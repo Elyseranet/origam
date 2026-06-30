@@ -432,8 +432,9 @@
 				})"
 		>
 			<template #default="{ state }">
-				<div style="padding: 24px; max-width: 500px;">
+				<div data-cy="confirm-wrapper-playground" style="padding: 24px; max-width: 500px;">
 					<origam-confirm-wrapper
+							data-cy="confirm-wrapper-playground-input"
 							v-model="playgroundValue"
 							v-model:confirm="playgroundConfirm"
 							v-bind="state"

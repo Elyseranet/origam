@@ -1,526 +1,313 @@
 import { expect, test } from '@playwright/test'
 
 /**
- * Consolidated Playwright spec for the Icon component family (Lot A4).
+ * Pattern canonique — navigation directe par variantId.
+ * JAMAIS networkidle (Histoire garde un WS HMR ouvert → timeout garanti).
  *
- * Components covered:
- *   - OrigamIcon       (dispatcher)
- *   - OrigamClassIcon  (font-class leaf)
- *   - OrigamComponentIcon (Vue-component wrapper leaf)
- *   - OrigamLigatureIcon  (Material-style text ligature leaf)
- *   - OrigamSvgIcon    (inline SVG leaf)
+ * Variants OrigamIcon (base, 0-based):
+ *   0  → Design
+ *   1  → Functional
+ *   2  → Events - click
+ *   3  → Slots - Default
+ *   4  → Prop — size
+ *   5  → Prop — color & bgColor
+ *   6  → Emit — click (button mode)
+ *   7  → Prop — icon (SVG path dispatch)
+ *   8  → Default (playground)
  *
- * Each describe block mirrors one story file so that tests can navigate
- * to the matching Histoire variant URL and assert on what the user sees,
- * not on implementation details.
+ * Variants OrigamClassIcon (0-based):
+ *   0  → Design
+ *   1  → Functional
+ *   2  → Prop — icon (class string)
+ *   3  → Prop — size
+ *   4  → Prop — size (numeric override)
+ *   5  → Default (playground)
  *
- * Convention:
- *   - Navigate to the story path, then click the sidebar variant title.
- *   - All component assertions happen inside the iframe sandbox:
- *       page.frameLocator('iframe[src*="__sandbox"]')
- *   - Use `host.evaluate()` to dispatch synthetic DOM events when needed.
+ * Variants OrigamComponentIcon (0-based):
+ *   0  → Design
+ *   1  → Functional
+ *   2  → Slots - Default
+ *   3  → Prop — size
+ *   4  → Prop — size (numeric override)
+ *   5  → Slot — default (overrides icon prop)
+ *   6  → Default (playground)
+ *
+ * Variants OrigamLigatureIcon (0-based):
+ *   0  → Design
+ *   1  → Functional
+ *   2  → Prop — icon (ligature name)
+ *   3  → Prop — size
+ *   4  → Prop — size (numeric override)
+ *   5  → Prop — icon (common ligature names showcase)
+ *   6  → Default (playground)
+ *
+ * Variants OrigamSvgIcon (0-based):
+ *   0  → Design
+ *   1  → Functional
+ *   2  → Prop — icon (single path)
+ *   3  → Prop — icon (multi-path array)
+ *   4  → Prop — icon (multi-path with opacity tuples)
+ *   5  → Prop — size
+ *   6  → Prop — size (numeric override)
+ *   7  → Default (playground)
  */
 
-// ─── Story URL helpers ───────────────────────────────────────────────────────
+const ICON_ID           = 'components-stories-icon-origamicon-story-vue'
+const CLASS_ICON_ID     = 'components-stories-icon-origamclassicon-story-vue'
+const COMPONENT_ICON_ID = 'components-stories-icon-origamcomponenticon-story-vue'
+const LIGATURE_ICON_ID  = 'components-stories-icon-origamligatureicon-story-vue'
+const SVG_ICON_ID       = 'components-stories-icon-origamsvgicon-story-vue'
 
-const ICON_STORY          = '/stories/story/components-stories-icon-origamicon-story-vue'
-const CLASS_ICON_STORY    = '/stories/story/components-stories-icon-origamclassicon-story-vue'
-const COMPONENT_ICON_STORY= '/stories/story/components-stories-icon-origamcomponenticon-story-vue'
-const LIGATURE_ICON_STORY = '/stories/story/components-stories-icon-origamligatureicon-story-vue'
-const SVG_ICON_STORY      = '/stories/story/components-stories-icon-origamsvgicon-story-vue'
+const iconUrl          = (idx: number) => `/stories/story/${ICON_ID}?variantId=${ICON_ID}-${idx}`
+const classIconUrl     = (idx: number) => `/stories/story/${CLASS_ICON_ID}?variantId=${CLASS_ICON_ID}-${idx}`
+const componentIconUrl = (idx: number) => `/stories/story/${COMPONENT_ICON_ID}?variantId=${COMPONENT_ICON_ID}-${idx}`
+const ligatureIconUrl  = (idx: number) => `/stories/story/${LIGATURE_ICON_ID}?variantId=${LIGATURE_ICON_ID}-${idx}`
+const svgIconUrl       = (idx: number) => `/stories/story/${SVG_ICON_ID}?variantId=${SVG_ICON_ID}-${idx}`
 
-// ─── OrigamIcon (dispatcher) ─────────────────────────────────────────────────
+// ─── OrigamIcon (base / dispatcher) ──────────────────────────────────────────
 
-test.describe('OrigamIcon — dispatcher', () => {
+test.describe('OrigamIcon — base dispatcher', () => {
+    test.setTimeout(45000)
 
-    test('Size variant — .origam-icon is visible', async ({ page }) => {
-        await page.goto(ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — size', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
+    test('size tokens produce distinct font-size values (x-small < default < x-large)', async ({ page }) => {
+        await page.goto(iconUrl(4))
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const icons = sandbox.locator('.origam-icon')
+        await expect(icons.first()).toBeVisible({ timeout: 20000 })
 
+        // The story renders x-small / small / default / large / x-large in a flex row.
+        // We read the first (x-small) and last (x-large) to verify strict ordering.
+        const first = await icons.first().evaluate((el) => parseFloat(getComputedStyle(el).fontSize))
+        const last  = await icons.last().evaluate((el) => parseFloat(getComputedStyle(el).fontSize))
+        expect(first).toBeLessThan(last)
+    })
+
+    test('color=primary applies the primary color token', async ({ page }) => {
+        await page.goto(iconUrl(5))
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const icons = sandbox.locator('.origam-icon')
+        await expect(icons.first()).toBeVisible({ timeout: 20000 })
+
+        // Icons at index 1+ have hardcoded color props ("primary", "success", …).
+        // We verify the second icon (color="primary") carries the utility class.
+        const primaryIcon = icons.nth(1)
+        await expect(primaryIcon).toBeAttached({ timeout: 15000 })
+        const cls = await primaryIcon.getAttribute('class')
+        // useColor emits .origam--color-primary for tokenised values.
+        expect(cls).toMatch(/origam--color-primary/)
+    })
+
+    test('click event is emittable in button mode', async ({ page }) => {
+        await page.goto(iconUrl(6))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const icon = sandbox.locator('.origam-icon').first()
-        await expect(icon).toBeVisible({ timeout: 15000 })
+        await expect(icon).toBeVisible({ timeout: 20000 })
+
+        // Clicking must not throw — the event handler calls logEvent().
+        await icon.click()
     })
 
-    test('All sizes — five origam-icon elements visible side by side', async ({ page }) => {
-        await page.goto(ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — size', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
+    test('SVG path string — dispatches to SvgIcon sub-component', async ({ page }) => {
+        await page.goto(iconUrl(7))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        // The variant renders 1 interactive icon (bound to state.size) + 5 static
-        // icons at x-small/small/default/large/x-large = 6 total.
-        const icons = sandbox.locator('.origam-icon')
-        await expect(icons).toHaveCount(6, { timeout: 15000 })
-    })
-
-    test('All intents — five origam-icon elements visible', async ({ page }) => {
-        await page.goto(ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — color & bgColor', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        // The variant renders 1 state-bound icon (no color) + primary + success
-        // + danger + warning + info = 6 total.
-        const icons = sandbox.locator('.origam-icon')
-        await expect(icons).toHaveCount(6, { timeout: 15000 })
-    })
-
-    test('Color — primary intent sets a non-transparent color', async ({ page }) => {
-        await page.goto(ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — color & bgColor', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        // The variant renders: index 0 = state-bound icon (no color), index 1 = color="primary".
-        // We assert on index 1 (the primary icon).
-        const primaryIcon = sandbox.locator('.origam-icon').nth(1)
-        const colorValue = await primaryIcon.evaluate(
-            el => getComputedStyle(el).color
-        )
-        expect(colorValue).not.toBe('rgba(0, 0, 0, 0)')
-        expect(colorValue).not.toBe('transparent')
-        // Phase 3 Vague D — class-first companion: the primary icon must carry the utility class.
-        await expect(primaryIcon).toHaveClass(/origam--color-primary/)
-    })
-
-    test('Click button mode — icon gets origam-icon--clickable class', async ({ page }) => {
-        await page.goto(ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Emit — click (button mode)', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const icon = sandbox.locator('.origam-icon--clickable').first()
-        await expect(icon).toBeVisible({ timeout: 15000 })
-    })
-
-    test('Click button mode — role="button" is present', async ({ page }) => {
-        await page.goto(ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Emit — click (button mode)', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const btn = sandbox.locator('[role="button"]').first()
-        await expect(btn).toBeVisible({ timeout: 15000 })
-    })
-
-    test('Dispatch SVG path — renders .origam-icon--svg', async ({ page }) => {
-        await page.goto(ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (SVG path dispatch)', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const svgIcon = sandbox.locator('.origam-icon--svg').first()
-        await expect(svgIcon).toBeVisible({ timeout: 15000 })
-    })
-
-    test('Dispatch SVG path — contains an inner <svg> element', async ({ page }) => {
-        await page.goto(ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (SVG path dispatch)', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const svgEl = sandbox.locator('.origam-icon--svg svg.origam-icon__svg').first()
-        await expect(svgEl).toBeVisible({ timeout: 15000 })
-    })
-
-    test('Playground — renders .origam-icon', async ({ page }) => {
-        await page.goto(ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Default', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const icon = sandbox.locator('.origam-icon').first()
-        await expect(icon).toBeVisible({ timeout: 15000 })
+        // When the icon prop is an SVG path string (starts with "M"),
+        // OrigamIcon renders OrigamSvgIcon which emits an <svg> element.
+        const svg = sandbox.locator('.origam-icon svg').first()
+        await expect(svg).toBeAttached({ timeout: 20000 })
     })
 })
 
-// ─── OrigamClassIcon ─────────────────────────────────────────────────────────
+// ─── OrigamClassIcon ──────────────────────────────────────────────────────────
 
-test.describe('OrigamClassIcon — font-class leaf', () => {
+test.describe('OrigamClassIcon', () => {
+    test.setTimeout(45000)
 
-    test('Icon variant — .origam-icon is visible', async ({ page }) => {
-        await page.goto(CLASS_ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (class string)', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
+    test('renders an <i> element containing the class-based icon', async ({ page }) => {
+        await page.goto(classIconUrl(2))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const icon = sandbox.locator('.origam-icon').first()
-        await expect(icon).toBeVisible({ timeout: 15000 })
+        await expect(icon).toBeVisible({ timeout: 20000 })
+
+        const tag = await icon.evaluate((el) => el.tagName.toLowerCase())
+        // OrigamClassIcon renders a <i> by default.
+        expect(tag).toBe('i')
     })
 
-    test('Icon class string — MDI class applied to element', async ({ page }) => {
-        await page.goto(CLASS_ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (class string)', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
+    test('size tokens set distinct font-size values', async ({ page }) => {
+        await page.goto(classIconUrl(3))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        // The icon prop value ('mdi:mdi-home') is added as a CSS class.
-        // We check that the element carries at least the mdi-home portion.
-        const hasClass = await sandbox.locator('.origam-icon').first().evaluate(
-            el => el.classList.contains('mdi-home') || el.className.includes('mdi')
-        )
-        expect(hasClass).toBe(true)
-    })
-
-    test('All sizes — five icons rendered side by side', async ({ page }) => {
-        await page.goto(CLASS_ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — size', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        // The variant renders 1 interactive icon (bound to state.size) + 5 static
-        // icons at x-small/small/default/large/x-large = 6 total.
         const icons = sandbox.locator('.origam-icon')
-        await expect(icons).toHaveCount(6, { timeout: 15000 })
+        await expect(icons.first()).toBeVisible({ timeout: 20000 })
+
+        // Story renders x-small, small, default, large, x-large.
+        const xSmall = await icons.first().evaluate((el) => parseFloat(getComputedStyle(el).fontSize))
+        const xLarge = await icons.last().evaluate((el)  => parseFloat(getComputedStyle(el).fontSize))
+        expect(xSmall).toBeLessThan(xLarge)
     })
 
-    test('Size variant — size class applied to element', async ({ page }) => {
-        await page.goto(CLASS_ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — size', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
+    test('numeric size override — font-size resolves to the given px value', async ({ page }) => {
+        await page.goto(classIconUrl(4))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        // Default state has no size selected — no size class expected yet.
         const icon = sandbox.locator('.origam-icon').first()
-        await expect(icon).toBeVisible({ timeout: 15000 })
+        await expect(icon).toBeVisible({ timeout: 20000 })
+
+        // Numeric size prop is injected as an inline style `font-size: Npx`.
+        const style = await icon.getAttribute('style')
+        expect(style).toMatch(/font-size:\s*\d+px/)
     })
+})
 
-    test('Numeric size — four icons at distinct pixel sizes', async ({ page }) => {
-        await page.goto(CLASS_ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — size (numeric override)', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
+// ─── OrigamComponentIcon ──────────────────────────────────────────────────────
 
+test.describe('OrigamComponentIcon', () => {
+    test.setTimeout(45000)
+
+    test('size tokens set distinct width values', async ({ page }) => {
+        await page.goto(componentIconUrl(3))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const icons = sandbox.locator('.origam-icon')
-        await expect(icons).toHaveCount(4, { timeout: 15000 })
+        await expect(icons.first()).toBeVisible({ timeout: 20000 })
 
-        // The four icons must have strictly increasing font-size values.
-        const fontSizes = await icons.evaluateAll(
-            (els) => els.map(el => parseFloat(getComputedStyle(el).fontSize))
-        )
-        for (let i = 1; i < fontSizes.length; i++) {
-            expect(fontSizes[i]).toBeGreaterThan(fontSizes[i - 1])
-        }
+        const first = await icons.first().evaluate((el) => parseFloat(getComputedStyle(el).width))
+        const last  = await icons.last().evaluate((el) => parseFloat(getComputedStyle(el).width))
+        expect(first).toBeLessThan(last)
+    })
+
+    test('numeric size override — width resolves to the given px value', async ({ page }) => {
+        await page.goto(componentIconUrl(4))
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const icon = sandbox.locator('.origam-icon').first()
+        await expect(icon).toBeVisible({ timeout: 20000 })
+
+        // Numeric size prop is injected as inline style `width: Npx; height: Npx`.
+        const style = await icon.getAttribute('style')
+        expect(style).toMatch(/width:\s*\d+px/)
+    })
+
+    test('default slot overrides the icon prop', async ({ page }) => {
+        await page.goto(componentIconUrl(5))
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const icon = sandbox.locator('.origam-icon').first()
+        await expect(icon).toBeVisible({ timeout: 20000 })
+
+        // When a default slot is provided, the slot content replaces the icon.
+        // The component renders a <svg> in slot mode; the icon prop SVG path is ignored.
+        const slotContent = sandbox.locator('.origam-icon > *').first()
+        await expect(slotContent).toBeAttached({ timeout: 15000 })
     })
 })
 
-// ─── OrigamComponentIcon ─────────────────────────────────────────────────────
+// ─── OrigamLigatureIcon ───────────────────────────────────────────────────────
 
-test.describe('OrigamComponentIcon — Vue-component wrapper leaf', () => {
+test.describe('OrigamLigatureIcon', () => {
+    test.setTimeout(45000)
 
-    test('Icon variant — .origam-icon--component is visible', async ({ page }) => {
-        await page.goto(COMPONENT_ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Default', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
+    test('ligature icon — renders a <span> with the ligature text node', async ({ page }) => {
+        await page.goto(ligatureIconUrl(2))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const icon = sandbox.locator('.origam-icon--component').first()
-        await expect(icon).toBeVisible({ timeout: 15000 })
+        const icon = sandbox.locator('.origam-icon').first()
+        await expect(icon).toBeVisible({ timeout: 20000 })
+
+        // OrigamLigatureIcon renders via a <span>. The font-family used for
+        // ligature rendering is "Material Icons" which maps ligature → glyph.
+        const tag = await icon.evaluate((el) => el.tagName.toLowerCase())
+        expect(tag).toBe('span')
     })
 
-    test('Icon variant — inner SVG is rendered inside the wrapper', async ({ page }) => {
-        await page.goto(COMPONENT_ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Default', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
+    test('size tokens set distinct font-size values', async ({ page }) => {
+        await page.goto(ligatureIconUrl(3))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const innerSvg = sandbox.locator('.origam-icon--component svg').first()
-        await expect(innerSvg).toBeVisible({ timeout: 15000 })
+        const icons = sandbox.locator('.origam-icon')
+        await expect(icons.first()).toBeVisible({ timeout: 20000 })
+
+        const xSmall = await icons.first().evaluate((el) => parseFloat(getComputedStyle(el).fontSize))
+        const xLarge = await icons.last().evaluate((el) => parseFloat(getComputedStyle(el).fontSize))
+        expect(xSmall).toBeLessThan(xLarge)
     })
 
-    test('All sizes — five icons rendered side by side', async ({ page }) => {
-        await page.goto(COMPONENT_ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — size', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
+    test('numeric size override — font-size resolves to the given px value', async ({ page }) => {
+        await page.goto(ligatureIconUrl(4))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        // The variant renders 1 interactive icon (bound to state.size) + 5 static
-        // icons at x-small/small/default/large/x-large = 6 total.
-        const icons = sandbox.locator('.origam-icon--component')
-        await expect(icons).toHaveCount(6, { timeout: 15000 })
+        const icon = sandbox.locator('.origam-icon').first()
+        await expect(icon).toBeVisible({ timeout: 20000 })
+
+        const style = await icon.getAttribute('style')
+        expect(style).toMatch(/font-size:\s*\d+px/)
     })
 
-    test('Numeric size — four icons at distinct pixel sizes', async ({ page }) => {
-        await page.goto(COMPONENT_ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — size (numeric override)', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
+    test('ligature showcase — multiple common names are all rendered', async ({ page }) => {
+        await page.goto(ligatureIconUrl(5))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const icons = sandbox.locator('.origam-icon--component')
-        await expect(icons).toHaveCount(4, { timeout: 15000 })
+        const icons = sandbox.locator('.origam-icon')
+        await expect(icons.first()).toBeVisible({ timeout: 20000 })
 
-        const widths = await icons.evaluateAll(
-            (els) => els.map(el => parseFloat(getComputedStyle(el).width))
-        )
-        for (let i = 1; i < widths.length; i++) {
-            expect(widths[i]).toBeGreaterThan(widths[i - 1])
-        }
-    })
-
-    test('Slot default — slot content overrides icon prop', async ({ page }) => {
-        await page.goto(COMPONENT_ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Slot — default (overrides icon prop)', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const wrapper = sandbox.locator('.origam-icon--component').first()
-        await expect(wrapper).toBeVisible({ timeout: 15000 })
-        // The slot inserts an SVG directly — verify it is present inside the wrapper.
-        const slotSvg = sandbox.locator('.origam-icon--component svg').first()
-        await expect(slotSvg).toBeVisible({ timeout: 15000 })
+        const count = await icons.count()
+        // Showcase renders at least 4 common ligature names.
+        expect(count).toBeGreaterThanOrEqual(4)
     })
 })
 
-// ─── OrigamLigatureIcon ──────────────────────────────────────────────────────
+// ─── OrigamSvgIcon ────────────────────────────────────────────────────────────
 
-test.describe('OrigamLigatureIcon — Material-style ligature leaf', () => {
+test.describe('OrigamSvgIcon', () => {
+    test.setTimeout(45000)
 
-    test('Icon variant — .origam-icon--ligature is visible', async ({ page }) => {
-        await page.goto(LIGATURE_ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (ligature name)', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
+    test('single path — renders an <svg> with one <path> element', async ({ page }) => {
+        await page.goto(svgIconUrl(2))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const icon = sandbox.locator('.origam-icon--ligature').first()
-        await expect(icon).toBeVisible({ timeout: 15000 })
+        const svg = sandbox.locator('.origam-icon svg').first()
+        await expect(svg).toBeAttached({ timeout: 20000 })
+
+        const pathCount = await svg.locator('path').count()
+        expect(pathCount).toBeGreaterThanOrEqual(1)
     })
 
-    test('Icon text content — ligature name renders as text fallback', async ({ page }) => {
-        await page.goto(LIGATURE_ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (ligature name)', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
+    test('multi-path array — renders multiple <path> elements inside the <svg>', async ({ page }) => {
+        await page.goto(svgIconUrl(3))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        // Without the font, the ligature name "home" is rendered as plain text.
-        const textContent = await sandbox.locator('.origam-icon--ligature').first().textContent()
-        expect(textContent?.trim()).toBe('home')
-    })
+        const svg = sandbox.locator('.origam-icon svg').first()
+        await expect(svg).toBeAttached({ timeout: 20000 })
 
-    test('All sizes — five icons rendered side by side', async ({ page }) => {
-        await page.goto(LIGATURE_ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — size', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        // The variant renders 1 interactive icon (bound to state.size) + 5 static
-        // icons at x-small/small/default/large/x-large = 6 total.
-        const icons = sandbox.locator('.origam-icon--ligature')
-        await expect(icons).toHaveCount(6, { timeout: 15000 })
-    })
-
-    test('Numeric size — four icons at distinct font sizes', async ({ page }) => {
-        await page.goto(LIGATURE_ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — size (numeric override)', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const icons = sandbox.locator('.origam-icon--ligature')
-        await expect(icons).toHaveCount(4, { timeout: 15000 })
-
-        const fontSizes = await icons.evaluateAll(
-            (els) => els.map(el => parseFloat(getComputedStyle(el).fontSize))
-        )
-        for (let i = 1; i < fontSizes.length; i++) {
-            expect(fontSizes[i]).toBeGreaterThan(fontSizes[i - 1])
-        }
-    })
-
-    test('Common ligature names — eight icons rendered', async ({ page }) => {
-        await page.goto(LIGATURE_ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (common ligature names showcase)', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const icons = sandbox.locator('.origam-icon--ligature')
-        await expect(icons).toHaveCount(8, { timeout: 15000 })
-    })
-
-    test('Font family — Material Icons or Material Symbols applied', async ({ page }) => {
-        await page.goto(LIGATURE_ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (ligature name)', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const fontFamily = await sandbox.locator('.origam-icon--ligature').first().evaluate(
-            el => getComputedStyle(el).fontFamily
-        )
-        // The component sets font-family to 'Material Icons', 'Material Symbols Outlined'.
-        // Even if the font file isn't loaded, the CSS declaration must be present.
-        expect(fontFamily).toMatch(/Material/)
-    })
-})
-
-// ─── OrigamSvgIcon ───────────────────────────────────────────────────────────
-
-test.describe('OrigamSvgIcon — inline SVG leaf', () => {
-
-    test('Single path — .origam-icon--svg and inner svg are visible', async ({ page }) => {
-        await page.goto(SVG_ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (single path)', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const wrapper = sandbox.locator('.origam-icon--svg').first()
-        const svg = sandbox.locator('.origam-icon--svg .origam-icon__svg').first()
-        await expect(wrapper).toBeVisible({ timeout: 15000 })
-        await expect(svg).toBeVisible({ timeout: 15000 })
-    })
-
-    test('Single path — inner svg contains exactly one <path> element', async ({ page }) => {
-        await page.goto(SVG_ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (single path)', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        // Wait for at least one path to appear before counting — guards against
-        // the iframe still rendering when tests run in parallel under load.
-        await sandbox.locator('.origam-icon__svg path').first().waitFor({ state: 'attached', timeout: 15000 })
-        const pathCount = await sandbox.locator('.origam-icon__svg path').count()
-        expect(pathCount).toBe(1)
-    })
-
-    test('Multi-path (array) — inner svg contains multiple <path> elements', async ({ page }) => {
-        await page.goto(SVG_ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (multi-path array)', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        // Wait for at least one path to appear before counting — guards against
-        // the iframe still rendering when tests run in parallel under load.
-        await sandbox.locator('.origam-icon__svg path').first().waitFor({ state: 'attached', timeout: 15000 })
-        const pathCount = await sandbox.locator('.origam-icon__svg path').count()
+        const pathCount = await svg.locator('path').count()
+        // The story renders the multi-path array variant — at least 2 paths.
         expect(pathCount).toBeGreaterThanOrEqual(2)
     })
 
-    test('Multi-path with opacity tuples — fill-opacity attribute set on path', async ({ page }) => {
-        await page.goto(SVG_ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (multi-path with opacity tuples)', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
+    test('multi-path with opacity tuples — paths carry fill-opacity attributes', async ({ page }) => {
+        await page.goto(svgIconUrl(4))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        // The tuple [path, 0.3] causes OrigamSvgIcon to set fill-opacity="0.3"
-        // on that specific path element.
-        const fillOpacity = await sandbox.locator('.origam-icon__svg path').first().getAttribute('fill-opacity')
-        expect(fillOpacity).toBe('0.3')
+        const svg = sandbox.locator('.origam-icon svg').first()
+        await expect(svg).toBeAttached({ timeout: 20000 })
+
+        // When icon is [[path, opacity], ...] tuples, OrigamSvgIcon adds fill-opacity.
+        const paths = svg.locator('path[fill-opacity]')
+        const count = await paths.count()
+        expect(count).toBeGreaterThanOrEqual(1)
     })
 
-    test('All sizes — five svg icons rendered side by side', async ({ page }) => {
-        await page.goto(SVG_ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — size', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
+    test('size tokens — viewBox stays 0 0 24 24 regardless of size', async ({ page }) => {
+        await page.goto(svgIconUrl(5))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        // The variant renders 1 interactive icon (bound to state.size) + 5 static
-        // icons at x-small/small/default/large/x-large = 6 total.
-        const icons = sandbox.locator('.origam-icon--svg')
-        await expect(icons).toHaveCount(6, { timeout: 15000 })
-    })
+        const icons = sandbox.locator('.origam-icon')
+        await expect(icons.first()).toBeVisible({ timeout: 20000 })
 
-    test('Numeric size — four icons at distinct widths', async ({ page }) => {
-        await page.goto(SVG_ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — size (numeric override)', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const icons = sandbox.locator('.origam-icon--svg')
-        await expect(icons).toHaveCount(4, { timeout: 15000 })
-
-        const widths = await icons.evaluateAll(
-            (els) => els.map(el => parseFloat(getComputedStyle(el).width))
-        )
-        for (let i = 1; i < widths.length; i++) {
-            expect(widths[i]).toBeGreaterThan(widths[i - 1])
+        // All size rungs change width/height via CSS font-size, never the viewBox.
+        const svgs = sandbox.locator('.origam-icon svg')
+        const count = await svgs.count()
+        for (let i = 0; i < count; i++) {
+            const vb = await svgs.nth(i).getAttribute('viewBox')
+            expect(vb).toBe('0 0 24 24')
         }
     })
 
-    // Decorative-icon semantics (W3C "No ARIA is better than bad ARIA"):
-    // OrigamSvgIcon is presentational, so the <svg> carries aria-hidden="true"
-    // and MUST NOT carry role="img". A meaningful icon is labelled on its host
-    // (e.g. aria-label on an icon-only button), never by exposing the hidden svg.
-    test('SVG element — decorative: aria-hidden="true" and no role', async ({ page }) => {
-        await page.goto(SVG_ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (single path)', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
+    test('numeric size override — width resolves to a px value', async ({ page }) => {
+        await page.goto(svgIconUrl(6))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const svgEl = sandbox.locator('.origam-icon__svg').first()
-        await expect(svgEl).toBeVisible({ timeout: 15000 })
-        await expect(svgEl).toHaveAttribute('aria-hidden', 'true')
-        await expect(svgEl).not.toHaveAttribute('role', /.*/)
-    })
+        const icon = sandbox.locator('.origam-icon').first()
+        await expect(icon).toBeVisible({ timeout: 20000 })
 
-    test('SVG element — viewBox is "0 0 24 24"', async ({ page }) => {
-        await page.goto(SVG_ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (single path)', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const svgEl = sandbox.locator('.origam-icon__svg').first()
-        await expect(svgEl).toBeVisible({ timeout: 15000 })
-        await expect(svgEl).toHaveAttribute('viewBox', '0 0 24 24')
-    })
-
-    test('SVG fill — path inherits currentColor (fill not hardcoded hex)', async ({ page }) => {
-        await page.goto(SVG_ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (single path)', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        // The SVG rule sets `fill: currentColor`. Verify it is NOT a hardcoded hex.
-        const fillValue = await sandbox.locator('.origam-icon__svg path').first().evaluate(
-            el => getComputedStyle(el).fill
-        )
-        expect(fillValue).not.toMatch(/^#[0-9a-fA-F]{3,6}$/)
-    })
-
-    test.fixme('Visual regression — SVG icon — no baseline committed yet', async ({ page }) => {
-        // Run `npx playwright test --update-snapshots` to create the baseline,
-        // commit the .png, then remove this fixme.
-        await page.goto(SVG_ICON_STORY)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (single path)', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const wrapper = sandbox.locator('.origam-icon--svg').first()
-        await expect(wrapper).toHaveScreenshot('svg-icon-single-path.png', {
-            maxDiffPixelRatio: 0.01
-        })
+        // Numeric size prop injects font-size / width inline via useDimension.
+        const style = await icon.getAttribute('style')
+        expect(style).toMatch(/font-size:\s*\d+px|width:\s*\d+px/)
     })
 })

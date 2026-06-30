@@ -55,6 +55,89 @@
 			</template>
 		</Variant>
 
+		<Variant title="Prop — default (single selection)">
+			<div class="ig-row">
+				<origam-item-group v-model="defaultModel">
+					<origam-item v-for="opt in plans" :key="opt.value" :value="opt.value">
+						<template #default="{ isSelected, toggle }">
+							<origam-card
+									border
+									rounded="default"
+									:class="['ig-card', { 'ig-card--active': isSelected }]"
+									@click="toggle"
+							>
+								<div class="ig-card__icon">{{ opt.icon }}</div>
+								<div class="ig-card__title">{{ opt.label }}</div>
+							</origam-card>
+						</template>
+					</origam-item>
+				</origam-item-group>
+				<p data-cy="ig-default-status" class="ig-status">selected = <strong>{{ JSON.stringify(defaultModel) }}</strong></p>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — multiple (checkbox-style)">
+			<div class="ig-row">
+				<origam-item-group v-model="multipleModel" :multiple="true">
+					<origam-item v-for="opt in plans" :key="opt.value" :value="opt.value">
+						<template #default="{ isSelected, toggle }">
+							<origam-card
+									border
+									rounded="default"
+									:class="['ig-card', { 'ig-card--active': isSelected }]"
+									@click="toggle"
+							>
+								<div class="ig-card__icon">{{ opt.icon }}</div>
+								<div class="ig-card__title">{{ opt.label }}</div>
+							</origam-card>
+						</template>
+					</origam-item>
+				</origam-item-group>
+				<p data-cy="ig-multiple-status" class="ig-status">selected = <strong>{{ JSON.stringify(multipleModel) }}</strong></p>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — mandatory (always keeps one selected)">
+			<div class="ig-row">
+				<origam-item-group v-model="mandatoryModel" :mandatory="true">
+					<origam-item v-for="opt in formats" :key="opt.value" :value="opt.value">
+						<template #default="{ isSelected, toggle }">
+							<origam-card
+									border
+									rounded="default"
+									:class="['ig-card ig-card--small', { 'ig-card--active': isSelected }]"
+									@click="toggle"
+							>
+								<div class="ig-card__title">{{ opt.label }}</div>
+							</origam-card>
+						</template>
+					</origam-item>
+				</origam-item-group>
+				<p class="ig-status">selected = <strong>{{ JSON.stringify(mandatoryModel) }}</strong></p>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — selectedClass (custom active class)">
+			<div class="ig-row">
+				<origam-item-group v-model="selectedClassModel" selected-class="my-custom-active">
+					<origam-item v-for="opt in plans" :key="opt.value" :value="opt.value">
+						<template #default="{ isSelected, toggle }">
+							<origam-card
+									border
+									rounded="default"
+									:class="['ig-card', { 'my-custom-active': isSelected }]"
+									@click="toggle"
+							>
+								<div class="ig-card__icon">{{ opt.icon }}</div>
+								<div class="ig-card__title">{{ opt.label }}</div>
+							</origam-card>
+						</template>
+					</origam-item>
+				</origam-item-group>
+				<p class="ig-status">selected = <strong>{{ JSON.stringify(selectedClassModel) }}</strong></p>
+			</div>
+		</Variant>
+
 		<Variant title="Events - update:modelValue">
 			<div class="ig-row">
 				<origam-item-group
@@ -168,10 +251,14 @@
 		{ value: 'underline', label: 'Underline' },
 	]
 
-	const functionalModel  = ref<any>('m')
-	const emitModel        = ref<any>(undefined)
-	const slotModel        = ref<string | undefined>('bold')
-	const playgroundModel  = ref<any>('m')
+	const functionalModel    = ref<any>('m')
+	const defaultModel       = ref<any>('m')
+	const multipleModel      = ref<any[]>(['s', 'm'])
+	const mandatoryModel     = ref<any>('bold')
+	const selectedClassModel = ref<any>('m')
+	const emitModel          = ref<any>(undefined)
+	const slotModel          = ref<string | undefined>('bold')
+	const playgroundModel    = ref<any>('m')
 </script>
 
 <style scoped>
@@ -207,6 +294,11 @@
 		box-shadow: 0 0 0 4px var(--origam-color__action--primary---bg-subtle, rgba(124, 58, 237, 0.1));
 	}
 	.ig-card--disabled { opacity: 0.45; cursor: not-allowed; }
+	.my-custom-active {
+		border-color: var(--origam-color__feedback--success---bg, rgb(22, 163, 74));
+		border-width: 2px;
+		box-shadow: 0 0 0 4px var(--origam-color__feedback--success---bg-subtle, rgba(22, 163, 74, 0.1));
+	}
 	.ig-status {
 		flex-basis: 100%;
 		font: 0.875rem/1.4 system-ui, sans-serif;

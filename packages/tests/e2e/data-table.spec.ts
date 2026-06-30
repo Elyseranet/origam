@@ -1,118 +1,114 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/stories/story/components-stories-datatable-origamdatatable-story-vue'
+/**
+ * Pattern canonique — navigation directe par variantId.
+ * JAMAIS networkidle (Histoire garde un WS HMR ouvert → timeout garanti).
+ *
+ * Variants OrigamDataTable (0-based):
+ *   0  → Design
+ *   1  → State
+ *   2  → Functional
+ *   3  → Events - update:currentItems
+ *   4  → Events - update:expanded
+ *   5  → Events - update:groupBy
+ *   6  → Events - update:itemsPerPage
+ *   7  → Events - update:modelValue
+ *   8  → Events - update:options
+ *   9  → Events - update:page
+ *  10  → Events - update:sortBy
+ *  11  → Slots - Top
+ *  12  → Slots - Prepend
+ *  13  → Slots - Append
+ *  14  → Slots - Body
+ *  15  → Slots - Bottom
+ *  16  → Slots - Colgroup
+ *  17  → Slots - Default
+ *  18  → Slots - Header
+ *  19  → Slots - Header.loader
+ *  20  → Slots - Header.mobile
+ *  21  → Slots - Thead
+ *  22  → Prop — headers & items (basic dataset)
+ *  23  → Prop — multiSort & mustSort
+ *  24  → Prop — itemsPerPage (pagination)
+ *  25  → Prop — showSelect
+ *  26  → Prop — search
+ *  27  → Prop — loading
+ *  28  → Slot — top
+ *  29  → Prop — loading (all shapes)
+ *  30  → Default (playground)
+ */
+const STORY_ID   = 'components-stories-datatable-origamdatatable-story-vue'
+const STORY_PATH = '/stories/story/' + STORY_ID
+
+const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 
 test.describe('OrigamDataTable', () => {
-    test('Basic variant — table renders with header and body', async ({ page }) => {
-        await page.goto(STORY_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — headers & items (basic dataset)', { exact: true }).first().click()
-        await page.waitForTimeout(800)
+    test.setTimeout(45000)
 
+    test('Basic variant — table renders with header and body', async ({ page }) => {
+        await page.goto(variantUrl(22))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        await expect(sandbox.locator('.origam-data-table').first()).toBeVisible({ timeout: 5000 })
-        await expect(sandbox.locator('thead').first()).toBeVisible({ timeout: 5000 })
-        await expect(sandbox.locator('tbody').first()).toBeVisible({ timeout: 5000 })
+        await expect(sandbox.locator('.origam-data-table').first()).toBeVisible({ timeout: 20000 })
+        await expect(sandbox.locator('thead').first()).toBeVisible({ timeout: 15000 })
+        await expect(sandbox.locator('tbody').first()).toBeVisible({ timeout: 15000 })
     })
 
     test('Basic variant — column headers are rendered', async ({ page }) => {
-        await page.goto(STORY_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — headers & items (basic dataset)', { exact: true }).first().click()
-        await page.waitForTimeout(800)
-
+        await page.goto(variantUrl(22))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        await expect(sandbox.getByText('First name')).toBeVisible({ timeout: 5000 })
-        await expect(sandbox.getByText('Last name')).toBeVisible({ timeout: 5000 })
+        await expect(sandbox.locator('.origam-data-table').first()).toBeVisible({ timeout: 20000 })
+        await expect(sandbox.getByText('First name')).toBeVisible({ timeout: 15000 })
+        await expect(sandbox.getByText('Last name')).toBeVisible({ timeout: 15000 })
     })
 
     test('Basic variant — item data is rendered', async ({ page }) => {
-        await page.goto(STORY_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — headers & items (basic dataset)', { exact: true }).first().click()
-        await page.waitForTimeout(800)
-
+        await page.goto(variantUrl(22))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        await expect(sandbox.getByText('Alice')).toBeVisible({ timeout: 5000 })
+        await expect(sandbox.locator('.origam-data-table').first()).toBeVisible({ timeout: 20000 })
+        await expect(sandbox.getByText('Alice')).toBeVisible({ timeout: 15000 })
     })
 
     test('Sorting variant — table renders with sortable columns', async ({ page }) => {
-        await page.goto(STORY_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — multiSort & mustSort', { exact: true }).first().click()
-        await page.waitForTimeout(800)
-
+        await page.goto(variantUrl(23))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        await expect(sandbox.locator('.origam-data-table').first()).toBeVisible({ timeout: 5000 })
+        await expect(sandbox.locator('.origam-data-table').first()).toBeVisible({ timeout: 20000 })
     })
 
     test('Pagination variant — footer pagination is present', async ({ page }) => {
-        await page.goto(STORY_PATH)
-        await page.waitForLoadState('networkidle')
-        // `getByText('Pagination', { exact: true })` was ambiguous —
-        // it ALSO matched the "Pagination" component group in the
-        // Histoire sidebar (where OrigamPagination story lives).
-        // Click the variant tile inside the current story's variant
-        // panel instead. Histoire renders variant tiles with the
-        // text "Pagination" inside `.histoire-variant` or similar;
-        // we use `.last()` because the sidebar group entry comes
-        // FIRST in DOM order, so the variant tile is last.
-        await page.getByText('Prop — itemsPerPage (pagination)', { exact: true }).first().click()
-        await page.waitForTimeout(800)
-
+        await page.goto(variantUrl(24))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        await expect(sandbox.locator('.origam-data-table').first()).toBeVisible({ timeout: 5000 })
+        await expect(sandbox.locator('.origam-data-table').first()).toBeVisible({ timeout: 20000 })
     })
 
     test('Selection variant — checkbox column is present', async ({ page }) => {
-        await page.goto(STORY_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — showSelect', { exact: true }).first().click()
-        await page.waitForTimeout(800)
-
+        await page.goto(variantUrl(25))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        await expect(sandbox.locator('input[type="checkbox"]').first()).toBeAttached({ timeout: 5000 })
+        await expect(sandbox.locator('input[type="checkbox"]').first()).toBeAttached({ timeout: 20000 })
     })
 
     test('Search variant — search field and table are both rendered', async ({ page }) => {
-        await page.goto(STORY_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — search', { exact: true }).first().click()
-        await page.waitForTimeout(800)
-
+        await page.goto(variantUrl(26))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        await expect(sandbox.locator('.origam-data-table').first()).toBeVisible({ timeout: 5000 })
-        await expect(sandbox.locator('.origam-text-field').first()).toBeVisible({ timeout: 5000 })
+        await expect(sandbox.locator('.origam-data-table').first()).toBeVisible({ timeout: 20000 })
+        await expect(sandbox.locator('.origam-text-field').first()).toBeVisible({ timeout: 15000 })
     })
 
     test('Loading variant — table renders in loading state', async ({ page }) => {
-        await page.goto(STORY_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — loading', { exact: true }).first().click()
-        await page.waitForTimeout(800)
-
+        await page.goto(variantUrl(27))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        await expect(sandbox.locator('.origam-data-table').first()).toBeVisible({ timeout: 5000 })
+        await expect(sandbox.locator('.origam-data-table').first()).toBeVisible({ timeout: 20000 })
     })
 
     test('Slot — top renders custom header content', async ({ page }) => {
-        await page.goto(STORY_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Slot — top', { exact: true }).first().click()
-        await page.waitForTimeout(800)
-
+        await page.goto(variantUrl(28))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        await expect(sandbox.getByText('User list')).toBeVisible({ timeout: 5000 })
+        await expect(sandbox.getByText('User list')).toBeVisible({ timeout: 20000 })
     })
 
     test('Playground — table renders with full set of controls', async ({ page }) => {
-        await page.goto(STORY_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Default', { exact: true }).first().click()
-        await page.waitForTimeout(800)
-
+        await page.goto(variantUrl(30))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        await expect(sandbox.locator('.origam-data-table').first()).toBeVisible({ timeout: 5000 })
+        await expect(sandbox.locator('.origam-data-table').first()).toBeVisible({ timeout: 20000 })
     })
 
     test.describe('Loading shapes', () => {
@@ -137,19 +133,15 @@ test.describe('OrigamDataTable', () => {
         //     (duplicate of default-state test below; merged)
 
         test('loading (all shapes) — default state (kind=line, enabled=true) renders table with progress bar', async ({ page }) => {
-            await page.goto(STORY_PATH)
-            await page.waitForLoadState('networkidle')
-            await page.getByText('Prop — loading (all shapes)', { exact: true }).first().click()
-            await page.waitForTimeout(800)
-
+            await page.goto(variantUrl(29))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             // The story default state: enabled=true, kind='line' → resolveDtLoading returns { type: 'line' }
             const table = sandbox.locator('[data-cy="data-table-loading-interactive"]')
-            await expect(table).toBeVisible({ timeout: 5000 })
+            await expect(table).toBeVisible({ timeout: 20000 })
             // Headers row is still rendered while loading
-            await expect(table.locator('thead').first()).toBeVisible({ timeout: 3000 })
+            await expect(table.locator('thead').first()).toBeVisible({ timeout: 5000 })
             // A progress bar (linear, role=progressbar) must be present
-            await expect(table.locator('[role="progressbar"]').first()).toBeVisible({ timeout: 3000 })
+            await expect(table.locator('[role="progressbar"]').first()).toBeVisible({ timeout: 5000 })
         })
     })
 })

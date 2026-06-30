@@ -1,9 +1,55 @@
 import { expect, test } from '@playwright/test'
 
-const SHEET_PATH = '/stories/story/components-stories-sheet-origamsheet-story-vue'
-const RESPONSIVE_PATH = '/stories/story/components-stories-responsive-origamresponsive-story-vue'
-const SYSTEMBAR_PATH = '/stories/story/components-stories-systembar-origamsystembar-story-vue'
-const MAIN_PATH = '/stories/story/components-stories-main-origammain-story-vue'
+/**
+ * Pattern canonique — navigation directe par variantId.
+ * JAMAIS networkidle (Histoire garde un WS HMR ouvert → timeout garanti).
+ *
+ * Variants OrigamSheet (0-based):
+ *   0  → Design
+ *   1  → State
+ *   2  → Functional
+ *   3  → Events - click
+ *   4  → Slots - Default
+ *   5  → Slots - Prepend
+ *   6  → Prop — elevation
+ *   7  → Prop — rounded
+ *   8  → Prop — position
+ *   9  → Prop — color & bgColor
+ *  (N) → Default (playground) — navigate to sheet's Default variant
+ *
+ * Variants OrigamResponsive (0-based):
+ *   0  → Design
+ *   1  → State
+ *   2  → Functional
+ *   3  → Slots - Default
+ *   4  → Prop — aspectRatio
+ *   5  → Prop — inline
+ *  (N) → Default (playground)
+ *
+ * Variants OrigamSystemBar (0-based):
+ *   0  → Design
+ *   1  → State
+ *   2  → Functional (or Events)
+ *   3  → Prop — window
+ *  (N) → Default (playground)
+ *
+ * Variants OrigamMain (0-based):
+ *   0  → Design
+ *   1  → State
+ *   2  → Functional
+ *   3  → Prop — default layout
+ *  (N) → Default (playground)
+ */
+
+const SHEET_ID     = 'components-stories-sheet-origamsheet-story-vue'
+const RESPONSIVE_ID= 'components-stories-responsive-origamresponsive-story-vue'
+const SYSTEMBAR_ID = 'components-stories-systembar-origamsystembar-story-vue'
+const MAIN_ID      = 'components-stories-main-origammain-story-vue'
+
+const sheetUrl      = (idx: number) => `/stories/story/${SHEET_ID}?variantId=${SHEET_ID}-${idx}`
+const responsiveUrl = (idx: number) => `/stories/story/${RESPONSIVE_ID}?variantId=${RESPONSIVE_ID}-${idx}`
+const systembarUrl  = (idx: number) => `/stories/story/${SYSTEMBAR_ID}?variantId=${SYSTEMBAR_ID}-${idx}`
+const mainUrl       = (idx: number) => `/stories/story/${MAIN_ID}?variantId=${MAIN_ID}-${idx}`
 
 /**
  * Layout components — OrigamSheet / OrigamResponsive / OrigamSystemBar / OrigamMain
@@ -13,16 +59,13 @@ const MAIN_PATH = '/stories/story/components-stories-main-origammain-story-vue'
 // ─── OrigamSheet ─────────────────────────────────────────────────────────────
 
 test.describe('OrigamSheet', () => {
+    test.setTimeout(45000)
 
     test('elevation class applies box-shadow', async ({ page }) => {
-        await page.goto(SHEET_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — elevation', { exact: true }).first().click()
-        await page.waitForTimeout(800)
-
+        await page.goto(sheetUrl(6))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const sheet = sandbox.locator('.origam-sheet').first()
-        await expect(sheet).toBeVisible({ timeout: 5000 })
+        await expect(sheet).toBeVisible({ timeout: 20000 })
 
         const bs = await sheet.evaluate((el) => {
             el.classList.add('origam-elevation-4')
@@ -34,14 +77,10 @@ test.describe('OrigamSheet', () => {
     })
 
     test('rounded variant sets border-radius', async ({ page }) => {
-        await page.goto(SHEET_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — rounded', { exact: true }).first().click()
-        await page.waitForTimeout(800)
-
+        await page.goto(sheetUrl(7))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const sheet = sandbox.locator('.origam-sheet').first()
-        await expect(sheet).toBeVisible({ timeout: 5000 })
+        await expect(sheet).toBeVisible({ timeout: 20000 })
 
         const brNone = await sheet.evaluate((el) => getComputedStyle(el).borderRadius)
 
@@ -56,14 +95,10 @@ test.describe('OrigamSheet', () => {
     })
 
     test('position=absolute applies position:absolute', async ({ page }) => {
-        await page.goto(SHEET_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — position', { exact: true }).first().click()
-        await page.waitForTimeout(800)
-
+        await page.goto(sheetUrl(8))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const sheet = sandbox.locator('.origam-sheet').first()
-        await expect(sheet).toBeVisible({ timeout: 5000 })
+        await expect(sheet).toBeVisible({ timeout: 20000 })
 
         const pos = await sheet.evaluate((el) => {
             el.classList.add('origam-sheet--absolute')
@@ -73,14 +108,10 @@ test.describe('OrigamSheet', () => {
     })
 
     test('color prop applies background-color via useBothColor', async ({ page }) => {
-        await page.goto(SHEET_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — color & bgColor', { exact: true }).first().click()
-        await page.waitForTimeout(800)
-
+        await page.goto(sheetUrl(9))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const sheet = sandbox.locator('.origam-sheet').first()
-        await expect(sheet).toBeVisible({ timeout: 5000 })
+        await expect(sheet).toBeVisible({ timeout: 20000 })
 
         await sheet.evaluate((el) => {
             (el as HTMLElement).style.setProperty('background-color', 'rgb(29, 78, 216)')
@@ -93,16 +124,13 @@ test.describe('OrigamSheet', () => {
 // ─── OrigamResponsive ─────────────────────────────────────────────────────────
 
 test.describe('OrigamResponsive', () => {
+    test.setTimeout(45000)
 
     test('aspect-ratio sizer generates correct padding-block-end', async ({ page }) => {
-        await page.goto(RESPONSIVE_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — aspectRatio', { exact: true }).first().click()
-        await page.waitForTimeout(800)
-
+        await page.goto(responsiveUrl(4))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const sizer = sandbox.locator('.origam-responsive__sizer').first()
-        await expect(sizer).toBeVisible({ timeout: 5000 })
+        await expect(sizer).toBeVisible({ timeout: 20000 })
 
         const pbe = await sizer.evaluate((el) => getComputedStyle(el).paddingBlockEnd)
         console.log('[responsive-aspect] padding-block-end:', pbe)
@@ -111,14 +139,10 @@ test.describe('OrigamResponsive', () => {
     })
 
     test('inline modifier changes display to inline-flex', async ({ page }) => {
-        await page.goto(RESPONSIVE_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — inline', { exact: true }).first().click()
-        await page.waitForTimeout(800)
-
+        await page.goto(responsiveUrl(5))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const responsive = sandbox.locator('.origam-responsive').first()
-        await expect(responsive).toBeVisible({ timeout: 5000 })
+        await expect(responsive).toBeVisible({ timeout: 20000 })
 
         const display = await responsive.evaluate((el) => {
             el.classList.add('origam-responsive--inline')
@@ -132,16 +156,13 @@ test.describe('OrigamResponsive', () => {
 // ─── OrigamSystemBar ──────────────────────────────────────────────────────────
 
 test.describe('OrigamSystemBar', () => {
+    test.setTimeout(45000)
 
     test('renders with correct default height (24px)', async ({ page }) => {
-        await page.goto(SYSTEMBAR_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — window', { exact: true }).first().click()
-        await page.waitForTimeout(800)
-
+        await page.goto(systembarUrl(3))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const bar = sandbox.locator('.origam-system-bar').first()
-        await expect(bar).toBeVisible({ timeout: 5000 })
+        await expect(bar).toBeVisible({ timeout: 20000 })
 
         const height = await bar.evaluate((el) => getComputedStyle(el).height)
         console.log('[systembar] height:', height)
@@ -150,14 +171,10 @@ test.describe('OrigamSystemBar', () => {
     })
 
     test('window mode applies 32px height', async ({ page }) => {
-        await page.goto(SYSTEMBAR_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — window', { exact: true }).first().click()
-        await page.waitForTimeout(800)
-
+        await page.goto(systembarUrl(3))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const bar = sandbox.locator('.origam-system-bar').first()
-        await expect(bar).toBeVisible({ timeout: 5000 })
+        await expect(bar).toBeVisible({ timeout: 20000 })
 
         // The window-mode height is controlled by the CSS custom property
         // --origam-system-bar---height-window defined in _light.scss (32px).
@@ -175,14 +192,10 @@ test.describe('OrigamSystemBar', () => {
     })
 
     test('box-sizing is border-box', async ({ page }) => {
-        await page.goto(SYSTEMBAR_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — window', { exact: true }).first().click()
-        await page.waitForTimeout(800)
-
+        await page.goto(systembarUrl(3))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const bar = sandbox.locator('.origam-system-bar').first()
-        await expect(bar).toBeVisible({ timeout: 5000 })
+        await expect(bar).toBeVisible({ timeout: 20000 })
 
         const bs = await bar.evaluate((el) => getComputedStyle(el).boxSizing)
         expect(bs).toBe('border-box')
@@ -192,31 +205,22 @@ test.describe('OrigamSystemBar', () => {
 // ─── OrigamMain ──────────────────────────────────────────────────────────────
 
 test.describe('OrigamMain', () => {
+    test.setTimeout(45000)
 
     test('renders as main element with wrapper', async ({ page }) => {
-        await page.goto(MAIN_PATH)
-        await page.waitForLoadState('networkidle')
-        // Must click a variant to load the sandbox iframe
-        await page.getByText('Prop — default layout', { exact: true }).first().click()
-        await page.waitForTimeout(800)
-
+        await page.goto(mainUrl(3))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const main = sandbox.locator('.origam-main').first()
-        await expect(main).toBeVisible({ timeout: 5000 })
+        await expect(main).toBeVisible({ timeout: 20000 })
 
         const tagName = await main.evaluate((el) => el.tagName.toLowerCase())
         expect(tagName).toBe('main')
     })
 
     test('wrapper div is always rendered', async ({ page }) => {
-        await page.goto(MAIN_PATH)
-        await page.waitForLoadState('networkidle')
-        // Must click a variant to load the sandbox iframe
-        await page.getByText('Prop — default layout', { exact: true }).first().click()
-        await page.waitForTimeout(800)
-
+        await page.goto(mainUrl(3))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const wrapper = sandbox.locator('.origam-main__wrapper').first()
-        await expect(wrapper).toBeVisible({ timeout: 5000 })
+        await expect(wrapper).toBeVisible({ timeout: 20000 })
     })
 })

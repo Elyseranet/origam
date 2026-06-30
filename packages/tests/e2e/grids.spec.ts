@@ -1,9 +1,46 @@
 import { expect, test } from '@playwright/test'
 
-const COL_PATH = '/stories/story/components-stories-grids-origamcol-story-vue'
-const ROW_PATH = '/stories/story/components-stories-grids-origamrow-story-vue'
-const CONTAINER_PATH = '/stories/story/components-stories-grids-origamcontainer-story-vue'
-const SPACER_PATH = '/stories/story/components-stories-grids-origamspacer-story-vue'
+/**
+ * Pattern canonique — navigation directe par variantId.
+ * JAMAIS networkidle (Histoire garde un WS HMR ouvert → timeout garanti).
+ *
+ * Variants OrigamCol (0-based):
+ *   0  → Design
+ *   1  → State
+ *   2  → Functional
+ *   3  → Prop — cols
+ *   4  → Prop — align (align-self)
+ *   5  → Prop — offset
+ *
+ * Variants OrigamRow (0-based):
+ *   0  → Design
+ *   1  → State
+ *   2  → Functional
+ *   3  → Prop — density
+ *   4  → Prop — align
+ *   5  → Prop — justify
+ *
+ * Variants OrigamContainer (0-based):
+ *   0  → Design
+ *   1  → State
+ *   2  → Functional
+ *   3  → Default (playground)
+ *
+ * Variants OrigamSpacer (0-based):
+ *   0  → Design
+ *   1  → State
+ *   2  → Default (playground)
+ */
+
+const COL_ID       = 'components-stories-grids-origamcol-story-vue'
+const ROW_ID       = 'components-stories-grids-origamrow-story-vue'
+const CONTAINER_ID = 'components-stories-grids-origamcontainer-story-vue'
+const SPACER_ID    = 'components-stories-grids-origamspacer-story-vue'
+
+const colUrl       = (idx: number) => `/stories/story/${COL_ID}?variantId=${COL_ID}-${idx}`
+const rowUrl       = (idx: number) => `/stories/story/${ROW_ID}?variantId=${ROW_ID}-${idx}`
+const containerUrl = (idx: number) => `/stories/story/${CONTAINER_ID}?variantId=${CONTAINER_ID}-${idx}`
+const spacerUrl    = (idx: number) => `/stories/story/${SPACER_ID}?variantId=${SPACER_ID}-${idx}`
 
 /**
  * Grids — OrigamCol / OrigamRow / OrigamContainer / OrigamSpacer runtime specs.
@@ -15,16 +52,13 @@ const SPACER_PATH = '/stories/story/components-stories-grids-origamspacer-story-
 // ─── OrigamCol ───────────────────────────────────────────────────────────────
 
 test.describe('OrigamCol', () => {
+    test.setTimeout(45000)
 
     test('cols=6 sets flex-basis to 50%', async ({ page }) => {
-        await page.goto(COL_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — cols', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
+        await page.goto(colUrl(3))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const col = sandbox.locator('.origam-col').first()
-        await expect(col).toBeVisible({ timeout: 15000 })
+        await expect(col).toBeVisible({ timeout: 20000 })
 
         const fb = await col.evaluate((el) => {
             el.classList.add('origam-col--6')
@@ -36,14 +70,10 @@ test.describe('OrigamCol', () => {
     })
 
     test('cols=4 sets flex-basis to ~33%', async ({ page }) => {
-        await page.goto(COL_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — cols', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
+        await page.goto(colUrl(3))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const col = sandbox.locator('.origam-col').first()
-        await expect(col).toBeVisible({ timeout: 15000 })
+        await expect(col).toBeVisible({ timeout: 20000 })
 
         const fb = await col.evaluate((el) => {
             el.classList.remove('origam-col--6')
@@ -57,14 +87,10 @@ test.describe('OrigamCol', () => {
     })
 
     test('align-center sets align-self: center', async ({ page }) => {
-        await page.goto(COL_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — align (align-self)', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
+        await page.goto(colUrl(4))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const col = sandbox.locator('.origam-col').first()
-        await expect(col).toBeVisible({ timeout: 15000 })
+        await expect(col).toBeVisible({ timeout: 20000 })
 
         const alignSelf = await col.evaluate((el) => {
             el.classList.add('origam-col--align-center')
@@ -75,14 +101,10 @@ test.describe('OrigamCol', () => {
     })
 
     test('offset-2 applies margin-inline-start', async ({ page }) => {
-        await page.goto(COL_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — offset', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
+        await page.goto(colUrl(5))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const col = sandbox.locator('.origam-col').first()
-        await expect(col).toBeVisible({ timeout: 15000 })
+        await expect(col).toBeVisible({ timeout: 20000 })
 
         // The SCSS rule sets --origam-col---margin-inline-start which cascades to margin-inline-start
         const mis = await col.evaluate((el) => {
@@ -98,16 +120,13 @@ test.describe('OrigamCol', () => {
 // ─── OrigamRow ───────────────────────────────────────────────────────────────
 
 test.describe('OrigamRow', () => {
+    test.setTimeout(45000)
 
     test('density-compact / default / comfortable produce distinct margins', async ({ page }) => {
-        await page.goto(ROW_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — density', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
+        await page.goto(rowUrl(3))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const row = sandbox.locator('.origam-row').first()
-        await expect(row).toBeVisible({ timeout: 15000 })
+        await expect(row).toBeVisible({ timeout: 20000 })
 
         const measureMargin = async (density: 'compact' | 'default' | 'comfortable') => {
             return row.evaluate((el, d) => {
@@ -132,14 +151,10 @@ test.describe('OrigamRow', () => {
     })
 
     test('align-center sets align-items: center', async ({ page }) => {
-        await page.goto(ROW_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — align', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
+        await page.goto(rowUrl(4))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const row = sandbox.locator('.origam-row').first()
-        await expect(row).toBeVisible({ timeout: 15000 })
+        await expect(row).toBeVisible({ timeout: 20000 })
 
         const ai = await row.evaluate((el) => {
             el.classList.add('origam-row--align-center')
@@ -149,14 +164,10 @@ test.describe('OrigamRow', () => {
     })
 
     test('justify-space-between sets justify-content', async ({ page }) => {
-        await page.goto(ROW_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — justify', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
+        await page.goto(rowUrl(5))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const row = sandbox.locator('.origam-row').first()
-        await expect(row).toBeVisible({ timeout: 15000 })
+        await expect(row).toBeVisible({ timeout: 20000 })
 
         const jc = await row.evaluate((el) => {
             el.classList.add('origam-row--justify-space-between')
@@ -166,14 +177,10 @@ test.describe('OrigamRow', () => {
     })
 
     test('direction-column sets flex-direction: column', async ({ page }) => {
-        await page.goto(ROW_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — align', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
+        await page.goto(rowUrl(4))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const row = sandbox.locator('.origam-row').first()
-        await expect(row).toBeVisible({ timeout: 15000 })
+        await expect(row).toBeVisible({ timeout: 20000 })
 
         const fd = await row.evaluate((el) => {
             el.classList.add('origam-row--direction-column')
@@ -186,17 +193,13 @@ test.describe('OrigamRow', () => {
 // ─── OrigamContainer ─────────────────────────────────────────────────────────
 
 test.describe('OrigamContainer', () => {
+    test.setTimeout(45000)
 
     test('renders with auto margins (horizontally centered)', async ({ page }) => {
-        await page.goto(CONTAINER_PATH)
-        await page.waitForLoadState('networkidle')
-        // Container story has no "Modifiers" variant — navigate via Default to load sandbox
-        await page.getByText('Default', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
+        await page.goto(containerUrl(3))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const container = sandbox.locator('.origam-container').first()
-        await expect(container).toBeVisible({ timeout: 15000 })
+        await expect(container).toBeVisible({ timeout: 20000 })
 
         const mis = await container.evaluate((el) => getComputedStyle(el).marginInlineStart)
         console.log('[container-margins] margin-inline-start:', mis)
@@ -205,15 +208,10 @@ test.describe('OrigamContainer', () => {
     })
 
     test('fluid modifier removes max-width constraint', async ({ page }) => {
-        await page.goto(CONTAINER_PATH)
-        await page.waitForLoadState('networkidle')
-        // Container story has no "Modifiers" variant — navigate via Default to load sandbox
-        await page.getByText('Default', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
+        await page.goto(containerUrl(3))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const container = sandbox.locator('.origam-container').first()
-        await expect(container).toBeVisible({ timeout: 15000 })
+        await expect(container).toBeVisible({ timeout: 20000 })
 
         const mw = await container.evaluate((el) => {
             el.classList.add('origam-container--fluid')
@@ -230,19 +228,15 @@ test.describe('OrigamContainer', () => {
 // ─── OrigamSpacer ────────────────────────────────────────────────────────────
 
 test.describe('OrigamSpacer', () => {
+    test.setTimeout(45000)
 
     test('renders with flex-grow: 1', async ({ page }) => {
-        await page.goto(SPACER_PATH)
-        await page.waitForLoadState('networkidle')
-        // Spacer story has no "Basic usage" variant — navigate via Default to load sandbox
-        await page.getByText('Default', { exact: true }).first().click()
-        await page.waitForTimeout(2000)
-
+        await page.goto(spacerUrl(2))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const spacer = sandbox.locator('.origam-spacer').first()
         // Spacer has no intrinsic content — it is in the DOM but may have zero
         // dimensions. Use toBeAttached instead of toBeVisible.
-        await expect(spacer).toBeAttached({ timeout: 15000 })
+        await expect(spacer).toBeAttached({ timeout: 20000 })
 
         const fg = await spacer.evaluate((el) => getComputedStyle(el).flexGrow)
         console.log('[spacer] flex-grow:', fg)

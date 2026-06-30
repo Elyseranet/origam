@@ -203,9 +203,110 @@
 
 		<Variant title="Prop — single + paperclip">
 			<origam-file-field
+					data-cy="file-field-single-paperclip"
 					v-model="singleFile"
 					label="Document"
 					display="list"
+					style="max-width: 400px"
+			/>
+		</Variant>
+
+		<Variant title="Prop — empty state">
+			<origam-file-field
+					data-cy="file-field-empty"
+					v-model="emptyFile"
+					label="No file selected"
+					style="max-width: 400px"
+			/>
+		</Variant>
+
+		<Variant title="Prop — multiple (chips)">
+			<origam-file-field
+					data-cy="file-field-chips"
+					v-model="chipsFiles"
+					label="Attachments"
+					multiple
+					display="chips"
+					style="max-width: 480px"
+			/>
+		</Variant>
+
+		<Variant title="Prop — multiple (counter)">
+			<origam-file-field
+					data-cy="file-field-counter"
+					v-model="counterFiles"
+					label="Files"
+					multiple
+					counter
+					style="max-width: 480px"
+			/>
+		</Variant>
+
+		<Variant title="Prop — dropzone (empty)">
+			<origam-file-field
+					data-cy="file-field-dropzone-empty"
+					v-model="dropzoneEmptyFile"
+					label="Drop a file here"
+					dropzone
+					style="max-width: 480px"
+			/>
+		</Variant>
+
+		<Variant title="Prop — dropzone (single file)">
+			<origam-file-field
+					data-cy="file-field-dropzone-single"
+					v-model="dropzoneSingleFile"
+					label="Drop a file here"
+					dropzone
+					style="max-width: 480px"
+			/>
+		</Variant>
+
+		<Variant title="Prop — dropzone (multiple files)">
+			<origam-file-field
+					data-cy="file-field-dropzone-multiple"
+					v-model="dropzoneMultiFiles"
+					label="Drop files here"
+					dropzone
+					multiple
+					style="max-width: 480px"
+			/>
+		</Variant>
+
+		<Variant title="Prop — dropzone (error)">
+			<origam-file-field
+					data-cy="file-field-dropzone-error"
+					v-model="dropzoneErrorFile"
+					label="Drop files here"
+					dropzone
+					:max-file-size="1"
+					max-file-size-error-string="File too large"
+					style="max-width: 480px"
+			/>
+		</Variant>
+
+		<Variant title="Prop — disabled &amp; readonly">
+			<div style="display: flex; flex-direction: column; gap: 16px; max-width: 400px;">
+				<origam-file-field
+						data-cy="file-field-disabled"
+						v-model="disabledFile"
+						label="Disabled"
+						disabled
+				/>
+				<origam-file-field
+						v-model="disabledFile"
+						label="Readonly"
+						readonly
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — showSize">
+			<origam-file-field
+					data-cy="file-field-show-size"
+					v-model="showSizeFile"
+					label="With file size"
+					show-size
 					style="max-width: 400px"
 			/>
 		</Variant>
@@ -647,14 +748,23 @@
 		{ label: 'auto', value: 'auto' },
 	]
 
-	const singleFile = ref(null)
-	const designFiles = ref(null)
-	const functionalFiles = ref(null)
-	const emitFiles = ref(null)
-	const emitMultiFiles = ref([])
-	const slotFiles = ref(null)
-	const slotMultiFiles = ref([])
-	const playgroundFiles = ref(null)
+	const singleFile          = ref(null)
+	const emptyFile           = ref(null)
+	const chipsFiles          = ref([])
+	const counterFiles        = ref([])
+	const dropzoneEmptyFile   = ref(null)
+	const dropzoneSingleFile  = ref(null)
+	const dropzoneMultiFiles  = ref([])
+	const dropzoneErrorFile   = ref(null)
+	const disabledFile        = ref(null)
+	const showSizeFile        = ref(null)
+	const designFiles         = ref(null)
+	const functionalFiles     = ref(null)
+	const emitFiles           = ref(null)
+	const emitMultiFiles      = ref([])
+	const slotFiles           = ref(null)
+	const slotMultiFiles      = ref([])
+	const playgroundFiles     = ref(null)
 </script>
 
 <docs lang="md" src="@docs/components/FileField/OrigamFileField.md"/>
