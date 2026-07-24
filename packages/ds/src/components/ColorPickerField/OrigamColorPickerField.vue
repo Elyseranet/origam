@@ -402,6 +402,8 @@
 			padding-bottom: 0;
 			padding-inline-start: 0;
 			overflow: hidden;
+			border-start-start-radius: var(--origam-field---border-radius, 8px);
+			border-end-start-radius: var(--origam-field---border-radius, 8px);
 
 			> .origam-sheet {
 				width: var(--origam-color-picker-field__swatch---width, 24px);
@@ -416,6 +418,10 @@
 			font-family: var(--origam-font__family---mono);
 			font-size: 0.875em;
 			letter-spacing: 0.03em;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			min-width: 0;
 		}
 
 		// `.origam-field__input` is `display: flex; flex-wrap: wrap` by
@@ -430,8 +436,21 @@
 		// `colorSelection` span is the real display value) — forcing
 		// `nowrap` lets the invisible native input shrink instead of
 		// pushing a wrap, with zero visual loss.
+		// Same single-line fix as OrigamSelect: the underlying native
+		// `<input>` is taken OUT of flow (`position: absolute`, `flex: 0 0`)
+		// so it can't sit beside the formatted hex `colorSelection` span and
+		// push the field onto a second line. The span is the real display
+		// value; the input only carries focus / the editable value. `nowrap`
+		// alone was insufficient — the in-flow input still forced a wrap in a
+		// narrow container.
 		:deep(.origam-field__input) {
 			flex-wrap: nowrap;
+
+			> input {
+				position: absolute;
+				flex: 0 0;
+				min-width: 0;
+			}
 		}
 	}
 </style>
