@@ -3,7 +3,6 @@ import { computed, ref, watchEffect } from 'vue'
 import { MDI_ICONS } from 'origam/enums'
 
 import { useT } from '~/composables/useT'
-import { THEME_BUILDER_RICH_CONTROL_KINDS } from '~/consts/theme-builder-controls.const'
 import type {
     IThemeBuilderComponentEntry,
     IThemeBuilderPropControl,
@@ -118,8 +117,6 @@ const onResetControl = (ctrl: IThemeBuilderPropControl): void => {
         emit('set-prop', props.entry.slug, p, defaultValue)
     }
 }
-
-const isRichControl = (ctrl: IThemeBuilderPropControl): boolean => THEME_BUILDER_RICH_CONTROL_KINDS.has(ctrl.kind)
 
 const onToken = (cssVar: string, value: string): void => {
     emit('set-token', props.activeMode, cssVar, value)
@@ -258,11 +255,11 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
                             v-for="ctrl in group.controls"
                             :key="ctrl.prop"
                             class="tb-row"
-                            :class="{ 'tb-row--edited': isRichControl(ctrl) ? isControlEdited(ctrl) : isPropEdited(entry.slug, ctrl.prop) }"
+                            :class="{ 'tb-row--edited': isControlEdited(ctrl) }"
                             :data-cy="`theming-prop-${ctrl.prop}`"
                         >
                             <origam-btn
-                                v-if="isRichControl(ctrl) && isControlEdited(ctrl)"
+                                v-if="isControlEdited(ctrl)"
                                 variant="text"
                                 size="x-small"
                                 density="compact"
@@ -840,6 +837,19 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
         inset-inline-start: -0.375rem;
         inset-block-start: 0.125rem;
         flex: 0 0 auto;
+        opacity: 0;
+        transition: opacity 0.12s ease;
+    }
+
+    &:hover &__reset,
+    &:focus-within &__reset {
+        opacity: 1;
+    }
+
+    @media (hover: none) {
+        &__reset {
+            opacity: 1;
+        }
     }
 
     &__color {
