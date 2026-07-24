@@ -259,10 +259,10 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
                             :data-cy="`theming-prop-${ctrl.prop}`"
                         >
                             <origam-btn
-                                v-if="isControlEdited(ctrl)"
                                 variant="text"
                                 size="x-small"
                                 density="compact"
+                                :disabled="!isControlEdited(ctrl)"
                                 :icon="MDI_ICONS.RESTORE"
                                 class="tb-row__reset"
                                 :aria-label="t('theming.controls.reset_prop', 'Reset {label}', { label: ctrl.label })"
