@@ -494,3 +494,35 @@
 	}, origamTextFieldRef))
 </script>
 
+<style
+		lang="scss"
+		scoped
+>
+	.origam-date-picker-field {
+		:deep(.origam-date-picker-field__selection-text) {
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			min-width: 0;
+		}
+
+		// Same single-line fix as OrigamSelect / OrigamColorPickerField: the
+		// underlying native `<input>` is taken OUT of flow so it can't sit
+		// beside the formatted `selectionText`/`rangeSelection` span and push
+		// the field onto a second line. The span is the real display value;
+		// the input only carries focus / the editable value. `nowrap` alone
+		// is insufficient — the in-flow input still forces a wrap in a
+		// narrow container (confirmed: 61px vs 36px at 150px width on the
+		// range variant).
+		:deep(.origam-field__input) {
+			flex-wrap: nowrap;
+
+			> input {
+				position: absolute;
+				flex: 0 0;
+				min-width: 0;
+			}
+		}
+	}
+</style>
+
