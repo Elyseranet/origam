@@ -261,6 +261,18 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
                             :class="{ 'tb-row--edited': isRichControl(ctrl) ? isControlEdited(ctrl) : isPropEdited(entry.slug, ctrl.prop) }"
                             :data-cy="`theming-prop-${ctrl.prop}`"
                         >
+                            <origam-btn
+                                v-if="isRichControl(ctrl) && isControlEdited(ctrl)"
+                                variant="text"
+                                size="x-small"
+                                density="compact"
+                                :icon="MDI_ICONS.RESTORE"
+                                class="tb-row__reset"
+                                :aria-label="t('theming.controls.reset_prop', 'Reset {label}', { label: ctrl.label })"
+                                :data-cy="`theming-prop-${ctrl.prop}-reset`"
+                                @click="onResetControl(ctrl)"
+                            />
+
                             <code class="tb-row__code">{{ ctrl.prop }}</code>
 
                             <div class="tb-row__control">
@@ -399,18 +411,6 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
                                     @update:model-value="onText(ctrl.prop, $event)"
                                 />
                             </div>
-
-                            <origam-btn
-                                v-if="isRichControl(ctrl) && isControlEdited(ctrl)"
-                                variant="text"
-                                size="x-small"
-                                density="compact"
-                                :icon="MDI_ICONS.RESTORE"
-                                class="tb-row__reset"
-                                :aria-label="t('theming.controls.reset_prop', 'Reset {label}', { label: ctrl.label })"
-                                :data-cy="`theming-prop-${ctrl.prop}-reset`"
-                                @click="onResetControl(ctrl)"
-                            />
                         </div>
                     </div>
                 </details>
@@ -712,10 +712,15 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
 }
 
 .tb-row {
+    position: relative;
     display: flex;
     align-items: center;
     gap: var(--origam-spacing-2, 0.5rem);
     padding-block: var(--origam-spacing-1, 0.25rem);
+    // Reserved left gutter for the per-row reset button (absolutely placed
+    // inside it). Present on EVERY row so prop labels stay left-aligned
+    // whether the row is edited (reset shown) or not.
+    padding-inline-start: 1.5rem;
     min-height: 1.875rem;
 
     & + & {
@@ -831,6 +836,9 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
     }
 
     &__reset {
+        position: absolute;
+        inset-inline-start: -0.375rem;
+        inset-block-start: 0.125rem;
         flex: 0 0 auto;
     }
 
