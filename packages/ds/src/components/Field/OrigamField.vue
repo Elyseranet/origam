@@ -1085,7 +1085,19 @@
 					&#{$this}__label--floating {
 						transform: translateY(-50%);
 						transform-origin: center;
-						margin: 0 4px;
+						// Align the floating label's inline-start with the input
+						// text (and the resting label), both of which sit at
+						// `--origam-field__input---padding-start`. The old hard
+						// `margin: 0 4px` pinned the floating label to the notch
+						// corner instead, leaving it inset by (input-padding − 4)
+						// px LESS than the value — a visible label/value
+						// misalignment that grows with the corner radius (most
+						// obvious on large-radius themes, e.g. cartoon `rounded-lg`,
+						// where it read as "the input is more indented than the
+						// label"). Keep the 4px on the inline-end for notch
+						// breathing room.
+						margin-block: 0;
+						margin-inline: var(--origam-field__input---padding-start, 0) 4px;
 					}
 				}
 
