@@ -405,6 +405,20 @@
 			border-start-start-radius: var(--origam-field---border-radius, 8px);
 			border-end-start-radius: var(--origam-field---border-radius, 8px);
 
+			// The swatch must sit FLUSH against the field's inline-start edge.
+			// `OrigamField` applies `--origam-field---padding-start` to the whole
+			// grid (prepend-inner included), so any consumer that raises it pushes
+			// the swatch inward and opens a gap between the colour and the left
+			// border. The Theme Builder does exactly this — it forces
+			// `--origam-field---padding-start: 14px` on prepended control fields to
+			// widen the outline's start leg so the left corner rounds — which left
+			// a ~14px gap in front of the swatch. Cancel the padding for the
+			// prepend cell only (negative margin = -padding-start) so the swatch
+			// bleeds back to the edge while the outline keeps its rounded corner.
+			// No-op when padding-start resolves to 0 (the component's own default),
+			// so there is zero regression for plain consumers.
+			margin-inline-start: calc(-1 * var(--origam-field---padding-start, 0px));
+
 			> .origam-sheet {
 				width: var(--origam-color-picker-field__swatch---width, 24px);
 				height: 100%;
@@ -412,22 +426,6 @@
 				border-radius: 0;
 				flex-shrink: 0;
 			}
-		}
-
-		// The swatch must sit FLUSH against the field's inline-start edge.
-		// `OrigamField` applies `--origam-field---padding-start` to the whole
-		// grid (prepend-inner included), so any consumer that raises it pushes
-		// the swatch inward and opens a gap between the colour and the left
-		// border. The Theme Builder does exactly this — it forces
-		// `--origam-field---padding-start: 14px` on prepended control fields to
-		// widen the outline's start leg so the left corner rounds — which left
-		// a ~14px gap in front of the swatch. Cancel the padding for the
-		// prepend cell only (negative margin = -padding-start) so the swatch
-		// bleeds back to the edge while the outline keeps its rounded corner.
-		// No-op when padding-start resolves to 0 (the component's own default),
-		// so there is zero regression for plain consumers.
-		:deep(.origam-field__prepend-inner) {
-			margin-inline-start: calc(-1 * var(--origam-field---padding-start, 0px));
 		}
 
 		:deep(.origam-color-picker-field__selection-text) {

@@ -579,15 +579,21 @@
 		return toPercent(clamped)
 	})
 
-	const bufferedStyles = computed<StyleValue>(() => {
+	/**
+	 * Where the buffered fill is anchored: vertical sliders grow from the
+	 * bottom, horizontal ones from whichever inline edge the track starts at.
+	 * Split out of `bufferedStyles` as guard clauses — the three cases are
+	 * mutually exclusive and read better than a nested ternary.
+	 */
+	const bufferedPosition = computed(() => {
 		const pct = bufferedPercentage.value
-		const position = isVertical.value
-				? { height: `${pct}%`, bottom: '0' }
-				: indexFromEnd.value
-						? { width: `${pct}%`, insetInlineEnd: '0' }
-						: { width: `${pct}%`, insetInlineStart: '0' }
+		if (isVertical.value) return { height: `${pct}%`, bottom: '0' }
+		if (indexFromEnd.value) return { width: `${pct}%`, insetInlineEnd: '0' }
+		return { width: `${pct}%`, insetInlineStart: '0' }
+	})
 
-		return [position, roundedStyles.value] as StyleValue
+	const bufferedStyles = computed<StyleValue>(() => {
+		return [bufferedPosition.value, roundedStyles.value] as StyleValue
 	})
 
 	/*********************************************************
