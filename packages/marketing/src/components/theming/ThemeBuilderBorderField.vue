@@ -3,7 +3,7 @@ import { computed, ref, watch } from 'vue'
 
 import { useT } from '~/composables/useT'
 import { useThemeBuilderBorderControl } from '~/composables/useThemeBuilderBorderControl'
-import { THEME_BUILDER_BORDER_STYLE_OPTIONS, THEME_BUILDER_BORDER_WIDTH_OPTIONS } from '~/consts/theme-builder-controls.const'
+import { THEME_BUILDER_BORDER_STYLE_OPTIONS, THEME_BUILDER_BORDER_WIDTH_OPTIONS, THEME_BUILDER_UNSET_VALUE } from '~/consts/theme-builder-controls.const'
 import { MDI_ICONS } from 'origam/enums'
 import type { TThemeBuilderBorderSide } from '~/types/theme-builder-controls.type'
 
@@ -90,8 +90,14 @@ watch(
 const widthSelectItems = computed(() =>
     THEME_BUILDER_BORDER_WIDTH_OPTIONS.map(o => ({ title: t(o.labelKey, o.labelFallback), value: o.value }))
 )
-const styleSelectItems = computed(() =>
-    THEME_BUILDER_BORDER_STYLE_OPTIONS.map(o => ({ title: t(o.labelKey, o.labelFallback), value: o.value }))
+const styleSelectItems = computed(() => [
+    { title: t('theming.control.unset', 'none'), value: THEME_BUILDER_UNSET_VALUE },
+    ...THEME_BUILDER_BORDER_STYLE_OPTIONS.map(o => ({ title: t(o.labelKey, o.labelFallback), value: o.value }))
+])
+
+/** Show "none" when the theme doesn't define `borderStyle` (empty value). */
+const styleSelectValue = computed<unknown>(() =>
+    props.styleValue === undefined || props.styleValue === null || props.styleValue === '' ? THEME_BUILDER_UNSET_VALUE : props.styleValue
 )
 
 const onSelectWidth = (value: unknown): void => {
@@ -104,6 +110,7 @@ const onSideWidth = (side: TThemeBuilderBorderSide, value: unknown): void => {
     if (typeof value === 'number') setSideWidth(side, value)
 }
 const onSelectStyle = (value: unknown): void => {
+    if (value === THEME_BUILDER_UNSET_VALUE) { emit('update:style', undefined); return }
     if (typeof value === 'string') emit('update:style', value)
 }
 const onColorUpdate = (value: string | undefined): void => {
@@ -215,7 +222,7 @@ const sideColorValue = (side: TThemeBuilderBorderSide): unknown => {
         >
             <legend class="tbc-border__legend">{{ t('theming.control.border.style_legend', 'Border — Style') }}</legend>
             <origam-select
-                :model-value="styleValue"
+                :model-value="styleSelectValue"
                 :items="styleSelectItems"
                 :label="t('theming.control.border.style_legend', 'Border — Style')"
                 variant="outlined"

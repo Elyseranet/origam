@@ -3,7 +3,7 @@ import { computed } from 'vue'
 
 import { useT } from '~/composables/useT'
 import { useThemeBuilderColorControl } from '~/composables/useThemeBuilderColorControl'
-import { THEME_BUILDER_CUSTOM_VALUE, THEME_BUILDER_INTENT_OPTIONS } from '~/consts/theme-builder-controls.const'
+import { THEME_BUILDER_CUSTOM_VALUE, THEME_BUILDER_INTENT_OPTIONS, THEME_BUILDER_UNSET_VALUE } from '~/consts/theme-builder-controls.const'
 
 /**
  * ThemeBuilderColorField — Contrôle 1 (`color-field.html`): named-intent
@@ -49,7 +49,7 @@ const selectDataCy = computed(() => `${props.dataCy}-select`)
 const customDataCy = computed(() => `${props.dataCy}-custom`)
 
 const modelValueRef = computed(() => props.modelValue)
-const { state, selectIntent, selectCustom } = useThemeBuilderColorControl(
+const { state, selectIntent, selectCustom, selectInherit } = useThemeBuilderColorControl(
     modelValueRef,
     (value) => emit('update:modelValue', value)
 )
@@ -59,10 +59,11 @@ const isCustom = computed(() => state.value.mode === 'custom')
 const selectValue = computed<string | undefined>(() => {
     if (isCustom.value) return THEME_BUILDER_CUSTOM_VALUE
     if (state.value.mode === 'intent') return state.value.intent
-    return undefined
+    return THEME_BUILDER_UNSET_VALUE
 })
 
 const selectItems = computed(() => [
+    { title: t('theming.control.unset', 'none'), value: THEME_BUILDER_UNSET_VALUE },
     ...THEME_BUILDER_INTENT_OPTIONS.map(o => ({ title: t(o.labelKey, o.labelFallback), value: o.value })),
     { title: t('theming.control.custom', 'Other…'), value: THEME_BUILDER_CUSTOM_VALUE }
 ])
@@ -71,6 +72,10 @@ const customHex = computed(() => state.value.custom ?? '#000000')
 
 const onSelect = (value: unknown): void => {
     if (typeof value !== 'string') return
+    if (value === THEME_BUILDER_UNSET_VALUE) {
+        selectInherit()
+        return
+    }
     if (value === THEME_BUILDER_CUSTOM_VALUE) {
         selectCustom(customHex.value)
         return

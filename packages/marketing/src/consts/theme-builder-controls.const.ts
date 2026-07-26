@@ -29,6 +29,17 @@ import { BORDER_STYLE, DENSITY, ROUNDED } from 'origam/enums'
 export const THEME_BUILDER_CUSTOM_VALUE = '__custom__' as const
 
 /**
+ * Sentinel value meaning "this prop is NOT defined by the theme" (undefined /
+ * unset). Modelled on `THEME_BUILDER_CUSTOM_VALUE`: it only ever lives in a
+ * control's local `<select>` state and NEVER reaches `IOrigamTheme.component`
+ * — `setProp` recognises it (like a bare `undefined`) and DELETES the prop
+ * from `state.defaults`, so the exported theme omits it and the DS component
+ * keeps its own default (PROPS-FIRST). Every control kind surfaces it as the
+ * "none" option so a theme author can uniformly opt OUT of a prop.
+ */
+export const THEME_BUILDER_UNSET_VALUE = '__unset__' as const
+
+/**
  * The 8 real `TIntent` values, in the order validated in `color-field.html`
  * (État C) — 2 rows of 4 in the swatch grid.
  */
@@ -45,12 +56,14 @@ export const THEME_BUILDER_INTENT_OPTIONS: Array<{ value: string; labelKey: stri
 
 /**
  * Named `rounded` rungs, in the order validated in `rounded-field.html`
- * (État B). `'none'` maps to `rounded={false}` (no DS enum member — the DS
- * ROUNDED enum has no `none`, confirmed in `rounded.enum.ts`), the 8 middle
- * rungs are the real `ROUNDED` enum, `custom` reveals the 4-corner editor.
+ * (État B). The head option `'none'` is the shared "none" (unset) entry:
+ * its control composable emits `undefined`, so the prop is omitted from the
+ * exported theme and the component keeps its own DS default (PROPS-FIRST) —
+ * it is NOT `rounded={false}`. The 8 middle rungs are the real `ROUNDED`
+ * enum; `custom` reveals the 4-corner editor.
  */
 export const THEME_BUILDER_ROUNDED_OPTIONS: Array<{ value: string; labelKey: string; labelFallback: string }> = [
-    { value: 'none', labelKey: 'theming.control.rounded.none', labelFallback: 'None' },
+    { value: 'none', labelKey: 'theming.control.unset', labelFallback: 'none' },
     { value: ROUNDED.X_SMALL, labelKey: 'theming.control.rounded.x_small', labelFallback: 'X-Small' },
     { value: ROUNDED.SMALL, labelKey: 'theming.control.rounded.small', labelFallback: 'Small' },
     { value: ROUNDED.DEFAULT, labelKey: 'theming.control.rounded.default', labelFallback: 'Default' },
@@ -69,7 +82,7 @@ export const THEME_BUILDER_ROUNDED_OPTIONS: Array<{ value: string; labelKey: str
  * intentionally differ).
  */
 export const THEME_BUILDER_ELEVATION_OPTIONS: Array<{ value: string; labelKey: string; labelFallback: string }> = [
-    { value: 'none', labelKey: 'theming.control.elevation.none', labelFallback: 'None' },
+    { value: 'none', labelKey: 'theming.control.unset', labelFallback: 'none' },
     { value: 'xs', labelKey: 'theming.control.elevation.xs', labelFallback: 'XS' },
     { value: 'sm', labelKey: 'theming.control.elevation.sm', labelFallback: 'SM' },
     { value: 'md', labelKey: 'theming.control.elevation.md', labelFallback: 'Default' },
@@ -99,7 +112,7 @@ export const THEME_BUILDER_DENSITY_OPTIONS: Array<{ value: string; labelKey: str
  * exported) — `none | thin | thick`, plus "Autre" for a numeric px width.
  */
 export const THEME_BUILDER_BORDER_WIDTH_OPTIONS: Array<{ value: string; labelKey: string; labelFallback: string }> = [
-    { value: 'none', labelKey: 'theming.control.border.width_none', labelFallback: 'None' },
+    { value: 'none', labelKey: 'theming.control.unset', labelFallback: 'none' },
     { value: 'thin', labelKey: 'theming.control.border.width_thin', labelFallback: 'Thin' },
     { value: 'thick', labelKey: 'theming.control.border.width_thick', labelFallback: 'Thick' },
     { value: THEME_BUILDER_CUSTOM_VALUE, labelKey: 'theming.control.custom', labelFallback: 'Other…' }
@@ -116,7 +129,7 @@ export const THEME_BUILDER_BORDER_STYLE_OPTIONS: Array<{ value: string; labelKey
     { value: BORDER_STYLE.DASHED, labelKey: 'theming.control.border.style_dashed', labelFallback: 'Dashed' },
     { value: BORDER_STYLE.DOTTED, labelKey: 'theming.control.border.style_dotted', labelFallback: 'Dotted' },
     { value: BORDER_STYLE.DOUBLE, labelKey: 'theming.control.border.style_double', labelFallback: 'Double' },
-    { value: BORDER_STYLE.NONE, labelKey: 'theming.control.border.style_none', labelFallback: 'None' },
+    { value: BORDER_STYLE.NONE, labelKey: 'theming.control.border.style_none', labelFallback: 'None (no line)' },
     { value: BORDER_STYLE.HIDDEN, labelKey: 'theming.control.border.style_hidden', labelFallback: 'Hidden' },
     { value: BORDER_STYLE.GROOVE, labelKey: 'theming.control.border.style_groove', labelFallback: 'Groove' },
     { value: BORDER_STYLE.RIDGE, labelKey: 'theming.control.border.style_ridge', labelFallback: 'Ridge' },

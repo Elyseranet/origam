@@ -3,6 +3,7 @@ import { computed, ref, watchEffect } from 'vue'
 import { MDI_ICONS } from 'origam/enums'
 
 import { useT } from '~/composables/useT'
+import { THEME_BUILDER_UNSET_VALUE } from '~/consts/theme-builder-controls.const'
 import type {
     IThemeBuilderComponentEntry,
     IThemeBuilderPropControl,
@@ -61,23 +62,77 @@ const toggleGroup = (id: string): void => {
 const groupLabel = (labelKey: string, fallback: string): string =>
     labelKey ? t(labelKey, fallback) : fallback
 
-const selectItems = (ctrl: IThemeBuilderPropControl) =>
-    (ctrl.options ?? []).map(o => ({ title: o.label, value: o.value }))
+/** Shared "none" option = undefined / prop not defined by the theme. */
+const unsetOption = computed(() => ({ title: t('theming.control.unset', 'none'), value: THEME_BUILDER_UNSET_VALUE }))
+
+/** Enum select: "none" first, then the real options. */
+const selectItems = (ctrl: IThemeBuilderPropControl) => [
+    unsetOption.value,
+    ...(ctrl.options ?? []).map(o => ({ title: o.label, value: o.value }))
+]
+
+/** Tri-state boolean: "none" (undefined) / true / false. */
+const triStateItems = computed(() => [
+    unsetOption.value,
+    { title: t('theming.control.bool_true', 'True'), value: true },
+    { title: t('theming.control.bool_false', 'False'), value: false }
+])
+
+/**
+ * A prop is "not defined" until the user edits it — the control then shows
+ * "none" (`UNSET`) rather than pre-filling the DS default, so the panel
+ * honestly reflects what the exported `component` block will contain
+ * (PROPS-FIRST). Rich controls take a bare `undefined` (their native unset
+ * input); the generic <select>/tri-state take the sentinel so an option can
+ * render as selected.
+ */
+const isEdited = (prop: string): boolean => props.isPropEdited(props.entry.slug, prop)
+
+/** Value fed to a generic <select> / tri-state (sentinel when unset). */
+const selectValue = (prop: string): unknown =>
+    isEdited(prop) ? props.propValue(props.entry.slug, prop) : THEME_BUILDER_UNSET_VALUE
+
+/**
+ * Value fed to a rich control (bare `undefined` when unset).
+ *
+ * NOT used for the border sub-props (`borderStyle`, `borderColor`, the 4
+ * per-side widths and the 4 per-side colours): there, `undefined` is the
+ * CAPABILITY signal — `ThemeBuilderBorderField` reads it to decide whether
+ * the DS component exposes the per-side facet at all
+ * (`hasSideWidthSupport` / `hasSideColorSupport`). Those props keep the raw
+ * `propValue` path, which resolves to `''` for an undefined-but-supported
+ * prop (verified: no component in the catalog declares a non-empty default
+ * for any border sub-prop), and the field maps `''` to its own unset state.
+ * Swapping them to `richValue` would collapse both meanings and silently
+ * hide the per-side editors.
+ */
+const richValue = (prop: string): unknown =>
+    isEdited(prop) ? props.propValue(props.entry.slug, prop) : undefined
+
+/** Number field value — empty (undefined) until the prop is defined. */
+const numberValue = (prop: string): number | undefined =>
+    isEdited(prop) ? propValueNum(prop) : undefined
+
+/** Text / hex field value — empty until the prop is defined. */
+const textValue = (prop: string): string =>
+    isEdited(prop) ? propValueStr(prop) : ''
 
 const onSelect = (prop: string, value: unknown): void => {
     emit('set-prop', props.entry.slug, prop, value)
 }
 
-const onSwitch = (prop: string, value: unknown): void => {
-    emit('set-prop', props.entry.slug, prop, Boolean(value))
+/** Tri-state boolean control: forwards `UNSET` sentinel or a real boolean. */
+const onTriState = (prop: string, value: unknown): void => {
+    emit('set-prop', props.entry.slug, prop, value === THEME_BUILDER_UNSET_VALUE ? THEME_BUILDER_UNSET_VALUE : Boolean(value))
 }
 
+/** Empty text/number clears the prop (undefined → omitted from the theme). */
 const onText = (prop: string, value: unknown): void => {
-    emit('set-prop', props.entry.slug, prop, value)
+    emit('set-prop', props.entry.slug, prop, value === '' || value === undefined ? THEME_BUILDER_UNSET_VALUE : value)
 }
 
 const onNumber = (prop: string, value: unknown): void => {
-    emit('set-prop', props.entry.slug, prop, value)
+    emit('set-prop', props.entry.slug, prop, value === undefined || value === '' ? THEME_BUILDER_UNSET_VALUE : value)
 }
 
 const onColor = (prop: string, value: string): void => {
@@ -139,10 +194,6 @@ const propValueStr = (prop: string): string => {
 const propValueNum = (prop: string): number | undefined => {
     const v = props.propValue(props.entry.slug, prop)
     return typeof v === 'number' ? v : undefined
-}
-
-const propValueBool = (prop: string): boolean => {
-    return Boolean(props.propValue(props.entry.slug, prop))
 }
 
 const groupPropNames = (controls: IThemeBuilderPropControl[]): string[] =>
@@ -278,7 +329,7 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
                                     class="tb-row__rich"
                                 >
                                     <theme-builder-color-field
-                                        :model-value="propValue(entry.slug, ctrl.prop)"
+                                        :model-value="richValue(ctrl.prop)"
                                         :label="ctrl.label"
                                         :data-cy="`theming-prop-${ctrl.prop}`"
                                         @update:model-value="onProp(ctrl.prop, $event)"
@@ -290,7 +341,7 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
                                     class="tb-row__rich"
                                 >
                                     <theme-builder-rounded-field
-                                        :model-value="propValue(entry.slug, ctrl.prop)"
+                                        :model-value="richValue(ctrl.prop)"
                                         :label="ctrl.label"
                                         :data-cy="`theming-prop-${ctrl.prop}`"
                                         @update:model-value="onProp(ctrl.prop, $event)"
@@ -302,7 +353,7 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
                                     class="tb-row__rich"
                                 >
                                     <theme-builder-elevation-field
-                                        :model-value="propValue(entry.slug, ctrl.prop)"
+                                        :model-value="richValue(ctrl.prop)"
                                         :label="ctrl.label"
                                         :data-cy="`theming-prop-${ctrl.prop}`"
                                         @update:model-value="onProp(ctrl.prop, $event)"
@@ -314,7 +365,7 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
                                     class="tb-row__rich"
                                 >
                                     <theme-builder-border-field
-                                        :width-value="propValue(entry.slug, 'border')"
+                                        :width-value="richValue('border')"
                                         :style-value="ctrl.props.includes('borderStyle') ? propValue(entry.slug, 'borderStyle') : undefined"
                                         :color-value="ctrl.props.includes('borderColor') ? propValue(entry.slug, 'borderColor') : undefined"
                                         :top-width-value="ctrl.props.includes('borderTop') ? propValue(entry.slug, 'borderTop') : undefined"
@@ -340,7 +391,7 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
                                     class="tb-row__rich"
                                 >
                                     <theme-builder-box-model-field
-                                        :model-value="propValue(entry.slug, ctrl.prop)"
+                                        :model-value="richValue(ctrl.prop)"
                                         :axis="ctrl.boxModelAxis ?? 'padding'"
                                         :label="ctrl.label"
                                         :data-cy="`theming-prop-${ctrl.prop}`"
@@ -350,7 +401,7 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
 
                                 <origam-select
                                     v-else-if="ctrl.kind === 'select'"
-                                    :model-value="propValue(entry.slug, ctrl.prop)"
+                                    :model-value="selectValue(ctrl.prop)"
                                     :items="selectItems(ctrl)"
                                     :label="ctrl.label"
                                     variant="outlined"
@@ -360,24 +411,21 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
                                     @update:model-value="onSelect(ctrl.prop, $event)"
                                 />
 
-                                <origam-switch
+                                <origam-select
                                     v-else-if="ctrl.kind === 'switch'"
-                                    :model-value="propValueBool(ctrl.prop)"
+                                    :model-value="selectValue(ctrl.prop)"
+                                    :items="triStateItems"
                                     :label="ctrl.label"
-                                    color="primary"
-                                    rounded="lg"
-                                    :border="true"
-                                    :elevation="3"
-                                    :inset="true"
+                                    variant="outlined"
                                     density="compact"
                                     hide-details
-                                    class="tb-row__switch"
-                                    @update:model-value="onSwitch(ctrl.prop, $event)"
+                                    class="tb-row__select"
+                                    @update:model-value="onTriState(ctrl.prop, $event)"
                                 />
 
                                 <origam-number-field
                                     v-else-if="ctrl.kind === 'number'"
-                                    :model-value="propValueNum(ctrl.prop)"
+                                    :model-value="numberValue(ctrl.prop)"
                                     :label="ctrl.label"
                                     variant="outlined"
                                     density="compact"
@@ -388,7 +436,7 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
 
                                 <origam-color-picker-field
                                     v-else-if="ctrl.kind === 'color'"
-                                    :model-value="propValueStr(ctrl.prop)"
+                                    :model-value="textValue(ctrl.prop)"
                                     :label="ctrl.label"
                                     variant="outlined"
                                     density="compact"
@@ -399,7 +447,7 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
 
                                 <origam-text-field
                                     v-else
-                                    :model-value="propValueStr(ctrl.prop)"
+                                    :model-value="textValue(ctrl.prop)"
                                     :label="ctrl.label"
                                     variant="outlined"
                                     density="compact"
@@ -789,39 +837,6 @@ const resetLabel = computed(() => t('theming.controls.reset', 'reset'))
         // corners round symmetrically.
         :deep(.origam-field--prepended) {
             --origam-field---padding-start: 14px;
-        }
-
-        // Agreed glass Switch treatment (design-mission #26, glass.theme.ts) —
-        // the controls panel sits outside the theme provider, so the toggle
-        // never inherits the theme's `origam-switch` config. Apply the glass
-        // track/thumb cssVars here, scoped to the control cell so the rest of
-        // the editor chrome stays neutral. ON identity (accent rail + pearl
-        // thumb) comes for free from `color="primary"`.
-        --origam-switch__track---background-color: rgba(255, 255, 255, 0.35);
-        --origam-switch__track---backdrop-filter: blur(20px) saturate(2.6);
-        --origam-switch__thumb---background-color: #ffffff;
-        --origam-switch__thumb---border-color: rgba(124, 58, 237, 0.35);
-    }
-
-    &__switch {
-        // Don't stretch the toggle to the full cell — pin it to the trailing
-        // edge like the value controls sit.
-        inline-size: auto;
-        margin-inline-start: auto;
-
-        // Visually hide the switch's own label (the prop-name <code> on the
-        // left already labels the row) while keeping it for a11y.
-        :deep(.origam-selection-control__label),
-        :deep(.origam-label) {
-            position: absolute;
-            inline-size: 1px;
-            block-size: 1px;
-            padding: 0;
-            margin: -1px;
-            overflow: hidden;
-            clip-path: inset(50%);
-            white-space: nowrap;
-            border: 0;
         }
     }
 
