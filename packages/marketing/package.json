@@ -42,9 +42,9 @@
     "shiki": "^4.3.1",
     "typeorm": "^0.3.20",
     "typeorm-naming-strategies": "^4.1.0",
-    "vue": "3.5.39",
+    "vue": "3.5.40",
     "vue-i18n": "^11.4.6",
-    "vue-router": "^4.5.0"
+    "vue-router": "^5.2.0"
   },
   "devDependencies": {
     "tsx": "^4.23.0",
