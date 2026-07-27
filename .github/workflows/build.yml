@@ -57,9 +57,68 @@ jobs:
       # Flip ENFORCE_QUALITY_GATE to 'true' (repo variable) once the gate is
       # green to make a red gate fail the build.
       - name: Quality gate
+        id: quality_gate
         if: ${{ vars.ENFORCE_QUALITY_GATE == 'true' }}
         uses: SonarSource/sonarqube-quality-gate-action@v1
         timeout-minutes: 5
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+
+      # The gate action only ever prints "Quality Gate has FAILED" — not WHICH
+      # condition failed, nor its value, nor the issues behind it. That gap
+      # cost a full manual investigation on #296: the first hypothesis blamed
+      # coverage, which was in fact at 92.5% (threshold 80) — the real cause
+      # was `new_violations = 2`. Re-fetch the gate here and print the detail.
+      #
+      # Never fails the job: it only runs when the gate step already failed,
+      # and every command is guarded so a network hiccup can't mask the real
+      # error. When the extraction yields nothing (API shape drift, empty
+      # response), the raw payload is dumped — this step must never be
+      # silently useless, which would put us right back at square one.
+      - name: Quality gate — failing conditions
+        if: ${{ always() && steps.quality_gate.outcome == 'failure' }}
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        run: |
+          set -uo pipefail
+
+          # Single source of truth — never hardcode the key here.
+          KEY=$(grep -E '^sonar\.projectKey=' sonar-project.properties | cut -d= -f2-)
+          echo "projectKey = $KEY"
+
+          # SonarQube Community Edition analyses a SINGLE branch: the requests
+          # must NOT carry `&branch=`, or the API answers
+          # `404 Branch 'develop' not found`.
+          STATUS=$(curl -sS -m 30 -u "$SONAR_TOKEN:" \
+            "$SONAR_HOST_URL/api/qualitygates/project_status?projectKey=$KEY" || echo '')
+
+          if [ -z "$STATUS" ]; then
+            echo "::warning::Impossible d'interroger l'API SonarQube — voir le dashboard."
+            exit 0
+          fi
+
+          FAILED=$(echo "$STATUS" | jq -r '
+            .projectStatus.conditions[]?
+            | select(.status == "ERROR")
+            | "::error::Quality Gate — \(.metricKey) = \(.actualValue) (requis \(.comparator) \(.errorThreshold))"
+          ' 2>/dev/null || echo '')
+
+          if [ -n "$FAILED" ]; then
+            echo "$FAILED"
+          else
+            echo "::warning::Aucune condition en ERROR extraite — payload brut ci-dessous."
+            echo "$STATUS"
+          fi
+
+          echo "--- Issues du nouveau code ---"
+          ISSUES=$(curl -sS -m 30 -u "$SONAR_TOKEN:" \
+            "$SONAR_HOST_URL/api/issues/search?componentKeys=$KEY&inNewCodePeriod=true&issueStatuses=OPEN,CONFIRMED&ps=50" || echo '')
+
+          if [ -n "$ISSUES" ]; then
+            echo "$ISSUES" | jq -r '
+              .issues[]?
+              | "  \(.component | split(":") | last):\(.line // 0) — [\(.severity // "?")] \(.message)"
+            ' 2>/dev/null || echo "$ISSUES"
+          fi
