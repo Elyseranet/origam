@@ -252,7 +252,7 @@
 }/* ── EDITORIAL — appbar buttons: 0px radius ────────────────────────────────
    DS default btn border-radius may show — reset to 0. */
 
-:root:root[data-theme="editorial"] .site-appbar .origam-btn {
+:root:root[data-theme="editorial"] .site-appbar .origam-btn:not(.primary-nav__link) {
     border-radius: 0px !important;
 }/* ── EDITORIAL DARK ──────────────────────────────────────────────────────── */
 
@@ -411,6 +411,6 @@
     border-color: var(--origam-color__border---default) !important;
 }
 
-:root:root[data-theme="editorial"][data-mode="dark"] .site-appbar .origam-btn {
+:root:root[data-theme="editorial"][data-mode="dark"] .site-appbar .origam-btn:not(.primary-nav__link) {
     border-radius: 0px !important;
 }

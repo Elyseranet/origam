@@ -14,15 +14,15 @@ useSeoMeta({
 })
 
 const { data: catalogData } = await useReferenceCatalog<IComponentEntry>('component')
-const COMPONENTS_CATALOG = computed<IComponentEntry[]>(() => catalogData.value ?? [])
+const componentsCatalog = computed<IComponentEntry[]>(() => catalogData.value ?? [])
 
 const { data: catsData } = await useReferenceCategories('component')
-const COMPONENTS_CATEGORIES = computed<string[]>(() => catsData.value ?? [])
+const componentsCategories = computed<string[]>(() => catsData.value ?? [])
 
 const searchQuery = ref('')
 
 const topLevelEntries = computed(() =>
-    COMPONENTS_CATALOG.value.filter(entry => !entry.parentSlug)
+    componentsCatalog.value.filter(entry => !entry.parentSlug)
 )
 
 const filteredEntries = computed(() => {
@@ -38,7 +38,7 @@ const filteredEntries = computed(() => {
 })
 
 const groupedByCategory = computed(() => {
-    return COMPONENTS_CATEGORIES.value.map(category => ({
+    return componentsCategories.value.map(category => ({
         category,
         entries: filteredEntries.value.filter(e => e.category === category)
     })).filter(group => group.entries.length > 0)
@@ -105,7 +105,7 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
                         {{ filteredCount }} {{ t('components.hero.count_filtered_of', 'of') }} {{ totalCount }} {{ t('components.hero.count_filtered_match', 'components match') }}
                     </template>
                     <template v-else>
-                        {{ totalCount }} {{ t('components.hero.count_families', 'component families across') }} {{ COMPONENTS_CATEGORIES.length }} {{ t('components.hero.count_categories', 'categories') }}
+                        {{ totalCount }} {{ t('components.hero.count_families', 'component families across') }} {{ componentsCategories.length }} {{ t('components.hero.count_categories', 'categories') }}
                     </template>
                 </p>
             </origam-container>

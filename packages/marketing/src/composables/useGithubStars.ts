@@ -1,11 +1,6 @@
 import { computed } from 'vue'
-
-const GITHUB_STARS_FALLBACK = 0
-
-interface IGithubStarsData {
-  stars: number
-  cached: boolean
-}
+import { GITHUB_STARS_FALLBACK } from '~/consts/chrome.const'
+import type { IGithubStarsData } from '~/interfaces/github.interface'
 
 export function useGithubStars () {
   const { data, status } = useFetch<IGithubStarsData>('/api/github-stars', {

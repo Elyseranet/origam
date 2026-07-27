@@ -1,4 +1,5 @@
 import { onMounted, reactive, ref } from 'vue'
+import type { TAvailabilityMap } from '~/types/link-availability.type'
 
 /**
  * Probes a list of hrefs to determine which ones are actually reachable.
@@ -15,8 +16,6 @@ import { onMounted, reactive, ref } from 'vue'
  * - Results are cached in a module-level map so the same href is never
  *   probed twice across component instances.
  */
-
-type TAvailabilityMap = Record<string, boolean | undefined>
 
 const CACHE: TAvailabilityMap = {}
 

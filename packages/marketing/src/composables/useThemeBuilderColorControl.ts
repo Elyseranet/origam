@@ -1,7 +1,8 @@
 import { computed, ref, type ComputedRef, type Ref } from 'vue'
 
+import { THEME_BUILDER_COLOR_MAX_RECENT } from '~/consts/theme-builder-controls.const'
 import { resolveThemeBuilderColorState } from '~/utils/theme-builder-color.util'
-import type { IThemeBuilderColorState } from '~/utils/theme-builder-color.util'
+import type { IThemeBuilderColorState } from '~/interfaces/theme-builder.interface'
 
 /**
  * Session-scoped "recent custom colors" list, shared across every Color
@@ -10,11 +11,10 @@ import type { IThemeBuilderColorState } from '~/utils/theme-builder-color.util'
  * only, reset on reload; not persisted to localStorage).
  */
 const recentColors: Ref<string[]> = ref([])
-const MAX_RECENT = 4
 
 function pushRecent (hex: string): void {
     const next = [hex, ...recentColors.value.filter(c => c.toLowerCase() !== hex.toLowerCase())]
-    recentColors.value = next.slice(0, MAX_RECENT)
+    recentColors.value = next.slice(0, THEME_BUILDER_COLOR_MAX_RECENT)
 }
 
 /**

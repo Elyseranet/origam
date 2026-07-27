@@ -60,7 +60,7 @@
 
 }/* ── MATERIAL — appbar buttons: 16px radius (measured in maquette) ──────── *//* DS uses 8px for outlined variant in appbar; Material uses --m-radius=16px  *//* Gap DS: border-radius not exposed via token on OrigamBtn appbar context    */
 
-:root:root[data-theme="material"] .site-appbar .origam-btn {
+:root:root[data-theme="material"] .site-appbar .origam-btn:not(.primary-nav__link) {
     border-radius: 16px !important;
 }/* ── MATERIAL — appbar chip (version badge): pill + white bg ─────────────── *//* Measured: bg=#FFF, border=1px rgba(28,27,31,0.12), radius=999px             */
 

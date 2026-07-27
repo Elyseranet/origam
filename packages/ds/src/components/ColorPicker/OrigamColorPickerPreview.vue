@@ -196,7 +196,7 @@
 			width: 100%;
 			margin: 0;
 
-			:deep(.origam-slider-track__fill) {
+			:deep(.origam-slider-field-track__fill) {
 				display: none;
 			}
 		}

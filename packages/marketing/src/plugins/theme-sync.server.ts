@@ -19,8 +19,7 @@ import { useTheme } from 'origam/composables'
 import { defineNuxtPlugin, useCookie, useRuntimeConfig } from '#app'
 import type { IOrigamNuxtRuntimeConfig } from 'origam/interfaces'
 import type { TTheme, TMode } from 'origam/types'
-
-const ORIGAM_THEME_AUTO = 'auto'
+import { ORIGAM_THEME_AUTO } from '~/consts/theme.const'
 
 export default defineNuxtPlugin({
     name: 'marketing:theme-sync-server',

@@ -881,8 +881,8 @@
   --origam-field__input---padding-block-xl: 14px;
   --origam-field__input---padding-top: var(--origam-field__input---padding-block-md);
   --origam-field__input---padding-bottom: var(--origam-field__input---padding-block-md);
-  --origam-field__input---padding-start: var(--origam-space---4);
-  --origam-field__input---padding-end: var(--origam-space---4);
+  --origam-field__input---padding-start: 0;
+  --origam-field__input---padding-end: 0;
   --origam-field__input---opacity: 0.7;
   --origam-field__label---font-size: 0.75em;
   --origam-field__label---transition-duration: var(--origam-motion__duration---normal);
@@ -2256,6 +2256,7 @@
   --origam-slider-field---padding-block: var(--origam-space---2);
   --origam-slider-field---transition-duration: var(--origam-motion__duration---fast);
   --origam-slider-field---transition-timing-function: var(--origam-motion__easing---standard);
+  --origam-slider-field---border-radius: var(--origam-radius---full);
   --origam-slider-field__track---height: 4px;
   --origam-slider-field__track---background-color: var(--origam-color__surface---disabled);
   --origam-slider-field__track---border-radius: var(--origam-radius---full);

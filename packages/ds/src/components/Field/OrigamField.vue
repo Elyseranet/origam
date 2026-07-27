@@ -613,7 +613,14 @@
 		flex: 1 0;
 		grid-area: control;
 		position: relative;
-		padding-inline: var(--origam-field---padding-start) var(--origam-field---padding-end);
+		// Corner-clearing: when the corner radius is larger than the inline
+		// padding, the text / floating label collide with the rounded outline.
+		// Floor the inline padding at the effective radius (capped at the control
+		// height for pills). Prepended fields opt out below — their prepend icon
+		// already fills the corner.
+		padding-inline:
+			max(var(--origam-field---padding-start), min(var(--origam-field---border-radius, 8px), var(--origam-input__control---height, 36px)))
+			var(--origam-field---padding-end);
 		backdrop-filter: var(--origam-field---backdrop-filter, none);
 		-webkit-backdrop-filter: var(--origam-field---backdrop-filter, none);
 
@@ -798,7 +805,7 @@
 
 			#{$this}__outline {
 				&--start {
-					flex: 0 0 var(--origam-field---padding-start);
+					flex: 0 0 max(var(--origam-field---padding-start), min(var(--origam-field---border-radius, 8px), var(--origam-input__control---height, 36px)));
 				}
 
 				&--end {
@@ -869,6 +876,16 @@
 
 		&--prepended {
 			--origam-field---padding-start: 6px;
+
+			// A prepend-inner (icon / swatch) already fills the left corner, so
+			// opt out of the corner-clearing floor: keep the inline padding and
+			// the start outline leg at the raw padding-start (widening them would
+			// draw the outline over the prepend content).
+			padding-inline: var(--origam-field---padding-start) var(--origam-field---padding-end);
+
+			#{$this}__outline--start {
+				flex-basis: var(--origam-field---padding-start);
+			}
 		}
 
 		&--appended {
@@ -1068,7 +1085,19 @@
 					&#{$this}__label--floating {
 						transform: translateY(-50%);
 						transform-origin: center;
-						margin: 0 4px;
+						// Align the floating label's inline-start with the input
+						// text (and the resting label), both of which sit at
+						// `--origam-field__input---padding-start`. The old hard
+						// `margin: 0 4px` pinned the floating label to the notch
+						// corner instead, leaving it inset by (input-padding − 4)
+						// px LESS than the value — a visible label/value
+						// misalignment that grows with the corner radius (most
+						// obvious on large-radius themes, e.g. cartoon `rounded-lg`,
+						// where it read as "the input is more indented than the
+						// label"). Keep the 4px on the inline-end for notch
+						// breathing room.
+						margin-block: 0;
+						margin-inline: var(--origam-field__input---padding-start, 0) 4px;
 					}
 				}
 

@@ -3,7 +3,7 @@ import { ref, computed, watch } from 'vue'
 import { MDI_ICONS } from 'origam/enums'
 import { useT } from '~/composables/useT'
 import { useAdminReference } from '~/composables/useAdminReference'
-import type { IAdminPatch } from '~/composables/useAdminReference'
+import type { IAdminPatch } from '~/interfaces/admin.interface'
 
 definePageMeta({ layout: 'admin', middleware: 'admin' })
 

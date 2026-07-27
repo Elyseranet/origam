@@ -83,6 +83,16 @@ const onEdge = (key: 'top' | 'left' | 'bottom' | 'right', value: unknown): void 
         :data-cy="dataCy"
     >
         <template v-if="!isCustom">
+            <button
+                type="button"
+                class="tbc-box-model__none-chip"
+                :class="{ 'tbc-box-model__none-chip--active': scaleValue === 'none' }"
+                :data-cy="`${dataCy}-none`"
+                @click="onScaleChip('none')"
+            >
+                {{ t('theming.control.unset', 'none') }}
+            </button>
+
             <p class="tbc-box-model__scale-label">{{ t('theming.control.box_model.scale_label', 'Scale steps (origam-space)') }}</p>
             <div
                 class="tbc-box-model__scale-grid"
@@ -194,6 +204,26 @@ const onEdge = (key: 'top' | 'left' | 'bottom' | 'right', value: unknown): void 
 
 <style scoped lang="scss">
 .tbc-box-model {
+    &__none-chip {
+        align-self: flex-start;
+        padding: var(--origam-spacing-1, 0.25rem) var(--origam-spacing-2, 0.5rem);
+        font-size: 0.6875rem;
+        background-color: var(--origam-color-surface-default);
+        border: 1px solid var(--origam-color-border-subtle, var(--origam-color-border-default));
+        border-radius: var(--origam-radius-sm, 0.25rem);
+        cursor: pointer;
+
+        &:hover {
+            background-color: var(--origam-color-surface-subtle, var(--origam-color-surface-raised));
+        }
+
+        &--active {
+            border-color: var(--origam-color__action--primary---bg, #7c3aed);
+            color: var(--origam-color__action--primary---bg, #7c3aed);
+            font-weight: var(--origam-font-weight-bold, 700);
+        }
+    }
+
     &__scale-label {
         margin: 0;
         font-size: 0.625rem;

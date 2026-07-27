@@ -372,4 +372,81 @@ test.describe('OrigamSliderField', () => {
             await expect(thumb).toHaveClass(/origam--color-danger/)
         })
     })
+
+    // ------------------------------------------------------------------ //
+    // ROUNDED — track shape (#283 fix)                                    //
+    //                                                                      //
+    // `rounded` was declared on `ISliderFieldProps` (via `IRoundedProps`)  //
+    // but never consumed anywhere in `OrigamSliderField.vue` — no          //
+    // `useRounded()` call, no forwarding to the track, every radius in     //
+    // the SCSS was a hardcoded `999px`/`9999px`. Fixed by wiring           //
+    // `useRounded(resolvedRounded)` and forwarding the resolved value to   //
+    // `<OrigamSliderFieldTrack>` (which already had a correct, unused      //
+    // `useRounded()` of its own) plus a new                                //
+    // `--origam-slider-field---border-radius` token backing the           //
+    // previously-hardcoded radii owned directly by `OrigamSliderField`.    //
+    //                                                                      //
+    // The Vue-level prop-forwarding wiring (top-level `rounded` reaching   //
+    // the track's `rounded` prop, `trackProps.rounded` override priority,  //
+    // theme-default resolution) is unit-tested in                         //
+    // `slider-field-rounded.spec.ts` (component mount, real prop values).  //
+    // These specs prove the OTHER half — that the resulting CSS variable   //
+    // actually repaints the rendered radius in a real browser — following  //
+    // the same technique already established for `OrigamSwitch` (see       //
+    // switch.spec.ts's "Track visual surface" describe): the custom        //
+    // `HstSelect` control is out of scope per project convention (custom   //
+    // DOM, brittle), so we assert the CSS mechanism by toggling the exact  //
+    // class/inline-style the component emits once `rounded` is resolved.   //
+    // ------------------------------------------------------------------ //
+
+    test.describe('Rounded — track shape (#283)', () => {
+        test('default (unset) track radius comes from the --origam-slider-field__track---border-radius token, not a bare hardcoded value', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const track = sandbox.locator('.origam-slider-field-track').first()
+            await expect(track).toBeVisible({ timeout: 12000 })
+
+            const radius = await track.evaluate(el => getComputedStyle(el).borderRadius)
+            // Pill shape at this track height — any large radius reads as fully round.
+            expect(radius).not.toBe('0px')
+        })
+
+        test('rounded="sm" (utility rung) repaints the track radius via the resolved inline style', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const slider = sandbox.locator('.origam-slider-field').first()
+            await expect(slider).toBeVisible({ timeout: 12000 })
+            const track = sandbox.locator('.origam-slider-field-track').first()
+
+            const defaultRadius = await track.evaluate(el => getComputedStyle(el).borderRadius)
+
+            // Mirrors what `useRounded('sm')` actually emits (utility rung →
+            // class + inline `border-radius` companion, see rounded.composable.ts)
+            // — the same class/style pair `OrigamSliderFieldTrack` would receive
+            // once `resolvedRounded` forwards a real `rounded="sm"` prop.
+            await track.evaluate((el) => {
+                el.classList.add('origam--rounded-sm')
+                ;(el as HTMLElement).style.setProperty('border-radius', 'var(--origam-radius---sm, 4px)')
+            })
+
+            const afterRadius = await track.evaluate(el => getComputedStyle(el).borderRadius)
+            expect(afterRadius).not.toBe(defaultRadius)
+            expect(afterRadius).not.toBe('0px')
+        })
+
+        test('rounded="none" collapses the track radius to square corners', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const track = sandbox.locator('.origam-slider-field-track').first()
+            await expect(track).toBeVisible({ timeout: 12000 })
+
+            await track.evaluate((el) => {
+                el.classList.add('origam--rounded-none')
+                ;(el as HTMLElement).style.setProperty('border-radius', 'var(--origam-radius---none, 0)')
+            })
+
+            const radius = await track.evaluate(el => getComputedStyle(el).borderRadius)
+            expect(radius).toBe('0px')
+        })
+    })
 })

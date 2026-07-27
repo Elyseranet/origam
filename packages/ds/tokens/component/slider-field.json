@@ -5,6 +5,8 @@
     "transition-duration":   { "$type": "duration",  "$value": "{motion.duration.fast}" },
     "transition-timing-function": { "$type": "cubicBezier", "$value": "{motion.easing.standard}" },
 
+    "border-radius": { "$type": "dimension", "$value": "{radius.full}" },
+
     "track": {
       "height":           { "$type": "dimension", "$value": "4px" },
       "background-color": { "$type": "color",     "$value": "{color.surface.disabled}" },

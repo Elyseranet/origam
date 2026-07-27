@@ -172,7 +172,7 @@ const modeLabel = (mode: TEditMode): string =>
     display: flex;
     flex-direction: column;
     min-height: 20rem;
-    overflow: visible;
+    overflow: hidden;
     border-width: 1px;
     border-style: solid;
     border-color: var(--origam-color-border-default);

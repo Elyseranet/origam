@@ -20,21 +20,21 @@ const DIRECTIVES_HERO_BADGE_VARS: CSSProperties = {
 
 const { data: catalogData } = await useReferenceCatalog<IDirectiveEntry>('directive')
 
-const DIRECTIVES_CATALOG = computed<IDirectiveEntry[]>(() => catalogData.value ?? [])
+const directivesCatalog = computed<IDirectiveEntry[]>(() => catalogData.value ?? [])
 
 const searchQuery = ref('')
 
 const filteredDirectives = computed(() => {
     const query = searchQuery.value.toLowerCase().trim()
-    if (!query) return DIRECTIVES_CATALOG.value
-    return DIRECTIVES_CATALOG.value.filter(entry => {
+    if (!query) return directivesCatalog.value
+    return directivesCatalog.value.filter(entry => {
         const nameMatch = entry.name.toLowerCase().includes(query)
         const descMatch = entry.descriptionFallback.toLowerCase().includes(query)
         return nameMatch || descMatch
     })
 })
 
-const totalCount = computed(() => DIRECTIVES_CATALOG.value.length)
+const totalCount = computed(() => directivesCatalog.value.length)
 const filteredCount = computed(() => filteredDirectives.value.length)
 const isFiltering = computed(() => searchQuery.value.trim().length > 0)
 </script>

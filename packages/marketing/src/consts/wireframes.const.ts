@@ -1,14 +1,5 @@
 import type { CSSProperties } from 'vue'
-
-export interface IWireframeLayout {
-    id: string
-    icon: string
-    titleKey: string
-    titleFallback: string
-    descriptionKey: string
-    descriptionFallback: string
-    components: string[]
-}
+import type { IWireframeLayout } from '~/interfaces/wireframes.interface'
 
 export const WIREFRAME_HERO_BADGE_VARS: CSSProperties = {
     '--origam-chip---background-color': 'transparent'

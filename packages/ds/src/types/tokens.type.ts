@@ -2397,6 +2397,7 @@ export type TTokenName =
   | '--origam-slide-group__vertical---content-overflow-x'
   | '--origam-slide-group__vertical---content-overflow-y'
   | '--origam-slide-group__vertical---max-height'
+  | '--origam-slider-field---border-radius'
   | '--origam-slider-field---opacity-disabled'
   | '--origam-slider-field---padding-block'
   | '--origam-slider-field---track-fill-background-color'

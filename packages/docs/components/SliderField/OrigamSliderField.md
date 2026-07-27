@@ -184,11 +184,12 @@ breathing room.
 | `density` | `enum` | `'default'` | Vertical density (inherited from `OrigamInput`). |
 | `color` | `TIntent` | — | Paints fill + thumb surface. |
 | `bgColor` | `TIntent` | — | Paints the rail. |
+| `rounded` | `boolean \| number \| string \| TRounded` | — | Corner-radius selector for the rail + the `buffered` fill. Forwarded to the track sub-component (unless overridden by `trackProps.rounded`); falls back to `--origam-slider-field---border-radius` when unset. See [Design tokens](#design-tokens). |
 | `showTicks` | `boolean \| 'always'` | `false` | Render tick marks on the track. |
 | `ticks` | `Array<number> \| Record<string, string>` | — | Custom tick values / labels. |
 | `tickSize` | `number \| string` | `2` | Tick dot size. |
 | `inset` | `boolean` | `false` | Compact style — thumb inside the track. |
-| `trackProps` | `ISliderFieldTrackProps` | — | Visual props forwarded to the track. |
+| `trackProps` | `ISliderFieldTrackProps` | — | Visual props forwarded to the track. Its own `rounded` (when set) takes priority over the top-level `rounded` prop. |
 
 ### Variant & media-scrubber props (Phase 2)
 
@@ -245,6 +246,7 @@ The native `<input type="range">` provides full a11y out of the box:
 
 | CSS variable | Default | Description |
 |---|---|---|
+| `--origam-slider-field---border-radius` | `{radius.full}` (pill) | Themeable default corner radius for the surfaces owned directly by `OrigamSliderField` (the `buffered` fill, and the inset/bare-variant rail overrides). Overridden inline whenever the `rounded` prop (or `trackProps.rounded`) is set. |
 | `--origam-slider-field---track-size` | `14px` (horizontal) / `2px` (vertical) | Track thickness. |
 | `--origam-slider-field---thumb-size` | `20px` | Thumb diameter. |
 | `--origam-slider-field-track__tick---size` | `2px` | Tick dot size. |

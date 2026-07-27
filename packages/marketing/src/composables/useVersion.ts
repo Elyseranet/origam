@@ -1,8 +1,5 @@
 import { computed } from 'vue'
-
-interface INpmVersionData {
-  version: string
-}
+import type { INpmVersionData } from '~/interfaces/version.interface'
 
 /**
  * Single source of truth for the displayed origam version.

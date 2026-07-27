@@ -55,8 +55,8 @@ function highlightTypeLabel (type: string): string {
     return t(key, fallbacks[type] ?? type)
 }
 
-const DEFAULT_VERSION = CHANGELOG_VERSIONS.find(v => v.type !== 'unreleased')?.version ?? CHANGELOG_VERSIONS[0].version
-const selectedVersion = ref<string>(DEFAULT_VERSION)
+const defaultVersion = CHANGELOG_VERSIONS.find(v => v.type !== 'unreleased')?.version ?? CHANGELOG_VERSIONS[0].version
+const selectedVersion = ref<string>(defaultVersion)
 
 const currentVersion = computed(() =>
     versions.value.find(v => v.version === selectedVersion.value) ?? versions.value[0]

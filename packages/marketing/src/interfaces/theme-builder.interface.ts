@@ -10,8 +10,30 @@
  */
 import type { TMode } from 'origam/types'
 
+import type { IComponentPlaygroundControl } from '~/interfaces/components-catalog.interface'
+import type { TThemeBuilderBoxModelMode, TThemeBuilderColorMode } from '~/types/theme-builder-controls.type'
+
 /** The two concrete edit modes (never 'auto'). */
 export type TEditMode = 'light' | 'dark'
+
+/** Minimal prop surface shape returned by `?includePropSurface=1`. */
+export interface IComponentThemeSurface {
+    slug: string
+    name: string
+    icon: string
+    category: string
+    parentSlug?: string | null
+    playground?: {
+        controls: IComponentPlaygroundControl[]
+        defaultSlotContent?: string
+    } | null
+    props: Array<{
+        name: string
+        type: { label: string | null; slug: string | null; kind: string | null }
+        required?: boolean | null
+        defaultValue?: string | null
+    }>
+}
 
 /**
  * A single editable CSS token row surfaced for a component, derived from the
@@ -248,4 +270,52 @@ export interface IThemeBuilderComponentEntry {
 export interface IThemeBuilderNavCategory {
     meta: IThemeBuilderCategoryMeta
     components: IThemeBuilderComponentEntry[]
+}
+
+/** The 4 raw per-side border-width prop values read by `useThemeBuilderBorderControl`. */
+export interface IThemeBuilderBorderSideValues {
+    top: unknown
+    right: unknown
+    bottom: unknown
+    left: unknown
+}
+
+/** Classified state of the Color control (Contrôle 1) — inherit / intent / custom. */
+export interface IThemeBuilderColorState {
+    mode: TThemeBuilderColorMode
+    intent?: string
+    custom?: string
+}
+
+/** The 4 corners of the Rounded 4-corner editor (Contrôle 3), in px. */
+export interface IThemeBuilderRoundedCorners {
+    topLeft: number
+    topRight: number
+    bottomLeft: number
+    bottomRight: number
+}
+
+/** The 4 edges of the Padding / Margin box-model editor (Contrôle 6), in px. */
+export interface IThemeBuilderBoxModelEdges {
+    top: number
+    left: number
+    bottom: number
+    right: number
+}
+
+/** Full state (link mode + edges) of the Padding / Margin box-model editor. */
+export interface IThemeBuilderBoxModelState {
+    mode: TThemeBuilderBoxModelMode
+    edges: IThemeBuilderBoxModelEdges
+}
+
+/** One shadow layer of the Elevation "Autre" full shadow composer (Contrôle 4). */
+export interface IThemeBuilderShadowLayer {
+    x: number
+    y: number
+    blur: number
+    spread: number
+    color: string
+    opacity: number
+    inset: boolean
 }

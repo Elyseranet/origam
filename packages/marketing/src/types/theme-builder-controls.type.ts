@@ -17,3 +17,9 @@ export type TThemeBuilderCorner = 'topLeft' | 'topRight' | 'bottomLeft' | 'botto
 
 /** One side of the Border per-side width/colour editor. */
 export type TThemeBuilderBorderSide = 'top' | 'right' | 'bottom' | 'left'
+
+/** Classification of a raw color prop value in the Color control (Contrôle 1). */
+export type TThemeBuilderColorMode = 'inherit' | 'intent' | 'custom'
+
+/** The two tabs of the component controls panel (`ThemeBuilderControls.vue`). */
+export type TThemeBuilderTab = 'props' | 'tokens'

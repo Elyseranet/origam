@@ -15,17 +15,17 @@ useSeoMeta({
 
 const { data: catalogData } = await useReferenceCatalog<IInterfaceEntry>('interface')
 
-const INTERFACES_CATALOG = computed<IInterfaceEntry[]>(() => catalogData.value ?? [])
+const interfacesCatalog = computed<IInterfaceEntry[]>(() => catalogData.value ?? [])
 
 const { data: catsData } = await useReferenceCategories('interface')
-const INTERFACES_CATEGORIES = computed<string[]>(() => catsData.value ?? [])
+const interfacesCategories = computed<string[]>(() => catsData.value ?? [])
 
 const searchQuery = ref('')
 
 const filteredEntries = computed(() => {
     const query = searchQuery.value.toLowerCase().trim()
-    if (!query) return INTERFACES_CATALOG.value
-    return INTERFACES_CATALOG.value.filter(entry => {
+    if (!query) return interfacesCatalog.value
+    return interfacesCatalog.value.filter(entry => {
         const nameMatch = entry.name.toLowerCase().includes(query)
         const categoryMatch = entry.category.toLowerCase().includes(query)
         const descMatch = entry.descriptionFallback.toLowerCase().includes(query)
@@ -34,13 +34,13 @@ const filteredEntries = computed(() => {
 })
 
 const groupedByCategory = computed(() =>
-    INTERFACES_CATEGORIES.value.map(category => ({
+    interfacesCategories.value.map(category => ({
         category,
         entries: filteredEntries.value.filter(e => e.category === category)
     })).filter(group => group.entries.length > 0)
 )
 
-const totalCount = computed(() => INTERFACES_CATALOG.value.length)
+const totalCount = computed(() => interfacesCatalog.value.length)
 const filteredCount = computed(() => filteredEntries.value.length)
 const isFiltering = computed(() => searchQuery.value.trim().length > 0)
 </script>
@@ -101,7 +101,7 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
                         {{ filteredCount }} {{ t('interfaces.hero.count_filtered_of', 'of') }} {{ totalCount }} {{ t('interfaces.hero.count_filtered_match', 'interfaces match') }}
                     </template>
                     <template v-else>
-                        {{ totalCount }} {{ t('interfaces.hero.count_total', 'interfaces across') }} {{ INTERFACES_CATEGORIES.length }} {{ t('interfaces.hero.count_categories', 'categories') }}
+                        {{ totalCount }} {{ t('interfaces.hero.count_total', 'interfaces across') }} {{ interfacesCategories.length }} {{ t('interfaces.hero.count_categories', 'categories') }}
                     </template>
                 </p>
             </origam-container>

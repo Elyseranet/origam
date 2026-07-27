@@ -15,17 +15,17 @@ useSeoMeta({
 
 const { data: catalogData } = await useReferenceCatalog<ITypeEntry>('type')
 
-const TYPES_CATALOG = computed<ITypeEntry[]>(() => catalogData.value ?? [])
+const typesCatalog = computed<ITypeEntry[]>(() => catalogData.value ?? [])
 
 const { data: catsData } = await useReferenceCategories('type')
-const TYPES_CATEGORIES = computed<string[]>(() => catsData.value ?? [])
+const typesCategories = computed<string[]>(() => catsData.value ?? [])
 
 const searchQuery = ref('')
 
 const filteredEntries = computed(() => {
     const query = searchQuery.value.toLowerCase().trim()
-    if (!query) return TYPES_CATALOG.value
-    return TYPES_CATALOG.value.filter(entry => {
+    if (!query) return typesCatalog.value
+    return typesCatalog.value.filter(entry => {
         const nameMatch = entry.name.toLowerCase().includes(query)
         const categoryMatch = entry.category.toLowerCase().includes(query)
         const descMatch = entry.descriptionFallback.toLowerCase().includes(query)
@@ -35,13 +35,13 @@ const filteredEntries = computed(() => {
 })
 
 const groupedByCategory = computed(() =>
-    TYPES_CATEGORIES.value.map(category => ({
+    typesCategories.value.map(category => ({
         category,
         entries: filteredEntries.value.filter(e => e.category === category)
     })).filter(group => group.entries.length > 0)
 )
 
-const totalCount = computed(() => TYPES_CATALOG.value.length)
+const totalCount = computed(() => typesCatalog.value.length)
 const filteredCount = computed(() => filteredEntries.value.length)
 const isFiltering = computed(() => searchQuery.value.trim().length > 0)
 </script>
@@ -102,7 +102,7 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
                         {{ filteredCount }} {{ t('types.hero.count_filtered_of', 'of') }} {{ totalCount }} {{ t('types.hero.count_filtered_match', 'types match') }}
                     </template>
                     <template v-else>
-                        {{ totalCount }} {{ t('types.hero.count_total', 'types and enums across') }} {{ TYPES_CATEGORIES.length }} {{ t('types.hero.count_categories', 'categories') }}
+                        {{ totalCount }} {{ t('types.hero.count_total', 'types and enums across') }} {{ typesCategories.length }} {{ t('types.hero.count_categories', 'categories') }}
                     </template>
                 </p>
             </origam-container>

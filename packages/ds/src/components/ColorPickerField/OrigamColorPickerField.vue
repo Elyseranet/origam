@@ -402,6 +402,22 @@
 			padding-bottom: 0;
 			padding-inline-start: 0;
 			overflow: hidden;
+			border-start-start-radius: var(--origam-field---border-radius, 8px);
+			border-end-start-radius: var(--origam-field---border-radius, 8px);
+
+			// The swatch must sit FLUSH against the field's inline-start edge.
+			// `OrigamField` applies `--origam-field---padding-start` to the whole
+			// grid (prepend-inner included), so any consumer that raises it pushes
+			// the swatch inward and opens a gap between the colour and the left
+			// border. The Theme Builder does exactly this — it forces
+			// `--origam-field---padding-start: 14px` on prepended control fields to
+			// widen the outline's start leg so the left corner rounds — which left
+			// a ~14px gap in front of the swatch. Cancel the padding for the
+			// prepend cell only (negative margin = -padding-start) so the swatch
+			// bleeds back to the edge while the outline keeps its rounded corner.
+			// No-op when padding-start resolves to 0 (the component's own default),
+			// so there is zero regression for plain consumers.
+			margin-inline-start: calc(-1 * var(--origam-field---padding-start, 0px));
 
 			> .origam-sheet {
 				width: var(--origam-color-picker-field__swatch---width, 24px);
@@ -416,6 +432,10 @@
 			font-family: var(--origam-font__family---mono);
 			font-size: 0.875em;
 			letter-spacing: 0.03em;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			min-width: 0;
 		}
 
 		// `.origam-field__input` is `display: flex; flex-wrap: wrap` by
@@ -430,8 +450,21 @@
 		// `colorSelection` span is the real display value) — forcing
 		// `nowrap` lets the invisible native input shrink instead of
 		// pushing a wrap, with zero visual loss.
+		// Same single-line fix as OrigamSelect: the underlying native
+		// `<input>` is taken OUT of flow (`position: absolute`, `flex: 0 0`)
+		// so it can't sit beside the formatted hex `colorSelection` span and
+		// push the field onto a second line. The span is the real display
+		// value; the input only carries focus / the editable value. `nowrap`
+		// alone was insufficient — the in-flow input still forced a wrap in a
+		// narrow container.
 		:deep(.origam-field__input) {
 			flex-wrap: nowrap;
+
+			> input {
+				position: absolute;
+				flex: 0 0;
+				min-width: 0;
+			}
 		}
 	}
 </style>

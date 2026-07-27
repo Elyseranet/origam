@@ -664,6 +664,9 @@
     },
     "control": {
       "custom": "Other…",
+      "unset": "none",
+      "bool_true": "True",
+      "bool_false": "False",
       "color": {
         "inherit": "Inherit from theme",
         "inherited": "Inherited from theme",
@@ -681,6 +684,11 @@
           "neutral": "Neutral",
           "ghost": "Ghost"
         }
+      },
+      "density": {
+        "compact": "Compact",
+        "default": "Default",
+        "comfortable": "Comfortable"
       },
       "rounded": {
         "none": "None",

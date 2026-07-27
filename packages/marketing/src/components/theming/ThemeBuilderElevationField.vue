@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 
 import { useT } from '~/composables/useT'
 import { useThemeBuilderElevationControl } from '~/composables/useThemeBuilderElevationControl'
 import { THEME_BUILDER_ELEVATION_OPTIONS } from '~/consts/theme-builder-controls.const'
 
 /**
- * ThemeBuilderElevationField — Contrôle 4 (`elevation-field.html`): named
- * shadow-rung select + "Autre…" with 2 sub-modes (Option A depth 0-24,
- * Option B full shadow composer). Both write straight into `elevation` —
- * verified live since PR #210 (`isCustomBoxShadow`, task #14).
+ * ThemeBuilderElevationField — Contrôle 4 (`elevation-field.html`): ONE
+ * named shadow-rung `<origam-select>` (last option is the "Autre…" sentinel)
+ * + "Autre…" reveal BELOW it, inline, with 2 sub-modes (Option A depth 0-24,
+ * Option B full shadow composer). No popover, no nested select-in-select
+ * (#294). Both sub-modes write straight into `elevation` — verified live
+ * since PR #210 (`isCustomBoxShadow`, task #14).
  */
 const props = defineProps<{
     modelValue: unknown
@@ -22,27 +24,12 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useT()
-const open = ref(false)
 
 const modelValueRef = computed(() => props.modelValue)
 const {
     selectValue, isCustom, customMode, depth, layer,
     selectRung, setDepth, setLayer, setCustomMode
 } = useThemeBuilderElevationControl(modelValueRef, (value) => emit('update:modelValue', value))
-
-const rungLabel = (value: string): string => {
-    const opt = THEME_BUILDER_ELEVATION_OPTIONS.find(o => o.value === value)
-    return opt ? t(opt.labelKey, opt.labelFallback) : value
-}
-
-const valueLabel = computed<string>(() => {
-    if (isCustom.value) {
-        return customMode.value === 'depth'
-            ? t('theming.control.elevation.custom_depth_value', 'Custom — depth {depth}', { depth: depth.value })
-            : t('theming.control.elevation.custom_shadow_value', 'Custom shadow')
-    }
-    return rungLabel(selectValue.value)
-})
 
 const selectItems = computed(() =>
     THEME_BUILDER_ELEVATION_OPTIONS.map(o => ({ title: t(o.labelKey, o.labelFallback), value: o.value }))
@@ -67,12 +54,7 @@ const onOpacity = (value: unknown): void => {
 </script>
 
 <template>
-    <theme-builder-control-trigger
-        v-model:open="open"
-        :label="label"
-        :value-label="valueLabel"
-        :data-cy="dataCy"
-    >
+    <div class="tbc-elevation">
         <origam-select
             :model-value="selectValue"
             :items="selectItems"
@@ -80,11 +62,15 @@ const onOpacity = (value: unknown): void => {
             variant="outlined"
             density="compact"
             hide-details
+            class="tbc-elevation__select"
             :data-cy="`${dataCy}-select`"
             @update:model-value="onSelect"
         />
 
-        <template v-if="isCustom">
+        <div
+            v-if="isCustom"
+            class="tbc-elevation__custom tb-reveal"
+        >
             <div
                 class="tbc-elevation__modes"
                 role="group"
@@ -193,20 +179,32 @@ const onOpacity = (value: unknown): void => {
                     </template>
                 </origam-slider-field>
             </template>
-        </template>
-    </theme-builder-control-trigger>
+        </div>
+    </div>
 </template>
 
 <style scoped lang="scss">
 .tbc-elevation {
+    display: flex;
+    flex-direction: column;
+    gap: var(--origam-spacing-2, 0.5rem);
+    inline-size: 100%;
+
+    &__custom {
+        display: flex;
+        flex-direction: column;
+        gap: var(--origam-spacing-2, 0.5rem);
+    }
+
     &__modes {
         display: flex;
+        flex-wrap: wrap;
         gap: var(--origam-spacing-2, 0.5rem);
     }
 
     &__shadow-grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
         gap: var(--origam-spacing-2, 0.5rem);
     }
 

@@ -1,16 +1,17 @@
 import { computed, ref, watch, type ComputedRef, type Ref } from 'vue'
 
-import { THEME_BUILDER_CUSTOM_VALUE, THEME_BUILDER_ROUNDED_OPTIONS } from '~/consts/theme-builder-controls.const'
+import {
+    THEME_BUILDER_CUSTOM_VALUE,
+    THEME_BUILDER_ROUNDED_NAMED_RUNGS
+} from '~/consts/theme-builder-controls.const'
 import {
     parseRoundedCorners,
     parseRoundedUniform,
     serializeRoundedCorners,
     serializeRoundedUniform
 } from '~/utils/theme-builder-rounded.util'
-import type { IThemeBuilderRoundedCorners } from '~/utils/theme-builder-rounded.util'
+import type { IThemeBuilderRoundedCorners } from '~/interfaces/theme-builder.interface'
 import type { TThemeBuilderCorner } from '~/types/theme-builder-controls.type'
-
-const NAMED_RUNGS = new Set(THEME_BUILDER_ROUNDED_OPTIONS.map(o => o.value).filter(v => v !== THEME_BUILDER_CUSTOM_VALUE))
 
 /**
  * useThemeBuilderRoundedControl — business logic for the Rounded control
@@ -26,7 +27,7 @@ export function useThemeBuilderRoundedControl (
     const selectValue = computed<string>(() => {
         const raw = modelValue.value
         if (raw === false || raw === undefined || raw === null || raw === '') return 'none'
-        if (typeof raw === 'string' && NAMED_RUNGS.has(raw)) return raw
+        if (typeof raw === 'string' && THEME_BUILDER_ROUNDED_NAMED_RUNGS.has(raw)) return raw
         return THEME_BUILDER_CUSTOM_VALUE
     })
 
@@ -66,7 +67,7 @@ export function useThemeBuilderRoundedControl (
             return
         }
         const uniform = parseRoundedUniform(raw)
-        if (uniform !== null && !NAMED_RUNGS.has(raw)) {
+        if (uniform !== null && !THEME_BUILDER_ROUNDED_NAMED_RUNGS.has(raw)) {
             corners.value = { topLeft: uniform, topRight: uniform, bottomLeft: uniform, bottomRight: uniform }
             linked.value = true
         }

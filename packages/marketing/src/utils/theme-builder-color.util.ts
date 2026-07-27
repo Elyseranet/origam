@@ -3,21 +3,12 @@
  * control (Contrôle 1, `color-field.html`), shared by `color`, `accentColor`
  * and (embedded) `borderColor`.
  */
-import { THEME_BUILDER_INTENT_OPTIONS } from '~/consts/theme-builder-controls.const'
-
-export type TThemeBuilderColorMode = 'inherit' | 'intent' | 'custom'
-
-export interface IThemeBuilderColorState {
-    mode: TThemeBuilderColorMode
-    intent?: string
-    custom?: string
-}
-
-const INTENT_VALUES = new Set(THEME_BUILDER_INTENT_OPTIONS.map(o => o.value))
+import { THEME_BUILDER_INTENT_VALUES } from '~/consts/theme-builder-controls.const'
+import type { IThemeBuilderColorState } from '~/interfaces/theme-builder.interface'
 
 /** Whether a raw prop value is one of the 8 real `TIntent` values. */
 export function isThemeBuilderIntentValue (value: unknown): value is string {
-    return typeof value === 'string' && INTENT_VALUES.has(value)
+    return typeof value === 'string' && THEME_BUILDER_INTENT_VALUES.has(value)
 }
 
 /** Whether a string looks like a hex color (`#abc` / `#aabbcc`). */

@@ -16,17 +16,9 @@
  */
 
 import type { Ref, ComputedRef } from 'vue'
+import type { TReferenceKind } from '~/types/api-reference.type'
 
-/** Familles d'entités supportées par l'API Reference. */
-export type TReferenceKind =
-    | 'component'
-    | 'composable'
-    | 'const'
-    | 'directive'
-    | 'enum'
-    | 'interface'
-    | 'type'
-    | 'util'
+export type { TReferenceKind } from '~/types/api-reference.type'
 
 /**
  * Fetches the lightweight catalog for one entity family.

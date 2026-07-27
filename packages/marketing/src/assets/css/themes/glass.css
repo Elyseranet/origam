@@ -285,6 +285,25 @@
         inset 0 -1px 0 rgba(0, 0, 0, 0.10),
         0 6px 20px -6px rgba(167, 139, 250, 0.25) !important;
 }/* — Menu glass effect — *//* backdrop-filter now flows through --origam-menu---backdrop-filter in DS token blocks above. *//* — Playground frame — glass surface for the editor window — */
+:root:root[data-theme="glass"] .origam-menu__content {
+    background-image:
+        linear-gradient(135deg, rgba(167, 139, 250, 0.16), rgba(124, 58, 237, 0.08));
+    box-shadow:
+        0 14px 44px -10px rgba(124, 58, 237, 0.30),
+        0 2px 8px -2px rgba(124, 58, 237, 0.14),
+        0 0 0 1px rgba(124, 58, 237, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.55);
+}
+
+:root:root[data-theme="glass"][data-mode="dark"] .origam-menu__content {
+    background-image:
+        linear-gradient(135deg, rgba(167, 139, 250, 0.14), rgba(124, 58, 237, 0.07));
+    box-shadow:
+        0 16px 44px -12px rgba(0, 0, 0, 0.55),
+        0 0 0 1px rgba(255, 255, 255, 0.14),
+        inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
 :root:root[data-theme="glass"] .home-playground__frame.origam-sheet {
     background-color: rgba(255, 255, 255, 0.30) !important;
     backdrop-filter: blur(16px) saturate(1.8) brightness(1.05);

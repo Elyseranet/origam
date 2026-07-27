@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { MDI_ICONS } from 'origam/enums'
 import { useT } from '~/composables/useT'
 import { useAdminReference } from '~/composables/useAdminReference'
+import { ADMIN_NAV_KINDS } from '~/consts/admin.const'
 
 const { t } = useT()
 const { logout } = useAdminReference()
@@ -11,17 +12,6 @@ const route = useRoute()
 const router = useRouter()
 
 const drawerOpen = ref(true)
-
-const NAV_KINDS = [
-    { key: 'component', icon: MDI_ICONS.LAYERS, labelKey: 'admin.nav.kind.component', labelFallback: 'Components' },
-    { key: 'composable', icon: MDI_ICONS.COG, labelKey: 'admin.nav.kind.composable', labelFallback: 'Composables' },
-    { key: 'const', icon: MDI_ICONS.TABLE, labelKey: 'admin.nav.kind.const', labelFallback: 'Consts' },
-    { key: 'directive', icon: MDI_ICONS.PENCIL, labelKey: 'admin.nav.kind.directive', labelFallback: 'Directives' },
-    { key: 'enum', icon: MDI_ICONS.FORMAT_LIST_BULLETED, labelKey: 'admin.nav.kind.enum', labelFallback: 'Enums' },
-    { key: 'interface', icon: MDI_ICONS.CODE_TAGS, labelKey: 'admin.nav.kind.interface', labelFallback: 'Interfaces' },
-    { key: 'type', icon: MDI_ICONS.TEXT, labelKey: 'admin.nav.kind.type', labelFallback: 'Types' },
-    { key: 'util', icon: MDI_ICONS.WRENCH, labelKey: 'admin.nav.kind.util', labelFallback: 'Utils' },
-] as const
 
 function isKindActive (key: string) {
     return route.path.startsWith(`/admin/${key}`)
@@ -97,7 +87,7 @@ async function handleLogout () {
                     <origam-divider class="admin-nav__divider" />
 
                     <origam-list-item
-                        v-for="kind in NAV_KINDS"
+                        v-for="kind in ADMIN_NAV_KINDS"
                         :key="kind.key"
                         :title="t(kind.labelKey, kind.labelFallback)"
                         :prepend-icon="kind.icon"

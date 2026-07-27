@@ -13,21 +13,30 @@ export const SHOWCASE_GRID_COLUMNS = '2fr 1fr 1fr'
  * Per-instance OrigamCard token overrides for a showcase widget card.
  *
  * Radius now rides the typed `rounded="var(--origam-radius---md)"` prop
- * (useRounded accepts custom-property refs since the v2.6 DS fix). `bgColor`
- * still rejects `var(--origam-…)` (it expects a TIntent), so the non-intent
- * `surface---raised` token is painted on the card's public bg custom-prop —
- * the documented color-policy hatch (same as FEATURE_CARD_VARS). The padding
- * tokens stay on the per-instance custom-props (the `padding` prop's regex
- * rejects `var(...)`).
+ * (useRounded accepts custom-property refs since the v2.6 DS fix). The
+ * padding tokens stay on the per-instance custom-props (the `padding` prop's
+ * regex rejects `var(...)`).
  *
- *   bg     #fafafa → --origam-color__surface---raised (sobre)
+ * Fix #285 — `--origam-card---background` used to be forced here to
+ * `var(--origam-color__surface---raised, #fafafa)`, an inline override
+ * (highest specificity) that silently bypassed whatever the ACTIVE THEME
+ * intends for `--origam-card---background` (e.g. glass's dedicated
+ * translucent recipe, or ecom's dedicated `#ffffff`/`#2e1b14` card colours —
+ * both set `--origam-card---background` directly in their theme object,
+ * which this override was shadowing for showcase widgets specifically). On
+ * sobre/default the override happened to resolve to the exact same opaque
+ * value as the component's own default cascade (`{color.surface.raised}` =
+ * `#ffffff`), so removing it is a strict no-op there — verified via
+ * computed-style. Removed so every theme's showcase widgets render with
+ * that theme's own intended card background, same as any other `origam-card`
+ * instance on the site.
+ *
  *   shadow         → --origam-shadow---card-elevated (marketing display token)
  *   padding 24px   → --origam-space---6
  */
 export const SHOWCASE_WIDGET_RADIUS = 'var(--origam-radius---md, 10px)'
 
 export const SHOWCASE_WIDGET_VARS: CSSProperties = {
-    '--origam-card---background': 'var(--origam-color__surface---raised, #fafafa)',
     '--origam-card---box-shadow': 'var(--origam-shadow---card-elevated)',
     '--origam-card---padding-block-start': 'var(--origam-space---6, 1.5rem)',
     '--origam-card---padding-block-end': 'var(--origam-space---6, 1.5rem)',

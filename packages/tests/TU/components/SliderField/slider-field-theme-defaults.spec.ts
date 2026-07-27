@@ -4,16 +4,11 @@
 // straight through to `withDefaults()` (`undefined`), never picking up a
 // theme-level default.
 //
-// NOTE on `rounded`: the issue text also names `rounded` as inert. Root-
-// caused separately during this fix — `rounded` is declared on
-// `ISliderFieldProps` (via `IRoundedProps`) but is NEVER consumed anywhere
-// in `OrigamSliderField.vue`'s script or `<style>` (no `useRounded()` call,
-// no `roundedClasses`/`roundedStyles`, no `var(--origam-radius-…)` in the
-// track/thumb CSS — every radius in the component is a hardcoded
-// `border-radius: 999px/50%/2px`). `useDefaults()` cannot fix a prop the
-// component never reads in the first place; that's a distinct, deeper gap
-// (missing consumption, not missing defaults-resolution) and is called out
-// to the lead rather than silently patched here — see the PR description.
+// NOTE on `rounded`: the issue text also named `rounded` as inert. That was
+// root-caused as a distinct, deeper gap — the prop was never CONSUMED at
+// all (no `useRounded()` call anywhere in `OrigamSliderField.vue`), so
+// `useDefaults()` alone couldn't have fixed it. Tracked and fixed
+// separately in #283 — see `slider-field-rounded.spec.ts`.
 
 import { afterEach, describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'

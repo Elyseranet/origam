@@ -68,6 +68,13 @@ value.
 </template>
 ```
 
+The inline padding automatically **clears the corner**: when the radius is
+larger than `--origam-field---padding-start` / `-end` (e.g. `rounded="lg"`
+against an 8px padding), the field floors its inline padding at the radius so
+the value text and the floating label never collide with the rounded outline.
+The floor is capped at the control height, so an intentional pill
+(`rounded="9999px"`) stays laid out instead of inheriting a 9999px padding.
+
 ## Prefix / suffix
 
 ```vue

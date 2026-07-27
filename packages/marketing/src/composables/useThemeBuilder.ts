@@ -8,6 +8,7 @@ import {
     THEME_BUILDER_STORAGE_KEY
 } from '~/consts/theme-builder.const'
 import { THEME_BUILDER_PRESETS } from '~/consts/theme-builder-presets.const'
+import { THEME_BUILDER_UNSET_VALUE } from '~/consts/theme-builder-controls.const'
 import { useThemeBuilderCatalog } from '~/composables/useThemeBuilderCatalog'
 import type {
     IThemeBuilderPreset,
@@ -135,16 +136,33 @@ export function useThemeBuilder () {
      */
     const isUnset = (v: unknown): boolean => v === undefined || v === null || v === '' || v === false
 
+    /** Delete a prop from the diff-only state (prop becomes "not defined"). */
+    const unsetProp = (key: string, prop: string): void => {
+        if (!state.defaults[key]) return
+        delete state.defaults[key][prop]
+        if (Object.keys(state.defaults[key]).length === 0) delete state.defaults[key]
+    }
+
     /** Set a prop value, storing only when it differs from the DS default. */
     const setProp = (slug: string, prop: string, value: unknown): void => {
         const key = `origam-${slug}`
+        /**
+         * "none" sentinel (or a bare `undefined`) means the theme should
+         * NOT define this prop at all — remove it so the export omits it and
+         * the component keeps its own DS default (PROPS-FIRST). Deleting is
+         * unconditional here (independent of the DS default), which also
+         * avoids the stray `prop: undefined` entry the previous
+         * "equals default" branch left behind when the default wasn't
+         * literally `undefined` (it polluted the TS export).
+         */
+        if (value === THEME_BUILDER_UNSET_VALUE || value === undefined) {
+            unsetProp(key, prop)
+            return
+        }
         const def = defaultProp(slug, prop)
         const isDefault = value === def || (isUnset(value) && isUnset(def))
         if (isDefault) {
-            if (state.defaults[key]) {
-                delete state.defaults[key][prop]
-                if (Object.keys(state.defaults[key]).length === 0) delete state.defaults[key]
-            }
+            unsetProp(key, prop)
             return
         }
         if (!state.defaults[key]) state.defaults[key] = {}

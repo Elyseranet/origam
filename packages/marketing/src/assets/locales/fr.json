@@ -664,6 +664,9 @@
     },
     "control": {
       "custom": "Autre…",
+      "unset": "aucun",
+      "bool_true": "Vrai",
+      "bool_false": "Faux",
       "color": {
         "inherit": "Hériter du thème",
         "inherited": "Hérité du thème",

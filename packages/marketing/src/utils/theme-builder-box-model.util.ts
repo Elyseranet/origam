@@ -22,19 +22,7 @@
  * disables the axis mode for margin, not this util.
  */
 import { THEME_BUILDER_SPACING_SCALE, THEME_BUILDER_SPACING_SCALE_PX } from '~/consts/theme-builder-controls.const'
-import type { TThemeBuilderBoxModelMode } from '~/types/theme-builder-controls.type'
-
-export interface IThemeBuilderBoxModelEdges {
-    top: number
-    left: number
-    bottom: number
-    right: number
-}
-
-export interface IThemeBuilderBoxModelState {
-    mode: TThemeBuilderBoxModelMode
-    edges: IThemeBuilderBoxModelEdges
-}
+import type { IThemeBuilderBoxModelEdges, IThemeBuilderBoxModelState } from '~/interfaces/theme-builder.interface'
 
 /** Whether a raw prop value is one of the utility scale digits (`'0'…'12'`). */
 export function isThemeBuilderSpacingScale (value: unknown): value is string {

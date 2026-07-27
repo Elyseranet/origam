@@ -5,7 +5,7 @@
   import { useTheme } from 'origam/composables'
   import { MDI_ICONS } from 'origam/enums'
   import type { ICommand } from 'origam/interfaces'
-  import type { INavLink } from '~/interfaces/nav.interface'
+  import type { INavLink, INavSection } from '~/interfaces/nav.interface'
 
   import { SKIP_LINK_HREF, SKIP_LINK_TARGET_ID } from '~/consts/a11y.const'
   import { FOOTER_COLUMNS, FOOTER_GRID_COLUMNS, NAV_SECTIONS, NAV_THEMING_LINK } from '~/consts/nav.const'
@@ -73,6 +73,17 @@
   function isLinkVisible (link: INavLink): boolean {
     if (link.external) return true
     return availability[link.href] === true
+  }
+
+  const route = useRoute()
+
+  function isRouteActive (href: string): boolean {
+    if (!href || href.startsWith('http') || href.startsWith('mailto:') || href.startsWith('#')) return false
+    return route.path === href || `${route.path}/` === href
+  }
+
+  function isSectionActive (section: Pick<INavSection, 'items'>): boolean {
+    return section.items.some(item => isRouteActive(item.href))
   }
 
   const visibleNavSections = computed(() =>
@@ -146,8 +157,12 @@
             <template #activator="{ props: menuProps }">
               <origam-btn
                 variant="text"
+                :elevation="0"
+                rounded="small"
                 class="primary-nav__link"
+                :class="{ 'primary-nav__link--active': isSectionActive(section) }"
                 :aria-label="sectionAriaLabel(section)"
+                :aria-current="isSectionActive(section) ? 'page' : undefined"
                 :append-icon="MDI_ICONS.CHEVRON_DOWN"
                 :data-cy="`nav-section-${section.titleFallback.toLowerCase().replace(/\s+/g, '-')}`"
                 v-bind="menuProps"
@@ -173,7 +188,11 @@
             v-if="showThemingLink"
             :href="NAV_THEMING_LINK.href"
             variant="text"
+            :elevation="0"
+            rounded="small"
             class="primary-nav__link"
+            :class="{ 'primary-nav__link--active': isRouteActive(NAV_THEMING_LINK.href) }"
+            :aria-current="isRouteActive(NAV_THEMING_LINK.href) ? 'page' : undefined"
             data-cy="nav-theming"
           >
             {{ themingLabel }}
@@ -459,9 +478,33 @@
       --origam-btn---min-height: 34px;
       --origam-btn---background-color: transparent;
       --origam-btn---overlay-opacity-hover: 0.06;
+      position: relative;
 
       &:hover {
         --origam-btn---color: var(--origam-color__text---primary, #0a0a0a);
+      }
+
+      &--active {
+        // `!important`: the DS's OrigamToolbar chrome contract
+        // (`.origam-toolbar :deep(.origam-btn:not(:hover):not(.origam-btn--active))`)
+        // sets `--origam-btn---color` with a higher-specificity selector
+        // that beats a plain `.primary-nav__link--active` custom-property
+        // override regardless of source order. Setting `color` directly
+        // (not through the `--origam-btn---color` token) with `!important`
+        // mirrors the DS's own pattern for the same class of problem
+        // (`&--variant-text` forces `background-color` the same way).
+        color: var(--origam-color__action--primary---fgSubtle, var(--origam-color__action--primary---bg)) !important;
+        --origam-btn---font-weight: 600;
+
+        &::after {
+          content: '';
+          position: absolute;
+          inset-inline: var(--origam-btn---padding-inline, 0.75rem);
+          inset-block-end: 4px;
+          block-size: 2px;
+          border-radius: var(--origam-radius---xs, 1px);
+          background-color: var(--origam-color__action--primary---bg, currentColor);
+        }
       }
     }
   }

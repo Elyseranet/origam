@@ -1,12 +1,13 @@
 import { computed, ref, type ComputedRef, type Ref } from 'vue'
 import { isCustomBoxShadow } from 'origam/utils'
 
-import { THEME_BUILDER_CUSTOM_VALUE, THEME_BUILDER_ELEVATION_OPTIONS } from '~/consts/theme-builder-controls.const'
+import {
+    THEME_BUILDER_CUSTOM_VALUE,
+    THEME_BUILDER_ELEVATION_NAMED_RUNGS
+} from '~/consts/theme-builder-controls.const'
 import { createDefaultShadowLayer, serializeElevationDepth, serializeShadowLayers } from '~/utils/theme-builder-elevation.util'
-import type { IThemeBuilderShadowLayer } from '~/utils/theme-builder-elevation.util'
+import type { IThemeBuilderShadowLayer } from '~/interfaces/theme-builder.interface'
 import type { TThemeBuilderElevationCustomMode } from '~/types/theme-builder-controls.type'
-
-const NAMED_RUNGS = new Set(THEME_BUILDER_ELEVATION_OPTIONS.map(o => o.value).filter(v => v !== THEME_BUILDER_CUSTOM_VALUE))
 
 /**
  * useThemeBuilderElevationControl — business logic for the Elevation control
@@ -21,7 +22,7 @@ export function useThemeBuilderElevationControl (
     const selectValue = computed<string>(() => {
         const raw = modelValue.value
         if (raw === undefined || raw === null || raw === '') return 'none'
-        if (typeof raw === 'string' && NAMED_RUNGS.has(raw)) return raw
+        if (typeof raw === 'string' && THEME_BUILDER_ELEVATION_NAMED_RUNGS.has(raw)) return raw
         return THEME_BUILDER_CUSTOM_VALUE
     })
 

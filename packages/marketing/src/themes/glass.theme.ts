@@ -132,6 +132,19 @@ export const glassLightTheme: IOrigamTheme = {
     // sont désormais câblés et vérifiés par computed-style (voir la PR),
     // à l'exception de checkbox/radio (issue #241, glyphe mdi — distincte
     // de #242/#249, toujours ouverte).
+    // ⚠️ `origam-app` is intentionally ABSENT from the `components` block
+    // below. Tried `'origam-app': { bgColor: 'transparent' }` first (the
+    // PROPS-FIRST path — `IAppProps extends IBgColorProps`, and `bgColor`
+    // is forwarded to `OrigamLayout`) but verified via computed-style /
+    // outerHTML that it is a SILENT NO-OP: `OrigamApp.vue` does not call
+    // `useDefaults()` (grep confirms only ~20 other components do — Btn,
+    // Card, Chip, Alert, Snackbar, … — App isn't one of them), so the
+    // theme's per-component prop block never reaches this component. DS GAP
+    // (same category as the `pill`/`border` no-ops already documented
+    // elsewhere in this file) — fixed here via the `cssVars` escape hatch
+    // instead (`--origam-app---background-color`, the var `OrigamApp.vue`'s
+    // OWN scoped `<style>` genuinely reads). See the `cssVars` block, fix
+    // #285 root-cause note, for the full explanation.
     components: {
         // ── Btn family — hors périmètre SYNTHESE (non ré-spécifiée), conservée
         // telle quelle. `pill` retiré : IBtnProps n'a PAS de prop `pill`
@@ -225,6 +238,23 @@ export const glassLightTheme: IOrigamTheme = {
     // composant sont listés en commentaire "DS GAP" (non appliqués) plutôt que
     // simulés avec un nom de var qui ne serait lu par rien — voir la PR.
     cssVars: {
+        // Fix #285 (root cause) — `<origam-app>` (the page shell, rendered as
+        // a full-page-height `<div class="origam-app">` directly inside
+        // `<body>`) defaults to an OPAQUE `background-color`
+        // (`--origam-app---background-color`, falls back to
+        // `{color.surface.default}`). That opaque fill sits ON TOP of
+        // `<body>`'s own `--origam-page---background-image` (the 4-blob
+        // glass gradient below) and fully occludes it for the ENTIRE page —
+        // confirmed by computed-style: `.origam-app`'s `background-color`
+        // resolved to solid `rgb(233, 236, 255)` with no `background-image`,
+        // at full document height (4512px, not just the 720px viewport).
+        // Card/sheet backgrounds were ALREADY correctly translucent
+        // (verified: `--origam-card---background` computed to
+        // `rgba(255,255,255,0.65)` even before this fix), but with nothing
+        // colourful behind them to blur, the frosted effect was invisible —
+        // reading as flat/opaque exactly as reported in #285. Fixed here
+        // (not via the `components` props block — see the note above it).
+        '--origam-app---background-color': 'transparent',
         '--origam-btn---border-color': 'rgba(124, 58, 237, 0.35)',
         '--origam-btn---border-width-outlined': '1px',
         '--origam-btn---border-width-ghost': '1px',
@@ -238,12 +268,24 @@ export const glassLightTheme: IOrigamTheme = {
         // ligne `backdrop-filter: var(--origam-card---backdrop-filter, none)`).
         '--origam-card---backdrop-filter': 'blur(28px) saturate(2.5) brightness(1.12)',
         '--origam-sheet---backdrop-filter': 'blur(28px) saturate(2.5) brightness(1.12)',
+        // Fix #285 — dedicated translucent background for card AND sheet.
+        // Card already resolved translucent via its DS default
+        // (`{color.surface.raised}` = `rgba(255,255,255,0.65)` in this theme,
+        // re-declared here explicitly so it doesn't silently depend on the
+        // generic surface-raised semantic matching this exact recipe forever).
+        // Sheet had NO override — its DS default is `{color.surface.default}`
+        // = the OPAQUE flat `#e9ecff` page colour (verified: `origam-sheet.json`
+        // → `background: {color.surface.default}`), so sheet WAS genuinely
+        // opaque, unlike card. Same translucency recipe as card (both are
+        // "raised glass surface" components in this design).
+        '--origam-card---background': 'rgba(255, 255, 255, 0.65)',
+        '--origam-sheet---background': 'rgba(255, 255, 255, 0.65)',
         '--origam-appbar---backdrop-filter': 'saturate(2) brightness(1.1) blur(26px)',
         // Hook vérifié (OrigamMenu.vue) ; valeur FORT unique donnée pour les 2
         // modes (contrairement à card/sheet qui ont des recettes séparées).
-        '--origam-menu---backdrop-filter': 'blur(28px) saturate(2)',
+        '--origam-menu---backdrop-filter': 'blur(30px) saturate(2.6) brightness(1.08)',
         '--origam-appbar---bg': 'rgba(255, 255, 255, 0.30)',
-        '--origam-menu---background': 'rgba(255, 255, 255, 0.80)',
+        '--origam-menu---background': 'rgba(224, 215, 250, 0.42)',
         '--origam-menu---color': 'var(--origam-color__text---primary)',
         '--origam-menu---border-radius': '16px',
         '--origam-menu---box-shadow': '0 8px 32px -8px rgba(124, 58, 237, 0.18), 0 1px 4px -1px rgba(124, 58, 237, 0.10), 0 0 0 1px var(--origam-color__border---default), inset 0 1px 0 rgba(255, 255, 255, 0.60)',
@@ -549,6 +591,13 @@ export const glassDarkTheme: IOrigamTheme = {
         }
     },
     cssVars: {
+        // Fix #285 (root cause, dark) — see the light theme's `cssVars`
+        // block above for the full explanation: `<origam-app>`'s opaque
+        // default background-color occludes `<body>`'s page gradient for
+        // the entire page. `components: { 'origam-app': {...} }` is a
+        // no-op (OrigamApp isn't wired to `useDefaults()`) — fixed via the
+        // raw cssVar instead, same as light.
+        '--origam-app---background-color': 'transparent',
         '--origam-btn---border-color': 'rgba(255, 255, 255, 0.20)',
         '--origam-btn---border-width-outlined': '1px',
         '--origam-btn---border-width-ghost': '1px',
@@ -559,10 +608,18 @@ export const glassDarkTheme: IOrigamTheme = {
         '--origam-code---border-radius': '16px',
         '--origam-card---backdrop-filter': 'blur(28px) saturate(2.2)',
         '--origam-sheet---backdrop-filter': 'blur(28px) saturate(2.2)',
+        // Fix #285 — dedicated translucent background for card AND sheet
+        // (dark). Same values as the DS default resolved via
+        // `{color.surface.raised}` for card (`rgba(255,255,255,0.05)`,
+        // re-declared explicitly), extended to sheet whose DS default
+        // (`{color.surface.default}` = opaque `#07060f`) was genuinely
+        // opaque. See the light theme's cssVars block for the full note.
+        '--origam-card---background': 'rgba(255, 255, 255, 0.05)',
+        '--origam-sheet---background': 'rgba(255, 255, 255, 0.05)',
         '--origam-appbar---backdrop-filter': 'saturate(2) brightness(1.1) blur(26px)',
-        '--origam-menu---backdrop-filter': 'blur(28px) saturate(2)',
+        '--origam-menu---backdrop-filter': 'blur(30px) saturate(2.3) brightness(1.05)',
         '--origam-appbar---bg': 'rgba(255, 255, 255, 0.06)',
-        '--origam-menu---background': 'rgba(20, 18, 40, 0.85)',
+        '--origam-menu---background': 'rgba(30, 25, 58, 0.50)',
         '--origam-menu---color': 'var(--origam-color__text---primary)',
         '--origam-menu---border-radius': '22px',
         '--origam-menu---box-shadow': '0 8px 32px -8px rgba(0, 0, 0, 0.60), 0 0 0 1px rgba(255, 255, 255, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.10)',

@@ -4,10 +4,10 @@
 			ref="origamAppRef"
 			:class="appClasses"
 			:style="appStyles"
-			:color="color"
-			:bg-color="bgColor"
-			:full-height="fullHeight"
-			:overlaps="overlaps"
+			:color="props.color"
+			:bg-color="props.bgColor"
+			:full-height="props.fullHeight"
+			:overlaps="props.overlaps"
 	>
 		<template #default>
 			<slot name="default"/>
@@ -21,7 +21,7 @@
 >
 	import { OrigamLayout } from '../../components'
 
-	import { useProps, useRtl , useStyle} from "../../composables"
+	import { useDefaults, useProps, useRtl , useStyle} from "../../composables"
 
 	import type { IAppProps } from '../../interfaces'
 
@@ -35,7 +35,20 @@
 	 * @description
 	 * Props and utility hooks for the App root component.
 	 ********************************************************/
-	const props = withDefaults(defineProps<IAppProps>(), {fullHeight: true})
+	const _props = withDefaults(defineProps<IAppProps>(), {fullHeight: true})
+
+	// `useDefaults` resolves each prop against theme.components['origam-app']
+	// (OrigamBtn / #242 pattern) — without this, a theme's
+	// `components: { 'origam-app': { bgColor: 'transparent', fullHeight: … } }`
+	// block was a silent no-op (#289).
+	//
+	// NOTE: `<script setup>` auto-exposes every `defineProps()` key to the
+	// template as a bare binding pointing at the raw, UNRESOLVED `$props` —
+	// independent of this `props` variable. The root `<origam-layout>` above
+	// therefore reads `props.color` / `props.bgColor` / `props.fullHeight` /
+	// `props.overlaps` explicitly (see OrigamTable.vue / OrigamAlert.vue for
+	// the full writeup of this footgun).
+	const props = useDefaults(_props)
 
 	const {filterProps} = useProps<IAppProps>(props)
 

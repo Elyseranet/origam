@@ -15,18 +15,18 @@ useSeoMeta({
 
 const { data: catalogData } = await useReferenceCatalog<IComposableEntry>('composable')
 
-const COMPOSABLES_CATALOG = computed<IComposableEntry[]>(() => catalogData.value ?? [])
+const composablesCatalog = computed<IComposableEntry[]>(() => catalogData.value ?? [])
 
-const COMPOSABLES_DOMAINS = computed(() =>
-    [...new Set(COMPOSABLES_CATALOG.value.map(e => e.domain))].sort()
+const composablesDomains = computed(() =>
+    [...new Set(composablesCatalog.value.map(e => e.domain))].sort()
 )
 
 const searchQuery = ref('')
 
 const filteredEntries = computed(() => {
     const query = searchQuery.value.toLowerCase().trim()
-    if (!query) return COMPOSABLES_CATALOG.value
-    return COMPOSABLES_CATALOG.value.filter(entry => {
+    if (!query) return composablesCatalog.value
+    return composablesCatalog.value.filter(entry => {
         const nameMatch = entry.name.toLowerCase().includes(query)
         const domainMatch = entry.domain.toLowerCase().includes(query)
         const descMatch = entry.descriptionFallback.toLowerCase().includes(query)
@@ -35,13 +35,13 @@ const filteredEntries = computed(() => {
 })
 
 const groupedByDomain = computed(() =>
-    COMPOSABLES_DOMAINS.value.map(domain => ({
+    composablesDomains.value.map(domain => ({
         domain,
         entries: filteredEntries.value.filter(e => e.domain === domain),
     })).filter(g => g.entries.length > 0)
 )
 
-const totalCount = computed(() => COMPOSABLES_CATALOG.value.length)
+const totalCount = computed(() => composablesCatalog.value.length)
 const filteredCount = computed(() => filteredEntries.value.length)
 const isFiltering = computed(() => searchQuery.value.trim().length > 0)
 </script>
@@ -102,7 +102,7 @@ const isFiltering = computed(() => searchQuery.value.trim().length > 0)
                         {{ filteredCount }} {{ t('composables.hero.count_filtered_of', 'of') }} {{ totalCount }} {{ t('composables.hero.count_filtered_match', 'composables match') }}
                     </template>
                     <template v-else>
-                        {{ totalCount }} {{ t('composables.hero.count_total', 'composables across') }} {{ COMPOSABLES_DOMAINS.length }} {{ t('composables.hero.count_domains', 'domains') }}
+                        {{ totalCount }} {{ t('composables.hero.count_total', 'composables across') }} {{ composablesDomains.length }} {{ t('composables.hero.count_domains', 'domains') }}
                     </template>
                 </p>
             </origam-container>

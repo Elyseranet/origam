@@ -1,16 +1,19 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 
 import { useT } from '~/composables/useT'
-import { isThemeBuilderHexColor, isThemeBuilderIntentValue } from '~/utils/theme-builder-color.util'
-import { THEME_BUILDER_INTENT_OPTIONS } from '~/consts/theme-builder-controls.const'
+import { useThemeBuilderColorControl } from '~/composables/useThemeBuilderColorControl'
+import { THEME_BUILDER_CUSTOM_VALUE, THEME_BUILDER_INTENT_OPTIONS, THEME_BUILDER_UNSET_VALUE } from '~/consts/theme-builder-controls.const'
 
 /**
- * ThemeBuilderColorField — standalone Color control (Contrôle 1,
- * `color-field.html`): trigger button + `ThemeBuilderColorPicker` popover.
- * Used for `color` / `accentColor` and for a standalone `borderColor` (when
- * a component has no `border` control to fold it into — see
- * `composePropGroups`).
+ * ThemeBuilderColorField — Contrôle 1 (`color-field.html`): named-intent
+ * `<origam-select>` (last option is the "Autre…" sentinel) + a custom hex
+ * picker that reveals BELOW it, inline, when "Autre…" is active. No popover
+ * (#294) — same shape as `ThemeBuilderRoundedField` / `ThemeBuilderElevationField`.
+ * Used for `color` / `accentColor` / `bgColor` (all folded into the
+ * `color-intent` control kind, see `THEME_BUILDER_INTENT_COLOR_PROPS`) and
+ * for a standalone `borderColor` when a component has no `border` control to
+ * fold it into.
  */
 const props = defineProps<{
     modelValue: unknown
@@ -24,69 +27,132 @@ const emit = defineEmits<{
 
 const { t } = useT()
 
-const open = ref(false)
+/**
+ * `data-cy` lands on a plain wrapper `<div>` around `<origam-select>` /
+ * `<origam-color-picker-field>` instead of directly on those DS components.
+ * Root cause (verified live, #294): a component that exposes BOTH `color`
+ * AND `bgColor` (or `color` + `accentColor`, e.g. Blockquote) renders TWO
+ * sibling `ThemeBuilderColorField` instances — `origam-select` doesn't
+ * declare its own `dataCy` prop, so `:data-cy` reaches it only as a
+ * fallthrough attribute; its root render is multi-node (Vue warns
+ * "Extraneous non-props attributes … could not be automatically inherited
+ * because component renders fragment or text or teleport root nodes"), and
+ * with 2 sibling instances of the SAME component the fallthrough value
+ * observably collapses onto the LAST-rendered sibling's value for both
+ * rows (label / model-value are unaffected — those are real, DECLARED
+ * props). This is a DS-side (`origam-select`) issue, not something fixable
+ * here — flagged to the frontend-lead. Meanwhile: a native wrapper element
+ * always has a single root, so Vue applies `data-cy` on it directly and
+ * correctly per-instance, sidestepping the bug for e2e test targeting.
+ */
+const selectDataCy = computed(() => `${props.dataCy}-select`)
+const customDataCy = computed(() => `${props.dataCy}-custom`)
 
-const intentLabel = (intent: string): string => {
-    const opt = THEME_BUILDER_INTENT_OPTIONS.find(o => o.value === intent)
-    return opt ? t(opt.labelKey, opt.labelFallback) : intent
+const modelValueRef = computed(() => props.modelValue)
+const { state, selectIntent, selectCustom, selectInherit } = useThemeBuilderColorControl(
+    modelValueRef,
+    (value) => emit('update:modelValue', value)
+)
+
+const isCustom = computed(() => state.value.mode === 'custom')
+
+const selectValue = computed<string | undefined>(() => {
+    if (isCustom.value) return THEME_BUILDER_CUSTOM_VALUE
+    if (state.value.mode === 'intent') return state.value.intent
+    return THEME_BUILDER_UNSET_VALUE
+})
+
+const selectItems = computed(() => [
+    { title: t('theming.control.unset', 'none'), value: THEME_BUILDER_UNSET_VALUE },
+    ...THEME_BUILDER_INTENT_OPTIONS.map(o => ({ title: t(o.labelKey, o.labelFallback), value: o.value })),
+    { title: t('theming.control.custom', 'Other…'), value: THEME_BUILDER_CUSTOM_VALUE }
+])
+
+const customHex = computed(() => state.value.custom ?? '#000000')
+
+const onSelect = (value: unknown): void => {
+    if (typeof value !== 'string') return
+    if (value === THEME_BUILDER_UNSET_VALUE) {
+        selectInherit()
+        return
+    }
+    if (value === THEME_BUILDER_CUSTOM_VALUE) {
+        selectCustom(customHex.value)
+        return
+    }
+    selectIntent(value)
 }
 
-const valueLabel = computed<string>(() => {
-    const raw = props.modelValue
-    if (raw === undefined || raw === null || raw === '') {
-        return t('theming.control.color.inherited', 'Inherited from theme')
-    }
-    if (isThemeBuilderIntentValue(raw)) return intentLabel(raw)
-    if (typeof raw === 'string') {
-        return t('theming.control.color.custom_value', '{value} (custom)', { value: raw })
-    }
-    return t('theming.control.color.inherited', 'Inherited from theme')
-})
-
-const hint = computed(() => props.modelValue === undefined || props.modelValue === null || props.modelValue === '')
-
-const GHOST_SWATCH_STYLE: Record<string, string> = {
-    backgroundImage: 'repeating-linear-gradient(45deg, var(--origam-color-surface-subtle, #eee), var(--origam-color-surface-subtle, #eee) 2px, transparent 2px, transparent 4px)'
-}
-
-const swatchClass = computed<string | undefined>(() => {
-    const raw = props.modelValue
-    if (typeof raw === 'string' && isThemeBuilderIntentValue(raw) && raw !== 'ghost') {
-        return `origam--bg-${raw}`
-    }
-    return undefined
-})
-
-const swatchStyle = computed<Record<string, string> | undefined>(() => {
-    const raw = props.modelValue
-    if (typeof raw === 'string' && raw === 'ghost') return GHOST_SWATCH_STYLE
-    if (typeof raw === 'string' && isThemeBuilderHexColor(raw)) return { backgroundColor: raw }
-    if (typeof raw === 'string' && !isThemeBuilderIntentValue(raw) && raw !== '') return { backgroundColor: raw }
-    return undefined
-})
-
-const onUpdate = (value: string | undefined): void => {
-    emit('update:modelValue', value)
+const onCustom = (value: unknown): void => {
+    if (typeof value === 'string') selectCustom(value)
 }
 </script>
 
 <template>
-    <theme-builder-control-trigger
-        v-model:open="open"
-        :label="label"
-        :value-label="valueLabel"
-        :hint="hint"
-        swatch
-        :swatch-class="swatchClass"
-        :swatch-style="swatchStyle"
-        :data-cy="dataCy"
-    >
-        <theme-builder-color-picker
-            :model-value="modelValue"
-            :label="label"
-            :data-cy="dataCy"
-            @update:model-value="onUpdate"
-            @close="open = false"
-        />
-    </theme-builder-control-trigger>
+    <div class="tbc-color-field">
+        <div
+            class="tbc-color-field__select-wrap"
+            :data-cy="selectDataCy"
+        >
+            <origam-select
+                :model-value="selectValue"
+                :items="selectItems"
+                :label="label"
+                variant="outlined"
+                density="compact"
+                hide-details
+                class="tbc-color-field__select"
+                @update:model-value="onSelect"
+            />
+        </div>
+
+        <fieldset
+            v-if="isCustom"
+            class="tbc-color-field__fieldset tb-reveal"
+        >
+            <legend class="tbc-color-field__legend">{{ t('theming.control.color.custom_label', 'Custom colour') }}</legend>
+            <div :data-cy="customDataCy">
+                <origam-color-picker-field
+                    :model-value="customHex"
+                    :label="t('theming.control.color.custom_label', 'Custom colour')"
+                    variant="outlined"
+                    density="compact"
+                    hide-details
+                    class="tbc-color-field__custom"
+                    @update:model-value="onCustom"
+                />
+            </div>
+        </fieldset>
+    </div>
 </template>
+
+<style scoped lang="scss">
+.tbc-color-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--origam-spacing-2, 0.5rem);
+    inline-size: 100%;
+
+    &__select-wrap {
+        inline-size: 100%;
+    }
+
+    &__fieldset {
+        display: flex;
+        flex-direction: column;
+        gap: var(--origam-spacing-2, 0.5rem);
+        padding: 0;
+        margin: 0;
+        border: none;
+    }
+
+    &__legend {
+        padding: 0;
+        font-size: 0.625rem;
+        font-weight: var(--origam-font-weight-bold, 700);
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        color: var(--origam-color-text-subtle);
+    }
+}
+</style>

@@ -23,12 +23,7 @@
  * linked as a 1-value string, unlinked as this 4-value TL/TR/BL/BR string.
  * This util only ever targets `rounded`, never the 4 discrete corner props.
  */
-export interface IThemeBuilderRoundedCorners {
-    topLeft: number
-    topRight: number
-    bottomLeft: number
-    bottomRight: number
-}
+import type { IThemeBuilderRoundedCorners } from '~/interfaces/theme-builder.interface'
 
 /** Serialise 4 independent corners (px) into the `rounded` 4-value string (TL/TR/BL/BR). */
 export function serializeRoundedCorners (corners: IThemeBuilderRoundedCorners): string {

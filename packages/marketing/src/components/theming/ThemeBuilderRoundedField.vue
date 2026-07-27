@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed } from 'vue'
 
 import { useT } from '~/composables/useT'
 import { useThemeBuilderRoundedControl } from '~/composables/useThemeBuilderRoundedControl'
@@ -9,10 +9,11 @@ import type { TThemeBuilderCorner } from '~/types/theme-builder-controls.type'
 
 /**
  * ThemeBuilderRoundedField — Contrôle 3 (`rounded-field.html`): named-rung
- * select (last option is the "Autre…" sentinel) + a 4-corner editor that
- * reveals when "Autre…" is active. Both linked and unlinked modes write into
- * the single `rounded` prop — see the correction documented in
- * `theme-builder-rounded.util.ts` (the 4 discrete corner props are dead).
+ * `<origam-select>` (last option is the "Autre…" sentinel) + a 4-corner
+ * editor that reveals BELOW it, inline, when "Autre…" is active. No popover
+ * (#294). Both linked and unlinked modes write into the single `rounded`
+ * prop — see the correction documented in `theme-builder-rounded.util.ts`
+ * (the 4 discrete corner props are dead).
  */
 const props = defineProps<{
     modelValue: unknown
@@ -25,30 +26,12 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useT()
-const open = ref(false)
 
 const modelValueRef = computed(() => props.modelValue)
 const { selectValue, isCustom, linked, corners, selectRung, setCorner, toggleLinked } = useThemeBuilderRoundedControl(
     modelValueRef,
     (value) => emit('update:modelValue', value)
 )
-
-const rungLabel = (value: string): string => {
-    const opt = THEME_BUILDER_ROUNDED_OPTIONS.find(o => o.value === value)
-    return opt ? t(opt.labelKey, opt.labelFallback) : value
-}
-
-const valueLabel = computed<string>(() => {
-    if (isCustom.value) {
-        return t('theming.control.rounded.custom_value', 'Custom — {tl} / {tr} / {bl} / {br}', {
-            tl: corners.value.topLeft,
-            tr: corners.value.topRight,
-            bl: corners.value.bottomLeft,
-            br: corners.value.bottomRight
-        })
-    }
-    return rungLabel(selectValue.value)
-})
 
 const selectItems = computed(() =>
     THEME_BUILDER_ROUNDED_OPTIONS.map(o => ({ title: t(o.labelKey, o.labelFallback), value: o.value }))
@@ -71,12 +54,7 @@ const onCorner = (corner: TThemeBuilderCorner, value: unknown): void => {
 </script>
 
 <template>
-    <theme-builder-control-trigger
-        v-model:open="open"
-        :label="label"
-        :value-label="valueLabel"
-        :data-cy="dataCy"
-    >
+    <div class="tbc-rounded">
         <origam-select
             :model-value="selectValue"
             :items="selectItems"
@@ -84,13 +62,14 @@ const onCorner = (corner: TThemeBuilderCorner, value: unknown): void => {
             variant="outlined"
             density="compact"
             hide-details
+            class="tbc-rounded__select"
             :data-cy="`${dataCy}-select`"
             @update:model-value="onSelect"
         />
 
         <fieldset
             v-if="isCustom"
-            class="tbc-rounded__fieldset"
+            class="tbc-rounded__fieldset tb-reveal"
         >
             <legend class="tbc-rounded__legend">{{ t('theming.control.rounded.custom_legend', 'Custom corners') }}</legend>
             <div class="tbc-rounded__grid">
@@ -121,11 +100,16 @@ const onCorner = (corner: TThemeBuilderCorner, value: unknown): void => {
                 />
             </div>
         </fieldset>
-    </theme-builder-control-trigger>
+    </div>
 </template>
 
 <style scoped lang="scss">
 .tbc-rounded {
+    display: flex;
+    flex-direction: column;
+    gap: var(--origam-spacing-2, 0.5rem);
+    inline-size: 100%;
+
     &__fieldset {
         display: flex;
         flex-direction: column;
@@ -146,13 +130,12 @@ const onCorner = (corner: TThemeBuilderCorner, value: unknown): void => {
 
     &__grid {
         display: grid;
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: 1fr;
         gap: var(--origam-spacing-2, 0.5rem);
         align-items: end;
     }
 
     &__link {
-        grid-column: span 2;
         justify-self: center;
     }
 }

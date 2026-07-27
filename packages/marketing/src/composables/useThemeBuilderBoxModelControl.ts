@@ -6,7 +6,7 @@ import {
     resolveBoxModelState,
     serializeBoxModelState
 } from '~/utils/theme-builder-box-model.util'
-import type { IThemeBuilderBoxModelEdges } from '~/utils/theme-builder-box-model.util'
+import type { IThemeBuilderBoxModelEdges } from '~/interfaces/theme-builder.interface'
 import type { TThemeBuilderBoxModelEdge, TThemeBuilderBoxModelMode } from '~/types/theme-builder-controls.type'
 
 /**

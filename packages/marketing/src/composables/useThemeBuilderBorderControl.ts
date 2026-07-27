@@ -1,16 +1,11 @@
 import { computed, ref, watch, type ComputedRef, type Ref } from 'vue'
 
-import { THEME_BUILDER_BORDER_WIDTH_OPTIONS, THEME_BUILDER_CUSTOM_VALUE } from '~/consts/theme-builder-controls.const'
+import {
+    THEME_BUILDER_BORDER_NAMED_WIDTHS,
+    THEME_BUILDER_CUSTOM_VALUE
+} from '~/consts/theme-builder-controls.const'
+import type { IThemeBuilderBorderSideValues } from '~/interfaces/theme-builder.interface'
 import type { TThemeBuilderBorderSide } from '~/types/theme-builder-controls.type'
-
-const NAMED_WIDTHS = new Set(THEME_BUILDER_BORDER_WIDTH_OPTIONS.map(o => o.value).filter(v => v !== THEME_BUILDER_CUSTOM_VALUE))
-
-export interface IThemeBuilderBorderSideValues {
-    top: unknown
-    right: unknown
-    bottom: unknown
-    left: unknown
-}
 
 const parseSideWidth = (raw: unknown): number => (typeof raw === 'number' ? raw : 0)
 
@@ -51,7 +46,7 @@ export function useThemeBuilderBorderControl (
         if (!widthLinked.value) return THEME_BUILDER_CUSTOM_VALUE
         const raw = borderValue.value
         if (raw === undefined || raw === null || raw === '' || raw === false) return 'none'
-        if (typeof raw === 'string' && NAMED_WIDTHS.has(raw)) return raw
+        if (typeof raw === 'string' && THEME_BUILDER_BORDER_NAMED_WIDTHS.has(raw)) return raw
         return THEME_BUILDER_CUSTOM_VALUE
     })
 
@@ -74,7 +69,7 @@ export function useThemeBuilderBorderControl (
 
     watch(borderValue, (raw) => {
         if (typeof raw === 'number') { customWidth.value = raw; return }
-        if (typeof raw === 'string' && !NAMED_WIDTHS.has(raw)) {
+        if (typeof raw === 'string' && !THEME_BUILDER_BORDER_NAMED_WIDTHS.has(raw)) {
             const m = /^(\d+(?:\.\d+)?)px$/.exec(raw.trim())
             if (m && m[1] !== undefined) customWidth.value = Number(m[1])
         }

@@ -18,7 +18,7 @@ const { data: displayDoc } = await useReferenceDoc<IComposableDoc>('composable',
 const catalogEntry = computed(() => displayDoc.value)
 
 const { data: composablesCatalogData } = await useReferenceCatalog<IComposableEntry>('composable')
-const COMPOSABLES_CATALOG = computed<IComposableEntry[]>(() => composablesCatalogData.value ?? [])
+const composablesCatalog = computed<IComposableEntry[]>(() => composablesCatalogData.value ?? [])
 
 const hasParams   = computed(() => (displayDoc.value?.params?.length ?? 0) > 0)
 const hasReturns  = computed(() => (displayDoc.value?.returns?.length ?? 0) > 0)
@@ -610,7 +610,7 @@ useSeoMeta({
                                                             tag="h3"
                                                             class="composable-related__card-name"
                                                         >
-                                                            {{ COMPOSABLES_CATALOG.find(e => e.slug === relSlug)?.name ?? relSlug }}
+                                                            {{ composablesCatalog.find(e => e.slug === relSlug)?.name ?? relSlug }}
                                                         </origam-title>
 
                                                         <origam-icon
@@ -622,7 +622,7 @@ useSeoMeta({
                                                     </div>
 
                                                     <p class="composable-related__card-desc">
-                                                        {{ COMPOSABLES_CATALOG.find(e => e.slug === relSlug)?.descriptionFallback ?? '' }}
+                                                        {{ composablesCatalog.find(e => e.slug === relSlug)?.descriptionFallback ?? '' }}
                                                     </p>
                                                 </div>
                                             </template>

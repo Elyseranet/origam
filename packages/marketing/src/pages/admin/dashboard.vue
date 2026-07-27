@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { MDI_ICONS } from 'origam/enums'
 import { useT } from '~/composables/useT'
 import { useReferenceCatalog } from '~/composables/useApiReference'
+import { ADMIN_NAV_KINDS } from '~/consts/admin.const'
 
 definePageMeta({ layout: 'admin', middleware: 'admin' })
 
@@ -12,17 +12,6 @@ useSeoMeta({
 })
 
 const { t } = useT()
-
-const KIND_META = [
-    { key: 'component', icon: MDI_ICONS.LAYERS, labelKey: 'admin.nav.kind.component', labelFallback: 'Components' },
-    { key: 'composable', icon: MDI_ICONS.COG, labelKey: 'admin.nav.kind.composable', labelFallback: 'Composables' },
-    { key: 'const', icon: MDI_ICONS.TABLE, labelKey: 'admin.nav.kind.const', labelFallback: 'Consts' },
-    { key: 'directive', icon: MDI_ICONS.PENCIL, labelKey: 'admin.nav.kind.directive', labelFallback: 'Directives' },
-    { key: 'enum', icon: MDI_ICONS.FORMAT_LIST_BULLETED, labelKey: 'admin.nav.kind.enum', labelFallback: 'Enums' },
-    { key: 'interface', icon: MDI_ICONS.CODE_TAGS, labelKey: 'admin.nav.kind.interface', labelFallback: 'Interfaces' },
-    { key: 'type', icon: MDI_ICONS.TEXT, labelKey: 'admin.nav.kind.type', labelFallback: 'Types' },
-    { key: 'util', icon: MDI_ICONS.WRENCH, labelKey: 'admin.nav.kind.util', labelFallback: 'Utils' },
-] as const
 
 const [
     { data: componentData },
@@ -92,7 +81,7 @@ const totalEntries = computed(() =>
             class="admin-dashboard__grid"
         >
             <origam-grid-item
-                v-for="meta in KIND_META"
+                v-for="meta in ADMIN_NAV_KINDS"
                 :key="meta.key"
                 tag="li"
                 class="admin-dashboard__item"

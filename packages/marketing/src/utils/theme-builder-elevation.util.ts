@@ -12,15 +12,7 @@
  * `isCustomBoxShadow` itself is imported from the DS (`origam/utils`), not
  * re-implemented — single source of truth for what "looks like a shadow".
  */
-export interface IThemeBuilderShadowLayer {
-    x: number
-    y: number
-    blur: number
-    spread: number
-    color: string
-    opacity: number
-    inset: boolean
-}
+import type { IThemeBuilderShadowLayer } from '~/interfaces/theme-builder.interface'
 
 /** A sane default single layer, matching the wireframe's État C bis defaults. */
 export function createDefaultShadowLayer (): IThemeBuilderShadowLayer {
