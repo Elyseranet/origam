@@ -15,6 +15,63 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ---
 
+## [2.10.0] — 2026-07-27
+
+Field-rendering release. No new API — no component, prop, emit or slot was
+added, and no source file was created. The minor bump is there to flag one
+**visible rendering change** for consumers of `origam/styles` (see *Changed*);
+everything else is a fix.
+
+### Changed
+
+- **`--origam-field__input---padding-start` / `-end` now resolve to `0`**
+  (was `var(--origam-space---4)`, i.e. 16px) for consumers of the bundled
+  `origam/styles` (`main.css`). The inline spacing of a field is owned by the
+  **root** token `--origam-field---padding-start`, which is unchanged at
+  `{space.4}`; the input wrapper sits inside it, so a second inline padding
+  doubled it — and it truncated the value text of narrow controls
+  (`elevated` → `ele…`). Consumers importing `origam/tokens/css/{light,dark}`
+  are **unaffected**: those sheets already emitted `0` since 2026-07-24.
+  Fields keep their inline spacing, supplied by the root token. (#295)
+
+### Fixed
+
+- **Tokens** — `field.input.padding-start/end` was `0` in the generated sheets
+  but `{space.4}` in the token source, so every `tokens:build` silently
+  reverted the fix, and `main.css` (produced by the separate `styles:build`
+  step) had drifted to a third value. The source now carries the intent and
+  the pipeline is idempotent — a second full build produces no diff. (#295)
+- **`OrigamSliderField`** — the `rounded` prop was inert: radii were
+  hardcoded instead of going through `useRounded()`. (#283)
+- **`OrigamApp`** — did not call `useDefaults()`, so
+  `theme.components['origam-app']` (`bgColor`, `fullHeight`) was ignored.
+- **`OrigamField`** — inline padding is floored at the corner radius so
+  content clears the rounded outline, and the outline's start leg is widened
+  to match, the left corner no longer rendering flatter than the right.
+  Prepended fields are excluded to avoid a swatch/icon box artifact.
+- **`OrigamField`** — the outlined floating label was pinned to the notch
+  corner by a hard `margin: 0 4px` while the input text and the resting label
+  both sit at `--origam-field__input---padding-start`, leaving the label
+  misaligned with its own value — visibly so on large-radius themes.
+- **`OrigamColorPickerField`** — the swatch sat inside the field's inline
+  padding, so any consumer raising `--origam-field---padding-start` opened a
+  gap between the colour and the left border. Also fixed: the field wrapping
+  onto two lines when given content, and the swatch's square outer corner.
+- **`OrigamColorPicker`** — a class typo on the hue/alpha slider fill
+  occluded both gradients.
+- **`OrigamDatePickerField`** — wrapped onto two lines when given content in
+  `range` mode.
+
+### Internal
+
+- Quality Gate unblocked: the two SonarQube new-code violations that had kept
+  the `Build` workflow red on every `develop` push since 2026-07-22 are
+  resolved — a nested ternary in `OrigamSliderField` and a duplicate
+  `:deep()` selector in `OrigamColorPickerField`. Both were pure
+  maintainability findings, no behaviour change. (#296)
+
+---
+
 ## [2.9.0] — 2026-07-22
 
 Theming-enablement release. This ships the design-token **hooks** and the
