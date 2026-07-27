@@ -65,8 +65,8 @@
       "padding-block-xl":     { "$type": "dimension",    "$value": "14px",                         "$description": "Per-size block padding for size=x-large (control 52px). 52 - 24 = 28 / 2 = 14px." },
       "padding-top":          { "$type": "dimension",    "$value": "{field.input.padding-block-md}", "$description": "Block-start inner padding — defaults to padding-block-md (6px) so the input text is vertically centered in the default 36px control." },
       "padding-bottom":       { "$type": "dimension",    "$value": "{field.input.padding-block-md}", "$description": "Block-end inner padding — same value as `padding-top` for vertical centering." },
-      "padding-start":        { "$type": "dimension",    "$value": "{space.4}",                    "$description": "Inline-start padding inside the input wrapper" },
-      "padding-end":          { "$type": "dimension",    "$value": "{space.4}",                    "$description": "Inline-end padding inside the input wrapper" },
+      "padding-start":        { "$type": "dimension",    "$value": "0",                            "$description": "Inline-start padding inside the input wrapper. 0 on purpose: the inline padding of a field is owned by the ROOT (`field.padding-start`), and the input wrapper sits inside it — adding a second inline padding here would double it, and it truncated the value text of narrow controls (`elevated` → `ele…`)." },
+      "padding-end":          { "$type": "dimension",    "$value": "0",                            "$description": "Inline-end padding inside the input wrapper. 0 on purpose — see `padding-start`." },
       "opacity":              { "$type": "number",       "$value": 0.7,                            "$description": "Default opacity for the input wrapper (transitions to 1 on active)" }
     },
 
