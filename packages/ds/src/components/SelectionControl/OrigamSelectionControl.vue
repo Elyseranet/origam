@@ -15,7 +15,8 @@
 
       <div
         v-ripple="rippleProp"
-        class="origam-selection-control__input"
+        :class="selectionControlInputClasses"
+        :style="selectionControlInputStyles"
       >
         <slot
           name="input"
@@ -73,10 +74,13 @@
   import { OrigamIcon, OrigamLabel } from '../../components'
 
   import {
+		useBorder,
 		useDefaults,
 		useDensity,
+		useElevation,
 		useHover,
 		useProps,
+		useRounded,
 		useStateEffect,
 		useStyle,
 		useTextColor,
@@ -276,6 +280,22 @@
 
   const {textColorClasses: wrapperColorClasses, textColorStyles: wrapperColorStyles} = useTextColor(color)
 
+  // Props-first (lot 4 theming fix, issue #241) — `border` / `rounded` /
+  // `elevation` are declared on `ISelectionControlProps` (Commons
+  // interfaces) but were never consumed anywhere: neither Checkbox nor
+  // Radio read them, so a theme's `'origam-checkbox': { rounded: 'md' }`
+  // was a silent no-op. `__input` is the element that owns the visible
+  // state-layer box (the circular hit/hover area sitting behind the
+  // glyph) — mirrors `OrigamSwitchTrack`'s "the box owns the surface"
+  // pattern. NOTE: the checkbox/radio glyph itself is a `mdi-*` icon-font
+  // character rendered by `<origam-icon>` — a font glyph has no
+  // border-radius/border/box-shadow of its own, so these props change the
+  // state-layer box around the glyph, not the glyph's own silhouette
+  // (tracked separately, see #241 rendering aggravation note).
+  const {borderClasses, borderStyles} = useBorder(props)
+  const {roundedClasses, roundedStyles} = useRounded(props)
+  const {elevationClasses, elevationStyles} = useElevation(props)
+
   const rippleProp = computed(() => {
     if (props.ripple) {
       return [ !props.disabled && !props.readonly, null, [ 'center', 'circle' ] ]
@@ -301,6 +321,21 @@
       'origam-selection-control__wrapper',
       wrapperColorClasses.value
     ]
+  })
+  const selectionControlInputClasses = computed(() => {
+    return [
+      'origam-selection-control__input',
+      borderClasses.value,
+      roundedClasses.value,
+      elevationClasses.value
+    ]
+  })
+  const selectionControlInputStyles = computed(() => {
+    return [
+      borderStyles.value,
+      roundedStyles.value,
+      elevationStyles.value
+    ] as StyleValue
   })
   const selectionControlClasses = computed(() => {
     return [
@@ -348,9 +383,12 @@
     contain: layout;
     display: flex;
     flex: 1 0;
-    grid-area: control;
     position: relative;
     user-select: none;
+
+    .origam-input & {
+      grid-area: control;
+    }
 
     .origam-label {
       white-space: normal;

@@ -197,22 +197,6 @@ const selectedIntent = computed(() => state.value.mode === 'intent' ? state.valu
         border-radius: var(--origam-radius-sm, 0.25rem);
         padding: var(--origam-spacing-1, 0.25rem);
 
-        /*
-         * `OrigamSelectionControl` (the base of `OrigamRadioBtn`) sets
-         * `grid-area: control` on its own root unconditionally, assuming
-         * it always sits inside `OrigamField`/`OrigamInput`'s named-area
-         * grid template. This grid has no such area, so every option
-         * collapses onto the same unresolved "control" line — all 8
-         * swatches stack at identical coordinates. Override with a
-         * doubled-class selector (`.tbc-color__option.origam-selection-control`,
-         * specificity 0,2,0) so it wins over the DS's single-class rule
-         * regardless of stylesheet source order, and let normal grid
-         * auto-placement take over.
-         */
-        &.origam-selection-control {
-            grid-area: unset;
-        }
-
         &:hover {
             background-color: var(--origam-color-surface-subtle, var(--origam-color-surface-raised));
         }

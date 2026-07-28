@@ -12,6 +12,11 @@
 					trueIcon: MDI_ICONS.CHECKBOX_MARKED,
 					falseIcon: MDI_ICONS.CHECKBOX_BLANK_OUTLINE,
 					indeterminateIcon: MDI_ICONS.MINUS_BOX,
+					rounded: undefined,
+					elevation: undefined,
+					border: undefined,
+					borderColor: undefined,
+					borderStyle: undefined
 				})"
 		>
 			<template #default="{ state }">
@@ -23,6 +28,11 @@
 						:true-icon="state.trueIcon"
 						:false-icon="state.falseIcon"
 						:indeterminate-icon="state.indeterminateIcon"
+						:rounded="state.rounded"
+						:elevation="state.elevation"
+						:border="state.border"
+						:border-color="state.borderColor"
+						:border-style="state.borderStyle"
 				/>
 			</template>
 			<template #controls="{ state }">
@@ -34,6 +44,15 @@
 					<HstSelect v-model="state.trueIcon"          title="True Icon"          :options="ICON_OPTIONS"/>
 					<HstSelect v-model="state.falseIcon"         title="False Icon"         :options="ICON_OPTIONS"/>
 					<HstSelect v-model="state.indeterminateIcon" title="Indeterminate Icon" :options="ICON_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -233,11 +252,15 @@
 	import {
 		ACTIVE_OPTIONS,
 		resolveActiveState,
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
+		ELEVATION_OPTIONS,
 		HOVER_OPTIONS,
 		resolveHoverState,
-		ICON_OPTIONS
+		ICON_OPTIONS,
+		ROUNDED_OPTIONS
 	} from '@stories/const'
 
 	const playgroundModel        = ref(false)
