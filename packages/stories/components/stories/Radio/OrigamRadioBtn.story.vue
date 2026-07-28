@@ -12,6 +12,11 @@
 					density: 'default',
 					trueIcon: MDI_ICONS.RADIOBOX_MARKED,
 					falseIcon: MDI_ICONS.RADIOBOX_BLANK,
+					rounded: undefined,
+					elevation: undefined,
+					border: undefined,
+					borderColor: undefined,
+					borderStyle: undefined
 				})"
 		>
 			<template #default="{ state }">
@@ -22,6 +27,11 @@
 						:density="state.density"
 						:true-icon="state.trueIcon || undefined"
 						:false-icon="state.falseIcon || undefined"
+						:rounded="state.rounded"
+						:elevation="state.elevation"
+						:border="state.border"
+						:border-color="state.borderColor"
+						:border-style="state.borderStyle"
 						value="design"
 						label="Radio button"
 				/>
@@ -37,6 +47,15 @@
 				<StoryGroup title="Icons">
 					<HstSelect v-model="state.trueIcon"  title="True Icon"  :options="ICON_OPTIONS"/>
 					<HstSelect v-model="state.falseIcon" title="False Icon" :options="ICON_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -234,11 +253,15 @@
 	import {
 		ACTIVE_OPTIONS,
 		resolveActiveState,
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
+		ELEVATION_OPTIONS,
 		HOVER_OPTIONS,
 		resolveHoverState,
-		ICON_OPTIONS
+		ICON_OPTIONS,
+		ROUNDED_OPTIONS
 	} from '@stories/const'
 
 	const designModel    = ref()

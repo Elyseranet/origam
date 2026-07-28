@@ -6,7 +6,7 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<Partial<ISelectionControlProps>>({ label: 'Control label', color: 'primary', bgColor: undefined, density: undefined, trueIcon: undefined, falseIcon: undefined, inline: false })"
+				:init-state="() => useStoryInitState<Partial<ISelectionControlProps>>({ label: 'Control label', color: 'primary', bgColor: undefined, density: undefined, trueIcon: undefined, falseIcon: undefined, inline: false, rounded: undefined, elevation: undefined, border: undefined, borderColor: undefined, borderStyle: undefined })"
 		>
 			<template #default="{ state }">
 				<origam-selection-control-group v-model="designModel" type="checkbox">
@@ -18,6 +18,11 @@
 							:true-icon="state.trueIcon || undefined"
 							:false-icon="state.falseIcon || undefined"
 							:inline="state.inline"
+							:rounded="state.rounded"
+							:elevation="state.elevation"
+							:border="state.border"
+							:border-color="state.borderColor"
+							:border-style="state.borderStyle"
 							value="design-val"
 					/>
 				</origam-selection-control-group>
@@ -33,6 +38,15 @@
 				<StoryGroup title="Icons">
 					<HstSelect v-model="state.trueIcon"  title="True Icon"  :options="ICON_OPTIONS"/>
 					<HstSelect v-model="state.falseIcon" title="False Icon" :options="ICON_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Shape">
+					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
+					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border">
+					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText   v-model="state.borderColor" title="Border Color"/>
+					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Layout">
 					<HstCheckbox v-model="state.inline" title="Inline"/>
@@ -162,6 +176,24 @@
 			</origam-selection-control-group>
 		</Variant>
 
+		<Variant title="Standalone in an unrelated grid (issue #247)">
+			<div
+					class="sc-grid-context"
+					role="radiogroup"
+					aria-label="Grid-context regression check"
+			>
+				<origam-selection-control
+						v-for="n in 4"
+						:key="n"
+						v-model="gridContextModel"
+						type="radio"
+						name="grid-context"
+						:value="`option-${n}`"
+						:label="`Option ${n}`"
+				/>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<ISelectionControlProps>({ label: 'Control label', type: 'checkbox', color: 'primary', density: undefined, trueIcon: undefined, falseIcon: undefined, disabled: false, readonly: false, required: false })"
@@ -185,6 +217,11 @@
 					<HstSelect   v-model="state.density"  title="Density"    :options="DENSITY_OPTIONS"/>
 					<HstSelect   v-model="state.trueIcon" title="True Icon"  :options="ICON_OPTIONS"/>
 					<HstSelect   v-model="state.falseIcon" title="False Icon" :options="ICON_OPTIONS"/>
+					<HstSelect   v-model="state.rounded"   title="Rounded"    :options="ROUNDED_OPTIONS"/>
+					<HstSelect   v-model="state.elevation" title="Elevation"  :options="ELEVATION_OPTIONS"/>
+					<HstSelect   v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
+					<HstText     v-model="state.borderColor" title="Border Color"/>
+					<HstSelect   v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstSelect   v-model="state.type"     title="Type"     :options="TYPE_OPTIONS"/>
@@ -219,11 +256,15 @@
 	import {
 		ACTIVE_OPTIONS,
 		resolveActiveState,
+		BORDER_OPTIONS,
+		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
+		ELEVATION_OPTIONS,
 		HOVER_OPTIONS,
 		resolveHoverState,
-		ICON_OPTIONS
+		ICON_OPTIONS,
+		ROUNDED_OPTIONS
 	} from '@stories/const'
 
 	const TYPE_OPTIONS: Array<IOptions<string>> = [
@@ -239,6 +280,7 @@
 	const slotDefaultModel = ref<string[]>([])
 	const slotLabelModel  = ref<string[]>([])
 	const slotInputModel  = ref<string[]>([])
+	const gridContextModel = ref<string>()
 	const playgroundModel = ref<any>(undefined)
 </script>
 
@@ -266,5 +308,11 @@
 		align-items: center;
 		justify-content: center;
 		cursor: pointer;
+	}
+
+	.sc-grid-context {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr);
+		gap: var(--origam-space---2, 8px);
 	}
 </style>

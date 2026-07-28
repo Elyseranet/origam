@@ -46,6 +46,12 @@ const selected = ref<string>('a')
 </template>
 ```
 
+`rounded` / `border` / `elevation` apply to the control's state-layer box
+(the circular hit/hover area behind the radio glyph), not to the glyph
+itself — the selected/unselected mark is an icon-font character
+(`mdi-radiobox-*`) with no border-radius of its own. Expect a visible
+ring/shadow/shape change around the control, not a reshaped radio dot.
+
 ## States (disabled / readonly)
 
 ```vue

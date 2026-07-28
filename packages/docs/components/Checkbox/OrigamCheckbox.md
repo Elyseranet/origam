@@ -47,6 +47,12 @@ const accepted = ref(false)
 </template>
 ```
 
+`rounded` / `border` / `elevation` apply to the control's state-layer box
+(the circular hit/hover area behind the checkbox glyph), not to the glyph
+itself — the checked/unchecked mark is an icon-font character (`mdi-checkbox-*`)
+with no border-radius of its own. Expect a visible ring/shadow/shape change
+around the control, not a reshaped checkbox mark.
+
 ## States (disabled / readonly / indeterminate)
 
 ```vue

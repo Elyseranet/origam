@@ -1,12 +1,25 @@
 import type {
     IActiveProps,
     IBgColorProps,
-    IColorProps, ICommonsComponentEmits, ICommonsComponentProps, IDensityProps, ISelectionControlGroupProps,
-    IHoverProps
+    IBorderProps,
+    IColorProps, ICommonsComponentEmits, ICommonsComponentProps, IDensityProps, IElevationProps, ISelectionControlGroupProps,
+    IHoverProps,
+    IRoundedProps
 } from '../../interfaces'
 import type { TColor, TIcon } from '../../types'
 
-export interface ISelectionControlProps extends ICommonsComponentProps, Partial<Omit<ISelectionControlGroupProps, 'items'>>, IColorProps, IBgColorProps, IActiveProps, IHoverProps, IDensityProps {
+/**
+ * `border` / `rounded` / `elevation` (props-first, issue #241) — declared
+ * here so `OrigamSelectionControl` (the element that owns the visible
+ * state-layer box behind the Checkbox/Radio glyph) can consume them via
+ * the standard `useBorder` / `useRounded` / `useElevation` composables,
+ * mirroring the `ISwitchTrackProps` pattern (the track owns the surface,
+ * not the outer `OrigamSwitch`). `ICheckboxBtnProps` / `IRadioBtnProps`
+ * extend this interface, so `OrigamCheckbox(Btn)` / `OrigamRadio(Btn)`
+ * forward these values down automatically through `filterProps` without
+ * any additional wiring.
+ */
+export interface ISelectionControlProps extends ICommonsComponentProps, Partial<Omit<ISelectionControlGroupProps, 'items'>>, IColorProps, IBgColorProps, IActiveProps, IHoverProps, IDensityProps, IBorderProps, IRoundedProps, IElevationProps {
     label?: string
     trueValue?: any
     falseValue?: any
