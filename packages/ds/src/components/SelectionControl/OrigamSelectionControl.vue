@@ -386,10 +386,6 @@
     position: relative;
     user-select: none;
 
-    .origam-input & {
-      grid-area: control;
-    }
-
     .origam-label {
       white-space: normal;
       word-break: break-word;

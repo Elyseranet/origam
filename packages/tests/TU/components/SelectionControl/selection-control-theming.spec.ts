@@ -141,10 +141,15 @@ describe('OrigamSelectionControl — grid-area is context-scoped, not unconditio
         // rule's own declaration list (right after `flex: 1 0;`), applying
         // unconditionally regardless of ancestor.
         expect(styleBlock).not.toMatch(/flex:\s*1 0;\s*grid-area:\s*control/)
-        // The fix: `grid-area: control` only fires nested under a
-        // `.origam-input` ancestor selector.
-        expect(styleBlock).toMatch(/\.origam-input\s*&\s*\{\s*grid-area:\s*control/)
-        expect((styleBlock.match(/grid-area:\s*control/g) || [])).toHaveLength(1)
+        // The fix: the declaration is GONE, not merely scoped. Root cause,
+        // verified in OrigamInput.vue:344-347 — `.origam-input__control`
+        // already owns `grid-area: control` AND is `display: flex`. A
+        // `grid-area` on a flex child has no effect, so this declaration was
+        // dead code on the Field/Input path and only ever caused harm outside
+        // it (every control collapsing onto one cell of a consumer's grid).
+        // Scoping it under `.origam-input &` would have preserved an inert
+        // rule that a future reader would believe is load-bearing.
+        expect((styleBlock.match(/grid-area:\s*control/g) || [])).toHaveLength(0)
     })
 
     it('renders with no ancestor .origam-input in the DOM when used standalone (e.g. a plain CSS grid, as ThemeBuilderColorPicker does)', () => {
