@@ -1,0 +1,72 @@
+{
+    "enums": {
+        "meta": {
+            "title": "API Enums · origam design system",
+            "description": "Browse TypeScript enums used across origam props. Click any enum to see its definition, members and the components that use it."
+        },
+        "hero": {
+            "badge": "TypeScript enums",
+            "title_line1": "API",
+            "title_line2": "enums.",
+            "subtitle": "Every TypeScript enum used across origam props. Fully documented with definitions, members and cross-references to the components that use them.",
+            "search_placeholder": "Search enums…",
+            "search_label": "Filter enums by name or category",
+            "count_filtered_of": "of",
+            "count_filtered_match": "enums match",
+            "count_total": "enums across",
+            "count_categories": "categories"
+        },
+        "catalog": {
+            "eyebrow": "BROWSE BY CATEGORY",
+            "title": "All enums.",
+            "empty_title": "No enums found",
+            "empty_desc": "No enum matches \"{query}\". Try a different term."
+        },
+        "detail": {
+            "meta": {
+                "title": "{name} · origam API enums"
+            },
+            "breadcrumb_label": "Page location",
+            "breadcrumb_catalog": "Enums",
+            "external_links_label": "External resources",
+            "toc_label": "Table of contents",
+            "toc_heading": "On this page",
+            "hero": {
+                "source_label": "Source"
+            },
+            "not_found": {
+                "title": "Enum not found",
+                "desc": "No enum matches the slug",
+                "back": "Back to catalogue"
+            },
+            "definition": {
+                "eyebrow": "TypeScript",
+                "title": "Definition",
+                "desc": "The TypeScript definition as found in the origam source. Click the copy icon to copy the snippet."
+            },
+            "no_doc": {
+                "title": "Documentation coming soon",
+                "desc": "The detailed API reference for this enum is being written."
+            },
+            "values": {
+                "eyebrow": "Members",
+                "title": "Members",
+                "desc": "All members of this enum. Click a value to copy it to clipboard.",
+                "copy_label": "Copy value"
+            },
+            "used_by": {
+                "eyebrow": "Ecosystem",
+                "title": "Used by",
+                "desc": "Components and props that accept this enum as a value."
+            },
+            "examples": {
+                "eyebrow": "Usage",
+                "title": "Examples",
+                "desc": "Ready-to-paste code snippets using this enum."
+            }
+        },
+        "kind": {
+            "enum": "enum"
+        }
+    }
+}
