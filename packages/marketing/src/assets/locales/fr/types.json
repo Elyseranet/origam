@@ -1,0 +1,76 @@
+{
+    "types": {
+        "meta": {
+            "title": "Types API · origam design system",
+            "description": "Parcourez les types TypeScript et les enums utilisés à travers les props d'origam. Cliquez sur un type pour voir sa définition, ses valeurs et les composants qui l'utilisent."
+        },
+        "hero": {
+            "badge": "Types & enums TypeScript",
+            "title_line1": "Types",
+            "title_line2": "API.",
+            "subtitle": "Chaque type TypeScript et enum utilisé à travers les props d'origam. Entièrement documenté avec définitions, valeurs acceptées et références croisées vers les composants qui les utilisent.",
+            "search_placeholder": "Rechercher un type…",
+            "search_label": "Filtrer les types par nom ou catégorie",
+            "count_filtered_of": "sur",
+            "count_filtered_match": "types correspondent",
+            "count_total": "types et enums répartis dans",
+            "count_categories": "catégories"
+        },
+        "catalog": {
+            "eyebrow": "PARCOURIR PAR CATÉGORIE",
+            "title": "Tous les types.",
+            "empty_title": "Aucun type trouvé",
+            "empty_desc": "Aucun type ne correspond à « {query} ». Essayez un autre terme."
+        },
+        "kind": {
+            "type": "type",
+            "enum": "enum"
+        },
+        "detail": {
+            "meta": {
+                "title": "{name} · types API origam"
+            },
+            "breadcrumb_label": "Emplacement de la page",
+            "breadcrumb_catalog": "Types",
+            "external_links_label": "Ressources externes",
+            "toc_label": "Table des matières",
+            "toc_heading": "Sur cette page",
+            "hero": {
+                "source_label": "Source"
+            },
+            "not_found": {
+                "title": "Type introuvable",
+                "desc": "Aucun type ne correspond au slug",
+                "back": "Retour au catalogue"
+            },
+            "definition": {
+                "eyebrow": "TypeScript",
+                "title": "Définition",
+                "desc": "La définition TypeScript telle que trouvée dans le code source d'origam. Cliquez sur l'icône de copie pour copier l'extrait."
+            },
+            "no_doc": {
+                "title": "Documentation à venir",
+                "desc": "La référence API détaillée de ce type est en cours de rédaction."
+            },
+            "values": {
+                "eyebrow": "Acceptées",
+                "eyebrow_enum": "Membres",
+                "title": "Valeurs",
+                "title_enum": "Membres",
+                "desc": "Valeurs littérales de chaîne acceptées pour ce type. Cliquez sur une valeur pour la copier.",
+                "desc_enum": "Tous les membres de cet enum. Cliquez sur une valeur pour la copier dans le presse-papiers.",
+                "copy_label": "Copier la valeur"
+            },
+            "used_by": {
+                "eyebrow": "Écosystème",
+                "title": "Utilisé par",
+                "desc": "Composants et props qui acceptent ce type comme valeur."
+            },
+            "examples": {
+                "eyebrow": "Usage",
+                "title": "Exemples",
+                "desc": "Extraits de code prêts à coller utilisant ce type."
+            }
+        }
+    }
+}
