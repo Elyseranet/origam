@@ -91,3 +91,22 @@ describe('OrigamMessages — lineHeight prop', () => {
         wrapper.unmount()
     })
 })
+
+// Regression guard for #250: the root `<component :is="…">` used to read a
+// bare `tag` in `<script setup>`, which resolves against Vue's raw $props —
+// NOT the `useDefaults()` Proxy assigned to the local `props` variable —
+// unless written as `props.tag` explicitly. See OrigamTable.vue / #249 for
+// the full writeup of this footgun.
+describe('OrigamMessages — useDefaults (theme components wiring)', () => {
+    function mountMessagesThemed (componentDefaults: Record<string, unknown>, props: Record<string, unknown> = {}) {
+        const theme = { name: 'brandx', mode: 'light' as const, components: { 'origam-messages': componentDefaults }, vars: {} }
+        const origam = createOrigam({ themes: [theme] })
+        origam._defaultsRef.value = origam._activeDefaultsFor('brandx', 'light')
+        return mount(OrigamMessages, { props: { messages: ['Test message'], ...props } as never, global: { plugins: [origam] } })
+    }
+
+    it('resolves tag="aside" from theme.components[\'origam-messages\'] when not passed', () => {
+        const wrapper = mountMessagesThemed({ tag: 'aside' })
+        expect(wrapper.find('.origam-messages').element.tagName).toBe('ASIDE')
+    })
+})
