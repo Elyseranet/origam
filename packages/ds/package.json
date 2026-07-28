@@ -1,6 +1,6 @@
 {
   "name": "origam",
-  "version": "2.10.0",
+  "version": "2.11.0",
   "type": "module",
   "description": "origam — a Vue 3 design system with multi-theme design tokens, CSS-first components and TypeScript types.",
   "keywords": [
