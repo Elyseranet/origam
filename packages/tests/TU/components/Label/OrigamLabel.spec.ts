@@ -40,6 +40,25 @@ function styleOf (props: Record<string, unknown> = {}): string {
     return mountLabel(props).find('.origam-label').attributes('style') || ''
 }
 
+// Regression guard for #250: the root `<component :is="…">` used to read a
+// bare `tag` in `<script setup>`, which resolves against Vue's raw $props —
+// NOT the `useDefaults()` Proxy assigned to the local `props` variable —
+// unless written as `props.tag` explicitly. See OrigamTable.vue / #249 for
+// the full writeup of this footgun.
+describe('OrigamLabel — useDefaults (theme components wiring)', () => {
+    function mountLabelThemed (componentDefaults: Record<string, unknown>, props: Record<string, unknown> = {}) {
+        const theme = { name: 'brandx', mode: 'light' as const, components: { 'origam-label': componentDefaults }, vars: {} }
+        const origam = createOrigam({ themes: [theme] })
+        origam._defaultsRef.value = origam._activeDefaultsFor('brandx', 'light')
+        return mount(OrigamLabel, { props: { text: 'Label', ...props } as never, global: { plugins: [origam] } })
+    }
+
+    it('resolves tag="span" from theme.components[\'origam-label\'] when not passed', () => {
+        const wrapper = mountLabelThemed({ tag: 'span' })
+        expect(wrapper.element.tagName).toBe('SPAN')
+    })
+})
+
 describe('OrigamLabel — fontSize prop', () => {
     it('emits no font-size override when fontSize is unset', () => {
         expect(styleOf()).not.toContain('--origam-label---font-size')

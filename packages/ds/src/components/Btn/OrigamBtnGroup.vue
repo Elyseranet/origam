@@ -1,6 +1,6 @@
 <template>
 	<component
-			:is="tag"
+			:is="props.tag"
 			:id="id"
 			role="group"
 			:class="btnGroupClasses"
@@ -33,6 +33,7 @@
 	import {
 		useDefaults,
 		useDensity,
+		usePassedProps,
 		useProps,
 		useSize,
 		useStateEffect,
@@ -43,6 +44,7 @@
 	import { DENSITY } from '../../enums'
 
 	import type { IBtnGroupProps, IBtnProps } from '../../interfaces'
+	import { omitUndefined } from '../../utils'
 
 	import { computed, StyleValue, useSlots } from 'vue'
 
@@ -76,27 +78,46 @@
 	// defaults, child overrides). Children consume this map via
 	// `useDefaults(props)` inside `OrigamBtn.vue`.
 	//
-	// `variant` matters here specifically: `--variant-text` (the group's
-	// own root default, and every child's own component default) has NO
-	// active-state background rule at all — only `outlined`/`tonal` paint
-	// a filled surface on the selected segment (see OrigamBtn.vue's
-	// `&--variant-outlined { &--active { background-color: ... } }`).
-	// Without forwarding it, a themed `<origam-btn-toggle variant="outlined">`
-	// got the right root chrome but every child silently stayed on 'text',
-	// so the active segment never filled — no visible selection at all.
+	// A prop the CONSUMER never passed to `<origam-btn-group>` must NOT be
+	// forwarded — else `mergeDeep` (used by `provideDefaults`/`useDefaults`
+	// to combine this map with an ancestor/theme `'origam-btn'` defaults
+	// entry) copies it unconditionally and silently overwrites the theme
+	// default (e.g. `origam-btn: { density: 'comfortable' }`) — see #263,
+	// the same bug already fixed on `OrigamAvatarGroup`.
+	//
+	// A plain `omitUndefined` is NOT enough for `hover` / `active`: both are
+	// typed `boolean | IHoverState / IActiveState`, so Vue resolves an UNSET
+	// prop to the concrete value `false` (its boolean-prop coercion), never
+	// to `undefined` — there is no `undefined` left to filter. `usePassedProps`
+	// reads `vnode.props` directly, so it tells the truth regardless of
+	// Vue's coercion.
+	const wasPropPassed = usePassedProps(props)
 	const slotDefaults = computed(() => ({
-		'origam-btn': {
+		'origam-btn': omitUndefined({
+			// `variant` is the ONE deliberate exception, kept unconditional:
+			// `--variant-text` (the group's own root default, and every
+			// child's own component default) has NO active-state background
+			// rule at all — only `outlined`/`tonal` paint a filled surface
+			// on the selected segment (see OrigamBtn.vue's
+			// `&--variant-outlined { &--active { background-color: ... } }`).
+			// The group's OWN resolved `variant` (whether explicitly passed,
+			// or resolved from a theme's `'origam-btn-group'` defaults) must
+			// always reach the children — else a themed
+			// `<origam-btn-toggle variant="outlined">` gets the right root
+			// chrome but every child silently stays on 'text', so the active
+			// segment never fills — no visible selection at all.
 			variant: props.variant,
-			density: props.density,
-			color: props.color,
-			bgColor: props.bgColor,
-			size: props.size,
+			density: wasPropPassed('density') ? props.density : undefined,
+			color: wasPropPassed('color') ? props.color : undefined,
+			bgColor: wasPropPassed('bgColor') ? props.bgColor : undefined,
+			size: wasPropPassed('size') ? props.size : undefined,
 			// New API: `hover` / `active` accept boolean | IHoverState |
 			// IActiveState; pass-through propagates the parent's intent
-			// override to each child OrigamBtn.
-			hover: props.hover,
-			active: props.active
-		}
+			// override to each child OrigamBtn — only when the consumer
+			// actually set it.
+			hover: wasPropPassed('hover') ? props.hover : undefined,
+			active: wasPropPassed('active') ? props.active : undefined
+		})
 	}))
 
 	// The `items` array path used to manually merge with `props.x ?? item.x`,

@@ -106,3 +106,34 @@ describe('OrigamTab — letterSpacing prop', () => {
         expect(styleOfTab({ letterSpacing: 'tight' })).toContain('--origam-tabs__item---letter-spacing: var(--origam-font__letterSpacing---tight)')
     })
 })
+
+// Regression guard for #250: the root `<component :is="…">` used to read a
+// bare `tag` in `<script setup>`, which resolves against Vue's raw $props —
+// NOT the `useDefaults()` Proxy assigned to the local `props` variable —
+// unless written as `props.tag` explicitly. See OrigamTable.vue / #249 for
+// the full writeup of this footgun.
+describe('OrigamTab — useDefaults (theme components wiring)', () => {
+    function buildTabThemed (componentDefaults: Record<string, unknown>, tabProps: Record<string, unknown> = {}) {
+        const theme = { name: 'brandx', mode: 'light' as const, components: { 'origam-tab': componentDefaults }, vars: {} }
+        const origam = createOrigam({ themes: [theme] })
+        origam._defaultsRef.value = origam._activeDefaultsFor('brandx', 'light')
+        return mount(OrigamTabs, {
+            props: { modelValue: 'a' },
+            slots: { default: () => [h(OrigamTab, { value: 'a', text: 'Tab A', ...tabProps })] },
+            attachTo: document.body,
+            global: {
+                plugins: [origam],
+                stubs: {
+                    OrigamDefaultsProvider: { template: '<slot/>' },
+                    OrigamIcon: { template: '<span/>' }
+                }
+            }
+        })
+    }
+
+    it('resolves tag="span" from theme.components[\'origam-tab\'] when not passed', () => {
+        const wrapper = buildTabThemed({ tag: 'span' })
+        expect(wrapper.find('[role="tab"]').element.tagName).toBe('SPAN')
+        wrapper.unmount()
+    })
+})
