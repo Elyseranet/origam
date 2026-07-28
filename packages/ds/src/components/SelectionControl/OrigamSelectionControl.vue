@@ -435,7 +435,11 @@
         left: 0;
         width: 100%;
         height: 100%;
-        border-radius: 100%;
+        // Le halo suit la forme du contrôle. Codé en dur à 100%, il restait
+        // circulaire même sous `rounded="md"` : la seule surface que la prop
+        // pouvait peindre au repos ignorait la prop. `inherit` reprend le
+        // border-radius résolu par `useRounded` sur `__input`.
+        border-radius: inherit;
         background-color: currentColor;
         opacity: 0;
         pointer-events: none;
