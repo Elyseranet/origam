@@ -1,0 +1,170 @@
+{
+    "components": {
+        "meta": {
+            "title": "Components · origam design system",
+            "description": "Browse 95+ accessible, token-driven Vue 3 components grouped by category. Click any component to see its API, props, emits, slots and live examples."
+        },
+        "hero": {
+            "badge": "95+ components — Vue 3",
+            "title_line1": "Component",
+            "title_line2": "catalogue.",
+            "subtitle": "Every component in origam is accessible, token-driven and themeable. Explore them by category, read the API and see them in action.",
+            "search_placeholder": "Search components…",
+            "search_label": "Filter components by name or category",
+            "count_families": "component families across",
+            "count_categories": "categories",
+            "count_filtered_of": "of",
+            "count_filtered_match": "components match"
+        },
+        "catalog": {
+            "eyebrow": "BROWSE BY CATEGORY",
+            "title": "All components.",
+            "empty_title": "No components found",
+            "empty_desc": "No component matches your search. Try a different term."
+        },
+        "detail": {
+            "meta": {
+                "title": "{name} · origam components"
+            },
+            "breadcrumb_label": "Page location",
+            "breadcrumb_catalog": "Components",
+            "external_links_label": "External resources",
+            "story_link": "View story",
+            "doc_link": "Full docs",
+            "toc_label": "Table of contents",
+            "toc_heading": "On this page",
+            "not_found": {
+                "title": "Component not found",
+                "desc": "No component matches the slug",
+                "back": "Back to catalogue"
+            },
+            "no_doc": {
+                "title": "Documentation coming soon",
+                "desc": "The detailed API reference for this component is being written. Check the Histoire stories or VitePress docs in the meantime."
+            },
+            "anatomy": {
+                "title": "Anatomy",
+                "eyebrow": "Structure",
+                "desc": "Visual breakdown of the component's internal structure with BEM class call-outs.",
+                "dom_structure_label": "DOM structure",
+                "col_class": "Class",
+                "col_description": "Description"
+            },
+            "css_vars": {
+                "title": "CSS variables",
+                "eyebrow": "Customisation",
+                "desc": "CSS custom properties exposed by this component. Override them to customise the component without losing theme compatibility.",
+                "col_variable": "Variable",
+                "col_default": "Default",
+                "col_description": "Description"
+            },
+            "exposed": {
+                "title": "Exposed members",
+                "eyebrow": "API",
+                "desc": "Properties and methods accessible via template ref (defineExpose). Use them for programmatic control.",
+                "col_name": "Name",
+                "col_type": "Type",
+                "col_description": "Description"
+            },
+            "composable": {
+                "title": "Composable",
+                "eyebrow": "API",
+                "desc": "Headless composable for using this component logic without the template.",
+                "signature_label": "Signature",
+                "usage_label": "Usage"
+            },
+            "a11y": {
+                "title": "Accessibility",
+                "eyebrow": "Inclusion",
+                "desc": "ARIA roles, keyboard navigation and focus management. Sourced from the real component template.",
+                "roles_label": "ARIA roles",
+                "keyboard_label": "Keyboard interactions",
+                "col_key": "Key",
+                "col_action": "Action",
+                "notes_label": "Notes"
+            },
+            "tokens": {
+                "title": "Design tokens",
+                "eyebrow": "Foundation",
+                "desc": "DTCG token excerpt from the component token file. Built with Style Dictionary v4.",
+                "col_token": "Token path",
+                "col_value": "Value",
+                "col_type": "Type",
+                "col_description": "Description",
+                "source_label": "Source",
+                "pipeline_label": "Pipeline"
+            },
+            "playground": {
+                "title": "Playground",
+                "eyebrow": "Interactive",
+                "desc": "Edit props live and see the component update in real time. The generated code snippet updates as you change values.",
+                "preview_label": "Live preview",
+                "code_label": "Generated code",
+                "controls_label": "Controls"
+            },
+            "examples": {
+                "title": "Examples",
+                "eyebrow": "Usage",
+                "desc": "Ready-to-paste code snippets for your templates."
+            },
+            "family": {
+                "title": "Family",
+                "eyebrow": "Ecosystem",
+                "desc": "Components from the same folder that share conventions and often compose together."
+            },
+            "related": {
+                "title": "Related elements",
+                "eyebrow": "Ecosystem",
+                "desc": "Components and directives from different folders that collaborate with this one.",
+                "kind_component": "component",
+                "kind_directive": "directive"
+            },
+            "props": {
+                "title": "Props",
+                "eyebrow": "API",
+                "desc": "All props accepted by this component, with their type, default value and description.",
+                "table_caption": "Props",
+                "col_name": "Name",
+                "col_type": "Type",
+                "col_default": "Default",
+                "col_description": "Description",
+                "required": "required"
+            },
+            "emits": {
+                "title": "Emits",
+                "eyebrow": "API",
+                "desc": "Events emitted by this component.",
+                "table_caption": "Events",
+                "col_event": "Event",
+                "col_payload": "Payload",
+                "col_description": "Description"
+            },
+            "slots": {
+                "title": "Slots",
+                "eyebrow": "API",
+                "desc": "Content slots exposed by this component.",
+                "table_caption": "Slots",
+                "col_slot": "Slot",
+                "col_slot_props": "Slot props",
+                "col_description": "Description"
+            },
+            "hero": {
+                "props_count": "{count} props",
+                "family_count": "{count} in family",
+                "source_label": "Source",
+                "story_label": "Story",
+                "docs_label": "Docs",
+                "import_label": "Copy import",
+                "import_copied": "Copied!",
+                "preview_label": "Preview",
+                "stable_label": "stable"
+            },
+            "status": {
+                "stable": "stable",
+                "beta": "beta",
+                "experimental": "experimental",
+                "deprecated": "deprecated"
+            }
+        }
+    }
+}

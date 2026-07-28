@@ -1,0 +1,135 @@
+{
+    "why_origam": {
+        "meta": {
+            "title": "Pourquoi origam ? · Design system Vue 3",
+            "description": "Un regard honnête sur ce qu'est origam, ce qui le différencie, et quand vous devriez — ou non — le choisir."
+        },
+        "hero": {
+            "badge": "Honnête par conception",
+            "title_line1": "Pourquoi origam ?",
+            "title_line2": "Une réponse honnête.",
+            "subtitle": "Nous avons construit origam pour les équipes Vue 3 qui accordent de l'importance à la qualité du design, à l'accessibilité et à la cohérence par tokens. Voici ce que nous faisons bien — et où nous progressons encore."
+        },
+        "strengths": {
+            "eyebrow": "CE QUE NOUS FAISONS BIEN",
+            "title": "Conçu pour Vue 3. Depuis la base.",
+            "title_line1": "Conçu pour Vue 3.",
+            "title_line2": "Depuis la base.",
+            "subtitle": "Chaque API, chaque composable, chaque prop — pensés pour la Composition API et TypeScript dès le premier jour.",
+            "vue3": {
+                "title": "Vue 3 natif",
+                "description": "Construit avec la Composition API et <script setup>. Pas de shim Options API, pas d'héritage Vue 2 — juste du Vue 3 idiomatique et propre."
+            },
+            "tokens": {
+                "title": "Design tokens DTCG",
+                "description": "Compatible Tokens Studio, Style Dictionary v4. 8 thèmes basculent à l'exécution sans remontage ni clignotement."
+            },
+            "charts": {
+                "title": "95 composants + 29 primitives de graphiques",
+                "description": "Des boutons atomiques aux graphiques ligne, aire, donut, heatmap et chandelier — dans un seul package cohérent."
+            },
+            "a11y": {
+                "title": "Certifié WCAG 2.1 AA",
+                "description": "Tests axe-core + Playwright livrés avec chaque composant. Clavier, lecteurs d'écran et mouvement réduit : couverts."
+            },
+            "css": {
+                "title": "Architecture CSS-first",
+                "description": "Container queries, :has(), color-mix(), view-transition-name. Nous utilisons la plateforme pour que votre bundle ne paye pas de polyfills."
+            },
+            "treeshake": {
+                "title": "< 50 ko tree-shakable",
+                "description": "Build ESM-first. Importez ce que vous utilisez ; le reste n'atteint jamais vos utilisateurs."
+            },
+            "composables": {
+                "title": "Composables headless",
+                "description": "Chaque composant expose sa logique en tant que composable autonome. Utilisez notre UI ou construisez la vôtre sur nos primitives."
+            },
+            "mit": {
+                "title": "Licence MIT",
+                "description": "Pas de frais de licence, pas de restrictions d'usage. origam est et restera open source."
+            }
+        },
+        "comparison": {
+            "eyebrow": "COMPARAISON HONNÊTE",
+            "title": "Comment se positionne origam ?",
+            "subtitle": "Un aperçu fonctionnalité par fonctionnalité des principaux design systems de l'écosystème Vue. Les appréciations sont les nôtres et peuvent être obsolètes — vérifiez toujours auprès de la documentation actuelle des projets.",
+            "disclaimer": "Certaines appréciations reflètent notre interprétation de la documentation publique disponible. Les concurrents évoluent vite — vérifiez leurs docs.",
+            "col_library": "Bibliothèque",
+            "col_vue_native": "Vue 3 natif",
+            "col_design_tokens": "Tokens DTCG",
+            "col_a11y_tested": "A11y testée",
+            "col_css_first": "CSS-first",
+            "col_tree_shakable": "Tree-shakable",
+            "col_charts": "Graphiques inclus",
+            "origam": "origam",
+            "vuetify": "Vuetify",
+            "vuetify_note": "Design system Material Design mature, grande communauté et riche écosystème.",
+            "prime_vue": "PrimeVue",
+            "prime_vue_note": "Très grand nombre de composants, dispose de son propre système de tokens (PrimeFlex).",
+            "quasar": "Quasar",
+            "quasar_note": "Framework multi-plateforme complet (web, Cordova, Electron). Un périmètre différent.",
+            "element_plus": "Element Plus",
+            "element_plus_note": "Populaire dans la communauté de développeurs chinoise, large couverture de composants.",
+            "naive_ui": "Naive UI",
+            "naive_ui_note": "TypeScript-first, personnalisation du thème par JS, léger.",
+            "yes": "Oui",
+            "no": "Non"
+        },
+        "weaknesses": {
+            "eyebrow": "SOYONS HONNÊTES",
+            "title": "Là où nous progressons encore.",
+            "title_line1": "Là où nous",
+            "title_line2": "progressons encore.",
+            "subtitle": "origam est jeune. C'est un atout en termes de fraîcheur d'API — et une contrainte en termes de maturité.",
+            "community": {
+                "title": "Communauté plus petite",
+                "description": "Vuetify et PrimeVue ont des années d'usage en production, des milliers de réponses Stack Overflow et de riches marchés de templates tiers. origam n'en est pas encore là."
+            },
+            "templates": {
+                "title": "Moins de templates prêts à l'emploi",
+                "description": "Vous ne trouverez pas aujourd'hui des dizaines de tableaux de bord admin ou de kits de landing page construits sur origam. Vous construisez avec les primitives."
+            },
+            "scale": {
+                "title": "Moins éprouvé à grande échelle",
+                "description": "Nous n'avons pas encore été mis à l'épreuve dans des apps avec des centaines de développeurs et des millions d'utilisateurs quotidiens. Si c'est votre cas, prenez-le en compte."
+            }
+        },
+        "use_cases": {
+            "eyebrow": "À QUI S'ADRESSE ORIGAM",
+            "title": "Choisissez origam quand…",
+            "fits_title": "origam est un excellent choix",
+            "no_fits_title": "origam n'est peut-être pas le bon choix",
+            "greenfield": {
+                "title": "Projet Vue 3 greenfield",
+                "description": "Vous démarrez sur Vue 3 avec une équipe design qui travaille en Figma et en tokens ? origam est conçu exactement pour cette configuration."
+            },
+            "token_team": {
+                "title": "Équipe pilotée par les design tokens",
+                "description": "Si votre designer utilise Tokens Studio ou Style Dictionary, origam s'intègre nativement — sans couche de traduction."
+            },
+            "saas_product": {
+                "title": "SaaS / produit nécessitant plusieurs thèmes de marque",
+                "description": "Besoin de livrer la même app aux couleurs du client A et du client B ? Le multi-thème à l'exécution est une fonctionnalité de première classe."
+            },
+            "dataviz": {
+                "title": "UI riche en données avec graphiques",
+                "description": "29 primitives de graphiques — ligne, aire, barre, donut, heatmap, chandelier — thémés et accessibles, en un seul install."
+            },
+            "migration": {
+                "title": "Migration d'une grande base Vuetify 2",
+                "description": "Si vous avez des milliers de composants Vuetify à migrer, Vuetify 3 sera un chemin moins accidenté qu'origam."
+            },
+            "ecosystem": {
+                "title": "Besoin d'un grand marché de templates tiers",
+                "description": "Si vous comptez sur des thèmes admin prêts à l'emploi ou des templates marketplace, Vuetify ou PrimeVue ont un catalogue plus large aujourd'hui."
+            }
+        },
+        "cta": {
+            "title": "Prêt à l'essayer ?",
+            "description": "Installez origam en 30 secondes et voyez jusqu'où les valeurs par défaut vous emmènent.",
+            "cta_components": "Parcourir les composants",
+            "cta_install": "Commencer",
+            "actions_label": "Essayer origam"
+        }
+    }
+}

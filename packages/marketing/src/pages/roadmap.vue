@@ -372,7 +372,7 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                                                 size="x-small"
                                                 pill
                                                 class="roadmap-timeline__effort"
-                                                aria-label="Effort"
+                                                :aria-label="t('a11y.roadmap_effort', 'Effort')"
                                             >
                                                 {{ t(item.effortKey, item.effortKey) }}
                                             </origam-chip>
@@ -454,7 +454,7 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                                             size="x-small"
                                             pill
                                             class="roadmap-wave4__shipped-badge"
-                                            aria-label="Shipped"
+                                            :aria-label="t('roadmap.wave4_grid.badge_shipped', 'Shipped')"
                                         >
                                             {{ t('roadmap.wave4_grid.badge_shipped', 'Shipped') }}
                                         </origam-chip>

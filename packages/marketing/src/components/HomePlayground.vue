@@ -43,7 +43,7 @@ const { t } = useT()
                 <div
                     class="home-playground__toolbar"
                     role="toolbar"
-                    aria-label="Editor toolbar"
+                    :aria-label="t('a11y.playground_toolbar', 'Editor toolbar')"
                 >
                     <span
                         class="home-playground__traffic"

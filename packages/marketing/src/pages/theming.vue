@@ -154,7 +154,7 @@
                 <span
                   class="theming__brand-badge"
                   aria-hidden="true"
-                >TB</span>
+                >{{ t('theming.topbar.badge', 'TB') }}</span>
         <origam-title
           tag="h1"
           class="theming__brand-title"

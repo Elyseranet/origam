@@ -1,0 +1,26 @@
+{
+    "nav": {
+        "components": "Composants",
+        "playground": "Playground",
+        "docs": "Docs",
+        "stories": "Stories",
+        "blog": "Blog",
+        "changelog": "Journal",
+        "github": "GitHub",
+        "why_origam": "Pourquoi origam ?",
+        "roadmap": "Feuille de route",
+        "installation": "Installation",
+        "wireframe": "Wireframe",
+        "directives": "Directives",
+        "theming": "Thématisation",
+        "sections": {
+            "introduction": "Introduction",
+            "getting_started": "Prise en main",
+            "features": "Fonctionnalités"
+        },
+        "a11y": {
+            "open_section": "Ouvrir le menu {section}",
+            "nav_primary": "Navigation principale"
+        }
+    }
+}
