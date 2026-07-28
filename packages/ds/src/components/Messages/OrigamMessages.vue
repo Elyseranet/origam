@@ -4,7 +4,7 @@
 			:transition="transition"
 	>
 		<component
-				:is="tag"
+				:is="props.tag"
 				:class="messagesClasses"
 				:style="[messagesStyles, rootTypographyStyles]"
 				aria-live="polite"

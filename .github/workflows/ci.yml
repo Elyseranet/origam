@@ -214,6 +214,31 @@ jobs:
           retention-days: 7
           if-no-files-found: error
 
+  i18n-check:
+    name: i18n check (marketing)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Checks 1 (missing key definitions) and 2 (EN/FR parity) run in
+      # WARNING mode: ~400 referenced keys are missing and ~93 FR values
+      # disagree with EN today (see scripts/i18n-check.mjs header for the
+      # gating rationale — flipping this to blocking now would make the job
+      # red on day one). Check 3 (zero hardcoded strings in .vue templates)
+      # is BLOCKING and starts clean, so any regression fails this job.
+      - name: i18n check (marketing)
+        run: pnpm -F @origam/marketing i18n:check
+
   test-e2e:
     name: E2E tests (Playwright / Chromium)
     runs-on: ubuntu-latest

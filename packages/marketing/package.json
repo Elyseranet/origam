@@ -26,6 +26,7 @@
     "presets:generate": "node scripts/generate-brand-presets.mjs",
     "presets:generate:check": "node scripts/generate-brand-presets.mjs --check",
     "theme:reset:generate": "node scripts/generate-origam-reset.mjs",
+    "i18n:check": "node scripts/i18n-check.mjs",
     "db:migrate": "tsx --tsconfig ./tsconfig.typeorm.json ./node_modules/typeorm/cli.js migration:run -d ./server/db/data-source.cli.ts",
     "db:rollback": "tsx --tsconfig ./tsconfig.typeorm.json ./node_modules/typeorm/cli.js migration:revert -d ./server/db/data-source.cli.ts",
     "db:migrate:status": "tsx --tsconfig ./tsconfig.typeorm.json ./node_modules/typeorm/cli.js migration:show -d ./server/db/data-source.cli.ts",
@@ -47,6 +48,8 @@
     "vue-router": "^4.5.0"
   },
   "devDependencies": {
+    "@vue/compiler-dom": "3.5.39",
+    "@vue/compiler-sfc": "3.5.39",
     "tsx": "^4.23.0",
     "typescript": "^6.0.3",
     "vue-tsc": "^3.3.6"

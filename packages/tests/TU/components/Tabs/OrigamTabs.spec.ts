@@ -270,3 +270,34 @@ describe('OrigamTabs — disabled tab', () => {
         wrapper.unmount()
     })
 })
+
+// Regression guard for #250: the root `<component :is="…">` used to read a
+// bare `tag` in `<script setup>`, which resolves against Vue's raw $props —
+// NOT the `useDefaults()` Proxy assigned to the local `props` variable —
+// unless written as `props.tag` explicitly. See OrigamTable.vue / #249 for
+// the full writeup of this footgun.
+describe('OrigamTabs — useDefaults (theme components wiring)', () => {
+    function buildTabsThemed (componentDefaults: Record<string, unknown>, tabsProps: Record<string, unknown> = {}) {
+        const theme = { name: 'brandx', mode: 'light' as const, components: { 'origam-tabs': componentDefaults }, vars: {} }
+        const origam = createOrigam({ themes: [theme] })
+        origam._defaultsRef.value = origam._activeDefaultsFor('brandx', 'light')
+        return mount(OrigamTabs, {
+            props: { modelValue: 'a', ...tabsProps },
+            slots: { default: () => [h(OrigamTab, { value: 'a', text: 'Tab A' })] },
+            attachTo: document.body,
+            global: {
+                plugins: [origam],
+                stubs: {
+                    OrigamDefaultsProvider: { template: '<slot/>' },
+                    OrigamIcon: { template: '<span/>' }
+                }
+            }
+        })
+    }
+
+    it('resolves tag="nav" from theme.components[\'origam-tabs\'] when not passed', () => {
+        const wrapper = buildTabsThemed({ tag: 'nav' })
+        expect(wrapper.element.tagName).toBe('NAV')
+        wrapper.unmount()
+    })
+})

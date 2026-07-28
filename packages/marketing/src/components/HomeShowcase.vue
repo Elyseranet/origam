@@ -69,7 +69,7 @@ const STATUS_DOT_COLOR: Record<string, string> = {
             tag="ul"
             :columns="SHOWCASE_GRID_COLUMNS"
             gap="16px"
-            aria-label="Component showcase"
+            :aria-label="t('a11y.showcase_grid', 'Component showcase')"
             class="home-showcase__grid"
         >
             <origam-grid-item
@@ -257,7 +257,7 @@ const STATUS_DOT_COLOR: Record<string, string> = {
                     <ul
                         class="home-showcase__chip-list"
                         data-cy="showcase-chip-group"
-                        aria-label="Chip intents"
+                        :aria-label="t('a11y.showcase_chip_list', 'Chip intents')"
                     >
                         <li
                             v-for="chip in SHOWCASE_CHIP_ITEMS"

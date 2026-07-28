@@ -1,0 +1,135 @@
+{
+    "why_origam": {
+        "meta": {
+            "title": "Why origam? · Vue 3 design system",
+            "description": "An honest look at what origam is, what makes it different, and when you should — or shouldn't — choose it."
+        },
+        "hero": {
+            "badge": "Honest by design",
+            "title_line1": "Why origam?",
+            "title_line2": "An honest answer.",
+            "subtitle": "We built origam for Vue 3 teams who care about design quality, accessibility, and token-driven consistency. Here's what we do well — and where we're still growing."
+        },
+        "strengths": {
+            "eyebrow": "WHAT WE DO WELL",
+            "title": "Built for Vue 3. From the ground up.",
+            "title_line1": "Built for Vue 3.",
+            "title_line2": "From the ground up.",
+            "subtitle": "Every API, every composable, every prop — designed for Composition API and TypeScript from day one.",
+            "vue3": {
+                "title": "Vue 3 native",
+                "description": "Built with Composition API and <script setup>. No legacy Options API shim, no Vue 2 baggage — just clean, idiomatic Vue 3."
+            },
+            "tokens": {
+                "title": "Design tokens DTCG",
+                "description": "Tokens Studio-compatible, Style Dictionary v4. 8 themes switch at runtime with zero remount and zero flicker."
+            },
+            "charts": {
+                "title": "95 components + 29 chart primitives",
+                "description": "From atomic buttons to line, area, donut, heatmap and candlestick charts — all in one coherent package."
+            },
+            "a11y": {
+                "title": "WCAG 2.1 AA verified",
+                "description": "axe-core + Playwright a11y tests ship with every component. Keyboard, screen-readers and reduced-motion: covered."
+            },
+            "css": {
+                "title": "CSS-first architecture",
+                "description": "Container queries, :has(), color-mix(), view-transition-name. We use the platform so your bundle doesn't pay for polyfills."
+            },
+            "treeshake": {
+                "title": "< 50 kb tree-shakable",
+                "description": "ESM-first build. Import what you use; the rest never reaches your users."
+            },
+            "composables": {
+                "title": "Headless composables",
+                "description": "Every component exposes its logic as a standalone composable. Use our UI or build your own on top of our primitives."
+            },
+            "mit": {
+                "title": "MIT licensed",
+                "description": "No license fees, no usage restrictions. origam is and will remain open source."
+            }
+        },
+        "comparison": {
+            "eyebrow": "HONEST COMPARISON",
+            "title": "How does origam compare?",
+            "subtitle": "A feature-by-feature look at the Vue ecosystem's main design systems. Assessments are our own and may be out of date — always verify against the project's current docs.",
+            "disclaimer": "Some assessments reflect our interpretation of publicly available documentation. Competitors ship fast — check their docs.",
+            "col_library": "Library",
+            "col_vue_native": "Vue 3 native",
+            "col_design_tokens": "DTCG tokens",
+            "col_a11y_tested": "A11y tested",
+            "col_css_first": "CSS-first",
+            "col_tree_shakable": "Tree-shakable",
+            "col_charts": "Charts included",
+            "origam": "origam",
+            "vuetify": "Vuetify",
+            "vuetify_note": "Mature Material Design system, large community and ecosystem.",
+            "prime_vue": "PrimeVue",
+            "prime_vue_note": "Very large component count, has its own token system (PrimeFlex).",
+            "quasar": "Quasar",
+            "quasar_note": "Full multi-platform framework (web, Cordova, Electron). Different scope.",
+            "element_plus": "Element Plus",
+            "element_plus_note": "Popular in the Chinese developer community, wide component coverage.",
+            "naive_ui": "Naive UI",
+            "naive_ui_note": "TypeScript-first, theme customisation via JS, lightweight.",
+            "yes": "Yes",
+            "no": "No"
+        },
+        "weaknesses": {
+            "eyebrow": "LET'S BE HONEST",
+            "title": "Where we're still growing.",
+            "title_line1": "Where we're",
+            "title_line2": "still growing.",
+            "subtitle": "origam is young. That's a strength in terms of API freshness — and a constraint in terms of maturity.",
+            "community": {
+                "title": "Smaller community",
+                "description": "Vuetify and PrimeVue have years of production usage, thousands of Stack Overflow answers, and rich third-party template markets. origam doesn't — yet."
+            },
+            "templates": {
+                "title": "Fewer ready-made templates",
+                "description": "You won't find dozens of admin dashboards or landing-page kits built on origam today. You build with the primitives."
+            },
+            "scale": {
+                "title": "Less battle-tested at scale",
+                "description": "We haven't been stress-tested in apps with hundreds of devs and millions of daily users. If that's your situation, factor this in."
+            }
+        },
+        "use_cases": {
+            "eyebrow": "WHO IS ORIGAM FOR",
+            "title": "Pick origam when…",
+            "fits_title": "origam is a great fit",
+            "no_fits_title": "origam might not be the right call",
+            "greenfield": {
+                "title": "Greenfield Vue 3 project",
+                "description": "Starting fresh on Vue 3 with a design team that works in Figma and tokens? origam is built for this exact setup."
+            },
+            "token_team": {
+                "title": "Design-token-driven team",
+                "description": "If your designer uses Tokens Studio or Style Dictionary, origam integrates natively — no translation layer needed."
+            },
+            "saas_product": {
+                "title": "SaaS / product requiring multiple brand themes",
+                "description": "Need to ship the same app in client-A colours and client-B colours? Multi-theme at runtime is a first-class feature."
+            },
+            "dataviz": {
+                "title": "Data-heavy UI with charts",
+                "description": "29 chart primitives — line, area, bar, donut, heatmap, candlestick — themed and accessible, in one install."
+            },
+            "migration": {
+                "title": "Migrating a large Vuetify 2 codebase",
+                "description": "If you have thousands of Vuetify components to migrate, Vuetify 3 will be a lower-friction path than origam."
+            },
+            "ecosystem": {
+                "title": "Needing a large third-party template market",
+                "description": "If you rely on pre-built admin themes or marketplace templates, Vuetify or PrimeVue have a larger catalogue today."
+            }
+        },
+        "cta": {
+            "title": "Ready to try it?",
+            "description": "Install origam in 30 seconds and see how far the defaults take you.",
+            "cta_components": "Browse components",
+            "cta_install": "Get started",
+            "actions_label": "Try origam"
+        }
+    }
+}

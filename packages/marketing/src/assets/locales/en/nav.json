@@ -1,0 +1,26 @@
+{
+    "nav": {
+        "components": "Components",
+        "playground": "Playground",
+        "docs": "Docs",
+        "stories": "Stories",
+        "blog": "Blog",
+        "changelog": "Changelog",
+        "github": "GitHub",
+        "why_origam": "Why origam?",
+        "roadmap": "Roadmap",
+        "installation": "Installation",
+        "wireframe": "Wireframe",
+        "directives": "Directives",
+        "theming": "Theming",
+        "sections": {
+            "introduction": "Introduction",
+            "getting_started": "Getting started",
+            "features": "Features"
+        },
+        "a11y": {
+            "open_section": "Open {section} menu",
+            "nav_primary": "Primary navigation"
+        }
+    }
+}

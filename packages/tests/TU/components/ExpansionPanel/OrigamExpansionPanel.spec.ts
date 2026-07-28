@@ -322,3 +322,29 @@ describe('OrigamExpansionPanel — DS known bug #25 (slot #title routing)', () =
         // Headless validation is unreliable — validate with Playwright e2e.
     })
 })
+
+// Regression guard for #250: the root `<component :is="…">` used to read a
+// bare `tag` in `<script setup>`, which resolves against Vue's raw $props —
+// NOT the `useDefaults()` Proxy assigned to the local `props` variable —
+// unless written as `props.tag` explicitly. See OrigamTable.vue / #249 for
+// the full writeup of this footgun.
+describe('OrigamExpansionPanel — useDefaults (theme components wiring)', () => {
+    function mountPanelsThemed (componentDefaults: Record<string, unknown>, panelProps: Record<string, unknown> = {}) {
+        const theme = { name: 'brandx', mode: 'light' as const, components: { 'origam-expansion-panel': componentDefaults }, vars: {} }
+        const origam = createOrigam({ themes: [theme] })
+        origam._defaultsRef.value = origam._activeDefaultsFor('brandx', 'light')
+        return mount(OrigamExpansionPanels, {
+            slots: {
+                default: () => [h(OrigamExpansionPanel, { title: 'Panel 1', ...panelProps })]
+            },
+            attachTo: document.body,
+            global: { ...makeGlobal(), plugins: [origam] }
+        })
+    }
+
+    it('resolves tag="section" from theme.components[\'origam-expansion-panel\'] when not passed', () => {
+        const wrapper = mountPanelsThemed({ tag: 'section' })
+        expect(wrapper.find('.origam-expansion-panel').element.tagName).toBe('SECTION')
+        wrapper.unmount()
+    })
+})

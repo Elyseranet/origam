@@ -1,6 +1,6 @@
 <template>
 	<component
-			:is="tag"
+			:is="props.tag"
 			:id="id"
 			ref="rootRef"
 			role="tablist"

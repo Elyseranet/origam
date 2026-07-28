@@ -63,3 +63,52 @@ describe('OrigamRadio — theme.components["origam-radio"] resolution (#279)', (
         wrapper.unmount()
     })
 })
+
+// ---------------------------------------------------------------------------
+// #241 — Radio side of the same fix already locked in for Checkbox
+// (OrigamCheckbox.spec.ts's `useDefaults (theme components wiring)` block).
+// `IRadioBtnProps` extends `ISelectionControlProps`, exactly like
+// `ICheckboxBtnProps` — the fix lives one level down, in
+// `OrigamSelectionControl` itself, so it is NOT Checkbox-specific. This
+// block is the Radio-side equivalent, strict mirror of the Checkbox
+// assertions, so the family stays symmetrically covered (an asymmetric
+// lock — Checkbox verified, Radio not — would let a future regression on
+// Radio alone pass unnoticed).
+//
+// Uses its own `mountRadioThemed(componentDefaults, props)` helper
+// (mirrors `mountCheckboxThemed` in OrigamCheckbox.spec.ts) rather than
+// the fixed-shape `mountThemedRadio` above, so `theme.components['origam-radio']`
+// can be parameterised per test the same way.
+// ---------------------------------------------------------------------------
+
+async function mountRadioThemed(componentDefaults: Record<string, unknown>, props: Record<string, unknown> = {}) {
+    const theme = { name: 'brandx-radio', mode: 'light' as const, components: { 'origam-radio': componentDefaults }, vars: {} }
+    const origam = createOrigam({ themes: [theme] })
+    origam._defaultsRef.value = origam._activeDefaultsFor('brandx-radio', 'light')
+    const wrapper = mount(OrigamRadio, {
+        props: props as never,
+        global: { plugins: [origam] }
+    })
+    await nextTick()
+    await nextTick()
+    return wrapper
+}
+
+describe('OrigamRadio — useDefaults (theme components wiring) — #241 parity with Checkbox', () => {
+    it('resolves rounded="lg" from theme.components[\'origam-radio\'] onto the selection-control state-layer box (issue #241)', async () => {
+        const wrapper = await mountRadioThemed({ rounded: 'lg' })
+        const inputEl = wrapper.find('.origam-selection-control__input')
+        expect(inputEl.classes()).toContain('origam--rounded-lg')
+        expect(inputEl.attributes('style') || '').toContain('border-radius: var(--origam-radius---lg, 12px)')
+        wrapper.unmount()
+    })
+
+    it('resolves border={true} and elevation="md" from theme defaults onto the same state-layer box', async () => {
+        const wrapper = await mountRadioThemed({ border: true, elevation: 'md' })
+        const inputEl = wrapper.find('.origam-selection-control__input')
+        expect(inputEl.classes()).toContain('origam--border-thin')
+        expect(inputEl.classes()).toContain('origam--shadow-md')
+        expect(inputEl.attributes('style') || '').toContain('box-shadow: var(--origam-shadow---md)')
+        wrapper.unmount()
+    })
+})

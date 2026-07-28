@@ -68,7 +68,7 @@ const { theme, setTheme } = useTheme()
 
                 <p
                     class="home-themes__tooling"
-                    aria-label="Tooling compatibility"
+                    :aria-label="t('a11y.themes_tooling', 'Tooling compatibility')"
                 >
                     <span
                         v-for="(pill, index) in THEMES_TOOLING_TEXT"
@@ -89,7 +89,7 @@ const { theme, setTheme } = useTheme()
                     tag="ul"
                     :columns="2"
                     gap="sm"
-                    aria-label="Theme preview tiles"
+                    :aria-label="t('a11y.themes_preview_tiles', 'Theme preview tiles')"
                     class="home-themes__previews"
                 >
                     <origam-grid-item

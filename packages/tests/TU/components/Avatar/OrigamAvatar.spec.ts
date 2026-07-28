@@ -94,3 +94,22 @@ describe('OrigamAvatar — letterSpacing prop', () => {
         expect(cssOf({ letterSpacing: 'widest' })).toContain('--origam-avatar---letter-spacing: var(--origam-font__letterSpacing---widest)')
     })
 })
+
+// Regression guard for #250: the root `<component :is="…">` used to read a
+// bare `tag` in `<script setup>`, which resolves against Vue's raw $props —
+// NOT the `useDefaults()` Proxy assigned to the local `props` variable —
+// unless written as `props.tag` explicitly. See OrigamTable.vue / #249 for
+// the full writeup of this footgun.
+describe('OrigamAvatar — useDefaults (theme components wiring)', () => {
+    function mountAvatarThemed (componentDefaults: Record<string, unknown>, props: Record<string, unknown> = {}) {
+        const theme = { name: 'brandx', mode: 'light' as const, components: { 'origam-avatar': componentDefaults }, vars: {} }
+        const origam = createOrigam({ themes: [theme] })
+        origam._defaultsRef.value = origam._activeDefaultsFor('brandx', 'light')
+        return mount(OrigamAvatar, { props: { text: 'AP', ...props } as never, global: { plugins: [origam] } })
+    }
+
+    it('resolves tag="span" from theme.components[\'origam-avatar\'] when not passed', () => {
+        const wrapper = mountAvatarThemed({ tag: 'span' })
+        expect(wrapper.element.tagName).toBe('SPAN')
+    })
+})

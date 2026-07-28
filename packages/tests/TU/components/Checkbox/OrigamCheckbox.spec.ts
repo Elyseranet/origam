@@ -224,16 +224,21 @@ describe('OrigamCheckbox — reactive modelValue', () => {
 // an inline `color: var(--origam-color__action--primary---fgSubtle)` on
 // `.origam-selection-control__wrapper`.
 //
-// `rounded` is NOT used as the probe prop: `ICheckboxProps` extends
+// `rounded` — issue #241 fix. Previously `ICheckboxProps` extended
 // `IRoundedProps` (declared on the interface) but NOTHING downstream
-// (OrigamCheckboxBtn -> OrigamSelectionControl) ever calls `useRounded`
-// on it — the control's `border-radius: 50%` circles are hardcoded SCSS.
-// Confirmed via the same runtime probe: `rounded: 'lg'` produces NO class
-// and NO style anywhere in the rendered tree, with or without this fix.
-// This is the checkbox/radio glyph-rendering gap tracked in issue #241 —
-// out of scope here. useDefaults wiring alone cannot fix a prop nothing
-// downstream consumes; #241 is the ticket to wire useRounded into
-// OrigamSelectionControl.
+// (OrigamCheckboxBtn -> OrigamSelectionControl) ever called `useRounded`
+// on it, so `rounded: 'lg'` produced no class and no style anywhere in
+// the rendered tree. `ISelectionControlProps` now extends `IBorderProps`
+// / `IRoundedProps` / `IElevationProps`, and `OrigamSelectionControl`
+// consumes them on `.origam-selection-control__input` (the state-layer
+// box behind the glyph, same "box owns the surface" pattern as
+// `OrigamSwitchTrack`). IMPORTANT CAVEAT kept from the original
+// diagnostic: the checkbox/radio GLYPH itself (`mdi-checkbox-*`,
+// rendered by `<origam-icon>` as an icon-font character) has no
+// border-radius/border/box-shadow of its own — these props are proven
+// to reach a real DOM box now, but they do not reshape the glyph's
+// silhouette. That remains a separate rendering-mechanism question
+// (glyph vs drawn box), intentionally out of scope for this wiring fix.
 // ---------------------------------------------------------------------------
 
 async function mountCheckboxThemed(componentDefaults: Record<string, unknown>, props: Record<string, unknown> = {}) {
@@ -264,10 +269,18 @@ describe('OrigamCheckbox — useDefaults (theme components wiring)', () => {
         expect(wrapperEl.classes()).not.toContain('origam--color-primary')
     })
 
-    it('DIAGNOSTIC (documents issue #241, not a regression of this fix): rounded resolves via useDefaults but produces no visible effect — nothing downstream consumes it', async () => {
+    it('resolves rounded="lg" from theme.components[\'origam-checkbox\'] onto the selection-control state-layer box (issue #241)', async () => {
         const wrapper = await mountCheckboxThemed({ rounded: 'lg' })
-        const html = wrapper.html()
-        expect(html).not.toContain('origam--rounded-lg')
-        expect(html).not.toContain('border-radius')
+        const inputEl = wrapper.find('.origam-selection-control__input')
+        expect(inputEl.classes()).toContain('origam--rounded-lg')
+        expect(inputEl.attributes('style') || '').toContain('border-radius: var(--origam-radius---lg, 12px)')
+    })
+
+    it('resolves border={true} and elevation="md" from theme defaults onto the same state-layer box', async () => {
+        const wrapper = await mountCheckboxThemed({ border: true, elevation: 'md' })
+        const inputEl = wrapper.find('.origam-selection-control__input')
+        expect(inputEl.classes()).toContain('origam--border-thin')
+        expect(inputEl.classes()).toContain('origam--shadow-md')
+        expect(inputEl.attributes('style') || '').toContain('box-shadow: var(--origam-shadow---md)')
     })
 })

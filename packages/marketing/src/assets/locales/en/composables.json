@@ -1,0 +1,77 @@
+{
+    "composables": {
+        "meta": {
+            "title": "Composables · origam design system",
+            "description": "Browse 80+ composables grouped by domain. Each exposes a documented signature, parameters, return values and usage examples."
+        },
+        "hero": {
+            "badge": "80+ composables — Vue 3",
+            "title_line1": "Composable",
+            "title_line2": "catalogue.",
+            "subtitle": "Every origam composable is documented with its real TypeScript signature, parameters and return values — sourced directly from the DS source code.",
+            "search_placeholder": "Search composables…",
+            "search_label": "Filter composables by name or domain",
+            "count_filtered_of": "of",
+            "count_filtered_match": "composables match",
+            "count_total": "composables across",
+            "count_domains": "domains"
+        },
+        "catalog": {
+            "eyebrow": "BROWSE BY DOMAIN",
+            "title": "All composables.",
+            "empty_title": "No composables found",
+            "empty_desc": "No composable matches \"{query}\". Try a different term."
+        },
+        "detail": {
+            "meta": {
+                "title": "{name} · origam composables"
+            },
+            "breadcrumb_label": "Page location",
+            "breadcrumb_catalog": "Composables",
+            "external_links_label": "External resources",
+            "toc_label": "Table of contents",
+            "toc_heading": "On this page",
+            "consumed_label": "Consumed interfaces",
+            "hero": {
+                "source_label": "Source",
+                "import_label": "Copy import statement",
+                "stable_label": "stable"
+            },
+            "not_found": {
+                "title": "Composable not found",
+                "desc": "No composable matches the slug",
+                "back": "Back to catalogue"
+            },
+            "no_doc": {
+                "title": "Documentation coming soon",
+                "desc": "The detailed API reference for this composable is being written."
+            },
+            "signature": {
+                "eyebrow": "API",
+                "title": "Signature",
+                "desc": "Full TypeScript signature sourced from the composable file."
+            },
+            "params": {
+                "eyebrow": "API",
+                "title": "Parameters",
+                "desc": "Input parameters accepted by this composable.",
+                "required": "required"
+            },
+            "returns": {
+                "eyebrow": "API",
+                "title": "Return values",
+                "desc": "Properties and methods exposed by the composable return object."
+            },
+            "examples": {
+                "eyebrow": "Usage",
+                "title": "Examples",
+                "desc": "Ready-to-paste usage snippets."
+            },
+            "related": {
+                "eyebrow": "Ecosystem",
+                "title": "Related composables",
+                "desc": "Other composables that pair naturally with this one."
+            }
+        }
+    }
+}

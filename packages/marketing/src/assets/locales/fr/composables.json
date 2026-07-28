@@ -1,0 +1,77 @@
+{
+    "composables": {
+        "meta": {
+            "title": "Composables · origam design system",
+            "description": "Parcourez 80+ composables regroupés par domaine. Chacun expose une signature documentée, des paramètres, des valeurs de retour et des exemples d'usage."
+        },
+        "hero": {
+            "badge": "80+ composables — Vue 3",
+            "title_line1": "Catalogue de",
+            "title_line2": "composables.",
+            "subtitle": "Chaque composable d'origam est documenté avec sa vraie signature TypeScript, ses paramètres et ses valeurs de retour — extraits directement du code source du DS.",
+            "search_placeholder": "Rechercher un composable…",
+            "search_label": "Filtrer les composables par nom ou domaine",
+            "count_filtered_of": "sur",
+            "count_filtered_match": "composables correspondent",
+            "count_total": "composables répartis dans",
+            "count_domains": "domaines"
+        },
+        "catalog": {
+            "eyebrow": "PARCOURIR PAR DOMAINE",
+            "title": "Tous les composables.",
+            "empty_title": "Aucun composable trouvé",
+            "empty_desc": "Aucun composable ne correspond à « {query} ». Essayez un autre terme."
+        },
+        "detail": {
+            "meta": {
+                "title": "{name} · composables origam"
+            },
+            "breadcrumb_label": "Emplacement de la page",
+            "breadcrumb_catalog": "Composables",
+            "external_links_label": "Ressources externes",
+            "toc_label": "Table des matières",
+            "toc_heading": "Sur cette page",
+            "consumed_label": "Interfaces consommées",
+            "hero": {
+                "source_label": "Source",
+                "import_label": "Copier l'instruction d'import",
+                "stable_label": "stable"
+            },
+            "not_found": {
+                "title": "Composable introuvable",
+                "desc": "Aucun composable ne correspond au slug",
+                "back": "Retour au catalogue"
+            },
+            "no_doc": {
+                "title": "Documentation à venir",
+                "desc": "La référence API détaillée de ce composable est en cours de rédaction."
+            },
+            "signature": {
+                "eyebrow": "API",
+                "title": "Signature",
+                "desc": "Signature TypeScript complète extraite du fichier du composable."
+            },
+            "params": {
+                "eyebrow": "API",
+                "title": "Paramètres",
+                "desc": "Paramètres d'entrée acceptés par ce composable.",
+                "required": "requis"
+            },
+            "returns": {
+                "eyebrow": "API",
+                "title": "Valeurs de retour",
+                "desc": "Propriétés et méthodes exposées par l'objet retourné par le composable."
+            },
+            "examples": {
+                "eyebrow": "Usage",
+                "title": "Exemples",
+                "desc": "Extraits de code prêts à coller."
+            },
+            "related": {
+                "eyebrow": "Écosystème",
+                "title": "Composables liés",
+                "desc": "D'autres composables qui s'associent naturellement à celui-ci."
+            }
+        }
+    }
+}
