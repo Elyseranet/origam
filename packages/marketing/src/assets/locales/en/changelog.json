@@ -1,0 +1,127 @@
+{
+    "changelog": {
+        "meta": {
+            "title": "Changelog · origam design system",
+            "description": "Every release of the origam design system, curated and accessible in one place."
+        },
+        "hero": {
+            "badge": "Changelog",
+            "title_line1": "Changelog.",
+            "title_line2": "Every release.",
+            "subtitle": "A curated overview of what shipped in each version of origam. Dates are release dates; the full diff lives on GitHub.",
+            "actions_label": "Changelog links",
+            "full_changelog": "Full changelog on GitHub"
+        },
+        "list": {
+            "eyebrow": "RELEASE HISTORY",
+            "title_line1": "Pick a release.",
+            "title_line2": "See what shipped.",
+            "subtitle": "Choose any version to see exactly what shipped — the summary plus its key highlights."
+        },
+        "select": {
+            "label": "Select a version"
+        },
+        "type": {
+            "unreleased": "Next",
+            "major": "Major",
+            "minor": "Minor",
+            "patch": "Patch"
+        },
+        "highlight": {
+            "added": "Added",
+            "changed": "Changed",
+            "fixed": "Fixed",
+            "deprecated": "Deprecated"
+        },
+        "unreleased": {
+            "label": "Not yet released"
+        },
+        "aria": {
+            "version": "Version",
+            "highlights": "Release highlights",
+            "version_links": "Version links"
+        },
+        "panel": {
+            "full_link": "Full changelog on GitHub"
+        },
+        "cta": {
+            "title": "Stay in the loop.",
+            "description": "Watch the repository on GitHub to be notified of every new release.",
+            "cta_github": "Star on GitHub",
+            "cta_fulllog": "Read full CHANGELOG",
+            "actions_label": "Follow origam"
+        },
+        "versions": {
+            "unreleased": {
+                "summary": "Work in progress — not yet released. Brand themes extracted from the DS, glassmorphism tokens, and SSR gaps resolved.",
+                "h1": "OrigamCode — compact and prompt display modes; two-axis theming (data-theme × data-mode) support",
+                "h2": "backdrop-filter glassmorphism tokens on Card / Sheet / Toolbar / Menu",
+                "h3": "Brand themes removed from the DS (ADR-004) — now installed via createOrigam() with a themes option instead of bundled in the lib",
+                "h4": "OrigamImg — markBooted rAF guard behind IN_BROWSER (SSR crash fixed)",
+                "h5": "Six SSR/theming gaps resolved: theme cookie race, data-mode on first SSR render, hydration mismatch on theme toggle"
+            },
+            "v260": {
+                "summary": "The bracket + a11y + theming release. v-contrast directive, OrigamBracket double-elimination, two-axis theming engine, monorepo migration. 170 commits.",
+                "h1": "v-contrast directive — runtime WCAG 2.1 AA text-legibility guard applied to every colour-bearing component",
+                "h2": "OrigamBracket — full double-elimination layout, Grand Final, cross-cutting prop surface, status indicators",
+                "h3": "OrigamBlockquote — two-axis colour model (color + bgColor) on all 5 variants",
+                "h4": "Two-axis theming engine — data-theme (brand identity) × data-mode (light/dark) + semantic JSON authoring",
+                "h5": "useStateEffect repaired — runtime prop changes for color/bgColor were silently ignored after initial mount",
+                "h6": "Monorepo migration — packages/ds, marketing, stories, docs, tests, figma-plugin as pnpm workspace packages"
+            },
+            "v251": {
+                "summary": "Patch. Two housekeeping commits with no public API impact.",
+                "h1": "Repository structure cleaned up — unit specs moved to tests/TU/, dev playground dropped",
+                "h2": ".gitignore updated to exclude test artefacts"
+            },
+            "v250": {
+                "summary": "The accessibility release. WCAG 2.1 AA pass across the entire component catalogue. 35 targeted fixes across 36 components.",
+                "h1": "WCAG 2.1 AA pass — 35 fixes: missing aria-label, incorrect role, focus gaps, colour-contrast warnings, keyboard-navigation holes",
+                "h2": "OrigamSelect — full combobox ARIA pattern (role=combobox + aria-expanded + aria-activedescendant)",
+                "h3": "OrigamDataTable — <caption> element added; OrigamColorPicker — keyboard navigation restored",
+                "h4": "VitePress docs sidebar reorganised by UI taxonomy (layout / navigation / data-display / forms / feedback / utility)"
+            },
+            "v240": {
+                "summary": "The chart engine + media kit + Wave 4 release. 27 chart primitives, atomic media kit (OrigamAudio + OrigamVideo), 6 utility components, OrigamCalendar, gradient support. 149 commits.",
+                "h1": "OrigamChart + useChart — in-house chart engine. 8 base types, pure SVG, 19 chart families total, zero external dep",
+                "h2": "OrigamAudio + OrigamVideo — custom players with Media Session API, waveform, stem-tracks, WebVTT captions, zero external dep",
+                "h3": "OrigamGrid, OrigamMasonry, OrigamEmptyState, OrigamClipboard, OrigamInlineEdit, OrigamNumberFormat — Wave 4 utilities",
+                "h4": "OrigamCalendar — 4 views, RRULE recurring events, drag-to-create, keyboard navigation; OrigamTextMask + gradient color props",
+                "h5": "DS-wide reuse-interfaces audit — every component now extends IDimensionProps / IMarginProps / etc.",
+                "h6": "withDefaults() inline literal rule enforced — Grid, Masonry, Blockquote undefined prop crashes fixed"
+            },
+            "v230": {
+                "summary": "The features release. Four new components, official Nuxt module, SSR safety audit. 378 unit tests. 0 lint errors.",
+                "h1": "origam/nuxt — official Nuxt 3 / Nuxt 4 module with SSR-safe theme resolution, auto-imports, FOUC-free",
+                "h2": "OrigamTextField mask prop — built-in patterns (phone, IBAN, credit card, date…) + custom syntax, zero external dep",
+                "h3": "OrigamTextareaField mode=rich — lightweight HTML/Markdown editor, 9 toolbar commands, zero external dep",
+                "h4": "SSR safety audit — every composable and component confirmed SSR-safe or patched; new ssr-smoke.spec.ts"
+            },
+            "v221": {
+                "summary": "Patch. First version published to npm (2.2.0 was tagged but never published). One package.json exports fix.",
+                "h1": "Expose ./package.json explicitly in the exports map — consumer pattern reading the version was broken",
+                "h2": "2.2.0 was tagged but never published to npm — 2.2.1 is the first version on the registry"
+            },
+            "v220": {
+                "summary": "The ready-for-npm release. Package metadata, peer dependencies, tree-shaking signals, README. Tarball shrunk from 5.6 MB to 867.9 kB. No API change vs 2.1.0.",
+                "h1": "525+ missing Slot / Emit Variants across 113 stories; OrigamSwitchTrack extracted as a standalone primitive",
+                "h2": "peerDependencies (vue ^3.5, vue-i18n ^11, vue-router ^4.5) — no longer auto-installed as dependencies",
+                "h3": "Carousel progress prop wired to real cycle timer; Histoire sash resizes in both directions"
+            },
+            "v210": {
+                "summary": "The classes-first release. 13 transversal composables now emit utility classes for tokenised values. The inline-style stack on a typical button drops from ~12 to ~6 declarations.",
+                "h1": "66 utility classes generated by Style Dictionary — origam--bg-[intent], origam--shadow-[rung], origam--rounded-[size]…",
+                "h2": "New *Classes return keys on all 10 transversal composables — colorClasses, elevationClasses, roundedClasses…",
+                "h3": "~54 components migrated to consume *Classes in parallel with *Styles (transition strategy A)",
+                "h4": "OrigamSwitch thumb tinting restored — regression from OrigamSwitchTrack extraction fixed via classes-first"
+            },
+            "v200": {
+                "summary": "The design tokens release. Every component now resolves colors, spacing, typography and motion through a centralised, theme-aware token pipeline. 50+ components migrated.",
+                "h1": "Multi-tier design tokens — Primitive / Semantic / Component tiers; Style Dictionary v4 + Tokens Studio pipeline",
+                "h2": "Multi-theme runtime — useTheme() composable, <OrigamThemeProvider>, prefers-color-scheme fallback",
+                "h3": "CSS-first / JS-fallback principle — useCssSupport() composable wrapping CSS.supports() with 20 feature flags",
+                "h4": "Multiple critical bug fixes — OrigamMessages id binding, OrigamNumberField reactive loop, OrigamOtpInputField crash"
+            }
+        }
+    }
+}

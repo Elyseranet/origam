@@ -1,0 +1,156 @@
+{
+    "home": {
+        "meta": {
+            "title": "origam · design system Vue 3",
+            "description": "95 composants. 29 primitives de graphiques. Accessibilité complète. Design tokens prêts à l'emploi. Conçu pour Vue 3 avec une DX TypeScript-first."
+        },
+        "hero": {
+            "badge": "v{version} — 29 graphiques livrés, conforme WCAG 2.1 AA",
+            "title_line1": "Le design system Vue 3",
+            "title_line2": "qui marche, tout simplement.",
+            "subtitle": "95 composants. 29 primitives de graphiques. Accessibilité complète. Design tokens prêts à l'emploi. Conçu pour Vue 3 avec une DX TypeScript-first.",
+            "cta_components": "Parcourir les composants",
+            "cta_github": "Star sur GitHub",
+            "install": "npm install origam",
+            "copy": "Copier",
+            "copied": "Copié",
+            "ctas_label": "Appels à l'action du hero"
+        },
+        "kpis": {
+            "title": "origam en chiffres",
+            "components_value": "95",
+            "components_label": "Composants",
+            "charts_value": "29",
+            "charts_label": "Primitives de graphiques",
+            "a11y_value": "100%",
+            "a11y_label": "WCAG 2.1 AA",
+            "size_value": "<50ko",
+            "size_label": "Tree-shakable",
+            "license_value": "MIT",
+            "license_label": "Open source"
+        },
+        "features": {
+            "eyebrow": "CE QU'IL Y A DEDANS",
+            "title": "Tout ce que vous attendez. Rien de superflu.",
+            "title_line1": "Tout ce que vous attendez.",
+            "title_line2": "Rien de superflu.",
+            "subtitle": "Une boîte à outils complète pour livrer des apps Vue 3 — des primitives atomiques à la dataviz complexe, chaque pièce testée, thémée et conforme a11y.",
+            "charts": {
+                "title": "29 primitives de graphiques",
+                "description": "Ligne, aire, barre, donut, chandelier, heatmap — une couverture digne de Highcharts, sans la licence."
+            },
+            "a11y": {
+                "title": "Vérifié WCAG 2.1 AA",
+                "description": "Chaque composant est livré avec des tests d'accessibilité axe-core + Playwright. Clavier, lecteurs d'écran, mouvement : couverts."
+            },
+            "tokens": {
+                "title": "Design tokens",
+                "description": "Multi-thème via Tokens Studio. Basculez entre clair, sombre ou votre propre marque à l'exécution, sans remontage."
+            },
+            "typescript": {
+                "title": "TypeScript d'abord",
+                "description": "Mode strict, inférence de types complète, génériques sur Data Table/List. Votre IDE vous remerciera."
+            },
+            "css": {
+                "title": "CSS d'abord",
+                "description": "Container queries, :has(), color-mix(), view-transition-name. On utilise le CSS moderne pour que vous n'ayez pas à le réinventer."
+            },
+            "composition": {
+                "title": "Composition API",
+                "description": "Construit sur script setup + Composition API. Composables headless exposés quand vous devez descendre au bas niveau."
+            }
+        },
+        "playground": {
+            "eyebrow": "PLAYGROUND EN DIRECT",
+            "title": "Essayez avant de livrer.",
+            "file": "App.vue",
+            "caption": "Le design system Vue 3 qui marche, tout simplement. Essayez un composant en direct.",
+            "preview_title": "Hello Origam",
+            "preview_text": "Le design system Vue 3 qui marche, tout simplement. Essayez un composant en direct.",
+            "preview_cta": "Commencer"
+        },
+        "showcase": {
+            "eyebrow": "VITRINE",
+            "title": "95 composants. Une seule âme.",
+            "title_line1": "95 composants.",
+            "title_line2": "Une seule âme.",
+            "view_all": "Voir tout",
+            "data_table": {
+                "title": "Data Table",
+                "caption": "Triable · filtrable · virtualisé",
+                "badge": "Data",
+                "col_project": "PROJET",
+                "col_name": "Nom",
+                "col_owner": "Responsable",
+                "col_status": "Statut",
+                "row_menu": "Actions de ligne",
+                "row1_name": "Version Aurora",
+                "row1_owner": "Arnaud",
+                "row1_status": "Livré",
+                "row2_name": "Tokens v2",
+                "row2_owner": "Léa",
+                "row2_status": "En revue",
+                "row3_name": "Audit a11y",
+                "row3_owner": "Jade",
+                "row3_status": "Livré",
+                "row4_name": "Moteur de graphiques",
+                "row4_owner": "Marc",
+                "row4_status": "Brouillon",
+                "row5_name": "Nouveau thème",
+                "row5_owner": "Romi",
+                "row5_status": "En revue"
+            },
+            "chart_line": {
+                "title": "Chart Line",
+                "caption": "+12,4 % ce mois-ci"
+            },
+            "switch": {
+                "title": "Switch",
+                "caption": "inset · plat · défaut"
+            },
+            "chips": {
+                "title": "Chips",
+                "caption": "6 intentions",
+                "primary": "Primaire",
+                "neutral": "Neutre",
+                "success": "Succès",
+                "warning": "Avertissement",
+                "danger": "Danger",
+                "info": "Info"
+            },
+            "avatar_group": {
+                "title": "Groupe d'avatars",
+                "caption": "+24 membres"
+            }
+        },
+        "themes": {
+            "eyebrow": "THÉMATISATION",
+            "title_line1": "Un design system.",
+            "title_line2": "Toutes les marques.",
+            "subtitle": "Design tokens conformes DTCG, multi-thème nativement. Basculez entre clair, sombre ou votre marque à l'exécution — sans remontage, sans clignotement.",
+            "chip_sobre": "Sobre",
+            "chip_glass": "Glass",
+            "chip_geek": "Geek",
+            "chip_cartoon": "Cartoon",
+            "chip_editorial": "Éditorial",
+            "chip_material": "Material",
+            "chip_ecom": "Ecom",
+            "chip_apple": "Apple",
+            "tooling_label": "Outillage",
+            "tokens_studio": "→ compatible tokens.studio",
+            "style_dictionary": "→ Style Dictionary v4",
+            "preview_light": "light.json",
+            "preview_dark": "dark.json",
+            "preview_brand_a": "brand-a.json",
+            "preview_brand_b": "brand-b.json",
+            "preview_button": "Bouton"
+        },
+        "cta": {
+            "title": "Prêt à livrer plus vite ?",
+            "description": "Démarrez votre projet Vue 3 avec origam en 30 secondes.",
+            "cta_start": "Commencer",
+            "cta_docs": "Lire la doc",
+            "actions_label": "Commencer"
+        }
+    }
+}

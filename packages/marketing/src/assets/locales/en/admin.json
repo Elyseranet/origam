@@ -1,0 +1,110 @@
+{
+    "admin": {
+        "appbar": {
+            "label": "Admin toolbar",
+            "title": "Admin",
+            "back_to_site": "Back to site",
+            "logout": "Log out",
+            "toggle_nav": "Toggle navigation"
+        },
+        "nav": {
+            "label": "Admin navigation",
+            "dashboard": "Dashboard",
+            "sync": "Sync",
+            "kind": {
+                "component": "Components",
+                "composable": "Composables",
+                "const": "Consts",
+                "directive": "Directives",
+                "enum": "Enums",
+                "interface": "Interfaces",
+                "type": "Types",
+                "util": "Utils"
+            }
+        },
+        "login": {
+            "title": "Admin area",
+            "subtitle": "Enter the admin password to access the backoffice.",
+            "password_label": "Password",
+            "password_placeholder": "Admin password",
+            "submit": "Sign in",
+            "error_wrong_password": "Incorrect password. Please try again.",
+            "error_server": "Server error. Please try again.",
+            "a11y_form": "Admin login form"
+        },
+        "dashboard": {
+            "title": "Dashboard",
+            "subtitle": "Overview of all reference families.",
+            "total_entries": "entries",
+            "entries": "entries"
+        },
+        "list": {
+            "search_placeholder": "Search…",
+            "search_label": "Filter entries",
+            "loading": "Loading…",
+            "col_name": "Name",
+            "col_category": "Category",
+            "col_icon": "Icon",
+            "col_edited": "Edited",
+            "edit_action": "Edit",
+            "edited_badge": "Edited",
+            "empty": "No entries found."
+        },
+        "editor": {
+            "title": "Edit {name}",
+            "subtitle": "{kind} · {slug}",
+            "section_editable": "Editable fields",
+            "section_readonly": "Source fields",
+            "section_readonly_hint": "These fields are populated automatically by the sync pipeline.",
+            "field_category": "Category",
+            "field_icon": "Icon",
+            "field_description_key": "Description key (i18n)",
+            "field_description_fallback": "Description (fallback)",
+            "field_story_url": "Story URL",
+            "field_doc_url": "Doc URL",
+            "field_note_key": "Note key (i18n)",
+            "field_note_fallback": "Note (fallback)",
+            "field_slug": "Slug",
+            "field_name": "Name",
+            "field_tag": "Tag",
+            "field_source_file": "Source file",
+            "field_definition": "Definition",
+            "field_signature": "Signature",
+            "auto_badge": "auto · re-sync",
+            "save": "Save changes",
+            "saving": "Saving…",
+            "save_success": "Changes saved.",
+            "save_error": "Failed to save: {error}",
+            "back": "Back to list",
+            "edited_by_user_badge": "Edited",
+            "not_found": "Entry not found."
+        },
+        "sync": {
+            "title": "Sync",
+            "subtitle": "Trigger a re-sync from the DS source and view recent sync history.",
+            "trigger_title": "Re-sync from source",
+            "trigger_desc": "Reads the DS source and upserts the reference catalogue in the database.",
+            "trigger_btn": "Trigger re-sync",
+            "triggering": "Syncing…",
+            "result_created": "created",
+            "result_updated": "updated",
+            "result_unchanged": "unchanged",
+            "result_orphaned": "orphaned",
+            "result_error": "Sync error: {error}",
+            "history_title": "Recent sync runs",
+            "refresh_history": "Refresh",
+            "col_started": "Started",
+            "col_finished": "Finished",
+            "col_status": "Status",
+            "col_created": "Created",
+            "col_updated": "Updated",
+            "col_unchanged": "Unchanged",
+            "col_orphaned": "Orphaned",
+            "col_commit": "Commit",
+            "status_running": "Running",
+            "status_success": "Success",
+            "status_failed": "Failed",
+            "no_runs": "No sync runs yet."
+        }
+    }
+}

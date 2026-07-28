@@ -1,0 +1,27 @@
+{
+    "footer": {
+        "tagline": "The Vue 3 design system that just works.",
+        "product": {
+            "title": "Product",
+            "charts": "Charts",
+            "themes": "Themes"
+        },
+        "resources": {
+            "title": "Resources",
+            "github": "GitHub",
+            "community": "Community",
+            "discord": "Discord",
+            "discussions": "Discussions",
+            "twitter": "Twitter",
+            "rss": "RSS"
+        },
+        "legal": {
+            "title": "Legal",
+            "license": "MIT License",
+            "privacy": "Privacy",
+            "contact": "Contact"
+        },
+        "copyright": "© 2026 origam · MIT",
+        "made_with": "Made with origam, by humans."
+    }
+}
