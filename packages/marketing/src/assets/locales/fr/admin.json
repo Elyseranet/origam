@@ -1,0 +1,110 @@
+{
+    "admin": {
+        "appbar": {
+            "label": "Barre d'outils d'administration",
+            "title": "Administration",
+            "back_to_site": "Retour au site",
+            "logout": "Se déconnecter",
+            "toggle_nav": "Basculer la navigation"
+        },
+        "nav": {
+            "label": "Navigation d'administration",
+            "dashboard": "Tableau de bord",
+            "sync": "Synchronisation",
+            "kind": {
+                "component": "Composants",
+                "composable": "Composables",
+                "const": "Constantes",
+                "directive": "Directives",
+                "enum": "Énumérations",
+                "interface": "Interfaces",
+                "type": "Types",
+                "util": "Utilitaires"
+            }
+        },
+        "login": {
+            "title": "Espace d'administration",
+            "subtitle": "Saisissez le mot de passe d'administration pour accéder au backoffice.",
+            "password_label": "Mot de passe",
+            "password_placeholder": "Mot de passe d'administration",
+            "submit": "Se connecter",
+            "error_wrong_password": "Mot de passe incorrect. Veuillez réessayer.",
+            "error_server": "Erreur serveur. Veuillez réessayer.",
+            "a11y_form": "Formulaire de connexion administrateur"
+        },
+        "dashboard": {
+            "title": "Tableau de bord",
+            "subtitle": "Vue d'ensemble de toutes les familles de référence.",
+            "total_entries": "entrées",
+            "entries": "entrées"
+        },
+        "list": {
+            "search_placeholder": "Rechercher…",
+            "search_label": "Filtrer les entrées",
+            "loading": "Chargement…",
+            "col_name": "Nom",
+            "col_category": "Catégorie",
+            "col_icon": "Icône",
+            "col_edited": "Modifié",
+            "edit_action": "Modifier",
+            "edited_badge": "Modifié",
+            "empty": "Aucune entrée trouvée."
+        },
+        "editor": {
+            "title": "Modifier {name}",
+            "subtitle": "{kind} · {slug}",
+            "section_editable": "Champs modifiables",
+            "section_readonly": "Champs source",
+            "section_readonly_hint": "Ces champs sont renseignés automatiquement par le pipeline de synchronisation.",
+            "field_category": "Catégorie",
+            "field_icon": "Icône",
+            "field_description_key": "Clé de description (i18n)",
+            "field_description_fallback": "Description (fallback)",
+            "field_story_url": "URL de la story",
+            "field_doc_url": "URL de la documentation",
+            "field_note_key": "Clé de note (i18n)",
+            "field_note_fallback": "Note (fallback)",
+            "field_slug": "Slug",
+            "field_name": "Nom",
+            "field_tag": "Tag",
+            "field_source_file": "Fichier source",
+            "field_definition": "Définition",
+            "field_signature": "Signature",
+            "auto_badge": "auto · resynchro",
+            "save": "Enregistrer les modifications",
+            "saving": "Enregistrement…",
+            "save_success": "Modifications enregistrées.",
+            "save_error": "Échec de l'enregistrement : {error}",
+            "back": "Retour à la liste",
+            "edited_by_user_badge": "Modifié",
+            "not_found": "Entrée introuvable."
+        },
+        "sync": {
+            "title": "Synchronisation",
+            "subtitle": "Déclenchez une resynchronisation depuis la source DS et consultez l'historique récent des synchronisations.",
+            "trigger_title": "Resynchroniser depuis la source",
+            "trigger_desc": "Lit la source DS et met à jour (upsert) le catalogue de référence dans la base de données.",
+            "trigger_btn": "Déclencher la resynchronisation",
+            "triggering": "Synchronisation en cours…",
+            "result_created": "créées",
+            "result_updated": "mises à jour",
+            "result_unchanged": "inchangées",
+            "result_orphaned": "orphelines",
+            "result_error": "Erreur de synchronisation : {error}",
+            "history_title": "Synchronisations récentes",
+            "refresh_history": "Actualiser",
+            "col_started": "Démarré",
+            "col_finished": "Terminé",
+            "col_status": "Statut",
+            "col_created": "Créées",
+            "col_updated": "Mises à jour",
+            "col_unchanged": "Inchangées",
+            "col_orphaned": "Orphelines",
+            "col_commit": "Commit",
+            "status_running": "En cours",
+            "status_success": "Succès",
+            "status_failed": "Échec",
+            "no_runs": "Aucune synchronisation pour l'instant."
+        }
+    }
+}
