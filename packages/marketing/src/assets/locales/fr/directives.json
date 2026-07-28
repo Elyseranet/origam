@@ -56,9 +56,9 @@
             },
             "modifiers": {
                 "eyebrow": "API",
-                "title": "Modifiers",
-                "desc": "Modifiers à suffixe point qui modifient le comportement de la directive.",
-                "table_caption": "Modifiers"
+                "title": "Modificateurs",
+                "desc": "Modificateurs à suffixe point qui modifient le comportement de la directive.",
+                "table_caption": "Modificateurs"
             },
             "examples": {
                 "eyebrow": "Usage",
