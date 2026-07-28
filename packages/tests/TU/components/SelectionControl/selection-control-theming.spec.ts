@@ -157,3 +157,23 @@ describe('OrigamSelectionControl — grid-area is context-scoped, not unconditio
         expect(wrapper.element.closest('.origam-input')).toBeNull()
     })
 })
+
+describe('OrigamSelectionControl — le halo suit `rounded` (#241)', () => {
+    it('déclare `border-radius: inherit` sur le :before, jamais une valeur en dur', async () => {
+        const fs = await import('node:fs')
+        const path = await import('node:path')
+        const src = fs.readFileSync(
+            path.resolve(process.cwd(), '../ds/src/components/SelectionControl/OrigamSelectionControl.vue'),
+            'utf-8'
+        )
+        const styleBlock = src.slice(src.indexOf('<style'))
+        const beforeBlock = styleBlock.slice(styleBlock.indexOf('&:before'))
+
+        // Le halo était codé `border-radius: 100%`, donc circulaire même sous
+        // `rounded="md"`. C'était la SEULE surface que la prop pouvait peindre
+        // au repos, et elle l'ignorait. `inherit` reprend le rayon résolu par
+        // `useRounded` sur `__input`.
+        expect(beforeBlock).toMatch(/border-radius:\s*inherit/)
+        expect(beforeBlock.slice(0, 400)).not.toMatch(/border-radius:\s*100%/)
+    })
+})

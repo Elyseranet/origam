@@ -47,11 +47,31 @@ const accepted = ref(false)
 </template>
 ```
 
-`rounded` / `border` / `elevation` apply to the control's state-layer box
-(the circular hit/hover area behind the checkbox glyph), not to the glyph
-itself — the checked/unchecked mark is an icon-font character (`mdi-checkbox-*`)
-with no border-radius of its own. Expect a visible ring/shadow/shape change
-around the control, not a reshaped checkbox mark.
+`rounded` / `border` / `elevation` apply to the control's **state-layer box**
+— the hit/hover area behind the glyph — not to the glyph itself. The
+checked/unchecked mark is an icon-font character (`mdi-checkbox-*`,
+`mdi-radiobox-*`) with no border-radius of its own.
+
+::: warning `rounded` alone paints nothing at rest
+The state-layer box has **no background and no border by default**. Changing
+its `border-radius` is real — it is measurable in the computed style — but
+there is nothing for the new corner to reveal, so a `rounded` prop passed on
+its own produces **no visible difference at rest**.
+
+`rounded` becomes visible when something paints that box:
+
+- **on hover**, the state layer fills in and follows the radius;
+- **combined with `border`**, which draws a ring on the box;
+- **combined with `elevation`**, which casts a shadow shaped by the radius;
+- with a custom background of your own.
+
+This matters for theme authors: a theme block such as
+`'origam-checkbox': { rounded: 'md' }` changes the hover halo, **not** the
+resting silhouette of the checkbox. If you want the mark itself to be
+square-with-rounded-corners rather than the DS glyph, that is a rendering
+change (glyph → drawn CSS box), not a prop — see
+[#241](https://github.com/arnaudprioul/origam/issues/241).
+:::
 
 ## States (disabled / readonly / indeterminate)
 
