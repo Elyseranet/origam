@@ -1,0 +1,76 @@
+{
+    "types": {
+        "meta": {
+            "title": "API Types · origam design system",
+            "description": "Browse TypeScript types and enums used across origam props. Click any type to see its definition, values and the components that use it."
+        },
+        "hero": {
+            "badge": "TypeScript types & enums",
+            "title_line1": "API",
+            "title_line2": "types.",
+            "subtitle": "Every TypeScript type and enum used across origam props. Fully documented with definitions, accepted values and cross-references to the components that use them.",
+            "search_placeholder": "Search types…",
+            "search_label": "Filter types by name or category",
+            "count_filtered_of": "of",
+            "count_filtered_match": "types match",
+            "count_total": "types and enums across",
+            "count_categories": "categories"
+        },
+        "catalog": {
+            "eyebrow": "BROWSE BY CATEGORY",
+            "title": "All types.",
+            "empty_title": "No types found",
+            "empty_desc": "No type matches \"{query}\". Try a different term."
+        },
+        "kind": {
+            "type": "type",
+            "enum": "enum"
+        },
+        "detail": {
+            "meta": {
+                "title": "{name} · origam API types"
+            },
+            "breadcrumb_label": "Page location",
+            "breadcrumb_catalog": "Types",
+            "external_links_label": "External resources",
+            "toc_label": "Table of contents",
+            "toc_heading": "On this page",
+            "hero": {
+                "source_label": "Source"
+            },
+            "not_found": {
+                "title": "Type not found",
+                "desc": "No type matches the slug",
+                "back": "Back to catalogue"
+            },
+            "definition": {
+                "eyebrow": "TypeScript",
+                "title": "Definition",
+                "desc": "The TypeScript definition as found in the origam source. Click the copy icon to copy the snippet."
+            },
+            "no_doc": {
+                "title": "Documentation coming soon",
+                "desc": "The detailed API reference for this type is being written."
+            },
+            "values": {
+                "eyebrow": "Accepted",
+                "eyebrow_enum": "Members",
+                "title": "Values",
+                "title_enum": "Members",
+                "desc": "Accepted string literal values for this type. Click a value to copy it.",
+                "desc_enum": "All members of this enum. Click a value to copy it to clipboard.",
+                "copy_label": "Copy value"
+            },
+            "used_by": {
+                "eyebrow": "Ecosystem",
+                "title": "Used by",
+                "desc": "Components and props that accept this type as a value."
+            },
+            "examples": {
+                "eyebrow": "Usage",
+                "title": "Examples",
+                "desc": "Ready-to-paste code snippets using this type."
+            }
+        }
+    }
+}
