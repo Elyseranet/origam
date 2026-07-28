@@ -9,10 +9,6 @@ import type { LocaleObject } from '@nuxtjs/i18n'
 // (e.g. `{ "nav": { ... } }`), which is required for the merge to nest
 // correctly (see dist/runtime/shared/messages.js: deepCopy per file).
 //
-// NOTE: `fr` intentionally has one fewer fragment than `en` — the `admin`
-// namespace has no French translation yet (tracked as an existing i18n gap,
-// not introduced by this split). `pnpm -F @origam/marketing i18n:check`
-// reports this as a parity warning.
 const EN_NAMESPACES = [
     'a11y',
     'admin',
@@ -31,6 +27,7 @@ const EN_NAMESPACES = [
 
 const FR_NAMESPACES = [
     'a11y',
+    'admin',
     'brand',
     'changelog',
     'chrome',
