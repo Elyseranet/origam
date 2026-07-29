@@ -34,11 +34,14 @@ export interface ILocaleOptions {
  * a connaitre le paquet.
  */
 export interface IVueI18nGlobalLike {
-    locale: any
-    fallbackLocale: any
-    messages: any
-    t: (key: string, ...args: any[]) => string
-    n: (value: number, ...args: any[]) => string
+    locale: Ref<string>
+    // `fallbackLocale` et `messages` sont des unions larges cote vue-i18n
+    // (FallbackLocale, LocaleMessages<…>). On les prend en `unknown` : le DS
+    // les re-type par assertion au point d'usage, comme il le faisait deja.
+    fallbackLocale: unknown
+    messages: unknown
+    t: (key: string, ...args: unknown[]) => string
+    n: (value: number, ...args: unknown[]) => string
 }
 
 export interface IVueI18nLike {
@@ -46,9 +49,9 @@ export interface IVueI18nLike {
 }
 
 export type TUseI18nLike = (options: Record<string, unknown>) => {
-    locale: { value: string }
-    t: (key: string, ...args: any[]) => string
-    n: (value: number, ...args: any[]) => string
+    locale: Ref<string>
+    t: (key: string, ...args: unknown[]) => string
+    n: (value: number, ...args: unknown[]) => string
 }
 
 export interface ILocaleI18n {
