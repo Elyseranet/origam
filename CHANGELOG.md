@@ -15,6 +15,69 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ---
 
+## [2.11.0] — 2026-07-28
+
+Theming-resolution release. Every fix here has the same root cause: a
+component **declared** theme-able props but never **consumed** them, so an
+`IOrigamTheme.components` block was a silent no-op. Minor rather than patch
+because the public prop surface grew (see *Added*), even though every commit
+is labelled `fix`.
+
+### Added
+
+- **`ISelectionControlProps` now extends `IBorderProps` / `IRoundedProps` /
+  `IElevationProps`**, inherited by `ICheckboxBtnProps` and `IRadioBtnProps`.
+  `OrigamSelectionControl` consumes them through the standard
+  `useBorder` / `useRounded` / `useElevation` composables, on the
+  state-layer box that owns the control's visible surface — same relay point
+  as `OrigamSwitchTrack`. Checkbox and Radio therefore accept `border`,
+  `rounded` and `elevation`, from a prop or from a theme. (#241)
+
+  ::: warning Known limit — `rounded` alone paints nothing at rest
+  The state-layer box has no background and no border by default, so a
+  `rounded` passed on its own is measurable in the computed style but
+  produces no visible difference at rest. It shows on hover (the state layer
+  now follows the radius), or combined with `border` / `elevation` / a
+  custom background. The glyph itself (`mdi-checkbox-*`, `mdi-radiobox-*`)
+  is an icon-font character and keeps its own shape — reshaping the mark
+  would be a rendering change, not a prop. Documented in the Checkbox and
+  Radio pages.
+  :::
+
+### Fixed
+
+- **`OrigamBtnGroup`** forwarded `density`/`color`/`bgColor`/`size`/`hover`/
+  `active` to its children unconditionally, overwriting theme defaults with
+  `undefined`. Now filtered through `usePassedProps()` — the helper that
+  detects whether the *consumer* actually passed a prop, since Vue coerces an
+  unpassed boolean to `false`, never `undefined`. (#274)
+- **`:is="tag"` bypassed theme resolution** on 7 components — `OrigamAvatar`,
+  `OrigamBtnGroup`, `OrigamExpansionPanel`, `OrigamLabel`, `OrigamMessages`,
+  `OrigamTab`, `OrigamTabs`. In `<script setup>` the template binds each prop
+  from the *raw* `$props`, independently of the local
+  `props = useDefaults(_props)`, so a bare `:is="tag"` never saw the theme's
+  value. The audit the ticket asked for widened the scope from 1 file to 7.
+  (#250)
+- **`OrigamSelectionControl` declared `grid-area: control` unconditionally**,
+  assuming it always sits inside a Field/Input named grid. Any consumer
+  placing a bare control in its own grid saw every instance collapse onto one
+  cell. The declaration was in fact **dead code** on the Field/Input path —
+  `.origam-input__control` already owns `grid-area: control` *and* is
+  `display: flex`, and a `grid-area` on a flex child has no effect — so it is
+  removed rather than scoped. (#247)
+- **The Checkbox/Radio hover halo hardcoded `border-radius: 100%`**, staying
+  circular even under `rounded="md"` — while being the only surface the prop
+  could paint. Now `inherit`. (#241)
+
+### Internal
+
+- Marketing i18n: locale files split one per top-level namespace, an
+  `i18n:check` script wired into CI, and 195 missing translation keys filled
+  (400 → 205). EN/FR parity reached **0 gap** — the admin backoffice went
+  from 0 % to fully translated. No change to the published package.
+
+---
+
 ## [2.10.0] — 2026-07-27
 
 Field-rendering release. No new API — no component, prop, emit or slot was

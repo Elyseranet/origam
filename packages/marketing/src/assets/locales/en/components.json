@@ -102,6 +102,9 @@
                 "code_label": "Generated code",
                 "controls_label": "Controls"
             },
+            "preview": {
+                "unavailable": "Live preview unavailable for this component."
+            },
             "examples": {
                 "title": "Examples",
                 "eyebrow": "Usage",

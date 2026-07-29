@@ -13,6 +13,13 @@
         "wireframe": "Wireframe",
         "directives": "Directives",
         "theming": "Thématisation",
+        "figma_plugin": "Plugin Figma",
+        "composables": "Composables",
+        "types": "Types",
+        "enums": "Énumérations",
+        "interfaces": "Interfaces",
+        "utils": "Utilitaires",
+        "consts": "Constantes",
         "sections": {
             "introduction": "Introduction",
             "getting_started": "Prise en main",
