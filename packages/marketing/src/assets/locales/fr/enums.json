@@ -1,13 +1,13 @@
 {
     "enums": {
         "meta": {
-            "title": "API Enums · origam design system",
+            "title": "API Énumérations · origam design system",
             "description": "Parcourez les enums TypeScript utilisés dans les props d'origam. Cliquez sur un enum pour voir sa définition, ses membres et les composants qui l'utilisent."
         },
         "hero": {
             "badge": "Enums TypeScript",
             "title_line1": "API",
-            "title_line2": "enums.",
+            "title_line2": "énumérations.",
             "subtitle": "Chaque enum TypeScript utilisé dans les props d'origam. Entièrement documenté avec ses définitions, ses membres et des références croisées vers les composants qui les utilisent.",
             "search_placeholder": "Rechercher un enum…",
             "search_label": "Filtrer les enums par nom ou catégorie",
@@ -27,7 +27,7 @@
                 "title": "{name} · enums API origam"
             },
             "breadcrumb_label": "Emplacement de la page",
-            "breadcrumb_catalog": "Enums",
+            "breadcrumb_catalog": "Énumérations",
             "external_links_label": "Ressources externes",
             "toc_label": "Table des matières",
             "toc_heading": "Sur cette page",

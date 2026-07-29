@@ -1,13 +1,13 @@
 {
     "utils": {
         "meta": {
-            "title": "Utils · origam design system",
+            "title": "Utilitaires · origam design system",
             "description": "Parcourez les utils origam groupés par catégorie. Chacun expose une signature TypeScript documentée, ses paramètres, sa valeur de retour et des exemples d'usage."
         },
         "hero": {
             "badge": "Utils — TypeScript",
-            "title_line1": "Util",
-            "title_line2": "catalogue.",
+            "title_line1": "Catalogue",
+            "title_line2": "d'utilitaires.",
             "subtitle": "Chaque util origam est documenté avec sa véritable signature TypeScript, ses paramètres et sa valeur de retour — extraits directement du code source du DS.",
             "search_placeholder": "Rechercher un util…",
             "search_label": "Filtrer les utils par nom ou catégorie",
@@ -27,7 +27,7 @@
                 "title": "{name} · utils origam"
             },
             "breadcrumb_label": "Emplacement de la page",
-            "breadcrumb_catalog": "Utils",
+            "breadcrumb_catalog": "Utilitaires",
             "external_links_label": "Ressources externes",
             "toc_label": "Table des matières",
             "toc_heading": "Sur cette page",
