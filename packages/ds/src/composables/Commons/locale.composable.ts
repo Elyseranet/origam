@@ -1,5 +1,4 @@
 import { computed, inject, provide, ref } from "vue"
-import { createI18n, I18n, useI18n } from "vue-i18n"
 import * as origamMessages from "../../assets/locales"
 
 import { LOCALE_RTL_DEFAULT, ORIGAM_LOCALE_KEY } from "../../consts"
@@ -10,24 +9,33 @@ import type {
     ILocaleProps,
     IRtlInstance,
     IRtlOptions,
-    IRtlProps
+    IRtlProps,
+    ILocaleMessages
 } from "../../interfaces"
 
-import { createVueI18nAdapter, getCurrentInstanceName, mergeDeep } from "../../utils"
+import { createBuiltinAdapter, getCurrentInstanceName, mergeDeep } from "../../utils"
 
 /*********************************************************
  * createLocale
  ********************************************************/
 export function createLocale (options?: ILocaleOptions & IRtlOptions) {
-    const i18nOptions = mergeDeep({
+    const merged = mergeDeep({
         locale: 'en',
         fallbackLocale: 'en',
-        messages: JSON.parse(JSON.stringify(origamMessages)), // Fix problems with json file imported
-        legacy: false
+        messages: JSON.parse(JSON.stringify(origamMessages)) // Fix problems with json file imported
     }, options as unknown as Record<string, unknown>) as Record<string, unknown>
-    const i18n = createI18n(i18nOptions) as unknown as I18n<Record<string, unknown>, Record<string, unknown>, Record<string, unknown>, string, false>
 
-    const locale = createVueI18nAdapter({i18n, useI18n})
+    // `vue-i18n` est un peer OPTIONNEL : le chemin par defaut ne doit jamais
+    // l'importer. Un consommateur qui veut vue-i18n passe son propre
+    // adaptateur, construit avec `createVueI18nAdapter({i18n, useI18n})` —
+    // c'est lui qui possede la dependance, pas le DS.
+    const locale = (options as ILocaleOptions & { adapter?: ILocaleInstance })?.adapter
+        ?? createBuiltinAdapter({
+            current: ref(merged.locale as string),
+            fallback: ref(merged.fallbackLocale as string),
+            messages: computed(() => merged.messages as ILocaleMessages)
+        })
+
     const rtl = createRtl(locale, options)
 
     return {...locale, ...rtl}

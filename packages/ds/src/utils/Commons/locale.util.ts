@@ -1,9 +1,8 @@
 import { ComputedRef, Ref, watch } from "vue"
 
-import { useI18n } from "vue-i18n"
 import { useVModel } from "../../composables"
 
-import type { ILocaleI18n, ILocaleInstance, ILocaleMessages, ILocaleProps } from "../../interfaces"
+import type { ILocaleI18n, ILocaleInstance, ILocaleMessages, ILocaleProps, TUseI18nLike } from "../../interfaces"
 
 // vue-i18n's translate-args parser is strict — it throws
 // `SyntaxError: Invalid arguments` when:
@@ -57,7 +56,7 @@ export function createProvideFunction (data: {
     current: Ref<string>
     fallback: Ref<string>
     messages: ComputedRef<ILocaleMessages>
-    useI18n: typeof useI18n
+    useI18n: TUseI18nLike
 }) {
     return (props: ILocaleProps): ILocaleInstance => {
         const current = useProvided(props, 'locale', data.current)
@@ -109,4 +108,78 @@ export function useProvided<T> (props: any, prop: string, provided: Ref<T>): Ref
     })
 
     return internal
+}
+
+/*********************************************************
+ * createBuiltinAdapter — adaptateur i18n natif, SANS vue-i18n
+ *
+ * `vue-i18n` est declare peer OPTIONNEL. Il ne doit donc jamais etre
+ * importe statiquement par le chemin par defaut : un projet qui ne
+ * l'installe pas ne peut meme pas appeler `createOrigam()`.
+ *
+ * Cet adaptateur couvre ce dont le DS a besoin pour ses propres chaines :
+ * resolution d'une cle pointee, repli sur la locale de secours puis sur la
+ * cle, interpolation positionnelle (`{0}`) et nommee (`{value}`) — les deux
+ * seules formes presentes dans assets/locales. Il n'ambitionne PAS de
+ * remplacer vue-i18n : pas de pluriels, pas de messages lies, pas de
+ * formatage de dates. Un consommateur qui en a besoin passe son propre
+ * adaptateur via `createVueI18nAdapter`.
+ ********************************************************/
+function resolveKey (messages: Record<string, unknown>, key: string): string | undefined {
+    const value = key.split('.').reduce<unknown>(
+        (acc, segment) => (acc && typeof acc === 'object' ? (acc as Record<string, unknown>)[segment] : undefined),
+        messages
+    )
+
+    return typeof value === 'string' ? value : undefined
+}
+
+function interpolate (template: string, params: unknown[]): string {
+    const named = params.length === 1 && params[0] !== null && typeof params[0] === 'object' && !Array.isArray(params[0])
+        ? params[0] as Record<string, unknown>
+        : undefined
+
+    return template.replace(/\{([^{}]+)\}/g, (_match, token: string) => {
+        const raw = named
+            ? named[token]
+            : (/^\d+$/.test(token) ? params[Number(token)] : undefined)
+
+        return raw == null ? '' : String(raw)
+    })
+}
+
+export function createBuiltinAdapter (data: {
+    current: Ref<string>
+    fallback: Ref<string>
+    messages: ComputedRef<ILocaleMessages>
+}): ILocaleInstance {
+    const translate = (key: string, ...params: unknown[]): string => {
+        if (typeof key !== 'string' || !key) return key as unknown as string
+
+        const all = data.messages.value as unknown as Record<string, Record<string, unknown>>
+        const template = resolveKey(all?.[data.current.value] ?? {}, key)
+            ?? resolveKey(all?.[data.fallback.value] ?? {}, key)
+
+        // Cle absente : on rend la cle, jamais une chaine vide — c'est ce qui
+        // rend un trou de traduction visible plutot que silencieux.
+        if (template === undefined) return key
+
+        return params.length ? interpolate(template, params) : template
+    }
+
+    return {
+        name: 'origam-builtin',
+        current: data.current,
+        fallback: data.fallback,
+        messages: data.messages,
+        t: translate,
+        n: (value: number) => new Intl.NumberFormat(data.current.value).format(value),
+        provide: (props: ILocaleProps): ILocaleInstance => {
+            const current = useProvided(props, 'locale', data.current)
+            const fallback = useProvided(props, 'fallback', data.fallback)
+            const messages = useProvided(props, 'messages', data.messages) as ComputedRef<ILocaleMessages>
+
+            return createBuiltinAdapter({current, fallback, messages})
+        }
+    }
 }
