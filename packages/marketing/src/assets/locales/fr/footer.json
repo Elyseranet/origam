@@ -13,7 +13,8 @@
             "discord": "Discord",
             "discussions": "Discussions",
             "twitter": "Twitter",
-            "rss": "RSS"
+            "rss": "RSS",
+            "figma_plugin": "Plugin Figma"
         },
         "legal": {
             "title": "Mentions légales",
