@@ -134,6 +134,23 @@ function resolveKey (messages: Record<string, unknown>, key: string): string | u
     return typeof value === 'string' ? value : undefined
 }
 
+/**
+ * Un parametre d'interpolation est une primitive. Tout le reste — objet,
+ * tableau, fonction — rendrait `[object Object]` a l'utilisateur : on rend
+ * une chaine vide, comme pour un parametre absent. Une valeur non primitive
+ * est une erreur d'appel, elle ne doit pas fuir dans l'interface.
+ */
+function stringifyParam (raw: unknown): string {
+    if (raw == null) return ''
+
+    const type = typeof raw
+    if (type === 'string' || type === 'number' || type === 'boolean' || type === 'bigint') {
+        return String(raw)
+    }
+
+    return ''
+}
+
 /** `t('cle', {value: 1})` — un objet unique = parametres nommes. */
 function asNamedParams (params: unknown[]): Record<string, unknown> | undefined {
     if (params.length !== 1) return undefined
@@ -158,9 +175,7 @@ function interpolate (template: string, params: unknown[]): string {
     }
 
     return template.replace(/\{([^{}]+)\}/g, (_match, token: string) => {
-        const raw = lookup(token)
-
-        return raw == null ? '' : String(raw)
+        return stringifyParam(lookup(token))
     })
 }
 
