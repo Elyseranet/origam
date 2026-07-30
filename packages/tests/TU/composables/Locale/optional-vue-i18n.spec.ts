@@ -92,3 +92,27 @@ describe('adaptateur natif', () => {
         expect(adapter.t('origam.open')).toBe('Open')
     })
 })
+
+describe('adaptateur natif — parametres non primitifs', () => {
+    it('ne laisse jamais fuir "[object Object]" dans l\'interface', () => {
+        const adapter = createBuiltinAdapter({
+            current: ref('en'),
+            fallback: ref('en'),
+            messages: computed(() => ({ en: { origam: { hi: 'Hi {0}' } } })) as never
+        })
+
+        // ATTENTION au piege : un objet SEUL est interprete comme des
+        // parametres NOMMES (`t('cle', {value: 1})`), il n'atteint donc
+        // jamais la stringification positionnelle. Il faut DEUX parametres
+        // pour que le premier soit resolu positionnellement — sans ca le
+        // test ne peut pas echouer, et ne prouve rien.
+        expect(adapter.t('origam.hi', { oops: true }, 'x')).toBe('Hi ')
+        expect(adapter.t('origam.hi', { oops: true }, 'x')).not.toContain('[object Object]')
+
+        // Un objet seul = parametres nommes : le token `0` n'existe pas.
+        expect(adapter.t('origam.hi', { oops: true })).toBe('Hi ')
+
+        // Les primitives passent normalement.
+        expect(adapter.t('origam.hi', 42)).toBe('Hi 42')
+    })
+})
