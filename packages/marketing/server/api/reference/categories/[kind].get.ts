@@ -13,8 +13,19 @@
  *
  * Validation : :kind ∈ 8 DOC_KINDS (400 sinon).
  * Réponse : string[] (noms de catégories, triés).
+ *
+ * ?locale= (ADR #325, task 3) : accepté et validé (via resolveLocale) pour
+ * rester cohérent avec les deux autres routes /api/reference/**, mais NON
+ * inclus dans la clé de cache — `doc_entry.category` est une valeur brute
+ * (ex. "Layout", "Forms"), jamais un couple *_key/*_fallback traduit. Il n'y a
+ * donc rien de locale-dépendant à mettre en cache séparément ici. Si
+ * `category` devient traduisible un jour, ce cache devra être revu en même
+ * temps (cf. tâche 4 de l'ADR).
+ *
  * Cache : 5 min par kind.
  */
+
+import { resolveLocale } from '../../../utils/reference-locale'
 
 const CACHE_TTL_SECONDS = 300
 
@@ -22,6 +33,9 @@ export default defineCachedEventHandler(
     async (event): Promise<string[]> => {
         const kind = getRouterParam(event, 'kind') ?? ''
         assertKind(kind)
+        // Validated for consistency with the other /api/reference/** routes —
+        // intentionally unused: see the cache-key note above.
+        resolveLocale(getQuery(event).locale)
 
         const db = await useDb()
 

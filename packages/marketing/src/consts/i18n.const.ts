@@ -4,6 +4,9 @@ import { fileURLToPath } from 'node:url'
 
 import type { LocaleObject } from '@nuxtjs/i18n'
 
+import { I18N_LOCALE_CODES } from './i18n-codes.const'
+import type { TLocaleCode } from '../types/i18n.type'
+
 // Locale messages are split one file per top-level namespace (cf.
 // scripts/split-locales.mjs) so 7+ devs can write translations in parallel
 // without conflicting on a single monolithic en.json / fr.json. Each entry
@@ -30,23 +33,21 @@ function localeFiles (code: string): string[] {
         .map((file) => `${code}/${file}`)
 }
 
+/** Display metadata per locale code — I18N_LOCALE_CODES stays the single list of valid codes. */
+const LOCALE_META: Record<TLocaleCode, { language: string; name: string }> = {
+    en: { language: 'en-US', name: 'English' },
+    fr: { language: 'fr-FR', name: 'Français' }
+}
+
 // NOTE: `fr` currently has fewer fragments than `en` — the `admin` namespace
 // has no French translation yet (pre-existing i18n gap, not introduced by the
 // split). `pnpm -F @origam/marketing i18n:check` reports it as a parity
 // warning.
-export const I18N_LOCALES: LocaleObject[] = [
-    {
-        code: 'en',
-        language: 'en-US',
-        name: 'English',
-        files: localeFiles('en')
-    },
-    {
-        code: 'fr',
-        language: 'fr-FR',
-        name: 'Français',
-        files: localeFiles('fr')
-    }
-]
+export const I18N_LOCALES: LocaleObject[] = I18N_LOCALE_CODES.map((code) => ({
+    code,
+    language: LOCALE_META[code].language,
+    name: LOCALE_META[code].name,
+    files: localeFiles(code)
+}))
 
 export const I18N_COOKIE_KEY = 'origam_locale'
