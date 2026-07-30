@@ -134,15 +134,31 @@ function resolveKey (messages: Record<string, unknown>, key: string): string | u
     return typeof value === 'string' ? value : undefined
 }
 
+/** `t('cle', {value: 1})` — un objet unique = parametres nommes. */
+function asNamedParams (params: unknown[]): Record<string, unknown> | undefined {
+    if (params.length !== 1) return undefined
+
+    const first = params[0]
+    if (first === null || typeof first !== 'object' || Array.isArray(first)) return undefined
+
+    return first as Record<string, unknown>
+}
+
 function interpolate (template: string, params: unknown[]): string {
-    const named = params.length === 1 && params[0] !== null && typeof params[0] === 'object' && !Array.isArray(params[0])
-        ? params[0] as Record<string, unknown>
-        : undefined
+    const named = asNamedParams(params)
+
+    // Clauses de garde plutot qu'un ternaire imbrique : les trois cas
+    // (nomme / positionnel / inconnu) sont mutuellement exclusifs et se
+    // lisent en sequence.
+    const lookup = (token: string): unknown => {
+        if (named) return named[token]
+        if (/^\d+$/.test(token)) return params[Number(token)]
+
+        return undefined
+    }
 
     return template.replace(/\{([^{}]+)\}/g, (_match, token: string) => {
-        const raw = named
-            ? named[token]
-            : (/^\d+$/.test(token) ? params[Number(token)] : undefined)
+        const raw = lookup(token)
 
         return raw == null ? '' : String(raw)
     })

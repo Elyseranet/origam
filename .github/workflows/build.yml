@@ -113,12 +113,28 @@ jobs:
           fi
 
           echo "--- Issues du nouveau code ---"
+          # `componentKeys` est deprecie au profit de `components`, et le
+          # filtre de statut a change de nom selon les versions. On tente la
+          # forme moderne, puis on retombe sur la forme historique — un
+          # diagnostic qui ne rend rien nous ramene au probleme que cette
+          # etape est censee resoudre (cf. #296, #303).
           ISSUES=$(curl -sS -m 30 -u "$SONAR_TOKEN:" \
-            "$SONAR_HOST_URL/api/issues/search?componentKeys=$KEY&inNewCodePeriod=true&issueStatuses=OPEN,CONFIRMED&ps=50" || echo '')
+            "$SONAR_HOST_URL/api/issues/search?components=$KEY&inNewCodePeriod=true&resolved=false&ps=50" || echo '')
 
-          if [ -n "$ISSUES" ]; then
+          COUNT=$(echo "$ISSUES" | jq -r '.issues | length' 2>/dev/null || echo 0)
+
+          if [ "${COUNT:-0}" = "0" ]; then
+            ISSUES=$(curl -sS -m 30 -u "$SONAR_TOKEN:" \
+              "$SONAR_HOST_URL/api/issues/search?componentKeys=$KEY&inNewCodePeriod=true&resolved=false&ps=50" || echo '')
+            COUNT=$(echo "$ISSUES" | jq -r '.issues | length' 2>/dev/null || echo 0)
+          fi
+
+          if [ "${COUNT:-0}" = "0" ]; then
+            echo "::warning::Aucune issue listee par l'API — payload brut ci-dessous."
+            echo "$ISSUES" | head -c 2000
+          else
             echo "$ISSUES" | jq -r '
               .issues[]?
-              | "  \(.component | split(":") | last):\(.line // 0) — [\(.severity // "?")] \(.message)"
+              | "  \(.component | split(":") | last):\(.line // 0) — [\(.severity // .impacts[0].severity // "?")] \(.message)"
             ' 2>/dev/null || echo "$ISSUES"
           fi
