@@ -133,8 +133,15 @@ jobs:
       - name: Build tokens (prereq for component tests)
         run: pnpm -F origam tokens:build
 
-      - name: Vitest
-        run: pnpm -F @origam/tests test:unit:run
+      # `test:coverage` et non `test:unit:run` : le provider V8 traverse
+      # `test-exclude` -> `glob` -> `minimatch`, un chemin que la suite nue
+      # n'emprunte jamais. C'est exactement ce qui a laisse passer la
+      # regression `brace-expansion` (#301/#307) : 10 checks verts sur une PR,
+      # et le workflow `Build` casse immediatement apres le merge sur develop.
+      # Le surcout mesure est de l'ordre de +30 % sur ce job — le prix d'un
+      # filet qui manquait. Cf. #308.
+      - name: Vitest (avec couverture)
+        run: pnpm -F @origam/tests test:coverage
 
   build:
     name: Library build (unbuild)
