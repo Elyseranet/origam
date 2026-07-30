@@ -141,13 +141,18 @@ function resolveKey (messages: Record<string, unknown>, key: string): string | u
  * est une erreur d'appel, elle ne doit pas fuir dans l'interface.
  */
 function stringifyParam (raw: unknown): string {
-    if (raw == null) return ''
-
-    const type = typeof raw
-    if (type === 'string' || type === 'number' || type === 'boolean' || type === 'bigint') {
-        return String(raw)
+    // Le `typeof` doit rester DANS la condition : le stocker dans une const
+    // (`const type = typeof raw`) n'apporte aucun narrowing a TypeScript,
+    // `raw` reste `unknown` et `String(raw)` redevient un appel non sur.
+    // C'est exactement ce que Sonar signalait.
+    if (typeof raw === 'string') return raw
+    if (typeof raw === 'number' || typeof raw === 'boolean' || typeof raw === 'bigint') {
+        return raw.toString()
     }
 
+    // null, undefined, objet, tableau, fonction, symbole : une valeur non
+    // primitive est une erreur d'appel. Elle rend une chaine vide, comme un
+    // parametre absent — jamais `[object Object]` a l'ecran.
     return ''
 }
 
