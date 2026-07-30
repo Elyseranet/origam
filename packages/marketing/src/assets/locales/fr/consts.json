@@ -1,0 +1,69 @@
+{
+    "consts": {
+        "meta": {
+            "title": "Constantes · origam design system",
+            "description": "Parcourez les constantes SCREAMING_SNAKE_CASE exportées par origam. Cliquez sur une constante pour voir sa définition, ses valeurs et les parties du DS qui l'utilisent."
+        },
+        "hero": {
+            "badge": "Constantes exportées",
+            "title_line1": "API",
+            "title_line2": "constantes.",
+            "subtitle": "Chaque constante SCREAMING_SNAKE_CASE exportée par origam. Entièrement documentée avec ses définitions, ses valeurs et des références croisées vers les parties du DS qui les utilisent.",
+            "search_placeholder": "Rechercher une constante…",
+            "search_label": "Filtrer les constantes par nom ou catégorie",
+            "count_filtered_of": "sur",
+            "count_filtered_match": "constantes correspondent",
+            "count_total": "constantes réparties dans",
+            "count_categories": "catégories"
+        },
+        "catalog": {
+            "eyebrow": "PARCOURIR PAR CATÉGORIE",
+            "title": "Toutes les constantes.",
+            "empty_title": "Aucune constante trouvée",
+            "empty_desc": "Aucune constante ne correspond à « {query} ». Essayez un autre terme."
+        },
+        "detail": {
+            "meta": {
+                "title": "{name} · constantes origam"
+            },
+            "breadcrumb_label": "Emplacement de la page",
+            "breadcrumb_catalog": "Constantes",
+            "external_links_label": "Ressources externes",
+            "toc_label": "Table des matières",
+            "toc_heading": "Sur cette page",
+            "hero": {
+                "source_label": "Source"
+            },
+            "not_found": {
+                "title": "Constante introuvable",
+                "desc": "Aucune constante ne correspond au slug",
+                "back": "Retour au catalogue"
+            },
+            "definition": {
+                "eyebrow": "TypeScript",
+                "title": "Définition",
+                "desc": "La définition TypeScript telle qu'elle apparaît dans le code source d'origam. Cliquez sur l'icône de copie pour copier l'extrait.",
+                "value_label": "Valeur résolue"
+            },
+            "values": {
+                "eyebrow": "Entrées",
+                "title": "Valeurs",
+                "desc": "Toutes les entrées de cette constante. Cliquez sur une valeur pour la copier dans le presse-papiers.",
+                "copy_label": "Copier la valeur"
+            },
+            "used_by": {
+                "eyebrow": "Écosystème",
+                "title": "Utilisé par",
+                "desc": "Composables et composants qui consomment cette constante."
+            },
+            "examples": {
+                "eyebrow": "Usage",
+                "title": "Exemples",
+                "desc": "Extraits de code prêts à coller utilisant cette constante."
+            }
+        },
+        "kind": {
+            "const": "const"
+        }
+    }
+}

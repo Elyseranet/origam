@@ -1,0 +1,55 @@
+{
+    "figma_plugin": {
+        "meta": {
+            "title": "Plugin Figma · origam design system",
+            "description": "Synchronisez les tokens et composants de design origam dans Figma. Installez le plugin Origam DS Sync via son manifest et gardez votre fichier Figma synchronisé avec la couche de tokens."
+        },
+        "hero": {
+            "badge": "Origam DS Sync",
+            "title_line1": "Figma rencontre",
+            "title_line2": "les tokens origam.",
+            "subtitle": "Origam DS Sync est un plugin Figma qui génère 14 ComponentSets liés à vos tokens de design, et les exporte vers le repo au format Tokens Studio JSON ou SCSS — gardant designers et développeurs parfaitement synchronisés.",
+            "actions_label": "Récupérer le plugin",
+            "cta_download": "Télécharger le plugin",
+            "cta_github": "Voir sur GitHub"
+        },
+        "install": {
+            "eyebrow": "CONFIGURATION",
+            "title_line1": "Importer via",
+            "title_line2": "manifest.",
+            "subtitle": "Origam DS Sync est un plugin de développement — il n'est pas publié sur la Figma Community. Vous l'installez localement en important son manifest.json dans Figma desktop.",
+            "desktop_note": "Application Figma desktop requise — la version navigateur ne peut pas charger de manifests locaux.",
+            "steps_label": "Étapes d'installation",
+            "steps": {
+                "download": {
+                    "title": "1. Télécharger le plugin",
+                    "description": "Téléchargez l'archive zip contenant le manifest du plugin et les artefacts compilés (dist/code.js + dist/ui.html).",
+                    "btn": "origam-figma-plugin.zip"
+                },
+                "unzip": {
+                    "title": "2. Décompresser l'archive",
+                    "description": "Extrayez le zip vers un emplacement permanent sur votre machine. Figma lit le manifest depuis le disque — ne déplacez pas le dossier après l'import."
+                },
+                "menu": {
+                    "title": "3. Ouvrir Figma desktop → Plugins → Development",
+                    "description": "Ouvrez n'importe quel fichier Figma dans l'application desktop. Dans le menu du haut, allez dans Plugins → Development → Import plugin from manifest…"
+                },
+                "manifest": {
+                    "title": "4. Sélectionner manifest.json",
+                    "description": "Dans le sélecteur de fichiers qui s'ouvre, naviguez jusqu'au dossier décompressé et sélectionnez manifest.json. Figma enregistre le plugin immédiatement."
+                },
+                "run": {
+                    "title": "5. Lancer Origam DS Sync",
+                    "description": "Allez dans Plugins → Development → Origam DS Sync. Le plugin s'ouvre avec trois onglets : Generate (créer des ComponentSets), Export (Tokens Studio JSON ou SCSS), et Sync (placeholder v2)."
+                }
+            }
+        },
+        "cta": {
+            "title": "Prêt à synchroniser ?",
+            "description": "Téléchargez le plugin, explorez le code source, ou parcourez le catalogue de composants origam pour voir ce qui est généré.",
+            "actions_label": "Démarrer avec le plugin Figma",
+            "cta_download": "Télécharger le plugin",
+            "cta_components": "Parcourir les composants"
+        }
+    }
+}

@@ -15,6 +15,60 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ---
 
+## [2.12.0] — 2026-07-29
+
+**Hotfix — `vue-i18n` is optional again.** A consuming project reported that
+origam could not be enabled at all: `createOrigam()` reached `createLocale()`,
+which imported `vue-i18n` at module level, even though the package declares it
+as an **optional** peer. Any project without `vue-i18n` failed at import time.
+
+### Fixed
+
+- **`createLocale()` no longer imports `vue-i18n`.** The default locale is now
+  backed by a built-in adapter shipped with the DS. Runtime *and* type
+  dependencies are gone — `grep vue-i18n` over the published `dist/` returns
+  only a string literal (the vue-i18n adapter's own `name` field) and a
+  comment. (Reported by a consumer.)
+- The `vue-i18n` **type** imports in `locale.interface.ts` / `locale.util.ts`
+  are replaced by locally-declared structural types. An `import type` costs
+  nothing at runtime but still breaks `tsc` for a project that does not install
+  the package once `skipLibCheck` is `false` — the same class of bug, one step
+  further.
+
+### Added
+
+- **`createBuiltinAdapter()`**, exported from `origam/utils`. Resolves dotted
+  keys, falls back to the fallback locale then to the key itself, and
+  interpolates both positional (`{0}`) and named (`{value}`) params — the only
+  two forms used by the DS's own messages.
+
+  It deliberately does **not** reimplement `vue-i18n`: no plurals, no linked
+  messages, no date formatting. A consumer needing those keeps `vue-i18n` and
+  passes their own adapter.
+
+### Changed — read this if you use `vue-i18n`
+
+**The default adapter is no longer `vue-i18n`.** If you relied on
+`createOrigam()` building a `vue-i18n` instance for you, pass it explicitly:
+
+```ts
+import { createOrigam } from 'origam'
+import { createVueI18nAdapter } from 'origam/utils'
+import { createI18n, useI18n } from 'vue-i18n'
+
+const i18n = createI18n({ legacy: false, locale: 'en' })
+
+createOrigam({
+    locale: { adapter: createVueI18nAdapter({ i18n, useI18n }) }
+})
+```
+
+Nothing changes for the DS's own strings — they resolve identically through
+either adapter. This is a **minor** rather than a patch precisely because that
+default changed.
+
+---
+
 ## [2.11.0] — 2026-07-28
 
 Theming-resolution release. Every fix here has the same root cause: a

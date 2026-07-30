@@ -13,6 +13,13 @@
         "wireframe": "Wireframe",
         "directives": "Directives",
         "theming": "Theming",
+        "figma_plugin": "Figma plugin",
+        "composables": "Composables",
+        "types": "Types",
+        "enums": "Enums",
+        "interfaces": "Interfaces",
+        "utils": "Utils",
+        "consts": "Constants",
         "sections": {
             "introduction": "Introduction",
             "getting_started": "Getting started",

@@ -1,0 +1,67 @@
+{
+    "wireframe": {
+        "meta": {
+            "title": "Wireframes · origam design system",
+            "description": "See complete UI layouts — dashboard, auth, settings, pricing and more — built entirely with origam components. No custom HTML, just the DS."
+        },
+        "hero": {
+            "badge": "6 layouts — 100% origam",
+            "title_line1": "Wireframes",
+            "title_line2": "with origam.",
+            "subtitle": "Complete UI layouts built exclusively with origam components. No custom HTML, no raw CSS hacks — just the design system doing what it's designed for."
+        },
+        "gallery": {
+            "eyebrow": "LAYOUT PATTERNS",
+            "title": "Ready-made layouts.",
+            "subtitle": "Each wireframe below is a live render — not an image. Resize, inspect and copy the markup."
+        },
+        "layouts": {
+            "dashboard": {
+                "title": "Dashboard",
+                "description": "App shell with sidebar navigation, top bar and a grid of stat cards."
+            },
+            "settings": {
+                "title": "Settings",
+                "description": "Sectioned settings page with sidebar nav and inline form fields."
+            },
+            "auth": {
+                "title": "Auth / Login",
+                "description": "Centered auth card with a logo, form fields and submit action."
+            },
+            "list_detail": {
+                "title": "List – Detail",
+                "description": "Master list on the left, detail pane on the right — classic split view."
+            },
+            "pricing": {
+                "title": "Pricing",
+                "description": "Grid of pricing cards with feature lists and call-to-action buttons."
+            },
+            "landing": {
+                "title": "Landing Page",
+                "description": "Marketing hero, feature grid and a final call-to-action section."
+            }
+        },
+        "preview": {
+            "save": "Save",
+            "cancel": "Cancel",
+            "sign_in": "Sign in",
+            "tag": "tag",
+            "open": "Open",
+            "popular": "Popular",
+            "get_started": "Get started",
+            "cta_primary": "Get started",
+            "cta_secondary": "Learn more"
+        },
+        "card": {
+            "components_label": "Components used",
+            "chips_label": "Components used in this wireframe"
+        },
+        "cta": {
+            "title": "Start building.",
+            "description": "All 95+ components are available today. Install origam and compose any layout in minutes.",
+            "actions_label": "Explore origam",
+            "cta_components": "Browse components",
+            "cta_install": "Installation guide"
+        }
+    }
+}

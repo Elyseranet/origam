@@ -102,6 +102,9 @@
                 "code_label": "Code généré",
                 "controls_label": "Contrôles"
             },
+            "preview": {
+                "unavailable": "Aperçu en direct indisponible pour ce composant."
+            },
             "examples": {
                 "title": "Exemples",
                 "eyebrow": "Usage",
