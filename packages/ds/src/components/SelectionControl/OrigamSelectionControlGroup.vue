@@ -167,3 +167,21 @@
 		styleId
 	})
 </script>
+
+<style
+		lang="scss"
+		scoped
+>
+	.origam-selection-control-group {
+		display: var(--origam-selection-control-group---display, flex);
+		flex-direction: var(--origam-selection-control-group---flex-direction, column);
+		flex-wrap: var(--origam-selection-control-group---flex-wrap, wrap);
+		gap: var(--origam-selection-control-group---gap, 8px);
+		padding-block: var(--origam-selection-control-group---padding-block, 0);
+		padding-inline: var(--origam-selection-control-group---padding-inline, 0);
+
+		&--inline {
+			flex-direction: var(--origam-selection-control-group---flex-direction-inline, row);
+		}
+	}
+</style>
