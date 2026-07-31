@@ -90,9 +90,6 @@ importers:
       vue-i18n:
         specifier: ^11.0.0
         version: 11.4.2(vue@3.5.39(typescript@6.0.3))
-      vue-router:
-        specifier: ^4.5.0
-        version: 4.6.4(vue@3.5.39(typescript@6.0.3))
     devDependencies:
       '@nuxt/kit':
         specifier: ^4.4.5
@@ -136,6 +133,9 @@ importers:
       vue:
         specifier: 3.5.39
         version: 3.5.39(typescript@6.0.3)
+      vue-router:
+        specifier: ^4.6.4
+        version: 4.6.4(vue@3.5.39(typescript@6.0.3))
       vue-sfc-transformer:
         specifier: ^0.1.16
         version: 0.1.17(@vue/compiler-core@3.5.39)(esbuild@0.28.1)(vue@3.5.39(typescript@6.0.3))
