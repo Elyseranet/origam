@@ -320,7 +320,7 @@
 			align-items: var(--origam-bottom-bar__content---align-items);
 			flex-wrap: var(--origam-bottom-bar__content---flex-wrap);
 			width: 100%;
-			transform: var(--origam-bottom-bar__content--transform);
+			transform: var(--origam-bottom-bar__content---transform);
 
 			> :deep(.origam-btn) {
 				--origam-btn---font-size: 0.75rem;
