@@ -149,12 +149,14 @@ const COMPONENT_CATEGORIES: Record<string, string[]> = {
         'Carousel',
         'Icon',
         'Img',
+        'Media',
         'Parallax',
         'Slide',
         'Video',
         'Watermark'
     ],
     'Utilities & Providers': [
+        'ClientOnly',
         'DefaultsProvider',
         'InfiniteScroll',
         'Lazy',
