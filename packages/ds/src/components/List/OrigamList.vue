@@ -2,6 +2,7 @@
 	<component
 			:is="tag"
 			:id="id"
+			ref="contentRef"
 			:class="listClasses"
 			:style="listStyles"
 			:tabindex="tabIndex"
