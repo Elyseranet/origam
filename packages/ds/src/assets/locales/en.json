@@ -1,6 +1,9 @@
 {
   "origam": {
     "badge": "Badge",
+    "bottomNav": {
+      "ariaLabel": "Bottom navigation"
+    },
     "open": "Open",
     "close": "Close",
     "dismiss": "Dismiss",
