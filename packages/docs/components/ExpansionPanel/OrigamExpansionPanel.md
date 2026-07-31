@@ -194,7 +194,7 @@ own prop still wins.
 |---|---|---|
 | `default` | — | Content body (used instead of `content`) |
 | `header` | Every `OrigamExpansionPanel` prop except `class` / `id` / `style` / `tag` — bound from `expansionPanelHeaderProps = filterProps(props, ['class', 'id', 'style', 'tag'])` (`OrigamExpansionPanel.vue:31-34,234-236`). This is a different, larger object than the 5-key scope below — that one is `OrigamExpansionPanelHeader`'s own internal `slotProps`, only handed to its `prepend` / `append` slots. | Replaces the entire header |
-| `title` | same as `header` | Overrides just the header's title content |
+| `title` | Same `{ collapseIcon, disabled, expanded, expandIcon, readonly }` object as `prepend` / `append` — `OrigamExpansionPanelHeader`'s own internal `slotProps` (`OrigamExpansionPanelHeader.vue:163-171`), **not** the `header` scope above. | Overrides just the header's title content |
 | `prepend` | `{ collapseIcon, disabled, expanded, expandIcon, readonly }` — `OrigamExpansionPanelHeader`'s own internal `slotProps` (`OrigamExpansionPanelHeader.vue:163-171`), **not** the `header` scope above: `header` and `prepend`/`append` do not receive the same object. | Leading icon/avatar area of the header |
 | `append` | Same `{ collapseIcon, disabled, expanded, expandIcon, readonly }` object as `prepend` (`OrigamExpansionPanelHeader.vue:163-171`) — again, different from `header`'s scope. | Trailing icon/avatar area of the header |
 | `loader` | — | Custom loading indicator (line/circular loader replacement) |

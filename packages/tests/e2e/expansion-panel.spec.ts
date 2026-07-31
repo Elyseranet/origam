@@ -16,7 +16,8 @@ import { expect, test } from '@playwright/test'
  *   5  Slots - Default
  *   6  Slots - Prepend
  *   7  Slots - Append
- *   8  Default (playground)
+ *   8  Slots - Title
+ *   9  Default (playground)
  *
  * Variant index map — OrigamExpansionPanel:
  *   0  Design
@@ -25,14 +26,22 @@ import { expect, test } from '@playwright/test'
  *   3  Events - group:selected
  *   4  Slots - Header
  *   5  Slots - Default
- *   6  Slots - Title         (DS bug #25 — test.fixme)
+ *   6  Slots - Title
  *   7  Slots - Prepend
  *   8  Slots - Append
  *   9  Slots - Loader
  *  10  Slots - Wrapper
  *  11  Default (playground)
  *
- * DS known bug #25: slot #title not routed through OrigamExpansionPanel → labelled test.fixme.
+ * DS bug fixed: `OrigamExpansionPanelHeader` had no `<slot name="title">` — the
+ * `#title` forwarded by `OrigamExpansionPanel` (and `OrigamExpansionPanels`) landed
+ * nowhere, and without a `title` prop the title `<span>` didn't even mount
+ * (`hasTitle` only checked `slots.default || props.title`). Fixed by adding a real
+ * `title` slot to the header, wrapping the previous `default` slot as its own
+ * fallback (so direct consumers of `OrigamExpansionPanelHeader` using `#default`
+ * keep working unchanged) — see `OrigamExpansionPanelHeader.vue`. Both Variant 6
+ * below (Panel-level forwarding) and Variant 8 of the Header story (direct usage)
+ * now assert the real behaviour instead of being `test.fixme`.
  *
  * Conventions (from btn.spec.ts recipe):
  *   - Navigation: page.goto(variantUrl(idx)) — variantId query param, direct load.
@@ -299,12 +308,34 @@ test.describe('OrigamExpansionPanelHeader', () => {
         })
     })
 
-    // ── Default / playground (index 8) ───────────────────────────────────────
+    // ── Slots - Title (index 8) ───────────────────────────────────────────────
+    // Direct usage of `<origam-expansion-panel-header>` with a `#title` slot and
+    // NO `title` prop — the exact regression scenario for the fixed DS bug.
+
+    test.describe('Slots - Title', () => {
+        test('title slot renders custom content with no `title` prop set', async ({ page }) => {
+            await page.goto(headerVariantUrl(8))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const title = sandbox.locator('.origam-expansion-panel-header__title').first()
+            await expect(title).toBeVisible({ timeout: 12000 })
+            await expect(title).toContainText('Custom title slot content')
+        })
+
+        test('title span mounts even without the `title` prop (hasTitle honours slots.title)', async ({ page }) => {
+            await page.goto(headerVariantUrl(8))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const header = sandbox.locator('.origam-expansion-panel-header').first()
+            await expect(header).toBeVisible({ timeout: 12000 })
+            await expect(header.locator('.origam-expansion-panel-header__title')).toHaveCount(1)
+        })
+    })
+
+    // ── Default / playground (index 9) ───────────────────────────────────────
     // init: { title: 'Section heading', hideActions: false, readonly: false, static: false, focusable: true }
 
     test.describe('Default (playground)', () => {
         test('renders a header with title "Section heading"', async ({ page }) => {
-            await page.goto(headerVariantUrl(8))
+            await page.goto(headerVariantUrl(9))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const title = sandbox.locator('.origam-expansion-panel-header__title').first()
             await expect(title).toBeVisible({ timeout: 12000 })
@@ -312,7 +343,7 @@ test.describe('OrigamExpansionPanelHeader', () => {
         })
 
         test('is a <button> element (default tag)', async ({ page }) => {
-            await page.goto(headerVariantUrl(8))
+            await page.goto(headerVariantUrl(9))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
@@ -321,7 +352,7 @@ test.describe('OrigamExpansionPanelHeader', () => {
         })
 
         test('expand icon (chevron-down) is present in the append area', async ({ page }) => {
-            await page.goto(headerVariantUrl(8))
+            await page.goto(headerVariantUrl(9))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
@@ -501,30 +532,25 @@ test.describe('OrigamExpansionPanel', () => {
     })
 
     // ── Slots - Title (index 6) ───────────────────────────────────────────────
-    // DS bug #25: slot #title is declared in OrigamExpansionPanel.vue but the
-    // forwarding template only routes it when the `title` prop is set too.
-    // The story uses #title slot with a <strong> + OrigamIcon — the slot content
-    // may not appear in the header title span because the prop-level hasHeader
-    // check requires `props.title` OR `slots.title` but the forwarding code
-    // routes it conditionally. This fixme documents the known regression.
+    // Fixed DS bug: OrigamExpansionPanel forwards its `#title` slot into
+    // OrigamExpansionPanelHeader (`OrigamExpansionPanel.vue:51-58`), but the
+    // header had no `<slot name="title">` to receive it — only `#default`,
+    // `#prepend`, `#append`. Content passed to `#title` (no `title` prop set)
+    // was silently dropped. Fixed by adding a `title` slot to the header,
+    // wrapping the previous `#default` slot as its own fallback. Discriminating:
+    // this test failed against the pre-fix header and passes against the fix
+    // (verified locally by reverting the header change and re-running it).
 
     test.describe('Slots - Title', () => {
-        test.fixme(
-            'title slot content is rendered inside the panel header — DS bug #25',
-            async ({ page }) => {
-                // Bug: OrigamExpansionPanel conditionally wraps the #title slot,
-                // but the template guard `v-if="slots.title"` depends on the parent
-                // slots context. The custom slot content ("Custom Title" + star icon)
-                // does not reach the header's __title span when no `title` prop is set.
-                // Tracked in task #25.
-                await page.goto(panelVariantUrl(6))
-                const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-                const header = sandbox.locator('.origam-expansion-panel-header').first()
-                await expect(header).toBeVisible({ timeout: 12000 })
-                const titleContent = await header.locator('.origam-expansion-panel-header__title').innerHTML()
-                expect(titleContent).toContain('Custom Title')
-            }
-        )
+        test('title slot content is rendered inside the panel header', async ({ page }) => {
+            await page.goto(panelVariantUrl(6))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const header = sandbox.locator('.origam-expansion-panel-header').first()
+            await expect(header).toBeVisible({ timeout: 12000 })
+            const title = header.locator('.origam-expansion-panel-header__title')
+            await expect(title).toContainText('Custom Title')
+            await expect(title.locator('.origam-icon')).toBeAttached()
+        })
     })
 
     // ── Slots - Prepend (index 7) ─────────────────────────────────────────────
