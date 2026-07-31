@@ -27,7 +27,7 @@ Peer dependencies — pulled in by default, but you can dedupe in your app:
 |--------------|----------|-------------------------------|
 | `vue`        | `^3.5`   | Always.                       |
 | `vue-i18n`   | `^11.1`  | Optional — locale composable. |
-| `vue-router` | `^4.5`   | Optional — link components.   |
+| `vue-router` | `^4.5 \|\| ^5`   | Optional — link components.   |
 
 Node >= 22 is required to **build** the package from source. Consumers only
 need Vue 3.5+ at runtime.

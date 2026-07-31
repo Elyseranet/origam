@@ -15,6 +15,40 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ---
 
+## [2.12.1] — 2026-07-31
+
+**Hotfix — `vue-router` 5 is now accepted.** A consuming project could not
+upgrade to Nuxt 4.5.1: Nuxt pulls `vue-router` 5, while origam declared an
+optional peer of `vue-router: "^4.5.0"`. The peer range is widened to
+`"^4.5.0 || ^5.0.0"`.
+
+Nothing else changed — no runtime code, no public API, no dependency added.
+The widening is strictly additive: projects on `vue-router` 4 are unaffected,
+projects on 5 stop being blocked.
+
+Vue Router 5 is, in the maintainers' own words, "a *boring* release, it
+merges unplugin-vue-router into the core package with no breaking changes",
+and the official migration guide states: "If you're using Vue Router 4
+without unplugin-vue-router, there are no breaking changes". origam does not
+use unplugin-vue-router, nor the iife build (the single documented breaking
+change is that the iife bundle no longer ships `@vue/devtools-api`).
+
+Verified on both majors before shipping: every symbol origam imports
+(`useLink`, `RouterLink.useLink`, `RouteLocationRaw`, `Router`,
+`RouteLocationNormalizedLoaded`, `NavigationGuardNext`, `UseLinkOptions`)
+still exists in 5.2.0; type-check of the design system is clean against
+4.6.4 and 5.2.0 alike; and the built `dist` was exercised at runtime under
+both — href resolution, named routes, click navigation, external hrefs,
+`isActive`, and the tag fallback when no `to` is passed all behave
+identically.
+
+**Consumer note.** `vue-router` 5 requires `vue` `^3.5.34 || ^4.0.0`, while
+origam's peer on `vue` remains `^3.5.0`. A project pinned between Vue 3.5.0
+and 3.5.33 that adopts `vue-router` 5 will hit a conflict — between `vue`
+and `vue-router` directly, not with origam.
+
+---
+
 ## [2.12.0] — 2026-07-29
 
 **Hotfix — `vue-i18n` is optional again.** A consuming project reported that
