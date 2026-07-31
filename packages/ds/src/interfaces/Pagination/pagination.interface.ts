@@ -73,9 +73,9 @@ export interface IPaginationProps extends ICommonsComponentProps, ITagProps, ICo
     nextText?: string
     /**
      * aria-label for the compact mode page number `<input>`. Falls back to
-     * the `origam.pagination.ariaLabel.pageNumber` i18n key.
+     * the `origam.pagination.aria_label.page_number` i18n key.
      *
-     * @default 'origam.pagination.ariaLabel.pageNumber'
+     * @default 'origam.pagination.aria_label.page_number'
      */
     pageNumberAriaLabel?: string
     /** @deprecated Use the `hover` object prop instead. Kept for back-compat. */

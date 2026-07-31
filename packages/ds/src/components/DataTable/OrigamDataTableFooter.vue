@@ -65,14 +65,14 @@
 			{value: 25, title: '25'},
 			{value: 50, title: '50'},
 			{value: 100, title: '100'},
-			{value: -1, title: 'origam.dataFooter.itemsPerPageAll'}
+			{value: -1, title: 'origam.data_footer.items_per_page_all'}
 		],
-		itemsPerPageText: 'origam.dataFooter.itemsPerPageText',
-		pageText: 'origam.dataFooter.pageText',
-		firstPageLabel: 'origam.dataFooter.firstPage',
-		prevPageLabel: 'origam.dataFooter.prevPage',
-		nextPageLabel: 'origam.dataFooter.nextPage',
-		lastPageLabel: 'origam.dataFooter.lastPage',
+		itemsPerPageText: 'origam.data_footer.items_per_page_text',
+		pageText: 'origam.data_footer.page_text',
+		firstPageLabel: 'origam.data_footer.first_page',
+		prevPageLabel: 'origam.data_footer.prev_page',
+		nextPageLabel: 'origam.data_footer.next_page',
+		lastPageLabel: 'origam.data_footer.last_page',
 		showCurrentPage: true
 	})
 
@@ -93,7 +93,7 @@
 					return {
 						value: option,
 						title: option === -1
-								? t('origam.dataFooter.itemsPerPageAll')
+								? t('origam.data_footer.items_per_page_all')
 								: String(option)
 					}
 				}

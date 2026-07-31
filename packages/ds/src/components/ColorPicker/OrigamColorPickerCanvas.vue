@@ -166,14 +166,14 @@
 	 ********************************************************/
 
 	const canvasAriaLabel = computed(() => {
-		return props.ariaLabel ?? t('origam.colorPicker.canvas.ariaLabel')
+		return props.ariaLabel ?? t('origam.color_picker.canvas.aria_label')
 	})
 
 	const canvasAriaValueText = computed(() => {
 		const s = Math.round((props.colorHsv?.s ?? 0) * 100)
 		const v = Math.round((props.colorHsv?.v ?? 0) * 100)
 
-		return t('origam.colorPicker.canvas.value', s, v)
+		return t('origam.color_picker.canvas.value', s, v)
 	})
 
 	/*********************************************************

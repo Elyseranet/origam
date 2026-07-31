@@ -71,7 +71,7 @@
 
 	const stepAriaLabel = computed<string | undefined>(() => {
 		if (!props.title) return undefined
-		return t('origam.stepper.stepAriaLabel', (props.index ?? 0) + 1, props.title)
+		return t('origam.stepper.step_aria_label', (props.index ?? 0) + 1, props.title)
 	})
 
 	const emit = defineEmits<{

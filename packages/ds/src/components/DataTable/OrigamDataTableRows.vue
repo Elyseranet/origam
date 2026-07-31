@@ -108,8 +108,8 @@
 	 ********************************************************/
 
 	const props = withDefaults(defineProps<IDataTableRowsProps>(), {
-		loadingText: 'origam.dataIterator.loadingText',
-		noDataText: 'origam.noDataText'
+		loadingText: 'origam.data_iterator.loading_text',
+		noDataText: 'origam.no_data_text'
 	})
 
 	const {filterProps} = useProps<IDataTableRowsProps>(props)

@@ -64,7 +64,7 @@
 		emptyIcon: MDI_ICONS.STAR_OUTLINE,
 		fullIcon: MDI_ICONS.STAR,
 		tag: 'div',
-		itemAriaLabel: 'origam.rating.ariaLabel.item'
+		itemAriaLabel: 'origam.rating.aria_label.item'
 	})
 
 	const emits = defineEmits<IRatingFieldItemEmits>()

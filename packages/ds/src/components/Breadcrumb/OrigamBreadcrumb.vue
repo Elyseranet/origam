@@ -3,7 +3,7 @@
 			:is="tag"
 			:id="id"
 			v-contrast
-			:aria-label="t('origam.breadcrumb.ariaLabel', 'Breadcrumb')"
+			:aria-label="t('origam.breadcrumb.aria_label', 'Breadcrumb')"
 			:class="breadcrumbClasses"
 	>
 		<origam-defaults-provider :defaults="slotDefaults">

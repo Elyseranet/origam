@@ -234,7 +234,7 @@
 				item,
 				{
 					id: `carousel-item-${item.id}`,
-					'aria-label': t('origam.carousel.ariaLabel.delimiter', index + 1, group.items.value.length),
+					'aria-label': t('origam.carousel.aria_label.delimiter', index + 1, group.items.value.length),
 					// The SELECTED dot is active. When the consumer passes an
 					// `active` STATE object, the selected dot wears that surface
 					// (forced); otherwise it just reads as active. Hover applies

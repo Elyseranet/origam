@@ -359,7 +359,7 @@
 		filterMode: FILTERS_MODE.INTERSECTION,
 		closeText: 'origam.close',
 		openText: 'origam.open',
-		noDataText: 'origam.noDataText'
+		noDataText: 'origam.no_data_text'
 	})
 
 	// `useDefaults` resolves each prop against theme.components['origam-select']

@@ -86,7 +86,7 @@
 				<template v-if="isRange">
 					<span class="origam-date-picker-field__selection-text">
             <slot name="rangeSelection">
-              {{ t('origam.datePickerRangeField.text', selectedValues[0], selectedValues[1]) }}
+              {{ t('origam.date_picker_range_field.text', selectedValues[0], selectedValues[1]) }}
             </slot>
           </span>
 				</template>
