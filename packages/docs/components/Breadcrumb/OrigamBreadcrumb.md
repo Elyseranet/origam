@@ -202,8 +202,6 @@ interface IBreadcrumbDividerProps extends ICommonsComponentProps, ITagProps,
     <ol class="origam-breadcrumb__items">
         <li class="origam-breadcrumb__item">
             <a class="origam-breadcrumb-item origam-breadcrumb-item--link">Home</a>
-        </li>
-        <li class="origam-breadcrumb__item">
             <span class="origam-breadcrumb-divider">/</span>
         </li>
         <li class="origam-breadcrumb__item">
@@ -213,6 +211,11 @@ interface IBreadcrumbDividerProps extends ICommonsComponentProps, ITagProps,
     </ol>
 </nav>
 ```
+
+Each crumb renders as a **single** `<li class="origam-breadcrumb__item">`
+that holds the crumb **and** the divider following it — there is no
+dedicated `<li>` for the divider (`OrigamBreadcrumb.vue`, lines 17-45).
+The last crumb has no divider inside its `<li>`.
 
 ## Design tokens consumed
 
@@ -225,10 +228,10 @@ children of the root component:
 |---|---|---|
 | `--origam-breadcrumb---background` | `transparent` | `<OrigamBreadcrumb>` root |
 | `--origam-breadcrumb---color` | `{color.text.primary}` | `<OrigamBreadcrumb>` root |
-| `--origam-breadcrumb---border-radius` | `{radius.none}` (`{radius.sm}` for `--rounded`) | `<OrigamBreadcrumb>` root |
-| `--origam-breadcrumb---box-shadow-elevated` | `{shadow.md}` | `<OrigamBreadcrumb>` root, `--elevated` modifier |
-| `--origam-breadcrumb---padding-block` / `-inline` | `{space.2}` | `<OrigamBreadcrumb>` root |
-| `--origam-breadcrumb---gap` | `{space.0}` | Gap between crumbs |
+| `--origam-breadcrumb---border-radius` | `{radius.none}` | `<OrigamBreadcrumb>` root — a `--origam-breadcrumb---border-radius-rounded` var (`{radius.sm}`, 4px) is also generated, but the component's `--rounded` modifier never reads it: `OrigamBreadcrumb.vue` hardcodes `border-radius: var(--origam-radius---2xl, 24px)` directly, so `--rounded` actually renders **24px**, not 4px |
+| `--origam-breadcrumb---box-shadow-elevated` | `{shadow.md}` | Generated in `main.css`, but **not read** by the component — the `--elevated` modifier in `OrigamBreadcrumb.vue` sets its local `--origam-breadcrumb---box-shadow` straight to `var(--origam-shadow---md, …)`, bypassing this variable entirely |
+| `--origam-breadcrumb---padding-block` / `-inline` | `{space.2}` | Generated in `main.css`, but **not read** — the component hardcodes its own local `--origam-breadcrumb---padding-{block,inline}-{start,end}` vars to a literal `8px`, ignoring these token-driven variables |
+| `--origam-breadcrumb---gap` | `{space.0}` | Generated in `main.css`, but **not read anywhere** — `&__items` has no `gap` declaration; crumbs are only spaced by the divider's own inline padding |
 | `--origam-breadcrumb__item---hover-color` | `{color.action.primary.bg}` | crumb hover affordance |
 | `--origam-breadcrumb__item---active-color` | `{color.text.secondary}` | current-page crumb |
 | `--origam-breadcrumb__item---opacity-disabled` | `{opacity.50}` | disabled crumb |

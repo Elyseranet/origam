@@ -255,13 +255,18 @@ a scrollable list (`max-height` + the default `overflow: auto`).
 | Slot | Scope | Description |
 |---|---|---|
 | `default` | — | Slotted rows (`OrigamListItem`, `OrigamListSubheader`, `OrigamListGroup`, …); overrides the `items`-driven renderer entirely |
-| `item` | `{ itemProps }` | Overrides the row renderer for plain items |
-| `subheader` | `{ itemProps }` | Overrides the row renderer for subheader items |
-| `subheaderTitle` | `{ title }` | Overrides just the subheader's title content |
-| `divider` | `{ itemProps }` | Overrides the row renderer for divider items |
-| `group` | `{ itemProps }` | Overrides the row renderer for group (parent) items |
+| `item` | spread `item.props` (`OrigamList.vue` re-emits via `v-bind="itemProps"`, **not** `{ itemProps }`) | Overrides the row renderer for the fallback/plain-item case |
+| `subheader` | spread `item.props` (same spread as `item`, **not** `{ itemProps }`) | Overrides the row renderer — but `OrigamListChildren.hasSubheader` is `slots.subheader \|\| item.type === 'subheader'`, so merely providing this slot makes **every** row match it (unless a `divider` slot is also supplied, which is checked first) |
+| `divider` | spread `item.props` (same spread as `item`, **not** `{ itemProps }`) | Overrides the row renderer — but `OrigamListChildren.hasDivider` is `slots.divider \|\| item.type === 'divider'`, so merely providing this slot makes **every** row match it (it's checked before `subheader` / `group` / `item`) |
+| `group` | spread `item.props` (same spread as `item`, **not** `{ itemProps }`) | Overrides the row renderer for group (parent) items — rows whose `children` array is non-empty; unlike `subheader` / `divider` this check is purely data-driven, not slot-gated |
 | `groupActivator` | `{ props, isOpen, events, toggleIcon }` | Overrides the clickable header of a group |
 | `childrenItem` | `{ item, index }` | Overrides the wrapper rendered around every item (item + its `<div class="origam-list-children__item">`) |
+
+> `subheaderTitle` (`{ title }`) exists on `OrigamListChildren` (which owns the
+> subheader's title content), but `OrigamList` does not forward it — it only
+> forwards `childrenItem`, `divider`, `subheader`, `group`, `groupActivator`
+> and `item` (`OrigamList.vue`). Passing `#subheaderTitle` to `<OrigamList>`
+> has no effect.
 
 ## Composition — the List family
 
@@ -303,10 +308,10 @@ directly in your templates:
 | `--origam-list---background` | `color.surface.default` | List background |
 | `--origam-list---color` | `color.text.primary` | Default text color |
 | `--origam-list---box-shadow` | `shadow.none` | Elevation shadow |
-| `--origam-list---border-radius` | `0px` | Corner radius (composed from four corner tokens) |
+| `--origam-list---border-radius` | `0px` | Corner radius — a single var read by `OrigamList.vue` (fallback `0px`); the four corner tokens declared in `list.json` (`border-{start-start,start-end,end-start,end-end}-radius`) are **not** composed/read by the component today |
 | `--origam-list---border-color` | `color.text.primary` | Border color |
 | `--origam-list---border-style` | `solid` | Border style |
-| `--origam-list---border-{top,left,bottom,right}-width` | `border.width.0` | Per-side border width |
+| `--origam-list---border-width` | `border.width.0` | Border width — a single shorthand read by `OrigamList.vue`; the per-side tokens declared in `list.json` (`border-{top,left,bottom,right}-width`) are **not** read by the component today |
 | `--origam-list---padding-block-start` / `-end` | `space.2` (8px) | Vertical padding |
 | `--origam-list---padding-inline-start` / `-end` | `space.0` | Horizontal padding |
 | `--origam-list---overflow` | `auto` | Overflow behaviour |

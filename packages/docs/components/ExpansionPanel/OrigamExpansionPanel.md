@@ -193,10 +193,10 @@ own prop still wins.
 | Slot | Scope | Description |
 |---|---|---|
 | `default` | — | Content body (used instead of `content`) |
-| `header` | `{ collapseIcon, disabled, expanded, expandIcon, readonly }` | Replaces the entire header |
+| `header` | Every `OrigamExpansionPanel` prop except `class` / `id` / `style` / `tag` — bound from `expansionPanelHeaderProps = filterProps(props, ['class', 'id', 'style', 'tag'])` (`OrigamExpansionPanel.vue:31-34,234-236`). This is a different, larger object than the 5-key scope below — that one is `OrigamExpansionPanelHeader`'s own internal `slotProps`, only handed to its `prepend` / `append` slots. | Replaces the entire header |
 | `title` | same as `header` | Overrides just the header's title content |
-| `prepend` | same as `header` | Leading icon/avatar area of the header |
-| `append` | same as `header` | Trailing icon/avatar area of the header |
+| `prepend` | `{ collapseIcon, disabled, expanded, expandIcon, readonly }` — `OrigamExpansionPanelHeader`'s own internal `slotProps` (`OrigamExpansionPanelHeader.vue:163-171`), **not** the `header` scope above: `header` and `prepend`/`append` do not receive the same object. | Leading icon/avatar area of the header |
+| `append` | Same `{ collapseIcon, disabled, expanded, expandIcon, readonly }` object as `prepend` (`OrigamExpansionPanelHeader.vue:163-171`) — again, different from `header`'s scope. | Trailing icon/avatar area of the header |
 | `loader` | — | Custom loading indicator (line/circular loader replacement) |
 | `wrapper` | `{ … content props }` | Replaces the entire content wrapper |
 
@@ -230,8 +230,8 @@ own prop still wins.
 
 | Variable | Default source | Description |
 |---|---|---|
-| `--origam-expansion-panel---background` | `color.surface.raised` | Panel background |
-| `--origam-expansion-panel---color` | `color.text.primary` | Panel text color |
+| `--origam-expansion-panel---background` | `color.surface.raised` | Seeded by the token build (`_light.scss:1777`) but **not read anywhere** — no `background`/`background-color` property in `OrigamExpansionPanel.vue`'s `<style>` block references it. Overriding it currently has no visible effect. |
+| `--origam-expansion-panel---color` | `color.text.primary` | Same gap as above: generated (`_light.scss:1778`) but not consumed by `OrigamExpansionPanel.vue`, `OrigamExpansionPanelHeader.vue` or `OrigamExpansionPanelContent.vue` — no matching `var(...)` reference in any of the three. |
 | `--origam-expansion-panel---border-radius` | `radius.sm` | Panel corner radius |
 | `--origam-expansion-panel---divider-color` | `color.border.subtle` | Separator between stacked panels (non-accordion) |
 | `--origam-expansion-panel---divider-opacity` | `opacity.12` | Separator opacity |

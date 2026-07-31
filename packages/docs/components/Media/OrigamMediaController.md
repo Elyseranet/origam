@@ -42,6 +42,56 @@ const { state, methods } = useMediaPlayer({ mediaRef: audioEl })
 </script>
 ```
 
+## Real-world integration: OrigamAudio
+
+`<OrigamAudio>` is the reference integration of this shell — it's a
+worked example of every surface described on this page: the media
+binding, the audio-specific opt-in props, three of the slots, and the
+`previous` / `next` / `download` emits.
+
+```vue
+<origam-media-controller
+    v-model:loop-mode="internalLoopMode"
+    v-model:shuffle="internalShuffle"
+    :state="state"
+    :methods="methods"
+    :playback-rates="playbackRates"
+    :allow-remote-playback="allowRemotePlayback"
+    :downloadable="downloadable"
+    :download-url="downloadUrl"
+    :download-filename="downloadFilename"
+    :show-previous="hasPlaylist"
+    :show-next="hasPlaylist"
+    :show-loop="true"
+    :show-shuffle="hasPlaylist"
+    @previous="onPrevious"
+    @next="onNext"
+    @download="onDownloadClick"
+>
+    <template #header>
+        <!-- cover art + title / artist / album strip -->
+    </template>
+    <template #waveform>
+        <!-- <OrigamSliderField variant="audio"> bound to state.currentTime -->
+    </template>
+    <template
+        v-if="hasPlaylist"
+        #footer
+    >
+        <!-- <OrigamList> of playlist tracks -->
+    </template>
+</origam-media-controller>
+```
+
+(`OrigamAudio.vue:44-193`.) `state` / `methods` come from
+`useAudioPlayer()`, a specialisation of `useMediaPlayer()`. Play,
+pause, seek, volume, mute, playback-rate, and cast are all resolved by
+the shell itself through `methods.*`; `OrigamAudio` only has to
+implement `previous` / `next` (playlist navigation vs. ±10 s skip) and
+`download` (its own URL-resolution policy), which is exactly the set
+of emits this shell doesn't own enough context to resolve on its own
+(see [Emits](#emits) below).
+
 ## When to use
 
 - You are composing your own media surface (a bespoke `<video>` /
@@ -54,10 +104,15 @@ When NOT to use:
 
 - Consuming a full player is usually simpler — reach for
   `<OrigamAudio>` or `<OrigamVideo>` directly. `<OrigamMediaController>`
-  is the shell THEY compose internally (`<OrigamVideo>` mounts it as
-  its transport bar; `<OrigamAudio>` composes its transport row from
-  the atomic media sub-components instead and does **not** mount this
-  shell).
+  is the shell THEY compose internally: `<OrigamVideo>` always mounts
+  it as its transport bar, and so does `<OrigamAudio>` — by default.
+  `<OrigamAudio>`'s `controls` prop defaults to `'custom'`
+  (`OrigamAudio.vue:321`), and `isCustomControls` (`OrigamAudio.vue:376`)
+  gates a `<origam-media-controller>` mount (`OrigamAudio.vue:44-193`)
+  wired to the `state` / `methods` pair from `useAudioPlayer()`. Only
+  `controls="native"` opts back out to a bare `<audio controls>`
+  element. See [Real-world integration: OrigamAudio](#real-world-integration-origamaudio)
+  below.
 
 ## Props
 
@@ -123,20 +178,39 @@ context:
 
 | Slot | Bindings | Default content |
 |---|---|---|
-| `header` | — | Empty. Rendered above the scrubber row (`<OrigamAudio>`-style cover/metadata strips would go here in a custom composition). |
+| `header` | — | Empty. Rendered above the scrubber row — `<OrigamAudio>` fills it with its cover/metadata strip (see [Real-world integration: OrigamAudio](#real-world-integration-origamaudio)). |
 | `waveform` | `{ state: IMediaPlayerState, methods: IMediaPlayerMethods }` | `<origam-media-scrubber>` bound to `state.currentTime` / duration / buffered, wired to `seek` on drag and commit. |
 | `footer` | — | Empty. Rendered below the transport row. |
 | `prepend-transport` | — | Empty. Rendered at the very start of the transport row's left side, before the previous/play/next buttons. |
 | `append-transport` | — | Empty. Rendered at the very end of the transport row's right side, after the config menu. |
 | `extraControlsLeft` | — | Empty. Legacy slot rendered on the left side, after the time label — prefer `prepend-transport`. |
 | `extraControlsRight` | — | Empty. Rendered on the right side, before the config menu (`<OrigamVideo>` injects captions / PiP / fullscreen buttons here). |
-| `configExtra` | `{ closeMenu: () => void }` | Empty. Extra rows appended inside the config menu. |
+| `configExtra` | `{ closeMenu: () => void }` (typed only — never constructed, see note below) | **Not rendered.** No `<slot name="configExtra">` exists anywhere in the template — the slot has no render site. |
+
+> ⚠️ **`configExtra` doesn't do what it's typed to do.** It's declared
+> in `IMediaControllerSlots` (`media-controller.interface.ts:161`) and
+> the component even checks `Boolean(slots.configExtra)` inside
+> `hasConfigContent` (`OrigamMediaController.vue:426-431`) — so passing
+> this slot **can** make the cog button appear when no other config
+> content (playback rates / quality options / download) is present.
+> But once the menu opens, the slot's content is never inserted: the
+> config menu is a single `<origam-menu :items="configMenuItems">`
+> (`OrigamMediaController.vue:134-153`) with no default-slot content
+> and no `<slot name="configExtra">` anywhere in the template. The
+> `closeMenu` binding promised by the type is likewise never
+> constructed (no `closeMenu` identifier exists in the component). Net
+> effect: a consumer can get an empty/misleading cog button, but
+> anything they put in `#configExtra` is silently dropped. This looks
+> like a DS bug, not documented behaviour — flagged, not fixed here
+> (out of this doc's scope).
 
 ## Exposed
 
 `defineExpose` surfaces three internal refs for parent/test access:
-`configMenuOpen` (`Ref<boolean>`), `resolvedLoopMode` (`Ref<TAudioLoopMode>`),
-and `internalShuffle` (`Ref<boolean>`).
+`configMenuOpen` (`Ref<boolean>`), `resolvedLoopMode`
+(`ComputedRef<TAudioLoopMode>` — read-only; it derives from the
+internal `internalLoopMode` ref rather than being that ref itself,
+`OrigamMediaController.vue:370`), and `internalShuffle` (`Ref<boolean>`).
 
 ## CSS variables
 

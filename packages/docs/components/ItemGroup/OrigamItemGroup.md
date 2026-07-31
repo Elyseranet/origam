@@ -59,9 +59,13 @@ selectable.
 - `modelValue` is expressed in terms of each item's `value` — internally the
   group maps values to registration ids and back (`getIds` / `getValues`),
   so consumers never see the internal ids.
-- An `<OrigamItem>` rendered outside of an `<OrigamItemGroup>` throws
-  `[Origam] <OrigamItem> must be used inside an <OrigamItemGroup>` at setup
-  time.
+- An `<OrigamItem>` rendered outside of an `<OrigamItemGroup>` throws at
+  setup time — but not the message the guard in `OrigamItem.vue:53-55` would
+  suggest. `useGroupItem` is called with `required = true` (the default), so
+  when no group injection is found, `useGroupItem` itself throws first
+  (`group.composable.ts:51-54`), before `OrigamItem.vue`'s own
+  `if (!groupItem)` check can ever run. The message actually thrown is:
+  `[Origam] Could not find useGroup injection with symbol origam:item-group`.
 
 ## Selection modes
 
@@ -123,11 +127,30 @@ selectable.
 </template>
 ```
 
-`selectedClass` set on the group is pushed down to every `<origam-item>` as a
-**default** — an item that sets its own `selected-class` still wins. The
-class (or array of classes) is only present in the item's slot scope while
-that item is selected; it is not applied automatically to any element by
-either component — you must bind it yourself as shown above.
+The group's `selectedClass` **always wins** over an item's own
+`selected-class` prop, not the other way around: `useGroupItem` resolves it
+as `group.selectedClass.value ? group.selectedClass.value : props.selectedClass`
+(`group.composable.ts:74-80`), and the group's `selectedClass` prop defaults
+to `'origam-item--selected'` (`OrigamItemGroup.vue:41`) — so it is truthy
+unless you explicitly clear it, which means a per-item `selected-class` is
+only ever used when the group's own prop has been unset.
+
+`<OrigamItemGroup>` also wraps its default slot in an
+`<origam-defaults-provider>` seeded with `{ 'origam-item': { selectedClass }
+}` (`OrigamItemGroup.vue:54-60`). That looks like the mechanism pushing the
+default down, but it has **no effect here**: `<OrigamItem>` never calls
+`useDefaults()`, so it never reads from that provider — the resolution
+above (through the group injection) is the only path that actually runs.
+
+The class (or array of classes) is present in the item's slot scope while
+that item is selected, and it **is** applied automatically: `OrigamItem.vue`
+pushes `groupItem.selectedClass.value` into its own root element's `class`
+binding, alongside the fixed `origam-item` class (`OrigamItem.vue:72-78`).
+Since the DS ships no CSS for `.origam-item` / `origam-item--selected` (see
+"CSS variables" below), that class alone won't visibly style anything — you
+still typically bind `selectedClass` onto your own inner markup (as in the
+example above) to get an actual visual effect, but that's for styling
+purposes, not because the class is otherwise missing from the DOM.
 
 ## Programmatic navigation
 
@@ -182,6 +205,22 @@ interface `OrigamTabs`, `OrigamBtnToggle`, `OrigamChipGroup` and
 | `id` | `string` | — | Declared on the interface, but not bound anywhere in the template — passing it has no effect on the rendered element |
 | `class` / `style` | `ICommonsComponentProps` | — | Passthrough on the root element |
 
+### `<OrigamItem>` props
+
+`IItemGroupItemProps extends ICommonsComponentProps, ITagProps, IGroupItemProps`
+(`item-group.interface.ts:32`) — `value`/`disabled`/`selectedClass` come
+from the generic `IGroupItemProps` (`Commons/group.interface.ts:36-40`);
+`tag` from `ITagProps`; `id`/`class`/`style` from `ICommonsComponentProps`.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `value` | `any` | — | Value this item contributes to the group's `modelValue` |
+| `disabled` | `boolean` | — | Disables this item (also forced `true` when the group itself is `disabled`) |
+| `selectedClass` | `string` | — | Fallback class used only when the group's own `selectedClass` is falsy — see "Selected item styling" above, since the group always defaults to a truthy value this rarely takes effect |
+| `tag` | `string` | `'div'` | Root element tag |
+| `id` | `string` | — | Passthrough on the root element |
+| `class` / `style` | `ICommonsComponentProps` | — | Passthrough on the root element |
+
 ## Emits
 
 | Event | Payload | Description |
@@ -197,6 +236,12 @@ is an event on the **item**, not on `<OrigamItemGroup>` itself.
 | Slot | Scope | Description |
 |---|---|---|
 | `default` | `{ isSelected, select, next, prev, selected }` | Container for `<origam-item>` children — see the caveat about `isSelected`/`select` operating on internal ids above |
+
+### `<OrigamItem>` slots
+
+| Slot | Scope | Description |
+|---|---|---|
+| `default` | `{ isSelected, selectedClass, toggle, select, value, disabled }` | Item content (`OrigamItem.vue:57-64`) — `isSelected` is this item's own selection state, `toggle`/`select` operate on this item specifically (no id juggling needed), `selectedClass` is the resolved class from "Selected item styling" above |
 
 ## Accessibility
 
