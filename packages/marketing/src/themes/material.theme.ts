@@ -244,7 +244,8 @@ export const materialLightTheme: IOrigamTheme = {
         // besoin. Couleurs actives via les vars dédiées
         // `--origam-pagination__item--is-active---*` (hooks propres, indépendants du
         // `--origam-btn---background-color-active` global — voir note bottom-nav).
-        'origam-list': { nav: true },
+        'origam-list': { nav: true, rounded: 'lg' },
+        'origam-list-item': { rounded: 'lg' },
         // Title — ITitleProps extends ITypographyProps. `fontWeight:'regular'` (400,
         // valeur réelle de TFontWeight). `fontFamily` NON réglé ici : le thème fixe déjà
         // `--origam-title---font-family` / `--origam-font-family---heading` à Roboto via
