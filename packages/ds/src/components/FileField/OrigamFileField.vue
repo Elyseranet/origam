@@ -732,7 +732,7 @@
     if (!hasFiles.value) return ''
 
     if (props.multiple) {
-      return t(props.counterString, model.value?.length ?? 0)
+      return t(props.counterString, [model.value?.length ?? 0])
     }
 
     return fileNames.value[0] ?? ''
@@ -741,10 +741,10 @@
     const fileCount = model.value?.length ?? 0
 
     if (props.showSize) {
-      return t(props.counterSizeString, fileCount, totalBytesReadable.value)
+      return t(props.counterSizeString, [fileCount, totalBytesReadable.value])
     }
 
-    return t(props.counterString, fileCount)
+    return t(props.counterString, [fileCount])
   })
   const hasFiles = computed(() => {
     return Array.isArray(model.value) && model.value.length > 0

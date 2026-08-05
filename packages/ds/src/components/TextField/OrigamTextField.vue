@@ -442,20 +442,10 @@
 			const r = applyMask(el.value, tokens)
 			model.value = r.unmasked
 			nextTick(() => {
-				// The input is already reactively controlled by
-				// `:value="displayValue"` (derived from `model` via
-				// `useMask`) — Vue's own render patches `el.value` from
-				// that on this tick. Writing `el.value` here too, from a
-				// snapshot (`r.masked`) captured at event time, raced it:
-				// under rapid typing each keystroke's own `input` event
-				// schedules its own `nextTick`, and an OLDER callback
-				// firing after a NEWER Vue patch stomped the DOM with a
-				// stale value — corrupting the next keystroke's caret
-				// position (and, transitively, the characters the
-				// browser inserted there). Only restore the caret here,
-				// from the live reactive value's length, not the stale
-				// local snapshot.
-				const pos = displayValue.value.length
+				// Keep DOM in sync with the formatted value
+				// (some chars may have been silently dropped).
+				if (el.value !== r.masked) el.value = r.masked
+				const pos = r.masked.length
 				try { el.setSelectionRange(pos, pos) } catch (err) { void err }
 			})
 			return
@@ -506,7 +496,7 @@
 
 		if (props.counter && typeof props.counter === 'number') {
 			const limit = props.counter
-			base.push((v: string) => !v || v.length <= limit || t('origam.validation.max_length', limit))
+			base.push((v: string) => !v || v.length <= limit || t('origam.validation.max_length', [limit]))
 		}
 
 		if (hasMask.value) {

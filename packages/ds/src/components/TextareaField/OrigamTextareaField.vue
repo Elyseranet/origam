@@ -708,7 +708,7 @@
 
 		if (props.counter && typeof props.counter === 'number') {
 			const limit = props.counter
-			base.push((v: string) => !v || v.length <= limit || t('origam.validation.max_length', limit))
+			base.push((v: string) => !v || v.length <= limit || t('origam.validation.max_length', [limit]))
 		}
 
 		return base
