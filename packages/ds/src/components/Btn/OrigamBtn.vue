@@ -446,7 +446,14 @@
 		]
 	})
 
-	const {id, css, load, isLoaded, unload} = useStyle(btnStyles)
+	// `useStyle` returns the id the root element must carry — it is the
+	// selector of the generated `#<id> { … }` rule, and Btn has no inline
+	// `:style` fallback, so root id and rule selector cannot drift apart.
+	// Passing `() => props.id` makes a CONSUMER-supplied `id` win and the
+	// rule follow it; without it the generated id silently overwrote the
+	// consumer's, breaking every `<label for>` / `aria-labelledby` /
+	// `aria-controls` / `aria-describedby` association targeting a button.
+	const {id, css, load, isLoaded, unload} = useStyle(btnStyles, () => props.id)
 
 	/*********************************************************
 	 * Expose
