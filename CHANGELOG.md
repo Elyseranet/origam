@@ -120,6 +120,89 @@ If you override any DS locale key, update the key path using the table below.
 | `origam.video.exitFullscreen` | `origam.video.exit_fullscreen` |
 | `origam.video.exitPip` | `origam.video.exit_pip` |
 
+### ⚠️ BREAKING — `<origam-title>` now defaults to `h2`, not `h1`
+
+Every `<origam-title>` written **without** an explicit `tag` renders an
+`<h2>` instead of an `<h1>`. This changes the rendered DOM, the heading
+outline, any CSS keyed on `h1`, and the result of automated a11y audits.
+
+**Why**: a document carries exactly one `h1`, so `h1` is the one level a
+shared component must never emit by default — two untagged titles on a page
+produced two `h1`s and broke both the heading order and the a11y audit. `h2`
+is the deepest level that is always valid under a page-owned `h1`, and
+repeating it is legal. The correct level depends on document position, which
+the component cannot know: pass `tag` explicitly whenever it matters.
+
+**Migration** — restore the old behaviour app-wide in one line, through the
+defaults layer:
+
+```ts
+createOrigam({ theme: { components: { 'origam-title': { tag: 'h1' } } } })
+```
+
+⚠️ **This migration only works from this release onwards.** On any earlier
+version it silently does nothing: `OrigamTitle`'s template bound `:is="tag"`,
+and in `<script setup>` a bare prop name in the template resolves against the
+raw `$props`, never against the `useDefaults()` proxy — so the theme value
+was read and then ignored. Fixed here by binding `:is="props.tag"`, the same
+correction as the seven components in #250. Do not conclude the snippet is
+wrong if you try it on 2.12.x.
+
+### Fixed
+
+- **`useStyle()` no longer overwrites a consumer-supplied `id`.** The
+  composable returns the id a component puts on its root element *and* the
+  selector of the `#<id> { … }` rule it injects — the two must be the same
+  value or the rule stops matching. It now accepts that id from the caller
+  (`useStyle(styles, () => props.id)`), reactively, so an `id` that only
+  appears on a later render is still picked up. Applied to `OrigamBtn`, where
+  the generated id silently replaced the consumer's and broke every
+  `<label for>` / `aria-labelledby` / `aria-controls` / `aria-describedby`
+  association targeting a button, and to `OrigamTitle`, where element and
+  rule had diverged. ⚠️ **138 of the 140 components calling `useStyle` are
+  still affected**, in three shapes: 14 swallow a consumer `id` outright
+  (same defect as Btn); 114 bind no id to their root at all, so where the
+  component also declares an `id` prop — 192 of 217 do — that prop is inert
+  and a consumer simply cannot set an id (measured on `OrigamCard` and
+  `OrigamKbd`, which render no `id` attribute even when one is passed); and
+  10 bind some other id while the rule keeps targeting the generated one,
+  the same divergence just fixed on Title. Tracked separately; a blanket
+  default was deliberately rejected because `OrigamSnackbarGroup` uses
+  `props.id` as a group *name*, not a DOM id.
+- **The injected stylesheet is valid CSS again.** Every rule carried a bare
+  `false` in its body (`#id {false}`). Vue's `StyleValue` type includes
+  `false`, so the shared `style` prop compiles to a runtime type containing
+  `Boolean`, and Vue resolves an unpassed boolean-typed prop to the concrete
+  value `false` — which was serialised verbatim. 192 of 217 components
+  declare that prop. No visual impact: Chromium, Firefox and WebKit all
+  discard the invalid declaration by CSS error recovery and apply the rest
+  unchanged. The cost was invalid CSS shipped to consumers, and jsdom
+  rejecting every generated sheet under test ("Could not parse CSS
+  stylesheet"). Numbers are dropped for the same reason, and an object nested
+  inside an array is now expanded instead of reaching the sheet as
+  `[object Object]`.
+- **`<origam-title>` reads its theme defaults.** It never called
+  `useDefaults()`, so `theme.components['origam-title']` was inert.
+
+### Added
+
+- **`escapeCssIdent()`** (`origam/utils`) — escapes an arbitrary string for
+  interpolation as a CSS ident. Required now that `useStyle()` builds a real
+  stylesheet rule out of a consumer-supplied id: without it an id such as
+  `a { } body { display: none }` appends attacker- or typo-controlled rules
+  to the document, and ids that are legal in HTML but illegal as a CSS ident
+  (leading digit, dots, colons) silently kill their own rule. Delegates to
+  the native `CSS.escape` when present, with a spec-equivalent fallback for
+  jsdom and SSR — the two were compared over 34 inputs in Chromium and are
+  byte-identical.
+
+### Changed
+
+- **`useStyle(styles, uniq)`** — `uniq` widened from `string | undefined` to
+  `MaybeRefOrGetter<string | undefined>`. Backward compatible: a plain string
+  still behaves exactly as before, and an empty value falls back to the
+  generated `<name>-<uid>` id rather than emitting the invalid selector `#`.
+
 ---
 
 ## [2.12.0] — 2026-07-29

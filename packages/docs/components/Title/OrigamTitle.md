@@ -1,7 +1,7 @@
 # OrigamTitle
 
 `<OrigamTitle>` is the semantic heading element for origam. It renders any
-HTML tag (`<h1>` by default) and wires the origam color / density / spacing
+HTML tag (`<h2>` by default) and wires the origam color / density / spacing
 mixins so headings stay theme-aware out of the box.
 
 It is intentionally **structural**: there is no chrome, no surface, no
@@ -21,6 +21,21 @@ background + radius around the title.
 The `tag` prop drives the rendered element. Pick a heading level that
 matches the document outline — visual sizing comes from CSS, not from the
 tag.
+
+The default is `h2`, **not** `h1`. A document carries exactly one `h1`, so
+`h1` is the one level a shared component must never emit by default: two
+untagged titles on a page would produce two `h1`s and break both the heading
+order and the automated a11y audit. `h2` is the deepest level that is always
+valid under a page-owned `h1`, and repeating it is legal. The right level
+still depends on document position, which the component cannot know — pass
+`tag` explicitly whenever it matters.
+
+To restore the previous behaviour app-wide, set it once through the defaults
+layer instead of on every call site:
+
+```ts
+createOrigam({ theme: { components: { 'origam-title': { tag: 'h1' } } } })
+```
 
 ```vue
 <template>
@@ -94,9 +109,9 @@ component uses for theme-aware fonts.
 ## Anatomy
 
 ```html
-<h1 class="origam-title">
+<h2 class="origam-title">
     <!-- default slot or `text` -->
-</h1>
+</h2>
 ```
 
 ## Design tokens consumed
@@ -127,8 +142,9 @@ The full list lives in
 ## Accessibility
 
 - Always pick a `tag` (`h1`–`h6`) that matches the document outline. The
-  default `h1` is correct for a page title; nested sections should use
-  `h2`+.
+  default is `h2`, which is safe under a page-owned `h1` but is a fallback,
+  not a recommendation — a page title still needs an explicit `tag="h1"`,
+  and it should be the only `h1` in the document.
 - Visual size is decoupled from semantic level — never demote the tag to
   shrink a heading; restyle via the `font-size-*` variables.
 - The element ships no implicit `role` override; assistive tech reads the
