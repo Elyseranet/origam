@@ -13,6 +13,68 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.13.0] - 2026-08-05
+
+### ⚠️ BREAKING — `<origam-select>` dropdown rows now follow the control
+
+A `<origam-select>` opened a menu whose rows measured 48px whatever the
+control was set to. The most common case — a select with **no** `size` prop —
+was the worst: a 48px row under a 36px control. Rows now match the control
+exactly at every size (36/36 unsized, 28/28 small, 44/44 large, 60/60
+x-large + comfortable).
+
+**Why this is breaking**: the fix corrects how `density` is applied to
+**every** list, not only dropdowns. Density becomes a coherent ±8px offset
+aligned on the field model, where it previously amounted to −24px in
+`compact` and did nothing at all in `comfortable`:
+
+| standalone list row, no `size` | before | after |
+|---|---|---|
+| `default` | 56px | 56px |
+| `compact` | 32px | **48px** |
+| `comfortable` | 56px | **64px** |
+
+The old 32px came from counting density three times (−8 on `min-height`,
+−8 on each block padding). `comfortable` had no rule at all and was a no-op.
+Anything relying on `density="compact"` on an `<origam-list>` will render
+8–16px taller.
+
+`ISizeProps` is added to `IListProps` (a forwarding prop — the list paints
+nothing from it) and to `IListItemProps` (which paints the row height).
+
+### ⚠️ BREAKING — `useStyle()` no longer overwrites a consumer `id`
+
+`useStyle()` generated its own id and the component put it on its root,
+silently overwriting an `id` passed as a prop. On `<origam-btn>` this broke
+every `<label for>`, `aria-labelledby`, `aria-controls` and
+`aria-describedby` pointing at a button. The consumer's `id` now wins and the
+generated rule follows it.
+
+**Why this is breaking**: components previously always carried a generated
+id. Anything keyed on that generated id (a CSS selector, a test locator)
+will no longer match when the consumer supplies an `id`.
+
+### Fixed
+
+- **The generated stylesheet was being discarded entirely.** `StyleValue`
+  includes `false`, and Vue resolves an unpassed prop whose declared type
+  contains Boolean to `false`, never `undefined` — so every component
+  exposing the shared `style` prop emitted `#id {false}`, which is not a
+  declaration. Browsers dropped it through error recovery; jsdom dropped the
+  **whole** sheet. Nested style arrays were also flattened one level only,
+  landing an object in the sheet as `[object Object]`.
+- **CSS injection through the `id` prop.** Now that the id comes from the
+  consumer and is interpolated verbatim into a `<style>` element, an id such
+  as `a { } body { display: none }` appended arbitrary rules to the document.
+  A new `escapeCssIdent()` utility delegates to native `CSS.escape`, with a
+  spec-conformant fallback for jsdom and SSR, which expose no `CSS` global.
+
+### Known issues
+
+`pnpm audit --prod` reports 3 `high` advisories (`brace-expansion`, DoS),
+transitive through `minimatch` and **pre-existing** — no dependency changed
+in this release. Remediation is tracked separately.
+
 ### ⚠️ BREAKING — i18n locale keys migrated to `snake_case`
 
 All locale keys shipped by the DS (`packages/ds/src/assets/locales/en.json`,
