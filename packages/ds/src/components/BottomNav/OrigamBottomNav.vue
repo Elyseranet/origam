@@ -7,7 +7,7 @@
 				v-contrast
 				:data-origam-color-locked="colorLocked"
 				:class="bottomNavClasses"
-				aria-label="Bottom navigation"
+				:aria-label="t('origam.bottom_nav.aria_label', 'Bottom navigation')"
 				@mouseenter="handleMouseenter"
 				@mouseleave="handleMouseleave"
 		>
@@ -56,6 +56,7 @@
 		useGroup,
 		useHover,
 		useLayoutItem,
+		useLocale,
 		useProps,
 		useSsrBoot,
 		useStateEffect,
@@ -102,6 +103,7 @@
 	defineEmits<IBottomNavEmits>()
 
 	const {filterProps} = useProps<IBottomNavProps>(props)
+	const {t} = useLocale()
 
 	// When `color` is explicitly set, mark the element so `v-contrast` keeps
 	// the chosen foreground instead of forcing black/white for legibility.
@@ -318,7 +320,7 @@
 			align-items: var(--origam-bottom-bar__content---align-items);
 			flex-wrap: var(--origam-bottom-bar__content---flex-wrap);
 			width: 100%;
-			transform: var(--origam-bottom-bar__content--transform);
+			transform: var(--origam-bottom-bar__content---transform);
 
 			> :deep(.origam-btn) {
 				--origam-btn---font-size: 0.75rem;
@@ -463,9 +465,9 @@
 		&--shift {
 			#{$this}__content {
 				> :deep(.origam-btn) {
-					&:not(#{$this}__item--selected) {
+					&:not(#{$this}__btn--selected) {
 						.origam-btn__content {
-							--origam-bottom-bar__content--transform: translateY(0.5rem);
+							transform: translateY(0.5rem);
 							transition: inherit;
 							opacity: 0;
 						}

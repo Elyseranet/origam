@@ -139,8 +139,8 @@
 
 	const props = withDefaults(defineProps<IDatePickerProps>(), {
 		weeksInMonth: CALENDAR_STRATEGY.STATIC,
-		title: 'origam.datePicker.title',
-		header: 'origam.datePicker.header'
+		title: 'origam.date_picker.title',
+		header: 'origam.date_picker.header'
 	})
 
 	const emits = defineEmits<IDatePickerEmits>()
@@ -192,7 +192,7 @@
 
 	const header = computed(() => {
 		if ((props.multiple || props.range) && model.value?.length > 1) {
-			return t('origam.datePicker.itemsSelected', model.value?.length)
+			return t('origam.date_picker.items_selected', model.value?.length)
 		}
 
 		return (model.value?.[0] && adapter.isValid(model.value?.[0]))

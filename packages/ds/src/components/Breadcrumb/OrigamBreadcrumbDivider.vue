@@ -121,7 +121,7 @@
 		lang="scss"
 		scoped
 >
-	.origam-breadcrumbs-divider {
+	.origam-breadcrumb-divider {
 		--origam-breadcrumb-divider---border-top-width: 0px;
 		--origam-breadcrumb-divider---border-left-width: 0px;
 		--origam-breadcrumb-divider---border-bottom-width: 0px;

@@ -291,7 +291,7 @@ const STATUS_DOT_COLOR: Record<string, string> = {
                             {{ t('home.showcase.avatar_group.title', 'Avatar Group') }}
                         </strong>
                         <span class="home-showcase__widget-caption">
-                            {{ t('home.showcase.avatar_group.caption', '+24 members') }}
+                            {{ t('home.showcase.avatar_group.caption', '+3 members') }}
                         </span>
                     </figcaption>
 
@@ -301,15 +301,7 @@ const STATUS_DOT_COLOR: Record<string, string> = {
                             :max="5"
                             class="home-showcase__avatar-group"
                             data-cy="showcase-avatar-group"
-                            :aria-label="t('home.showcase.avatar_group.caption', '+24 members')"
-                        />
-                        <origam-chip
-                            text="+24"
-                            color="neutral"
-                            border
-                            pill
-                            size="x-small"
-                            class="home-showcase__avatar-pill"
+                            :aria-label="t('home.showcase.avatar_group.caption', '+3 members')"
                         />
                     </div>
                 </origam-card>

@@ -13,7 +13,7 @@
 		<template v-if="hasPrepend">
       <span
 		      key="prepend"
-		      class="origam-breadcrumbs__prepend"
+		      class="origam-breadcrumb-item__prepend"
 		      @click="handleClickPrepend"
       >
         <slot name="prepend">
@@ -40,7 +40,7 @@
 		<template v-if="hasAppend">
       <span
 		      key="append"
-		      class="origam-breadcrumbs__append"
+		      class="origam-breadcrumb-item__append"
 		      @click="handleClickAppend"
       >
        <slot name="append">

@@ -154,8 +154,8 @@
 		side: INFINITE_SCROLL_SIDE.END,
 		mode: INFINITE_SCROLL_MODE.INTERSECT,
 		tag: 'div',
-		loadMoreText: 'origam.infiniteScroll.loadMore',
-		emptyText: 'origam.infiniteScroll.empty'
+		loadMoreText: 'origam.infinite_scroll.load_more',
+		emptyText: 'origam.infinite_scroll.empty'
 	})
 
 	const emits = defineEmits<IInfiniteScrollEmits>()

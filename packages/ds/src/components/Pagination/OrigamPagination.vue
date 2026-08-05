@@ -207,20 +207,20 @@
 		length: 1,
 		start: 1,
 		modelValue: 1, // TODO - Delete default value for modelValue
-		ariaLabel: 'origam.pagination.ariaLabel.root',
-		pageAriaLabel: 'origam.pagination.ariaLabel.page',
-		currentPageAriaLabel: 'origam.pagination.ariaLabel.currentPage',
-		firstAriaLabel: 'origam.pagination.ariaLabel.first',
-		previousAriaLabel: 'origam.pagination.ariaLabel.previous',
-		nextAriaLabel: 'origam.pagination.ariaLabel.next',
-		lastAriaLabel: 'origam.pagination.ariaLabel.last',
+		ariaLabel: 'origam.pagination.aria_label.root',
+		pageAriaLabel: 'origam.pagination.aria_label.page',
+		currentPageAriaLabel: 'origam.pagination.aria_label.current_page',
+		firstAriaLabel: 'origam.pagination.aria_label.first',
+		previousAriaLabel: 'origam.pagination.aria_label.previous',
+		nextAriaLabel: 'origam.pagination.aria_label.next',
+		lastAriaLabel: 'origam.pagination.aria_label.last',
 		compact: false,
 		pageText: 'origam.pagination.page',
 		ofText: 'origam.pagination.of',
 		withInfo: false,
 		infoText: 'origam.pagination.info',
 		perPage: 10,
-		pageNumberAriaLabel: 'origam.pagination.ariaLabel.pageNumber'
+		pageNumberAriaLabel: 'origam.pagination.aria_label.page_number'
 	})
 
 	const emits = defineEmits<IPaginationEmits>()

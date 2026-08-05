@@ -10,6 +10,7 @@ import type {
     INestedProps,
     IPaddingProps,
     IRoundedProps,
+    ISizeProps,
     ITagProps
 } from '../../interfaces'
 
@@ -17,7 +18,15 @@ import type { TLines, TSelectItemKey } from '../../types'
 
 import { deepEqual } from '../../utils'
 
-export interface IListProps extends ITagProps, ICommonsComponentProps, IElevationProps, IBorderProps, IDensityProps, IRoundedProps, IDimensionProps, INestedProps, IItemProps, IColorProps, IBgColorProps, IPaddingProps, IMarginProps {
+/**
+ * `size` is a FORWARDING prop on the list: the root paints nothing from it,
+ * it is pushed down to every descendant `<origam-list-item>` through the
+ * defaults provider (same channel as `density` / `color` / `bgColor`), where
+ * it drives the row height scale. It exists so a container that owns a size
+ * — a `<origam-select>` dropdown, a sized `<origam-menu>` — can keep its
+ * popup rows on the same vertical scale as its control.
+ */
+export interface IListProps extends ITagProps, ICommonsComponentProps, IElevationProps, IBorderProps, IDensityProps, ISizeProps, IRoundedProps, IDimensionProps, INestedProps, IItemProps, IColorProps, IBgColorProps, IPaddingProps, IMarginProps {
     activeClass?: string
     disabled?: boolean
     expandIcon?: string

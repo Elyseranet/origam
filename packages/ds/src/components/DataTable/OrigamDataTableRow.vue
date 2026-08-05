@@ -43,7 +43,7 @@
 							>
 								<origam-btn
 										:aria-expanded="isExpanded(item)"
-										:aria-label="isExpanded(item) ? t('origam.dataTableRow.collapseRow', 'Collapse row') : t('origam.dataTableRow.expandRow', 'Expand row')"
+										:aria-label="isExpanded(item) ? t('origam.data_table_row.collapse_row', 'Collapse row') : t('origam.data_table_row.expand_row', 'Expand row')"
 										:icon="isExpanded(item) ? MDI_ICONS.CHEVRON_UP : MDI_ICONS.CHEVRON_DOWN"
 										:size="SIZES.SMALL"
 										@click="handleBtnClick"

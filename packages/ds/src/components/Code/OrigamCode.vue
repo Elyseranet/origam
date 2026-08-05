@@ -323,8 +323,8 @@
 		: t('origam.code.copy', 'Copy')
 	)
 	const copyAriaLabel = computed(() => copied.value
-		? t('origam.code.copiedAriaLabel', 'Code copied to clipboard')
-		: t('origam.code.copyAriaLabel', 'Copy code to clipboard')
+		? t('origam.code.copied_aria_label', 'Code copied to clipboard')
+		: t('origam.code.copy_aria_label', 'Copy code to clipboard')
 	)
 
 	const copyBtnStyle = {

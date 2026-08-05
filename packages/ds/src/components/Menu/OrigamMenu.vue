@@ -29,7 +29,11 @@
 					:style="[colorStyles, roundedStyles, borderStyles, elevationStyles, paddingStyles, marginStyles]"
 			>
 				<slot name="default">
-					<origam-list class="origam-menu__list">
+					<origam-list
+							:density="density"
+							:size="size"
+							class="origam-menu__list"
+					>
 						<origam-list-subheader
 								v-if="title"
 								class="origam-menu__title"

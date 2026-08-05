@@ -2,6 +2,7 @@
 	<component
 			:is="tag"
 			:id="id"
+			ref="contentRef"
 			:class="listClasses"
 			:style="listStyles"
 			:tabindex="tabIndex"
@@ -146,6 +147,7 @@
 	const slotDefaults = computed(() => ({
 		'origam-list-item': {
 			density: props.density,
+			size: props.size,
 			color: props.color,
 			bgColor: props.bgColor
 		}
@@ -388,6 +390,10 @@
 
 		&--density-compact {
 			--origam-list---density: -8px;
+		}
+
+		&--density-comfortable {
+			--origam-list---density: 8px;
 		}
 
 		&__overlay {

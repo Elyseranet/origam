@@ -423,11 +423,11 @@
     rounded: true,
     divider: ',',
     display: 'list',
-    counterSizeString: 'origam.fileField.counterSize',
-    counterString: 'origam.fileField.counter',
-    dropzoneTitle: 'origam.fileField.dropzoneTitle',
-    dropzoneSubtitle: 'origam.fileField.dropzoneSubtitle',
-    browseText: 'origam.fileField.browse',
+    counterSizeString: 'origam.file_field.counter_size',
+    counterString: 'origam.file_field.counter',
+    dropzoneTitle: 'origam.file_field.dropzone_title',
+    dropzoneSubtitle: 'origam.file_field.dropzone_subtitle',
+    browseText: 'origam.file_field.browse',
     maxFileSizeErrorString: 'origam.validation.max_size_error'
   })
   const props = useDefaults(_props)

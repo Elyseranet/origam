@@ -1,6 +1,6 @@
 <template>
 	<component
-			:is="tag"
+			:is="props.tag"
 			:id="id"
 			v-contrast
 			:class="titleClasses"
@@ -23,6 +23,7 @@
 	import {
 	useBorder,
 	useBothColor,
+	useDefaults,
 	useDensity,
 	useMargin,
 	usePadding,
@@ -41,7 +42,20 @@
 	 * @description
 	 * Props with defaults, filterProps utility, and slot ref.
 	 ********************************************************/
-	const props = withDefaults(defineProps<ITitleProps>(), {tag: 'h1'})
+	// `h2`, NOT `h1`. A document may carry exactly ONE `h1`, so `h1` is the
+	// one level a shared component must never emit by default: two untagged
+	// titles on a page produced two `h1`s and broke both the heading order
+	// and the automated a11y audit. `h2` is the deepest level that is always
+	// valid under a page-owned `h1`, and repeating it is legal.
+	// The right level still depends on document position, which the
+	// component cannot know — pass `tag` explicitly whenever it matters.
+	const _props = withDefaults(defineProps<ITitleProps>(), {tag: 'h2'})
+
+	// Opt into the defaults layer so `theme.components['origam-title']` (or a
+	// `<OrigamDefaultsProvider>`) can set `tag` — and every other prop —
+	// app-wide. This is also the one-line migration for anyone who relied on
+	// the previous `h1` default: `'origam-title': { tag: 'h1' }`.
+	const props = useDefaults(_props)
 
 	const {filterProps} = useProps<ITitleProps>(props)
 
@@ -95,12 +109,18 @@
 			props.class
 		]
 	})
-	// NOTE: `useStyle` returns its own generated `id` (the injected
-	// <style> element id). It MUST be aliased — leaving it named `id`
-	// shadows the `id` PROP in the template, so `:id="id"` on the root
-	// would bind the style-sheet id (undefined during SSR) instead of the
-	// consumer's `id`, silently dropping `id` / breaking `aria-labelledby`.
-	const {id: styleId, css, load, isLoaded, unload} = useStyle(titleStyles)
+	// NOTE: `useStyle` returns the id its generated `#<id> { … }` rule
+	// targets. It MUST stay aliased — leaving it named `id` shadows the `id`
+	// PROP in the template, so `:id="id"` on the root would bind the
+	// generated id instead of the consumer's, silently dropping `id` /
+	// breaking `aria-labelledby`.
+	// Passing `() => props.id` is the other half of the same defect: without
+	// it the root carried the consumer's `id` while the rule kept targeting
+	// the generated one, so the two DIVERGED and the rule matched nothing.
+	// Same correction as OrigamBtn — latent here rather than visible, because
+	// Title also applies the very same bag inline via `:style`, and an inline
+	// style outranks an id rule anyway.
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(titleStyles, () => props.id)
 
 
 	/*********************************************************

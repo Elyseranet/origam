@@ -79,6 +79,24 @@ async function styleOf (panelProps: Record<string, unknown> = {}): Promise<strin
     return style
 }
 
+// `mountHeader` above only forwards panel PROPS. The regression below needs to
+// forward a panel SLOT (`#title`) too, so it gets its own mount helper rather
+// than widening `mountHeader`'s signature for every existing caller.
+async function mountHeaderWithPanelSlots (
+    panelProps: Record<string, unknown> = {},
+    panelSlots: Record<string, () => unknown> = {}
+) {
+    const wrapper = mount(OrigamExpansionPanels, {
+        slots: {
+            default: () => h(OrigamExpansionPanel, panelProps, panelSlots)
+        },
+        attachTo: document.body,
+        global: makeGlobal()
+    })
+    await nextTick()
+    return wrapper
+}
+
 describe('OrigamExpansionPanelHeader — fontSize prop', () => {
     it('emits no font-size override when fontSize is unset', async () => {
         expect(await styleOf()).not.toContain('--origam-expansion-panel__header---font-size:')
@@ -104,5 +122,33 @@ describe('OrigamExpansionPanelHeader — lineHeight prop', () => {
 
     it('lineHeight="tight" sets the line-height var to the tight token', async () => {
         expect(await styleOf({ lineHeight: 'tight' })).toContain('--origam-expansion-panel__header---line-height: var(--origam-font__lineHeight---tight)')
+    })
+})
+
+// Regression for the DS bug where `OrigamExpansionPanel` forwards a `#title`
+// slot to `<origam-expansion-panel-header>` (`OrigamExpansionPanel.vue:51-58`),
+// but the header itself only ever rendered `<slot name="default">` — no
+// `<slot name="title">` existed, so the forwarded content was never invoked.
+// Without a `title` prop, `hasTitle` was also `false` (`slots.default ||
+// props.title`), so the title `<span>` didn't even mount. Discriminating:
+// this test fails against the pre-fix header and passes against the fix.
+describe('OrigamExpansionPanelHeader — #title slot forwarded from OrigamExpansionPanel', () => {
+    it('renders custom #title slot content with no `title` prop set', async () => {
+        const wrapper = await mountHeaderWithPanelSlots(
+            { content: 'Body' },
+            { title: () => h('strong', 'Custom Title') }
+        )
+        const title = wrapper.find('.origam-expansion-panel-header__title')
+        expect(title.exists()).toBe(true)
+        expect(title.text()).toContain('Custom Title')
+        wrapper.unmount()
+    })
+
+    it('still falls back to the `title` prop when no #title slot is provided', async () => {
+        const wrapper = await mountHeaderWithPanelSlots({ title: 'Panel', content: 'Body' })
+        const title = wrapper.find('.origam-expansion-panel-header__title')
+        expect(title.exists()).toBe(true)
+        expect(title.text()).toBe('Panel')
+        wrapper.unmount()
     })
 })

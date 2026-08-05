@@ -128,6 +128,7 @@
 		useList,
 		useNestedItem,
 		useProps,
+		useSize,
 		useStateEffect,
 		useStyle,
 		useTypography
@@ -180,6 +181,11 @@
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 	const {backgroundColorClasses, backgroundColorStyles} = useBackgroundColor(toRef(props, 'bgColor'))
 	const {densityClasses} = useDensity(props)
+	// Only `sizeClasses` is consumed — NEVER `sizeStyles`. Its non-tokenised
+	// branch emits an identical `width` AND `height` (a square), which would
+	// destroy a list row. The rung classes below drive `min-height` + block
+	// padding instead; see the `&--size-*` rules in the style block.
+	const {sizeClasses} = useSize(props)
 
 	const {isHover, hoverState} = useHover(props)
 	const {
@@ -350,6 +356,7 @@
 			backgroundColorClasses.value,
 			borderClasses.value,
 			densityClasses.value,
+			sizeClasses.value,
 			elevationClasses.value,
 			lineClasses.value,
 			roundedClasses.value,
@@ -386,6 +393,11 @@
 	.origam-list-item {
 		$this: &;
 
+		// Declared locally rather than inherited from the global reset in
+		// `assets/scss/main.scss`: the row height is the contract of the
+		// `--size-*` rungs below, and it must resolve to the same number
+		// whether or not the consumer imported the reset sheet. Same
+		// precedent as `.origam-field__input`, which declares it too.
 		align-items: var(--origam-list-item---align-items, center);
 		display: var(--origam-list-item---display, grid);
 		flex: var(--origam-list-item---flex, none);
@@ -393,15 +405,21 @@
 		grid-template-columns: var(--origam-list-item---grid-template-columns, max-content 1fr auto);
 
 		max-width: var(--origam-list-item---max-width, 100%);
-		min-height: calc(var(--origam-list-item---min-height, 40px) + var(--origam-list---density, 0px));
+		// Density is added ONCE, on this term only — mirrors
+		// `.origam-field__input`'s own `min-height: max(calc(height + density), lineHeight + padding)`.
+		// The block padding below stays fixed per rung (no density term), exactly
+		// like the field's `--origam-field__input---padding-top/bottom`, which are
+		// only rung-dependent. Adding density a second time here (or a third time
+		// via the block padding) double/triple-counts it — see the mixin comment.
+		min-height: max(calc(var(--origam-list-item---min-height, 40px) + var(--origam-list---density, 0px)), 1.5rem);
 
 		text-decoration: var(--origam-list-item---text-decoration, none);
 
 		outline: var(--origam-list-item---outline, none);
 		position: var(--origam-list-item---position, relative);
 
-		padding-block-start: calc(var(--origam-list-item---padding-block-start, 8px) + var(--origam-list---density, 0px));
-		padding-block-end: calc(var(--origam-list-item---padding-block-end, 8px) + var(--origam-list---density, 0px));
+		padding-block-start: var(--origam-list-item---padding-block-start, 8px);
+		padding-block-end: var(--origam-list-item---padding-block-end, 8px);
 		padding-inline-start: calc(var(--origam-list-item---padding-inline-start, 16px) + var(--origam-list---indent-padding, 0px) + var(--origam-list---density, 0px));
 		padding-inline-end: calc(var(--origam-list-item---padding-inline-end, 16px) + var(--origam-list---density, 0px));
 
@@ -421,6 +439,48 @@
 
 		&--rounded {
 			--origam-list-item---border-radius: 4px;
+		}
+
+		// Row-height scale, aligned rung for rung on the control-height scale
+		// (`--origam-input__control---height-{sm,md,lg,xl}` = 28/36/44/52px) so
+		// a row and a field of the same `size` share an identical vertical
+		// footprint. The block padding is the field's own per-size padding —
+		// (rung - 24px title line-height) / 2.
+		//
+		// One correction is needed to land on the rung, and it comes from the box
+		// model rather than from the scale: the row is `content-box`, so the base
+		// `min-height` above sizes the CONTENT only and the block padding is
+		// added on top. The rung is therefore split — `min-height` takes
+		// `rung - 2 * block`, the padding takes `block` — and the two sum back to
+		// the rung. Density is NOT touched here: the base rule already applies it
+		// once, to `min-height` only, which is where the field applies it too.
+		//
+		// The result reproduces `.origam-field__input` exactly:
+		// `max(controlHeight + density, 1.5rem + paddingTop + paddingBottom)`.
+		@mixin size-rung($rung, $block) {
+			--origam-list-item---min-height: calc(#{$rung} - #{$block} * 2);
+			--origam-list-item---padding-block-start: #{$block};
+			--origam-list-item---padding-block-end: #{$block};
+		}
+
+		&--size-small {
+			@include size-rung(var(--origam-list-item---height-sm, 28px), var(--origam-list-item---padding-block-sm, 2px));
+		}
+
+		// `x-small` maps onto the default rung on purpose: `.origam-field` has no
+		// `--size-x-small` rule, so a field at that size renders at 36px. Giving
+		// the row a smaller rung would re-create the mismatch instead of fixing it.
+		&--size-x-small,
+		&--size-default {
+			@include size-rung(var(--origam-list-item---height-md, 36px), var(--origam-list-item---padding-block-md, 6px));
+		}
+
+		&--size-large {
+			@include size-rung(var(--origam-list-item---height-lg, 44px), var(--origam-list-item---padding-block-lg, 10px));
+		}
+
+		&--size-x-large {
+			@include size-rung(var(--origam-list-item---height-xl, 52px), var(--origam-list-item---padding-block-xl, 14px));
 		}
 
 		&--active {

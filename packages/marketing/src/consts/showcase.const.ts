@@ -149,4 +149,7 @@ export const SHOWCASE_AVATAR_ITEMS = [
     { text: 'LB', bgColor: 'info'    },
     { text: 'JD', bgColor: 'warning' },
     { text: 'MC', bgColor: 'danger'  },
+    { text: 'AP', bgColor: '#123456'  },
+    { text: 'VP', bgColor: 'blue'  },
+    { text: 'PR', bgColor: 'neutral'  },
 ]

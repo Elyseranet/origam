@@ -1,43 +1,46 @@
 {
   "origam": {
     "badge": "Badge",
+    "bottom_nav": {
+      "aria_label": "Bottom navigation"
+    },
     "open": "Open",
     "close": "Close",
     "dismiss": "Dismiss",
-    "confirmEdit": {
+    "confirm_edit": {
       "ok": "OK",
       "cancel": "Cancel"
     },
-    "dataIterator": {
-      "noResultsText": "No matching records found",
-      "loadingText": "Loading items..."
+    "data_iterator": {
+      "no_results_text": "No matching records found",
+      "loading_text": "Loading items..."
     },
-    "dataTable": {
-      "itemsPerPageText": "Rows per page:",
-      "ariaLabel": {
-        "sortDescending": "Sorted descending.",
-        "sortAscending": "Sorted ascending.",
-        "sortNone": "Not sorted.",
-        "activateNone": "Activate to remove sorting.",
-        "activateDescending": "Activate to sort descending.",
-        "activateAscending": "Activate to sort ascending."
+    "data_table": {
+      "items_per_page_text": "Rows per page:",
+      "aria_label": {
+        "sort_descending": "Sorted descending.",
+        "sort_ascending": "Sorted ascending.",
+        "sort_none": "Not sorted.",
+        "activate_none": "Activate to remove sorting.",
+        "activate_descending": "Activate to sort descending.",
+        "activate_ascending": "Activate to sort ascending."
       },
-      "sortBy": "Sort by"
+      "sort_by": "Sort by"
     },
-    "dataFooter": {
-      "itemsPerPageText": "Items per page:",
-      "itemsPerPageAll": "All",
-      "nextPage": "Next page",
-      "prevPage": "Previous page",
-      "firstPage": "First page",
-      "lastPage": "Last page",
-      "pageText": "{0}-{1} of {2}"
+    "data_footer": {
+      "items_per_page_text": "Items per page:",
+      "items_per_page_all": "All",
+      "next_page": "Next page",
+      "prev_page": "Previous page",
+      "first_page": "First page",
+      "last_page": "Last page",
+      "page_text": "{0}-{1} of {2}"
     },
-    "datePickerRangeField": {
+    "date_picker_range_field": {
       "text": "{0} to {1}"
     },
-    "datePicker": {
-      "itemsSelected": "{0} selected",
+    "date_picker": {
+      "items_selected": "{0} selected",
       "range": {
         "title": "Select dates",
         "header": "Enter dates"
@@ -48,22 +51,22 @@
         "placeholder": "Enter date"
       }
     },
-    "noDataText": "No data available",
+    "no_data_text": "No data available",
     "carousel": {
       "prev": "Previous visual",
       "next": "Next visual",
-      "ariaLabel": {
+      "aria_label": {
         "delimiter": "Carousel slide {0} of {1}"
       }
     },
     "calendar": {
-      "moreEvents": "{0} more",
+      "more_events": "{0} more",
       "today": "Today",
       "previous": "Previous",
       "next": "Next",
-      "viewSwitcher": "View",
-      "monthGrid": "Month grid",
-      "ariaLabel": "Calendar",
+      "view_switcher": "View",
+      "month_grid": "Month grid",
+      "aria_label": "Calendar",
       "toolbar": "Calendar toolbar",
       "empty": "No events to display",
       "view": {
@@ -75,38 +78,39 @@
     },
     "input": {
       "clear": "Clear {0}",
-      "prependAction": "{0} prepended action",
-      "appendAction": "{0} appended action",
+      "prepend_action": "{0} prepended action",
+      "append_action": "{0} appended action",
       "otp": "Please enter OTP character {0}"
     },
-    "fileInput": {
+    "file_input": {
       "counter": "{0} files",
-      "counterSize": "{0} files ({1} in total)"
+      "counter_size": "{0} files ({1} in total)"
     },
-    "fileField": {
+    "file_field": {
       "counter": "{0} files",
-      "counterSize": "{0} files ({1} in total)",
-      "dropzoneTitle": "Drag and drop files here",
-      "dropzoneSubtitle": "or click to browse",
+      "counter_size": "{0} files ({1} in total)",
+      "dropzone_title": "Drag and drop files here",
+      "dropzone_subtitle": "or click to browse",
       "browse": "Browse Files"
     },
-    "fileUpload": {
+    "file_upload": {
       "title": "Drag and drop files here",
       "divider": "or",
       "browse": "Browse Files"
     },
-    "timePicker": {
+    "time_picker": {
       "am": "AM",
       "pm": "PM",
       "title": "Select Time"
     },
     "pagination": {
-      "ariaLabel": {
+      "aria_label": {
         "root": "Pagination Navigation",
         "next": "Next page",
         "previous": "Previous page",
         "page": "Go to page {0}",
-        "currentPage": "Page {0}, Current page",
+        "current_page": "Page {0}, Current page",
+        "page_number": "Page number",
         "first": "First page",
         "last": "Last page"
       },
@@ -119,12 +123,12 @@
     "code": {
       "copy": "Copy",
       "copied": "Copied!",
-      "copyAriaLabel": "Copy code to clipboard",
-      "copiedAriaLabel": "Code copied to clipboard"
+      "copy_aria_label": "Copy code to clipboard",
+      "copied_aria_label": "Code copied to clipboard"
     },
     "clipboard": {
-      "copyAriaLabel": "Copy to clipboard",
-      "copiedAriaLabel": "Value copied to clipboard"
+      "copy_aria_label": "Copy to clipboard",
+      "copied_aria_label": "Value copied to clipboard"
     },
     "snackbar": {
       "dismiss": "Dismiss notification"
@@ -132,22 +136,22 @@
     "stepper": {
       "next": "Next",
       "prev": "Previous",
-      "progressSteps": "Progress steps",
-      "stepAriaLabel": "Step {0}: {1}"
+      "progress_steps": "Progress steps",
+      "step_aria_label": "Step {0}: {1}"
     },
-    "dataTableRow": {
-      "expandRow": "Expand row",
-      "collapseRow": "Collapse row"
+    "data_table_row": {
+      "expand_row": "Expand row",
+      "collapse_row": "Collapse row"
     },
     "rating": {
-      "ariaLabel": {
+      "aria_label": {
         "item": "Rating {0} of {1}"
       },
       "clear": "Clear rating"
     },
     "loading": "Loading...",
-    "infiniteScroll": {
-      "loadMore": "Load more",
+    "infinite_scroll": {
+      "load_more": "Load more",
       "empty": "No more"
     },
     "validation": {
@@ -155,7 +159,8 @@
       "must_match": "The fields do not match",
       "max_length": "Maximum {0} characters",
       "must_contains": "This field must contain: {value}",
-      "max_size_error": "File \"{0}\" exceeds maximum size of {1}"
+      "max_size_error": "File \"{0}\" exceeds maximum size of {1}",
+      "invalid_format": "Invalid format"
     },
     "media": {
       "play": "Play",
@@ -169,28 +174,61 @@
       "seconds": "{0} seconds",
       "quality": "Quality",
       "download": "Download",
-      "castToDevice": "Cast to device",
-      "stopCasting": "Stop casting",
+      "cast_to_device": "Cast to device",
+      "stop_casting": "Stop casting",
       "settings": "Settings",
       "back": "Back",
-      "playbackSpeed": "Playback speed",
-      "normalSpeed": "Normal",
-      "previousTrack": "Previous track",
-      "nextTrack": "Next track",
-      "waveform": "Audio waveform"
+      "playback_speed": "Playback speed",
+      "normal_speed": "Normal",
+      "previous_track": "Previous track",
+      "next_track": "Next track",
+      "waveform": "Audio waveform",
+      "loop_all": "Loop playlist",
+      "loop_off": "Loop off",
+      "loop_one": "Loop track",
+      "shuffle": "Shuffle",
+      "transport": "Transport controls"
     },
     "video": {
-      "enterFullscreen": "Enter fullscreen",
-      "exitFullscreen": "Exit fullscreen",
-      "enterPip": "Enter picture in picture",
-      "exitPip": "Exit picture in picture",
-      "enableCaptions": "Enable captions",
-      "disableCaptions": "Disable captions"
+      "enter_fullscreen": "Enter fullscreen",
+      "exit_fullscreen": "Exit fullscreen",
+      "enter_pip": "Enter picture in picture",
+      "exit_pip": "Exit picture in picture",
+      "enable_captions": "Enable captions",
+      "disable_captions": "Disable captions"
     },
-    "colorPicker": {
+    "color_picker": {
       "canvas": {
-        "ariaLabel": "Saturation and lightness",
+        "aria_label": "Saturation and lightness",
         "value": "Saturation {0}%, lightness {1}%"
+      }
+    },
+    "breadcrumb": {
+      "aria_label": "Breadcrumb"
+    },
+    "textarea": {
+      "rich": {
+        "toolbar": {
+          "aria_label": "Text formatting"
+        },
+        "link": {
+          "placeholder": "https://example.com",
+          "apply": "Apply"
+        },
+        "command": {
+          "bold": "Bold",
+          "italic": "Italic",
+          "underline": "Underline",
+          "link": "Insert link",
+          "list_bullet": "Bullet list",
+          "list_ordered": "Numbered list",
+          "heading": "Heading",
+          "heading_1": "Heading 1",
+          "heading_2": "Heading 2",
+          "heading_3": "Heading 3",
+          "code_inline": "Inline code",
+          "clear_format": "Clear formatting"
+        }
       }
     }
   }

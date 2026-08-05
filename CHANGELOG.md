@@ -13,6 +13,196 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### ⚠️ BREAKING — i18n locale keys migrated to `snake_case`
+
+All locale keys shipped by the DS (`packages/ds/src/assets/locales/en.json`,
+`fr.json`) now follow the project-wide i18n convention: every key **segment**
+is `snake_case` (`a-z`, `0-9`, `_`). Nested structure is unchanged — only the
+casing of each segment changes (e.g. `dataTable.ariaLabel.sortBy` →
+`data_table.aria_label.sort_by`).
+
+**Why this is breaking**: `createOrigam({ messages })` lets a consumer
+override any locale message by key path. Any override keyed on an old
+camelCase path (e.g. `'origam.dataTable.sortBy'`) will silently stop applying
+— the DS falls back to its own bundled (English) string with **no error**,
+which is easy to miss until a French (or other locale) screen renders in
+English.
+
+**All 65 `t()` call sites and their indirect prop-default equivalents were
+updated in the same commit** — verified with a cross-reference script (every
+literal `origam.*` key still referenced in `packages/ds/src` was checked
+against both locale files; zero leftover old-casing key strings remain
+anywhere in `packages/ds/src`). Fallback strings (the second argument to
+`t(key, fallback)`) are unchanged — only the key paths moved.
+
+If you override any DS locale key, update the key path using the table below.
+
+| Old key | New key |
+|---|---|
+| `origam.bottomNav.ariaLabel` | `origam.bottom_nav.aria_label` |
+| `origam.calendar.ariaLabel` | `origam.calendar.aria_label` |
+| `origam.calendar.monthGrid` | `origam.calendar.month_grid` |
+| `origam.calendar.moreEvents` | `origam.calendar.more_events` |
+| `origam.calendar.viewSwitcher` | `origam.calendar.view_switcher` |
+| `origam.carousel.ariaLabel.delimiter` | `origam.carousel.aria_label.delimiter` |
+| `origam.clipboard.copiedAriaLabel` | `origam.clipboard.copied_aria_label` |
+| `origam.clipboard.copyAriaLabel` | `origam.clipboard.copy_aria_label` |
+| `origam.code.copiedAriaLabel` | `origam.code.copied_aria_label` |
+| `origam.code.copyAriaLabel` | `origam.code.copy_aria_label` |
+| `origam.colorPicker.canvas.ariaLabel` | `origam.color_picker.canvas.aria_label` |
+| `origam.colorPicker.canvas.value` | `origam.color_picker.canvas.value` |
+| `origam.confirmEdit.cancel` | `origam.confirm_edit.cancel` |
+| `origam.confirmEdit.ok` | `origam.confirm_edit.ok` |
+| `origam.dataFooter.firstPage` | `origam.data_footer.first_page` |
+| `origam.dataFooter.itemsPerPageAll` | `origam.data_footer.items_per_page_all` |
+| `origam.dataFooter.itemsPerPageText` | `origam.data_footer.items_per_page_text` |
+| `origam.dataFooter.lastPage` | `origam.data_footer.last_page` |
+| `origam.dataFooter.nextPage` | `origam.data_footer.next_page` |
+| `origam.dataFooter.pageText` | `origam.data_footer.page_text` |
+| `origam.dataFooter.prevPage` | `origam.data_footer.prev_page` |
+| `origam.dataIterator.loadingText` | `origam.data_iterator.loading_text` |
+| `origam.dataIterator.noResultsText` | `origam.data_iterator.no_results_text` |
+| `origam.dataTable.ariaLabel.activateAscending` | `origam.data_table.aria_label.activate_ascending` |
+| `origam.dataTable.ariaLabel.activateDescending` | `origam.data_table.aria_label.activate_descending` |
+| `origam.dataTable.ariaLabel.activateNone` | `origam.data_table.aria_label.activate_none` |
+| `origam.dataTable.ariaLabel.sortAscending` | `origam.data_table.aria_label.sort_ascending` |
+| `origam.dataTable.ariaLabel.sortDescending` | `origam.data_table.aria_label.sort_descending` |
+| `origam.dataTable.ariaLabel.sortNone` | `origam.data_table.aria_label.sort_none` |
+| `origam.dataTable.itemsPerPageText` | `origam.data_table.items_per_page_text` |
+| `origam.dataTable.sortBy` | `origam.data_table.sort_by` |
+| `origam.dataTableRow.collapseRow` | `origam.data_table_row.collapse_row` |
+| `origam.dataTableRow.expandRow` | `origam.data_table_row.expand_row` |
+| `origam.datePicker.header` | `origam.date_picker.header` |
+| `origam.datePicker.input.placeholder` | `origam.date_picker.input.placeholder` |
+| `origam.datePicker.itemsSelected` | `origam.date_picker.items_selected` |
+| `origam.datePicker.range.header` | `origam.date_picker.range.header` |
+| `origam.datePicker.range.title` | `origam.date_picker.range.title` |
+| `origam.datePicker.title` | `origam.date_picker.title` |
+| `origam.datePickerRangeField.text` | `origam.date_picker_range_field.text` |
+| `origam.fileField.browse` | `origam.file_field.browse` |
+| `origam.fileField.counter` | `origam.file_field.counter` |
+| `origam.fileField.counterSize` | `origam.file_field.counter_size` |
+| `origam.fileField.dropzoneSubtitle` | `origam.file_field.dropzone_subtitle` |
+| `origam.fileField.dropzoneTitle` | `origam.file_field.dropzone_title` |
+| `origam.fileInput.counter` | `origam.file_input.counter` |
+| `origam.fileInput.counterSize` | `origam.file_input.counter_size` |
+| `origam.fileUpload.browse` | `origam.file_upload.browse` |
+| `origam.fileUpload.divider` | `origam.file_upload.divider` |
+| `origam.fileUpload.title` | `origam.file_upload.title` |
+| `origam.infiniteScroll.empty` | `origam.infinite_scroll.empty` |
+| `origam.infiniteScroll.loadMore` | `origam.infinite_scroll.load_more` |
+| `origam.input.appendAction` | `origam.input.append_action` |
+| `origam.input.prependAction` | `origam.input.prepend_action` |
+| `origam.media.castToDevice` | `origam.media.cast_to_device` |
+| `origam.media.nextTrack` | `origam.media.next_track` |
+| `origam.media.normalSpeed` | `origam.media.normal_speed` |
+| `origam.media.playbackSpeed` | `origam.media.playback_speed` |
+| `origam.media.previousTrack` | `origam.media.previous_track` |
+| `origam.media.stopCasting` | `origam.media.stop_casting` |
+| `origam.noDataText` | `origam.no_data_text` |
+| `origam.pagination.ariaLabel.currentPage` | `origam.pagination.aria_label.current_page` |
+| `origam.pagination.ariaLabel.first` | `origam.pagination.aria_label.first` |
+| `origam.pagination.ariaLabel.last` | `origam.pagination.aria_label.last` |
+| `origam.pagination.ariaLabel.next` | `origam.pagination.aria_label.next` |
+| `origam.pagination.ariaLabel.page` | `origam.pagination.aria_label.page` |
+| `origam.pagination.ariaLabel.previous` | `origam.pagination.aria_label.previous` |
+| `origam.pagination.ariaLabel.root` | `origam.pagination.aria_label.root` |
+| `origam.rating.ariaLabel.item` | `origam.rating.aria_label.item` |
+| `origam.stepper.progressSteps` | `origam.stepper.progress_steps` |
+| `origam.stepper.stepAriaLabel` | `origam.stepper.step_aria_label` |
+| `origam.timePicker.am` | `origam.time_picker.am` |
+| `origam.timePicker.pm` | `origam.time_picker.pm` |
+| `origam.timePicker.title` | `origam.time_picker.title` |
+| `origam.video.disableCaptions` | `origam.video.disable_captions` |
+| `origam.video.enableCaptions` | `origam.video.enable_captions` |
+| `origam.video.enterFullscreen` | `origam.video.enter_fullscreen` |
+| `origam.video.enterPip` | `origam.video.enter_pip` |
+| `origam.video.exitFullscreen` | `origam.video.exit_fullscreen` |
+| `origam.video.exitPip` | `origam.video.exit_pip` |
+
+### ⚠️ BREAKING — `<origam-title>` now defaults to `h2`, not `h1`
+
+Every `<origam-title>` written **without** an explicit `tag` renders an
+`<h2>` instead of an `<h1>`. This changes the rendered DOM, the heading
+outline, any CSS keyed on `h1`, and the result of automated a11y audits.
+
+**Why**: a document carries exactly one `h1`, so `h1` is the one level a
+shared component must never emit by default — two untagged titles on a page
+produced two `h1`s and broke both the heading order and the a11y audit. `h2`
+is the deepest level that is always valid under a page-owned `h1`, and
+repeating it is legal. The correct level depends on document position, which
+the component cannot know: pass `tag` explicitly whenever it matters.
+
+**Migration** — restore the old behaviour app-wide in one line, through the
+defaults layer:
+
+```ts
+createOrigam({ theme: { components: { 'origam-title': { tag: 'h1' } } } })
+```
+
+⚠️ **This migration only works from this release onwards.** On any earlier
+version it silently does nothing: `OrigamTitle`'s template bound `:is="tag"`,
+and in `<script setup>` a bare prop name in the template resolves against the
+raw `$props`, never against the `useDefaults()` proxy — so the theme value
+was read and then ignored. Fixed here by binding `:is="props.tag"`, the same
+correction as the seven components in #250. Do not conclude the snippet is
+wrong if you try it on 2.12.x.
+
+### Fixed
+
+- **`useStyle()` no longer overwrites a consumer-supplied `id`.** The
+  composable returns the id a component puts on its root element *and* the
+  selector of the `#<id> { … }` rule it injects — the two must be the same
+  value or the rule stops matching. It now accepts that id from the caller
+  (`useStyle(styles, () => props.id)`), reactively, so an `id` that only
+  appears on a later render is still picked up. Applied to `OrigamBtn`, where
+  the generated id silently replaced the consumer's and broke every
+  `<label for>` / `aria-labelledby` / `aria-controls` / `aria-describedby`
+  association targeting a button, and to `OrigamTitle`, where element and
+  rule had diverged. ⚠️ **138 of the 140 components calling `useStyle` are
+  still affected**, in three shapes: 14 swallow a consumer `id` outright
+  (same defect as Btn); 114 bind no id to their root at all, so where the
+  component also declares an `id` prop — 192 of 217 do — that prop is inert
+  and a consumer simply cannot set an id (measured on `OrigamCard` and
+  `OrigamKbd`, which render no `id` attribute even when one is passed); and
+  10 bind some other id while the rule keeps targeting the generated one,
+  the same divergence just fixed on Title. Tracked separately; a blanket
+  default was deliberately rejected because `OrigamSnackbarGroup` uses
+  `props.id` as a group *name*, not a DOM id.
+- **The injected stylesheet is valid CSS again.** Every rule carried a bare
+  `false` in its body (`#id {false}`). Vue's `StyleValue` type includes
+  `false`, so the shared `style` prop compiles to a runtime type containing
+  `Boolean`, and Vue resolves an unpassed boolean-typed prop to the concrete
+  value `false` — which was serialised verbatim. 192 of 217 components
+  declare that prop. No visual impact: Chromium, Firefox and WebKit all
+  discard the invalid declaration by CSS error recovery and apply the rest
+  unchanged. The cost was invalid CSS shipped to consumers, and jsdom
+  rejecting every generated sheet under test ("Could not parse CSS
+  stylesheet"). Numbers are dropped for the same reason, and an object nested
+  inside an array is now expanded instead of reaching the sheet as
+  `[object Object]`.
+- **`<origam-title>` reads its theme defaults.** It never called
+  `useDefaults()`, so `theme.components['origam-title']` was inert.
+
+### Added
+
+- **`escapeCssIdent()`** (`origam/utils`) — escapes an arbitrary string for
+  interpolation as a CSS ident. Required now that `useStyle()` builds a real
+  stylesheet rule out of a consumer-supplied id: without it an id such as
+  `a { } body { display: none }` appends attacker- or typo-controlled rules
+  to the document, and ids that are legal in HTML but illegal as a CSS ident
+  (leading digit, dots, colons) silently kill their own rule. Delegates to
+  the native `CSS.escape` when present, with a spec-equivalent fallback for
+  jsdom and SSR — the two were compared over 34 inputs in Chromium and are
+  byte-identical.
+
+### Changed
+
+- **`useStyle(styles, uniq)`** — `uniq` widened from `string | undefined` to
+  `MaybeRefOrGetter<string | undefined>`. Backward compatible: a plain string
+  still behaves exactly as before, and an empty value falls back to the
+  generated `<name>-<uid>` id rather than emitting the invalid selector `#`.
+
 ---
 
 ## [2.12.1] — 2026-07-31

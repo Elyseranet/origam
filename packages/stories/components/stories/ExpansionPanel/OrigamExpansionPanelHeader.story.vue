@@ -214,6 +214,19 @@
 			</origam-expansion-panels>
 		</Variant>
 
+		<Variant title="Slots - Title">
+			<origam-expansion-panels>
+				<origam-expansion-panel>
+					<origam-expansion-panel-header>
+						<template #title>
+							<strong>Custom title slot content</strong>
+						</template>
+					</origam-expansion-panel-header>
+					<origam-expansion-panel-content content="Body"/>
+				</origam-expansion-panel>
+			</origam-expansion-panels>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IExpansionPanelHeaderProps>({

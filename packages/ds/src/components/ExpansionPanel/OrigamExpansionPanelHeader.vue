@@ -46,10 +46,15 @@
 					class="origam-expansion-panel-header__title"
 			>
         <slot
-		        name="default"
+		        name="title"
 		        v-bind="slotProps"
         >
-          {{ title }}
+          <slot
+			        name="default"
+			        v-bind="slotProps"
+          >
+            {{ title }}
+          </slot>
         </slot>
       </span>
 
@@ -171,7 +176,7 @@
 	})
 
 	const hasTitle = computed(() => {
-		return slots.default || props.title
+		return slots.title || slots.default || props.title != null
 	})
 
 	/*********************************************************
