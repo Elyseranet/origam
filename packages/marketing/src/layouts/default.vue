@@ -20,6 +20,15 @@
 
   const { t } = useT()
   const { versionTag } = useVersion()
+  const { public: publicConfig } = useRuntimeConfig()
+
+  // The donation entry is opt-in: it appears only once NUXT_PUBLIC_DONATE_URL
+  // is set on the deployment, so no placeholder link is ever shipped.
+  const donateUrl = computed(() => publicConfig.donateUrl)
+  const hasDonateUrl = computed(() => donateUrl.value.length > 0)
+  const donateLabel = computed(() => t('footer.donate', 'Support origam'))
+  const donateAriaLabel = computed(() => t('a11y.donate', 'Support origam with a donation'))
+
   const { theme, setTheme, resolvedMode, toggleMode } = useTheme()
   const { stars } = useGithubStars()
   const showGithubStars = computed(() => stars.value >= GITHUB_STARS_MIN_DISPLAY)
@@ -403,6 +412,16 @@
       <div class="site-footer__bottom">
         <p class="site-footer__line">{{ t('footer.copyright', '© 2026 origam · MIT') }}</p>
         <p class="site-footer__line">{{ t('footer.made_with', 'Made with origam, by humans.') }}</p>
+        <a
+          v-if="hasDonateUrl"
+          :href="donateUrl"
+          :aria-label="donateAriaLabel"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="site-footer__link"
+        >
+          {{ donateLabel }}
+        </a>
       </div>
     </footer>
   </origam-app>
@@ -682,7 +701,6 @@
 
   .appbar-menu .origam-list-item {
     cursor: pointer;
-    border-radius: var(--origam-radius---sm, 6px);
     transition: background-color 0.12s ease;
   }
 

@@ -12,7 +12,8 @@
         "playground_toolbar": "Editor toolbar",
         "themes_tooling": "Tooling compatibility",
         "themes_preview_tiles": "Theme preview tiles",
-        "roadmap_effort": "Effort"
+        "roadmap_effort": "Effort",
+        "donate": "Support origam with a donation"
     },
     "admin": {
         "appbar": {
@@ -799,7 +800,8 @@
             "contact": "Contact"
         },
         "copyright": "© 2026 origam · MIT",
-        "made_with": "Made with origam, by humans."
+        "made_with": "Made with origam, by humans.",
+        "donate": "Support origam"
     },
     "home": {
         "meta": {
