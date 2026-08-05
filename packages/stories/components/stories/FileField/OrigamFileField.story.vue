@@ -206,6 +206,103 @@
 					v-model="singleFile"
 					label="Document"
 					display="list"
+					data-cy="file-field-single-paperclip"
+					style="max-width: 400px"
+			/>
+		</Variant>
+
+		<Variant title="Prop — empty state">
+			<origam-file-field
+					v-model="emptyStateFile"
+					label="Document"
+					placeholder="No file selected"
+					data-cy="file-field-empty"
+					style="max-width: 400px"
+			/>
+		</Variant>
+
+		<Variant title="Prop — multiple (chips)">
+			<origam-file-field
+					v-model="chipsFiles"
+					label="Documents"
+					multiple
+					display="chips"
+					data-cy="file-field-chips"
+					style="max-width: 400px"
+			/>
+		</Variant>
+
+		<Variant title="Prop — multiple (counter)">
+			<origam-file-field
+					v-model="counterFiles"
+					label="Documents"
+					multiple
+					display="counter"
+					data-cy="file-field-counter"
+					style="max-width: 400px"
+			/>
+		</Variant>
+
+		<Variant title="Prop — dropzone (empty)">
+			<origam-file-field
+					v-model="dropzoneEmptyFiles"
+					label="Upload"
+					dropzone
+					data-cy="file-field-dropzone-empty"
+					style="max-width: 400px"
+			/>
+		</Variant>
+
+		<Variant title="Prop — dropzone (single file)">
+			<origam-file-field
+					v-model="dropzoneSingleFile"
+					label="Upload"
+					dropzone
+					data-cy="file-field-dropzone-single"
+					style="max-width: 400px"
+			/>
+		</Variant>
+
+		<Variant title="Prop — dropzone (multiple files)">
+			<origam-file-field
+					v-model="dropzoneMultipleFiles"
+					label="Upload"
+					multiple
+					dropzone
+					data-cy="file-field-dropzone-multiple"
+					style="max-width: 400px"
+			/>
+		</Variant>
+
+		<Variant title="Prop — dropzone (error)">
+			<origam-file-field
+					v-model="dropzoneErrorFiles"
+					label="Upload"
+					dropzone
+					error="File is too large — max 2 MB allowed"
+					data-cy="file-field-dropzone-error"
+					style="max-width: 400px"
+			/>
+		</Variant>
+
+		<Variant title="Prop — disabled & readonly">
+			<origam-file-field
+					v-model="disabledFile"
+					label="Upload"
+					dropzone
+					disabled
+					data-cy="file-field-disabled"
+					style="max-width: 400px"
+			/>
+		</Variant>
+
+		<Variant title="Prop — showSize">
+			<origam-file-field
+					v-model="showSizeFiles"
+					label="Upload"
+					multiple
+					show-size
+					data-cy="file-field-show-size"
 					style="max-width: 400px"
 			/>
 		</Variant>
@@ -647,6 +744,16 @@
 		{ label: 'auto', value: 'auto' },
 	]
 
+	// Fake a large file without allocating real bytes — mirrors the
+	// mockFile helper in OrigamFileFieldListItem.story.vue /
+	// OrigamFileFieldDragNDropItem.story.vue.
+	const mockFile = (name: string, type: string, size: number): File => {
+		const blob = new Blob([new Uint8Array(Math.min(size, 64))], { type })
+		const file = new File([blob], name, { type })
+		Object.defineProperty(file, 'size', { value: size })
+		return file
+	}
+
 	const singleFile = ref(null)
 	const designFiles = ref(null)
 	const functionalFiles = ref(null)
@@ -655,6 +762,20 @@
 	const slotFiles = ref(null)
 	const slotMultiFiles = ref([])
 	const playgroundFiles = ref(null)
+
+	const emptyStateFile = ref(null)
+	const chipsFiles = ref([])
+	const counterFiles = ref([])
+	const dropzoneEmptyFiles = ref(null)
+	const dropzoneSingleFile = ref([mockFile('contract.pdf', 'application/pdf', 128_000)])
+	const dropzoneMultipleFiles = ref([
+		mockFile('one.txt', 'text/plain', 1_024),
+		mockFile('two.txt', 'text/plain', 2_048),
+		mockFile('three.txt', 'text/plain', 4_096),
+	])
+	const dropzoneErrorFiles = ref(null)
+	const disabledFile = ref(null)
+	const showSizeFiles = ref([])
 </script>
 
 <docs lang="md" src="@docs/components/FileField/OrigamFileField.md"/>

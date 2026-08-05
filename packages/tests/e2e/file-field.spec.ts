@@ -36,6 +36,15 @@ const navigateToVariant = async (page: import('@playwright/test').Page, name: st
 }
 
 test.describe('OrigamFileField — PDF P3 11 modes', () => {
+    // Mode 11 (Show size) drives a native file-input change event through
+    // useVModel → useMask-adjacent reactivity → OrigamFileFieldListItem
+    // mount; this measured ~24s on a loaded dev machine (multiple
+    // concurrent Histoire/build processes) — comfortably under the default
+    // 30s test timeout on its own, but with no margin. Same 45s allowance
+    // already used by btn.spec.ts / breadcrumb.spec.ts for MDI-icon-heavy
+    // variants on a cold Playwright context.
+    test.setTimeout(45000)
+
     test('Mode 1 — Single + paperclip: file input + paperclip prepend', async ({ page }) => {
         await navigateToVariant(page, 'Prop — single + paperclip')
 
