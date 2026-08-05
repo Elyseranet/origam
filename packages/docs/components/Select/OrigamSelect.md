@@ -87,6 +87,40 @@ const selected = ref<string[]>([])
 </template>
 ```
 
+## Size and density reach the dropdown
+
+`size` and `density` are forwarded to the `OrigamList` mounted inside the
+dropdown, which cascades them to every option row. A `small` / `compact`
+select therefore opens a `small` / `compact` menu instead of a full-size one.
+
+```vue
+<template>
+  <OrigamSelect
+      label="Country"
+      size="small"
+      density="compact"
+      :items="['France', 'Germany', 'Spain']"
+  />
+</template>
+```
+
+The option row lands on the same rung of the control-height scale as the field
+itself (28 / 36 / 44 / 52px for `small` / `default` / `large` / `x-large`), so
+the two heights match exactly. `density` then shifts both by the same
+`0` / `-8px` / `+8px`. Measured on the Design story, control and option row are
+equal at every `size` × `density` combination.
+
+Two deliberate limits:
+
+- **The option text is not scaled.** `.origam-field` renders its own text at a
+  fixed 16px whatever the `size`, so scaling the menu text would create a new
+  mismatch rather than remove one.
+- **An unsized select keeps the historical 40px rows** against a 36px control.
+  Passing `size="default"` explicitly brings both to 36px.
+
+`listProps` still wins: `:list-props="{ density: 'default' }"` overrides the
+forwarded value for consumers who want the popup to diverge on purpose.
+
 ## Slots
 
 | Slot | Scope | Description |

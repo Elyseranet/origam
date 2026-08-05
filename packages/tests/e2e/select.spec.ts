@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Page } from '@playwright/test'
 
 /**
  * RECIPE — OrigamSelect e2e spec (follows btn.spec.ts canonical pattern)
@@ -50,6 +50,52 @@ const STORY_ID   = 'components-stories-select-origamselect-story-vue'
 const STORY_PATH = '/stories/story/' + STORY_ID
 
 const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
+
+/**
+ * Drives a Histoire `HstSelect` sidebar control by its visible title.
+ *
+ * The control is NOT a native `<select>` — it renders a `v-popper` dropdown
+ * whose options are plain divs. Clicking the trigger then the option by exact
+ * text is stable; do not try `selectOption()` on it.
+ *
+ * The retry wrapper is REQUIRED, not defensive. Under a full 3-browser run the
+ * panel intermittently stays open after its option is clicked — never
+ * reproducible in isolation, where it always closes within one frame. Both
+ * observed symptoms come from that single fault:
+ *
+ *   - `locator.click: Test timeout` … `<div …>X-Small</div> … subtree
+ *     intercepts pointer events` — the stale panel covers the NEXT control's
+ *     trigger, so the following `pickControl` can never click it;
+ *   - `expect(locator).toHaveCount(0)` … `Received: 1` — a bare wait on the
+ *     panel closing, which simply never happens.
+ *
+ * Neither symptom reaches a height assertion, so a failure here looks nothing
+ * like the mismatch this suite is about. Retrying the whole interaction and
+ * settling on the OUTCOME — the trigger displaying the chosen value — is what
+ * makes it deterministic. Escape clears any panel a previous attempt left
+ * behind. Match the trigger text exactly: `Large` is a substring of `X-Large`.
+ */
+const pickControl = async (page: Page, title: string, option: string) => {
+    const row = page.locator('label.histoire-select', { hasText: title }).first()
+    const trigger = row.locator('.v-popper').first()
+    const shownPanels = page.locator('.v-popper__popper--shown')
+
+    await expect(async () => {
+        if (await shownPanels.count() > 0) {
+            await page.keyboard.press('Escape')
+            await expect(shownPanels).toHaveCount(0, { timeout: 2000 })
+        }
+
+        await trigger.click()
+        await page.locator('.v-popper__popper--shown')
+            .locator('div.htw-cursor-pointer')
+            .filter({ hasText: new RegExp(`^${option}$`) })
+            .first()
+            .click({ timeout: 5000 })
+
+        await expect(trigger).toHaveText(new RegExp(`^${option}$`), { timeout: 2000 })
+    }).toPass({ timeout: 25000 })
+}
 
 test.describe('OrigamSelect', () => {
     test.setTimeout(45000)
@@ -450,7 +496,13 @@ test.describe('OrigamSelect', () => {
             expect(hasLinkClass).toBe(true)
         })
 
-        test('dropdown list items render at the default list-item height (40px)', async ({ page }) => {
+        // Superseded assertion: this used to expect the standalone-list row
+        // height, on the premise that the dropdown had a height of its own
+        // regardless of the control. That premise is the bug — a `size="small"`
+        // select opened onto rows a third taller than its own field. The row now
+        // sits on the control-height scale, so an unsized select renders the
+        // `md` rung on both sides.
+        test('dropdown list items render at the control height rung (36px)', async ({ page }) => {
             await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const select = sandbox.locator('.origam-select').first()
@@ -461,7 +513,7 @@ test.describe('OrigamSelect', () => {
 
             const itemHeight = await sandbox.locator('.origam-list-item').first()
                 .evaluate(el => el.getBoundingClientRect().height)
-            expect(itemHeight).toBe(40)
+            expect(itemHeight).toBe(36)
         })
 
         test('list items have a visible hover state layer', async ({ page }) => {
@@ -662,6 +714,113 @@ test.describe('OrigamSelect', () => {
         test.fixme('loading={ type: "skeleton" } → origam-skeleton replaces content', async () => {
             // FIXTURE ROT: sidebar "Loading Kind" cannot be driven headlessly.
             // Requires a static data-cy="select-loading-skeleton" fixture in the story.
+        })
+    })
+    // ------------------------------------------------------------------ //
+    // SIZE / DENSITY REACH THE DROPDOWN (index 0 — Design)                //
+    //                                                                     //
+    // Regression guard for "small field, full-size popup". Pre-fix the    //
+    // <origam-list> mounted in the menu received neither :density nor     //
+    // :size, so it always rendered `origam-list--density-default` and a   //
+    // 48px row whatever the select was set to — measured identical across //
+    // small/compact, x-small/compact, default/default and x-large/        //
+    // comfortable. All four assertions below fail on that build.          //
+    // ------------------------------------------------------------------ //
+
+    test.describe('Dropdown inherits size and density', () => {
+        /**
+         * Row height vs control height, retried until the layout settles.
+         *
+         * The menu opens through `OrigamExpandY`, so the first row is reported
+         * visible while the container is still animating and an early read can
+         * catch a mid-transition box. Polling keeps the acceptance value
+         * identical — the delta must still reach <= 1px — it only stops the
+         * assertion from being decided on the first frame.
+         */
+        const expectRowMatchesControl = async (page: Page) => {
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const field = sandbox.locator('.origam-select .origam-field').first()
+            const row = sandbox.locator('.origam-list-item').first()
+
+            await expect.poll(async () => {
+                const fieldBox = await field.boundingBox()
+                const rowBox = await row.boundingBox()
+
+                if (!fieldBox || !rowBox) return null
+
+                return Math.abs(rowBox.height - fieldBox.height)
+            }, { timeout: 5000 }).toBeLessThanOrEqual(1)
+        }
+
+        const openDropdown = async (page: Page) => {
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const field = sandbox.locator('.origam-select .origam-field').first()
+            await field.click()
+            await expect(sandbox.locator('.origam-list-item').first()).toBeVisible({ timeout: 8000 })
+            return { sandbox, field }
+        }
+
+        test('density=compact cascades to the menu list', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-select').first()).toBeVisible({ timeout: 12000 })
+
+            await pickControl(page, 'Density', 'Compact')
+            await openDropdown(page)
+
+            await expect(sandbox.locator('.origam-list').first())
+                .toHaveClass(/origam-list--density-compact/, { timeout: 5000 })
+        })
+
+        test('size=small cascades to the menu rows', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-select').first()).toBeVisible({ timeout: 12000 })
+
+            await pickControl(page, 'Size', 'Small')
+            await openDropdown(page)
+
+            await expect(sandbox.locator('.origam-list-item').first())
+                .toHaveClass(/origam-list-item--size-small/, { timeout: 5000 })
+        })
+
+        // The acceptance criterion is deliberately RELATIVE, not a pixel
+        // constant: Histoire loads the token sheets but not `main.scss`, so
+        // absolute row heights differ between the story sandbox and a consumer
+        // app that imports the global reset. The control-to-row ratio does not.
+        for (const [size, density] of [
+            ['Small', 'Compact'],
+            ['Small', 'Default'],
+            ['Default', 'Default'],
+            ['Large', 'Default'],
+            ['X-Large', 'Comfortable']
+        ] as const) {
+            test(`menu row matches the control height — size=${size} density=${density}`, async ({ page }) => {
+                await page.goto(variantUrl(0))
+                const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+                await expect(sandbox.locator('.origam-select').first()).toBeVisible({ timeout: 12000 })
+
+                await pickControl(page, 'Size', size)
+                await pickControl(page, 'Density', density)
+
+                await openDropdown(page)
+                // 1px of tolerance for sub-pixel layout rounding only.
+                await expectRowMatchesControl(page)
+            })
+        }
+
+        // `size` is optional on the select, and this is by far its most common
+        // shape. With no rung class of its own the row would fall back to the
+        // standalone-list height (56px) against a 36px control — a WORSE gap
+        // than the bug this suite guards. `OrigamSelect` therefore hands the
+        // list an explicit `default` rung rather than forwarding `undefined`.
+        test('menu row matches the control height — no size, no density', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-select').first()).toBeVisible({ timeout: 12000 })
+
+            await openDropdown(page)
+            await expectRowMatchesControl(page)
         })
     })
 })

@@ -157,7 +157,7 @@ Props.
 `disabled` sets the whole list non-interactive (`pointer-events: none`,
 `tabindex="-1"` on the root).
 
-## Density / color / shape
+## Density / size / color / shape
 
 `density` (`TDensity`: `'default' | 'compact' | 'comfortable'`), `color` /
 `bgColor` (`TColor`, cascaded as **defaults** to every descendant
@@ -167,6 +167,21 @@ variants) all follow the standard cross-cutting composables (`useDensity`,
 `useBothColor`, `useElevation`, `useRounded`, `useBorder`, `usePadding`,
 `useMargin`) — see the matching Commons interface for the full per-side prop
 set.
+
+`size` (`TSize`) is a **forwarding** prop: the list root paints nothing from
+it, it is pushed down to every descendant `OrigamListItem` through the same
+defaults channel as `density` / `color` / `bgColor`, where it selects a rung
+of the shared control-height scale (28 / 36 / 44 / 52px — the same one
+`--origam-input__control---height-{sm,md,lg,xl}` drives). It exists so a
+container that owns a size — an `OrigamSelect` dropdown, a sized
+`OrigamMenu` — can keep its popup rows on the same vertical scale as its
+control. `x-small` maps onto the default rung, mirroring `.origam-field`,
+which has no `x-small` rule either.
+
+`size` and `density` compose rather than compete: the row height resolves to
+`max(rung + density, titleLineHeight + blockPadding)`, the exact model
+`.origam-field__input` uses. A list left without a `size` keeps the historical
+40px row.
 
 ## Dimension
 
@@ -199,6 +214,7 @@ a scrollable list (`max-height` + the default `overflow: auto`).
 | `color` | `TColor` | — | Text color intent, cascaded as a default to descendant items |
 | `bgColor` | `TColor` | — | Background color intent, cascaded as a default to descendant items |
 | `density` | `TDensity` | `'default'` | Row density, cascaded as a default to descendant items |
+| `size` | `TSize` | — | Row-height rung (28/36/44/52px), cascaded as a default to descendant items. Paints nothing on the root — see note above |
 | `elevation` | `TElevation` | — | Shadow rung |
 | `rounded` | `boolean \| number \| string \| TRounded` | — | Corner radius (+ per-corner variants) |
 | `border` | `boolean \| number \| string \| TDirectionBoth \| Array<TDirectionBoth>` | — | Border (+ per-side variants and `borderColor` / `borderStyle`) |

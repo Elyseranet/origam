@@ -15,6 +15,7 @@
 						:margin="state.margin"
 						:bg-color="state.bgColor"
 						:density="state.density"
+						:size="state.size"
 						:rounded="state.rounded"
 						:elevation="state.elevation"
 						:border="state.border"
@@ -34,6 +35,7 @@
 				</StoryGroup>
 				<StoryGroup title="Sizing">
 					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
+					<HstSelect v-model="state.size"    title="Size"    :options="SIZE_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Shape">
 					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
@@ -202,6 +204,7 @@
 					<HstSelect v-model="state.color"     title="Color"     :options="COLOR_OPTIONS"/>
 					<HstSelect v-model="state.bgColor"   title="Bg Color"  :options="COLOR_OPTIONS"/>
 					<HstSelect v-model="state.density"   title="Density"   :options="DENSITY_OPTIONS"/>
+					<HstSelect v-model="state.size"      title="Size"      :options="SIZE_OPTIONS"/>
 					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
 					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
 					<HstSelect v-model="state.border"    title="Border"    :options="BORDER_OPTIONS"/>
@@ -240,6 +243,7 @@
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
 		ROUNDED_OPTIONS,
+		SIZE_OPTIONS,
 		TAG_OPTIONS
 	} from '@stories/const'
 
