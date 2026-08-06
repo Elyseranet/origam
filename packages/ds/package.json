@@ -23,17 +23,17 @@
   ],
   "license": "MIT",
   "author": "Prioul Arnaud",
-  "homepage": "https://github.com/arnaudprioul/origam#readme",
+  "homepage": "https://github.com/Elyseranet/origam#readme",
   "funding": {
     "type": "custom",
     "url": "https://www.paypal.com/donate/?hosted_button_id=EQFUQ2JV95YGQ"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/arnaudprioul/origam.git"
+    "url": "git+https://github.com/Elyseranet/origam.git"
   },
   "bugs": {
-    "url": "https://github.com/arnaudprioul/origam/issues"
+    "url": "https://github.com/Elyseranet/origam/issues"
   },
   "engines": {
     "node": ">=22"
