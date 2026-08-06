@@ -113,7 +113,7 @@ function mapInterface (doc) {
         optional: orNull(p.optional),
         required: null,
         default_value: orNull(p.default),
-        description_key: null,
+        description_key: orNull(p.descriptionKey),
         description_fallback: orNull(p.descriptionFallback),
     }))
     r.examples = examples(doc)
