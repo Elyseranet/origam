@@ -51,7 +51,7 @@
     </div>
 
     <div
-      v-if="label"
+      v-if="label || $slots.label"
       class="origam-selection-control__label"
     >
       <slot name="label" v-bind="{text: label, color, props: { id, onClick: handleClickLabel, ...labelProps}}">
