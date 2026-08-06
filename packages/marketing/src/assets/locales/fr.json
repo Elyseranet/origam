@@ -13,7 +13,8 @@
         "themes_tooling": "Compatibilité des outils",
         "themes_preview_tiles": "Aperçus des thèmes",
         "roadmap_effort": "Effort",
-        "donate": "Soutenir origam par un don"
+        "donate": "Soutenir origam par un don",
+        "donate_qr": "Code QR menant à la page de dons"
     },
     "admin": {
         "appbar": {
@@ -791,7 +792,8 @@
             "discussions": "Discussions",
             "twitter": "Twitter",
             "rss": "RSS",
-            "figma_plugin": "Plugin Figma"
+            "figma_plugin": "Plugin Figma",
+            "support": "Soutenir origam"
         },
         "legal": {
             "title": "Mentions légales",
@@ -1397,6 +1399,27 @@
                 "name": "OrigamTextMask",
                 "note": "Révélation de texte via background-clip: text, fonds gradient + image"
             }
+        }
+    },
+    "support": {
+        "meta": {
+            "title": "Soutenir origam · Design system Vue 3",
+            "description": "origam est gratuit, sous licence MIT, et maintenu par un seul développeur. Les dons financent le travail de maintenance."
+        },
+        "hero": {
+            "badge": "Indépendant et gratuit",
+            "title": "Soutenir origam",
+            "lead": "origam est conçu et maintenu par un seul développeur, sur son temps. Il est gratuit, sous licence MIT, et le restera. S’il vous fait gagner du temps, un don le fait avancer."
+        },
+        "give": {
+            "title": "Faire un don",
+            "hint": "Scannez le code avec votre téléphone, ou utilisez le bouton ci-dessous. Les paiements passent par PayPal — aucun compte n’est nécessaire pour donner par carte.",
+            "cta": "Donner via PayPal"
+        },
+        "what": {
+            "title": "Ce que ça change",
+            "body": "Les dons achètent du temps de maintenance : répondre aux tickets, garder les dépendances à jour, tester sur les différents navigateurs, et écrire la documentation qui rend un composant utilisable plutôt que simplement livré. Ce n’est pas un contrat de support et cela n’achète aucune priorité — cela rend seulement le travail ingrat soutenable.",
+            "alt": "Pas en mesure de donner ? Signaler un bug précis, améliorer une page de documentation ou parler d’origam autour de vous aide tout autant."
         }
     },
     "theming": {

@@ -13,7 +13,8 @@
         "themes_tooling": "Tooling compatibility",
         "themes_preview_tiles": "Theme preview tiles",
         "roadmap_effort": "Effort",
-        "donate": "Support origam with a donation"
+        "donate": "Support origam with a donation",
+        "donate_qr": "QR code linking to the donation page"
     },
     "admin": {
         "appbar": {
@@ -791,7 +792,8 @@
             "discussions": "Discussions",
             "twitter": "Twitter",
             "rss": "RSS",
-            "figma_plugin": "Figma plugin"
+            "figma_plugin": "Figma plugin",
+            "support": "Support origam"
         },
         "legal": {
             "title": "Legal",
@@ -1397,6 +1399,27 @@
                 "name": "OrigamTextMask",
                 "note": "Text reveal via background-clip: text, gradient + image backgrounds"
             }
+        }
+    },
+    "support": {
+        "meta": {
+            "title": "Support origam · Vue 3 design system",
+            "description": "origam is free and MIT-licensed, maintained by one developer. Donations fund the maintenance work."
+        },
+        "hero": {
+            "badge": "Independent and free",
+            "title": "Support origam",
+            "lead": "origam is built and maintained by one developer, on his own time. It is free, MIT-licensed, and it will stay that way. If it saves you time, a donation keeps it moving."
+        },
+        "give": {
+            "title": "Make a donation",
+            "hint": "Scan the code with your phone, or use the button below. Payments are handled by PayPal — no account is required to give by card.",
+            "cta": "Donate via PayPal"
+        },
+        "what": {
+            "title": "What it changes",
+            "body": "Donations buy maintenance time: answering issues, keeping dependencies patched, testing across browsers, and writing the documentation that makes a component usable rather than merely shipped. They are not a support contract and they buy no priority — they simply make the unglamorous work sustainable.",
+            "alt": "Not in a position to give? Reporting a precise bug, improving a documentation page or telling someone about origam helps just as much."
         }
     },
     "theming": {
