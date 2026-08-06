@@ -86,11 +86,24 @@ They are raised to the patched floors (`^2.1.4` / `^5.0.9`), which clears
 the three `high` DoS advisories (unbounded expansion) that `pnpm audit`
 reported through `minimatch`.
 
+Nuxt advisories published during this release cycle are cleared too:
+`@nuxt/devtools` (**critical**), and five `high` on `nuxt` itself
+(server-side RCE via Runtime, unauthenticated OOM crash, CPU exhaustion
+while parsing). `nuxt` moves to `^4.5.1` and `typeorm` to `^0.3.31`,
+staying on the `0.3.x` line — the fix landed there, and `1.x` is a
+breaking change. `pnpm audit --prod` now reports **no known
+vulnerabilities**.
+
 Scope note for consumers: the published `origam` package depends only on
 `@mdi/font` and `qrcode-generator`, with `shiki` / `vue` / `vue-i18n` /
-`vue-router` as peers. Advisories raised against the monorepo's site
-tooling (Nuxt and friends) come from `@origam/marketing`, which is
-`private` and never published — they are not part of what you install.
+`vue-router` as peers. None of the packages above ship with it — they all
+come from `@origam/marketing`, which is `private` and never published. You
+were never exposed; the deployed site was.
+
+One change does reach the published package. Nuxt 4.5 made TypeScript
+unable to name the type `defineNuxtModule` returns, so the default export
+of the `origam/nuxt` sub-export is now explicitly annotated as
+`NuxtModule`. Behaviour is unchanged — it is a declaration-emit fix.
 
 ### ⚠️ BREAKING — i18n locale keys migrated to `snake_case`
 
