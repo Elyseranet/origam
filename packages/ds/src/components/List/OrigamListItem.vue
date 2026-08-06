@@ -411,7 +411,20 @@
 		// like the field's `--origam-field__input---padding-top/bottom`, which are
 		// only rung-dependent. Adding density a second time here (or a third time
 		// via the block padding) double/triple-counts it — see the mixin comment.
-		min-height: max(calc(var(--origam-list-item---min-height, 40px) + var(--origam-list---density, 0px)), 1.5rem);
+		// `border-box` is declared here rather than inherited: the rung scale
+		// below resolves to a DIFFERENT height under each box model, so leaving
+		// it to the consumer's reset made the row depend on whether that reset
+		// was loaded. Measured on x-large + comfortable: 60px without the reset
+		// (content-box), 52px with it (border-box) — the second is what a built
+		// app renders, and it silently broke the control/row match. Declaring
+		// the model makes the scale mean one thing everywhere.
+		box-sizing: border-box;
+
+		// Density is added ONCE, on this term only — mirrors
+		// `.origam-field__input`'s own `min-height: max(height + density, …)`.
+		// Under `border-box` this min-height IS the row height, so the rungs
+		// below hand it the FULL rung, not the rung minus its padding.
+		min-height: max(calc(var(--origam-list-item---min-height, 56px) + var(--origam-list---density, 0px)), 1.5rem);
 
 		text-decoration: var(--origam-list-item---text-decoration, none);
 
@@ -447,18 +460,16 @@
 		// footprint. The block padding is the field's own per-size padding —
 		// (rung - 24px title line-height) / 2.
 		//
-		// One correction is needed to land on the rung, and it comes from the box
-		// model rather than from the scale: the row is `content-box`, so the base
-		// `min-height` above sizes the CONTENT only and the block padding is
-		// added on top. The rung is therefore split — `min-height` takes
-		// `rung - 2 * block`, the padding takes `block` — and the two sum back to
-		// the rung. Density is NOT touched here: the base rule already applies it
-		// once, to `min-height` only, which is where the field applies it too.
+		// The row is `border-box` (declared on the base rule above), so the
+		// `min-height` there IS the rendered height: the rung goes in whole,
+		// and the block padding only positions the 24px title inside it.
+		// Density is NOT touched here — the base rule already applies it once,
+		// to `min-height` only, which is where the field applies it too.
 		//
 		// The result reproduces `.origam-field__input` exactly:
 		// `max(controlHeight + density, 1.5rem + paddingTop + paddingBottom)`.
 		@mixin size-rung($rung, $block) {
-			--origam-list-item---min-height: calc(#{$rung} - #{$block} * 2);
+			--origam-list-item---min-height: #{$rung};
 			--origam-list-item---padding-block-start: #{$block};
 			--origam-list-item---padding-block-end: #{$block};
 		}
