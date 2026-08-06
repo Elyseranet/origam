@@ -155,12 +155,29 @@ will no longer match when the consumer supplies an `id`.
   as `a { } body { display: none }` appended arbitrary rules to the document.
   A new `escapeCssIdent()` utility delegates to native `CSS.escape`, with a
   spec-conformant fallback for jsdom and SSR, which expose no `CSS` global.
+- **Interpolation placeholders silently rendered empty.** `t()` is variadic
+  — `t(key, ...params)` — but five call sites passed it an **array**, so the
+  array landed in `params[0]` where the template expected the value itself.
+  This stayed invisible while `stringifyParam` accepted any value (`[3]`
+  stringified to `"3"`); once it was narrowed to primitives, an array began
+  rendering as an **empty string** and the placeholder vanished. Visible
+  effects: `<origam-file-field display="counter">` displayed `" files"`
+  instead of `"3 files"`, and the `max_length` validation message of
+  `<origam-text-field>` / `<origam-textarea-field>` showed an empty limit.
 
-### Known issues
+### Security
 
-`pnpm audit --prod` reports 3 `high` advisories (`brace-expansion`, DoS),
-transitive through `minimatch` and **pre-existing** — no dependency changed
-in this release. Remediation is tracked separately.
+`brace-expansion` overrides were pinned to the **vulnerable** versions
+(`^2.1.2` / `^5.0.8`) — set for an earlier advisory and never moved since.
+They are raised to the patched floors (`^2.1.4` / `^5.0.9`), which clears
+the three `high` DoS advisories (unbounded expansion) that `pnpm audit`
+reported through `minimatch`.
+
+Scope note for consumers: the published `origam` package depends only on
+`@mdi/font` and `qrcode-generator`, with `shiki` / `vue` / `vue-i18n` /
+`vue-router` as peers. Advisories raised against the monorepo's site
+tooling (Nuxt and friends) come from `@origam/marketing`, which is
+`private` and never published — they are not part of what you install.
 
 ### ⚠️ BREAKING — i18n locale keys migrated to `snake_case`
 
