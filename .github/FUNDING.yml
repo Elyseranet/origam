@@ -1,0 +1,3 @@
+# Renders the "Sponsor" button on the repository page.
+# `custom` takes arbitrary URLs — here a PayPal hosted Donate button.
+custom: ['https://www.paypal.com/donate/?hosted_button_id=EQFUQ2JV95YGQ']
