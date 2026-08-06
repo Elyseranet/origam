@@ -30,6 +30,7 @@ const ENTRY_SRC = ['name', 'definition', 'signature', 'tag', 'value', 'source_fi
 const ENTRY_EDIT = [
     'category', 'domain', 'icon', 'description_key', 'description_fallback',
     'package_note', 'note_key', 'note_fallback', 'story_url', 'doc_url', 'kind_extra',
+    'svg_title_key', 'svg_title_fallback', 'svg_desc_key', 'svg_desc_fallback',
 ]
 
 /**

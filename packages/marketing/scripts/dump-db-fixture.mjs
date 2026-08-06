@@ -61,6 +61,10 @@ function entryShape (e) {
         doc_url: e.doc_url,
         parent_slug: e.parent_slug,
         kind_extra: e.kind_extra,
+        svg_title_key: e.svg_title_key,
+        svg_title_fallback: e.svg_title_fallback,
+        svg_desc_key: e.svg_desc_key,
+        svg_desc_fallback: e.svg_desc_fallback,
         edited_by_user: e.edited_by_user === true || e.edited_by_user === 't',
     }
 }

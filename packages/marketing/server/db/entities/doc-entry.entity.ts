@@ -77,6 +77,24 @@ export class DocEntry extends DocRowBase {
     @Column({ type: 'jsonb', nullable: true })
     kind_extra!: unknown | null
 
+    /**
+     * Accessible title/description of the component anatomy diagram's SVG
+     * (role="img"). Mirrors `note_key`/`note_fallback`: a per-entry [ÉDIT]
+     * key/fallback couple, nullable — only populated for `kind='component'`
+     * rows that ship an anatomy diagram (ADR 325, task 1).
+     */
+    @Column({ type: 'text', nullable: true })
+    svg_title_key!: string | null
+
+    @Column({ type: 'text', nullable: true })
+    svg_title_fallback!: string | null
+
+    @Column({ type: 'text', nullable: true })
+    svg_desc_key!: string | null
+
+    @Column({ type: 'text', nullable: true })
+    svg_desc_fallback!: string | null
+
     @Column({ type: 'boolean', default: false })
     edited_by_user!: boolean
 
