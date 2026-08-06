@@ -2,6 +2,12 @@ import { readdirSync, readFileSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 
 import { addComponentsDir, addImports, addPlugin, createResolver, defineNuxtModule } from '@nuxt/kit'
+// `NuxtModule` is imported from `@nuxt/schema`, not `@nuxt/kit`: kit uses the
+// type internally but does not re-export it. It is needed to ANNOTATE the
+// default export below — without the annotation TypeScript infers a type it
+// cannot name from a package that is not a direct dependency, and the
+// declaration build fails with TS2883. Surfaced by Nuxt 4.5.
+import type { NuxtModule } from '@nuxt/schema'
 
 import type { IOrigamNuxtModuleOptions, IOrigamTheme } from '../interfaces'
 
@@ -64,7 +70,7 @@ const SCALAR_DEFAULTS = {
     prefix: DEFAULTS.prefix
 }
 
-export default defineNuxtModule<IOrigamNuxtModuleOptions>({
+const origamNuxtModule: NuxtModule<IOrigamNuxtModuleOptions, IOrigamNuxtModuleOptions, false> = defineNuxtModule<IOrigamNuxtModuleOptions>({
     meta: {
         name: MODULE_NAME,
         configKey: CONFIG_KEY,
@@ -200,5 +206,7 @@ export default defineNuxtModule<IOrigamNuxtModuleOptions>({
         }
     }
 })
+
+export default origamNuxtModule
 
 export type { IOrigamNuxtModuleOptions }
