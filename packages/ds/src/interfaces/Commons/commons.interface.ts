@@ -131,3 +131,22 @@ export interface IFilterPropsOptions<PropsOptions extends {
 export interface IConfigurableDocument {
     document?: Document
 }
+
+/**
+ * The extra surface Nuxt puts on a Vue `App` instance.
+ *
+ * Nuxt attaches `$nuxt` to the app at runtime, but the type augmentation
+ * that declares it ships with Nuxt's own types. The library must not depend
+ * on them: it is framework-agnostic and type-checks standalone, so
+ * `app.$nuxt` resolves to `Property '$nuxt' does not exist on type
+ * 'App<any>'` in CI even though the property really is there under Nuxt.
+ *
+ * Intersecting `App` with this interface keeps the runtime guard honest —
+ * `$nuxt` stays optional, so the `else` branch remains reachable and
+ * type-checked — without pulling `@nuxt/schema` into the type graph.
+ */
+export interface INuxtAwareApp {
+    $nuxt?: {
+        hook: (name: string, callback: () => void) => void
+    }
+}

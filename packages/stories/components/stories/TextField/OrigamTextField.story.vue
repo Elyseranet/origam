@@ -309,59 +309,6 @@
 			/>
 		</Variant>
 
-		<Variant title="Prop — mask (built-in patterns)">
-			<origam-text-field
-					v-model="maskBuiltinModel"
-					mask="phone:fr"
-					label="French mobile (mask)"
-					data-cy="textfield-mask-builtin"
-					@valid="v => maskBuiltinValid = v"
-					@complete="e => maskBuiltinComplete = e.complete"
-			/>
-			<div data-cy="textfield-mask-builtin-status" style="margin-top: 8px; font-family: monospace; font-size: 12px;">
-				unmasked = {{ maskBuiltinModel }} · complete = {{ maskBuiltinComplete }} · valid = {{ maskBuiltinValid }}
-			</div>
-		</Variant>
-
-		<Variant title="Prop — mask (credit card with Luhn)">
-			<origam-text-field
-					v-model="maskCreditCardModel"
-					mask="creditcard"
-					label="Credit card (Luhn)"
-					data-cy="textfield-mask-creditcard"
-					@valid="v => maskCreditCardValid = v"
-			/>
-			<div data-cy="textfield-mask-creditcard-status" style="margin-top: 8px; font-family: monospace; font-size: 12px;">
-				unmasked = {{ maskCreditCardModel }} · valid = {{ maskCreditCardValid }}
-			</div>
-		</Variant>
-
-		<Variant title="Prop — mask (custom pattern)">
-			<origam-text-field
-					v-model="maskCustomModel"
-					mask="(##) ###-####"
-					label="US-style phone (custom pattern)"
-					data-cy="textfield-mask-custom"
-					@complete="e => maskCustomComplete = e.complete"
-			/>
-			<div data-cy="textfield-mask-custom-status" style="margin-top: 8px; font-family: monospace; font-size: 12px;">
-				unmasked = {{ maskCustomModel }} · complete = {{ maskCustomComplete }}
-			</div>
-		</Variant>
-
-		<Variant title="Emit — valid / complete">
-			<origam-text-field
-					v-model="maskEmitModel"
-					mask="phone:fr"
-					label="French mobile (mask)"
-					data-cy="textfield-mask-emit"
-					@valid="handleMaskEmitValid"
-			/>
-			<div data-cy="textfield-mask-emit-status" style="margin-top: 8px; font-family: monospace; font-size: 12px;">
-				valid-emits = {{ maskEmitValidCount }}
-			</div>
-		</Variant>
-
 		<Variant title="Events - valid">
 			<origam-text-field
 					v-model="emitValidModel"
@@ -556,6 +503,59 @@
 				</StoryGroup>
 			</template>
 		</Variant>
+		<Variant title="Prop — mask (built-in patterns)">
+			<origam-text-field
+					v-model="maskBuiltinModel"
+					mask="phone:fr"
+					label="French mobile (mask)"
+					data-cy="textfield-mask-builtin"
+					@valid="v => maskBuiltinValid = v"
+					@complete="e => maskBuiltinComplete = e.complete"
+			/>
+			<div data-cy="textfield-mask-builtin-status" style="margin-top: 8px; font-family: monospace; font-size: 12px;">
+				unmasked = {{ maskBuiltinModel }} · complete = {{ maskBuiltinComplete }} · valid = {{ maskBuiltinValid }}
+			</div>
+		</Variant>
+
+		<Variant title="Prop — mask (credit card with Luhn)">
+			<origam-text-field
+					v-model="maskCreditCardModel"
+					mask="creditcard"
+					label="Credit card (Luhn)"
+					data-cy="textfield-mask-creditcard"
+					@valid="v => maskCreditCardValid = v"
+			/>
+			<div data-cy="textfield-mask-creditcard-status" style="margin-top: 8px; font-family: monospace; font-size: 12px;">
+				unmasked = {{ maskCreditCardModel }} · valid = {{ maskCreditCardValid }}
+			</div>
+		</Variant>
+
+		<Variant title="Prop — mask (custom pattern)">
+			<origam-text-field
+					v-model="maskCustomModel"
+					mask="(##) ###-####"
+					label="US-style phone (custom pattern)"
+					data-cy="textfield-mask-custom"
+					@complete="e => maskCustomComplete = e.complete"
+			/>
+			<div data-cy="textfield-mask-custom-status" style="margin-top: 8px; font-family: monospace; font-size: 12px;">
+				unmasked = {{ maskCustomModel }} · complete = {{ maskCustomComplete }}
+			</div>
+		</Variant>
+
+		<Variant title="Emit — valid / complete">
+			<origam-text-field
+					v-model="maskEmitModel"
+					mask="phone:fr"
+					label="French mobile (mask)"
+					data-cy="textfield-mask-emit"
+					@valid="handleMaskEmitValid"
+			/>
+			<div data-cy="textfield-mask-emit-status" style="margin-top: 8px; font-family: monospace; font-size: 12px;">
+				valid-emits = {{ maskEmitValidCount }}
+			</div>
+		</Variant>
+
 	</Story>
 </template>
 
