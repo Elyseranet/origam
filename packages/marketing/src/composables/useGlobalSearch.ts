@@ -9,8 +9,14 @@
  *   - pages statiques (installation, changelog, roadmap, wireframe, theming, figma-plugin)
  *
  * Le tableau est réactif : réinitialisation automatique quand les données API changent.
+ *
+ * Locale (ADR #325, task 3) : chaque `entry.descriptionFallback` affiché ici vient
+ * du serveur en texte localisé — `?locale=` est donc transmis (+ inclus dans la
+ * clé de cache) sur les 4 appels ci-dessous, sinon la palette resterait figée
+ * sur la première langue chargée après un changement de locale.
  */
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
 import type { ICommand } from 'origam/interfaces'
 
 const STATIC_PAGES: ICommand[] = [
@@ -90,6 +96,8 @@ const STATIC_PAGE_HREFS: Record<string, string> = {
 }
 
 export function useGlobalSearch () {
+    const { locale } = useI18n()
+
     const { data: components } = useFetch<Array<{
         slug: string
         name: string
@@ -98,7 +106,8 @@ export function useGlobalSearch () {
         parentSlug?: string
         descriptionFallback: string
     }>>('/api/reference/component', {
-        key: 'global-search:component',
+        key: () => `global-search:component:${locale.value}`,
+        query: { locale },
         default: () => [],
     })
 
@@ -109,7 +118,8 @@ export function useGlobalSearch () {
         domain: string
         descriptionFallback: string
     }>>('/api/reference/composable', {
-        key: 'global-search:composable',
+        key: () => `global-search:composable:${locale.value}`,
+        query: { locale },
         default: () => [],
     })
 
@@ -119,7 +129,8 @@ export function useGlobalSearch () {
         icon: string
         descriptionFallback: string
     }>>('/api/reference/directive', {
-        key: 'global-search:directive',
+        key: () => `global-search:directive:${locale.value}`,
+        query: { locale },
         default: () => [],
     })
 
@@ -131,7 +142,8 @@ export function useGlobalSearch () {
         kind: 'type' | 'enum'
         descriptionFallback: string
     }>>('/api/reference/type', {
-        key: 'global-search:type',
+        key: () => `global-search:type:${locale.value}`,
+        query: { locale },
         default: () => [],
     })
 

@@ -12,6 +12,11 @@
  *   ?limit=<number>           cap the number of entries returned (all if omitted)
  *   ?orphaned=1               include orphaned entries (excluded by default)
  *   ?includePropSurface=1     (component only) include props[] + playground in each entry
+ *   ?locale=<string>          locale for descriptionFallback resolution (ADR #325).
+ *                             Validated against I18N_LOCALE_CODES; missing/unknown
+ *                             values silently fall back to DEFAULT_LOCALE — never a 4xx.
+ *                             Reaches reference-mappers.ts (signature only for now —
+ *                             resolving the translated value is ticket 4, not this one).
  *
  * Response shape per kind:
  *   component  - IComponentEntry[]   (includes family members via batch relation query)
@@ -24,11 +29,15 @@
  *   type       - ITypeEntry[]        (includes kind: type or enum from kind_extra)
  *   util       - IUtilEntry[]        (includes related slugs)
  *
- * Cache: 5 min per kind + filter combination.
+ * Cache: 5 min per kind + filter + LOCALE combination — the locale is part of the
+ * cache key precisely because it changes the response content (descriptionFallback),
+ * so caching without it would serve one locale's text to every other locale (ADR #325).
  * Invalidate on re-sync / backoffice edit (ticket E clears the storage keys).
  */
 
 import { DocEntry, DocProp, DocRelation } from '../../db/entities'
+import { resolveLocale } from '../../utils/reference-locale'
+import type { TLocaleCode } from '../../../src/types/i18n.type'
 
 /** Inline type to avoid cross-directory import type issues with Nitro esbuild. */
 type DescMap = Map<string, { description_key: string | null; description_fallback: string | null }>
@@ -41,6 +50,7 @@ export default defineCachedEventHandler(
         assertKind(kind)
 
         const query = getQuery(event)
+        const locale = resolveLocale(query.locale)
         const categoryFilter = typeof query.category === 'string' && query.category
             ? query.category
             : undefined
@@ -77,24 +87,24 @@ export default defineCachedEventHandler(
             if (includePropSurface) {
                 return buildComponentThemeCatalog(db, entries)
             }
-            return buildComponentCatalog(db, entries)
+            return buildComponentCatalog(db, entries, locale)
         }
         if (kind === 'composable') {
-            return buildRelatedCatalog(db, entries, mapComposableEntry)
+            return buildRelatedCatalog(db, entries, mapComposableEntry, locale)
         }
         if (kind === 'util') {
-            return buildRelatedCatalog(db, entries, mapUtilEntry)
+            return buildRelatedCatalog(db, entries, mapUtilEntry, locale)
         }
 
         // ─── Kinds without relation data in the catalog ────────────────────
 
         return entries.map((e: any) => {
             switch (kind) {
-                case 'const': return mapConstEntry(e)
-                case 'directive': return mapDirectiveCatalogEntry(e)
-                case 'enum': return mapEnumEntry(e)
-                case 'interface': return mapInterfaceEntry(e)
-                case 'type': return mapTypeEntry(e)
+                case 'const': return mapConstEntry(e, locale)
+                case 'directive': return mapDirectiveCatalogEntry(e, locale)
+                case 'enum': return mapEnumEntry(e, locale)
+                case 'interface': return mapInterfaceEntry(e, locale)
+                case 'type': return mapTypeEntry(e, locale)
                 default: return { slug: e.slug, name: e.name }
             }
         })
@@ -106,7 +116,8 @@ export default defineCachedEventHandler(
             const kind = getRouterParam(event, 'kind') ?? ''
             const q = getQuery(event)
             const ps = q.includePropSurface === '1' ? ':props' : ''
-            return `catalog:${kind}${ps}:${q.category ?? ''}:${q.limit ?? ''}:${q.orphaned ?? ''}`
+            const locale = resolveLocale(q.locale)
+            return `catalog:${kind}${ps}:${q.category ?? ''}:${q.limit ?? ''}:${q.orphaned ?? ''}:${locale}`
         },
     },
 )
@@ -117,7 +128,7 @@ export default defineCachedEventHandler(
  * Component catalog: includes IComponentFamilyMember[] for each entry.
  * Two extra queries: family relations + family member descriptions.
  */
-async function buildComponentCatalog (db: any, entries: any[]) {
+async function buildComponentCatalog (db: any, entries: any[], locale: TLocaleCode) {
     const ids = entries.map((e: any) => e.id as string)
 
     const familyRels: any[] = ids.length > 0
@@ -162,7 +173,7 @@ async function buildComponentCatalog (db: any, entries: any[]) {
     }
 
     return entries.map((e: any) =>
-        mapComponentEntry(e, familyByEntryId.get(e.id) ?? []),
+        mapComponentEntry(e, familyByEntryId.get(e.id) ?? [], locale),
     )
 }
 
@@ -223,7 +234,8 @@ async function buildComponentThemeCatalog (db: any, entries: any[]) {
 async function buildRelatedCatalog (
     db: any,
     entries: any[],
-    mapper: (row: any, related: string[]) => unknown,
+    mapper: (row: any, related: string[], locale: TLocaleCode) => unknown,
+    locale: TLocaleCode,
 ) {
     const ids = entries.map((e: any) => e.id as string)
 
@@ -243,5 +255,5 @@ async function buildRelatedCatalog (
         relatedByEntryId.set(rel.entry_id, list)
     }
 
-    return entries.map((e: any) => mapper(e, relatedByEntryId.get(e.id) ?? []))
+    return entries.map((e: any) => mapper(e, relatedByEntryId.get(e.id) ?? [], locale))
 }

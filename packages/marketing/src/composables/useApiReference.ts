@@ -13,9 +13,17 @@
  *  - server/api/reference/[kind].get.ts
  *  - server/api/reference/[kind]/[slug].get.ts
  *  - server/api/reference/categories/[kind].get.ts
+ *
+ * Locale (ADR #325, task 3) : chaque appel transmet `?locale=` avec la locale
+ * i18n courante (useI18n().locale), à la fois en query param ET dans la clé
+ * de cache Nuxt (useFetch/useAsyncData) — sinon un changement de langue ne
+ * re-fetcherait jamais côté client (le payload SSR resterait figé sur la
+ * première locale rendue).
  */
 
 import type { Ref, ComputedRef } from 'vue'
+import { useI18n } from 'vue-i18n'
+
 import type { TReferenceKind } from '~/types/api-reference.type'
 
 export type { TReferenceKind } from '~/types/api-reference.type'
@@ -30,9 +38,15 @@ export type { TReferenceKind } from '~/types/api-reference.type'
  * @param category - Filtre optionnel category/domain (transmis en query param).
  */
 export function useReferenceCatalog<T>(kind: TReferenceKind, category?: string) {
+    const { locale } = useI18n()
+
     return useFetch<T[]>(`/api/reference/${kind}`, {
-        key: `catalog:${kind}:${category ?? ''}`,
-        query: category ? { category } : undefined,
+        // `key` is a getter (not a plain string) and `locale` is passed as the
+        // Ref itself in `query` so both re-evaluate when the user switches
+        // language client-side — a static key/query would keep serving the
+        // first-rendered locale's payload forever.
+        key: () => `catalog:${kind}:${category ?? ''}:${locale.value}`,
+        query: { category, locale },
         default: () => [] as T[],
     })
 }
@@ -56,15 +70,18 @@ export async function useReferenceDoc<T>(
     slug: Ref<string | null | undefined> | ComputedRef<string | null | undefined> | string | null | undefined,
 ) {
     const slugRef: Ref<string | null | undefined> = isRef(slug) ? slug : ref(slug)
+    const { locale } = useI18n()
 
     const result = await useAsyncData<T | null>(
-        () => slugRef.value ? `doc:${kind}:${slugRef.value}` : `doc:${kind}:__skip`,
+        () => slugRef.value ? `doc:${kind}:${slugRef.value}:${locale.value}` : `doc:${kind}:__skip`,
         async () => {
             if (!slugRef.value) return null
-            return await $fetch<T>(`/api/reference/${kind}/${slugRef.value}`)
+            return await $fetch<T>(`/api/reference/${kind}/${slugRef.value}`, {
+                query: { locale: locale.value },
+            })
         },
         {
-            watch: [slugRef],
+            watch: [slugRef, locale],
             default: () => null as T | null,
         },
     )
@@ -91,6 +108,10 @@ export async function useReferenceDoc<T>(
  *
  * Retourne les clés de catégorie sous forme de string[] (ordonnées par position).
  * Remplace les constantes statiques du type COMPONENTS_CATEGORIES.
+ *
+ * Ne transmet PAS `?locale=` : `doc_entry.category` est une valeur brute
+ * (ex. "Layout"), jamais un couple *_key/*_fallback traduit — cf. le
+ * commentaire de server/api/reference/categories/[kind].get.ts.
  *
  * @param kind - L'une des 8 familles DOC_KINDS.
  */
