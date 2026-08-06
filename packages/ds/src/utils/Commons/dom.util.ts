@@ -25,6 +25,54 @@
  * element whose id really contains a NULL. Pathological in HTML, and not
  * something this function can fix — the round trip is lossy by spec.
  */
+/** Digit, `0`-`9`. */
+function isDigit (code: number): boolean {
+    return code >= 0x0030 && code <= 0x0039
+}
+
+/**
+ * Characters an ident may carry as-is: alphanumerics, `-`, `_`, and
+ * everything non-ASCII (the spec lets those through unescaped).
+ */
+function isIdentSafe (code: number): boolean {
+    return (
+        code >= 0x0080 ||
+        code === 0x002D ||
+        code === 0x005F ||
+        isDigit(code) ||
+        (code >= 0x0041 && code <= 0x005A) ||
+        (code >= 0x0061 && code <= 0x007A)
+    )
+}
+
+/**
+ * Characters that must take the `\<hex><space>` form: the C0 controls and
+ * DEL, plus a digit in a position where it would start the ident — first,
+ * or second behind a leading `-`.
+ */
+function needsHexEscape (code: number, index: number, value: string): boolean {
+    if (code <= 0x001F || code === 0x007F) return true
+    if (!isDigit(code)) return false
+
+    return index === 0 || (index === 1 && value.charCodeAt(0) === 0x002D)
+}
+
+/** A lone `-` is not a valid ident on its own. */
+function isLoneHyphen (code: number, index: number, value: string): boolean {
+    return index === 0 && code === 0x002D && value.length === 1
+}
+
+function escapeIdentChar (value: string, index: number): string {
+    const code = value.charCodeAt(index)
+
+    if (code === 0x0000) return '�'
+    if (needsHexEscape(code, index, value)) return `\\${code.toString(16)} `
+    if (isLoneHyphen(code, index, value)) return `\\${value[index]}`
+    if (isIdentSafe(code)) return value[index]
+
+    return `\\${value[index]}`
+}
+
 export function escapeCssIdent (value: string): string {
     const css = (globalThis as { CSS?: { escape?: (v: string) => string } }).CSS
 
@@ -34,45 +82,7 @@ export function escapeCssIdent (value: string): string {
     let out = ''
 
     for (let i = 0; i < value.length; i++) {
-        const code = value.charCodeAt(i)
-        const char = value[i]
-
-        if (code === 0x0000) {
-            out += '�'
-            continue
-        }
-
-        // Control characters, and a leading digit (or a digit right after a
-        // leading `-`), must use the `\<hex><space>` form.
-        if (
-            (code >= 0x0001 && code <= 0x001F) ||
-            code === 0x007F ||
-            (i === 0 && code >= 0x0030 && code <= 0x0039) ||
-            (i === 1 && code >= 0x0030 && code <= 0x0039 && value.charCodeAt(0) === 0x002D)
-        ) {
-            out += `\\${code.toString(16)} `
-            continue
-        }
-
-        // A lone `-` is not a valid ident on its own.
-        if (i === 0 && code === 0x002D && value.length === 1) {
-            out += `\\${char}`
-            continue
-        }
-
-        if (
-            code >= 0x0080 ||
-            code === 0x002D ||
-            code === 0x005F ||
-            (code >= 0x0030 && code <= 0x0039) ||
-            (code >= 0x0041 && code <= 0x005A) ||
-            (code >= 0x0061 && code <= 0x007A)
-        ) {
-            out += char
-            continue
-        }
-
-        out += `\\${char}`
+        out += escapeIdentChar(value, i)
     }
 
     return out
