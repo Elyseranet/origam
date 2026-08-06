@@ -201,6 +201,7 @@ export const cartoonLightTheme: IOrigamTheme = {
         // déjà présent (pas de cssVars nécessaire, valeur par défaut correcte).
         'origam-pagination': { border: true, elevation: 2 },
         'origam-list': { rounded: 'lg', nav: true },
+        'origam-list-item': { rounded: 'lg' },
         'origam-blockquote': { variant: 'default', rounded: 'lg', border: true, accentColor: 'primary' }
     },
     // Overrides bruts non exprimables en props (couleur + épaisseur de bordure,

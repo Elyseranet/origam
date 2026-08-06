@@ -69,6 +69,26 @@ Use the `default` slot when `items` is insufficient.
 </template>
 ```
 
+## Size and density on the built-in list
+
+When the menu renders its own list from `items` (rather than a `#default`
+slot), `size` and `density` are forwarded to that `OrigamList`, which cascades
+them to every row. This keeps a menu opened from a sized activator on the same
+vertical scale as the activator itself.
+
+```vue
+<template>
+  <OrigamMenu size="small" density="compact" :items="items">
+    <template #activator="{ props }">
+      <OrigamBtn v-bind="props" size="small">Actions</OrigamBtn>
+    </template>
+  </OrigamMenu>
+</template>
+```
+
+A menu driven by the `#default` slot owns its own markup — pass `size` /
+`density` to the `OrigamList` you mount there.
+
 ## Slots
 
 | Slot | Slot props | Description |

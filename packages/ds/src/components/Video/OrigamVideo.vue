@@ -782,15 +782,15 @@
 	 * logic in templates").
 	 ********************************************************/
 	const captionsLabelKey = computed<string>(() => {
-		return captionsEnabled.value ? 'origam.video.disableCaptions' : 'origam.video.enableCaptions'
+		return captionsEnabled.value ? 'origam.video.disable_captions' : 'origam.video.enable_captions'
 	})
 
 	const pipLabelKey = computed<string>(() => {
-		return state.pip.value ? 'origam.video.exitPip' : 'origam.video.enterPip'
+		return state.pip.value ? 'origam.video.exit_pip' : 'origam.video.enter_pip'
 	})
 
 	const fullscreenLabelKey = computed<string>(() => {
-		return state.fullscreen.value ? 'origam.video.exitFullscreen' : 'origam.video.enterFullscreen'
+		return state.fullscreen.value ? 'origam.video.exit_fullscreen' : 'origam.video.enter_fullscreen'
 	})
 
 	const fullscreenIcon = computed<string>(() => {

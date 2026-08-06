@@ -22,8 +22,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-alert--design",
-        "doc_url": "http://localhost:4000/components/Alert/OrigamAlert",
+        "story_url": "/stories/?story=components-alert--design",
+        "doc_url": "/docs/components/Alert/OrigamAlert.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -860,8 +860,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-app--design",
-        "doc_url": "http://localhost:4000/components/App/OrigamApp",
+        "story_url": "/stories/?story=components-app--design",
+        "doc_url": "/docs/components/App/OrigamApp.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -1224,8 +1224,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-app-bar--design",
-        "doc_url": "http://localhost:4000/components/App/OrigamAppBar",
+        "story_url": "/stories/?story=components-app-bar--design",
+        "doc_url": "/docs/components/App/OrigamAppBar.html",
         "parent_slug": "app",
         "kind_extra": {
           "a11y": {
@@ -1754,8 +1754,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-audio--design",
-        "doc_url": "http://localhost:4000/components/Audio/OrigamAudio",
+        "story_url": "/stories/?story=components-audio--design",
+        "doc_url": "/docs/components/Audio/OrigamAudio.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -2715,8 +2715,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-avatar--design",
-        "doc_url": "http://localhost:4000/components/Avatar/OrigamAvatar",
+        "story_url": "/stories/?story=components-avatar--design",
+        "doc_url": "/docs/components/Avatar/OrigamAvatar.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -3381,8 +3381,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-avatar--design",
-        "doc_url": "http://localhost:4000/components/Avatar/OrigamAvatarGroup",
+        "story_url": "/stories/?story=components-avatar--design",
+        "doc_url": "/docs/components/Avatar/OrigamAvatarGroup.html",
         "parent_slug": "avatar",
         "kind_extra": {
           "a11y": {
@@ -3859,8 +3859,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-badge--design",
-        "doc_url": "http://localhost:4000/components/Badge/OrigamBadge",
+        "story_url": "/stories/?story=components-badge--design",
+        "doc_url": "/docs/components/Badge/OrigamBadge.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -4510,8 +4510,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-blockquote--design",
-        "doc_url": "http://localhost:4000/components/Blockquote/OrigamBlockquote",
+        "story_url": "/stories/?story=components-blockquote--design",
+        "doc_url": "/docs/components/Blockquote/OrigamBlockquote.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -5162,8 +5162,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-bottom-nav--design",
-        "doc_url": "http://localhost:4000/components/BottomNav/OrigamBottomNav",
+        "story_url": "/stories/?story=components-bottom-nav--design",
+        "doc_url": "/docs/components/BottomNav/OrigamBottomNav.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -5808,8 +5808,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-bracket--design",
-        "doc_url": "http://localhost:4000/components/Bracket/OrigamBracket",
+        "story_url": "/stories/?story=components-bracket--design",
+        "doc_url": "/docs/components/Bracket/OrigamBracket.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -6477,8 +6477,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-bracket--design",
-        "doc_url": "http://localhost:4000/components/Bracket/OrigamBracketCompetitor",
+        "story_url": "/stories/?story=components-bracket--design",
+        "doc_url": "/docs/components/Bracket/OrigamBracketCompetitor.html",
         "parent_slug": "bracket",
         "kind_extra": {
           "a11y": {
@@ -7108,8 +7108,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-bracket--design",
-        "doc_url": "http://localhost:4000/components/Bracket/OrigamBracketMatch",
+        "story_url": "/stories/?story=components-bracket--design",
+        "doc_url": "/docs/components/Bracket/OrigamBracketMatch.html",
         "parent_slug": "bracket",
         "kind_extra": {
           "a11y": {
@@ -7763,8 +7763,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-bracket--design",
-        "doc_url": "http://localhost:4000/components/Bracket/OrigamBracketRound",
+        "story_url": "/stories/?story=components-bracket--design",
+        "doc_url": "/docs/components/Bracket/OrigamBracketRound.html",
         "parent_slug": "bracket",
         "kind_extra": {
           "a11y": {
@@ -8243,8 +8243,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-breadcrumb--design",
-        "doc_url": "http://localhost:4000/components/Breadcrumb/OrigamBreadcrumb",
+        "story_url": "/stories/?story=components-breadcrumb--design",
+        "doc_url": "/docs/components/Breadcrumb/OrigamBreadcrumb.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -8879,8 +8879,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-breadcrumb--design",
-        "doc_url": "http://localhost:4000/components/Breadcrumb/OrigamBreadcrumb",
+        "story_url": "/stories/?story=components-breadcrumb--design",
+        "doc_url": "/docs/components/Breadcrumb/OrigamBreadcrumb.html",
         "parent_slug": "breadcrumb",
         "kind_extra": {
           "a11y": {
@@ -9273,8 +9273,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-breadcrumb--design",
-        "doc_url": "http://localhost:4000/components/Breadcrumb/OrigamBreadcrumb",
+        "story_url": "/stories/?story=components-breadcrumb--design",
+        "doc_url": "/docs/components/Breadcrumb/OrigamBreadcrumb.html",
         "parent_slug": "breadcrumb",
         "kind_extra": {
           "a11y": {
@@ -9950,7 +9950,7 @@
         "note_key": null,
         "note_fallback": null,
         "story_url": "https://example.com",
-        "doc_url": "http://localhost:4000/components/Btn/OrigamBtn",
+        "doc_url": "/docs/components/Btn/OrigamBtn.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -11186,8 +11186,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-btn--design",
-        "doc_url": "http://localhost:4000/components/Btn/OrigamBtn",
+        "story_url": "/stories/?story=components-btn--design",
+        "doc_url": "/docs/components/Btn/OrigamBtn.html",
         "parent_slug": "btn",
         "kind_extra": {
           "a11y": {
@@ -11716,8 +11716,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-btn--design",
-        "doc_url": "http://localhost:4000/components/Btn/OrigamBtn",
+        "story_url": "/stories/?story=components-btn--design",
+        "doc_url": "/docs/components/Btn/OrigamBtn.html",
         "parent_slug": "btn",
         "kind_extra": {
           "a11y": {
@@ -12216,8 +12216,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-calendar--design",
-        "doc_url": "http://localhost:4000/components/Calendar/OrigamCalendar",
+        "story_url": "/stories/?story=components-calendar--design",
+        "doc_url": "/docs/components/Calendar/OrigamCalendar.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -13020,8 +13020,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-card--design",
-        "doc_url": "http://localhost:4000/components/Card/OrigamCard",
+        "story_url": "/stories/?story=components-card--design",
+        "doc_url": "/docs/components/Card/OrigamCard.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -13988,8 +13988,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-card--design",
-        "doc_url": "http://localhost:4000/components/Card/OrigamCard",
+        "story_url": "/stories/?story=components-card--design",
+        "doc_url": "/docs/components/Card/OrigamCard.html",
         "parent_slug": "card",
         "kind_extra": {
           "a11y": {
@@ -14639,8 +14639,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-card--design",
-        "doc_url": "http://localhost:4000/components/Card/OrigamCard",
+        "story_url": "/stories/?story=components-card--design",
+        "doc_url": "/docs/components/Card/OrigamCard.html",
         "parent_slug": "card",
         "kind_extra": {
           "a11y": {
@@ -15057,8 +15057,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-carousel--design",
-        "doc_url": "http://localhost:4000/components/Carousel/OrigamCarousel",
+        "story_url": "/stories/?story=components-carousel--design",
+        "doc_url": "/docs/components/Carousel/OrigamCarousel.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -15732,8 +15732,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-carousel--design",
-        "doc_url": "http://localhost:4000/components/Carousel/OrigamCarousel",
+        "story_url": "/stories/?story=components-carousel--design",
+        "doc_url": "/docs/components/Carousel/OrigamCarousel.html",
         "parent_slug": "carousel",
         "kind_extra": {
           "a11y": {
@@ -16099,8 +16099,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-chart--design",
-        "doc_url": "http://localhost:4000/components/Chart/OrigamChart",
+        "story_url": "/stories/?story=components-chart--design",
+        "doc_url": "/docs/components/Chart/OrigamChart.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -18011,8 +18011,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-chart-bullet--design",
-        "doc_url": "http://localhost:4000/components/Chart/OrigamChartBullet",
+        "story_url": "/stories/?story=components-chart-bullet--design",
+        "doc_url": "/docs/components/Chart/OrigamChartBullet.html",
         "parent_slug": "chart",
         "kind_extra": {
           "a11y": {
@@ -18833,8 +18833,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-chart-candlestick--design",
-        "doc_url": "http://localhost:4000/components/Chart/OrigamChartCandlestick",
+        "story_url": "/stories/?story=components-chart-candlestick--design",
+        "doc_url": "/docs/components/Chart/OrigamChartCandlestick.html",
         "parent_slug": "chart",
         "kind_extra": {
           "a11y": {
@@ -19558,8 +19558,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-chart-cartesian--design",
-        "doc_url": "http://localhost:4000/components/Chart/OrigamChartCartesian",
+        "story_url": "/stories/?story=components-chart-cartesian--design",
+        "doc_url": "/docs/components/Chart/OrigamChartCartesian.html",
         "parent_slug": "chart",
         "kind_extra": {
           "a11y": {
@@ -20250,8 +20250,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-chart-gauge--design",
-        "doc_url": "http://localhost:4000/components/Chart/OrigamChartGauge",
+        "story_url": "/stories/?story=components-chart-gauge--design",
+        "doc_url": "/docs/components/Chart/OrigamChartGauge.html",
         "parent_slug": "chart",
         "kind_extra": {
           "a11y": {
@@ -20758,8 +20758,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-chart-heatmap--design",
-        "doc_url": "http://localhost:4000/components/Chart/OrigamChartHeatmap",
+        "story_url": "/stories/?story=components-chart-heatmap--design",
+        "doc_url": "/docs/components/Chart/OrigamChartHeatmap.html",
         "parent_slug": "chart",
         "kind_extra": {
           "a11y": {
@@ -21477,8 +21477,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-chart-honeycomb--design",
-        "doc_url": "http://localhost:4000/components/Chart/OrigamChartHoneycomb",
+        "story_url": "/stories/?story=components-chart-honeycomb--design",
+        "doc_url": "/docs/components/Chart/OrigamChartHoneycomb.html",
         "parent_slug": "chart",
         "kind_extra": {
           "a11y": {
@@ -22179,8 +22179,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-chart-legend--design",
-        "doc_url": "http://localhost:4000/components/Chart/OrigamChartLegend",
+        "story_url": "/stories/?story=components-chart-legend--design",
+        "doc_url": "/docs/components/Chart/OrigamChartLegend.html",
         "parent_slug": "chart",
         "kind_extra": {
           "a11y": {
@@ -22459,8 +22459,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-chart-map--design",
-        "doc_url": "http://localhost:4000/components/Chart/OrigamChartMap",
+        "story_url": "/stories/?story=components-chart-map--design",
+        "doc_url": "/docs/components/Chart/OrigamChartMap.html",
         "parent_slug": "chart",
         "kind_extra": {
           "a11y": {
@@ -23204,8 +23204,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-chart-pareto--design",
-        "doc_url": "http://localhost:4000/components/Chart/OrigamChartPareto",
+        "story_url": "/stories/?story=components-chart-pareto--design",
+        "doc_url": "/docs/components/Chart/OrigamChartPareto.html",
         "parent_slug": "chart",
         "kind_extra": {
           "a11y": {
@@ -24059,8 +24059,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-chart-pictorial--design",
-        "doc_url": "http://localhost:4000/components/Chart/OrigamChartPictorial",
+        "story_url": "/stories/?story=components-chart-pictorial--design",
+        "doc_url": "/docs/components/Chart/OrigamChartPictorial.html",
         "parent_slug": "chart",
         "kind_extra": {
           "a11y": {
@@ -24794,8 +24794,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-chart-polar--design",
-        "doc_url": "http://localhost:4000/components/Chart/OrigamChartPolar",
+        "story_url": "/stories/?story=components-chart-polar--design",
+        "doc_url": "/docs/components/Chart/OrigamChartPolar.html",
         "parent_slug": "chart",
         "kind_extra": {
           "a11y": {
@@ -25463,8 +25463,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-chart-polar-bar--design",
-        "doc_url": "http://localhost:4000/components/Chart/OrigamChartPolarBar",
+        "story_url": "/stories/?story=components-chart-polar-bar--design",
+        "doc_url": "/docs/components/Chart/OrigamChartPolarBar.html",
         "parent_slug": "chart-polar",
         "kind_extra": {
           "a11y": {
@@ -26131,8 +26131,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-checkbox--design",
-        "doc_url": "http://localhost:4000/components/Checkbox/OrigamCheckbox",
+        "story_url": "/stories/?story=components-checkbox--design",
+        "doc_url": "/docs/components/Checkbox/OrigamCheckbox.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -26869,8 +26869,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-checkboxbtn--design",
-        "doc_url": "http://localhost:4000/components/Checkbox/OrigamCheckboxBtn",
+        "story_url": "/stories/?story=components-checkboxbtn--design",
+        "doc_url": "/docs/components/Checkbox/OrigamCheckboxBtn.html",
         "parent_slug": "checkbox",
         "kind_extra": {
           "a11y": {
@@ -27464,8 +27464,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-chip--design",
-        "doc_url": "http://localhost:4000/components/Chip/OrigamChip",
+        "story_url": "/stories/?story=components-chip--design",
+        "doc_url": "/docs/components/Chip/OrigamChip.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -28376,8 +28376,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-chipgroup--design",
-        "doc_url": "http://localhost:4000/components/Chip/OrigamChipGroup",
+        "story_url": "/stories/?story=components-chipgroup--design",
+        "doc_url": "/docs/components/Chip/OrigamChipGroup.html",
         "parent_slug": "chip",
         "kind_extra": {
           "a11y": {
@@ -28918,8 +28918,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-icon--design",
-        "doc_url": "http://localhost:4000/components/Icon/OrigamIcon",
+        "story_url": "/stories/?story=components-icon--design",
+        "doc_url": "/docs/components/Icon/OrigamIcon.html",
         "parent_slug": "icon",
         "kind_extra": {
           "a11y": {
@@ -29233,8 +29233,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-clientonly--design",
-        "doc_url": "http://localhost:4000/components/ClientOnly/OrigamClientOnly",
+        "story_url": "/stories/?story=components-clientonly--design",
+        "doc_url": "/docs/components/ClientOnly/OrigamClientOnly.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -29367,8 +29367,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-clipboard--design",
-        "doc_url": "http://localhost:4000/components/Clipboard/OrigamClipboard",
+        "story_url": "/stories/?story=components-clipboard--design",
+        "doc_url": "/docs/components/Clipboard/OrigamClipboard.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -29847,8 +29847,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-code--design",
-        "doc_url": "http://localhost:4000/components/Code/OrigamCode",
+        "story_url": "/stories/?story=components-code--design",
+        "doc_url": "/docs/components/Code/OrigamCode.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -30558,8 +30558,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-grids--design",
-        "doc_url": "http://localhost:4000/components/Grids/OrigamGrids",
+        "story_url": "/stories/?story=components-grids--design",
+        "doc_url": "/docs/components/Grids/OrigamGrids.html",
         "parent_slug": "grids",
         "kind_extra": {
           "a11y": {
@@ -31100,8 +31100,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-colorpicker--design",
-        "doc_url": "http://localhost:4000/components/ColorPicker/OrigamColorPicker",
+        "story_url": "/stories/?story=components-colorpicker--design",
+        "doc_url": "/docs/components/ColorPicker/OrigamColorPicker.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -31787,8 +31787,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-colorpicker--design",
-        "doc_url": "http://localhost:4000/components/ColorPicker/OrigamColorPicker",
+        "story_url": "/stories/?story=components-colorpicker--design",
+        "doc_url": "/docs/components/ColorPicker/OrigamColorPicker.html",
         "parent_slug": "color-picker",
         "kind_extra": {
           "a11y": {
@@ -32084,8 +32084,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-colorpicker--design",
-        "doc_url": "http://localhost:4000/components/ColorPicker/OrigamColorPickerEdit",
+        "story_url": "/stories/?story=components-colorpicker--design",
+        "doc_url": "/docs/components/ColorPicker/OrigamColorPickerEdit.html",
         "parent_slug": "color-picker",
         "kind_extra": {
           "a11y": {
@@ -32486,8 +32486,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-colorpickerfield--design",
-        "doc_url": "http://localhost:4000/components/ColorPickerField/OrigamColorPickerField",
+        "story_url": "/stories/?story=components-colorpickerfield--design",
+        "doc_url": "/docs/components/ColorPickerField/OrigamColorPickerField.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -33153,8 +33153,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-colorpicker--design",
-        "doc_url": "http://localhost:4000/components/ColorPicker/OrigamColorPicker",
+        "story_url": "/stories/?story=components-colorpicker--design",
+        "doc_url": "/docs/components/ColorPicker/OrigamColorPicker.html",
         "parent_slug": "color-picker",
         "kind_extra": {
           "a11y": {
@@ -33552,8 +33552,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-colorpicker--design",
-        "doc_url": "http://localhost:4000/components/ColorPicker/OrigamColorPicker",
+        "story_url": "/stories/?story=components-colorpicker--design",
+        "doc_url": "/docs/components/ColorPicker/OrigamColorPicker.html",
         "parent_slug": "color-picker",
         "kind_extra": {
           "a11y": {
@@ -33871,8 +33871,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-commandpalette--design",
-        "doc_url": "http://localhost:4000/components/CommandPalette/OrigamCommandPalette",
+        "story_url": "/stories/?story=components-commandpalette--design",
+        "doc_url": "/docs/components/CommandPalette/OrigamCommandPalette.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -34472,8 +34472,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-icon--design",
-        "doc_url": "http://localhost:4000/components/Icon/OrigamIcon",
+        "story_url": "/stories/?story=components-icon--design",
+        "doc_url": "/docs/components/Icon/OrigamIcon.html",
         "parent_slug": "icon",
         "kind_extra": {
           "a11y": {
@@ -34785,8 +34785,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-confirmwrapper--design",
-        "doc_url": "http://localhost:4000/components/ConfirmWrapper/OrigamConfirmWrapper",
+        "story_url": "/stories/?story=components-confirmwrapper--design",
+        "doc_url": "/docs/components/ConfirmWrapper/OrigamConfirmWrapper.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -35614,8 +35614,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-grids--design",
-        "doc_url": "http://localhost:4000/components/Grids/OrigamGrids",
+        "story_url": "/stories/?story=components-grids--design",
+        "doc_url": "/docs/components/Grids/OrigamGrids.html",
         "parent_slug": "grids",
         "kind_extra": {
           "a11y": {
@@ -35889,8 +35889,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-contextualmenu--design",
-        "doc_url": "http://localhost:4000/components/ContextualMenu/OrigamContextualMenu",
+        "story_url": "/stories/?story=components-contextualmenu--design",
+        "doc_url": "/docs/components/ContextualMenu/OrigamContextualMenu.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -36444,8 +36444,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-counter--design",
-        "doc_url": "http://localhost:4000/components/Counter/OrigamCounter",
+        "story_url": "/stories/?story=components-counter--design",
+        "doc_url": "/docs/components/Counter/OrigamCounter.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -36910,8 +36910,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-datalist--design",
-        "doc_url": "http://localhost:4000/components/DataList/OrigamDataList",
+        "story_url": "/stories/?story=components-datalist--design",
+        "doc_url": "/docs/components/DataList/OrigamDataList.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -37527,8 +37527,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-datatable--design",
-        "doc_url": "http://localhost:4000/components/DataTable/OrigamDataTable",
+        "story_url": "/stories/?story=components-datatable--design",
+        "doc_url": "/docs/components/DataTable/OrigamDataTable.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -38576,8 +38576,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-datatable--design",
-        "doc_url": "http://localhost:4000/components/DataTable/OrigamDataTable",
+        "story_url": "/stories/?story=components-datatable--design",
+        "doc_url": "/docs/components/DataTable/OrigamDataTable.html",
         "parent_slug": "data-table",
         "kind_extra": {
           "a11y": {
@@ -39130,8 +39130,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-datatable--design",
-        "doc_url": "http://localhost:4000/components/DataTable/OrigamDataTable",
+        "story_url": "/stories/?story=components-datatable--design",
+        "doc_url": "/docs/components/DataTable/OrigamDataTable.html",
         "parent_slug": "data-table",
         "kind_extra": {
           "a11y": {
@@ -39781,8 +39781,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-datatable--design",
-        "doc_url": "http://localhost:4000/components/DataTable/OrigamDataTable",
+        "story_url": "/stories/?story=components-datatable--design",
+        "doc_url": "/docs/components/DataTable/OrigamDataTable.html",
         "parent_slug": "data-table",
         "kind_extra": {
           "a11y": {
@@ -40342,8 +40342,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-datatable--design",
-        "doc_url": "http://localhost:4000/components/DataTable/OrigamDataTable",
+        "story_url": "/stories/?story=components-datatable--design",
+        "doc_url": "/docs/components/DataTable/OrigamDataTable.html",
         "parent_slug": "data-table",
         "kind_extra": {
           "a11y": {
@@ -40794,8 +40794,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-datatable--design",
-        "doc_url": "http://localhost:4000/components/DataTable/OrigamDataTable",
+        "story_url": "/stories/?story=components-datatable--design",
+        "doc_url": "/docs/components/DataTable/OrigamDataTable.html",
         "parent_slug": "data-table",
         "kind_extra": {
           "a11y": {
@@ -42557,8 +42557,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-datepicker--design",
-        "doc_url": "http://localhost:4000/components/DatePicker/OrigamDatePicker",
+        "story_url": "/stories/?story=components-datepicker--design",
+        "doc_url": "/docs/components/DatePicker/OrigamDatePicker.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -43898,8 +43898,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-datepickerfield--design",
-        "doc_url": "http://localhost:4000/components/DatePickerField/OrigamDatePickerField",
+        "story_url": "/stories/?story=components-datepickerfield--design",
+        "doc_url": "/docs/components/DatePickerField/OrigamDatePickerField.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -45362,8 +45362,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-datepicker--design",
-        "doc_url": "http://localhost:4000/components/DatePicker/OrigamDatePickerMonth",
+        "story_url": "/stories/?story=components-datepicker--design",
+        "doc_url": "/docs/components/DatePicker/OrigamDatePickerMonth.html",
         "parent_slug": "date-picker",
         "kind_extra": {
           "a11y": {
@@ -45969,8 +45969,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-datepicker--design",
-        "doc_url": "http://localhost:4000/components/DatePicker/OrigamDatePickerMonths",
+        "story_url": "/stories/?story=components-datepicker--design",
+        "doc_url": "/docs/components/DatePicker/OrigamDatePickerMonths.html",
         "parent_slug": "date-picker",
         "kind_extra": {
           "a11y": {
@@ -46333,8 +46333,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-datepicker--design",
-        "doc_url": "http://localhost:4000/components/DatePicker/OrigamDatePickerYears",
+        "story_url": "/stories/?story=components-datepicker--design",
+        "doc_url": "/docs/components/DatePicker/OrigamDatePickerYears.html",
         "parent_slug": "date-picker",
         "kind_extra": {
           "a11y": {
@@ -46685,8 +46685,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-defaults-provider--design",
-        "doc_url": "http://localhost:4000/components/DefaultsProvider/OrigamDefaultsProvider",
+        "story_url": "/stories/?story=components-defaults-provider--design",
+        "doc_url": "/docs/components/DefaultsProvider/OrigamDefaultsProvider.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -46895,8 +46895,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-dialog--design",
-        "doc_url": "http://localhost:4000/components/Dialog/OrigamDialog",
+        "story_url": "/stories/?story=components-dialog--design",
+        "doc_url": "/docs/components/Dialog/OrigamDialog.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -47772,8 +47772,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-dialog--design",
-        "doc_url": "http://localhost:4000/components/Dialog/OrigamDialogConfirmation",
+        "story_url": "/stories/?story=components-dialog--design",
+        "doc_url": "/docs/components/Dialog/OrigamDialogConfirmation.html",
         "parent_slug": "dialog",
         "kind_extra": {
           "a11y": {
@@ -48509,8 +48509,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-divider--design",
-        "doc_url": "http://localhost:4000/components/Divider/OrigamDivider",
+        "story_url": "/stories/?story=components-divider--design",
+        "doc_url": "/docs/components/Divider/OrigamDivider.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -48898,8 +48898,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-drawer--design",
-        "doc_url": "http://localhost:4000/components/Drawer/OrigamDrawer",
+        "story_url": "/stories/?story=components-drawer--design",
+        "doc_url": "/docs/components/Drawer/OrigamDrawer.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -49599,8 +49599,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-emptystate--design",
-        "doc_url": "http://localhost:4000/components/EmptyState/OrigamEmptyState",
+        "story_url": "/stories/?story=components-emptystate--design",
+        "doc_url": "/docs/components/EmptyState/OrigamEmptyState.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -50157,8 +50157,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-transition--design",
-        "doc_url": "http://localhost:4000/components/Transition/OrigamExpandX",
+        "story_url": "/stories/?story=components-transition--design",
+        "doc_url": "/docs/components/Transition/OrigamExpandX.html",
         "parent_slug": "transition",
         "kind_extra": {
           "a11y": {
@@ -50516,8 +50516,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-transition--design",
-        "doc_url": "http://localhost:4000/components/Transition/OrigamExpandY",
+        "story_url": "/stories/?story=components-transition--design",
+        "doc_url": "/docs/components/Transition/OrigamExpandY.html",
         "parent_slug": "transition",
         "kind_extra": {
           "a11y": {
@@ -50882,8 +50882,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-expansionpanel--design",
-        "doc_url": "http://localhost:4000/components/ExpansionPanel/OrigamExpansionPanel",
+        "story_url": "/stories/?story=components-expansionpanel--design",
+        "doc_url": "/docs/components/ExpansionPanel/OrigamExpansionPanel.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -51587,8 +51587,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-expansionpanel--design",
-        "doc_url": "http://localhost:4000/components/ExpansionPanel/OrigamExpansionPanel",
+        "story_url": "/stories/?story=components-expansionpanel--design",
+        "doc_url": "/docs/components/ExpansionPanel/OrigamExpansionPanel.html",
         "parent_slug": "expansion-panel",
         "kind_extra": {
           "a11y": {
@@ -52124,8 +52124,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-expansionpanel--design",
-        "doc_url": "http://localhost:4000/components/ExpansionPanel/OrigamExpansionPanel",
+        "story_url": "/stories/?story=components-expansionpanel--design",
+        "doc_url": "/docs/components/ExpansionPanel/OrigamExpansionPanel.html",
         "parent_slug": "expansion-panel",
         "kind_extra": {
           "a11y": {
@@ -52818,8 +52818,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-expansionpanel--design",
-        "doc_url": "http://localhost:4000/components/ExpansionPanel/OrigamExpansionPanel",
+        "story_url": "/stories/?story=components-expansionpanel--design",
+        "doc_url": "/docs/components/ExpansionPanel/OrigamExpansionPanel.html",
         "parent_slug": "expansion-panel",
         "kind_extra": {
           "a11y": {
@@ -53455,8 +53455,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-transition--design",
-        "doc_url": "http://localhost:4000/components/Transition/OrigamTransition",
+        "story_url": "/stories/?story=components-transition--design",
+        "doc_url": "/docs/components/Transition/OrigamTransition.html",
         "parent_slug": "transition",
         "kind_extra": {
           "a11y": {
@@ -53792,8 +53792,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-field--design",
-        "doc_url": "http://localhost:4000/components/Field/OrigamField",
+        "story_url": "/stories/?story=components-field--design",
+        "doc_url": "/docs/components/Field/OrigamField.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -54846,8 +54846,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-filefield--design",
-        "doc_url": "http://localhost:4000/components/FileField/OrigamFileField",
+        "story_url": "/stories/?story=components-filefield--design",
+        "doc_url": "/docs/components/FileField/OrigamFileField.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -55689,8 +55689,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-filefield--design",
-        "doc_url": "http://localhost:4000/components/FileField/OrigamFileField",
+        "story_url": "/stories/?story=components-filefield--design",
+        "doc_url": "/docs/components/FileField/OrigamFileField.html",
         "parent_slug": "file-field",
         "kind_extra": {
           "a11y": {
@@ -56165,8 +56165,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-filefield--design",
-        "doc_url": "http://localhost:4000/components/FileField/OrigamFileField",
+        "story_url": "/stories/?story=components-filefield--design",
+        "doc_url": "/docs/components/FileField/OrigamFileField.html",
         "parent_slug": "file-field",
         "kind_extra": {
           "a11y": {
@@ -56677,8 +56677,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-form--design",
-        "doc_url": "http://localhost:4000/components/Form/OrigamForm",
+        "story_url": "/stories/?story=components-form--design",
+        "doc_url": "/docs/components/Form/OrigamForm.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -57214,8 +57214,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-grid--design",
-        "doc_url": "http://localhost:4000/components/Grid/OrigamGrid",
+        "story_url": "/stories/?story=components-grid--design",
+        "doc_url": "/docs/components/Grid/OrigamGrid.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -57796,8 +57796,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-grid--design",
-        "doc_url": "http://localhost:4000/components/Grid/OrigamGrid",
+        "story_url": "/stories/?story=components-grid--design",
+        "doc_url": "/docs/components/Grid/OrigamGrid.html",
         "parent_slug": "grid",
         "kind_extra": {
           "a11y": {
@@ -58080,8 +58080,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-grids--design",
-        "doc_url": "http://localhost:4000/components/Grids/OrigamGrids",
+        "story_url": "/stories/?story=components-grids--design",
+        "doc_url": "/docs/components/Grids/OrigamGrids.html",
         "parent_slug": null,
         "kind_extra": {
           "playground": {
@@ -58567,8 +58567,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-icon--design",
-        "doc_url": "http://localhost:4000/components/Icon/OrigamIcon",
+        "story_url": "/stories/?story=components-icon--design",
+        "doc_url": "/docs/components/Icon/OrigamIcon.html",
         "parent_slug": null,
         "kind_extra": {
           "playground": {
@@ -58831,8 +58831,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-img--design",
-        "doc_url": "http://localhost:4000/components/Img/OrigamImg",
+        "story_url": "/stories/?story=components-img--design",
+        "doc_url": "/docs/components/Img/OrigamImg.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -59559,8 +59559,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-infinite-scroll--design",
-        "doc_url": "http://localhost:4000/components/InfiniteScroll/OrigamInfiniteScroll",
+        "story_url": "/stories/?story=components-infinite-scroll--design",
+        "doc_url": "/docs/components/InfiniteScroll/OrigamInfiniteScroll.html",
         "parent_slug": null,
         "kind_extra": {
           "playground": {
@@ -59849,8 +59849,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-infinite-scroll--design",
-        "doc_url": "http://localhost:4000/components/InfiniteScroll/OrigamInfiniteScroll",
+        "story_url": "/stories/?story=components-infinite-scroll--design",
+        "doc_url": "/docs/components/InfiniteScroll/OrigamInfiniteScroll.html",
         "parent_slug": "infinite-scroll",
         "kind_extra": {
           "a11y": {
@@ -60068,8 +60068,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-inline-edit--design",
-        "doc_url": "http://localhost:4000/components/InlineEdit/OrigamInlineEdit",
+        "story_url": "/stories/?story=components-inline-edit--design",
+        "doc_url": "/docs/components/InlineEdit/OrigamInlineEdit.html",
         "parent_slug": null,
         "kind_extra": {
           "playground": {
@@ -60447,8 +60447,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-input--design",
-        "doc_url": "http://localhost:4000/components/Input/OrigamInput",
+        "story_url": "/stories/?story=components-input--design",
+        "doc_url": "/docs/components/Input/OrigamInput.html",
         "parent_slug": null,
         "kind_extra": {
           "playground": {
@@ -60921,8 +60921,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-item-group--design",
-        "doc_url": "http://localhost:4000/components/ItemGroup/OrigamItemGroup",
+        "story_url": "/stories/?story=components-item-group--design",
+        "doc_url": "/docs/components/ItemGroup/OrigamItemGroup.html",
         "parent_slug": "item-group",
         "kind_extra": {
           "a11y": {
@@ -61137,8 +61137,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-itemgroup--design",
-        "doc_url": "http://localhost:4000/components/ItemGroup/OrigamItemGroup",
+        "story_url": "/stories/?story=components-itemgroup--design",
+        "doc_url": "/docs/components/ItemGroup/OrigamItemGroup.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -61488,8 +61488,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-kbd--design",
-        "doc_url": "http://localhost:4000/components/Kbd/OrigamKbd",
+        "story_url": "/stories/?story=components-kbd--design",
+        "doc_url": "/docs/components/Kbd/OrigamKbd.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -61957,8 +61957,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-label--design",
-        "doc_url": "http://localhost:4000/components/Label/OrigamLabel",
+        "story_url": "/stories/?story=components-label--design",
+        "doc_url": "/docs/components/Label/OrigamLabel.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -62460,8 +62460,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-layout--design",
-        "doc_url": "http://localhost:4000/components/Layout/OrigamLayout",
+        "story_url": "/stories/?story=components-layout--design",
+        "doc_url": "/docs/components/Layout/OrigamLayout.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -62941,8 +62941,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-lazy--design",
-        "doc_url": "http://localhost:4000/components/Lazy/OrigamLazy",
+        "story_url": "/stories/?story=components-lazy--design",
+        "doc_url": "/docs/components/Lazy/OrigamLazy.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -63304,8 +63304,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-icon--design",
-        "doc_url": "http://localhost:4000/components/Icon/OrigamIcon",
+        "story_url": "/stories/?story=components-icon--design",
+        "doc_url": "/docs/components/Icon/OrigamIcon.html",
         "parent_slug": "icon",
         "kind_extra": {
           "a11y": {
@@ -63902,8 +63902,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-list--design",
-        "doc_url": "http://localhost:4000/components/List/OrigamList",
+        "story_url": "/stories/?story=components-list--design",
+        "doc_url": "/docs/components/List/OrigamList.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -64832,8 +64832,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-list--design",
-        "doc_url": "http://localhost:4000/components/List/OrigamList",
+        "story_url": "/stories/?story=components-list--design",
+        "doc_url": "/docs/components/List/OrigamList.html",
         "parent_slug": "list",
         "kind_extra": {
           "a11y": {
@@ -65303,8 +65303,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-list--design",
-        "doc_url": "http://localhost:4000/components/List/OrigamList",
+        "story_url": "/stories/?story=components-list--design",
+        "doc_url": "/docs/components/List/OrigamList.html",
         "parent_slug": "list-group",
         "kind_extra": {
           "a11y": {
@@ -65473,8 +65473,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-list-item--design",
-        "doc_url": "http://localhost:4000/components/List/OrigamListItem",
+        "story_url": "/stories/?story=components-list-item--design",
+        "doc_url": "/docs/components/List/OrigamListItem.html",
         "parent_slug": "list",
         "kind_extra": {
           "a11y": {
@@ -66282,8 +66282,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-list-subheader--design",
-        "doc_url": "http://localhost:4000/components/List/OrigamListSubheader",
+        "story_url": "/stories/?story=components-list-subheader--design",
+        "doc_url": "/docs/components/List/OrigamListSubheader.html",
         "parent_slug": "list",
         "kind_extra": {
           "a11y": {
@@ -66675,8 +66675,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-loader--design",
-        "doc_url": "http://localhost:4000/components/Loader/OrigamLoader",
+        "story_url": "/stories/?story=components-loader--design",
+        "doc_url": "/docs/components/Loader/OrigamLoader.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -67060,8 +67060,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-main--design",
-        "doc_url": "http://localhost:4000/components/Main/OrigamMain",
+        "story_url": "/stories/?story=components-main--design",
+        "doc_url": "/docs/components/Main/OrigamMain.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -67540,8 +67540,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-masonry--design",
-        "doc_url": "http://localhost:4000/components/Masonry/OrigamMasonry",
+        "story_url": "/stories/?story=components-masonry--design",
+        "doc_url": "/docs/components/Masonry/OrigamMasonry.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -68015,8 +68015,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-audio--design",
-        "doc_url": "http://localhost:4000/components/Media/OrigamMediaController",
+        "story_url": "/stories/?story=components-audio--design",
+        "doc_url": "/docs/components/Media/OrigamMediaController.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -68652,8 +68652,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-audio--design",
-        "doc_url": "http://localhost:4000/components/Media/OrigamMediaController",
+        "story_url": "/stories/?story=components-audio--design",
+        "doc_url": "/docs/components/Media/OrigamMediaController.html",
         "parent_slug": "media",
         "kind_extra": {
           "a11y": {
@@ -69332,8 +69332,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-audio--design",
-        "doc_url": "http://localhost:4000/components/Media/OrigamMediaController",
+        "story_url": "/stories/?story=components-audio--design",
+        "doc_url": "/docs/components/Media/OrigamMediaController.html",
         "parent_slug": "media",
         "kind_extra": {
           "a11y": {
@@ -70058,8 +70058,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-media-volume-control--design",
-        "doc_url": "http://localhost:4000/components/Media/OrigamMediaVolumeControl",
+        "story_url": "/stories/?story=components-media-volume-control--design",
+        "doc_url": "/docs/components/Media/OrigamMediaVolumeControl.html",
         "parent_slug": "media",
         "kind_extra": {
           "a11y": {
@@ -70375,8 +70375,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-menu--design",
-        "doc_url": "http://localhost:4000/components/Menu/OrigamMenu",
+        "story_url": "/stories/?story=components-menu--design",
+        "doc_url": "/docs/components/Menu/OrigamMenu.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -71067,8 +71067,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-messages--design",
-        "doc_url": "http://localhost:4000/components/Messages/OrigamMessages",
+        "story_url": "/stories/?story=components-messages--design",
+        "doc_url": "/docs/components/Messages/OrigamMessages.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -71574,8 +71574,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-numberfield--design",
-        "doc_url": "http://localhost:4000/components/NumberField/OrigamNumberField",
+        "story_url": "/stories/?story=components-numberfield--design",
+        "doc_url": "/docs/components/NumberField/OrigamNumberField.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -72447,8 +72447,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-numberformat--design",
-        "doc_url": "http://localhost:4000/components/NumberFormat/OrigamNumberFormat",
+        "story_url": "/stories/?story=components-numberformat--design",
+        "doc_url": "/docs/components/NumberFormat/OrigamNumberFormat.html",
         "parent_slug": null,
         "kind_extra": {
           "playground": {
@@ -72889,8 +72889,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-otpinputfield--design",
-        "doc_url": "http://localhost:4000/components/OtpInputField/OrigamOtpInputField",
+        "story_url": "/stories/?story=components-otpinputfield--design",
+        "doc_url": "/docs/components/OtpInputField/OrigamOtpInputField.html",
         "parent_slug": null,
         "kind_extra": {
           "playground": {
@@ -73311,8 +73311,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-overlay--design",
-        "doc_url": "http://localhost:4000/components/Overlay/OrigamOverlay",
+        "story_url": "/stories/?story=components-overlay--design",
+        "doc_url": "/docs/components/Overlay/OrigamOverlay.html",
         "parent_slug": null,
         "kind_extra": {
           "playground": {
@@ -73700,8 +73700,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-overlay-scrim--design",
-        "doc_url": "http://localhost:4000/components/Overlay/OrigamOverlayScrim",
+        "story_url": "/stories/?story=components-overlay-scrim--design",
+        "doc_url": "/docs/components/Overlay/OrigamOverlayScrim.html",
         "parent_slug": "overlay",
         "kind_extra": {
           "a11y": {
@@ -74044,8 +74044,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-pagination--design",
-        "doc_url": "http://localhost:4000/components/Pagination/OrigamPagination",
+        "story_url": "/stories/?story=components-pagination--design",
+        "doc_url": "/docs/components/Pagination/OrigamPagination.html",
         "parent_slug": null,
         "kind_extra": {
           "playground": {
@@ -74454,8 +74454,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-parallax--design",
-        "doc_url": "http://localhost:4000/components/Parallax/OrigamParallax",
+        "story_url": "/stories/?story=components-parallax--design",
+        "doc_url": "/docs/components/Parallax/OrigamParallax.html",
         "parent_slug": null,
         "kind_extra": {
           "playground": {
@@ -74807,8 +74807,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-parallax--design",
-        "doc_url": "http://localhost:4000/components/Parallax/OrigamParallax",
+        "story_url": "/stories/?story=components-parallax--design",
+        "doc_url": "/docs/components/Parallax/OrigamParallax.html",
         "parent_slug": "parallax",
         "kind_extra": {
           "a11y": {
@@ -75343,8 +75343,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-parallax--design",
-        "doc_url": "http://localhost:4000/components/Parallax/OrigamParallax",
+        "story_url": "/stories/?story=components-parallax--design",
+        "doc_url": "/docs/components/Parallax/OrigamParallax.html",
         "parent_slug": "parallax",
         "kind_extra": {
           "a11y": {
@@ -75617,8 +75617,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-passwordfield--design",
-        "doc_url": "http://localhost:4000/components/PasswordField/OrigamPasswordField",
+        "story_url": "/stories/?story=components-passwordfield--design",
+        "doc_url": "/docs/components/PasswordField/OrigamPasswordField.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -76385,8 +76385,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-datepicker--design",
-        "doc_url": "http://localhost:4000/components/Picker/OrigamPicker",
+        "story_url": "/stories/?story=components-datepicker--design",
+        "doc_url": "/docs/components/Picker/OrigamPicker.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -76994,8 +76994,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-datepicker--design",
-        "doc_url": "http://localhost:4000/components/Picker/OrigamPicker",
+        "story_url": "/stories/?story=components-datepicker--design",
+        "doc_url": "/docs/components/Picker/OrigamPicker.html",
         "parent_slug": "picker",
         "kind_extra": {
           "a11y": {
@@ -77376,8 +77376,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-progress--design",
-        "doc_url": "http://localhost:4000/components/Progress/OrigamProgress",
+        "story_url": "/stories/?story=components-progress--design",
+        "doc_url": "/docs/components/Progress/OrigamProgress.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -78046,8 +78046,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-progress-circular--design",
-        "doc_url": "http://localhost:4000/components/Progress/OrigamProgressCircular",
+        "story_url": "/stories/?story=components-progress-circular--design",
+        "doc_url": "/docs/components/Progress/OrigamProgressCircular.html",
         "parent_slug": "progress",
         "kind_extra": {
           "a11y": {
@@ -78624,8 +78624,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-progress-linear--design",
-        "doc_url": "http://localhost:4000/components/Progress/OrigamProgressLinear",
+        "story_url": "/stories/?story=components-progress-linear--design",
+        "doc_url": "/docs/components/Progress/OrigamProgressLinear.html",
         "parent_slug": "progress",
         "kind_extra": {
           "a11y": {
@@ -79243,8 +79243,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-qrcode--design",
-        "doc_url": "http://localhost:4000/components/QrCode/OrigamQrCode",
+        "story_url": "/stories/?story=components-qrcode--design",
+        "doc_url": "/docs/components/QrCode/OrigamQrCode.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -79835,8 +79835,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-radio--design",
-        "doc_url": "http://localhost:4000/components/Radio/OrigamRadio",
+        "story_url": "/stories/?story=components-radio--design",
+        "doc_url": "/docs/components/Radio/OrigamRadio.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -80580,8 +80580,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-radio-btn--design",
-        "doc_url": "http://localhost:4000/components/Radio/OrigamRadioBtn",
+        "story_url": "/stories/?story=components-radio-btn--design",
+        "doc_url": "/docs/components/Radio/OrigamRadioBtn.html",
         "parent_slug": "radio",
         "kind_extra": {
           "a11y": {
@@ -81243,8 +81243,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-radio--design",
-        "doc_url": "http://localhost:4000/components/Radio/OrigamRadioGroup",
+        "story_url": "/stories/?story=components-radio--design",
+        "doc_url": "/docs/components/Radio/OrigamRadioGroup.html",
         "parent_slug": "radio",
         "kind_extra": {
           "a11y": {
@@ -81861,8 +81861,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-rating-field--design",
-        "doc_url": "http://localhost:4000/components/RatingField/OrigamRatingField",
+        "story_url": "/stories/?story=components-rating-field--design",
+        "doc_url": "/docs/components/RatingField/OrigamRatingField.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -82526,8 +82526,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-rating-field--design",
-        "doc_url": "http://localhost:4000/components/RatingField/OrigamRatingFieldItem",
+        "story_url": "/stories/?story=components-rating-field--design",
+        "doc_url": "/docs/components/RatingField/OrigamRatingFieldItem.html",
         "parent_slug": "rating-field",
         "kind_extra": {
           "a11y": {
@@ -83154,8 +83154,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-responsive--design",
-        "doc_url": "http://localhost:4000/components/Responsive/OrigamResponsive",
+        "story_url": "/stories/?story=components-responsive--design",
+        "doc_url": "/docs/components/Responsive/OrigamResponsive.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -83675,8 +83675,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-rich-toolbar--design",
-        "doc_url": "http://localhost:4000/components/TextareaField/OrigamRichToolbar",
+        "story_url": "/stories/?story=components-rich-toolbar--design",
+        "doc_url": "/docs/components/TextareaField/OrigamRichToolbar.html",
         "parent_slug": "textarea-field",
         "kind_extra": {
           "a11y": {
@@ -84063,8 +84063,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-grids--design",
-        "doc_url": "http://localhost:4000/components/Grids/OrigamGrids",
+        "story_url": "/stories/?story=components-grids--design",
+        "doc_url": "/docs/components/Grids/OrigamGrids.html",
         "parent_slug": "grids",
         "kind_extra": {
           "a11y": {
@@ -84716,8 +84716,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-transition--design",
-        "doc_url": "http://localhost:4000/components/Transition/OrigamTransition",
+        "story_url": "/stories/?story=components-transition--design",
+        "doc_url": "/docs/components/Transition/OrigamTransition.html",
         "parent_slug": "transition",
         "kind_extra": {
           "a11y": {
@@ -85074,8 +85074,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-section--design",
-        "doc_url": "http://localhost:4000/components/Section/OrigamSection",
+        "story_url": "/stories/?story=components-section--design",
+        "doc_url": "/docs/components/Section/OrigamSection.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -85259,8 +85259,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-select--design",
-        "doc_url": "http://localhost:4000/components/Select/OrigamSelect",
+        "story_url": "/stories/?story=components-select--design",
+        "doc_url": "/docs/components/Select/OrigamSelect.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -86219,8 +86219,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-selection-control--design",
-        "doc_url": "http://localhost:4000/components/SelectionControl/OrigamSelectionControl",
+        "story_url": "/stories/?story=components-selection-control--design",
+        "doc_url": "/docs/components/SelectionControl/OrigamSelectionControl.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -86996,8 +86996,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-selection-control--design",
-        "doc_url": "http://localhost:4000/components/SelectionControl/OrigamSelectionControl",
+        "story_url": "/stories/?story=components-selection-control--design",
+        "doc_url": "/docs/components/SelectionControl/OrigamSelectionControl.html",
         "parent_slug": "selection-control",
         "kind_extra": {
           "a11y": {
@@ -87539,8 +87539,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-sheet--design",
-        "doc_url": "http://localhost:4000/components/Sheet/OrigamSheet",
+        "story_url": "/stories/?story=components-sheet--design",
+        "doc_url": "/docs/components/Sheet/OrigamSheet.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -88216,8 +88216,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-skeleton--design",
-        "doc_url": "http://localhost:4000/components/Skeleton/OrigamSkeleton",
+        "story_url": "/stories/?story=components-skeleton--design",
+        "doc_url": "/docs/components/Skeleton/OrigamSkeleton.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -88748,8 +88748,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-slidegroup--design",
-        "doc_url": "http://localhost:4000/components/Slide/OrigamSlideGroup",
+        "story_url": "/stories/?story=components-slidegroup--design",
+        "doc_url": "/docs/components/Slide/OrigamSlideGroup.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -89392,8 +89392,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-sliderfield--design",
-        "doc_url": "http://localhost:4000/components/SliderField/OrigamSliderField",
+        "story_url": "/stories/?story=components-sliderfield--design",
+        "doc_url": "/docs/components/SliderField/OrigamSliderField.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -90107,8 +90107,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-slider-field--design",
-        "doc_url": "http://localhost:4000/components/SliderField/OrigamSliderField",
+        "story_url": "/stories/?story=components-slider-field--design",
+        "doc_url": "/docs/components/SliderField/OrigamSliderField.html",
         "parent_slug": "slider-field",
         "kind_extra": {
           "a11y": {
@@ -90793,8 +90793,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-transition--design",
-        "doc_url": "http://localhost:4000/components/Transition/OrigamTransition",
+        "story_url": "/stories/?story=components-transition--design",
+        "doc_url": "/docs/components/Transition/OrigamTransition.html",
         "parent_slug": "transition",
         "kind_extra": {
           "a11y": {
@@ -91169,8 +91169,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-transition--design",
-        "doc_url": "http://localhost:4000/components/Transition/OrigamTransition",
+        "story_url": "/stories/?story=components-transition--design",
+        "doc_url": "/docs/components/Transition/OrigamTransition.html",
         "parent_slug": "transition",
         "kind_extra": {
           "a11y": {
@@ -91545,8 +91545,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-snackbar--design",
-        "doc_url": "http://localhost:4000/components/Snackbar/OrigamSnackbar",
+        "story_url": "/stories/?story=components-snackbar--design",
+        "doc_url": "/docs/components/Snackbar/OrigamSnackbar.html",
         "parent_slug": null,
         "kind_extra": {
           "playground": {
@@ -91853,8 +91853,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-snackbar--design",
-        "doc_url": "http://localhost:4000/components/Snackbar/OrigamSnackbar",
+        "story_url": "/stories/?story=components-snackbar--design",
+        "doc_url": "/docs/components/Snackbar/OrigamSnackbar.html",
         "parent_slug": "snackbar",
         "kind_extra": {
           "a11y": {
@@ -92284,8 +92284,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-snackbar--design",
-        "doc_url": "http://localhost:4000/components/Snackbar/OrigamSnackbar",
+        "story_url": "/stories/?story=components-snackbar--design",
+        "doc_url": "/docs/components/Snackbar/OrigamSnackbar.html",
         "parent_slug": "snackbar",
         "kind_extra": {
           "a11y": {
@@ -92925,8 +92925,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-spacer--design",
-        "doc_url": "http://localhost:4000/components/Spacer/OrigamSpacer",
+        "story_url": "/stories/?story=components-spacer--design",
+        "doc_url": "/docs/components/Spacer/OrigamSpacer.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -93109,8 +93109,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-stepper--design",
-        "doc_url": "http://localhost:4000/components/Stepper/OrigamStepper",
+        "story_url": "/stories/?story=components-stepper--design",
+        "doc_url": "/docs/components/Stepper/OrigamStepper.html",
         "parent_slug": null,
         "kind_extra": {
           "playground": {
@@ -93451,8 +93451,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-stepper--design",
-        "doc_url": "http://localhost:4000/components/Stepper/OrigamStepper",
+        "story_url": "/stories/?story=components-stepper--design",
+        "doc_url": "/docs/components/Stepper/OrigamStepper.html",
         "parent_slug": "stepper",
         "kind_extra": {
           "a11y": {
@@ -93931,8 +93931,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-icon--design",
-        "doc_url": "http://localhost:4000/components/Icon/OrigamIcon",
+        "story_url": "/stories/?story=components-icon--design",
+        "doc_url": "/docs/components/Icon/OrigamIcon.html",
         "parent_slug": "icon",
         "kind_extra": {
           "a11y": {
@@ -94502,8 +94502,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-switch--design",
-        "doc_url": "http://localhost:4000/components/Switch/OrigamSwitch",
+        "story_url": "/stories/?story=components-switch--design",
+        "doc_url": "/docs/components/Switch/OrigamSwitch.html",
         "parent_slug": null,
         "kind_extra": {
           "playground": {
@@ -94863,8 +94863,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-switch--design",
-        "doc_url": "http://localhost:4000/components/Switch/OrigamSwitch",
+        "story_url": "/stories/?story=components-switch--design",
+        "doc_url": "/docs/components/Switch/OrigamSwitch.html",
         "parent_slug": "switch",
         "kind_extra": {
           "a11y": {
@@ -95415,8 +95415,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-system-bar--design",
-        "doc_url": "http://localhost:4000/components/SystemBar/OrigamSystemBar",
+        "story_url": "/stories/?story=components-system-bar--design",
+        "doc_url": "/docs/components/SystemBar/OrigamSystemBar.html",
         "parent_slug": null,
         "kind_extra": {
           "playground": {
@@ -95583,8 +95583,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-tabs--design",
-        "doc_url": "http://localhost:4000/components/Tabs/OrigamTabs",
+        "story_url": "/stories/?story=components-tabs--design",
+        "doc_url": "/docs/components/Tabs/OrigamTabs.html",
         "parent_slug": "tabs",
         "kind_extra": {
           "a11y": {
@@ -96196,8 +96196,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-table--design",
-        "doc_url": "http://localhost:4000/components/Table/OrigamTable",
+        "story_url": "/stories/?story=components-table--design",
+        "doc_url": "/docs/components/Table/OrigamTable.html",
         "parent_slug": null,
         "kind_extra": {
           "playground": {
@@ -96495,8 +96495,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-tabs--design",
-        "doc_url": "http://localhost:4000/components/Tabs/OrigamTabs",
+        "story_url": "/stories/?story=components-tabs--design",
+        "doc_url": "/docs/components/Tabs/OrigamTabs.html",
         "parent_slug": "tabs",
         "kind_extra": {
           "a11y": {
@@ -96829,8 +96829,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-tabs--design",
-        "doc_url": "http://localhost:4000/components/Tabs/OrigamTabs",
+        "story_url": "/stories/?story=components-tabs--design",
+        "doc_url": "/docs/components/Tabs/OrigamTabs.html",
         "parent_slug": "tabs",
         "kind_extra": {
           "a11y": {
@@ -97222,8 +97222,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-tabs--design",
-        "doc_url": "http://localhost:4000/components/Tabs/OrigamTabs",
+        "story_url": "/stories/?story=components-tabs--design",
+        "doc_url": "/docs/components/Tabs/OrigamTabs.html",
         "parent_slug": null,
         "kind_extra": {
           "playground": {
@@ -97559,8 +97559,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-textareafield--design",
-        "doc_url": "http://localhost:4000/components/TextareaField/OrigamTextareaField",
+        "story_url": "/stories/?story=components-textareafield--design",
+        "doc_url": "/docs/components/TextareaField/OrigamTextareaField.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -98300,8 +98300,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-text-field--design",
-        "doc_url": "http://localhost:4000/components/TextField/OrigamTextField",
+        "story_url": "/stories/?story=components-text-field--design",
+        "doc_url": "/docs/components/TextField/OrigamTextField.html",
         "parent_slug": null,
         "kind_extra": {
           "playground": {
@@ -98905,8 +98905,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-textmask--design",
-        "doc_url": "http://localhost:4000/components/TextMask/OrigamTextMask",
+        "story_url": "/stories/?story=components-textmask--design",
+        "doc_url": "/docs/components/TextMask/OrigamTextMask.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -99412,8 +99412,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-themeprovider--design",
-        "doc_url": "http://localhost:4000/components/ThemeProvider/OrigamThemeProvider",
+        "story_url": "/stories/?story=components-themeprovider--design",
+        "doc_url": "/docs/components/ThemeProvider/OrigamThemeProvider.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -99611,8 +99611,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-timeline--design",
-        "doc_url": "http://localhost:4000/components/Timeline/OrigamTimeline",
+        "story_url": "/stories/?story=components-timeline--design",
+        "doc_url": "/docs/components/Timeline/OrigamTimeline.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -100126,8 +100126,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-timeline--design",
-        "doc_url": "http://localhost:4000/components/Timeline/OrigamTimeline",
+        "story_url": "/stories/?story=components-timeline--design",
+        "doc_url": "/docs/components/Timeline/OrigamTimeline.html",
         "parent_slug": "timeline",
         "kind_extra": {
           "a11y": {
@@ -100742,8 +100742,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-title--design",
-        "doc_url": "http://localhost:4000/components/Title/OrigamTitle",
+        "story_url": "/stories/?story=components-title--design",
+        "doc_url": "/docs/components/Title/OrigamTitle.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -101220,8 +101220,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-toolbar--design",
-        "doc_url": "http://localhost:4000/components/Toolbar/OrigamToolbar",
+        "story_url": "/stories/?story=components-toolbar--design",
+        "doc_url": "/docs/components/Toolbar/OrigamToolbar.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -101949,8 +101949,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-tooltip--design",
-        "doc_url": "http://localhost:4000/components/Tooltip/OrigamTooltip",
+        "story_url": "/stories/?story=components-tooltip--design",
+        "doc_url": "/docs/components/Tooltip/OrigamTooltip.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -102517,8 +102517,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-transition--design",
-        "doc_url": "http://localhost:4000/components/Transition/OrigamTransition",
+        "story_url": "/stories/?story=components-transition--design",
+        "doc_url": "/docs/components/Transition/OrigamTransition.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -102933,8 +102933,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-treeview--design",
-        "doc_url": "http://localhost:4000/components/Treeview/OrigamTreeview",
+        "story_url": "/stories/?story=components-treeview--design",
+        "doc_url": "/docs/components/Treeview/OrigamTreeview.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -103507,8 +103507,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-treeview--design",
-        "doc_url": "http://localhost:4000/components/Treeview/OrigamTreeview",
+        "story_url": "/stories/?story=components-treeview--design",
+        "doc_url": "/docs/components/Treeview/OrigamTreeview.html",
         "parent_slug": "treeview",
         "kind_extra": {
           "a11y": {
@@ -103982,8 +103982,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-video--design",
-        "doc_url": "http://localhost:4000/components/Video/OrigamVideo",
+        "story_url": "/stories/?story=components-video--design",
+        "doc_url": "/docs/components/Video/OrigamVideo.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -104870,8 +104870,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-virtual-scroll--design",
-        "doc_url": "http://localhost:4000/components/VirtualScroll/OrigamVirtualScroll",
+        "story_url": "/stories/?story=components-virtual-scroll--design",
+        "doc_url": "/docs/components/VirtualScroll/OrigamVirtualScroll.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -105241,8 +105241,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-virtual-scroll--design",
-        "doc_url": "http://localhost:4000/components/VirtualScroll/OrigamVirtualScroll",
+        "story_url": "/stories/?story=components-virtual-scroll--design",
+        "doc_url": "/docs/components/VirtualScroll/OrigamVirtualScroll.html",
         "parent_slug": "virtual-scroll",
         "kind_extra": {
           "a11y": {
@@ -105487,8 +105487,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-watermark--design",
-        "doc_url": "http://localhost:4000/components/Watermark/OrigamWatermark",
+        "story_url": "/stories/?story=components-watermark--design",
+        "doc_url": "/docs/components/Watermark/OrigamWatermark.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -105914,8 +105914,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-window--design",
-        "doc_url": "http://localhost:4000/components/Window/OrigamWindow",
+        "story_url": "/stories/?story=components-window--design",
+        "doc_url": "/docs/components/Window/OrigamWindow.html",
         "parent_slug": null,
         "kind_extra": {
           "a11y": {
@@ -106573,8 +106573,8 @@
         "package_note": "origam",
         "note_key": null,
         "note_fallback": null,
-        "story_url": "http://localhost:6006/?story=components-window--design",
-        "doc_url": "http://localhost:4000/components/Window/OrigamWindowItem",
+        "story_url": "/stories/?story=components-window--design",
+        "doc_url": "/docs/components/Window/OrigamWindowItem.html",
         "parent_slug": "window",
         "kind_extra": {
           "a11y": {

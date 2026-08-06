@@ -18,7 +18,7 @@ import {
 import * as origamDirectives from './directives'
 import { setContrastConfig } from './directives/Contrast/contrast.directive'
 
-import type { IDefault, IOrigamOptions, IOrigamTheme } from './interfaces'
+import type { IDefault, INuxtAwareApp, IOrigamOptions, IOrigamTheme } from './interfaces'
 import type { TIconOptions, TModeResolved } from './types'
 import { applyThemes, getUid, installedThemesFromList, mergeDeep } from './utils'
 
@@ -121,8 +121,10 @@ export function createOrigam (origam: IOrigamOptions = {}) {
                 activeDefaultsFor(allThemes, brand, mode))
 
             if (IN_BROWSER && options.ssr) {
-                if (app.$nuxt) {
-                    app.$nuxt.hook('app:suspense:resolve', () => {
+                const nuxt = (app as App & INuxtAwareApp).$nuxt
+
+                if (nuxt) {
+                    nuxt.hook('app:suspense:resolve', () => {
                         display.update()
                     })
                 } else {

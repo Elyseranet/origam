@@ -112,7 +112,7 @@
 	const linkInput = ref('')
 	const linkInputRef = ref<HTMLInputElement>()
 
-	const toolbarLabel = computed(() => t('origam.textarea.rich.toolbar.aria-label', 'Text formatting'))
+	const toolbarLabel = computed(() => t('origam.textarea.rich.toolbar.aria_label', 'Text formatting'))
 	const linkPlaceholder = computed(() => t('origam.textarea.rich.link.placeholder', 'https://example.com'))
 	const linkApplyLabel = computed(() => t('origam.textarea.rich.link.apply', 'Apply'))
 
@@ -136,14 +136,14 @@
 		[TEXTAREA_TOOLBAR_COMMAND.ITALIC]: ['origam.textarea.rich.command.italic', 'Italic'],
 		[TEXTAREA_TOOLBAR_COMMAND.UNDERLINE]: ['origam.textarea.rich.command.underline', 'Underline'],
 		[TEXTAREA_TOOLBAR_COMMAND.LINK]: ['origam.textarea.rich.command.link', 'Insert link'],
-		[TEXTAREA_TOOLBAR_COMMAND.LIST_BULLET]: ['origam.textarea.rich.command.list-bullet', 'Bullet list'],
-		[TEXTAREA_TOOLBAR_COMMAND.LIST_ORDERED]: ['origam.textarea.rich.command.list-ordered', 'Numbered list'],
+		[TEXTAREA_TOOLBAR_COMMAND.LIST_BULLET]: ['origam.textarea.rich.command.list_bullet', 'Bullet list'],
+		[TEXTAREA_TOOLBAR_COMMAND.LIST_ORDERED]: ['origam.textarea.rich.command.list_ordered', 'Numbered list'],
 		[TEXTAREA_TOOLBAR_COMMAND.HEADING]: ['origam.textarea.rich.command.heading', 'Heading'],
-		[TEXTAREA_TOOLBAR_COMMAND.HEADING_1]: ['origam.textarea.rich.command.heading-1', 'Heading 1'],
-		[TEXTAREA_TOOLBAR_COMMAND.HEADING_2]: ['origam.textarea.rich.command.heading-2', 'Heading 2'],
-		[TEXTAREA_TOOLBAR_COMMAND.HEADING_3]: ['origam.textarea.rich.command.heading-3', 'Heading 3'],
-		[TEXTAREA_TOOLBAR_COMMAND.CODE_INLINE]: ['origam.textarea.rich.command.code-inline', 'Inline code'],
-		[TEXTAREA_TOOLBAR_COMMAND.CLEAR_FORMAT]: ['origam.textarea.rich.command.clear-format', 'Clear formatting']
+		[TEXTAREA_TOOLBAR_COMMAND.HEADING_1]: ['origam.textarea.rich.command.heading_1', 'Heading 1'],
+		[TEXTAREA_TOOLBAR_COMMAND.HEADING_2]: ['origam.textarea.rich.command.heading_2', 'Heading 2'],
+		[TEXTAREA_TOOLBAR_COMMAND.HEADING_3]: ['origam.textarea.rich.command.heading_3', 'Heading 3'],
+		[TEXTAREA_TOOLBAR_COMMAND.CODE_INLINE]: ['origam.textarea.rich.command.code_inline', 'Inline code'],
+		[TEXTAREA_TOOLBAR_COMMAND.CLEAR_FORMAT]: ['origam.textarea.rich.command.clear_format', 'Clear formatting']
 	}
 
 	const toolbarClasses = computed(() => [

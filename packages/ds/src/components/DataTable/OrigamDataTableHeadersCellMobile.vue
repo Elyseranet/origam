@@ -13,7 +13,7 @@
 							:append-icon="appendIcon"
 							:density="DENSITY.DEFAULT"
 							:items="displayItems"
-							:label="t('origam.dataTable.sortBy')"
+							:label="t('origam.data_table.sort_by')"
 							:multiple="multiSort"
 							chips
 							class="origam-data-table-headers-cell__sort-select"

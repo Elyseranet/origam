@@ -9,7 +9,7 @@
 // DOM-dependent tests (load/unload checking DOM mutations) are exercised via
 // mount() so tryOnMounted/onMounted hooks fire correctly.
 
-import { computed, defineComponent, h, ref } from 'vue'
+import { computed, defineComponent, h, ref, type MaybeRefOrGetter } from 'vue'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 
@@ -240,5 +240,136 @@ describe('useStyle — customCss generation', () => {
 
         mount(Host)
         expect(cssValue).toMatch(/^#my-uniq-id/)
+    })
+})
+
+// ---------------------------------------------------------------------------
+// useStyle — `uniq` resolution
+//
+// REGRESSION. `useStyle` returns BOTH the id a component is expected to put on
+// its root element AND the selector of the rule it generates for that element.
+// The two are the same value on purpose: if a component honours a
+// consumer-supplied `id` but the rule keeps targeting the generated one, they
+// diverge and the rule matches nothing — the component loses its own styles.
+// That is why `uniq` must be a reactive getter (`() => props.id`): an `id` that
+// only appears on a later render still has to be picked up.
+// ---------------------------------------------------------------------------
+
+function styleHost (uniq: MaybeRefOrGetter<string | undefined>, styles: unknown[] = ['padding: 8px']) {
+    let api!: ReturnType<typeof useStyle>
+
+    const Host = defineComponent({
+        name: 'OrigamStyleUniqResolutionHost',
+        setup () {
+            api = useStyle(computed(() => styles) as never, uniq)
+            return () => h('div')
+        }
+    })
+
+    mount(Host)
+
+    return api
+}
+
+describe('useStyle — uniq resolution', () => {
+    it('no uniq → falls back to a generated `<name>-<uid>` id', () => {
+        const api = styleHost(undefined)
+
+        expect(api.id.value).toMatch(/^origam-style-uniq-resolution-host-\d+$/)
+        expect(api.css.value).toMatch(/^#origam-style-uniq-resolution-host-\d+ \{/)
+    })
+
+    it('a plain string uniq wins over the generated id', () => {
+        const api = styleHost('consumer-id')
+
+        expect(api.id.value).toBe('consumer-id')
+        expect(api.css.value).toMatch(/^#consumer-id \{/)
+    })
+
+    it('a getter uniq wins, and the returned id and the rule selector always agree', () => {
+        const api = styleHost(() => 'from-getter')
+
+        expect(api.id.value).toBe('from-getter')
+        expect(api.css.value).toBe(`#${api.id.value} {padding: 8px}`)
+    })
+
+    it('a ref uniq that fills in on a later render is picked up', () => {
+        const uniq = ref<string | undefined>(undefined)
+        const api = styleHost(uniq)
+
+        expect(api.id.value).toMatch(/^origam-style-uniq-resolution-host-\d+$/)
+
+        uniq.value = 'late-id'
+
+        expect(api.id.value).toBe('late-id')
+        expect(api.css.value).toMatch(/^#late-id \{/)
+    })
+
+    it('an empty-string uniq falls back rather than emitting the invalid selector `#`', () => {
+        const api = styleHost('')
+
+        expect(api.id.value).not.toBe('')
+        expect(api.css.value).not.toMatch(/^# \{/)
+    })
+
+    it('escapes a uniq that is not a valid CSS ident, so the rule still matches', () => {
+        const api = styleHost('1st.title')
+
+        expect(api.id.value).toBe('1st.title')
+        expect(api.css.value).toMatch(/^#\\31 st\\.title \{/)
+    })
+})
+
+// ---------------------------------------------------------------------------
+// useStyle — declaration filtering
+//
+// REGRESSION. Vue's own `StyleValue` type includes `false`, so every component
+// declaring the shared `style` prop compiles to a runtime prop type containing
+// `Boolean` — and Vue resolves an unpassed boolean-typed prop to the concrete
+// value `false`, never `undefined`. That `false` was reaching the generated
+// rule as a bare `#id {false}`, which is not a declaration: jsdom rejects the
+// whole sheet ("Could not parse CSS stylesheet") and browsers discard it by
+// error recovery. Nothing may leave this composable that is not a
+// `prop: value` declaration.
+// ---------------------------------------------------------------------------
+
+describe('useStyle — declaration filtering', () => {
+    it('drops a boolean — the unpassed `style` prop Vue coerces to false', () => {
+        const api = styleHost('bool-id', [{ color: 'red' }, false])
+
+        expect(api.css.value).toBe('#bool-id {color: red}')
+        expect(api.css.value).not.toContain('false')
+    })
+
+    it('a bag holding nothing but that false produces an empty rule body', () => {
+        const api = styleHost('only-false-id', [false])
+
+        expect(api.css.value).toBe('#only-false-id {}')
+    })
+
+    it('drops numbers — a bare `0` is not a declaration either', () => {
+        const api = styleHost('num-id', [{ opacity: '0.5' }, 0])
+
+        expect(api.css.value).toBe('#num-id {opacity: 0.5}')
+    })
+
+    it('drops null, undefined and empty strings', () => {
+        const api = styleHost('nullish-id', [null, undefined, '', 'color: red'])
+
+        expect(api.css.value).toBe('#nullish-id {color: red}')
+    })
+
+    it('expands an object nested inside an array instead of emitting [object Object]', () => {
+        const api = styleHost('nested-id', [['color: red', { 'font-size': '14px' }]])
+
+        expect(api.css.value).not.toContain('[object Object]')
+        expect(api.css.value).toContain('color: red')
+        expect(api.css.value).toContain('font-size: 14px')
+    })
+
+    it('keeps every declaration of a plain object bag', () => {
+        const api = styleHost('obj-id', [{ color: 'red', 'font-size': '14px' }])
+
+        expect(api.css.value).toBe('#obj-id {color: red;font-size: 14px}')
     })
 })

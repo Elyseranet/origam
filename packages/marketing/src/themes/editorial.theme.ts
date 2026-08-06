@@ -130,6 +130,7 @@ export const editorialLightTheme: IOrigamTheme = {
         'origam-color-picker-field': { rounded: 'none', border: true },
         'origam-code': { rounded: 'none', border: true, elevation: 0 },
         'origam-menu': { rounded: 'none', border: true, elevation: 0 },
+        'origam-list-item': { rounded: 'none' },
         'origam-table': { rounded: 'none', border: true },
         'origam-avatar': { rounded: 'none', border: true },
         // Checkbox/Radio (Refs #35) — spec asks for `--checkbox---border-color`,

@@ -1,43 +1,46 @@
 {
   "origam": {
     "badge": "Badge",
+    "bottom_nav": {
+      "aria_label": "Navigation inférieure"
+    },
     "open": "Ouvrir",
     "close": "Fermer",
     "dismiss": "Dismiss",
-    "confirmEdit": {
+    "confirm_edit": {
       "ok": "OK",
       "cancel": "Annuler"
     },
-    "dataIterator": {
-      "noResultsText": "Aucun enregistrement correspondant trouvé",
-      "loadingText": "Chargement de l'élément..."
+    "data_iterator": {
+      "no_results_text": "Aucun enregistrement correspondant trouvé",
+      "loading_text": "Chargement de l'élément..."
     },
-    "dataTable": {
-      "itemsPerPageText": "Lignes par page :",
-      "ariaLabel": {
-        "sortDescending": "Tri décroissant.",
-        "sortAscending": "Tri croissant.",
-        "sortNone": "Non trié.",
-        "activateNone": "Activer pour supprimer le tri.",
-        "activateDescending": "Activer pour trier par ordre décroissant.",
-        "activateAscending": "Activer pour trier par ordre croissant."
+    "data_table": {
+      "items_per_page_text": "Lignes par page :",
+      "aria_label": {
+        "sort_descending": "Tri décroissant.",
+        "sort_ascending": "Tri croissant.",
+        "sort_none": "Non trié.",
+        "activate_none": "Activer pour supprimer le tri.",
+        "activate_descending": "Activer pour trier par ordre décroissant.",
+        "activate_ascending": "Activer pour trier par ordre croissant."
       },
-      "sortBy": "Trier par"
+      "sort_by": "Trier par"
     },
-    "dataFooter": {
-      "itemsPerPageText": "Éléments par page :",
-      "itemsPerPageAll": "Tous",
-      "nextPage": "Page suivante",
-      "prevPage": "Page précédente",
-      "firstPage": "Première page",
-      "lastPage": "Dernière page",
-      "pageText": "{0}-{1} de {2}"
+    "data_footer": {
+      "items_per_page_text": "Éléments par page :",
+      "items_per_page_all": "Tous",
+      "next_page": "Page suivante",
+      "prev_page": "Page précédente",
+      "first_page": "Première page",
+      "last_page": "Dernière page",
+      "page_text": "{0}-{1} de {2}"
     },
-    "datePickerRangeField": {
+    "date_picker_range_field": {
       "text": "{0} à {1}"
     },
-    "datePicker": {
-      "itemsSelected": "{0} selected",
+    "date_picker": {
+      "items_selected": "{0} selected",
       "range": {
         "title": "Sélectionner des dates",
         "header": "Entrer des dates"
@@ -48,22 +51,22 @@
         "placeholder": "Entrer une date"
       }
     },
-    "noDataText": "Aucune donnée disponible",
+    "no_data_text": "Aucune donnée disponible",
     "carousel": {
       "prev": "Visuel précédent",
       "next": "Visuel suivant",
-      "ariaLabel": {
+      "aria_label": {
         "delimiter": "Diapositive {0} de {1}"
       }
     },
     "calendar": {
-      "moreEvents": "{0} de plus",
+      "more_events": "{0} de plus",
       "today": "Aujourd'hui",
       "previous": "Précédent",
       "next": "Suivant",
-      "viewSwitcher": "Vue",
-      "monthGrid": "Grille du mois",
-      "ariaLabel": "Calendrier",
+      "view_switcher": "Vue",
+      "month_grid": "Grille du mois",
+      "aria_label": "Calendrier",
       "toolbar": "Barre d'outils du calendrier",
       "empty": "Aucun événement à afficher",
       "view": {
@@ -75,54 +78,57 @@
     },
     "input": {
       "clear": "Vider {0}",
-      "prependAction": "{0} action avant",
-      "appendAction": "{0} action après",
+      "prepend_action": "{0} action avant",
+      "append_action": "{0} action après",
       "otp": "Caractère {0} du mot de passe à usage unique"
     },
-    "fileInput": {
+    "file_input": {
       "counter": "{0} fichier(s)",
-      "counterSize": "{0} fichier(s) ({1} au total)"
+      "counter_size": "{0} fichier(s) ({1} au total)"
     },
-    "fileField": {
+    "file_field": {
       "counter": "{0} fichier(s)",
-      "counterSize": "{0} fichier(s) ({1} au total)",
-      "dropzoneTitle": "Glissez et déposez vos fichiers ici",
-      "dropzoneSubtitle": "ou cliquez pour parcourir",
+      "counter_size": "{0} fichier(s) ({1} au total)",
+      "dropzone_title": "Glissez et déposez vos fichiers ici",
+      "dropzone_subtitle": "ou cliquez pour parcourir",
       "browse": "Parcourir les fichiers"
     },
-    "fileUpload": {
+    "file_upload": {
       "title": "Drag and drop files here",
       "divider": "or",
       "browse": "Browse Files"
     },
-    "timePicker": {
+    "time_picker": {
       "am": "AM",
       "pm": "PM",
       "title": "Select Time"
     },
     "pagination": {
-      "ariaLabel": {
+      "aria_label": {
         "root": "Navigation de pagination",
         "next": "Page suivante",
         "previous": "Page précédente",
         "page": "Aller à la page {0}",
-        "currentPage": "Page actuelle, Page {0}",
+        "current_page": "Page actuelle, Page {0}",
+        "page_number": "Numéro de page",
         "first": "Première page",
         "last": "Dernière page"
       },
       "page": "Page",
       "of": "sur",
-      "info": "Affichage de {0}-{1} sur {2}"
+      "info": "Affichage de {0}-{1} sur {2}",
+      "next": "Suivant",
+      "previous": "Précédent"
     },
     "code": {
       "copy": "Copier",
       "copied": "Copié !",
-      "copyAriaLabel": "Copier le code dans le presse-papier",
-      "copiedAriaLabel": "Code copié dans le presse-papier"
+      "copy_aria_label": "Copier le code dans le presse-papier",
+      "copied_aria_label": "Code copié dans le presse-papier"
     },
     "clipboard": {
-      "copyAriaLabel": "Copier dans le presse-papier",
-      "copiedAriaLabel": "Valeur copiée dans le presse-papier"
+      "copy_aria_label": "Copier dans le presse-papier",
+      "copied_aria_label": "Valeur copiée dans le presse-papier"
     },
     "snackbar": {
       "dismiss": "Fermer la notification"
@@ -130,22 +136,22 @@
     "stepper": {
       "next": "Suivant",
       "prev": "Précédent",
-      "progressSteps": "Étapes de progression",
-      "stepAriaLabel": "Étape {0} : {1}"
+      "progress_steps": "Étapes de progression",
+      "step_aria_label": "Étape {0} : {1}"
     },
-    "dataTableRow": {
-      "expandRow": "Développer la ligne",
-      "collapseRow": "Réduire la ligne"
+    "data_table_row": {
+      "expand_row": "Développer la ligne",
+      "collapse_row": "Réduire la ligne"
     },
     "rating": {
-      "ariaLabel": {
+      "aria_label": {
         "item": "Note de {0} sur {1}"
       },
       "clear": "Réinitialiser la note"
     },
     "loading": "Chargement...",
-    "infiniteScroll": {
-      "loadMore": "Charger plus",
+    "infinite_scroll": {
+      "load_more": "Charger plus",
       "empty": "Aucune donnée supplémentaire"
     },
     "validation": {
@@ -153,7 +159,8 @@
       "must_match": "Les champs ne correspondent pas",
       "max_length": "Maximum {0} caractères",
       "must_contains": "Ce champ doit contenir : {value}",
-      "max_size_error": "Le fichier \"{0}\" dépasse la taille maximum de {1}"
+      "max_size_error": "Le fichier \"{0}\" dépasse la taille maximum de {1}",
+      "invalid_format": "Format invalide"
     },
     "media": {
       "play": "Lecture",
@@ -167,25 +174,61 @@
       "seconds": "{0} secondes",
       "quality": "Qualité",
       "download": "Télécharger",
-      "castToDevice": "Diffuser sur un appareil",
-      "stopCasting": "Arrêter la diffusion",
+      "cast_to_device": "Diffuser sur un appareil",
+      "stop_casting": "Arrêter la diffusion",
       "settings": "Paramètres",
       "back": "Retour",
-      "playbackSpeed": "Vitesse de lecture",
-      "normalSpeed": "Normale"
+      "playback_speed": "Vitesse de lecture",
+      "normal_speed": "Normale",
+      "loop_all": "Répéter tout",
+      "loop_off": "Répétition désactivée",
+      "loop_one": "Répéter la piste",
+      "shuffle": "Lecture aléatoire",
+      "transport": "Contrôles de lecture",
+      "next_track": "Piste suivante",
+      "previous_track": "Piste précédente",
+      "waveform": "Forme d'onde audio"
     },
     "video": {
-      "enterFullscreen": "Plein écran",
-      "exitFullscreen": "Quitter le plein écran",
-      "enterPip": "Activer image dans l'image",
-      "exitPip": "Désactiver image dans l'image",
-      "enableCaptions": "Activer les sous-titres",
-      "disableCaptions": "Désactiver les sous-titres"
+      "enter_fullscreen": "Plein écran",
+      "exit_fullscreen": "Quitter le plein écran",
+      "enter_pip": "Activer image dans l'image",
+      "exit_pip": "Désactiver image dans l'image",
+      "enable_captions": "Activer les sous-titres",
+      "disable_captions": "Désactiver les sous-titres"
     },
-    "colorPicker": {
+    "color_picker": {
       "canvas": {
-        "ariaLabel": "Saturation et luminosité",
+        "aria_label": "Saturation et luminosité",
         "value": "Saturation {0}%, luminosité {1}%"
+      }
+    },
+    "breadcrumb": {
+      "aria_label": "Fil d'Ariane"
+    },
+    "textarea": {
+      "rich": {
+        "toolbar": {
+          "aria_label": "Mise en forme du texte"
+        },
+        "link": {
+          "placeholder": "https://example.com",
+          "apply": "Appliquer"
+        },
+        "command": {
+          "bold": "Gras",
+          "italic": "Italique",
+          "underline": "Souligné",
+          "link": "Insérer un lien",
+          "list_bullet": "Liste à puces",
+          "list_ordered": "Liste numérotée",
+          "heading": "Titre",
+          "heading_1": "Titre 1",
+          "heading_2": "Titre 2",
+          "heading_3": "Titre 3",
+          "code_inline": "Code en ligne",
+          "clear_format": "Effacer la mise en forme"
+        }
       }
     }
   }

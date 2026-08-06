@@ -1,0 +1,2009 @@
+{
+    "a11y": {
+        "skip_to_content": "Skip to content",
+        "toggle_theme": "Toggle light and dark mode",
+        "toggle_brand_theme": "Switch brand theme",
+        "search": "Search the documentation",
+        "star_count": "GitHub stars",
+        "language": "Change language",
+        "themes_chips_list": "Available themes",
+        "showcase_grid": "Component showcase",
+        "showcase_chip_list": "Chip intents",
+        "playground_toolbar": "Editor toolbar",
+        "themes_tooling": "Tooling compatibility",
+        "themes_preview_tiles": "Theme preview tiles",
+        "roadmap_effort": "Effort",
+        "donate": "Support origam with a donation",
+        "donate_qr": "QR code linking to the donation page"
+    },
+    "admin": {
+        "appbar": {
+            "label": "Admin toolbar",
+            "title": "Admin",
+            "back_to_site": "Back to site",
+            "logout": "Log out",
+            "toggle_nav": "Toggle navigation"
+        },
+        "nav": {
+            "label": "Admin navigation",
+            "dashboard": "Dashboard",
+            "sync": "Sync",
+            "kind": {
+                "component": "Components",
+                "composable": "Composables",
+                "const": "Consts",
+                "directive": "Directives",
+                "enum": "Enums",
+                "interface": "Interfaces",
+                "type": "Types",
+                "util": "Utils"
+            }
+        },
+        "login": {
+            "title": "Admin area",
+            "subtitle": "Enter the admin password to access the backoffice.",
+            "password_label": "Password",
+            "password_placeholder": "Admin password",
+            "submit": "Sign in",
+            "error_wrong_password": "Incorrect password. Please try again.",
+            "error_server": "Server error. Please try again.",
+            "a11y_form": "Admin login form"
+        },
+        "dashboard": {
+            "title": "Dashboard",
+            "subtitle": "Overview of all reference families.",
+            "total_entries": "entries",
+            "entries": "entries"
+        },
+        "list": {
+            "search_placeholder": "Search…",
+            "search_label": "Filter entries",
+            "loading": "Loading…",
+            "col_name": "Name",
+            "col_category": "Category",
+            "col_icon": "Icon",
+            "col_edited": "Edited",
+            "edit_action": "Edit",
+            "edited_badge": "Edited",
+            "empty": "No entries found."
+        },
+        "editor": {
+            "title": "Edit {name}",
+            "subtitle": "{kind} · {slug}",
+            "section_editable": "Editable fields",
+            "section_readonly": "Source fields",
+            "section_readonly_hint": "These fields are populated automatically by the sync pipeline.",
+            "field_category": "Category",
+            "field_icon": "Icon",
+            "field_description_key": "Description key (i18n)",
+            "field_description_fallback": "Description (fallback)",
+            "field_story_url": "Story URL",
+            "field_doc_url": "Doc URL",
+            "field_note_key": "Note key (i18n)",
+            "field_note_fallback": "Note (fallback)",
+            "field_slug": "Slug",
+            "field_name": "Name",
+            "field_tag": "Tag",
+            "field_source_file": "Source file",
+            "field_definition": "Definition",
+            "field_signature": "Signature",
+            "auto_badge": "auto · re-sync",
+            "save": "Save changes",
+            "saving": "Saving…",
+            "save_success": "Changes saved.",
+            "save_error": "Failed to save: {error}",
+            "back": "Back to list",
+            "edited_by_user_badge": "Edited",
+            "not_found": "Entry not found."
+        },
+        "sync": {
+            "title": "Sync",
+            "subtitle": "Trigger a re-sync from the DS source and view recent sync history.",
+            "trigger_title": "Re-sync from source",
+            "trigger_desc": "Reads the DS source and upserts the reference catalogue in the database.",
+            "trigger_btn": "Trigger re-sync",
+            "triggering": "Syncing…",
+            "result_created": "created",
+            "result_updated": "updated",
+            "result_unchanged": "unchanged",
+            "result_orphaned": "orphaned",
+            "result_error": "Sync error: {error}",
+            "history_title": "Recent sync runs",
+            "refresh_history": "Refresh",
+            "col_started": "Started",
+            "col_finished": "Finished",
+            "col_status": "Status",
+            "col_created": "Created",
+            "col_updated": "Updated",
+            "col_unchanged": "Unchanged",
+            "col_orphaned": "Orphaned",
+            "col_commit": "Commit",
+            "status_running": "Running",
+            "status_success": "Success",
+            "status_failed": "Failed",
+            "no_runs": "No sync runs yet."
+        }
+    },
+    "brand": {
+        "name": "origam",
+        "tagline": "The Vue 3 design system that just works."
+    },
+    "changelog": {
+        "meta": {
+            "title": "Changelog · origam design system",
+            "description": "Every release of the origam design system, curated and accessible in one place."
+        },
+        "hero": {
+            "badge": "Changelog",
+            "title_line1": "Changelog.",
+            "title_line2": "Every release.",
+            "subtitle": "A curated overview of what shipped in each version of origam. Dates are release dates; the full diff lives on GitHub.",
+            "actions_label": "Changelog links",
+            "full_changelog": "Full changelog on GitHub"
+        },
+        "list": {
+            "eyebrow": "RELEASE HISTORY",
+            "title_line1": "Pick a release.",
+            "title_line2": "See what shipped.",
+            "subtitle": "Choose any version to see exactly what shipped — the summary plus its key highlights."
+        },
+        "select": {
+            "label": "Select a version"
+        },
+        "type": {
+            "unreleased": "Next",
+            "major": "Major",
+            "minor": "Minor",
+            "patch": "Patch"
+        },
+        "highlight": {
+            "added": "Added",
+            "changed": "Changed",
+            "fixed": "Fixed",
+            "deprecated": "Deprecated"
+        },
+        "unreleased": {
+            "label": "Not yet released"
+        },
+        "aria": {
+            "version": "Version",
+            "highlights": "Release highlights",
+            "version_links": "Version links"
+        },
+        "panel": {
+            "full_link": "Full changelog on GitHub"
+        },
+        "cta": {
+            "title": "Stay in the loop.",
+            "description": "Watch the repository on GitHub to be notified of every new release.",
+            "cta_github": "Star on GitHub",
+            "cta_fulllog": "Read full CHANGELOG",
+            "actions_label": "Follow origam"
+        },
+        "versions": {
+            "unreleased": {
+                "summary": "Work in progress — not yet released. Brand themes extracted from the DS, glassmorphism tokens, and SSR gaps resolved.",
+                "h1": "OrigamCode — compact and prompt display modes; two-axis theming (data-theme × data-mode) support",
+                "h2": "backdrop-filter glassmorphism tokens on Card / Sheet / Toolbar / Menu",
+                "h3": "Brand themes removed from the DS (ADR-004) — now installed via createOrigam() with a themes option instead of bundled in the lib",
+                "h4": "OrigamImg — markBooted rAF guard behind IN_BROWSER (SSR crash fixed)",
+                "h5": "Six SSR/theming gaps resolved: theme cookie race, data-mode on first SSR render, hydration mismatch on theme toggle"
+            },
+            "v260": {
+                "summary": "The bracket + a11y + theming release. v-contrast directive, OrigamBracket double-elimination, two-axis theming engine, monorepo migration. 170 commits.",
+                "h1": "v-contrast directive — runtime WCAG 2.1 AA text-legibility guard applied to every colour-bearing component",
+                "h2": "OrigamBracket — full double-elimination layout, Grand Final, cross-cutting prop surface, status indicators",
+                "h3": "OrigamBlockquote — two-axis colour model (color + bgColor) on all 5 variants",
+                "h4": "Two-axis theming engine — data-theme (brand identity) × data-mode (light/dark) + semantic JSON authoring",
+                "h5": "useStateEffect repaired — runtime prop changes for color/bgColor were silently ignored after initial mount",
+                "h6": "Monorepo migration — packages/ds, marketing, stories, docs, tests, figma-plugin as pnpm workspace packages"
+            },
+            "v251": {
+                "summary": "Patch. Two housekeeping commits with no public API impact.",
+                "h1": "Repository structure cleaned up — unit specs moved to tests/TU/, dev playground dropped",
+                "h2": ".gitignore updated to exclude test artefacts"
+            },
+            "v250": {
+                "summary": "The accessibility release. WCAG 2.1 AA pass across the entire component catalogue. 35 targeted fixes across 36 components.",
+                "h1": "WCAG 2.1 AA pass — 35 fixes: missing aria-label, incorrect role, focus gaps, colour-contrast warnings, keyboard-navigation holes",
+                "h2": "OrigamSelect — full combobox ARIA pattern (role=combobox + aria-expanded + aria-activedescendant)",
+                "h3": "OrigamDataTable — <caption> element added; OrigamColorPicker — keyboard navigation restored",
+                "h4": "VitePress docs sidebar reorganised by UI taxonomy (layout / navigation / data-display / forms / feedback / utility)"
+            },
+            "v240": {
+                "summary": "The chart engine + media kit + Wave 4 release. 27 chart primitives, atomic media kit (OrigamAudio + OrigamVideo), 6 utility components, OrigamCalendar, gradient support. 149 commits.",
+                "h1": "OrigamChart + useChart — in-house chart engine. 8 base types, pure SVG, 19 chart families total, zero external dep",
+                "h2": "OrigamAudio + OrigamVideo — custom players with Media Session API, waveform, stem-tracks, WebVTT captions, zero external dep",
+                "h3": "OrigamGrid, OrigamMasonry, OrigamEmptyState, OrigamClipboard, OrigamInlineEdit, OrigamNumberFormat — Wave 4 utilities",
+                "h4": "OrigamCalendar — 4 views, RRULE recurring events, drag-to-create, keyboard navigation; OrigamTextMask + gradient color props",
+                "h5": "DS-wide reuse-interfaces audit — every component now extends IDimensionProps / IMarginProps / etc.",
+                "h6": "withDefaults() inline literal rule enforced — Grid, Masonry, Blockquote undefined prop crashes fixed"
+            },
+            "v230": {
+                "summary": "The features release. Four new components, official Nuxt module, SSR safety audit. 378 unit tests. 0 lint errors.",
+                "h1": "origam/nuxt — official Nuxt 3 / Nuxt 4 module with SSR-safe theme resolution, auto-imports, FOUC-free",
+                "h2": "OrigamTextField mask prop — built-in patterns (phone, IBAN, credit card, date…) + custom syntax, zero external dep",
+                "h3": "OrigamTextareaField mode=rich — lightweight HTML/Markdown editor, 9 toolbar commands, zero external dep",
+                "h4": "SSR safety audit — every composable and component confirmed SSR-safe or patched; new ssr-smoke.spec.ts"
+            },
+            "v221": {
+                "summary": "Patch. First version published to npm (2.2.0 was tagged but never published). One package.json exports fix.",
+                "h1": "Expose ./package.json explicitly in the exports map — consumer pattern reading the version was broken",
+                "h2": "2.2.0 was tagged but never published to npm — 2.2.1 is the first version on the registry"
+            },
+            "v220": {
+                "summary": "The ready-for-npm release. Package metadata, peer dependencies, tree-shaking signals, README. Tarball shrunk from 5.6 MB to 867.9 kB. No API change vs 2.1.0.",
+                "h1": "525+ missing Slot / Emit Variants across 113 stories; OrigamSwitchTrack extracted as a standalone primitive",
+                "h2": "peerDependencies (vue ^3.5, vue-i18n ^11, vue-router ^4.5) — no longer auto-installed as dependencies",
+                "h3": "Carousel progress prop wired to real cycle timer; Histoire sash resizes in both directions"
+            },
+            "v210": {
+                "summary": "The classes-first release. 13 transversal composables now emit utility classes for tokenised values. The inline-style stack on a typical button drops from ~12 to ~6 declarations.",
+                "h1": "66 utility classes generated by Style Dictionary — origam--bg-[intent], origam--shadow-[rung], origam--rounded-[size]…",
+                "h2": "New *Classes return keys on all 10 transversal composables — colorClasses, elevationClasses, roundedClasses…",
+                "h3": "~54 components migrated to consume *Classes in parallel with *Styles (transition strategy A)",
+                "h4": "OrigamSwitch thumb tinting restored — regression from OrigamSwitchTrack extraction fixed via classes-first"
+            },
+            "v200": {
+                "summary": "The design tokens release. Every component now resolves colors, spacing, typography and motion through a centralised, theme-aware token pipeline. 50+ components migrated.",
+                "h1": "Multi-tier design tokens — Primitive / Semantic / Component tiers; Style Dictionary v4 + Tokens Studio pipeline",
+                "h2": "Multi-theme runtime — useTheme() composable, <OrigamThemeProvider>, prefers-color-scheme fallback",
+                "h3": "CSS-first / JS-fallback principle — useCssSupport() composable wrapping CSS.supports() with 20 feature flags",
+                "h4": "Multiple critical bug fixes — OrigamMessages id binding, OrigamNumberField reactive loop, OrigamOtpInputField crash"
+            }
+        }
+    },
+    "chrome": {
+        "search_placeholder": "Search…",
+        "search_shortcut": "⌘K",
+        "search_empty": "No results",
+        "star_count": "4.2k",
+        "theme": "Theme",
+        "theme_active": "Theme: {label}",
+        "theme_select_label": "Select brand theme"
+    },
+    "components": {
+        "meta": {
+            "title": "Components · origam design system",
+            "description": "Browse 95+ accessible, token-driven Vue 3 components grouped by category. Click any component to see its API, props, emits, slots and live examples."
+        },
+        "hero": {
+            "badge": "95+ components — Vue 3",
+            "title_line1": "Component",
+            "title_line2": "catalogue.",
+            "subtitle": "Every component in origam is accessible, token-driven and themeable. Explore them by category, read the API and see them in action.",
+            "search_placeholder": "Search components…",
+            "search_label": "Filter components by name or category",
+            "count_families": "component families across",
+            "count_categories": "categories",
+            "count_filtered_of": "of",
+            "count_filtered_match": "components match"
+        },
+        "catalog": {
+            "eyebrow": "BROWSE BY CATEGORY",
+            "title": "All components.",
+            "empty_title": "No components found",
+            "empty_desc": "No component matches your search. Try a different term."
+        },
+        "detail": {
+            "meta": {
+                "title": "{name} · origam components"
+            },
+            "breadcrumb_label": "Page location",
+            "breadcrumb_catalog": "Components",
+            "external_links_label": "External resources",
+            "story_link": "View story",
+            "doc_link": "Full docs",
+            "toc_label": "Table of contents",
+            "toc_heading": "On this page",
+            "not_found": {
+                "title": "Component not found",
+                "desc": "No component matches the slug",
+                "back": "Back to catalogue"
+            },
+            "no_doc": {
+                "title": "Documentation coming soon",
+                "desc": "The detailed API reference for this component is being written. Check the Histoire stories or VitePress docs in the meantime."
+            },
+            "anatomy": {
+                "title": "Anatomy",
+                "eyebrow": "Structure",
+                "desc": "Visual breakdown of the component's internal structure with BEM class call-outs.",
+                "dom_structure_label": "DOM structure",
+                "col_class": "Class",
+                "col_description": "Description"
+            },
+            "css_vars": {
+                "title": "CSS variables",
+                "eyebrow": "Customisation",
+                "desc": "CSS custom properties exposed by this component. Override them to customise the component without losing theme compatibility.",
+                "col_variable": "Variable",
+                "col_default": "Default",
+                "col_description": "Description"
+            },
+            "exposed": {
+                "title": "Exposed members",
+                "eyebrow": "API",
+                "desc": "Properties and methods accessible via template ref (defineExpose). Use them for programmatic control.",
+                "col_name": "Name",
+                "col_type": "Type",
+                "col_description": "Description"
+            },
+            "composable": {
+                "title": "Composable",
+                "eyebrow": "API",
+                "desc": "Headless composable for using this component logic without the template.",
+                "signature_label": "Signature",
+                "usage_label": "Usage"
+            },
+            "a11y": {
+                "title": "Accessibility",
+                "eyebrow": "Inclusion",
+                "desc": "ARIA roles, keyboard navigation and focus management. Sourced from the real component template.",
+                "roles_label": "ARIA roles",
+                "keyboard_label": "Keyboard interactions",
+                "col_key": "Key",
+                "col_action": "Action",
+                "notes_label": "Notes"
+            },
+            "tokens": {
+                "title": "Design tokens",
+                "eyebrow": "Foundation",
+                "desc": "DTCG token excerpt from the component token file. Built with Style Dictionary v4.",
+                "col_token": "Token path",
+                "col_value": "Value",
+                "col_type": "Type",
+                "col_description": "Description",
+                "source_label": "Source",
+                "pipeline_label": "Pipeline"
+            },
+            "playground": {
+                "title": "Playground",
+                "eyebrow": "Interactive",
+                "desc": "Edit props live and see the component update in real time. The generated code snippet updates as you change values.",
+                "preview_label": "Live preview",
+                "code_label": "Generated code",
+                "controls_label": "Controls"
+            },
+            "preview": {
+                "unavailable": "Live preview unavailable for this component."
+            },
+            "examples": {
+                "title": "Examples",
+                "eyebrow": "Usage",
+                "desc": "Ready-to-paste code snippets for your templates."
+            },
+            "family": {
+                "title": "Family",
+                "eyebrow": "Ecosystem",
+                "desc": "Components from the same folder that share conventions and often compose together."
+            },
+            "related": {
+                "title": "Related elements",
+                "eyebrow": "Ecosystem",
+                "desc": "Components and directives from different folders that collaborate with this one.",
+                "kind_component": "component",
+                "kind_directive": "directive"
+            },
+            "props": {
+                "title": "Props",
+                "eyebrow": "API",
+                "desc": "All props accepted by this component, with their type, default value and description.",
+                "table_caption": "Props",
+                "col_name": "Name",
+                "col_type": "Type",
+                "col_default": "Default",
+                "col_description": "Description",
+                "required": "required"
+            },
+            "emits": {
+                "title": "Emits",
+                "eyebrow": "API",
+                "desc": "Events emitted by this component.",
+                "table_caption": "Events",
+                "col_event": "Event",
+                "col_payload": "Payload",
+                "col_description": "Description"
+            },
+            "slots": {
+                "title": "Slots",
+                "eyebrow": "API",
+                "desc": "Content slots exposed by this component.",
+                "table_caption": "Slots",
+                "col_slot": "Slot",
+                "col_slot_props": "Slot props",
+                "col_description": "Description"
+            },
+            "hero": {
+                "props_count": "{count} props",
+                "family_count": "{count} in family",
+                "source_label": "Source",
+                "story_label": "Story",
+                "docs_label": "Docs",
+                "import_label": "Copy import",
+                "import_copied": "Copied!",
+                "preview_label": "Preview",
+                "stable_label": "stable"
+            },
+            "status": {
+                "stable": "stable",
+                "beta": "beta",
+                "experimental": "experimental",
+                "deprecated": "deprecated"
+            }
+        }
+    },
+    "composables": {
+        "meta": {
+            "title": "Composables · origam design system",
+            "description": "Browse 80+ composables grouped by domain. Each exposes a documented signature, parameters, return values and usage examples."
+        },
+        "hero": {
+            "badge": "80+ composables — Vue 3",
+            "title_line1": "Composable",
+            "title_line2": "catalogue.",
+            "subtitle": "Every origam composable is documented with its real TypeScript signature, parameters and return values — sourced directly from the DS source code.",
+            "search_placeholder": "Search composables…",
+            "search_label": "Filter composables by name or domain",
+            "count_filtered_of": "of",
+            "count_filtered_match": "composables match",
+            "count_total": "composables across",
+            "count_domains": "domains"
+        },
+        "catalog": {
+            "eyebrow": "BROWSE BY DOMAIN",
+            "title": "All composables.",
+            "empty_title": "No composables found",
+            "empty_desc": "No composable matches \"{query}\". Try a different term."
+        },
+        "detail": {
+            "meta": {
+                "title": "{name} · origam composables"
+            },
+            "breadcrumb_label": "Page location",
+            "breadcrumb_catalog": "Composables",
+            "external_links_label": "External resources",
+            "toc_label": "Table of contents",
+            "toc_heading": "On this page",
+            "consumed_label": "Consumed interfaces",
+            "hero": {
+                "source_label": "Source",
+                "import_label": "Copy import statement",
+                "stable_label": "stable"
+            },
+            "not_found": {
+                "title": "Composable not found",
+                "desc": "No composable matches the slug",
+                "back": "Back to catalogue"
+            },
+            "no_doc": {
+                "title": "Documentation coming soon",
+                "desc": "The detailed API reference for this composable is being written."
+            },
+            "signature": {
+                "eyebrow": "API",
+                "title": "Signature",
+                "desc": "Full TypeScript signature sourced from the composable file."
+            },
+            "params": {
+                "eyebrow": "API",
+                "title": "Parameters",
+                "desc": "Input parameters accepted by this composable.",
+                "required": "required"
+            },
+            "returns": {
+                "eyebrow": "API",
+                "title": "Return values",
+                "desc": "Properties and methods exposed by the composable return object."
+            },
+            "examples": {
+                "eyebrow": "Usage",
+                "title": "Examples",
+                "desc": "Ready-to-paste usage snippets."
+            },
+            "related": {
+                "eyebrow": "Ecosystem",
+                "title": "Related composables",
+                "desc": "Other composables that pair naturally with this one."
+            }
+        }
+    },
+    "consts": {
+        "meta": {
+            "title": "Constants · origam design system",
+            "description": "Browse the SCREAMING_SNAKE_CASE constants exported by origam. Click any constant to see its definition, values and the parts of the DS that use it."
+        },
+        "hero": {
+            "badge": "Exported constants",
+            "title_line1": "API",
+            "title_line2": "constants.",
+            "subtitle": "Every SCREAMING_SNAKE_CASE constant exported by origam. Fully documented with definitions, values and cross-references to the parts of the DS that use them.",
+            "search_placeholder": "Search constants…",
+            "search_label": "Filter constants by name or category",
+            "count_filtered_of": "of",
+            "count_filtered_match": "constants match",
+            "count_total": "constants across",
+            "count_categories": "categories"
+        },
+        "catalog": {
+            "eyebrow": "BROWSE BY CATEGORY",
+            "title": "All constants.",
+            "empty_title": "No constants found",
+            "empty_desc": "No constant matches \"{query}\". Try a different term."
+        },
+        "detail": {
+            "meta": {
+                "title": "{name} · origam constants"
+            },
+            "breadcrumb_label": "Page location",
+            "breadcrumb_catalog": "Constants",
+            "external_links_label": "External resources",
+            "toc_label": "Table of contents",
+            "toc_heading": "On this page",
+            "hero": {
+                "source_label": "Source"
+            },
+            "not_found": {
+                "title": "Constant not found",
+                "desc": "No constant matches the slug",
+                "back": "Back to catalogue"
+            },
+            "definition": {
+                "eyebrow": "TypeScript",
+                "title": "Definition",
+                "desc": "The TypeScript definition as found in the origam source. Click the copy icon to copy the snippet.",
+                "value_label": "Resolved value"
+            },
+            "values": {
+                "eyebrow": "Entries",
+                "title": "Values",
+                "desc": "All entries in this constant. Click a value to copy it to clipboard.",
+                "copy_label": "Copy value"
+            },
+            "used_by": {
+                "eyebrow": "Ecosystem",
+                "title": "Used by",
+                "desc": "Composables and components that consume this constant."
+            },
+            "examples": {
+                "eyebrow": "Usage",
+                "title": "Examples",
+                "desc": "Ready-to-paste code snippets using this constant."
+            }
+        },
+        "kind": {
+            "const": "const"
+        }
+    },
+    "directives": {
+        "meta": {
+            "title": "Directives · origam design system",
+            "description": "Six runtime directives that extend Vue templates with click-outside detection, contrast enforcement, hover classes, intersection tracking, ripple effects, and touch/swipe gestures."
+        },
+        "hero": {
+            "badge": "6 directives — Vue 3",
+            "title_line1": "Template",
+            "title_line2": "directives.",
+            "subtitle": "Six runtime directives that extend any Vue template. From click-outside detection to ripple effects, swipe gestures, viewport tracking, hover classes, and WCAG contrast enforcement.",
+            "search_placeholder": "Search directives…",
+            "search_label": "Filter directives by name",
+            "count_filtered_of": "of",
+            "count_filtered_match": "directives match",
+            "count_total": "directives — globally registered"
+        },
+        "catalog": {
+            "eyebrow": "API REFERENCE",
+            "title": "All directives.",
+            "empty_title": "No directives found",
+            "empty_desc": "No directive matches \"{query}\". Try a different term.",
+            "card_tag": "directive"
+        },
+        "detail": {
+            "meta": {
+                "title": "{name} · origam directives"
+            },
+            "breadcrumb_label": "Page location",
+            "breadcrumb_catalog": "Directives",
+            "category": "Directive",
+            "external_links_label": "External resources",
+            "toc_label": "Table of contents",
+            "toc_heading": "On this page",
+            "hero": {
+                "story_label": "Story",
+                "source_label": "Source",
+                "signature_copy_label": "Copy directive signature"
+            },
+            "not_found": {
+                "title": "Directive not found",
+                "desc": "No directive matches the slug",
+                "back": "Back to directives"
+            },
+            "signature": {
+                "eyebrow": "API",
+                "title": "Signature",
+                "desc": "All accepted forms of the directive binding."
+            },
+            "args": {
+                "eyebrow": "API",
+                "title": "Value / Arguments",
+                "desc": "Shape of the binding value and each property in the options object.",
+                "table_caption": "Value shape",
+                "required": "required"
+            },
+            "modifiers": {
+                "eyebrow": "API",
+                "title": "Modifiers",
+                "desc": "Dot-suffix modifiers that alter the directive behaviour.",
+                "table_caption": "Modifiers"
+            },
+            "examples": {
+                "eyebrow": "Usage",
+                "title": "Examples",
+                "desc": "Ready-to-paste code snippets for your templates."
+            },
+            "related": {
+                "eyebrow": "Ecosystem",
+                "title": "Related elements",
+                "desc": "DS components that use this directive internally or that commonly pair with it.",
+                "kind_directive": "directive",
+                "kind_component": "component"
+            },
+            "no_doc": {
+                "title": "Documentation coming soon",
+                "desc": "The detailed API reference for this directive is being written."
+            }
+        }
+    },
+    "enums": {
+        "meta": {
+            "title": "API Enums · origam design system",
+            "description": "Browse TypeScript enums used across origam props. Click any enum to see its definition, members and the components that use it."
+        },
+        "hero": {
+            "badge": "TypeScript enums",
+            "title_line1": "API",
+            "title_line2": "enums.",
+            "subtitle": "Every TypeScript enum used across origam props. Fully documented with definitions, members and cross-references to the components that use them.",
+            "search_placeholder": "Search enums…",
+            "search_label": "Filter enums by name or category",
+            "count_filtered_of": "of",
+            "count_filtered_match": "enums match",
+            "count_total": "enums across",
+            "count_categories": "categories"
+        },
+        "catalog": {
+            "eyebrow": "BROWSE BY CATEGORY",
+            "title": "All enums.",
+            "empty_title": "No enums found",
+            "empty_desc": "No enum matches \"{query}\". Try a different term."
+        },
+        "detail": {
+            "meta": {
+                "title": "{name} · origam API enums"
+            },
+            "breadcrumb_label": "Page location",
+            "breadcrumb_catalog": "Enums",
+            "external_links_label": "External resources",
+            "toc_label": "Table of contents",
+            "toc_heading": "On this page",
+            "hero": {
+                "source_label": "Source"
+            },
+            "not_found": {
+                "title": "Enum not found",
+                "desc": "No enum matches the slug",
+                "back": "Back to catalogue"
+            },
+            "definition": {
+                "eyebrow": "TypeScript",
+                "title": "Definition",
+                "desc": "The TypeScript definition as found in the origam source. Click the copy icon to copy the snippet."
+            },
+            "no_doc": {
+                "title": "Documentation coming soon",
+                "desc": "The detailed API reference for this enum is being written."
+            },
+            "values": {
+                "eyebrow": "Members",
+                "title": "Members",
+                "desc": "All members of this enum. Click a value to copy it to clipboard.",
+                "copy_label": "Copy value"
+            },
+            "used_by": {
+                "eyebrow": "Ecosystem",
+                "title": "Used by",
+                "desc": "Components and props that accept this enum as a value."
+            },
+            "examples": {
+                "eyebrow": "Usage",
+                "title": "Examples",
+                "desc": "Ready-to-paste code snippets using this enum."
+            }
+        },
+        "kind": {
+            "enum": "enum"
+        }
+    },
+    "figma_plugin": {
+        "meta": {
+            "title": "Figma plugin · origam design system",
+            "description": "Sync origam design tokens and components into Figma. Install the Origam DS Sync plugin via its manifest and keep your Figma file in sync with the token layer."
+        },
+        "hero": {
+            "badge": "Origam DS Sync",
+            "title_line1": "Figma meets",
+            "title_line2": "origam tokens.",
+            "subtitle": "Origam DS Sync is a Figma plugin that generates 14 ComponentSets bound to your design tokens, and exports them back to the repo as Tokens Studio JSON or SCSS — keeping designers and developers in perfect sync.",
+            "actions_label": "Get the plugin",
+            "cta_download": "Download plugin",
+            "cta_github": "View on GitHub"
+        },
+        "install": {
+            "eyebrow": "SETUP",
+            "title_line1": "Import via",
+            "title_line2": "manifest.",
+            "subtitle": "Origam DS Sync is a development plugin — it is not published to the Figma Community. You install it locally by importing its manifest.json in Figma desktop.",
+            "desktop_note": "Figma desktop app required — the browser version cannot load local manifests.",
+            "steps_label": "Installation steps",
+            "steps": {
+                "download": {
+                    "title": "1. Download the plugin",
+                    "description": "Download the zip archive containing the plugin manifest and built artefacts (dist/code.js + dist/ui.html).",
+                    "btn": "origam-figma-plugin.zip"
+                },
+                "unzip": {
+                    "title": "2. Unzip the archive",
+                    "description": "Extract the zip to a permanent location on your machine. Figma reads the manifest from disk — do not move the folder after importing."
+                },
+                "menu": {
+                    "title": "3. Open Figma desktop → Plugins → Development",
+                    "description": "Open any Figma file in the desktop app. In the top menu, go to Plugins → Development → Import plugin from manifest…"
+                },
+                "manifest": {
+                    "title": "4. Select manifest.json",
+                    "description": "In the file picker that opens, navigate to the unzipped folder and select manifest.json. Figma registers the plugin immediately."
+                },
+                "run": {
+                    "title": "5. Run Origam DS Sync",
+                    "description": "Go to Plugins → Development → Origam DS Sync. The plugin opens with three tabs: Generate (create ComponentSets), Export (Tokens Studio JSON or SCSS), and Sync (v2 placeholder)."
+                }
+            }
+        },
+        "cta": {
+            "title": "Ready to sync?",
+            "description": "Download the plugin, explore the source, or browse the origam component catalogue to see what gets generated.",
+            "actions_label": "Get started with the Figma plugin",
+            "cta_download": "Download plugin",
+            "cta_components": "Browse components"
+        }
+    },
+    "footer": {
+        "tagline": "The Vue 3 design system that just works.",
+        "product": {
+            "title": "Product",
+            "charts": "Charts",
+            "themes": "Themes"
+        },
+        "resources": {
+            "title": "Resources",
+            "github": "GitHub",
+            "community": "Community",
+            "discord": "Discord",
+            "discussions": "Discussions",
+            "twitter": "Twitter",
+            "rss": "RSS",
+            "figma_plugin": "Figma plugin",
+            "support": "Support origam"
+        },
+        "legal": {
+            "title": "Legal",
+            "license": "MIT License",
+            "privacy": "Privacy",
+            "contact": "Contact"
+        },
+        "copyright": "© 2026 origam · MIT",
+        "made_with": "Made with origam, by humans.",
+        "donate": "Support origam"
+    },
+    "home": {
+        "meta": {
+            "title": "origam · Vue 3 design system",
+            "description": "95 components. 29 chart primitives. Full a11y. Design tokens out of the box. Built for Vue 3 with TypeScript-first DX."
+        },
+        "hero": {
+            "badge": "v{version} — 29 charts shipped, WCAG 2.1 AA pass",
+            "title_line1": "The Vue 3 design system",
+            "title_line2": "that just works.",
+            "subtitle": "95 components. 29 chart primitives. Full a11y. Design tokens out of the box. Built for Vue 3 with TypeScript-first DX.",
+            "cta_components": "Browse components",
+            "cta_github": "Star on GitHub",
+            "install": "npm install origam",
+            "copy": "Copy",
+            "copied": "Copied",
+            "ctas_label": "Hero calls to action"
+        },
+        "kpis": {
+            "title": "origam by the numbers",
+            "components_value": "95",
+            "components_label": "Components",
+            "charts_value": "29",
+            "charts_label": "Chart primitives",
+            "a11y_value": "100%",
+            "a11y_label": "WCAG 2.1 AA",
+            "size_value": "<50kb",
+            "size_label": "Tree-shakable",
+            "license_value": "MIT",
+            "license_label": "Open source"
+        },
+        "features": {
+            "eyebrow": "WHAT'S INSIDE",
+            "title": "Everything you'd expect. Nothing you wouldn't.",
+            "title_line1": "Everything you'd expect.",
+            "title_line2": "Nothing you wouldn't.",
+            "subtitle": "A complete toolkit for shipping Vue 3 apps — from atomic primitives to complex data viz, every piece tested, themed and a11y-compliant.",
+            "charts": {
+                "title": "29 chart primitives",
+                "description": "Line, area, bar, donut, candlestick, heatmap — Highcharts-tier coverage without the license."
+            },
+            "a11y": {
+                "title": "WCAG 2.1 AA verified",
+                "description": "Each component ships with axe-core + Playwright a11y tests. Keyboard, screen-readers, motion: covered."
+            },
+            "tokens": {
+                "title": "Design tokens",
+                "description": "Multi-theme via Tokens Studio. Switch between light, dark, or your own brand at runtime with zero remount."
+            },
+            "typescript": {
+                "title": "TypeScript first",
+                "description": "Strict mode, full type inference, generics on Data Table/List. Your IDE will thank you."
+            },
+            "css": {
+                "title": "CSS-first",
+                "description": "Container queries, :has(), color-mix(), view-transition-name. We use modern CSS so you don't reinvent it."
+            },
+            "composition": {
+                "title": "Composition API",
+                "description": "Built on script setup + Composition API. Headless composables exposed when you need to go low-level."
+            }
+        },
+        "playground": {
+            "eyebrow": "LIVE PLAYGROUND",
+            "title": "Try before you ship.",
+            "file": "App.vue",
+            "caption": "The Vue 3 design system that just works. Try a component live.",
+            "preview_title": "Hello Origam",
+            "preview_text": "The Vue 3 design system that just works. Try a component live.",
+            "preview_cta": "Get started"
+        },
+        "showcase": {
+            "eyebrow": "SHOWCASE",
+            "title": "95 components. One vibe.",
+            "title_line1": "95 components.",
+            "title_line2": "One vibe.",
+            "view_all": "View all",
+            "data_table": {
+                "title": "Data Table",
+                "caption": "Sortable · filterable · virtualized",
+                "badge": "Data",
+                "col_project": "PROJECT",
+                "col_name": "Name",
+                "col_owner": "Owner",
+                "col_status": "Status",
+                "row_menu": "Row actions",
+                "row1_name": "Aurora release",
+                "row1_owner": "Arnaud",
+                "row1_status": "Shipped",
+                "row2_name": "Tokens v2",
+                "row2_owner": "Léa",
+                "row2_status": "In review",
+                "row3_name": "A11y audit",
+                "row3_owner": "Jade",
+                "row3_status": "Shipped",
+                "row4_name": "Chart engine",
+                "row4_owner": "Marc",
+                "row4_status": "Draft",
+                "row5_name": "New theme",
+                "row5_owner": "Romi",
+                "row5_status": "In review"
+            },
+            "chart_line": {
+                "title": "Chart Line",
+                "caption": "+12.4% this month"
+            },
+            "switch": {
+                "title": "Switch",
+                "caption": "inset · flat · default"
+            },
+            "chips": {
+                "title": "Chips",
+                "caption": "6 intents",
+                "primary": "Primary",
+                "neutral": "Neutral",
+                "success": "Success",
+                "warning": "Warning",
+                "danger": "Danger",
+                "info": "Info"
+            },
+            "avatar_group": {
+                "title": "Avatar Group",
+                "caption": "+3 members"
+            }
+        },
+        "themes": {
+            "eyebrow": "THEMING",
+            "title_line1": "One design system.",
+            "title_line2": "Every brand.",
+            "subtitle": "DTCG-compliant design tokens, multi-theme out of the box. Switch between light, dark or your custom brand at runtime — zero remount, zero flicker.",
+            "chip_sobre": "Sobre",
+            "chip_glass": "Glass",
+            "chip_geek": "Geek",
+            "chip_cartoon": "Cartoon",
+            "chip_editorial": "Editorial",
+            "chip_material": "Material",
+            "chip_ecom": "Ecom",
+            "chip_apple": "Apple",
+            "tooling_label": "Tooling",
+            "tokens_studio": "→ tokens.studio compatible",
+            "style_dictionary": "→ Style Dictionary v4",
+            "preview_light": "light.json",
+            "preview_dark": "dark.json",
+            "preview_brand_a": "brand-a.json",
+            "preview_brand_b": "brand-b.json",
+            "preview_button": "Button"
+        },
+        "cta": {
+            "title": "Ready to ship faster?",
+            "description": "Spin up your Vue 3 project with origam in 30 seconds.",
+            "cta_start": "Get started",
+            "cta_docs": "Read docs",
+            "actions_label": "Get started"
+        }
+    },
+    "installation": {
+        "meta": {
+            "title": "Installation · origam design system",
+            "description": "Get origam up and running in minutes. Install the npm package, register the plugin, and start building with 95+ accessible Vue 3 components."
+        },
+        "hero": {
+            "badge": "npm install origam",
+            "title_line1": "Up and running",
+            "title_line2": "in minutes.",
+            "subtitle": "Install origam, register the plugin, and start building with 95+ accessible, token-driven Vue 3 components right away."
+        },
+        "steps": {
+            "eyebrow": "STEP BY STEP",
+            "title_line1": "Five steps.",
+            "title_line2": "You're set.",
+            "subtitle": "From zero to a fully themed Vue 3 app with origam — no boilerplate needed.",
+            "list_label": "Installation steps",
+            "install": {
+                "title": "1. Install",
+                "description": "Add origam to your project with your preferred package manager.",
+                "pm_label": "Package manager",
+                "copy": "Copy",
+                "copied": "Copied"
+            },
+            "register": {
+                "title": "2. Register the plugin",
+                "description": "Import the token sheets and register origam as a Vue plugin in your entry file.",
+                "note": "createOrigam() accepts an optional options bag to configure icons, locale, display, SSR, aliases and more. By default, all components and directives are registered globally."
+            },
+            "use": {
+                "title": "3. Use a component",
+                "description": "All components are globally registered. Drop any Origam component into your templates — no per-file import needed."
+            },
+            "theming": {
+                "title": "4. Theming",
+                "description": "origam ships with light and dark themes. Switch statically via an HTML attribute, or at runtime with the useTheme composable.",
+                "sub_static": "Static switch — HTML attribute (omit to follow system preference):",
+                "sub_runtime": "Runtime switch — useTheme composable:",
+                "sub_scoped": "Scoped sub-tree override:",
+                "note": "Import origam/tokens/css/dark once at boot to enable the dark token sheet."
+            },
+            "nuxt": {
+                "title": "5. Nuxt integration",
+                "description": "Using Nuxt 3 or Nuxt 4? The official origam Nuxt module is included in the same package — no extra install required.",
+                "note": "The Nuxt module is delivered as a sub-export (origam/nuxt) — no separate package to install. It auto-imports all components and composables, and resolves themes SSR-safely."
+            }
+        },
+        "peer_deps": {
+            "eyebrow": "REQUIREMENTS",
+            "title": "Peer dependencies.",
+            "subtitle": "origam has a minimal footprint. Vue 3 is the only mandatory peer — everything else is optional and tree-shaken when unused.",
+            "table_caption": "Peer dependencies",
+            "col_pkg": "Package",
+            "col_required": "Required",
+            "col_used_by": "Used by",
+            "vue_used_by": "Always — core runtime",
+            "vue_i18n_used_by": "Optional — locale composable",
+            "vue_router_used_by": "Optional — link components",
+            "node_note": "Node >= 22 is required to build origam from source. Consumers need only Vue 3.5+ at runtime."
+        },
+        "cta": {
+            "title": "Ready to build?",
+            "description": "Explore the full component catalogue, browse interactive stories, or dive into the source on GitHub.",
+            "cta_components": "Browse components",
+            "cta_github": "View on GitHub",
+            "actions_label": "Explore origam"
+        }
+    },
+    "interfaces": {
+        "meta": {
+            "title": "API Interfaces · origam design system",
+            "description": "Browse TypeScript prop interfaces used across origam components. Click any interface to see its definition, properties and the components that use it."
+        },
+        "hero": {
+            "badge": "TypeScript interfaces",
+            "title_line1": "API",
+            "title_line2": "interfaces.",
+            "subtitle": "Every prop interface used across origam components. Fully documented with definitions, properties, extends chains and cross-references to the components that use them.",
+            "search_placeholder": "Search interfaces…",
+            "search_label": "Filter interfaces by name or category",
+            "count_filtered_of": "of",
+            "count_filtered_match": "interfaces match",
+            "count_total": "interfaces across",
+            "count_categories": "categories"
+        },
+        "catalog": {
+            "eyebrow": "BROWSE BY CATEGORY",
+            "title": "All interfaces.",
+            "empty_title": "No interfaces found",
+            "empty_desc": "No interface matches \"{query}\". Try a different term."
+        },
+        "kind": {
+            "interface": "interface",
+            "composable": "composable",
+            "component": "component"
+        },
+        "detail": {
+            "meta": {
+                "title": "{name} · origam API interfaces"
+            },
+            "breadcrumb_label": "Page location",
+            "breadcrumb_catalog": "Interfaces",
+            "external_links_label": "External resources",
+            "toc_label": "Table of contents",
+            "toc_heading": "On this page",
+            "hero": {
+                "source_label": "Source"
+            },
+            "not_found": {
+                "title": "Interface not found",
+                "desc": "No interface matches the slug",
+                "back": "Back to catalogue"
+            },
+            "definition": {
+                "eyebrow": "TypeScript",
+                "title": "Definition",
+                "desc": "The TypeScript interface definition as found in the origam source. Click the copy icon to copy the snippet."
+            },
+            "extends": {
+                "eyebrow": "Inheritance",
+                "title": "Extends",
+                "desc": "Parent interfaces this one inherits from. Their properties are available on every consumer of this interface."
+            },
+            "props": {
+                "eyebrow": "API",
+                "title": "Properties",
+                "desc": "Every property declared by this interface, with its type, optionality and default.",
+                "col_name": "Name",
+                "col_type": "Type",
+                "col_optional": "Optional",
+                "col_default": "Default",
+                "col_description": "Description",
+                "optional_yes": "Yes",
+                "optional_no": "No"
+            },
+            "used_by": {
+                "eyebrow": "Ecosystem",
+                "title": "Used by",
+                "desc": "Components and composables that extend or consume this interface."
+            },
+            "examples": {
+                "eyebrow": "Usage",
+                "title": "Examples",
+                "desc": "Ready-to-paste code snippets using this interface."
+            }
+        }
+    },
+    "nav": {
+        "components": "Components",
+        "playground": "Playground",
+        "docs": "Docs",
+        "stories": "Stories",
+        "blog": "Blog",
+        "changelog": "Changelog",
+        "github": "GitHub",
+        "why_origam": "Why origam?",
+        "roadmap": "Roadmap",
+        "installation": "Installation",
+        "wireframe": "Wireframe",
+        "directives": "Directives",
+        "theming": "Theming",
+        "figma_plugin": "Figma plugin",
+        "composables": "Composables",
+        "types": "Types",
+        "enums": "Enums",
+        "interfaces": "Interfaces",
+        "utils": "Utils",
+        "consts": "Constants",
+        "sections": {
+            "introduction": "Introduction",
+            "getting_started": "Getting started",
+            "features": "Features"
+        },
+        "a11y": {
+            "open_section": "Open {section} menu",
+            "nav_primary": "Primary navigation"
+        }
+    },
+    "roadmap": {
+        "meta": {
+            "title": "Roadmap · origam design system",
+            "description": "Where origam is today, what has been delivered, and what is coming next. Public, honest, updated with each release."
+        },
+        "hero": {
+            "badge": "v2.6.0 — Wave 4 shipped",
+            "title_line1": "Roadmap.",
+            "title_line2": "Honest & public.",
+            "subtitle": "origam is an early-stage Vue 3 design system. Here is where we stand today, what we have already shipped, and what is on the horizon."
+        },
+        "status": {
+            "eyebrow": "WHERE WE STAND",
+            "title_line1": "Post-2.6.0",
+            "title_line2": "Status.",
+            "subtitle": "An honest snapshot of what works, what is in progress, and what is still missing.",
+            "npm_published": "First public release on npm — tarball 869 kB, 0 critical vulnerabilities",
+            "pre_delivery": "Pre-delivery automated via prepublishOnly (tokens + build + 220 unit tests)",
+            "readme_changelog": "README correct, CHANGELOG up to date",
+            "monorepo": "Monorepo migration complete (May 2026) — 6 pnpm workspace packages",
+            "doc_online": "No online documentation yet. No deployed stories.",
+            "ci": "CI pipeline incomplete — lint / test / build / publish not yet automated",
+            "playwright_coverage": "Partial Playwright coverage (~100 specs for 161 stories)",
+            "bundle_monitoring": "No bundle-size monitoring yet. No systematic a11y audit.",
+            "wave4_shipped": "Wave 4 shipped — 13 components + gradient support + OrigamTextMask (v2.6.0)"
+        },
+        "delivered": {
+            "eyebrow": "ALREADY SHIPPED",
+            "title_line1": "A full design system.",
+            "title_line2": "Already in production.",
+            "subtitle": "origam is not starting from zero — here is the scope already shipped on npm, with the latest waves below.",
+            "badge_done": "Delivered"
+        },
+        "overview": {
+            "label": "What origam already is",
+            "components": "component families",
+            "composables": "composables",
+            "directives": "directives",
+            "stories": "interactive stories",
+            "themes": "base themes (light + dark)",
+            "token_tiers": "design-token tiers"
+        },
+        "waves": {
+            "wave1": {
+                "title": "Wave 1 — New components",
+                "tabs": "Tabs / Tab / TabPanel / TabPanels — 3 variants, 2 orientations, ARIA WAI-ARIA APG, lazy panel mount",
+                "command_palette": "CommandPalette (⌘K) — fuzzy match, useHotkey cross-platform, reuses OrigamKbd",
+                "snackbar_stack": "SnackbarStack — 8 locations, FIFO max stack, useSnackbarStack singleton, role=status/alert per intent",
+                "bracket": "Bracket (tournament bracket) — 3 variants (single-elim, double-elim, round-robin), SVG connectors"
+            },
+            "wave2": {
+                "title": "Wave 2 — Enrichments",
+                "parallax": "OrigamParallax — multi-layer, direction, easing, CSS-first scroll-driven animation",
+                "code": "OrigamCode — Shiki syntax highlighting, 14 languages, 2 themes, line numbers, copy, filename",
+                "textarea_richtext": "OrigamTextareaField — rich mode contenteditable editor with 9 toolbar commands",
+                "text_field_mask": "OrigamTextField — mask engine with 13 built-in patterns + Luhn + IBAN mod-97"
+            },
+            "wave3": {
+                "title": "Wave 3 — Infrastructure",
+                "nuxt_module": "Official Nuxt module (sub-export origam/nuxt) — auto-import, SSR-safe theme plugin",
+                "ssr_safety": "SSR safety audit + useCssSupportClient + OrigamClientOnly",
+                "monorepo": "pnpm monorepo — 6 packages (ds, marketing, stories, docs, tests, figma-plugin)"
+            },
+            "wave4": {
+                "title": "Wave 4 — New components & features",
+                "grid": "OrigamGrid — declarative CSS Grid with columns, rows, areas, gap, auto-flow",
+                "masonry": "OrigamMasonry — CSS-first via grid-template-rows: masonry, JS fallback",
+                "blockquote": "OrigamBlockquote — typography: quote + author + source + variants",
+                "empty_state": "OrigamEmptyState — 5 presets: no-data, no-results, error, offline, locked",
+                "clipboard": "OrigamClipboard — copy wrapper + Copied! feedback, no dependencies",
+                "inline_edit": "OrigamInlineEdit — edit-in-place pattern, v-model + validators, ARIA live",
+                "number_format": "OrigamNumberFormat — i18n formatting via Intl.NumberFormat, display only",
+                "qr_code": "OrigamQRCode — SVG output, ISO/IEC 18004, error correction level, logo overlay",
+                "watermark": "OrigamWatermark — diagonal repeat overlay, SVG text or canvas data-URI",
+                "video": "OrigamVideo — custom player: play/pause, scrubber, PIP, captions, HLS optional",
+                "sound": "OrigamSound — audio player + waveform via Web Audio API, Media Session API",
+                "calendar": "OrigamCalendar — month/week/day/agenda views, RRULE, drag-to-create, 100 % in-house",
+                "chart": "OrigamChart — SVG-native: line, area, bar, pie, radar, scatter — no d3 or chart.js",
+                "gradient": "Gradient support — color/bgColor/textColor props accept gradient values",
+                "text_mask": "OrigamTextMask — text reveal via background-clip: text, gradient + image backgrounds"
+            }
+        },
+        "phases": {
+            "eyebrow": "WHAT'S NEXT",
+            "title": "A phased roadmap.",
+            "subtitle": "Each phase builds on the previous. The order reflects real technical dependencies, not arbitrary milestones.",
+            "short_term": {
+                "eyebrow": "Q3 2026",
+                "title": "Short term",
+                "ci": {
+                    "title": "Complete CI / CD pipeline",
+                    "description": "GitHub Actions: lint, token:lint, unit tests, e2e, build on every PR. Automated publish on tag v*."
+                },
+                "deployment": {
+                    "title": "Deploy VitePress + Histoire",
+                    "description": "Docs on origam.dev, stories on stories.origam.dev. Blocks all external adoption."
+                },
+                "playwright": {
+                    "title": "Full Playwright coverage",
+                    "description": "100 % of public components covered — one spec per component exercising every Variant and prop."
+                },
+                "a11y_audit": {
+                    "title": "Overlay a11y audit",
+                    "description": "Focus trap, focus restoration, aria-modal, Esc key for Dialog, Menu, Tooltip, Drawer, Snackbar."
+                },
+                "bundle_size": {
+                    "title": "Bundle-size monitoring",
+                    "description": "size-limit on every sub-export. PR comments auto-generated. The 5.6 MB → 869 kB drop must stay an asset."
+                },
+                "sonarqube": {
+                    "title": "SonarQube — A rating, zero debt",
+                    "description": "The Sonar scan is already wired (build.yml + sonar-project.properties) but incomplete. Feed the Vitest lcov coverage into Sonar (sonar.javascript.lcov.reportPaths), enable a blocking quality gate, and clear every bug / vulnerability / security hotspot / code smell to reach an A rating on all axes with zero technical debt. Run on PRs and add it to the pre-delivery checks."
+                },
+                "ci_e2e": {
+                    "title": "CI E2E — job cancelled on every run",
+                    "description": "The Playwright E2E job is cancelled on every CI run (the 5 other jobs pass): it exceeds its 30-min timeout even on the green subset. Cause: the Playwright webServer runs Histoire in Vite DEV mode, which compiles each story on first access (19-30 s cold-start per story) — too slow on a fresh runner. Decide: fix by pointing the e2e webServer at the static Histoire build already produced by build:embeds (public/stories, served via http-server — no Vite cold-start), or make the e2e job non-blocking / move it to a separate nightly workflow until then."
+                }
+            },
+            "mid_term": {
+                "eyebrow": "Q4 2026 / Q1 2027",
+                "title": "Mid term",
+                "v3": {
+                    "title": "v3.0.0 — Strategy B",
+                    "description": "Remove *Styles returns when the value is tokenised. Utility classes become the sole API. ~2× less reactive computation."
+                },
+                "motion_tokens": {
+                    "title": "Motion & a11y media tokens",
+                    "description": "tokens/semantic/motion.json — durations, easings. Auto 0ms if prefers-reduced-motion. High-contrast ramp."
+                },
+                "vrt": {
+                    "title": "Visual regression testing",
+                    "description": "Playwright toHaveScreenshot() per Variant, or Chromatic / Lost-Pixel. Baseline on main, diff blocks PR."
+                },
+                "accent_color": {
+                    "title": "accentColor rename (breaking v3)",
+                    "description": "bgColor → accentColor prop rename, aligned with the CSS accent-color standard. Full deprecation path included."
+                },
+                "list_semantics": {
+                    "title": "Semantic list variants (OrigamList)",
+                    "description": "OrigamList / OrigamListItem render <div role=\"listbox\"> today. A new variant prop (unordered → ul/li, ordered → ol/li, nav, listbox) will emit real <ul>/<ol>/<li> semantics, replacing the boolean nav prop."
+                },
+                "turborepo": {
+                    "title": "Turborepo build cache",
+                    "description": "Replace raw pnpm -r scripts with Turborepo pipelines. Remote cache drastically cuts CI rebuild time."
+                },
+                "background_directive": {
+                    "title": "v-background directive",
+                    "description": "Compose one or several backgrounds on any element — image or color gradient (tokenised intents + custom). Per-layer position, size, repeat and a simple mask. Each layer renders as a pseudo-element (default, zero extra DOM) or an injected div, switchable in the directive config."
+                },
+                "textmask_stroke": {
+                    "title": "TextMask — colored stroke & fill",
+                    "description": "Extend OrigamTextMask with an outlined mode: transparent text with a colored per-letter stroke (-webkit-text-stroke) and/or a distinct fill, for outline-only and contrasted headline effects. Stays real, selectable text; CSS-first with a solid fallback."
+                },
+                "theming_completion": {
+                    "title": "Complete the /theming builder",
+                    "description": "The marketing theme builder shipped as a partial V1 (~14 core components, tokens capped, modals/slot-driven not previewable). Finish it: cover all editable components, handle overlay/slot-driven previews, lift the token cap, and rework the UI — the current ergonomics are clearly not good enough. Stays data-driven and DS-first."
+                }
+            },
+            "long_term": {
+                "eyebrow": "> 6 MONTHS",
+                "title": "Long term",
+                "vapor": {
+                    "title": "Vue Vapor mode (exploratory)",
+                    "description": "No-virtual-DOM compilation — ~40 % less runtime overhead. POC on 5 pivot components, benchmarks first."
+                },
+                "web_components": {
+                    "title": "Web Components export",
+                    "description": "origam/elements sub-export via defineCustomElement. Cross-framework demo (React, Svelte, Angular)."
+                },
+                "theme_builder": {
+                    "title": "Theme Builder UI",
+                    "description": "Standalone app consuming origam itself: edit primitive tokens, preview components in real time, export brand JSON."
+                },
+                "marketing_db": {
+                    "title": "Marketing — database + auto DS sync",
+                    "description": "Persist the whole reference catalogue (components, composables, types, enums, interfaces, utils, consts) in a database (Nitro + TypeORM / PostgreSQL) instead of static glob files. A sync job reads the DS source and upserts the DB on every release, so the reference docs follow the design system automatically. Editorial content lives in the same tables with a DS-auto vs edited flag."
+                },
+                "marketing_cms": {
+                    "title": "Marketing — admin backend (CMS)",
+                    "description": "A back-office to manage all site content when auto-generation falls short: edit any page (reference + editorial), reorder, publish/hide, without touching code. Fully translatable (DB-driven i18n, per-locale completeness) and built with origam itself — a full-scale DS showcase. Auth + roles, change audit, pre-publish guardrail. Stack: Nitro + TypeORM/PostgreSQL + Redis."
+                }
+            }
+        },
+        "effort": {
+            "small": "S",
+            "medium": "M",
+            "large": "L",
+            "xlarge": "XL"
+        },
+        "cta": {
+            "title": "Follow the progress.",
+            "description": "Star the repository on GitHub to stay updated. Contributions and feedback are welcome.",
+            "cta_github": "Star on GitHub",
+            "cta_changelog": "Read CHANGELOG",
+            "actions_label": "Follow origam"
+        },
+        "wave4_grid": {
+            "eyebrow": "WAVE 4 — SHIPPED",
+            "title_line1": "15 components & features",
+            "title_line2": "already shipped.",
+            "subtitle": "Everything in Wave 4 is live on npm. These are the components and features available right now in origam.",
+            "badge_shipped": "Shipped",
+            "grid": {
+                "name": "OrigamGrid",
+                "note": "Declarative CSS Grid with columns, rows, areas, gap, auto-flow"
+            },
+            "masonry": {
+                "name": "OrigamMasonry",
+                "note": "CSS-first via grid-template-rows: masonry, JS fallback"
+            },
+            "blockquote": {
+                "name": "OrigamBlockquote",
+                "note": "Typography: quote + author + source + variants"
+            },
+            "empty_state": {
+                "name": "OrigamEmptyState",
+                "note": "5 presets: no-data, no-results, error, offline, locked"
+            },
+            "clipboard": {
+                "name": "OrigamClipboard",
+                "note": "Copy wrapper + Copied! feedback, no dependencies"
+            },
+            "inline_edit": {
+                "name": "OrigamInlineEdit",
+                "note": "Edit-in-place pattern, v-model + validators, ARIA live"
+            },
+            "number_format": {
+                "name": "OrigamNumberFormat",
+                "note": "i18n formatting via Intl.NumberFormat, display only"
+            },
+            "qr_code": {
+                "name": "OrigamQRCode",
+                "note": "SVG output, ISO/IEC 18004, error correction level, logo overlay"
+            },
+            "watermark": {
+                "name": "OrigamWatermark",
+                "note": "Diagonal repeat overlay, SVG text or canvas data-URI"
+            },
+            "video": {
+                "name": "OrigamVideo",
+                "note": "Custom player: play/pause, scrubber, PIP, captions, HLS optional"
+            },
+            "sound": {
+                "name": "OrigamSound",
+                "note": "Audio player + waveform via Web Audio API, Media Session API"
+            },
+            "calendar": {
+                "name": "OrigamCalendar",
+                "note": "Month/week/day/agenda views, RRULE, drag-to-create, 100 % in-house"
+            },
+            "chart": {
+                "name": "OrigamChart",
+                "note": "SVG-native: line, area, bar, pie, radar, scatter — no d3 or chart.js"
+            },
+            "gradient": {
+                "name": "Gradient support",
+                "note": "color/bgColor/textColor props now accept gradient values"
+            },
+            "text_mask": {
+                "name": "OrigamTextMask",
+                "note": "Text reveal via background-clip: text, gradient + image backgrounds"
+            }
+        }
+    },
+    "support": {
+        "meta": {
+            "title": "Support origam · Vue 3 design system",
+            "description": "origam is free and MIT-licensed, maintained by one developer. Donations fund the maintenance work."
+        },
+        "hero": {
+            "badge": "Independent and free",
+            "title": "Support origam",
+            "lead": "origam is built and maintained by one developer, on his own time. It is free, MIT-licensed, and it will stay that way. If it saves you time, a donation keeps it moving."
+        },
+        "give": {
+            "title": "Make a donation",
+            "hint": "Scan the code with your phone, or use the button below. Payments are handled by PayPal — no account is required to give by card.",
+            "cta": "Donate via PayPal"
+        },
+        "what": {
+            "title": "What it changes",
+            "body": "Donations buy maintenance time: answering issues, keeping dependencies patched, testing across browsers, and writing the documentation that makes a component usable rather than merely shipped. They are not a support contract and they buy no priority — they simply make the unglamorous work sustainable.",
+            "alt": "Not in a position to give? Reporting a precise bug, improving a documentation page or telling someone about origam helps just as much."
+        }
+    },
+    "theming": {
+        "meta": {
+            "title": "Theme builder · origam design system",
+            "description": "Configure a default origam theme visually — edit component props and CSS tokens with a live preview, then export a ready-to-use theme module."
+        },
+        "eyebrow": "Theme builder",
+        "title": "Theme Builder",
+        "lead": "Pick a component, tune its props and CSS tokens, watch the preview update, then export a ready-to-register theme module.",
+        "name": {
+            "label": "Name",
+            "placeholder": "my-theme"
+        },
+        "label": {
+            "label": "Label",
+            "placeholder": "My theme"
+        },
+        "mode": {
+            "label": "Color mode",
+            "light": "Light",
+            "dark": "Dark",
+            "auto": "Auto",
+            "edit": "EDIT",
+            "view": "VIEW",
+            "tab_label": "Edit color mode"
+        },
+        "split": {
+            "toggle": "Split",
+            "switch_mode": "Switch to {mode} mode"
+        },
+        "controls": {
+            "heading": "Controls — {component} ({mode})",
+            "panel_label": "Component controls",
+            "tabs_label": "Controls view",
+            "tab_props": "Props",
+            "tab_tokens": "CSS Tokens",
+            "reset": "reset",
+            "reset_prop": "Reset {label}",
+            "edited": "Edited",
+            "no_props": "This component exposes no themable props.",
+            "no_tokens": "No editable CSS tokens registered for this component yet."
+        },
+        "control": {
+            "custom": "Other…",
+            "unset": "none",
+            "bool_true": "True",
+            "bool_false": "False",
+            "color": {
+                "inherit": "Inherit from theme",
+                "inherited": "Inherited from theme",
+                "intent_group": "Colour intent",
+                "back": "Back to theme colours",
+                "custom_label": "Custom colour",
+                "custom_value": "{value} (custom)",
+                "intent": {
+                    "primary": "Primary",
+                    "secondary": "Secondary",
+                    "success": "Success",
+                    "warning": "Warning",
+                    "danger": "Danger",
+                    "info": "Info",
+                    "neutral": "Neutral",
+                    "ghost": "Ghost"
+                }
+            },
+            "density": {
+                "compact": "Compact",
+                "default": "Default",
+                "comfortable": "Comfortable"
+            },
+            "rounded": {
+                "none": "None",
+                "x_small": "X-Small",
+                "small": "Small",
+                "default": "Default",
+                "medium": "Medium",
+                "large": "Large",
+                "x_large": "X-Large",
+                "shaped": "Shaped",
+                "shaped_invert": "Shaped invert",
+                "custom_legend": "Custom corners",
+                "custom_value": "Custom — {tl} / {tr} / {bl} / {br}",
+                "corner_top_left": "Top-left corner",
+                "corner_top_right": "Top-right corner",
+                "corner_bottom_left": "Bottom-left corner",
+                "corner_bottom_right": "Bottom-right corner",
+                "link_corners": "Link the 4 corners"
+            },
+            "elevation": {
+                "none": "None",
+                "xs": "XS",
+                "sm": "SM",
+                "md": "Default",
+                "lg": "LG",
+                "xl": "XL",
+                "custom_depth_value": "Custom — depth {depth}",
+                "custom_shadow_value": "Custom shadow",
+                "mode_group": "Custom shadow mode",
+                "mode_depth": "Depth",
+                "mode_shadow": "Shadow",
+                "depth_label": "Depth (0-24)",
+                "offset_x": "Offset X (px)",
+                "offset_y": "Offset Y (px)",
+                "blur": "Blur (px)",
+                "spread": "Spread (px)",
+                "shadow_color": "Shadow colour",
+                "opacity": "Opacity"
+            },
+            "border": {
+                "width_none": "None",
+                "width_thin": "Thin",
+                "width_thick": "Thick",
+                "style_solid": "Solid",
+                "style_dashed": "Dashed",
+                "style_dotted": "Dotted",
+                "style_double": "Double",
+                "style_none": "None",
+                "style_hidden": "Hidden",
+                "style_groove": "Groove",
+                "style_ridge": "Ridge",
+                "style_inset": "Inset",
+                "style_outset": "Outset",
+                "width_legend": "Border — Width",
+                "style_legend": "Border — Style",
+                "color_legend": "Border — Colour",
+                "custom_width_value": "{width}px",
+                "custom_sides_value": "{tl}/{tr}/{bl}/{br}px",
+                "uniform_width": "All sides (px)",
+                "link_sides": "Link the 4 sides",
+                "color_per_side": "Colour per side",
+                "color_global": "Single colour",
+                "side_top": "Top (px)",
+                "side_right": "Right (px)",
+                "side_bottom": "Bottom (px)",
+                "side_left": "Left (px)"
+            },
+            "box_model": {
+                "inherited": "Inherited from theme",
+                "scale_label": "Scale steps (origam-space)",
+                "other": "Other… (box-model editor)",
+                "mode_group": "Link mode",
+                "mode_linked": "All linked",
+                "mode_axis": "Vertical / Horizontal",
+                "mode_unlinked": "No link",
+                "all_edges": "All edges (px)",
+                "vertical": "Vertical (top + bottom)",
+                "horizontal": "Horizontal (left + right)",
+                "edge_top": "Top (px)",
+                "edge_left": "Left (px)",
+                "edge_bottom": "Bottom (px)",
+                "edge_right": "Right (px)"
+            }
+        },
+        "reset": "Reset",
+        "validate": "Validate & export",
+        "export_json": "Export JSON",
+        "preset": {
+            "origam": "Origam",
+            "cartoon": "Cartoon",
+            "apple": "Apple",
+            "geek": "Geek",
+            "glass": "Glass",
+            "editorial": "Editorial",
+            "material": "Material",
+            "ecom": "E-commerce",
+            "sobre": "Sobre",
+            "label": "Preset",
+            "none": "— none —"
+        },
+        "seed": {
+            "title": "Start from an existing theme",
+            "preset_label": "Seed from a DS preset",
+            "import_label": "Paste a theme module or JSON",
+            "import_placeholder": "Paste a theme module or a JSON object…",
+            "import_action": "Import",
+            "import_error": "Could not parse that theme — paste a valid IOrigamTheme module or JSON object.",
+            "import_dialog_title": "Import a theme"
+        },
+        "nav": {
+            "label": "Components",
+            "search": "Search component…",
+            "no_result": "No component matches “{query}”.",
+            "total": "{count} components",
+            "previewable": "Live preview available"
+        },
+        "props": {
+            "legend": "Default props",
+            "global": "global"
+        },
+        "tokens": {
+            "legend": "CSS tokens",
+            "legend_light": "CSS tokens — Light",
+            "legend_dark": "CSS tokens — Dark"
+        },
+        "preview": {
+            "unavailable": "Live preview unavailable for this component. Edit its props and CSS tokens — they still export to your theme.",
+            "light_label": "Light",
+            "dark_label": "Dark",
+            "label": "Live preview",
+            "error": "Preview failed to render with the current props."
+        },
+        "output": {
+            "title": "Generated theme"
+        },
+        "export": {
+            "filename": "Downloads {file}"
+        },
+        "topbar": {
+            "label": "Theme builder toolbar",
+            "badge": "TB"
+        },
+        "mods": "modifications",
+        "export_ts": "Export .ts",
+        "group": {
+            "color": "Color",
+            "size": "Size & density",
+            "shape": "Shape",
+            "border": "Border",
+            "elevation": "Elevation",
+            "dimension": "Dimensions",
+            "spacing": "Spacing",
+            "state": "States",
+            "icon": "Icons",
+            "link": "Link & tag",
+            "layout": "Alignment & position",
+            "content": "Content",
+            "other": "Other"
+        },
+        "category": {
+            "layout": "Layout & Structure",
+            "navigation": "Navigation",
+            "form": "Form & Input",
+            "data": "Data Display",
+            "feedback": "Feedback & Status",
+            "overlay": "Overlay & Surface",
+            "media": "Media",
+            "utilities": "Utilities & Providers"
+        },
+        "dev_banner": {
+            "title": "Feature under development",
+            "text": "The Theme Builder is under active development — some features may be incomplete or change."
+        }
+    },
+    "types": {
+        "meta": {
+            "title": "API Types · origam design system",
+            "description": "Browse TypeScript types and enums used across origam props. Click any type to see its definition, values and the components that use it."
+        },
+        "hero": {
+            "badge": "TypeScript types & enums",
+            "title_line1": "API",
+            "title_line2": "types.",
+            "subtitle": "Every TypeScript type and enum used across origam props. Fully documented with definitions, accepted values and cross-references to the components that use them.",
+            "search_placeholder": "Search types…",
+            "search_label": "Filter types by name or category",
+            "count_filtered_of": "of",
+            "count_filtered_match": "types match",
+            "count_total": "types and enums across",
+            "count_categories": "categories"
+        },
+        "catalog": {
+            "eyebrow": "BROWSE BY CATEGORY",
+            "title": "All types.",
+            "empty_title": "No types found",
+            "empty_desc": "No type matches \"{query}\". Try a different term."
+        },
+        "kind": {
+            "type": "type",
+            "enum": "enum"
+        },
+        "detail": {
+            "meta": {
+                "title": "{name} · origam API types"
+            },
+            "breadcrumb_label": "Page location",
+            "breadcrumb_catalog": "Types",
+            "external_links_label": "External resources",
+            "toc_label": "Table of contents",
+            "toc_heading": "On this page",
+            "hero": {
+                "source_label": "Source"
+            },
+            "not_found": {
+                "title": "Type not found",
+                "desc": "No type matches the slug",
+                "back": "Back to catalogue"
+            },
+            "definition": {
+                "eyebrow": "TypeScript",
+                "title": "Definition",
+                "desc": "The TypeScript definition as found in the origam source. Click the copy icon to copy the snippet."
+            },
+            "no_doc": {
+                "title": "Documentation coming soon",
+                "desc": "The detailed API reference for this type is being written."
+            },
+            "values": {
+                "eyebrow": "Accepted",
+                "eyebrow_enum": "Members",
+                "title": "Values",
+                "title_enum": "Members",
+                "desc": "Accepted string literal values for this type. Click a value to copy it.",
+                "desc_enum": "All members of this enum. Click a value to copy it to clipboard.",
+                "copy_label": "Copy value"
+            },
+            "used_by": {
+                "eyebrow": "Ecosystem",
+                "title": "Used by",
+                "desc": "Components and props that accept this type as a value."
+            },
+            "examples": {
+                "eyebrow": "Usage",
+                "title": "Examples",
+                "desc": "Ready-to-paste code snippets using this type."
+            }
+        }
+    },
+    "utils": {
+        "meta": {
+            "title": "Utils · origam design system",
+            "description": "Browse the origam utility helpers grouped by category. Each exposes a documented signature, parameters, return value and usage examples."
+        },
+        "hero": {
+            "badge": "Utility helpers — TypeScript",
+            "title_line1": "Util",
+            "title_line2": "catalogue.",
+            "subtitle": "Every origam utility helper is documented with its real TypeScript signature, parameters and return value — sourced directly from the DS source code.",
+            "search_placeholder": "Search utils…",
+            "search_label": "Filter utils by name or category",
+            "count_filtered_of": "of",
+            "count_filtered_match": "utils match",
+            "count_total": "utils across",
+            "count_categories": "categories"
+        },
+        "catalog": {
+            "eyebrow": "BROWSE BY CATEGORY",
+            "title": "All utils.",
+            "empty_title": "No utils found",
+            "empty_desc": "No util matches \"{query}\". Try a different term."
+        },
+        "detail": {
+            "meta": {
+                "title": "{name} · origam utils"
+            },
+            "breadcrumb_label": "Page location",
+            "breadcrumb_catalog": "Utils",
+            "external_links_label": "External resources",
+            "toc_label": "Table of contents",
+            "toc_heading": "On this page",
+            "hero": {
+                "stable_label": "stable",
+                "source_label": "Source",
+                "import_label": "Copy import statement"
+            },
+            "not_found": {
+                "title": "Util not found",
+                "desc": "No util matches the slug",
+                "back": "Back to catalogue"
+            },
+            "signature": {
+                "eyebrow": "API",
+                "title": "Signature",
+                "desc": "Full TypeScript signature sourced from the util file."
+            },
+            "params": {
+                "eyebrow": "API",
+                "title": "Parameters",
+                "desc": "Input parameters accepted by this util.",
+                "required": "required"
+            },
+            "returns": {
+                "eyebrow": "API",
+                "title": "Return value",
+                "desc": "The value returned by this util."
+            },
+            "examples": {
+                "eyebrow": "Usage",
+                "title": "Examples",
+                "desc": "Ready-to-paste usage snippets."
+            },
+            "related": {
+                "eyebrow": "Ecosystem",
+                "title": "Related utils",
+                "desc": "Other helpers that pair naturally with this one."
+            }
+        }
+    },
+    "why_origam": {
+        "meta": {
+            "title": "Why origam? · Vue 3 design system",
+            "description": "An honest look at what origam is, what makes it different, and when you should — or shouldn't — choose it."
+        },
+        "hero": {
+            "badge": "Honest by design",
+            "title_line1": "Why origam?",
+            "title_line2": "An honest answer.",
+            "subtitle": "We built origam for Vue 3 teams who care about design quality, accessibility, and token-driven consistency. Here's what we do well — and where we're still growing."
+        },
+        "strengths": {
+            "eyebrow": "WHAT WE DO WELL",
+            "title": "Built for Vue 3. From the ground up.",
+            "title_line1": "Built for Vue 3.",
+            "title_line2": "From the ground up.",
+            "subtitle": "Every API, every composable, every prop — designed for Composition API and TypeScript from day one.",
+            "vue3": {
+                "title": "Vue 3 native",
+                "description": "Built with Composition API and <script setup>. No legacy Options API shim, no Vue 2 baggage — just clean, idiomatic Vue 3."
+            },
+            "tokens": {
+                "title": "Design tokens DTCG",
+                "description": "Tokens Studio-compatible, Style Dictionary v4. 8 themes switch at runtime with zero remount and zero flicker."
+            },
+            "charts": {
+                "title": "95 components + 29 chart primitives",
+                "description": "From atomic buttons to line, area, donut, heatmap and candlestick charts — all in one coherent package."
+            },
+            "a11y": {
+                "title": "WCAG 2.1 AA verified",
+                "description": "axe-core + Playwright a11y tests ship with every component. Keyboard, screen-readers and reduced-motion: covered."
+            },
+            "css": {
+                "title": "CSS-first architecture",
+                "description": "Container queries, :has(), color-mix(), view-transition-name. We use the platform so your bundle doesn't pay for polyfills."
+            },
+            "treeshake": {
+                "title": "< 50 kb tree-shakable",
+                "description": "ESM-first build. Import what you use; the rest never reaches your users."
+            },
+            "composables": {
+                "title": "Headless composables",
+                "description": "Every component exposes its logic as a standalone composable. Use our UI or build your own on top of our primitives."
+            },
+            "mit": {
+                "title": "MIT licensed",
+                "description": "No license fees, no usage restrictions. origam is and will remain open source."
+            }
+        },
+        "comparison": {
+            "eyebrow": "HONEST COMPARISON",
+            "title": "How does origam compare?",
+            "subtitle": "A feature-by-feature look at the Vue ecosystem's main design systems. Assessments are our own and may be out of date — always verify against the project's current docs.",
+            "disclaimer": "Some assessments reflect our interpretation of publicly available documentation. Competitors ship fast — check their docs.",
+            "col_library": "Library",
+            "col_vue_native": "Vue 3 native",
+            "col_design_tokens": "DTCG tokens",
+            "col_a11y_tested": "A11y tested",
+            "col_css_first": "CSS-first",
+            "col_tree_shakable": "Tree-shakable",
+            "col_charts": "Charts included",
+            "origam": "origam",
+            "vuetify": "Vuetify",
+            "vuetify_note": "Mature Material Design system, large community and ecosystem.",
+            "prime_vue": "PrimeVue",
+            "prime_vue_note": "Very large component count, has its own token system (PrimeFlex).",
+            "quasar": "Quasar",
+            "quasar_note": "Full multi-platform framework (web, Cordova, Electron). Different scope.",
+            "element_plus": "Element Plus",
+            "element_plus_note": "Popular in the Chinese developer community, wide component coverage.",
+            "naive_ui": "Naive UI",
+            "naive_ui_note": "TypeScript-first, theme customisation via JS, lightweight.",
+            "yes": "Yes",
+            "no": "No"
+        },
+        "weaknesses": {
+            "eyebrow": "LET'S BE HONEST",
+            "title": "Where we're still growing.",
+            "title_line1": "Where we're",
+            "title_line2": "still growing.",
+            "subtitle": "origam is young. That's a strength in terms of API freshness — and a constraint in terms of maturity.",
+            "community": {
+                "title": "Smaller community",
+                "description": "Vuetify and PrimeVue have years of production usage, thousands of Stack Overflow answers, and rich third-party template markets. origam doesn't — yet."
+            },
+            "templates": {
+                "title": "Fewer ready-made templates",
+                "description": "You won't find dozens of admin dashboards or landing-page kits built on origam today. You build with the primitives."
+            },
+            "scale": {
+                "title": "Less battle-tested at scale",
+                "description": "We haven't been stress-tested in apps with hundreds of devs and millions of daily users. If that's your situation, factor this in."
+            }
+        },
+        "use_cases": {
+            "eyebrow": "WHO IS ORIGAM FOR",
+            "title": "Pick origam when…",
+            "fits_title": "origam is a great fit",
+            "no_fits_title": "origam might not be the right call",
+            "greenfield": {
+                "title": "Greenfield Vue 3 project",
+                "description": "Starting fresh on Vue 3 with a design team that works in Figma and tokens? origam is built for this exact setup."
+            },
+            "token_team": {
+                "title": "Design-token-driven team",
+                "description": "If your designer uses Tokens Studio or Style Dictionary, origam integrates natively — no translation layer needed."
+            },
+            "saas_product": {
+                "title": "SaaS / product requiring multiple brand themes",
+                "description": "Need to ship the same app in client-A colours and client-B colours? Multi-theme at runtime is a first-class feature."
+            },
+            "dataviz": {
+                "title": "Data-heavy UI with charts",
+                "description": "29 chart primitives — line, area, bar, donut, heatmap, candlestick — themed and accessible, in one install."
+            },
+            "migration": {
+                "title": "Migrating a large Vuetify 2 codebase",
+                "description": "If you have thousands of Vuetify components to migrate, Vuetify 3 will be a lower-friction path than origam."
+            },
+            "ecosystem": {
+                "title": "Needing a large third-party template market",
+                "description": "If you rely on pre-built admin themes or marketplace templates, Vuetify or PrimeVue have a larger catalogue today."
+            }
+        },
+        "cta": {
+            "title": "Ready to try it?",
+            "description": "Install origam in 30 seconds and see how far the defaults take you.",
+            "cta_components": "Browse components",
+            "cta_install": "Get started",
+            "actions_label": "Try origam"
+        }
+    },
+    "wireframe": {
+        "meta": {
+            "title": "Wireframes · origam design system",
+            "description": "See complete UI layouts — dashboard, auth, settings, pricing and more — built entirely with origam components. No custom HTML, just the DS."
+        },
+        "hero": {
+            "badge": "6 layouts — 100% origam",
+            "title_line1": "Wireframes",
+            "title_line2": "with origam.",
+            "subtitle": "Complete UI layouts built exclusively with origam components. No custom HTML, no raw CSS hacks — just the design system doing what it's designed for."
+        },
+        "gallery": {
+            "eyebrow": "LAYOUT PATTERNS",
+            "title": "Ready-made layouts.",
+            "subtitle": "Each wireframe below is a live render — not an image. Resize, inspect and copy the markup."
+        },
+        "layouts": {
+            "dashboard": {
+                "title": "Dashboard",
+                "description": "App shell with sidebar navigation, top bar and a grid of stat cards."
+            },
+            "settings": {
+                "title": "Settings",
+                "description": "Sectioned settings page with sidebar nav and inline form fields."
+            },
+            "auth": {
+                "title": "Auth / Login",
+                "description": "Centered auth card with a logo, form fields and submit action."
+            },
+            "list_detail": {
+                "title": "List – Detail",
+                "description": "Master list on the left, detail pane on the right — classic split view."
+            },
+            "pricing": {
+                "title": "Pricing",
+                "description": "Grid of pricing cards with feature lists and call-to-action buttons."
+            },
+            "landing": {
+                "title": "Landing Page",
+                "description": "Marketing hero, feature grid and a final call-to-action section."
+            }
+        },
+        "preview": {
+            "save": "Save",
+            "cancel": "Cancel",
+            "sign_in": "Sign in",
+            "tag": "tag",
+            "open": "Open",
+            "popular": "Popular",
+            "get_started": "Get started",
+            "cta_primary": "Get started",
+            "cta_secondary": "Learn more"
+        },
+        "card": {
+            "components_label": "Components used",
+            "chips_label": "Components used in this wireframe"
+        },
+        "cta": {
+            "title": "Start building.",
+            "description": "All 95+ components are available today. Install origam and compose any layout in minutes.",
+            "actions_label": "Explore origam",
+            "cta_components": "Browse components",
+            "cta_install": "Installation guide"
+        }
+    }
+}

@@ -218,6 +218,7 @@ export const glassLightTheme: IOrigamTheme = {
         // / `-rounded`), câblé plus bas dans `cssVars`.
         'origam-pagination': { border: true, elevation: 2 },
         'origam-list': { rounded: 'lg', nav: true },
+        'origam-list-item': { rounded: 'lg' },
 
         // ── Data Display (SYNTHESE §3) ───────────────────────────────────
         'origam-table': { rounded: 'lg', border: true, elevation: 3, hover: true },

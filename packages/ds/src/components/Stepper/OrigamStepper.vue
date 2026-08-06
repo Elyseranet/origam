@@ -3,7 +3,7 @@
 			:id="id"
 			v-contrast
 			:class="stepperClasses"
-			:aria-label="t('origam.stepper.progressSteps', 'Progress steps')"
+			:aria-label="t('origam.stepper.progress_steps', 'Progress steps')"
 	>
 		<slot name="default">
 			<template v-if="hasItems">

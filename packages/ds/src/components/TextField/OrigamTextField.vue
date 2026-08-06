@@ -430,6 +430,11 @@
 		if (hasMask.value) emits('complete', {complete: c, unmasked: unmaskedValue.value})
 	}, {immediate: false})
 
+	// Monotonic token identifying the latest masked `input` event, so a
+	// deferred DOM write from a superseded event can recognise itself as
+	// stale and bail. Instance-local: two fields must not share a counter.
+	let maskInputSeq = 0
+
 	const handleInput = (e: Event) => {
 		const el = e.target as HTMLInputElement
 
@@ -441,7 +446,26 @@
 			const tokens = cfg?.pattern ?? ''
 			const r = applyMask(el.value, tokens)
 			model.value = r.unmasked
+
+			// The DOM write below is deferred so it lands AFTER Vue has
+			// re-rendered `:value="displayValue"` — writing it synchronously
+			// would be overwritten by that render. Deferring, however, opens a
+			// race: `r` is captured here, so when several `input` events fire
+			// within the same tick the FIRST callback would write its own
+			// stale `masked` over the newest value, and move the caret back
+			// with it. Every following keystroke then lands at the wrong
+			// offset and the value collapses — measured: "(1" instead of
+			// "(12) 345-6789".
+			//
+			// A monotonic token makes superseded callbacks bail out, so only
+			// the last input of a burst touches the DOM. Human typing never
+			// reached this (measured: broken at 0ms between keystrokes, correct
+			// from 30ms up) but browser autofill and programmatic writes do
+			// emit their characters within a single tick.
+			const seq = ++maskInputSeq
 			nextTick(() => {
+				if (seq !== maskInputSeq) return
+
 				// Keep DOM in sync with the formatted value
 				// (some chars may have been silently dropped).
 				if (el.value !== r.masked) el.value = r.masked
@@ -496,7 +520,7 @@
 
 		if (props.counter && typeof props.counter === 'number') {
 			const limit = props.counter
-			base.push((v: string) => !v || v.length <= limit || t('origam.validation.max_length', [limit]))
+			base.push((v: string) => !v || v.length <= limit || t('origam.validation.max_length', limit))
 		}
 
 		if (hasMask.value) {

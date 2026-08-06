@@ -204,6 +204,7 @@ export const geekLightTheme: IOrigamTheme = {
         'origam-breadcrumb': { rounded: 'sm', border: true },
         'origam-pagination': { border: true, elevation: 1 },
         'origam-list': { rounded: 'sm', nav: true },
+        'origam-list-item': { rounded: 'sm' },
 
         // ── Data Display (SYNTHESE §3) ────────────────────────────────────
         'origam-table': { rounded: 'sm', border: true, hover: true },

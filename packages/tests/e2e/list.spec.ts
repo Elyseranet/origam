@@ -387,4 +387,102 @@ test.describe('OrigamList', () => {
             await expect(list).toHaveClass(/origam-list--one-line/)
         })
     })
+
+    // ------------------------------------------------------------------ //
+    // KEYBOARD NAVIGATION (uses the Functional variant, index 1)          //
+    // 3 selectable items (Option one/two/three) — each carries a `value`, //
+    // making it clickable/focusable inside the list (tabindex="-2").     //
+    //                                                                     //
+    // Regression coverage for a bug where `contentRef` (declared and     //
+    // consumed by handleFocus/handleKeydown/focus in OrigamList.vue) was //
+    // never bound to the root element via `ref="contentRef"` — so every  //
+    // early-return guard (`if (!contentRef.value) return`) fired         //
+    // unconditionally and Arrow/Home/End did nothing.                    //
+    // ------------------------------------------------------------------ //
+
+    test.describe('Keyboard navigation', () => {
+        test('ArrowDown from the list root moves focus to the first item', async ({ page }) => {
+            await page.goto(variantUrl(1))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const list = sandbox.locator('.origam-list').first()
+            await expect(list).toBeVisible({ timeout: 12000 })
+            const items = sandbox.locator('.origam-list-item')
+
+            await list.focus()
+            await expect(list).toBeFocused()
+            await page.keyboard.press('ArrowDown')
+            await expect(items.nth(0)).toBeFocused()
+        })
+
+        test('repeated ArrowDown steps through items in order', async ({ page }) => {
+            await page.goto(variantUrl(1))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const list = sandbox.locator('.origam-list').first()
+            await expect(list).toBeVisible({ timeout: 12000 })
+            const items = sandbox.locator('.origam-list-item')
+
+            await list.focus()
+            await page.keyboard.press('ArrowDown')
+            await expect(items.nth(0)).toBeFocused()
+            await page.keyboard.press('ArrowDown')
+            await expect(items.nth(1)).toBeFocused()
+            await page.keyboard.press('ArrowDown')
+            await expect(items.nth(2)).toBeFocused()
+        })
+
+        test('ArrowUp steps backwards through items', async ({ page }) => {
+            await page.goto(variantUrl(1))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const list = sandbox.locator('.origam-list').first()
+            await expect(list).toBeVisible({ timeout: 12000 })
+            const items = sandbox.locator('.origam-list-item')
+
+            await list.focus()
+            await page.keyboard.press('ArrowDown')
+            await page.keyboard.press('ArrowDown')
+            await expect(items.nth(1)).toBeFocused()
+            await page.keyboard.press('ArrowUp')
+            await expect(items.nth(0)).toBeFocused()
+        })
+
+        test('End jumps directly to the last item', async ({ page }) => {
+            await page.goto(variantUrl(1))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const list = sandbox.locator('.origam-list').first()
+            await expect(list).toBeVisible({ timeout: 12000 })
+            const items = sandbox.locator('.origam-list-item')
+
+            await list.focus()
+            await page.keyboard.press('End')
+            await expect(items.nth(2)).toBeFocused()
+        })
+
+        test('Home jumps directly to the first item', async ({ page }) => {
+            await page.goto(variantUrl(1))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const list = sandbox.locator('.origam-list').first()
+            await expect(list).toBeVisible({ timeout: 12000 })
+            const items = sandbox.locator('.origam-list-item')
+
+            await list.focus()
+            await page.keyboard.press('End')
+            await expect(items.nth(2)).toBeFocused()
+            await page.keyboard.press('Home')
+            await expect(items.nth(0)).toBeFocused()
+        })
+
+        test('ArrowDown wraps from the last item back to the first (focusChild fallback)', async ({ page }) => {
+            await page.goto(variantUrl(1))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const list = sandbox.locator('.origam-list').first()
+            await expect(list).toBeVisible({ timeout: 12000 })
+            const items = sandbox.locator('.origam-list-item')
+
+            await list.focus()
+            await page.keyboard.press('End')
+            await expect(items.nth(2)).toBeFocused()
+            await page.keyboard.press('ArrowDown')
+            await expect(items.nth(0)).toBeFocused()
+        })
+    })
 })

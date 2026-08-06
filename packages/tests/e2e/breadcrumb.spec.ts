@@ -571,14 +571,14 @@ test.describe('OrigamBreadcrumbItem', () => {
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             // MDI icon loading may be slow on cold Playwright context
             await expect(item).toBeVisible({ timeout: 20000 })
-            const prepend = item.locator('.origam-breadcrumbs__prepend')
+            const prepend = item.locator('.origam-breadcrumb-item__prepend')
             await expect(prepend).toBeAttached()
         })
 
         test('click on prepend area does not throw', async ({ page }) => {
             await page.goto(bciUrl(3))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            const prepend = sandbox.locator('.origam-breadcrumbs__prepend').first()
+            const prepend = sandbox.locator('.origam-breadcrumb-item__prepend').first()
             await expect(prepend).toBeVisible({ timeout: 20000 })
             await prepend.click()
             // logEvent() side-effect is not observable headlessly — no error = success
@@ -595,14 +595,14 @@ test.describe('OrigamBreadcrumbItem', () => {
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 20000 })
-            const append = item.locator('.origam-breadcrumbs__append')
+            const append = item.locator('.origam-breadcrumb-item__append')
             await expect(append).toBeAttached()
         })
 
         test('click on append area does not throw', async ({ page }) => {
             await page.goto(bciUrl(4))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            const append = sandbox.locator('.origam-breadcrumbs__append').first()
+            const append = sandbox.locator('.origam-breadcrumb-item__append').first()
             await expect(append).toBeVisible({ timeout: 20000 })
             await append.click()
         })
@@ -642,7 +642,7 @@ test.describe('OrigamBreadcrumbItem', () => {
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 20000 })
-            await expect(item.locator('.origam-breadcrumbs__prepend .origam-icon')).toBeAttached()
+            await expect(item.locator('.origam-breadcrumb-item__prepend .origam-icon')).toBeAttached()
         })
     })
 
@@ -656,7 +656,7 @@ test.describe('OrigamBreadcrumbItem', () => {
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 20000 })
-            await expect(item.locator('.origam-breadcrumbs__append .origam-icon')).toBeAttached()
+            await expect(item.locator('.origam-breadcrumb-item__append .origam-icon')).toBeAttached()
         })
     })
 

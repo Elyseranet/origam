@@ -50,8 +50,11 @@
       </div>
     </div>
 
-    <div class="origam-selection-control__label">
-      <slot name="label">
+    <div
+      v-if="label || $slots.label"
+      class="origam-selection-control__label"
+    >
+      <slot name="label" v-bind="{text: label, color, props: { id, onClick: handleClickLabel, ...labelProps}}">
         <origam-label
           ref="origamLabelRef"
           :for="id"
@@ -63,7 +66,9 @@
       </slot>
     </div>
   </div>
-</template><script
+</template>
+
+<script
   lang="ts"
   setup
 >
@@ -74,24 +79,24 @@
   import { OrigamIcon, OrigamLabel } from '../../components'
 
   import {
-		useBorder,
-		useDefaults,
-		useDensity,
-		useElevation,
-		useHover,
-		useProps,
-		useRounded,
-		useStateEffect,
-		useStyle,
-		useTextColor,
-		useVModel
-} from '../../composables'
+    useBorder,
+    useDefaults,
+    useDensity,
+    useElevation,
+    useHover,
+    useProps,
+    useRounded,
+    useStateEffect,
+    useStyle,
+    useTextColor,
+    useVModel
+  } from '../../composables'
 
   import { vRipple } from '../../directives'
 
-  import type { ISelectionControlProps, ISelectionControlSlots} from "../../interfaces"
+  import type { ISelectionControlProps, ISelectionControlSlots } from "../../interfaces"
 
-	import type { ISelectionControlEmits } from '../../interfaces/SelectionControl/selection-control.interface'
+  import type { ISelectionControlEmits } from '../../interfaces/SelectionControl/selection-control.interface'
 
   import { deepEqual, filterInputAttrs, forwardRefs, getUid, matchesSelector, wrapInArray } from '../../utils'
 
@@ -139,11 +144,11 @@
    * Composables
    ********************************************************/
 
-  const {densityClasses} = useDensity(props)
+  const { densityClasses } = useDensity(props)
 
 
-	const {isHover, hoverState} = useHover(props)
-	useStateEffect(props, isHover, undefined, hoverState, undefined)
+  const { isHover, hoverState } = useHover(props)
+  useStateEffect(props, isHover, undefined, hoverState, undefined)
   /*********************************************************
    * Value
    ********************************************************/
@@ -164,14 +169,14 @@
   })
 
   const model = computed({
-    get () {
+    get() {
       const val = group ? group.modelValue.value : modelValue.value
 
       return isMultiple.value
         ? wrapInArray(val).some((v: any) => valueComparator.value(v, trueValue.value))
         : valueComparator.value(val, trueValue.value)
     },
-    set (val: boolean) {
+    set(val: boolean) {
       if (props.readonly) return
 
       const currentValue = val ? trueValue.value : falseValue.value
@@ -180,7 +185,7 @@
 
       if (isMultiple.value) {
         newVal = val
-          ? [...wrapInArray(modelValue.value), currentValue]
+          ? [ ...wrapInArray(modelValue.value), currentValue ]
           : wrapInArray(modelValue.value).filter((item: any) => !valueComparator.value(item, trueValue.value))
       }
 
@@ -223,7 +228,7 @@
    ********************************************************/
 
   const labelProps = computed(() => {
-    return origamLabelRef.value?.filterProps(props, ['text', 'color', 'bgColor', 'class', 'style', 'id', 'for'])
+    return origamLabelRef.value?.filterProps(props, [ 'text', 'color', 'bgColor', 'border', 'elevation', 'class', 'style', 'id', 'for' ])
   })
 
   const handleFocus = (e: FocusEvent) => {
@@ -278,7 +283,7 @@
    * Color
    ********************************************************/
 
-  const {textColorClasses: wrapperColorClasses, textColorStyles: wrapperColorStyles} = useTextColor(color)
+  const { textColorClasses: wrapperColorClasses, textColorStyles: wrapperColorStyles } = useTextColor(color)
 
   // Props-first (lot 4 theming fix, issue #241) — `border` / `rounded` /
   // `elevation` are declared on `ISelectionControlProps` (Commons
@@ -292,9 +297,9 @@
   // border-radius/border/box-shadow of its own, so these props change the
   // state-layer box around the glyph, not the glyph's own silhouette
   // (tracked separately, see #241 rendering aggravation note).
-  const {borderClasses, borderStyles} = useBorder(props)
-  const {roundedClasses, roundedStyles} = useRounded(props)
-  const {elevationClasses, elevationStyles} = useElevation(props)
+  const { borderClasses, borderStyles } = useBorder(props)
+  const { roundedClasses, roundedStyles } = useRounded(props)
+  const { elevationClasses, elevationStyles } = useElevation(props)
 
   const rippleProp = computed(() => {
     if (props.ripple) {
@@ -352,7 +357,7 @@
       props.class
     ]
   })
-	const {id: styleId, css, load, isLoaded, unload} = useStyle(selectionControlStyles)
+  const { id: styleId, css, load, isLoaded, unload } = useStyle(selectionControlStyles)
 
 
   /*********************************************************
@@ -362,14 +367,15 @@
    * Exposes filterProps to parent ref consumers, forwarded
    * through inputRef.
    ********************************************************/
-  defineExpose(forwardRefs({ filterProps,
-		css,
-		id,
-		load,
-		unload,
-		isLoaded,
-		styleId
-	}, inputRef))
+  defineExpose(forwardRefs({
+    filterProps,
+    css,
+    id,
+    load,
+    unload,
+    isLoaded,
+    styleId
+  }, inputRef))
 </script>
 
 <style

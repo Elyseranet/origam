@@ -131,6 +131,7 @@ export const ecomLightTheme: IOrigamTheme = {
         'origam-color-picker-field': { rounded: 'sm', border: true },
         'origam-code': { rounded: 'md', border: true, elevation: 1 },
         'origam-menu': { rounded: 'sm', border: true, elevation: 2 },
+        'origam-list-item': { rounded: 'sm' },
         'origam-table': { rounded: 'md', border: true },
         // Avatar initiales (Refs #36) — pas de hook dédié aux initiales
         // (audit : OrigamAvatar.vue n'a que `--origam-avatar---color`

@@ -85,8 +85,10 @@
 							v-if="hasList"
 							:id="listboxId"
 							ref="origamListRef"
+							:density="density"
 							:select-strategy="multiple ? SELECT_STRATEGY.INDEPENDENT : SELECT_STRATEGY.SINGLE_INDEPENDENT"
 							:selected="selectedValues"
+							:size="listSize"
 							:tabindex="-1"
 							aria-live="polite"
 							v-bind="{ ...listProps }"
@@ -312,6 +314,7 @@
 		KEYBOARD_VALUES,
 		MDI_ICONS,
 		SELECT_STRATEGY,
+		SIZES,
 		TEXT_FIELD_TYPE
 	} from '../../enums'
 
@@ -359,7 +362,7 @@
 		filterMode: FILTERS_MODE.INTERSECTION,
 		closeText: 'origam.close',
 		openText: 'origam.open',
-		noDataText: 'origam.noDataText'
+		noDataText: 'origam.no_data_text'
 	})
 
 	// `useDefaults` resolves each prop against theme.components['origam-select']
@@ -1040,6 +1043,16 @@
 		return origamTextFieldRef.value?.filterProps(props, ['class', 'id', 'style', 'counterValue', 'dirty', 'modelValue', 'placeholder', 'validationValue', 'focused'])
 	})
 
+	// The dropdown rows must sit on the same height rung as the control, so the
+	// popup never dwarfs a small field. `size` is optional on the select and an
+	// unsized `.origam-field` still resolves its control height from the `md`
+	// rung — the list has to be told that explicitly, because with no `size` at
+	// all `useSize` emits no rung class and the row would fall back to the
+	// standalone-list height instead.
+	const listSize = computed(() => {
+		return props.size ?? SIZES.DEFAULT
+	})
+
 	const isDirty = computed(() => {
 		return model.value.length > 0
 	})
@@ -1291,7 +1304,6 @@
 	}
 
 	.origam-select__content .origam-list-item {
-		--origam-list-item---min-height: 32px;
 		--origam-list-item---padding-inline-start: 32px;
 	}
 </style>

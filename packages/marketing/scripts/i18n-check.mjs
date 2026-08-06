@@ -148,22 +148,16 @@ function flatten(obj, prefix = '', out = {}) {
 }
 
 function loadLocaleMessages(code) {
-    const dir = path.join(LOCALES_DIR, code)
+    const file = `${code}.json`
+    const filePath = path.join(LOCALES_DIR, file)
 
-    if (!fs.existsSync(dir)) {
-        return { merged: {}, files: [] }
+    if (!fs.existsSync(filePath)) {
+        return { merged: {}, file: null }
     }
 
-    const files = fs.readdirSync(dir).filter((f) => f.endsWith('.json')).sort()
-    const merged = {}
+    const merged = JSON.parse(fs.readFileSync(filePath, 'utf-8'))
 
-    for (const file of files) {
-        const content = JSON.parse(fs.readFileSync(path.join(dir, file), 'utf-8'))
-
-        Object.assign(merged, content)
-    }
-
-    return { merged, files }
+    return { merged, file }
 }
 
 function extractPlaceholders(value) {
@@ -368,9 +362,9 @@ function main() {
     const locales = {}
 
     for (const code of LOCALE_CODES) {
-        const { merged, files } = loadLocaleMessages(code)
+        const { merged, file } = loadLocaleMessages(code)
 
-        locales[code] = { merged, files, flat: flatten(merged) }
+        locales[code] = { merged, file, flat: flatten(merged) }
     }
 
     // -------- check 1: referenced but undefined --------
@@ -445,7 +439,7 @@ function main() {
         summary: {
             referencedKeysTotal: refs.size,
             channelBReferencedKeys: [...refs.values()].filter((sites) => sites.some((s) => s.channel === 'B')).length,
-            localeFragmentFiles: Object.fromEntries(LOCALE_CODES.map((c) => [c, locales[c].files.length])),
+            localeFiles: Object.fromEntries(LOCALE_CODES.map((c) => [c, locales[c].file])),
             missingKeysByLocale: Object.fromEntries(LOCALE_CODES.map((c) => [c, missingByLocale[c].length])),
             parityGaps: parityGapCount,
             hardcodedStringViolations: hardcodedViolations.length,
@@ -491,7 +485,7 @@ function printHumanReport(report) {
     console.log('i18n check — packages/marketing\n')
     console.log(`Referenced keys (all channels): ${s.referencedKeysTotal}`)
     console.log(`  of which via channel B (*Key/*Fallback prop convention): ${s.channelBReferencedKeys}`)
-    console.log(`Locale fragment files: ${JSON.stringify(s.localeFragmentFiles)}\n`)
+    console.log(`Locale files: ${JSON.stringify(s.localeFiles)}\n`)
 
     console.log('[1] Missing key definitions (WARNING — non-blocking):')
     for (const [code, count] of Object.entries(s.missingKeysByLocale)) {
