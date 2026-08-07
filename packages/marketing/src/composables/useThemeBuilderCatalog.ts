@@ -398,11 +398,16 @@ function buildEntry (component: IComponentThemeSurface, t: (key: string, fallbac
 }
 
 export function useThemeBuilderCatalog () {
-    const { t } = useT()
+    const { t, locale } = useT()
 
+    // `?locale=` (ADR #325, task 3): the theme-surface catalog also carries
+    // `descriptionFallback` per component (unused by this composable today,
+    // which builds its own controls from `props[]`), so it goes through the
+    // same locale transport + cache-key contract as every other
+    // /api/reference/** consumer for forward compatibility.
     const { data } = useFetch<IComponentThemeSurface[]>('/api/reference/component', {
-        key: 'catalog:component:theme-surface',
-        query: { includePropSurface: '1' },
+        key: () => `catalog:component:theme-surface:${locale.value}`,
+        query: { includePropSurface: '1', locale },
         default: () => [] as IComponentThemeSurface[],
     })
 
