@@ -13,8 +13,32 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
-All three items below were reported from a real integration, not from a code
-review, and each was reproduced before being fixed.
+## [2.14.0] - 2026-08-07
+
+Reported from a real integration, not from a code review. Each item was
+reproduced before being fixed, and the fix verified against the running
+component.
+
+### ⚠️ BREAKING — `<origam-avatar>` is now a circle by default
+
+The base theme sized avatar corners with `rounded: 'lg'` — a 16px rounded
+square. Every avatar that does not set `rounded` explicitly now renders as a
+circle (`rounded: 'full'`).
+
+**Why**: an avatar is round in the overwhelming majority of interfaces, and
+until now obtaining one required knowing that a second, undocumented radius
+scale existed (see the `rounded` fix below). The mismatch showed: a
+rounded-square avatar dropped into a circular trigger left a visible ring
+around it — reported from the field as *"a square inside a circle"*.
+
+**Migration** — restore the previous shape app-wide in one line, through the
+theme layer:
+
+```ts
+createOrigam({ theme: { components: { 'origam-avatar': { rounded: 'lg' } } } })
+```
+
+or per instance with `<origam-avatar rounded="lg">`.
 
 ### Fixed — dead `aria-describedby` on input fields (accessibility)
 
