@@ -877,15 +877,17 @@
 		&--prepended {
 			--origam-field---padding-start: 6px;
 
-			// A prepend-inner (icon / swatch) already fills the left corner, so
-			// opt out of the corner-clearing floor: keep the inline padding and
-			// the start outline leg at the raw padding-start (widening them would
-			// draw the outline over the prepend content).
+			// Le CONTENU se rapproche du bord (l'icone/swatch remplit le coin),
+			// donc on retire le plancher de degagement sur le padding.
 			padding-inline: var(--origam-field---padding-start) var(--origam-field---padding-end);
 
-			#{$this}__outline--start {
-				flex-basis: var(--origam-field---padding-start);
-			}
+			// MAIS on ne touche PAS a la largeur de la patte d'outline : ce
+			// segment PORTE le rayon du coin gauche, et CSS reduit proportionnellement
+			// un `border-radius` qui depasse la boite qui le declare (une patte de
+			// 6px ne peut pas rendre un rayon de 12px+ : le coin sort plat). Le
+			// couplage n'avait pas lieu d'etre : `__outlines` est `position: absolute`
+			// + `pointer-events: none`, une couche decorative qui ne deplace aucun
+			// contenu — l'elargir ne dessine rien par-dessus le prepend.
 		}
 
 		&--appended {
