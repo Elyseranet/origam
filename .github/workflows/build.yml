@@ -22,7 +22,7 @@ jobs:
           # Full history so SonarQube can attribute blame / new-code period.
           fetch-depth: 0
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
 
       - uses: actions/setup-node@v6
         with:
@@ -51,11 +51,9 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
-      # Quality gate enforcement. Disabled by default until the first
-      # diagnostic scan establishes the baseline (ratings + debt); enabling it
-      # blind would red the pipeline before we know what needs remediation.
-      # Flip ENFORCE_QUALITY_GATE to 'true' (repo variable) once the gate is
-      # green to make a red gate fail the build.
+      # Pilote par la variable de depot ENFORCE_QUALITY_GATE : a 'true', les
+      # deux etapes de gate ci-dessous s'executent ; sinon elles sont sautees.
+      #
       # INFORMATIF — ne fait plus echouer le job. L'action officielle est tout
       # ou rien : elle rougit des qu'une condition du gate casse, y compris
       # `new_violations > 0`, sans regarder la GRAVITE. Deux odeurs de code

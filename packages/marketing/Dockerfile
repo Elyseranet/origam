@@ -69,7 +69,7 @@ RUN pnpm -F @origam/marketing build
 # -----------------------------------------------------------------------------
 FROM node:22-alpine AS runtime
 
-LABEL org.opencontainers.image.source="https://github.com/arnaudprioul/origam"
+LABEL org.opencontainers.image.source="https://github.com/Elyseranet/origam"
 LABEL org.opencontainers.image.title="origam-marketing"
 LABEL org.opencontainers.image.description="Nuxt 4 marketing site for the origam design system (with embedded docs + stories)"
 LABEL org.opencontainers.image.licenses="MIT"
