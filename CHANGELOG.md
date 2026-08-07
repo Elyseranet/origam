@@ -13,6 +13,93 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.14.0] - 2026-08-07
+
+Reported from a real integration, not from a code review. Each item was
+reproduced before being fixed, and the fix verified against the running
+component.
+
+### ⚠️ BREAKING — `<origam-avatar>` is now a circle by default
+
+The base theme sized avatar corners with `rounded: 'lg'` — a 16px rounded
+square. Every avatar that does not set `rounded` explicitly now renders as a
+circle (`rounded: 'full'`).
+
+**Why**: an avatar is round in the overwhelming majority of interfaces, and
+until now obtaining one required knowing that a second, undocumented radius
+scale existed (see the `rounded` fix below). The mismatch showed: a
+rounded-square avatar dropped into a circular trigger left a visible ring
+around it — reported from the field as *"a square inside a circle"*.
+
+**Migration** — restore the previous shape app-wide in one line, through the
+theme layer:
+
+```ts
+createOrigam({ theme: { components: { 'origam-avatar': { rounded: 'lg' } } } })
+```
+
+or per instance with `<origam-avatar rounded="lg">`.
+
+### Fixed — dead `aria-describedby` on input fields (accessibility)
+
+A screen reader announced **no validation message at all**. The defect was
+invisible to the eye: the message rendered correctly.
+
+`<origam-text-field>` filtered `id` out of the props it forwarded, so
+`<origam-input>` never received it and invented its own. It then derived
+`<id>-messages` and pointed `aria-describedby` at it — but `<origam-messages>`
+declared an `id` prop and applied it to **no element**, giving each message a
+different id instead. The reference resolved to nothing.
+
+`<origam-messages>` now applies the received `id` to its root, and
+`<origam-text-field>` no longer filters `id` out. Verified in a browser:
+`aria-describedby` resolves to an element that exists.
+
+**Second effect of the same fix**: an `id` passed to a text field now actually
+reaches its `<input>`. `document.getElementById(...)` finds it, and an
+external `<label for>` associates correctly — both previously failed silently.
+
+### Fixed — `<origam-avatar size>` ignored outside a flex container
+
+The root element declared no `display`, so with `tag="span"` it inherited the
+browser's `inline` — and an inline box ignores `width`/`height`. The avatar
+collapsed to its content and `size` did nothing, with no warning.
+
+It appeared to work only when the parent happened to be a flex container,
+which blockifies its children. Measured on one real page: the same component
+rendered 32×32 under `inline-flex` but **30×30 under `position: relative`**
+for a requested size of 72.
+
+The root now declares `display: inline-flex` — `inline-flex` rather than
+`block` because `tag="span"` exists so an avatar can sit in phrasing content,
+inside a `<button>` whose content model rejects block-level elements. Consumers
+who worked around this with `.origam-avatar { display: inline-flex }` can drop
+the override; it remains harmless.
+
+### Fixed — `rounded` rejected the token scale, hiding the circular variant
+
+`TRounded` only described the component scale (`x-small` … `x-large`,
+`shaped`), none of which produces a circle. The radius rungs — `none`, `xs`,
+`sm`, `md`, `lg`, `xl` and **`full`**, the one that yields a circle — were
+already honoured at runtime (the brand themes have shipped `rounded: 'md'` for
+a while) but failed to type-check and never appeared in autocompletion.
+
+A round avatar was therefore undiscoverable: it required knowing that a second,
+undocumented scale existed. Reported from the field as *"a square inside a
+circle"* — a rounded-square avatar in a circular trigger leaves a visible ring.
+
+The rungs are now a first-class `ROUNDED_TOKEN` enum and part of `TRounded`.
+`rounded="full"` type-checks. The two scales stay separate on purpose: one
+names an intent (`shaped`), the other a radius rung — `x-small` and `xs` are
+not interchangeable.
+
+### Fixed — the published package shipped no changelog
+
+`files` listed `CHANGELOG.md`, but the file lives at the monorepo root and had
+no counterpart in `packages/ds/`, so npm silently packed nothing. Consumers had
+no way to tell what a release contained. A `prepack` step now copies it in —
+verified: 96 kB of changelog in the tarball.
+
 ## [2.13.0] - 2026-08-05
 
 ### ⚠️ BREAKING — `<origam-select>` dropdown rows now follow the control

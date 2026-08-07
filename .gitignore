@@ -97,3 +97,6 @@ ds-bundle/
 .design-sync/.cache/
 .design-sync/learnings/
 .design-sync/node_modules
+
+# Copie generee au packaging (prepack) — la source est le CHANGELOG.md racine
+packages/ds/CHANGELOG.md

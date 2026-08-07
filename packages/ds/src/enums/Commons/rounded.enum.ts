@@ -15,3 +15,29 @@ export enum ROUNDED {
     SHAPED = 'shaped',
     SHAPED_INVERT = 'shaped-invert'
 }
+
+/**
+ * The token-scale rungs, resolved by `useRounded` to the generated utility
+ * classes (`.origam--rounded-full` → `var(--origam-radius---full)`).
+ *
+ * They were always accepted at runtime — the brand themes have shipped
+ * `rounded: 'md'` / `'lg'` / `'none'` for a while — but `TRounded` only
+ * described the component scale above, so TypeScript rejected them and they
+ * were invisible to autocompletion. `FULL` in particular is the only way to
+ * obtain a circle, which made a round avatar undiscoverable: none of the
+ * component-scale names produces one.
+ *
+ * Declared as a separate enum rather than merged into `ROUNDED` because the
+ * two scales are different things — `ROUNDED` names an intent (`shaped`),
+ * this one names a radius rung — and merging them would suggest
+ * `x-small` and `xs` are interchangeable. They are not.
+ */
+export enum ROUNDED_TOKEN {
+    NONE = 'none',
+    XS = 'xs',
+    SM = 'sm',
+    MD = 'md',
+    LG = 'lg',
+    XL = 'xl',
+    FULL = 'full'
+}

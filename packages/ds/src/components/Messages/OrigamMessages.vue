@@ -5,6 +5,7 @@
 	>
 		<component
 				:is="props.tag"
+				:id="props.id"
 				:class="messagesClasses"
 				:style="[messagesStyles, rootTypographyStyles]"
 				aria-live="polite"

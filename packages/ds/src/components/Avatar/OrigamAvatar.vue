@@ -211,6 +211,20 @@
 	.origam-avatar {
 		$this: &;
 
+		// Declared on the ROOT, not only on `__wrapper`. Without it the root
+		// inherits the browser default — `inline` for `tag="span"` — and an
+		// inline box ignores `width`/`height`, so `size` silently did nothing:
+		// the avatar collapsed to its text. It only appeared to work when the
+		// parent was a flex container, which blockifies its children (measured:
+		// same component, 32x32 under `inline-flex`, 30x30 under `position:
+		// relative`, for a requested size of 72).
+		//
+		// `inline-flex` and not `block`: `tag="span"` exists so an avatar can sit
+		// in phrasing content — inside a `<button>`, whose content model rejects
+		// block-level elements.
+		display: var(--origam-avatar---display, inline-flex);
+		vertical-align: var(--origam-avatar---vertical-align, middle);
+
 		line-height: var(--origam-avatar---line-height);
 		text-align: var(--origam-avatar---text-align);
 		font-size: var(--origam-avatar---font-size);
