@@ -106,7 +106,8 @@
     "styles:build": "sass src/assets/scss/main.scss src/assets/css/main.css --no-source-map --style=compressed",
     "tokens:watch": "node scripts/build-tokens.mjs --watch",
     "tokens:lint": "node scripts/build-tokens.mjs --dry-run --strict",
-    "prepublishOnly": "pnpm run build"
+    "prepublishOnly": "pnpm run build",
+    "prepack": "node -e \"require('fs').copyFileSync('../../CHANGELOG.md','CHANGELOG.md')\""
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",
