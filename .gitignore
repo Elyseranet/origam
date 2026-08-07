@@ -100,3 +100,8 @@ ds-bundle/
 
 # Copie generee au packaging (prepack) — la source est le CHANGELOG.md racine
 packages/ds/CHANGELOG.md
+
+# Secrets locaux — ne JAMAIS versionner (le depot est public)
+.env.local
+.env.*.local
+*.token

@@ -1,87 +1,89 @@
 {
-  "name": "origam",
-  "version": "2.5.1",
-  "private": true,
-  "type": "module",
-  "description": "origam monorepo — Vue 3 design system (lib + marketing + stories + docs + tests + figma plugin). Workspace root, not published. The publishable package lives in packages/ds.",
-  "license": "MIT",
-  "author": "Prioul Arnaud",
-  "homepage": "https://github.com/Elyseranet/origam#readme",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Elyseranet/origam.git"
-  },
-  "bugs": {
-    "url": "https://github.com/Elyseranet/origam/issues"
-  },
-  "engines": {
-    "node": ">=22"
-  },
-  "workspaces": [
-    "packages/*"
-  ],
-  "scripts": {
-    "build:lib": "pnpm -F origam build",
-    "build:marketing": "pnpm -F @origam/marketing build",
-    "build:stories": "pnpm -F @origam/stories build",
-    "build:docs": "pnpm -F @origam/docs build",
-    "build:figma": "pnpm -F @origam/figma-plugin build",
-    "build:all": "pnpm -r build",
-    "tokens:build": "pnpm -F origam tokens:build",
-    "tokens:watch": "pnpm -F origam tokens:watch",
-    "tokens:lint": "pnpm -F origam tokens:lint",
-    "dev:stories": "pnpm -F @origam/stories dev",
-    "dev:docs": "pnpm -F @origam/docs dev",
-    "dev:marketing": "pnpm -F @origam/marketing dev",
-    "test:unit": "pnpm -F @origam/tests test:unit",
-    "test:unit:run": "pnpm -F @origam/tests test:unit:run",
-    "test:run": "pnpm -F @origam/tests test:unit:run",
-    "test:e2e": "pnpm -F @origam/tests test:e2e",
-    "test:a11y": "pnpm -F @origam/tests test:a11y",
-    "test:unit:coverage": "pnpm -F @origam/tests test:unit --coverage",
-    "lint:fix": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --max-warnings 0",
-    "clean": "pnpm -r exec rm -rf dist node_modules && rm -rf node_modules",
-    "prepare": "husky",
-    "build:embeds": "pnpm run build:stories && pnpm run build:docs"
-  },
-  "pnpm": {
-    "overrides": {
-      "vue": "3.5.39",
-      "@vue/runtime-core": "3.5.39",
-      "@vue/runtime-dom": "3.5.39",
-      "@vue/reactivity": "3.5.39",
-      "@vue/shared": "3.5.39",
-      "@vue/compiler-core": "3.5.39",
-      "@vue/compiler-dom": "3.5.39",
-      "@vue/compiler-sfc": "3.5.39",
-      "@vue/server-renderer": "3.5.39",
-      "vite": ">=7.3.6",
-      "ws": ">=8.21.0",
-      "postcss": "^8.5.18",
-      "tar": "^7.5.19",
-      "shell-quote": "^1.9.0",
-      "js-yaml@4": "^4.3.0",
-      "svgo@4": "^4.0.2",
-      "fast-xml-parser@5": "^5.10.1",
-      "brace-expansion@2": "^2.1.4",
-      "brace-expansion@5": "^5.0.9",
-      "@nuxt/devtools": "^3.3.1",
-      "launch-editor": "^2.14.1",
-      "esbuild@0": "^0.28.1"
-    }
-  },
-  "devDependencies": {
-    "@eslint/js": "^10.0.1",
-    "eslint": "^10.6.0",
-    "eslint-config-prettier": "^10.1.5",
-    "eslint-plugin-vue": "^10.3.0",
-    "globals": "^17.7.0",
-    "husky": "^9.1.7",
-    "lint-staged": "^17.0.8",
-    "typescript": "^6.0.3",
-    "typescript-eslint": "^8.37.0",
-    "vue-eslint-parser": "^10.4.1"
-  },
-  "packageManager": "pnpm@9.15.0+sha512.76e2379760a4328ec4415815bcd6628dee727af3779aaa4c914e3944156c4299921a89f976381ee107d41f12cfa4b66681ca9c718f0668fa0831ed4c6d8ba56c"
+    "name": "origam",
+    "version": "2.5.1",
+    "private": true,
+    "type": "module",
+    "description": "origam monorepo — Vue 3 design system (lib + marketing + stories + docs + tests + figma plugin). Workspace root, not published. The publishable package lives in packages/ds.",
+    "license": "MIT",
+    "author": "Prioul Arnaud",
+    "homepage": "https://github.com/Elyseranet/origam#readme",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Elyseranet/origam.git"
+    },
+    "bugs": {
+        "url": "https://github.com/Elyseranet/origam/issues"
+    },
+    "engines": {
+        "node": ">=22"
+    },
+    "workspaces": [
+        "packages/*"
+    ],
+    "scripts": {
+        "build:lib": "pnpm -F origam build",
+        "build:marketing": "pnpm -F @origam/marketing build",
+        "build:stories": "pnpm -F @origam/stories build",
+        "build:docs": "pnpm -F @origam/docs build",
+        "build:figma": "pnpm -F @origam/figma-plugin build",
+        "build:all": "pnpm -r build",
+        "tokens:build": "pnpm -F origam tokens:build",
+        "tokens:watch": "pnpm -F origam tokens:watch",
+        "tokens:lint": "pnpm -F origam tokens:lint",
+        "dev:stories": "pnpm -F @origam/stories dev",
+        "dev:docs": "pnpm -F @origam/docs dev",
+        "dev:marketing": "pnpm -F @origam/marketing dev",
+        "test:unit": "pnpm -F @origam/tests test:unit",
+        "test:unit:run": "pnpm -F @origam/tests test:unit:run",
+        "test:run": "pnpm -F @origam/tests test:unit:run",
+        "test:e2e": "pnpm -F @origam/tests test:e2e",
+        "test:a11y": "pnpm -F @origam/tests test:a11y",
+        "test:unit:coverage": "pnpm -F @origam/tests test:unit --coverage",
+        "lint:fix": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
+        "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --max-warnings 0",
+        "clean": "pnpm -r exec rm -rf dist node_modules && rm -rf node_modules",
+        "prepare": "husky",
+        "build:embeds": "pnpm run build:stories && pnpm run build:docs",
+        "sonar": "node scripts/sonar.mjs",
+        "sonar:gate": "node scripts/sonar-gate.mjs"
+    },
+    "pnpm": {
+        "overrides": {
+            "vue": "3.5.39",
+            "@vue/runtime-core": "3.5.39",
+            "@vue/runtime-dom": "3.5.39",
+            "@vue/reactivity": "3.5.39",
+            "@vue/shared": "3.5.39",
+            "@vue/compiler-core": "3.5.39",
+            "@vue/compiler-dom": "3.5.39",
+            "@vue/compiler-sfc": "3.5.39",
+            "@vue/server-renderer": "3.5.39",
+            "vite": ">=7.3.6",
+            "ws": ">=8.21.0",
+            "postcss": "^8.5.18",
+            "tar": "^7.5.19",
+            "shell-quote": "^1.9.0",
+            "js-yaml@4": "^4.3.0",
+            "svgo@4": "^4.0.2",
+            "fast-xml-parser@5": "^5.10.1",
+            "brace-expansion@2": "^2.1.4",
+            "brace-expansion@5": "^5.0.9",
+            "@nuxt/devtools": "^3.3.1",
+            "launch-editor": "^2.14.1",
+            "esbuild@0": "^0.28.1"
+        }
+    },
+    "devDependencies": {
+        "@eslint/js": "^10.0.1",
+        "eslint": "^10.6.0",
+        "eslint-config-prettier": "^10.1.5",
+        "eslint-plugin-vue": "^10.3.0",
+        "globals": "^17.7.0",
+        "husky": "^9.1.7",
+        "lint-staged": "^17.0.8",
+        "typescript": "^6.0.3",
+        "typescript-eslint": "^8.37.0",
+        "vue-eslint-parser": "^10.4.1"
+    },
+    "packageManager": "pnpm@9.15.0+sha512.76e2379760a4328ec4415815bcd6628dee727af3779aaa4c914e3944156c4299921a89f976381ee107d41f12cfa4b66681ca9c718f0668fa0831ed4c6d8ba56c"
 }
