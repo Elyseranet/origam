@@ -65,7 +65,7 @@ radius), or with a custom background of your own.
 This matters for theme authors: `'origam-radio': { rounded: 'md' }` changes
 the hover halo, **not** the resting silhouette of the radio. Reshaping the
 mark itself is a rendering change (glyph → drawn CSS box), not a prop — see
-[#241](https://github.com/arnaudprioul/origam/issues/241).
+[#241](https://github.com/Elyseranet/origam/issues/241).
 :::
 
 ## States (disabled / readonly)
