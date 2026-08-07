@@ -17,8 +17,15 @@
  *   ?limit=<number>   cap the values array for consts/enums/types with very
  *                     large value lists (e.g. mdi-icons: 7297 values). All values
  *                     are returned when the parameter is omitted.
+ *   ?locale=<string>  locale for descriptionFallback resolution (ADR #325).
+ *                     Validated against I18N_LOCALE_CODES; missing/unknown
+ *                     values silently fall back to DEFAULT_LOCALE — never a 4xx.
+ *                     Reaches reference-mappers.ts (signature only for now —
+ *                     resolving the translated value is ticket 4, not this one).
  *
- * Cache: 5 min per kind:slug combination.
+ * Cache: 5 min per kind:slug:LOCALE combination — the locale is part of the cache
+ * key precisely because it changes the response content (descriptionFallback), so
+ * caching without it would serve one locale's text to every other locale (ADR #325).
  * Invalidate on re-sync / backoffice edit (ticket E clears the storage key).
  */
 
@@ -26,6 +33,8 @@ import {
     DocEntry, DocProp, DocEmit, DocSlot, DocExample, DocValue,
     DocParam, DocReturn, DocDirectiveArg, DocDirectiveModifier, DocRelation,
 } from '../../../db/entities'
+import { resolveLocale } from '../../../utils/reference-locale'
+import type { TLocaleCode } from '../../../../src/types/i18n.type'
 
 /**
  * Inline child-collection types to avoid cross-directory import type issues
@@ -51,6 +60,7 @@ export default defineCachedEventHandler(
         assertSlug(slug)
 
         const query = getQuery(event)
+        const locale = resolveLocale(query.locale)
         const limitRaw = typeof query.limit === 'string' ? parseInt(query.limit, 10) : undefined
         const valuesLimit = limitRaw && Number.isFinite(limitRaw) && limitRaw > 0
             ? limitRaw
@@ -75,14 +85,14 @@ export default defineCachedEventHandler(
         // ─── 2. Fetch child tables in parallel based on kind ─────────────
 
         switch (kind) {
-            case 'component': return buildComponentDoc(db, entry, entryId)
-            case 'composable': return buildComposableDoc(db, entry, entryId)
-            case 'const': return buildConstDoc(db, entry, entryId, valuesLimit)
-            case 'directive': return buildDirectiveDoc(db, entry, entryId)
-            case 'enum': return buildEnumDoc(db, entry, entryId, valuesLimit)
-            case 'interface': return buildInterfaceDoc(db, entry, entryId)
-            case 'type': return buildTypeDoc(db, entry, entryId, valuesLimit)
-            case 'util': return buildUtilDoc(db, entry, entryId)
+            case 'component': return buildComponentDoc(db, entry, entryId, locale)
+            case 'composable': return buildComposableDoc(db, entry, entryId, locale)
+            case 'const': return buildConstDoc(db, entry, entryId, valuesLimit, locale)
+            case 'directive': return buildDirectiveDoc(db, entry, entryId, locale)
+            case 'enum': return buildEnumDoc(db, entry, entryId, valuesLimit, locale)
+            case 'interface': return buildInterfaceDoc(db, entry, entryId, locale)
+            case 'type': return buildTypeDoc(db, entry, entryId, valuesLimit, locale)
+            case 'util': return buildUtilDoc(db, entry, entryId, locale)
             default:
                 throw createError({ statusCode: 500, statusMessage: 'Unhandled kind' })
         }
@@ -94,7 +104,8 @@ export default defineCachedEventHandler(
             const kind = getRouterParam(event, 'kind') ?? ''
             const slug = getRouterParam(event, 'slug') ?? ''
             const q = getQuery(event)
-            return `doc:${kind}:${slug}:${q.limit ?? ''}`
+            const locale = resolveLocale(q.locale)
+            return `doc:${kind}:${slug}:${q.limit ?? ''}:${locale}`
         },
     },
 )
@@ -220,7 +231,7 @@ async function fetchDescriptionsBySlug (
 
 // ─── Kind-specific doc builders ────────────────────────────────────────────
 
-async function buildComponentDoc (db: any, entry: any, entryId: string) {
+async function buildComponentDoc (db: any, entry: any, entryId: string, locale: TLocaleCode) {
     const [props, emits, slots, examples, relations] = await Promise.all([
         fetchProps(db, entryId),
         fetchEmits(db, entryId),
@@ -243,10 +254,10 @@ async function buildComponentDoc (db: any, entry: any, entryId: string) {
     )
 
     const ch: ComponentChildren = { props, emits, slots, examples, relations, descriptionsBySlug }
-    return mapComponentDoc(entry, ch)
+    return mapComponentDoc(entry, ch, locale)
 }
 
-async function buildComposableDoc (db: any, entry: any, entryId: string) {
+async function buildComposableDoc (db: any, entry: any, entryId: string, locale: TLocaleCode) {
     const [params, returns, examples, relations] = await Promise.all([
         fetchParams(db, entryId),
         fetchReturns(db, entryId),
@@ -254,20 +265,20 @@ async function buildComposableDoc (db: any, entry: any, entryId: string) {
         fetchRelations(db, entryId),
     ])
     const ch: ComposableChildren = { params, returns, examples, relations }
-    return mapComposableDoc(entry, ch)
+    return mapComposableDoc(entry, ch, locale)
 }
 
-async function buildConstDoc (db: any, entry: any, entryId: string, valuesLimit?: number) {
+async function buildConstDoc (db: any, entry: any, entryId: string, valuesLimit: number | undefined, locale: TLocaleCode) {
     const [values, examples, relations] = await Promise.all([
         fetchValues(db, entryId, valuesLimit),
         fetchExamples(db, entryId),
         fetchRelations(db, entryId),
     ])
     const ch: ConstChildren = { values, examples, relations }
-    return mapConstDoc(entry, ch)
+    return mapConstDoc(entry, ch, locale)
 }
 
-async function buildDirectiveDoc (db: any, entry: any, entryId: string) {
+async function buildDirectiveDoc (db: any, entry: any, entryId: string, locale: TLocaleCode) {
     const [args, modifiers, examples, relations] = await Promise.all([
         fetchDirectiveArgs(db, entryId),
         fetchDirectiveModifiers(db, entryId),
@@ -286,40 +297,40 @@ async function buildDirectiveDoc (db: any, entry: any, entryId: string) {
     )
 
     const ch: DirectiveChildren = { args, modifiers, examples, relations, descriptionsBySlug }
-    return mapDirectiveDoc(entry, ch)
+    return mapDirectiveDoc(entry, ch, locale)
 }
 
-async function buildEnumDoc (db: any, entry: any, entryId: string, valuesLimit?: number) {
+async function buildEnumDoc (db: any, entry: any, entryId: string, valuesLimit: number | undefined, locale: TLocaleCode) {
     const [values, examples, relations] = await Promise.all([
         fetchValues(db, entryId, valuesLimit),
         fetchExamples(db, entryId),
         fetchRelations(db, entryId),
     ])
     const ch: EnumChildren = { values, examples, relations }
-    return mapEnumDoc(entry, ch)
+    return mapEnumDoc(entry, ch, locale)
 }
 
-async function buildInterfaceDoc (db: any, entry: any, entryId: string) {
+async function buildInterfaceDoc (db: any, entry: any, entryId: string, locale: TLocaleCode) {
     const [props, examples, relations] = await Promise.all([
         fetchProps(db, entryId),
         fetchExamples(db, entryId),
         fetchRelations(db, entryId),
     ])
     const ch: InterfaceChildren = { props, examples, relations }
-    return mapInterfaceDoc(entry, ch)
+    return mapInterfaceDoc(entry, ch, locale)
 }
 
-async function buildTypeDoc (db: any, entry: any, entryId: string, valuesLimit?: number) {
+async function buildTypeDoc (db: any, entry: any, entryId: string, valuesLimit: number | undefined, locale: TLocaleCode) {
     const [values, examples, relations] = await Promise.all([
         fetchValues(db, entryId, valuesLimit),
         fetchExamples(db, entryId),
         fetchRelations(db, entryId),
     ])
     const ch: TypeChildren = { values, examples, relations }
-    return mapTypeDoc(entry, ch)
+    return mapTypeDoc(entry, ch, locale)
 }
 
-async function buildUtilDoc (db: any, entry: any, entryId: string) {
+async function buildUtilDoc (db: any, entry: any, entryId: string, locale: TLocaleCode) {
     const [params, returns, examples, relations] = await Promise.all([
         fetchParams(db, entryId),
         fetchReturns(db, entryId),
@@ -327,5 +338,5 @@ async function buildUtilDoc (db: any, entry: any, entryId: string) {
         fetchRelations(db, entryId),
     ])
     const ch: UtilChildren = { params, returns, examples, relations }
-    return mapUtilDoc(entry, ch)
+    return mapUtilDoc(entry, ch, locale)
 }

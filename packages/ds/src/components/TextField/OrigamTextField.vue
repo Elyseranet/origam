@@ -544,7 +544,12 @@
 	 ********************************************************/
 
 	const inputProps = computed(() => {
-		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'id', 'focused'])
+		// `id` is deliberately NOT filtered out: OrigamInput needs it to build
+		// `<id>-messages`, the target of its own `aria-describedby`. Filtering it
+		// forced OrigamInput to invent an id, so a consumer passing `id` got an
+		// `<input>` that could not be found by `getElementById` and a `<label for>`
+		// that pointed nowhere.
+		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'focused'])
 	})
 	const fieldProps = computed(() => {
 		return origamFieldRef.value?.filterProps(props, ['class', 'id', 'active', 'dirty', 'disabled', 'focused', 'error', 'style'])
