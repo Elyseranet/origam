@@ -136,7 +136,7 @@
     "@tokens-studio/sd-transforms": "^2.0.3",
     "@types/node": "^26.1.0",
     "@vitejs/plugin-vue": "^6.0.7",
-    "sass": "^1.89.2",
+    "sass": "^1.102.0",
     "style-dictionary": "^5.5.0",
     "ts-transformer-keys": "^0.4.4",
     "typescript": "^6.0.3",
