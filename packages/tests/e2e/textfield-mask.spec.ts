@@ -8,7 +8,7 @@ test.describe('OrigamTextField — mask', () => {
     // and exercises the `data-cy`-tagged fixture directly.
 
     test('phone:fr — typing 0612345678 formats to "06 12 34 56 78"', async ({ page }) => {
-        test.fixme(true, 'DS BUG: @complete emit never fires — watch(maskComplete) in OrigamTextField does not trigger when saisie completes via Playwright type(); maskBuiltinComplete stays false even after 10 digits are correctly displayed ("06 12 34 56 78") and unmasked is correct. The complete Ref in useMask does not propagate through the watch pipeline during rapid synthetic input.')
+        test.fixme(true, "DS BUG (ADR-001, chantier en cours) — course « effacer puis taper dans le meme tick ». Le motif historiquement note ici (saisie synthetique de Playwright, delay:5) est FAUX : mesure a la sonde, la saisie a delay:5 ms passe parfaitement des qu'on laisse 50 ms apres le fill(''). C'est le repit APRES l'effacement qui decide, pas la vitesse de frappe : 0 ms -> '(1', 50 ms -> '(12) 345-6789'. Un vrai utilisateur peut donc le declencher (bouton d'effacement, ou select-all + suppression suivis d'une frappe immediate). La fenetre de lecture optimiste de useVModel, livree sur cette branche, ne suffit pas a le corriger.")
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
         await page.getByRole('link', { name: 'Prop — mask (built-in patterns)', exact: true }).click()
@@ -51,7 +51,7 @@ test.describe('OrigamTextField — mask', () => {
     })
 
     test('creditcard — valid Luhn 4111... passes', async ({ page }) => {
-        test.fixme(true, 'DS BUG: handleInput + nextTick race condition — Playwright type() with delay:5 in an iframe with a masked input triggers a nextTick rewrite of el.value between each keystroke; subsequent keystrokes land on the wrong caret position and the value is truncated to 2-3 chars instead of 16. Affects all credit-card (19-char masked) inputs driven by synthetic char-by-char input.')
+        test.fixme(true, "DS BUG (ADR-001, chantier en cours) — course « effacer puis taper dans le meme tick ». Le motif historiquement note ici (saisie synthetique de Playwright, delay:5) est FAUX : mesure a la sonde, la saisie a delay:5 ms passe parfaitement des qu'on laisse 50 ms apres le fill(''). C'est le repit APRES l'effacement qui decide, pas la vitesse de frappe : 0 ms -> '(1', 50 ms -> '(12) 345-6789'. Un vrai utilisateur peut donc le declencher (bouton d'effacement, ou select-all + suppression suivis d'une frappe immediate). La fenetre de lecture optimiste de useVModel, livree sur cette branche, ne suffit pas a le corriger.")
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
         await page.getByRole('link', { name: 'Prop — mask (credit card with Luhn)', exact: true }).click()
@@ -71,7 +71,7 @@ test.describe('OrigamTextField — mask', () => {
     })
 
     test('creditcard — invalid Luhn fails validation', async ({ page }) => {
-        test.fixme(true, 'DS BUG: handleInput + nextTick race condition — same as the valid-Luhn case. Playwright type() with delay:5 in an iframe with a masked input triggers a nextTick rewrite of el.value between each keystroke; subsequent keystrokes land on the wrong caret position and the value is truncated instead of reaching the full 19-char formatted form "1234 5678 9012 3456". aria-invalid="true" is never observed because the input value never completes.')
+        test.fixme(true, "DS BUG (ADR-001, chantier en cours) — course « effacer puis taper dans le meme tick ». Le motif historiquement note ici (saisie synthetique de Playwright, delay:5) est FAUX : mesure a la sonde, la saisie a delay:5 ms passe parfaitement des qu'on laisse 50 ms apres le fill(''). C'est le repit APRES l'effacement qui decide, pas la vitesse de frappe : 0 ms -> '(1', 50 ms -> '(12) 345-6789'. Un vrai utilisateur peut donc le declencher (bouton d'effacement, ou select-all + suppression suivis d'une frappe immediate). La fenetre de lecture optimiste de useVModel, livree sur cette branche, ne suffit pas a le corriger.")
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
         await page.getByRole('link', { name: 'Prop — mask (credit card with Luhn)', exact: true }).click()
@@ -116,7 +116,7 @@ test.describe('OrigamTextField — mask', () => {
     })
 
     test('backspace — preserves unmasked semantics (deletes digit, skips literal)', async ({ page }) => {
-        test.fixme(true, 'DS BUG: handleInput + nextTick race condition — same root cause as the credit-card cases above. Playwright type() in an iframe with a masked input triggers a nextTick rewrite of el.value between each keystroke; the caret lands on the wrong offset and the value is truncated before the backspace step is ever reached. Measured on chromium, firefox and webkit alike.')
+        test.fixme(true, "DS BUG (ADR-001, chantier en cours) — course « effacer puis taper dans le meme tick ». Le motif historiquement note ici (saisie synthetique de Playwright, delay:5) est FAUX : mesure a la sonde, la saisie a delay:5 ms passe parfaitement des qu'on laisse 50 ms apres le fill(''). C'est le repit APRES l'effacement qui decide, pas la vitesse de frappe : 0 ms -> '(1', 50 ms -> '(12) 345-6789'. Un vrai utilisateur peut donc le declencher (bouton d'effacement, ou select-all + suppression suivis d'une frappe immediate). La fenetre de lecture optimiste de useVModel, livree sur cette branche, ne suffit pas a le corriger.")
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
         await page.getByRole('link', { name: 'Prop — mask (built-in patterns)', exact: true }).click()
@@ -139,7 +139,7 @@ test.describe('OrigamTextField — mask', () => {
     })
 
     test('@valid emit fires when validity flips', async ({ page }) => {
-        test.fixme(true, 'DS BUG: @valid emit never fires during rapid synthetic input — the watch() on useMask validity state in OrigamTextField does not trigger when input is driven by Playwright type() with delay:10 inside a sandboxed iframe. The maskEmitValidCount stays at 0 because the Vue reactivity pipeline (watch + emit) is bypassed by the nextTick rewrite of el.value between synthetic keystrokes. Same root cause as the @complete emit bug documented on the phone:fr test.')
+        test.fixme(true, "DS BUG (ADR-001, chantier en cours) — course « effacer puis taper dans le meme tick ». Le motif historiquement note ici (saisie synthetique de Playwright, delay:5) est FAUX : mesure a la sonde, la saisie a delay:5 ms passe parfaitement des qu'on laisse 50 ms apres le fill(''). C'est le repit APRES l'effacement qui decide, pas la vitesse de frappe : 0 ms -> '(1', 50 ms -> '(12) 345-6789'. Un vrai utilisateur peut donc le declencher (bouton d'effacement, ou select-all + suppression suivis d'une frappe immediate). La fenetre de lecture optimiste de useVModel, livree sur cette branche, ne suffit pas a le corriger.")
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
         await page.getByRole('link', { name: 'Emit — valid / complete', exact: true }).click()
@@ -161,7 +161,7 @@ test.describe('OrigamTextField — mask', () => {
     })
 
     test('custom pattern (##) ###-#### formats US-style phone', async ({ page }) => {
-        test.fixme(true, 'DS BUG: handleInput + nextTick race condition — same root cause as the credit-card cases above. Measured: the input holds "(1" instead of "(12) 345-6789" — the value is truncated after the second keystroke, exactly the symptom already documented on the 19-char credit-card mask.')
+        test.fixme(true, "DS BUG (ADR-001, chantier en cours) — course « effacer puis taper dans le meme tick ». Le motif historiquement note ici (saisie synthetique de Playwright, delay:5) est FAUX : mesure a la sonde, la saisie a delay:5 ms passe parfaitement des qu'on laisse 50 ms apres le fill(''). C'est le repit APRES l'effacement qui decide, pas la vitesse de frappe : 0 ms -> '(1', 50 ms -> '(12) 345-6789'. Un vrai utilisateur peut donc le declencher (bouton d'effacement, ou select-all + suppression suivis d'une frappe immediate). La fenetre de lecture optimiste de useVModel, livree sur cette branche, ne suffit pas a le corriger.")
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
         await page.getByRole('link', { name: 'Prop — mask (custom pattern)', exact: true }).click()
