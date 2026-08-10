@@ -533,9 +533,76 @@
 	const menuDisabled = computed(() => {
 		return (props.hideNoData && !displayItems.value.length) || props.readonly || form?.isReadonly.value
 	})
+	/*********************************************************
+	 * Typography bridge across the teleport
+	 *
+	 * @description
+	 * The menu is teleported out of the select's DOM subtree, so CSS written
+	 * by the consuming application never reaches it. An app that shrinks the
+	 * field — `.origam-select * { font-size: 13px }`, a compact form theme, a
+	 * scaled container — leaves the options at their own size, and the popup
+	 * comes out visibly larger than the control that opened it.
+	 *
+	 * Inheriting `font-size` on the teleported surface is NOT enough on its
+	 * own: list items size their text with `var(--origam-list-item__title---font-size, 1rem)`,
+	 * and `rem` resolves against the document root, not the parent. The options
+	 * would keep the root size whatever the surface inherits.
+	 *
+	 * So the resolved typography is measured on the field and republished on
+	 * the surface as the component tokens the list already reads. Measured at
+	 * open time rather than computed from props, because the value we need is
+	 * whatever CSS actually won — including rules the design system cannot see.
+	 ********************************************************/
+
+	const menuTypographyStyles = ref<Record<string, string>>({})
+
+	const fieldElement = () => {
+		const root = (origamTextFieldRef.value as unknown as { $el?: HTMLElement })?.$el
+
+		if (!root || typeof root.querySelector !== 'function') return undefined
+
+		// The <input> carries the text the user actually sees; the root would
+		// report the wrapper's size, which a consumer rule may not have touched.
+		return (root.querySelector('input') ?? root) as HTMLElement
+	}
+
+	const syncMenuTypography = () => {
+		const el = fieldElement()
+
+		if (!el || typeof window === 'undefined') return
+
+		const styles = window.getComputedStyle(el)
+		const fontSize = styles.fontSize
+
+		if (!fontSize) return
+
+		menuTypographyStyles.value = {
+			'font-family': styles.fontFamily,
+			'font-size': fontSize,
+			'letter-spacing': styles.letterSpacing,
+			'--origam-list-item__title---font-size': fontSize,
+			// Kept proportional to the title rather than pinned, so the pair
+			// keeps its relationship at any scale.
+			'--origam-list-item__subtitle---font-size': `calc(${ fontSize } * 0.875)`
+		}
+	}
+
+	watch(menu, (isOpen) => {
+		if (isOpen) nextTick(syncMenuTypography)
+	})
+
 	const menuProps = computed(() => {
+		const consumerProps = (props.menuProps ?? {}) as Record<string, any>
+		const consumerContentProps = (consumerProps.contentProps ?? {}) as Record<string, any>
+
 		return {
-			...props.menuProps
+			...consumerProps,
+			contentProps: {
+				...consumerContentProps,
+				// The consumer's own style is listed last so it still wins —
+				// the bridge is a default, not a lock.
+				style: [menuTypographyStyles.value, consumerContentProps.style]
+			}
 		}
 	})
 
