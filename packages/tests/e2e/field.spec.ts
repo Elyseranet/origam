@@ -130,4 +130,31 @@ test.describe('OrigamField', () => {
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         await expect(sandbox.locator('[data-cy="field-playground"]')).toBeVisible({ timeout: 5000 })
     })
+
+    // Regression — a prepended field's `__outline--start` leg must stay at
+    // least as wide as the field's border-radius. When it was clamped to the
+    // raw `padding-start` (6px) instead, a `rounded="large"` (16px) corner
+    // rendered flat: CSS scales down a border-radius that exceeds the box
+    // carrying it, and `__outline--start` is exactly the box that carries the
+    // start-side radius.
+    test('Prepended + rounded — outline start leg is not narrower than the corner radius', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Prop — prepended corner (regression)', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const field = sandbox.locator('[data-cy="field-corner-prepended"]')
+        const outlineStart = sandbox.locator('[data-cy="field-corner-prepended"] .origam-field__outline--start')
+
+        await expect(field).toBeVisible({ timeout: 5000 })
+        await expect(outlineStart).toBeVisible({ timeout: 3000 })
+
+        const radiusPx = await field.evaluate(el => parseFloat(getComputedStyle(el).borderTopLeftRadius))
+        const outlineBox = await outlineStart.boundingBox()
+
+        expect(radiusPx).toBeGreaterThan(6)
+        expect(outlineBox).not.toBeNull()
+        expect(outlineBox!.width).toBeGreaterThanOrEqual(radiusPx - 1)
+    })
 })

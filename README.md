@@ -300,7 +300,7 @@ are git-ignored, so the three lockfiles never drift against each other
 in version control.
 
 ```bash
-git clone https://github.com/arnaudprioul/origam.git
+git clone https://github.com/Elyseranet/origam.git
 cd origam
 
 # Recommended:

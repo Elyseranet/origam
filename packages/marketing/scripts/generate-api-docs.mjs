@@ -19,6 +19,16 @@
  *              the pages are rebranched on the API and the const files are removed
  *              (ticket F). Lets the transition stay non-destructive.
  *
+ *   --backfill-keys
+ *              ADR 325 (task 1). Generates a deterministic i18n key for every
+ *              row that has real curated `*_fallback` prose but an EMPTY
+ *              `*_key` (3 763 rows: doc_entry, doc_prop, doc_param, doc_return,
+ *              doc_example), backfills the two new `svg_title_key`/`svg_desc_key`
+ *              columns from the component anatomy diagrams, and fixes the
+ *              `enum.` → `enums.` namespace typo. See lib/key-convention.mjs
+ *              for the naming convention (audited against the 14 498 keys that
+ *              already exist) and lib/key-backfill.ts for the DB orchestration.
+ *
  * Every DB run is wrapped in a single transaction and recorded in doc_sync_run.
  * `--check` is a dry-run drift gate (rolls back, exits 1 if anything would change).
  *
@@ -26,10 +36,13 @@
  *   node scripts/generate-api-docs.mjs --seed [--check] [--domain=<kind>] [--verbose]
  *   node scripts/generate-api-docs.mjs        [--check] [--domain=<dir>]  [--verbose]
  *   node scripts/generate-api-docs.mjs --files [--check] [--domain=<dir>] [--limit=N]
+ *   node scripts/generate-api-docs.mjs --backfill-keys [--check]
  *
  * VERACITY
  *   No prose is invented. [ÉDIT] content always comes from the curated files
  *   (seed) or is left as-is in the DB (re-sync). [SRC] always comes from the DS.
+ *   `--backfill-keys` never touches a `*_fallback` value — it only generates
+ *   the missing `*_key` from structural facts already on the row.
  */
 
 import fs from 'node:fs'
@@ -44,6 +57,7 @@ import { readExistingDoc } from './lib/read-existing.mjs'
 import { mapDoc } from './lib/doc-to-rows.ts'
 import { ingestFull, ingestSrc } from './lib/db-upsert.ts'
 import { getDb, closeDb, sourceCommit } from './lib/db.ts'
+import { backfillKeys, backfillSvgKeys } from './lib/key-backfill.ts'
 import { DOC_KIND_DIRS } from '../server/db/db.const.mjs'
 import { DocEntry, DocSyncRun } from '../server/db/entities/index.ts'
 import { syncFixtures } from '../server/utils/doc-fixture-sync.ts'
@@ -53,6 +67,7 @@ const CHECK = ARGS.includes('--check')
 const VERBOSE = ARGS.includes('--verbose')
 const SEED = ARGS.includes('--seed')
 const FILES = ARGS.includes('--files')
+const BACKFILL_KEYS = ARGS.includes('--backfill-keys')
 const NEW_ONLY = ARGS.includes('--new-only')
 const DOMAIN_ARG = (ARGS.find(a => a.startsWith('--domain=')) || '').split('=')[1]
 const LIMIT = Number((ARGS.find(a => a.startsWith('--limit=')) || '').split('=')[1]) || 0
@@ -263,8 +278,45 @@ async function runFiles () {
     if (totalErrors) process.exit(2)
 }
 
+// ─── Key backfill (ADR 325, task 1) ──────────────────────────────────────────
+async function runBackfillKeys () {
+    const db = await getDb()
+    let counts = null
+    let svgCount = 0
+
+    try {
+        await db.transaction(async (manager) => {
+            counts = await backfillKeys(manager)
+            svgCount = await backfillSvgKeys(manager)
+            if (CHECK) throw new Error(ROLLBACK)
+        })
+    } catch (e) {
+        if (e.message !== ROLLBACK) throw e
+    }
+
+    const total = Object.values(counts).reduce((a, b) => a + b, 0) + svgCount
+    console.log(`\n${CHECK ? 'CHECK' : 'BACKFILL'} summary`)
+    console.log(`  doc_entry.description_key : ${counts.entryDescription}`)
+    console.log(`  doc_entry.note_key        : ${counts.entryNote}`)
+    console.log(`  doc_prop.description_key  : ${counts.props}`)
+    console.log(`  doc_param.description_key : ${counts.params}`)
+    console.log(`  doc_return.description_key: ${counts.returns}`)
+    console.log(`  doc_example.title_key     : ${counts.examples}`)
+    console.log(`  enum. -> enums. namespace : ${counts.enumNamespace}`)
+    console.log(`  doc_entry.svg_*_key       : ${svgCount}`)
+    console.log(`  TOTAL                     : ${total}`)
+
+    if (CHECK && total > 0) {
+        console.log('\n--check: the database WOULD change. Run without --check to apply.')
+        await closeDb()
+        process.exit(1)
+    }
+    await closeDb()
+}
+
 async function run () {
     if (FILES) return runFiles()
+    if (BACKFILL_KEYS) return runBackfillKeys()
     return runDb()
 }
 

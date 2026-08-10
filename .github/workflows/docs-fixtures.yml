@@ -74,7 +74,7 @@ jobs:
           # `Authorization` headers → "Duplicate header" → push fails (exit 128).
           persist-credentials: false
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
 
       - name: Setup Node
         uses: actions/setup-node@v6
@@ -133,7 +133,7 @@ jobs:
       # Open / refresh a PR to develop. create-pull-request no-ops when there is
       # no diff, so it is the single change gate.
       - name: Open PR with regenerated fixtures
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: chore/regenerate-fixtures

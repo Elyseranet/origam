@@ -179,10 +179,60 @@ describe('useParallaxRuntime — initial ref values', () => {
 // ---------------------------------------------------------------------------
 
 describe('useParallaxRuntime — cssScrollDriven', () => {
-    it('is false in jsdom (CSS.supports("animation-timeline: scroll()") returns false)', () => {
-        // jsdom does not support animation-timeline — CSS.supports falls back to false
-        const { api } = mountParallax({ easing: PARALLAX_EASING.LINEAR })
-        expect(api().cssScrollDriven.value).toBe(false)
+    /**
+     * The browser's answer is STUBBED, never inherited from jsdom.
+     *
+     * The previous version asserted "false in jsdom, which does not implement
+     * animation-timeline" — making the test a hostage of its environment. jsdom
+     * 30 began answering `true` to `animation-timeline: scroll()` and the
+     * assertion flipped without a single line of origam changing. What we mean
+     * to assert is the RULE — CSS support plus linear easing — so both premises
+     * are stated here.
+     *
+     * `useCssSupport` memoises its answers in a module-level cache, so stubbing
+     * `CSS.supports` is not enough on its own: an earlier test in this file has
+     * already read `cssScrollDriven` and filled that cache. `resetModules()` plus
+     * a dynamic import hands us a fresh module — and therefore an empty cache —
+     * for each premise.
+     */
+    async function mountWithCssSupport (supported: boolean) {
+        vi.resetModules()
+
+        const supports = vi.spyOn(CSS, 'supports').mockReturnValue(supported)
+        const { useParallaxRuntime: fresh } = await import('@origam/composables')
+
+        let api!: ReturnType<typeof fresh>
+
+        const Host = defineComponent({
+            name: 'OrigamParallaxCssHost',
+            setup () {
+                api = fresh({
+                    target: ref(undefined),
+                    direction: ref(PARALLAX_DIRECTION.VERTICAL),
+                    easing: ref(PARALLAX_EASING.LINEAR),
+                    threshold: ref(0),
+                    disabled: ref(false),
+                    speed: ref(0.3)
+                })
+                return () => h('div')
+            }
+        })
+
+        const wrapper = mount(Host)
+        const value = api.cssScrollDriven.value
+
+        wrapper.unmount()
+        supports.mockRestore()
+
+        return value
+    }
+
+    it('is false when the browser does not support animation-timeline', async () => {
+        expect(await mountWithCssSupport(false)).toBe(false)
+    })
+
+    it('is true when the browser supports animation-timeline and easing is linear', async () => {
+        expect(await mountWithCssSupport(true)).toBe(true)
     })
 
     it('is false when easing is SPRING even if CSS were to support it', () => {

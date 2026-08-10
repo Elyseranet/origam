@@ -1,6 +1,6 @@
 {
   "name": "origam",
-  "version": "2.13.0",
+  "version": "2.14.0",
   "type": "module",
   "description": "origam — a Vue 3 design system with multi-theme design tokens, CSS-first components and TypeScript types.",
   "keywords": [
@@ -23,17 +23,17 @@
   ],
   "license": "MIT",
   "author": "Prioul Arnaud",
-  "homepage": "https://github.com/arnaudprioul/origam#readme",
+  "homepage": "https://github.com/Elyseranet/origam#readme",
   "funding": {
     "type": "custom",
     "url": "https://www.paypal.com/donate/?hosted_button_id=EQFUQ2JV95YGQ"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/arnaudprioul/origam.git"
+    "url": "git+https://github.com/Elyseranet/origam.git"
   },
   "bugs": {
-    "url": "https://github.com/arnaudprioul/origam/issues"
+    "url": "https://github.com/Elyseranet/origam/issues"
   },
   "engines": {
     "node": ">=22"
@@ -106,7 +106,8 @@
     "styles:build": "sass src/assets/scss/main.scss src/assets/css/main.css --no-source-map --style=compressed",
     "tokens:watch": "node scripts/build-tokens.mjs --watch",
     "tokens:lint": "node scripts/build-tokens.mjs --dry-run --strict",
-    "prepublishOnly": "pnpm run build"
+    "prepublishOnly": "pnpm run build",
+    "prepack": "node -e \"require('fs').copyFileSync('../../CHANGELOG.md','CHANGELOG.md')\""
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",
@@ -135,7 +136,7 @@
     "@tokens-studio/sd-transforms": "^2.0.3",
     "@types/node": "^26.1.0",
     "@vitejs/plugin-vue": "^6.0.7",
-    "sass": "^1.89.2",
+    "sass": "^1.102.0",
     "style-dictionary": "^5.5.0",
     "ts-transformer-keys": "^0.4.4",
     "typescript": "^6.0.3",

@@ -163,7 +163,7 @@ export const origamLightTheme: IOrigamTheme = {
     components: {
         'origam-alert': { tag: 'div', density: 'default' },
         'origam-audio': { tag: 'article', variant: 'expanded', position: 'relative' },
-        'origam-avatar': { tag: 'div', size: 'default', rounded: 'lg', color: 'primary' },
+        'origam-avatar': { tag: 'div', size: 'default', rounded: 'full', color: 'primary' },
         'origam-badge': { tag: 'div', location: 'top right' },
         'origam-blockquote': { tag: 'blockquote', variant: 'default' },
         'origam-bottom-nav': { tag: 'nav', position: 'start' },
@@ -317,7 +317,7 @@ export const origamDarkTheme: IOrigamTheme = {
     components: {
         'origam-alert': { tag: 'div', density: 'default' },
         'origam-audio': { tag: 'article', variant: 'expanded', position: 'relative' },
-        'origam-avatar': { tag: 'div', size: 'default', rounded: 'lg', color: 'primary' },
+        'origam-avatar': { tag: 'div', size: 'default', rounded: 'full', color: 'primary' },
         'origam-badge': { tag: 'div', location: 'top right' },
         'origam-blockquote': { tag: 'blockquote', variant: 'default' },
         'origam-bottom-nav': { tag: 'nav', position: 'start' },
