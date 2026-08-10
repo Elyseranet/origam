@@ -221,6 +221,57 @@ jobs:
           retention-days: 7
           if-no-files-found: error
 
+  build-marketing:
+    name: Build marketing (Nuxt)
+    runs-on: ubuntu-latest
+    needs: tokens
+    # No GHA/docker.yml job builds the marketing image (it only ships docs +
+    # stories, and only on `main`/tags) — Coolify was the only thing building
+    # it on every `develop` push, and its failures never surfaced on GitHub.
+    # This job is the guard: it runs the same `nuxt build` Coolify's Docker
+    # image runs, on a full checkout, so a broken marketing build goes red
+    # here instead of only at deploy time. See postmortem: a stale root
+    # tsconfig project reference (fixed in 29e9c1b7) broke every Coolify
+    # deploy on `develop` for days while this workflow stayed green, because
+    # nothing here ever ran `pnpm -F @origam/marketing build`.
+    #
+    # Deliberately narrow: builds the lib (marketing imports `origam`) then
+    # the Nuxt app directly, skipping `build:embeds` (Histoire + VitePress,
+    # ~70s+ on its own, already covered by `build-embeds` above). The embeds
+    # are static assets copied into `public/`; nothing in `nuxt.config.ts` or
+    # the build pipeline reads them at build time, so omitting them doesn't
+    # lose any coverage — confirmed by reproducing the original incident
+    # (renaming packages/tests/{TU,e2e}/tsconfig.json) with embeds skipped
+    # and still seeing `nuxt build` fail with the same
+    # `[TSCONFIG_ERROR] ... Tsconfig not found`.
+    env:
+      # Matches packages/marketing/Dockerfile's build stage: the Nitro build
+      # (server bundle + SSR payload) OOMs on the workflow-level 4096 MB.
+      NODE_OPTIONS: --max-old-space-size=8192
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build library (marketing imports `origam`)
+        run: pnpm -F origam build
+
+      - name: Build marketing (Nuxt)
+        run: pnpm -F @origam/marketing build
+
+      - name: Assert Nuxt output exists
+        run: |
+          test -f packages/marketing/.output/server/index.mjs \
+            || { echo "::error::packages/marketing/.output/server/index.mjs missing — Nitro server entry not emitted"; exit 1; }
+
   i18n-check:
     name: i18n check (marketing)
     runs-on: ubuntu-latest
