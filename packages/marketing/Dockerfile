@@ -49,6 +49,23 @@ COPY packages/docs packages/docs
 COPY packages/stories packages/stories
 COPY packages/marketing packages/marketing
 
+# The root tsconfig.json declares project `references` to
+# packages/tests/{TU,e2e}/tsconfig.json. Those two files must exist here even
+# though no test runs during the image build: the Vue transform resolves the
+# tsconfig chain for every .vue file, and a reference pointing at a missing
+# file aborts the whole build with
+#   [TSCONFIG_ERROR] Failed to load tsconfig for 'src/pages/...': Tsconfig not found
+#
+# It surfaced with the Vite 8 / rolldown upgrade — the oxc transform resolves
+# references strictly, where esbuild used to ignore a broken one. Nothing in
+# the app changed, which is why it reads as a mystery: the marketing build
+# passed locally (packages/tests is on disk) and failed only in the image.
+#
+# Only the tsconfigs are copied, not the specs: the build needs the references
+# to RESOLVE, not the tests to exist.
+COPY packages/tests/TU/tsconfig.json packages/tests/TU/tsconfig.json
+COPY packages/tests/e2e/tsconfig.json packages/tests/e2e/tsconfig.json
+
 # --- Tools stage: deps + source + tsx, WITHOUT the heavy lib/embeds/nuxt build.
 #     Consumed by the docker-compose `migrate` service to run the TypeORM
 #     migrations and the ingestion pipeline (db:migrate + docs:seed + docs:sync)
