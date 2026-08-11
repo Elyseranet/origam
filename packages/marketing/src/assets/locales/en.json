@@ -1246,6 +1246,18 @@
                     "title": "Bundle-size monitoring",
                     "description": "size-limit on every sub-export. PR comments auto-generated. The 5.6 MB → 869 kB drop must stay an asset."
                 },
+                "tu_audit": {
+                    "title": "Unit test suite consolidation",
+                    "description": "Standardize on a single tests/unit/{Domain}/{name}.spec.ts convention and lift branch coverage on the transversal composables, mocking CSS.supports in jsdom."
+                },
+                "api_audit": {
+                    "title": "Pre-v3 API audit",
+                    "description": "A full deprecation inventory in the v2-to-v3 migration guide, missing {'@'}deprecated markers completed, and a codemod for the mechanical renames."
+                },
+                "dependency_automation": {
+                    "title": "Automated dependency updates",
+                    "description": "Renovate with grouped update policies, automatic merges for patch-level dev dependencies, and a weekly grouped PR for minor bumps."
+                },
                 "sonarqube": {
                     "title": "SonarQube — A rating, zero debt",
                     "description": "The Sonar scan is already wired (build.yml + sonar-project.properties) but incomplete. Feed the Vitest lcov coverage into Sonar (sonar.javascript.lcov.reportPaths), enable a blocking quality gate, and clear every bug / vulnerability / security hotspot / code smell to reach an A rating on all axes with zero technical debt. Run on PRs and add it to the pre-delivery checks."
@@ -1261,6 +1273,10 @@
                 "v3": {
                     "title": "v3.0.0 — Strategy B",
                     "description": "Remove *Styles returns when the value is tokenised. Utility classes become the sole API. ~2× less reactive computation."
+                },
+                "modularization": {
+                    "title": "Modular sub-exports (origam/core, origam/form, origam/chart, …)",
+                    "description": "Split the published library into tree-shakable sub-exports by domain, so an app only pays for what it actually imports. The existing origam barrel stays available for backward compatibility."
                 },
                 "motion_tokens": {
                     "title": "Motion & a11y media tokens",
@@ -1281,6 +1297,18 @@
                 "turborepo": {
                     "title": "Turborepo build cache",
                     "description": "Replace raw pnpm -r scripts with Turborepo pipelines. Remote cache drastically cuts CI rebuild time."
+                },
+                "variant_presets": {
+                    "title": "variant as a preset of real props",
+                    "description": "Turn each visual variant into a transparent, fully overridable preset of component props instead of hardcoded styling — piloted on OrigamBlockquote, then generalized."
+                },
+                "add_more": {
+                    "title": "OrigamAddMore — form field repeater",
+                    "description": "A new form component for repeating a group of fields with an 'Add more' action, min/max bounds, and full keyboard and screen-reader support."
+                },
+                "content_justify": {
+                    "title": "OrigamBtn — contentJustify prop",
+                    "description": "A props-first way to control how a button's content aligns inside its layout, for buttons that don't rely on the prepend/append icon slots."
                 },
                 "background_directive": {
                     "title": "v-background directive",
@@ -1317,6 +1345,54 @@
                 "marketing_cms": {
                     "title": "Marketing — admin backend (CMS)",
                     "description": "A back-office to manage all site content when auto-generation falls short: edit any page (reference + editorial), reorder, publish/hide, without touching code. Fully translatable (DB-driven i18n, per-locale completeness) and built with origam itself — a full-scale DS showcase. Auth + roles, change audit, pre-publish guardrail. Stack: Nitro + TypeORM/PostgreSQL + Redis."
+                },
+                "server_components": {
+                    "title": "Vue Server Components",
+                    "description": "Track the Vue compiler ecosystem and align with a React-Server-Components-style pattern once it stabilizes."
+                },
+                "ai_figma": {
+                    "title": "AI-assisted generation (Figma → code)",
+                    "description": "Make the Figma plugin bidirectional — turning Figma designs into origam components automatically speeds up new component creation."
+                },
+                "maintenance_eol": {
+                    "title": "Maintenance & EOL policy",
+                    "description": "A documented LTS policy: after v3.0 ships, the v2.x branch keeps receiving security and critical bugfixes for a defined window."
+                }
+            },
+            "ongoing": {
+                "eyebrow": "EVERY SPRINT",
+                "title": "Continuous hygiene",
+                "dependencies": {
+                    "title": "Dependency hygiene",
+                    "description": "Weekly automated dependency updates; zero high or critical vulnerability tolerated at merge time."
+                },
+                "doc": {
+                    "title": "Documentation coverage",
+                    "description": "No component merges without its doc page. Quarterly audit of the documentation links."
+                },
+                "performance": {
+                    "title": "Performance budget",
+                    "description": "Bundle-size checks block any PR that exceeds its budget; every changed component is profiled before merge."
+                },
+                "refactor": {
+                    "title": "Boy-scout refactors",
+                    "description": "Any PR touching a component with legacy patterns (hardcoded colors, inline-only styling) migrates it before merge."
+                },
+                "quality_gate": {
+                    "title": "Code-quality gate",
+                    "description": "Static analysis, strict linting, and type-checking run on every PR — no unexplained escape hatches."
+                },
+                "changelog": {
+                    "title": "Changelog discipline",
+                    "description": "The changelog is updated with every pull request, not just at release time."
+                },
+                "test_as_you_build": {
+                    "title": "Test-as-you-build",
+                    "description": "Every new story ships with its end-to-end coverage in the same pull request — checked automatically in CI."
+                },
+                "security": {
+                    "title": "Security checks on every PR",
+                    "description": "Secret scanning on every pull request, plus a dedicated security review for any change to server code, services, or build configuration."
                 }
             }
         },
