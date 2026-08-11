@@ -265,7 +265,7 @@ async function resolvePropTypeValues (db: any, propRows: any[]): Promise<Map<str
     const typeSlugs = [...refs].filter(r => r.startsWith('type:')).map(r => r.slice('type:'.length))
     const enumSlugs = [...refs].filter(r => r.startsWith('enum:')).map(r => r.slice('enum:'.length))
 
-    let qb = db
+    const qb = db
         .getRepository(DocEntry)
         .createQueryBuilder('e')
         .select(['e.id', 'e.kind', 'e.slug'])
