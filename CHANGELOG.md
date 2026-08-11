@@ -178,8 +178,13 @@ Nuxt advisories published during this release cycle are cleared too:
 (server-side RCE via Runtime, unauthenticated OOM crash, CPU exhaustion
 while parsing). `nuxt` moves to `^4.5.1` and `typeorm` to `^0.3.31`,
 staying on the `0.3.x` line — the fix landed there, and `1.x` is a
-breaking change. `pnpm audit --prod` now reports **no known
-vulnerabilities**.
+breaking change. Every advisory listed above is cleared as of this release.
+
+Advisories are a moving target, so this is stated as of a date rather than as
+a standing guarantee: on 2026-08-11, `pnpm audit --prod` surfaced three new
+`high` advisories unrelated to the ones above (`image-size` ICNS and JXL/HEIF
+parsers, `nanoid` custom generators). They arrived after this release and are
+tracked separately — run `pnpm audit --prod` yourself for the current state.
 
 Scope note for consumers: the published `origam` package depends only on
 `@mdi/font` and `qrcode-generator`, with `shiki` / `vue` / `vue-i18n` /
