@@ -132,7 +132,7 @@
 >
 	import { OrigamColorPicker, OrigamMenu, OrigamSheet, OrigamTextField, OrigamTranslateScale } from "../../components"
 
-	import { useDefaults, useLocale, useProps, useVModel , useStyle} from "../../composables"
+	import { useDefaults, useLocale, useProps, useTeleportTypography, useVModel , useStyle} from "../../composables"
 
 	import { COLOR_NULL, ORIGAM_FORM_KEY } from "../../consts"
 
@@ -242,12 +242,31 @@
 	const menuDisabled = computed(() => {
 		return props.readonly || form?.isReadonly.value
 	})
+
+	// Typography bridge across the teleport — see `useTeleportTypography` for
+	// the full rationale. The popup's channel labels (`origam-color-picker-edit__label`)
+	// and, when a title is set, its `origam-picker-title` header size themselves
+	// with `rem`-based tokens, so they need the field's REAL font-size republished
+	// as those specific tokens, not just inherited.
+	const { typographyStyles: menuTypographyStyles } = useTeleportTypography(origamTextFieldRef, menu, (fontSize) => ({
+		'--origam-picker-title---font-size': fontSize,
+		'--origam-color-picker-edit__label---font-size': fontSize
+	}))
+
 	const menuProps = computed(() => {
+		const consumerContentProps = (props.menuProps?.contentProps ?? {}) as Record<string, any>
+
 		return {
 			...props.menuProps,
 			activatorProps: {
 				...(props.menuProps?.activatorProps || {}),
 				'aria-haspopup': 'colorpickerbox' // Set aria-haspopup to 'listbox'
+			},
+			contentProps: {
+				...consumerContentProps,
+				// The consumer's own style is listed last so it still wins —
+				// the bridge is a default, not a lock.
+				style: [menuTypographyStyles.value, consumerContentProps.style]
 			}
 		}
 	})

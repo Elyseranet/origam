@@ -346,7 +346,12 @@
 			display: grid;
 			grid-template-rows: repeat(7, 1fr);
 			column-gap: 4px;
-			font-size: .85rem;
+			// `rem` resolves against the document root, not this component's
+			// ancestor — a plain literal here would be immune to the typography
+			// bridge `OrigamDatePickerField` republishes on the teleported
+			// surface (see `useTeleportTypography`). Generic-first read, same
+			// convention as `useTypography`'s rollout.
+			font-size: var(--origam-date-picker-month__weeks---font-size, .85rem);
 
 			+ #{$this}__days {
 				grid-row-gap: 0;
@@ -354,7 +359,7 @@
 		}
 
 		&__weekday {
-			font-size: .85rem;
+			font-size: var(--origam-date-picker-month__weekday---font-size, .85rem);
 		}
 
 		&__days {
@@ -377,6 +382,13 @@
 			:deep(.origam-btn) {
 				--origam-btn---height: 24px;
 				--origam-btn---size: .85rem;
+				// `OrigamBtn`'s own `--size-*` modifier sets `--origam-btn---font-size`
+				// directly on this same element (its size prop is unset here, so it's
+				// the default rung) — an inherited custom property from an ancestor
+				// loses to that local declaration. A plain `font-size` read here, at
+				// equal locality, is what actually wins; same rem-trap as `&__weeks` /
+				// `&__weekday` above, bridged token first, historical size as fallback.
+				font-size: var(--origam-date-picker-month__day---font-size, .85rem);
 				z-index: 1;
 			}
 
