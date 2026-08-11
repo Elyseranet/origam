@@ -1143,7 +1143,7 @@
             "description": "Where origam is today, what has been delivered, and what is coming next. Public, honest, updated with each release."
         },
         "hero": {
-            "badge": "v2.6.0 — Wave 4 shipped",
+            "badge": "v{version} — Wave 4 shipped",
             "title_line1": "Roadmap.",
             "title_line2": "Honest & public.",
             "subtitle": "origam is an early-stage Vue 3 design system. Here is where we stand today, what we have already shipped, and what is on the horizon."
