@@ -1,7 +1,7 @@
 # ADR-005 — `variant` = preconfiguration of props, not a CSS layer
 
-- **Status**: Proposed (2026-08-11) — awaiting arbitration on the open items at
-  the end of this document
+- **Status**: Accepted in part (2026-08-11) — Q1, Q4 and Q5 arbitrated; Q2 and Q3 still open
+
 - **Deciders**: user (arnaudprioul), architect
 - **Scope**: `packages/ds` (component API + `useVariant` + `useDefaults` +
   theme model), with downstream impact on `packages/stories`,
@@ -48,8 +48,8 @@ inline-style declaration. So the variant rule wins unconditionally, and no
 prop, class or inline style the consumer can reach will ever beat it.
 
 This is not a one-off. **The variant block of `OrigamBtn.vue` (lines 672-800)
-contains 9 `!important` declarations, every one of them on
-`background-color`.** And the DS itself already works around them:
+contains 4 `!important` declarations on `background-color` — verified by
+grep on the whole file, which holds 20 in total, the remainder on positioning.** And the DS itself already works around them:
 
 > `packages/ds/src/components/Pagination/OrigamPagination.vue:388-392`
 > ```
@@ -505,17 +505,38 @@ with empty entries and a lie in the documentation.
 
 ---
 
-## Open items requiring the maintainer's arbitration
+## Maintainer's arbitration — decided 2026-08-11
 
-These are deliberately not decided here.
+**Q1 → option (a): a new prop surface.** `IBackdropProps` joins Commons with a
+matching `--origam-backdrop-*` token group, and `ghost` becomes a pure preset
+like every other variant in family A. The sanctioned-exception option was
+rejected on the grounds that an exception to the rule the chantier is built on
+does not stay singular — it becomes the precedent the next edge case cites.
 
-**Q1 — `ghost`: new prop surface, or sanctioned exception?**
-`backdrop-filter` has no prop and no token group. Options: (a) add
-`IBackdropProps` to Commons and a `--origam-backdrop-*` token group, making
-`ghost` a pure preset; (b) declare `ghost` the one variant allowed to keep a
-DS-shipped CSS rule, documented as such; (c) drop `ghost` in v3. Option (b)
-weakens the "no CSS with the variant" rule the chantier is built on, so this
-should be an explicit decision, not an implementation detail.
+**Q4 → rename.** Family B (`OrigamSkeleton`, `OrigamBracket`,
+`OrigamSliderField`, `OrigamAudio`, `OrigamTab`'s indicator) drops the name
+`variant`. Keeping one word for two opposite meanings — a style preset and a
+behavioural discriminant — is what produced the current tangle;  v3 is the only
+window to separate them. The replacement name per component is an
+implementation decision, to be settled component by component against the list
+in D5 (`type` / `layout` / `shape`+`composition` are the candidates raised).
+
+**Q5 → confirmed.** This file stays at
+`packages/docs/internal/adr-005-…`, following the existing convention.
+
+### Consequence of Q1 + Q4 on scope
+
+Both decisions **widen** the breaking surface rather than narrowing it: Q1 adds
+a Commons interface and a token group, Q4 renames a public prop on five
+components. That is a deliberate choice of doing it properly over doing it
+cheaply — but it makes the visual-regression prerequisite in D7 harder, not
+softer. There is currently **no VRT baseline in the repo** (one `toHaveScreenshot`
+call across 175 e2e specs, with no committed snapshot). Renaming a prop is
+caught by the type-checker; a variant that silently stops painting is not.
+
+## Still open
+
+These two are deliberately not decided here.
 
 **Q2 — Preset (tier 1.5) vs. theme default (tier 2).**
 D2 lets a locally written `variant="outlined"` override an app-wide
@@ -535,19 +556,6 @@ engaged** (`CLAUDE.md` § *Classes-first*, rule 4), so state presets resolve to
 inline styles only. Confirm that a preset may reach into state props, or
 restrict presets to the resting state and keep state styling in the component's
 own CSS keyed off a behavioural class.
-
-**Q4 — Should family B keep the name `variant`?**
-`OrigamSkeleton`, `OrigamBracket`, `OrigamSliderField`, `OrigamAudio` and
-`OrigamTab`'s indicator use `variant` as a discriminant. v3 is the only chance
-to rename (`type`? `layout`? `shape` + `composition` for Skeleton, which
-conflates two axes). Renaming is clearer but widens the breaking surface.
-
-**Q5 — ADR numbering and location.**
-This file is `packages/docs/internal/adr-005-variant-as-props-preset.md`,
-following the repo's existing convention (`adr-001` … `adr-004` all live
-there). The task requested `docs/adr/002-variant-as-props-preset.md`; **002 is
-already taken by the Theme Builder data model ADR**, which ADR-004 references
-by number. Confirm this placement, or say where the ADR tree should move.
 
 ---
 
