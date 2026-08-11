@@ -207,7 +207,7 @@
                 "summary": "La version accessibilité. Passe WCAG 2.1 AA sur l'ensemble du catalogue. 35 corrections ciblées sur 36 composants.",
                 "h1": "Passe WCAG 2.1 AA — 35 corrections : aria-label manquants, rôles incorrects, lacunes de focus, contraste",
                 "h2": "OrigamSelect — pattern ARIA combobox complet (role=combobox + aria-expanded + aria-activedescendant)",
-                "h3": "OrigamDataTable — élément <caption> ajouté ; OrigamColorPicker — navigation clavier restaurée",
+                "h3": "OrigamDataTable — élément caption ajouté ; OrigamColorPicker — navigation clavier restaurée",
                 "h4": "Barre latérale VitePress réorganisée par taxonomie UI (layout / navigation / affichage / formulaires / retours / utilitaires)"
             },
             "v240": {
@@ -247,7 +247,7 @@
             "v200": {
                 "summary": "La version design tokens. Chaque composant résout désormais couleurs, espacement, typographie et animation via un pipeline de tokens centralisé et thémé. 50+ composants migrés.",
                 "h1": "Tokens design multi-niveaux — tiers Primitif / Sémantique / Composant ; pipeline Style Dictionary v4 + Tokens Studio",
-                "h2": "Runtime multi-thème — composable useTheme(), <OrigamThemeProvider>, fallback prefers-color-scheme",
+                "h2": "Runtime multi-thème — composable useTheme(), OrigamThemeProvider, fallback prefers-color-scheme",
                 "h3": "Architecture CSS-first / JS-fallback — composable useCssSupport() avec 20 flags de fonctionnalités modernes",
                 "h4": "Nombreux correctifs critiques — id OrigamMessages, boucle réactive OrigamNumberField, crash OrigamOtpInputField"
             }
@@ -1292,7 +1292,7 @@
                 },
                 "list_semantics": {
                     "title": "Variants de liste sémantiques (OrigamList)",
-                    "description": "OrigamList / OrigamListItem rendent aujourd'hui des <div role=\"listbox\">. Une nouvelle prop variant (unordered → ul/li, ordered → ol/li, nav, listbox) émettra du vrai <ul>/<ol>/<li>, en remplacement de la prop booléenne nav."
+                    "description": "OrigamList / OrigamListItem rendent aujourd'hui des div role=\"listbox\". Une nouvelle prop variant (unordered → ul/li, ordered → ol/li, nav, listbox) émettra du vrai ul/ol/li, en remplacement de la prop booléenne nav."
                 },
                 "turborepo": {
                     "title": "Cache de build Turborepo",
@@ -1903,7 +1903,7 @@
             "subtitle": "Chaque API, chaque composable, chaque prop — pensés pour la Composition API et TypeScript dès le premier jour.",
             "vue3": {
                 "title": "Vue 3 natif",
-                "description": "Construit avec la Composition API et <script setup>. Pas de shim Options API, pas d'héritage Vue 2 — juste du Vue 3 idiomatique et propre."
+                "description": "Construit avec la Composition API et script setup. Pas de shim Options API, pas d'héritage Vue 2 — juste du Vue 3 idiomatique et propre."
             },
             "tokens": {
                 "title": "Design tokens DTCG",

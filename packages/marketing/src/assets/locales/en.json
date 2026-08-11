@@ -207,7 +207,7 @@
                 "summary": "The accessibility release. WCAG 2.1 AA pass across the entire component catalogue. 35 targeted fixes across 36 components.",
                 "h1": "WCAG 2.1 AA pass — 35 fixes: missing aria-label, incorrect role, focus gaps, colour-contrast warnings, keyboard-navigation holes",
                 "h2": "OrigamSelect — full combobox ARIA pattern (role=combobox + aria-expanded + aria-activedescendant)",
-                "h3": "OrigamDataTable — <caption> element added; OrigamColorPicker — keyboard navigation restored",
+                "h3": "OrigamDataTable — caption element added; OrigamColorPicker — keyboard navigation restored",
                 "h4": "VitePress docs sidebar reorganised by UI taxonomy (layout / navigation / data-display / forms / feedback / utility)"
             },
             "v240": {
@@ -247,7 +247,7 @@
             "v200": {
                 "summary": "The design tokens release. Every component now resolves colors, spacing, typography and motion through a centralised, theme-aware token pipeline. 50+ components migrated.",
                 "h1": "Multi-tier design tokens — Primitive / Semantic / Component tiers; Style Dictionary v4 + Tokens Studio pipeline",
-                "h2": "Multi-theme runtime — useTheme() composable, <OrigamThemeProvider>, prefers-color-scheme fallback",
+                "h2": "Multi-theme runtime — useTheme() composable, OrigamThemeProvider, prefers-color-scheme fallback",
                 "h3": "CSS-first / JS-fallback principle — useCssSupport() composable wrapping CSS.supports() with 20 feature flags",
                 "h4": "Multiple critical bug fixes — OrigamMessages id binding, OrigamNumberField reactive loop, OrigamOtpInputField crash"
             }
@@ -1292,7 +1292,7 @@
                 },
                 "list_semantics": {
                     "title": "Semantic list variants (OrigamList)",
-                    "description": "OrigamList / OrigamListItem render <div role=\"listbox\"> today. A new variant prop (unordered → ul/li, ordered → ol/li, nav, listbox) will emit real <ul>/<ol>/<li> semantics, replacing the boolean nav prop."
+                    "description": "OrigamList / OrigamListItem render div role=\"listbox\" today. A new variant prop (unordered → ul/li, ordered → ol/li, nav, listbox) will emit real ul/ol/li semantics, replacing the boolean nav prop."
                 },
                 "turborepo": {
                     "title": "Turborepo build cache",
@@ -1903,7 +1903,7 @@
             "subtitle": "Every API, every composable, every prop — designed for Composition API and TypeScript from day one.",
             "vue3": {
                 "title": "Vue 3 native",
-                "description": "Built with Composition API and <script setup>. No legacy Options API shim, no Vue 2 baggage — just clean, idiomatic Vue 3."
+                "description": "Built with Composition API and script setup. No legacy Options API shim, no Vue 2 baggage — just clean, idiomatic Vue 3."
             },
             "tokens": {
                 "title": "Design tokens DTCG",
