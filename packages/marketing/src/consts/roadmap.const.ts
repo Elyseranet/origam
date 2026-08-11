@@ -203,6 +203,24 @@ export const ROADMAP_PHASES: IRoadmapPhase[] = [
                 effortKey: 'roadmap.effort.medium'
             },
             {
+                titleKey: 'roadmap.phases.mid_term.wizard_form.title',
+                descriptionKey: 'roadmap.phases.mid_term.wizard_form.description',
+                icon: 'mdi-stairs',
+                effortKey: 'roadmap.effort.medium'
+            },
+            {
+                titleKey: 'roadmap.phases.mid_term.page.title',
+                descriptionKey: 'roadmap.phases.mid_term.page.description',
+                icon: 'mdi-page-layout-header-footer',
+                effortKey: 'roadmap.effort.small'
+            },
+            {
+                titleKey: 'roadmap.phases.mid_term.section.title',
+                descriptionKey: 'roadmap.phases.mid_term.section.description',
+                icon: 'mdi-view-agenda-outline',
+                effortKey: 'roadmap.effort.medium'
+            },
+            {
                 titleKey: 'roadmap.phases.mid_term.motion_tokens.title',
                 descriptionKey: 'roadmap.phases.mid_term.motion_tokens.description',
                 icon: 'mdi-animation-play-outline',

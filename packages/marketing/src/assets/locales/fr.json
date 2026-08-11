@@ -1321,6 +1321,18 @@
                 "theming_completion": {
                     "title": "Compléter le builder /theming",
                     "description": "Le theme builder marketing est livré en V1 partielle (~14 composants core, tokens plafonnés, modals/slot-driven non prévisualisables). À finir : couvrir tous les composants éditables, gérer les previews overlay/slot-driven, lever le cap de tokens, et refondre l'UI — l'ergonomie actuelle n'est clairement pas assez bonne. Reste data-driven et DS-first."
+                },
+                "wizard_form": {
+                    "title": "OrigamWizardForm — formulaire multi-étapes",
+                    "description": "Compose les composants existants OrigamForm et OrigamStepper — aucune réimplémentation de la validation ni de la navigation par étapes. La validation par étape bloque la progression tant que l'étape active n'est pas valide ; un seul v-model agrège les valeurs de toutes les étapes."
+                },
+                "page": {
+                    "title": "OrigamPage — wrapper de page",
+                    "description": "Un wrapper structurel volontairement simple, avec trois zones optionnelles — header, content, footer — rendues en éléments sémantiques réels. Aucun comportement de scroll ou de sticky imposé, juste un squelette de page cohérent avec les tokens de spacing du DS."
+                },
+                "section": {
+                    "title": "OrigamSection — schémas de section",
+                    "description": "OrigamSection existe déjà aujourd'hui sous forme de coquille vide de 14 lignes — ce jalon l'achève, ce n'est pas une création. Reprend le pattern de schémas déjà éprouvé par OrigamSkeleton : des schémas de section prédéfinis comme hero, split, centered ou full-bleed, en presets de props overridables sur un vrai élément section, props d'abord."
                 }
             },
             "long_term": {
