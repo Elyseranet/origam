@@ -222,7 +222,7 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                                 </origam-chip>
                             </template>
 
-                            <template #title>
+                            <template #header.title>
                                 <origam-title
                                     tag="h3"
                                     class="roadmap-delivered__wave-title"
@@ -315,8 +315,8 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                                 flat
                                 class="roadmap-timeline__card"
                             >
-                                <template #title>
-                                    <header class="roadmap-timeline__card-header">
+                                <template #header.title>
+                                    <div class="roadmap-timeline__card-header">
                                         <origam-chip
                                             :color="phase.intent"
                                             size="small"
@@ -332,7 +332,7 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                                         >
                                             {{ t(phase.titleKey, phase.titleKey) }}
                                         </origam-title>
-                                    </header>
+                                    </div>
                                 </template>
 
                                 <template #default>

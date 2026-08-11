@@ -1246,6 +1246,18 @@
                     "title": "Monitoring bundle-size",
                     "description": "size-limit sur chaque sous-export. Commentaires PR auto-générés. La chute 5,6 Mo → 869 ko doit rester un acquis."
                 },
+                "tu_audit": {
+                    "title": "Consolidation de la suite de tests unitaires",
+                    "description": "Adopter une convention unique tests/unit/{Domain}/{name}.spec.ts et augmenter la couverture de branches des composables transversaux, en mockant CSS.supports sous jsdom."
+                },
+                "api_audit": {
+                    "title": "Audit API pré-v3",
+                    "description": "Un inventaire exhaustif des dépréciations dans le guide de migration v2 vers v3, les marqueurs {'@'}deprecated manquants complétés, et un codemod pour les renommages mécaniques."
+                },
+                "dependency_automation": {
+                    "title": "Mise à jour automatisée des dépendances",
+                    "description": "Renovate avec des politiques de regroupement, fusion automatique des dépendances de dev en version patch, et une PR groupée hebdomadaire pour les montées mineures."
+                },
                 "sonarqube": {
                     "title": "SonarQube — note A, zéro dette",
                     "description": "Le scan Sonar est déjà branché (build.yml + sonar-project.properties) mais incomplet. Câbler la couverture lcov des TU Vitest dans Sonar (sonar.javascript.lcov.reportPaths), activer une quality gate bloquante, et résorber chaque bug / vulnérabilité / security hotspot / code smell pour atteindre la note A sur tous les axes avec zéro dette technique. Le faire tourner sur les PR et l'ajouter aux checks pre-delivery."
@@ -1261,6 +1273,10 @@
                 "v3": {
                     "title": "v3.0.0 — Strategy B",
                     "description": "Suppression des retours *Styles quand la valeur est tokenisée. Les classes utilitaires deviennent l'unique API. ~2× moins de calcul réactif."
+                },
+                "modularization": {
+                    "title": "Sous-exports modulaires (origam/core, origam/form, origam/chart, …)",
+                    "description": "Découper la librairie publiée en sous-exports tree-shakables par domaine, pour qu'une application ne paie que ce qu'elle importe réellement. Le barrel global origam reste disponible pour la rétrocompatibilité."
                 },
                 "motion_tokens": {
                     "title": "Tokens motion & media a11y",
@@ -1281,6 +1297,18 @@
                 "turborepo": {
                     "title": "Cache de build Turborepo",
                     "description": "Remplacement des scripts pnpm -r bruts par des pipelines Turborepo. Le cache distant réduit drastiquement les temps de rebuild en CI."
+                },
+                "variant_presets": {
+                    "title": "variant comme préconfiguration de props",
+                    "description": "Transformer chaque variant visuel en préconfiguration transparente et intégralement surchargeable des props du composant, plutôt qu'un traitement visuel figé en dur — piloté sur OrigamBlockquote, puis généralisé."
+                },
+                "add_more": {
+                    "title": "OrigamAddMore — répéteur de champs de formulaire",
+                    "description": "Un nouveau composant de formulaire pour répéter un groupe de champs avec une action « Add more », des bornes min/max, et un support clavier et lecteur d'écran complet."
+                },
+                "content_justify": {
+                    "title": "OrigamBtn — prop contentJustify",
+                    "description": "Un moyen props-first de contrôler l'alignement du contenu d'un bouton dans sa mise en page, pour les boutons qui n'utilisent pas les slots d'icône prepend/append."
                 },
                 "background_directive": {
                     "title": "Directive v-background",
@@ -1317,6 +1345,54 @@
                 "marketing_cms": {
                     "title": "Marketing — backend d'administration (CMS)",
                     "description": "Un back-office pour gérer tout le contenu du site quand l'auto-génération est imparfaite : éditer n'importe quelle page (référentiel + éditorial), réordonner, publier/masquer, sans toucher au code. Entièrement traduisible (i18n piloté par la BDD, complétude par langue) et construit avec origam lui-même — une vitrine grandeur nature du DS. Auth + rôles, audit des modifications, garde-fou pré-publication. Stack : Nitro + TypeORM/PostgreSQL + Redis."
+                },
+                "server_components": {
+                    "title": "Vue Server Components",
+                    "description": "Suivre l'écosystème du compilateur Vue et s'aligner sur un modèle façon React Server Components une fois qu'il se stabilise."
+                },
+                "ai_figma": {
+                    "title": "Génération assistée par IA (Figma → code)",
+                    "description": "Rendre le plugin Figma bidirectionnel — transformer automatiquement des designs Figma en composants origam accélère la création de nouveaux composants."
+                },
+                "maintenance_eol": {
+                    "title": "Politique de maintenance & fin de vie",
+                    "description": "Une politique LTS documentée : une fois la v3.0 publiée, la branche v2.x continue de recevoir des correctifs de sécurité et bugs critiques pendant une période définie."
+                }
+            },
+            "ongoing": {
+                "eyebrow": "CHAQUE SPRINT",
+                "title": "Hygiène continue",
+                "dependencies": {
+                    "title": "Hygiène des dépendances",
+                    "description": "Mises à jour de dépendances automatisées chaque semaine ; zéro vulnérabilité high ou critical tolérée au merge."
+                },
+                "doc": {
+                    "title": "Couverture documentaire",
+                    "description": "Aucun composant ne passe la review sans sa page de doc. Audit trimestriel des liens de la documentation."
+                },
+                "performance": {
+                    "title": "Budget de performance",
+                    "description": "Les contrôles de taille de bundle bloquent toute PR qui dépasse son budget ; chaque composant modifié est profilé avant merge."
+                },
+                "refactor": {
+                    "title": "Refacto opportuniste",
+                    "description": "Toute PR qui touche un composant aux anciens patterns (couleurs en dur, styles inline uniquement) le migre avant merge."
+                },
+                "quality_gate": {
+                    "title": "Garde-fou qualité de code",
+                    "description": "Analyse statique, lint strict et vérification de types s'exécutent sur chaque PR — pas d'échappatoire non justifiée."
+                },
+                "changelog": {
+                    "title": "Discipline du changelog",
+                    "description": "Le changelog est tenu à jour à chaque pull request, pas seulement à la release."
+                },
+                "test_as_you_build": {
+                    "title": "Test-as-you-build",
+                    "description": "Chaque nouvelle story est livrée avec sa couverture end-to-end dans la même pull request — vérifié automatiquement en CI."
+                },
+                "security": {
+                    "title": "Contrôles de sécurité sur chaque PR",
+                    "description": "Scan de secrets sur chaque pull request, plus une revue de sécurité dédiée pour toute modification du code serveur, des services, ou de la configuration de build."
                 }
             }
         },
