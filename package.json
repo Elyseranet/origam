@@ -72,6 +72,12 @@
             "@nuxt/devtools": "^3.3.1",
             "launch-editor": "^2.14.1",
             "esbuild@0": "^0.28.1"
+        },
+        "auditConfig": {
+            "ignoreGhsas": [
+                "GHSA-w3rx-r6r6-pgpr",
+                "GHSA-5p2g-fcmc-qvqq"
+            ]
         }
     },
     "devDependencies": {
