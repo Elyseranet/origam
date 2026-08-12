@@ -51,6 +51,10 @@ import { expect, test } from '@playwright/test'
  *    12  → Slots - Loader
  *    13  → Slots - Wrapper
  *    14  → Default (playground)
+ *    15  → Prop — variant (VRT matrix)
+ *    16  → Prop — variant override (bgColor beats the preset) — ADR-005
+ *           ticket #23, appended AFTER the VRT matrix on purpose (same
+ *           index-stability constraint, see VRT.md).
  *
  *   ⚠️  Les titres StoryGroup visibles dans les #controls (Color, Sizing, Shape…)
  *   sont des fieldsets DANS la sidebar — PAS des Variants séparés. Ne pas les cibler.
@@ -494,82 +498,109 @@ test.describe('OrigamBtn', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // VARIANT SCSS classes                                                 //
+    // VARIANT = PROPS PRESET (ADR-005, ticket #23)                         //
+    //                                                                      //
+    // These three tests used to LOCK the pre-migration bug: they asserted //
+    // `background-color: transparent !important` was present in the      //
+    // compiled stylesheet for `.origam-btn--variant-outlined` /           //
+    // `--variant-text`. That is exactly the mechanism that made a themed  //
+    // `outlined` button ignore any `bgColor` (docs/internal/adr-005-      //
+    // variant-as-props-preset.md, "The symptom that motivated the         //
+    // audit"). `variant` is now a PROPS PRESET resolved by `useDefaults`  //
+    // as its WEAKEST tier (ADR-005 Q2) — the DS ships ZERO CSS rule       //
+    // matching `--variant-*` (D3). These tests assert the NEW contract:   //
+    // (a) no such CSS rule exists at all, (b) the preset still applies    //
+    // its OWN props (e.g. `outlined`'s border) when nothing overrides     //
+    // them, (c) an explicit `bgColor` at the call site paints regardless  //
+    // of `variant` — the ticket's headline fix.                           //
     // ------------------------------------------------------------------ //
 
-    test.describe('Variant SCSS rules', () => {
-        test('--variant-outlined: adds border-style solid from the scoped rule', async ({ page }) => {
-            // The outlined rule adds border-style via the scoped CSS selector.
-            // We verify the border declaration (the reliable headless-assertable part).
-            //
-            // NOTE on background-color: the rule does declare `background-color: transparent
-            // !important`, which wins over the component's own bg rule. However,
-            // getComputedStyle() returns the resolved painted color — if the parent container
-            // has a background, "transparent" propagates the parent's color through and the
-            // computed value is NOT rgba(0,0,0,0) but the parent's bg. This is correct CSS
-            // behaviour, not a bug. Asserting the computed bg in a sandbox with an opaque
-            // parent would produce a false negative. We therefore assert border-style only.
-            await page.goto(variantUrl(2))
+    test.describe('Variant = props preset (ADR-005)', () => {
+        test('--variant-outlined / --variant-text: the DS ships ZERO CSS rule for either class', async ({ page }) => {
+            // D3: the class survives purely as a consumer override hook —
+            // asserted here by proving NO stylesheet rule in the whole
+            // document targets it, not even for an unrelated property.
+            await page.goto(variantUrl(15))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            const btn = sandbox.locator('.origam-btn').first()
-            await expect(btn).toBeVisible({ timeout: 12000 })
-            const borderStyle = await btn.evaluate(el => {
-                el.classList.add('origam-btn--variant-outlined')
-                return getComputedStyle(el).borderTopStyle
+            const matrix = sandbox.locator('[data-cy="btn-variant-matrix"]')
+            await expect(matrix).toBeVisible({ timeout: 12000 })
+            const btn = sandbox.locator('[data-cy="btn-variant-outlined"]')
+            const found = await btn.evaluate(el => {
+                const targets = ['.origam-btn--variant-outlined', '.origam-btn--variant-text']
+                for (const sheet of document.styleSheets) {
+                    try {
+                        for (const rule of sheet.cssRules) {
+                            const selector = (rule as CSSStyleRule).selectorText
+                            if (selector && targets.some(t => selector.includes(t))) {
+                                return selector
+                            }
+                        }
+                    } catch { /* unreadable cross-origin stylesheet — skip */ }
+                }
+                return null
             })
+            expect(found, 'no CSS rule should target --variant-outlined or --variant-text').toBeNull()
+        })
+
+        test('variant="outlined" alone (no bgColor): the preset still applies a solid border', async ({ page }) => {
+            // The preset's OWN props (border / borderStyle / borderColor)
+            // still take effect via `useDefaults`'s weakest tier when
+            // nothing overrides them — this is NOT the bug, `outlined`
+            // keeping its border with no bgColor set is correct.
+            await page.goto(variantUrl(15))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const btn = sandbox.locator('[data-cy="btn-variant-outlined"]')
+            await expect(btn).toBeVisible({ timeout: 12000 })
+            const borderStyle = await btn.evaluate(el => getComputedStyle(el).borderTopStyle)
             expect(borderStyle).toBe('solid')
         })
 
-        test('--variant-outlined: background-color declaration is transparent !important (stylesheet inspection)', async ({ page }) => {
-            // Directly inspect the stylesheet to verify the SCSS compiled correctly.
-            // This tests the rule's existence and priority, not the painted color.
-            await page.goto(variantUrl(2))
+        test('variant="outlined" + bgColor="primary": bgColor paints (ADR-005 Q2 — the headline fix)', async ({ page }) => {
+            // THE bug this ticket fixes: pre-migration, `&--variant-outlined
+            // { background-color: transparent !important }` swallowed any
+            // `bgColor` unconditionally. `bgColor` is now a call-site prop
+            // (tier 1) and the preset's `bgColor: 'transparent'` is tier 3
+            // (weakest) — tier 1 wins, so this paints.
+            await page.goto(variantUrl(16))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            const btn = sandbox.locator('.origam-btn').first()
-            await expect(btn).toBeVisible({ timeout: 12000 })
-            const ruleCheck = await btn.evaluate(el => {
-                el.classList.add('origam-btn--variant-outlined')
-                for (const sheet of document.styleSheets) {
-                    try {
-                        for (const rule of sheet.cssRules) {
-                            if (rule.selectorText && el.matches(rule.selectorText)) {
-                                const bg = rule.style?.getPropertyValue('background-color')
-                                const priority = rule.style?.getPropertyPriority('background-color')
-                                if (bg === 'transparent' && priority === 'important') {
-                                    return true
-                                }
-                            }
-                        }
-                    } catch { /* unreadable cross-origin stylesheet — skip */ }
-                }
-                return false
-            })
-            expect(ruleCheck, 'variant-outlined rule must have background-color: transparent !important').toBe(true)
+            const matrix = sandbox.locator('[data-cy="btn-variant-override-matrix"]')
+            await expect(matrix).toBeVisible({ timeout: 12000 })
+
+            const only   = sandbox.locator('[data-cy="btn-ovr-outlined-only"]')
+            const withBg = sandbox.locator('[data-cy="btn-ovr-outlined-bgcolor"]')
+            await expect(only).toBeVisible()
+            await expect(withBg).toBeVisible()
+
+            const bgOnly   = await only.evaluate(el => getComputedStyle(el).backgroundColor)
+            const bgWithBg = await withBg.evaluate(el => getComputedStyle(el).backgroundColor)
+
+            // The "…+bgColor" button paints an actually different, opaque
+            // colour from its "…only" sibling — the preset's transparent no
+            // longer wins unconditionally.
+            expect(bgWithBg).not.toBe(bgOnly)
+            expect(bgWithBg).not.toBe('rgba(0, 0, 0, 0)')
+            expect(bgWithBg).not.toBe('transparent')
+            // Matches the origam primary token used elsewhere in this file
+            // (see the recipe comment's "Design" init-state note).
+            expect(bgWithBg).toBe('rgb(124, 58, 237)')
         })
 
-        test('--variant-text: background-color declaration is transparent !important (stylesheet inspection)', async ({ page }) => {
-            await page.goto(variantUrl(2))
+        test('variant="text" + bgColor="primary": bgColor paints (same fix, different preset)', async ({ page }) => {
+            await page.goto(variantUrl(16))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            const btn = sandbox.locator('.origam-btn').first()
-            await expect(btn).toBeVisible({ timeout: 12000 })
-            const ruleCheck = await btn.evaluate(el => {
-                el.classList.add('origam-btn--variant-text')
-                for (const sheet of document.styleSheets) {
-                    try {
-                        for (const rule of sheet.cssRules) {
-                            if (rule.selectorText && el.matches(rule.selectorText)) {
-                                const bg = rule.style?.getPropertyValue('background-color')
-                                const priority = rule.style?.getPropertyPriority('background-color')
-                                if (bg === 'transparent' && priority === 'important') {
-                                    return true
-                                }
-                            }
-                        }
-                    } catch { /* unreadable cross-origin stylesheet — skip */ }
-                }
-                return false
-            })
-            expect(ruleCheck, 'variant-text rule must have background-color: transparent !important').toBe(true)
+            const matrix = sandbox.locator('[data-cy="btn-variant-override-matrix"]')
+            await expect(matrix).toBeVisible({ timeout: 12000 })
+
+            const only   = sandbox.locator('[data-cy="btn-ovr-text-only"]')
+            const withBg = sandbox.locator('[data-cy="btn-ovr-text-bgcolor"]')
+            await expect(only).toBeVisible()
+            await expect(withBg).toBeVisible()
+
+            const bgOnly   = await only.evaluate(el => getComputedStyle(el).backgroundColor)
+            const bgWithBg = await withBg.evaluate(el => getComputedStyle(el).backgroundColor)
+
+            expect(bgWithBg).not.toBe(bgOnly)
+            expect(bgWithBg).toBe('rgb(124, 58, 237)')
         })
     })
 })

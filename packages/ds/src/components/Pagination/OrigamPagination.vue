@@ -183,7 +183,7 @@
 
 	import { useDensity, useDisplay, useLocale, useProps, useRefs, useResizeObserver, useSize, useTypography, useVModel , useStyle} from "../../composables"
 
-	import { KEYBOARD_VALUES, MDI_ICONS, VARIANT } from "../../enums"
+	import { KEYBOARD_VALUES, MDI_ICONS } from "../../enums"
 
 	import type { IPaginationProps} from "../../interfaces"
 
@@ -384,12 +384,20 @@
 		// in each state and the clash detection kicks for white text.
 		const baseBg = props.bgColor || props.color
 		return {
-			// In colored mode force `flat` so the btn actually PAINTS the
-			// pagination-driven `--origam-btn---background-color`. The theme's
-			// default `text` variant sets `background-color: transparent
-			// !important`, which would otherwise swallow the colored fill. When
-			// no color is set, leave `variant` undefined → the neutral text look.
-			variant: baseBg ? VARIANT.FLAT : undefined,
+			// ADR-005 (ticket #23) removed the `variant: baseBg ? FLAT :
+			// undefined` workaround this comment used to document. The
+			// theme's default `text` variant used to set `background-color:
+			// transparent !important` unconditionally, which swallowed the
+			// colored fill below — forcing `flat` was the only way to bypass
+			// it. Now that `variant` resolves to a PROPS PRESET (weakest
+			// resolution tier, ADR-005 Q2), the explicit `bgColor: baseBg`
+			// prop passed at THIS call site always outranks whatever the
+			// resolved `variant`'s preset would otherwise default `bgColor`
+			// to — so the fill paints regardless of `variant`, and no
+			// workaround is needed. `variant` is deliberately NOT set here
+			// any more: it falls through to whatever the ambient default
+			// (component/theme/withDefaults) resolves to, same as any other
+			// unset prop.
 			color: props.color,
 			bgColor: baseBg,
 			hoverColor: props.hoverColor,

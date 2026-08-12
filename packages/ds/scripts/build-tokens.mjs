@@ -358,6 +358,27 @@ const UTILITY_GROUPS = [
         ]
     },
     {
+        title: 'Opacity',
+        property: 'opacity',
+        prefix: 'opacity',
+        // ADR-005 D6 (`docs/internal/adr-005-variant-as-props-preset.md`):
+        // `OrigamBtn`'s `plain` variant preset needs a themeable resting
+        // opacity — this is the utility-class half of `useOpacity`
+        // (`src/composables/Commons/opacity.composable.ts`), mirrored
+        // 1-for-1 against the `--origam-opacity---{rung}` primitive scale.
+        items: [
+            { suffix: '0',   token: 'origam-opacity---0' },
+            { suffix: '12',  token: 'origam-opacity---12' },
+            { suffix: '26',  token: 'origam-opacity---26' },
+            { suffix: '32',  token: 'origam-opacity---32' },
+            { suffix: '50',  token: 'origam-opacity---50' },
+            { suffix: '60',  token: 'origam-opacity---60' },
+            { suffix: '70',  token: 'origam-opacity---70' },
+            { suffix: '87',  token: 'origam-opacity---87' },
+            { suffix: '100', token: 'origam-opacity---100' }
+        ]
+    },
+    {
         title: 'Font size',
         property: 'font-size',
         prefix: 'text',

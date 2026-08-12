@@ -6,7 +6,7 @@ import type {
     IRoundedProps
 } from '../../interfaces'
 
-import type { TColor } from '../../types'
+import type { TColor, TFontWeight, TOpacity } from '../../types'
 
 /**
  * Shared shape for state-aware visual overrides (`hover`, `active`).
@@ -46,6 +46,14 @@ export interface IStateEffectConfig {
     bgColor?: TColor
     /** Border width / style / direction override. */
     border?: IBorderProps['border']
+    /**
+     * Border COLOR override, independent of `border` (ADR-005 —
+     * `OrigamBtn`'s `outlined` variant preset: `active: { borderColor: … }`,
+     * re-expressing the removed `&--variant-outlined &--active {
+     * border-color: … }` SCSS, where only the colour changes on selection,
+     * not the width/style). Resolved by `useStateEffect` alongside `border`.
+     */
+    borderColor?: IBorderProps['borderColor']
     /** Corner radius override. */
     rounded?: IRoundedProps['rounded']
     /** Box-shadow elevation override. */
@@ -56,6 +64,23 @@ export interface IStateEffectConfig {
     margin?: IMarginProps['margin']
     /** Gap (flex/grid) override. Components that expose a `gap` prop pick it up. */
     gap?: boolean | number | string
+    /**
+     * Opacity override (ADR-005 D6 — `OrigamBtn`'s `plain` variant preset:
+     * `opacity: '70'`, `hover: { opacity: '100' }`). Resolved by
+     * `useStateEffect` exactly like the other axes above.
+     */
+    opacity?: TOpacity
+    /**
+     * Font-weight override (ADR-005 — `OrigamBtn`'s `tonal` variant preset:
+     * `active: { fontWeight: 'semibold' }`, the props re-expression of the
+     * pre-migration `&--variant-tonal &--active { font-weight: 600 }` SCSS).
+     * NOT resolved centrally by `useStateEffect` (no shared consumer needs
+     * it yet, unlike `opacity`) — typed here only so preset authors can
+     * write `active: { fontWeight: … }` and have it type-check; the
+     * component that needs it (`OrigamBtn`) reads `activeState.value
+     * ?.fontWeight` / `hoverState.value?.fontWeight` directly.
+     */
+    fontWeight?: TFontWeight
 }
 
 /**

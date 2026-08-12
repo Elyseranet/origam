@@ -4,6 +4,7 @@ import type { ComputedRef, Ref } from 'vue'
 import { useBorder } from './border.composable'
 import { useElevation } from './elevation.composable'
 import { useMargin } from './margin.composable'
+import { useOpacity } from './opacity.composable'
 import { usePadding } from './padding.composable'
 import { useRounded } from './rounded.composable'
 
@@ -29,6 +30,7 @@ import type {
     IElevationProps,
     IHoverState,
     IMarginProps,
+    IOpacityProps,
     IPaddingProps,
     IRoundedProps,
 } from '../../interfaces'
@@ -117,6 +119,7 @@ type TStateEffectProps =
     & IElevationProps
     & IPaddingProps
     & IMarginProps
+    & IOpacityProps
     & { gap?: boolean | number | string }
 
 const noopRef = computed(() => false)
@@ -164,6 +167,10 @@ export function useStateEffect (
     const color    = computed<TColor | undefined>(() => statusIntent.value ? undefined : baseColor.value)
     const bgColor  = computed<TColor | undefined>(() => statusIntent.value ?? baseBgColor.value)
     const border   = pickEffective(() => props.border, isHover, isActive, hoverState, activeState, 'border')
+    // ADR-005 — `borderColor` state override, independent of `border`
+    // (`OrigamBtn`'s `outlined` variant preset needs the active-state
+    // border to change COLOUR only, keeping the resting width/style).
+    const borderColorOverride = pickEffective(() => props.borderColor, isHover, isActive, hoverState, activeState, 'borderColor')
     const rounded  = pickEffective(() => props.rounded, isHover, isActive, hoverState, activeState, 'rounded')
     const elevation = pickEffective(() => props.elevation, isHover, isActive, hoverState, activeState, 'elevation')
     const padding  = pickEffective(() => props.padding, isHover, isActive, hoverState, activeState, 'padding')
@@ -171,6 +178,12 @@ export function useStateEffect (
     const gap      = pickEffective<boolean | number | string>(
         () => (props as any).gap, isHover, isActive, hoverState, activeState, 'gap',
     )
+    // ADR-005 D6 — `opacity` joins the state-aware axes so a preset's
+    // `hover: { opacity: '100' }` (e.g. `OrigamBtn`'s `plain` variant,
+    // re-expressing the pre-migration `&--variant-plain:hover { opacity: 1 }`
+    // SCSS) resolves through the SAME per-prop precedence as every other
+    // axis, instead of a bespoke local computed in each consumer.
+    const opacity  = pickEffective(() => props.opacity, isHover, isActive, hoverState, activeState, 'opacity')
 
     // ── Color axis (preserved verbatim from useColorEffect) ──────────
     // Helper: same intent on the override slot is equivalent to no
@@ -268,20 +281,23 @@ export function useStateEffect (
     // ── Other axes — delegate to existing composables via Ref overloads
     // Border goes through the props-object overload (not the bare Ref) so
     // the standalone `borderColor` / `borderStyle` props are honoured in
-    // addition to the state-resolved `border` shorthand. The shorthand
-    // stays state-aware via the reactive getter (same pattern as
-    // padding / margin); `borderColor` / `borderStyle` — and the per-side
-    // `borderTop`/`borderRight`/`borderBottom`/`borderLeft` (+ `*Color`)
-    // props from issue #215 — are not state-swappable, so they read
-    // straight from the base props. Forwarding these was the same "declared
-    // but never read" bug the ticket fixes at the `useBorder` level: without
-    // this explicit pass-through, any consumer of `useStateEffect` (Card,
-    // Sheet, …) would have the props typed on `IBorderProps` yet silently
-    // dropped before reaching `useBorder`.
+    // addition to the state-resolved `border` shorthand. `border` AND
+    // `borderColor` are both state-aware via the reactive getter (same
+    // pattern as padding / margin) — ADR-005 added the `borderColor` axis
+    // (ticket #23, `OrigamBtn`'s `outlined` variant needs the active-state
+    // border to change COLOUR only, keeping the resting width/style).
+    // `borderStyle` — and the per-side `borderTop`/`borderRight`/
+    // `borderBottom`/`borderLeft` (+ `*Color`) props from issue #215 — are
+    // NOT state-swappable, so they read straight from the base props (no
+    // current consumer needs them to be). Forwarding these was the same
+    // "declared but never read" bug the ticket fixes at the `useBorder`
+    // level: without this explicit pass-through, any consumer of
+    // `useStateEffect` (Card, Sheet, …) would have the props typed on
+    // `IBorderProps` yet silently dropped before reaching `useBorder`.
     const { borderClasses, borderStyles }       = useBorder(
         reactive({
             get border () { return border.value },
-            get borderColor () { return props.borderColor },
+            get borderColor () { return borderColorOverride.value },
             get borderStyle () { return props.borderStyle },
             get borderTop () { return props.borderTop },
             get borderRight () { return props.borderRight },
@@ -311,6 +327,9 @@ export function useStateEffect (
     const { marginClasses, marginStyles }       = useMargin(
         reactive({ get margin () { return margin.value } }) as IMarginProps,
     )
+    const { opacityClasses, opacityStyles }     = useOpacity(
+        reactive({ get opacity () { return opacity.value } }) as IOpacityProps,
+    )
 
     // Gap support: there's no `useGap` composable today. Emit an inline
     // style when the override is present (and a runtime gap class if we
@@ -334,6 +353,7 @@ export function useStateEffect (
         padding,
         margin,
         gap,
+        opacity,
 
         // Per-axis classes + styles (state-aware)
         colorClasses,
@@ -350,5 +370,7 @@ export function useStateEffect (
         marginStyles,
         gapClasses,
         gapStyles,
+        opacityClasses,
+        opacityStyles,
     }
 }

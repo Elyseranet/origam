@@ -14,6 +14,8 @@
 			@click="handleClick"
 			@mouseenter="handleMouseenter"
 			@mouseleave="handleMouseleave"
+			@focus="handleMouseenter"
+			@blur="handleMouseleave"
 	>
     <span
 		    key="overlay"
@@ -127,13 +129,14 @@
 		lang="ts"
 		setup
 >
-	import { computed, ref, StyleValue, toRef, useAttrs, useSlots } from 'vue'
+	import { computed, ref, StyleValue, useAttrs, useSlots } from 'vue'
 	import type { ComputedRef, ExtractPropTypes } from 'vue'
 	import { OrigamAvatar, OrigamIcon, OrigamLoader, OrigamProgress, OrigamSkeleton } from '../../components'
 
 	import {
 		useActive,
 		useAdjacent,
+		useBackdrop,
 		useDefaults,
 		useDensity,
 		useDimension,
@@ -153,7 +156,7 @@
 		useVariant
 	} from '../../composables'
 
-	import { ORIGAM_BTN_TOGGLE_KEY } from '../../consts'
+	import { BTN_VARIANT_PRESETS, ORIGAM_BTN_TOGGLE_KEY } from '../../consts'
 
 	import { vContrast, vRipple } from '../../directives'
 
@@ -185,7 +188,14 @@
 	// silently dropped when buttons were passed via the default slot —
 	// only the `items` prop path was honoured (and even that flipped the
 	// override semantics: parent `??` item, instead of item-wins).
-	const props = useDefaults(_props)
+	//
+	// ADR-005 (`docs/internal/adr-005-variant-as-props-preset.md`, ticket
+	// #23) — `variant` is a PRESET (a named `Partial<IBtnProps>`), not a CSS
+	// layer. Passing `BTN_VARIANT_PRESETS` inserts that preset as the
+	// WEAKEST tier of the SAME chain: call-site prop > theme default >
+	// variant preset > this component's own `withDefaults()` value. Every
+	// read below MUST go through this resolved `props`, never `_props`.
+	const props = useDefaults<IBtnProps>(_props, 'origam-btn', BTN_VARIANT_PRESETS)
 
 	// When the consumer explicitly picks a foreground `color`, mark the element
 	// so `v-contrast` doesn't override that intentional colour for legibility.
@@ -240,7 +250,13 @@
 	/*********************************************************
 	 * Disabled
 	 ********************************************************/
-	const isDisabled = computed(() => group?.disabled.value || props.disabled)
+	// `!!` pins the type to a definite `boolean` (never `undefined`) —
+	// `useStateEffect`'s `isDisabled` parameter requires exactly that.
+	// Needed because passing `BTN_VARIANT_PRESETS` as `useDefaults`'s 3rd
+	// argument widens the 2-source generic inference for `props`'s type
+	// just enough that `props.disabled` alone no longer narrows cleanly to
+	// a `ComputedRef<boolean>` further downstream.
+	const isDisabled = computed<boolean>(() => !!(group?.disabled.value || props.disabled))
 
 	/*********************************************************
 	 * Value
@@ -291,6 +307,10 @@
 	 * Color
 	 ********************************************************/
 
+	// Same `!!` pin as `isDisabled` above — `props.flat` is an optional
+	// boolean with no `withDefaults` default.
+	const isFlat = computed<boolean>(() => !!props.flat)
+
 	const {
 		colorClasses, colorStyles,
 		borderClasses, borderStyles,
@@ -298,8 +318,29 @@
 		elevationClasses, elevationStyles,
 		paddingClasses, paddingStyles,
 		marginClasses, marginStyles,
-	} = useStateEffect(props, isHover, isActive as ComputedRef<boolean>, hoverState, activeState, isDisabled, toRef(props, 'flat'))
+		// ADR-005 D6 — the `plain` variant preset's `opacity` / `hover:
+		// { opacity: 1 }` resolve through this SAME state-aware axis,
+		// re-expressing the removed `&--variant-plain { opacity: … }
+		// &:hover { opacity: 1 } }` SCSS.
+		opacityClasses, opacityStyles,
+	} = useStateEffect(props, isHover, isActive as ComputedRef<boolean>, hoverState, activeState, isDisabled, isFlat)
 	const {variantClasses} = useVariant(props)
+
+	// ADR-005 Q1 — `ghost`'s `backdrop-filter: blur(...)` is now the
+	// `backdropBlur` prop (`IBackdropProps`, ticket #21) instead of a
+	// `@supports`-guarded SCSS block.
+	const {backdropClasses, backdropStyles} = useBackdrop(props)
+
+	// `IStateEffectConfig.fontWeight` (`tonal`'s active-state re-expression
+	// of the removed `&--variant-tonal &--active { font-weight: 600 }`
+	// SCSS) is typed on the shared interface but NOT resolved centrally by
+	// `useStateEffect` — no other consumer needs it yet. Hover wins over
+	// active, mirroring `useStateEffect`'s internal `pickEffective` order.
+	const fontWeightStyles = computed(() => {
+		const fw = (isHover.value && hoverState.value?.fontWeight)
+				|| (isActive.value && activeState.value?.fontWeight)
+		return fw ? [`--origam-btn---font-weight: var(--origam-font__weight---${fw})`] : []
+	})
 	const {
 		onClickPrepend: handleClickPrepend,
 		onClickAppend: handleClickAppend,
@@ -403,6 +444,9 @@
 			sizeStyles.value,
 			elevationStyles.value,
 			typographyStyles.value,
+			opacityStyles.value,
+			backdropStyles.value,
+			fontWeightStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -442,6 +486,8 @@
 			roundedClasses.value,
 			sizeClasses.value,
 			statusClasses.value,
+			opacityClasses.value,
+			backdropClasses.value,
 			props.class
 		]
 	})
@@ -669,131 +715,16 @@
 			}
 		}
 
-		&--flat,
-		&--variant-flat {
+		// `&--flat` — legacy boolean shortcut (deprecated prop, kept for
+		// back-compat), unrelated to `variant`. ADR-005 (ticket #23) removed
+		// the SIBLING `&--variant-*` selectors (7 blocks, 9 `!important` on
+		// `background-color`) that used to live in this file — `variant` is
+		// now a props preset (`BTN_VARIANT_PRESETS`, `consts/Btn/
+		// btn-variant.const.ts`), resolved via `useDefaults`, with ZERO
+		// shipped CSS for the `--variant-*` class (D3: the class survives as
+		// a pure consumer override hook, the DS ships no rule for it).
+		&--flat {
 			box-shadow: none;
-		}
-
-		&--variant-text {
-			background-color: transparent !important;
-			box-shadow: none;
-		}
-
-		&--variant-elevated {
-			box-shadow: var(--origam-btn---box-shadow-elevated, var(--origam-shadow---md));
-		}
-
-		&--variant-tonal {
-			background-color: var(
-				--origam-btn---background-color-tonal,
-				var(--origam-color__surface---overlay)
-			) !important;
-			box-shadow: none;
-
-			// Active / selected state (e.g. inside an OrigamBtnToggle):
-			// lift the surface to the "raised" rung so the selected
-			// button is clearly distinct from the resting siblings.
-			// Three axes change on selection:
-			//   1. background → raised surface (white in light / elevated in dark)
-			//   2. box-shadow → xs shadow (segmented-control "pill" lift)
-			//   3. font-weight → semibold (label emphasis)
-			// All three are driven by theme-overridable tokens.
-			&#{$this}--active {
-				background-color: var(
-					--origam-btn---background-color-tonal-active,
-					var(--origam-color__surface---raised, var(--origam-color__surface---overlay))
-				) !important;
-				box-shadow: var(
-					--origam-btn---box-shadow-tonal-active,
-					var(--origam-shadow---xs)
-				);
-				font-weight: 600;
-			}
-		}
-
-		&--variant-outlined {
-			background-color: transparent !important;
-			border-width: var(--origam-btn---border-width-outlined, var(--origam-border__width---thin));
-			border-style: solid;
-			border-color: var(--origam-btn---border-color, currentColor);
-			box-shadow: none;
-
-			// Selected state inside an OrigamBtnToggle: the active option
-			// FILLS like a real default button (using the btn's own bg/fg
-			// tokens, so it follows color/intent and theme), while the resting
-			// siblings stay outlined. This is what makes a btn-toggle read as
-			// a row of real buttons rather than a flat segmented strip.
-			//
-			// `-background-color-active` is a DEDICATED token, separate from
-			// the plain `-background-color` one: a theme is free to keep
-			// outlined buttons unfilled at rest (background-color:
-			// transparent, e.g. a print/minimalist identity) without also
-			// erasing the active/selected indicator — the two states are
-			// no longer forced to share one token. Themes that don't
-			// declare it fall straight through to the existing behaviour
-			// (their own `-background-color`), so this is additive only.
-			&#{$this}--active {
-				background-color: var(--origam-btn---background-color-active, var(--origam-btn---background-color)) !important;
-				color: var(--origam-btn---color);
-				border-color: var(--origam-btn---background-color-active, var(--origam-btn---background-color));
-			}
-		}
-
-		&--variant-plain {
-			background-color: transparent !important;
-			box-shadow: none;
-			opacity: var(--origam-btn---opacity-plain, var(--origam-opacity---70));
-
-			&:hover,
-			&:focus-visible {
-				opacity: 1;
-			}
-		}
-
-		&--variant-ghost {
-			background-color: var(
-				--origam-btn---background-color-ghost,
-				color-mix(in srgb, currentColor 12%, transparent)
-			) !important;
-			border-width: var(--origam-btn---border-width-ghost, var(--origam-border__width---thin));
-			border-style: solid;
-			border-color: var(
-				--origam-btn---border-color-ghost,
-				color-mix(in srgb, currentColor 24%, transparent)
-			);
-
-			box-shadow: var(
-				--origam-btn---box-shadow-ghost,
-				0 0 0 1px color-mix(in srgb, currentColor 18%, transparent),
-				0 4px 18px 0 color-mix(in srgb, currentColor 28%, transparent),
-				0 1px 0 0 color-mix(in srgb, white 35%, transparent) inset
-			);
-
-			@supports (backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px)) {
-				backdrop-filter: var(--origam-btn---backdrop-filter-ghost, blur(8px));
-				-webkit-backdrop-filter: var(--origam-btn---backdrop-filter-ghost, blur(8px));
-			}
-
-			@supports not ((backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px))) {
-				background-color: var(
-					--origam-btn---background-color-ghost,
-					color-mix(in srgb, currentColor 18%, transparent)
-				) !important;
-			}
-
-			&:hover,
-			&:focus-visible {
-				background-color: var(
-					--origam-btn---background-color-ghost-hover,
-					color-mix(in srgb, currentColor 18%, transparent)
-				) !important;
-				box-shadow: var(
-					--origam-btn---box-shadow-ghost-hover,
-					0 0 0 1px color-mix(in srgb, currentColor 26%, transparent),
-					0 6px 24px 0 color-mix(in srgb, currentColor 40%, transparent),
-					0 1px 0 0 color-mix(in srgb, white 45%, transparent) inset
-				);
-			}
 		}
 
 		&--block {

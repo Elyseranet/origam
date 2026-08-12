@@ -14,6 +14,24 @@ intent / variant / size / density mixin set.
 
 ## Variants
 
+`variant` is a **props preset** (ADR-005 —
+`docs/internal/adr-005-variant-as-props-preset.md`), not a CSS class the DS
+ships styling for. Each value is a named `Partial<IBtnProps>`
+(`BTN_VARIANT_PRESETS`, `consts/Btn/btn-variant.const.ts`) that pre-fills
+`bgColor` / `border` / `elevation` / … — resolved through the SAME
+`useDefaults` chain a theme default already goes through, as the **weakest**
+tier:
+
+```
+prop at the call site  >  theme default  >  variant preset  >  component default
+```
+
+Concretely: **an explicit prop always wins over the variant's preset**, even
+for the SAME prop the variant would otherwise set.
+`<OrigamBtn variant="outlined" bgColor="primary">` paints solid primary — the
+preset's `bgColor: 'transparent'` is the weakest tier, `bgColor="primary"` at
+the call site is the strongest.
+
 ```vue
 <template>
     <div class="demo-row">
@@ -23,9 +41,38 @@ intent / variant / size / density mixin set.
         <OrigamBtn variant="outlined" text="Outlined" />
         <OrigamBtn variant="text"     text="Text" />
         <OrigamBtn variant="plain"    text="Plain" />
+        <OrigamBtn variant="ghost"    text="Ghost" />
     </div>
 </template>
+
+<template>
+    <!-- The preset's transparent bg is the WEAKEST tier — an explicit
+         bgColor always wins, regardless of variant. -->
+    <OrigamBtn variant="outlined" bg-color="primary" text="Outlined, but filled" />
+</template>
 ```
+
+### Preset table
+
+| Variant | Preset (`Partial<IBtnProps>`) |
+|---|---|
+| `text` | `{ bgColor: 'transparent', elevation: 0 }` |
+| `flat` | `{ elevation: 0 }` |
+| `elevated` | `{ elevation: 'var(--origam-btn---box-shadow-elevated, …)' }` |
+| `tonal` | `{ bgColor: 'var(--origam-btn---background-color-tonal, …)', elevation: 0, active: { bgColor, elevation, fontWeight: 'semibold' } }` |
+| `outlined` | `{ bgColor: 'transparent', border: 1, borderStyle: 'solid', borderColor: 'var(--origam-btn---border-color, currentColor)', elevation: 0, active: { bgColor, color, borderColor } }` |
+| `plain` | `{ bgColor: 'transparent', elevation: 0, opacity: 'var(--origam-btn---opacity-plain, …)', hover: { opacity: 1 } }` |
+| `ghost` | `{ bgColor: '…', border: 1, borderStyle: 'solid', borderColor: '…', elevation: '…', backdropBlur: 'md', hover: { bgColor, elevation } }` |
+
+`active` / `hover` sub-objects (`IStateEffectConfig`, ADR-005 Q3) apply ONLY
+while that state is engaged — a preset may set them, but an explicit
+`hover` / `active` prop at the call site still overrides the WHOLE object
+(each is resolved as a single prop, same tier rules as everything else).
+
+The `variant` class (`origam-btn--variant-{value}`) still gets emitted for
+consumers who want a CSS-selector override hook, but the DS ships **zero**
+rule matching it — every visual effect above is a prop, never a shipped
+`!important` declaration.
 
 ## Color (intent)
 
@@ -119,7 +166,7 @@ For one-off custom colors, use a `:style` binding instead of `color`:
 The `outlined` and `ghost` variants expose a customizable border. Beyond
 the `border` shorthand (inherited from `IBorderProps`), the standalone
 `borderColor` and `borderStyle` props override only the colour or the
-line-style without restating the width — the width stays theme-driven.
+line-style without restating the width.
 
 ```vue
 <template>
@@ -132,6 +179,40 @@ line-style without restating the width — the width stays theme-driven.
 The outlined variant resolves its colour from
 `var(--origam-btn---border-color, currentColor)`, so per-instance overrides
 work via the prop, a token, or an inline `--origam-btn---border-color`.
+
+> Since ADR-005, the WIDTH of `outlined` / `ghost`'s border is a literal
+> `1px` (`border: 1` in the preset), not a per-component override token —
+> `IBorderProps.border`'s shorthand parser cannot safely carry a `var(...)`
+> width reference. A theme that needs a different width for these two
+> variants specifically should use the theme's `variants` map
+> (`IOrigamTheme.variants['origam-btn'].outlined.border`), not a raw CSS
+> custom property.
+
+## Backdrop blur (`ghost`)
+
+`ghost`'s glass effect is the `backdropBlur` prop (`IBackdropProps`), not
+component-owned CSS. Accepts an origam-native rung
+(`'none'|'xs'|'sm'|'md'|'lg'|'xl'`), a bare length, or a free-form
+`backdrop-filter` value.
+
+```vue
+<template>
+    <OrigamBtn variant="ghost" text="Glass" />
+    <OrigamBtn variant="ghost" backdrop-blur="xl" text="Stronger blur" />
+</template>
+```
+
+## Opacity (`plain`)
+
+`plain`'s resting fade is the `opacity` prop (`IOpacityProps`). Accepts an
+origam-native rung (the primitive scale `'0'|'12'|…|'100'`), a bare `0..1`
+number, or a free-form custom value.
+
+```vue
+<template>
+    <OrigamBtn opacity="50" text="Half-opaque" />
+</template>
+```
 
 ## Polymorphic tag
 
@@ -194,20 +275,27 @@ work via the prop, a token, or an inline `--origam-btn---border-color`.
 
 ```ts
 interface IBtnProps extends ICommonsComponentProps,
-    IColorProps, IBorderProps, IDensityProps, IDimensionProps,
+    IColorProps, IBgColorProps, IBorderProps, IDensityProps, IDimensionProps,
     IElevationProps, IRoundedProps, ITagProps, ISizeProps,
     ILinkProps, IRippleProps, ILoaderProps, IPositionProps,
     ILocationProps, IGroupItemProps, IPaddingProps, IMarginProps,
-    IAdjacentProps, IStatusProps, IHoverProps, ITypographyProps {
-    active?: boolean
+    IAdjacentProps, IHoverProps, IVariantProps, ITypographyProps,
+    IBackdropProps, IOpacityProps {
+    active?: boolean | IActiveState
     flat?: boolean
     icon?: boolean | TIcon
     block?: boolean
     slim?: boolean
     stacked?: boolean
     text?: string
+    status?: TStatus
+    statusIconPosition?: TStatusPosition
 }
 ```
+
+`IBackdropProps` (`backdropBlur`) and `IOpacityProps` (`opacity`) were added
+by ADR-005 (ticket #23) to close the two prop-coverage gaps the `ghost` /
+`plain` variant presets needed — see "Backdrop blur" and "Opacity" below.
 
 ### Typography
 
@@ -268,6 +356,15 @@ a `:style` binding to re-skin a single instance.
 | `--origam-btn---font-weight` | `{font.weight.medium}` |
 | `--origam-btn---transition-duration` | `{motion.duration.slow}` |
 | `--origam-btn--{intent}---background-color` | `{color.action.{intent}.bg}` |
+| `--origam-btn---background-color-tonal` | `{color.surface.overlay}` (`tonal` preset) |
+| `--origam-btn---background-color-tonal-active` | `{color.surface.raised}` (`tonal` preset, active) |
+| `--origam-btn---background-color-active` | `(unset)` — `outlined` preset, active fill |
+| `--origam-btn---box-shadow-elevated` | `{shadow.md}` (`elevated` preset) |
+| `--origam-btn---box-shadow-tonal-active` | `{shadow.xs}` (`tonal` preset, active) |
+| `--origam-btn---background-color-ghost` / `-hover` | `color-mix(currentColor 12/18%)` (`ghost` preset) |
+| `--origam-btn---box-shadow-ghost` / `-hover` | multi-layer `color-mix` shadow (`ghost` preset) |
+| `--origam-btn---opacity-plain` | `{opacity.70}` (`plain` preset) |
+| `--origam-backdrop__blur---md` | `blur(8px)` (`ghost` preset's `backdropBlur`) |
 
 The full list lives in
 `tokens/component/btn.json`.

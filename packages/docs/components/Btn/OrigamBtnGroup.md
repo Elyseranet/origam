@@ -76,6 +76,44 @@ buttons share a fill color and you still want a visible split.
 </template>
 ```
 
+## Variants
+
+Like `<OrigamBtn>`, `variant` is a **props preset** (ADR-005 —
+`docs/internal/adr-005-variant-as-props-preset.md`) resolved via
+`BTN_GROUP_VARIANT_PRESETS` (`consts/Btn/btn-group-variant.const.ts`), the
+same weakest-tier `useDefaults` mechanism, same 7 values
+(`text`/`flat`/`elevated`/`tonal`/`outlined`/`plain`/`ghost`). The group's
+own resolved `variant` — whether passed here explicitly or resolved from a
+theme's `origam-btn-group` defaults — is also forwarded, unconditionally, to
+every child `<OrigamBtn>` so the whole strip reads as one themed surface.
+
+```vue
+<template>
+    <OrigamBtnGroup variant="outlined">
+        <OrigamBtn text="One" />
+        <OrigamBtn text="Two" />
+    </OrigamBtnGroup>
+</template>
+```
+
+An explicit `bgColor` at the call site outranks the preset, same as
+`OrigamBtn`:
+
+```vue
+<template>
+    <OrigamBtnGroup variant="outlined" bg-color="primary">
+        <OrigamBtn text="Filled" />
+        <OrigamBtn text="Group"  />
+    </OrigamBtnGroup>
+</template>
+```
+
+`ghost` additionally accepts `backdropBlur` (`IBackdropProps`), same
+contract as `OrigamBtn`. The group has no `active`/`hover` state-preset
+axis — `useStateEffect` on the group's own surface is called without state
+arguments, so `hover`/`active` on `IBtnGroupProps` exist only to be
+forwarded to children, never to restyle the group itself.
+
 ## Rounded & border
 
 Both props are forwarded mixin-style. `rounded` pushes the outer
