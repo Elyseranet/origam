@@ -266,6 +266,18 @@
 				</StoryGroup>
 			</template>
 		</Variant>
+
+		<Variant title="Prop — variant (VRT matrix)">
+			<div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;" data-cy="btn-variant-matrix">
+				<origam-btn variant="text"     text="Text"     data-cy="btn-variant-text"/>
+				<origam-btn variant="flat"     text="Flat"     data-cy="btn-variant-flat"/>
+				<origam-btn variant="elevated" text="Elevated" data-cy="btn-variant-elevated"/>
+				<origam-btn variant="tonal"    text="Tonal"    data-cy="btn-variant-tonal"/>
+				<origam-btn variant="outlined" text="Outlined" data-cy="btn-variant-outlined"/>
+				<origam-btn variant="plain"    text="Plain"    data-cy="btn-variant-plain"/>
+				<origam-btn variant="ghost"    text="Ghost"    data-cy="btn-variant-ghost"/>
+			</div>
+		</Variant>
 	</Story>
 </template>
 

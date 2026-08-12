@@ -18,7 +18,12 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
     "test:e2e:report": "playwright show-report",
-    "test:a11y": "playwright test --config=playwright.a11y.config.ts"
+    "test:a11y": "playwright test --config=playwright.a11y.config.ts",
+    "test:vrt": "playwright test --config=playwright.vrt.config.ts",
+    "test:vrt:update": "playwright test --config=playwright.vrt.config.ts --update-snapshots",
+    "test:vrt:report": "playwright show-report vrt/.report",
+    "test:vrt:docker": "bash vrt/vrt-docker.sh test",
+    "test:vrt:docker:update": "bash vrt/vrt-docker.sh update"
   },
   "dependencies": {
     "@vue/server-renderer": "^3.5.39",
