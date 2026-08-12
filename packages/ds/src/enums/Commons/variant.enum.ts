@@ -12,10 +12,12 @@ export enum VARIANT {
     PLAIN = 'plain',
     /**
      * Glassmorphism — translucent tint of the current text color plus a
-     * backdrop-filter blur. Browsers without `backdrop-filter` get a
-     * slightly stronger tint as the fallback (handled in the SCSS via
-     * `@supports`). Pairs cleanly with `color="primary"` etc. — the
-     * variant only owns the chrome, not the foreground color.
+     * `backdropBlur` (`IBackdropProps`, ADR-005 Q1). Browsers without
+     * `backdrop-filter` support simply render without the blur (no
+     * `@supports` fallback rule — `useBackdrop` degrades gracefully on its
+     * own, see `backdrop.composable.ts`). Pairs cleanly with
+     * `color="primary"` etc. — the variant only owns the chrome, not the
+     * foreground color.
      */
     GHOST = 'ghost'
 }

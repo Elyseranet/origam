@@ -278,6 +278,15 @@
 				<origam-btn variant="ghost"    text="Ghost"    data-cy="btn-variant-ghost"/>
 			</div>
 		</Variant>
+
+		<Variant title="Prop — variant override (bgColor beats the preset)">
+			<div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;" data-cy="btn-variant-override-matrix">
+				<origam-btn variant="outlined" text="Outlined only"          data-cy="btn-ovr-outlined-only"/>
+				<origam-btn variant="outlined" text="Outlined + bgColor" bg-color="primary" data-cy="btn-ovr-outlined-bgcolor"/>
+				<origam-btn variant="text"     text="Text only"              data-cy="btn-ovr-text-only"/>
+				<origam-btn variant="text"     text="Text + bgColor"     bg-color="primary" data-cy="btn-ovr-text-bgcolor"/>
+			</div>
+		</Variant>
 	</Story>
 </template>
 

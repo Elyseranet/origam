@@ -1,5 +1,6 @@
 import type {
     IActiveProps,
+    IBackdropProps,
     IBorderProps,
     IBtnProps,
     IBgColorProps,
@@ -16,7 +17,9 @@ import type {
     IVariantProps
 } from '../../interfaces'
 
-export interface IBtnGroupProps extends ITagProps, ICommonsComponentProps, IRoundedProps, IBorderProps, IDensityProps, IElevationProps, IColorProps, IBgColorProps, IMarginProps, IPaddingProps, IHoverProps, IActiveProps, IVariantProps, ISizeProps {
+/** `IBackdropProps` (ADR-005 Q1) — the group's `ghost` variant preset needs
+ *  `backdropBlur` on the group root, mirroring `OrigamBtn`. */
+export interface IBtnGroupProps extends ITagProps, ICommonsComponentProps, IRoundedProps, IBorderProps, IDensityProps, IElevationProps, IColorProps, IBgColorProps, IMarginProps, IPaddingProps, IHoverProps, IActiveProps, IVariantProps, ISizeProps, IBackdropProps {
     divided?: boolean
     items?: Array<IBtnProps>
 }

@@ -1,6 +1,6 @@
 <template>
 	<component
-			:is="props.tag"
+			:is="tag"
 			:id="id"
 			role="group"
 			:class="btnGroupClasses"
@@ -31,6 +31,7 @@
 >
 	import { OrigamBtn, OrigamDefaultsProvider } from '../../components'
 	import {
+		useBackdrop,
 		useDefaults,
 		useDensity,
 		usePassedProps,
@@ -40,6 +41,8 @@
 		useStyle,
 		useVariant
 	} from '../../composables'
+
+	import { BTN_GROUP_VARIANT_PRESETS } from '../../consts'
 
 	import { DENSITY } from '../../enums'
 
@@ -68,7 +71,11 @@
 	// dropped — confirmed via computed-style (`box-shadow: none` on a
 	// themed Light/Dark toggle despite `elevation: 2` configured). Mirrors
 	// `OrigamBtn.vue`'s exact pattern.
-	const props = useDefaults(_props)
+	//
+	// ADR-005 (ticket #23) — `BTN_GROUP_VARIANT_PRESETS` inserts the
+	// variant preset tier, same mechanism as `OrigamBtn.vue`. See
+	// `consts/Btn/btn-group-variant.const.ts` for the full rationale.
+	const props = useDefaults(_props, 'origam-btn-group', BTN_GROUP_VARIANT_PRESETS)
 
 	const {filterProps} = useProps<IBtnGroupProps>(props)
 
@@ -95,11 +102,12 @@
 	const slotDefaults = computed(() => ({
 		'origam-btn': omitUndefined({
 			// `variant` is the ONE deliberate exception, kept unconditional:
-			// `--variant-text` (the group's own root default, and every
-			// child's own component default) has NO active-state background
-			// rule at all — only `outlined`/`tonal` paint a filled surface
-			// on the selected segment (see OrigamBtn.vue's
-			// `&--variant-outlined { &--active { background-color: ... } }`).
+			// `text` (the group's own root default, and every child's own
+			// component default) has NO active-state background override in
+			// its preset — only `outlined`/`tonal` declare an `active: {
+			// bgColor: … }` sub-object (`BTN_VARIANT_PRESETS`,
+			// `consts/Btn/btn-variant.const.ts`) that paints a filled
+			// surface on the selected segment.
 			// The group's OWN resolved `variant` (whether explicitly passed,
 			// or resolved from a theme's `'origam-btn-group'` defaults) must
 			// always reach the children — else a themed
@@ -126,6 +134,13 @@
 	// needed — `useDefaults` inside each child enforces the correct
 	// resolution order and respects per-item overrides automatically.
 	const items = computed(() => (props.items ?? []) as Array<IBtnProps>)
+
+	// `props.tag` is read once here (not inline as `:is="props.tag"` in the
+	// template — `props` is the `useDefaults`-wrapped proxy, not the raw
+	// `defineProps()` macro result Vue auto-exposes by name, so the
+	// template must reference a plain top-level binding, mirroring
+	// `OrigamBtn.vue`'s own `link.tag` pattern).
+	const tag = computed(() => props.tag)
 
 	const slots = useSlots()
 	const hasItems = computed(() => {
@@ -167,11 +182,15 @@
 	// gets patched over by each child's own background (which is exactly
 	// what produced the "flat white toggle" bug: children individually
 	// painting their own tonal bg, unevenly, instead of one shared
-	// surface). `variantClasses` below reuses the SAME CSS custom
-	// properties `OrigamBtn` itself reads (they're theme-global tokens,
-	// not scoped to the Btn instance) via matching `--variant-*` SCSS
-	// rules further down.
+	// surface). `variantClasses` below is a pure consumer override hook
+	// (ADR-005 D3) — the group's actual surface now resolves via
+	// `BTN_GROUP_VARIANT_PRESETS` (props preset), consumed by
+	// `useStateEffect` below, same mechanism as `OrigamBtn.vue`.
 	const {variantClasses} = useVariant(props)
+
+	// ADR-005 Q1 — `ghost`'s `backdrop-filter: blur(...)` is the
+	// `backdropBlur` prop, mirroring `OrigamBtn.vue`.
+	const {backdropClasses, backdropStyles} = useBackdrop(props)
 
 	/*********************************************************
 	 * Color
@@ -193,6 +212,7 @@
 			marginStyles.value,
 			paddingStyles.value,
 			elevationStyles.value,
+			backdropStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -210,6 +230,7 @@
 			paddingClasses.value,
 			variantClasses.value,
 			sizeClasses.value,
+			backdropClasses.value,
 			props.class
 		]
 	})
@@ -340,82 +361,13 @@
 			--origam-btn-group---height: 52px;
 		}
 
-		// Full parity with `OrigamBtn`'s own variant rules — same CSS
-		// custom properties, same literal values, one-for-one. A themed
-		// `origam-btn: { variant: 'outlined' }` (cartoon/geek/editorial)
-		// must produce the SAME border-width/border-color/background/
-		// box-shadow on the group as it does on a standalone Btn; the
-		// group is not allowed to fall back to a subset. Earlier passes
-		// only ported the `background-color` half of each rule (border/
-		// shadow were silently dropped), which is exactly what made the
-		// toggle read as "thin border, no shadow" next to a themed Btn's
-		// thick border + hard shadow under cartoon.
-		&--variant-flat {
-			box-shadow: none;
-		}
-
-		&--variant-text,
-		&--variant-plain {
-			background-color: transparent !important;
-			box-shadow: none;
-		}
-
-		&--variant-elevated {
-			box-shadow: var(--origam-btn---box-shadow-elevated, var(--origam-shadow---md));
-		}
-
-		&--variant-tonal {
-			background-color: var(
-				--origam-btn---background-color-tonal,
-				var(--origam-color__surface---overlay)
-			) !important;
-			box-shadow: none;
-		}
-
-		&--variant-outlined {
-			background-color: transparent !important;
-			// Mirror the literal border-width into the SAME custom property
-			// `--origam-btn-group---inner-border-radius` calc()s against
-			// (see the base rule above) — that calc reads the CUSTOM
-			// PROPERTY, which this rule would otherwise never touch (it
-			// only ever set the literal `border-width` property directly),
-			// leaving the calc's border-width input silently at its
-			// pre-variant fallback of 0 regardless of the REAL rendered
-			// border. `calc(20px - 0px)` still LOOKS plausible, so this
-			// class of bug doesn't throw or visibly break — it just quietly
-			// gives the child's fill the wrong inset curve.
-			--origam-btn-group---border-width: var(--origam-btn---border-width-outlined, var(--origam-border__width---thin));
-			border-width: var(--origam-btn-group---border-width);
-			border-style: solid;
-			border-color: var(--origam-btn---border-color, currentColor);
-			box-shadow: none;
-		}
-
-		&--variant-ghost {
-			background-color: var(
-				--origam-btn---background-color-ghost,
-				color-mix(in srgb, currentColor 12%, transparent)
-			) !important;
-			// See the matching comment in `&--variant-outlined` above.
-			--origam-btn-group---border-width: var(--origam-btn---border-width-ghost, var(--origam-border__width---thin));
-			border-width: var(--origam-btn-group---border-width);
-			border-style: solid;
-			border-color: var(
-				--origam-btn---border-color-ghost,
-				color-mix(in srgb, currentColor 24%, transparent)
-			);
-			box-shadow: var(
-				--origam-btn---box-shadow-ghost,
-				0 0 0 1px color-mix(in srgb, currentColor 18%, transparent),
-				0 4px 18px 0 color-mix(in srgb, currentColor 28%, transparent),
-				0 1px 0 0 color-mix(in srgb, white 35%, transparent) inset
-			);
-
-			@supports (backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px)) {
-				backdrop-filter: var(--origam-btn---backdrop-filter-ghost, blur(8px));
-				-webkit-backdrop-filter: var(--origam-btn---backdrop-filter-ghost, blur(8px));
-			}
-		}
+		// ADR-005 (ticket #23) removed the SIX `&--variant-*` selectors that
+		// used to live here (parity blocks mirroring `OrigamBtn.vue`'s own,
+		// same 9 `!important` problem). `variant` is now a props preset
+		// (`BTN_GROUP_VARIANT_PRESETS`, `consts/Btn/btn-group-variant.
+		// const.ts`), resolved via `useDefaults` and consumed by
+		// `useStateEffect` above — the `--variant-*` class survives as a
+		// pure consumer override hook (D3), the DS ships no rule for it.
 
 		// A btnGroup/btnToggle reads as ONE button with internal
 		// separators — not N bordered buttons glued together. The GROUP
@@ -456,17 +408,19 @@
 
 			// Resting (non-selected) segments stay fully naked — no
 			// background of their own — so the group's ONE surface
-			// (painted above via `variantClasses`) shows through evenly
-			// across the whole strip instead of each child individually
-			// re-painting its own themed variant background (that
-			// per-child repaint, at varying opacity/tint per button, is
-			// what produced the inconsistent/blank-looking group surface
-			// bug). The SELECTED segment inside an `OrigamBtnToggle`
-			// keeps its own active-state background — that fill is the
-			// documented, intentional "reads as a real filled button"
-			// affordance for the current selection (see `OrigamBtn`'s
-			// `&--variant-outlined &--active` / `&--variant-tonal
-			// &--active` rules) and is NOT the bug being fixed here.
+			// (painted above via `colorStyles`/`colorClasses`, resolved
+			// from `BTN_GROUP_VARIANT_PRESETS` through `useStateEffect`)
+			// shows through evenly across the whole strip instead of each
+			// child individually re-painting its own themed variant
+			// background (that per-child repaint, at varying opacity/tint
+			// per button, is what produced the inconsistent/blank-looking
+			// group surface bug). The SELECTED segment inside an
+			// `OrigamBtnToggle` keeps its own active-state background —
+			// that fill is the documented, intentional "reads as a real
+			// filled button" affordance for the current selection (see
+			// `BTN_VARIANT_PRESETS.outlined.active` / `.tonal.active` in
+			// `consts/Btn/btn-variant.const.ts`) and is NOT the bug being
+			// fixed here.
 			&:not(.origam-btn--active) {
 				background-color: transparent !important;
 			}
