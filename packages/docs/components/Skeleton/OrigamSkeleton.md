@@ -9,25 +9,45 @@ blocks, reducing perceived loading time.
 ```vue
 <template>
     <!-- text line -->
-    <OrigamSkeleton variant="text" width="200" />
+    <OrigamSkeleton shape="text" width="200" />
 
     <!-- block rectangle -->
-    <OrigamSkeleton variant="rectangular" width="100%" height="80px" />
+    <OrigamSkeleton shape="rectangular" width="100%" height="80px" />
 
     <!-- circular avatar placeholder -->
-    <OrigamSkeleton variant="circular" width="48" />
+    <OrigamSkeleton shape="circular" width="48" />
 </template>
 ```
 
-## Variants
+## Shape and composition
 
-| Variant | Description |
+> **Renamed in v3 (ADR-005, Q4).** The former single `variant` prop
+> conflated two independent axes — a primitive **shape** and a composite
+> **layout assembled from several shapes**. They are now two separate
+> props: `shape` and `composition`. Setting `composition` selects an
+> entirely different template branch, and `shape` is then ignored.
+
+### `shape` — primitive block
+
+| Value | Description |
 |---|---|
 | `text` | Short rectangle with `1.2em` default height — represents a line of text. |
 | `rectangular` | Generic rectangle. Set `width` and `height` freely. |
 | `circular` | Perfectly round placeholder. `height` mirrors `width`. |
+
+### `composition` — preset assembled from several `shape` blocks
+
+| Value | Description |
+|---|---|
 | `list-item` | Preset: circular avatar + 2 text lines side-by-side. |
 | `card` | Preset: image rectangle + 3 text lines stacked vertically. |
+
+```vue
+<template>
+    <OrigamSkeleton composition="card" />
+    <OrigamSkeleton composition="list-item" />
+</template>
+```
 
 ## Loading toggle
 
@@ -36,7 +56,7 @@ content is displayed instead.
 
 ```vue
 <template>
-    <OrigamSkeleton :loading="isLoading" variant="text" width="200">
+    <OrigamSkeleton :loading="isLoading" shape="text" width="200">
         <p>Content loaded</p>
     </OrigamSkeleton>
 </template>
@@ -50,7 +70,7 @@ content where motion reduction is preferred.
 
 ```vue
 <template>
-    <OrigamSkeleton variant="rectangular" width="100%" height="60px" :pulse="false" />
+    <OrigamSkeleton shape="rectangular" width="100%" height="60px" :pulse="false" />
 </template>
 ```
 
@@ -58,7 +78,8 @@ content where motion reduction is preferred.
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
-| `variant` | `'text' \| 'rectangular' \| 'circular' \| 'card' \| 'list-item'` | `'rectangular'` | Visual shape. |
+| `shape` | `'text' \| 'rectangular' \| 'circular'` | `'rectangular'` | Primitive block shape. Ignored when `composition` is set. |
+| `composition` | `'card' \| 'list-item'` | — | Composite layout assembled from several `shape` blocks. |
 | `width` | `string \| number` | — | CSS width (e.g. `200`, `'100%'`, `'12rem'`). |
 | `height` | `string \| number` | — | CSS height. |
 | `loading` | `boolean` | `true` | When `false`, renders the slot content instead. |

@@ -210,7 +210,7 @@ export const glassLightTheme: IOrigamTheme = {
         // rend aucun triangle/pointeur, la spec n'a rien à désactiver.
 
         // ── Navigation (SYNTHESE §3) ─────────────────────────────────────
-        'origam-tabs': { variant: 'pills', rounded: 'lg' },
+        'origam-tabs': { indicator: 'pills', rounded: 'lg' },
         'origam-bottom-nav': { rounded: 'lg', border: true, elevation: 4 },
         'origam-breadcrumb': { rounded: 'lg', border: true, density: 'compact' },
         // rounded retiré : IPaginationProps n'étend PAS IRoundedProps — le

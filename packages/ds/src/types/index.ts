@@ -13,7 +13,7 @@ export * from './Blockquote/blockquote-align.type'
 
 export * from './BottomNav/bottom-nav.type'
 
-export * from './Bracket/bracket-variant.type'
+export * from './Bracket/bracket-format.type'
 export * from './Bracket/bracket-direction.type'
 export * from './Bracket/bracket-match-status.type'
 export * from './Bracket/bracket-round-side.type'
@@ -240,7 +240,7 @@ export * from './Slide/slide-group.type'
 
 export * from './SliderField/slider-field.type'
 export * from './SliderField/slider-field-track.type'
-export * from './SliderField/slider-field-variant.type'
+export * from './SliderField/slider-field-mode.type'
 
 export * from './Snackbar/snackbar.type'
 
@@ -291,7 +291,7 @@ export * from './Transition/window-y-translate.type'
 export * from './VirtualScroll/virtual-scroll.type'
 export * from './VirtualScroll/virtual-scroll-item.type'
 
-export * from './Tabs/tab-variant.type'
+export * from './Tabs/tab-indicator.type'
 export * from './Tabs/tabs.type'
 export * from './Tabs/tab.type'
 export * from './Tabs/tab-panels.type'
@@ -325,7 +325,7 @@ export * from './Video/video-controls.type'
 export * from './Video/video-track-kind.type'
 
 export * from './Audio/audio-controls.type'
-export * from './Audio/audio-variant.type'
+export * from './Audio/audio-layout.type'
 export * from './Audio/audio-loop-mode.type'
 export * from './Audio/cover-position.type'
 

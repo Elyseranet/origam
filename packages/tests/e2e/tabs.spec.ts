@@ -9,16 +9,20 @@ import { expect, test } from '@playwright/test'
  *
  * ## Variants OrigamTabs (0-based, grep -nE '<Variant' OrigamTabs.story.vue)
  *
- *   0 → Design        (variant, color, bgColor, density, rounded, direction)
+ *   0 → Design        (indicator, color, bgColor, density, rounded, direction)
  *   1 → Functional    (disabled, mandatory, multiple, fixed, centered)
  *   2 → Events - update:modelValue
  *   3 → Slots - Default
  *   4 → Default       (playground : tabs + panels + story-status)
  *
+ * ADR-005 (Q4): the `variant` prop was renamed to `indicator` — it is a
+ * behavioural discriminant (`'underline'` mounts an extra DOM element),
+ * not a style preset.
+ *
  * ## Classes BEM réelles (lues depuis OrigamTabs.vue + OrigamTab.vue)
  *
  *   .origam-tabs                        → root tablist
- *   .origam-tabs--{variant}             → origam-tabs--default | --pills | --underline
+ *   .origam-tabs--{indicator}           → origam-tabs--default | --pills | --underline
  *   .origam-tabs--direction-horizontal  → aria-orientation="horizontal"
  *   .origam-tabs--direction-vertical    → aria-orientation="vertical"
  *   .origam-tabs--density-default       → min-height: 48px (via CSS var)
@@ -47,7 +51,7 @@ test.describe('OrigamTabs', () => {
 
     // ------------------------------------------------------------------ //
     // DESIGN (index 0)                                                     //
-    // init: { variant: 'default', direction: 'horizontal', density: … }  //
+    // init: { indicator: 'default', direction: 'horizontal', density: … } //
     // Tabs: Profile(v=0), Settings(v=1), Billing(v=2) — v-model=0         //
     // ------------------------------------------------------------------ //
 
@@ -113,9 +117,9 @@ test.describe('OrigamTabs', () => {
         })
     })
 
-    test.describe('Design — variant modifier classes', () => {
-        test('variant=default → origam-tabs--default', async ({ page }) => {
-            // init-state sets variant: TAB_VARIANT.DEFAULT
+    test.describe('Design — indicator modifier classes', () => {
+        test('indicator=default → origam-tabs--default', async ({ page }) => {
+            // init-state sets indicator: TAB_INDICATOR.DEFAULT
             await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const tablist = sandbox.locator('.origam-tabs').first()
@@ -124,7 +128,7 @@ test.describe('OrigamTabs', () => {
             await expect(tablist).toHaveClass(/origam-tabs--default/)
         })
 
-        test('variant=pills → origam-tabs--pills (injected programmatically)', async ({ page }) => {
+        test('indicator=pills → origam-tabs--pills (injected programmatically)', async ({ page }) => {
             await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const tablist = sandbox.locator('.origam-tabs').first()
@@ -144,7 +148,7 @@ test.describe('OrigamTabs', () => {
             expect(borderRadius).toBe('row')
         })
 
-        test('variant=underline → origam-tabs--underline (injected programmatically)', async ({ page }) => {
+        test('indicator=underline → origam-tabs--underline (injected programmatically)', async ({ page }) => {
             await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const tablist = sandbox.locator('.origam-tabs').first()
@@ -385,7 +389,7 @@ test.describe('OrigamTabs', () => {
 
     // ------------------------------------------------------------------ //
     // DEFAULT / PLAYGROUND (index 4)                                      //
-    // init: { variant:'default', direction:'horizontal', mandatory:true } //
+    // init: { indicator:'default', direction:'horizontal', mandatory:true } //
     // Tabs + TabPanels + story-status                                     //
     // ------------------------------------------------------------------ //
 

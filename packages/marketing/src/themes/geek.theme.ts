@@ -199,7 +199,7 @@ export const geekLightTheme: IOrigamTheme = {
         'origam-slider-field': { rounded: 'sm', color: 'primary' },
 
         // ── Navigation (SYNTHESE §3) ──────────────────────────────────────
-        'origam-tabs': { variant: 'pills', rounded: 'sm' },
+        'origam-tabs': { indicator: 'pills', rounded: 'sm' },
         'origam-bottom-nav': { rounded: 'sm', border: true, elevation: 2 },
         'origam-breadcrumb': { rounded: 'sm', border: true },
         'origam-pagination': { border: true, elevation: 1 },

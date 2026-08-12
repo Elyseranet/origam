@@ -8,7 +8,7 @@
 //  - modelValue-driven selection (initial + after click)
 //  - update:modelValue emit on tab click
 //  - ARIA tablist + orientation
-//  - variant / direction / density / centered / fixed class modifiers
+//  - indicator / direction / density / centered / fixed class modifiers
 //  - keyboard navigation (ArrowRight / ArrowLeft / Home / End)
 //  - disabled tab: aria-disabled, no selection on click
 
@@ -71,20 +71,20 @@ describe('OrigamTabs — rendering', () => {
 })
 
 describe('OrigamTabs — class modifiers', () => {
-    it('adds origam-tabs--default variant class by default', () => {
+    it('adds origam-tabs--default indicator class by default', () => {
         const wrapper = buildTabs()
         expect(wrapper.classes()).toContain('origam-tabs--default')
         wrapper.unmount()
     })
 
-    it('adds origam-tabs--pills when variant=pills', () => {
-        const wrapper = buildTabs({ variant: 'pills' })
+    it('adds origam-tabs--pills when indicator=pills', () => {
+        const wrapper = buildTabs({ indicator: 'pills' })
         expect(wrapper.classes()).toContain('origam-tabs--pills')
         wrapper.unmount()
     })
 
-    it('adds origam-tabs--underline when variant=underline', () => {
-        const wrapper = buildTabs({ variant: 'underline' })
+    it('adds origam-tabs--underline when indicator=underline', () => {
+        const wrapper = buildTabs({ indicator: 'underline' })
         expect(wrapper.classes()).toContain('origam-tabs--underline')
         wrapper.unmount()
     })

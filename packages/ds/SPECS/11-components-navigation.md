@@ -182,7 +182,7 @@ La prop `items` est normalisée dans un `computed` : chaque item est enrichi de 
 
 **Fichier** : `packages/ds/src/components/Tabs/OrigamTabs.vue`
 
-**Rôle** : Conteneur de tablist WAI-ARIA (`role="tablist"`). Orchestre la sélection via `useGroup` (injection key `ORIGAM_TABS_KEY`). Propage `density`, `color`, `variant`, `fixed` aux `OrigamTab` enfants.
+**Rôle** : Conteneur de tablist WAI-ARIA (`role="tablist"`). Orchestre la sélection via `useGroup` (injection key `ORIGAM_TABS_KEY`). Propage `density`, `color`, `indicator`, `fixed` aux `OrigamTab` enfants.
 
 #### Entrées (props)
 
@@ -193,7 +193,7 @@ La prop `items` est normalisée dans un `computed` : chaque item est enrichi de 
 | `tag` | `string` | `'div'` | Élément racine. |
 | `direction` | `DIRECTION` | `DIRECTION.HORIZONTAL` | `'horizontal'` ou `'vertical'`. Adapte `flex-direction` et `aria-orientation`. |
 | `density` | `DENSITY` | `DENSITY.DEFAULT` | Hauteur via `--origam-tabs---height` (56px comfortable / 48px default / 36px compact). |
-| `variant` | `TTabVariant` | `TAB_VARIANT.DEFAULT` | `'default'`, `'pills'`, `'underline'`. Chaque variant a des styles SCSS dédiés. |
+| `indicator` (renommé depuis `variant`, ADR-005 Q4) | `TTabIndicator` | `TAB_INDICATOR.DEFAULT` | `'default'`, `'pills'`, `'underline'`. Chaque valeur a des styles SCSS dédiés. |
 | `mandatory` | `boolean` | `true` | Toujours un onglet sélectionné (convention WAI-ARIA). |
 | `fixed` | `boolean` | `false` | Distribution égale des onglets (`flex: 1 1 0`). |
 | `centered` | `boolean` | `false` | Centre le tablist (`justify-content: center`). |
@@ -227,7 +227,7 @@ Focus maintenu via `querySelector('[data-origam-tab-id="${id}"]')`.
 
 - **Composables** : `useDensity`, `useGroup`, `useProps`, `useRounded`, `useStyle`.
 - **Consts** : `ORIGAM_TABS_KEY`.
-- **Enums** : `DENSITY`, `DIRECTION`, `TAB_VARIANT`.
+- **Enums** : `DENSITY`, `DIRECTION`, `TAB_INDICATOR`.
 - **Composants** : `OrigamDefaultsProvider`.
 
 ---
@@ -250,11 +250,11 @@ Interface locale étendant `ITabProps` et `IGroupItemProps` :
 | `appendIcon` | `TIcon` | — | Icône append. |
 | `value` | `any` | — | Valeur de cet onglet dans le groupe. |
 | `disabled` | `boolean` | — | Désactive l'onglet (`tabindex=-1`, `aria-disabled`). |
-| `variant` | `TTabVariant` | — | Résolu par `useDefaults` depuis le parent. Contrôle l'indicateur (`hasIndicator = variant === 'underline'`). |
+| `indicator` (renommé depuis `variant`, ADR-005 Q4) | `TTabIndicator` | — | Résolu par `useDefaults` depuis le parent. Contrôle l'indicateur (`hasIndicator = indicator === 'underline'`). |
 
 **`tabindex`** : `0` si sélectionné et non désactivé, `-1` sinon (roving tabindex).
 
-**Indicateur underline** : `<span class="origam-tab__indicator" aria-hidden="true"/>` rendu uniquement si `variant === 'underline'`. Il se scale de `scaleX(0)` à `scaleX(1)` via CSS sur la classe `--active`.
+**Indicateur underline** : `<span class="origam-tab__indicator" aria-hidden="true"/>` rendu uniquement si `indicator === 'underline'`. Il se scale de `scaleX(0)` à `scaleX(1)` via CSS sur la classe `--active`.
 
 #### Dépendances
 

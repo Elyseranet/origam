@@ -13,7 +13,7 @@
 					rounded: undefined,
 					elevation: undefined,
 					border: undefined,
-					variant: 'field',
+					mode: 'field',
 					direction: 'horizontal',
 					min: 0,
 					max: 100,
@@ -38,7 +38,7 @@
 						:border="state.border"
 						:border-color="state.borderColor"
 						:border-style="state.borderStyle"
-						:variant="state.variant"
+						:mode="state.mode"
 						:direction="state.direction"
 						:min="state.min"
 						:max="state.max"
@@ -52,8 +52,8 @@
 				/>
 			</template>
 			<template #controls="{ state }">
-				<StoryGroup title="Variant">
-					<HstSelect v-model="state.variant" title="Variant" :options="SLIDER_FIELD_VARIANT_OPTIONS"/>
+				<StoryGroup title="Mode">
+					<HstSelect v-model="state.mode" title="Mode" :options="SLIDER_FIELD_MODE_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Color">
 					<HstSelect v-model="state.color"   title="Color"   :options="COLOR_OPTIONS"/>
@@ -264,7 +264,7 @@
 					disabled: false,
 					readonly: false,
 					error: false,
-					variant: 'field',
+					mode: 'field',
 					showThumbOnHoverOnly: false,
 					showHoverTooltip: false,
 				})"
@@ -284,7 +284,7 @@
 					<HstText v-model="state.label" title="Label"/>
 				</StoryGroup>
 				<StoryGroup title="Design">
-					<HstSelect   v-model="state.variant"   title="Variant"   :options="SLIDER_FIELD_VARIANT_OPTIONS"/>
+					<HstSelect   v-model="state.mode"   title="Mode"   :options="SLIDER_FIELD_MODE_OPTIONS"/>
 					<HstSelect   v-model="state.color"     title="Color"     :options="COLOR_OPTIONS"/>
 					<HstSelect   v-model="state.bgColor"   title="Bg Color"  :options="COLOR_OPTIONS"/>
 					<HstSelect   v-model="state.density"   title="Density"   :options="DENSITY_OPTIONS"/>
@@ -318,9 +318,9 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamIcon, OrigamSliderField } from '@origam/components'
-	import { DIRECTION, MDI_ICONS, SLIDER_FIELD_VARIANT } from '@origam/enums'
+	import { DIRECTION, MDI_ICONS, SLIDER_FIELD_MODE } from '@origam/enums'
 	import type { IOptions, ISliderFieldProps } from '@origam/interfaces'
-	import type { TAlways, TSliderFieldVariant } from '@origam/types'
+	import type { TAlways, TSliderFieldMode } from '@origam/types'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
@@ -345,10 +345,10 @@
 	const slotModel       = ref(50)
 	const playgroundModel = ref(50)
 
-	const SLIDER_FIELD_VARIANT_OPTIONS: Array<IOptions<TSliderFieldVariant>> = [
-		{ label: 'field (default)', value: SLIDER_FIELD_VARIANT.FIELD },
-		{ label: 'timer',           value: SLIDER_FIELD_VARIANT.TIMER },
-		{ label: 'audio',           value: SLIDER_FIELD_VARIANT.AUDIO },
+	const SLIDER_FIELD_MODE_OPTIONS: Array<IOptions<TSliderFieldMode>> = [
+		{ label: 'field (default)', value: SLIDER_FIELD_MODE.FIELD },
+		{ label: 'timer',           value: SLIDER_FIELD_MODE.TIMER },
+		{ label: 'audio',           value: SLIDER_FIELD_MODE.AUDIO },
 	]
 
 	const DIRECTION_OPTIONS: Array<IOptions<string>> = [

@@ -36,14 +36,20 @@ selection, the panels render the matching content.
 </script>
 ```
 
-## Variants
+## Indicator style
 
-The visual treatment is controlled by the `variant` prop on `<OrigamTabs>`.
+> **Renamed in v3 (ADR-005, Q4).** This prop used to be named `variant`.
+> It is a behavioural discriminant, not a style preset — `'underline'`
+> mounts an extra DOM element (`.origam-tab__indicator`) on every
+> `<OrigamTab>`, which no set of prop values can express — so it kept
+> its own name instead of joining the props-preset model.
+
+The active-tab indicator is controlled by the `indicator` prop on `<OrigamTabs>`.
 
 ```vue
-<OrigamTabs v-model="active" variant="default" />
-<OrigamTabs v-model="active" variant="pills" />
-<OrigamTabs v-model="active" variant="underline" />
+<OrigamTabs v-model="active" indicator="default" />
+<OrigamTabs v-model="active" indicator="pills" />
+<OrigamTabs v-model="active" indicator="underline" />
 ```
 
 | Value     | Description                                            |
@@ -55,11 +61,11 @@ The visual treatment is controlled by the `variant` prop on `<OrigamTabs>`.
 ## Vertical orientation
 
 Switch to a vertical column with `direction="vertical"`. The indicator
-on `variant="underline"` moves to the trailing edge. ARIA
+on `indicator="underline"` moves to the trailing edge. ARIA
 `aria-orientation` follows the prop.
 
 ```vue
-<OrigamTabs v-model="active" direction="vertical" variant="underline">
+<OrigamTabs v-model="active" direction="vertical" indicator="underline">
     <OrigamTab :value="0">Inbox</OrigamTab>
     <OrigamTab :value="1">Sent</OrigamTab>
     <OrigamTab :value="2">Drafts</OrigamTab>
@@ -99,7 +105,7 @@ On touch devices, enable horizontal swipe between panels with
 | Prop          | Type                       | Default        | Description                            |
 |---------------|----------------------------|----------------|----------------------------------------|
 | `modelValue`  | `number \| string`         | —              | Active tab value (two-way bound).     |
-| `variant`     | `'default' \| 'pills' \| 'underline'` | `'default'` | Visual treatment.                |
+| `indicator`   | `'default' \| 'pills' \| 'underline'` | `'default'` | Active-tab indicator style.       |
 | `direction`   | `'horizontal' \| 'vertical'` | `'horizontal'` | Layout axis + ARIA orientation. |
 | `density`     | `'default' \| 'compact' \| 'comfortable'` | `'default'` | Vertical compression. |
 | `fixed`       | `boolean`                  | `false`        | Each tab gets `flex: 1` — equal width. |

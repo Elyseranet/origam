@@ -75,9 +75,9 @@ const mountAudio = (opts: IMountOpts = {}): VueWrapper => {
                 },
                 OrigamMediaController: OrigamMediaControllerStub,
                 OrigamSliderField: {
-                    props: ['modelValue', 'max', 'step', 'buffered', 'peaks', 'variant', 'showThumbOnHoverOnly', 'showHoverTooltip', 'formatHoverTooltip', 'ariaLabel'],
+                    props: ['modelValue', 'max', 'step', 'buffered', 'peaks', 'mode', 'showThumbOnHoverOnly', 'showHoverTooltip', 'formatHoverTooltip', 'ariaLabel'],
                     emits: ['update:modelValue'],
-                    template: '<div :data-variant="variant" data-cy="origam-audio-waveform-slider" />'
+                    template: '<div :data-mode="mode" data-cy="origam-audio-waveform-slider" />'
                 },
                 OrigamList: {
                     template: '<ul data-cy="origam-audio-playlist"><slot /></ul>'
@@ -262,8 +262,8 @@ describe('OrigamAudio — loop / shuffle binding', () => {
     })
 })
 
-describe('OrigamAudio — variant routing', () => {
-    it('applies the expanded variant class by default and renders the waveform slider', () => {
+describe('OrigamAudio — layout routing', () => {
+    it('applies the expanded layout class by default and renders the waveform slider', () => {
         const wrapper = mountAudio({ props: { title: 'Track' } })
         const root = wrapper.find('[data-cy="origam-audio"]')
         expect(root.classes()).toContain('origam-audio--expanded')
@@ -271,19 +271,19 @@ describe('OrigamAudio — variant routing', () => {
         expect(waveform.exists()).toBe(true)
     })
 
-    it('applies the compact variant class and removes the has-waveform marker', () => {
+    it('applies the compact layout class and removes the has-waveform marker', () => {
         // In compact mode the waveform slot content is CSS-hidden (display:none via
         // .origam-audio--compact rule) — the element stays in the DOM but the
         // `origam-audio--has-waveform` modifier class is absent so consumers and
         // CSS rules can key off it.
-        const wrapper = mountAudio({ props: { variant: 'compact' } })
+        const wrapper = mountAudio({ props: { layout: 'compact' } })
         const root = wrapper.find('[data-cy="origam-audio"]')
         expect(root.classes()).toContain('origam-audio--compact')
         expect(root.classes()).not.toContain('origam-audio--has-waveform')
     })
 
-    it('honours the legacy "minimal" alias as the compact variant', () => {
-        const wrapper = mountAudio({ props: { variant: 'minimal' } })
+    it('honours the legacy "minimal" alias as the compact layout', () => {
+        const wrapper = mountAudio({ props: { layout: 'minimal' } })
         const root = wrapper.find('[data-cy="origam-audio"]')
         expect(root.classes()).toContain('origam-audio--compact')
     })

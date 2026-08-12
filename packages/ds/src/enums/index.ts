@@ -2,7 +2,7 @@ export * from './Icon/mdi.enum'
 
 export * from './Img/img.enum'
 
-export * from './Audio/audio-variant.enum'
+export * from './Audio/audio-layout.enum'
 export * from './Audio/audio-loop-mode.enum'
 export * from './Audio/cover-position.enum'
 
@@ -71,7 +71,7 @@ export * from './Transition/transition.enum'
 export * from './Blockquote/blockquote-variant.enum'
 export * from './Blockquote/blockquote-lang.enum'
 
-export * from './Bracket/bracket-variant.enum'
+export * from './Bracket/bracket-format.enum'
 
 export * from './BottomNav/bottom-nav-position.enum'
 export * from './Bracket/bracket-match-status.enum'
@@ -96,9 +96,9 @@ export * from './DataTable/data-table.enum'
 
 export * from './DatePicker/date-picker.enum'
 
-export * from './SliderField/slider-field-variant.enum'
+export * from './SliderField/slider-field-mode.enum'
 
-export * from './Tabs/tab-variant.enum'
+export * from './Tabs/tab-indicator.enum'
 
 export * from './Mask/mask.enum'
 

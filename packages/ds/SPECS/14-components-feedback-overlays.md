@@ -765,13 +765,16 @@ Props spécifiques :
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
-| `variant` | `TSkeletonVariant` | `'rectangular'` | `'text'`, `'rectangular'`, `'circular'`, `'card'`, `'list-item'` |
+| `shape` | `TSkeletonShape` | `'rectangular'` | `'text'`, `'rectangular'`, `'circular'` — ignoré si `composition` est défini |
+| `composition` | `TSkeletonComposition` | — | `'card'`, `'list-item'` |
 | `loading` | `boolean` | `true` | Active le skeleton |
 | `pulse` | `boolean` | `true` | Active l'animation de shimmer/spin |
 | `width` | `string \| number` | — | Largeur (auto-ajustée pour `text` → `'100%'`, pour `circular` → miroir de height) |
 | `height` | `string \| number` | — | Hauteur (pour `text` → `var(--origam-skeleton---text-height)`) |
 
-`TSkeletonVariant` : `'text' | 'rectangular' | 'circular' | 'card' | 'list-item'`
+`variant` a été scindé en deux props/types indépendants (ADR-005, Q4) — il confondait un axe de forme et un axe de composition :
+`TSkeletonShape` : `'text' | 'rectangular' | 'circular'`
+`TSkeletonComposition` : `'card' | 'list-item'`
 
 #### Sorties
 
@@ -781,10 +784,10 @@ Props spécifiques :
 |---|---|
 | `default` | Rendu si `loading === false` |
 
-**Classes (mode simple)** : `origam-skeleton`, `origam-skeleton--{variant}`, `origam-skeleton--pulse`, `colorClasses`, `roundedClasses`, `sizeClasses`.
+**Classes (mode simple)** : `origam-skeleton`, `origam-skeleton--{shape}`, `origam-skeleton--pulse`, `colorClasses`, `roundedClasses`, `sizeClasses`.
 **Styles (mode simple)** : `width`, `height`, `colorStyles`, `roundedStyles`, `sizeStyles`.
 
-**Classes (mode composite `card` / `list-item`)** : `origam-skeleton-wrapper`, `origam-skeleton-wrapper--{variant}`.
+**Classes (mode composite `card` / `list-item`)** : `origam-skeleton-wrapper`, `origam-skeleton-wrapper--{composition}`.
 
 #### Dépendances
 
@@ -798,9 +801,9 @@ Props spécifiques :
 
 **ARIA** : `role="status"` + `aria-busy="true"` + `aria-label="Loading"` sur chaque bloc skeleton affiché.
 
-**Animation** : animation CSS `origam-skeleton-wave` (gradient animé, `background-size: 200%`, direction `90deg`) pour les variantes text/rectangular. Pour `circular`, animation `origam-skeleton-spin` avec `conic-gradient`. Respecte `prefers-reduced-motion: reduce` (suppression de l'animation).
+**Animation** : animation CSS `origam-skeleton-wave` (gradient animé, `background-size: 200%`, direction `90deg`) pour les shapes text/rectangular. Pour `circular`, animation `origam-skeleton-spin` avec `conic-gradient`. Respecte `prefers-reduced-motion: reduce` (suppression de l'animation).
 
-**Variantes composites** : `'card'` et `'list-item'` utilisent un wrapper dédié avec des éléments `.origam-skeleton--rectangular`, `.origam-skeleton--circular` et `.origam-skeleton--text` dont les proportions sont définies par le CSS (`nth-child`). Ces variantes ne peuvent pas recevoir les props `width`/`height`/`color` directement — seul le container wrapper est rendu.
+**Compositions** : `'card'` et `'list-item'` utilisent un wrapper dédié avec des éléments `.origam-skeleton--rectangular`, `.origam-skeleton--circular` et `.origam-skeleton--text` dont les proportions sont définies par le CSS (`nth-child`). Ces compositions ne peuvent pas recevoir les props `width`/`height`/`color` directement — seul le container wrapper est rendu.
 
 **`color-mix`** : la couleur du shimmer est calculée par `color-mix(in srgb, var(--origam-skeleton---background-color) 50%, white)` — CSS natif moderne, aucun calcul JS.
 
@@ -808,10 +811,10 @@ Props spécifiques :
 
 ```vue
 <!-- Loading : skeleton list-item -->
-<origam-skeleton variant="list-item" :loading="isPending" />
+<origam-skeleton composition="list-item" :loading="isPending" />
 
 <!-- Loaded : contenu réel -->
-<origam-skeleton variant="rectangular" :loading="isPending" height="200px">
+<origam-skeleton shape="rectangular" :loading="isPending" height="200px">
   <img src="..." alt="Photo de profil" />
 </origam-skeleton>
 ```

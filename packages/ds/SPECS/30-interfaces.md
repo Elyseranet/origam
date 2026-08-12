@@ -1080,7 +1080,7 @@ Props locales : `indeterminate?`, `inset?`, `flat?`.
 
 **Extends** : `ICommonsComponentProps, IDensityProps, IColorProps, IInputProps, IFocusProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, IRippleProps, IDirectionProps`
 
-Props locales : `disabled?`, `required?`, `label?`, `error?`, `readonly?`, `max?`, `min?`, `step?`, `trackProps?`, `reverse?`, `modelValue?`, `range?`, `showTicks?`, `ticks?`, `tickSize?`, `inset?`, `variant?: TSliderFieldVariant`, `buffered?`, `showThumbOnHoverOnly?`, `showHoverTooltip?`, `formatHoverTooltip?`, `peaks?`.
+Props locales : `disabled?`, `required?`, `label?`, `error?`, `readonly?`, `max?`, `min?`, `step?`, `trackProps?`, `reverse?`, `modelValue?`, `range?`, `showTicks?`, `ticks?`, `tickSize?`, `inset?`, `mode?: TSliderFieldMode` (renommé depuis `variant`, ADR-005 Q4), `buffered?`, `showThumbOnHoverOnly?`, `showHoverTooltip?`, `formatHoverTooltip?`, `peaks?`.
 
 **Emits** : `ISliderFieldEmits extends ICommonsComponentEmits, IFocusEmits` + `start`, `end`.
 
@@ -1148,7 +1148,7 @@ Props : `side?: TDirectionBoth`, `swipeable?`, `snapPoints?`, `defaultSnap?`, `o
 
 **Extends** : `ICommonsComponentProps, ITagProps, IDirectionProps, IDensityProps, IRoundedProps, IColorProps, IBgColorProps, IGroupProps`
 
-Props : `variant?: TTabVariant`, `fixed?`, `centered?`.
+Props : `indicator?: TTabIndicator` (renommé depuis `variant`, ADR-005 Q4), `fixed?`, `centered?`.
 
 #### `IBottomNavProps`
 
@@ -1212,7 +1212,7 @@ Props : `items: ITreeviewNode[]`, `modelValue?`, `expandedValue?`, `selectMode?`
 
 **Extends** : `ICommonsComponentProps, ITagProps, IRoundedProps, IBorderProps, IMarginProps, IPaddingProps, IElevationProps, IPositionProps, IColorProps, IBgColorProps`
 
-Props locales : `variant?: TAudioVariant`, `coverPosition?`, `src` (requis), `tracks?`, `title?`, `artist?`, `album?`, `cover?`, `waveform?`, `waveformColor?`, `autoplay?`, `muted?`, `loop?` (déprécié), `loopMode?`, `shuffle?`, `playlist?`, `currentTrackIndex?`, `preload?`, `crossorigin?`, `controls?`, `playbackRates?`, `playbackRate?`, `allowRemotePlayback?`, `downloadable?`, `downloadFilename?`.
+Props locales : `layout?: TAudioLayout` (renommé depuis `variant`, ADR-005 Q4), `coverPosition?`, `src` (requis), `tracks?`, `title?`, `artist?`, `album?`, `cover?`, `waveform?`, `waveformColor?`, `autoplay?`, `muted?`, `loop?` (déprécié), `loopMode?`, `shuffle?`, `playlist?`, `currentTrackIndex?`, `preload?`, `crossorigin?`, `controls?`, `playbackRates?`, `playbackRate?`, `allowRemotePlayback?`, `downloadable?`, `downloadFilename?`.
 
 **Emits** : `IAudioEmits` — 17 événements (play, pause, ended, timeupdate, volumechange, loadedmetadata, error, update:playbackRate, download, waveform, previous, next, update:currentTrackIndex, update:loopMode, update:shuffle, track-change).
 
@@ -1334,7 +1334,7 @@ Props : `content?`, `dot?`, `floating?`, `inline?`, `label?`, `max?`, `modelValu
 
 **Extends** : `ICommonsComponentProps, IColorProps, IBgColorProps, ISizeProps, IRoundedProps`
 
-Props : `variant?: TSkeletonVariant`, `width?`, `height?`, `loading?`, `pulse?`.
+Props : `shape?: TSkeletonShape`, `composition?: TSkeletonComposition` (`variant` scindé en deux axes indépendants, ADR-005 Q4), `width?`, `height?`, `loading?`, `pulse?`.
 
 #### `IEmptyStateProps`
 
@@ -1725,7 +1725,7 @@ IDisplayProps                           (mobileBreakpoint)
 | `ISizeProps` | Avatar, AvatarGroup, Chip, Icon, Kbd, Pagination, QrCode, RatingField, Skeleton, Stepper, Timeline, Treeview, … |
 | `ILocationProps` | Alert, Badge, Snackbar, Sheet, … |
 | `IPositionProps` | Alert, Audio, Btn, Card, Sheet, Snackbar, Toolbar, … |
-| `IVariantProps` | Btn, ConfirmWrapper, Field, Select, Tabs, TextField, … |
+| `IVariantProps` | Btn, ConfirmWrapper, Field, Select, TextField, … (Tabs' `indicator` — renamed from `variant`, ADR-005 Q4 — is a discriminant prop declared locally, not via this mixin) |
 | `IHoverProps` | Alert, Audio, Avatar, AvatarGroup, Badge, BottomNav, Card, Chip, Drawer, ExpansionPanel, Snackbar, Switch, Toolbar, … |
 | `IActiveProps` | Avatar, AvatarGroup, Btn, Card, Checkbox, Chip, Drawer, ExpansionPanel, Radio, Sheet, Snackbar, Switch, Toolbar, … |
 | `IAdjacentProps` | Alert, Btn, Card, CardHeader, Chip, ConfirmWrapper, Input, Select, … |

@@ -1,6 +1,6 @@
 <template>
 	<origam-input
-			v-if="isFieldVariant"
+			v-if="isFieldMode"
 			ref="origamInputRef"
 			:class="sliderFieldClasses"
 			:focused="isFocused"
@@ -239,7 +239,7 @@
 			:class="bareWrapperClasses"
 			:style="sliderFieldStyles"
 			:aria-label="label"
-			:data-variant="variant"
+			:data-mode="mode"
 	>
 		<div
 				class="origam-slider-field__container"
@@ -440,7 +440,7 @@
 		useVModel
 	} from '../../composables'
 
-	import { DENSITY, DIRECTION, SLIDER_FIELD_VARIANT } from '../../enums'
+	import { DENSITY, DIRECTION, SLIDER_FIELD_MODE } from '../../enums'
 
 	import type { ISliderFieldProps } from "../../interfaces"
 
@@ -464,7 +464,7 @@
 		direction: DIRECTION.HORIZONTAL,
 		density: DENSITY.DEFAULT,
 		inset: false,
-		variant: 'field',
+		mode: 'field',
 		showThumbOnHoverOnly: false,
 		showHoverTooltip: false,
 		formatHoverTooltip: (value: number) => String(value)
@@ -486,16 +486,16 @@
 	const slots = useSlots()
 
 	/*********************************************************
-	 * Variant routing
+	 * Mode routing
 	 *
 	 * @description
-	 * `variant='field'` keeps the legacy chrome (Phase-1 default).
-	 * `variant='timer' | 'audio'` drop the `<origam-input>` wrapper
+	 * `mode='field'` keeps the legacy chrome (Phase-1 default).
+	 * `mode='timer' | 'audio'` drop the `<origam-input>` wrapper
 	 * for a sober media-scrubber look. Audio adds a waveform SVG.
 	 ********************************************************/
-	const isFieldVariant = computed(() => props.variant === SLIDER_FIELD_VARIANT.FIELD)
-	const isAudioVariant = computed(() => props.variant === SLIDER_FIELD_VARIANT.AUDIO)
-	const isBareVariant = computed(() => !isFieldVariant.value)
+	const isFieldMode = computed(() => props.mode === SLIDER_FIELD_MODE.FIELD)
+	const isAudioMode = computed(() => props.mode === SLIDER_FIELD_MODE.AUDIO)
+	const isBareMode = computed(() => !isFieldMode.value)
 
 	/*********************************************************
 	 * Value & Range
@@ -597,7 +597,7 @@
 	})
 
 	/*********************************************************
-	 * Waveform (variant='audio')
+	 * Waveform (mode='audio')
 	 *
 	 * @description
 	 * `peaks` is a `[0..1]` array drawn as vertical bars BEHIND the
@@ -607,7 +607,7 @@
 	 * `currentColor`, right uses a 35 % mix.
 	 ********************************************************/
 	const hasPeaks = computed(() => {
-		if (!isAudioVariant.value) return false
+		if (!isAudioMode.value) return false
 		const peaks = props.peaks
 		return Array.isArray(peaks) && peaks.length > 0
 	})
@@ -985,7 +985,7 @@
 			props.style
 		] as StyleValue
 	})
-	const variantClass = computed(() => `origam-slider-field--variant-${props.variant ?? SLIDER_FIELD_VARIANT.FIELD}`)
+	const modeClass = computed(() => `origam-slider-field--mode-${props.mode ?? SLIDER_FIELD_MODE.FIELD}`)
 
 	const sharedStateClasses = computed(() => ({
 		'origam-slider-field--has-labels': slots.tickLabel || hasTickLabels.value,
@@ -999,7 +999,7 @@
 		'origam-slider-field--vertical': isVertical.value,
 		'origam-slider-field--horizontal': !isVertical.value,
 		'origam-slider-field--reverse': isReversed.value,
-		'origam-slider-field--thumb-on-hover': props.showThumbOnHoverOnly || isBareVariant.value,
+		'origam-slider-field--thumb-on-hover': props.showThumbOnHoverOnly || isBareMode.value,
 		'origam-slider-field--has-buffered': hasBuffered.value,
 		'origam-slider-field--has-peaks': hasPeaks.value
 	}))
@@ -1007,7 +1007,7 @@
 	const sliderFieldClasses = computed(() => {
 		return [
 			'origam-slider-field',
-			variantClass.value,
+			modeClass.value,
 			sharedStateClasses.value,
 			rtlClasses.value,
 			roundedClasses.value,
@@ -1019,7 +1019,7 @@
 		return [
 			'origam-slider-field',
 			'origam-slider-field--bare',
-			variantClass.value,
+			modeClass.value,
 			sharedStateClasses.value,
 			rtlClasses.value,
 			roundedClasses.value,
@@ -1146,7 +1146,7 @@
 			border-radius: var(--origam-slider-field---border-radius, 999px);
 			top: 50%;
 			transform: translateY(-50%);
-			height: var(--origam-slider-field--variant--field---track-thickness, var(--origam-slider-field---track-size, 4px));
+			height: var(--origam-slider-field--field---track-thickness, var(--origam-slider-field---track-size, 4px));
 			z-index: 1;
 		}
 
@@ -1335,7 +1335,7 @@
 				bottom: 0;
 				inset-inline-start: 50%;
 				transform: translateX(-50%);
-				width: var(--origam-slider-field--variant--field---track-thickness, var(--origam-slider-field---track-size, 4px));
+				width: var(--origam-slider-field--field---track-thickness, var(--origam-slider-field---track-size, 4px));
 				height: auto;
 			}
 		}
@@ -1426,8 +1426,8 @@
 	}
 
 	.origam-slider-field--bare {
-		--origam-slider-field--variant--field---track-thickness: var(--origam-slider-field--bare---track-thickness, 2px);
-		--origam-slider-field--variant--field---track-thickness-active: var(--origam-slider-field--bare---track-thickness-active, 4px);
+		--origam-slider-field--field---track-thickness: var(--origam-slider-field--bare---track-thickness, 2px);
+		--origam-slider-field--field---track-thickness-active: var(--origam-slider-field--bare---track-thickness-active, 4px);
 
 		display: block;
 		position: relative;
@@ -1443,7 +1443,7 @@
 		:deep(.origam-slider-field-track) {
 			background-color: var(--origam-slider-field--bare---track-background-color, color-mix(in srgb, currentColor 25%, transparent));
 			border-radius: var(--origam-slider-field---border-radius, 999px);
-			height: var(--origam-slider-field--variant--field---track-thickness);
+			height: var(--origam-slider-field--field---track-thickness);
 			width: 100%;
 			transition: height 140ms ease;
 
@@ -1463,7 +1463,7 @@
 			background: var(--origam-slider-field__buffered--bare---background-color, color-mix(in srgb, currentColor 40%, transparent));
 			opacity: 1;
 			border-radius: var(--origam-slider-field---border-radius, 999px);
-			height: var(--origam-slider-field--variant--field---track-thickness);
+			height: var(--origam-slider-field--field---track-thickness);
 			z-index: 1;
 		}
 
@@ -1481,17 +1481,17 @@
 		&:hover :deep(.origam-slider-field-track),
 		&:focus-within :deep(.origam-slider-field-track),
 		&.origam-slider-field--pressed :deep(.origam-slider-field-track) {
-			height: var(--origam-slider-field--variant--field---track-thickness-active);
+			height: var(--origam-slider-field--field---track-thickness-active);
 		}
 
 		&:hover .origam-slider-field__buffered,
 		&:focus-within .origam-slider-field__buffered,
 		&.origam-slider-field--pressed .origam-slider-field__buffered {
-			height: var(--origam-slider-field--variant--field---track-thickness-active);
+			height: var(--origam-slider-field--field---track-thickness-active);
 		}
 	}
 
-	.origam-slider-field--variant-audio {
+	.origam-slider-field--mode-audio {
 		--origam-slider-field--audio---track-height: 48px;
 
 		.origam-slider-field__container {

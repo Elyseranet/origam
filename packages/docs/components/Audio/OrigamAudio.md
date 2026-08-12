@@ -7,13 +7,20 @@ and a body column with three rows: a metadata header, a waveform mini
 scrubber, and a transport `<nav>` composed entirely of the atomic
 media sub-components (`<OrigamMediaPlayBtn>`, `<OrigamMediaVolumeControl>`,
 `<OrigamMediaTimeLabel>`, `<OrigamMediaCastBtn>`, `<OrigamMediaConfigMenu>`,
-plus two `<OrigamSliderField>` scrubbers — `variant="audio"` for the
-waveform and `variant="timer"` for the inline scrubber).
+plus two `<OrigamSliderField>` scrubbers — `mode="audio"` for the
+waveform and `mode="timer"` for the inline scrubber).
 
-Ships in two visual variants — `'expanded'` for full hero strips and
-`'compact'` for slim docks — and extends the canonical `IPositionProps`
-so the wrapper can be `static`, `relative`, `absolute`, `fixed`, or
-`sticky` with the standard `top` / `bottom` / `left` / `right` anchors.
+Ships in two chrome layouts — `'expanded'` for full hero strips and
+`'compact'` for slim docks, selected via the `layout` prop — and
+extends the canonical `IPositionProps` so the wrapper can be `static`,
+`relative`, `absolute`, `fixed`, or `sticky` with the standard `top` /
+`bottom` / `left` / `right` anchors.
+
+> **Renamed in v3 (ADR-005, Q4).** `layout` used to be named `variant`.
+> Its value swaps which chrome elements render (cover size, metadata
+> header, waveform), not only how they're painted — a behavioural
+> discriminant, not a style preset — so it kept its own name instead of
+> joining the props-preset model.
 
 The root element is `<article>` (the surface is self-contained); the
 cover lives in a `<figure>`, the metadata header in a `<header>`, and
@@ -64,31 +71,31 @@ When NOT to use:
 ## Anatomy
 
 ```
-variant="expanded", coverPosition="left"
+layout="expanded", coverPosition="left"
 ┌──────────────────────────────────────────────────────────────────────┐
 │  ┌────┐                                                              │
 │  │ 96 │   Track Title (18 px Bold)                                   │
 │  │ px │   Artist · Album · 03:14                                     │
 │  │ cov│                                                              │
-│  └────┘   ░░▒▒▓▓██▒░░  ← <OrigamSliderField variant="audio">         │
+│  └────┘   ░░▒▒▓▓██▒░░  ← <OrigamSliderField mode="audio">            │
 │                                                                      │
 │  ⏮  ⬤PLAY⬤  ⏭   00:42 / 03:14  ─━━━━●──── 🔊 ⚙ ↺ ⋯               │
-│      48 px                          ← <OrigamSliderField variant=    │
+│      48 px                          ← <OrigamSliderField mode=       │
 │                                       "timer"> hairline 2 px → 4 px  │
 │                                       on hover                       │
 └──────────────────────────────────────────────────────────────────────┘
 
-variant="expanded", coverPosition="right"  — swaps the grid columns
+layout="expanded", coverPosition="right"  — swaps the grid columns
 
-variant="compact"
+layout="compact"
 ┌──────────────────────────────────────────────────────────────────────┐
 │ [48px] Title · Artist     ⏮ ⬤ ⏭  00:42 / 03:14  ━━●━━ 🔊 ⚙ ↺ ⋯    │
 └──────────────────────────────────────────────────────────────────────┘
 ```
 
-The `compact` variant hides the waveform mini scrubber and inlines the
+The `compact` layout hides the waveform mini scrubber and inlines the
 metadata next to a 48 px cover to keep the dock height tight. The
-`expanded` variant ships a 96 px cover, the metadata header, and the
+`expanded` layout ships a 96 px cover, the metadata header, and the
 waveform when `waveform="true"` (or `"auto"` with `OfflineAudioContext`
 support).
 
@@ -98,11 +105,11 @@ are all unset (and no `#metadata` slot is provided), only the cover
 
 ## Props
 
-### Layout & variants
+### Layout
 
 | Prop            | Type                                                             | Default       | Description                                                                                                                                            |
 |-----------------|------------------------------------------------------------------|---------------|--------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `variant`       | `'expanded' \| 'compact' \| 'normal' \| 'minimal'`                | `'expanded'`  | `expanded` = full Stemtracks strip. `compact` = slim transport-only dock. Legacy `'normal'` / `'minimal'` aliases resolve to `expanded` / `compact`.   |
+| `layout`        | `'expanded' \| 'compact' \| 'normal' \| 'minimal'`                | `'expanded'`  | `expanded` = full Stemtracks strip. `compact` = slim transport-only dock. Legacy `'normal'` / `'minimal'` aliases resolve to `expanded` / `compact`.   |
 | `coverPosition` | `'left' \| 'right'`                                              | `'left'`      | Side of the surface where the album cover is painted. The body column sits on the opposite side.                                                       |
 | `position`      | `'static' \| 'relative' \| 'absolute' \| 'fixed' \| 'sticky'`     | `'relative'`  | Inherited from `IPositionProps`. Drives the wrapper's CSS `position` so the player can be docked / floated.                                            |
 | `top`           | `number \| string`                                               | `undefined`   | Inherited from `IPositionProps`. CSS `top` offset.                                                                                                     |
@@ -180,7 +187,7 @@ A single set of `ITypographyProps` drives all four text surfaces. Each surface r
 | `cover`      | —                                                                 | `<origam-img>` of the resolved `cover`.                                                                  |
 | `metadata`   | —                                                                 | Title + artist · album · duration meta line.                                                             |
 | `title`      | —                                                                 | `<strong>` with the `title` prop.                                                                        |
-| `waveform`   | `{ peaks: Array<number>, currentTime: number, duration: number }`  | `<origam-slider-field variant="audio">`.                                                                 |
+| `waveform`   | `{ peaks: Array<number>, currentTime: number, duration: number }`  | `<origam-slider-field mode="audio">`.                                                                    |
 | `controls`   | `IAudioScopedSlotBindings`                                        | Transport `<nav>` composed of the atomic media sub-components.                                            |
 | `loading`    | —                                                                 | `<origam-icon icon="LOADING">`.                                                                          |
 | `error`      | `{ error: MediaError \| Error }`                                  | `<origam-icon>` + `<span>` with the error message.                                                       |
@@ -200,8 +207,8 @@ State variants use the double-tiret separator
 | `--origam-audio---gap`                                  | `16px`                                          | Grid gap between cover and body.                                       |
 | `--origam-audio---padding`                              | `16px`                                          | Surface padding.                                                       |
 | `--origam-audio---border-radius`                        | `var(--origam-radius---lg, 12px)`               | Surface radius.                                                        |
-| `--origam-audio__cover---size`                          | `96px`                                          | Expanded variant cover size.                                           |
-| `--origam-audio--compact__cover---size`                 | `48px`                                          | Compact variant cover size.                                            |
+| `--origam-audio__cover---size`                          | `96px`                                          | Expanded layout cover size.                                            |
+| `--origam-audio--compact__cover---size`                 | `48px`                                          | Compact layout cover size.                                             |
 | `--origam-audio__title---font-size`                     | `18px`                                          | Title size (expanded). Overridden in compact.                          |
 | `--origam-audio__meta---color`                          | `color-mix(in srgb, currentColor 60%, transparent)` | Subtle meta line colour.                                            |
 | `--origam-audio__transport---gap`                       | `8px`                                           | Spacing between transport-row controls.                                |
@@ -228,7 +235,7 @@ State variants use the double-tiret separator
     artist="Origam DS Cast"
     album="Season 3"
     cover="https://picsum.photos/seed/audio/256"
-    variant="expanded"
+    layout="expanded"
     :waveform="true"
 />
 ```
@@ -238,7 +245,7 @@ State variants use the double-tiret separator
 ```vue
 <origam-audio
     :src="src"
-    variant="compact"
+    layout="compact"
     position="sticky"
     bottom="0"
     title="Pinned"

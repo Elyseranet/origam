@@ -10,7 +10,11 @@ import { test, expect } from '@playwright/test'
  */
 
 const CASES: { path: string; title: string; expectText: string }[] = [
-    { path: '/enums/audio-variant', title: 'AUDIO_VARIANT', expectText: 'export enum AUDIO_VARIANT' },
+    // ADR-005 (Q4): `AUDIO_VARIANT` was renamed to `AUDIO_LAYOUT` — the slug
+    // and title below only take effect once the marketing API-doc sync
+    // pipeline (packages/marketing/scripts/generate-api-docs.mjs) re-runs
+    // against the renamed DS source (`enums/Audio/audio-layout.enum.ts`).
+    { path: '/enums/audio-layout', title: 'AUDIO_LAYOUT', expectText: 'export enum AUDIO_LAYOUT' },
     { path: '/interfaces/i-active-props', title: 'IActiveProps', expectText: 'export interface IActiveProps' },
     { path: '/consts/audio-defaults', title: 'AUDIO_DEFAULTS', expectText: 'export const AUDIO_DEFAULTS' },
     { path: '/utils/add-days', title: 'addDays', expectText: 'function addDays' },
@@ -31,10 +35,10 @@ for (const c of CASES) {
     })
 }
 
-test('audio-variant definition keeps member @deprecated JSDoc', async ({ page }) => {
-    await page.goto('/enums/audio-variant', { waitUntil: 'networkidle' })
+test('audio-layout definition keeps member @deprecated JSDoc', async ({ page }) => {
+    await page.goto('/enums/audio-layout', { waitUntil: 'networkidle' })
     const def = page.locator('[data-cy="enum-definition-code"]')
     await expect(def).toContainText('@deprecated')
     await expect(def).toContainText('Use `EXPANDED`')
-    await page.screenshot({ path: 'e2e/.results-marketing/api-audio-variant-deprecated.png', fullPage: false })
+    await page.screenshot({ path: 'e2e/.results-marketing/api-audio-layout-deprecated.png', fullPage: false })
 })

@@ -19,7 +19,7 @@ import type {
 import type {
     TAlways,
     TSize,
-    TSliderFieldVariant
+    TSliderFieldMode
 } from '../../types'
 
 export interface ISliderFieldProps extends ICommonsComponentProps, IDensityProps, IColorProps, IInputProps, IFocusProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, IRippleProps, IDirectionProps {
@@ -55,7 +55,10 @@ export interface ISliderFieldProps extends ICommonsComponentProps, IDensityProps
     inset?: boolean
 
     /**
-     * Visual variant of the slider.
+     * Usage mode of the slider. Renamed from `variant` (ADR-005, Q4) — it
+     * switches between three structurally different renders, not only
+     * paint, so it stayed a discriminant prop instead of joining the
+     * props-preset model.
      *
      * - `'field'`  → default, wraps the slider in `<origam-input>` chrome
      *               (label, messages, prepend/append). Use for form-grade
@@ -69,7 +72,7 @@ export interface ISliderFieldProps extends ICommonsComponentProps, IDensityProps
      *
      * @default 'field'
      */
-    variant?: TSliderFieldVariant
+    mode?: TSliderFieldMode
 
     /**
      * Secondary fill rendered from `min` to `buffered`, layered behind
@@ -82,8 +85,8 @@ export interface ISliderFieldProps extends ICommonsComponentProps, IDensityProps
      * Hide the thumb at rest and only reveal it on container `:hover`,
      * `:focus-within`, or during a drag. CSS-only — no JS state.
      *
-     * For `variant='timer'` and `variant='audio'`, this is effectively
-     * always on (forced via the variant's class). For `variant='field'`,
+     * For `mode='timer'` and `mode='audio'`, this is effectively
+     * always on (forced via the mode's class). For `mode='field'`,
      * the consumer must opt in explicitly.
      *
      * @default false
@@ -109,9 +112,9 @@ export interface ISliderFieldProps extends ICommonsComponentProps, IDensityProps
 
     /**
      * Waveform peaks in the range `[0, 1]`. When set with
-     * `variant='audio'`, peaks are painted as vertical bars BEHIND the
+     * `mode='audio'`, peaks are painted as vertical bars BEHIND the
      * track via inline SVG: bars left of the thumb use the active color,
-     * bars right use a 35 %-mixed fade. No effect for other variants.
+     * bars right use a 35 %-mixed fade. No effect for other modes.
      */
     peaks?: ReadonlyArray<number>
 }

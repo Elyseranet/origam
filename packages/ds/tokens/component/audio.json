@@ -52,7 +52,7 @@
     },
 
     "waveform": {
-      "_comment": "Web-Audio-decoded peaks rendered as an SVG sibling inside the SliderField variant=audio. The played bars use the audio accent; the unplayed bars use a translucent currentColor.",
+      "_comment": "Web-Audio-decoded peaks rendered as an SVG sibling inside the SliderField mode=audio. The played bars use the audio accent; the unplayed bars use a translucent currentColor.",
       "height":                  { "$type": "dimension",  "$value": "48px" },
       "color":                   { "$type": "color",      "$value": "{color.action.primary.bg}" }
     },
@@ -68,7 +68,7 @@
     },
 
     "compact": {
-      "_comment": "Compact dock variant — 48 px cover, single inline metadata strip, no waveform, dense transport row.",
+      "_comment": "Compact dock layout — 48 px cover, single inline metadata strip, no waveform, dense transport row.",
       "cover": {
         "size":                  { "$type": "dimension",  "$value": "48px" }
       },

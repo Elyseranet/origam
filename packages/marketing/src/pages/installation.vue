@@ -144,7 +144,7 @@ const githubHref = computed(() => MARKETING_DEFAULTS.githubRepo)
                                 <template #header="{ copy, copied }">
                                     <origam-tabs
                                         v-model="activePackageManager"
-                                        variant="underline"
+                                        indicator="underline"
                                         color="primary"
                                         class="installation-step__pm-tabs"
                                         :aria-label="t('installation.steps.install.pm_label', 'Package manager')"

@@ -137,3 +137,33 @@ describe('OrigamTab — useDefaults (theme components wiring)', () => {
         wrapper.unmount()
     })
 })
+
+// ADR-005 (Q4): `variant` was renamed to `indicator` on <OrigamTabs> /
+// <OrigamTab> — `hasIndicator` (OrigamTab.vue) reads `props.indicator`
+// directly, so a stale `props.variant` reference would silently make the
+// underline indicator element unreachable.
+describe('OrigamTab — indicator prop (renamed from variant, ADR-005 Q4)', () => {
+    it('does not render .origam-tab__indicator when indicator is unset', () => {
+        const wrapper = buildTab()
+        expect(wrapper.find('.origam-tab__indicator').exists()).toBe(false)
+        wrapper.unmount()
+    })
+
+    it('does not render .origam-tab__indicator when indicator="default"', () => {
+        const wrapper = buildTab({ indicator: 'default' })
+        expect(wrapper.find('.origam-tab__indicator').exists()).toBe(false)
+        wrapper.unmount()
+    })
+
+    it('does not render .origam-tab__indicator when indicator="pills"', () => {
+        const wrapper = buildTab({ indicator: 'pills' })
+        expect(wrapper.find('.origam-tab__indicator').exists()).toBe(false)
+        wrapper.unmount()
+    })
+
+    it('renders .origam-tab__indicator when indicator="underline"', () => {
+        const wrapper = buildTab({ indicator: 'underline' })
+        expect(wrapper.find('.origam-tab__indicator').exists()).toBe(true)
+        wrapper.unmount()
+    })
+})

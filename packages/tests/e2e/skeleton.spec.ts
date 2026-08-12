@@ -5,18 +5,26 @@ import { expect, test } from '@playwright/test'
  *
  * ## Variants (index 0-based, grep -E '<Variant' OrigamSkeleton.story.vue)
  *
- *   0 → Design      init: { variant:'rectangular', width:'200', height:'80' }, loading=true
- *   1 → Functional  init: { loading:true, pulse:true, variant:'text', width:'200' }
- *   2 → Slots - Default  loading=false, slot "<span>Custom slot content…</span>" visible
+ *   0 → Design                  init: { shape:'rectangular', width:'200', height:'80' }, loading=true
+ *   1 → Functional               init: { loading:true, pulse:true, shape:'text', width:'200' }
+ *   2 → Slots - Default          loading=false, slot "<span>Custom slot content…</span>" visible
  *   3 → Default (playground)
+ *   4 → Composition - Card       literal: composition="card" loading
+ *   5 → Composition - List Item  literal: composition="list-item" loading
+ *
+ * ADR-005 (Q4): `variant` was renamed and split into two independent props —
+ * it used to conflate a shape axis (text/rectangular/circular) and a
+ * composition axis (card/list-item), which are two different discriminants
+ * (see ADR-005 D5/Skeleton). `shape` and `composition` are mutually
+ * exclusive at the template level: `composition` selects a different
+ * branch entirely and `shape` is ignored when it is set.
  *
  * ## Composant (OrigamSkeleton.vue)
  *
  *   - Quand loading=false → rend le slot (aucun .origam-skeleton dans le DOM).
- *   - variant ∈ { text | rectangular | circular | card | list-item }.
- *     - card / list-item → root = .origam-skeleton-wrapper--{variant}
- *       avec des .origam-skeleton enfants.
- *     - autres → root = .origam-skeleton.origam-skeleton--{variant}.
+ *   - shape ∈ { text | rectangular | circular } → root = .origam-skeleton.origam-skeleton--{shape}.
+ *   - composition ∈ { card | list-item } → root = .origam-skeleton-wrapper--{composition}
+ *     avec des .origam-skeleton enfants.
  *   - pulse=true → ajoute .origam-skeleton--pulse (animation wave/spin).
  *   - circular → border-radius = var(--origam-skeleton---border-radius-circular, 50%)
  *     Le token DS résout à 9999px (pill universel — même que Avatar, Chip, Badge).
@@ -41,7 +49,7 @@ test.describe('OrigamSkeleton', () => {
 
     // ------------------------------------------------------------------ //
     // DESIGN (index 0)                                                     //
-    // init: { variant:'rectangular', width:'200', height:'80' }, loading  //
+    // init: { shape:'rectangular', width:'200', height:'80' }, loading    //
     // ------------------------------------------------------------------ //
 
     test.describe('Design', () => {
@@ -52,7 +60,7 @@ test.describe('OrigamSkeleton', () => {
             await expect(el).toBeVisible({ timeout: 12000 })
         })
 
-        test('variant=rectangular applies the modifier class', async ({ page }) => {
+        test('shape=rectangular applies the modifier class', async ({ page }) => {
             await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const el = sandbox.locator('.origam-skeleton').first()
@@ -91,28 +99,29 @@ test.describe('OrigamSkeleton', () => {
             expect(bg).not.toBe('transparent')
         })
 
-        test('variant=text applies the text modifier class', async ({ page: _page }) => {
-            // Navigate to Design, then test text variant explicitly via circular/text
+        test('shape=text applies the text modifier class', async ({ page: _page }) => {
+            // Navigate to Design, then test text shape explicitly via circular/text
             // The Design init-state uses 'rectangular'; we test text via Functional (index 1)
-            // which sets variant='text'. This test is here for documentation purposes:
+            // which sets shape='text'. This test is here for documentation purposes:
             // tested in Functional.
-            test.skip(true, 'variant=text covered by Functional variant (index 1)')
+            test.skip(true, 'shape=text covered by Functional variant (index 1)')
         })
 
-        test('variant=circular applies the circular modifier and a square aspect', async ({ page: _page }) => {
+        test('shape=circular applies the circular modifier and a square aspect', async ({ page: _page }) => {
             // circular is not the init-state of Design (rectangular is).
             // We test circular via dedicated check below using the component's
             // skeletonCircularClasses (exposed in list-item composite). For a
-            // standalone circular variant, the SCSS sets border-radius to
+            // standalone circular shape, the SCSS sets border-radius to
             // --origam-skeleton---border-radius-circular (9999px token).
-            // Tested via Functional variant which can hold any variant value.
-            test.skip(true, 'standalone circular tested via Functional/list-item composite')
+            // Tested via the Composition - List Item variant (index 5), whose
+            // avatar block is rendered with skeletonCircularClasses.
+            test.skip(true, 'standalone circular tested via Composition - List Item (index 5)')
         })
     })
 
     // ------------------------------------------------------------------ //
     // FUNCTIONAL (index 1)                                                 //
-    // init: { loading:true, pulse:true, variant:'text', width:'200' }     //
+    // init: { loading:true, pulse:true, shape:'text', width:'200' }       //
     // ------------------------------------------------------------------ //
 
     test.describe('Functional', () => {
@@ -131,7 +140,7 @@ test.describe('OrigamSkeleton', () => {
             await expect(el).toHaveClass(/origam-skeleton--pulse/)
         })
 
-        test('variant=text applies the text modifier class', async ({ page }) => {
+        test('shape=text applies the text modifier class', async ({ page }) => {
             await page.goto(variantUrl(1))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const el = sandbox.locator('.origam-skeleton').first()
@@ -139,7 +148,7 @@ test.describe('OrigamSkeleton', () => {
             await expect(el).toHaveClass(/origam-skeleton--text/)
         })
 
-        test('variant=text with no height prop uses CSS token height (not inline)', async ({ page }) => {
+        test('shape=text with no height prop uses CSS token height (not inline)', async ({ page }) => {
             // init-state has no height → resolvedHeight resolves to CSS var
             // → inline style "height" must NOT be set as a pixel value by JS
             await page.goto(variantUrl(1))
@@ -209,45 +218,33 @@ test.describe('OrigamSkeleton', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // COMPOSITE VARIANTS: card and list-item                               //
-    // Tested via Default playground (index 3) — init includes loading=true //
+    // COMPOSITION: card (index 4) and list-item (index 5)                  //
+    // ADR-005 (Q4) — `composition` is the discriminant axis split out of   //
+    // the former `variant`; each literal Variant fixes one value.          //
     // ------------------------------------------------------------------ //
 
-    test.describe('Composite variants', () => {
-        test('variant=card renders a wrapper with 4 inner .origam-skeleton children', async ({ page: _page }) => {
-            // Default playground (index 3) init: { variant:'text', loading:true, pulse:true }
-            // We test card via Design (index 0) which exposes variant controls, but the init
-            // is rectangular. The card structure is part of the static component template
-            // and can be verified by navigating to Design and checking after state update.
-            //
-            // Strategy: use the playground (index 3) — it has full controls including variant.
-            // However, manipulating HstSelect headlessly is fragile (custom DOM).
-            // We test the card structure via the component source contract:
-            //   - .origam-skeleton-wrapper--card exists as a root class for card variant
-            //   - It contains 4 .origam-skeleton children (1 rectangular + 3 text lines)
-            //
-            // Since no Variant exposes card as init-state, we assert card's DOM structure
-            // by checking that the Design Variant (rectangular, index 0) does NOT produce
-            // a wrapper class — i.e., single-block variants render .origam-skeleton directly.
-            //
-            // The card and list-item structures are covered below by accessing the Design
-            // Variant and using its URL. If a dedicated Variant is added later, update index.
-            test.fixme(
-                true,
-                'DS: no Variant initialises variant=card — add a dedicated Variant in OrigamSkeleton.story.vue, ' +
-                'then replace this fixme with a goto(variantUrl(<new-index>)) test'
-            )
+    test.describe('Composition', () => {
+        test('composition=card renders a wrapper with 4 inner .origam-skeleton children', async ({ page }) => {
+            await page.goto(variantUrl(4))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const wrapper = sandbox.locator('.origam-skeleton-wrapper--card')
+            await expect(wrapper).toBeVisible({ timeout: 12000 })
+            const children = wrapper.locator('.origam-skeleton')
+            await expect(children).toHaveCount(4)
         })
 
-        test('variant=list-item renders circular avatar + 2 text lines', async ({ page: _page }) => {
-            test.fixme(
-                true,
-                'DS: no Variant initialises variant=list-item — add a dedicated Variant in OrigamSkeleton.story.vue, ' +
-                'then replace this fixme with a goto(variantUrl(<new-index>)) test'
-            )
+        test('composition=list-item renders circular avatar + 2 text lines', async ({ page }) => {
+            await page.goto(variantUrl(5))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const wrapper = sandbox.locator('.origam-skeleton-wrapper--list-item')
+            await expect(wrapper).toBeVisible({ timeout: 12000 })
+            const circular = wrapper.locator('.origam-skeleton--circular')
+            await expect(circular).toHaveCount(1)
+            const lines = wrapper.locator('.origam-skeleton__lines .origam-skeleton')
+            await expect(lines).toHaveCount(2)
         })
 
-        test('single-block variants (rectangular) render .origam-skeleton root — not a wrapper', async ({ page }) => {
+        test('single-block shapes (rectangular) render .origam-skeleton root — not a wrapper', async ({ page }) => {
             // Verifies that rectangular (and by extension text/circular) use
             // the v-else branch → root element IS .origam-skeleton, NOT .origam-skeleton-wrapper
             await page.goto(variantUrl(0))
@@ -261,11 +258,11 @@ test.describe('OrigamSkeleton', () => {
 
     // ------------------------------------------------------------------ //
     // DEFAULT playground (index 3)                                         //
-    // init: { variant:'text', width:'200', loading:true, pulse:true }     //
+    // init: { shape:'text', width:'200', loading:true, pulse:true }       //
     // ------------------------------------------------------------------ //
 
     test.describe('Default playground', () => {
-        test('renders with combined init-state: text variant, pulse, loading', async ({ page }) => {
+        test('renders with combined init-state: text shape, pulse, loading', async ({ page }) => {
             await page.goto(variantUrl(3))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const el = sandbox.locator('.origam-skeleton').first()

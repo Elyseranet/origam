@@ -785,10 +785,10 @@ La majorité des fichiers composant ne contiennent qu'un alias d'instance. Ce pa
 |---|---|---|
 | `TAudioControls` | `'custom' \| 'native'` | `Audio/audio-controls.type.ts` |
 | `TAudioLoopMode` | `'none' \| 'all' \| 'one'` | `Audio/audio-loop-mode.type.ts` |
-| `TAudioVariant` | `'expanded' \| 'compact' \| 'normal' \| 'minimal'` | `Audio/audio-variant.type.ts` |
+| `TAudioLayout` | `'expanded' \| 'compact' \| 'normal' \| 'minimal'` | `Audio/audio-layout.type.ts` |
 | `TCoverPosition` | `'left' \| 'right'` | `Audio/cover-position.type.ts` |
 
-`TAudioVariant` : `normal` et `minimal` sont des alias dépréciés de `expanded` et `compact` (même valeur runtime, conservés pour la rétrocompatibilité v0.x).
+`TAudioLayout` (renommé depuis `TAudioVariant`, ADR-005 Q4) : `normal` et `minimal` sont des alias dépréciés de `expanded` et `compact` (même valeur runtime, conservés pour la rétrocompatibilité v0.x).
 
 ---
 
@@ -809,7 +809,7 @@ La majorité des fichiers composant ne contiennent qu'un alias d'instance. Ce pa
 | `TBracketDirection` | alias de `TDirection` = `'horizontal' \| 'vertical'` | `Bracket/bracket-direction.type.ts` |
 | `TBracketMatchStatus` | `'pending' \| 'live' \| 'completed' \| 'forfeited'` | `Bracket/bracket-match-status.type.ts` |
 | `TBracketRoundSide` | `'winner' \| 'loser' \| 'grand-final'` | `Bracket/bracket-round-side.type.ts` |
-| `TBracketVariant` | `'single-elimination' \| 'double-elimination' \| 'round-robin'` | `Bracket/bracket-variant.type.ts` |
+| `TBracketFormat` | `'single-elimination' \| 'double-elimination' \| 'round-robin'` | `Bracket/bracket-format.type.ts` |
 
 ---
 
@@ -1103,7 +1103,12 @@ Note : `BUILT_IN_PATTERN` et `PATTERN_VALIDATOR` sont des `const` (non des `enum
 
 ### Skeleton
 
-- `TSkeletonVariant` : `'text' | 'rectangular' | 'circular' | 'card' | 'list-item'`
+- `TSkeletonShape` : `'text' | 'rectangular' | 'circular'`
+- `TSkeletonComposition` : `'card' | 'list-item'`
+
+`variant` a été scindé en deux props/types indépendants (ADR-005, Q4) —
+il confondait un axe de forme (`shape`) et un axe de composition
+(`composition`, un layout composite assemblant plusieurs blocs `shape`).
 
 ---
 
@@ -1111,7 +1116,7 @@ Note : `BUILT_IN_PATTERN` et `PATTERN_VALIDATOR` sont des `const` (non des `enum
 
 | Type | Union / définition | Fichier |
 |---|---|---|
-| `TSliderFieldVariant` | `'field' \| 'timer' \| 'audio'` | `SliderField/slider-field-variant.type.ts` |
+| `TSliderFieldMode` | `'field' \| 'timer' \| 'audio'` | `SliderField/slider-field-mode.type.ts` |
 | `TAlways` | `boolean \| 'always'` | `SliderField/slider-field.type.ts` |
 | `TSliderData` | `{ value: number }` | `SliderField/slider-field.type.ts` |
 | `TTick` | `{ value: number, position: number, label?: string }` | `SliderField/slider-field.type.ts` |
@@ -1138,7 +1143,7 @@ Note : `BUILT_IN_PATTERN` et `PATTERN_VALIDATOR` sont des `const` (non des `enum
 
 ### Tabs
 
-- `TTabVariant` : `'default' | 'pills' | 'underline'`
+- `TTabIndicator` (renommé depuis `TTabVariant`, ADR-005 Q4) : `'default' | 'pills' | 'underline'`
 
 ---
 

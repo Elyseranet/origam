@@ -69,11 +69,11 @@
 
 	import type { ITabProps } from '../../interfaces'
 
-	import type { TTabVariant } from '../../types'
+	import type { TTabIndicator } from '../../types'
 
 	interface IProps extends ITabProps {
 		text?: string
-		variant?: TTabVariant
+		indicator?: TTabIndicator
 	}
 
 	/*********************************************************
@@ -83,7 +83,7 @@
 		tag: 'button',
 		value: undefined,
 		text: '',
-		variant: undefined
+		indicator: undefined
 	})
 
 	const props = useDefaults(_props)
@@ -157,9 +157,9 @@
 	}
 
 	/*********************************************************
-	 * Indicator (only on variant=underline)
+	 * Indicator (only on indicator=underline)
 	 ********************************************************/
-	const hasIndicator = computed(() => props.variant === 'underline')
+	const hasIndicator = computed(() => props.indicator === 'underline')
 
 	/*********************************************************
 	 * Typography

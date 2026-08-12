@@ -10,14 +10,14 @@ import type {
     ITagProps
 } from '../../interfaces'
 
-import type { TTabVariant } from '../../types'
+import type { TTabIndicator } from '../../types'
 
 /**
  * Props for `<OrigamTabs>` — a stateful tablist container.
  *
  * Mirrors `IBtnToggleProps` (re-uses `useGroup`) plus three tab-only
  * facets:
- *  - `variant`   visual treatment (`default`, `pills`, `underline`).
+ *  - `indicator` active-tab indicator style (`default`, `pills`, `underline`).
  *  - `fixed`     equal-width distribution of children (justify-evenly).
  *  - `centered`  centers the tablist within the container.
  *
@@ -32,7 +32,15 @@ import type { TTabVariant } from '../../types'
  */
 export interface ITabsProps extends ICommonsComponentProps, ITagProps, IDirectionProps, IDensityProps, IRoundedProps, IColorProps, IBgColorProps, IGroupProps {
     tag?: string
-    variant?: TTabVariant
+    /**
+     * Active-tab indicator style. Renamed from `variant` (ADR-005, Q4):
+     * `'underline'` mounts an extra DOM element per `<OrigamTab>`
+     * (`.origam-tab__indicator`) rather than only changing paint, so it
+     * is a behavioural discriminant, not a props preset.
+     *
+     * @default 'default'
+     */
+    indicator?: TTabIndicator
     fixed?: boolean
     centered?: boolean
 }
