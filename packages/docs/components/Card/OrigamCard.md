@@ -114,6 +114,37 @@ hatch): any string that isn't a named rung and doesn't parse as `0..24` is treat
 through to the pre-existing behaviour (no shadow emitted). See `useElevation`
 (`src/composables/Commons/elevation.composable.ts`) for the full resolution order.
 
+## Backdrop blur
+
+`backdropBlur` (ADR-005 ticket #21 — `IBackdropProps` / `useBackdrop`) accepts three shapes:
+
+- An **origam-native rung name** — `'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl'` — resolves to
+  `var(--origam-backdrop__blur---{rung})`, a ready-made `blur(Npx)` filter-function token.
+- A **bare CSS length** — a `number` (`8` → `blur(8px)`) or a unit string (`'8px'`, `'0.5rem'`) —
+  wrapped into `blur({length})`.
+- A **free-form custom `backdrop-filter` value** — `'blur(8px) saturate(1.4)'`, `var(--my-filter)`,
+  a comma-separated filter list — emitted verbatim.
+
+```vue
+<template>
+    <OrigamCard backdrop-blur="md" title="Frosted card" />
+    <OrigamCard :backdrop-blur="8" title="Bare length" />
+    <OrigamCard backdrop-blur="blur(12px) saturate(1.4)" title="Custom filter" />
+</template>
+```
+
+Card composes the prop with the existing `--origam-card---backdrop-filter` token (default
+`none`) — a Card that never sets `backdropBlur` renders exactly as before. Since several of the
+DS's `backdrop-filter` call sites already own the property via a component-scoped token, a
+tokenised rung emits **both** the `.origam--backdrop-{rung}` utility class and an inline-style
+companion (same cascade-safety pattern as `rounded`) so the paint isn't silently lost to a
+higher-specificity scoped rule. See `useBackdrop`
+(`src/composables/Commons/backdrop.composable.ts`) for the full resolution order, and
+`FEATURE_QUERIES.backdropFilter` (`useCssSupport`) for the opt-in `backdropSupported` flag a
+component can consult for a fallback appearance on unsupported browsers — `useBackdrop` itself
+does not gate emission on it, since an unsupported `backdrop-filter` declaration is dropped
+harmlessly by the browser.
+
 ## Rounded
 
 ```vue
@@ -201,6 +232,8 @@ red top edge while the other three sides stay 1px solid black.
 | `--origam-card---background` | Card background color. |
 | `--origam-card---color` | Card text color. |
 | `--origam-card---box-shadow` | Shadow layer. |
+| `--origam-card---backdrop-filter` | Backdrop filter (default `none`); set via the `backdropBlur` prop. |
+| `--origam-backdrop__blur---{none\|xs\|sm\|md\|lg\|xl}` | Primitive blur-rung scale (`blur(Npx)`) consumed by `backdropBlur`. Not Card-specific — shared across every `useBackdrop` consumer. |
 | `--origam-card---border-radius` | Border radius (composed from four corner tokens). |
 | `--origam-card---border-color` | Border color. |
 | `--origam-card---border-width` | Border width. |

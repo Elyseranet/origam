@@ -148,6 +148,7 @@
 	import {
 		useActive,
 		useAdjacent,
+		useBackdrop,
 		useDefaults,
 		useDensity,
 		useDimension,
@@ -357,12 +358,18 @@
 	const {dimensionStyles} = useDimension(props)
 	const {locationStyles} = useLocation(props)
 	const {positionClasses} = usePosition(props)
+	// ADR-005 ticket #21 demo wiring — `backdropBlur` targets the SAME
+	// `--origam-card---backdrop-filter` property Card's own scoped SCSS
+	// already declares (default `none`, untouched). No state/hover variant
+	// (out of scope here — `useStateEffect` is not extended by this ticket).
+	const {backdropClasses, backdropStyles} = useBackdrop(props)
 	// border / rounded / elevation / padding / margin all come from
 	// `useStateEffect` above — state-aware versions that honour
 	// `:hover="{ … }"` / `:active="{ … }"` overrides.
 
 	const cardStyles = computed(() => {
 		return [
+			backdropStyles.value,
 			borderStyles.value,
 			colorStyles.value,
 			dimensionStyles.value,
@@ -389,6 +396,7 @@
 				'origam-card--hover': props.hover && !(props.disabled || props.flat),
 				'origam-card--link': isClickable.value
 			},
+			backdropClasses.value,
 			borderClasses.value,
 			colorClasses.value,
 			densityClasses.value,

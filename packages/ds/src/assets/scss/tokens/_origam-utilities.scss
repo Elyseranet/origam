@@ -34,6 +34,14 @@
 .origam--shadow-lg { box-shadow: var(--origam-shadow---lg); }
 .origam--shadow-xl { box-shadow: var(--origam-shadow---xl); }
 
+/* ── Backdrop blur ───────────────────────────────── */
+.origam--backdrop-none { backdrop-filter: var(--origam-backdrop__blur---none); -webkit-backdrop-filter: var(--origam-backdrop__blur---none); }
+.origam--backdrop-xs { backdrop-filter: var(--origam-backdrop__blur---xs); -webkit-backdrop-filter: var(--origam-backdrop__blur---xs); }
+.origam--backdrop-sm { backdrop-filter: var(--origam-backdrop__blur---sm); -webkit-backdrop-filter: var(--origam-backdrop__blur---sm); }
+.origam--backdrop-md { backdrop-filter: var(--origam-backdrop__blur---md); -webkit-backdrop-filter: var(--origam-backdrop__blur---md); }
+.origam--backdrop-lg { backdrop-filter: var(--origam-backdrop__blur---lg); -webkit-backdrop-filter: var(--origam-backdrop__blur---lg); }
+.origam--backdrop-xl { backdrop-filter: var(--origam-backdrop__blur---xl); -webkit-backdrop-filter: var(--origam-backdrop__blur---xl); }
+
 /* ── Border radius ───────────────────────────────── */
 .origam--rounded-none { border-radius: var(--origam-radius---none); }
 .origam--rounded-xs { border-radius: var(--origam-radius---xs); }

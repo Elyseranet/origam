@@ -165,6 +165,16 @@
       { "offsetX": "0px", "offsetY": "9px", "blur": "46px", "spread": "8px", "color": "rgba(0,0,0,0.12)" }
     ]}
   },
+  "backdrop": {
+    "blur": {
+      "none": { "$type": "other", "$value": "blur(0px)" },
+      "xs":   { "$type": "other", "$value": "blur(2px)" },
+      "sm":   { "$type": "other", "$value": "blur(4px)" },
+      "md":   { "$type": "other", "$value": "blur(8px)" },
+      "lg":   { "$type": "other", "$value": "blur(16px)" },
+      "xl":   { "$type": "other", "$value": "blur(24px)" }
+    }
+  },
   "motion": {
     "duration": {
       "instant": { "$type": "duration", "$value": "0ms" },
