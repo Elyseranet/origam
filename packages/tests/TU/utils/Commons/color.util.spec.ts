@@ -64,6 +64,8 @@ describe('isCssColor', () => {
         'oklab(0.5 0 0)',
         'oklch(0.5 0 0)',
         'color(srgb 1 0 0)',
+        'color-mix(in srgb, currentColor 8%, transparent)',
+        'COLOR-MIX(in srgb, red 50%, blue)',
         'var(--my-color)',
         'transparent',
         'currentcolor',
@@ -100,6 +102,17 @@ describe('isParsableColor', () => {
     })
     it('returns false for intent strings', () => {
         expect(isParsableColor('primary')).toBe(false)
+    })
+    // ADR-005 (Kbd pilot) — `color-mix(...)` is recognised as a CSS colour
+    // (renders verbatim via the custom-value style channel) but is NOT
+    // parsable: its operands (`currentColor`, `var(--…)`) have no static
+    // value, and `parseColor()` has no `color-mix` case — it would throw.
+    // This is what keeps `useColor`'s legacy auto-contrast branch from ever
+    // calling `parseColor` on a `color-mix(...)` background.
+    it('returns false for color-mix(...) even though isCssColor is true', () => {
+        const value = 'color-mix(in srgb, currentColor 8%, transparent)'
+        expect(isCssColor(value)).toBe(true)
+        expect(isParsableColor(value)).toBe(false)
     })
 })
 

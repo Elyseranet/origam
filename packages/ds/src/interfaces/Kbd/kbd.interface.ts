@@ -3,6 +3,7 @@ import type {
     IBgColorProps,
     IColorProps,
     ICommonsComponentProps,
+    IElevationProps,
     IRoundedProps,
     ISizeProps,
     ITypographyProps,
@@ -10,7 +11,7 @@ import type {
 
 import type { TKbdVariant } from '../../types'
 
-export interface IKbdProps extends ICommonsComponentProps, IColorProps, IBgColorProps, ISizeProps, IBorderProps, IRoundedProps, ITypographyProps {
+export interface IKbdProps extends ICommonsComponentProps, IColorProps, IBgColorProps, ISizeProps, IBorderProps, IRoundedProps, ITypographyProps, IElevationProps {
     /** Single key label (e.g. "⌘", "Ctrl", "A"). Overridden by the default slot. */
     text?: string
     /** Composed shortcut rendered as individual nested `<kbd>` elements (e.g. ['Ctrl', 'Shift', 'Z']). */

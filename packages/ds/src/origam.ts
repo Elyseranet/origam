@@ -183,15 +183,19 @@ export function createOrigam (origam: IOrigamOptions = {}) {
 }
 
 /**
- * Collapse the per-component DEFAULT PROPS (`theme.components`) of the themes
- * matching the ACTIVE brand×mode into a single `IDefault`. A theme matches when
- * its `name` equals `brand` AND its `mode` is compatible with the active `mode`:
+ * Collapse the per-component DEFAULT PROPS (`theme.components`) — AND the
+ * per-variant preset overrides (`theme.variants`, ADR-005 D4) — of the
+ * themes matching the ACTIVE brand×mode into a single `IDefault`. A theme
+ * matches when its `name` equals `brand` AND its `mode` is compatible with
+ * the active `mode`:
  *   - the theme is mode-agnostic (`mode` unset or `'auto'`), OR
  *   - the active `mode` is unset (match every mode of the brand — used for the
  *     mode-less install-time seed before the plugins resolve a concrete mode), OR
  *   - the theme's `mode` equals the active `mode`.
  * Matching themes are deep-merged in install order (later wins) via the shared
- * `mergeDeep` util — no hand-rolled merge.
+ * `mergeDeep` util — no hand-rolled merge. `theme.variants` collapses into
+ * `merged.variants`, read by `useDefaults`'s preset tier ahead of the
+ * DS-shipped table (`consts/{Component}/{component}-variant.const.ts`).
  *
  * Pure (no DOM / Vue access) so it runs identically on the server and client.
  */
@@ -202,14 +206,15 @@ export function activeDefaultsFor (
 ): IDefault {
     let merged: IDefault = {}
     for (const theme of themes) {
-        if (!theme.components) continue
+        if (!theme.components && !theme.variants) continue
         // A name-less theme is the ROOT baseline (`origam`) — its component
         // defaults ALWAYS apply; the active brand is layered on top.
         const brandMatches = !theme.name || theme.name === brand
         const themeModeAgnostic = theme.mode === undefined || theme.mode === 'auto'
         const modeMatches = themeModeAgnostic || mode === undefined || theme.mode === mode
         if (brandMatches && modeMatches) {
-            merged = mergeDeep(merged, theme.components) as IDefault
+            if (theme.components) merged = mergeDeep(merged, theme.components) as IDefault
+            if (theme.variants) merged = mergeDeep(merged, { variants: theme.variants }) as IDefault
         }
     }
     return merged

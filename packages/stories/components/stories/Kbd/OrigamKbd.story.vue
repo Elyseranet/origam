@@ -9,18 +9,31 @@
 				:init-state="() => useStoryInitState<Partial<IKbdProps>>({ variant: 'outlined', color: undefined, bgColor: undefined, size: undefined, rounded: undefined, border: undefined, fontFamily: undefined, fontSize: undefined, fontWeight: undefined })"
 		>
 			<template #default="{ state }">
-				<origam-kbd
-						:variant="state.variant"
-						:color="state.color"
-						:bg-color="state.bgColor"
-						:size="state.size"
-						:rounded="state.rounded"
-						:border="state.border"
-						:font-family="state.fontFamily"
-						:font-size="state.fontSize"
-						:font-weight="state.fontWeight"
-						:combination="['⌘', 'S']"
-				/>
+				<figure style="margin: 0 0 12px;">
+					<figcaption style="font-size: 11px; opacity: 0.65; margin-block-end: 6px;">Resolved preset (variant only)</figcaption>
+					<origam-kbd
+							:variant="state.variant"
+							:color="state.color"
+							:bg-color="state.bgColor"
+							:size="state.size"
+							:rounded="state.rounded"
+							:border="state.border"
+							:font-family="state.fontFamily"
+							:font-size="state.fontSize"
+							:font-weight="state.fontWeight"
+							:combination="['⌘', 'S']"
+					/>
+				</figure>
+				<figure style="margin: 0;">
+					<figcaption style="font-size: 11px; opacity: 0.65; margin-block-end: 6px;">Same variant, bg-color="primary" explicitly set — the explicit prop wins (ADR-005)</figcaption>
+					<origam-kbd
+							:variant="state.variant"
+							bg-color="primary"
+							:size="state.size"
+							:rounded="state.rounded"
+							:combination="['⌘', 'S']"
+					/>
+				</figure>
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Variant">

@@ -3,15 +3,26 @@ import { expect, test } from '@playwright/test'
 /**
  * OrigamKbd runtime probes — pattern canonique btn.spec.ts
  *
+ * ADR-005 (`docs/internal/adr-005-variant-as-props-preset.md`) pilot: `variant`
+ * is now a props PRESET (`KBD_VARIANT_PRESETS`, resolved via `useDefaults`),
+ * not a CSS layer — the DS ships zero `--variant-*` SCSS rule.
+ *
  * Variants dans OrigamKbd.story.vue (grep -nE '<Variant' …) :
- *   0 → Design      init: { variant: 'outlined', combination: ['⌘', 'S'] }
- *   1 → Functional  init: { text: '⌘', separator: '+' }
+ *   0 → Design      init: { variant: 'outlined' } — renders TWO
+ *                    <origam-kbd variant="outlined" combination=['⌘','S']>
+ *                    side by side: #1 the resolved preset as-is, #2 the
+ *                    SAME variant with `bg-color="primary"` forced — proves
+ *                    the explicit prop beats the preset (ADR-005 Q2).
+ *   1 → Functional  init: { text: '⌘', separator: '+' }  (variant unset →
+ *                    component's own `withDefaults` default 'outlined')
  *   2 → Slots - Default  (slot avec <origam-icon>)
  *   3 → Default     init: { text: '⌘', variant: 'outlined', separator: '+' }
  *
  * Structure du composant :
- *   <kbd class="origam-kbd origam-kbd--variant-{v} …">
- *     <!-- combination → -->
+ *   <kbd class="origam-kbd origam-kbd--variant-{v} …">   ← class survives,
+ *                                                           carries NO style
+ *     <!-- combination → resolved surface (bg/border/elevation) applied
+ *          directly to EACH nested key, suppressed on the root -->
  *     <kbd class="origam-kbd__key">…</kbd>
  *     <span class="origam-kbd__separator" aria-hidden="true">…</span>
  *     <!-- text → texte direct -->
@@ -211,6 +222,100 @@ test.describe('OrigamKbd', () => {
             await expect(kbd).toBeVisible({ timeout: 12000 })
             const borderWidth = await kbd.evaluate(el => parseFloat(getComputedStyle(el).borderTopWidth))
             expect(borderWidth).toBeGreaterThan(0)
+        })
+    })
+
+    // ------------------------------------------------------------------ //
+    // ADR-005 — variant = props preset, not a CSS layer (index 0)          //
+    //                                                                      //
+    // Design variant renders TWO <origam-kbd variant="outlined"> side by   //
+    // side (see OrigamKbd.story.vue): #1 the resolved preset as-is, #2 the //
+    // SAME variant with `bg-color="primary"` set explicitly. Per ADR-005   //
+    // Q2, the explicit prop must win — this is the model's headline test,  //
+    // and it requires NO Histoire control interaction (both examples are   //
+    // static markup in the story), which is why it is exercised here      //
+    // rather than by driving the HstSelect variant picker.                //
+    // ------------------------------------------------------------------ //
+
+    test.describe('ADR-005 — variant preset tier', () => {
+        test('an explicit bg-color beats the resolved variant preset', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            // Both demo figures render `:combination="['⌘', 'S']"` — the ROOT
+            // `.origam-kbd` is always transparent by design (surface moves to
+            // `__key`, see `surfaceStyles` in OrigamKbd.vue), so the paint
+            // must be read off the KEY, not the root.
+            const keys = sandbox.locator('.origam-kbd__key')
+            await expect(keys.first()).toBeVisible({ timeout: 12000 })
+
+            const presetBg = await keys.nth(0).evaluate(el => getComputedStyle(el).backgroundColor)
+            const overriddenBg = await keys.nth(2).evaluate(el => getComputedStyle(el).backgroundColor)
+
+            // The override paints a DIFFERENT color than the bare preset —
+            // proves `bgColor="primary"` was not swallowed by `variant`.
+            expect(overriddenBg).not.toBe(presetBg)
+            expect(overriddenBg).not.toBe('rgba(0, 0, 0, 0)')
+        })
+
+        test('the DS ships zero CSS rule targeting .origam-kbd--variant-* (D3)', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const kbd = sandbox.locator('.origam-kbd').first()
+            await expect(kbd).toBeVisible({ timeout: 12000 })
+
+            // Scan every loaded stylesheet reachable from the sandbox frame
+            // for a selector mentioning `.origam-kbd--variant-` SPECIFICALLY
+            // (scoped to Kbd — other, not-yet-migrated DS components such as
+            // Btn still ship their OWN `--variant-*` rules on purpose, and
+            // the sandbox iframe loads every component's CSS globally, so an
+            // unscoped substring match would false-positive on THEIR rules).
+            // None should exist for Kbd — the class is a pure override hook
+            // (D3), styling now comes exclusively from resolved props
+            // (inline style / utility class).
+            const hasVariantRule = await sandbox.locator('html').evaluate(() => {
+                let found = false
+                for (const sheet of Array.from(document.styleSheets)) {
+                    let rules: CSSRuleList
+                    try {
+                        rules = sheet.cssRules
+                    } catch {
+                        continue
+                    }
+                    for (const rule of Array.from(rules)) {
+                        if ('selectorText' in rule && typeof (rule as CSSStyleRule).selectorText === 'string'
+                            && (rule as CSSStyleRule).selectorText.includes('.origam-kbd--variant-')) {
+                            found = true
+                        }
+                    }
+                }
+                return found
+            })
+            expect(hasVariantRule).toBe(false)
+        })
+
+        test('combination root has no surface (transparent bg) while each key does', async ({ page }) => {
+            // Regression guard for the props-preset migration: the old SCSS
+            // relied on a CSS custom-property cascade (root class → var →
+            // inherited by nested __key) to paint each key while hiding the
+            // ROOT's own background. Props/inline-styles do NOT cascade —
+            // OrigamKbd.vue now applies the resolved surface directly to
+            // each __key and suppresses it on the root. This test catches a
+            // regression where the whole combination group would get a
+            // background box drawn around it.
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const kbd = sandbox.locator('.origam-kbd').first()
+            await expect(kbd).toBeVisible({ timeout: 12000 })
+
+            const rootBg = await kbd.evaluate(el => getComputedStyle(el).backgroundColor)
+            expect(rootBg).toBe('rgba(0, 0, 0, 0)')
+
+            const keys = kbd.locator('.origam-kbd__key')
+            await expect(keys).toHaveCount(2)
+            for (const idx of [0, 1]) {
+                const keyBg = await keys.nth(idx).evaluate(el => getComputedStyle(el).backgroundColor)
+                expect(keyBg).not.toBe('rgba(0, 0, 0, 0)')
+            }
         })
     })
 })

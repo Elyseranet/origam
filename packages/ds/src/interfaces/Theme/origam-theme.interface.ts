@@ -119,4 +119,31 @@ export interface IOrigamTheme {
      * }
      */
     components?: IDefault
+
+    /**
+     * Per-VARIANT prop overrides (ADR-005 D1/D4) — a SIBLING of `components`,
+     * not a nested key inside it (`components` is typed `IDefault`, a flat
+     * component → prop map; nesting a variant level inside it would make
+     * `{ 'origam-btn': { outlined: … } }` ambiguous with a prop literally
+     * named `outlined`).
+     *
+     * Keyed by component instance name, then by the variant VALUE that
+     * component's `variant` prop can take, then the partial prop bag to
+     * apply for that value. Merged over the DS-shipped preset table
+     * (`consts/{Component}/{component}-variant.const.ts`) at
+     * `createOrigam()` time via the same `mergeDeep` `components` already
+     * uses — a theme can redefine an existing DS variant or add an
+     * entirely new named one, with no extra machinery.
+     *
+     * @example
+     * // Every `outlined` button gets a 3px hard border under this theme,
+     * // while every other variant (and every prop the consumer sets
+     * // explicitly) is untouched — the variant preset is the WEAKEST
+     * // resolution tier (ADR-005 Q2): a call-site prop or another
+     * // `components` default still wins over this.
+     * variants: {
+     *   'origam-btn': { outlined: { border: 3, borderStyle: 'solid', rounded: 'lg' } }
+     * }
+     */
+    variants?: Record<string, Record<string, Record<string, unknown>>>
 }

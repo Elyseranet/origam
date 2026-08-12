@@ -91,3 +91,4 @@ export * from './Clipboard/clipboard.const'
 
 export * from './CssSupport/css-support.const'
 export * from './Commons/elevation.const'
+export * from './Kbd/kbd-variant.const'
