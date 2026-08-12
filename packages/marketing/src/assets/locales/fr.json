@@ -949,7 +949,23 @@
             "preview_dark": "dark.json",
             "preview_brand_a": "brand-a.json",
             "preview_brand_b": "brand-b.json",
-            "preview_button": "Bouton"
+            "preview_button": "Bouton",
+            "actions_label": "Essayer le générateur de thème",
+            "cta_builder": "Essayer le générateur de thème"
+        },
+        "figma": {
+            "eyebrow": "OUTILS DESIGN",
+            "title_line1": "Concevez dans Figma.",
+            "title_line2": "Livrez les mêmes tokens.",
+            "subtitle": "Origam DS Sync est un plugin Figma gratuit qui transforme vos design tokens en vrais composants Figma, et exporte les Variables Figma dans un format qu'origam comprend déjà.",
+            "highlight_generate_title": "Générer des composants",
+            "highlight_generate_description": "14 ComponentSets prêts à l'emploi, liés à vos design tokens, générés directement dans votre fichier Figma.",
+            "highlight_export_title": "Exporter les tokens",
+            "highlight_export_description": "Les Variables Figma s'exportent en JSON Tokens Studio ou en SCSS origam — prêtes à intégrer dans le dépôt.",
+            "mapping_label": "token.json ⇄ Variable Figma",
+            "actions_label": "Obtenir le plugin Figma",
+            "cta_explore": "Découvrir le plugin",
+            "cta_download": "Télécharger le plugin"
         },
         "cta": {
             "title": "Prêt à livrer plus vite ?",
