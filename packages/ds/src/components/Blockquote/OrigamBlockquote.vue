@@ -55,6 +55,7 @@
 
 	import {
 		useBorder,
+		useDefaults,
 		useElevation,
 		useMargin,
 		usePadding,
@@ -62,6 +63,7 @@
 		useTypography
 	} from '../../composables'
 
+	import { BLOCKQUOTE_VARIANT_PRESETS } from '../../consts'
 	import { QUOTE_MARKS_BY_LANG } from '../../consts/Blockquote/blockquote.const'
 
 	import type { IBlockquoteProps } from '../../interfaces'
@@ -77,14 +79,25 @@
 	 * Props + defaults for `<OrigamBlockquote>`. The component renders a
 	 * native `<blockquote>` (overridable via `tag`) with an optional
 	 * attribution `<footer>` and variant-driven decoration (accent bar,
-	 * decorative quote marks, pull-quote rules). All visual decisions
-	 * are token-driven — the SCSS only branches on the variant class.
+	 * decorative quote marks, pull-quote rules). Per ADR-005, `variant` is
+	 * a PROPS PRESET (a named `Partial<IBlockquoteProps>`), not a CSS
+	 * layer: the SCSS ships zero rule matching `--variant-*` (D3) — every
+	 * visual decision below is token/prop-driven.
 	 ********************************************************/
-	const props = withDefaults(defineProps<IBlockquoteProps>(), {
+	const _props = withDefaults(defineProps<IBlockquoteProps>(), {
 		tag: 'blockquote',
 		variant: 'default',
 		lang: 'auto'
 	})
+
+	// ADR-005 — `useDefaults` resolves EVERY prop (not just the ones a preset
+	// touches) through the same chain a theme default already goes through:
+	// call-site prop > theme default > variant preset > this component's own
+	// `withDefaults()` value. Every read below MUST go through this resolved
+	// `props`, never `_props` — the preset tier is a pure extension of
+	// `useDefaults`, not a parallel mechanism (see the module doc in
+	// `defaults.composable.ts`).
+	const props = useDefaults(_props, 'origam-blockquote', BLOCKQUOTE_VARIANT_PRESETS)
 
 	const slots = useSlots()
 
@@ -217,6 +230,17 @@
 
 	/*********************************************************
 	 * Class & Style
+	 *
+	 * @description
+	 * ADR-005 — `origam-blockquote--variant-{value}` survives as a pure
+	 * override hook for consumer CSS (D3); the DS ships zero rule matching
+	 * it. The one visual need that genuinely can't move into the props
+	 * preset — the `quoted` glyph's `z-index` stacking, which targets
+	 * NESTED BEM children the preset mechanism has no reach into — is kept
+	 * as component CSS keyed off `origam-blockquote--has-quote-mark`
+	 * instead: a STRUCTURAL class driven by `showQuoteMark`, decoupled
+	 * from the variant class so it doesn't trip the CI guard banning DS
+	 * rules on `--variant-*` selectors.
 	 ********************************************************/
 	const blockquoteClasses = computed(() => {
 		return [
@@ -226,7 +250,8 @@
 			{
 				[`origam-blockquote--color-${props.color}`]: colorIsIntent.value,
 				[`origam-blockquote--accent-${resolvedAccentColor.value}`]: accentIsIntent.value,
-				'origam-blockquote--has-attribution': hasAttribution.value
+				'origam-blockquote--has-attribution': hasAttribution.value,
+				'origam-blockquote--has-quote-mark': showQuoteMark.value
 			},
 			roundedClasses.value,
 			elevationClasses.value,
@@ -343,24 +368,24 @@
 		text-align: right;
 	}
 
-	.origam-blockquote--variant-default {
-		border-inline-start: var(--origam-blockquote__accent---width, 4px) solid var(--origam-blockquote---resolved-accent-color);
-		padding-inline-start: calc(var(--origam-blockquote---resolved-padding-inline) + var(--origam-blockquote__accent---width, 4px));
-	}
-
-	.origam-blockquote--variant-elegant {
-		font-family: var(--origam-blockquote__elegant---font-family, Georgia, 'Times New Roman', serif);
-		font-size: var(--origam-blockquote__elegant---font-size, 1.125rem);
-		font-style: var(--origam-blockquote__elegant---font-style, italic);
-		line-height: var(--origam-blockquote__elegant---line-height, 2);
-		padding-block: var(--origam-blockquote__elegant---padding-block, 24px);
-		border-inline-start: var(--origam-blockquote__accent---width, 4px) solid var(--origam-blockquote---resolved-accent-color);
-		padding-inline-start: calc(var(--origam-blockquote---resolved-padding-inline) + var(--origam-blockquote__accent---width, 4px));
-	}
-
-	.origam-blockquote--variant-quoted {
-		padding-top: calc(var(--origam-blockquote---resolved-padding-block) + var(--origam-blockquote--quoted---glyph-padding-extra, 1rem));
-
+	// ADR-005 — `variant` is a props preset (`BLOCKQUOTE_VARIANT_PRESETS`,
+	// resolved via `useDefaults`), not a CSS layer. The `origam-blockquote
+	// --variant-*` class is still emitted (an override hook for consumer
+	// CSS) but the DS ships ZERO rule matching it — the five `&--variant-*`
+	// blocks that used to live here (accent border, padding, typography)
+	// are gone; the component now resolves them to props (`border`,
+	// `borderColor`, `padding`, `fontFamily`/`fontSize`/`fontStyle`/
+	// `fontWeight`/`lineHeight`) applied via the standard cross-cutting
+	// composables (see `<script>`).
+	//
+	// The ONE thing that could not move into the preset — `quoted`'s
+	// z-index stacking, which targets NESTED BEM children (`__body`,
+	// `__attribution`) rather than the root the preset configures — stays
+	// as component CSS, but keyed off the STRUCTURAL
+	// `--has-quote-mark` class (driven by `showQuoteMark`, independent of
+	// the variant class) so it doesn't trip the CI guard banning DS rules
+	// on `--variant-*` selectors.
+	.origam-blockquote--has-quote-mark {
 		.origam-blockquote__body {
 			position: relative;
 			z-index: 1;
@@ -370,26 +395,6 @@
 			position: relative;
 			z-index: 1;
 		}
-	}
-
-	.origam-blockquote--variant-minimal {
-		font-size: var(--origam-blockquote__minimal---font-size, 0.875rem);
-		font-style: var(--origam-blockquote__minimal---font-style, italic);
-		padding-inline: var(--origam-blockquote__minimal---padding-inline, 12px);
-		padding-block: 0;
-		border-inline-start: var(--origam-blockquote--minimal---accent-width, 2px) solid var(--origam-blockquote---resolved-accent-color);
-		padding-inline-start: calc(var(--origam-blockquote__minimal---padding-inline, 12px) + var(--origam-blockquote--minimal---accent-width, 2px));
-	}
-
-	.origam-blockquote--variant-pull {
-		font-family: var(--origam-blockquote__pull---font-family, Georgia, 'Times New Roman', serif);
-		font-size: var(--origam-blockquote__pull---font-size, 1.5rem);
-		font-weight: var(--origam-blockquote__pull---font-weight, 500);
-		line-height: var(--origam-blockquote__pull---line-height, 1.375);
-		padding-block: var(--origam-blockquote__pull---padding-block, 24px);
-		padding-inline: var(--origam-blockquote---resolved-padding-inline);
-		border-block-start: var(--origam-blockquote__pull---rule-width, 2px) solid var(--origam-blockquote---resolved-accent-color);
-		border-block-end: var(--origam-blockquote__pull---rule-width, 2px) solid var(--origam-blockquote---resolved-accent-color);
 	}
 
 	.origam-blockquote--accent-primary {

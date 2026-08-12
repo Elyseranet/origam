@@ -3,13 +3,27 @@ import { expect, test } from '@playwright/test'
 /**
  * OrigamBlockquote — runtime probes.
  *
- * Variants (0-based index matching <Variant> order in the story file):
+ * Variants (0-based index matching <Variant> order in the story file).
+ * ADR-005 ticket #25 — variant is now a props preset (`useDefaults`), not a
+ * CSS layer. New Variants are NEVER inserted mid-list (it silently shifts
+ * every index below and breaks this file) — none were needed here: the
+ * preset-tier demo lives INSIDE the existing Design Variant (index 0, see
+ * OrigamBlockquote.story.vue), mirroring the Kbd pilot's own pattern
+ * (kbd.spec.ts). Indices below are unchanged from pre-#25.
+ *
  *   0 → Design      (init: variant='default', bgColor='primary', lang='auto', align='left')
+ *                    renders TWO <origam-blockquote> side by side: #1 the
+ *                    resolved preset as-is (same props as before #25 — every
+ *                    pre-existing assertion below targets THIS one via
+ *                    `.first()`), #2 the SAME variant with an explicit
+ *                    `border="0px 16px 0px 0px"` — the ADR-005 Q2 override
+ *                    demo (see the "ADR-005 — variant preset tier" block).
  *   1 → Functional  (init: tag='blockquote', author='Linus Torvalds', source='LKML, 2003',
  *                          cite='https://lkml.org/lkml/2003/8/26/142', variant='default',
  *                          color='primary')
  *   2 → Slots - Default
- *   3 → Slots - Author
+ *   3 → Slots - Author   (static variant='elegant' — used below to assert the
+ *                          resolved `elegant` preset without driving HstSelect)
  *   4 → Slots - Source
  *   5 → Default     (playground)
  *
@@ -359,4 +373,103 @@ test.describe('OrigamBlockquote', () => {
     // story file with init-state variant='quoted' — then the spec can      //
     // navigate directly to it via variantUrl(N) without HstSelect control. //
     // ------------------------------------------------------------------ //
+
+    // ------------------------------------------------------------------ //
+    // ADR-005 ticket #25 — variant = props preset, not a CSS layer         //
+    //                                                                      //
+    // Design (index 0) renders TWO <origam-blockquote variant="default">   //
+    // side by side (see OrigamBlockquote.story.vue): #1 the resolved       //
+    // preset as-is, #2 the SAME variant with `border="0px 16px 0px 0px"`   //
+    // set explicitly. Per ADR-005 Q2 the explicit prop must win — this is  //
+    // the model's headline test, and it needs NO Histoire control          //
+    // interaction (both examples are static markup in the story), which   //
+    // is why it is exercised here rather than by driving the HstSelect     //
+    // variant picker (documented above as unreliable headless).            //
+    // ------------------------------------------------------------------ //
+
+    test.describe('ADR-005 — variant preset tier', () => {
+        test('an explicit border beats the resolved variant preset', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const blockquotes = sandbox.locator('.origam-blockquote')
+            await expect(blockquotes.first()).toBeVisible(VIS)
+
+            const presetWidth = await blockquotes.nth(0).evaluate(el =>
+                getComputedStyle(el).borderInlineStartWidth || getComputedStyle(el).borderLeftWidth)
+            const overriddenWidth = await blockquotes.nth(1).evaluate(el =>
+                getComputedStyle(el).borderInlineStartWidth || getComputedStyle(el).borderLeftWidth)
+
+            // The preset's own value (4px, asserted elsewhere in "Design").
+            expect(presetWidth).toBe('4px')
+            // The override (16px) wins — proves `border` was not swallowed
+            // by `variant`.
+            expect(overriddenWidth).toBe('16px')
+            expect(overriddenWidth).not.toBe(presetWidth)
+        })
+
+        test('bg-color=primary keeps painting the accent regardless of variant (accent axis is independent of the preset table)', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const host = sandbox.locator('.origam-blockquote').first()
+            await expect(host).toBeVisible(VIS)
+            await expect(host).toHaveClass(/origam-blockquote--accent-primary/)
+        })
+
+        test('the DS ships zero CSS rule targeting .origam-blockquote--variant-* (D3)', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const host = sandbox.locator('.origam-blockquote').first()
+            await expect(host).toBeVisible(VIS)
+
+            // Scan every loaded stylesheet reachable from the sandbox frame
+            // for a selector mentioning `.origam-blockquote--variant-`
+            // SPECIFICALLY (scoped to Blockquote — other, not-yet-migrated
+            // DS components such as Btn / Field / SliderField still ship
+            // their OWN `--variant-*` rules on purpose, and the sandbox
+            // iframe loads every component's CSS globally, so an unscoped
+            // substring match would false-positive on THEIR rules). None
+            // should exist for Blockquote — the class is a pure override
+            // hook (D3), styling now comes exclusively from resolved props
+            // (inline style / utility class).
+            const hasVariantRule = await sandbox.locator('html').evaluate(() => {
+                let found = false
+                for (const sheet of Array.from(document.styleSheets)) {
+                    let rules: CSSRuleList
+                    try {
+                        rules = sheet.cssRules
+                    } catch {
+                        continue
+                    }
+                    for (const rule of Array.from(rules)) {
+                        if ('selectorText' in rule && typeof (rule as CSSStyleRule).selectorText === 'string'
+                            && (rule as CSSStyleRule).selectorText.includes('.origam-blockquote--variant-')) {
+                            found = true
+                        }
+                    }
+                }
+                return found
+            })
+            expect(hasVariantRule).toBe(false)
+        })
+
+        test('variant=elegant resolves its typography preset (serif, italic) with no HstSelect interaction', async ({ page }) => {
+            // Index 3 ("Slots - Author") renders a STATIC variant="elegant"
+            // blockquote — reused here to assert the preset without driving
+            // the (documented-unreliable) HstSelect variant picker.
+            await page.goto(variantUrl(3))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const host = sandbox.locator('.origam-blockquote').first()
+            await expect(host).toBeVisible(VIS)
+
+            const fontStyle = await host.evaluate(el => getComputedStyle(el).fontStyle)
+            expect(fontStyle).toBe('italic')
+
+            const fontFamily = await host.evaluate(el => getComputedStyle(el).fontFamily)
+            expect(fontFamily.toLowerCase()).toContain('serif')
+
+            const width = await host.evaluate(el =>
+                getComputedStyle(el).borderInlineStartWidth || getComputedStyle(el).borderLeftWidth)
+            expect(width).toBe('4px')
+        })
+    })
 })
