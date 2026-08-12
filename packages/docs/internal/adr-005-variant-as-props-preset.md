@@ -1,6 +1,6 @@
 # ADR-005 — `variant` = preconfiguration of props, not a CSS layer
 
-- **Status**: Accepted in part (2026-08-11) — Q1, Q4 and Q5 arbitrated; Q2 and Q3 still open
+- **Status**: Accepted (2026-08-12) — all five open items arbitrated; D2 inverted by Q2
 
 - **Deciders**: user (arnaudprioul), architect
 - **Scope**: `packages/ds` (component API + `useVariant` + `useDefaults` +
@@ -196,6 +196,13 @@ resolve to, not their source.
 (ADR-004 D1). The theme *overrides* the table (D4); it does not constitute it.
 
 ### D2 — Resolution: **tier-bound expansion**
+
+> ⚠️ **SUPERSEDED by Q2 (2026-08-12).** The ordering proposed in this section —
+> where a preset written at the call site outranks a theme declaration — was
+> **rejected**. The preset is now the **weakest** tier: call site, then theme,
+> then preset. Read the arbitration section at the end of this document before
+> implementing anything from here. The reasoning below is kept because it
+> documents the alternative that was weighed, not the decision that was taken.
 
 The mechanism already exists. `useDefaults`
 (`packages/ds/src/composables/Commons/defaults.composable.ts`) resolves every
@@ -534,28 +541,57 @@ softer. There is currently **no VRT baseline in the repo** (one `toHaveScreensho
 call across 175 e2e specs, with no committed snapshot). Renaming a prop is
 caught by the type-checker; a variant that silently stops painting is not.
 
-## Still open
+## Maintainer's arbitration — round 2 (2026-08-12)
 
-These two are deliberately not decided here.
+**Q2 → INVERTED. The preset is the WEAKEST tier.**
+The proposal in D2 is rejected. The maintainer's reasoning, verbatim: a variant
+sets `bgColor` — `ghost` for `outlined`, say — but *« rien n'oblige
+l'utilisateur à garder le bgColor en ghost, il peut le transformer en primary »*.
+An explicitly declared value wins, whether it comes from the call site or from
+the theme. Resolution order becomes, strongest first:
 
-**Q2 — Preset (tier 1.5) vs. theme default (tier 2).**
-D2 lets a locally written `variant="outlined"` override an app-wide
-`bgColor: 'primary'` set by the theme. The alternative — theme defaults always
-win over presets — would make a brand-wide fill survive a local `outlined`.
-Both are defensible; the first is proposed because a variant chosen at the call
-site is the more specific intent. Confirm or invert.
+1. prop written at the call site
+2. theme default (`useDefaults`)
+3. **variant preset** ← lowest
+4. component `withDefaults` fallback
 
-**Q3 — May a preset set *state* props (`hover: {…}` / `active: {…}`)?**
-Several current variants style `:hover` / `--active`
-(`OrigamBtn.vue:730-753`). The machinery exists —
-`IStateEffectConfig` covers `color` / `bgColor` / `border` / `rounded` /
-`elevation` / `padding` / `margin` / `gap` — so `outlined`'s active fill
-converts cleanly. Two reservations: it roughly doubles preset size, and
-`useColorEffect` deliberately emits **no utility class while a state is
-engaged** (`CLAUDE.md` § *Classes-first*, rule 4), so state presets resolve to
-inline styles only. Confirm that a preset may reach into state props, or
-restrict presets to the resting state and keep state styling in the component's
-own CSS keyed off a behavioural class.
+This settles the original bug directly: a theme declaring both
+`variant: 'outlined'` and `bgColor: 'primary'` now paints, because the preset no
+longer outranks the declaration.
+
+**Consequence, accepted knowingly.** A variant can be visually dissolved by a
+theme-wide declaration — an `outlined` button under a theme that sets
+`bgColor: 'primary'` will not look outlined. That is the intended trade-off, and
+it follows from how the maintainer frames variants: *« pour dire vrai j'aimerais
+supprimer les variants, mais l'avantage qu'ils ont c'est de définir quelques
+design donc il faut garder »*. A variant is a **convenience default**, not an
+identity the DS defends. Anything the DS must guarantee belongs in a token or a
+prop, never in a preset.
+
+**Q3 → yes, presets carry state.**
+A preset may set `hover` / `active` props, *« c'est pour pouvoir définir tout le
+design »*. The reservations raised above stand and must be handled at
+implementation rather than used to refuse: presets roughly double in size, and
+`useColorEffect` emits no utility class while a state is engaged
+(`CLAUDE.md` § *Classes-first*, rule 4), so state presets resolve to inline
+styles. Since Q2 makes the preset the weakest tier, an inline style produced by
+a preset must **not** outrank a consumer declaration — verify this specific
+interaction on the pilot component, it is the sharpest edge of the two decisions
+combined.
+
+### Follow-up requested — consumer-authored variants
+
+Beyond this ADR's scope, and recorded so it is not lost: the maintainer wants
+consumers to be able to **create and name their own variants** from the theming
+layer — *« on pourrait même faire dans le theming, la possibilité de créer des
+variants par l'utilisateur, de les nommer »*.
+
+This is coherent with Q2 rather than an addition to it: once a variant is a
+plain, lowest-priority bag of props, "user-defined variant" needs no new
+machinery — it is an entry in the theme's `variants` map (D4). It does raise
+questions this ADR does not answer: name collisions with DS variants, typing of
+an open-ended set against `TVariant`, and how the Theme Builder would author
+one. Worth its own ADR once the pilot lands.
 
 ---
 
