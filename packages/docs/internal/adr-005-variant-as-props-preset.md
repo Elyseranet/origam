@@ -606,3 +606,41 @@ one. Worth its own ADR once the pilot lands.
   which is a family-B case and should be re-read against D5
 - `CLAUDE.md` § *Classes-first conventions*, § *Reuse existing interfaces*,
   § *Story + doc sync on every component change*
+
+---
+
+## Implementation directive — a preset IS theme configuration
+
+Added 2026-08-12, from the maintainer:
+
+> « Il faut voir ça comme une config par défaut comme avec le thème, c'est la
+> même logique. »
+
+This is not a nuance, it is the implementation rule, and it settles a question
+D1 left open. A variant preset must **not** get a bespoke resolution path. It is
+the same mechanism the theme already uses to declare default props per
+component (`IOrigamTheme.components` → `useDefaults` / `provideDefaults`),
+inserted one tier lower.
+
+Consequences that follow directly:
+
+- **Reuse `useDefaults`.** If the implementation ends up writing new merge logic
+  for presets, it has taken a wrong turn. The only thing being added is a
+  *lower-priority source* feeding the same resolution the theme already goes
+  through.
+- **Q2 stops being an arbitrary ordering** and becomes a property of the model:
+  theme config and preset are the same kind of thing, so the more specific
+  declaration wins, exactly as it already does between a theme default and a
+  call-site prop.
+- **Consumer-authored variants need no new machinery at all** — the follow-up
+  recorded above is not a feature to build so much as a surface to expose. A
+  user variant is a named entry in the theme, resolved by the code that already
+  resolves the theme.
+- **The preset table's location should be re-examined.** D1 puts it in
+  `consts/{Component}/`. That still holds for the DS-shipped defaults, but the
+  shape of the entry must be *identical* to what a theme may declare, or the two
+  paths diverge and the reuse above becomes impossible.
+
+If a variant needs anything the theme-defaults mechanism cannot express, that is
+the signal it belongs to family B (structural), not that the mechanism needs
+extending.
