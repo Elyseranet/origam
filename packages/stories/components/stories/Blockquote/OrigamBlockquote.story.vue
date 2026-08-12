@@ -15,29 +15,43 @@
 				})"
 		>
 			<template #default="{ state }">
-				<origam-blockquote
-						:variant="state.variant"
-						:color="state.color"
-						:accent-color="state.accentColor"
-						:rounded="state.rounded"
-						:elevation="state.elevation"
-						:border="state.border"
-						:border-color="state.borderColor"
-						:border-style="state.borderStyle"
-						:padding="state.padding"
-						:margin="state.margin"
-						:align="state.align"
-						:lang="state.lang"
-						:font-family="state.fontFamily"
-						:font-size="state.fontSize"
-						:font-weight="state.fontWeight"
-						:line-height="state.lineHeight"
-						author="Linus Torvalds"
-						source="LKML, 2003"
-						cite="https://lkml.org/lkml/2003/8/26/142"
-				>
-					Talk is cheap. Show me the code.
-				</origam-blockquote>
+				<figure style="margin: 0 0 16px;">
+					<figcaption style="font-size: 11px; opacity: 0.65; margin-block-end: 6px;">Resolved preset (all controls above apply — variant preset fills whatever is left unset)</figcaption>
+					<origam-blockquote
+							:variant="state.variant"
+							:color="state.color"
+							:accent-color="state.accentColor"
+							:rounded="state.rounded"
+							:elevation="state.elevation"
+							:border="state.border"
+							:border-color="state.borderColor"
+							:border-style="state.borderStyle"
+							:padding="state.padding"
+							:margin="state.margin"
+							:align="state.align"
+							:lang="state.lang"
+							:font-family="state.fontFamily"
+							:font-size="state.fontSize"
+							:font-style="state.fontStyle"
+							:font-weight="state.fontWeight"
+							:line-height="state.lineHeight"
+							author="Linus Torvalds"
+							source="LKML, 2003"
+							cite="https://lkml.org/lkml/2003/8/26/142"
+					>
+						Talk is cheap. Show me the code.
+					</origam-blockquote>
+				</figure>
+				<figure style="margin: 0;">
+					<figcaption style="font-size: 11px; opacity: 0.65; margin-block-end: 6px;">Same variant, border="0px 16px 0px 0px" explicitly set — the explicit prop WINS over the preset's own border value (ADR-005 Q2: preset is the weakest tier). The preset still supplies whatever this override doesn't touch (padding, borderColor).</figcaption>
+					<origam-blockquote
+							:variant="state.variant"
+							border="0px 16px 0px 0px"
+							:align="state.align"
+					>
+						Talk is cheap. Show me the code.
+					</origam-blockquote>
+				</figure>
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Variant">
@@ -52,6 +66,7 @@
 				<StoryGroup title="Typography">
 					<HstSelect v-model="state.fontFamily" title="Font Family" :options="FONT_FAMILY_OPTIONS"/>
 					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontStyle"  title="Font Style"  :options="FONT_STYLE_OPTIONS"/>
 					<HstSelect v-model="state.fontWeight" title="Font Weight" :options="FONT_WEIGHT_OPTIONS"/>
 					<HstSelect v-model="state.lineHeight" title="Line Height" :options="LINE_HEIGHT_OPTIONS"/>
 				</StoryGroup>
@@ -182,6 +197,7 @@
 				<StoryGroup title="Typography">
 					<HstSelect v-model="state.fontFamily" title="Font Family" :options="FONT_FAMILY_OPTIONS"/>
 					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontStyle"  title="Font Style"  :options="FONT_STYLE_OPTIONS"/>
 					<HstSelect v-model="state.fontWeight" title="Font Weight" :options="FONT_WEIGHT_OPTIONS"/>
 					<HstSelect v-model="state.lineHeight" title="Line Height" :options="LINE_HEIGHT_OPTIONS"/>
 				</StoryGroup>
@@ -213,6 +229,7 @@
 		ELEVATION_OPTIONS,
 		FONT_FAMILY_OPTIONS,
 		FONT_SIZE_OPTIONS,
+		FONT_STYLE_OPTIONS,
 		FONT_WEIGHT_OPTIONS,
 		INTENT_OPTIONS,
 		LINE_HEIGHT_OPTIONS,

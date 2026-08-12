@@ -25,6 +25,7 @@ export { borderList as BORDER_OPTIONS, borderStyleList as BORDER_STYLE_OPTIONS }
 export {
     fontFamilyList as FONT_FAMILY_OPTIONS,
     fontSizeList as FONT_SIZE_OPTIONS,
+    fontStyleList as FONT_STYLE_OPTIONS,
     fontWeightList as FONT_WEIGHT_OPTIONS,
     lineHeightList as LINE_HEIGHT_OPTIONS,
     letterSpacingList as LETTER_SPACING_OPTIONS

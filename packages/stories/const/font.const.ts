@@ -1,5 +1,5 @@
 import type { IOptions } from '@origam/interfaces'
-import type { TFontFamily, TFontSize, TFontWeight, TLetterSpacing, TLineHeight } from '@origam/types'
+import type { TFontFamily, TFontSize, TFontStyle, TFontWeight, TLetterSpacing, TLineHeight } from '@origam/types'
 
 export const fontFamilyList: Array<IOptions<TFontFamily>> = [
     { label: '(none)', value: undefined },
@@ -19,6 +19,13 @@ export const fontSizeList: Array<IOptions<TFontSize>> = [
     { label: '3xl (1.5rem)', value: '3xl' },
     { label: '4xl (1.875rem)', value: '4xl' },
     { label: '5xl (2.25rem)', value: '5xl' }
+]
+
+export const fontStyleList: Array<IOptions<TFontStyle>> = [
+    { label: '(none)', value: undefined },
+    { label: 'Normal', value: 'normal' },
+    { label: 'Italic', value: 'italic' },
+    { label: 'Oblique', value: 'oblique' }
 ]
 
 export const fontWeightList: Array<IOptions<TFontWeight>> = [

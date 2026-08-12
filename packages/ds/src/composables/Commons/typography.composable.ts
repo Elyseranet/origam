@@ -152,6 +152,14 @@ export function useTypography (props: ITypographyProps, varPrefix: string) {
             }
         }
 
+        // `fontStyle` is NOT in TYPOGRAPHY_TOKEN_MAP — it has no primitive
+        // token ramp (`italic` / `normal` / `oblique` IS the value space,
+        // see the interface JSDoc), so it is written as a literal keyword
+        // instead of a `var(--origam-{tokenGroup}---{value})` indirection.
+        if (props.fontStyle) {
+            styles[`--origam-${varPrefix}---font-style`] = props.fontStyle
+        }
+
         return Object.keys(styles).length ? styles : null
     })
 

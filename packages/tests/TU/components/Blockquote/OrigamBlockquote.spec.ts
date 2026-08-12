@@ -56,6 +56,24 @@ describe('OrigamBlockquote — fontSize prop', () => {
     })
 })
 
+describe('OrigamBlockquote — fontStyle prop (added for ADR-005 ticket #25)', () => {
+    it('emits no font-style override when fontStyle is unset', () => {
+        expect(styleOf()).not.toContain('--origam-blockquote---font-style:')
+    })
+
+    it('fontStyle="italic" writes the literal keyword (no primitive-token indirection)', () => {
+        expect(styleOf({ fontStyle: 'italic' })).toContain('--origam-blockquote---font-style: italic')
+    })
+
+    it('fontStyle="normal" writes the literal keyword', () => {
+        expect(styleOf({ fontStyle: 'normal' })).toContain('--origam-blockquote---font-style: normal')
+    })
+
+    it('an explicit fontStyle beats the elegant preset (which presets italic)', () => {
+        expect(styleOf({ variant: 'elegant', fontStyle: 'normal' })).toContain('--origam-blockquote---font-style: normal')
+    })
+})
+
 describe('OrigamBlockquote — fontWeight prop', () => {
     it('emits no font-weight override when fontWeight is unset', () => {
         expect(styleOf()).not.toContain('--origam-blockquote---font-weight:')
