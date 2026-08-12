@@ -21,6 +21,7 @@
 						:bg-color="state.bgColor"
 						:elevation="state.elevation"
 						:flat="state.flat"
+						:backdrop-blur="state.backdropBlur"
 						:border="state.border"
 						:border-color="state.borderColor"
 						:border-style="state.borderStyle"
@@ -56,6 +57,9 @@
 					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
 					<HstSelect   v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
 					<HstCheckbox v-model="state.flat"      title="Flat"/>
+				</StoryGroup>
+				<StoryGroup title="Backdrop">
+					<HstSelect v-model="state.backdropBlur" title="Backdrop Blur" :options="BACKDROP_BLUR_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Border">
 					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
@@ -314,6 +318,23 @@
 			/>
 		</Variant>
 
+		<Variant title="Prop — backdropBlur">
+			<div style="position: relative; padding: 32px; background: linear-gradient(135deg, #f43f5e, #6366f1); display: flex; gap: 16px; flex-wrap: wrap;">
+				<origam-card
+						backdrop-blur="md"
+						title="Rung: md"
+						text="backdropBlur=&quot;md&quot; resolves the origam__backdrop-blur---md token (blur(8px)) — utility class + inline-style companion."
+						style="width: 240px;"
+				/>
+				<origam-card
+						backdrop-blur="blur(12px) saturate(1.4)"
+						title="Custom filter"
+						text="A free-form backdrop-filter value is emitted verbatim, same escape hatch as elevation/rounded."
+						style="width: 240px;"
+				/>
+			</div>
+		</Variant>
+
 		<Variant title="Prop — border per-side">
 			<origam-card
 					:border-top="4"
@@ -358,13 +379,14 @@
 					<HstSelect v-model="state.appendIcon"    title="Append Icon"    :options="ICON_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Design">
-					<HstSelect   v-model="state.color"     title="Color"     :options="COLOR_OPTIONS"/>
-					<HstSelect   v-model="state.bgColor"   title="Bg Color"  :options="COLOR_OPTIONS"/>
-					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
-					<HstSelect   v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
-					<HstSelect   v-model="state.density"   title="Density"   :options="DENSITY_OPTIONS"/>
-					<HstSelect   v-model="state.border"    title="Border"    :options="BORDER_OPTIONS"/>
-					<HstCheckbox v-model="state.flat"      title="Flat"/>
+					<HstSelect   v-model="state.color"        title="Color"         :options="COLOR_OPTIONS"/>
+					<HstSelect   v-model="state.bgColor"      title="Bg Color"      :options="COLOR_OPTIONS"/>
+					<HstSelect   v-model="state.rounded"      title="Rounded"       :options="ROUNDED_OPTIONS"/>
+					<HstSelect   v-model="state.elevation"    title="Elevation"     :options="ELEVATION_OPTIONS"/>
+					<HstSelect   v-model="state.density"      title="Density"       :options="DENSITY_OPTIONS"/>
+					<HstSelect   v-model="state.border"       title="Border"        :options="BORDER_OPTIONS"/>
+					<HstSelect   v-model="state.backdropBlur" title="Backdrop Blur" :options="BACKDROP_BLUR_OPTIONS"/>
+					<HstCheckbox v-model="state.flat"         title="Flat"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.disabled" title="Disabled"/>
@@ -393,6 +415,7 @@
 	import {
 		ACTIVE_OPTIONS,
 		resolveActiveState,
+		BACKDROP_BLUR_OPTIONS,
 		BORDER_OPTIONS,
 		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,

@@ -257,6 +257,26 @@ const UTILITY_GROUPS = [
         ]
     },
     {
+        title: 'Backdrop blur',
+        property: 'backdrop-filter',
+        prefix: 'backdrop',
+        // `backdrop-filter` still needs the `-webkit-` alias for Safari
+        // (every one of the DS's 16 hand-authored call sites pairs the two
+        // declarations — see `packages/docs/internal/adr-005-…`, D6). The
+        // primitive tokens already hold the ready-made `blur(Npx)` function
+        // call (`tokens/primitive.json` → `backdrop.blur.*`, `$type: "other"`),
+        // so both declarations reference the SAME var — no duplicated value.
+        webkitAlias: true,
+        items: [
+            { suffix: 'none', token: 'origam-backdrop__blur---none' },
+            { suffix: 'xs',   token: 'origam-backdrop__blur---xs' },
+            { suffix: 'sm',   token: 'origam-backdrop__blur---sm' },
+            { suffix: 'md',   token: 'origam-backdrop__blur---md' },
+            { suffix: 'lg',   token: 'origam-backdrop__blur---lg' },
+            { suffix: 'xl',   token: 'origam-backdrop__blur---xl' }
+        ]
+    },
+    {
         title: 'Border radius',
         property: 'border-radius',
         prefix: 'rounded',
@@ -378,6 +398,15 @@ StyleDictionary.registerFormat({
                     for (const decl of group.pairedDecls) {
                         declarations.push(`${decl.property}: ${decl.value};`)
                     }
+                }
+                // Vendor-prefixed twin referencing the SAME var — for
+                // properties (`backdrop-filter`) where Safari still needs
+                // the `-webkit-` form. Declared after the unprefixed rule
+                // so a browser understanding both applies the standard one
+                // last (source order tie-break; the two are value-identical
+                // so it never actually matters which "wins").
+                if (group.webkitAlias) {
+                    declarations.push(`-webkit-${group.property}: var(--${item.token});`)
                 }
                 lines.push(
                     `.origam--${group.prefix}-${item.suffix} { ${declarations.join(' ')} }`

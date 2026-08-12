@@ -1,6 +1,7 @@
 export * from './Media/format-time.util'
 
 export * from './Commons/anchor.util'
+export * from './Commons/backdrop.util'
 export * from './Commons/border.util'
 export * from './Commons/color.util'
 export * from './Commons/gradient.util'
