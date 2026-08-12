@@ -7,7 +7,7 @@
 			:style="rootStyles"
 			role="region"
 	>
-		<template v-if="variant === BRACKET_VARIANT.ROUND_ROBIN">
+		<template v-if="format === BRACKET_FORMAT.ROUND_ROBIN">
 			<div
 					class="origam-bracket__round-robin"
 					data-cy="origam-bracket-round-robin"
@@ -63,7 +63,7 @@
 			</div>
 		</template>
 
-		<template v-else-if="variant === BRACKET_VARIANT.DOUBLE_ELIMINATION">
+		<template v-else-if="format === BRACKET_FORMAT.DOUBLE_ELIMINATION">
 			<div
 					ref="doubleRef"
 					class="origam-bracket__double"
@@ -265,7 +265,7 @@
 		BRACKET_DEFAULT_ROUND_GAP
 	} from '../../consts'
 
-	import { BRACKET_VARIANT, DIRECTION } from '../../enums'
+	import { BRACKET_FORMAT, DIRECTION } from '../../enums'
 
 	import {
 		bracketDashArray,
@@ -291,7 +291,7 @@
 	 ********************************************************/
 	const props = withDefaults(defineProps<IBracketProps>(), {
 		tag: 'div',
-		variant: BRACKET_VARIANT.SINGLE_ELIMINATION,
+		format: BRACKET_FORMAT.SINGLE_ELIMINATION,
 		direction: DIRECTION.HORIZONTAL,
 		showRoundTitles: true,
 		showScores: true,
@@ -328,7 +328,7 @@
 	 * order within each group.
 	 ********************************************************/
 	const displayRounds = computed<IBracketRound[]>(() => {
-		if (props.variant !== BRACKET_VARIANT.DOUBLE_ELIMINATION) return props.rounds
+		if (props.format !== BRACKET_FORMAT.DOUBLE_ELIMINATION) return props.rounds
 
 		const winners = props.rounds.filter(r => r.side === 'winner' || r.side === undefined)
 		const losers = props.rounds.filter(r => r.side === 'loser')
@@ -499,7 +499,7 @@
 	const verticalRoundThickness = 120
 
 	const showConnectors = computed<boolean>(() => {
-		if (props.variant === BRACKET_VARIANT.ROUND_ROBIN) return false
+		if (props.format === BRACKET_FORMAT.ROUND_ROBIN) return false
 
 		return displayRounds.value.length > 1
 	})
@@ -690,13 +690,13 @@
 	}
 
 	const measureConnectors = (): void => {
-		if (props.variant === BRACKET_VARIANT.DOUBLE_ELIMINATION) {
+		if (props.format === BRACKET_FORMAT.DOUBLE_ELIMINATION) {
 			measureDoubleConnectors()
 
 			return
 		}
 
-		if (props.variant === BRACKET_VARIANT.ROUND_ROBIN) {
+		if (props.format === BRACKET_FORMAT.ROUND_ROBIN) {
 			connectorPaths.value = []
 
 			return
@@ -706,7 +706,7 @@
 	}
 
 	const connectorContainer = (): HTMLElement | null => {
-		return props.variant === BRACKET_VARIANT.DOUBLE_ELIMINATION ? doubleRef.value : treeRef.value
+		return props.format === BRACKET_FORMAT.DOUBLE_ELIMINATION ? doubleRef.value : treeRef.value
 	}
 
 	let connectorResizeObserver: ResizeObserver | null = null
@@ -735,7 +735,7 @@
 	})
 
 	watch(
-		() => props.variant,
+		() => props.format,
 		() => nextTick(() => {
 			attachConnectorObserver()
 			measureConnectors()
@@ -797,7 +797,7 @@
 	// intent (warning, success, …) white is unreadable. Since the surface
 	// resolves to a theme var we cannot WCAG-test it in JS — so we measure
 	// the painted match card at runtime and pick the better of black /
-	// white. Reactive: re-measured on mount, on bgColor / variant change.
+	// white. Reactive: re-measured on mount, on bgColor / format change.
 	const autoTextColor = ref<string | null>(null)
 
 	const measureContrast = (): void => {
@@ -888,7 +888,7 @@
 	}
 
 	watch(
-		[() => props.bgColor, () => props.variant, displayRounds],
+		[() => props.bgColor, () => props.format, displayRounds],
 		scheduleContrast,
 		{flush: 'post'}
 	)
@@ -930,7 +930,7 @@
 	const rootClasses = computed(() => {
 		return [
 			'origam-bracket',
-			`origam-bracket--variant-${props.variant}`,
+			`origam-bracket--format-${props.format}`,
 			`origam-bracket--direction-${props.direction}`,
 			`origam-bracket--density-${props.density ?? 'default'}`,
 			`origam-bracket--color-${props.color}`,

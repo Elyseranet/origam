@@ -5,7 +5,7 @@ import { expect, test, type Page } from '@playwright/test'
  * built directly from the atomic media sub-components (OrigamMediaPlayBtn,
  * OrigamMediaVolumeControl, OrigamMediaTimeLabel, OrigamMediaCastBtn,
  * OrigamMediaConfigMenu) and two OrigamSliderField scrubbers
- * (`variant="audio"` for the waveform, `variant="timer"` for the inline
+ * (`mode="audio"` for the waveform, `mode="timer"` for the inline
  * transport scrubber).
  *
  * Variants are reached via their dedicated titles — never via the
@@ -221,10 +221,19 @@ test.describe('OrigamAudio — Remote Playback availability gate (headless cavea
     })
 })
 
-test.describe('OrigamAudio — variant routing', () => {
-    test('expanded variant renders the waveform mini scrubber', async ({ page }) => {
-        // Story title: "Prop — variant (expanded)"
-        await openVariant(page, 'Prop — variant (expanded)')
+// PRE-EXISTING DRIFT (unrelated to ADR-005 / ticket #26): this describe
+// block navigates by Variant title ('Prop — layout (expanded/compact)',
+// 'Prop — coverPosition (right edge)') and `data-cy` hooks that do not
+// exist in the current OrigamAudio.story.vue (canonical Design /
+// Functional / Events / Slots / Default section layout — cf. CLAUDE.md
+// "Story + doc sync"). Identifiers were renamed for consistency with
+// `layout`, but this block was already failing against the current
+// story before this ticket and needs its own remediation — out of
+// scope for a prop rename.
+test.describe('OrigamAudio — layout routing', () => {
+    test('expanded layout renders the waveform mini scrubber', async ({ page }) => {
+        // Story title: "Prop — layout (expanded)"
+        await openVariant(page, 'Prop — layout (expanded)')
         const sandbox = sandboxOf(page)
 
         const host = sandbox.locator('[data-cy="audio-expanded-player"]').first()
@@ -233,10 +242,10 @@ test.describe('OrigamAudio — variant routing', () => {
         await expect(host.locator('[data-cy="origam-audio-waveform-slider"]')).toBeVisible()
     })
 
-    test.fixme(true, 'DS BUG: compact variant does NOT hide the waveform slider — OrigamAudio injects the OrigamSliderField unconditionally into the #waveform slot of OrigamMediaController regardless of isCompactVariant. In compact mode the slider switches to variant="timer" but stays in the DOM (data-cy="origam-audio-waveform-slider" toHaveCount(1), not 0). Fix: add v-if="!isCompactVariant" on the OrigamSliderField inside the #waveform slot in OrigamAudio.vue.')
-    test('compact variant hides the waveform mini scrubber', async ({ page }) => {
-        // Story title: "Prop — variant (compact)"
-        await openVariant(page, 'Prop — variant (compact)')
+    test.fixme(true, 'DS BUG: compact layout does NOT hide the waveform slider — OrigamAudio injects the OrigamSliderField unconditionally into the #waveform slot of OrigamMediaController regardless of isCompactLayout. In compact mode the slider switches to mode="timer" but stays in the DOM (data-cy="origam-audio-waveform-slider" toHaveCount(1), not 0). Fix: add v-if="!isCompactLayout" on the OrigamSliderField inside the #waveform slot in OrigamAudio.vue.')
+    test('compact layout hides the waveform mini scrubber', async ({ page }) => {
+        // Story title: "Prop — layout (compact)"
+        await openVariant(page, 'Prop — layout (compact)')
         const sandbox = sandboxOf(page)
 
         const host = sandbox.locator('[data-cy="audio-compact-player"]').first()

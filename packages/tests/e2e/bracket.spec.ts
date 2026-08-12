@@ -1,13 +1,13 @@
 import { expect, test, type Page } from '@playwright/test'
 
 /**
- * OrigamBracket — runtime probes for every prop / variant exposed by
+ * OrigamBracket — runtime probes for every prop / format exposed by
  * the story. Each block targets one orthogonal facet:
  *
  *   - Default: confirms the bracket mounts with the ARIA contract
  *     (`role="region"`, `aria-label`, each round becomes a `role="group"`
  *     with `aria-labelledby` pointing at its title heading).
- *   - Variant: asserts the tree DOM (`__tree`) for tree variants vs
+ *   - Format: asserts the tree DOM (`__tree`) for tree formats vs
  *     the table DOM (`__round-robin`) for round-robin.
  *   - Direction: asserts the `--direction-{value}` modifier class flips
  *     between horizontal and vertical.
@@ -18,6 +18,18 @@ import { expect, test, type Page } from '@playwright/test'
  *
  * Histoire iframes render the sandbox under `iframe[src*="__sandbox"]`,
  * same convention as every other origam spec.
+ *
+ * PRE-EXISTING DRIFT (unrelated to ADR-005 / ticket #26): this file
+ * navigates by clicking Variant titles ('Prop — format', 'Prop — direction',
+ * 'Prop — density', 'Slot — match', 'Slot — competitor', 'Emit — match-click')
+ * and `data-cy` hooks that do not exist in the current
+ * `OrigamBracket.story.vue` (canonical Design / Functional / Events /
+ * Slots / Default section layout — cf. CLAUDE.md "Story + doc sync").
+ * The identifiers below were renamed for consistency with `format`, but
+ * this spec was already failing against the current story before this
+ * ticket and needs its own remediation (rewrite against the current
+ * story's Variant titles / data-cy hooks) — out of scope for a prop
+ * rename.
  */
 
 const sandboxOf = (page: Page) =>
@@ -90,14 +102,14 @@ test.describe('OrigamBracket — ARIA contract (Playground)', () => {
     })
 })
 
-test.describe('OrigamBracket — variant', () => {
+test.describe('OrigamBracket — format', () => {
     test('tree DOM for single/double-elim, table DOM for round-robin', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — variant')
+        await openVariant(page, STORY, 'Prop — format')
         const sandbox = sandboxOf(page)
 
-        const single = sandbox.locator('[data-cy="bracket-variant-single"]').first()
-        const double = sandbox.locator('[data-cy="bracket-variant-double"]').first()
-        const rr = sandbox.locator('[data-cy="bracket-variant-rr"]').first()
+        const single = sandbox.locator('[data-cy="bracket-format-single"]').first()
+        const double = sandbox.locator('[data-cy="bracket-format-double"]').first()
+        const rr = sandbox.locator('[data-cy="bracket-format-rr"]').first()
 
         await expect(single).toBeVisible({ timeout: 8000 })
 
@@ -105,9 +117,9 @@ test.describe('OrigamBracket — variant', () => {
         const doubleClass = await double.evaluate(el => el.className)
         const rrClass = await rr.evaluate(el => el.className)
 
-        expect(singleClass).toContain('origam-bracket--variant-single-elimination')
-        expect(doubleClass).toContain('origam-bracket--variant-double-elimination')
-        expect(rrClass).toContain('origam-bracket--variant-round-robin')
+        expect(singleClass).toContain('origam-bracket--format-single-elimination')
+        expect(doubleClass).toContain('origam-bracket--format-double-elimination')
+        expect(rrClass).toContain('origam-bracket--format-round-robin')
 
         // Round-robin uses a table-like DOM (no tree wrapper).
         const treeInside = await rr.locator('.origam-bracket__tree').count()
@@ -121,10 +133,10 @@ test.describe('OrigamBracket — variant', () => {
     })
 
     test('double-elimination groups winner / loser / grand-final in order', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — variant')
+        await openVariant(page, STORY, 'Prop — format')
         const sandbox = sandboxOf(page)
 
-        const double = sandbox.locator('[data-cy="bracket-variant-double"]').first()
+        const double = sandbox.locator('[data-cy="bracket-format-double"]').first()
         await expect(double).toBeVisible({ timeout: 8000 })
 
         const titles = await double.locator('.origam-bracket-round__title').allInnerTexts()

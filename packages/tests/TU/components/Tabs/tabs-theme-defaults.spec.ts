@@ -1,10 +1,11 @@
 // Regression coverage for #279 — `<OrigamTabs>` (the PARENT, sole owner of
-// the `variant` prop) never called `useDefaults()`, so
-// `theme.components['origam-tabs']` (e.g. `variant: 'pills'`) was
-// completely inert — the resolved `props.variant` always fell straight
-// through to `withDefaults()`'s `'default'`, and the `slotDefaults`
-// forwarded to descendant `<OrigamTab>` never picked up the theme's pill
-// styling either (it reads straight off `props.variant`).
+// the `indicator` prop, renamed from `variant` — ADR-005, Q4) never called
+// `useDefaults()`, so `theme.components['origam-tabs']` (e.g.
+// `indicator: 'pills'`) was completely inert — the resolved
+// `props.indicator` always fell straight through to `withDefaults()`'s
+// `'default'`, and the `slotDefaults` forwarded to descendant `<OrigamTab>`
+// never picked up the theme's pill styling either (it reads straight off
+// `props.indicator`).
 
 import { afterEach, describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
@@ -21,7 +22,7 @@ const THEME: IOrigamTheme = {
     name: 'tabs-defaults-theme',
     mode: 'light',
     components: {
-        'origam-tabs': { variant: 'pills', fixed: true }
+        'origam-tabs': { indicator: 'pills', fixed: true }
     },
     vars: {}
 }
@@ -41,7 +42,7 @@ const mountThemedTabs = (props: Record<string, unknown> = {}) => {
 }
 
 describe('OrigamTabs — theme.components["origam-tabs"] resolution (#279)', () => {
-    it('applies the theme variant ("pills") to the root class', () => {
+    it('applies the theme indicator ("pills") to the root class', () => {
         const wrapper = mountThemedTabs()
         expect(wrapper.classes()).toContain('origam-tabs--pills')
         expect(wrapper.classes()).not.toContain('origam-tabs--default')
@@ -54,8 +55,8 @@ describe('OrigamTabs — theme.components["origam-tabs"] resolution (#279)', () 
         wrapper.unmount()
     })
 
-    it('an explicit variant prop on the consumer still wins over the theme default', () => {
-        const wrapper = mountThemedTabs({ variant: 'underline' })
+    it('an explicit indicator prop on the consumer still wins over the theme default', () => {
+        const wrapper = mountThemedTabs({ indicator: 'underline' })
         expect(wrapper.classes()).toContain('origam-tabs--underline')
         expect(wrapper.classes()).not.toContain('origam-tabs--pills')
         wrapper.unmount()

@@ -1,9 +1,13 @@
 /**
- * Visual variant of `<OrigamAudio>`.
+ * Chrome layout of `<OrigamAudio>`.
+ *
+ * Renamed from `AUDIO_VARIANT` (ADR-005, Q4) — the value swaps which
+ * chrome elements render (cover size, metadata header, waveform mini
+ * scrubber), not only how they're painted.
  *
  * - `EXPANDED` — full Stemtracks studio strip: 96 px album cover,
  *                title / artist / album metadata header, mini waveform
- *                scrubber (variant=audio SliderField) above the
+ *                scrubber (mode=audio SliderField) above the
  *                transport row. Use as the primary surface on a
  *                "Now playing" page or a podcast hero.
  * - `COMPACT`  — slim transport-only dock: 48 px cover, single inline
@@ -16,7 +20,7 @@
  * same runtime values as `EXPANDED` / `COMPACT` so the brief swap is
  * a pure additive change.
  */
-export enum AUDIO_VARIANT {
+export enum AUDIO_LAYOUT {
     EXPANDED = 'expanded',
     COMPACT = 'compact',
     /** @deprecated Use `EXPANDED` — same runtime value. */

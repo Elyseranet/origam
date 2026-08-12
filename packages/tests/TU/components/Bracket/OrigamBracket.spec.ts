@@ -2,7 +2,7 @@
 //
 // Strategy: we focus on the typography surface wired on the double-elimination
 // __de-label BEM child. The label is only rendered when:
-//   1. variant === BRACKET_VARIANT.DOUBLE_ELIMINATION
+//   1. format === BRACKET_FORMAT.DOUBLE_ELIMINATION
 //   2. the section has a non-empty `label` string (winnersLabel / losersLabel)
 //
 // ResizeObserver: vi.clearAllMocks() in the global vitest.setup.ts resets the
@@ -12,7 +12,7 @@ import { mount } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import OrigamBracket from '@origam/components/Bracket/OrigamBracket.vue'
-import { BRACKET_VARIANT } from '@origam/enums'
+import { BRACKET_FORMAT } from '@origam/enums'
 import type { IBracketRound } from '@origam/interfaces'
 import { createOrigam } from '@origam/origam'
 
@@ -68,7 +68,7 @@ const mountBracket = (props: Record<string, any> = {}) => {
     return mount(OrigamBracket, {
         props: {
             rounds: DOUBLE_ELIM_FIXTURE,
-            variant: BRACKET_VARIANT.DOUBLE_ELIMINATION,
+            format: BRACKET_FORMAT.DOUBLE_ELIMINATION,
             winnersLabel: 'Winners bracket',
             losersLabel: 'Losers bracket',
             ...props
@@ -135,7 +135,7 @@ describe('OrigamBracket — typography (double-elimination __de-label)', () => {
                         matches: [{ id: 'f1', competitorA: { id: 't1', name: 'T1' }, competitorB: null, status: 'pending' }]
                     }
                 ],
-                variant: BRACKET_VARIANT.SINGLE_ELIMINATION
+                format: BRACKET_FORMAT.SINGLE_ELIMINATION
             },
             attachTo: document.body,
             global: makeGlobal()

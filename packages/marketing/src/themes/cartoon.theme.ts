@@ -192,7 +192,7 @@ export const cartoonLightTheme: IOrigamTheme = {
         // Tabs : `border` n'existe PAS sur ITabsProps (vérifié — pas
         // IBorderProps). rounded seul est posé ici ; la bordure 3px passe par
         // `cssVars` (--origam-tabs---border-*, les tokens existent même sans prop).
-        'origam-tabs': { variant: 'pills', rounded: 'lg' },
+        'origam-tabs': { indicator: 'pills', rounded: 'lg' },
         'origam-bottom-nav': { rounded: 'lg', border: true, elevation: 2 },
         'origam-breadcrumb': { rounded: 'lg', border: true, elevation: 2 },
         // Pagination : `rounded` n'existe PAS sur IPaginationProps (vérifié —

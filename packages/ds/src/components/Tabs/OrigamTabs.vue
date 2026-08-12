@@ -37,7 +37,7 @@
 
 	import { ORIGAM_TABS_KEY } from '../../consts'
 
-	import { DENSITY, DIRECTION, TAB_VARIANT } from '../../enums'
+	import { DENSITY, DIRECTION, TAB_INDICATOR } from '../../enums'
 
 	import type { ITabsProps} from '../../interfaces'
 
@@ -50,7 +50,7 @@
 		tag: 'div',
 		direction: DIRECTION.HORIZONTAL,
 		density: DENSITY.DEFAULT,
-		variant: TAB_VARIANT.DEFAULT,
+		indicator: TAB_INDICATOR.DEFAULT,
 		mandatory: true,
 		fixed: false,
 		centered: false,
@@ -59,10 +59,10 @@
 
 	// `useDefaults` resolves each prop against the closest
 	// `<OrigamDefaultsProvider>` / theme `components['origam-tabs']` entry.
-	// OrigamTabs is the SOLE owner of `variant` — without this hook a
-	// theme's `'origam-tabs': { variant: 'pills' }` was completely inert,
+	// OrigamTabs is the SOLE owner of `indicator` — without this hook a
+	// theme's `'origam-tabs': { indicator: 'pills' }` was completely inert,
 	// and the `slotDefaults` forwarded to descendant `<OrigamTab>` (which
-	// reads straight off `props.variant`/`density`/`color`/`fixed`) never
+	// reads straight off `props.indicator`/`density`/`color`/`fixed`) never
 	// picked it up either (see #279).
 	const props = useDefaults(_props)
 
@@ -98,7 +98,7 @@
 		'origam-tab': {
 			density: props.density,
 			color: props.color,
-			variant: props.variant,
+			indicator: props.indicator,
 			fixed: props.fixed
 		}
 	}))
@@ -186,7 +186,7 @@
 	const tabsClasses = computed(() => {
 		return [
 			'origam-tabs',
-			`origam-tabs--${props.variant}`,
+			`origam-tabs--${props.indicator}`,
 			`origam-tabs--direction-${props.direction}`,
 			{
 				'origam-tabs--fixed': props.fixed,

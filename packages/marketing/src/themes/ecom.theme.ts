@@ -218,7 +218,7 @@ export const ecomLightTheme: IOrigamTheme = {
         // pré-existante que cartoon/glass/geek.theme.ts qui posent la même
         // prop) — à signaler en ticket DS (`OrigamTabs.vue` : ajouter
         // `useDefaults()`), PAS un bug propre à ce thème.
-        'origam-tabs': { variant: 'pills' },
+        'origam-tabs': { indicator: 'pills' },
         // Breadcrumb (Refs #36, mirrors apple.theme.ts #266 / editorial.theme.ts
         // #35's verified pattern) — `color` est la SEULE route thémable (pas
         // de cssVar dédiée sur BreadcrumbItem, vérifié — `--origam-breadcrumb-item

@@ -4,7 +4,7 @@
 	</template>
 
 	<div
-			v-else-if="variant === 'list-item'"
+			v-else-if="composition === 'list-item'"
 			:class="skeletonContainerClasses"
 			:style="skeletonContainerStyles"
 			aria-busy="true"
@@ -22,7 +22,7 @@
 	</div>
 
 	<div
-			v-else-if="variant === 'card'"
+			v-else-if="composition === 'card'"
 			:class="skeletonContainerClasses"
 			:style="skeletonContainerStyles"
 			aria-busy="true"
@@ -64,7 +64,7 @@
 	 ********************************************************/
 
 	const props = withDefaults(defineProps<ISkeletonProps>(), {
-		variant: 'rectangular',
+		shape: 'rectangular',
 		loading: true,
 		pulse: true
 	})
@@ -86,15 +86,15 @@
 
 	// ── Resolve width / height to CSS strings ──────────────────────────────
 	const resolvedWidth = computed(() => {
-		if (props.variant === 'text' && props.width == null) return '100%'
+		if (props.shape === 'text' && props.width == null) return '100%'
 		return props.width != null ? convertToUnit(props.width) : undefined
 	})
 
 	const resolvedHeight = computed(() => {
-		if (props.variant === 'text') {
+		if (props.shape === 'text') {
 			return props.height != null ? convertToUnit(props.height) : 'var(--origam-skeleton---text-height)'
 		}
-		if (props.variant === 'circular') {
+		if (props.shape === 'circular') {
 			// height mirrors width for circles
 			return props.width != null ? convertToUnit(props.width) : undefined
 		}
@@ -108,7 +108,7 @@
 		height: circularSize.value
 	}))
 
-	// ── Composite-variant container ────────────────────────────────────────
+	// ── Composite-composition container ─────────────────────────────────────
 	/*********************************************************
 	 * Class & Style
 	 ********************************************************/
@@ -130,7 +130,7 @@
 	])
 	const skeletonContainerClasses = computed(() => [
 		'origam-skeleton-wrapper',
-		`origam-skeleton-wrapper--${props.variant}`,
+		`origam-skeleton-wrapper--${props.composition}`,
 		props.class
 	])
 
@@ -139,7 +139,7 @@
 	// ── Single-block classes & styles ──────────────────────────────────────
 	const skeletonClasses = computed(() => [
 		'origam-skeleton',
-		`origam-skeleton--${props.variant}`,
+		`origam-skeleton--${props.shape}`,
 		{'origam-skeleton--pulse': props.pulse},
 		colorClasses.value,
 		roundedClasses.value,

@@ -7,7 +7,7 @@
 		<Variant
 				title="Design"
 				:init-state="() => useStoryInitState<Partial<IBracketProps>>({
-					variant: BRACKET_VARIANT.DOUBLE_ELIMINATION,
+					format: BRACKET_FORMAT.DOUBLE_ELIMINATION,
 					direction: DIRECTION.HORIZONTAL,
 					color: 'primary',
 					showRoundTitles: true,
@@ -17,10 +17,10 @@
 		>
 			<template #default="{ state }">
 				<origam-bracket
-						:rounds="roundsFor(state.variant)"
+						:rounds="roundsFor(state.format)"
 						:padding="state.padding"
 						:margin="state.margin"
-						:variant="state.variant"
+						:format="state.format"
 						:direction="state.direction"
 						:color="state.color"
 						:bg-color="state.bgColor"
@@ -47,8 +47,8 @@
 				/>
 			</template>
 			<template #controls="{ state }">
-				<StoryGroup title="Variant">
-					<HstSelect v-model="state.variant"   title="Variant"   :options="BRACKET_VARIANT_OPTIONS"/>
+				<StoryGroup title="Format">
+					<HstSelect v-model="state.format"   title="Format"   :options="BRACKET_FORMAT_OPTIONS"/>
 					<HstSelect v-model="state.direction" title="Direction" :options="BRACKET_DIRECTION_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Color">
@@ -224,7 +224,7 @@
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<Partial<IBracketProps>>({
-					variant: BRACKET_VARIANT.SINGLE_ELIMINATION,
+					format: BRACKET_FORMAT.SINGLE_ELIMINATION,
 					direction: DIRECTION.HORIZONTAL,
 					density: DENSITY.DEFAULT,
 					color: 'primary',
@@ -237,8 +237,8 @@
 			<template #default="{ state }">
 				<div class="story-shell" data-cy="bracket-playground">
 					<origam-bracket
-							:rounds="roundsFor(state.variant, true)"
-							:variant="state.variant"
+							:rounds="roundsFor(state.format, true)"
+							:format="state.format"
 							:direction="state.direction"
 							:density="state.density"
 							:color="state.color"
@@ -259,7 +259,7 @@
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Design">
-					<HstSelect   v-model="state.variant"         title="Variant"           :options="BRACKET_VARIANT_OPTIONS"/>
+					<HstSelect   v-model="state.format"         title="Format"           :options="BRACKET_FORMAT_OPTIONS"/>
 					<HstSelect   v-model="state.direction"       title="Direction"         :options="BRACKET_DIRECTION_OPTIONS"/>
 					<HstSelect   v-model="state.color"           title="Color"             :options="COLOR_OPTIONS"/>
 					<HstSelect   v-model="state.bgColor"         title="Bg Color"          :options="COLOR_OPTIONS"/>
@@ -286,14 +286,14 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamBracket } from '@origam/components'
-	import { BRACKET_VARIANT, DENSITY, DIRECTION } from '@origam/enums'
+	import { BRACKET_FORMAT, DENSITY, DIRECTION } from '@origam/enums'
 	import type {
 		IBracketMatch,
 		IBracketProps,
 		IBracketRound,
 		IOptions
 	} from '@origam/interfaces'
-	import type { TBracketVariant } from '@origam/types'
+	import type { TBracketFormat } from '@origam/types'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
@@ -310,10 +310,10 @@
 		TAG_OPTIONS
 	} from '@stories/const'
 
-	const BRACKET_VARIANT_OPTIONS: Array<IOptions<TBracketVariant>> = [
-		{ label: 'Single elimination', value: BRACKET_VARIANT.SINGLE_ELIMINATION },
-		{ label: 'Double elimination', value: BRACKET_VARIANT.DOUBLE_ELIMINATION },
-		{ label: 'Round robin',        value: BRACKET_VARIANT.ROUND_ROBIN }
+	const BRACKET_FORMAT_OPTIONS: Array<IOptions<TBracketFormat>> = [
+		{ label: 'Single elimination', value: BRACKET_FORMAT.SINGLE_ELIMINATION },
+		{ label: 'Double elimination', value: BRACKET_FORMAT.DOUBLE_ELIMINATION },
+		{ label: 'Round robin',        value: BRACKET_FORMAT.ROUND_ROBIN }
 	]
 
 	const BRACKET_DIRECTION_OPTIONS: Array<IOptions<'horizontal' | 'vertical'>> = [
@@ -572,9 +572,9 @@
 		}
 	]
 
-	const roundsFor = (variant: TBracketVariant | undefined, bigSingle = false): IBracketRound[] => {
-		if (variant === BRACKET_VARIANT.DOUBLE_ELIMINATION) return DOUBLE_ELIM_4
-		if (variant === BRACKET_VARIANT.ROUND_ROBIN) return ROUND_ROBIN_4
+	const roundsFor = (format: TBracketFormat | undefined, bigSingle = false): IBracketRound[] => {
+		if (format === BRACKET_FORMAT.DOUBLE_ELIMINATION) return DOUBLE_ELIM_4
+		if (format === BRACKET_FORMAT.ROUND_ROBIN) return ROUND_ROBIN_4
 
 		return bigSingle ? SINGLE_ELIM_8 : SINGLE_ELIM_4
 	}

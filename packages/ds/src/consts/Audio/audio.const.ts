@@ -1,4 +1,4 @@
-import { AUDIO_VARIANT, COVER_POSITION, POSITION } from '../../enums'
+import { AUDIO_LAYOUT, COVER_POSITION, POSITION } from '../../enums'
 
 /**
  * Default number of waveform peaks (`bins`) produced by `useWaveform`.
@@ -15,7 +15,7 @@ export const WAVEFORM_DEFAULT_BINS = 200
  */
 export const AUDIO_DEFAULTS = {
     tag: 'div',
-    variant: AUDIO_VARIANT.EXPANDED,
+    layout: AUDIO_LAYOUT.EXPANDED,
     coverPosition: COVER_POSITION.LEFT,
     position: POSITION.RELATIVE,
     autoplay: false,

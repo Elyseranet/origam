@@ -1,5 +1,10 @@
 /**
- * Visual variants of `<OrigamSliderField>`.
+ * Usage mode of `<OrigamSliderField>`.
+ *
+ * Renamed from `SLIDER_FIELD_VARIANT` (ADR-005, Q4) — the value switches
+ * between three structurally different renders (wrapped in
+ * `<origam-input>` chrome, or bare, or bare + waveform), not a paint-only
+ * preset.
  *
  * - `FIELD` (default) — current behaviour with the full `<origam-input>`
  *                       chrome (label + messages + prepend/append).
@@ -14,7 +19,7 @@
  *                       painted from the `peaks` prop. Used by
  *                       `OrigamAudio` (Phase 3) for its waveform scrubber.
  */
-export enum SLIDER_FIELD_VARIANT {
+export enum SLIDER_FIELD_MODE {
     FIELD = 'field',
     TIMER = 'timer',
     AUDIO = 'audio'

@@ -13,7 +13,7 @@ import type {
     ITypographyProps
 } from '../../interfaces'
 
-import type { TBracketVariant } from '../../types'
+import type { TBracketFormat } from '../../types'
 
 import type { IBracketRound } from './bracket-round.interface'
 
@@ -36,16 +36,20 @@ export interface IBracketProps extends ICommonsComponentProps, ITagProps, IDensi
      */
     rounds: IBracketRound[]
     /**
-     * Tournament shape. Single-elimination is the default.
+     * Tournament format. Single-elimination is the default.
      * Round-robin renders a NxN matrix instead of a tree.
+     *
+     * Renamed from `variant` (ADR-005, Q4) — the value drives the
+     * round-derivation algorithm and the SVG connector geometry, not a
+     * visual preset.
      *
      * @default 'single-elimination'
      */
-    variant?: TBracketVariant
+    format?: TBracketFormat
     /**
      * Layout axis. Horizontal stacks rounds as columns (the classic
      * tournament tree look). Vertical stacks rounds as rows — useful
-     * for narrow viewports. Ignored when `variant === 'round-robin'`
+     * for narrow viewports. Ignored when `format === 'round-robin'`
      * (the matrix layout has its own grid axis).
      *
      * @default 'horizontal'

@@ -1,11 +1,11 @@
-import type { TBracketMatchStatus, TBracketVariant } from '../../types'
+import type { TBracketFormat, TBracketMatchStatus } from '../../types'
 
 /**
- * Closed list of valid `variant` values for `OrigamBracket`. Exposed so
+ * Closed list of valid `format` values for `OrigamBracket`. Exposed so
  * stories / consumers can iterate the matrix (e.g. for a `HstSelect`)
  * without duplicating string literals.
  */
-export const BRACKET_VARIANTS: ReadonlyArray<TBracketVariant> = [
+export const BRACKET_FORMATS: ReadonlyArray<TBracketFormat> = [
     'single-elimination',
     'double-elimination',
     'round-robin'

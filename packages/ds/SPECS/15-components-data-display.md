@@ -1127,14 +1127,14 @@ Construit dans `packages/ds/src/composables/Video/video-player.composable.ts`. �
 
 **Fichier :** `packages/ds/src/components/Audio/OrigamAudio.vue`
 
-**Rôle / utilité.** Lecteur audio avec interface inspirée du studio-strip (cover vinyl, métadonnées, waveform, transport). Deux variantes : `'expanded'` (plein strip) et `'compact'` (dock minimal). Support playlist complète avec shuffle, loop tri-état, navigation piste précédente/suivante.
+**Rôle / utilité.** Lecteur audio avec interface inspirée du studio-strip (cover vinyl, métadonnées, waveform, transport). Deux layouts : `'expanded'` (plein strip) et `'compact'` (dock minimal), sélectionnés via `layout` (renommé depuis `variant`, ADR-005 Q4). Support playlist complète avec shuffle, loop tri-état, navigation piste précédente/suivante.
 
 ### Entrées (props) — `IAudioProps`
 
 | Prop | Type | Défaut | Description |
 |---|---|---|---|
 | `src` | `string \| IAudioSource \| IAudioSource[]` | — | Source audio |
-| `variant` | `'expanded' \| 'compact'` | `'expanded'` | Variante visuelle |
+| `layout` | `'expanded' \| 'compact'` | `'expanded'` | Layout du chrome |
 | `coverPosition` | `'left' \| 'right'` | `'left'` | Position de la pochette |
 | `title`, `artist`, `album` | `string` | — | Métadonnées track standalone |
 | `cover` | `string \| ISrcObject` | — | Pochette d'album |
@@ -1178,7 +1178,7 @@ Construit dans `packages/ds/src/composables/Video/video-player.composable.ts`. �
 
 **`audioLoopAttr`.** Vaut `true` uniquement pour `loopMode === 'one'` — l'attribut HTML `loop` gère le cas single-track loop nativement. Pour `'all'`, `onNativeEnded` avance programmatiquement.
 
-**Compact mode.** Variante `compact` (ou alias `minimal`) transforme le layout via des règles SCSS scoped avec `:deep()` : `origam-media-controller` devient un `display: grid` deux colonnes (header | transport), le progress bar est `position: absolute; bottom: 0` sur toute la largeur.
+**Compact mode.** `layout="compact"` (ou alias `minimal`) transforme le layout via des règles SCSS scoped avec `:deep()` : `origam-media-controller` devient un `display: grid` deux colonnes (header | transport), le progress bar est `position: absolute; bottom: 0` sur toute la largeur.
 
 **Vinyle CSS.** La pochette `.origam-audio__cover` porte des pseudo-éléments `::before` (sillons concentriques via `repeating-radial-gradient`) et `::after` (disque central label). Un `mask` perce un trou de broche (spindle hole) au centre. En lecture, l'animation `vinyl-spin` tourne à 3.5 s/tour. `prefers-reduced-motion: reduce` supprime cette animation.
 

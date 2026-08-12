@@ -128,7 +128,7 @@ useSeoMeta({
                                                 <div class="wf wf--dashboard">
                                                     <div class="wf__sidebar">
                                                         <origam-skeleton
-                                                            variant="text"
+                                                            shape="text"
                                                             :pulse="false"
                                                             width="60%"
                                                             height="12px"
@@ -145,7 +145,7 @@ useSeoMeta({
                                                             >
                                                                 <template #prepend>
                                                                     <origam-skeleton
-                                                                        variant="circular"
+                                                                        shape="circular"
                                                                         :pulse="false"
                                                                         width="14px"
                                                                         rounded="full"
@@ -153,7 +153,7 @@ useSeoMeta({
                                                                     />
                                                                 </template>
                                                                 <origam-skeleton
-                                                                    variant="text"
+                                                                    shape="text"
                                                                     :pulse="false"
                                                                     :width="`${55 + n * 7}%`"
                                                                     height="10px"
@@ -166,7 +166,7 @@ useSeoMeta({
                                                     <div class="wf__main">
                                                         <div class="wf__topbar">
                                                             <origam-skeleton
-                                                                variant="text"
+                                                                shape="text"
                                                                 :pulse="false"
                                                                 width="120px"
                                                                 height="12px"
@@ -174,7 +174,7 @@ useSeoMeta({
                                                             />
                                                             <origam-spacer />
                                                             <origam-skeleton
-                                                                variant="circular"
+                                                                shape="circular"
                                                                 :pulse="false"
                                                                 width="24px"
                                                                 rounded="full"
@@ -199,14 +199,14 @@ useSeoMeta({
                                                                     <template #default>
                                                                         <div class="wf__stat-inner">
                                                                             <origam-skeleton
-                                                                                variant="text"
+                                                                                shape="text"
                                                                                 :pulse="false"
                                                                                 width="40%"
                                                                                 height="8px"
                                                                                 rounded="sm"
                                                                             />
                                                                             <origam-skeleton
-                                                                                variant="text"
+                                                                                shape="text"
                                                                                 :pulse="false"
                                                                                 width="55%"
                                                                                 height="18px"
@@ -226,7 +226,7 @@ useSeoMeta({
                                                         >
                                                             <template #default>
                                                                 <origam-skeleton
-                                                                    variant="rectangular"
+                                                                    shape="rectangular"
                                                                     :pulse="false"
                                                                     height="100%"
                                                                 />
@@ -242,7 +242,7 @@ useSeoMeta({
                                                         <origam-list density="compact" nav class="wf__settings-nav">
                                                             <origam-list-subheader>
                                                                 <origam-skeleton
-                                                                    variant="text"
+                                                                    shape="text"
                                                                     :pulse="false"
                                                                     width="60%"
                                                                     height="8px"
@@ -256,7 +256,7 @@ useSeoMeta({
                                                                 :class="{ 'wf__nav-item--active': n === 1 }"
                                                             >
                                                                 <origam-skeleton
-                                                                    variant="text"
+                                                                    shape="text"
                                                                     :pulse="false"
                                                                     :width="`${50 + n * 8}%`"
                                                                     height="10px"
@@ -268,7 +268,7 @@ useSeoMeta({
 
                                                     <div class="wf__settings-content">
                                                         <origam-skeleton
-                                                            variant="text"
+                                                            shape="text"
                                                             :pulse="false"
                                                             width="40%"
                                                             height="14px"
@@ -282,14 +282,14 @@ useSeoMeta({
                                                             class="wf__settings-row"
                                                         >
                                                             <origam-skeleton
-                                                                variant="text"
+                                                                shape="text"
                                                                 :pulse="false"
                                                                 width="30%"
                                                                 height="8px"
                                                                 rounded="sm"
                                                             />
                                                             <origam-skeleton
-                                                                variant="rectangular"
+                                                                shape="rectangular"
                                                                 :pulse="false"
                                                                 height="22px"
                                                                 rounded="sm"
@@ -298,14 +298,14 @@ useSeoMeta({
 
                                                         <div class="wf__settings-toggle-row">
                                                             <origam-skeleton
-                                                                variant="text"
+                                                                shape="text"
                                                                 :pulse="false"
                                                                 width="50%"
                                                                 height="9px"
                                                                 rounded="sm"
                                                             />
                                                             <origam-skeleton
-                                                                variant="rectangular"
+                                                                shape="rectangular"
                                                                 :pulse="false"
                                                                 width="32px"
                                                                 height="18px"
@@ -349,7 +349,7 @@ useSeoMeta({
                                                         <template #default>
                                                             <div class="wf__auth-inner">
                                                                 <origam-skeleton
-                                                                    variant="circular"
+                                                                    shape="circular"
                                                                     :pulse="false"
                                                                     width="36px"
                                                                     rounded="full"
@@ -357,7 +357,7 @@ useSeoMeta({
                                                                 />
 
                                                                 <origam-skeleton
-                                                                    variant="text"
+                                                                    shape="text"
                                                                     :pulse="false"
                                                                     width="50%"
                                                                     height="13px"
@@ -372,14 +372,14 @@ useSeoMeta({
                                                                         class="wf__auth-field"
                                                                     >
                                                                         <origam-skeleton
-                                                                            variant="text"
+                                                                            shape="text"
                                                                             :pulse="false"
                                                                             width="35%"
                                                                             height="8px"
                                                                             rounded="sm"
                                                                         />
                                                                         <origam-skeleton
-                                                                            variant="rectangular"
+                                                                            shape="rectangular"
                                                                             :pulse="false"
                                                                             height="24px"
                                                                             rounded="sm"
@@ -401,7 +401,7 @@ useSeoMeta({
                                                                 <origam-divider>
                                                                     <template #default>
                                                                         <origam-skeleton
-                                                                            variant="text"
+                                                                            shape="text"
                                                                             :pulse="false"
                                                                             width="24px"
                                                                             height="8px"
@@ -411,7 +411,7 @@ useSeoMeta({
                                                                 </origam-divider>
 
                                                                 <origam-skeleton
-                                                                    variant="rectangular"
+                                                                    shape="rectangular"
                                                                     :pulse="false"
                                                                     height="24px"
                                                                     rounded="sm"
@@ -428,7 +428,7 @@ useSeoMeta({
                                                     <origam-list density="compact" class="wf__master">
                                                         <origam-list-subheader>
                                                             <origam-skeleton
-                                                                variant="text"
+                                                                shape="text"
                                                                 :pulse="false"
                                                                 width="50%"
                                                                 height="8px"
@@ -443,7 +443,7 @@ useSeoMeta({
                                                         >
                                                             <template #prepend>
                                                                 <origam-skeleton
-                                                                    variant="circular"
+                                                                    shape="circular"
                                                                     :pulse="false"
                                                                     width="20px"
                                                                     rounded="full"
@@ -451,14 +451,14 @@ useSeoMeta({
                                                             </template>
                                                             <div class="wf__master-item">
                                                                 <origam-skeleton
-                                                                    variant="text"
+                                                                    shape="text"
                                                                     :pulse="false"
                                                                     :width="`${50 + n * 6}%`"
                                                                     height="9px"
                                                                     rounded="sm"
                                                                 />
                                                                 <origam-skeleton
-                                                                    variant="text"
+                                                                    shape="text"
                                                                     :pulse="false"
                                                                     width="40%"
                                                                     height="7px"
@@ -472,7 +472,7 @@ useSeoMeta({
 
                                                     <div class="wf__detail">
                                                         <origam-skeleton
-                                                            variant="text"
+                                                            shape="text"
                                                             :pulse="false"
                                                             width="55%"
                                                             height="14px"
@@ -496,7 +496,7 @@ useSeoMeta({
                                                         <origam-skeleton
                                                             v-for="p in 3"
                                                             :key="p"
-                                                            variant="text"
+                                                            shape="text"
                                                             :pulse="false"
                                                             :width="`${70 + p * 8}%`"
                                                             height="8px"
@@ -551,14 +551,14 @@ useSeoMeta({
                                                                         </origam-chip>
 
                                                                         <origam-skeleton
-                                                                            variant="text"
+                                                                            shape="text"
                                                                             :pulse="false"
                                                                             width="50%"
                                                                             height="10px"
                                                                             rounded="sm"
                                                                         />
                                                                         <origam-skeleton
-                                                                            variant="text"
+                                                                            shape="text"
                                                                             :pulse="false"
                                                                             width="65%"
                                                                             height="20px"
@@ -575,13 +575,13 @@ useSeoMeta({
                                                                                 class="wf__pricing-feature"
                                                                             >
                                                                                 <origam-skeleton
-                                                                                    variant="circular"
+                                                                                    shape="circular"
                                                                                     :pulse="false"
                                                                                     width="10px"
                                                                                     rounded="full"
                                                                                 />
                                                                                 <origam-skeleton
-                                                                                    variant="text"
+                                                                                    shape="text"
                                                                                     :pulse="false"
                                                                                     :width="`${55 + f * 8}%`"
                                                                                     height="8px"
@@ -612,7 +612,7 @@ useSeoMeta({
                                                 <div class="wf wf--landing">
                                                     <div class="wf__landing-hero">
                                                         <origam-skeleton
-                                                            variant="text"
+                                                            shape="text"
                                                             :pulse="false"
                                                             width="55%"
                                                             height="18px"
@@ -620,7 +620,7 @@ useSeoMeta({
                                                             class="wf__landing-headline"
                                                         />
                                                         <origam-skeleton
-                                                            variant="text"
+                                                            shape="text"
                                                             :pulse="false"
                                                             width="70%"
                                                             height="9px"
@@ -665,20 +665,20 @@ useSeoMeta({
                                                                 <template #default>
                                                                     <div class="wf__landing-feature-inner">
                                                                         <origam-skeleton
-                                                                            variant="circular"
+                                                                            shape="circular"
                                                                             :pulse="false"
                                                                             width="20px"
                                                                             rounded="full"
                                                                         />
                                                                         <origam-skeleton
-                                                                            variant="text"
+                                                                            shape="text"
                                                                             :pulse="false"
                                                                             width="60%"
                                                                             height="10px"
                                                                             rounded="sm"
                                                                         />
                                                                         <origam-skeleton
-                                                                            variant="text"
+                                                                            shape="text"
                                                                             :pulse="false"
                                                                             width="85%"
                                                                             height="8px"
@@ -698,7 +698,7 @@ useSeoMeta({
                                                         <template #default>
                                                             <div class="wf__landing-cta-inner">
                                                                 <origam-skeleton
-                                                                    variant="text"
+                                                                    shape="text"
                                                                     :pulse="false"
                                                                     width="50%"
                                                                     height="12px"

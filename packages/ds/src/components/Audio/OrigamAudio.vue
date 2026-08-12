@@ -141,9 +141,9 @@
 							:max="scrubberMax"
 							:step="0.1"
 							:buffered="state.buffered.value"
-							:peaks="isCompactVariant ? undefined : displayedPeaks"
+							:peaks="isCompactLayout ? undefined : displayedPeaks"
 							:aria-label="waveformAriaLabel"
-							:variant="isCompactVariant ? 'timer' : 'audio'"
+							:mode="isCompactLayout ? 'timer' : 'audio'"
 							show-thumb-on-hover-only
 							show-hover-tooltip
 							:format-hover-tooltip="formatTimeTooltip"
@@ -295,7 +295,7 @@
 
 	const props = withDefaults(defineProps<IAudioProps>(), {
 		tag: 'article',
-		variant: 'expanded',
+		layout: 'expanded',
 		coverPosition: 'left',
 		position: 'relative',
 		top: undefined,
@@ -377,14 +377,14 @@
 	const isNativeControls = computed<boolean>(() => props.controls === 'native')
 
 	/*********************************************************
-	 * Variant normalisation — accept the legacy `'normal' | 'minimal'`
+	 * Layout normalisation — accept the legacy `'normal' | 'minimal'`
 	 * aliases as well as the canonical `'expanded' | 'compact'` values
 	 * so the brief swap is non-breaking for v0.x consumers.
 	 ********************************************************/
-	const isCompactVariant = computed<boolean>(() => {
-		return props.variant === 'compact' || props.variant === 'minimal'
+	const isCompactLayout = computed<boolean>(() => {
+		return props.layout === 'compact' || props.layout === 'minimal'
 	})
-	const isExpandedVariant = computed<boolean>(() => !isCompactVariant.value)
+	const isExpandedLayout = computed<boolean>(() => !isCompactLayout.value)
 
 	/*********************************************************
 	 * Playlist state machine
@@ -659,9 +659,9 @@
 	 * Cover size — `<origam-img>` needs explicit `width` / `height`
 	 * attribute values to clamp its inner `<img>` (CSS scoped on
 	 * the parent doesn't pierce the wrapper). Resolved at the parent
-	 * level from the variant — 96px for `expanded`, 48px for `compact`.
+	 * level from the layout — 96px for `expanded`, 48px for `compact`.
 	 ********************************************************/
-	const coverSizePx = computed<number>(() => (isCompactVariant.value ? 48 : 96))
+	const coverSizePx = computed<number>(() => (isCompactLayout.value ? 48 : 96))
 
 	const hasMetadata = computed<boolean>(() => {
 		return Boolean(resolvedTitle.value || resolvedArtist.value || resolvedAlbum.value)
@@ -679,11 +679,11 @@
 	/*********************************************************
 	 * Waveform — decoded on the fly via `useWaveform`. The waveform
 	 * mini scrubber lives between the metadata header and the
-	 * transport row in the EXPANDED variant; the COMPACT variant
+	 * transport row in the EXPANDED layout; the COMPACT layout
 	 * hides it to keep the dock height tight.
 	 ********************************************************/
 	const waveformEnabled = computed<boolean>(() => {
-		if (isCompactVariant.value) return false
+		if (isCompactLayout.value) return false
 		if (props.waveform === true) return true
 		if (props.waveform === 'auto') {
 			if (typeof window === 'undefined') return false
@@ -693,7 +693,7 @@
 		return false
 	})
 
-	const showWaveform = computed<boolean>(() => waveformEnabled.value || isExpandedVariant.value)
+	const showWaveform = computed<boolean>(() => waveformEnabled.value || isExpandedLayout.value)
 
 	const waveformSrc = computed<string | undefined>(() => {
 		if (!waveformEnabled.value) return undefined
@@ -714,7 +714,7 @@
 	})
 
 	/*********************************************************
-	 * Displayed peaks — the audio variant of `<OrigamSliderField>`
+	 * Displayed peaks — the audio mode of `<OrigamSliderField>`
 	 * only paints its waveform SVG when the `peaks` array is non-empty.
 	 * Real peaks come from `useWaveform` which depends on a successful
 	 * `OfflineAudioContext.decodeAudioData()`. The decode fails silently
@@ -927,10 +927,10 @@
 	 * Class & Style — Strategy A: classes win for tokenised values,
 	 * inline styles win for raw CSS, both bind in parallel.
 	 ********************************************************/
-	const variantClassName = computed<string>(() => `origam-audio--${ isCompactVariant.value ? 'compact' : 'expanded' }`)
+	const layoutClassName = computed<string>(() => `origam-audio--${ isCompactLayout.value ? 'compact' : 'expanded' }`)
 
 	const rootClasses = computed(() => [
-		variantClassName.value,
+		layoutClassName.value,
 		`origam-audio--cover-${ props.coverPosition }`,
 		{
 			'origam-audio--playing': state.playing.value,
@@ -1497,7 +1497,7 @@
 		}
 
 		/*
-		 * Visual hierarchy applied to EVERY variant (expanded, compact)
+		 * Visual hierarchy applied to EVERY layout (expanded, compact)
 		 * so the play btn always reads as the primary action.
 		 *
 		 *   - Secondary actions (loop, shuffle, volume, cog, prev, next):
@@ -1622,7 +1622,7 @@
 			 * the box to `relative` via the CSS variable so the
 			 * progress anchoring still works; if `position="sticky"`
 			 * (or any other modifier) is set, the modifier rule below
-			 * the variant block overrides this default.
+			 * the layout block overrides this default.
 			 */
 			--origam-audio---position: relative;
 			overflow: hidden;
@@ -1796,7 +1796,7 @@
 		/*
 		 * Position modifiers — placed AFTER `&--compact` on purpose so
 		 * they win in source order when both classes coexist (e.g.
-		 * `variant="compact" position="sticky" bottom="0"`). `usePosition`
+		 * `layout="compact" position="sticky" bottom="0"`). `usePosition`
 		 * emits the modifier class AND inline `top|right|bottom|left`
 		 * styles; the modifier flips the `--origam-audio---position`
 		 * variable consumed by the root rule.

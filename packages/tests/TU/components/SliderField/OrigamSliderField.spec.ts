@@ -4,9 +4,9 @@
 // We exercise:
 //   - BEM root class: origam-slider-field
 //   - Modifier classes: --horizontal, --vertical, --disabled, --readonly,
-//     --error, --range, --focused, --inset, --reverse, --variant-*
-//   - variant='field' → renders origam-input wrapper
-//   - variant='timer'/'audio' → bare section element (no origam-input)
+//     --error, --range, --focused, --inset, --reverse, --mode-*
+//   - mode='field' → renders origam-input wrapper
+//   - mode='timer'/'audio' → bare section element (no origam-input)
 //   - Native <input type="range"> value / min / max / step attributes
 //   - input event → update:modelValue emit
 //   - range mode: two inputs rendered
@@ -152,37 +152,37 @@ describe('OrigamSliderField — BEM root class', () => {
     })
 })
 
-describe('OrigamSliderField — variant routing', () => {
-    it('wraps in origam-input (field variant) by default', () => {
+describe('OrigamSliderField — mode routing', () => {
+    it('wraps in origam-input (field mode) by default', () => {
         const wrapper = mountSlider()
         expect(wrapper.find('.origam-input').exists()).toBe(true)
         expect(wrapper.find('section').exists()).toBe(false)
     })
 
-    it('renders a bare <section> for variant=timer', () => {
-        const wrapper = mountSlider({ props: { variant: 'timer' } })
+    it('renders a bare <section> for mode=timer', () => {
+        const wrapper = mountSlider({ props: { mode: 'timer' } })
         expect(wrapper.find('section').exists()).toBe(true)
         expect(wrapper.find('.origam-input').exists()).toBe(false)
     })
 
-    it('renders a bare <section> for variant=audio', () => {
-        const wrapper = mountSlider({ props: { variant: 'audio' } })
+    it('renders a bare <section> for mode=audio', () => {
+        const wrapper = mountSlider({ props: { mode: 'audio' } })
         expect(wrapper.find('section').exists()).toBe(true)
         expect(wrapper.find('.origam-input').exists()).toBe(false)
     })
 
-    it('adds --variant-field class for field variant', () => {
-        const wrapper = mountSlider({ props: { variant: 'field' } })
-        expect(wrapper.find('.origam-slider-field--variant-field').exists()).toBe(true)
+    it('adds --mode-field class for field mode', () => {
+        const wrapper = mountSlider({ props: { mode: 'field' } })
+        expect(wrapper.find('.origam-slider-field--mode-field').exists()).toBe(true)
     })
 
-    it('adds --variant-timer class for timer variant', () => {
-        const wrapper = mountSlider({ props: { variant: 'timer' } })
-        expect(wrapper.find('.origam-slider-field--variant-timer').exists()).toBe(true)
+    it('adds --mode-timer class for timer mode', () => {
+        const wrapper = mountSlider({ props: { mode: 'timer' } })
+        expect(wrapper.find('.origam-slider-field--mode-timer').exists()).toBe(true)
     })
 
     it('exposes aria-label on the bare section', () => {
-        const wrapper = mountSlider({ props: { variant: 'timer', label: 'Playback position' } })
+        const wrapper = mountSlider({ props: { mode: 'timer', label: 'Playback position' } })
         const section = wrapper.find('section')
         expect(section.attributes('aria-label')).toBe('Playback position')
     })
@@ -214,16 +214,16 @@ describe('OrigamSliderField — native input attributes (single mode)', () => {
         expect(input.attributes('step')).toBe('any')
     })
 
-    it('sets the disabled attribute on the native input in bare variant (timer)', () => {
-        // In 'timer' variant, disabled is passed directly without the OrigamInput slot chain,
+    it('sets the disabled attribute on the native input in bare mode (timer)', () => {
+        // In 'timer' mode, disabled is passed directly without the OrigamInput slot chain,
         // so the native <input> receives :disabled="disabled" directly.
-        const wrapper = mountSlider({ props: { disabled: true, modelValue: 0, variant: 'timer' } })
+        const wrapper = mountSlider({ props: { disabled: true, modelValue: 0, mode: 'timer' } })
         const input = wrapper.find('input[type="range"]')
         expect(input.attributes('disabled')).toBeDefined()
     })
 
-    it('sets the readonly attribute on the native input in bare variant (timer)', () => {
-        const wrapper = mountSlider({ props: { readonly: true, modelValue: 0, variant: 'timer' } })
+    it('sets the readonly attribute on the native input in bare mode (timer)', () => {
+        const wrapper = mountSlider({ props: { readonly: true, modelValue: 0, mode: 'timer' } })
         const input = wrapper.find('input[type="range"]')
         expect(input.attributes('readonly')).toBeDefined()
     })

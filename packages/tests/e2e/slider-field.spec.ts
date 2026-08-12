@@ -24,7 +24,7 @@ test.describe('OrigamSliderField', () => {
 
     // ------------------------------------------------------------------ //
     // DESIGN (index 0)                                                     //
-    // init: { variant: 'field', color: 'primary', direction: 'horizontal' }//
+    // init: { mode: 'field', color: 'primary', direction: 'horizontal' }  //
     // ------------------------------------------------------------------ //
     test.describe('Design', () => {
         test('renders the slider root with BEM class', async ({ page }) => {
@@ -41,11 +41,11 @@ test.describe('OrigamSliderField', () => {
             await expect(sandbox.locator('.origam-slider-field__track').first()).toBeVisible()
         })
 
-        test('field variant wraps inside origam-input', async ({ page }) => {
+        test('field mode wraps inside origam-input', async ({ page }) => {
             await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-slider-field').first()).toBeVisible({ timeout: 12000 })
-            // The field variant renders via <origam-input> which carries the class
+            // The field mode renders via <origam-input> which carries the class
             await expect(sandbox.locator('.origam-input').first()).toBeVisible()
         })
 

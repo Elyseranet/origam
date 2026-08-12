@@ -20,7 +20,7 @@ import type {
     IVideoTrack
 } from '../../interfaces'
 
-import type { TAudioControls, TAudioLoopMode, TAudioVariant, TCoverPosition } from '../../types'
+import type { TAudioControls, TAudioLayout, TAudioLoopMode, TCoverPosition } from '../../types'
 
 /**
  * Descriptor for a single track in an `<OrigamAudio>` playlist.
@@ -136,7 +136,10 @@ export interface IAudioProps
         IBgColorProps,
         ITypographyProps {
     /**
-     * Visual variant of the audio surface.
+     * Chrome layout of the audio surface. Renamed from `variant`
+     * (ADR-005, Q4) — the value swaps which chrome elements render
+     * (cover size, metadata header, waveform), not only how they're
+     * painted.
      *
      * - `'expanded'` — full Stemtracks studio strip: 96 px cover,
      *                  title / artist / album header, waveform mini
@@ -149,7 +152,7 @@ export interface IAudioProps
      *
      * @default 'expanded'
      */
-    variant?: TAudioVariant
+    layout?: TAudioLayout
     /**
      * Side of the surface where the album cover is painted. The
      * controller column sits on the opposite side. Swap to keep the

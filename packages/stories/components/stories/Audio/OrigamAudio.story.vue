@@ -12,7 +12,7 @@
 					artist: 'Origam DS Cast',
 					album: 'Season 3',
 					cover: PICSUM_COVER,
-					variant: 'expanded',
+					layout: 'expanded',
 					coverPosition: 'left',
 					waveform: true,
 					width: undefined,
@@ -32,7 +32,7 @@
 							:artist="state.artist || undefined"
 							:album="state.album || undefined"
 							:cover="state.cover || undefined"
-							:variant="state.variant"
+							:layout="state.layout"
 							:cover-position="state.coverPosition"
 							:color="state.color || undefined"
 							:bg-color="state.bgColor || undefined"
@@ -53,8 +53,8 @@
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<StoryGroup title="Variant">
-					<HstSelect v-model="state.variant"       title="Variant"        :options="AUDIO_VARIANT_OPTIONS"/>
+				<StoryGroup title="Layout">
+					<HstSelect v-model="state.layout"       title="Layout"        :options="AUDIO_LAYOUT_OPTIONS"/>
 					<HstSelect v-model="state.coverPosition" title="Cover Position" :options="COVER_POSITION_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Color">
@@ -358,7 +358,7 @@
 					artist: 'Origam DS Cast',
 					album: 'Season 3',
 					cover: PICSUM_COVER,
-					variant: 'expanded',
+					layout: 'expanded',
 					coverPosition: 'left',
 					controls: 'custom',
 					preload: 'metadata',
@@ -395,7 +395,7 @@
 					<HstText v-model="state.cover"  title="Cover (URL)"/>
 				</StoryGroup>
 				<StoryGroup title="Design">
-					<HstSelect v-model="state.variant"       title="Variant"        :options="AUDIO_VARIANT_OPTIONS"/>
+					<HstSelect v-model="state.layout"       title="Layout"        :options="AUDIO_LAYOUT_OPTIONS"/>
 					<HstSelect v-model="state.coverPosition" title="Cover Position" :options="COVER_POSITION_OPTIONS"/>
 					<HstSelect v-model="state.color"         title="Color"          :options="COLOR_OPTIONS"/>
 					<HstSelect v-model="state.bgColor"       title="Bg Color"       :options="COLOR_OPTIONS"/>
@@ -426,7 +426,7 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamAudio } from '@origam/components'
-	import { AUDIO_LOOP_MODE, AUDIO_VARIANT, COVER_POSITION } from '@origam/enums'
+	import { AUDIO_LOOP_MODE, AUDIO_LAYOUT, COVER_POSITION } from '@origam/enums'
 	import type { IAudioProps, IAudioTrack } from '@origam/interfaces'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
@@ -486,9 +486,9 @@
 		}
 	]
 
-	const AUDIO_VARIANT_OPTIONS = [
-		{ label: 'Expanded', value: AUDIO_VARIANT.EXPANDED },
-		{ label: 'Compact', value: AUDIO_VARIANT.COMPACT }
+	const AUDIO_LAYOUT_OPTIONS = [
+		{ label: 'Expanded', value: AUDIO_LAYOUT.EXPANDED },
+		{ label: 'Compact', value: AUDIO_LAYOUT.COMPACT }
 	]
 
 	const COVER_POSITION_OPTIONS = [

@@ -6,11 +6,11 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<Partial<ITabsProps & ITabProps>>({ variant: TAB_VARIANT.DEFAULT, color: undefined, bgColor: undefined, rounded: undefined, density: undefined, direction: DIRECTION.HORIZONTAL, fontSize: undefined, fontWeight: undefined, letterSpacing: undefined })"
+				:init-state="() => useStoryInitState<Partial<ITabsProps & ITabProps>>({ indicator: TAB_INDICATOR.DEFAULT, color: undefined, bgColor: undefined, rounded: undefined, density: undefined, direction: DIRECTION.HORIZONTAL, fontSize: undefined, fontWeight: undefined, letterSpacing: undefined })"
 		>
 			<template #default="{ state }">
 				<origam-tabs
-						:variant="state.variant"
+						:indicator="state.indicator"
 						:color="state.color"
 						:bg-color="state.bgColor"
 						:rounded="state.rounded"
@@ -24,8 +24,8 @@
 				</origam-tabs>
 			</template>
 			<template #controls="{ state }">
-				<StoryGroup title="Variant">
-					<HstSelect v-model="state.variant" title="Variant" :options="TAB_VARIANT_OPTIONS"/>
+				<StoryGroup title="Indicator">
+					<HstSelect v-model="state.indicator" title="Indicator" :options="TAB_INDICATOR_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Color">
 					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
@@ -106,7 +106,7 @@
 
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<ITabsProps>({ variant: TAB_VARIANT.DEFAULT, direction: DIRECTION.HORIZONTAL, mandatory: true })"
+				:init-state="() => useStoryInitState<ITabsProps>({ indicator: TAB_INDICATOR.DEFAULT, direction: DIRECTION.HORIZONTAL, mandatory: true })"
 		>
 			<template #default="{ state }">
 				<origam-tabs v-bind="state" v-model="playgroundValue" @update:model-value="logEvent('update:modelValue', $event)">
@@ -125,7 +125,7 @@
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Design">
-					<HstSelect v-model="state.variant"   title="Variant"   :options="TAB_VARIANT_OPTIONS"/>
+					<HstSelect v-model="state.indicator" title="Indicator" :options="TAB_INDICATOR_OPTIONS"/>
 					<HstSelect v-model="state.color"     title="Color"     :options="COLOR_OPTIONS"/>
 					<HstSelect v-model="state.bgColor"   title="Bg Color"  :options="COLOR_OPTIONS"/>
 					<HstSelect v-model="state.density"   title="Density"   :options="DENSITY_OPTIONS"/>
@@ -152,10 +152,10 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamTab, OrigamTabPanel, OrigamTabPanels, OrigamTabs } from '@origam/components'
-	import { DENSITY, DIRECTION, TAB_VARIANT } from '@origam/enums'
+	import { DENSITY, DIRECTION, TAB_INDICATOR } from '@origam/enums'
 	import type { ITabProps, ITabsProps } from '@origam/interfaces'
 	import type { IOptions } from '@origam/interfaces'
-	import type { TTabVariant } from '@origam/types'
+	import type { TTabIndicator } from '@origam/types'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
@@ -168,11 +168,11 @@
 		ROUNDED_OPTIONS
 	} from '@stories/const'
 
-	const TAB_VARIANT_OPTIONS: Array<IOptions<TTabVariant>> = [
+	const TAB_INDICATOR_OPTIONS: Array<IOptions<TTabIndicator>> = [
 		{ label: '(none)', value: undefined },
-		{ label: 'Default', value: TAB_VARIANT.DEFAULT },
-		{ label: 'Pills', value: TAB_VARIANT.PILLS },
-		{ label: 'Underline', value: TAB_VARIANT.UNDERLINE }
+		{ label: 'Default', value: TAB_INDICATOR.DEFAULT },
+		{ label: 'Pills', value: TAB_INDICATOR.PILLS },
+		{ label: 'Underline', value: TAB_INDICATOR.UNDERLINE }
 	]
 
 	const DIRECTION_OPTIONS: Array<IOptions<'horizontal' | 'vertical'>> = [

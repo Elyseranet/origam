@@ -215,10 +215,10 @@ export const materialLightTheme: IOrigamTheme = {
             color: 'var(--origam-material---tooltip-on-surface)'
         },
         // Tabs — ITabsProps extends IRoundedProps, IColorProps, IBgColorProps,
-        // `variant` accepte 'underline' (TAB_VARIANT). Couleur/épaisseur 3px de
+        // `indicator` accepte 'underline' (TAB_INDICATOR). Couleur/épaisseur 3px de
         // l'indicateur réglées en cssVars (--origam-tabs__indicator---color/height,
         // hooks réels).
-        'origam-tabs': { variant: 'underline' },
+        'origam-tabs': { indicator: 'underline' },
         // Bottom nav — IBottomNavProps extends IRoundedProps, IElevationProps.
         // Pastille active PAR ITEM : BLOQUÉ — les items sont des <origam-btn> bruts
         // fournis par le consommateur (prop `items`), sans sous-composant dédié

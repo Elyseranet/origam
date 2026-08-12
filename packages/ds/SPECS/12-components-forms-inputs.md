@@ -784,7 +784,7 @@ Champ de sélection de fichier(s). Deux modes visuels : mode **inline** (OrigamF
 
 ### Rôle / utilité
 
-Curseur de sélection numérique. Supporte le mode simple (une valeur) et le mode range (deux valeurs). Trois variants visuels : `'field'` (dans `OrigamInput` avec label), `'timer'` (barre media player), `'audio'` (barre waveform). Supporte les ticks, la barre bufferisée, le tooltip au survol.
+Curseur de sélection numérique. Supporte le mode simple (une valeur) et le mode range (deux valeurs). Trois modes d'usage (`mode`, renommé depuis `variant`, ADR-005 Q4) : `'field'` (dans `OrigamInput` avec label), `'timer'` (barre media player), `'audio'` (barre waveform). Supporte les ticks, la barre bufferisée, le tooltip au survol.
 
 ### Entrées (props)
 
@@ -796,7 +796,7 @@ Curseur de sélection numérique. Supporte le mode simple (une valeur) et le mod
 | `min`, `max` | `number \| string` | — | Bornes de la plage |
 | `step` | `number \| string` | — | Pas de déplacement |
 | `range` | `boolean` | — | Mode range (deux poignées) |
-| `variant` | `TSliderFieldVariant` | `'field'` | `'field' \| 'timer' \| 'audio'` |
+| `mode` (renommé depuis `variant`, ADR-005 Q4) | `TSliderFieldMode` | `'field'` | `'field' \| 'timer' \| 'audio'` |
 | `showTicks` | `TAlways` | — | Affichage des ticks |
 | `ticks` | `Array<number> \| Record<string, string>` | — | Positions des ticks (avec labels optionnels) |
 | `tickSize` | `TSize \| number` | — | Taille des ticks |
@@ -807,8 +807,8 @@ Curseur de sélection numérique. Supporte le mode simple (une valeur) et le mod
 | `showHoverTooltip` | `boolean` | — | Tooltip sous le curseur |
 | `formatHoverTooltip` | `Function` | `v => String(v)` | Formateur du tooltip |
 | `buffered` | `number` | — | Valeur de remplissage buffered |
-| `peaks` | `ReadonlyArray<number>` | — | Forme d'onde (variant `'audio'`) |
-| `label` | `string` | — | Label du champ (variant `'field'`) |
+| `peaks` | `ReadonlyArray<number>` | — | Forme d'onde (mode `'audio'`) |
+| `label` | `string` | — | Label du champ (mode `'field'`) |
 | `disabled`, `readonly`, `error`, `required` | `boolean` | — | États standard |
 
 ### Sorties
@@ -818,7 +818,7 @@ Curseur de sélection numérique. Supporte le mode simple (une valeur) et le mod
 **Emits (`ISliderFieldEmits`) :** `ICommonsComponentEmits`, `IFocusEmits` + `start` / `end` (pointerdown/pointerup sur le pouce).
 
 **Slots :**
-- `prepend` (variant `'field'`)
+- `prepend` (mode `'field'`)
 - `default` — `{ id, messagesId, isDisabled, isReadonly, isValid }`
 - `label` — remplace `<OrigamLabel>`
 - `item` — itemSlotProps de `OrigamSliderFieldTrack` (tick/label custom)
@@ -1109,7 +1109,7 @@ Label de champ de formulaire. Rendu via `<component :is="tag">` (par défaut `<l
 | `OrigamPasswordField` | Input + Field | `string \| null` | enrichedRules + Input | `useVModel`, `computeStrength` |
 | `OrigamOtpInputField` | Field (n fois) | `string \| number` | Proxy + `useValidation` | `useVModel` (array↔string) |
 | `OrigamFileField` | Input + Field (ou dropzone) | `File \| File[] \| null` | via Input | `useVModel`, `useBothColor` |
-| `OrigamSliderField` | Input (variant field) | `number \| Array<number>` | via Input | `useVModel`, `useFocus` |
+| `OrigamSliderField` | Input (mode field) | `number \| Array<number>` | via Input | `useVModel`, `useFocus` |
 | `OrigamRatingField` | Input | `number` | via Input | `useVModel` |
 | `OrigamForm` | — | `boolean \| null` | `useForm` + `useValidation` | `useForm`, `useValidation` |
 | `OrigamLabel` | — | — | ✗ | `useBorder`, `useRounded`, `useBothColor` |
@@ -1137,7 +1137,7 @@ Spécialisations (toutes construites sur OrigamInput + OrigamField) :
   OrigamPasswordField    ─ ajoute toggle show/hide, strength bar, requirements
   OrigamOtpInputField    ─ n × OrigamField, useValidation via Proxy, focus routing
   OrigamFileField        ─ ajoute mode dropzone (DnD natif), display list/chips/counter
-  OrigamSliderField      ─ ajoute <input type="range"> natif, track, ticks, variants
+  OrigamSliderField      ─ ajoute <input type="range"> natif, track, ticks, modes
   OrigamRatingField      ─ n × OrigamRatingFieldItem (radio), hover, half-increments
 ```
 

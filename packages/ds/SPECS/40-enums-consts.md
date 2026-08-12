@@ -382,9 +382,9 @@ Raison : le compilateur de SFC Vue 3 analyse `withDefaults` de façon **statique
 
 ---
 
-### `AUDIO_VARIANT`
-- **Fichier** : `src/enums/Audio/audio-variant.enum.ts`
-- **Rôle** : Layout visuel du lecteur audio. `NORMAL` et `MINIMAL` sont des alias dépréciés v0.x conservés pour la compatibilité ascendante.
+### `AUDIO_LAYOUT`
+- **Fichier** : `src/enums/Audio/audio-layout.enum.ts`
+- **Rôle** : Layout du chrome du lecteur audio. Renommé depuis `AUDIO_VARIANT` (ADR-005, Q4) — la valeur change quels éléments de chrome se rendent, pas seulement leur peinture. `NORMAL` et `MINIMAL` sont des alias dépréciés v0.x conservés pour la compatibilité ascendante.
 - **Membres** :
   - `EXPANDED = 'expanded'` — surface complète avec jaquette 96 px, métadonnées et waveform
   - `COMPACT = 'compact'` — dock transport-only, jaquette 48 px, pas de waveform
@@ -430,11 +430,11 @@ Raison : le compilateur de SFC Vue 3 analyse `withDefaults` de façon **statique
 
 ---
 
-### `BRACKET_VARIANT`
-- **Fichier** : `src/enums/Bracket/bracket-variant.enum.ts`
-- **Rôle** : Format du tableau de compétition.
+### `BRACKET_FORMAT`
+- **Fichier** : `src/enums/Bracket/bracket-format.enum.ts`
+- **Rôle** : Format du tableau de compétition. Renommé depuis `BRACKET_VARIANT` (ADR-005, Q4) — discriminant structurel (pilote l'algorithme de dérivation des rounds + la géométrie SVG), pas un préréglage de style.
 - **Membres** : `SINGLE_ELIMINATION = 'single-elimination'`, `DOUBLE_ELIMINATION = 'double-elimination'`, `ROUND_ROBIN = 'round-robin'`
-- **Consommé par** : `OrigamBracket`, `BRACKET_VARIANTS`.
+- **Consommé par** : `OrigamBracket`, `BRACKET_FORMATS`.
 
 ---
 
@@ -803,9 +803,9 @@ Raison : le compilateur de SFC Vue 3 analyse `withDefaults` de façon **statique
 
 ### Domaine : SliderField
 
-### `SLIDER_FIELD_VARIANT`
-- **Fichier** : `src/enums/SliderField/slider-field-variant.enum.ts`
-- **Rôle** : Variante visuelle du champ slider.
+### `SLIDER_FIELD_MODE`
+- **Fichier** : `src/enums/SliderField/slider-field-mode.enum.ts`
+- **Rôle** : Mode d'usage du champ slider. Renommé depuis `SLIDER_FIELD_VARIANT` (ADR-005, Q4) — discriminant structurel (bascule entre trois rendus DOM différents), pas un préréglage de style.
   - `FIELD` — chrome complet `<origam-input>` (formulaire)
   - `TIMER` — rail fin sans chrome, style scrubber vidéo
   - `AUDIO` — identique à `TIMER` + fond waveform piloté par la prop `peaks`
@@ -816,9 +816,9 @@ Raison : le compilateur de SFC Vue 3 analyse `withDefaults` de façon **statique
 
 ### Domaine : Tabs
 
-### `TAB_VARIANT`
-- **Fichier** : `src/enums/Tabs/tab-variant.enum.ts`
-- **Rôle** : Style visuel des onglets.
+### `TAB_INDICATOR`
+- **Fichier** : `src/enums/Tabs/tab-indicator.enum.ts`
+- **Rôle** : Style de l'indicateur d'onglet actif. Renommé depuis `TAB_VARIANT` (ADR-005, Q4) — `'underline'` monte un élément DOM supplémentaire (`.origam-tab__indicator`), donc discriminant comportemental plutôt que préréglage de style.
 - **Membres** : `DEFAULT = 'default'`, `PILLS = 'pills'`, `UNDERLINE = 'underline'`
 - **Consommé par** : `OrigamTabs`, `OrigamTab`.
 
@@ -1240,10 +1240,10 @@ Raison : le compilateur de SFC Vue 3 analyse `withDefaults` de façon **statique
 
 ### Domaine : Bracket
 
-### `BRACKET_VARIANTS`, `BRACKET_MATCH_STATUSES`, `BRACKET_DEFAULT_MATCH_WIDTH/HEIGHT/GAP`, `BRACKET_DEFAULT_ROUND_GAP`
+### `BRACKET_FORMATS`, `BRACKET_MATCH_STATUSES`, `BRACKET_DEFAULT_MATCH_WIDTH/HEIGHT/GAP`, `BRACKET_DEFAULT_ROUND_GAP`
 - **Fichier** : `src/consts/Bracket/bracket.const.ts`
 - **Rôle** :
-  - Listes fermées de valeurs (`BRACKET_VARIANTS`, `BRACKET_MATCH_STATUSES`)
+  - Listes fermées de valeurs (`BRACKET_FORMATS`, `BRACKET_MATCH_STATUSES`)
   - Constantes géométriques du layout d'algorithme : `BRACKET_DEFAULT_MATCH_WIDTH = 240`, `BRACKET_DEFAULT_MATCH_HEIGHT = 72`, `BRACKET_DEFAULT_MATCH_GAP = 24`, `BRACKET_DEFAULT_ROUND_GAP = 48`
 - **Consommé par** : `OrigamBracket`, algorithme de tracé des connecteurs.
 
@@ -1650,9 +1650,9 @@ Ces constantes sont des **clés d'injection Vue** (`Symbol.for(…)`) partagées
 | Domaine | Enum(s) | Nombre de membres |
 |---|---|---|
 | Commons | `FOCUS_LOCATION`, `CLIENT_POSITION`, `ADJACENT`, `ALIGN`, `BLOCK`, `INLINE`, `START_END`, `BORDER_STYLE`, `CALENDAR_STRATEGY`, `DENSITY`, `DIMENSIONS`, `DIRECTION`, `BREAKPOINTS`, `AXIS`, `FILTERS_MODE`, `KEYBOARD_MODIFIERS_KEY`, `KEYBOARD_VALUES`, `JUSTIFY`, `LOCATION_STRATEGIES`, `MODE`, `SELECT_STRATEGY`, `OPEN_STRATEGY`, `SELECTED`, `POSITION`, `ROUNDED`, `SCROLL_STRATEGIES`, `SIZES`, `SORT_DIRECTION`, `STATUS`, `STATUS_POSITION`, `TOUCH_EVENTS`, `VALIDATE_ON`, `VARIANT`, `VARIANT_INPUT` | 34 enums |
-| Audio | `AUDIO_LOOP_MODE`, `AUDIO_VARIANT`, `COVER_POSITION` | 3 |
+| Audio | `AUDIO_LOOP_MODE`, `AUDIO_LAYOUT`, `COVER_POSITION` | 3 |
 | Blockquote | `BLOCKQUOTE_LANG`, `BLOCKQUOTE_VARIANT` | 2 |
-| Bracket | `BRACKET_MATCH_STATUS`, `BRACKET_VARIANT` | 2 |
+| Bracket | `BRACKET_MATCH_STATUS`, `BRACKET_FORMAT` | 2 |
 | Card | `CARD_TYPE` | 1 |
 | Chart | `CHART_TYPE`, `CHART_BULLET_ORIENTATION`, `CHART_CARTESIAN_KIND`, `CHART_HONEYCOMB_COLOR_MODE`, `CHART_HONEYCOMB_ORIENTATION`, `CHART_MAP_MODE`, `CHART_PICTORIAL_DIRECTION`, `CHART_PICTORIAL_MODE`, `CHART_POLAR_KIND`, `CHART_PYRAMID_KIND`, `CHART_SPARKLINE_KIND`, `CHART_STACKING`, `CHART_STREAMGRAPH_OFFSET`, `CHART_TREEMAP_ALGORITHM`, `CHART_WORD_CLOUD_ROTATION` | 15 |
 | Code | `CODE_LANG`, `CODE_THEME` | 2 |
@@ -1670,8 +1670,8 @@ Ces constantes sont des **clés d'injection Vue** (`Symbol.for(…)`) partagées
 | OtpInputField | `OTP_INPUT_FIELD_TYPE` | 1 |
 | Parallax | `PARALLAX_DIRECTION`, `PARALLAX_EASING`, `PARALLAX_ELEMENT_TYPE`, `PARALLAX_EVENT` | 4 |
 | Progress | `PROGRESS_TYPE` | 1 |
-| SliderField | `SLIDER_FIELD_VARIANT` | 1 |
-| Tabs | `TAB_VARIANT` | 1 |
+| SliderField | `SLIDER_FIELD_MODE` | 1 |
+| Tabs | `TAB_INDICATOR` | 1 |
 | TextField | `TEXT_FIELD_TYPE` | 1 |
 | Textarea | `TEXTAREA_MODE`, `TEXTAREA_OUTPUT`, `TEXTAREA_TOOLBAR_COMMAND`, `TEXTAREA_TOOLBAR_POSITION` | 4 |
 | Toolbar | `SCROLL_BEHAVIOR` | 1 |

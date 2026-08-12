@@ -1,8 +1,14 @@
 # OrigamBracket
 
-`<OrigamBracket>` renders a tournament tree. It supports three layouts:
+`<OrigamBracket>` renders a tournament tree. It supports three formats,
+selected via the `format` prop:
 
-| Variant                 | Visual                                                       |
+> **Renamed in v3 (ADR-005, Q4).** This prop used to be named `variant`.
+> Its value drives the round-derivation algorithm and the SVG connector
+> geometry — a behavioural discriminant, not a style preset — so it kept
+> its own name instead of joining the props-preset model.
+
+| Format                  | Visual                                                       |
 |-------------------------|--------------------------------------------------------------|
 | `single-elimination`    | Classic knockout. Each round is a column of matches.         |
 | `double-elimination`    | Winner Bracket on top, Loser Bracket below, Grand Final last.|
@@ -100,7 +106,7 @@ interface IBracketRound {
 ## Double elimination
 
 ```vue
-<OrigamBracket :rounds="doubleElim" variant="double-elimination" />
+<OrigamBracket :rounds="doubleElim" format="double-elimination" />
 ```
 
 Use `round.side` to mark whether a round belongs to the Winner Bracket,
@@ -120,7 +126,7 @@ section is preserved.
 ## Round robin
 
 ```vue
-<OrigamBracket :rounds="groupStage" variant="round-robin" />
+<OrigamBracket :rounds="groupStage" format="round-robin" />
 ```
 
 Round-robin renders an NxN matrix. Every match in the dataset gets
@@ -132,7 +138,7 @@ diagonal. The diagonal cells are inert.
 | Prop              | Type                                                          | Default               |
 |-------------------|---------------------------------------------------------------|-----------------------|
 | `rounds`          | `IBracketRound[]`                                             | — (required)          |
-| `variant`         | `'single-elimination' \| 'double-elimination' \| 'round-robin'` | `'single-elimination'` |
+| `format`          | `'single-elimination' \| 'double-elimination' \| 'round-robin'` | `'single-elimination'` |
 | `direction`       | `'horizontal' \| 'vertical'`                                  | `'horizontal'`        |
 | `density`         | `'default' \| 'compact' \| 'comfortable'`                     | `'default'`           |
 | `showRoundTitles` | `boolean`                                                     | `true`                |
