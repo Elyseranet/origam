@@ -22,6 +22,17 @@ import type { ICommonsComponentProps } from '../../interfaces'
  */
 export interface IDefault {
     global?: Record<string, unknown>
+    /**
+     * Theme-authored variant PRESET overrides (ADR-005 D4). Keyed by
+     * component name, then by variant value: `{ 'origam-kbd': { outlined:
+     * { bgColor: '...' } } }`. Same shape a DS-shipped preset table
+     * (`TVariantPresets`, `consts/{Component}/{component}-variant.const.ts`)
+     * already uses — `useDefaults`'s preset tier checks this map FIRST and
+     * falls back to the DS table, so a theme can redefine (or add) a named
+     * variant with no new resolution machinery (ADR-005 "a preset IS theme
+     * configuration" directive).
+     */
+    variants?: Record<string, Record<string, Record<string, unknown>>>
     [key: string]: Record<string, unknown> | undefined
 }
 

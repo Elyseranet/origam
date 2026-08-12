@@ -8,14 +8,18 @@
 			<slot/>
 		</template>
 
-		<template v-else-if="combination && combination.length > 0">
+		<template v-else-if="isCombination">
 			<template
 					v-for="(key, index) in combination"
 					:key="index"
 			>
-				<kbd class="origam-kbd__key">{{ key }}</kbd>
+				<kbd
+						class="origam-kbd__key"
+						:class="surfaceClasses"
+						:style="surfaceStyles"
+				>{{ key }}</kbd>
 				<span
-						v-if="index < combination.length - 1"
+						v-if="index < combination!.length - 1"
 						class="origam-kbd__separator"
 						aria-hidden="true"
 				>{{ separator }}</span>
@@ -33,6 +37,8 @@
 	import {
 		useBorder,
 		useBothColor,
+		useDefaults,
+		useElevation,
 		useProps,
 		useRounded,
 		useSize,
@@ -40,6 +46,7 @@
 		useTypography
 } from '../../composables'
 
+	import { KBD_VARIANT_PRESETS } from '../../consts'
 	import type { IKbdProps } from '../../interfaces'
 
 	import { computed, StyleValue, toRef } from 'vue'
@@ -55,7 +62,14 @@
 		variant: 'outlined',
 	})
 
-	const props = _props
+	// ADR-005 pilot — `variant` is a PRESET (a named `Partial<IKbdProps>`),
+	// not a CSS layer. `useDefaults` resolves EVERY prop (not just the ones a
+	// preset touches) through the same chain a theme default already goes
+	// through: call-site prop > theme default > variant preset > this
+	// component's own `withDefaults()` value. Every read below MUST go
+	// through this resolved `props`, never `_props` — the preset tier is a
+	// pure extension of `useDefaults`, not a parallel mechanism.
+	const props = useDefaults(_props, 'origam-kbd', KBD_VARIANT_PRESETS)
 
 	const { filterProps } = useProps<IKbdProps>(props)
 
@@ -66,6 +80,7 @@
 	const { sizeClasses, sizeStyles } = useSize(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
 	const { borderClasses, borderStyles } = useBorder(props)
+	const { elevationClasses, elevationStyles } = useElevation(props)
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 	const { typographyStyles } = useTypography(props, 'kbd')
 
@@ -80,18 +95,47 @@
 	 *
 	 * @description
 	 * Composable-driven class and style composition.
+	 *
+	 * `surfaceClasses` / `surfaceStyles` carry the resolved bg / border /
+	 * elevation — i.e. everything the removed `&--variant-*` SCSS blocks
+	 * used to set via a cascaded CSS custom property. That cascade is what
+	 * let a SINGLE class on the root repaint every nested `__key` in a
+	 * combination for free; props/inline-styles don't cascade to
+	 * descendants, so the surface is computed ONCE here and applied
+	 * explicitly to whichever element(s) actually need it: the root alone
+	 * when it's a single key, or every `__key` (never the root — see
+	 * `isCombination` below) when it's a combination.
 	 ********************************************************/
+	const isCombination = computed(() => !!(props.combination && props.combination.length > 0))
+
+	const surfaceClasses = computed(() => [
+		colorClasses.value,
+		borderClasses.value,
+		elevationClasses.value,
+	])
+
+	const surfaceStyles = computed(() => {
+		return [
+			colorStyles.value,
+			borderStyles.value,
+			elevationStyles.value,
+		] as StyleValue
+	})
+
 	const kbdClasses = computed(() => {
 		return [
 			'origam-kbd',
 			{
 				[`origam-kbd--variant-${props.variant}`]: props.variant,
-				'origam-kbd--combination': props.combination && props.combination.length > 0,
+				'origam-kbd--combination': isCombination.value,
 			},
-			colorClasses.value,
 			sizeClasses.value,
 			roundedClasses.value,
-			borderClasses.value,
+			// Suppressed on the root during a combination — the surface
+			// belongs to each `__key` instead (template). Binding it here
+			// unconditionally would repaint a box around the WHOLE group;
+			// `&--combination` has no DS rule left to neutralise it (D3).
+			...(isCombination.value ? [] : [surfaceClasses.value]),
 			props.class,
 		]
 	})
@@ -100,9 +144,8 @@
 		return [
 			sizeStyles.value,
 			roundedStyles.value,
-			borderStyles.value,
-			colorStyles.value,
 			typographyStyles.value,
+			...(isCombination.value ? [] : [surfaceStyles.value]),
 			props.style,
 		] as StyleValue
 	})
@@ -183,38 +226,17 @@
 			@include key-surface;
 		}
 
-		&--variant-outlined,
-		&--variant-outlined &__key {
-			--origam-kbd---background-color: var(--origam-color__surface---raised, #fff);
-			--origam-kbd---border-color: var(--origam-color__border---subtle, #d4d4d4);
-			--origam-kbd---box-shadow: 0 1px 0 0 color-mix(in srgb, currentColor 12%, transparent),
-			                            inset 0 1px 0 0 color-mix(in srgb, white 50%, transparent);
-		}
-
-		&--variant-filled,
-		&--variant-filled &__key {
-			--origam-kbd---background-color: var(--origam-color__surface---overlay, #f5f5f5);
-			--origam-kbd---border-color: var(--origam-color__border---subtle, #d4d4d4);
-			--origam-kbd---box-shadow: 0 1px 2px 0 color-mix(in srgb, currentColor 18%, transparent),
-			                            inset 0 1px 0 0 color-mix(in srgb, white 60%, transparent);
-		}
-
-		&--variant-tonal,
-		&--variant-tonal &__key {
-			--origam-kbd---background-color: color-mix(in srgb, currentColor 8%, transparent);
-			--origam-kbd---border-color: transparent;
-			--origam-kbd---border-width: 0px;
-			--origam-kbd---box-shadow: none;
-		}
-
-		&--combination#{&}--variant-outlined,
-		&--combination#{&}--variant-filled,
-		&--combination#{&}--variant-tonal {
-			background-color: transparent;
-			border-color: transparent;
-			border-width: 0;
-			box-shadow: none;
-		}
+		// ADR-005 — `variant` is a props preset (`KBD_VARIANT_PRESETS`,
+		// resolved via `useDefaults`), not a CSS layer. The `origam-kbd
+		// --variant-*` class still gets emitted (an override hook for
+		// consumer CSS) but the DS ships ZERO rule matching it — the
+		// `&--variant-*` blocks that used to live here, and the
+		// `&--combination#{&}--variant-*` block that neutralised them on
+		// the combination root, are gone. The component now resolves bg /
+		// border / elevation to inline styles/classes applied directly to
+		// whichever element needs the surface (see `surfaceStyles` /
+		// `surfaceClasses` in the `<script>` block) — `&--combination`
+		// below only has structural/layout responsibility left.
 
 		&--size-x-small { font-size: var(--origam-kbd---font-size, var(--origam-kbd---font-size-xs, 0.625rem)); }
 		&--size-small   { font-size: var(--origam-kbd---font-size, var(--origam-kbd---font-size-sm, 0.75rem)); }

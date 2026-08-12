@@ -2,6 +2,7 @@ import { computed, inject, provide, ref, type Ref } from 'vue'
 
 import { ORIGAM_DEFAULTS_KEY } from '../../consts'
 import type { IDefault } from '../../interfaces'
+import type { TVariantPresets } from '../../types'
 import { getCurrentInstance, getCurrentInstanceName, mergeDeep } from '../../utils'
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -13,12 +14,38 @@ import { getCurrentInstance, getCurrentInstanceName, mergeDeep } from '../../uti
 // in via `useDefaults(props)` which returns a Proxy that resolves each prop
 // against the parent provider before falling back to `withDefaults()`.
 //
-// Resolution order, per prop:
+// Resolution order, per prop (ADR-005 Q2 — the preset tier was inserted
+// 2026-08, see below):
 //   1. Value explicitly passed by the parent in template (highest priority).
 //   2. Component-specific defaults from the closest provider, e.g.
 //      `defaults['origam-btn'].color`.
 //   3. Global defaults from the closest provider: `defaults.global.color`.
-//   4. The component's own `withDefaults()` value (lowest priority).
+//   4. VARIANT PRESET — only consulted when the caller passes a
+//      `variantPresets` table AND the prop being resolved is not `variant`
+//      itself. Resolves the component's EFFECTIVE `variant` value through
+//      tiers 1-2-3 above (never through a preset — a variant has no preset
+//      of itself), then looks up that value in, in order: the ACTIVE
+//      theme's `variants[name]` override (ADR-005 D4) and, failing that,
+//      the DS-shipped table passed by the component.
+//   5. The component's own `withDefaults()` value (lowest priority).
+//
+// ADR-005 "a preset IS theme configuration" directive: this is NOT a
+// parallel merge mechanism. It is the SAME per-prop resolution `useDefaults`
+// already runs for theme defaults, with one more source consulted before
+// falling through to `withDefaults()`. A variant preset can therefore never
+// outrank an explicit call-site prop OR a theme default — even one declared
+// on a DIFFERENT prop than `variant` — because each prop is resolved
+// independently: there is only ever ONE winning value per prop, decided
+// before any composable (useColor, useBorder, useElevation, …) reads it.
+// This is what makes the model safe for STATE presets too (ADR-005 Q3): a
+// preset's `hover` / `active` object resolves through this exact same
+// per-prop chain, so it can be beaten by an explicit `hover` / `active`
+// prop, but it can NEVER coexist as a second, competing inline-style
+// declaration alongside a stronger tier's value for the same prop — there
+// is nothing for it to "outrank" once resolution has already picked one
+// winner per key. See `defaults.composable.spec.ts` for a test that proves
+// this concretely (a preset-sourced value that would render as an inline
+// style still loses to an explicit consumer prop).
 //
 // SSR-safe: no DOM access. The injection key is a global symbol so multiple
 // bundle copies of origam still cooperate.
@@ -56,6 +83,22 @@ function camelize (str: string): string {
  * reason `useDefaults()` re-reads it: a parent binding through a dynamic
  * `v-bind` whose object starts empty (`childRef?.filterProps(...)` before
  * mount) only fills `vnode.props` on a later render.
+ *
+ * ADR-005 pilot addendum — a key present in `vnode.props` with the value
+ * `undefined` does NOT count as "passed". Discovered while visually
+ * verifying the Kbd preset tier: the standard story/consumer pattern
+ * `<OrigamKbd :bg-color="state.bgColor">` ALWAYS puts `bgColor` in
+ * `vnode.props` (Vue does not omit a dynamically-bound key just because
+ * its current value is `undefined`), which froze resolution at tier 1
+ * with `ownValue === undefined` and silently skipped every weaker tier —
+ * theme defaults included, not just the new preset tier. Proven with a
+ * scratch reproduction against the UNMODIFIED (pre-ADR-005) function
+ * before this fix landed, so this is a pre-existing characteristic of
+ * `useDefaults`, not something the preset tier introduced. Requiring a
+ * non-`undefined` value aligns `wasPropPassed` with how Vue's OWN
+ * `withDefaults()` already treats an `undefined` prop value (falls
+ * through to the default) — it does not touch the boolean-coercion case
+ * above, which is about a key ABSENT from `vnode.props` entirely.
  */
 
 /*********************************************************
@@ -70,7 +113,7 @@ export function usePassedProps<T extends Record<string, any>> (
     return (key) => {
         const vnodeProps = vm.vnode.props || {}
         for (const k in vnodeProps) {
-            if (k === key || camelize(k) === key) return true
+            if (k === key || camelize(k) === key) return vnodeProps[k] !== undefined
         }
         return false
     }
@@ -87,6 +130,11 @@ export function usePassedProps<T extends Record<string, any>> (
  * Pass `name` if the consumer is not a component (e.g. a child composable
  * that wants to read another component's defaults). Defaults to the current
  * instance's kebab-cased name (`getCurrentInstanceName()`).
+ *
+ * Pass `variantPresets` (ADR-005) to insert the preset tier described in the
+ * module doc above — a component that has a `variant` prop AND a DS-shipped
+ * preset table for it. Omit it entirely for components with no variant
+ * preset; behaviour is then byte-for-byte the pre-ADR-005 4-tier chain.
  */
 
 /*********************************************************
@@ -94,7 +142,8 @@ export function usePassedProps<T extends Record<string, any>> (
  ********************************************************/
 export function useDefaults<T extends Record<string, any>> (
     props: T,
-    name = getCurrentInstanceName()
+    name = getCurrentInstanceName(),
+    variantPresets?: TVariantPresets<string, T>
 ): T {
     const defaults = inject(ORIGAM_DEFAULTS_KEY, ref<IDefault>({}))
 
@@ -105,6 +154,23 @@ export function useDefaults<T extends Record<string, any>> (
     // see `usePassedProps()` above for why this can't be a plain
     // `!== undefined` check.
     const wasPropPassed = usePassedProps(props, 'useDefaults')
+
+    // Resolve the component's EFFECTIVE `variant` value through tiers 1-2-3
+    // ONLY (never through a preset — `variant` has no preset of itself, or
+    // presets could reference each other circularly). Re-run on every call
+    // (not memoised as its own `computed`) so each prop's `computed` below
+    // tracks `props.variant` / `defaults.value` / `vnode.props` directly as
+    // ITS OWN dependency — mirrors the existing `wasPropPassed` re-read
+    // rationale a few lines up.
+    const resolveVariantForPreset = (): string | undefined => {
+        if (!variantPresets || !('variant' in props)) return undefined
+        if (wasPropPassed('variant')) return (props as any).variant
+        const componentDefs = defaults.value?.[name]
+        if (componentDefs?.variant !== undefined) return componentDefs.variant as string
+        const globalDefs = defaults.value?.global
+        if (globalDefs?.variant !== undefined) return globalDefs.variant as string
+        return (props as any).variant
+    }
 
     const result = {} as Record<string, any>
 
@@ -127,6 +193,24 @@ export function useDefaults<T extends Record<string, any>> (
 
             const globalDefs = defaults.value?.global
             if (globalDefs?.[key] !== undefined) return globalDefs[key]
+
+            // Variant preset tier (ADR-005 Q2 — weakest tier above
+            // `withDefaults()`). Skipped when resolving `variant` itself.
+            if (variantPresets && key !== 'variant') {
+                const variantValue = resolveVariantForPreset()
+                if (variantValue != null) {
+                    // Theme override (D4) wins over the DS-shipped table —
+                    // same shape, checked first.
+                    const themePreset = defaults.value?.variants?.[name]?.[variantValue]
+                    if (themePreset && key in themePreset && themePreset[key] !== undefined) {
+                        return themePreset[key]
+                    }
+                    const dsPreset = (variantPresets as Record<string, Record<string, unknown> | undefined>)[variantValue]
+                    if (dsPreset && key in dsPreset && dsPreset[key] !== undefined) {
+                        return dsPreset[key]
+                    }
+                }
+            }
 
             // Fall through to the value baked in by `withDefaults()`.
             return ownValue
