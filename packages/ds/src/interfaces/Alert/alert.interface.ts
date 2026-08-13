@@ -1,5 +1,6 @@
 import type {
     IAdjacentProps,
+    IAdjacentSlots,
     IBorderProps,
     IBgColorProps,
     IClickCloseEmits,
@@ -35,3 +36,13 @@ export interface IAlertProps extends ICommonsComponentProps, ITagProps, IColorPr
 /** Emits fired by `<OrigamAlert>` — close button, dismissal v-model,
  *  hover propagation. */
 export interface IAlertEmits extends ICommonsComponentEmits, IClickCloseEmits, IHoverEmits {}
+
+/** Slot signatures for `<OrigamAlert>`. */
+export interface IAlertSlots extends IAdjacentSlots {
+    /** Overrides the whole prepend/content/append layout. */
+    wrapper?: () => any
+    title?: () => any
+    text?: () => any
+    default?: () => any
+    close?: () => any
+}

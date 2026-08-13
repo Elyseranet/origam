@@ -57,3 +57,17 @@ export interface ITimelineItemProps extends ICommonsComponentProps, IColorProps,
     orientation?: TTimelineOrientation
     index?: number
 }
+
+/** Slot signatures for `<OrigamTimeline>`. */
+export interface ITimelineSlots {
+    /** Overrides the whole auto-generated `<OrigamTimelineItem>` list. */
+    default?: () => any
+}
+
+/** Slot signatures for `<OrigamTimelineItem>`. */
+export interface ITimelineItemSlots {
+    dot?: () => any
+    /** Overrides the whole title/subtitle header + body block. */
+    default?: () => any
+    body?: () => any
+}

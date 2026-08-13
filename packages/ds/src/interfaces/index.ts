@@ -42,6 +42,8 @@ export * from './Checkbox/checkbox-btn.interface'
 export * from './Chip/chip.interface'
 export * from './Chip/chip-group.interface'
 
+export * from './ClientOnly/client-only.interface'
+
 export * from './Clipboard/clipboard.interface'
 
 export * from './Code/code.interface'
@@ -286,6 +288,8 @@ export * from './Textarea/textarea-toolbar.interface'
 export * from './TextField/text-field.interface'
 
 export * from './TextMask/text-mask.interface'
+
+export * from './ThemeProvider/theme-provider.interface'
 
 export * from './Title/title.interface'
 

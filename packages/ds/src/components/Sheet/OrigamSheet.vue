@@ -46,7 +46,7 @@
 
 	import type { ISheetProps} from "../../interfaces"
 
-	import type { ISheetEmits } from '../../interfaces/Sheet/sheet-emits.interface'
+	import type { ISheetEmits, ISheetSlots } from '../../interfaces/Sheet/sheet-emits.interface'
 
 	import type { TColor, TSheetSnapId, TSheetSnapPoint } from "../../types"
 
@@ -65,6 +65,8 @@
 	})
 
 	const emit = defineEmits<ISheetEmits>()
+
+	defineSlots<ISheetSlots>()
 
 	const {filterProps} = useProps<ISheetProps>(props)
 

@@ -12,3 +12,8 @@ export interface ILazyComponentProps extends ICommonsComponentProps, IDimensionP
 /** Emits fired by `<OrigamLazy>` — v-model fires when the intersection
  *  observer flips the wrapper to "visible". */
 export interface ILazyEmits extends ICommonsComponentEmits {}
+
+/** Slot signatures for `<OrigamLazy>`. */
+export interface ILazySlots {
+    default?: () => any
+}

@@ -40,7 +40,7 @@
 		useTypography
 } from '../../composables'
 
-	import type { IKbdProps } from '../../interfaces'
+	import type { IKbdProps, IKbdSlots } from '../../interfaces'
 
 	import { computed, StyleValue, toRef } from 'vue'
 
@@ -58,6 +58,8 @@
 	const props = _props
 
 	const { filterProps } = useProps<IKbdProps>(props)
+
+	defineSlots<IKbdSlots>()
 
 	/*********************************************************
 	 * Composables

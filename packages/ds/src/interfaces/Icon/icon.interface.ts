@@ -21,6 +21,12 @@ export interface IIconComponentProps extends IIconProps, IColorProps, IBgColorPr
     disabled?: boolean
 }
 
+/** Slot signatures shared by `<OrigamIcon>` and `<OrigamComponentIcon>` —
+ *  a single unscoped `default` slot holding the icon glyph / fallback. */
+export interface IIconComponentSlots {
+    default?: () => any
+}
+
 export interface IIconAliases {
     [name: string]: TIcon
 }

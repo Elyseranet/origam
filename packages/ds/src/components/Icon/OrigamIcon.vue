@@ -31,7 +31,7 @@
 	useStyle
 } from '../../composables'
 
-	import type { IIconComponentProps } from '../../interfaces'
+	import type { IIconComponentProps, IIconComponentSlots } from '../../interfaces'
 
 	import { flattenFragments } from '../../utils'
 
@@ -46,6 +46,8 @@
 	const props = withDefaults(defineProps<IIconComponentProps>(), {tag: 'i'})
 
 	const {filterProps} = useProps<IIconComponentProps>(props)
+
+	defineSlots<IIconComponentSlots>()
 
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 

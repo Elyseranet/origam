@@ -20,3 +20,9 @@ export interface IKbdProps extends ICommonsComponentProps, IColorProps, IBgColor
     /** Visual variant. Defaults to 'outlined'. */
     variant?: TKbdVariant
 }
+
+/** Slot signatures for `<OrigamKbd>`. The default slot wins over both
+ *  the `combination` and `text` props. */
+export interface IKbdSlots {
+    default?: () => any
+}

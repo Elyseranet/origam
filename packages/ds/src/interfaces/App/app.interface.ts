@@ -28,3 +28,8 @@ export interface IAppProps extends ICommonsComponentProps, IColorProps, IBgColor
 
 /** Emits fired by `<OrigamApp>` — none beyond the shared component contract. */
 export interface IAppEmits extends ICommonsComponentEmits {}
+
+/** Slot signatures for `<OrigamApp>`. */
+export interface IAppSlots {
+    default?: () => any
+}

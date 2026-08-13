@@ -46,7 +46,7 @@
 
 	import { PARALLAX_DIRECTION, PARALLAX_EASING, PARALLAX_EVENT } from '../../enums'
 
-	import type { IBox, IParallaxEmits, IParallaxProps } from '../../interfaces'
+	import type { IBox, IParallaxEmits, IParallaxProps, IParallaxSlots } from '../../interfaces'
 
 	import type { TParallaxDirection, TParallaxEasing } from '../../types'
 
@@ -78,6 +78,8 @@
 	const emit = defineEmits<IParallaxEmits>()
 
 	const {filterProps} = useProps<IParallaxProps>(props)
+
+	defineSlots<IParallaxSlots>()
 
 	/*********************************************************
 	 * Composables (chrome)

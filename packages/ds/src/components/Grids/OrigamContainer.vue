@@ -21,7 +21,7 @@
 	useStyle
 } from '../../composables'
 
-	import type { IContainerProps } from '../../interfaces'
+	import type { ICommonsComponentSlots, IContainerProps } from '../../interfaces'
 
 	import { computed, StyleValue } from 'vue'
 
@@ -34,6 +34,8 @@
 	const props = withDefaults(defineProps<IContainerProps>(), {tag: 'div', fluid: false})
 
 	const {filterProps} = useProps<IContainerProps>(props)
+
+	defineSlots<ICommonsComponentSlots>()
 
 	/*********************************************************
 	 * Composables

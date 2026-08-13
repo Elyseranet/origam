@@ -24,7 +24,7 @@
 } from '../../composables'
 	import { DENSITY } from '../../enums'
 
-	import type { IRowProps } from '../../interfaces'
+	import type { ICommonsComponentSlots, IRowProps } from '../../interfaces'
 	import type { TColor } from '../../types'
 
 	import { toKebabCase } from '../../utils'
@@ -38,6 +38,8 @@
 	const props = withDefaults(defineProps<IRowProps>(), {tag: 'div', density: DENSITY.DEFAULT})
 
 	const {filterProps} = useProps<IRowProps>(props)
+
+	defineSlots<ICommonsComponentSlots>()
 
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 

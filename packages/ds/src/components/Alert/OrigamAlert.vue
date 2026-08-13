@@ -142,7 +142,7 @@
 
 	import type { IAlertProps} from '../../interfaces'
 
-	import type { IAlertEmits } from '../../interfaces/Alert/alert.interface'
+	import type { IAlertEmits, IAlertSlots } from '../../interfaces/Alert/alert.interface'
 
 	/*********************************************************
 	 * Global
@@ -174,6 +174,8 @@
 	const props = useDefaults(_props)
 
 	const emits = defineEmits<IAlertEmits>()
+
+	defineSlots<IAlertSlots>()
 
 	const {filterProps} = useProps<IAlertProps>(props)
 	const {t} = useLocale()

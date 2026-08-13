@@ -21,7 +21,7 @@
 	useStyle
 } from '../../composables'
 
-	import type { IColProps } from '../../interfaces'
+	import type { IColProps, ICommonsComponentSlots } from '../../interfaces'
 
 	import { toKebabCase } from '../../utils'
 
@@ -36,6 +36,8 @@
 	const props = withDefaults(defineProps<IColProps>(), {tag: 'div'})
 
 	const {filterProps} = useProps<IColProps>(props)
+
+	defineSlots<ICommonsComponentSlots>()
 
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 

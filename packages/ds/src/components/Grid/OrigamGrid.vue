@@ -27,7 +27,7 @@
 
 	import { GRID_GAP_SIZE_VAR } from '../../consts'
 
-	import type { IGridProps, TGridTracks } from '../../interfaces'
+	import type { ICommonsComponentSlots, IGridProps, TGridTracks } from '../../interfaces'
 
 	import type { TGridGapSize } from '../../types'
 
@@ -61,6 +61,8 @@
 	})
 
 	const {filterProps} = useProps<IGridProps>(props)
+
+	defineSlots<ICommonsComponentSlots>()
 
 	/*********************************************************
 	 * Track serialisation

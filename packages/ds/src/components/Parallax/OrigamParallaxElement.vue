@@ -28,7 +28,7 @@
 
 	import { AXIS, PARALLAX_ELEMENT_TYPE } from '../../enums'
 
-	import type { IParallaxElementProps } from '../../interfaces'
+	import type { IParallaxElementProps, IParallaxElementSlots } from '../../interfaces'
 
 	import { cyclicMovement, elementMovement } from '../../utils'
 
@@ -50,6 +50,8 @@
 	})
 
 	const {filterProps} = useProps<IParallaxElementProps>(props)
+
+	defineSlots<IParallaxElementSlots>()
 
 	/*********************************************************
 	 * Decorators

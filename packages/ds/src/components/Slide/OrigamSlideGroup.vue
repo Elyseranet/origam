@@ -81,7 +81,7 @@
 
 	import type { IGoToOptions, ISlideGroupProps} from "../../interfaces"
 
-	import type { ISlideGroupEmits } from '../../interfaces/Slide/slide-group.interface'
+	import type { ISlideGroupEmits, ISlideGroupSlots } from '../../interfaces/Slide/slide-group.interface'
 	import {
 		calculateCenteredTarget,
 		calculateUpdatedTarget,
@@ -115,6 +115,8 @@
 	})
 
 	defineEmits<ISlideGroupEmits>()
+
+	defineSlots<ISlideGroupSlots>()
 
 	const {filterProps} = useProps<ISlideGroupProps>(props)
 

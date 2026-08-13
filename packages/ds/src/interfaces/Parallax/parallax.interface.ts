@@ -92,6 +92,11 @@ export interface IParallaxEmits {
     (e: 'scroll-progress', progress: number): void
 }
 
+/** Slot signatures for `<OrigamParallax>`. */
+export interface IParallaxSlots {
+    default?: () => any
+}
+
 export interface IParallaxProvide {
     audioData: Ref<any>
     eventData: Ref<TPoint>

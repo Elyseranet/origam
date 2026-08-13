@@ -53,7 +53,7 @@
 
 	import type { IRadioBtnProps} from '../../interfaces'
 
-	import type { IRadioBtnEmits } from '../../interfaces/Radio/radio-btn.interface'
+	import type { IRadioBtnEmits, IRadioBtnSlots } from '../../interfaces/Radio/radio-btn.interface'
 
 	import type { TOrigamSelectionControl } from "../../types"
 
@@ -70,6 +70,8 @@
 	})
 
 	const emits = defineEmits<IRadioBtnEmits>()
+
+	defineSlots<IRadioBtnSlots>()
 
 	const {filterProps} = useProps<IRadioBtnProps>(props)
 

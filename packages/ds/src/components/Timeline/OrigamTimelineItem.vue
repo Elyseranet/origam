@@ -51,7 +51,7 @@
 	useSize,
 	useStyle
 } from '../../composables'
-	import type { ITimelineItemProps } from '../../interfaces'
+	import type { ITimelineItemProps, ITimelineItemSlots } from '../../interfaces'
 
 	import { TIMELINE_CONTEXT_KEY } from '../../consts'
 
@@ -72,6 +72,8 @@
 	const timelineCtx = inject(TIMELINE_CONTEXT_KEY, null)
 
 	const { filterProps } = useProps<ITimelineItemProps>(props)
+
+	defineSlots<ITimelineItemSlots>()
 	/*********************************************************
 	 * Composables
 	 ********************************************************/

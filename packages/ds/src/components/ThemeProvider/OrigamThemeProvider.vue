@@ -16,7 +16,7 @@
 	import { computed, inject, ref, useAttrs } from 'vue'
 	import { provideDefaults } from '../../composables'
 	import { ORIGAM_DEFAULTS_KEY, ORIGAM_THEME_DEFAULTS_KEY } from '../../consts'
-	import type { IDefault } from '../../interfaces'
+	import type { IDefault, IThemeProviderSlots } from '../../interfaces'
 	import type { TMode, TModeResolved, TTheme } from '../../types'
 
 	defineOptions({ inheritAttrs: false })
@@ -55,6 +55,8 @@
 		mode: 'auto',
 		tag: 'div'
 	})
+
+	defineSlots<IThemeProviderSlots>()
 
 	const attrs = useAttrs()
 

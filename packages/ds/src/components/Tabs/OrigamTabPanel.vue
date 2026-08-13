@@ -38,7 +38,7 @@
 
 	import { ORIGAM_TABS_KEY, ORIGAM_TAB_PANELS_KEY, ORIGAM_TAB_PANELS_CTX_KEY } from '../../consts'
 
-	import type { ITabPanelProps } from '../../interfaces'
+	import type { ITabPanelProps, ITabPanelSlots } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -50,6 +50,8 @@
 	})
 
 	const {filterProps} = useProps<ITabPanelProps>(props)
+
+	defineSlots<ITabPanelSlots>()
 
 	const rootRef = ref<HTMLElement>()
 

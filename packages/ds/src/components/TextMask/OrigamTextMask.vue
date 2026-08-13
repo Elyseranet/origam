@@ -23,7 +23,7 @@
 	import { resolveGradient } from '../../utils/Commons/gradient.util'
 	import { useTypography } from '../../composables'
 
-	import type { ITextMaskProps } from '../../interfaces'
+	import type { ITextMaskProps, ITextMaskSlots } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -46,6 +46,8 @@
 		animationType: 'pan',
 		align: 'left'
 	})
+
+	defineSlots<ITextMaskSlots>()
 
 	const slots = useSlots()
 

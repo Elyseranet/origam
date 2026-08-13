@@ -14,7 +14,7 @@
 >
 	import { computed, StyleValue } from 'vue'
 
-	import type { IGridItemProps, IGridLineSpec } from '../../interfaces'
+	import type { ICommonsComponentSlots, IGridItemProps, IGridLineSpec } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -33,6 +33,8 @@
 		alignSelf: undefined,
 		justifySelf: undefined
 	})
+
+	defineSlots<ICommonsComponentSlots>()
 
 	/*********************************************************
 	 * Line-spec serialisation

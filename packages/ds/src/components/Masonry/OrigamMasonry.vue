@@ -55,7 +55,7 @@
 
 	import { GRID_GAP_SIZE_VAR } from '../../consts'
 
-	import type { IMasonryProps } from '../../interfaces'
+	import type { ICommonsComponentSlots, IMasonryProps } from '../../interfaces'
 
 	import type { TGridGapSize } from '../../types'
 
@@ -79,6 +79,8 @@
 	})
 
 	const {filterProps} = useProps<IMasonryProps>(props)
+
+	defineSlots<ICommonsComponentSlots>()
 
 	const slots = useSlots()
 	const rootEl = ref<HTMLElement | null>(null)

@@ -35,7 +35,7 @@
 
 	import type { ILazyComponentProps} from '../../interfaces'
 
-	import type { ILazyEmits } from '../../interfaces/Commons/lazy.interface'
+	import type { ILazyEmits, ILazySlots } from '../../interfaces/Commons/lazy.interface'
 
 	import type { TTransitionProps } from "../../types"
 
@@ -57,6 +57,8 @@
 	})
 
 	defineEmits<ILazyEmits>()
+
+	defineSlots<ILazySlots>()
 
 	const {filterProps} = useProps<ILazyComponentProps>(props)
 

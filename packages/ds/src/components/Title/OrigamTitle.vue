@@ -34,7 +34,7 @@
 
 	import { vContrast } from '../../directives'
 
-	import type { ITitleProps } from '../../interfaces'
+	import type { ITitleProps, ITitleSlots } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -58,6 +58,8 @@
 	const props = useDefaults(_props)
 
 	const {filterProps} = useProps<ITitleProps>(props)
+
+	defineSlots<ITitleSlots>()
 
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 

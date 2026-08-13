@@ -54,7 +54,7 @@
 	useSize,
 	useStyle
 } from '../../composables'
-	import type { ISkeletonProps } from '../../interfaces'
+	import type { ICommonsComponentSlots, ISkeletonProps } from '../../interfaces'
 	import { convertToUnit } from '../../utils'
 	import { computed, toRef } from 'vue'
 	import type { StyleValue } from 'vue'
@@ -70,6 +70,8 @@
 	})
 
 	const {filterProps} = useProps<ISkeletonProps>(props)
+
+	defineSlots<ICommonsComponentSlots>()
 	/*********************************************************
 	 * Composables
 	 ********************************************************/

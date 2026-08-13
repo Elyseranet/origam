@@ -16,3 +16,8 @@ import type {
 export interface ITabPanelProps extends ICommonsComponentProps, ITagProps, IGroupItemProps, ILazyProps {
     tag?: string
 }
+
+/** Slot signatures for `<OrigamTabPanel>`. */
+export interface ITabPanelSlots {
+    default?: () => any
+}

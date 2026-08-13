@@ -20,7 +20,7 @@
 	import { useProps , useStyle} from "../../composables"
 	import { SIZES_ARRAY } from '../../consts'
 
-	import type { IIconComponentProps } from '../../interfaces'
+	import type { IIconComponentProps, IIconComponentSlots } from '../../interfaces'
 	import type { Component } from 'vue'
 	import { computed, StyleValue } from 'vue'
 
@@ -36,6 +36,8 @@
 	const props = withDefaults(defineProps<IIconComponentProps>(), {tag: 'div'})
 
 	const {filterProps} = useProps<IIconComponentProps>(props)
+
+	defineSlots<IIconComponentSlots>()
 
 	const hasIcon = computed(() => {
 		return !!props.icon

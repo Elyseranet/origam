@@ -29,6 +29,11 @@ export interface IParallaxLayerProps extends ICommonsComponentProps, ITagProps {
     zIndex?: number
 }
 
+/** Slot signatures for `<OrigamParallaxLayer>`. */
+export interface IParallaxLayerSlots {
+    default?: () => any
+}
+
 export interface IParallaxLayerRegistry {
     /**
      * Internal layer descriptor as registered into the parent OrigamParallax

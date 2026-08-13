@@ -17,6 +17,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 
+import type { IClientOnlySlots } from '../../interfaces'
+
 defineOptions({ name: 'OrigamClientOnly' })
 
 defineProps<{
@@ -35,6 +37,8 @@ defineProps<{
      */
     placeholderClass?: string
 }>()
+
+defineSlots<IClientOnlySlots>()
 
 const isMounted = ref(false)
 

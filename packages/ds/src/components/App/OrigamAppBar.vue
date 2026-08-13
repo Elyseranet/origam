@@ -66,7 +66,7 @@
 
 	import type { IAppBarProps} from '../../interfaces'
 
-	import type { IAppBarEmits } from '../../interfaces/App/app-bar.interface'
+	import type { IAppBarEmits, IAppBarSlots } from '../../interfaces/App/app-bar.interface'
 
 	import type { TOrigamToolbar } from "../../types"
 
@@ -89,6 +89,8 @@
 	})
 
 	defineEmits<IAppBarEmits>()
+
+	defineSlots<IAppBarSlots>()
 
 	const {filterProps} = useProps<IAppBarProps>(props)
 

@@ -17,7 +17,7 @@
 	import { computed, StyleValue, toRef } from "vue"
 	import { useBothColor, useProps, useStyle, useTypography } from "../../composables"
 
-	import type { IPickerTitleProps } from "../../interfaces"
+	import type { IPickerTitleProps, IPickerTitleSlots } from "../../interfaces"
 
 	/*********************************************************
 	 * Global
@@ -30,6 +30,8 @@
 	})
 
 	const {filterProps} = useProps<IPickerTitleProps>(props)
+
+	defineSlots<IPickerTitleSlots>()
 
 	/*********************************************************
 	 * Color

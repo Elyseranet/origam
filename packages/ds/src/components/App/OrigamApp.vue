@@ -23,7 +23,7 @@
 
 	import { useDefaults, useProps, useRtl , useStyle} from "../../composables"
 
-	import type { IAppProps } from '../../interfaces'
+	import type { IAppProps, IAppSlots } from '../../interfaces'
 
 	import type { TOrigamApp } from "../../types"
 
@@ -51,6 +51,8 @@
 	const props = useDefaults(_props)
 
 	const {filterProps} = useProps<IAppProps>(props)
+
+	defineSlots<IAppSlots>()
 
 	/*********************************************************
 	 * Composables

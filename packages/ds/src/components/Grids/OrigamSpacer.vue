@@ -15,7 +15,7 @@
 	import { computed, StyleValue } from 'vue'
 	import { useProps , useStyle} from "../../composables"
 
-	import type { ISpacerProps } from "../../interfaces"
+	import type { ICommonsComponentSlots, ISpacerProps } from "../../interfaces"
 
 	/*********************************************************
 	 * Global
@@ -26,6 +26,8 @@
 	const props = withDefaults(defineProps<ISpacerProps>(), {tag: 'div'})
 
 	const {filterProps} = useProps<ISpacerProps>(props)
+
+	defineSlots<ICommonsComponentSlots>()
 
 	/*********************************************************
 	 * Class & Style

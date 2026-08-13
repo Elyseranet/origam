@@ -8,3 +8,9 @@ import type { IBgColorProps,
 export interface IPickerTitleProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, ITypographyProps {
     title?: string
 }
+
+/** Slot signatures for `<OrigamPickerTitle>`. The default slot wins
+ *  over the `title` prop. */
+export interface IPickerTitleSlots {
+    default?: () => any
+}

@@ -38,7 +38,7 @@
 
 	import type { IWindowItemProps} from '../../interfaces'
 
-	import type { IWindowItemEmits } from '../../interfaces/Window/window-item.interface'
+	import type { IWindowItemEmits, IWindowItemSlots } from '../../interfaces/Window/window-item.interface'
 
 	import { convertToUnit } from '../../utils'
 
@@ -56,6 +56,8 @@
 	})
 
 	defineEmits<IWindowItemEmits>()
+
+	defineSlots<IWindowItemSlots>()
 
 	const {filterProps} = useProps<IWindowItemProps>(props)
 

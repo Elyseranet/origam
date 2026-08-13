@@ -32,7 +32,7 @@
 	useStyle
 } from '../../composables'
 
-	import type { ILayoutProps } from '../../interfaces'
+	import type { ICommonsComponentSlots, ILayoutProps } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -44,6 +44,8 @@
 	const props = withDefaults(defineProps<ILayoutProps>(), {})
 
 	const {filterProps} = useProps<ILayoutProps>(props)
+
+	defineSlots<ICommonsComponentSlots>()
 
 	/*********************************************************
 	 * Composables

@@ -7,3 +7,8 @@ export interface IWindowItemProps extends ICommonsComponentProps, ILazyProps, IG
 
 /** Emits fired by `<OrigamWindowItem>` — group membership lifecycle. */
 export interface IWindowItemEmits extends IGroupEmits {}
+
+/** Slot signatures for `<OrigamWindowItem>`. */
+export interface IWindowItemSlots {
+    default?: () => any
+}

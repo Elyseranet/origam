@@ -43,6 +43,11 @@ export interface IParallaxElementMovement {
     maxY?: number,
 }
 
+/** Slot signatures for `<OrigamParallaxElement>`. */
+export interface IParallaxElementSlots {
+    default?: () => any
+}
+
 export interface IParallaxElementCicle {
     referencePosition: TPoint,
     shape: IBox,

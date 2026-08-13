@@ -27,3 +27,12 @@ export interface IAppBarProps extends Omit<IToolbarProps, 'width' | 'minWidth' |
 
 /** Emits fired by `<OrigamAppBar>` — v-model on the rail/expanded state. */
 export interface IAppBarEmits extends ICommonsComponentEmits {}
+
+/** Slot signatures for `<OrigamAppBar>`. */
+export interface IAppBarSlots {
+    append?: () => any
+    prepend?: () => any
+    img?: () => any
+    content?: () => any
+    default?: () => any
+}

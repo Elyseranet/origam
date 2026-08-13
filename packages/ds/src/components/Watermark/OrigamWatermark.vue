@@ -35,7 +35,8 @@
 	import { useWatermark } from '../../composables'
 
 	import type {
-		IWatermarkProps
+		IWatermarkProps,
+		IWatermarkSlots
 	} from '../../interfaces'
 
 	/*********************************************************
@@ -89,6 +90,8 @@
 		pointerEvents: props.pointerEvents,
 		zIndex: props.zIndex
 	}))
+
+	defineSlots<IWatermarkSlots>()
 
 	const { patternUrl } = useWatermark(resolvedOptions)
 

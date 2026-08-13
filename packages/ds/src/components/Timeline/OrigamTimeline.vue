@@ -60,7 +60,7 @@
 	useSize,
 	useStyle
 } from '../../composables'
-	import type { ITimelineProps } from '../../interfaces'
+	import type { ITimelineProps, ITimelineSlots } from '../../interfaces'
 	import { TIMELINE_CONTEXT_KEY } from '../../consts'
 
 	/*********************************************************
@@ -75,6 +75,8 @@
 	})
 
 	const { filterProps } = useProps<ITimelineProps>(props)
+
+	defineSlots<ITimelineSlots>()
 
 	const orientation = computed(() => props.orientation ?? 'vertical')
 

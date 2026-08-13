@@ -15,6 +15,11 @@ export interface IProgressProps extends IProgressLinearProps, IProgressCircularP
     type?: TProgressType
 }
 
+/** Slot signatures for `<OrigamProgress>`. */
+export interface IProgressSlots {
+    default?: () => any
+}
+
 export interface IProgressTypeProps extends ITagProps, ICommonsComponentProps, IColorProps, IBgColorProps, IPaddingProps, IMarginProps {
     indeterminate?: boolean
     modelValue?: string | number

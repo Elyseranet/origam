@@ -15,3 +15,8 @@ export interface ISheetEmits {
 
     (e: 'update:open', value: boolean): void
 }
+
+/** Slot signatures for `<OrigamSheet>`. */
+export interface ISheetSlots {
+    default?: () => any
+}

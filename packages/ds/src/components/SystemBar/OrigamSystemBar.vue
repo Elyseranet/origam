@@ -29,7 +29,7 @@
 
 	import { vContrast } from "../../directives"
 
-	import type { ISystemBarProps } from "../../interfaces"
+	import type { ICommonsComponentSlots, ISystemBarProps } from "../../interfaces"
 
 	/*********************************************************
 	 * Global
@@ -42,6 +42,8 @@
 	})
 
 	const {filterProps} = useProps<ISystemBarProps>(props)
+
+	defineSlots<ICommonsComponentSlots>()
 
 	/*********************************************************
 	 * Layout

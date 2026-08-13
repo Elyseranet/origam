@@ -38,7 +38,7 @@
 
 	import { PROGRESS_TYPE, SIZES } from '../../enums'
 
-	import type { IProgressProps } from '../../interfaces'
+	import type { IProgressProps, IProgressSlots } from '../../interfaces'
 
 	import type { TOrigamProgressCircular, TOrigamProgressLinear } from "../../types"
 
@@ -57,6 +57,8 @@
 	})
 
 	const {filterProps} = useProps<IProgressProps>(props)
+
+	defineSlots<IProgressSlots>()
 
 	/*********************************************************
 	 * DOM refs

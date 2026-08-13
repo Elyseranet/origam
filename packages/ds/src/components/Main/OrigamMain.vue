@@ -31,7 +31,7 @@
 	useStyle
 } from '../../composables'
 
-	import type { IMainProps } from '../../interfaces'
+	import type { ICommonsComponentSlots, IMainProps } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -42,6 +42,8 @@
 	const props = withDefaults(defineProps<IMainProps>(), {tag: 'main'})
 
 	const {filterProps} = useProps<IMainProps>(props)
+
+	defineSlots<ICommonsComponentSlots>()
 
 	/*********************************************************
 	 * Layout & decorators
