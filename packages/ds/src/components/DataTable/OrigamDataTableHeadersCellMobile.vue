@@ -20,6 +20,7 @@
 							clearable
 							@click:clear="handleClear"
 							@click:append="handleAppendCLick"
+							@click:prepend="handlePrependClick"
 					>
 						<template
 								v-if="slots['select.prepend']"
@@ -262,6 +263,13 @@
 	const handleAppendCLick = (e: MouseEvent) => {
 		selectAll(!allSelected)
 		emits('click:append', e)
+	}
+	// No "select all" business logic attached here — unlike the append
+	// side, this cell never sets a `prependIcon` on the internal select
+	// itself, so a prepend click can only originate from a consumer's
+	// `#select.prepend` slot. Just pass the click through.
+	const handlePrependClick = (e: MouseEvent) => {
+		emits('click:prepend', e)
 	}
 
 	const handleChipClick = (item: IInternalListItem) => {
