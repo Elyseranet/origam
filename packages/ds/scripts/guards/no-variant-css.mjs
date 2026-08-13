@@ -56,7 +56,27 @@ const REPO_ROOT = path.resolve(DS_ROOT, '../..')
 const SRC_DIR = path.join(DS_ROOT, 'src')
 const BASELINE_PATH = path.join(__dirname, 'baseline/no-variant-css.json')
 
-const VARIANT_SELECTOR_RE = /--variant-[a-z0-9-]+/
+// Matches `--variant-*` AND the aliases a component may introduce to hold the
+// CSS that genuinely cannot become props.
+//
+// WHY THE ALIASES ARE WATCHED TOO. A variant's CSS does not always reduce to
+// root props: Field styles BEM children (`__outlines`) and states, Blockquote
+// draws a decorative glyph. Both tickets moved that residue onto a differently
+// named class — `--chrome-{variant}`, `--has-quote-mark` — so the rule below
+// would not see it. That is a defensible separation of concerns: the leftover
+// is structural chrome, not a style preset.
+//
+// It is also, unwatched, an unbounded escape hatch. `chromeClasses` in
+// `OrigamField.vue` resolves to `origam-field--chrome-${props.variant}` — the
+// variant class under another name. If each conversion may coin its own alias,
+// the guard protects a naming convention rather than the contract, and the CSS
+// the chantier set out to remove simply relocates.
+//
+// So aliases are matched and baselined like everything else: existing ones are
+// grandfathered, a NEW one fails the build. Adding a legitimate alias stays
+// possible — it just becomes a deliberate act, reviewed once, instead of a
+// silent side effect of a conversion.
+const VARIANT_SELECTOR_RE = /--(?:variant|chrome)-[a-z0-9-]+|--has-quote-mark/
 
 function walkFiles (dir, predicate) {
     const out = []
