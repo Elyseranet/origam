@@ -556,6 +556,13 @@
 			</div>
 		</Variant>
 
+		<Variant title="Prop — variant override (bgColor beats the preset)">
+			<div style="display: flex; gap: 24px; padding: 16px;" data-cy="textfield-variant-override-matrix">
+				<origam-text-field variant="outlined" label="Outlined only" data-cy="textfield-ovr-outlined-only"/>
+				<origam-text-field variant="outlined" label="Outlined + bgColor" bg-color="primary" data-cy="textfield-ovr-outlined-bgcolor"/>
+			</div>
+		</Variant>
+
 	</Story>
 </template>
 

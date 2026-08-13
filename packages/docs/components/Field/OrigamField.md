@@ -23,12 +23,95 @@ field chrome.
 
 ## Variants
 
+`variant` is a **props preset** (ADR-005 — `variant` = preconfiguration of
+props, not a CSS layer), resolved through the exact same mechanism a theme
+uses to declare default props: `useDefaults`. It also has the widest
+`variant` surface in the DS (`OrigamField` and its six descendants —
+TextField, TextareaField, Select, FileField, NumberField, OtpInputField —
+all share the `outlined`/`filled`/`plain`/`underlined`/`solo` vocabulary),
+and it is the **hardest** conversion: almost all of a Field variant's look
+targets nested BEM children (`__outlines`, `__outline`) or is
+state-conditioned on them, which a preset — root-props-only by design —
+cannot reach. This conversion is therefore **partial by construction**
+(ADR-005 D5 family C), not a regression:
+
+| Value | What converted to the preset | What stayed component CSS |
+|---|---|---|
+| `outlined` (default) | `bgColor` (background) | Border width/opacity custom properties, the full `__outline--start/end/notch` per-corner geometry, floating-label alignment, active/focused notch border — all BEM-child-only |
+| `filled` | `bgColor` (background), `rounded` (asymmetric top-only radius) | `__input` top padding, `__outline` bottom-border + hover/focus/error opacity |
+| `plain` | `bgColor: 'transparent'` | `__outlines { display: none }`, `__input` inline padding |
+| `solo` | `elevation` (box-shadow) | `__input` top padding |
+| `underlined` | *nothing* — see below | Border width/opacity, `__outline` bottom-border geometry, hover/focus opacity |
+
 ```vue
 <template>
   <OrigamField variant="outlined" label="Outlined" />
   <OrigamField variant="filled"   label="Filled" />
   <OrigamField variant="plain"    label="Plain" />
+  <OrigamField variant="solo"     label="Solo" />
+  <OrigamField variant="underlined" label="Underlined" />
 </template>
+```
+
+### Resolution order — the preset is the WEAKEST tier
+
+```
+prop at the call site  >  theme default  >  variant preset  >  component default
+```
+
+```vue
+<template>
+    <!-- Paints primary — bgColor is a call-site prop (tier 1), the
+         outlined preset's bgColor is tier 3 (weakest). This is the
+         ADR-005 acceptance test for this ticket. -->
+    <origam-text-field variant="outlined" bg-color="primary">…</origam-text-field>
+</template>
+```
+
+The `origam-field--variant-{value}` class is still applied to the root
+element — it carries **zero** DS rules, purely a consumer override hook.
+The irreducible BEM-child CSS listed above is kept alive by a SEPARATE
+structural class, `origam-field--chrome-{value}` (driven by the resolved
+`variant`, same pattern as `OrigamBlockquote`'s
+`origam-blockquote--has-quote-mark`) — so it survives the CI guard that
+bans DS rules on `--variant-*` selectors.
+
+### `underlined` has no preset entry
+
+Every declaration `underlined` used to make targets `__outline` children
+(directly, or via a custom property only they read) — there is nothing at
+the root to preset. `FIELD_VARIANT_PRESETS` deliberately omits an
+`underlined` key rather than writing a misleading empty `{}` entry.
+
+### `rounded` reaches the six descendants only when nothing else sets it
+
+`TextField` / `TextareaField` / `Select` / `FileField` / `NumberField` /
+`OtpInputField` all default their OWN `rounded` prop to `true` — a
+concrete value, always forwarded explicitly to the internal
+`<origam-field>`. That means `filled`'s asymmetric-radius preset entry is
+only reachable through a **bare** `<OrigamField variant="filled">` — it
+does not change rendering through any of the six typed atoms, in either
+direction (their `rounded="true"` already beat the OLD `&--variant-filled`
+CSS the same way, inline always winning over a class). `bgColor` and
+`elevation` don't have this limitation — see `field-variant.const.ts` for
+the full, verified explanation.
+
+### Theme-level override
+
+A theme can redefine what a variant means via `IOrigamTheme.variants`,
+merged over the DS-shipped table:
+
+```ts
+createOrigam({
+    themes: [{
+        name: 'brand-x',
+        variants: {
+            'origam-field': {
+                filled: { bgColor: 'var(--origam-color__surface---overlay)' }
+            }
+        }
+    }]
+})
 ```
 
 ## Color

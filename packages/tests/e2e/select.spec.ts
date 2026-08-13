@@ -859,4 +859,32 @@ test.describe('OrigamSelect', () => {
             })
         }
     })
+
+    // ------------------------------------------------------------------ //
+    // VARIANT = PROPS PRESET, forwarded through Select (index 29)         //
+    // ADR-005, ticket #24 — same acceptance test as OrigamTextField: an   //
+    // explicit bgColor at the Select call site must beat the outlined     //
+    // preset's bgColor on the INNER <origam-field> Select renders.        //
+    // ------------------------------------------------------------------ //
+
+    test.describe('Variant = props preset, forwarded to inner OrigamField (ADR-005)', () => {
+        test('variant="outlined" + bgColor="primary": bgColor paints on the inner field', async ({ page }) => {
+            await page.goto(variantUrl(29))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const matrix = sandbox.locator('[data-cy="select-variant-override-matrix"]')
+            await expect(matrix).toBeVisible({ timeout: 12000 })
+
+            const only = sandbox.locator('[data-cy="select-ovr-outlined-only"] .origam-field')
+            const withBg = sandbox.locator('[data-cy="select-ovr-outlined-bgcolor"] .origam-field')
+            await expect(only).toBeVisible()
+            await expect(withBg).toBeVisible()
+
+            const bgOnly = await only.evaluate(el => getComputedStyle(el).backgroundColor)
+            const bgWithBg = await withBg.evaluate(el => getComputedStyle(el).backgroundColor)
+
+            expect(bgWithBg).not.toBe(bgOnly)
+            expect(bgWithBg).not.toBe('rgba(0, 0, 0, 0)')
+            expect(bgWithBg).toBe('rgb(124, 58, 237)')
+        })
+    })
 })

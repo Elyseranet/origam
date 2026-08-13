@@ -471,6 +471,21 @@
 				</StoryGroup>
 			</template>
 		</Variant>
+
+		<Variant title="Prop — variant override (bgColor beats the preset)">
+			<div style="display: flex; gap: 24px; padding: 16px;" data-cy="field-variant-override-matrix">
+				<origam-field variant="outlined" label="Outlined only" data-cy="field-ovr-outlined-only">
+					<template #default="{ id, onFocus, onBlur }">
+						<input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/>
+					</template>
+				</origam-field>
+				<origam-field variant="outlined" label="Outlined + bgColor" bg-color="primary" data-cy="field-ovr-outlined-bgcolor">
+					<template #default="{ id, onFocus, onBlur }">
+						<input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/>
+					</template>
+				</origam-field>
+			</div>
+		</Variant>
 	</Story>
 </template>
 

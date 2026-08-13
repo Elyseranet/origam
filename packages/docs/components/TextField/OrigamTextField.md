@@ -19,13 +19,30 @@ const name = ref('')
 
 ## Variants
 
+`variant` is a **props preset** resolved on the INNER `<OrigamField>` this
+component renders (ADR-005, ticket #24 — see
+[`OrigamField`'s Variants section](/components/Field/OrigamField.md#variants)
+for the full preset table and what did / didn't convert). An explicit prop
+at the call site always beats the preset:
+
 ```vue
 <template>
   <OrigamTextField variant="outlined" label="Outlined" />
   <OrigamTextField variant="filled"   label="Filled" />
   <OrigamTextField variant="plain"    label="Plain" />
+
+  <!-- Paints primary — bgColor is a call-site prop, the outlined preset's
+       bgColor is the weakest tier. -->
+  <OrigamTextField variant="outlined" bg-color="primary" label="Primary outlined" />
 </template>
 ```
+
+Note: `TextField` defaults its OWN `rounded` prop to `true`, which is
+always forwarded to the inner `OrigamField` as an explicit value — so the
+`filled` preset's asymmetric-corner-radius entry never reaches a
+`TextField` (it's reachable through a bare `OrigamField` only). This does
+not change any TextField rendering; see `field-variant.const.ts` for the
+verified detail.
 
 ## Color
 
