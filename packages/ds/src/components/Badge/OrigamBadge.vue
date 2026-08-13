@@ -25,9 +25,16 @@
         >
           <template v-if="!dot">
             <slot name="badge">
-              <template v-if="hasPrependIcon">
+              <template v-if="hasPrepend">
                 <slot name="prepend">
+                  <origam-avatar
+                          v-if="prependAvatar"
+                          key="prepend-avatar"
+                          class="origam-badge__prepend"
+                          :image="prependAvatar"
+                  />
                   <origam-icon
+                          v-if="hasPrependIcon"
                           key="prepend-icon"
                           class="origam-badge__prepend"
                           :icon="prependIcon"
@@ -45,9 +52,16 @@
                 <span class="origam-badge__content">{{ content }}</span>
               </template>
 
-              <template v-if="hasAppendIcon">
+              <template v-if="hasAppend">
                 <slot name="append">
+                  <origam-avatar
+                          v-if="appendAvatar"
+                          key="append-avatar"
+                          class="origam-badge__append"
+                          :image="appendAvatar"
+                  />
                   <origam-icon
+                          v-if="hasAppendIcon"
                           key="append-icon"
                           class="origam-badge__append"
                           :icon="appendIcon"
@@ -66,7 +80,7 @@
 		lang="ts"
 		setup
 >
-	import { OrigamFade, OrigamIcon, OrigamTransition } from '../../components'
+	import { OrigamAvatar, OrigamFade, OrigamIcon, OrigamTransition } from '../../components'
 
 	import {
 		useActive,
@@ -167,6 +181,15 @@
 	})
 	const hasAppendIcon = computed(() => {
 		return !!appendIcon.value
+	})
+	// Media presence also covers `prependAvatar` / `appendAvatar` — those
+	// don't flow through `useStatus()` (status only ever swaps an icon,
+	// never an avatar), so they're read straight off `props` here.
+	const hasPrepend = computed(() => {
+		return hasPrependIcon.value || !!props.prependAvatar
+	})
+	const hasAppend = computed(() => {
+		return hasAppendIcon.value || !!props.appendAvatar
 	})
 
 	const content = computed(() => {

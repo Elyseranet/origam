@@ -32,6 +32,16 @@ export interface IDataTableHeadersProps extends ICommonsComponentProps, IColorPr
 
 }
 
+/**
+ * Deliberately NOT `extends IAdjacentProps`. This cell has no
+ * consumer-facing prepend/append icon prop — the `appendIcon` rendered
+ * inside it is a purely internal computed (the multi-select checkbox
+ * glyph, see `appendIcon` in `OrigamDataTableHeadersCellMobile.vue`)
+ * forwarded to the nested `<OrigamSelect>`'s own `IAdjacentProps.appendIcon`.
+ * There is no `prependIcon` counterpart because there is nothing for a
+ * consumer to set — adding one would fabricate an API this component
+ * doesn't have a use for.
+ */
 export interface IDataTableHeadersCellMobileProps extends ICommonsComponentProps, IHeaderCellProps, IColorProps {
     columns: Array<IInternalDataTableHeader>
     colspan?: number

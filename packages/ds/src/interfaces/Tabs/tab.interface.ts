@@ -1,18 +1,24 @@
 import type {
+    IAdjacentProps,
     ICommonsComponentProps,
     IGroupItemProps,
     ITagProps,
     ITypographyProps
 } from '../../interfaces'
 
-import type { TIcon } from '../../types'
+import type { TIcon, TTabVariant } from '../../types'
 
 /**
  * Props for `<OrigamTab>` — a single registered tab inside an
  * `<OrigamTabs>` tablist.
  *
- * The slot scope is the default text label. Optional `icon` /
- * `appendIcon` render at the leading / trailing edge respectively.
+ * The slot scope is the default text label. Leading / trailing content
+ * is driven by the standard `IAdjacentProps` surface (`prependIcon` /
+ * `appendIcon` / `prependAvatar` / `appendAvatar`) — the same contract
+ * every other adjacent-icon component in the DS uses (`OrigamBtn`,
+ * `OrigamChip`, `OrigamListItem`, …). Before this fix `icon` /
+ * `appendIcon` were declared by hand, without `prependIcon` — an icon
+ * could only ever be placed on the trailing edge, never the leading one.
  *
  * ARIA wiring (`role="tab"`, `aria-selected`, `aria-controls`, `id`,
  * `tabindex`) is computed inside the component — consumers only
@@ -23,8 +29,15 @@ import type { TIcon } from '../../types'
  * `lineHeight` is intentionally excluded — the SCSS hard-codes `line-height: 1`
  * with no CSS-var hook.
  */
-export interface ITabProps extends ICommonsComponentProps, ITagProps, IGroupItemProps, ITypographyProps {
+export interface ITabProps extends ICommonsComponentProps, ITagProps, IGroupItemProps, ITypographyProps, IAdjacentProps {
     tag?: string
+    /** Text label — used when the `default` slot is not provided. */
+    text?: string
+    /** Visual treatment, mirrored down from the parent `<OrigamTabs>` (`default`, `pills`, `underline`). */
+    variant?: TTabVariant
+    /**
+     * @deprecated Use `prependIcon` instead — same leading-icon position,
+     * kept for backward compatibility. Ignored when `prependIcon` is set.
+     */
     icon?: TIcon
-    appendIcon?: TIcon
 }
