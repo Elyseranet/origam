@@ -46,6 +46,10 @@ export * from './Checkbox/checkbox-btn.type'
 export * from './Chip/chip.type'
 export * from './Chip/chip-group.type'
 
+export * from './ClientOnly/client-only.type'
+
+export * from './Clipboard/clipboard.type'
+
 export * from './Code/code-lang.type'
 
 export * from './ColorPicker/color-picker.type'
@@ -53,6 +57,8 @@ export * from './ColorPicker/color-picker-canvas.type'
 export * from './ColorPicker/color-picker-preview.type'
 export * from './ColorPicker/color-picker-edit.type'
 export * from './ColorPicker/color-picker-swatches.type'
+
+export * from './ColorPickerField/color-picker-field.type'
 
 export * from './Commons/activator.type'
 export * from './Commons/axis.type'
@@ -99,6 +105,8 @@ export * from './Commons/touch.type'
 export * from './Commons/v-model.type'
 export * from './Commons/validation.type'
 
+export * from './ConfirmWrapper/confirm-wrapper.type'
+
 export * from './ContextualMenu/contextual-menu.type'
 
 export * from './Counter/counter.type'
@@ -133,6 +141,8 @@ export * from './Dialog/dialog-confirmation.type'
 export * from './Divider/divider.type'
 
 export * from './Drawer/drawer.type'
+
+export * from './DefaultsProvider/defaults-provider.type'
 
 export * from './EmptyState/empty-state-preset.type'
 export * from './EmptyState/empty-state-size.type'
@@ -177,6 +187,9 @@ export * from './InlineEdit/inline-edit-input-type.type'
 export * from './NumberFormat/number-format-format.type'
 
 export * from './Input/input.type'
+
+export * from './ItemGroup/item.type'
+export * from './ItemGroup/item-group.type'
 
 export * from './Label/label.type'
 
@@ -237,6 +250,8 @@ export * from './Select/select.type'
 export * from './SelectionControl/selection-control.type'
 export * from './SelectionControl/selection-control-group.type'
 
+export * from './Section/section.type'
+
 export * from './Sheet/sheet.type'
 export * from './Sheet/sheet-snap-point.type'
 
@@ -291,6 +306,8 @@ export * from './Transition/window-x-reverse-translate.type'
 export * from './Transition/window-x-translate.type'
 export * from './Transition/window-y-reverse-translate.type'
 export * from './Transition/window-y-translate.type'
+export * from './Transition/translate-picker.type'
+export * from './Transition/reverse-translate-picker.type'
 
 export * from './VirtualScroll/virtual-scroll.type'
 export * from './VirtualScroll/virtual-scroll-item.type'
@@ -324,6 +341,8 @@ export * from './Mask/pattern-validator.type'
 export * from './Mask/mask.type'
 
 export * from './QrCode/qr-code-error-correction.type'
+
+export * from './Watermark/watermark.type'
 
 export * from './Video/video-controls.type'
 export * from './Video/video-track-kind.type'
