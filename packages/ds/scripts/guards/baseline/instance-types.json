@@ -1,27 +1,7 @@
 [
-    "Blockquote",
-    "Calendar",
-    "ClientOnly",
-    "Clipboard",
-    "Code",
-    "ColorPickerField",
-    "CommandPalette",
-    "ConfirmWrapper",
-    "DefaultsProvider",
     "FileFieldDragNDropItem",
     "FileFieldListItem",
-    "InlineEdit",
-    "Item",
-    "ItemGroup",
-    "Masonry",
-    "NumberFormat",
     "ParallaxLayer",
-    "QrCode",
-    "ReverseTranslatePicker",
-    "RichToolbar",
-    "Section",
     "SnackbarItem",
-    "ThemeProvider",
-    "TranslatePicker",
-    "Watermark"
+    "ThemeProvider"
 ]

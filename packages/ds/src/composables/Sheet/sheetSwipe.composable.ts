@@ -7,18 +7,17 @@ import {
     watch
 } from 'vue'
 
-import { DEFAULT_SHEET_SNAP_POINTS } from '../../consts/Sheet/sheet-snap-points.const'
-import { SHEET_FAST_FLICK_THRESHOLD as FAST_FLICK_THRESHOLD } from '../../consts/Sheet/sheet-swipe.const'
+import { DEFAULT_SHEET_SNAP_POINTS, SHEET_FAST_FLICK_THRESHOLD as FAST_FLICK_THRESHOLD } from '../../consts/Sheet/sheet.const'
 import type { ISheetSwipeOptions, ISheetSwipeReturn } from '../../interfaces'
 import type { TSheetSnapId, TSheetSnapPoint } from '../../types'
 
 // Re-export so existing `import { DEFAULT_SHEET_SNAP_POINTS } from
 // '@/composables'` callsites continue to resolve. The const itself
-// lives in `src/consts/Sheet/sheet-snap-points.const.ts` per the
+// lives in `src/consts/Sheet/sheet.const.ts` per the
 // global CLAUDE.md "Constants ONLY in src/consts/" rule.
-export { DEFAULT_SHEET_SNAP_POINTS } from '../../consts/Sheet/sheet-snap-points.const'
+export { DEFAULT_SHEET_SNAP_POINTS } from '../../consts/Sheet/sheet.const'
 
-// `FAST_FLICK_THRESHOLD` lives in `src/consts/Sheet/sheet-swipe.const.ts`
+// `FAST_FLICK_THRESHOLD` lives in `src/consts/Sheet/sheet.const.ts`
 // (exported there as `SHEET_FAST_FLICK_THRESHOLD`).
 
 /**

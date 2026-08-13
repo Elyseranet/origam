@@ -1,68 +1,108 @@
 #!/usr/bin/env node
 /**
- * Guard 4 — enum / type file naming must resolve to a real component.
+ * Guard 4 — enum / type / const file naming must resolve to a real component.
  *
- * RULE: a file under `src/enums/**` or `src/types/**` is named after the
- * component it belongs to, optionally suffixed with a descriptive concept
- * (`-variant`, `-lang`, `-align`, …) — never a bare concept with no
- * component tie at all.
+ * RULE (tightened — see "History" below): a file under `src/enums/**`,
+ * `src/types/**` or `src/consts/**` is named EXACTLY after the real
+ * component it belongs to — `chart-honeycomb.enum.ts` for the real
+ * component `ChartHoneycomb`, never `chart-honeycomb-color-mode.enum.ts`
+ * with a descriptive concept tacked on. ONE file per real component,
+ * gathering every enum/type/const that component owns. The concept
+ * (`variant`, `lang`, `align`, `mode`, …) lives in the SYMBOL name inside
+ * the file (`AUDIO_LOOP_MODE`, `TBlockquoteAlign`, …), never in the
+ * filename — that's the whole point of the rule: `grep`-ing for a
+ * component's surface means listing ONE file, not chasing N differently
+ * -suffixed ones scattered across the directory.
  *
- * WHY NOT "has a hyphen" — THE FALSE-POSITIVE TRAP
- * ---------------------------------------------------
- * A first pass flagging every multi-word (hyphenated) filename in
- * `src/enums/` + `src/types/` counted 166. Most of those are legitimate:
- * `app-bar.type.ts` (component `AppBar`) and `avatar-group.type.ts`
- * (component `AvatarGroup`) are real, correctly-named, multi-word
- * component files — origam has plenty of two-word component names, and
- * kebab-case is the correct filename casing for all of them (per
- * CLAUDE.md's own file-naming table). Counting hyphens proves nothing;
- * only comparing against the REAL component list does.
- *
- * ALGORITHM — greedy longest-prefix match against the real component list
- * ---------------------------------------------------------------------------
- * Split the filename's basename on `-`. Try the full basename first; if it
- * is not itself a real component's kebab name, drop the last segment and
- * try again, down to a single segment. The first (longest) prefix that
- * matches a real component is accepted — everything after it is treated as
- * a descriptive suffix (`variant`, `lang`, `align`, `mode`, …), which this
- * guard does not restrict to a fixed vocabulary (inventing one would just
- * move the false-positive risk elsewhere). If NO prefix — not even the
- * first single segment — matches any real component, the file names a
- * concept with no traceable owner and is a violation.
+ * ALGORITHM — exact match against the real component list
+ * ----------------------------------------------------------
+ * The file's basename (suffix stripped) must be a member of
+ * `getComponentKebabSet()` — no prefix trick, no suffix tolerance.
  *
  * Examples on the real component list:
- *   - `app-bar.type.ts`      -> "app-bar" matches component AppBar        -> OK
- *   - `avatar-group.type.ts` -> "avatar-group" matches AvatarGroup        -> OK
- *   - `tab-variant.enum.ts`  -> "tab-variant" no match; "tab" matches Tab -> OK
- *   - `mask.enum.ts`         -> "mask" matches no component (the real
- *                               component is `TextMask`, not `Mask`)      -> VIOLATION
+ *   - `chart-honeycomb.enum.ts` -> "chart-honeycomb" IS component
+ *     ChartHoneycomb                                              -> OK
+ *   - `chart-honeycomb-color-mode.enum.ts` -> "chart-honeycomb-color-mode"
+ *     is NOT a component (the concept belongs INSIDE chart-honeycomb.enum.ts) -> VIOLATION
+ *   - `mask.enum.ts` -> "mask" is not a component (the real owner, once
+ *     traced, is `TextField` — see the `Mask/`->`TextField/` merge) -> VIOLATION unless exempted
+ *
+ * HISTORY — why this got stricter
+ * ----------------------------------
+ * The guard originally accepted "component name, optionally suffixed with
+ * a descriptive concept" (greedy longest-prefix match), which is why
+ * `chart-honeycomb-color-mode.enum.ts` used to pass: "chart-honeycomb" is
+ * a real component, so the guard stopped looking and let the
+ * "-color-mode" suffix ride. That laxity is exactly what let the
+ * one-file-per-concept sprawl happen in the first place — the guard
+ * matched the CONVENTION EVERYONE WAS ALREADY VIOLATING. Once the mission
+ * "un fichier par composant reel" swept enums/types/consts into one file
+ * per component (Blockquote, Bracket, Chart's ~23 sub-components, Code,
+ * CommandPalette, DataTable, InlineEdit, Masonry, NumberFormat, Parallax,
+ * PasswordField, QrCode, Sheet, SliderField, Snackbar, Tabs, TextField
+ * (absorbing the misfiled `Mask/`), TextareaField, RichToolbar, Theme's
+ * `mdi` catalogue -> Commons, …), the exact-match rule became reachable —
+ * every file that convention touched now equals its owning component's
+ * kebab name with zero suffix. Loosening back to prefix-matching would
+ * let the next component silently re-introduce
+ * `some-component-some-concept.enum.ts` and drift right back.
+ *
+ * SCOPE EXTENSION — consts joined enums/types
+ * ----------------------------------------------
+ * Previously "Interfaces and consts are OUT OF SCOPE for this guard".
+ * Consts are now IN SCOPE (interfaces remain out — a separate, unaudited
+ * surface). The DataTable false-positive this caught: `pagination.const.ts`
+ * / `select.const.ts` looked like they belonged to the real `Pagination` /
+ * `Select` components by bare name, but both export
+ * `ORIGAM_DATA_TABLE_*_KEY` injection keys consumed exclusively by
+ * `OrigamDataTable` — verified via `grep` before merging, not assumed from
+ * the filename. They're folded into `data-table.const.ts` now.
  *
  * SCOPE EXCLUSIONS (documented, not silent)
  * -------------------------------------------
- * - `src/{enums,types}/Commons/**` — explicitly cross-cutting mixins by
- *   design (`CLAUDE.md`: "packages/ds/src/interfaces/Commons/*.interface.ts
- *   are the single source of truth for cross-cutting prop surfaces"). A
- *   file there is deliberately not tied to one component.
- * - `types/index.ts`, `enums/index.ts`, `types/tokens.type.ts` — barrels
- *   and the Style-Dictionary-generated token type sheet, not hand-authored
- *   component files.
- * - `types/Media/quality-option.type.ts` — same rationale as the Commons
- *   exclusion above, scoped to one symbol rather than the whole
- *   directory: it's consumed by two components (`OrigamVideo`,
- *   `OrigamMediaController`), so it deliberately does not live under
- *   either one's folder. `Media` has no single owning component (no
- *   `OrigamMedia.vue`) to prefix-match against, unlike e.g. `Bracket`.
+ * - `src/{enums,types,consts}/Commons/**` — explicitly cross-cutting
+ *   mixins by design (`CLAUDE.md`: "packages/ds/src/interfaces/Commons/
+ *   *.interface.ts are the single source of truth for cross-cutting prop
+ *   surfaces"). A file there is deliberately not tied to one component.
+ *   `enums/Commons/mdi.enum.ts` + `consts/Commons/mdi.const.ts` (the
+ *   generated MDI icon catalogue, ~44 consumers, zero of them the Icon
+ *   components themselves) live here for the same reason — not a
+ *   component's props, a transverse data catalogue.
+ * - `src/types/Theme/**` + `src/consts/Theme/**` — the theming ENGINE
+ *   (`TTheme`, `TMode`, `TModeResolved`, the semantic/token/installed-theme
+ *   trees, `theme.const.ts`'s defaults), not a component. `OrigamThemeProvider`
+ *   is a real (and separately named) component, but these files are the
+ *   public theming contract consumed by `useTheme()`, the Nuxt module, and
+ *   `origam.ts` itself — verified zero of them are scoped to
+ *   `OrigamThemeProvider` specifically. Unlike `Mask/` (which turned out
+ *   to have a single real owner, `TextField`, once traced), `Theme/`
+ *   genuinely has no single owning component — it is a subsystem exactly
+ *   like `Commons/`, just kept in its own folder because
+ *   `composables/Theme/` and `interfaces/Theme/` already use that name.
+ * - `src/consts/CssSupport/**` — `css-support.const.ts` (`FEATURE_QUERIES`)
+ *   backs the `useCssSupport()` feature-detection composable, not a
+ *   component. Same rationale as `Theme/`: a subsystem folder, not a prop
+ *   surface, exempted rather than force-renamed into a fake owner.
+ * - `types/Media/quality-option.type.ts` (single-file exemption, not a
+ *   whole-directory one — `Media/` files are otherwise in scope) — a
+ *   symbol consumed by two components (`OrigamVideo`, `OrigamMediaController`),
+ *   so it deliberately does not live under either one's folder. `Media`
+ *   has no single owning component (no `OrigamMedia.vue`) to match
+ *   against, unlike e.g. `Bracket`. Same rationale as the Commons
+ *   exclusion above, scoped to one file instead of the whole directory
+ *   because the rest of `Media/` (`MediaController`, `MediaScrubber`,
+ *   `MediaVolumeControl`) genuinely does have real single owners.
+ * - `types/index.ts`, `enums/index.ts`, `consts/index.ts`,
+ *   `types/tokens.type.ts` — barrels and the Style-Dictionary-generated
+ *   token type sheet, not hand-authored component files.
  *
-
- * Interfaces and consts are OUT OF SCOPE for this guard — the mission that
- * requested it named only "enums et types" file naming; interfaces/consts
- * naming was not audited and this guard makes no claim about them.
+ * Interfaces remain OUT OF SCOPE for this guard — not yet audited.
  *
  * Run: `node packages/ds/scripts/guards/file-naming.mjs`
  * (or `pnpm -F origam guards:naming`)
  */
 
-import { readFileSync, readdirSync, statSync } from 'node:fs'
+import { readdirSync, statSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { getComponentKebabSet } from './lib/components.mjs'
@@ -74,8 +114,9 @@ const REPO_ROOT = path.resolve(DS_ROOT, '../..')
 const BASELINE_PATH = path.join(__dirname, 'baseline/file-naming.json')
 
 const TARGETS = [
-    { dir: path.join(DS_ROOT, 'src/types'), suffix: '.type.ts' },
-    { dir: path.join(DS_ROOT, 'src/enums'), suffix: '.enum.ts' }
+    { dir: path.join(DS_ROOT, 'src/types'), suffix: '.type.ts', exemptDirs: ['Commons', 'Theme'] },
+    { dir: path.join(DS_ROOT, 'src/enums'), suffix: '.enum.ts', exemptDirs: ['Commons'] },
+    { dir: path.join(DS_ROOT, 'src/consts'), suffix: '.const.ts', exemptDirs: ['Commons', 'Theme', 'CssSupport'] }
 ]
 
 const EXCLUDED_BASENAMES = new Set(['index.ts', 'tokens.type.ts', 'quality-option.type.ts'])
@@ -91,28 +132,23 @@ function walk (dir, predicate) {
     return out
 }
 
-function longestMatchingPrefix (basename, componentKebabSet) {
-    const segments = basename.split('-')
-    for (let len = segments.length; len >= 1; len--) {
-        const candidate = segments.slice(0, len).join('-')
-        if (componentKebabSet.has(candidate)) return candidate
-    }
-    return null
-}
-
 function run () {
     const componentKebabSet = getComponentKebabSet()
     const violations = new Map()
 
-    for (const { dir, suffix } of TARGETS) {
-        const files = walk(dir, f => f.endsWith(suffix) && !f.includes(`${path.sep}Commons${path.sep}`))
+    for (const { dir, suffix, exemptDirs } of TARGETS) {
+        const exemptSet = new Set(exemptDirs)
+        const files = walk(dir, f => {
+            if (!f.endsWith(suffix)) return false
+            const domain = path.relative(dir, f).split(path.sep)[0]
+            return !exemptSet.has(domain)
+        })
         for (const file of files) {
             if (EXCLUDED_BASENAMES.has(path.basename(file))) continue
             const base = path.basename(file, suffix)
-            const match = longestMatchingPrefix(base, componentKebabSet)
-            if (!match) {
+            if (!componentKebabSet.has(base)) {
                 const relFile = path.relative(REPO_ROOT, file)
-                violations.set(relFile, `\`${base}\` does not resolve (by longest-prefix match) to any real component name.`)
+                violations.set(relFile, `\`${base}\` is not the exact kebab-case name of any real component.`)
             }
         }
     }
@@ -124,11 +160,11 @@ function run () {
     }
 
     const exitCode = report({
-        guardName: 'file-naming (enum/type filenames must resolve to a real component)',
+        guardName: 'file-naming (enum/type/const filenames must exactly match a real component)',
         baselinePath: BASELINE_PATH,
         currentIds: violations.keys(),
         detailsById: violations,
-        fixHint: 'Rename the file so its basename is (or is prefixed by) a real component\'s kebab-case name, or move the concept into the owning component\'s existing file if one already exists.'
+        fixHint: 'Rename the file to exactly the owning component\'s kebab-case name and fold every enum/type/const it declares into that single file, or move it into the owning component\'s existing file if one already exists.'
     })
     process.exit(exitCode)
 }

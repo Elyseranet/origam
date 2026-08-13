@@ -1,6 +1,6 @@
 import type { IChartBaseEmits, IChartBaseProps, IChartBaseSlots, IChartPoint, IChartSeries } from '../../interfaces'
 
-import type { TChartMapMode } from '../../types/Chart/chart-map-mode.type'
+import type { TChartMapMode } from '../../types/Chart/chart-map.type'
 import type { TIntent } from '../../types'
 
 /**

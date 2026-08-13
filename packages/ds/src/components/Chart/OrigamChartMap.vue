@@ -236,9 +236,9 @@
 
 	import { intentBgExpr, isIntent } from '../../utils/Commons/color.util'
 
-	import { CHART_MAP_MODE } from '../../enums/Chart/chart-map-mode.enum'
+	import { CHART_MAP_MODE } from '../../enums/Chart/chart-map.enum'
 
-	import { WORLD_GEOGRAPHIC_DATA } from '../../consts/Chart/world-geographic.const'
+	import { WORLD_GEOGRAPHIC_DATA } from '../../consts/Chart/chart-map.const'
 	import { multiPolygonToSvgPath, multiPolygonCentroid } from '../../utils/Chart/mercator.util'
 
 	import type { TIntent } from '../../types'
