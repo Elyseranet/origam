@@ -18,3 +18,10 @@ export interface ICounterProps extends ICommonsComponentProps, ITagProps, IPaddi
     max?: string | number
     value?: string | number
 }
+
+/** Slot signatures for `<OrigamCounter>`. `value` defaults to `0`
+ *  (`withDefaults`) so it's always defined at runtime; `max` has no
+ *  default and stays optional. */
+export interface ICounterSlots {
+    default?: (data: { counter: string, max?: string | number, value: string | number }) => any
+}

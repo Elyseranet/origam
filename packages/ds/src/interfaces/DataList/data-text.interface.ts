@@ -1,5 +1,6 @@
 import type {
     IAdjacentProps,
+    IAdjacentSlots,
     IBgColorProps,
     IColorProps,
     ICommonsComponentProps,
@@ -16,4 +17,9 @@ export interface IDataTextProps extends ICommonsComponentProps, IAdjacentProps, 
     hoverColor?: TColor
     /** @deprecated Use the `hover` object prop instead. Kept for back-compat. */
     hoverBgColor?: TColor
+}
+
+/** Slot signatures for `<OrigamDataText>`. */
+export interface IDataTextSlots extends IAdjacentSlots {
+    default?: () => any
 }

@@ -144,7 +144,7 @@
 	import { MDI_ICONS } from '../../enums'
 	import type { IDialogProps} from '../../interfaces'
 
-	import type { IDialogEmits } from '../../interfaces/Dialog/dialog.interface'
+	import type { IDialogEmits, IDialogSlots } from '../../interfaces/Dialog/dialog.interface'
 	import type { TOrigamCard, TOrigamOverlay, TTransitionProps } from '../../types'
 	import { focusableChildren, forwardRefs } from '../../utils'
 
@@ -186,6 +186,8 @@
 	})
 
 	const emits = defineEmits<IDialogEmits>()
+
+	defineSlots<IDialogSlots>()
 
 	const {filterProps} = useProps<IDialogProps>(props)
 

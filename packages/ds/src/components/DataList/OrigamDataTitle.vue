@@ -71,7 +71,7 @@
 	import { useAdjacent, useBothColor, useDensity, useMargin, usePadding, useProps , useStyle} from "../../composables"
 	import { vContrast } from "../../directives"
 
-	import type { IDataTitleProps } from "../../interfaces"
+	import type { IDataTitleProps, IDataTitleSlots } from "../../interfaces"
 	import { computed, shallowRef, StyleValue, toRef } from "vue"
 
 	/*********************************************************
@@ -79,6 +79,8 @@
 	 ********************************************************/
 
 	const props = withDefaults(defineProps<IDataTitleProps>(), {})
+
+	defineSlots<IDataTitleSlots>()
 
 	const {filterProps} = useProps<IDataTitleProps>(props)
 

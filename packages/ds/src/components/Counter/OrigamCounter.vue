@@ -27,7 +27,7 @@
 
 	import { useBothColor, useProps, useSsrBoot , useStyle} from "../../composables"
 
-	import type { ICounterProps } from "../../interfaces"
+	import type { ICounterProps, ICounterSlots } from "../../interfaces"
 	import type { TTransitionProps } from "../../types"
 
 	import { computed, StyleValue, toRef } from "vue"
@@ -41,6 +41,8 @@
 		tag: 'div',
 		transition: () => ({component: OrigamSlideY}) as unknown as TTransitionProps
 	})
+
+	defineSlots<ICounterSlots>()
 
 	const {filterProps} = useProps<ICounterProps>(props)
 
