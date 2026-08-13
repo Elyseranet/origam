@@ -50,7 +50,7 @@
 		useStyle
 	} from '../../composables'
 
-	import type { IStepperProps } from '../../interfaces'
+	import type { IStepperEmits, IStepperProps, IStepperSlots } from '../../interfaces'
 	import type { TStepperItemStatus } from '../../types'
 
 	/*********************************************************
@@ -72,9 +72,9 @@
 	 ********************************************************/
 	const { t } = useLocale()
 
-	const emit = defineEmits<{
-		(e: 'update:modelValue', value: number): void
-	}>()
+	const emit = defineEmits<IStepperEmits>()
+
+	defineSlots<IStepperSlots>()
 
 	const { filterProps } = useProps<IStepperProps>(props)
 

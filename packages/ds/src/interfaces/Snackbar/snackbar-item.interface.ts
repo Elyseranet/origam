@@ -87,3 +87,19 @@ export interface ISnackbarItemProps extends ICommonsComponentProps, ITypographyP
      */
     dataCy?: string
 }
+
+/** Emits fired by `<OrigamSnackbarItem>` — dismissal and action-button
+ *  activation. */
+export interface ISnackbarItemEmits {
+    (e: 'dismiss'): void
+    (e: 'action', action: ISnackbarGroupItemAction): void
+}
+
+/** Slot signatures for `<OrigamSnackbarItem>`. */
+export interface ISnackbarItemSlots {
+    prepend?: () => any
+    title?: () => any
+    message?: () => any
+    default?: () => any
+    actions?: () => any
+}

@@ -36,7 +36,7 @@
 	useStyle
 } from '../../composables'
 
-	import type { ITreeviewProps } from '../../interfaces'
+	import type { ITreeviewEmits, ITreeviewProps } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -52,12 +52,7 @@
 		ariaLabel: undefined
 	})
 
-	const emit = defineEmits<{
-		(e: 'update:modelValue', value: string[] | string): void
-		(e: 'update:expandedValue', value: string[]): void
-		(e: 'select', id: string): void
-		(e: 'toggle', id: string, expanded: boolean): void
-	}>()
+	const emit = defineEmits<ITreeviewEmits>()
 
 	const { filterProps } = useProps<ITreeviewProps>(props)
 

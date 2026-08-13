@@ -29,6 +29,15 @@ export interface ITreeviewNodeProps extends ICommonsComponentProps {
     depth?: number
 }
 
+/** Emits fired by `<OrigamTreeview>` — v-model echoes (selection,
+ *  expansion) and node select/toggle lifecycle. */
+export interface ITreeviewEmits {
+    (e: 'update:modelValue', value: string[] | string): void
+    (e: 'update:expandedValue', value: string[]): void
+    (e: 'select', id: string): void
+    (e: 'toggle', id: string, expanded: boolean): void
+}
+
 export interface ITreeviewProvide {
     toggleExpanded: (id: string) => void
     toggleSelected: (id: string) => void

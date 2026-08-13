@@ -84,6 +84,14 @@ export interface IParallaxProps extends ICommonsComponentProps, ITagProps, IColo
     threshold?: number
 }
 
+/** Emits fired by `<OrigamParallax>` — mouse/scroll movement lifecycle
+ *  and live scroll-progress reporting. */
+export interface IParallaxEmits {
+    (e: 'enter'): void
+    (e: 'leave'): void
+    (e: 'scroll-progress', progress: number): void
+}
+
 export interface IParallaxProvide {
     audioData: Ref<any>
     eventData: Ref<TPoint>

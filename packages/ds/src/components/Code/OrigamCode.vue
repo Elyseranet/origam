@@ -99,7 +99,7 @@
 	import { CODE_DEFAULTS } from '../../consts'
 	import { CODE_LANG } from '../../enums'
 
-	import type { ICodeProps } from '../../interfaces'
+	import type { ICodeEmits, ICodeProps, ICodeSlots } from '../../interfaces'
 
 	import { parseHighlightLines } from '../../utils'
 
@@ -147,9 +147,9 @@
 	// it's a `computed(() => props.tag === 'figure' ? …)`.
 	const props = useDefaults(_props)
 
-	const emit = defineEmits<{
-		(e: 'copy', code: string): void
-	}>()
+	const emit = defineEmits<ICodeEmits>()
+
+	defineSlots<ICodeSlots>()
 
 	const slots = useSlots()
 

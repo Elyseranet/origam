@@ -85,7 +85,7 @@
 
   import { MDI_ICONS } from '../../enums'
 
-  import type { ISnackbarItemProps } from '../../interfaces'
+  import type { ISnackbarItemEmits, ISnackbarItemProps, ISnackbarItemSlots } from '../../interfaces'
   import type { ISnackbarGroupItemAction } from '../../interfaces'
   import type { TIcon, TIntent } from '../../types'
 
@@ -131,10 +131,9 @@
   /*********************************************************
    * Emits
    ********************************************************/
-  const emit = defineEmits<{
-    (e: 'dismiss'): void
-    (e: 'action', action: ISnackbarGroupItemAction): void
-  }>()
+  const emit = defineEmits<ISnackbarItemEmits>()
+
+  defineSlots<ISnackbarItemSlots>()
 
   /*********************************************************
    * Intent helpers

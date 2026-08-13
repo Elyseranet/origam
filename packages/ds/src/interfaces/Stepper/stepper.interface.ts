@@ -45,3 +45,19 @@ export interface IStepperItemProps extends ICommonsComponentProps {
     status?: TStepperItemStatus
     clickable?: boolean
 }
+
+/** Emits fired by `<OrigamStepper>` — v-model echo for the active step. */
+export interface IStepperEmits {
+    (e: 'update:modelValue', value: number): void
+}
+
+/** Slot signatures for `<OrigamStepper>`. */
+export interface IStepperSlots {
+    /** Overrides the whole auto-generated item list. */
+    default?: () => any
+}
+
+/** Emits fired by `<OrigamStepperItem>` — click on a clickable step. */
+export interface IStepperItemEmits {
+    (e: 'click', index: number): void
+}

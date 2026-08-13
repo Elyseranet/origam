@@ -92,6 +92,21 @@ export interface ICodeProps extends ICommonsComponentProps, ITagProps, IBorderPr
     prompt?: string
 }
 
+/** Emits fired by `<OrigamCode>` — copy-to-clipboard confirmation. */
+export interface ICodeEmits {
+    (e: 'copy', code: string): void
+}
+
+/** Slot signatures for `<OrigamCode>`. */
+export interface ICodeSlots {
+    /** Custom header content — receives the copy-button wiring so a
+     *  consumer can rebuild the default filename/lang badge + copy button. */
+    header?: (data: { filename: string | undefined, langName: TCodeLang | undefined, copy: () => Promise<void>, copied: boolean }) => any
+    footer?: () => any
+    /** Source for the highlighted code when the `code` prop is omitted. */
+    default?: () => any
+}
+
 /**
  * Public surface of the `useCode` composable. Lazily instantiates a shiki
  * highlighter on first call and reuses it across every `OrigamCode`

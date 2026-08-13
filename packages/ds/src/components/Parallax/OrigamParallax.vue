@@ -46,7 +46,7 @@
 
 	import { PARALLAX_DIRECTION, PARALLAX_EASING, PARALLAX_EVENT } from '../../enums'
 
-	import type { IBox, IParallaxProps } from '../../interfaces'
+	import type { IBox, IParallaxEmits, IParallaxProps } from '../../interfaces'
 
 	import type { TParallaxDirection, TParallaxEasing } from '../../types'
 
@@ -75,11 +75,7 @@
 		threshold: 0
 	})
 
-	const emit = defineEmits<{
-		(e: 'enter'): void
-		(e: 'leave'): void
-		(e: 'scroll-progress', progress: number): void
-	}>()
+	const emit = defineEmits<IParallaxEmits>()
 
 	const {filterProps} = useProps<IParallaxProps>(props)
 

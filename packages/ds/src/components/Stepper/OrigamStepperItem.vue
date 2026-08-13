@@ -52,7 +52,7 @@
 	import { useLocale, useProps } from '../../composables'
 	import { vContrast } from '../../directives'
 
-	import type { IStepperItemProps } from '../../interfaces'
+	import type { IStepperItemEmits, IStepperItemProps } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -74,9 +74,7 @@
 		return t('origam.stepper.step_aria_label', (props.index ?? 0) + 1, props.title)
 	})
 
-	const emit = defineEmits<{
-		(e: 'click', index: number): void
-	}>()
+	const emit = defineEmits<IStepperItemEmits>()
 
 	const { filterProps } = useProps<IStepperItemProps>(props)
 
