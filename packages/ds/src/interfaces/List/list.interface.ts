@@ -6,6 +6,9 @@ import type {
     IDensityProps,
     IDimensionProps,
     IElevationProps,
+    IInternalListItem,
+    IInternalListItemChildren,
+    IListGroupActivatorSlotProps,
     IMarginProps,
     INestedProps,
     IPaddingProps,
@@ -54,4 +57,22 @@ export interface IListEmits {
     (e: 'update:opened', value: Array<unknown>): void
     (e: 'click:open', value: { id: unknown, value: boolean, path: Array<unknown> }): void
     (e: 'click:select', value: { id: unknown, value: boolean, path: Array<unknown> }): void
+}
+
+/**
+ * Slot signatures for `<OrigamList>`. All slots below `default` are
+ * forwarded straight through to the nested `<OrigamListChildren>` —
+ * `divider` / `subheader` / `group` / `item` receive the destructured
+ * `itemProps` object SPREAD as the scope (`v-bind="itemProps"`, not
+ * `v-bind="{itemProps}"`), `childrenItem` mirrors ListChildren's own
+ * `children` slot scope.
+ */
+export interface IListSlots {
+    default?: () => any
+    childrenItem?: (data: { item: IInternalListItemChildren, index: number }) => any
+    divider?: (props: IInternalListItem['props']) => any
+    subheader?: (props: IInternalListItem['props']) => any
+    group?: (props: IInternalListItem['props']) => any
+    groupActivator?: (data: IListGroupActivatorSlotProps) => any
+    item?: (props: IInternalListItem['props']) => any
 }

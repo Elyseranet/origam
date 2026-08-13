@@ -30,7 +30,7 @@
 
 	import type { IItemGroupProps} from '../../interfaces'
 
-	import type { IItemGroupEmits } from '../../interfaces/ItemGroup/item-group.interface'
+	import type { IItemGroupEmits, IItemGroupSlots } from '../../interfaces/ItemGroup/item-group.interface'
 
 	/*********************************************************
 	 * Global
@@ -42,6 +42,8 @@
 	})
 
 	defineEmits<IItemGroupEmits>()
+
+	defineSlots<IItemGroupSlots>()
 
 	const {filterProps} = useProps<IItemGroupProps>(props)
 

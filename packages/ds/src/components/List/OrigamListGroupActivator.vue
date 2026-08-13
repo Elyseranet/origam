@@ -19,13 +19,15 @@
 	useStyle
 } from '../../composables'
 
-	import type { IListActivatorProps } from '../../interfaces'
+	import type { IListActivatorProps, IListActivatorSlots } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
 	 ********************************************************/
 
 	const props = withDefaults(defineProps<IListActivatorProps>(), {tag: 'div'})
+
+	defineSlots<IListActivatorSlots>()
 
 	const {filterProps} = useProps<IListActivatorProps>(props)
 
