@@ -70,8 +70,15 @@ export interface IChartHeatmapProps extends IChartBaseProps {
 /** Emits surfaced by `<OrigamChartHeatmap>`. Mirrors the base family. */
 export type IChartHeatmapEmits = IChartBaseEmits
 
-/** Slot signatures exposed by `<OrigamChartHeatmap>`. */
-export interface IChartHeatmapSlots extends IChartBaseSlots {
+/**
+ * Slot signatures exposed by `<OrigamChartHeatmap>`.
+ *
+ * Omits `legend-item` from the base family — the heatmap renders a
+ * continuous colour-gradient legend (min/max labels + a gradient
+ * swatch), not a discrete per-series legend list, so there is no
+ * `<slot name="legend-item">` in the template to forward it to.
+ */
+export interface IChartHeatmapSlots extends Omit<IChartBaseSlots, 'legend-item'> {
     /**
      * Replace the tooltip body for a hovered cell.
      * Receives the hovered point, its resolved colour, and

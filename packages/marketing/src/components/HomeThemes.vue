@@ -1,14 +1,21 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useTheme } from 'origam/composables'
 import { useT } from '~/composables/useT'
+import { useLinkAvailability } from '~/composables/useLinkAvailability'
 import {
     THEMES_TOOLING_TEXT,
     THEME_CHIPS,
-    THEME_PREVIEW_TILES
+    THEME_PREVIEW_TILES,
+    HOME_THEMES_BUILDER_HREF
 } from '~/consts/themes-showcase.const'
 
 const { t } = useT()
 const { theme, setTheme } = useTheme()
+
+const { availability } = useLinkAvailability([HOME_THEMES_BUILDER_HREF])
+
+const showBuilderCta = computed(() => availability[HOME_THEMES_BUILDER_HREF] === true)
 </script>
 
 <template>
@@ -79,6 +86,22 @@ const { theme, setTheme } = useTheme()
                         {{ t(pill.labelKey, pill.labelFallback) }}
                     </span>
                 </p>
+
+                <nav
+                    v-if="showBuilderCta"
+                    class="home-themes__actions"
+                    :aria-label="t('home.themes.actions_label', 'Try the theme builder')"
+                >
+                    <origam-btn
+                        class="home-themes__btn"
+                        variant="text"
+                        append-icon="mdi-arrow-right"
+                        :href="HOME_THEMES_BUILDER_HREF"
+                        data-cy="themes-cta-builder"
+                    >
+                        {{ t('home.themes.cta_builder', 'Try the theme builder') }}
+                    </origam-btn>
+                </nav>
             </origam-grid-item>
 
             <origam-grid-item
@@ -273,6 +296,14 @@ const { theme, setTheme } = useTheme()
     &__tooling-sep {
         color: var(--origam-color__text---tertiary, #737373);
         user-select: none;
+    }
+
+    &__actions {
+        margin-block-start: var(--origam-space---2, 0.5rem);
+    }
+
+    &__btn {
+        padding-inline: 0;
     }
 
     &__previews {

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { useT } from '~/composables/useT'
+import { useVersion } from '~/composables/useVersion'
 import {
     ROADMAP_HERO_BADGE_VARS,
     ROADMAP_STATUS_ITEMS,
@@ -12,6 +13,16 @@ import {
 import { MARKETING_DEFAULTS } from '~/consts/marketing.const'
 
 const { t } = useT()
+
+// The badge used to hardcode "v2.6.0", which drifted to four minor versions
+// behind what npm actually served. `useVersion` is the single source of truth
+// (live registry, build-time fallback) — the same one the home hero reads, so
+// a release only requires bumping the package, never editing a badge string.
+const { version } = useVersion()
+
+const heroBadge = computed(() =>
+    t('roadmap.hero.badge', `v${ version.value } — Wave 4 shipped`, { version: version.value })
+)
 
 useSeoMeta({
     title: () => t('roadmap.meta.title', 'Roadmap · origam design system'),
@@ -50,7 +61,7 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                     pill
                     data-cy="roadmap-hero-badge"
                 >
-                    {{ t('roadmap.hero.badge', 'v2.6.0 — Wave 4 shipped') }}
+                    {{ heroBadge }}
                 </origam-chip>
 
                 <origam-title
@@ -222,7 +233,7 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                                 </origam-chip>
                             </template>
 
-                            <template #title>
+                            <template #header.title>
                                 <origam-title
                                     tag="h3"
                                     class="roadmap-delivered__wave-title"
@@ -315,8 +326,8 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                                 flat
                                 class="roadmap-timeline__card"
                             >
-                                <template #title>
-                                    <header class="roadmap-timeline__card-header">
+                                <template #header.title>
+                                    <div class="roadmap-timeline__card-header">
                                         <origam-chip
                                             :color="phase.intent"
                                             size="small"
@@ -332,7 +343,7 @@ const changelogHref = computed(() => `${MARKETING_DEFAULTS.githubRepo}/blob/main
                                         >
                                             {{ t(phase.titleKey, phase.titleKey) }}
                                         </origam-title>
-                                    </header>
+                                    </div>
                                 </template>
 
                                 <template #default>

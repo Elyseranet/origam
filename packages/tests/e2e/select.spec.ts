@@ -823,4 +823,40 @@ test.describe('OrigamSelect', () => {
             await expectRowMatchesControl(page)
         })
     })
+// The menu is teleported out of the select's subtree, so a stylesheet
+    // written by the consuming application reaches the field and never the
+    // options. Inheriting `font-size` on the surface does not close it either:
+    // list items size their text with `var(--origam-list-item__title---font-size, 1rem)`,
+    // and `rem` resolves against the document root, not the parent.
+    //
+    // Measured before the bridge: field 13px, option 14px in the sandbox — and
+    // far wider in a real app, which is how it was reported (a small control
+    // opening a visibly oversized popup).
+    test.describe('Teleported menu follows the field typography', () => {
+        for (const fontSize of ['11px', '13px', '20px']) {
+            test(`option text matches a field overridden to ${fontSize}`, async ({ page }) => {
+                await page.goto(variantUrl(0))
+                const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+                const select = sandbox.locator('.origam-select').first()
+                await expect(select).toBeVisible({ timeout: 12000 })
+
+                // Stands in for the consuming application's own stylesheet.
+                await select.evaluate((el, fs) => {
+                    const style = document.createElement('style')
+                    style.textContent = `.origam-select, .origam-select * { font-size: ${fs} !important; }`
+                    document.head.appendChild(style)
+                }, fontSize)
+
+                await select.click()
+                await expect(sandbox.locator('.origam-list-item').first()).toBeVisible({ timeout: 8000 })
+
+                const fieldSize = await select.evaluate((el) =>
+                    getComputedStyle((el.querySelector('input') ?? el) as HTMLElement).fontSize)
+                const optionSize = await sandbox.locator('.origam-list-item').first().evaluate((el) =>
+                    getComputedStyle((el.querySelector('.origam-list-item__title') ?? el) as HTMLElement).fontSize)
+
+                expect(parseFloat(optionSize)).toBeCloseTo(parseFloat(fieldSize), 1)
+            })
+        }
+    })
 })

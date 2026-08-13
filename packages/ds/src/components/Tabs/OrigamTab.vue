@@ -17,10 +17,19 @@
 			@click="handleClick"
 	>
 		<span
-				v-if="icon"
+				v-if="hasPrependMedia"
 				class="origam-tab__prepend"
 		>
-			<origam-icon :icon="icon"/>
+			<origam-avatar
+					v-if="prependAvatar"
+					key="prepend-avatar"
+					:image="prependAvatar"
+			/>
+			<origam-icon
+					v-if="resolvedPrependIcon"
+					key="prepend-icon"
+					:icon="resolvedPrependIcon"
+			/>
 		</span>
 
 		<span class="origam-tab__label">
@@ -33,10 +42,19 @@
 		</span>
 
 		<span
-				v-if="appendIcon"
+				v-if="hasAppendMedia"
 				class="origam-tab__append"
 		>
-			<origam-icon :icon="appendIcon"/>
+			<origam-avatar
+					v-if="appendAvatar"
+					key="append-avatar"
+					:image="appendAvatar"
+			/>
+			<origam-icon
+					v-if="appendIcon"
+					key="append-icon"
+					:icon="appendIcon"
+			/>
 		</span>
 
 		<span
@@ -51,11 +69,12 @@
 		lang="ts"
 		setup
 >
-	import { computed, inject, ref, StyleValue } from 'vue'
+	import { computed, inject, ref, StyleValue, toRef } from 'vue'
 
-	import { OrigamIcon } from '../../components'
+	import { OrigamAvatar, OrigamIcon } from '../../components'
 
 	import {
+		useAdjacent,
 		useDefaults,
 		useGroupItem,
 		useProps,
@@ -69,17 +88,10 @@
 
 	import type { ITabProps } from '../../interfaces'
 
-	import type { TTabVariant } from '../../types'
-
-	interface IProps extends ITabProps {
-		text?: string
-		variant?: TTabVariant
-	}
-
 	/*********************************************************
 	 * Global
 	 ********************************************************/
-	const _props = withDefaults(defineProps<IProps>(), {
+	const _props = withDefaults(defineProps<ITabProps>(), {
 		tag: 'button',
 		value: undefined,
 		text: '',
@@ -88,9 +100,24 @@
 
 	const props = useDefaults(_props)
 
-	const {filterProps} = useProps<IProps>(props)
+	const {filterProps} = useProps<ITabProps>(props)
 
 	const rootRef = ref<HTMLElement>()
+
+	/*********************************************************
+	 * Adjacent
+	 *
+	 * `icon` is a deprecated alias for `prependIcon` (same leading-icon
+	 * position) — the merged computed is handed to `useAdjacent` so a
+	 * legacy consumer's `icon` keeps rendering while a `prependIcon`
+	 * takes priority when both are set.
+	 ********************************************************/
+	const resolvedPrependIcon = computed(() => props.prependIcon ?? props.icon)
+
+	const {
+		hasPrependMedia,
+		hasAppendMedia
+	} = useAdjacent(props, resolvedPrependIcon, toRef(props, 'appendIcon'))
 
 	/*********************************************************
 	 * Group registration
@@ -181,8 +208,8 @@
 			groupItem!.selectedClass.value,
 			{
 				'origam-tab--disabled': isDisabled.value,
-				'origam-tab--with-prepend': !!props.icon,
-				'origam-tab--with-append': !!props.appendIcon
+				'origam-tab--with-prepend': hasPrependMedia.value,
+				'origam-tab--with-append': hasAppendMedia.value
 			},
 			props.class
 		]

@@ -16,6 +16,7 @@ import type {
 
 import type { TBracketMatchStatus } from '../../types'
 
+import type { IBracketCompetitor } from './bracket-competitor.interface'
 import type { IBracketMatch } from './bracket-match.interface'
 
 /**
@@ -66,4 +67,27 @@ export interface IBracketMatchProps extends ICommonsComponentProps, ITagProps, I
      * @default true
      */
     interactive?: boolean
+}
+
+/** Emits fired by `<OrigamBracketMatch>` — click on the card itself
+ *  (outside a competitor row), and the two per-competitor channels the
+ *  card re-emits on behalf of its `competitor` slot / default rows. */
+export interface IBracketMatchEmits {
+    (e: 'click', match: IBracketMatch, event: MouseEvent): void
+    (e: 'competitor-click', competitor: IBracketCompetitor, match: IBracketMatch, side: 'A' | 'B', event: MouseEvent | KeyboardEvent): void
+    (e: 'winner-click', competitor: IBracketCompetitor, match: IBracketMatch, event: MouseEvent | KeyboardEvent): void
+}
+
+/** Scope for the `competitor` slot — one side (`A` or `B`) of the match.
+ *  `competitor` is `null` for a not-yet-determined participant (renders
+ *  "TBD" by default). */
+export interface IBracketMatchCompetitorSlot {
+    competitor: IBracketCompetitor | null
+    match: IBracketMatch
+    isWinner: boolean
+    side: 'A' | 'B'
+}
+
+export interface IBracketMatchSlots {
+    competitor?: (props: IBracketMatchCompetitorSlot) => any
 }

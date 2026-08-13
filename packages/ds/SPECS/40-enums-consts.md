@@ -154,7 +154,7 @@ Raison : le compilateur de SFC Vue 3 analyse `withDefaults` de façon **statique
 - **Membres** :
   - `HORIZONTAL = 'horizontal'`
   - `VERTICAL = 'vertical'`
-- **Consommé par** : `OrigamDivider`, `OrigamSlider`, `OrigamParallax`, composables de scroll.
+- **Consommé par** : `OrigamDivider`, `OrigamSlider`, `OrigamParallax`, composables de scroll, `OrigamChartBullet` (prop `orientation`), `OrigamChartPictorial` (prop `direction`) — les anciens `CHART_BULLET_ORIENTATION` / `CHART_PICTORIAL_DIRECTION` dupliquaient exactement ce jeu de valeurs et ont été fusionnés dans `DIRECTION`.
 
 ---
 
@@ -458,14 +458,6 @@ Raison : le compilateur de SFC Vue 3 analyse `withDefaults` de façon **statique
 
 ---
 
-### `CHART_BULLET_ORIENTATION`
-- **Fichier** : `src/enums/Chart/chart-bullet-orientation.enum.ts`
-- **Rôle** : Orientation d'un graphique bullet.
-- **Membres** : `HORIZONTAL`, `VERTICAL`
-- **Consommé par** : `OrigamChartBullet`.
-
----
-
 ### `CHART_CARTESIAN_KIND`
 - **Fichier** : `src/enums/Chart/chart-cartesian-kind.enum.ts`
 - **Rôle** : Topologie d'un graphique cartésien (évite les magic strings pour les switch internes).
@@ -495,14 +487,6 @@ Raison : le compilateur de SFC Vue 3 analyse `withDefaults` de façon **statique
 - **Rôle** : Mode du graphique cartographique.
 - **Membres** : `CHOROPLETH = 'choropleth'`, `FLIGHT_ROUTES = 'flight-routes'`
 - **Consommé par** : `OrigamChartMap`.
-
----
-
-### `CHART_PICTORIAL_DIRECTION`
-- **Fichier** : `src/enums/Chart/chart-pictorial-direction.enum.ts`
-- **Rôle** : Direction de remplissage du graphique pictorial.
-- **Membres** : `VERTICAL`, `HORIZONTAL`
-- **Consommé par** : `OrigamChartPictorial`.
 
 ---
 
@@ -1654,7 +1638,7 @@ Ces constantes sont des **clés d'injection Vue** (`Symbol.for(…)`) partagées
 | Blockquote | `BLOCKQUOTE_LANG`, `BLOCKQUOTE_VARIANT` | 2 |
 | Bracket | `BRACKET_MATCH_STATUS`, `BRACKET_VARIANT` | 2 |
 | Card | `CARD_TYPE` | 1 |
-| Chart | `CHART_TYPE`, `CHART_BULLET_ORIENTATION`, `CHART_CARTESIAN_KIND`, `CHART_HONEYCOMB_COLOR_MODE`, `CHART_HONEYCOMB_ORIENTATION`, `CHART_MAP_MODE`, `CHART_PICTORIAL_DIRECTION`, `CHART_PICTORIAL_MODE`, `CHART_POLAR_KIND`, `CHART_PYRAMID_KIND`, `CHART_SPARKLINE_KIND`, `CHART_STACKING`, `CHART_STREAMGRAPH_OFFSET`, `CHART_TREEMAP_ALGORITHM`, `CHART_WORD_CLOUD_ROTATION` | 15 |
+| Chart | `CHART_TYPE`, `CHART_CARTESIAN_KIND`, `CHART_HONEYCOMB_COLOR_MODE`, `CHART_HONEYCOMB_ORIENTATION`, `CHART_MAP_MODE`, `CHART_PICTORIAL_MODE`, `CHART_POLAR_KIND`, `CHART_PYRAMID_KIND`, `CHART_SPARKLINE_KIND`, `CHART_STACKING`, `CHART_STREAMGRAPH_OFFSET`, `CHART_TREEMAP_ALGORITHM`, `CHART_WORD_CLOUD_ROTATION` | 13 |
 | Code | `CODE_LANG`, `CODE_THEME` | 2 |
 | ColorPicker | `COLOR_MODES_NAMES` | 1 |
 | DataTable | `DATATABLE_SELECT_STRATEGY` | 1 |
@@ -1677,7 +1661,7 @@ Ces constantes sont des **clés d'injection Vue** (`Symbol.for(…)`) partagées
 | Toolbar | `SCROLL_BEHAVIOR` | 1 |
 | Transition | `TRANSITION_MODE`, `EASING` | 2 |
 
-**Total : ~79 enums** (incluant les 2 `const as`).
+**Total : ~77 enums** (incluant les 2 `const as`) — `CHART_BULLET_ORIENTATION` et `CHART_PICTORIAL_DIRECTION` ont été fusionnés dans `DIRECTION` (Commons), qui dupliquait exactement le même jeu de valeurs.
 
 ---
 

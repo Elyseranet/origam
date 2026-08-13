@@ -125,6 +125,31 @@ Pass `icon` to render an icon glyph instead of `content`. The slot
 </template>
 ```
 
+## Prepend / append
+
+`prependIcon` / `appendIcon` / `prependAvatar` / `appendAvatar` add a
+leading or trailing glyph on either side of the badge content — the
+standard `IAdjacentProps` surface shared with `OrigamBtn` / `OrigamAlert`
+/ `OrigamChip`. Both sides can be set at once. The `prepend` / `append`
+slots override the icon/avatar with fully custom content.
+
+```vue
+<template>
+    <OrigamBadge
+        :model-value="true"
+        :content="3"
+        :prepend-icon="MDI_ICONS.CHEVRON_LEFT"
+        :append-icon="MDI_ICONS.CHEVRON_RIGHT"
+    >
+        <OrigamAvatar text="AP" />
+    </OrigamBadge>
+</template>
+```
+
+Clicking either side emits `click:prepend` / `click:append` — useful to
+wire a dismiss or drill-down action without swallowing clicks on the
+host element itself.
+
 ## Rounded / border / elevation
 
 The same chrome mixins as the rest of origam apply to the badge chip
@@ -144,12 +169,16 @@ itself.
 |---|---|---|
 | `default` | — | The host element the badge attaches to. |
 | `badge` | — | Override the badge chip content (icon / text / custom). |
+| `prepend` | — | Override the leading icon/avatar (see `prependIcon` / `prependAvatar`). |
+| `append` | — | Override the trailing icon/avatar (see `appendIcon` / `appendAvatar`). |
 
 ## Events
 
 | Event | Payload | Description |
 |---|---|---|
 | `update:hover` | `boolean` | Hover toggled on mouse enter / leave. |
+| `click:prepend` | `MouseEvent` | The leading (prepend) icon/avatar/slot was clicked. |
+| `click:append` | `MouseEvent` | The trailing (append) icon/avatar/slot was clicked. |
 
 ## Props (interface)
 
@@ -157,7 +186,7 @@ itself.
 interface IBadgeProps extends ICommonsComponentProps, ITagProps,
     IBorderProps, IColorProps, ILocationProps, IRoundedProps,
     ITransitionComponentProps, IStatusProps, IHoverProps,
-    IElevationProps, ITypographyProps {
+    IElevationProps, ITypographyProps, IAdjacentProps {
     content?: number | string
     dot?: boolean
     floating?: boolean
@@ -169,6 +198,15 @@ interface IBadgeProps extends ICommonsComponentProps, ITagProps,
     offsetY?: number | string
 }
 ```
+
+### Adjacent props (`IAdjacentProps`)
+
+| Prop | Type | Description |
+|---|---|---|
+| `prependIcon` | `TIcon` | Leading icon, rendered before the content. |
+| `appendIcon` | `TIcon` | Trailing icon, rendered after the content. |
+| `prependAvatar` | `string` | Leading avatar image URL. |
+| `appendAvatar` | `string` | Trailing avatar image URL. |
 
 ### Typography props
 

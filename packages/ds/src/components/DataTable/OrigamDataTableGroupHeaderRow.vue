@@ -56,7 +56,7 @@
 	import { useGroupBy, useHeaders, useProps, useSelection , useStyle} from "../../composables"
 	import { MDI_ICONS } from "../../enums"
 
-	import type { IDataTableGroupHeaderRowProps } from "../../interfaces"
+	import type { IDataTableGroupHeaderRowProps, IDataTableGroupHeaderRowSlots } from "../../interfaces"
 
 	import { computed, StyleValue } from "vue"
 
@@ -65,6 +65,8 @@
 	 ********************************************************/
 
 	const props = withDefaults(defineProps<IDataTableGroupHeaderRowProps>(), {})
+
+	defineSlots<IDataTableGroupHeaderRowSlots>()
 
 	const {filterProps} = useProps<IDataTableGroupHeaderRowProps>(props)
 

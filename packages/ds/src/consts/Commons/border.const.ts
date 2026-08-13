@@ -1,4 +1,5 @@
 import { BLOCK, INLINE } from '../../enums'
+import type { TBorderLogicalAxis } from '../../types'
 
 /**
  * Parse a free-form `border` value into width / style / color groups.
@@ -36,4 +37,21 @@ export const BORDER_POSITION_MAP = [
     {side: INLINE.RIGHT, widthProp: 'borderRight', colorProp: 'borderRightColor'},
     {side: BLOCK.BOTTOM, widthProp: 'borderBottom', colorProp: 'borderBottomColor'},
     {side: INLINE.LEFT, widthProp: 'borderLeft', colorProp: 'borderLeftColor'},
+] as const
+
+/**
+ * Logical-axis lookup driving `borderBlock` / `borderInline` wiring.
+ *
+ * Unlike `BORDER_POSITION_MAP` (physical sides, issue #215), these two
+ * props are already named LOGICALLY on `IBorderProps` and map straight
+ * onto the native CSS logical properties `border-block-{width,style,color}`
+ * / `border-inline-{width,style,color}` — no physical translation table
+ * needed, the browser resolves start/end per the active writing mode.
+ * No matching `borderBlockColor` / `borderInlineColor` prop exists (the
+ * per-side color override only applies to the 4 physical corners), so
+ * unlike `BORDER_POSITION_MAP` there is no `colorProp` here.
+ */
+export const BORDER_LOGICAL_AXIS_MAP: ReadonlyArray<{ axis: TBorderLogicalAxis, widthProp: 'borderBlock' | 'borderInline' }> = [
+    {axis: 'block', widthProp: 'borderBlock'},
+    {axis: 'inline', widthProp: 'borderInline'},
 ] as const

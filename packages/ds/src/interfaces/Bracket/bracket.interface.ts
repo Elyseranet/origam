@@ -13,8 +13,12 @@ import type {
     ITypographyProps
 } from '../../interfaces'
 
-import type { TBracketVariant } from '../../types'
+import type { TBracketConnectorPath, TBracketVariant } from '../../types'
 
+import type { IBracketCompetitor } from './bracket-competitor.interface'
+import type { IBracketMatchCompetitorSlot } from './bracket-match-component.interface'
+import type { IBracketMatch } from './bracket-match.interface'
+import type { IBracketRoundMatchSlot, IBracketRoundTitleSlot } from './bracket-round-component.interface'
 import type { IBracketRound } from './bracket-round.interface'
 
 /**
@@ -92,4 +96,33 @@ export interface IBracketProps extends ICommonsComponentProps, ITagProps, IDensi
      * @default 'Losers bracket'
      */
     losersLabel?: string
+}
+
+/** Emits fired by `<OrigamBracket>` — bubbled up from every match /
+ *  competitor across every round (single-elim tree, both double-elim
+ *  trees, or the round-robin matrix). */
+export interface IBracketEmits {
+    (e: 'match-click', match: IBracketMatch, round: IBracketRound, event: MouseEvent): void
+    (e: 'winner-click', competitor: IBracketCompetitor, match: IBracketMatch, event: MouseEvent | KeyboardEvent): void
+    (e: 'competitor-click', competitor: IBracketCompetitor, match: IBracketMatch, event: MouseEvent | KeyboardEvent): void
+}
+
+/** Scope for the `connector` slot — one measured SVG link between two
+ *  match cards (single/double-elimination only; round-robin has no
+ *  connectors). Overriding it replaces the default `<path>` render. */
+export interface IBracketConnectorSlot {
+    from: TBracketConnectorPath['from']
+    to: TBracketConnectorPath['to']
+}
+
+/** Slot signatures for `<OrigamBracket>`. `round-title` / `match` /
+ *  `competitor` are 1:1 forwards of `<OrigamBracketRound>` /
+ *  `<OrigamBracketMatch>`'s own slots (same scope, same names) — they
+ *  exist here so a consumer can override deeply-nested match/competitor
+ *  rendering without dropping down to the round component directly. */
+export interface IBracketSlots {
+    connector?: (props: IBracketConnectorSlot) => any
+    'round-title'?: (props: IBracketRoundTitleSlot) => any
+    match?: (props: IBracketRoundMatchSlot) => any
+    competitor?: (props: IBracketMatchCompetitorSlot) => any
 }

@@ -20,6 +20,7 @@
 							clearable
 							@click:clear="handleClear"
 							@click:append="handleAppendCLick"
+							@click:prepend="handlePrependClick"
 					>
 						<template
 								v-if="slots['select.prepend']"
@@ -203,7 +204,7 @@
 
 	import type { IDataTableHeadersCellMobileProps, IInternalListItem} from '../../interfaces'
 
-	import type { IDataTableHeadersCellMobileEmits } from '../../interfaces/DataTable/headers.interface'
+	import type { IDataTableHeadersCellMobileEmits, IDataTableHeadersCellMobileSlots } from '../../interfaces/DataTable/headers.interface'
 
 	import { computed, mergeProps, useSlots } from 'vue'
 
@@ -214,6 +215,8 @@
 	const props = withDefaults(defineProps<IDataTableHeadersCellMobileProps>(), {})
 
 	const emits = defineEmits<IDataTableHeadersCellMobileEmits>()
+
+	defineSlots<IDataTableHeadersCellMobileSlots>()
 
 	const {filterProps} = useProps<IDataTableHeadersCellMobileProps>(props)
 
@@ -260,6 +263,13 @@
 	const handleAppendCLick = (e: MouseEvent) => {
 		selectAll(!allSelected)
 		emits('click:append', e)
+	}
+	// No "select all" business logic attached here — unlike the append
+	// side, this cell never sets a `prependIcon` on the internal select
+	// itself, so a prepend click can only originate from a consumer's
+	// `#select.prepend` slot. Just pass the click through.
+	const handlePrependClick = (e: MouseEvent) => {
+		emits('click:prepend', e)
 	}
 
 	const handleChipClick = (item: IInternalListItem) => {

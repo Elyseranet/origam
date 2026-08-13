@@ -160,9 +160,10 @@
 	import OrigamChartLegend from './OrigamChartLegend.vue'
 
 	import type {
-		IChartBaseEmits,
 		IChartPath,
+		IChartRadarEmits,
 		IChartRadarProps,
+		IChartRadarSlots,
 		IChartSeries
 	} from '../../interfaces'
 
@@ -194,7 +195,9 @@
 		aspectRatio: undefined
 	})
 
-	const emit = defineEmits<IChartBaseEmits>()
+	const emit = defineEmits<IChartRadarEmits>()
+
+	defineSlots<IChartRadarSlots>()
 
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')

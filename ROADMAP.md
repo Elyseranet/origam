@@ -612,6 +612,88 @@ pour ajouter une nouvelle occurrence, et la possibilité de **supprimer un group
 - Livrable : composant + interface (`IAddMoreProps`) + types + story (format unifié) +
   doc + e2e (ajout, suppression, bornes min/max) — **test-as-you-build**.
 
+### `OrigamWizardForm` — formulaire multi-étapes **(M, spec)**
+
+> Demande mainteneur (août 2026). **Statut : planifié, non implémenté.** Module `form`.
+
+**Constat** : le DS a déjà tout ce qu'il faut pour un formulaire à étapes —
+`OrigamForm` (284 lignes : validation, `v-model`, gestion des erreurs) et
+`OrigamStepper` (288 lignes : navigation par étapes, orientation, statut par
+step). Aucun composant ne les **compose** aujourd'hui pour offrir le pattern
+« formulaire wizard » clé en main. Règle anti-duplication du dépôt oblige
+(`CLAUDE.md` — réutiliser avant d'écrire) : `OrigamWizardForm` **ne
+réimplémente ni la validation ni la navigation par étapes**, il assemble les
+deux composants existants.
+
+**Principe cible** : chaque step du wizard est un groupe de champs rendu par
+`OrigamForm` (scoping de la validation à l'étape active) ; la progression et
+la navigation (Précédent / Suivant / Terminer) sont rendues par
+`OrigamStepper`. La validation d'un step bloque le passage au suivant tant
+qu'elle échoue.
+
+**API cible (esquisse — à affiner)** :
+- `steps: IWizardFormStep[]` (titre + slot de contenu + validators par step)
+  OU slots nommés `#step-{n}` — à trancher au lancement.
+- `v-model` global agrégeant les valeurs de tous les steps.
+- props reprises de `OrigamStepper` pour l'orientation / l'apparence de la
+  progression (horizontale / verticale, linéaire ou non) et de `OrigamForm`
+  pour le comportement de validation.
+- Livrable : composant + interface (`IWizardFormProps`) + story (format
+  unifié) + doc + e2e (navigation avant/arrière, blocage sur step invalide,
+  soumission finale) — **test-as-you-build**.
+
+### `OrigamPage` — wrapper de page (header / content / footer) **(S, spec)**
+
+> Demande mainteneur (août 2026). **Statut : planifié, non implémenté.**
+
+Composant volontairement simple : un wrapper structurel pour une page
+applicative, avec trois zones — header, content, footer — sans logique
+métier imposée. Objectif : un squelette de page sémantique et cohérent avec
+les tokens du DS (spacing) sans que chaque application ne réinvente son
+propre wrapper générique.
+
+**API cible (esquisse)** :
+- slots `#header`, `#default` (content), `#footer` — tous optionnels, layout
+  en colonne (header / content flexible / footer collé en bas).
+- rendu sémantique natif (`header` / `main` / `footer` — pas de conteneur
+  générique, cf. règle HTML sémantique du dépôt).
+- props minimales : dimension (`extends IDimensionProps`), spacing
+  (`extends IMarginProps` / `IPaddingProps`) — pas de logique de scroll ou
+  de sticky imposée dans cette première version.
+- Livrable : composant + interface (`IPageProps`) + story + doc + e2e
+  (présence des 3 zones, rendu sans certaines zones) — **test-as-you-build**.
+
+### `OrigamSection` — achèvement + schémas de section **(M, spec)**
+
+> Demande mainteneur (août 2026). **Statut : coquille existante à achever,
+> PAS une création.**
+
+**Constat** : `packages/ds/src/components/Section/OrigamSection.vue` existe
+déjà mais c'est une coquille vide (14 lignes, `TODO - WIP`) — le `CLAUDE.md`
+recommande d'ailleurs d'utiliser l'élément `section` natif en attendant. Ce
+jalon **achève** le composant, il ne le crée pas.
+
+**Principe cible** : réutiliser le pattern de « schémas » déjà validé par
+`OrigamSkeleton` (`TSkeletonVariant` : `text` / `rectangular` / `circular` /
+`card` / `list-item` — des variants composites qui préconfigurent structure
+ET props). `OrigamSection` exposerait de la même façon des **schémas de
+section** prédéfinis (ex. `hero`, `split`, `centered`, `full-bleed`) : chaque
+schéma est un preset de props (spacing vertical, `bgColor`, alignement de
+contenu) sur le vrai élément `section` sémantique — **props d'abord**, pas de
+CSS bespoke par instance (cf. règle DS « props-first »).
+
+**API cible (esquisse)** :
+- prop `variant?: TSectionVariant` (nommage aligné sur le pattern Skeleton)
+  pilotant un preset de props internes.
+- `extends IDimensionProps` / `IMarginProps` / `IPaddingProps` / `IColorProps`
+  / `IBgColorProps` (Commons) pour l'override — le schéma reste un **bundle
+  de défauts** overridable, jamais un mur opaque.
+- tag racine `section` natif (jamais de conteneur générique — cf. règle HTML
+  sémantique du dépôt).
+- Livrable : composant + interface (`ISectionProps`) + types
+  (`TSectionVariant`) + story + doc + e2e (un schéma par Variant, props
+  overridées testées) — **test-as-you-build**.
+
 ### `OrigamBtn` — prop `contentJustify` **(S, spec)**
 
 > Identifié lot 4 theming (juillet 2026), pendant le fix du trigger

@@ -41,11 +41,12 @@ type TokenSetMap = Map<string, DTCGTree>
  * (i.e. should be serialised as a dimension token like "4px") rather than a
  * bare number.
  */
-const DIMENSION_SCOPES: VariableScope[] = [
+export const DIMENSION_SCOPES: VariableScope[] = [
   'WIDTH_HEIGHT',
   'GAP',
   'CORNER_RADIUS',
   'STROKE_FLOAT',
+  'EFFECT_FLOAT',
 ]
 
 // ---------------------------------------------------------------------------

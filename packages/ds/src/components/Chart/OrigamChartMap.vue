@@ -230,7 +230,8 @@
 		IChartMapEmits,
 		IChartMapProps,
 		IChartMapRoute,
-		IChartMapRouteDatum
+		IChartMapRouteDatum,
+		IChartMapSlots
 	} from '../../interfaces/Chart/chart-map.interface'
 
 	import { intentBgExpr, isIntent } from '../../utils/Commons/color.util'
@@ -284,6 +285,8 @@
 	})
 
 	const emit = defineEmits<IChartMapEmits>()
+
+	defineSlots<IChartMapSlots>()
 
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')

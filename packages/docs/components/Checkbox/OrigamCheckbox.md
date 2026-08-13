@@ -70,7 +70,7 @@ This matters for theme authors: a theme block such as
 resting silhouette of the checkbox. If you want the mark itself to be
 square-with-rounded-corners rather than the DS glyph, that is a rendering
 change (glyph → drawn CSS box), not a prop — see
-[#241](https://github.com/arnaudprioul/origam/issues/241).
+[#241](https://github.com/Elyseranet/origam/issues/241).
 :::
 
 ## States (disabled / readonly / indeterminate)

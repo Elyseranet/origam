@@ -115,7 +115,7 @@
 
 	import type { IDatePickerControlsProps, IDatePickerProps} from "../../interfaces"
 
-	import type { IDatePickerEmits } from '../../interfaces/DatePicker/date-picker.interface'
+	import type { IDatePickerEmits, IDatePickerSlots } from '../../interfaces/DatePicker/date-picker.interface'
 
 	import type {
 		TOrigamDatePickerControls,
@@ -144,6 +144,8 @@
 	})
 
 	const emits = defineEmits<IDatePickerEmits>()
+
+	defineSlots<IDatePickerSlots>()
 
 	const slots = useSlots()
 	const {filterProps} = useProps<IDatePickerProps>(props)

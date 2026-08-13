@@ -25,7 +25,7 @@
 
 	import type { IDatePickerYearsProps} from "../../interfaces"
 
-	import type { IDatePickerYearsEmits } from '../../interfaces/DatePicker/date-picker-years.interface'
+	import type { IDatePickerYearsEmits, IDatePickerYearsSlots } from '../../interfaces/DatePicker/date-picker-years.interface'
 	import type { TTemplateRef } from "../../types"
 	import { convertToUnit, createRange, int, templateRef } from "../../utils"
 
@@ -41,6 +41,8 @@
 	const props = withDefaults(defineProps<IDatePickerYearsProps>(), {})
 
 	const emits = defineEmits<IDatePickerYearsEmits>()
+
+	defineSlots<IDatePickerYearsSlots>()
 
 	const {filterProps} = useProps<IDatePickerYearsProps>(props)
 

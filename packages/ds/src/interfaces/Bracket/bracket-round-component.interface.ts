@@ -2,6 +2,8 @@ import type { ICommonsComponentProps, IDirectionProps, ITagProps, ITypographyPro
 
 import type { TIntent } from '../../types'
 
+import type { IBracketCompetitor } from './bracket-competitor.interface'
+import type { IBracketMatch } from './bracket-match.interface'
 import type { IBracketRound } from './bracket-round.interface'
 
 /**
@@ -26,4 +28,33 @@ export interface IBracketRoundProps extends ICommonsComponentProps, ITagProps, I
     interactive?: boolean
     /** Forward intent color. */
     color?: TIntent
+}
+
+/** Emits fired by `<OrigamBracketRound>` — re-emitted from its default
+ *  `<OrigamBracketMatch>` renders (or from a custom `match` / `competitor`
+ *  slot render that wires the same handlers back up). */
+export interface IBracketRoundEmits {
+    (e: 'match-click', match: IBracketMatch, event: MouseEvent): void
+    (e: 'competitor-click', competitor: IBracketCompetitor, match: IBracketMatch, side: 'A' | 'B', event: MouseEvent | KeyboardEvent): void
+    (e: 'winner-click', competitor: IBracketCompetitor, match: IBracketMatch, event: MouseEvent | KeyboardEvent): void
+}
+
+/** Scope for the `round-title` slot. */
+export interface IBracketRoundTitleSlot {
+    round: IBracketRound
+    index: number
+}
+
+/** Scope for the `match` slot — one match card slot in this round.
+ *  `isFinal` is `true` only for the round's single match when it's also
+ *  the bracket's last round (the championship match). */
+export interface IBracketRoundMatchSlot {
+    match: IBracketMatch
+    round: IBracketRound
+    isFinal: boolean
+}
+
+export interface IBracketRoundSlots {
+    'round-title'?: (props: IBracketRoundTitleSlot) => any
+    match?: (props: IBracketRoundMatchSlot) => any
 }

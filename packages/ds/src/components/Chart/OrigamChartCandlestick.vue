@@ -147,7 +147,7 @@
 					:y-axis-format="yAxisFormat"
 			>
 				<template
-						v-if="$slots.tooltip"
+						v-if="$slots.tooltip && hoveredCandle"
 						#default="bindings"
 				>
 					<slot
@@ -216,6 +216,7 @@
 		IChartCandlestickEmits,
 		IChartCandlestickDatum,
 		IChartCandlestickProps,
+		IChartCandlestickSlots,
 		IChartLegendItem,
 		IChartPoint,
 		IChartSeries
@@ -269,6 +270,8 @@
 	})
 
 	const emit = defineEmits<IChartCandlestickEmits>()
+
+	defineSlots<IChartCandlestickSlots>()
 
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
@@ -482,14 +485,20 @@
 		hoveredCandle.value?.datum.date ?? ''
 	)
 
-	const enrichedTooltipBindings = (bindings: Record<string, unknown>) => {
-		const c = hoveredCandle.value
+	/**
+	 * Builds the `IChartCandlestickSlots['tooltip']` scope. The
+	 * template only invokes this while `v-if="$slots.tooltip &&
+	 * hoveredCandle"` holds, so `hoveredCandle.value` is non-null here
+	 * — the `!` reflects that guard, not an unchecked assumption.
+	 */
+	const enrichedTooltipBindings = (bindings: { point: IChartPoint, series: IChartSeries, category: string | number }) => {
+		const c = hoveredCandle.value!
 		return {
 			...bindings,
-			datum: c?.datum ?? null,
-			change: c?.change ?? 0,
-			changePct: c?.changePct ?? 0,
-			isBullish: c?.isBullish ?? true
+			datum: c.datum,
+			change: c.change,
+			changePct: c.changePct,
+			isBullish: c.isBullish
 		}
 	}
 

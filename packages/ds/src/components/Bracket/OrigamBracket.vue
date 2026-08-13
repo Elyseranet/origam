@@ -277,14 +277,16 @@
 
 	import type {
 		IBracketCompetitor,
+		IBracketEmits,
 		IBracketMatch,
 		IBracketProps,
-		IBracketRound
+		IBracketRound,
+		IBracketSlots
 	} from '../../interfaces'
 
 	import type { IBracketSurfaceInput } from '../../utils/Bracket/bracket-surface.util'
 
-	import type { TIntent } from '../../types'
+	import type { TBracketConnectorPath, TBracketDoubleSection, TIntent } from '../../types'
 
 	/*********************************************************
 	 * Global
@@ -302,11 +304,9 @@
 		losersLabel: 'Losers bracket'
 	})
 
-	const emit = defineEmits<{
-		(e: 'match-click', match: IBracketMatch, round: IBracketRound, event: MouseEvent): void
-		(e: 'winner-click', competitor: IBracketCompetitor, match: IBracketMatch, event: MouseEvent | KeyboardEvent): void
-		(e: 'competitor-click', competitor: IBracketCompetitor, match: IBracketMatch, event: MouseEvent | KeyboardEvent): void
-	}>()
+	const emit = defineEmits<IBracketEmits>()
+
+	defineSlots<IBracketSlots>()
 
 	const {filterProps} = useProps<IBracketProps>(props)
 
@@ -353,14 +353,8 @@
 	const loserRounds = computed<IBracketRound[]>(() => props.rounds.filter(r => r.side === 'loser'))
 	const grandFinalRounds = computed<IBracketRound[]>(() => props.rounds.filter(r => r.side === 'grand-final'))
 
-	type TDoubleSection = {
-		key: 'winners' | 'losers' | 'grand-final'
-		label: string
-		rounds: IBracketRound[]
-	}
-
-	const doubleSections = computed<TDoubleSection[]>(() => {
-		const all: TDoubleSection[] = [
+	const doubleSections = computed<TBracketDoubleSection[]>(() => {
+		const all: TBracketDoubleSection[] = [
 			{key: 'winners', label: props.winnersLabel ?? '', rounds: winnerRounds.value},
 			{key: 'losers', label: props.losersLabel ?? '', rounds: loserRounds.value},
 			{key: 'grand-final', label: '', rounds: grandFinalRounds.value}
@@ -522,14 +516,6 @@
 	const doubleRef = ref<HTMLElement | null>(null)
 	const connectorViewBox = ref<string>('0 0 0 0')
 
-	type TConnectorPath = {
-		key: string
-		d: string
-		from: { matchId: IBracketMatch['id']; x: number; y: number }
-		to: { matchId: IBracketMatch['id']; x: number; y: number }
-		winner: boolean
-	}
-
 	/*********************************************************
 	 * Connector measurement (real DOM positions)
 	 *
@@ -543,7 +529,7 @@
 	 * exact middle of the card it leaves / enters, whatever the
 	 * title, density, scores or gap.
 	 ********************************************************/
-	const connectorPaths = ref<TConnectorPath[]>([])
+	const connectorPaths = ref<TBracketConnectorPath[]>([])
 
 	/*********************************************************
 	 * Double-elimination connectors (id-driven)
@@ -573,7 +559,7 @@
 			rectById.set(String(card.dataset.matchId), card.getBoundingClientRect())
 		})
 
-		const paths: TConnectorPath[] = []
+		const paths: TBracketConnectorPath[] = []
 
 		for (const round of props.rounds) {
 			for (const match of round.matches) {
@@ -626,7 +612,7 @@
 		})
 
 		const horiz = isHorizontal.value
-		const paths: TConnectorPath[] = []
+		const paths: TBracketConnectorPath[] = []
 
 		for (let r = 0; r < displayRounds.value.length - 1; r += 1) {
 			const round = displayRounds.value[r]
@@ -655,8 +641,8 @@
 				const toCenterY = (toRect.top - treeRect.top) + toRect.height / 2
 
 				let d: string
-				let from: TConnectorPath['from']
-				let to: TConnectorPath['to']
+				let from: TBracketConnectorPath['from']
+				let to: TBracketConnectorPath['to']
 
 				if (horiz) {
 					const startX = fromRect.right - treeRect.left
