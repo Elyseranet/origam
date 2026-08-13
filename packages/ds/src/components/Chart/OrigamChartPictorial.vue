@@ -320,7 +320,8 @@
 	import type {
 		IChartPictorialColumn,
 		IChartPictorialEmits,
-		IChartPictorialProps
+		IChartPictorialProps,
+		IChartPictorialSlots
 	} from '../../interfaces/Chart/chart-pictorial.interface'
 
 	import { intentBgExpr, isIntent } from '../../utils/Commons/color.util'
@@ -372,6 +373,8 @@
 	})
 
 	const emit = defineEmits<IChartPictorialEmits>()
+
+	defineSlots<IChartPictorialSlots>()
 
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')

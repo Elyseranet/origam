@@ -325,7 +325,8 @@
 		IChartParetoBar,
 		IChartParetoDatum,
 		IChartParetoEmits,
-		IChartParetoProps
+		IChartParetoProps,
+		IChartParetoSlots
 	} from '../../interfaces/Chart/chart-pareto.interface'
 
 	import { intentBgExpr, isIntent } from '../../utils/Commons/color.util'
@@ -374,6 +375,8 @@
 	})
 
 	const emit = defineEmits<IChartParetoEmits>()
+
+	defineSlots<IChartParetoSlots>()
 
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
@@ -650,17 +653,26 @@
 		hoveredBar.value?.category ?? ''
 	)
 
-	const tooltipBindings = (bindings: Record<string, unknown>) => {
+	/**
+	 * Builds the `IChartParetoSlots['tooltip']` scope from the default
+	 * `{ point, series, category }` binding + the hovered bar's own
+	 * fields (`value`, `formattedValue`, `share`, `cumulative`,
+	 * `color`). `bar` is guaranteed non-null whenever this runs — the
+	 * tooltip only renders while `hoveredBar` backs `hoveredPoint` /
+	 * `hoveredSeries`, which the `<origam-chart-tooltip>` wrapper's own
+	 * `v-if="point && series"` already gates — but the fallback keeps
+	 * the return type honest without a non-null assertion.
+	 */
+	const tooltipBindings = (bindings: { point: IChartPoint, series: IChartSeries, category: string | number }) => {
 		const bar = hoveredBar.value
-		if (!bar) return bindings
 		return {
-			...bindings,
-			category: bar.category,
-			value: bar.value,
-			formattedValue: bar.formattedValue,
-			share: bar.share,
-			cumulative: bar.cumulative,
-			color: bar.color
+			point: bindings.point,
+			category: bar?.category ?? '',
+			value: bar?.value ?? 0,
+			formattedValue: bar?.formattedValue ?? '',
+			share: bar?.share ?? 0,
+			cumulative: bar?.cumulative ?? 0,
+			color: bar?.color ?? ''
 		}
 	}
 

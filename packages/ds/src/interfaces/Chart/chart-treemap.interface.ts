@@ -110,3 +110,17 @@ export interface IChartTreemapSlots extends IChartBaseSlots {
         visible: boolean
     }) => any
 }
+
+/**
+ * Plain SVG-space rectangle (`x`, `y`, `w`, `h`) shared by both layout
+ * algorithms (`squarify` / `sliceDice`). Moved out of
+ * `OrigamChartTreemap.vue` (was a bare `interface Rect` local to the
+ * `<script setup>`) so the `.vue` file only imports it, per the
+ * "no declarations in .vue" rule.
+ */
+export interface IChartTreemapRect {
+    x: number
+    y: number
+    w: number
+    h: number
+}

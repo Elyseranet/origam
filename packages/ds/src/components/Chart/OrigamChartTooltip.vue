@@ -33,7 +33,7 @@
 		type StyleValue
 	} from 'vue'
 
-	import type { IChartTooltipProps } from '../../interfaces'
+	import type { IChartTooltipProps, IChartTooltipSlots } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -60,6 +60,8 @@
 		xAxisFormat: undefined,
 		yAxisFormat: undefined
 	})
+
+	defineSlots<IChartTooltipSlots>()
 
 	/*********************************************************
 	 * Format helpers — fall back to identity when the consumer

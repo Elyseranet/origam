@@ -152,6 +152,7 @@
 	import type {
 		IChartWordCloudEmits,
 		IChartWordCloudProps,
+		IChartWordCloudSlots,
 		IChartWordCloudWord
 	} from '../../interfaces/Chart/chart-word-cloud.interface'
 
@@ -166,7 +167,7 @@
 
 	import { intentBgExpr, isIntent } from '../../utils/Commons/color.util'
 
-	import type { TIntent } from '../../types'
+	import type { TChartWordCloudRawDatum, TIntent } from '../../types'
 
 	/*********************************************************
 	 * Global
@@ -205,6 +206,8 @@
 	})
 
 	const emit = defineEmits<IChartWordCloudEmits>()
+
+	defineSlots<IChartWordCloudSlots>()
 
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
@@ -301,8 +304,7 @@
 		const series = props.series?.[0]
 		if (!series || !series.data?.length) return []
 
-		type RawDatum = { text: string; value: number; color?: string }
-		const raw = series.data as unknown as Array<RawDatum>
+		const raw = series.data as unknown as Array<TChartWordCloudRawDatum>
 
 		const valid = raw.filter((d) => d && typeof d === 'object' && 'text' in d && typeof d.value === 'number')
 		if (!valid.length) return []

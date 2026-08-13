@@ -531,6 +531,7 @@
 		IChartPlotBand,
 		IChartPlotLine,
 		IChartPoint,
+		IChartCartesianSlots,
 		IChartRangeSelectorButton,
 		IChartSeries,
 		IChartSeriesPoint
@@ -588,6 +589,8 @@
 	})
 
 	const emit = defineEmits<IChartCartesianEmits>()
+
+	defineSlots<IChartCartesianSlots>()
 
 	/*********************************************************
 	 * Drilldown state — a navigation stack where index 0 is the

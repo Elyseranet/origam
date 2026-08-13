@@ -262,7 +262,8 @@
 		IChartVariwideColumn,
 		IChartVariwideDatum,
 		IChartVariwideEmits,
-		IChartVariwideProps
+		IChartVariwideProps,
+		IChartVariwideSlots
 	} from '../../interfaces'
 
 	import { intentBgExpr, isIntent } from '../../utils/Commons/color.util'
@@ -311,6 +312,8 @@
 	})
 
 	const emit = defineEmits<IChartVariwideEmits>()
+
+	defineSlots<IChartVariwideSlots>()
 
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
@@ -552,17 +555,24 @@
 		hoveredColumn.value?.category ?? ''
 	)
 
-	const tooltipBindings = (bindings: Record<string, unknown>) => {
+	/**
+	 * Builds the `IChartVariwideSlots['tooltip']` scope from the
+	 * default `{ point, series, category }` binding + the hovered
+	 * column's own fields. Mirrors the Pareto / Heatmap fix — `col` is
+	 * guaranteed non-null whenever the tooltip actually renders, but
+	 * the `?? ` fallbacks keep the return type honest without a
+	 * non-null assertion.
+	 */
+	const tooltipBindings = (bindings: { point: IChartPoint, series: IChartSeries, category: string | number }) => {
 		const col = hoveredColumn.value
-		if (!col) return bindings
 		return {
-			...bindings,
-			category: col.category,
-			value: col.value,
-			widthValue: col.widthValue,
-			formattedValue: col.formattedValue,
-			formattedWidth: col.formattedWidth,
-			color: col.color
+			point: bindings.point,
+			category: col?.category ?? '',
+			value: col?.value ?? 0,
+			widthValue: col?.widthValue ?? 0,
+			formattedValue: col?.formattedValue ?? '',
+			formattedWidth: col?.formattedWidth ?? '',
+			color: col?.color ?? ''
 		}
 	}
 

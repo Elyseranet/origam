@@ -29,7 +29,10 @@
 		lang="ts"
 		setup
 >
-	import type { IChartRangeSelectorButton } from '../../interfaces'
+	import type {
+		IChartRangeSelectorEmits,
+		IChartRangeSelectorProps
+	} from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -44,18 +47,12 @@
 		name: 'OrigamChartRangeSelector'
 	})
 
-	const props = withDefaults(defineProps<{
-		buttons: Array<IChartRangeSelectorButton>
-		activeIndex?: number
-		dataLength?: number
-	}>(), {
+	const props = withDefaults(defineProps<IChartRangeSelectorProps>(), {
 		activeIndex: -1,
 		dataLength: 0
 	})
 
-	const emit = defineEmits<{
-		(e: 'select', index: number, start: number, end: number): void
-	}>()
+	const emit = defineEmits<IChartRangeSelectorEmits>()
 
 	const onButtonClick = (index: number): void => {
 		const btn = props.buttons[index]

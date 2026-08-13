@@ -276,7 +276,8 @@
 		IChartBoxPlotBox,
 		IChartBoxPlotDatum,
 		IChartBoxPlotEmits,
-		IChartBoxPlotProps
+		IChartBoxPlotProps,
+		IChartBoxPlotSlots
 	} from '../../interfaces/Chart/chart-box-plot.interface'
 
 	import type {
@@ -333,6 +334,8 @@
 	})
 
 	const emit = defineEmits<IChartBoxPlotEmits>()
+
+	defineSlots<IChartBoxPlotSlots>()
 
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')

@@ -172,7 +172,7 @@
 					:y-axis-format="yAxisFormat"
 			>
 				<template
-						v-if="$slots.tooltip"
+						v-if="$slots.tooltip && hoveredBullet"
 						#default="bindings"
 				>
 					<slot
@@ -241,6 +241,7 @@
 		IChartBulletDatum,
 		IChartBulletEmits,
 		IChartBulletProps,
+		IChartBulletSlots,
 		IChartLegendItem,
 		IChartPoint,
 		IChartSeries
@@ -294,6 +295,8 @@
 	})
 
 	const emit = defineEmits<IChartBulletEmits>()
+
+	defineSlots<IChartBulletSlots>()
 
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
