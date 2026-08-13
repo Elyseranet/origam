@@ -1,5 +1,4 @@
 [
-    "Audio",
     "Blockquote",
     "Calendar",
     "ClientOnly",
@@ -9,18 +8,12 @@
     "CommandPalette",
     "ConfirmWrapper",
     "DefaultsProvider",
-    "EmptyState",
     "FileFieldDragNDropItem",
     "FileFieldListItem",
-    "Grid",
-    "GridItem",
     "InlineEdit",
     "Item",
     "ItemGroup",
     "Masonry",
-    "MediaController",
-    "MediaScrubber",
-    "MediaVolumeControl",
     "NumberFormat",
     "ParallaxLayer",
     "QrCode",
@@ -30,6 +23,5 @@
     "SnackbarItem",
     "ThemeProvider",
     "TranslatePicker",
-    "Video",
     "Watermark"
 ]

@@ -134,6 +134,7 @@ export * from './Divider/divider.type'
 
 export * from './Drawer/drawer.type'
 
+export * from './EmptyState/empty-state.type'
 export * from './EmptyState/empty-state-preset.type'
 export * from './EmptyState/empty-state-size.type'
 export * from './EmptyState/empty-state-align.type'
@@ -154,6 +155,8 @@ export * from './Grids/container.type'
 export * from './Grids/row.type'
 export * from './Grids/spacer.type'
 
+export * from './Grid/grid.type'
+export * from './Grid/grid-item.type'
 export * from './Grid/grid-flow.type'
 export * from './Grid/grid-align.type'
 
@@ -325,9 +328,11 @@ export * from './Mask/mask.type'
 
 export * from './QrCode/qr-code-error-correction.type'
 
+export * from './Video/video.type'
 export * from './Video/video-controls.type'
 export * from './Video/video-track-kind.type'
 
+export * from './Audio/audio.type'
 export * from './Audio/audio-controls.type'
 export * from './Audio/audio-variant.type'
 export * from './Audio/audio-loop-mode.type'
