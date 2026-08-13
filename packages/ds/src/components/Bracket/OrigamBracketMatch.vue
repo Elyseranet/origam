@@ -105,7 +105,6 @@
 
 	import type {
 		IBracketCompetitor,
-		IBracketMatch,
 		IBracketMatchEmits,
 		IBracketMatchProps,
 		IBracketMatchSlots
