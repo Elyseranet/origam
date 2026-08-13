@@ -336,7 +336,7 @@ export * from './Audio/audio.type'
 export * from './Audio/audio-controls.type'
 export * from './Audio/audio-variant.type'
 export * from './Audio/audio-loop-mode.type'
-export * from './Audio/cover-position.type'
+export * from './Audio/audio-cover-position.type'
 
 
 export * from './Calendar/calendar-view.type'

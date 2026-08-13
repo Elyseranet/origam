@@ -4,7 +4,7 @@ export * from './Img/img.enum'
 
 export * from './Audio/audio-variant.enum'
 export * from './Audio/audio-loop-mode.enum'
-export * from './Audio/cover-position.enum'
+export * from './Audio/audio-cover-position.enum'
 
 export * from './Chart/chart.enum'
 export * from './Chart/chart-cartesian-kind.enum'
