@@ -7,22 +7,14 @@ export * from './Avatar/avatar.type'
 
 export * from './Badge/badge.type'
 
-export * from './Blockquote/blockquote-variant.type'
-export * from './Blockquote/blockquote-lang.type'
-export * from './Blockquote/blockquote-align.type'
+export * from './Blockquote/blockquote.type'
 
 export * from './BottomNav/bottom-nav.type'
 
-export * from './Bracket/bracket-variant.type'
-export * from './Bracket/bracket-direction.type'
-export * from './Bracket/bracket-match-status.type'
-export * from './Bracket/bracket-round-side.type'
 export * from './Bracket/bracket.type'
-export * from './Bracket/bracket-round.type'
 export * from './Bracket/bracket-match.type'
+export * from './Bracket/bracket-round.type'
 export * from './Bracket/bracket-competitor.type'
-export * from './Bracket/bracket-double-section.type'
-export * from './Bracket/bracket-connector-path.type'
 
 export * from './Breadcrumb/breadcrumb.type'
 export * from './Breadcrumb/breadcrumb-divider.type'
@@ -50,7 +42,7 @@ export * from './ClientOnly/client-only.type'
 
 export * from './Clipboard/clipboard.type'
 
-export * from './Code/code-lang.type'
+export * from './Code/code.type'
 
 export * from './ColorPicker/color-picker.type'
 export * from './ColorPicker/color-picker-canvas.type'
@@ -167,7 +159,7 @@ export * from './Grids/spacer.type'
 export * from './Grid/grid-flow.type'
 export * from './Grid/grid-align.type'
 
-export * from './Masonry/masonry-align.type'
+export * from './Masonry/masonry.type'
 
 export * from './Media'
 
@@ -182,9 +174,9 @@ export * from './Img/img.type'
 export * from './InfiniteScroll/infinite-scroll.type'
 export * from './InfiniteScroll/infinite-scroll-intersect.type'
 
-export * from './InlineEdit/inline-edit-input-type.type'
+export * from './InlineEdit/inline-edit.type'
 
-export * from './NumberFormat/number-format-format.type'
+export * from './NumberFormat/number-format.type'
 
 export * from './Input/input.type'
 
@@ -223,11 +215,8 @@ export * from './Pagination/pagination.type'
 
 export * from './Parallax/parallax.type'
 export * from './Parallax/parallax-element.type'
-export * from './Parallax/parallax-direction.type'
-export * from './Parallax/parallax-easing.type'
 
 export * from './PasswordField/password-field.type'
-export * from './PasswordField/password-strength.type'
 
 export * from './Picker/picker.type'
 export * from './Picker/picker-title.type'
@@ -253,21 +242,17 @@ export * from './SelectionControl/selection-control-group.type'
 export * from './Section/section.type'
 
 export * from './Sheet/sheet.type'
-export * from './Sheet/sheet-snap-point.type'
 
 export * from './Slide/slide-group.type'
 
 export * from './SliderField/slider-field.type'
 export * from './SliderField/slider-field-track.type'
-export * from './SliderField/slider-field-variant.type'
 
 export * from './Snackbar/snackbar.type'
 
 export * from './Snackbar/snackbar-group.type'
-export * from './Snackbar/snackbar-group-location.type'
-export * from './Snackbar/snackbar-group-direction.type'
 
-export * from './CommandPalette/command-palette-hotkey.type'
+export * from './CommandPalette/command-palette.type'
 
 export * from './Switch/switch.type'
 export * from './Switch/switch-track.type'
@@ -276,15 +261,11 @@ export * from './Table/table.type'
 
 export * from './TextareaField/textarea-field.type'
 
-export * from './Textarea/textarea-mode.type'
-export * from './Textarea/textarea-output.type'
-export * from './Textarea/textarea-toolbar-command.type'
-export * from './Textarea/textarea-toolbar-position.type'
+export * from './RichToolbar/rich-toolbar.type'
 
 export * from './TextField/text-field.type'
 
 export * from './TextMask/text-mask.type'
-export * from './TextMask/text-mask-animation.type'
 
 export * from './Title/title.type'
 
@@ -312,9 +293,8 @@ export * from './Transition/reverse-translate-picker.type'
 export * from './VirtualScroll/virtual-scroll.type'
 export * from './VirtualScroll/virtual-scroll-item.type'
 
-export * from './Tabs/tab-variant.type'
-export * from './Tabs/tabs.type'
 export * from './Tabs/tab.type'
+export * from './Tabs/tabs.type'
 export * from './Tabs/tab-panels.type'
 export * from './Tabs/tab-panel.type'
 
@@ -336,11 +316,8 @@ export * from './Timeline/timeline.type'
 
 export * from './Treeview/treeview.type'
 
-export * from './Mask/built-in-pattern.type'
-export * from './Mask/pattern-validator.type'
-export * from './Mask/mask.type'
 
-export * from './QrCode/qr-code-error-correction.type'
+export * from './QrCode/qr-code.type'
 
 export * from './Watermark/watermark.type'
 
@@ -353,8 +330,7 @@ export * from './Audio/audio-loop-mode.type'
 export * from './Audio/cover-position.type'
 
 
-export * from './Calendar/calendar-view.type'
-export * from './Calendar/calendar-time-format.type'
+export * from './Calendar/calendar.type'
 
 export * from './Chart/chart-legend-position.type'
 export * from './Chart/chart-smoothing.type'
