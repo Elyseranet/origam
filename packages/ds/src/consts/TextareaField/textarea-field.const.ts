@@ -1,5 +1,4 @@
 import { TEXTAREA_TOOLBAR_COMMAND } from '../../enums'
-
 import type { TTextareaToolbarCommand } from '../../types'
 
 /**
