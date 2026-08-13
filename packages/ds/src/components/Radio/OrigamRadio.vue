@@ -122,7 +122,7 @@
 
 	import type { IRadioProps} from '../../interfaces'
 
-	import type { IRadioEmits } from '../../interfaces/Radio/radio.interface'
+	import type { IRadioEmits, IRadioSlots } from '../../interfaces/Radio/radio.interface'
 
 	import type { TOrigamInput, TOrigamRadioBtn } from "../../types"
 
@@ -146,6 +146,8 @@
 	const props = useDefaults(_props)
 
 	const emits = defineEmits<IRadioEmits>()
+
+	defineSlots<IRadioSlots>()
 
 
 	const {isHover, hoverState} = useHover(props)

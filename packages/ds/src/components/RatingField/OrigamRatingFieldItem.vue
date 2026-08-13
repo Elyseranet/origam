@@ -46,7 +46,7 @@
 
 	import { MDI_ICONS, VARIANT } from "../../enums"
 
-	import type { IRatingFieldItemProps} from '../../interfaces'
+	import type { IRatingFieldItemProps, IRatingFieldItemSlots} from '../../interfaces'
 
 	import type { IRatingFieldItemEmits } from '../../interfaces/RatingField/rating-field-item.interface'
 
@@ -68,6 +68,8 @@
 	})
 
 	const emits = defineEmits<IRatingFieldItemEmits>()
+
+	defineSlots<IRatingFieldItemSlots>()
 
 	const {filterProps} = useProps<IRatingFieldItemProps>(props)
 

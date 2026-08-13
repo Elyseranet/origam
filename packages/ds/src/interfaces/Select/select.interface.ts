@@ -3,6 +3,7 @@ import type {
     IAdjacentInnerEmits,
     IAdjacentInnerProps,
     IAdjacentProps,
+    IAdjacentSlots,
     IBorderProps,
     IChipProps,
     IBgColorProps,
@@ -12,9 +13,11 @@ import type {
     IDensityProps,
     IElevationProps,
     IFieldProps,
+    IFieldSlots,
     IFiltersProps,
     IFocusEmits,
     IInputProps,
+    IInternalListItem,
     IItemProps,
     ILazyProps,
     IListProps,
@@ -58,4 +61,23 @@ export interface ISelectEmits extends ICommonsComponentEmits, IFocusEmits, IAdja
     (e: 'click:control', event: MouseEvent): void
     (e: 'mousedown:control', event: MouseEvent): void
     (e: 'update:menu', value: boolean): void
+}
+
+/** Slot signatures for `<OrigamSelect>` — the field chrome slots
+ *  (`IFieldSlots` minus its scoped `default`, since this field renders
+ *  its own dropdown/selection markup instead) plus `prepend` / `append`
+ *  (`IAdjacentSlots`) and the dropdown/selection overrides. */
+export interface ISelectSlots extends Omit<IFieldSlots, 'default'>, IAdjacentSlots {
+    /** Rendered before the option list, inside the dropdown. */
+    'items.prepend'?: () => any
+    /** Overrides the "no results" row. */
+    noData?: () => any
+    /** Overrides one option row — `props` is the resolved `<OrigamListItem>` prop bag. */
+    item?: (data: { item: IInternalListItem, index: number, props: Record<string, unknown> }) => any
+    /** Rendered after the option list, inside the dropdown. */
+    'items.append'?: () => any
+    /** Overrides one selected-value chip (`chips` mode). */
+    chip?: (data: { item: IInternalListItem, index: number, props: Record<string, unknown> }) => any
+    /** Overrides a single selected value's text representation. */
+    selection?: () => any
 }

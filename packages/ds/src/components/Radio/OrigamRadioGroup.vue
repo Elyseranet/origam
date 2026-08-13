@@ -73,7 +73,7 @@
 
 	import { DENSITY } from '../../enums'
 
-	import type { IRadioGroupProps } from '../../interfaces'
+	import type { IRadioGroupProps, IRadioGroupSlots } from '../../interfaces'
 	import type { TOrigamInput, TOrigamSelectionControlGroup } from "../../types"
 
 	import { filterInputAttrs, getUid } from '../../utils'
@@ -87,6 +87,8 @@
 	const props = withDefaults(defineProps<IRadioGroupProps>(), {
 		density: DENSITY.DEFAULT
 	})
+
+	defineSlots<IRadioGroupSlots>()
 
 	const {filterProps} = useProps<IRadioGroupProps>(props)
 
