@@ -150,6 +150,24 @@ export const ROADMAP_PHASES: IRoadmapPhase[] = [
                 descriptionKey: 'roadmap.phases.short_term.bundle_size.description',
                 icon: 'mdi-package-variant-closed',
                 effortKey: 'roadmap.effort.small'
+            },
+            {
+                titleKey: 'roadmap.phases.short_term.tu_audit.title',
+                descriptionKey: 'roadmap.phases.short_term.tu_audit.description',
+                icon: 'mdi-flask-outline',
+                effortKey: 'roadmap.effort.medium'
+            },
+            {
+                titleKey: 'roadmap.phases.short_term.api_audit.title',
+                descriptionKey: 'roadmap.phases.short_term.api_audit.description',
+                icon: 'mdi-file-search-outline',
+                effortKey: 'roadmap.effort.large'
+            },
+            {
+                titleKey: 'roadmap.phases.short_term.dependency_automation.title',
+                descriptionKey: 'roadmap.phases.short_term.dependency_automation.description',
+                icon: 'mdi-source-pull',
+                effortKey: 'roadmap.effort.small'
             }
         ]
     },
@@ -167,6 +185,12 @@ export const ROADMAP_PHASES: IRoadmapPhase[] = [
                 effortKey: 'roadmap.effort.xlarge'
             },
             {
+                titleKey: 'roadmap.phases.mid_term.modularization.title',
+                descriptionKey: 'roadmap.phases.mid_term.modularization.description',
+                icon: 'mdi-puzzle-outline',
+                effortKey: 'roadmap.effort.xlarge'
+            },
+            {
                 titleKey: 'roadmap.phases.mid_term.accent_color.title',
                 descriptionKey: 'roadmap.phases.mid_term.accent_color.description',
                 icon: 'mdi-palette-outline',
@@ -176,6 +200,24 @@ export const ROADMAP_PHASES: IRoadmapPhase[] = [
                 titleKey: 'roadmap.phases.mid_term.list_semantics.title',
                 descriptionKey: 'roadmap.phases.mid_term.list_semantics.description',
                 icon: 'mdi-format-list-bulleted',
+                effortKey: 'roadmap.effort.medium'
+            },
+            {
+                titleKey: 'roadmap.phases.mid_term.wizard_form.title',
+                descriptionKey: 'roadmap.phases.mid_term.wizard_form.description',
+                icon: 'mdi-stairs',
+                effortKey: 'roadmap.effort.medium'
+            },
+            {
+                titleKey: 'roadmap.phases.mid_term.page.title',
+                descriptionKey: 'roadmap.phases.mid_term.page.description',
+                icon: 'mdi-page-layout-header-footer',
+                effortKey: 'roadmap.effort.small'
+            },
+            {
+                titleKey: 'roadmap.phases.mid_term.section.title',
+                descriptionKey: 'roadmap.phases.mid_term.section.description',
+                icon: 'mdi-view-agenda-outline',
                 effortKey: 'roadmap.effort.medium'
             },
             {
@@ -212,6 +254,24 @@ export const ROADMAP_PHASES: IRoadmapPhase[] = [
                 titleKey: 'roadmap.phases.mid_term.turborepo.title',
                 descriptionKey: 'roadmap.phases.mid_term.turborepo.description',
                 icon: 'mdi-rocket-outline',
+                effortKey: 'roadmap.effort.small'
+            },
+            {
+                titleKey: 'roadmap.phases.mid_term.variant_presets.title',
+                descriptionKey: 'roadmap.phases.mid_term.variant_presets.description',
+                icon: 'mdi-tune-variant',
+                effortKey: 'roadmap.effort.large'
+            },
+            {
+                titleKey: 'roadmap.phases.mid_term.add_more.title',
+                descriptionKey: 'roadmap.phases.mid_term.add_more.description',
+                icon: 'mdi-playlist-plus',
+                effortKey: 'roadmap.effort.medium'
+            },
+            {
+                titleKey: 'roadmap.phases.mid_term.content_justify.title',
+                descriptionKey: 'roadmap.phases.mid_term.content_justify.description',
+                icon: 'mdi-align-horizontal-center',
                 effortKey: 'roadmap.effort.small'
             }
         ]
@@ -252,6 +312,72 @@ export const ROADMAP_PHASES: IRoadmapPhase[] = [
                 descriptionKey: 'roadmap.phases.long_term.marketing_cms.description',
                 icon: 'mdi-view-dashboard-edit-outline',
                 effortKey: 'roadmap.effort.xlarge'
+            },
+            {
+                titleKey: 'roadmap.phases.long_term.server_components.title',
+                descriptionKey: 'roadmap.phases.long_term.server_components.description',
+                icon: 'mdi-server-outline',
+                effortKey: 'roadmap.effort.medium'
+            },
+            {
+                titleKey: 'roadmap.phases.long_term.ai_figma.title',
+                descriptionKey: 'roadmap.phases.long_term.ai_figma.description',
+                icon: 'mdi-auto-fix',
+                effortKey: 'roadmap.effort.large'
+            },
+            {
+                titleKey: 'roadmap.phases.long_term.maintenance_eol.title',
+                descriptionKey: 'roadmap.phases.long_term.maintenance_eol.description',
+                icon: 'mdi-calendar-clock-outline'
+            }
+        ]
+    },
+    {
+        id: 'ongoing',
+        eyebrowKey: 'roadmap.phases.ongoing.eyebrow',
+        titleKey: 'roadmap.phases.ongoing.title',
+        intent: 'secondary',
+        icon: 'mdi-refresh',
+        items: [
+            {
+                titleKey: 'roadmap.phases.ongoing.dependencies.title',
+                descriptionKey: 'roadmap.phases.ongoing.dependencies.description',
+                icon: 'mdi-update'
+            },
+            {
+                titleKey: 'roadmap.phases.ongoing.doc.title',
+                descriptionKey: 'roadmap.phases.ongoing.doc.description',
+                icon: 'mdi-book-open-page-variant-outline'
+            },
+            {
+                titleKey: 'roadmap.phases.ongoing.performance.title',
+                descriptionKey: 'roadmap.phases.ongoing.performance.description',
+                icon: 'mdi-speedometer'
+            },
+            {
+                titleKey: 'roadmap.phases.ongoing.refactor.title',
+                descriptionKey: 'roadmap.phases.ongoing.refactor.description',
+                icon: 'mdi-broom'
+            },
+            {
+                titleKey: 'roadmap.phases.ongoing.quality_gate.title',
+                descriptionKey: 'roadmap.phases.ongoing.quality_gate.description',
+                icon: 'mdi-check-decagram-outline'
+            },
+            {
+                titleKey: 'roadmap.phases.ongoing.changelog.title',
+                descriptionKey: 'roadmap.phases.ongoing.changelog.description',
+                icon: 'mdi-file-document-edit-outline'
+            },
+            {
+                titleKey: 'roadmap.phases.ongoing.test_as_you_build.title',
+                descriptionKey: 'roadmap.phases.ongoing.test_as_you_build.description',
+                icon: 'mdi-clipboard-check-outline'
+            },
+            {
+                titleKey: 'roadmap.phases.ongoing.security.title',
+                descriptionKey: 'roadmap.phases.ongoing.security.description',
+                icon: 'mdi-shield-lock-outline'
             }
         ]
     }

@@ -1,6 +1,6 @@
 {
   "name": "origam",
-  "version": "2.14.0",
+  "version": "2.14.1",
   "type": "module",
   "description": "origam — a Vue 3 design system with multi-theme design tokens, CSS-first components and TypeScript types.",
   "keywords": [
@@ -106,6 +106,11 @@
     "styles:build": "sass src/assets/scss/main.scss src/assets/css/main.css --no-source-map --style=compressed",
     "tokens:watch": "node scripts/build-tokens.mjs --watch",
     "tokens:lint": "node scripts/build-tokens.mjs --dry-run --strict",
+    "guards": "node scripts/guards/run-all.mjs",
+    "guards:declarations": "node scripts/guards/no-declarations-in-vue.mjs",
+    "guards:variant-css": "node scripts/guards/no-variant-css.mjs",
+    "guards:instance-types": "node scripts/guards/instance-types.mjs",
+    "guards:naming": "node scripts/guards/file-naming.mjs",
     "prepublishOnly": "pnpm run build",
     "prepack": "node -e \"require('fs').copyFileSync('../../CHANGELOG.md','CHANGELOG.md')\""
   },

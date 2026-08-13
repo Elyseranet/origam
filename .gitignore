@@ -46,6 +46,17 @@ packages/tests/e2e/.report-marketing
 packages/tests/e2e/.results-marketing
 packages/tests/a11y/.report
 packages/tests/a11y/.results
+packages/tests/vrt/.report
+packages/tests/vrt/.results
+
+# VRT baselines are ONLY trustworthy when captured in the pinned Linux
+# container documented in packages/tests/vrt/VRT.md. Playwright's default
+# snapshot naming embeds {platform}, so a baseline captured natively on a
+# contributor's machine lands in a *-darwin.png / *-win32.png file distinct
+# from the committed *-linux.png ones. Ignore those so an accidental native
+# `--update-snapshots` run can never be committed by mistake.
+packages/tests/vrt/**/*-darwin.png
+packages/tests/vrt/**/*-win32.png
 
 # Debug files
 *.debug*

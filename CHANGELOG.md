@@ -13,6 +13,38 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.14.1] - 2026-08-13
+
+Two fixes, both found while converting variants to props presets on the v3
+line. Neither is caused by that work — they predate it and affect this 2.x
+line, so they are shipped here rather than held back for a major.
+
+### Fixed
+
+- **A theme default could be silently ignored.** `usePassedProps` counted a key
+  present in `vnode.props` with the value `undefined` as "passed". Vue does not
+  drop a dynamically-bound key just because its current value is `undefined`, so
+  the most ordinary consumer pattern — `:bg-color="state.bgColor"` — reported
+  the prop as declared while it was empty, and the theme default was skipped.
+
+  The symptom was a component that appeared not to follow its theme, with
+  nothing logged and no error. Requiring a non-`undefined` value brings this in
+  line with Vue's own `withDefaults()`, where an `undefined` prop falls back to
+  its default.
+
+- **`color-mix()` was not recognised as a CSS colour.** `isCssColor` matched
+  `color(...)` (Color Level 4) but not `color-mix(...)`, which is a full
+  `<color>` function and one the design system uses itself. Values passed that
+  way fell through silently. Purely additive — no caller could have depended on
+  a `color-mix(...)` string being dropped. `useElevation` already listed
+  `color-mix` in its equivalent detector; this brings `isCssColor` in line.
+
+### Notes for consumers
+
+No API change, no visual change by default. If a component of yours looked like
+it was ignoring a theme default while you bound a possibly-`undefined` value to
+one of its props, that is the first fix above.
+
 ## [2.14.0] - 2026-08-07
 
 Reported from a real integration, not from a code review. Each item was
@@ -155,12 +187,47 @@ will no longer match when the consumer supplies an `id`.
   as `a { } body { display: none }` appended arbitrary rules to the document.
   A new `escapeCssIdent()` utility delegates to native `CSS.escape`, with a
   spec-conformant fallback for jsdom and SSR, which expose no `CSS` global.
+- **Interpolation placeholders silently rendered empty.** `t()` is variadic
+  — `t(key, ...params)` — but five call sites passed it an **array**, so the
+  array landed in `params[0]` where the template expected the value itself.
+  This stayed invisible while `stringifyParam` accepted any value (`[3]`
+  stringified to `"3"`); once it was narrowed to primitives, an array began
+  rendering as an **empty string** and the placeholder vanished. Visible
+  effects: `<origam-file-field display="counter">` displayed `" files"`
+  instead of `"3 files"`, and the `max_length` validation message of
+  `<origam-text-field>` / `<origam-textarea-field>` showed an empty limit.
 
-### Known issues
+### Security
 
-`pnpm audit --prod` reports 3 `high` advisories (`brace-expansion`, DoS),
-transitive through `minimatch` and **pre-existing** — no dependency changed
-in this release. Remediation is tracked separately.
+`brace-expansion` overrides were pinned to the **vulnerable** versions
+(`^2.1.2` / `^5.0.8`) — set for an earlier advisory and never moved since.
+They are raised to the patched floors (`^2.1.4` / `^5.0.9`), which clears
+the three `high` DoS advisories (unbounded expansion) that `pnpm audit`
+reported through `minimatch`.
+
+Nuxt advisories published during this release cycle are cleared too:
+`@nuxt/devtools` (**critical**), and five `high` on `nuxt` itself
+(server-side RCE via Runtime, unauthenticated OOM crash, CPU exhaustion
+while parsing). `nuxt` moves to `^4.5.1` and `typeorm` to `^0.3.31`,
+staying on the `0.3.x` line — the fix landed there, and `1.x` is a
+breaking change. Every advisory listed above is cleared as of this release.
+
+Advisories are a moving target, so this is stated as of a date rather than as
+a standing guarantee: on 2026-08-11, `pnpm audit --prod` surfaced three new
+`high` advisories unrelated to the ones above (`image-size` ICNS and JXL/HEIF
+parsers, `nanoid` custom generators). They arrived after this release and are
+tracked separately — run `pnpm audit --prod` yourself for the current state.
+
+Scope note for consumers: the published `origam` package depends only on
+`@mdi/font` and `qrcode-generator`, with `shiki` / `vue` / `vue-i18n` /
+`vue-router` as peers. None of the packages above ship with it — they all
+come from `@origam/marketing`, which is `private` and never published. You
+were never exposed; the deployed site was.
+
+One change does reach the published package. Nuxt 4.5 made TypeScript
+unable to name the type `defineNuxtModule` returns, so the default export
+of the `origam/nuxt` sub-export is now explicitly annotated as
+`NuxtModule`. Behaviour is unchanged — it is a declaration-emit fix.
 
 ### ⚠️ BREAKING — i18n locale keys migrated to `snake_case`
 

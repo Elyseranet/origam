@@ -191,4 +191,44 @@ test.describe('OrigamDatePickerField', () => {
         const messagesContainer = rangeField.locator('.origam-messages')
         await expect(messagesContainer).toBeAttached({ timeout: 3000 })
     })
+
+    // The calendar is teleported out of the field's subtree, so a stylesheet
+    // written by the consuming application reaches the field and never the
+    // popup. Inheriting `font-size` on the surface does not close it either:
+    // day numbers and the weekday header size their text with `rem`-based
+    // tokens (`var(--origam-date-picker-month__day---font-size, .85rem)` and
+    // siblings), and `rem` resolves against the document root, not the
+    // parent. See `useTeleportTypography` (mirrors `select.spec.ts`'s
+    // equivalent block).
+    test.describe('Teleported menu follows the field typography', () => {
+        for (const fontSize of ['11px', '13px', '20px']) {
+            test(`day number text matches a field overridden to ${fontSize}`, async ({ page }) => {
+                await page.goto(STORY_PATH)
+                await page.waitForLoadState('networkidle')
+                await page.getByText('Default', { exact: true }).first().click()
+                await page.waitForTimeout(800)
+
+                const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+                const field = sandbox.locator('.origam-date-picker-field').first()
+                await expect(field).toBeVisible({ timeout: 12000 })
+
+                // Stands in for the consuming application's own stylesheet.
+                await field.evaluate((el, fs) => {
+                    const style = document.createElement('style')
+                    style.textContent = `.origam-date-picker-field, .origam-date-picker-field * { font-size: ${fs} !important; }`
+                    document.head.appendChild(style)
+                }, fontSize)
+
+                await field.click()
+                const dayBtn = sandbox.locator('.origam-date-picker-month__day-btn .origam-btn__content').first()
+                await expect(dayBtn).toBeVisible({ timeout: 8000 })
+
+                const fieldSize = await field.evaluate((el) =>
+                    getComputedStyle((el.querySelector('input') ?? el) as HTMLElement).fontSize)
+                const daySize = await dayBtn.evaluate((el) => getComputedStyle(el as HTMLElement).fontSize)
+
+                expect(parseFloat(daySize)).toBeCloseTo(parseFloat(fieldSize), 1)
+            })
+        }
+    })
 })

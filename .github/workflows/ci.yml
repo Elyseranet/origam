@@ -40,6 +40,31 @@ jobs:
       - name: Run ESLint (no auto-fix)
         run: pnpm exec eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --max-warnings 0
 
+  architecture-guards:
+    name: Architecture guards (DS)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Four static-analysis guards over packages/ds/src — see
+      # packages/ds/scripts/guards/README.md for what each one checks and
+      # how the baseline mechanism works. No build/tokens prerequisite: the
+      # guards parse .vue/.ts/.scss source text directly (~1s total), so
+      # this job stays independent of the `tokens` job and adds negligible
+      # wall-clock to the pipeline.
+      - name: Run architecture guards
+        run: pnpm -F origam guards
+
   type-check:
     name: Type-check (vue-tsc)
     runs-on: ubuntu-latest
@@ -221,6 +246,57 @@ jobs:
           retention-days: 7
           if-no-files-found: error
 
+  build-marketing:
+    name: Build marketing (Nuxt)
+    runs-on: ubuntu-latest
+    needs: tokens
+    # No GHA/docker.yml job builds the marketing image (it only ships docs +
+    # stories, and only on `main`/tags) — Coolify was the only thing building
+    # it on every `develop` push, and its failures never surfaced on GitHub.
+    # This job is the guard: it runs the same `nuxt build` Coolify's Docker
+    # image runs, on a full checkout, so a broken marketing build goes red
+    # here instead of only at deploy time. See postmortem: a stale root
+    # tsconfig project reference (fixed in 29e9c1b7) broke every Coolify
+    # deploy on `develop` for days while this workflow stayed green, because
+    # nothing here ever ran `pnpm -F @origam/marketing build`.
+    #
+    # Deliberately narrow: builds the lib (marketing imports `origam`) then
+    # the Nuxt app directly, skipping `build:embeds` (Histoire + VitePress,
+    # ~70s+ on its own, already covered by `build-embeds` above). The embeds
+    # are static assets copied into `public/`; nothing in `nuxt.config.ts` or
+    # the build pipeline reads them at build time, so omitting them doesn't
+    # lose any coverage — confirmed by reproducing the original incident
+    # (renaming packages/tests/{TU,e2e}/tsconfig.json) with embeds skipped
+    # and still seeing `nuxt build` fail with the same
+    # `[TSCONFIG_ERROR] ... Tsconfig not found`.
+    env:
+      # Matches packages/marketing/Dockerfile's build stage: the Nitro build
+      # (server bundle + SSR payload) OOMs on the workflow-level 4096 MB.
+      NODE_OPTIONS: --max-old-space-size=8192
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build library (marketing imports `origam`)
+        run: pnpm -F origam build
+
+      - name: Build marketing (Nuxt)
+        run: pnpm -F @origam/marketing build
+
+      - name: Assert Nuxt output exists
+        run: |
+          test -f packages/marketing/.output/server/index.mjs \
+            || { echo "::error::packages/marketing/.output/server/index.mjs missing — Nitro server entry not emitted"; exit 1; }
+
   i18n-check:
     name: i18n check (marketing)
     runs-on: ubuntu-latest
@@ -320,5 +396,55 @@ jobs:
           path: |
             packages/tests/e2e/.report
             packages/tests/e2e/.results
+          retention-days: 7
+          if-no-files-found: ignore
+
+  vrt:
+    name: Visual regression (OrigamBtn variants)
+    runs-on: ubuntu-latest
+    needs: tokens
+    timeout-minutes: 15
+    # Runs INSIDE the pinned Playwright image — not on the bare runner OS
+    # via `playwright install --with-deps` like `test-e2e` above. Visual
+    # baselines are font/anti-aliasing sensitive (see packages/tests/vrt/VRT.md);
+    # pinning the exact container used to CAPTURE the baselines is what
+    # makes this job's verdict meaningful. Keep the tag in sync with
+    # packages/tests/package.json's @playwright/test version — a version
+    # bump there without bumping this tag re-introduces the exact drift
+    # this job exists to eliminate.
+    container:
+      image: mcr.microsoft.com/playwright:v1.59.1-jammy
+    env:
+      E2E_STATIC: '1'
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build tokens
+        run: pnpm -F origam tokens:build
+
+      - name: Build static Histoire (served by the vrt webServer)
+        run: pnpm -F @origam/stories build
+
+      - name: Run VRT suite (chromium, in-container)
+        run: pnpm -F @origam/tests exec playwright test --config=playwright.vrt.config.ts
+
+      - name: Upload VRT report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report-vrt
+          path: |
+            packages/tests/vrt/.report
+            packages/tests/vrt/.results
           retention-days: 7
           if-no-files-found: ignore

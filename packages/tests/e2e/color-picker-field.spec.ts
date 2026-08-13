@@ -186,4 +186,39 @@ test.describe('OrigamColorPickerField', () => {
         // Error message must no longer be visible (colour is now set)
         await expect(errorText).not.toBeVisible({ timeout: 3000 })
     })
+
+    // The picker is teleported out of the field's subtree, so a stylesheet
+    // written by the consuming application reaches the field and never the
+    // popup. Inheriting `font-size` on the surface does not close it either:
+    // the channel labels size their text with
+    // `var(--origam-color-picker-edit__label---font-size, .75rem)`, and `rem`
+    // resolves against the document root, not the parent. See
+    // `useTeleportTypography` (mirrors `select.spec.ts`'s equivalent block).
+    test.describe('Teleported menu follows the field typography', () => {
+        for (const fontSize of ['11px', '13px', '20px']) {
+            test(`channel label text matches a field overridden to ${fontSize}`, async ({ page }) => {
+                await page.goto(variantUrl(19))
+                const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+                const field = sandbox.locator('.origam-color-picker-field').first()
+                await expect(field).toBeVisible({ timeout: 12000 })
+
+                // Stands in for the consuming application's own stylesheet.
+                await field.evaluate((el, fs) => {
+                    const style = document.createElement('style')
+                    style.textContent = `.origam-color-picker-field, .origam-color-picker-field * { font-size: ${fs} !important; }`
+                    document.head.appendChild(style)
+                }, fontSize)
+
+                await field.click()
+                await expect(sandbox.locator('.origam-color-picker-edit__label').first()).toBeVisible({ timeout: 8000 })
+
+                const fieldSize = await field.evaluate((el) =>
+                    getComputedStyle((el.querySelector('input') ?? el) as HTMLElement).fontSize)
+                const labelSize = await sandbox.locator('.origam-color-picker-edit__label').first().evaluate((el) =>
+                    getComputedStyle(el as HTMLElement).fontSize)
+
+                expect(parseFloat(labelSize)).toBeCloseTo(parseFloat(fieldSize), 1)
+            })
+        }
+    })
 })
