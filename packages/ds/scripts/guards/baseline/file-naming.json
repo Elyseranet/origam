@@ -8,7 +8,6 @@
     "packages/ds/src/types/Mask/built-in-pattern.type.ts",
     "packages/ds/src/types/Mask/mask.type.ts",
     "packages/ds/src/types/Mask/pattern-validator.type.ts",
-    "packages/ds/src/types/Media/quality-option.type.ts",
     "packages/ds/src/types/PasswordField/password-strength.type.ts",
     "packages/ds/src/types/Textarea/textarea-mode.type.ts",
     "packages/ds/src/types/Textarea/textarea-output.type.ts",

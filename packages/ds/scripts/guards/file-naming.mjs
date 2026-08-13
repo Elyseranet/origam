@@ -46,7 +46,14 @@
  * - `types/index.ts`, `enums/index.ts`, `types/tokens.type.ts` — barrels
  *   and the Style-Dictionary-generated token type sheet, not hand-authored
  *   component files.
+ * - `types/Media/quality-option.type.ts` — same rationale as the Commons
+ *   exclusion above, scoped to one symbol rather than the whole
+ *   directory: it's consumed by two components (`OrigamVideo`,
+ *   `OrigamMediaController`), so it deliberately does not live under
+ *   either one's folder. `Media` has no single owning component (no
+ *   `OrigamMedia.vue`) to prefix-match against, unlike e.g. `Bracket`.
  *
+
  * Interfaces and consts are OUT OF SCOPE for this guard — the mission that
  * requested it named only "enums et types" file naming; interfaces/consts
  * naming was not audited and this guard makes no claim about them.
@@ -71,7 +78,7 @@ const TARGETS = [
     { dir: path.join(DS_ROOT, 'src/enums'), suffix: '.enum.ts' }
 ]
 
-const EXCLUDED_BASENAMES = new Set(['index.ts', 'tokens.type.ts'])
+const EXCLUDED_BASENAMES = new Set(['index.ts', 'tokens.type.ts', 'quality-option.type.ts'])
 
 function walk (dir, predicate) {
     const out = []
