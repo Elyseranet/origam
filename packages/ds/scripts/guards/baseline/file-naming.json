@@ -1,0 +1,23 @@
+[
+    "packages/ds/src/enums/Audio/cover-position.enum.ts",
+    "packages/ds/src/enums/Icon/mdi.enum.ts",
+    "packages/ds/src/enums/Mask/mask.enum.ts",
+    "packages/ds/src/enums/Textarea/textarea-mode.enum.ts",
+    "packages/ds/src/enums/Textarea/textarea-output.enum.ts",
+    "packages/ds/src/enums/Textarea/textarea-toolbar-command.enum.ts",
+    "packages/ds/src/enums/Textarea/textarea-toolbar-position.enum.ts",
+    "packages/ds/src/types/Audio/cover-position.type.ts",
+    "packages/ds/src/types/Mask/built-in-pattern.type.ts",
+    "packages/ds/src/types/Mask/mask.type.ts",
+    "packages/ds/src/types/Mask/pattern-validator.type.ts",
+    "packages/ds/src/types/Media/quality-option.type.ts",
+    "packages/ds/src/types/PasswordField/password-strength.type.ts",
+    "packages/ds/src/types/Textarea/textarea-mode.type.ts",
+    "packages/ds/src/types/Textarea/textarea-output.type.ts",
+    "packages/ds/src/types/Textarea/textarea-toolbar-command.type.ts",
+    "packages/ds/src/types/Textarea/textarea-toolbar-position.type.ts",
+    "packages/ds/src/types/Theme/installed-theme.type.ts",
+    "packages/ds/src/types/Theme/semantic-tree.type.ts",
+    "packages/ds/src/types/Theme/theme.type.ts",
+    "packages/ds/src/types/Theme/token-tree.type.ts"
+]
