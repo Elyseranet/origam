@@ -185,6 +185,7 @@
 	import type {
 		IChartPolarBarEmits,
 		IChartPolarBarProps,
+		IChartPolarBarSlots,
 		IChartPolarBarWedge
 	} from '../../interfaces/Chart/chart-polar-bar.interface'
 
@@ -235,6 +236,8 @@
 	})
 
 	const emit = defineEmits<IChartPolarBarEmits>()
+
+	defineSlots<IChartPolarBarSlots>()
 
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')

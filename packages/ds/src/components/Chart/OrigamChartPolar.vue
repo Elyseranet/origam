@@ -193,6 +193,7 @@
 		IChartPoint,
 		IChartPolarEmits,
 		IChartPolarProps,
+		IChartPolarSlots,
 		IChartSeries,
 		IChartSeriesPoint
 	} from '../../interfaces'
@@ -234,6 +235,8 @@
 	})
 
 	const emit = defineEmits<IChartPolarEmits>()
+
+	defineSlots<IChartPolarSlots>()
 
 	/*********************************************************
 	 * Drilldown state — mirrors the cartesian implementation.

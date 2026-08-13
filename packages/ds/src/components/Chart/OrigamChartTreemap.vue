@@ -186,6 +186,8 @@
 		IChartSeries,
 		IChartTreemapEmits,
 		IChartTreemapProps,
+		IChartTreemapRect,
+		IChartTreemapSlots,
 		IChartTreemapTile
 	} from '../../interfaces'
 
@@ -235,6 +237,8 @@
 	})
 
 	const emit = defineEmits<IChartTreemapEmits>()
+
+	defineSlots<IChartTreemapSlots>()
 
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
@@ -305,13 +309,6 @@
 	 * map those areas back to {x, y, width, height} rects.
 	 ********************************************************/
 
-	interface Rect {
-		x: number
-		y: number
-		w: number
-		h: number
-	}
-
 	/**
 	 * Squarified treemap algorithm (Bruls, Huijse & van Wijk, 1999).
 	 *
@@ -320,7 +317,7 @@
 	 *
 	 * Returns one {x, y, w, h} rect per input value, preserving order.
 	 */
-	const squarify = (values: Array<number>, bounds: Rect): Array<Rect> => {
+	const squarify = (values: Array<number>, bounds: IChartTreemapRect): Array<IChartTreemapRect> => {
 		if (values.length === 0) return []
 		if (values.length === 1) {
 			return [{ x: bounds.x, y: bounds.y, w: bounds.w, h: bounds.h }]
@@ -331,12 +328,12 @@
 		const scale = totalArea / (total || 1)
 		const scaled = values.map((v) => v * scale)
 
-		const rects: Array<Rect> = []
+		const rects: Array<IChartTreemapRect> = []
 		layoutRow(scaled, bounds, rects)
 		return rects
 	}
 
-	const layoutRow = (values: Array<number>, bounds: Rect, rects: Array<Rect>): void => {
+	const layoutRow = (values: Array<number>, bounds: IChartTreemapRect, rects: Array<IChartTreemapRect>): void => {
 		if (values.length === 0) return
 
 		const { x, y, w, h } = bounds
@@ -373,7 +370,7 @@
 		}
 
 		if (remaining.length > 0) {
-			const nextBounds: Rect = isWide
+			const nextBounds: IChartTreemapRect = isWide
 				? { x: x + rowThick, y, w: w - rowThick, h }
 				: { x, y: y + rowThick, w, h: h - rowThick }
 			layoutRow(remaining, nextBounds, rects)
@@ -396,7 +393,7 @@
 	 * Slice-dice algorithm. Alternates between horizontal and vertical
 	 * splitting at each call. `depth` starts at 0 (horizontal slice).
 	 */
-	const sliceDice = (values: Array<number>, bounds: Rect, depth: number): Array<Rect> => {
+	const sliceDice = (values: Array<number>, bounds: IChartTreemapRect, depth: number): Array<IChartTreemapRect> => {
 		if (values.length === 0) return []
 		if (values.length === 1) {
 			return [{ x: bounds.x, y: bounds.y, w: bounds.w, h: bounds.h }]
@@ -404,7 +401,7 @@
 
 		const total = values.reduce((a, b) => a + b, 0)
 		const { x, y, w, h } = bounds
-		const rects: Array<Rect> = []
+		const rects: Array<IChartTreemapRect> = []
 		const horizontal = depth % 2 === 0
 
 		let cursor = horizontal ? x : y
@@ -414,7 +411,7 @@
 		for (const v of values) {
 			const frac = v / (total || 1)
 			const len = frac * along
-			const r: Rect = horizontal
+			const r: IChartTreemapRect = horizontal
 				? { x: cursor, y, w: len, h: across }
 				: { x, y: cursor, w: across, h: len }
 			rects.push(r)

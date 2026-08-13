@@ -42,7 +42,8 @@
 	import type {
 		IChartLegendEmits,
 		IChartLegendItem,
-		IChartLegendProps
+		IChartLegendProps,
+		IChartLegendSlots
 	} from '../../interfaces'
 
 	/*********************************************************
@@ -70,6 +71,8 @@
 	})
 
 	const emit = defineEmits<IChartLegendEmits>()
+
+	defineSlots<IChartLegendSlots>()
 
 	/*********************************************************
 	 * Computed

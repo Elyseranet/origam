@@ -185,6 +185,7 @@
 		IChartSunburstEmits,
 		IChartSunburstNode,
 		IChartSunburstProps,
+		IChartSunburstSlots,
 		TChartSunburstLabelMode
 	} from '../../interfaces/Chart/chart-sunburst.interface'
 
@@ -238,6 +239,8 @@
 	})
 
 	const emit = defineEmits<IChartSunburstEmits>()
+
+	defineSlots<IChartSunburstSlots>()
 
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
