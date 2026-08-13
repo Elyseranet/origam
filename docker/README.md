@@ -5,8 +5,8 @@ of the design system:
 
 | Image | Content | Local port |
 |---|---|---|
-| `ghcr.io/arnaudprioul/origam-docs` | VitePress documentation site (`docs/.vitepress/dist`) | `8080` |
-| `ghcr.io/arnaudprioul/origam-stories` | Histoire component stories (`dist/stories`) | `8081` |
+| `ghcr.io/elyseranet/origam-docs` | VitePress documentation site (`docs/.vitepress/dist`) | `8080` |
+| `ghcr.io/elyseranet/origam-stories` | Histoire component stories (`dist/stories`) | `8081` |
 
 Both images are multi-stage `node:22-alpine` builds finalised on
 `nginx:1.27-alpine`, with gzip, long-lived cache for hashed assets,
@@ -62,12 +62,12 @@ echo $GHCR_PAT | docker login ghcr.io -u arnaudprioul --password-stdin
 ### Pulling
 
 ```bash
-docker pull ghcr.io/arnaudprioul/origam-docs:latest
-docker pull ghcr.io/arnaudprioul/origam-stories:latest
+docker pull ghcr.io/elyseranet/origam-docs:latest
+docker pull ghcr.io/elyseranet/origam-stories:latest
 
 # Or a specific release (both tag styles work — pick one and stick with it)
-docker pull ghcr.io/arnaudprioul/origam-docs:v2.2.1
-docker pull ghcr.io/arnaudprioul/origam-docs:2.2.1
+docker pull ghcr.io/elyseranet/origam-docs:v2.2.1
+docker pull ghcr.io/elyseranet/origam-docs:2.2.1
 ```
 
 Both images are published for `linux/amd64` and `linux/arm64`, so they
@@ -100,7 +100,7 @@ healthcheck to `GET /healthz`. No build context needed.
 ```bash
 # Render: declare the image in the Web Service config
 image:
-  url: ghcr.io/arnaudprioul/origam-docs:latest
+  url: ghcr.io/elyseranet/origam-docs:latest
 healthCheckPath: /healthz
 ```
 
@@ -119,10 +119,10 @@ stories.origam.dev {
 
 ```bash
 docker run -d --name origam-docs --restart unless-stopped \
-    -p 8080:80 ghcr.io/arnaudprioul/origam-docs:latest
+    -p 8080:80 ghcr.io/elyseranet/origam-docs:latest
 
 docker run -d --name origam-stories --restart unless-stopped \
-    -p 8081:80 ghcr.io/arnaudprioul/origam-stories:latest
+    -p 8081:80 ghcr.io/elyseranet/origam-stories:latest
 ```
 
 ## Notes

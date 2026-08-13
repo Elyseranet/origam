@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test'
 /**
  * RECIPE — OrigamBadge e2e spec (réf. btn.spec.ts — pattern canonique)
  *
- * ## Variants index map (0-based, Badge story — état au 2026-06-22)
+ * ## Variants index map (0-based, Badge story — état au 2026-08-13)
  *
  *   0  → Design       init: { bgColor: 'primary', content: 3, modelValue: true, location: 'top right' }
  *   1  → State        init: { bgColor: 'primary', modelValue: true }
@@ -13,7 +13,17 @@ import { expect, test } from '@playwright/test'
  *   5  → Slots - Badge
  *   6  → Slots - Prepend
  *   7  → Slots - Append
- *   8  → Default (playground)
+ *   8  → Prop — content & max
+ *   9  → Prop — dot
+ *   10 → Prop — inline
+ *   11 → Prop — floating
+ *   12 → Prop — status & statusIconPosition
+ *   13 → Prop — elevation
+ *   14 → Prop — border
+ *   15 → Prop — modelValue
+ *   16 → Events - click:prepend
+ *   17 → Events - click:append
+ *   18 → Default (playground)
  *
  * ## Comportement spécifique à Badge
  *
@@ -290,21 +300,20 @@ test.describe('OrigamBadge', () => {
     })
 
     test.describe('Slots - Prepend', () => {
-        // The #prepend slot inside the badge pill is gated by `v-if="hasPrependIcon"`.
-        // `hasPrependIcon` is true only when a `prependIcon` prop (or `status` with
-        // an icon) is set — the story for this variant passes a slot content with an
-        // MDI heartIcon. The slot is therefore NOT rendered (hasPrependIcon=false) and
-        // the story relies on the slot-default fallback path, not the named slot.
-        // Headless assertion of the internal pill slot structure is not feasible from
-        // this story variant. We verify instead that the badge root and pill are
-        // visible, and that the wrapper still renders the default slot (avatar).
-        test('badge renders with a visible pill on Slots - Prepend variant', async ({ page }) => {
+        // Regression guard for the IAdjacentProps ticket: the #prepend slot inside
+        // the pill used to be gated by a hand-rolled `hasPrependIcon` that only
+        // checked the `prependIcon` prop, so a #prepend slot with NO matching prop
+        // (this story variant's exact case) never rendered. The component now
+        // consumes `useAdjacent()`, whose `hasPrepend` also checks slot presence —
+        // `.origam-badge__prepend` renders and carries the slotted MDI heart icon.
+        test('renders .origam-badge__prepend with the slotted icon', async ({ page }) => {
             await page.goto(variantUrl(6))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
-            const pill = root.locator('.origam-badge__badge').first()
-            await expect(pill).toBeVisible({ timeout: 5000 })
+            const prepend = root.locator('.origam-badge__prepend').first()
+            await expect(prepend).toBeVisible({ timeout: 20000 })
+            await expect(prepend.locator('.origam-icon.mdi-heart')).toBeAttached()
         })
 
         test('wrapper still renders the default slot (origam-avatar) with prepend variant', async ({ page }) => {
@@ -317,17 +326,15 @@ test.describe('OrigamBadge', () => {
     })
 
     test.describe('Slots - Append', () => {
-        // Same constraint as Slots - Prepend: the #append slot inside the pill is
-        // gated by `v-if="hasAppendIcon"` (true only with appendIcon prop / status).
-        // The story variant passes a slot but hasPrependIcon remains false, so the
-        // slot template is never mounted. Not headlessly assertable from this variant.
-        test('badge renders with a visible pill on Slots - Append variant', async ({ page }) => {
+        // Same regression guard as Slots - Prepend, mirrored for the append side.
+        test('renders .origam-badge__append with the slotted icon', async ({ page }) => {
             await page.goto(variantUrl(7))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
-            const pill = root.locator('.origam-badge__badge').first()
-            await expect(pill).toBeVisible({ timeout: 5000 })
+            const append = root.locator('.origam-badge__append').first()
+            await expect(append).toBeVisible({ timeout: 20000 })
+            await expect(append.locator('.origam-icon.mdi-heart')).toBeAttached()
         })
 
         test('wrapper still renders the default slot (origam-avatar) with append variant', async ({ page }) => {
@@ -340,14 +347,67 @@ test.describe('OrigamBadge', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // DEFAULT — playground (index 8)                                       //
+    // EVENTS — click:prepend / click:append (indexes 16-17)                //
+    //                                                                       //
+    // Same IAdjacentProps regression guard as Slots - Prepend/Append,       //
+    // but driven through the `prependIcon` / `appendIcon` PROPS (not the    //
+    // slots) — mirrors btn.spec.ts's "Events - click:prepend/append".       //
+    // ------------------------------------------------------------------ //
+
+    test.describe('Events - click:prepend', () => {
+        test('renders .origam-badge__prepend with the prependIcon', async ({ page }) => {
+            await page.goto(variantUrl(16))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const root = sandbox.locator('.origam-badge').first()
+            await expect(root).toBeVisible({ timeout: 30000 })
+            const prepend = root.locator('.origam-badge__prepend').first()
+            await expect(prepend).toBeVisible({ timeout: 20000 })
+            await expect(prepend.locator('.origam-icon.mdi-heart')).toBeAttached()
+        })
+
+        test('click on prepend area does not throw', async ({ page }) => {
+            await page.goto(variantUrl(16))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const prepend = sandbox.locator('.origam-badge__prepend').first()
+            await expect(prepend).toBeVisible({ timeout: 20000 })
+            // logEvent() is an Histoire-internal side-effect; observable only via the
+            // Histoire event panel which is not inside the sandbox iframe. The
+            // click:prepend → emit wiring itself is asserted headlessly in
+            // TU/components/Badge/OrigamBadge.spec.ts (real @vue/test-utils emit
+            // assertion) — here we only confirm the click doesn't throw at runtime.
+            await prepend.click()
+        })
+    })
+
+    test.describe('Events - click:append', () => {
+        test('renders .origam-badge__append with the appendIcon', async ({ page }) => {
+            await page.goto(variantUrl(17))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const root = sandbox.locator('.origam-badge').first()
+            await expect(root).toBeVisible({ timeout: 30000 })
+            const append = root.locator('.origam-badge__append').first()
+            await expect(append).toBeVisible({ timeout: 20000 })
+            await expect(append.locator('.origam-icon.mdi-heart')).toBeAttached()
+        })
+
+        test('click on append area does not throw', async ({ page }) => {
+            await page.goto(variantUrl(17))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const append = sandbox.locator('.origam-badge__append').first()
+            await expect(append).toBeVisible({ timeout: 20000 })
+            await append.click()
+        })
+    })
+
+    // ------------------------------------------------------------------ //
+    // DEFAULT — playground (index 18)                                      //
     // init: { modelValue: true, content: 3, bgColor: 'primary',           //
     //         location: 'top right' }                                      //
     // ------------------------------------------------------------------ //
 
     test.describe('Default (playground)', () => {
         test('renders badge root with --active class and content "3"', async ({ page }) => {
-            await page.goto(variantUrl(16))
+            await page.goto(variantUrl(18))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -356,7 +416,7 @@ test.describe('OrigamBadge', () => {
         })
 
         test('root tag defaults to <div>', async ({ page }) => {
-            await page.goto(variantUrl(16))
+            await page.goto(variantUrl(18))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -365,7 +425,7 @@ test.describe('OrigamBadge', () => {
         })
 
         test('pill receives a non-transparent background from the primary token', async ({ page }) => {
-            await page.goto(variantUrl(16))
+            await page.goto(variantUrl(18))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })

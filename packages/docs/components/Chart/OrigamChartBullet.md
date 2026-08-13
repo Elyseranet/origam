@@ -66,7 +66,7 @@ Bands are rendered in array order. Each band covers `[previous.to, this.to]`. St
 | `barColor` | `TIntent \| string` | `'primary'` | Fill colour of the actual-value bar. |
 | `targetColor` | `TIntent \| string` | `'danger'` | Stroke colour of the target marker tick. |
 | `rangeColors` | `Array<TIntent \| string>` | `['danger', 'warning', 'success']` | Fallback palette used when `range.color` is omitted. Cycled in array order. |
-| `orientation` | `TChartBulletOrientation` | `'horizontal'` | `'horizontal'` renders labels left, bars right. `'vertical'` renders labels bottom, bars upward. |
+| `orientation` | `TDirection` | `'horizontal'` | `'horizontal'` renders labels left, bars right. `'vertical'` renders labels bottom, bars upward. |
 | `barThickness` | `number` | `0.45` | Fraction of the slot height (horizontal) or slot width (vertical) used for the value bar. Range `[0, 1]`. |
 
 ### Behaviour

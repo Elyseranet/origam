@@ -10,6 +10,8 @@ import type {
     IPaddingProps
 } from '../../interfaces'
 
+import type { TIcon } from '../../types'
+
 export interface IDataTableGroupProps {
     groupBy?: Array<IDataTableSortItem>
 }
@@ -59,4 +61,31 @@ export interface IDataTableGroupHeaderRowProps<T = IDataTableGroup> extends ICom
     isSelected: (items: IDataTableSelectableItem | Array<IDataTableSelectableItem>) => boolean
     toggleSelect: (item: IDataTableSelectableItem) => void
     toggleGroup: (group: IDataTableGroup) => void
+}
+
+/** Scope for the `data-table-group` slot — the group's own toggle button
+ *  (`props`) is pre-wired so a custom render can spread it onto any
+ *  trigger element and still collapse/expand correctly. */
+export interface IDataTableGroupHeaderRowGroupSlot<T = IDataTableGroup> {
+    item: T
+    count: number
+    props: {
+        icon: TIcon
+        onClick: () => void
+    }
+}
+
+/** Scope for the `data-table-select` slot — mirrors the group's row-select
+ *  checkbox binding (`v-bind="props"` reproduces the default checkbox). */
+export interface IDataTableGroupHeaderRowSelectSlot {
+    props: {
+        modelValue: boolean
+        indeterminate: boolean
+        'onUpdate:modelValue': (value: boolean) => void
+    }
+}
+
+export interface IDataTableGroupHeaderRowSlots<T = IDataTableGroup> {
+    'data-table-group'?: (props: IDataTableGroupHeaderRowGroupSlot<T>) => any
+    'data-table-select'?: (props: IDataTableGroupHeaderRowSelectSlot) => any
 }

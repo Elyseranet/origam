@@ -51,7 +51,7 @@ import { OrigamChartPictorial } from '@origam/ds'
 
 | Name | Type | Default | Description |
 |---|---|---|---|
-| `direction` | `TChartPictorialDirection` | `'vertical'` | `'vertical'` stacks icons bottom-to-top (traditional column). `'horizontal'` stacks left-to-right. |
+| `direction` | `TDirection` | `'vertical'` | `'vertical'` stacks icons bottom-to-top (traditional column). `'horizontal'` stacks left-to-right. |
 | `height` | `number \| string` | `400` | Chart height. A plain number is `px`. Ignored when `aspectRatio` is set. |
 | `aspectRatio` | `string` | `undefined` | CSS `aspect-ratio` shorthand. Overrides `height`. |
 | `colorScheme` | `Array<TIntent \| string>` | 8-intent cycle | Per-series fill palette when `iconColor` is not set. |

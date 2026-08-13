@@ -300,6 +300,7 @@
 	useProps,
 	useScrolling,
 	useStyle,
+	useTeleportTypography,
 	useTextColor,
 	useVModel
 } from '../../composables'
@@ -533,9 +534,29 @@
 	const menuDisabled = computed(() => {
 		return (props.hideNoData && !displayItems.value.length) || props.readonly || form?.isReadonly.value
 	})
+	// Typography bridge across the teleport — see `useTeleportTypography` for
+	// the full rationale (the menu is teleported out of the select's DOM
+	// subtree, so a consumer's CSS never reaches it, and `rem`-sized option
+	// text would stay pinned to the document root even if it did).
+	const { typographyStyles: menuTypographyStyles } = useTeleportTypography(origamTextFieldRef, menu, (fontSize) => ({
+		'--origam-list-item__title---font-size': fontSize,
+		// Kept proportional to the title rather than pinned, so the pair
+		// keeps its relationship at any scale.
+		'--origam-list-item__subtitle---font-size': `calc(${ fontSize } * 0.875)`
+	}))
+
 	const menuProps = computed(() => {
+		const consumerProps = (props.menuProps ?? {}) as Record<string, any>
+		const consumerContentProps = (consumerProps.contentProps ?? {}) as Record<string, any>
+
 		return {
-			...props.menuProps
+			...consumerProps,
+			contentProps: {
+				...consumerContentProps,
+				// The consumer's own style is listed last so it still wins —
+				// the bridge is a default, not a lock.
+				style: [menuTypographyStyles.value, consumerContentProps.style]
+			}
 		}
 	})
 

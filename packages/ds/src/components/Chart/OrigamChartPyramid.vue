@@ -181,6 +181,7 @@
 		IChartPyramidEmits,
 		IChartPyramidProps,
 		IChartPyramidSlice,
+		IChartPyramidSlots,
 		IChartSeries
 	} from '../../interfaces'
 
@@ -230,6 +231,8 @@
 	})
 
 	const emit = defineEmits<IChartPyramidEmits>()
+
+	defineSlots<IChartPyramidSlots>()
 
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')

@@ -47,14 +47,26 @@ import { consoleWarn } from './console.util'
  * Recognise any string the CSS engine treats as a colour:
  *   - hex (`#abc`, `#aabbcc`, `#aabbccdd`)
  *   - functional notation (`rgb()`, `rgba()`, `hsl()`, `hsla()`,
- *     `hwb()`, `lab()`, `lch()`, `oklab()`, `oklch()`, `color()`)
+ *     `hwb()`, `lab()`, `lch()`, `oklab()`, `oklch()`, `color()`,
+ *     `color-mix()`)
  *   - CSS variable (`var(--…)`)
  *   - one of the 148 named colours OR a CSS-wide keyword
  *     (`transparent`, `currentColor`, `inherit`, …)
+ *
+ * `color-mix` was added ADR-005 (Kbd pilot): it is a real CSS `<color>`
+ * function (e.g. `color-mix(in srgb, currentColor 8%, transparent)`, the
+ * literal value the pre-migration `OrigamKbd` `tonal` variant SCSS used for
+ * its background). Before this fix the alternation only recognised bare
+ * `color(...)` (CSS Color() Level 4), so `color-mix(...)` silently fell
+ * through — NOT a regression risk: no caller could have been relying on a
+ * `color-mix(...)` string being silently dropped as "expected" behaviour.
+ * `useElevation`'s equivalent custom-value detector
+ * (`CUSTOM_BOX_SHADOW_REGEX`) already listed `color-mix` — this brings
+ * `isCssColor` in line with it.
  */
 export function isCssColor (color?: string | null | false): boolean {
     return !!color && (
-        /^(#|var\(--|(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color)\()/i.test(color) ||
+        /^(#|var\(--|(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color-mix|color)\()/i.test(color) ||
         CSS_NAMED_COLORS.has(color.toLowerCase())
     )
 }
@@ -62,11 +74,22 @@ export function isCssColor (color?: string | null | false): boolean {
 /**
  * Is parsable color.
  *
+ * @description
+ * A CSS colour is "parsable" when `parseColor()` (below) can actually
+ * compute its RGBA components in JS — used to gate the auto-contrast
+ * (`getForeground`) path. `var(--…)` references are excluded because their
+ * final value is only known to the browser. `color-mix(...)` is excluded
+ * for the same reason PLUS one more: its operands are frequently
+ * `currentColor` or another `var(--…)`, which have no static value at all
+ * — `parseColor` has no case for the `color-mix` function and would throw.
+ * `isCssColor` recognising `color-mix` (so it still renders verbatim via
+ * the "custom value" style channel) does NOT make it parsable.
+ *
  * @param color …
  * @returns …
  */
 export function isParsableColor (color: string): boolean {
-    return isCssColor(color) && !/^((rgb|hsl)a?\()?var\(--/.test(color)
+    return isCssColor(color) && !/^((rgb|hsl)a?\()?var\(--/.test(color) && !/^color-mix\(/i.test(color)
 }
 
 /**

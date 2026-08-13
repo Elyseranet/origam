@@ -1,4 +1,4 @@
-const GITHUB_API_URL = 'https://api.github.com/repos/arnaudprioul/origam'
+const GITHUB_API_URL = 'https://api.github.com/repos/Elyseranet/origam'
 const FALLBACK_STAR_COUNT = 0
 const CACHE_TTL_SECONDS = 3600
 

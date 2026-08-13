@@ -151,7 +151,8 @@
 
 	import type {
 		IChartGaugeEmits,
-		IChartGaugeProps
+		IChartGaugeProps,
+		IChartGaugeSlots
 	} from '../../interfaces'
 
 	/*********************************************************
@@ -195,6 +196,8 @@
 
 	const emit = defineEmits<IChartGaugeEmits>()
 	void emit
+
+	defineSlots<IChartGaugeSlots>()
 
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')

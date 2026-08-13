@@ -76,7 +76,7 @@
 
 	import { isIntent, tokenForegroundForIntent } from '../../utils/Commons/color.util'
 
-	import type { IBracketCompetitorProps } from '../../interfaces'
+	import type { IBracketCompetitorEmits, IBracketCompetitorProps } from '../../interfaces'
 
 	import type { TIntent } from '../../types'
 
@@ -89,9 +89,7 @@
 		interactive: true
 	})
 
-	const emit = defineEmits<{
-		(e: 'click', event: MouseEvent | KeyboardEvent): void
-	}>()
+	const emit = defineEmits<IBracketCompetitorEmits>()
 
 	const {filterProps} = useProps<IBracketCompetitorProps>(props)
 

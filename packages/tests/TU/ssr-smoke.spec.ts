@@ -190,9 +190,26 @@ describe('SSR safety — Vue server renderer integration', () => {
                 return () => h('div', { class: { 'has-grid': css.value.grid } }, 'hello')
             }
         })
-        const html = await renderToString(h(Host))
+        // A real server has no `CSS` global at all. This suite runs under jsdom,
+        // which DOES provide one — so the absence of `has-grid` used to hold by
+        // accident, only because jsdom answered `false` to every query. jsdom 30
+        // started answering `true` for `display: grid`, and the assertion broke
+        // without any origam change. Removing the global reproduces the actual
+        // server condition, which is what this test claims to cover.
+        const globals = globalThis as { CSS?: unknown }
+        const savedCss = globals.CSS
+        delete globals.CSS
+
+        let html: string
+
+        try {
+            html = await renderToString(h(Host))
+        } finally {
+            globals.CSS = savedCss
+        }
+
         expect(html).toContain('hello')
-        // All flags must be false → no `has-grid` class on the SSR output.
+        // Every flag is false server-side → no `has-grid` class on the output.
         expect(html).not.toContain('has-grid')
     })
 

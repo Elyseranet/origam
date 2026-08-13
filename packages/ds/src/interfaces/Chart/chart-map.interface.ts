@@ -129,8 +129,15 @@ export interface IChartMapProps extends IChartBaseProps {
 /** Emits surfaced by `<OrigamChartMap>`. Mirrors the base family. */
 export type IChartMapEmits = IChartBaseEmits
 
-/** Slot signatures exposed by `<OrigamChartMap>`. */
-export interface IChartMapSlots extends IChartBaseSlots {
+/**
+ * Slot signatures exposed by `<OrigamChartMap>`.
+ *
+ * Omits `legend-item` from the base family — the map's series
+ * represent choropleth regions / flight routes, not a discrete
+ * toggleable legend list, so the template never renders a
+ * `<slot name="legend-item">` to forward it to.
+ */
+export interface IChartMapSlots extends Omit<IChartBaseSlots, 'legend-item'> {
     /**
      * Replace the default tooltip body.
      * Receives the hovered point, series, and category label.

@@ -185,6 +185,7 @@
 		IChartSankeyLink,
 		IChartSankeyNode,
 		IChartSankeyProps,
+		IChartSankeySlots,
 		IChartSeries
 	} from '../../interfaces'
 
@@ -200,7 +201,7 @@
 
 	import { intentBgExpr, isIntent } from '../../utils/Commons/color.util'
 
-	import type { TIntent } from '../../types'
+	import type { TChartSankeyLinkSpec, TIntent } from '../../types'
 
 	/*********************************************************
 	 * Global
@@ -239,6 +240,8 @@
 	})
 
 	const emit = defineEmits<IChartSankeyEmits>()
+
+	defineSlots<IChartSankeySlots>()
 
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
@@ -526,19 +529,7 @@
 		 * this sort, ribbons cross themselves on the same node and
 		 * produce the swirl-from-hell visual.
 		 */
-		type TLinkSpec = {
-			index: number
-			from: string
-			to: string
-			value: number
-			color: string
-			srcBandH: number
-			tgtBandH: number
-			srcY: number
-			tgtY: number
-		}
-
-		const specs: Array<TLinkSpec> = []
+		const specs: Array<TChartSankeyLinkSpec> = []
 		for (let i = 0; i < data.length; i++) {
 			const d = data[i]
 			const sourceNode = nodeMap.get(d.from)
@@ -576,7 +567,7 @@
 		 * so we need the exact vertical extent.
 		 */
 		const srcOffsetMap = new Map<number, { yTop: number, srcBandH: number }>()
-		const bySource = new Map<string, Array<TLinkSpec>>()
+		const bySource = new Map<string, Array<TChartSankeyLinkSpec>>()
 		for (const s of specs) {
 			if (!bySource.has(s.from)) bySource.set(s.from, [])
 			bySource.get(s.from)!.push(s)
@@ -597,7 +588,7 @@
 		 * band on the target came from the topmost source.
 		 */
 		const tgtOffsetMap = new Map<number, { yTop: number, tgtBandH: number }>()
-		const byTarget = new Map<string, Array<TLinkSpec>>()
+		const byTarget = new Map<string, Array<TChartSankeyLinkSpec>>()
 		for (const s of specs) {
 			if (!byTarget.has(s.to)) byTarget.set(s.to, [])
 			byTarget.get(s.to)!.push(s)

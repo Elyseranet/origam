@@ -110,13 +110,54 @@ the two heights match exactly. `density` then shifts both by the same
 `0` / `-8px` / `+8px`. Measured on the Design story, control and option row are
 equal at every `size` × `density` combination.
 
-Two deliberate limits:
+One deliberate limit remains:
 
-- **The option text is not scaled.** `.origam-field` renders its own text at a
-  fixed 16px whatever the `size`, so scaling the menu text would create a new
-  mismatch rather than remove one.
+- **`size` alone does not scale the option text.** `.origam-field` renders its
+  own text at a fixed 16px whatever the `size`, so scaling the menu text off the
+  `size` prop would create a new mismatch rather than remove one. The text does
+  follow the field when your own CSS changes it — see below.
 - **An unsized select keeps the historical 40px rows** against a 36px control.
   Passing `size="default"` explicitly brings both to 36px.
+
+## The dropdown follows your own typography
+
+The menu is teleported out of the select's DOM subtree so it can escape
+`overflow` and stacking contexts. A consequence catches most applications out:
+**CSS you write against the select never reaches the options**. A compact form
+theme, a scaled container, or a plain rule like
+
+```css
+.my-form .origam-select * { font-size: 13px; }
+```
+
+used to shrink the control and leave the popup at its own size — a small field
+opening a visibly oversized menu.
+
+Inheriting `font-size` on the teleported surface would not have fixed it either:
+option text is sized with `var(--origam-list-item__title---font-size, 1rem)`, and
+`rem` resolves against the document root, not the parent — the options would keep
+the root size whatever the surface inherited.
+
+So `OrigamSelect` measures the typography that actually won on the field when the
+menu opens, and republishes it on the teleported surface as the tokens the list
+already reads. Nothing to configure: any rule of yours that changes the field's
+font is picked up, including rules the design system cannot see.
+
+`menuProps.contentProps.style` still wins, for a popup you want to diverge on
+purpose:
+
+```vue
+<template>
+  <OrigamSelect
+      label="Country"
+      :items="items"
+      :menu-props="{ contentProps: { style: { fontSize: '15px' } } }"
+  />
+</template>
+```
+
+The measurement is taken at open time, so a font that changes while the menu is
+already open is picked up at the next opening.
 
 `listProps` still wins: `:list-props="{ density: 'default' }"` overrides the
 forwarded value for consumers who want the popup to diverge on purpose.

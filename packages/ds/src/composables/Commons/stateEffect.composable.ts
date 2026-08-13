@@ -272,17 +272,25 @@ export function useStateEffect (
     // stays state-aware via the reactive getter (same pattern as
     // padding / margin); `borderColor` / `borderStyle` — and the per-side
     // `borderTop`/`borderRight`/`borderBottom`/`borderLeft` (+ `*Color`)
-    // props from issue #215 — are not state-swappable, so they read
+    // props from issue #215, plus the logical-axis `borderBlock` /
+    // `borderInline` props — are not state-swappable, so they read
     // straight from the base props. Forwarding these was the same "declared
     // but never read" bug the ticket fixes at the `useBorder` level: without
     // this explicit pass-through, any consumer of `useStateEffect` (Card,
     // Sheet, …) would have the props typed on `IBorderProps` yet silently
-    // dropped before reaching `useBorder`.
+    // dropped before reaching `useBorder`. `borderBlock` / `borderInline`
+    // hit exactly this gap a second time: `useBorder` itself was fixed to
+    // read them, but this curated getter list was never updated to forward
+    // them, so every one of the ~30 components routed through
+    // `useStateEffect` (Card, Btn, Sheet, Alert, …) still silently dropped
+    // them even after that fix.
     const { borderClasses, borderStyles }       = useBorder(
         reactive({
             get border () { return border.value },
             get borderColor () { return props.borderColor },
             get borderStyle () { return props.borderStyle },
+            get borderBlock () { return props.borderBlock },
+            get borderInline () { return props.borderInline },
             get borderTop () { return props.borderTop },
             get borderRight () { return props.borderRight },
             get borderBottom () { return props.borderBottom },

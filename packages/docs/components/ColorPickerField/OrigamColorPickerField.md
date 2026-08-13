@@ -32,6 +32,47 @@ The picker opens when the user clicks the field. Use `close-on-select` to close 
 | `closeOnSelect` | `boolean` | `false` | Closes the picker immediately after colour selection |
 | `openOnClear` | `boolean` | `false` | Re-opens the picker when the field is cleared |
 
+## The dropdown follows your own typography
+
+The picker is teleported out of the field's DOM subtree so it can escape
+`overflow` and stacking contexts. A consequence catches most applications out:
+**CSS you write against the field never reaches the popup**. A compact form
+theme, a scaled container, or a plain rule like
+
+```css
+.my-form .origam-color-picker-field * { font-size: 13px; }
+```
+
+used to shrink the control and leave the channel labels (`R` `G` `B` `A`) at
+their own size — a small field opening a visibly oversized popup.
+
+Inheriting `font-size` on the teleported surface would not have fixed it
+either: the labels are sized with `var(--origam-color-picker-edit__label---font-size, .75rem)`,
+and `rem` resolves against the document root, not the parent — they would
+keep the root size whatever the surface inherited.
+
+So `OrigamColorPickerField` measures the typography that actually won on the
+field when the popup opens, and republishes it on the teleported surface as
+the tokens the picker already reads (plus `--origam-picker-title---font-size`,
+for a popup `title`). Nothing to configure: any rule of yours that changes the
+field's font is picked up, including rules the design system cannot see.
+
+`menuProps.contentProps.style` still wins, for a popup you want to diverge on
+purpose:
+
+```vue
+<template>
+  <OrigamColorPickerField
+      v-model="color"
+      label="Brand colour"
+      :menu-props="{ contentProps: { style: { fontSize: '15px' } } }"
+  />
+</template>
+```
+
+The measurement is taken at open time, so a font that changes while the popup
+is already open is picked up at the next opening.
+
 ## Labels and text
 
 ```vue
@@ -111,3 +152,5 @@ The `validationValue` passed to the underlying `OrigamInput` is always the curre
 | Token | Description |
 |---|---|
 | `--origam-field---padding-start` | Overridden to `0` so the swatch bleeds to the edge |
+| `--origam-color-picker-edit__label---font-size` | Republished by the typography bridge at open time; falls back to `.75rem` |
+| `--origam-picker-title---font-size` | Republished by the typography bridge when the popup has a `title`; falls back to `.75rem` |

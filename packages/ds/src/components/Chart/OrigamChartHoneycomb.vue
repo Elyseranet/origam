@@ -166,6 +166,7 @@
 	import type {
 		IChartHoneycombEmits,
 		IChartHoneycombProps,
+		IChartHoneycombSlots,
 		IChartHoneycombTile,
 		IChartLegendItem,
 		IChartPoint,
@@ -219,6 +220,8 @@
 	})
 
 	const emit = defineEmits<IChartHoneycombEmits>()
+
+	defineSlots<IChartHoneycombSlots>()
 
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')

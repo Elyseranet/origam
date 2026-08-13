@@ -680,6 +680,32 @@ La majorité des fichiers composant ne contiennent qu'un alias d'instance. Ce pa
 | `TOrigamCardText` | `OrigamCardText` | `Card/card-text.type.ts` |
 | `TOrigamCarousel` | `OrigamCarousel` | `Carousel/carousel.type.ts` |
 | `TOrigamCarouselItem` | `OrigamCarouselItem` | `Carousel/carousel-item.type.ts` |
+| `TOrigamChart` | `OrigamChart` | `Chart/chart.type.ts` |
+| `TOrigamChartAxis` | `OrigamChartAxis` | `Chart/chart-axis.type.ts` |
+| `TOrigamChartBoxPlot` | `OrigamChartBoxPlot` | `Chart/chart-box-plot.type.ts` |
+| `TOrigamChartBullet` | `OrigamChartBullet` | `Chart/chart-bullet.type.ts` |
+| `TOrigamChartCandlestick` | `OrigamChartCandlestick` | `Chart/chart-candlestick.type.ts` |
+| `TOrigamChartCartesian` | `OrigamChartCartesian` | `Chart/chart-cartesian.type.ts` |
+| `TOrigamChartGauge` | `OrigamChartGauge` | `Chart/chart-gauge.type.ts` |
+| `TOrigamChartHeatmap` | `OrigamChartHeatmap` | `Chart/chart-heatmap.type.ts` |
+| `TOrigamChartHoneycomb` | `OrigamChartHoneycomb` | `Chart/chart-honeycomb.type.ts` |
+| `TOrigamChartLegend` | `OrigamChartLegend` | `Chart/chart-legend.type.ts` |
+| `TOrigamChartMap` | `OrigamChartMap` | `Chart/chart-map.type.ts` |
+| `TOrigamChartPareto` | `OrigamChartPareto` | `Chart/chart-pareto.type.ts` |
+| `TOrigamChartPictorial` | `OrigamChartPictorial` | `Chart/chart-pictorial.type.ts` |
+| `TOrigamChartPolar` | `OrigamChartPolar` | `Chart/chart-polar.type.ts` |
+| `TOrigamChartPolarBar` | `OrigamChartPolarBar` | `Chart/chart-polar-bar.type.ts` |
+| `TOrigamChartPyramid` | `OrigamChartPyramid` | `Chart/chart-pyramid.type.ts` |
+| `TOrigamChartRadar` | `OrigamChartRadar` | `Chart/chart-radar.type.ts` |
+| `TOrigamChartRangeSelector` | `OrigamChartRangeSelector` | `Chart/chart-range-selector.type.ts` |
+| `TOrigamChartSankey` | `OrigamChartSankey` | `Chart/chart-sankey.type.ts` |
+| `TOrigamChartSparkline` | `OrigamChartSparkline` | `Chart/chart-sparkline.type.ts` |
+| `TOrigamChartStreamgraph` | `OrigamChartStreamgraph` | `Chart/chart-streamgraph.type.ts` |
+| `TOrigamChartSunburst` | `OrigamChartSunburst` | `Chart/chart-sunburst.type.ts` |
+| `TOrigamChartTooltip` | `OrigamChartTooltip` | `Chart/chart-tooltip.type.ts` |
+| `TOrigamChartTreemap` | `OrigamChartTreemap` | `Chart/chart-treemap.type.ts` |
+| `TOrigamChartVariwide` | `OrigamChartVariwide` | `Chart/chart-variwide.type.ts` |
+| `TOrigamChartWordCloud` | `OrigamChartWordCloud` | `Chart/chart-word-cloud.type.ts` |
 | `TOrigamColorPicker` | `OrigamColorPicker` | `ColorPicker/color-picker.type.ts` |
 | `TOrigamColorPickerCanvas` | `OrigamColorPickerCanvas` | `ColorPicker/color-picker-canvas.type.ts` |
 | `TOrigamColorPickerEdit` | `OrigamColorPickerEdit` | `ColorPicker/color-picker-edit.type.ts` |
@@ -856,11 +882,9 @@ La majorité des fichiers composant ne contiennent qu'un alias d'instance. Ce pa
 | `TChartSmoothing` | `'none' \| 'curve' \| 'monotone'` | `Chart/chart-smoothing.type.ts` |
 | `TChartLegendPosition` | `'top' \| 'bottom' \| 'left' \| 'right'` | `Chart/chart-legend-position.type.ts` |
 | `TChartSparklineKind` | `'line' \| 'area' \| 'column' \| 'bar'` | `Chart/chart-sparkline-kind.type.ts` |
-| `TChartBulletOrientation` | `'horizontal' \| 'vertical'` | `Chart/chart-bullet-orientation.type.ts` |
 | `TChartHoneycombColorMode` | `'categorical' \| 'heatmap'` | `Chart/chart-honeycomb-color-mode.type.ts` |
 | `TChartHoneycombOrientation` | `'pointy-top' \| 'flat-top'` | `Chart/chart-honeycomb-orientation.type.ts` |
 | `TChartMapMode` | `'choropleth' \| 'flight-routes'` | `Chart/chart-map-mode.type.ts` |
-| `TChartPictorialDirection` | `'vertical' \| 'horizontal'` | `Chart/chart-pictorial-direction.type.ts` |
 | `TChartPictorialMode` | `'stack' \| 'fill'` | `Chart/chart-pictorial-mode.type.ts` |
 | `TChartPyramidKind` | `'pyramid' \| 'funnel'` | `Chart/chart-pyramid-kind.type.ts` |
 | `TChartTreemapAlgorithm` | `'squarified' \| 'slice-dice'` | `Chart/chart-treemap-algorithm.type.ts` |

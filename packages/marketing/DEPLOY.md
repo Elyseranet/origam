@@ -51,7 +51,7 @@ node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 
 ### Divers (déjà en place)
 ```
-NUXT_PUBLIC_GITHUB_REPO=arnaudprioul/origam
+NUXT_PUBLIC_GITHUB_REPO=Elyseranet/origam
 NITRO_PORT=3000
 NITRO_HOST=0.0.0.0
 ```

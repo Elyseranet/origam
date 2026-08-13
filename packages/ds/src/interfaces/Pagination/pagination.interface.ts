@@ -15,6 +15,17 @@ import type {
 
 import type { TColor, TIcon } from "../../types"
 
+/**
+ * Deliberately NOT `extends IAdjacentProps`. `IAdjacentProps` models a
+ * single leading/trailing pair around one piece of content (`prependIcon`
+ * / `appendIcon`); Pagination has FOUR fixed-purpose navigation icons
+ * (first / prev / next / last), each a distinct semantic role rather than
+ * a generic "start" / "end" slot. `prevIcon` / `nextIcon` are forwarded
+ * as `prependIcon` / `appendIcon` props to the internal `<OrigamBtn>` nav
+ * buttons (see `controls` computed in `OrigamPagination.vue`) — that's
+ * `IBtnProps.IAdjacentProps` being consumed by the child, not a surface
+ * this component itself exposes.
+ */
 export interface IPaginationProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IBorderProps, IPaddingProps, IMarginProps, IElevationProps, ISizeProps, IDensityProps, ITypographyProps {
     start?: number
     modelValue?: number

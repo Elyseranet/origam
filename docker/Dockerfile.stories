@@ -39,7 +39,7 @@ RUN pnpm -F @origam/stories build
 # -----------------------------------------------------------------------------
 FROM nginx:1.27-alpine AS serve
 
-LABEL org.opencontainers.image.source="https://github.com/arnaudprioul/origam"
+LABEL org.opencontainers.image.source="https://github.com/Elyseranet/origam"
 LABEL org.opencontainers.image.title="origam-stories"
 LABEL org.opencontainers.image.description="Histoire stories for the origam design system"
 LABEL org.opencontainers.image.licenses="MIT"

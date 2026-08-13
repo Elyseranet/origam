@@ -103,7 +103,12 @@
 
 	import type { IBracketSurfaceInput } from '../../utils/Bracket/bracket-surface.util'
 
-	import type { IBracketCompetitor, IBracketMatch, IBracketMatchProps } from '../../interfaces'
+	import type {
+		IBracketCompetitor,
+		IBracketMatchEmits,
+		IBracketMatchProps,
+		IBracketMatchSlots
+	} from '../../interfaces'
 
 	const props = withDefaults(defineProps<IBracketMatchProps>(), {
 		tag: 'div',
@@ -114,11 +119,9 @@
 		color: 'primary'
 	})
 
-	const emit = defineEmits<{
-		(e: 'click', match: IBracketMatch, event: MouseEvent): void
-		(e: 'competitor-click', competitor: IBracketCompetitor, match: IBracketMatch, side: 'A' | 'B', event: MouseEvent | KeyboardEvent): void
-		(e: 'winner-click', competitor: IBracketCompetitor, match: IBracketMatch, event: MouseEvent | KeyboardEvent): void
-	}>()
+	const emit = defineEmits<IBracketMatchEmits>()
+
+	defineSlots<IBracketMatchSlots>()
 
 	const {filterProps} = useProps<IBracketMatchProps>(props)
 

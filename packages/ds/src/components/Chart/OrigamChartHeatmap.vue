@@ -200,7 +200,7 @@
 				>
 					<slot
 							name="tooltip"
-							v-bind="bindings"
+							v-bind="enrichedTooltipBindings(bindings)"
 					/>
 				</template>
 			</origam-chart-tooltip>
@@ -235,6 +235,7 @@
 		IChartHeatmapDatum,
 		IChartHeatmapEmits,
 		IChartHeatmapProps,
+		IChartHeatmapSlots,
 		IChartPoint,
 		IChartSeries
 	} from '../../interfaces'
@@ -300,6 +301,8 @@
 	})
 
 	const emit = defineEmits<IChartHeatmapEmits>()
+
+	defineSlots<IChartHeatmapSlots>()
 
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
@@ -540,6 +543,25 @@
 		if (!c) return ''
 		return `${ c.xCat } × ${ c.yCat }`
 	})
+
+	/**
+	 * Enriches the default `{ point, series, category }` tooltip scope
+	 * with the cell-level fields `IChartHeatmapSlots['tooltip']`
+	 * promises (`color`, `xLabel`, `yLabel`, `value`) — sourced from
+	 * `hoveredCell`, which already carries them. Was previously
+	 * forwarding the raw `bindings` unmodified, silently never
+	 * fulfilling the documented tooltip slot signature.
+	 */
+	const enrichedTooltipBindings = (bindings: { point: IChartPoint, series: IChartSeries, category: string | number }) => {
+		const c = hoveredCell.value
+		return {
+			...bindings,
+			color: c?.color ?? '',
+			xLabel: c ? formatXLabel(c.xCat) : '',
+			yLabel: c ? formatYLabel(c.yCat) : '',
+			value: c?.value ?? 0
+		}
+	}
 
 	const showEmpty = computed(() => {
 		if (!props.series?.length) return true
