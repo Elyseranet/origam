@@ -52,6 +52,7 @@ export * from './Commons/calendar.enum'
 export * from './Commons/sort.enum'
 export * from './Commons/status.enum'
 export * from './Commons/touch.enum'
+export * from './Commons/controls.enum'
 
 export * from './List/list.enum'
 export * from './List/list-item.enum'

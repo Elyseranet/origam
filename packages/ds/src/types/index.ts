@@ -98,6 +98,7 @@ export * from './Commons/status.type'
 export * from './Commons/touch.type'
 export * from './Commons/v-model.type'
 export * from './Commons/validation.type'
+export * from './Commons/controls.type'
 
 export * from './ContextualMenu/contextual-menu.type'
 

@@ -1,3 +1,5 @@
+import type { TControlsSource } from '../Commons/controls.type'
+
 /**
  * Controls rendering strategy for `<OrigamVideo>`.
  *
@@ -13,5 +15,9 @@
  * - `'none'`: neither the custom nor the native toolbar is rendered.
  *   The consumer drives playback programmatically through the
  *   `#controls` slot or the exposed composable methods.
+ *
+ * Full range of the Commons `TControlsSource` (see
+ * `Commons/controls.type.ts`) — mirrors `TAudioControls`, which is the
+ * `custom | native` subset (Audio has no `none`).
  */
-export type TVideoControls = 'custom' | 'native' | 'none'
+export type TVideoControls = TControlsSource
