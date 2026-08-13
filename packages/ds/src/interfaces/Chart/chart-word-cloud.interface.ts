@@ -1,6 +1,6 @@
 import type { IChartBaseEmits, IChartBaseProps, IChartBaseSlots } from '../../interfaces'
 
-import type { TChartWordCloudRotation } from '../../types/Chart/chart-word-cloud-rotation.type'
+import type { TChartWordCloudRotation } from '../../types/Chart/chart-word-cloud.type'
 
 /**
  * A single processed word datum used by the layout engine.
