@@ -1,3 +1,7 @@
+import { OrigamMasonry } from '../../components'
+
+export type TOrigamMasonry = InstanceType<typeof OrigamMasonry>
+
 /**
  * Vertical alignment of items inside a single masonry column.
  *

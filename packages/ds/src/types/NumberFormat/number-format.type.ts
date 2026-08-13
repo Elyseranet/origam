@@ -1,3 +1,7 @@
+import { OrigamNumberFormat } from '../../components'
+
+export type TOrigamNumberFormat = InstanceType<typeof OrigamNumberFormat>
+
 /**
  * High-level format dialect understood by `<OrigamNumberFormat>` and
  * `useNumberFormat`. Each value maps to a known `Intl.NumberFormat`

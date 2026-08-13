@@ -1,3 +1,7 @@
+import { OrigamQrCode } from '../../components'
+
+export type TOrigamQrCode = InstanceType<typeof OrigamQrCode>
+
 /**
  * QR Code error-correction level (Reed-Solomon redundancy budget).
  * The higher the level, the more of the matrix is reserved for
