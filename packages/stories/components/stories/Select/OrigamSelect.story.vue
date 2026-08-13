@@ -511,6 +511,13 @@
 				</StoryGroup>
 			</template>
 		</Variant>
+
+		<Variant title="Prop — variant override (bgColor beats the preset)">
+			<div style="display: flex; gap: 24px; padding: 16px;" data-cy="select-variant-override-matrix">
+				<origam-select :items="stringItems" variant="outlined" label="Outlined only" data-cy="select-ovr-outlined-only"/>
+				<origam-select :items="stringItems" variant="outlined" label="Outlined + bgColor" bg-color="primary" data-cy="select-ovr-outlined-bgcolor"/>
+			</div>
+		</Variant>
 	</Story>
 </template>
 

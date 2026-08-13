@@ -188,6 +188,8 @@
 		useVariant
 } from '../../composables'
 
+	import { FIELD_VARIANT_PRESETS } from '../../consts'
+
 	import { vContrast } from '../../directives'
 
 	import { DENSITY, EASING, KEYBOARD_VALUES, MDI_ICONS, PROGRESS_TYPE, VARIANT_INPUT } from '../../enums'
@@ -210,7 +212,15 @@
 		centerAffix: true,
 		clearIcon: MDI_ICONS.CLOSE_CIRCLE_OUTLINE
 	})
-	const props = useDefaults(_props)
+	// ADR-005 (`docs/internal/adr-005-variant-as-props-preset.md`, ticket
+	// #24) — `variant` is a PRESET (a named `Partial<IFieldProps>`), not a
+	// CSS layer. Passing `FIELD_VARIANT_PRESETS` inserts that preset as the
+	// WEAKEST tier: call-site prop > theme default > variant preset >
+	// this component's own `withDefaults()` value. Field's conversion is
+	// PARTIAL BY CONSTRUCTION (D5 family C — see the preset table's own
+	// doc for the precise list of what did / didn't convert); every read
+	// below MUST go through this resolved `props`, never `_props`.
+	const props = useDefaults<IFieldProps>(_props, 'origam-field', FIELD_VARIANT_PRESETS)
 
 	defineEmits<IFieldEmits>()
 
@@ -510,6 +520,21 @@
 	const {variantClasses} = useVariant(props)
 	const {sizeClasses} = useSize(props, 'origam-field')
 
+	// ADR-005 D5 family C / D6 — the part of each variant's CSS that targets
+	// a BEM CHILD (`__outlines`, `__outline`) or is state-conditioned on one
+	// cannot be expressed by a props preset (a preset only configures the
+	// ROOT instance). It survives as component CSS, keyed off this
+	// STRUCTURAL class rather than the pure-override `origam-field--variant-
+	// {value}` class `variantClasses` emits — mirrors the Blockquote
+	// ticket's `origam-blockquote--has-quote-mark` pattern, generalised
+	// from a single boolean flag to the full resolved `variant` value so it
+	// covers all five `&--chrome-*` selectors. Keeping it OFF `--variant-*`
+	// is what lets the DS-owned CSS survive the D3 CI guard banning DS
+	// rules on that selector shape.
+	const chromeClasses = computed(() => {
+		return props.variant ? [`origam-field--chrome-${props.variant}`] : []
+	})
+
 	// The `rounded` prop rounds the OUTER box (inline `border-radius` via
 	// useStyle), but the field's inner chrome (outline legs, per-corner radii)
 	// reads `--origam-field---border-radius` — which the prop never touched, so
@@ -567,6 +592,7 @@
 			densityClasses.value,
 			focusClasses.value,
 			variantClasses.value,
+			chromeClasses.value,
 			roundedClasses.value,
 			elevationClasses.value,
 			sizeClasses.value,
@@ -993,16 +1019,35 @@
 			}
 		}
 
-		&--variant {
+		// ADR-005 (ticket #24) — `variant` is a props preset
+		// (`FIELD_VARIANT_PRESETS`, `consts/Field/field-variant.const.ts`),
+		// resolved via `useDefaults`. This block is what's LEFT after that
+		// conversion: the part of each variant's look that targets a BEM
+		// CHILD (`__outlines`, `__outline`) or is state-conditioned on one —
+		// out of reach for a preset, which only configures the ROOT
+		// instance's own props (D5 family C, D6). Renamed from
+		// `&--variant-*` to `&--chrome-*` (driven by the `chromeClasses`
+		// computed, keyed off the RESOLVED `variant`, independent of the
+		// inert `origam-field--variant-*` class `useVariant` still emits)
+		// so it survives the D3 CI guard banning DS rules on `--variant-*`
+		// selectors — same pattern as the Blockquote ticket's
+		// `--has-quote-mark` class. See `field-variant.const.ts`'s doc for
+		// the precise, verified list of what converted vs. what didn't.
+		&--chrome {
 			&-solo {
-				box-shadow: var(--origam-theme---elevation, var(--origam-field--variant-solo---box-shadow, var(--origam-shadow---sm)));
+				// `box-shadow` (elevation) converted to the `elevation`
+				// preset. `border-color: transparent` stays — verified
+				// inert (no `.origam-field` base rule paints a root
+				// border), kept unchanged for zero behaviour change.
 				border-color: transparent;
 				--origam-field__input---padding-top: 20px;
 			}
 
 			&-filled {
-				background: var(--origam-field--variant-filled---background-color, color-mix(in srgb, currentColor 12%, transparent));
-				border-radius: var(--origam-field---border-radius, 8px) var(--origam-field---border-radius, 8px) 0 0;
+				// `background` converted to the `bgColor` preset;
+				// asymmetric `border-radius` converted to the `rounded`
+				// preset (see field-variant.const.ts for why it's a baked
+				// literal, not a var() chain).
 				--origam-field__input---padding-top: 20px;
 
 				#{$this}__outlines {
@@ -1031,7 +1076,11 @@
 			}
 
 			&-plain {
-				background: transparent;
+				// `background: transparent` converted to the `bgColor`
+				// preset. `--origam-field---border-width: 0px` stays —
+				// dead in practice (`__outlines` below is hidden, so
+				// nothing reads it), kept for parity with the pre-ticket
+				// rendering.
 				--origam-field---border-width: 0px;
 
 				#{$this}__outlines {
@@ -1044,9 +1093,12 @@
 			}
 
 			&-outlined {
+				// `background` converted to the `bgColor` preset — the
+				// custom properties below are consumed EXCLUSIVELY by
+				// `__outline` children, never by the root itself, so they
+				// stay component CSS (D5 family C).
 				--origam-field---border-width: var(--origam-field---border-width-outlined, 1px);
 				--origam-field---border-opacity: var(--origam-field---border-opacity-outlined, .38);
-				background: var(--origam-field---background-color, transparent);
 
 				#{$this}__outline {
 					border-color: var(--origam-field---border-color, currentColor);
@@ -1112,6 +1164,10 @@
 			}
 
 			&-underlined {
+				// Nothing converted — every declaration here targets
+				// `__outline` children (directly or via a custom property
+				// they alone read). `FIELD_VARIANT_PRESETS` deliberately
+				// has NO `underlined` entry (see its doc).
 				--origam-field---border-width: 1px;
 				--origam-field---border-opacity: .38;
 

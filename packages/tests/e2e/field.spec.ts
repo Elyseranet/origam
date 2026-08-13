@@ -1,6 +1,17 @@
 import { expect, test } from '@playwright/test'
 
-const STORY_PATH = '/stories/story/components-stories-field-origamfield-story-vue'
+const STORY_ID = 'components-stories-field-origamfield-story-vue'
+const STORY_PATH = '/stories/story/' + STORY_ID
+
+// Index-based nav for the "Prop — variant override" Variant (index 26,
+// appended LAST — see CLAUDE.md's story-append rule). `getByText(...)`
+// click-navigation times out on this Variant's sidebar entry (same
+// characteristic already worked around by `btn.spec.ts`'s `variantUrl()`
+// helper for its own "variant override" Variant), so this one Variant
+// alone is reached by direct URL instead of the text-click pattern the
+// rest of this file uses.
+const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
+const VARIANT_OVERRIDE_INDEX = 27
 
 test.describe('OrigamField', () => {
     test('Variant — default variant emits origam-field--variant-outlined class', async ({ page }) => {
@@ -156,5 +167,129 @@ test.describe('OrigamField', () => {
         expect(radiusPx).toBeGreaterThan(6)
         expect(outlineBox).not.toBeNull()
         expect(outlineBox!.width).toBeGreaterThanOrEqual(radiusPx - 1)
+    })
+
+    // ------------------------------------------------------------------ //
+    // VARIANT = PROPS PRESET (ADR-005, ticket #24)                        //
+    //                                                                      //
+    // Field's conversion is PARTIAL BY CONSTRUCTION (D5 family C — most    //
+    // of a variant's look targets BEM children `__outlines` / `__outline`,//
+    // out of a preset's reach). These tests assert the part that DID      //
+    // convert: (a) the DS ships zero CSS rule for `--variant-*` (the      //
+    // surviving irreducible CSS moved to `--chrome-*`, a DIFFERENT        //
+    // selector), (b) `outlined`'s own preset bgColor still applies with   //
+    // nothing set, (c) an explicit bgColor at the call site beats it.     //
+    // ------------------------------------------------------------------ //
+
+    test.describe('Variant = props preset (ADR-005)', () => {
+        test('--variant-outlined: the DS ships ZERO CSS rule for the class', async ({ page }) => {
+            await page.goto(STORY_PATH)
+            await page.waitForLoadState('networkidle')
+            await page.getByText('Prop — variant (all)', { exact: true }).first().click()
+            await page.waitForTimeout(800)
+
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const field = sandbox.locator('[data-cy="field-showcase-outlined"]')
+            await expect(field).toBeVisible({ timeout: 5000 })
+
+            const found = await field.evaluate(el => {
+                for (const sheet of document.styleSheets) {
+                    try {
+                        for (const rule of sheet.cssRules) {
+                            const selector = (rule as CSSStyleRule).selectorText
+                            if (selector && selector.includes('.origam-field--variant-outlined')) {
+                                return selector
+                            }
+                        }
+                    } catch { /* unreadable cross-origin stylesheet — skip */ }
+                }
+                return null
+            })
+            expect(found, 'no CSS rule should target --variant-outlined').toBeNull()
+        })
+
+        test('--chrome-outlined: the surviving irreducible CSS lives on the RENAMED selector', async ({ page }) => {
+            await page.goto(STORY_PATH)
+            await page.waitForLoadState('networkidle')
+            await page.getByText('Prop — variant (all)', { exact: true }).first().click()
+            await page.waitForTimeout(800)
+
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const field = sandbox.locator('[data-cy="field-showcase-outlined"]')
+            await expect(field).toBeVisible({ timeout: 5000 })
+            await expect(field).toHaveClass(/origam-field--chrome-outlined/)
+        })
+
+        test('variant="outlined" alone (no bgColor): the preset still applies transparent background', async ({ page }) => {
+            await page.goto(variantUrl(VARIANT_OVERRIDE_INDEX))
+            await page.waitForLoadState('networkidle')
+
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const only = sandbox.locator('[data-cy="field-ovr-outlined-only"]')
+            await expect(only).toBeVisible({ timeout: 5000 })
+            const bg = await only.evaluate(el => getComputedStyle(el).backgroundColor)
+            expect(bg).toBe('rgba(0, 0, 0, 0)')
+        })
+
+        test('variant="outlined" + bgColor="primary": bgColor paints (ADR-005 Q2 — the headline fix)', async ({ page }) => {
+            await page.goto(variantUrl(VARIANT_OVERRIDE_INDEX))
+            await page.waitForLoadState('networkidle')
+
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const matrix = sandbox.locator('[data-cy="field-variant-override-matrix"]')
+            await expect(matrix).toBeVisible({ timeout: 5000 })
+
+            const only = sandbox.locator('[data-cy="field-ovr-outlined-only"]')
+            const withBg = sandbox.locator('[data-cy="field-ovr-outlined-bgcolor"]')
+            await expect(only).toBeVisible()
+            await expect(withBg).toBeVisible()
+
+            const bgOnly = await only.evaluate(el => getComputedStyle(el).backgroundColor)
+            const bgWithBg = await withBg.evaluate(el => getComputedStyle(el).backgroundColor)
+
+            expect(bgWithBg).not.toBe(bgOnly)
+            expect(bgWithBg).not.toBe('rgba(0, 0, 0, 0)')
+            expect(bgWithBg).toBe('rgb(124, 58, 237)')
+        })
+
+        test('variant="filled": preset applies bgColor and asymmetric rounded corners', async ({ page }) => {
+            await page.goto(STORY_PATH)
+            await page.waitForLoadState('networkidle')
+            await page.getByText('Prop — variant (all)', { exact: true }).first().click()
+            await page.waitForTimeout(800)
+
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const field = sandbox.locator('[data-cy="field-showcase-filled"]')
+            await expect(field).toBeVisible({ timeout: 5000 })
+
+            const styles = await field.evaluate(el => {
+                const cs = getComputedStyle(el)
+                return {
+                    bg: cs.backgroundColor,
+                    tl: cs.borderTopLeftRadius,
+                    tr: cs.borderTopRightRadius,
+                    bl: cs.borderBottomLeftRadius,
+                    br: cs.borderBottomRightRadius
+                }
+            })
+            expect(styles.bg).not.toBe('rgba(0, 0, 0, 0)')
+            expect(styles.bl).toBe('0px')
+            expect(styles.br).toBe('0px')
+            expect(parseFloat(styles.tl)).toBeGreaterThan(0)
+            expect(styles.tl).toBe(styles.tr)
+        })
+
+        test('variant="solo": preset applies a non-zero box-shadow (elevation)', async ({ page }) => {
+            await page.goto(STORY_PATH)
+            await page.waitForLoadState('networkidle')
+            await page.getByText('Prop — variant (all)', { exact: true }).first().click()
+            await page.waitForTimeout(800)
+
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const field = sandbox.locator('[data-cy="field-showcase-solo"]')
+            await expect(field).toBeVisible({ timeout: 5000 })
+            const shadow = await field.evaluate(el => getComputedStyle(el).boxShadow)
+            expect(shadow).not.toBe('none')
+        })
     })
 })
