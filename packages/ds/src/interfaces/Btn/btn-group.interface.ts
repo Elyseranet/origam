@@ -20,3 +20,11 @@ export interface IBtnGroupProps extends ITagProps, ICommonsComponentProps, IRoun
     divided?: boolean
     items?: Array<IBtnProps>
 }
+
+/** Slot signatures for `<OrigamBtnGroup>`. */
+export interface IBtnGroupSlots {
+    /** Overrides the whole auto-generated `<origam-btn>` list. */
+    default?: () => any
+    /** One call per item — overrides a single button. */
+    item?: (data: { item: IBtnProps, index: number }) => any
+}

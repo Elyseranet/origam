@@ -371,7 +371,8 @@
   import type {
     ICalendarComponentProps,
     IEvent,
-    ICalendarEmits
+    ICalendarEmits,
+    ICalendarSlots
   } from '../../interfaces'
 
   import type {
@@ -426,6 +427,8 @@
   })
 
   const emit = defineEmits<ICalendarEmits>()
+
+  defineSlots<ICalendarSlots>()
 
   /*********************************************************
    * Constants — view enumeration, default event limits, ARIA copy.

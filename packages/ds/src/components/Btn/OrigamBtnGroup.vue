@@ -43,7 +43,7 @@
 
 	import { DENSITY } from '../../enums'
 
-	import type { IBtnGroupProps, IBtnProps } from '../../interfaces'
+	import type { IBtnGroupProps, IBtnGroupSlots, IBtnProps } from '../../interfaces'
 	import { omitUndefined } from '../../utils'
 
 	import { computed, StyleValue, useSlots } from 'vue'
@@ -71,6 +71,8 @@
 	const props = useDefaults(_props)
 
 	const {filterProps} = useProps<IBtnGroupProps>(props)
+
+	defineSlots<IBtnGroupSlots>()
 
 	// Push the visual-token props down to every descendant `<origam-btn>`
 	// as DEFAULTS — children that pass their own `density` / `color` /

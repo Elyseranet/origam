@@ -68,7 +68,7 @@
 
 	import type { IBottomNavProps, IBreadcrumbItemProps} from '../../interfaces'
 
-	import type { IBottomNavEmits } from '../../interfaces/BottomNav/bottom-nav.interface'
+	import type { IBottomNavEmits, IBottomNavSlots } from '../../interfaces/BottomNav/bottom-nav.interface'
 	import type { TOrigamBtn, TTransitionProps } from "../../types"
 
 	import { convertToUnit, int } from '../../utils'
@@ -101,6 +101,8 @@
 	})
 
 	defineEmits<IBottomNavEmits>()
+
+	defineSlots<IBottomNavSlots>()
 
 	const {filterProps} = useProps<IBottomNavProps>(props)
 	const {t} = useLocale()

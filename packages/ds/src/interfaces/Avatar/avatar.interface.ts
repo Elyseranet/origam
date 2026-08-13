@@ -32,3 +32,13 @@ export interface IAvatarProps extends ICommonsComponentProps, IDensityProps, IRo
 
 /** Emits fired by `<OrigamAvatar>` — active + hover state propagation. */
 export interface IAvatarEmits extends IActiveEmits, IHoverEmits {}
+
+/** Slot signatures for `<OrigamAvatar>`. Each overrides the matching
+ *  auto-rendered content (image / icon / text), `default` overrides the
+ *  whole image/icon/text switch. */
+export interface IAvatarSlots {
+    default?: () => any
+    avatar?: () => any
+    icon?: () => any
+    text?: () => any
+}

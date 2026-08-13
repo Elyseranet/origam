@@ -64,7 +64,7 @@
 
 	import { QUOTE_MARKS_BY_LANG } from '../../consts/Blockquote/blockquote.const'
 
-	import type { IBlockquoteProps } from '../../interfaces'
+	import type { IBlockquoteProps, IBlockquoteSlots } from '../../interfaces'
 
 	import type { TBlockquoteLang, TColor } from '../../types'
 
@@ -85,6 +85,8 @@
 		variant: 'default',
 		lang: 'auto'
 	})
+
+	defineSlots<IBlockquoteSlots>()
 
 	const slots = useSlots()
 

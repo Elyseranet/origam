@@ -28,3 +28,13 @@ export interface IAvatarGroupProps extends ICommonsComponentProps, IDirectionPro
 /** Emits fired by `<OrigamAvatarGroup>` — propagates active + hover from
  *  the underlying avatars. */
 export interface IAvatarGroupEmits extends IActiveEmits, IHoverEmits {}
+
+/** Slot signatures for `<OrigamAvatarGroup>`. */
+export interface IAvatarGroupSlots {
+    /** One call per displayed item — overrides the default `<origam-avatar>`. */
+    avatar?: (data: { item: IAvatarProps, index: number }) => any
+    /** Overrides the "+N" overflow chip. */
+    rest?: (data: { rest: Array<IAvatarProps>, length: number }) => any
+    /** Overrides the "+N" label rendered inside the overflow chip. */
+    default?: () => any
+}

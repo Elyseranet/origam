@@ -1,6 +1,7 @@
 import type {
     IAdjacentEmits,
     IAdjacentProps,
+    IAdjacentSlots,
     IBorderProps,
     IBgColorProps,
     IColorProps,
@@ -42,3 +43,9 @@ export interface IBadgeProps extends ICommonsComponentProps, ITagProps, IBorderP
 /** Emits fired by `<OrigamBadge>` — clicks on the prepend/append slots
  *  (same contract as `OrigamBtn` / `OrigamAlert`, via `useAdjacent`). */
 export interface IBadgeEmits extends IAdjacentEmits {}
+
+/** Slot signatures for `<OrigamBadge>`. */
+export interface IBadgeSlots extends IAdjacentSlots {
+    default?: () => any
+    badge?: () => any
+}

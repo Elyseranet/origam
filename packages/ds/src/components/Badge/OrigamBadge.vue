@@ -104,7 +104,7 @@
 	} from '../../composables'
 
 	import type { IBadgeProps } from '../../interfaces'
-	import type { IBadgeEmits } from '../../interfaces/Badge/badge.interface'
+	import type { IBadgeEmits, IBadgeSlots } from '../../interfaces/Badge/badge.interface'
 	import type { TTransitionProps } from "../../types"
 
 	import { vContrast } from '../../directives'
@@ -133,6 +133,8 @@
 	})
 
 	defineEmits<IBadgeEmits>()
+
+	defineSlots<IBadgeSlots>()
 
 	const {filterProps} = useProps<IBadgeProps>(props)
 	const {t} = useLocale()

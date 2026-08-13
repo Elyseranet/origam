@@ -46,7 +46,7 @@
 
 	import type { IBtnToggleProps} from '../../interfaces'
 
-	import type { IBtnToggleEmits } from '../../interfaces/Btn/btn-toggle.interface'
+	import type { IBtnToggleEmits, IBtnToggleSlots } from '../../interfaces/Btn/btn-toggle.interface'
 
 	import type { TOrigamBtnGroup } from "../../types"
 
@@ -71,6 +71,8 @@
 	const props = useDefaults(_props)
 
 	defineEmits<IBtnToggleEmits>()
+
+	defineSlots<IBtnToggleSlots>()
 
 	const {filterProps} = useProps<IBtnToggleProps>(props)
 

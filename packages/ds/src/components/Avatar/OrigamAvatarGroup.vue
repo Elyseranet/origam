@@ -58,7 +58,7 @@
 	import { DIRECTION } from "../../enums"
 	import type { IAvatarGroupProps, IAvatarProps} from "../../interfaces"
 
-	import type { IAvatarGroupEmits } from '../../interfaces/Avatar/avatar-group.interface'
+	import type { IAvatarGroupEmits, IAvatarGroupSlots } from '../../interfaces/Avatar/avatar-group.interface'
 	import { omitUndefined } from "../../utils"
 
 	import type { ComputedRef, StyleValue, VNodeProps } from 'vue'
@@ -108,6 +108,8 @@
 	}))
 
 	defineEmits<IAvatarGroupEmits>()
+
+	defineSlots<IAvatarGroupSlots>()
 
 	const {filterProps} = useProps<IAvatarGroupProps>(props)
 

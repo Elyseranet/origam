@@ -2,6 +2,7 @@ import type {
     IActiveProps,
     IAdjacentEmits,
     IAdjacentProps,
+    IAdjacentSlots,
     IBorderProps,
     IBgColorProps,
     IColorProps,
@@ -22,3 +23,9 @@ export interface IBreadcrumbItemProps extends ICommonsComponentProps, ITagProps,
 
 /** Emits fired by `<OrigamBreadcrumbItem>` — clicks on prepend/append icons. */
 export interface IBreadcrumbItemEmits extends IAdjacentEmits {}
+
+/** Slot signatures for `<OrigamBreadcrumbItem>`. */
+export interface IBreadcrumbItemSlots extends IAdjacentSlots {
+    /** Overrides the item's title label. */
+    default?: () => any
+}

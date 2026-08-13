@@ -28,7 +28,7 @@
 
 	import { MDI_ICONS } from '../../enums'
 
-	import type { IBreadcrumbDividerProps } from '../../interfaces'
+	import type { IBreadcrumbDividerProps, IBreadcrumbDividerSlots } from '../../interfaces'
 	import type { TValueOf } from "../../types"
 
 	import { computed, StyleValue, toRef } from 'vue'
@@ -42,6 +42,8 @@
 	const props = withDefaults(defineProps<IBreadcrumbDividerProps>(), {tag: 'span', divider: '/'})
 
 	const {filterProps} = useProps<IBreadcrumbDividerProps>(props)
+
+	defineSlots<IBreadcrumbDividerSlots>()
 
 	/*********************************************************
 	 * Icon detection

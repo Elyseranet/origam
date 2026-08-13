@@ -40,3 +40,12 @@ export interface IBottomNavProps extends ITagProps, ICommonsComponentProps, ICol
 /** Emits fired by `<OrigamBottomNav>` — active item v-model + hover/active
  *  propagation. */
 export interface IBottomNavEmits extends ICommonsComponentEmits, IActiveEmits, IHoverEmits {}
+
+/** Slot signatures for `<OrigamBottomNav>`. `item.{index}` (e.g.
+ *  `item.0`) overrides a single button by position; `item` is the
+ *  fallback used by every index without its own `item.{index}` slot. */
+export interface IBottomNavSlots {
+    default?: () => any
+    [key: `item.${number}`]: ((data: { props: IBtnProps }) => any) | undefined
+    item?: (data: { props: IBtnProps, index: number }) => any
+}

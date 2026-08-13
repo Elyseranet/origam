@@ -86,7 +86,7 @@
 
 	import type { IBreadcrumbItemProps} from '../../interfaces'
 
-	import type { IBreadcrumbItemEmits } from '../../interfaces/Breadcrumb/breadcrumb-item.interface'
+	import type { IBreadcrumbItemEmits, IBreadcrumbItemSlots } from '../../interfaces/Breadcrumb/breadcrumb-item.interface'
 
 	import { computed, ComputedRef, StyleValue, toRef, useAttrs } from 'vue'
 
@@ -104,6 +104,8 @@
 	const props = useDefaults(_props)
 
 	defineEmits<IBreadcrumbItemEmits>()
+
+	defineSlots<IBreadcrumbItemSlots>()
 
 	const {filterProps} = useProps<IBreadcrumbItemProps>(props)
 

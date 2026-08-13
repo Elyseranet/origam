@@ -69,7 +69,7 @@
 
 	import { DENSITY } from '../../enums'
 
-	import type { IBreadcrumbItemProps, IBreadcrumbProps } from '../../interfaces'
+	import type { IBreadcrumbItemProps, IBreadcrumbProps, IBreadcrumbSlots } from '../../interfaces'
 
 	import type { TBreadcrumbItem } from '../../types'
 
@@ -90,6 +90,8 @@
 	})
 
 	const {filterProps} = useProps<IBreadcrumbProps>(props)
+
+	defineSlots<IBreadcrumbSlots>()
 	const {t} = useLocale()
 
 	// Push visual-token props down to every descendant `<origam-breadcrumb-item>`

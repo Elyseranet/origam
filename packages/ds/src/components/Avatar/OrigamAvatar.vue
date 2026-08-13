@@ -65,7 +65,7 @@
 
 	import type { IAvatarProps, ISrcObject} from '../../interfaces'
 
-	import type { IAvatarEmits } from '../../interfaces/Avatar/avatar.interface'
+	import type { IAvatarEmits, IAvatarSlots } from '../../interfaces/Avatar/avatar.interface'
 	import { isEmpty } from "../../utils"
 
 	import type { ComputedRef, StyleValue } from 'vue'
@@ -86,6 +86,8 @@
 	const props = useDefaults(_props)
 
 	defineEmits<IAvatarEmits>()
+
+	defineSlots<IAvatarSlots>()
 
 	const {filterProps} = useProps<IAvatarProps>(props)
 
