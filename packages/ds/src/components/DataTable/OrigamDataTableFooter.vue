@@ -50,7 +50,7 @@
 
 	import { DENSITY } from "../../enums"
 
-	import type { IDataTableFooterProps } from "../../interfaces"
+	import type { IDataTableFooterProps, IDataTableFooterSlots } from "../../interfaces"
 	import type { TOrigamPagination } from "../../types"
 
 	import { computed, ref, StyleValue } from "vue"
@@ -75,6 +75,8 @@
 		lastPageLabel: 'origam.data_footer.last_page',
 		showCurrentPage: true
 	})
+
+	defineSlots<IDataTableFooterSlots>()
 
 	const {filterProps} = useProps<IDataTableFooterProps>(props)
 	const {t} = useLocale()

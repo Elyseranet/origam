@@ -26,7 +26,7 @@
 
 	import type { IDatePickerMonthsProps} from "../../interfaces"
 
-	import type { IDatePickerMonthsEmits } from '../../interfaces/DatePicker/date-picker-months.interface'
+	import type { IDatePickerMonthsEmits, IDatePickerMonthsSlots } from '../../interfaces/DatePicker/date-picker-months.interface'
 
 	import { convertToUnit, createRange, int } from "../../utils"
 
@@ -42,6 +42,8 @@
 	const props = withDefaults(defineProps<IDatePickerMonthsProps>(), {})
 
 	const emits = defineEmits<IDatePickerMonthsEmits>()
+
+	defineSlots<IDatePickerMonthsSlots>()
 
 	const {filterProps} = useProps<IDatePickerMonthsProps>(props)
 

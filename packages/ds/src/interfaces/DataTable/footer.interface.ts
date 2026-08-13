@@ -1,4 +1,4 @@
-import type { IAlignProps, IColorProps, ICommonsComponentProps, IPaddingProps } from "../../interfaces"
+import type { IAdjacentSlots, IAlignProps, IColorProps, ICommonsComponentProps, IPaddingProps } from "../../interfaces"
 
 import type { TIcon } from "../../types"
 
@@ -15,4 +15,10 @@ export interface IDataTableFooterProps extends ICommonsComponentProps, IColorPro
     lastPageLabel?: string
     itemsPerPageOptions?: Array<number | { title: string, value: number }>
     showCurrentPage?: boolean
+}
+
+/** Slot signatures for `<OrigamDataTableFooter>` — both `prepend` and
+ *  `append` render with no scope (bracket the items-per-page / pagination
+ *  row), so the shared `IAdjacentSlots` contract applies unchanged. */
+export interface IDataTableFooterSlots extends IAdjacentSlots {
 }

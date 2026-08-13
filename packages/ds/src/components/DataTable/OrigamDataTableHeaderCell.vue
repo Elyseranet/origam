@@ -71,7 +71,12 @@
 	useStyle
 } from '../../composables'
 
-	import type { IDataTableHeaderCellProps, IDataTableSortItem, IInternalDataTableHeader } from '../../interfaces'
+	import type {
+		IDataTableHeaderCellProps,
+		IDataTableHeaderCellSlots,
+		IDataTableSortItem,
+		IInternalDataTableHeader
+	} from '../../interfaces'
 
 	import { convertToUnit } from '../../utils'
 
@@ -82,6 +87,8 @@
 	 ********************************************************/
 
 	const props = withDefaults(defineProps<IDataTableHeaderCellProps>(), {})
+
+	defineSlots<IDataTableHeaderCellSlots>()
 
 	const {filterProps} = useProps<IDataTableHeaderCellProps>(props)
 

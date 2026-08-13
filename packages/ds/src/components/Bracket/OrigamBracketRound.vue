@@ -65,7 +65,9 @@
 	import type {
 		IBracketCompetitor,
 		IBracketMatch,
-		IBracketRoundProps
+		IBracketRoundEmits,
+		IBracketRoundProps,
+		IBracketRoundSlots
 	} from '../../interfaces'
 
 	const props = withDefaults(defineProps<IBracketRoundProps>(), {
@@ -78,11 +80,9 @@
 		color: 'primary'
 	})
 
-	const emit = defineEmits<{
-		(e: 'match-click', match: IBracketMatch, event: MouseEvent): void
-		(e: 'competitor-click', competitor: IBracketCompetitor, match: IBracketMatch, side: 'A' | 'B', event: MouseEvent | KeyboardEvent): void
-		(e: 'winner-click', competitor: IBracketCompetitor, match: IBracketMatch, event: MouseEvent | KeyboardEvent): void
-	}>()
+	const emit = defineEmits<IBracketRoundEmits>()
+
+	defineSlots<IBracketRoundSlots>()
 
 	const {filterProps} = useProps<IBracketRoundProps>(props)
 

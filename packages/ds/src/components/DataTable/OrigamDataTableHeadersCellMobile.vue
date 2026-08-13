@@ -203,7 +203,7 @@
 
 	import type { IDataTableHeadersCellMobileProps, IInternalListItem} from '../../interfaces'
 
-	import type { IDataTableHeadersCellMobileEmits } from '../../interfaces/DataTable/headers.interface'
+	import type { IDataTableHeadersCellMobileEmits, IDataTableHeadersCellMobileSlots } from '../../interfaces/DataTable/headers.interface'
 
 	import { computed, mergeProps, useSlots } from 'vue'
 
@@ -214,6 +214,8 @@
 	const props = withDefaults(defineProps<IDataTableHeadersCellMobileProps>(), {})
 
 	const emits = defineEmits<IDataTableHeadersCellMobileEmits>()
+
+	defineSlots<IDataTableHeadersCellMobileSlots>()
 
 	const {filterProps} = useProps<IDataTableHeadersCellMobileProps>(props)
 

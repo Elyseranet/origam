@@ -78,7 +78,7 @@
 
 	import type { IDatePickerHeaderProps} from "../../interfaces"
 
-	import type { IDatePickerHeaderEmits } from '../../interfaces/DatePicker/date-picker-header.interface'
+	import type { IDatePickerHeaderEmits, IDatePickerHeaderSlots } from '../../interfaces/DatePicker/date-picker-header.interface'
 
 	import { computed, StyleValue, toRef, useSlots } from "vue"
 
@@ -92,6 +92,8 @@
 	const props = withDefaults(defineProps<IDatePickerHeaderProps>(), {})
 
 	const emits = defineEmits<IDatePickerHeaderEmits>()
+
+	defineSlots<IDatePickerHeaderSlots>()
 
 	const {filterProps} = useProps<IDatePickerHeaderProps>(props)
 
