@@ -51,3 +51,21 @@ export interface ICardProps extends ICommonsComponentProps, ITagProps, IBorderPr
 /** Emits fired by `<OrigamCard>` — prepend/append clicks + active/hover
  *  state propagation. */
 export interface ICardEmits extends IAdjacentEmits, IActiveEmits, IHoverEmits {}
+
+/** Slot signatures for `<OrigamCard>`. The `header.*` slots forward into
+ *  the nested `<OrigamCardHeader>`'s own named slots. */
+export interface ICardSlots {
+    /** Overrides the whole loader/header/asset/text/footer layout. */
+    wrapper?: () => any
+    loader?: () => any
+    header?: () => any
+    'header.append'?: () => any
+    'header.prepend'?: () => any
+    'header.title'?: () => any
+    'header.subtitle'?: () => any
+    'header.content'?: () => any
+    asset?: () => any
+    text?: () => any
+    default?: () => any
+    footer?: () => any
+}

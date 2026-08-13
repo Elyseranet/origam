@@ -161,7 +161,7 @@
 
 	import type { IAdjacentProps, IBtnProps, IProgressProps, IStatusProps } from '../../interfaces'
 
-	import type { IBtnEmits } from '../../interfaces/Btn/btn.interface'
+	import type { IBtnEmits, IBtnSlots } from '../../interfaces/Btn/btn.interface'
 
 	import type { TOrigamProgress } from "../../types"
 
@@ -192,6 +192,8 @@
 	const colorLocked = computed(() => (props.color ? 'true' : undefined))
 
 	defineEmits<IBtnEmits>()
+
+	defineSlots<IBtnSlots>()
 
 	const {filterProps} = useProps<IBtnProps>(props)
 

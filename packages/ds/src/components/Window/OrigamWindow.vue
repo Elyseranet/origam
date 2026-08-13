@@ -88,7 +88,7 @@
 
 	import type { ITouchHandlers, IWindowProps} from '../../interfaces'
 
-	import type { IWindowEmits } from '../../interfaces/Window/window.interface'
+	import type { IWindowEmits, IWindowSlots } from '../../interfaces/Window/window.interface'
 
 	/*********************************************************
 	 * Global
@@ -117,6 +117,8 @@
 	})
 
 	defineEmits<IWindowEmits>()
+
+	defineSlots<IWindowSlots>()
 
 	const {filterProps} = useProps<IWindowProps>(props)
 

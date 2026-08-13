@@ -167,7 +167,7 @@
 
 	import type { ICardProps} from '../../interfaces'
 
-	import type { ICardEmits } from '../../interfaces/Card/card.interface'
+	import type { ICardEmits, ICardSlots } from '../../interfaces/Card/card.interface'
 
 	import { computed, StyleValue, toRef, useAttrs, useSlots } from 'vue'
 
@@ -185,6 +185,8 @@
 	const props = useDefaults(_props)
 
 	defineEmits<ICardEmits>()
+
+	defineSlots<ICardSlots>()
 
 	const {filterProps} = useProps<ICardProps>(props)
 

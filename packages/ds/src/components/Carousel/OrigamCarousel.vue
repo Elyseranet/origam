@@ -104,7 +104,7 @@
 
 	import type { ICarouselProps, IGroupProvide} from '../../interfaces'
 
-	import type { ICarouselEmits } from '../../interfaces/Carousel/carousel.interface'
+	import type { ICarouselEmits, ICarouselSlots } from '../../interfaces/Carousel/carousel.interface'
 
 	import type { TOrigamWindow } from "../../types"
 
@@ -128,6 +128,8 @@
 	})
 
 	defineEmits<ICarouselEmits>()
+
+	defineSlots<ICarouselSlots>()
 
 	const {filterProps} = useProps<ICarouselProps>(props)
 	const {t} = useLocale()

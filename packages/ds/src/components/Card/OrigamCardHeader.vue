@@ -107,7 +107,7 @@
 
 	import type { ICardHeaderProps} from '../../interfaces'
 
-	import type { ICardHeaderEmits } from '../../interfaces/Card/card-header.interface'
+	import type { ICardHeaderEmits, ICardHeaderSlots } from '../../interfaces/Card/card-header.interface'
 
 	import { computed, StyleValue, toRef, useSlots } from 'vue'
 
@@ -121,6 +121,8 @@
 	const props = withDefaults(defineProps<ICardHeaderProps>(), {tag: 'OrigamToolbar'})
 
 	defineEmits<ICardHeaderEmits>()
+
+	defineSlots<ICardHeaderSlots>()
 
 	const {filterProps} = useProps<ICardHeaderProps>(props)
 

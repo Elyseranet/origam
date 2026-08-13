@@ -2,6 +2,7 @@ import type {
     IActiveState,
     IAdjacentEmits,
     IAdjacentProps,
+    IAdjacentSlots,
     IBorderProps,
     IBgColorProps,
     IColorProps,
@@ -49,3 +50,13 @@ export interface IBtnProps extends ICommonsComponentProps, IColorProps, IBgColor
 /** Emits fired by `<OrigamBtn>` — clicks on prepend/append slots and
  *  group-membership lifecycle. */
 export interface IBtnEmits extends IAdjacentEmits, IGroupEmits {}
+
+/** Slot signatures for `<OrigamBtn>`. */
+export interface IBtnSlots extends IAdjacentSlots {
+    /** Overrides the whole loader/prepend/content/append layout. */
+    wrapper?: () => any
+    /** Overrides the active loader (line/circular/skeleton), receives the
+     *  forwarded `<OrigamProgress>` props. */
+    loader?: (data: Record<string, unknown>) => any
+    default?: () => any
+}

@@ -48,7 +48,7 @@
 	useStyle
 } from '../../composables'
 
-	import type { ICarouselItemProps } from '../../interfaces'
+	import type { ICarouselItemProps, ICarouselItemSlots } from '../../interfaces'
 
 	import type { TOrigamImg, TOrigamWindowItem } from "../../types"
 
@@ -67,6 +67,8 @@
 	})
 
 	const {filterProps} = useProps<ICarouselItemProps>(props)
+
+	defineSlots<ICarouselItemSlots>()
 
 	const attrs = useAttrs()
 

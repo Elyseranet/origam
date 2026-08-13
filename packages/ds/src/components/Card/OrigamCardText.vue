@@ -15,7 +15,7 @@
 		setup
 >
 	import { useDensity, useProps, useStyle, useTypography } from "../../composables"
-	import type { ICardTextProps } from '../../interfaces'
+	import type { ICardTextProps, ICardTextSlots } from '../../interfaces'
 
 	import { computed, StyleValue } from 'vue'
 
@@ -29,6 +29,8 @@
 	const props = withDefaults(defineProps<ICardTextProps>(), {tag: 'div'})
 
 	const {filterProps} = useProps<ICardTextProps>(props)
+
+	defineSlots<ICardTextSlots>()
 
 	const {densityClasses} = useDensity(props)
 
