@@ -40,6 +40,31 @@ jobs:
       - name: Run ESLint (no auto-fix)
         run: pnpm exec eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --max-warnings 0
 
+  architecture-guards:
+    name: Architecture guards (DS)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Four static-analysis guards over packages/ds/src — see
+      # packages/ds/scripts/guards/README.md for what each one checks and
+      # how the baseline mechanism works. No build/tokens prerequisite: the
+      # guards parse .vue/.ts/.scss source text directly (~1s total), so
+      # this job stays independent of the `tokens` job and adds negligible
+      # wall-clock to the pipeline.
+      - name: Run architecture guards
+        run: pnpm -F origam guards
+
   type-check:
     name: Type-check (vue-tsc)
     runs-on: ubuntu-latest
