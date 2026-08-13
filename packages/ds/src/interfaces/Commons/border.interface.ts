@@ -6,7 +6,23 @@ export interface IBorderProps {
     borderLeft?: boolean | number | string
     borderBottom?: boolean | number | string
     borderRight?: boolean | number | string
+    /**
+     * Logical-axis shorthand for the block-start + block-end edges (top +
+     * bottom in the default horizontal-tb writing mode). Resolves to the
+     * native CSS `border-block-{width,style,color}` properties — same
+     * value grammar as `borderTop` / `borderRight` / `borderBottom` /
+     * `borderLeft` (boolean opt-in, bare width number, or a free-form
+     * `"width style color"` string). Precedence: beats the global `border`
+     * shorthand for the edges it targets, but a physical `borderTop` /
+     * `borderBottom` still wins over it for that specific edge — see
+     * `useBorder` JSDoc for the full precedence table.
+     */
     borderBlock?: boolean | number | string
+    /**
+     * Logical-axis shorthand for the inline-start + inline-end edges (left
+     * + right in LTR). Same grammar and precedence rules as `borderBlock`,
+     * mapped onto `border-inline-{width,style,color}`.
+     */
     borderInline?: boolean | number | string
     borderColor?: string
     borderStyle?: string

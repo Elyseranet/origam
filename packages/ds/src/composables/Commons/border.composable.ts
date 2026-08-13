@@ -1,5 +1,5 @@
 import { computed, isRef, Ref } from 'vue'
-import { BORDER_POSITION_MAP, BORDER_REGEX, DIRECTION_ARRAY } from '../../consts'
+import { BORDER_LOGICAL_AXIS_MAP, BORDER_POSITION_MAP, BORDER_REGEX, DIRECTION_ARRAY } from '../../consts'
 
 import type { IBorderProps } from '../../interfaces'
 import { TDirectionBoth } from "../../types"
@@ -38,16 +38,20 @@ function isUtilityBorder (value: unknown): value is string {
  *
  *   1. global `border` shorthand (1/2/4-value, logical properties)
  *   2. global standalone `borderColor` / `borderStyle`
- *   3. per-side `borderTop` / `borderRight` / `borderBottom` / `borderLeft`
- *      (physical properties — width, and style/color when a full string
- *      like `"2px dashed red"` is given)
- *   4. per-side `borderTopColor` / `borderRightColor` /
+ *   3. logical-axis `borderBlock` / `borderInline` (width, and
+ *      style/color when a full string like `"2px dashed red"` is given)
+ *   4. per-side `borderTop` / `borderRight` / `borderBottom` / `borderLeft`
+ *      (physical properties — more specific than the axis rung above:
+ *      `borderTop` overrides whatever `borderBlock` set for the top edge)
+ *   5. per-side `borderTopColor` / `borderRightColor` /
  *      `borderBottomColor` / `borderLeftColor`
  *
- * So `borderTop` beats `border` for the top side, and `borderTopColor`
- * beats both the color embedded in `borderTop` and the global
- * `borderColor` — each rung only overrides the physical side(s) it
- * actually targets, everything else keeps cascading from the rung below.
+ * So `borderBlock` beats `border` for the top+bottom edges, `borderTop`
+ * beats both `border` and `borderBlock` for the top side specifically,
+ * and `borderTopColor` beats the color embedded in `borderTop`, the
+ * axis-level color, and the global `borderColor` — each rung only
+ * overrides the side(s)/axis it actually targets, everything else keeps
+ * cascading from the rung below.
  ********************************************************/
 export function useBorder (props: IBorderProps | Ref<boolean | number | string | TDirectionBoth | Array<TDirectionBoth> | null | undefined>, name = getCurrentInstanceName()) {
     const borderClasses = computed(() => {
@@ -117,6 +121,36 @@ export function useBorder (props: IBorderProps | Ref<boolean | number | string |
 
             if (!isEmpty(borderColor)) styles.push(`border-color: ${borderColor}`)
             if (!isEmpty(borderStyle)) styles.push(`border-style: ${borderStyle}`)
+
+            // Logical-axis width/style (bug: `borderBlock` / `borderInline`
+            // were declared on `IBorderProps` but never read here — a
+            // "half-implemented surface", same shape as the pre-#215 gap
+            // on the physical per-side props). Pushed AFTER the global
+            // `border` / `borderColor` / `borderStyle` declarations above,
+            // and BEFORE the physical per-side loop below, so a physical
+            // `borderTop` still wins over `borderBlock` for the top edge
+            // (specific beats general — see the precedence table above).
+            BORDER_LOGICAL_AXIS_MAP.forEach(({axis, widthProp}) => {
+                const axisValue = props[widthProp]
+
+                if (typeof axisValue === 'number') {
+                    // Mirrors the global/per-side numeric defaulting: a bare
+                    // width alone paints nothing (`border-style` defaults to
+                    // `none`), so default to solid/currentColor.
+                    styles.push(`border-${axis}-width: ${convertToUnit(axisValue)}`)
+                    styles.push(`border-${axis}-style: solid`)
+                    styles.push(`border-${axis}-color: currentColor`)
+                } else if (axisValue === true) {
+                    // Legacy boolean opt-in — same 'thin' design-token width
+                    // as the physical per-side boolean form.
+                    styles.push(`border-${axis}-width: var(--origam-border__width---thin)`)
+                    styles.push(`border-${axis}-style: solid`)
+                    styles.push(`border-${axis}-color: currentColor`)
+                } else if (typeof axisValue === 'string' && axisValue !== '') {
+                    const parsed = parseBorderPositionValue(axisValue)
+                    if (parsed) styles.push(...formatBorderPositionStylesVar(axis, parsed))
+                }
+            })
 
             // Per-side width/style/color (issue #215) — `borderTop` /
             // `borderRight` / `borderBottom` / `borderLeft` were declared
