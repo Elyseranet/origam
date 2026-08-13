@@ -15,7 +15,7 @@
 	import { useProps } from "../../composables"
 	import { EASING, TRANSITION_MODE } from '../../enums'
 
-	import type { ITranslateScaleProps } from '../../interfaces'
+	import type { ITranslateScaleProps, ITransitionSlots } from '../../interfaces'
 
 	import { animate, getChildren, getDimensions } from '../../utils'
 
@@ -31,6 +31,8 @@
 	})
 
 	const {filterProps} = useProps<ITranslateScaleProps>(props)
+
+	defineSlots<ITransitionSlots>()
 
 	/*********************************************************
 	 * TranslateScale transition hooks

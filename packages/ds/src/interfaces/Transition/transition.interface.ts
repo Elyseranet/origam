@@ -24,3 +24,10 @@ export interface ITranslateScaleProps extends ITransitionProps {
 export interface ITransitionWindowProps extends ITransitionProps {
     window?: IWindowProvide
 }
+
+/** Slot signatures shared by every `<Origam*>` transition wrapper
+ *  (Fade, SlideX/Y, ExpandX/Y, ScaleRotate, TranslateScale, …) — a
+ *  single unscoped `default` slot holding the transitioned content. */
+export interface ITransitionSlots {
+    default?: () => any
+}

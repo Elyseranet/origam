@@ -22,7 +22,7 @@
 	import { useProps } from "../../composables"
 	import { TRANSITION_MODE } from '../../enums'
 
-	import type { IHTMLExpandElement, ITransitionProps } from '../../interfaces'
+	import type { IHTMLExpandElement, ITransitionProps, ITransitionSlots } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -36,6 +36,8 @@
 	})
 
 	const {filterProps} = useProps<ITransitionProps>(props)
+
+	defineSlots<ITransitionSlots>()
 
 	/*********************************************************
 	 * Expand-X transition hooks

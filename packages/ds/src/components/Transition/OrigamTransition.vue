@@ -14,7 +14,7 @@
 	import { computed, mergeProps, Transition, useAttrs } from 'vue'
 	import { OrigamFade } from '../../components'
 	import { useProps, useTransition } from '../../composables'
-	import type { ITransitionComponentProps } from '../../interfaces'
+	import type { ITransitionComponentProps, ITransitionSlots } from '../../interfaces'
 	import type { TTransitionProps } from '../../types'
 
 	import { omit } from '../../utils'
@@ -30,6 +30,8 @@
 	})
 
 	const {filterProps} = useProps<ITransitionComponentProps>(props)
+
+	defineSlots<ITransitionSlots>()
 
 	const attrs = useAttrs()
 

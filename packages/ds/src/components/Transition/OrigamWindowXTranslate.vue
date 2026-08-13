@@ -14,7 +14,7 @@
 >
 	import { useProps, useWindowTransition } from '../../composables'
 
-	import type { ITransitionProps } from '../../interfaces'
+	import type { ITransitionProps, ITransitionSlots } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -27,6 +27,8 @@
 	})
 
 	const {filterProps} = useProps<ITransitionProps>(props)
+
+	defineSlots<ITransitionSlots>()
 
 	/*********************************************************
 	 * Transition
