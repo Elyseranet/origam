@@ -129,7 +129,7 @@
 
 	import type { IExpansionPanelProps} from '../../interfaces'
 
-	import type { IExpansionPanelEmits } from '../../interfaces/ExpensionPanel/expansion-panel.interface'
+	import type { IExpansionPanelEmits, IExpansionPanelSlots } from '../../interfaces/ExpensionPanel/expansion-panel.interface'
 
 	import type { TOrigamExpansionPanelContent, TOrigamExpansionPanelHeader } from "../../types"
 
@@ -149,6 +149,8 @@
 	const props = useDefaults(_props)
 
 	defineEmits<IExpansionPanelEmits>()
+
+	defineSlots<IExpansionPanelSlots>()
 
 	const {filterProps} = useProps<IExpansionPanelProps>(props)
 

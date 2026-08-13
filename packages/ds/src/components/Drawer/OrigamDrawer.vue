@@ -95,7 +95,7 @@
 
 	import type { IDrawerProps} from '../../interfaces'
 
-	import type { IDrawerEmits } from '../../interfaces/Drawer/drawer.interface'
+	import type { IDrawerEmits, IDrawerSlots } from '../../interfaces/Drawer/drawer.interface'
 
 	import { int } from "../../utils"
 
@@ -136,6 +136,8 @@
 	})
 
 	const emits = defineEmits<IDrawerEmits>()
+
+	defineSlots<IDrawerSlots>()
 
 	const {filterProps} = useProps<IDrawerProps>(props)
 

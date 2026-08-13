@@ -135,7 +135,7 @@
 
 	import type { IExpansionPanelsProps} from '../../interfaces'
 
-	import type { IExpansionPanelsEmits } from '../../interfaces/ExpensionPanel/expansion-panels.interface'
+	import type { IExpansionPanelsEmits, IExpansionPanelsSlots } from '../../interfaces/ExpensionPanel/expansion-panels.interface'
 
 	/*********************************************************
 	 * Global
@@ -149,6 +149,8 @@
 	})
 
 	defineEmits<IExpansionPanelsEmits>()
+
+	defineSlots<IExpansionPanelsSlots>()
 
 	const {filterProps} = useProps<IExpansionPanelsProps>(props)
 

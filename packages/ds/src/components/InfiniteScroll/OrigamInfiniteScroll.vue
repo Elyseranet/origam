@@ -139,7 +139,7 @@
 
 	import type { IInfiniteScrollProps} from '../../interfaces'
 
-	import type { IInfiniteScrollEmits } from '../../interfaces/InfiniteScroll/infinite-scroll.interface'
+	import type { IInfiniteScrollEmits, IInfiniteScrollSlots } from '../../interfaces/InfiniteScroll/infinite-scroll.interface'
 
 	import type { TInfiniteScrollSide, TInfiniteScrollStatus } from '../../types'
 
@@ -159,6 +159,8 @@
 	})
 
 	const emits = defineEmits<IInfiniteScrollEmits>()
+
+	defineSlots<IInfiniteScrollSlots>()
 
 	const {filterProps} = useProps<IInfiniteScrollProps>(props)
 

@@ -41,3 +41,10 @@ export interface IImgEmits {
     (e: 'error', value: { src: string }): void
 }
 
+/** Slot signatures for `<OrigamImg>`. */
+export interface IImgSlots {
+    placeholder?: () => any
+    error?: () => any
+    default?: () => any
+}
+
