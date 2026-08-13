@@ -30,6 +30,7 @@
         "tokens:build": "pnpm -F origam tokens:build",
         "tokens:watch": "pnpm -F origam tokens:watch",
         "tokens:lint": "pnpm -F origam tokens:lint",
+        "guards": "pnpm -F origam guards",
         "dev:stories": "pnpm -F @origam/stories dev",
         "dev:docs": "pnpm -F @origam/docs dev",
         "dev:marketing": "pnpm -F @origam/marketing dev",
