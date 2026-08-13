@@ -1,3 +1,4 @@
+import { INTENT } from '../../enums'
 import { HSLtoRGB, HSVtoRGB } from '../../utils'
 
 export const CSS_COLOR_REGEX = /^(?<fn>(?:rgb|hsl)a?)\((?<values>.+)\)/
@@ -87,13 +88,10 @@ export const MAIN_TRC = 2.4
 
 // ── Intent runtime detection ────────────────────────────────────────────────
 // Runtime set of every semantic intent recognised by `useColorEffect` /
-// `useColor`. Keep this in sync with the `TIntent` type — adding a new
-// intent there must also add the literal here, otherwise the type guard
-// `isIntent` will reject it at runtime.
-export const COLOR_INTENTS: ReadonlySet<string> = new Set([
-    'neutral', 'primary', 'secondary', 'ghost',
-    'success', 'warning', 'danger', 'info'
-])
+// `useColor`, derived from the `INTENT` enum — the enum is the single
+// source of truth, adding a member there is enough for `isIntent` to
+// accept it at runtime.
+export const COLOR_INTENTS: ReadonlySet<string> = new Set(Object.values(INTENT))
 
 // Subset of `COLOR_INTENTS` for which a global utility class ships in
 // `src/assets/css/tokens/origam-utilities.css` (Phase 1 manifest).
@@ -102,10 +100,9 @@ export const COLOR_INTENTS: ReadonlySet<string> = new Set([
 // `.origam--bg-ghost` because the intent is meant to be a transparent
 // surface that adopts the parent's color, which can't be expressed by
 // a single utility class. Falls back to the inline-style path.
-export const COLOR_UTILITY_INTENTS: ReadonlySet<string> = new Set([
-    'neutral', 'primary', 'secondary',
-    'success', 'warning', 'danger', 'info'
-])
+export const COLOR_UTILITY_INTENTS: ReadonlySet<string> = new Set(
+    Object.values(INTENT).filter(intent => intent !== INTENT.GHOST)
+)
 
 // ── State darken progression (cross-component) ──────────────────────────────
 // Hover / active states derive from the rest-state bgColor by mixing

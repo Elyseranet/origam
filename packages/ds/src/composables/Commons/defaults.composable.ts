@@ -70,7 +70,19 @@ export function usePassedProps<T extends Record<string, any>> (
     return (key) => {
         const vnodeProps = vm.vnode.props || {}
         for (const k in vnodeProps) {
-            if (k === key || camelize(k) === key) return true
+            // A key present in `vnode.props` with the value `undefined` does
+            // NOT count as passed. Vue does not omit a dynamically-bound key
+            // just because its current value is `undefined`, so the ordinary
+            // consumer pattern `:bg-color="state.bgColor"` made this return
+            // `true` while the value was empty — and the theme default was
+            // then silently skipped. The field looked unthemed for no visible
+            // reason, and nothing reported it.
+            //
+            // Requiring a non-`undefined` value aligns this with how Vue's own
+            // `withDefaults()` already behaves (an `undefined` prop falls back
+            // to the default). Distinct from the `?? {}` guard above, which is
+            // about a key ABSENT from `vnode.props` entirely.
+            if (k === key || camelize(k) === key) return vnodeProps[k] !== undefined
         }
         return false
     }

@@ -395,7 +395,15 @@ StyleDictionary.registerFormat({
 })
 
 // ────────────────────────────────────────────────────────────────────────────
-// TS types format: TToken + TIntent + TTheme.
+// TS types format: TToken only.
+//
+// `TIntent` and `TTheme` used to be re-declared here as hardcoded literal
+// duplicates of the real public types (`src/types/Commons/intent.type.ts`,
+// `src/types/Theme/theme.type.ts`). This file is never re-exported by
+// `types/index.ts`, so those two duplicates were dead code — removed rather
+// than kept in sync, since this plain Node script has no TS-loader wired up
+// to import the enum-derived types directly (see git history for the prior
+// hardcoded block if this ever needs resurrecting).
 // ────────────────────────────────────────────────────────────────────────────
 StyleDictionary.registerFormat({
     name: 'origam/ts/types',
@@ -410,18 +418,6 @@ StyleDictionary.registerFormat({
             '',
             'export type TTokenName =',
             names,
-            '',
-            "export type TIntent =",
-            "  | 'neutral'",
-            "  | 'primary'",
-            "  | 'secondary'",
-            "  | 'ghost'",
-            "  | 'success'",
-            "  | 'warning'",
-            "  | 'danger'",
-            "  | 'info'",
-            '',
-            "export type TTheme = 'auto' | 'light' | 'dark' | string",
             ''
         ].join('\n')
     }

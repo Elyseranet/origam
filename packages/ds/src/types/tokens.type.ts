@@ -2926,15 +2926,3 @@ export type TTokenName =
   | '--origam-zIndex---sticky'
   | '--origam-zIndex---toast'
   | '--origam-zIndex---tooltip'
-
-export type TIntent =
-  | 'neutral'
-  | 'primary'
-  | 'secondary'
-  | 'ghost'
-  | 'success'
-  | 'warning'
-  | 'danger'
-  | 'info'
-
-export type TTheme = 'auto' | 'light' | 'dark' | string

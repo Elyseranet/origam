@@ -153,7 +153,8 @@
 		IChartPoint,
 		IChartSparklineEmits,
 		IChartSparklineKind,
-		IChartSparklineProps
+		IChartSparklineProps,
+		IChartSparklineSlots
 	} from '../../interfaces'
 
 	import { intentBgExpr, isIntent } from '../../utils/Commons/color.util'
@@ -199,6 +200,8 @@
 	})
 
 	defineEmits<IChartSparklineEmits>()
+
+	defineSlots<IChartSparklineSlots>()
 
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
 	const { elevationClasses, elevationStyles } = useElevation(props)

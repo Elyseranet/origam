@@ -37,3 +37,31 @@ export interface IChartRangeSelector {
     /** Zero-based index of the initially selected button. */
     selected?: number
 }
+
+/**
+ * Props for `<OrigamChartRangeSelector>` — the band-style preset
+ * toolbar rendered above `<OrigamChartCartesian>` when
+ * `rangeSelector.enabled` is `true`. Distinct from `IChartRangeSelector`
+ * above, which is the *configuration object* a consumer passes to
+ * `<OrigamChartCartesian rangeSelector="…">`; this is the standalone
+ * sub-component's own prop surface.
+ */
+export interface IChartRangeSelectorProps {
+    /** Buttons to render, in order. */
+    buttons: Array<IChartRangeSelectorButton>
+    /** Zero-based index of the currently active button. `-1` = none selected. */
+    activeIndex?: number
+    /** Total category count — the window each button computes against. */
+    dataLength?: number
+}
+
+/**
+ * Emits surfaced by `<OrigamChartRangeSelector>`.
+ */
+export interface IChartRangeSelectorEmits {
+    /**
+     * Fired when a button is activated (click or keyboard). Carries the
+     * button's index and the resolved `[start, end]` category window.
+     */
+    (e: 'select', index: number, start: number, end: number): void
+}

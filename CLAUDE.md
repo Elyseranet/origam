@@ -601,6 +601,23 @@ will retire the `*Styles` returns.
 
 ---
 
+## Work priorities and versioning
+
+Which work is picked up first, and how a release number is chosen, live in
+**`docs/work-priorities.md`**. The short form:
+
+1. **Fixes** — a bug costs a user something now.
+2. **Refactoring** — *a refactor is a bug seen from the developer's side*.
+   Misfiled code does not break at runtime; it breaks whoever has to find
+   something in it next. That cost is invisible, which is why it gets
+   postponed — and why it ranks second rather than last.
+3. **Features**, simplest first.
+
+Version: **major** for a large user-facing feature or a breaking change,
+**minor** for a medium feature with limited impact, **patch** for a bug fix.
+A dependency upgrade is judged by its size and impact, not by the file it
+touches — a test-runner major is a *medium feature*, not a patch.
+
 ## Pre-delivery (project-specific overlay)
 
 The global pre-delivery policy (TU + e2e + security) applies. Specific to

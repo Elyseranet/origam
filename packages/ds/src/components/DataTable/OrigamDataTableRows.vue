@@ -73,7 +73,7 @@
 				<template v-if="isExpanded(item)">
 					<slot
 							name="expanded-row"
-							v-bind="slotProps"
+							v-bind="slotProps(item, index)"
 					/>
 				</template>
 			</template>
@@ -94,7 +94,8 @@
 		IDataTableGroupHeaderSlot,
 		IDataTableItemBaseSlot,
 		IDataTableItemSlot,
-		IDataTableRowsProps
+		IDataTableRowsProps,
+		IDataTableRowsSlots
 	} from '../../interfaces'
 
 	import { getPrefixedEventHandlers } from '../../utils'
@@ -111,6 +112,8 @@
 		loadingText: 'origam.data_iterator.loading_text',
 		noDataText: 'origam.no_data_text'
 	})
+
+	defineSlots<IDataTableRowsSlots>()
 
 	const {filterProps} = useProps<IDataTableRowsProps>(props)
 

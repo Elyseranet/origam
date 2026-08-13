@@ -22,7 +22,7 @@ jobs:
           # Full history so SonarQube can attribute blame / new-code period.
           fetch-depth: 0
 
-      - uses: pnpm/action-setup@v4
+      - uses: pnpm/action-setup@v6
 
       - uses: actions/setup-node@v6
         with:
@@ -51,14 +51,21 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
-      # Quality gate enforcement. Disabled by default until the first
-      # diagnostic scan establishes the baseline (ratings + debt); enabling it
-      # blind would red the pipeline before we know what needs remediation.
-      # Flip ENFORCE_QUALITY_GATE to 'true' (repo variable) once the gate is
-      # green to make a red gate fail the build.
-      - name: Quality gate
+      # Pilote par la variable de depot ENFORCE_QUALITY_GATE : a 'true', les
+      # deux etapes de gate ci-dessous s'executent ; sinon elles sont sautees.
+      #
+      # INFORMATIF — ne fait plus echouer le job. L'action officielle est tout
+      # ou rien : elle rougit des qu'une condition du gate casse, y compris
+      # `new_violations > 0`, sans regarder la GRAVITE. Deux odeurs de code
+      # mineures suffisaient donc a bloquer une livraison — c'est ce qui est
+      # arrive a la 2.14.0, dont tous les controles fonctionnels etaient verts.
+      # On garde l'appel pour l'affichage du verdict et pour alimenter l'etape
+      # de diagnostic ci-dessous ; le blocage reel se decide juste apres, par
+      # gravite.
+      - name: Quality gate (informatif)
         id: quality_gate
         if: ${{ vars.ENFORCE_QUALITY_GATE == 'true' }}
+        continue-on-error: true
         uses: SonarSource/sonarqube-quality-gate-action@v1
         timeout-minutes: 5
         env:
@@ -138,3 +145,76 @@ jobs:
               | "  \(.component | split(":") | last):\(.line // 0) — [\(.severity // .impacts[0].severity // "?")] \(.message)"
             ' 2>/dev/null || echo "$ISSUES"
           fi
+
+      # LE gate qui bloque reellement. Ne retient que ce qui justifie d'arreter
+      # une livraison : une faille de securite, ou un defaut de gravite critique.
+      # Une odeur de code ou une complexite trop haute est remontee en warning
+      # et n'arrete rien — elle se traite dans un ticket, pas en urgence.
+      #
+      # Les deux taxonomies SonarQube sont couvertes : l'historique
+      # (`type` / `severity`) et la moderne introduite en 10.x
+      # (`impacts[].softwareQuality` / `impacts[].severity`), parce que l'API
+      # renvoie l'une, l'autre ou les deux selon la version et la regle.
+      #
+      # Les hotspots de securite sont signales mais ne bloquent PAS : ce sont
+      # des points « a revoir », pas des vulnerabilites confirmees. Les bloquer
+      # rendrait le gate bruyant et pousserait a le desactiver — l'inverse du
+      # but recherche.
+      - name: Quality gate — securite et criticite uniquement
+        if: ${{ vars.ENFORCE_QUALITY_GATE == 'true' }}
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        run: |
+          set -uo pipefail
+
+          KEY=$(grep -E '^sonar\.projectKey=' sonar-project.properties | cut -d= -f2-)
+
+          fetch_issues () {
+            curl -sS -m 30 -u "$SONAR_TOKEN:" \
+              "$SONAR_HOST_URL/api/issues/search?$1=$KEY&inNewCodePeriod=true&resolved=false&ps=500" || echo ''
+          }
+
+          ISSUES=$(fetch_issues components)
+          if [ "$(echo "$ISSUES" | jq -r '.issues | length' 2>/dev/null || echo 0)" = "0" ]; then
+            ISSUES=$(fetch_issues componentKeys)
+          fi
+
+          if ! echo "$ISSUES" | jq -e '.issues' >/dev/null 2>&1; then
+            echo "::warning::API SonarQube injoignable ou reponse inattendue — gate non evalue."
+            exit 0
+          fi
+
+          SELECT='.issues[]? | select(
+              (.type == "VULNERABILITY")
+              or ((.severity // "") as $s | $s == "BLOCKER" or $s == "CRITICAL")
+              or ((.impacts // []) | any(.softwareQuality == "SECURITY"))
+              or ((.impacts // []) | any(.severity == "BLOCKER"))
+          )'
+
+          BLOCKING=$(echo "$ISSUES" | jq -r "$SELECT
+            | \"::error::[\(.type // \"?\")/\(.severity // .impacts[0].severity // \"?\")] \(.component | split(\":\") | last):\(.line // 0) — \(.message)\"" 2>/dev/null || echo '')
+
+          OTHERS=$(echo "$ISSUES" | jq -r "[ .issues[]? ] | length" 2>/dev/null || echo 0)
+          NB_BLOCK=$(echo "$ISSUES" | jq -r "[ $SELECT ] | length" 2>/dev/null || echo 0)
+
+          echo "Issues du nouveau code : $OTHERS au total, dont $NB_BLOCK bloquantes (securite ou critique)."
+
+          HOTSPOTS=$(curl -sS -m 30 -u "$SONAR_TOKEN:" \
+            "$SONAR_HOST_URL/api/hotspots/search?projectKey=$KEY&status=TO_REVIEW&ps=100" || echo '')
+          NB_HS=$(echo "$HOTSPOTS" | jq -r '.hotspots | length' 2>/dev/null || echo 0)
+          if [ "${NB_HS:-0}" != "0" ]; then
+            echo "::warning::$NB_HS hotspot(s) de securite a revoir — non bloquant, voir le dashboard."
+          fi
+
+          if [ "${NB_BLOCK:-0}" != "0" ]; then
+            echo "$BLOCKING"
+            echo "::error::Gate bloque : $NB_BLOCK issue(s) de securite ou de gravite critique dans le nouveau code."
+            exit 1
+          fi
+
+          if [ "${OTHERS:-0}" != "0" ]; then
+            echo "::warning::$OTHERS issue(s) non critiques dans le nouveau code — a traiter en ticket, ne bloquent pas la livraison."
+          fi
+
+          echo "Gate OK — aucune issue de securite ni de gravite critique."

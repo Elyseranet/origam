@@ -51,12 +51,9 @@
 
 						<template
 								v-if="slots['header.loader']"
-								#loader="headerLoaderProps"
+								#loader
 						>
-							<slot
-									name="header.loader"
-									v-bind="headerLoaderProps"
-							/>
+							<slot name="header.loader"/>
 						</template>
 					</origam-data-table-headers>
 					</thead>
@@ -146,7 +143,7 @@
 	import type {
 		IDataTableGroup, IDataTableGroupableItem, IDataTableProps, IDataTableSelectableItem, IDataTableSortItem} from '../../interfaces'
 
-	import type { IDataTableEmits } from '../../interfaces/DataTable/data-table.interface'
+	import type { IDataTableEmits, IDataTableSlots } from '../../interfaces/DataTable/data-table.interface'
 
 	import type { TOrigamDataTableFooter, TOrigamDataTableHeaders, TOrigamDataTableRows, TOrigamTable } from "../../types"
 
@@ -182,6 +179,8 @@
 	})
 
 	defineEmits<IDataTableEmits>()
+
+	defineSlots<IDataTableSlots>()
 
 	const {filterProps} = useProps<IDataTableProps>(props)
 

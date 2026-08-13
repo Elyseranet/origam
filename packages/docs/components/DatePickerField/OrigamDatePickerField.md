@@ -86,6 +86,56 @@ A `required` rule should check `Array.length > 0` (single or multiple) or `Array
 | `openText` | `string` | `'origam.open'` | ARIA label when picker is closed |
 | `closeText` | `string` | `'origam.close'` | ARIA label when picker is open |
 
+### The dropdown follows your own typography
+
+The calendar is teleported out of the field's DOM subtree so it can escape
+`overflow` and stacking contexts. A consequence catches most applications out:
+**CSS you write against the field never reaches the popup**. A compact form
+theme, a scaled container, or a plain rule like
+
+```css
+.my-form .origam-date-picker-field * { font-size: 13px; }
+```
+
+used to shrink the control and leave the weekday header, week numbers, and
+day cells at their own size — a small field opening a visibly oversized
+calendar.
+
+Inheriting `font-size` on the teleported surface would not have fixed it
+either: those elements are sized with `rem`-based tokens
+(`var(--origam-date-picker-month__weekday---font-size, .85rem)` and siblings),
+and `rem` resolves against the document root, not the parent — they would
+keep the root size whatever the surface inherited.
+
+So `OrigamDatePickerField` measures the typography that actually won on the
+field when the popup opens, and republishes it on the teleported surface as
+the tokens the calendar already reads (plus `--origam-picker-title---font-size`,
+for a popup `title`). Nothing to configure: any rule of yours that changes the
+field's font is picked up, including rules the design system cannot see.
+
+`menuProps.contentProps.style` still wins, for a popup you want to diverge on
+purpose:
+
+```vue
+<template>
+  <OrigamDatePickerField
+      v-model="date"
+      label="Appointment"
+      :menu-props="{ contentProps: { style: { fontSize: '15px' } } }"
+  />
+</template>
+```
+
+The measurement is taken at open time, so a font that changes while the popup
+is already open is picked up at the next opening.
+
+| Token | Description |
+|---|---|
+| `--origam-date-picker-month__weekday---font-size` | Republished by the typography bridge at open time; falls back to `.85rem` |
+| `--origam-date-picker-month__weeks---font-size` | Republished by the typography bridge at open time; falls back to `.85rem` |
+| `--origam-date-picker-month__day---font-size` | Republished by the typography bridge at open time; falls back to `.85rem` |
+| `--origam-picker-title---font-size` | Republished by the typography bridge when the popup has a `title`; falls back to `.75rem` |
+
 ## Slots
 
 | Slot | Description |

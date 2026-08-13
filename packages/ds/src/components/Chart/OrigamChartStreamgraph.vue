@@ -205,7 +205,8 @@
 		IChartSeries,
 		IChartStreamgraphEmits,
 		IChartStreamgraphProps,
-		IChartStreamgraphRibbon
+		IChartStreamgraphRibbon,
+		IChartStreamgraphSlots
 	} from '../../interfaces'
 
 	import { intentBgExpr, isIntent } from '../../utils/Commons/color.util'
@@ -254,6 +255,8 @@
 	})
 
 	const emit = defineEmits<IChartStreamgraphEmits>()
+
+	defineSlots<IChartStreamgraphSlots>()
 
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')

@@ -151,9 +151,16 @@ export function useStyle (
     // a render, where `getCurrentInstance()` is null.
     const fallbackId = `${name}-${getUid()}`
 
-    // `||`, not `??`: an empty string is not a usable id, and would produce
-    // the invalid selector `# { … }`.
-    const id = computed(() => toValue(uniq) || fallbackId)
+    // The emptiness test is written out rather than folded into `||`: an empty
+    // string must fall back too — it would otherwise produce the invalid
+    // selector `# { … }` — and `??` alone would let it through. Spelling the
+    // condition out says which values are rejected instead of leaving it to the
+    // reader to recall what `||` treats as falsy.
+    const id = computed(() => {
+        const requested = toValue(uniq)
+
+        return typeof requested === 'string' && requested.length > 0 ? requested : fallbackId
+    })
 
     const customCss = computed(() => {
         const stylesArray = toDeclarations(styles.value)

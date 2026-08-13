@@ -25,13 +25,12 @@
 
     "types": ["@figma/plugin-typings"],
 
-    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "@/lib/*": ["src/lib/*"],
-      "@/components/*": ["src/components/*"],
-      "@/types/*": ["src/types/*"],
-      "@/ui/*": ["src/ui/*"]
+      "@/*": ["./src/*"],
+      "@/lib/*": ["./src/lib/*"],
+      "@/components/*": ["./src/components/*"],
+      "@/types/*": ["./src/types/*"],
+      "@/ui/*": ["./src/ui/*"]
     }
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "esbuild.config.mjs"],

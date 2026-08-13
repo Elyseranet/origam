@@ -207,7 +207,7 @@
                 "summary": "The accessibility release. WCAG 2.1 AA pass across the entire component catalogue. 35 targeted fixes across 36 components.",
                 "h1": "WCAG 2.1 AA pass — 35 fixes: missing aria-label, incorrect role, focus gaps, colour-contrast warnings, keyboard-navigation holes",
                 "h2": "OrigamSelect — full combobox ARIA pattern (role=combobox + aria-expanded + aria-activedescendant)",
-                "h3": "OrigamDataTable — <caption> element added; OrigamColorPicker — keyboard navigation restored",
+                "h3": "OrigamDataTable — caption element added; OrigamColorPicker — keyboard navigation restored",
                 "h4": "VitePress docs sidebar reorganised by UI taxonomy (layout / navigation / data-display / forms / feedback / utility)"
             },
             "v240": {
@@ -247,7 +247,7 @@
             "v200": {
                 "summary": "The design tokens release. Every component now resolves colors, spacing, typography and motion through a centralised, theme-aware token pipeline. 50+ components migrated.",
                 "h1": "Multi-tier design tokens — Primitive / Semantic / Component tiers; Style Dictionary v4 + Tokens Studio pipeline",
-                "h2": "Multi-theme runtime — useTheme() composable, <OrigamThemeProvider>, prefers-color-scheme fallback",
+                "h2": "Multi-theme runtime — useTheme() composable, OrigamThemeProvider, prefers-color-scheme fallback",
                 "h3": "CSS-first / JS-fallback principle — useCssSupport() composable wrapping CSS.supports() with 20 feature flags",
                 "h4": "Multiple critical bug fixes — OrigamMessages id binding, OrigamNumberField reactive loop, OrigamOtpInputField crash"
             }
@@ -949,7 +949,23 @@
             "preview_dark": "dark.json",
             "preview_brand_a": "brand-a.json",
             "preview_brand_b": "brand-b.json",
-            "preview_button": "Button"
+            "preview_button": "Button",
+            "actions_label": "Try the theme builder",
+            "cta_builder": "Try the theme builder"
+        },
+        "figma": {
+            "eyebrow": "DESIGN TOOLING",
+            "title_line1": "Design in Figma.",
+            "title_line2": "Ship the same tokens.",
+            "subtitle": "Origam DS Sync is a free Figma plugin that turns your design tokens into real Figma components, and exports Figma Variables back out in a format origam already understands.",
+            "highlight_generate_title": "Generate components",
+            "highlight_generate_description": "14 production-ready ComponentSets, bound to your design tokens, built directly in your Figma file.",
+            "highlight_export_title": "Export tokens",
+            "highlight_export_description": "Figma Variables export back out as Tokens Studio JSON or origam SCSS — ready to drop into the repo.",
+            "mapping_label": "token.json ⇄ Figma Variable",
+            "actions_label": "Get the Figma plugin",
+            "cta_explore": "Explore the plugin",
+            "cta_download": "Download plugin"
         },
         "cta": {
             "title": "Ready to ship faster?",
@@ -1143,7 +1159,7 @@
             "description": "Where origam is today, what has been delivered, and what is coming next. Public, honest, updated with each release."
         },
         "hero": {
-            "badge": "v2.6.0 — Wave 4 shipped",
+            "badge": "v{version} — Wave 4 shipped",
             "title_line1": "Roadmap.",
             "title_line2": "Honest & public.",
             "subtitle": "origam is an early-stage Vue 3 design system. Here is where we stand today, what we have already shipped, and what is on the horizon."
@@ -1246,6 +1262,18 @@
                     "title": "Bundle-size monitoring",
                     "description": "size-limit on every sub-export. PR comments auto-generated. The 5.6 MB → 869 kB drop must stay an asset."
                 },
+                "tu_audit": {
+                    "title": "Unit test suite consolidation",
+                    "description": "Standardize on a single tests/unit/{Domain}/{name}.spec.ts convention and lift branch coverage on the transversal composables, mocking CSS.supports in jsdom."
+                },
+                "api_audit": {
+                    "title": "Pre-v3 API audit",
+                    "description": "A full deprecation inventory in the v2-to-v3 migration guide, missing {'@'}deprecated markers completed, and a codemod for the mechanical renames."
+                },
+                "dependency_automation": {
+                    "title": "Automated dependency updates",
+                    "description": "Renovate with grouped update policies, automatic merges for patch-level dev dependencies, and a weekly grouped PR for minor bumps."
+                },
                 "sonarqube": {
                     "title": "SonarQube — A rating, zero debt",
                     "description": "The Sonar scan is already wired (build.yml + sonar-project.properties) but incomplete. Feed the Vitest lcov coverage into Sonar (sonar.javascript.lcov.reportPaths), enable a blocking quality gate, and clear every bug / vulnerability / security hotspot / code smell to reach an A rating on all axes with zero technical debt. Run on PRs and add it to the pre-delivery checks."
@@ -1262,6 +1290,10 @@
                     "title": "v3.0.0 — Strategy B",
                     "description": "Remove *Styles returns when the value is tokenised. Utility classes become the sole API. ~2× less reactive computation."
                 },
+                "modularization": {
+                    "title": "Modular sub-exports (origam/core, origam/form, origam/chart, …)",
+                    "description": "Split the published library into tree-shakable sub-exports by domain, so an app only pays for what it actually imports. The existing origam barrel stays available for backward compatibility."
+                },
                 "motion_tokens": {
                     "title": "Motion & a11y media tokens",
                     "description": "tokens/semantic/motion.json — durations, easings. Auto 0ms if prefers-reduced-motion. High-contrast ramp."
@@ -1276,11 +1308,23 @@
                 },
                 "list_semantics": {
                     "title": "Semantic list variants (OrigamList)",
-                    "description": "OrigamList / OrigamListItem render <div role=\"listbox\"> today. A new variant prop (unordered → ul/li, ordered → ol/li, nav, listbox) will emit real <ul>/<ol>/<li> semantics, replacing the boolean nav prop."
+                    "description": "OrigamList / OrigamListItem render div role=\"listbox\" today. A new variant prop (unordered → ul/li, ordered → ol/li, nav, listbox) will emit real ul/ol/li semantics, replacing the boolean nav prop."
                 },
                 "turborepo": {
                     "title": "Turborepo build cache",
                     "description": "Replace raw pnpm -r scripts with Turborepo pipelines. Remote cache drastically cuts CI rebuild time."
+                },
+                "variant_presets": {
+                    "title": "variant as a preset of real props",
+                    "description": "Turn each visual variant into a transparent, fully overridable preset of component props instead of hardcoded styling — piloted on OrigamBlockquote, then generalized."
+                },
+                "add_more": {
+                    "title": "OrigamAddMore — form field repeater",
+                    "description": "A new form component for repeating a group of fields with an 'Add more' action, min/max bounds, and full keyboard and screen-reader support."
+                },
+                "content_justify": {
+                    "title": "OrigamBtn — contentJustify prop",
+                    "description": "A props-first way to control how a button's content aligns inside its layout, for buttons that don't rely on the prepend/append icon slots."
                 },
                 "background_directive": {
                     "title": "v-background directive",
@@ -1293,6 +1337,18 @@
                 "theming_completion": {
                     "title": "Complete the /theming builder",
                     "description": "The marketing theme builder shipped as a partial V1 (~14 core components, tokens capped, modals/slot-driven not previewable). Finish it: cover all editable components, handle overlay/slot-driven previews, lift the token cap, and rework the UI — the current ergonomics are clearly not good enough. Stays data-driven and DS-first."
+                },
+                "wizard_form": {
+                    "title": "OrigamWizardForm — multi-step form",
+                    "description": "Composes the existing OrigamForm and OrigamStepper — no reimplementation of validation or step navigation. Per-step validation blocks progression until the active step is valid; a single v-model aggregates every step's values."
+                },
+                "page": {
+                    "title": "OrigamPage — page wrapper",
+                    "description": "A deliberately simple structural wrapper with three optional zones — header, content, footer — rendered as real semantic elements. No imposed scroll or sticky behaviour, just a consistent page skeleton on top of the DS spacing tokens."
+                },
+                "section": {
+                    "title": "OrigamSection — section schemas",
+                    "description": "OrigamSection exists today as an empty 14-line shell — this finishes it, it is not a new component. Reuses the schema pattern already proven by OrigamSkeleton: predefined section schemas such as hero, split, centered or full-bleed, as overridable prop presets on a real section element, props-first."
                 }
             },
             "long_term": {
@@ -1317,6 +1373,54 @@
                 "marketing_cms": {
                     "title": "Marketing — admin backend (CMS)",
                     "description": "A back-office to manage all site content when auto-generation falls short: edit any page (reference + editorial), reorder, publish/hide, without touching code. Fully translatable (DB-driven i18n, per-locale completeness) and built with origam itself — a full-scale DS showcase. Auth + roles, change audit, pre-publish guardrail. Stack: Nitro + TypeORM/PostgreSQL + Redis."
+                },
+                "server_components": {
+                    "title": "Vue Server Components",
+                    "description": "Track the Vue compiler ecosystem and align with a React-Server-Components-style pattern once it stabilizes."
+                },
+                "ai_figma": {
+                    "title": "AI-assisted generation (Figma → code)",
+                    "description": "Make the Figma plugin bidirectional — turning Figma designs into origam components automatically speeds up new component creation."
+                },
+                "maintenance_eol": {
+                    "title": "Maintenance & EOL policy",
+                    "description": "A documented LTS policy: after v3.0 ships, the v2.x branch keeps receiving security and critical bugfixes for a defined window."
+                }
+            },
+            "ongoing": {
+                "eyebrow": "EVERY SPRINT",
+                "title": "Continuous hygiene",
+                "dependencies": {
+                    "title": "Dependency hygiene",
+                    "description": "Weekly automated dependency updates; zero high or critical vulnerability tolerated at merge time."
+                },
+                "doc": {
+                    "title": "Documentation coverage",
+                    "description": "No component merges without its doc page. Quarterly audit of the documentation links."
+                },
+                "performance": {
+                    "title": "Performance budget",
+                    "description": "Bundle-size checks block any PR that exceeds its budget; every changed component is profiled before merge."
+                },
+                "refactor": {
+                    "title": "Boy-scout refactors",
+                    "description": "Any PR touching a component with legacy patterns (hardcoded colors, inline-only styling) migrates it before merge."
+                },
+                "quality_gate": {
+                    "title": "Code-quality gate",
+                    "description": "Static analysis, strict linting, and type-checking run on every PR — no unexplained escape hatches."
+                },
+                "changelog": {
+                    "title": "Changelog discipline",
+                    "description": "The changelog is updated with every pull request, not just at release time."
+                },
+                "test_as_you_build": {
+                    "title": "Test-as-you-build",
+                    "description": "Every new story ships with its end-to-end coverage in the same pull request — checked automatically in CI."
+                },
+                "security": {
+                    "title": "Security checks on every PR",
+                    "description": "Secret scanning on every pull request, plus a dedicated security review for any change to server code, services, or build configuration."
                 }
             }
         },
@@ -1827,7 +1931,7 @@
             "subtitle": "Every API, every composable, every prop — designed for Composition API and TypeScript from day one.",
             "vue3": {
                 "title": "Vue 3 native",
-                "description": "Built with Composition API and <script setup>. No legacy Options API shim, no Vue 2 baggage — just clean, idiomatic Vue 3."
+                "description": "Built with Composition API and script setup. No legacy Options API shim, no Vue 2 baggage — just clean, idiomatic Vue 3."
             },
             "tokens": {
                 "title": "Design tokens DTCG",

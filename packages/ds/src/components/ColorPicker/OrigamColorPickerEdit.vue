@@ -177,7 +177,13 @@
 			}
 
 			#{$this}__label {
-				font-size: .75rem
+				// `rem` resolves against the document root, not this component's
+				// ancestor — a plain literal here would be immune to the typography
+				// bridge `OrigamColorPickerField` republishes on the teleported
+				// surface (see `useTeleportTypography`). Generic-first read, same
+				// convention as `useTypography`'s rollout: the bridged var wins when
+				// present, the historical size is the fallback.
+				font-size: var(--origam-color-picker-edit__label---font-size, .75rem);
 			}
 		}
 	}

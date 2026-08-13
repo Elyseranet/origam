@@ -184,7 +184,7 @@
 		OrigamTranslateScale
 	} from "../../components"
 
-	import { useDate, useDefaults, useLocale, useProps, useTextColor, useVModel , useStyle} from "../../composables"
+	import { useDate, useDefaults, useLocale, useProps, useTeleportTypography, useTextColor, useVModel , useStyle} from "../../composables"
 
 	import { ORIGAM_FORM_KEY } from "../../consts"
 
@@ -315,12 +315,33 @@
 	const menuDisabled = computed(() => {
 		return props.readonly || form?.isReadonly.value
 	})
+
+	// Typography bridge across the teleport — see `useTeleportTypography` for
+	// the full rationale. The calendar's weekday header, week-number column
+	// and day numbers, plus the popup title when one is set, size themselves
+	// with `rem`-based tokens, so they need the field's REAL font-size
+	// republished as those specific tokens, not just inherited.
+	const { typographyStyles: menuTypographyStyles } = useTeleportTypography(origamTextFieldRef, menu, (fontSize) => ({
+		'--origam-picker-title---font-size': fontSize,
+		'--origam-date-picker-month__weekday---font-size': fontSize,
+		'--origam-date-picker-month__weeks---font-size': fontSize,
+		'--origam-date-picker-month__day---font-size': fontSize
+	}))
+
 	const menuProps = computed(() => {
+		const consumerContentProps = (props.menuProps?.contentProps ?? {}) as Record<string, any>
+
 		return {
 			...props.menuProps,
 			activatorProps: {
 				...(props.menuProps?.activatorProps || {}),
 				'aria-haspopup': 'datepickerbox' // Set aria-haspopup to 'listbox'
+			},
+			contentProps: {
+				...consumerContentProps,
+				// The consumer's own style is listed last so it still wins —
+				// the bridge is a default, not a lock.
+				style: [menuTypographyStyles.value, consumerContentProps.style]
 			}
 		}
 	})

@@ -410,6 +410,22 @@
 			</div>
 		</Variant>
 
+		<Variant title="Prop — prepended corner (regression)">
+			<div style="display: flex; gap: 24px; padding: 16px;">
+				<origam-field
+						label="Prepended, rounded large"
+						variant="outlined"
+						rounded="large"
+						:prepend-inner-icon="prependInnerIcon"
+						data-cy="field-corner-prepended"
+				>
+					<template #default="{ id, onFocus, onBlur }">
+						<input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/>
+					</template>
+				</origam-field>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IFieldProps>({ label: 'Field label', color: 'primary' })"

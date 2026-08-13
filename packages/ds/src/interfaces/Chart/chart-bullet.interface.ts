@@ -1,6 +1,6 @@
 import type { IChartBaseEmits, IChartBaseProps, IChartBaseSlots, IChartPoint, IChartSeries } from '../../interfaces'
 
-import type { TChartBulletOrientation, TIntent } from '../../types'
+import type { TDirection, TIntent } from '../../types'
 
 /**
  * One qualitative range band in a bullet chart.
@@ -105,8 +105,14 @@ export interface IChartBulletProps extends IChartBaseProps {
      * left, bar extending right). `'vertical'` renders bullets as
      * columns (label below, bar extending upward). Default
      * `'horizontal'`.
+     *
+     * Typed via the shared `TDirection` (Commons) rather than a
+     * component-local union — the value set (`horizontal`/`vertical`)
+     * is identical, and this is a pure layout axis, same as `TDirection`
+     * usage on `OrigamDivider` / `OrigamSliderField`. A former
+     * `TChartBulletOrientation` duplicated this exactly.
      */
-    orientation?: TChartBulletOrientation
+    orientation?: TDirection
     /**
      * Thickness of the actual-value bar as a fraction of the slot
      * height (horizontal) or slot width (vertical). Range [0, 1].
