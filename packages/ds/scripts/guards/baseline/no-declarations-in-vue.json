@@ -9,6 +9,5 @@
     "packages/ds/src/components/CommandPalette/OrigamCommandPalette.vue::interface::IRenderedGroup",
     "packages/ds/src/components/ItemGroup/OrigamItem.vue::interface::Props",
     "packages/ds/src/components/Media/OrigamMediaController.vue::interface::IConfigMenuItem",
-    "packages/ds/src/components/Tabs/OrigamTab.vue::interface::IProps",
     "packages/ds/src/components/ThemeProvider/OrigamThemeProvider.vue::interface::Props"
 ]

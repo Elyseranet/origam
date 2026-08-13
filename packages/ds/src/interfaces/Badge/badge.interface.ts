@@ -1,4 +1,5 @@
 import type {
+    IAdjacentEmits,
     IAdjacentProps,
     IBorderProps,
     IBgColorProps,
@@ -37,3 +38,7 @@ export interface IBadgeProps extends ICommonsComponentProps, ITagProps, IBorderP
     offsetX?: number | string
     offsetY?: number | string
 }
+
+/** Emits fired by `<OrigamBadge>` — clicks on the prepend/append slots
+ *  (same contract as `OrigamBtn` / `OrigamAlert`, via `useAdjacent`). */
+export interface IBadgeEmits extends IAdjacentEmits {}

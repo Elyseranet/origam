@@ -11,66 +11,74 @@
 			<slot name="default"/>
 
 			<origam-transition :transition="transition">
-        <span
-		        v-show="modelValue"
-		        :id="id"
-		        v-contrast
-		        :aria-label="t(label, content)"
-		        :class="badgeContentClasses"
-		        :style="typographyStyles"
-		        aria-atomic="true"
-		        aria-live="polite"
-		        role="status"
-		        v-bind="badgeAttrs"
-        >
-          <template v-if="!dot">
-            <slot name="badge">
-              <template v-if="hasPrepend">
-                <slot name="prepend">
-                  <origam-avatar
-                          v-if="prependAvatar"
-                          key="prepend-avatar"
-                          class="origam-badge__prepend"
-                          :image="prependAvatar"
-                  />
-                  <origam-icon
-                          v-if="hasPrependIcon"
-                          key="prepend-icon"
-                          class="origam-badge__prepend"
-                          :icon="prependIcon"
-                  />
-                </slot>
-              </template>
+				<span
+						v-show="modelValue"
+						:id="id"
+						v-contrast
+						:aria-label="t(label, content)"
+						:class="badgeContentClasses"
+						:style="typographyStyles"
+						aria-atomic="true"
+						aria-live="polite"
+						role="status"
+						v-bind="badgeAttrs"
+				>
+					<template v-if="!dot">
+						<slot name="badge">
+							<template v-if="hasPrepend">
+								<span
+										key="prepend"
+										class="origam-badge__prepend"
+										@click="handleClickPrepend"
+								>
+									<slot name="prepend">
+										<origam-avatar
+												v-if="prependAvatar"
+												key="prepend-avatar"
+												:image="prependAvatar"
+										/>
+										<origam-icon
+												v-if="prependIcon"
+												key="prepend-icon"
+												:icon="prependIcon"
+										/>
+									</slot>
+								</span>
+							</template>
 
-              <template v-if="hasIcon">
-                <origam-icon
-                        key="content-icon"
-                        :icon="icon"
-                />
-              </template>
-              <template v-else-if="content !== undefined && content !== null && content !== ''">
-                <span class="origam-badge__content">{{ content }}</span>
-              </template>
+							<template v-if="hasIcon">
+								<origam-icon
+										key="content-icon"
+										:icon="icon"
+								/>
+							</template>
+							<template v-else-if="content !== undefined && content !== null && content !== ''">
+								<span class="origam-badge__content">{{ content }}</span>
+							</template>
 
-              <template v-if="hasAppend">
-                <slot name="append">
-                  <origam-avatar
-                          v-if="appendAvatar"
-                          key="append-avatar"
-                          class="origam-badge__append"
-                          :image="appendAvatar"
-                  />
-                  <origam-icon
-                          v-if="hasAppendIcon"
-                          key="append-icon"
-                          class="origam-badge__append"
-                          :icon="appendIcon"
-                  />
-                </slot>
-              </template>
-            </slot>
-          </template>
-        </span>
+							<template v-if="hasAppend">
+								<span
+										key="append"
+										class="origam-badge__append"
+										@click="handleClickAppend"
+								>
+									<slot name="append">
+										<origam-avatar
+												v-if="appendAvatar"
+												key="append-avatar"
+												:image="appendAvatar"
+										/>
+										<origam-icon
+												v-if="appendIcon"
+												key="append-icon"
+												:icon="appendIcon"
+										/>
+									</slot>
+								</span>
+							</template>
+						</slot>
+					</template>
+				</span>
 			</origam-transition>
 		</div>
 	</component>
@@ -84,6 +92,7 @@
 
 	import {
 		useActive,
+		useAdjacent,
 		useHover,
 		useLocale,
 		useLocation,
@@ -95,6 +104,7 @@
 	} from '../../composables'
 
 	import type { IBadgeProps } from '../../interfaces'
+	import type { IBadgeEmits } from '../../interfaces/Badge/badge.interface'
 	import type { TTransitionProps } from "../../types"
 
 	import { vContrast } from '../../directives'
@@ -121,6 +131,8 @@
 		// being already mounted in the page.
 		transition: () => ({component: OrigamFade}) as unknown as TTransitionProps
 	})
+
+	defineEmits<IBadgeEmits>()
 
 	const {filterProps} = useProps<IBadgeProps>(props)
 	const {t} = useLocale()
@@ -155,6 +167,12 @@
 	const {typographyStyles} = useTypography(props, 'badge__badge')
 
 	const {icon, prependIcon, appendIcon, statusClasses} = useStatus(props)
+	const {
+		onClickPrepend: handleClickPrepend,
+		onClickAppend: handleClickAppend,
+		hasAppend,
+		hasPrepend
+	} = useAdjacent(props, prependIcon, appendIcon)
 	const {locationStyles} = useLocation(props, true, side => {
 		const base = props.floating
 				? (props.dot ? 2 : 4)
@@ -175,21 +193,6 @@
 	 ********************************************************/
 	const hasIcon = computed(() => {
 		return !!icon.value
-	})
-	const hasPrependIcon = computed(() => {
-		return !!prependIcon.value
-	})
-	const hasAppendIcon = computed(() => {
-		return !!appendIcon.value
-	})
-	// Media presence also covers `prependAvatar` / `appendAvatar` — those
-	// don't flow through `useStatus()` (status only ever swaps an icon,
-	// never an avatar), so they're read straight off `props` here.
-	const hasPrepend = computed(() => {
-		return hasPrependIcon.value || !!props.prependAvatar
-	})
-	const hasAppend = computed(() => {
-		return hasAppendIcon.value || !!props.appendAvatar
 	})
 
 	const content = computed(() => {
