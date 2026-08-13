@@ -43,6 +43,19 @@
  *   design (`CLAUDE.md`: "packages/ds/src/interfaces/Commons/*.interface.ts
  *   are the single source of truth for cross-cutting prop surfaces"). A
  *   file there is deliberately not tied to one component.
+ * - `src/types/Theme/**` — the theming ENGINE (`TTheme`, `TMode`,
+ *   `TModeResolved`, the semantic/token/installed-theme trees), not a
+ *   component. `OrigamThemeProvider` is a real (and separately named)
+ *   component, but these files are the public theming contract consumed
+ *   by `useTheme()`, the Nuxt module, and `origam.ts` itself — verified
+ *   zero of them are scoped to `OrigamThemeProvider` specifically. Unlike
+ *   `Mask/` (which turned out to have a single real owner, `TextField`,
+ *   once traced), `Theme/` genuinely has no single owning component —
+ *   it is a subsystem exactly like `Commons/`, just kept in its own
+ *   folder because `composables/Theme/` and `interfaces/Theme/` already
+ *   use that name. Do not merge `types/Theme/*.type.ts` into a fake
+ *   `theme-provider.type.ts` — that would misattribute the theming
+ *   engine to one component that only consumes a slice of it.
  * - `types/index.ts`, `enums/index.ts`, `types/tokens.type.ts` — barrels
  *   and the Style-Dictionary-generated token type sheet, not hand-authored
  *   component files.
@@ -98,7 +111,10 @@ function run () {
     const violations = new Map()
 
     for (const { dir, suffix } of TARGETS) {
-        const files = walk(dir, f => f.endsWith(suffix) && !f.includes(`${path.sep}Commons${path.sep}`))
+        const files = walk(dir, f =>
+            f.endsWith(suffix) &&
+            !f.includes(`${path.sep}Commons${path.sep}`) &&
+            !f.includes(`${path.sep}types${path.sep}Theme${path.sep}`))
         for (const file of files) {
             if (EXCLUDED_BASENAMES.has(path.basename(file))) continue
             const base = path.basename(file, suffix)
