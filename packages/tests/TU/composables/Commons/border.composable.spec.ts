@@ -199,3 +199,61 @@ describe('useBorder — per-side props (issue #215)', () => {
         expect(topColorDeclarations).toEqual(['border-top-color: currentColor'])
     })
 })
+
+describe('useBorder — logical-axis props borderBlock / borderInline (half-implemented-surface bug)', () => {
+    it('numeric borderBlock emits logical border-block-* declarations with solid/currentColor defaults', () => {
+        const { api } = mountWithProps({ borderBlock: 4 })
+        const styles = api().borderStyles.value
+        expect(styles).toContain('border-block-width: 4px')
+        expect(styles).toContain('border-block-style: solid')
+        expect(styles).toContain('border-block-color: currentColor')
+    })
+
+    it('boolean borderInline true falls back to the "thin" design-token width', () => {
+        const { api } = mountWithProps({ borderInline: true })
+        const styles = api().borderStyles.value
+        expect(styles).toContain('border-inline-width: var(--origam-border__width---thin)')
+        expect(styles).toContain('border-inline-style: solid')
+        expect(styles).toContain('border-inline-color: currentColor')
+    })
+
+    it('free-form string borderInline parses width/style/color for that axis only', () => {
+        const { api } = mountWithProps({ borderInline: '2px dashed red' })
+        const styles = api().borderStyles.value
+        expect(styles).toContain('border-inline-width: 2px')
+        expect(styles).toContain('border-inline-style: dashed')
+        expect(styles).toContain('border-inline-color: red')
+        expect(styles.some(d => d.startsWith('border-block-'))).toBe(false)
+    })
+
+    it('borderBlock and borderInline can be set independently', () => {
+        const { api } = mountWithProps({ borderBlock: 1, borderInline: 2 })
+        const styles = api().borderStyles.value
+        expect(styles).toContain('border-block-width: 1px')
+        expect(styles).toContain('border-inline-width: 2px')
+    })
+
+    it('unset borderBlock / borderInline emit nothing (regression guard: this is the bug the fix closes)', () => {
+        const { api } = mountWithProps({ border: 2 })
+        const styles = api().borderStyles.value
+        expect(styles.some(d => d.startsWith('border-block-') || d.startsWith('border-inline-'))).toBe(false)
+    })
+
+    it('global border shorthand + borderBlock → borderBlock wins for the block edges', () => {
+        const { api } = mountWithProps({ border: '1px solid black', borderBlock: '4px dashed red' })
+        const styles = api().borderStyles.value
+        expect(styles.filter(d => d.startsWith('border-block-width')).at(-1)).toBe('border-block-width: 4px')
+    })
+
+    it('borderBlock + physical borderTop → borderTop wins for the top edge specifically (specific beats axis)', () => {
+        const { api } = mountWithProps({ borderBlock: '4px dashed red', borderTop: '1px solid black' })
+        const styles = api().borderStyles.value
+        // Both are emitted (different CSS properties for the same edge);
+        // the physical one is pushed AFTER the axis one, so it wins the cascade.
+        expect(styles).toContain('border-block-width: 4px')
+        expect(styles).toContain('border-top-width: 1px')
+        const blockIndex = styles.indexOf('border-block-width: 4px')
+        const topIndex = styles.indexOf('border-top-width: 1px')
+        expect(topIndex).toBeGreaterThan(blockIndex)
+    })
+})

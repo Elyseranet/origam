@@ -1,5 +1,5 @@
 import { BORDER_REGEX } from '../../consts'
-import type { TColor, TDirectionBoth, TIntent } from '../../types'
+import type { TBorderLogicalAxis, TColor, TDirectionBoth, TIntent } from '../../types'
 
 import { isEmpty } from './commons.util'
 import { isCssColor, isIntent, tokenForegroundForIntent } from './color.util'
@@ -71,16 +71,22 @@ export function parseBorderPositionValue (value: string): { width: string, style
 
 /**
  * Format the width/style/color facets resolved by `parseBorderPositionValue`
- * into PHYSICAL per-side CSS declarations (`border-{position}-{type}`).
+ * into per-side CSS declarations (`border-{position}-{type}`).
  *
- * Deliberately physical (not logical, unlike `formatBorderStylesVar`'s
- * 2/4-value output for the global `border` shorthand) — `borderTop` /
- * `borderRight` / `borderBottom` / `borderLeft` are already named
- * physically on `IBorderProps`, so the emitted CSS property stays
+ * `position` accepts either a PHYSICAL side (`TDirectionBoth` —
+ * `borderTop` / `borderRight` / `borderBottom` / `borderLeft`, already
+ * named physically on `IBorderProps`, so the emitted CSS property stays
  * physical too: no logical/physical mismatch for the consumer to
- * mentally translate.
+ * mentally translate) or a LOGICAL axis (`TBorderLogicalAxis` —
+ * `borderBlock` / `borderInline`, which map onto the native CSS logical
+ * properties `border-block-*` / `border-inline-*` verbatim). Both share
+ * the exact same `border-{position}-{width,style,color}` template, so
+ * one function covers both without duplicating the formatting logic
+ * (unlike `formatBorderStylesVar`'s 2/4-value output for the global
+ * `border` shorthand, which distributes ACROSS axes from a single value
+ * list — a different concern).
  */
-export function formatBorderPositionStylesVar (position: TDirectionBoth, facets: { width?: string, style?: string, color?: string }): Array<string> {
+export function formatBorderPositionStylesVar (position: TDirectionBoth | TBorderLogicalAxis, facets: { width?: string, style?: string, color?: string }): Array<string> {
     const styles: Array<string> = []
 
     if (!isEmpty(facets.width)) styles.push(`border-${position}-width: ${facets.width}`)
