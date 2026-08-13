@@ -13,6 +13,38 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.14.1] - 2026-08-13
+
+Two fixes, both found while converting variants to props presets on the v3
+line. Neither is caused by that work — they predate it and affect this 2.x
+line, so they are shipped here rather than held back for a major.
+
+### Fixed
+
+- **A theme default could be silently ignored.** `usePassedProps` counted a key
+  present in `vnode.props` with the value `undefined` as "passed". Vue does not
+  drop a dynamically-bound key just because its current value is `undefined`, so
+  the most ordinary consumer pattern — `:bg-color="state.bgColor"` — reported
+  the prop as declared while it was empty, and the theme default was skipped.
+
+  The symptom was a component that appeared not to follow its theme, with
+  nothing logged and no error. Requiring a non-`undefined` value brings this in
+  line with Vue's own `withDefaults()`, where an `undefined` prop falls back to
+  its default.
+
+- **`color-mix()` was not recognised as a CSS colour.** `isCssColor` matched
+  `color(...)` (Color Level 4) but not `color-mix(...)`, which is a full
+  `<color>` function and one the design system uses itself. Values passed that
+  way fell through silently. Purely additive — no caller could have depended on
+  a `color-mix(...)` string being dropped. `useElevation` already listed
+  `color-mix` in its equivalent detector; this brings `isCssColor` in line.
+
+### Notes for consumers
+
+No API change, no visual change by default. If a component of yours looked like
+it was ignoring a theme default while you bound a possibly-`undefined` value to
+one of its props, that is the first fix above.
+
 ## [2.14.0] - 2026-08-07
 
 Reported from a real integration, not from a code review. Each item was
