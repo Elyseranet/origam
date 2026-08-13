@@ -104,7 +104,7 @@
 
 	import type { IColorPickerProps} from "../../interfaces"
 
-	import type { IColorPickerEmits } from '../../interfaces/ColorPicker/color-picker.interface'
+	import type { IColorPickerEmits, IColorPickerSlots } from '../../interfaces/ColorPicker/color-picker.interface'
 
 	import type {
 		TColorModes,
@@ -138,6 +138,8 @@
 	})
 
 	defineEmits<IColorPickerEmits>()
+
+	defineSlots<IColorPickerSlots>()
 
 	const slots = useSlots()
 	const {filterProps} = useProps<IColorPickerProps>(props)

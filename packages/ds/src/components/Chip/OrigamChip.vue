@@ -154,7 +154,7 @@
 	import { KEYBOARD_VALUES, MDI_ICONS, SIZES } from '../../enums'
 
 	import type { IChipProps } from '../../interfaces'
-	import type { IChipEmits } from '../../interfaces/Chip/chip.interface'
+	import type { IChipEmits, IChipSlots } from '../../interfaces/Chip/chip.interface'
 
 	import { computed, StyleValue, toRef, useAttrs, useSlots } from 'vue'
 
@@ -188,6 +188,8 @@
 	const props = useDefaults(_props)
 
 	const emits = defineEmits<IChipEmits>()
+
+	defineSlots<IChipSlots>()
 
 	const {filterProps} = useProps<IChipProps>(props)
 

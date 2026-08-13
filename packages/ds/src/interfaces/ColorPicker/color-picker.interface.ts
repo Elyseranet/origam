@@ -11,6 +11,7 @@ import type {
     IMarginProps,
     IPaddingProps,
     IPickerProps,
+    IPickerSlots,
     IRoundedProps
 } from "../../interfaces"
 
@@ -56,3 +57,7 @@ export interface IColorPickerMode {
 /** Emits fired by `<OrigamColorPicker>` — v-model on the resolved colour
  *  plus the active input mode. */
 export interface IColorPickerEmits extends ICommonsComponentEmits, IColorModeEmits {}
+
+/** Slot signatures for `<OrigamColorPicker>` — thin wrapper forwarding
+ *  the exact same slots as the underlying `<OrigamPicker>`. */
+export interface IColorPickerSlots extends IPickerSlots {}

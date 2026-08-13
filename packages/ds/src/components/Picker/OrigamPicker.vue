@@ -52,7 +52,7 @@
 
 	import { useBackgroundColor, useProps , useStyle} from "../../composables"
 
-	import type { IPickerProps } from "../../interfaces"
+	import type { IPickerProps, IPickerSlots } from "../../interfaces"
 
 	import type { TOrigamSheet } from "../../types"
 
@@ -66,6 +66,8 @@
 
 	const slots = useSlots()
 	const {filterProps} = useProps<IPickerProps>(props)
+
+	defineSlots<IPickerSlots>()
 
 	/*********************************************************
 	 * Background color & title guard

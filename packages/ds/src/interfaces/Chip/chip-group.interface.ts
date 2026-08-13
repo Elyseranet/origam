@@ -5,6 +5,7 @@ import type {
     ICommonsComponentEmits,
     ICommonsComponentProps,
     IGroupProps,
+    IGroupProvide,
     IMarginProps,
     IPaddingProps,
     IRoundedProps,
@@ -22,3 +23,9 @@ export interface IChipGroupProps extends ICommonsComponentProps, ITagProps, IGro
 
 /** Emits fired by `<OrigamChipGroup>` — v-model on the active chip set. */
 export interface IChipGroupEmits extends ICommonsComponentEmits {}
+
+/** Slot signatures for `<OrigamChipGroup>`. `selected` is bound
+ *  unwrapped (template auto-unref of `IGroupProvide.selected`). */
+export interface IChipGroupSlots {
+    default?: (data: { selected: Readonly<Array<number>> } & Pick<IGroupProvide, 'isSelected' | 'select' | 'next' | 'prev'>) => any
+}

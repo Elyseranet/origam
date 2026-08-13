@@ -56,7 +56,7 @@
 		IClipboardProps
 	} from '../../interfaces'
 
-	import type { IClipboardEmits } from '../../interfaces/Clipboard/clipboard.interface'
+	import type { IClipboardEmits, IClipboardSlots } from '../../interfaces/Clipboard/clipboard.interface'
 
 	/*********************************************************
 	 * Global
@@ -82,6 +82,8 @@
 	})
 
 	const emit = defineEmits<IClipboardEmits>()
+
+	defineSlots<IClipboardSlots>()
 
 	/*********************************************************
 	 * Color

@@ -8,3 +8,11 @@ export interface IPickerProps extends ISheetProps, IBgColorProps, IPickerTitlePr
     landscape?: boolean
     hideHeader?: boolean
 }
+
+/** Slot signatures for `<OrigamPicker>`. */
+export interface IPickerSlots {
+    title?: () => any
+    header?: () => any
+    default?: () => any
+    actions?: () => any
+}

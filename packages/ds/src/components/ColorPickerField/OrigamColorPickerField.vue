@@ -138,7 +138,7 @@
 
 	import { BLOCK, DENSITY, DIRECTION, TEXT_FIELD_TYPE } from "../../enums"
 
-	import type { IColorPickerFieldProps } from "../../interfaces"
+	import type { IColorPickerFieldProps, IColorPickerFieldSlots } from "../../interfaces"
 
 	import type { TColor, TOrigamColorPicker, TOrigamMenu, TOrigamTextField, TTransitionProps } from "../../types"
 
@@ -173,6 +173,8 @@
 	const props = useDefaults(_props)
 
 	const {filterProps} = useProps<IColorPickerFieldProps>(props)
+
+	defineSlots<IColorPickerFieldSlots>()
 
 	const {t} = useLocale()
 

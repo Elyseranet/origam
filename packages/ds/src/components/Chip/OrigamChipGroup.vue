@@ -28,7 +28,7 @@
 
 	import type { IChipGroupProps} from '../../interfaces'
 
-	import type { IChipGroupEmits } from '../../interfaces/Chip/chip-group.interface'
+	import type { IChipGroupEmits, IChipGroupSlots } from '../../interfaces/Chip/chip-group.interface'
 
 	import type { TOrigamSlideGroup } from "../../types"
 
@@ -50,6 +50,8 @@
 	})
 
 	defineEmits<IChipGroupEmits>()
+
+	defineSlots<IChipGroupSlots>()
 
 	const {filterProps} = useProps<IChipGroupProps>(props)
 
