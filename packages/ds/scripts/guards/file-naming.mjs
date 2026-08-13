@@ -83,6 +83,18 @@
  *   backs the `useCssSupport()` feature-detection composable, not a
  *   component. Same rationale as `Theme/`: a subsystem folder, not a prop
  *   surface, exempted rather than force-renamed into a fake owner.
+ * - `types/Media/quality-option.type.ts` + `consts/Media/media.const.ts`
+ *   (single-file exemptions, not a whole-directory one — `Media/` files
+ *   are otherwise in scope) — both consumed by more than one component
+ *   (`quality-option.type.ts`: `OrigamVideo` + `OrigamMediaController`;
+ *   `media.const.ts`: `useMediaPlayer`, `OrigamAudio` via
+ *   `consts/Video/video.const.ts` re-export, `OrigamVideo`), so neither
+ *   deliberately lives under any single component's folder. `Media` has
+ *   no single owning component (no `OrigamMedia.vue`) to match against,
+ *   unlike e.g. `Bracket`. Same rationale as the Commons exclusion
+ *   above, scoped to one file at a time instead of the whole directory
+ *   because the rest of `Media/` (`MediaController`, `MediaScrubber`,
+ *   `MediaVolumeControl`) genuinely does have real single owners.
  * - `types/index.ts`, `enums/index.ts`, `consts/index.ts`,
  *   `types/tokens.type.ts` — barrels and the Style-Dictionary-generated
  *   token type sheet, not hand-authored component files.
@@ -110,7 +122,7 @@ const TARGETS = [
     { dir: path.join(DS_ROOT, 'src/consts'), suffix: '.const.ts', exemptDirs: ['Commons', 'Theme', 'CssSupport'] }
 ]
 
-const EXCLUDED_BASENAMES = new Set(['index.ts', 'tokens.type.ts'])
+const EXCLUDED_BASENAMES = new Set(['index.ts', 'tokens.type.ts', 'quality-option.type.ts', 'media.const.ts'])
 
 function walk (dir, predicate) {
     const out = []

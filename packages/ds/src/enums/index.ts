@@ -2,9 +2,7 @@ export * from './Commons/mdi.enum'
 
 export * from './Img/img.enum'
 
-export * from './Audio/audio-variant.enum'
-export * from './Audio/audio-loop-mode.enum'
-export * from './Audio/cover-position.enum'
+export * from './Audio/audio.enum'
 
 export * from './Chart/chart.enum'
 export * from './Chart/chart-cartesian.enum'
@@ -49,6 +47,7 @@ export * from './Commons/calendar.enum'
 export * from './Commons/sort.enum'
 export * from './Commons/status.enum'
 export * from './Commons/touch.enum'
+export * from './Commons/controls.enum'
 
 export * from './List/list.enum'
 export * from './List/list-item.enum'
@@ -68,7 +67,7 @@ export * from './Blockquote/blockquote.enum'
 
 export * from './Bracket/bracket.enum'
 
-export * from './BottomNav/bottom-nav-position.enum'
+export * from './BottomNav/bottom-nav.enum'
 export * from './Bracket/bracket-match.enum'
 
 export * from './Card/card.enum'
@@ -92,6 +91,6 @@ export * from './SliderField/slider-field.enum'
 export * from './Tabs/tab.enum'
 
 
-export * from './EmptyState/empty-state-preset.enum'
+export * from './EmptyState/empty-state.enum'
 
 export * from './InlineEdit/inline-edit.enum'

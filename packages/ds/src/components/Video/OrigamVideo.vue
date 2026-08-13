@@ -244,6 +244,8 @@
 
 	import type { IVideoEmits } from '../../interfaces/Video/video.interface'
 
+	import type { TQualityOption } from '../../types'
+
 	/*********************************************************
 	 * Global
 	 *
@@ -577,10 +579,13 @@
 	 * derivation + the `<source>` swap because both depend on the
 	 * `props.src` shape which is video-specific.
 	 ********************************************************/
-	const qualityOptions = computed<Array<{ quality: string, label: string, src: string, type?: string }>>(() => {
+	// `src` is required here (unlike the generic `TQualityOption.src?`):
+	// every entry is derived from `IVideoSource.src`, which IS required —
+	// the `video.src = target.src` swap below relies on that guarantee.
+	const qualityOptions = computed<Array<TQualityOption & { src: string }>>(() => {
 		const sources = Array.isArray(props.src) ? props.src : []
 		const seen = new Set<string>()
-		const out: Array<{ quality: string, label: string, src: string, type?: string }> = []
+		const out: Array<TQualityOption & { src: string }> = []
 		for (const s of sources) {
 			if (!s?.quality || seen.has(s.quality)) continue
 			seen.add(s.quality)

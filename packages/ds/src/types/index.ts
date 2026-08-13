@@ -96,6 +96,7 @@ export * from './Commons/status.type'
 export * from './Commons/touch.type'
 export * from './Commons/v-model.type'
 export * from './Commons/validation.type'
+export * from './Commons/controls.type'
 
 export * from './ConfirmWrapper/confirm-wrapper.type'
 
@@ -136,9 +137,7 @@ export * from './Drawer/drawer.type'
 
 export * from './DefaultsProvider/defaults-provider.type'
 
-export * from './EmptyState/empty-state-preset.type'
-export * from './EmptyState/empty-state-size.type'
-export * from './EmptyState/empty-state-align.type'
+export * from './EmptyState/empty-state.type'
 
 export * from './ExpansionPanel/expansion-panel.type'
 export * from './ExpansionPanel/expansion-panel-content.type'
@@ -156,8 +155,8 @@ export * from './Grids/container.type'
 export * from './Grids/row.type'
 export * from './Grids/spacer.type'
 
-export * from './Grid/grid-flow.type'
-export * from './Grid/grid-align.type'
+export * from './Grid/grid.type'
+export * from './Grid/grid-item.type'
 
 export * from './Masonry/masonry.type'
 
@@ -321,13 +320,9 @@ export * from './QrCode/qr-code.type'
 
 export * from './Watermark/watermark.type'
 
-export * from './Video/video-controls.type'
-export * from './Video/video-track-kind.type'
+export * from './Video/video.type'
 
-export * from './Audio/audio-controls.type'
-export * from './Audio/audio-variant.type'
-export * from './Audio/audio-loop-mode.type'
-export * from './Audio/cover-position.type'
+export * from './Audio/audio.type'
 
 
 export * from './Calendar/calendar.type'

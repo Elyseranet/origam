@@ -1,15 +1,7 @@
 [
-    "Audio",
-    "EmptyState",
     "FileFieldDragNDropItem",
     "FileFieldListItem",
-    "Grid",
-    "GridItem",
-    "MediaController",
-    "MediaScrubber",
-    "MediaVolumeControl",
     "ParallaxLayer",
     "SnackbarItem",
-    "ThemeProvider",
-    "Video"
+    "ThemeProvider"
 ]
