@@ -187,7 +187,7 @@
 
 	import type { IPaginationProps} from "../../interfaces"
 
-	import type { IPaginationEmits } from '../../interfaces/Pagination/pagination.interface'
+	import type { IPaginationEmits, IPaginationSlots } from '../../interfaces/Pagination/pagination.interface'
 
 	import { createRange, int } from "../../utils"
 
@@ -224,6 +224,8 @@
 	})
 
 	const emits = defineEmits<IPaginationEmits>()
+
+	defineSlots<IPaginationSlots>()
 
 	const {filterProps} = useProps<IPaginationProps>(props)
 

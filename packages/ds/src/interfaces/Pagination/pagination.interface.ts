@@ -107,3 +107,21 @@ export interface IPaginationEmits extends ICommonsComponentEmits {
     (e: 'next', value: number): void
     (e: 'last', value: number): void
 }
+
+/**
+ * Slot signatures for `<OrigamPagination>`. `first` / `prev` / `next` /
+ * `last` receive the resolved `<OrigamBtn>` props bag spread as the
+ * scope (`v-bind="{...controls.prev}"`, …) — a loose `Record` since the
+ * bag mixes DS button props with internal wiring (`ref`, `onClick`,
+ * `ellipsis`). Per-page overrides (`item-{key}` / `item`) are unscoped —
+ * the template renders `<slot :name="…">` with no `v-bind`.
+ */
+export interface IPaginationSlots {
+    info?: (data: { start: number, end: number, total: number }) => any
+    first?: (props: Record<string, unknown>) => any
+    prev?: (props: Record<string, unknown>) => any
+    next?: (props: Record<string, unknown>) => any
+    last?: (props: Record<string, unknown>) => any
+    item?: () => any
+    [key: `item-${string}`]: (() => any) | undefined
+}
