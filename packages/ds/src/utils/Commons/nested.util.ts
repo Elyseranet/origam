@@ -1,3 +1,5 @@
+import { SELECTED } from '../../enums'
+
 import type { TStrategySelect } from '../../types'
 import { toRaw } from 'vue'
 
@@ -15,11 +17,11 @@ export function independentSelectStrategy (mandatory?: boolean): TStrategySelect
             // When mandatory and we're trying to deselect when id
             // is the only currently selected item then do nothing
             if (mandatory && !value) {
-                const on = Array.from(selected.entries()).reduce((arr, [key, value]) => value === 'on' ? [...arr, key] : arr, [] as Array<unknown>)
+                const on = Array.from(selected.entries()).reduce((arr, [key, value]) => value === SELECTED.ON ? [...arr, key] : arr, [] as Array<unknown>)
                 if (on.length === 1 && on[0] === id) return selected
             }
 
-            selected.set(id, value ? 'on' : 'off')
+            selected.set(id, value ? SELECTED.ON : SELECTED.OFF)
 
             return selected
         },
@@ -42,7 +44,7 @@ export function independentSelectStrategy (mandatory?: boolean): TStrategySelect
             const arr = []
 
             for (const [key, value] of v.entries()) {
-                if (value === 'on') arr.push(key)
+                if (value === SELECTED.ON) arr.push(key)
             }
 
             return arr
@@ -147,7 +149,7 @@ export function classicSelectStrategy (mandatory?: boolean): TStrategySelect {
             while (items.length) {
                 const item = items.shift()!
 
-                selected.set(item, value ? 'on' : 'off')
+                selected.set(item, value ? SELECTED.ON : SELECTED.OFF)
 
                 if (children.has(item)) {
                     items.push(...children.get(item)!)
@@ -158,10 +160,10 @@ export function classicSelectStrategy (mandatory?: boolean): TStrategySelect {
 
             while (parent) {
                 const childrenIds = children.get(parent)!
-                const everySelected = childrenIds.every(cid => selected.get(cid) === 'on')
-                const noneSelected = childrenIds.every(cid => !selected.has(cid) || selected.get(cid) === 'off')
+                const everySelected = childrenIds.every(cid => selected.get(cid) === SELECTED.ON)
+                const noneSelected = childrenIds.every(cid => !selected.has(cid) || selected.get(cid) === SELECTED.OFF)
 
-                selected.set(parent, everySelected ? 'on' : noneSelected ? 'off' : 'indeterminate')
+                selected.set(parent, everySelected ? SELECTED.ON : noneSelected ? SELECTED.OFF : SELECTED.INDETERMINATE)
 
                 parent = parents.get(parent)
             }
@@ -169,7 +171,7 @@ export function classicSelectStrategy (mandatory?: boolean): TStrategySelect {
             // If mandatory and planned deselect results in no selected
             // items then we can't do it, so return original state
             if (mandatory && !value) {
-                const on = Array.from(selected.entries()).reduce((arr, [key, value]) => value === 'on' ? [...arr, key] : arr, [] as Array<unknown>)
+                const on = Array.from(selected.entries()).reduce((arr, [key, value]) => value === SELECTED.ON ? [...arr, key] : arr, [] as Array<unknown>)
                 if (on.length === 0) return original
             }
 
@@ -194,7 +196,7 @@ export function classicSelectStrategy (mandatory?: boolean): TStrategySelect {
             const arr = []
 
             for (const [key, value] of v.entries()) {
-                if (value === 'on' && !children.has(key)) arr.push(key)
+                if (value === SELECTED.ON && !children.has(key)) arr.push(key)
             }
 
             return arr
