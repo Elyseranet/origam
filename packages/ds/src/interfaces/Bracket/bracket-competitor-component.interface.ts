@@ -79,3 +79,9 @@ export interface IBracketCompetitorProps extends ICommonsComponentProps, ITagPro
      */
     forfeit?: boolean
 }
+
+/** Emits fired by `<OrigamBracketCompetitor>` — click (mouse) / activation
+ *  (Enter / Space when `interactive`) on the row. */
+export interface IBracketCompetitorEmits {
+    (e: 'click', event: MouseEvent | KeyboardEvent): void
+}

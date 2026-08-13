@@ -70,7 +70,7 @@
 
 	import { PROGRESS_TYPE } from '../../enums'
 
-	import type { IDataTableHeadersProps, IDataTableHeadersSlotProps } from '../../interfaces'
+	import type { IDataTableHeadersProps, IDataTableHeadersSlotProps, IDataTableHeadersSlots } from '../../interfaces'
 	import type { TOrigamDataTableHeadersCell, TOrigamDataTableHeadersCellMobile } from "../../types"
 
 	import { computed, ref, StyleValue } from 'vue'
@@ -80,6 +80,8 @@
 	 ********************************************************/
 
 	const props = withDefaults(defineProps<IDataTableHeadersProps>(), {})
+
+	defineSlots<IDataTableHeadersSlots>()
 
 	const {filterProps} = useProps<IDataTableHeadersProps>(props)
 

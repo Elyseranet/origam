@@ -103,7 +103,7 @@
 
 	import type { IDataTableHeaderCellColumnSlot, IDataTableItemKey, IDataTableRowProps} from '../../interfaces'
 
-	import type { IDataTableRowEmits } from '../../interfaces/DataTable/row.interface'
+	import type { IDataTableRowEmits, IDataTableRowSlots } from '../../interfaces/DataTable/row.interface'
 
 	import { getCurrentInstance, getObjectValueByPath } from '../../utils'
 
@@ -126,6 +126,8 @@
 	const { t } = useLocale()
 
 	const emits = defineEmits<IDataTableRowEmits>()
+
+	defineSlots<IDataTableRowSlots>()
 
 	const {filterProps} = useProps<IDataTableRowProps>(props)
 
@@ -161,9 +163,9 @@
 			selectAll,
 			isSorted,
 			toggleSort,
-			sortBy: sortBy,
-			someSelected: someSelected,
-			allSelected: allSelected,
+			sortBy: sortBy.value,
+			someSelected: someSelected.value,
+			allSelected: allSelected.value,
 			getSortIcon: () => ''
 		}
 	}

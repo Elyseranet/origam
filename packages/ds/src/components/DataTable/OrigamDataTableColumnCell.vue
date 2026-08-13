@@ -22,7 +22,7 @@
 
 	import { ALIGN } from '../../enums'
 
-	import type { IDataTableColumnProps } from '../../interfaces'
+	import type { IDataTableColumnCellSlots, IDataTableColumnProps } from '../../interfaces'
 
 	import { convertToUnit } from '../../utils'
 
@@ -36,6 +36,8 @@
 		align: ALIGN.START,
 		tag: 'td'
 	})
+
+	defineSlots<IDataTableColumnCellSlots>()
 
 	const {filterProps} = useProps<IDataTableColumnProps>(props)
 

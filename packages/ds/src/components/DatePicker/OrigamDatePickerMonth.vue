@@ -101,7 +101,7 @@
 
 	import { CALENDAR_STRATEGY, DENSITY } from "../../enums"
 
-	import type { IDatePickerMonthProps, IDay } from "../../interfaces"
+	import type { IDatePickerMonthProps, IDatePickerMonthSlots, IDay } from "../../interfaces"
 
 	import type { TOrigamBtn, TTransitionProps } from "../../types"
 
@@ -122,6 +122,8 @@
 		transition: () => ({component: OrigamTranslatePicker}) as unknown as TTransitionProps,
 		reverseTransition: () => ({component: OrigamReverseTranslatePicker}) as unknown as TTransitionProps
 	})
+
+	defineSlots<IDatePickerMonthSlots>()
 
 	const {filterProps} = useProps<IDatePickerMonthProps>(props)
 

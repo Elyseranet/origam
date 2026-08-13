@@ -8,3 +8,10 @@ export interface IDataTableColumnProps extends ICommonsComponentProps, ITagProps
     lastFixed?: boolean
     nowrap?: boolean
 }
+
+/** Slot signature for `<OrigamDataTableColumnCell>` — a plain content cell,
+ *  no scope passed through (the header/row callers compute their own
+ *  scoped props before forwarding into this wrapper). */
+export interface IDataTableColumnCellSlots {
+    default?: () => any
+}

@@ -15,7 +15,7 @@ import type {
     IRoundedProps
 } from "../../interfaces"
 
-import type { TDateMode } from "../../types"
+import type { TDateMode, TTransitionProps } from "../../types"
 
 // IPickerProps (via ISheetProps → IActiveProps) declares `active?: boolean | IActiveState`.
 // IDatePickerControlsProps declares `active?: string | Array<string> | boolean | IActiveState`.
@@ -33,4 +33,23 @@ export interface IDatePickerEmits extends ICommonsComponentEmits {
     (e: 'update:month', value: number): void
     (e: 'update:year', value: number): void
     (e: 'update:viewMode', value: TDateMode): void
+}
+
+/** Scope forwarded on the `header` slot — the computed header text plus the
+ *  reverse-aware transition wrapper (`OrigamTranslatePicker` /
+ *  `OrigamReverseTranslatePicker`) driving its enter/leave direction. */
+export interface IDatePickerHeaderSlot {
+    header: string
+    transition: TTransitionProps
+}
+
+/** Slot signatures for `<OrigamDatePicker>`. `title` / `default` / `actions`
+ *  render with no scope (the default render swaps controls + month/months/
+ *  years panels internally); `header` forwards `<OrigamDatePickerHeader>`'s
+ *  computed text + transition so a custom render can reuse them. */
+export interface IDatePickerSlots {
+    title?: () => any
+    header?: (props: IDatePickerHeaderSlot) => any
+    default?: () => any
+    actions?: () => any
 }

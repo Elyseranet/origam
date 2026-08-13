@@ -1,6 +1,4 @@
 [
-    "packages/ds/src/components/Bracket/OrigamBracket.vue::type::TConnectorPath",
-    "packages/ds/src/components/Bracket/OrigamBracket.vue::type::TDoubleSection",
     "packages/ds/src/components/Calendar/OrigamCalendar.vue::interface::IDragMonthState",
     "packages/ds/src/components/Calendar/OrigamCalendar.vue::interface::IDragSlotState",
     "packages/ds/src/components/Chart/OrigamChartSankey.vue::type::TLinkSpec",
