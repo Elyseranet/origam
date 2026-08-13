@@ -110,6 +110,8 @@
 		IBracketMatchSlots
 	} from '../../interfaces'
 
+	import { BRACKET_MATCH_STATUS } from '../../enums'
+
 	const props = withDefaults(defineProps<IBracketMatchProps>(), {
 		tag: 'div',
 		isFinal: false,
@@ -179,8 +181,8 @@
 
 	// On a forfeited match the LOSER (the side that didn't advance) is the
 	// one that forfeited — flag it so the row can show it.
-	const isForfeitA = computed<boolean>(() => resolvedStatus.value === 'forfeited' && isLoserA.value)
-	const isForfeitB = computed<boolean>(() => resolvedStatus.value === 'forfeited' && isLoserB.value)
+	const isForfeitA = computed<boolean>(() => resolvedStatus.value === BRACKET_MATCH_STATUS.FORFEITED && isLoserA.value)
+	const isForfeitB = computed<boolean>(() => resolvedStatus.value === BRACKET_MATCH_STATUS.FORFEITED && isLoserB.value)
 
 	const advantageFor = (competitor: IBracketCompetitor | null): number | undefined => {
 		const advantage = props.match.advantage
@@ -238,7 +240,7 @@
 	const {hoverClasses, isHover, hoverState, onMouseenter, onMouseleave} = useHover(props)
 	const {activeClasses, isActive, activeState, onActive} = useActive(props)
 
-	const isLive = computed<boolean>(() => resolvedStatus.value === 'live')
+	const isLive = computed<boolean>(() => resolvedStatus.value === BRACKET_MATCH_STATUS.LIVE)
 	const isActiveOrLive = computed<boolean>(() => isActive.value || isLive.value)
 
 	// Effective surface props: hover / active (incl. live) state objects
