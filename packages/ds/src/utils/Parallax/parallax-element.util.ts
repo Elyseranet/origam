@@ -1,3 +1,5 @@
+import { PARALLAX_EVENT } from '../../enums'
+
 import type { IParallaxElementCicle, IParallaxElementMovement } from '../../interfaces'
 
 import type { TPoint } from '../../types'
@@ -13,7 +15,7 @@ export function elementMovement (action: IParallaxElementMovement) {
     const {originX = 50} = action
     let {originY = 50} = action
 
-    if (event === 'scroll') {
+    if (event === PARALLAX_EVENT.SCROLL) {
         originY = -originY / 2
     }
 
@@ -44,8 +46,8 @@ export function elementMovement (action: IParallaxElementMovement) {
 export function cyclicMovement (cycleData: IParallaxElementCicle): TPoint {
     const {referencePosition, shape, event, cycles, strength} = cycleData
 
-    const spanningRangeX = event === 'scroll' ? window.innerWidth : shape?.width
-    const spanningRangeY = event === 'scroll' ? window.innerHeight : shape?.height
+    const spanningRangeX = event === PARALLAX_EVENT.SCROLL ? window.innerWidth : shape?.width
+    const spanningRangeY = event === PARALLAX_EVENT.SCROLL ? window.innerHeight : shape?.height
 
     const radialPositionX = ((referencePosition.x - shape?.left) * (Math.PI * 2)) / spanningRangeX
     const radialPositionY = ((referencePosition.y - shape?.top) * (Math.PI * 2)) / spanningRangeY

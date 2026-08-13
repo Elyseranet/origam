@@ -6,7 +6,7 @@ import {
     ORIGAM_NESTED_KEY,
     SINGLE_OPEN_STRATEGY
 } from '../../consts'
-import { OPEN_STRATEGY, SELECT_STRATEGY } from '../../enums'
+import { OPEN_STRATEGY, SELECTED, SELECT_STRATEGY } from '../../enums'
 
 import type { INestedProps } from '../../interfaces'
 
@@ -99,7 +99,7 @@ export const useNested = (props: INestedProps) => {
 
                 if (selected.value) {
                     for (const [key, value] of selected.value.entries()) {
-                        if (value === 'on') arr.push(key)
+                        if (value === SELECTED.ON) arr.push(key)
                     }
                 }
 
@@ -222,8 +222,8 @@ export function useNestedItem (id: Ref<unknown>, isGroup: boolean) {
                 parent.root.select(computedId.value, selected, e)
             }
         },
-        isSelected: computed(() => Boolean(parent?.root?.selected.value.get(toRaw(computedId.value)) === 'on')),
-        isIndeterminate: computed(() => Boolean(parent?.root?.selected.value.get(computedId.value) === 'indeterminate')),
+        isSelected: computed(() => Boolean(parent?.root?.selected.value.get(toRaw(computedId.value)) === SELECTED.ON)),
+        isIndeterminate: computed(() => Boolean(parent?.root?.selected.value.get(computedId.value) === SELECTED.INDETERMINATE)),
         isLeaf: computed(() => Boolean(!parent?.root?.children.value.get(computedId.value))),
         isGroupActivator: parent?.isGroupActivator
     }

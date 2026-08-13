@@ -250,6 +250,7 @@
 	import { intentBgExpr, isIntent } from '../../utils/Commons/color.util'
 
 	import type { TIntent } from '../../types'
+	import { DIRECTION } from '../../enums'
 
 	/*********************************************************
 	 * Global
@@ -316,7 +317,7 @@
 	const TARGET_TICK_FRACTION = 0.7
 	const LABEL_GAP = 6
 
-	const isHorizontal = computed(() => props.orientation !== 'vertical')
+	const isHorizontal = computed(() => props.orientation !== DIRECTION.VERTICAL)
 
 	const PADDING = computed(() => isHorizontal.value
 		? { top: 12, right: 24, bottom: 32, left: 120 }

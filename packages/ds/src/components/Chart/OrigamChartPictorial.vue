@@ -201,7 +201,7 @@
 				</g>
 
 				<g
-						v-if="mode === 'stack' && showAxis && direction === 'vertical'"
+						v-if="mode === 'stack' && showAxis && direction === DIRECTION.VERTICAL"
 						class="origam-chart-pictorial__axis"
 						data-cy="origam-chart-pictorial-axis"
 				>
@@ -219,7 +219,7 @@
 				</g>
 
 				<g
-						v-if="mode === 'stack' && showAxis && direction === 'horizontal'"
+						v-if="mode === 'stack' && showAxis && direction === DIRECTION.HORIZONTAL"
 						class="origam-chart-pictorial__axis"
 						data-cy="origam-chart-pictorial-axis"
 				>
@@ -327,7 +327,7 @@
 	import { intentBgExpr, isIntent } from '../../utils/Commons/color.util'
 
 	import type { TIntent } from '../../types'
-	import { CHART_PICTORIAL_MODE } from '../../enums'
+	import { CHART_PICTORIAL_MODE, DIRECTION } from '../../enums'
 
 	/*********************************************************
 	 * Global
@@ -494,27 +494,27 @@
 	const valueLabelH = computed<number>(() => (props.showLabel ? VALUE_LABEL_HEIGHT : 0))
 
 	const plotHeight = computed<number>(() => {
-		if (props.direction === 'horizontal') {
+		if (props.direction === DIRECTION.HORIZONTAL) {
 			return SVG_HEIGHT - axisH.value
 		}
 		return SVG_HEIGHT - axisH.value - valueLabelH.value
 	})
 
 	const plotWidth = computed<number>(() => {
-		if (props.direction === 'horizontal') {
+		if (props.direction === DIRECTION.HORIZONTAL) {
 			return SVG_WIDTH - axisH.value - valueLabelH.value
 		}
 		return SVG_WIDTH
 	})
 
 	const PLOT_Y = computed<number>(() => (props.showLabel ? VALUE_LABEL_HEIGHT : 0))
-	const PLOT_X = computed<number>(() => (props.direction === 'horizontal' && props.showAxis ? AXIS_LABEL_HEIGHT + AXIS_PADDING : 0))
+	const PLOT_X = computed<number>(() => (props.direction === DIRECTION.HORIZONTAL && props.showAxis ? AXIS_LABEL_HEIGHT + AXIS_PADDING : 0))
 
 	const columnWidth = computed<number>(() => {
 		const totalCols = categoryCount.value * seriesCount.value
 		if (totalCols <= 0) return 0
 		const totalGaps = (totalCols - 1) * SERIES_GAP
-		if (props.direction === 'vertical') {
+		if (props.direction === DIRECTION.VERTICAL) {
 			return Math.max(4, (plotWidth.value - totalGaps) / totalCols)
 		}
 		const totalGapsH = (categoryCount.value - 1) * SERIES_GAP
@@ -524,7 +524,7 @@
 	const iconSize = computed<number>(() => {
 		const s = slotsPerColumn.value
 		if (s <= 0) return 0
-		if (props.direction === 'vertical') {
+		if (props.direction === DIRECTION.VERTICAL) {
 			const slotH = plotHeight.value / s - ICON_GAP
 			const colBound = columnWidth.value - ICON_GAP
 			return Math.max(MIN_ICON_SIZE, Math.min(slotH, colBound))
@@ -561,7 +561,7 @@
 				let x: number
 				let y: number
 
-				if (props.direction === 'vertical') {
+				if (props.direction === DIRECTION.VERTICAL) {
 					x = PLOT_X.value + colIdx * (colW + SERIES_GAP)
 					y = PLOT_Y.value
 				} else {
@@ -712,7 +712,7 @@
 	 * Horizontal: icons stacked left-to-right (slot 0 = left)
 	 ********************************************************/
 	const iconX = (col: IChartPictorialColumn, slotIdx: number): number => {
-		if (props.direction === 'horizontal') {
+		if (props.direction === DIRECTION.HORIZONTAL) {
 			return slotIdx * (col.iconSize + ICON_GAP)
 		}
 		const colW = columnWidth.value
@@ -720,7 +720,7 @@
 	}
 
 	const iconY = (col: IChartPictorialColumn, slotIdx: number): number => {
-		if (props.direction === 'horizontal') {
+		if (props.direction === DIRECTION.HORIZONTAL) {
 			const colW = columnWidth.value
 			return (colW - col.iconSize) / 2
 		}
@@ -733,7 +733,7 @@
 	 * Label position helpers
 	 ********************************************************/
 	const labelX = (col: IChartPictorialColumn): number => {
-		if (props.direction === 'horizontal') {
+		if (props.direction === DIRECTION.HORIZONTAL) {
 			const usedW = slotsPerColumn.value * (col.iconSize + ICON_GAP)
 			return usedW + VALUE_LABEL_HEIGHT / 2
 		}
@@ -741,7 +741,7 @@
 	}
 
 	const labelY = (_col: IChartPictorialColumn): number => {
-		if (props.direction === 'horizontal') {
+		if (props.direction === DIRECTION.HORIZONTAL) {
 			return columnWidth.value / 2
 		}
 		return -VALUE_LABEL_HEIGHT / 2
