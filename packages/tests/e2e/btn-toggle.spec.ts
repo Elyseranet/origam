@@ -1,5 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
+import { toggleHstCheckbox } from './_support/histoire-controls'
+
 /**
  * Lot C1 — OrigamBtnToggle runtime probes.
  *
@@ -13,6 +15,22 @@ import { expect, test, type Page } from '@playwright/test'
  * Note the selectedClass default is `origam-btn-group-item--active`
  * (set by OrigamBtnToggle's `useGroup` registration) — that's the
  * source of truth for "is this item selected".
+ *
+ * The story restructuring (canonical Design/State/Functional/Events/Slots
+ * layout, see root CLAUDE.md) removed every scenario-specific fixture
+ * this spec targeted (bt-default-*, bt-multiple-*, bt-mandatory-*,
+ * bt-disabled-*, each with its own crafted example data) — replaced by
+ * ONE shared "Functional" Variant with generic buttons (One/Two/Three,
+ * values 1/2/3, `functionalValue` starting at `1`) and Multiple /
+ * Mandatory / Disabled checkboxes (see OrigamBtnToggle.story.vue). Every
+ * test below drives the relevant checkbox on that one Variant instead of
+ * navigating to a dedicated fixture, and reads the generic
+ * `.story-status strong` status text instead of a per-fixture data-cy.
+ * Verified empirically against the running story before writing the
+ * assertions: Multiple=true + click "Two" → `[1,2]`; click "One" again →
+ * `[2]` (removes); Mandatory=true + re-click the active item → stays `1`
+ * (no deselect); Disabled=true + click "Two" (force) → stays `1`
+ * (unchanged).
  */
 
 const sandboxOf = (page: Page) =>
@@ -43,33 +61,35 @@ test.describe('OrigamBtnToggle — single selection', () => {
         // Fix needed in packages/ds/src/components/Btn/OrigamBtn.vue — change the guard
         // so the group path is reached when no explicit `active` prop is passed.
         test.fixme(true, 'DS BUG: origam-btn--active never applied — useActive returns false (not undefined) for unset prop, masking group.isSelected')
-        await openVariant(page, STORY, 'Prop — modelValue (single selection)')
+        // Dedicated fixture folded into "Functional" — `functionalValue`
+        // starts at `1` ("One" selected), see OrigamBtnToggle.story.vue.
+        await openVariant(page, STORY, 'Functional')
         const sandbox = sandboxOf(page)
 
         const toggle = sandbox.locator('.origam-btn-toggle').first()
         await expect(toggle).toBeVisible({ timeout: 8000 })
 
-        // story default is `center`
+        // story default is `1` ("One")
         const active = await sandbox.locator(`.${SELECTED_CLASS}`).count()
         expect(active).toBe(1)
 
         const activeText = await sandbox.locator(`.${SELECTED_CLASS}`).first().locator('.origam-btn__content').textContent()
-        expect((activeText || '').trim()).toBe('Center')
+        expect((activeText || '').trim()).toBe('One')
     })
 
     test('clicking another button moves the selection there', async ({ page }) => {
         // DS BUG: same root cause as above — origam-btn--active never applied.
         // v-model updates correctly (status text changes) but visual active class is missing.
         test.fixme(true, 'DS BUG: origam-btn--active never applied — useActive returns false (not undefined) for unset prop, masking group.isSelected')
-        await openVariant(page, STORY, 'Prop — modelValue (single selection)')
+        await openVariant(page, STORY, 'Functional')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-btn-toggle').first()).toBeVisible({ timeout: 8000 })
 
-        await sandbox.locator('[data-cy="bt-default-right"]').click()
+        await sandbox.locator('.origam-btn', { hasText: 'Two' }).click()
         await page.waitForTimeout(200)
 
-        const status = await sandbox.locator('[data-cy="bt-default-status"]').textContent()
-        expect(status).toContain('right')
+        const status = await sandbox.locator('.story-status strong').textContent()
+        expect(status).toContain('2')
 
         const active = await sandbox.locator(`.${SELECTED_CLASS}`).count()
         expect(active).toBe(1)
@@ -80,24 +100,29 @@ test.describe('OrigamBtnToggle — single selection', () => {
 
 test.describe('OrigamBtnToggle — multiple selection', () => {
     test('clicking a second item appends to the v-model array', async ({ page }) => {
-        // DS BUG: v-model accumulation works correctly (status text shows bold + italic),
+        // DS BUG: v-model accumulation works correctly (status text shows [1,2]),
         // but the visual activeCount is 0 because origam-btn--active is never applied.
         // Same root cause: useActive returns false (not undefined) for unset prop.
         test.fixme(true, 'DS BUG: origam-btn--active never applied — useActive returns false (not undefined) for unset prop, masking group.isSelected')
-        await openVariant(page, STORY, 'Prop — multiple')
+        // Dedicated fixture folded into "Functional" — Multiple checkbox
+        // defaults to unchecked (false), flip it on. Verified empirically:
+        // functionalValue starts at 1; toggling Multiple then clicking
+        // "Two" produces status `[1,2]`.
+        await openVariant(page, STORY, 'Functional')
+        await toggleHstCheckbox(page, 'Multiple')
+        await page.waitForTimeout(400)
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-btn-toggle').first()).toBeVisible({ timeout: 8000 })
 
-        // story default is ['bold']
-        const status0 = await sandbox.locator('[data-cy="bt-multiple-status"]').textContent()
-        expect(status0).toContain('bold')
+        const status0 = await sandbox.locator('.story-status strong').textContent()
+        expect(status0).toContain('1')
 
-        await sandbox.locator('[data-cy="bt-multiple-italic"]').click()
+        await sandbox.locator('.origam-btn', { hasText: 'Two' }).click()
         await page.waitForTimeout(200)
 
-        const status1 = await sandbox.locator('[data-cy="bt-multiple-status"]').textContent()
-        expect(status1).toContain('bold')
-        expect(status1).toContain('italic')
+        const status1 = await sandbox.locator('.story-status strong').textContent()
+        expect(status1).toContain('1')
+        expect(status1).toContain('2')
 
         // Both should now be visually active.
         const activeCount = await sandbox.locator(`.${SELECTED_CLASS}`).count()
@@ -105,16 +130,24 @@ test.describe('OrigamBtnToggle — multiple selection', () => {
     })
 
     test('clicking a selected item removes it from the array', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — multiple')
+        // Dedicated fixture folded into "Functional" — same Multiple
+        // toggle as above. Verified empirically: with Multiple=true and
+        // the initial `1` ("One") selection, a single click on the
+        // already-selected "One" produces status `[]` (JSON.stringify of
+        // the now-empty array — the status text is a raw
+        // `JSON.stringify(functionalValue)`, no "(empty)" fallback here).
+        await openVariant(page, STORY, 'Functional')
+        await toggleHstCheckbox(page, 'Multiple')
+        await page.waitForTimeout(400)
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-btn-toggle').first()).toBeVisible({ timeout: 8000 })
 
-        // initially `bold` is selected. Click it again.
-        await sandbox.locator('[data-cy="bt-multiple-bold"]').click()
+        // initially `1` ("One") is selected. Click it again.
+        await sandbox.locator('.origam-btn', { hasText: 'One' }).click()
         await page.waitForTimeout(200)
 
-        const status = await sandbox.locator('[data-cy="bt-multiple-status"]').textContent()
-        expect(status).toContain('(empty)')
+        const status = await sandbox.locator('.story-status strong').textContent()
+        expect(status).toContain('[]')
         const activeCount = await sandbox.locator(`.${SELECTED_CLASS}`).count()
         expect(activeCount).toBe(0)
     })
@@ -124,20 +157,26 @@ test.describe('OrigamBtnToggle — multiple selection', () => {
 
 test.describe('OrigamBtnToggle — mandatory', () => {
     test('clicking the active item does NOT deselect it', async ({ page }) => {
-        // DS BUG: mandatory logic works correctly (v-model stays 'default' after re-click),
+        // DS BUG: mandatory logic works correctly (v-model stays `1` after re-click),
         // but activeCount is 0 because origam-btn--active is never applied.
         // Same root cause: useActive returns false (not undefined) for unset prop.
         test.fixme(true, 'DS BUG: origam-btn--active never applied — useActive returns false (not undefined) for unset prop, masking group.isSelected')
-        await openVariant(page, STORY, 'Prop — mandatory')
+        // Dedicated fixture folded into "Functional" — Mandatory checkbox
+        // defaults to unchecked (false), flip it on. Verified empirically:
+        // functionalValue starts at 1; toggling Mandatory then re-clicking
+        // the active "One" leaves status at `1` (no deselect).
+        await openVariant(page, STORY, 'Functional')
+        await toggleHstCheckbox(page, 'Mandatory')
+        await page.waitForTimeout(400)
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-btn-toggle').first()).toBeVisible({ timeout: 8000 })
 
-        // story default = `default`
-        await sandbox.locator('[data-cy="bt-mandatory-default"]').click()
+        // story default = `1` ("One")
+        await sandbox.locator('.origam-btn', { hasText: 'One' }).click()
         await page.waitForTimeout(200)
 
-        const status = await sandbox.locator('[data-cy="bt-mandatory-status"]').textContent()
-        expect(status).toContain('default')
+        const status = await sandbox.locator('.story-status strong').textContent()
+        expect(status).toContain('1')
         const activeCount = await sandbox.locator(`.${SELECTED_CLASS}`).count()
         expect(activeCount).toBe(1)
     })
@@ -147,18 +186,24 @@ test.describe('OrigamBtnToggle — mandatory', () => {
 
 test.describe('OrigamBtnToggle — disabled', () => {
     test('clicks on disabled buttons do not change the selection', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — disabled')
+        // Dedicated fixture folded into "Functional" — Disabled checkbox
+        // defaults to unchecked (false), flip it on. Verified empirically:
+        // functionalValue starts at 1; toggling Disabled then force-clicking
+        // "Two" leaves status unchanged at `1`.
+        await openVariant(page, STORY, 'Functional')
+        await toggleHstCheckbox(page, 'Disabled')
+        await page.waitForTimeout(400)
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-btn-toggle').first()).toBeVisible({ timeout: 8000 })
 
-        const status0 = await sandbox.locator('[data-cy="bt-disabled-status"]').textContent()
+        const status0 = await sandbox.locator('.story-status strong').textContent()
 
         // Force the click — disabled buttons normally swallow pointer
         // events so without `force` Playwright would refuse.
-        await sandbox.locator('[data-cy="bt-disabled-a"]').click({ force: true })
+        await sandbox.locator('.origam-btn', { hasText: 'Two' }).click({ force: true })
         await page.waitForTimeout(200)
 
-        const status1 = await sandbox.locator('[data-cy="bt-disabled-status"]').textContent()
+        const status1 = await sandbox.locator('.story-status strong').textContent()
         expect(status1).toBe(status0)
     })
 })
@@ -167,7 +212,12 @@ test.describe('OrigamBtnToggle — disabled', () => {
 
 test.describe('OrigamBtnToggle — forwards density to the underlying group', () => {
     test('the toggle renders a btn-group with the selected density modifier', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — density')
+        // Dedicated fixture folded into "Design" — its default init-state
+        // leaves density unset, and the composable's baked-in 'default'
+        // rung applies regardless (same pattern already confirmed on
+        // btn-group.spec.ts / btn-propagation.spec.ts), so no control
+        // interaction is needed.
+        await openVariant(page, STORY, 'Design')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-btn-toggle').first()).toBeVisible({ timeout: 8000 })
 
