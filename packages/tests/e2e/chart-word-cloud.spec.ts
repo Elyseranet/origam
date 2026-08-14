@@ -1,5 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
+import { eventLogItems, fillHstNumber, openEventsTab, selectHstOption } from './_support/histoire-controls'
+
 /**
  * OrigamChartWordCloud — Playwright spec.
  *
@@ -7,16 +9,24 @@ import { expect, test, type Page } from '@playwright/test'
  *  - N `<text>` word elements render for N valid data points.
  *  - Default variant carries role="figure", role="img", title, desc.
  *  - Each word has role="button", tabindex="0", non-empty aria-label.
- *  - Clicking a word fires point-click (checked via story-log).
+ *  - Clicking a word fires point-click (checked via Histoire's Events tab).
  *  - Rotation variants all render the correct word count.
  *  - Empty state slot renders when series is empty.
  *
  * NOTE: The word-placement heuristic uses `text.length * fontSize * 0.6`
  * for AABB estimation. Wide-character words can visually overlap.
  * This is documented as an accepted v1 limitation.
+ *
+ * Story realignment (canonical Design/Functional/Events/Slots structure):
+ * the old side-by-side "Prop — rotation / minFontSize / maxFontSize"
+ * Variants were folded into the "Design" Variant's Rotation HstSelect /
+ * Min-Max Font Size HstNumber controls, driven in sequence. Events/Slots
+ * Variants keep their story-provided `data-cy="word-cloud-{…}-chart"`
+ * fall-through, unlike most other Chart family stories.
  */
 
 const WORD_CLOUD_STORY = '/stories/story/components-stories-chart-origamchartwordcloud-story-vue'
+const ROOT = '[data-cy="origam-chart-word-cloud"]'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')
@@ -32,7 +42,7 @@ test.describe('OrigamChartWordCloud — Default', () => {
     test('renders figure root with role="figure"', async ({ page }) => {
         await openVariant(page, WORD_CLOUD_STORY, 'Default')
         const sandbox = sandboxOf(page)
-        const host = sandbox.locator('[data-cy="word-cloud-playground-chart"]').first()
+        const host = sandbox.locator('[data-cy="origam-chart-word-cloud"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
         await expect(host).toHaveAttribute('role', 'figure')
     })
@@ -40,7 +50,7 @@ test.describe('OrigamChartWordCloud — Default', () => {
     test('SVG carries role=img, title and desc', async ({ page }) => {
         await openVariant(page, WORD_CLOUD_STORY, 'Default')
         const sandbox = sandboxOf(page)
-        const svg = sandbox.locator('[data-cy="word-cloud-playground-chart"] svg').first()
+        const svg = sandbox.locator('[data-cy="origam-chart-word-cloud"] svg').first()
         await expect(svg).toBeVisible()
         await expect(svg).toHaveAttribute('role', 'img')
         await expect(svg.locator('title')).toHaveCount(1)
@@ -52,14 +62,14 @@ test.describe('OrigamChartWordCloud — Default', () => {
         const sandbox = sandboxOf(page)
         await page.screenshot({ path: '/tmp/chart-word-cloud-default.png', fullPage: false })
 
-        const words = sandbox.locator('[data-cy="word-cloud-playground-chart"] [data-cy^="origam-chart-word-cloud-word-"]')
+        const words = sandbox.locator('[data-cy="origam-chart-word-cloud"] [data-cy^="origam-chart-word-cloud-word-"]')
         await expect(words).toHaveCount(20, { timeout: 8000 })
     })
 
     test('each word element has non-empty text content', async ({ page }) => {
         await openVariant(page, WORD_CLOUD_STORY, 'Default')
         const sandbox = sandboxOf(page)
-        const words = sandbox.locator('[data-cy="word-cloud-playground-chart"] [data-cy^="origam-chart-word-cloud-word-"]')
+        const words = sandbox.locator('[data-cy="origam-chart-word-cloud"] [data-cy^="origam-chart-word-cloud-word-"]')
         await expect(words.first()).toBeVisible({ timeout: 8000 })
         const count = await words.count()
         expect(count).toBeGreaterThan(0)
@@ -72,7 +82,7 @@ test.describe('OrigamChartWordCloud — accessibility', () => {
     test('each word has role="button" and a non-empty aria-label', async ({ page }) => {
         await openVariant(page, WORD_CLOUD_STORY, 'Default')
         const sandbox = sandboxOf(page)
-        const words = sandbox.locator('[data-cy="word-cloud-playground-chart"] [data-cy^="origam-chart-word-cloud-word-"]')
+        const words = sandbox.locator('[data-cy="origam-chart-word-cloud"] [data-cy^="origam-chart-word-cloud-word-"]')
         await expect(words.first()).toBeVisible({ timeout: 8000 })
         const count = await words.count()
         expect(count).toBeGreaterThan(0)
@@ -86,7 +96,7 @@ test.describe('OrigamChartWordCloud — accessibility', () => {
     test('each word is keyboard-focusable (tabindex=0)', async ({ page }) => {
         await openVariant(page, WORD_CLOUD_STORY, 'Default')
         const sandbox = sandboxOf(page)
-        const words = sandbox.locator('[data-cy="word-cloud-playground-chart"] [data-cy^="origam-chart-word-cloud-word-"]')
+        const words = sandbox.locator('[data-cy="origam-chart-word-cloud"] [data-cy^="origam-chart-word-cloud-word-"]')
         await expect(words.first()).toBeVisible({ timeout: 8000 })
         const count = await words.count()
         for (let i = 0; i < Math.min(count, 5); i++) {
@@ -96,59 +106,59 @@ test.describe('OrigamChartWordCloud — accessibility', () => {
 })
 
 test.describe('OrigamChartWordCloud — emit point-click', () => {
-    test('clicking a word appends an entry to the story log', async ({ page }) => {
-        await openVariant(page, WORD_CLOUD_STORY, 'Emit — point-click on word (live counter)')
+    test('clicking a word appends an entry to the Events tab', async ({ page }) => {
+        await openVariant(page, WORD_CLOUD_STORY, 'Events - point-click')
         const sandbox = sandboxOf(page)
 
-        const words = sandbox.locator('[data-cy="word-cloud-emit-chart"] [data-cy^="origam-chart-word-cloud-word-"]')
+        const words = sandbox.locator('[data-cy="word-cloud-emit-point-click-chart"] [data-cy^="origam-chart-word-cloud-word-"]')
         await expect(words.first()).toBeVisible({ timeout: 8000 })
-
-        const logEl = sandbox.locator('[data-cy="word-cloud-emit-log"]')
-        const beforeText = await logEl.textContent()
 
         await words.first().click()
         await page.waitForTimeout(300)
 
-        const afterText = await logEl.textContent()
-        expect(afterText).not.toBe(beforeText)
-        expect(afterText).toContain('point-click')
+        await openEventsTab(page)
+        await expect(eventLogItems(page).first()).toContainText('point-click', { timeout: 4000 })
     })
 })
 
 test.describe('OrigamChartWordCloud — rotation variants', () => {
     test('rotation=none renders correct word count', async ({ page }) => {
-        await openVariant(page, WORD_CLOUD_STORY, 'Prop — rotation (none / random / orthogonal)')
+        await openVariant(page, WORD_CLOUD_STORY, 'Design')
         const sandbox = sandboxOf(page)
+        await selectHstOption(page, 'Rotation', 'none')
         await page.screenshot({ path: '/tmp/chart-word-cloud-rotation.png', fullPage: false })
 
-        const words = sandbox.locator('[data-cy="word-cloud-rotation-none"] [data-cy^="origam-chart-word-cloud-word-"]')
+        const words = sandbox.locator(`${ ROOT } [data-cy^="origam-chart-word-cloud-word-"]`)
         await expect(words.first()).toBeVisible({ timeout: 8000 })
         const count = await words.count()
         expect(count).toBeGreaterThan(0)
     })
 
     test('rotation=random renders correct word count', async ({ page }) => {
-        await openVariant(page, WORD_CLOUD_STORY, 'Prop — rotation (none / random / orthogonal)')
+        await openVariant(page, WORD_CLOUD_STORY, 'Design')
         const sandbox = sandboxOf(page)
-        const words = sandbox.locator('[data-cy="word-cloud-rotation-random"] [data-cy^="origam-chart-word-cloud-word-"]')
+        await selectHstOption(page, 'Rotation', 'random')
+        const words = sandbox.locator(`${ ROOT } [data-cy^="origam-chart-word-cloud-word-"]`)
         await expect(words.first()).toBeVisible({ timeout: 8000 })
         const count = await words.count()
         expect(count).toBeGreaterThan(0)
     })
 
     test('rotation=orthogonal renders correct word count', async ({ page }) => {
-        await openVariant(page, WORD_CLOUD_STORY, 'Prop — rotation (none / random / orthogonal)')
+        await openVariant(page, WORD_CLOUD_STORY, 'Design')
         const sandbox = sandboxOf(page)
-        const words = sandbox.locator('[data-cy="word-cloud-rotation-orthogonal"] [data-cy^="origam-chart-word-cloud-word-"]')
+        await selectHstOption(page, 'Rotation', 'orthogonal')
+        const words = sandbox.locator(`${ ROOT } [data-cy^="origam-chart-word-cloud-word-"]`)
         await expect(words.first()).toBeVisible({ timeout: 8000 })
         const count = await words.count()
         expect(count).toBeGreaterThan(0)
     })
 
     test('rotation=none: all words have transform with rotate(0)', async ({ page }) => {
-        await openVariant(page, WORD_CLOUD_STORY, 'Prop — rotation (none / random / orthogonal)')
+        await openVariant(page, WORD_CLOUD_STORY, 'Design')
         const sandbox = sandboxOf(page)
-        const words = sandbox.locator('[data-cy="word-cloud-rotation-none"] [data-cy^="origam-chart-word-cloud-word-"]')
+        await selectHstOption(page, 'Rotation', 'none')
+        const words = sandbox.locator(`${ ROOT } [data-cy^="origam-chart-word-cloud-word-"]`)
         await expect(words.first()).toBeVisible({ timeout: 8000 })
         const count = await words.count()
         expect(count).toBeGreaterThan(0)
@@ -161,9 +171,10 @@ test.describe('OrigamChartWordCloud — rotation variants', () => {
     })
 
     test('rotation=orthogonal: odd-index words have rotate(90)', async ({ page }) => {
-        await openVariant(page, WORD_CLOUD_STORY, 'Prop — rotation (none / random / orthogonal)')
+        await openVariant(page, WORD_CLOUD_STORY, 'Design')
         const sandbox = sandboxOf(page)
-        const words = sandbox.locator('[data-cy="word-cloud-rotation-orthogonal"] [data-cy^="origam-chart-word-cloud-word-"]')
+        await selectHstOption(page, 'Rotation', 'orthogonal')
+        const words = sandbox.locator(`${ ROOT } [data-cy^="origam-chart-word-cloud-word-"]`)
         await expect(words.first()).toBeVisible({ timeout: 8000 })
         const count = await words.count()
         expect(count).toBeGreaterThanOrEqual(2)
@@ -175,35 +186,36 @@ test.describe('OrigamChartWordCloud — rotation variants', () => {
 
 test.describe('OrigamChartWordCloud — font-size variants', () => {
     test('compact variant renders words with smaller font size than giant', async ({ page }) => {
-        await openVariant(page, WORD_CLOUD_STORY, 'Prop — minFontSize / maxFontSize (compact vs giant)')
+        await openVariant(page, WORD_CLOUD_STORY, 'Design')
         const sandbox = sandboxOf(page)
-
-        const compactFirstWord = sandbox.locator('[data-cy="word-cloud-font-compact"] [data-cy="origam-chart-word-cloud-word-0"]')
-        const giantFirstWord = sandbox.locator('[data-cy="word-cloud-font-giant"] [data-cy="origam-chart-word-cloud-word-0"]')
-
-        await expect(compactFirstWord).toBeVisible({ timeout: 8000 })
-        await expect(giantFirstWord).toBeVisible({ timeout: 8000 })
-
-        const compactStyle = await compactFirstWord.getAttribute('style')
-        const giantStyle = await giantFirstWord.getAttribute('style')
-
-        expect(compactStyle).toBeTruthy()
-        expect(giantStyle).toBeTruthy()
+        const firstWord = sandbox.locator(`${ ROOT } [data-cy="origam-chart-word-cloud-word-0"]`)
 
         const extractFontSize = (style: string): number => {
             const m = style.match(/font-size:\s*([\d.]+)px/)
             return m ? parseFloat(m[1]) : 0
         }
 
+        await fillHstNumber(page, 'Min Font Size (px)', 4)
+        await fillHstNumber(page, 'Max Font Size (px)', 16)
+        await expect(firstWord).toBeVisible({ timeout: 8000 })
+        const compactStyle = await firstWord.getAttribute('style')
+        expect(compactStyle).toBeTruthy()
         const compactFs = extractFontSize(compactStyle!)
+
+        await fillHstNumber(page, 'Min Font Size (px)', 32)
+        await fillHstNumber(page, 'Max Font Size (px)', 120)
+        await expect(firstWord).toBeVisible({ timeout: 8000 })
+        const giantStyle = await firstWord.getAttribute('style')
+        expect(giantStyle).toBeTruthy()
         const giantFs = extractFontSize(giantStyle!)
+
         expect(giantFs).toBeGreaterThan(compactFs)
     })
 })
 
 test.describe('OrigamChartWordCloud — empty state', () => {
     test('empty slot renders when series is empty', async ({ page }) => {
-        await openVariant(page, WORD_CLOUD_STORY, 'Slot — empty')
+        await openVariant(page, WORD_CLOUD_STORY, 'Slots - Empty')
         const sandbox = sandboxOf(page)
         const empty = sandbox.locator('[data-cy="word-cloud-slot-empty-chart"] [data-cy="origam-chart-word-cloud-empty"]')
         await expect(empty).toBeVisible({ timeout: 6000 })
