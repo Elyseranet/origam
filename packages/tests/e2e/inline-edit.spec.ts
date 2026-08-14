@@ -156,8 +156,7 @@ test.describe('OrigamInlineEdit — Slots', () => {
 
         // The default button affordance should NOT be in the DOM when
         // the consumer supplies a #display slot.
-        const builtIn = await sandbox.locator('[data-cy="inline-edit-slot-display"] [data-cy="origam-inline-edit-display"]').count()
-        expect(builtIn).toBe(0)
+        await expect(sandbox.locator('[data-cy="inline-edit-slot-display"] [data-cy="origam-inline-edit-display"]')).toHaveCount(0)
 
         await trigger.click()
         await expect(inputInField(sandbox, 'inline-edit-slot-display')).toBeVisible()
