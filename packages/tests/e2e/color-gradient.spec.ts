@@ -84,7 +84,7 @@ async function getInjectedBgImage (locator: ReturnType<ReturnType<typeof sandbox
 // Fix: add the isGradient guard in stateEffect.composable.ts colorStyles, mirroring color.composable.ts useColorEffect lines 399-409.
 test.describe.fixme('Color gradient — raw CSS string', () => {
     test('linear-gradient(135deg, #ff0080, #7928ca) renders verbatim', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — raw CSS gradient string')
+        await openVariant(page, STORY, 'Design - Raw CSS string')
         const sandbox = sandboxOf(page)
         const btn = sandbox.locator('[data-cy="raw-string-btn-1"]').first()
         await expect(btn).toBeVisible({ timeout: 8000 })
@@ -102,7 +102,7 @@ test.describe.fixme('Color gradient — raw CSS string', () => {
     })
 
     test('radial-gradient renders as radial-gradient(...)', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — raw CSS gradient string')
+        await openVariant(page, STORY, 'Design - Raw CSS string')
         const sandbox = sandboxOf(page)
         const btn = sandbox.locator('[data-cy="raw-string-btn-3"]').first()
         await expect(btn).toBeVisible({ timeout: 8000 })
@@ -119,7 +119,7 @@ test.describe.fixme('Color gradient — raw CSS string', () => {
 // Fix: add the isGradient guard in stateEffect.composable.ts colorStyles, mirroring color.composable.ts useColorEffect lines 399-409.
 test.describe.fixme('Color gradient — IGradient object (intent stops)', () => {
     test('{ from: primary, to: success } emits intent CSS-var references', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — IGradient object (intents)')
+        await openVariant(page, STORY, 'Design - IGradient object')
         const sandbox = sandboxOf(page)
         const btn = sandbox.locator('[data-cy="object-btn-1"]').first()
         await expect(btn).toBeVisible({ timeout: 8000 })
@@ -135,7 +135,7 @@ test.describe.fixme('Color gradient — IGradient object (intent stops)', () => 
     })
 
     test('stops array with 3 colors emits the matching number of positioned stops', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — IGradient object (intents)')
+        await openVariant(page, STORY, 'Design - IGradient object')
         const sandbox = sandboxOf(page)
         const btn = sandbox.locator('[data-cy="object-btn-4"]').first()
         await expect(btn).toBeVisible({ timeout: 8000 })
@@ -153,7 +153,7 @@ test.describe.fixme('Color gradient — IGradient object (intent stops)', () => 
 // Fix: add the isGradient guard in stateEffect.composable.ts colorStyles, mirroring color.composable.ts useColorEffect lines 399-409.
 test.describe.fixme('Color gradient — preset name', () => {
     test('bg-color="gradient-sunset" resolves to var(--origam-gradient---sunset)', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — preset names')
+        await openVariant(page, STORY, 'Design - Preset names')
         const sandbox = sandboxOf(page)
         const btn = sandbox.locator('[data-cy="preset-btn-sunset"]').first()
         await expect(btn).toBeVisible({ timeout: 8000 })
@@ -164,7 +164,7 @@ test.describe.fixme('Color gradient — preset name', () => {
     })
 
     test('all 5 presets resolve to their respective CSS vars', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — preset names')
+        await openVariant(page, STORY, 'Design - Preset names')
         const sandbox = sandboxOf(page)
         const presets = ['sunset', 'ocean', 'forest', 'fire', 'midnight']
         for (const p of presets) {
@@ -184,7 +184,7 @@ test.describe.fixme('Color gradient — preset name', () => {
 
 test.describe('Color gradient — text gradient (background-clip)', () => {
     test('color={ from, to } on title produces background-clip: text + color: transparent', async ({ page }) => {
-        await openVariant(page, STORY, 'Text gradient — background-clip: text')
+        await openVariant(page, STORY, 'Design - Text gradient (background-clip: text)')
         const sandbox = sandboxOf(page)
         const title = sandbox.locator('[data-cy="text-gradient-title"]').first()
         await expect(title).toBeVisible({ timeout: 8000 })
@@ -202,7 +202,7 @@ test.describe('Color gradient — text gradient (background-clip)', () => {
     })
 
     test('color="gradient-sunset" on label triggers the preset text gradient', async ({ page }) => {
-        await openVariant(page, STORY, 'Text gradient — background-clip: text')
+        await openVariant(page, STORY, 'Design - Text gradient (background-clip: text)')
         const sandbox = sandboxOf(page)
         const label = sandbox.locator('[data-cy="text-gradient-label"]').first()
         await expect(label).toBeVisible({ timeout: 8000 })
