@@ -1,31 +1,39 @@
 import { expect, test, type Page } from '@playwright/test'
 
+import { fillHstNumber, selectHstOption } from './_support/histoire-controls'
+
 /**
  * OrigamSnackbarGroup — runtime probes for every prop / behaviour
- * exposed by the story. Each block targets one orthogonal facet:
+ * exposed by the story.
  *
- *   - Default: a notify click renders a visible item with the
- *     ARIA contract (`role="region"`, `aria-live`).
- *   - Location: spawning a toast in each anchor renders into the
- *     matching `--{location}` modifier class.
- *   - Max: bursting more items than `max` keeps only the latest N.
- *   - Sticky (`duration: 0`): the item survives past a typical
- *     auto-dismiss window.
- *   - Auto-dismiss: a short-`duration` toast leaves the DOM after
- *     the requested timeout.
- *   - Dismiss button: clicking X removes the item.
- *   - Action handler: clicking an action triggers its handler
- *     (verified via the story-side counter).
- *   - ARIA: confirms `role="region"` + `role="status" / "alert"`
- *     and the appropriate `aria-live` per intent.
+ * REALIGNED (2026-08) — the story migrated to the canonical
+ * Design/Functional structure (this component has no Design/Events/
+ * Slots Variants — only "Functional" and "Default"). The pre-migration
+ * story had FOUR separate fixtures, each with its own trigger buttons
+ * and `data-cy` hosts:
+ *   - "Prop — location": 4 simultaneous stacks (one per corner)
+ *   - "Prop — max": a dedicated "burst 10 at once" button
+ *   - "Prop — intent": 4 simultaneous trigger buttons (one per intent)
+ *   - "Emit — onDismiss": a dismiss/action counter rendered in the DOM
+ * All four collapsed into the single "Functional" Variant: ONE stack,
+ * ONE "Notify" button using whatever `location` / `intent` / `max` /
+ * `defaultDuration` the HstSelect/HstNumber controls currently hold.
+ * Tests below drive those controls SEQUENTIALLY instead of reading
+ * parallel fixtures. The dismiss/action counter has no equivalent
+ * anymore (no story-side counter) — the dismiss MECHANIC itself
+ * (item removed from the DOM) is still verified; the counter
+ * assertion and the action-button coverage are flagged as gaps below.
  *
- * Items are now rendered by `<OrigamSnackbarItem>` — selectors use
- * `.origam-snackbar-item` and `.origam-snackbar-item--intent-*`.
+ * Items are rendered by `<OrigamSnackbarItem>` — selectors use
+ * `.origam-snackbar-item` / `.origam-snackbar-item--intent-*` /
+ * `.origam-snackbar-item__dismiss` (all static classes on the
+ * component itself, unaffected by the story migration).
  *
  * Histoire iframes render the sandbox under `iframe[src*="__sandbox"]`,
  * same convention as every other origam spec. The stack is teleported
  * to `document.body` so we search the whole page (not just the host
- * container) for items.
+ * container) for items; the group root DOM id is `origam-snackbar-
+ * group-{id}` (`resolvedDomId`, static in OrigamSnackbarGroup.vue).
  */
 
 const sandboxOf = (page: Page) =>
@@ -40,25 +48,30 @@ const openVariant = async (page: Page, variant: string) => {
 
 const STORY = '/stories/story/components-stories-snackbar-origamsnackbargroup-story-vue'
 
+const notifyBtn = (sandbox: ReturnType<typeof sandboxOf>) =>
+    sandbox.getByText('Notify', { exact: true }).first()
+
+const dismissAllBtn = (sandbox: ReturnType<typeof sandboxOf>) =>
+    sandbox.getByText('Dismiss all', { exact: true }).first()
+
 test.describe('OrigamSnackbarGroup — Default', () => {
     test('notify renders an item, dismiss-all empties the stack', async ({ page }) => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
-        const trigger = sandbox.locator('[data-cy="snackbar-group-playground-trigger"]').first()
-        await expect(trigger).toBeVisible({ timeout: 8000 })
+        await expect(notifyBtn(sandbox)).toBeVisible({ timeout: 8000 })
 
         // 3 notifications.
-        await trigger.click()
-        await trigger.click()
-        await trigger.click()
+        await notifyBtn(sandbox).click()
+        await notifyBtn(sandbox).click()
+        await notifyBtn(sandbox).click()
         await page.waitForTimeout(300)
 
-        const items = sandbox.locator('.origam-snackbar-item')
+        const host = sandbox.locator('#origam-snackbar-group-playground').first()
+        const items = host.locator('.origam-snackbar-item')
         await expect(items).toHaveCount(3, { timeout: 5000 })
 
-        const dismissAll = sandbox.locator('[data-cy="snackbar-group-playground-dismiss-all"]').first()
-        await dismissAll.click()
+        await dismissAllBtn(sandbox).click()
         await page.waitForTimeout(400)
 
         await expect(items).toHaveCount(0)
@@ -68,13 +81,12 @@ test.describe('OrigamSnackbarGroup — Default', () => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
-        const trigger = sandbox.locator('[data-cy="snackbar-group-playground-trigger"]').first()
-        await expect(trigger).toBeVisible({ timeout: 8000 })
-        await trigger.click()
+        await expect(notifyBtn(sandbox)).toBeVisible({ timeout: 8000 })
+        await notifyBtn(sandbox).click()
         await page.waitForTimeout(300)
 
-        // Verify items use OrigamSnackbarItem classes (not old stack item classes)
-        const item = sandbox.locator('.origam-snackbar-item').first()
+        const host = sandbox.locator('#origam-snackbar-group-playground').first()
+        const item = host.locator('.origam-snackbar-item').first()
         await expect(item).toBeVisible({ timeout: 5000 })
 
         // OrigamSnackbarItem structure: content div with prepend + text
@@ -83,174 +95,196 @@ test.describe('OrigamSnackbarGroup — Default', () => {
 })
 
 test.describe('OrigamSnackbarGroup — Prop: location', () => {
-    test('spawning at each location renders into the matching container', async ({ page }) => {
-        await openVariant(page, 'Prop — location')
+    test('switching location moves the modifier class and the stack still spawns items', async ({ page }) => {
+        await openVariant(page, 'Functional')
         const sandbox = sandboxOf(page)
+        const host = sandbox.locator('#origam-snackbar-group-functional').first()
 
         const locations = ['top-left', 'top-right', 'bottom-left', 'bottom-right'] as const
 
         for (const loc of locations) {
-            const trigger = sandbox.locator(`[data-cy="snackbar-group-location-${loc}"]`).first()
-            await expect(trigger).toBeVisible({ timeout: 8000 })
-            await trigger.click()
-        }
+            await selectHstOption(page, 'location', loc)
+            await page.waitForTimeout(200)
+            await expect(host).toHaveClass(new RegExp(`origam-snackbar-group--${loc}`))
 
-        await page.waitForTimeout(300)
-
-        for (const loc of locations) {
-            // The group is teleported to body — locate it by the DOM id the
-            // component emits: `id="origam-snackbar-group-location-${loc}"`.
-            // The location variant passes `:id="\`location-${loc}\`"` to each
-            // group → rendered DOM id = `origam-snackbar-group-location-${loc}`.
-            const host = sandbox.locator(`#origam-snackbar-group-location-${loc}`).first()
-
-            // At least one OrigamSnackbarItem should live in the matching host.
-            const items = host.locator('.origam-snackbar-item')
-            await expect(items.first()).toBeVisible({ timeout: 5000 })
+            await notifyBtn(sandbox).click()
+            await page.waitForTimeout(200)
+            await expect(host.locator('.origam-snackbar-item').first()).toBeVisible({ timeout: 4000 })
         }
     })
 })
 
 test.describe('OrigamSnackbarGroup — Prop: max', () => {
-    test('bursting 10 toasts caps the rendered stack at 5', async ({ page }) => {
-        await openVariant(page, 'Prop — max')
+    test('sending 10 notifications caps the rendered stack at max (5)', async ({ page }) => {
+        // "Prop — max" had a dedicated burst-10 button; the migrated
+        // story only exposes a single Notify click — loop it instead.
+        // Functional init-state already sets max: 5.
+        await openVariant(page, 'Functional')
         const sandbox = sandboxOf(page)
+        const host = sandbox.locator('#origam-snackbar-group-functional').first()
 
-        const trigger = sandbox.locator('[data-cy="snackbar-group-max-burst"]').first()
-        await expect(trigger).toBeVisible({ timeout: 8000 })
-        await trigger.click()
-        await page.waitForTimeout(500)
+        for (let i = 0; i < 10; i++) {
+            await notifyBtn(sandbox).click()
+            await page.waitForTimeout(50)
+        }
+        await page.waitForTimeout(400)
 
-        // The group is teleported to body and the component emits
-        // id="origam-snackbar-group-max-test" (story passes id="max-test").
-        const host = sandbox.locator('#origam-snackbar-group-max-test').first()
-        const items = host.locator('.origam-snackbar-item')
-        await expect(items).toHaveCount(5, { timeout: 5000 })
+        await expect(host.locator('.origam-snackbar-item')).toHaveCount(5, { timeout: 5000 })
     })
 })
 
 test.describe('OrigamSnackbarGroup — Prop: intent', () => {
     test('renders each intent with the matching modifier class', async ({ page }) => {
-        await openVariant(page, 'Prop — intent')
+        await openVariant(page, 'Functional')
         const sandbox = sandboxOf(page)
+        const host = sandbox.locator('#origam-snackbar-group-functional').first()
 
-        // The group is teleported to body — data-cy attrs on <origam-snackbar-group>
-        // are NOT forwarded through the teleport. Locate the host by its DOM id:
-        // story passes id="intent-stack" → resolvedDomId = "origam-snackbar-group-intent-stack".
-        const host = sandbox.locator('#origam-snackbar-group-intent-stack').first()
+        // HstSelect option labels are capitalised (INTENT_OPTIONS,
+        // @stories/const/intent.const.ts) even though the underlying
+        // value — and the CSS modifier class — stays lowercase.
+        const intents = [
+            { value: 'success', label: 'Success' },
+            { value: 'warning', label: 'Warning' },
+            { value: 'danger', label: 'Danger' },
+            { value: 'info', label: 'Info' }
+        ] as const
 
-        for (const intent of ['success', 'warning', 'danger', 'info'] as const) {
-            const trigger = sandbox.locator(`[data-cy="snackbar-group-intent-${intent}"]`).first()
-            await trigger.click()
+        for (const intent of intents) {
+            await selectHstOption(page, 'intent', intent.label)
+            await page.waitForTimeout(150)
+            await notifyBtn(sandbox).click()
             await page.waitForTimeout(150)
 
-            const intentItem = host
-                .locator(`.origam-snackbar-item--intent-${intent}`)
-                .first()
-
+            const intentItem = host.locator(`.origam-snackbar-item--intent-${intent.value}`).first()
             await expect(intentItem).toBeVisible({ timeout: 4000 })
         }
     })
 
     test('warning and danger intents render role="alert" + aria-live="assertive"', async ({ page }) => {
-        await openVariant(page, 'Prop — intent')
+        await openVariant(page, 'Functional')
         const sandbox = sandboxOf(page)
+        const host = sandbox.locator('#origam-snackbar-group-functional').first()
 
-        await sandbox.locator('[data-cy="snackbar-group-intent-danger"]').first().click()
+        await selectHstOption(page, 'intent', 'Danger')
+        await notifyBtn(sandbox).click()
         await page.waitForTimeout(200)
 
-        const item = sandbox.locator('.origam-snackbar-item--intent-danger').first()
+        const item = host.locator('.origam-snackbar-item--intent-danger').first()
         await expect(item).toHaveAttribute('role', 'alert')
         await expect(item).toHaveAttribute('aria-live', 'assertive')
     })
 })
 
-test.describe('OrigamSnackbarGroup — Emits + dismiss + actions', () => {
-    test('clicking the X dismiss button removes the item and bumps the counter', async ({ page }) => {
-        await openVariant(page, 'Emit — onDismiss')
+test.describe('OrigamSnackbarGroup — Dismiss', () => {
+    test('clicking the X dismiss button removes the item', async ({ page }) => {
+        // The pre-migration story also asserted a "Dismissed: N" counter
+        // rendered by the story itself — the migrated story has no such
+        // counter anymore (no equivalent data-cy). The dismiss MECHANIC
+        // (item removed from the DOM) is still fully verifiable and is
+        // what's asserted here.
+        await openVariant(page, 'Functional')
         const sandbox = sandboxOf(page)
+        const host = sandbox.locator('#origam-snackbar-group-functional').first()
 
-        const trigger = sandbox.locator('[data-cy="snackbar-group-emit-trigger"]').first()
-        await expect(trigger).toBeVisible({ timeout: 8000 })
-        await trigger.click()
+        await notifyBtn(sandbox).click()
         await page.waitForTimeout(200)
 
-        // The group is teleported to body — data-cy is not forwarded through
-        // the teleport. Locate by DOM id: story passes id="emit-stack" →
-        // resolvedDomId = "origam-snackbar-group-emit-stack".
-        const host = sandbox.locator('#origam-snackbar-group-emit-stack').first()
-        const dismissBtn = host
-            .locator('.origam-snackbar-item__dismiss')
-            .first()
+        const dismissBtn = host.locator('.origam-snackbar-item__dismiss').first()
         await expect(dismissBtn).toBeVisible({ timeout: 4000 })
 
         await dismissBtn.click()
         await page.waitForTimeout(400)
 
-        const items = host.locator('.origam-snackbar-item')
-        await expect(items).toHaveCount(0, { timeout: 5000 })
-
-        const counter = sandbox.locator('[data-cy="snackbar-group-emit-counter"]').first()
-        await expect(counter).toContainText('Dismissed: 1')
+        await expect(host.locator('.origam-snackbar-item')).toHaveCount(0, { timeout: 5000 })
     })
 
-    test('clicking the action invokes the handler and dismisses by default', async ({ page }) => {
-        await openVariant(page, 'Emit — onDismiss')
-        const sandbox = sandboxOf(page)
-
-        const trigger = sandbox.locator('[data-cy="snackbar-group-emit-action"]').first()
-        await expect(trigger).toBeVisible({ timeout: 8000 })
-        await trigger.click()
-        await page.waitForTimeout(200)
-
-        const action = sandbox
-            .locator('[data-cy^="origam-snackbar-group-item-"]')
-            .locator('.origam-snackbar-item__action')
-            .first()
-        await expect(action).toBeVisible({ timeout: 4000 })
-        await action.click()
-        await page.waitForTimeout(400)
-
-        const counter = sandbox.locator('[data-cy="snackbar-group-emit-counter"]').first()
-        await expect(counter).toContainText('Action clicks: 1')
-        // Action handler default dismisses → onDismiss increments too.
-        await expect(counter).toContainText('Dismissed: 1')
+    test.fixme('clicking the action invokes the handler and dismisses by default [STORY COVERAGE MISSING]', async () => {
+        // The migrated story's Functional/Default `notify()` calls only
+        // pass { title, message, intent, dismissible } — no `actions`
+        // array is ever spawned, so OrigamSnackbarItem's action-button
+        // slot never renders. There is no fixture left that exercises
+        // the `actions` prop or the story-side "Action clicks" /
+        // "Dismissed" counters that used to live in "Emit — onDismiss".
+        // Needs a story fixture (Notify-with-action button + counters
+        // restored), not a spec-only change.
     })
 })
 
 test.describe('OrigamSnackbarGroup — Auto-dismiss timing', () => {
-    test('sticky item (duration: 0) survives past the default auto-dismiss window', async ({ page }) => {
-        await openVariant(page, 'Prop — max')
+    /**
+     * ⛔ REAL BUG FOUND while realigning (root-caused, not guessed):
+     * the "defaultDuration (ms)" HstNumber control sets the
+     * `<OrigamSnackbarGroup default-duration>` PROP, but that prop is
+     * never read by the auto-dismiss scheduling path at all.
+     *
+     * Root cause (read in source):
+     *   - `functionalNotify(state)` / `playgroundNotify(state)`
+     *     (OrigamSnackbarGroup.story.vue) call
+     *     `useSnackbarGroup({ id: state.id ?? 'functional' })` fresh on
+     *     every click, WITHOUT forwarding `state.defaultDuration` —
+     *     only `id` is passed.
+     *   - `useSnackbarGroup()`'s `notify()`
+     *     (packages/ds/src/composables/Snackbar/snackbar-group.composable.ts)
+     *     computes `duration = opts.duration ?? options.defaultDuration
+     *     ?? SNACKBAR_GROUP_DEFAULT_DURATION` — since this call site's
+     *     `options.defaultDuration` is undefined, it ALWAYS falls back
+     *     to the hardcoded 5000ms default, regardless of the story
+     *     control's value.
+     *   - `<OrigamSnackbarGroup>`'s own `defaultDuration` PROP is only
+     *     read by `useSnackbarGroupInternal(id)`, which exposes just
+     *     `rawItems` / `itemCount` (read-only) — it never registers
+     *     `defaultDuration` into the shared per-id store, so no
+     *     `notify()` call from ANY composable instance can ever pick
+     *     it up. The prop is entirely decorative.
+     *
+     * Verified empirically (2026-08, running Histoire instance): 5
+     * items pushed with the "defaultDuration (ms)" control set to 0
+     * (intended: sticky, `duration <= 0` skips scheduling per source)
+     * were ALL gone by 6s — consistent with the hardcoded 5000ms
+     * default firing regardless. A naive "short duration" test with a
+     * generous assertion timeout can accidentally PASS for the wrong
+     * reason (the item eventually disappears via the hardcoded 5000ms
+     * path, which still fits inside an over-generous retry window) —
+     * the tight-timeout tests below are written specifically to not
+     * be fooled by that.
+     *
+     * Flagged as `test.fixme` with this diagnostic, story/component
+     * left untouched per this pass's scope (title-drift realignment).
+     */
+    test.fixme('sticky item (defaultDuration: 0) survives past the default auto-dismiss window', async ({ page }) => {
+        await openVariant(page, 'Functional')
         const sandbox = sandboxOf(page)
+        const host = sandbox.locator('#origam-snackbar-group-functional').first()
 
-        // The max-burst spawn uses `duration: 0` → sticky.
-        await sandbox.locator('[data-cy="snackbar-group-max-burst"]').first().click()
+        await fillHstNumber(page, 'defaultDuration (ms)', 0)
+        for (let i = 0; i < 5; i++) {
+            await notifyBtn(sandbox).click()
+            await page.waitForTimeout(50)
+        }
         await page.waitForTimeout(6_000)
 
-        // The group is teleported to body — data-cy is not forwarded.
-        // Story passes id="max-test" → resolvedDomId = "origam-snackbar-group-max-test".
-        const host = sandbox.locator('#origam-snackbar-group-max-test').first()
-        const items = host.locator('.origam-snackbar-item')
-        await expect(items).toHaveCount(5)
+        await expect(host.locator('.origam-snackbar-item')).toHaveCount(5)
     })
 
-    test('short-duration item auto-dismisses within the requested window', async ({ page }) => {
-        await openVariant(page, 'Prop — intent')
+    test.fixme('short-duration item auto-dismisses within the requested window (tight timeout — see diagnostic above)', async ({ page }) => {
+        await openVariant(page, 'Functional')
         const sandbox = sandboxOf(page)
+        const host = sandbox.locator('#origam-snackbar-group-functional').first()
 
-        // Intent spawns use `duration: 4000`. We assert the item is
-        // still there at 1s and gone after the full 4.5s.
-        // The group is teleported to body — data-cy is not forwarded.
-        // Story passes id="intent-stack" → resolvedDomId = "origam-snackbar-group-intent-stack".
-        await sandbox.locator('[data-cy="snackbar-group-intent-success"]').first().click()
-        await page.waitForTimeout(1_000)
+        await fillHstNumber(page, 'defaultDuration (ms)', 1500)
+        await selectHstOption(page, 'intent', 'Success')
+        await notifyBtn(sandbox).click()
+        await page.waitForTimeout(500)
 
-        const host = sandbox.locator('#origam-snackbar-group-intent-stack').first()
         const item = host.locator('.origam-snackbar-item--intent-success').first()
         await expect(item).toBeVisible()
 
-        await page.waitForTimeout(4_000)
-        await expect(host.locator('.origam-snackbar-item--intent-success')).toHaveCount(0, { timeout: 5000 })
+        // Tight timeout on purpose: 1500ms requested duration + 1000ms
+        // slack, well short of the buggy hardcoded 5000ms fallback —
+        // this must FAIL today (proving the bug) rather than pass for
+        // the wrong reason with a generous window.
+        await page.waitForTimeout(1_500)
+        await expect(host.locator('.origam-snackbar-item--intent-success')).toHaveCount(0, { timeout: 1_000 })
     })
 })
 
@@ -259,15 +293,10 @@ test.describe('OrigamSnackbarGroup — ARIA region', () => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
-        // The group is teleported to body — data-cy attrs passed to
-        // <origam-snackbar-group> are not forwarded through the teleport.
-        // Locate via DOM id: story passes id="playground" →
-        // resolvedDomId = "origam-snackbar-group-playground".
         // Trigger a notify first so the root becomes visible (it is always
         // rendered but may have zero size before items are present).
-        const trigger = sandbox.locator('[data-cy="snackbar-group-playground-trigger"]').first()
-        await expect(trigger).toBeVisible({ timeout: 8000 })
-        await trigger.click()
+        await expect(notifyBtn(sandbox)).toBeVisible({ timeout: 8000 })
+        await notifyBtn(sandbox).click()
         await page.waitForTimeout(300)
 
         const root = sandbox.locator('#origam-snackbar-group-playground').first()
@@ -277,13 +306,15 @@ test.describe('OrigamSnackbarGroup — ARIA region', () => {
     })
 
     test('info / success intent items render role="status" + aria-live="polite"', async ({ page }) => {
-        await openVariant(page, 'Prop — intent')
+        await openVariant(page, 'Functional')
         const sandbox = sandboxOf(page)
+        const host = sandbox.locator('#origam-snackbar-group-functional').first()
 
-        await sandbox.locator('[data-cy="snackbar-group-intent-success"]').first().click()
+        await selectHstOption(page, 'intent', 'Success')
+        await notifyBtn(sandbox).click()
         await page.waitForTimeout(200)
 
-        const item = sandbox.locator('.origam-snackbar-item--intent-success').first()
+        const item = host.locator('.origam-snackbar-item--intent-success').first()
         await expect(item).toHaveAttribute('role', 'status')
         await expect(item).toHaveAttribute('aria-live', 'polite')
     })
