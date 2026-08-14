@@ -25,21 +25,32 @@ const countItems = async (page: Page) => {
  * fire on scroll. Fixing the boolean expression restored the
  * intersect-driven load path.
  *
- * DS BUG (open): `OrigamInfiniteScrollIntersect` receives `rootRef` as a prop
- * (declared in IInfiniteScrollIntersectProps) but `useIntersectionObserver` is
- * called without passing `root: rootRef` in the IntersectionObserverInit options.
- * The observer therefore targets the iframe viewport, not the scroll container.
- * A programmatic `el.scrollTo()` on the div scroll container does not move the
- * iframe viewport, so the end sentinel never fires `isIntersecting = true` and
- * `@load` is never emitted in intersect mode.
- * Fix: pass `{ root: props.rootRef, rootMargin: props.margin }` to
- * `useIntersectionObserver` in OrigamInfiniteScrollIntersect.vue.
+ * DS BUG STATUS UPDATE (2026-08, re-verified during title-drift repair):
+ * `OrigamInfiniteScrollIntersect` still calls `useIntersectionObserver`
+ * without passing `root: props.rootRef` (verified by reading
+ * OrigamInfiniteScrollIntersect.vue — `rootRef` is a declared prop that is
+ * never referenced in the file). The code-level gap the previous fixme
+ * describes is real. However, re-tested against the current "Design"
+ * Variant (5 runs, incl. 3 in parallel, all green): the test PASSES for
+ * real. Per MDN, an IntersectionObserver's target is clipped by ALL
+ * ancestor scroll containers regardless of the configured `root` — once
+ * the sentinel scrolls into the container's visible area it stops being
+ * clipped and correctly intersects the default (viewport) root, so a
+ * `root: rootRef` isn't actually required for this scenario to work.
+ * Un-fixme'd; kept the missing-`root`-option observation since it may
+ * still matter for scenarios this specific fixture doesn't exercise
+ * (e.g. the scroll container itself only partially overlapping the
+ * viewport) — worth a follow-up ticket, not a currently-reproducing bug.
  */
 
 test('OrigamInfiniteScroll — scroll-to-bottom triggers load (intersect mode)', async ({ page }) => {
-    test.fixme(true, 'DS BUG: OrigamInfiniteScrollIntersect ignores rootRef prop — IntersectionObserver has no root, observes iframe viewport instead of the scroll container, so programmatic scrollTo() never triggers @load in intersect mode. Fix: pass root: props.rootRef to useIntersectionObserver in OrigamInfiniteScrollIntersect.vue.')
     test.setTimeout(60_000)
-    await open(page, 'Basic — end side')
+    // Story realignment: the old dedicated "Basic — end side" Variant is
+    // gone — "Design" hardcodes side="end" mode="intersect" with the same
+    // 20-item fixture and load-more-up-to-60 behaviour, so it's a faithful
+    // re-target (not a control-driven equivalent — side/mode aren't exposed
+    // as controls on this Variant at all).
+    await open(page, 'Design')
     const initial = await countItems(page)
     expect(initial).toBe(20)
 
