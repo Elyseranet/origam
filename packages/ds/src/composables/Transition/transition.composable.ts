@@ -2,7 +2,7 @@ import { ORIGAM_WINDOW_KEY } from '../../consts'
 import type { ITransitionProps } from '../../interfaces'
 import { convertToUnit } from '../../utils'
 
-import { Component, computed, inject, nextTick, ShallowRef, shallowRef, Transition, TransitionGroup } from 'vue'
+import { Component, computed, inject, nextTick, shallowRef, Transition, TransitionGroup } from 'vue'
 
 /*********************************************************
  * useTransition
@@ -26,7 +26,7 @@ export function useCssTransition (props: ITransitionProps) {
 
     const {name, isDisabled} = useTransition(props)
 
-    const tag: ShallowRef<Component> = props.group ? shallowRef(TransitionGroup) : shallowRef(Transition)
+    const tag = computed<Component>(() => props.group ? TransitionGroup : Transition)
 
     const handleBeforeEnter = (el: HTMLElement) => {
         if (props.origin) {
@@ -94,7 +94,7 @@ export function useWindowTransition (props: ITransitionProps) {
 
     const {name, isDisabled} = useTransition(props)
 
-    const tag: ShallowRef<Component> = props.group ? shallowRef(TransitionGroup) : shallowRef(Transition)
+    const tag = computed<Component>(() => props.group ? TransitionGroup : Transition)
 
     const window = inject(ORIGAM_WINDOW_KEY)
 

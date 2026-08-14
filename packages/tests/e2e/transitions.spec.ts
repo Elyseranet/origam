@@ -165,46 +165,21 @@ test.describe('OrigamFade', () => {
     })
 
     /**
-     * ⛔ REAL BUG FOUND while realigning (root-caused, not guessed):
-     * toggling "Group (TransitionGroup)" AFTER mount has no effect —
-     * the dispatcher stays on `Transition` (singular) and silently
-     * drops every item past the first.
+     * ⛔ REAL BUG — FIXED (packages/ds/src/composables/Transition/transition.composable.ts).
+     * Toggling "Group (TransitionGroup)" AFTER mount used to have no effect —
+     * the dispatcher stayed on `Transition` (singular) and silently dropped
+     * every item past the first.
      *
-     * Root cause (read in source,
-     * packages/ds/src/composables/Transition/transition.composable.ts,
-     * `useCssTransition` — and `useWindowTransition` right below it,
-     * same pattern):
-     *   `const tag: ShallowRef<Component> = props.group ?
-     *   shallowRef(TransitionGroup) : shallowRef(Transition)`
-     *   This reads `props.group` ONCE, at setup time, into a plain
-     *   `shallowRef` — not a `computed()`. `<component :is="tag">` in
-     *   the SFC template therefore never re-evaluates when `group`
-     *   changes reactively after mount; it stays locked to whichever
-     *   component (`Transition` vs `TransitionGroup`) was correct at
-     *   the FIRST render. Since every Variant's `group` control starts
-     *   at `false` (Transition, single-child), flipping the checkbox
-     *   on afterwards updates the prop but the underlying dispatcher
-     *   never swaps to `TransitionGroup` — and plain `Transition`
-     *   silently renders/tracks only its first child, dropping the
-     *   rest.
+     * Root cause was `const tag: ShallowRef<Component> = props.group ?
+     * shallowRef(TransitionGroup) : shallowRef(Transition)` in both
+     * `useCssTransition` and `useWindowTransition` — reading `props.group`
+     * ONCE at setup time into a plain `shallowRef`, never re-evaluated by
+     * `<component :is="tag">` when `group` changed reactively after mount.
      *
-     * Verified empirically (2026-08, running Histoire instance, fresh
-     * dev server to rule out HMR staleness): `functionalItems` is
-     * `ref([1, 2])` in the story script, but after toggling "Group
-     * (TransitionGroup)" on, only `target-group-1` ever renders — the
-     * DOM shows a single `.story-target`, not two.
-     *
-     * This is not specific to OrigamFade — `useCssTransition` backs
-     * every CSS transition family member (ScaleRotate, ExpandX/Y,
-     * SlideX/Y, TranslateScale, TranslateBottom, Translate/ReverseTranslatePicker)
-     * and `useWindowTransition` has the identical pattern for the
-     * Window* family — any consumer that toggles `group` reactively
-     * after mount (rather than setting it once, statically) hits this.
-     *
-     * Flagged as `test.fixme` with this diagnostic, story/component
-     * left untouched per this pass's scope (title-drift realignment).
+     * Fix: `tag` is now `computed(() => props.group ? TransitionGroup :
+     * Transition)`, tracked reactively like every other prop-derived value.
      */
-    test.fixme('Group — items animate via TransitionGroup', async ({ page }) => {
+    test('Group — items animate via TransitionGroup', async ({ page }) => {
         // "Prop — group (transition-group)" is now the "Functional"
         // Variant's "Group (TransitionGroup)" HstCheckbox (init false).
         // functionalItems starts at [1, 2] — toggling Group on renders
