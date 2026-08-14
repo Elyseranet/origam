@@ -57,9 +57,19 @@ import { expect, test } from '@playwright/test'
  *
  * ## 4. Init-state par défaut
  *
+ *   ⚠️  Le rendu réel dépend aussi du thème origam actif (Histoire monte les
+ *   stories sous le thème par défaut). Depuis le commit 9a082b90 (2026-06-27,
+ *   POSTÉRIEUR à ce fichier), `origam.theme.ts` fixe
+ *   `'origam-btn': { variant: 'text', size: 'small' }` — tout prop `variant`/
+ *   `size` laissé vide dans une story résout donc sur CES valeurs, pas sur
+ *   les défauts propres du composant (variant non défini / size-default).
+ *
  *   Design     : { color: 'white', bgColor: 'primary', text: 'Button' }
- *               → classes: origam-btn origam--bg-primary origam--text-md
- *               → background-color: rgb(124, 58, 237)
+ *               → classes: origam-btn origam-btn--variant-text
+ *                 origam-btn--size-small origam--bg-primary origam--text-sm
+ *               → background-color: transparent (variant=text force
+ *                 `background-color: transparent !important`, quel que soit
+ *                 bgColor — cf. tests "--variant-text: … stylesheet inspection")
  *
  *   State      : { bgColor: 'primary' }
  *               → classes: origam-btn origam--bg-primary
@@ -122,7 +132,32 @@ test.describe('OrigamBtn', () => {
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
-            const bg = await btn.evaluate(el => getComputedStyle(el).backgroundColor)
+            // The Design variant's `variant` is left unset in init-state, so it
+            // now resolves through useDefaults() against the origam theme,
+            // which pins `'origam-btn': { variant: 'text', size: 'small' }`
+            // (packages/ds/src/themes/origam.theme.ts, since commit 9a082b90
+            // "sobre-as-default theme, per-component defaults" — dated AFTER
+            // this test was written). `.origam-btn--variant-text` forces
+            // `background-color: transparent !important` — a deliberate,
+            // older rule (2026-04-26) already guarded by the dedicated
+            // "--variant-text: background-color declaration is transparent
+            // !important" spec further down this file. So the LIVE btn is
+            // always transparent here, by design, regardless of whether the
+            // bgColor token itself resolves correctly.
+            //
+            // Probe the token in isolation instead: a bare element carrying
+            // only the origam--bg-primary utility class (no variant modifier)
+            // reveals whether the token is broken (falls back to transparent
+            // / UA gray) or resolves to a real color — which is what this
+            // test actually guards against.
+            const bg = await btn.evaluate(el => {
+                const probe = document.createElement('span')
+                probe.className = 'origam--bg-primary'
+                el.ownerDocument.body.appendChild(probe)
+                const resolved = getComputedStyle(probe).backgroundColor
+                probe.remove()
+                return resolved
+            })
             // Must NOT be transparent or the browser default (gray).
             // The primary token resolves to a non-transparent color.
             expect(bg).not.toBe('rgba(0, 0, 0, 0)')
