@@ -70,20 +70,31 @@ test.describe('OrigamChip', () => {
         // text prop renders inside the content area
         await expect(chip.locator('.origam-chip__content')).toContainText('Chip')
 
-        // default size class is present
-        await expect(chip).toHaveClass(/origam-chip--size-default/)
+        // Size: the story's init-state does not set `size` — it resolves
+        // through useDefaults() against the origam theme, which pins
+        // `'origam-chip': { size: 'small', ... }` (packages/ds/src/themes/
+        // origam.theme.ts, since commit 9a082b90 "sobre-as-default theme,
+        // per-component defaults"). OrigamChip's own withDefaults() falls
+        // back to SIZES.DEFAULT, but that only applies when no theme (and
+        // no explicit prop) sets it — the theme wins here, by design.
+        await expect(chip).toHaveClass(/origam-chip--size-small/)
         // density class: the chip emits a density class only when a density
         // prop is explicitly passed. With no density prop, useDensity emits
         // no class — the chip's SCSS resets --density via the scoped :root block.
 
-        // pill / label not active by default
+        // pill / border: also theme defaults (`pill: true, border: true` on
+        // 'origam-chip') — not component-own defaults (OrigamChip's
+        // withDefaults() does not set either). `label` stays unset by both
+        // the component and the theme, so it correctly stays absent.
         const classes = await chip.getAttribute('class') ?? ''
-        expect(classes).not.toContain('origam-chip--pill')
+        expect(classes).toContain('origam-chip--pill')
+        expect(classes).toContain('origam-chip--border')
         expect(classes).not.toContain('origam-chip--label')
 
-        // default height from --size-default SCSS rule
+        // Height follows from the theme-resolved size-small SCSS rule
+        // (`--origam-chip---height-sm`, 24px) — not size-default's 32px.
         const height = await chip.evaluate(el => getComputedStyle(el).height)
-        expect(height).toBe('32px')
+        expect(height).toBe('24px')
     })
 
     // ------------------------------------------------------------------ //
