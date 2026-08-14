@@ -26,17 +26,22 @@ import type { Page } from '@playwright/test'
  *     starting value (from the Variant's `:init-state`) and only call
  *     `setHstCheckbox` when a flip is actually needed.
  *
- * Known fragility (documented, not hidden): the option-click in
- * `selectHstOption` matches by visible text anywhere on the page while the
- * dropdown is open. If two controls could show the same option label
- * simultaneously this would be ambiguous — none of the current call sites
- * hit that, but a future one might; verify with a screenshot if a
- * selection doesn't stick.
+ * Two ambiguity traps found and closed empirically (documented so the next
+ * fix doesn't have to rediscover them):
+ *   - Field-row matching must be EXACT, not substring. `label.histoire-
+ *     select`'s row label lives in that label's first `<span>` child.
+ *     Matching by `hasText` (substring) picks the wrong row whenever one
+ *     field name is a prefix of another's suffix — e.g. "Color" matches
+ *     BOTH the "Color" row AND the "Bg Color" row ("Bg " + "Color"), and
+ *     `.first()` only avoided a wrong pick by DOM-order luck.
+ *   - The option-click must be scoped to the open dropdown's own popper
+ *     container, not matched page-wide — see `selectHstOption` below.
  */
 
 /**
- * Open a Histoire `HstSelect` field (matched by its row label) and pick an
- * option by its visible text.
+ * Open a Histoire `HstSelect` field (matched by the EXACT text of its row
+ * label — the first `<span>` child of `label.histoire-select`, see module
+ * doc) and pick an option by its visible text.
  *
  * The option click is scoped to `.v-popper__popper` — the floating
  * dropdown's own teleported container (confirmed via DOM inspection: it
@@ -52,12 +57,17 @@ import type { Page } from '@playwright/test'
  * "Default" Variant link).
  */
 export async function selectHstOption(page: Page, fieldLabel: string, optionLabel: string): Promise<void> {
-    const row = page.locator('label.histoire-select', { hasText: fieldLabel }).first()
+    const row = page.locator('label.histoire-select').filter({ has: page.locator('span', { hasText: new RegExp(`^${escapeRegExp(fieldLabel)}$`) }) }).first()
     await row.locator('.v-popper--theme-dropdown').click()
     await page.waitForTimeout(300)
     const popper = page.locator('.v-popper__popper.v-popper__popper--shown').last()
     await popper.getByText(optionLabel, { exact: true }).click()
     await page.waitForTimeout(300)
+}
+
+/** Escapes regex metacharacters so a field label can be used as a literal exact-match pattern. */
+function escapeRegExp(value: string): string {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
 /** Fill a Histoire `HstText` / `HstNumber` field (matched by its accessible name). */
