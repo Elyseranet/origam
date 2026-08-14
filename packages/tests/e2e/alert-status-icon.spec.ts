@@ -22,14 +22,35 @@ import { expect, test, type Page } from '@playwright/test'
 
 const sandboxOf = (page: Page) => page.frameLocator('iframe[src*="__sandbox"]')
 
-const openVariant = async (page: Page, storyPath: string, variant: string) => {
-    await page.goto(storyPath)
-    await page.waitForLoadState('networkidle')
-    await page.getByText(variant, { exact: true }).first().click()
-    await page.waitForTimeout(800)
-}
-
 const STORY = '/stories/story/components-stories-alert-origamalert-story-vue'
+
+/**
+ * The story restructuring (canonical Design/State/Functional/Events/Slots
+ * layout, see root CLAUDE.md) removed the dedicated "Prop — status"
+ * showcase Variant that used to render a static `data-cy="alert-status"`
+ * fixture. `status` is now a dynamic control (`HstSelect`, "Status" field)
+ * inside the "Design" Variant, with no static data-cy on the result — so
+ * this regression spec drives that control instead of navigating to a
+ * fixture that no longer exists.
+ *
+ * The control is a custom Vue popover (histoire-base-select), not a
+ * native <select> — verified empirically (Playwright's `page.locator(
+ * 'select')` finds zero elements before AND after opening it). Driving it
+ * via `getByText(label, { exact: true }).click()` on the option was
+ * confirmed reliable against the running Design variant.
+ */
+const openDesignWithStatus = async (page: Page, statusLabel: 'Success' | 'Info' | 'Warning' | 'Error') => {
+    await page.goto(STORY)
+    await page.waitForLoadState('networkidle')
+    await page.getByText('Design', { exact: true }).first().click()
+    await page.waitForTimeout(800)
+
+    const statusRow = page.locator('label.histoire-select', { hasText: 'Status' }).first()
+    await statusRow.locator('.v-popper--theme-dropdown').click()
+    await page.waitForTimeout(300)
+    await page.getByText(statusLabel, { exact: true }).click()
+    await page.waitForTimeout(500)
+}
 
 test.describe('OrigamAlert — title line-height aligns with prepend icon', () => {
     test('title vertical centre is within 3px of the prepend-icon vertical centre', async ({ page }) => {
@@ -39,9 +60,12 @@ test.describe('OrigamAlert — title line-height aligns with prepend icon', () =
         // icon's centre. Reduced to `tight` (1.25) → ~30px title height,
         // matches the icon ~28px and the flex `align-items: center`
         // produces a clean baseline.
-        await openVariant(page, STORY, 'Prop — status')
+        await openDesignWithStatus(page, 'Info')
         const sandbox = sandboxOf(page)
-        const alert = sandbox.locator('[data-cy="alert-status"]').first()
+        // No dedicated data-cy fixture exists anymore (see openDesignWithStatus) —
+        // the Design variant renders exactly one alert, so the structural
+        // class is an unambiguous anchor.
+        const alert = sandbox.locator('.origam-alert').first()
         await expect(alert).toBeVisible({ timeout: 8000 })
 
         const iconBox = await alert.locator('.origam-alert__prepend i.origam-icon').first().boundingBox()
@@ -63,9 +87,9 @@ test.describe('OrigamAlert — title line-height aligns with prepend icon', () =
 
 test.describe('OrigamAlert — status icon: single render, no duplicate, no empty placeholder', () => {
     test('status="info" renders exactly ONE icon (prepend) — no duplicate, no empty header placeholder', async ({ page }) => {
-        await openVariant(page, STORY, 'Prop — status')
+        await openDesignWithStatus(page, 'Info')
         const sandbox = sandboxOf(page)
-        const alert = sandbox.locator('[data-cy="alert-status"]').first()
+        const alert = sandbox.locator('.origam-alert').first()
         await expect(alert).toBeVisible({ timeout: 8000 })
 
         // Total icon count across the entire alert wrapper.

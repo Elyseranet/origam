@@ -122,7 +122,7 @@ export default defineConfig({
         // Story URLs must include the full prefix: page.goto('/stories/story/STORY_ID...')
         // Note: Playwright resolves absolute paths (starting with /) against the baseURL
         // host only, NOT the full baseURL path. Keep baseURL at origin level.
-        baseURL: 'http://localhost:6006',
+        baseURL: `http://localhost:${process.env.E2E_HISTOIRE_PORT ?? '6006'}`,
         trace: 'on-first-retry',
         screenshot: 'only-on-failure',
         video: 'retain-on-failure'
@@ -153,7 +153,7 @@ export default defineConfig({
             ? 'pnpm -F @origam/stories exec histoire preview -p 6006'
             : 'pnpm -F @origam/stories dev',
         cwd: REPO_ROOT,
-        url: 'http://localhost:6006/stories/',
+        url: `http://localhost:${process.env.E2E_HISTOIRE_PORT ?? '6006'}/stories/`,
         reuseExistingServer: !process.env.CI,
         timeout: 120_000
     }
