@@ -12,6 +12,12 @@ import { expect, test, type Page } from '@playwright/test'
  * These tests assert the animation actually runs by sampling `scrollTop`
  * at several points during the 300ms default duration and counting how
  * many distinct intermediate values the browser saw.
+ *
+ * REALIGNED (2026-08) — "Prop — scrollToIndex (method)" is now the
+ * "Functional" Variant (init scrollDuration: 300, scrollEasing:
+ * 'easeInOutCubic', 1000 rows). Its "Top" / "Index 500" / "End" jump
+ * buttons carry no `data-cy` — reached via `getByText(…, { exact: true })`
+ * instead of the removed `[data-cy="sti-jump-*"]` hosts.
  */
 
 const sandboxOf = (page: Page) =>
@@ -28,7 +34,7 @@ const VS_PATH = '/stories/story/components-stories-virtualscroll-origamvirtualsc
 
 test('jumpTo(500) animates scrollTop instead of teleporting', async ({ page }) => {
     test.setTimeout(30_000)
-    await openVariant(page, VS_PATH, 'Prop — scrollToIndex (method)')
+    await openVariant(page, VS_PATH, 'Functional')
     const sandbox = sandboxOf(page)
 
     const container = sandbox.locator('.origam-virtual-scroll').first()
@@ -40,7 +46,7 @@ test('jumpTo(500) animates scrollTop instead of teleporting', async ({ page }) =
 
     // Click the "Index 500" CTA WITHOUT awaiting — we want to start the
     // animation, then sample scrollTop in parallel.
-    const clickPromise = sandbox.locator('[data-cy="sti-jump-500"]').click({ force: true })
+    const clickPromise = sandbox.getByText('Index 500', { exact: true }).click({ force: true })
 
     // Sample scrollTop while the rAF loop runs. With duration=300ms we
     // need samples < 50ms apart to catch intermediate frames; we collect
@@ -82,19 +88,19 @@ test('jumpTo(500) animates scrollTop instead of teleporting', async ({ page }) =
 
 test('jumpTo(0) animates back to the top after a forward jump', async ({ page }) => {
     test.setTimeout(30_000)
-    await openVariant(page, VS_PATH, 'Prop — scrollToIndex (method)')
+    await openVariant(page, VS_PATH, 'Functional')
     const sandbox = sandboxOf(page)
     const container = sandbox.locator('.origam-virtual-scroll').first()
     await expect(container).toBeVisible({ timeout: 8000 })
 
     // Jump forward first (and let it settle).
-    await sandbox.locator('[data-cy="sti-jump-500"]').click({ force: true })
+    await sandbox.getByText('Index 500', { exact: true }).click({ force: true })
     await page.waitForTimeout(450)
     const midTop = await container.evaluate(el => (el as HTMLElement).scrollTop)
     expect(midTop).toBeGreaterThan(20000)
 
     // Now jump back, sampling along the way.
-    const clickPromise = sandbox.locator('[data-cy="sti-jump-0"]').click({ force: true })
+    const clickPromise = sandbox.getByText('Top', { exact: true }).click({ force: true })
     const samples: number[] = []
     const start = Date.now()
     while (Date.now() - start < 320) {
