@@ -147,6 +147,8 @@ export * from './ExpansionPanel/expansion-panels.type'
 export * from './Field/field.type'
 
 export * from './FileField/file-field.type'
+export * from './FileField/file-field-drag-n-drop-item.type'
+export * from './FileField/file-field-list-item.type'
 
 export * from './Form/form.type'
 
@@ -214,6 +216,7 @@ export * from './Pagination/pagination.type'
 
 export * from './Parallax/parallax.type'
 export * from './Parallax/parallax-element.type'
+export * from './Parallax/parallax-layer.type'
 
 export * from './PasswordField/password-field.type'
 
@@ -248,6 +251,7 @@ export * from './SliderField/slider-field.type'
 export * from './SliderField/slider-field-track.type'
 
 export * from './Snackbar/snackbar.type'
+export * from './Snackbar/snackbar-item.type'
 
 export * from './Snackbar/snackbar-group.type'
 
@@ -302,6 +306,8 @@ export * from './Theme/theme.type'
 export * from './Theme/token-tree.type'
 export * from './Theme/semantic-tree.type'
 export * from './Theme/installed-theme.type'
+
+export * from './ThemeProvider/theme-provider.type'
 
 export * from './Window/window-item.type'
 
