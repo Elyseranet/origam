@@ -1,5 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
+import { selectHstOption, toggleHstCheckbox } from './_support/histoire-controls'
+
 /**
  * OrigamChartSparkline — runtime probes aligned with the Histoire story at
  * packages/stories/components/stories/Chart/OrigamChartSparkline.story.vue
@@ -7,22 +9,30 @@ import { expect, test, type Page } from '@playwright/test'
  *
  * Navigation pattern: goto STORY + click Variant title + frameLocator sandbox.
  *
+ * Story realignment (canonical Design/Functional/Events/Slots structure):
+ * the story no longer passes any story-side `data-cy="sparkline-*"` fall-
+ * through onto the component root, nor does it render side-by-side
+ * comparison fixtures (type/markers/colors) or the stock-prices table use
+ * case — all folded into (or dropped from) the single "Design" Variant's
+ * controls. Root data-cy is now always the component's own hardcoded
+ * "origam-chart-sparkline" (single instance per Variant); type/color/marker
+ * comparisons are driven via `selectHstOption` / `toggleHstCheckbox`
+ * instead of navigating to a dedicated fixture Variant. The "Use case —
+ * stock prices table" Variant has no surviving equivalent at all — see the
+ * `test.fixme` block below.
+ *
  * data-cy resolution:
- *   - Story passes data-cy="sparkline-*" directly on <origam-chart-sparkline>,
- *     which fall-through-binds to the component root <figure>. So the root
- *     element carries the story-provided data-cy, not the hardcoded
- *     "origam-chart-sparkline" of the component.
+ *   - Component root (a <figure>): data-cy="origam-chart-sparkline".
  *   - Internal elements (svg, paths, circles) keep their component-hardcoded
  *     data-cy values: origam-chart-sparkline-svg, origam-chart-sparkline-line,
- *     origam-chart-sparkline-area, origam-chart-sparkline-bar-{n},
+ *     origam-chart-sparkline-area, origam-chart-sparkline-bar-{n} (column),
+ *     origam-chart-sparkline-hbar-{n} (bar/horizontal),
  *     origam-chart-sparkline-special-{min|max|last},
  *     origam-chart-sparkline-empty.
- *   - Story wrapper divs (sparkline-types, sparkline-markers, sparkline-colors,
- *     sparkline-stocks, sparkline-playground) are on <div> elements in the
- *     story, not on the component.
  */
 
 const STORY = '/stories/story/components-stories-chart-origamchartsparkline-story-vue'
+const ROOT = '[data-cy="origam-chart-sparkline"]'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')
@@ -40,8 +50,7 @@ test.describe('OrigamChartSparkline', () => {
             await openVariant(page, 'Default')
             const sandbox = sandboxOf(page)
 
-            // Story passes data-cy="sparkline-playground-chart" to the component root (fall-through)
-            const chart = sandbox.locator('[data-cy="sparkline-playground-chart"]').first()
+            const chart = sandbox.locator(ROOT).first()
             await expect(chart).toBeVisible({ timeout: 8000 })
 
             // SVG has its own hardcoded data-cy inside the component
@@ -64,7 +73,7 @@ test.describe('OrigamChartSparkline', () => {
             await openVariant(page, 'Default')
             const sandbox = sandboxOf(page)
 
-            await expect(sandbox.locator('[data-cy="sparkline-playground-chart"]').first()).toBeVisible({ timeout: 8000 })
+            await expect(sandbox.locator('[data-cy="origam-chart-sparkline"]').first()).toBeVisible({ timeout: 8000 })
 
             // data-cy="origam-chart-sparkline-line" is hardcoded inside the component
             const linePath = sandbox.locator('[data-cy="origam-chart-sparkline-line"]').first()
@@ -75,7 +84,7 @@ test.describe('OrigamChartSparkline', () => {
             await openVariant(page, 'Default')
             const sandbox = sandboxOf(page)
 
-            await expect(sandbox.locator('[data-cy="sparkline-playground-chart"]').first()).toBeVisible({ timeout: 8000 })
+            await expect(sandbox.locator('[data-cy="origam-chart-sparkline"]').first()).toBeVisible({ timeout: 8000 })
 
             // Special marker role "last" → data-cy="origam-chart-sparkline-special-last"
             const lastMarker = sandbox.locator('[data-cy="origam-chart-sparkline-special-last"]').first()
@@ -83,157 +92,137 @@ test.describe('OrigamChartSparkline', () => {
         })
     })
 
-    test.describe('Prop — type variant', () => {
-        test('renders all four type variants', async ({ page }) => {
-            await openVariant(page, 'Prop — type (line / area / column / bar)')
+    // Story realignment: the old "Prop — type (line / area / column / bar)"
+    // side-by-side Variant is gone — `type` is now the "Design" Variant's
+    // Type HstSelect control (single instance, driven in sequence).
+    test.describe('Design Variant — type control', () => {
+        test('renders each of the four type variants without error', async ({ page }) => {
+            await openVariant(page, 'Design')
             const sandbox = sandboxOf(page)
+            const root = sandbox.locator(ROOT).first()
 
-            await expect(sandbox.locator('[data-cy="sparkline-types"]').first()).toBeVisible({ timeout: 8000 })
-
-            // Story passes data-cy="sparkline-type-*" to each component root (fall-through)
-            await expect(sandbox.locator('[data-cy="sparkline-type-line"]').first()).toBeVisible()
-            await expect(sandbox.locator('[data-cy="sparkline-type-area"]').first()).toBeVisible()
-            await expect(sandbox.locator('[data-cy="sparkline-type-column"]').first()).toBeVisible()
-            await expect(sandbox.locator('[data-cy="sparkline-type-bar"]').first()).toBeVisible()
+            for (const type of ['line', 'area', 'column', 'bar']) {
+                await selectHstOption(page, 'Type', type)
+                await expect(root).toBeVisible({ timeout: 8000 })
+            }
         })
 
         test('line type renders a path element', async ({ page }) => {
-            await openVariant(page, 'Prop — type (line / area / column / bar)')
+            await openVariant(page, 'Design')
             const sandbox = sandboxOf(page)
+            await selectHstOption(page, 'Type', 'line')
 
-            await expect(sandbox.locator('[data-cy="sparkline-type-line"]').first()).toBeVisible({ timeout: 8000 })
-
-            // data-cy="origam-chart-sparkline-line" is the hardcoded value on the <path> inside the component
-            const linePath = sandbox.locator('[data-cy="sparkline-type-line"] [data-cy="origam-chart-sparkline-line"]').first()
-            const count = await linePath.count()
-            expect(count).toBeGreaterThan(0)
+            const linePath = sandbox.locator(`${ ROOT } [data-cy="origam-chart-sparkline-line"]`).first()
+            await expect(linePath).toBeVisible({ timeout: 8000 })
         })
 
         test('area type renders both line and area paths', async ({ page }) => {
-            await openVariant(page, 'Prop — type (line / area / column / bar)')
+            await openVariant(page, 'Design')
             const sandbox = sandboxOf(page)
+            await selectHstOption(page, 'Type', 'area')
 
-            await expect(sandbox.locator('[data-cy="sparkline-type-area"]').first()).toBeVisible({ timeout: 8000 })
-
-            const area = sandbox.locator('[data-cy="sparkline-type-area"] .origam-chart-sparkline__area')
-            const line = sandbox.locator('[data-cy="sparkline-type-area"] .origam-chart-sparkline__line')
-            const areaCount = await area.count()
-            const lineCount = await line.count()
-            expect(areaCount).toBeGreaterThan(0)
-            expect(lineCount).toBeGreaterThan(0)
+            const area = sandbox.locator(`${ ROOT } .origam-chart-sparkline__area`)
+            const line = sandbox.locator(`${ ROOT } .origam-chart-sparkline__line`)
+            await expect(area.first()).toBeVisible({ timeout: 8000 })
+            await expect(line.first()).toBeVisible()
         })
 
         test('column type renders rect elements', async ({ page }) => {
-            await openVariant(page, 'Prop — type (line / area / column / bar)')
+            await openVariant(page, 'Design')
             const sandbox = sandboxOf(page)
+            await selectHstOption(page, 'Type', 'column')
 
-            await expect(sandbox.locator('[data-cy="sparkline-type-column"]').first()).toBeVisible({ timeout: 8000 })
-
-            const bars = sandbox.locator('[data-cy="sparkline-type-column"] .origam-chart-sparkline__bar')
-            const count = await bars.count()
-            expect(count).toBeGreaterThan(0)
+            const bars = sandbox.locator(`${ ROOT } .origam-chart-sparkline__bar`)
+            await expect(bars.first()).toBeVisible({ timeout: 8000 })
         })
 
         test('bar type renders horizontal rect elements', async ({ page }) => {
-            await openVariant(page, 'Prop — type (line / area / column / bar)')
+            await openVariant(page, 'Design')
             const sandbox = sandboxOf(page)
+            await selectHstOption(page, 'Type', 'bar')
 
-            await expect(sandbox.locator('[data-cy="sparkline-type-bar"]').first()).toBeVisible({ timeout: 8000 })
-
-            const hbars = sandbox.locator('[data-cy="sparkline-type-bar"] .origam-chart-sparkline__bar--horizontal')
-            const count = await hbars.count()
-            expect(count).toBeGreaterThan(0)
+            const hbars = sandbox.locator(`${ ROOT } .origam-chart-sparkline__bar--horizontal`)
+            await expect(hbars.first()).toBeVisible({ timeout: 8000 })
         })
 
         test('column bars have positive height', async ({ page }) => {
-            await openVariant(page, 'Prop — type (line / area / column / bar)')
+            await openVariant(page, 'Design')
             const sandbox = sandboxOf(page)
-
-            await expect(sandbox.locator('[data-cy="sparkline-type-column"]').first()).toBeVisible({ timeout: 8000 })
+            await selectHstOption(page, 'Type', 'column')
 
             // Component emits :data-cy="`origam-chart-sparkline-bar-${bar.index}`" on each rect
-            const firstBar = sandbox.locator('[data-cy="sparkline-type-column"] [data-cy="origam-chart-sparkline-bar-0"]').first()
-            const count = await firstBar.count()
-            if (count > 0) {
-                const height = await firstBar.getAttribute('height')
-                expect(parseFloat(height ?? '0')).toBeGreaterThan(0)
-            }
+            const firstBar = sandbox.locator(`${ ROOT } [data-cy="origam-chart-sparkline-bar-0"]`).first()
+            await expect(firstBar).toBeVisible({ timeout: 8000 })
+            const height = await firstBar.getAttribute('height')
+            expect(parseFloat(height ?? '0')).toBeGreaterThan(0)
         })
     })
 
-    test.describe('Prop — markers variant', () => {
-        test('renders min marker when showMin is true', async ({ page }) => {
-            await openVariant(page, 'Prop — showMin / showMax / showLast')
+    // Story realignment: the old "Prop — showMin / showMax / showLast"
+    // fixture Variant is gone — these are now three HstCheckbox controls on
+    // the "Design" Variant (init state: showMin=false, showMax=false,
+    // showLast=true). showLast is already on by default; showMin/showMax
+    // are toggled on via `toggleHstCheckbox`.
+    test.describe('Design Variant — marker controls', () => {
+        test('renders min and max markers once toggled on, distinct from each other', async ({ page }) => {
+            await openVariant(page, 'Design')
             const sandbox = sandboxOf(page)
+            await toggleHstCheckbox(page, 'Show Min')
+            await toggleHstCheckbox(page, 'Show Max')
+            await page.waitForTimeout(300)
 
-            await expect(sandbox.locator('[data-cy="sparkline-markers-minmax"]').first()).toBeVisible({ timeout: 8000 })
-
-            // Component emits :data-cy="`origam-chart-sparkline-special-${m.role}`" where role="min"
-            const minMarker = sandbox.locator('[data-cy="sparkline-markers-minmax"] [data-cy="origam-chart-sparkline-special-min"]').first()
-            await expect(minMarker).toBeVisible()
-        })
-
-        test('renders max marker when showMax is true', async ({ page }) => {
-            await openVariant(page, 'Prop — showMin / showMax / showLast')
-            const sandbox = sandboxOf(page)
-
-            await expect(sandbox.locator('[data-cy="sparkline-markers-minmax"]').first()).toBeVisible({ timeout: 8000 })
-
-            const maxMarker = sandbox.locator('[data-cy="sparkline-markers-minmax"] [data-cy="origam-chart-sparkline-special-max"]').first()
-            await expect(maxMarker).toBeVisible()
-        })
-
-        test('min and max markers are distinct circles', async ({ page }) => {
-            await openVariant(page, 'Prop — showMin / showMax / showLast')
-            const sandbox = sandboxOf(page)
-
-            await expect(sandbox.locator('[data-cy="sparkline-markers-minmax"]').first()).toBeVisible({ timeout: 8000 })
-
-            const min = sandbox.locator('[data-cy="sparkline-markers-minmax"] [data-cy="origam-chart-sparkline-special-min"]').first()
-            const max = sandbox.locator('[data-cy="sparkline-markers-minmax"] [data-cy="origam-chart-sparkline-special-max"]').first()
+            const min = sandbox.locator(`${ ROOT } [data-cy="origam-chart-sparkline-special-min"]`).first()
+            const max = sandbox.locator(`${ ROOT } [data-cy="origam-chart-sparkline-special-max"]`).first()
+            await expect(min).toBeVisible({ timeout: 8000 })
+            await expect(max).toBeVisible()
 
             const minCy = await min.getAttribute('cy')
             const maxCy = await max.getAttribute('cy')
-
             expect(minCy).not.toBeNull()
             expect(maxCy).not.toBeNull()
             expect(minCy).not.toBe(maxCy)
         })
 
-        test('last marker colour matches series colour', async ({ page }) => {
-            await openVariant(page, 'Prop — showMin / showMax / showLast')
+        test('last marker is visible by default (showLast=true on Design init-state)', async ({ page }) => {
+            await openVariant(page, 'Design')
             const sandbox = sandboxOf(page)
 
-            // Story passes data-cy="sparkline-markers-last" to the component root (fall-through)
-            await expect(sandbox.locator('[data-cy="sparkline-markers-last"]').first()).toBeVisible({ timeout: 8000 })
-
-            const lastMarker = sandbox.locator('[data-cy="sparkline-markers-last"] [data-cy="origam-chart-sparkline-special-last"]').first()
-            await expect(lastMarker).toBeVisible()
+            const lastMarker = sandbox.locator(`${ ROOT } [data-cy="origam-chart-sparkline-special-last"]`).first()
+            await expect(lastMarker).toBeVisible({ timeout: 8000 })
         })
     })
 
-    test.describe('Prop — color variant', () => {
+    // Story realignment: the old "Prop — color (primary / success / danger)"
+    // side-by-side Variant is gone — `color` is now the "Design" Variant's
+    // Color HstSelect control, driven in sequence instead of comparing DOM
+    // siblings.
+    test.describe('Design Variant — color control', () => {
         test('renders three colour variants without error', async ({ page }) => {
-            await openVariant(page, 'Prop — color (primary / success / danger)')
+            await openVariant(page, 'Design')
             const sandbox = sandboxOf(page)
+            const root = sandbox.locator(ROOT).first()
 
-            await expect(sandbox.locator('[data-cy="sparkline-colors"]').first()).toBeVisible({ timeout: 8000 })
-
-            // Story passes data-cy="sparkline-color-*" to each component root (fall-through)
-            await expect(sandbox.locator('[data-cy="sparkline-color-primary"]').first()).toBeVisible()
-            await expect(sandbox.locator('[data-cy="sparkline-color-success"]').first()).toBeVisible()
-            await expect(sandbox.locator('[data-cy="sparkline-color-danger"]').first()).toBeVisible()
+            for (const color of ['Primary', 'Success', 'Danger']) {
+                await selectHstOption(page, 'Color', color)
+                await expect(root).toBeVisible({ timeout: 8000 })
+            }
         })
     })
 
-    test.describe('Use case — stock prices table', () => {
+    // Story realignment: "Use case — stock prices table" has NO surviving
+    // equivalent — OrigamChartSparkline.story.vue no longer has any
+    // multi-ticker table fixture at all (Design/Functional/Events/Slots all
+    // render a single sparkline instance against FIXTURE_SALES or
+    // FIXTURE_VOLATILE). This is a genuine coverage gap, not a renamed
+    // Variant — flagging via test.fixme rather than inventing a fixture the
+    // story doesn't have. Needs a story-side decision: either reinstate a
+    // "stock prices table" usage-example Variant, or accept the loss.
+    test.describe('Use case — stock prices table [REMOVED FROM STORY]', () => {
         test('renders all five tickers', async ({ page }) => {
-            await openVariant(page, 'Use case — stock prices table')
+            test.fixme(true, 'Story no longer has any stock-prices-table fixture/Variant — see chart-sparkline.spec.ts header note')
+            await openVariant(page, 'Default')
             const sandbox = sandboxOf(page)
 
-            await expect(sandbox.locator('[data-cy="sparkline-stocks"]').first()).toBeVisible({ timeout: 8000 })
-
-            // Story emits :data-cy="`sparkline-stock-${stock.ticker.toLowerCase()}`" on each <tr>
             const tickers = ['aapl', 'googl', 'msft', 'tsla', 'amzn']
             for (const ticker of tickers) {
                 await expect(sandbox.locator(`[data-cy="sparkline-stock-${ ticker }"]`).first()).toBeVisible()
@@ -241,12 +230,10 @@ test.describe('OrigamChartSparkline', () => {
         })
 
         test('each stock row contains a sparkline SVG', async ({ page }) => {
-            await openVariant(page, 'Use case — stock prices table')
+            test.fixme(true, 'Story no longer has any stock-prices-table fixture/Variant — see chart-sparkline.spec.ts header note')
+            await openVariant(page, 'Default')
             const sandbox = sandboxOf(page)
 
-            await expect(sandbox.locator('[data-cy="sparkline-stocks"]').first()).toBeVisible({ timeout: 8000 })
-
-            // Story passes :data-cy="`sparkline-stock-chart-${...}`" to the component root (fall-through)
             const tickers = ['aapl', 'googl', 'msft', 'tsla', 'amzn']
             for (const ticker of tickers) {
                 const chart = sandbox.locator(`[data-cy="sparkline-stock-chart-${ ticker }"]`).first()
@@ -257,7 +244,8 @@ test.describe('OrigamChartSparkline', () => {
         })
 
         test('table has correct accessible structure', async ({ page }) => {
-            await openVariant(page, 'Use case — stock prices table')
+            test.fixme(true, 'Story no longer has any stock-prices-table fixture/Variant — see chart-sparkline.spec.ts header note')
+            await openVariant(page, 'Default')
             const sandbox = sandboxOf(page)
 
             await expect(sandbox.locator('[data-cy="sparkline-stocks"]').first()).toBeVisible({ timeout: 8000 })
@@ -270,19 +258,17 @@ test.describe('OrigamChartSparkline', () => {
         })
     })
 
-    test.describe('Slot — empty', () => {
+    test.describe('Slots - Empty', () => {
         test('renders empty slot when series is empty', async ({ page }) => {
-            await openVariant(page, 'Slot — empty')
+            await openVariant(page, 'Slots - Empty')
             const sandbox = sandboxOf(page)
 
-            // Story passes data-cy="sparkline-slot-empty-chart" to the component root (fall-through)
-            const chart = sandbox.locator('[data-cy="sparkline-slot-empty-chart"]').first()
+            const chart = sandbox.locator(ROOT).first()
             await expect(chart).toBeVisible({ timeout: 8000 })
 
             // Empty state div inside the component has data-cy="origam-chart-sparkline-empty"
-            const empty = sandbox.locator('[data-cy="sparkline-slot-empty-chart"] [data-cy="origam-chart-sparkline-empty"]').first()
-            const count = await empty.count()
-            expect(count).toBeGreaterThan(0)
+            const empty = sandbox.locator(`${ ROOT } [data-cy="origam-chart-sparkline-empty"]`).first()
+            await expect(empty).toBeVisible({ timeout: 4000 })
         })
     })
 
@@ -291,8 +277,7 @@ test.describe('OrigamChartSparkline', () => {
             await openVariant(page, 'Default')
             const sandbox = sandboxOf(page)
 
-            // In the Default variant, the story passes data-cy="sparkline-playground-chart" to the component root
-            const figure = sandbox.locator('[data-cy="sparkline-playground-chart"]').first()
+            const figure = sandbox.locator(ROOT).first()
             await expect(figure).toBeVisible({ timeout: 8000 })
 
             const tagName = await figure.evaluate((el) => el.tagName.toLowerCase())
