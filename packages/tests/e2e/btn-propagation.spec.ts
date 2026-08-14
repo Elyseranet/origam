@@ -1,5 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
+import { selectHstOption } from './_support/histoire-controls'
+
 /**
  * Regression spec — parent → children prop propagation across the
  * Btn/BtnGroup/BtnToggle and Chip/ChipGroup families.
@@ -44,7 +46,11 @@ test.describe('OrigamBtnGroup → OrigamBtn propagation', () => {
         // initial provideDefaults fix: `color` was painting backgrounds
         // (because `useColorEffect` auto-paired bg from intent). The
         // colour composable was patched to drop that auto-pair.
-        await openVariant(page, BTN_GROUP, 'Prop — color & bgColor')
+        // Dedicated fixture folded into "Design" — flip Color from its
+        // unset default to Primary.
+        await openVariant(page, BTN_GROUP, 'Design')
+        await selectHstOption(page, 'Color', 'Primary')
+        await page.waitForTimeout(400)
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-btn-group').first()).toBeVisible({ timeout: 8000 })
 
@@ -73,7 +79,10 @@ test.describe('OrigamBtnGroup → OrigamBtn propagation', () => {
     })
 
     test('group density forwards to children passed via items prop', async ({ page }) => {
-        await openVariant(page, BTN_GROUP, 'Prop — items')
+        // Dedicated fixture folded into the canonical "Slots - Item"
+        // Variant (`:items="actions"`, see OrigamBtnGroup.story.vue) —
+        // same fixture btn-group.spec.ts's "items prop" test now uses.
+        await openVariant(page, BTN_GROUP, 'Slots - Item')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-btn-group').first()).toBeVisible({ timeout: 8000 })
 
@@ -93,7 +102,12 @@ test.describe('OrigamBtnGroup → OrigamBtn propagation', () => {
 
 test.describe('OrigamBtnToggle → OrigamBtn propagation', () => {
     test('toggle density forwards to children', async ({ page }) => {
-        await openVariant(page, BTN_TOGGLE, 'Prop — density')
+        // Dedicated fixture folded into "Design" — density is unset in
+        // its init-state, so children fall through to the composable's
+        // baked-in 'default' rung with no control interaction needed
+        // (mirrors the story's own comment on OrigamBtnGroup's
+        // equivalent case).
+        await openVariant(page, BTN_TOGGLE, 'Design')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-btn-toggle').first()).toBeVisible({ timeout: 8000 })
 
@@ -107,7 +121,10 @@ test.describe('OrigamBtnToggle → OrigamBtn propagation', () => {
 
     test('toggle color forwards: children TEXT colour shifts; background stays neutral', async ({ page }) => {
         // Same contract as the BtnGroup test above — `color` is fg-only.
-        await openVariant(page, BTN_TOGGLE, 'Prop — color & bgColor')
+        // Dedicated fixture folded into "Design" — its default init-state
+        // already sets color: 'primary' (see OrigamBtnToggle.story.vue),
+        // so no control interaction is needed.
+        await openVariant(page, BTN_TOGGLE, 'Design')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-btn-toggle').first()).toBeVisible({ timeout: 8000 })
 
@@ -136,13 +153,16 @@ test.describe('OrigamBtn — color/bgColor semantics (universal contract)', () =
      * Pre-fix `color` auto-paired a primary background as well, which broke
      * propagation expectations through groups.
      *
-     * The BtnGroup `Color (intent)` variant initialises `color: 'primary'`
-     * on the parent — so its children are the cleanest way to assert the
-     * fix end-to-end without driving Histoire's HstSelect dropdown
-     * (which is a custom Vue component, not a native <select>).
+     * The old dedicated `Color (intent)` Variant that initialised
+     * `color: 'primary'` statically no longer exists — "Design" is the
+     * canonical replacement, with Color driven via the shared
+     * `selectHstOption` helper (confirmed reliable against Histoire's
+     * HstSelect popover — see `_support/histoire-controls.ts`).
      */
     test('color flows fg-only across propagation: text shifts, bg stays neutral', async ({ page }) => {
-        await openVariant(page, BTN_GROUP, 'Prop — color & bgColor')
+        await openVariant(page, BTN_GROUP, 'Design')
+        await selectHstOption(page, 'Color', 'Primary')
+        await page.waitForTimeout(400)
         const sandbox = sandboxOf(page)
         const firstBtn = sandbox.locator('.origam-btn-group .origam-btn').first()
         await expect(firstBtn).toBeVisible({ timeout: 8000 })
