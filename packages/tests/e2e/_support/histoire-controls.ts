@@ -34,12 +34,29 @@ import type { Page } from '@playwright/test'
  * selection doesn't stick.
  */
 
-/** Open a Histoire `HstSelect` field (matched by its row label) and pick an option by its visible text. */
+/**
+ * Open a Histoire `HstSelect` field (matched by its row label) and pick an
+ * option by its visible text.
+ *
+ * The option click is scoped to `.v-popper__popper` — the floating
+ * dropdown's own teleported container (confirmed via DOM inspection: it
+ * carries a `v-popper__popper--shown` class while open, sibling to
+ * `.v-popper__backdrop` / `.v-popper__arrow-container`). A page-wide
+ * `getByText(optionLabel)` is NOT safe: an option whose label matches
+ * text elsewhere on the page — e.g. every story has a "Default" Variant
+ * link in its sidebar, and the trigger itself still shows the
+ * currently-selected value as text — throws a Playwright strict-mode
+ * "resolved to N elements" error. Reproduced empirically on
+ * bracket.spec.ts picking "Double elimination" (already the selected
+ * value, shown twice) and "Default" (collides with the sidebar's
+ * "Default" Variant link).
+ */
 export async function selectHstOption(page: Page, fieldLabel: string, optionLabel: string): Promise<void> {
     const row = page.locator('label.histoire-select', { hasText: fieldLabel }).first()
     await row.locator('.v-popper--theme-dropdown').click()
     await page.waitForTimeout(300)
-    await page.getByText(optionLabel, { exact: true }).click()
+    const popper = page.locator('.v-popper__popper.v-popper__popper--shown').last()
+    await popper.getByText(optionLabel, { exact: true }).click()
     await page.waitForTimeout(300)
 }
 
