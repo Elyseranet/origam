@@ -39,6 +39,13 @@ import { eventLogItems, openEventsTab, selectHstOption, toggleHstCheckbox } from
  * `name` happen to still work because the story passes them directly
  * on each `<OrigamSelectionControl>` (no merge needed).
  *
+ * NOTE: this is not a "no `props.` in the template" convention
+ * problem — that convention is fine and stays. The fault is in
+ * `useDefaults()`'s integration: it manufactures a SECOND props
+ * object in parallel of the first instead of making the merged
+ * values consumable under the prop's own name, so the two objects
+ * silently diverge for any prop the template reads bare.
+ *
  * Verified empirically (2026-08, running Histoire instance):
  *   - `<input>` renders with NO `type` attribute at all — `el.type`
  *     reads back as the browser's implicit default `"text"`.
@@ -78,7 +85,7 @@ test.describe('OrigamSelectionControlGroup — Type', () => {
         await openVariant(page, 'Functional')
         const sandbox = sandboxOf(page)
         await expect(group(sandbox)).toBeVisible({ timeout: 8000 })
-        expect(await group(sandbox).locator('.origam-selection-control').count()).toBe(3)
+        await expect(group(sandbox).locator('.origam-selection-control')).toHaveCount(3)
     })
 
     test('switching type to radio still renders 3 controls', async ({ page }) => {
@@ -86,7 +93,7 @@ test.describe('OrigamSelectionControlGroup — Type', () => {
         const sandbox = sandboxOf(page)
         await selectHstOption(page, 'Type', 'Radio')
         await page.waitForTimeout(300)
-        expect(await group(sandbox).locator('.origam-selection-control').count()).toBe(3)
+        await expect(group(sandbox).locator('.origam-selection-control')).toHaveCount(3)
     })
 
     test('the native input actually carries the group type attribute (checkbox)', async ({ page }) => {
@@ -108,8 +115,7 @@ test.describe('OrigamSelectionControlGroup — Color', () => {
         await openVariant(page, 'Design')
         const sandbox = sandboxOf(page)
         await expect(group(sandbox)).toBeVisible({ timeout: 8000 })
-        const count = await group(sandbox).locator('.origam-selection-control').count()
-        expect(count).toBeGreaterThan(0)
+        await expect(group(sandbox).locator('.origam-selection-control')).not.toHaveCount(0)
         const wrappers = await group(sandbox).locator('.origam-selection-control__wrapper').evaluateAll(els =>
             els.map(el => el.className)
         )
@@ -161,7 +167,7 @@ test.describe('OrigamSelectionControlGroup — Selection modifiers', () => {
         const sandbox = sandboxOf(page)
         await toggleHstCheckbox(page, 'Inline')
         await page.waitForTimeout(300)
-        expect(await group(sandbox).locator('.origam-selection-control').count()).toBe(3)
+        await expect(group(sandbox).locator('.origam-selection-control')).toHaveCount(3)
     })
 
     test('toggling multiple (Functional Variant) still renders 3 controls', async ({ page }) => {
@@ -169,7 +175,7 @@ test.describe('OrigamSelectionControlGroup — Selection modifiers', () => {
         const sandbox = sandboxOf(page)
         await toggleHstCheckbox(page, 'Multiple')
         await page.waitForTimeout(300)
-        expect(await group(sandbox).locator('.origam-selection-control').count()).toBe(3)
+        await expect(group(sandbox).locator('.origam-selection-control')).toHaveCount(3)
     })
 })
 
@@ -182,7 +188,7 @@ test.describe('OrigamSelectionControlGroup — Icons', () => {
         const sandbox = sandboxOf(page)
         await selectHstOption(page, 'True Icon', 'Check')
         await page.waitForTimeout(300)
-        expect(await group(sandbox).locator('.origam-selection-control').count()).toBe(3)
+        await expect(group(sandbox).locator('.origam-selection-control')).toHaveCount(3)
     })
 })
 
@@ -200,8 +206,7 @@ test.describe('OrigamSelectionControlGroup — States', () => {
         await toggleHstCheckbox(page, 'Disabled')
         await toggleHstCheckbox(page, 'Error')
         await page.waitForTimeout(300)
-        const count = await group(sandbox).locator('.origam-selection-control').count()
-        expect(count).toBeGreaterThan(0)
+        await expect(group(sandbox).locator('.origam-selection-control')).not.toHaveCount(0)
         const firstControl = group(sandbox).locator('.origam-selection-control').first()
         await expect(firstControl).toHaveClass(/origam-selection-control--disabled/)
     })
@@ -228,7 +233,7 @@ test.describe('OrigamSelectionControlGroup — Items prop', () => {
         await openVariant(page, 'Slots - Item')
         const sandbox = sandboxOf(page)
         await expect(group(sandbox)).toBeVisible({ timeout: 8000 })
-        expect(await group(sandbox).locator('.origam-selection-control').count()).toBe(3)
+        await expect(group(sandbox).locator('.origam-selection-control')).toHaveCount(3)
     })
 })
 
@@ -252,8 +257,7 @@ test.describe('OrigamSelectionControlGroup — Slot: item', () => {
         await openVariant(page, 'Slots - Item')
         const sandbox = sandboxOf(page)
         await expect(group(sandbox)).toBeVisible({ timeout: 8000 })
-        const count = await group(sandbox).locator('.origam-selection-control').count()
-        expect(count).toBeGreaterThan(0)
+        await expect(group(sandbox).locator('.origam-selection-control')).not.toHaveCount(0)
         // The custom #item template prefixes each label with its 1-based index.
         await expect(group(sandbox)).toContainText('1. Alpha')
         await expect(group(sandbox)).toContainText('2. Beta')
@@ -268,7 +272,7 @@ test.describe('OrigamSelectionControlGroup — Emit: update:modelValue', () => {
         await openVariant(page, 'Events - update:modelValue')
         const sandbox = sandboxOf(page)
         await expect(group(sandbox)).toBeVisible({ timeout: 8000 })
-        expect(await group(sandbox).locator('.origam-selection-control').count()).toBe(2)
+        await expect(group(sandbox).locator('.origam-selection-control')).toHaveCount(2)
     })
 
     test('checking a control fires update:modelValue (verified via the Events tab)', async ({ page }) => {
@@ -294,6 +298,6 @@ test.describe('OrigamSelectionControlGroup — Default', () => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
         await expect(group(sandbox)).toBeVisible({ timeout: 8000 })
-        expect(await group(sandbox).locator('.origam-selection-control').count()).toBe(3)
+        await expect(group(sandbox).locator('.origam-selection-control')).toHaveCount(3)
     })
 })

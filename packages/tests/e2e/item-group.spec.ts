@@ -43,7 +43,7 @@ test.describe('OrigamItemGroup — Default (single selection)', () => {
         const sandbox = sandboxOf(page)
         const active = sandbox.locator('.ig-card--active')
         await expect(active.first()).toBeVisible({ timeout: 8000 })
-        expect(await active.count()).toBe(1)
+        await expect(active).toHaveCount(1)
     })
 
     test('clicking another card shifts the active state', async ({ page }) => {
@@ -62,8 +62,7 @@ test.describe('OrigamItemGroup — Default (single selection)', () => {
         expect(status).toContain('l')
 
         // Active class moved.
-        const activeCount = await sandbox.locator('.ig-card--active').count()
-        expect(activeCount).toBe(1)
+        await expect(sandbox.locator('.ig-card--active')).toHaveCount(1)
     })
 })
 
@@ -84,8 +83,7 @@ test.describe('OrigamItemGroup — Multiple', () => {
         expect(status).toContain('m')
         expect(status).toContain('s')
 
-        const activeCount = await sandbox.locator('.ig-card--active').count()
-        expect(activeCount).toBe(2)
+        await expect(sandbox.locator('.ig-card--active')).toHaveCount(2)
     })
 
     test('clicking a selected item removes it from the array', async ({ page }) => {
@@ -100,8 +98,7 @@ test.describe('OrigamItemGroup — Multiple', () => {
 
         const status = await sandbox.locator('.ig-status').textContent()
         expect(status).toContain('[]')
-        const activeCount = await sandbox.locator('.ig-card--active').count()
-        expect(activeCount).toBe(0)
+        await expect(sandbox.locator('.ig-card--active')).toHaveCount(0)
     })
 })
 
@@ -119,8 +116,7 @@ test.describe('OrigamItemGroup — Mandatory', () => {
         await page.waitForTimeout(250)
 
         // Still exactly one active.
-        const activeCount = await sandbox.locator('.ig-card--active').count()
-        expect(activeCount).toBe(1)
+        await expect(sandbox.locator('.ig-card--active')).toHaveCount(1)
     })
 })
 
@@ -137,7 +133,6 @@ test.describe('OrigamItemGroup — Custom selectedClass', () => {
         // <OrigamItem> root (via `useGroupItem`'s selectedClass, see
         // group.composable.ts) that wraps the active card.
         await page.waitForTimeout(300)
-        const activeWithCustom = await sandbox.locator('.my-custom-active').count()
-        expect(activeWithCustom).toBeGreaterThanOrEqual(1)
+        await expect(sandbox.locator('.my-custom-active')).not.toHaveCount(0)
     })
 })
