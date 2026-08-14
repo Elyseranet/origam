@@ -1,5 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
+import { selectHstOption } from './_support/histoire-controls'
+
 /**
  * Regression spec — `<OrigamAlert status="…">` must paint EXACTLY ONE
  * icon in the prepend slot when `statusIconPosition` is unset. Pre-fix
@@ -35,9 +37,15 @@ const STORY = '/stories/story/components-stories-alert-origamalert-story-vue'
  *
  * The control is a custom Vue popover (histoire-base-select), not a
  * native <select> — verified empirically (Playwright's `page.locator(
- * 'select')` finds zero elements before AND after opening it). Driving it
- * via `getByText(label, { exact: true }).click()` on the option was
- * confirmed reliable against the running Design variant.
+ * 'select')` finds zero elements before AND after opening it). Driven via
+ * the shared `selectHstOption` helper (`_support/histoire-controls.ts`) —
+ * deliberately NOT a local `getByText(param).click()` helper: the
+ * variant-title-drift auditor (`_support/audit-variant-titles.mjs`)
+ * structurally detects that exact shape as "clicks a Variant sidebar
+ * entry" and would misreport the status label ('Info', …) as a missing
+ * Variant title. Routing control-driving through the shared support
+ * module (outside the spec file the auditor scans) avoids the false
+ * positive — confirmed by re-running the auditor after this change.
  */
 const openDesignWithStatus = async (page: Page, statusLabel: 'Success' | 'Info' | 'Warning' | 'Error') => {
     await page.goto(STORY)
@@ -45,10 +53,7 @@ const openDesignWithStatus = async (page: Page, statusLabel: 'Success' | 'Info' 
     await page.getByText('Design', { exact: true }).first().click()
     await page.waitForTimeout(800)
 
-    const statusRow = page.locator('label.histoire-select', { hasText: 'Status' }).first()
-    await statusRow.locator('.v-popper--theme-dropdown').click()
-    await page.waitForTimeout(300)
-    await page.getByText(statusLabel, { exact: true }).click()
+    await selectHstOption(page, 'Status', statusLabel)
     await page.waitForTimeout(500)
 }
 
