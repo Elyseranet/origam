@@ -27,20 +27,13 @@
 
   import type { IItemGroupItemProps, IItemGroupItemSlots } from '../../interfaces'
 
-  interface Props extends IItemGroupItemProps {
-    tag?: string
-    value?: any
-    disabled?: boolean
-    selectedClass?: string
-  }
-
   /*********************************************************
    * Global
    *
    * @description
    * Props, group registration, and slot props.
    ********************************************************/
-  const props = withDefaults(defineProps<Props>(), {
+  const props = withDefaults(defineProps<IItemGroupItemProps>(), {
     tag: 'div',
     value: undefined,
     selectedClass: undefined

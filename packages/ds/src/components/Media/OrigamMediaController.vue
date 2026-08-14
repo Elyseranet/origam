@@ -181,6 +181,8 @@
 		IMediaControllerSlots
 	} from '../../interfaces/Media/media-controller.interface'
 
+	import type { IConfigMenuItem } from '../../interfaces/Media/media-config-menu-item.interface'
+
 	import type { TAudioLoopMode } from '../../types'
 
 	import OrigamMediaScrubber from './OrigamMediaScrubber.vue'
@@ -441,21 +443,6 @@
 		const match = props.qualityOptions.find((q) => q.quality === props.currentQuality)
 		return match?.label ?? props.currentQuality
 	})
-
-	interface IConfigMenuItem {
-		title: string
-		appendText?: string
-		prependIcon?: string
-		key: string
-		value?: string | number
-		children?: Array<IConfigMenuItem>
-		onClick?: (event: MouseEvent) => void
-		link?: boolean
-		href?: string
-		download?: string | boolean
-		rel?: string
-		target?: string
-	}
 
 	/*********************************************************
 	 * configMenuItems

@@ -192,6 +192,8 @@
 
 	import type { ICommandPaletteEmits } from '../../interfaces/CommandPalette/command-palette.interface'
 
+	import type { IRenderedGroup } from '../../interfaces/CommandPalette/command-palette-rendered-group.interface'
+
 	import { getUid } from '../../utils'
 
 	import { fuzzyMatch, type IFuzzyMatchResult } from '../../utils/CommandPalette/fuzzy-match.util'
@@ -345,11 +347,6 @@
 	 * When the query is non-empty we keep the fuzzy ranking flat
 	 * (groups would conflict with score-based ordering).
 	 ********************************************************/
-
-	interface IRenderedGroup {
-		label: string | null
-		items: ReadonlyArray<IFuzzyMatchResult<ICommand>>
-	}
 
 	const groupedResults = computed<ReadonlyArray<IRenderedGroup>>(() => {
 		if (query.value.trim().length > 0) {
