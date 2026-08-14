@@ -1,5 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
+import { selectHstOption } from './_support/histoire-controls'
+
 /**
  * OrigamChartHoneycomb — Playwright spec.
  *
@@ -12,10 +14,23 @@ import { expect, test, type Page } from '@playwright/test'
  *    present for screen-reader support.
  *  - Each tile carries role="button" and aria-label.
  *  - Empty slot renders when series is empty.
+ *
+ * The story restructuring (canonical Design/State/Functional/Events/Slots
+ * layout, see root CLAUDE.md) removed every per-fixture root data-cy this
+ * spec targeted (honeycomb-playground-chart, honeycomb-orientation-*,
+ * honeycomb-color-mode-*, honeycomb-slot-empty-chart) —
+ * `OrigamChartHoneycomb.vue` itself sets a static
+ * `data-cy="origam-chart-honeycomb"` on its own root instead. orientation/
+ * colorMode were static side-by-side comparisons, now single dynamic
+ * controls on "Design" — which uses a DIFFERENT fixture (FIXTURE_HEATMAP,
+ * 12 tiles / 4×3) than "Default"/"Functional" (FIXTURE_3X3, 9 tiles /
+ * 3×3, see OrigamChartHoneycomb.story.vue) — so orientation/colorMode
+ * tests now expect 12 tiles, not 9.
  */
 
 const HONEYCOMB_STORY = '/stories/story/components-stories-chart-origamcharthoneycomb-story-vue'
 const CHART_STORY = '/stories/story/components-stories-chart-origamchart-story-vue'
+const CHART = '[data-cy="origam-chart-honeycomb"]'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')
@@ -31,7 +46,7 @@ test.describe('OrigamChartHoneycomb — Default', () => {
     test('renders figure root with role="figure"', async ({ page }) => {
         await openVariant(page, HONEYCOMB_STORY, 'Default')
         const sandbox = sandboxOf(page)
-        const host = sandbox.locator('[data-cy="honeycomb-playground-chart"]').first()
+        const host = sandbox.locator(CHART).first()
         await expect(host).toBeVisible({ timeout: 8000 })
         await expect(host).toHaveAttribute('role', 'figure')
     })
@@ -39,7 +54,7 @@ test.describe('OrigamChartHoneycomb — Default', () => {
     test('SVG carries role=img, title and desc', async ({ page }) => {
         await openVariant(page, HONEYCOMB_STORY, 'Default')
         const sandbox = sandboxOf(page)
-        const svg = sandbox.locator('[data-cy="honeycomb-playground-chart"] svg').first()
+        const svg = sandbox.locator(`${ CHART } svg`).first()
         await expect(svg).toBeVisible()
         await expect(svg).toHaveAttribute('role', 'img')
         await expect(svg.locator('title')).toHaveCount(1)
@@ -51,16 +66,19 @@ test.describe('OrigamChartHoneycomb — Default', () => {
         const sandbox = sandboxOf(page)
         await page.screenshot({ path: '/tmp/chart-honeycomb-default.png', fullPage: false })
 
-        const tiles = sandbox.locator('[data-cy="honeycomb-playground-chart"] polygon[data-cy^="origam-chart-honeycomb-tile-"]')
+        const tiles = sandbox.locator(`${ CHART } polygon[data-cy^="origam-chart-honeycomb-tile-"]`)
         await expect(tiles).toHaveCount(9, { timeout: 8000 })
     })
 
     test('each tile polygon has a non-empty points attribute', async ({ page }) => {
         await openVariant(page, HONEYCOMB_STORY, 'Default')
         const sandbox = sandboxOf(page)
-        const tiles = sandbox.locator('[data-cy="honeycomb-playground-chart"] polygon[data-cy^="origam-chart-honeycomb-tile-"]')
+        const tiles = sandbox.locator(`${ CHART } polygon[data-cy^="origam-chart-honeycomb-tile-"]`)
+        // Timing race found while repairing this spec's title drift,
+        // unrelated to it (same class documented on chart-bullet.spec.ts's
+        // axis-ticks test) — toHaveCount auto-retries.
+        await expect(tiles).toHaveCount(9, { timeout: 6000 })
         const count = await tiles.count()
-        expect(count).toBe(9)
         for (let i = 0; i < count; i++) {
             const pts = await tiles.nth(i).getAttribute('points')
             expect(pts).toBeTruthy()
@@ -73,7 +91,7 @@ test.describe('OrigamChartHoneycomb — accessibility', () => {
     test('each tile has role="button" and a non-empty aria-label', async ({ page }) => {
         await openVariant(page, HONEYCOMB_STORY, 'Default')
         const sandbox = sandboxOf(page)
-        const tiles = sandbox.locator('[data-cy="honeycomb-playground-chart"] polygon[data-cy^="origam-chart-honeycomb-tile-"]')
+        const tiles = sandbox.locator(`${ CHART } polygon[data-cy^="origam-chart-honeycomb-tile-"]`)
         const count = await tiles.count()
         for (let i = 0; i < count; i++) {
             await expect(tiles.nth(i)).toHaveAttribute('role', 'button')
@@ -85,7 +103,7 @@ test.describe('OrigamChartHoneycomb — accessibility', () => {
     test('each tile is keyboard-focusable (tabindex=0)', async ({ page }) => {
         await openVariant(page, HONEYCOMB_STORY, 'Default')
         const sandbox = sandboxOf(page)
-        const tiles = sandbox.locator('[data-cy="honeycomb-playground-chart"] polygon[data-cy^="origam-chart-honeycomb-tile-"]')
+        const tiles = sandbox.locator(`${ CHART } polygon[data-cy^="origam-chart-honeycomb-tile-"]`)
         const count = await tiles.count()
         for (let i = 0; i < count; i++) {
             await expect(tiles.nth(i)).toHaveAttribute('tabindex', '0')
@@ -94,27 +112,33 @@ test.describe('OrigamChartHoneycomb — accessibility', () => {
 })
 
 test.describe('OrigamChartHoneycomb — orientation variant', () => {
-    test('pointy-top and flat-top both render 9 tiles', async ({ page }) => {
-        await openVariant(page, HONEYCOMB_STORY, 'Prop — orientation (pointy-top vs flat-top side by side)')
+    test('pointy-top and flat-top both render 12 tiles', async ({ page }) => {
+        // Dedicated side-by-side fixture folded into "Design" — a single
+        // dynamic "Orientation" control (default 'pointy-top'), driven
+        // sequentially. Design uses FIXTURE_HEATMAP (12 tiles / 4×3), NOT
+        // the 9-tile FIXTURE_3X3 the old fixture used — see file-level
+        // comment.
+        await openVariant(page, HONEYCOMB_STORY, 'Design')
         const sandbox = sandboxOf(page)
-        await page.screenshot({ path: '/tmp/chart-honeycomb-orientation.png', fullPage: false })
+        const tiles = sandbox.locator(`${ CHART } polygon[data-cy^="origam-chart-honeycomb-tile-"]`)
 
-        const pointyTiles = sandbox.locator('[data-cy="honeycomb-orientation-pointy"] polygon[data-cy^="origam-chart-honeycomb-tile-"]')
-        const flatTiles = sandbox.locator('[data-cy="honeycomb-orientation-flat"] polygon[data-cy^="origam-chart-honeycomb-tile-"]')
+        await expect(tiles).toHaveCount(12, { timeout: 8000 })
 
-        await expect(pointyTiles).toHaveCount(9, { timeout: 8000 })
-        await expect(flatTiles).toHaveCount(9, { timeout: 8000 })
+        await selectHstOption(page, 'Orientation', 'flat-top')
+        await page.waitForTimeout(400)
+        await expect(tiles).toHaveCount(12, { timeout: 8000 })
     })
 
     test('pointy-top and flat-top tile bounding boxes differ', async ({ page }) => {
-        await openVariant(page, HONEYCOMB_STORY, 'Prop — orientation (pointy-top vs flat-top side by side)')
+        await openVariant(page, HONEYCOMB_STORY, 'Design')
         const sandbox = sandboxOf(page)
+        const tile0 = sandbox.locator(`${ CHART } polygon[data-cy="origam-chart-honeycomb-tile-0"]`)
 
-        const pointyTile0 = sandbox.locator('[data-cy="honeycomb-orientation-pointy"] polygon[data-cy="origam-chart-honeycomb-tile-0"]')
-        const flatTile0 = sandbox.locator('[data-cy="honeycomb-orientation-flat"] polygon[data-cy="origam-chart-honeycomb-tile-0"]')
+        const pointyPoints = await tile0.getAttribute('points')
 
-        const pointyPoints = await pointyTile0.getAttribute('points')
-        const flatPoints = await flatTile0.getAttribute('points')
+        await selectHstOption(page, 'Orientation', 'flat-top')
+        await page.waitForTimeout(400)
+        const flatPoints = await tile0.getAttribute('points')
 
         expect(pointyPoints).toBeTruthy()
         expect(flatPoints).toBeTruthy()
@@ -124,22 +148,31 @@ test.describe('OrigamChartHoneycomb — orientation variant', () => {
 
 test.describe('OrigamChartHoneycomb — colorMode variant', () => {
     test('categorical and heatmap both render tiles', async ({ page }) => {
-        await openVariant(page, HONEYCOMB_STORY, 'Prop — colorMode (categorical vs heatmap side by side)')
+        // Dedicated side-by-side fixture folded into "Design" — a single
+        // dynamic "Color Mode" control (default 'categorical'), driven
+        // sequentially. Design's FIXTURE_HEATMAP has 12 tiles — matches
+        // the original expectation unchanged.
+        await openVariant(page, HONEYCOMB_STORY, 'Design')
         const sandbox = sandboxOf(page)
-        await page.screenshot({ path: '/tmp/chart-honeycomb-heatmap.png', fullPage: false })
+        const tiles = sandbox.locator(`${ CHART } polygon[data-cy^="origam-chart-honeycomb-tile-"]`)
 
-        const catTiles = sandbox.locator('[data-cy="honeycomb-color-mode-categorical"] polygon[data-cy^="origam-chart-honeycomb-tile-"]')
-        const heatTiles = sandbox.locator('[data-cy="honeycomb-color-mode-heatmap"] polygon[data-cy^="origam-chart-honeycomb-tile-"]')
+        await expect(tiles).toHaveCount(12, { timeout: 8000 })
 
-        await expect(catTiles).toHaveCount(12, { timeout: 8000 })
-        await expect(heatTiles).toHaveCount(12, { timeout: 8000 })
+        await selectHstOption(page, 'Color Mode', 'heatmap')
+        await page.waitForTimeout(400)
+        await expect(tiles).toHaveCount(12, { timeout: 8000 })
     })
 
     test('at least 2 tiles have distinct style fill values (categorical)', async ({ page }) => {
-        await openVariant(page, HONEYCOMB_STORY, 'Prop — colorMode (categorical vs heatmap side by side)')
+        // Dedicated fixture folded into "Design" — its default init-state
+        // already sets colorMode: 'categorical', so no control
+        // interaction is needed.
+        await openVariant(page, HONEYCOMB_STORY, 'Design')
         const sandbox = sandboxOf(page)
 
-        const tiles = sandbox.locator('[data-cy="honeycomb-color-mode-categorical"] polygon[data-cy^="origam-chart-honeycomb-tile-"]')
+        const tiles = sandbox.locator(`${ CHART } polygon[data-cy^="origam-chart-honeycomb-tile-"]`)
+        // Same timing race as above.
+        await expect(tiles.first()).toBeAttached({ timeout: 6000 })
         const count = await tiles.count()
         expect(count).toBeGreaterThanOrEqual(2)
 
@@ -154,28 +187,48 @@ test.describe('OrigamChartHoneycomb — colorMode variant', () => {
 
 test.describe('OrigamChartHoneycomb — empty state', () => {
     test('empty slot renders when series is empty', async ({ page }) => {
-        await openVariant(page, HONEYCOMB_STORY, 'Slot — empty (custom CTA)')
+        // Canonical Variant is "Slots - Empty" — no story-level root
+        // data-cy, anchored via the component's own static root.
+        await openVariant(page, HONEYCOMB_STORY, 'Slots - Empty')
         const sandbox = sandboxOf(page)
-        const empty = sandbox.locator('[data-cy="honeycomb-slot-empty-chart"] [data-cy="origam-chart-honeycomb-empty"]')
+        const empty = sandbox.locator(`${ CHART } [data-cy="origam-chart-honeycomb-empty"]`)
         await expect(empty).toBeVisible({ timeout: 6000 })
         await expect(empty).toContainText('No hex tile data')
     })
 })
 
 test.describe('OrigamChart shell — honeycomb dispatch', () => {
-    test('honeycomb tile in 14-primitives grid renders 9 tiles', async ({ page }) => {
-        await openVariant(page, CHART_STORY, 'Prop — type (29 primitives)')
+    test('OrigamChart dispatches type=honeycomb and renders tiles', async ({ page }) => {
+        // The dedicated "14-primitives grid" / "honeycomb tile-map"
+        // fixtures (each producing exactly 9 tiles) no longer exist in
+        // the generic OrigamChart.story.vue — only "Design"'s single
+        // dynamic "Type" control remains, defaulting to `series:
+        // FIXTURE_SALES_SERIES` (12 monthly category points, a LINE-
+        // shaped dataset, not a 3×3 hex grid). Verified empirically:
+        // switching Type to 'honeycomb' with that data renders 12 tiles
+        // (one per month), not 9 — the shape comes from the data length,
+        // not a hex-grid-specific fixture. Adapted to check the shell
+        // dispatch CONTRACT that's still meaningful and verifiable
+        // (OrigamChart correctly routes type=honeycomb to the honeycomb
+        // renderer, which mounts real tiles) rather than an exact count
+        // tied to a fixture that's gone.
+        await openVariant(page, CHART_STORY, 'Design')
+        await selectHstOption(page, 'Type', 'honeycomb')
+        await page.waitForTimeout(400)
         const sandbox = sandboxOf(page)
 
-        const tiles = sandbox.locator('[data-cy="chart-type-honeycomb"] polygon[data-cy^="origam-chart-honeycomb-tile-"]')
-        await expect(tiles).toHaveCount(9, { timeout: 8000 })
+        const tiles = sandbox.locator('polygon[data-cy^="origam-chart-honeycomb-tile-"]')
+        await expect(tiles.first()).toBeAttached({ timeout: 8000 })
+        const count = await tiles.count()
+        expect(count).toBeGreaterThan(0)
     })
 
-    test('honeycomb tile-map Variant renders 9 tiles', async ({ page }) => {
-        await openVariant(page, CHART_STORY, 'Prop — honeycomb tile-map')
-        const sandbox = sandboxOf(page)
-
-        const tiles = sandbox.locator('[data-cy="chart-honeycomb-9tiles"] polygon[data-cy^="origam-chart-honeycomb-tile-"]')
-        await expect(tiles).toHaveCount(9, { timeout: 8000 })
+    test('honeycomb tile-map Variant renders 9 tiles', async () => {
+        // STORY GAP found while repairing this spec: the dedicated 9-tile
+        // "honeycomb tile-map" fixture (distinct from the generic type
+        // dispatch above) no longer exists anywhere in
+        // OrigamChart.story.vue. Cannot be reproduced without editing the
+        // story.
+        test.skip(true, 'STORY GAP: OrigamChart.story.vue no longer has a dedicated 9-tile "honeycomb tile-map" fixture after the canonical-structure migration — only the generic Type=honeycomb dispatch (12 tiles, via FIXTURE_SALES_SERIES) remains. Needs a dedicated story fixture, not a spec change.')
     })
 })
