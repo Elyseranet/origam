@@ -59,7 +59,7 @@
 
 	import { DENSITY } from '../../enums'
 
-	import type { IToolbarProps } from '../../interfaces'
+	import type { IToolbarProps, IToolbarSlots } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -72,6 +72,8 @@
 		density: DENSITY.DEFAULT,
 		modelValue: true
 	})
+
+	defineSlots<IToolbarSlots>()
 
 	const {filterProps} = useProps<IToolbarProps>(props)
 

@@ -58,7 +58,7 @@
 
 	import type { ITooltipProps} from '../../interfaces'
 
-	import type { ITooltipEmits } from '../../interfaces/Tooltip/tooltip.interface'
+	import type { ITooltipEmits, ITooltipSlots } from '../../interfaces/Tooltip/tooltip.interface'
 
 	import type { TAnchor, TOrigamOverlay } from '../../types'
 
@@ -84,6 +84,8 @@
 	})
 
 	defineEmits<ITooltipEmits>()
+
+	defineSlots<ITooltipSlots>()
 
 	const {filterProps} = useProps<ITooltipProps>(props)
 
