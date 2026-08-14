@@ -13,6 +13,175 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.15.0] - 2026-08-14
+
+A structural release. Most of it is invisible at runtime — public typing
+surface that was missing, and internal files moved to where you would expect
+to find them. The visible part is four bugs, one of which had been inert
+since the component shipped.
+
+### Added
+
+- **Every component now exposes its instance type.** `TOrigamXxx =
+  InstanceType<typeof OrigamXxx>` is what you need to type a template ref
+  (`const btnRef = ref<TOrigamBtn>()`). Before this release 63 components had
+  none, so you fell back to `any` or rebuilt the type by hand. All 217 have
+  one now.
+
+- **Emit and slot interfaces.** 129 components rendered a `<slot>` without a
+  `defineSlots<IXxxSlots>()`, so the slot scope was untyped and you wrote
+  those templates blind. Six more declared emits with an inline type instead
+  of a named `IXxxEmits`. Both are now consistent across the catalogue, with
+  the scope actually typed — `OrigamVirtualScroll` needed four distinct scope
+  interfaces because its indexed slot and its fallback slot genuinely do not
+  expose the same data.
+
+- **`INTENT` enum** (`enums/Commons/intent.enum.ts`). The most-used vocabulary
+  of the design system — `neutral | primary | secondary | ghost | success |
+  warning | danger | info` — had no enum. It lived in three parallel places,
+  one of which was a runtime `Set` carrying a comment asking you to keep it in
+  sync by hand. `TIntent` now derives from the enum; the type is character-
+  for-character identical, only its source changed.
+
+### Fixed
+
+- **`borderBlock` and `borderInline` did nothing.** Declared on
+  `IBorderProps`, never consumed. Passing them produced no border and no
+  warning. The fix turned out to have two floors: `useBorder` ignored them,
+  and beneath it `useStateEffect` — the path ~32 components take — rebuilt
+  its props through a hardcoded getter list that never learned about them. So
+  fixing `useBorder` alone would still have left those components inert.
+
+- **`OrigamBadge` dropped its prepend and append content.** The interface
+  inherited `IAdjacentProps` but the component never consumed `useAdjacent`,
+  reimplementing the detection by hand. A `#prepend` slot passed without an
+  icon prop never rendered at all, and no click was ever emitted.
+
+- **`<origam-parallax event="orientation">` never moved.** The guard for the
+  orientation branch tested `props.event === 'move'` — a condition that
+  cannot hold inside a branch only reached when the event is `orientation`.
+  The listener was registered and did fire; the movement was simply never
+  applied. Present since the component's first implementation (2025-07-18),
+  and just as inert on a real device with a real sensor as in a test.
+
+- **`useSnackbarGroup` ignored a story-level default.** Unrelated to consumer
+  code — see *Known issues* below for the remaining half of that one.
+
+### Changed — internal file layout
+
+Enum, type and const files are now named after the **component** that owns
+them, one file per component, with the concept living in the symbol name
+rather than the filename. `tabs-variant.enum.ts` became `tab.enum.ts`;
+`chart-honeycomb-color-mode.enum.ts` and
+`chart-honeycomb-orientation.enum.ts` merged into `chart-honeycomb.enum.ts`.
+The intent is that finding a component's surface means opening one file, not
+hunting several differently-suffixed ones. A CI guard now enforces it.
+
+Ownership was decided by reading which component actually consumes each
+symbol, not by the filename. Two cases were counter-intuitive: the `Mask/`
+files belong to `OrigamTextField` (input masking) and not to `OrigamTextMask`
+(a text-rendering component that consumes none of them); and the toolbar
+enums belong to `OrigamRichToolbar`, a component in its own right — there is
+no `OrigamTextarea`.
+
+Several transverse symbols moved to `Commons/` — `mdi`, and the duplicated
+`horizontal | vertical` declarations that had accumulated under eight
+different names. Where a component-specific name was worth keeping, it now
+derives from the Commons one (`TStepperOrientation = TDirection`) rather than
+redeclaring the same values.
+
+### Deep import paths are not a supported API
+
+`package.json` exposes a `"./*"` wildcard, so `origam/enums/Audio/audio-variant.enum`
+resolved in 2.14.1. **74 such paths no longer exist** after the reorganisation
+above (48 types, 15 enums, 11 consts).
+
+If you import from `origam` — the path documented everywhere — nothing
+changes. If you import a deep path into a source file, it may break. Those
+paths are internal structure, not API, and they will keep moving.
+
+**`"./*"` will be removed from the exports map in 3.0.0**, which turns
+today's ambiguity into an explicit contract. The declared entry points
+(`origam`, `origam/styles`, `origam/tokens/*`, `origam/nuxt`,
+`origam/components`, `origam/composables`, …) are unaffected.
+
+The 41 renames git could track:
+
+| Before | After |
+|---|---|
+| `origam/consts/Chart/pictorial-icons.const` | `origam/consts/Chart/chart-pictorial.const` |
+| `origam/consts/Chart/world-geographic.const` | `origam/consts/Chart/chart-map.const` |
+| `origam/consts/Icon/mdi.const` | `origam/consts/Commons/mdi.const` |
+| `origam/consts/Parallax/parallax-container.const` | `origam/consts/Parallax/parallax.const` |
+| `origam/consts/Sheet/sheet-snap-points.const` | `origam/consts/Sheet/sheet.const` |
+| `origam/consts/Textarea/textarea.const` | `origam/consts/TextareaField/textarea-field.const` |
+| `origam/enums/Blockquote/blockquote-variant.enum` | `origam/enums/Blockquote/blockquote.enum` |
+| `origam/enums/Bracket/bracket-match-status.enum` | `origam/enums/Bracket/bracket-match.enum` |
+| `origam/enums/Bracket/bracket-variant.enum` | `origam/enums/Bracket/bracket.enum` |
+| `origam/enums/Chart/chart-cartesian-kind.enum` | `origam/enums/Chart/chart-cartesian.enum` |
+| `origam/enums/Chart/chart-honeycomb-orientation.enum` | `origam/enums/Chart/chart-honeycomb.enum` |
+| `origam/enums/Chart/chart-map-mode.enum` | `origam/enums/Chart/chart-map.enum` |
+| `origam/enums/Chart/chart-pictorial-mode.enum` | `origam/enums/Chart/chart-pictorial.enum` |
+| `origam/enums/Chart/chart-polar-kind.enum` | `origam/enums/Chart/chart-polar.enum` |
+| `origam/enums/Chart/chart-pyramid-kind.enum` | `origam/enums/Chart/chart-pyramid.enum` |
+| `origam/enums/Chart/chart-sparkline-kind.enum` | `origam/enums/Chart/chart-sparkline.enum` |
+| `origam/enums/Chart/chart-streamgraph-offset.enum` | `origam/enums/Chart/chart-streamgraph.enum` |
+| `origam/enums/Chart/chart-treemap-algorithm.enum` | `origam/enums/Chart/chart-treemap.enum` |
+| `origam/enums/Chart/chart-word-cloud-rotation.enum` | `origam/enums/Chart/chart-word-cloud.enum` |
+| `origam/enums/Code/code-lang.enum` | `origam/enums/Code/code.enum` |
+| `origam/enums/EmptyState/empty-state-preset.enum` | `origam/enums/EmptyState/empty-state.enum` |
+| `origam/enums/Icon/mdi.enum` | `origam/enums/Commons/mdi.enum` |
+| `origam/enums/InlineEdit/inline-edit-action.enum` | `origam/enums/InlineEdit/inline-edit.enum` |
+| `origam/enums/SliderField/slider-field-variant.enum` | `origam/enums/SliderField/slider-field.enum` |
+| `origam/enums/Tabs/tab-variant.enum` | `origam/enums/Tabs/tab.enum` |
+| `origam/enums/Textarea/textarea-output.enum` | `origam/enums/TextareaField/textarea-field.enum` |
+| `origam/enums/Textarea/textarea-toolbar-command.enum` | `origam/enums/RichToolbar/rich-toolbar.enum` |
+| `origam/types/Bracket/bracket-round-side.type` | `origam/types/Bracket/bracket-round.type` |
+| `origam/types/Chart/chart-cartesian-kind.type` | `origam/types/Chart/chart-cartesian.type` |
+| `origam/types/Chart/chart-legend-position.type` | `origam/types/Chart/chart-legend.type` |
+| `origam/types/Chart/chart-map-mode.type` | `origam/types/Chart/chart-map.type` |
+| `origam/types/Chart/chart-polar-kind.type` | `origam/types/Chart/chart-polar.type` |
+| `origam/types/Chart/chart-pyramid-kind.type` | `origam/types/Chart/chart-pyramid.type` |
+| `origam/types/Chart/chart-sparkline-kind.type` | `origam/types/Chart/chart-sparkline.type` |
+| `origam/types/Chart/chart-treemap-algorithm.type` | `origam/types/Chart/chart-treemap.type` |
+| `origam/types/CommandPalette/command-palette-hotkey.type` | `origam/types/CommandPalette/command-palette.type` |
+| `origam/types/Grid/grid-align.type` | `origam/types/Grid/grid.type` |
+| `origam/types/InlineEdit/inline-edit-input-type.type` | `origam/types/InlineEdit/inline-edit.type` |
+| `origam/types/Masonry/masonry-align.type` | `origam/types/Masonry/masonry.type` |
+| `origam/types/NumberFormat/number-format-format.type` | `origam/types/NumberFormat/number-format.type` |
+| `origam/types/QrCode/qr-code-error-correction.type` | `origam/types/QrCode/qr-code.type` |
+
+The remaining 33 were merged into an existing file rather than renamed; the
+symbols kept their names and are all still exported from `origam`.
+
+### Known issues
+
+Found while repairing the test suite, documented rather than rushed into this
+release:
+
+- **Theme-level component defaults reach only part of the catalogue.** The
+  `components` block of a theme is delivered through `useDefaults()`, which a
+  component must opt into — 173 of 217 do not, so setting a prop there does
+  nothing for them, silently. On top of that, a component that does opt in
+  reads the merged value in its script but the template sees the raw props,
+  so `<origam-selection-control>` inside its group renders an `<input>`
+  without a `type` attribute and never emits. Both are being addressed
+  together; the 2.14.1 fix to `usePassedProps` was a third failure of the same
+  path.
+
+- **`defaultDuration` on `<origam-snackbar-group>` is decorative.** Declared,
+  defaulted, never read — `notify()` always uses the built-in 5 000 ms.
+
+- **`<origam-snackbar-item>` never renders its prepend area,** including a
+  custom `#prepend` slot. `icon` is typed `TIcon | false` with no explicit
+  default, so Vue resolves an unpassed prop to `false` rather than
+  `undefined`, and the template hides the whole area.
+
+- **Transitions ignore `group` when it changes after mount.** The tag is a
+  flat `shallowRef` read once at setup instead of a computed, so
+  `<component :is>` never re-evaluates. Affects the 12 components built on
+  `useCssTransition` / `useWindowTransition`. Setting `group` statically works.
+
 ## [2.14.1] - 2026-08-13
 
 Two fixes, both found while converting variants to props presets on the v3
