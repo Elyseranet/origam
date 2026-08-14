@@ -105,12 +105,26 @@ test.describe('OrigamTextField', () => {
             await expect(sandbox.locator('.origam-text-field input').first()).toBeAttached()
         })
 
-        test('density-default class is present on root', async ({ page }) => {
+        test('density-compact class is present on root (theme default)', async ({ page }) => {
+            // The Design variant leaves `density` unset in init-state, so it
+            // resolves through useDefaults() against the origam theme, which
+            // pins `'origam-text-field': { rounded: 'lg', variant: 'outlined',
+            // density: 'compact' }` (packages/ds/src/themes/origam.theme.ts,
+            // since commit 9a082b90, dated AFTER this test was originally
+            // written against OrigamTextField's own component-level default
+            // of DENSITY.DEFAULT). Note the separate `'origam-input': {
+            // density: 'default' }` theme entry does NOT apply here: Text
+            // Field resolves its own `density` first (keyed by its own
+            // instance name, 'origam-text-field') and forwards that already-
+            // resolved value explicitly to the child <origam-input>, so from
+            // the Input's perspective the value was "passed by the parent"
+            // and wins over its own theme default (see useDefaults()
+            // resolution order in defaults.composable.ts).
             await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-text-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
-            await expect(root).toHaveClass(/origam-input--density-default/)
+            await expect(root).toHaveClass(/origam-input--density-compact/)
         })
     })
 
