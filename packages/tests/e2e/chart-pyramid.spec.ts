@@ -202,6 +202,7 @@ test.describe('OrigamChartPyramid — accessibility', () => {
         await openVariant(page, PYRAMID_STORY, 'Default')
         const sandbox = sandboxOf(page)
         const slices = sandbox.locator('[data-cy="origam-chart-pyramid"] [data-cy^="origam-chart-pyramid-slice-"]')
+        await expect(slices).toHaveCount(5, { timeout: 6000 })
         const count = await slices.count()
         for (let i = 0; i < count; i++) {
             await expect(slices.nth(i)).toHaveAttribute('role', 'button')
@@ -214,6 +215,7 @@ test.describe('OrigamChartPyramid — accessibility', () => {
         await openVariant(page, PYRAMID_STORY, 'Default')
         const sandbox = sandboxOf(page)
         const slices = sandbox.locator('[data-cy="origam-chart-pyramid"] [data-cy^="origam-chart-pyramid-slice-"]')
+        await expect(slices).toHaveCount(5, { timeout: 6000 })
         const count = await slices.count()
         for (let i = 0; i < count; i++) {
             await expect(slices.nth(i)).toHaveAttribute('tabindex', '0')
