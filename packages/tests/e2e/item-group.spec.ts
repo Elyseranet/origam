@@ -1,5 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
+import { fillHstText, toggleHstCheckbox } from './_support/histoire-controls'
+
 /**
  * Regression spec — `OrigamItemGroup` + `OrigamItem` are origam's
  * generic, renderless selection primitives (Vuetify `v-item-group` /
@@ -7,6 +9,14 @@ import { expect, test, type Page } from '@playwright/test'
  * paint each option however they like (a Card, a Tile, a custom UI)
  * via the `<OrigamItem>` slot scope: `{ isSelected, toggle, select,
  * value, disabled, selectedClass }`.
+ *
+ * REALIGNED (2026-08) — the story migrated to the canonical
+ * Design/Functional/Events/Slots structure. The old spec navigated to
+ * one dedicated `Prop — X` Variant per fixture (default / multiple /
+ * mandatory / selectedClass); those Variants no longer exist. The
+ * "Functional" Variant now covers all four via HstCheckbox/HstText
+ * controls on a single instance (fixture cards: Small/Medium/Large,
+ * `functionalModel` starts at `'m'` — Medium pre-selected).
  *
  * Each test below verifies one selection-mode contract end-to-end by
  * clicking a card (the consumer-rendered visual that wraps each
@@ -24,6 +34,9 @@ const open = async (page: Page, variant: string) => {
     await page.waitForTimeout(800)
 }
 
+const cardByLabel = (sandbox: ReturnType<typeof sandboxOf>, label: string) =>
+    sandbox.locator('.ig-card').filter({ hasText: label })
+
 test.describe('OrigamItemGroup — Default (single selection)', () => {
     test('initial selection shows one active card', async ({ page }) => {
         await open(page, 'Default')
@@ -34,16 +47,18 @@ test.describe('OrigamItemGroup — Default (single selection)', () => {
     })
 
     test('clicking another card shifts the active state', async ({ page }) => {
-        // "Prop — default (single selection)" carries data-cy="ig-default-status"
-        await open(page, 'Prop — default (single selection)')
+        // "Prop — default (single selection)" is now the "Functional"
+        // Variant's default state (multiple=false, mandatory=false).
+        // Status text lives in `.ig-status` (no dedicated data-cy anymore).
+        await open(page, 'Functional')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.ig-card').first()).toBeVisible({ timeout: 8000 })
 
-        // Story init: 'm' is selected. Click the third card ('l').
-        await sandbox.locator('.ig-card').nth(2).click()
+        // Story init: 'm' (Medium) is selected. Click Large.
+        await cardByLabel(sandbox, 'Large').click()
         await page.waitForTimeout(250)
 
-        const status = await sandbox.locator('[data-cy="ig-default-status"]').textContent()
+        const status = await sandbox.locator('.ig-status').textContent()
         expect(status).toContain('l')
 
         // Active class moved.
@@ -54,35 +69,37 @@ test.describe('OrigamItemGroup — Default (single selection)', () => {
 
 test.describe('OrigamItemGroup — Multiple', () => {
     test('clicking adds to the array', async ({ page }) => {
-        // "Prop — multiple (checkbox-style, many selected)" carries data-cy="ig-multiple-status"
-        await open(page, 'Prop — multiple (checkbox-style, many selected)')
+        // "Prop — multiple (checkbox-style, many selected)" is now the
+        // "Functional" Variant with the "Multiple" checkbox toggled on.
+        await open(page, 'Functional')
+        await toggleHstCheckbox(page, 'Multiple')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.ig-card').first()).toBeVisible({ timeout: 8000 })
 
-        // Story init: ['bold']. Click italic.
-        await sandbox.locator('.ig-card').nth(1).click()
+        // Story init: 'm' (Medium) selected. Click Small to add it.
+        await cardByLabel(sandbox, 'Small').click()
         await page.waitForTimeout(250)
 
-        const status = await sandbox.locator('[data-cy="ig-multiple-status"]').textContent()
-        expect(status).toContain('bold')
-        expect(status).toContain('italic')
+        const status = await sandbox.locator('.ig-status').textContent()
+        expect(status).toContain('m')
+        expect(status).toContain('s')
 
         const activeCount = await sandbox.locator('.ig-card--active').count()
         expect(activeCount).toBe(2)
     })
 
     test('clicking a selected item removes it from the array', async ({ page }) => {
-        // "Prop — multiple (checkbox-style, many selected)" carries data-cy="ig-multiple-status"
-        await open(page, 'Prop — multiple (checkbox-style, many selected)')
+        await open(page, 'Functional')
+        await toggleHstCheckbox(page, 'Multiple')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.ig-card').first()).toBeVisible({ timeout: 8000 })
 
-        // Click 'bold' (already active) → removed.
-        await sandbox.locator('.ig-card').first().click()
+        // Click 'Medium' (already active, story init) → removed.
+        await cardByLabel(sandbox, 'Medium').click()
         await page.waitForTimeout(250)
 
-        const status = await sandbox.locator('[data-cy="ig-multiple-status"]').textContent()
-        expect(status).toContain('(empty)')
+        const status = await sandbox.locator('.ig-status').textContent()
+        expect(status).toContain('[]')
         const activeCount = await sandbox.locator('.ig-card--active').count()
         expect(activeCount).toBe(0)
     })
@@ -90,13 +107,15 @@ test.describe('OrigamItemGroup — Multiple', () => {
 
 test.describe('OrigamItemGroup — Mandatory', () => {
     test('clicking the active item does NOT deselect it', async ({ page }) => {
-        // "Prop — mandatory (always keeps one selected)" is the current variant title
-        await open(page, 'Prop — mandatory (always keeps one selected)')
+        // "Prop — mandatory (always keeps one selected)" is now the
+        // "Functional" Variant with the "Mandatory" checkbox toggled on.
+        await open(page, 'Functional')
+        await toggleHstCheckbox(page, 'Mandatory')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.ig-card').first()).toBeVisible({ timeout: 8000 })
 
-        // Story init: 's' active. Click the SAME 's'.
-        await sandbox.locator('.ig-card').first().click()
+        // Story init: 'm' (Medium) active. Click the SAME Medium card.
+        await cardByLabel(sandbox, 'Medium').click()
         await page.waitForTimeout(250)
 
         // Still exactly one active.
@@ -107,16 +126,17 @@ test.describe('OrigamItemGroup — Mandatory', () => {
 
 test.describe('OrigamItemGroup — Custom selectedClass', () => {
     test('the custom class lands on active items in addition to the default origam-item--selected', async ({ page }) => {
-        // "Prop — selectedClass (custom active class)" is the current variant title
-        await open(page, 'Prop — selectedClass (custom active class)')
+        // "Prop — selectedClass (custom active class)" is now the
+        // "Functional" Variant's "Selected Class" HstText control.
+        await open(page, 'Functional')
+        await fillHstText(page, 'Selected Class', 'my-custom-active')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.ig-card').first()).toBeVisible({ timeout: 8000 })
 
-        // Story init: 'italic' active. The custom class can land both on
-        // the OrigamItem root (via `useGroupItem`'s selectedClass) and on
-        // the inner Card (via the explicit `:class="{ 'my-custom-active':
-        // isSelected }"` binding) — both are valid landing spots, just
-        // assert at least one element bears it.
+        // Story init: 'm' (Medium) active. The custom class lands on the
+        // <OrigamItem> root (via `useGroupItem`'s selectedClass, see
+        // group.composable.ts) that wraps the active card.
+        await page.waitForTimeout(300)
         const activeWithCustom = await sandbox.locator('.my-custom-active').count()
         expect(activeWithCustom).toBeGreaterThanOrEqual(1)
     })
