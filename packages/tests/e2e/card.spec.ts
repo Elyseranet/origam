@@ -131,11 +131,20 @@ test.describe('OrigamCard', () => {
             expect(classes).not.toContain('origam-card--rounded ')
         })
 
-        test('no flat modifier class in default init-state', async ({ page }) => {
+        test('flat modifier class is present in default init-state (theme default)', async ({ page }) => {
+            // The Design variant leaves `flat` unset in init-state, so it
+            // resolves through useDefaults() against the origam theme, which
+            // pins `'origam-card': { ..., flat: true }` (packages/ds/src/
+            // themes/origam.theme.ts, since commit 9a082b90, dated AFTER this
+            // test was originally written against OrigamCard's own
+            // component-level default, which does not set `flat` at all).
+            // This is a deliberate, documented choice — see the comment
+            // block above `flatForElevation` in OrigamCard.vue (issue #242):
+            // "the origam base theme defaults every card to flat: true".
             await page.goto(variantUrl(0))
             const sandbox = await expectCardVisible(page)
             const classes = await sandbox.locator('.origam-card').first().getAttribute('class') ?? ''
-            expect(classes).not.toContain('origam-card--flat')
+            expect(classes).toContain('origam-card--flat')
         })
     })
 
