@@ -63,7 +63,7 @@
 
 	import { EMPTY_STATE_PRESET_CONFIG } from '../../consts/EmptyState/empty-state.const'
 
-	import type { IEmptyStateProps } from '../../interfaces'
+	import type { IEmptyStateProps, IEmptyStateSlots } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -88,6 +88,8 @@
 		size: 'md',
 		align: 'center'
 	})
+
+	defineSlots<IEmptyStateSlots>()
 
 	const slots = useSlots()
 

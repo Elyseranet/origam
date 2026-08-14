@@ -38,7 +38,7 @@
 
 	import type { ITabPanelsProps, ITouchHandlers} from '../../interfaces'
 
-	import type { ITabPanelsEmits } from '../../interfaces/Tabs/tab-panels.interface'
+	import type { ITabPanelsEmits, ITabPanelsSlots } from '../../interfaces/Tabs/tab-panels.interface'
 
 	/*********************************************************
 	 * Global
@@ -53,6 +53,8 @@
 	})
 
 	defineEmits<ITabPanelsEmits>()
+
+	defineSlots<ITabPanelsSlots>()
 
 	const {filterProps} = useProps<ITabPanelsProps>(props)
 

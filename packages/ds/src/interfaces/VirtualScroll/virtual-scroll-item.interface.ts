@@ -10,3 +10,13 @@ export interface IVirtualScrollItemProps extends ICommonsComponentProps {
 export interface IVirtualScrollItemEmits {
     (e: 'update:height', value: number): void
 }
+
+/** Slot signatures for `<OrigamVirtualScrollItem>`. */
+export interface IVirtualScrollItemSlots {
+    /** Renderless mode only (`renderless: true`) — receives the
+     *  resize-observed element ref so the consumer can attach it to
+     *  their own markup instead of the built-in wrapper `<div>`. */
+    renderless?: (data: { itemRef: HTMLElement | null | undefined }) => any
+    /** Default (non-renderless) content, rendered inside the wrapper `<div>`. */
+    default?: () => any
+}

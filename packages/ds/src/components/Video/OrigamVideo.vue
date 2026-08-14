@@ -242,7 +242,7 @@
 	import type {
 		IVideoProps, IVideoSource} from '../../interfaces'
 
-	import type { IVideoEmits } from '../../interfaces/Video/video.interface'
+	import type { IVideoEmits, IVideoSlots } from '../../interfaces/Video/video.interface'
 
 	import type { TQualityOption } from '../../types'
 
@@ -310,6 +310,8 @@
 	})
 
 	const emit = defineEmits<IVideoEmits>()
+
+	defineSlots<IVideoSlots>()
 
 	/*********************************************************
 	 * Icon refs — single source of truth for the toolbar glyphs.

@@ -92,7 +92,7 @@
 	useVirtual
 } from '../../composables'
 
-	import type { IVirtualScrollProps } from '../../interfaces'
+	import type { IVirtualScrollProps, IVirtualScrollSlots } from '../../interfaces'
 
 	import { convertToUnit, getCurrentInstance, getScrollParent } from '../../utils'
 
@@ -103,6 +103,8 @@
 	 * Props with defaults and filterProps utility.
 	 ********************************************************/
 	const props = withDefaults(defineProps<IVirtualScrollProps>(), {})
+
+	defineSlots<IVirtualScrollSlots>()
 
 	const {filterProps} = useProps<IVirtualScrollProps>(props)
 

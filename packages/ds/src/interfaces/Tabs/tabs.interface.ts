@@ -6,6 +6,7 @@ import type {
     IDensityProps,
     IDirectionProps,
     IGroupProps,
+    IGroupProvide,
     IRoundedProps,
     ITagProps
 } from '../../interfaces'
@@ -39,3 +40,16 @@ export interface ITabsProps extends ICommonsComponentProps, ITagProps, IDirectio
 
 /** Emits fired by `<OrigamTabs>` — v-model on the active tab. */
 export interface ITabsEmits extends ICommonsComponentEmits {}
+
+/** Scope forwarded to the `default` slot — the raw `useGroup()`
+ *  selection API, forwarded as-is (its `selected` field stays a `Ref`,
+ *  mirroring `IItemGroupSlots`). `items` is unwrapped from the
+ *  `ComputedRef` returned by `useGroup` into the plain array. */
+export interface ITabsSlotProps extends Pick<IGroupProvide, 'isSelected' | 'select' | 'next' | 'prev' | 'selected'> {
+    items: IGroupProvide['items']['value']
+}
+
+/** Slot signatures for `<OrigamTabs>`. */
+export interface ITabsSlots {
+    default?: (data: ITabsSlotProps) => any
+}
