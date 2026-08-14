@@ -242,15 +242,38 @@ function paramDefaultLiteral (raw) {
  * `getByRole('link', { name: PARAM, … })`. Both are followed (possibly a
  * few chained calls later) by `.click(`. Checked in this order against a
  * helper body / direct call site.
+ *
+ * RECEIVER IS RESTRICTED TO `page.` — deliberately, not incidentally. The
+ * Variant sidebar lives in Histoire's top-level DOM, so a real navigation
+ * click can only ever be `page.getByText(…)` / `page.getByRole('link', …)`.
+ * Every component under test is rendered inside a sandboxed `<iframe
+ * src="…__sandbox…">`, reached via `page.frameLocator(…)` and commonly
+ * aliased to a local var (`sandbox`, `sandboxH`, `sb`, or something
+ * component-specific like `trigger` / `feedbackSpan` — there is no fixed
+ * naming convention, dozens of distinct names exist across specs). A
+ * `sandbox.getByText('Index 500').click()` targets an in-iframe CTA button
+ * of the component being tested, NOT a Variant title, even though the
+ * regex shape is identical. `page.getByText` cannot see inside that
+ * iframe at all (Playwright locators don't pierce iframes without an
+ * explicit `frameLocator`), so anchoring on the literal `page.` receiver
+ * is both necessary and sufficient to tell the two apart — no need to
+ * enumerate sandbox alias names. Verified false positive this fixed:
+ * virtual-scroll-jump.spec.ts's `sandbox.getByText('Index 500' /
+ * 'Top').click()` on OrigamVirtualScroll's jump buttons (no `data-cy`
+ * on those buttons at the time of the report). Do NOT drop this filter
+ * thinking it's redundant with the `getByRole('link')` role restriction
+ * above/below — that one guards against a different receiver (`page`)
+ * targeting the wrong ARIA role; this one guards against the right
+ * ARIA-shaped call targeting the wrong (in-iframe) receiver.
  */
 const CLICK_TARGET_IDENT_RES = [
-    /getByText\(\s*([A-Za-z_$][\w$]*)\b[^)]*\)[\s\S]{0,150}?\.click\(/g,
+    /\bpage\.getByText\(\s*([A-Za-z_$][\w$]*)\b[^)]*\)[\s\S]{0,150}?\.click\(/g,
     // Restricted to role 'link' — that's the ARIA role Histoire renders its
     // sidebar Variant navigation entries with. `getByRole('button', …)` /
     // `getByRole('checkbox', …)` target in-sandbox controls and must NOT be
     // mistaken for Variant navigation (false positives were observed on
     // picker-overlay.spec.ts's `getByRole('checkbox', { name: 'active' })`).
-    /getByRole\(\s*'link'\s*,\s*\{[^}]*\bname:\s*([A-Za-z_$][\w$]*)\b[^)]*\)[\s\S]{0,150}?\.click\(/g
+    /\bpage\.getByRole\(\s*'link'\s*,\s*\{[^}]*\bname:\s*([A-Za-z_$][\w$]*)\b[^)]*\)[\s\S]{0,150}?\.click\(/g
 ]
 
 /**
@@ -297,8 +320,13 @@ function clickedTitlesOf (specSrc) {
     const titles = new Set()
     const unresolved = []
 
-    // Direct: getByText('Title', { exact: true }) … .click()
-    const gbt = /getByText\(\s*'((?:[^'\\]|\\.)*)'\s*(?:,\s*\{[^}]*\})?\s*\)/g
+    // Direct: page.getByText('Title', { exact: true }) … .click()
+    // Receiver restricted to `page.` — see the CLICK_TARGET_IDENT_RES
+    // comment above for why. Without it this matched e.g.
+    // `sandbox.getByText('Index 500').click()` (an in-iframe CTA click on
+    // the component under test, not a Variant sidebar navigation) as a
+    // false positive.
+    const gbt = /\bpage\.getByText\(\s*'((?:[^'\\]|\\.)*)'\s*(?:,\s*\{[^}]*\})?\s*\)/g
     let m
     while ((m = gbt.exec(specSrc)) !== null) {
         const idx = gbt.lastIndex
@@ -307,10 +335,11 @@ function clickedTitlesOf (specSrc) {
             titles.add(m[1].replace(/\\'/g, "'"))
         }
     }
-    // Direct: getByRole('link', { name: 'Title', exact: true }) … .click()
+    // Direct: page.getByRole('link', { name: 'Title', exact: true }) … .click()
     // Restricted to role 'link' — see CLICK_TARGET_IDENT_RES note above on
-    // why 'button' / 'checkbox' must NOT be treated as Variant navigation.
-    const gbr = /getByRole\(\s*'link'\s*,\s*\{[^}]*\bname:\s*'((?:[^'\\]|\\.)*)'[^)]*\)/g
+    // why 'button' / 'checkbox' must NOT be treated as Variant navigation —
+    // AND restricted to receiver `page.` for the same reason as `gbt` above.
+    const gbr = /\bpage\.getByRole\(\s*'link'\s*,\s*\{[^}]*\bname:\s*'((?:[^'\\]|\\.)*)'[^)]*\)/g
     while ((m = gbr.exec(specSrc)) !== null) {
         const idx = gbr.lastIndex
         const tail = specSrc.slice(idx, idx + 80)
