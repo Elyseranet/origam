@@ -123,7 +123,16 @@
 			},
 			orientation: {
 				action: orientationElement,
-				condition: props.event === 'move' && isTouch.value,
+				// `handleMovement` looks up `eventActions.value[props.event]` — when
+				// `props.event === 'orientation'` we are ALREADY in this branch, so
+				// gating on `props.event === 'move'` here can never be true. That
+				// left `<origam-parallax event="orientation">` permanently inert:
+				// the `deviceorientation` listener fired (registered via
+				// `eventMap.value.orientation`) but `condition` always evaluated to
+				// `false`, so `movement.value` never updated regardless of a real
+				// sensor being present. Mirrors the `scroll` branch's guard (a
+				// measured target box must exist before applying movement).
+				condition: props.event === 'orientation' && !!shape.value?.height,
 				type: 'deviceorientation'
 			}
 		}
