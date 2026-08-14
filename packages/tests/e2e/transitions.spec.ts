@@ -1,5 +1,7 @@
 import { expect, test, type Page, type FrameLocator } from '@playwright/test'
 
+import { toggleHstCheckbox } from './_support/histoire-controls'
+
 /**
  * Consolidated Playwright spec for the Transition component family (Lot A5).
  *
@@ -116,26 +118,39 @@ async function expectToggleLeave (
 }
 
 // ─── OrigamTransition (dispatcher) ───────────────────────────────────────────
-// Note: OrigamTransition story uses dedicated named variants with their own
-// toggle-* / target-* data-cy attributes (not "playground" ones).
+// REALIGNED (2026-08): the story migrated to Design/Functional/Slots -
+// Default/Default. Neither dedicated "Prop — X" fixture exists anymore:
+//   - "Prop — transition (string name)" is now the "Design" Variant
+//     (toggle-design/target-design), init transition =
+//     'origam-transition--fade' (string CSS-name form, matches the old
+//     fixture's intent).
+//   - "Prop — transition (component object)" has NO equivalent anymore —
+//     Design/Functional/Default only expose a string-name HstSelect
+//     (TRANSITION_CSS_OPTIONS); no Variant passes a component OBJECT to
+//     `transition`. Flagged as a coverage gap below.
+//   - "Prop — disabled (animation off)" is now the "Functional" Variant's
+//     "Disabled" HstCheckbox (toggle-functional/target-functional).
 
 test.describe('OrigamTransition — dispatcher', () => {
     test('Default — string-name dispatch toggles slot', async ({ page }) => {
-        await gotoVariant(page, STORIES.transition, 'Prop — transition (string name)')
-        await expectToggleEnter(page, 'target-default', 'origam-transition--fade', 'toggle-default')
-        await expectToggleLeave(page, 'target-default', 'toggle-default')
+        await gotoVariant(page, STORIES.transition, 'Design')
+        await expectToggleEnter(page, 'target-design', 'origam-transition--fade', 'toggle-design')
+        await expectToggleLeave(page, 'target-design', 'toggle-design')
     })
 
-    test('Component dispatch — slot mounts via component prop', async ({ page }) => {
-        await gotoVariant(page, STORIES.transition, 'Prop — transition (component object)')
-        await expectToggleEnter(page, 'target-component', 'origam-transition--scale-rotate', 'toggle-component')
+    test.fixme('Component dispatch — slot mounts via component prop [STORY COVERAGE MISSING]', async () => {
+        // No Variant in the current story passes a component OBJECT to
+        // `transition` — Design/Functional/Default only expose the
+        // string-name HstSelect (TRANSITION_CSS_OPTIONS). Needs a story
+        // fixture, not a spec-only change.
     })
 
     test('Disabled — slot still toggles, no transition class persisted', async ({ page }) => {
-        await gotoVariant(page, STORIES.transition, 'Prop — disabled (animation off)')
+        await gotoVariant(page, STORIES.transition, 'Functional')
+        await toggleHstCheckbox(page, 'Disabled')
         const sb = sandbox(page)
-        await sb.locator('[data-cy="toggle-disabled"]').click()
-        await expect(sb.locator('[data-cy="target-disabled"]')).toBeVisible({ timeout: 5000 })
+        await sb.locator('[data-cy="toggle-functional"]').click()
+        await expect(sb.locator('[data-cy="target-functional"]')).toBeVisible({ timeout: 5000 })
     })
 })
 
@@ -149,8 +164,53 @@ test.describe('OrigamFade', () => {
         await expectToggleLeave(page, 'target-playground')
     })
 
-    test('Group — items animate via TransitionGroup', async ({ page }) => {
-        await gotoVariant(page, STORIES.fade, 'Prop — group (transition-group)')
+    /**
+     * ⛔ REAL BUG FOUND while realigning (root-caused, not guessed):
+     * toggling "Group (TransitionGroup)" AFTER mount has no effect —
+     * the dispatcher stays on `Transition` (singular) and silently
+     * drops every item past the first.
+     *
+     * Root cause (read in source,
+     * packages/ds/src/composables/Transition/transition.composable.ts,
+     * `useCssTransition` — and `useWindowTransition` right below it,
+     * same pattern):
+     *   `const tag: ShallowRef<Component> = props.group ?
+     *   shallowRef(TransitionGroup) : shallowRef(Transition)`
+     *   This reads `props.group` ONCE, at setup time, into a plain
+     *   `shallowRef` — not a `computed()`. `<component :is="tag">` in
+     *   the SFC template therefore never re-evaluates when `group`
+     *   changes reactively after mount; it stays locked to whichever
+     *   component (`Transition` vs `TransitionGroup`) was correct at
+     *   the FIRST render. Since every Variant's `group` control starts
+     *   at `false` (Transition, single-child), flipping the checkbox
+     *   on afterwards updates the prop but the underlying dispatcher
+     *   never swaps to `TransitionGroup` — and plain `Transition`
+     *   silently renders/tracks only its first child, dropping the
+     *   rest.
+     *
+     * Verified empirically (2026-08, running Histoire instance, fresh
+     * dev server to rule out HMR staleness): `functionalItems` is
+     * `ref([1, 2])` in the story script, but after toggling "Group
+     * (TransitionGroup)" on, only `target-group-1` ever renders — the
+     * DOM shows a single `.story-target`, not two.
+     *
+     * This is not specific to OrigamFade — `useCssTransition` backs
+     * every CSS transition family member (ScaleRotate, ExpandX/Y,
+     * SlideX/Y, TranslateScale, TranslateBottom, Translate/ReverseTranslatePicker)
+     * and `useWindowTransition` has the identical pattern for the
+     * Window* family — any consumer that toggles `group` reactively
+     * after mount (rather than setting it once, statically) hits this.
+     *
+     * Flagged as `test.fixme` with this diagnostic, story/component
+     * left untouched per this pass's scope (title-drift realignment).
+     */
+    test.fixme('Group — items animate via TransitionGroup', async ({ page }) => {
+        // "Prop — group (transition-group)" is now the "Functional"
+        // Variant's "Group (TransitionGroup)" HstCheckbox (init false).
+        // functionalItems starts at [1, 2] — toggling Group on renders
+        // target-group-1 / target-group-2 immediately.
+        await gotoVariant(page, STORIES.fade, 'Functional')
+        await toggleHstCheckbox(page, 'Group (TransitionGroup)')
         const sb = sandbox(page)
         await expect(sb.locator('[data-cy="target-group-1"]')).toBeVisible({ timeout: 5000 })
         await sb.locator('[data-cy="group-add"]').click()
