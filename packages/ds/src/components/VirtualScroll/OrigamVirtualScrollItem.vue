@@ -30,7 +30,7 @@
 
 	import type { IVirtualScrollItemProps} from '../../interfaces'
 
-	import type { IVirtualScrollItemEmits } from '../../interfaces/VirtualScroll/virtual-scroll-item.interface'
+	import type { IVirtualScrollItemEmits, IVirtualScrollItemSlots } from '../../interfaces/VirtualScroll/virtual-scroll-item.interface'
 
 	/*********************************************************
 	 * Global
@@ -42,6 +42,8 @@
 	const props = withDefaults(defineProps<IVirtualScrollItemProps>(), {})
 
 	const emits = defineEmits<IVirtualScrollItemEmits>()
+
+	defineSlots<IVirtualScrollItemSlots>()
 
 	const {filterProps} = useProps<IVirtualScrollItemProps>(props)
 
