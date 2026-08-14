@@ -46,7 +46,7 @@
 
 	import { DENSITY } from '../../enums'
 
-	import type { ITableProps } from '../../interfaces'
+	import type { ITableProps, ITableSlots } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -78,6 +78,8 @@
 	// Audit any OTHER useDefaults-wired component for the same bare
 	// binding before assuming "useDefaults(_props) is enough".
 	const props = useDefaults(_props)
+
+	defineSlots<ITableSlots>()
 
 	const {filterProps} = useProps<ITableProps>(props)
 

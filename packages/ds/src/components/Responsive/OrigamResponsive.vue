@@ -33,7 +33,7 @@
 		useStyle
 } from '../../composables'
 
-	import type { IResponsiveProps } from '../../interfaces'
+	import type { IResponsiveProps, IResponsiveSlots } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -42,6 +42,8 @@
 	 * Props and filterProps for the Responsive component.
 	 ********************************************************/
 	const props = withDefaults(defineProps<IResponsiveProps>(), {})
+
+	defineSlots<IResponsiveSlots>()
 
 	const {filterProps} = useProps<IResponsiveProps>(props)
 

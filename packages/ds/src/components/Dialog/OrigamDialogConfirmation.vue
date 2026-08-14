@@ -131,7 +131,7 @@
 
 	import type { IDialogConfirmationProps} from '../../interfaces'
 
-	import type { IDialogConfirmationEmits } from '../../interfaces/Dialog/dialog-confirmation.interface'
+	import type { IDialogConfirmationEmits, IDialogConfirmationSlots } from '../../interfaces/Dialog/dialog-confirmation.interface'
 
 	import type { TOrigamDialog } from "../../types"
 
@@ -146,6 +146,8 @@
 	})
 
 	const emits = defineEmits<IDialogConfirmationEmits>()
+
+	defineSlots<IDialogConfirmationSlots>()
 
 	const {filterProps} = useProps<IDialogConfirmationProps>(props)
 

@@ -16,6 +16,7 @@ import type {
     IPaddingProps,
     IRoundedProps,
     ISelectionControlProps,
+    ISwitchTrackSlotsProps,
     ITagProps
 } from '../../interfaces'
 
@@ -28,3 +29,13 @@ export interface ISwitchProps extends ICommonsComponentProps, ITagProps, IPaddin
 /** Emits fired by `<OrigamSwitch>` — v-model + focus + indeterminate
  *  (three-state) + label click. */
 export interface ISwitchEmits extends ICommonsComponentEmits, IFocusEmits, IIndeterminateEmits, IClickLabelEmits {}
+
+/** Slot signatures for `<OrigamSwitch>`. `track.true` / `track.false`
+ *  forward straight through to the nested `<OrigamSwitchTrack>`'s own
+ *  slots of the same name; `loader` overrides the circular spinner
+ *  painted on the thumb during an async toggle. */
+export interface ISwitchSlots {
+    'track.true'?: (props: ISwitchTrackSlotsProps) => any
+    'track.false'?: (props: ISwitchTrackSlotsProps) => any
+    loader?: () => any
+}

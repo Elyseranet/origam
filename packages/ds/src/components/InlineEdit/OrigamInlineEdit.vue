@@ -210,7 +210,7 @@
 	import type {
 		IInlineEditProps} from '../../interfaces'
 
-	import type { IInlineEditEmits } from '../../interfaces/InlineEdit/inline-edit.interface'
+	import type { IInlineEditEmits, IInlineEditSlots } from '../../interfaces/InlineEdit/inline-edit.interface'
 
 	/*********************************************************
 	 * Global
@@ -240,6 +240,8 @@
 	})
 
 	const emit = defineEmits<IInlineEditEmits>()
+
+	defineSlots<IInlineEditSlots>()
 
 	/*********************************************************
 	 * Model — reactive accessor so the composable always reads the

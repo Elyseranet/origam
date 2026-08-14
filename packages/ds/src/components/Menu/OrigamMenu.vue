@@ -103,7 +103,7 @@
 
 	import type { IItemProps, IMenuProps} from '../../interfaces'
 
-	import type { IMenuEmits } from '../../interfaces/Menu/menu.interface'
+	import type { IMenuEmits, IMenuSlots } from '../../interfaces/Menu/menu.interface'
 
 	import type { TOrigamOverlay, TTransitionProps } from '../../types'
 
@@ -134,6 +134,8 @@
 	const props = useDefaults(_props)
 
 	defineEmits<IMenuEmits>()
+
+	defineSlots<IMenuSlots>()
 
 	const {filterProps} = useProps<IMenuProps>(props)
 

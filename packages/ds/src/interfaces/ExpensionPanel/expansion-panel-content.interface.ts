@@ -16,3 +16,9 @@ import type {
 export interface IExpansionPanelContentProps extends IColorProps, IBgColorProps, ITagProps, ICommonsComponentProps, IDensityProps, IRoundedProps, IBorderProps, IPaddingProps, IMarginProps, ILazyProps, ILoaderProps {
     content?: string | Component
 }
+
+/** Slot signatures for `<OrigamExpansionPanelContent>`. */
+export interface IExpansionPanelContentSlots {
+    loader?: () => any
+    default?: () => any
+}

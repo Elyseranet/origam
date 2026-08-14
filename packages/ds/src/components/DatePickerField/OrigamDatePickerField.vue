@@ -190,7 +190,7 @@
 
 	import { BLOCK, DENSITY, DIRECTION, KEYBOARD_VALUES, MDI_ICONS, TEXT_FIELD_TYPE } from "../../enums"
 
-	import type { IDatePickerFieldProps, IDatePickerProps } from "../../interfaces"
+	import type { IDatePickerFieldProps, IDatePickerFieldSlots, IDatePickerProps } from "../../interfaces"
 
 	import type { TOrigamDatePicker, TOrigamMenu, TOrigamTextField, TTransitionProps } from "../../types"
 
@@ -221,6 +221,8 @@
 	// (OrigamBtn pattern). Pre-fix, the legacy `rounded: true` / `border: true`
 	// booleans always won, same forwarding-parity gap already fixed on Select.
 	const props = useDefaults(_props)
+
+	defineSlots<IDatePickerFieldSlots>()
 
 	const {filterProps} = useProps<IDatePickerFieldProps>(props)
 

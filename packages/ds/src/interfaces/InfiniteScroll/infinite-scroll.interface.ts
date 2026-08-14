@@ -1,7 +1,7 @@
 import type { IBgColorProps,
     IColorProps, ICommonsComponentProps, IDimensionProps, IDirectionProps, ITagProps, ITypographyProps } from '../../interfaces'
 
-import type { TInfiniteScrollMode, TInfiniteScrollSide } from '../../types'
+import type { TColor, TInfiniteScrollMode, TInfiniteScrollSide } from '../../types'
 
 export interface IInfiniteScrollProps extends ICommonsComponentProps, IColorProps, IBgColorProps, IDimensionProps, ITagProps, IDirectionProps, ITypographyProps {
     side?: TInfiniteScrollSide
@@ -27,4 +27,21 @@ export interface IInfiniteScrollEmits {
  *  sentinel that just bubbles its IntersectionObserver entries. */
 export interface IInfiniteScrollIntersectEmits {
     (e: 'intersect', value: { isIntersecting: boolean, side: TInfiniteScrollSide }): void
+}
+
+/** Scope forwarded to every `<OrigamInfiniteScroll>` side slot
+ *  (`error` / `empty` / `loading` / `loadMore`) — which edge triggered
+ *  it, plus a ready-to-bind click handler + the resolved color. */
+export interface IInfiniteScrollSideSlotProps {
+    side: TInfiniteScrollSide
+    props: { onClick: () => void, color: TColor | undefined }
+}
+
+/** Slot signatures for `<OrigamInfiniteScroll>`. */
+export interface IInfiniteScrollSlots {
+    error?: (data: IInfiniteScrollSideSlotProps) => any
+    empty?: (data: IInfiniteScrollSideSlotProps) => any
+    loading?: (data: IInfiniteScrollSideSlotProps) => any
+    loadMore?: (data: IInfiniteScrollSideSlotProps) => any
+    default?: () => any
 }

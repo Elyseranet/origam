@@ -68,7 +68,7 @@
 	import { useAdjacent, useBothColor, useDensity, useMargin, usePadding, useProps , useStyle} from "../../composables"
 	import { vContrast } from "../../directives"
 
-	import type { IDataTextProps } from "../../interfaces"
+	import type { IDataTextProps, IDataTextSlots } from "../../interfaces"
 	import { computed, shallowRef, StyleValue, toRef } from "vue"
 
 	/*********************************************************
@@ -76,6 +76,8 @@
 	 ********************************************************/
 
 	const props = withDefaults(defineProps<IDataTextProps>(), {})
+
+	defineSlots<IDataTextSlots>()
 
 	const {filterProps} = useProps<IDataTextProps>(props)
 

@@ -32,3 +32,11 @@ export interface IOverlayEmits extends ICommonsComponentEmits, IClickOutsideEmit
     (e: 'afterLeave'): void
     (e: 'keydown', event: KeyboardEvent): void
 }
+
+/** Slot signatures for `<OrigamOverlay>`. */
+export interface IOverlaySlots {
+    /** Receives the merged activator ref/events/props bag — bind it with
+     *  `v-bind="props"` on whatever element should toggle the overlay. */
+    activator?: (data: { isActive: boolean, props: Record<string, unknown> }) => any
+    default?: (data: { isActive: boolean }) => any
+}

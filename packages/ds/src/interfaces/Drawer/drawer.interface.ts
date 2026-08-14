@@ -1,5 +1,6 @@
 import type {
     IActiveProps,
+    IAdjacentSlots,
     IBgColorProps,
     IBorderProps,
     IColorProps,
@@ -70,4 +71,11 @@ export interface IDrawerProps extends ITagProps, ICommonsComponentProps, IBorder
 /** Emits fired by `<OrigamDrawer>` — v-model on the rail collapsed state. */
 export interface IDrawerEmits {
     (e: 'update:rail', value: boolean): void
+}
+
+/** Slot signatures for `<OrigamDrawer>`. */
+export interface IDrawerSlots extends IAdjacentSlots {
+    /** Overrides the whole prepend/content/append layout. */
+    wrapper?: () => any
+    default?: () => any
 }

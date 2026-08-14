@@ -18,3 +18,12 @@ export interface IMenuProps extends IOverlayProps, IListProps, IListItemProps {
 export interface IMenuEmits extends ICommonsComponentEmits {
     (e: 'contextmenu', event: MouseEvent): void
 }
+
+/** Slot signatures for `<OrigamMenu>`. `activator` only forwards the
+ *  merged `props` bag (not the inner overlay's `isActive`) — matches
+ *  the template's `v-bind="{props}"` (destructured from
+ *  `#activator="{props}"`). */
+export interface IMenuSlots {
+    activator?: (data: { props: Record<string, unknown> }) => any
+    default?: () => any
+}

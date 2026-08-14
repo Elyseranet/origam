@@ -6,3 +6,8 @@ export interface IProgressLinearProps extends IProgressTypeProps, IRoundedProps,
     reverse?: boolean
     stream?: boolean
 }
+
+/** Slot signatures for `<OrigamProgressLinear>`. */
+export interface IProgressLinearSlots {
+    default?: (data: { value: number, buffer: number }) => any
+}

@@ -21,7 +21,7 @@ import type {
     ITypographyProps
 } from '../../interfaces'
 
-import type { TLines } from '../../types'
+import type { TLines, TListItemSlot } from '../../types'
 
 /**
  * `size` picks a rung of the shared control-height scale (28 / 36 / 44 / 52 px,
@@ -51,3 +51,16 @@ export interface IListItemProps extends IBorderProps, ICommonsComponentProps, ID
 
 /** Emits fired by `<OrigamListItem>` — generic click + prepend/append slot clicks. */
 export interface IListItemEmits extends IClickEmits, IAdjacentEmits {}
+
+/** Slot signatures for `<OrigamListItem>`. `prepend` / `default` /
+ *  `append` share the same selection-state scope (`TListItemSlot`);
+ *  `title` / `subtitle` receive their own resolved text value. */
+export interface IListItemSlots {
+    /** Overrides the whole prepend/content/append layout. */
+    wrapper?: () => any
+    prepend?: (data: TListItemSlot) => any
+    title?: (data: { title?: string | number }) => any
+    subtitle?: (data: { subtitle?: string | number }) => any
+    default?: (data: TListItemSlot) => any
+    append?: (data: TListItemSlot) => any
+}

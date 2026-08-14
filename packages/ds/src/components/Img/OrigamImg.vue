@@ -114,7 +114,7 @@
 
 	import type { IImgProps, ISrcObject} from '../../interfaces'
 
-	import type { IImgEmits } from '../../interfaces/Img/img.interface'
+	import type { IImgEmits, IImgSlots } from '../../interfaces/Img/img.interface'
 
 	import type { TImgState } from '../../types'
 
@@ -129,6 +129,8 @@
 	const props = withDefaults(defineProps<IImgProps>(), {})
 
 	const emits = defineEmits<IImgEmits>()
+
+	defineSlots<IImgSlots>()
 
 	const {filterProps} = useProps<IImgProps>(props)
 

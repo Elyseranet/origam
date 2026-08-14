@@ -66,7 +66,7 @@
 
 	import type { IListActivatorProps, IListGroupProps} from '../../interfaces'
 
-	import type { IListGroupEmits } from '../../interfaces/List/list-group.interface'
+	import type { IListGroupEmits, IListGroupSlots } from '../../interfaces/List/list-group.interface'
 
 	/*********************************************************
 	 * Global
@@ -79,6 +79,8 @@
 	})
 
 	const emits = defineEmits<IListGroupEmits>()
+
+	defineSlots<IListGroupSlots>()
 
 
 	const {isHover, hoverState} = useHover(props)

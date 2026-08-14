@@ -77,7 +77,7 @@
 
 	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts'
 
-	import type { IExpansionPanelContentProps } from '../../interfaces'
+	import type { IExpansionPanelContentProps, IExpansionPanelContentSlots } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -88,6 +88,8 @@
 	const props = withDefaults(defineProps<IExpansionPanelContentProps>(), {
 		tag: 'div'
 	})
+
+	defineSlots<IExpansionPanelContentSlots>()
 
 	const {filterProps} = useProps<IExpansionPanelContentProps>(props)
 
