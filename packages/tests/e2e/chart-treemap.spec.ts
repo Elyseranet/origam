@@ -1,5 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
+import { selectHstOption, toggleHstCheckbox } from './_support/histoire-controls'
+
 /**
  * OrigamChartTreemap — Playwright spec.
  *
@@ -11,9 +13,20 @@ import { expect, test, type Page } from '@playwright/test'
  *  - ARIA attributes (role="figure", role="img", title, desc) are present.
  *  - Label text renders inside large-enough tiles (showLabel=true).
  *  - Empty slot renders when series is empty.
+ *
+ * Story realignment (canonical Design/Functional/Events/Slots structure):
+ * the old side-by-side "Prop — algorithm / showLabel" Variants were folded
+ * into the "Design" Variant's Algorithm HstSelect / Show Label HstCheckbox
+ * controls, driven in sequence. The old single "Emit — point-click /
+ * legend-click / series-toggle" Variant is now three separate
+ * "Events - {name}" Variants, each with its own FIXTURE_BUDGET (5 tiles)
+ * instance and only that one listener wired — story-provided
+ * `data-cy="treemap-emit-{name}-chart"` fall-through still exists on these,
+ * unlike most other Chart family stories.
  */
 
 const TREEMAP_STORY = '/stories/story/components-stories-chart-origamcharttreemap-story-vue'
+const ROOT = '[data-cy="origam-chart-treemap"]'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')
@@ -29,7 +42,7 @@ test.describe('OrigamChartTreemap — Default', () => {
     test('renders figure root with role="figure"', async ({ page }) => {
         await openVariant(page, TREEMAP_STORY, 'Default')
         const sandbox = sandboxOf(page)
-        const host = sandbox.locator('[data-cy="treemap-playground-chart"]').first()
+        const host = sandbox.locator('[data-cy="origam-chart-treemap"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
         await expect(host).toHaveAttribute('role', 'figure')
     })
@@ -37,7 +50,7 @@ test.describe('OrigamChartTreemap — Default', () => {
     test('SVG carries role=img, title and desc', async ({ page }) => {
         await openVariant(page, TREEMAP_STORY, 'Default')
         const sandbox = sandboxOf(page)
-        const svg = sandbox.locator('[data-cy="treemap-playground-chart"] svg').first()
+        const svg = sandbox.locator('[data-cy="origam-chart-treemap"] svg').first()
         await expect(svg).toBeVisible()
         await expect(svg).toHaveAttribute('role', 'img')
         await expect(svg.locator('title')).toHaveCount(1)
@@ -52,14 +65,14 @@ test.describe('OrigamChartTreemap — Default', () => {
         // Use `rect[data-cy^=...]` to target only the <rect> tile elements and exclude
         // the <g> wrapper groups which share the same data-cy prefix ("origam-chart-treemap-tile-group-N"
         // also starts with "origam-chart-treemap-tile-"), causing a 2× count.
-        const tiles = sandbox.locator('[data-cy="treemap-playground-chart"] rect[data-cy^="origam-chart-treemap-tile-"]')
+        const tiles = sandbox.locator('[data-cy="origam-chart-treemap"] rect[data-cy^="origam-chart-treemap-tile-"]')
         await expect(tiles).toHaveCount(10, { timeout: 6000 })
     })
 
     test('each tile rect has positive width and height attributes', async ({ page }) => {
         await openVariant(page, TREEMAP_STORY, 'Default')
         const sandbox = sandboxOf(page)
-        const tiles = sandbox.locator('[data-cy="treemap-playground-chart"] rect[data-cy^="origam-chart-treemap-tile-"]')
+        const tiles = sandbox.locator('[data-cy="origam-chart-treemap"] rect[data-cy^="origam-chart-treemap-tile-"]')
         await expect(tiles).toHaveCount(10, { timeout: 6000 })
         const count = await tiles.count()
         expect(count).toBe(10)
@@ -74,30 +87,35 @@ test.describe('OrigamChartTreemap — Default', () => {
 
 test.describe('OrigamChartTreemap — algorithm variants', () => {
     test('squarified variant renders 10 tiles', async ({ page }) => {
-        await openVariant(page, TREEMAP_STORY, 'Prop — algorithm (squarified vs slice-dice)')
+        await openVariant(page, TREEMAP_STORY, 'Design')
         const sandbox = sandboxOf(page)
+        await selectHstOption(page, 'Algorithm', 'squarified')
         await page.screenshot({ path: '/tmp/chart-treemap-algorithm.png', fullPage: false })
 
-        const tiles = sandbox.locator('[data-cy="treemap-algorithm-squarified"] rect[data-cy^="origam-chart-treemap-tile-"]')
+        const tiles = sandbox.locator(`${ ROOT } rect[data-cy^="origam-chart-treemap-tile-"]`)
         await expect(tiles).toHaveCount(10, { timeout: 6000 })
     })
 
     test('slice-dice variant renders 10 tiles', async ({ page }) => {
-        await openVariant(page, TREEMAP_STORY, 'Prop — algorithm (squarified vs slice-dice)')
+        await openVariant(page, TREEMAP_STORY, 'Design')
         const sandbox = sandboxOf(page)
-        const tiles = sandbox.locator('[data-cy="treemap-algorithm-slice-dice"] rect[data-cy^="origam-chart-treemap-tile-"]')
+        await selectHstOption(page, 'Algorithm', 'slice-dice')
+        const tiles = sandbox.locator(`${ ROOT } rect[data-cy^="origam-chart-treemap-tile-"]`)
         await expect(tiles).toHaveCount(10, { timeout: 6000 })
     })
 
     test('squarified and slice-dice produce different tile geometries', async ({ page }) => {
-        await openVariant(page, TREEMAP_STORY, 'Prop — algorithm (squarified vs slice-dice)')
+        await openVariant(page, TREEMAP_STORY, 'Design')
         const sandbox = sandboxOf(page)
+        const tile0 = sandbox.locator(`${ ROOT } [data-cy="origam-chart-treemap-tile-0"]`)
 
-        const sqTile0 = sandbox.locator('[data-cy="treemap-algorithm-squarified"] [data-cy="origam-chart-treemap-tile-0"]')
-        const sdTile0 = sandbox.locator('[data-cy="treemap-algorithm-slice-dice"] [data-cy="origam-chart-treemap-tile-0"]')
+        await selectHstOption(page, 'Algorithm', 'squarified')
+        await expect(tile0).toBeVisible({ timeout: 8000 })
+        const sqW = await tile0.getAttribute('width')
 
-        const sqW = await sqTile0.getAttribute('width')
-        const sdW = await sdTile0.getAttribute('width')
+        await selectHstOption(page, 'Algorithm', 'slice-dice')
+        await expect(tile0).toBeVisible({ timeout: 8000 })
+        const sdW = await tile0.getAttribute('width')
 
         expect(sqW).toBeTruthy()
         expect(sdW).toBeTruthy()
@@ -107,18 +125,20 @@ test.describe('OrigamChartTreemap — algorithm variants', () => {
 
 test.describe('OrigamChartTreemap — showLabel', () => {
     test('showLabel=true renders name and value labels for large tiles', async ({ page }) => {
-        await openVariant(page, TREEMAP_STORY, 'Prop — showLabel (on / off)')
+        await openVariant(page, TREEMAP_STORY, 'Design')
         const sandbox = sandboxOf(page)
-        const labels = sandbox.locator('[data-cy="treemap-label-on"] [data-cy^="origam-chart-treemap-label-name-"]')
+        // Design Variant init-state has showLabel=true already — no toggle needed.
+        const labels = sandbox.locator(`${ ROOT } [data-cy^="origam-chart-treemap-label-name-"]`)
         // Use not.toHaveCount(0) so Playwright retries until at least one label appears (up to 6 s).
         // Plain count() is synchronous and races with the chart's first render frame.
         await expect(labels).not.toHaveCount(0, { timeout: 6000 })
     })
 
     test('showLabel=false renders no name labels', async ({ page }) => {
-        await openVariant(page, TREEMAP_STORY, 'Prop — showLabel (on / off)')
+        await openVariant(page, TREEMAP_STORY, 'Design')
         const sandbox = sandboxOf(page)
-        const labels = sandbox.locator('[data-cy="treemap-label-off"] [data-cy^="origam-chart-treemap-label-name-"]')
+        await toggleHstCheckbox(page, 'Show Label')
+        const labels = sandbox.locator(`${ ROOT } [data-cy^="origam-chart-treemap-label-name-"]`)
         await expect(labels).toHaveCount(0, { timeout: 4000 })
     })
 })
@@ -128,10 +148,10 @@ test.describe('OrigamChartTreemap — legend toggle', () => {
         await openVariant(page, TREEMAP_STORY, 'Default')
         const sandbox = sandboxOf(page)
 
-        const tiles = sandbox.locator('[data-cy="treemap-playground-chart"] rect[data-cy^="origam-chart-treemap-tile-"]')
+        const tiles = sandbox.locator('[data-cy="origam-chart-treemap"] rect[data-cy^="origam-chart-treemap-tile-"]')
         await expect(tiles).toHaveCount(10, { timeout: 6000 })
 
-        const legendItems = sandbox.locator('[data-cy="treemap-playground-chart"] .origam-chart__legend-item')
+        const legendItems = sandbox.locator('[data-cy="origam-chart-treemap"] .origam-chart__legend-item')
         await expect(legendItems.first()).toBeVisible()
         await legendItems.first().click()
         await page.waitForTimeout(300)
@@ -144,8 +164,8 @@ test.describe('OrigamChartTreemap — legend toggle', () => {
         await openVariant(page, TREEMAP_STORY, 'Default')
         const sandbox = sandboxOf(page)
 
-        const tiles = sandbox.locator('[data-cy="treemap-playground-chart"] rect[data-cy^="origam-chart-treemap-tile-"]')
-        const legendItems = sandbox.locator('[data-cy="treemap-playground-chart"] .origam-chart__legend-item')
+        const tiles = sandbox.locator('[data-cy="origam-chart-treemap"] rect[data-cy^="origam-chart-treemap-tile-"]')
+        const legendItems = sandbox.locator('[data-cy="origam-chart-treemap"] .origam-chart__legend-item')
 
         await legendItems.first().click()
         await page.waitForTimeout(300)
@@ -162,7 +182,7 @@ test.describe('OrigamChartTreemap — accessibility', () => {
     test('each tile has role="button" and a non-empty aria-label', async ({ page }) => {
         await openVariant(page, TREEMAP_STORY, 'Default')
         const sandbox = sandboxOf(page)
-        const tiles = sandbox.locator('[data-cy="treemap-playground-chart"] rect[data-cy^="origam-chart-treemap-tile-"]')
+        const tiles = sandbox.locator('[data-cy="origam-chart-treemap"] rect[data-cy^="origam-chart-treemap-tile-"]')
         await expect(tiles).toHaveCount(10, { timeout: 6000 })
         const count = await tiles.count()
         for (let i = 0; i < count; i++) {
@@ -175,7 +195,7 @@ test.describe('OrigamChartTreemap — accessibility', () => {
     test('each tile is keyboard-focusable (tabindex=0)', async ({ page }) => {
         await openVariant(page, TREEMAP_STORY, 'Default')
         const sandbox = sandboxOf(page)
-        const tiles = sandbox.locator('[data-cy="treemap-playground-chart"] rect[data-cy^="origam-chart-treemap-tile-"]')
+        const tiles = sandbox.locator('[data-cy="origam-chart-treemap"] rect[data-cy^="origam-chart-treemap-tile-"]')
         await expect(tiles).toHaveCount(10, { timeout: 6000 })
         const count = await tiles.count()
         for (let i = 0; i < count; i++) {
@@ -186,7 +206,7 @@ test.describe('OrigamChartTreemap — accessibility', () => {
 
 test.describe('OrigamChartTreemap — empty state', () => {
     test('empty slot renders when series is empty', async ({ page }) => {
-        await openVariant(page, TREEMAP_STORY, 'Slot — empty')
+        await openVariant(page, TREEMAP_STORY, 'Slots - Empty')
         const sandbox = sandboxOf(page)
         const empty = sandbox.locator('[data-cy="treemap-slot-empty-chart"] [data-cy="origam-chart-treemap-empty"]')
         await expect(empty).toBeVisible({ timeout: 6000 })
@@ -196,9 +216,9 @@ test.describe('OrigamChartTreemap — empty state', () => {
 
 test.describe('OrigamChartTreemap — budget fixture (5 tiles)', () => {
     test('budget fixture renders exactly 5 tiles', async ({ page }) => {
-        await openVariant(page, TREEMAP_STORY, 'Emit — point-click / legend-click / series-toggle')
+        await openVariant(page, TREEMAP_STORY, 'Events - point-click')
         const sandbox = sandboxOf(page)
-        const tiles = sandbox.locator('[data-cy="treemap-emit-chart"] rect[data-cy^="origam-chart-treemap-tile-"]')
+        const tiles = sandbox.locator('[data-cy="treemap-emit-point-click-chart"] rect[data-cy^="origam-chart-treemap-tile-"]')
         await expect(tiles).toHaveCount(5, { timeout: 6000 })
     })
 })
