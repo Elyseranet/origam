@@ -111,7 +111,7 @@
 
   import { SCROLL_STRATEGIES } from '../../enums'
 
-  import type { ISnackbarProps } from '../../interfaces'
+  import type { ISnackbarProps, ISnackbarSlots } from '../../interfaces'
 
   import type { TIntent, TOrigamOverlay, TTransitionProps } from '../../types'
 
@@ -138,6 +138,8 @@
   // (OrigamBtn pattern) — without this, theme.components['origam-snackbar']
   // (location/border/rounded/elevation) was a silent no-op.
   const props = useDefaults(_props)
+
+  defineSlots<ISnackbarSlots>()
 
   const { filterProps } = useProps<ISnackbarProps>(props)
 
