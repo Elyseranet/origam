@@ -41,7 +41,7 @@
 
 	import type { ITabsProps} from '../../interfaces'
 
-	import type { ITabsEmits } from '../../interfaces/Tabs/tabs.interface'
+	import type { ITabsEmits, ITabsSlots } from '../../interfaces/Tabs/tabs.interface'
 
 	/*********************************************************
 	 * Global
@@ -67,6 +67,8 @@
 	const props = useDefaults(_props)
 
 	defineEmits<ITabsEmits>()
+
+	defineSlots<ITabsSlots>()
 
 	const {filterProps} = useProps<ITabsProps>(props)
 

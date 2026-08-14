@@ -88,6 +88,8 @@
 
 	import type { ITabProps } from '../../interfaces'
 
+	import type { ITabSlots } from '../../interfaces/Tabs/tab.interface'
+
 	/*********************************************************
 	 * Global
 	 ********************************************************/
@@ -99,6 +101,8 @@
 	})
 
 	const props = useDefaults(_props)
+
+	defineSlots<ITabSlots>()
 
 	const {filterProps} = useProps<ITabProps>(props)
 

@@ -3,6 +3,7 @@ import type {
     ICommonsComponentProps,
     IDirectionProps,
     IGroupProps,
+    IGroupProvide,
     ITagProps
 } from '../../interfaces'
 
@@ -38,3 +39,17 @@ export interface ITabPanelsProvide {
 
 /** Emits fired by `<OrigamTabPanels>` — v-model mirrors the parent tablist. */
 export interface ITabPanelsEmits extends ICommonsComponentEmits {}
+
+/** Scope forwarded to the `default` slot — the raw `useGroup()`
+ *  selection API, forwarded as-is (its `selected` field stays a `Ref`,
+ *  mirroring `ITabsSlotProps` / `IItemGroupSlots`). `items` is
+ *  unwrapped from the `ComputedRef` returned by `useGroup` into the
+ *  plain array. */
+export interface ITabPanelsSlotProps extends Pick<IGroupProvide, 'isSelected' | 'select' | 'next' | 'prev' | 'selected'> {
+    items: IGroupProvide['items']['value']
+}
+
+/** Slot signatures for `<OrigamTabPanels>`. */
+export interface ITabPanelsSlots {
+    default?: (data: ITabPanelsSlotProps) => any
+}

@@ -41,3 +41,20 @@ export interface ITabProps extends ICommonsComponentProps, ITagProps, IGroupItem
      */
     icon?: TIcon
 }
+
+/** Scope forwarded to the `default` slot — the resolved selection
+ *  state from `useGroupItem`, unwrapped from its `Ref`s (unlike
+ *  `ITabsSlotProps`, which forwards the parent's raw `useGroup()` API
+ *  as-is). */
+export interface ITabSlotProps {
+    isSelected: boolean
+    toggle: () => void
+    select: (value: boolean) => void
+    value: unknown
+    disabled: boolean | undefined
+}
+
+/** Slot signatures for `<OrigamTab>`. */
+export interface ITabSlots {
+    default?: (data: ITabSlotProps) => any
+}
