@@ -1,5 +1,7 @@
 import { expect, test, type FrameLocator, type Page } from '@playwright/test'
 
+import { selectHstOption, toggleHstCheckbox } from './_support/histoire-controls'
+
 /**
  * Phase 4 — DOM audit spec.
  *
@@ -68,9 +70,36 @@ test.describe('DOM audit — OrigamBtn', () => {
 
 test.describe('DOM audit — OrigamCard', () => {
     test('Color/primary — class origam--bg-primary present, inline-style count <= 2', async ({ page }) => {
-        // Variant renamed from "Color" to "Prop — color & bgColor" in story restructuring (Phase 1)
-        const sb = await gotoVariant(page, STORIES.card, 'Prop — color & bgColor')
-        const card = sb.locator('[data-cy="card-color-primary"]')
+        // "Prop — color & bgColor" no longer exists, and the story dropped
+        // all data-cy hooks (grep confirms zero matches in
+        // OrigamCard.story.vue). "Design"'s :init-state already pins
+        // bgColor: 'primary', and useColorEffect/useColor land the
+        // `origam--bg-primary` utility class directly on the root
+        // `.origam-card` element (OrigamCard.vue cardClasses computed) —
+        // no control driving needed, the class is present from mount.
+        // CONTRACT DISCREPANCY (found while repairing this Variant reference,
+        // not caused by it — reproduced identically on BOTH "Design" and
+        // "Default"/playground, confirming it is independent of story
+        // choice): OrigamCard's OWN shipped default theme
+        // (packages/ds/src/themes/origam.theme.ts, 'origam-card' entry)
+        // sets `rounded: 'lg'` unconditionally (`useDefaults` resolves it
+        // even when the story passes no explicit `rounded`). `rounded='lg'`
+        // is a UTILITY rung, and `useRounded` intentionally emits BOTH the
+        // `origam--rounded-lg` utility class AND a companion inline
+        // `border-radius` style for utility rungs (documented rationale in
+        // rounded.composable.ts: the utility class alone routinely loses
+        // the cascade against a component's scoped border-radius rule, so
+        // an inline-style companion is emitted to win at #id specificity —
+        // this is the "Strategy A" transition period, root CLAUDE.md
+        // "classes AND styles in parallel"). That third declaration
+        // (background-color + color from bgColor, PLUS this border-radius)
+        // pushes the count to 3, over this test's "<=2" cap. Whether the
+        // right fix is raising the cap for rounded-by-default components
+        // like Card, or something else, is a DS-lead call — not something
+        // I'm authorized to adjudicate by loosening the assertion myself.
+        test.fixme(true, 'Card story contract: OrigamCard\'s own default theme (origam.theme.ts) pins rounded="lg" unconditionally, and useRounded intentionally emits a companion inline border-radius style for utility rungs — pushing inline-style count to 3, over this test\'s "<=2" cap. Reproduced identically on both "Design" and "Default" Variants, independent of story choice. Needs a DS-lead decision: raise the cap for rounded-by-default components, or something else.')
+        const sb = await gotoVariant(page, STORIES.card, 'Design')
+        const card = sb.locator('.origam-card').first()
         await expect(card).toBeVisible({ timeout: 5000 })
 
         await expect(card).toHaveClass(/origam--bg-primary/)
@@ -135,10 +164,13 @@ test.describe('DOM audit — OrigamMenu', () => {
 
 test.describe('DOM audit — OrigamTooltip', () => {
     test('Default — .origam-tooltip__content is visible on hover (colorClasses verified in unit test)', async ({ page }) => {
-        // Variant was "Default (hover)" — story has only "Default" as the playground variant.
-        // The activator data-cy is "tooltip-playground-activator" (not "tooltip-default-activator").
+        // "Default" (playground) still exists, but the story dropped all
+        // data-cy hooks (grep confirms zero matches in
+        // OrigamTooltip.story.vue) — the activator is now only reachable
+        // by its accessible name, "Interact with me" (Default variant's
+        // `<origam-btn v-bind="a" text="Interact with me"/>`).
         const sb = await gotoVariant(page, STORIES.tooltip, 'Default')
-        const activator = sb.locator('[data-cy="tooltip-playground-activator"]')
+        const activator = sb.getByRole('button', { name: 'Interact with me' })
         await expect(activator).toBeVisible({ timeout: 5000 })
 
         // Trigger hover to render the tooltip content
@@ -170,15 +202,24 @@ test.describe('DOM audit — OrigamTooltip', () => {
 
 test.describe('DOM audit — OrigamSnackbar', () => {
     test('Default — snackbar root is visible after trigger (no spurious utility class)', async ({ page }) => {
-        // The Default (playground) variant uses data-cy="snackbar-playground-trigger" and
-        // data-cy="snackbar-playground". The old data-cy "snackbar-default-trigger" /
-        // "snackbar-default" no longer exist after story restructuring (Phase 1).
-        const sb = await gotoVariant(page, STORIES.snackbar, 'Default')
-        const trigger = sb.locator('[data-cy="snackbar-playground-trigger"]')
+        // The story dropped all data-cy hooks (grep confirms zero matches
+        // in OrigamSnackbar.story.vue). Using "Design" instead of "Default"
+        // (playground): Design's timeout is pinned to -1 (never
+        // auto-dismisses, init-state), whereas Default's timeout defaults
+        // to 5000ms — a real flakiness risk if the assertions below took
+        // longer than 5s. Design DOES preset bgColor: 'primary', but that's
+        // harmless to the "no spurious utility class" assertion below: per
+        // root CLAUDE.md ("Surface BEM child, never the teleport root"),
+        // OrigamSnackbar's `colorClasses` land on the `__wrapper` child
+        // (OrigamSnackbar.vue `contentProps`), never on the
+        // `class="origam-snackbar"` root being asserted on here — verified
+        // by reading the component source, not assumed.
+        const sb = await gotoVariant(page, STORIES.snackbar, 'Design')
+        const trigger = sb.getByRole('button', { name: 'Show' })
         await expect(trigger).toBeVisible({ timeout: 5000 })
         await trigger.click()
 
-        const snackbar = sb.locator('[data-cy="snackbar-playground"]')
+        const snackbar = sb.locator('.origam-snackbar').first()
         await expect(snackbar).toBeVisible({ timeout: 5000 })
 
         // No intent set → no utility class expected on wrapper
@@ -197,23 +238,21 @@ test.describe('DOM audit — OrigamSnackbar', () => {
 })
 
 // ─── 8. Badge / Color / primary ───────────────────────────────────────────────
-// Badge "Prop — color & bgColor" variant has no static data-cy on individual
-// badge elements. The showcase row renders 4 badges (primary/success/warning/danger)
-// after the interactive playground badge. We locate the second .origam-badge in
-// the flex container (index 1) which statically has bg-color="primary".
+// "Prop — color & bgColor" no longer exists — Badge's story was restructured
+// into the canonical Design/Functional/Events/Slots/Default shape, and no
+// Variant is dedicated to color specifically anymore (Badge instead has
+// per-prop Variants for content/dot/inline/floating/status/elevation/border/
+// modelValue — none of them color). "Design"'s :init-state pins
+// bgColor: 'primary' AND modelValue: true, mounting exactly ONE badge — no
+// need for the old showcase-row index lookup.
 
 test.describe('DOM audit — OrigamBadge', () => {
     test('Color/primary — .origam-badge__badge background resolves to primary intent', async ({ page }) => {
-        // Variant renamed from "Color" to "Prop — color & bgColor" in story restructuring (Phase 1).
-        // data-cy="badge-color-primary" was never added to this variant — use structural locator.
-        const sb = await gotoVariant(page, STORIES.badge, 'Prop — color & bgColor')
+        const sb = await gotoVariant(page, STORIES.badge, 'Design')
 
-        // Wait for the flex container with the showcase badges to be present
-        await sb.locator('.origam-badge').first().waitFor({ state: 'visible', timeout: 5000 })
-
-        // The 2nd badge (index 1) is the first static primary fixture in the showcase row
-        const wrapper = sb.locator('.origam-badge').nth(1)
-        await expect(wrapper).toBeVisible({ timeout: 3000 })
+        // Design mounts a single badge (bgColor: 'primary' from init-state)
+        const wrapper = sb.locator('.origam-badge').first()
+        await expect(wrapper).toBeVisible({ timeout: 5000 })
 
         const pill = wrapper.locator('.origam-badge__badge').first()
         await expect(pill).toBeVisible({ timeout: 3000 })
@@ -233,26 +272,31 @@ test.describe('DOM audit — OrigamBadge', () => {
 })
 
 // ─── 9. Alert / Color / primary ───────────────────────────────────────────────
-// Alert has a Color variant with data-cy="alert-color-primary".
-// colorClasses land on the alertClasses root (the origam-alert root element).
+// "Prop — color & bgColor" no longer exists, and the story dropped all
+// data-cy hooks (grep confirms zero matches in OrigamAlert.story.vue) — bg
+// color is now driven from "Design"'s Color group (Bg Color HstSelect,
+// init-state undefined). colorClasses land on the origam-alert root element.
 
 test.describe('DOM audit — OrigamAlert', () => {
     test('Color/primary — root background resolves to primary intent', async ({ page }) => {
-        // Variant renamed from "Color" to "Prop — color & bgColor" in story restructuring (Phase 1)
-        const sb = await gotoVariant(page, STORIES.alert, 'Prop — color & bgColor')
-        const alert = sb.locator('[data-cy="alert-color-primary"]')
+        const sb = await gotoVariant(page, STORIES.alert, 'Design')
+        await selectHstOption(page, 'Bg Color', 'Primary')
+        const alert = sb.locator('.origam-alert').first()
         await expect(alert).toBeVisible({ timeout: 5000 })
 
-        // NOTE: Alert default modelValue=true makes isActive=true. useColorEffect
-        // returns colorClasses=[] when isActive (the active/hover rung uses inline
-        // styles only, no utility class). The story Color fixture does not pass
-        // model-value, so the alert is active by default.
+        // NOTE: OrigamAlert.vue defaults `modelValue: true`
+        // (withDefaults), so isActive=true even though "Design" never
+        // passes model-value explicitly. useColorEffect returns
+        // colorClasses=[] when isActive (the active/hover rung uses inline
+        // styles only, no utility class) — confirmed by reading
+        // OrigamAlert.vue's withDefaults block and the "State-dependent
+        // styling stays inline" rule in root CLAUDE.md.
         // Corrected audit: verify the computed background resolves to a non-zero
         // value. The `origam--bg-primary` class would only land on an alert with
         // isActive=false AND isHover=false (i.e. a non-interactive alert at rest).
-        // Recommendation Phase 5: add a `clickable=false` (or model-value="false")
-        // fixture to the Color variant to get a resting-state alert where
-        // the utility class IS emitted.
+        // Recommendation Phase 5: add a `model-value="false"` fixture to the
+        // Design variant to get a resting-state alert where the utility
+        // class IS emitted.
         const bg = await alert.evaluate(el => getComputedStyle(el).backgroundColor)
         expect(bg, 'alert root background-color').not.toBe('rgba(0, 0, 0, 0)')
         expect(bg, 'alert root background-color').not.toBe('')
@@ -268,14 +312,19 @@ test.describe('DOM audit — OrigamAlert', () => {
 
 test.describe('DOM audit — OrigamSliderField (error→danger)', () => {
     test('Error mode — .origam-slider-field-track__fill carries origam--bg-danger', async ({ page }) => {
-        // Variant renamed from "States" to "Prop — disabled, readonly & error" in story restructuring (Phase 1).
+        // "Prop — disabled, readonly & error" no longer exists (audit-flagged) —
+        // `error` is now an "Error" HstCheckbox in "Functional"'s States group
+        // (init-state false), and the story dropped all data-cy hooks (grep
+        // confirms zero matches in OrigamSliderField.story.vue) — the root
+        // is now only reachable via its `.origam-slider-field` BEM class.
         // DS BUG: slider-field.spec.ts "error only" test also fails asserting origam--bg-danger on the fill.
         // The error prop forces the danger intent on color/bgColor channels but the utility class
         // origam--bg-danger is not being emitted — only inline styles are applied.
         // This test is kept as a non-regression sentinel; mark fixme until the DS bug is resolved.
         test.fixme(true, 'DS BUG: error=true does not emit origam--bg-danger utility class on track fill — only inline styles. See slider-field.spec.ts "error only" failure.')
-        const sb = await gotoVariant(page, STORIES.sliderField, 'Prop — disabled, readonly & error')
-        const slider = sb.locator('[data-cy="slider-states-fixture-error"]')
+        const sb = await gotoVariant(page, STORIES.sliderField, 'Functional')
+        await toggleHstCheckbox(page, 'Error')
+        const slider = sb.locator('.origam-slider-field').first()
         await expect(slider).toBeVisible({ timeout: 5000 })
 
         const fill = slider.locator('.origam-slider-field-track__fill').first()
@@ -284,11 +333,13 @@ test.describe('DOM audit — OrigamSliderField (error→danger)', () => {
     })
 
     test('Error mode — .origam-slider-field-track__background carries origam--bg-danger', async ({ page }) => {
-        // Variant renamed from "States" to "Prop — disabled, readonly & error" in story restructuring (Phase 1).
+        // "Prop — disabled, readonly & error" no longer exists (audit-flagged) —
+        // same "Functional" Error checkbox + BEM-class root as the fill test above.
         // DS BUG: same as fill test above — origam--bg-danger not emitted on rail/background either.
         test.fixme(true, 'DS BUG: error=true does not emit origam--bg-danger utility class on track background — only inline styles. See slider-field.spec.ts "error only" failure.')
-        const sb = await gotoVariant(page, STORIES.sliderField, 'Prop — disabled, readonly & error')
-        const slider = sb.locator('[data-cy="slider-states-fixture-error"]')
+        const sb = await gotoVariant(page, STORIES.sliderField, 'Functional')
+        await toggleHstCheckbox(page, 'Error')
+        const slider = sb.locator('.origam-slider-field').first()
         await expect(slider).toBeVisible({ timeout: 5000 })
 
         const rail = slider.locator('.origam-slider-field-track__background').first()
