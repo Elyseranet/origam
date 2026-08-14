@@ -269,6 +269,7 @@
 	import type {
 		IAudioEmits,
 		IAudioProps,
+		IAudioSlots,
 		IAudioSource,
 		IAudioTrack
 	} from '../../interfaces/Audio/audio-player.interface'
@@ -329,6 +330,8 @@
 	})
 
 	const emit = defineEmits<IAudioEmits>()
+
+	defineSlots<IAudioSlots>()
 
 	/*********************************************************
 	 * Icon refs — single source of truth for the transport + status

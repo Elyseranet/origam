@@ -96,6 +96,10 @@ export interface IAudioScopedSlotBindings {
  * Slot signatures for `<OrigamAudio>`.
  */
 export interface IAudioSlots {
+    /** Override the entire title/artist/cover header strip (cover +
+     *  metadata together). Takes priority over the individual
+     *  `cover` / `metadata` / `title` slots. */
+    header?: () => any
     /** Override the entire title/artist/cover strip. */
     metadata?: () => any
     /** Override the cover image / placeholder. */
@@ -110,6 +114,9 @@ export interface IAudioSlots {
     /** Override the entire controls (replaces the default
      *  `<OrigamMediaController>`). */
     controls?: (bindings: IAudioScopedSlotBindings) => any
+    /** Override the playlist list rendered below the transport row.
+     *  Only rendered when `playlist` is set. */
+    playlist?: (bindings: { tracks: Array<IAudioTrack> | undefined; currentIndex: number; select: (index: number) => void }) => any
     /** Overlay rendered while the media is loading. */
     loading?: () => any
     /** Overlay rendered when an error occurred. */
