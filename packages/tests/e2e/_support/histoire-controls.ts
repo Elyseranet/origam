@@ -34,12 +34,24 @@ import type { Page } from '@playwright/test'
  * selection doesn't stick.
  */
 
-/** Open a Histoire `HstSelect` field (matched by its row label) and pick an option by its visible text. */
+/**
+ * Open a Histoire `HstSelect` field (matched by its row label) and pick an
+ * option by its visible text.
+ *
+ * The option click is scoped to the open `.v-popper__popper:visible`
+ * (floating-vue's teleported dropdown content) rather than a page-wide
+ * `getByText`. Without that scope, re-selecting the option that is ALREADY
+ * the field's current value is ambiguous: the closed trigger also renders
+ * the selected label as its own text node, so a page-wide exact-text match
+ * resolves to 2 elements (trigger + option) and Playwright throws a strict
+ * mode violation. Found empirically selecting the default "funnel" value
+ * on OrigamChartPyramid's Design Variant (2026-08).
+ */
 export async function selectHstOption(page: Page, fieldLabel: string, optionLabel: string): Promise<void> {
     const row = page.locator('label.histoire-select', { hasText: fieldLabel }).first()
     await row.locator('.v-popper--theme-dropdown').click()
     await page.waitForTimeout(300)
-    await page.getByText(optionLabel, { exact: true }).click()
+    await page.locator('.v-popper__popper:visible').getByText(optionLabel, { exact: true }).click()
     await page.waitForTimeout(300)
 }
 
@@ -61,4 +73,38 @@ export async function fillHstNumber(page: Page, fieldLabel: string, value: numbe
  */
 export async function toggleHstCheckbox(page: Page, fieldLabel: string): Promise<void> {
     await page.getByRole('checkbox', { name: fieldLabel, exact: true }).click()
+}
+
+/**
+ * Switch Histoire's right-hand panel to its "Events" tab, where `logEvent(…)`
+ * calls made from a story (e.g. `@point-click="logEvent('point-click', $event)"`)
+ * surface as a list of `[data-test-id="event-item"]` rows.
+ *
+ * Needed by any spec that asserts an emit actually fired — the canonical
+ * `Events - {name}` Variant structure (root CLAUDE.md, "Story + doc sync")
+ * replaced the old per-story custom log `<div data-cy="…-log">`, so specs
+ * that used to read a bespoke shell selector must read Histoire's own event
+ * log instead.
+ *
+ * Widens the viewport first: at Playwright's default 1280×720, Histoire's
+ * right-panel tab bar collapses the "Events" tab into a `visibility:hidden`
+ * wrapper once the badge count pushes it past the available width — the
+ * element still resolves (count 1) and even accepts a forced click without
+ * throwing, but the click lands on nothing because a `visibility:hidden`
+ * node doesn't receive real pointer hits, so the tab never actually
+ * switches. Verified empirically against a running Histoire instance
+ * (Chart/Sankey story, 2026-08): identical steps succeed at 1600×1000 and
+ * silently no-op at 1280×720.
+ */
+export async function openEventsTab(page: Page): Promise<void> {
+    await page.setViewportSize({ width: 1600, height: 1000 })
+    const tab = page.locator('a.histoire-base-tab[href*="tab=events"]')
+    await tab.scrollIntoViewIfNeeded()
+    await tab.click()
+    await page.waitForTimeout(300)
+}
+
+/** Locator for the logged event rows in Histoire's "Events" tab — call `openEventsTab` first. */
+export function eventLogItems(page: Page) {
+    return page.locator('[data-test-id="event-item"]')
 }
