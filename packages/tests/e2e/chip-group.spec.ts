@@ -48,9 +48,7 @@ test.describe('OrigamChipGroup — default', () => {
 
         const group = sandbox.locator('.origam-chip-group').first()
         await expect(group).toBeVisible({ timeout: 8000 })
-
-        const chips = await group.locator('.origam-chip').count()
-        expect(chips).toBe(3)
+        await expect(group.locator('.origam-chip')).toHaveCount(3, { timeout: 8000 })
     })
 
     test('clicking a chip toggles selection and updates status', async ({ page }) => {

@@ -70,6 +70,7 @@ test.describe('OrigamChart — type matrix', () => {
         const sandbox = sandboxOf(page)
         await selectHstOption(page, 'Type', 'line')
         const paths = sandbox.locator('[data-cy~="origam-chart--line"] path[data-cy="origam-chart-path"]')
+        await expect(paths.first()).toBeVisible({ timeout: 8000 })
         // 2 series → 2 line paths
         const count = await paths.count()
         expect(count).toBeGreaterThanOrEqual(2)
@@ -80,6 +81,7 @@ test.describe('OrigamChart — type matrix', () => {
         const sandbox = sandboxOf(page)
         await selectHstOption(page, 'Type', 'area')
         const paths = sandbox.locator('[data-cy~="origam-chart--area"] path[data-cy="origam-chart-path"]')
+        await expect(paths.first()).toBeVisible({ timeout: 8000 })
         // 2 series × (area + line) = 4 paths.
         const count = await paths.count()
         expect(count).toBeGreaterThanOrEqual(4)

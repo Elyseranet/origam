@@ -157,6 +157,7 @@ test.describe('OrigamChartSankey — accessibility', () => {
         await openVariant(page, SANKEY_STORY, 'Default')
         const sandbox = sandboxOf(page)
         const nodes = sandbox.locator('[data-cy="origam-chart-sankey"] [data-cy^="origam-chart-sankey-node-"]')
+        await expect(nodes).toHaveCount(7, { timeout: 8000 })
         const count = await nodes.count()
         for (let i = 0; i < count; i++) {
             await expect(nodes.nth(i)).toHaveAttribute('role', 'button')
@@ -169,6 +170,7 @@ test.describe('OrigamChartSankey — accessibility', () => {
         await openVariant(page, SANKEY_STORY, 'Default')
         const sandbox = sandboxOf(page)
         const links = sandbox.locator('[data-cy="origam-chart-sankey"] [data-cy^="origam-chart-sankey-link-"]')
+        await expect(links).toHaveCount(7, { timeout: 8000 })
         const count = await links.count()
         for (let i = 0; i < count; i++) {
             await expect(links.nth(i)).toHaveAttribute('role', 'button')
@@ -181,6 +183,7 @@ test.describe('OrigamChartSankey — accessibility', () => {
         await openVariant(page, SANKEY_STORY, 'Default')
         const sandbox = sandboxOf(page)
         const nodes = sandbox.locator('[data-cy="origam-chart-sankey"] [data-cy^="origam-chart-sankey-node-"]')
+        await expect(nodes).toHaveCount(7, { timeout: 8000 })
         const count = await nodes.count()
         for (let i = 0; i < count; i++) {
             await expect(nodes.nth(i)).toHaveAttribute('tabindex', '0')
@@ -191,6 +194,7 @@ test.describe('OrigamChartSankey — accessibility', () => {
         await openVariant(page, SANKEY_STORY, 'Default')
         const sandbox = sandboxOf(page)
         const links = sandbox.locator('[data-cy="origam-chart-sankey"] [data-cy^="origam-chart-sankey-link-"]')
+        await expect(links).toHaveCount(7, { timeout: 8000 })
         const count = await links.count()
         for (let i = 0; i < count; i++) {
             await expect(links.nth(i)).toHaveAttribute('tabindex', '0')

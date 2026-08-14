@@ -1,5 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
+import { selectHstOption } from './_support/histoire-controls'
+
 const STORY_PATH = '/stories/story/components-stories-datalist-origamdatalist-story-vue'
 
 const sandboxOf = (page: Page) => page.frameLocator('iframe[src*="__sandbox"]')
@@ -13,10 +15,18 @@ const openVariant = async (page: Page, variant: string) => {
     await page.waitForTimeout(800)
 }
 
+/**
+ * Story realignment (canonical Design/Functional/Events/Slots structure):
+ * the old per-prop `Prop — …` Variants were folded into the "Design" /
+ * "Functional" Variants' controls (color/density/rounded/border on Design;
+ * mode/prependIcon/appendIcon on Functional) — driven here via
+ * `selectHstOption` instead of navigating to a vanished dedicated fixture.
+ * Class/style expectations below were verified empirically against a
+ * running Histoire instance (2026-08), not assumed.
+ */
 test.describe('OrigamDataList — avatar mode (back-compat)', () => {
     test('Basic variant — renders a definition list', async ({ page }) => {
-        // Variant was renamed from "Basic" to "Prop — items (basic)" in the story.
-        await openVariant(page, 'Prop — items (basic)')
+        await openVariant(page, 'Design')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-data-list').first()).toBeVisible({ timeout: 5000 })
         // Default mode is `avatar`, so the modifier class must be present.
@@ -24,43 +34,47 @@ test.describe('OrigamDataList — avatar mode (back-compat)', () => {
     })
 
     test('Basic variant — title and text content are visible', async ({ page }) => {
-        // Variant was renamed from "Basic" to "Prop — items (basic)" in the story.
-        await openVariant(page, 'Prop — items (basic)')
+        await openVariant(page, 'Design')
         const sandbox = sandboxOf(page)
         await expect(sandbox.getByText('Status')).toBeVisible({ timeout: 5000 })
         await expect(sandbox.getByText('Active')).toBeVisible({ timeout: 5000 })
     })
 
     test('Density variant — renders with density class', async ({ page }) => {
-        // Variant was renamed from "Density" to "Prop — density" in the story.
-        await openVariant(page, 'Prop — density')
+        await openVariant(page, 'Design')
         const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('.origam-data-list').first()).toBeVisible({ timeout: 5000 })
+        await selectHstOption(page, 'Density', 'Compact')
+        await expect(sandbox.locator('.origam-data-list--density-compact').first()).toBeVisible({ timeout: 5000 })
     })
 
     test('Adjacent icons variant — renders with icon controls', async ({ page }) => {
-        // Variant was renamed from "Adjacent icons" to "Prop — prependIcon & appendIcon".
-        await openVariant(page, 'Prop — prependIcon & appendIcon')
+        await openVariant(page, 'Functional')
         const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('.origam-data-list').first()).toBeVisible({ timeout: 5000 })
+        await selectHstOption(page, 'Prepend Icon', 'Account')
+        await selectHstOption(page, 'Append Icon', 'Star')
+        await expect(sandbox.locator('.origam-icon.mdi-account').first()).toBeVisible({ timeout: 5000 })
+        await expect(sandbox.locator('.origam-icon.mdi-star').first()).toBeVisible({ timeout: 5000 })
     })
 
     test('Border and rounded variant — renders', async ({ page }) => {
-        // Variant was renamed from "Border and rounded" to "Prop — border & rounded".
-        await openVariant(page, 'Prop — border & rounded')
+        await openVariant(page, 'Design')
         const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('.origam-data-list').first()).toBeVisible({ timeout: 5000 })
+        await selectHstOption(page, 'Border', 'Border (legacy boolean → thin)')
+        await selectHstOption(page, 'Rounded', 'small (radius.sm / 4px)')
+        const root = sandbox.locator('.origam-data-list').first()
+        await expect(root).toHaveClass(/origam-data-list--border/, { timeout: 5000 })
+        await expect(root).toHaveClass(/origam-data-list--rounded-small/, { timeout: 5000 })
     })
 
     test('Slot — item renders custom item content', async ({ page }) => {
-        await openVariant(page, 'Slot — item')
+        await openVariant(page, 'Slots - Item')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-data-list').first()).toBeVisible({ timeout: 5000 })
         await expect(sandbox.getByText('Status')).toBeVisible({ timeout: 5000 })
     })
 
     test('Slot — item.title renders custom title', async ({ page }) => {
-        await openVariant(page, 'Slot — item.title')
+        await openVariant(page, 'Slots - Item.title')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-data-list').first()).toBeVisible({ timeout: 5000 })
     })
@@ -76,11 +90,16 @@ test.describe('OrigamDataList — avatar mode (back-compat)', () => {
 // KV mode — PDF-aligned key/value rows
 // ───────────────────────────────────────────────────────────────────
 
+// Story realignment: there is no more standalone "KV — basic" nor
+// "Prop — mode (kv vs avatar)" Variant — `mode` is now the "Functional"
+// Variant's Mode HstSelect control (init-state default: 'avatar'), driven
+// via the shared `selectHstOption` helper (now proven reliable — the old
+// "don't try to flip a HstSelect" caveat this file carried predates that
+// helper).
 test.describe('OrigamDataList — KV mode (PDF design)', () => {
     test('KV basic — root carries the kv mode class', async ({ page }) => {
-        // No standalone "KV — basic" variant exists. The closest is
-        // "Prop — mode (kv vs avatar)" whose init-state pins mode:'kv'.
-        await openVariant(page, 'Prop — mode (kv vs avatar)')
+        await openVariant(page, 'Functional')
+        await selectHstOption(page, 'Mode', 'kv')
         const sandbox = sandboxOf(page)
         const root = sandbox.locator('.origam-data-list--mode-kv').first()
         await expect(root).toBeVisible({ timeout: 8000 })
@@ -90,9 +109,8 @@ test.describe('OrigamDataList — KV mode (PDF design)', () => {
     })
 
     test('KV basic — emits one <dt>+<dd> per item (4 rows)', async ({ page }) => {
-        // No standalone "KV — basic" variant exists. The closest is
-        // "Prop — mode (kv vs avatar)" whose init-state pins mode:'kv'.
-        await openVariant(page, 'Prop — mode (kv vs avatar)')
+        await openVariant(page, 'Functional')
+        await selectHstOption(page, 'Mode', 'kv')
         const sandbox = sandboxOf(page)
         const root = sandbox.locator('.origam-data-list--mode-kv').first()
         await expect(root).toBeVisible({ timeout: 8000 })
@@ -110,9 +128,8 @@ test.describe('OrigamDataList — KV mode (PDF design)', () => {
     })
 
     test('KV basic — rows expose data-cy keyed off the kebab-cased label', async ({ page }) => {
-        // No standalone "KV — basic" variant exists. The closest is
-        // "Prop — mode (kv vs avatar)" whose init-state pins mode:'kv'.
-        await openVariant(page, 'Prop — mode (kv vs avatar)')
+        await openVariant(page, 'Functional')
+        await selectHstOption(page, 'Mode', 'kv')
         const sandbox = sandboxOf(page)
         // data-cy is generated as `data-list-kv-row-${toKebabCase(item.key)}`
         // by the component. Spaces in `Created at` collapse to a single dash.
@@ -131,9 +148,8 @@ test.describe('OrigamDataList — KV mode (PDF design)', () => {
     })
 
     test('KV basic — key uses muted color, value uses primary text color', async ({ page }) => {
-        // No standalone "KV — basic" variant exists. The closest is
-        // "Prop — mode (kv vs avatar)" whose init-state pins mode:'kv'.
-        await openVariant(page, 'Prop — mode (kv vs avatar)')
+        await openVariant(page, 'Functional')
+        await selectHstOption(page, 'Mode', 'kv')
         const sandbox = sandboxOf(page)
         const row = sandbox.locator('[data-cy="data-list-kv-row-owner"]').first()
         await expect(row).toBeVisible({ timeout: 8000 })
@@ -162,18 +178,15 @@ test.describe('OrigamDataList — KV mode (PDF design)', () => {
     })
 
     test('KV basic — renders text values verbatim', async ({ page }) => {
-        // No standalone "KV — basic" variant exists. The closest is
-        // "Prop — mode (kv vs avatar)" whose init-state pins mode:'kv'.
-        await openVariant(page, 'Prop — mode (kv vs avatar)')
+        await openVariant(page, 'Functional')
+        await selectHstOption(page, 'Mode', 'kv')
         const sandbox = sandboxOf(page)
         await expect(sandbox.getByText('Arnaud Martin').first()).toBeVisible({ timeout: 8000 })
         await expect(sandbox.getByText('Apr 12, 2026').first()).toBeVisible({ timeout: 8000 })
     })
 
     test('KV mixed — chip-valued row renders an .origam-chip inside <dd>', async ({ page }) => {
-        // Variant was renamed from "KV — mixed values" to
-        // "KV — mixed value types (component cells)" in the story.
-        await openVariant(page, 'KV — mixed value types (component cells)')
+        await openVariant(page, 'Slots - KV component-value cells')
         const sandbox = sandboxOf(page)
         await expect(
             sandbox.locator('.origam-data-list--mode-kv').first()
@@ -182,19 +195,15 @@ test.describe('OrigamDataList — KV mode (PDF design)', () => {
         // Status row should host a chip in its <dd>.
         const statusRow = sandbox.locator('[data-cy="data-list-kv-row-status"]').first()
         await expect(statusRow).toBeVisible({ timeout: 8000 })
-        const chipCount = await statusRow.locator('dd .origam-chip').count()
-        expect(chipCount).toBeGreaterThanOrEqual(1)
+        await expect(statusRow.locator('dd .origam-chip')).not.toHaveCount(0, { timeout: 8000 })
 
         // Priority row should also host a chip (different intent).
         const priorityRow = sandbox.locator('[data-cy="data-list-kv-row-priority"]').first()
-        const priorityChipCount = await priorityRow.locator('dd .origam-chip').count()
-        expect(priorityChipCount).toBeGreaterThanOrEqual(1)
+        await expect(priorityRow.locator('dd .origam-chip')).not.toHaveCount(0, { timeout: 8000 })
     })
 
     test('KV mixed — text-valued row keeps a plain <dd> (no chip)', async ({ page }) => {
-        // Variant was renamed from "KV — mixed values" to
-        // "KV — mixed value types (component cells)" in the story.
-        await openVariant(page, 'KV — mixed value types (component cells)')
+        await openVariant(page, 'Slots - KV component-value cells')
         const sandbox = sandboxOf(page)
         const ownerRow = sandbox.locator('[data-cy="data-list-kv-row-owner"]').first()
         await expect(ownerRow).toBeVisible({ timeout: 8000 })
@@ -204,37 +213,30 @@ test.describe('OrigamDataList — KV mode (PDF design)', () => {
     })
 
     test('KV slot override — #value slot replaces the default cell renderer', async ({ page }) => {
-        // Variant was renamed from "KV — slot override" to
-        // "Slot — value (KV mode custom cell)" in the story.
-        await openVariant(page, 'Slot — value (KV mode custom cell)')
+        await openVariant(page, 'Slots - Value (KV mode)')
         const sandbox = sandboxOf(page)
         await expect(
             sandbox.locator('.origam-data-list--mode-kv').first()
         ).toBeVisible({ timeout: 8000 })
 
-        // The Owner row uses a `<a href="#owner-profile">` injected by
-        // the consumer's slot override.
-        const link = sandbox.locator('[data-cy="kv-slot-owner-link"]').first()
+        // The Owner row uses a `<a href="#owner-profile">` injected by the
+        // consumer's slot override. Story realignment: the new story does
+        // NOT set a `data-cy` on this link (verified by reading
+        // OrigamDataList.story.vue) — targeted by href instead.
+        const link = sandbox.locator('a[href="#owner-profile"]').first()
         await expect(link).toBeVisible({ timeout: 8000 })
         const href = await link.getAttribute('href')
         expect(href).toBe('#owner-profile')
         // The link must live INSIDE the Owner row's <dd>.
         const ownerRow = sandbox.locator('[data-cy="data-list-kv-row-owner"]').first()
-        const linksInOwner = await ownerRow.locator('dd a[data-cy="kv-slot-owner-link"]').count()
+        const linksInOwner = await ownerRow.locator('dd a[href="#owner-profile"]').count()
         expect(linksInOwner).toBe(1)
     })
 
-    test('KV mode toggle — initial state honours `mode="kv"` from init-state', async ({ page }) => {
-        // Variant was renamed from "KV — mode toggle" to
-        // "Prop — mode (kv vs avatar)" in the story.
-        // We don't try to flip Histoire's HstSelect from a Playwright spec —
-        // it's a custom (non-`<select>`) widget and clicking through it is
-        // brittle (per the project CLAUDE.md guidance). What we DO check is
-        // that the `mode` prop is honoured: the variant's init-state pins
-        // `mode: 'kv'`, so the rendered list must carry the kv modifier and
-        // none of the avatar modifier.
-        await openVariant(page, 'Prop — mode (kv vs avatar)')
+    test('KV mode toggle — selecting Mode=kv on Functional swaps to KV rendering', async ({ page }) => {
+        await openVariant(page, 'Functional')
         const sandbox = sandboxOf(page)
+        await selectHstOption(page, 'Mode', 'kv')
 
         await expect(
             sandbox.locator('.origam-data-list--mode-kv').first()
