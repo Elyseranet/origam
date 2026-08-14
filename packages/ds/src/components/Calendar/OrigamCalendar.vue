@@ -375,6 +375,8 @@
     ICalendarSlots
   } from '../../interfaces'
 
+  import type { IDragMonthState, IDragSlotState } from '../../interfaces/Calendar/calendar-drag.interface'
+
   import type {
     TCalendarNavigate,
     TCalendarView,
@@ -849,17 +851,6 @@
    * Week / day view: same idea but on individual slots, with a
    * pixel-level overlay that paints the in-progress range.
    ********************************************************/
-  interface IDragMonthState {
-    startDate: Date
-    endDate: Date
-  }
-
-  interface IDragSlotState {
-    day: Date
-    startMin: number
-    endMin: number
-  }
-
   const monthDrag = ref<IDragMonthState | null>(null)
   const dragSelection = ref<IDragSlotState | null>(null)
   const isMouseDown = ref(false)
