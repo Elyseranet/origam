@@ -1,5 +1,7 @@
 import { expect, test, type FrameLocator, type Page } from '@playwright/test'
 
+import { eventLogItems, fillHstNumber, fillHstText, openEventsTab, selectHstOption, toggleHstCheckbox } from './_support/histoire-controls'
+
 /**
  * Consolidated Playwright spec for the Picker + Overlay families
  * (Lots B4 + B5).
@@ -19,12 +21,19 @@ import { expect, test, type FrameLocator, type Page } from '@playwright/test'
  * sandbox iframe's document — locators based on the sandbox frame
  * therefore find it without any extra plumbing.
  *
- * Each variant assertion confirms the prop produced a runtime effect:
- *   - Picker: layout class flips, body/header slots render, `landscape`
- *     toggles `--landscape` modifier, hideHeader removes the title row.
- *   - Overlay: model/activator wiring, scrim presence, persistent
- *     swallows outside-click, disabled prevents open, contained scopes
- *     the scrim to the host.
+ * All 4 stories have been migrated to the canonical Design / State /
+ * Functional / Events - {name} / Slots - {Name} / Default(Playground)
+ * structure (root CLAUDE.md, "Story + doc sync"). None of the old
+ * `Prop — …` / `Emit — …` / `Slot — …` Variants survive, AND the old
+ * story's `data-cy="…"` hooks were dropped entirely in the migration —
+ * they don't exist anywhere in the current story source or in the
+ * underlying `OrigamPicker*` / `OrigamOverlay*` component templates
+ * (verified: `grep -n data-cy` on both component dirs returns nothing).
+ * Every locator below is therefore rebuilt against the component's own
+ * BEM classes (read from the `.vue` source) or against visible text /
+ * accessible role, and prop-specific Variants that no longer exist are
+ * exercised by driving the matching Histoire control on "Design" /
+ * "Functional" / "Default" instead (see `_support/histoire-controls.ts`).
  *
  * Variant title → story file mapping (Histoire slug):
  *   OrigamPicker     → /story/components-stories-picker-origampicker-story-vue
@@ -61,129 +70,153 @@ function sandbox (page: Page): FrameLocator {
 // ════════════════════════════════════════════════════════════════════════════
 
 test.describe('OrigamPicker', () => {
-    // Variant "Prop — title" has data-cy="picker-default" and data-cy="picker-default-body"
-    test('Default — title prop renders inside .origam-picker__title', async ({ page }) => {
-        await gotoVariant(page, STORIES.picker, 'Prop — title')
+    // "Design" pins :init-state title: 'Picker'. Renders <origam-picker-title>
+    // via the default (auto) fallback, which gets the extra
+    // `origam-picker__title` BEM class (OrigamPicker.vue line 20).
+    test('Design — title prop renders inside .origam-picker__title', async ({ page }) => {
+        await gotoVariant(page, STORIES.picker, 'Design')
         const sb = sandbox(page)
-        const picker = sb.locator('[data-cy="picker-default"]')
+        const picker = sb.locator('.origam-picker')
         await expect(picker).toBeVisible({ timeout: 5000 })
-        await expect(picker.locator('.origam-picker__title')).toContainText('Pick something')
-        await expect(sb.locator('[data-cy="picker-default-body"]')).toBeVisible()
+        await expect(picker.locator('.origam-picker__title')).toContainText('Picker')
+        await expect(picker.locator('.origam-picker__body')).toBeVisible()
     })
 
-    // Variant "Prop — title (editable)" has data-cy="picker-title-prop"
-    test('Title prop — text reflects control state', async ({ page }) => {
-        await gotoVariant(page, STORIES.picker, 'Prop — title (editable)')
+    // The old "Prop — title (editable)" Variant is gone; the only Variant
+    // that exposes an HstText control for `title` is the "Default"
+    // playground ("Content" group). Drive it to prove reactivity, rather
+    // than just reading the fixed init-state value.
+    test('Title prop — reactive update via the Default playground control', async ({ page }) => {
+        await gotoVariant(page, STORIES.picker, 'Default')
         const sb = sandbox(page)
-        const picker = sb.locator('[data-cy="picker-title-prop"]')
+        const picker = sb.locator('.origam-picker')
+        await expect(picker.locator('.origam-picker__title')).toContainText('Picker')
+        await fillHstText(page, 'Title', 'Pick a date')
         await expect(picker.locator('.origam-picker__title')).toContainText('Pick a date')
     })
 
-    // Variant "Prop — hideHeader" has data-cy="picker-hide-header" with hideHeader=true initially
-    test('Hide header — toggling hideHeader removes the title region', async ({ page }) => {
-        await gotoVariant(page, STORIES.picker, 'Prop — hideHeader')
+    // "Functional" init-state pins hideHeader: false — toggle it via its
+    // "Hide Header" checkbox (Layout group).
+    test('Functional — toggling Hide Header removes the title region', async ({ page }) => {
+        await gotoVariant(page, STORIES.picker, 'Functional')
         const sb = sandbox(page)
-        const picker = sb.locator('[data-cy="picker-hide-header"]')
+        const picker = sb.locator('.origam-picker')
         await expect(picker).toBeVisible()
-        // Initial state hideHeader=true → no title rendered
+        await expect(picker.locator('.origam-picker__title')).toBeVisible()
+        await toggleHstCheckbox(page, 'Hide Header')
+        // OrigamPicker.vue wraps title AND header behind one `v-if="!hideHeader"`
+        // — both vanish together, not just the title.
         await expect(picker.locator('.origam-picker__title')).toHaveCount(0)
+        await expect(picker.locator('.origam-picker__header')).toHaveCount(0)
     })
 
-    // Variant "Prop — landscape" has data-cy="picker-landscape" with landscape=true initially
-    test('Landscape — modifier class flips the grid layout', async ({ page }) => {
-        await gotoVariant(page, STORIES.picker, 'Prop — landscape')
+    // "Functional" init-state pins landscape: false — toggle it via its
+    // "Landscape" checkbox (Layout group).
+    test('Functional — toggling Landscape flips the grid layout', async ({ page }) => {
+        await gotoVariant(page, STORIES.picker, 'Functional')
         const sb = sandbox(page)
-        const picker = sb.locator('[data-cy="picker-landscape"]')
-        await expect(picker).toHaveClass(/origam-picker--landscape/)
-        await expect(sb.locator('[data-cy="picker-landscape-header"]')).toBeVisible()
-        await expect(sb.locator('[data-cy="picker-landscape-body"]')).toBeVisible()
-    })
-
-    // Variant "Slot — actions" has data-cy="picker-actions" and action buttons
-    test('Slot — actions modifier class & buttons render', async ({ page }) => {
-        await gotoVariant(page, STORIES.picker, 'Slot — actions')
-        const sb = sandbox(page)
-        const picker = sb.locator('[data-cy="picker-actions"]')
-        await expect(picker).toHaveClass(/origam-picker--has-actions/)
-        await expect(sb.locator('[data-cy="picker-actions-cancel"]')).toBeVisible()
-        await expect(sb.locator('[data-cy="picker-actions-save"]')).toBeVisible()
-        await expect(picker.locator('.origam-picker__actions')).toBeVisible()
-    })
-
-    // Variant "Slot — header" has data-cy="picker-header" and data-cy="picker-header-content"
-    test('Slot — header content renders inside .origam-picker__header', async ({ page }) => {
-        await gotoVariant(page, STORIES.picker, 'Slot — header')
-        const sb = sandbox(page)
-        const picker = sb.locator('[data-cy="picker-header"]')
+        const picker = sb.locator('.origam-picker')
         await expect(picker.locator('.origam-picker__header')).toBeVisible()
-        await expect(sb.locator('[data-cy="picker-header-content"]')).toBeVisible()
+        await expect(picker.locator('.origam-picker__body')).toBeVisible()
+        await toggleHstCheckbox(page, 'Landscape')
+        await expect(picker).toHaveClass(/origam-picker--landscape/)
+        await expect(picker.locator('.origam-picker__header')).toBeVisible()
+        await expect(picker.locator('.origam-picker__body')).toBeVisible()
     })
 
-    // Variant "Slot — title" has data-cy="picker-title-slot-content" (OrigamPickerTitle with tag="h2")
-    test('Slot — title override replaces auto-rendered title', async ({ page }) => {
-        await gotoVariant(page, STORIES.picker, 'Slot — title')
+    // "Slots - Actions" statically wires a Cancel/Save actions slot.
+    test('Slots - Actions — modifier class & buttons render', async ({ page }) => {
+        await gotoVariant(page, STORIES.picker, 'Slots - Actions')
         const sb = sandbox(page)
-        const slotted = sb.locator('[data-cy="picker-title-slot-content"]')
+        const picker = sb.locator('.origam-picker')
+        await expect(picker).toHaveClass(/origam-picker--has-actions/)
+        await expect(picker.locator('.origam-picker__actions')).toBeVisible()
+        await expect(picker.getByRole('button', { name: 'Cancel' })).toBeVisible()
+        await expect(picker.getByRole('button', { name: 'Save' })).toBeVisible()
+    })
+
+    // "Slots - Header" statically wires custom header content.
+    test('Slots - Header — content renders inside .origam-picker__header', async ({ page }) => {
+        await gotoVariant(page, STORIES.picker, 'Slots - Header')
+        const sb = sandbox(page)
+        const picker = sb.locator('.origam-picker')
+        await expect(picker.locator('.origam-picker__header')).toBeVisible()
+        await expect(picker.locator('.origam-picker__header')).toContainText('Custom header content')
+    })
+
+    // "Slots - Title" statically wires a custom OrigamPickerTitle (tag="h2")
+    // via the `#title` slot, overriding the auto-rendered title. The
+    // slotted title is NOT wrapped with the `origam-picker__title` BEM
+    // class (that class is only added by the parent's own fallback
+    // render, OrigamPicker.vue line 20) — locate it by the component's
+    // own root class instead.
+    test('Slots - Title — override replaces the auto-rendered title', async ({ page }) => {
+        await gotoVariant(page, STORIES.picker, 'Slots - Title')
+        const sb = sandbox(page)
+        const slotted = sb.locator('.origam-picker .origam-picker-title')
         await expect(slotted).toBeVisible()
         await expect(slotted).toContainText('Custom title via slot')
-        // tag prop honoured
         await expect(slotted.evaluate((el) => el.tagName.toLowerCase())).resolves.toBe('h2')
     })
 
-    // Variant "Prop — color & bgColor" has data-cy="picker-color"
-    test('Color — picker mounts with the Color variant and title rendered', async ({ page }) => {
-        await gotoVariant(page, STORIES.picker, 'Prop — color & bgColor')
+    // "Design" leaves bgColor at its init-state 'primary' — the header div
+    // gets the `useBackgroundColor` utility class `origam--bg-primary`
+    // (color.composable.ts). Drive the "Bg Color" control to a different
+    // intent to prove the class actually reacts to the prop, not just to
+    // the init-state default.
+    test('Design — Bg Color control swaps the header background utility class', async ({ page }) => {
+        await gotoVariant(page, STORIES.picker, 'Design')
         const sb = sandbox(page)
-        // NOTE: Histoire's HstSelect renders a custom VDropdown (not a native <select>),
-        // so page.getByTitle(...).selectOption() cannot interact with it.
-        // The test validates that the Color variant renders the picker correctly in its
-        // initial state (color/bgColor both undefined → default surface token applied).
-        // OrigamPicker renders as <origam-sheet> at root — data-cy falls through to the
-        // sheet div. The picker class + title slot are both verifiable without controls.
-        const picker = sb.locator('[data-cy="picker-color"]')
-        await expect(picker).toBeVisible({ timeout: 5000 })
-        await expect(picker).toHaveClass(/origam-picker/)
-        // The title slot is rendered (title="Color" passed in story)
-        await expect(picker.locator('.origam-picker__title')).toContainText('Color')
+        const picker = sb.locator('.origam-picker')
+        await expect(picker.locator('.origam--bg-primary')).toBeVisible({ timeout: 5000 })
+        await selectHstOption(page, 'Bg Color', 'Success')
+        await expect(picker.locator('.origam--bg-primary')).toHaveCount(0)
+        await expect(picker.locator('.origam--bg-success')).toBeVisible()
     })
 
-    // Variant "Prop — elevation" has data-cy="picker-elevation"
-    test('Elevation — picker mounts and carries the origam-picker class', async ({ page }) => {
-        await gotoVariant(page, STORIES.picker, 'Prop — elevation')
+    // "Design" leaves elevation undefined by default (no `--elevated`
+    // class). Drive the "Elevation" control to prove the forwarded sheet
+    // prop actually reaches OrigamSheet's own `useElevation`.
+    test('Design — Elevation control adds the sheet elevated class', async ({ page }) => {
+        await gotoVariant(page, STORIES.picker, 'Design')
         const sb = sandbox(page)
-        // NOTE: Histoire's HstSelect renders a custom VDropdown (not a native <select>),
-        // so elevation cannot be changed via page.getByTitle(...).selectOption().
-        // Validate that the Elevation variant renders the picker correctly in its
-        // initial state (elevation=undefined → no elevation modifier class).
-        // OrigamPicker root = origam-sheet; data-cy falls through to the sheet div.
-        const picker = sb.locator('[data-cy="picker-elevation"]')
-        await expect(picker).toBeVisible({ timeout: 5000 })
-        await expect(picker).toHaveClass(/origam-picker/)
-        // With no elevation set, the origam-sheet base class must be present
-        await expect(picker).toHaveClass(/origam-sheet/)
+        const picker = sb.locator('.origam-picker')
+        await expect(picker).not.toHaveClass(/origam-sheet--elevated/)
+        await selectHstOption(page, 'Elevation', 'MD (8)')
+        await expect(picker).toHaveClass(/origam-sheet--elevated/)
+        await expect(picker).toHaveClass(/origam--shadow-md/)
     })
 
-    // Variant "Prop — rounded" has data-cy="picker-rounded" with border hardcoded
-    test('Rounded — picker mounts with border modifier class present', async ({ page }) => {
-        await gotoVariant(page, STORIES.picker, 'Prop — rounded')
+    // "Design" leaves rounded undefined by default. Drive the "Rounded"
+    // control to prove the forwarded sheet prop reaches `useRounded`.
+    test('Design — Rounded control adds the sheet rounded modifier class', async ({ page }) => {
+        await gotoVariant(page, STORIES.picker, 'Design')
         const sb = sandbox(page)
-        // NOTE: Histoire's HstSelect renders a custom VDropdown (not a native <select>),
-        // so rounded cannot be changed via page.getByTitle(...).selectOption().
-        // The story hardcodes `border` on the picker, so the border modifier class
-        // is present in the initial state without any control interaction.
-        // OrigamPicker root = origam-sheet; data-cy falls through to the sheet div.
-        const picker = sb.locator('[data-cy="picker-rounded"]')
-        await expect(picker).toBeVisible({ timeout: 5000 })
-        await expect(picker).toHaveClass(/origam-picker/)
-        // `border` prop is hardcoded in the story → --border modifier must be present
+        const picker = sb.locator('.origam-picker')
+        await expect(picker).not.toHaveClass(/origam-sheet--rounded-/)
+        await selectHstOption(page, 'Rounded', 'small (radius.sm / 4px)')
+        await expect(picker).toHaveClass(/origam-sheet--rounded-small/)
+    })
+
+    // "Design" leaves border undefined by default. The old "Prop —
+    // rounded" Variant actually hardcoded `border` (mislabeled — it never
+    // exercised rounded at all) — this test restores that border-modifier
+    // coverage honestly, under its own name, driving the real control.
+    test('Design — Border control adds the sheet border modifier class', async ({ page }) => {
+        await gotoVariant(page, STORIES.picker, 'Design')
+        const sb = sandbox(page)
+        const picker = sb.locator('.origam-picker')
+        await expect(picker).not.toHaveClass(/origam-sheet--border/)
+        await selectHstOption(page, 'Border', 'Border (legacy boolean → thin)')
         await expect(picker).toHaveClass(/origam-sheet--border/)
+        await expect(picker).toHaveClass(/origam--border-thin/)
     })
 
-    // Variant "Default" (playground) has data-cy="picker-playground" with actions slot
-    test('Playground — mounts with composite props', async ({ page }) => {
+    // "Default" (playground) unconditionally wires an actions slot.
+    test('Default — playground mounts with composite props', async ({ page }) => {
         await gotoVariant(page, STORIES.picker, 'Default')
         const sb = sandbox(page)
-        const picker = sb.locator('[data-cy="picker-playground"]')
+        const picker = sb.locator('.origam-picker')
         await expect(picker).toBeVisible()
         await expect(picker).toHaveClass(/origam-picker--has-actions/)
     })
@@ -194,44 +227,56 @@ test.describe('OrigamPicker', () => {
 // ════════════════════════════════════════════════════════════════════════════
 
 test.describe('OrigamPickerTitle', () => {
-    // Variant "Prop — title" has data-cy="picker-title-default" with title="Pick a date"
-    test('Default — renders the title prop text', async ({ page }) => {
-        await gotoVariant(page, STORIES.pickerTitle, 'Prop — title')
+    // "Design" init-state pins title: 'Pick a date'.
+    test('Design — renders the title prop text', async ({ page }) => {
+        await gotoVariant(page, STORIES.pickerTitle, 'Design')
         const sb = sandbox(page)
-        const title = sb.locator('[data-cy="picker-title-default"]')
+        const title = sb.locator('.origam-picker-title')
         await expect(title).toBeVisible()
         await expect(title).toContainText('Pick a date')
-        await expect(title).toHaveClass(/origam-picker-title/)
     })
 
-    // Variant "Prop — title (editable)" has data-cy="picker-title-prop" with title="Custom title"
-    test('Title prop — reactive update from controls', async ({ page }) => {
-        await gotoVariant(page, STORIES.pickerTitle, 'Prop — title (editable)')
+    // "Functional" exposes an HstText "Title" control (Content group,
+    // init-state 'Custom title') — drive it to prove reactivity rather
+    // than only reading the init-state value.
+    test('Functional — title text reflects the Title control', async ({ page }) => {
+        await gotoVariant(page, STORIES.pickerTitle, 'Functional')
         const sb = sandbox(page)
-        const title = sb.locator('[data-cy="picker-title-prop"]')
+        const title = sb.locator('.origam-picker-title')
         await expect(title).toContainText('Custom title')
+        await fillHstText(page, 'Title', 'Reactive title')
+        await expect(title).toContainText('Reactive title')
     })
 
-    // Variant "Prop — tag (polymorphic element)" has data-cy="picker-title-tag" with tag='h2'
-    test('Tag — polymorphic tag renders an h2', async ({ page }) => {
-        await gotoVariant(page, STORIES.pickerTitle, 'Prop — tag (polymorphic element)')
+    // The shared TAG_OPTIONS dropdown (@stories/const) does not include
+    // "h2" — it only offers (none)/button/a/div/span/router-link/nuxt-link,
+    // so the old hardcoded `tag="h2"` case can't be driven through this
+    // control. Polymorphism is proven here with "span" instead; the "h2"
+    // concrete case is still covered by
+    // `OrigamPicker › Slots - Title — override replaces the auto-rendered title`
+    // above, which hardcodes an `<origam-picker-title tag="h2">` in the story
+    // markup itself — no coverage is lost, just re-homed.
+    test('Functional — Tag control renders the chosen polymorphic tag', async ({ page }) => {
+        await gotoVariant(page, STORIES.pickerTitle, 'Functional')
         const sb = sandbox(page)
-        const title = sb.locator('[data-cy="picker-title-tag"]')
-        await expect(title.evaluate((el) => el.tagName.toLowerCase())).resolves.toBe('h2')
+        const title = sb.locator('.origam-picker-title')
+        await expect(title.evaluate((el) => el.tagName.toLowerCase())).resolves.toBe('div')
+        await selectHstOption(page, 'Tag', 'span')
+        await expect(title.evaluate((el) => el.tagName.toLowerCase())).resolves.toBe('span')
     })
 
-    // Variant "Slot — default (rich content)" has data-cy="picker-title-slot-strong"
-    test('Slot — default slot replaces the title prop', async ({ page }) => {
-        await gotoVariant(page, STORIES.pickerTitle, 'Slot — default (rich content)')
+    test('Slots - Default — default slot replaces the title prop', async ({ page }) => {
+        await gotoVariant(page, STORIES.pickerTitle, 'Slots - Default')
         const sb = sandbox(page)
-        await expect(sb.locator('[data-cy="picker-title-slot-strong"]')).toBeVisible()
+        const title = sb.locator('.origam-picker-title')
+        await expect(title).toBeVisible()
+        await expect(title.locator('strong')).toContainText('rich')
     })
 
-    // Variant "Default" (playground) has data-cy="picker-title-playground" with tag='div'
-    test('Playground — mounts with default tag div', async ({ page }) => {
+    test('Default — playground mounts with the default tag div', async ({ page }) => {
         await gotoVariant(page, STORIES.pickerTitle, 'Default')
         const sb = sandbox(page)
-        const title = sb.locator('[data-cy="picker-title-playground"]')
+        const title = sb.locator('.origam-picker-title')
         await expect(title.evaluate((el) => el.tagName.toLowerCase())).resolves.toBe('div')
     })
 })
@@ -241,105 +286,142 @@ test.describe('OrigamPickerTitle', () => {
 // ════════════════════════════════════════════════════════════════════════════
 
 test.describe('OrigamOverlay', () => {
-    // Variant "Default" (playground) has data-cy="overlay-playground-activator/content/close"
     test('Default — activator opens overlay content', async ({ page }) => {
+        // DS STORY BUG (found today, verified via a standalone Playwright
+        // script against the live Histoire instance — reproduced 3/3 in
+        // chromium/firefox/webkit, not a browser flake): the "Default"
+        // Variant's `<origam-overlay>` never actually opens when its
+        // activator is clicked.
+        //
+        // Root cause: OrigamOverlay.story.vue's "Default" Variant binds
+        // BOTH `v-model="playgroundOpen"` AND `v-bind="state"` on the same
+        // element, in that source order:
+        //     <origam-overlay v-model="playgroundOpen" v-bind="state" …>
+        // `state`'s :init-state includes `modelValue: false` (never
+        // mutated afterwards — nothing in the Variant writes back to
+        // `state.modelValue`, only to `playgroundOpen`). Vue's prop merge
+        // for `v-bind="obj"` overwrites earlier same-key bindings in
+        // template source order for plain (non class/style/on*) keys, so
+        // `state.modelValue` (always `false`) permanently wins over the
+        // `v-model` binding's own `modelValue`.
+        //
+        // Confirmed via a standalone script: clicking the activator DOES
+        // fire `update:modelValue` (`{name: 'update:modelValue', argument:
+        // true}` observed in the console — `playgroundOpen` itself flips),
+        // but the Vue devtools prop dump on the very next render still
+        // shows `OrigamOverlay modelValue=false`, and the sandbox body HTML
+        // never gains a `.origam-overlay` node at all (not just a hidden
+        // one — `useLazy`'s `hasContent` never flips because the `isActive`
+        // computed reads the shadowed `props.modelValue`, stuck at
+        // `false`). Design/Functional Variants of the same story are
+        // unaffected — they only bind individually-named props
+        // (`:persistent`, `:scrim`, …), never a whole-object `v-bind="state"`
+        // that also contains `modelValue`.
+        //
+        // Per root CLAUDE.md ("NE MODIFIE JAMAIS UNE STORY pour la faire
+        // correspondre à une spec") this spec does not touch the story.
+        // Fix belongs in
+        // packages/stories/components/stories/Overlay/OrigamOverlay.story.vue
+        // — either drop `modelValue` from the "Default" Variant's
+        // `:init-state`, or reorder so `v-bind="state"` comes BEFORE
+        // `v-model="playgroundOpen"` in the template.
+        test.fixme(true, 'DS STORY BUG: OrigamOverlay.story.vue "Default" Variant — v-bind="state" (state.modelValue fixed at false) is declared AFTER v-model="playgroundOpen" and permanently overrides it via Vue prop-merge source order, so the activator never actually opens the overlay. See in-test comment for full repro.')
         await gotoVariant(page, STORIES.overlay, 'Default')
         const sb = sandbox(page)
-        const activator = sb.locator('[data-cy="overlay-playground-activator"]')
+        const activator = sb.getByRole('button', { name: 'Open playground' })
         await expect(activator).toBeVisible()
-        // Content not yet visible
-        await expect(sb.locator('[data-cy="overlay-playground-content"]')).toHaveCount(0)
+        await expect(sb.locator('.origam-overlay__content')).toHaveCount(0)
         await activator.click()
-        await expect(sb.locator('[data-cy="overlay-playground-content"]')).toBeVisible({ timeout: 4000 })
-        // Close
-        await sb.locator('[data-cy="overlay-playground-close"]').click()
-        await expect(sb.locator('[data-cy="overlay-playground-content"]')).not.toBeVisible({ timeout: 4000 })
+        await expect(sb.locator('.origam-overlay__content')).toBeVisible({ timeout: 4000 })
+        await sb.getByRole('button', { name: 'Close' }).click()
+        await expect(sb.locator('.origam-overlay__content')).not.toBeVisible({ timeout: 4000 })
     })
 
-    // Variant "Prop — scrim" has data-cy="overlay-scrim-activator/content/close"
-    test('Scrim — true renders the scrim element', async ({ page }) => {
-        await gotoVariant(page, STORIES.overlay, 'Prop — scrim')
+    // "Design" init-state pins scrim: true.
+    test('Design — scrim true (default) renders the scrim element', async ({ page }) => {
+        await gotoVariant(page, STORIES.overlay, 'Design')
         const sb = sandbox(page)
-        await sb.locator('[data-cy="overlay-scrim-activator"]').click()
-        await expect(sb.locator('[data-cy="overlay-scrim-content"]')).toBeVisible({ timeout: 4000 })
-        // Scrim element is rendered (inside the .origam-overlay container)
+        await sb.getByRole('button', { name: 'Open (design)' }).click()
+        await expect(sb.locator('.origam-overlay__content')).toBeVisible({ timeout: 4000 })
         await expect(sb.locator('.origam-scrim').first()).toBeVisible()
-        await sb.locator('[data-cy="overlay-scrim-close"]').click()
+        await sb.getByRole('button', { name: 'Close' }).click()
     })
 
-    // Variant "Prop — scrim": initial scrim=true, content shows "scrim=true"
-    test('Scrim — initial state true — scrim element is rendered and shows the value', async ({ page }) => {
-        await gotoVariant(page, STORIES.overlay, 'Prop — scrim')
+    // The old "Prop — scrim" Variant couldn't actually change the control
+    // (HstSelect is a custom popover, not a native <select>) so it only
+    // ever asserted the fixed init-state. `selectHstOption` now drives it
+    // for real — toggling scrim off and confirming the element disappears
+    // is a strictly stronger assertion of the same prop.
+    test('Design — toggling Scrim to false removes the scrim element', async ({ page }) => {
+        await gotoVariant(page, STORIES.overlay, 'Design')
         const sb = sandbox(page)
-        // NOTE: Histoire's HstSelect renders a custom VDropdown (not a native <select>),
-        // so scrim=false cannot be set via page.getByTitle(...).selectOption().
-        // Instead, validate the initial state: scrim=true → scrim element is rendered
-        // and the overlay content reflects the reactive state value.
-        await sb.locator('[data-cy="overlay-scrim-activator"]').click()
-        await expect(sb.locator('[data-cy="overlay-scrim-content"]')).toBeVisible({ timeout: 4000 })
-        // With scrim=true (default), .origam-scrim must be present in the DOM
-        await expect(sb.locator('.origam-scrim').first()).toBeVisible()
-        // The content slot shows the reactive value "scrim=true"
-        await expect(sb.locator('[data-cy="overlay-scrim-content"]')).toContainText('scrim=true')
-        await sb.locator('[data-cy="overlay-scrim-close"]').click()
+        await selectHstOption(page, 'Scrim', 'false (no backdrop)')
+        await sb.getByRole('button', { name: 'Open (design)' }).click()
+        await expect(sb.locator('.origam-overlay__content')).toBeVisible({ timeout: 4000 })
+        await expect(sb.locator('.origam-scrim')).toHaveCount(0)
     })
 
-    // Variant "Prop — persistent" has persistent=true initially
-    test('Persistent — outside click does not close overlay', async ({ page }) => {
-        await gotoVariant(page, STORIES.overlay, 'Prop — persistent')
+    // "Functional" init-state pins persistent: false — toggle it.
+    test('Functional — Persistent: outside click does not close the overlay', async ({ page }) => {
+        await gotoVariant(page, STORIES.overlay, 'Functional')
         const sb = sandbox(page)
-        await sb.locator('[data-cy="overlay-persistent-activator"]').click()
-        await expect(sb.locator('[data-cy="overlay-persistent-content"]')).toBeVisible({ timeout: 4000 })
-        // Click on the scrim (outside content)
+        await toggleHstCheckbox(page, 'Persistent')
+        await sb.getByRole('button', { name: 'Open (functional)' }).click()
+        await expect(sb.locator('.origam-overlay__content')).toBeVisible({ timeout: 4000 })
         const scrim = sb.locator('.origam-overlay__scrim, .origam-scrim').first()
         if (await scrim.count()) await scrim.click({ force: true })
         await page.waitForTimeout(400)
-        // Still visible because persistent
-        await expect(sb.locator('[data-cy="overlay-persistent-content"]')).toBeVisible()
-        // Close via the explicit button
-        await sb.locator('[data-cy="overlay-persistent-close"]').click()
-        await expect(sb.locator('[data-cy="overlay-persistent-content"]')).not.toBeVisible({ timeout: 4000 })
+        await expect(sb.locator('.origam-overlay__content')).toBeVisible()
+        await sb.getByRole('button', { name: 'Close' }).click()
+        await expect(sb.locator('.origam-overlay__content')).not.toBeVisible({ timeout: 4000 })
     })
 
-    // Variant "Prop — disabled" has disabled=true initially
-    test('Disabled — clicking activator never opens', async ({ page }) => {
-        await gotoVariant(page, STORIES.overlay, 'Prop — disabled')
+    // "Functional" init-state pins disabled: false — toggle it.
+    test('Functional — Disabled: clicking the activator never opens', async ({ page }) => {
+        await gotoVariant(page, STORIES.overlay, 'Functional')
         const sb = sandbox(page)
-        await sb.locator('[data-cy="overlay-disabled-activator"]').click()
+        await toggleHstCheckbox(page, 'Disabled')
+        await sb.getByRole('button', { name: 'Open (functional)' }).click()
         await page.waitForTimeout(400)
-        await expect(sb.locator('[data-cy="overlay-disabled-content"]')).toHaveCount(0)
-        await expect(sb.locator('[data-cy="overlay-disabled-state"]')).toContainText('open=false')
+        await expect(sb.locator('.origam-overlay__content')).toHaveCount(0)
     })
 
-    // Variant "Prop — contained" has contained=true initially
-    test('Contained — overlay scoped to host (--contained class)', async ({ page }) => {
-        await gotoVariant(page, STORIES.overlay, 'Prop — contained')
+    // "Functional" init-state pins contained: false — toggle it.
+    test('Functional — Contained: overlay is scoped to the host (--contained class)', async ({ page }) => {
+        await gotoVariant(page, STORIES.overlay, 'Functional')
         const sb = sandbox(page)
-        await sb.locator('[data-cy="overlay-contained-activator"]').click()
-        await expect(sb.locator('[data-cy="overlay-contained-content"]')).toBeVisible({ timeout: 4000 })
+        await toggleHstCheckbox(page, 'Contained')
+        await sb.getByRole('button', { name: 'Open (functional)' }).click()
+        await expect(sb.locator('.origam-overlay__content')).toBeVisible({ timeout: 4000 })
         await expect(sb.locator('.origam-overlay--contained').first()).toBeVisible()
-        await sb.locator('[data-cy="overlay-contained-close"]').click()
     })
 
-    // Variant "Prop — zIndex" has zIndex=2000 initially
-    test('Z-index — overlay container honours zIndex prop', async ({ page }) => {
-        await gotoVariant(page, STORIES.overlay, 'Prop — zIndex')
+    // "Functional" init-state pins zIndex: 2000 — drive it to a distinct
+    // value to prove the prop actually reaches the rendered stack style.
+    test('Functional — Z-Index: overlay container honours the zIndex control', async ({ page }) => {
+        await gotoVariant(page, STORIES.overlay, 'Functional')
         const sb = sandbox(page)
-        await sb.locator('[data-cy="overlay-zindex-activator"]').click()
-        await expect(sb.locator('[data-cy="overlay-zindex-content"]')).toBeVisible({ timeout: 4000 })
+        await fillHstNumber(page, 'Z-Index', 3000)
+        await sb.getByRole('button', { name: 'Open (functional)' }).click()
+        await expect(sb.locator('.origam-overlay__content')).toBeVisible({ timeout: 4000 })
         const overlay = sb.locator('.origam-overlay--active').first()
         const z = await overlay.evaluate((el) => getComputedStyle(el).zIndex)
-        expect(parseInt(z, 10)).toBeGreaterThanOrEqual(2000)
-        await sb.locator('[data-cy="overlay-zindex-close"]').click()
+        expect(parseInt(z, 10)).toBeGreaterThanOrEqual(3000)
     })
 
-    // Variant "Default" (playground) already verified above; kept for composite check
-    test('Playground — composite mounts and toggles', async ({ page }) => {
-        await gotoVariant(page, STORIES.overlay, 'Default')
+    // The old "Playground — composite mounts and toggles" test only
+    // re-verified the same open/close path already covered by the
+    // "Default" test above. Repurposed to cover "Slots - Activator"
+    // instead, which had no dedicated test — no coverage lost, redundant
+    // assertion replaced by a real gap.
+    test('Slots - Activator — custom activator slot reflects isActive', async ({ page }) => {
+        await gotoVariant(page, STORIES.overlay, 'Slots - Activator')
         const sb = sandbox(page)
-        await sb.locator('[data-cy="overlay-playground-activator"]').click()
-        await expect(sb.locator('[data-cy="overlay-playground-content"]')).toBeVisible({ timeout: 4000 })
-        await sb.locator('[data-cy="overlay-playground-close"]').click()
+        const activator = sb.getByRole('button', { name: 'Custom activator slot' })
+        await expect(activator).toBeVisible()
+        await activator.click()
+        await expect(sb.getByRole('button', { name: 'Opened' })).toBeVisible({ timeout: 4000 })
+        await expect(sb.locator('.origam-overlay__content')).toBeVisible()
     })
 })
 
@@ -348,62 +430,57 @@ test.describe('OrigamOverlay', () => {
 // ════════════════════════════════════════════════════════════════════════════
 
 test.describe('OrigamOverlayScrim', () => {
-    // Variant "Default" (playground) has data-cy="scrim-playground-toggle" and data-cy="scrim-playground"
     test('Default — toggle button mounts and unmounts the scrim', async ({ page }) => {
         await gotoVariant(page, STORIES.scrim, 'Default')
         const sb = sandbox(page)
-        await expect(sb.locator('[data-cy="scrim-playground"]')).toHaveCount(0)
-        await sb.locator('[data-cy="scrim-playground-toggle"]').click()
-        await expect(sb.locator('[data-cy="scrim-playground"]')).toBeVisible({ timeout: 4000 })
+        await expect(sb.locator('.origam-scrim')).toHaveCount(0)
+        await sb.getByRole('button', { name: 'Toggle scrim' }).click()
+        await expect(sb.locator('.origam-scrim')).toBeVisible({ timeout: 4000 })
     })
 
-    // Variant "Prop — active" has data-cy="scrim-active" and data-cy="scrim-active-label"
-    test('Active — checkbox mounts the scrim element', async ({ page }) => {
-        await gotoVariant(page, STORIES.scrim, 'Prop — active')
+    // "Functional" init-state pins active: false — toggle it via the
+    // shared control helper (its own "Active" HstCheckbox, States group).
+    test('Functional — Active control mounts the scrim element', async ({ page }) => {
+        await gotoVariant(page, STORIES.scrim, 'Functional')
         const sb = sandbox(page)
-        // Initial state active=false → no DOM
-        await expect(sb.locator('[data-cy="scrim-active"]')).toHaveCount(0)
-        // Toggle via the HstCheckbox control.
-        // HstWrapper renders as <label role="checkbox"> with title as text content,
-        // so use getByRole('checkbox', { name }) — not getByTitle() which looks for
-        // an HTML title="" attribute that doesn't exist on the wrapper element.
-        const checkbox = page.getByRole('checkbox', { name: 'active', exact: true })
-        await checkbox.click()
-        await page.waitForTimeout(300)
-        await expect(sb.locator('[data-cy="scrim-active"]')).toBeVisible({ timeout: 4000 })
-        await expect(sb.locator('[data-cy="scrim-active-label"]')).toContainText('active=true')
+        await expect(sb.locator('.origam-scrim')).toHaveCount(0)
+        await toggleHstCheckbox(page, 'Active')
+        await expect(sb.locator('.origam-scrim')).toBeVisible({ timeout: 4000 })
+        await expect(sb.getByText('active=true')).toBeVisible()
     })
 
-    // Variant "Prop — scrim (color)" has data-cy="scrim-color-toggle" and data-cy="scrim-color"
-    test('Scrim color — primary applies a non-transparent backdrop', async ({ page }) => {
-        await gotoVariant(page, STORIES.scrim, 'Prop — scrim (color)')
+    // "Design" init-state already pins active: true, scrim: true — the
+    // scrim is visible immediately, no toggle needed before driving Scrim.
+    test('Design — Scrim color primary applies a non-transparent backdrop', async ({ page }) => {
+        await gotoVariant(page, STORIES.scrim, 'Design')
         const sb = sandbox(page)
-        await sb.locator('[data-cy="scrim-color-toggle"]').click()
-        await expect(sb.locator('[data-cy="scrim-color"]')).toBeVisible({ timeout: 4000 })
-        const bg = await sb.locator('[data-cy="scrim-color"]').evaluate((el) => getComputedStyle(el).backgroundColor)
+        await expect(sb.locator('.origam-scrim')).toBeVisible({ timeout: 4000 })
+        await selectHstOption(page, 'Scrim', 'primary')
+        const bg = await sb.locator('.origam-scrim').evaluate((el) => getComputedStyle(el).backgroundColor)
         expect(bg).toMatch(/rgb/)
     })
 
-    // Variant "Emit — click" has data-cy="scrim-emit-toggle", data-cy="scrim-emit", data-cy="scrim-emit-counter"
-    test('Emits — click increments the counter and closes the scrim', async ({ page }) => {
-        await gotoVariant(page, STORIES.scrim, 'Emit — click')
+    // Canonical "Events - click" Variant replaced the old bespoke
+    // `data-cy="scrim-emit-counter"` shell — read Histoire's own event log
+    // instead (root CLAUDE.md convention, `_support/histoire-controls.ts`).
+    test('Events - click — emits click and closes the scrim', async ({ page }) => {
+        await gotoVariant(page, STORIES.scrim, 'Events - click')
         const sb = sandbox(page)
-        await sb.locator('[data-cy="scrim-emit-toggle"]').click()
-        await expect(sb.locator('[data-cy="scrim-emit"]')).toBeVisible({ timeout: 4000 })
-        await sb.locator('[data-cy="scrim-emit"]').click({ force: true })
-        await page.waitForTimeout(400)
-        await expect(sb.locator('[data-cy="scrim-emit-counter"]')).toContainText('clicks=1')
+        await sb.getByRole('button', { name: 'Show scrim' }).click()
+        await expect(sb.locator('.origam-scrim')).toBeVisible({ timeout: 4000 })
+        await sb.locator('.origam-scrim').click({ force: true })
+        await expect(sb.locator('.origam-scrim')).not.toBeVisible({ timeout: 4000 })
+        await openEventsTab(page)
+        await expect(eventLogItems(page)).toHaveCount(1)
     })
 
-    // Variant "Default" (playground) has data-cy="scrim-playground" controlled by "active" HstCheckbox
-    test('Playground — mounts when toggled active', async ({ page }) => {
+    // "Default" (playground) exposes an "Active" HstCheckbox (Functional
+    // group), init-state active: false.
+    test('Default — playground mounts when Active is toggled', async ({ page }) => {
         await gotoVariant(page, STORIES.scrim, 'Default')
         const sb = sandbox(page)
-        // HstWrapper renders as <label role="checkbox"> with title as text content;
-        // use getByRole instead of getByTitle (which looks for HTML title="" attribute).
-        const checkbox = page.getByRole('checkbox', { name: 'active', exact: true })
-        await checkbox.click()
-        await page.waitForTimeout(300)
-        await expect(sb.locator('[data-cy="scrim-playground"]')).toBeVisible({ timeout: 4000 })
+        await expect(sb.locator('.origam-scrim')).toHaveCount(0)
+        await toggleHstCheckbox(page, 'Active')
+        await expect(sb.locator('.origam-scrim')).toBeVisible({ timeout: 4000 })
     })
 })
