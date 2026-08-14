@@ -1,4 +1,5 @@
 import type {
+    IAdjacentSlots,
     ICommonsComponentEmits,
     IInputProps,
     ILabelProps,
@@ -26,3 +27,19 @@ export interface IRatingFieldProps extends IInputProps, IRippleProps, ITagProps,
 
 /** Emits fired by `<OrigamRatingField>` — v-model on the rating value. */
 export interface IRatingFieldEmits extends ICommonsComponentEmits {}
+
+/**
+ * Slot signatures for `<OrigamRatingField>` — the wrapping
+ * `<OrigamInput>` chrome (`default` / `details` / `messages` /
+ * `message`, plus `prepend` / `append`), `label`, and per-item labels
+ * (`itemLabel.{index}` / `itemLabel`), all unscoped except `default`.
+ */
+export interface IRatingFieldSlots extends IAdjacentSlots {
+    default?: (data: { id: string, messagesId: string, isDisabled: boolean, isReadonly: boolean, isValid: boolean | undefined }) => any
+    label?: () => any
+    itemLabel?: () => any
+    details?: (props: any) => any
+    messages?: (data: { hasMessages: boolean, messages: Array<string> | Record<string, string> }) => any
+    message?: (data: { message: any }) => any
+    [key: `itemLabel.${number}`]: (() => any) | undefined
+}

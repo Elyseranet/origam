@@ -40,3 +40,10 @@ export interface IRatingFieldItemEmits extends IClickEmits {
     (e: 'mouseenter', event: MouseEvent): void
     (e: 'mouseleave', event: MouseEvent): void
 }
+
+/** Slot signatures for `<OrigamRatingFieldItem>`. */
+export interface IRatingFieldItemSlots {
+    /** Overrides the star/icon button — `props` is the resolved
+     *  `<OrigamBtn>` prop bag (icon, color, ripple, click handlers…). */
+    item?: (data: { props: Record<string, unknown>, value: number }) => any
+}

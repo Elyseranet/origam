@@ -25,7 +25,7 @@
 
   import { ORIGAM_ITEM_GROUP_KEY } from '../../consts'
 
-  import type { IItemGroupItemProps } from '../../interfaces'
+  import type { IItemGroupItemProps, IItemGroupItemSlots } from '../../interfaces'
 
   interface Props extends IItemGroupItemProps {
     tag?: string
@@ -45,6 +45,8 @@
     value: undefined,
     selectedClass: undefined
   })
+
+  defineSlots<IItemGroupItemSlots>()
 
   const { filterProps } = useProps<IItemGroupItemProps>(props)
 

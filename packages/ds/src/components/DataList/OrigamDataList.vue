@@ -195,6 +195,7 @@
 		IDataListKVItem,
 		IDataListKVItemValueComponent,
 		IDataListProps,
+		IDataListSlots,
 		IDataTextProps
 	} from "../../interfaces"
 	// `isDataListKVItemValueComponent` is a type-guard FUNCTION — it
@@ -213,6 +214,8 @@
 	const props = withDefaults(defineProps<IDataListProps>(), {
 		mode: 'avatar'
 	})
+
+	defineSlots<IDataListSlots>()
 
 	const {filterProps} = useProps<IDataListProps>(props)
 

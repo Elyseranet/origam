@@ -24,3 +24,14 @@ export interface ISliderFieldTrackProps extends ICommonsComponentProps, IColorPr
     /** Pre-computed tick descriptors — parent owns the math. */
     ticks?: Array<TTick>
 }
+
+/**
+ * Slot signatures for `<OrigamSliderFieldTrack>`. `item` and the
+ * per-tick `item.{index}` share the same `{ tick, index }` scope — the
+ * indexed form is the fallback the un-indexed `item` slot itself falls
+ * back to.
+ */
+export interface ISliderFieldTrackSlots {
+    item?: (data: { tick: TTick, index: number }) => any
+    [key: `item.${number}`]: ((data: { tick: TTick, index: number }) => any) | undefined
+}

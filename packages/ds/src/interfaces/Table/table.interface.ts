@@ -19,3 +19,12 @@ export interface ITableProps extends ICommonsComponentProps, IBorderProps, IRoun
     captionVisible?: boolean
     ariaRowcount?: number
 }
+
+/** Slot signatures for `<OrigamTable>`. */
+export interface ITableSlots {
+    top?: () => any
+    /** Overrides the whole `<table>` element. */
+    wrapper?: () => any
+    default?: () => any
+    bottom?: () => any
+}

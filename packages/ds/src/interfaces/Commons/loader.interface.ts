@@ -5,3 +5,9 @@ export interface ILoaderProps extends ICommonsComponentProps, ITagProps, IColorP
     loading?: TLoadingValue
     loadingText?: string
 }
+
+/** Slot signatures for `<OrigamLoader>`. */
+export interface ILoaderSlots {
+    loader?: () => any
+    default?: () => any
+}

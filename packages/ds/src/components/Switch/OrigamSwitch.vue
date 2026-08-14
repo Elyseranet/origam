@@ -164,7 +164,7 @@
 
   import type { ISwitchProps } from "../../interfaces"
 
-  import type { ISwitchEmits } from '../../interfaces/Switch/switch.interface'
+  import type { ISwitchEmits, ISwitchSlots } from '../../interfaces/Switch/switch.interface'
 
   import type { TOrigamInput, TOrigamSelectionControl, TOrigamSwitchTrack } from "../../types"
 
@@ -192,6 +192,8 @@
   const props = useDefaults(_props)
 
   defineEmits<ISwitchEmits>()
+
+  defineSlots<ISwitchSlots>()
 
 
   const { isHover, hoverState } = useHover(props)

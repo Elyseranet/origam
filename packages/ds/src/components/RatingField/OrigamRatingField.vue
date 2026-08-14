@@ -159,7 +159,7 @@
 
 	import type { IRatingFieldProps} from '../../interfaces'
 
-	import type { IRatingFieldEmits } from '../../interfaces/RatingField/rating-field.interface'
+	import type { IRatingFieldEmits, IRatingFieldSlots } from '../../interfaces/RatingField/rating-field.interface'
 
 	import type { TOrigamInput, TOrigamRatingFieldItem } from "../../types"
 
@@ -181,6 +181,8 @@
 	})
 
 	defineEmits<IRatingFieldEmits>()
+
+	defineSlots<IRatingFieldSlots>()
 
 	const {filterProps} = useProps<IRatingFieldProps>(props)
 

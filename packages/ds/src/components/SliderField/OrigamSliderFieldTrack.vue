@@ -59,7 +59,7 @@
 		useStyle
 	} from '../../composables'
 
-	import type { ISliderFieldTrackProps } from "../../interfaces"
+	import type { ISliderFieldTrackProps, ISliderFieldTrackSlots } from "../../interfaces"
 
 	import type { TTick } from '../../types'
 
@@ -76,6 +76,8 @@
 		showTicks: false,
 		tickSize: 2
 	})
+
+	defineSlots<ISliderFieldTrackSlots>()
 
 	const {filterProps} = useProps<ISliderFieldTrackProps>(props)
 

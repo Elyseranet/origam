@@ -34,7 +34,7 @@
 
 	import { PROGRESS_TYPE } from '../../enums'
 
-	import type { ILoaderProps } from '../../interfaces'
+	import type { ILoaderProps, ILoaderSlots } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -44,6 +44,8 @@
 	 ********************************************************/
 
 	const props = withDefaults(defineProps<ILoaderProps>(), {tag: 'span'})
+
+	defineSlots<ILoaderSlots>()
 
 	const {filterProps} = useProps<ILoaderProps>(props)
 

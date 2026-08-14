@@ -1,4 +1,5 @@
 import type {
+    IAdjacentSlots,
     IBorderProps,
     IColorProps,
     ICommonsComponentEmits,
@@ -13,7 +14,8 @@ import type {
     IPaddingProps,
     IRippleProps,
     IRoundedProps,
-    ISliderFieldTrackProps
+    ISliderFieldTrackProps,
+    ISliderFieldTrackSlots
 } from '../../interfaces'
 
 import type {
@@ -121,4 +123,20 @@ export interface ISliderFieldProps extends ICommonsComponentProps, IDensityProps
 export interface ISliderFieldEmits extends ICommonsComponentEmits, IFocusEmits {
     (e: 'start', value: number | string | Array<number> | Array<string>): void
     (e: 'end', value: number | string | Array<number> | Array<string>): void
+}
+
+/**
+ * Slot signatures for `<OrigamSliderField>`. `prepend` / `append` are
+ * unscoped ("field" variant only — `hasPrepend`/`slots.append` gate
+ * them). `default` is scoped when the field variant renders, `label`
+ * is unscoped, `item` forwards straight through to the nested
+ * `<OrigamSliderFieldTrack>`'s own `item` slot.
+ */
+export interface ISliderFieldSlots extends IAdjacentSlots {
+    default?: (data: { id: string, messagesId: string, isDisabled: boolean, isReadonly: boolean, isValid: boolean | undefined }) => any
+    label?: () => any
+    item?: ISliderFieldTrackSlots['item']
+    details?: (props: any) => any
+    messages?: (data: { hasMessages: boolean, messages: Array<string> | Record<string, string> }) => any
+    message?: (data: { message: any }) => any
 }

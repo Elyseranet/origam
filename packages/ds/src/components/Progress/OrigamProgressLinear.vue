@@ -67,7 +67,7 @@
 		useTextColor
 } from '../../composables'
 
-	import type { IProgressLinearProps } from '../../interfaces'
+	import type { IProgressLinearProps, IProgressLinearSlots } from '../../interfaces'
 
 	import { convertToUnit } from '../../utils'
 
@@ -83,6 +83,8 @@
 		max: 100,
 		thickness: 4
 	})
+
+	defineSlots<IProgressLinearSlots>()
 
 	const {filterProps} = useProps<IProgressLinearProps>(props)
 

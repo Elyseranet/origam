@@ -15,3 +15,8 @@ export interface IListSubheader extends ICommonsComponentProps, ITagProps, IColo
     sticky?: boolean,
     title?: string,
 }
+
+/** Slot signatures for `<OrigamListSubheader>`. */
+export interface IListSubheaderSlots {
+    default?: (data: { title?: string }) => any
+}

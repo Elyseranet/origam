@@ -81,7 +81,7 @@
 
 	import type { IOverlayProps} from '../../interfaces'
 
-	import type { IOverlayEmits } from '../../interfaces/Overlay/overlay.interface'
+	import type { IOverlayEmits, IOverlaySlots } from '../../interfaces/Overlay/overlay.interface'
 
 	import type { TOrigamOverlayScrim, TTransitionProps } from "../../types"
 
@@ -128,6 +128,8 @@
 	})
 
 	const emits = defineEmits<IOverlayEmits>()
+
+	defineSlots<IOverlaySlots>()
 
 	const {filterProps} = useProps<IOverlayProps>(props)
 

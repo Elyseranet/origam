@@ -37,13 +37,15 @@
 
 	import { vContrast } from '../../directives'
 
-	import type { IListSubheader } from '../../interfaces'
+	import type { IListSubheader, IListSubheaderSlots } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
 	 ********************************************************/
 
 	const props = withDefaults(defineProps<IListSubheader>(), {tag: 'div'})
+
+	defineSlots<IListSubheaderSlots>()
 
 	const {filterProps} = useProps<IListSubheader>(props)
 

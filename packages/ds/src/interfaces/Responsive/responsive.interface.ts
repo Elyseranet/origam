@@ -12,3 +12,9 @@ export interface IResponsiveProps extends IDimensionProps, ICommonsComponentProp
     contentClass?: string
     inline?: boolean
 }
+
+/** Slot signatures for `<OrigamResponsive>`. */
+export interface IResponsiveSlots {
+    additional?: () => any
+    default?: () => any
+}

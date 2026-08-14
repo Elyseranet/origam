@@ -3,6 +3,7 @@ import type {
     ICommonsComponentProps,
     IGroupItemProps,
     IGroupProps,
+    IGroupProvide,
     ITagProps
 } from '../../interfaces'
 
@@ -35,3 +36,26 @@ export interface IItemGroupItemProps extends ICommonsComponentProps, ITagProps, 
 
 /** Emits fired by `<OrigamItemGroup>` — v-model on the active item set. */
 export interface IItemGroupEmits extends ICommonsComponentEmits {}
+
+/** Scope forwarded to `<OrigamItem>`'s `default` slot — the resolved
+ *  selection state from the enclosing `<OrigamItemGroup>`. */
+export interface IItemGroupItemSlotProps {
+    isSelected: boolean
+    selectedClass: Array<string | undefined> | false
+    toggle: () => void
+    select: (value: boolean) => void
+    value: unknown
+    disabled: boolean | undefined
+}
+
+/** Slot signatures for `<OrigamItem>`. */
+export interface IItemGroupItemSlots {
+    default?: (data: IItemGroupItemSlotProps) => any
+}
+
+/** Slot signatures for `<OrigamItemGroup>` — the raw `useGroup()`
+ *  selection API, forwarded as-is (its `selected` field stays a `Ref`,
+ *  unlike `OrigamItem`'s own unwrapped `default` scope). */
+export interface IItemGroupSlots {
+    default?: (data: Pick<IGroupProvide, 'isSelected' | 'select' | 'next' | 'prev' | 'selected'>) => any
+}

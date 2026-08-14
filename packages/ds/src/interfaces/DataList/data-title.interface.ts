@@ -1,5 +1,6 @@
 import type {
     IAdjacentProps,
+    IAdjacentSlots,
     IBgColorProps,
     IColorProps,
     ICommonsComponentProps,
@@ -16,4 +17,9 @@ export interface IDataTitleProps extends ICommonsComponentProps, IAdjacentProps,
     hoverColor?: TColor
     /** @deprecated Use the `hover` object prop instead. Kept for back-compat. */
     hoverBgColor?: TColor
+}
+
+/** Slot signatures for `<OrigamDataTitle>`. */
+export interface IDataTitleSlots extends IAdjacentSlots {
+    default?: (data: { text: string | number }) => any
 }

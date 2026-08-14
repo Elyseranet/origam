@@ -64,7 +64,7 @@
 
 	import { CIRCUMFERENCE, MAGIC_RADIUS } from '../../consts'
 
-	import type { IProgressCircularProps } from '../../interfaces'
+	import type { IProgressCircularProps, IProgressCircularSlots } from '../../interfaces'
 
 	import { convertToUnit } from '../../utils'
 
@@ -87,6 +87,8 @@
 		thickness: 4,
 		size: SIZES.DEFAULT
 	})
+
+	defineSlots<IProgressCircularSlots>()
 
 	const {filterProps} = useProps<IProgressCircularProps>(props)
 

@@ -27,7 +27,8 @@
 	import { useNumberFormat } from '../../composables'
 
 	import type {
-		INumberFormatProps
+		INumberFormatProps,
+		INumberFormatSlots
 	} from '../../interfaces'
 
 	/*********************************************************
@@ -61,6 +62,8 @@
 		useGrouping: true,
 		signDisplay: 'auto'
 	})
+
+	defineSlots<INumberFormatSlots>()
 
 	/*********************************************************
 	 * Resolved options snapshot — fed to the composable as a getter

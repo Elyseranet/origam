@@ -24,3 +24,15 @@ export interface ISnackbarProps extends ICommonsComponentProps, ITagProps, IStat
     timeout?: number | string
     vertical?: boolean
 }
+
+/** Slot signatures for `<OrigamSnackbar>` — the nested
+ *  `<OrigamSnackbarItem>`'s `prepend` / `title` / `message` chrome,
+ *  plus the unscoped `default` and the `action` slot. */
+export interface ISnackbarSlots {
+    prepend?: () => any
+    title?: () => any
+    text?: () => any
+    message?: () => any
+    default?: () => any
+    action?: (data: { isActive: boolean }) => any
+}

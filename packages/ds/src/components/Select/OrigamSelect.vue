@@ -321,7 +321,7 @@
 
 	import type { IInternalListItem, IItemProps, ISelectProps} from '../../interfaces'
 
-	import type { ISelectEmits } from '../../interfaces/Select/select.interface'
+	import type { ISelectEmits, ISelectSlots } from '../../interfaces/Select/select.interface'
 
 	import type {
 		TOrigamChip,
@@ -375,6 +375,8 @@
 	const props = useDefaults(_props)
 
 	defineEmits<ISelectEmits>()
+
+	defineSlots<ISelectSlots>()
 
 	const {filterProps} = useProps<ISelectProps>(props)
 

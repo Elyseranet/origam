@@ -444,7 +444,7 @@
 
 	import type { ISliderFieldProps } from "../../interfaces"
 
-	import type { ISliderFieldEmits } from '../../interfaces/SliderField/slider-field.interface'
+	import type { ISliderFieldEmits, ISliderFieldSlots } from '../../interfaces/SliderField/slider-field.interface'
 
 	import type { TOrigamInput, TTick } from '../../types'
 
@@ -478,6 +478,8 @@
 	const props = useDefaults(_props)
 
 	const emits = defineEmits<ISliderFieldEmits>()
+
+	defineSlots<ISliderFieldSlots>()
 
 	const {filterProps} = useProps<ISliderFieldProps>(props)
 

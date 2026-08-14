@@ -86,13 +86,15 @@
 
 	import { LIST_ITEM_TYPE } from '../../enums'
 
-	import type { IInternalListItemChildren, IListItemChildren } from '../../interfaces'
+	import type { IInternalListItemChildren, IListChildrenSlots, IListItemChildren } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
 	 ********************************************************/
 
 	const props = withDefaults(defineProps<IListItemChildren>(), {})
+
+	defineSlots<IListChildrenSlots>()
 
 	const {filterProps} = useProps<IListItemChildren>(props)
 

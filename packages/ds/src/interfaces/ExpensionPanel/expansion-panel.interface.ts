@@ -8,6 +8,7 @@ import type {
     IElevationProps,
     IExpansionPanelContentProps,
     IExpansionPanelHeaderProps,
+    IExpansionPanelHeaderSlotProps,
     IGroupEmits,
     IGroupItemProps,
     IHoverProps,
@@ -24,3 +25,18 @@ export interface IExpansionPanelProps extends ITagProps, ICommonsComponentProps,
 
 /** Emits fired by `<OrigamExpansionPanel>` — group membership lifecycle. */
 export interface IExpansionPanelEmits extends IGroupEmits {}
+
+/** Slot signatures for `<OrigamExpansionPanel>`. `header` / `wrapper`
+ *  receive the filtered props forwarded to the nested
+ *  `<OrigamExpansionPanelHeader>` / `<OrigamExpansionPanelContent>`;
+ *  `prepend` / `title` / `append` receive that header's own slot scope
+ *  (they're forwarded straight through to it). */
+export interface IExpansionPanelSlots {
+    loader?: () => any
+    header?: (props: Partial<IExpansionPanelHeaderProps>) => any
+    prepend?: (data: IExpansionPanelHeaderSlotProps) => any
+    title?: (data: IExpansionPanelHeaderSlotProps) => any
+    append?: (data: IExpansionPanelHeaderSlotProps) => any
+    wrapper?: (props: Partial<IExpansionPanelContentProps>) => any
+    default?: () => any
+}

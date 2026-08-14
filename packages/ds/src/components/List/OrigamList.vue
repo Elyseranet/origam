@@ -113,7 +113,7 @@
 
 	import type { IListProps} from '../../interfaces'
 
-	import type { IListEmits } from '../../interfaces/List/list.interface'
+	import type { IListEmits, IListSlots } from '../../interfaces/List/list.interface'
 
 	import type { TFocusLocation } from '../../types'
 
@@ -139,6 +139,8 @@
 	})
 
 	defineEmits<IListEmits>()
+
+	defineSlots<IListSlots>()
 
 	const {filterProps} = useProps<IListProps>(props)
 
