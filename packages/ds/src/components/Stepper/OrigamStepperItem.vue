@@ -48,7 +48,7 @@
 
 	import { OrigamIcon } from '../../components'
 	import { ORIGAM_STEPPER_KEY } from '../../consts'
-	import { MDI_ICONS } from '../../enums'
+	import { DIRECTION, MDI_ICONS } from '../../enums'
 	import { useLocale, useProps } from '../../composables'
 	import { vContrast } from '../../directives'
 
@@ -119,7 +119,7 @@
 	/*********************************************************
 	 * Class & Style
 	 ********************************************************/
-	const orientation = computed(() => stepper?.orientation.value ?? 'horizontal')
+	const orientation = computed(() => stepper?.orientation.value ?? DIRECTION.HORIZONTAL)
 
 	const itemClasses = computed(() => [
 		'origam-stepper-item',

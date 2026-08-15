@@ -4,8 +4,8 @@
 			:id="id"
 			v-contrast
 			:class="alertClasses"
-			:role="status === 'warning' || status === 'error' ? 'alert' : 'status'"
-			:aria-live="status === 'warning' || status === 'error' ? 'assertive' : 'polite'"
+			:role="isUrgentStatus ? 'alert' : 'status'"
+			:aria-live="isUrgentStatus ? 'assertive' : 'polite'"
 			@mouseenter="handleMouseenter"
 			@mouseleave="handleMouseleave"
 	>
@@ -138,7 +138,7 @@
 		useTypography
 	} from '../../composables'
 
-	import { DENSITY, MDI_ICONS } from '../../enums'
+	import { DENSITY, MDI_ICONS, STATUS } from '../../enums'
 
 	import type { IAlertProps} from '../../interfaces'
 
@@ -255,6 +255,14 @@
 		emits('click:close', e)
 	}
 	const size = 28
+
+	// Bare `status` in the template resolves to the raw, unresolved
+	// `_props.status` (see the `<script setup>` auto-expose note above),
+	// so this computed reads `_props` directly to keep the exact same
+	// source rather than the theme-resolved `props`.
+	const isUrgentStatus = computed(() => {
+		return _props.status === STATUS.WARNING || _props.status === STATUS.ERROR
+	})
 
 	const hasIcon = computed(() => {
 		// Pre-fix: `!!(props.icon || props.status)` returned true as soon

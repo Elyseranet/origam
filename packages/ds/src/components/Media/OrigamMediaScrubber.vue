@@ -73,6 +73,8 @@
 		useRounded
 	} from '../../composables'
 
+	import { DIRECTION } from '../../enums'
+
 	import type {
 		IMediaScrubberProps, IMediaScrubberSlots} from '../../interfaces'
 
@@ -168,7 +170,7 @@
 	 ********************************************************/
 	const showTooltip = computed(() =>
 		props.showHoverTooltip
-		&& props.orientation === 'horizontal'
+		&& props.orientation === DIRECTION.HORIZONTAL
 		&& hoverPct.value !== null
 		&& !props.disabled
 	)
@@ -188,7 +190,7 @@
 		const el = rootEl.value
 		if (!el) return 0
 		const rect = el.getBoundingClientRect()
-		if (props.orientation === 'vertical') {
+		if (props.orientation === DIRECTION.VERTICAL) {
 			const y = clamp(event.clientY, rect.top, rect.bottom)
 			return ((rect.bottom - y) / Math.max(1, rect.height)) * 100
 		}
@@ -284,7 +286,7 @@
 
 	function onKeyDown (event: KeyboardEvent): void {
 		if (props.disabled) return
-		const isVertical = props.orientation === 'vertical'
+		const isVertical = props.orientation === DIRECTION.VERTICAL
 		const step = keyStep()
 		let next: number | null = null
 
@@ -311,21 +313,21 @@
 	 * the underlying track orientation.
 	 ********************************************************/
 	const progressStyles = computed<StyleValue>(() => {
-		if (props.orientation === 'vertical') {
+		if (props.orientation === DIRECTION.VERTICAL) {
 			return { height: `${valuePct.value}%` }
 		}
 		return { width: `${valuePct.value}%` }
 	})
 
 	const bufferStyles = computed<StyleValue>(() => {
-		if (props.orientation === 'vertical') {
+		if (props.orientation === DIRECTION.VERTICAL) {
 			return { height: `${bufferPct.value}%` }
 		}
 		return { width: `${bufferPct.value}%` }
 	})
 
 	const thumbStyles = computed<StyleValue>(() => {
-		if (props.orientation === 'vertical') {
+		if (props.orientation === DIRECTION.VERTICAL) {
 			return { bottom: `${valuePct.value}%` }
 		}
 		return { left: `${valuePct.value}%` }
@@ -341,8 +343,8 @@
 	 ********************************************************/
 	const rootClasses = computed(() => [
 		{
-			'origam-media-scrubber--horizontal': props.orientation === 'horizontal',
-			'origam-media-scrubber--vertical': props.orientation === 'vertical',
+			'origam-media-scrubber--horizontal': props.orientation === DIRECTION.HORIZONTAL,
+			'origam-media-scrubber--vertical': props.orientation === DIRECTION.VERTICAL,
 			'origam-media-scrubber--disabled': props.disabled,
 			'origam-media-scrubber--scrubbing': isScrubbing.value,
 			'origam-media-scrubber--thumb-on-hover': props.showThumbOnHoverOnly

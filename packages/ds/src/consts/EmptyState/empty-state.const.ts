@@ -1,4 +1,4 @@
-import { MDI_ICONS } from '../../enums'
+import { EMPTY_STATE_PRESET, MDI_ICONS } from '../../enums'
 
 import type { TEmptyStateAlign, TEmptyStatePreset, TEmptyStateSize, TIcon, TIntent } from '../../types'
 
@@ -7,13 +7,7 @@ import type { TEmptyStateAlign, TEmptyStatePreset, TEmptyStateSize, TIcon, TInte
  * Exposed so stories / consumers can iterate the matrix without
  * re-typing the literals.
  */
-export const EMPTY_STATE_PRESETS: ReadonlyArray<TEmptyStatePreset> = [
-    'no-data',
-    'no-results',
-    'error',
-    'offline',
-    'locked'
-]
+export const EMPTY_STATE_PRESETS: ReadonlyArray<TEmptyStatePreset> = Object.values(EMPTY_STATE_PRESET)
 
 /**
  * Closed list of valid `size` values.
@@ -47,23 +41,23 @@ export interface IEmptyStatePresetConfig {
 }
 
 export const EMPTY_STATE_PRESET_CONFIG: Record<TEmptyStatePreset, IEmptyStatePresetConfig> = {
-    'no-data': {
+    [EMPTY_STATE_PRESET.NO_DATA]: {
         icon: MDI_ICONS.DATABASE_OFF_OUTLINE,
         intent: 'neutral'
     },
-    'no-results': {
+    [EMPTY_STATE_PRESET.NO_RESULTS]: {
         icon: MDI_ICONS.MAGNIFY_CLOSE,
         intent: 'neutral'
     },
-    'error': {
+    [EMPTY_STATE_PRESET.ERROR]: {
         icon: MDI_ICONS.ALERT_CIRCLE_OUTLINE,
         intent: 'danger'
     },
-    'offline': {
+    [EMPTY_STATE_PRESET.OFFLINE]: {
         icon: MDI_ICONS.WIFI_OFF,
         intent: 'warning'
     },
-    'locked': {
+    [EMPTY_STATE_PRESET.LOCKED]: {
         icon: MDI_ICONS.LOCK_OUTLINE,
         intent: 'secondary'
     }

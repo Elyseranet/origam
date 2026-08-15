@@ -1,5 +1,5 @@
 import type { IColorProps, ICommonsComponentProps, IDensityProps, ISizeProps, ITagProps } from '../../interfaces'
-import type { TIcon, TIntent, TTimelineOrientation } from '../../types'
+import type { TIcon, TIntent, TTimelineOrientation, TTimelineSide } from '../../types'
 
 /**
  * Shape of the context object provided by OrigamTimeline to its
@@ -11,7 +11,7 @@ import type { TIcon, TIntent, TTimelineOrientation } from '../../types'
  * `src/consts/Timeline/timeline.const.ts` (TIMELINE_CONTEXT_KEY).
  */
 export interface ITimelineContext {
-    side: 'start' | 'end' | 'alternating'
+    side: TTimelineSide
     truncateLine: boolean
     orientation: TTimelineOrientation
     color?: string
@@ -36,7 +36,7 @@ export interface ITimelineProps extends ICommonsComponentProps, ITagProps, IColo
      *    Content (title/subtitle/body) renders BELOW each dot.
      */
     orientation?: TTimelineOrientation
-    side?: 'start' | 'end' | 'alternating'
+    side?: TTimelineSide
     truncateLine?: boolean
     ariaLabel?: string
 }
@@ -48,7 +48,7 @@ export interface ITimelineItemProps extends ICommonsComponentProps, IColorProps,
     intent?: TIntent
     isLast?: boolean
     truncateLine?: boolean
-    side?: 'start' | 'end' | 'alternating'
+    side?: TTimelineSide
     /**
      * Layout direction forwarded by the parent OrigamTimeline. When unset
      * the item assumes vertical layout. Items rarely set this directly —

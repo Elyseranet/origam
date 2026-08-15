@@ -7,7 +7,7 @@
 		:aria-label="ariaLabel"
 	>
 		<div
-				v-if="orientation === 'horizontal'"
+				v-if="isHorizontal"
 				class="origam-timeline__track-wrapper"
 		>
 			<slot name="default">
@@ -62,6 +62,7 @@
 } from '../../composables'
 	import type { ITimelineProps, ITimelineSlots } from '../../interfaces'
 	import { TIMELINE_CONTEXT_KEY } from '../../consts'
+	import { DIRECTION } from '../../enums'
 
 	/*********************************************************
 	 * Global
@@ -78,7 +79,8 @@
 
 	defineSlots<ITimelineSlots>()
 
-	const orientation = computed(() => props.orientation ?? 'vertical')
+	const orientation = computed(() => props.orientation ?? DIRECTION.VERTICAL)
+	const isHorizontal = computed(() => orientation.value === DIRECTION.HORIZONTAL)
 
 	/*********************************************************
 	 * Composables

@@ -130,10 +130,10 @@
 	const resolvedStatus = computed(() => props.status ?? props.match.status)
 
 	const STATUS_LABELS: Record<string, string> = {
-		pending: 'TBD',
-		live: 'LIVE',
-		completed: 'Completed',
-		forfeited: 'Forfeit'
+		[BRACKET_MATCH_STATUS.PENDING]: 'TBD',
+		[BRACKET_MATCH_STATUS.LIVE]: 'LIVE',
+		[BRACKET_MATCH_STATUS.COMPLETED]: 'Completed',
+		[BRACKET_MATCH_STATUS.FORFEITED]: 'Forfeit'
 	}
 
 	const statusLabel = computed<string>(() => {
@@ -147,7 +147,7 @@
 	const statusClasses = computed(() => {
 		return [
 			'origam-bracket-match__status',
-			`origam-bracket-match__status--${resolvedStatus.value ?? 'pending'}`
+			`origam-bracket-match__status--${resolvedStatus.value ?? BRACKET_MATCH_STATUS.PENDING}`
 		]
 	})
 

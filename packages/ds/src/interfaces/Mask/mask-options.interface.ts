@@ -1,4 +1,4 @@
-import type { TPatternValidator } from '../../types'
+import type { TMaskTokenKind, TPatternValidator } from '../../types'
 
 /**
  * Configuration object accepted by `useMask` / the
@@ -46,7 +46,7 @@ export interface IMaskApplyResult {
  * (`#`, `A`, `*`) or is a literal kept verbatim.
  */
 export interface IMaskToken {
-    kind: 'digit' | 'letter' | 'any' | 'literal'
+    kind: TMaskTokenKind
     char: string
     consumer: boolean
 }

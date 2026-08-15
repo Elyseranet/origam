@@ -54,6 +54,7 @@
 	import type { ITimelineItemProps, ITimelineItemSlots } from '../../interfaces'
 
 	import { TIMELINE_CONTEXT_KEY } from '../../consts'
+	import { DIRECTION } from '../../enums'
 
 	/*********************************************************
 	 * Global
@@ -88,7 +89,7 @@
 
 	const effectiveOrientation = computed(() => {
 		if (timelineCtx?.orientation) return timelineCtx.orientation
-		return props.orientation ?? 'vertical'
+		return props.orientation ?? DIRECTION.VERTICAL
 	})
 
 	const effectiveTruncateLine = computed(() => {
@@ -119,7 +120,7 @@
 		// "thickness" becomes the height, and the width fills the
 		// available space. In vertical layout (legacy default) it's a
 		// thin vertical bar.
-		const isH = effectiveOrientation.value === 'horizontal'
+		const isH = effectiveOrientation.value === DIRECTION.HORIZONTAL
 		return {
 			'background-color': 'var(--origam-timeline---connector-color, var(--origam-color__border---subtle))',
 			[isH ? 'height' : 'width']: 'var(--origam-timeline---connector-thickness, var(--origam-border__width---thin, 1px))'

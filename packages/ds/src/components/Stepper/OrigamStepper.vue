@@ -38,7 +38,7 @@
 
 	import { OrigamStepperItem } from '../../components'
 	import { ORIGAM_STEPPER_KEY } from '../../consts'
-	import { DENSITY, SIZES } from '../../enums'
+	import { DENSITY, DIRECTION, SIZES } from '../../enums'
 	import { vContrast } from '../../directives'
 	import {
 		useDensity,
@@ -90,7 +90,7 @@
 	// Provide stepper context for child items
 	provide(ORIGAM_STEPPER_KEY, {
 		modelValue: internalModel,
-		orientation: computed(() => props.orientation ?? 'horizontal'),
+		orientation: computed(() => props.orientation ?? DIRECTION.HORIZONTAL),
 		clickable: computed(() => props.clickable ?? false),
 		color: computed(() => props.color as string | undefined)
 	})
@@ -155,7 +155,7 @@
 
 	const stepperClasses = computed(() => [
 		'origam-stepper',
-		`origam-stepper--${props.orientation ?? 'horizontal'}`,
+		`origam-stepper--${props.orientation ?? DIRECTION.HORIZONTAL}`,
 		colorClasses.value,
 		densityClasses.value,
 		sizeClasses.value,

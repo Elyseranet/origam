@@ -19,7 +19,7 @@ import type {
     IVideoTrack
 } from '../../interfaces'
 
-import type { TVideoControls } from '../../types'
+import type { TCrossOrigin, TVideoControls } from '../../types'
 
 /**
  * Bindings passed to the `#controls` scoped slot of `<OrigamVideo>`.
@@ -180,7 +180,7 @@ export interface IVideoProps extends ICommonsComponentProps, IColorProps, IBgCol
      * the consumer needs canvas / WebAudio access to the decoded
      * frames. Affects how cookies are sent on the request.
      */
-    crossorigin?: 'anonymous' | 'use-credentials'
+    crossorigin?: TCrossOrigin
     /**
      * Disables the picture-in-picture button (and the matching
      * keyboard shortcut). Useful for content where PIP would defeat

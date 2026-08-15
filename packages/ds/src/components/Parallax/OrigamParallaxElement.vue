@@ -26,7 +26,7 @@
 
 	import { ORIGAM_PARALLAX_KEY } from '../../consts'
 
-	import { AXIS, PARALLAX_ELEMENT_TYPE } from '../../enums'
+	import { AXIS, PARALLAX_ELEMENT_TYPE, PARALLAX_EVENT } from '../../enums'
 
 	import type { IParallaxElementProps, IParallaxElementSlots } from '../../interfaces'
 
@@ -144,17 +144,17 @@
 					maxY: props.maxY
 				})
 				: cyclicMovement({
-					referencePosition: parallax.event.value === 'scroll' ? {x: 0, y: 0} : parallax.eventData.value,
+					referencePosition: parallax.event.value === PARALLAX_EVENT.SCROLL ? {x: 0, y: 0} : parallax.eventData.value,
 					shape: parallax.shape.value,
 					event: parallax.event.value,
 					cycles: props.cycle,
 					strength: strength.value
 				})
 
-		if (parallax.event.value !== 'scroll') {
+		if (parallax.event.value !== PARALLAX_EVENT.SCROLL) {
 			movementX = props.axis === AXIS.Y ? 0 : x
 			movementY = props.axis === AXIS.X ? 0 : y
-		} else if (parallax.event.value === 'scroll') {
+		} else if (parallax.event.value === PARALLAX_EVENT.SCROLL) {
 			movementX = props.axis === AXIS.X ? y : 0
 			movementY = props.axis === AXIS.Y || !props.axis ? y : 0
 		} else if (props.cycle > 0) {

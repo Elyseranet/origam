@@ -135,7 +135,7 @@
 	const scrollOffset = shallowRef(0)
 	const containerSize = shallowRef(0)
 	const contentSize = shallowRef(0)
-	const isHorizontal = computed(() => props.direction === 'horizontal')
+	const isHorizontal = computed(() => props.direction === DIRECTION.HORIZONTAL)
 
 	const {resizeRef: containerRef, contentRect: containerRect} = useResizeObserver()
 	const {resizeRef: contentRef, contentRect} = useResizeObserver()
