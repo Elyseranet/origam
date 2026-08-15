@@ -285,33 +285,33 @@ test.describe('OrigamPickerTitle', () => {
 
 test.describe('OrigamOverlay', () => {
     /**
-     * ⛔ REAL BUG FOUND while realigning (root-caused, not guessed):
-     * the "Default" playground Variant's activator can never open the
-     * overlay — clicking it has no effect.
+     * ⛔ REAL BUG — FIXED (was root-caused and left as `test.fixme`,
+     * now resolved at the source):
+     * the "Default" playground Variant's activator could never open
+     * the overlay — clicking it had no effect.
      *
-     * Root cause (read in source,
-     * OrigamOverlay.story.vue "Default" Variant, ~line 263-267):
+     * Root cause (OrigamOverlay.story.vue "Default" Variant):
      *   `<origam-overlay v-model="playgroundOpen" v-bind="state" …>`
      *   `v-model="playgroundOpen"` desugars to a `model-value` binding
      *   + an `onUpdate:modelValue` handler that writes back into the
-     *   LOCAL `playgroundOpen` ref. `v-bind="state"` is declared
-     *   AFTER it and also carries a `modelValue` key (`state.modelValue`,
+     *   LOCAL `playgroundOpen` ref. `v-bind="state"` was declared
+     *   AFTER it and also carried a `modelValue` key (`state.modelValue`,
      *   seeded `false` and never written to by anything). Vue resolves
      *   conflicting attribute bindings by DECLARATION ORDER — the
      *   later one wins — so `state.modelValue` (permanently `false`)
-     *   overrides the `v-model`-driven prop. Clicking the activator
-     *   still updates `playgroundOpen` under the hood, but that ref is
-     *   never actually wired to anything the overlay reads.
+     *   overrode the `v-model`-driven prop. Clicking the activator
+     *   still updated `playgroundOpen` under the hood, but that ref was
+     *   never actually wired to anything the overlay read.
      *
-     * Verified empirically (2026-08, running Histoire instance): after
-     * clicking "Open playground", the DOM still shows only the
-     * `<!--v-if-->` placeholder where `.origam-overlay__content`
-     * should mount — `isMounted && hasContent` never becomes true.
-     *
-     * Flagged as `test.fixme` with this diagnostic, story left
-     * untouched per this pass's scope (title-drift realignment).
+     * Fix: removed `modelValue` from the playground's `useStoryInitState`
+     * object (`Omit<IOverlayProps, 'modelValue'>`) so `v-bind="state"`
+     * no longer carries a conflicting key — `v-model` is the sole
+     * source of truth again. Verified empirically: before the fix the
+     * DOM only ever showed the `<!--v-if-->` placeholder after clicking
+     * "Open playground"; after the fix `.origam-overlay__content`
+     * mounts and unmounts as expected.
      */
-    test.fixme('Default — activator opens overlay content', async ({ page }) => {
+    test('Default — activator opens overlay content', async ({ page }) => {
         await gotoVariant(page, STORIES.overlay, 'Default')
         const sb = sandbox(page)
         const activator = sb.getByText('Open playground', { exact: true })
@@ -405,9 +405,9 @@ test.describe('OrigamOverlay', () => {
     })
 
     // "Default" (playground) already verified above; kept for composite
-    // check. Same v-bind-ordering bug as above (see diagnostic on
+    // check. Same v-bind-ordering bug as above — fixed (see diagnostic on
     // "Default — activator opens overlay content").
-    test.fixme('Playground — composite mounts and toggles', async ({ page }) => {
+    test('Playground — composite mounts and toggles', async ({ page }) => {
         await gotoVariant(page, STORIES.overlay, 'Default')
         const sb = sandbox(page)
         await sb.getByText('Open playground', { exact: true }).click()
