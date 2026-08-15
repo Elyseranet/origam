@@ -246,8 +246,7 @@
 
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<IOverlayProps>({
-					modelValue: false,
+				:init-state="() => useStoryInitState<Omit<IOverlayProps, 'modelValue'>>({
 					scrim: true,
 					persistent: false,
 					disabled: false,

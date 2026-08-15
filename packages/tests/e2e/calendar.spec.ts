@@ -70,6 +70,62 @@ test.describe('OrigamCalendar — Default', () => {
     })
 })
 
+test.describe('OrigamCalendar — init-state fixture date', () => {
+    /**
+     * ⛔ REAL BUG — FIXED: Histoire's `@histoire/plugin-vue` clones every
+     * Variant's `:init-state` object via its own `toRawDeep()` (see
+     * node_modules/.../@histoire/plugin-vue/dist/bundled/client/app/util.js).
+     * That helper walks any `typeof value === 'object'` value with
+     * `Object.keys(value)` — which is `[]` for a `Date` instance (its data
+     * lives in an internal slot, not an own enumerable property) — so any
+     * raw `Date` seeded into `useStoryInitState(...)` was silently
+     * flattened to `{}` before the story ever saw it. The calendar then
+     * fell back to "now" for `currentDate`, so every Variant seeded with
+     * the fixture date (`FIXTURE_REFERENCE_DATE = new Date(2026, 4, 14)`)
+     * actually rendered the CURRENT month instead of May 2026.
+     *
+     * Fix: OrigamCalendar.story.vue now seeds `currentDate` as
+     * `FIXTURE_REFERENCE_DATE.toISOString()` (a string survives
+     * `toRawDeep` unchanged) in the "Design", "Functional" and "Default"
+     * Variants — `ICalendarComponentProps.currentDate` already accepts
+     * `Date | string`, so no component change was needed. Same pattern
+     * already used successfully by the "Events - navigate" / "Events -
+     * view-change" Variants in this file.
+     *
+     * These three assertions guard against regressing back to a raw
+     * `Date` in any of this story's `useStoryInitState` calls.
+     */
+    test('"Design" Variant renders the May 2026 fixture month, not today\'s', async ({ page }) => {
+        await openVariant(page, 'Design')
+        const sandbox = sandboxOf(page)
+
+        const title = sandbox.locator('[data-cy="origam-calendar-title"]').first()
+        await expect(title).toBeVisible({ timeout: 8000 })
+        await expect(title).toContainText('May')
+        await expect(title).toContainText('2026')
+    })
+
+    test('"Functional" Variant renders the May 2026 fixture month, not today\'s', async ({ page }) => {
+        await openVariant(page, 'Functional')
+        const sandbox = sandboxOf(page)
+
+        const title = sandbox.locator('[data-cy="origam-calendar-title"]').first()
+        await expect(title).toBeVisible({ timeout: 8000 })
+        await expect(title).toContainText('May')
+        await expect(title).toContainText('2026')
+    })
+
+    test('"Default" Variant renders the May 2026 fixture month, not today\'s', async ({ page }) => {
+        await openVariant(page, 'Default')
+        const sandbox = sandboxOf(page)
+
+        const title = sandbox.locator('[data-cy="origam-calendar-title"]').first()
+        await expect(title).toBeVisible({ timeout: 8000 })
+        await expect(title).toContainText('May')
+        await expect(title).toContainText('2026')
+    })
+})
+
 test.describe('OrigamCalendar — view (month / week / day / agenda)', () => {
     // Dedicated fixture folded into "Design" — "view" is now a single
     // dynamic control (VIEW_OPTIONS: month/week/day/agenda, default

@@ -8,7 +8,7 @@
 				title="Design"
 				:init-state="() => useStoryInitState<Partial<ICalendarComponentProps> & { dsLocale?: string }>({
 					view: 'month',
-					currentDate: FIXTURE_REFERENCE_DATE,
+					currentDate: FIXTURE_REFERENCE_DATE.toISOString(),
 					firstDayOfWeek: 1,
 					timeFormat: '24h',
 					locale: 'en-US',
@@ -102,7 +102,7 @@
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<ICalendarComponentProps>>({
 					view: 'month',
-					currentDate: FIXTURE_REFERENCE_DATE,
+					currentDate: FIXTURE_REFERENCE_DATE.toISOString(),
 					selectable: true,
 					eventColorKey: 'category',
 					weekendHighlight: true,
@@ -327,7 +327,7 @@
 				title="Default"
 				:init-state="() => useStoryInitState<ICalendarComponentProps>({
 					view: 'month',
-					currentDate: FIXTURE_REFERENCE_DATE,
+					currentDate: FIXTURE_REFERENCE_DATE.toISOString(),
 					firstDayOfWeek: 1,
 					timeFormat: '24h',
 					locale: 'en-US',
