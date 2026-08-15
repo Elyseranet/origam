@@ -21,11 +21,7 @@ import { createOrigam } from '@origam/origam'
 // ResizeObserver re-mock (vi.clearAllMocks in global setup clears it each test)
 // ---------------------------------------------------------------------------
 beforeEach(() => {
-    global.ResizeObserver = vi.fn().mockImplementation(() => ({
-        observe: vi.fn(),
-        unobserve: vi.fn(),
-        disconnect: vi.fn()
-    })) as any
+    global.ResizeObserver = vi.fn(class { observe = vi.fn(); unobserve = vi.fn(); disconnect = vi.fn() }) as any
 })
 
 // ---------------------------------------------------------------------------

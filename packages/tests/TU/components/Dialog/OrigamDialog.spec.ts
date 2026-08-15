@@ -25,11 +25,7 @@ import { createOrigam } from '@origam/origam'
 // Re-mock per-test (vi.clearAllMocks() from global setup wipes mockImplementation)
 // ---------------------------------------------------------------------------
 beforeEach(() => {
-    global.IntersectionObserver = vi.fn().mockImplementation(() => ({
-        observe: vi.fn(),
-        unobserve: vi.fn(),
-        disconnect: vi.fn()
-    })) as any
+    global.IntersectionObserver = vi.fn(class { observe = vi.fn(); unobserve = vi.fn(); disconnect = vi.fn() }) as any
 })
 
 // ---------------------------------------------------------------------------
