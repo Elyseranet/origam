@@ -221,11 +221,12 @@ test.describe('OrigamDrawer', () => {
 			await expect(drawer).toHaveClass(/origam-drawer--expand-on-hover/)
 		})
 
-		// NOTE: testing mouseenter → update:rail emit is unreliable headless because
-		// the drawer is teleported and hover events on teleported elements are not
-		// consistently dispatched by Playwright headless Chromium.
-		// Marked fixme until a reliable approach (e.g. page.evaluate injection) is found.
-		test.fixme('hovering the drawer triggers update:rail=false emit', async ({ page }) => {
+		// BUG FOUND while auditing this fixme's claim: "hover events on
+		// teleported elements are not consistently dispatched by Playwright
+		// headless Chromium" was wrong — verified live, 4/4 repeat runs
+		// pass. Teleport only moves the DOM location of the target; it does
+		// not affect standard Playwright pointer-event dispatch.
+		test('hovering the drawer triggers update:rail=false emit', async ({ page }) => {
 			await page.goto(variantUrl(4))
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const drawer = sandbox.locator('.origam-drawer').first()
