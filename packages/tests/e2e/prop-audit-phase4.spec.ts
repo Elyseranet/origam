@@ -317,11 +317,6 @@ test.describe('DOM audit — OrigamSliderField (error→danger)', () => {
         // (init-state false), and the story dropped all data-cy hooks (grep
         // confirms zero matches in OrigamSliderField.story.vue) — the root
         // is now only reachable via its `.origam-slider-field` BEM class.
-        // DS BUG: slider-field.spec.ts "error only" test also fails asserting origam--bg-danger on the fill.
-        // The error prop forces the danger intent on color/bgColor channels but the utility class
-        // origam--bg-danger is not being emitted — only inline styles are applied.
-        // This test is kept as a non-regression sentinel; mark fixme until the DS bug is resolved.
-        test.fixme(true, 'DS BUG: error=true does not emit origam--bg-danger utility class on track fill — only inline styles. See slider-field.spec.ts "error only" failure.')
         const sb = await gotoVariant(page, STORIES.sliderField, 'Functional')
         await toggleHstCheckbox(page, 'Error')
         const slider = sb.locator('.origam-slider-field').first()
@@ -335,8 +330,6 @@ test.describe('DOM audit — OrigamSliderField (error→danger)', () => {
     test('Error mode — .origam-slider-field-track__background carries origam--bg-danger', async ({ page }) => {
         // "Prop — disabled, readonly & error" no longer exists (audit-flagged) —
         // same "Functional" Error checkbox + BEM-class root as the fill test above.
-        // DS BUG: same as fill test above — origam--bg-danger not emitted on rail/background either.
-        test.fixme(true, 'DS BUG: error=true does not emit origam--bg-danger utility class on track background — only inline styles. See slider-field.spec.ts "error only" failure.')
         const sb = await gotoVariant(page, STORIES.sliderField, 'Functional')
         await toggleHstCheckbox(page, 'Error')
         const slider = sb.locator('.origam-slider-field').first()

@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test'
 
+import { selectHstOption } from './_support/histoire-controls'
+
 /**
  * OrigamEmptyState — runtime probes for each Variant exposed by the story.
  *
@@ -51,10 +53,11 @@ import { expect, test } from '@playwright/test'
  *   preset 'locked' → intent 'secondary' → .origam-empty-state--intent-secondary
  *   preset 'no-data'→ intent 'neutral'   → .origam-empty-state--intent-neutral
  *
- * ## Multi-preset / multi-size headless limitation
- *   The story has NO dedicated Variant per preset or size. Piloting the
- *   HstSelect controls headlessly is brittle. Multi-value assertions are
- *   marked test.fixme and documented below.
+ * ## Multi-preset / multi-size coverage
+ *   The story has NO dedicated Variant per preset or size — the "Design"
+ *   Variant's "Preset" / "Size" HstSelect controls are piloted via the
+ *   shared `selectHstOption` helper (`_support/histoire-controls.ts`),
+ *   same mechanism as the rest of the suite.
  */
 
 const STORY_ID   = 'components-stories-emptystate-origamemptystate-story-vue'
@@ -176,31 +179,98 @@ test.describe('OrigamEmptyState', () => {
         })
 
         /**
-         * NOTE: Piloting HstSelect headlessly to switch preset/size is fragile
-         * because it requires interacting with Histoire's right panel outside
-         * the sandbox. These multi-value assertions are deferred below.
+         * BUG FOUND while auditing this file's fixmes: the "headless-control-
+         * limitation" claim on the preset assertions below was wrong —
+         * verified empirically. The Design Variant's "Preset" HstSelect
+         * pilots exactly the same way as every other spec in this suite via
+         * the shared `selectHstOption` helper (`_support/histoire-controls.ts`,
+         * already used successfully by dozens of specs including
+         * btn-toggle.spec.ts and chip-group.spec.ts) — nothing about this
+         * story's Preset control is special. This file simply never imported
+         * the helper. Reactivated below; all 3 preset assertions pass.
+         *
+         * The "Size" control (2 tests further down) is a DIFFERENT, genuine
+         * finding — kept fixme with an updated, verified diagnostic. See
+         * there for details; do not fold it into this same explanation.
          */
-        test.fixme('preset=error applies intent-danger and mdi-alert-circle-outline [headless-control-limitation]', async () => {
-            // Would require selecting 'error' in the HstSelect Preset control.
-            // No dedicated Variant for 'error' preset in the story.
-            // Manually verified: error → intent-danger class + alert-circle-outline glyph.
+        test('preset=error applies intent-danger and mdi-alert-circle-outline', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const root = sandbox.locator('.origam-empty-state').first()
+            await expect(root).toBeVisible({ timeout: 20000 })
+            await selectHstOption(page, 'Preset', 'error')
+            await expect(root).toHaveClass(/origam-empty-state--intent-danger/)
+            const iconHtml = await root.locator('.origam-empty-state__icon').first().innerHTML()
+            expect(iconHtml).toContain('mdi-alert-circle-outline')
         })
 
-        test.fixme('preset=offline applies intent-warning and mdi-wifi-off [headless-control-limitation]', async () => {
-            // Would require selecting 'offline' in the HstSelect Preset control.
+        test('preset=offline applies intent-warning and mdi-wifi-off', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const root = sandbox.locator('.origam-empty-state').first()
+            await expect(root).toBeVisible({ timeout: 20000 })
+            await selectHstOption(page, 'Preset', 'offline')
+            await expect(root).toHaveClass(/origam-empty-state--intent-warning/)
+            const iconHtml = await root.locator('.origam-empty-state__icon').first().innerHTML()
+            expect(iconHtml).toContain('mdi-wifi-off')
         })
 
-        test.fixme('preset=locked applies intent-secondary and mdi-lock-outline [headless-control-limitation]', async () => {
-            // Would require selecting 'locked' in the HstSelect Preset control.
+        test('preset=locked applies intent-secondary and mdi-lock-outline', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const root = sandbox.locator('.origam-empty-state').first()
+            await expect(root).toBeVisible({ timeout: 20000 })
+            await selectHstOption(page, 'Preset', 'locked')
+            await expect(root).toHaveClass(/origam-empty-state--intent-secondary/)
+            const iconHtml = await root.locator('.origam-empty-state__icon').first().innerHTML()
+            expect(iconHtml).toContain('mdi-lock-outline')
         })
 
-        test.fixme('size=sm icon font-size is smaller than size=md [headless-control-limitation]', async () => {
-            // Would require selecting 'sm' in the HstSelect Size control.
-            // Token default: sm=48px, md=64px, lg=96px.
+        /**
+         * REAL FINDING, re-diagnosed (not the original "brittle to pilot"
+         * claim): verified live that `selectHstOption(page, 'Size', 'sm')`
+         * DOES work mechanically — the Histoire controls-panel trigger
+         * updates its own displayed text to "sm" (`state.size` changed on
+         * the main-document instance) — but `.origam-empty-state` inside
+         * the SANDBOX IFRAME never gains `--size-sm` and its icon
+         * font-size never changes, even after an extra 1.5s wait. The
+         * exact same mechanism (`selectHstOption` on the same Variant's
+         * "Preset" control, same story, same postMessage sync path) DOES
+         * propagate correctly — see the 3 reactivated preset tests above —
+         * so this is not the generic Histoire double-mount race documented
+         * in KNOWN_LIMITATIONS.md (that manifests as a TIMING race, not a
+         * permanent desync of one specific field while siblings sync fine).
+         * Root cause not established: could be the story's own state
+         * plumbing or a Histoire quirk specific to a prop literally named
+         * `size` — not conclusively a DS component bug (OrigamEmptyState's
+         * own `size` consumption, packages/ds/src/components/EmptyState/
+         * OrigamEmptyState.vue:135, is a plain reactive computed like any
+         * other prop it reads). Needs follow-up before unfixming.
+         */
+        test.fixme('size=sm icon font-size is smaller than size=md', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const root = sandbox.locator('.origam-empty-state').first()
+            await expect(root).toBeVisible({ timeout: 20000 })
+            const iconContainer = root.locator('.origam-empty-state__icon').first()
+            const mdFontSize = await iconContainer.evaluate(el => parseFloat(getComputedStyle(el).fontSize))
+            await selectHstOption(page, 'Size', 'sm')
+            await expect(root).toHaveClass(/origam-empty-state--size-sm/)
+            const smFontSize = await iconContainer.evaluate(el => parseFloat(getComputedStyle(el).fontSize))
+            expect(smFontSize).toBeLessThan(mdFontSize)
         })
 
-        test.fixme('size=lg icon font-size is larger than size=md [headless-control-limitation]', async () => {
-            // Would require selecting 'lg' in the HstSelect Size control.
+        test.fixme('size=lg icon font-size is larger than size=md', async ({ page }) => {
+            await page.goto(variantUrl(0))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const root = sandbox.locator('.origam-empty-state').first()
+            await expect(root).toBeVisible({ timeout: 20000 })
+            const iconContainer = root.locator('.origam-empty-state__icon').first()
+            const mdFontSize = await iconContainer.evaluate(el => parseFloat(getComputedStyle(el).fontSize))
+            await selectHstOption(page, 'Size', 'lg')
+            await expect(root).toHaveClass(/origam-empty-state--size-lg/)
+            const lgFontSize = await iconContainer.evaluate(el => parseFloat(getComputedStyle(el).fontSize))
+            expect(lgFontSize).toBeGreaterThan(mdFontSize)
         })
     })
 

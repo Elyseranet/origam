@@ -1,5 +1,7 @@
 import { expect, test, type Page } from '@playwright/test'
 
+import { selectHstOption, toggleHstCheckbox } from './_support/histoire-controls'
+
 /**
  * RECIPE — OrigamSelect e2e spec (follows btn.spec.ts canonical pattern)
  *
@@ -693,27 +695,42 @@ test.describe('OrigamSelect', () => {
             await expect(select.locator('.origam-field__loader')).not.toBeVisible({ timeout: 3000 })
         })
 
-        // FIXTURE ROT: switching the "Loading Kind" Histoire sidebar control
-        // (HstCheckbox "Loading" + HstSelect "Loading Kind") cannot be driven
-        // headlessly from outside the sandbox iframe via Playwright. The tests
-        // below require per-kind static fixtures (one field per kind) which
-        // are not present in the current story. Marked fixme until the story
-        // exposes per-kind data-cy anchors, or until a helper that drives
-        // Histoire sidebar controls is implemented.
-
-        test.fixme('loading=true (bool) → default linear progress mounted', async () => {
-            // FIXTURE ROT: sidebar "Loading" toggle cannot be driven headlessly.
-            // Requires a static data-cy="select-loading-bool" fixture in the story.
+        // BUG FOUND while auditing this fixme's claim: "sidebar 'Loading'
+        // toggle cannot be driven headlessly" is wrong — verified live. The
+        // "Loading" HstCheckbox and "Loading Kind" HstSelect on this exact
+        // Functional Variant pilot via the same shared helpers
+        // (toggleHstCheckbox / selectHstOption) used throughout this suite.
+        test('loading=true (bool) → default linear progress mounted', async ({ page }) => {
+            await page.goto(variantUrl(1))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const select = sandbox.locator('.origam-select').first()
+            await expect(select).toBeVisible({ timeout: 12000 })
+            await toggleHstCheckbox(page, 'Loading')
+            const loader = select.locator('.origam-field__loader')
+            await expect(loader).toBeVisible({ timeout: 5000 })
+            await expect(loader.locator('.origam-progress--linear')).toBeVisible()
         })
 
-        test.fixme('loading={ type: "circular" } → circular progress mounted', async () => {
-            // FIXTURE ROT: sidebar "Loading Kind" cannot be driven headlessly.
-            // Requires a static data-cy="select-loading-circular" fixture in the story.
+        test('loading={ type: "circular" } → circular progress mounted', async ({ page }) => {
+            await page.goto(variantUrl(1))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const select = sandbox.locator('.origam-select').first()
+            await expect(select).toBeVisible({ timeout: 12000 })
+            await toggleHstCheckbox(page, 'Loading')
+            await selectHstOption(page, 'Loading Kind', '{ type: circular }')
+            const loader = select.locator('.origam-field__loader')
+            await expect(loader.locator('.origam-progress--circular')).toBeVisible({ timeout: 5000 })
         })
 
-        test.fixme('loading={ type: "skeleton" } → origam-skeleton replaces content', async () => {
-            // FIXTURE ROT: sidebar "Loading Kind" cannot be driven headlessly.
-            // Requires a static data-cy="select-loading-skeleton" fixture in the story.
+        test('loading={ type: "skeleton" } → origam-skeleton replaces content', async ({ page }) => {
+            await page.goto(variantUrl(1))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const select = sandbox.locator('.origam-select').first()
+            await expect(select).toBeVisible({ timeout: 12000 })
+            await toggleHstCheckbox(page, 'Loading')
+            await selectHstOption(page, 'Loading Kind', '{ type: skeleton }')
+            await expect(select.locator('.origam-field__skeleton')).toBeVisible({ timeout: 5000 })
+            await expect(select.locator('.origam-field__loader')).toHaveCount(0)
         })
     })
     // ------------------------------------------------------------------ //
