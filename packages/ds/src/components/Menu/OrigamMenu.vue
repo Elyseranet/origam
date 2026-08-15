@@ -47,20 +47,21 @@
 								<origam-list-item
 										v-if="!hasChilds(item)"
 										class="origam-menu__item"
-										v-bind="item"
+										v-bind="menuItemProps(item)"
 								/>
 								<origam-menu
 										v-else
+										v-bind="{...menuItemProps(item), ...overlayProps}"
+										:items="childItems(item)"
 										:offset="[8,8]"
 										:open-on-context-menu="false"
 										open-on-click
-										v-bind="{...item, ...overlayProps}"
 								>
 									<template #activator="{props}">
 										<origam-list-item
 												:append-icon="MDI_ICONS.CHEVRON_RIGHT"
 												class="origam-menu__item"
-												v-bind="{...props, ...item}"
+												v-bind="{...props, ...menuItemProps(item)}"
 										/>
 									</template>
 								</origam-menu>
@@ -107,7 +108,7 @@
 
 	import type { TOrigamOverlay, TTransitionProps } from '../../types'
 
-	import { focusableChildren, focusChild, forwardRefs, getNextElement, getUid } from '../../utils'
+	import { focusableChildren, focusChild, forwardRefs, getNextElement, getPropertyFromItem, getUid, omit } from '../../utils'
 
 	/*********************************************************
 	 * Global
@@ -125,6 +126,10 @@
 		location: INLINE.RIGHT,
 		scrollStrategy: SCROLL_STRATEGIES.REPOSITION,
 		offset: 8,
+		// Matches `OrigamList`'s own default (see OrigamList.vue) so a
+		// consumer's item objects use the same nested-children key
+		// whether they render through `<origam-list>` or `<origam-menu>`.
+		itemChildren: 'children',
 		transition: () => ({component: OrigamTranslateScale}) as unknown as TTransitionProps
 	})
 
@@ -330,8 +335,47 @@
 		return origamOverlayRef.value?.filterProps(props, ['activatorProps', 'id', 'class', 'style', 'role', 'modelValue', 'absolute', 'activator', 'target', 'openOnClick', 'openOnContextMenu'])
 	})
 
+	/**
+	 * ⛔ BUG 4 FIX — was `return item?.items`, hardcoding the child-items
+	 * key to the literal `'items'` and ignoring `props.itemChildren`
+	 * entirely (declared on `IItemProps`, defaulted above to `'children'`
+	 * — the SAME default `OrigamList` already uses). A consumer whose
+	 * item objects nest children under `children` (the DS-wide default,
+	 * e.g. `OrigamMediaController`'s `configMenuItems`) got `hasChilds()
+	 * === undefined` for every row: no nested `<origam-menu>` was ever
+	 * rendered, so a click on that row fell through to the PARENT menu's
+	 * ordinary `closeOnContentClick` handling and closed the whole menu
+	 * instead of opening a submenu. `childItems` now resolves the
+	 * children array through the same `getPropertyFromItem` helper
+	 * `transformListItem` (packages/ds/src/utils/List/list-item.util.ts)
+	 * already uses for `<origam-list>`, so both components agree on
+	 * where an item's children live.
+	 */
+	const childItems = (item: IItemProps): Array<any> => {
+		const children = getPropertyFromItem(item, props.itemChildren)
+
+		return Array.isArray(children) ? children : []
+	}
 	const hasChilds = (item: IItemProps) => {
-		return item?.items
+		return childItems(item).length > 0
+	}
+
+	/**
+	 * The raw children array lives under `item[props.itemChildren]` (e.g.
+	 * `item.children`) — it is NOT a real `<origam-menu>` / `<origam-list-
+	 * item>` prop. Spreading `item` as-is (`v-bind="item"`) therefore leaks
+	 * that key as a fallthrough attribute. When it cascades down to a
+	 * native DOM element it collides with the browser's own read-only
+	 * `Element.children` and Vue throws `TypeError: Cannot set property
+	 * children of #<Element> which has only a getter` on every render.
+	 * `menuItemProps` strips it before spreading (`childItems(item)` is
+	 * bound explicitly as `:items="…"` on the recursive `<origam-menu>`
+	 * instead — see the template).
+	 */
+	const menuItemProps = (item: IItemProps) => {
+		return typeof props.itemChildren === 'string'
+			? omit(item as Record<string, any>, [props.itemChildren])
+			: item
 	}
 
 	/*********************************************************

@@ -231,6 +231,28 @@
 				</StoryGroup>
 			</template>
 		</Variant>
+
+		<!--
+			Nested submenu — regression coverage for BUG 4 (OrigamMenu's
+			`hasChilds()` used to hardcode the `items` key, ignoring
+			`itemChildren`, so a row nesting its children under the
+			DS-wide default `children` key — e.g. OrigamMediaController's
+			config menu — never rendered as a submenu activator; the
+			click fell through to the parent's closeOnContentClick and
+			closed the whole tree instead of opening the submenu).
+			Appended LAST (new index, after "Default") so it does not
+			shift the 0-based indices `packages/tests/e2e/menu.spec.ts`
+			already documents for every other Variant.
+		-->
+		<Variant title="Nested submenu">
+			<div style="padding: 48px; display: flex; justify-content: center;">
+				<origam-menu :items="nestedItems">
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="Open File Menu"/>
+					</template>
+				</origam-menu>
+			</div>
+		</Variant>
 	</Story>
 </template>
 
@@ -257,6 +279,22 @@
 		{ title: 'Edit', prependIcon: 'mdi-pencil' },
 		{ title: 'Duplicate', prependIcon: 'mdi-content-copy' },
 		{ title: 'Delete', prependIcon: 'mdi-delete' }
+	]
+
+	// `children` is the DS-wide nested-items key (matches OrigamList's own
+	// `itemChildren: 'children'` default, and the documented
+	// `<OrigamMenu>` nested-menu usage). Mirrors OrigamMediaController's
+	// real `configMenuItems` shape (a parent row with NO onClick of its
+	// own, only `children`) so this Variant reproduces BUG 4 faithfully.
+	const nestedItems = [
+		{
+			title: 'File',
+			children: [
+				{ title: 'New', prependIcon: 'mdi-file-plus' },
+				{ title: 'Open', prependIcon: 'mdi-folder-open' }
+			]
+		},
+		{ title: 'Settings', prependIcon: 'mdi-cog' }
 	]
 
 	const LOCATION_OPTIONS = [

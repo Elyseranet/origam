@@ -173,22 +173,29 @@ test.describe('OrigamAudio — play / pause toggle', () => {
 
 test.describe('OrigamAudio — playback rate via cog menu', () => {
     test('picking 2× from the config menu updates the audio element playbackRate', async ({ page }) => {
-        // DS BUG found while repairing this spec's variant-title drift (this
-        // test was previously masked by a `data-cy="audio-default-player"`
-        // locator that no longer existed after the story migration — it
-        // never actually reached this interaction before). Clicking the
-        // "Playback speed" row (a `children`-bearing item rendered by
-        // OrigamMenu as a nested `<origam-menu open-on-click>`, see
-        // OrigamMenu.vue's `hasChilds(item)` branch and OrigamMediaController
-        // .vue's `configMenuItems`) does NOT open the nested rate submenu —
-        // it closes the ENTIRE menu tree instead (`.origam-menu` count goes
-        // to 0). Verified empirically: reproduced consistently across
-        // several wait/timing variations (300ms–1200ms), ruling out a
-        // simple race. Root cause not investigated further (out of scope
-        // for a variant-title-drift repair) — flagging for backend/DS
-        // follow-up rather than masking it as a passing test.
-        test.fixme(true, 'DS BUG: clicking a children-bearing OrigamMenu row (e.g. "Playback speed" in OrigamMediaController\'s config menu) closes the entire menu tree instead of opening the nested submenu. Reproduced via Playwright against the Default Audio story: after `cog.click()` then clicking the "Playback speed" row, `.origam-menu` count drops to 0 (menu fully closed) rather than revealing the rate options (1×/1.5×/2×/…). See OrigamMenu.vue `hasChilds(item)` branch (nested `<origam-menu open-on-click>` activator) and OrigamMediaController.vue configMenuItems.')
-
+        // ⛔ REAL BUG — FIXED (packages/ds/src/components/Menu/OrigamMenu.vue).
+        // Clicking the "Playback speed" row (a `children`-bearing item
+        // rendered by OrigamMenu as a nested `<origam-menu open-on-click>`)
+        // used to close the ENTIRE menu tree instead of opening the nested
+        // rate submenu. Root cause: `OrigamMenu.vue`'s `hasChilds(item)`
+        // hardcoded `item?.items`, ignoring `props.itemChildren` (declared
+        // on `IItemProps`, and never defaulted by `OrigamMenu` either) —
+        // `OrigamMediaController`'s `configMenuItems` nests its rate options
+        // under `children` (the DS-wide default, matching `OrigamList`'s own
+        // `itemChildren: 'children'` default), so `hasChilds()` was always
+        // `undefined`/false for every row. No nested `<origam-menu>` was
+        // ever rendered for "Playback speed" — the click fell through to
+        // the PARENT menu's ordinary `closeOnContentClick` handling and
+        // closed the whole menu instead of opening a submenu.
+        //
+        // Fix: `OrigamMenu` now defaults `itemChildren: 'children'` and
+        // resolves a row's children through `getPropertyFromItem(item,
+        // props.itemChildren)` — the same helper `transformListItem`
+        // already uses for `<origam-list>` — via a new `childItems(item)`
+        // helper, also bound explicitly as `:items="childItems(item)"` on
+        // the recursive `<origam-menu>` so the submenu itself receives the
+        // right collection regardless of what raw keys the source item
+        // object carries.
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 

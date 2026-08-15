@@ -104,3 +104,96 @@ describe('OrigamMenu — useDefaults (theme components wiring)', () => {
         expect(content.classes()).not.toContain('origam--rounded-lg')
     })
 })
+
+// ---------------------------------------------------------------------------
+// BUG 4 regression — nested items via `itemChildren`
+// ---------------------------------------------------------------------------
+//
+// `hasChilds(item)` used to hardcode `item?.items`, ignoring
+// `props.itemChildren` (defaulted to `'children'`, matching `OrigamList`).
+// A row nesting its children under `children` — e.g. `OrigamMediaController`
+// 's real `configMenuItems` — was never detected as having children, so no
+// nested `<origam-menu>` ever rendered for it; the row behaved like a plain
+// leaf item instead.
+//
+// A second, related defect: spreading the raw item object onto the nested
+// `<origam-menu>` / its activator `<origam-list-item>` leaked the resolved
+// `itemChildren` key (`children`) as a fallthrough DOM attribute, colliding
+// with the browser's own read-only `Element.children` — jsdom enforces the
+// same read-only getter as real browsers, so this throws a real
+// `TypeError` during mount, not just a console warning.
+async function mountMenuWithItems(items: Array<Record<string, unknown>>) {
+    const origam = createOrigam()
+    const wrapper = mount(OrigamMenu, {
+        props: { modelValue: true, items } as never,
+        attachTo: document.body,
+        global: makeGlobal([origam])
+    })
+    await nextTick()
+    return wrapper
+}
+
+describe('OrigamMenu — nested items via itemChildren (BUG 4 regression)', () => {
+    const items = [
+        {
+            title: 'File',
+            children: [
+                { title: 'New' },
+                { title: 'Open' }
+            ]
+        },
+        { title: 'Settings' }
+    ]
+
+    it('mounts without throwing (no "children" fallthrough-attribute collision with the DOM)', async () => {
+        await expect(mountMenuWithItems(items)).resolves.toBeDefined()
+    })
+
+    it('renders a nested overlay/menu structure for the children-bearing row, not just a flat list item', async () => {
+        const wrapper = await mountMenuWithItems(items)
+        // Outer menu contributes one overlay stub; the "File" row — now
+        // correctly detected as having children — contributes a SECOND,
+        // nested one for its own <origam-menu>. Pre-fix, only the outer
+        // stub existed (count === 1) because `hasChilds()` never matched.
+        const overlayStubs = wrapper.findAll('[data-stub="overlay"]')
+        expect(overlayStubs.length).toBe(2)
+    })
+
+    it('the flat row ("Settings") renders as a plain .origam-menu__item with no nested overlay', async () => {
+        const wrapper = await mountMenuWithItems(items)
+        const settingsItem = wrapper.findAll('.origam-menu__item')
+            .find(item => item.text().includes('Settings'))
+        expect(settingsItem).toBeDefined()
+        // The flat item itself must not contain a nested overlay stub.
+        expect(settingsItem!.findAll('[data-stub="overlay"]')).toHaveLength(0)
+    })
+
+    it('the children-bearing row still renders its own title text ("File") as the submenu activator', async () => {
+        const wrapper = await mountMenuWithItems(items)
+        expect(wrapper.text()).toContain('File')
+    })
+
+    it('a row with an empty children array behaves as a flat leaf item (no nested overlay)', async () => {
+        const wrapper = await mountMenuWithItems([{ title: 'Empty', children: [] }])
+        expect(wrapper.findAll('[data-stub="overlay"]')).toHaveLength(1)
+    })
+
+    it('respects a custom itemChildren key when the DS default ("children") is not used', async () => {
+        const wrapper = await (async () => {
+            const origam = createOrigam()
+            const w = mount(OrigamMenu, {
+                props: {
+                    modelValue: true,
+                    itemChildren: 'kids',
+                    items: [{ title: 'Parent', kids: [{ title: 'Child' }] }]
+                } as never,
+                attachTo: document.body,
+                global: makeGlobal([origam])
+            })
+            await nextTick()
+            return w
+        })()
+
+        expect(wrapper.findAll('[data-stub="overlay"]')).toHaveLength(2)
+    })
+})

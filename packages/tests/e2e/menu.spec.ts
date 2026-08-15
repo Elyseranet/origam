@@ -326,4 +326,114 @@ test.describe('OrigamMenu', () => {
             expect(ariaExpanded).toBe('false')
         })
     })
+
+    // ------------------------------------------------------------------ //
+    // NESTED SUBMENU (index 7)                                             //
+    // items=nestedItems — a "File" row with `children` (New / Open) plus a //
+    // flat "Settings" row. Regression coverage for BUG 4.                 //
+    // ------------------------------------------------------------------ //
+    //
+    // ⛔ REAL BUG — FIXED (packages/ds/src/components/Menu/OrigamMenu.vue).
+    // `hasChilds(item)` hardcoded `item?.items`, ignoring `props.itemChildren`
+    // (declared on `IItemProps`, never defaulted by `OrigamMenu` either) — a
+    // row nesting its children under `children` (the DS-wide default,
+    // matching `OrigamList`'s own `itemChildren: 'children'` default, and
+    // what `OrigamMediaController`'s real config menu uses) was NEVER
+    // detected as having children. No nested `<origam-menu>` ever rendered
+    // for that row, so a click on it fell through to the PARENT menu's
+    // ordinary `closeOnContentClick` handling and closed the WHOLE menu
+    // instead of opening a submenu.
+    //
+    // Fix: `OrigamMenu` now defaults `itemChildren: 'children'` and resolves
+    // a row's children through `getPropertyFromItem(item, props.itemChildren)`
+    // (the same helper `transformListItem` already uses for `<origam-list>`)
+    // via a `childItems(item)` helper, bound explicitly as `:items=
+    // "childItems(item)"` on the recursive `<origam-menu>`. A second,
+    // related defect surfaced while proving this fix empirically: spreading
+    // the raw item object (`v-bind="item"`) leaked the `children` key as a
+    // fallthrough DOM attribute, colliding with the browser's own read-only
+    // `Element.children` (`TypeError: Cannot set property children of
+    // #<Element> which has only a getter`) — fixed via a `menuItemProps`
+    // helper that omits the resolved `itemChildren` key before spreading.
+    //
+    // No test in this file (nor in `packages/tests/e2e/audio.spec.ts`, the
+    // only other place that exercised a real children-bearing OrigamMenu
+    // row before this pass) previously covered a nested-menu open/click
+    // path at all — this describe block, and the "Nested submenu" Variant
+    // it drives, are new.
+
+    test.describe('Nested submenu (index 7)', () => {
+        test('clicking a children-bearing row OPENS the nested submenu — the parent menu stays open', async ({ page }) => {
+            await page.goto(variantUrl(7))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const { content: rawContent } = await openMenu(sandbox)
+            // Pinned to `.first()` up front: once the submenu opens below,
+            // `.origam-menu__content` resolves to TWO elements and an
+            // unpinned locator becomes ambiguous ("strict mode violation")
+            // for any assertion made after that point.
+            const parentContent = rawContent.first()
+
+            // Baseline: only the parent menu is open, showing its own two
+            // rows ("File" — the parent row with children — and "Settings").
+            await expect(parentContent).toContainText('File')
+            await expect(parentContent).toContainText('Settings')
+            await expect(sandbox.locator('.origam-menu__content')).toHaveCount(1)
+
+            // Click the "File" row — scoped to the parent content so this
+            // never matches the outer activator button (also visible on
+            // screen, and NOT text-identical here, but scoping is the
+            // robust pattern regardless of copy).
+            const fileRow = parentContent.getByText('File', { exact: true }).first()
+            await expect(fileRow).toBeVisible({ timeout: 5000 })
+            await fileRow.click()
+
+            // The regression: pre-fix, this click closed the ENTIRE tree —
+            // `.origam-menu__content` count dropped to 0. Post-fix, a SECOND
+            // menu (the submenu) opens while the parent stays open.
+            await expect(sandbox.locator('.origam-menu__content')).toHaveCount(2, { timeout: 5000 })
+
+            const submenu = sandbox.locator('.origam-menu__content').last()
+            await expect(submenu).toContainText('New')
+            await expect(submenu).toContainText('Open')
+
+            // The parent is still there too — not just "a menu somewhere".
+            await expect(parentContent).toBeVisible()
+            await expect(parentContent).toContainText('Settings')
+        })
+
+        test('a leaf row inside the opened submenu is reachable and clickable (closeOnContentClick default closes on selection)', async ({ page }) => {
+            await page.goto(variantUrl(7))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const { content: parentContent } = await openMenu(sandbox)
+
+            const fileRow = parentContent.getByText('File', { exact: true }).first()
+            await fileRow.click()
+
+            const submenu = sandbox.locator('.origam-menu__content').last()
+            await expect(submenu).toBeVisible({ timeout: 5000 })
+
+            const newRow = submenu.getByText('New', { exact: true }).first()
+            await expect(newRow).toBeVisible({ timeout: 5000 })
+            await newRow.click()
+
+            // Default `closeOnContentClick` behaviour closes the tree once a
+            // real (non-parent) row is actually selected.
+            await expect(sandbox.locator('.origam-menu__content')).toHaveCount(0, { timeout: 5000 })
+        })
+
+        test('no stray "children" attribute reaches the DOM (fallthrough-attr regression)', async ({ page }) => {
+            const pageErrors: Array<string> = []
+            page.on('pageerror', (err) => pageErrors.push(err.message))
+
+            await page.goto(variantUrl(7))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const { content: parentContent } = await openMenu(sandbox)
+
+            const fileRow = parentContent.getByText('File', { exact: true }).first()
+            await fileRow.click()
+            await expect(sandbox.locator('.origam-menu__content')).toHaveCount(2, { timeout: 5000 })
+
+            expect(pageErrors.join('\n')).not.toContain('children')
+        })
+    })
 })
