@@ -26,8 +26,14 @@ import { getCurrentInstance, getCurrentInstanceName, mergeDeep } from '../../uti
 /**
  * `kebab-case` → `camelCase`. Used to recognise prop names that were passed
  * as kebab-case attributes on the parent vnode.
+ *
+ * Exported (not just used internally by `usePassedProps`/`useDefaults`) so
+ * `theme-props-resolver.composable.ts` can match `vnode.props` keys against
+ * declared prop names with the EXACT same rule — see ADR-005. Two independent
+ * implementations of this matching rule is exactly the kind of drift the
+ * "reuse before writing" policy exists to prevent.
  */
-function camelize (str: string): string {
+export function camelize (str: string): string {
     return str.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase())
 }
 
