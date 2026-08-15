@@ -67,10 +67,47 @@ const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
  * (display:none) pendant le chargement initial du composant. Le premier
  * test qui touche une story "froide" peut mettre 25-30s avant que le
  * rendu soit révélé.
+ *
+ * Diagnostic renforcé sur ce timeout (post-mortem 2026-08) : un
+ * `.origam-btn` introuvable a DEUX causes très différentes qui produisent
+ * la même erreur Playwright brute :
+ *   1. Le composant est lent à monter (cause visée par le timeout 35s).
+ *   2. AUCUNE iframe sandbox n'a jamais été montée — Histoire est resté
+ *      sur son fallback "Select a variant" (page d'accueil + sidebar).
+ *      Constaté en environnement réel : `reuseExistingServer: !CI` (cf.
+ *      playwright.config.ts) réutilise SILENCIEUSEMENT tout process déjà
+ *      lié au port, y compris un `histoire dev`/`preview` provenant d'un
+ *      AUTRE worktree/session dont le manifeste de stories a été buildé
+ *      AVANT qu'un Variant récent (ex. "Nested submenu") n'existe. Le
+ *      variantId demandé ne matche alors plus rien côté serveur : zéro
+ *      iframe, "Select a variant" affiché, le clic ne peut jamais arriver
+ *      — et ça ressemble à un timeout aléatoire sur `.origam-btn` au lieu
+ *      d'un routing miss. Reproduit et confirmé : naviguer vers un
+ *      variantId inexistant produit exactement ce DOM (0 iframe, texte
+ *      "Select a variant"). Cause racine PROUVÉE ≠ défaut du composant/
+ *      story/spec — vérifié vert en isolation ET dans la suite complète.
+ *      On distingue donc les deux cas ici pour ne plus perdre de cycle de
+ *      debug sur une fausse piste "composant lent".
  */
 const openMenu = async (sandbox: FrameLocator) => {
     const activator = sandbox.locator('.origam-btn').first()
-    await expect(activator).toBeVisible({ timeout: 35000 })
+    try {
+        await expect(activator).toBeVisible({ timeout: 35000 })
+    } catch (cause) {
+        const sandboxIframeMounted = await sandbox.owner().count()
+        if (sandboxIframeMounted === 0) {
+            throw new Error(
+                'No sandbox iframe was ever mounted for this variant — Histoire fell back to its ' +
+                '"Select a variant" placeholder instead of rendering the story. This is the signature ' +
+                'of a STALE server answering this port: `reuseExistingServer` (playwright.config.ts) ' +
+                'silently reused a `histoire dev`/`preview` process left over from another run or ' +
+                'worktree, whose story manifest predates this Variant. Run `lsof -i :<port>` and kill ' +
+                'the foreign process, then re-run.',
+                { cause }
+            )
+        }
+        throw cause
+    }
     await activator.click()
     const content = sandbox.locator('.origam-menu__content')
     await expect(content).toBeVisible({ timeout: 12000 })
