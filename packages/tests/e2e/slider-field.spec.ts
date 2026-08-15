@@ -340,17 +340,27 @@ test.describe('OrigamSliderField', () => {
             await expect(slider).not.toHaveClass(/origam-slider-field--error/)
         })
 
-        test.fixme(
-            true,
-            'DS BUG: thumbSurfaceClasses includes thumbBgClasses (useBackgroundColor(color)) ' +
-            'which emits background-color: var(--origam-color__feedback--danger---bg)=#ef4444 ' +
-            'inline style on the thumb surface, overriding background-color:currentColor → fgSubtle ' +
-            '(#b91c1c). The thumb surface should carry thumbTextClasses only so currentColor picks up ' +
-            'fgSubtle. Additionally, origam--bg-danger utility class assertions on fill/rail need ' +
-            'runtime verification (Task #5).'
-        )
-         
         test('error only — fill, rail (bg) and thumb (fgSubtle) all in danger rung', async ({ page }) => {
+            // BUG FOUND while auditing this fixme's scope: `test.fixme(true, reason)`
+            // was previously called as a BARE statement in the enclosing
+            // `describe` body, BETWEEN the two tests, not inside this test's own
+            // callback. Per Playwright semantics that scopes the fixme to the
+            // WHOLE enclosing describe block, not just this test — verified
+            // empirically: before this fix, BOTH tests in "error state — danger
+            // color contract" reported skipped, including "error=true adds the
+            // error modifier class on the root" whose own comment says it "does
+            // NOT depend on the color-channel bug" and is unrelated. Moving the
+            // call inside this test body (the officially supported conditional-
+            // fixme pattern) restores the other test to actually running.
+            test.fixme(
+                true,
+                'DS BUG: thumbSurfaceClasses includes thumbBgClasses (useBackgroundColor(color)) ' +
+                'which emits background-color: var(--origam-color__feedback--danger---bg)=#ef4444 ' +
+                'inline style on the thumb surface, overriding background-color:currentColor → fgSubtle ' +
+                '(#b91c1c). The thumb surface should carry thumbTextClasses only so currentColor picks up ' +
+                'fgSubtle. Additionally, origam--bg-danger utility class assertions on fill/rail need ' +
+                'runtime verification (Task #5).'
+            )
             // Requires a dedicated story fixture with error=true pre-set.
             // Until the DS bug is fixed and a fixture exists, this is unreachable.
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
