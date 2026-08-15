@@ -287,7 +287,7 @@
           </origam-field>
 
           <ul
-              v-if="multiple && hasFiles && !hasChips && displayMode === 'list'"
+              v-if="multiple && hasFiles && !hasChips && displayMode === FILE_FIELD_DISPLAY.LIST"
               class="origam-file-field__list"
           >
             <template v-for="(item, idx) in fileList" :key="idx">
@@ -392,7 +392,7 @@
 	useStyle,
 	useVModel
 } from '../../composables'
-  import { DENSITY, MDI_ICONS } from '../../enums'
+  import { DENSITY, FILE_FIELD_DISPLAY, MDI_ICONS } from '../../enums'
   import type { IFileFieldProps, IFileFieldSlots} from '../../interfaces'
 
 	import type { IFileFieldEmits } from '../../interfaces/FileField/file-field.interface'
@@ -448,8 +448,8 @@
    ********************************************************/
   const isDropzoneMode = computed(() => Boolean(props.dropzone || props.dragndrop))
   const displayMode = computed(() => {
-    if (props.chips) return 'chips'
-    return props.display ?? 'list'
+    if (props.chips) return FILE_FIELD_DISPLAY.CHIPS
+    return props.display ?? FILE_FIELD_DISPLAY.LIST
   })
   const isErrored = computed(() => Boolean(props.error))
   const errorMessage = computed(() => typeof props.error === 'string' ? props.error : '')
@@ -756,10 +756,10 @@
     return slots.details || hasCounter.value
   })
   const hasChips = computed(() => {
-    return displayMode.value === 'chips' || slots.chip
+    return displayMode.value === FILE_FIELD_DISPLAY.CHIPS || slots.chip
   })
   const hasInlineCounter = computed(() => {
-    return displayMode.value === 'counter' && hasFiles.value && props.multiple
+    return displayMode.value === FILE_FIELD_DISPLAY.COUNTER && hasFiles.value && props.multiple
   })
   const inlineCounterValue = computed(() => {
     return model.value?.length ?? 0

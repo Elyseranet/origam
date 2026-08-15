@@ -1,4 +1,5 @@
 import { OrigamMasonry } from '../../components'
+import { MASONRY_ALIGN } from '../../enums'
 
 export type TOrigamMasonry = InstanceType<typeof OrigamMasonry>
 
@@ -17,6 +18,4 @@ export type TOrigamMasonry = InstanceType<typeof OrigamMasonry>
  * The CSS path therefore always aligns to top; switching to `'center'`
  * implicitly forces the JS fallback so the value is observable.
  */
-export type TMasonryAlign =
-    | 'top'
-    | 'center'
+export type TMasonryAlign = `${MASONRY_ALIGN}`

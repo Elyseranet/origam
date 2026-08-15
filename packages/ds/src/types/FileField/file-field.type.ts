@@ -1,4 +1,5 @@
 import { OrigamFileField } from "../../components"
+import { FILE_FIELD_DISPLAY } from "../../enums"
 
 export type TFileSize = boolean | 1000 | 1024
 
@@ -10,6 +11,6 @@ export type TFile = Array<File> | File | null
  *   - `'chips'`   — each file as a closable `<OrigamChip>` inline.
  *   - `'counter'` — single "N files" line + an `<OrigamCounter>`.
  */
-export type TFileFieldDisplay = 'list' | 'chips' | 'counter'
+export type TFileFieldDisplay = `${FILE_FIELD_DISPLAY}`
 
 export type TOrigamFileField = InstanceType<typeof OrigamFileField>

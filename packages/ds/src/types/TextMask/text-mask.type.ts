@@ -1,4 +1,5 @@
 import { OrigamTextMask } from "../../components"
+import { TEXT_MASK_ANIMATION } from "../../enums"
 
 export type TOrigamTextMask = InstanceType<typeof OrigamTextMask>
 
@@ -18,8 +19,4 @@ export type TOrigamTextMask = InstanceType<typeof OrigamTextMask>
  * disables the keyframes entirely so users opting out of motion get a
  * static painted text without flashes or transforms.
  */
-export type TTextMaskAnimation =
-    | 'pan'
-    | 'rotate'
-    | 'pulse'
-    | 'zoom'
+export type TTextMaskAnimation = `${TEXT_MASK_ANIMATION}`

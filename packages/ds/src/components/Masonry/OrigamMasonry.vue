@@ -55,6 +55,8 @@
 
 	import { GRID_GAP_SIZE_VAR } from '../../consts'
 
+	import { MASONRY_ALIGN } from '../../enums'
+
 	import type { ICommonsComponentSlots, IMasonryProps } from '../../interfaces'
 
 	import type { TGridGapSize } from '../../types'
@@ -100,7 +102,7 @@
 	 ********************************************************/
 	const { css } = useCssSupport()
 	const supportsCssMasonry = computed(() =>
-		css.value.masonry && props.align === 'top'
+		css.value.masonry && props.align === MASONRY_ALIGN.TOP
 	)
 
 	/*********************************************************
