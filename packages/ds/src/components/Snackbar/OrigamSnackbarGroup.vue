@@ -46,6 +46,8 @@
   import { useProps, useStyle } from '../../composables'
   import { useSnackbarGroupInternal } from '../../composables/Snackbar/snackbar-group.composable'
 
+  import { INTENT, SNACKBAR_GROUP_DIRECTION } from '../../enums'
+
   import {
     SNACKBAR_GROUP_DEFAULT_DURATION,
     SNACKBAR_GROUP_DEFAULT_ID,
@@ -111,7 +113,7 @@
     // many items in the store while only painting a few.
     const sliced = items.slice(-props.max)
 
-    return effectiveDirection.value === 'bottom-up' ? [...sliced].reverse() : sliced
+    return effectiveDirection.value === SNACKBAR_GROUP_DIRECTION.BOTTOM_UP ? [...sliced].reverse() : sliced
   })
 
   /*********************************************************
@@ -125,11 +127,11 @@
   const effectiveDirection = computed<TSnackbarGroupDirection>(() => {
     if (props.direction) return props.direction
 
-    return props.location.startsWith('top') ? 'top-down' : 'bottom-up'
+    return props.location.startsWith('top') ? SNACKBAR_GROUP_DIRECTION.TOP_DOWN : SNACKBAR_GROUP_DIRECTION.BOTTOM_UP
   })
 
   const resolveAriaRole = (intent?: TIntent): 'status' | 'alert' => {
-    return intent === 'warning' || intent === 'danger' ? 'alert' : 'status'
+    return intent === INTENT.WARNING || intent === INTENT.DANGER ? 'alert' : 'status'
   }
 
   const resolveAriaLive = (intent?: TIntent): 'polite' | 'assertive' => {

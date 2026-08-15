@@ -1,4 +1,5 @@
 import { OrigamBracketRound } from '../../components'
+import { BRACKET_ROUND_SIDE } from '../../enums'
 
 /**
  * Optional side marker for double-elimination tournaments.
@@ -11,6 +12,6 @@ import { OrigamBracketRound } from '../../components'
  * Single-elimination tournaments do not need to set this — leave it
  * `undefined`.
  */
-export type TBracketRoundSide = 'winner' | 'loser' | 'grand-final'
+export type TBracketRoundSide = `${BRACKET_ROUND_SIDE}`
 
 export type TOrigamBracketRound = InstanceType<typeof OrigamBracketRound>

@@ -1,4 +1,5 @@
 import { OrigamQrCode } from '../../components'
+import { QR_CODE_ERROR_CORRECTION_LEVEL } from '../../enums'
 
 export type TOrigamQrCode = InstanceType<typeof OrigamQrCode>
 
@@ -23,4 +24,4 @@ export type TOrigamQrCode = InstanceType<typeof OrigamQrCode>
  * for ≥20%. Below `Q`, the redundancy budget is too thin for any
  * meaningful overlay.
  */
-export type TQrCodeErrorCorrectionLevel = 'L' | 'M' | 'Q' | 'H'
+export type TQrCodeErrorCorrectionLevel = `${QR_CODE_ERROR_CORRECTION_LEVEL}`

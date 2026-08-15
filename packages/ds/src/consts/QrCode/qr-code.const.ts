@@ -1,3 +1,4 @@
+import { QR_CODE_ERROR_CORRECTION_LEVEL } from '../../enums'
 import type { TQrCodeErrorCorrectionLevel } from '../../types'
 
 /**
@@ -5,7 +6,7 @@ import type { TQrCodeErrorCorrectionLevel } from '../../types'
  * between matrix density and damage tolerance for clean digital /
  * print mediums without a logo overlay.
  */
-export const QR_CODE_DEFAULT_ECC: TQrCodeErrorCorrectionLevel = 'M'
+export const QR_CODE_DEFAULT_ECC: TQrCodeErrorCorrectionLevel = QR_CODE_ERROR_CORRECTION_LEVEL.M
 
 /**
  * ISO/IEC 18004-recommended quiet zone (in modules) surrounding the

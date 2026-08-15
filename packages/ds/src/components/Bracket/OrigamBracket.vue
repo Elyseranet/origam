@@ -265,7 +265,7 @@
 		BRACKET_DEFAULT_ROUND_GAP
 	} from '../../consts'
 
-	import { BRACKET_VARIANT, DIRECTION } from '../../enums'
+	import { BRACKET_ROUND_SIDE, BRACKET_VARIANT, DIRECTION } from '../../enums'
 
 	import {
 		bracketDashArray,
@@ -330,9 +330,9 @@
 	const displayRounds = computed<IBracketRound[]>(() => {
 		if (props.variant !== BRACKET_VARIANT.DOUBLE_ELIMINATION) return props.rounds
 
-		const winners = props.rounds.filter(r => r.side === 'winner' || r.side === undefined)
-		const losers = props.rounds.filter(r => r.side === 'loser')
-		const grandFinals = props.rounds.filter(r => r.side === 'grand-final')
+		const winners = props.rounds.filter(r => r.side === BRACKET_ROUND_SIDE.WINNER || r.side === undefined)
+		const losers = props.rounds.filter(r => r.side === BRACKET_ROUND_SIDE.LOSER)
+		const grandFinals = props.rounds.filter(r => r.side === BRACKET_ROUND_SIDE.GRAND_FINAL)
 
 		return [...winners, ...losers, ...grandFinals]
 	})
@@ -349,9 +349,9 @@
 	 * Each section is rendered as its own tree; empty sections are
 	 * dropped.
 	 ********************************************************/
-	const winnerRounds = computed<IBracketRound[]>(() => props.rounds.filter(r => r.side === 'winner' || r.side === undefined))
-	const loserRounds = computed<IBracketRound[]>(() => props.rounds.filter(r => r.side === 'loser'))
-	const grandFinalRounds = computed<IBracketRound[]>(() => props.rounds.filter(r => r.side === 'grand-final'))
+	const winnerRounds = computed<IBracketRound[]>(() => props.rounds.filter(r => r.side === BRACKET_ROUND_SIDE.WINNER || r.side === undefined))
+	const loserRounds = computed<IBracketRound[]>(() => props.rounds.filter(r => r.side === BRACKET_ROUND_SIDE.LOSER))
+	const grandFinalRounds = computed<IBracketRound[]>(() => props.rounds.filter(r => r.side === BRACKET_ROUND_SIDE.GRAND_FINAL))
 
 	const doubleSections = computed<TBracketDoubleSection[]>(() => {
 		const all: TBracketDoubleSection[] = [

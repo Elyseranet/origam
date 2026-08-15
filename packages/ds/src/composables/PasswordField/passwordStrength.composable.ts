@@ -23,6 +23,7 @@
  * __strength---bg-{level}`).
  */
 
+import { PASSWORD_STRENGTH_LEVEL } from '../../enums'
 import type { IPasswordStrength } from '../../interfaces'
 import type { TPasswordStrengthLevel, TPasswordStrengthScore } from '../../types'
 
@@ -38,7 +39,7 @@ export function computeStrength (value: string | null | undefined): IPasswordStr
     const v = (value ?? '').toString()
 
     if (v.length === 0) {
-        return { score: 0, level: 'weak' }
+        return { score: 0, level: PASSWORD_STRENGTH_LEVEL.WEAK }
     }
 
     let raw = 0
@@ -52,10 +53,10 @@ export function computeStrength (value: string | null | undefined): IPasswordStr
     const score = (raw > 4 ? 4 : raw) as TPasswordStrengthScore
 
     let level: TPasswordStrengthLevel
-    if (score <= 1) level = 'weak'
-    else if (score === 2) level = 'fair'
-    else if (score === 3) level = 'good'
-    else level = 'strong'
+    if (score <= 1) level = PASSWORD_STRENGTH_LEVEL.WEAK
+    else if (score === 2) level = PASSWORD_STRENGTH_LEVEL.FAIR
+    else if (score === 3) level = PASSWORD_STRENGTH_LEVEL.GOOD
+    else level = PASSWORD_STRENGTH_LEVEL.STRONG
 
     return { score, level }
 }

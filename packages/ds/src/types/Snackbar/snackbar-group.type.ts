@@ -1,4 +1,5 @@
 import type { OrigamSnackbarGroup } from "../../components"
+import { SNACKBAR_GROUP_DIRECTION, SNACKBAR_GROUP_LOCATION } from "../../enums"
 
 export type TOrigamSnackbarGroup = InstanceType<typeof OrigamSnackbarGroup>
 
@@ -13,7 +14,7 @@ export type TOrigamSnackbarGroup = InstanceType<typeof OrigamSnackbarGroup>
  *   (older items drift downward). Default for locations anchored to
  *   the bottom edge.
  */
-export type TSnackbarGroupDirection = 'top-down' | 'bottom-up'
+export type TSnackbarGroupDirection = `${SNACKBAR_GROUP_DIRECTION}`
 
 /**
  * Anchor locations supported by `OrigamSnackbarGroup`.
@@ -23,12 +24,4 @@ export type TSnackbarGroupDirection = 'top-down' | 'bottom-up'
  * horizontal centering. Each location maps to a CSS pinning pair on
  * the stack root (`top` / `bottom` + `left` / `right` / centered).
  */
-export type TSnackbarGroupLocation =
-    | 'top-left'
-    | 'top-right'
-    | 'top-center'
-    | 'bottom-left'
-    | 'bottom-right'
-    | 'bottom-center'
-    | 'top'
-    | 'bottom'
+export type TSnackbarGroupLocation = `${SNACKBAR_GROUP_LOCATION}`

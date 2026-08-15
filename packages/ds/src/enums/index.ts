@@ -67,6 +67,7 @@ export * from './Transition/transition.enum'
 export * from './Blockquote/blockquote.enum'
 
 export * from './Bracket/bracket.enum'
+export * from './Bracket/bracket-round.enum'
 
 export * from './BottomNav/bottom-nav.enum'
 export * from './Bracket/bracket-match.enum'
@@ -101,6 +102,12 @@ export * from './Stepper/stepper.enum'
 export * from './Kbd/kbd.enum'
 
 export * from './Video/video.enum'
+
+export * from './Snackbar/snackbar-group.enum'
+
+export * from './PasswordField/password-field.enum'
+
+export * from './QrCode/qr-code.enum'
 
 export * from './Calendar/calendar.enum'
 

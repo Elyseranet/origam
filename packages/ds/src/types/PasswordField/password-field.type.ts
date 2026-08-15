@@ -1,4 +1,5 @@
 import { OrigamPasswordField } from "../../components"
+import { PASSWORD_STRENGTH_LEVEL } from "../../enums"
 
 export type TOrigamPasswordField = InstanceType<typeof OrigamPasswordField>
 
@@ -12,7 +13,7 @@ export type TOrigamPasswordField = InstanceType<typeof OrigamPasswordField>
  * (`origam-password-field__strength-segment--{level}`) and as the lookup
  * key into the `--origam-password-field__strength---bg-{level}` token.
  */
-export type TPasswordStrengthLevel = 'weak' | 'fair' | 'good' | 'strong'
+export type TPasswordStrengthLevel = `${PASSWORD_STRENGTH_LEVEL}`
 
 /**
  * `TPasswordStrengthScore` — integer 0..4 returned by `computeStrength()`.
