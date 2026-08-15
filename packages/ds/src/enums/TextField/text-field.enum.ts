@@ -36,6 +36,19 @@ export const PATTERN_VALIDATOR = {
     DATE_US: 'date:us'
 } as const
 
+/**
+ * Token emitted by the mask pattern parser (`applyMask` /
+ * `useMask`). `'digit'`, `'letter'` and `'any'` consume one input
+ * character (`#`, `A`, `*`); `'literal'` is kept verbatim from the
+ * pattern template.
+ */
+export enum MASK_TOKEN_KIND {
+    DIGIT = 'digit',
+    LETTER = 'letter',
+    ANY = 'any',
+    LITERAL = 'literal'
+}
+
 export enum TEXT_FIELD_TYPE {
     TEXT = 'text',
     NUMBER = 'number',

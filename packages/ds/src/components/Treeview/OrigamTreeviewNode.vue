@@ -98,6 +98,7 @@
 	import type { StyleValue } from 'vue'
 
 	import { ORIGAM_TREEVIEW_KEY } from '../../consts'
+	import { TREEVIEW_SELECT_MODE, TREEVIEW_SELECTABLE_NODES } from '../../enums'
 	import {
 	useProps,
 	useStyle
@@ -136,10 +137,10 @@
 
 	const isSelectable = computed(() => {
 		if (props.node.disabled) return false
-		const mode = treeview?.selectMode.value ?? 'none'
-		if (mode === 'none') return false
-		const selectableNodes = treeview?.selectableNodes.value ?? 'leaf'
-		if (selectableNodes === 'leaf') return isLeaf.value
+		const mode = treeview?.selectMode.value ?? TREEVIEW_SELECT_MODE.NONE
+		if (mode === TREEVIEW_SELECT_MODE.NONE) return false
+		const selectableNodes = treeview?.selectableNodes.value ?? TREEVIEW_SELECTABLE_NODES.LEAF
+		if (selectableNodes === TREEVIEW_SELECTABLE_NODES.LEAF) return isLeaf.value
 		return true
 	})
 

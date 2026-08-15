@@ -34,7 +34,7 @@
             :aria-label="ariaPrevLabel"
             :disabled="!canPrev"
             data-cy="origam-calendar-prev"
-            @click="onNavigate('prev')"
+            @click="onNavigate(CALENDAR_NAVIGATE.PREV)"
           />
           <origam-btn
             variant="text"
@@ -42,7 +42,7 @@
             :text="todayLabel"
             :aria-label="ariaTodayLabel"
             data-cy="origam-calendar-today"
-            @click="onNavigate('today')"
+            @click="onNavigate(CALENDAR_NAVIGATE.TODAY)"
           />
           <origam-btn
             variant="text"
@@ -51,7 +51,7 @@
             :aria-label="ariaNextLabel"
             :disabled="!canNext"
             data-cy="origam-calendar-next"
-            @click="onNavigate('next')"
+            @click="onNavigate(CALENDAR_NAVIGATE.NEXT)"
           />
         </origam-btn-group>
 
@@ -85,7 +85,7 @@
     </slot>
 
     <div
-      v-if="resolvedView === VIEW.MONTH"
+      v-if="resolvedView === CALENDAR_VIEW.MONTH"
       class="origam-calendar__body origam-calendar__body--month"
       data-cy="origam-calendar-body-month"
     >
@@ -188,11 +188,11 @@
     </div>
 
     <div
-      v-else-if="resolvedView === VIEW.WEEK || resolvedView === VIEW.DAY"
+      v-else-if="resolvedView === CALENDAR_VIEW.WEEK || resolvedView === CALENDAR_VIEW.DAY"
       class="origam-calendar__body"
       :class="{
-					'origam-calendar__body--week': resolvedView === VIEW.WEEK,
-					'origam-calendar__body--day': resolvedView === VIEW.DAY
+					'origam-calendar__body--week': resolvedView === CALENDAR_VIEW.WEEK,
+					'origam-calendar__body--day': resolvedView === CALENDAR_VIEW.DAY
 				}"
       :data-cy="`origam-calendar-body-${resolvedView}`"
     >
@@ -221,7 +221,7 @@
             :data-cy="`origam-calendar-timeline-day-${dayCellKey(day)}`"
           >
             <div
-              v-if="resolvedView === VIEW.WEEK"
+              v-if="resolvedView === CALENDAR_VIEW.WEEK"
               class="origam-calendar__day-header"
             >
               <slot
@@ -351,6 +351,8 @@
 
   import { OrigamBtn, OrigamBtnGroup } from '../../components'
 
+  import { CALENDAR_NAVIGATE, CALENDAR_VIEW, INTENT, VARIANT } from '../../enums'
+
   import {
     useCalendar,
     useDensity,
@@ -439,14 +441,7 @@
    * the SFC; the public surface that consumers extend is the
    * `ICalendarProps`/`IEvent` interface pair.
    ********************************************************/
-  const VIEW = {
-    MONTH: 'month',
-    WEEK: 'week',
-    DAY: 'day',
-    AGENDA: 'agenda'
-  } as const
-
-  const VIEW_OPTIONS: Array<TCalendarView> = [ VIEW.MONTH, VIEW.WEEK, VIEW.DAY, VIEW.AGENDA ]
+  const VIEW_OPTIONS: Array<TCalendarView> = [ CALENDAR_VIEW.MONTH, CALENDAR_VIEW.WEEK, CALENDAR_VIEW.DAY, CALENDAR_VIEW.AGENDA ]
   const MONTH_EVENT_LIMIT = 3
   const DEFAULT_SLOT_HEIGHT_PX = 32
 
@@ -456,10 +451,10 @@
   const {t} = useLocale()
 
   const VIEW_LABEL_FALLBACK: Record<TCalendarView, string> = {
-    month: 'Month',
-    week: 'Week',
-    day: 'Day',
-    agenda: 'Agenda'
+    [CALENDAR_VIEW.MONTH]: 'Month',
+    [CALENDAR_VIEW.WEEK]: 'Week',
+    [CALENDAR_VIEW.DAY]: 'Day',
+    [CALENDAR_VIEW.AGENDA]: 'Agenda'
   }
 
   function viewLabel(view: TCalendarView): string {
@@ -493,7 +488,7 @@
   // interactive — the toolbar switches views / navigates on click. When
   // the parent binds `v-model:view` / `v-model:current-date`, the watchers
   // sync the controlled value back in.
-  const internalView = ref<TCalendarView>(props.view ?? 'month')
+  const internalView = ref<TCalendarView>(props.view ?? CALENDAR_VIEW.MONTH)
   const internalDate = ref<Date>(toDate(props.currentDate as Date | string) ?? new Date())
 
   watch(() => props.view, (next) => {
@@ -576,7 +571,7 @@
   }
 
   function viewBtnVariant(view: TCalendarView): TVariant {
-    return isViewActive(view) ? 'flat' : 'text'
+    return isViewActive(view) ? VARIANT.FLAT : VARIANT.TEXT
   }
 
   // The active view segment follows the calendar's OWN intent — the
@@ -590,7 +585,7 @@
     const fg = props.color
     if (fg && isIntent(fg as string)) return fg as TIntent
 
-    return 'primary'
+    return INTENT.PRIMARY
   })
 
   function viewBtnBgColor(view: TCalendarView): TIntent | undefined {
@@ -605,21 +600,21 @@
     const date = resolvedDate.value
     const locale = resolvedLocale.value
     switch (resolvedView.value) {
-      case 'week': {
+      case CALENDAR_VIEW.WEEK: {
         const range = calendar.visibleDateRange.value
         const startLabel = formatDate(range.start, locale, { month: 'short', day: 'numeric' })
         const endLabel = formatDate(range.end, locale, { month: 'short', day: 'numeric', year: 'numeric' })
         return `${ startLabel } — ${ endLabel }`
       }
-      case 'day':
+      case CALENDAR_VIEW.DAY:
         return formatDate(date, locale, {
           weekday: 'long',
           month: 'long',
           day: 'numeric',
           year: 'numeric'
         })
-      case 'month':
-      case 'agenda':
+      case CALENDAR_VIEW.MONTH:
+      case CALENDAR_VIEW.AGENDA:
       default:
         return formatDate(date, locale, { month: 'long', year: 'numeric' })
     }
@@ -709,7 +704,7 @@
    * Week / day view bindings.
    ********************************************************/
   const timelineDays = computed<Array<Date>>(() => {
-    if (resolvedView.value === 'day') return [ startOfDay(resolvedDate.value) ]
+    if (resolvedView.value === CALENDAR_VIEW.DAY) return [ startOfDay(resolvedDate.value) ]
     const range = calendar.visibleDateRange.value
     const out: Array<Date> = []
     let cursor = startOfDay(range.start)
@@ -781,10 +776,7 @@
    * inherits theme-aware colours without re-implementing the
    * intent → color matrix.
    ********************************************************/
-  const INTENT_NAMES: ReadonlyArray<TIntent> = [
-    'neutral', 'primary', 'secondary', 'ghost',
-    'success', 'warning', 'danger', 'info'
-  ]
+  const INTENT_NAMES: ReadonlyArray<TIntent> = Object.values(INTENT)
 
   function colorFor(event: IEvent): string | null {
     if (props.eventColorKey === 'color' && event.color) {

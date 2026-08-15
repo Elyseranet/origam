@@ -5,7 +5,7 @@
 			:style="treeviewStyles"
 			role="tree"
 			:aria-label="ariaLabel || 'File tree'"
-			:aria-multiselectable="selectMode === 'multiple' || undefined"
+			:aria-multiselectable="selectMode === TREEVIEW_SELECT_MODE.MULTIPLE || undefined"
 			@keydown="handleKeydown"
 	>
 		<origam-treeview-node
@@ -27,7 +27,7 @@
 
 	import { OrigamTreeviewNode } from '../../components'
 	import { ORIGAM_TREEVIEW_KEY } from '../../consts'
-	import { DENSITY, SIZES } from '../../enums'
+	import { DENSITY, SIZES, TREEVIEW_SELECT_MODE, TREEVIEW_SELECTABLE_NODES } from '../../enums'
 	import {
 	useDensity,
 	useProps,
@@ -99,11 +99,11 @@
 
 	const toggleSelected = (id: string) => {
 		const mode = props.selectMode
-		if (mode === 'none') return
+		if (mode === TREEVIEW_SELECT_MODE.NONE) return
 
 		const next = new Set(selectedSet.value)
 
-		if (mode === 'single') {
+		if (mode === TREEVIEW_SELECT_MODE.SINGLE) {
 			if (next.has(id)) {
 				next.clear()
 			} else {
@@ -135,8 +135,8 @@
 		toggleSelected,
 		isExpanded,
 		isSelected,
-		selectMode: computed(() => props.selectMode ?? 'none'),
-		selectableNodes: computed(() => props.selectableNodes ?? 'leaf'),
+		selectMode: computed(() => props.selectMode ?? TREEVIEW_SELECT_MODE.NONE),
+		selectableNodes: computed(() => props.selectableNodes ?? TREEVIEW_SELECTABLE_NODES.LEAF),
 		showLines: computed(() => props.showLines !== false),
 		expandOnClick: computed(() => props.expandOnClick === true),
 		color: computed(() => {

@@ -1,5 +1,7 @@
 import { OrigamBlockquote } from '../../components'
 
+import { BLOCKQUOTE_LANG, BLOCKQUOTE_VARIANT } from '../../enums'
+
 export type TOrigamBlockquote = InstanceType<typeof OrigamBlockquote>
 
 /**
@@ -28,12 +30,7 @@ export type TBlockquoteAlign =
  * Resolution lives in `src/consts/Blockquote/blockquote.const.ts`
  * (`QUOTE_MARKS_BY_LANG`).
  */
-export type TBlockquoteLang =
-    | 'fr'
-    | 'en'
-    | 'es'
-    | 'de'
-    | 'auto'
+export type TBlockquoteLang = `${BLOCKQUOTE_LANG}`
 
 /**
  * Visual variants for `<OrigamBlockquote>`. Each variant is a self
@@ -51,9 +48,4 @@ export type TBlockquoteLang =
  * - `pull`     — pull quote: large body type, centred, extracted out of
  *                the flow. Use sparingly — one per article max.
  */
-export type TBlockquoteVariant =
-    | 'default'
-    | 'elegant'
-    | 'quoted'
-    | 'minimal'
-    | 'pull'
+export type TBlockquoteVariant = `${BLOCKQUOTE_VARIANT}`

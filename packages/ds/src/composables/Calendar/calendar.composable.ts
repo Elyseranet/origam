@@ -1,5 +1,7 @@
 import { computed, type ComputedRef } from 'vue'
 
+import { CALENDAR_NAVIGATE, CALENDAR_VIEW } from '../../enums'
+
 import type {
     IEvent,
     IUseCalendarOptions
@@ -65,10 +67,10 @@ const NAVIGATION_STEP: Record<
     TCalendarView,
     (date: Date, direction: 1 | -1) => Date
 > = {
-    month: (date, direction) => addMonths(date, direction),
-    week: (date, direction) => addWeeks(date, direction),
-    day: (date, direction) => addDays(date, direction),
-    agenda: (date, direction) => addMonths(date, direction)
+    [CALENDAR_VIEW.MONTH]: (date, direction) => addMonths(date, direction),
+    [CALENDAR_VIEW.WEEK]: (date, direction) => addWeeks(date, direction),
+    [CALENDAR_VIEW.DAY]: (date, direction) => addDays(date, direction),
+    [CALENDAR_VIEW.AGENDA]: (date, direction) => addMonths(date, direction)
 }
 
 /**
@@ -99,8 +101,8 @@ export function useCalendar (
         const date = options.currentDate()
         const firstDayOfWeek = options.firstDayOfWeek()
         switch (view) {
-            case 'month':
-            case 'agenda': {
+            case CALENDAR_VIEW.MONTH:
+            case CALENDAR_VIEW.AGENDA: {
                 const monthStart = startOfMonth(date)
                 const gridStart = startOfWeekFixed(monthStart, firstDayOfWeek)
                 // The month grid always renders 6 rows × 7 cols so the
@@ -108,12 +110,12 @@ export function useCalendar (
                 const gridEnd = addDays(gridStart, 6 * 7 - 1)
                 return { start: gridStart, end: gridEnd }
             }
-            case 'week':
+            case CALENDAR_VIEW.WEEK:
                 return {
                     start: startOfWeekFixed(date, firstDayOfWeek),
                     end: endOfWeekFixed(date, firstDayOfWeek)
                 }
-            case 'day':
+            case CALENDAR_VIEW.DAY:
             default: {
                 const start = startOfDay(date)
                 const end = new Date(start)
@@ -155,10 +157,10 @@ export function useCalendar (
         const view = options.view()
         const current = options.currentDate()
         let next: Date
-        if (direction === 'today') {
+        if (direction === CALENDAR_NAVIGATE.TODAY) {
             next = new Date()
         } else {
-            const step = direction === 'next' ? 1 : -1
+            const step = direction === CALENDAR_NAVIGATE.NEXT ? 1 : -1
             next = NAVIGATION_STEP[view](current, step)
         }
         // Clamp to min/max.

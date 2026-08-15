@@ -1,4 +1,5 @@
 import type { OrigamStepper, OrigamStepperItem } from '../../components'
+import { STEPPER_ITEM_STATUS } from '../../enums'
 import type { TDirection } from '../Commons/direction.type'
 
 export type TOrigamStepper = InstanceType<typeof OrigamStepper>
@@ -11,4 +12,4 @@ export type TOrigamStepperItem = InstanceType<typeof OrigamStepperItem>
  */
 export type TStepperOrientation = TDirection
 
-export type TStepperItemStatus = 'pending' | 'active' | 'done' | 'error'
+export type TStepperItemStatus = `${STEPPER_ITEM_STATUS}`

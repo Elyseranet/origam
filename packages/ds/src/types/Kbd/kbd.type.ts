@@ -1,5 +1,6 @@
 import { OrigamKbd } from '../../components'
+import { KBD_VARIANT } from '../../enums'
 
-export type TKbdVariant = 'filled' | 'outlined' | 'tonal'
+export type TKbdVariant = `${KBD_VARIANT}`
 
 export type TOrigamKbd = InstanceType<typeof OrigamKbd>

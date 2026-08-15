@@ -1,3 +1,5 @@
+import { MASK_TOKEN_KIND } from '../../enums'
+
 import type { IMaskApplyResult, IMaskToken } from '../../interfaces'
 
 /**
@@ -42,13 +44,13 @@ export function parsePattern (pattern: string): Array<IMaskToken> {
     const tokens: Array<IMaskToken> = []
     for (const char of pattern) {
         if (char === '#') {
-            tokens.push({kind: 'digit', char: '#', consumer: true})
+            tokens.push({kind: MASK_TOKEN_KIND.DIGIT, char: '#', consumer: true})
         } else if (char === 'A') {
-            tokens.push({kind: 'letter', char: 'A', consumer: true})
+            tokens.push({kind: MASK_TOKEN_KIND.LETTER, char: 'A', consumer: true})
         } else if (char === '*') {
-            tokens.push({kind: 'any', char: '*', consumer: true})
+            tokens.push({kind: MASK_TOKEN_KIND.ANY, char: '*', consumer: true})
         } else {
-            tokens.push({kind: 'literal', char, consumer: false})
+            tokens.push({kind: MASK_TOKEN_KIND.LITERAL, char, consumer: false})
         }
     }
 
@@ -129,15 +131,15 @@ export function applyMask (value: string, pattern: string): IMaskApplyResult {
         let matched: string | null = null
         while (consumed < stripped.length) {
             const c = stripped[consumed++]
-            if (tok.kind === 'digit' && isDigit(c)) {
+            if (tok.kind === MASK_TOKEN_KIND.DIGIT && isDigit(c)) {
                 matched = c
                 break
             }
-            if (tok.kind === 'letter' && isLetter(c)) {
+            if (tok.kind === MASK_TOKEN_KIND.LETTER && isLetter(c)) {
                 matched = c
                 break
             }
-            if (tok.kind === 'any') {
+            if (tok.kind === MASK_TOKEN_KIND.ANY) {
                 matched = c
                 break
             }

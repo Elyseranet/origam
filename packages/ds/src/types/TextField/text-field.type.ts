@@ -1,7 +1,7 @@
 import type { BUILT_IN_PATTERN, PATTERN_VALIDATOR } from '../../enums'
 import type { IMaskOptions } from '../../interfaces'
 import { OrigamTextField } from '../../components'
-import { TEXT_FIELD_TYPE } from "../../enums"
+import { MASK_TOKEN_KIND, TEXT_FIELD_TYPE } from "../../enums"
 
 export type TTextFieldType = `${TEXT_FIELD_TYPE}`
 
@@ -32,7 +32,7 @@ export type TMask = TBuiltInPattern | string | IMaskOptions | null
  * - `literal`  : emitted as-is, does NOT consume the
  *                input character.
  */
-export type TMaskTokenKind = 'digit' | 'letter' | 'any' | 'literal'
+export type TMaskTokenKind = `${MASK_TOKEN_KIND}`
 
 /**
  * Built-in validator name (string) — recognised by

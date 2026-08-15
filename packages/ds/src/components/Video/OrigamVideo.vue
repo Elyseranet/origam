@@ -237,7 +237,7 @@
 
 	import { shouldSuppressAutoplay, useBorder, useColorEffect, useDimension, useElevation, useLocale, useMargin, usePadding, useRounded, useTypography, useVideoPlayer } from '../../composables'
 
-	import { MDI_ICONS } from '../../enums'
+	import { MDI_ICONS, VIDEO_TRACK_KIND } from '../../enums'
 
 	import type {
 		IVideoProps, IVideoSource} from '../../interfaces'
@@ -717,7 +717,7 @@
 	const captionsEnabled = ref<boolean>(false)
 
 	const hasCaptions = computed(() => props.tracks.some((track) => {
-		return track.kind === 'captions' || track.kind === 'subtitles'
+		return track.kind === VIDEO_TRACK_KIND.CAPTIONS || track.kind === VIDEO_TRACK_KIND.SUBTITLES
 	}))
 
 	function toggleCaptions (): void {

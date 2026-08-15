@@ -1,5 +1,7 @@
 import { OrigamChartCartesian } from '../../components'
 
+import { CHART_CARTESIAN_KIND } from '../../enums'
+
 /**
  * Cartesian chart topology — the subset of `TChartType` that
  * `<OrigamChartCartesian>` knows how to render. Each value implies
@@ -17,13 +19,6 @@ import { OrigamChartCartesian } from '../../components'
  * `TChartType` because the family-level component only accepts
  * this narrower subset — the SFC's `defineProps` enforces it.
  */
-export type TChartCartesianKind =
-    | 'line'
-    | 'area'
-    | 'bar'
-    | 'column'
-    | 'scatter'
-    | 'spline'
-    | 'stepped-line'
+export type TChartCartesianKind = `${CHART_CARTESIAN_KIND}`
 
 export type TOrigamChartCartesian = InstanceType<typeof OrigamChartCartesian>

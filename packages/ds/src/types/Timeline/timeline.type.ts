@@ -1,9 +1,10 @@
 import type { OrigamTimeline, OrigamTimelineItem } from '../../components'
+import { TIMELINE_SIDE } from '../../enums'
 import type { TDirection } from '../Commons/direction.type'
 
 export type TOrigamTimeline = InstanceType<typeof OrigamTimeline>
 export type TOrigamTimelineItem = InstanceType<typeof OrigamTimelineItem>
-export type TTimelineSide = 'start' | 'end' | 'alternating'
+export type TTimelineSide = `${TIMELINE_SIDE}`
 
 /**
  * Layout axis of `<OrigamTimeline>`. Mirrors the global `TDirection` so

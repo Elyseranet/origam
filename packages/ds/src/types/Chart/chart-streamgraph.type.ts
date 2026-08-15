@@ -1,5 +1,7 @@
 import { OrigamChartStreamgraph } from '../../components'
 
-export type TChartStreamgraphOffset = 'wiggle' | 'silhouette' | 'expand' | 'zero'
+import { CHART_STREAMGRAPH_OFFSET } from '../../enums'
+
+export type TChartStreamgraphOffset = `${CHART_STREAMGRAPH_OFFSET}`
 
 export type TOrigamChartStreamgraph = InstanceType<typeof OrigamChartStreamgraph>

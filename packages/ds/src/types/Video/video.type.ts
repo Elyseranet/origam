@@ -1,4 +1,5 @@
 import { OrigamVideo } from '../../components'
+import { VIDEO_TRACK_KIND } from '../../enums'
 import type { TControlsSource } from '../Commons/controls.type'
 
 export type TOrigamVideo = InstanceType<typeof OrigamVideo>
@@ -35,4 +36,4 @@ export type TVideoControls = TControlsSource
  * See https://html.spec.whatwg.org/multipage/media.html#attr-track-kind
  * for the full list of legal values.
  */
-export type TVideoTrackKind = 'captions' | 'subtitles' | 'descriptions' | 'chapters'
+export type TVideoTrackKind = `${VIDEO_TRACK_KIND}`

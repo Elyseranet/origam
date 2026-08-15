@@ -1,5 +1,7 @@
 import { OrigamChartPolar } from '../../components'
 
+import { CHART_POLAR_KIND } from '../../enums'
+
 /**
  * Polar chart topology — the subset of `TChartType` that
  * `<OrigamChartPolar>` knows how to render. Two values, two arc
@@ -13,6 +15,6 @@ import { OrigamChartPolar } from '../../components'
  * reason (the legacy `<OrigamChart>` shell painted axis lines
  * behind pie/donut slices, which is the user's primary complaint).
  */
-export type TChartPolarKind = 'pie' | 'donut'
+export type TChartPolarKind = `${CHART_POLAR_KIND}`
 
 export type TOrigamChartPolar = InstanceType<typeof OrigamChartPolar>

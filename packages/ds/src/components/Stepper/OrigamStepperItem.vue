@@ -3,9 +3,9 @@
 			:is="isClickable ? 'button' : 'div'"
 			:class="itemClasses"
 			:type="isClickable ? 'button' : undefined"
-			:aria-current="resolvedStatus === 'active' ? 'step' : undefined"
+			:aria-current="resolvedStatus === STEPPER_ITEM_STATUS.ACTIVE ? 'step' : undefined"
 			:aria-label="stepAriaLabel"
-			:disabled="isClickable && resolvedStatus === 'active' ? true : undefined"
+			:disabled="isClickable && resolvedStatus === STEPPER_ITEM_STATUS.ACTIVE ? true : undefined"
 			@click="handleClick"
 	>
 		<span
@@ -13,10 +13,10 @@
 				:class="indicatorClasses"
 				aria-hidden="true"
 		>
-			<template v-if="resolvedStatus === 'done'">
+			<template v-if="resolvedStatus === STEPPER_ITEM_STATUS.DONE">
 				<origam-icon :icon="MDI_ICONS.CHECK" />
 			</template>
-			<template v-else-if="resolvedStatus === 'error'">
+			<template v-else-if="resolvedStatus === STEPPER_ITEM_STATUS.ERROR">
 				<origam-icon :icon="MDI_ICONS.EXCLAMATION" />
 			</template>
 			<template v-else-if="icon">
@@ -48,7 +48,7 @@
 
 	import { OrigamIcon } from '../../components'
 	import { ORIGAM_STEPPER_KEY } from '../../consts'
-	import { DIRECTION, MDI_ICONS } from '../../enums'
+	import { DIRECTION, MDI_ICONS, STEPPER_ITEM_STATUS } from '../../enums'
 	import { useLocale, useProps } from '../../composables'
 	import { vContrast } from '../../directives'
 
@@ -99,9 +99,9 @@
 		if (props.status !== undefined) return props.status
 		const modelValue = stepper?.modelValue.value ?? 0
 		const idx = props.index ?? 0
-		if (idx < modelValue) return 'done'
-		if (idx === modelValue) return 'active'
-		return 'pending'
+		if (idx < modelValue) return STEPPER_ITEM_STATUS.DONE
+		if (idx === modelValue) return STEPPER_ITEM_STATUS.ACTIVE
+		return STEPPER_ITEM_STATUS.PENDING
 	})
 
 	/*********************************************************

@@ -1,4 +1,5 @@
 import { OrigamCalendar } from '../../components'
+import { CALENDAR_NAVIGATE, CALENDAR_TIME_FORMAT, CALENDAR_VIEW } from '../../enums'
 
 export type TOrigamCalendar = InstanceType<typeof OrigamCalendar>
 
@@ -8,14 +9,14 @@ export type TOrigamCalendar = InstanceType<typeof OrigamCalendar>
  * `'24h'` — 00:00 → 23:59. Default for everywhere except en-US.
  * `'12h'` — 12:00 AM → 11:59 PM. Honours locale-specific AM/PM.
  */
-export type TCalendarTimeFormat = '12h' | '24h'
+export type TCalendarTimeFormat = `${CALENDAR_TIME_FORMAT}`
 
 /**
  * Navigation direction passed to `useCalendar().navigate(...)` and
  * the `navigate` event. `'today'` jumps to "now" regardless of the
  * current view.
  */
-export type TCalendarNavigate = 'prev' | 'next' | 'today'
+export type TCalendarNavigate = `${CALENDAR_NAVIGATE}`
 
 /**
  * Top-level view modes supported by `<OrigamCalendar>`.
@@ -26,4 +27,4 @@ export type TCalendarNavigate = 'prev' | 'next' | 'today'
  * - `'agenda'`— flat list grouped by day, useful for screen readers
  *               and dense schedules.
  */
-export type TCalendarView = 'month' | 'week' | 'day' | 'agenda'
+export type TCalendarView = `${CALENDAR_VIEW}`

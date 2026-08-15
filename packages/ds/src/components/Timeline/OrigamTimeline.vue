@@ -21,7 +21,7 @@
 					:intent="entry.intent"
 					:is-last="index === (items?.length ?? 0) - 1"
 					:truncate-line="truncateLine ?? false"
-					:side="side ?? 'start'"
+					:side="side ?? TIMELINE_SIDE.START"
 					:orientation="orientation"
 					:index="index"
 					:data-cy="`timeline-item-${index}`"
@@ -62,7 +62,7 @@
 } from '../../composables'
 	import type { ITimelineProps, ITimelineSlots } from '../../interfaces'
 	import { TIMELINE_CONTEXT_KEY } from '../../consts'
-	import { DIRECTION } from '../../enums'
+	import { DIRECTION, TIMELINE_SIDE } from '../../enums'
 
 	/*********************************************************
 	 * Global
@@ -93,7 +93,7 @@
 	// is exposed too so an item dropped manually in the slot picks up the
 	// parent layout direction without having to pass the prop explicitly.
 	provide(TIMELINE_CONTEXT_KEY, {
-		get side() { return props.side ?? 'start' },
+		get side() { return props.side ?? TIMELINE_SIDE.START },
 		get truncateLine() { return props.truncateLine ?? false },
 		get orientation() { return orientation.value },
 		get color() {

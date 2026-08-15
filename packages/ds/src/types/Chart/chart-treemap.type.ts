@@ -1,5 +1,7 @@
 import { OrigamChartTreemap } from '../../components'
 
+import { CHART_TREEMAP_ALGORITHM } from '../../enums'
+
 /**
  * Treemap layout algorithm selector.
  *
@@ -11,6 +13,6 @@ import { OrigamChartTreemap } from '../../components'
  *   each recursion level (slice at even depth, dice at odd depth).
  *   Tiles tend to be long and thin but preserve data order.
  */
-export type TChartTreemapAlgorithm = 'squarified' | 'slice-dice'
+export type TChartTreemapAlgorithm = `${CHART_TREEMAP_ALGORITHM}`
 
 export type TOrigamChartTreemap = InstanceType<typeof OrigamChartTreemap>

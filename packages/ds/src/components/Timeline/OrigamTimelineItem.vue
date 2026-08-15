@@ -54,7 +54,7 @@
 	import type { ITimelineItemProps, ITimelineItemSlots } from '../../interfaces'
 
 	import { TIMELINE_CONTEXT_KEY } from '../../consts'
-	import { DIRECTION } from '../../enums'
+	import { DIRECTION, TIMELINE_SIDE } from '../../enums'
 
 	/*********************************************************
 	 * Global
@@ -149,8 +149,8 @@
 
 	const contentSide = computed(() => {
 		const side = effectiveSide.value
-		if (side === 'alternating') {
-			return props.index % 2 === 0 ? 'start' : 'end'
+		if (side === TIMELINE_SIDE.ALTERNATING) {
+			return props.index % 2 === 0 ? TIMELINE_SIDE.START : TIMELINE_SIDE.END
 		}
 		return side
 	})
@@ -163,10 +163,10 @@
 		'origam-timeline-item',
 		`origam-timeline-item--orientation-${effectiveOrientation.value}`,
 		{
-			'origam-timeline-item--side-start': effectiveSide.value === 'start' || contentSide.value === 'start',
-			'origam-timeline-item--side-end': effectiveSide.value === 'end' || contentSide.value === 'end',
-			'origam-timeline-item--alternating': effectiveSide.value === 'alternating',
-			'origam-timeline-item--content-end': contentSide.value === 'end',
+			'origam-timeline-item--side-start': effectiveSide.value === TIMELINE_SIDE.START || contentSide.value === TIMELINE_SIDE.START,
+			'origam-timeline-item--side-end': effectiveSide.value === TIMELINE_SIDE.END || contentSide.value === TIMELINE_SIDE.END,
+			'origam-timeline-item--alternating': effectiveSide.value === TIMELINE_SIDE.ALTERNATING,
+			'origam-timeline-item--content-end': contentSide.value === TIMELINE_SIDE.END,
 			'origam-timeline-item--last': props.isLast
 		},
 		densityClasses.value,

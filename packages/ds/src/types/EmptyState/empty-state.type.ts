@@ -1,4 +1,5 @@
 import { OrigamEmptyState } from '../../components'
+import { EMPTY_STATE_PRESET } from '../../enums'
 import type { TRoundedToken } from '../Commons/rounded.type'
 
 export type TOrigamEmptyState = InstanceType<typeof OrigamEmptyState>
@@ -16,12 +17,7 @@ export type TOrigamEmptyState = InstanceType<typeof OrigamEmptyState>
  * - `offline`     — connectivity issue; offline-mode CTA is typical.
  * - `locked`      — feature is gated (auth, plan, permissions).
  */
-export type TEmptyStatePreset =
-    | 'no-data'
-    | 'no-results'
-    | 'error'
-    | 'offline'
-    | 'locked'
+export type TEmptyStatePreset = `${EMPTY_STATE_PRESET}`
 
 /**
  * Horizontal alignment of the icon / title / description / actions
