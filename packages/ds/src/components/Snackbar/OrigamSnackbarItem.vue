@@ -10,12 +10,12 @@
   >
     <div class="origam-snackbar-item__content">
       <div
-        v-if="resolvedIcon !== false"
+        v-if="hasPrepend"
         class="origam-snackbar-item__prepend"
       >
         <slot name="prepend">
           <origam-icon
-            :icon="resolvedIcon"
+            :icon="iconToRender"
             :size="24"
           />
         </slot>
@@ -79,7 +79,7 @@
 
   import { OrigamBtn, OrigamIcon } from '../../components'
 
-  import { useLocale, useProps, useTypography } from '../../composables'
+  import { useLocale, usePassedProps, useProps, useTypography } from '../../composables'
 
   import { vContrast } from '../../directives'
 
@@ -112,6 +112,21 @@
   const dismissLabel = computed<string>(() => props.dismissLabel ?? t('origam.snackbar.dismiss', 'Dismiss notification'))
 
   const { filterProps } = useProps<ISnackbarItemProps>(props)
+
+  /*********************************************************
+   * Passed-prop tracking
+   *
+   * @description
+   * `icon` is typed `TIcon | false`. Vue's compiler infers a runtime
+   * `Boolean` branch from the `false` literal, and any unset prop whose
+   * type includes `Boolean` resolves to the concrete value `false` —
+   * never `undefined` — when the consumer does not pass it. A naive
+   * `props.icon === false` check therefore ALWAYS short-circuits, even
+   * when the consumer never touched `icon`. `usePassedProps()` reads
+   * `vnode.props` directly to tell "explicitly passed `false`" apart
+   * from "not passed at all".
+   ********************************************************/
+  const wasIconPassed = usePassedProps<ISnackbarItemProps>(props, 'OrigamSnackbarItem')
 
   /*********************************************************
    * Typography
@@ -150,10 +165,32 @@
   }
 
   const resolvedIcon = computed<TIcon | false>(() => {
-    if (props.icon === false) return false
-    if (props.icon) return props.icon
+    if (wasIconPassed('icon')) return props.icon as TIcon | false
 
     return INTENT_ICONS[props.intent ?? 'info']
+  })
+
+  /*********************************************************
+   * A custom `#prepend` slot must render on its own merits — it must
+   * NEVER be suppressed just because the default-icon resolution landed
+   * on `false`. Coupling the zone's `v-if` to `resolvedIcon` silently
+   * dropped any consumer-provided `#prepend` content along with the icon.
+   ********************************************************/
+  const hasPrepend = computed<boolean>(() => {
+    return resolvedIcon.value !== false || !!slots['prepend']
+  })
+
+  /*********************************************************
+   * `<origam-icon>` (the `#prepend` fallback) only takes `TIcon |
+   * undefined` — it has no `false` branch. `hasPrepend` (unlike the old
+   * `v-if="resolvedIcon !== false"`) is an opaque boolean the template
+   * type-checker cannot narrow `resolvedIcon` through, so the fallback
+   * needs its own correctly-typed value. Only reached at runtime when
+   * no `#prepend` slot content overrides it, so `undefined` here is
+   * inert either way.
+   ********************************************************/
+  const iconToRender = computed<TIcon | undefined>(() => {
+    return resolvedIcon.value === false ? undefined : resolvedIcon.value
   })
 
   const resolvedRole = computed<'status' | 'alert'>(() => {

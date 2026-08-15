@@ -177,54 +177,27 @@ test.describe('OrigamSnackbarItem — Slot: actions', () => {
 
 test.describe('OrigamSnackbarItem — Slot: prepend', () => {
     /**
-     * ⛔ REAL BUG FOUND while realigning (root-caused, not guessed):
-     * the ENTIRE prepend area — including any custom `#prepend` slot
-     * content — never renders on any Variant of this story, because
-     * `resolvedIcon` is always `false`.
+     * ⛔ REAL BUG — FIXED (packages/ds/src/components/Snackbar/OrigamSnackbarItem.vue).
+     * The entire prepend area — including any custom `#prepend` slot
+     * content — used to never render, because `resolvedIcon` was always
+     * `false`: `icon?: TIcon | false` (ISnackbarItemProps) makes the
+     * runtime prop type include `Boolean`, and Vue resolves an unset
+     * prop whose type includes `Boolean` to the concrete value `false`
+     * (never `undefined`) when no default silences it. The template
+     * also gated the WHOLE prepend wrapper — not just the built-in
+     * `<origam-icon>` fallback — behind `v-if="resolvedIcon !== false"`,
+     * so a consumer-supplied `#prepend` slot was dropped along with the
+     * default icon.
      *
-     * Root cause (read in source,
-     * packages/ds/src/components/Snackbar/OrigamSnackbarItem.vue):
-     *   - `icon?: TIcon | false` (ISnackbarItemProps) — the type union
-     *     includes `boolean`.
-     *   - `const props = withDefaults(defineProps<...>(), { intent:
-     *     'info', dismissible: true, dismissLabel: undefined })` never
-     *     lists a default for `icon`.
-     *   - Vue's compiler-generated runtime prop options special-case
-     *     any prop whose type includes `Boolean`: when the consumer
-     *     doesn't pass it, Vue resolves it to the concrete value
-     *     `false`, NOT `undefined` (documented Vue 3 behaviour,
-     *     already called out for the exact same trap in
-     *     packages/ds/src/composables/Commons/defaults.composable.ts's
-     *     `usePassedProps()` doc comment — this component just didn't
-     *     apply the same fix).
-     *   - `resolvedIcon = computed(() => props.icon === false ? false
-     *     : props.icon ? props.icon : INTENT_ICONS[props.intent ?? 'info'])`
-     *     therefore short-circuits to `false` on the FIRST branch for
-     *     every instance that doesn't explicitly pass `icon`.
-     *   - The template gates the WHOLE prepend wrapper —  not just
-     *     the built-in `<origam-icon>` fallback — behind `v-if=
-     *     "resolvedIcon !== false"`, so a consumer-supplied `#prepend`
-     *     slot is silently dropped along with the default icon.
-     *
-     * Verified empirically (2026-08, running Histoire instance): on
-     * every Variant (Design with icon left at its "(none)"/undefined
-     * control value, Functional, Events - action, Slots - Prepend —
-     * none of which explicitly pass `:icon`), `el.__vueParentComponent
-     * .props.icon` reads back the boolean `false`, and the rendered
-     * DOM shows a bare `<!--v-if-->` comment where the prepend `<div>`
-     * should be — for Slots - Prepend specifically, that means the
-     * story's `#prepend` heart icon (mdi:mdi-heart) never appears at
-     * all despite being wired correctly on the consumer side.
-     *
-     * The intended contract ("When omitted, defaults to the
-     * per-intent icon… Pass `false` to suppress the icon entirely" —
-     * ISnackbarItemProps doc comment) is inverted: omitted currently
-     * behaves exactly like `icon={false}`. Fix is `icon: undefined`
-     * added to the `withDefaults()` map (forces Vue to stop treating
-     * "unset" as "false" for this prop) — component left untouched
-     * per this pass's scope (title-drift realignment).
+     * Fix: `resolvedIcon` now resolves via `usePassedProps()` (the DS's
+     * existing helper for telling "explicitly passed `false`" apart
+     * from "not passed at all", per its doc comment in
+     * defaults.composable.ts) instead of a naive `props.icon === false`
+     * check. The prepend zone's `v-if` is decoupled into its own
+     * `hasPrepend` computed (`resolvedIcon !== false || !!slots.prepend`)
+     * so a custom slot renders independently of the icon default.
      */
-    test.fixme('custom prepend slot overrides the default icon', async ({ page }) => {
+    test('custom prepend slot overrides the default icon', async ({ page }) => {
         await openVariant(page, 'Slots - Prepend')
         const sandbox = sandboxOf(page)
 
@@ -233,8 +206,8 @@ test.describe('OrigamSnackbarItem — Slot: prepend', () => {
     })
 })
 
-test.describe('OrigamSnackbarItem — Prop: icon (default per-intent) [REAL BUG — see Slot: prepend diagnostic]', () => {
-    test.fixme('the default per-intent icon renders when icon is left unset', async ({ page }) => {
+test.describe('OrigamSnackbarItem — Prop: icon (default per-intent)', () => {
+    test('the default per-intent icon renders when icon is left unset', async ({ page }) => {
         await openVariant(page, 'Design')
         const sandbox = sandboxOf(page)
 
