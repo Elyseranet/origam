@@ -39,7 +39,7 @@
   lang="ts"
   setup
 >
-  import { computed, ref, StyleValue } from 'vue'
+  import { computed, ref, StyleValue, watch } from 'vue'
 
   import OrigamSnackbarItem from './OrigamSnackbarItem.vue'
 
@@ -90,7 +90,17 @@
    * public `useSnackbarGroup({ id }).notify / dismiss /
    * dismissAll` composable — this side only reads them.
    ********************************************************/
-  const { rawItems } = useSnackbarGroupInternal(props.id)
+  const { rawItems, registerDefaultDuration } = useSnackbarGroupInternal(props.id)
+
+  // Publishes `defaultDuration` into the shared store so `notify()` —
+  // called from ANY `useSnackbarGroup({ id })` instance targeting this
+  // stack — honours the value declared here, without every call site
+  // having to repeat it as a composable option. `immediate: true`
+  // registers it before any consumer interaction can fire `notify()`;
+  // the watcher keeps it in sync across reactive prop updates too.
+  watch(() => props.defaultDuration, (duration) => {
+    registerDefaultDuration(duration)
+  }, { immediate: true })
 
   const visibleItems = computed<ReadonlyArray<ISnackbarGroupItem>>(() => {
     const items = rawItems.value

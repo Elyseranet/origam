@@ -40,7 +40,11 @@ export interface ISnackbarGroupProps extends ICommonsComponentProps, ITagProps {
     /**
      * Default auto-dismiss timeout (ms) applied to items that do not
      * supply their own `duration`. Pass `0` to make all items sticky
-     * by default.
+     * by default. Registered into the shared stack store on mount (and
+     * kept in sync reactively), so it applies to `notify()` calls from
+     * ANY `useSnackbarGroup({ id })` instance targeting this stack —
+     * not only calls that repeat `defaultDuration` as a composable
+     * option.
      *
      * @default 5000
      */

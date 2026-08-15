@@ -18,6 +18,19 @@ interface ISnackbarGroupState {
     items: Ref<Array<ISnackbarGroupItem>>
     timers: Map<string, number>
     counter: { current: number }
+    /**
+     * Fallback `duration` (ms) for this stack, registered by the
+     * mounted `<OrigamSnackbarGroup defaultDuration="…">` instance (see
+     * `useSnackbarGroupInternal`'s `registerDefaultDuration`). Lets
+     * `notify()` — called from ANYWHERE, independent of which
+     * `useSnackbarGroup({ id })` call site fired it — honour the
+     * component's declared default without requiring every caller to
+     * repeat `defaultDuration` as a composable option. See #snackbar-
+     * group-default-duration-bug: before this, the component's prop and
+     * the composable's `notify()` never met, so `defaultDuration` on
+     * `<OrigamSnackbarGroup>` was purely decorative.
+     */
+    defaultDuration: Ref<number>
 }
 
 const STORES = new Map<string, ISnackbarGroupState>()
@@ -29,7 +42,8 @@ const getStore = (id: string): ISnackbarGroupState => {
         store = {
             items: ref<Array<ISnackbarGroupItem>>([]),
             timers: new Map(),
-            counter: { current: 0 }
+            counter: { current: 0 },
+            defaultDuration: ref(SNACKBAR_GROUP_DEFAULT_DURATION)
         }
 
         STORES.set(id, store)
@@ -116,7 +130,13 @@ export function useSnackbarGroup (options: IUseSnackbarGroupOptions = {}): IUseS
 
     const notify = (opts: ISnackbarGroupItemOptions): string => {
         const itemId = generateId(state)
-        const duration = opts.duration ?? options.defaultDuration ?? SNACKBAR_GROUP_DEFAULT_DURATION
+        // Precedence: per-item override > explicit `useSnackbarGroup({
+        // defaultDuration })` call-site option > the stack's registered
+        // default (`<OrigamSnackbarGroup defaultDuration="…">`, kept in
+        // sync via `useSnackbarGroupInternal`'s `registerDefaultDuration`
+        // — falls back to `SNACKBAR_GROUP_DEFAULT_DURATION` itself when
+        // no component instance is mounted for this stack `id`).
+        const duration = opts.duration ?? options.defaultDuration ?? state.defaultDuration.value
 
         const item: ISnackbarGroupItem = {
             ...opts,
@@ -180,9 +200,20 @@ export function useSnackbarGroup (options: IUseSnackbarGroupOptions = {}): IUseS
 export function useSnackbarGroupInternal (id: string = SNACKBAR_GROUP_DEFAULT_ID) {
     const state = getStore(id)
 
+    // Links the component's `defaultDuration` prop to `notify()`'s
+    // resolution above — the two channels used to never meet (see the
+    // `defaultDuration` doc comment on `ISnackbarGroupState`). The host
+    // component calls this from a `watch(() => props.defaultDuration,
+    // …, { immediate: true })` so the store always reflects the
+    // CURRENTLY mounted instance's prop, including live updates.
+    const registerDefaultDuration = (duration: number): void => {
+        state.defaultDuration.value = duration
+    }
+
     return {
         rawItems: state.items,
-        itemCount: computed(() => state.items.value.length)
+        itemCount: computed(() => state.items.value.length),
+        registerDefaultDuration
     }
 }
 

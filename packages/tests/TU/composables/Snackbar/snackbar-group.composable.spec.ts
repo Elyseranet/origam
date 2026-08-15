@@ -14,7 +14,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import {
     resetSnackbarGroupForTesting,
-    useSnackbarGroup
+    useSnackbarGroup,
+    useSnackbarGroupInternal
 } from '@origam/composables/Snackbar/snackbar-group.composable'
 
 describe('useSnackbarGroup', () => {
@@ -128,5 +129,82 @@ describe('useSnackbarGroup', () => {
         expect(b.items.value).toHaveLength(2)
         b.dismissAll()
         expect(a.items.value).toHaveLength(0)
+    })
+})
+
+// ---------------------------------------------------------------------------
+// BUG 3 regression — `<OrigamSnackbarGroup defaultDuration>` used to be
+// purely decorative: the component prop and `useSnackbarGroup().notify()`'s
+// duration resolution were two channels that never met — `notify()` only
+// ever read `opts.duration ?? options.defaultDuration ??
+// SNACKBAR_GROUP_DEFAULT_DURATION`, and nothing fed the component's prop
+// into `options.defaultDuration` for a `notify()` call site that never
+// re-specifies it. Fixed by having the component register its prop into
+// the shared per-id store (`useSnackbarGroupInternal(id)
+// .registerDefaultDuration`), which `notify()` now falls back to.
+// ---------------------------------------------------------------------------
+describe('useSnackbarGroup — registerDefaultDuration link (BUG 3 regression)', () => {
+    beforeEach(() => {
+        resetSnackbarGroupForTesting()
+        vi.useFakeTimers()
+    })
+
+    it('notify() honours a duration registered via useSnackbarGroupInternal — simulating the mounted <OrigamSnackbarGroup defaultDuration> — even though the notify() call site never passes defaultDuration itself', () => {
+        // Mirrors the real runtime wiring: the component instance calls
+        // `useSnackbarGroupInternal(id).registerDefaultDuration(prop)` from
+        // a `watch(…, { immediate: true })`; a COMPLETELY SEPARATE
+        // `useSnackbarGroup({ id })` call site (e.g. a story button
+        // handler) fires `notify()` without ever repeating the value.
+        useSnackbarGroupInternal('toasts').registerDefaultDuration(0)
+
+        const stack = useSnackbarGroup({ id: 'toasts' })
+        stack.notify({ message: 'sticky by component default' })
+
+        vi.advanceTimersByTime(60_000)
+        expect(stack.items.value).toHaveLength(1)
+    })
+
+    it('a short registered default auto-dismisses within the registered window, not the hardcoded 5000ms', () => {
+        useSnackbarGroupInternal('toasts').registerDefaultDuration(1500)
+
+        const stack = useSnackbarGroup({ id: 'toasts' })
+        stack.notify({ message: 'short-lived' })
+
+        vi.advanceTimersByTime(1499)
+        expect(stack.items.value).toHaveLength(1)
+        vi.advanceTimersByTime(1)
+        expect(stack.items.value).toHaveLength(0)
+    })
+
+    it('an explicit useSnackbarGroup({ defaultDuration }) call-site option still wins over the registered component default', () => {
+        useSnackbarGroupInternal('toasts').registerDefaultDuration(0)
+
+        const stack = useSnackbarGroup({ id: 'toasts', defaultDuration: 300 })
+        stack.notify({ message: 'call-site wins' })
+
+        vi.advanceTimersByTime(300)
+        expect(stack.items.value).toHaveLength(0)
+    })
+
+    it('a per-item duration still wins over the registered component default', () => {
+        useSnackbarGroupInternal('toasts').registerDefaultDuration(0)
+
+        const stack = useSnackbarGroup({ id: 'toasts' })
+        stack.notify({ message: 'item wins', duration: 200 })
+
+        vi.advanceTimersByTime(200)
+        expect(stack.items.value).toHaveLength(0)
+    })
+
+    it('falls back to SNACKBAR_GROUP_DEFAULT_DURATION when nothing registered a default for this id', () => {
+        // No component mounted for 'unregistered' — the store still uses
+        // its own initial default (5000ms per SNACKBAR_GROUP_DEFAULT_DURATION).
+        const stack = useSnackbarGroup({ id: 'unregistered' })
+        stack.notify({ message: 'x' })
+
+        vi.advanceTimersByTime(4_999)
+        expect(stack.items.value).toHaveLength(1)
+        vi.advanceTimersByTime(1)
+        expect(stack.items.value).toHaveLength(0)
     })
 })

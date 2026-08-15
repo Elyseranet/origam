@@ -212,46 +212,30 @@ test.describe('OrigamSnackbarGroup — Dismiss', () => {
 
 test.describe('OrigamSnackbarGroup — Auto-dismiss timing', () => {
     /**
-     * ⛔ REAL BUG FOUND while realigning (root-caused, not guessed):
-     * the "defaultDuration (ms)" HstNumber control sets the
-     * `<OrigamSnackbarGroup default-duration>` PROP, but that prop is
-     * never read by the auto-dismiss scheduling path at all.
+     * ⛔ REAL BUG — FIXED (packages/ds/src/composables/Snackbar/snackbar-group.composable.ts,
+     * packages/ds/src/components/Snackbar/OrigamSnackbarGroup.vue).
+     * `<OrigamSnackbarGroup defaultDuration>` used to be entirely
+     * decorative: `useSnackbarGroupInternal(id)` only exposed read-only
+     * `rawItems` / `itemCount`, so the prop never reached `notify()`'s
+     * `duration = opts.duration ?? options.defaultDuration ??
+     * SNACKBAR_GROUP_DEFAULT_DURATION` resolution — every stack fell
+     * back to the hardcoded 5000ms regardless of the prop.
      *
-     * Root cause (read in source):
-     *   - `functionalNotify(state)` / `playgroundNotify(state)`
-     *     (OrigamSnackbarGroup.story.vue) call
-     *     `useSnackbarGroup({ id: state.id ?? 'functional' })` fresh on
-     *     every click, WITHOUT forwarding `state.defaultDuration` —
-     *     only `id` is passed.
-     *   - `useSnackbarGroup()`'s `notify()`
-     *     (packages/ds/src/composables/Snackbar/snackbar-group.composable.ts)
-     *     computes `duration = opts.duration ?? options.defaultDuration
-     *     ?? SNACKBAR_GROUP_DEFAULT_DURATION` — since this call site's
-     *     `options.defaultDuration` is undefined, it ALWAYS falls back
-     *     to the hardcoded 5000ms default, regardless of the story
-     *     control's value.
-     *   - `<OrigamSnackbarGroup>`'s own `defaultDuration` PROP is only
-     *     read by `useSnackbarGroupInternal(id)`, which exposes just
-     *     `rawItems` / `itemCount` (read-only) — it never registers
-     *     `defaultDuration` into the shared per-id store, so no
-     *     `notify()` call from ANY composable instance can ever pick
-     *     it up. The prop is entirely decorative.
+     * Fix: the per-id store now carries a `defaultDuration` ref.
+     * `<OrigamSnackbarGroup>` registers its prop into that ref via
+     * `useSnackbarGroupInternal(id).registerDefaultDuration` (a
+     * `watch(… , { immediate: true })`, kept in sync on prop changes),
+     * and `notify()` resolves `opts.duration ?? options.defaultDuration
+     * ?? state.defaultDuration.value` — the component-declared default
+     * now applies to `notify()` calls from ANY `useSnackbarGroup({ id })`
+     * instance targeting that stack, not only call sites that repeat
+     * `defaultDuration` as a composable option.
      *
-     * Verified empirically (2026-08, running Histoire instance): 5
-     * items pushed with the "defaultDuration (ms)" control set to 0
-     * (intended: sticky, `duration <= 0` skips scheduling per source)
-     * were ALL gone by 6s — consistent with the hardcoded 5000ms
-     * default firing regardless. A naive "short duration" test with a
-     * generous assertion timeout can accidentally PASS for the wrong
-     * reason (the item eventually disappears via the hardcoded 5000ms
-     * path, which still fits inside an over-generous retry window) —
-     * the tight-timeout tests below are written specifically to not
-     * be fooled by that.
-     *
-     * Flagged as `test.fixme` with this diagnostic, story/component
-     * left untouched per this pass's scope (title-drift realignment).
+     * The tight-timeout test below is written specifically so it can't
+     * pass for the wrong reason (an over-generous window would still
+     * catch the OLD hardcoded-5000ms behaviour).
      */
-    test.fixme('sticky item (defaultDuration: 0) survives past the default auto-dismiss window', async ({ page }) => {
+    test('sticky item (defaultDuration: 0) survives past the default auto-dismiss window', async ({ page }) => {
         await openVariant(page, 'Functional')
         const sandbox = sandboxOf(page)
         const host = sandbox.locator('#origam-snackbar-group-functional').first()
@@ -266,7 +250,7 @@ test.describe('OrigamSnackbarGroup — Auto-dismiss timing', () => {
         await expect(host.locator('.origam-snackbar-item')).toHaveCount(5)
     })
 
-    test.fixme('short-duration item auto-dismisses within the requested window (tight timeout — see diagnostic above)', async ({ page }) => {
+    test('short-duration item auto-dismisses within the requested window (tight timeout — see diagnostic above)', async ({ page }) => {
         await openVariant(page, 'Functional')
         const sandbox = sandboxOf(page)
         const host = sandbox.locator('#origam-snackbar-group-functional').first()
