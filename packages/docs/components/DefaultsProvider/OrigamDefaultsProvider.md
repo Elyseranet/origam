@@ -1,6 +1,8 @@
 # OrigamDefaultsProvider
 
-`<OrigamDefaultsProvider>` is a structurally transparent wrapper that injects a defaults map into the component tree below. Any origam component that calls `useDefaults()` internally will receive these defaults as its resolved prop values.
+`<OrigamDefaultsProvider>` is a structurally transparent wrapper that injects a defaults map into the component tree below.
+
+> ⛔ **Since ADR-005, calling `useDefaults()` is NOT required for a component to receive these defaults.** A global hook installed by `createOrigam()` (`installThemePropsResolver`, see `theme-props-resolver.composable.ts`) resolves the SAME injected map directly onto every component's `instance.props` — the object its template actually reads — for any prop a theme or a `<OrigamDefaultsProvider>` names. `useDefaults()` still exists and 39 built-in components still call it (mainly to read a resolved value inside their OWN `<script setup>` logic, not just the template), but it is no longer the mechanism that makes theming reach a component at all. See [Theming — how a prop default is actually resolved](../../integrations/theming-authoring.md#how-a-prop-default-is-actually-resolved) for the full mechanism and why it used to fail silently on 178 of 217 components.
 
 ## Basic usage
 

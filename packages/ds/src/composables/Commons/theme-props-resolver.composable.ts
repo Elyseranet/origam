@@ -113,6 +113,25 @@ import { camelize } from './defaults.composable'
 // with the size of the themes actually installed. If NO theme names ANY
 // prop, `installThemePropsResolver()` never even calls `app.mixin()`.
 //
+// ## Known limitation — a prop read ONCE, synchronously, inside `setup()`
+//
+// `beforeCreate` (where this hook installs the getter/setter) fires AFTER
+// `setup()` has already returned — Vue's own sequencing, not a choice made
+// here (`finishComponentSetup` → `applyOptions` → `beforeCreate` only runs
+// once `setupStatefulComponent` has already called `setup()` and captured
+// its return value). A component that reads `props.x` synchronously at the
+// TOP LEVEL of `setup()` — not inside a `computed()`, `watchEffect()`, or the
+// render function itself — captures whatever Vue resolved BEFORE this hook
+// patched the slot (i.e. the theme is not yet visible at that exact read).
+// This is a narrow case: reading a prop once to seed a local non-reactive
+// variable, which is unusual and arguably already a smell independent of
+// theming. `useDefaults()` does NOT have this gap (its computed's getter
+// runs on `.value` access at any time, since the defaults ref is already
+// injected by the time `setup()` runs) — worth knowing if you're deciding
+// whether to keep a `useDefaults()` call for a specific component instead of
+// relying solely on this hook. Not audited across the 178 previously
+// uncovered components; flagged here rather than guessed away.
+//
 // ## Pinned Vue internal — READ BEFORE UPGRADING VUE
 //
 // Mutating `instance.props` via `Object.defineProperty` is not a documented
@@ -137,13 +156,12 @@ import { camelize } from './defaults.composable'
 // ## What this does NOT change
 //
 // - The 39 existing `useDefaults()` callers keep working unmodified — they
-//   read the same injected map, just via their own explicit call. Both
-//   mechanisms coexist safely (verified: this hook patches `instance.props`
-//   BEFORE `useDefaults()` even runs inside `setup()`... actually the reverse
-//   — `setup()` runs BEFORE `beforeCreate`, so `useDefaults()`'s OWN
-//   `usePassedProps()` check reads `instance.vnode.props` directly too, never
-//   `instance.props` — the two mechanisms never read from each other, they
-//   independently arrive at the same answer from the same sources).
+//   read the same injected defaults map, just via their own explicit call
+//   inside `setup()` (which always runs BEFORE this hook's `beforeCreate`).
+//   The two mechanisms never read from or depend on each other: `useDefaults()`'s
+//   own `usePassedProps()` check reads `instance.vnode.props` directly, the
+//   same source this hook's getter reads — so both independently arrive at
+//   the same answer without either needing to know the other exists.
 // - A key a theme names that the target component does NOT declare as a prop
 //   is silently skipped (not written to `instance.attrs`, not a crash) — a
 //   theme cannot accidentally rewire fallthrough attributes.

@@ -1,6 +1,20 @@
 # ADR-005 — Where theme default PROPS get resolved
 
-- **Status**: Proposed — awaiting arbitration (2026-08-15)
+- **Status**: Implemented (2026-08-15) — the recommended option below shipped
+  as `installThemePropsResolver()` in
+  `packages/ds/src/composables/Commons/theme-props-resolver.composable.ts`,
+  wired into `createOrigam()`. The "Open questions" section is resolved as
+  follows: (1) the global `beforeCreate` hook was accepted; (2) interception
+  is scoped to the union of every REGISTERED theme (not just the brand active
+  at mount) — the Theme Builder runtime-authoring residual gap noted there is
+  still open and untested; (3) the 39 `useDefaults()` calls were **not**
+  removed in this change — they coexist, pace of removal still to be decided;
+  (4) the dependency on `instance.props` being mutable via
+  `Object.defineProperty` was accepted, pinned by tests that must fail loudly
+  on a Vue upgrade that breaks it (see that file's own doc comment). See
+  `CLAUDE.md`'s "How `theme.components` props actually resolve" section and
+  `packages/docs/integrations/theming-authoring.md` for the consumer-facing
+  writeup.
 - **Deciders**: user (arnaudprioul) — *pending*; architect (analysis + spike)
 - **Scope**: `packages/ds` (`useDefaults`, `provideDefaults`, `createOrigam`,
   all 217 components)

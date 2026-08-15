@@ -516,6 +516,53 @@ To add a brand theme:
 
 ---
 
+## ⛔ How `theme.components` props actually resolve — invisible machinery (ADR-005)
+
+A theme's `components` block (`{ global: {...}, 'origam-btn': {...} }`) is
+**not** read because a component calls `useDefaults()`. It is resolved by
+**one single mechanism**, for the whole 217-component catalogue at once:
+`createOrigam()` installs a global Vue `app.mixin({ beforeCreate() {...} })`
+(`installThemePropsResolver` in
+`packages/ds/src/composables/Commons/theme-props-resolver.composable.ts`)
+that patches the exact prop slots any REGISTERED theme names directly onto
+`instance.props` — the same object a compiled `<script setup>` template
+reads (`__props.x`). No component code, anywhere, opts into this.
+
+**Why this exists.** Before ADR-005: only 39 of 217 components called
+`useDefaults()` (178 silently ignored `theme.components` — no warning, no
+error). Worse, even those 39 were broken for any prop their TEMPLATE reads
+by its bare name, because `useDefaults()` returns a NEW object the compiled
+template never sees (verified repro: `OrigamSelectionControl`'s
+`:type="type"` binding rendered `<input>` with NO `type` attribute at all
+under a theme setting `type: 'checkbox'` — no checkbox semantics, no
+`update:modelValue`, ever). Full writeup:
+`packages/docs/internal/adr-005-theme-props-resolution.md`.
+
+**What this means when you read or write a component:**
+
+- **If a prop's resolved value doesn't match what you see in `withDefaults()`
+  or a `useDefaults()` call, check the active theme's `components` block
+  BEFORE assuming a bug.** The value did not necessarily come from either
+  place in the `.vue` file you're reading.
+- **You do NOT need to call `useDefaults()` for a new component to be
+  themeable.** Every prop on every component is already reachable by
+  `theme.components` — the resolver intercepts based on what a theme NAMES,
+  not on what the component opted into.
+- **The 39 existing `useDefaults()` calls stay** — do not remove them
+  opportunistically; their removal is a separate, deliberate, batched
+  migration per ADR-005's own migration sketch, not incidental cleanup.
+- **Do not reintroduce a per-prop `computed()` pass-through "for clarity."**
+  It was measured at +42.6% mount cost when applied across a realistic prop
+  surface and was explicitly rejected on those grounds — see ADR-005.
+- This relies on mutating `instance.props` via `Object.defineProperty`, which
+  is **not** documented public Vue API. It is pinned by tests
+  (`packages/tests/TU/origam/theme-props-resolver.spec.ts`) that must fail
+  loudly, not silently, if a future Vue upgrade changes the relevant
+  internals — see the long comment at the top of
+  `theme-props-resolver.composable.ts` for exactly what to check.
+
+---
+
 ## Color / intent props
 
 The legacy `color="#ff0080"` API is **deprecated since v0.4** (warns once
