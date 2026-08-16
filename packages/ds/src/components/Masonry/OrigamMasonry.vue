@@ -50,7 +50,8 @@
 		useMasonry,
 		usePadding,
 		useProps,
-		useRounded
+		useRounded,
+		useTheme
 	} from '../../composables'
 
 	import { GRID_GAP_SIZE_VAR } from '../../consts'
@@ -176,7 +177,18 @@
 	})
 
 	// Re-resolve gap when the prop changes (token rename, raw value).
-	watch(() => props.gap, () => {
+	//
+	// `theme` and `mode` are watched ALONGSIDE the prop, and that is required,
+	// not defensive. `gap` is named by the theme's `components` block, so its
+	// slot on `instance.props` is an accessor installed by the theme-props
+	// resolver AFTER `setup()` has run — a watcher created here therefore holds
+	// no dependency on the theme, and a brand/mode swap that changes `gap`
+	// would never re-run it. Watching the theme refs closes that path with no
+	// extra machinery. Measured: prop alone never fires on a swap; prop+theme
+	// fires with the correct value.
+	const { theme, mode } = useTheme()
+
+	watch([() => props.gap, theme, mode], () => {
 		// Microtask: the CSS var is already updated synchronously, but
 		// `getComputedStyle` reads through layout — one frame is safer.
 		requestAnimationFrame(resolveGapPx)

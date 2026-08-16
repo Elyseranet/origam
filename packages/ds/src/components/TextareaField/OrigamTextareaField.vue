@@ -278,6 +278,7 @@
 	useProps,
 	useStyle,
 	useTextareaRich,
+	useTheme,
 	useTypography,
 	useVModel
 } from '../../composables'
@@ -628,7 +629,17 @@
 		})
 	}
 
-	watch([model, () => props.maxRows, () => props.density, () => props.rows], () => {
+	// `theme` and `mode` are watched ALONGSIDE the props, and that is required,
+	// not defensive. `density` is named by the theme's `components` block, so
+	// its slot on `instance.props` is an accessor installed by the theme-props
+	// resolver AFTER `setup()` has run — a watcher created here therefore holds
+	// no dependency on the theme, and a brand/mode swap that changes `density`
+	// would never recompute the control height. Watching the theme refs closes
+	// that path with no extra machinery. Measured: the prop alone never fires
+	// on a swap; prop+theme fires with the correct value.
+	const { theme: activeTheme, mode: activeMode } = useTheme()
+
+	watch([model, () => props.maxRows, () => props.density, () => props.rows, activeTheme, activeMode], () => {
 		calculateInputHeight()
 	}, {immediate: true})
 	watch(minHeight, () => {
