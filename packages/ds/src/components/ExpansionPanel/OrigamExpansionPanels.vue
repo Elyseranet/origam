@@ -133,6 +133,8 @@
 
 	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts'
 
+	import { LOADER_KIND } from '../../enums'
+
 	import type { IExpansionPanelsProps} from '../../interfaces'
 
 	import type { IExpansionPanelsEmits, IExpansionPanelsSlots } from '../../interfaces/ExpensionPanel/expansion-panels.interface'
@@ -202,7 +204,7 @@
 	 * Loader
 	 ********************************************************/
 
-	const {loaderClasses} = useLoader(props, 'line')
+	const {loaderClasses} = useLoader(props, LOADER_KIND.LINE)
 
 	const expansionPanelsStyles = computed(() => {
 		return [

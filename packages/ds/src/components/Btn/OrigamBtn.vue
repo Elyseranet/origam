@@ -157,7 +157,7 @@
 
 	import { vContrast, vRipple } from '../../directives'
 
-	import { DENSITY, PROGRESS_TYPE, SIZES } from '../../enums'
+	import { DENSITY, LOADER_KIND, PROGRESS_TYPE, SIZES } from '../../enums'
 
 	import type { IAdjacentProps, IBtnProps, IProgressProps, IStatusProps } from '../../interfaces'
 
@@ -270,7 +270,7 @@
 	 ********************************************************/
 	const {densityClasses} = useDensity(props)
 	const {dimensionStyles} = useDimension(props)
-	const {loaderClasses, loaderConfig} = useLoader(props, 'circular')
+	const {loaderClasses, loaderConfig} = useLoader(props, LOADER_KIND.CIRCULAR)
 	const {locationStyles} = useLocation(props)
 	const {positionClasses} = usePosition(props)
 	const {sizeClasses, sizeStyles} = useSize(props)

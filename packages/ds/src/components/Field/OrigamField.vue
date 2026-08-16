@@ -190,7 +190,7 @@
 
 	import { vContrast } from '../../directives'
 
-	import { DENSITY, EASING, KEYBOARD_VALUES, MDI_ICONS, PROGRESS_TYPE, VARIANT_INPUT } from '../../enums'
+	import { DENSITY, EASING, KEYBOARD_VALUES, LOADER_KIND, MDI_ICONS, PROGRESS_TYPE, VARIANT_INPUT } from '../../enums'
 
 	import type { IFieldProps, IFieldSlots} from '../../interfaces'
 
@@ -397,7 +397,7 @@
 	 * @description
 	 *
 	 ********************************************************/
-	const {loaderClasses, loaderConfig} = useLoader(props, 'line')
+	const {loaderClasses, loaderConfig} = useLoader(props, LOADER_KIND.LINE)
 
 	const hasLoader = computed(() => {
 		return slots.loader || loaderConfig.value.isActive

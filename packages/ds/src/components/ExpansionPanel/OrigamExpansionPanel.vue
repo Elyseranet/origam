@@ -125,7 +125,7 @@
 
 	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts'
 
-	import { PROGRESS_TYPE } from '../../enums'
+	import { LOADER_KIND, PROGRESS_TYPE } from '../../enums'
 
 	import type { IExpansionPanelProps} from '../../interfaces'
 
@@ -210,7 +210,7 @@
 	 * @description
 	 * Controls the line/circular/skeleton loader at the panel top.
 	 ********************************************************/
-	const {loaderClasses, loaderConfig} = useLoader(props, 'line')
+	const {loaderClasses, loaderConfig} = useLoader(props, LOADER_KIND.LINE)
 
 	const hasLoading = computed(() => {
 		return slots.loader || loaderConfig.value.isActive

@@ -163,7 +163,7 @@
 
 	import { vContrast, vRipple } from '../../directives'
 
-	import { DENSITY, PROGRESS_TYPE } from '../../enums'
+	import { DENSITY, LOADER_KIND, PROGRESS_TYPE } from '../../enums'
 
 	import type { ICardProps} from '../../interfaces'
 
@@ -302,7 +302,7 @@
 	 * @description
 	 * Controls the card loader slot and progress renderer.
 	 ********************************************************/
-	const {loaderClasses, loaderConfig} = useLoader(props, 'line')
+	const {loaderClasses, loaderConfig} = useLoader(props, LOADER_KIND.LINE)
 
 	const slots = useSlots()
 

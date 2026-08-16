@@ -68,7 +68,7 @@
 	useStyle
 } from '../../composables'
 
-	import { PROGRESS_TYPE } from '../../enums'
+	import { LOADER_KIND, PROGRESS_TYPE } from '../../enums'
 
 	import type { IDataTableHeadersProps, IDataTableHeadersSlotProps, IDataTableHeadersSlots } from '../../interfaces'
 	import type { TOrigamDataTableHeadersCell, TOrigamDataTableHeadersCellMobile } from "../../types"
@@ -100,7 +100,7 @@
 	 * Loader
 	 ********************************************************/
 
-	const {loaderClasses, loaderConfig} = useLoader(props, 'line')
+	const {loaderClasses, loaderConfig} = useLoader(props, LOADER_KIND.LINE)
 	const {getSortIcon} = useHeadersCell(props)
 
 	const {displayClasses, mobile} = useDisplay(props)

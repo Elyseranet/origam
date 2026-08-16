@@ -73,7 +73,7 @@
 		useStyle
 } from '../../composables'
 
-	import { PROGRESS_TYPE } from '../../enums'
+	import { LOADER_KIND, PROGRESS_TYPE } from '../../enums'
 
 	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts'
 
@@ -123,7 +123,7 @@
 	 * @description
 	 * Line/circular/skeleton loading state for the content area.
 	 ********************************************************/
-	const {loaderClasses, loaderConfig} = useLoader(props, 'line')
+	const {loaderClasses, loaderConfig} = useLoader(props, LOADER_KIND.LINE)
 
 	/*********************************************************
 	 * Class & Style

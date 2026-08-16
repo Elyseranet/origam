@@ -98,6 +98,8 @@
 		IDataTableRowsSlots
 	} from '../../interfaces'
 
+	import { LOADER_KIND } from '../../enums'
+
 	import { getPrefixedEventHandlers } from '../../utils'
 
 	import { mergeProps, useAttrs } from 'vue'
@@ -126,7 +128,7 @@
 	 * Composables
 	 ********************************************************/
 
-	const {loaderConfig} = useLoader(props, 'line')
+	const {loaderConfig} = useLoader(props, LOADER_KIND.LINE)
 
 	const {columns} = useHeaders()
 	const {expandOnClick, toggleExpand, isExpanded} = useExpanded()

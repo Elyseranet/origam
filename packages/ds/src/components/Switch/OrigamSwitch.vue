@@ -160,7 +160,7 @@
     useVModel
   } from '../../composables'
 
-  import { DENSITY, PROGRESS_TYPE, SIZES } from '../../enums'
+  import { DENSITY, LOADER_KIND, PROGRESS_TYPE, SIZES } from '../../enums'
 
   import type { ISwitchProps } from "../../interfaces"
 
@@ -222,7 +222,7 @@
   const attrs = useAttrs()
   const slots = useSlots()
 
-  const { loaderClasses, loaderConfig } = useLoader(props, 'circular')
+  const { loaderClasses, loaderConfig } = useLoader(props, LOADER_KIND.CIRCULAR)
 
   const uid = getUid()
   const id = computed(() => {
