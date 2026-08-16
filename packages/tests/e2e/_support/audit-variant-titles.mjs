@@ -48,6 +48,7 @@ const STORIES_PKG = join(TESTS_ROOT, '..', 'stories')     // packages/stories
 
 const argv = process.argv.slice(2)
 const AS_JSON = argv.includes('--json')
+const SHOW_SKIPPED = argv.includes('--skipped')
 
 /** Recursively collect files matching a predicate. */
 function walk (dir, pred, acc = []) {
@@ -89,6 +90,27 @@ function variantTitlesOf (storySrc) {
  *     `BASE` is a same-file `const BASE = '/stories/story/prefix-'` — a
  *     handful of multi-story specs (transitions.spec.ts, picker-overlay
  *     .spec.ts) build a map of slugs off one shared prefix.
+ *   - a BARE `'…-story-vue'` string literal anywhere in the file.
+ *
+ * That last case is the one this auditor was blind to for its whole life,
+ * and it was the majority shape. The canonical spec header in this repo is
+ *
+ *     const STORY_ID   = 'components-stories-btn-origambtn-story-vue'
+ *     const STORY_PATH = '/stories/story/' + STORY_ID
+ *
+ * — the slug never appears literally after `/story/`, it is spliced in by
+ * concatenation. Requiring the literal `/story/<slug>` form therefore matched
+ * only 85 of 175 specs (measured); the other 90 resolved no slug at all, hit
+ * the `if (!slugs.length) continue` in the main loop, and were silently
+ * dropped from the audit. Silence then read as "clean" — which is how a
+ * "drift résorbé, 55 → 0" claim came to rest on a guard that had never looked
+ * at the majority of the suite.
+ *
+ * Matching any bare `…-story-vue` literal is safe against the opposite
+ * failure (inventing drift): every one of the 19 multi-slug specs was checked
+ * by hand and genuinely targets each slug it names — none picks up an
+ * unrelated story mentioned in passing. It also picks up the slug repeated in
+ * a file's doc-comment header, which is the same value and therefore inert.
  */
 function slugsInSpec (specSrc) {
     const slugs = new Set()
@@ -113,7 +135,46 @@ function slugsInSpec (specSrc) {
         if (storyIdx === -1) continue
         slugs.add(baseVal.slice(storyIdx + '/story/'.length) + suffix)
     }
+
+    const bareRe = /(['"`])([a-z0-9][a-z0-9-]*-story-vue)\1/g
+    while ((m = bareRe.exec(specSrc)) !== null) slugs.add(m[2])
+
     return slugs
+}
+
+/**
+ * Find the index of the `)` matching the `(` at `openParenIdx`, string- and
+ * comment-aware. Returns -1 if unterminated.
+ *
+ * Needed because a helper's PARAMETER LIST can legitimately contain nested
+ * parentheses, and the naive `\(([^)]*)\)` this file used to rely on stops at
+ * the first one. The shape that broke it is the repo's own idiom for typing a
+ * Playwright page without an import statement:
+ *
+ *     const openVariant = async (page: import('@playwright/test').Page, …) => {
+ *
+ * `[^)]*` truncates the params at `import('@playwright/test'`, the `=>` no
+ * longer follows, the whole helper goes undetected, and every title it clicks
+ * silently drops out of the audit. Three specs use that idiom.
+ */
+function matchParen (src, openParenIdx) {
+    let depth = 0
+    let inStr = null
+    for (let i = openParenIdx; i < src.length; i++) {
+        const c = src[i]
+        if (inStr) {
+            if (c === '\\') { i++; continue }
+            if (c === inStr) inStr = null
+            continue
+        }
+        if (c === "'" || c === '"' || c === '`') { inStr = c; continue }
+        if (c === '(') depth++
+        else if (c === ')') {
+            depth--
+            if (depth === 0) return i
+        }
+    }
+    return -1
 }
 
 /**
@@ -223,6 +284,37 @@ function resolveLiteral (argStr, fileSrc) {
     return null
 }
 
+/**
+ * Split a parameter list on TOP-LEVEL commas only. A plain `split(',')`
+ * misaligns the parameter INDEX — and therefore which argument the auditor
+ * reads at each call site — as soon as one parameter's type carries a comma
+ * of its own (`Record<string, string>`, an inline object type, a default
+ * value that is an object literal).
+ */
+function splitParams (rawParams) {
+    if (!rawParams.length) return []
+    const out = []
+    let depth = 0
+    let inStr = null
+    let cur = ''
+    for (let i = 0; i < rawParams.length; i++) {
+        const c = rawParams[i]
+        if (inStr) {
+            cur += c
+            if (c === '\\') { i++; cur += rawParams[i] ?? ''; continue }
+            if (c === inStr) inStr = null
+            continue
+        }
+        if (c === "'" || c === '"' || c === '`') { inStr = c; cur += c; continue }
+        if (c === '(' || c === '[' || c === '{' || c === '<') { depth++; cur += c; continue }
+        if (c === ')' || c === ']' || c === '}' || c === '>') { depth--; cur += c; continue }
+        if (c === ',' && depth === 0) { out.push(cur); cur = ''; continue }
+        cur += c
+    }
+    if (cur.trim().length) out.push(cur)
+    return out
+}
+
 /** Normalise a raw param-list entry ("title: string", "variant = 'x'") down to its bare name. */
 function paramName (raw) {
     return raw.split(':')[0].split('=')[0].trim()
@@ -273,7 +365,13 @@ const CLICK_TARGET_IDENT_RES = [
     // `getByRole('checkbox', …)` target in-sandbox controls and must NOT be
     // mistaken for Variant navigation (false positives were observed on
     // picker-overlay.spec.ts's `getByRole('checkbox', { name: 'active' })`).
-    /\bpage\.getByRole\(\s*'link'\s*,\s*\{[^}]*\bname:\s*([A-Za-z_$][\w$]*)\b[^)]*\)[\s\S]{0,150}?\.click\(/g
+    /\bpage\.getByRole\(\s*'link'\s*,\s*\{[^}]*\bname:\s*([A-Za-z_$][\w$]*)\b[^)]*\)[\s\S]{0,150}?\.click\(/g,
+    // ES6 SHORTHAND — `{ name, exact: true }`, where the option's value is the
+    // same-named local variable and there is no colon at all. The `name:`
+    // form above cannot match it, so file-field.spec.ts's ten navigations
+    // were invisible. The captured identifier IS `name`, hence the constant
+    // capture group.
+    /\bpage\.getByRole\(\s*'link'\s*,\s*\{\s*(name)\s*[,}][^)]*\)[\s\S]{0,150}?\.click\(/g
 ]
 
 /**
@@ -286,12 +384,28 @@ const CLICK_TARGET_IDENT_RES = [
  */
 function localHelpersOf (specSrc) {
     const helpers = new Map()
-    const defRe = /(?:\b(?:async\s+function|function)\s+([A-Za-z_$][\w$]*)\s*\(([^)]*)\)\s*(?::[^{]*)?\{)|(?:\b(?:const|let)\s+([A-Za-z_$][\w$]*)\s*=\s*async\s*\(([^)]*)\)\s*(?::[^={]*)?=>\s*\{)/g
+    // Only the DECLARATION HEAD is matched by regex; the parameter list is
+    // then scanned with balanced parens (see `matchParen`) instead of being
+    // captured by `[^)]*`, which truncated on any nested `(`.
+    const headRe = /(?:\b(?:async\s+function|function)\s+([A-Za-z_$][\w$]*)\s*\()|(?:\b(?:const|let)\s+([A-Za-z_$][\w$]*)\s*=\s*(?:async\s*)?\()/g
     let m
-    while ((m = defRe.exec(specSrc)) !== null) {
-        const name = m[1] || m[3]
-        const rawParams = (m[2] ?? m[4] ?? '').trim()
-        const braceIdx = m.index + m[0].length - 1
+    while ((m = headRe.exec(specSrc)) !== null) {
+        const name = m[1] || m[2]
+        const openParen = m.index + m[0].length - 1
+        const closeParen = matchParen(specSrc, openParen)
+        if (closeParen === -1) continue
+        const rawParams = specSrc.slice(openParen + 1, closeParen).trim()
+
+        // After the params: an optional return-type annotation, then either
+        // `=> {` (arrow) or `{` (function declaration). Anything else — an
+        // expression-bodied arrow, a call, a tuple — is not a helper body.
+        const after = specSrc.slice(closeParen + 1)
+        const bodyRe = m[1] ? /^\s*(?::[^{]*)?\{/ : /^\s*(?::[^={]*)?=>\s*\{/
+        const bm = bodyRe.exec(after)
+        if (!bm) continue
+        const braceIdx = closeParen + 1 + bm[0].length - 1
+        headRe.lastIndex = braceIdx
+
         const bodyEnd = matchBrace(specSrc, braceIdx)
         if (bodyEnd === -1) continue
         const body = specSrc.slice(braceIdx, bodyEnd + 1)
@@ -304,7 +418,7 @@ function localHelpersOf (specSrc) {
         }
         if (!foundIdent) continue
 
-        const rawParamList = rawParams.length ? rawParams.split(',') : []
+        const rawParamList = splitParams(rawParams)
         const params = rawParamList.map(paramName)
         const idx = params.indexOf(foundIdent)
         if (idx !== -1) helpers.set(name, { idx, defaultLiteral: paramDefaultLiteral(rawParamList[idx]) })
@@ -380,19 +494,148 @@ function clickedTitlesOf (specSrc) {
     return { titles, unresolved }
 }
 
+/**
+ * Proof, on synthetic input, that this auditor actually resolves what it
+ * claims to — in BOTH directions.
+ *
+ * A checker nobody has watched fail is indistinguishable from one that always
+ * passes, and this file spent its whole life in that state: it reported "no
+ * drift" while silently skipping every spec whose helper it could not parse.
+ * Two parsing gaps were found that way, both load-bearing, both fixed here,
+ * and both pinned below so they cannot regress:
+ *
+ *   1. a helper whose parameter list contains `import('@playwright/test')`
+ *      — nested parens truncated the old `\(([^)]*)\)` capture;
+ *   2. `getByRole('link', { name, exact: true })` — the ES6 SHORTHAND, with
+ *      no colon for the old `name:\s*IDENT` pattern to match.
+ *
+ * The negative cases matter as much: an in-iframe click on a component's own
+ * button must NOT be mistaken for sidebar navigation.
+ *
+ * Fixtures are synthetic strings — nothing is read from or written to the
+ * shared worktree, where other agents are live.
+ */
+function selfTest () {
+    const cases = [
+        {
+            name: "helper typé via import('@playwright/test') → titres résolus",
+            src: `const openVariant = async (page: import('@playwright/test').Page, path: string, variant: string) => {
+                      await page.goto(path)
+                      await page.getByText(variant, { exact: true }).first().click()
+                  }
+                  openVariant(page, P, 'Design')`,
+            wantTitles: ['Design']
+        },
+        {
+            name: 'shorthand getByRole(\'link\', { name }) → titres résolus',
+            src: `const nav = async (page: import('@playwright/test').Page, name: string) => {
+                      await page.getByRole('link', { name, exact: true }).click()
+                  }
+                  nav(page, 'Prop — showSize')`,
+            wantTitles: ['Prop — showSize']
+        },
+        {
+            name: 'forme longue { name: ident } → toujours résolue (non-régression)',
+            src: `const nav = async (page, name) => {
+                      await page.getByRole('link', { name: name, exact: true }).click()
+                  }
+                  nav(page, 'Functional')`,
+            wantTitles: ['Functional']
+        },
+        {
+            name: 'clic DANS la sandbox (receiver ≠ page) → ignoré',
+            src: `const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+                  await sandbox.getByText('Index 500').click()`,
+            wantTitles: []
+        },
+        {
+            name: "getByRole('button') → ignoré (pas une nav de Variant)",
+            src: `await page.getByRole('button', { name: 'Submit' }).click()`,
+            wantTitles: []
+        },
+        {
+            name: 'slug par concaténation de const → story reconnue',
+            src: `const STORY_ID = 'components-stories-btn-origambtn-story-vue'
+                  const STORY_PATH = '/stories/story/' + STORY_ID`,
+            wantSlugs: ['components-stories-btn-origambtn-story-vue']
+        },
+        {
+            name: 'argument dynamique → signalé comme non résolu, jamais comme sain',
+            src: `const openVariant = async (page, title: string) => {
+                      await page.getByText(title, { exact: true }).click()
+                  }
+                  for (const t of LIST) openVariant(page, t)`,
+            wantUnresolved: 1
+        }
+    ]
+
+    let failed = 0
+    for (const c of cases) {
+        let ok = true
+        let got
+        if (c.wantSlugs) {
+            got = [...slugsInSpec(c.src)]
+            ok = c.wantSlugs.every((s) => got.includes(s))
+        } else {
+            const r = clickedTitlesOf(c.src)
+            if (c.wantUnresolved !== undefined) {
+                got = r.unresolved.length
+                ok = got === c.wantUnresolved
+            } else {
+                got = [...r.titles]
+                ok = got.length === c.wantTitles.length && c.wantTitles.every((t) => got.includes(t))
+            }
+        }
+        console.log(`${ok ? '✓' : '✗'} ${c.name}`)
+        if (!ok) {
+            failed++
+            console.log(`    attendu ${JSON.stringify(c.wantSlugs ?? c.wantTitles ?? c.wantUnresolved)}, obtenu ${JSON.stringify(got)}`)
+        }
+    }
+    console.log(`\n${cases.length - failed}/${cases.length} cas passés.`)
+    process.exit(failed ? 1 : 0)
+}
+
+if (argv.includes('--self-test')) selfTest()
+
 const storyFiles = walk(STORIES_PKG, (f) => f.endsWith('.story.vue'))
 const slugToStory = new Map()
 for (const f of storyFiles) slugToStory.set(slugForStory(f), f)
 
 const specFiles = walk(E2E_DIR, (f) => f.endsWith('.spec.ts'))
 
+/**
+ * Coverage accounting — the part that makes a clean run MEAN something.
+ *
+ * This auditor's whole failure mode is that a spec it cannot parse is
+ * skipped by a bare `continue`, and its absence from the report is
+ * indistinguishable from a pass. That is how "drift résorbé, 55 → 0" came to
+ * be announced on the strength of a run that had never looked at most of the
+ * suite. From here on the auditor publishes its own denominator, on success
+ * as well as on failure, so nobody has to reverse-engineer what it examined.
+ *
+ * `noStory`  — spec resolves no Histoire slug at all. Expected and legitimate
+ *              for the marketing/docs specs, which live in the same folder
+ *              but drive the Nuxt site (`/components`, `/theming`, …) under a
+ *              different config; they are listed, not silently dropped.
+ * `noTitles` — spec targets a story but never navigates by title. These
+ *              navigate POSITIONALLY (`?variantId=<slug>-<N>`); nothing here
+ *              can check them, and saying so is the point — they are the
+ *              province of `audit-variant-pins.mjs`, and the two guards
+ *              partition the suite rather than overlap.
+ */
+const coverage = { total: 0, audited: 0, noStory: [], noTitles: [], titlesChecked: 0 }
+
 const report = []
 for (const spec of specFiles) {
     const src = readFileSync(spec, 'utf8')
+    coverage.total++
     const slugs = [...slugsInSpec(src)]
-    if (!slugs.length) continue
+    if (!slugs.length) { coverage.noStory.push(relative(TESTS_ROOT, spec)); continue }
     const { titles: clicked, unresolved } = clickedTitlesOf(src)
-    if (!clicked.size && !unresolved.length) continue
+    if (!clicked.size && !unresolved.length) { coverage.noTitles.push(relative(TESTS_ROOT, spec)); continue }
+    coverage.audited++
+    coverage.titlesChecked += clicked.size
 
     const knownTitles = new Set()
     const unresolvedSlugs = []
@@ -415,9 +658,33 @@ for (const spec of specFiles) {
     }
 }
 
+/** Coverage banner — printed on EVERY run, pass or fail. */
+function printCoverage () {
+    const { total, audited, noStory, noTitles, titlesChecked } = coverage
+    const histoireSpecs = total - noStory.length
+    console.log(
+        `Couverture : ${audited}/${histoireSpecs} specs ciblant une story auditées `
+        + `(${titlesChecked} titres cliqués vérifiés) — sur ${total} specs au total.`
+    )
+    console.log(
+        `  ${noTitles.length} ciblent une story mais naviguent par index `
+        + `(?variantId=<slug>-N) : hors de portée d'un audit de TITRE, couvertes par `
+        + `audit-variant-pins.mjs.`
+    )
+    console.log(`  ${noStory.length} ne ciblent aucune story (specs marketing/docs).`)
+    if (SHOW_SKIPPED) {
+        for (const s of noTitles) console.log(`      [index] ${s}`)
+        for (const s of noStory) console.log(`      [non-story] ${s}`)
+    } else {
+        console.log('  (--skipped pour la liste nominative)')
+    }
+    console.log('')
+}
+
 if (AS_JSON) {
-    console.log(JSON.stringify(report, null, 2))
+    console.log(JSON.stringify({ coverage, report }, null, 2))
 } else {
+    printCoverage()
     if (!report.length) {
         console.log('✓ No variant-title drift — every clicked title exists in its story.')
     } else {
