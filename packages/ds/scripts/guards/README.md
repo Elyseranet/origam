@@ -49,6 +49,17 @@ Unlike the other four, this guard's detection is cross-validated against a
 runtime sweep rather than only reviewed: **precision 100 %** (0 false
 positives over 1 317 flagged pairs), **recall 82.3 %**.
 
+**Baseline audited by sampling.** 30 entries drawn at random from the 1 663
+(seeded, reproducible) and checked one by one: **30 inert, 0 false
+positives**. 22 already carried a runtime verdict from the sweep; the other
+8 were settled individually — 4 by runtime mount (see
+`packages/tests/audit/sample-verification.spec.ts`, which had to wrap
+`OrigamMain` in an `OrigamLayout` to get past the layout injection), and 4
+by showing the identifier occurs nowhere in `src/` outside the interface
+that declares it. Observed error rate 0 %; with n=30 and 0 errors the
+95 % upper bound is ≈10 % (rule of three), so the honest claim is "no
+false positive found in 30", not "there are none".
+
 ⚠️ Its first baseline was 3 340 and was wrong — half of it was props
 FORWARDED to a child through `filterProps(props, …)`, which the detector
 mis-classified as a local read. The correction is documented in the script
