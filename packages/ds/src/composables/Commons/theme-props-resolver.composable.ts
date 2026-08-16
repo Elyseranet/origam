@@ -227,6 +227,79 @@ import { camelize } from './defaults.composable'
 // the upgrade warning below. Pinned by an `it.fails` test so it cannot go
 // dormant.
 //
+// ### Why the gap is NOT closed by "installing the accessor before `setup()`"
+//
+// That is the obvious idea, and it would close the gap for free: a `watch()`
+// created in `setup()` would run its eager getter THROUGH our accessor, touch
+// the `defaults` ref, and subscribe channel (b) — no sentinel, no second
+// internals dependency. It was investigated against Vue 3.5.39 and the answer
+// is that NO SUCH HOOK EXISTS. Do not re-run this investigation.
+//
+// A plugin's entire reach over an app is `App` + `AppContext`: `use`, `mixin`,
+// `component`, `directive`, `mount`, `unmount`, `onUnmount`, `provide`,
+// `runWithContext`, and the 10 fields of `AppConfig` (`isNativeTag`,
+// `performance`, `optionMergeStrategies`, `globalProperties`, `errorHandler`,
+// `warnHandler`, `compilerOptions`, `isCustomElement`, `warnRecursiveComputed`,
+// `throwUnhandledErrorInProduction`, `idPrefix`). None of them is a
+// per-instance callback. The only per-instance callbacks a plugin can install
+// app-wide are options-API lifecycle hooks via `app.mixin`, and MEASURED order
+// for one instance is:
+//
+//     mixin `props` getter → setup() → beforeCreate → created
+//                          → onBeforeMount → onVnodeBeforeMount → render
+//
+// Every candidate, and why each fails:
+//
+//   - `app.mixin({ beforeCreate })` — invoked from `applyOptions`, which
+//     `finishComponentSetup` calls strictly AFTER `setupStatefulComponent`
+//     has run `setup()`. This is the current hook; it cannot be moved earlier.
+//   - `onVnodeBeforeMount` (and every other vnode hook) — for a COMPONENT
+//     vnode it fires inside `componentUpdateFn`, i.e. after `setupComponent`.
+//     Measured to land after `onBeforeMount`. It is also unreachable: it lives
+//     in the PARENT's `vnode.props`, which a plugin does not author.
+//   - `app.mixin({ props })` — global mixin props ARE merged early, by
+//     `normalizePropsOptions` inside `createComponentInstance` (before
+//     `setup()`). But the result is cached in `appContext.propsCache` PER
+//     COMPONENT TYPE: measured 2 getter calls for 3 instances. There is no
+//     per-instance callback here, and a component's own `props` overwrite the
+//     mixin's (`extend(normalized, props)` runs mixins first), so this cannot
+//     override a declared prop's default either.
+//   - a mixin prop whose `default` is a FACTORY — the one route that genuinely
+//     runs per instance before `setup()` (`resolvePropValue`, called from
+//     `initProps`). It still fails, on four counts, all measured: inside the
+//     factory `getCurrentInstance()` returns the PARENT instance, not this one;
+//     `inject()` therefore resolves against the wrong provides chain and
+//     returns the default (so `ORIGAM_DEFAULTS_KEY` is unreachable and
+//     `<OrigamThemeProvider scoped>` would break); the component name is not
+//     derivable; and the raw props object is still EMPTY at that moment, so the
+//     `if (!(key in rawProps)) continue` guard that stops a theme rewiring
+//     fallthrough attrs becomes impossible. It would also add a phantom prop to
+//     all 217 components plus a factory call per instance per mount.
+//   - `app.config.optionMergeStrategies` — only consulted by
+//     `resolveMergedOptions`, whose only callers are `applyOptions`, the
+//     `$options` getter, and template resolution. All after `setup()`. And
+//     `setupStatefulComponent` reads `setup` off the RAW component, never off
+//     merged options, so a merged `setup` would never be invoked (`setup` is
+//     not in `internalOptionMergeStrats` either — mixins cannot supply one).
+//   - `app.directive` — global directives only apply where a template writes
+//     `v-xxx`, and their hooks run against the rendered element anyway.
+//
+// The one remaining route is NOT a Vue hook: `createOrigam` both registers and
+// exports the component objects, so it could WRAP `Component.setup` at install
+// time to install the accessor first. Rejected on coverage, not on taste — a
+// theme's `global` block applies to EVERY component, including a consumer's
+// own, and a theme may name any kebab component name. This hook matches on
+// `getCurrentInstanceName()`, not on origam registration, and every spec in
+// `theme-props-resolver.spec.ts` exercises it against consumer stand-ins
+// (`FakeCard`, `SwapCard`) that are never passed to `app.component`. Wrapping
+// origam's own registry would cover the 217 and silently lose everyone else,
+// so it would have to run ALONGSIDE the mixin — two mechanisms instead of one,
+// plus mutation of shared module singletons (multi-app, HMR, import order).
+// Strictly more fragile than the sentinel it was meant to avoid.
+//
+// Conclusion: closing the gap requires the sentinel described above, or
+// nothing. It is a real trade-off, not an oversight.
+//
 // ## Known limitation — a prop read ONCE, synchronously, inside `setup()`
 //
 // `beforeCreate` (where this hook installs the getter/setter) fires AFTER
