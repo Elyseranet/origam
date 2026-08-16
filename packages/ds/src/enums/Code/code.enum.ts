@@ -30,9 +30,11 @@ export enum CODE_LANG {
  * `AUTO` follows the host page's `<html data-theme="…">` attribute (or the
  * `prefers-color-scheme` media query when no attribute is set). `LIGHT`
  * and `DARK` force a specific shiki theme regardless of the page theme.
+ *
+ * The value set is the transverse `COLOR_MODE` vocabulary — re-exported
+ * under its historical name rather than redeclared, so the two lists
+ * cannot drift apart. `CODE_THEME.AUTO`, `` `${CODE_THEME}` `` and
+ * `import { CODE_THEME } from 'origam/enums'` all keep working
+ * unchanged.
  */
-export enum CODE_THEME {
-    AUTO = 'auto',
-    LIGHT = 'light',
-    DARK = 'dark'
-}
+export { COLOR_MODE as CODE_THEME } from '../Commons/theme.enum'

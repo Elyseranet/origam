@@ -1,4 +1,4 @@
-import { BLOCK, INLINE } from '../../enums'
+import { BLOCK, BORDER_LOGICAL_AXIS, INLINE } from '../../enums'
 import type { TBorderLogicalAxis } from '../../types'
 
 /**
@@ -52,6 +52,6 @@ export const BORDER_POSITION_MAP = [
  * unlike `BORDER_POSITION_MAP` there is no `colorProp` here.
  */
 export const BORDER_LOGICAL_AXIS_MAP: ReadonlyArray<{ axis: TBorderLogicalAxis, widthProp: 'borderBlock' | 'borderInline' }> = [
-    {axis: 'block', widthProp: 'borderBlock'},
-    {axis: 'inline', widthProp: 'borderInline'},
+    {axis: BORDER_LOGICAL_AXIS.BLOCK, widthProp: 'borderBlock'},
+    {axis: BORDER_LOGICAL_AXIS.INLINE, widthProp: 'borderInline'},
 ] as const

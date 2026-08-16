@@ -1,5 +1,6 @@
 import { OrigamEmptyState } from '../../components'
 import { EMPTY_STATE_PRESET } from '../../enums'
+import type { TTextAlign } from '../Commons/align.type'
 import type { TRoundedToken } from '../Commons/rounded.type'
 
 export type TOrigamEmptyState = InstanceType<typeof OrigamEmptyState>
@@ -27,8 +28,12 @@ export type TEmptyStatePreset = `${EMPTY_STATE_PRESET}`
  *              Best for full-page or full-section placeholders.
  * - `left`   — left-aligned stack. Best for narrow side panels or list
  *              empty zones where the surrounding content is left-aligned.
+ *
+ * Narrows the Commons `TTextAlign` vocabulary rather than redeclaring
+ * the strings — `right` is excluded on purpose (no design token drives
+ * a right-aligned empty state).
  */
-export type TEmptyStateAlign = 'center' | 'left'
+export type TEmptyStateAlign = Exclude<TTextAlign, 'right'>
 
 /**
  * Vertical density of `<OrigamEmptyState>`. Drives icon size + title /

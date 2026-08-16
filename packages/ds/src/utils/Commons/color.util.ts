@@ -31,6 +31,8 @@ import {
     SRGB_REVERSE_TRANSFORM
 } from '../../consts'
 
+import { BG_FG_ROLE } from '../../enums/Commons/color.enum'
+
 import type { TBgFgRole, TColor, TColorType, THex, THSLA, THSVA, TIntent, TLAB, TRGBA, TXYZ } from '../../types'
 
 // Direct imports from sibling util files (NOT the barrel) to avoid a
@@ -689,7 +691,7 @@ export function intentFgExpr (intent: TIntent, role: TBgFgRole): string {
  * Build the CSS-vars override map for an intent (foreground + background)
  * for a given interaction state.
  */
-export function tokenStylesForIntent (intent: TIntent, role: TBgFgRole = 'default'): Record<string, string> {
+export function tokenStylesForIntent (intent: TIntent, role: TBgFgRole = BG_FG_ROLE.DEFAULT): Record<string, string> {
     return {
         'background-color': intentBgExpr(intent, role),
         color: intentFgExpr(intent, role),

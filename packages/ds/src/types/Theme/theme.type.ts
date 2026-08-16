@@ -1,3 +1,5 @@
+import { COLOR_MODE } from '../../enums'
+
 /**
  * Runtime theme (brand) name applied to `<html data-theme="…">` (or to a
  * sub-tree via `<OrigamThemeProvider>`).
@@ -12,7 +14,7 @@
  * - any other string is treated as a custom theme (e.g. `'brand-a'`) — the
  *   matching CSS file must be loaded by the consumer.
  */
-export type TTheme = 'auto' | 'light' | 'dark' | (string & {})
+export type TTheme = `${COLOR_MODE}` | (string & {})
 
 /**
  * Concrete (resolved) theme — what `data-theme` actually equals after
@@ -33,7 +35,7 @@ export type TThemeResolved = Exclude<TTheme, 'auto'>
  * - `'light'` : forced light mode.
  * - `'dark'`  : forced dark mode.
  */
-export type TMode = 'auto' | 'light' | 'dark'
+export type TMode = `${COLOR_MODE}`
 
 /**
  * Concrete (resolved) mode — what `data-mode` actually equals after

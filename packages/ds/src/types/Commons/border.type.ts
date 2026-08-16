@@ -1,4 +1,4 @@
-import { BORDER_STYLE } from '../../enums'
+import { BORDER_LOGICAL_AXIS, BORDER_STYLE } from '../../enums'
 
 export type TBorderStyle = `${BORDER_STYLE}`
 
@@ -11,4 +11,4 @@ export type TBorderStyle = `${BORDER_STYLE}`
  * the correct physical edges per the current writing mode (no manual
  * LTR/RTL translation needed on our side).
  */
-export type TBorderLogicalAxis = 'block' | 'inline'
+export type TBorderLogicalAxis = `${BORDER_LOGICAL_AXIS}`

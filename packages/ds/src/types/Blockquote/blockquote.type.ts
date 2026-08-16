@@ -1,6 +1,6 @@
 import { OrigamBlockquote } from '../../components'
 
-import { BLOCKQUOTE_LANG, BLOCKQUOTE_VARIANT } from '../../enums'
+import { BLOCKQUOTE_LANG, BLOCKQUOTE_VARIANT, TEXT_ALIGN } from '../../enums'
 
 export type TOrigamBlockquote = InstanceType<typeof OrigamBlockquote>
 
@@ -8,10 +8,7 @@ export type TOrigamBlockquote = InstanceType<typeof OrigamBlockquote>
  * Horizontal alignment of the citation body. `pull` variant defaults to
  * `'center'`; every other variant defaults to `'left'`.
  */
-export type TBlockquoteAlign =
-    | 'left'
-    | 'center'
-    | 'right'
+export type TBlockquoteAlign = `${TEXT_ALIGN}`
 
 /**
  * Locale hint for `<OrigamBlockquote>` decorative quote marks. Only

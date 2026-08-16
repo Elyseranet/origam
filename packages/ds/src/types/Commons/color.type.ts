@@ -1,3 +1,5 @@
+import { BG_FG_ROLE } from '../../enums'
+
 import type { IGradient } from '../../interfaces/Commons/gradient.interface'
 
 /**
@@ -38,4 +40,4 @@ export type TColorType = string | number | THSVA | TRGBA | THSLA
  *   • `active`   → cascading `var(bgActive, color-mix(bg, black 30%))`
  *   • `disabled` → resting `bgDisabled` token (per-intent)
  */
-export type TBgFgRole = 'default' | 'hover' | 'active' | 'disabled'
+export type TBgFgRole = `${BG_FG_ROLE}`

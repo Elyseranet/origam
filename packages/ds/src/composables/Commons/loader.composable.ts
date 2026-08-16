@@ -1,4 +1,5 @@
 import { computed, type ComputedRef } from 'vue'
+import { LOADER_KIND } from '../../enums'
 import type { ILoaderProps } from '../../interfaces'
 import type { TLoaderConfig, TLoaderKind } from '../../types'
 import { getCurrentInstanceName } from '../../utils'
@@ -49,7 +50,7 @@ export interface IResolvedLoader {
  ********************************************************/
 export function useLoader (
     props: ILoaderProps,
-    defaultKind: TLoaderKind = 'circular',
+    defaultKind: TLoaderKind = LOADER_KIND.CIRCULAR,
     name = getCurrentInstanceName()
 ): {
     loaderClasses: ComputedRef<Record<string, boolean>>
