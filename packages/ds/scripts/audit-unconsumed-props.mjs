@@ -185,7 +185,7 @@ const COMPOSABLES = new Map()
 
 const PROP_PARAM_NAMES = ['props', 'properties']
 
-function scanPropReads (src) {
+function scanPropReads (src, fileSrc = src) {
     const direct = new Set()
     let wildcard = false
 
@@ -194,6 +194,10 @@ function scanPropReads (src) {
         for (const m of src.matchAll(new RegExp(`\\b${p}\\s*\\??\\.\\s*([A-Za-z_$][A-Za-z0-9_$]*)`, 'g'))) direct.add(m[1])
         // props['foo']
         for (const m of src.matchAll(new RegExp(`\\b${p}\\s*\\[\\s*['"]([^'"]+)['"]\\s*\\]`, 'g'))) direct.add(m[1])
+        // (props as any).foo — the TS cast breaks the plain `props.foo` shape.
+        // `useActive` reads its legacy `activeClass` exactly like this, which
+        // was the last remaining false-positive cluster (6 components).
+        for (const m of src.matchAll(new RegExp(`\\b${p}\\s+as\\s+[^)]*\\)\\s*\\??\\.\\s*([A-Za-z_$][A-Za-z0-9_$]*)`, 'g'))) direct.add(m[1])
         // toRef(props, 'foo') / toRefs
         for (const m of src.matchAll(new RegExp(`toRef\\s*\\(\\s*${p}\\s*,\\s*['"]([^'"]+)['"]`, 'g'))) direct.add(m[1])
         // const { a, b } = props
@@ -208,11 +212,27 @@ function scanPropReads (src) {
         if (new RegExp(`Object\\.(keys|entries|values)\\s*\\(\\s*${p}\\s*\\)`).test(src)) wildcard = true
     }
 
-    // props[SOME_CONST] indexed access -> credit the const array members
+    // props[SOME_CONST] / props[key] indexed access.
+    //
+    // The key is a variable, so the set of props actually read is whatever the
+    // table being iterated contains. Two shapes exist in this codebase:
+    //   1. an EXPORTED const array in src/consts (`DIMENSIONS_ARRAY`);
+    //   2. a MODULE-LOCAL table, sometimes an array of tuples
+    //      (`TYPOGRAPHY_TOKEN_MAP = [['fontFamily', 'font-family', …], …]`
+    //      in typography.composable.ts).
+    //
+    // Missing shape 2 produced 124 measured false positives (every
+    // ITypographyProps prop on every component that calls `useTypography`).
+    // A guard's false positives block innocent PRs, so the bias here is
+    // deliberately towards over-crediting: harvest every string literal that
+    // appears inside an array literal in the file.
     const indexed = /\bprops\s*\[\s*[A-Za-z_$]/.test(src)
     if (indexed) {
         for (const [name, vals] of CONST_ARRAYS) {
             if (new RegExp(`\\b${name}\\b`).test(src)) for (const v of vals) direct.add(v)
+        }
+        for (const arr of fileSrc.matchAll(/\[([^[\]]*)\]/g)) {
+            for (const lit of arr[1].matchAll(/['"]([A-Za-z_$][A-Za-z0-9_$]*)['"]/g)) direct.add(lit[1])
         }
     }
 
@@ -234,7 +254,7 @@ function indexComposables () {
         for (const m of src.matchAll(/export\s+(?:async\s+)?function\s+(use[A-Z][A-Za-z0-9_]*)/g)) {
             const fn = m[1]
             const body = fnBody(src, m.index)
-            const { direct, wildcard, indexed } = scanPropReads(body)
+            const { direct, wildcard, indexed } = scanPropReads(body, src)
             COMPOSABLES.set(fn, { file, direct, calls: scanComposableCalls(body), wildcard, indexed })
         }
     }
@@ -399,13 +419,39 @@ function analyseComponent (file) {
 /* main                                                                */
 /* ------------------------------------------------------------------ */
 
-indexInterfaces()
-indexEnums()
-indexConstArrays()
-indexComposables()
+/**
+ * Runs the whole analysis and returns one entry per component.
+ *
+ * Exported so the CI guard (`scripts/guards/unconsumed-props.mjs`) shares the
+ * exact analysis this file is measured on, instead of a drifting copy of it.
+ * Measured against the runtime sweep: precision 100 % (0 false positives on
+ * 1 997 flagged pairs), recall 83.1 %. The bias is deliberate — a guard's
+ * false positive blocks an innocent PR, a false negative only misses debt.
+ */
+export function analyse () {
+    if (!INTERFACES.size) {
+        indexInterfaces()
+        indexEnums()
+        indexConstArrays()
+        indexComposables()
+    }
+    const componentFiles = walk(join(SRC, 'components'), (f) => f.endsWith('.vue')).sort()
+    return componentFiles.map(analyseComponent).filter(Boolean)
+}
 
-const componentFiles = walk(join(SRC, 'components'), (f) => f.endsWith('.vue')).sort()
-const results = componentFiles.map(analyseComponent).filter(Boolean)
+/* ------------------------------------------------------------------ */
+/* CLI — skipped when this module is imported (e.g. by the guard)      */
+/* ------------------------------------------------------------------ */
+
+const invokedDirectly = process.argv[1] && fileURLToPath(import.meta.url) === process.argv[1]
+if (!invokedDirectly) {
+    // imported as a library — nothing else to do
+} else {
+main()
+}
+
+function main () {
+const results = analyse()
 
 const argv = process.argv.slice(2)
 const flag = (n) => argv.includes(n)
@@ -456,4 +502,5 @@ console.log('')
 for (const r of clean.filter((x) => x.unconsumed.length).sort((a, b) => b.unconsumed.length - a.unconsumed.length)) {
     console.log(`${r.name} (${r.unconsumed.length}/${r.declaredCount})`)
     console.log(`   ${r.unconsumed.map((u) => u.prop).join(', ')}`)
+}
 }

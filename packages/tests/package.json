@@ -12,6 +12,7 @@
     "test:unit:run": "vitest --run",
     "test:run": "vitest --run",
     "test:coverage": "vitest --run --coverage",
+    "audit:inert-props": "node audit/run-inert-props-audit.mjs",
     "test:e2e": "playwright test",
     "test:e2e:audit": "node e2e/_support/audit-variant-titles.mjs",
     "test:e2e:audit:pins": "node e2e/_support/audit-variant-pins.mjs",

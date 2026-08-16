@@ -19,7 +19,8 @@ const GUARDS = [
     'no-declarations-in-vue.mjs',
     'no-variant-css.mjs',
     'instance-types.mjs',
-    'file-naming.mjs'
+    'file-naming.mjs',
+    'unconsumed-props.mjs'
 ]
 
 let failed = 0

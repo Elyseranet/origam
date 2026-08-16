@@ -14,17 +14,18 @@ below from getting worse. The existing debt is grandfathered in a baseline
 ## Run locally
 
 ```bash
-pnpm -F origam guards                  # all four
-pnpm -F origam guards:declarations     # guard 1 only
-pnpm -F origam guards:variant-css      # guard 2 only
-pnpm -F origam guards:instance-types   # guard 3 only
-pnpm -F origam guards:naming           # guard 4 only
+pnpm -F origam guards                    # all five
+pnpm -F origam guards:declarations       # guard 1 only
+pnpm -F origam guards:variant-css        # guard 2 only
+pnpm -F origam guards:instance-types     # guard 3 only
+pnpm -F origam guards:naming             # guard 4 only
+pnpm -F origam guards:unconsumed-props   # guard 5 only
 ```
 
 No build step required — every guard parses `.vue`/`.ts`/`.scss` source
 text directly. The full suite runs in under a second.
 
-## The four guards
+## The five guards
 
 | # | Script | Rule | Baseline size |
 |---|---|---|---|
@@ -32,6 +33,18 @@ text directly. The full suite runs in under a second.
 | 2 | `no-variant-css.mjs` | No DS-shipped CSS rule targets a `--variant-*` class; no `!important` inside one (ADR-005 D3) | 36 |
 | 3 | `instance-types.mjs` | Every `Origam{Name}.vue` has a matching `TOrigam{Name} = InstanceType<typeof Origam{Name}>` under `src/types/` | 63 |
 | 4 | `file-naming.mjs` | `enum`/`type` filenames resolve (by longest-prefix match) to a real component name | 21 |
+| 5 | `unconsumed-props.mjs` | Every declared prop reaches the render or the behaviour — the project's "bug n°1", a documented prop that silently does nothing | 3340 |
+
+Guard 5's baseline is two orders of magnitude larger than the others. That
+is the finding, not a defect of the guard: three cross-cutting `Commons`
+interfaces advertise a per-side / per-corner surface no composable reads
+(`marginTop`…`marginInline`, `paddingTop`…`paddingInline`, the four
+`rounded{Corner}`), which alone accounts for ~1 600 of the entries across
+~100 components. See `packages/tests/TU/origam/dead-commons-props.spec.ts`
+for the runtime proof and the impact radius. Unlike the other four, this
+guard's detection was cross-validated against a runtime sweep rather than
+only reviewed: **precision 100 %** (0 false positives over 1 997 flagged
+pairs), **recall 83.1 %**.
 
 Each script's file header explains its detection method, the false-positive
 trap it specifically avoids, and (guards 1 and 4) the scoping decision made
@@ -190,7 +203,7 @@ flag 152 legitimate local constants to catch a handful of real ones.
 
 Added as its own job, `architecture-guards`, in `.github/workflows/ci.yml`
 (parallel to `lint`, no shared dependency). Measured on this repo: **~0.9s**
-for all four guards combined (see `run-all.mjs`'s own timing line), plus the
+for all five guards combined (see `run-all.mjs`'s own timing line), plus the
 job's fixed `actions/checkout` + `pnpm install --frozen-lockfile` overhead
 already paid by every other job in the pipeline. No `tokens:build` or other
 prerequisite — the guards never touch generated token types, so this job

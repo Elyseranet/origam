@@ -38,7 +38,7 @@ Object.defineProperty(window, 'matchMedia', {
     }))
 })
 
-const modules = import.meta.glob('../../../ds/src/components/**/*.vue', { eager: true }) as Record<
+const modules = import.meta.glob('../../ds/src/components/**/*.vue', { eager: true }) as Record<
     string,
     { default: any }
 >
@@ -276,6 +276,9 @@ describe('runtime sweep — declared props that produce no DOM difference', () =
     it.each(['margin', 'padding', 'rounded', 'border'])(
         'CONTROL — %s is detected as live on at least 30 components',
         (prop) => {
+            // Shards probe disjoint prop sets; a control prop absent from THIS
+            // shard has nothing to say about the instrument's health.
+            if (!propFilter.includes(prop)) return
             const live = rows.filter((r) => r.prop === prop && r.verdict === 'live')
             expect(live.length).toBeGreaterThanOrEqual(30)
         }

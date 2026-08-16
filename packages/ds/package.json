@@ -111,6 +111,7 @@
     "guards:variant-css": "node scripts/guards/no-variant-css.mjs",
     "guards:instance-types": "node scripts/guards/instance-types.mjs",
     "guards:naming": "node scripts/guards/file-naming.mjs",
+    "guards:unconsumed-props": "node scripts/guards/unconsumed-props.mjs",
     "prepublishOnly": "pnpm run build",
     "prepack": "node -e \"require('fs').copyFileSync('../../CHANGELOG.md','CHANGELOG.md')\""
   },
