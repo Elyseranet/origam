@@ -9,8 +9,13 @@ import { expect, test } from '@playwright/test'
  *   1  → Functional
  *   2  → Prop — fullHeight
  *   3  → Prop — drawer (with Drawer child)
- *   4  → Slots - Default
- *   5  → Default (playground)
+ *   4  → Prop — app-bar + drawer (layout order)
+ *   5  → Slots - Default
+ *   6  → Default (playground)
+ *
+ * ⚠️  Cette table décale dès qu'un <Variant> est inséré dans la story :
+ * `variantId` vaut `<storyId>-<index>` et l'index est la POSITION dans le
+ * fichier. Elle est vérifiée par `node e2e/_support/audit-variant-pins.mjs`.
  */
 
 const STORY_ID   = 'components-stories-app-origamapp-story-vue'

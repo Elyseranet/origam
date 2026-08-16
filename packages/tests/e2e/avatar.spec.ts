@@ -16,7 +16,19 @@ import { expect, test } from '@playwright/test'
  *   6  → Slots - Avatar
  *   7  → Slots - Icon
  *   8  → Slots - Text
- *   9  → Default (playground)
+ *   9  → Prop — content (text · image · icon)
+ *  10  → Prop — size
+ *  11  → Prop — density
+ *  12  → Prop — rounded
+ *  13  → Prop — elevation
+ *  14  → Prop — border
+ *  15  → Prop — tag
+ *  16  → Default (playground)
+ *
+ * ⚠️  `variantId` vaut `<storyId>-<index>` et l'index est la POSITION du
+ * <Variant> dans le fichier : insérer un Variant décale tous les suivants
+ * sans casser la navigation. Table vérifiée par
+ * `node e2e/_support/audit-variant-pins.mjs`.
  *
  * ⚠️  JAMAIS waitForLoadState('networkidle') : Histoire garde un websocket HMR
  * ouvert → networkidle ne résout JAMAIS → timeout garanti.
@@ -242,12 +254,18 @@ test.describe('OrigamAvatar', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // DEFAULT / PLAYGROUND (index 9)                                      //
+    // DEFAULT / PLAYGROUND (index 16)                                     //
     // init: { text: 'AP', bgColor: 'primary' }                           //
+    //                                                                     //
+    // Était `variantUrl(9)`. Sept Variants « Prop — … » ont été insérés   //
+    // avant le playground, qui est passé de l'index 9 à 16. Le test       //
+    // continuait de PASSER en visant l'index 9 (« Prop — content »), dont //
+    // le premier avatar affiche aussi 'AP' avec bg-color="primary" en dur //
+    // dans le template — vert, et n'observant pas le playground.          //
     // ------------------------------------------------------------------ //
 
     test('Default (playground) — text "AP", bgColor primary, hover wired', async ({ page }) => {
-        await page.goto(variantUrl(9))
+        await page.goto(variantUrl(16))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const avatar = sandbox.locator('.origam-avatar').first()
         await expect(avatar).toBeVisible({ timeout: 20000 })
