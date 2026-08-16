@@ -3,6 +3,9 @@ import { expect, test } from '@playwright/test'
 /**
  * OrigamBottomNav — `shift` mode non-regression.
  *
+ * Variants visités (index → titre, 0-based, ordre des <Variant> dans la story) :
+ *   0 → Design
+ *
  * Bug fixed: `.origam-bottom-nav--shift` was meant to fade/slide the label of
  * every NON-selected button, but two independent defects in
  * `OrigamBottomNav.vue`'s scoped SCSS made it a no-op:

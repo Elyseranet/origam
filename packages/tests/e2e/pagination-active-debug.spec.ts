@@ -4,6 +4,10 @@ import { test, expect } from '@playwright/test'
  * Pattern canonique — navigation directe par variantId (cf. btn.spec.ts).
  * JAMAIS networkidle (Histoire garde un WS HMR ouvert → timeout garanti).
  *
+ * Variants visités (index → titre, 0-based) :
+ *   15 → Color — default vs primary
+ *   21 → Default
+ *
  * Variant utilisé : Default (playground, index 21) — expose
  * toujours au moins un OrigamPagination, idéal pour auditer les styles
  * actif/inactif sans dépendre d'un nommage de variant fragile.

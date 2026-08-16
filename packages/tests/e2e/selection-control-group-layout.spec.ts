@@ -5,6 +5,9 @@ import { expect, test } from '@playwright/test'
  *
  * Story URL: /stories/story/components-stories-selectioncontrol-origamselectioncontrolgroup-story-vue
  *
+ * Variants visités (index → titre, 0-based, ordre des <Variant> dans la story) :
+ *   0 → Design
+ *
  * Regression coverage for a bug where `.origam-selection-control-group`
  * shipped zero `<style>` block (confirmed absent since the file's very
  * first commit — never a refactor regression, an unfinished

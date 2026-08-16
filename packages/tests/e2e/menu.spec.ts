@@ -16,6 +16,7 @@ import { expect, FrameLocator, test } from '@playwright/test'
  *     4  → Slots - Activator           items=defaultItems, #activator custom btn
  *     5  → Slots - Default             #default custom <ul> markup
  *     6  → Default (playground)        openOnClick=true, items=defaultItems
+ *     7  → Nested submenu              items porteurs d'itemChildren
  *
  * ## DOM / floating
  *

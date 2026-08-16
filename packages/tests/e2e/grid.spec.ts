@@ -9,15 +9,15 @@ import { expect, test } from '@playwright/test'
  *   variantId = STORY_ID + '-' + index  (0-based, StoryGroup ≠ Variant)
  *
  *   Variants (index → titre) :
- *     0  Design
- *     1  Functional
- *     2  Slots - Default
- *     3  Prop — columns
- *     4  Prop — areas
- *     5  Prop — gap
- *     6  Prop — autoFlow
- *     7  Sub-component — OrigamGridItem
- *     8  Default  (playground)
+ *     0  → Design
+ *     1  → Functional
+ *     2  → Slots - Default
+ *     3  → Prop — columns
+ *     4  → Prop — areas
+ *     5  → Prop — gap
+ *     6  → Prop — autoFlow
+ *     7  → Sub-component — OrigamGridItem
+ *     8  → Default  (playground)
  *
  * ## Sélection du composant
  *

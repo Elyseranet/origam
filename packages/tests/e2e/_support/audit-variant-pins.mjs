@@ -69,6 +69,7 @@ const STORIES_PKG = join(TESTS_ROOT, '..', 'stories')
 const argv = process.argv.slice(2)
 const AS_JSON = argv.includes('--json')
 const SHOW_COVERAGE = argv.includes('--coverage')
+const SHOW_BLIND = argv.includes('--blind')
 
 function walk (dir, pred, acc = []) {
     for (const name of readdirSync(dir)) {
@@ -230,7 +231,14 @@ function claimsInSpec (src) {
     const inits = new Map()
     let m
 
-    const reArrow = /^[ \t]*\*?[ \t]*(\d+)[ \t]*(?:→|->)[ \t]*(.+?)[ \t]*$/gm
+    // `//`-style line comments are accepted alongside `*` JSDoc rows: the repo
+    // writes its index tables both ways, and slider-field.spec.ts carried a
+    // COMPLETE and CORRECT `// 0  → Design` table that this regex could not
+    // reach — 12 references reported as undocumented while the documentation
+    // was sitting right there. The discriminator stays the `N → Titre` shape,
+    // which prose does not have; allowing the comment marker does not widen
+    // what qualifies as a row, only where a row may live.
+    const reArrow = /^[ \t]*(?:\/\/+|\*)?[ \t]*(\d+)[ \t]*(?:→|->)[ \t]*(.+?)[ \t]*$/gm
     while ((m = reArrow.exec(src)) !== null) {
         const i = Number(m[1])
         if (!titles.has(i)) titles.set(i, m[2].trim())
@@ -373,6 +381,38 @@ function selfTest () {
         }
     ]
 
+    /**
+     * Cases on `claimsInSpec` itself — where the table is READ, as opposed to
+     * `compareIndex` above, where it is compared. A table the parser cannot
+     * reach is indistinguishable from a table that does not exist: the
+     * reference is reported as undocumented and nobody is accused, so the gap
+     * is invisible in the findings. slider-field.spec.ts sat in exactly that
+     * state with a complete, correct `//`-comment table and 12 references
+     * counted as blind.
+     */
+    const claimCases = [
+        {
+            name: 'tableau en commentaire JSDoc ( * N → Titre) → lu',
+            src: '/**\n *   0  → Design\n *   1  → Functional\n */',
+            want: [[0, 'Design'], [1, 'Functional']]
+        },
+        {
+            name: 'tableau en commentaire de ligne (// N → Titre) → lu',
+            src: '// 0  → Design\n// 1  → Functional\n',
+            want: [[0, 'Design'], [1, 'Functional']]
+        },
+        {
+            name: 'flèche ASCII (->) → lue comme →',
+            src: '// 3 -> Slots - Default\n',
+            want: [[3, 'Slots - Default']]
+        },
+        {
+            name: 'séparateur ESPACE (ancienne forme maison) → NON lu, jamais deviné',
+            src: '/**\n *  0  Design\n */',
+            want: []
+        }
+    ]
+
     let failed = 0
     for (const c of cases) {
         const { findings, unverifiable } = compareIndex(c.input)
@@ -384,7 +424,17 @@ function selfTest () {
         console.log(`${ok ? '✓' : '✗'} ${c.name}`)
         if (!ok) console.log(`    attendu ${c.wantFindings} finding(s)${c.wantKind ? ' ' + c.wantKind : ''}, obtenu ${findings.length} [${findings.map((f) => f.kind).join(',')}], unverifiable=${unverifiable.length}`)
     }
-    console.log(`\n${cases.length - failed}/${cases.length} cas de contrôle OK`)
+    for (const c of claimCases) {
+        const got = [...claimsInSpec(c.src).titles.entries()]
+        const ok = got.length === c.want.length
+            && c.want.every(([i, t]) => got.some(([gi, gt]) => gi === i && gt === t))
+        if (!ok) failed++
+        console.log(`${ok ? '✓' : '✗'} ${c.name}`)
+        if (!ok) console.log(`    attendu ${JSON.stringify(c.want)}, obtenu ${JSON.stringify(got)}`)
+    }
+
+    const total = cases.length + claimCases.length
+    console.log(`\n${total - failed}/${total} cas de contrôle OK`)
     return failed ? 1 : 0
 }
 
@@ -397,6 +447,22 @@ function run () {
     const findings = []
     const unverifiable = []
     const coverage = []
+    /**
+     * Index references this guard looks at but CANNOT decide, because the spec
+     * documents no `N → Titre` for them. They are the guard's own blind spots
+     * and they are listed by name, not merely counted: a reference nobody can
+     * name is a reference nobody will ever fix.
+     */
+    const blind = []
+    /**
+     * References it never even reaches: a spec targeting SEVERAL stories has no
+     * unambiguous index→story mapping, so the whole spec is skipped before any
+     * reference is counted. `refsChecked` therefore excludes them entirely —
+     * they are invisible to the headline ratio, which is exactly the shape of
+     * under-reporting this file exists to avoid.
+     */
+    let refsUnattributable = 0
+    let specsUnattributable = 0
     let specsBound = 0, refsChecked = 0, titlesChecked = 0, pinsChecked = 0
 
     for (const sf of walk(E2E_DIR, (f) => f.endsWith('.spec.ts'))) {
@@ -408,6 +474,8 @@ function run () {
         const slugs = slugsInSpec(src)
         if (slugs.length !== 1) {
             unverifiable.push({ spec: rel, why: `${slugs.length} story slugs pour ${idxs.length} index — l'index ne peut pas être attribué sans ambiguïté` })
+            specsUnattributable++
+            refsUnattributable += idxs.length
             continue
         }
         const story = storyBySlug.get(slugs[0])
@@ -431,6 +499,7 @@ function run () {
 
             const ct = claimTitles.get(i)
             const ci = claimInits.get(i)
+            if (ct == null) blind.push({ spec: rel, index: i, realTitle: v.title })
             if (ct != null) titlesChecked++
             if (ci != null) pinsChecked += scalarPins(ci).pins.size
 
@@ -444,7 +513,13 @@ function run () {
     }
 
     if (AS_JSON) {
-        console.log(JSON.stringify({ findings, unverifiable, coverage, counts: { specsBound, refsChecked, titlesChecked, pinsChecked } }, null, 2))
+        console.log(JSON.stringify({
+            findings,
+            unverifiable,
+            coverage,
+            blind,
+            counts: { specsBound, refsChecked, titlesChecked, pinsChecked, refsUnattributable, specsUnattributable }
+        }, null, 2))
         return findings.length ? 1 : 0
     }
 
@@ -454,7 +529,13 @@ function run () {
     console.log(`références d'index vérifiées  : ${refsChecked}`)
     console.log(`  dont titre auto-documenté   : ${titlesChecked}`)
     console.log(`  dont pins auto-documentés   : ${pinsChecked}`)
+    console.log(`  SANS titre documenté        : ${blind.length}  ← aveugles : un décalage y passerait sans bruit`)
+    console.log(`références NON ATTRIBUABLES   : ${refsUnattributable} (${specsUnattributable} specs multi-stories, exclues du total ci-dessus)`)
     console.log('─'.repeat(70))
+    if (SHOW_BLIND) {
+        for (const b of blind) console.log(`  ? ${b.spec} [index ${b.index}] → "${b.realTitle}" (non documenté par la spec)`)
+        console.log('─'.repeat(70))
+    }
 
     if (!findings.length) {
         console.log('✓ Aucun désaccord index → titre / pins.')

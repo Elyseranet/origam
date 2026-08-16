@@ -7,33 +7,44 @@ import { expect, test } from '@playwright/test'
  * NEVER waitForLoadState('networkidle') — Histoire holds a WebSocket open.
  * Variant index map (0-based, matches grep -E '<Variant' in the story file):
  *
- *  0  Design
- *  1  State
- *  2  Functional
- *  3  Functional - Rich Mode
- *  4  Events - update:modelValue
- *  5  Events - focus
- *  6  Events - click:control
- *  7  Events - mousedown:control
- *  8  Events - update:height
- *  9  Events - format
- * 10  Slots - Default
- * 11  Slots - Prepend
- * 12  Slots - Append
- * 13  Slots - PrependInner
- * 14  Slots - AppendInner
- * 15  Slots - Clear
- * 16  Slots - Counter
- * 17  Slots - Details
- * 18  Slots - FloatingLabel
- * 19  Slots - Label
- * 20  Slots - Loader
- * 21  Slots - Message
- * 22  Slots - Messages
- * 23  Slots - Prefix
- * 24  Slots - Suffix
- * 25  Slots - Toolbar
- * 26  Default (playground)
+ *  0  → Design
+ *  1  → State
+ *  2  → Functional
+ *  3  → Functional - Rich Mode
+ *  4  → Mode — rich (HTML output)
+ *  5  → Mode — rich (Markdown output)
+ *  6  → Prop — toolbar (filtered)
+ *  7  → Events - update:modelValue
+ *  8  → Events - focus
+ *  9  → Events - click:control
+ * 10  → Events - mousedown:control
+ * 11  → Events - update:height
+ * 12  → Events - format
+ * 13  → Slots - Default
+ * 14  → Slots - Prepend
+ * 15  → Slots - Append
+ * 16  → Slots - PrependInner
+ * 17  → Slots - AppendInner
+ * 18  → Slots - Clear
+ * 19  → Slots - Counter
+ * 20  → Slots - Details
+ * 21  → Slots - FloatingLabel
+ * 22  → Slots - Label
+ * 23  → Slots - Loader
+ * 24  → Slots - Message
+ * 25  → Slots - Messages
+ * 26  → Slots - Prefix
+ * 27  → Slots - Suffix
+ * 28  → Slots - Toolbar
+ * 29  → Default
+ *
+ * Ce tableau était DÉCALÉ DE 3 à partir de l'index 4 : trois Variants
+ * ("Mode — rich (HTML output)", "Mode — rich (Markdown output)",
+ * "Prop — toolbar (filtered)") ont été insérés après "Functional - Rich Mode"
+ * et le code de navigation a suivi (il vise bien 7..29) — mais pas l'en-tête.
+ * Les tests assertaient donc contre les bons Variants tout en les documentant
+ * faux. Invisible au garde parce que le séparateur était une espace et non
+ * "→", la seule forme qu'il sache lire.
  *
  * Non-headless limitations documented inline where applicable.
  */

@@ -3,6 +3,9 @@ import { expect, test } from '@playwright/test'
 /**
  * OrigamSelectionControl — e2e spec
  *
+ * Variants visités (index → titre, 0-based, ordre des <Variant> dans la story) :
+ *   0 → Design
+ *
  * Two regressions covered here:
  *
  *  - #247: `.origam-selection-control` used to hardcode `grid-area: control`

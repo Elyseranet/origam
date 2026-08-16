@@ -4,6 +4,9 @@ import { test, expect } from '@playwright/test'
  * Pattern canonique — navigation directe par variantId (cf. btn.spec.ts).
  * JAMAIS networkidle (Histoire garde un WS HMR ouvert → timeout garanti).
  *
+ * Variants visités (index → titre, 0-based) :
+ *   15 → Color — default vs primary
+ *
  * Variant utilisé : Color — default vs primary (index 15) — expose les
  * deux paginations (default + colored) sur la même page, idéal pour
  * auditer le contraste fg/bg en mode coloré.

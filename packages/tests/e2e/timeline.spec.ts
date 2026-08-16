@@ -7,8 +7,17 @@ import { expect, test } from '@playwright/test'
  * Variants (0-based) :
  *   0 → Design        init: { color:'primary', density:'default', size:'default' }
  *   1 → Functional    init: { orientation:'vertical', side:'start', truncateLine:false }
- *   2 → Slots - Default   2 manual items (v1.0.0 + v0.9-rc); isLast=true on second
- *   3 → Default (playground) — v-bind="state", same releaseEntries as Design
+ *   2 → Size / Density
+ *   3 → Prop — orientation (horizontal, scroll-snap slider)
+ *   4 → Slots - Default   2 manual items (v1.0.0 + v0.9-rc); isLast=true on second
+ *   5 → Default (playground) — v-bind="state", same releaseEntries as Design
+ *
+ * Ce tableau s'arrêtait à 3 et donnait "Slots - Default" pour l'index 2 et
+ * "Default" pour le 3. Deux Variants ("Size / Density", "Prop — orientation")
+ * ont depuis été insérés en 2 et 3, décalant les deux derniers de +2. Le code
+ * de navigation avait suivi (il vise bien 4 et 5), l'en-tête non — donc les
+ * tests assertaient juste tout en se documentant faux, et le garde ne pouvait
+ * rien en dire puisque 4 et 5 n'étaient documentés nulle part.
  *
  * Pattern canonique : navigation directe par variantId (cf. btn.spec.ts recipe).
  * JAMAIS networkidle (Histoire garde un WS HMR ouvert → timeout garanti).
