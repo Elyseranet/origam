@@ -106,20 +106,32 @@ test.describe('OrigamTextField', () => {
         })
 
         test('density-compact class is present on root (theme default)', async ({ page }) => {
-            // The Design variant leaves `density` unset in init-state, so it
-            // resolves through useDefaults() against the origam theme, which
-            // pins `'origam-text-field': { rounded: 'lg', variant: 'outlined',
-            // density: 'compact' }` (packages/ds/src/themes/origam.theme.ts,
-            // since commit 9a082b90, dated AFTER this test was originally
-            // written against OrigamTextField's own component-level default
-            // of DENSITY.DEFAULT). Note the separate `'origam-input': {
-            // density: 'default' }` theme entry does NOT apply here: Text
-            // Field resolves its own `density` first (keyed by its own
-            // instance name, 'origam-text-field') and forwards that already-
-            // resolved value explicitly to the child <origam-input>, so from
-            // the Input's perspective the value was "passed by the parent"
-            // and wins over its own theme default (see useDefaults()
-            // resolution order in defaults.composable.ts).
+            // ⛔ CE TEST ÉCHOUE, ET LE DIAGNOSTIC CI-DESSOUS EST L'INVERSE DE
+            // CE QUI ÉTAIT ÉCRIT ICI. Conservé tel quel volontairement : c'est
+            // le seul témoin d'un vrai bug de thème, décrit dans la tâche #48.
+            //
+            // Le Variant « Design » ne fixe pas `density` en init-state, donc la
+            // valeur se résout contre le thème origam. Deux entrées la nomment,
+            // et elles se contredisent sur ce qui n'est QU'UN SEUL élément — la
+            // racine de <OrigamTextField> EST celle d'<OrigamInput>, elle porte
+            // `origam-input … origam-text-field` ensemble :
+            //
+            //     'origam-input':      { density: 'default' }
+            //     'origam-text-field': { …, density: 'compact' }
+            //
+            // L'ancien commentaire affirmait que TextField résout son propre
+            // `density` puis le transmet à l'enfant, si bien que l'entrée
+            // `origam-input` ne s'appliquerait pas. Le runtime dit le contraire :
+            // le DOM rendu porte `origam-input--density-default`. C'est
+            // `'origam-input'` qui gagne, et `'origam-text-field'.density` est
+            // MORT — vérifié en unitaire, en changeant la valeur d'une entrée à
+            // la fois et en constatant que le DOM ne bouge pas
+            // (TU/origam/theme-entry-collisions.spec.ts).
+            //
+            // Ne pas « réparer » en alignant l'assertion sur `density-default` :
+            // laquelle des deux clés DOIT gagner est un arbitrage de design, il
+            // appartient à l'utilisateur. Tant qu'il n'est pas tranché, ce rouge
+            // est le comportement correct d'un test qui fait son travail.
             await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-text-field').first()
