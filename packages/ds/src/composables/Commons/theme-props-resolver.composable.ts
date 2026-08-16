@@ -1,4 +1,4 @@
-import { type App, getCurrentInstance, inject, ref } from 'vue'
+import { type App, getCurrentInstance, inject, ref, shallowRef } from 'vue'
 
 import { ORIGAM_DEFAULTS_KEY } from '../../consts'
 import type { IDefault } from '../../interfaces'
@@ -85,21 +85,55 @@ import { camelize } from './defaults.composable'
 // props, or the removed-prop reset path: whatever Vue would have put in that
 // slot, `fallbackValue` mirrors it.
 //
-// ## Why there is no `computed()` here
+// ## Where this getter's reactivity comes from — all THREE branches
 //
-// The getter reads `defaults.value` (a plain `ref`, injected per-instance so
-// a `<OrigamThemeProvider scoped>` override is honoured) DURING the render
-// effect — the compiled render function calls `__props.x` synchronously while
-// that component's render `ReactiveEffect` is the active tracking context.
-// Reading a ref's `.value` inside ANY active effect auto-subscribes that
-// effect to the ref — reactivity comes for free, with NO extra reactive node
-// per prop. A `computed()` per prop was measured at a further −5.2% vs the
-// getter (both within noise of each other) — the number that actually
-// matters, measured at realistic width (1000 instances × 71 props, 6 themed),
-// is that doing PER-PROP work on the ENTIRE prop surface (not just the
-// themed subset) costs +42.6%. See ADR-005 for the full numbers. Do not
-// "clean this up" into a computed — it buys nothing and the ADR explicitly
-// rejected that option on measured grounds.
+// ⛔ An earlier version of this comment claimed "reactivity comes for free".
+// That was true of ONE branch out of three, and the other two shipped a bug
+// that froze 53 (component, prop) couples across 77 components. Read the
+// whole list before touching any of it.
+//
+// The getter can return from three places. They are NOT reactive for the
+// same reason, and two of them are not reactive on their own at all:
+//
+//   1. `instance.vnode.props` — what the parent passed. A PLAIN OBJECT that
+//      Vue never tracks. Reading it subscribes nothing.
+//   2. `defaults.value` — the theme. A real `ref`, read DURING the render
+//      effect (the compiled render function calls `__props.x` synchronously
+//      while that component's `ReactiveEffect` is the active tracking
+//      context). THIS is the branch that is reactive by itself: reading a
+//      ref's `.value` inside any active effect auto-subscribes that effect.
+//   3. `fallbackValue` — what Vue itself resolved. Was a plain closure
+//      variable; likewise tracked by nothing.
+//
+// So a theme SWAP invalidated dependents, but a value arriving from the
+// PARENT did not — nor did Vue re-resolving a default when a parent stopped
+// passing a prop. The template still showed fresh values, which is what hid
+// this for so long: the parent's patch force-re-runs the child's render, so
+// a DIRECT `__props.x` read in `render()` always looks correct. Anything
+// MEMOISED did not: a `computed()` on the prop stayed stale for the lifetime
+// of the instance, and a `watch()` on it NEVER fired once.
+//
+// ## Why this is a `shallowRef`
+//
+// Making `fallbackValue` a `shallowRef` and reading it FIRST, unconditionally,
+// gives branches 1 and 3 the reactive dependency they lacked. It works because
+// Vue's own `setFullProps` writes `props[key] = value` — hitting our setter —
+// on every change that matters: a new explicit value from the parent, and the
+// re-resolved default when the parent stops passing one. The setter is
+// therefore the exact point where reactivity re-attaches, which is one more
+// reason not to remove it (see "Why the setter matters" above).
+//
+// ## Why there is still no `computed()` here
+//
+// Measured, at realistic width (1000 instances × 71 props, 6 themed), 21
+// interleaved rounds: the `shallowRef` costs +1 % against the plain closure
+// variable (reproduced 4×: +1.6 / +1.2 / +0.5 / +1.4 %), because it does
+// per-prop work only on the THEMED subset — 6 props, not 71. That is also
+// exactly why ADR-005's +42.6 % does NOT apply to it: that figure measured
+// per-prop work across the ENTIRE prop surface. A `computed()` per prop was
+// measured at a further −5.2 % vs the getter (both within noise). Do not
+// "clean this up" into a computed — it buys nothing the shallowRef doesn't
+// already buy, and the ADR rejected that option on measured grounds.
 //
 // ## Cost — scoped to what a theme actually names
 //
@@ -247,15 +281,32 @@ export function installThemePropsResolver (app: App, themedKeysUnion: Map<string
                 // fallthrough semantics).
                 if (!(key in rawProps)) continue
 
-                // Snapshot of what Vue itself resolved (explicit value, or
-                // the component's own `withDefaults()`). Kept LIVE by the
-                // setter below — see "Why the setter matters" above.
-                let fallbackValue = rawProps[key]
+                // Mirror of what Vue itself resolved (explicit value, or the
+                // component's own `withDefaults()`). Kept LIVE by the setter
+                // below — see "Why the setter matters" above.
+                //
+                // A `shallowRef`, NOT a plain closure variable: this is the
+                // ONLY reactive dependency the getter can offer for the two
+                // branches that read non-reactive sources. See "Why this is a
+                // shallowRef" above before changing it back.
+                const fallbackValue = shallowRef(rawProps[key])
 
                 Object.defineProperty(rawProps, key, {
                     configurable: true,
                     enumerable: true,
                     get () {
+                        // Read FIRST and UNCONDITIONALLY, before any branch can
+                        // return early. This read is what subscribes the calling
+                        // effect — and it is the whole point of the shallowRef.
+                        // Vue writes this slot (`setFullProps` → `props[key] =
+                        // value`) on every parent re-render that changes an
+                        // explicit value, and again when a parent STOPS passing
+                        // a prop and Vue re-resolves the default. Without this
+                        // line, the `vnode.props` branch below reads a source
+                        // Vue never tracks, and nothing invalidates a `computed`
+                        // or fires a `watch` built on this prop.
+                        const fallback = fallbackValue.value
+
                         const vnodeProps = instance.vnode.props as Record<string, unknown> | null
                         if (vnodeProps) {
                             for (const rawKey in vnodeProps) {
@@ -280,10 +331,10 @@ export function installThemePropsResolver (app: App, themedKeysUnion: Map<string
                             return globalDefaults[key]
                         }
 
-                        return fallbackValue
+                        return fallback
                     },
                     set (value: unknown) {
-                        fallbackValue = value
+                        fallbackValue.value = value
                     }
                 })
             }

@@ -14,12 +14,14 @@
 // `useDefaults()` — the whole point is that they don't need to.
 
 import { afterEach, describe, expect, it } from 'vitest'
-import { createSSRApp, defineComponent, h, nextTick } from 'vue'
+import { computed, createSSRApp, defineComponent, h, nextTick, watch } from 'vue'
 import { mount } from '@vue/test-utils'
 import { renderToString } from '@vue/server-renderer'
 
 import { activeDefaultsFor, createOrigam } from '@origam/origam'
 import { installThemePropsResolver, themedPropKeysUnion } from '@origam/composables/Commons/theme-props-resolver.composable'
+import OrigamRadio from '@origam/components/Radio/OrigamRadio.vue'
+import OrigamTextField from '@origam/components/TextField/OrigamTextField.vue'
 import OrigamThemeProvider from '@origam/components/ThemeProvider/OrigamThemeProvider.vue'
 import type { IOrigamTheme } from '@origam/interfaces'
 
@@ -442,5 +444,153 @@ describe('activeDefaultsFor + themedPropKeysUnion — sanity: the union is built
         // `themedPropKeysUnion` (the ALL-registered union) are deliberately
         // different in scope — this is not an oversight.
         expect(activeDefaultsFor(themes, 'a', undefined)).toEqual({ 'fake-card': { color: 'primary' } })
+    })
+})
+
+// ────────────────────────────────────────────────────────────────────────────
+// Regression guard — the MEMOISED read channels (#52)
+// ────────────────────────────────────────────────────────────────────────────
+//
+// Every spec above reads the themed prop DIRECTLY inside `render()`, via
+// `FakeCard`. That is the ONE channel that survived the bug this block guards
+// against — which is why 4365 green unit tests never saw it: a parent's patch
+// force-re-runs the child's render, so a direct `__props.x` read always looks
+// fresh even when nothing in the reactivity graph was invalidated.
+//
+// The patched prop slot on `instance.props` REPLACES Vue's own reactive slot.
+// If its getter offers no tracked dependency, a `computed()` built on the prop
+// stays stale for the lifetime of the instance and a `watch()` on it never
+// fires once. Keep at least one assertion on EACH channel here.
+
+// The watch log is module-scoped, NOT rendered into the DOM. Asserting it
+// through a rendered attribute would be unsound: the prop write happens inside
+// the child's own update job, so a `pre`-flush watcher callback can land AFTER
+// the render that would have displayed it — and pushing to a plain array
+// triggers no further render. That reads as "the watcher never fired" when it
+// did. Observe the watcher directly.
+const watchLog: string[] = []
+
+const MemoCard = defineComponent({
+    name: 'FakeCard',
+    props: { color: { type: String, default: 'neutral' } },
+    setup (props) {
+        const memoised = computed(() => `memo-${props.color}`)
+        watch(() => props.color, (v) => { watchLog.push(v) })
+        return () => h('span', {
+            'data-direct': `direct-${props.color}`,
+            'data-memo': memoised.value
+        })
+    }
+})
+
+describe('a themed prop stays reactive through MEMOISED readers, not just direct render reads', () => {
+    // Shape-changing props object → Vue's "full props update" path, the one
+    // that writes `props[key] = value` straight onto `instance.props`.
+    const Parent = defineComponent({
+        props: { explicit: { type: String, default: undefined } },
+        setup (props) {
+            return () => h(MemoCard, props.explicit ? { color: props.explicit } : {})
+        }
+    })
+
+    function themedOrigam (name = 'brandx', color = 'primary') {
+        const theme: IOrigamTheme = { name, components: { 'fake-card': { color } }, vars: {} }
+        const origam = createOrigam({ themes: [theme] })
+        origam._defaultsRef.value = origam._activeDefaultsFor(name, undefined)
+        return origam
+    }
+
+    it('a computed() on the prop re-evaluates when the parent starts passing a value', async () => {
+        const wrapper = mount(Parent, { global: { plugins: [themedOrigam()] } })
+        expect(wrapper.find('span').attributes('data-memo')).toBe('memo-primary')
+
+        await wrapper.setProps({ explicit: 'success' })
+        // Before #52's fix, `data-direct` correctly read 'direct-success'
+        // while `data-memo` stayed 'memo-primary' forever — the exact split
+        // that kept the bug invisible to every spec above.
+        expect(wrapper.find('span').attributes('data-direct')).toBe('direct-success')
+        expect(wrapper.find('span').attributes('data-memo')).toBe('memo-success')
+
+        await wrapper.setProps({ explicit: undefined })
+        expect(wrapper.find('span').attributes('data-memo')).toBe('memo-primary')
+    })
+
+    // KNOWN DEFECT, still open — the shallowRef fix repairs the `computed()`
+    // channel but NOT this one. Measured on the fixed source, not assumed:
+    // when the parent starts passing a value, `data-memo` correctly becomes
+    // `memo-success` and the render sees `success`, yet the watcher callback
+    // never runs. So the memoisation dependency IS established (the computed
+    // above proves it) while a standalone `watch()` effect still is not woken.
+    //
+    // `it.fails` is deliberate: the suite stays green on the CURRENT reality,
+    // and the day the watch channel is repaired this test turns RED and forces
+    // whoever fixed it to promote it to a normal `it`. A skipped test would
+    // just go dormant — that failure mode cost this repo 109 sleeping tests.
+    //
+    // Real-world casualty: OrigamMasonry.vue:179 `watch(() => props.gap, …)`,
+    // and `origam-masonry.gap` is one of the themed couples.
+    it.fails('a watch() on the prop actually fires — NOT YET REPAIRED', async () => {
+        watchLog.length = 0
+        const wrapper = mount(Parent, { global: { plugins: [themedOrigam()] } })
+        expect(watchLog).toEqual([])
+
+        await wrapper.setProps({ explicit: 'success' })
+        await nextTick()
+        expect(watchLog).toEqual(['success'])
+
+        await wrapper.setProps({ explicit: undefined })
+        await nextTick()
+        expect(watchLog).toEqual(['success', 'primary'])
+    })
+
+    it('a theme swap still invalidates memoised readers (the branch that always worked)', async () => {
+        const themes: IOrigamTheme[] = [
+            { name: 'a', components: { 'fake-card': { color: 'primary' } }, vars: {} },
+            { name: 'b', components: { 'fake-card': { color: 'danger' } }, vars: {} }
+        ]
+        const origam = createOrigam({ themes })
+        origam._defaultsRef.value = origam._activeDefaultsFor('a', undefined)
+
+        const wrapper = mount(MemoCard, { global: { plugins: [origam] } })
+        expect(wrapper.find('span').attributes('data-memo')).toBe('memo-primary')
+
+        origam._defaultsRef.value = origam._activeDefaultsFor('b', undefined)
+        await nextTick()
+        expect(wrapper.find('span').attributes('data-memo')).toBe('memo-danger')
+    })
+})
+
+// ────────────────────────────────────────────────────────────────────────────
+// Regression guard — real components, STABILISED state after mount (#52)
+// ────────────────────────────────────────────────────────────────────────────
+//
+// `OrigamRadio` / `OrigamTextField` render `<origam-input>` as their root and
+// forward their own RESOLVED props to it through
+// `inputProps = origamInputRef.value?.filterProps(props, …)`. That template ref
+// is only populated AFTER mount, so the inner input first resolves its own
+// theme entry (`origam-input.density = 'default'`) and only then receives the
+// outer one (`origam-radio` / `origam-text-field` = 'compact').
+//
+// ⛔ ASSERT THE STABILISED STATE, NEVER t0. At t0 the inner entry legitimately
+// wins — that transient is expected and is tracked separately (#54). Asserting
+// t0 here would pin the bug instead of the contract.
+describe('an outer component\'s theme entry reaches the inner root it forwards to', () => {
+    async function densityAfterSettle (Component: object): Promise<string> {
+        const Host = defineComponent({ render: () => h(Component) })
+        const wrapper = mount(Host, { global: { plugins: [createOrigam({})] } })
+        for (let i = 0; i < 6; i++) await nextTick()
+        const root = wrapper.element as HTMLElement
+        const inner = root.matches?.('.origam-input') ? root : root.querySelector('.origam-input')
+        const classes = inner ? [...inner.classList].filter(c => c.includes('--density-')) : []
+        wrapper.unmount()
+        return classes.join(' ')
+    }
+
+    it('origam-radio.density wins over origam-input.density once forwarding lands', async () => {
+        expect(await densityAfterSettle(OrigamRadio)).toBe('origam-input--density-compact')
+    })
+
+    it('origam-text-field.density wins over origam-input.density once forwarding lands', async () => {
+        expect(await densityAfterSettle(OrigamTextField)).toBe('origam-input--density-compact')
     })
 })
