@@ -37,6 +37,9 @@ import { describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createOrigam } from '@origam/origam'
 import OrigamCard from '@origam/components/Card/OrigamCard.vue'
+import OrigamChip from '@origam/components/Chip/OrigamChip.vue'
+import OrigamChipGroup from '@origam/components/Chip/OrigamChipGroup.vue'
+import { h } from 'vue'
 
 Object.defineProperty(window, 'matchMedia', {
     writable: true,
@@ -135,6 +138,52 @@ describe('DEFECT — usePosition offsets never reach OrigamCard', () => {
                 .toBe(surface({ position: 'absolute', [prop]: '40px' }))
         }
     )
+})
+
+describe('DEFECT — IChipGroupProps.filter never cascades to the chips', () => {
+    /*
+     * The homonym trap. `grep filter packages/ds/src/components/Chip/OrigamChipGroup.vue`
+     * returns 4 hits and every one of them is `filterProps` — the unrelated
+     * prop-filtering helper returned by `useProps`. The declared prop
+     * (chip-group.interface.ts:18) is read nowhere.
+     *
+     * That it was MEANT to cascade is not a guess: `IChipProps` carries
+     * `filter` and `filterIcon` (chip.interface.ts:35-36) and `OrigamChip`
+     * renders the check affordance from them (OrigamChip.vue:310,339). The
+     * group-level switch that would turn it on for all children was never
+     * wired.
+     */
+    const renderGroup = (props: Record<string, unknown>) => {
+        document.head.innerHTML = ''
+        const wrapper = mount(OrigamChipGroup, {
+            props: props as never,
+            slots: { default: () => [h(OrigamChip, { value: 'a', text: 'A' }), h(OrigamChip, { value: 'b', text: 'B' })] },
+            global: { plugins: [origam] }
+        })
+        const out = wrapper.html()
+        wrapper.unmount()
+        document.head.innerHTML = ''
+        return out.replace(/(origam-[a-z-]+?)-\d+/g, '$1-N')
+    }
+
+    it('filter=true and filter=false render the same chips', () => {
+        expect(renderGroup({ filter: true })).toBe(renderGroup({ filter: false }))
+    })
+
+    it('no chip carries the filter affordance under filter=true', () => {
+        expect(renderGroup({ filter: true })).not.toContain('origam-chip--filter')
+    })
+
+    it('CONTROL — the chip DOES render it when filter is set on the chip itself', () => {
+        document.head.innerHTML = ''
+        const wrapper = mount(OrigamChipGroup, {
+            props: { modelValue: ['a'] } as never,
+            slots: { default: () => [h(OrigamChip, { value: 'a', text: 'A', filter: true })] },
+            global: { plugins: [origam] }
+        })
+        expect(wrapper.html()).toContain('origam-chip--filter')
+        wrapper.unmount()
+    })
 })
 
 describe('DEFECT — borderColor emits an intent verbatim instead of resolving it', () => {
