@@ -95,6 +95,24 @@ function themeWith (entries: Record<string, Record<string, unknown>>): IOrigamTh
 }
 
 /**
+ * The class tokens the markup carries FOR THE PROP UNDER TEST, e.g.
+ * `--density-compact`, `--size-small`.
+ *
+ * Comparing whole `wrapper.html()` was the first approach and it was WRONG:
+ * the markup also carries per-mount generated ids (`input-2`,
+ * `origam-menu--4`) and unrelated attributes, so two renders can differ for
+ * reasons that have nothing to do with the theme entry. That scored
+ * `OrigamDatePickerField` as "the outer entry wins" when a direct check shows
+ * its density class is identical (`--density-default`) under all three
+ * configurations. Narrowing the comparison to the prop's own class tokens
+ * removes the noise.
+ */
+function propTokens (html: string, prop: string): string {
+    const re = new RegExp(`--${prop}-[\\w-]+`, 'g')
+    return [...new Set(html.match(re) ?? [])].sort().join(' ')
+}
+
+/**
  * Rendered markup of `component` under a theme, or null if it cannot mount.
  *
  * ⚠️ Registering a theme is NOT enough to apply it. `createOrigam({themes})`
@@ -142,18 +160,28 @@ function classify (c: ICollisionCase): { verdict: TCollisionVerdict, detail: str
         return { verdict: 'NON-MESURABLE', detail: 'rien de rendu à l\'état fermé (famille overlay) — à départager ouvert, en e2e' }
     }
 
-    const rootFlipped = renderUnder(c.component, themeWith({
+    const rootFlippedHtml = renderUnder(c.component, themeWith({
         [c.self]: { [c.prop]: c.a },
         [c.root]: { [c.prop]: c.alt }
     }))
-    const selfFlipped = renderUnder(c.component, themeWith({
+    const selfFlippedHtml = renderUnder(c.component, themeWith({
         [c.self]: { [c.prop]: c.alt },
         [c.root]: { [c.prop]: c.b }
     }))
-    if (rootFlipped === null || selfFlipped === null) return { verdict: 'NON-MESURABLE', detail: 'montage instable entre deux thèmes' }
+    if (rootFlippedHtml === null || selfFlippedHtml === null) return { verdict: 'NON-MESURABLE', detail: 'montage instable entre deux thèmes' }
 
-    const rootMatters = rootFlipped !== base
-    const selfMatters = selfFlipped !== base
+    const baseTokens = propTokens(base, c.prop)
+    const rootFlipped = propTokens(rootFlippedHtml, c.prop)
+    const selfFlipped = propTokens(selfFlippedHtml, c.prop)
+
+    // No class carries this prop at all — nothing observable to compare, so
+    // refuse to score rather than call three empty strings "identical".
+    if (!baseTokens && !rootFlipped && !selfFlipped) {
+        return { verdict: 'NON-MESURABLE', detail: `aucune classe ne porte '${c.prop}' dans ce rendu — indécidable par les classes` }
+    }
+
+    const rootMatters = rootFlipped !== baseTokens
+    const selfMatters = selfFlipped !== baseTokens
 
     if (selfMatters && !rootMatters) return { verdict: 'RACINE-MORTE', detail: `'${c.self}'.${c.prop} gagne ; '${c.root}'.${c.prop} n'a aucun effet` }
     if (rootMatters && !selfMatters) return { verdict: 'SELF-MORT', detail: `'${c.root}'.${c.prop} gagne ; '${c.self}'.${c.prop} n'a aucun effet` }
@@ -195,6 +223,61 @@ describe('collisions d\'entrées de thème sur une racine partagée', () => {
             expect(verdict).toBeTruthy()
         }
     )
+
+    /*
+     * MÉCANISME — pourquoi l'une gagne. Instrumenté, pas supposé.
+     *
+     * L'hypothèse de départ était : `density` n'est pas lié explicitement sur
+     * <origam-input>, il ne peut transiter que par
+     * `inputProps = origamInputRef.value?.filterProps(props, …)` — un computed
+     * sur une ref de template, donc `undefined` au premier rendu. Le parent ne
+     * transmettrait alors rien, et l'enfant retomberait sur sa propre entrée
+     * de thème.
+     *
+     * Ces deux lectures la départagent : si TextField résout bien 'compact'
+     * pour lui-même mais que l'Input voit 'default', la valeur n'a pas été
+     * transmise. Si TextField voit déjà 'default', c'est sa PROPRE résolution
+     * qui n'a pas pris, et l'hypothèse du forwarding est hors sujet.
+     */
+    it.each([
+        ['OrigamTextField', 'origam-text-field', 'OrigamInput', 'origam-input'],
+        ['OrigamDatePickerField', 'origam-date-picker-field', 'OrigamTextField', 'origam-text-field']
+    ])('MÉCANISME — %s : density résolu chez le parent vs chez l\'enfant', async (outerName, outerKey, innerName, innerKey) => {
+        const theme = themeWith({
+            [outerKey]: { density: 'compact' },
+            [innerKey]: { density: 'default' }
+        })
+        const origam = createOrigam({ themes: [theme] })
+        origam._defaultsRef.value = origam._activeDefaultsFor(PROBE_THEME, undefined)
+
+        const Outer = (components as unknown as Record<string, object>)[outerName]
+        const wrapper = mount(Outer, { global: { plugins: [origam] } })
+        const vm = wrapper.vm as unknown as { $props: Record<string, unknown>, $nextTick: () => Promise<void> }
+
+        const readInner = (): unknown => {
+            const c = wrapper.findComponent({ name: innerName })
+            return c.exists() ? (c.vm as unknown as { $props: Record<string, unknown> }).$props.density : '(enfant absent)'
+        }
+
+        const firstPass = readInner()
+        // Si la valeur ne transite que par un computed suspendu à une ref de
+        // template (undefined au premier rendu), elle doit apparaître une fois
+        // la ref peuplée et le composant re-rendu.
+        await vm.$nextTick()
+        await vm.$nextTick()
+        const afterTicks = readInner()
+
+        console.log(`\n──────── MÉCANISME — ${outerName} ────────`)
+        console.log(`  thème                 : ${outerKey}.density=compact | ${innerKey}.density=default`)
+        console.log(`  ${outerName}.$props.density :`, JSON.stringify(vm.$props.density))
+        console.log(`  ${innerName}.$props.density (1er rendu) :`, JSON.stringify(firstPass))
+        console.log(`  ${innerName}.$props.density (après ticks) :`, JSON.stringify(afterTicks))
+        console.log('  classe rendue         :', /origam-input--density-\w+/.exec(wrapper.html())?.[0])
+        console.log('────────────────────────────────────────\n')
+
+        // Aucune assertion sur QUI doit gagner : on enregistre la lecture.
+        expect(wrapper.exists()).toBe(true)
+    })
 
     it('imprime l\'inventaire', () => {
         const lines = results.map((r) => `${r.verdict.padEnd(18)} ${r.case.self} / ${r.case.root} [${r.case.prop}] — ${r.detail}`)
