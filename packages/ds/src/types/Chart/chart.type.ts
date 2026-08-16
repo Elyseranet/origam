@@ -1,5 +1,5 @@
 import type { CHART_STACKING } from '../../enums'
-import { CHART_TYPE } from '../../enums'
+import { CHART_SMOOTHING, CHART_TYPE } from '../../enums'
 import { OrigamChart } from '../../components'
 
 /**
@@ -26,7 +26,7 @@ export type TChartItem = string | number | { value: number }
  * staircase is a different topology (right-angle connections),
  * not a curve choice. See `TChartCartesianKind`.
  */
-export type TChartSmoothing = 'none' | 'curve' | 'monotone'
+export type TChartSmoothing = `${CHART_SMOOTHING}`
 
 /**
  * Stacking strategy for bar / column / area charts.

@@ -15,6 +15,7 @@ export * from './Chart/chart-pictorial.enum'
 export * from './Chart/chart-streamgraph.enum'
 export * from './Chart/chart-map.enum'
 export * from './Chart/chart-sparkline.enum'
+export * from './Chart/chart-sunburst.enum'
 
 export * from './Code/code.enum'
 
@@ -127,3 +128,13 @@ export * from './Calendar/calendar.enum'
 export * from './Treeview/treeview.enum'
 
 export * from './Timeline/timeline.enum'
+
+export * from './DataList/data-list.enum'
+
+export * from './Grid/grid.enum'
+
+export * from './NumberFormat/number-format.enum'
+
+export * from './Sheet/sheet.enum'
+
+export * from './Skeleton/skeleton.enum'

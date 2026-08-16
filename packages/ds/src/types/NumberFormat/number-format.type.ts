@@ -1,4 +1,13 @@
 import { OrigamNumberFormat } from '../../components'
+import {
+    NUMBER_FORMAT_COMPACT_DISPLAY,
+    NUMBER_FORMAT_CURRENCY_DISPLAY,
+    NUMBER_FORMAT_FORMAT,
+    NUMBER_FORMAT_NOTATION,
+    NUMBER_FORMAT_SIGN_DISPLAY,
+    NUMBER_FORMAT_UNIT_DISPLAY,
+    NUMBER_FORMAT_USE_GROUPING
+} from '../../enums'
 
 export type TOrigamNumberFormat = InstanceType<typeof OrigamNumberFormat>
 
@@ -18,44 +27,37 @@ export type TOrigamNumberFormat = InstanceType<typeof OrigamNumberFormat>
  * - `scientific` — exponent notation (1.234E5).
  * - `engineering` — engineering-style exponent (multiples of 3).
  */
-export type TNumberFormatFormat =
-    | 'decimal'
-    | 'currency'
-    | 'percent'
-    | 'unit'
-    | 'compact'
-    | 'scientific'
-    | 'engineering'
+export type TNumberFormatFormat = `${NUMBER_FORMAT_FORMAT}`
 
 /**
  * Currency-symbol rendering — forwarded to `Intl.NumberFormat`'s
  * `currencyDisplay` option.
  */
-export type TNumberFormatCurrencyDisplay = 'symbol' | 'narrowSymbol' | 'code' | 'name'
+export type TNumberFormatCurrencyDisplay = `${NUMBER_FORMAT_CURRENCY_DISPLAY}`
 
 /**
  * Unit-label rendering — forwarded to `Intl.NumberFormat`'s
  * `unitDisplay` option.
  */
-export type TNumberFormatUnitDisplay = 'short' | 'long' | 'narrow'
+export type TNumberFormatUnitDisplay = `${NUMBER_FORMAT_UNIT_DISPLAY}`
 
 /**
  * Compact-notation rendering — forwarded to `Intl.NumberFormat`'s
  * `compactDisplay` option. Only applies when `notation === 'compact'`.
  */
-export type TNumberFormatCompactDisplay = 'short' | 'long'
+export type TNumberFormatCompactDisplay = `${NUMBER_FORMAT_COMPACT_DISPLAY}`
 
 /**
  * Raw `notation` mirror — exposed for advanced callers who set
  * `format: 'decimal'` but still want scientific / engineering output.
  */
-export type TNumberFormatNotation = 'standard' | 'compact' | 'scientific' | 'engineering'
+export type TNumberFormatNotation = `${NUMBER_FORMAT_NOTATION}`
 
 /**
  * Sign-display strategy — forwarded to `Intl.NumberFormat`'s
  * `signDisplay` option.
  */
-export type TNumberFormatSignDisplay = 'auto' | 'always' | 'except-zero' | 'negative' | 'never'
+export type TNumberFormatSignDisplay = `${NUMBER_FORMAT_SIGN_DISPLAY}`
 
 /**
  * Grouping (thousands separator) strategy — boolean kept for backwards
@@ -63,7 +65,7 @@ export type TNumberFormatSignDisplay = 'auto' | 'always' | 'except-zero' | 'nega
  * (`'always' | 'auto' | 'min2'`) match the modern proposal landed in
  * Chrome 106+ / Safari 16.4+.
  */
-export type TNumberFormatUseGrouping = boolean | 'always' | 'auto' | 'min2'
+export type TNumberFormatUseGrouping = boolean | `${NUMBER_FORMAT_USE_GROUPING}`
 
 /**
  * Sentinel for the locale prop — `'auto'` triggers the runtime

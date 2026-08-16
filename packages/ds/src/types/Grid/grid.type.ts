@@ -1,4 +1,8 @@
 import { OrigamGrid } from '../../components'
+import { GRID_AUTO_FLOW } from '../../enums'
+
+import type { TAlign } from '../Commons/align.type'
+import type { TJustify } from '../Commons/justify.type'
 import type { TRoundedToken } from '../Commons/rounded.type'
 
 export type TOrigamGrid = InstanceType<typeof OrigamGrid>
@@ -12,36 +16,27 @@ export type TOrigamGrid = InstanceType<typeof OrigamGrid>
  * exotic value, they can pass a raw string via `:style` on the
  * outer container — we don't double-validate `grid-auto-flow`.
  */
-export type TGridAutoFlow =
-    | 'row'
-    | 'column'
-    | 'row dense'
-    | 'column dense'
+export type TGridAutoFlow = `${GRID_AUTO_FLOW}`
 
 /**
  * Place-items (`align-items` + `justify-items`) accepts the 4-value
  * subset of CSS Box Alignment. `baseline` is excluded on purpose —
  * it has no useful meaning when items can span rows / columns.
+ *
+ * Narrows the Commons `TAlign` vocabulary rather than redeclaring its
+ * literals, so a rung added to `ALIGN` cannot silently bypass this
+ * component's surface.
  */
-export type TGridPlaceItems =
-    | 'start'
-    | 'center'
-    | 'end'
-    | 'stretch'
+export type TGridPlaceItems = Exclude<TAlign, 'baseline'>
 
 /**
  * Place-content (`align-content` + `justify-content`) — aligns the
  * full grid inside its container when the grid is smaller than the
- * available space. Mirrors the CSS Box Alignment matrix.
+ * available space. Mirrors the CSS Box Alignment matrix: the full
+ * `JUSTIFY` distribution vocabulary plus `stretch`, which only the
+ * `ALIGN` side carries.
  */
-export type TGridPlaceContent =
-    | 'start'
-    | 'center'
-    | 'end'
-    | 'stretch'
-    | 'space-between'
-    | 'space-around'
-    | 'space-evenly'
+export type TGridPlaceContent = TJustify | Extract<TAlign, 'stretch'>
 
 /**
  * Gap size tokens (`'xs' | 'sm' | 'md' | 'lg' | 'xl'`). When the
