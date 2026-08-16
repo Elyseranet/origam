@@ -107,7 +107,13 @@ const PROBES: Record<string, [unknown, unknown]> = {
     appendIcon: ['$check', '$close'],
     prependIcon: ['$check', '$close'],
     appendAvatar: ['/probe-a.png', '/probe-b.png'],
-    prependAvatar: ['/probe-a.png', '/probe-b.png']
+    prependAvatar: ['/probe-a.png', '/probe-b.png'],
+    // `class` / `style` are DECLARED props on ICommonsComponentProps, so Vue
+    // removes them from `$attrs`: a component that does not bind them loses
+    // the consumer's value outright.
+    class: ['probe-a', 'probe-b'],
+    style: ['color: red', 'color: blue'],
+    disabled: [false, true]
 }
 
 type Row = {

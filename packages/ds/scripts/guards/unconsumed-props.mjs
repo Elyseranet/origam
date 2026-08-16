@@ -38,15 +38,30 @@
  *    of those shapes, unmodelled, produced a false-positive cluster. They are
  *    now credited — see `scanPropReads` in the audit script.
  *
- * PRECISION, MEASURED
- * -------------------
- * The analysis was cross-checked against a runtime sweep that mounts each
+ * PRECISION, MEASURED — AND THE MISTAKE THAT INFLATED IT
+ * -----------------------------------------------------
+ * The analysis is cross-checked against a runtime sweep that mounts each
  * component twice with two distinct values and diffs the rendered surface
  * (markup + the stylesheet `useStyle` injects): **precision 100 %** — 0 false
- * positives over 1 997 flagged pairs — for **recall 83.1 %**. That trade is
- * deliberate and is the right one for a blocking guard: a false positive
- * blocks an innocent PR, a false negative only fails to catch some debt.
+ * positives over 1 317 flagged pairs — for **recall 82.3 %**. That trade is
+ * deliberate and right for a blocking guard: a false positive blocks an
+ * innocent PR, a false negative only fails to catch some debt.
  * Re-run the cross-check with `pnpm -F @origam/tests audit:inert-props`.
+ *
+ * The first baseline held 3 340 entries and was WRONG. `filterProps(props, …)`
+ * was recorded as "an explicit key list, not a wildcard" — it is neither: it
+ * hands a child every prop the two components share. All 42 call sites in
+ * this catalogue pass the whole `props` object; not one passes an object
+ * literal. Correcting it removed **1 677 entries (50.2 %)** and took the
+ * excluded-component count from 15 to 49.
+ *
+ * That first number also LOOKED validated, and was not. Precision was
+ * computed only over pairs the runtime sweep could decide, and the
+ * forwarding-heavy components are overlays (`Dialog`, `ContextualMenu`,
+ * `Menu`, `Tooltip`, `Snackbar`…) which render nothing while closed. They
+ * landed in `not-rendered` / `unmountable` and were silently outside the
+ * measurement. A precision figure is only as good as the population it was
+ * measured over — check that population before trusting the percentage.
  *
  * COMPONENTS THIS GUARD DOES NOT JUDGE
  * ------------------------------------

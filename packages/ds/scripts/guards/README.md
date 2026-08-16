@@ -33,18 +33,28 @@ text directly. The full suite runs in under a second.
 | 2 | `no-variant-css.mjs` | No DS-shipped CSS rule targets a `--variant-*` class; no `!important` inside one (ADR-005 D3) | 36 |
 | 3 | `instance-types.mjs` | Every `Origam{Name}.vue` has a matching `TOrigam{Name} = InstanceType<typeof Origam{Name}>` under `src/types/` | 63 |
 | 4 | `file-naming.mjs` | `enum`/`type` filenames resolve (by longest-prefix match) to a real component name | 21 |
-| 5 | `unconsumed-props.mjs` | Every declared prop reaches the render or the behaviour — the project's "bug n°1", a documented prop that silently does nothing | 3340 |
+| 5 | `unconsumed-props.mjs` | Every declared prop reaches the render or the behaviour — the project's "bug n°1", a documented prop that silently does nothing | 1663 |
 
-Guard 5's baseline is two orders of magnitude larger than the others. That
-is the finding, not a defect of the guard: three cross-cutting `Commons`
-interfaces advertise a per-side / per-corner surface no composable reads
+Guard 5's baseline is an order of magnitude larger than the others, and
+**72 % of it is one defect**: three cross-cutting `Commons` interfaces
+advertise a per-side / per-corner surface no composable reads
 (`marginTop`…`marginInline`, `paddingTop`…`paddingInline`, the four
-`rounded{Corner}`), which alone accounts for ~1 600 of the entries across
-~100 components. See `packages/tests/TU/origam/dead-commons-props.spec.ts`
-for the runtime proof and the impact radius. Unlike the other four, this
-guard's detection was cross-validated against a runtime sweep rather than
-only reviewed: **precision 100 %** (0 false positives over 1 997 flagged
-pairs), **recall 83.1 %**.
+`rounded{Corner}`, plus `loadingText`) — 1 195 of the 1 663 entries, across
+~100 components. That is the finding, not guard noise. See
+`packages/tests/TU/origam/dead-commons-props.spec.ts` for the runtime proof.
+Fixing `usePadding` alone will turn ~600 entries stale at once, which is
+precisely the pressure the baseline is meant to apply.
+
+Unlike the other four, this guard's detection is cross-validated against a
+runtime sweep rather than only reviewed: **precision 100 %** (0 false
+positives over 1 317 flagged pairs), **recall 82.3 %**.
+
+⚠️ Its first baseline was 3 340 and was wrong — half of it was props
+FORWARDED to a child through `filterProps(props, …)`, which the detector
+mis-classified as a local read. The correction is documented in the script
+header, together with why the original precision measurement failed to
+catch it (the forwarding-heavy components are overlays, which render
+nothing while closed and were therefore outside the measured population).
 
 Each script's file header explains its detection method, the false-positive
 trap it specifically avoids, and (guards 1 and 4) the scoping decision made

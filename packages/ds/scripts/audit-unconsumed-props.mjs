@@ -390,7 +390,27 @@ function analyseComponent (file) {
     // raw spreads of props
     if (/\.\.\.\s*props\b/.test(cleanScript)) { wildcard = true; wildcardReasons.push('`...props` spread in script') }
     if (/v-bind\s*=\s*"props"/.test(template)) { wildcard = true; wildcardReasons.push('`v-bind="props"` in template') }
-    if (/\bfilterProps\s*\(/.test(cleanScript)) wildcardReasons.push('uses filterProps() (explicit key list, not a wildcard)')
+    /*
+     * `filterProps(props, …)` IS wholesale forwarding, and treating it as an
+     * "explicit key list" was a measured mistake.
+     *
+     * `useProps().filterProps(properties, excludes)` keeps every key of
+     * `properties` that also exists on the component's own props. Called as
+     * `childRef.filterProps(props, […])` — which is how all 42 call sites in
+     * this catalogue are written, and there is not a single object-literal
+     * call — it hands the CHILD every prop the two components share. So a
+     * parent like `OrigamContextualMenu` (`OrigamContextualMenu.vue:83`,
+     * bound at line 11 via `v-bind="menuProps"`) does not read `location`,
+     * `offset`, `items`… itself; it forwards them. They are alive.
+     *
+     * Before this fix those 42 components contributed the bulk of the
+     * candidate list — `OrigamContextualMenu` alone scored 109 of its 117
+     * props. Every one of those was noise.
+     */
+    if (/\bfilterProps\s*\(\s*props\b/.test(cleanScript)) {
+        wildcard = true
+        wildcardReasons.push('filterProps(props, …) forwards every shared prop to a child')
+    }
     if (/mergeProps\s*\(\s*props\b/.test(cleanScript)) { wildcard = true; wildcardReasons.push('mergeProps(props, …)') }
 
     const unconsumed = []
