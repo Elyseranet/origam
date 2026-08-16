@@ -515,21 +515,27 @@ describe('a themed prop stays reactive through MEMOISED readers, not just direct
         expect(wrapper.find('span').attributes('data-memo')).toBe('memo-primary')
     })
 
-    // KNOWN DEFECT, still open — the shallowRef fix repairs the `computed()`
-    // channel but NOT this one. Measured on the fixed source, not assumed:
-    // when the parent starts passing a value, `data-memo` correctly becomes
-    // `memo-success` and the render sees `success`, yet the watcher callback
-    // never runs. So the memoisation dependency IS established (the computed
-    // above proves it) while a standalone `watch()` effect still is not woken.
+    // WAS `it.fails` — repaired by snapshotting the passed value instead of
+    // reading `instance.vnode.props` live in the getter. Promoted to a normal
+    // `it`, exactly as the previous marking intended.
     //
-    // `it.fails` is deliberate: the suite stays green on the CURRENT reality,
-    // and the day the watch channel is repaired this test turns RED and forces
-    // whoever fixed it to promote it to a normal `it`. A skipped test would
-    // just go dormant — that failure mode cost this repo 109 sleeping tests.
+    // Why this channel died while the `computed()` above survived — the two
+    // subscribe DIFFERENT deps:
+    //   - the `computed()` is lazy, first evaluated during `render()`, i.e.
+    //     AFTER `beforeCreate` patched the slot, so it subscribes the getter's
+    //     own `fallbackValue` shallowRef;
+    //   - a `watch(() => props.color, …)` created in `setup()` runs its getter
+    //     EAGERLY, before the patch exists, so it only ever holds the
+    //     `shallowReactive` proxy's per-key dep.
+    // And that per-key dep was never triggered: `MutableReactiveHandler.set`
+    // reads `oldValue = target[key]` THROUGH the getter and gates `trigger()`
+    // on `hasChanged(assigned, oldValue)`. Since `instance.vnode` is swapped
+    // BEFORE `updateProps` runs, a LIVE `vnode.props` read already returned the
+    // parent's new value at compare time — `hasChanged` false, no trigger, ever.
     //
-    // Real-world casualty: OrigamMasonry.vue:179 `watch(() => props.gap, …)`,
-    // and `origam-masonry.gap` is one of the themed couples.
-    it.fails('a watch() on the prop actually fires — NOT YET REPAIRED', async () => {
+    // Real-world casualty this repairs: OrigamMasonry.vue:179
+    // `watch(() => props.gap, …)`, and `origam-masonry.gap` is a themed couple.
+    it('a watch() on the prop actually fires', async () => {
         watchLog.length = 0
         const wrapper = mount(Parent, { global: { plugins: [themedOrigam()] } })
         expect(watchLog).toEqual([])
@@ -541,6 +547,59 @@ describe('a themed prop stays reactive through MEMOISED readers, not just direct
         await wrapper.setProps({ explicit: undefined })
         await nextTick()
         expect(watchLog).toEqual(['success', 'primary'])
+    })
+
+    // KNOWN GAP, deliberately still open — a `watch()` created in `setup()` is
+    // woken by a value arriving from the PARENT (the test above) but NOT by a
+    // pure THEME SWAP with no parent update at all. Measured, not assumed.
+    //
+    // Why: such a watcher runs its getter eagerly, before `beforeCreate` patches
+    // the slot, so it only ever holds the proxy's per-key dep — never the
+    // getter's own `defaults` dep. The parent path works because Vue's own
+    // `props[key] = …` write triggers that key dep; a theme swap performs no
+    // such write, and there is no public API to trigger a reactive object's key.
+    // A `computed()` is unaffected (control assertion in the test below).
+    //
+    // Deliberately NOT closed, on measured grounds: both shipped theme objects
+    // (light and dark) carry BYTE-IDENTICAL `components` blocks, so no theme the
+    // DS ships can change a prop value on a swap. It can only bite a consumer
+    // registering several BRAND themes whose `components` blocks differ, and it
+    // reaches exactly two call sites in the whole catalogue (OrigamMasonry.gap,
+    // OrigamTextareaField.density). The candidate fix — a per-instance
+    // `watch(defaults, …)` force-triggering each patched key by assigning a
+    // sentinel through the proxy — was built and verified to close it at no
+    // measurable time cost, but it adds a SECOND undocumented-Vue-internals
+    // dependency to a file that already carries an upgrade warning. That
+    // trade-off is the user's call, not a silent one.
+    //
+    // `it.fails` so this cannot go dormant: the day someone closes the gap this
+    // turns RED and forces them to promote it.
+    it.fails('a theme swap alone wakes a setup-created watch — KNOWN GAP, NOT REPAIRED', async () => {
+        const swapLog: string[] = []
+        const SwapCard = defineComponent({
+            name: 'FakeCard',
+            props: { color: { type: String, default: 'neutral' } },
+            setup (props) {
+                watch(() => props.color, v => { swapLog.push(v) })
+                return () => h('span', { 'data-c': props.color })
+            }
+        })
+        const themes: IOrigamTheme[] = [
+            { name: 'a', components: { 'fake-card': { color: 'primary' } }, vars: {} },
+            { name: 'b', components: { 'fake-card': { color: 'danger' } }, vars: {} }
+        ]
+        const origam = createOrigam({ themes })
+        origam._defaultsRef.value = origam._activeDefaultsFor('a', undefined)
+
+        const wrapper = mount(SwapCard, { global: { plugins: [origam] } })
+        expect(wrapper.find('span').attributes('data-c')).toBe('primary')
+
+        origam._defaultsRef.value = origam._activeDefaultsFor('b', undefined)
+        await nextTick()
+        await nextTick()
+        // The RENDER does see the swap — only the standalone watcher does not.
+        expect(wrapper.find('span').attributes('data-c')).toBe('danger')
+        expect(swapLog).toEqual(['danger'])
     })
 
     it('a theme swap still invalidates memoised readers (the branch that always worked)', async () => {

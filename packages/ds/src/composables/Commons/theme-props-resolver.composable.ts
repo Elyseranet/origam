@@ -42,11 +42,12 @@ import { camelize } from './defaults.composable'
 // For each instance, IF a registered theme names one of ITS OWN declared
 // props (see "Cost" below for how that set is computed), this hook replaces
 // that prop slot on `instance.props` with an accessor (`get`/`set`) that:
-//   1. Prefers a value the parent template EXPLICITLY bound this render,
-//      read live from `instance.vnode.props` (mirrors `usePassedProps()` —
-//      an explicitly bound `undefined` does NOT count as "passed", so it
-//      correctly falls through to the theme — this is manifestation 1's fix,
-//      inherited for free).
+//   1. Prefers a value the parent template EXPLICITLY bound this render, read
+//      from `instance.vnode.props` and SNAPSHOT at each write (mirrors
+//      `usePassedProps()` — an explicitly bound `undefined` does NOT count as
+//      "passed", so it correctly falls through to the theme — this is
+//      manifestation 1's fix, inherited for free). The snapshot is load-bearing,
+//      not an optimisation: see "Why the passed value is a SNAPSHOT" below.
 //   2. Falls back to the theme's per-component default, then its `global`
 //      default — read from `inject(ORIGAM_DEFAULTS_KEY, …)`, i.e. the
 //      CLOSEST provider (root app defaults, OR a `<OrigamThemeProvider
@@ -95,8 +96,8 @@ import { camelize } from './defaults.composable'
 // The getter can return from three places. They are NOT reactive for the
 // same reason, and two of them are not reactive on their own at all:
 //
-//   1. `instance.vnode.props` — what the parent passed. A PLAIN OBJECT that
-//      Vue never tracks. Reading it subscribes nothing.
+//   1. the passed-value snapshot, taken from `instance.vnode.props` — a PLAIN
+//      OBJECT that Vue never tracks. Reading it subscribes nothing.
 //   2. `defaults.value` — the theme. A real `ref`, read DURING the render
 //      effect (the compiled render function calls `__props.x` synchronously
 //      while that component's `ReactiveEffect` is the active tracking
@@ -123,6 +124,49 @@ import { camelize } from './defaults.composable'
 // therefore the exact point where reactivity re-attaches, which is one more
 // reason not to remove it (see "Why the setter matters" above).
 //
+// ## Why the passed value is a SNAPSHOT, not a live `vnode.props` read
+//
+// ⛔ The `shallowRef` alone was NOT enough, and the reason is subtle enough
+// that it shipped as a second, separate defect (#52 follow-up): a `computed()`
+// on a themed prop was repaired, but a `watch()` on it still never fired once.
+//
+// An effect reading `props.x` subscribes TWO independent channels:
+//   (a) the `shallowReactive` proxy's own per-key dep, registered by its `get`
+//       trap — this one is subscribed by EVERY read through `instance.props`,
+//       whenever it happens;
+//   (b) whatever OUR getter itself touches (`fallbackValue`, `defaults`) —
+//       subscribed only by effects whose first read runs AFTER `beforeCreate`
+//       patched the slot.
+//
+// A `computed()` is lazy: its first evaluation happens during `render()`, so it
+// gets (b). A `watch(() => props.x, …)` created in `setup()` runs its getter
+// EAGERLY, before this hook exists (see "Known limitation" below for why
+// `beforeCreate` is after `setup`), so it only ever has (a). Proven by
+// intervention: the SAME watcher moved into `onMounted()` fires; in `setup()`
+// it does not.
+//
+// And channel (a) was dead. `MutableReactiveHandler.set` does
+// `let oldValue = target[key]` — a read THROUGH our getter — then gates
+// `trigger()` on `hasChanged(assignedValue, oldValue)`. Vue's
+// `updateComponentPreRender` assigns `instance.vnode = nextVNode` BEFORE
+// calling `updateProps`, so a getter reading `instance.vnode.props` LIVE
+// already returns the parent's NEW value at compare time. `hasChanged` is
+// therefore false and Vue never triggers the key — measured: at the instant
+// Vue assigns `'success'`, the getter already returned `'success'`.
+//
+// Snapshotting the passed value in the SETTER fixes channel (a) at the root:
+// the getter still returns the OLD resolution when the trap compares, so
+// `hasChanged` is true and Vue triggers the key dep normally. That repairs
+// EVERY reader regardless of when it subscribed — which is why this is the
+// fix rather than trying to make setup-time watchers subscribe (b).
+//
+// The snapshot cannot drift: Vue assigns `props[key]` unconditionally for
+// every key it resolves — both on the optimized `dynamicProps` path and on the
+// full `setFullProps` path, including the "parent stopped passing it" reset.
+// A key Vue never assigns is a key whose binding cannot change. As a bonus the
+// `vnode.props` scan moved off the read path (every render) onto the write path
+// (parent updates only).
+//
 // ## Why there is still no `computed()` here
 //
 // Measured, at realistic width (1000 instances × 71 props, 6 themed), 21
@@ -135,6 +179,12 @@ import { camelize } from './defaults.composable'
 // "clean this up" into a computed — it buys nothing the shallowRef doesn't
 // already buy, and the ADR rejected that option on measured grounds.
 //
+// Re-measured after the snapshot change, same harness, 3 interleaved rounds of
+// 21: median 107.1 / 103.6 / 105.7 ms against 111.3 / 106.1 / 128.5 ms for the
+// live-read version. Equal or slightly better — expected, since the
+// `vnode.props` scan moved off the read path (every render of every themed
+// instance) onto the write path (parent updates only).
+//
 // ## Cost — scoped to what a theme actually names
 //
 // `themedPropKeysUnion()` (in `origam.ts`, next to `activeDefaultsFor`) walks
@@ -146,6 +196,36 @@ import { camelize } from './defaults.composable'
 // lookup — no work scales with the size of the 217-component catalogue, only
 // with the size of the themes actually installed. If NO theme names ANY
 // prop, `installThemePropsResolver()` never even calls `app.mixin()`.
+//
+// ## Known gap — a setup-created `watch()` vs a pure THEME SWAP
+//
+// The snapshot above repairs the proxy key dep, which is what a setup-created
+// `watch()` holds — so such a watcher now fires for any value arriving from the
+// PARENT. It still does NOT fire for a pure theme swap with no parent update,
+// because a theme swap performs no `props[key] = …` write, and there is no
+// public API to trigger a reactive object's per-key dep from outside. Effects
+// whose first read happens AFTER `beforeCreate` (every `computed()`, every
+// render function, any `watch` created in `onMounted`) are unaffected: they hold
+// the getter's own `defaults` dep.
+//
+// Left open deliberately, on measured grounds: both theme objects this DS ships
+// (light and dark) carry BYTE-IDENTICAL `components` blocks, so no shipped theme
+// can change a prop value on a swap. The gap can only bite a consumer that
+// registers several BRAND themes whose `components` blocks differ, and it
+// reaches exactly TWO call sites in the whole catalogue — `OrigamMasonry.gap`
+// (`watch(() => props.gap, …)`) and `OrigamTextareaField.density`. Both recover
+// on their next natural trigger (a resize, the next model change).
+//
+// The candidate fix was built and verified: one per-instance
+// `watch(defaults, …)` that force-triggers each patched key by assigning a
+// fresh `Symbol` sentinel through the proxy (guarded by an `internalWrite` flag
+// so the setter ignores it), which makes `hasChanged` unconditionally true. It
+// closes the gap at no measurable time cost (median mount+2-update cost over
+// 21 rounds × 1000 instances: 102.7–124.9 ms, indistinguishable from the
+// 103.6–107.1 ms of the shipped version). It was NOT shipped because it adds a
+// SECOND undocumented-Vue-internals dependency to a file that already carries
+// the upgrade warning below. Pinned by an `it.fails` test so it cannot go
+// dormant.
 //
 // ## Known limitation — a prop read ONCE, synchronously, inside `setup()`
 //
@@ -194,7 +274,7 @@ import { camelize } from './defaults.composable'
 //   inside `setup()` (which always runs BEFORE this hook's `beforeCreate`).
 //   The two mechanisms never read from or depend on each other: `useDefaults()`'s
 //   own `usePassedProps()` check reads `instance.vnode.props` directly, the
-//   same source this hook's getter reads — so both independently arrive at
+//   the same source this hook snapshots — so both independently arrive at
 //   the same answer without either needing to know the other exists.
 // - A key a theme names that the target component does NOT declare as a prop
 //   is silently skipped (not written to `instance.attrs`, not a crash) — a
@@ -235,6 +315,29 @@ export function themedPropKeysUnion (themes: IDefault[]): Map<string, Set<string
     }
 
     return union
+}
+
+/**
+ * The value the parent EXPLICITLY bound for `key` on a given vnode, or
+ * `undefined` when it bound nothing — or bound `undefined` itself, which
+ * deliberately does NOT count as "passed" and falls through to the theme
+ * (manifestation 1's fix; mirrors `usePassedProps()`).
+ *
+ * Matches both the camelCase key and its raw (possibly hyphenated) template
+ * spelling, because `vnode.props` holds keys exactly as the template wrote
+ * them while `instance.props` holds them camelized.
+ *
+ * Called only from the accessor's SETTER — never from its getter. See
+ * "Why the passed value is a snapshot" at the top of this file.
+ */
+function passedPropValue (vnodeProps: Record<string, unknown> | null, key: string): unknown {
+    if (!vnodeProps) return undefined
+
+    for (const rawKey in vnodeProps) {
+        if (rawKey === key || camelize(rawKey) === key) return vnodeProps[rawKey]
+    }
+
+    return undefined
 }
 
 /**
@@ -291,6 +394,17 @@ export function installThemePropsResolver (app: App, themedKeysUnion: Map<string
                 // shallowRef" above before changing it back.
                 const fallbackValue = shallowRef(rawProps[key])
 
+                // SNAPSHOT of what the parent explicitly bound for this key,
+                // NOT a live read of `instance.vnode.props`. `undefined` means
+                // "not passed" (a present-but-`undefined` binding included —
+                // manifestation 1's fix). Refreshed by the setter, i.e. at the
+                // exact moment Vue pushes a new resolution into this slot.
+                //
+                // ⛔ A LIVE read here silently kills Vue's OWN `trigger` for
+                // this key — see "Why the passed value is a snapshot" above.
+                // Do not "simplify" this back into the getter.
+                let passedValue = passedPropValue(instance.vnode.props as Record<string, unknown> | null, key)
+
                 Object.defineProperty(rawProps, key, {
                     configurable: true,
                     enumerable: true,
@@ -302,24 +416,12 @@ export function installThemePropsResolver (app: App, themedKeysUnion: Map<string
                         // value`) on every parent re-render that changes an
                         // explicit value, and again when a parent STOPS passing
                         // a prop and Vue re-resolves the default. Without this
-                        // line, the `vnode.props` branch below reads a source
-                        // Vue never tracks, and nothing invalidates a `computed`
-                        // or fires a `watch` built on this prop.
+                        // line, the branches below read sources Vue never
+                        // tracks, and nothing invalidates a `computed` built on
+                        // this prop.
                         const fallback = fallbackValue.value
 
-                        const vnodeProps = instance.vnode.props as Record<string, unknown> | null
-                        if (vnodeProps) {
-                            for (const rawKey in vnodeProps) {
-                                if (rawKey === key || camelize(rawKey) === key) {
-                                    const passedValue = vnodeProps[rawKey]
-                                    // A present-but-`undefined` binding does
-                                    // NOT count as "passed" — falls through
-                                    // to the theme (manifestation 1's fix).
-                                    if (passedValue !== undefined) return passedValue
-                                    break
-                                }
-                            }
-                        }
+                        if (passedValue !== undefined) return passedValue
 
                         const componentDefaults = defaults.value?.[name]
                         if (componentDefaults && componentDefaults[key] !== undefined) {
@@ -334,6 +436,15 @@ export function installThemePropsResolver (app: App, themedKeysUnion: Map<string
                         return fallback
                     },
                     set (value: unknown) {
+                        // ORDER MATTERS. `instance.vnode` is ALREADY the new
+                        // vnode when Vue writes this slot (`updateComponentPreRender`
+                        // assigns `instance.vnode = nextVNode` BEFORE calling
+                        // `updateProps`), so this is the correct moment — and
+                        // the only one — to re-snapshot. It must land BEFORE
+                        // the ref write, because that write is what fires
+                        // `flush: 'sync'` watchers synchronously; they would
+                        // otherwise read a stale snapshot.
+                        passedValue = passedPropValue(instance.vnode.props as Record<string, unknown> | null, key)
                         fallbackValue.value = value
                     }
                 })
