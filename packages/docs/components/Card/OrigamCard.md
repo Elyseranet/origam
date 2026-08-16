@@ -122,6 +122,45 @@ through to the pre-existing behaviour (no shadow emitted). See `useElevation`
 </template>
 ```
 
+Each corner can be overridden individually. A corner prop beats the `rounded`
+shorthand for that corner only:
+
+```vue
+<template>
+    <OrigamCard rounded="lg" rounded-top-left="0px" title="One flat corner" />
+</template>
+```
+
+| Prop | Effet |
+|:--|:--|
+| `roundedTopLeft` | Coin haut-gauche uniquement |
+| `roundedTopRight` | Coin haut-droit uniquement |
+| `roundedBottomLeft` | Coin bas-gauche uniquement |
+| `roundedBottomRight` | Coin bas-droit uniquement |
+
+Même vocabulaire que `rounded` : `8`, `'8px'`, `'md'`, `'large'`, `'var(…)'`.
+
+## Padding et margin
+
+Les deux raccourcis se déclinent par axe logique et par côté physique :
+
+```vue
+<template>
+    <OrigamCard padding="16px" padding-left="32px" title="Un seul côté ajusté" />
+</template>
+```
+
+| Groupe | Props |
+|:--|:--|
+| Padding — axe | `paddingBlock` `paddingInline` |
+| Padding — côté | `paddingTop` `paddingRight` `paddingBottom` `paddingLeft` |
+| Margin — axe | `marginBlock` `marginInline` |
+| Margin — côté | `marginTop` `marginRight` `marginBottom` `marginLeft` |
+
+Le côté physique gagne sur l'axe, qui gagne sur le raccourci. Les valeurs
+acceptées et la table de précédence complète sont documentées dans
+[Espacement et coins](/guide/spacing-and-corners).
+
 ## Border
 
 ```vue

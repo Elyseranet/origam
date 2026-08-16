@@ -305,7 +305,8 @@ export default defineConfig({
                         { text: 'Utilisation', link: '/guide/usage' },
                         { text: 'Composants', link: '/guide/components' },
                         { text: 'Composables', link: '/guide/composables' },
-                        { text: 'Directives', link: '/guide/directives' }
+                        { text: 'Directives', link: '/guide/directives' },
+                        { text: 'Espacement et coins', link: '/guide/spacing-and-corners' }
                     ]
                 }
             ],

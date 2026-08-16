@@ -17,7 +17,19 @@
 				<origam-card
 						:color="state.color"
 						:padding="state.padding"
+						:padding-top="state.paddingTop"
+						:padding-right="state.paddingRight"
+						:padding-bottom="state.paddingBottom"
+						:padding-left="state.paddingLeft"
+						:padding-block="state.paddingBlock"
+						:padding-inline="state.paddingInline"
 						:margin="state.margin"
+						:margin-top="state.marginTop"
+						:margin-right="state.marginRight"
+						:margin-bottom="state.marginBottom"
+						:margin-left="state.marginLeft"
+						:margin-block="state.marginBlock"
+						:margin-inline="state.marginInline"
 						:bg-color="state.bgColor"
 						:elevation="state.elevation"
 						:flat="state.flat"
@@ -33,6 +45,10 @@
 						:border-bottom-color="state.borderBottomColor"
 						:border-left-color="state.borderLeftColor"
 						:rounded="state.rounded"
+						:rounded-top-left="state.roundedTopLeft"
+						:rounded-top-right="state.roundedTopRight"
+						:rounded-bottom-left="state.roundedBottomLeft"
+						:rounded-bottom-right="state.roundedBottomRight"
 						:density="state.density"
 						:image="state.image"
 						:type="state.type"
@@ -56,6 +72,12 @@
 					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
 					<HstSelect   v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
 					<HstCheckbox v-model="state.flat"      title="Flat"/>
+				</StoryGroup>
+				<StoryGroup title="Rounded — per corner">
+					<HstText v-model="state.roundedTopLeft"     title="Rounded Top Left"/>
+					<HstText v-model="state.roundedTopRight"    title="Rounded Top Right"/>
+					<HstText v-model="state.roundedBottomLeft"  title="Rounded Bottom Left"/>
+					<HstText v-model="state.roundedBottomRight" title="Rounded Bottom Right"/>
 				</StoryGroup>
 				<StoryGroup title="Border">
 					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
@@ -97,6 +119,22 @@
 				<StoryGroup title="Spacing">
 					<HstText v-model="state.padding" title="Padding"/>
 					<HstText v-model="state.margin"  title="Margin"/>
+				</StoryGroup>
+				<StoryGroup title="Padding — per side">
+					<HstText v-model="state.paddingTop"    title="Padding Top"/>
+					<HstText v-model="state.paddingRight"  title="Padding Right"/>
+					<HstText v-model="state.paddingBottom" title="Padding Bottom"/>
+					<HstText v-model="state.paddingLeft"   title="Padding Left"/>
+					<HstText v-model="state.paddingBlock"  title="Padding Block"/>
+					<HstText v-model="state.paddingInline" title="Padding Inline"/>
+				</StoryGroup>
+				<StoryGroup title="Margin — per side">
+					<HstText v-model="state.marginTop"    title="Margin Top"/>
+					<HstText v-model="state.marginRight"  title="Margin Right"/>
+					<HstText v-model="state.marginBottom" title="Margin Bottom"/>
+					<HstText v-model="state.marginLeft"   title="Margin Left"/>
+					<HstText v-model="state.marginBlock"  title="Margin Block"/>
+					<HstText v-model="state.marginInline" title="Margin Inline"/>
 				</StoryGroup>
 			</template>
 		</Variant>

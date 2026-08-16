@@ -25,7 +25,10 @@ Les composables communs fournissent des fonctionnalités réutilisables pour tou
 | **useMessage**        | Gère les messages (snackbars, notifications)                |
 | **useOverflow**       | Gère le débordement (overflow)                              |
 | **useProps**          | Filtre et extrait les props du composant                    |
-| **useRounded**        | Gère les coins arrondis (border-radius)                     |
+| **usePadding**        | Gère l'espacement interne, raccourci + par côté             |
+| **useMargin**         | Gère l'espacement externe, raccourci + par côté             |
+| **useBorder**         | Gère les bordures, raccourci + par côté + couleur par côté  |
+| **useRounded**        | Gère les coins arrondis (border-radius), raccourci + par coin |
 | **useSelectLink**     | Gère les liens dans les sélections                          |
 | **useSize**           | Gère la taille des composants                               |
 | **useStatus**         | Gère le statut (success, error, warning, info)              |

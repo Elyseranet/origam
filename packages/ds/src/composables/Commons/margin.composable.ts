@@ -1,34 +1,53 @@
 import { computed } from 'vue'
-import { MARGIN_REGEX } from '../../consts'
+import { MARGIN_LOGICAL_AXIS_MAP, MARGIN_POSITION_MAP, MARGIN_REGEX, SPACING_SCALE_STEPS } from '../../consts'
 
 import type { IMarginProps } from '../../interfaces'
 
-import { convertToUnit, formatMarginStylesVar, getCurrentInstanceName } from '../../utils'
-
-/**
- * Margin scale steps mirrored by global utility classes
- * (`.origam--m-0` … `.origam--m-12`) emitted from the Phase 1 manifest.
- *
- * IMPORTANT — opt-in via STRING form to avoid breaking the legacy
- * `margin={number}` contract (where numbers were interpreted as raw
- * pixels via `convertToUnit`). Authors that want the design-system
- * spacing scale must pass the value as a string (`margin="4"`), which
- * resolves to `var(--origam-space---4)` (= 16px in the primitive ladder).
- *
- * Axis-specific utilities (`mx`, `my`, `mt`, `mb`, …) are NOT yet
- * emitted by the manifest. `marginTop`, `marginInline`, etc. continue
- * to fall through to the inline style path until Phase 1.5 lands.
- */
-const UTILITY_MARGIN_SCALE: ReadonlySet<string> = new Set([
-    '0', '1', '2', '3', '4', '5', '6', '8', '10', '12'
-])
+import { convertToUnit, formatMarginStylesVar, getCurrentInstanceName, resolveSpacingValue } from '../../utils'
 
 function isUtilityMarginScale (value: unknown): value is string {
-    return typeof value === 'string' && UTILITY_MARGIN_SCALE.has(value)
+    return typeof value === 'string' && SPACING_SCALE_STEPS.includes(value)
 }
 
 /*********************************************************
  * useMargin
+ *
+ * @description
+ * Precedence rule — SPECIFIC beats GLOBAL, always in this order, enforced
+ * purely by PUSH ORDER onto the `styles` array (later declarations win
+ * within the same inline `style` attribute — this holds even across
+ * logical vs physical property syntax for the same box edge). Mirrors
+ * `useBorder` / `usePadding` exactly:
+ *
+ *   1. global `margin` shorthand (1/2/4-value, logical properties)
+ *   2. logical-axis `marginBlock` / `marginInline`
+ *   3. physical per-side `marginTop` / `marginRight` / `marginBottom` /
+ *      `marginLeft`
+ *
+ * So `marginBlock` beats `margin` for the top+bottom edges, and
+ * `marginTop` beats both `margin` and `marginBlock` for the top edge
+ * specifically.
+ *
+ * ⚠️ The 4-value `margin` shorthand distributes in the DS's
+ * **Haut/Gauche/Bas/Droite** order, NOT the CSS clockwise order — an
+ * intentional convention arbitrated in issue #216 (see
+ * `formatMarginStylesVar`). The per-side props exist precisely so a
+ * consumer never has to know that.
+ *
+ * NOTE ON THE UTILITY CLASSES — the scale steps
+ * (`SPACING_SCALE_STEPS`) are mirrored by global utility classes
+ * (`.origam--m-0` … `.origam--m-12`) that a STRING value opts into
+ * (`margin="4"` → `var(--origam-space---4)`); the NUMBER form keeps its
+ * legacy raw-pixel meaning (`margin={4}` → `4px`). Axis-specific
+ * utilities (`mx`, `my`, `mt`, …) do NOT exist in the manifest, so the
+ * directional props resolve through the INLINE-STYLE path below.
+ *
+ * (An earlier version of this comment claimed `marginTop` / `marginInline`
+ * "continue to fall through to the inline style path until Phase 1.5
+ * lands". That was false in a way worth naming: no such path existed —
+ * the props were parsed by nothing at all and emitted nothing. They now
+ * genuinely do fall through to the inline path, which is what rungs 2
+ * and 3 below implement.)
  ********************************************************/
 export function useMargin (props: IMarginProps, name = getCurrentInstanceName()) {
 
@@ -40,10 +59,6 @@ export function useMargin (props: IMarginProps, name = getCurrentInstanceName())
             classes.push(`${name}--marged`)
         }
 
-        // Classes-first companion: when `margin` is a number that maps
-        // to the spacing scale exposed by the Phase 1 manifest, emit
-        // the matching `.origam--m-{n}` utility. Custom px values fall
-        // through to the inline-style path.
         if (isUtilityMarginScale(margin)) {
             classes.push(`origam--m-${margin}`)
         }
@@ -55,22 +70,38 @@ export function useMargin (props: IMarginProps, name = getCurrentInstanceName())
         const margin = props.margin
         const styles: Array<string> = []
 
-        // Scale form (string `'4'`) handled by the utility class — no
-        // inline style needed.
-        if (isUtilityMarginScale(margin)) return styles
+        // ── Rung 1: global `margin` shorthand ────────────────────────
+        // Scale form handled by the utility class — no inline style. The
+        // directional rungs below still run: they are additive overrides
+        // on top of whatever the class paints.
+        if (!isUtilityMarginScale(margin)) {
+            if (typeof margin === 'string' && margin !== '') {
+                const match = MARGIN_REGEX.exec(margin)?.groups
+                if (match) {
+                    Object.keys(match).forEach((key) => {
+                        const values = String(match[key]).split(' ')
 
-        if (typeof margin === 'string' && margin !== '') {
-            const match = MARGIN_REGEX.exec(margin)?.groups
-            if (match) {
-                Object.keys(match).forEach((key) => {
-                    const values = String(match[key]).split(' ')
-
-                    styles.push(...formatMarginStylesVar(values))
-                })
+                        styles.push(...formatMarginStylesVar(values))
+                    })
+                }
+            } else if (typeof margin === 'number') {
+                styles.push(`margin: ${convertToUnit(margin)}`)
             }
-        } else if (typeof margin === 'number') {
-            styles.push(`margin: ${convertToUnit(margin)}`)
         }
+
+        // ── Rung 2: logical-axis `marginBlock` / `marginInline` ──────
+        MARGIN_LOGICAL_AXIS_MAP.forEach(({axis, prop}) => {
+            const resolved = resolveSpacingValue(props[prop])
+
+            if (resolved) styles.push(`margin-${axis}: ${resolved}`)
+        })
+
+        // ── Rung 3: physical per-side ────────────────────────────────
+        MARGIN_POSITION_MAP.forEach(({side, prop}) => {
+            const resolved = resolveSpacingValue(props[prop])
+
+            if (resolved) styles.push(`margin-${side}: ${resolved}`)
+        })
 
         return styles
     })

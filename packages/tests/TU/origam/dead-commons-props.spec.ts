@@ -7,30 +7,35 @@
  *
  * What is pinned
  * --------------
- * Three cross-cutting `Commons` interfaces advertise a per-side / per-corner
- * surface that NO composable reads and NO component binds:
- *
- *   IMarginProps   marginTop marginRight marginBottom marginLeft
- *                  marginBlock marginInline          (only `margin` is read)
- *   IPaddingProps  paddingTop paddingRight paddingBottom paddingLeft
- *                  paddingBlock paddingInline        (only `padding` is read)
- *   IRoundedProps  roundedTopLeft roundedTopRight
- *                  roundedBottomLeft roundedBottomRight  (only `rounded`)
  *   ILoaderProps   loadingText                       (never read anywhere)
+ *   IPositionProps top / bottom / left / right       (computed, then dropped)
+ *   IChipGroupProps.filter                           (never cascades)
+ *   IBorderProps.borderColor                         (emits an intent verbatim)
  *
- * `useMargin` / `usePadding` read `props.margin` / `props.padding` only;
- * `useRounded` receives the `rounded` value alone. The other 16 names appear
- * in `packages/ds/src/interfaces/Commons/*` and nowhere else in the library.
+ * RESOLVED — the 16 per-side / per-corner props
+ * ---------------------------------------------
+ * `marginTop|Right|Bottom|Left|Block|Inline`,
+ * `paddingTop|Right|Bottom|Left|Block|Inline` and
+ * `roundedTopLeft|TopRight|BottomLeft|BottomRight` were pinned here as inert
+ * and are now IMPLEMENTED. Their inert assertions have been removed from this
+ * file per the instruction at the top; the behavioural tests that replaced
+ * them live in:
+ *
+ *   packages/tests/TU/composables/Commons/directional-props.composable.spec.ts
+ *       — value vocabulary + the precedence grammar, at composable level
+ *   packages/tests/TU/components/Card/OrigamCard.directional-props.spec.ts
+ *       — the same 16 through `useStateEffect`, asserted on computed style
+ *   packages/tests/TU/components/Btn/OrigamBtn.directional-props.spot-check.spec.ts
+ *       — a second `useStateEffect` consumer, to prove it is not Card-specific
+ *
+ * The runtime-declaration assertion below is KEPT: it is what guarantees a
+ * consumer can actually pass the names, independently of whether they paint.
  *
  * OrigamCard is the host because it is the strongest possible contrast: the
  * SHORTHAND forms (`margin`, `padding`, `rounded`) demonstrably paint on it,
  * so a failure to paint from the per-side form cannot be blamed on the
  * component not wiring the composable at all. The "control" block below is
- * what makes the "dead" block meaningful — do not delete it.
- *
- * Scope of the defect (measured, see the sweep in inert-props-sweep.spec.ts):
- * 100 components declare the margin/padding names, 102 the rounded corners,
- * 14 `loadingText`; ZERO of them react to any of those props.
+ * what makes the remaining "dead" blocks meaningful — do not delete it.
  */
 
 import { describe, expect, it, vi } from 'vitest'
@@ -73,23 +78,16 @@ function surface (props: Record<string, unknown>): string {
     return out.replace(/origam_styletag_\d+/g, 'N').replace(/(origam-[a-z-]+?)-\d+/g, '$1-N')
 }
 
-const DEAD_PROPS: Array<[string, unknown, unknown]> = [
-    ['marginTop', 4, 40],
-    ['marginRight', 4, 40],
-    ['marginBottom', 4, 40],
-    ['marginLeft', 4, 40],
-    ['marginBlock', 4, 40],
-    ['marginInline', 4, 40],
-    ['paddingTop', 4, 40],
-    ['paddingRight', 4, 40],
-    ['paddingBottom', 4, 40],
-    ['paddingLeft', 4, 40],
-    ['paddingBlock', 4, 40],
-    ['paddingInline', 4, 40],
-    ['roundedTopLeft', 4, 40],
-    ['roundedTopRight', 4, 40],
-    ['roundedBottomLeft', 4, 40],
-    ['roundedBottomRight', 4, 40]
+/**
+ * The 16 per-side / per-corner names, kept as a list so the
+ * runtime-declaration assertion below stays exhaustive. These are no longer
+ * dead — see the "RESOLVED" note in the file header for where their
+ * behavioural tests live.
+ */
+const DIRECTIONAL_PROPS: Array<string> = [
+    'marginTop', 'marginRight', 'marginBottom', 'marginLeft', 'marginBlock', 'marginInline',
+    'paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft', 'paddingBlock', 'paddingInline',
+    'roundedTopLeft', 'roundedTopRight', 'roundedBottomLeft', 'roundedBottomRight'
 ]
 
 describe('CONTROL — the shorthand forms do paint (proves the harness detects a working prop)', () => {
@@ -103,23 +101,14 @@ describe('CONTROL — the shorthand forms do paint (proves the harness detects a
     })
 })
 
-describe('DEFECT — per-side / per-corner props are declared, typed, documented, and inert', () => {
-    it.each(DEAD_PROPS)(
-        '%s produces an identical rendered surface for two different values',
-        (prop, a, b) => {
-            expect(
-                surface({ [prop as string]: a }),
-                `\`${prop}\` now changes the render — the defect this spec pins is FIXED. `
-                + 'Remove this case and write a real behavioural test for the prop.'
-            ).toBe(surface({ [prop as string]: b }))
-        }
-    )
-
+describe('per-side / per-corner props — declared at runtime', () => {
     it('declares every one of them at runtime (so a consumer really can pass them)', () => {
         const declared = Object.keys((OrigamCard as unknown as { props: Record<string, unknown> }).props)
-        for (const [prop] of DEAD_PROPS) expect(declared).toContain(prop)
+        for (const prop of DIRECTIONAL_PROPS) expect(declared).toContain(prop)
     })
+})
 
+describe('DEFECT — loadingText is inert', () => {
     it('loadingText is inert even with loading active', () => {
         expect(surface({ loading: true, loadingText: 'aaa' }))
             .toBe(surface({ loading: true, loadingText: 'bbb' }))

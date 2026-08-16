@@ -1,59 +1,94 @@
 import { computed, isRef, Ref } from 'vue'
 
-import { BORDER_RADIUS_REGEX, PREDEFINED_ROUNDED } from '../../consts'
+import {
+    BORDER_RADIUS_REGEX,
+    NAMED_RADIUS_TOKEN,
+    PREDEFINED_ROUNDED,
+    ROUNDED_CORNER_MAP,
+    UTILITY_RADIUS_FALLBACK
+} from '../../consts'
 
 import type { IRoundedProps } from '../../interfaces'
 
 import type { TRounded } from '../../types'
 
-import { convertToUnit, formatRoundedStylesVar, getCurrentInstanceName, isCustomBorderRadius } from '../../utils'
+import {
+    convertToUnit,
+    formatRoundedStylesVar,
+    getCurrentInstanceName,
+    isCustomBorderRadius,
+    resolveRoundedCornerValue
+} from '../../utils'
 
 /**
- * Set of rounded values for which a global utility class exists in
- * `src/assets/css/tokens/origam-utilities.css` (Phase 1 manifest).
+ * Whether `value` names a rung for which a global utility class exists in
+ * `src/assets/css/tokens/origam-utilities.css` (Phase 1 manifest):
+ * `none | xs | sm | md | lg | xl | full`.
  *
- * NOTE: this set does NOT overlap the legacy `PREDEFINED_ROUNDED`
+ * The rung list is READ OFF `UTILITY_RADIUS_FALLBACK` rather than
+ * duplicated as a second hand-maintained literal, so the two cannot drift.
+ *
+ * ⚠️ The lookup is deliberately done at CALL time, not hoisted into a
+ * module-level `new Set(Object.keys(...))`. Hoisting it crashed the whole
+ * `composables/index.ts` barrel with `TypeError: Cannot convert undefined
+ * or null to object`: this module reads `UTILITY_RADIUS_FALLBACK` through
+ * the `consts` barrel, and under the barrel's circular-import graph that
+ * binding is still `undefined` while this module's top level executes.
+ * By call time every module is initialised.
+ *
+ * NOTE: these rungs do NOT overlap the legacy `PREDEFINED_ROUNDED`
  * (`x-small | small | default | medium | large | x-large | shaped |
  * shaped-invert`) — the utility manifest follows the modern
  * `xs|sm|md|lg|xl` taxonomy plus `none|full`. Components that pass
  * `rounded="default"` or `rounded="x-small"` keep emitting their
- * component-local class (no utility companion). This mismatch is
- * documented in the Phase 2 report; a Phase 1.5 may bridge the
- * legacy ROUNDED enum onto utility names.
+ * component-local class (no utility companion).
  */
-const UTILITY_ROUNDED: ReadonlySet<string> = new Set([
-    'none', 'xs', 'sm', 'md', 'lg', 'xl', 'full'
-])
-
 function isUtilityRounded (value: unknown): value is string {
-    return typeof value === 'string' && UTILITY_ROUNDED.has(value)
+    return typeof value === 'string' && Object.hasOwn(UTILITY_RADIUS_FALLBACK, value)
 }
 
-/**
+/*********************************************************
+ * useRounded
+ *
+ * @description
  * Resolve the consumer's `rounded` prop into either a class (named variant
  * or legacy boolean) or an inline `border-radius` declaration (free-form
- * CSS value). Mirrors the origam-design-system implementation but uses a
- * static `PREDEFINED_ROUNDED` whitelist instead of the origam
- * theme-driven `useTheme().current.value.variables.rounded`, since origam
- * ships its radius rungs as fixed primitive tokens.
+ * CSS value), then layer the per-corner overrides on top.
  *
- * Behaviour matrix:
+ * Precedence rule — SPECIFIC beats GLOBAL, enforced by PUSH ORDER onto the
+ * `styles` array (later declarations win within the same inline `style`
+ * attribute — this holds even across logical vs physical corner syntax for
+ * the same corner). Mirrors `useBorder` / `usePadding` / `useMargin`:
+ *
+ *   1. global `rounded` (utility rung, named variant, legacy boolean, or
+ *      free-form 1/4-value CSS)
+ *   2. per-corner `roundedTopLeft` / `roundedTopRight` /
+ *      `roundedBottomLeft` / `roundedBottomRight`
+ *
+ * So `roundedTopLeft="0"` beats `rounded="lg"` for the top-left corner
+ * only; the other three keep the `lg` rung.
+ *
+ * ⚠️ The per-corner props are only reachable through the PROPS-OBJECT
+ * overload. The `Ref` overload carries a single scalar — the `rounded`
+ * shorthand — by construction, so a caller that needs the corners must
+ * pass an object (see `useStateEffect`, which builds a `reactive` getter
+ * bag for exactly this reason).
+ *
+ * Behaviour matrix for the shorthand:
  *
  * | `rounded` value           | output                                      |
  * |---------------------------|---------------------------------------------|
  * | unset / `false` / `null`  | nothing — component default radius wins      |
- * | `'small'`, `'large'`, …   | class `${name}--rounded-${value}`            |
+ * | `'small'`, `'large'`, …   | class `${name}--rounded-${value}` + token    |
  * | `true` or `''`            | class `${name}--rounded` (legacy)            |
  * | `4` (number)              | inline `border-radius: 4px`                  |
  * | `'4px'`                   | inline `border-radius: 4px`                  |
  * | `'4px 0 4px 0'`           | inline 4-corner radii                        |
  *
  * Free-form strings are parsed by `BORDER_RADIUS_REGEX`. Anything that
- * doesn't match is silently dropped (no inline style emitted).
- */
-
-/*********************************************************
- * useRounded
+ * doesn't match (and isn't a `var()`/`calc()`) is silently dropped.
+ * Accepted per-corner value forms are documented on
+ * `resolveRoundedCornerValue`.
  ********************************************************/
 export function useRounded (
     props: IRoundedProps | Ref<boolean | number | string | TRounded | null | undefined>,
@@ -96,38 +131,14 @@ export function useRounded (
         return classes
     })
 
-    // Map a `PREDEFINED_ROUNDED` named variant to its primitive radius
-    // token. Mirrors the per-component SCSS rules (Avatar, Btn, …) that
-    // historically duplicated this mapping inline. Centralising it here
-    // lets every component pick up its `border-radius` from
-    // `roundedStyles` (inline-style via `useStyle`) without each one
-    // re-implementing the 6-row table.
-    const NAMED_RADIUS_TOKEN: Record<string, string> = {
-        'x-small': 'var(--origam-radius---xs, 2px)',
-        'small':   'var(--origam-radius---sm, 4px)',
-        'default': 'var(--origam-radius---md, 8px)',
-        'medium':  'var(--origam-radius---lg, 12px)',
-        'large':   'var(--origam-radius---xl, 16px)',
-        'x-large': 'var(--origam-radius---2xl, 24px)'
-    }
-
-    // Fallback radius per utility rung. `none` has NO token (none = 0), so a
-    // bare `var(--origam-radius---none)` is an invalid declaration that gets
-    // dropped — and a component's hardcoded default radius then wins
-    // (`rounded="none"` looked slightly rounded on Audio). The fallback also
-    // protects themes that omit a rung.
-    const UTILITY_RADIUS_FALLBACK: Record<string, string> = {
-        none: '0',
-        xs:   '2px',
-        sm:   '4px',
-        md:   '8px',
-        lg:   '12px',
-        xl:   '16px',
-        full: '9999px'
-    }
-
-    const roundedStyles = computed(() => {
-        const rounded = isRef(props) ? props.value : props.rounded
+    /**
+     * Rung 1 — the `rounded` shorthand, resolved to inline declarations.
+     * Extracted so the per-corner rung below can always run: the previous
+     * implementation `return`ed early from each shorthand branch, which
+     * would have made the corners unreachable for every value of
+     * `rounded` except "unset".
+     */
+    const shorthandStyles = (rounded: boolean | number | string | TRounded | null | undefined): Array<string> => {
         const styles: Array<string> = []
 
         // Boolean / empty / nullish — the legacy class chrome handles it.
@@ -186,6 +197,27 @@ export function useRounded (
             }
         } else if (typeof rounded === 'number') {
             styles.push(`border-radius: ${convertToUnit(rounded)}`)
+        }
+
+        return styles
+    }
+
+    const roundedStyles = computed(() => {
+        const rounded = isRef(props) ? props.value : props.rounded
+
+        const styles: Array<string> = shorthandStyles(rounded)
+
+        // ── Rung 2: per-corner overrides ─────────────────────────────
+        // Declared on `IRoundedProps` but never read until now. Emitted
+        // as PHYSICAL corner longhands (`border-top-left-radius`), which
+        // beat the LOGICAL ones the 4-value shorthand emits
+        // (`border-start-start-radius`) by declaration order.
+        if (!isRef(props)) {
+            ROUNDED_CORNER_MAP.forEach(({corner, prop}) => {
+                const resolved = resolveRoundedCornerValue(props[prop])
+
+                if (resolved) styles.push(`border-${corner}-radius: ${resolved}`)
+            })
         }
 
         return styles

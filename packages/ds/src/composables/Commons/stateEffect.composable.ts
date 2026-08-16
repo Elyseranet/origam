@@ -301,7 +301,26 @@ export function useStateEffect (
             get borderLeftColor () { return props.borderLeftColor },
         }) as IBorderProps,
     )
-    const { roundedClasses, roundedStyles }     = useRounded(rounded)
+    // Rounded goes through the props-object overload (not the bare Ref) for
+    // the same reason border does: the `Ref` overload carries ONLY the
+    // `rounded` shorthand scalar, so the per-corner `roundedTopLeft` /
+    // `roundedTopRight` / `roundedBottomLeft` / `roundedBottomRight` props
+    // were structurally unreachable — every component routed through
+    // `useStateEffect` (Card, Btn, Sheet, Alert, …) dropped them even once
+    // `useRounded` learned to read them. This is the third instance of the
+    // exact same "curated getter list was never updated" bug (border per-side
+    // → borderBlock/borderInline → here); the shorthand stays state-aware via
+    // the reactive getter, the corners read straight from the base props
+    // (they are not state-swappable).
+    const { roundedClasses, roundedStyles }     = useRounded(
+        reactive({
+            get rounded () { return rounded.value },
+            get roundedTopLeft () { return props.roundedTopLeft },
+            get roundedTopRight () { return props.roundedTopRight },
+            get roundedBottomLeft () { return props.roundedBottomLeft },
+            get roundedBottomRight () { return props.roundedBottomRight },
+        }) as IRoundedProps,
+    )
     const { elevationClasses, elevationStyles } = useElevation(
         elevation as Ref<number | string | undefined>,
         flat as Ref<boolean>,
@@ -313,11 +332,35 @@ export function useStateEffect (
     // when `padding` changes — which is exactly what happens on
     // hover/active swaps. Wrap with a `reactive` getter so the read goes
     // through the ref every time, preserving the dependency chain.
+    //
+    // The directional props (`paddingTop` / `paddingBlock` / … and their
+    // margin mirrors) are NOT state-swappable — there is no `hoverState
+    // .paddingTop` — so they read straight from the base props. They must
+    // still be forwarded explicitly: a getter bag only exposes the keys it
+    // names, so omitting them here would silently drop all 12 for every
+    // component routed through `useStateEffect`, exactly as happened to
+    // `borderBlock` / `borderInline` above.
     const { paddingClasses, paddingStyles }     = usePadding(
-        reactive({ get padding () { return padding.value } }) as IPaddingProps,
+        reactive({
+            get padding () { return padding.value },
+            get paddingTop () { return props.paddingTop },
+            get paddingRight () { return props.paddingRight },
+            get paddingBottom () { return props.paddingBottom },
+            get paddingLeft () { return props.paddingLeft },
+            get paddingBlock () { return props.paddingBlock },
+            get paddingInline () { return props.paddingInline },
+        }) as IPaddingProps,
     )
     const { marginClasses, marginStyles }       = useMargin(
-        reactive({ get margin () { return margin.value } }) as IMarginProps,
+        reactive({
+            get margin () { return margin.value },
+            get marginTop () { return props.marginTop },
+            get marginRight () { return props.marginRight },
+            get marginBottom () { return props.marginBottom },
+            get marginLeft () { return props.marginLeft },
+            get marginBlock () { return props.marginBlock },
+            get marginInline () { return props.marginInline },
+        }) as IMarginProps,
     )
 
     // Gap support: there's no `useGap` composable today. Emit an inline
