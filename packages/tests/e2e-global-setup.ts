@@ -57,17 +57,20 @@ export default async function globalSetup (): Promise<void> {
 
     const port = resolveHistoirePort()
     const baseUrl = resolveHistoireBaseUrl()
-    const isStatic = process.env[HISTOIRE_STATIC_ENV] === HISTOIRE_STATIC_ON
     const local = readLocalStories()
 
     const deadline = Date.now() + MANIFEST_GUARD_TIMEOUT_MS
     let lastDrifts: IHistoireStoryDrift[] | null = null
-    let sawHistoire = false
+    // Falls back to the env var only when nothing answered: `playwright.vrt
+    // .config.ts` serves a `histoire preview` WITHOUT setting E2E_STATIC, so
+    // the detected mode — not the env var — is what makes the remediation
+    // command in the abort message correct.
+    let servedSource: THistoireManifestSource | null = null
 
     for (;;) {
         const served = await fetchServedManifest(baseUrl)
         if (served) {
-            sawHistoire = true
+            servedSource = served.source
             const drifts = diffManifests(local, served.stories)
             if (!drifts.length) {
                 console.log(
@@ -85,7 +88,18 @@ export default async function globalSetup (): Promise<void> {
         await new Promise((done) => setTimeout(done, MANIFEST_GUARD_POLL_INTERVAL_MS))
     }
 
-    throw new Error(buildAbortMessage({ baseUrl, port, isStatic, sawHistoire, drifts: lastDrifts, localCount: local.length }))
+    const isStatic = servedSource === null
+        ? process.env[HISTOIRE_STATIC_ENV] === HISTOIRE_STATIC_ON
+        : servedSource === 'static'
+
+    throw new Error(buildAbortMessage({
+        baseUrl,
+        port,
+        isStatic,
+        sawHistoire: servedSource !== null,
+        drifts: lastDrifts,
+        localCount: local.length
+    }))
 }
 
 /**

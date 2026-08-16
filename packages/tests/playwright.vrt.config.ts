@@ -5,6 +5,9 @@ import { fileURLToPath } from 'node:url'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const REPO_ROOT = resolve(__dirname, '..', '..')
 
+/** Same knob as `playwright.config.ts` — the manifest guard reads it too. */
+const HISTOIRE_PORT = process.env.E2E_HISTOIRE_PORT ?? '6006'
+
 /*
  * Standalone Playwright config for `pnpm -F @origam/tests test:vrt`.
  *
@@ -41,6 +44,11 @@ export default defineConfig({
     testDir: './vrt',
     outputDir: './vrt/.results',
 
+    // Same `reuseExistingServer` exposure as the e2e config, and worse here:
+    // a stale server would produce visually plausible screenshots against the
+    // wrong Variants, silently poisoning the baselines. See e2e-global-setup.ts.
+    globalSetup: './e2e-global-setup.ts',
+
     fullyParallel: false,
 
     forbidOnly: !!process.env.CI,
@@ -54,7 +62,7 @@ export default defineConfig({
     ],
 
     use: {
-        baseURL: 'http://localhost:6006',
+        baseURL: `http://localhost:${HISTOIRE_PORT}`,
         trace: 'retain-on-failure',
         screenshot: 'only-on-failure',
         video: 'off'
@@ -71,9 +79,9 @@ export default defineConfig({
         // The VRT suite only ever runs against the prebuilt static Histoire
         // (never `histoire dev`) — HMR / cold Vite compiles are exactly the
         // kind of non-determinism this suite must not depend on.
-        command: 'pnpm -F @origam/stories exec histoire preview -p 6006',
+        command: `pnpm -F @origam/stories exec histoire preview -p ${HISTOIRE_PORT}`,
         cwd: REPO_ROOT,
-        url: 'http://localhost:6006/stories/',
+        url: `http://localhost:${HISTOIRE_PORT}/stories/`,
         reuseExistingServer: !process.env.CI,
         timeout: 120_000
     }
