@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { toggleHstCheckbox } from './_support/histoire-controls'
 
 /**
  * OrigamNumberField — e2e spec
@@ -553,7 +554,17 @@ test.describe('OrigamNumberField', () => {
     //                                                                      //
     // The Functional variant (index 1) starts with compact=false.         //
     // Histoire controls (HstCheckbox) are rendered in the outer window and //
-    // can be toggled from Playwright.                                      //
+    // can be toggled from Playwright — via `toggleHstCheckbox`, which      //
+    // targets `getByRole('checkbox')`.                                     //
+    //                                                                      //
+    // These blocks used to sit behind `if (await page.locator('label')     //
+    // .filter({hasText:'Compact'}).locator('input[type="checkbox"]')       //
+    // .count() > 0)`. Measured on the built bundle: the whole page holds   //
+    // ZERO `input[type=checkbox]` — HstCheckbox renders a                  //
+    // `<label class="histoire-checkbox" role="checkbox">` around an SVG.   //
+    // The guard could therefore never be true, the assertions never ran,   //
+    // and the spec reported green from `GREEN_SPECS` for nothing. Same     //
+    // defect fixed in media-scrubber.spec.ts (3b21c7e6).                   //
     // ------------------------------------------------------------------ //
 
     test.describe('Compact mode (structural — data-cy from component)', () => {
@@ -563,22 +574,13 @@ test.describe('OrigamNumberField', () => {
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
 
             // Tick the "Compact" HstCheckbox in the outer Histoire panel
-            const compactCheckbox = page.locator('label').filter({ hasText: 'Compact' }).locator('input[type="checkbox"]')
-            if (await compactCheckbox.count() > 0) {
-                await compactCheckbox.check()
-                await page.waitForTimeout(600)
+            await toggleHstCheckbox(page, 'Compact')
+            await page.waitForTimeout(600)
 
-                // Compact mode should now render data-cy elements from the component
-                await expect(sandbox.locator('[data-cy="numberfield-compact-input"]').first()).toBeVisible({ timeout: 8000 })
-                await expect(sandbox.locator('[data-cy="numberfield-compact-increment"]').first()).toBeVisible({ timeout: 8000 })
-                await expect(sandbox.locator('[data-cy="numberfield-compact-decrement"]').first()).toBeVisible({ timeout: 8000 })
-            } else {
-                // Controls panel not accessible — document limitation
-                test.info().annotations.push({
-                    type: 'limitation',
-                    description: 'HstCheckbox "Compact" control not found in outer window. Compact DOM structure must be verified manually: open Functional variant, enable Compact checkbox, verify data-cy="numberfield-compact-{input,increment,decrement}" are rendered.'
-                })
-            }
+            // Compact mode should now render data-cy elements from the component
+            await expect(sandbox.locator('[data-cy="numberfield-compact-input"]').first()).toBeVisible({ timeout: 8000 })
+            await expect(sandbox.locator('[data-cy="numberfield-compact-increment"]').first()).toBeVisible({ timeout: 8000 })
+            await expect(sandbox.locator('[data-cy="numberfield-compact-decrement"]').first()).toBeVisible({ timeout: 8000 })
         })
 
         test('compact increment click changes the displayed value', async ({ page }) => {
@@ -586,27 +588,19 @@ test.describe('OrigamNumberField', () => {
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
 
-            const compactCheckbox = page.locator('label').filter({ hasText: 'Compact' }).locator('input[type="checkbox"]')
-            if (await compactCheckbox.count() > 0) {
-                await compactCheckbox.check()
-                await page.waitForTimeout(600)
+            await toggleHstCheckbox(page, 'Compact')
+            await page.waitForTimeout(600)
 
-                const incBtn = sandbox.locator('[data-cy="numberfield-compact-increment"]').first()
-                await expect(incBtn).toBeVisible({ timeout: 8000 })
+            const incBtn = sandbox.locator('[data-cy="numberfield-compact-increment"]').first()
+            await expect(incBtn).toBeVisible({ timeout: 8000 })
 
-                const valueBefore = await sandbox.locator('div').filter({ hasText: /value\s*=/ }).first().textContent({ timeout: 3000 })
-                await incBtn.click()
-                await page.waitForTimeout(300)
-                const valueAfter = await sandbox.locator('div').filter({ hasText: /value\s*=/ }).first().textContent({ timeout: 3000 })
+            const valueBefore = await sandbox.locator('div').filter({ hasText: /value\s*=/ }).first().textContent({ timeout: 3000 })
+            await incBtn.click()
+            await page.waitForTimeout(300)
+            const valueAfter = await sandbox.locator('div').filter({ hasText: /value\s*=/ }).first().textContent({ timeout: 3000 })
 
-                // Value text should have changed
-                expect(valueBefore).not.toEqual(valueAfter)
-            } else {
-                test.info().annotations.push({
-                    type: 'limitation',
-                    description: 'Compact increment click test requires HstCheckbox interaction — not reliably automatable. Test manually.'
-                })
-            }
+            // Value text should have changed
+            expect(valueBefore).not.toEqual(valueAfter)
         })
     })
 
@@ -627,22 +621,14 @@ test.describe('OrigamNumberField', () => {
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
 
-            const hideControlsCheckbox = page.locator('label').filter({ hasText: 'Hide Controls' }).locator('input[type="checkbox"]')
-            if (await hideControlsCheckbox.count() > 0) {
-                await hideControlsCheckbox.check()
-                await page.waitForTimeout(400)
+            await toggleHstCheckbox(page, 'Hide Controls')
+            await page.waitForTimeout(400)
 
-                const root = sandbox.locator('.origam-number-field').first()
-                await expect(root).toHaveClass(/origam-number-field--hide-controls/, { timeout: 5000 })
+            const root = sandbox.locator('.origam-number-field').first()
+            await expect(root).toHaveClass(/origam-number-field--hide-controls/, { timeout: 5000 })
 
-                // Control area should no longer be attached (v-if removed it)
-                await expect(sandbox.locator('.origam-number-field__control')).toHaveCount(0, { timeout: 3000 })
-            } else {
-                test.info().annotations.push({
-                    type: 'limitation',
-                    description: 'HstCheckbox "Hide Controls" not found. Verify manually: enable Hide Controls → root gets origam-number-field--hide-controls class and .origam-number-field__control is removed from DOM.'
-                })
-            }
+            // Control area should no longer be attached (v-if removed it)
+            await expect(sandbox.locator('.origam-number-field__control')).toHaveCount(0, { timeout: 3000 })
         })
     })
 
