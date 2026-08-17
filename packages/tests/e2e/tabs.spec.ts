@@ -546,7 +546,7 @@ test.describe('OrigamTabs', () => {
     // ------------------------------------------------------------------ //
 
     test('aria-controls points at the matching panel id', async ({ page }) => {
-        test.fixme(
+        test.fail(
             true,
             'DS BUG: aria-controls is always undefined — OrigamTab injects ORIGAM_TAB_PANELS_KEY ' +
             'but OrigamTabPanels is a sibling (not an ancestor) so inject() returns null. ' +

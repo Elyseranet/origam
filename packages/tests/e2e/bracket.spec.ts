@@ -212,7 +212,7 @@ test.describe('OrigamBracket — slots', () => {
         // this test body (the officially supported conditional-fixme
         // pattern) so only this test is affected; the DS bug itself is
         // still real and unfixed.
-        test.fixme(true, 'DS BUG: OrigamBracketRound does not forward the #competitor slot to OrigamBracketMatch — OrigamBracketCompetitor is always rendered even when the consumer provides a #competitor slot at OrigamBracket level. Fix: OrigamBracketRound must relay $slots.competitor into each <origam-bracket-match> it renders via default #match slot.')
+        test.fail(true, 'DS BUG: OrigamBracketRound does not forward the #competitor slot to OrigamBracketMatch — OrigamBracketCompetitor is always rendered even when the consumer provides a #competitor slot at OrigamBracket level. Fix: OrigamBracketRound must relay $slots.competitor into each <origam-bracket-match> it renders via default #match slot.')
 
         // Canonical Variant is "Slots - Competitor".
         await openVariant(page, STORY, 'Slots - Competitor')

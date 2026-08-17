@@ -72,7 +72,7 @@ test.describe('OrigamDrawer', () => {
 		// Reproduced: variantUrl(0), init-state density=undefined (falls back to 'default').
 		// Expected: origam-drawer--density-default. Severity: medium.
 		// Kept as fixme for non-regression tracking until the DS bug is fixed.
-		test.fixme('default density class is applied', async ({ page }) => {
+		test.fail('default density class is applied', async ({ page }) => {
 			await page.goto(variantUrl(0))
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const drawer = sandbox.locator('.origam-drawer').first()

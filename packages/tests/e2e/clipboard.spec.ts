@@ -365,7 +365,7 @@ test.describe('OrigamClipboard', () => {
         // BUG DS : slot #feedback non déclaré dans OrigamClipboard.vue.
         // Vue ignore le contenu → "Done!" n'est jamais rendu.
         // Déverrouiller quand le slot #feedback est ajouté au composant.
-        test.fixme('après clic, le slot #feedback affiche "Done!" [BUG DS: slot non implémenté]', async ({ page }) => {
+        test.fail('après clic, le slot #feedback affiche "Done!" [BUG DS: slot non implémenté]', async ({ page }) => {
             await page.goto(variantUrl(5))
             await waitForRoot(page)
             const trigger = sandbox(page).locator('[data-cy="origam-clipboard-default-trigger"]').first()

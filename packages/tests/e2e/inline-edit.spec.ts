@@ -95,7 +95,7 @@ test.describe('OrigamInlineEdit — Default (display → edit transition)', () =
     // by direct DOM inspection: after Enter the output stays "Initial
     // title" instead of the committed value. Needs a story fix, not a
     // spec fix — do not touch the story from this pass (CLAUDE.md rule).
-    test.fixme('Enter confirms, the input disappears, the v-model state updates', async ({ page }) => {
+    test.fail('Enter confirms, the input disappears, the v-model state updates', async ({ page }) => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 

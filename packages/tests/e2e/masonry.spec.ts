@@ -327,13 +327,33 @@ test.describe('OrigamMasonry', () => {
     test.fixme(
         'CSS path (.origam-masonry--css): grid-template-rows:masonry requires the experimental flag',
         async () => {
-            // grid-template-rows: masonry is behind chrome://flags/#enable-experimental-web-platform-features.
-            // Headless Chromium does not enable it. The CSS path is therefore
-            // never activated in this suite. Unit tests cover the pure helpers
-            // (pickColumnsForWidth, bucketFill) in packages/tests/TU/.
-            // To test the CSS path manually: launch Chrome with
-            //   --enable-experimental-web-platform-features
-            // and navigate to http://localhost:6006/stories/story/<STORY_ID>.
+            // 2026-08-17 — REASON RE-MEASURED, AND IT IS A REAL LIMITATION.
+            //
+            // The old wording ("requires the experimental flag") implied that
+            // passing the flag would be enough, which would have made this a
+            // false limitation. It is not. Probed by launching the chromium
+            // project with
+            //   test.use({ launchOptions: { args: ['--enable-experimental-web-platform-features'] } })
+            // against this worktree's static Histoire. Result on
+            // Chrome/147.0.7727.15:
+            //
+            //   CSS.supports('grid-template-rows', 'masonry')  -> false
+            //   CSS.supports('grid-template',      'masonry')  -> false
+            //   CSS.supports('item-flow',      'row masonry')  -> false
+            //
+            // The flag does not unlock it in this Chromium build — neither the
+            // original `grid-template-rows: masonry` syntax nor the newer
+            // `item-flow` one. So the CSS path CANNOT be activated here by any
+            // launch option, and the component's `useCssSupport` branch always
+            // takes the JS fallback under test.
+            //
+            // Unit tests cover the pure helpers (pickColumnsForWidth,
+            // bucketFill) in packages/tests/TU/.
+            //
+            // TO LIFT: re-run the three CSS.supports probes above after a
+            // Playwright chromium bump. The day any of them returns true, this
+            // test becomes writable — assert `.origam-masonry--css` is the
+            // active path and that items flow without the JS column buckets.
         }
     )
 })

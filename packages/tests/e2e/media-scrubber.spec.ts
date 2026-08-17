@@ -56,6 +56,19 @@ import { expect, test, type Page } from '@playwright/test'
  * ─────────────────────────────────────────────────────────────────────────────
  */
 
+// 2026-08-17 — reason RE-VERIFIED on develop @ e66dac68 and STILL TRUE.
+// `find packages/stories -ipath "*MediaScrubber*" -o -ipath "*media-scrubber*"`
+// returns nothing; the static Histoire build serves 210 stories / 1938
+// variants and none of them is this component. Waking the 11 tests below was
+// measured: all 11 fail with a 30 s Playwright timeout (they navigate to a
+// story id that 404s), so they cannot be encoded as `test.fail` either — a
+// timeout counts as `unexpected` even under `test.fail`, which would redden
+// CI instead of documenting the hole. They stay `test.fixme`.
+//
+// TO LIFT: create the story from the blueprint above (Variants, data-cy
+// attributes and prop values are all specified), then swap the 11
+// `test.fixme` for `test` and drop the @audit-variant-titles pragma.
+//
 // BLOCKED: story does not exist yet — path kept for when it is created
 const STORY = '/stories/story/components-stories-mediascrubber-origammediascrubber-story-vue'
 

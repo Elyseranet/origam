@@ -80,9 +80,19 @@ async function getInjectedBgImage (locator: ReturnType<ReturnType<typeof sandbox
 
 // ─── Format 1 — raw CSS gradient string ─────────────────────────────────────
 
-// DS BUG: useStateEffect (used by OrigamBtn) ignores isGradient/resolveGradient — background-image is never emitted for bgColor gradient strings.
-// Fix: add the isGradient guard in stateEffect.composable.ts colorStyles, mirroring color.composable.ts useColorEffect lines 399-409.
-test.describe.fixme('Color gradient — raw CSS string', () => {
+// DS BUG (re-verified 2026-08-17 on develop @ e66dac68): useStateEffect (used by
+// OrigamBtn) ignores isGradient/resolveGradient — background-image is never emitted
+// for bgColor gradient strings. `grep -n "isGradient\|resolveGradient"
+// packages/ds/src/composables/Commons/stateEffect.composable.ts` returns ZERO lines,
+// against 10 in color.composable.ts. Measured DOM: background-image === "none".
+// Fix: add the isGradient guard in stateEffect.composable.ts colorStyles, mirroring
+// color.composable.ts useColorEffect lines 399-409.
+//
+// The 3 describes below were `test.describe.fixme` (6 tests never executed). They
+// now RUN under `test.fail`: green while the bug is present, RED the day it is
+// fixed — so the fix cannot land without this file being updated.
+test.describe('Color gradient — raw CSS string', () => {
+    test.beforeEach(() => { test.fail() })
     test('linear-gradient(135deg, #ff0080, #7928ca) renders verbatim', async ({ page }) => {
         await openVariant(page, STORY, 'Design - Raw CSS string')
         const sandbox = sandboxOf(page)
@@ -117,7 +127,8 @@ test.describe.fixme('Color gradient — raw CSS string', () => {
 
 // DS BUG: useStateEffect (used by OrigamBtn) ignores isGradient/resolveGradient — background-image is never emitted for IGradient bgColor objects.
 // Fix: add the isGradient guard in stateEffect.composable.ts colorStyles, mirroring color.composable.ts useColorEffect lines 399-409.
-test.describe.fixme('Color gradient — IGradient object (intent stops)', () => {
+test.describe('Color gradient — IGradient object (intent stops)', () => {
+    test.beforeEach(() => { test.fail() })
     test('{ from: primary, to: success } emits intent CSS-var references', async ({ page }) => {
         await openVariant(page, STORY, 'Design - IGradient object')
         const sandbox = sandboxOf(page)
@@ -151,7 +162,8 @@ test.describe.fixme('Color gradient — IGradient object (intent stops)', () => 
 
 // DS BUG: useStateEffect (used by OrigamBtn) ignores isGradient/resolveGradient — background-image is never emitted for gradient-{slug} bgColor preset strings.
 // Fix: add the isGradient guard in stateEffect.composable.ts colorStyles, mirroring color.composable.ts useColorEffect lines 399-409.
-test.describe.fixme('Color gradient — preset name', () => {
+test.describe('Color gradient — preset name', () => {
+    test.beforeEach(() => { test.fail() })
     test('bg-color="gradient-sunset" resolves to var(--origam-gradient---sunset)', async ({ page }) => {
         await openVariant(page, STORY, 'Design - Preset names')
         const sandbox = sandboxOf(page)

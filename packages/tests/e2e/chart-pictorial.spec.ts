@@ -188,7 +188,7 @@ test.describe('OrigamChartPictorial — iconsPerUnit', () => {
     // is derived as maxValue/8 ≈ 8.125 regardless of the iconsPerUnit prop value.
     // Expected fix: raise MAX_SLOTS or use a fixture where iconsPerUnit values produce
     // rawSlotsPerColumn below the cap (e.g., iconsPerUnit=1 vs iconsPerUnit=10 with max=9).
-    test.fixme('iconsPerUnit=1 renders more filled icons than iconsPerUnit=5 for same data', async ({ page }) => {
+    test.fail('iconsPerUnit=1 renders more filled icons than iconsPerUnit=5 for same data', async ({ page }) => {
         // Dedicated side-by-side fixture folded into "Design" — a single
         // dynamic "Icons Per Unit" control (default 5), driven
         // sequentially instead. Kept as test.fixme — the DS bug this test

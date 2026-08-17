@@ -327,7 +327,7 @@ test.describe('OrigamChartStreamgraph — Emit point-click', () => {
 	})
 
 	test('keyboard Enter on a ribbon fires point-click', async ({ page }) => {
-		test.fixme(true, 'DS BUG: onRibbonActivate skips emit when hoveredXIndex is null — keyboard focus never sets hoveredXIndex (only onSvgMouseMove does), so pressing Enter on a ribbon always finds hoveredPoint===null and the point-click emit is silently swallowed. Fix needed in OrigamChartStreamgraph.vue: onRibbonActivate must derive a fallback xIndex (e.g. middle column) when hoveredXIndex is null.')
+		test.fail(true, 'DS BUG: onRibbonActivate skips emit when hoveredXIndex is null — keyboard focus never sets hoveredXIndex (only onSvgMouseMove does), so pressing Enter on a ribbon always finds hoveredPoint===null and the point-click emit is silently swallowed. Fix needed in OrigamChartStreamgraph.vue: onRibbonActivate must derive a fallback xIndex (e.g. middle column) when hoveredXIndex is null.')
 		await openVariant(page, 'Events - point-click')
 		const sandbox = sandboxOf(page)
 

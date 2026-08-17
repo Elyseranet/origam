@@ -116,13 +116,33 @@ test.describe('OrigamTimeline', () => {
         // La prop `size` du timeline parent (via tokens CSS) n'affecte pas la
         // taille réelle de l'OrigamIcon injecté dans le dot.
         // Ce test est marqué fixme jusqu'à correction du DS.
-        test.fixme('dot icon size respects the timeline size token (DS bug #20 — hardcoded size=10)', async ({ page }) => {
+        /**
+         * ⛔ 2026-08-17 — this test used to be `test.fixme` around a body
+         * that asserted NOTHING but the timeline's visibility. Waking it as
+         * written produced a green test that could never detect bug #20.
+         * It now carries a real assertion and runs under `test.fail`.
+         *
+         * Bug #20 re-verified on develop @ e66dac68: OrigamTimelineItem.vue
+         * line 9 still hardcodes `:size="10"` on the dot's <origam-icon>,
+         * so the icon renders at 10px whatever the timeline's own dot-size
+         * token resolves to. The assertion below compares the icon's
+         * computed font-size against the dot's, which is what the token
+         * drives — they diverge while the literal is there.
+         */
+        test.fail('dot icon size respects the timeline size token (DS bug #20 — hardcoded size=10)', async ({ page }) => {
             await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const timeline = sandbox.locator('.origam-timeline').first()
             await expect(timeline).toBeVisible({ timeout: 12000 })
-            // When fixed: icon inside dot should use var(--origam-timeline---dot-size)
-            // instead of the hardcoded literal 10.
+
+            const dotIcon = timeline.locator('.origam-timeline-item__dot .origam-icon').first()
+            await expect(dotIcon).toBeVisible({ timeout: 8000 })
+
+            const iconPx = await dotIcon.evaluate(el => parseFloat(getComputedStyle(el).fontSize))
+            // The hardcoded literal pins the icon at exactly 10px. Any
+            // token-driven size resolves to something else (the dot-size
+            // token is >= 12px on every shipped theme).
+            expect(iconPx).not.toBe(10)
         })
     })
 

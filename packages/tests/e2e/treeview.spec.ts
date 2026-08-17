@@ -264,7 +264,7 @@ test.describe('OrigamTreeview', () => {
     // forwardé aux nœuds fils. Dans le DOM tous les emplacements slot sont <!--v-if-->.
     // Fix requis : ajouter <template #node="slotProps"><slot name="node" v-bind="slotProps"/></template>
     // sur chaque <origam-treeview-node> dans OrigamTreeview.vue.
-    test.fixme('Slots/Node — slot personnalise rend le texte [slot]', async ({ page }) => {
+    test.fail('Slots/Node — slot personnalise rend le texte [slot]', async ({ page }) => {
         const sandbox = await gotoVariant(page, VARIANT.SLOTS_NODE)
         // Le slot #node de la story produit un <span style="fontStyle:italic"> avec "[slot] {label}"
         const slotSpans = sandbox.locator('.origam-treeview-node > span[style*="italic"]')

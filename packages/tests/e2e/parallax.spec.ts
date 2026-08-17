@@ -203,7 +203,7 @@ test.describe('OrigamParallax — multi-layer (enriched)', () => {
         // at "progress = 0.000" regardless of page scroll.
         // This is a design gap in useParallaxRuntime: the CSS path should still
         // call onProgress via a scroll listener so event consumers get updates.
-        test.fixme(true, 'DS BUG: @scroll-progress not emitted when cssScrollDriven=true (LINEAR easing + Chrome 115+). useParallaxRuntime CSS path skips onProgress entirely.')
+        test.fail(true, 'DS BUG: @scroll-progress not emitted when cssScrollDriven=true (LINEAR easing + Chrome 115+). useParallaxRuntime CSS path skips onProgress entirely.')
 
         await page.goto(variantUrl(9))
 

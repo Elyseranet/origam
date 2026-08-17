@@ -352,6 +352,19 @@ test.describe('OrigamSliderField', () => {
             // NOT depend on the color-channel bug" and is unrelated. Moving the
             // call inside this test body (the officially supported conditional-
             // fixme pattern) restores the other test to actually running.
+            // 2026-08-17 — CANNOT be encoded as `test.fail`. This test never
+            // calls page.goto (the fixture it needs does not exist), so waking
+            // it produces a 45 s TIMEOUT, and Playwright counts a timed-out
+            // test as `unexpected` even under `test.fail` — it would redden CI
+            // instead of documenting the bug. Measured: 45 s timeout, status
+            // `unexpected`, expectedStatus `failed`.
+            //
+            // TO LIFT THIS: add a Variant to OrigamSliderField.story.vue whose
+            // init-state pre-sets `error: true` (the Functional variant inits
+            // error=false and the control cannot be driven headlessly), then
+            // add the matching `page.goto(variantUrl(<new-index>))` here. Once
+            // the test actually reaches the DOM, convert it to `test.fail`
+            // against the colour bug described below.
             test.fixme(
                 true,
                 'DS BUG: thumbSurfaceClasses includes thumbBgClasses (useBackgroundColor(color)) ' +

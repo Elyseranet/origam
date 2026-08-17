@@ -509,9 +509,29 @@ test.describe('OrigamSvgIcon — inline SVG leaf', () => {
         expect(fillValue).not.toMatch(/^#[0-9a-fA-F]{3,6}$/)
     })
 
-    test.fixme('Visual regression — SVG icon — no baseline committed yet', async ({ page }) => {
-        // Run `npx playwright test --update-snapshots` to create the baseline,
-        // commit the .png, then remove this fixme.
+    /**
+     * 2026-08-17 — reason RE-VERIFIED, still valid, but the old one ("run
+     * --update-snapshots, commit the .png, remove this fixme") is the WRONG
+     * instruction and would have made CI unstable.
+     *
+     * Measured: waking this test writes
+     *   e2e/icons.spec.ts-snapshots/svg-icon-single-path-chromium-darwin.png
+     * — a host-specific baseline. This repo runs e2e on Linux in CI, so a
+     * darwin baseline committed from a dev machine mismatches on every CI
+     * run (font rasterisation + DPI differ). That is exactly why no baseline
+     * was ever committed.
+     *
+     * Screenshot assertions belong to the dedicated VRT suite, which exists
+     * precisely to pin the rendering host: packages/tests/playwright.vrt.config.ts
+     * with `pnpm -F @origam/tests test:vrt:docker` (and
+     * `test:vrt:docker:update` to regenerate baselines inside the container).
+     *
+     * TO LIFT: move this assertion into packages/tests/vrt/, generate the
+     * baseline via `test:vrt:docker:update`, commit the container-generated
+     * .png, and delete this test from the e2e suite. Do NOT commit a
+     * `-chromium-darwin.png` baseline here.
+     */
+    test.fixme('Visual regression — SVG icon — belongs in the VRT suite, not here (see note)', async ({ page }) => {
         await page.goto(SVG_ICON_STORY)
         await page.waitForLoadState('networkidle')
         await page.getByText('Prop — icon (single path)', { exact: true }).first().click()

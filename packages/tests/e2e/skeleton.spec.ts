@@ -96,7 +96,16 @@ test.describe('OrigamSkeleton', () => {
             // The Design init-state uses 'rectangular'; we test text via Functional (index 1)
             // which sets variant='text'. This test is here for documentation purposes:
             // tested in Functional.
-            test.skip(true, 'variant=text covered by Functional variant (index 1)')
+            // 2026-08-17 — reason RE-VERIFIED AND TRUE. `variant=text` really
+            // is asserted for real at skeleton.spec.ts:134 ("variant=text
+            // applies the text modifier class", `toHaveClass(/origam-skeleton--text/)`)
+            // inside the Functional block. This declaration is therefore a
+            // duplicate placeholder with an EMPTY body: waking it yields a test
+            // that passes without asserting anything, which is worse than the
+            // skip. Kept skipped rather than deleted so the Design-block
+            // symmetry stays readable.
+            // TO LIFT: delete this test outright — the contract is covered.
+            test.skip(true, 'variant=text covered for real by the Functional block (skeleton.spec.ts:134) — this declaration has an empty body')
         })
 
         test('variant=circular applies the circular modifier and a square aspect', async ({ page: _page }) => {
@@ -106,7 +115,26 @@ test.describe('OrigamSkeleton', () => {
             // standalone circular variant, the SCSS sets border-radius to
             // --origam-skeleton---border-radius-circular (9999px token).
             // Tested via Functional variant which can hold any variant value.
-            test.skip(true, 'standalone circular tested via Functional/list-item composite')
+            // ⛔ 2026-08-17 — THIS REASON WAS FALSE, and hid a coverage hole.
+            // It claimed circular was "tested via Functional/list-item
+            // composite". It is not: `grep -n circular skeleton.spec.ts`
+            // returns exactly two `test(` declarations — this one, and
+            // "variant=list-item renders circular avatar + 2 text lines"
+            // (skeleton.spec.ts:242), which is ITSELF a disabled test with an
+            // empty body. No assertion anywhere in this file exercises the
+            // circular modifier or its border-radius. `variant=circular` has
+            // ZERO e2e coverage.
+            //
+            // It stays disabled because the body is empty and no Variant
+            // init-states circular (Design inits rectangular, and the HstSelect
+            // cannot be driven for this prop headlessly).
+            //
+            // TO LIFT: add a Variant to OrigamSkeleton.story.vue whose
+            // init-state sets `variant: 'circular'`, then write the body
+            // against it — assert `origam-skeleton--circular` on the root and
+            // a border-radius resolving from
+            // `--origam-skeleton---border-radius-circular`.
+            test.skip(true, 'STORY GAP: no Variant init-states variant=circular, and the claimed coverage elsewhere does not exist — see the note above (verified 2026-08-17)')
         })
     })
 

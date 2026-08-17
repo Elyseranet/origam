@@ -297,12 +297,49 @@ test.describe('OrigamNumberFormat — Prop signDisplay', () => {
         expect(neg).toMatch(/^-/)
     })
 
-    test('except-zero hides the sign on 0', async ({ page }) => {
-        test.fixme(true, 'DS BUG: signDisplay="except-zero" invalide — TNumberFormatSignDisplay (packages/ds/src/types/NumberFormat/number-format-format.type.ts) définit "except-zero" (kebab) mais ECMAScript Intl.NumberFormat attend "exceptZero" (camelCase). Lève RangeError à la construction, le composant ne rend pas. La story passe sign="except-zero" depuis SIGN_DISPLAY_OPTIONS, ce qui casse le Variant dès que ce choix est sélectionné.')
+    /**
+     * DS BUG — signDisplay="except-zero" is not a valid Intl value.
+     *
+     * `TNumberFormatSignDisplay` (packages/ds/src/types/NumberFormat/
+     * number-format.type.ts, via NUMBER_FORMAT_SIGN_DISPLAY) exposes the
+     * kebab-case `'except-zero'`, but ECMAScript `Intl.NumberFormat`
+     * expects the camelCase `'exceptZero'`. The composable casts the value
+     * straight through (number-format.composable.ts:161, with a comment
+     * acknowledging the casing divergence), so construction throws.
+     *
+     * ⛔ WHY THIS TEST IS WRITTEN THE WAY IT IS (2026-08-17).
+     * The previous version selected `except-zero` from the DEFAULT state
+     * (`auto`) and asserted `expect(zero).not.toMatch(/^[+-]/)`. That
+     * assertion PASSES WHETHER OR NOT THE BUG EXISTS: when the RangeError
+     * is thrown the component keeps the previous (`auto`) formatter, which
+     * renders "0" — no sign — so the test could never detect the bug. It
+     * was a `test.fixme` guarding an assertion that was silently vacuous.
+     *
+     * Measured on develop @ e66dac68 (chromium, static Histoire):
+     *   Sign Display = always,       Value = 5  ->  "+5"
+     *   Sign Display = except-zero,  Value = 5  ->  "+5"
+     *   Sign Display = except-zero,  Value = 0  ->  "+0"   <-- WRONG
+     *   pageerror: "RangeError: Value except-zero out of range for
+     *               Intl.NumberFormat options property signDisplay"
+     *
+     * So the test now switches to `always` FIRST. That pins the stale
+     * formatter to one that DOES sign zero, making the two outcomes
+     * distinguishable: correct behaviour renders "0", the live bug renders
+     * "+0". Marked `test.fail` — green while the bug is there, RED the day
+     * the type is fixed to 'exceptZero' (or the composable maps it).
+     */
+    test.fail('except-zero hides the sign on 0', async ({ page }) => {
         await openVariant(page, 'Functional')
         const sandbox = sandboxOf(page)
-        await selectHstOption(page, 'Sign Display', 'except-zero')
+
+        // Pin the stale-formatter fallback to one that signs zero, so a
+        // silently-rejected `except-zero` is observable.
+        await selectHstOption(page, 'Sign Display', 'always')
         await fillHstNumber(page, 'Value', 0)
+        await page.waitForTimeout(300)
+        expect(normaliseWs(await host(sandbox).textContent())).toMatch(/^\+/)
+
+        await selectHstOption(page, 'Sign Display', 'except-zero')
         await page.waitForTimeout(300)
         const zero = normaliseWs(await host(sandbox).textContent())
         expect(zero).not.toMatch(/^[+-]/)

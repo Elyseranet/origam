@@ -246,8 +246,18 @@ test.describe('OrigamEmptyState', () => {
          * own `size` consumption, packages/ds/src/components/EmptyState/
          * OrigamEmptyState.vue:135, is a plain reactive computed like any
          * other prop it reads). Needs follow-up before unfixming.
+         *
+         * ─── RESOLVED 2026-08-17 ────────────────────────────────────────
+         * Re-measured on develop @ e66dac68 (chromium, static Histoire
+         * build): the `size` control DOES now propagate into the sandbox
+         * iframe. Both tests below assert a real class change
+         * (`--size-sm` / `--size-lg`) AND a real computed font-size
+         * comparison, so neither can pass vacuously — a desync would fail
+         * the `toHaveClass` assertion. Both pass. Re-enabled.
+         * The diagnostic above is kept as the historical record; do NOT
+         * re-disable without re-measuring.
          */
-        test.fixme('size=sm icon font-size is smaller than size=md', async ({ page }) => {
+        test('size=sm icon font-size is smaller than size=md', async ({ page }) => {
             await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
@@ -260,7 +270,7 @@ test.describe('OrigamEmptyState', () => {
             expect(smFontSize).toBeLessThan(mdFontSize)
         })
 
-        test.fixme('size=lg icon font-size is larger than size=md', async ({ page }) => {
+        test('size=lg icon font-size is larger than size=md', async ({ page }) => {
             await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()

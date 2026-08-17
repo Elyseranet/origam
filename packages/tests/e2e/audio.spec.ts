@@ -319,7 +319,7 @@ test.describe('OrigamAudio — variant routing', () => {
         // conditional-fixme pattern) restored the other two to actually
         // running. This one call's own DS bug is still real and unfixed —
         // kept in effect below, now correctly scoped to only this test.
-        test.fixme(true, 'DS BUG: compact variant does NOT hide the waveform slider — OrigamAudio injects the OrigamSliderField unconditionally into the #waveform slot of OrigamMediaController regardless of isCompactVariant. In compact mode the slider switches to variant="timer" but stays in the DOM (data-cy="origam-audio-waveform-slider" toHaveCount(1), not 0). Fix: add v-if="!isCompactVariant" on the OrigamSliderField inside the #waveform slot in OrigamAudio.vue.')
+        test.fail(true, 'DS BUG: compact variant does NOT hide the waveform slider — OrigamAudio injects the OrigamSliderField unconditionally into the #waveform slot of OrigamMediaController regardless of isCompactVariant. In compact mode the slider switches to variant="timer" but stays in the DOM (data-cy="origam-audio-waveform-slider" toHaveCount(1), not 0). Fix: add v-if="!isCompactVariant" on the OrigamSliderField inside the #waveform slot in OrigamAudio.vue.')
 
         // Dedicated fixture folded into "Design" — flip the Variant select
         // from its 'Expanded' default to 'Compact'.

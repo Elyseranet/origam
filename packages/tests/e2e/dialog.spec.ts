@@ -427,7 +427,7 @@ test.describe('OrigamDialog', () => {
 		 *
 		 * Ticket de remédiation : corriger `OrigamCard` pour router ce slot.
 		 */
-		test.fixme('le slot #header-content rend du markup personnalise dans le header [DS BUG - OrigamCard ne route pas #header-content]', async ({ page }) => {
+		test.fail('le slot #header-content rend du markup personnalise dans le header [DS BUG - OrigamCard ne route pas #header-content]', async ({ page }) => {
 			await page.goto(variantUrl(12))
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
@@ -480,7 +480,7 @@ test.describe('OrigamDialog', () => {
 		 *
 		 * Ticket de remédiation : corriger `OrigamCard` pour router ce slot.
 		 */
-		test.fixme('le slot #header-subtitle rend du contenu dans la zone sous-titre [DS BUG - OrigamCard ne route pas #header-subtitle]', async ({ page }) => {
+		test.fail('le slot #header-subtitle rend du contenu dans la zone sous-titre [DS BUG - OrigamCard ne route pas #header-subtitle]', async ({ page }) => {
 			await page.goto(variantUrl(14))
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
@@ -516,7 +516,7 @@ test.describe('OrigamDialog', () => {
 		 *
 		 * Ticket de remédiation : corriger `OrigamCard` pour router #header-title.
 		 */
-		test.fixme('le slot #header-title rend du markup riche dans le titre [DS BUG - OrigamCard ne route pas #header-title]', async ({ page }) => {
+		test.fail('le slot #header-title rend du markup riche dans le titre [DS BUG - OrigamCard ne route pas #header-title]', async ({ page }) => {
 			await page.goto(variantUrl(15))
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)

@@ -138,17 +138,53 @@ test.describe('OrigamColorPickerField', () => {
         await expect(errorText).toHaveText('Color required')
     })
 
-    test('Prop — rules: error message disappears after a colour is selected', async ({ page }) => {
-        // Skipped: the field → picker → canvas model-commit wiring is CORRECT
-        // (verified in #172 — OrigamColorPicker emits `update:model-value` via
-        // `handleUpdateColor`, the field's `handleSelectColor` writes it). BUT
-        // the canvas emit (`OrigamColorPickerCanvas` dotPosition setter) derives
-        // the colour from `canvasWidth`/`canvasHeight`, which aren't reliably
-        // measured in headless/static — so no automatable gesture (canvas
-        // drag/click, HSL channel inputs, field input; there are no preset
-        // swatches) commits a colour. This is an automation limit, NOT a
-        // component bug. The companion test above proves validation FIRES on blur.
-        test.skip(true, 'picker colour selection not automatable in headless (canvas measurement) — see #172')
+    /**
+     * ⛔ THE "NOT AUTOMATABLE IN HEADLESS" JUSTIFICATION WAS FALSE.
+     *
+     * This test carried `test.skip(true, 'picker colour selection not
+     * automatable in headless (canvas measurement) — see #172')`, on the
+     * stated grounds that the canvas emit derives its colour from
+     * `canvasWidth`/`canvasHeight` which "aren't reliably measured in
+     * headless/static", and that the field -> picker wiring was CORRECT.
+     *
+     * Both halves of that claim measured false on develop @ e66dac68
+     * (chromium, static Histoire build, 2026-08-17).
+     *
+     * A plain `.origam-color-picker-canvas` click at a position is fully
+     * automatable, and the measurement works:
+     *
+     *   BEFORE  --origam-color-picker-color-hsv : rgba(NaN, NaN, NaN, 1)
+     *           aria-valuetext                  : "Saturation 0%, lightness 0%"
+     *           preview dot                     : background: rgb(0, 0, 0)
+     *   AFTER   --origam-color-picker-color-hsv : rgba(241, 90, 90, 1)
+     *           aria-valuetext                  : "Saturation 63%, lightness 95%"
+     *           preview dot                     : background: rgb(241, 90, 90)
+     *
+     * The gesture registers, the canvas measures, the picker's internal HSV
+     * state moves and the preview repaints. What never happens is the emit:
+     * the field's input stays "" and no `update:modelValue` is observed.
+     * Reproduced on the STANDALONE OrigamColorPicker story as well
+     * (aria-valuetext 73%/96% -> 20%/73%, still no emit), which places the
+     * fault in OrigamColorPicker — NOT in OrigamColorPickerField, whose
+     * `@update:model-value="handleSelectColor"` binding is correct
+     * (OrigamColorPickerField.vue:85 and :200).
+     *
+     * Two other automatable gestures were probed and are equally inert:
+     * the 4 `.origam-color-picker-edit__input` RGBA number inputs, and the
+     * hue `input[type=range]` — neither commits a colour either. The canvas
+     * also declares `role="application" tabindex="0"` with a live
+     * `aria-valuetext` but ignores Arrow keys entirely (valuetext unchanged
+     * after 5x ArrowRight + 5x ArrowUp), which is a separate a11y defect.
+     *
+     * So this is a PRODUCT BUG, not an automation limit, and the skip was
+     * hiding it. Now `test.fail`: green while the emit is missing, RED the
+     * day OrigamColorPicker propagates the canvas commit.
+     *
+     * Suspect (NOT root-caused — fixing DS bugs is out of this pass's
+     * scope): the `useVModel` transform-out on OrigamColorPicker's `model`,
+     * OrigamColorPicker.vue:159-180.
+     */
+    test.fail('Prop — rules: error message disappears after a colour is selected', async ({ page }) => {
         await page.goto(variantUrl(5))
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

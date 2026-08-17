@@ -329,7 +329,7 @@ test.describe('OrigamSelect', () => {
         // Expected: first click should add France to model and mount the #selection slot.
         // Workaround: none headlessly. The story renders correctly when interacted
         // with in a real browser.
-        test.fixme('Slots - Selection — custom selection slot renders on multiple', async ({ page }) => {
+        test.fail('Slots - Selection — custom selection slot renders on multiple', async ({ page }) => {
             await page.goto(variantUrl(24))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-slot-selection"]')

@@ -636,7 +636,7 @@ test.describe('OrigamProgress (dispatcher)', () => {
          * File: packages/ds/src/components/Progress/OrigamProgress.vue line 19
          *   <slot name="default"/>  ← must be v-bind="{ value: normalizedValue }"
          */
-        test.fixme('DS BUG slot value prop is NaN — dispatcher does not forward v-bind to slot', async ({ page }) => {
+        test.fail('DS BUG slot value prop is NaN — dispatcher does not forward v-bind to slot', async ({ page }) => {
             await page.goto(progressUrl(3))
             const sb = sandbox(page)
             await expect(sb.locator('.origam-progress--circular').first()).toBeVisible({ timeout: 25000 })
