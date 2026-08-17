@@ -63,7 +63,21 @@ test.describe('OrigamVideo — Default', () => {
         await expect(h).toBeVisible({ timeout: 8000 })
         await expect(h.locator('[data-cy="origam-video-controls"]').first()).toBeVisible()
         await expect(h.locator('[data-cy="origam-media-controller-play"]').first()).toBeVisible()
-        await expect(h.locator('[data-cy="origam-media-scrubber"]').first()).toBeVisible()
+        // `origam-media-controller-scrubber`, NOT `origam-media-scrubber`.
+        // OrigamMediaScrubber declares `dataCy` as a real prop and renders
+        // `props.dataCy ?? 'origam-media-scrubber'`, so the literal only
+        // survives when nobody forwards a selector — and OrigamMediaController
+        // always does (`data-cy="origam-media-controller-scrubber"` on the
+        // `#waveform` fallback). Same composition as the volume control below.
+        // Asserting the bare literal here is what made this spec red on all
+        // three engines: the element was present with a complete ARIA
+        // contract, only the locator matched nothing.
+        await expect(h.locator('[data-cy="origam-media-controller-scrubber"]').first()).toBeVisible()
+        // Pin the composition itself — a parent silently renaming the child's
+        // selector is exactly how this spec broke, and a `toBeVisible` on the
+        // new name alone would not catch the symmetric mistake (the scrubber
+        // falling back to its own literal because the forward was dropped).
+        await expect(h.locator('[data-cy="origam-media-scrubber"]')).toHaveCount(0)
         // The volume control's root IS the mute button (origam-media-
         // controller-volume-mute) — the plain "origam-media-controller-
         // volume" data-cy is only a prefix forwarded into
@@ -83,13 +97,98 @@ test.describe('OrigamVideo — Default', () => {
         await expect(btn).toHaveAttribute('aria-label', /play/i)
     })
 
-    test('scrubber declares role=slider with aria-valuemin/max', async ({ page }) => {
+    /**
+     * `role="slider"` is only half a contract. A role advertised without
+     * its value triplet, its orientation, its name and a way to operate it
+     * from the keyboard is worse than no role at all — the project rule is
+     * "No ARIA is better than bad ARIA". So this asserts the whole thing,
+     * not just the role attribute the old version checked.
+     */
+    test('scrubber honours the full role=slider contract', async ({ page }) => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
-        const scrubber = host(sandbox).locator('[data-cy="origam-media-scrubber"]').first()
+        const scrubber = host(sandbox).locator('[data-cy="origam-media-controller-scrubber"]').first()
+        await expect(scrubber).toBeVisible({ timeout: 8000 })
+
         await expect(scrubber).toHaveAttribute('role', 'slider')
         await expect(scrubber).toHaveAttribute('aria-valuemin', '0')
+        await expect(scrubber).toHaveAttribute('aria-orientation', 'horizontal')
+        // Accessible name — the controller passes a translated `Seek`.
+        await expect(scrubber).toHaveAttribute('aria-label', /.+/)
+        // Operable from the keyboard, so it must be reachable by Tab.
+        await expect(scrubber).toHaveAttribute('tabindex', '0')
+
+        // aria-valuenow must exist AND sit inside [valuemin, valuemax].
+        // aria-valuemax reflects the real duration once `loadedmetadata`
+        // has landed — it must never be the internal epsilon guard the
+        // component uses as a division floor (that leak is pinned at the
+        // unit level in TU/components/Media/OrigamMediaScrubber.spec.ts).
+        await expect
+            .poll(async () => Number(await scrubber.getAttribute('aria-valuemax')), { timeout: 10000 })
+            .toBeGreaterThan(1)
+
+        const [min, now, max] = await Promise.all([
+            scrubber.getAttribute('aria-valuemin'),
+            scrubber.getAttribute('aria-valuenow'),
+            scrubber.getAttribute('aria-valuemax')
+        ])
+        expect(now).not.toBeNull()
+        expect(Number(now)).toBeGreaterThanOrEqual(Number(min))
+        expect(Number(now)).toBeLessThanOrEqual(Number(max))
+    })
+
+    /**
+     * The half of the slider contract an attribute check cannot prove:
+     * that the arrow keys actually MOVE something. This is the failure
+     * mode OrigamColorPicker shipped — `role` + a live `aria-valuetext`
+     * on a control that ignored the arrows in its default state.
+     *
+     * MEASURED HEADLESS LIMITATION (verified, not assumed): the story's
+     * remote asset reaches `readyState=4` and reports a real duration,
+     * but never decodes a frame — `video.play()` flips `paused` to false
+     * and ZERO `timeupdate` events fire over several seconds, and a
+     * programmatic seek emits `seeking` without ever emitting `seeked`.
+     * `state.currentTime` is fed by `timeupdate`, so `aria-valuenow`
+     * cannot be asserted after a keypress here. That is the environment,
+     * not the component.
+     *
+     * What IS observable is the link the keyboard owns: keydown → commit →
+     * `update:modelValue` → the controller's seek → `video.currentTime`.
+     * Asserting on the media element skips the event the environment
+     * withholds while still proving the arrows are wired to the media.
+     */
+    test('scrubber arrow keys drive the media element, not just the ARIA value', async ({ page }) => {
+        await openVariant(page, 'Default')
+        const sandbox = sandboxOf(page)
+
+        const h = host(sandbox)
+        const scrubber = h.locator('[data-cy="origam-media-controller-scrubber"]').first()
+        await expect(scrubber).toBeVisible({ timeout: 8000 })
+
+        // Wait for the duration, otherwise the range is empty and every
+        // key press legitimately clamps back to 0.
+        await expect
+            .poll(async () => Number(await scrubber.getAttribute('aria-valuemax')), { timeout: 10000 })
+            .toBeGreaterThan(1)
+
+        const readTime = () =>
+            h.locator('[data-cy="origam-video-el"]').first()
+                .evaluate((node) => (node as HTMLVideoElement).currentTime)
+
+        await scrubber.focus()
+        await expect(scrubber).toBeFocused()
+
+        expect(await readTime()).toBe(0)
+
+        await scrubber.press('ArrowRight')
+        await expect.poll(readTime, { timeout: 5000 }).toBeGreaterThan(0)
+
+        await scrubber.press('Home')
+        await expect.poll(readTime, { timeout: 5000 }).toBe(0)
+
+        await scrubber.press('End')
+        await expect.poll(readTime, { timeout: 5000 }).toBeGreaterThan(1)
     })
 })
 
