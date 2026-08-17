@@ -60,8 +60,22 @@ import { eventLogItems, openEventsTab, selectHstOption, toggleHstCheckbox } from
  *     is non-functional for any consumer following the documented
  *     group-level `type` pattern.
  *
- * Flagged as `test.fixme` below with this diagnostic, story/component
- * left untouched per this pass's scope (title-drift realignment).
+ * ─── RESOLVED 2026-08-17 ────────────────────────────────────────────
+ * The three tests this diagnostic used to disable are LIVE again.
+ *
+ * The bug was fixed upstream by commit e66dac68 ("fix(ds): reparer 4
+ * bugs de selection en groupe"), which repaired the cascade centrally
+ * in the theme-props-resolver rather than component by component: the
+ * resolver already read the injected defaults map that `provideDefaults`
+ * writes, but only installed its accessor for prop keys a REGISTERED
+ * theme happened to name. `type` / `disabled` were not named by any
+ * theme, so the template's bare `:type="type"` binding kept reading the
+ * raw, undefaulted `_props`.
+ *
+ * Re-measured on this worktree at e66dac68 (chromium, static Histoire):
+ * all 17 tests in this file pass, including the 3 formerly disabled
+ * ones. The diagnostic above is kept as the historical record of the
+ * failure mode — do NOT re-disable these tests without re-measuring.
  */
 
 const sandboxOf = (page: Page) => page.frameLocator('iframe[src*="__sandbox"]')
@@ -97,7 +111,6 @@ test.describe('OrigamSelectionControlGroup — Type', () => {
     })
 
     test('the native input actually carries the group type attribute (checkbox)', async ({ page }) => {
-        test.fixme(true, 'DS BUG: OrigamSelectionControl never applies the group-injected `type` to its native <input> — see module-level diagnostic. `el.type` reads back "text" instead of "checkbox".')
         await openVariant(page, 'Functional')
         const sandbox = sandboxOf(page)
         const firstInput = group(sandbox).locator('.origam-selection-control__input input').first()
@@ -212,7 +225,6 @@ test.describe('OrigamSelectionControlGroup — States', () => {
     })
 
     test('the native input actually reflects disabled via aria-disabled', async ({ page }) => {
-        test.fixme(true, 'DS BUG: OrigamSelectionControl never applies the group-injected `disabled` to its native <input> — see module-level diagnostic. aria-disabled stays "false" even though the wrapping element correctly gains the --disabled class.')
         await openVariant(page, 'Functional')
         const sandbox = sandboxOf(page)
         await toggleHstCheckbox(page, 'Disabled')
@@ -276,7 +288,6 @@ test.describe('OrigamSelectionControlGroup — Emit: update:modelValue', () => {
     })
 
     test('checking a control fires update:modelValue (verified via the Events tab)', async ({ page }) => {
-        test.fixme(true, 'DS BUG (downstream of the type-attribute bug, see module-level diagnostic): the native <input> never gets type="checkbox", so a click never toggles `.checked`, `handleInput` never sees a truthy change, and update:modelValue never fires. Confirmed empirically: Events tab stays empty after a click that visibly does nothing.')
         await openVariant(page, 'Events - update:modelValue')
         const sandbox = sandboxOf(page)
         const inputA = group(sandbox).locator('input[aria-label="Option A"]').first()
