@@ -36,6 +36,12 @@ export interface IMediaScrubberProps extends ICommonsComponentProps, IColorProps
      * Upper bound of the value range. Required to compute the thumb
      * position. Passing `0` (or any value `<= min`) freezes the
      * scrubber at the start.
+     *
+     * A frozen range is the NORMAL mount state for a media scrubber, not
+     * an error: `OrigamMediaController` feeds `scrubberMax`, which stays
+     * `0` until `state.duration` becomes finite. `aria-valuemax` reports
+     * that empty range honestly (`0`), never the internal epsilon the
+     * component uses to keep the percentage division finite.
      */
     max: number
     /**
@@ -106,9 +112,25 @@ export interface IMediaScrubberProps extends ICommonsComponentProps, IColorProps
      */
     ariaValueText?: string
     /**
-     * Optional `data-cy` test selector forwarded by the parent
-     * (`OrigamMediaController`, `OrigamMediaVolumeControl`) as a
-     * camelCase Vue prop. Passed through `$attrs` to the host element.
+     * `data-cy` test selector for the host element.
+     *
+     * Declaring it as a prop REMOVES it from `$attrs`, so it is rendered
+     * explicitly by the template — it does not fall through. When a parent
+     * forwards one it WINS over the component's own literal; the literal
+     * `'origam-media-scrubber'` is only the fallback for a standalone
+     * instance nobody named.
+     *
+     * Both in-house parents forward one, so inside `<OrigamVideo>` /
+     * `<OrigamAudio>` the fallback is never what renders:
+     *   - `OrigamMediaController` → `origam-media-controller-scrubber`
+     *     (the timeline, on the `#waveform` fallback)
+     *   - `OrigamMediaVolumeControl` → its own `dataCy` verbatim, i.e.
+     *     `origam-media-controller-volume` in the default toolbar
+     *
+     * Target the composed name in tests. Asserting on the bare literal is
+     * what made `video.spec.ts` red on all three engines.
+     *
+     * @default 'origam-media-scrubber'
      */
     dataCy?: string
 }
