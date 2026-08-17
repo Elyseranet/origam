@@ -26,10 +26,24 @@
 						:bg-color="state.bgColor"
 						:density="state.density"
 						:rounded="state.rounded"
+						:rounded-top-left="state.roundedTopLeft"
+						:rounded-top-right="state.roundedTopRight"
+						:rounded-bottom-left="state.roundedBottomLeft"
+						:rounded-bottom-right="state.roundedBottomRight"
 						:elevation="state.elevation"
 						:border="state.border"
 						:border-color="state.borderColor"
 						:border-style="state.borderStyle"
+						:border-top="state.borderTop"
+						:border-right="state.borderRight"
+						:border-bottom="state.borderBottom"
+						:border-left="state.borderLeft"
+						:border-block="state.borderBlock"
+						:border-inline="state.borderInline"
+						:border-top-color="state.borderTopColor"
+						:border-right-color="state.borderRightColor"
+						:border-bottom-color="state.borderBottomColor"
+						:border-left-color="state.borderLeftColor"
 						:show-round-titles="state.showRoundTitles"
 						:show-scores="state.showScores"
 						:show-seed="state.showSeed"
@@ -62,10 +76,30 @@
 					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
 					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
 				</StoryGroup>
+				<StoryGroup title="Rounded — per corner">
+					<HstText v-model="state.roundedTopLeft"     title="Rounded Top Left"/>
+					<HstText v-model="state.roundedTopRight"    title="Rounded Top Right"/>
+					<HstText v-model="state.roundedBottomLeft"  title="Rounded Bottom Left"/>
+					<HstText v-model="state.roundedBottomRight" title="Rounded Bottom Right"/>
+				</StoryGroup>
 				<StoryGroup title="Border">
 					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
 					<HstSelect v-model="state.borderColor" title="Border Color" :options="COLOR_OPTIONS"/>
 					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border — per side (width in px)">
+					<HstNumber v-model="state.borderTop"    title="Border Top"    :min="0" :max="12"/>
+					<HstNumber v-model="state.borderRight"  title="Border Right"  :min="0" :max="12"/>
+					<HstNumber v-model="state.borderBottom" title="Border Bottom" :min="0" :max="12"/>
+					<HstNumber v-model="state.borderLeft"   title="Border Left"   :min="0" :max="12"/>
+					<HstNumber v-model="state.borderBlock"  title="Border Block"  :min="0" :max="12"/>
+					<HstNumber v-model="state.borderInline" title="Border Inline" :min="0" :max="12"/>
+				</StoryGroup>
+				<StoryGroup title="Border — per side (color)">
+					<HstSelect v-model="state.borderTopColor"    title="Border Top Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.borderRightColor"  title="Border Right Color"  :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.borderBottomColor" title="Border Bottom Color" :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.borderLeftColor"   title="Border Left Color"   :options="COLOR_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Display">
 					<HstCheckbox v-model="state.showRoundTitles" title="Show Round Titles"/>

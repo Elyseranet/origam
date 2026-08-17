@@ -20,6 +20,10 @@
 							:border="state.border"
 							:border-color="state.borderColor"
 							:border-style="state.borderStyle"
+							:border-top="state.borderTop"
+							:border-right="state.borderRight"
+							:border-bottom="state.borderBottom"
+							:border-left="state.borderLeft"
 							:rounded="state.rounded"
 							:rounded-top-right="state.roundedTopRight"
 							:rounded-top-left="state.roundedTopLeft"
@@ -49,6 +53,12 @@
 					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
 					<HstText   v-model="state.borderColor" title="Border Color"/>
 					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Border — per side">
+					<HstSelect v-model="state.borderTop"    title="Border Top"    :options="BORDER_OPTIONS"/>
+					<HstSelect v-model="state.borderRight"  title="Border Right"  :options="BORDER_OPTIONS"/>
+					<HstSelect v-model="state.borderBottom" title="Border Bottom" :options="BORDER_OPTIONS"/>
+					<HstSelect v-model="state.borderLeft"   title="Border Left"   :options="BORDER_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Tag">
 					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>

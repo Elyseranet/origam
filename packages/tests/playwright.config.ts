@@ -75,7 +75,10 @@ const GREEN_SPECS = [
     'theme-provider.spec.ts',
     'textarea-richtext.spec.ts',
     'defaults-provider.spec.ts',
-    'field-height.spec.ts'
+    'field-height.spec.ts',
+    // wave 7 — contrôles de story pour les 16 props directionnelles câblées
+    // en 249ac7d1. Vérifiée verte sur chromium + firefox + webkit.
+    'directional-story-controls.spec.ts'
 ]
 
 /**
