@@ -14,6 +14,7 @@ export {
 export { intentList as COLOR_OPTIONS } from './intent.const'
 export { sizeList as SIZE_OPTIONS } from './size.const'
 export { densityList as DENSITY_OPTIONS } from './density.const'
+export { directionList as DIRECTION_OPTIONS } from './direction.const'
 export { roundedList as ROUNDED_OPTIONS } from './rounded.const'
 export { elevationList as ELEVATION_OPTIONS } from './elevation.const'
 export { iconList as ICON_OPTIONS } from './icon.const'
