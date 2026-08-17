@@ -69,21 +69,42 @@ export const fa: IIconSet = {
 
 ## Props (interface)
 
-`OrigamClassIcon` accepts the same `IIconComponentProps` interface as
-`OrigamIcon` but **only `icon`, `size`, `tag`, `class`, `style`** are
-honoured at the leaf level. The other axes (color, border, padding,
-margin) are wired by the dispatcher (`OrigamIcon`) — passing them to
-`OrigamClassIcon` directly is a no-op.
+`OrigamClassIcon` accepts the full `IIconComponentProps` interface, and
+resolves every surface axis itself.
 
-```ts
-interface IIconComponentProps {
-    icon?: TIcon
-    size?: TSize | number
-    tag?: string
-    class?: string | string[] | object
-    style?: string | string[] | object
-}
-```
+| Prop | Type | Description |
+|---|---|---|
+| `icon` | `TIcon` | Icon class name, e.g. `mdi-account`. |
+| `size` | `TSize \| number` | Named token, or a number applied as both `font-size` and `line-height`. |
+| `tag` | `string` | Root element. |
+| `color` / `bgColor` | `TColor` | Foreground / background intent. |
+| `border` (+ per-side, `borderColor`, `borderStyle`) | see [Border](../Alert/OrigamAlert.md#border) | Border axis. |
+| `rounded` (+ per-corner) | `boolean \| number \| string \| TRounded` | Radius axis. |
+| `padding` / `margin` (+ per-side, block, inline) | `boolean \| number \| string` | Spacing axes. |
+| `width` / `height` / `min*` / `max*` | `number \| string` | Dimension axis. |
+| `class` | `string \| string[] \| object` | Merged into the root class list. |
+| `style` | `string \| string[] \| object` | Merged into the root style. |
+| `disabled` | `boolean` | **Declared but not consumed** — see the note below. |
+
+::: tip Behaviour change
+These axes used to be a no-op at the leaf level: `OrigamIcon` resolved them
+and handed the result down as `class` / `style`, so they only worked when the
+icon was reached *through* the dispatcher. Since the leaves are exported on
+the public barrel too, `<origam-class-icon padding="8px">` written directly
+got nothing at all.
+
+The leaf now consumes the same composables itself, so both paths work. There
+is no double application — the dispatcher forwards only `icon`, `size`,
+`tag`, `class` and `style`.
+:::
+
+::: warning `disabled` does nothing
+`disabled` reaches this component through `IIconComponentProps` but is not
+read anywhere — no class, no attribute, no style. The same holds for
+`OrigamIcon`, `OrigamSvgIcon`, `OrigamLigatureIcon` and `OrigamComponentIcon`;
+all five are recorded in the `unconsumed-props` guard baseline. To grey out an
+icon, drive `color` or wrap it in the disabled control that owns it.
+:::
 
 ## Anatomy
 
