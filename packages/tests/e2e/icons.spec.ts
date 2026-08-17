@@ -277,10 +277,10 @@ test.describe('OrigamComponentIcon — Vue-component wrapper leaf', () => {
         }
     })
 
-    test('Slot default — slot content overrides icon prop', async ({ page }) => {
+    test('Slot default — slotted SVG renders inside the wrapper', async ({ page }) => {
         await page.goto(COMPONENT_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Slot — default (overrides icon prop)', { exact: true }).first().click()
+        await page.getByText('Slots - Default', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
