@@ -33,6 +33,8 @@
 >
 	import { useLocale, useProps, useResizeObserver, useStyle } from "../../composables"
 
+	import { COLOR_NULL } from "../../consts"
+
 	import { KEYBOARD_VALUES } from "../../enums"
 
 	import type { IColorPickerCanvasProps } from "../../interfaces"
@@ -187,9 +189,13 @@
 		if (props.disabled) return
 
 		const step = e.shiftKey ? STEP_LARGE : STEP_SMALL
-		const hsv = props.colorHsv
-
-		if (!hsv) return
+		// A picker that has no colour yet (an empty OrigamColorPickerField
+		// opens in exactly that state) must still answer the keyboard: a
+		// mouse click on this same canvas commits a colour from null, and
+		// this element advertises `role="application"`, `tabindex="0"` and a
+		// live `aria-valuetext`. Bailing out on a null colour made it inert
+		// for keyboard users precisely when they had nothing to start from.
+		const hsv = props.colorHsv ?? COLOR_NULL
 
 		const {h, a} = hsv
 		let {s, v} = hsv

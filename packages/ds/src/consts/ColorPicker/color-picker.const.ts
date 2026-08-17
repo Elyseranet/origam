@@ -2,7 +2,20 @@ import type { IColorPickerMode } from "../../interfaces"
 
 import type { THSLA, TRGBA } from "../../types"
 
-import { HexToHSV, HSLtoHSV, HSVtoHex, HSVtoHSL, HSVtoRGB, RGBtoHSV } from "../../utils"
+// Deep import, NOT the `../../utils` barrel — deliberate.
+//
+// `utils/index.ts` re-exports with `export *`, and a dozen `utils/*` modules
+// import back from the `../../consts` barrel, so consts <-> utils is a cycle.
+// Whether this file sees real functions or `undefined` then depends purely on
+// which barrel the module graph entered first. Entering through `composables`
+// (which every ColorPicker SFC does, before it imports `consts`) starts
+// `utils/index.ts` first; by the time this file runs, that barrel is still
+// mid-execution and its namespace has no `HSVtoRGB` yet — so `to` / `from`
+// below were captured as `undefined`, permanently, for all six modes.
+//
+// Deep-importing the defining module sidesteps the barrel: the exports of
+// `color.util` are hoisted function declarations, available even mid-cycle.
+import { HexToHSV, HSLtoHSV, HSVtoHex, HSVtoHSL, HSVtoRGB, RGBtoHSV } from "../../utils/Commons/color.util"
 
 export const COLOR_NULL = {h: 0, s: 0, v: 0, a: 1}
 
