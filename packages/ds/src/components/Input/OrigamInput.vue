@@ -102,11 +102,16 @@
 
 	import {
 		useAdjacent,
+		useBorder,
 		useBothColor,
 		useDefaults,
 		useDensity,
 		useDimension,
+		useElevation,
+		useMargin,
+		usePadding,
 		useProps,
+		useRounded,
 		useRtl,
 		useSize,
 		useStyle,
@@ -237,11 +242,32 @@
 	const {sizeClasses} = useSize(props, 'origam-input')
 	const {typographyStyles} = useTypography(props, 'input')
 
+	/*********************************************************
+	 * Spacing / border / shape / elevation
+	 *
+	 * @description
+	 * `IInputProps` extends IPaddingProps / IMarginProps / IBorderProps /
+	 * IRoundedProps / IElevationProps. The component consumed dimension,
+	 * color, density, size and typography — but none of these five, so 32
+	 * typed props resolved to nothing. Declared after the existing axes so
+	 * the spacing rungs land last and win the inline cascade.
+	 ********************************************************/
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {marginClasses, marginStyles} = useMargin(props)
+	const {borderClasses, borderStyles} = useBorder(props)
+	const {roundedClasses, roundedStyles} = useRounded(props)
+	const {elevationClasses, elevationStyles} = useElevation(props)
+
 	const inputStyles = computed(() => {
 		return [
 			dimensionStyles.value,
 			colorStyles.value,
 			typographyStyles.value,
+			borderStyles.value,
+			roundedStyles.value,
+			elevationStyles.value,
+			marginStyles.value,
+			paddingStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -258,6 +284,11 @@
 			sizeClasses.value,
 			validationClasses.value,
 			rtlClasses.value,
+			borderClasses.value,
+			roundedClasses.value,
+			elevationClasses.value,
+			paddingClasses.value,
+			marginClasses.value,
 			props.class
 		]
 	})

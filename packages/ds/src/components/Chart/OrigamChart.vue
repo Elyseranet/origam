@@ -563,7 +563,65 @@
 	 * happy and irrelevant props (e.g. `smoothing` on a gauge)
 	 * are silently dropped.
 	 ********************************************************/
+	/*********************************************************
+	 * Surface props — forwarded to EVERY family.
+	 *
+	 * @description
+	 * `OrigamChart` renders no DOM of its own: it dispatches to one family
+	 * component per `type`. The per-family bags below are hand-curated, and
+	 * the whole spacing / shape / surface axis was missing from all 21 of
+	 * them — so `<origam-chart padding="8px" rounded="lg" elevation="md">`
+	 * resolved to nothing, even though `IChartProps` declares the props AND
+	 * every family already consumes them through `IChartBaseProps` (same
+	 * `IDimensionProps` / `IMarginProps` / `IPaddingProps` / `IRoundedProps` /
+	 * `IElevationProps` / `IBgColorProps` chain).
+	 *
+	 * Kept as ONE spread rather than 21 copies of 28 keys: the curated-list
+	 * bug this fixes is exactly what a duplicated list re-creates on the next
+	 * prop added (see the same failure in `useStateEffect`, three times).
+	 *
+	 * `height` stays declared per-family below — several families narrow or
+	 * default it — so it is deliberately absent here.
+	 ********************************************************/
+	const surfaceProps = computed(() => ({
+		id: props.id,
+		class: props.class,
+		style: props.style,
+
+		width: props.width,
+		maxHeight: props.maxHeight,
+		maxWidth: props.maxWidth,
+		minHeight: props.minHeight,
+		minWidth: props.minWidth,
+
+		bgColor: props.bgColor,
+		elevation: props.elevation,
+
+		padding: props.padding,
+		paddingTop: props.paddingTop,
+		paddingRight: props.paddingRight,
+		paddingBottom: props.paddingBottom,
+		paddingLeft: props.paddingLeft,
+		paddingBlock: props.paddingBlock,
+		paddingInline: props.paddingInline,
+
+		margin: props.margin,
+		marginTop: props.marginTop,
+		marginRight: props.marginRight,
+		marginBottom: props.marginBottom,
+		marginLeft: props.marginLeft,
+		marginBlock: props.marginBlock,
+		marginInline: props.marginInline,
+
+		rounded: props.rounded,
+		roundedTopLeft: props.roundedTopLeft,
+		roundedTopRight: props.roundedTopRight,
+		roundedBottomLeft: props.roundedBottomLeft,
+		roundedBottomRight: props.roundedBottomRight
+	}))
+
 	const cartesianProps = computed(() => ({
+		...surfaceProps.value,
 		type: props.type as TChartCartesianKind,
 		series: seriesWithVisibility.value,
 		categories: props.categories,
@@ -594,6 +652,7 @@
 	}))
 
 	const polarProps = computed(() => ({
+		...surfaceProps.value,
 		type: props.type as TChartPolarKind,
 		series: seriesWithVisibility.value,
 		categories: props.categories,
@@ -614,6 +673,7 @@
 	}))
 
 	const radarProps = computed(() => ({
+		...surfaceProps.value,
 		series: seriesWithVisibility.value,
 		categories: props.categories,
 		height: props.height,
@@ -628,6 +688,7 @@
 	}))
 
 	const gaugeProps = computed(() => ({
+		...surfaceProps.value,
 		series: seriesWithVisibility.value,
 		categories: props.categories,
 		height: props.height,
@@ -646,6 +707,7 @@
 	}))
 
 	const pyramidProps = computed(() => ({
+		...surfaceProps.value,
 		type: props.type as TChartPyramidKind,
 		series: seriesWithVisibility.value,
 		categories: props.categories,
@@ -664,6 +726,7 @@
 	}))
 
 	const honeycombProps = computed(() => ({
+		...surfaceProps.value,
 		series: seriesWithVisibility.value,
 		height: props.height,
 		title: props.title,
@@ -680,6 +743,7 @@
 	}))
 
 	const treemapProps = computed(() => ({
+		...surfaceProps.value,
 		series: seriesWithVisibility.value,
 		height: props.height,
 		title: props.title,
@@ -695,6 +759,7 @@
 	}))
 
 	const sankeyProps = computed(() => ({
+		...surfaceProps.value,
 		series: seriesWithVisibility.value,
 		height: props.height,
 		title: props.title,
@@ -711,6 +776,7 @@
 	}))
 
 	const wordCloudProps = computed(() => ({
+		...surfaceProps.value,
 		series: seriesWithVisibility.value,
 		height: props.height,
 		title: props.title,
@@ -726,6 +792,7 @@
 	}))
 
 	const heatmapProps = computed(() => ({
+		...surfaceProps.value,
 		series: seriesWithVisibility.value,
 		height: props.height,
 		title: props.title,
@@ -743,6 +810,7 @@
 	}))
 
 	const sunburstProps = computed(() => ({
+		...surfaceProps.value,
 		series: seriesWithVisibility.value,
 		height: props.height,
 		title: props.title,
@@ -758,6 +826,7 @@
 	}))
 
 	const boxPlotProps = computed(() => ({
+		...surfaceProps.value,
 		series: seriesWithVisibility.value,
 		categories: props.categories,
 		height: props.height,
@@ -779,6 +848,7 @@
 	}))
 
 	const pictorialProps = computed(() => ({
+		...surfaceProps.value,
 		series: seriesWithVisibility.value,
 		categories: props.categories,
 		height: props.height,
@@ -797,6 +867,7 @@
 	}))
 
 	const candlestickProps = computed(() => ({
+		...surfaceProps.value,
 		series: seriesWithVisibility.value,
 		height: props.height,
 		title: props.title,
@@ -816,6 +887,7 @@
 	}))
 
 	const streamgraphProps = computed(() => ({
+		...surfaceProps.value,
 		series: seriesWithVisibility.value,
 		categories: props.categories,
 		height: props.height,
@@ -835,6 +907,7 @@
 	}))
 
 	const variwideProps = computed(() => ({
+		...surfaceProps.value,
 		series: seriesWithVisibility.value,
 		height: props.height,
 		title: props.title,
@@ -855,6 +928,7 @@
 	}))
 
 	const polarBarProps = computed(() => ({
+		...surfaceProps.value,
 		series: seriesWithVisibility.value,
 		categories: props.categories,
 		height: props.height,
@@ -872,6 +946,7 @@
 	}))
 
 	const bulletProps = computed(() => ({
+		...surfaceProps.value,
 		series: seriesWithVisibility.value,
 		categories: props.categories,
 		height: props.height,
@@ -889,6 +964,7 @@
 	}))
 
 	const paretoProps = computed(() => ({
+		...surfaceProps.value,
 		series: seriesWithVisibility.value,
 		height: props.height,
 		title: props.title,
@@ -906,6 +982,7 @@
 	}))
 
 	const mapProps = computed(() => ({
+		...surfaceProps.value,
 		series: seriesWithVisibility.value,
 		height: props.height,
 		title: props.title,
@@ -920,6 +997,7 @@
 	}))
 
 	const sparklineProps = computed(() => ({
+		...surfaceProps.value,
 		series: seriesWithVisibility.value,
 		height: props.height,
 		width: props.width,

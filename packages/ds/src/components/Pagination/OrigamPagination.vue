@@ -181,7 +181,22 @@
 	import { ComponentPublicInstance, computed, nextTick, ref, shallowRef, StyleValue } from "vue"
 	import { OrigamBtn } from "../../components"
 
-	import { useDensity, useDisplay, useLocale, useProps, useRefs, useResizeObserver, useSize, useTypography, useVModel , useStyle} from "../../composables"
+	import {
+		useBorder,
+		useDensity,
+		useDisplay,
+		useElevation,
+		useLocale,
+		useMargin,
+		usePadding,
+		useProps,
+		useRefs,
+		useResizeObserver,
+		useSize,
+		useStyle,
+		useTypography,
+		useVModel
+	} from "../../composables"
 
 	import { KEYBOARD_VALUES, MDI_ICONS, VARIANT } from "../../enums"
 
@@ -648,6 +663,21 @@
 	const { densityClasses } = useDensity(props)
 	const { typographyStyles } = useTypography(props, 'pagination--info')
 
+	/*********************************************************
+	 * Spacing / border / elevation
+	 *
+	 * @description
+	 * `IPaginationProps` extends IPaddingProps / IMarginProps / IBorderProps /
+	 * IElevationProps. None of the four were consumed: the row could not be
+	 * padded, spaced, bordered or raised despite the types promising it.
+	 * These paint the pagination ROW itself — the per-page buttons keep
+	 * taking their own size / density through `btnProps` above.
+	 ********************************************************/
+	const { paddingClasses, paddingStyles } = usePadding(props)
+	const { marginClasses, marginStyles } = useMargin(props)
+	const { borderClasses, borderStyles } = useBorder(props)
+	const { elevationClasses, elevationStyles } = useElevation(props)
+
 	const paginationClasses = computed(() => {
 		return [
 			'origam-pagination',
@@ -658,11 +688,19 @@
 			},
 			sizeClasses.value,
 			densityClasses.value,
+			borderClasses.value,
+			elevationClasses.value,
+			paddingClasses.value,
+			marginClasses.value,
 			props.class
 		]
 	})
 	const paginationStyles = computed(() => {
 		return [
+			borderStyles.value,
+			elevationStyles.value,
+			marginStyles.value,
+			paddingStyles.value,
 			props.style
 		] as StyleValue
 	})

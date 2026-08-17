@@ -17,12 +17,21 @@
 		lang="ts"
 		setup
 >
-	import { useProps , useStyle} from "../../composables"
+	import {
+		useBorder,
+		useBothColor,
+		useDimension,
+		useMargin,
+		usePadding,
+		useProps,
+		useRounded,
+		useStyle
+	} from "../../composables"
 	import { SIZES_ARRAY } from '../../consts'
 
 	import type { IIconComponentProps, IIconComponentSlots } from '../../interfaces'
 	import type { Component } from 'vue'
-	import { computed, StyleValue } from 'vue'
+	import { computed, StyleValue, toRef } from 'vue'
 
 	import type { TSize } from '../../types'
 	import { convertToUnit } from '../../utils'
@@ -52,6 +61,13 @@
 	 * @description
 	 * Composable-driven class and style composition.
 	 ********************************************************/
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	const {borderClasses, borderStyles} = useBorder(props)
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {marginClasses, marginStyles} = useMargin(props)
+	const {roundedClasses, roundedStyles} = useRounded(props)
+	const {dimensionStyles} = useDimension(props)
+
 	const iconStyles = computed(() => {
 		const numericSize = typeof props.size === 'number'
 				? convertToUnit(props.size)
@@ -63,6 +79,12 @@
 				'width': numericSize,
 				'height': numericSize
 			},
+			colorStyles.value,
+			borderStyles.value,
+			roundedStyles.value,
+			dimensionStyles.value,
+			marginStyles.value,
+			paddingStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -76,6 +98,11 @@
 			'origam-icon',
 			'origam-icon--component',
 			namedSize,
+			colorClasses.value,
+			borderClasses.value,
+			roundedClasses.value,
+			paddingClasses.value,
+			marginClasses.value,
 			props.class
 		]
 	})

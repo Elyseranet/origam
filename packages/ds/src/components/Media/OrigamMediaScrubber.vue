@@ -1,5 +1,6 @@
 <template>
 	<div
+			:id="id"
 			ref="rootEl"
 			class="origam-media-scrubber"
 			:class="rootClasses"
@@ -13,7 +14,7 @@
 			:aria-valuetext="ariaValueText || undefined"
 			:aria-label="ariaLabel"
 			:aria-disabled="disabled || undefined"
-			data-cy="origam-media-scrubber"
+			:data-cy="resolvedDataCy"
 			@pointerdown="onPointerDown"
 			@pointermove="onPointerMove"
 			@pointerleave="onPointerLeave"
@@ -22,7 +23,7 @@
 		<div
 				class="origam-media-scrubber__track"
 				:class="[colorClasses, roundedClasses]"
-				:style="colorStyles"
+				:style="[colorStyles, roundedStyles]"
 				aria-hidden="true"
 		>
 			<div
@@ -117,7 +118,14 @@
 	 * surface — track + buffer stay neutral by design).
 	 ********************************************************/
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(toRef(props, 'color'))
-	const { roundedClasses } = useRounded(toRef(props, 'rounded'))
+	// The props-OBJECT overload, not `toRef(props, 'rounded')`: the `Ref`
+	// overload of `useRounded` carries a single scalar — the `rounded`
+	// shorthand — so `roundedTopLeft` / `roundedTopRight` /
+	// `roundedBottomLeft` / `roundedBottomRight` were unreachable by
+	// construction, whatever `useRounded` did internally. `roundedStyles`
+	// was also being dropped on the floor, which silently discarded every
+	// non-tokenised radius (a length, a `var()`, a `calc()`).
+	const { roundedClasses, roundedStyles } = useRounded(props)
 
 	const colorClasses = computed(() => backgroundColorClasses.value)
 	const colorStyles = computed(() => backgroundColorStyles.value)
@@ -150,6 +158,14 @@
 	 * to `-1` when disabled (slider stays addressable for tests, but
 	 * out of the user's tab order).
 	 ********************************************************/
+	// `dataCy` is DECLARED as a prop, which removes it from `$attrs` — so the
+	// interface's "passed through $attrs to the host element" note could never
+	// hold, and the template's hardcoded `data-cy` meant a parent
+	// (OrigamMediaController, OrigamMediaVolumeControl) forwarding its own
+	// selector was silently overridden. The prop now wins, with the historical
+	// literal as the fallback so existing selectors keep matching.
+	const resolvedDataCy = computed(() => props.dataCy ?? 'origam-media-scrubber')
+
 	const resolvedRole = computed(() => (props.disabled ? undefined : 'slider'))
 	const resolvedTabIndex = computed(() => (props.disabled ? -1 : 0))
 

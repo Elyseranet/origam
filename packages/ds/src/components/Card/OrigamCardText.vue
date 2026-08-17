@@ -14,7 +14,16 @@
 		lang="ts"
 		setup
 >
-	import { useDensity, useProps, useStyle, useTypography } from "../../composables"
+	import {
+		useBorder,
+		useDensity,
+		useMargin,
+		usePadding,
+		useProps,
+		useRounded,
+		useStyle,
+		useTypography
+	} from "../../composables"
 	import type { ICardTextProps, ICardTextSlots } from '../../interfaces'
 
 	import { computed, StyleValue } from 'vue'
@@ -33,6 +42,22 @@
 	defineSlots<ICardTextSlots>()
 
 	const {densityClasses} = useDensity(props)
+
+	/*********************************************************
+	 * Spacing / border / shape
+	 *
+	 * @description
+	 * `ICardTextProps` extends IPaddingProps / IMarginProps / IBorderProps /
+	 * IRoundedProps, and the scoped SCSS below already declares the matching
+	 * `--origam-card-text---padding-*` / `margin-*` / `border-*` custom
+	 * properties — the surface was designed to be settable. Only the wiring
+	 * to the composables was missing, so `<origam-card-text padding="8px">`
+	 * resolved to nothing. Inline declarations beat the scoped defaults.
+	 ********************************************************/
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {marginClasses, marginStyles} = useMargin(props)
+	const {borderClasses, borderStyles} = useBorder(props)
+	const {roundedClasses, roundedStyles} = useRounded(props)
 
 	/*********************************************************
 	 * Typography
@@ -55,6 +80,10 @@
 	const cardTextStyles = computed(() => {
 		return [
 			typographyStyles.value,
+			borderStyles.value,
+			roundedStyles.value,
+			marginStyles.value,
+			paddingStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -62,6 +91,10 @@
 		return [
 			'origam-card-text',
 			densityClasses.value,
+			borderClasses.value,
+			roundedClasses.value,
+			paddingClasses.value,
+			marginClasses.value,
 			props.class
 		]
 	})

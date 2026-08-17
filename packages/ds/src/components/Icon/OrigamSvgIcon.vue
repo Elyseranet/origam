@@ -38,8 +38,17 @@
 		lang="ts"
 		setup
 >
-	import { computed, StyleValue } from 'vue'
-	import { useProps , useStyle} from "../../composables"
+	import { computed, StyleValue, toRef } from 'vue'
+	import {
+		useBorder,
+		useBothColor,
+		useDimension,
+		useMargin,
+		usePadding,
+		useProps,
+		useRounded,
+		useStyle
+	} from "../../composables"
 	import { SIZES_ARRAY } from '../../consts'
 
 	import type { IIconComponentProps } from '../../interfaces'
@@ -62,6 +71,28 @@
 	}
 
 	/*********************************************************
+	 * Composables
+	 *
+	 * @description
+	 * `IIconComponentProps` carries the full color / spacing / border /
+	 * dimension / rounded surface. `OrigamIcon` resolves it and passes the
+	 * result down as `class` / `style`, so these axes work when the glyph
+	 * leaf is reached through the parent. The leaf is also exported on the
+	 * public barrel, and used directly it dropped every one of them. The
+	 * parent forwards only `icon` / `size` / `tag` / `class` / `style`, so
+	 * consuming the props here cannot double-apply.
+	 *
+	 * `dimensionStyles` is pushed AFTER the `size`-derived width/height so an
+	 * explicit `width` / `height` beats the size shorthand.
+	 ********************************************************/
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	const {borderClasses, borderStyles} = useBorder(props)
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {marginClasses, marginStyles} = useMargin(props)
+	const {roundedClasses, roundedStyles} = useRounded(props)
+	const {dimensionStyles} = useDimension(props)
+
+	/*********************************************************
 	 * Class & Style
 	 *
 	 * @description
@@ -78,6 +109,12 @@
 				'width': numericSize,
 				'height': numericSize
 			},
+			colorStyles.value,
+			borderStyles.value,
+			roundedStyles.value,
+			dimensionStyles.value,
+			marginStyles.value,
+			paddingStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -91,6 +128,11 @@
 			'origam-icon',
 			'origam-icon--svg',
 			namedSize,
+			colorClasses.value,
+			borderClasses.value,
+			roundedClasses.value,
+			paddingClasses.value,
+			marginClasses.value,
 			props.class
 		]
 	})

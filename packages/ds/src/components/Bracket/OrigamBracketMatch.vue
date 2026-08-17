@@ -353,6 +353,24 @@
 		border-style: var(--origam-bracket-match---border-style, solid);
 		border-color: var(--origam-bracket-match---border-color, var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12)));
 		border-radius: var(--origam-bracket-match---border-radius, 6px);
+
+		border-block-width: var(--origam-bracket-match---border-block-width, var(--origam-bracket-match---border-width, 1px));
+		border-inline-width: var(--origam-bracket-match---border-inline-width, var(--origam-bracket-match---border-width, 1px));
+
+		border-top-width: var(--origam-bracket-match---border-top-width, var(--origam-bracket-match---border-block-width, var(--origam-bracket-match---border-width, 1px)));
+		border-right-width: var(--origam-bracket-match---border-right-width, var(--origam-bracket-match---border-inline-width, var(--origam-bracket-match---border-width, 1px)));
+		border-bottom-width: var(--origam-bracket-match---border-bottom-width, var(--origam-bracket-match---border-block-width, var(--origam-bracket-match---border-width, 1px)));
+		border-left-width: var(--origam-bracket-match---border-left-width, var(--origam-bracket-match---border-inline-width, var(--origam-bracket-match---border-width, 1px)));
+
+		border-top-color: var(--origam-bracket-match---border-top-color, var(--origam-bracket-match---border-color, var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12))));
+		border-right-color: var(--origam-bracket-match---border-right-color, var(--origam-bracket-match---border-color, var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12))));
+		border-bottom-color: var(--origam-bracket-match---border-bottom-color, var(--origam-bracket-match---border-color, var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12))));
+		border-left-color: var(--origam-bracket-match---border-left-color, var(--origam-bracket-match---border-color, var(--origam-color__border---subtle, rgba(0, 0, 0, 0.12))));
+
+		border-top-left-radius: var(--origam-bracket-match---border-top-left-radius, var(--origam-bracket-match---border-radius, 6px));
+		border-top-right-radius: var(--origam-bracket-match---border-top-right-radius, var(--origam-bracket-match---border-radius, 6px));
+		border-bottom-left-radius: var(--origam-bracket-match---border-bottom-left-radius, var(--origam-bracket-match---border-radius, 6px));
+		border-bottom-right-radius: var(--origam-bracket-match---border-bottom-right-radius, var(--origam-bracket-match---border-radius, 6px));
 		box-shadow: var(--origam-bracket-match---box-shadow, 0 1px 2px rgba(0, 0, 0, 0.06));
 		overflow: hidden;
 		transition: background-color var(--origam-bracket-match---transition-duration, 120ms) ease,

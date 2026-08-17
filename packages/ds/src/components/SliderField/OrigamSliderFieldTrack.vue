@@ -108,16 +108,15 @@
 		return !!props.showTicks
 	})
 
-	const roundedProps = computed(() => {
-		return props.rounded
-	})
-
 	const parsedTicks = computed<Array<TTick>>(() => {
 		const ticks = props.ticks ?? []
 		return props.isVertical ? ticks.slice().reverse() : ticks
 	})
 
-	const {roundedClasses, roundedStyles} = useRounded(roundedProps)
+	// The props-OBJECT overload. The previous `computed(() => props.rounded)`
+	// hit the `Ref` overload, which carries the shorthand scalar ONLY — the
+	// four per-corner props were unreachable by construction.
+	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {
 		backgroundColorClasses: trackFillColorClasses,
 		backgroundColorStyles: trackFillColorStyles

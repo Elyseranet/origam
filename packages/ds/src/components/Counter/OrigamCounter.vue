@@ -25,7 +25,17 @@
 >
 	import { OrigamSlideY, OrigamTransition } from "../../components"
 
-	import { useBothColor, useProps, useSsrBoot , useStyle} from "../../composables"
+	import {
+		useBorder,
+		useBothColor,
+		useElevation,
+		useMargin,
+		usePadding,
+		useProps,
+		useRounded,
+		useSsrBoot,
+		useStyle
+	} from "../../composables"
 
 	import type { ICounterProps, ICounterSlots } from "../../interfaces"
 	import type { TTransitionProps } from "../../types"
@@ -58,6 +68,16 @@
 
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
+	// Same audit-fix as `color` above, one rung out: ICounterProps also
+	// extends IPaddingProps / IMarginProps / IBorderProps / IRoundedProps /
+	// IElevationProps and consumed none of them, so 33 typed props resolved
+	// to nothing at runtime.
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {marginClasses, marginStyles} = useMargin(props)
+	const {borderClasses, borderStyles} = useBorder(props)
+	const {roundedClasses, roundedStyles} = useRounded(props)
+	const {elevationClasses, elevationStyles} = useElevation(props)
+
 	const {isBooted} = useSsrBoot()
 
 	const counter = computed(() => {
@@ -70,6 +90,11 @@
 	const counterStyles = computed(() => {
 		return [
 			colorStyles.value,
+			borderStyles.value,
+			roundedStyles.value,
+			elevationStyles.value,
+			marginStyles.value,
+			paddingStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -80,6 +105,11 @@
 				'origam-counter--error': props.max && !props.disabled && parseFloat(props.value) > parseFloat(props.max)
 			},
 			colorClasses.value,
+			borderClasses.value,
+			roundedClasses.value,
+			elevationClasses.value,
+			paddingClasses.value,
+			marginClasses.value,
 			props.class
 		]
 	})

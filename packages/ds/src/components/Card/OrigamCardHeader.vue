@@ -99,8 +99,12 @@
 
 	import {
 	useAdjacent,
+	useBorder,
 	useDensity,
+	useMargin,
+	usePadding,
 	useProps,
+	useRounded,
 	useStyle,
 	useTypography
 } from '../../composables'
@@ -133,6 +137,20 @@
 	 ********************************************************/
 
 	const {densityClasses} = useDensity(props)
+
+	/*********************************************************
+	 * Spacing / border / shape
+	 *
+	 * @description
+	 * `ICardHeaderProps` extends IPaddingProps / IMarginProps / IBorderProps /
+	 * IRoundedProps but consumed none of them: the header declared 32 props
+	 * that resolved to nothing. Same wiring as OrigamCardText — the scoped
+	 * SCSS already exposes the matching custom properties.
+	 ********************************************************/
+	const {paddingClasses, paddingStyles} = usePadding(props)
+	const {marginClasses, marginStyles} = useMargin(props)
+	const {borderClasses, borderStyles} = useBorder(props)
+	const {roundedClasses, roundedStyles} = useRounded(props)
 
 	/*********************************************************
 	 * Typography
@@ -190,6 +208,10 @@
 
 	const cardHeaderStyles = computed(() => {
 		return [
+			borderStyles.value,
+			roundedStyles.value,
+			marginStyles.value,
+			paddingStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -197,6 +219,10 @@
 		return [
 			'origam-card-header',
 			densityClasses.value,
+			borderClasses.value,
+			roundedClasses.value,
+			paddingClasses.value,
+			marginClasses.value,
 			props.class
 		]
 	})
