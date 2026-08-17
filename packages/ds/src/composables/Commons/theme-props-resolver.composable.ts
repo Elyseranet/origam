@@ -187,7 +187,8 @@ import { camelize } from './defaults.composable'
 //
 // ## Cost — scoped to what a theme OR AN ANCESTOR PROVIDER actually names
 //
-// `themedPropKeysUnion()` (in `origam.ts`, next to `activeDefaultsFor`) walks
+// `themedPropKeysUnion()` (defined BELOW in this file; called from `origam.ts`
+// next to `activeDefaultsFor`, which is the one that lives there) walks
 // every REGISTERED theme at install time (not just the one active at mount —
 // see the note on that in `origam.ts`) and returns the UNION of
 // (componentName → Set<propKey>) any theme names, PLUS a `global` set.
@@ -387,8 +388,12 @@ import { camelize } from './defaults.composable'
 // BottomNav→btn, BtnGroup→btn, AvatarGroup→avatar), plus ConfirmWrapper which
 // builds its child defaults dynamically. Several forward a dozen keys apiece
 // (`OrigamSelectionControlGroup` forwards 12). Re-derive this list with
-//     grep -rn "'origam-[a-z-]*': {" packages/ds/src/components
+//     grep -rln "origam-defaults-provider" packages/ds/src/components
 // rather than trusting the count above — it is a snapshot, not an invariant.
+// Do NOT grep for the map literal itself: the maps are named per component
+// (`slotDefaults`, `radioDefaults`, …) and their keys are wrapped
+// (`'origam-radio': omitUndefined({ … })`), so a pattern anchored on
+// `'origam-x': {` silently misses every one of them.
 //
 // ## What this does NOT change
 //
