@@ -90,6 +90,50 @@ const skipped = results.filter((r) => r.wildcard)
  * Violation ID = `Component.prop`. Deliberately NOT line-based: a baseline
  * keyed on line numbers goes stale on every unrelated edit above it.
  */
+/*
+ * PROVEN CONSUMED, but invisible to the heuristic.
+ *
+ * This guard decides "consumed" by following the composables a component
+ * calls. `OrigamBracket` does not use them: it paints `rounded` / `border` /
+ * `elevation` — and, since 249ac7d1, their directional rungs — onto the MATCH
+ * CARD rather than its own root, by handing `props` wholesale to
+ * `bracket-surface.util.ts`, which emits `--origam-bracket-match---*` custom
+ * properties. The heuristic cannot see through a util call that takes the
+ * props object, so it reports every one of these as unconsumed.
+ *
+ * They are not. Consumption was proven at runtime — 14 assertions driving two
+ * distinct values per prop and reading the emitted custom property — before
+ * this list was written.
+ *
+ * WHY AN EXCLUSION AND NOT A BASELINE ENTRY. The baseline is meant to hold
+ * real debt awaiting repair; its count is the number people look at to judge
+ * progress. Parking 17 provably-correct props in it makes that number lie in
+ * the reassuring direction, which is the exact failure mode this guard family
+ * exists to prevent. An exclusion list states, in code, that these were
+ * checked and found fine.
+ *
+ * ⚠️ This list is a claim about the CODE, not a waiver. If `OrigamBracket`
+ * stops routing props through `bracket-surface.util.ts`, these entries become
+ * silently wrong. Re-prove them (or delete the list) when that file changes.
+ *
+ * The better fix is to teach the heuristic to follow a util that receives
+ * `props` — deliberately not attempted here: it widens the guard's blast
+ * radius across all 210 components, and would need its own before/after
+ * measurement.
+ */
+const PROVEN_CONSUMED_INDIRECTLY = new Set([
+    'OrigamBracket.border', 'OrigamBracket.borderTop', 'OrigamBracket.borderRight',
+    'OrigamBracket.borderBottom', 'OrigamBracket.borderLeft',
+    'OrigamBracket.borderBlock', 'OrigamBracket.borderInline',
+    'OrigamBracket.borderColor', 'OrigamBracket.borderStyle',
+    'OrigamBracket.borderTopColor', 'OrigamBracket.borderRightColor',
+    'OrigamBracket.borderBottomColor', 'OrigamBracket.borderLeftColor',
+    'OrigamBracket.rounded',
+    'OrigamBracket.roundedTopLeft', 'OrigamBracket.roundedTopRight',
+    'OrigamBracket.roundedBottomLeft', 'OrigamBracket.roundedBottomRight',
+    'OrigamBracket.elevation'
+])
+
 const currentIds = new Set()
 const detailsById = new Map()
 
@@ -97,6 +141,7 @@ for (const r of results) {
     if (r.wildcard) continue
     for (const u of r.unconsumed) {
         const id = `${r.name}.${u.prop}`
+        if (PROVEN_CONSUMED_INDIRECTLY.has(id)) continue
         currentIds.add(id)
         detailsById.set(id, `declared by ${u.declaredBy} — ${r.file}`)
     }
