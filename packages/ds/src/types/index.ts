@@ -15,6 +15,7 @@ export * from './Bracket/bracket.type'
 export * from './Bracket/bracket-match.type'
 export * from './Bracket/bracket-round.type'
 export * from './Bracket/bracket-competitor.type'
+export * from './Bracket/bracket-surface.type'
 
 export * from './Breadcrumb/breadcrumb.type'
 export * from './Breadcrumb/breadcrumb-divider.type'

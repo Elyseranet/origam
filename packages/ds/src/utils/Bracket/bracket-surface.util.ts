@@ -3,6 +3,16 @@ import { isCssColor, isIntent, tokenForegroundForIntent, tokenStylesForIntent } 
 import { BORDER_LOGICAL_AXIS_MAP, BORDER_POSITION_MAP } from '../../consts/Commons/border.const'
 import { ROUNDED_CORNER_MAP } from '../../consts/Commons/spacing.const'
 
+import type { IBracketSurfaceInput } from '../../interfaces'
+import type {
+    TBracketBorder,
+    TBracketColor,
+    TBracketElevation,
+    TBracketRounded
+} from '../../types'
+
+export type { IBracketSurfaceInput } from '../../interfaces'
+
 /**
  * Shared resolvers for the Bracket family surface. The match card's
  * background / radius / shadow / border are driven through
@@ -14,11 +24,6 @@ import { ROUNDED_CORNER_MAP } from '../../consts/Commons/spacing.const'
  * Tokenised intents / rungs resolve to the generated theme vars; custom
  * numbers and CSS values pass through `convertToUnit` (or verbatim).
  */
-
-type TBracketColor = string | null | undefined
-type TBracketRounded = string | number | boolean | null | undefined
-type TBracketElevation = string | number | boolean | null | undefined
-type TBracketBorder = string | number | boolean | null | undefined
 
 const ROUNDED_RUNGS = ['none', 'xs', 'sm', 'md', 'lg', 'xl', 'full']
 const SHADOW_RUNGS = ['none', 'xs', 'sm', 'md', 'lg', 'xl']
@@ -110,42 +115,6 @@ export function bracketDashArray (borderStyle: string | null | undefined): { das
     if (borderStyle === 'dotted') return { dasharray: '1 5', linecap: 'round' }
 
     return {}
-}
-
-export interface IBracketSurfaceInput {
-    bgColor?: TBracketColor
-    rounded?: TBracketRounded
-    elevation?: TBracketElevation
-    border?: TBracketBorder
-    borderColor?: TBracketColor
-    borderStyle?: string | null
-
-    /**
-     * Per-corner radius and per-side border overrides.
-     *
-     * The bracket resolves `rounded` / `border` onto the MATCH CARD rather
-     * than its own root (each card is what the user sees shaped and
-     * bordered), so the directional rungs of `IRoundedProps` /
-     * `IBorderProps` have to follow the same target — otherwise
-     * `roundedTopLeft` is typed, editable in Histoire, and inert, which is
-     * exactly the class of bug this surface is being audited for.
-     */
-    roundedTopLeft?: TBracketRounded
-    roundedTopRight?: TBracketRounded
-    roundedBottomLeft?: TBracketRounded
-    roundedBottomRight?: TBracketRounded
-
-    borderTop?: TBracketBorder
-    borderRight?: TBracketBorder
-    borderBottom?: TBracketBorder
-    borderLeft?: TBracketBorder
-    borderBlock?: TBracketBorder
-    borderInline?: TBracketBorder
-
-    borderTopColor?: TBracketColor
-    borderRightColor?: TBracketColor
-    borderBottomColor?: TBracketColor
-    borderLeftColor?: TBracketColor
 }
 
 /**

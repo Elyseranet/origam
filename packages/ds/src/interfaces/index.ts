@@ -19,6 +19,7 @@ export * from './Bracket/bracket-round.interface'
 export * from './Bracket/bracket-match-component.interface'
 export * from './Bracket/bracket-competitor-component.interface'
 export * from './Bracket/bracket-round-component.interface'
+export * from './Bracket/bracket-surface.interface'
 
 export * from './Breadcrumb/breadcrumb.interface'
 export * from './Breadcrumb/breadcrumb-item.interface'
