@@ -41,6 +41,18 @@ import { expect, test, type Page } from '@playwright/test'
  *
  * STORY_PATH (once the story exists):
  *   '/stories/story/components-stories-mediascrubber-origammediascrubber-story-vue'
+ *
+ * @audit-variant-titles:exempt(la story n'existe pas — les titres cliqués
+ * ci-dessus décrivent une story À ÉCRIRE, pas une story qui aurait dérivé. Le
+ * garde de titres n'a donc rien à comparer et son échec permanent ne
+ * signalait pas un drift : il rendait la gate rouge en continu, donc
+ * contournée. Le trou reste ENTIER et visible — 11 tests en test.fixme, listés
+ * sur chaque run du garde. Le blueprint complet (Variants, data-cy, valeurs de
+ * props) est écrit ci-dessus : créer la story est un travail cadré, mais il
+ * appartient au propriétaire d'OrigamMediaScrubber
+ * (packages/ds/src/components/Media/OrigamMediaScrubber.vue), hors périmètre
+ * de l'agent qui a réparé la gate. Lever l'exemption = créer la story, retirer
+ * les test.fixme, supprimer ce pragma.)
  * ─────────────────────────────────────────────────────────────────────────────
  */
 

@@ -35,6 +35,18 @@ import { selectHstOption } from './_support/histoire-controls'
  *     "Design", so both assertions now drive the control explicitly.
  *   - ExpansionPanels: fully migrated (see expansion-panels.spec.ts, same
  *     wave) — density undefined by default, driven explicitly.
+ *
+ * ─── Exemption du garde de titres ────────────────────────────────────────────
+ * @audit-variant-titles:exempt(spec multi-stories — chaque appel
+ * openVariant(page, STORY, titre) associe un titre à UNE story précise, mais
+ * l'audit statique ne relie pas la paire : il ne sait qu'unir les titres des
+ * 6 stories et vérifier l'appartenance à cette union. Un titre supprimé de
+ * Breadcrumb mais présent dans List passerait donc pour sain. Ce n'est pas un
+ * titre irrésolvable, c'est une vérification qui MENTIRAIT si on la laissait
+ * répondre. La couverture réelle de cette spec est assurée autrement : chaque
+ * story a été relue à la main, findings ci-dessus. Lever l'exemption suppose
+ * d'apprendre à l'audit à apparier (slug, titre) par site d'appel.)
+ * ─────────────────────────────────────────────────────────────────────────────
  */
 
 const sandboxOf = (page: Page) => page.frameLocator('iframe[src*="__sandbox"]')

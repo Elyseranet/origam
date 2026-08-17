@@ -515,6 +515,54 @@ function clickedTitlesOf (specSrc) {
  * Fixtures are synthetic strings — nothing is read from or written to the
  * shared worktree, where other agents are live.
  */
+/**
+ * In-file exemption pragma — `@audit-variant-titles:exempt(<raison>)`.
+ *
+ * A spec whose Variant titles cannot be resolved statically, for a reason that
+ * is a property of the spec rather than a defect, declares it IN ITS OWN
+ * HEADER. Deliberately not a list living in this script: an opaque allow-list
+ * is read by nobody, drifts from reality, and turns into the very thing this
+ * guard exists to prevent — a silence that means nothing.
+ *
+ * Three properties keep the escape hatch from becoming a rubber stamp:
+ *   1. the reason is MANDATORY — `exempt()` with an empty reason is itself a
+ *      finding, so the pragma cannot be pasted in as a mute silencer;
+ *   2. exempted specs are printed on EVERY run, pass or fail, so the debt is
+ *      visible rather than archived;
+ *   3. they are counted in their own bucket, never folded into `audited` —
+ *      the headline denominator keeps saying what was actually VERIFIED.
+ */
+const EXEMPT_TAG = '@audit-variant-titles:exempt('
+
+/**
+ * The reason is delimited by BALANCED parentheses, not by the first `)`.
+ * A non-greedy `\(([\s\S]*?)\)` truncates any reason that quotes code —
+ * and reasons quote code constantly ("openVariant(page, STORY, titre)").
+ * The truncated tail then vanishes from the report, which is precisely the
+ * silent-under-reporting failure this guard is supposed to model, reproduced
+ * inside the guard itself. Caught in review; keep the depth counter.
+ */
+function exemptionOf (src) {
+    const start = src.indexOf(EXEMPT_TAG)
+    if (start === -1) return null
+    let depth = 0
+    let end = -1
+    for (let i = start + EXEMPT_TAG.length - 1; i < src.length; i++) {
+        if (src[i] === '(') depth++
+        else if (src[i] === ')') {
+            depth--
+            if (depth === 0) { end = i; break }
+        }
+    }
+    // Unterminated pragma is not an exemption — it is a malformed one, and
+    // must land as a finding rather than quietly exempt the whole file.
+    if (end === -1) return { reason: '', valid: false, unterminated: true }
+    const raw = src.slice(start + EXEMPT_TAG.length, end)
+    // JSDoc continuation asterisks are layout, not reason. Strip them.
+    const reason = raw.replace(/^\s*\*+\s?/gm, ' ').replace(/\s+/g, ' ').trim()
+    return { reason, valid: reason.length > 0 }
+}
+
 function selfTest () {
     const cases = [
         {
@@ -566,6 +614,33 @@ function selfTest () {
                   }
                   for (const t of LIST) openVariant(page, t)`,
             wantUnresolved: 1
+        },
+        {
+            name: 'pragma exempt avec raison → exemption valide',
+            src: `/** @audit-variant-titles:exempt(spec multi-stories : l'union des titres
+                   * masquerait un miss par story) */`,
+            wantExempt: { valid: true, reasonHas: 'multi-stories' }
+        },
+        {
+            name: 'pragma exempt SANS raison → refusé (pas un silencieux muet)',
+            src: `/** @audit-variant-titles:exempt() */`,
+            wantExempt: { valid: false }
+        },
+        {
+            name: 'aucun pragma → pas d’exemption (défaut = audité)',
+            src: `await page.getByText('Design').click()`,
+            wantExempt: null
+        },
+        {
+            name: 'raison contenant des parenthèses → lue ENTIÈRE, non tronquée',
+            src: `/** @audit-variant-titles:exempt(l'appel openVariant(page, S, t)
+                   * associe un titre à une story, fin de la raison ICI) */`,
+            wantExempt: { valid: true, reasonHas: 'fin de la raison ICI' }
+        },
+        {
+            name: 'pragma non refermé → refusé, jamais exempté en silence',
+            src: `/** @audit-variant-titles:exempt(raison sans parenthèse fermante`,
+            wantExempt: { valid: false }
         }
     ]
 
@@ -573,7 +648,14 @@ function selfTest () {
     for (const c of cases) {
         let ok = true
         let got
-        if (c.wantSlugs) {
+        if (c.wantExempt !== undefined) {
+            const e = exemptionOf(c.src)
+            got = e
+            if (c.wantExempt === null) ok = e === null
+            else ok = e !== null
+                && e.valid === c.wantExempt.valid
+                && (!c.wantExempt.reasonHas || e.reason.includes(c.wantExempt.reasonHas))
+        } else if (c.wantSlugs) {
             got = [...slugsInSpec(c.src)]
             ok = c.wantSlugs.every((s) => got.includes(s))
         } else {
@@ -589,7 +671,7 @@ function selfTest () {
         console.log(`${ok ? '✓' : '✗'} ${c.name}`)
         if (!ok) {
             failed++
-            console.log(`    attendu ${JSON.stringify(c.wantSlugs ?? c.wantTitles ?? c.wantUnresolved)}, obtenu ${JSON.stringify(got)}`)
+            console.log(`    attendu ${JSON.stringify(c.wantExempt ?? c.wantSlugs ?? c.wantTitles ?? c.wantUnresolved)}, obtenu ${JSON.stringify(got)}`)
         }
     }
     console.log(`\n${cases.length - failed}/${cases.length} cas passés.`)
@@ -624,16 +706,39 @@ const specFiles = walk(E2E_DIR, (f) => f.endsWith('.spec.ts'))
  *              province of `audit-variant-pins.mjs`, and the two guards
  *              partition the suite rather than overlap.
  */
-const coverage = { total: 0, audited: 0, noStory: [], noTitles: [], titlesChecked: 0 }
+const coverage = { total: 0, audited: 0, noStory: [], noTitles: [], titlesChecked: 0, exempt: [] }
 
 const report = []
 for (const spec of specFiles) {
     const src = readFileSync(spec, 'utf8')
     coverage.total++
+    const rel = relative(TESTS_ROOT, spec)
+
+    // Exemption is evaluated BEFORE slug resolution: the whole point of an
+    // exempted spec is that something upstream of title-matching (a missing
+    // story, a multi-story helper) makes the match undecidable here.
+    const exemption = exemptionOf(src)
+    if (exemption) {
+        if (!exemption.valid) {
+            report.push({
+                spec: rel,
+                slugs: [],
+                unresolvedSlugs: [],
+                missingTitles: [],
+                unresolvedDynamicArgs: [],
+                emptyExemption: true,
+                availableTitles: []
+            })
+            continue
+        }
+        coverage.exempt.push({ spec: rel, reason: exemption.reason })
+        continue
+    }
+
     const slugs = [...slugsInSpec(src)]
-    if (!slugs.length) { coverage.noStory.push(relative(TESTS_ROOT, spec)); continue }
+    if (!slugs.length) { coverage.noStory.push(rel); continue }
     const { titles: clicked, unresolved } = clickedTitlesOf(src)
-    if (!clicked.size && !unresolved.length) { coverage.noTitles.push(relative(TESTS_ROOT, spec)); continue }
+    if (!clicked.size && !unresolved.length) { coverage.noTitles.push(rel); continue }
     coverage.audited++
     coverage.titlesChecked += clicked.size
 
@@ -648,7 +753,7 @@ for (const spec of specFiles) {
     const missing = [...clicked].filter((t) => !knownTitles.has(t))
     if (missing.length || unresolvedSlugs.length || unresolved.length) {
         report.push({
-            spec: relative(TESTS_ROOT, spec),
+            spec: rel,
             slugs,
             unresolvedSlugs,
             missingTitles: missing,
@@ -660,7 +765,7 @@ for (const spec of specFiles) {
 
 /** Coverage banner — printed on EVERY run, pass or fail. */
 function printCoverage () {
-    const { total, audited, noStory, noTitles, titlesChecked } = coverage
+    const { total, audited, noStory, noTitles, titlesChecked, exempt } = coverage
     const histoireSpecs = total - noStory.length
     console.log(
         `Couverture : ${audited}/${histoireSpecs} specs ciblant une story auditées `
@@ -672,6 +777,12 @@ function printCoverage () {
         + `audit-variant-pins.mjs.`
     )
     console.log(`  ${noStory.length} ne ciblent aucune story (specs marketing/docs).`)
+    // Printed unconditionally, pass or fail: an exemption that only shows up
+    // when someone thinks to pass a flag is an exemption nobody ever revisits.
+    if (exempt.length) {
+        console.log(`  ${exempt.length} exemptée(s) par pragma @audit-variant-titles:exempt — NON vérifiée(s) ici :`)
+        for (const e of exempt) console.log(`      [exempt] ${e.spec}\n               ↳ ${e.reason}`)
+    }
     if (SHOW_SKIPPED) {
         for (const s of noTitles) console.log(`      [index] ${s}`)
         for (const s of noStory) console.log(`      [non-story] ${s}`)
@@ -691,6 +802,7 @@ if (AS_JSON) {
         console.log(`✗ Variant-title drift in ${report.length} spec(s):\n`)
         for (const r of report) {
             console.log(`• ${r.spec}`)
+            if (r.emptyExemption) console.log(`    @audit-variant-titles:exempt() sans raison — une exemption doit se justifier dans le fichier`)
             if (r.unresolvedSlugs.length) console.log(`    slug not found in stories: ${r.unresolvedSlugs.join(', ')}`)
             if (r.missingTitles.length) console.log(`    clicked titles absent from story: ${r.missingTitles.map((t) => `"${t}"`).join(', ')}`)
             if (r.unresolvedDynamicArgs.length) {

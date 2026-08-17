@@ -209,14 +209,32 @@ function slugsInSpec (src) {
     return [...slugs]
 }
 
-/** Variant indices a spec navigates to. */
+/**
+ * Variant indices a spec navigates to.
+ *
+ * The helper-name pattern is `*Url(N)`, NOT the single literal `variantUrl(N)`
+ * it used to be. Hardcoding one name made the guard blind to every spec that
+ * called its local builder something else, and specs do that constantly —
+ * measured on this tree, 12 distinct helper names across 7 specs
+ * (`sandboxUrl`, `bcUrl`, `bciUrl`, `linearUrl`, `circularUrl`, `progressUrl`,
+ * `rUrl`, `rgUrl`, `rfUrl`, `rfiUrl`, `headerVariantUrl`, `panelVariantUrl`),
+ * carrying ~253 literal-index call sites that NO guard examined.
+ *
+ * The damage was not just missed coverage, it was a false zero: those specs
+ * never entered the denominator, so `références NON ATTRIBUABLES : 0` was
+ * printed on every run while 52 of them were unattributable. A count that
+ * excludes what it cannot see reports the absence of a problem it never
+ * looked for. Widening the pattern moves them into the report — chip binds
+ * outright (+15 refs verified), and the 5 multi-story specs are now named as
+ * unattributable instead of being silently absent.
+ */
 function indicesInSpec (src) {
     const idxs = new Set()
     let m
     for (const re of [
         /variantId=\$\{[A-Za-z_$][\w$]*\}-(\d+)/g,
         /variantId=[a-z0-9-]*-story-vue-(\d+)/g,
-        /\bvariantUrl\s*\(\s*(\d+)/g
+        /\b[A-Za-z_$][\w$]*Url\s*\(\s*(\d+)/g
     ]) while ((m = re.exec(src)) !== null) idxs.add(Number(m[1]))
     return [...idxs].sort((a, b) => a - b)
 }
@@ -433,7 +451,39 @@ function selfTest () {
         if (!ok) console.log(`    attendu ${JSON.stringify(c.want)}, obtenu ${JSON.stringify(got)}`)
     }
 
-    const total = cases.length + claimCases.length
+    // Index detection — the guard must not be blind to a helper because of
+    // how the spec chose to NAME it.
+    const indexCases = [
+        {
+            name: 'helper nommé variantUrl(N) → index lu (non-régression)',
+            src: 'await page.goto(variantUrl(3))',
+            want: [3]
+        },
+        {
+            name: 'helper nommé autrement (sandboxUrl/bcUrl/rgUrl) → index lu aussi',
+            src: 'await page.goto(sandboxUrl(0))\nawait page.goto(bcUrl(7))\nawait page.goto(rgUrl(2))',
+            want: [0, 2, 7]
+        },
+        {
+            name: 'URL variantId littérale → index lu (non-régression)',
+            src: "await page.goto('/x?variantId=components-stories-btn-origambtn-story-vue-4')",
+            want: [4]
+        },
+        {
+            name: 'index NON littéral (variable) → jamais deviné',
+            src: 'await page.goto(variantUrl(idx))',
+            want: []
+        }
+    ]
+    for (const c of indexCases) {
+        const got = indicesInSpec(c.src)
+        const ok = got.length === c.want.length && c.want.every((i) => got.includes(i))
+        if (!ok) failed++
+        console.log(`${ok ? '✓' : '✗'} ${c.name}`)
+        if (!ok) console.log(`    attendu ${JSON.stringify(c.want)}, obtenu ${JSON.stringify(got)}`)
+    }
+
+    const total = cases.length + claimCases.length + indexCases.length
     console.log(`\n${total - failed}/${total} cas de contrôle OK`)
     return failed ? 1 : 0
 }
