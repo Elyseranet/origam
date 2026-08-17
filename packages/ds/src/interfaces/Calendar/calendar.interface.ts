@@ -194,3 +194,30 @@ export interface IUseCalendarOptions {
     maxDate?: () => Date | null
     locale?: () => string
 }
+
+/**
+ * Time-slot descriptor returned by `buildDayGrid` / `buildWeekGrid`.
+ *
+ * The grid is **not** event-aware — events are positioned absolutely
+ * on top of the timeline using `diffMinutes(dayStart, event.start)`.
+ * Decoupling the grid from the events lets us re-use the grid output
+ * for the drag-select overlay without re-computing.
+ */
+export interface ICalendarTimeSlot {
+    /** Top-of-slot Date (e.g. 09:30). */
+    date: Date
+    /** Slot duration in minutes (mirror of `options.slotDuration`). */
+    durationMin: number
+    /** True when the slot's hour mark falls on the hour. */
+    isHourMark: boolean
+}
+
+/**
+ * Agenda entry — one per day that has at least one event in the
+ * visible window. Agenda view skips empty days; the `#empty` slot
+ * fires when *no* event is in range.
+ */
+export interface ICalendarAgendaEntry {
+    date: Date
+    events: Array<IEvent>
+}

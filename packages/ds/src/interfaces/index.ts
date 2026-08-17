@@ -333,6 +333,7 @@ export * from './Video/video-track.interface'
 
 export * from './Calendar/event.interface'
 export * from './Calendar/calendar.interface'
+export * from './Calendar/rrule.interface'
 
 export * from './Chart/chart-series.interface'
 export * from './Chart/chart-point.interface'

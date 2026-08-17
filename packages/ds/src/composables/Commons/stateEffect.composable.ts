@@ -23,17 +23,14 @@ import {
 
 import type {
     IActiveState,
-    IBgColorProps,
     IBorderProps,
-    IColorProps,
-    IElevationProps,
     IHoverState,
     IMarginProps,
     IPaddingProps,
     IRoundedProps,
 } from '../../interfaces'
 
-import type { TBgFgRole, TColor } from '../../types'
+import type { TBgFgRole, TColor, TStateEffectProps } from '../../types'
 
 // ────────────────────────────────────────────────────────────────────────────
 // `useStateEffect` — single composable for state-aware visual styles.
@@ -108,16 +105,6 @@ function pickEffective<T> (
         return rest()
     })
 }
-
-type TStateEffectProps =
-    & IColorProps
-    & IBgColorProps
-    & IBorderProps
-    & IRoundedProps
-    & IElevationProps
-    & IPaddingProps
-    & IMarginProps
-    & { gap?: boolean | number | string }
 
 const noopRef = computed(() => false)
 
