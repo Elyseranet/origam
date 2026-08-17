@@ -178,22 +178,6 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slot — header">
-			<div style="padding: 24px; max-width: 400px;">
-				<origam-confirm-wrapper
-						v-model="slotHeaderValue"
-						v-model:confirm="slotHeaderConfirm"
-						field="text-field"
-						:defaults="{ label: 'Email' }"
-						data-cy="confirm-wrapper-slot-header"
-				>
-					<template #header>
-						<div style="padding-bottom: 8px; font-weight: 700;">Custom header slot</div>
-					</template>
-				</origam-confirm-wrapper>
-			</div>
-		</Variant>
-
 		<Variant title="Slot — default & confirm">
 			<div style="padding: 24px; max-width: 400px;">
 				<origam-confirm-wrapper
@@ -320,6 +304,7 @@
 						v-model:confirm="slotHeaderConfirm"
 						field="text-field"
 						:defaults="{ label: 'Email' }"
+						data-cy="confirm-wrapper-slot-header"
 				>
 					<template #header>
 						<div style="padding-bottom: 8px; font-weight: 700;">Custom header slot</div>

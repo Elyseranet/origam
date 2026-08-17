@@ -72,7 +72,7 @@ test.describe('OrigamConfirmWrapper', () => {
 	test('Slot — header — custom header renders inside wrapper', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Slot — header', { exact: true }).first().click()
+		await page.getByText('Slots - Header', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
