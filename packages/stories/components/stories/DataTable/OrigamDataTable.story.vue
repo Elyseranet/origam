@@ -428,14 +428,6 @@
 			</template>
 		</Variant>
 
-		<Variant title="Slot — top">
-			<origam-data-table :headers="headers" :items="items">
-				<template #top>
-					<div style="padding: 12px; font-weight: bold;">User list</div>
-				</template>
-			</origam-data-table>
-		</Variant>
-
 		<Variant
 				title="Prop — loading (all shapes)"
 				:init-state="() => useStoryInitState<ILoadingState>({ enabled: true, kind: 'line', progress: 42, circularSize: 24 })"
