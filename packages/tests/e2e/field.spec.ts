@@ -88,7 +88,7 @@ test.describe('OrigamField', () => {
     test('Emit focus / blur — focusing input fires events', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Emit — focus & blur', { exact: true }).first().click()
+        await page.getByText('Events - focus', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

@@ -140,6 +140,7 @@
 		<Variant title="Events - focus">
 			<origam-field
 					label="Focus & blur events"
+					data-cy="field-emit-focus"
 					@focus="logEvent('focus', $event)"
 					@blur="logEvent('blur', $event)"
 			>
@@ -375,20 +376,6 @@
 				<template #appendInner>
 					<origam-icon :icon="appendInnerIcon" size="small"/>
 				</template>
-				<template #default="{ id, onFocus, onBlur }">
-					<input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/>
-				</template>
-			</origam-field>
-		</Variant>
-
-		<Variant title="Emit — focus & blur">
-			<origam-field
-					label="Focus / blur events"
-					variant="outlined"
-					data-cy="field-emit-focus"
-					@focus="logEvent('focus', $event)"
-					@blur="logEvent('blur', $event)"
-			>
 				<template #default="{ id, onFocus, onBlur }">
 					<input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/>
 				</template>
