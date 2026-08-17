@@ -6,7 +6,7 @@
 			:class="chipClasses"
 			:disabled="disabled"
 			:draggable="draggable"
-			:href="link.href"
+			:href="link.href.value"
 			:style="chipStyles"
 			:tabindex="isClickable ? 0 : undefined"
 			@click="handleClick"

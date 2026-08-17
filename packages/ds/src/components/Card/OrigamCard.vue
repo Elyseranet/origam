@@ -4,7 +4,7 @@
 			v-ripple="isClickable && ripple"
 			v-contrast
 			:class="cardClasses"
-			:href="link.href"
+			:href="link.href.value"
 			:style="cardStyles"
 			:tabindex="disabled ? -1 : undefined"
 			@click="handleClick"
@@ -282,8 +282,25 @@
 		hasPrepend
 	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
 
+	// `isClickable` drives the ripple, the `__overlay` element, the
+	// `--link` modifier class and the click-to-navigate bridge. It must be
+	// true whenever the card is interactive for any reason — i.e. when
+	// EITHER of the following holds:
+	//   • `props.link` toggles explicit router-link mode
+	//   • `link.isClickable.value` — useLink detects an `href`, a `to`,
+	//     OR an `onClick` listener (on attrs or props)
+	//
+	// Unlike `OrigamChip` / `OrigamListItem`, Card has no group notion, so
+	// there is no `!!group` disjunct to carry over here.
+	//
+	// Pre-fix the chain was `… && props.link && (props.link || …)`. The
+	// middle `props.link` short-circuited the whole parenthesis to false
+	// whenever the consumer didn't opt into link mode, making
+	// `link.isClickable.value` dead code — an `href`-only card rendered as
+	// an `<a>` but stayed visually and behaviourally inert. Same repair as
+	// `OrigamListItem` and `OrigamChip` before it.
 	const isClickable = computed(() => {
-		return !props.disabled && props.link && (props.link || link.isClickable.value)
+		return !props.disabled && (props.link || link.isClickable.value)
 	})
 
 	// Combined click handler — drives both `isActive` (so `activeColor`
