@@ -152,15 +152,6 @@
 			</template>
 		</Variant>
 
-		<Variant title="Prop — closeOnSelect">
-			<origam-color-picker-field
-					v-model="functionalColor"
-					label="Colour (closeOnSelect)"
-					close-on-select
-					style="max-width: 320px"
-			/>
-		</Variant>
-
 		<Variant title="Prop — disabled & readonly">
 			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px; max-width: 320px;">
 				<origam-color-picker-field v-model="functionalColor" label="Disabled" disabled/>
