@@ -37,13 +37,19 @@
  * Exit code is non-zero when drift OR unresolved dynamic titles are found,
  * so it doubles as a CI guard.
  */
-import { readFileSync, readdirSync, statSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
 import { dirname, join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const TESTS_ROOT = join(HERE, '..', '..')                 // packages/tests
-const E2E_DIR = join(TESTS_ROOT, 'e2e')
+/**
+ * Same rationale as audit-variant-pins.mjs: `vrt/` holds specs that address
+ * Variants and lived outside both guards. Keep the two lists in sync.
+ */
+const SPEC_DIRS = ['e2e', 'vrt']
+    .map((d) => join(TESTS_ROOT, d))
+    .filter((d) => existsSync(d))
 const STORIES_PKG = join(TESTS_ROOT, '..', 'stories')     // packages/stories
 
 const argv = process.argv.slice(2)
@@ -684,7 +690,7 @@ const storyFiles = walk(STORIES_PKG, (f) => f.endsWith('.story.vue'))
 const slugToStory = new Map()
 for (const f of storyFiles) slugToStory.set(slugForStory(f), f)
 
-const specFiles = walk(E2E_DIR, (f) => f.endsWith('.spec.ts'))
+const specFiles = SPEC_DIRS.flatMap((d) => walk(d, (f) => f.endsWith('.spec.ts')))
 
 /**
  * Coverage accounting — the part that makes a clean run MEAN something.

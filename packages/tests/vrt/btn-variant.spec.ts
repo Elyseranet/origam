@@ -37,6 +37,13 @@ const STORY_PATH = '/stories/story/' + STORY_ID
 // mid-file shifts every numeric variantId index e2e/btn.spec.ts hardcodes,
 // silently breaking 10 of its tests). Verified by
 // `grep -n '<Variant' OrigamBtn.story.vue` (see recipe in e2e/btn.spec.ts).
+//
+// Index table — the row below is what makes this reference auditable by
+// e2e/_support/audit-variant-pins.mjs. Until that guard was widened to walk
+// `vrt/` (it only ever walked `e2e/`), this file was outside the net entirely:
+// its hardcoded index was invisible to the audit, and a Variant removed above
+// index 15 would have shifted it with nothing to flag the drift.
+// 15 → Prop — variant (VRT matrix)
 const VRT_VARIANT_URL = `${STORY_PATH}?variantId=${STORY_ID}-15`
 
 const BTN_VARIANTS = ['text', 'flat', 'elevated', 'tonal', 'outlined', 'plain', 'ghost'] as const

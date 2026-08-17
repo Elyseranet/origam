@@ -57,14 +57,29 @@
  *
  * Exit code is non-zero when a RANGE / TITLE / PINS disagreement is found.
  */
-import { readFileSync, readdirSync, statSync } from 'node:fs'
+import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs'
 import { dirname, join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const HERE = dirname(fileURLToPath(import.meta.url))
 const TESTS_ROOT = join(HERE, '..', '..')
-const E2E_DIR = join(TESTS_ROOT, 'e2e')
+/**
+ * Every directory holding Playwright specs that may address a Variant by
+ * index. `e2e/` is the historical one; `vrt/` was added later and sat
+ * OUTSIDE this guard for its whole life — yet `vrt/btn-variant.spec.ts`
+ * hardcodes `${STORY_ID}-15` and drives 7 committed screenshot baselines.
+ * A guard that enumerates index references while ignoring a directory full
+ * of them reports a denominator that is simply wrong, and its green means
+ * less than it claims. Add a directory here rather than a second walker.
+ */
+const SPEC_DIRS = ['e2e', 'vrt']
+    .map((d) => join(TESTS_ROOT, d))
+    .filter((d) => existsSync(d))
 const STORIES_PKG = join(TESTS_ROOT, '..', 'stories')
+
+/** Specs from every registered directory, in a stable order. */
+const allSpecFiles = () =>
+    SPEC_DIRS.flatMap((d) => walk(d, (f) => f.endsWith('.spec.ts')))
 
 const argv = process.argv.slice(2)
 const AS_JSON = argv.includes('--json')
@@ -558,7 +573,7 @@ function run () {
     let specsUnattributable = 0
     let specsBound = 0, refsChecked = 0, titlesChecked = 0, pinsChecked = 0
 
-    for (const sf of walk(E2E_DIR, (f) => f.endsWith('.spec.ts'))) {
+    for (const sf of allSpecFiles()) {
         const src = readFileSync(sf, 'utf8')
         const rel = relative(TESTS_ROOT, sf)
         const idxs = indicesInSpec(src)
