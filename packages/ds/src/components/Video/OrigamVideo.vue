@@ -945,31 +945,9 @@
 		overflow: hidden;
 		border-radius: var(--origam-video---border-radius, 0);
 
-		/*
-		 * Force the chrome (MediaController play / volume / cog,
-		 * native `<button>`-based MediaVolumeControl) to white by
-		 * default — the controller's own SCSS reads `color:
-		 * var(--origam-media-controller---color, inherit)` which
-		 * defaults to the `#171717` text-primary token. On the dark
-		 * video overlay that produces near-invisible icons (the
-		 * user-reported "icons all black" symptom).
-		 *
-		 * The variable is overridden to `inherit` further down when
-		 * the consumer passes `color` / `bgColor`, so `useColorEffect`
-		 * gets to drive the tint through.
-		 */
 		--origam-media-controller---color: #ffffff;
 	}
 
-	/*
-	 * Tint propagation when the consumer passes `color` or `bgColor`:
-	 * the MediaController + the white-by-default `.origam-video__btn`
-	 * icons need to inherit the host colour so the scrubber's
-	 * `currentColor` (set by `scrubberColorStyle`) AND the icons
-	 * track the user's intent. Without these overrides the
-	 * MediaController's own scoped `color: var(--origam-media-controller---color, inherit)`
-	 * pins the chrome back to the dark text-primary token.
-	 */
 	.origam-video--has-color,
 	.origam-video--has-bg-color {
 		--origam-media-controller---color: inherit;
@@ -983,30 +961,10 @@
 		}
 	}
 
-	/*
-	 * Native `<button class="origam-media-volume-control__btn">` lives
-	 * inside OrigamMediaVolumeControl with its own scoped CSS that
-	 * doesn't honour `--origam-media-controller---color`. Force it
-	 * to inherit from the controller (which is now white by default)
-	 * so the volume icon matches the rest of the chrome.
-	 */
 	:deep(.origam-media-volume-control__btn) {
 		color: inherit;
 	}
 
-	/*
-	 * Scrubber track / buffer background — overrides the MediaController
-	 * defaults so the dark, semi-translucent track doesn't let the
-	 * video frame underneath bleed through with whatever hue the
-	 * picture has at the playhead position (the user-reported "pink
-	 * scrubber" symptom on a pastel-toned video frame). White-tinted
-	 * translucent backgrounds give a uniform light-grey track on
-	 * every video regardless of content.
-	 *
-	 * The :deep(.) reaches into the OrigamMediaScrubber scope to set
-	 * its internal slots; the consumer can still override per-instance
-	 * via `--origam-media-scrubber---track-background-color`.
-	 */
 	:deep(.origam-media-controller__scrubber) {
 		--origam-media-scrubber---track-background-color: rgba(255, 255, 255, 0.28);
 		--origam-media-scrubber---buffer-background-color: rgba(255, 255, 255, 0.42);
@@ -1102,11 +1060,6 @@
 		font-size: var(--origam-video--error---icon-font-size, 32px);
 	}
 
-	/* State pulse — YouTube-style brief icon flash at the centre of
-	 * the video when play/pause toggles. PURELY cosmetic, never
-	 * absorbs clicks (pointer-events: none) so the underlying video
-	 * surface stays interactive. Fades in + scales up over ~600 ms
-	 * then disappears. */
 	.origam-video__state-pulse {
 		position: absolute;
 		top: 50%;

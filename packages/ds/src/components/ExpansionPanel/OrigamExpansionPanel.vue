@@ -1,6 +1,6 @@
 <template>
 	<component
-			:is="props.tag"
+			:is="tag"
 			v-contrast
 			:class="expansionPanelClasses"
 			:style="expansionPanelStyles"

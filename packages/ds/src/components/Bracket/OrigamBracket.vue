@@ -961,10 +961,6 @@
 			display: flex;
 			position: relative;
 			gap: var(--origam-bracket---round-gap, 48px);
-			/* Pin to natural size — otherwise a wider parent stretches
-			 * the tree, the connectors SVG stretches with it (via
-			 * preserveAspectRatio="none"), but the round columns keep
-			 * their fixed width → connectors land outside the cards. */
 			width: max-content;
 
 			&--direction-horizontal {

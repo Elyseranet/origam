@@ -405,14 +405,6 @@
   lang="scss"
   scoped
 >
-  /*
-   * Skeleton placeholder mimicking the switch silhouette — a 52×32
-   * rounded track + a 20px circular thumb pinned to the left so the
-   * shape is unmistakably a switch (vs the previous plain rectangle
-   * which looked like a generic loading bar). Both halves share the
-   * `--origam-switch__skeleton-bg` pulse animation inherited from
-   * the broader skeleton token so the rhythm matches OrigamSkeleton.
-   */
   @keyframes origam-switch-skeleton-pulse {
     0%, 100% {
       opacity: 1;
@@ -454,7 +446,6 @@
 
     &--inset {
       .origam-switch__skeleton-thumb {
-        /* inset switches use a 24px thumb that overflows the track */
         width: 24px;
         height: 24px;
         left: 4px;
@@ -469,29 +460,10 @@
       padding-inline-start: 10px;
     }
 
-    /*
-     * Line loader — thin linear progress positioned ON the track,
-     * spanning the full switch footprint (46×14 standard or 52×32
-     * inset). Sits BEHIND the thumb so the thumb stays visually
-     * dominant and the consumer still sees the on/off position
-     * while the background indicates async work in flight.
-     *
-     * `OrigamProgressLinear` ships an inline `height: thickness`
-     * (4 px default) that wins over standard CSS — we force it
-     * to 100 % via `:deep()` so the bar fills the track height
-     * regardless of the standard / inset variant.
-     */
     &__progress--linear {
       position: absolute !important;
       inset: 0 !important;
       width: 100% !important;
-      /*
-       * `OrigamProgressLinear` inlines `height: 4px` on its root via
-       * `:style="{ height: thickness }"`, which beats any non-important
-       * scoped rule. `!important` here is the only way to expand the
-       * loader to the full track height without subclassing the
-       * progress component.
-       */
       height: 100% !important;
       line-height: 1 !important;
       border-radius: inherit;
@@ -526,24 +498,6 @@
     .origam-selection-control {
       min-height: calc(var(--origam-switch__selection-control---min-height, 56px) + var(--origam-input---density, 0px));
 
-      /*
-       * The base SelectionControl wrapper reserves a fixed
-       * `calc(40px + 1.5 * density)` box sized for a checkbox/radio
-       * input glyph. Switch instead renders a variable-width track
-       * (36–52px depending on `--origam-switch__track---width` /
-       * the `inset` variant, plus its own horizontal padding) as
-       * the wrapper's only in-flow child — `__input` is forced
-       * `position: absolute` below so it no longer participates in
-       * the flex layout. That fixed formula was never track-aware:
-       * under `density="compact"` (-8px) the wrapper shrinks to
-       * 28px while the standard track needs ~46px, so the track
-       * visually overflows into the neighbouring label ("Flat"
-       * rendering as "lat"). Let the wrapper size to its actual
-       * content (`max-content`) instead, keeping the original
-       * density formula only as a floor via `min-width`/`min-height`
-       * so the checkbox-sized footprint is preserved whenever the
-       * track is smaller than it (never smaller than before).
-       */
       :deep(.origam-selection-control__wrapper) {
         width: max-content;
         height: max-content;
