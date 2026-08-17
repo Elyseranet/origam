@@ -196,8 +196,15 @@ test.describe('OrigamMain', () => {
     test('renders as main element with wrapper', async ({ page }) => {
         await page.goto(MAIN_PATH)
         await page.waitForLoadState('networkidle')
-        // Must click a variant to load the sandbox iframe
-        await page.getByText('Prop — default layout', { exact: true }).first().click()
+        // Cible « Slots - Default », qui rend un <origam-main> SANS aucune prop.
+        // Les deux assertions ci-dessous portent sur le comportement PAR DÉFAUT
+        // (tag racine, présence du wrapper) : elles ont besoin d'un rendu qui ne
+        // pinne rien. L'ancien Variant « Prop — default layout » faisait
+        // exactement cela et rien de plus — c'était un doublon. Viser « Design »
+        // à la place aurait rendu le test tautologique, ce Variant pinnant
+        // tag: 'main' dans son init-state : on aurait vérifié la valeur pinnée,
+        // plus le défaut du composant.
+        await page.getByText('Slots - Default', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -211,8 +218,8 @@ test.describe('OrigamMain', () => {
     test('wrapper div is always rendered', async ({ page }) => {
         await page.goto(MAIN_PATH)
         await page.waitForLoadState('networkidle')
-        // Must click a variant to load the sandbox iframe
-        await page.getByText('Prop — default layout', { exact: true }).first().click()
+        // Même cible que ci-dessus, même raison : rendu sans prop.
+        await page.getByText('Slots - Default', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
