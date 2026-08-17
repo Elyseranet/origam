@@ -222,19 +222,29 @@ test.describe('OrigamCalendar — events', () => {
 
     test('recurring event expands to multiple chips on Mon/Wed/Fri', async () => {
         // The recurring-event fixture no longer exists in the migrated
-        // story — FIXTURE_EVENTS has zero `rrule` entries (verified via
-        // grep across OrigamCalendar.story.vue). `rrule` is still a real,
-        // documented, implemented feature (event.interface.ts + a
-        // dedicated src/utils/Calendar/rrule.util.ts expansion util) — this
-        // is a genuine coverage gap left by the migration, not a removed
-        // feature, and not something a spec can work around: the fixture
-        // is a hardcoded array baked into the story, with no control that
-        // could inject a custom rrule event, and specs must not edit
-        // stories (root CLAUDE.md). Skipped with a diagnostic instead of
-        // silently deleting the coverage — recommend a story fixture
-        // (e.g. a `Prop — recurring events` or folded into Design behind a
-        // toggle) be added in a follow-up.
-        test.skip(true, 'STORY GAP: FIXTURE_EVENTS in OrigamCalendar.story.vue has no rrule entries after the canonical-structure migration — rrule recurrence (event.interface.ts + rrule.util.ts) is untested. Needs a story fixture addition, not a spec change — cannot be worked around without editing the story.')
+        // story — FIXTURE_EVENTS has zero `rrule` entries (re-verified
+        // 2026-08-17). The fixture is a hardcoded array baked into the
+        // story with no control that could inject a custom rrule event,
+        // and specs must not edit stories (root CLAUDE.md), so this
+        // *visual* assertion stays parked.
+        //
+        // CORRECTION (2026-08-17): the previous skip message claimed
+        // "rrule recurrence is untested". That was FALSE and stayed
+        // uncorrected for a release. `rrule` expansion has always had
+        // unit coverage — `TU/utils/Calendar/rrule.util.spec.ts` (49
+        // tests, 98.71% statements / 97.61% branches on rrule.util.ts)
+        // plus an integration test through the composable in
+        // `TU/composables/Calendar/calendar.composable.spec.ts`
+        // ("expands a weekly RRULE inside the visible month").
+        //
+        // What is missing is narrower than "untested" and worth stating
+        // precisely, because the two are not interchangeable: the
+        // recurrence ARITHMETIC is guarded (and guarded in the unit
+        // suite, which CI runs in full, unlike the e2e subset); what is
+        // NOT guarded is that expanded occurrences RENDER as one chip
+        // per day in the month grid. That is a rendering assertion, and
+        // it is the only part that needs a story fixture.
+        test.skip(true, 'STORY GAP (rendering only): FIXTURE_EVENTS in OrigamCalendar.story.vue has no rrule entries, so the "one chip per expanded occurrence" RENDERING is unverified. The recurrence arithmetic itself IS covered — see TU/utils/Calendar/rrule.util.spec.ts (49 tests, 97.61% branch) and the useCalendar integration test. Needs a story fixture to go further; not a spec change.')
     })
 })
 
@@ -247,29 +257,86 @@ test.describe('OrigamCalendar — ARIA / Keyboard', () => {
         await expect(firstCell).toHaveAttribute('aria-label', /.+/)
     })
 
-    test('view switcher exposes role=tab with aria-selected', async ({ page }) => {
-        // DS/test contract mismatch found while repairing this spec —
-        // unrelated to the story migration ('Default' title was never
-        // drifted; this test simply never actually ran to completion
-        // before because earlier tests in the same file blocked full
-        // suite runs). OrigamCalendar.vue's view-switcher buttons use
-        // `:aria-pressed="isViewActive(viewOption)"` on a `<button>` (a
-        // toggle-button-group pattern), NOT `role="tab"` / `aria-selected`
-        // (a tabpanel pattern) — verified via source (OrigamCalendar.vue
-        // line ~79) and DOM (`aria-pressed="true"`, `role` absent).
-        // Genuinely unclear which is "correct" without a DS/a11y decision
-        // — a segmented view-switcher is arguably NOT a tabpanel (it
-        // doesn't show/hide tabbed content, it swaps the whole calendar
-        // body), so `aria-pressed` may be the intentional, correct choice
-        // and this test's assumption may be the one that's wrong. Flagging
-        // rather than guessing.
-        test.fixme(true, 'ARIA contract mismatch: OrigamCalendar view-switcher buttons use aria-pressed (toggle-button pattern), not role="tab"/aria-selected (tabpanel pattern) that this test asserts. Needs a DS/a11y decision on the intended pattern before either the component or this test is changed.')
+    /*
+     * ARIA contract for the view switcher — SETTLED 2026-08-17.
+     *
+     * This test used to assert `role="tab"` / `aria-selected` and was
+     * parked as `test.fixme` pending a decision. The decision is: the
+     * view switcher is a GROUP OF TOGGLE BUTTONS (`role="group"` +
+     * `<button aria-pressed>`), which is what the component already
+     * renders. The test was the side that was wrong. Reasons, in order
+     * of weight:
+     *
+     * 1. The tabs pattern requires a panel. WAI-ARIA APG "Tabs" has each
+     *    `role="tab"` reference its panel through `aria-controls`, and
+     *    the panel carries `role="tabpanel"` + `aria-labelledby`.
+     *    OrigamCalendar renders exactly ONE body, via `v-if` on
+     *    `resolvedView` — the three inactive views have no DOM node at
+     *    all. Three of the four tabs would therefore carry
+     *    `aria-controls` pointing at IDs that do not exist. A dangling
+     *    `aria-controls` is invalid and its AT behaviour is undefined.
+     *
+     * 2. A view switcher swaps a RENDERING, not a panel of content.
+     *    Month / week / day / agenda are four projections of the same
+     *    event set into the same region. Tabs say "there is other
+     *    content you have not seen"; a view switcher says "same content,
+     *    different shape" — that is a mode control, i.e. a pressed state.
+     *
+     * 3. Composite-widget keyboard collision — measured, not assumed.
+     *    `tablist` (like `radiogroup`) is a composite widget: one tab
+     *    stop, roving `tabindex`, and Arrow/Home/End MUST move between
+     *    tabs. OrigamCalendar's root already binds
+     *    ArrowLeft/Right/Up/Down + PageUp/PageDown for date navigation
+     *    and calls `preventDefault()`. Measured in
+     *    `TU/components/Calendar/OrigamCalendar.aria.spec.ts`: pressing
+     *    ArrowRight while a view button is the event target moves the
+     *    current date (2026-05-14 → 2026-05-15). The arrow contract a
+     *    tablist owes its user is pre-empted by the calendar today, so
+     *    declaring `role="tab"` here would announce a keyboard model the
+     *    component does not honour — the exact OrigamColorPicker defect
+     *    (`role="application"` + live `aria-valuetext`, arrows ignored).
+     *
+     * 4. The pattern in place is already COMPLETE: `role="group"` with an
+     *    accessible name, native `<button type="button">` (each its own
+     *    tab stop, Space/Enter handled by the platform), and
+     *    `aria-pressed` reflecting state. Nothing is half-declared —
+     *    which is what "No ARIA is better than bad ARIA" asks for.
+     *
+     * Adopting tabs later is defensible, but it is a whole delivery:
+     * carve the switcher out of the root `onKeydown`, add roving
+     * tabindex + Home/End, give each view a persistent panel node with a
+     * stable id, and wire `aria-controls` / `aria-labelledby`. Not a
+     * one-attribute change.
+     *
+     * The same contract is pinned in the unit suite (see spec above) —
+     * that copy is the one under CI guard, since CI runs the whole Vitest
+     * suite but only a subset of the e2e specs.
+     */
+    test('view switcher is a toggle-button group (role=group + aria-pressed)', async ({ page }) => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
-        const monthTab = sandbox.locator('[data-cy="origam-calendar-view-month"]').first()
-        await expect(monthTab).toHaveAttribute('role', 'tab')
-        await expect(monthTab).toHaveAttribute('aria-selected', 'true')
+        const monthBtn = sandbox.locator('[data-cy="origam-calendar-view-month"]').first()
+        const weekBtn = sandbox.locator('[data-cy="origam-calendar-view-week"]').first()
+
+        // Native button semantics — no redundant role override.
+        await expect(monthBtn).toHaveJSProperty('tagName', 'BUTTON')
+        await expect(monthBtn).not.toHaveAttribute('role', /.*/)
+        await expect(monthBtn).not.toHaveAttribute('aria-selected', /.*/)
+
+        // Pressed state tracks the active view, and only one is pressed.
+        await expect(monthBtn).toHaveAttribute('aria-pressed', 'true')
+        await expect(weekBtn).toHaveAttribute('aria-pressed', 'false')
+
+        // The switcher is a named group so AT announces the set.
+        const group = sandbox.locator('.origam-calendar__toolbar-views').first()
+        await expect(group).toHaveAttribute('role', 'group')
+        await expect(group).toHaveAttribute('aria-label', /.+/)
+
+        // Activating another view moves the pressed state.
+        await weekBtn.click()
+        await expect(weekBtn).toHaveAttribute('aria-pressed', 'true')
+        await expect(monthBtn).toHaveAttribute('aria-pressed', 'false')
     })
 
     test('arrow-right keyboard nav advances current-date by 1 day', async ({ page }) => {
