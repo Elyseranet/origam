@@ -27,14 +27,12 @@
 								key="prepend-avatar"
 								:density="density"
 								:image="prependAvatar"
-								:size="size"
 						/>
 						<origam-icon
 								v-if="prependIcon"
 								key="prepend-icon"
 								:density="density"
 								:icon="prependIcon"
-								:size="size"
 						/>
 					</slot>
 				</div>
@@ -49,7 +47,6 @@
 						<origam-icon
 								key="content-icon"
 								:icon="icon"
-								:size="size"
 						/>
 					</template>
 					<template v-if="hasTitle">
@@ -78,14 +75,12 @@
 								key="append-avatar"
 								:density="density"
 								:image="appendAvatar"
-								:size="size"
 						/>
 						<origam-icon
 								v-if="appendIcon"
 								key="append-icon"
 								:density="density"
 								:icon="appendIcon"
-								:size="size"
 						/>
 					</slot>
 				</div>
@@ -176,6 +171,7 @@
 	const emits = defineEmits<IAlertEmits>()
 
 	defineSlots<IAlertSlots>()
+  const slots = useSlots()
 
 	const {filterProps} = useProps<IAlertProps>(props)
 	const {t} = useLocale()
@@ -192,8 +188,6 @@
 	 ********************************************************/
 	const {typographyStyles} = useTypography(props, 'alert__title')
 
-	const slots = useSlots()
-
 	/*********************************************************
 	 * Effect
 	 *
@@ -202,13 +196,12 @@
 	 ********************************************************/
 	const {activeClasses, isActive, activeState, onActive} = useActive(props, 'modelValue')
 	const {isHover, hoverState, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave, hoverClasses} = useHover(props)
-	// Phase 3 (Vague D) — class-first companion alongside inline styles.
-	// `colorClasses` ships `.origam--bg-{intent}` / `.origam--color-{intent}`
-	// for the resting state only — `useStateEffect` returns `[]` for hover/
-	// active so the inline `colorStyles` keeps owning those slots.
 
 	/*********************************************************
-	 * Color
+	 * Effects
+   * 
+   * @description
+   * Resolve effects for all states (normal, hover, active)
 	 ********************************************************/
 
 	const { colorClasses, colorStyles, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, elevationStyles, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, isHover, isActive as unknown as ComputedRef<boolean>, hoverState, activeState)
@@ -220,16 +213,7 @@
 	 * Resolves prepend/append icons and click handlers.
 	 ********************************************************/
 
-	/*********************************************************
-	 * Icon
-	 ********************************************************/
-
 	const {icon, prependIcon, appendIcon, statusClasses} = useStatus(props)
-
-	/*********************************************************
-	 * Composables
-	 ********************************************************/
-
 	const {
 		onClickPrepend: handleClickPrepend,
 		onClickAppend: handleClickAppend,
@@ -238,15 +222,10 @@
 	} = useAdjacent(props, prependIcon, appendIcon)
 
 	/*********************************************************
-	 * Slots
-	 *
-	 * @description
-	 * Computed flags that control conditional rendering of
-	 * icon, title, header and close button sections.
-	 ********************************************************/
-
-	/*********************************************************
 	 * Event handlers
+   * 
+   * @description
+   * 
 	 ********************************************************/
 
 	const handleClose = (e: MouseEvent) => {
@@ -254,24 +233,12 @@
 
 		emits('click:close', e)
 	}
-	const size = 28
 
-	// Bare `status` in the template resolves to the raw, unresolved
-	// `_props.status` (see the `<script setup>` auto-expose note above),
-	// so this computed reads `_props` directly to keep the exact same
-	// source rather than the theme-resolved `props`.
 	const isUrgentStatus = computed(() => {
-		return _props.status === STATUS.WARNING || _props.status === STATUS.ERROR
+		return props.status === STATUS.WARNING || props.status === STATUS.ERROR
 	})
 
 	const hasIcon = computed(() => {
-		// Pre-fix: `!!(props.icon || props.status)` returned true as soon
-		// as a `status` was set, even when the resolved `icon` was empty
-		// (`useStatus` only assigns `statusIcon` to `icon` when
-		// `statusIconPosition === 'replace'`). The header then rendered
-		// `<origam-icon :icon="undefined">` — an empty `<i.origam-icon>`
-		// placeholder squeezed in next to the title. Pin the gate to the
-		// actual resolved icon used by the template.
 		return !!icon.value
 	})
 	const hasTitle = computed(() => {
