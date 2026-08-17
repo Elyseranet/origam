@@ -22,22 +22,9 @@ import {
 } from '../../consts/Watermark/watermark.const'
 
 import type {
-    IUseWatermarkOptions
+    IUseWatermarkOptions,
+    IWatermarkResolvedOptions
 } from '../../interfaces'
-
-interface IResolvedOptions {
-    text: string
-    image: string
-    opacity: number
-    angle: number
-    gap: number
-    fontSize: number
-    fontFamily: string
-    color: string
-    fontWeight: number | string
-    pointerEvents: 'none' | 'auto'
-    zIndex: number
-}
 
 /**
  * Escape the five XML metacharacters before embedding a user-controlled
@@ -67,7 +54,7 @@ function escapeXml (raw: string): string {
  * tiny — a few hundred bytes per pattern, well below any meaningful
  * data-URL limit.
  */
-function buildPatternUrl (options: IResolvedOptions): string {
+function buildPatternUrl (options: IWatermarkResolvedOptions): string {
     const tile = options.gap + Math.max(options.fontSize, 1)
     const cx = tile / 2
     const cy = tile / 2
@@ -110,7 +97,7 @@ function buildPatternUrl (options: IResolvedOptions): string {
  * the component reads from the same getter so consumer omitted props
  * never have to be defaulted twice.
  */
-function resolveOptions (raw: IUseWatermarkOptions | undefined): IResolvedOptions {
+function resolveOptions (raw: IUseWatermarkOptions | undefined): IWatermarkResolvedOptions {
     const opts = raw ?? {}
     return {
         text: opts.text ?? '',
@@ -132,7 +119,7 @@ function resolveOptions (raw: IUseWatermarkOptions | undefined): IResolvedOption
  * Extracted so `install()` and the anti-tamper re-injection path share
  * the same styling code.
  */
-function applyLayerStyles (layer: HTMLElement, options: IResolvedOptions, pattern: string): void {
+function applyLayerStyles (layer: HTMLElement, options: IWatermarkResolvedOptions, pattern: string): void {
     layer.style.position = 'absolute'
     layer.style.top = '0'
     layer.style.right = '0'
@@ -175,7 +162,7 @@ export function useWatermark (
     install: (target?: HTMLElement) => HTMLElement | null
     uninstall: () => void
 } {
-    const resolved: ComputedRef<IResolvedOptions> = computed(() => {
+    const resolved: ComputedRef<IWatermarkResolvedOptions> = computed(() => {
         const raw = isRef(options) || typeof options === 'function' ? toValue(options) : options
         return resolveOptions(raw)
     })

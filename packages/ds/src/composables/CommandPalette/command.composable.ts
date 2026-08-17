@@ -1,8 +1,10 @@
-import { computed, type ComputedRef, ref, type Ref } from 'vue'
+import { computed, ref } from 'vue'
 
-import type { ICommand } from '../../interfaces'
+import type { ICommand, ICommandRegistry, IUseCommandReturn } from '../../interfaces'
 
 import { tryOnScopeDispose } from '../../utils'
+
+export type { IUseCommandReturn } from '../../interfaces'
 
 /*********************************************************
  * Singleton registry
@@ -16,13 +18,6 @@ import { tryOnScopeDispose } from '../../utils'
  * Reactivity is preserved through plain `ref()` references. Two
  * callers on the same module instance see the exact same list.
  ********************************************************/
-
-interface ICommandRegistry {
-    /** Live array of registered commands. Dedup by id is enforced at write time. */
-    items: Ref<Array<ICommand>>
-    /** Whether the global palette singleton is currently open. */
-    isOpen: Ref<boolean>
-}
 
 const REGISTRY: ICommandRegistry = {
     items: ref<Array<ICommand>>([]),
@@ -51,28 +46,6 @@ const removeById = (id: string): void => {
  * useCommand
  ********************************************************/
 
-export interface IUseCommandReturn {
-    /**
-     * Register a command. Returns an `unregister()` closure so callers
-     * can drop the entry imperatively. When called from inside a Vue
-     * effect scope, the entry is auto-unregistered on scope dispose
-     * (component unmount, route leave, …) via `tryOnScopeDispose`.
-     */
-    register: (cmd: ICommand) => () => void
-    /** Drop the entry with the matching `id`. No-op if unknown. */
-    unregister: (id: string) => void
-    /**
-     * Reactive read-only view of every registered command, deduplicated
-     * by id.
-     */
-    commands: ComputedRef<ReadonlyArray<ICommand>>
-    /** Open the global palette singleton. */
-    open: () => void
-    /** Close the global palette singleton. */
-    close: () => void
-    /** Reactive open/close state of the global palette singleton. */
-    isOpen: Ref<boolean>
-}
 
 export function useCommand (): IUseCommandReturn {
     const register = (cmd: ICommand): () => void => {

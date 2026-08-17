@@ -147,3 +147,22 @@ export interface IParallaxLayerProvide {
     register: (layer: IParallaxLayerRegistry) => void
     unregister: (id: symbol) => void
 }
+
+/*********************************************************
+ * Options consumed by `useParallaxRuntime`.
+ ********************************************************/
+export interface IUseParallaxRuntimeOptions {
+    target: Ref<HTMLElement | undefined>
+    direction: Ref<TParallaxDirection>
+    easing: Ref<TParallaxEasing | string>
+    threshold: Ref<number>
+    disabled: Ref<boolean>
+    /**
+     * Fallback speed used when `slot=default` carries raw content (no
+     * `<OrigamParallaxLayer>`). Mirrors `IParallaxProps.speed`.
+     */
+    speed: Ref<number>
+    onEnter?: () => void
+    onLeave?: () => void
+    onProgress?: (progress: number) => void
+}

@@ -1,5 +1,6 @@
 import type { IUseCodeReturn } from '../../interfaces'
 import type { TCodeLang } from '../../types'
+import type { TShikiHighlighter } from '../../types/Code/shiki.type'
 
 import { CODE_CACHE_MAX_ENTRIES, CODE_DARK_THEME as DARK_THEME, CODE_LIGHT_THEME as LIGHT_THEME, SUPPORTED_LANGS } from '../../consts/Code/code.const'
 import { CODE_LANG } from '../../enums'
@@ -31,15 +32,7 @@ import { CODE_LANG } from '../../enums'
  * is a pure CSS cascade (no JS re-render).
  */
 
-type ShikiHighlighter = {
-    codeToHtml: (code: string, opts: {
-        lang: string
-        themes?: { light: string, dark: string }
-        defaultColor?: false | string
-    }) => string
-}
-
-let _highlighterPromise: Promise<ShikiHighlighter> | null = null
+let _highlighterPromise: Promise<TShikiHighlighter> | null = null
 let _highlighterReady = false
 // `shiki` is an OPTIONAL peer dependency. When it is not installed, the dynamic
 // import below throws — we degrade to plain, un-highlighted code instead of
@@ -79,7 +72,7 @@ function lruSet (key: string, value: string): void {
     _cache.set(key, value)
 }
 
-async function loadHighlighter (): Promise<ShikiHighlighter | null> {
+async function loadHighlighter (): Promise<TShikiHighlighter | null> {
     if (_highlighterUnavailable) return null
     if (_highlighterPromise) return _highlighterPromise
 
@@ -104,7 +97,7 @@ async function loadHighlighter (): Promise<ShikiHighlighter | null> {
             langs: [...SUPPORTED_LANGS]
         })
         _highlighterReady = true
-        return highlighter as unknown as ShikiHighlighter
+        return highlighter as unknown as TShikiHighlighter
     })()
 
     // shiki not installed (optional peer) or failed to load → degrade to plain.

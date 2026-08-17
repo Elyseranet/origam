@@ -167,3 +167,23 @@ export interface IUseWatermarkOptions {
     /** Same semantics as `IWatermarkProps.zIndex`. */
     zIndex?: number
 }
+
+/**
+ * `useWatermark`'s options AFTER defaulting — every field resolved to a
+ * concrete value so the SVG data-URL builder never re-applies a
+ * fallback. Counterpart of `IUseWatermarkOptions`, which is the loose,
+ * all-optional shape a caller passes in.
+ */
+export interface IWatermarkResolvedOptions {
+    text: string
+    image: string
+    opacity: number
+    angle: number
+    gap: number
+    fontSize: number
+    fontFamily: string
+    color: string
+    fontWeight: number | string
+    pointerEvents: 'none' | 'auto'
+    zIndex: number
+}

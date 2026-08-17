@@ -1,6 +1,23 @@
+import type { Ref } from 'vue'
+
 import type { IThemeVars, TThemeVars } from '../../types'
-import type { TMode } from '../../types/Theme/theme.type'
+import type { TMode, TTheme } from '../../types/Theme/theme.type'
 import type { IDefault } from '../DefaultProvider/default-provider.interface'
+
+/**
+ * Shape of the `useTheme()` singleton state.
+ *
+ * Held on `globalThis` in the browser (so duplicated module instances
+ * within the same JS realm share it) and as a plain module-level object
+ * on the server (so per-request theme state cannot leak across
+ * concurrent requests). See `theme.composable.ts` for the full rationale.
+ */
+export interface IOrigamThemeSingletonState {
+    theme: Ref<TTheme> | null
+    mode: Ref<TMode> | null
+    systemPrefersDark: Ref<boolean> | null
+    mediaInitDone: boolean
+}
 
 /**
  * Runtime theme object ingested by `createOrigam({ themes })`. At install time

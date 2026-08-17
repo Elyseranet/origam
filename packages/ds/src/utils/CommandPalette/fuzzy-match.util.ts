@@ -26,16 +26,9 @@
  * inside a `computed`.
  */
 
-/**
- * Output of `fuzzyMatch` — the matched item carries its score so callers
- * can short-circuit a re-sort on cached input.
- */
-export interface IFuzzyMatchResult<T> {
-    /** Original item passed in. */
-    item: T
-    /** Higher = better fit. `0` is the floor for a successful match. */
-    score: number
-}
+import type { IFuzzyMatchResult } from '../../interfaces'
+
+export type { IFuzzyMatchResult } from '../../interfaces'
 
 /**
  * Bonus weights — tuned by hand against typical command-palette

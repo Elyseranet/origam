@@ -337,6 +337,7 @@ export * from './Audio/audio.type'
 export * from './Calendar/calendar.type'
 
 export * from './Chart/chart-legend.type'
+export * from './Chart/chart-path.type'
 export * from './Chart/chart.type'
 
 export * from './Chart/chart-cartesian.type'

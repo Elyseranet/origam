@@ -1,5 +1,4 @@
-import type { ICommand } from './command.interface'
-import type { IFuzzyMatchResult } from '../../utils/CommandPalette/fuzzy-match.util'
+import type { ICommand, IFuzzyMatchResult } from './command.interface'
 
 /**
  * Internal implementation detail of `<OrigamCommandPalette>`'s grouping

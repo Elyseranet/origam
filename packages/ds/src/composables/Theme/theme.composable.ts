@@ -9,6 +9,7 @@ import {
 } from '../../consts/Theme/theme.const'
 
 import type { TMode, TModeResolved, TTheme, TThemeResolved } from '../../types/Theme/theme.type'
+import type { IOrigamThemeSingletonState } from '../../interfaces/Theme/origam-theme.interface'
 
 /**
  * Module-level singletons — every call to `useTheme()` shares the same Refs
@@ -54,13 +55,6 @@ import type { TMode, TModeResolved, TTheme, TThemeResolved } from '../../types/T
  * (each request re-seeds from its own cookie), so the failure mode this fix
  * targets doesn't apply there.
  */
-interface IOrigamThemeSingletonState {
-    theme: Ref<TTheme> | null
-    mode: Ref<TMode> | null
-    systemPrefersDark: Ref<boolean> | null
-    mediaInitDone: boolean
-}
-
 const ORIGAM_THEME_SINGLETON_KEY = '__origamThemeSingleton__'
 
 const _serverSingleton: IOrigamThemeSingletonState = {

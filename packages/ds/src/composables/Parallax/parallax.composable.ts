@@ -4,27 +4,10 @@ import { useCssSupport } from '../CssSupport/cssSupport.composable'
 
 import { PARALLAX_DIRECTION, PARALLAX_EASING } from '../../enums'
 
-import type { IParallaxLayerRegistry } from '../../interfaces'
-import type { TParallaxDirection, TParallaxEasing } from '../../types'
+import type { IParallaxLayerRegistry, IUseParallaxRuntimeOptions } from '../../interfaces'
+import type { TParallaxDirection } from '../../types'
 
-/*********************************************************
- * Internal options consumed by `useParallaxRuntime`.
- ********************************************************/
-export interface IUseParallaxRuntimeOptions {
-    target: Ref<HTMLElement | undefined>
-    direction: Ref<TParallaxDirection>
-    easing: Ref<TParallaxEasing | string>
-    threshold: Ref<number>
-    disabled: Ref<boolean>
-    /**
-     * Fallback speed used when `slot=default` carries raw content (no
-     * `<OrigamParallaxLayer>`). Mirrors `IParallaxProps.speed`.
-     */
-    speed: Ref<number>
-    onEnter?: () => void
-    onLeave?: () => void
-    onProgress?: (progress: number) => void
-}
+export type { IUseParallaxRuntimeOptions } from '../../interfaces'
 
 /**
  * Detect `prefers-reduced-motion: reduce` once at mount time. We watch the

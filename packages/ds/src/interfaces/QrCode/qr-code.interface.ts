@@ -9,6 +9,7 @@ import type {
     IRoundedProps,
     ISizeProps,
     ISrcObject,
+    IQrCodeLogo,
     ITagProps
 } from '../../interfaces'
 
@@ -176,4 +177,19 @@ export interface IUseQrCodeOptions {
  */
 export interface IQrCodeSlots {
     center?: (bindings: { size: number }) => any
+}
+
+/**
+ * `useQrCode`'s option bag AFTER defaulting — every field resolved to a
+ * concrete value, so the SVG builders downstream never re-apply a
+ * fallback. Distinct from `IUseQrCodeOptions`, which is the loose,
+ * all-optional shape a caller passes in.
+ */
+export interface IQrCodeResolvedOptions {
+    errorCorrectionLevel: TQrCodeErrorCorrectionLevel
+    foreground: string
+    background: string
+    margin: number
+    cornerRadius: number
+    logo?: IQrCodeLogo
 }

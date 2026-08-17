@@ -17,7 +17,7 @@ import {
 } from '../../consts/QrCode/qr-code.const'
 
 import type {
-    IQrCodeLogo,
+    IQrCodeResolvedOptions,
     IUseQrCodeOptions
 } from '../../interfaces'
 
@@ -32,15 +32,6 @@ import type {
  * `src/consts/QrCode/qr-code.const.ts`.
  */
 const matrixCache = new Map<string, boolean[][]>()
-
-interface IInternalOptions {
-    errorCorrectionLevel: TQrCodeErrorCorrectionLevel
-    foreground: string
-    background: string
-    margin: number
-    cornerRadius: number
-    logo?: IQrCodeLogo
-}
 
 /**
  * Pull a (cached or freshly built) module matrix for the requested
@@ -120,7 +111,7 @@ function escapeXmlAttr (raw: string): string {
  */
 function buildSvg (
     matrix: boolean[][],
-    options: IInternalOptions
+    options: IQrCodeResolvedOptions
 ): string {
     const count = matrix.length
     const viewSize = count + options.margin * 2
@@ -219,7 +210,7 @@ export function useQrCode (
         return typeof resolved === 'string' ? resolved : String(resolved ?? '')
     })
 
-    const normalisedOptions: ComputedRef<IInternalOptions> = computed(() => {
+    const normalisedOptions: ComputedRef<IQrCodeResolvedOptions> = computed(() => {
         const raw = isRef(options) || typeof options === 'function' ? toValue(options) : options
         const opts = (raw ?? {}) as IUseQrCodeOptions
 
