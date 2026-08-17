@@ -29,7 +29,7 @@ panel needs (selection state, `multiple`, `mandatory`, `max`).
 header entirely or just the pieces you need. `expandIcon` / `collapseIcon`
 (default: chevron-down / chevron-up) swap the trailing indicator, and
 `hideActions` removes it. Every header prop and slot documented on
-[`OrigamExpansionPanelHeader`](./OrigamExpansionPanelHeader.md) is available
+`OrigamExpansionPanelHeader` is available
 directly on `OrigamExpansionPanel` (its props interface extends the header's).
 
 ```vue
@@ -61,7 +61,7 @@ directly on `OrigamExpansionPanel` (its props interface extends the header's).
 
 `content` accepts a string or a component; for rich/slotted markup use the
 default slot instead — every prop and slot documented on
-[`OrigamExpansionPanelContent`](./OrigamExpansionPanelContent.md) is likewise
+`OrigamExpansionPanelContent` is likewise
 forwarded from `OrigamExpansionPanel` (its props interface extends the
 content's).
 
@@ -172,7 +172,7 @@ own prop still wins.
 | `padding` | `boolean \| number \| string` | — | Padding (+ per-side variants) |
 | `margin` | `boolean \| number \| string` | — | Margin (+ per-side variants) |
 | `ripple` | `boolean \| { class: string }` | — | Header click-ripple override (forwarded to the header) |
-| `fontFamily` / `fontSize` / `fontWeight` / `lineHeight` / `letterSpacing` | typography tokens | — | Header typography overrides (forwarded to the header) — see [`OrigamExpansionPanelHeader`](./OrigamExpansionPanelHeader.md) |
+| `fontFamily` / `fontSize` / `fontWeight` / `lineHeight` / `letterSpacing` | typography tokens | — | Header typography overrides (forwarded to the header) — see `OrigamExpansionPanelHeader` |
 
 > **Known gap** — `loadingText` (from `ILoaderProps`) and `selectedClass`
 > (from `IGroupItemProps`, the "class applied while selected" analogue of
@@ -209,10 +209,10 @@ own prop still wins.
   `OrigamExpansionPanel` children. Also carries the `flat` / `accordion` /
   `popout` / `inset` layout variants. **No dedicated doc page exists for it
   yet** — flagging this gap rather than inventing one.
-- [`OrigamExpansionPanelHeader`](./OrigamExpansionPanelHeader.md) — the
+- `OrigamExpansionPanelHeader` — the
   clickable header row; rendered automatically by `OrigamExpansionPanel`
   from its own props, but can be overridden via the `#header` slot.
-- [`OrigamExpansionPanelContent`](./OrigamExpansionPanelContent.md) — the
+- `OrigamExpansionPanelContent` — the
   collapsible content region; rendered automatically by
   `OrigamExpansionPanel` from `content` / the default slot, throws if
   instantiated outside an `OrigamExpansionPanel` ancestor.
@@ -258,5 +258,5 @@ own prop still wins.
 Header-specific typography variables
 (`--origam-expansion-panel__header---font-family` etc.) and the full content
 token set are documented on
-[`OrigamExpansionPanelHeader`](./OrigamExpansionPanelHeader.md) and
-[`OrigamExpansionPanelContent`](./OrigamExpansionPanelContent.md).
+`OrigamExpansionPanelHeader` and
+`OrigamExpansionPanelContent`.

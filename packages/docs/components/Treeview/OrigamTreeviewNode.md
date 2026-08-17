@@ -1,6 +1,6 @@
 # OrigamTreeviewNode
 
-Sub-component of [`OrigamTreeview`](./OrigamTreeview.md). It renders one node of
+Sub-component of `OrigamTreeview`. It renders one node of
 the tree — its label, optional icon and size hint, its expand toggle — and
 recurses over `node.children` to render the subtree below it.
 

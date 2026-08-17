@@ -1,6 +1,6 @@
 # OrigamStepperItem
 
-Sub-component of [`OrigamStepper`](./OrigamStepper.md). It renders a single
+Sub-component of `OrigamStepper`. It renders a single
 step: a numbered or icon indicator, a title, and an optional subtitle.
 
 `OrigamStepper` generates one of these per entry in its `items` array, so most

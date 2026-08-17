@@ -78,7 +78,7 @@ resolves every surface axis itself.
 | `size` | `TSize \| number` | Named token, or a number applied as both `font-size` and `line-height`. |
 | `tag` | `string` | Root element. |
 | `color` / `bgColor` | `TColor` | Foreground / background intent. |
-| `border` (+ per-side, `borderColor`, `borderStyle`) | see [Border](../Alert/OrigamAlert.md#border) | Border axis. |
+| `border` (+ per-side, `borderColor`, `borderStyle`) | see `OrigamAlert` | Border axis. |
 | `rounded` (+ per-corner) | `boolean \| number \| string \| TRounded` | Radius axis. |
 | `padding` / `margin` (+ per-side, block, inline) | `boolean \| number \| string` | Spacing axes. |
 | `width` / `height` / `min*` / `max*` | `number \| string` | Dimension axis. |

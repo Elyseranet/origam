@@ -149,7 +149,7 @@ add an `origam-list--{lines}-line` class to the root — **but no CSS rule in
 the codebase selects that class**, so today it has no visible effect. The
 line-clamp itself only works when set directly on each `OrigamListItem`
 (`origam-list-item--{lines}-line`, documented on
-[`OrigamListItem`](./OrigamListItem.md)). See the known-gap note under
+`OrigamListItem`). See the known-gap note under
 Props.
 
 ## Disabled
@@ -289,9 +289,9 @@ a scrollable list (`max-height` + the default `overflow: auto`).
 `OrigamList` is the entry point of a small family of components you compose
 directly in your templates:
 
-- [`OrigamListItem`](./OrigamListItem.md) — a single row (title/subtitle,
+- `OrigamListItem` — a single row (title/subtitle,
   prepend/append icon or avatar, link behaviour).
-- [`OrigamListSubheader`](./OrigamListSubheader.md) — a section label between
+- `OrigamListSubheader` — a section label between
   groups of items.
 - `OrigamListGroup` (`packages/ds/src/components/List/OrigamListGroup.vue`) —
   a collapsible group: renders an activator row (an `OrigamListItem` by
@@ -299,11 +299,11 @@ directly in your templates:
   items. Used automatically for `items` with a non-empty `children` array, or
   can be nested manually in the default slot. **No dedicated doc page exists
   for it yet** — flagging this gap rather than inventing one.
-- [`OrigamListGroupActivator`](./OrigamListGroupActivator.md) — the low-level
+- `OrigamListGroupActivator` — the low-level
   wrapper a custom `#groupActivator` slot content should be placed in; it
   registers the group-activator context so the activator itself doesn't
   count as a nested list item.
-- [`OrigamListChildren`](./OrigamListChildren.md) — the internal renderer
+- `OrigamListChildren` — the internal renderer
   that turns an `items` array into rows (item / subheader / divider / group);
   used automatically when you pass `items`, rarely instantiated directly.
 
@@ -341,5 +341,5 @@ directly in your templates:
 Row-level (`--origam-list-item---*`), subheader-level
 (`--origam-list-subheader---*`) and group-level (`--origam-list-group---*`)
 variables are documented on their own pages
-([`OrigamListItem`](./OrigamListItem.md#tokens),
-[`OrigamListSubheader`](./OrigamListSubheader.md#tokens)).
+(`OrigamListItem`,
+`OrigamListSubheader`).

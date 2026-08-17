@@ -1,9 +1,9 @@
 # OrigamDataTableRows
 
-Sub-component of [`OrigamDataTable`](./OrigamDataTable.md). It is the table
+Sub-component of `OrigamDataTable`. It is the table
 body's list-level renderer: it decides, for the whole row set, whether to show
 the loading state, the empty state, or the rows — and then emits one
-[`OrigamDataTableRow`](./OrigamDataTableRow.md) or group header per entry.
+`OrigamDataTableRow` or group header per entry.
 
 It renders `<tr>` elements directly, with no wrapper of its own, so it must sit
 inside a `<tbody>`. Column definitions come from the table context through

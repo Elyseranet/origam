@@ -1,6 +1,6 @@
 # OrigamSliderFieldTrack
 
-Sub-component of [`OrigamSliderField`](./OrigamSliderField.md). It paints the
+Sub-component of `OrigamSliderField`. It paints the
 rail a slider thumb travels along: a background stripe, a fill stripe covering
 the selected span, and an optional row of tick marks.
 
