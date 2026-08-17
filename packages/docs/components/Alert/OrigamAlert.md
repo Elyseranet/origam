@@ -98,6 +98,109 @@ The styles are bound inline on that element via `useTypography(props, 'alert__ti
 | `letterSpacing` | `TLetterSpacing` | `--origam-alert__title---letter-spacing` | Title letter-spacing token. |
 | `lineHeight` | `TLineHeight` | `--origam-alert__title---line-height` | Title line-height token. |
 
+## Props
+
+`IAlertProps` declares six props of its own and inherits the rest from the
+`Commons` interfaces. The tables below are grouped the same way the story's
+`#controls` panel is, so a control you see in Histoire maps to a row here.
+
+### Content & behaviour
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `modelValue` | `boolean` | `true` | Visibility. The close button sets it to `false`. |
+| `title` | `string` | — | Title rendered in the `__title` BEM child. Overridden by the `title` slot. |
+| `text` | `string` | — | Body text. Overridden by the `text` slot. |
+| `closable` | `boolean` | `false` | Renders the close button. |
+| `closeIcon` | `TIcon` | `MDI_ICONS.CLOSE` | Icon of the close button. |
+| `closeLabel` | `string` | `'origam.close'` | Translation **key** resolved through `useLocale()` for the close button's `aria-label`. Pass a key, not a literal. |
+
+### Status & icons
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `status` | `TStatus` | — | Semantic intent (`info`, `success`, `warning`, `error`). Paints the surface and selects the default icon. |
+| `statusIconPosition` | `TStatusPosition` | — | Which adjacent slot the status icon occupies. |
+| `icon` | `TIcon` | — | Explicit icon, overriding the one implied by `status`. |
+| `prependIcon` | `TIcon` | — | Icon in the prepend (left) column. |
+| `appendIcon` | `TIcon` | — | Icon in the append (right) column. |
+| `prependAvatar` | `string` | — | Avatar image URL in the prepend column. |
+| `appendAvatar` | `string` | — | Avatar image URL in the append column. |
+
+### Colour
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `color` | `TColor` | — | Foreground / accent intent. |
+| `bgColor` | `TColor` | — | Background intent. |
+
+> Because Alert binds `useActive(props, 'modelValue')`, `useColorEffect` returns
+> no utility class while the alert is visible — the surface is painted by the
+> inline `colorStyles`. Assert on `getComputedStyle`, not on `.origam--color-*`.
+
+### Border
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `border` | `boolean \| number \| string \| TDirectionBoth \| Array<TDirectionBoth>` | — | Border shorthand. |
+| `borderTop` / `borderRight` / `borderBottom` / `borderLeft` | `boolean \| number \| string` | — | Per-side width. |
+| `borderBlock` / `borderInline` | `boolean \| number \| string` | — | Logical axis width. |
+| `borderColor` | `string` | — | Border colour for every side. |
+| `borderTopColor` / `borderRightColor` / `borderBottomColor` / `borderLeftColor` | `TColor` | — | Per-side colour. |
+| `borderStyle` | `string` | — | `solid`, `dashed`, … |
+
+### Rounded
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `rounded` | `boolean \| number \| string \| TRounded \| null` | — | Radius shorthand. |
+| `roundedTopLeft` / `roundedTopRight` / `roundedBottomLeft` / `roundedBottomRight` | `boolean \| number \| string` | — | Per-corner radius. |
+
+### Spacing
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `padding` | `boolean \| number \| string` | — | Padding shorthand. |
+| `paddingTop` / `paddingRight` / `paddingBottom` / `paddingLeft` | `boolean \| number \| string` | — | Per-side padding. |
+| `paddingBlock` / `paddingInline` | `boolean \| number \| string` | — | Logical axis padding. |
+| `margin` | `boolean \| number \| string` | — | Margin shorthand. |
+| `marginTop` / `marginRight` / `marginBottom` / `marginLeft` | `boolean \| number \| string` | — | Per-side margin. |
+| `marginBlock` / `marginInline` | `boolean \| number \| string` | — | Logical axis margin. |
+
+### Dimension
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `width` / `height` | `number \| string` | — | Fixed size. Bare numbers become `px`. |
+| `minWidth` / `minHeight` | `number \| string` | — | Lower bound. |
+| `maxWidth` / `maxHeight` | `number \| string` | — | Upper bound. |
+
+### Layout & elevation
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `density` | `TDensity` | `'default'` | `compact` / `default` / `comfortable`. |
+| `elevation` | `TElevation` | — | Shadow rung (`xs`…`xl`). Never hardcode a shadow per instance. |
+| `position` | `TPosition` | — | CSS positioning scheme. |
+| `top` / `right` / `bottom` / `left` | `number \| string` | — | Offsets, applied when `position` is set. |
+| `location` | `TAnchor` | — | Anchor shorthand resolved by `useLocation()`. |
+| `hover` | `boolean \| IHoverState` | `true` | Enables the hover surface, or configures it explicitly. |
+
+### Typography
+
+`fontSize`, `fontWeight`, `letterSpacing` and `lineHeight` target the `__title`
+BEM child — see [Typography props](#typography-props) above. `fontFamily` is
+declared by `ITypographyProps` but has no visual effect here.
+
+### Identity
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `tag` | `string` | `'div'` | Root element. |
+| `id` | `string` | — | Root `id`. |
+| `class` | `string \| Array<string> \| object` | — | Merged into the root class list. |
+| `style` | `string \| Array<string> \| object \| StyleValue` | — | Merged into the root style. |
+
 ## Emits
 
 | Event              | Payload      | Description                                     |
