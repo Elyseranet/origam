@@ -308,22 +308,6 @@
 			</template>
 		</Variant>
 
-		<Variant title="Slot — error">
-			<origam-img
-					:aspect-ratio="16 / 9"
-					alt="Error slot demo"
-					eager
-					src="https://this-host-does-not-exist.invalid/broken.png"
-					style="max-width: 480px; background: var(--origam-color__surface---overlay, #f3f4f6);"
-			>
-				<template #error>
-					<div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; color: var(--origam-color__feedback--danger---fg, #b91c1c);">
-						Failed to load image
-					</div>
-				</template>
-			</origam-img>
-		</Variant>
-
 				<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<Partial<IImgProps>>({

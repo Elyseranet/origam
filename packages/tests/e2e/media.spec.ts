@@ -132,7 +132,7 @@ test.describe('OrigamImg', () => {
     test('error state — error slot renders when src is broken', async ({ page }) => {
         await page.goto(IMG_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Slot — error', { exact: true }).first().click()
+        await page.getByText('Slots - Error', { exact: true }).first().click()
         // Allow the network request to fail and the error slot to mount.
         await page.waitForTimeout(2000)
 
