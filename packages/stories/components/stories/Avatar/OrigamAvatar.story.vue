@@ -202,20 +202,6 @@
 		</Variant>
 
 		<Variant
-				title="Prop — tag"
-				:init-state="() => useStoryInitState<Partial<IAvatarProps>>({ tag: 'div' })"
-		>
-			<template #default="{ state }">
-				<origam-avatar :tag="state.tag" text="AP" bg-color="primary"/>
-			</template>
-			<template #controls="{ state }">
-				<StoryGroup title="Tag">
-					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
-				</StoryGroup>
-			</template>
-		</Variant>
-
-				<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IAvatarProps>({ text: 'AP', bgColor: 'primary' })"
 		>

@@ -22,8 +22,7 @@ import { expect, test } from '@playwright/test'
  *  12  → Prop — rounded
  *  13  → Prop — elevation
  *  14  → Prop — border
- *  15  → Prop — tag
- *  16  → Default (playground)
+ *  15  → Default (playground)
  *
  * ⚠️  `variantId` vaut `<storyId>-<index>` et l'index est la POSITION du
  * <Variant> dans le fichier : insérer un Variant décale tous les suivants
@@ -254,18 +253,21 @@ test.describe('OrigamAvatar', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // DEFAULT / PLAYGROUND (index 16)                                     //
+    // DEFAULT / PLAYGROUND (index 15)                                     //
     // init: { text: 'AP', bgColor: 'primary' }                           //
     //                                                                     //
-    // Était `variantUrl(9)`. Sept Variants « Prop — … » ont été insérés   //
-    // avant le playground, qui est passé de l'index 9 à 16. Le test       //
-    // continuait de PASSER en visant l'index 9 (« Prop — content »), dont //
-    // le premier avatar affiche aussi 'AP' avec bg-color="primary" en dur //
-    // dans le template — vert, et n'observant pas le playground.          //
+    // Historique de cet index, à garder en tête avant de le toucher :     //
+    // il valait 9 à l'origine. Sept Variants « Prop — … » insérés avant   //
+    // le playground l'ont poussé à 16, et le test a CONTINUÉ À PASSER en  //
+    // visant 9 (« Prop — content »), dont le premier avatar affiche lui   //
+    // aussi 'AP' en bg-color="primary" codé en dur — vert, sans jamais    //
+    // observer le playground. Il est repassé à 15 avec la suppression du  //
+    // Variant « Prop — tag », doublon exact du Variant canonique          //
+    // « Functional » (même init-state, même template, même contrôle).     //
     // ------------------------------------------------------------------ //
 
     test('Default (playground) — text "AP", bgColor primary, hover wired', async ({ page }) => {
-        await page.goto(variantUrl(16))
+        await page.goto(variantUrl(15))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const avatar = sandbox.locator('.origam-avatar').first()
         await expect(avatar).toBeVisible({ timeout: 20000 })
