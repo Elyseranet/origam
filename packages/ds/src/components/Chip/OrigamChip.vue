@@ -244,8 +244,15 @@
 	const isLink = computed(() => {
 		return props.link && link.isLink.value
 	})
+	// `props.link &&` used to gate the whole expression, which short-circuited
+	// the `!!group` disjunct into dead code: a chip inside an
+	// `<origam-chip-group>` was inert unless it ALSO carried `link`, so the
+	// group never emitted `update:modelValue`. Same shape as the repaired
+	// `OrigamListItem.isClickable` — a chip is clickable when it belongs to a
+	// group, when it opts in via `link`, or when `useLink` detects an `href` /
+	// `to` / a bound `click` listener.
 	const isClickable = computed(() => {
-		return !props.disabled && props.link && (!!group || props.link || link.isClickable.value)
+		return !props.disabled && (!!group || props.link || link.isClickable.value)
 	})
 	const rippleProps = computed(() => {
 		return [isClickable.value && props.ripple, null]
@@ -332,6 +339,12 @@
 	const chipClasses = computed(() => {
 		return [
 			'origam-chip',
+			// `OrigamChipGroup` declares `selectedClass: 'origam-chip--selected'`
+			// and the chip exposed it to the default slot only, so a chip that
+			// WAS selected carried no class on its root and stayed visually
+			// indistinguishable. Same position as `OrigamBtn`, `OrigamItem`,
+			// `OrigamTab` and `OrigamWindowItem`.
+			group?.selectedClass.value,
 			{
 				'origam-chip--disabled': props.disabled,
 				'origam-chip--label': props.label,
@@ -457,6 +470,11 @@
 
 		&--label {
 			border-radius: var(--origam-chip---border-radius-label, 4px);
+		}
+
+		&--selected {
+			background-color: var(--origam-chip--selected---background-color);
+			color: var(--origam-chip--selected---color);
 		}
 
 		&--size-x-small {

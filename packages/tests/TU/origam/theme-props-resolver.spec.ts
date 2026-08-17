@@ -343,21 +343,29 @@ describe('installThemePropsResolver — coexists with an existing useDefaults() 
     })
 })
 
-describe('installThemePropsResolver — zero-cost early out', () => {
-    it('an empty union (no theme names any prop) never calls app.mixin() at all', () => {
-        // `createOrigam()` always prepends the baseline `origamTheme`, which
-        // DOES populate an extensive `components` block (that's the whole
-        // point of the baseline — every stock component gets sane defaults)
-        // — so there is no way to observe a truly empty union through the
-        // public `createOrigam()` API. Testing `installThemePropsResolver()`
-        // directly with an empty map is the precise way to pin the
-        // early-out this file's own doc comment promises.
+describe('installThemePropsResolver — mixin installation', () => {
+    // ⚠️ CONTRACT CHANGE, deliberate. This used to assert the opposite —
+    // "an empty union never calls app.mixin() at all" — as a zero-cost
+    // early out.
+    //
+    // That early-out was sound only while a REGISTERED THEME was the single
+    // writer of the defaults map. It no longer is: the hook now also resolves
+    // the `provideDefaults` cascade, which group components fill at RUNTIME
+    // from their own props. An empty union therefore no longer implies there
+    // is nothing to intercept, and skipping the mixin on that basis would
+    // reinstate the very defect being repaired for any app whose theme
+    // happens to name nothing.
+    //
+    // What is NOT lost: the PER-INSTANCE early out. An instance named by
+    // neither a theme nor an ancestor provider still bails after two Map
+    // lookups and two property lookups — pinned by the next spec.
+    it('installs the mixin even for an empty union (the provideDefaults cascade needs it)', () => {
         let mixinCalls = 0
         const app = { mixin: () => { mixinCalls++ } }
 
         installThemePropsResolver(app as any, new Map())
 
-        expect(mixinCalls).toBe(0)
+        expect(mixinCalls).toBe(1)
     })
 
     it('a non-empty union DOES call app.mixin() exactly once', () => {
@@ -367,6 +375,32 @@ describe('installThemePropsResolver — zero-cost early out', () => {
         installThemePropsResolver(app as any, new Map([['fake-card', new Set(['color'])]]))
 
         expect(mixinCalls).toBe(1)
+    })
+
+    // The per-instance early out is what actually keeps the catalogue cheap.
+    // A component no theme and no provider names must come out of
+    // `beforeCreate` with its props slots UNTOUCHED — i.e. still plain data
+    // properties, not accessors.
+    it('leaves an un-named component\'s prop slots untouched (per-instance early out)', () => {
+        const origam = createOrigam({ themes: [{ name: 'empty', components: {}, vars: {} }] })
+
+        const Probe = defineComponent({
+            name: 'UnnamedProbe',
+            props: { color: { type: String, default: 'neutral' } },
+            setup (props) {
+                const instance = (globalThis as any).__probeInstance = props
+                return () => h('span', instance.color)
+            }
+        })
+
+        const wrapper = mount(Probe, { global: { plugins: [origam] } })
+        const descriptor = Object.getOwnPropertyDescriptor(
+            (wrapper.vm as any).$ ? (wrapper.vm as any).$.props : {},
+            'color'
+        )
+
+        expect(descriptor?.get).toBeUndefined()
+        expect(wrapper.text()).toBe('neutral')
     })
 })
 

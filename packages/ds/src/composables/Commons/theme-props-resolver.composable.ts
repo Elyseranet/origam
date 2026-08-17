@@ -185,17 +185,34 @@ import { camelize } from './defaults.composable'
 // `vnode.props` scan moved off the read path (every render of every themed
 // instance) onto the write path (parent updates only).
 //
-// ## Cost — scoped to what a theme actually names
+// ## Cost — scoped to what a theme OR AN ANCESTOR PROVIDER actually names
 //
 // `themedPropKeysUnion()` (in `origam.ts`, next to `activeDefaultsFor`) walks
 // every REGISTERED theme at install time (not just the one active at mount —
 // see the note on that in `origam.ts`) and returns the UNION of
-// (componentName → Set<propKey>) any theme names, PLUS a `global` set. A
-// component instance whose kebab name is in neither set (nor is `global`
-// themed) returns immediately from `beforeCreate` having done a single Map
-// lookup — no work scales with the size of the 217-component catalogue, only
-// with the size of the themes actually installed. If NO theme names ANY
-// prop, `installThemePropsResolver()` never even calls `app.mixin()`.
+// (componentName → Set<propKey>) any theme names, PLUS a `global` set.
+//
+// That union is ONE of the two key sources; the other is the injected defaults
+// map itself, which `provideDefaults` fills at runtime (see "Two key sources"
+// in the hook body for why both must be honoured). A component instance whose
+// kebab name is named by neither returns immediately from `beforeCreate`
+// having done two Map lookups and two property lookups — no work scales with
+// the size of the 217-component catalogue, only with what themes and ancestor
+// providers actually name.
+//
+// MEASURED cost of adding the provider source, same harness shape as below
+// (1000 instances × 71 declared props, 6 themed, mount + 2 updates), A/B rounds
+// interleaved, 21 rounds, 4 independent repetitions:
+//
+//   - a plain app with NO provider anywhere — the path that gains nothing and
+//     pays only the extra `inject()` + two lookups: +4.4 / +1.6 / +1.2 / +1.1 %
+//   - every instance under a provider naming 12 keys (the shape
+//     `OrigamSelectionControlGroup` produces) — the path this REPAIRS:
+//     +9.7 / +9.3 / +7.3 / +11.3 %
+//
+// Both sit far below the +42.6 % that ADR-005 rejected for a per-prop pass over
+// the ENTIRE prop surface — which this is not, for the same reason the themed
+// subset isn't: only the handful of keys someone actually names get patched.
 //
 // ## Known gap — a setup-created `watch()` vs a pure THEME SWAP
 //
@@ -340,6 +357,31 @@ import { camelize } from './defaults.composable'
 // `useDefaults()` on every component, opt-in, visible-but-verbose) until a
 // new mechanism is designed.
 //
+// ## The `provideDefaults` cascade — same defect, same repair
+//
+// `useDefaults()`'s "the template never sees it" defect is NOT specific to
+// themes. A group component that forwards props to its slotted children
+// (`OrigamSelectionControlGroup`, `OrigamBottomNav`, `OrigamList`,
+// `OrigamBreadcrumb`, …) writes them into the SAME defaults map through
+// `provideDefaults`, and the child picks them up with the SAME
+// `useDefaults(_props)` call — so a forwarded prop the child reads bare in its
+// template was lost in exactly the same way, for exactly the same reason.
+//
+// It looked like a different bug only because of the gate: a forwarded key that
+// a theme HAPPENED to also name was intercepted and arrived, while its
+// neighbours silently did not. `<origam-selection-control-group type="checkbox"
+// disabled name="x">` rendered children with no `type` attribute at all, not
+// actually disabled (painted `--disabled`, `aria-disabled="false"`, still
+// editable) and with no `name` (so radios were not mutually exclusive) — while
+// `density`, themed for `origam-selection-control`, came through fine.
+//
+// Honouring both key sources removes the split. Verified repaired across every
+// provider→child pair in the catalogue, not just the reported one: 9 forwarded
+// keys over 5 pairs (`origam-selection-control-group`→`origam-selection-control`
+// (color, type, disabled, name), `origam-bottom-nav`→`origam-btn` (density,
+// color, active), `origam-list`→`origam-list-item` (density),
+// `origam-breadcrumb`→`origam-breadcrumb-item` (density)).
+//
 // ## What this does NOT change
 //
 // - The 39 existing `useDefaults()` callers keep working unmodified — they
@@ -417,13 +459,22 @@ function passedPropValue (vnodeProps: Record<string, unknown> | null, key: strin
  * Install the global `beforeCreate` hook described at the top of this file.
  * Called once by `createOrigam()` per app instance.
  *
- * No-ops (never calls `app.mixin()`) when no registered theme names any prop
- * at all — the common case for a bare `createOrigam()` install with only the
- * neutral baseline theme, which intentionally ships no `components` block.
+ * ⚠️ ALWAYS calls `app.mixin()`, even for an empty `themedKeysUnion`.
+ *
+ * It used to early-out on an empty union, on the grounds that a theme naming
+ * nothing means nothing to intercept. That stopped being true once this hook
+ * also resolves the `provideDefaults` cascade (see "Two key sources" in the
+ * hook body): a `<origam-defaults-provider>` — or any group component that
+ * forwards props to its children — populates the very same defaults map at
+ * RUNTIME, long after install time. There is no install-time way to know
+ * whether one will ever mount, so the union being empty no longer implies
+ * there is nothing to do.
+ *
+ * The per-instance early-out inside the hook is unchanged in spirit and still
+ * carries the cost argument: an instance that neither a theme nor an ancestor
+ * provider names returns after a Map lookup and one property lookup.
  */
 export function installThemePropsResolver (app: App, themedKeysUnion: Map<string, Set<string>>): void {
-    if (!themedKeysUnion.size) return
-
     app.mixin({
         beforeCreate () {
             // `getCurrentInstance()` (and `inject()` below) are valid here:
@@ -436,19 +487,54 @@ export function installThemePropsResolver (app: App, themedKeysUnion: Map<string
 
             const name = getCurrentInstanceName('theme-props-resolver')
 
-            const ownKeys = themedKeysUnion.get(name)
-            const globalKeys = themedKeysUnion.get('global')
-            if (!ownKeys?.size && !globalKeys?.size) return
-
             // Per-instance injection (NOT the root `defaultsRef` closed over
             // by `createOrigam`) so a `<OrigamThemeProvider scoped>` ancestor
             // correctly overrides this instance's resolution — same source
             // `useDefaults()` reads.
+            //
+            // Read BEFORE the early-out, because the DefaultsProvider cascade
+            // (see "Two key sources" below) is only knowable from here.
             const defaults = inject(ORIGAM_DEFAULTS_KEY, ref<IDefault>({}))
+
+            const ownKeys = themedKeysUnion.get(name)
+            const globalKeys = themedKeysUnion.get('global')
+
+            // Two key sources, ONE mechanism.
+            //
+            // `themedKeysUnion` is static: the keys any REGISTERED THEME names,
+            // computed once at install time. It cannot see the OTHER writer of
+            // the very same defaults map — `provideDefaults`, which a group
+            // component fills at runtime from its own props (e.g.
+            // `OrigamSelectionControlGroup` → `{'origam-selection-control':
+            // {type, disabled, name, …}}`).
+            //
+            // Both write the same map and the getter below already reads both
+            // indistinguishably — so a cascaded prop reached the template only
+            // when a theme HAPPENED to name the same key. Verified consequence
+            // before this widening: `<origam-selection-control-group
+            // type="checkbox">` rendered `<input>` with NO `type` attribute at
+            // all, `disabled` painted the child without disabling it, and `name`
+            // never reached the radios that need it to be mutually exclusive —
+            // while `density`, which the origam theme happens to name for
+            // `origam-selection-control`, arrived fine. That split is an
+            // artefact of the gate, not a designed behaviour.
+            //
+            // Reading the provider's key set here costs one property lookup on
+            // a plain object per instance. It is NOT a walk of the component's
+            // prop surface: only the handful of keys an ancestor actually
+            // names are patched — see "Cost" above, the same argument applies.
+            const providerOwnKeys = defaults.value?.[name]
+            const providerGlobalKeys = defaults.value?.global
+
+            if (!ownKeys?.size && !globalKeys?.size && !providerOwnKeys && !providerGlobalKeys) return
 
             const rawProps = instance.props as Record<string, unknown>
             const targetKeys = ownKeys ? new Set(ownKeys) : new Set<string>()
             if (globalKeys) for (const key of globalKeys) targetKeys.add(key)
+            if (providerOwnKeys) for (const key in providerOwnKeys) targetKeys.add(key)
+            if (providerGlobalKeys) for (const key in providerGlobalKeys) targetKeys.add(key)
+
+
 
             for (const key of targetKeys) {
                 // A theme naming a prop the component doesn't declare is a

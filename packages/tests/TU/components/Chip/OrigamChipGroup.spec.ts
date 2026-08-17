@@ -1,16 +1,12 @@
 // Unit tests for <OrigamChipGroup> — emit contract.
 //
-// ⚠️ PRODUCT BUG FOUND BY THIS FILE — see the "known defect" block at the
-// bottom. A plain `<origam-chip>` inside an `<origam-chip-group>` NEVER
-// toggles on click, so the group never emits `update:modelValue`. The
-// selection machinery itself is sound: driving `toggle` from the chip's slot
-// props, or adding `link` to the chip, both emit correctly. The defect is
-// confined to OrigamChip's `isClickable` guard.
-//
-// The specs below are therefore split in two:
-//  - the paths that DO work, asserted on payload (regression net);
-//  - the broken path, encoded with `it.fails` so it stays visible in CI and
-//    turns RED the day someone fixes the component (forcing the flip to `it`).
+// ⚠️ PRODUCT BUG FOUND BY THIS FILE, since REPAIRED — see the block at the
+// bottom. A plain `<origam-chip>` inside an `<origam-chip-group>` never
+// toggled on click, so the group never emitted `update:modelValue`. The
+// selection machinery itself was sound: driving `toggle` from the chip's slot
+// props, or adding `link` to the chip, both emitted correctly. The defect was
+// confined to OrigamChip's `isClickable` guard, plus a second one right behind
+// it — the group's `selectedClass` never reached the chip's root element.
 
 import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
@@ -144,18 +140,20 @@ describe('OrigamChipGroup — max', () => {
 })
 
 // ---------------------------------------------------------------------------
-// The chip's OWN click handler
+// The chip's OWN click handler — REPAIRED
 // ---------------------------------------------------------------------------
-// OrigamChip.vue gates its click handler behind:
+// OrigamChip.vue used to gate its click handler behind:
 //
-//     const isClickable = computed(() => {
-//         return !props.disabled && props.link && (!!group || props.link || link.isClickable.value)
-//     })
+//     !props.disabled && props.link && (!!group || props.link || link.isClickable.value)
 //
-// `props.link &&` short-circuits the whole expression, so the `!!group`
-// disjunct that is plainly meant to make a grouped chip clickable is dead
-// code. Consequence: a chip inside a chip-group is inert unless it ALSO
-// carries `link`.
+// `props.link &&` short-circuited the whole expression, so the `!!group`
+// disjunct that is plainly meant to make a grouped chip clickable was dead
+// code, and a chip inside a chip-group was inert unless it ALSO carried
+// `link`. Now:
+//
+//     !props.disabled && (!!group || props.link || link.isClickable.value)
+//
+// the same shape `OrigamListItem.isClickable` already used.
 
 describe('OrigamChipGroup — selection through the chip\'s own click handler', () => {
     const PLAIN_MARKUP = `
@@ -176,32 +174,49 @@ describe('OrigamChipGroup — selection through the chip\'s own click handler', 
         expect(updates[0][0]).toBe('a')
     })
 
-    // KNOWN DEFECT — this is the behaviour a consumer expects and does NOT get.
-    // `it.fails` passes while the bug is present and turns RED once OrigamChip's
-    // `isClickable` guard is fixed. Flip it to `it` at that point.
-    it.fails('BUG: clicking a plain chip in a group emits update:modelValue', async () => {
+    // REPAIRED — was `it.fails` while `props.link &&` gated the whole guard.
+    it('clicking a plain chip in a group emits update:modelValue', async () => {
         const wrapper = mountGroup('', PLAIN_MARKUP)
         await wrapper.findAll('.origam-chip')[0].trigger('click')
 
         expect(modelUpdates(wrapper).at(-1)?.[0]).toBe('a')
     })
 
-    // The same defect seen from the DOM: no chip ever gets the selected class.
-    it.fails('BUG: clicking a plain chip in a group marks it selected', async () => {
+    // The same repair seen from the DOM. Two distinct defects had to be fixed
+    // for this one: the `isClickable` guard above, AND the fact that OrigamChip
+    // exposed the group's `selectedClass` to its default slot only, never
+    // applying it on its own root the way OrigamBtn / OrigamItem / OrigamTab do.
+    it('clicking a plain chip in a group marks it selected', async () => {
         const wrapper = mountGroup('', PLAIN_MARKUP)
         await wrapper.findAll('.origam-chip')[0].trigger('click')
 
         expect(wrapper.findAll('.origam-chip')[0].classes()).toContain('origam-chip--selected')
     })
 
-    // Pins the CURRENT broken state so the bug cannot widen unnoticed: the
-    // click is received (the `click` emit fires) but selection never happens.
-    it('currently: the click IS received, only the selection is dropped', async () => {
+    // The click emit and the selection are two separate channels; assert both
+    // fire exactly once, so a future regression that re-breaks one of them (or
+    // makes the click double-toggle) is caught rather than silently absorbed.
+    it('the click emit and the selection both fire exactly once', async () => {
         const wrapper = mountGroup('', PLAIN_MARKUP)
         const firstChip = wrapper.findAllComponents(OrigamChip)[0]
         await wrapper.findAll('.origam-chip')[0].trigger('click')
 
         expect(firstChip.emitted('click')).toHaveLength(1)
-        expect(modelUpdates(wrapper)).toHaveLength(0)
+        expect(modelUpdates(wrapper)).toHaveLength(1)
+        expect(modelUpdates(wrapper)[0][0]).toBe('a')
+    })
+
+    // The chip must NOT become clickable just by existing: outside a group,
+    // with no `link`, no `href`/`to` and no bound click listener, the guard
+    // still says no. This is what stops the fix from over-shooting into
+    // "every chip is a button".
+    it('a plain chip outside a group is still not clickable', () => {
+        const Host = defineComponent({
+            components: { OrigamChip },
+            template: '<origam-chip text="A"/>'
+        })
+        const wrapper = mount(Host, { global: { plugins: [createOrigam()] } })
+
+        expect(wrapper.find('.origam-chip').classes()).not.toContain('origam-chip--link')
     })
 })

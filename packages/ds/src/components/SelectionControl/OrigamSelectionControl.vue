@@ -168,9 +168,19 @@
     return props.valueComparator ?? deepEqual
   })
 
+  // The model this control reads from and writes back to. Inside a group the
+  // group owns the selection; standalone, the control's own `v-model` does.
+  // The getter and the setter MUST agree on this source: while the setter
+  // rebuilt the array from `modelValue` (the control's own, always empty
+  // inside a group) it discarded every previously selected value — checking
+  // `b` after `a` emitted `['b']` instead of `['a','b']`, and unchecking
+  // filtered an empty array. Read it fresh on each access; both callers are
+  // inside a computed's accessor, so the dependency stays tracked.
+  const currentModel = () => group ? group.modelValue.value : modelValue.value
+
   const model = computed({
     get() {
-      const val = group ? group.modelValue.value : modelValue.value
+      const val = currentModel()
 
       return isMultiple.value
         ? wrapInArray(val).some((v: any) => valueComparator.value(v, trueValue.value))
@@ -184,9 +194,11 @@
       let newVal = currentValue
 
       if (isMultiple.value) {
+        const previous = currentModel()
+
         newVal = val
-          ? [ ...wrapInArray(modelValue.value), currentValue ]
-          : wrapInArray(modelValue.value).filter((item: any) => !valueComparator.value(item, trueValue.value))
+          ? [ ...wrapInArray(previous), currentValue ]
+          : wrapInArray(previous).filter((item: any) => !valueComparator.value(item, trueValue.value))
       }
 
       if (group) {

@@ -1,25 +1,33 @@
 // Unit tests for <OrigamSelectionControlGroup> — emit contract.
 //
-// ⚠️ PRODUCT BUG FOUND BY THIS FILE. `update:modelValue` had no assertion
-// anywhere before this spec, and the reason that matters is visible below:
-// the group DOES emit the event while broken — it just emits the WRONG
-// payload. A test asserting only `expect(emitted).toBeTruthy()` would have
-// passed on a component that cannot select anything.
+// ⚠️ TWO PRODUCT BUGS FOUND BY THIS FILE, both since REPAIRED.
+// `update:modelValue` had no assertion anywhere before this spec, and the
+// reason that matters is visible below: the group DID emit the event while
+// broken — it just emitted the WRONG payload. A test asserting only
+// `expect(emitted).toBeTruthy()` would have passed on a component that could
+// not select anything.
 //
-// Root cause (same family as ADR-005, on a path the ADR's resolver does not
-// cover). The group cascades its own props to children through
-// <origam-defaults-provider> → `provideDefaults`, and <OrigamSelectionControl>
-// picks them up with `const props = useDefaults(_props)`. `useDefaults`
-// returns a NEW object that only the SCRIPT sees:
+// 1. ASYMMETRIC `model` computed in <OrigamSelectionControl> — the getter read
+//    the GROUP's model, the setter rebuilt the array from the CONTROL's own
+//    (always empty inside a group), so each checkbox discarded every earlier
+//    selection. Fixed by giving both accessors one shared source.
 //
-//   - props consumed in the SCRIPT (density, multiple, …) → propagate ✅
-//   - props read BARE in the TEMPLATE (`:type="type"`, `disabled`, `name`)
-//     → never propagate ❌ — `child.props('type')` stays `undefined` and the
-//     rendered <input> carries no `type` attribute at all.
+// 2. The `provideDefaults` cascade never reached the child's TEMPLATE (same
+//    family as ADR-005). The group forwards its props through
+//    <origam-defaults-provider>, and <OrigamSelectionControl> picks them up
+//    with `const props = useDefaults(_props)` — which returns a NEW object
+//    only the SCRIPT sees. Props read bare in the template (`:type="type"`,
+//    `disabled`, `name`) never arrived: `child.props('type')` stayed
+//    `undefined` and the rendered <input> carried no `type` attribute at all.
 //
-// The theme-props-resolver installed by createOrigam() patches only the prop
-// slots a REGISTERED THEME names; it does not intercept the DefaultsProvider
-// cascade, so this path is still broken.
+//    Fixed in the theme-props-resolver rather than here. That hook already
+//    resolved this exact cascade — it reads the injected defaults map, which
+//    is what `provideDefaults` writes — but only installed its accessor for
+//    keys a REGISTERED THEME named. So `density` (themed for
+//    `origam-selection-control`) arrived while its neighbours silently did
+//    not. Honouring both key sources repairs the whole class; see
+//    `theme-props-resolver.composable.ts`, section "The `provideDefaults`
+//    cascade — same defect, same repair".
 
 import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
@@ -68,25 +76,10 @@ describe('OrigamSelectionControlGroup — update:modelValue (checkbox, multiple)
         expect(updates[0][0]).toEqual(['a'])
     })
 
-    // KNOWN DEFECT — multi-select accumulation loses every earlier value.
-    //
-    // <OrigamSelectionControl>'s `model` computed is asymmetric: the GETTER
-    // reads the group's model when inside a group…
-    //
-    //     get() { const val = group ? group.modelValue.value : modelValue.value }
-    //
-    // …but the SETTER always builds the new array from the CONTROL's OWN
-    // model before writing it to the group:
-    //
-    //     newVal = val ? [ ...wrapInArray(modelValue.value), currentValue ]
-    //                  : wrapInArray(modelValue.value).filter(…)
-    //     if (group) { group.modelValue.value = newVal }
-    //
-    // Each checkbox therefore starts from its own (empty) model, so checking a
-    // second box REPLACES the first instead of appending to it. This is
-    // independent of the `type` cascade defect below — it reproduces with
-    // `type="checkbox"` correctly set on each child.
-    it.fails('BUG: accumulates both values when both boxes are checked', async () => {
+    // REPAIRED — was `it.fails` while the setter rebuilt the array from the
+    // control's own model. This was DATA LOSS, not a cosmetic defect: every
+    // selection but the last one silently disappeared from the payload.
+    it('accumulates both values when both boxes are checked', async () => {
         const wrapper = mountGroup(GROUP, CHILD)
         await wrapper.findAll('input')[0].setValue(true)
         await wrapper.findAll('input')[1].setValue(true)
@@ -94,13 +87,28 @@ describe('OrigamSelectionControlGroup — update:modelValue (checkbox, multiple)
         expect(modelUpdates(wrapper).at(-1)?.[0]).toEqual(['a', 'b'])
     })
 
-    // Pins the current data-losing behaviour.
-    it('currently: checking a second box discards the first selection', async () => {
+    // The intermediate emit must be right too, not just the final one — a
+    // setter that only APPENDED correctly on the last write would still be
+    // wrong for a consumer reading every event.
+    it('emits the full accumulated selection at each step', async () => {
         const wrapper = mountGroup(GROUP, CHILD)
         await wrapper.findAll('input')[0].setValue(true)
         expect(modelUpdates(wrapper).at(-1)?.[0]).toEqual(['a'])
 
         await wrapper.findAll('input')[1].setValue(true)
+        expect(modelUpdates(wrapper).at(-1)?.[0]).toEqual(['a', 'b'])
+    })
+
+    // Unchecking suffered from the same wrong source: the `filter` ran over an
+    // empty array, so it could never actually remove anything. With two boxes
+    // checked, unchecking the first must leave the second selected.
+    it('unchecking one of two boxes keeps the other selected', async () => {
+        const wrapper = mountGroup(GROUP, CHILD)
+        await wrapper.findAll('input')[0].setValue(true)
+        await wrapper.findAll('input')[1].setValue(true)
+        expect(modelUpdates(wrapper).at(-1)?.[0]).toEqual(['a', 'b'])
+
+        await wrapper.findAll('input')[0].setValue(false)
         expect(modelUpdates(wrapper).at(-1)?.[0]).toEqual(['b'])
     })
 
@@ -143,72 +151,79 @@ describe('OrigamSelectionControlGroup — update:modelValue (radio, single)', ()
 })
 
 // ---------------------------------------------------------------------------
-// KNOWN DEFECT — `type` set on the GROUP never reaches the children
+// REPAIRED — props set on the GROUP now reach the children's TEMPLATE
 // ---------------------------------------------------------------------------
-// This is the documented API of the component: the group exposes `type` and
-// cascades it via slotDefaults. It does not work. `it.fails` keeps the defect
-// visible in CI and turns RED once the propagation is repaired.
+// This is the documented API of the component: the group exposes `type`,
+// `disabled` and `name` and cascades them via slotDefaults. All five specs
+// below were `it.fails` until the theme-props-resolver was taught to honour
+// the provideDefaults cascade, not just what a registered theme names.
 
 describe('OrigamSelectionControlGroup — type cascaded from the group', () => {
-    it.fails('BUG: type="checkbox" on the group renders checkbox inputs', () => {
+    it('type="checkbox" on the group renders checkbox inputs', () => {
         const wrapper = mountGroup('type="checkbox" multiple', '')
         expect(wrapper.findAll('input').map(i => i.attributes('type'))).toEqual(['checkbox', 'checkbox'])
     })
 
-    it.fails('BUG: type="checkbox" on the group emits the checked value', async () => {
+    it('type="checkbox" on the group emits the checked value', async () => {
         const wrapper = mountGroup('type="checkbox" multiple', '')
         await wrapper.findAll('input')[0].setValue(true)
 
         expect(modelUpdates(wrapper).at(-1)?.[0]).toEqual(['a'])
     })
 
-    it.fails('BUG: type="radio" on the group emits the selected value', async () => {
+    it('type="radio" on the group emits the selected value', async () => {
         const wrapper = mountGroup('type="radio"', '')
         await wrapper.findAll('input')[0].setValue(true)
 
         expect(modelUpdates(wrapper).at(-1)?.[0]).toBe('a')
     })
 
-    // Pins the CURRENT broken behaviour so it cannot silently drift further.
-    // Note the emit DOES fire — with a payload that carries no selection.
-    it('currently: the input has no type attribute and the payload is empty', async () => {
+    // The prop must land on the INSTANCE, not merely produce the right DOM by
+    // some other route — that distinction is what the original defect turned
+    // on (`child.props('type')` was `undefined` while the emit still fired).
+    it('the cascaded type reaches the child instance and carries a real payload', async () => {
         const wrapper = mountGroup('type="checkbox" multiple', '')
 
-        expect(wrapper.find('input').attributes('type')).toBeUndefined()
-        expect(wrapper.findComponent(OrigamSelectionControl).props('type')).toBeUndefined()
+        expect(wrapper.find('input').attributes('type')).toBe('checkbox')
+        expect(wrapper.findComponent(OrigamSelectionControl).props('type')).toBe('checkbox')
 
         await wrapper.findAll('input')[0].setValue(true)
 
         expect(modelUpdates(wrapper)).toHaveLength(1)
-        expect(modelUpdates(wrapper)[0][0]).toEqual([])
+        expect(modelUpdates(wrapper)[0][0]).toEqual(['a'])
     })
 
-    // Same root cause, worse consequence: the control is painted as disabled
-    // but the underlying input is not disabled and announces itself enabled.
-    it('currently: disabled on the group paints the child but does not disable it', () => {
+    // The a11y consequence of the same defect: the control used to be PAINTED
+    // as disabled while the underlying input stayed enabled and announced
+    // itself enabled. Paint and semantics must now agree.
+    it('disabled on the group paints AND disables the child, consistently', () => {
         const wrapper = mountGroup('type="checkbox" disabled', '')
         const child = wrapper.findComponent(OrigamSelectionControl)
 
         expect(child.classes()).toContain('origam-selection-control--disabled')
-        expect(child.props('disabled')).toBe(false)
-        expect(wrapper.find('input').attributes('aria-disabled')).toBe('false')
-        expect(wrapper.find('input').attributes('disabled')).toBeUndefined()
+        expect(child.props('disabled')).toBe(true)
+        expect(wrapper.find('input').attributes('aria-disabled')).toBe('true')
+        expect(wrapper.find('input').attributes('disabled')).toBeDefined()
     })
 
-    it.fails('BUG: disabled on the group disables the child input', () => {
+    it('disabled on the group disables the child input', () => {
         const wrapper = mountGroup('type="checkbox" disabled', '')
         expect(wrapper.find('input').attributes('disabled')).toBeDefined()
     })
 
     // `name` is what makes native radios mutually exclusive in a browser.
-    it.fails('BUG: name on the group reaches the child inputs', () => {
+    it('name on the group reaches the child inputs', () => {
         const wrapper = mountGroup('name="choice"', 'type="radio"')
         expect(wrapper.findAll('input').map(i => i.attributes('name'))).toEqual(['choice', 'choice'])
     })
 
-    // Proof the cascade itself is alive — a SCRIPT-consumed prop does arrive.
-    // This isolates the defect to template-read props rather than to
-    // provideDefaults being broken wholesale.
+    // A child's own value must still beat the group's cascade — the cascade is
+    // a DEFAULT, not an override. Easy to break when widening interception.
+    it('a value set on the child still wins over the group cascade', () => {
+        const wrapper = mountGroup('type="checkbox"', 'type="radio"')
+        expect(wrapper.findAll('input').map(i => i.attributes('type'))).toEqual(['radio', 'radio'])
+    })
+
     it('density (script-consumed) DOES cascade from the group', () => {
         const wrapper = mountGroup('density="compact"', 'type="checkbox"')
         expect(wrapper.findComponent(OrigamSelectionControl).classes())
