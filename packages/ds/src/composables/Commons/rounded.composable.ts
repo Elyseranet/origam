@@ -150,6 +150,35 @@ export function useRounded (
         // `border-radius` / per-corner declarations (spec 0,2,0). Emit
         // an inline-style companion so `useStyle` lands the radius at
         // `#id` (spec 1,0,0) and wins everywhere.
+        //
+        // ⛔ "Routinely" is MEASURED, not asserted — do not delete this
+        // branch as a Strategy-A cleanup. Chromium, Histoire rebuilt with
+        // and without this `styles.push`, computed `border-start-start-
+        // radius` on the component root of each component whose entry in
+        // `themes/origam.theme.ts` pins a utility rung:
+        //
+        //   component         with      without    verdict
+        //   card              12px      0px        companion REQUIRED
+        //   table             12px      0px        companion REQUIRED
+        //   expansion-panel   8px       4px        companion REQUIRED
+        //   code              12px      12px       class suffices
+        //   text-field        12px      12px       class suffices
+        //   skeleton          4px       4px        class suffices
+        //   avatar            9999px    9999px     class suffices
+        //
+        // 3 of 7 regress. Card is the clearest case: `.origam-card[data-v-…]`
+        // declares the four LOGICAL corner longhands (`border-start-start-
+        // radius: var(…, 0)` …) at (0,2,0), which beat this utility class's
+        // `border-radius` shorthand at (0,1,0) — every Card in the catalogue
+        // turns square without the companion.
+        //
+        // Retiring this in v3.0.0 (when `*Styles` goes away) is therefore
+        // NOT a pure deletion: each component in the "REQUIRED" list must
+        // first drop or lower its own scoped radius rule, or the utility
+        // class must be promoted. Pinned by two Playwright assertions in
+        // `packages/tests/e2e/prop-audit-phase4.spec.ts` (OrigamCard block),
+        // one of which fails LOUDLY the day the cascade is fixed — that is
+        // the signal this branch can finally go.
         if (isUtilityRounded(rounded)) {
             styles.push(`border-radius: var(--origam-radius---${rounded}, ${UTILITY_RADIUS_FALLBACK[rounded]})`)
             return styles

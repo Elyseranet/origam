@@ -48,6 +48,25 @@ async function countInlineStyles(locator: ReturnType<FrameLocator['locator']>): 
     return style.split(';').filter(s => s.trim() !== '').length
 }
 
+/**
+ * The property names of an element's inline declarations, as WRITTEN.
+ *
+ * ⚠️ Parses `cssText`, deliberately NOT `Array.from(el.style)`. Iterating the
+ * CSSStyleDeclaration yields the EXPANDED longhands — a single authored
+ * `border-radius` surfaces as four `border-{corner}-radius` entries — which
+ * would disagree with `countInlineStyles()` above (3 vs 5 on the same
+ * element) and would make the allowlist below assert something no composable
+ * ever wrote. `cssText` preserves the shorthand the component emitted.
+ */
+async function inlineStyleProps(locator: ReturnType<FrameLocator['locator']>): Promise<string[]> {
+    const style = await locator.evaluate(el => (el as HTMLElement).style.cssText)
+    if (!style || style.trim() === '') return []
+    return style
+        .split(';')
+        .filter(s => s.trim() !== '')
+        .map(s => s.slice(0, s.indexOf(':')).trim())
+}
+
 // ─── 1. Btn / Color / primary ─────────────────────────────────────────────────
 
 test.describe('DOM audit — OrigamBtn', () => {
@@ -69,43 +88,105 @@ test.describe('DOM audit — OrigamBtn', () => {
 // ─── 2. Card / Color / primary ────────────────────────────────────────────────
 
 test.describe('DOM audit — OrigamCard', () => {
-    test('Color/primary — class origam--bg-primary present, inline-style count <= 2', async ({ page }) => {
+    test('Color/primary — class origam--bg-primary present, inline-style count <= 3', async ({ page }) => {
         // "Prop — color & bgColor" no longer exists, and the story dropped
         // all data-cy hooks (grep confirms zero matches in
         // OrigamCard.story.vue). "Design"'s :init-state already pins
         // bgColor: 'primary', and useColorEffect/useColor land the
         // `origam--bg-primary` utility class directly on the root
         // `.origam-card` element (OrigamCard.vue cardClasses computed) —
-        // no control driving needed, the class is present from mount.
-        // CONTRACT DISCREPANCY (found while repairing this Variant reference,
-        // not caused by it — reproduced identically on BOTH "Design" and
-        // "Default"/playground, confirming it is independent of story
-        // choice): OrigamCard's OWN shipped default theme
-        // (packages/ds/src/themes/origam.theme.ts, 'origam-card' entry)
-        // sets `rounded: 'lg'` unconditionally (`useDefaults` resolves it
-        // even when the story passes no explicit `rounded`). `rounded='lg'`
-        // is a UTILITY rung, and `useRounded` intentionally emits BOTH the
-        // `origam--rounded-lg` utility class AND a companion inline
-        // `border-radius` style for utility rungs (documented rationale in
-        // rounded.composable.ts: the utility class alone routinely loses
-        // the cascade against a component's scoped border-radius rule, so
-        // an inline-style companion is emitted to win at #id specificity —
-        // this is the "Strategy A" transition period, root CLAUDE.md
-        // "classes AND styles in parallel"). That third declaration
-        // (background-color + color from bgColor, PLUS this border-radius)
-        // pushes the count to 3, over this test's "<=2" cap. Whether the
-        // right fix is raising the cap for rounded-by-default components
-        // like Card, or something else, is a DS-lead call — not something
-        // I'm authorized to adjudicate by loosening the assertion myself.
-        test.fixme(true, 'Card story contract: OrigamCard\'s own default theme (origam.theme.ts) pins rounded="lg" unconditionally, and useRounded intentionally emits a companion inline border-radius style for utility rungs — pushing inline-style count to 3, over this test\'s "<=2" cap. Reproduced identically on both "Design" and "Default" Variants, independent of story choice. Needs a DS-lead decision: raise the cap for rounded-by-default components, or something else.')
+        // no control needed, the class is present from mount.
+        //
+        // ── Why the cap here is 3 and not 2 (measured, not assumed) ──────
+        //
+        // Card's own shipped theme (themes/origam.theme.ts, 'origam-card')
+        // pins `rounded: 'lg'`. `lg` is a UTILITY rung, so `useRounded`
+        // emits BOTH `origam--rounded-lg` AND a companion inline
+        // `border-radius` — a third declaration on top of the two
+        // (`background-color`, `color`) that bgColor already contributes.
+        //
+        // This was previously `fixme`d pending a DS-lead call between
+        // "raise the cap" and "drop the companion as superfluous". The
+        // question was settled by MEASUREMENT rather than by reading the
+        // composable's own rationale, and the companion is load-bearing:
+        //
+        //   Chromium, Design Variant, companion emitted vs. suppressed at
+        //   the source (`useRounded`'s utility-rung branch stubbed out),
+        //   Histoire rebuilt between the two runs, computed border-radius
+        //   of each component root:
+        //
+        //     component         with      without    verdict
+        //     card              12px      0px        companion REQUIRED
+        //     table             12px      0px        companion REQUIRED
+        //     expansion-panel   8px       4px        companion REQUIRED
+        //     code              12px      12px       class suffices
+        //     text-field        12px      12px       class suffices
+        //     skeleton          4px       4px        class suffices
+        //     avatar            9999px    9999px     class suffices
+        //
+        // For Card specifically the mechanism is visible in the matched
+        // rules: `.origam-card[data-v-…]` (specificity 0,2,0) declares the
+        // four LOGICAL corner longhands (`border-start-start-radius: var(…,
+        // 0)` …), which beat `.origam--rounded-lg` (0,1,0) declaring the
+        // `border-radius` shorthand. Delete the companion and every Card in
+        // the catalogue turns square. So the cap is stale, not the style.
+        //
+        // Note this cap never expressed a "class XOR style" rule in the
+        // first place: the very same element already carries
+        // `origam--bg-primary` TOGETHER with its two inline colour
+        // declarations, and that pairing is what the passing OrigamBtn
+        // assertion above counts as compliant. The cap is a declaration
+        // BUDGET; the third entry differs from the first two in count, not
+        // in kind. Root CLAUDE.md's "don't double-apply" rule is about the
+        // same channel landing on two different ELEMENTS (root + BEM child
+        // via mergeProps), which is not what happens here.
+        //
+        // The allowlist below is the part worth keeping strict: it is what
+        // catches a genuinely new stray declaration, which a bare count of
+        // 3 would let through the day one of these three goes away.
         const sb = await gotoVariant(page, STORIES.card, 'Design')
         const card = sb.locator('.origam-card').first()
         await expect(card).toBeVisible({ timeout: 5000 })
 
         await expect(card).toHaveClass(/origam--bg-primary/)
+        await expect(card).toHaveClass(/origam--rounded-lg/)
 
         const styleCount = await countInlineStyles(card)
-        expect(styleCount, 'card inline-style count').toBeLessThanOrEqual(2)
+        expect(styleCount, 'card inline-style count').toBeLessThanOrEqual(3)
+
+        const props = await inlineStyleProps(card)
+        expect(props.sort(), 'card inline-style properties').toEqual(
+            ['background-color', 'border-radius', 'color']
+        )
+    })
+
+    test('the inline border-radius companion is load-bearing, not redundant with the utility class', async ({ page }) => {
+        // Pins the measurement that justified raising the cap above, so the
+        // justification cannot rot silently. Suppressing ONLY the inline
+        // `border-radius` (leaving `origam--rounded-lg` in place) must
+        // collapse the computed radius to 0px — that is the proof the class
+        // alone loses the cascade against Card's scoped logical-corner
+        // longhands.
+        //
+        // If this test ever fails with radiusWithoutCompanion === '12px',
+        // that is GOOD NEWS, not a regression: it means the cascade got
+        // fixed (utility class promoted, or Card's scoped longhands
+        // removed) and `useRounded`'s companion emission can finally be
+        // retired — along with the cap of 3 above, back down to 2.
+        const sb = await gotoVariant(page, STORIES.card, 'Design')
+        const card = sb.locator('.origam-card').first()
+        await expect(card).toBeVisible({ timeout: 5000 })
+
+        const measured = await card.evaluate(el => {
+            const h = el as HTMLElement
+            const withCompanion = getComputedStyle(h).borderStartStartRadius
+            h.style.removeProperty('border-radius')
+            const withoutCompanion = getComputedStyle(h).borderStartStartRadius
+            return { withCompanion, withoutCompanion }
+        })
+
+        expect(measured.withCompanion, 'radius with the companion').not.toBe('0px')
+        expect(measured.withoutCompanion, 'radius without the companion').toBe('0px')
     })
 })
 
