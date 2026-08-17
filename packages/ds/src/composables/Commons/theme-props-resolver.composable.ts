@@ -375,12 +375,20 @@ import { camelize } from './defaults.composable'
 // editable) and with no `name` (so radios were not mutually exclusive) — while
 // `density`, themed for `origam-selection-control`, came through fine.
 //
-// Honouring both key sources removes the split. Verified repaired across every
-// provider→child pair in the catalogue, not just the reported one: 9 forwarded
-// keys over 5 pairs (`origam-selection-control-group`→`origam-selection-control`
-// (color, type, disabled, name), `origam-bottom-nav`→`origam-btn` (density,
-// color, active), `origam-list`→`origam-list-item` (density),
-// `origam-breadcrumb`→`origam-breadcrumb-item` (density)).
+// Honouring both key sources removes the split. The repair is generic — the
+// getter reads whatever the injected map holds, so it covers every forwarded
+// key without enumerating them.
+//
+// Scale, as of this writing: 13 components ship a `slotDefaults` map through
+// `<origam-defaults-provider>` (Tabs→tab, TabPanels→tab-panel,
+// ExpansionPanels→expansion-panel, RadioGroup→radio, ChipGroup→chip,
+// SelectionControlGroup→selection-control, List→list-item,
+// ListGroup→list-item, ItemGroup→item, Breadcrumb→breadcrumb-item,
+// BottomNav→btn, BtnGroup→btn, AvatarGroup→avatar), plus ConfirmWrapper which
+// builds its child defaults dynamically. Several forward a dozen keys apiece
+// (`OrigamSelectionControlGroup` forwards 12). Re-derive this list with
+//     grep -rn "'origam-[a-z-]*': {" packages/ds/src/components
+// rather than trusting the count above — it is a snapshot, not an invariant.
 //
 // ## What this does NOT change
 //
@@ -389,7 +397,7 @@ import { camelize } from './defaults.composable'
 //   inside `setup()` (which always runs BEFORE this hook's `beforeCreate`).
 //   The two mechanisms never read from or depend on each other: `useDefaults()`'s
 //   own `usePassedProps()` check reads `instance.vnode.props` directly, the
-//   the same source this hook snapshots — so both independently arrive at
+//   same source this hook snapshots — so both independently arrive at
 //   the same answer without either needing to know the other exists.
 // - A key a theme names that the target component does NOT declare as a prop
 //   is silently skipped (not written to `instance.attrs`, not a crash) — a

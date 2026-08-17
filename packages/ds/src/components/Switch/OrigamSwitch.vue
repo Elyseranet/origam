@@ -4,7 +4,7 @@
     class="origam-switch__skeleton"
     :class="{ 'origam-switch__skeleton--inset': inset }"
     aria-busy="true"
-    aria-label="Loading"
+    :aria-label="loadingLabel"
     role="status"
     data-cy="origam-switch-skeleton"
   >
@@ -153,6 +153,7 @@
     useFocus,
     useHover,
     useLoader,
+    useLocale,
     useProps,
     useRounded,
     useStateEffect,
@@ -223,6 +224,9 @@
   const slots = useSlots()
 
   const { loaderClasses, loaderConfig } = useLoader(props, LOADER_KIND.CIRCULAR)
+
+  const { t } = useLocale()
+  const loadingLabel = computed(() => t('origam.loading'))
 
   const uid = getUid()
   const id = computed(() => {
