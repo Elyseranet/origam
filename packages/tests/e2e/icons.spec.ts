@@ -92,7 +92,7 @@ test.describe('OrigamIcon — dispatcher', () => {
     test('Click button mode — icon gets origam-icon--clickable class', async ({ page }) => {
         await page.goto(ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Emit — click (button mode)', { exact: true }).first().click()
+        await page.getByText('Events - click', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -103,7 +103,7 @@ test.describe('OrigamIcon — dispatcher', () => {
     test('Click button mode — role="button" is present', async ({ page }) => {
         await page.goto(ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Emit — click (button mode)', { exact: true }).first().click()
+        await page.getByText('Events - click', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

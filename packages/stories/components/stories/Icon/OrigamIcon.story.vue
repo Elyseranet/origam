@@ -130,14 +130,6 @@
 			</template>
 		</Variant>
 
-		<Variant title="Emit — click (button mode)">
-			<origam-icon
-					:icon="MDI_ICONS.CLOSE"
-					aria-label="Close"
-					@click="logEvent('click', $event)"
-			/>
-		</Variant>
-
 		<Variant title="Prop — icon (SVG path dispatch)">
 			<origam-icon :icon="ICON_SVG_PATH_STAR"/>
 		</Variant>
