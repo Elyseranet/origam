@@ -135,20 +135,6 @@
 			<origam-btn style="margin-top: 8px;" text="Reveal" @click="lazySlotVisible = true"/>
 		</Variant>
 
-		<Variant title="Emit — update:modelValue">
-			<div style="height: 400px; overflow-y: auto; border: 1px solid var(--origam-color__border---default); padding: 16px; border-radius: 4px;">
-				<p style="margin-bottom: 200px; opacity: 0.5;">Scroll down to trigger the emit.</p>
-				<origam-lazy
-						height="100"
-						@update:model-value="logEvent('update:modelValue', $event)"
-				>
-					<div style="padding: 16px; background: var(--origam-color__surface---default); border-radius: 4px; font-weight: bold;">
-						Lazy emit fired!
-					</div>
-				</origam-lazy>
-			</div>
-		</Variant>
-
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<ILazyComponentProps>({ height: 120, tag: 'div', modelValue: false })"
