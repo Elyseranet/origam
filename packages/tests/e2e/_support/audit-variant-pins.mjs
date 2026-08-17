@@ -71,8 +71,17 @@ const TESTS_ROOT = join(HERE, '..', '..')
  * A guard that enumerates index references while ignoring a directory full
  * of them reports a denominator that is simply wrong, and its green means
  * less than it claims. Add a directory here rather than a second walker.
+ *
+ * `a11y/` is the sixth widening. `a11y/components.spec.ts` builds
+ * `…?variantId=stories-components-stories-${storySlug}-story-vue-0` for a
+ * table of ~30 component slugs — a genuine index reference, on index 0, that
+ * this guard never once looked at. It happens to be safe today because index
+ * 0 is `Design` under the canonical order, but that is a property of the
+ * convention, not something the guard was checking. Registering the
+ * directory keeps the denominator honest and makes the day someone
+ * reorders a story's first Variant a loud failure instead of a silent one.
  */
-const SPEC_DIRS = ['e2e', 'vrt']
+const SPEC_DIRS = ['e2e', 'vrt', 'a11y']
     .map((d) => join(TESTS_ROOT, d))
     .filter((d) => existsSync(d))
 const STORIES_PKG = join(TESTS_ROOT, '..', 'stories')

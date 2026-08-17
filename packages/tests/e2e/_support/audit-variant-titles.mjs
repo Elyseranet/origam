@@ -46,8 +46,16 @@ const TESTS_ROOT = join(HERE, '..', '..')                 // packages/tests
 /**
  * Same rationale as audit-variant-pins.mjs: `vrt/` holds specs that address
  * Variants and lived outside both guards. Keep the two lists in sync.
+ *
+ * `a11y/` added as the sixth widening, in step with audit-variant-pins.mjs.
+ * `a11y/components.spec.ts` addresses Variants by INDEX, so this guard has
+ * nothing to compare there today — but leaving the directory out kept the
+ * two lists out of sync and made this guard's "N specs au total"
+ * denominator disagree with the pins guard for no reason. Registering it
+ * also means a future a11y spec that clicks a Variant by TITLE is audited
+ * from its first commit instead of silently escaping.
  */
-const SPEC_DIRS = ['e2e', 'vrt']
+const SPEC_DIRS = ['e2e', 'vrt', 'a11y']
     .map((d) => join(TESTS_ROOT, d))
     .filter((d) => existsSync(d))
 const STORIES_PKG = join(TESTS_ROOT, '..', 'stories')     // packages/stories
