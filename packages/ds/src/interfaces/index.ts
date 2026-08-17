@@ -335,6 +335,8 @@ export * from './Calendar/event.interface'
 export * from './Calendar/calendar.interface'
 export * from './Calendar/rrule.interface'
 
+export * from './CssSupport/css-support.interface'
+
 export * from './Chart/chart-series.interface'
 export * from './Chart/chart-point.interface'
 export * from './Chart/chart-drilldown.interface'

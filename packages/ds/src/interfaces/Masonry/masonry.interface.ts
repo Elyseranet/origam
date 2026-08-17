@@ -16,6 +16,8 @@ import type {
     TMasonryAlign
 } from '../../types'
 
+import type { Ref } from 'vue'
+
 /**
  * Map of `min-width` (px) → number of columns to apply when the
  * container is at least that wide. Container-query based (NOT viewport),
@@ -94,4 +96,61 @@ export interface IMasonryProps extends ICommonsComponentProps, ITagProps, IDimen
      * @default 'top'
      */
     align?: TMasonryAlign
+}
+
+/**
+ * Internal layout descriptor produced by the bucket-fill algorithm.
+ * One entry per measured item. Coordinates are expressed in CSS px,
+ * relative to the masonry container's content box.
+ */
+export interface IMasonryItemRect {
+    /** Index of the item in the original DOM order. */
+    index: number
+    /** `left` (px) of the item inside the container's content box. */
+    left: number
+    /** `top` (px) of the item inside the container's content box. */
+    top: number
+    /** Computed width (px) — same for every item in a given pass. */
+    width: number
+    /** Measured height (px) — preserved from the natural item flow. */
+    height: number
+    /** Zero-based column index the item was placed into. */
+    column: number
+}
+
+/**
+ * Public layout result. The caller uses `containerHeight` to size the
+ * container (absolute-positioned children would otherwise collapse it),
+ * and `items` to read per-item coordinates for inline-style assignment.
+ */
+export interface IMasonryLayoutResult {
+    /** Final container height (px) — `max(column heights)`. */
+    containerHeight: number
+    /** Per-item position record. Index matches the original DOM order. */
+    items: IMasonryItemRect[]
+    /** Effective column count used for this layout (post-breakpoint). */
+    columns: number
+}
+
+/**
+ * Options consumed by `useMasonry`. All inputs are refs so the
+ * composable can react to prop changes from its consumer.
+ */
+export interface IUseMasonryOptions {
+    /** Default column count. Used when no breakpoint matches. */
+    columnsRef: Ref<number>
+    /**
+     * Gap in **px** between items, both axes. The composable expects an
+     * already-resolved pixel value — string-token resolution happens in
+     * the component wrapper.
+     */
+    gapRef: Ref<number>
+    /** Optional container-query breakpoints. */
+    breakpointsRef?: Ref<TMasonryColumnBreakpoints | undefined>
+    /**
+     * Vertical alignment of items inside a column. `'top'` packs to the
+     * top; `'center'` shifts each column's content down by half the
+     * unused space.
+     */
+    alignRef?: Ref<TMasonryAlign>
 }

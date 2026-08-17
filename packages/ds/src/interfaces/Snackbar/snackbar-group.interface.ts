@@ -1,4 +1,6 @@
-import type { ICommonsComponentProps, ITagProps } from '../../interfaces'
+import type { Ref } from 'vue'
+
+import type { ICommonsComponentProps, ISnackbarGroupItem, ISnackbarGroupItemOptions, ITagProps } from '../../interfaces'
 import type { TSnackbarGroupDirection, TSnackbarGroupLocation } from '../../types'
 
 /**
@@ -62,4 +64,60 @@ export interface ISnackbarGroupProps extends ICommonsComponentProps, ITagProps {
      * — matching the natural reading direction of fresh items.
      */
     direction?: TSnackbarGroupDirection
+}
+
+/**
+ * Per-`id` singleton store backing `useSnackbarGroup`.
+ *
+ * One entry per stack `id`, held in a module-level map for the lifetime
+ * of the module, so any number of components / composables addressing
+ * the same `id` share state (notify here, dismiss there).
+ */
+export interface ISnackbarGroupState {
+    items: Ref<Array<ISnackbarGroupItem>>
+    timers: Map<string, number>
+    counter: { current: number }
+    /**
+     * Fallback `duration` (ms) for this stack, registered by the
+     * mounted `<OrigamSnackbarGroup defaultDuration="…">` instance (see
+     * `useSnackbarGroupInternal`'s `registerDefaultDuration`). Lets
+     * `notify()` — called from ANYWHERE, independent of which
+     * `useSnackbarGroup({ id })` call site fired it — honour the
+     * component's declared default without requiring every caller to
+     * repeat `defaultDuration` as a composable option. See #snackbar-
+     * group-default-duration-bug: before this, the component's prop and
+     * the composable's `notify()` never met, so `defaultDuration` on
+     * `<OrigamSnackbarGroup>` was purely decorative.
+     */
+    defaultDuration: Ref<number>
+}
+
+/** Options accepted by `useSnackbarGroup`. */
+export interface IUseSnackbarGroupOptions {
+    id?: string
+    /**
+     * Maximum number of items kept in the stack. When `notify` would
+     * push past this number, the oldest item is evicted FIFO. When
+     * undefined, the stack is unbounded (the rendering component
+     * still caps the visible count via its `max` prop).
+     */
+    max?: number
+    /**
+     * Fallback `duration` applied to items that omit their own.
+     * Defaults to `SNACKBAR_GROUP_DEFAULT_DURATION` (5 000 ms).
+     */
+    defaultDuration?: number
+}
+
+/**
+ * Public API returned by `useSnackbarGroup`. The `items` ref is the
+ * same reactive reference shared with the matching
+ * `<OrigamSnackbarGroup id="…">` instance, so direct mutation outside
+ * of `notify` / `dismiss` is discouraged.
+ */
+export interface IUseSnackbarGroupReturn {
+    items: Readonly<Ref<ReadonlyArray<ISnackbarGroupItem>>>
+    notify: (opts: ISnackbarGroupItemOptions) => string
+    dismiss: (itemId: string) => void
+    dismissAll: () => void
 }

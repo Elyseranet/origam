@@ -101,6 +101,8 @@ export * from './Commons/controls.type'
 
 export * from './ConfirmWrapper/confirm-wrapper.type'
 
+export * from './CssSupport/css-support.type'
+
 export * from './ContextualMenu/contextual-menu.type'
 
 export * from './Counter/counter.type'

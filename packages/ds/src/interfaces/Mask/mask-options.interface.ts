@@ -1,3 +1,5 @@
+import type { Ref } from 'vue'
+
 import type { TMaskTokenKind, TPatternValidator } from '../../types'
 
 /**
@@ -49,4 +51,25 @@ export interface IMaskToken {
     kind: TMaskTokenKind
     char: string
     consumer: boolean
+}
+
+/**
+ * Public return shape of `useMask`.
+ */
+export interface IUseMaskReturn {
+    masked: Ref<string>
+    unmasked: Ref<string>
+    isValid: Ref<boolean>
+    complete: Ref<boolean>
+    /**
+     * Imperatively re-run the formatter on a raw value
+     * (used by paste / external sync). Returns the new
+     * `unmasked` so callers can keep their model in sync.
+     */
+    setRaw: (raw: string) => string
+    /**
+     * Currently resolved config (pattern + validator +
+     * required). `null` when no mask is active.
+     */
+    config: Ref<IResolvedMaskConfig | null>
 }

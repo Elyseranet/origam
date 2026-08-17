@@ -2,7 +2,18 @@ import { computed, ref, type Ref } from 'vue'
 
 import { SNACKBAR_GROUP_DEFAULT_DURATION, SNACKBAR_GROUP_DEFAULT_ID } from '../../consts'
 
-import type { ISnackbarGroupItem, ISnackbarGroupItemOptions } from '../../interfaces'
+import type {
+    ISnackbarGroupItem,
+    ISnackbarGroupItemOptions,
+    ISnackbarGroupState,
+    IUseSnackbarGroupOptions,
+    IUseSnackbarGroupReturn
+} from '../../interfaces'
+
+export type {
+    IUseSnackbarGroupOptions,
+    IUseSnackbarGroupReturn
+} from '../../interfaces'
 
 /*********************************************************
  * Internal store
@@ -13,25 +24,6 @@ import type { ISnackbarGroupItem, ISnackbarGroupItemOptions } from '../../interf
  * composables addressing the same stack `id` share state
  * (notify here, dismiss there).
  ********************************************************/
-
-interface ISnackbarGroupState {
-    items: Ref<Array<ISnackbarGroupItem>>
-    timers: Map<string, number>
-    counter: { current: number }
-    /**
-     * Fallback `duration` (ms) for this stack, registered by the
-     * mounted `<OrigamSnackbarGroup defaultDuration="…">` instance (see
-     * `useSnackbarGroupInternal`'s `registerDefaultDuration`). Lets
-     * `notify()` — called from ANYWHERE, independent of which
-     * `useSnackbarGroup({ id })` call site fired it — honour the
-     * component's declared default without requiring every caller to
-     * repeat `defaultDuration` as a composable option. See #snackbar-
-     * group-default-duration-bug: before this, the component's prop and
-     * the composable's `notify()` never met, so `defaultDuration` on
-     * `<OrigamSnackbarGroup>` was purely decorative.
-     */
-    defaultDuration: Ref<number>
-}
 
 const STORES = new Map<string, ISnackbarGroupState>()
 
@@ -79,29 +71,6 @@ const clearTimer = (state: ISnackbarGroupState, itemId: string): void => {
  * `<OrigamSnackbarGroup id="…">` instance, so direct
  * mutation outside of `notify` / `dismiss` is discouraged.
  ********************************************************/
-export interface IUseSnackbarGroupOptions {
-    id?: string
-    /**
-     * Maximum number of items kept in the stack. When `notify` would
-     * push past this number, the oldest item is evicted FIFO. When
-     * undefined, the stack is unbounded (the rendering component
-     * still caps the visible count via its `max` prop).
-     */
-    max?: number
-    /**
-     * Fallback `duration` applied to items that omit their own.
-     * Defaults to `SNACKBAR_GROUP_DEFAULT_DURATION` (5 000 ms).
-     */
-    defaultDuration?: number
-}
-
-export interface IUseSnackbarGroupReturn {
-    items: Readonly<Ref<ReadonlyArray<ISnackbarGroupItem>>>
-    notify: (opts: ISnackbarGroupItemOptions) => string
-    dismiss: (itemId: string) => void
-    dismissAll: () => void
-}
-
 export function useSnackbarGroup (options: IUseSnackbarGroupOptions = {}): IUseSnackbarGroupReturn {
     const id = options.id ?? SNACKBAR_GROUP_DEFAULT_ID
     const state = getStore(id)

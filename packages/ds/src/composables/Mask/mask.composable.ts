@@ -1,31 +1,10 @@
-import { computed, isRef, MaybeRef, Ref, ref, unref, watch } from 'vue'
+import { computed, isRef, MaybeRef, ref, unref, watch } from 'vue'
 
-import type { IMaskOptions, IResolvedMaskConfig } from '../../interfaces'
+import type { IMaskOptions, IResolvedMaskConfig, IUseMaskReturn } from '../../interfaces'
 
 import type { TMask } from '../../types'
 
 import { applyMask, resolveMaskConfig, validatePattern } from '../../utils'
-
-/**
- * Public return shape of `useMask`.
- */
-export interface IUseMaskReturn {
-    masked: Ref<string>
-    unmasked: Ref<string>
-    isValid: Ref<boolean>
-    complete: Ref<boolean>
-    /**
-     * Imperatively re-run the formatter on a raw value
-     * (used by paste / external sync). Returns the new
-     * `unmasked` so callers can keep their model in sync.
-     */
-    setRaw: (raw: string) => string
-    /**
-     * Currently resolved config (pattern + validator +
-     * required). `null` when no mask is active.
-     */
-    config: Ref<IResolvedMaskConfig | null>
-}
 
 /**
  * Reactive mask engine — keeps `masked`, `unmasked`,
@@ -107,4 +86,4 @@ export function useMask (
 }
 
 // Re-export for ergonomic import from a single path.
-export type { IMaskOptions }
+export type { IMaskOptions, IUseMaskReturn }
