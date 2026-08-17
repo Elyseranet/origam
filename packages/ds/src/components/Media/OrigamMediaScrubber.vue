@@ -74,6 +74,8 @@
 		useRounded
 	} from '../../composables'
 
+	import { MEDIA_SCRUBBER_MIN_RANGE } from '../../consts'
+
 	import { DIRECTION } from '../../enums'
 
 	import type {
@@ -131,15 +133,27 @@
 	const colorStyles = computed(() => backgroundColorStyles.value)
 
 	/*********************************************************
-	 * Range bookkeeping — clamps `modelValue` into `[min, max]` so
-	 * a stale parent value never paints the thumb outside the track.
-	 * `max` is forced to `> min` (we keep a tiny epsilon as a
-	 * defensive sentinel) so `(value - min) / (max - min)` never
-	 * divides by 0.
+	 * Range bookkeeping — two DISTINCT quantities, deliberately not
+	 * folded into one:
+	 *
+	 *   `resolvedMax` is the DECLARED maximum. It feeds `aria-valuemax`
+	 *   and every clamp, so it must stay a value the consumer could
+	 *   recognise. Floored at `min` only, so an inverted range never
+	 *   announces `aria-valuemax < aria-valuemin`.
+	 *
+	 *   `range` is the DENOMINATOR of `(value - min) / (max - min)`.
+	 *   It carries the epsilon floor so an empty range paints `0%`
+	 *   instead of `NaN%`.
+	 *
+	 * Collapsing the two is what leaked `aria-valuemax="1e-7"` to
+	 * assistive tech for the whole pre-`loadedmetadata` window — the
+	 * state every media scrubber mounts in, since
+	 * `OrigamMediaController.scrubberMax` returns 0 until the duration
+	 * is finite.
 	 ********************************************************/
 	const resolvedMin = computed(() => props.min)
-	const resolvedMax = computed(() => Math.max(props.max, props.min + 0.0000001))
-	const range = computed(() => resolvedMax.value - resolvedMin.value)
+	const resolvedMax = computed(() => Math.max(props.max, props.min))
+	const range = computed(() => Math.max(resolvedMax.value - resolvedMin.value, MEDIA_SCRUBBER_MIN_RANGE))
 
 	const resolvedValue = computed(() => clamp(props.modelValue, resolvedMin.value, resolvedMax.value))
 

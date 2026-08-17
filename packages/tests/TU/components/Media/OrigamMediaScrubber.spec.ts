@@ -168,3 +168,55 @@ describe('OrigamMediaScrubber — change emit', () => {
         expect(change[0][0]).toBe(0)
     })
 })
+
+// ---------------------------------------------------------------------------
+// Degenerate range (`max <= min`) — the state EVERY media scrubber sits in
+// between mount and `loadedmetadata`.
+//
+// This is not a synthetic edge case. `OrigamMediaController` feeds
+// `:max="scrubberMax"`, and `scrubberMax` returns 0 for as long as
+// `state.duration` is not finite. So `min=0, max=0` is exactly what
+// <OrigamVideo> and <OrigamAudio> render on every mount, for however long
+// the network takes to deliver the metadata.
+//
+// The component guards the `(value - min) / (max - min)` division with an
+// epsilon (`min + 1e-7`). That guard is an INTERNAL arithmetic concern and
+// must not reach the accessibility tree: `aria-valuemax="1e-7"` is a value
+// no consumer ever passed, it reaches assistive tech in exponent notation,
+// and it contradicts the `aria-valuetext` the controller supplies
+// alongside it. ARIA attributes mirror the DECLARED range; the epsilon
+// belongs to the denominator only.
+// ---------------------------------------------------------------------------
+
+describe('OrigamMediaScrubber — degenerate range does not leak the epsilon guard', () => {
+    it('reports aria-valuemax=0 (not the 1e-7 sentinel) when max=0', () => {
+        const wrapper = mountScrubber({ modelValue: 0, min: 0, max: 0 })
+        expect(wrapper.attributes('aria-valuemax')).toBe('0')
+    })
+
+    it('never announces a valuemax below valuemin when max < min', () => {
+        const wrapper = mountScrubber({ modelValue: 0, min: 10, max: 0 })
+        const min = Number(wrapper.attributes('aria-valuemin'))
+        const max = Number(wrapper.attributes('aria-valuemax'))
+        expect(max).toBeGreaterThanOrEqual(min)
+    })
+
+    it('keeps aria-valuenow inside [valuemin, valuemax] on a degenerate range', () => {
+        const wrapper = mountScrubber({ modelValue: 5, min: 0, max: 0 })
+        expect(wrapper.attributes('aria-valuenow')).toBe('0')
+    })
+
+    it('does not paint a NaN offset on the thumb when the range is empty', () => {
+        const wrapper = mountScrubber({ modelValue: 0, min: 0, max: 0 })
+        const thumb = wrapper.get('.origam-media-scrubber__thumb')
+        expect(thumb.attributes('style') ?? '').not.toContain('NaN')
+    })
+
+    it('switches to the real aria-valuemax as soon as the duration lands', async () => {
+        const wrapper = mountScrubber({ modelValue: 0, min: 0, max: 0 })
+        expect(wrapper.attributes('aria-valuemax')).toBe('0')
+
+        await wrapper.setProps({ max: 634.571 })
+        expect(wrapper.attributes('aria-valuemax')).toBe('634.571')
+    })
+})
