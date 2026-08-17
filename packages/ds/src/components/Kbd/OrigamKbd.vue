@@ -33,6 +33,7 @@
 	import {
 		useBorder,
 		useBothColor,
+		useDefaults,
 		useProps,
 		useRounded,
 		useSize,
@@ -55,7 +56,7 @@
 		variant: 'outlined',
 	})
 
-	const props = _props
+	const props = useDefaults(_props)
 
 	const { filterProps } = useProps<IKbdProps>(props)
 

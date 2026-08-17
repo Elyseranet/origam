@@ -20,7 +20,8 @@ const GUARDS = [
     'no-variant-css.mjs',
     'instance-types.mjs',
     'file-naming.mjs',
-    'unconsumed-props.mjs'
+    'unconsumed-props.mjs',
+    'raw-props-usage.mjs'
 ]
 
 let failed = 0
