@@ -51,6 +51,24 @@ const openVariant = async (page: Page, title: string): Promise<void> => {
     await page.waitForTimeout(400)
 }
 
+/**
+ * Ticks the "Disabled" HstCheckbox in the Histoire controls panel.
+ *
+ * `HstCheckbox` renders NO `<input type="checkbox">` — measured on the built
+ * bundle, the whole page contains zero of them. It renders a
+ * `<label class="histoire-checkbox" role="checkbox" tabindex="0">` wrapping an
+ * SVG. The `label >> input[type="checkbox"]` locator this spec used to carry
+ * therefore could never resolve, on any story; it is the same locator
+ * `number-field.spec.ts` guards behind `if (count() > 0)`, which is why that
+ * spec's compact-mode blocks silently never execute.
+ */
+const toggleDisabled = async (page: Page): Promise<void> => {
+    const control = page.locator('label.histoire-checkbox').filter({ hasText: 'Disabled' }).first()
+    await expect(control).toBeVisible({ timeout: 8000 })
+    await control.click()
+    await page.waitForTimeout(200)
+}
+
 test.describe('OrigamMediaScrubber — Default (mount + ARIA)', () => {
     test('mounts the primitive with role="slider"', async ({ page }) => {
         await openVariant(page, 'Default')
@@ -184,9 +202,7 @@ test.describe('OrigamMediaScrubber — disabled flag', () => {
         await openVariant(page, 'Functional')
         const sandbox = sandboxOf(page)
 
-        const disabledCheckbox = page.locator('label', { hasText: 'disabled' }).locator('input[type="checkbox"]').first()
-        await disabledCheckbox.check({ force: true })
-        await page.waitForTimeout(200)
+        await toggleDisabled(page)
 
         const host = sandbox.locator('[data-cy="media-scrubber-functional-host"]').first()
         await expect(host).toHaveAttribute('tabindex', '-1')
@@ -205,9 +221,7 @@ test.describe('OrigamMediaScrubber — disabled flag', () => {
         // reachable when the key event actually lands on the host.
         await host.focus()
 
-        const disabledCheckbox = page.locator('label', { hasText: 'disabled' }).locator('input[type="checkbox"]').first()
-        await disabledCheckbox.check({ force: true })
-        await page.waitForTimeout(200)
+        await toggleDisabled(page)
 
         await host.focus()
         const before = Number(await host.getAttribute('aria-valuenow'))
