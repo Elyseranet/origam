@@ -11,9 +11,9 @@
  * scaled points in.
  */
 
-import type { TPathPoint } from '../../types/Chart/chart-path.type'
+import type { TPathPoint } from '../../types/Chart/chart.type'
 
-export type { TPathPoint } from '../../types/Chart/chart-path.type'
+export type { TPathPoint } from '../../types/Chart/chart.type'
 
 /**
  * Joins a list of pixel points with straight segments.

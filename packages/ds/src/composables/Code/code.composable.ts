@@ -1,6 +1,6 @@
 import type { IUseCodeReturn } from '../../interfaces'
 import type { TCodeLang } from '../../types'
-import type { TShikiHighlighter } from '../../types/Code/shiki.type'
+import type { TShikiHighlighter } from '../../types'
 
 import { CODE_CACHE_MAX_ENTRIES, CODE_DARK_THEME as DARK_THEME, CODE_LIGHT_THEME as LIGHT_THEME, SUPPORTED_LANGS } from '../../consts/Code/code.const'
 import { CODE_LANG } from '../../enums'

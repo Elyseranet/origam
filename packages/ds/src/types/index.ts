@@ -15,7 +15,6 @@ export * from './Bracket/bracket.type'
 export * from './Bracket/bracket-match.type'
 export * from './Bracket/bracket-round.type'
 export * from './Bracket/bracket-competitor.type'
-export * from './Bracket/bracket-surface.type'
 
 export * from './Breadcrumb/breadcrumb.type'
 export * from './Breadcrumb/breadcrumb-divider.type'
@@ -60,6 +59,7 @@ export * from './Commons/anchor.type'
 export * from './Commons/border.type'
 export * from './Commons/color.type'
 export * from './Commons/calendar.type'
+export * from './Commons/css-support.type'
 export * from './Commons/commons.type'
 export * from './Commons/date.type'
 export * from './Commons/density.type'
@@ -101,8 +101,6 @@ export * from './Commons/validation.type'
 export * from './Commons/controls.type'
 
 export * from './ConfirmWrapper/confirm-wrapper.type'
-
-export * from './CssSupport/css-support.type'
 
 export * from './ContextualMenu/contextual-menu.type'
 
@@ -338,7 +336,6 @@ export * from './Audio/audio.type'
 export * from './Calendar/calendar.type'
 
 export * from './Chart/chart-legend.type'
-export * from './Chart/chart-path.type'
 export * from './Chart/chart.type'
 
 export * from './Chart/chart-cartesian.type'

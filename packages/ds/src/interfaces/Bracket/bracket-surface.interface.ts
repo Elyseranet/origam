@@ -24,7 +24,8 @@ import type {
  * typed-but-inert failure the surrounding audit exists to remove.
  *
  * Every property type is nonetheless DERIVED from the matching Commons
- * vocabulary (see `types/Bracket/bracket-surface.type.ts`), so the two
+ * vocabulary (see the `TBracket*` aliases in
+ * `types/Bracket/bracket.type.ts`), so the two
  * cannot drift on the value grammar they share.
  */
 export interface IBracketSurfaceInput {
