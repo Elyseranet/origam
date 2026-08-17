@@ -36,6 +36,7 @@
 	import { computed, onScopeDispose, provide, StyleValue } from 'vue'
 	import { OrigamDefaultsProvider } from '../../components'
 	import {
+	usePassedProps,
 	useProps,
 	useStyle,
 	useVModel
@@ -49,7 +50,7 @@
 
 	import type { ISelectionControlGroupEmits } from '../../interfaces/SelectionControl/selection-control-group.interface'
 
-	import { getUid } from '../../utils'
+	import { getUid, omitUndefined } from '../../utils'
 
 	/*********************************************************
 	 * Global
@@ -83,21 +84,33 @@
 	 * updated and the radio looked broken. Forward `type` plus
 	 * the rest of the group-level surface. (Closes task #24.)
 	 ********************************************************/
+	// A prop the CONSUMER never passed must NOT be forwarded — `mergeDeep`
+	// (used by `provideDefaults`/`useDefaults` to combine this map with an
+	// ancestor/theme `'origam-selection-control'` entry) copies it
+	// unconditionally and silently overwrites the theme default — see #263.
+	//
+	// A plain `omitUndefined` is NOT enough: `disabled`/`readonly`/`error`/
+	// `multiple`/`ripple` are boolean-typed and `color` is `TColor` (which
+	// includes `false`), so Vue resolves them to the concrete value `false`
+	// when unset — there is no `undefined` left to filter. `usePassedProps`
+	// reads `vnode.props` directly, so it tells the truth regardless of
+	// Vue's coercion.
+	const wasPropPassed = usePassedProps(props)
 	const slotDefaults = computed(() => ({
-		'origam-selection-control': {
-			density: props.density,
-			color: props.color,
-			type: props.type,
-			disabled: props.disabled,
-			readonly: props.readonly,
-			error: props.error,
-			multiple: props.multiple,
-			name: props.name,
-			ripple: props.ripple,
-			falseIcon: props.falseIcon,
-			trueIcon: props.trueIcon,
-			valueComparator: props.valueComparator
-		}
+		'origam-selection-control': omitUndefined({
+			density: wasPropPassed('density') ? props.density : undefined,
+			color: wasPropPassed('color') ? props.color : undefined,
+			type: wasPropPassed('type') ? props.type : undefined,
+			disabled: wasPropPassed('disabled') ? props.disabled : undefined,
+			readonly: wasPropPassed('readonly') ? props.readonly : undefined,
+			error: wasPropPassed('error') ? props.error : undefined,
+			multiple: wasPropPassed('multiple') ? props.multiple : undefined,
+			name: wasPropPassed('name') ? props.name : undefined,
+			ripple: wasPropPassed('ripple') ? props.ripple : undefined,
+			falseIcon: wasPropPassed('falseIcon') ? props.falseIcon : undefined,
+			trueIcon: wasPropPassed('trueIcon') ? props.trueIcon : undefined,
+			valueComparator: wasPropPassed('valueComparator') ? props.valueComparator : undefined
+		})
 	}))
 
 	/*********************************************************

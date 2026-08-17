@@ -30,12 +30,15 @@
 		useDefaults,
 		useDensity,
 		useGroup,
+		usePassedProps,
 		useProps,
 		useRounded,
 		useStyle
 	} from '../../composables'
 
 	import { ORIGAM_TABS_KEY } from '../../consts'
+
+	import { omitUndefined } from '../../utils'
 
 	import { DENSITY, DIRECTION, TAB_VARIANT } from '../../enums'
 
@@ -96,13 +99,22 @@
 		items: items.value
 	}))
 
+	// Forward ONLY what the consumer actually passed — see #263. `color` is
+	// `TColor` (includes `false`) and `fixed` is boolean, so Vue coerces both
+	// to a concrete `false` when unset; `omitUndefined` alone cannot see it.
+	//
+	// `variant` is kept unconditional, exactly as on `OrigamBtnGroup`: the
+	// tabs' own resolved variant (whether passed or resolved from a theme's
+	// `'origam-tabs'` block) must always reach the children, else a themed
+	// variant paints the tab bar but leaves every tab on its own default.
+	const wasPropPassed = usePassedProps(props)
 	const slotDefaults = computed(() => ({
-		'origam-tab': {
-			density: props.density,
-			color: props.color,
+		'origam-tab': omitUndefined({
 			variant: props.variant,
-			fixed: props.fixed
-		}
+			density: wasPropPassed('density') ? props.density : undefined,
+			color: wasPropPassed('color') ? props.color : undefined,
+			fixed: wasPropPassed('fixed') ? props.fixed : undefined
+		})
 	}))
 
 	/*********************************************************

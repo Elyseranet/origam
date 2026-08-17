@@ -22,11 +22,14 @@
 	import { OrigamDefaultsProvider } from '../../components'
 	import {
 	useGroup,
+	usePassedProps,
 	useProps,
 	useStyle
 } from '../../composables'
 
 	import { ORIGAM_ITEM_GROUP_KEY } from '../../consts'
+
+	import { omitUndefined } from '../../utils'
 
 	import type { IItemGroupProps} from '../../interfaces'
 
@@ -55,10 +58,14 @@
 
 	// Push the selectedClass down to every descendant `<origam-item>` as
 	// DEFAULTS — items that pass their own props still win.
+	// Forward ONLY what the consumer actually passed — see #263. `selectedClass`
+	// carries a `withDefaults` value today, so nothing junk leaks through in
+	// practice, but the guard keeps every forwarder on one single shape.
+	const wasPropPassed = usePassedProps(props)
 	const slotDefaults = computed(() => ({
-		'origam-item': {
-			selectedClass: props.selectedClass
-		}
+		'origam-item': omitUndefined({
+			selectedClass: wasPropPassed('selectedClass') ? props.selectedClass : undefined
+		})
 	}))
 
 	const slotProps = computed(() => ({

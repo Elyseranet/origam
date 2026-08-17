@@ -20,7 +20,7 @@
 >
 	import { OrigamDefaultsProvider, OrigamSlideGroup } from '../../components'
 
-	import { useBorder, useGroup, useMargin, usePadding, useProps, useRounded, useStyle } from "../../composables"
+	import { useBorder, useGroup, useMargin, usePadding, usePassedProps, useProps, useRounded, useStyle } from "../../composables"
 
 	import { ORIGAM_CHIP_GROUP_KEY } from "../../consts"
 
@@ -31,6 +31,8 @@
 	import type { IChipGroupEmits, IChipGroupSlots } from '../../interfaces/Chip/chip-group.interface'
 
 	import type { TOrigamSlideGroup } from "../../types"
+
+	import { omitUndefined } from '../../utils'
 
 	import { computed, ref, StyleValue } from "vue";
 
@@ -75,13 +77,22 @@
 	// Push the visual-token props down to every descendant `<origam-chip>`
 	// as DEFAULTS (children that pass their own value still win). Same
 	// pattern as `OrigamBtnGroup` — see the propagation contract there.
+	// Forward ONLY what the consumer actually passed — see #263 and the same
+	// guard on `OrigamBtnGroup` / `OrigamAvatarGroup`. `color` / `bgColor` are
+	// `TColor` (which includes `false`) and `hover` / `active` are
+	// `boolean | IHoverState / IActiveState`, so Vue coerces every one of them
+	// to a concrete `false` when unset — `omitUndefined` alone cannot see it.
+	// Pre-fix, the forwarded `color: false` won the `mergeDeep` against the
+	// baseline theme's `'origam-chip': { color: 'primary' }`, so chips lost
+	// their themed colour merely by being wrapped in a group.
+	const wasPropPassed = usePassedProps(props)
 	const slotDefaults = computed(() => ({
-		'origam-chip': {
-			color: props.color,
-			bgColor: props.bgColor,
-			active: props.active,
-			hover: props.hover,
-		}
+		'origam-chip': omitUndefined({
+			color: wasPropPassed('color') ? props.color : undefined,
+			bgColor: wasPropPassed('bgColor') ? props.bgColor : undefined,
+			active: wasPropPassed('active') ? props.active : undefined,
+			hover: wasPropPassed('hover') ? props.hover : undefined
+		})
 	}))
 
 	/*********************************************************

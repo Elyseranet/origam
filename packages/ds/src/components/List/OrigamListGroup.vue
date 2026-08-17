@@ -54,6 +54,7 @@
 		useHover,
 		useList,
 		useNestedItem,
+		usePassedProps,
 		useProps,
 		useSsrBoot,
 		useStateEffect,
@@ -61,6 +62,8 @@
 } from '../../composables'
 
 	import { vContrast } from '../../directives'
+
+	import { omitUndefined } from '../../utils'
 
 	import { MDI_ICONS } from "../../enums"
 
@@ -94,11 +97,15 @@
 
 	// Push visual-token props down to every descendant `<origam-list-item>` as
 	// DEFAULTS — items that pass their own props still win.
+	// Forward ONLY what the consumer actually passed — see #263. `color` /
+	// `bgColor` are `TColor`, which includes `false`, so Vue coerces them to a
+	// concrete `false` when unset and `omitUndefined` alone cannot see it.
+	const wasPropPassed = usePassedProps(props)
 	const slotDefaults = computed(() => ({
-		'origam-list-item': {
-			color: props.color,
-			bgColor: props.bgColor
-		}
+		'origam-list-item': omitUndefined({
+			color: wasPropPassed('color') ? props.color : undefined,
+			bgColor: wasPropPassed('bgColor') ? props.bgColor : undefined
+		})
 	}))
 
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.

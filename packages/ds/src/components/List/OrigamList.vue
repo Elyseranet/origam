@@ -104,6 +104,7 @@
 		useMargin,
 		useNested,
 		usePadding,
+		usePassedProps,
 		useProps,
 		useRounded,
 		useStyle
@@ -117,7 +118,7 @@
 
 	import type { TFocusLocation } from '../../types'
 
-	import { deepEqual, focusChild } from '../../utils'
+	import { deepEqual, focusChild, omitUndefined } from '../../utils'
 
 	/*********************************************************
 	 * Global
@@ -146,13 +147,19 @@
 
 	// Push visual-token props down to every descendant `<origam-list-item>` as
 	// DEFAULTS — items that pass their own props still win.
+	// Forward ONLY what the consumer actually passed — see #263. `color` /
+	// `bgColor` are `TColor` (which includes `false`) so Vue coerces them to a
+	// concrete `false` when unset; `size` additionally leaked a bare
+	// `undefined`, which `mergeDeep` copies unconditionally and which
+	// therefore ERASED any ancestor/theme item size.
+	const wasPropPassed = usePassedProps(props)
 	const slotDefaults = computed(() => ({
-		'origam-list-item': {
-			density: props.density,
-			size: props.size,
-			color: props.color,
-			bgColor: props.bgColor
-		}
+		'origam-list-item': omitUndefined({
+			density: wasPropPassed('density') ? props.density : undefined,
+			size: wasPropPassed('size') ? props.size : undefined,
+			color: wasPropPassed('color') ? props.color : undefined,
+			bgColor: wasPropPassed('bgColor') ? props.bgColor : undefined
+		})
 	}))
 
 	/*********************************************************

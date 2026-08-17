@@ -60,12 +60,15 @@
 	import {
 		useDensity,
 		useLocale,
+		usePassedProps,
 		useProps,
 		useStateEffect,
 		useStyle
 	} from '../../composables'
 
 	import { vContrast } from '../../directives'
+
+	import { omitUndefined } from '../../utils'
 
 	import { DENSITY } from '../../enums'
 
@@ -103,15 +106,21 @@
 	// items, so a `<OrigamBreadcrumb color="primary" bgColor="primary">`
 	// renders items with `primary-fgSubtle` (violet) ON a `primary-bg`
 	// surface — unreadable. Same goes for hover/active overrides.
+	// Forward ONLY what the consumer actually passed — see #263. `disabled` is
+	// boolean, `hover` / `active` are `boolean | IHoverState / IActiveState`,
+	// and `color` / `bgColor` are `TColor` (which includes `false`), so Vue
+	// coerces every one of them to a concrete `false` when unset —
+	// `omitUndefined` alone cannot see it.
+	const wasPropPassed = usePassedProps(props)
 	const slotDefaults = computed(() => ({
-		'origam-breadcrumb-item': {
-			density: props.density,
-			color: props.color,
-			bgColor: props.bgColor,
-			hover: props.hover,
-			active: props.active,
-			disabled: props.disabled
-		}
+		'origam-breadcrumb-item': omitUndefined({
+			density: wasPropPassed('density') ? props.density : undefined,
+			color: wasPropPassed('color') ? props.color : undefined,
+			bgColor: wasPropPassed('bgColor') ? props.bgColor : undefined,
+			hover: wasPropPassed('hover') ? props.hover : undefined,
+			active: wasPropPassed('active') ? props.active : undefined,
+			disabled: wasPropPassed('disabled') ? props.disabled : undefined
+		})
 	}))
 
 	/*********************************************************

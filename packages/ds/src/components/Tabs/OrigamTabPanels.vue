@@ -26,11 +26,14 @@
 
 	import {
 		useGroup,
+		usePassedProps,
 		useProps,
 		useStyle
 	} from '../../composables'
 
 	import { ORIGAM_TAB_PANELS_KEY, ORIGAM_TAB_PANELS_CTX_KEY } from '../../consts'
+
+	import { omitUndefined } from '../../utils'
 
 	import { vTouch } from '../../directives'
 
@@ -119,10 +122,14 @@
 		items: items.value
 	}))
 
+	// Forward ONLY what the consumer actually passed — see #263. `transition`
+	// resolves from the theme baseline today, so nothing junk leaks through in
+	// practice, but the guard keeps every forwarder on one single shape.
+	const wasPropPassed = usePassedProps(props)
 	const slotDefaults = computed(() => ({
-		'origam-tab-panel': {
-			transition: props.transition
-		}
+		'origam-tab-panel': omitUndefined({
+			transition: wasPropPassed('transition') ? props.transition : undefined
+		})
 	}))
 
 	/*********************************************************

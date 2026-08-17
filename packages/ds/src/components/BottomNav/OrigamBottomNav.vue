@@ -57,6 +57,7 @@
 		useHover,
 		useLayoutItem,
 		useLocale,
+		usePassedProps,
 		useProps,
 		useSsrBoot,
 		useStateEffect,
@@ -71,7 +72,7 @@
 	import type { IBottomNavEmits, IBottomNavSlots } from '../../interfaces/BottomNav/bottom-nav.interface'
 	import type { TOrigamBtn, TTransitionProps } from "../../types"
 
-	import { convertToUnit, int } from '../../utils'
+	import { convertToUnit, int, omitUndefined } from '../../utils'
 
 	import { computed, ref, StyleValue, toRef } from 'vue'
 	import type { ComputedRef } from 'vue'
@@ -115,18 +116,37 @@
 	// bottom-nav button children) as DEFAULTS — items that pass their own
 	// props still win. `OrigamBtn` already calls `useDefaults` so this is
 	// picked up automatically.
+	// Forward ONLY what the consumer actually passed — see #263 and the same
+	// guard on `OrigamBtnGroup` / `OrigamAvatarGroup`. A prop the consumer
+	// never set must NOT be forwarded: `mergeDeep` (used by
+	// `provideDefaults`/`useDefaults` to combine this map with an
+	// ancestor/theme `'origam-btn'` entry) copies it unconditionally and
+	// silently overwrites the theme default.
+	//
+	// A plain `omitUndefined` is NOT enough here: `color` / `bgColor` are
+	// `TColor` (which includes `false`) and `hover` / `active` are
+	// `boolean | IHoverState / IActiveState`, so Vue's boolean-prop coercion
+	// resolves every one of them to the concrete value `false` when unset —
+	// there is no `undefined` left to filter. `density` was the reverse case:
+	// it leaked a bare `undefined`, which `mergeDeep` copies just the same and
+	// which therefore ERASED any themed button density. Measured before the
+	// fix: under a theme setting `'origam-btn': { color: 'success', density:
+	// 'comfortable' }`, a standalone button rendered
+	// `origam--color-success origam-btn--density-comfortable` while the very
+	// same button inside `<origam-bottom-nav>` rendered neither.
+	const wasPropPassed = usePassedProps(props)
 	const slotDefaults = computed(() => ({
-		'origam-btn': {
-			density: props.density,
-			color: props.color,
-			bgColor: props.bgColor,
+		'origam-btn': omitUndefined({
+			density: wasPropPassed('density') ? props.density : undefined,
+			color: wasPropPassed('color') ? props.color : undefined,
+			bgColor: wasPropPassed('bgColor') ? props.bgColor : undefined,
 			// New API: forward `hover` / `active` (boolean | object)
 			// to each child OrigamBtn; the legacy split `hoverColor` /
 			// `hoverBgColor` / `activeColor` / `activeBgColor` props no
 			// longer exist on the parent or the children.
-			hover: props.hover,
-			active: props.active
-		}
+			hover: wasPropPassed('hover') ? props.hover : undefined,
+			active: wasPropPassed('active') ? props.active : undefined
+		})
 	}))
 
 	/*********************************************************

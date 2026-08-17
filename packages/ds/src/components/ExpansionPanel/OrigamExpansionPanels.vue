@@ -126,12 +126,15 @@
 		useGroup,
 		useHover,
 		useLoader,
+		usePassedProps,
 		useProps,
 		useStateEffect,
 		useStyle
 } from '../../composables'
 
 	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts'
+
+	import { omitUndefined } from '../../utils'
 
 	import { LOADER_KIND } from '../../enums'
 
@@ -158,14 +161,21 @@
 
 	// Push visual-token props down to every descendant `<origam-expansion-panel>`
 	// as DEFAULTS — panels that pass their own props still win.
+	// Forward ONLY what the consumer actually passed — see #263. `rounded` /
+	// `border` are boolean-inclusive and `color` / `bgColor` are `TColor`
+	// (which includes `false`), so Vue coerces all four to a concrete `false`
+	// when unset; `omitUndefined` alone cannot see it. `density` additionally
+	// leaked a bare `undefined`, which `mergeDeep` copies unconditionally and
+	// which therefore ERASED any ancestor/theme density.
+	const wasPropPassed = usePassedProps(props)
 	const slotDefaults = computed(() => ({
-		'origam-expansion-panel': {
-			density: props.density,
-			color: props.color,
-			bgColor: props.bgColor,
-			rounded: props.rounded,
-			border: props.border
-		}
+		'origam-expansion-panel': omitUndefined({
+			density: wasPropPassed('density') ? props.density : undefined,
+			color: wasPropPassed('color') ? props.color : undefined,
+			bgColor: wasPropPassed('bgColor') ? props.bgColor : undefined,
+			rounded: wasPropPassed('rounded') ? props.rounded : undefined,
+			border: wasPropPassed('border') ? props.border : undefined
+		})
 	}))
 
 	useGroup(props, ORIGAM_EXPANSION_PANEL_KEY)
