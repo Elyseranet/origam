@@ -56,7 +56,7 @@ test.describe('OrigamContextualMenu', () => {
 	test('Slot — default — right-click zone renders for custom content', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Slot — default (custom content)', { exact: true }).first().click()
+		await page.getByText('Slots - Default', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -67,7 +67,7 @@ test.describe('OrigamContextualMenu', () => {
 	test('Emit — update:modelValue — right-click zone renders', async ({ page }) => {
 		await page.goto(STORY_PATH)
 		await page.waitForLoadState('networkidle')
-		await page.getByText('Emit — update:modelValue', { exact: true }).first().click()
+		await page.getByText('Events - update:modelValue', { exact: true }).first().click()
 		await page.waitForTimeout(800)
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
