@@ -543,19 +543,6 @@
 			</div>
 		</Variant>
 
-		<Variant title="Emit — valid / complete">
-			<origam-text-field
-					v-model="maskEmitModel"
-					mask="phone:fr"
-					label="French mobile (mask)"
-					data-cy="textfield-mask-emit"
-					@valid="handleMaskEmitValid"
-			/>
-			<div data-cy="textfield-mask-emit-status" style="margin-top: 8px; font-family: monospace; font-size: 12px;">
-				valid-emits = {{ maskEmitValidCount }}
-			</div>
-		</Variant>
-
 	</Story>
 </template>
 
@@ -652,12 +639,6 @@
 
 	const maskCustomModel       = ref('')
 	const maskCustomComplete    = ref(false)
-
-	const maskEmitModel         = ref('')
-	const maskEmitValidCount    = ref(0)
-	const handleMaskEmitValid = () => {
-		maskEmitValidCount.value++
-	}
 
 	const slotOuterModel         = ref('')
 	const slotInnerModel         = ref('')
