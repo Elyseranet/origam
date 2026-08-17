@@ -203,7 +203,33 @@ test.describe('OrigamParallax — multi-layer (enriched)', () => {
         // at "progress = 0.000" regardless of page scroll.
         // This is a design gap in useParallaxRuntime: the CSS path should still
         // call onProgress via a scroll listener so event consumers get updates.
-        test.fail(true, 'DS BUG: @scroll-progress not emitted when cssScrollDriven=true (LINEAR easing + Chrome 115+). useParallaxRuntime CSS path skips onProgress entirely.')
+        // ⛔ 2026-08-17 — DELIBERATELY *NOT* CONVERTED TO `test.fail`, and the
+        // reason above is NOT what currently makes this test fail.
+        //
+        // Measured on develop @ e66dac68 (chromium, static Histoire): the test
+        // fails at `expect(target).toBeVisible()` with "element(s) not found"
+        // — it never reaches the progress assertion at all. The story no
+        // longer renders any `[data-cy="scroll-progress"]` node: the
+        // "Events - scroll-progress" Variant now reports through Histoire's
+        // event log (`@scroll-progress="logEvent('scroll-progress', $event)"`,
+        // OrigamParallax.story.vue:193-198). So this is a LOCATOR DRIFT
+        // sitting on top of the DS bug, and marking it `test.fail` would make
+        // it green for the wrong reason — it would stay green even after the
+        // DS bug is fixed, which is precisely the failure mode this pass
+        // exists to remove.
+        //
+        // Second reason not to `test.fail` it: the documented bug is
+        // Chromium-only (it needs `animation-timeline: scroll()`, Chrome
+        // 115+). On the firefox and webkit projects the runtime takes the JS
+        // rAF path and DOES emit, so the test would PASS there — and a passing
+        // `test.fail` is reported as an unexpected failure, reddening CI on
+        // two of the three projects.
+        //
+        // TO LIFT: rewrite the assertion against the Histoire event log
+        // (`[data-test-id="event-item"]`, as chart-streamgraph.spec.ts does),
+        // then guard it with `test.skip(browserName !== 'chromium', …)` and
+        // only then convert to `test.fail` against the DS bug.
+        test.fixme(true, 'LOCATOR DRIFT (2026-08-17): the story reports @scroll-progress via logEvent, not via [data-cy="scroll-progress"] — see the note above. The underlying DS bug (@scroll-progress not emitted when cssScrollDriven=true, Chrome 115+) is real but is NOT what this test currently measures.')
 
         await page.goto(variantUrl(9))
 
