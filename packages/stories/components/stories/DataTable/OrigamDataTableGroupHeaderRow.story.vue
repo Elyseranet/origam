@@ -38,25 +38,6 @@
 			/>
 		</Variant>
 
-		<Variant title="Functional - groupBy nested">
-			<origam-data-table
-					:headers="extendedHeaders"
-					:items="extendedItems"
-					:group-by="[{ key: 'team', order: 'asc' }, { key: 'role', order: 'asc' }]"
-					data-cy="group-header-nested"
-			/>
-		</Variant>
-
-		<Variant title="Functional - showSelect">
-			<origam-data-table
-					:headers="headers"
-					:items="items"
-					:group-by="[{ key: 'team', order: 'asc' }]"
-					show-select
-					data-cy="group-header-show-select"
-			/>
-		</Variant>
-
 		<Variant title="Slots - data-table-group">
 			<origam-data-table
 					:headers="headers"
