@@ -382,15 +382,6 @@
 			</div>
 		</Variant>
 
-		<Variant title="Emit — update:modelValue">
-			<origam-date-picker-field
-					v-model="emitDate"
-					label="Date"
-					style="max-width: 320px"
-					@update:model-value="logEvent('update:modelValue', $event)"
-			/>
-		</Variant>
-
 		<Variant title="Prop — rules">
 			<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
 				<origam-date-picker-field
