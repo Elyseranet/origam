@@ -228,6 +228,29 @@ function slugsInSpec (src) {
  * outright (+15 refs verified), and the 5 multi-story specs are now named as
  * unattributable instead of being silently absent.
  */
+/**
+ * Second navigation SHAPE, distinct from the URL-builder above: the spec keeps
+ * no `*Url` helper at all and passes the index straight to a navigator that
+ * also receives the Playwright `page` — `gotoVariant(page, 3)`. None of the
+ * three patterns above can see it (there is no `variantId=` literal and no
+ * name ending in `Url`), so such a spec never entered the denominator: the
+ * report printed `SANS titre documenté : 0` while 45 references across
+ * code.spec.ts (35) and textarea-richtext.spec.ts (10) were never looked at.
+ * That is the same false zero the `*Url` widening already had to fix once —
+ * a count that excludes what it cannot see reports the absence of a problem
+ * it never searched for.
+ *
+ * Matching on the NAME rather than on the bare `(page, N)` shape is
+ * deliberate. Any two-argument call whose second argument is a number would
+ * otherwise qualify — `waitForRows(page, 5)` would be read as "index 5" and,
+ * on a story with fewer Variants, produce a RANGE accusation that is simply
+ * false. The guard's own rule is that a checker which cries wolf gets
+ * disabled, which is worse than no checker; so the identifier must look like
+ * navigation. The list stays name-SHAPED, not name-LITERAL, precisely to
+ * avoid re-committing the `variantUrl`-hardcoding mistake documented above.
+ */
+const NAVIGATOR_NAME = /^(?:goto|open|visit|navigate|nav)[A-Z_$]|variant/i
+
 function indicesInSpec (src) {
     const idxs = new Set()
     let m
@@ -236,6 +259,11 @@ function indicesInSpec (src) {
         /variantId=[a-z0-9-]*-story-vue-(\d+)/g,
         /\b[A-Za-z_$][\w$]*Url\s*\(\s*(\d+)/g
     ]) while ((m = re.exec(src)) !== null) idxs.add(Number(m[1]))
+
+    const reNav = /\b([A-Za-z_$][\w$]*)\s*\(\s*page\s*,\s*(\d+)\s*[,)]/g
+    while ((m = reNav.exec(src)) !== null) {
+        if (NAVIGATOR_NAME.test(m[1])) idxs.add(Number(m[2]))
+    }
     return [...idxs].sort((a, b) => a - b)
 }
 
@@ -472,6 +500,21 @@ function selfTest () {
         {
             name: 'index NON littéral (variable) → jamais deviné',
             src: 'await page.goto(variantUrl(idx))',
+            want: []
+        },
+        {
+            name: 'navigateur prenant (page, N) → index lu (code.spec.ts)',
+            src: 'await gotoVariant(page, 3)\nawait gotoVariant(page, 8)',
+            want: [3, 8]
+        },
+        {
+            name: 'navigateur (page, N) nommé autrement → index lu aussi',
+            src: 'await openVariant(page, 2)\nawait visitVariant(page, 5)',
+            want: [2, 5]
+        },
+        {
+            name: 'helper (page, N) qui ne navigue PAS → jamais compté (pas de fausse accusation RANGE)',
+            src: 'await waitForRows(page, 5)\nawait expectCount(page, 12)',
             want: []
         }
     ]
