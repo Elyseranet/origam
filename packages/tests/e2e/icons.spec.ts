@@ -384,7 +384,7 @@ test.describe('OrigamSvgIcon — inline SVG leaf', () => {
     test('Single path — .origam-icon--svg and inner svg are visible', async ({ page }) => {
         await page.goto(SVG_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (single path)', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -397,7 +397,7 @@ test.describe('OrigamSvgIcon — inline SVG leaf', () => {
     test('Single path — inner svg contains exactly one <path> element', async ({ page }) => {
         await page.goto(SVG_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (single path)', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -473,7 +473,7 @@ test.describe('OrigamSvgIcon — inline SVG leaf', () => {
     test('SVG element — decorative: aria-hidden="true" and no role', async ({ page }) => {
         await page.goto(SVG_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (single path)', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -486,7 +486,7 @@ test.describe('OrigamSvgIcon — inline SVG leaf', () => {
     test('SVG element — viewBox is "0 0 24 24"', async ({ page }) => {
         await page.goto(SVG_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (single path)', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -498,7 +498,7 @@ test.describe('OrigamSvgIcon — inline SVG leaf', () => {
     test('SVG fill — path inherits currentColor (fill not hardcoded hex)', async ({ page }) => {
         await page.goto(SVG_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (single path)', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -534,7 +534,7 @@ test.describe('OrigamSvgIcon — inline SVG leaf', () => {
     test.fixme('Visual regression — SVG icon — belongs in the VRT suite, not here (see note)', async ({ page }) => {
         await page.goto(SVG_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (single path)', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

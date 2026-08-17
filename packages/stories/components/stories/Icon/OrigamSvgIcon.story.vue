@@ -121,10 +121,6 @@
 		</Variant>
 
 
-		<Variant title="Prop — icon (single path)">
-			<origam-svg-icon :icon="SVG_PATH_HEART"/>
-		</Variant>
-
 		<Variant title="Prop — icon (multi-path array)">
 			<origam-svg-icon :icon="SVG_MULTI_PATHS"/>
 		</Variant>
