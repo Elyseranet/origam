@@ -19,7 +19,7 @@ test.describe('OrigamCol', () => {
     test('cols=6 sets flex-basis to 50%', async ({ page }) => {
         await page.goto(COL_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — cols', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -38,7 +38,7 @@ test.describe('OrigamCol', () => {
     test('cols=4 sets flex-basis to ~33%', async ({ page }) => {
         await page.goto(COL_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — cols', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
