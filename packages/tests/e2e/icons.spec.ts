@@ -299,7 +299,7 @@ test.describe('OrigamLigatureIcon — Material-style ligature leaf', () => {
     test('Icon variant — .origam-icon--ligature is visible', async ({ page }) => {
         await page.goto(LIGATURE_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (ligature name)', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -310,7 +310,7 @@ test.describe('OrigamLigatureIcon — Material-style ligature leaf', () => {
     test('Icon text content — ligature name renders as text fallback', async ({ page }) => {
         await page.goto(LIGATURE_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (ligature name)', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -364,7 +364,7 @@ test.describe('OrigamLigatureIcon — Material-style ligature leaf', () => {
     test('Font family — Material Icons or Material Symbols applied', async ({ page }) => {
         await page.goto(LIGATURE_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (ligature name)', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

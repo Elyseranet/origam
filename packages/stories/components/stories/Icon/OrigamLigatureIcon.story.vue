@@ -126,20 +126,6 @@
 
 
 		<Variant
-				title="Prop — icon (ligature name)"
-				:init-state="() => useStoryInitState<Partial<IIconComponentProps>>({ icon: 'home', size: undefined })"
-		>
-			<template #default="{ state }">
-				<origam-ligature-icon :icon="state.icon" size="large"/>
-			</template>
-			<template #controls="{ state }">
-				<StoryGroup title="Icon">
-					<HstSelect v-model="state.icon" title="Icon (ligature)" :options="LIGATURE_OPTIONS"/>
-				</StoryGroup>
-			</template>
-		</Variant>
-
-		<Variant
 				title="Prop — size"
 				:init-state="() => useStoryInitState<Partial<IIconComponentProps>>({ icon: 'home', size: undefined })"
 		>
