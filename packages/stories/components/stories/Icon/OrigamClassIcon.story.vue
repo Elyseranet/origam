@@ -125,20 +125,6 @@
 
 
 		<Variant
-				title="Prop — icon (class string)"
-				:init-state="() => useStoryInitState<IIconComponentProps>({ icon: MDI_HOME })"
-		>
-			<template #default="{ state }">
-				<origam-class-icon :icon="state.icon"/>
-			</template>
-			<template #controls="{ state }">
-				<StoryGroup title="Icon">
-					<HstSelect v-model="state.icon" title="Icon" :options="ICON_CLASS_OPTIONS"/>
-				</StoryGroup>
-			</template>
-		</Variant>
-
-		<Variant
 				title="Prop — size"
 				:init-state="() => useStoryInitState<IIconComponentProps>({ icon: MDI_HOME, size: undefined })"
 		>

@@ -152,7 +152,7 @@ test.describe('OrigamClassIcon — font-class leaf', () => {
     test('Icon variant — .origam-icon is visible', async ({ page }) => {
         await page.goto(CLASS_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (class string)', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -163,7 +163,7 @@ test.describe('OrigamClassIcon — font-class leaf', () => {
     test('Icon class string — MDI class applied to element', async ({ page }) => {
         await page.goto(CLASS_ICON_STORY)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — icon (class string)', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(2000)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
