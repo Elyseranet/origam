@@ -48,6 +48,7 @@
 										v-if="!hasChilds(item)"
 										class="origam-menu__item"
 										v-bind="menuItemProps(item)"
+										@click="handleSelect(item)"
 								/>
 								<origam-menu
 										v-else
@@ -102,7 +103,7 @@
 
 	import { INLINE, KEYBOARD_VALUES, LOCATION_STRATEGIES, MDI_ICONS, SCROLL_STRATEGIES } from '../../enums'
 
-	import type { IItemProps, IMenuProps} from '../../interfaces'
+	import type { IItemProps, IListItemProps, IMenuProps} from '../../interfaces'
 
 	import type { IMenuEmits, IMenuSlots } from '../../interfaces/Menu/menu.interface'
 
@@ -138,7 +139,7 @@
 	// border / elevation config on the menu surface was a silent no-op.
 	const props = useDefaults(_props)
 
-	defineEmits<IMenuEmits>()
+	const emit = defineEmits<IMenuEmits>()
 
 	defineSlots<IMenuSlots>()
 
@@ -272,6 +273,21 @@
 
 	const handleClickOutside = () => {
 		parent?.closeParents()
+	}
+	/**
+	 * Fires the `select` emit for a picked leaf row.
+	 *
+	 * Bound only on the `v-if="!hasChilds(item)"` branch of the items
+	 * loop, so a row that merely opens a submenu stays silent — opening a
+	 * submenu is navigation, not a choice. The row's own `onClick` (spread
+	 * through `menuItemProps`) still runs: Vue merges the two handlers
+	 * rather than letting one replace the other, so consumers already
+	 * relying on per-item callbacks keep working unchanged.
+	 */
+	const handleSelect = (item: IListItemProps) => {
+		if (props.disabled) return
+
+		emit('select', item)
 	}
 	const handleKeydown = (e: KeyboardEvent) => {
 		if (props.disabled) return

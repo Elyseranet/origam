@@ -165,6 +165,19 @@
 			</div>
 		</Variant>
 
+		<Variant title="Events - select">
+			<div style="padding: 48px; display: flex; justify-content: center;">
+				<origam-menu
+						:items="defaultItems"
+						@select="logEvent('select', $event)"
+				>
+					<template #activator="{ props: a }">
+						<origam-btn v-bind="a" text="Pick an item (watch Events)"/>
+					</template>
+				</origam-menu>
+			</div>
+		</Variant>
+
 		<Variant title="Slots - Activator">
 			<div style="padding: 48px; display: flex; justify-content: center;">
 				<origam-menu :items="defaultItems">

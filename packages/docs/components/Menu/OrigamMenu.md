@@ -102,6 +102,21 @@ A menu driven by the `#default` slot owns its own markup — pass `size` /
 |---|---|---|
 | `update:modelValue` | `boolean` | Menu open / close. |
 | `contextmenu` | `MouseEvent` | Right-click when `openOnContextMenu`. |
+| `select` | `IListItemProps` | A leaf row of `items` was clicked. Rows that open a submenu do **not** emit — opening a submenu is navigation, not a choice. |
+
+When you render rows through the `items` prop, the menu owns the
+`<origam-list-item>` that receives the click, so `select` is how you learn
+which row was picked:
+
+```vue
+<origam-menu :items="items" @select="onSelect"/>
+```
+
+An item object may still carry its own `onClick`; both run on the same click.
+Wire one or the other, not both, or a single click will be handled twice.
+Prefer `onClick` when the handler needs the `MouseEvent` itself (to call
+`preventDefault()`, for instance) — the `select` payload is the item, not the
+event.
 
 ## Design tokens
 

@@ -194,12 +194,23 @@ describe('useParallaxRuntime — cssScrollDriven', () => {
      * already read `cssScrollDriven` and filled that cache. `resetModules()` plus
      * a dynamic import hands us a fresh module — and therefore an empty cache —
      * for each premise.
+     *
+     * ⚠️ Import the composable's OWN module, never the `@origam/composables`
+     * barrel. `resetModules()` empties Vitest's module registry, so the next
+     * import re-transforms everything it pulls in — and the barrel pulls in
+     * every composable in the DS. That cost was measured at 2.6–3.2 s for the
+     * first of these cases against a default 5 s `testTimeout`, which is why
+     * the case failed only under parallel load: it was never a logic fault,
+     * just a budget the barrel had already spent. The narrow path re-transforms
+     * the parallax module and its own dependency chain (which still includes a
+     * fresh `cssSupport` module, so the cache is still empty — the point of the
+     * reset is preserved).
      */
     async function mountWithCssSupport (supported: boolean) {
         vi.resetModules()
 
         const supports = vi.spyOn(CSS, 'supports').mockReturnValue(supported)
-        const { useParallaxRuntime: fresh } = await import('@origam/composables')
+        const { useParallaxRuntime: fresh } = await import('@origam/composables/Parallax/parallax.composable')
 
         let api!: ReturnType<typeof fresh>
 

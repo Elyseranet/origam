@@ -137,7 +137,6 @@
 						:items="configMenuItems"
 						:item-children="'children'"
 						data-cy="origam-media-controller-config"
-						@select="onConfigSelect"
 				>
 					<template #activator="{ props: activatorProps }">
 						<origam-btn
@@ -447,17 +446,19 @@
 	/*********************************************************
 	 * configMenuItems
 	 *
-	 * `<OrigamMenu>` doesn't emit a `select` event — clicking an item
-	 * fires whatever `onClick` lives on the item, dispatched through
-	 * the underlying `<OrigamListItem>`. Each leaf item therefore needs
-	 * its OWN click handler; parent rows that open a submenu purposely
-	 * have NO click (the menu toggles the submenu on hover/click via
-	 * its own activator binding).
+	 * Each leaf item carries its OWN `onClick`, dispatched through the
+	 * underlying `<OrigamListItem>`; parent rows that open a submenu
+	 * purposely have NO click (the menu toggles the submenu on
+	 * hover/click via its own activator binding).
 	 *
-	 * Carrying `onClick` on the item object also lights up
-	 * `OrigamListItem.isClickable.value` → cursor: pointer, ripple,
-	 * keyboard activation, focusable tabindex — i.e. the visual
-	 * affordances a menu row needs.
+	 * `<OrigamMenu>` also emits `select` for a picked leaf row, so this
+	 * component deliberately does NOT listen for it: both channels fire
+	 * on the same click, and routing both into `onConfigSelect` emitted
+	 * `download` twice per click (and called `setPlaybackRate` /
+	 * `quality-change` twice). The per-item handler is the one kept
+	 * because `handleDownloadClick` needs the real `MouseEvent` to
+	 * `preventDefault()` the cross-origin anchor navigation — the
+	 * `select` payload is the item object, not the event.
 	 ********************************************************/
 	const configMenuItems = computed<Array<IConfigMenuItem>>(() => {
 		const items: Array<IConfigMenuItem> = []
@@ -555,14 +556,6 @@
 			emit('quality-change', item.value)
 			configMenuOpen.value = false
 			return
-		}
-		if (item.key === 'download') {
-			// Path used by the test stub: it emits `select` on click
-			// without going through the per-item `onClick`. In the
-			// real browser, `handleDownloadClick` already emits and
-			// closes — this branch keeps the controller spec passing.
-			emit('download')
-			configMenuOpen.value = false
 		}
 	}
 

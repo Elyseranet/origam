@@ -197,3 +197,100 @@ describe('OrigamMenu — nested items via itemChildren (BUG 4 regression)', () =
         expect(wrapper.findAll('[data-stub="overlay"]')).toHaveLength(2)
     })
 })
+
+// ---------------------------------------------------------------------------
+// `select` emit — the item-picked notification channel
+// ---------------------------------------------------------------------------
+//
+// `<origam-menu :items="…">` renders its rows itself, so the consumer never
+// touches the `<origam-list-item>` that receives the click. Without a `select`
+// emit the ONLY way to learn which row was picked is to hang an `onClick` on
+// every single item object — which `OrigamMediaController` was forced to do
+// (see its `configMenuItems` factory) while ALSO carrying a `@select` listener
+// that could never fire: `select` was absent from `IMenuEmits`, so Vue routed
+// `onSelect` to the overlay root as a plain fallthrough attribute, where it
+// only ever answered the native DOM `select` event (text selection).
+//
+// Each case mounts its own wrapper — no state is shared between them.
+describe('OrigamMenu — select emit', () => {
+    it('emits `select` when a leaf item row is clicked', async () => {
+        const wrapper = await mountMenuWithItems([{ title: 'Leaf', key: 'leaf', value: 1 }])
+
+        await wrapper.find('.origam-menu__item').trigger('click')
+
+        expect(wrapper.emitted('select')).toBeTruthy()
+    })
+
+    it('carries the clicked item object as the `select` payload', async () => {
+        const item = { title: 'Leaf', key: 'leaf', value: 42 }
+        const wrapper = await mountMenuWithItems([item])
+
+        await wrapper.find('.origam-menu__item').trigger('click')
+
+        const payload = wrapper.emitted('select')![0][0] as Record<string, unknown>
+        expect(payload.key).toBe('leaf')
+        expect(payload.value).toBe(42)
+    })
+
+    it('emits `select` for the row that was clicked, not merely the first one', async () => {
+        const wrapper = await mountMenuWithItems([
+            { title: 'First', key: 'first' },
+            { title: 'Second', key: 'second' }
+        ])
+
+        const second = wrapper.findAll('.origam-menu__item')
+            .find(row => row.text().includes('Second'))
+        await second!.trigger('click')
+
+        const payload = wrapper.emitted('select')![0][0] as Record<string, unknown>
+        expect(payload.key).toBe('second')
+    })
+
+    it('still runs the item\'s own onClick handler alongside the emit', async () => {
+        const onClick = vi.fn()
+        const wrapper = await mountMenuWithItems([{ title: 'Leaf', key: 'leaf', onClick }])
+
+        await wrapper.find('.origam-menu__item').trigger('click')
+
+        expect(onClick).toHaveBeenCalledTimes(1)
+    })
+
+    it('does not emit `select` for a row that only opens a submenu', async () => {
+        const wrapper = await mountMenuWithItems([
+            { title: 'Parent', key: 'parent', children: [{ title: 'Child', key: 'child' }] }
+        ])
+
+        const parentRow = wrapper.findAll('.origam-menu__item')
+            .find(row => row.text().includes('Parent'))
+        await parentRow!.trigger('click')
+
+        expect(wrapper.emitted('select')).toBeFalsy()
+    })
+
+    // `select` is ALSO a native DOM event (fired on text selection inside an
+    // input/textarea). While it was missing from `IMenuEmits`, Vue routed a
+    // consumer's `@select` through the fallthrough-attribute path and bound it
+    // as a real DOM listener on the menu root — so highlighting text inside
+    // the menu invoked the consumer's item-picked handler with a plain
+    // `Event`, never an item. Declaring the emit takes the listener off the
+    // DOM entirely, which is what this asserts.
+    it('does not fire a consumer `@select` handler on the native DOM select event', async () => {
+        const onSelect = vi.fn()
+        const origam = createOrigam()
+        const wrapper = mount(OrigamMenu, {
+            props: {
+                modelValue: true,
+                items: [{ title: 'Leaf', key: 'leaf' }],
+                onSelect
+            } as never,
+            attachTo: document.body,
+            global: makeGlobal([origam])
+        })
+        await nextTick()
+
+        wrapper.element.dispatchEvent(new Event('select', { bubbles: true }))
+        await nextTick()
+
+        expect(onSelect).not.toHaveBeenCalled()
+    })
+})
