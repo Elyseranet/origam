@@ -289,7 +289,7 @@
 		</Variant>
 
 		<Variant title="Slots - Prepend">
-			<origam-input v-model="slotPrependModel" label="With prepend slot">
+			<origam-input v-model="slotPrependModel" label="With prepend slot" data-cy="input-slot-prepend">
 				<template #prepend>
 					<origam-icon :icon="prependIcon" style="color: var(--origam-color__feedback--danger---bg);"/>
 				</template>
@@ -459,17 +459,6 @@
 			</origam-input>
 		</Variant>
 
-		<Variant title="Slot — prepend">
-			<origam-input v-model="slotPrependNewModel" label="Custom prepend slot" data-cy="input-slot-prepend">
-				<template #prepend>
-					<origam-icon :icon="prependIcon"/>
-				</template>
-				<template #default="{ id, isDisabled }">
-					<input :id="id" v-model="slotPrependNewModel" :disabled="isDisabled" style="border: none; outline: none; background: transparent; width: 100%;"/>
-				</template>
-			</origam-input>
-		</Variant>
-
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IInputProps>({
@@ -590,7 +579,6 @@
 	const adjacentModel     = ref('')
 	const emitNewUpdateModel = ref('')
 	const emitClickModel    = ref('')
-	const slotPrependNewModel = ref('')
 </script>
 
 <docs lang="md" src="@docs/components/Input/OrigamInput.md"/>
