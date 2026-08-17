@@ -56,7 +56,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # Four static-analysis guards over packages/ds/src — see
+      # Static-analysis guards over packages/ds/src — see
       # packages/ds/scripts/guards/README.md for what each one checks and
       # how the baseline mechanism works. No build/tokens prerequisite: the
       # guards parse .vue/.ts/.scss source text directly (~1s total), so
@@ -64,6 +64,27 @@ jobs:
       # wall-clock to the pipeline.
       - name: Run architecture guards
         run: pnpm -F origam guards
+
+      # The e2e audit guards, added 2026-08-17. They were repaired and wired
+      # into `pretest:e2e` that day, and then measured to be in NO workflow at
+      # all — so they protected local runs only and blocked no merge. That is
+      # the same failure shape they exist to catch: a check that reports clean
+      # because nobody asked it anything.
+      #
+      # They are static (no browser, no Histoire server, no build) and cover
+      # the two halves of the suite with zero overlap: one resolves the
+      # `<Variant title>` a spec clicks, the other the positional
+      # `?variantId=<slug>-N` a spec navigates to. Running only one leaves
+      # half the suite unguarded, which is why the runner aggregates exit
+      # codes instead of chaining with `&&`.
+      - name: Run e2e audit guards
+        run: pnpm -F @origam/tests run test:e2e:audit
+
+      # Pins the guards' own detectors. Without this a regression in an
+      # extractor makes both guards go quiet — the failure mode that let 55
+      # broken specs pass as "no drift".
+      - name: Run e2e audit self-tests
+        run: pnpm -F @origam/tests run test:e2e:audit:self
 
   type-check:
     name: Type-check (vue-tsc)
