@@ -8,7 +8,13 @@ const sandboxOf = (page: Page) => page.frameLocator('iframe[src*="__sandbox"]')
 
 const openVariant = async (page: Page, variant: string) => {
     await page.goto(STORY_PATH)
-    await page.waitForLoadState('networkidle')
+    // NO waitForLoadState('networkidle') here — the canonical recipe in
+    // btn.spec.ts forbids it, and it was measured as the exact call that
+    // stalls: under worker contention this spec failed with
+    // `page.waitForLoadState: Test timeout of 30000ms exceeded` while every
+    // assertion budget below was untouched. `networkidle` waits on a global
+    // network-quiet condition unrelated to what the test needs; the click
+    // below already auto-waits for the sidebar link to be actionable.
     // Navigate via the sidebar `<a>` link (NOT generic getByText — that
     // matches the iframe contents too) so the Variant URL is committed.
     await page.getByRole('link', { name: variant, exact: true }).click()
@@ -25,6 +31,15 @@ const openVariant = async (page: Page, variant: string) => {
  * running Histoire instance (2026-08), not assumed.
  */
 test.describe('OrigamDataList — avatar mode (back-compat)', () => {
+    // 45000 comme btn/list/tabs/code/drawer, dont cette spec reprend le modèle.
+    // Elle était seule sur le défaut Playwright de 30000 tout en faisant DEUX
+    // navigations (racine de story puis clic sur le lien de la sidebar) là où
+    // les specs canoniques n'en font qu'une : le budget le plus court couvrait
+    // le geste le plus lourd. Mesuré : sous contention, l'échec est
+    // `Test timeout of 30000ms exceeded` sur page.goto/click — jamais sur une
+    // assertion. Les budgets d'assertion restent inchangés.
+    test.setTimeout(45000)
+
     test('Basic variant — renders a definition list', async ({ page }) => {
         await openVariant(page, 'Design')
         const sandbox = sandboxOf(page)
@@ -97,6 +112,8 @@ test.describe('OrigamDataList — avatar mode (back-compat)', () => {
 // "don't try to flip a HstSelect" caveat this file carried predates that
 // helper).
 test.describe('OrigamDataList — KV mode (PDF design)', () => {
+    test.setTimeout(45000)
+
     test('KV basic — root carries the kv mode class', async ({ page }) => {
         await openVariant(page, 'Functional')
         await selectHstOption(page, 'Mode', 'kv')
