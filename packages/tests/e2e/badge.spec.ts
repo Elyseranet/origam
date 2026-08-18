@@ -66,14 +66,14 @@ test.describe('OrigamBadge', () => {
 
     test.describe('Design', () => {
         test('renders the badge root with BEM class', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
         })
 
         test('modelValue=true adds --active class on the root wrapper', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -81,7 +81,7 @@ test.describe('OrigamBadge', () => {
         })
 
         test('badge pill (.origam-badge__badge) is visible when modelValue=true', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -93,7 +93,7 @@ test.describe('OrigamBadge', () => {
             // When modelValue=true (active state), useStateEffect bypasses utility classes
             // and applies color via inline styles. The resolved token emits color(srgb …)
             // in Chrome P3 wide-gamut — not rgb(). Assert non-transparent only.
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -105,7 +105,7 @@ test.describe('OrigamBadge', () => {
         })
 
         test('content=3 renders the digit inside .origam-badge__content', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -113,7 +113,7 @@ test.describe('OrigamBadge', () => {
         })
 
         test('root tag defaults to <div>', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -122,7 +122,7 @@ test.describe('OrigamBadge', () => {
         })
 
         test('pill has role="status" for a11y live region', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -139,7 +139,7 @@ test.describe('OrigamBadge', () => {
 
     test.describe('State', () => {
         test('renders badge root with --active class', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -147,7 +147,7 @@ test.describe('OrigamBadge', () => {
         })
 
         test('pill background is non-transparent in resting state', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -166,7 +166,7 @@ test.describe('OrigamBadge', () => {
 
     test.describe('Functional', () => {
         test('renders badge root in visible state', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -174,7 +174,7 @@ test.describe('OrigamBadge', () => {
         })
 
         test('content=3 renders the digit inside the pill', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -182,7 +182,7 @@ test.describe('OrigamBadge', () => {
         })
 
         test('dot=false: .origam-badge--dot is absent from root by default', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -193,7 +193,7 @@ test.describe('OrigamBadge', () => {
         test('SCSS --dot: injecting the class sets pill height to 9px', async ({ page }) => {
             // Verifies the SCSS --dot override compiles correctly.
             // The CSS var --origam-badge__badge---height is set to 9px inside &--dot.
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -207,7 +207,7 @@ test.describe('OrigamBadge', () => {
         })
 
         test('SCSS --floating: adding the class is accepted without error', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -226,7 +226,7 @@ test.describe('OrigamBadge', () => {
             // We therefore read the CSS *custom property* value directly — it IS
             // propagated by the cascade even without the scoped attr — and confirm
             // it was authored as 'inline-flex' in the stylesheet.
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -249,7 +249,7 @@ test.describe('OrigamBadge', () => {
 
     test.describe('Events - update:hover', () => {
         test('renders a visible badge for hover event testing', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -258,7 +258,7 @@ test.describe('OrigamBadge', () => {
         test('mouseenter / mouseleave do not throw (logEvent not assertable headlessly)', async ({ page }) => {
             // logEvent() is an Histoire-internal side-effect; observable only via the
             // Histoire event panel which is not inside the sandbox iframe.
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -274,7 +274,7 @@ test.describe('OrigamBadge', () => {
 
     test.describe('Slots - Default', () => {
         test('default slot renders custom text content in the wrapper', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -285,7 +285,7 @@ test.describe('OrigamBadge', () => {
 
     test.describe('Slots - Badge', () => {
         test('badge slot replaces default pill content with custom markup', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -309,7 +309,7 @@ test.describe('OrigamBadge', () => {
         // consumes `useAdjacent()`, whose `hasPrepend` also checks slot presence —
         // `.origam-badge__prepend` renders and carries the slotted MDI heart icon.
         test('renders .origam-badge__prepend with the slotted icon', async ({ page }) => {
-            await page.goto(variantUrl(6))
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -319,7 +319,7 @@ test.describe('OrigamBadge', () => {
         })
 
         test('wrapper still renders the default slot (origam-avatar) with prepend variant', async ({ page }) => {
-            await page.goto(variantUrl(6))
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -330,7 +330,7 @@ test.describe('OrigamBadge', () => {
     test.describe('Slots - Append', () => {
         // Same regression guard as Slots - Prepend, mirrored for the append side.
         test('renders .origam-badge__append with the slotted icon', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -340,7 +340,7 @@ test.describe('OrigamBadge', () => {
         })
 
         test('wrapper still renders the default slot (origam-avatar) with append variant', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -358,7 +358,7 @@ test.describe('OrigamBadge', () => {
 
     test.describe('Events - click:prepend', () => {
         test('renders .origam-badge__prepend with the prependIcon', async ({ page }) => {
-            await page.goto(variantUrl(16))
+            await page.goto(variantUrl(16), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -368,7 +368,7 @@ test.describe('OrigamBadge', () => {
         })
 
         test('click on prepend area does not throw', async ({ page }) => {
-            await page.goto(variantUrl(16))
+            await page.goto(variantUrl(16), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const prepend = sandbox.locator('.origam-badge__prepend').first()
             await expect(prepend).toBeVisible({ timeout: 20000 })
@@ -383,7 +383,7 @@ test.describe('OrigamBadge', () => {
 
     test.describe('Events - click:append', () => {
         test('renders .origam-badge__append with the appendIcon', async ({ page }) => {
-            await page.goto(variantUrl(17))
+            await page.goto(variantUrl(17), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -393,7 +393,7 @@ test.describe('OrigamBadge', () => {
         })
 
         test('click on append area does not throw', async ({ page }) => {
-            await page.goto(variantUrl(17))
+            await page.goto(variantUrl(17), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const append = sandbox.locator('.origam-badge__append').first()
             await expect(append).toBeVisible({ timeout: 20000 })
@@ -409,7 +409,7 @@ test.describe('OrigamBadge', () => {
 
     test.describe('Default (playground)', () => {
         test('renders badge root with --active class and content "3"', async ({ page }) => {
-            await page.goto(variantUrl(18))
+            await page.goto(variantUrl(18), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -418,7 +418,7 @@ test.describe('OrigamBadge', () => {
         })
 
         test('root tag defaults to <div>', async ({ page }) => {
-            await page.goto(variantUrl(18))
+            await page.goto(variantUrl(18), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -427,7 +427,7 @@ test.describe('OrigamBadge', () => {
         })
 
         test('pill receives a non-transparent background from the primary token', async ({ page }) => {
-            await page.goto(variantUrl(18))
+            await page.goto(variantUrl(18), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -445,7 +445,7 @@ test.describe('OrigamBadge', () => {
 
     test.describe('Rounded SCSS rules', () => {
         test('--rounded-shaped: TL+BR rounded, TR+BL = 0 (pill)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -469,7 +469,7 @@ test.describe('OrigamBadge', () => {
         })
 
         test('--rounded-shaped-invert: TR+BL rounded, TL+BR = 0 (pill)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })

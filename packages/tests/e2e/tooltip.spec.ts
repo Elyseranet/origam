@@ -77,21 +77,21 @@ test.describe('OrigamTooltip', () => {
 
     test.describe('Design (index 0)', () => {
         test('activateur visible dans la sandbox', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 35000 })
         })
 
         test('tooltip apparaît au hover avec le texte issu du prop text', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openTooltip(sandbox)
             await expect(content).toContainText('Tooltip text')
         })
 
         test('root .origam-tooltip porte la classe BEM', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-btn').first()).toBeVisible({ timeout: 35000 })
             const root = sandbox.locator('.origam-tooltip').first()
@@ -99,14 +99,14 @@ test.describe('OrigamTooltip', () => {
         })
 
         test('contenu du tooltip porte la classe origam-tooltip__content', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openTooltip(sandbox)
             await expect(content).toHaveClass(/origam-tooltip__content/)
         })
 
         test('tooltip se ferme quand la souris quitte l activateur', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { activator: _activator, content } = await openTooltip(sandbox)
             // Déplacer la souris hors de l'activateur
@@ -122,14 +122,14 @@ test.describe('OrigamTooltip', () => {
 
     test.describe('Functional (index 1)', () => {
         test('tooltip apparaît au hover (openOnHover=true par défaut)', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openTooltip(sandbox)
             await expect(content).toContainText('Tooltip text')
         })
 
         test('eager=true — le contenu est dans le DOM avant le premier hover', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             // S'assurer que l'activateur est présent sans hover
             await expect(sandbox.locator('.origam-btn').first()).toBeVisible({ timeout: 35000 })
@@ -145,7 +145,7 @@ test.describe('OrigamTooltip', () => {
 
     test.describe('Events - update:modelValue (index 2)', () => {
         test('tooltip s ouvre au hover (proxy de l emit update:modelValue)', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openTooltip(sandbox)
             // Le montage visible EST le signe que l'emit a bien déclenché
@@ -153,7 +153,7 @@ test.describe('OrigamTooltip', () => {
         })
 
         test('tooltip affiche le texte déclaré dans la variant Events', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openTooltip(sandbox)
             await expect(content).toContainText('Watch Events tab')
@@ -167,7 +167,7 @@ test.describe('OrigamTooltip', () => {
 
     test.describe('Slots - Activator (index 3)', () => {
         test('le slot activator rend un bouton personnalisé', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 35000 })
@@ -175,7 +175,7 @@ test.describe('OrigamTooltip', () => {
         })
 
         test('tooltip s ouvre au hover de l activateur custom', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openTooltip(sandbox)
             await expect(content).toContainText('Tooltip text')
@@ -189,7 +189,7 @@ test.describe('OrigamTooltip', () => {
 
     test.describe('Slots - Default (index 4)', () => {
         test('le slot default rend du markup riche dans le contenu tooltip', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openTooltip(sandbox)
             // La variant Slots - Default contient :
@@ -199,7 +199,7 @@ test.describe('OrigamTooltip', () => {
         })
 
         test('le prop text n est pas rendu quand le slot default est utilisé', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openTooltip(sandbox)
             // Le slot override le <span>{{ text }}</span> natif
@@ -216,14 +216,14 @@ test.describe('OrigamTooltip', () => {
 
     test.describe('Default / Playground (index 5)', () => {
         test('tooltip apparaît au hover avec le texte seedé', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openTooltip(sandbox)
             await expect(content).toContainText('Tooltip text')
         })
 
         test('location=right — le popup se positionne à droite de l activateur', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { activator, content } = await openTooltip(sandbox)
 
@@ -243,7 +243,7 @@ test.describe('OrigamTooltip', () => {
         })
 
         test('offset=10 — le contenu overlay est positionné avec des coordonnées pixel', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await openTooltip(sandbox)
 

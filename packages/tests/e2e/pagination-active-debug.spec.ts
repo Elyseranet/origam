@@ -21,7 +21,7 @@ const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 test.setTimeout(180_000)
 
 test('DEBUG pagination — default mode active is neutral gray (not violet)', async ({ page }) => {
-    await page.goto(variantUrl(21))
+    await page.goto(variantUrl(21), { waitUntil: 'domcontentloaded' })
 
     const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
     // Wait for at least one pagination root inside the sandbox
@@ -76,9 +76,14 @@ test('DEBUG pagination — default mode active is neutral gray (not violet)', as
 
 test('DEBUG pagination — colored mode active stays primary fill', async ({ page }) => {
     // "Color — default vs primary" (index 15) exposes both default and colored paginations.
-    await page.goto(variantUrl(15))
+    await page.goto(variantUrl(15), { waitUntil: 'domcontentloaded' })
 
     const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+    // Positive barrier before the escape hatch below. `count()` does NOT wait:
+    // without this, the test samples the DOM before the story has mounted,
+    // reads 0, takes the early return and passes WITHOUT ASSERTING ANYTHING.
+    // That is what happened when the goto stopped waiting for `load`.
+    await expect(sandbox.locator('.origam-pagination').first()).toBeVisible({ timeout: 12000 })
     const colored = sandbox.locator('.origam-pagination.origam-pagination--colored').first()
     const exists = await colored.count().catch(() => 0)
     if (!exists) {

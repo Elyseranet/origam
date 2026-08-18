@@ -79,27 +79,27 @@ test.describe('OrigamPasswordField', () => {
 
     test.describe('Design', () => {
         test('renders root .origam-password-field', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-password-field').first()).toBeVisible({ timeout: 12000 })
         })
 
         test('initial input type is password', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-password-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('input[type="password"]').first()).toBeAttached()
         })
 
         test('toggle icon is rendered (non-minimal default)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-password-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-password-field__toggle-icon').first()).toBeVisible()
         })
 
         test('clicking the toggle icon switches input type to text', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-password-field').first()).toBeVisible({ timeout: 12000 })
 
@@ -109,7 +109,7 @@ test.describe('OrigamPasswordField', () => {
         })
 
         test('clicking the toggle icon a second time restores type=password', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-password-field').first()).toBeVisible({ timeout: 12000 })
 
@@ -121,7 +121,7 @@ test.describe('OrigamPasswordField', () => {
         })
 
         test('no strength bar present when strengthBar prop is absent', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-password-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-password-field__strength-segment')).toHaveCount(0)
@@ -135,13 +135,13 @@ test.describe('OrigamPasswordField', () => {
 
     test.describe('Functional', () => {
         test('renders without error (all props false)', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-password-field').first()).toBeVisible({ timeout: 12000 })
         })
 
         test('input is interactive — typing updates value', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-password-field').first()).toBeVisible({ timeout: 12000 })
             const input = sandbox.locator('input').first()
@@ -157,14 +157,14 @@ test.describe('OrigamPasswordField', () => {
 
     test.describe('Events - update:strength / Strength bar', () => {
         test('4 segments are mounted when strengthBar=true', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-password-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-password-field__strength-segment')).toHaveCount(4)
         })
 
         test('empty password → score=0, all segments have --empty modifier', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-password-field').first()).toBeVisible({ timeout: 12000 })
 
@@ -175,7 +175,7 @@ test.describe('OrigamPasswordField', () => {
         })
 
         test('short password → score=1 (weak), 1 segment filled', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-password-field').first()).toBeVisible({ timeout: 12000 })
 
@@ -188,7 +188,7 @@ test.describe('OrigamPasswordField', () => {
         })
 
         test('fair password → score=2, 2 segments filled', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-password-field').first()).toBeVisible({ timeout: 12000 })
 
@@ -200,7 +200,7 @@ test.describe('OrigamPasswordField', () => {
         })
 
         test('good password → score=3, 3 segments filled', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-password-field').first()).toBeVisible({ timeout: 12000 })
 
@@ -213,7 +213,7 @@ test.describe('OrigamPasswordField', () => {
         })
 
         test('strong password → score=4, all 4 segments filled', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-password-field').first()).toBeVisible({ timeout: 12000 })
 
@@ -226,7 +226,7 @@ test.describe('OrigamPasswordField', () => {
         })
 
         test('clearing password resets bar to score=0', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-password-field').first()).toBeVisible({ timeout: 12000 })
 
@@ -246,7 +246,7 @@ test.describe('OrigamPasswordField', () => {
 
     test.describe('Events - update:modelValue', () => {
         test('input renders and accepts typing', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-password-field').first()).toBeVisible({ timeout: 12000 })
 
@@ -263,7 +263,7 @@ test.describe('OrigamPasswordField', () => {
 
     test.describe('Slots - Clear', () => {
         test('field renders with pre-set value "secret"', async ({ page }) => {
-            await page.goto(variantUrl(13))
+            await page.goto(variantUrl(13), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-password-field').first()).toBeVisible({ timeout: 12000 })
             // The input value should be "secret" (pre-seeded by the story)
@@ -271,7 +271,7 @@ test.describe('OrigamPasswordField', () => {
         })
 
         test('custom clear slot renders its content (origam-icon close)', async ({ page }) => {
-            await page.goto(variantUrl(13))
+            await page.goto(variantUrl(13), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-password-field').first()).toBeVisible({ timeout: 12000 })
             // The clear slot passes through to .origam-field__clearable — it should be visible
@@ -287,7 +287,7 @@ test.describe('OrigamPasswordField', () => {
 
     test.describe('Slots - Loader', () => {
         test('custom loader slot content renders when loading', async ({ page }) => {
-            await page.goto(variantUrl(18))
+            await page.goto(variantUrl(18), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-password-field').first()).toBeVisible({ timeout: 12000 })
             // The story slot renders <span>Loading...</span>
@@ -302,7 +302,7 @@ test.describe('OrigamPasswordField', () => {
 
     test.describe('Slots - Info', () => {
         test('field with requirements renders (popup is closed by default)', async ({ page }) => {
-            await page.goto(variantUrl(23))
+            await page.goto(variantUrl(23), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-password-field').first()).toBeVisible({ timeout: 12000 })
             // The custom info slot renders inside the OrigamMenu teleport.
@@ -319,7 +319,7 @@ test.describe('OrigamPasswordField', () => {
 
     test.describe('Slots - Prepend', () => {
         test('prepend slot renders its content', async ({ page }) => {
-            await page.goto(variantUrl(9))
+            await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-password-field').first()).toBeVisible({ timeout: 12000 })
             // The story passes an OrigamIcon to #prepend — the outer prepend wrapper must exist
@@ -333,7 +333,7 @@ test.describe('OrigamPasswordField', () => {
 
     test.describe('Slots - Append', () => {
         test('append slot renders its content', async ({ page }) => {
-            await page.goto(variantUrl(10))
+            await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-password-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-input__append').first()).toBeVisible({ timeout: 3000 })
@@ -346,13 +346,13 @@ test.describe('OrigamPasswordField', () => {
 
     test.describe('Default (playground)', () => {
         test('playground renders .origam-password-field', async ({ page }) => {
-            await page.goto(variantUrl(25))
+            await page.goto(variantUrl(25), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-password-field').first()).toBeVisible({ timeout: 12000 })
         })
 
         test('playground input type is password by default', async ({ page }) => {
-            await page.goto(variantUrl(25))
+            await page.goto(variantUrl(25), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-password-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('input[type="password"]').first()).toBeAttached()

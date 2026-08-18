@@ -48,13 +48,13 @@ test.describe('OrigamRatingField', () => {
 
     test.describe('Design', () => {
         test('renders the rating-field root with BEM class', async ({ page }) => {
-            await page.goto(rfUrl(0))
+            await page.goto(rfUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
         })
 
         test('renders 5 visible star items inside __content (length=5)', async ({ page }) => {
-            await page.goto(rfUrl(0))
+            await page.goto(rfUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             // The component also renders a hidden item (index=-1, showStar=false) in __empty.
@@ -65,7 +65,7 @@ test.describe('OrigamRatingField', () => {
         })
 
         test('renders 6 native radio inputs (5 stars + 1 hidden value=0)', async ({ page }) => {
-            await page.goto(rfUrl(0))
+            await page.goto(rfUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             // 5 star items + 1 hidden item (value=0, index=-1) = 6 inputs total.
@@ -73,7 +73,7 @@ test.describe('OrigamRatingField', () => {
         })
 
         test('inner btn elements use text variant — no background, no box-shadow', async ({ page }) => {
-            await page.goto(rfUrl(0))
+            await page.goto(rfUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             const btn = sandbox.locator('.origam-rating-field-item .origam-btn').first()
@@ -96,7 +96,7 @@ test.describe('OrigamRatingField', () => {
         })
 
         test('label "Rating" is rendered inside the field', async ({ page }) => {
-            await page.goto(rfUrl(0))
+            await page.goto(rfUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-rating-field')).toContainText('Rating')
@@ -113,7 +113,7 @@ test.describe('OrigamRatingField', () => {
 
     test.describe('Functional', () => {
         test('renders without disabled state by default', async ({ page }) => {
-            await page.goto(rfUrl(1))
+            await page.goto(rfUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             // disabled=false → no disabled attribute on radio inputs
@@ -122,21 +122,21 @@ test.describe('OrigamRatingField', () => {
         })
 
         test('hover=false by default — no origam-rating-field--hover class', async ({ page }) => {
-            await page.goto(rfUrl(1))
+            await page.goto(rfUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-rating-field--hover')).toHaveCount(0)
         })
 
         test('readonly=false by default — no origam-rating-field--readonly class', async ({ page }) => {
-            await page.goto(rfUrl(1))
+            await page.goto(rfUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-rating-field--readonly')).toHaveCount(0)
         })
 
         test('clearable=false by default — no clear button rendered', async ({ page }) => {
-            await page.goto(rfUrl(1))
+            await page.goto(rfUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             // clearable=false OR modelValue=0 → no clear button
@@ -144,7 +144,7 @@ test.describe('OrigamRatingField', () => {
         })
 
         test('renders 5 visible star items inside __content (length=5, no half increments)', async ({ page }) => {
-            await page.goto(rfUrl(1))
+            await page.goto(rfUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             const visibleItems = sandbox.locator('.origam-rating-field__content .origam-rating-field-item')
@@ -158,14 +158,14 @@ test.describe('OrigamRatingField', () => {
 
     test.describe('Events - update:modelValue', () => {
         test('renders a rating field with label "Rate this"', async ({ page }) => {
-            await page.goto(rfUrl(2))
+            await page.goto(rfUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-rating-field')).toContainText('Rate this')
         })
 
         test('clicking the first star btn does not throw (event fires)', async ({ page }) => {
-            await page.goto(rfUrl(2))
+            await page.goto(rfUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             // NOTE: logEvent() is Histoire-internal — not assertable from the outer page.
@@ -181,7 +181,7 @@ test.describe('OrigamRatingField', () => {
 
     test.describe('Slots - Default', () => {
         test('default slot renders custom content inside the field', async ({ page }) => {
-            await page.goto(rfUrl(3))
+            await page.goto(rfUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-rating-field span')).toContainText('Custom default slot content')
@@ -195,7 +195,7 @@ test.describe('OrigamRatingField', () => {
 
     test.describe('Slots - Prepend', () => {
         test('prepend slot renders an origam-icon in the prepend area', async ({ page }) => {
-            await page.goto(rfUrl(4))
+            await page.goto(rfUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 20000 })
             await expect(sandbox.locator('.origam-icon').first()).toBeAttached()
@@ -209,7 +209,7 @@ test.describe('OrigamRatingField', () => {
 
     test.describe('Slots - Append', () => {
         test('append slot renders an origam-icon in the append area', async ({ page }) => {
-            await page.goto(rfUrl(5))
+            await page.goto(rfUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 20000 })
             await expect(sandbox.locator('.origam-icon').first()).toBeAttached()
@@ -222,7 +222,7 @@ test.describe('OrigamRatingField', () => {
 
     test.describe('Slots - Label', () => {
         test('label slot renders custom label markup (strong tag)', async ({ page }) => {
-            await page.goto(rfUrl(6))
+            await page.goto(rfUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-rating-field strong')).toContainText('Rate this product')
@@ -235,7 +235,7 @@ test.describe('OrigamRatingField', () => {
 
     test.describe('Slots - Details', () => {
         test('details slot renders custom details area content', async ({ page }) => {
-            await page.goto(rfUrl(7))
+            await page.goto(rfUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-rating-field')).toContainText('Custom details area')
@@ -260,7 +260,7 @@ test.describe('OrigamRatingField', () => {
          * crash the component.
          */
         test('itemLabel slot variant renders the field without crash (DS slot-gate bug noted)', async ({ page }) => {
-            await page.goto(rfUrl(8))
+            await page.goto(rfUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             // The <strong> from the #itemLabel slot is NOT rendered because the DS
@@ -277,14 +277,14 @@ test.describe('OrigamRatingField', () => {
 
     test.describe('Default (playground)', () => {
         test('renders with label "Rating"', async ({ page }) => {
-            await page.goto(rfUrl(9))
+            await page.goto(rfUrl(9), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-rating-field')).toContainText('Rating')
         })
 
         test('renders 5 visible star items inside __content (length=5)', async ({ page }) => {
-            await page.goto(rfUrl(9))
+            await page.goto(rfUrl(9), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             const visibleItems = sandbox.locator('.origam-rating-field__content .origam-rating-field-item')
@@ -292,7 +292,7 @@ test.describe('OrigamRatingField', () => {
         })
 
         test('modelValue=3 → the radio with value=3 is checked', async ({ page }) => {
-            await page.goto(rfUrl(9))
+            await page.goto(rfUrl(9), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             // The field renders 6 inputs: hidden value=0 + visible values 1..5.
@@ -311,7 +311,7 @@ test.describe('OrigamRatingField', () => {
          * If the DS renders the clear button when clearable is falsy → regression.
          */
         test('clearable not set → no clear button even with modelValue=3', async ({ page }) => {
-            await page.goto(rfUrl(9))
+            await page.goto(rfUrl(9), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="rating-field-clear"]')).toHaveCount(0)
@@ -330,7 +330,7 @@ test.describe('OrigamRatingField', () => {
          * defaults to false) and verifies the class is absent.
          */
         test('hover prop absent → no origam-rating-field--hover class', async ({ page }) => {
-            await page.goto(rfUrl(0))
+            await page.goto(rfUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-rating-field--hover')).toHaveCount(0)
@@ -357,20 +357,20 @@ test.describe('OrigamRatingFieldItem', () => {
 
     test.describe('Design', () => {
         test('renders the rating-field-item root with BEM class', async ({ page }) => {
-            await page.goto(rfiUrl(0))
+            await page.goto(rfiUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field-item').first()).toBeVisible({ timeout: 12000 })
         })
 
         test('showStar=true → origam-btn is rendered inside the item', async ({ page }) => {
-            await page.goto(rfiUrl(0))
+            await page.goto(rfiUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field-item').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-rating-field-item .origam-btn').first()).toBeAttached()
         })
 
         test('btn uses text variant (no background, no box-shadow)', async ({ page }) => {
-            await page.goto(rfiUrl(0))
+            await page.goto(rfiUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field-item').first()).toBeVisible({ timeout: 12000 })
             const btn = sandbox.locator('.origam-rating-field-item .origam-btn').first()
@@ -391,7 +391,7 @@ test.describe('OrigamRatingFieldItem', () => {
         })
 
         test('isFilled=true → full icon is used (icon !== empty star)', async ({ page }) => {
-            await page.goto(rfiUrl(0))
+            await page.goto(rfiUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field-item').first()).toBeVisible({ timeout: 12000 })
             // A filled item renders an .origam-icon inside the btn
@@ -399,14 +399,14 @@ test.describe('OrigamRatingFieldItem', () => {
         })
 
         test('renders a hidden native radio input', async ({ page }) => {
-            await page.goto(rfiUrl(0))
+            await page.goto(rfiUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field-item').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('input[type="radio"]').first()).toBeAttached()
         })
 
         test('native radio value matches value prop (3)', async ({ page }) => {
-            await page.goto(rfiUrl(0))
+            await page.goto(rfiUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field-item').first()).toBeVisible({ timeout: 12000 })
             const radioValue = await sandbox.locator('input[type="radio"]').first().getAttribute('value')
@@ -425,21 +425,21 @@ test.describe('OrigamRatingFieldItem', () => {
 
     test.describe('Functional', () => {
         test('renders without disabled attribute by default', async ({ page }) => {
-            await page.goto(rfiUrl(1))
+            await page.goto(rfiUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field-item').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('input[type="radio"][disabled]')).toHaveCount(0)
         })
 
         test('checked=false by default — radio is not checked', async ({ page }) => {
-            await page.goto(rfiUrl(1))
+            await page.goto(rfiUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field-item').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('input[type="radio"]:checked')).toHaveCount(0)
         })
 
         test('halfIncrements=false → no half/full BEM modifier class', async ({ page }) => {
-            await page.goto(rfiUrl(1))
+            await page.goto(rfiUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field-item').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-rating-field-item--half')).toHaveCount(0)
@@ -447,7 +447,7 @@ test.describe('OrigamRatingFieldItem', () => {
         })
 
         test('showStar=true → btn is rendered', async ({ page }) => {
-            await page.goto(rfiUrl(1))
+            await page.goto(rfiUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field-item').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-btn').first()).toBeAttached()
@@ -460,7 +460,7 @@ test.describe('OrigamRatingFieldItem', () => {
 
     test.describe('Events - click', () => {
         test('renders item in the events-click variant', async ({ page }) => {
-            await page.goto(rfiUrl(2))
+            await page.goto(rfiUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field-item').first()).toBeVisible({ timeout: 12000 })
         })
@@ -470,7 +470,7 @@ test.describe('OrigamRatingFieldItem', () => {
          * We verify the click is accepted without error by the component.
          */
         test('clicking the btn does not throw', async ({ page }) => {
-            await page.goto(rfiUrl(2))
+            await page.goto(rfiUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field-item').first()).toBeVisible({ timeout: 12000 })
             const btn = sandbox.locator('.origam-rating-field-item .origam-btn').first()
@@ -484,7 +484,7 @@ test.describe('OrigamRatingFieldItem', () => {
 
     test.describe('Events - mouseenter', () => {
         test('renders item in the events-mouseenter variant', async ({ page }) => {
-            await page.goto(rfiUrl(3))
+            await page.goto(rfiUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field-item').first()).toBeVisible({ timeout: 12000 })
         })
@@ -493,7 +493,7 @@ test.describe('OrigamRatingFieldItem', () => {
          * NOTE: mouseenter fires logEvent() — not assertable headlessly from outer page.
          */
         test('hovering the btn does not throw', async ({ page }) => {
-            await page.goto(rfiUrl(3))
+            await page.goto(rfiUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field-item').first()).toBeVisible({ timeout: 12000 })
             const btn = sandbox.locator('.origam-rating-field-item .origam-btn').first()
@@ -507,7 +507,7 @@ test.describe('OrigamRatingFieldItem', () => {
 
     test.describe('Events - mouseleave', () => {
         test('renders item in the events-mouseleave variant', async ({ page }) => {
-            await page.goto(rfiUrl(4))
+            await page.goto(rfiUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field-item').first()).toBeVisible({ timeout: 12000 })
         })
@@ -516,7 +516,7 @@ test.describe('OrigamRatingFieldItem', () => {
          * NOTE: mouseleave fires logEvent() — not assertable headlessly.
          */
         test('hover then move away does not throw', async ({ page }) => {
-            await page.goto(rfiUrl(4))
+            await page.goto(rfiUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field-item').first()).toBeVisible({ timeout: 12000 })
             const btn = sandbox.locator('.origam-rating-field-item .origam-btn').first()
@@ -542,7 +542,7 @@ test.describe('OrigamRatingFieldItem', () => {
          * implemented, the assertion on origam-btn count must be updated to 0.
          */
         test('item slot variant: rating field is visible and default btns are still present (DS slot-routing bug noted)', async ({ page }) => {
-            await page.goto(rfiUrl(5))
+            await page.goto(rfiUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             // DS does not route #item slot → origam-btn still render inside items.
@@ -553,7 +553,7 @@ test.describe('OrigamRatingFieldItem', () => {
         })
 
         test('custom item slot: 5 rating-field-item wrappers still rendered (length=5)', async ({ page }) => {
-            await page.goto(rfiUrl(5))
+            await page.goto(rfiUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             // The visible items (in __content wrappers) should still be 5 — the slot
@@ -572,20 +572,20 @@ test.describe('OrigamRatingFieldItem', () => {
 
     test.describe('Default (playground)', () => {
         test('renders the item root in playground', async ({ page }) => {
-            await page.goto(rfiUrl(6))
+            await page.goto(rfiUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field-item').first()).toBeVisible({ timeout: 12000 })
         })
 
         test('isFilled=true → origam-btn is present', async ({ page }) => {
-            await page.goto(rfiUrl(6))
+            await page.goto(rfiUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field-item').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-rating-field-item .origam-btn').first()).toBeAttached()
         })
 
         test('native radio value matches value prop (3)', async ({ page }) => {
-            await page.goto(rfiUrl(6))
+            await page.goto(rfiUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field-item').first()).toBeVisible({ timeout: 12000 })
             const radioValue = await sandbox.locator('input[type="radio"]').first().getAttribute('value')

@@ -109,7 +109,7 @@ test.describe('OrigamSelect', () => {
 
     test.describe('Design', () => {
         test('renders root .origam-select with single/multiple modifier', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const select = sandbox.locator('.origam-select').first()
             await expect(select).toBeVisible({ timeout: 12000 })
@@ -117,7 +117,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('renders inner .origam-field and input', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const select = sandbox.locator('.origam-select').first()
             await expect(select).toBeVisible({ timeout: 12000 })
@@ -126,7 +126,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('label prop renders the field label', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const select = sandbox.locator('.origam-select').first()
             await expect(select).toBeVisible({ timeout: 12000 })
@@ -135,7 +135,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('menu-icon (.origam-select__menu-icon) is present as dropdown affordance', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const select = sandbox.locator('.origam-select').first()
             await expect(select).toBeVisible({ timeout: 12000 })
@@ -143,7 +143,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('clicking the field opens the dropdown list', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const select = sandbox.locator('.origam-select').first()
             await expect(select).toBeVisible({ timeout: 12000 })
@@ -153,7 +153,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('dropdown items render France / Germany / Spain from stringItems', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const select = sandbox.locator('.origam-select').first()
             await expect(select).toBeVisible({ timeout: 12000 })
@@ -166,7 +166,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('selecting an item renders the selection div (.origam-select__selection)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const select = sandbox.locator('.origam-select').first()
             await expect(select).toBeVisible({ timeout: 12000 })
@@ -187,7 +187,7 @@ test.describe('OrigamSelect', () => {
 
     test.describe('Functional', () => {
         test('renders in default state (no disabled/error class)', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const select = sandbox.locator('.origam-select').first()
             await expect(select).toBeVisible({ timeout: 12000 })
@@ -202,7 +202,7 @@ test.describe('OrigamSelect', () => {
 
     test.describe('Events', () => {
         test('update:modelValue — selecting an item fires the emit', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-emit-update"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -217,7 +217,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('update:menu — opening dropdown makes .origam-select--active-menu visible', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-emit-menu"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -230,7 +230,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('click:clear — clear button present and clickable on clearable select', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-emit-clear"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -252,7 +252,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('click:append — append icon rendered when appendIcon prop set', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-emit-click-append"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -261,7 +261,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('click:control — field is clickable (control surface present)', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-emit-click-control"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -269,7 +269,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('click:prepend — prepend icon rendered when prependIcon prop set', async ({ page }) => {
-            await page.goto(variantUrl(8))
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-emit-click-prepend"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -284,7 +284,7 @@ test.describe('OrigamSelect', () => {
 
     test.describe('Slots', () => {
         test('Slots - Loader — custom loader slot content renders', async ({ page }) => {
-            await page.goto(variantUrl(21))
+            await page.goto(variantUrl(21), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-slot-loader"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -293,7 +293,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('Slots - NoData — custom noData slot renders on open with empty items', async ({ page }) => {
-            await page.goto(variantUrl(22))
+            await page.goto(variantUrl(22), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-slot-no-data"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -305,7 +305,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('Slots - Chip — custom chip slot renders on multiple selection', async ({ page }) => {
-            await page.goto(variantUrl(23))
+            await page.goto(variantUrl(23), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-slot-chip"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -330,7 +330,7 @@ test.describe('OrigamSelect', () => {
         // Workaround: none headlessly. The story renders correctly when interacted
         // with in a real browser.
         test.fail('Slots - Selection — custom selection slot renders on multiple', async ({ page }) => {
-            await page.goto(variantUrl(24))
+            await page.goto(variantUrl(24), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-slot-selection"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -345,7 +345,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('Slots - Label — custom label slot renders', async ({ page }) => {
-            await page.goto(variantUrl(17))
+            await page.goto(variantUrl(17), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-slot-label"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -354,7 +354,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('Slots - Prefix — custom prefix slot renders inside the field', async ({ page }) => {
-            await page.goto(variantUrl(19))
+            await page.goto(variantUrl(19), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-slot-prefix"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -362,7 +362,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('Slots - Suffix — custom suffix slot renders inside the field', async ({ page }) => {
-            await page.goto(variantUrl(20))
+            await page.goto(variantUrl(20), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-slot-suffix"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -370,7 +370,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('Slots - Items.Prepend — prepend content renders at top of list', async ({ page }) => {
-            await page.goto(variantUrl(26))
+            await page.goto(variantUrl(26), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-slot-items-prepend"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -381,7 +381,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('Slots - Items.Append — append content renders at bottom of list', async ({ page }) => {
-            await page.goto(variantUrl(27))
+            await page.goto(variantUrl(27), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-slot-items-append"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -399,14 +399,14 @@ test.describe('OrigamSelect', () => {
 
     test.describe('Playground (Default)', () => {
         test('renders the select component', async ({ page }) => {
-            await page.goto(variantUrl(28))
+            await page.goto(variantUrl(28), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const select = sandbox.locator('[data-cy="select-playground"]')
             await expect(select).toBeVisible({ timeout: 12000 })
         })
 
         test('status div present and contains "value ="', async ({ page }) => {
-            await page.goto(variantUrl(28))
+            await page.goto(variantUrl(28), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const status = sandbox.locator('[data-cy="select-playground-status"]')
             await expect(status).toBeVisible({ timeout: 12000 })
@@ -414,7 +414,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('selecting an item updates the status binding', async ({ page }) => {
-            await page.goto(variantUrl(28))
+            await page.goto(variantUrl(28), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const select = sandbox.locator('[data-cy="select-playground"]')
             await expect(select).toBeVisible({ timeout: 12000 })
@@ -435,7 +435,7 @@ test.describe('OrigamSelect', () => {
 
     test.describe('dropdown surface', () => {
         test('menu width matches activator width', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const select = sandbox.locator('.origam-select').first()
             await expect(select).toBeVisible({ timeout: 12000 })
@@ -458,7 +458,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('dropdown is flush with activator (no top/left gap)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const select = sandbox.locator('.origam-select').first()
             await expect(select).toBeVisible({ timeout: 12000 })
@@ -481,7 +481,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('list items show cursor:pointer (clickable affordance)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const select = sandbox.locator('.origam-select').first()
             await expect(select).toBeVisible({ timeout: 12000 })
@@ -505,7 +505,7 @@ test.describe('OrigamSelect', () => {
         // sits on the control-height scale, so an unsized select renders the
         // `md` rung on both sides.
         test('dropdown list items render at the control height rung (36px)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const select = sandbox.locator('.origam-select').first()
             await expect(select).toBeVisible({ timeout: 12000 })
@@ -519,7 +519,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('list items have a visible hover state layer', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const select = sandbox.locator('.origam-select').first()
             await expect(select).toBeVisible({ timeout: 12000 })
@@ -557,7 +557,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('open animation uses OrigamExpandY transition', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const select = sandbox.locator('.origam-select').first()
             await expect(select).toBeVisible({ timeout: 12000 })
@@ -586,7 +586,7 @@ test.describe('OrigamSelect', () => {
         // was only called when isFocused=true. Fixed: icon handler only toggles when
         // already focused; unfocused clicks let the event bubble to handleMousedownControl.
         test('menu-icon first click stays open (no double-toggle regression)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const select = sandbox.locator('.origam-select').first()
             await expect(select).toBeVisible({ timeout: 12000 })
@@ -602,7 +602,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('menu-icon second click (already focused) closes the menu', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const select = sandbox.locator('.origam-select').first()
             await expect(select).toBeVisible({ timeout: 12000 })
@@ -621,7 +621,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('selection is not duplicated after re-focus (no double title in input)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const select = sandbox.locator('.origam-select').first()
             await expect(select).toBeVisible({ timeout: 12000 })
@@ -649,7 +649,7 @@ test.describe('OrigamSelect', () => {
             // possible headlessly. The Design variant (index 0) is a non-autocomplete select.
             // This test targets the Events - update:modelValue variant (index 2) which is
             // a plain select — verifying the layout contract for non-autocomplete mode.
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-emit-update"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -667,7 +667,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('loading=true (Slots - Loader variant) — custom loader slot text rendered', async ({ page }) => {
-            await page.goto(variantUrl(21))
+            await page.goto(variantUrl(21), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const field = sandbox.locator('[data-cy="select-slot-loader"]')
             await expect(field).toBeVisible({ timeout: 12000 })
@@ -687,7 +687,7 @@ test.describe('OrigamSelect', () => {
 
     test.describe('Loading', () => {
         test('Functional init-state: no loader present when loading=false', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const select = sandbox.locator('.origam-select').first()
             await expect(select).toBeVisible({ timeout: 12000 })
@@ -701,7 +701,7 @@ test.describe('OrigamSelect', () => {
         // Functional Variant pilot via the same shared helpers
         // (toggleHstCheckbox / selectHstOption) used throughout this suite.
         test('loading=true (bool) → default linear progress mounted', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const select = sandbox.locator('.origam-select').first()
             await expect(select).toBeVisible({ timeout: 12000 })
@@ -712,7 +712,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('loading={ type: "circular" } → circular progress mounted', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const select = sandbox.locator('.origam-select').first()
             await expect(select).toBeVisible({ timeout: 12000 })
@@ -723,7 +723,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('loading={ type: "skeleton" } → origam-skeleton replaces content', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const select = sandbox.locator('.origam-select').first()
             await expect(select).toBeVisible({ timeout: 12000 })
@@ -778,7 +778,7 @@ test.describe('OrigamSelect', () => {
         }
 
         test('density=compact cascades to the menu list', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-select').first()).toBeVisible({ timeout: 12000 })
 
@@ -790,7 +790,7 @@ test.describe('OrigamSelect', () => {
         })
 
         test('size=small cascades to the menu rows', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-select').first()).toBeVisible({ timeout: 12000 })
 
@@ -813,7 +813,7 @@ test.describe('OrigamSelect', () => {
             ['X-Large', 'Comfortable']
         ] as const) {
             test(`menu row matches the control height — size=${size} density=${density}`, async ({ page }) => {
-                await page.goto(variantUrl(0))
+                await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
                 const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
                 await expect(sandbox.locator('.origam-select').first()).toBeVisible({ timeout: 12000 })
 
@@ -832,7 +832,7 @@ test.describe('OrigamSelect', () => {
         // than the bug this suite guards. `OrigamSelect` therefore hands the
         // list an explicit `default` rung rather than forwarding `undefined`.
         test('menu row matches the control height — no size, no density', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-select').first()).toBeVisible({ timeout: 12000 })
 
@@ -852,7 +852,7 @@ test.describe('OrigamSelect', () => {
     test.describe('Teleported menu follows the field typography', () => {
         for (const fontSize of ['11px', '13px', '20px']) {
             test(`option text matches a field overridden to ${fontSize}`, async ({ page }) => {
-                await page.goto(variantUrl(0))
+                await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
                 const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
                 const select = sandbox.locator('.origam-select').first()
                 await expect(select).toBeVisible({ timeout: 12000 })

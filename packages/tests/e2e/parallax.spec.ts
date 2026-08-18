@@ -34,7 +34,7 @@ const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 test.describe('OrigamParallax — legacy element runtime', () => {
 
     test('event="move" — mouse movement translates the element', async ({ page }) => {
-        await page.goto(variantUrl(1))
+        await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const host = sandbox.locator('.origam-parallax').first()
@@ -65,7 +65,7 @@ test.describe('OrigamParallax — legacy element runtime', () => {
     })
 
     test('event="scroll" — window scroll translates the element', async ({ page }) => {
-        await page.goto(variantUrl(2))
+        await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const host = sandbox.locator('.origam-parallax').first()
@@ -91,7 +91,7 @@ test.describe('OrigamParallax — legacy element runtime', () => {
     })
 
     test('event="orientation" — deviceorientation translates the element', async ({ page }) => {
-        await page.goto(variantUrl(3))
+        await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const host = sandbox.locator('.origam-parallax').first()
@@ -123,7 +123,7 @@ test.describe('OrigamParallax — legacy element runtime', () => {
 test.describe('OrigamParallax — multi-layer (enriched)', () => {
 
     test('multi-layer — scroll translates 3 layers with different amplitudes', async ({ page }) => {
-        await page.goto(variantUrl(4))
+        await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const host = sandbox.locator('.origam-parallax').first()
@@ -170,7 +170,7 @@ test.describe('OrigamParallax — multi-layer (enriched)', () => {
     test('direction="horizontal" — translateX changes (not translateY)', async ({ page }) => {
         // Navigate directly to the dedicated "Prop — direction (horizontal)" variant (index 5)
         // which pre-sets direction=horizontal, avoiding brittle HstSelect interaction.
-        await page.goto(variantUrl(5))
+        await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const host = sandbox.locator('[data-cy="parallax-horizontal"]').first()
@@ -184,7 +184,7 @@ test.describe('OrigamParallax — multi-layer (enriched)', () => {
     })
 
     test('@enter / @leave — counters increment on scroll', async ({ page }) => {
-        await page.goto(variantUrl(6))
+        await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const display = sandbox.locator('.origam-parallax__layer').first()
@@ -233,7 +233,7 @@ test.describe('OrigamParallax — multi-layer (enriched)', () => {
         // only then convert to `test.fail` against the DS bug.
         test.fixme(true, 'LOCATOR DRIFT (2026-08-17): the story reports @scroll-progress via logEvent, not via [data-cy="scroll-progress"] — see the note above. The underlying DS bug (@scroll-progress not emitted when cssScrollDriven=true, Chrome 115+) is real but is NOT what this test currently measures.')
 
-        await page.goto(variantUrl(9))
+        await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const target = sandbox.locator('[data-cy="scroll-progress"]').first()
@@ -279,7 +279,7 @@ test.describe('OrigamParallax — multi-layer (enriched)', () => {
         // The gesture below is therefore the MOUSE one (same shape as the
         // `event="move"` test at the top of this file, which is what proves the
         // gesture actually moves the element when `disabled` is off).
-        await page.goto(variantUrl(1))
+        await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const host = sandbox.locator('.origam-parallax').first()
@@ -333,7 +333,7 @@ test.describe('OrigamParallax — multi-layer (enriched)', () => {
         // `isMoving` (which makes OrigamParallaxElement short-circuit to
         // {x: 0, y: 0}) can bring the element home. Drop that gate and this test
         // reddens; the other one does not.
-        await page.goto(variantUrl(1))
+        await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const host = sandbox.locator('.origam-parallax').first()
@@ -381,7 +381,7 @@ test.describe('OrigamParallax — multi-layer (enriched)', () => {
         test.skip(browserName !== 'chromium', 'reduced-motion reliable only on chromium')
 
         await page.emulateMedia({ reducedMotion: 'reduce' })
-        await page.goto(variantUrl(4))
+        await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const layers = sandbox.locator('.origam-parallax__layer')

@@ -100,19 +100,19 @@ test.describe('OrigamClipboard', () => {
 
     test.describe('Design — variant 0', () => {
         test('monte la racine .origam-clipboard', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             await waitForRoot(page)
         })
 
         test('rend le bouton trigger par défaut', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             await waitForRoot(page)
             const trigger = sandbox(page).locator('[data-cy="origam-clipboard-default-trigger"]').first()
             await expect(trigger).toBeVisible({ timeout: 8000 })
         })
 
         test('le trigger porte l\'aria-label "copy to clipboard" au repos', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             await waitForRoot(page)
             const trigger = sandbox(page).locator('[data-cy="origam-clipboard-default-trigger"]').first()
             await expect(trigger).toBeVisible({ timeout: 8000 })
@@ -120,7 +120,7 @@ test.describe('OrigamClipboard', () => {
         })
 
         test('le trigger n\'est pas désactivé (disabled=false par défaut)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             await waitForRoot(page)
             const trigger = sandbox(page).locator('[data-cy="origam-clipboard-default-trigger"]').first()
             await expect(trigger).toBeVisible({ timeout: 8000 })
@@ -128,7 +128,7 @@ test.describe('OrigamClipboard', () => {
         })
 
         test('après clic stubé, l\'aria-label flip à "copied"', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             await waitForRoot(page)
             const trigger = sandbox(page).locator('[data-cy="origam-clipboard-default-trigger"]').first()
             await expect(trigger).toBeVisible({ timeout: 8000 })
@@ -139,7 +139,7 @@ test.describe('OrigamClipboard', () => {
         })
 
         test('après clic stubé, writeText a reçu le payload arnaud@example.com', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             await waitForRoot(page)
             const trigger = sandbox(page).locator('[data-cy="origam-clipboard-default-trigger"]').first()
             await expect(trigger).toBeVisible({ timeout: 8000 })
@@ -152,7 +152,7 @@ test.describe('OrigamClipboard', () => {
         })
 
         test('la classe --copied apparaît sur le trigger après copie', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             await waitForRoot(page)
             const trigger = sandbox(page).locator('[data-cy="origam-clipboard-default-trigger"]').first()
             await expect(trigger).toBeVisible({ timeout: 8000 })
@@ -163,7 +163,7 @@ test.describe('OrigamClipboard', () => {
         })
 
         test('le label feedback .origam-clipboard__default-label apparaît après copie', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             await waitForRoot(page)
             const trigger = sandbox(page).locator('[data-cy="origam-clipboard-default-trigger"]').first()
             await expect(trigger).toBeVisible({ timeout: 8000 })
@@ -179,7 +179,7 @@ test.describe('OrigamClipboard', () => {
         })
 
         test('la classe --copied disparaît sur la racine après feedbackDuration (2 s)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const root = await waitForRoot(page)
             const trigger = sandbox(page).locator('[data-cy="origam-clipboard-default-trigger"]').first()
             await expect(trigger).toBeVisible({ timeout: 8000 })
@@ -202,7 +202,7 @@ test.describe('OrigamClipboard', () => {
 
     test.describe('Functional — variant 1', () => {
         test('le trigger est activé par défaut (disabled=false)', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             await waitForRoot(page)
             const trigger = sandbox(page).locator('[data-cy="origam-clipboard-default-trigger"]').first()
             await expect(trigger).toBeVisible({ timeout: 8000 })
@@ -210,7 +210,7 @@ test.describe('OrigamClipboard', () => {
         })
 
         test('la racine ne porte pas la classe --disabled (disabled=false par défaut)', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const root = await waitForRoot(page)
             await expect(root).not.toHaveClass(/origam-clipboard--disabled/)
         })
@@ -224,14 +224,14 @@ test.describe('OrigamClipboard', () => {
 
     test.describe('Events - copy — variant 2', () => {
         test('monte et affiche le trigger par défaut', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             await waitForRoot(page)
             const trigger = sandbox(page).locator('[data-cy="origam-clipboard-default-trigger"]').first()
             await expect(trigger).toBeVisible({ timeout: 8000 })
         })
 
         test('après clic stubé, feedback visuel + payload counter-payload', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const root = await waitForRoot(page)
             const trigger = sandbox(page).locator('[data-cy="origam-clipboard-default-trigger"]').first()
             await expect(trigger).toBeVisible({ timeout: 8000 })
@@ -258,7 +258,7 @@ test.describe('OrigamClipboard', () => {
 
     test.describe('Events - error — variant 3', () => {
         test('monte le bouton story-arm + le trigger clipboard', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             await waitForRoot(page)
             const arm     = sandbox(page).locator('button.story-arm').first()
             const trigger = sandbox(page).locator('[data-cy="origam-clipboard-default-trigger"]').first()
@@ -267,7 +267,7 @@ test.describe('OrigamClipboard', () => {
         })
 
         test('après armErrorMode + clic, le trigger reste en état non-copied', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const root    = await waitForRoot(page)
             const arm     = sandbox(page).locator('button.story-arm').first()
             const trigger = sandbox(page).locator('[data-cy="origam-clipboard-default-trigger"]').first()
@@ -282,7 +282,7 @@ test.describe('OrigamClipboard', () => {
         })
 
         test('après armErrorMode, writeText n\'enregistre aucun appel réussi', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             await waitForRoot(page)
             const arm     = sandbox(page).locator('button.story-arm').first()
             const trigger = sandbox(page).locator('[data-cy="origam-clipboard-default-trigger"]').first()
@@ -311,7 +311,7 @@ test.describe('OrigamClipboard', () => {
 
     test.describe('Slots - Default — variant 4', () => {
         test('le slot custom remplace le trigger par défaut', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             await waitForRoot(page)
             const sb        = sandbox(page)
             const customBtn = sb.locator('.origam-btn').first()
@@ -320,7 +320,7 @@ test.describe('OrigamClipboard', () => {
         })
 
         test('le slot affiche "Copy API key" au repos', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             await waitForRoot(page)
             const customBtn = sandbox(page).locator('.origam-btn').first()
             await expect(customBtn).toBeVisible({ timeout: 8000 })
@@ -328,7 +328,7 @@ test.describe('OrigamClipboard', () => {
         })
 
         test('après clic stubé, le slot reçoit copied=true → texte "Copied!"', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             await waitForRoot(page)
             const customBtn = sandbox(page).locator('.origam-btn').first()
             await expect(customBtn).toBeVisible({ timeout: 8000 })
@@ -356,7 +356,7 @@ test.describe('OrigamClipboard', () => {
 
     test.describe('Slots - Feedback — variant 5', () => {
         test('le trigger par défaut est rendu (slot #feedback ignoré — bug DS)', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             await waitForRoot(page)
             const trigger = sandbox(page).locator('[data-cy="origam-clipboard-default-trigger"]').first()
             await expect(trigger).toBeVisible({ timeout: 8000 })
@@ -366,7 +366,7 @@ test.describe('OrigamClipboard', () => {
         // Vue ignore le contenu → "Done!" n'est jamais rendu.
         // Déverrouiller quand le slot #feedback est ajouté au composant.
         test.fail('après clic, le slot #feedback affiche "Done!" [BUG DS: slot non implémenté]', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             await waitForRoot(page)
             const trigger = sandbox(page).locator('[data-cy="origam-clipboard-default-trigger"]').first()
             await expect(trigger).toBeVisible({ timeout: 8000 })
@@ -387,7 +387,7 @@ test.describe('OrigamClipboard', () => {
 
     test.describe('Default (playground) — variant 6', () => {
         test('monte la racine avec le trigger actif', async ({ page }) => {
-            await page.goto(variantUrl(6))
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             await waitForRoot(page)
             const trigger = sandbox(page).locator('[data-cy="origam-clipboard-default-trigger"]').first()
             await expect(trigger).toBeVisible({ timeout: 8000 })
@@ -395,7 +395,7 @@ test.describe('OrigamClipboard', () => {
         })
 
         test('clic copie arnaud@example.com et produit le feedback', async ({ page }) => {
-            await page.goto(variantUrl(6))
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             await waitForRoot(page)
             const trigger = sandbox(page).locator('[data-cy="origam-clipboard-default-trigger"]').first()
             await expect(trigger).toBeVisible({ timeout: 8000 })
@@ -410,7 +410,7 @@ test.describe('OrigamClipboard', () => {
         })
 
         test('feedback se réinitialise après feedbackDuration (2 s)', async ({ page }) => {
-            await page.goto(variantUrl(6))
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             await waitForRoot(page)
             const trigger = sandbox(page).locator('[data-cy="origam-clipboard-default-trigger"]').first()
             await expect(trigger).toBeVisible({ timeout: 8000 })

@@ -31,14 +31,14 @@ test.describe('OrigamDivider', () => {
 
     test.describe('Design', () => {
         test('renders the divider root with BEM class', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const divider = sandbox.locator('.origam-divider').first()
             await expect(divider).toBeVisible({ timeout: 12000 })
         })
 
         test('horizontal init-state applies origam-divider--horizontal class', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const divider = sandbox.locator('.origam-divider').first()
             await expect(divider).toBeVisible({ timeout: 12000 })
@@ -46,7 +46,7 @@ test.describe('OrigamDivider', () => {
         })
 
         test('horizontal divider has border-top-width of 1px (thin resolves)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const divider = sandbox.locator('.origam-divider').first()
             await expect(divider).toBeVisible({ timeout: 12000 })
@@ -55,7 +55,7 @@ test.describe('OrigamDivider', () => {
         })
 
         test('horizontal divider has border-right-width of 0px', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const divider = sandbox.locator('.origam-divider').first()
             await expect(divider).toBeVisible({ timeout: 12000 })
@@ -64,7 +64,7 @@ test.describe('OrigamDivider', () => {
         })
 
         test('divider rendered tag is hr', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const divider = sandbox.locator('.origam-divider').first()
             await expect(divider).toBeVisible({ timeout: 12000 })
@@ -73,7 +73,7 @@ test.describe('OrigamDivider', () => {
         })
 
         test('divider has role=separator', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const divider = sandbox.locator('.origam-divider').first()
             await expect(divider).toBeVisible({ timeout: 12000 })
@@ -81,7 +81,7 @@ test.describe('OrigamDivider', () => {
         })
 
         test('divider has aria-orientation=horizontal', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const divider = sandbox.locator('.origam-divider').first()
             await expect(divider).toBeVisible({ timeout: 12000 })
@@ -89,7 +89,7 @@ test.describe('OrigamDivider', () => {
         })
 
         test('divider max-width defaults to 100%', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const divider = sandbox.locator('.origam-divider').first()
             await expect(divider).toBeVisible({ timeout: 12000 })
@@ -100,7 +100,7 @@ test.describe('OrigamDivider', () => {
         })
 
         test('thickness inline CSS var overrides border-top-width', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const divider = sandbox.locator('.origam-divider').first()
             await expect(divider).toBeVisible({ timeout: 12000 })
@@ -114,7 +114,7 @@ test.describe('OrigamDivider', () => {
         })
 
         test('length inline CSS var constrains max-width', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const divider = sandbox.locator('.origam-divider').first()
             await expect(divider).toBeVisible({ timeout: 12000 })
@@ -128,7 +128,7 @@ test.describe('OrigamDivider', () => {
         })
 
         test('inset class adds margin-inline-start greater than 0', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const divider = sandbox.locator('.origam-divider').first()
             await expect(divider).toBeVisible({ timeout: 12000 })
@@ -142,7 +142,7 @@ test.describe('OrigamDivider', () => {
         })
 
         test('inset class token resolves to 16px by default', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const divider = sandbox.locator('.origam-divider').first()
             await expect(divider).toBeVisible({ timeout: 12000 })
@@ -164,7 +164,7 @@ test.describe('OrigamDivider', () => {
 
     test.describe('Vertical direction (SCSS rule verification)', () => {
         test('vertical class sets border-right-width via CSS var', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const divider = sandbox.locator('.origam-divider').first()
             await expect(divider).toBeVisible({ timeout: 12000 })
@@ -178,7 +178,7 @@ test.describe('OrigamDivider', () => {
         })
 
         test('vertical class sets border-top-width to 0px', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const divider = sandbox.locator('.origam-divider').first()
             await expect(divider).toBeVisible({ timeout: 12000 })
@@ -192,7 +192,7 @@ test.describe('OrigamDivider', () => {
         })
 
         test('vertical thickness CSS var overrides border-right-width', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const divider = sandbox.locator('.origam-divider').first()
             await expect(divider).toBeVisible({ timeout: 12000 })
@@ -207,7 +207,7 @@ test.describe('OrigamDivider', () => {
         })
 
         test('vertical inset adds margin-block-start greater than 0', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const divider = sandbox.locator('.origam-divider').first()
             await expect(divider).toBeVisible({ timeout: 12000 })
@@ -228,14 +228,14 @@ test.describe('OrigamDivider', () => {
 
     test.describe('Default (playground)', () => {
         test('playground variant renders divider root', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const divider = sandbox.locator('.origam-divider').first()
             await expect(divider).toBeVisible({ timeout: 12000 })
         })
 
         test('playground variant applies horizontal class by default', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const divider = sandbox.locator('.origam-divider').first()
             await expect(divider).toBeVisible({ timeout: 12000 })

@@ -69,13 +69,13 @@ test.describe('OrigamSnackbar', () => {
 
     test.describe('Design', () => {
         test('show btn renders before snackbar is open', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-btn').first()).toBeVisible(VIS)
         })
 
         test('clicking show btn makes the snackbar overlay visible', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible(VIS)
@@ -84,7 +84,7 @@ test.describe('OrigamSnackbar', () => {
         })
 
         test('snackbar root has origam-overlay--active after open', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible(VIS)
@@ -93,7 +93,7 @@ test.describe('OrigamSnackbar', () => {
         })
 
         test('text prop renders "Snackbar message" in the item message area', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await sandbox.locator('.origam-btn').first().click()
             await expect(
@@ -102,7 +102,7 @@ test.describe('OrigamSnackbar', () => {
         })
 
         test('bgColor=primary: wrapper has utility class origam--bg-primary', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await sandbox.locator('.origam-btn').first().click()
             await expect(sandbox.locator('.origam-snackbar__wrapper').first()).toBeVisible(VIS)
@@ -110,7 +110,7 @@ test.describe('OrigamSnackbar', () => {
         })
 
         test('bgColor=primary: computed background-color is non-transparent', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await sandbox.locator('.origam-btn').first().click()
             const wrapper = sandbox.locator('.origam-snackbar__wrapper').first()
@@ -123,7 +123,7 @@ test.describe('OrigamSnackbar', () => {
         })
 
         test('snackbar-item has role="status" for a11y', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await sandbox.locator('.origam-btn').first().click()
             const item = sandbox.locator('.origam-snackbar-item').first()
@@ -132,7 +132,7 @@ test.describe('OrigamSnackbar', () => {
         })
 
         test('snackbar-item has aria-live="polite" for a11y', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await sandbox.locator('.origam-btn').first().click()
             const item = sandbox.locator('.origam-snackbar-item').first()
@@ -148,13 +148,13 @@ test.describe('OrigamSnackbar', () => {
 
     test.describe('State', () => {
         test('renders the show btn in resting state', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-btn').first()).toBeVisible(VIS)
         })
 
         test('opening the snackbar shows the wrapper with bgColor=primary', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await sandbox.locator('.origam-btn').first().click()
             const wrapper = sandbox.locator('.origam-snackbar__wrapper').first()
@@ -163,7 +163,7 @@ test.describe('OrigamSnackbar', () => {
         })
 
         test('computed background-color matches the primary token', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await sandbox.locator('.origam-btn').first().click()
             const wrapper = sandbox.locator('.origam-snackbar__wrapper').first()
@@ -182,20 +182,20 @@ test.describe('OrigamSnackbar', () => {
 
     test.describe('Functional', () => {
         test('renders the show btn', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-btn').first()).toBeVisible(VIS)
         })
 
         test('clicking show btn opens the snackbar immediately', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await sandbox.locator('.origam-btn').first().click()
             await expect(sandbox.locator('.origam-snackbar')).toHaveClass(/origam-overlay--active/, VIS)
         })
 
         test('timer=false: no .origam-snackbar__timer element is rendered', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await sandbox.locator('.origam-btn').first().click()
             await expect(sandbox.locator('.origam-snackbar')).toBeVisible(VIS)
@@ -206,7 +206,7 @@ test.describe('OrigamSnackbar', () => {
         test('SCSS --multi-line: injecting the modifier class is reflected (SCSS rule exists)', async ({ page }) => {
             // Verify the SCSS modifier compiles correctly by injecting it programmatically
             // on the snackbar-item. We assert pointer-events are still auto (no breakage).
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await sandbox.locator('.origam-btn').first().click()
             const item = sandbox.locator('.origam-snackbar-item').first()
@@ -226,13 +226,13 @@ test.describe('OrigamSnackbar', () => {
 
     test.describe('Events - update:modelValue', () => {
         test('renders the show btn', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-btn').first()).toBeVisible(VIS)
         })
 
         test('clicking show btn opens the snackbar and emits update:modelValue (no throw)', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible(VIS)
@@ -242,7 +242,7 @@ test.describe('OrigamSnackbar', () => {
         })
 
         test('snackbar shows the event hint text', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await sandbox.locator('.origam-btn').first().click()
             await expect(
@@ -257,13 +257,13 @@ test.describe('OrigamSnackbar', () => {
 
     test.describe('Slots - Default', () => {
         test('renders the show btn', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-btn').first()).toBeVisible(VIS)
         })
 
         test('default slot content is rendered inside the snackbar', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await sandbox.locator('.origam-btn').first().click()
             const sb = sandbox.locator('.origam-snackbar')
@@ -280,13 +280,13 @@ test.describe('OrigamSnackbar', () => {
 
     test.describe('Slots - Prepend', () => {
         test('renders the show btn', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-btn').first()).toBeVisible(VIS)
         })
 
         test('prepend slot injects an icon into the prepend area', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await sandbox.locator('.origam-btn').first().click()
             await expect(sandbox.locator('.origam-snackbar')).toBeVisible(VIS)
@@ -297,7 +297,7 @@ test.describe('OrigamSnackbar', () => {
         })
 
         test('prepend slot text is shown alongside the prepend icon', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await sandbox.locator('.origam-btn').first().click()
             await expect(
@@ -312,13 +312,13 @@ test.describe('OrigamSnackbar', () => {
 
     test.describe('Slots - Text', () => {
         test('renders the show btn', async ({ page }) => {
-            await page.goto(variantUrl(6))
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-btn').first()).toBeVisible(VIS)
         })
 
         test('#text slot renders custom text content in the snackbar', async ({ page }) => {
-            await page.goto(variantUrl(6))
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await sandbox.locator('.origam-btn').first().click()
             await expect(sandbox.locator('.origam-snackbar')).toBeVisible(VIS)
@@ -334,13 +334,13 @@ test.describe('OrigamSnackbar', () => {
 
     test.describe('Slots - Action', () => {
         test('renders the show btn', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-btn').first()).toBeVisible(VIS)
         })
 
         test('#action slot renders an Undo button inside the actions area', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await sandbox.locator('.origam-btn').first().click()
             await expect(sandbox.locator('.origam-snackbar')).toBeVisible(VIS)
@@ -355,7 +355,7 @@ test.describe('OrigamSnackbar', () => {
         })
 
         test('#action slot adds --with-actions modifier on snackbar-item', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await sandbox.locator('.origam-btn').first().click()
             await expect(
@@ -364,7 +364,7 @@ test.describe('OrigamSnackbar', () => {
         })
 
         test('Undo click does not throw (closes snackbar via isActive=false)', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await sandbox.locator('.origam-btn').first().click()
             await expect(sandbox.locator('.origam-snackbar')).toBeVisible(VIS)
@@ -383,13 +383,13 @@ test.describe('OrigamSnackbar', () => {
 
     test.describe('Default (playground)', () => {
         test('renders the show btn', async ({ page }) => {
-            await page.goto(variantUrl(8))
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-btn').first()).toBeVisible(VIS)
         })
 
         test('clicking show btn opens the snackbar', async ({ page }) => {
-            await page.goto(variantUrl(8))
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await sandbox.locator('.origam-btn').first().click()
             await expect(
@@ -398,7 +398,7 @@ test.describe('OrigamSnackbar', () => {
         })
 
         test('playground snackbar displays the init text', async ({ page }) => {
-            await page.goto(variantUrl(8))
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await sandbox.locator('.origam-btn').first().click()
             await expect(
@@ -419,7 +419,7 @@ test.describe('OrigamSnackbar', () => {
 
     test.describe('Timer bar (SCSS)', () => {
         test('SCSS: .origam-snackbar__timer rule declares position:absolute', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await sandbox.locator('.origam-btn').first().click()
             await expect(sandbox.locator('.origam-snackbar')).toBeVisible(VIS)
@@ -445,7 +445,7 @@ test.describe('OrigamSnackbar', () => {
             // The shorthand `animation` property's animation-name longhand is not always
             // accessible via getPropertyValue('animation-name') on CSSStyleDeclaration;
             // we match against the raw cssText instead.
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await sandbox.locator('.origam-btn').first().click()
             await expect(sandbox.locator('.origam-snackbar')).toBeVisible(VIS)
@@ -474,7 +474,7 @@ test.describe('OrigamSnackbar', () => {
 
     test.describe('Location modifiers (SCSS)', () => {
         test('--top: snackbar root gets align-items: flex-start', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await sandbox.locator('.origam-btn').first().click()
             await expect(sandbox.locator('.origam-snackbar')).toBeVisible(VIS)
@@ -487,7 +487,7 @@ test.describe('OrigamSnackbar', () => {
         })
 
         test('--bottom (default location): snackbar item carries the origam-snackbar--bottom class', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await sandbox.locator('.origam-btn').first().click()
             await expect(

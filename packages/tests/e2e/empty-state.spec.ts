@@ -77,14 +77,14 @@ test.describe('OrigamEmptyState', () => {
 
     test.describe('Design', () => {
         test('root element mounts with BEM class origam-empty-state', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
         })
 
         test('root carries role=status and aria-live=polite', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
@@ -93,7 +93,7 @@ test.describe('OrigamEmptyState', () => {
         })
 
         test('size=md applies modifier class origam-empty-state--size-md', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
@@ -101,7 +101,7 @@ test.describe('OrigamEmptyState', () => {
         })
 
         test('align=center applies modifier class origam-empty-state--align-center', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
@@ -109,7 +109,7 @@ test.describe('OrigamEmptyState', () => {
         })
 
         test('preset=no-data applies modifier class origam-empty-state--preset-no-data', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
@@ -117,7 +117,7 @@ test.describe('OrigamEmptyState', () => {
         })
 
         test('preset=no-data applies intent modifier class origam-empty-state--intent-neutral', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
@@ -125,7 +125,7 @@ test.describe('OrigamEmptyState', () => {
         })
 
         test('icon container is present and aria-hidden=true', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
@@ -135,7 +135,7 @@ test.describe('OrigamEmptyState', () => {
         })
 
         test('preset=no-data icon contains the mdi-database-off-outline class', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
@@ -144,7 +144,7 @@ test.describe('OrigamEmptyState', () => {
         })
 
         test('title prop renders the label in .origam-empty-state__title', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
@@ -155,7 +155,7 @@ test.describe('OrigamEmptyState', () => {
         })
 
         test('description prop renders in .origam-empty-state__description', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
@@ -166,7 +166,7 @@ test.describe('OrigamEmptyState', () => {
         })
 
         test('size=md icon font-size resolves to 64px (token default)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
@@ -194,7 +194,7 @@ test.describe('OrigamEmptyState', () => {
          * there for details; do not fold it into this same explanation.
          */
         test('preset=error applies intent-danger and mdi-alert-circle-outline', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
@@ -205,7 +205,7 @@ test.describe('OrigamEmptyState', () => {
         })
 
         test('preset=offline applies intent-warning and mdi-wifi-off', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
@@ -216,7 +216,7 @@ test.describe('OrigamEmptyState', () => {
         })
 
         test('preset=locked applies intent-secondary and mdi-lock-outline', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
@@ -258,7 +258,7 @@ test.describe('OrigamEmptyState', () => {
          * re-disable without re-measuring.
          */
         test('size=sm icon font-size is smaller than size=md', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
@@ -271,7 +271,7 @@ test.describe('OrigamEmptyState', () => {
         })
 
         test('size=lg icon font-size is larger than size=md', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
@@ -293,7 +293,7 @@ test.describe('OrigamEmptyState', () => {
 
     test.describe('Functional', () => {
         test('root element renders as <div> when tag=div', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
@@ -302,7 +302,7 @@ test.describe('OrigamEmptyState', () => {
         })
 
         test('title and description are rendered from props', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
@@ -313,7 +313,7 @@ test.describe('OrigamEmptyState', () => {
         })
 
         test('ARIA contract is preserved on the functional variant', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
@@ -329,7 +329,7 @@ test.describe('OrigamEmptyState', () => {
 
     test.describe('Slots - Icon', () => {
         test('custom SVG slot replaces the default glyph', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             // The story renders a single OrigamEmptyState without any id/cy attribute.
             const iconContainer = sandbox.locator('.origam-empty-state__icon').first()
@@ -341,7 +341,7 @@ test.describe('OrigamEmptyState', () => {
         })
 
         test('#icon slot: the built-in origam-icon glyph is NOT rendered', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const iconContainer = sandbox.locator('.origam-empty-state__icon').first()
             await expect(iconContainer).toBeVisible({ timeout: 20000 })
@@ -351,7 +351,7 @@ test.describe('OrigamEmptyState', () => {
         })
 
         test('#icon slot: title and description are still rendered', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
@@ -371,7 +371,7 @@ test.describe('OrigamEmptyState', () => {
 
     test.describe('Slots - Title', () => {
         test('#title slot: custom markup rendered inside .origam-empty-state__title', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
@@ -385,7 +385,7 @@ test.describe('OrigamEmptyState', () => {
         })
 
         test('#title slot: description from prop is still rendered', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
@@ -402,7 +402,7 @@ test.describe('OrigamEmptyState', () => {
 
     test.describe('Slots - Description', () => {
         test('#description slot: custom markup rendered inside .origam-empty-state__description', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
@@ -416,7 +416,7 @@ test.describe('OrigamEmptyState', () => {
         })
 
         test('#description slot: title from prop is still rendered', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
@@ -434,7 +434,7 @@ test.describe('OrigamEmptyState', () => {
 
     test.describe('Slots - Actions', () => {
         test('#actions slot: actions container is rendered', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             // Both instances are in the page; first one has 1 action
             const firstRoot = sandbox.locator('.origam-empty-state').first()
@@ -444,7 +444,7 @@ test.describe('OrigamEmptyState', () => {
         })
 
         test('#actions slot — 1 action: single button is rendered', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const firstRoot = sandbox.locator('.origam-empty-state').first()
             await expect(firstRoot).toBeVisible({ timeout: 20000 })
@@ -456,7 +456,7 @@ test.describe('OrigamEmptyState', () => {
         })
 
         test('#actions slot — 2 actions: both buttons rendered in second instance', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             // Second OrigamEmptyState in the story (index 1)
             const secondRoot = sandbox.locator('.origam-empty-state').nth(1)
@@ -467,7 +467,7 @@ test.describe('OrigamEmptyState', () => {
         })
 
         test('#actions slot — 2 actions: labels are "Create project" and "Import CSV"', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const secondRoot = sandbox.locator('.origam-empty-state').nth(1)
             await expect(secondRoot).toBeVisible({ timeout: 20000 })
@@ -488,7 +488,7 @@ test.describe('OrigamEmptyState', () => {
 
     test.describe('Slots - Default', () => {
         test('default slot: built-in icon is NOT rendered', async ({ page }) => {
-            await page.goto(variantUrl(6))
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
@@ -496,7 +496,7 @@ test.describe('OrigamEmptyState', () => {
         })
 
         test('default slot: built-in title block is NOT rendered', async ({ page }) => {
-            await page.goto(variantUrl(6))
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
@@ -504,7 +504,7 @@ test.describe('OrigamEmptyState', () => {
         })
 
         test('default slot: built-in description block is NOT rendered', async ({ page }) => {
-            await page.goto(variantUrl(6))
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
@@ -512,7 +512,7 @@ test.describe('OrigamEmptyState', () => {
         })
 
         test('default slot: custom content is visible inside the root', async ({ page }) => {
-            await page.goto(variantUrl(6))
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
@@ -523,7 +523,7 @@ test.describe('OrigamEmptyState', () => {
         })
 
         test('default slot: root still carries role=status and aria-live=polite', async ({ page }) => {
-            await page.goto(variantUrl(6))
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
@@ -541,14 +541,14 @@ test.describe('OrigamEmptyState', () => {
 
     test.describe('Default (playground)', () => {
         test('playground: component mounts with origam-empty-state root class', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
         })
 
         test('playground: init state title and description are rendered', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
@@ -561,7 +561,7 @@ test.describe('OrigamEmptyState', () => {
         })
 
         test('playground: ARIA contract present on root', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })

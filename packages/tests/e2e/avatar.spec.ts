@@ -55,7 +55,7 @@ test.describe('OrigamAvatar', () => {
     // ------------------------------------------------------------------ //
 
     test('Design — BEM class, bgColor token, size, text content, three avatars', async ({ page }) => {
-        await page.goto(variantUrl(0))
+        await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const firstAvatar = sandbox.locator('.origam-avatar').first()
 
@@ -105,7 +105,7 @@ test.describe('OrigamAvatar', () => {
     // ------------------------------------------------------------------ //
 
     test('State — resting: bgColor token, non-transparent bg, wrapper present', async ({ page }) => {
-        await page.goto(variantUrl(1))
+        await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const avatar = sandbox.locator('.origam-avatar').first()
         await expect(avatar).toBeVisible({ timeout: 20000 })
@@ -128,7 +128,7 @@ test.describe('OrigamAvatar', () => {
     // ------------------------------------------------------------------ //
 
     test('Functional — tag=div as root, text "AP" rendered', async ({ page }) => {
-        await page.goto(variantUrl(2))
+        await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const avatar = sandbox.locator('.origam-avatar').first()
         await expect(avatar).toBeVisible({ timeout: 20000 })
@@ -146,7 +146,7 @@ test.describe('OrigamAvatar', () => {
     // ------------------------------------------------------------------ //
 
     test('Events - update:active — button-tagged, clickable without error', async ({ page }) => {
-        await page.goto(variantUrl(3))
+        await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const avatar = sandbox.locator('.origam-avatar').first()
         await expect(avatar).toBeVisible({ timeout: 20000 })
@@ -166,7 +166,7 @@ test.describe('OrigamAvatar', () => {
     // ------------------------------------------------------------------ //
 
     test('Events - update:hover — button-tagged, hoverable without error', async ({ page }) => {
-        await page.goto(variantUrl(4))
+        await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const avatar = sandbox.locator('.origam-avatar').first()
         await expect(avatar).toBeVisible({ timeout: 20000 })
@@ -184,7 +184,7 @@ test.describe('OrigamAvatar', () => {
     // ------------------------------------------------------------------ //
 
     test('Slots - Default — custom content renders inside wrapper', async ({ page }) => {
-        await page.goto(variantUrl(5))
+        await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const avatar = sandbox.locator('.origam-avatar').first()
         await expect(avatar).toBeVisible({ timeout: 20000 })
@@ -201,7 +201,7 @@ test.describe('OrigamAvatar', () => {
     // ------------------------------------------------------------------ //
 
     test('Slots - Avatar — avatar renders with bg-color=primary, token resolves', async ({ page }) => {
-        await page.goto(variantUrl(6))
+        await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const avatar = sandbox.locator('.origam-avatar').first()
         await expect(avatar).toBeVisible({ timeout: 20000 })
@@ -221,7 +221,7 @@ test.describe('OrigamAvatar', () => {
     // ------------------------------------------------------------------ //
 
     test('Slots - Icon — __icon wrapper and origam-icon element present', async ({ page }) => {
-        await page.goto(variantUrl(7))
+        await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const avatar = sandbox.locator('.origam-avatar').first()
         await expect(avatar).toBeVisible({ timeout: 20000 })
@@ -237,7 +237,7 @@ test.describe('OrigamAvatar', () => {
     // ------------------------------------------------------------------ //
 
     test('Slots - Text — custom label "Custom" with italic font-style', async ({ page }) => {
-        await page.goto(variantUrl(8))
+        await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const avatar = sandbox.locator('.origam-avatar').first()
         await expect(avatar).toBeVisible({ timeout: 20000 })
@@ -266,7 +266,7 @@ test.describe('OrigamAvatar', () => {
     // ------------------------------------------------------------------ //
 
     test('Default (playground) — text "AP", bgColor primary, hover wired', async ({ page }) => {
-        await page.goto(variantUrl(15))
+        await page.goto(variantUrl(15), { waitUntil: 'domcontentloaded' })
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const avatar = sandbox.locator('.origam-avatar').first()
         await expect(avatar).toBeVisible({ timeout: 20000 })

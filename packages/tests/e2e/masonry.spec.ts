@@ -52,7 +52,7 @@ test.describe('OrigamMasonry', () => {
     test.beforeAll(async ({ browser }) => {
         const ctx = await browser.newContext()
         const page = await ctx.newPage()
-        await page.goto(variantUrl(0))
+        await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         await sandbox.locator('.origam-masonry').first().waitFor({ state: 'visible', timeout: WARM_TIMEOUT })
         await ctx.close()
@@ -65,14 +65,14 @@ test.describe('OrigamMasonry', () => {
 
     test.describe('Design', () => {
         test('renders the masonry root with BEM class', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-masonry').first()
             await expect(root).toBeVisible({ timeout: 30000 })
         })
 
         test('root carries role="list" (a11y)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-masonry').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -80,7 +80,7 @@ test.describe('OrigamMasonry', () => {
         })
 
         test('Chromium headless uses the JS path (.origam-masonry--js)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-masonry').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -88,7 +88,7 @@ test.describe('OrigamMasonry', () => {
         })
 
         test('JS path: 9 preview cards are wrapped in .origam-masonry__item', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
             const items = sandbox.locator('.origam-masonry__item')
@@ -96,7 +96,7 @@ test.describe('OrigamMasonry', () => {
         })
 
         test('each .origam-masonry__item carries role="listitem"', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
             const firstItem = sandbox.locator('.origam-masonry__item').first()
@@ -104,7 +104,7 @@ test.describe('OrigamMasonry', () => {
         })
 
         test('JS path: items are positioned absolutely (bucket-fill layout)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
             // Allow one rAF for the first relayout to fire
@@ -116,7 +116,7 @@ test.describe('OrigamMasonry', () => {
         })
 
         test('columns=3: items distribute into 3 distinct horizontal positions', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
             await page.waitForTimeout(300)
@@ -136,7 +136,7 @@ test.describe('OrigamMasonry', () => {
         })
 
         test('--origam-masonry---resolved-gap is set on the root (token bridge)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-masonry').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -147,7 +147,7 @@ test.describe('OrigamMasonry', () => {
         })
 
         test('Design variant uses component default animated=true (.origam-masonry--animated present)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-masonry').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -164,14 +164,14 @@ test.describe('OrigamMasonry', () => {
 
     test.describe('Functional', () => {
         test('renders 16 cards as masonry items', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
             await expect(sandbox.locator('.origam-masonry__item')).toHaveCount(16, { timeout: 8000 })
         })
 
         test('animated=true: .origam-masonry--animated class is present', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-masonry').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -179,7 +179,7 @@ test.describe('OrigamMasonry', () => {
         })
 
         test('animated=true: items carry a non-zero transition declaration', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
             await page.waitForTimeout(200)
@@ -192,7 +192,7 @@ test.describe('OrigamMasonry', () => {
         })
 
         test('columns=3: 16 items distributed into 3 horizontal columns', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
             await page.waitForTimeout(300)
@@ -211,7 +211,7 @@ test.describe('OrigamMasonry', () => {
         })
 
         test('JS layout: container height CSS var is set and > 0', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-masonry').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -225,7 +225,7 @@ test.describe('OrigamMasonry', () => {
         })
 
         test('shuffle button reorders items in the DOM', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
             await page.waitForTimeout(300)
@@ -253,14 +253,14 @@ test.describe('OrigamMasonry', () => {
 
     test.describe('Slots - Default', () => {
         test('slot renders 9 cards as masonry items', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
             await expect(sandbox.locator('.origam-masonry__item')).toHaveCount(9, { timeout: 8000 })
         })
 
         test('slot content is rendered inside each item wrapper', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
             // Each item wraps a .card div from the slot
@@ -276,21 +276,21 @@ test.describe('OrigamMasonry', () => {
 
     test.describe('Default (playground)', () => {
         test('playground renders the masonry root', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-masonry').first()
             await expect(root).toBeVisible({ timeout: 30000 })
         })
 
         test('playground: 16 items are rendered', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
             await expect(sandbox.locator('.origam-masonry__item')).toHaveCount(16, { timeout: 8000 })
         })
 
         test('playground: gap token resolves to a non-empty CSS value', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-masonry').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -301,7 +301,7 @@ test.describe('OrigamMasonry', () => {
         })
 
         test('playground shuffle button reorders items', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-masonry').first()).toBeVisible({ timeout: 30000 })
             await page.waitForTimeout(300)

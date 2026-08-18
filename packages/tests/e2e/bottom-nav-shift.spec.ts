@@ -43,7 +43,7 @@ test.describe('OrigamBottomNav — shift mode', () => {
     test.setTimeout(45000)
 
     test('selected button keeps its label visible; non-selected labels fade + slide', async ({ page }) => {
-        await page.goto(designUrl)
+        await page.goto(designUrl, { waitUntil: 'domcontentloaded' })
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 
         const nav = sandbox.locator('.origam-bottom-nav').first()

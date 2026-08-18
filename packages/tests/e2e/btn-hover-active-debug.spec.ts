@@ -28,7 +28,7 @@ test('DEBUG btn — hover and active produce DIFFERENT bg colors for primary int
     // bg-color="primary" — this is the only Variant where colorStyles
     // emits an inline background-color that changes per state
     // (rest / hover / active via tokenStylesForIntent + bgRole).
-    await page.goto(variantUrl(3))
+    await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
 
     const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 

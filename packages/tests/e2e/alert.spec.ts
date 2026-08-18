@@ -60,14 +60,14 @@ test.describe('OrigamAlert', () => {
 
     test.describe('Design', () => {
         test('renders the alert root with BEM class', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
         })
 
         test('default role is "status" (no status prop)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
@@ -76,7 +76,7 @@ test.describe('OrigamAlert', () => {
         })
 
         test('text prop renders "Alert message." in the body', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
@@ -84,7 +84,7 @@ test.describe('OrigamAlert', () => {
         })
 
         test('default density class is applied (density-default)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
@@ -92,7 +92,7 @@ test.describe('OrigamAlert', () => {
         })
 
         test('alert is active by default (modelValue=true → origam-alert--active class)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
@@ -100,7 +100,7 @@ test.describe('OrigamAlert', () => {
         })
 
         test('underlay element is present in the DOM', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
@@ -108,7 +108,7 @@ test.describe('OrigamAlert', () => {
         })
 
         test('content area is present in the DOM', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
@@ -129,7 +129,7 @@ test.describe('OrigamAlert', () => {
             // useStateEffect returns colorClasses=[] when isActive=true (classes-first rule).
             // Background is owned by useStyle (injected <style> tag via colorStyles), not a utility class.
             // We assert via getComputedStyle rather than a class assertion.
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
@@ -139,7 +139,7 @@ test.describe('OrigamAlert', () => {
         })
 
         test('bgColor=info produces a non-transparent background', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
@@ -149,7 +149,7 @@ test.describe('OrigamAlert', () => {
         })
 
         test('renders hover instruction text', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
@@ -164,7 +164,7 @@ test.describe('OrigamAlert', () => {
 
     test.describe('Functional', () => {
         test('renders with modelValue=true (active + visible)', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
@@ -172,7 +172,7 @@ test.describe('OrigamAlert', () => {
         })
 
         test('closable=false: close button is absent in initial state', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
@@ -181,7 +181,7 @@ test.describe('OrigamAlert', () => {
         })
 
         test('SCSS --density-comfortable: adding the class sets density to -8px', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
@@ -194,7 +194,7 @@ test.describe('OrigamAlert', () => {
         })
 
         test('SCSS --density-compact: adding the class sets density to 8px', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
@@ -207,7 +207,7 @@ test.describe('OrigamAlert', () => {
         })
 
         test('SCSS --density-default: density variable is 0px', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
@@ -218,7 +218,7 @@ test.describe('OrigamAlert', () => {
         })
 
         test('SCSS --warning: injecting status class sets a non-empty background-color variable', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
@@ -231,7 +231,7 @@ test.describe('OrigamAlert', () => {
         })
 
         test('SCSS --rounded: adding class produces a non-zero border-radius', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
@@ -250,7 +250,7 @@ test.describe('OrigamAlert', () => {
 
     test.describe('Events - click:close', () => {
         test('renders a closable alert with the close button', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
@@ -258,7 +258,7 @@ test.describe('OrigamAlert', () => {
         })
 
         test('clicking the close button does not throw', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const closeBtn = sandbox.locator('[data-cy="close"]').first()
             await expect(closeBtn).toBeVisible(VIS)
@@ -268,7 +268,7 @@ test.describe('OrigamAlert', () => {
 
     test.describe('Events - update:hover', () => {
         test('renders an alert with hover instruction text', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
@@ -276,7 +276,7 @@ test.describe('OrigamAlert', () => {
         })
 
         test('hovering over the alert does not throw', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
@@ -287,7 +287,7 @@ test.describe('OrigamAlert', () => {
 
     test.describe('Events - update:modelValue', () => {
         test('renders a closable alert for dismiss interaction', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
@@ -299,7 +299,7 @@ test.describe('OrigamAlert', () => {
             // The alert stays active after click; the emit is an Histoire-internal side-effect
             // that cannot be observed from the outer page. We verify the close button is present
             // and the click does not throw.
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
@@ -316,7 +316,7 @@ test.describe('OrigamAlert', () => {
 
     test.describe('Slots - Default', () => {
         test('default slot renders custom content', async ({ page }) => {
-            await page.goto(variantUrl(6))
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
@@ -326,7 +326,7 @@ test.describe('OrigamAlert', () => {
 
     test.describe('Slots - Title', () => {
         test('title slot renders custom strong element in the title area', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
@@ -337,7 +337,7 @@ test.describe('OrigamAlert', () => {
 
     test.describe('Slots - Text', () => {
         test('text slot renders custom italic content in the body', async ({ page }) => {
-            await page.goto(variantUrl(8))
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
@@ -348,7 +348,7 @@ test.describe('OrigamAlert', () => {
 
     test.describe('Slots - Prepend', () => {
         test('prepend slot renders an origam-icon in the prepend area', async ({ page }) => {
-            await page.goto(variantUrl(9))
+            await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
@@ -359,7 +359,7 @@ test.describe('OrigamAlert', () => {
 
     test.describe('Slots - Append', () => {
         test('append slot renders an origam-icon in the append area', async ({ page }) => {
-            await page.goto(variantUrl(10))
+            await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
@@ -370,7 +370,7 @@ test.describe('OrigamAlert', () => {
 
     test.describe('Slots - Close', () => {
         test('close slot renders a custom origam-icon; default data-cy="close" btn is absent', async ({ page }) => {
-            await page.goto(variantUrl(11))
+            await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
@@ -383,7 +383,7 @@ test.describe('OrigamAlert', () => {
 
     test.describe('Slots - Wrapper', () => {
         test('wrapper slot replaces default layout; origam-alert__content is absent', async ({ page }) => {
-            await page.goto(variantUrl(12))
+            await page.goto(variantUrl(12), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
@@ -400,14 +400,14 @@ test.describe('OrigamAlert', () => {
 
     test.describe('Default (playground)', () => {
         test('renders the alert root with BEM class', async ({ page }) => {
-            await page.goto(variantUrl(13))
+            await page.goto(variantUrl(13), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
         })
 
         test('default role is "status" (no status prop)', async ({ page }) => {
-            await page.goto(variantUrl(13))
+            await page.goto(variantUrl(13), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
@@ -416,7 +416,7 @@ test.describe('OrigamAlert', () => {
         })
 
         test('alert is active by default (modelValue implicit true → --active class)', async ({ page }) => {
-            await page.goto(variantUrl(13))
+            await page.goto(variantUrl(13), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
@@ -424,7 +424,7 @@ test.describe('OrigamAlert', () => {
         })
 
         test('text prop renders "Alert message." in the body', async ({ page }) => {
-            await page.goto(variantUrl(13))
+            await page.goto(variantUrl(13), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)

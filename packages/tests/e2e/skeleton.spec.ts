@@ -46,14 +46,14 @@ test.describe('OrigamSkeleton', () => {
 
     test.describe('Design', () => {
         test('renders the skeleton root with BEM class', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const el = sandbox.locator('.origam-skeleton').first()
             await expect(el).toBeVisible({ timeout: 12000 })
         })
 
         test('variant=rectangular applies the modifier class', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const el = sandbox.locator('.origam-skeleton').first()
             await expect(el).toBeVisible({ timeout: 12000 })
@@ -61,7 +61,7 @@ test.describe('OrigamSkeleton', () => {
         })
 
         test('width and height are applied as inline styles', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const el = sandbox.locator('.origam-skeleton').first()
             await expect(el).toBeVisible({ timeout: 12000 })
@@ -73,7 +73,7 @@ test.describe('OrigamSkeleton', () => {
         })
 
         test('loading=true makes the skeleton visible (aria-busy)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const el = sandbox.locator('.origam-skeleton').first()
             await expect(el).toBeVisible({ timeout: 12000 })
@@ -82,7 +82,7 @@ test.describe('OrigamSkeleton', () => {
         })
 
         test('skeleton has a non-transparent background color from DS token', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const el = sandbox.locator('.origam-skeleton').first()
             await expect(el).toBeVisible({ timeout: 12000 })
@@ -145,14 +145,14 @@ test.describe('OrigamSkeleton', () => {
 
     test.describe('Functional', () => {
         test('loading=true renders the skeleton element (not the slot)', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const el = sandbox.locator('.origam-skeleton').first()
             await expect(el).toBeVisible({ timeout: 12000 })
         })
 
         test('pulse=true adds origam-skeleton--pulse class', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const el = sandbox.locator('.origam-skeleton').first()
             await expect(el).toBeVisible({ timeout: 12000 })
@@ -160,7 +160,7 @@ test.describe('OrigamSkeleton', () => {
         })
 
         test('variant=text applies the text modifier class', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const el = sandbox.locator('.origam-skeleton').first()
             await expect(el).toBeVisible({ timeout: 12000 })
@@ -170,7 +170,7 @@ test.describe('OrigamSkeleton', () => {
         test('variant=text with no height prop uses CSS token height (not inline)', async ({ page }) => {
             // init-state has no height → resolvedHeight resolves to CSS var
             // → inline style "height" must NOT be set as a pixel value by JS
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const el = sandbox.locator('.origam-skeleton').first()
             await expect(el).toBeVisible({ timeout: 12000 })
@@ -183,7 +183,7 @@ test.describe('OrigamSkeleton', () => {
         })
 
         test('slot content is hidden when loading=true', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             // Positive readiness gate FIRST, at the canonical 12000 budget of this
             // spec family. Without it the assertion below is vacuous: `not.toBeVisible`
@@ -196,7 +196,7 @@ test.describe('OrigamSkeleton', () => {
         })
 
         test('role=status and aria-busy=true present on loading skeleton', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const el = sandbox.locator('.origam-skeleton').first()
             await expect(el).toBeVisible({ timeout: 12000 })
@@ -207,7 +207,7 @@ test.describe('OrigamSkeleton', () => {
         })
 
         test('aria-label="Loading" present on skeleton element', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const el = sandbox.locator('.origam-skeleton').first()
             await expect(el).toBeVisible({ timeout: 12000 })
@@ -223,7 +223,7 @@ test.describe('OrigamSkeleton', () => {
 
     test.describe('Slots - Default', () => {
         test('loading=false renders slot content instead of skeleton', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             // The story renders: <span>Custom slot content visible when not loading</span>
             const slot = sandbox.locator('span').filter({ hasText: 'Custom slot content visible when not loading' })
@@ -231,7 +231,7 @@ test.describe('OrigamSkeleton', () => {
         })
 
         test('loading=false — no .origam-skeleton element in the DOM', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const slot = sandbox.locator('span').filter({ hasText: 'Custom slot content visible when not loading' })
             await expect(slot).toBeVisible({ timeout: 12000 })
@@ -283,7 +283,7 @@ test.describe('OrigamSkeleton', () => {
         test('single-block variants (rectangular) render .origam-skeleton root — not a wrapper', async ({ page }) => {
             // Verifies that rectangular (and by extension text/circular) use
             // the v-else branch → root element IS .origam-skeleton, NOT .origam-skeleton-wrapper
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const el = sandbox.locator('.origam-skeleton').first()
             await expect(el).toBeVisible({ timeout: 12000 })
@@ -299,7 +299,7 @@ test.describe('OrigamSkeleton', () => {
 
     test.describe('Default playground', () => {
         test('renders with combined init-state: text variant, pulse, loading', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const el = sandbox.locator('.origam-skeleton').first()
             await expect(el).toBeVisible({ timeout: 12000 })
@@ -308,7 +308,7 @@ test.describe('OrigamSkeleton', () => {
         })
 
         test('width=200 from init-state is applied (200px)', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const el = sandbox.locator('.origam-skeleton').first()
             await expect(el).toBeVisible({ timeout: 12000 })

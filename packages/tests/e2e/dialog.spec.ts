@@ -98,13 +98,13 @@ test.describe('OrigamDialog', () => {
 
 	test.describe('Design (index 0)', () => {
 		test('activateur .origam-btn est visible dans la sandbox', async ({ page }) => {
-			await page.goto(variantUrl(0))
+			await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			await expect(sandbox.locator('.origam-btn').first()).toBeVisible({ timeout: 35000 })
 		})
 
 		test('aria-haspopup="dialog" est posé sur l activateur avant ouverture', async ({ page }) => {
-			await page.goto(variantUrl(0))
+			await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const activator = sandbox.locator('.origam-btn').first()
 			await expect(activator).toBeVisible({ timeout: 35000 })
@@ -113,7 +113,7 @@ test.describe('OrigamDialog', () => {
 		})
 
 		test('aria-expanded passe de false a true au clic de l activateur', async ({ page }) => {
-			await page.goto(variantUrl(0))
+			await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { activator } = await openDialog(page, sandbox)
 			const ariaExpanded = await activator.evaluate(el => el.getAttribute('aria-expanded'))
@@ -121,14 +121,14 @@ test.describe('OrigamDialog', () => {
 		})
 
 		test('le contenu .origam-overlay__content apparait au clic', async ({ page }) => {
-			await page.goto(variantUrl(0))
+			await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
 			await expect(overlayContent).toBeVisible()
 		})
 
 		test('la card interne porte role="dialog" et aria-modal="true"', async ({ page }) => {
-			await page.goto(variantUrl(0))
+			await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			await openDialog(page, sandbox)
 			const card = sandbox.locator('[role="dialog"]')
@@ -138,7 +138,7 @@ test.describe('OrigamDialog', () => {
 		})
 
 		test('le root overlay porte la classe origam-dialog apres ouverture', async ({ page }) => {
-			await page.goto(variantUrl(0))
+			await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			await openDialog(page, sandbox)
 			const dialogRoot = sandbox.locator('.origam-dialog')
@@ -147,7 +147,7 @@ test.describe('OrigamDialog', () => {
 		})
 
 		test('fermeture via le bouton Close — dialog dispara t apres clic', async ({ page }) => {
-			await page.goto(variantUrl(0))
+			await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
 
@@ -158,7 +158,7 @@ test.describe('OrigamDialog', () => {
 		})
 
 		test('fermeture via clic en dehors — dialog dispara t apres click outside', async ({ page }) => {
-			await page.goto(variantUrl(0))
+			await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
 
@@ -178,14 +178,14 @@ test.describe('OrigamDialog', () => {
 
 	test.describe('Functional (index 1)', () => {
 		test('le dialog s ouvre au clic sur l activateur', async ({ page }) => {
-			await page.goto(variantUrl(1))
+			await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
 			await expect(overlayContent).toBeVisible()
 		})
 
 		test('le titre du dialog est presente dans le card-header', async ({ page }) => {
-			await page.goto(variantUrl(1))
+			await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			await openDialog(page, sandbox)
 			const header = sandbox.locator('.origam-card-header')
@@ -194,7 +194,7 @@ test.describe('OrigamDialog', () => {
 		})
 
 		test('fermeture via Escape — dialog dispara t apres la touche Escape', async ({ page }) => {
-			await page.goto(variantUrl(1))
+			await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
 			await page.keyboard.press('Escape')
@@ -202,7 +202,7 @@ test.describe('OrigamDialog', () => {
 		})
 
 		test('le contenu liste 8 lignes via la prop Content slot', async ({ page }) => {
-			await page.goto(variantUrl(1))
+			await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			await openDialog(page, sandbox)
 			// La variant Functional contient : <p v-for="n in 8">Line {{ n }} of content.</p>
@@ -217,7 +217,7 @@ test.describe('OrigamDialog', () => {
 
 	test.describe('Events - update:modelValue (index 2)', () => {
 		test('activateur porte aria-haspopup="dialog" et texte descriptif', async ({ page }) => {
-			await page.goto(variantUrl(2))
+			await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const activator = sandbox.locator('.origam-btn').first()
 			await expect(activator).toBeVisible({ timeout: 35000 })
@@ -227,7 +227,7 @@ test.describe('OrigamDialog', () => {
 		})
 
 		test('aria-expanded reflate l etat du dialog (proxy de l emit update:modelValue)', async ({ page }) => {
-			await page.goto(variantUrl(2))
+			await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const activator = sandbox.locator('.origam-btn').first()
 			await expect(activator).toBeVisible({ timeout: 35000 })
@@ -248,7 +248,7 @@ test.describe('OrigamDialog', () => {
 
 	test.describe('Events - isRead (index 3)', () => {
 		test('activateur visible et dialog s ouvre', async ({ page }) => {
-			await page.goto(variantUrl(3))
+			await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
 			await expect(overlayContent).toBeVisible()
@@ -261,14 +261,14 @@ test.describe('OrigamDialog', () => {
 
 	test.describe('Events - click:outside (index 4)', () => {
 		test('activateur visible et dialog s ouvre', async ({ page }) => {
-			await page.goto(variantUrl(4))
+			await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
 			await expect(overlayContent).toBeVisible()
 		})
 
 		test('clic en dehors ferme le dialog non-persistent', async ({ page }) => {
-			await page.goto(variantUrl(4))
+			await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
 
@@ -286,7 +286,7 @@ test.describe('OrigamDialog', () => {
 
 	test.describe('Slots - Activator (index 5)', () => {
 		test('le slot #activator rend un bouton personnalise', async ({ page }) => {
-			await page.goto(variantUrl(5))
+			await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const btn = sandbox.locator('.origam-btn').first()
 			await expect(btn).toBeVisible({ timeout: 35000 })
@@ -294,7 +294,7 @@ test.describe('OrigamDialog', () => {
 		})
 
 		test('le dialog s ouvre depuis le slot activateur custom', async ({ page }) => {
-			await page.goto(variantUrl(5))
+			await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
 			await expect(overlayContent).toBeVisible()
@@ -308,7 +308,7 @@ test.describe('OrigamDialog', () => {
 
 	test.describe('Slots - Asset (index 6)', () => {
 		test('le dialog s ouvre et l icone asset est presente', async ({ page }) => {
-			await page.goto(variantUrl(6))
+			await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
 			await expect(overlayContent).toBeVisible()
@@ -325,7 +325,7 @@ test.describe('OrigamDialog', () => {
 
 	test.describe('Slots - Content (index 7)', () => {
 		test('le slot #content rend du contenu personnalise', async ({ page }) => {
-			await page.goto(variantUrl(7))
+			await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
 			await expect(overlayContent).toContainText('Custom content slot.')
@@ -339,7 +339,7 @@ test.describe('OrigamDialog', () => {
 
 	test.describe('Slots - Default (index 8)', () => {
 		test('le slot #default rend du contenu directement dans l overlay', async ({ page }) => {
-			await page.goto(variantUrl(8))
+			await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
 			await expect(overlayContent).toContainText('Custom default slot content.')
@@ -353,7 +353,7 @@ test.describe('OrigamDialog', () => {
 
 	test.describe('Slots - Footer (index 9)', () => {
 		test('le slot #footer rend deux boutons (Cancel + Confirm)', async ({ page }) => {
-			await page.goto(variantUrl(9))
+			await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
 			// La variant footer expose deux boutons Cancel + Confirm
@@ -362,7 +362,7 @@ test.describe('OrigamDialog', () => {
 		})
 
 		test('Cancel ferme le dialog', async ({ page }) => {
-			await page.goto(variantUrl(9))
+			await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
 			const cancelBtn = sandbox.locator('.origam-btn').filter({ hasText: 'Cancel' }).first()
@@ -379,7 +379,7 @@ test.describe('OrigamDialog', () => {
 
 	test.describe('Slots - Header (index 10)', () => {
 		test('le slot #header rend un header personnalise', async ({ page }) => {
-			await page.goto(variantUrl(10))
+			await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
 			await expect(overlayContent).toContainText('Custom header slot')
@@ -393,7 +393,7 @@ test.describe('OrigamDialog', () => {
 
 	test.describe('Slots - Header Append (index 11)', () => {
 		test('le dialog s ouvre avec le header-append slot', async ({ page }) => {
-			await page.goto(variantUrl(11))
+			await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
 			await expect(overlayContent).toBeVisible()
@@ -408,7 +408,7 @@ test.describe('OrigamDialog', () => {
 
 	test.describe('Slots - Header Content (index 12)', () => {
 		test('le dialog s ouvre depuis la variant Slots-Header Content', async ({ page }) => {
-			await page.goto(variantUrl(12))
+			await page.goto(variantUrl(12), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
 			await expect(overlayContent).toBeVisible()
@@ -428,7 +428,7 @@ test.describe('OrigamDialog', () => {
 		 * Ticket de remédiation : corriger `OrigamCard` pour router ce slot.
 		 */
 		test.fail('le slot #header-content rend du markup personnalise dans le header [DS BUG - OrigamCard ne route pas #header-content]', async ({ page }) => {
-			await page.goto(variantUrl(12))
+			await page.goto(variantUrl(12), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
 			await expect(overlayContent).toContainText('Custom header-content slot')
@@ -442,14 +442,14 @@ test.describe('OrigamDialog', () => {
 
 	test.describe('Slots - Header Prepend (index 13)', () => {
 		test('le dialog s ouvre avec le header-prepend slot', async ({ page }) => {
-			await page.goto(variantUrl(13))
+			await page.goto(variantUrl(13), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
 			await expect(overlayContent).toBeVisible()
 		})
 
 		test('le texte du header inclut le titre With prepend icon', async ({ page }) => {
-			await page.goto(variantUrl(13))
+			await page.goto(variantUrl(13), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
 			await expect(overlayContent).toContainText('With prepend icon')
@@ -463,7 +463,7 @@ test.describe('OrigamDialog', () => {
 
 	test.describe('Slots - Header Subtitle (index 14)', () => {
 		test('le dialog s ouvre et affiche le titre With subtitle', async ({ page }) => {
-			await page.goto(variantUrl(14))
+			await page.goto(variantUrl(14), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
 			// Le titre de la story est "With subtitle" — c'est ce qui est rendu
@@ -481,7 +481,7 @@ test.describe('OrigamDialog', () => {
 		 * Ticket de remédiation : corriger `OrigamCard` pour router ce slot.
 		 */
 		test.fail('le slot #header-subtitle rend du contenu dans la zone sous-titre [DS BUG - OrigamCard ne route pas #header-subtitle]', async ({ page }) => {
-			await page.goto(variantUrl(14))
+			await page.goto(variantUrl(14), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
 			await expect(overlayContent).toContainText('Custom subtitle slot')
@@ -495,7 +495,7 @@ test.describe('OrigamDialog', () => {
 
 	test.describe('Slots - Header Title (index 15)', () => {
 		test('le dialog s ouvre depuis la variant Slots-Header Title', async ({ page }) => {
-			await page.goto(variantUrl(15))
+			await page.goto(variantUrl(15), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
 			await expect(overlayContent).toBeVisible()
@@ -517,7 +517,7 @@ test.describe('OrigamDialog', () => {
 		 * Ticket de remédiation : corriger `OrigamCard` pour router #header-title.
 		 */
 		test.fail('le slot #header-title rend du markup riche dans le titre [DS BUG - OrigamCard ne route pas #header-title]', async ({ page }) => {
-			await page.goto(variantUrl(15))
+			await page.goto(variantUrl(15), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
 			const strong = overlayContent.locator('strong')
@@ -532,7 +532,7 @@ test.describe('OrigamDialog', () => {
 
 	test.describe('Slots - Loader (index 16)', () => {
 		test('le dialog s ouvre depuis la variant Slots-Loader', async ({ page }) => {
-			await page.goto(variantUrl(16))
+			await page.goto(variantUrl(16), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
 			await expect(overlayContent).toBeVisible()
@@ -546,7 +546,7 @@ test.describe('OrigamDialog', () => {
 
 	test.describe('Slots - Text (index 17)', () => {
 		test('le slot #text rend du contenu personnalise', async ({ page }) => {
-			await page.goto(variantUrl(17))
+			await page.goto(variantUrl(17), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
 			await expect(overlayContent).toContainText('Custom text slot content.')
@@ -561,7 +561,7 @@ test.describe('OrigamDialog', () => {
 
 	test.describe('Default / Playground (index 18)', () => {
 		test('activateur visible avec le texte Open playground', async ({ page }) => {
-			await page.goto(variantUrl(18))
+			await page.goto(variantUrl(18), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const btn = sandbox.locator('.origam-btn').first()
 			await expect(btn).toBeVisible({ timeout: 35000 })
@@ -569,7 +569,7 @@ test.describe('OrigamDialog', () => {
 		})
 
 		test('le dialog s ouvre et affiche le titre Dialog', async ({ page }) => {
-			await page.goto(variantUrl(18))
+			await page.goto(variantUrl(18), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
 			await expect(overlayContent).toBeVisible()
@@ -578,7 +578,7 @@ test.describe('OrigamDialog', () => {
 		})
 
 		test('le dialog se ferme via le bouton Close', async ({ page }) => {
-			await page.goto(variantUrl(18))
+			await page.goto(variantUrl(18), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
 			const closeBtn = sandbox.locator('.origam-btn').filter({ hasText: 'Close' }).first()
@@ -588,7 +588,7 @@ test.describe('OrigamDialog', () => {
 		})
 
 		test('aria-haspopup="dialog" est posé sur l activateur du playground', async ({ page }) => {
-			await page.goto(variantUrl(18))
+			await page.goto(variantUrl(18), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const activator = sandbox.locator('.origam-btn').first()
 			await expect(activator).toBeVisible({ timeout: 35000 })
