@@ -117,7 +117,6 @@ semantics: `role="button"`, `cursor: pointer`, no `aria-hidden`.
 interface IIconComponentProps extends IIconProps,
     IColorProps, ICommonsComponentProps, ITagProps,
     ISizeProps, IPaddingProps, IMarginProps, IBorderProps {
-    disabled?: boolean
 }
 
 interface IIconProps {

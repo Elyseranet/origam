@@ -101,19 +101,15 @@
 
 		<Variant
 				title="Functional"
-				:init-state="() => useStoryInitState<Partial<IIconComponentProps>>({ tag: 'div', disabled: false })"
+				:init-state="() => useStoryInitState<Partial<IIconComponentProps>>({ tag: 'div' })"
 		>
 			<template #default="{ state }">
 				<origam-svg-icon
 						:icon="SVG_PATH_HEART"
 						:tag="state.tag"
-						:disabled="state.disabled"
 				/>
 			</template>
 			<template #controls="{ state }">
-				<StoryGroup title="States">
-					<HstCheckbox v-model="state.disabled" title="Disabled"/>
-				</StoryGroup>
 				<StoryGroup title="Tag">
 					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
 				</StoryGroup>
@@ -174,7 +170,6 @@
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstSelect   v-model="state.tag"      title="Tag"      :options="TAG_OPTIONS"/>
-					<HstCheckbox v-model="state.disabled" title="Disabled"/>
 				</StoryGroup>
 			</template>
 		</Variant>

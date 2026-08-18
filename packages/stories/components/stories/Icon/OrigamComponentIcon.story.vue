@@ -72,7 +72,6 @@
 			<template #default="{ state }">
 				<origam-component-icon
 						:icon="StarSvgComponent"
-						:disabled="state.disabled"
 						:tag="state.tag"
 						:size="state.size"
 						:padding="state.padding"
@@ -92,9 +91,6 @@
 				/>
 			</template>
 			<template #controls="{ state }">
-				<StoryGroup title="States">
-					<HstCheckbox v-model="state.disabled" title="Disabled"/>
-				</StoryGroup>
 				<StoryGroup title="Tag">
 					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
 				</StoryGroup>
@@ -183,7 +179,6 @@
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstSelect   v-model="state.tag"      title="Tag"      :options="TAG_OPTIONS"/>
-					<HstCheckbox v-model="state.disabled" title="Disabled"/>
 				</StoryGroup>
 			</template>
 		</Variant>

@@ -76,7 +76,6 @@
 				<origam-ligature-icon
 						:icon="state.icon"
 						:tag="state.tag"
-						:disabled="state.disabled"
 						:padding="state.padding"
 						:padding-top="state.paddingTop"
 						:padding-right="state.paddingRight"
@@ -95,9 +94,6 @@
 				/>
 			</template>
 			<template #controls="{ state }">
-				<StoryGroup title="States">
-					<HstCheckbox v-model="state.disabled" title="Disabled"/>
-				</StoryGroup>
 				<StoryGroup title="Tag">
 					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
 				</StoryGroup>
@@ -186,7 +182,6 @@
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstSelect   v-model="state.tag"      title="Tag"      :options="TAG_OPTIONS"/>
-					<HstCheckbox v-model="state.disabled" title="Disabled"/>
 				</StoryGroup>
 			</template>
 		</Variant>

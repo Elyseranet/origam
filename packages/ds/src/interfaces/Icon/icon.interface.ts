@@ -17,8 +17,18 @@ export interface IIconProps {
     icon?: TIcon
 }
 
+/**
+ * Surface de props partagée par `<OrigamIcon>` et ses quatre feuilles de
+ * rendu (`ClassIcon`, `ComponentIcon`, `LigatureIcon`, `SvgIcon`).
+ *
+ * ⚠️ PAS de prop `disabled` ici, et c'est délibéré. Elle y a été déclarée
+ * puis retirée : aucun des cinq composants ne la lisait, et une icône est
+ * un élément de rendu, pas un élément interactif — il n'y a rien à
+ * désactiver. Un état désactivé se peint sur le contrôle qui PORTE l'icône
+ * (bouton, champ, item de liste), pas sur l'icône elle-même, qui hérite
+ * alors naturellement de son opacité et de son curseur.
+ */
 export interface IIconComponentProps extends IIconProps, IColorProps, IBgColorProps, ICommonsComponentProps, ITagProps, ISizeProps, IPaddingProps, IMarginProps, IBorderProps, IDimensionProps, IRoundedProps {
-    disabled?: boolean
 }
 
 /** Slot signatures shared by `<OrigamIcon>` and `<OrigamComponentIcon>` —

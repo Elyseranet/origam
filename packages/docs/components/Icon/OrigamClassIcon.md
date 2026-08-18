@@ -84,7 +84,6 @@ resolves every surface axis itself.
 | `width` / `height` / `min*` / `max*` | `number \| string` | Dimension axis. |
 | `class` | `string \| string[] \| object` | Merged into the root class list. |
 | `style` | `string \| string[] \| object` | Merged into the root style. |
-| `disabled` | `boolean` | **Declared but not consumed** — see the note below. |
 
 ::: tip Behaviour change
 These axes used to be a no-op at the leaf level: `OrigamIcon` resolved them
@@ -98,12 +97,20 @@ is no double application — the dispatcher forwards only `icon`, `size`,
 `tag`, `class` and `style`.
 :::
 
-::: warning `disabled` does nothing
-`disabled` reaches this component through `IIconComponentProps` but is not
-read anywhere — no class, no attribute, no style. The same holds for
-`OrigamIcon`, `OrigamSvgIcon`, `OrigamLigatureIcon` and `OrigamComponentIcon`;
-all five are recorded in the `unconsumed-props` guard baseline. To grey out an
-icon, drive `color` or wrap it in the disabled control that owns it.
+::: tip There is no `disabled` prop
+An icon renders; it does not respond to input. There is nothing on it to
+disable, so the whole family — `OrigamIcon`, `OrigamClassIcon`,
+`OrigamSvgIcon`, `OrigamLigatureIcon`, `OrigamComponentIcon` — deliberately
+exposes no `disabled`.
+
+A `disabled` prop did exist on `IIconComponentProps` up to v2.15. None of the
+five components ever read it: it produced no class, no attribute and no style,
+and passing it did nothing at all. It was removed rather than implemented.
+
+Paint the disabled state on the control that OWNS the icon — the button, the
+field, the list item. The icon then inherits its opacity and cursor for free,
+which is also what keeps a single control from showing two different disabled
+treatments. For a one-off greyed icon, drive `color`.
 :::
 
 ## Anatomy

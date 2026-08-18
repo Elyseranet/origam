@@ -62,13 +62,9 @@
 				<origam-icon
 						:icon="state.icon"
 						:tag="state.tag"
-						:disabled="state.disabled"
 				/>
 			</template>
 			<template #controls="{ state }">
-				<StoryGroup title="States">
-					<HstCheckbox v-model="state.disabled" title="Disabled"/>
-				</StoryGroup>
 				<StoryGroup title="Tag">
 					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
 				</StoryGroup>
@@ -154,7 +150,6 @@
 					<HstSelect v-model="state.border"  title="Border"   :options="BORDER_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
-					<HstCheckbox v-model="state.disabled" title="Disabled"/>
 					<HstSelect   v-model="state.tag"      title="Tag" :options="TAG_OPTIONS"/>
 				</StoryGroup>
 			</template>
