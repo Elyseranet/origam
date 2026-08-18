@@ -185,6 +185,11 @@ test.describe('OrigamSkeleton', () => {
         test('slot content is hidden when loading=true', async ({ page }) => {
             await page.goto(variantUrl(1))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            // Positive readiness gate FIRST, at the canonical 12000 budget of this
+            // spec family. Without it the assertion below is vacuous: `not.toBeVisible`
+            // resolves instantly while the sandbox is still empty, so the test passed
+            // even when pointed at a variant index that does not exist (measured).
+            await expect(sandbox.locator('.origam-skeleton').first()).toBeVisible({ timeout: 12000 })
             // The slot "<p>Content loaded</p>" should not be visible
             const slotContent = sandbox.locator('p').filter({ hasText: 'Content loaded' })
             await expect(slotContent).not.toBeVisible()

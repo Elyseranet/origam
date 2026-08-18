@@ -119,6 +119,11 @@ test.describe('OrigamPagination', () => {
         await page.goto(variantUrl(17))
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        // Positive readiness gate FIRST — `toHaveCount(0)` is satisfied by an empty
+        // DOM, so without it the test passed against a variant index that does not
+        // exist (measured, 547 ms). The 12000 budget below never bit: a negative
+        // assertion resolves on the first poll, it is not a waiting budget.
+        await expect(sandbox.locator('[data-cy="pagination-compact-input"]')).toBeVisible({ timeout: 12000 })
         // No page-number items (buttons with aria-label "Go to page N")
         const pageItems = sandbox.locator('.origam-pagination__item')
         await expect(pageItems).toHaveCount(0, { timeout: 12000 })
