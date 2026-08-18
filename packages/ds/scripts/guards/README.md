@@ -14,18 +14,19 @@ below from getting worse. The existing debt is grandfathered in a baseline
 ## Run locally
 
 ```bash
-pnpm -F origam guards                    # all five
-pnpm -F origam guards:declarations       # guard 1 only
-pnpm -F origam guards:variant-css        # guard 2 only
-pnpm -F origam guards:instance-types     # guard 3 only
-pnpm -F origam guards:naming             # guard 4 only
-pnpm -F origam guards:unconsumed-props   # guard 5 only
+pnpm -F origam guards                      # all seven
+pnpm -F origam guards:declarations         # guard 1 only
+pnpm -F origam guards:variant-css          # guard 2 only
+pnpm -F origam guards:instance-types       # guard 3 only
+pnpm -F origam guards:naming               # guard 4 only
+pnpm -F origam guards:unconsumed-props     # guard 5 only
+pnpm -F origam guards:emits-completeness   # guard 7 only
 ```
 
 No build step required — every guard parses `.vue`/`.ts`/`.scss` source
 text directly. The full suite runs in under a second.
 
-## The five guards
+## The seven guards
 
 | # | Script | Rule | Baseline size |
 |---|---|---|---|
@@ -34,6 +35,8 @@ text directly. The full suite runs in under a second.
 | 3 | `instance-types.mjs` | Every `Origam{Name}.vue` has a matching `TOrigam{Name} = InstanceType<typeof Origam{Name}>` under `src/types/` | 63 |
 | 4 | `file-naming.mjs` | `enum`/`type` filenames resolve (by longest-prefix match) to a real component name | 21 |
 | 5 | `unconsumed-props.mjs` | Every declared prop reaches the render or the behaviour — the project's "bug n°1", a documented prop that silently does nothing | 1663 |
+| 6 | `raw-props-usage.mjs` | `_props` may only feed `useDefaults()` | 0 |
+| 7 | `emits-completeness.mjs` | Every REACHABLE `update:*` — including those a relay composable emits on the component's behalf — is declared by its emits interface | 5 |
 
 Guard 5's baseline is an order of magnitude larger than the others, and
 **72 % of it is one defect**: three cross-cutting `Commons` interfaces
@@ -66,6 +69,43 @@ mis-classified as a local read. The correction is documented in the script
 header, together with why the original precision measurement failed to
 catch it (the forwarding-heavy components are overlays, which render
 nothing while closed and were therefore outside the measured population).
+
+### Guard 7 — precision, and why the reachability filter is the whole point
+
+`emits-completeness` is cross-validated against a runtime sweep, not merely
+reviewed. Every one of its 5 baselined findings was mounted and made to
+emit: **precision 100 % (5/5, zero false positives)**. Two of the five are
+corroborated by Vue's own dev warning (`OrigamSelect`, `OrigamDrawer`); the
+other three emit in total silence because they have no `defineEmits` at all
+— with `emitsOptions === null`, Vue never warns, whatever the component
+emits. That silent class is exactly what the guard exists to see.
+
+**The reachability filter is what makes it usable.** A naive "does this
+component call a relay with `props`?" sweep returns 20 candidates for 7 real
+defects — **precision 35 %, measured**, not estimated. Requiring the write
+path to actually exist (`onActive` destructured for `useActive`; the
+`useVModel` ref written or `v-model`-bound) is what lifts it to 100 %.
+Without that filter the guard would push authors to declare emits "just in
+case", which is a **behaviour change, not neutral hygiene**: declaring an
+emit a component never fires removes its handler from `$attrs` and so
+changes what `inheritAttrs` puts on the root element.
+
+Two false-positive traps were found and fixed while measuring, both worth
+knowing before touching the detection logic:
+
+- **Empty single-line interface bodies.** `export interface IXEmits extends
+  IYEmits {}` has no `\n}`, so a lazy `\{([\s\S]*?)\n\}` body regex ran on
+  to a LATER interface's closing brace and swallowed its declaration. Any
+  component whose interface got swallowed resolved to an EMPTY declared set
+  and was flagged. `OrigamColorPicker` was reported this way and is in fact
+  correct — `IColorPickerEmits extends IColorModeEmits` does declare
+  `update:mode`. The body is now delimited by brace counting.
+- **A probe that never reaches the write path.** `OrigamDrawer` looked clean
+  under a mount-and-click probe and was wrongly cleared by hand; its write
+  lives in `watch(isTemporary, …)`, so only flipping `temporary` false→true
+  reaches it. The guard was right and the manual sweep was wrong. Same trap
+  as the empty-`OrigamForm` mount described in
+  `packages/tests/TU/origam/relay-emits-declaration.spec.ts`.
 
 Each script's file header explains its detection method, the false-positive
 trap it specifically avoids, and (guards 1 and 4) the scoping decision made

@@ -21,7 +21,8 @@ const GUARDS = [
     'instance-types.mjs',
     'file-naming.mjs',
     'unconsumed-props.mjs',
-    'raw-props-usage.mjs'
+    'raw-props-usage.mjs',
+    'emits-completeness.mjs'
 ]
 
 let failed = 0
