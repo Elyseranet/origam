@@ -147,6 +147,18 @@
 			</div>
 		</Variant>
 
+		<Variant title="Events - update:modelValue">
+			<div style="padding: 24px;">
+				<origam-btn text="Open" @click="emitModelValueOpen = true"/>
+				<origam-dialog-confirmation
+						v-model="emitModelValueOpen"
+						title="Watch update:modelValue"
+						text="Validate or Cancel — both close the dialog and emit the new value."
+						@update:model-value="logEvent('update:modelValue', $event)"
+				/>
+			</div>
+		</Variant>
+
 		<Variant title="Slots - Default">
 			<div style="padding: 24px;">
 				<origam-btn text="Open default slot" @click="slotDefaultOpen = true"/>
@@ -424,6 +436,7 @@
 	const functionalOpen       = ref(false)
 	const emitValidateOpen     = ref(false)
 	const emitCancelOpen       = ref(false)
+	const emitModelValueOpen   = ref(false)
 	const slotDefaultOpen      = ref(false)
 	const slotActivatorOpen    = ref(false)
 	const slotAssetOpen        = ref(false)

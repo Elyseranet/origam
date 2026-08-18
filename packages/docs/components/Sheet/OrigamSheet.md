@@ -84,6 +84,14 @@ needs.
 </template>
 ```
 
+## Events
+
+| Name | Payload | When |
+|---|---|---|
+| `update:snap` | `TSheetSnapId` | The gesture or `snapTo()` settles on a new snap point. |
+| `update:open` | `boolean` | The sheet crosses the closed / non-closed boundary. |
+| `update:active` | `boolean` | v-model companion of the `active` prop — emitted on click and on `Enter` / `Space`, via `useActive`. |
+
 ## Slots
 
 | Slot | Slot props | Description |

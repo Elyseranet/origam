@@ -170,6 +170,22 @@
 			</div>
 		</Variant>
 
+		<Variant title="Events - update:active">
+			<div style="position: relative; height: 320px; background: var(--origam-color__surface---overlay, #f5f5f5); overflow: hidden; border-radius: 8px;">
+				<origam-sheet
+						side="bottom"
+						default-snap="peek"
+						elevation="lg"
+						style="background: var(--origam-color__surface---default);"
+						@update:active="logEvent('update:active', $event)"
+				>
+					<div style="padding: 16px;">
+						<p>Click or press Enter / Space on the sheet — watch the log</p>
+					</div>
+				</origam-sheet>
+			</div>
+		</Variant>
+
 		<Variant title="Slots - Default">
 			<origam-sheet border rounded style="padding: 16px;">
 				<strong>Custom default slot</strong>

@@ -1,3 +1,5 @@
+import type { IActiveEmits } from '../../interfaces'
+
 import type { TSheetSnapId } from '../../types'
 
 /**
@@ -9,8 +11,13 @@ import type { TSheetSnapId } from '../../types'
  * - `update:open` is the v-model:open companion — emitted on the
  *   closed/non-closed boundary so two-way binding stays consistent
  *   when the user dismisses via swipe-down.
+ * - `update:active` vient de `useActive(props)` : `onActive()` est câblé
+ *   sur le clic ET sur `keydown.enter` / `keydown.space` du template, et
+ *   écrit dans le v-model `active`. L'émission partait sans être
+ *   déclarée. Prouvé au runtime dans
+ *   `packages/tests/TU/origam/relay-emits-declaration.spec.ts`.
  */
-export interface ISheetEmits {
+export interface ISheetEmits extends IActiveEmits {
     (e: 'update:snap', id: TSheetSnapId): void
 
     (e: 'update:open', value: boolean): void

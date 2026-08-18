@@ -58,6 +58,7 @@ an orange dot. When the match is `live` and `to` is set, a red
 | `click`            | `(match, ev: MouseEvent)` — fired on the card (not a row)    |
 | `competitor-click` | `(competitor, match, side: 'A' \| 'B', ev)`                  |
 | `winner-click`     | `(competitor, match, ev)` — when the declared winner is clicked |
+| `update:active`    | `(value: boolean)` — v-model companion of the `active` prop, emitted on every card click via `useActive` |
 
 ## Slots
 
