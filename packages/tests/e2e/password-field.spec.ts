@@ -124,8 +124,7 @@ test.describe('OrigamPasswordField', () => {
             await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-password-field').first()).toBeVisible({ timeout: 12000 })
-            const segCount = await sandbox.locator('.origam-password-field__strength-segment').count()
-            expect(segCount).toBe(0)
+            await expect(sandbox.locator('.origam-password-field__strength-segment')).toHaveCount(0)
         })
     })
 
@@ -161,8 +160,7 @@ test.describe('OrigamPasswordField', () => {
             await page.goto(variantUrl(7))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-password-field').first()).toBeVisible({ timeout: 12000 })
-            const segCount = await sandbox.locator('.origam-password-field__strength-segment').count()
-            expect(segCount).toBe(4)
+            await expect(sandbox.locator('.origam-password-field__strength-segment')).toHaveCount(4)
         })
 
         test('empty password → score=0, all segments have --empty modifier', async ({ page }) => {
@@ -173,8 +171,7 @@ test.describe('OrigamPasswordField', () => {
             // Input is unfilled → score=0 → level=weak, 0 filled segments
             const bar = sandbox.locator('.origam-password-field__strength').first()
             await expect(bar).toHaveAttribute('data-strength-score', '0', { timeout: 3000 })
-            const emptySegs = await sandbox.locator('.origam-password-field__strength-segment--empty').count()
-            expect(emptySegs).toBe(4)
+            await expect(sandbox.locator('.origam-password-field__strength-segment--empty')).toHaveCount(4)
         })
 
         test('short password → score=1 (weak), 1 segment filled', async ({ page }) => {
@@ -187,8 +184,7 @@ test.describe('OrigamPasswordField', () => {
             const bar = sandbox.locator('.origam-password-field__strength').first()
             await expect(bar).toHaveAttribute('data-strength-score', '1', { timeout: 3000 })
             await expect(bar).toHaveAttribute('data-strength-level', 'weak')
-            const weakSegs = await sandbox.locator('.origam-password-field__strength-segment--weak').count()
-            expect(weakSegs).toBe(1)
+            await expect(sandbox.locator('.origam-password-field__strength-segment--weak')).toHaveCount(1)
         })
 
         test('fair password → score=2, 2 segments filled', async ({ page }) => {
@@ -213,8 +209,7 @@ test.describe('OrigamPasswordField', () => {
             const bar = sandbox.locator('.origam-password-field__strength').first()
             await expect(bar).toHaveAttribute('data-strength-score', '3', { timeout: 3000 })
             await expect(bar).toHaveAttribute('data-strength-level', 'good')
-            const goodSegs = await sandbox.locator('.origam-password-field__strength-segment--good').count()
-            expect(goodSegs).toBe(3)
+            await expect(sandbox.locator('.origam-password-field__strength-segment--good')).toHaveCount(3)
         })
 
         test('strong password → score=4, all 4 segments filled', async ({ page }) => {
@@ -227,8 +222,7 @@ test.describe('OrigamPasswordField', () => {
             const bar = sandbox.locator('.origam-password-field__strength').first()
             await expect(bar).toHaveAttribute('data-strength-score', '4', { timeout: 3000 })
             await expect(bar).toHaveAttribute('data-strength-level', 'strong')
-            const strongSegs = await sandbox.locator('.origam-password-field__strength-segment--strong').count()
-            expect(strongSegs).toBe(4)
+            await expect(sandbox.locator('.origam-password-field__strength-segment--strong')).toHaveCount(4)
         })
 
         test('clearing password resets bar to score=0', async ({ page }) => {

@@ -347,8 +347,7 @@ test.describe('OrigamEmptyState', () => {
             await expect(iconContainer).toBeVisible({ timeout: 20000 })
 
             // The built-in glyph element (OrigamClassIcon) should be absent
-            const glyphCount = await iconContainer.locator('.origam-empty-state__icon-glyph').count()
-            expect(glyphCount).toBe(0)
+            await expect(iconContainer.locator('.origam-empty-state__icon-glyph')).toHaveCount(0)
         })
 
         test('#icon slot: title and description are still rendered', async ({ page }) => {
@@ -451,8 +450,7 @@ test.describe('OrigamEmptyState', () => {
             await expect(firstRoot).toBeVisible({ timeout: 20000 })
             const buttons = firstRoot.locator('.origam-empty-state__actions .origam-btn')
             await expect(buttons.first()).toBeVisible({ timeout: 20000 })
-            const count = await buttons.count()
-            expect(count).toBe(1)
+            await expect(buttons).toHaveCount(1)
             const text = await buttons.first().textContent()
             expect(text?.trim()).toContain('Create project')
         })
@@ -465,8 +463,7 @@ test.describe('OrigamEmptyState', () => {
             await expect(secondRoot).toBeVisible({ timeout: 20000 })
             const buttons = secondRoot.locator('.origam-empty-state__actions .origam-btn')
             await expect(buttons.first()).toBeVisible({ timeout: 20000 })
-            const count = await buttons.count()
-            expect(count).toBe(2)
+            await expect(buttons).toHaveCount(2)
         })
 
         test('#actions slot — 2 actions: labels are "Create project" and "Import CSV"', async ({ page }) => {
@@ -495,8 +492,7 @@ test.describe('OrigamEmptyState', () => {
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
-            const iconCount = await root.locator('.origam-empty-state__icon').count()
-            expect(iconCount).toBe(0)
+            await expect(root.locator('.origam-empty-state__icon')).toHaveCount(0)
         })
 
         test('default slot: built-in title block is NOT rendered', async ({ page }) => {
@@ -504,8 +500,7 @@ test.describe('OrigamEmptyState', () => {
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
-            const titleCount = await root.locator('.origam-empty-state__title').count()
-            expect(titleCount).toBe(0)
+            await expect(root.locator('.origam-empty-state__title')).toHaveCount(0)
         })
 
         test('default slot: built-in description block is NOT rendered', async ({ page }) => {
@@ -513,8 +508,7 @@ test.describe('OrigamEmptyState', () => {
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-empty-state').first()
             await expect(root).toBeVisible({ timeout: 20000 })
-            const descCount = await root.locator('.origam-empty-state__description').count()
-            expect(descCount).toBe(0)
+            await expect(root.locator('.origam-empty-state__description')).toHaveCount(0)
         })
 
         test('default slot: custom content is visible inside the root', async ({ page }) => {

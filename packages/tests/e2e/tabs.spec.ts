@@ -108,8 +108,7 @@ test.describe('OrigamTabs', () => {
             await expect(tabs.nth(1)).toHaveAttribute('aria-selected', 'true')
             await expect(tabs.nth(1)).toHaveClass(/origam-tab--active/)
 
-            const activeCount = await sandbox.locator('.origam-tab--active').count()
-            expect(activeCount).toBe(1)
+            await expect(sandbox.locator('.origam-tab--active')).toHaveCount(1)
         })
     })
 

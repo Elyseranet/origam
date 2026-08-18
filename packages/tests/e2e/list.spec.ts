@@ -72,8 +72,7 @@ test.describe('OrigamList', () => {
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
-            const count = await sandbox.locator('.origam-list-item').count()
-            expect(count).toBe(3)
+            await expect(sandbox.locator('.origam-list-item')).toHaveCount(3)
         })
 
         test('second item has a subtitle element', async ({ page }) => {
@@ -105,8 +104,7 @@ test.describe('OrigamList', () => {
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
-            const count = await sandbox.locator('.origam-list-item').count()
-            expect(count).toBe(3)
+            await expect(sandbox.locator('.origam-list-item')).toHaveCount(3)
         })
 
         test('no --nav modifier class at init (nav=false)', async ({ page }) => {
@@ -139,8 +137,7 @@ test.describe('OrigamList', () => {
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
-            const count = await sandbox.locator('.origam-list-item').count()
-            expect(count).toBe(3)
+            await expect(sandbox.locator('.origam-list-item')).toHaveCount(3)
         })
     })
 
@@ -154,8 +151,7 @@ test.describe('OrigamList', () => {
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
-            const count = await sandbox.locator('.origam-list-item').count()
-            expect(count).toBe(3)
+            await expect(sandbox.locator('.origam-list-item')).toHaveCount(3)
         })
     })
 
@@ -201,8 +197,7 @@ test.describe('OrigamList', () => {
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
-            const count = await sandbox.locator('.origam-list-item').count()
-            expect(count).toBe(3)
+            await expect(sandbox.locator('.origam-list-item')).toHaveCount(3)
         })
 
         test('item titles are visible (Alpha, Beta, Gamma)', async ({ page }) => {
@@ -343,8 +338,7 @@ test.describe('OrigamList', () => {
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
-            const count = await sandbox.locator('.origam-list-item').count()
-            expect(count).toBe(3)
+            await expect(sandbox.locator('.origam-list-item')).toHaveCount(3)
         })
     })
 
@@ -367,8 +361,7 @@ test.describe('OrigamList', () => {
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
-            const count = await sandbox.locator('.origam-list-item').count()
-            expect(count).toBe(3)
+            await expect(sandbox.locator('.origam-list-item')).toHaveCount(3)
         })
 
         test('density-default class applied', async ({ page }) => {
