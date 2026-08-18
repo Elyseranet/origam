@@ -66,6 +66,7 @@ any surface — they have no visual effect until the SCSS is extended.
 | Event   | Payload                          |
 |---------|-----------------------------------|
 | `click` | `(ev: MouseEvent \| KeyboardEvent)` — only when `interactive` |
+| `update:active` | `(value: boolean)` — v-model companion of the `active` prop, emitted on every click via `useActive` |
 
 ## Notes
 

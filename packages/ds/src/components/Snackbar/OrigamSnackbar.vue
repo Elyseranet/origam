@@ -111,7 +111,7 @@
 
   import { SCROLL_STRATEGIES } from '../../enums'
 
-  import type { ISnackbarProps, ISnackbarSlots } from '../../interfaces'
+  import type { ISnackbarEmits, ISnackbarProps, ISnackbarSlots } from '../../interfaces'
 
   import type { TIntent, TOrigamOverlay, TTransitionProps } from '../../types'
 
@@ -140,6 +140,8 @@
   const props = useDefaults(_props)
 
   defineSlots<ISnackbarSlots>()
+
+  defineEmits<ISnackbarEmits>()
 
   const { filterProps } = useProps<ISnackbarProps>(props)
 

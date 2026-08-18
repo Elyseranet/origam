@@ -1,4 +1,5 @@
 import type {
+    IActiveEmits,
     IActiveProps,
     IBgColorProps,
     IBorderProps,
@@ -72,7 +73,10 @@ export interface IBracketMatchProps extends ICommonsComponentProps, ITagProps, I
 /** Emits fired by `<OrigamBracketMatch>` — click on the card itself
  *  (outside a competitor row), and the two per-competitor channels the
  *  card re-emits on behalf of its `competitor` slot / default rows. */
-export interface IBracketMatchEmits {
+/* Même défaut que `IBracketCompetitorEmits` : `useActive(props)` émet
+ * `update:active` via `onActive()`, câblé sur le clic. Prouvé au runtime
+ * dans `packages/tests/TU/origam/relay-emits-declaration.spec.ts`. */
+export interface IBracketMatchEmits extends IActiveEmits {
     (e: 'click', match: IBracketMatch, event: MouseEvent): void
     (e: 'competitor-click', competitor: IBracketCompetitor, match: IBracketMatch, side: 'A' | 'B', event: MouseEvent | KeyboardEvent): void
     (e: 'winner-click', competitor: IBracketCompetitor, match: IBracketMatch, event: MouseEvent | KeyboardEvent): void

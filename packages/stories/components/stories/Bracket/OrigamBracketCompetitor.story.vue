@@ -138,6 +138,16 @@
 			</div>
 		</Variant>
 
+		<Variant title="Events - update:active">
+			<div class="story-competitor-shell" data-cy="competitor-emit-update-active">
+				<origam-bracket-competitor
+						:competitor="COMPETITOR"
+						:score="2"
+						@update:active="logEvent('update:active', $event)"
+				/>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IBracketCompetitorProps>({

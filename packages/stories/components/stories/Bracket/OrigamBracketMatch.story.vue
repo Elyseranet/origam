@@ -158,6 +158,15 @@
 			</div>
 		</Variant>
 
+		<Variant title="Events - update:active">
+			<div class="story-match-shell" data-cy="match-emit-update-active">
+				<origam-bracket-match
+						:match="MATCH_COMPLETED"
+						@update:active="logEvent('update:active', $event)"
+				/>
+			</div>
+		</Variant>
+
 		<Variant title="Slots - Competitor">
 			<div class="story-match-shell">
 				<origam-bracket-match :match="MATCH_COMPLETED">

@@ -1,4 +1,5 @@
 import type {
+    IActiveEmits,
     IActiveProps,
     IBgColorProps,
     IBorderProps,
@@ -82,6 +83,12 @@ export interface IBracketCompetitorProps extends ICommonsComponentProps, ITagPro
 
 /** Emits fired by `<OrigamBracketCompetitor>` — click (mouse) / activation
  *  (Enter / Space when `interactive`) on the row. */
-export interface IBracketCompetitorEmits {
+/* `useActive(props)` écrit dans le v-model `active` depuis `onActive()`,
+ * câblé sur le clic du composant. L'émission `update:active` partait donc
+ * sans être déclarée — Vue avertissait à chaque clic et le handler
+ * `onUpdate:active` restait dans `$attrs`, posé sur l'élément racine par
+ * `inheritAttrs`. Prouvé au runtime dans
+ * `packages/tests/TU/origam/relay-emits-declaration.spec.ts`. */
+export interface IBracketCompetitorEmits extends IActiveEmits {
     (e: 'click', event: MouseEvent | KeyboardEvent): void
 }
