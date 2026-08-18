@@ -54,7 +54,7 @@ test.describe('OrigamChip', () => {
     // ------------------------------------------------------------------ //
 
     test('Design: root BEM class, bgColor=primary, text, size, density, pill, label', async ({ page }) => {
-        await page.goto(sandboxUrl(0))
+        await page.goto(sandboxUrl(0), { waitUntil: 'domcontentloaded' })
         const chip = page.locator('.origam-chip').first()
         await expect(chip).toBeVisible({ timeout: 30000 })
 
@@ -102,7 +102,7 @@ test.describe('OrigamChip', () => {
     // ------------------------------------------------------------------ //
 
     test('Design → Rounded SCSS: --rounded-shaped, --rounded-shaped-invert, --label radius', async ({ page }) => {
-        await page.goto(sandboxUrl(0))
+        await page.goto(sandboxUrl(0), { waitUntil: 'domcontentloaded' })
         const chip = page.locator('.origam-chip').first()
         await expect(chip).toBeVisible({ timeout: 30000 })
 
@@ -149,7 +149,7 @@ test.describe('OrigamChip', () => {
     // ------------------------------------------------------------------ //
 
     test('State: bgColor=primary, overlay opacity 0 at rest', async ({ page }) => {
-        await page.goto(sandboxUrl(1))
+        await page.goto(sandboxUrl(1), { waitUntil: 'domcontentloaded' })
         const chip = page.locator('.origam-chip').first()
         await expect(chip).toBeVisible({ timeout: 30000 })
         await expect(chip).toHaveClass(/origam--bg-primary/)
@@ -168,7 +168,7 @@ test.describe('OrigamChip', () => {
     // ------------------------------------------------------------------ //
 
     test('Functional: no disabled/closable by default, SCSS --disabled/--label rules work', async ({ page }) => {
-        await page.goto(sandboxUrl(2))
+        await page.goto(sandboxUrl(2), { waitUntil: 'domcontentloaded' })
         const chip = page.locator('.origam-chip').first()
         await expect(chip).toBeVisible({ timeout: 30000 })
         await expect(chip).toHaveClass(/origam--bg-primary/)
@@ -208,7 +208,7 @@ test.describe('OrigamChip', () => {
     // ------------------------------------------------------------------ //
 
     test('Events - click: chip is visible, has --link class, click does not throw', async ({ page }) => {
-        await page.goto(sandboxUrl(3))
+        await page.goto(sandboxUrl(3), { waitUntil: 'domcontentloaded' })
         const chip = page.locator('.origam-chip').first()
         await expect(chip).toBeVisible({ timeout: 30000 })
         await expect(chip).toContainText('Click me')
@@ -222,7 +222,7 @@ test.describe('OrigamChip', () => {
     // ------------------------------------------------------------------ //
 
     test('Events - click:prepend: prepend area present, click does not throw', async ({ page }) => {
-        await page.goto(sandboxUrl(4))
+        await page.goto(sandboxUrl(4), { waitUntil: 'domcontentloaded' })
         const chip = page.locator('.origam-chip').first()
         await expect(chip).toBeVisible({ timeout: 30000 })
         const prepend = chip.locator('.origam-chip__prepend').first()
@@ -236,7 +236,7 @@ test.describe('OrigamChip', () => {
     // ------------------------------------------------------------------ //
 
     test('Events - click:append: append area present, click does not throw', async ({ page }) => {
-        await page.goto(sandboxUrl(5))
+        await page.goto(sandboxUrl(5), { waitUntil: 'domcontentloaded' })
         const chip = page.locator('.origam-chip').first()
         await expect(chip).toBeVisible({ timeout: 30000 })
         const append = chip.locator('.origam-chip__append').first()
@@ -250,7 +250,7 @@ test.describe('OrigamChip', () => {
     // ------------------------------------------------------------------ //
 
     test('Events - click:close: close button present with correct margin, click does not throw', async ({ page }) => {
-        await page.goto(sandboxUrl(6))
+        await page.goto(sandboxUrl(6), { waitUntil: 'domcontentloaded' })
         const chip = page.locator('.origam-chip').first()
         await expect(chip).toBeVisible({ timeout: 30000 })
         await expect(chip).toContainText('Close me')
@@ -276,7 +276,7 @@ test.describe('OrigamChip', () => {
     // ------------------------------------------------------------------ //
 
     test('Events - group:selected: chip-group renders 2 chips, click does not throw', async ({ page }) => {
-        await page.goto(sandboxUrl(7))
+        await page.goto(sandboxUrl(7), { waitUntil: 'domcontentloaded' })
         const chips = page.locator('.origam-chip')
         await expect(chips.first()).toBeVisible({ timeout: 30000 })
         await expect(chips).toHaveCount(2)
@@ -288,7 +288,7 @@ test.describe('OrigamChip', () => {
     // ------------------------------------------------------------------ //
 
     test('Events - update:modelValue: chip-group renders chips A and B, click does not throw', async ({ page }) => {
-        await page.goto(sandboxUrl(8))
+        await page.goto(sandboxUrl(8), { waitUntil: 'domcontentloaded' })
         const chips = page.locator('.origam-chip')
         await expect(chips.first()).toBeVisible({ timeout: 30000 })
         await expect(chips).toHaveCount(2)
@@ -300,7 +300,7 @@ test.describe('OrigamChip', () => {
     // ------------------------------------------------------------------ //
 
     test('Slots - Default: custom italic content rendered inside chip content area', async ({ page }) => {
-        await page.goto(sandboxUrl(9))
+        await page.goto(sandboxUrl(9), { waitUntil: 'domcontentloaded' })
         const chip = page.locator('.origam-chip').first()
         await expect(chip).toBeVisible({ timeout: 30000 })
         // Story renders: <span style="font-style: italic;">Custom slot content</span>
@@ -313,7 +313,7 @@ test.describe('OrigamChip', () => {
     // ------------------------------------------------------------------ //
 
     test('Slots - Prepend: origam-icon in prepend area, chip text "With prepend"', async ({ page }) => {
-        await page.goto(sandboxUrl(10))
+        await page.goto(sandboxUrl(10), { waitUntil: 'domcontentloaded' })
         const chip = page.locator('.origam-chip').first()
         await expect(chip).toBeVisible({ timeout: 30000 })
         await expect(chip).toContainText('With prepend')
@@ -325,7 +325,7 @@ test.describe('OrigamChip', () => {
     // ------------------------------------------------------------------ //
 
     test('Slots - Append: origam-icon in append area, chip text "With append"', async ({ page }) => {
-        await page.goto(sandboxUrl(11))
+        await page.goto(sandboxUrl(11), { waitUntil: 'domcontentloaded' })
         const chip = page.locator('.origam-chip').first()
         await expect(chip).toBeVisible({ timeout: 30000 })
         await expect(chip).toContainText('With append')
@@ -337,7 +337,7 @@ test.describe('OrigamChip', () => {
     // ------------------------------------------------------------------ //
 
     test('Slots - Close: custom icon in close button, chip text "Custom close"', async ({ page }) => {
-        await page.goto(sandboxUrl(12))
+        await page.goto(sandboxUrl(12), { waitUntil: 'domcontentloaded' })
         const chip = page.locator('.origam-chip').first()
         await expect(chip).toBeVisible({ timeout: 30000 })
         await expect(chip).toContainText('Custom close')
@@ -351,7 +351,7 @@ test.describe('OrigamChip', () => {
     // ------------------------------------------------------------------ //
 
     test('Slots - Filter: chip-group renders, clicking a chip shows filter area', async ({ page }) => {
-        await page.goto(sandboxUrl(13))
+        await page.goto(sandboxUrl(13), { waitUntil: 'domcontentloaded' })
         const chips = page.locator('.origam-chip')
         await expect(chips.first()).toBeVisible({ timeout: 30000 })
         await expect(chips).toHaveCount(2)
@@ -366,7 +366,7 @@ test.describe('OrigamChip', () => {
     // ------------------------------------------------------------------ //
 
     test('Default (playground): bgColor=primary, text "Chip", tag=span', async ({ page }) => {
-        await page.goto(sandboxUrl(14))
+        await page.goto(sandboxUrl(14), { waitUntil: 'domcontentloaded' })
         const chip = page.locator('.origam-chip').first()
         await expect(chip).toBeVisible({ timeout: 30000 })
         await expect(chip).toHaveClass(/origam--bg-primary/)

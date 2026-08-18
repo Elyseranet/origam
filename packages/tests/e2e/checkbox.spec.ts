@@ -54,14 +54,14 @@ test.describe('OrigamCheckbox', () => {
 
     test.describe('Design', () => {
         test('renders the checkbox root with BEM class origam-checkbox', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-checkbox').first()
             await expect(root).toBeVisible({ timeout: 12000 })
         })
 
         test('density=default class is present on the root', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-checkbox').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -69,7 +69,7 @@ test.describe('OrigamCheckbox', () => {
         })
 
         test('color=primary applies origam--color-primary on the wrapper', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
             const wrapper = sandbox.locator('.origam-selection-control__wrapper').first()
@@ -77,14 +77,14 @@ test.describe('OrigamCheckbox', () => {
         })
 
         test('label prop renders the label text "Checkbox"', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-label').first()).toContainText('Checkbox')
         })
 
         test('input has aria-label="Checkbox"', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
             const input = sandbox.locator('input[type=checkbox]').first()
@@ -92,7 +92,7 @@ test.describe('OrigamCheckbox', () => {
         })
 
         test('input is not checked in initial state (modelValue=false)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
             const input = sandbox.locator('input[type=checkbox]').first()
@@ -100,7 +100,7 @@ test.describe('OrigamCheckbox', () => {
         })
 
         test('input has aria-disabled="false" by default', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
             const input = sandbox.locator('input[type=checkbox]').first()
@@ -115,7 +115,7 @@ test.describe('OrigamCheckbox', () => {
 
     test.describe('State', () => {
         test('renders the checkbox with color=primary wrapper class', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
             const wrapper = sandbox.locator('.origam-selection-control__wrapper').first()
@@ -123,7 +123,7 @@ test.describe('OrigamCheckbox', () => {
         })
 
         test('resting state: input is not checked', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
             const input = sandbox.locator('input[type=checkbox]').first()
@@ -138,7 +138,7 @@ test.describe('OrigamCheckbox', () => {
 
     test.describe('Functional', () => {
         test('initial value is false (value div shows "value = false")', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
             const valueDiv = sandbox.locator('div').filter({ hasText: /^value =/ }).first()
@@ -146,7 +146,7 @@ test.describe('OrigamCheckbox', () => {
         })
 
         test('input is not disabled by default', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
             const input = sandbox.locator('input[type=checkbox]').first()
@@ -156,7 +156,7 @@ test.describe('OrigamCheckbox', () => {
         })
 
         test('input is not checked by default', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
             const input = sandbox.locator('input[type=checkbox]').first()
@@ -164,7 +164,7 @@ test.describe('OrigamCheckbox', () => {
         })
 
         test('input is not indeterminate by default', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
             const input = sandbox.locator('input[type=checkbox]').first()
@@ -179,7 +179,7 @@ test.describe('OrigamCheckbox', () => {
 
     test.describe('Events - update:modelValue', () => {
         test('clicking the input toggles checked state from false to true', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
             const input = sandbox.locator('input[type=checkbox]').first()
@@ -189,7 +189,7 @@ test.describe('OrigamCheckbox', () => {
         })
 
         test('toggling updates the value div from false to true', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
             const valueDiv = sandbox.locator('div').filter({ hasText: /^value =/ }).first()
@@ -200,7 +200,7 @@ test.describe('OrigamCheckbox', () => {
         })
 
         test('second click toggles back to unchecked', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
             const input = sandbox.locator('input[type=checkbox]').first()
@@ -211,7 +211,7 @@ test.describe('OrigamCheckbox', () => {
         })
 
         test('renders label "Toggle me"', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-label').first()).toContainText('Toggle me')
@@ -226,14 +226,14 @@ test.describe('OrigamCheckbox', () => {
 
     test.describe('Events - focus & blur', () => {
         test('renders label "Focus & blur me"', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-label').first()).toContainText('Focus & blur me')
         })
 
         test('input is keyboard-focusable (focus does not throw)', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
             const input = sandbox.locator('input[type=checkbox]').first()
@@ -249,14 +249,14 @@ test.describe('OrigamCheckbox', () => {
 
     test.describe('Events - click:label', () => {
         test('renders label "Click the label"', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-label').first()).toContainText('Click the label')
         })
 
         test('clicking the label area does not throw', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
             // Click the wrapper div — origam-selection-control__label intercepts pointer
@@ -278,14 +278,14 @@ test.describe('OrigamCheckbox', () => {
 
     test.describe('Slots - Default', () => {
         test('renders the checkbox root (.origam-checkbox) without the native input', async ({ page }) => {
-            await page.goto(variantUrl(6))
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('input[type=checkbox]')).toHaveCount(0)
         })
 
         test('custom slot content "Custom slot content" is rendered', async ({ page }) => {
-            await page.goto(variantUrl(6))
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-input__control span').first()).toContainText('Custom slot content')
@@ -298,14 +298,14 @@ test.describe('OrigamCheckbox', () => {
 
     test.describe('Slots - Label', () => {
         test('renders the native input (slot #label does not remove the input)', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('input[type=checkbox]').first()).toBeAttached()
         })
 
         test('slot label renders a custom span with "I agree to"', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
             const labelArea = sandbox.locator('.origam-selection-control__label')
@@ -313,7 +313,7 @@ test.describe('OrigamCheckbox', () => {
         })
 
         test('value div shows initial value = false', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
             const valueDiv = sandbox.locator('div').filter({ hasText: /^value =/ }).first()
@@ -332,20 +332,20 @@ test.describe('OrigamCheckbox', () => {
 
     test.describe('Slots - Input', () => {
         test('renders the checkbox root (.origam-checkbox)', async ({ page }) => {
-            await page.goto(variantUrl(8))
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
         })
 
         test('no native input[type=checkbox] in DOM (slot replaces it)', async ({ page }) => {
-            await page.goto(variantUrl(8))
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('input[type=checkbox]')).toHaveCount(0)
         })
 
         test('custom div slot has type="checkbox" attribute forwarded by inputProps', async ({ page }) => {
-            await page.goto(variantUrl(8))
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
             const customInput = sandbox.locator('.origam-selection-control__input div[type=checkbox]').first()
@@ -353,7 +353,7 @@ test.describe('OrigamCheckbox', () => {
         })
 
         test('value div shows initial value = false', async ({ page }) => {
-            await page.goto(variantUrl(8))
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
             const valueDiv = sandbox.locator('div').filter({ hasText: /^value =/ }).first()
@@ -368,7 +368,7 @@ test.describe('OrigamCheckbox', () => {
 
     test.describe('Default (playground)', () => {
         test('renders checkbox root with color=primary', async ({ page }) => {
-            await page.goto(variantUrl(9))
+            await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
             const wrapper = sandbox.locator('.origam-selection-control__wrapper').first()
@@ -376,14 +376,14 @@ test.describe('OrigamCheckbox', () => {
         })
 
         test('renders label "Accept terms"', async ({ page }) => {
-            await page.goto(variantUrl(9))
+            await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-label').first()).toContainText('Accept terms')
         })
 
         test('value div shows initial value = false', async ({ page }) => {
-            await page.goto(variantUrl(9))
+            await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
             const valueDiv = sandbox.locator('div').filter({ hasText: /^value =/ }).first()
@@ -391,7 +391,7 @@ test.describe('OrigamCheckbox', () => {
         })
 
         test('toggle updates the value div to true', async ({ page }) => {
-            await page.goto(variantUrl(9))
+            await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
             const input = sandbox.locator('input[type=checkbox]').first()
