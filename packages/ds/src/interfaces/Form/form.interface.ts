@@ -1,5 +1,5 @@
 import type { ComponentInternalInstance, ComputedRef, Raw, Ref } from 'vue'
-import type { ICommonsComponentProps, ICommonsComponentSlots, ITypographyProps } from '../../interfaces'
+import type { ICommonsComponentEmits, ICommonsComponentProps, ICommonsComponentSlots, ITypographyProps } from '../../interfaces'
 import type { TValidateOn } from '../../types'
 
 export interface IFormProvide {
@@ -39,7 +39,14 @@ export interface IFormSlots extends ICommonsComponentSlots {
     actions?: (data: { submit: () => void, reset: () => void }) => any
 }
 
-export interface IFormEmits {
+/**
+ * `useForm` ÉCRIT la validité calculée dans `modelValue`
+ * (form.composable.ts:77) — c'est un canal sortant, pas seulement une valeur
+ * entrante. L'émission correspondante doit donc être déclarée, sans quoi Vue
+ * avertit à chaque montage et le handler `onUpdate:modelValue` reste dans
+ * `$attrs`, où `inheritAttrs` le pose sur l'élément `<form>` racine.
+ */
+export interface IFormEmits extends ICommonsComponentEmits {
     (e: 'submit', value: any): void
     (e: 'reset', value: any): void
 }
