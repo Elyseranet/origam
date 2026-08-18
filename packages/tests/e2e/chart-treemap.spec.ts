@@ -74,9 +74,7 @@ test.describe('OrigamChartTreemap — Default', () => {
         const sandbox = sandboxOf(page)
         const tiles = sandbox.locator('[data-cy="origam-chart-treemap"] rect[data-cy^="origam-chart-treemap-tile-"]')
         await expect(tiles).toHaveCount(10, { timeout: 6000 })
-        const count = await tiles.count()
-        expect(count).toBe(10)
-        for (let i = 0; i < count; i++) {
+        for (let i = 0; i < 10; i++) {
             const w = await tiles.nth(i).getAttribute('width')
             const h = await tiles.nth(i).getAttribute('height')
             expect(parseFloat(w ?? '0')).toBeGreaterThan(0)
