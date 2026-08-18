@@ -243,7 +243,7 @@ test.describe('OrigamTabs', () => {
 
             // none disabled in default init-state
             const tabs = sandbox.locator('.origam-tab')
-            expect(await tabs.count()).toBe(3)
+            await expect(tabs).toHaveCount(3)
             await expect(tabs.nth(0)).toHaveAttribute('aria-selected', 'true')
         })
 
@@ -328,7 +328,7 @@ test.describe('OrigamTabs', () => {
             await expect(tabs.nth(2)).toHaveClass(/origam-tab--active/)
 
             // exactly one tab active at a time
-            expect(await sandbox.locator('.origam-tab--active').count()).toBe(1)
+            await expect(sandbox.locator('.origam-tab--active')).toHaveCount(1)
         })
 
         test('switching back updates story-status correctly', async ({ page }) => {
@@ -413,10 +413,9 @@ test.describe('OrigamTabs', () => {
             await expect(sandbox.locator('.origam-tabs').first()).toBeVisible({ timeout: 12000 })
 
             const panels = sandbox.locator('.origam-tab-panel')
-            const count = await panels.count()
-            expect(count).toBe(3)
+            await expect(panels).toHaveCount(3)
 
-            for (let i = 0; i < count; i++) {
+            for (let i = 0; i < 3; i++) {
                 await expect(panels.nth(i)).toHaveAttribute('role', 'tabpanel')
             }
         })
