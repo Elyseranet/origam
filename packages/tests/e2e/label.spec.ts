@@ -157,8 +157,7 @@ test.describe('OrigamLabel', () => {
             const label = sandbox.locator('.origam-label').first()
             await expect(label).toBeVisible({ timeout: 12000 })
             // Default init-state has required=undefined (falsy) → no sup
-            const supCount = await label.locator('sup').count()
-            expect(supCount).toBe(0)
+            await expect(label.locator('sup')).toHaveCount(0)
         })
 
         test('SCSS sup: required indicator color token is declared', async ({ page }) => {

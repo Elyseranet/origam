@@ -89,8 +89,7 @@ test.describe('OrigamAvatar', () => {
         await expect(firstAvatar.locator('.origam-avatar__text')).toContainText('AP')
 
         // Three avatars rendered (text / image / icon)
-        const count = await sandbox.locator('.origam-avatar').count()
-        expect(count).toBe(3)
+        await expect(sandbox.locator('.origam-avatar')).toHaveCount(3)
 
         // SCSS --rounded injects a non-zero border-radius
         const radius = await firstAvatar.evaluate(el => {

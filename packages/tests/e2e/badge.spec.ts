@@ -294,8 +294,10 @@ test.describe('OrigamBadge', () => {
             await expect(pill).toBeVisible({ timeout: 5000 })
             await expect(pill).toContainText('!')
             // The default .origam-badge__content span must NOT be present
-            const contentCount = await pill.locator('.origam-badge__content').count()
-            expect(contentCount, 'badge slot replaces default content').toBe(0)
+            await expect(
+                pill.locator('.origam-badge__content'),
+                'badge slot replaces default content'
+            ).toHaveCount(0)
         })
     })
 

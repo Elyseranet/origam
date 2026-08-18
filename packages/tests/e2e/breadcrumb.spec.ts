@@ -281,9 +281,8 @@ test.describe('OrigamBreadcrumb', () => {
             const bc = sandbox.locator('.origam-breadcrumb').first()
             await expect(bc).toBeVisible({ timeout: 12000 })
             const items = bc.locator('.origam-breadcrumb-item')
-            const count = await items.count()
             // Story renders Home / Section / Current = 3 items
-            expect(count).toBe(3)
+            await expect(items).toHaveCount(3)
         })
 
         test('renders dividers between manually composed items', async ({ page }) => {
@@ -292,9 +291,8 @@ test.describe('OrigamBreadcrumb', () => {
             const bc = sandbox.locator('.origam-breadcrumb').first()
             await expect(bc).toBeVisible({ timeout: 12000 })
             const dividers = bc.locator('.origam-breadcrumb-divider')
-            const count = await dividers.count()
             // 3 items → 2 dividers
-            expect(count).toBe(2)
+            await expect(dividers).toHaveCount(2)
         })
     })
 
@@ -309,8 +307,7 @@ test.describe('OrigamBreadcrumb', () => {
             const bc = sandbox.locator('.origam-breadcrumb').first()
             await expect(bc).toBeVisible({ timeout: 12000 })
             const items = bc.locator('.origam-breadcrumb-item')
-            const count = await items.count()
-            expect(count).toBe(3)
+            await expect(items).toHaveCount(3)
         })
     })
 

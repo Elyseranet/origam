@@ -172,8 +172,7 @@ test.describe('OrigamQrCode', () => {
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const qr = sandbox.locator('.origam-qr-code').first()
             await expect(qr).toBeVisible({ timeout: 30000 })
-            const centerCount = await qr.locator('.origam-qr-code__center').count()
-            expect(centerCount).toBe(0)
+            await expect(qr.locator('.origam-qr-code__center')).toHaveCount(0)
         })
     })
 

@@ -200,8 +200,7 @@ test.describe('OrigamSnackbar', () => {
             await sandbox.locator('.origam-btn').first().click()
             await expect(sandbox.locator('.origam-snackbar')).toBeVisible(VIS)
             // timer prop is false in init-state → timer element must be absent
-            const timerCount = await sandbox.locator('.origam-snackbar__timer').count()
-            expect(timerCount).toBe(0)
+            await expect(sandbox.locator('.origam-snackbar__timer')).toHaveCount(0)
         })
 
         test('SCSS --multi-line: injecting the modifier class is reflected (SCSS rule exists)', async ({ page }) => {

@@ -131,10 +131,8 @@ test.describe('OrigamTextareaField — richtext mode', () => {
 
         await expect(container.locator('[data-cy="origam-rich-toolbar-bold"]')).toBeVisible({ timeout: ARROW_TIMEOUT })
         await expect(container.locator('[data-cy="origam-rich-toolbar-italic"]')).toBeVisible({ timeout: ARROW_TIMEOUT })
-        const headingCount = await container.locator('[data-cy="origam-rich-toolbar-heading"]').count()
-        expect(headingCount).toBe(0)
-        const clearCount = await container.locator('[data-cy="origam-rich-toolbar-clear-format"]').count()
-        expect(clearCount).toBe(0)
+        await expect(container.locator('[data-cy="origam-rich-toolbar-heading"]')).toHaveCount(0)
+        await expect(container.locator('[data-cy="origam-rich-toolbar-clear-format"]')).toHaveCount(0)
     })
 
     test('Slot toolbar — replaces the default toolbar', async ({ page }) => {
@@ -144,8 +142,7 @@ test.describe('OrigamTextareaField — richtext mode', () => {
         await expect(custom).toBeVisible({ timeout: ARROW_TIMEOUT })
 
         // The default-toolbar should NOT have rendered alongside.
-        const defaultToolbar = await sandbox.locator('[data-cy="textarea-rich-slot-toolbar"] [data-cy="origam-rich-toolbar"]').count()
-        expect(defaultToolbar).toBe(0)
+        await expect(sandbox.locator('[data-cy="textarea-rich-slot-toolbar"] [data-cy="origam-rich-toolbar"]')).toHaveCount(0)
     })
 
     test('Emit format — counter increments on every toolbar click', async ({ page }) => {

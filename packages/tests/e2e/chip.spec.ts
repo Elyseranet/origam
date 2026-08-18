@@ -200,8 +200,7 @@ test.describe('OrigamChip', () => {
         expect(labelRadius).toBe('4px')
 
         // closable=false by default: no close button
-        const closeCount = await chip.locator('.origam-chip__close').count()
-        expect(closeCount).toBe(0)
+        await expect(chip.locator('.origam-chip__close')).toHaveCount(0)
     })
 
     // ------------------------------------------------------------------ //

@@ -185,8 +185,7 @@ test.describe('OrigamWatermark', () => {
             const root = sandbox.locator('[data-cy="origam-watermark"]').first()
             await expect(root).toBeVisible({ timeout: 30000 })
 
-            const before = await root.locator('[data-cy="origam-watermark-layer"]').count()
-            expect(before).toBe(1)
+            await expect(root.locator('[data-cy="origam-watermark-layer"]')).toHaveCount(1)
 
             // Remove the layer — no MutationObserver installed (antiTamper=false)
             await root.evaluate((node) => {
@@ -195,8 +194,7 @@ test.describe('OrigamWatermark', () => {
             })
             await page.waitForTimeout(200)
 
-            const after = await root.locator('[data-cy="origam-watermark-layer"]').count()
-            expect(after).toBe(0)
+            await expect(root.locator('[data-cy="origam-watermark-layer"]')).toHaveCount(0)
         })
 
         test('antiTamper=true — layer is re-injected after DOM removal', async ({ page }) => {
@@ -222,8 +220,7 @@ test.describe('OrigamWatermark', () => {
             // MutationObserver microtask deferred via Promise.resolve() — wait 300ms
             await page.waitForTimeout(300)
 
-            const after = await root.locator('[data-cy="origam-watermark-layer"]').count()
-            expect(after).toBe(1)
+            await expect(root.locator('[data-cy="origam-watermark-layer"]')).toHaveCount(1)
         })
     })
 

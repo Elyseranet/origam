@@ -281,8 +281,7 @@ test.describe('OrigamCheckbox', () => {
             await page.goto(variantUrl(6))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
-            const inputCount = await sandbox.locator('input[type=checkbox]').count()
-            expect(inputCount).toBe(0)
+            await expect(sandbox.locator('input[type=checkbox]')).toHaveCount(0)
         })
 
         test('custom slot content "Custom slot content" is rendered', async ({ page }) => {
@@ -342,8 +341,7 @@ test.describe('OrigamCheckbox', () => {
             await page.goto(variantUrl(8))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
-            const inputCount = await sandbox.locator('input[type=checkbox]').count()
-            expect(inputCount).toBe(0)
+            await expect(sandbox.locator('input[type=checkbox]')).toHaveCount(0)
         })
 
         test('custom div slot has type="checkbox" attribute forwarded by inputProps', async ({ page }) => {
