@@ -130,13 +130,13 @@ test.describe('OrigamMenu', () => {
 
     test.describe('Design (index 0)', () => {
         test('activateur .origam-btn visible dans la sandbox', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-btn').first()).toBeVisible({ timeout: 35000 })
         })
 
         test('menu root .origam-menu porte la classe BEM (attaché quand le menu est ouvert)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             // Ouvrir le menu — l'overlay monte son wrapper au premier rendu
             await openMenu(sandbox)
@@ -144,7 +144,7 @@ test.describe('OrigamMenu', () => {
         })
 
         test('wrapper .origam-menu est transparent (pas de rectangle plein-iframe)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { activator: _activator } = await openMenu(sandbox)
             const wrapperBg = await sandbox.locator('.origam-menu').first()
@@ -153,7 +153,7 @@ test.describe('OrigamMenu', () => {
         })
 
         test('corps .origam-menu__content apparaît au clic et porte une surface non transparente', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
             const bg = await content.evaluate(el => getComputedStyle(el).backgroundColor)
@@ -161,7 +161,7 @@ test.describe('OrigamMenu', () => {
         })
 
         test('corps porte le border-radius par défaut (8px)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
             const borderRadius = await content.evaluate(el => getComputedStyle(el).borderRadius)
@@ -169,7 +169,7 @@ test.describe('OrigamMenu', () => {
         })
 
         test('corps porte une box-shadow (elevation token)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
             const boxShadow = await content.evaluate(el => getComputedStyle(el).boxShadow)
@@ -177,7 +177,7 @@ test.describe('OrigamMenu', () => {
         })
 
         test('corps est display:inline-block', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
             const display = await content.evaluate(el => getComputedStyle(el).display)
@@ -185,7 +185,7 @@ test.describe('OrigamMenu', () => {
         })
 
         test('items par défaut (Edit / Duplicate / Delete) s affichent dans .origam-menu__items', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
             const items = content.locator('.origam-menu__items')
@@ -203,14 +203,14 @@ test.describe('OrigamMenu', () => {
 
     test.describe('Functional (index 1)', () => {
         test('menu s ouvre au clic sur l activateur (openOnClick=true)', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
             await expect(content).toBeVisible()
         })
 
         test('menu affiche la liste des items (Edit / Duplicate / Delete)', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
             await expect(content).toContainText('Edit')
@@ -219,7 +219,7 @@ test.describe('OrigamMenu', () => {
         })
 
         test('closeOnContentClick=true — clic sur un item ferme le menu', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
             // Clic sur le premier item de la liste
@@ -237,14 +237,14 @@ test.describe('OrigamMenu', () => {
 
     test.describe('Events - update:modelValue (index 2)', () => {
         test('menu s ouvre au clic (proxy de l emit update:modelValue)', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
             await expect(content).toBeVisible()
         })
 
         test('activateur porte aria-expanded="true" quand le menu est ouvert', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { activator } = await openMenu(sandbox)
             const ariaExpanded = await activator.evaluate(el => el.getAttribute('aria-expanded'))
@@ -259,13 +259,13 @@ test.describe('OrigamMenu', () => {
 
     test.describe('Events - contextmenu (index 3)', () => {
         test('activateur .origam-btn visible', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-btn').first()).toBeVisible({ timeout: 35000 })
         })
 
         test('menu s ouvre au clic gauche (openOnClick reste la valeur par défaut)', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
             await expect(content).toBeVisible()
@@ -279,7 +279,7 @@ test.describe('OrigamMenu', () => {
 
     test.describe('Events - select (index 4)', () => {
         test('activateur .origam-btn visible', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-btn').first()).toBeVisible({ timeout: 35000 })
         })
@@ -291,7 +291,7 @@ test.describe('OrigamMenu', () => {
         // (closeOnContentClick par défaut) — la régression qu'un emit branché
         // sur le mauvais élément produirait.
         test('un clic sur une ligne feuille ferme le menu (handler select branché sans casser closeOnContentClick)', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
 
@@ -308,7 +308,7 @@ test.describe('OrigamMenu', () => {
 
     test.describe('Slots - Activator (index 5)', () => {
         test('le slot #activator rend un bouton personnalisé', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 35000 })
@@ -316,7 +316,7 @@ test.describe('OrigamMenu', () => {
         })
 
         test('menu s ouvre au clic de l activateur custom', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
             await expect(content).toContainText('Edit')
@@ -330,7 +330,7 @@ test.describe('OrigamMenu', () => {
 
     test.describe('Slots - Default (index 6)', () => {
         test('le slot #default rend du markup personnalisé dans le corps du menu', async ({ page }) => {
-            await page.goto(variantUrl(6))
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
             // La variant Slots - Default contient :
@@ -340,7 +340,7 @@ test.describe('OrigamMenu', () => {
         })
 
         test('le slot #default n utilise pas origam-menu__items (pas de prop items)', async ({ page }) => {
-            await page.goto(variantUrl(6))
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
             // Aucun <ul class="origam-list-group origam-menu__items"> quand le
@@ -357,14 +357,14 @@ test.describe('OrigamMenu', () => {
 
     test.describe('Default / Playground (index 7)', () => {
         test('menu s ouvre au clic avec l état seedé du playground', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
             await expect(content).toBeVisible()
         })
 
         test('offset=8 — l overlay content a des coordonnées pixel calculées', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await openMenu(sandbox)
 
@@ -381,7 +381,7 @@ test.describe('OrigamMenu', () => {
         })
 
         test('activateur porte aria-haspopup="menu"', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const activator = sandbox.locator('.origam-btn').first()
             await expect(activator).toBeVisible({ timeout: 35000 })
@@ -390,7 +390,7 @@ test.describe('OrigamMenu', () => {
         })
 
         test('activateur porte aria-expanded="false" à l état initial fermé', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const activator = sandbox.locator('.origam-btn').first()
             await expect(activator).toBeVisible({ timeout: 35000 })
@@ -436,7 +436,7 @@ test.describe('OrigamMenu', () => {
 
     test.describe('Nested submenu (index 8)', () => {
         test('clicking a children-bearing row OPENS the nested submenu — the parent menu stays open', async ({ page }) => {
-            await page.goto(variantUrl(8))
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content: rawContent } = await openMenu(sandbox)
             // Pinned to `.first()` up front: once the submenu opens below,
@@ -474,7 +474,7 @@ test.describe('OrigamMenu', () => {
         })
 
         test('a leaf row inside the opened submenu is reachable and clickable (closeOnContentClick default closes on selection)', async ({ page }) => {
-            await page.goto(variantUrl(8))
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content: parentContent } = await openMenu(sandbox)
 
@@ -497,7 +497,7 @@ test.describe('OrigamMenu', () => {
             const pageErrors: Array<string> = []
             page.on('pageerror', (err) => pageErrors.push(err.message))
 
-            await page.goto(variantUrl(8))
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content: parentContent } = await openMenu(sandbox)
 

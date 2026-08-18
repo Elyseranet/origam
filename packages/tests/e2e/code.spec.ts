@@ -42,7 +42,7 @@ const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
  * present in the DOM but still empty.
  */
 async function gotoVariant (page: import('@playwright/test').Page, idx: number) {
-    await page.goto(variantUrl(idx))
+    await page.goto(variantUrl(idx), { waitUntil: 'domcontentloaded' })
     // Wait until Histoire has injected the sandbox src (may take 1-3s on cold starts).
     await page.waitForFunction(
         () => {

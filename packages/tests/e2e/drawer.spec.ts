@@ -44,13 +44,13 @@ test.describe('OrigamDrawer', () => {
 
 	test.describe('Design', () => {
 		test('renders the drawer root with BEM class', async ({ page }) => {
-			await page.goto(variantUrl(0))
+			await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			await expect(sandbox.locator('.origam-drawer').first()).toBeVisible({ timeout: 12000 })
 		})
 
 		test('default location class is origam-drawer--left', async ({ page }) => {
-			await page.goto(variantUrl(0))
+			await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const drawer = sandbox.locator('.origam-drawer').first()
 			await expect(drawer).toBeVisible({ timeout: 12000 })
@@ -58,7 +58,7 @@ test.describe('OrigamDrawer', () => {
 		})
 
 		test('active class is present on permanent drawer', async ({ page }) => {
-			await page.goto(variantUrl(0))
+			await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const drawer = sandbox.locator('.origam-drawer').first()
 			await expect(drawer).toBeVisible({ timeout: 12000 })
@@ -73,7 +73,7 @@ test.describe('OrigamDrawer', () => {
 		// Expected: origam-drawer--density-default. Severity: medium.
 		// Kept as fixme for non-regression tracking until the DS bug is fixed.
 		test.fail('default density class is applied', async ({ page }) => {
-			await page.goto(variantUrl(0))
+			await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const drawer = sandbox.locator('.origam-drawer').first()
 			await expect(drawer).toBeVisible({ timeout: 12000 })
@@ -81,7 +81,7 @@ test.describe('OrigamDrawer', () => {
 		})
 
 		test('drawer content is visible inside the panel', async ({ page }) => {
-			await page.goto(variantUrl(0))
+			await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const drawer = sandbox.locator('.origam-drawer').first()
 			await expect(drawer).toBeVisible({ timeout: 12000 })
@@ -96,7 +96,7 @@ test.describe('OrigamDrawer', () => {
 
 	test.describe('State', () => {
 		test('renders the drawer in state variant', async ({ page }) => {
-			await page.goto(variantUrl(1))
+			await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			await expect(sandbox.locator('.origam-drawer').first()).toBeVisible({ timeout: 12000 })
 		})
@@ -109,13 +109,13 @@ test.describe('OrigamDrawer', () => {
 
 	test.describe('Functional', () => {
 		test('renders the drawer root', async ({ page }) => {
-			await page.goto(variantUrl(2))
+			await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			await expect(sandbox.locator('.origam-drawer').first()).toBeVisible({ timeout: 12000 })
 		})
 
 		test('Toggle button is present in the AppBar', async ({ page }) => {
-			await page.goto(variantUrl(2))
+			await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			// origam-btn has inheritAttrs=true (default) → aria-label lands on root <button>.
 			const toggleBtn = sandbox.locator('button[aria-label="Toggle"]').first()
@@ -123,7 +123,7 @@ test.describe('OrigamDrawer', () => {
 		})
 
 		test('rail mode: class absent at init (rail=false)', async ({ page }) => {
-			await page.goto(variantUrl(2))
+			await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const drawer = sandbox.locator('.origam-drawer').first()
 			await expect(drawer).toBeVisible({ timeout: 12000 })
@@ -132,7 +132,7 @@ test.describe('OrigamDrawer', () => {
 		})
 
 		test('location prop produces origam-drawer--left class (default)', async ({ page }) => {
-			await page.goto(variantUrl(2))
+			await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const drawer = sandbox.locator('.origam-drawer').first()
 			await expect(drawer).toBeVisible({ timeout: 12000 })
@@ -147,7 +147,7 @@ test.describe('OrigamDrawer', () => {
 
 	test.describe('Events - update:modelValue', () => {
 		test('drawer is absent when open=false (temporary, v-if)', async ({ page }) => {
-			await page.goto(variantUrl(3))
+			await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			// Wait for the AppBar (not teleported) to confirm the sandbox is mounted,
 			// then assert the drawer is not in the DOM (v-if="isActive", starts false).
@@ -156,7 +156,7 @@ test.describe('OrigamDrawer', () => {
 		})
 
 		test('clicking Toggle opens the temporary drawer', async ({ page }) => {
-			await page.goto(variantUrl(3))
+			await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			// Wait for the toolbar first, then locate the Toggle button
 			await expect(sandbox.locator('.origam-toolbar').first()).toBeVisible({ timeout: 12000 })
@@ -169,7 +169,7 @@ test.describe('OrigamDrawer', () => {
 		})
 
 		test('temporary drawer shows origam-drawer--temporary class when open', async ({ page }) => {
-			await page.goto(variantUrl(3))
+			await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			await expect(sandbox.locator('.origam-toolbar').first()).toBeVisible({ timeout: 12000 })
 			const toggleBtn = sandbox.locator('button[aria-label="Toggle"]').first()
@@ -181,7 +181,7 @@ test.describe('OrigamDrawer', () => {
 		})
 
 		test('closing the drawer via close button removes it from DOM', async ({ page }) => {
-			await page.goto(variantUrl(3))
+			await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			await expect(sandbox.locator('.origam-toolbar').first()).toBeVisible({ timeout: 12000 })
 			const toggleBtn = sandbox.locator('button[aria-label="Toggle"]').first()
@@ -205,7 +205,7 @@ test.describe('OrigamDrawer', () => {
 
 	test.describe('Events - update:rail', () => {
 		test('rail drawer is visible (rail=true, permanent, expand-on-hover)', async ({ page }) => {
-			await page.goto(variantUrl(4))
+			await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const drawer = sandbox.locator('.origam-drawer').first()
 			await expect(drawer).toBeVisible({ timeout: 12000 })
@@ -214,7 +214,7 @@ test.describe('OrigamDrawer', () => {
 		})
 
 		test('expand-on-hover class is present when expandOnHover=true', async ({ page }) => {
-			await page.goto(variantUrl(4))
+			await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const drawer = sandbox.locator('.origam-drawer').first()
 			await expect(drawer).toBeVisible({ timeout: 12000 })
@@ -227,7 +227,7 @@ test.describe('OrigamDrawer', () => {
 		// pass. Teleport only moves the DOM location of the target; it does
 		// not affect standard Playwright pointer-event dispatch.
 		test('hovering the drawer triggers update:rail=false emit', async ({ page }) => {
-			await page.goto(variantUrl(4))
+			await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const drawer = sandbox.locator('.origam-drawer').first()
 			await expect(drawer).toBeVisible({ timeout: 12000 })
@@ -243,7 +243,7 @@ test.describe('OrigamDrawer', () => {
 
 	test.describe('Slots - Default', () => {
 		test('default slot content is rendered inside the drawer', async ({ page }) => {
-			await page.goto(variantUrl(5))
+			await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const drawer = sandbox.locator('.origam-drawer').first()
 			await expect(drawer).toBeVisible({ timeout: 12000 })
@@ -258,14 +258,14 @@ test.describe('OrigamDrawer', () => {
 
 	test.describe('Slots - Prepend', () => {
 		test('prepend slot renders .origam-drawer__prepend', async ({ page }) => {
-			await page.goto(variantUrl(6))
+			await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			await expect(sandbox.locator('.origam-drawer').first()).toBeVisible({ timeout: 12000 })
 			await expect(sandbox.locator('.origam-drawer__prepend').first()).toBeVisible({ timeout: 8000 })
 		})
 
 		test('prepend slot contains the App Logo text', async ({ page }) => {
-			await page.goto(variantUrl(6))
+			await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			await expect(sandbox.locator('.origam-drawer').first()).toBeVisible({ timeout: 12000 })
 			await expect(sandbox.locator('.origam-drawer__prepend').first()).toContainText('App Logo')
@@ -278,14 +278,14 @@ test.describe('OrigamDrawer', () => {
 
 	test.describe('Slots - Append', () => {
 		test('append slot renders .origam-drawer__append', async ({ page }) => {
-			await page.goto(variantUrl(7))
+			await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			await expect(sandbox.locator('.origam-drawer').first()).toBeVisible({ timeout: 12000 })
 			await expect(sandbox.locator('.origam-drawer__append').first()).toBeVisible({ timeout: 8000 })
 		})
 
 		test('append slot contains version text', async ({ page }) => {
-			await page.goto(variantUrl(7))
+			await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			// Slightly longer initial timeout: consecutive navigations to the same
 			// variantUrl within a single Playwright session can take longer because
@@ -302,21 +302,21 @@ test.describe('OrigamDrawer', () => {
 
 	test.describe('Slots - Wrapper', () => {
 		test('wrapper slot renders inside .origam-drawer__wrapper', async ({ page }) => {
-			await page.goto(variantUrl(8))
+			await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			await expect(sandbox.locator('.origam-drawer').first()).toBeVisible({ timeout: 12000 })
 			await expect(sandbox.locator('.origam-drawer__wrapper').first()).toBeVisible({ timeout: 8000 })
 		})
 
 		test('wrapper slot content is present (Custom wrapper text)', async ({ page }) => {
-			await page.goto(variantUrl(8))
+			await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			await expect(sandbox.locator('.origam-drawer').first()).toBeVisible({ timeout: 12000 })
 			await expect(sandbox.locator('.origam-drawer__wrapper').first()).toContainText('Custom wrapper')
 		})
 
 		test('wrapper slot replaces default skeleton: no __prepend nor __content', async ({ page }) => {
-			await page.goto(variantUrl(8))
+			await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			await expect(sandbox.locator('.origam-drawer').first()).toBeVisible({ timeout: 12000 })
 			// wrapper slot is used → __prepend and __content are NOT rendered
@@ -333,14 +333,14 @@ test.describe('OrigamDrawer', () => {
 
 	test.describe('Default (Playground)', () => {
 		test('playground wrapper is visible (data-cy="drawer-playground")', async ({ page }) => {
-			await page.goto(variantUrl(9))
+			await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			// data-cy is on the outer div (not teleported) wrapping <origam-app>
 			await expect(sandbox.locator('[data-cy="drawer-playground"]')).toBeVisible({ timeout: 12000 })
 		})
 
 		test('drawer is visible in playground at init (open=true, permanent=true)', async ({ page }) => {
-			await page.goto(variantUrl(9))
+			await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const drawer = sandbox.locator('.origam-drawer').first()
 			await expect(drawer).toBeVisible({ timeout: 12000 })
@@ -348,7 +348,7 @@ test.describe('OrigamDrawer', () => {
 		})
 
 		test('playground drawer has left location by default', async ({ page }) => {
-			await page.goto(variantUrl(9))
+			await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const drawer = sandbox.locator('.origam-drawer').first()
 			await expect(drawer).toBeVisible({ timeout: 12000 })
@@ -356,7 +356,7 @@ test.describe('OrigamDrawer', () => {
 		})
 
 		test('Menu button is present in the playground AppBar', async ({ page }) => {
-			await page.goto(variantUrl(9))
+			await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			// Menu button has aria-label="Menu" (distinct from Toggle in Functional)
 			await expect(sandbox.locator('button[aria-label="Menu"]').first()).toBeVisible({ timeout: 12000 })

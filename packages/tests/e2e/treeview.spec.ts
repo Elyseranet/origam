@@ -62,7 +62,7 @@ const VARIANT = {
  * ayant laissé l'iframe en cours de transition.
  */
 async function gotoVariant(page: import('@playwright/test').Page, idx: number) {
-    await page.goto(variantUrl(idx))
+    await page.goto(variantUrl(idx), { waitUntil: 'domcontentloaded' })
     await page.waitForLoadState('domcontentloaded')
     const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
     await expect(sandbox.locator('.origam-treeview')).toBeVisible({ timeout: 20000 })
