@@ -197,3 +197,50 @@ describe('OrigamCounter — reactive updates', () => {
         expect(wrapper.find('.origam-counter--error').exists()).toBe(true)
     })
 })
+
+/*
+ * DENSITÉ — première moitié de la preuve.
+ *
+ * `ICounterProps` étend `IDensityProps` depuis toujours, mais le composant
+ * n'appelait pas `useDensity` : la prop était déclarée et morte. Elle est
+ * désormais câblée.
+ *
+ * Ce bloc prouve le premier maillon — prop -> classe. Il ne peut PAS prouver
+ * le second : jsdom n'applique pas le SCSS scopé, donc `getComputedStyle` y
+ * renverrait la même valeur quelle que soit la classe. Émettre une classe sans
+ * règle SCSS correspondante est justement l'anti-patron que le CLAUDE.md
+ * interdit — le maillon classe -> style calculé est donc prouvé séparément,
+ * dans `packages/tests/e2e/counter.spec.ts`, contre un navigateur réel.
+ *
+ * Les deux moitiés sont nécessaires. Prise seule, celle-ci passerait au vert
+ * même si le bloc `<style>` était vide.
+ */
+describe('OrigamCounter — density', () => {
+    it.each([
+        ['default', 'origam-counter--density-default'],
+        ['comfortable', 'origam-counter--density-comfortable'],
+        ['compact', 'origam-counter--density-compact']
+    ])('density="%s" emits %s', (density, expected) => {
+        const wrapper = mountCounter({ props: { active: true, value: 1, density } })
+
+        expect(wrapper.find(`.${expected}`).exists()).toBe(true)
+    })
+
+    it('emits no density class when the prop is omitted', () => {
+        const wrapper = mountCounter({ props: { active: true, value: 1 } })
+
+        expect(wrapper.find('.origam-counter').classes().filter((c) => c.includes('--density-')))
+            .toEqual([])
+    })
+
+    it('swaps the class at runtime rather than accumulating', async () => {
+        const wrapper = mountCounter({ props: { active: true, value: 1, density: 'compact' } })
+        expect(wrapper.find('.origam-counter--density-compact').exists()).toBe(true)
+
+        await wrapper.setProps({ density: 'comfortable' })
+        await nextTick()
+
+        expect(wrapper.find('.origam-counter--density-compact').exists()).toBe(false)
+        expect(wrapper.find('.origam-counter--density-comfortable').exists()).toBe(true)
+    })
+})

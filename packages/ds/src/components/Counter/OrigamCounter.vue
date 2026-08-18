@@ -28,6 +28,7 @@
 	import {
 		useBorder,
 		useBothColor,
+		useDensity,
 		useElevation,
 		useMargin,
 		usePadding,
@@ -77,6 +78,7 @@
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {elevationClasses, elevationStyles} = useElevation(props)
+	const {densityClasses} = useDensity(props)
 
 	const {isBooted} = useSsrBoot()
 
@@ -108,6 +110,7 @@
 			borderClasses.value,
 			roundedClasses.value,
 			elevationClasses.value,
+			densityClasses.value,
 			paddingClasses.value,
 			marginClasses.value,
 			props.class
@@ -136,8 +139,20 @@
 	.origam-counter {
 		color: currentColor;
 		flex: 0 1 auto;
-		font-size: 12px;
+		font-size: var(--origam-counter---font-size, 12px);
 		transition-duration: 150ms;
+
+		&--density-comfortable {
+			--origam-counter---font-size: 13px;
+		}
+
+		&--density-default {
+			--origam-counter---font-size: 12px;
+		}
+
+		&--density-compact {
+			--origam-counter---font-size: 11px;
+		}
 	}
 </style>
 

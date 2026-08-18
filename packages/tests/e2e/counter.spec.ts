@@ -187,4 +187,35 @@ test.describe('OrigamCounter', () => {
             await expect(counter).toHaveClass(/origam-counter/)
         })
     })
+
+    /*
+     * ⛔ PAS DE TEST DE DENSITÉ ICI — ET C'EST DÉLIBÉRÉ.
+     *
+     * `density` est désormais câblée côté composant : la prop produit bien
+     * `origam-counter--density-{default|comfortable|compact}`, prouvé par
+     * mutation dans TU/components/Counter/OrigamCounter.spec.ts.
+     *
+     * Le maillon suivant — classe -> rendu — n'a PAS pu être prouvé, et un
+     * test qui l'affirmerait sans l'avoir établi serait exactement le « vert
+     * vacant » que cette suite passe son temps à traquer.
+     *
+     * Ce qui a été mesuré, sur la variante Design :
+     *   - la règle compilée est bien présente dans le CSS servi et matche
+     *     l'élément (`.origam-counter--density-compact[data-v-…]`) ;
+     *   - après ajout de la classe, la variable `--origam-counter---font-size`
+     *     vaut bien `11px` sur l'élément ;
+     *   - et pourtant `getComputedStyle(el).fontSize` reste à `10px`.
+     *
+     * Le contrôle qui referme le sujet : poser `font-size: 30px` EN INLINE sur
+     * l'élément ne change ni le style calculé (`10px`) ni sa boîte
+     * (`596x14` avant comme après). Rien en CSS ne peut battre un style inline
+     * sans `!important`, et un balayage récursif des feuilles n'en trouve
+     * aucun. La police de ce composant est donc épinglée par un mécanisme que
+     * je n'ai pas identifié.
+     *
+     * Conséquence, plus large que la densité : tant que ce mécanisme n'est pas
+     * identifié, la taille de police d'OrigamCounter n'est modifiable par
+     * AUCUN canal — ni prop, ni token, ni thème, ni style inline. Suivi en
+     * tâche dédiée.
+     */
 })
