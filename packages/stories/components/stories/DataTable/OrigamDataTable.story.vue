@@ -329,13 +329,6 @@
 			</origam-data-table>
 		</Variant>
 
-		<Variant title="Prop — headers & items (basic dataset)">
-			<origam-data-table
-					:headers="headers"
-					:items="items"
-			/>
-		</Variant>
-
 		<Variant
 				title="Prop — multiSort & mustSort"
 				:init-state="() => useStoryInitState<Partial<IDataTableProps>>({ multiSort: false, mustSort: false })"

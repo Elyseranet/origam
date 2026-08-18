@@ -6,7 +6,7 @@ test.describe('OrigamDataTable', () => {
     test('Basic variant — table renders with header and body', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — headers & items (basic dataset)', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -18,7 +18,7 @@ test.describe('OrigamDataTable', () => {
     test('Basic variant — column headers are rendered', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — headers & items (basic dataset)', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -29,7 +29,7 @@ test.describe('OrigamDataTable', () => {
     test('Basic variant — item data is rendered', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — headers & items (basic dataset)', { exact: true }).first().click()
+        await page.getByText('Design', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
