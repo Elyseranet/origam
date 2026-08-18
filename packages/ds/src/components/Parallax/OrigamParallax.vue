@@ -177,6 +177,23 @@
 	}
 
 	const handleMovement = useThrottleFn((event: MouseEvent & DeviceOrientationEvent) => {
+		// `disabled` is the HARD kill-switch documented on `IParallaxProps`:
+		// "translate stays at 0 regardless of scroll / events". Until this fix it
+		// only reached `useParallaxRuntime` (the <OrigamParallaxLayer> path) and
+		// the `origam-parallax--disabled` class — whose SCSS only neutralises
+		// `.origam-parallax__layer`. The legacy <OrigamParallaxElement> path was
+		// never gated, so `<origam-parallax disabled event="move">` kept
+		// translating under the mouse (measured: matrix(1,0,0,1,-1,-1) →
+		// matrix(1,0,0,1,-50.58,-50.62)). Gating the shared entry point covers
+		// all three legacy modes (move / scroll / orientation) at once.
+		//
+		// `active` deliberately stays NARROWER — it only freezes the mouse mode
+		// (cf. `IParallaxProps.active`, "Legacy kill-switch"), which is why it is
+		// enforced through `handleMovementStart` (isMoving never latches) rather
+		// than here: an `event="scroll"` host with `active={false}` must keep
+		// scrolling. The two props are not synonyms and must not be merged.
+		if (props.disabled) return
+
 		if (!props.active && !root.value) return
 
 		if (!isMoving.value && !leftOnce.value) {
@@ -245,7 +262,15 @@
 		audioData,
 		event: toRef(props, 'event'),
 		eventData: data,
-		isMoving: computed(() => isMoving.value || props.event === PARALLAX_EVENT.SCROLL) as unknown as Ref<boolean>,
+		// Second half of the `disabled` kill-switch. The early return in
+		// `handleMovement` stops FUTURE updates, but `movement` keeps whatever
+		// value it held when `disabled` flipped on — so the element would freeze
+		// mid-travel instead of returning to offset 0 as documented.
+		// `OrigamParallaxElement.transformCalculation` short-circuits to
+		// `{x: 0, y: 0}` as soon as this ref reads false, so gating it here is
+		// what makes "translate stays at 0" literally true, and it covers the
+		// `event="scroll"` branch of this same expression too.
+		isMoving: computed(() => !props.disabled && (isMoving.value || props.event === PARALLAX_EVENT.SCROLL)) as unknown as Ref<boolean>,
 		movement,
 		duration: resolvedDuration,
 		easing: toRef(props, 'easing') as unknown as Ref<string>,
