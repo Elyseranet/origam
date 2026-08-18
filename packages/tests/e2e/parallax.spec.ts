@@ -321,6 +321,60 @@ test.describe('OrigamParallax — multi-layer (enriched)', () => {
         expect(final).toBe(initial)
     })
 
+    test('disabled — flipping it mid-hover returns the element to offset 0', async ({ page }) => {
+        // Companion to the test above, and the one that actually PINS the fix.
+        //
+        // Mutation testing (2026-08-18) showed the previous test alone kills only
+        // the "no guard at all" mutant: with `disabled` flipped BEFORE any mouse
+        // input, `isMoving` is still false and `movement` still {0,0}, so EITHER
+        // half of the fix holds the element at rest on its own. Flipping mid-hover
+        // is what separates them — by then `isMoving` is true and `movement`
+        // carries the last mouse-derived offset, so only the gate on the PROVIDED
+        // `isMoving` (which makes OrigamParallaxElement short-circuit to
+        // {x: 0, y: 0}) can bring the element home. Drop that gate and this test
+        // reddens; the other one does not.
+        await page.goto(variantUrl(1))
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const host = sandbox.locator('.origam-parallax').first()
+        const element = sandbox.locator('.origam-parallax-element').first()
+        await expect(host).toBeVisible({ timeout: 12000 })
+
+        const resting = await element.evaluate((el) => getComputedStyle(el).transform)
+
+        await host.evaluate(async (host) => {
+            const rect = host.getBoundingClientRect()
+            host.dispatchEvent(new MouseEvent('mouseenter', {
+                bubbles: true, clientX: rect.left + rect.width / 2, clientY: rect.top + rect.height / 2, view: window,
+            }))
+            await new Promise(r => setTimeout(r, 50))
+            for (let i = 0; i <= 10; i++) {
+                const ratio = i / 10
+                host.dispatchEvent(new MouseEvent('mousemove', {
+                    bubbles: true, clientX: rect.left + rect.width * ratio, clientY: rect.top + rect.height * ratio, view: window,
+                }))
+                await new Promise(r => setTimeout(r, 120))
+            }
+        })
+        await page.waitForTimeout(400)
+
+        const moved = await element.evaluate((el) => getComputedStyle(el).transform)
+        console.log('[disabled/mid-hover] resting:', resting, '→ moved:', moved)
+        // Self-check: if the gesture didn't move anything, the assertion below
+        // would pass vacuously — exactly the failure mode this pass exists to remove.
+        expect(moved).not.toBe(resting)
+
+        await toggleHstCheckbox(page, 'Disabled')
+        await expect(sandbox.locator('.origam-parallax--disabled')).toHaveCount(1)
+
+        // The Variant runs `duration: 1000`, so the return trip is a 1s CSS
+        // transition — poll rather than sampling once.
+        await expect.poll(
+            async () => element.evaluate((el) => getComputedStyle(el).transform),
+            { timeout: 8000, message: 'element should return to its resting transform once disabled' }
+        ).toBe(resting)
+    })
+
     test('prefers-reduced-motion — layer transform stays at offset 0', async ({ page, browserName }) => {
         // Chromium-only — Firefox's emulateMedia for reducedMotion has quirks
         // through Playwright that make this assertion brittle.

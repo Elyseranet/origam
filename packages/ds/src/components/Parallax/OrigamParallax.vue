@@ -177,21 +177,16 @@
 	}
 
 	const handleMovement = useThrottleFn((event: MouseEvent & DeviceOrientationEvent) => {
-		// `disabled` is the HARD kill-switch documented on `IParallaxProps`:
-		// "translate stays at 0 regardless of scroll / events". Until this fix it
-		// only reached `useParallaxRuntime` (the <OrigamParallaxLayer> path) and
-		// the `origam-parallax--disabled` class — whose SCSS only neutralises
-		// `.origam-parallax__layer`. The legacy <OrigamParallaxElement> path was
-		// never gated, so `<origam-parallax disabled event="move">` kept
-		// translating under the mouse (measured: matrix(1,0,0,1,-1,-1) →
-		// matrix(1,0,0,1,-50.58,-50.62)). Gating the shared entry point covers
-		// all three legacy modes (move / scroll / orientation) at once.
-		//
-		// `active` deliberately stays NARROWER — it only freezes the mouse mode
-		// (cf. `IParallaxProps.active`, "Legacy kill-switch"), which is why it is
-		// enforced through `handleMovementStart` (isMoving never latches) rather
-		// than here: an `event="scroll"` host with `active={false}` must keep
-		// scrolling. The two props are not synonyms and must not be merged.
+		// WORK-AVOIDANCE ONLY — this is NOT the guard that makes `disabled`
+		// visible. Mutation testing (2026-08-18) confirmed it: delete this line
+		// and both `disabled` e2e tests still pass, because the gate on the
+		// PROVIDED `isMoving` (see the `provide` block below) already pins the
+		// rendered transform to offset 0 on its own. What this line buys is that
+		// a disabled host stops doing per-mousemove work it can't display —
+		// `getTargetBox` (a forced `getBoundingClientRect`) every 100 ms, plus
+		// writes to `movement` / `data` that invalidate every child's computeds
+		// and keep pushing `eventData` at consumers of ORIGAM_PARALLAX_KEY.
+		// Keep it, but don't mistake it for the fix.
 		if (props.disabled) return
 
 		if (!props.active && !root.value) return
@@ -222,6 +217,16 @@
 		}
 	}
 
+	// `active` and `disabled` both stop movement, and the asymmetry between them
+	// is deliberate — see `IParallaxProps`. `disabled` is the HARD switch
+	// ("translate stays at 0 regardless of scroll / events") and is enforced on
+	// the provided `isMoving`, so it kills every legacy mode at once. `active` is
+	// the NARROW legacy kill-switch: it only freezes the MOUSE mode, which is
+	// exactly why it is enforced here — `handleMovementStart` is the mouse
+	// entry point, so an `event="scroll"` host with `active={false}` keeps
+	// scrolling (the provided `isMoving` is forced true for SCROLL). Do not
+	// "harmonise" the two by moving this test next to the `disabled` one: that
+	// would silently widen `active` into a second hard switch.
 	const handleMovementStart = () => {
 		if (!props.active) return
 		isMoving.value = true
@@ -262,12 +267,21 @@
 		audioData,
 		event: toRef(props, 'event'),
 		eventData: data,
-		// Second half of the `disabled` kill-switch. The early return in
-		// `handleMovement` stops FUTURE updates, but `movement` keeps whatever
-		// value it held when `disabled` flipped on — so the element would freeze
-		// mid-travel instead of returning to offset 0 as documented.
-		// `OrigamParallaxElement.transformCalculation` short-circuits to
-		// `{x: 0, y: 0}` as soon as this ref reads false, so gating it here is
+		// ⛔ THIS is the `disabled` kill-switch for the legacy
+		// <OrigamParallaxElement> path — the only gate whose removal reddens a
+		// test (`disabled — flipping it mid-hover…`). Before it, `disabled`
+		// reached only `useParallaxRuntime` (the <OrigamParallaxLayer> path) and
+		// the `origam-parallax--disabled` class, whose SCSS neutralises
+		// `.origam-parallax__layer` and nothing else — so a
+		// `<origam-parallax disabled event="move">` kept translating under the
+		// mouse (measured: matrix(1,0,0,1,-1,-1) → matrix(1,0,0,1,-50.58,-50.62)).
+		//
+		// It has to live HERE rather than only in `handleMovement`: stopping
+		// future updates leaves `movement` at whatever value it held when
+		// `disabled` flipped on, freezing the element mid-travel (measured at
+		// -91,-91) instead of returning to offset 0 as `IParallaxProps.disabled`
+		// documents. `OrigamParallaxElement.transformCalculation` short-circuits
+		// to `{x: 0, y: 0}` as soon as this ref reads false, so gating it here is
 		// what makes "translate stays at 0" literally true, and it covers the
 		// `event="scroll"` branch of this same expression too.
 		isMoving: computed(() => !props.disabled && (isMoving.value || props.event === PARALLAX_EVENT.SCROLL)) as unknown as Ref<boolean>,

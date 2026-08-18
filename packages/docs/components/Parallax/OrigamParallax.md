@@ -55,17 +55,35 @@ of scroll.
 | `direction` | `'vertical' \| 'horizontal' \| 'both'` | `'vertical'` | Axis of the parallax translation. `both` mixes scroll-progress (Y) and mouse-ratio (X). |
 | `easing` | `'linear' \| 'ease-out' \| 'spring' \| string` | `'linear'` | Easing keyword or raw CSS timing-function. Only `linear` activates the CSS-first path. |
 | `speed` | `number` | `0.5` | Default speed multiplier when the host has no `<OrigamParallaxLayer>` children. |
-| `disabled` | `boolean` | `false` | Force OFF — layers stay at offset 0 regardless of scroll. |
+| `disabled` | `boolean` | `false` | Hard kill-switch. `<OrigamParallaxLayer>` **and** `<OrigamParallaxElement>` stay at offset 0 regardless of the event source — scroll, mouse, or device orientation. See "`disabled` vs `active`" below. |
 | `threshold` | `number` | `0` | Proportion of the host (0 → 1) that must enter the viewport before the effect activates. |
 | `duration` | `number` | `1000` | Legacy transition duration (ms) for `<OrigamParallaxElement>`. |
 | `perspective` | `number` | `1000` | Host CSS `perspective` (px). |
 | `event` | `'move' \| 'scroll' \| 'orientation'` | `'move'` | Legacy event source for `<OrigamParallaxElement>`. |
-| `active` | `boolean` | `true` | Legacy kill-switch — only freezes the mouse path. |
+| `active` | `boolean` | `true` | Narrow legacy kill-switch — freezes the **mouse** path only. See "`disabled` vs `active`" below. |
 | `animationDuration` | `number` | `undefined` | **Deprecated** — alias for `duration`, removed in v3.0.0. |
 
 Plus all the standard chrome props: `tag`, `color`, `bgColor`,
 `padding`, `margin`, `border`, `rounded`, `elevation`, `dimension`,
 `audio`, `class`, `style`.
+
+### `disabled` vs `active`
+
+Both stop the effect, and the difference is deliberate — they are not
+synonyms.
+
+| | `disabled` | `active={false}` |
+|---|---|---|
+| Scope | Every path: `<OrigamParallaxLayer>` runtime **and** the legacy `<OrigamParallaxElement>` | Legacy `<OrigamParallaxElement>` only |
+| Event sources stopped | `scroll`, `move`, `orientation` | `move` only — `event="scroll"` keeps running |
+| Resting position | Snaps back to offset 0, including mid-gesture | Stops where it is |
+| Intended use | SSR, snapshot tests, `prefers-reduced-motion` integrations | Legacy v2.x pause of the mouse effect |
+
+Reach for `disabled` unless you specifically want the narrow, legacy
+behaviour. Until v2.15.x, `disabled` was silently inert on the legacy
+`<OrigamParallaxElement>` mouse path — a host with
+`<origam-parallax disabled event="move">` kept translating under the
+cursor.
 
 ## Events
 
