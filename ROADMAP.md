@@ -292,7 +292,8 @@ lieu d'un point d'entrée unique massif :
   Dépendance commune à tous les autres modules.
 - **`origam/form`** — champs & formulaires : TextField, Textarea, Select, Checkbox,
   Switch, Radio, Slider, NumberField, PasswordField, OtpInput, RatingField, FileField,
-  ColorPicker, DatePicker, Form, validation, **AddMore** (cf. spec ci-dessous).
+  ColorPicker, DatePicker, Form, validation, **AddMore** et **TimePicker /
+  TimePickerField** (cf. specs ci-dessous).
 - **`origam/chart`** — toute la famille `OrigamChart*` (la plus lourde : SVG + maths),
   isolée pour ne JAMAIS peser sur une app sans graphes.
 
@@ -641,6 +642,81 @@ qu'elle échoue.
 - Livrable : composant + interface (`IWizardFormProps`) + story (format
   unifié) + doc + e2e (navigation avant/arrière, blocage sur step invalide,
   soumission finale) — **test-as-you-build**.
+
+### `OrigamTimePicker` + `OrigamTimePickerField` — sélection d'heure **(M, spec)**
+
+> Demande mainteneur (août 2026). **Statut : planifié, non implémenté.** Module `form`.
+
+**Constat** : le catalogue couvre la date (`OrigamDatePicker` + ses 5
+sous-composants, `OrigamDatePickerField`) mais **rien ne couvre l'heure** —
+vérifié, aucun fichier `*Time*` hors la famille `Timeline`, qui est un
+composant d'affichage chronologique sans rapport. C'est le trou le plus
+visible de la famille de saisie : un formulaire de rendez-vous ne peut pas
+être construit avec origam seul aujourd'hui.
+
+**Deux composants, comme pour la date** — la surface de sélection et son
+habillage en champ sont deux besoins distincts (la surface sert aussi
+inline, dans un panneau ou une Card, sans champ) :
+- `OrigamTimePicker` — la surface de sélection seule.
+- `OrigamTimePickerField` — le champ qui l'ouvre dans un overlay.
+
+**Ce qui existe déjà et DOIT être réutilisé** (règle anti-duplication du
+dépôt — audit fait avant d'écrire cette spec) :
+- `CALENDAR_TIME_FORMAT` (`enums/Calendar`, valeurs `'12h'` / `'24h'`) et le
+  type dérivé `TCalendarTimeFormat` couvrent déjà le format d'horloge.
+  **Ne pas en créer un second.** Comme il devient partagé entre deux
+  familles, il rejoint `Commons` conformément à la règle « cible
+  d'unification = TOUJOURS Commons » — le renommage fait partie du ticket.
+- Le patron du champ est **exactement** celui de
+  `OrigamDatePickerField.vue` : `origam-text-field` (l.2) + `origam-menu`
+  (l.62) + le picker en contenu (l.76), avec `v-bind="{ ...textFieldProps }"`
+  pour le passe-plat. `OrigamTimePickerField` mirroite cette structure ; il
+  ne réinvente ni le champ, ni l'overlay, ni le placement.
+- Les props transversales passent par les interfaces `Commons`
+  (`IValidationProps`, `IDensityProps`, `ISizeProps`, `IRoundedProps`…),
+  jamais redéclarées inline.
+
+**⚠️ Ce qui N'EST PAS réutilisable, malgré son nom** :
+`formatMediaTime` (`utils/Media/format-time.util.ts`) formate une **durée**
+en `mm:ss` / `h:mm:ss` avec un repli `--:--`. C'est un autre domaine qu'une
+**heure de la journée** (pas de 12h/24h, pas de méridien, pas de fuseau).
+La réutiliser produirait un affichage faux. Le formatage horaire est à
+écrire, dans `utils/` et non inline.
+
+**API cible (esquisse — à affiner au lancement)** :
+- `v-model` — à trancher entre une `Date`, une chaîne `HH:mm`, ou un objet
+  `{ hours, minutes, seconds }`. Contrainte : rester cohérent avec ce que
+  `OrigamDatePicker` émet déjà, pour qu'un couple date + heure se compose
+  sans conversion côté application.
+- `format?: TTimeFormat` — 12h / 24h, réutilisant l'enum ci-dessus.
+- `min` / `max` — bornes horaires ; `step` (minutes) pour contraindre la
+  granularité ; `allowedTimes` pour les cas non réguliers (créneaux).
+- `useSeconds?: boolean` — masqué par défaut, la majorité des usages
+  s'arrêtent à la minute.
+- Mode de saisie : **liste de créneaux scrollable** (heures / minutes en
+  colonnes) plutôt qu'un cadran analogique en première version — le cadran
+  est joli mais coûteux en a11y et en tests, il peut venir en second temps
+  derrière une prop de variante.
+- `OrigamTimePickerField` ajoute : `placeholder`, `clearable`, saisie
+  clavier directe dans le champ (pas seulement via l'overlay), et la
+  validation `IValidationProps` héritée de la chaîne de champs.
+
+**a11y — le point dur, à traiter dès la conception** : un sélecteur d'heure
+est un piège classique. Les colonnes de créneaux sont des `listbox`
+navigables au clavier (flèches, Home/End, saisie du premier chiffre), pas
+des `div` cliquables ; l'heure sélectionnée est annoncée en toutes lettres
+et non lue comme deux nombres isolés ; la saisie clavier directe dans le
+champ doit rester possible sans jamais ouvrir l'overlay. Suivre la règle
+HTML sémantique du dépôt : élément natif d'abord, ARIA seulement là où
+aucun natif ne convient.
+
+**Livrable** : 2 composants + interfaces (`ITimePickerProps`,
+`ITimePickerFieldProps`) + types + util de formatage + 2 stories (format
+canonique : Design / State / Functional / Emits / Slots / Playground) +
+2 docs + e2e (sélection à la souris, navigation clavier complète, bornes
+min/max, step, 12h vs 24h, saisie directe au clavier dans le champ) —
+**test-as-you-build**, spec Playwright livrée dans la même PR que
+l'implémentation.
 
 ### `OrigamPage` — wrapper de page (header / content / footer) **(S, spec)**
 
