@@ -68,7 +68,7 @@ test.describe('OrigamWatermark', () => {
 
     test.describe('Design variant', () => {
         test('renders root and layer with BEM classes', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root  = sandbox.locator('.origam-watermark').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -77,7 +77,7 @@ test.describe('OrigamWatermark', () => {
         })
 
         test('layer carries aria-hidden="true" so screen readers skip the overlay', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const layer = sandbox.locator('[data-cy="origam-watermark-layer"]').first()
             await expect(layer).toBeVisible({ timeout: 30000 })
@@ -85,7 +85,7 @@ test.describe('OrigamWatermark', () => {
         })
 
         test('layer backgroundImage is a data:image/svg+xml URL', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const layer = sandbox.locator('[data-cy="origam-watermark-layer"]').first()
             await expect(layer).toBeVisible({ timeout: 30000 })
@@ -94,7 +94,7 @@ test.describe('OrigamWatermark', () => {
         })
 
         test('SVG contains a <text> glyph with text CONFIDENTIAL', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const layer = sandbox.locator('[data-cy="origam-watermark-layer"]').first()
             await expect(layer).toBeVisible({ timeout: 30000 })
@@ -105,7 +105,7 @@ test.describe('OrigamWatermark', () => {
         })
 
         test('SVG viewBox matches tile = gap(120) + fontSize(16) = 136', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const layer = sandbox.locator('[data-cy="origam-watermark-layer"]').first()
             await expect(layer).toBeVisible({ timeout: 30000 })
@@ -114,7 +114,7 @@ test.describe('OrigamWatermark', () => {
         })
 
         test('SVG rotate() transform uses init angle -30', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const layer = sandbox.locator('[data-cy="origam-watermark-layer"]').first()
             await expect(layer).toBeVisible({ timeout: 30000 })
@@ -123,7 +123,7 @@ test.describe('OrigamWatermark', () => {
         })
 
         test('SVG opacity attribute matches init opacity=0.1', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const layer = sandbox.locator('[data-cy="origam-watermark-layer"]').first()
             await expect(layer).toBeVisible({ timeout: 30000 })
@@ -132,7 +132,7 @@ test.describe('OrigamWatermark', () => {
         })
 
         test('root has position:relative (computed) so absolute layer is bounded', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('[data-cy="origam-watermark"]').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -143,7 +143,7 @@ test.describe('OrigamWatermark', () => {
         })
 
         test('layer inline style has pointer-events:none', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const layer = sandbox.locator('[data-cy="origam-watermark-layer"]').first()
             await expect(layer).toBeVisible({ timeout: 30000 })
@@ -162,7 +162,7 @@ test.describe('OrigamWatermark', () => {
 
     test.describe('Functional variant', () => {
         test('renders root and layer', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-watermark').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -171,7 +171,7 @@ test.describe('OrigamWatermark', () => {
         })
 
         test('zIndex=1 (init) is set on the layer inline style', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const layer = sandbox.locator('[data-cy="origam-watermark-layer"]').first()
             await expect(layer).toBeVisible({ timeout: 30000 })
@@ -180,7 +180,7 @@ test.describe('OrigamWatermark', () => {
         })
 
         test('antiTamper=false (init) — layer stays removed after DOM removal', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('[data-cy="origam-watermark"]').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -198,7 +198,7 @@ test.describe('OrigamWatermark', () => {
         })
 
         test('antiTamper=true — layer is re-injected after DOM removal', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('[data-cy="origam-watermark"]').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -232,7 +232,7 @@ test.describe('OrigamWatermark', () => {
 
     test.describe('Slots - Default variant', () => {
         test('renders root with slotted <article> content visible', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-watermark').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -242,7 +242,7 @@ test.describe('OrigamWatermark', () => {
         })
 
         test('layer aria-hidden="true" on the Slots variant', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const layer = sandbox.locator('[data-cy="origam-watermark-layer"]').first()
             await expect(layer).toBeVisible({ timeout: 30000 })
@@ -250,7 +250,7 @@ test.describe('OrigamWatermark', () => {
         })
 
         test('SVG opacity is 0.08 (static prop)', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const layer = sandbox.locator('[data-cy="origam-watermark-layer"]').first()
             await expect(layer).toBeVisible({ timeout: 30000 })
@@ -259,7 +259,7 @@ test.describe('OrigamWatermark', () => {
         })
 
         test('SVG fill uses the static color #dc2626', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const layer = sandbox.locator('[data-cy="origam-watermark-layer"]').first()
             await expect(layer).toBeVisible({ timeout: 30000 })
@@ -276,7 +276,7 @@ test.describe('OrigamWatermark', () => {
 
     test.describe('Default (playground) variant', () => {
         test('renders root and layer', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-watermark').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -285,7 +285,7 @@ test.describe('OrigamWatermark', () => {
         })
 
         test('playground init — SVG text + angle=-30 + opacity=0.1 + tile=136', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const layer = sandbox.locator('[data-cy="origam-watermark-layer"]').first()
             await expect(layer).toBeVisible({ timeout: 30000 })
@@ -299,7 +299,7 @@ test.describe('OrigamWatermark', () => {
         })
 
         test('slot button inside the playground is still clickable (pointer-events passthrough)', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-watermark').first()
             await expect(root).toBeVisible({ timeout: 30000 })
@@ -311,7 +311,7 @@ test.describe('OrigamWatermark', () => {
         })
 
         test('origam-watermark--anti-tamper class absent when antiTamper=false (init)', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('[data-cy="origam-watermark"]').first()
             await expect(root).toBeVisible({ timeout: 30000 })

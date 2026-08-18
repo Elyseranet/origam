@@ -38,14 +38,14 @@ test.describe('OrigamLabel', () => {
 
     test.describe('Design', () => {
         test('renders the label root with BEM class', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const label = sandbox.locator('.origam-label').first()
             await expect(label).toBeVisible({ timeout: 12000 })
         })
 
         test('default tag is <label> (HTML element)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const label = sandbox.locator('label.origam-label').first()
             await expect(label).toBeVisible({ timeout: 12000 })
@@ -54,7 +54,7 @@ test.describe('OrigamLabel', () => {
         })
 
         test('text prop renders inside a <span> in the default slot', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const label = sandbox.locator('.origam-label').first()
             await expect(label).toBeVisible({ timeout: 12000 })
@@ -62,7 +62,7 @@ test.describe('OrigamLabel', () => {
         })
 
         test('color token --origam-label---color is defined', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const label = sandbox.locator('.origam-label').first()
             await expect(label).toBeVisible({ timeout: 12000 })
@@ -73,7 +73,7 @@ test.describe('OrigamLabel', () => {
         })
 
         test('computed color resolves to a valid rgb() value', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const label = sandbox.locator('.origam-label').first()
             await expect(label).toBeVisible({ timeout: 12000 })
@@ -84,7 +84,7 @@ test.describe('OrigamLabel', () => {
         })
 
         test('font-size token --origam-label---font-size is defined and resolves to > 0', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const label = sandbox.locator('.origam-label').first()
             await expect(label).toBeVisible({ timeout: 12000 })
@@ -104,14 +104,14 @@ test.describe('OrigamLabel', () => {
 
     test.describe('Functional', () => {
         test('renders with BEM root class', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const label = sandbox.locator('.origam-label').first()
             await expect(label).toBeVisible({ timeout: 12000 })
         })
 
         test('floating=false: origam-label--floating class is absent by default', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const label = sandbox.locator('.origam-label').first()
             await expect(label).toBeVisible({ timeout: 12000 })
@@ -123,7 +123,7 @@ test.describe('OrigamLabel', () => {
             // The floating modifier rule in SCSS:
             //   &--floating { font-size: var(--origam-label__floating---font-size) }
             // We verify the token value is smaller than the base token.
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const label = sandbox.locator('.origam-label').first()
             await expect(label).toBeVisible({ timeout: 12000 })
@@ -152,7 +152,7 @@ test.describe('OrigamLabel', () => {
         })
 
         test('required=false: no <sup> rendered by default', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const label = sandbox.locator('.origam-label').first()
             await expect(label).toBeVisible({ timeout: 12000 })
@@ -164,7 +164,7 @@ test.describe('OrigamLabel', () => {
             // The SCSS rule: .origam-label sup { color: var(--origam-label---required-indicator-color) }
             // We verify the rule is compiled by scanning stylesheets — injecting a sup
             // and checking the selector resolves correctly.
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const label = sandbox.locator('.origam-label').first()
             await expect(label).toBeVisible({ timeout: 12000 })
@@ -189,7 +189,7 @@ test.describe('OrigamLabel', () => {
         test('tag prop can change root element to <span>', async ({ page }) => {
             // The story init is tag='label'; we test the SCSS/component
             // handles the default correctly, and verify tagName directly.
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const label = sandbox.locator('.origam-label').first()
             await expect(label).toBeVisible({ timeout: 12000 })
@@ -206,7 +206,7 @@ test.describe('OrigamLabel', () => {
 
     test.describe('Events - click', () => {
         test('renders a label with text "Click me"', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const label = sandbox.locator('.origam-label').first()
             await expect(label).toBeVisible({ timeout: 12000 })
@@ -217,7 +217,7 @@ test.describe('OrigamLabel', () => {
             // pointer-events: var(--origam-label---pointer-events) — the token defaults
             // to 'none' in most themes. We force the click to bypass pointer-events.
             // What we test: the @click handler is wired at the Vue level (no runtime error).
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const label = sandbox.locator('.origam-label').first()
             await expect(label).toBeVisible({ timeout: 12000 })
@@ -234,7 +234,7 @@ test.describe('OrigamLabel', () => {
 
     test.describe('Slots - Default', () => {
         test('default slot renders custom content', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const label = sandbox.locator('.origam-label').first()
             await expect(label).toBeVisible({ timeout: 12000 })
@@ -244,7 +244,7 @@ test.describe('OrigamLabel', () => {
         })
 
         test('default slot replaces the text prop span (no span.text wrapper)', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const label = sandbox.locator('.origam-label').first()
             await expect(label).toBeVisible({ timeout: 12000 })
@@ -262,7 +262,7 @@ test.describe('OrigamLabel', () => {
 
     test.describe('Default (playground)', () => {
         test('renders with BEM root class and default text', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const label = sandbox.locator('.origam-label').first()
             await expect(label).toBeVisible({ timeout: 12000 })
@@ -270,7 +270,7 @@ test.describe('OrigamLabel', () => {
         })
 
         test('default tag is <label> in playground', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const label = sandbox.locator('label.origam-label').first()
             await expect(label).toBeVisible({ timeout: 12000 })
@@ -279,7 +279,7 @@ test.describe('OrigamLabel', () => {
         })
 
         test('pointer-events token --origam-label---pointer-events is declared', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const label = sandbox.locator('.origam-label').first()
             await expect(label).toBeVisible({ timeout: 12000 })
