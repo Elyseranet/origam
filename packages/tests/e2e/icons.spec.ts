@@ -404,8 +404,7 @@ test.describe('OrigamSvgIcon — inline SVG leaf', () => {
         // Wait for at least one path to appear before counting — guards against
         // the iframe still rendering when tests run in parallel under load.
         await sandbox.locator('.origam-icon__svg path').first().waitFor({ state: 'attached', timeout: 15000 })
-        const pathCount = await sandbox.locator('.origam-icon__svg path').count()
-        expect(pathCount).toBe(1)
+        await expect(sandbox.locator('.origam-icon__svg path')).toHaveCount(1)
     })
 
     test('Multi-path (array) — inner svg contains multiple <path> elements', async ({ page }) => {

@@ -98,23 +98,19 @@ test.describe('OrigamAlert — status icon: single render, no duplicate, no empt
         await expect(alert).toBeVisible({ timeout: 8000 })
 
         // Total icon count across the entire alert wrapper.
-        const total = await alert.locator('i.origam-icon').count()
-        expect(total).toBe(1)
+        await expect(alert.locator('i.origam-icon')).toHaveCount(1)
 
         // The single icon must live in the prepend slot.
-        const prependIcons = await alert.locator('.origam-alert__prepend i.origam-icon').count()
-        expect(prependIcons).toBe(1)
+        await expect(alert.locator('.origam-alert__prepend i.origam-icon')).toHaveCount(1)
 
         // And it MUST be the resolved status icon (mdi-information for `info`).
         const cls = await alert.locator('.origam-alert__prepend i.origam-icon').first().getAttribute('class')
         expect(cls).toContain('mdi-information')
 
         // No icon in the header next to the title.
-        const headerIcons = await alert.locator('.origam-alert__header > i.origam-icon').count()
-        expect(headerIcons).toBe(0)
+        await expect(alert.locator('.origam-alert__header > i.origam-icon')).toHaveCount(0)
 
         // No icon in the append slot.
-        const appendIcons = await alert.locator('.origam-alert__append i.origam-icon').count()
-        expect(appendIcons).toBe(0)
+        await expect(alert.locator('.origam-alert__append i.origam-icon')).toHaveCount(0)
     })
 })

@@ -179,8 +179,7 @@ test.describe('OrigamBottomNav — Items prop', () => {
         const sandbox = sandboxOf(page)
         const nav = sandbox.locator('.origam-bottom-nav').first()
         await expect(nav).toBeVisible({ timeout: 8000 })
-        const count = await nav.locator('.origam-btn').count()
-        expect(count).toBe(3)
+        await expect(nav.locator('.origam-btn')).toHaveCount(3)
     })
 })
 
@@ -223,8 +222,7 @@ test.describe('OrigamBottomNav — Slot: item', () => {
         await openVariant(page, 'Slots - Item')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('[data-cy="slot-item-0"]').first()).toBeVisible({ timeout: 8000 })
-        const count = await sandbox.locator('[data-cy^="slot-item-"]').count()
-        expect(count).toBe(3)
+        await expect(sandbox.locator('[data-cy^="slot-item-"]')).toHaveCount(3)
     })
 })
 

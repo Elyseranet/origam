@@ -129,8 +129,7 @@ test.describe('OrigamChartMap — Prop — mode', () => {
         const sandbox = sandboxOf(page)
 
         const routes = sandbox.locator('[data-cy^="origam-chart-map-route-"]')
-        const count = await routes.count()
-        expect(count).toBe(8)
+        await expect(routes).toHaveCount(8)
     })
 
     test('route arc paths start with M and contain Q for Bezier curve', async ({ page }) => {

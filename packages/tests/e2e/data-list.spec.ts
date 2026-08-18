@@ -208,8 +208,7 @@ test.describe('OrigamDataList — KV mode (PDF design)', () => {
         const ownerRow = sandbox.locator('[data-cy="data-list-kv-row-owner"]').first()
         await expect(ownerRow).toBeVisible({ timeout: 8000 })
         await expect(ownerRow.locator('dd')).toContainText('Arnaud Martin')
-        const ownerChipCount = await ownerRow.locator('dd .origam-chip').count()
-        expect(ownerChipCount).toBe(0)
+        await expect(ownerRow.locator('dd .origam-chip')).toHaveCount(0)
     })
 
     test('KV slot override — #value slot replaces the default cell renderer', async ({ page }) => {
@@ -229,8 +228,7 @@ test.describe('OrigamDataList — KV mode (PDF design)', () => {
         expect(href).toBe('#owner-profile')
         // The link must live INSIDE the Owner row's <dd>.
         const ownerRow = sandbox.locator('[data-cy="data-list-kv-row-owner"]').first()
-        const linksInOwner = await ownerRow.locator('dd a[href="#owner-profile"]').count()
-        expect(linksInOwner).toBe(1)
+        await expect(ownerRow.locator('dd a[href="#owner-profile"]')).toHaveCount(1)
     })
 
     test('KV mode toggle — selecting Mode=kv on Functional swaps to KV rendering', async ({ page }) => {
@@ -241,7 +239,6 @@ test.describe('OrigamDataList — KV mode (PDF design)', () => {
         await expect(
             sandbox.locator('.origam-data-list--mode-kv').first()
         ).toBeVisible({ timeout: 8000 })
-        const avatarCount = await sandbox.locator('.origam-data-list--mode-avatar').count()
-        expect(avatarCount).toBe(0)
+        await expect(sandbox.locator('.origam-data-list--mode-avatar')).toHaveCount(0)
     })
 })

@@ -37,8 +37,7 @@ test.describe('OrigamBtnGroup — default', () => {
         const group = sandbox.locator('.origam-btn-group').first()
         await expect(group).toBeVisible({ timeout: 8000 })
 
-        const children = await group.locator('.origam-btn').count()
-        expect(children).toBe(3)
+        await expect(group.locator('.origam-btn')).toHaveCount(3)
     })
 
     test('children buttons are stacked horizontally without gaps', async ({ page }) => {
@@ -83,8 +82,7 @@ test.describe('OrigamBtnGroup — items prop', () => {
         const group = sandbox.locator('.origam-btn-group').first()
         await expect(group).toBeVisible({ timeout: 8000 })
 
-        const children = await group.locator('.origam-btn').count()
-        expect(children).toBe(3)
+        await expect(group.locator('.origam-btn')).toHaveCount(3)
 
         const labels = await group.locator('.origam-btn .origam-btn__content').evaluateAll(els =>
             els.map(el => (el.textContent || '').trim())
@@ -164,14 +162,12 @@ test.describe('OrigamBtnGroup — item slot', () => {
         const group = sandbox.locator('.origam-btn-group').first()
         await expect(group).toBeVisible({ timeout: 8000 })
 
-        const children = await group.locator('.origam-btn').count()
-        expect(children).toBe(3)
+        await expect(group.locator('.origam-btn')).toHaveCount(3)
 
         // Each cell should have a chevron-right append icon.
         // The icon enum value is 'mdi:mdi-chevron-right' which becomes a CSS class
         // on the <i> element. The colon makes it an attribute-contains selector.
-        const chevrons = await group.locator('.origam-btn i[class*="mdi-chevron-right"]').count()
-        expect(chevrons).toBe(3)
+        await expect(group.locator('.origam-btn i[class*="mdi-chevron-right"]')).toHaveCount(3)
     })
 })
 
@@ -189,8 +185,7 @@ test.describe('OrigamBtnGroup — color (intent)', () => {
         const group = sandbox.locator('.origam-btn-group').first()
         await expect(group).toBeVisible({ timeout: 8000 })
 
-        const childCount = await group.locator('.origam-btn').count()
-        expect(childCount).toBe(3)
+        await expect(group.locator('.origam-btn')).toHaveCount(3)
 
         // Children must end up with a non-default color (any intent token
         // produces either a class or an inline style on the btn root).

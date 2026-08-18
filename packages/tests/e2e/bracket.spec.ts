@@ -112,7 +112,7 @@ test.describe('OrigamBracket — variant', () => {
         await page.waitForTimeout(400)
         await expect(bracket).toBeVisible({ timeout: 8000 })
         expect(await bracket.evaluate(el => el.className)).toContain('origam-bracket--variant-single-elimination')
-        expect(await bracket.locator('.origam-bracket__tree').count()).toBe(1)
+        await expect(bracket.locator('.origam-bracket__tree')).toHaveCount(1)
 
         await selectHstOption(page, 'Variant', 'Double elimination')
         await page.waitForTimeout(400)
@@ -127,8 +127,8 @@ test.describe('OrigamBracket — variant', () => {
         await page.waitForTimeout(400)
         expect(await bracket.evaluate(el => el.className)).toContain('origam-bracket--variant-round-robin')
         // Round-robin uses a table-like DOM (no tree wrapper).
-        expect(await bracket.locator('.origam-bracket__tree').count()).toBe(0)
-        expect(await bracket.locator('.origam-bracket__round-robin').count()).toBe(1)
+        await expect(bracket.locator('.origam-bracket__tree')).toHaveCount(0)
+        await expect(bracket.locator('.origam-bracket__round-robin')).toHaveCount(1)
     })
 
     test('double-elimination groups winner / loser / grand-final in order', async ({ page }) => {
@@ -194,8 +194,7 @@ test.describe('OrigamBracket — slots', () => {
 
         // Default match card should NOT render when the slot is provided.
         const host = sandbox.locator('[data-cy="bracket-slot-match-host"]').first()
-        const defaultCount = await host.locator('.origam-bracket-match').count()
-        expect(defaultCount).toBe(0)
+        await expect(host.locator('.origam-bracket-match')).toHaveCount(0)
     })
 
     test('competitor slot replaces the default row', async ({ page }) => {
@@ -222,6 +221,12 @@ test.describe('OrigamBracket — slots', () => {
         await expect(customRow).toBeVisible({ timeout: 8000 })
 
         const host = sandbox.locator('[data-cy="bracket-slot-competitor-host"]').first()
+        // NOT converted to `toHaveCount(0)` deliberately. This assertion sits
+        // inside a `test.fail()` pinning a real, unfixed DS bug: its job is to
+        // FAIL. Making it patient would only burn the retry budget waiting for
+        // a failure we already expect, and a transient empty DOM could flip the
+        // expected-failure into a pass — which Playwright then reports as a
+        // FAILING test. Keep the synchronous read until the DS bug is fixed.
         const defaultCount = await host.locator('.origam-bracket-competitor').count()
         expect(defaultCount).toBe(0)
     })

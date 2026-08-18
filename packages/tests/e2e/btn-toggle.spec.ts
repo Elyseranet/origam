@@ -63,8 +63,7 @@ test.describe('OrigamBtnToggle — single selection', () => {
         await expect(toggle).toBeVisible({ timeout: 8000 })
 
         // story default is `1` ("One")
-        const active = await sandbox.locator(`.${SELECTED_CLASS}`).count()
-        expect(active).toBe(1)
+        await expect(sandbox.locator(`.${SELECTED_CLASS}`)).toHaveCount(1)
 
         const activeText = await sandbox.locator(`.${SELECTED_CLASS}`).first().locator('.origam-btn__content').textContent()
         expect((activeText || '').trim()).toBe('One')
@@ -81,8 +80,7 @@ test.describe('OrigamBtnToggle — single selection', () => {
         const status = await sandbox.locator('.story-status strong').textContent()
         expect(status).toContain('2')
 
-        const active = await sandbox.locator(`.${SELECTED_CLASS}`).count()
-        expect(active).toBe(1)
+        await expect(sandbox.locator(`.${SELECTED_CLASS}`)).toHaveCount(1)
     })
 })
 
@@ -111,8 +109,7 @@ test.describe('OrigamBtnToggle — multiple selection', () => {
         expect(status1).toContain('2')
 
         // Both should now be visually active.
-        const activeCount = await sandbox.locator(`.${SELECTED_CLASS}`).count()
-        expect(activeCount).toBe(2)
+        await expect(sandbox.locator(`.${SELECTED_CLASS}`)).toHaveCount(2)
     })
 
     test('clicking a selected item removes it from the array', async ({ page }) => {
@@ -134,8 +131,7 @@ test.describe('OrigamBtnToggle — multiple selection', () => {
 
         const status = await sandbox.locator('.story-status strong').textContent()
         expect(status).toContain('[]')
-        const activeCount = await sandbox.locator(`.${SELECTED_CLASS}`).count()
-        expect(activeCount).toBe(0)
+        await expect(sandbox.locator(`.${SELECTED_CLASS}`)).toHaveCount(0)
     })
 })
 
@@ -159,8 +155,7 @@ test.describe('OrigamBtnToggle — mandatory', () => {
 
         const status = await sandbox.locator('.story-status strong').textContent()
         expect(status).toContain('1')
-        const activeCount = await sandbox.locator(`.${SELECTED_CLASS}`).count()
-        expect(activeCount).toBe(1)
+        await expect(sandbox.locator(`.${SELECTED_CLASS}`)).toHaveCount(1)
     })
 })
 
