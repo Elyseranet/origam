@@ -70,14 +70,14 @@ test.describe('OrigamBreadcrumb', () => {
 
     test.describe('Design', () => {
         test('renders the breadcrumb root with BEM class', async ({ page }) => {
-            await page.goto(bcUrl(0))
+            await page.goto(bcUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const bc = sandbox.locator('.origam-breadcrumb').first()
             await expect(bc).toBeVisible({ timeout: 12000 })
         })
 
         test('renders a <nav> element by default', async ({ page }) => {
-            await page.goto(bcUrl(0))
+            await page.goto(bcUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const bc = sandbox.locator('.origam-breadcrumb').first()
             await expect(bc).toBeVisible({ timeout: 12000 })
@@ -86,7 +86,7 @@ test.describe('OrigamBreadcrumb', () => {
         })
 
         test('carries the aria-label attribute for accessibility', async ({ page }) => {
-            await page.goto(bcUrl(0))
+            await page.goto(bcUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const bc = sandbox.locator('.origam-breadcrumb').first()
             await expect(bc).toBeVisible({ timeout: 12000 })
@@ -95,7 +95,7 @@ test.describe('OrigamBreadcrumb', () => {
         })
 
         test('default density class is applied (density-default)', async ({ page }) => {
-            await page.goto(bcUrl(0))
+            await page.goto(bcUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const bc = sandbox.locator('.origam-breadcrumb').first()
             await expect(bc).toBeVisible({ timeout: 12000 })
@@ -103,7 +103,7 @@ test.describe('OrigamBreadcrumb', () => {
         })
 
         test('renders an ordered list of items (.origam-breadcrumb__items)', async ({ page }) => {
-            await page.goto(bcUrl(0))
+            await page.goto(bcUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const bc = sandbox.locator('.origam-breadcrumb').first()
             await expect(bc).toBeVisible({ timeout: 12000 })
@@ -112,7 +112,7 @@ test.describe('OrigamBreadcrumb', () => {
         })
 
         test('items prop renders breadcrumb-item children', async ({ page }) => {
-            await page.goto(bcUrl(0))
+            await page.goto(bcUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const bc = sandbox.locator('.origam-breadcrumb').first()
             await expect(bc).toBeVisible({ timeout: 12000 })
@@ -122,7 +122,7 @@ test.describe('OrigamBreadcrumb', () => {
         })
 
         test('divider renders between items (.origam-breadcrumb-divider)', async ({ page }) => {
-            await page.goto(bcUrl(0))
+            await page.goto(bcUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const bc = sandbox.locator('.origam-breadcrumb').first()
             await expect(bc).toBeVisible({ timeout: 12000 })
@@ -135,7 +135,7 @@ test.describe('OrigamBreadcrumb', () => {
             // Vue scoped styles carry a [data-v-XXXX] attribute — injecting the class
             // programmatically won't activate the scoped rule. We inspect the compiled
             // stylesheet directly to verify the declaration is present.
-            await page.goto(bcUrl(0))
+            await page.goto(bcUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const bc = sandbox.locator('.origam-breadcrumb').first()
             await expect(bc).toBeVisible({ timeout: 12000 })
@@ -157,7 +157,7 @@ test.describe('OrigamBreadcrumb', () => {
         })
 
         test('SCSS --density-compact: stylesheet declares --density = 8px', async ({ page }) => {
-            await page.goto(bcUrl(0))
+            await page.goto(bcUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const bc = sandbox.locator('.origam-breadcrumb').first()
             await expect(bc).toBeVisible({ timeout: 12000 })
@@ -181,7 +181,7 @@ test.describe('OrigamBreadcrumb', () => {
         test('SCSS --border: stylesheet declares border-width = thin', async ({ page }) => {
             // The scoped rule `.origam-breadcrumb--border { --origam-breadcrumb---border-width: thin }`
             // cannot be tested via class injection (scoped). Inspect the stylesheet instead.
-            await page.goto(bcUrl(0))
+            await page.goto(bcUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const bc = sandbox.locator('.origam-breadcrumb').first()
             await expect(bc).toBeVisible({ timeout: 12000 })
@@ -203,7 +203,7 @@ test.describe('OrigamBreadcrumb', () => {
         })
 
         test('SCSS --rounded: stylesheet declares non-zero border-radius', async ({ page }) => {
-            await page.goto(bcUrl(0))
+            await page.goto(bcUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const bc = sandbox.locator('.origam-breadcrumb').first()
             await expect(bc).toBeVisible({ timeout: 12000 })
@@ -232,14 +232,14 @@ test.describe('OrigamBreadcrumb', () => {
 
     test.describe('Functional', () => {
         test('renders breadcrumb root', async ({ page }) => {
-            await page.goto(bcUrl(1))
+            await page.goto(bcUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const bc = sandbox.locator('.origam-breadcrumb').first()
             await expect(bc).toBeVisible({ timeout: 12000 })
         })
 
         test('disabled=false: items are rendered (not hidden)', async ({ page }) => {
-            await page.goto(bcUrl(1))
+            await page.goto(bcUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const bc = sandbox.locator('.origam-breadcrumb').first()
             await expect(bc).toBeVisible({ timeout: 12000 })
@@ -249,7 +249,7 @@ test.describe('OrigamBreadcrumb', () => {
         })
 
         test('last item carries the disabled modifier class (aria-current page = last)', async ({ page }) => {
-            await page.goto(bcUrl(1))
+            await page.goto(bcUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const bc = sandbox.locator('.origam-breadcrumb').first()
             await expect(bc).toBeVisible({ timeout: 12000 })
@@ -276,7 +276,7 @@ test.describe('OrigamBreadcrumb', () => {
 
     test.describe('Slots - Default', () => {
         test('renders manually composed breadcrumb-item children in the default slot', async ({ page }) => {
-            await page.goto(bcUrl(2))
+            await page.goto(bcUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const bc = sandbox.locator('.origam-breadcrumb').first()
             await expect(bc).toBeVisible({ timeout: 12000 })
@@ -286,7 +286,7 @@ test.describe('OrigamBreadcrumb', () => {
         })
 
         test('renders dividers between manually composed items', async ({ page }) => {
-            await page.goto(bcUrl(2))
+            await page.goto(bcUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const bc = sandbox.locator('.origam-breadcrumb').first()
             await expect(bc).toBeVisible({ timeout: 12000 })
@@ -302,7 +302,7 @@ test.describe('OrigamBreadcrumb', () => {
 
     test.describe('Slots - Item', () => {
         test('custom #item slot renders 3 breadcrumb-item elements', async ({ page }) => {
-            await page.goto(bcUrl(3))
+            await page.goto(bcUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const bc = sandbox.locator('.origam-breadcrumb').first()
             await expect(bc).toBeVisible({ timeout: 12000 })
@@ -317,7 +317,7 @@ test.describe('OrigamBreadcrumb', () => {
 
     test.describe('Slots - Divider', () => {
         test('custom #divider slot renders divider containers between items', async ({ page }) => {
-            await page.goto(bcUrl(4))
+            await page.goto(bcUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const bc = sandbox.locator('.origam-breadcrumb').first()
             await expect(bc).toBeVisible({ timeout: 12000 })
@@ -345,14 +345,14 @@ test.describe('OrigamBreadcrumb', () => {
 
     test.describe('Default (playground)', () => {
         test('renders a breadcrumb in the playground variant', async ({ page }) => {
-            await page.goto(bcUrl(6))
+            await page.goto(bcUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const bc = sandbox.locator('.origam-breadcrumb').first()
             await expect(bc).toBeVisible({ timeout: 12000 })
         })
 
         test('playground: items are rendered', async ({ page }) => {
-            await page.goto(bcUrl(6))
+            await page.goto(bcUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const bc = sandbox.locator('.origam-breadcrumb').first()
             await expect(bc).toBeVisible({ timeout: 12000 })
@@ -375,14 +375,14 @@ test.describe('OrigamBreadcrumbItem', () => {
 
     test.describe('Design', () => {
         test('renders the breadcrumb-item root with BEM class', async ({ page }) => {
-            await page.goto(bciUrl(0))
+            await page.goto(bciUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 12000 })
         })
 
         test('color=primary applies the utility class origam--color-primary', async ({ page }) => {
-            await page.goto(bciUrl(0))
+            await page.goto(bciUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 12000 })
@@ -390,7 +390,7 @@ test.describe('OrigamBreadcrumbItem', () => {
         })
 
         test('title prop renders the text content inside the item', async ({ page }) => {
-            await page.goto(bciUrl(0))
+            await page.goto(bciUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 12000 })
@@ -398,7 +398,7 @@ test.describe('OrigamBreadcrumbItem', () => {
         })
 
         test('default density class is applied (density-default)', async ({ page }) => {
-            await page.goto(bciUrl(0))
+            await page.goto(bciUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 12000 })
@@ -406,7 +406,7 @@ test.describe('OrigamBreadcrumbItem', () => {
         })
 
         test('href prop renders an anchor element (--link modifier class)', async ({ page }) => {
-            await page.goto(bciUrl(0))
+            await page.goto(bciUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 12000 })
@@ -417,7 +417,7 @@ test.describe('OrigamBreadcrumbItem', () => {
         test('SCSS --disabled: pointer-events are none and stylesheet declares the rule', async ({ page }) => {
             // Vue scoped SCSS: injecting --disabled class programmatically won't activate
             // the scoped rule (missing data-v-* attribute). We verify the stylesheet instead.
-            await page.goto(bciUrl(0))
+            await page.goto(bciUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 12000 })
@@ -439,7 +439,7 @@ test.describe('OrigamBreadcrumbItem', () => {
         })
 
         test('SCSS --density-comfortable: stylesheet declares --density = -8px', async ({ page }) => {
-            await page.goto(bciUrl(0))
+            await page.goto(bciUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 12000 })
@@ -461,7 +461,7 @@ test.describe('OrigamBreadcrumbItem', () => {
         })
 
         test('SCSS --density-compact: stylesheet declares --density = 8px', async ({ page }) => {
-            await page.goto(bciUrl(0))
+            await page.goto(bciUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 12000 })
@@ -490,7 +490,7 @@ test.describe('OrigamBreadcrumbItem', () => {
 
     test.describe('State', () => {
         test('renders breadcrumb-item with bgColor=primary utility class', async ({ page }) => {
-            await page.goto(bciUrl(1))
+            await page.goto(bciUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 12000 })
@@ -498,7 +498,7 @@ test.describe('OrigamBreadcrumbItem', () => {
         })
 
         test('resting state: background-color is non-transparent (token applied)', async ({ page }) => {
-            await page.goto(bciUrl(1))
+            await page.goto(bciUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 12000 })
@@ -515,14 +515,14 @@ test.describe('OrigamBreadcrumbItem', () => {
 
     test.describe('Functional', () => {
         test('renders breadcrumb-item root', async ({ page }) => {
-            await page.goto(bciUrl(2))
+            await page.goto(bciUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 12000 })
         })
 
         test('tag=span: root element is a <span>', async ({ page }) => {
-            await page.goto(bciUrl(2))
+            await page.goto(bciUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 12000 })
@@ -531,7 +531,7 @@ test.describe('OrigamBreadcrumbItem', () => {
         })
 
         test('title renders as text content', async ({ page }) => {
-            await page.goto(bciUrl(2))
+            await page.goto(bciUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 12000 })
@@ -539,7 +539,7 @@ test.describe('OrigamBreadcrumbItem', () => {
         })
 
         test('disabled=false (initial): no --disabled class present', async ({ page }) => {
-            await page.goto(bciUrl(2))
+            await page.goto(bciUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 12000 })
@@ -548,7 +548,7 @@ test.describe('OrigamBreadcrumbItem', () => {
         })
 
         test('no href: --link class is absent (plain span, not a link)', async ({ page }) => {
-            await page.goto(bciUrl(2))
+            await page.goto(bciUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 12000 })
@@ -563,7 +563,7 @@ test.describe('OrigamBreadcrumbItem', () => {
 
     test.describe('Events - click:prepend', () => {
         test('prepend area is rendered when prependIcon is set', async ({ page }) => {
-            await page.goto(bciUrl(3))
+            await page.goto(bciUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             // MDI icon loading may be slow on cold Playwright context
@@ -573,7 +573,7 @@ test.describe('OrigamBreadcrumbItem', () => {
         })
 
         test('click on prepend area does not throw', async ({ page }) => {
-            await page.goto(bciUrl(3))
+            await page.goto(bciUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const prepend = sandbox.locator('.origam-breadcrumb-item__prepend').first()
             await expect(prepend).toBeVisible({ timeout: 20000 })
@@ -588,7 +588,7 @@ test.describe('OrigamBreadcrumbItem', () => {
 
     test.describe('Events - click:append', () => {
         test('append area is rendered when appendIcon is set', async ({ page }) => {
-            await page.goto(bciUrl(4))
+            await page.goto(bciUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 20000 })
@@ -597,7 +597,7 @@ test.describe('OrigamBreadcrumbItem', () => {
         })
 
         test('click on append area does not throw', async ({ page }) => {
-            await page.goto(bciUrl(4))
+            await page.goto(bciUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const append = sandbox.locator('.origam-breadcrumb-item__append').first()
             await expect(append).toBeVisible({ timeout: 20000 })
@@ -611,7 +611,7 @@ test.describe('OrigamBreadcrumbItem', () => {
 
     test.describe('Slots - Default', () => {
         test('default slot renders custom content (ignores title prop)', async ({ page }) => {
-            await page.goto(bciUrl(5))
+            await page.goto(bciUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 12000 })
@@ -621,7 +621,7 @@ test.describe('OrigamBreadcrumbItem', () => {
         })
 
         test('default slot: a <strong> element is rendered inside the item', async ({ page }) => {
-            await page.goto(bciUrl(5))
+            await page.goto(bciUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 12000 })
@@ -635,7 +635,7 @@ test.describe('OrigamBreadcrumbItem', () => {
 
     test.describe('Slots - Prepend', () => {
         test('prepend slot renders an origam-icon inside the prepend area', async ({ page }) => {
-            await page.goto(bciUrl(6))
+            await page.goto(bciUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 20000 })
@@ -649,7 +649,7 @@ test.describe('OrigamBreadcrumbItem', () => {
 
     test.describe('Slots - Append', () => {
         test('append slot renders an origam-icon inside the append area', async ({ page }) => {
-            await page.goto(bciUrl(7))
+            await page.goto(bciUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 20000 })
@@ -664,14 +664,14 @@ test.describe('OrigamBreadcrumbItem', () => {
 
     test.describe('Default (playground)', () => {
         test('renders the breadcrumb-item in the playground variant', async ({ page }) => {
-            await page.goto(bciUrl(8))
+            await page.goto(bciUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 12000 })
         })
 
         test('playground: title renders as text content', async ({ page }) => {
-            await page.goto(bciUrl(8))
+            await page.goto(bciUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 12000 })

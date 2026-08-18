@@ -28,21 +28,21 @@ test.describe('OrigamSliderField', () => {
     // ------------------------------------------------------------------ //
     test.describe('Design', () => {
         test('renders the slider root with BEM class', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const slider = sandbox.locator('.origam-slider-field').first()
             await expect(slider).toBeVisible({ timeout: 12000 })
         })
 
         test('track renders inside the slider container', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-slider-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-slider-field__track').first()).toBeVisible()
         })
 
         test('field variant wraps inside origam-input', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-slider-field').first()).toBeVisible({ timeout: 12000 })
             // The field variant renders via <origam-input> which carries the class
@@ -50,21 +50,21 @@ test.describe('OrigamSliderField', () => {
         })
 
         test('native input type=range is present', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-slider-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('input[type="range"]').first()).toBeVisible()
         })
 
         test('thumb surface is rendered', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-slider-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-slider-field-thumb__surface').first()).toBeAttached()
         })
 
         test('color=primary applies utility class on thumb surface', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-slider-field').first()).toBeVisible({ timeout: 12000 })
             // useTextColor('primary') emits origam--color-primary on the thumb surface
@@ -73,7 +73,7 @@ test.describe('OrigamSliderField', () => {
         })
 
         test('label is rendered inside the field', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-slider-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-label').first()).toContainText('Slider')
@@ -87,13 +87,13 @@ test.describe('OrigamSliderField', () => {
     // ------------------------------------------------------------------ //
     test.describe('Functional', () => {
         test('renders slider in functional variant', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-slider-field').first()).toBeVisible({ timeout: 12000 })
         })
 
         test('displays value paragraph below slider', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-slider-field').first()).toBeVisible({ timeout: 12000 })
             // The Functional variant renders <p>value = {{ functionalModel }}</p>
@@ -101,7 +101,7 @@ test.describe('OrigamSliderField', () => {
         })
 
         test('single thumb (non-range) renders one native input', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-slider-field').first()).toBeVisible({ timeout: 12000 })
             // Default: range=false → one input[type=range]
@@ -110,7 +110,7 @@ test.describe('OrigamSliderField', () => {
         })
 
         test('disabled state adds the disabled modifier class', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-slider-field').first()).toBeVisible({ timeout: 12000 })
             // Default init: disabled=false — class must NOT be present at load
@@ -119,7 +119,7 @@ test.describe('OrigamSliderField', () => {
         })
 
         test('readonly state does not add disabled class', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-slider-field').first()).toBeVisible({ timeout: 12000 })
             // Default init: readonly=false
@@ -128,7 +128,7 @@ test.describe('OrigamSliderField', () => {
         })
 
         test('error state does not appear by default', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-slider-field').first()).toBeVisible({ timeout: 12000 })
             const slider = sandbox.locator('.origam-slider-field').first()
@@ -136,7 +136,7 @@ test.describe('OrigamSliderField', () => {
         })
 
         test('range=false — no range modifier class on root', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-slider-field').first()).toBeVisible({ timeout: 12000 })
             const slider = sandbox.locator('.origam-slider-field').first()
@@ -144,7 +144,7 @@ test.describe('OrigamSliderField', () => {
         })
 
         test('keyboard arrow-right on range input increments value', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-slider-field').first()).toBeVisible({ timeout: 12000 })
             const input = sandbox.locator('input[type="range"]').first()
@@ -162,13 +162,13 @@ test.describe('OrigamSliderField', () => {
     // ------------------------------------------------------------------ //
     test.describe('Events - update:modelValue', () => {
         test('renders slider for emit variant', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-slider-field').first()).toBeVisible({ timeout: 12000 })
         })
 
         test('value paragraph is rendered with initial value', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-slider-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('p').first()).toContainText('value =')
@@ -180,7 +180,7 @@ test.describe('OrigamSliderField', () => {
     // ------------------------------------------------------------------ //
     test.describe('Events - start', () => {
         test('renders slider for start-emit variant', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-slider-field').first()).toBeVisible({ timeout: 12000 })
         })
@@ -191,7 +191,7 @@ test.describe('OrigamSliderField', () => {
     // ------------------------------------------------------------------ //
     test.describe('Events - end', () => {
         test('renders slider for end-emit variant', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-slider-field').first()).toBeVisible({ timeout: 12000 })
         })
@@ -202,13 +202,13 @@ test.describe('OrigamSliderField', () => {
     // ------------------------------------------------------------------ //
     test.describe('Events - update:focused', () => {
         test('renders slider for focused-emit variant', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-slider-field').first()).toBeVisible({ timeout: 12000 })
         })
 
         test('focus on input triggers the focused state class', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-slider-field').first()).toBeVisible({ timeout: 12000 })
             const input = sandbox.locator('input[type="range"]').first()
@@ -224,7 +224,7 @@ test.describe('OrigamSliderField', () => {
     // ------------------------------------------------------------------ //
     test.describe('Slots - Default', () => {
         test('custom default slot content is rendered', async ({ page }) => {
-            await page.goto(variantUrl(6))
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-slider-field').first()).toBeVisible({ timeout: 12000 })
             // The custom default slot renders a <p> with "Custom default slot"
@@ -237,7 +237,7 @@ test.describe('OrigamSliderField', () => {
     // ------------------------------------------------------------------ //
     test.describe('Slots - Label', () => {
         test('custom label slot replaces default label', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-slider-field').first()).toBeVisible({ timeout: 12000 })
             // The story renders <strong>Custom label</strong> in #label slot
@@ -250,7 +250,7 @@ test.describe('OrigamSliderField', () => {
     // ------------------------------------------------------------------ //
     test.describe('Slots - Prepend', () => {
         test('prepend slot renders an icon', async ({ page }) => {
-            await page.goto(variantUrl(8))
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-slider-field').first()).toBeVisible({ timeout: 12000 })
             // The prepend slot contains an origam-icon
@@ -263,7 +263,7 @@ test.describe('OrigamSliderField', () => {
     // ------------------------------------------------------------------ //
     test.describe('Slots - Append', () => {
         test('append slot renders an icon', async ({ page }) => {
-            await page.goto(variantUrl(9))
+            await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-slider-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-icon').first()).toBeVisible()
@@ -275,7 +275,7 @@ test.describe('OrigamSliderField', () => {
     // ------------------------------------------------------------------ //
     test.describe('Slots - Item', () => {
         test('custom item slot renders tick labels', async ({ page }) => {
-            await page.goto(variantUrl(10))
+            await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-slider-field').first()).toBeVisible({ timeout: 12000 })
             // The item slot renders <span> elements for each tick (step=25 → 5 ticks)
@@ -288,20 +288,20 @@ test.describe('OrigamSliderField', () => {
     // ------------------------------------------------------------------ //
     test.describe('Default (Playground)', () => {
         test('renders playground slider', async ({ page }) => {
-            await page.goto(variantUrl(11))
+            await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-slider-field').first()).toBeVisible({ timeout: 12000 })
         })
 
         test('playground shows initial value in paragraph', async ({ page }) => {
-            await page.goto(variantUrl(11))
+            await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-slider-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('p').first()).toContainText('value =')
         })
 
         test('playground slider has label "Slider"', async ({ page }) => {
-            await page.goto(variantUrl(11))
+            await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-slider-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-label').first()).toContainText('Slider')
@@ -331,7 +331,7 @@ test.describe('OrigamSliderField', () => {
         test('error=true adds the error modifier class on the root', async ({ page }) => {
             // This behavioural assertion does NOT depend on the color-channel bug —
             // it only checks the BEM modifier class, which is correctly set.
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-slider-field').first()).toBeVisible({ timeout: 12000 })
             // The Functional variant init has error=false; we verify the class
@@ -424,7 +424,7 @@ test.describe('OrigamSliderField', () => {
 
     test.describe('Rounded — track shape (#283)', () => {
         test('default (unset) track radius comes from the --origam-slider-field__track---border-radius token, not a bare hardcoded value', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const track = sandbox.locator('.origam-slider-field-track').first()
             await expect(track).toBeVisible({ timeout: 12000 })
@@ -435,7 +435,7 @@ test.describe('OrigamSliderField', () => {
         })
 
         test('rounded="sm" (utility rung) repaints the track radius via the resolved inline style', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const slider = sandbox.locator('.origam-slider-field').first()
             await expect(slider).toBeVisible({ timeout: 12000 })
@@ -458,7 +458,7 @@ test.describe('OrigamSliderField', () => {
         })
 
         test('rounded="none" collapses the track radius to square corners', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const track = sandbox.locator('.origam-slider-field-track').first()
             await expect(track).toBeVisible({ timeout: 12000 })

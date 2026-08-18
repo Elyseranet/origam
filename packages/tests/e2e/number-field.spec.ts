@@ -66,20 +66,20 @@ test.describe('OrigamNumberField', () => {
 
     test.describe('Design', () => {
         test('renders the root .origam-number-field class', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field').first()).toBeVisible({ timeout: 12000 })
         })
 
         test('wraps an <input> element', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('input').first()).toBeVisible({ timeout: 8000 })
         })
 
         test('init model value 42 appears in the input', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const input = sandbox.locator('input').first()
             await expect(input).toBeVisible({ timeout: 12000 })
@@ -87,7 +87,7 @@ test.describe('OrigamNumberField', () => {
         })
 
         test('label "Quantity" is rendered', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-field__label, .origam-label').first()).toContainText('Quantity')
@@ -99,7 +99,7 @@ test.describe('OrigamNumberField', () => {
              * overflow:hidden or be sized to 0 in certain states — use toBeAttached,
              * not toBeVisible.
              */
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-number-field__control').first()).toBeAttached({ timeout: 8000 })
@@ -113,7 +113,7 @@ test.describe('OrigamNumberField', () => {
 
     test.describe('Functional', () => {
         test('renders number field with value display', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field').first()).toBeVisible({ timeout: 12000 })
             // Story renders <div>value = {{ functionalModel }}</div>
@@ -121,7 +121,7 @@ test.describe('OrigamNumberField', () => {
         })
 
         test('input accepts numeric keyboard input and updates displayed value', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field').first()).toBeVisible({ timeout: 12000 })
             const input = sandbox.locator('input').first()
@@ -137,7 +137,7 @@ test.describe('OrigamNumberField', () => {
         })
 
         test('ArrowUp increments value by 1 (default step)', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field').first()).toBeVisible({ timeout: 12000 })
 
@@ -160,7 +160,7 @@ test.describe('OrigamNumberField', () => {
         })
 
         test('ArrowDown decrements value by 1 (default step)', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field').first()).toBeVisible({ timeout: 12000 })
 
@@ -189,7 +189,7 @@ test.describe('OrigamNumberField', () => {
              * clamps it, and writes the result back.
              * We test with a value WITHIN the valid range (min=0, max=100).
              */
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field').first()).toBeVisible({ timeout: 12000 })
 
@@ -209,7 +209,7 @@ test.describe('OrigamNumberField', () => {
              * fill() bypasses the beforeinput event. pressSequentially() fires
              * real key events and exercises the guard.
              */
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field').first()).toBeVisible({ timeout: 12000 })
 
@@ -240,14 +240,14 @@ test.describe('OrigamNumberField', () => {
 
     test.describe('Events - update:modelValue', () => {
         test('renders field and value display', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('div').filter({ hasText: /value\s*=/ }).first()).toBeVisible({ timeout: 8000 })
         })
 
         test('changing the input value updates the displayed value', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
 
@@ -264,14 +264,14 @@ test.describe('OrigamNumberField', () => {
 
     test.describe('Events - increment', () => {
         test('renders field and value display', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('div').filter({ hasText: /value\s*=/ }).first()).toBeVisible({ timeout: 8000 })
         })
 
         test('ArrowUp fires increment and updates value', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
 
@@ -291,7 +291,7 @@ test.describe('OrigamNumberField', () => {
 
     test.describe('Events - click:control', () => {
         test('renders the number field', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
         })
@@ -299,7 +299,7 @@ test.describe('OrigamNumberField', () => {
 
     test.describe('Events - mousedown:control', () => {
         test('renders the number field', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
         })
@@ -307,7 +307,7 @@ test.describe('OrigamNumberField', () => {
 
     test.describe('Events - click:clear', () => {
         test('renders the field with clearable enabled', async ({ page }) => {
-            await page.goto(variantUrl(6))
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
         })
@@ -315,7 +315,7 @@ test.describe('OrigamNumberField', () => {
 
     test.describe('Events - click:prepend', () => {
         test('renders the field with a prepend icon area', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
             // OrigamInput renders prepend as .origam-input__prepend, not .origam-field__prepend
@@ -325,7 +325,7 @@ test.describe('OrigamNumberField', () => {
 
     test.describe('Events - click:append', () => {
         test('renders the field with an append icon area', async ({ page }) => {
-            await page.goto(variantUrl(8))
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
             // OrigamInput renders append as .origam-input__append, not .origam-field__append
@@ -339,7 +339,7 @@ test.describe('OrigamNumberField', () => {
 
     test.describe('Slots - Default', () => {
         test('default slot content is rendered inside the field', async ({ page }) => {
-            await page.goto(variantUrl(9))
+            await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('span').filter({ hasText: 'Custom slot content' }).first()).toBeVisible({ timeout: 8000 })
@@ -348,7 +348,7 @@ test.describe('OrigamNumberField', () => {
 
     test.describe('Slots - Prepend', () => {
         test('prepend slot renders an origam-icon in the prepend area', async ({ page }) => {
-            await page.goto(variantUrl(10))
+            await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
             // OrigamInput prepend area: .origam-input__prepend
@@ -358,7 +358,7 @@ test.describe('OrigamNumberField', () => {
 
     test.describe('Slots - Append', () => {
         test('append slot renders an origam-icon in the append area', async ({ page }) => {
-            await page.goto(variantUrl(11))
+            await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
             // OrigamInput append area: .origam-input__append
@@ -368,7 +368,7 @@ test.describe('OrigamNumberField', () => {
 
     test.describe('Slots - PrependInner', () => {
         test('prependInner slot renders an origam-icon inside the field', async ({ page }) => {
-            await page.goto(variantUrl(12))
+            await page.goto(variantUrl(12), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-field__prepend-inner .origam-icon').first()).toBeAttached({ timeout: 8000 })
@@ -377,7 +377,7 @@ test.describe('OrigamNumberField', () => {
 
     test.describe('Slots - AppendInner', () => {
         test('appendInner slot renders an origam-icon inside the field', async ({ page }) => {
-            await page.goto(variantUrl(13))
+            await page.goto(variantUrl(13), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
             // appendInner always has the control area; slot icon is also present
@@ -387,7 +387,7 @@ test.describe('OrigamNumberField', () => {
 
     test.describe('Slots - Clear', () => {
         test('clear slot: field with clearable renders without throwing', async ({ page }) => {
-            await page.goto(variantUrl(14))
+            await page.goto(variantUrl(14), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
         })
@@ -395,7 +395,7 @@ test.describe('OrigamNumberField', () => {
 
     test.describe('Slots - Increment', () => {
         test('increment slot: control area is present in the DOM', async ({ page }) => {
-            await page.goto(variantUrl(15))
+            await page.goto(variantUrl(15), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
             // The control area must be attached (not necessarily visible — it may be overflow-hidden)
@@ -405,7 +405,7 @@ test.describe('OrigamNumberField', () => {
 
     test.describe('Slots - Decrement', () => {
         test('decrement slot: control area is present in the DOM', async ({ page }) => {
-            await page.goto(variantUrl(16))
+            await page.goto(variantUrl(16), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-number-field__control').first()).toBeAttached({ timeout: 8000 })
@@ -414,7 +414,7 @@ test.describe('OrigamNumberField', () => {
 
     test.describe('Slots - Field', () => {
         test('field slot renders custom content', async ({ page }) => {
-            await page.goto(variantUrl(17))
+            await page.goto(variantUrl(17), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('span').filter({ hasText: 'Custom field content' }).first()).toBeVisible({ timeout: 8000 })
@@ -423,7 +423,7 @@ test.describe('OrigamNumberField', () => {
 
     test.describe('Slots - Label', () => {
         test('label slot renders custom text', async ({ page }) => {
-            await page.goto(variantUrl(18))
+            await page.goto(variantUrl(18), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('span').filter({ hasText: 'Custom label' }).first()).toBeVisible({ timeout: 8000 })
@@ -432,7 +432,7 @@ test.describe('OrigamNumberField', () => {
 
     test.describe('Slots - FloatingLabel', () => {
         test('floatingLabel slot renders floating label text', async ({ page }) => {
-            await page.goto(variantUrl(19))
+            await page.goto(variantUrl(19), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('span').filter({ hasText: 'Floating label' }).first()).toBeVisible({ timeout: 8000 })
@@ -441,7 +441,7 @@ test.describe('OrigamNumberField', () => {
 
     test.describe('Slots - Prefix', () => {
         test('prefix slot renders the prefix element', async ({ page }) => {
-            await page.goto(variantUrl(20))
+            await page.goto(variantUrl(20), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('span').filter({ hasText: '€' }).first()).toBeVisible({ timeout: 8000 })
@@ -450,7 +450,7 @@ test.describe('OrigamNumberField', () => {
 
     test.describe('Slots - Suffix', () => {
         test('suffix slot renders the suffix element', async ({ page }) => {
-            await page.goto(variantUrl(21))
+            await page.goto(variantUrl(21), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('span').filter({ hasText: 'kg' }).first()).toBeVisible({ timeout: 8000 })
@@ -459,7 +459,7 @@ test.describe('OrigamNumberField', () => {
 
     test.describe('Slots - Loader', () => {
         test('loading=true activates loading state on the field', async ({ page }) => {
-            await page.goto(variantUrl(22))
+            await page.goto(variantUrl(22), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-number-field, .origam-text-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -470,7 +470,7 @@ test.describe('OrigamNumberField', () => {
 
     test.describe('Slots - Details', () => {
         test('details slot renders custom content in the details area', async ({ page }) => {
-            await page.goto(variantUrl(23))
+            await page.goto(variantUrl(23), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('span').filter({ hasText: 'Custom details area' }).first()).toBeVisible({ timeout: 8000 })
@@ -479,7 +479,7 @@ test.describe('OrigamNumberField', () => {
 
     test.describe('Slots - Messages', () => {
         test('messages slot renders custom messages area with error-messages set', async ({ page }) => {
-            await page.goto(variantUrl(24))
+            await page.goto(variantUrl(24), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('span').filter({ hasText: 'Custom messages area' }).first()).toBeVisible({ timeout: 8000 })
@@ -488,7 +488,7 @@ test.describe('OrigamNumberField', () => {
 
     test.describe('Slots - Message', () => {
         test('message slot renders individual error message text', async ({ page }) => {
-            await page.goto(variantUrl(25))
+            await page.goto(variantUrl(25), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('span').filter({ hasText: 'Error message' }).first()).toBeVisible({ timeout: 8000 })
@@ -502,13 +502,13 @@ test.describe('OrigamNumberField', () => {
 
     test.describe('Default (playground)', () => {
         test('renders the number field', async ({ page }) => {
-            await page.goto(variantUrl(26))
+            await page.goto(variantUrl(26), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
         })
 
         test('displays value label', async ({ page }) => {
-            await page.goto(variantUrl(26))
+            await page.goto(variantUrl(26), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('div').filter({ hasText: /value\s*=/ }).first()).toBeVisible({ timeout: 8000 })
@@ -523,7 +523,7 @@ test.describe('OrigamNumberField', () => {
              * discrepancy between the design intent and the runtime behaviour.
              * We test what IS present instead of asserting the missing class.
              */
-            await page.goto(variantUrl(26))
+            await page.goto(variantUrl(26), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-number-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -533,7 +533,7 @@ test.describe('OrigamNumberField', () => {
         })
 
         test('input is interactive and updates value', async ({ page }) => {
-            await page.goto(variantUrl(26))
+            await page.goto(variantUrl(26), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field').first()).toBeVisible({ timeout: 12000 })
             const input = sandbox.locator('input').first()
@@ -569,7 +569,7 @@ test.describe('OrigamNumberField', () => {
 
     test.describe('Compact mode (structural — data-cy from component)', () => {
         test('compact=true renders the data-cy compact buttons and input via HstCheckbox', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
 
@@ -584,7 +584,7 @@ test.describe('OrigamNumberField', () => {
         })
 
         test('compact increment click changes the displayed value', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
 
@@ -617,7 +617,7 @@ test.describe('OrigamNumberField', () => {
              * but the SCSS file has no display rule for it — the buttons simply aren't mounted.
              * We verify the class appears on the root when the prop is toggled.
              */
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
 
@@ -634,7 +634,7 @@ test.describe('OrigamNumberField', () => {
 
     test.describe('SCSS — compact modifier', () => {
         test('origam-number-field--compact sets display:inline-flex on the compact wrapper', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-number-field').first()).toBeVisible({ timeout: 12000 })
 
