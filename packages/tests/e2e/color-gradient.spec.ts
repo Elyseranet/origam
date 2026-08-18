@@ -94,7 +94,7 @@ async function getInjectedBgImage (locator: ReturnType<ReturnType<typeof sandbox
 test.describe('Color gradient — raw CSS string', () => {
     test.beforeEach(() => { test.fail() })
     test('linear-gradient(135deg, #ff0080, #7928ca) renders verbatim', async ({ page }) => {
-        await openVariant(page, STORY, 'Design - Raw CSS string')
+        await openVariant(page, STORY, 'Design')
         const sandbox = sandboxOf(page)
         const btn = sandbox.locator('[data-cy="raw-string-btn-1"]').first()
         await expect(btn).toBeVisible({ timeout: 8000 })
@@ -112,7 +112,7 @@ test.describe('Color gradient — raw CSS string', () => {
     })
 
     test('radial-gradient renders as radial-gradient(...)', async ({ page }) => {
-        await openVariant(page, STORY, 'Design - Raw CSS string')
+        await openVariant(page, STORY, 'Design')
         const sandbox = sandboxOf(page)
         const btn = sandbox.locator('[data-cy="raw-string-btn-3"]').first()
         await expect(btn).toBeVisible({ timeout: 8000 })
@@ -130,7 +130,7 @@ test.describe('Color gradient — raw CSS string', () => {
 test.describe('Color gradient — IGradient object (intent stops)', () => {
     test.beforeEach(() => { test.fail() })
     test('{ from: primary, to: success } emits intent CSS-var references', async ({ page }) => {
-        await openVariant(page, STORY, 'Design - IGradient object')
+        await openVariant(page, STORY, 'Design')
         const sandbox = sandboxOf(page)
         const btn = sandbox.locator('[data-cy="object-btn-1"]').first()
         await expect(btn).toBeVisible({ timeout: 8000 })
@@ -146,7 +146,7 @@ test.describe('Color gradient — IGradient object (intent stops)', () => {
     })
 
     test('stops array with 3 colors emits the matching number of positioned stops', async ({ page }) => {
-        await openVariant(page, STORY, 'Design - IGradient object')
+        await openVariant(page, STORY, 'Design')
         const sandbox = sandboxOf(page)
         const btn = sandbox.locator('[data-cy="object-btn-4"]').first()
         await expect(btn).toBeVisible({ timeout: 8000 })
@@ -165,7 +165,7 @@ test.describe('Color gradient — IGradient object (intent stops)', () => {
 test.describe('Color gradient — preset name', () => {
     test.beforeEach(() => { test.fail() })
     test('bg-color="gradient-sunset" resolves to var(--origam-gradient---sunset)', async ({ page }) => {
-        await openVariant(page, STORY, 'Design - Preset names')
+        await openVariant(page, STORY, 'Design')
         const sandbox = sandboxOf(page)
         const btn = sandbox.locator('[data-cy="preset-btn-sunset"]').first()
         await expect(btn).toBeVisible({ timeout: 8000 })
@@ -176,7 +176,7 @@ test.describe('Color gradient — preset name', () => {
     })
 
     test('all 5 presets resolve to their respective CSS vars', async ({ page }) => {
-        await openVariant(page, STORY, 'Design - Preset names')
+        await openVariant(page, STORY, 'Design')
         const sandbox = sandboxOf(page)
         const presets = ['sunset', 'ocean', 'forest', 'fire', 'midnight']
         for (const p of presets) {
@@ -196,7 +196,7 @@ test.describe('Color gradient — preset name', () => {
 
 test.describe('Color gradient — text gradient (background-clip)', () => {
     test('color={ from, to } on title produces background-clip: text + color: transparent', async ({ page }) => {
-        await openVariant(page, STORY, 'Design - Text gradient (background-clip: text)')
+        await openVariant(page, STORY, 'Design')
         const sandbox = sandboxOf(page)
         const title = sandbox.locator('[data-cy="text-gradient-title"]').first()
         await expect(title).toBeVisible({ timeout: 8000 })
@@ -214,7 +214,7 @@ test.describe('Color gradient — text gradient (background-clip)', () => {
     })
 
     test('color="gradient-sunset" on label triggers the preset text gradient', async ({ page }) => {
-        await openVariant(page, STORY, 'Design - Text gradient (background-clip: text)')
+        await openVariant(page, STORY, 'Design')
         const sandbox = sandboxOf(page)
         const label = sandbox.locator('[data-cy="text-gradient-label"]').first()
         await expect(label).toBeVisible({ timeout: 8000 })
