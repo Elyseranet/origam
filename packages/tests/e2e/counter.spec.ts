@@ -40,13 +40,13 @@ test.describe('OrigamCounter', () => {
 
     test.describe('Design', () => {
         test('renders the counter root with BEM class', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-counter').first()).toBeVisible(VIS)
         })
 
         test('value=50 max=100 — affiche "50 / 100"', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const counter = sandbox.locator('.origam-counter').first()
             await expect(counter).toBeVisible(VIS)
@@ -55,7 +55,7 @@ test.describe('OrigamCounter', () => {
         })
 
         test('color=primary applique une couleur de texte non transparente', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const counter = sandbox.locator('.origam-counter').first()
             await expect(counter).toBeVisible(VIS)
@@ -67,7 +67,7 @@ test.describe('OrigamCounter', () => {
         })
 
         test('active=true — counter visible (v-show ne le cache pas)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const counter = sandbox.locator('.origam-counter').first()
             await expect(counter).toBeVisible(VIS)
@@ -83,13 +83,13 @@ test.describe('OrigamCounter', () => {
 
     test.describe('Functional', () => {
         test('renders visible with default init state', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-counter').first()).toBeVisible(VIS)
         })
 
         test('value=50 max=100 — affiche le format "50 / 100"', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const counter = sandbox.locator('.origam-counter').first()
             await expect(counter).toBeVisible(VIS)
@@ -100,7 +100,7 @@ test.describe('OrigamCounter', () => {
         test('init state (50/100) — pas de classe origam-counter--error', async ({ page }) => {
             // La classe --error n'apparaît que si parseFloat(value) > parseFloat(max).
             // Au init (50 < 100), elle ne doit pas être présente.
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const counter = sandbox.locator('.origam-counter').first()
             await expect(counter).toBeVisible(VIS)
@@ -108,7 +108,7 @@ test.describe('OrigamCounter', () => {
         })
 
         test('max=100 présent — le séparateur "/" est affiché', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const counter = sandbox.locator('.origam-counter').first()
             await expect(counter).toBeVisible(VIS)
@@ -127,7 +127,7 @@ test.describe('OrigamCounter', () => {
 
     test.describe('Slots - Default', () => {
         test('renders the counter root', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-counter').first()).toBeVisible(VIS)
         })
@@ -135,7 +135,7 @@ test.describe('OrigamCounter', () => {
         test('slot default — contient le texte "42 / 100" via le slot counter', async ({ page }) => {
             // Le slot reçoit { counter, max, value }. Le scoped slot passe counter = "42 / 100".
             // La story rend <strong>{{ counter }}</strong> items → "42 / 100 items".
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const counter = sandbox.locator('.origam-counter').first()
             await expect(counter).toBeVisible(VIS)
@@ -143,7 +143,7 @@ test.describe('OrigamCounter', () => {
         })
 
         test('slot default — contient le texte "items" (contenu personnalisé)', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const counter = sandbox.locator('.origam-counter').first()
             await expect(counter).toBeVisible(VIS)
@@ -151,7 +151,7 @@ test.describe('OrigamCounter', () => {
         })
 
         test('slot default — rend un élément <strong>', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-counter').first()).toBeVisible(VIS)
             await expect(sandbox.locator('.origam-counter strong').first()).toBeVisible()
@@ -165,13 +165,13 @@ test.describe('OrigamCounter', () => {
 
     test.describe('Default (Playground)', () => {
         test('renders visible', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-counter').first()).toBeVisible(VIS)
         })
 
         test('affiche "50 / 100" avec les valeurs initiales', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const counter = sandbox.locator('.origam-counter').first()
             await expect(counter).toBeVisible(VIS)
@@ -180,7 +180,7 @@ test.describe('OrigamCounter', () => {
         })
 
         test('possède la classe BEM racine .origam-counter', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const counter = sandbox.locator('.origam-counter').first()
             await expect(counter).toBeVisible(VIS)

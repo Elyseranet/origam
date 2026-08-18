@@ -56,7 +56,7 @@ test.describe('OrigamQrCode', () => {
 
     test.describe('Design', () => {
         test('mounts with the BEM root class', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const qr = sandbox.locator('.origam-qr-code').first()
             // Cold-start: Histoire + DS bundle load takes ~19-22s on headless Chromium.
@@ -64,7 +64,7 @@ test.describe('OrigamQrCode', () => {
         })
 
         test('carries role="img" for a11y', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const qr = sandbox.locator('.origam-qr-code').first()
             await expect(qr).toBeVisible({ timeout: 30000 })
@@ -72,7 +72,7 @@ test.describe('OrigamQrCode', () => {
         })
 
         test('carries a non-empty aria-label (fallback = "QR code for <value>")', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const qr = sandbox.locator('.origam-qr-code').first()
             await expect(qr).toBeVisible({ timeout: 30000 })
@@ -81,7 +81,7 @@ test.describe('OrigamQrCode', () => {
         })
 
         test('default ECC=M applies the origam-qr-code--ecc-m modifier class', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const qr = sandbox.locator('.origam-qr-code').first()
             await expect(qr).toBeVisible({ timeout: 30000 })
@@ -89,7 +89,7 @@ test.describe('OrigamQrCode', () => {
         })
 
         test('injects an inline SVG into the svg-host span', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const qr = sandbox.locator('.origam-qr-code').first()
             await expect(qr).toBeVisible({ timeout: 30000 })
@@ -99,7 +99,7 @@ test.describe('OrigamQrCode', () => {
         })
 
         test('SVG contains at least 2 rects (background + module rects)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const qr = sandbox.locator('.origam-qr-code').first()
             await expect(qr).toBeVisible({ timeout: 30000 })
@@ -111,7 +111,7 @@ test.describe('OrigamQrCode', () => {
         })
 
         test('renders as a <div> by default (tag prop default)', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const qr = sandbox.locator('.origam-qr-code').first()
             await expect(qr).toBeVisible({ timeout: 30000 })
@@ -130,7 +130,7 @@ test.describe('OrigamQrCode', () => {
 
     test.describe('Functional', () => {
         test('mounts and renders the svg-host span', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const qr = sandbox.locator('.origam-qr-code').first()
             await expect(qr).toBeVisible({ timeout: 30000 })
@@ -138,7 +138,7 @@ test.describe('OrigamQrCode', () => {
         })
 
         test('ECC=M modifier class is present (init state)', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const qr = sandbox.locator('.origam-qr-code').first()
             await expect(qr).toBeVisible({ timeout: 30000 })
@@ -149,7 +149,7 @@ test.describe('OrigamQrCode', () => {
             // Story sets border="thin" rounded="medium" on the Functional variant.
             // useBorder emits both origam-qr-code--border (component scope) and
             // origam--border-thin (utility class) on the root.
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const qr = sandbox.locator('.origam-qr-code').first()
             await expect(qr).toBeVisible({ timeout: 30000 })
@@ -159,7 +159,7 @@ test.describe('OrigamQrCode', () => {
         test('rounded=medium applies origam-qr-code--rounded-medium class', async ({ page }) => {
             // useRounded emits the component-scoped class origam-qr-code--rounded-medium
             // (not the generic utility origam--rounded-medium) on the QrCode root.
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const qr = sandbox.locator('.origam-qr-code').first()
             await expect(qr).toBeVisible({ timeout: 30000 })
@@ -168,7 +168,7 @@ test.describe('OrigamQrCode', () => {
 
         test('no .origam-qr-code__center present when no overlay props set', async ({ page }) => {
             // Functional init has icon: undefined, image: undefined, no center slot
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const qr = sandbox.locator('.origam-qr-code').first()
             await expect(qr).toBeVisible({ timeout: 30000 })
@@ -185,7 +185,7 @@ test.describe('OrigamQrCode', () => {
 
     test.describe('Slots - center', () => {
         test('mounts and renders the SVG', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const qr = sandbox.locator('.origam-qr-code').first()
             await expect(qr).toBeVisible({ timeout: 30000 })
@@ -194,7 +194,7 @@ test.describe('OrigamQrCode', () => {
         })
 
         test('ECC=H modifier class applied (story passes error-correction-level="H")', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const qr = sandbox.locator('.origam-qr-code').first()
             await expect(qr).toBeVisible({ timeout: 30000 })
@@ -202,7 +202,7 @@ test.describe('OrigamQrCode', () => {
         })
 
         test('center slot mounts the .origam-qr-code__center wrapper', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const qr = sandbox.locator('.origam-qr-code').first()
             await expect(qr).toBeVisible({ timeout: 30000 })
@@ -211,7 +211,7 @@ test.describe('OrigamQrCode', () => {
         })
 
         test('center slot renders custom content (star span)', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const qr = sandbox.locator('.origam-qr-code').first()
             await expect(qr).toBeVisible({ timeout: 30000 })
@@ -221,7 +221,7 @@ test.describe('OrigamQrCode', () => {
         })
 
         test('center wrapper carries aria-hidden="true" (decorative overlay)', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const qr = sandbox.locator('.origam-qr-code').first()
             await expect(qr).toBeVisible({ timeout: 30000 })
@@ -236,14 +236,14 @@ test.describe('OrigamQrCode', () => {
             // Design: 'https://origam.dev' → ECC=M
             // Slots-center: 'https://origam.dev/center-slot' → ECC=H
             // Both payloads are short URLs — rect count difference comes from ECC level.
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandboxH = page.frameLocator('iframe[src*="__sandbox"]')
             const qrH = sandboxH.locator('.origam-qr-code').first()
             await expect(qrH).toBeVisible({ timeout: 30000 })
             await expect(qrH.locator('.origam-qr-code__svg-host svg').first()).toBeAttached({ timeout: 12000 })
             const hCount = await qrH.locator('.origam-qr-code__svg-host svg rect').count()
 
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandboxM = page.frameLocator('iframe[src*="__sandbox"]')
             const qrM = sandboxM.locator('.origam-qr-code').first()
             await expect(qrM).toBeVisible({ timeout: 15000 })
@@ -265,14 +265,14 @@ test.describe('OrigamQrCode', () => {
 
     test.describe('Default (playground)', () => {
         test('renders the QR root with BEM class', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const qr = sandbox.locator('.origam-qr-code').first()
             await expect(qr).toBeVisible({ timeout: 30000 })
         })
 
         test('SVG is injected into the svg-host span', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const qr = sandbox.locator('.origam-qr-code').first()
             await expect(qr).toBeVisible({ timeout: 30000 })
@@ -281,7 +281,7 @@ test.describe('OrigamQrCode', () => {
         })
 
         test('ECC=M modifier class present (init state)', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const qr = sandbox.locator('.origam-qr-code').first()
             await expect(qr).toBeVisible({ timeout: 30000 })
@@ -289,7 +289,7 @@ test.describe('OrigamQrCode', () => {
         })
 
         test('aria-label defaults to "QR code for https://origam.dev"', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const qr = sandbox.locator('.origam-qr-code').first()
             await expect(qr).toBeVisible({ timeout: 30000 })
@@ -298,7 +298,7 @@ test.describe('OrigamQrCode', () => {
         })
 
         test('svg-host has display:block (SCSS rule)', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const qr = sandbox.locator('.origam-qr-code').first()
             await expect(qr).toBeVisible({ timeout: 30000 })
@@ -311,7 +311,7 @@ test.describe('OrigamQrCode', () => {
         test('svg-host enforces 1:1 aspect-ratio (SCSS rule)', async ({ page }) => {
             // Story sets size=200 → svg-host should be exactly 200×200.
             // aspect-ratio: 1 means width === height (tolerance ±2px for sub-pixel).
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const qr = sandbox.locator('.origam-qr-code').first()
             await expect(qr).toBeVisible({ timeout: 30000 })
@@ -325,7 +325,7 @@ test.describe('OrigamQrCode', () => {
         test('SCSS: ECC modifier classes can be toggled programmatically', async ({ page }) => {
             // Verify that all 4 ECC SCSS modifier classes are compiled into the
             // scoped stylesheet by injecting each one and checking class presence.
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const qr = sandbox.locator('.origam-qr-code').first()
             await expect(qr).toBeVisible({ timeout: 30000 })

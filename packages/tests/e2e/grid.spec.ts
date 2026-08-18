@@ -49,7 +49,7 @@ test.describe('OrigamGrid', () => {
 
     test.describe('Design — montage et display grid', () => {
         test('le composant racine a display: grid', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const grid = sandbox.locator('.origam-grid').first()
             await expect(grid).toBeVisible({ timeout: 30000 })
@@ -59,7 +59,7 @@ test.describe('OrigamGrid', () => {
         })
 
         test('columns=4 (défaut) → 4 pistes dans grid-template-columns', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const grid = sandbox.locator('.origam-grid').first()
             await expect(grid).toBeVisible({ timeout: 30000 })
@@ -71,7 +71,7 @@ test.describe('OrigamGrid', () => {
         })
 
         test('gap=md (défaut) → token --origam-grid---gap-md = 16px résolu', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const grid = sandbox.locator('.origam-grid').first()
             await expect(grid).toBeVisible({ timeout: 30000 })
@@ -81,7 +81,7 @@ test.describe('OrigamGrid', () => {
         })
 
         test('8 cellules enfants sont rendues', async ({ page }) => {
-            await page.goto(variantUrl(0))
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const grid = sandbox.locator('.origam-grid').first()
             await expect(grid).toBeVisible({ timeout: 30000 })
@@ -98,7 +98,7 @@ test.describe('OrigamGrid', () => {
 
     test.describe('Functional — inline-grid', () => {
         test('inline=false → display: grid (pas inline-grid) par défaut', async ({ page }) => {
-            await page.goto(variantUrl(1))
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const grid = sandbox.locator('.origam-grid').first()
             await expect(grid).toBeVisible({ timeout: 30000 })
@@ -116,7 +116,7 @@ test.describe('OrigamGrid', () => {
 
     test.describe('Slots - Default', () => {
         test('les enfants passés dans le slot default sont rendus dans la grille', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const grid = sandbox.locator('.origam-grid').first()
             await expect(grid).toBeVisible({ timeout: 30000 })
@@ -126,7 +126,7 @@ test.describe('OrigamGrid', () => {
         })
 
         test('columns=3 → 3 pistes', async ({ page }) => {
-            await page.goto(variantUrl(2))
+            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const grid = sandbox.locator('.origam-grid').first()
             await expect(grid).toBeVisible({ timeout: 30000 })
@@ -149,7 +149,7 @@ test.describe('OrigamGrid', () => {
 
     test.describe('Prop — columns', () => {
         test('number=3 → 3 pistes égales', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const grid = sandbox.locator('.origam-grid').nth(0)
             await expect(grid).toBeVisible({ timeout: 30000 })
@@ -161,7 +161,7 @@ test.describe('OrigamGrid', () => {
         })
 
         test('number=12 → 12 pistes égales', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const grid = sandbox.locator('.origam-grid').nth(1)
             await expect(grid).toBeVisible({ timeout: 30000 })
@@ -173,7 +173,7 @@ test.describe('OrigamGrid', () => {
         })
 
         test('string "1fr 2fr 1fr" → piste centrale ~2× les latérales', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const grid = sandbox.locator('.origam-grid').nth(2)
             await expect(grid).toBeVisible({ timeout: 30000 })
@@ -195,7 +195,7 @@ test.describe('OrigamGrid', () => {
         })
 
         test('array ["200px","1fr","200px"] → pistes latérales à 200px exact', async ({ page }) => {
-            await page.goto(variantUrl(3))
+            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const grid = sandbox.locator('.origam-grid').nth(3)
             await expect(grid).toBeVisible({ timeout: 30000 })
@@ -216,7 +216,7 @@ test.describe('OrigamGrid', () => {
 
     test.describe('Prop — areas', () => {
         test('grid-template-areas contient les 5 noms de zones', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const grid = sandbox.locator('.origam-grid').first()
             await expect(grid).toBeVisible({ timeout: 30000 })
@@ -230,7 +230,7 @@ test.describe('OrigamGrid', () => {
         })
 
         test('header et footer s\'étendent sur toute la largeur de la grille', async ({ page }) => {
-            await page.goto(variantUrl(4))
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const grid = sandbox.locator('.origam-grid').first()
             await expect(grid).toBeVisible({ timeout: 30000 })
@@ -275,7 +275,7 @@ test.describe('OrigamGrid', () => {
             const expected = EXPECTED_PX[size]
 
             test(`gap=${size} → columnGap computé = ${expected}px`, async ({ page }) => {
-                await page.goto(variantUrl(5))
+                await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
                 const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
                 const grid = sandbox.locator('.origam-grid').nth(i)
                 await expect(grid).toBeVisible({ timeout: 30000 })
@@ -288,7 +288,7 @@ test.describe('OrigamGrid', () => {
         }
 
         test('les valeurs de gap sont strictement croissantes (xs < sm < md < lg < xl)', async ({ page }) => {
-            await page.goto(variantUrl(5))
+            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const values: number[] = []
 
@@ -314,7 +314,7 @@ test.describe('OrigamGrid', () => {
 
     test.describe('Prop — autoFlow', () => {
         test('autoFlow="row" → grid-auto-flow = "row"', async ({ page }) => {
-            await page.goto(variantUrl(6))
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const grid = sandbox.locator('.origam-grid').nth(0)
             await expect(grid).toBeVisible({ timeout: 30000 })
@@ -324,7 +324,7 @@ test.describe('OrigamGrid', () => {
         })
 
         test('autoFlow="column" → grid-auto-flow = "column"', async ({ page }) => {
-            await page.goto(variantUrl(6))
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const grid = sandbox.locator('.origam-grid').nth(1)
             await expect(grid).toBeVisible({ timeout: 30000 })
@@ -334,7 +334,7 @@ test.describe('OrigamGrid', () => {
         })
 
         test('autoFlow="row dense" → keyword dense présent dans grid-auto-flow', async ({ page }) => {
-            await page.goto(variantUrl(6))
+            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const grid = sandbox.locator('.origam-grid').nth(2)
             await expect(grid).toBeVisible({ timeout: 30000 })
@@ -356,7 +356,7 @@ test.describe('OrigamGrid', () => {
 
     test.describe('Sub-component — OrigamGridItem', () => {
         test('object { start:1, end:4 } → style grid-column: 1 / 4', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const firstGrid = sandbox.locator('.origam-grid').nth(0)
             await expect(firstGrid).toBeVisible({ timeout: 30000 })
@@ -369,7 +369,7 @@ test.describe('OrigamGrid', () => {
         })
 
         test('object { start:4, span:3 } → style grid-column: 4 / span 3', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const firstGrid = sandbox.locator('.origam-grid').nth(0)
             await expect(firstGrid).toBeVisible({ timeout: 30000 })
@@ -382,7 +382,7 @@ test.describe('OrigamGrid', () => {
         })
 
         test('object { span:2 } → style grid-column: span 2', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const firstGrid = sandbox.locator('.origam-grid').nth(0)
             await expect(firstGrid).toBeVisible({ timeout: 30000 })
@@ -395,7 +395,7 @@ test.describe('OrigamGrid', () => {
         })
 
         test('string "span 4" (syntaxe raw) → style grid-column: span 4', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const firstGrid = sandbox.locator('.origam-grid').nth(0)
             await expect(firstGrid).toBeVisible({ timeout: 30000 })
@@ -408,7 +408,7 @@ test.describe('OrigamGrid', () => {
         })
 
         test('prop area="header" → style grid-area: header', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const secondGrid = sandbox.locator('.origam-grid').nth(1)
             await expect(secondGrid).toBeVisible({ timeout: 30000 })
@@ -421,7 +421,7 @@ test.describe('OrigamGrid', () => {
         })
 
         test('prop area="footer" → style grid-area: footer', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const secondGrid = sandbox.locator('.origam-grid').nth(1)
             await expect(secondGrid).toBeVisible({ timeout: 30000 })
@@ -434,7 +434,7 @@ test.describe('OrigamGrid', () => {
         })
 
         test('la grille areas contient 5 OrigamGridItems', async ({ page }) => {
-            await page.goto(variantUrl(7))
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const secondGrid = sandbox.locator('.origam-grid').nth(1)
             await expect(secondGrid).toBeVisible({ timeout: 30000 })
@@ -451,7 +451,7 @@ test.describe('OrigamGrid', () => {
 
     test.describe('Default (playground)', () => {
         test('display grid + 4 pistes + gap=md résolu', async ({ page }) => {
-            await page.goto(variantUrl(8))
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const grid = sandbox.locator('.origam-grid').first()
             await expect(grid).toBeVisible({ timeout: 30000 })

@@ -63,7 +63,7 @@ function sandbox (page: Page): FrameLocator {
 async function warmupStory (browser: Browser, storyUrl: string): Promise<void> {
     const warmPage = await browser.newPage()
     try {
-        await warmPage.goto(storyUrl)
+        await warmPage.goto(storyUrl, { waitUntil: 'domcontentloaded' })
         // Wait until the sandbox iframe is attached to the page (Vite started)
         await warmPage.waitForFunction(
             () => {
@@ -90,13 +90,13 @@ test.describe('OrigamProgressLinear', () => {
     // Design (index 0) — modelValue:60, color:'primary', thickness:4
     test.describe('Design', () => {
         test('renders root with BEM class origam-progress--linear', async ({ page }) => {
-            await page.goto(linearUrl(0))
+            await page.goto(linearUrl(0), { waitUntil: 'domcontentloaded' })
             const bar = sandbox(page).locator('.origam-progress--linear').first()
             await expect(bar).toBeVisible({ timeout: 25000 })
         })
 
         test('thickness:4 drives inline height on the wrapper (≥4px)', async ({ page }) => {
-            await page.goto(linearUrl(0))
+            await page.goto(linearUrl(0), { waitUntil: 'domcontentloaded' })
             const bar = sandbox(page).locator('.origam-progress--linear').first()
             await expect(bar).toBeVisible({ timeout: 25000 })
             const style = await bar.getAttribute('style') || ''
@@ -105,7 +105,7 @@ test.describe('OrigamProgressLinear', () => {
         })
 
         test('modelValue:60 → loader bar width ≈ 60%', async ({ page }) => {
-            await page.goto(linearUrl(0))
+            await page.goto(linearUrl(0), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             const bar = sb.locator('.origam-progress--linear').first()
             await expect(bar).toBeVisible({ timeout: 25000 })
@@ -118,7 +118,7 @@ test.describe('OrigamProgressLinear', () => {
         })
 
         test('color:primary — loader node carries a non-transparent computed color', async ({ page }) => {
-            await page.goto(linearUrl(0))
+            await page.goto(linearUrl(0), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             const loader = sb.locator('.origam-progress__loader').first()
             await expect(loader).toBeAttached({ timeout: 25000 })
@@ -128,7 +128,7 @@ test.describe('OrigamProgressLinear', () => {
         })
 
         test('background div is present in the DOM', async ({ page }) => {
-            await page.goto(linearUrl(0))
+            await page.goto(linearUrl(0), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             await expect(sb.locator('.origam-progress--linear').first()).toBeVisible({ timeout: 25000 })
             await expect(sb.locator('.origam-progress__background').first()).toBeAttached()
@@ -138,14 +138,14 @@ test.describe('OrigamProgressLinear', () => {
     // Functional (index 1) — modelValue:42, bufferValue:70, indeterminate:false, active:true
     test.describe('Functional', () => {
         test('active:true — applies origam-progress--active class', async ({ page }) => {
-            await page.goto(linearUrl(1))
+            await page.goto(linearUrl(1), { waitUntil: 'domcontentloaded' })
             const bar = sandbox(page).locator('.origam-progress--linear').first()
             await expect(bar).toBeVisible({ timeout: 25000 })
             await expect(bar).toHaveClass(/origam-progress--active/)
         })
 
         test('indeterminate:false — no indeterminate class in init state', async ({ page }) => {
-            await page.goto(linearUrl(1))
+            await page.goto(linearUrl(1), { waitUntil: 'domcontentloaded' })
             const bar = sandbox(page).locator('.origam-progress--linear').first()
             await expect(bar).toBeVisible({ timeout: 25000 })
             const cls = await bar.getAttribute('class') || ''
@@ -153,7 +153,7 @@ test.describe('OrigamProgressLinear', () => {
         })
 
         test('indeterminate:false → single determinate bar (no long/short bars)', async ({ page }) => {
-            await page.goto(linearUrl(1))
+            await page.goto(linearUrl(1), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             const bar = sb.locator('.origam-progress--linear').first()
             await expect(bar).toBeVisible({ timeout: 25000 })
@@ -165,7 +165,7 @@ test.describe('OrigamProgressLinear', () => {
         test('SCSS injection: indeterminate class triggers animation-play-state rule', async ({ page }) => {
             // Indeterminate prop cannot be toggled headlessly from init-state.
             // We inject the class to verify the SCSS animation-play-state rule.
-            await page.goto(linearUrl(1))
+            await page.goto(linearUrl(1), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             const bar = sb.locator('.origam-progress--linear').first()
             await expect(bar).toBeVisible({ timeout: 25000 })
@@ -181,7 +181,7 @@ test.describe('OrigamProgressLinear', () => {
         })
 
         test('stream:false (init) — no stream node rendered', async ({ page }) => {
-            await page.goto(linearUrl(1))
+            await page.goto(linearUrl(1), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             await expect(sb.locator('.origam-progress--linear').first()).toBeVisible({ timeout: 25000 })
             // stream=false in init-state → no .origam-progress__stream
@@ -192,7 +192,7 @@ test.describe('OrigamProgressLinear', () => {
     // Slots - Default (index 2) — renders slot with value + buffer text
     test.describe('Slots - Default', () => {
         test('slot renders content node inside .origam-progress__content', async ({ page }) => {
-            await page.goto(linearUrl(2))
+            await page.goto(linearUrl(2), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             await expect(sb.locator('.origam-progress--linear').first()).toBeVisible({ timeout: 25000 })
             const content = sb.locator('.origam-progress__content').first()
@@ -200,7 +200,7 @@ test.describe('OrigamProgressLinear', () => {
         })
 
         test('slot exposes value (≈73) and buffer (≈90) to default slot', async ({ page }) => {
-            await page.goto(linearUrl(2))
+            await page.goto(linearUrl(2), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             const content = sb.locator('.origam-progress__content').first()
             await expect(content).toBeVisible({ timeout: 25000 })
@@ -213,7 +213,7 @@ test.describe('OrigamProgressLinear', () => {
     // Default / playground (index 3) — modelValue:42, color:'primary', active:true
     test.describe('Default (playground)', () => {
         test('playground renders one linear bar', async ({ page }) => {
-            await page.goto(linearUrl(3))
+            await page.goto(linearUrl(3), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             const bars = sb.locator('.origam-progress--linear')
             await expect(bars.first()).toBeVisible({ timeout: 25000 })
@@ -221,7 +221,7 @@ test.describe('OrigamProgressLinear', () => {
         })
 
         test('playground: tag=div (default) → root is a <div>', async ({ page }) => {
-            await page.goto(linearUrl(3))
+            await page.goto(linearUrl(3), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             const bar = sb.locator('.origam-progress--linear').first()
             await expect(bar).toBeVisible({ timeout: 25000 })
@@ -230,7 +230,7 @@ test.describe('OrigamProgressLinear', () => {
         })
 
         test('playground: loader bar has a width% style (determinate init)', async ({ page }) => {
-            await page.goto(linearUrl(3))
+            await page.goto(linearUrl(3), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             const bar = sb.locator('.origam-progress--linear').first()
             await expect(bar).toBeVisible({ timeout: 25000 })
@@ -241,7 +241,7 @@ test.describe('OrigamProgressLinear', () => {
         })
 
         test('SCSS absolute rule: injecting --absolute sets position:absolute', async ({ page }) => {
-            await page.goto(linearUrl(3))
+            await page.goto(linearUrl(3), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             const bar = sb.locator('.origam-progress--linear').first()
             await expect(bar).toBeVisible({ timeout: 25000 })
@@ -253,7 +253,7 @@ test.describe('OrigamProgressLinear', () => {
         })
 
         test('SCSS reverse rule: injecting --reverse shifts background to right:0', async ({ page }) => {
-            await page.goto(linearUrl(3))
+            await page.goto(linearUrl(3), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             const bar = sb.locator('.origam-progress--linear').first()
             await expect(bar).toBeVisible({ timeout: 25000 })
@@ -280,20 +280,20 @@ test.describe('OrigamProgressCircular', () => {
     // Design (index 0) — modelValue:60, color:'primary', size:'large', thickness:4
     test.describe('Design', () => {
         test('renders root with BEM class origam-progress--circular', async ({ page }) => {
-            await page.goto(circularUrl(0))
+            await page.goto(circularUrl(0), { waitUntil: 'domcontentloaded' })
             const ring = sandbox(page).locator('.origam-progress--circular').first()
             await expect(ring).toBeVisible({ timeout: 25000 })
         })
 
         test('size:large — applies origam-progress--size-large class', async ({ page }) => {
-            await page.goto(circularUrl(0))
+            await page.goto(circularUrl(0), { waitUntil: 'domcontentloaded' })
             const ring = sandbox(page).locator('.origam-progress--circular').first()
             await expect(ring).toBeVisible({ timeout: 25000 })
             await expect(ring).toHaveClass(/origam-progress--size-large/)
         })
 
         test('size:large SCSS — computed width is 48px', async ({ page }) => {
-            await page.goto(circularUrl(0))
+            await page.goto(circularUrl(0), { waitUntil: 'domcontentloaded' })
             const ring = sandbox(page).locator('.origam-progress--circular').first()
             await expect(ring).toBeVisible({ timeout: 25000 })
             const width = await ring.evaluate(el => getComputedStyle(el).width)
@@ -301,7 +301,7 @@ test.describe('OrigamProgressCircular', () => {
         })
 
         test('modelValue:60 → overlay stroke-dashoffset is not 0 and not empty', async ({ page }) => {
-            await page.goto(circularUrl(0))
+            await page.goto(circularUrl(0), { waitUntil: 'domcontentloaded' })
             const ring = sandbox(page).locator('.origam-progress--circular').first()
             await expect(ring).toBeVisible({ timeout: 25000 })
             const overlay = ring.locator('circle.origam-progress__overlay')
@@ -312,7 +312,7 @@ test.describe('OrigamProgressCircular', () => {
         })
 
         test('thickness:4 → stroke-width attribute is > 0 on overlay circle', async ({ page }) => {
-            await page.goto(circularUrl(0))
+            await page.goto(circularUrl(0), { waitUntil: 'domcontentloaded' })
             const ring = sandbox(page).locator('.origam-progress--circular').first()
             await expect(ring).toBeVisible({ timeout: 25000 })
             const overlay = ring.locator('circle.origam-progress__overlay')
@@ -322,7 +322,7 @@ test.describe('OrigamProgressCircular', () => {
         })
 
         test('SVG viewBox is present and non-empty', async ({ page }) => {
-            await page.goto(circularUrl(0))
+            await page.goto(circularUrl(0), { waitUntil: 'domcontentloaded' })
             const ring = sandbox(page).locator('.origam-progress--circular').first()
             await expect(ring).toBeVisible({ timeout: 25000 })
             const svg = ring.locator('svg').first()
@@ -334,7 +334,7 @@ test.describe('OrigamProgressCircular', () => {
 
         test('rotate:0 (default) → SVG transform style contains rotate()', async ({ page }) => {
             // Component always applies: transform: rotate(calc(-90deg + 0deg))
-            await page.goto(circularUrl(0))
+            await page.goto(circularUrl(0), { waitUntil: 'domcontentloaded' })
             const ring = sandbox(page).locator('.origam-progress--circular').first()
             await expect(ring).toBeVisible({ timeout: 25000 })
             const svg = ring.locator('svg').first()
@@ -343,7 +343,7 @@ test.describe('OrigamProgressCircular', () => {
         })
 
         test('color:primary — overlay computed stroke is non-transparent', async ({ page }) => {
-            await page.goto(circularUrl(0))
+            await page.goto(circularUrl(0), { waitUntil: 'domcontentloaded' })
             const ring = sandbox(page).locator('.origam-progress--circular').first()
             await expect(ring).toBeVisible({ timeout: 25000 })
             const overlay = ring.locator('circle.origam-progress__overlay').first()
@@ -353,7 +353,7 @@ test.describe('OrigamProgressCircular', () => {
         })
 
         test('underlay circle is present with class origam-progress__underlay', async ({ page }) => {
-            await page.goto(circularUrl(0))
+            await page.goto(circularUrl(0), { waitUntil: 'domcontentloaded' })
             const ring = sandbox(page).locator('.origam-progress--circular').first()
             await expect(ring).toBeVisible({ timeout: 25000 })
             await expect(ring.locator('circle.origam-progress__underlay')).toBeAttached()
@@ -363,14 +363,14 @@ test.describe('OrigamProgressCircular', () => {
     // Functional (index 1) — modelValue:42, indeterminate:false, active:true, size:'large'
     test.describe('Functional', () => {
         test('active:true — applies origam-progress--active class', async ({ page }) => {
-            await page.goto(circularUrl(1))
+            await page.goto(circularUrl(1), { waitUntil: 'domcontentloaded' })
             const ring = sandbox(page).locator('.origam-progress--circular').first()
             await expect(ring).toBeVisible({ timeout: 25000 })
             await expect(ring).toHaveClass(/origam-progress--active/)
         })
 
         test('indeterminate:false — no indeterminate class in init state', async ({ page }) => {
-            await page.goto(circularUrl(1))
+            await page.goto(circularUrl(1), { waitUntil: 'domcontentloaded' })
             const ring = sandbox(page).locator('.origam-progress--circular').first()
             await expect(ring).toBeVisible({ timeout: 25000 })
             const cls = await ring.getAttribute('class') || ''
@@ -378,7 +378,7 @@ test.describe('OrigamProgressCircular', () => {
         })
 
         test('indeterminate:false — SVG has no rotate animation in init state', async ({ page }) => {
-            await page.goto(circularUrl(1))
+            await page.goto(circularUrl(1), { waitUntil: 'domcontentloaded' })
             const ring = sandbox(page).locator('.origam-progress--circular').first()
             await expect(ring).toBeVisible({ timeout: 25000 })
             const animName = await ring.locator('svg').first().evaluate(el =>
@@ -389,7 +389,7 @@ test.describe('OrigamProgressCircular', () => {
         })
 
         test('SCSS injection: indeterminate class triggers SVG rotation animation', async ({ page }) => {
-            await page.goto(circularUrl(1))
+            await page.goto(circularUrl(1), { waitUntil: 'domcontentloaded' })
             const ring = sandbox(page).locator('.origam-progress--circular').first()
             await expect(ring).toBeVisible({ timeout: 25000 })
             const animName = await ring.evaluate(el => {
@@ -403,7 +403,7 @@ test.describe('OrigamProgressCircular', () => {
         })
 
         test('tag:div (default) → root element is a <div>', async ({ page }) => {
-            await page.goto(circularUrl(1))
+            await page.goto(circularUrl(1), { waitUntil: 'domcontentloaded' })
             const ring = sandbox(page).locator('.origam-progress--circular').first()
             await expect(ring).toBeVisible({ timeout: 25000 })
             const tagName = await ring.evaluate(el => el.tagName.toLowerCase())
@@ -414,7 +414,7 @@ test.describe('OrigamProgressCircular', () => {
     // Slots - Default (index 2) — modelValue:73, size:'x-large', renders `{{ value }}%`
     test.describe('Slots - Default', () => {
         test('slot renders .origam-progress__content with label text', async ({ page }) => {
-            await page.goto(circularUrl(2))
+            await page.goto(circularUrl(2), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             await expect(sb.locator('.origam-progress--circular').first()).toBeVisible({ timeout: 25000 })
             const content = sb.locator('.origam-progress__content').first()
@@ -424,7 +424,7 @@ test.describe('OrigamProgressCircular', () => {
         })
 
         test('size:x-large SCSS — computed width is 64px', async ({ page }) => {
-            await page.goto(circularUrl(2))
+            await page.goto(circularUrl(2), { waitUntil: 'domcontentloaded' })
             const ring = sandbox(page).locator('.origam-progress--circular').first()
             await expect(ring).toBeVisible({ timeout: 25000 })
             await expect(ring).toHaveClass(/origam-progress--size-x-large/)
@@ -436,7 +436,7 @@ test.describe('OrigamProgressCircular', () => {
     // Default / playground (index 3) — modelValue:42, size:'large', color:'primary'
     test.describe('Default (playground)', () => {
         test('playground renders one circular ring', async ({ page }) => {
-            await page.goto(circularUrl(3))
+            await page.goto(circularUrl(3), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             const rings = sb.locator('.origam-progress--circular')
             await expect(rings.first()).toBeVisible({ timeout: 25000 })
@@ -444,7 +444,7 @@ test.describe('OrigamProgressCircular', () => {
         })
 
         test('playground: modelValue:42 → dashoffset is between 0 and CIRCUMFERENCE', async ({ page }) => {
-            await page.goto(circularUrl(3))
+            await page.goto(circularUrl(3), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             const ring = sb.locator('.origam-progress--circular').first()
             await expect(ring).toBeVisible({ timeout: 25000 })
@@ -458,7 +458,7 @@ test.describe('OrigamProgressCircular', () => {
         })
 
         test('SCSS size-default: injecting class sets 32px width', async ({ page }) => {
-            await page.goto(circularUrl(3))
+            await page.goto(circularUrl(3), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             const ring = sb.locator('.origam-progress--circular').first()
             await expect(ring).toBeVisible({ timeout: 25000 })
@@ -472,7 +472,7 @@ test.describe('OrigamProgressCircular', () => {
         })
 
         test('SCSS size-small: injecting class sets 24px width', async ({ page }) => {
-            await page.goto(circularUrl(3))
+            await page.goto(circularUrl(3), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             const ring = sb.locator('.origam-progress--circular').first()
             await expect(ring).toBeVisible({ timeout: 25000 })
@@ -485,7 +485,7 @@ test.describe('OrigamProgressCircular', () => {
         })
 
         test('SCSS size-x-small: injecting class sets 16px width', async ({ page }) => {
-            await page.goto(circularUrl(3))
+            await page.goto(circularUrl(3), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             const ring = sb.locator('.origam-progress--circular').first()
             await expect(ring).toBeVisible({ timeout: 25000 })
@@ -510,7 +510,7 @@ test.describe('OrigamProgress (dispatcher)', () => {
     // Design (index 0) — type:'circular', modelValue:60, color:'primary', size:'default'
     test.describe('Design', () => {
         test('type:circular → renders .origam-progress--circular, not linear', async ({ page }) => {
-            await page.goto(progressUrl(0))
+            await page.goto(progressUrl(0), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             const circular = sb.locator('.origam-progress--circular').first()
             await expect(circular).toBeVisible({ timeout: 25000 })
@@ -518,7 +518,7 @@ test.describe('OrigamProgress (dispatcher)', () => {
         })
 
         test('color:primary — overlay stroke is non-transparent', async ({ page }) => {
-            await page.goto(progressUrl(0))
+            await page.goto(progressUrl(0), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             const ring = sb.locator('.origam-progress--circular').first()
             await expect(ring).toBeVisible({ timeout: 25000 })
@@ -530,7 +530,7 @@ test.describe('OrigamProgress (dispatcher)', () => {
         })
 
         test('modelValue:60 → overlay stroke-dashoffset is > 0', async ({ page }) => {
-            await page.goto(progressUrl(0))
+            await page.goto(progressUrl(0), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             const ring = sb.locator('.origam-progress--circular').first()
             await expect(ring).toBeVisible({ timeout: 25000 })
@@ -543,7 +543,7 @@ test.describe('OrigamProgress (dispatcher)', () => {
     // State (index 1) — type:'circular', indeterminate:false, active:true, modelValue:60
     test.describe('State', () => {
         test('active:true → origam-progress--active class present', async ({ page }) => {
-            await page.goto(progressUrl(1))
+            await page.goto(progressUrl(1), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             const ring = sb.locator('.origam-progress--circular').first()
             await expect(ring).toBeVisible({ timeout: 25000 })
@@ -551,7 +551,7 @@ test.describe('OrigamProgress (dispatcher)', () => {
         })
 
         test('indeterminate:false (init) → no indeterminate class', async ({ page }) => {
-            await page.goto(progressUrl(1))
+            await page.goto(progressUrl(1), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             const ring = sb.locator('.origam-progress--circular').first()
             await expect(ring).toBeVisible({ timeout: 25000 })
@@ -563,7 +563,7 @@ test.describe('OrigamProgress (dispatcher)', () => {
     // Functional (index 2) — type:'linear', modelValue:50, bufferValue:75, color:'primary'
     test.describe('Functional', () => {
         test('type:linear → renders .origam-progress--linear, not circular', async ({ page }) => {
-            await page.goto(progressUrl(2))
+            await page.goto(progressUrl(2), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             const bar = sb.locator('.origam-progress--linear').first()
             await expect(bar).toBeVisible({ timeout: 25000 })
@@ -571,7 +571,7 @@ test.describe('OrigamProgress (dispatcher)', () => {
         })
 
         test('modelValue:50 → loader bar width is 50%', async ({ page }) => {
-            await page.goto(progressUrl(2))
+            await page.goto(progressUrl(2), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             const bar = sb.locator('.origam-progress--linear').first()
             await expect(bar).toBeVisible({ timeout: 25000 })
@@ -582,7 +582,7 @@ test.describe('OrigamProgress (dispatcher)', () => {
         })
 
         test('background div width reflects non-stream mode (100%)', async ({ page }) => {
-            await page.goto(progressUrl(2))
+            await page.goto(progressUrl(2), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             const bar = sb.locator('.origam-progress--linear').first()
             await expect(bar).toBeVisible({ timeout: 25000 })
@@ -594,7 +594,7 @@ test.describe('OrigamProgress (dispatcher)', () => {
         })
 
         test('thickness drives inline height (default 4px)', async ({ page }) => {
-            await page.goto(progressUrl(2))
+            await page.goto(progressUrl(2), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             const bar = sb.locator('.origam-progress--linear').first()
             await expect(bar).toBeVisible({ timeout: 25000 })
@@ -606,7 +606,7 @@ test.describe('OrigamProgress (dispatcher)', () => {
     // Slots - Default (index 3) — type:'circular', modelValue:73, slot renders "73%"
     test.describe('Slots - Default', () => {
         test('slot renders .origam-progress__content (visible and attached)', async ({ page }) => {
-            await page.goto(progressUrl(3))
+            await page.goto(progressUrl(3), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             await expect(sb.locator('.origam-progress--circular').first()).toBeVisible({ timeout: 25000 })
             const content = sb.locator('.origam-progress__content').first()
@@ -637,7 +637,7 @@ test.describe('OrigamProgress (dispatcher)', () => {
          *   <slot name="default"/>  ← must be v-bind="{ value: normalizedValue }"
          */
         test.fail('DS BUG slot value prop is NaN — dispatcher does not forward v-bind to slot', async ({ page }) => {
-            await page.goto(progressUrl(3))
+            await page.goto(progressUrl(3), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             await expect(sb.locator('.origam-progress--circular').first()).toBeVisible({ timeout: 25000 })
             const content = sb.locator('.origam-progress__content').first()
@@ -650,14 +650,14 @@ test.describe('OrigamProgress (dispatcher)', () => {
     // Default / playground (index 4) — type:'circular', modelValue:42, color:'primary', active:true
     test.describe('Default (playground)', () => {
         test('playground renders one progress component (circular init)', async ({ page }) => {
-            await page.goto(progressUrl(4))
+            await page.goto(progressUrl(4), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             // init type='circular' → circular ring
             await expect(sb.locator('.origam-progress--circular').first()).toBeVisible({ timeout: 25000 })
         })
 
         test('playground: active:true → origam-progress--active class present', async ({ page }) => {
-            await page.goto(progressUrl(4))
+            await page.goto(progressUrl(4), { waitUntil: 'domcontentloaded' })
             const sb = sandbox(page)
             const ring = sb.locator('.origam-progress--circular').first()
             await expect(ring).toBeVisible({ timeout: 25000 })

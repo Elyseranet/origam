@@ -44,7 +44,7 @@ const variantUrl = (slug: string, idx: number) =>
  * OrigamSliderFieldTrack case for the one instance.
  */
 async function open (page: Page, slug: string, idx: number, rootSelector: string, state: 'visible' | 'attached' = 'visible') {
-    await page.goto(variantUrl(slug, idx))
+    await page.goto(variantUrl(slug, idx), { waitUntil: 'domcontentloaded' })
     const sandbox = page.frameLocator(SANDBOX)
     await sandbox.locator(rootSelector).first().waitFor({ state, timeout: TIMEOUT })
 

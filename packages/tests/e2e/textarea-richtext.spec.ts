@@ -11,7 +11,7 @@ const ARROW_TIMEOUT = 5000
 // (textarea-richtext:110 timed out in CI) — plus a brittle `getByText().click()`
 // and a fixed `waitForTimeout`. This resolves deterministically and fast.
 const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
-const gotoVariant = (page: Page, idx: number) => page.goto(variantUrl(idx))
+const gotoVariant = (page: Page, idx: number) => page.goto(variantUrl(idx), { waitUntil: 'domcontentloaded' })
 
 test.describe('OrigamTextareaField — richtext mode', () => {
     test('Mode rich (HTML) — renders contenteditable host with toolbar', async ({ page }) => {

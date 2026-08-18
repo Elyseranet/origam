@@ -25,7 +25,7 @@ test.describe('OrigamColorPicker', () => {
     test.setTimeout(45000)
 
     test('Functional — picker renders with the canvas area present', async ({ page }) => {
-        await page.goto(variantUrl(1))
+        await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const picker = sandbox.locator('.origam-color-picker').first()
@@ -33,7 +33,7 @@ test.describe('OrigamColorPicker', () => {
     })
 
     test('Functional — picker renders under the hideCanvas control', async ({ page }) => {
-        await page.goto(variantUrl(1))
+        await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         // Functional pins hideCanvas=false, so the canvas is present.
@@ -42,7 +42,7 @@ test.describe('OrigamColorPicker', () => {
     })
 
     test('Functional — picker renders under the mode control', async ({ page }) => {
-        await page.goto(variantUrl(1))
+        await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const picker = sandbox.locator('.origam-color-picker').first()
@@ -50,7 +50,7 @@ test.describe('OrigamColorPicker', () => {
     })
 
     test('Functional — picker renders under the sliders / inputs controls', async ({ page }) => {
-        await page.goto(variantUrl(1))
+        await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const picker = sandbox.locator('.origam-color-picker').first()
@@ -58,7 +58,7 @@ test.describe('OrigamColorPicker', () => {
     })
 
     test('Functional — picker renders under the swatches controls', async ({ page }) => {
-        await page.goto(variantUrl(1))
+        await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const picker = sandbox.locator('.origam-color-picker').first()
@@ -66,28 +66,28 @@ test.describe('OrigamColorPicker', () => {
     })
 
     test('Slot — title renders custom title content', async ({ page }) => {
-        await page.goto(variantUrl(5))
+        await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         await expect(sandbox.getByText('Pick a colour')).toBeVisible({ timeout: 12000 })
     })
 
     test('Slot — actions renders action buttons', async ({ page }) => {
-        await page.goto(variantUrl(7))
+        await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         await expect(sandbox.getByRole('button', { name: /apply/i })).toBeVisible({ timeout: 12000 })
     })
 
     test('Emit — update:modelValue variant renders picker', async ({ page }) => {
-        await page.goto(variantUrl(2))
+        await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         await expect(sandbox.locator('.origam-color-picker').first()).toBeVisible({ timeout: 12000 })
     })
 
     test('Playground variant — picker renders', async ({ page }) => {
-        await page.goto(variantUrl(8))
+        await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const picker = sandbox.locator('.origam-color-picker').first()

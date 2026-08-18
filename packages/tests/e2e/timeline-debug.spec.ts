@@ -22,7 +22,7 @@ test.setTimeout(180_000)
 
 test('DEBUG timeline — size cascade + horizontal orientation', async ({ page }) => {
     // ── Size / Density variant ────────────────────────────────────────
-    await page.goto(variantUrl(2))
+    await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
 
     const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 
@@ -60,7 +60,7 @@ test('DEBUG timeline — size cascade + horizontal orientation', async ({ page }
     }
 
     // ── Horizontal variant ──────────────────────────────────────────
-    await page.goto(variantUrl(3))
+    await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
 
     const h = await sandbox.locator('[data-cy="timeline-horizontal"]').first().evaluate((el) => {
         const wrapper = el.querySelector('.origam-timeline__track-wrapper') as HTMLElement | null

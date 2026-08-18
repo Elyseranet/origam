@@ -35,42 +35,42 @@ test.describe('OrigamColorPickerField', () => {
     test.setTimeout(45000)
 
     test('Basic variant — field renders with a visible input', async ({ page }) => {
-        await page.goto(variantUrl(18))
+        await page.goto(variantUrl(18), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         await expect(sandbox.locator('.origam-color-picker-field').first()).toBeVisible({ timeout: 12000 })
     })
 
     test('Functional — field renders under the closeOnSelect control', async ({ page }) => {
-        await page.goto(variantUrl(2))
+        await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         await expect(sandbox.locator('.origam-color-picker-field').first()).toBeVisible({ timeout: 12000 })
     })
 
     test('States — disabled state prevents menu from opening', async ({ page }) => {
-        await page.goto(variantUrl(3))
+        await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         await expect(sandbox.locator('.origam-color-picker-field').first()).toBeVisible({ timeout: 12000 })
     })
 
     test('Slot — colorSelection renders custom content', async ({ page }) => {
-        await page.goto(variantUrl(12))
+        await page.goto(variantUrl(12), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         await expect(sandbox.locator('.origam-color-picker-field').first()).toBeVisible({ timeout: 12000 })
     })
 
     test('Emit — update:modelValue variant renders field', async ({ page }) => {
-        await page.goto(variantUrl(5))
+        await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         await expect(sandbox.locator('.origam-color-picker-field').first()).toBeVisible({ timeout: 12000 })
     })
 
     test('Playground — field renders and has the active-menu class when picker opens', async ({ page }) => {
-        await page.goto(variantUrl(18))
+        await page.goto(variantUrl(18), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const field = sandbox.locator('.origam-color-picker-field').first()
@@ -101,7 +101,7 @@ test.describe('OrigamColorPickerField', () => {
      * Run manually: `pnpm -F @origam/tests test:e2e -- --grep "rules"`
      */
     test('Prop — rules: error message appears when field is empty after blur', async ({ page }) => {
-        await page.goto(variantUrl(4))
+        await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 
@@ -184,7 +184,7 @@ test.describe('OrigamColorPickerField', () => {
      * OrigamColorPicker.vue:159-180.
      */
     test.fail('Prop — rules: error message disappears after a colour is selected', async ({ page }) => {
-        await page.goto(variantUrl(4))
+        await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const field = sandbox.locator('[data-cy="colorpickerfield-rules"]')
@@ -232,7 +232,7 @@ test.describe('OrigamColorPickerField', () => {
     test.describe('Teleported menu follows the field typography', () => {
         for (const fontSize of ['11px', '13px', '20px']) {
             test(`channel label text matches a field overridden to ${fontSize}`, async ({ page }) => {
-                await page.goto(variantUrl(18))
+                await page.goto(variantUrl(18), { waitUntil: 'domcontentloaded' })
                 const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
                 const field = sandbox.locator('.origam-color-picker-field').first()
                 await expect(field).toBeVisible({ timeout: 12000 })
