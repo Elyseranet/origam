@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test'
 
+import { toggleHstCheckbox } from './_support/histoire-controls'
+
 /**
  * Probe spec for OrigamParallax runtime behaviour. Covers the three legacy
  * `event` modes (move / scroll / orientation) on <OrigamParallaxElement>
@@ -256,38 +258,66 @@ test.describe('OrigamParallax — multi-layer (enriched)', () => {
         expect(final).toMatch(/progress\s*=\s*\d\.\d{3}/)
     })
 
-    test('disabled — layer transform stays at offset 0', async ({ page }) => {
+    test('disabled — element transform stays at offset 0 under the mouse', async ({ page }) => {
+        // ⛔ 2026-08-18 — this test was VACANT TWICE before this rewrite, and both
+        // vacancies have to stay closed for it to keep meaning anything:
+        //
+        //  1. Its guard read `page.locator('input[type="checkbox"]')`, measured at
+        //     ZERO on the whole page. Histoire's `HstCheckbox` renders
+        //     `role="checkbox"` on a `<label>`, never a native `<input>` (see
+        //     _support/histoire-controls.ts). `count() > 0` was therefore always
+        //     false, the `disabled` flip never happened, and the body measured a
+        //     variant still at its `:init-state` default `disabled: false`.
+        //  2. Even with the flip restored, the body SCROLLED — but the Functional
+        //     variant runs `event: PARALLAX_EVENT.MOVE`
+        //     (OrigamParallax.story.vue:59), so scrolling drives nothing on the
+        //     legacy `<OrigamParallaxElement>` path. Measured on the unfixed
+        //     component: scroll moves the element from `matrix(1,0,0,1,-1,-1)` to
+        //     `matrix(1,0,0,1,-1,-1)` — i.e. `expect(final).toBe(initial)` passed
+        //     without ever exercising `disabled`.
+        //
+        // The gesture below is therefore the MOUSE one (same shape as the
+        // `event="move"` test at the top of this file, which is what proves the
+        // gesture actually moves the element when `disabled` is off).
         await page.goto(variantUrl(1))
 
-        // Flip disabled on via the HstCheckbox.
-        const checkbox = page.locator('input[type="checkbox"]').filter({ hasNot: page.locator(':checked') }).first()
-        if (await checkbox.count() > 0) {
-            await checkbox.check()
-            await page.waitForTimeout(300)
-        }
-
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        // The Functional variant uses <origam-parallax-element> (class .origam-parallax-element),
-        // not <origam-parallax-layer> (class .origam-parallax__layer).
-        const layer = sandbox.locator('.origam-parallax-element').first()
-        await expect(layer).toBeVisible({ timeout: 12000 })
+        const host = sandbox.locator('.origam-parallax').first()
+        // The Functional variant uses <origam-parallax-element> (class
+        // .origam-parallax-element), not <origam-parallax-layer>
+        // (class .origam-parallax__layer).
+        const element = sandbox.locator('.origam-parallax-element').first()
+        await expect(host).toBeVisible({ timeout: 12000 })
 
-        const initial = await layer.evaluate((el) => getComputedStyle(el).transform)
+        // Flip `disabled` on. The Variant's :init-state documents it as `false`,
+        // which is what makes this unconditional click safe — HstCheckbox exposes
+        // no `aria-checked` to read back (see _support/histoire-controls.ts).
+        await toggleHstCheckbox(page, 'Disabled')
+        await page.waitForTimeout(300)
+        await expect(sandbox.locator('.origam-parallax--disabled')).toHaveCount(1)
 
-        await sandbox.locator('body').evaluate(async () => {
-            const win = window
-            win.document.body.style.minHeight = '300vh'
-            for (const top of [50, 200, 500, 900]) {
-                win.scrollTo({ top, behavior: 'auto' })
-                win.dispatchEvent(new Event('scroll'))
-                await new Promise(r => setTimeout(r, 100))
+        const initial = await element.evaluate((el) => getComputedStyle(el).transform)
+
+        await host.evaluate(async (host) => {
+            const rect = host.getBoundingClientRect()
+            host.dispatchEvent(new MouseEvent('mouseenter', {
+                bubbles: true, clientX: rect.left + rect.width / 2, clientY: rect.top + rect.height / 2, view: window,
+            }))
+            await new Promise(r => setTimeout(r, 50))
+            for (let i = 0; i <= 10; i++) {
+                const ratio = i / 10
+                host.dispatchEvent(new MouseEvent('mousemove', {
+                    bubbles: true, clientX: rect.left + rect.width * ratio, clientY: rect.top + rect.height * ratio, view: window,
+                }))
+                await new Promise(r => setTimeout(r, 120))
             }
         })
         await page.waitForTimeout(400)
 
-        const final = await layer.evaluate((el) => getComputedStyle(el).transform)
-        console.log('[disabled] initial:', initial, '→ final:', final)
-        // With disabled=true the transform must NOT change between scrolls.
+        const final = await element.evaluate((el) => getComputedStyle(el).transform)
+        console.log('[disabled/move] initial:', initial, '→ final:', final)
+        // `disabled` is documented on IParallaxProps as "translate stays at 0
+        // regardless of scroll / events" — the mouse is one of those events.
         expect(final).toBe(initial)
     })
 
