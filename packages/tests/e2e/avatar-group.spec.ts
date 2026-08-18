@@ -27,7 +27,7 @@ test.describe('OrigamAvatarGroup — separation ring (#263)', () => {
     test.setTimeout(60000)
 
     test('every `__item` AND the `__rest` overflow chip carry the outline-based separation ring', async ({ page }) => {
-        await page.goto(variantUrl(0))
+        await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 
         const items = sandbox.locator('.origam-avatar-group__item')

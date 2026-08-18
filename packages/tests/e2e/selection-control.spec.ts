@@ -45,7 +45,7 @@ const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 
 test.describe('OrigamSelectionControl — grid-area contract (#247)', () => {
     test('does not force grid-area on its own root — leaves auto-placement to the consumer grid', async ({ page }) => {
-        await page.goto(variantUrl(0))
+        await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const sc = sandbox.locator('.origam-selection-control').first()
         await expect(sc).toBeVisible({ timeout: 12000 })
@@ -56,7 +56,7 @@ test.describe('OrigamSelectionControl — grid-area contract (#247)', () => {
     })
 
     test('4 bare instances in an unrelated repeat(4,1fr) grid (no named areas) do NOT collapse onto the same cell', async ({ page }) => {
-        await page.goto(variantUrl(0))
+        await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
 
@@ -83,7 +83,7 @@ test.describe('OrigamSelectionControl — grid-area contract (#247)', () => {
 
 test.describe('OrigamSelectionControl — border/rounded/elevation on __input (#241)', () => {
     test('rounded="lg" (via origam--rounded-lg + inline style) overrides the default circular radius', async ({ page }) => {
-        await page.goto(variantUrl(0))
+        await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const inputBox = sandbox.locator('.origam-selection-control__input').first()
         await expect(inputBox).toBeVisible({ timeout: 12000 })
@@ -100,7 +100,7 @@ test.describe('OrigamSelectionControl — border/rounded/elevation on __input (#
     })
 
     test('border="true" (via origam--border-thin) paints a real, visible border', async ({ page }) => {
-        await page.goto(variantUrl(0))
+        await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const inputBox = sandbox.locator('.origam-selection-control__input').first()
         await expect(inputBox).toBeVisible({ timeout: 12000 })
@@ -115,7 +115,7 @@ test.describe('OrigamSelectionControl — border/rounded/elevation on __input (#
     })
 
     test('elevation="md" (via origam--shadow-md + inline style) paints a real, visible box-shadow', async ({ page }) => {
-        await page.goto(variantUrl(0))
+        await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const inputBox = sandbox.locator('.origam-selection-control__input').first()
         await expect(inputBox).toBeVisible({ timeout: 12000 })
@@ -142,7 +142,7 @@ test.describe('OrigamSelectionControl — border/rounded/elevation on __input (#
     // (byte-identical PNG before/after `rounded` alone; a real, measurable
     // diff bbox appears as soon as `border` or `elevation` is added).
     test('DIAGNOSTIC: rounded alone (no border/elevation) changes border-radius but the box stays otherwise unpainted (background transparent)', async ({ page }) => {
-        await page.goto(variantUrl(0))
+        await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const inputBox = sandbox.locator('.origam-selection-control__input').first()
         await expect(inputBox).toBeVisible({ timeout: 12000 })

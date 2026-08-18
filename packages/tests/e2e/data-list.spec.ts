@@ -7,7 +7,7 @@ const STORY_PATH = '/stories/story/components-stories-datalist-origamdatalist-st
 const sandboxOf = (page: Page) => page.frameLocator('iframe[src*="__sandbox"]')
 
 const openVariant = async (page: Page, variant: string) => {
-    await page.goto(STORY_PATH)
+    await page.goto(STORY_PATH, { waitUntil: 'domcontentloaded' })
     // NO waitForLoadState('networkidle') here — the canonical recipe in
     // btn.spec.ts forbids it, and it was measured as the exact call that
     // stalls: under worker contention this spec failed with

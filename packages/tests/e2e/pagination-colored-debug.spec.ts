@@ -20,7 +20,7 @@ const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 test.setTimeout(180_000)
 
 test('DEBUG pagination — colored mode: white text on primary bg, NOT violet on violet', async ({ page }) => {
-    await page.goto(variantUrl(15))
+    await page.goto(variantUrl(15), { waitUntil: 'domcontentloaded' })
 
     const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
     const allRoots = await sandbox.locator('.origam-pagination').all()
