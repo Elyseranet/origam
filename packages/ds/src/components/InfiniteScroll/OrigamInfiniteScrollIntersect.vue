@@ -15,7 +15,7 @@
 
 	import type { IInfiniteScrollIntersectProps} from '../../interfaces'
 
-	import type { IInfiniteScrollIntersectEmits } from '../../interfaces/InfiniteScroll/infinite-scroll.interface'
+	import type { IInfiniteScrollIntersectEmits } from '../../interfaces/InfiniteScroll/infinite-scroll-intersect.interface'
 
 	/*********************************************************
 	 * Global

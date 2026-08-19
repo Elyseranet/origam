@@ -15,6 +15,16 @@ import type {
 import type { TIcon } from '../../types'
 import type { TStepperItemStatus, TStepperOrientation } from '../../types'
 
+/*********************************************************
+ * IStepperItem / IStepperProps / IStepperProvide
+ *
+ * @description
+ * `IStepperItemProps` / `IStepperItemEmits` (the actual
+ * `<OrigamStepperItem>` component surface) moved out to
+ * `interfaces/Stepper/stepper-item.interface.ts` under issue #364 —
+ * this file used to hold both distinct component surfaces
+ * (Stepper / StepperItem).
+ ********************************************************/
 export interface IStepperItem {
     title: string
     subtitle?: string
@@ -37,15 +47,6 @@ export interface IStepperProvide {
     color: ComputedRef<string | undefined>
 }
 
-export interface IStepperItemProps extends ICommonsComponentProps {
-    index?: number
-    title?: string
-    subtitle?: string
-    icon?: TIcon
-    status?: TStepperItemStatus
-    clickable?: boolean
-}
-
 /** Emits fired by `<OrigamStepper>` — v-model echo for the active step. */
 export interface IStepperEmits {
     (e: 'update:modelValue', value: number): void
@@ -55,9 +56,4 @@ export interface IStepperEmits {
 export interface IStepperSlots {
     /** Overrides the whole auto-generated item list. */
     default?: () => any
-}
-
-/** Emits fired by `<OrigamStepperItem>` — click on a clickable step. */
-export interface IStepperItemEmits {
-    (e: 'click', index: number): void
 }

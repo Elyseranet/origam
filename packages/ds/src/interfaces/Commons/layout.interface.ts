@@ -1,18 +1,22 @@
 import type { ComponentInternalInstance, ComputedRef, CSSProperties, Ref } from 'vue'
-import type {
-    IBgColorProps,
-    IBorderProps,
-    IColorProps,
-    ICommonsComponentProps,
-    IDimensionProps,
-    IElevationProps,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps
-} from '../../interfaces'
+import type { ICommonsComponentProps } from '../../interfaces'
 
 import type { TDirectionBoth } from '../../types'
 
+/*********************************************************
+ * ILayoutProvide / ILayer / ILayerItem / ILayoutItemProps
+ *
+ * @description
+ * Genuinely transverse — consumed via `useLayoutItem` /
+ * `useCreateLayout` (composables/Commons/layout.composable.ts) by
+ * App(Bar), BottomNav, Drawer, and SystemBar, none of which belong to
+ * the Layout family. Stay here.
+ *
+ * @description
+ * `ILayoutProps` (the actual `<OrigamLayout>` props, single consumer)
+ * moved out to `interfaces/Layout/layout.interface.ts` under issue
+ * #364 — it was the one symbol in this file that was NOT transverse.
+ ********************************************************/
 export interface ILayoutProvide {
     register: (
         vm: ComponentInternalInstance,
@@ -52,11 +56,6 @@ export interface ILayerItem extends ILayer {
     id: string
     size: number
     position: TDirectionBoth
-}
-
-export interface ILayoutProps extends ICommonsComponentProps, IDimensionProps, IMarginProps, IPaddingProps, IRoundedProps, IElevationProps, IBgColorProps, IColorProps, IBorderProps {
-    overlaps?: Array<string>
-    fullHeight?: boolean
 }
 
 export interface ILayoutItemProps extends ICommonsComponentProps {

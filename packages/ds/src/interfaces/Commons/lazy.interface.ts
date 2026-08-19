@@ -1,19 +1,17 @@
-import type { ICommonsComponentEmits, ICommonsComponentProps, IDimensionProps, ITagProps, ITransitionComponentProps } from '../../interfaces'
-
+/*********************************************************
+ * ILazyProps
+ *
+ * @description
+ * Genuinely transverse — `extends ILazyProps` by Tabs (TabPanel),
+ * ExpansionPanel (x3: Panel, Panels, Content), Tooltip, Img, Window
+ * (WindowItem), Select, and Overlay. None of that is the Lazy family.
+ *
+ * @description
+ * `ILazyComponentProps` / `ILazyEmits` / `ILazySlots` (the actual
+ * `<OrigamLazy>` component surface, single consumer) moved out to
+ * `interfaces/Lazy/lazy.interface.ts` under issue #364 — they were the
+ * symbols in this file that were NOT transverse.
+ ********************************************************/
 export interface ILazyProps {
     eager?: boolean
-}
-
-export interface ILazyComponentProps extends ICommonsComponentProps, IDimensionProps, ITagProps, ITransitionComponentProps {
-    modelValue?: boolean
-    options?: IntersectionObserverInit
-}
-
-/** Emits fired by `<OrigamLazy>` — v-model fires when the intersection
- *  observer flips the wrapper to "visible". */
-export interface ILazyEmits extends ICommonsComponentEmits {}
-
-/** Slot signatures for `<OrigamLazy>`. */
-export interface ILazySlots {
-    default?: () => any
 }

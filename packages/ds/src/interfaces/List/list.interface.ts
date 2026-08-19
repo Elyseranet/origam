@@ -8,6 +8,7 @@ import type {
     IElevationProps,
     IInternalListItem,
     IInternalListItemChildren,
+    IItemProps,
     IListGroupActivatorSlotProps,
     IMarginProps,
     INestedProps,
@@ -17,9 +18,7 @@ import type {
     ITagProps
 } from '../../interfaces'
 
-import type { TLines, TSelectItemKey } from '../../types'
-
-import { deepEqual } from '../../utils'
+import type { TLines } from '../../types'
 
 /**
  * `size` is a FORWARDING prop on the list: the root paints nothing from it,
@@ -38,16 +37,6 @@ export interface IListProps extends ITagProps, ICommonsComponentProps, IElevatio
     slim?: boolean
     nav?: boolean
     itemType?: string
-}
-
-export interface IItemProps {
-    items?: Array<any>
-    itemTitle?: TSelectItemKey
-    itemValue?: TSelectItemKey
-    itemChildren?: TSelectItemKey
-    itemProps?: TSelectItemKey
-    returnObject?: boolean
-    valueComparator?: typeof deepEqual
 }
 
 /** Emits fired by `<OrigamList>` — selection / open state propagation and

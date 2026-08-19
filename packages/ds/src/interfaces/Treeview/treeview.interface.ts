@@ -4,6 +4,16 @@ import type { IBgColorProps,
 import type { TIcon } from '../../types'
 import type { TTreeviewSelectMode, TTreeviewSelectableNodes } from '../../types'
 
+/*********************************************************
+ * ITreeviewNode / ITreeviewProps / ITreeviewProvide
+ *
+ * @description
+ * `ITreeviewNodeProps` / `ITreeviewNodeSlots` (the actual
+ * `<OrigamTreeviewNode>` component surface) moved out to
+ * `interfaces/Treeview/treeview-node.interface.ts` under issue #364 —
+ * this file used to hold both distinct component surfaces
+ * (Treeview / TreeviewNode).
+ ********************************************************/
 export interface ITreeviewNode {
     id: string
     label: string
@@ -28,26 +38,6 @@ export interface ITreeviewProps extends ICommonsComponentProps, IColorProps, IBg
      * surrounding context does not already name it.
      */
     ariaLabel?: string
-}
-
-export interface ITreeviewNodeProps extends ICommonsComponentProps {
-    node: ITreeviewNode
-    depth?: number
-}
-
-/** Slots exposed by `<OrigamTreeviewNode>`. */
-export interface ITreeviewNodeSlots {
-    /**
-     * Replaces the default row rendering for a node. Receives the node
-     * itself plus its resolved state, so a custom row can mirror the
-     * built-in affordances (chevron, selection) without recomputing them.
-     */
-    node (props: {
-        node: ITreeviewNode
-        depth: number
-        isExpanded: boolean
-        isSelected: boolean
-    }): unknown
 }
 
 /** Emits fired by `<OrigamTreeview>` — v-model echoes (selection,
