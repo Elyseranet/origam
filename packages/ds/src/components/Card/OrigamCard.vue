@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="link.tag.value"
+			:id="id"
 			v-ripple="isClickable && ripple"
 			v-contrast
 			:class="cardClasses"
@@ -421,7 +422,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(cardStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(cardStyles, () => props.id)
 
 
 	/*********************************************************

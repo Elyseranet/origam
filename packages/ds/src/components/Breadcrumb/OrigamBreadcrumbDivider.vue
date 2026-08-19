@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			v-contrast
 			:class="breadcrumbDividerClasses"
 			:style="breadcrumbDividerStyles"
@@ -107,7 +108,7 @@
 		]
 	})
 
-	const {id, css, load, isLoaded, unload} = useStyle(breadcrumbDividerStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(breadcrumbDividerStyles, () => props.id)
 
 	/*********************************************************
 	 * Expose

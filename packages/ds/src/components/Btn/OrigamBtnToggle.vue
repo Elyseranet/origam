@@ -1,5 +1,6 @@
 <template>
 	<origam-btn-group
+			:id="id"
 			ref="origamBtnGroupRef"
 			:class="btnToggleClasses"
 			:styles="btnToggleStyles"
@@ -98,7 +99,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(btnToggleStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(btnToggleStyles, () => props.id)
 
 
 	/*********************************************************

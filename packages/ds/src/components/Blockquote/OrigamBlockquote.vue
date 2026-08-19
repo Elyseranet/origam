@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			:cite="cite"
 			:class="blockquoteClasses"
 			:style="blockquoteStyles"

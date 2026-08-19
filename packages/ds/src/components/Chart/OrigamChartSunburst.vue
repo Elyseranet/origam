@@ -1,5 +1,6 @@
 <template>
 	<div
+			:id="id"
 			class="origam-chart-sunburst"
 			:class="rootClasses"
 			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles, headerTypographyStyles]"

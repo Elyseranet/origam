@@ -1,5 +1,6 @@
 <template>
   <div
+    :id="id"
     class="origam-calendar"
     :class="rootClasses"
     :style="rootStyles"

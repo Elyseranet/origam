@@ -1,5 +1,6 @@
 <template>
 	<article
+			:id="id"
 			class="origam-audio"
 			:class="rootClasses"
 			:style="rootStyles"

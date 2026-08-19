@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			:class="cardHeaderClasses"
 			:style="cardHeaderStyles"
 			v-bind="$attrs"
@@ -225,7 +226,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(cardHeaderStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(cardHeaderStyles, () => props.id)
 
 
 	/*********************************************************

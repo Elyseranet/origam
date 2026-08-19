@@ -1,5 +1,6 @@
 <template>
 	<div
+			:id="id"
 			ref="resizeRef"
 			:aria-label="canvasAriaLabel"
 			:aria-valuetext="canvasAriaValueText"
@@ -339,7 +340,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(colorPickerCanvasStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(colorPickerCanvasStyles, () => props.id)
 
 
 	/*********************************************************

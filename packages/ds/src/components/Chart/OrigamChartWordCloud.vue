@@ -1,5 +1,6 @@
 <template>
 	<div
+			:id="id"
 			class="origam-chart-word-cloud"
 			:class="rootClasses"
 			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles]"

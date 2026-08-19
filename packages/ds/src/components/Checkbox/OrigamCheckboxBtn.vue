@@ -1,5 +1,6 @@
 <template>
 	<origam-selection-control
+			:id="id"
 			ref="origamSelectionControlRef"
 			v-model="model"
 			:aria-checked="indeterminate ? 'mixed' : undefined"
@@ -140,7 +141,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(checkboxBtnStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(checkboxBtnStyles, () => props.id)
 
 
 	/*********************************************************

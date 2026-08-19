@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			class="origam-clipboard"
 			:class="rootClasses"
 			:style="rootStyles"
