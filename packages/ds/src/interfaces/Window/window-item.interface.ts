@@ -1,4 +1,10 @@
-import type { ICommonsComponentProps, IGroupEmits, IGroupItemProps, ILazyProps, ITransitionComponentProps } from '../../interfaces'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type {
+    IGroupEmits,
+    IGroupItemProps
+} from '../Commons/group.interface'
+import type { ILazyProps } from '../Commons/lazy.interface'
+import type { ITransitionComponentProps } from '../Commons/transition-component.interface'
 
 export interface IWindowItemProps extends ICommonsComponentProps, ILazyProps, IGroupItemProps, ITransitionComponentProps {
     transition?: boolean | string

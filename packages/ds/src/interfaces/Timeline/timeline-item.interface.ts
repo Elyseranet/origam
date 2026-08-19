@@ -1,5 +1,13 @@
-import type { IColorProps, ICommonsComponentProps, IDensityProps, ISizeProps } from '../../interfaces'
-import type { TIcon, TIntent, TTimelineOrientation, TTimelineSide } from '../../types'
+import type { IColorProps } from '../Commons/color.interface'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { ISizeProps } from '../Commons/size.interface'
+import type { TIcon } from '../../types/Icon/icon.type'
+import type { TIntent } from '../../types/Commons/intent.type'
+import type {
+    TTimelineOrientation,
+    TTimelineSide
+} from '../../types/Timeline/timeline.type'
 
 /*********************************************************
  * ITimelineItemProps / ITimelineItemSlots

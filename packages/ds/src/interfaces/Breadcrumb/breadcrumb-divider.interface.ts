@@ -1,15 +1,17 @@
 import type {
     IBgColorProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type {
     ICommonsComponentProps,
-    IDensityProps,
-    IMarginProps,
-    IPaddingProps,
-    ISizeProps,
     ITagProps
-} from '../../interfaces'
+} from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { ISizeProps } from '../Commons/size.interface'
 
-import type { TIcon } from '../../types'
+import type { TIcon } from '../../types/Icon/icon.type'
 
 /** Slot signatures for `<OrigamBreadcrumbDivider>`. */
 export interface IBreadcrumbDividerSlots {

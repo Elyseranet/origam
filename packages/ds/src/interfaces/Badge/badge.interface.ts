@@ -1,20 +1,24 @@
 import type {
     IAdjacentEmits,
     IAdjacentProps,
-    IAdjacentSlots,
-    IBorderProps,
+    IAdjacentSlots
+} from '../Commons/adjacent.interface'
+import type { IBorderProps } from '../Commons/border.interface'
+import type {
     IBgColorProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type {
     ICommonsComponentProps,
-    IElevationProps,
-    IHoverProps,
-    ILocationProps,
-    IRoundedProps,
-    IStatusProps,
-    ITagProps,
-    ITransitionComponentProps,
-    ITypographyProps
-} from '../../interfaces'
+    ITagProps
+} from '../Commons/commons.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IHoverProps } from '../Commons/hover.interface'
+import type { ILocationProps } from '../Commons/location.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { IStatusProps } from '../Commons/status.interface'
+import type { ITransitionComponentProps } from '../Commons/transition-component.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
 
 /**
  * `IAdjacentProps` is pulled in explicitly (not just inherited through

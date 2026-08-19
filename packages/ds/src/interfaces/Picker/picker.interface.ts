@@ -1,8 +1,6 @@
-import type {
-    IBgColorProps,
-    IPickerTitleProps,
-    ISheetProps
-} from "../../interfaces"
+import type { IBgColorProps } from '../Commons/color.interface'
+import type { IPickerTitleProps } from './picker-title.interface'
+import type { ISheetProps } from '../Sheet/sheet.interface'
 
 export interface IPickerProps extends ISheetProps, IBgColorProps, IPickerTitleProps {
     landscape?: boolean

@@ -1,20 +1,16 @@
-import type {
-    IBgColorProps,
-    IChartPoint,
-    IChartSeries,
-    ICommonsComponentProps,
-    IDimensionProps,
-    IElevationProps,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps,
-    ITypographyProps
-} from '../../interfaces'
+import type { IBgColorProps } from '../Commons/color.interface'
+import type { IChartPoint } from './chart-point.interface'
+import type { IChartSeries } from './chart-series.interface'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
 
-import type {
-    TChartLegendPosition,
-    TIntent
-} from '../../types'
+import type { TChartLegendPosition } from '../../types/Chart/chart-legend.type'
+import type { TIntent } from '../../types/Commons/intent.type'
 
 /**
  * Props shared across every chart type. Per-type components

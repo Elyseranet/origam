@@ -1,21 +1,28 @@
+import type { IAudioProps } from '../Audio/audio-player.interface'
+import type { IBorderProps } from '../Commons/border.interface'
+import type { IBox } from '../Commons/box.interface'
 import type {
-    IAudioProps,
-    IBorderProps,
-    IBox,
     IBgColorProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type {
     ICommonsComponentProps,
-    IDimensionProps,
-    IElevationProps,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps,
-    ITagProps,
-    IParallaxLayerRegistry,
-    IUseAudioProps
-} from '../../interfaces'
+    ITagProps
+} from '../Commons/commons.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { IParallaxLayerRegistry } from './parallax-layer.interface'
+import type { IUseAudioProps } from '../Commons/audio.interface'
 
-import type { TParallaxDirection, TParallaxEasing, TParallaxEvent, TPoint } from '../../types'
+import type {
+    TParallaxDirection,
+    TParallaxEasing,
+    TParallaxEvent
+} from '../../types/Parallax/parallax.type'
+import type { TPoint } from '../../types/Commons/point.type'
 
 import type { Ref } from 'vue'
 

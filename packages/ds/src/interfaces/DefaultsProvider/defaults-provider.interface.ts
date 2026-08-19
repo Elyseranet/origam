@@ -1,4 +1,4 @@
-import type { ICommonsComponentProps } from '../../interfaces'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
 
 /**
  * Defaults map shape consumed by `<OrigamDefaultsProvider>` and resolved

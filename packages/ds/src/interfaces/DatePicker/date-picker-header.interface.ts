@@ -1,6 +1,12 @@
-import type { IAdjacentProps, IAdjacentSlots, IColorProps, ICommonsComponentProps, IDensityProps } from "../../interfaces"
+import type {
+    IAdjacentProps,
+    IAdjacentSlots
+} from '../Commons/adjacent.interface'
+import type { IColorProps } from '../Commons/color.interface'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
 
-import type { TTransitionProps } from "../../types"
+import type { TTransitionProps } from '../../types/Transition/transition.type'
 
 export interface IDatePickerHeaderProps extends ICommonsComponentProps, IColorProps, IAdjacentProps, IDensityProps {
     header?: string

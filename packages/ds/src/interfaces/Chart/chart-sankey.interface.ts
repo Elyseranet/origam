@@ -1,6 +1,10 @@
-import type { IChartBaseEmits, IChartBaseProps, IChartBaseSlots } from '../../interfaces'
+import type {
+    IChartBaseEmits,
+    IChartBaseProps,
+    IChartBaseSlots
+} from './chart-base.interface'
 
-import type { TIntent } from '../../types'
+import type { TIntent } from '../../types/Commons/intent.type'
 
 /**
  * A single flow datum in the Sankey series.

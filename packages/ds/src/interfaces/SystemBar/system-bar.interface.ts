@@ -1,15 +1,17 @@
+import type { IBorderProps } from '../Commons/border.interface'
 import type {
-    IBorderProps,
     IBgColorProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type {
     ICommonsComponentProps,
-    IDimensionProps,
-    IElevationProps,
-    ILayoutItemProps,
-    IRoundedProps,
-    ITagProps,
-    ITypographyProps
-} from "../../interfaces"
+    ITagProps
+} from '../Commons/commons.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { ILayoutItemProps } from '../Commons/layout.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
 
 export interface ISystemBarProps extends ICommonsComponentProps, ITagProps, IElevationProps, IColorProps, IBgColorProps, ILayoutItemProps, IRoundedProps, IBorderProps, IDimensionProps, ITypographyProps {
     window?: boolean

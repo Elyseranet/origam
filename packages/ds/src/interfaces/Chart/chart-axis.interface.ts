@@ -1,4 +1,4 @@
-import type { IChartTick } from '../../interfaces'
+import type { IChartTick } from './chart.interface'
 
 /**
  * Props for `<OrigamChartAxis>` — the cartesian-only axes + grid +

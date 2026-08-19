@@ -1,6 +1,6 @@
-import type { TSelectItemKey } from '../../types'
+import type { TSelectItemKey } from '../../types/Commons/commons.type'
 
-import { deepEqual } from '../../utils'
+import { deepEqual } from '../../utils/Commons/commons.util'
 
 /*********************************************************
  * IItemProps

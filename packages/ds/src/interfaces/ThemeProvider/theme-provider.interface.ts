@@ -1,5 +1,8 @@
 import type { ITagProps } from '../Commons/commons.interface'
-import type { TMode, TTheme } from '../../types'
+import type {
+    TMode,
+    TTheme
+} from '../../types/Commons/theme.type'
 
 /** Props for `<OrigamThemeProvider>` — the sub-tree theme/mode override wrapper. */
 export interface IThemeProviderProps extends ITagProps {

@@ -1,6 +1,11 @@
-import { ALIGN } from '../../enums'
-import type { IDataTableItem } from '../../interfaces'
-import type { TDataTableCompareFunction, TDataTableHeaderCell, TFilterFunction, TSelectItemKey } from '../../types'
+import { ALIGN } from '../../enums/Commons/align.enum'
+import type { IDataTableItem } from './items.interface'
+import type {
+    TDataTableCompareFunction,
+    TDataTableHeaderCell
+} from '../../types/DataTable/data-table.type'
+import type { TFilterFunction } from '../../types/Commons/filters.type'
+import type { TSelectItemKey } from '../../types/Commons/commons.type'
 
 /*********************************************************
  * IDataTableHeaderProps / IDataTableHeader / IInternalDataTableHeader

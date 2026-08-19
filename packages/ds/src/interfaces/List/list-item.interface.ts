@@ -1,27 +1,32 @@
+import type { IActiveProps } from '../Commons/active.interface'
 import type {
-    IActiveProps,
     IAdjacentEmits,
-    IAdjacentProps,
+    IAdjacentProps
+} from '../Commons/adjacent.interface'
+import type {
     IBgColorProps,
-    IBorderProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type { IBorderProps } from '../Commons/border.interface'
+import type {
     IClickEmits,
-    IColorProps,
     ICommonsComponentProps,
-    IDensityProps,
-    IDimensionProps,
-    IElevationProps,
-    IHoverProps,
-    ILinkProps,
-    IMarginProps,
-    IPaddingProps,
-    IRippleProps,
-    IRoundedProps,
-    ISizeProps,
-    ITagProps,
-    ITypographyProps
-} from '../../interfaces'
+    ITagProps
+} from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IHoverProps } from '../Commons/hover.interface'
+import type { ILinkProps } from '../Commons/router.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRippleProps } from '../Commons/ripple.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { ISizeProps } from '../Commons/size.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
 
-import type { TLines, TListItemSlot } from '../../types'
+import type { TLines } from '../../types/List/list.type'
+import type { TListItemSlot } from '../../types/List/list-item.type'
 
 /**
  * `size` picks a rung of the shared control-height scale (28 / 36 / 44 / 52 px,

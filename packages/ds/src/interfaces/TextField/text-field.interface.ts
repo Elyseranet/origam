@@ -1,21 +1,26 @@
+import type { IBorderProps } from '../Commons/border.interface'
+import type { IColorProps } from '../Commons/color.interface'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
 import type {
-    IBorderProps,
-    IColorProps,
-    ICommonsComponentProps,
-    IDensityProps,
-    IElevationProps,
     IFieldEmits,
     IFieldProps,
-    IFieldSlots,
+    IFieldSlots
+} from '../Field/field.interface'
+import type {
     IInputEmits,
     IInputProps,
-    IInputSlots,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps
-} from '../../interfaces'
+    IInputSlots
+} from '../Input/input.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
 
-import type { TMask, TTextFieldType } from '../../types'
+import type {
+    TMask,
+    TTextFieldType
+} from '../../types/TextField/text-field.type'
 
 export interface ITextFieldProps extends ICommonsComponentProps, IColorProps, IDensityProps, IFieldProps, IInputProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps {
     autofocus?: boolean

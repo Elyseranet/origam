@@ -1,11 +1,13 @@
 import type {
     ICommonsComponentEmits,
     ICommonsComponentProps,
-    IDirectionProps,
-    IGroupProps,
-    IGroupProvide,
     ITagProps
-} from '../../interfaces'
+} from '../Commons/commons.interface'
+import type { IDirectionProps } from '../Commons/direction.interface'
+import type {
+    IGroupProps,
+    IGroupProvide
+} from '../Commons/group.interface'
 
 import type { ComputedRef, Ref } from 'vue'
 

@@ -1,17 +1,21 @@
 import type {
     IBgColorProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type {
     ICommonsComponentEmits,
     ICommonsComponentProps,
-    IDensityProps,
-    IDirectionProps,
-    IGroupProps,
-    IGroupProvide,
-    IRoundedProps,
     ITagProps
-} from '../../interfaces'
+} from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IDirectionProps } from '../Commons/direction.interface'
+import type {
+    IGroupProps,
+    IGroupProvide
+} from '../Commons/group.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
 
-import type { TTabVariant } from '../../types'
+import type { TTabVariant } from '../../types/Tabs/tab.type'
 
 /**
  * Props for `<OrigamTabs>` — a stateful tablist container.

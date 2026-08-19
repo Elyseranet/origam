@@ -1,27 +1,31 @@
+import type { IActiveProps } from '../Commons/active.interface'
 import type {
-    IActiveProps,
     IBgColorProps,
-    IBorderProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type { IBorderProps } from '../Commons/border.interface'
+import type {
     ICommonsComponentEmits,
     ICommonsComponentProps,
-    IDensityProps,
-    IElevationProps,
-    IExpansionPanelContentProps,
-    IExpansionPanelHeaderProps,
-    IExpansionPanelHeaderSlotProps,
-    IExpansionPanelProps,
-    IGroupProps,
-    IHoverProps,
-    ILazyProps,
-    ILoaderProps,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps,
     ITagProps
-} from '../../interfaces'
+} from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IExpansionPanelContentProps } from './expansion-panel-content.interface'
+import type {
+    IExpansionPanelHeaderProps,
+    IExpansionPanelHeaderSlotProps
+} from './expansion-panel-header.interface'
+import type { IExpansionPanelProps } from './expansion-panel.interface'
+import type { IGroupProps } from '../Commons/group.interface'
+import type { IHoverProps } from '../Commons/hover.interface'
+import type { ILazyProps } from '../Commons/lazy.interface'
+import type { ILoaderProps } from '../Commons/loader.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
 
-import type { TIcon } from '../../types'
+import type { TIcon } from '../../types/Icon/icon.type'
 
 export interface IExpansionPanelsProps extends IColorProps, IBgColorProps, ITagProps, ICommonsComponentProps, IGroupProps, IDensityProps, IRoundedProps, IBorderProps, IPaddingProps, IMarginProps, ILazyProps, ILoaderProps, IElevationProps, IActiveProps, IHoverProps {
     flat?: boolean

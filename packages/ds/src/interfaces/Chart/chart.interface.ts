@@ -1,27 +1,25 @@
-import type {
-    IBgColorProps,
-    IChartAnnotation,
-    IChartDrilldownProps,
-    IChartPlotBand,
-    IChartPlotLine,
-    IChartPoint,
-    IChartSecondaryYAxis,
-    IChartSeries,
-    ICommonsComponentProps,
-    IDimensionProps,
-    IElevationProps,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps
-} from '../../interfaces'
+import type { IBgColorProps } from '../Commons/color.interface'
+import type { IChartAnnotation } from './chart-annotation.interface'
+import type { IChartDrilldownProps } from './chart-drilldown.interface'
+import type { IChartPlotBand } from './chart-plot-band.interface'
+import type { IChartPlotLine } from './chart-plot-line.interface'
+import type { IChartPoint } from './chart-point.interface'
+import type { IChartSecondaryYAxis } from './chart-axis.interface'
+import type { IChartSeries } from './chart-series.interface'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
 
+import type { TChartLegendPosition } from '../../types/Chart/chart-legend.type'
 import type {
-    TChartLegendPosition,
     TChartSmoothing,
     TChartStacking,
-    TChartType,
-    TIntent
-} from '../../types'
+    TChartType
+} from '../../types/Chart/chart.type'
+import type { TIntent } from '../../types/Commons/intent.type'
 
 /**
  * Props accepted by `<OrigamChart>`. Single component for eight

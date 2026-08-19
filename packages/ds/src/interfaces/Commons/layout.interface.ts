@@ -1,7 +1,7 @@
 import type { ComponentInternalInstance, ComputedRef, CSSProperties, Ref } from 'vue'
-import type { ICommonsComponentProps } from '../../interfaces'
+import type { ICommonsComponentProps } from './commons.interface'
 
-import type { TDirectionBoth } from '../../types'
+import type { TDirectionBoth } from '../../types/Commons/anchor.type'
 
 /*********************************************************
  * ILayoutProvide / ILayer / ILayerItem / ILayoutItemProps

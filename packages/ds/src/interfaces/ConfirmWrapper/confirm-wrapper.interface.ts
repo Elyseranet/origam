@@ -1,18 +1,22 @@
 import type {
     IAdjacentEmits,
     IAdjacentProps,
-    IAdjacentSlots,
-    IColorProps,
+    IAdjacentSlots
+} from '../Commons/adjacent.interface'
+import type { IColorProps } from '../Commons/color.interface'
+import type {
     ICommonsComponentEmits,
-    ICommonsComponentProps,
-    IDensityProps,
-    IDirectionProps,
-    IElevationProps,
+    ICommonsComponentProps
+} from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IDirectionProps } from '../Commons/direction.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type {
     IFocusEmits,
-    IFocusProps,
-    IRoundedProps,
-    IVariantProps
-} from '../../interfaces'
+    IFocusProps
+} from '../Commons/focus.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { IVariantProps } from '../Commons/variant.interface'
 
 /**
  * Props for `<OrigamConfirmWrapper>` — a "type-it-twice" form helper that

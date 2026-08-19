@@ -1,6 +1,8 @@
-import type { IActiveState, ICommonsComponentProps } from "../../interfaces"
+import type { IActiveState } from '../Commons/state-effect.interface'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
 
-import type { TDateMode, TIcon } from "../../types"
+import type { TDateMode } from '../../types/DatePicker/date-picker.type'
+import type { TIcon } from '../../types/Icon/icon.type'
 
 export interface IDatePickerControlsProps extends ICommonsComponentProps {
     /**

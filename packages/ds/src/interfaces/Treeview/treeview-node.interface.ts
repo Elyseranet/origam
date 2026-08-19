@@ -1,4 +1,5 @@
-import type { ICommonsComponentProps, ITreeviewNode } from '../../interfaces'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { ITreeviewNode } from './treeview.interface'
 
 /*********************************************************
  * ITreeviewNodeProps / ITreeviewNodeSlots

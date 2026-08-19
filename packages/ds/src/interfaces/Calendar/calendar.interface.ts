@@ -1,23 +1,23 @@
 import type {
     IBgColorProps,
-    IBorderProps,
-    IColorProps,
-    ICommonsComponentProps,
-    IDensityProps,
-    IDimensionProps,
-    IElevationProps,
-    IEvent,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps
-} from '../../interfaces'
+    IColorProps
+} from '../Commons/color.interface'
+import type { IBorderProps } from '../Commons/border.interface'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IEvent } from './event.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
 
 import type {
     TCalendarNavigate,
     TCalendarTimeFormat,
-    TCalendarView,
-    TIntent
-} from '../../types'
+    TCalendarView
+} from '../../types/Calendar/calendar.type'
+import type { TIntent } from '../../types/Commons/intent.type'
 
 /**
  * Props for `<OrigamCalendar>`. Two-way bindings on `view` and

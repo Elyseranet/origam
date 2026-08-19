@@ -1,6 +1,13 @@
-import type { IChartBaseEmits, IChartBaseProps, IChartBaseSlots, IChartPoint, IChartSeries } from '../../interfaces'
+import type {
+    IChartBaseEmits,
+    IChartBaseProps,
+    IChartBaseSlots
+} from './chart-base.interface'
+import type { IChartPoint } from './chart-point.interface'
+import type { IChartSeries } from './chart-series.interface'
 
-import type { TChartSunburstLabelMode, TIntent } from '../../types'
+import type { TChartSunburstLabelMode } from '../../types/Chart/chart-sunburst.type'
+import type { TIntent } from '../../types/Commons/intent.type'
 
 export type { TChartSunburstLabelMode } from '../../types/Chart/chart-sunburst.type'
 

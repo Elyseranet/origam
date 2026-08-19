@@ -1,14 +1,14 @@
+import type { IBorderProps } from '../Commons/border.interface'
 import type {
-    IBorderProps,
     IBgColorProps,
-    IColorProps,
-    ICommonsComponentProps,
-    IRoundedProps,
-    ISizeProps,
-    ITypographyProps,
-} from '../../interfaces'
+    IColorProps
+} from '../Commons/color.interface'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { ISizeProps } from '../Commons/size.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
 
-import type { TKbdVariant } from '../../types'
+import type { TKbdVariant } from '../../types/Kbd/kbd.type'
 
 export interface IKbdProps extends ICommonsComponentProps, IColorProps, IBgColorProps, ISizeProps, IBorderProps, IRoundedProps, ITypographyProps {
     /** Single key label (e.g. "⌘", "Ctrl", "A"). Overridden by the default slot. */

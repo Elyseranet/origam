@@ -1,4 +1,4 @@
-import type { TTextareaToolbarCommand } from '../../types'
+import type { TTextareaToolbarCommand } from '../../types/TextareaField/textarea-field-rich-toolbar.type'
 
 /**
  * Returned shape of the `useTextareaRich` composable. Components consume

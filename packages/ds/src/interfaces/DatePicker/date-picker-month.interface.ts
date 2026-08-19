@@ -1,6 +1,11 @@
-import type { ICalendarProps, IColorProps, ICommonsComponentProps, IDay } from "../../interfaces"
+import type {
+    ICalendarProps,
+    IDay
+} from './date-picker-calendar.interface'
+import type { IColorProps } from '../Commons/color.interface'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
 
-import type { TTransitionProps } from "../../types"
+import type { TTransitionProps } from '../../types/Transition/transition.type'
 
 export interface IDatePickerMonthProps extends ICommonsComponentProps, IColorProps, ICalendarProps {
     hideWeekdays?: boolean

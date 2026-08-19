@@ -1,9 +1,11 @@
 import type {
     IBgColorProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type {
     ICommonsComponentEmits,
     ICommonsComponentProps
-} from '../../interfaces'
+} from '../Commons/commons.interface'
 
 /**
  * Props for the `<OrigamApp>` application shell.

@@ -1,5 +1,5 @@
-import type { IListGroupActivatorSlotProps } from '../../interfaces'
-import type { TListItemType } from '../../types'
+import type { IListGroupActivatorSlotProps } from './list-group.interface'
+import type { TListItemType } from '../../types/List/list-item.type'
 
 export interface IListItemChildren {
     items: Array<IInternalListItemChildren>

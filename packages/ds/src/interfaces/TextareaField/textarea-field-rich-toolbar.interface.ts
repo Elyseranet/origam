@@ -1,4 +1,7 @@
-import type { TTextareaToolbarCommand, TTextareaToolbarPosition } from '../../types'
+import type {
+    TTextareaToolbarCommand,
+    TTextareaToolbarPosition
+} from '../../types/TextareaField/textarea-field-rich-toolbar.type'
 
 import type { ITextareaRichActiveState } from './textarea-field-rich.interface'
 

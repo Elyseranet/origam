@@ -1,6 +1,7 @@
 import type { Ref } from 'vue'
 
-import type { IThemeVars, TThemeVars } from '../../types'
+import type { IThemeVars } from '../../types/Commons/semantic-tree.type'
+import type { TThemeVars } from '../../types/Commons/token-tree.type'
 import type { TMode, TTheme } from '../../types/Commons/theme.type'
 import type { IDefault } from '../DefaultsProvider/defaults-provider.interface'
 

@@ -1,5 +1,6 @@
-import type { ICommonsComponentProps, IColorProps } from '../../interfaces'
-import type { TIcon } from '../../types'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IColorProps } from '../Commons/color.interface'
+import type { TIcon } from '../../types/Icon/icon.type'
 
 /*********************************************************
  * IHeaderCellProps

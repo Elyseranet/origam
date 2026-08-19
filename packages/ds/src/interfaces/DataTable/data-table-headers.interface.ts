@@ -1,15 +1,13 @@
 import type { ComputedRef, Ref, UnwrapRef } from 'vue'
-import type {
-    IColorProps,
-    ICommonsComponentProps,
-    IDataTableSortItem,
-    IDisplayProps,
-    IHeaderCellProps,
-    IInternalDataTableHeader,
-    ILoaderProps
-} from '../../interfaces'
+import type { IColorProps } from '../Commons/color.interface'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IDataTableSortItem } from './sort.interface'
+import type { IDisplayProps } from '../Commons/display.interface'
+import type { IHeaderCellProps } from './header-cell-base.interface'
+import type { IInternalDataTableHeader } from './data-table-header.interface'
+import type { ILoaderProps } from '../Commons/loader.interface'
 
-import type { TIcon } from '../../types'
+import type { TIcon } from '../../types/Icon/icon.type'
 
 /*********************************************************
  * IDataTableHeadersProps

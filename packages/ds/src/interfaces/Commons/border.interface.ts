@@ -1,4 +1,5 @@
-import { TColor, TDirectionBoth } from "../../types"
+import { TColor } from '../../types/Commons/color.type'
+import { TDirectionBoth } from '../../types/Commons/anchor.type'
 
 export interface IBorderProps {
     border?: boolean | number | string | TDirectionBoth | Array<TDirectionBoth>

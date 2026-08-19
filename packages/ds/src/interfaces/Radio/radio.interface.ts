@@ -1,23 +1,23 @@
+import type { IActiveProps } from '../Commons/active.interface'
+import type { IAdjacentSlots } from '../Commons/adjacent.interface'
+import type { IBorderProps } from '../Commons/border.interface'
 import type {
-    IActiveProps,
-    IAdjacentSlots,
-    IBorderProps,
     IClickLabelEmits,
-    IColorProps,
     ICommonsComponentEmits,
-    ICommonsComponentProps,
-    IDensityProps,
-    IElevationProps,
-    IFocusEmits,
-    IHoverProps,
-    IInputProps,
-    IMarginProps,
-    IPaddingProps,
-    IRadioBtnProps,
-    IRoundedProps
-} from '../../interfaces'
+    ICommonsComponentProps
+} from '../Commons/commons.interface'
+import type { IColorProps } from '../Commons/color.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IFocusEmits } from '../Commons/focus.interface'
+import type { IHoverProps } from '../Commons/hover.interface'
+import type { IInputProps } from '../Input/input.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRadioBtnProps } from './radio-btn.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
 
-import type { TIcon } from '../../types'
+import type { TIcon } from '../../types/Icon/icon.type'
 
 export interface IRadioProps extends ICommonsComponentProps, IInputProps, IRadioBtnProps, IDensityProps, IPaddingProps, IMarginProps, IRoundedProps, IColorProps, IBorderProps, IElevationProps, IActiveProps, IHoverProps {
 

@@ -1,15 +1,17 @@
 import type {
     IBgColorProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type {
     ICommonsComponentProps,
-    IMarginProps,
-    IPaddingProps,
-    IProgressCircularProps,
-    IProgressLinearProps,
     ITagProps
-} from '../../interfaces'
+} from '../Commons/commons.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IProgressCircularProps } from './progress-circular.interface'
+import type { IProgressLinearProps } from './progress-linear.interface'
 
-import type { TProgressType } from '../../types'
+import type { TProgressType } from '../../types/Progress/progress.type'
 
 export interface IProgressProps extends IProgressLinearProps, IProgressCircularProps {
     type?: TProgressType

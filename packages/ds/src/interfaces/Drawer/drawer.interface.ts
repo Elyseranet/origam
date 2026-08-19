@@ -1,21 +1,23 @@
+import type { IActiveProps } from '../Commons/active.interface'
+import type { IAdjacentSlots } from '../Commons/adjacent.interface'
 import type {
-    IActiveProps,
-    IAdjacentSlots,
     IBgColorProps,
-    IBorderProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type { IBorderProps } from '../Commons/border.interface'
+import type {
     ICommonsComponentProps,
-    IDensityProps,
-    IElevationProps,
-    IHoverProps,
-    ILayoutItemProps,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps,
-    IScrimProps,
-    ITagProps,
-    ITransitionComponentProps
-} from '../../interfaces'
+    ITagProps
+} from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IHoverProps } from '../Commons/hover.interface'
+import type { ILayoutItemProps } from '../Commons/layout.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { IScrimProps } from '../Overlay/overlay-scrim.interface'
+import type { ITransitionComponentProps } from '../Commons/transition-component.interface'
 
 
 export interface IDrawerProps extends ITagProps, ICommonsComponentProps, IBorderProps, IElevationProps, ILayoutItemProps, IRoundedProps, IColorProps, IBgColorProps, IDensityProps, IPaddingProps, IMarginProps, ITransitionComponentProps, IScrimProps, IActiveProps, IHoverProps {

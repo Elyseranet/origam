@@ -1,12 +1,15 @@
-import type {
-    IDataTableGroupableItem,
-    IDataTableSelectableItem,
-    IDataTableSortItem,
-    IInternalDataTableHeader,
-    IInternalItem
-} from '../../interfaces'
+import type { IDataTableGroupableItem } from './group.interface'
+import type { IDataTableSelectableItem } from './select.interface'
+import type { IDataTableSortItem } from './sort.interface'
+import type { IInternalDataTableHeader } from './data-table-header.interface'
+import type { IInternalItem } from '../List/list-children.interface'
 
-import type { TDataTableCell, TDataTableRow, TIcon, TSelectItemKey } from '../../types'
+import type {
+    TDataTableCell,
+    TDataTableRow
+} from '../../types/DataTable/data-table.type'
+import type { TIcon } from '../../types/Icon/icon.type'
+import type { TSelectItemKey } from '../../types/Commons/commons.type'
 
 export interface IDataTableItemsProps {
     items?: Array<IDataTableItem>

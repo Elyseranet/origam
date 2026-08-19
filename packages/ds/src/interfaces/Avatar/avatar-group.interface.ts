@@ -1,22 +1,28 @@
 import type {
     IActiveEmits,
-    IActiveProps,
-    IAvatarProps,
-    IBorderProps,
+    IActiveProps
+} from '../Commons/active.interface'
+import type { IAvatarProps } from './avatar.interface'
+import type { IBorderProps } from '../Commons/border.interface'
+import type {
     IBgColorProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type {
     ICommonsComponentProps,
-    IDensityProps,
-    IDirectionProps,
-    IElevationProps,
-    IHoverEmits,
-    IHoverProps,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps,
-    ISizeProps,
     ITagProps
-} from "../../interfaces"
+} from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IDirectionProps } from '../Commons/direction.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type {
+    IHoverEmits,
+    IHoverProps
+} from '../Commons/hover.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { ISizeProps } from '../Commons/size.interface'
 
 export interface IAvatarGroupProps extends ICommonsComponentProps, IDirectionProps, IDensityProps, IRoundedProps, ISizeProps, ITagProps, IColorProps, IBgColorProps, IPaddingProps, IMarginProps, IBorderProps, IElevationProps, IHoverProps, IActiveProps {
     items?: Array<IAvatarProps>

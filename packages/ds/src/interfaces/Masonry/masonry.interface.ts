@@ -1,20 +1,20 @@
 import type {
     IBgColorProps,
-    IBorderProps,
-    IColorProps,
-    ICommonsComponentProps,
-    IDimensionProps,
-    IElevationProps,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps,
-    ITagProps
-} from '../../interfaces'
-
+    IColorProps
+} from '../Commons/color.interface'
+import type { IBorderProps } from '../Commons/border.interface'
 import type {
-    TGridGapSize,
-    TMasonryAlign
-} from '../../types'
+    ICommonsComponentProps,
+    ITagProps
+} from '../Commons/commons.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+
+import type { TGridGapSize } from '../../types/Grid/grid.type'
+import type { TMasonryAlign } from '../../types/Masonry/masonry.type'
 
 import type { Ref } from 'vue'
 

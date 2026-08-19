@@ -1,5 +1,12 @@
-import type { IBgColorProps,
-    IColorProps, ICommonsComponentProps, ITagProps, ITypographyProps } from "../../interfaces"
+import type {
+    IBgColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type {
+    ICommonsComponentProps,
+    ITagProps
+} from '../Commons/commons.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
 
 // `IColorProps` exposes `color` / `bgColor` hooks. Pre-fix the
 // PickerTitle SCSS read `var(--origam-picker-title---color)` from

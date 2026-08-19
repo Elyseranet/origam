@@ -1,4 +1,4 @@
-import type { ITransitionProps } from '../../interfaces'
+import type { ITransitionProps } from './transition.interface'
 
 /*********************************************************
  * ITranslateScaleProps

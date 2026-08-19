@@ -1,19 +1,22 @@
+import type { IBorderProps } from '../Commons/border.interface'
 import type {
-    IBorderProps,
     IBgColorProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type {
     ICommonsComponentEmits,
     ICommonsComponentProps,
-    IDensityProps,
-    IElevationProps,
-    IMarginProps,
-    IPaddingProps,
-    ISizeProps,
-    ITagProps,
-    ITypographyProps
-} from "../../interfaces"
+    ITagProps
+} from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { ISizeProps } from '../Commons/size.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
 
-import type { TColor, TIcon } from "../../types"
+import type { TColor } from '../../types/Commons/color.type'
+import type { TIcon } from '../../types/Icon/icon.type'
 
 /**
  * Deliberately NOT `extends IAdjacentProps`. `IAdjacentProps` models a

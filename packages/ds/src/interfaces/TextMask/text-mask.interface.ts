@@ -1,14 +1,12 @@
 import type {
     ICommonsComponentProps,
-    IGradient,
-    ITagProps,
-    ITypographyProps
-} from '../../interfaces'
+    ITagProps
+} from '../Commons/commons.interface'
+import type { IGradient } from '../Commons/gradient.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
 
-import type {
-    TBlockquoteAlign,
-    TTextMaskAnimation
-} from '../../types'
+import type { TBlockquoteAlign } from '../../types/Blockquote/blockquote.type'
+import type { TTextMaskAnimation } from '../../types/TextMask/text-mask.type'
 
 /**
  * Props for `<OrigamTextMask>` — typographic "window" component.

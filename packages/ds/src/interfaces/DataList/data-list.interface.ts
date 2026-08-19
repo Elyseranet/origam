@@ -1,21 +1,21 @@
+import type { IAdjacentProps } from '../Commons/adjacent.interface'
+import type { IBorderProps } from '../Commons/border.interface'
 import type {
-    IAdjacentProps,
-    IBorderProps,
     IBgColorProps,
-    IColorProps,
-    ICommonsComponentProps,
-    IDataListKVItem,
-    IDataTextProps,
-    IDataTitleProps,
-    IDensityProps,
-    IElevationProps,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps,
-    ITypographyProps
-} from "../../interfaces"
+    IColorProps
+} from '../Commons/color.interface'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IDataListKVItem } from './data-list-kv-item.interface'
+import type { IDataTextProps } from './data-text.interface'
+import type { IDataTitleProps } from './data-title.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
 
-import type { TDataListMode } from "../../types"
+import type { TDataListMode } from '../../types/DataList/data-list.type'
 
 export type { TDataListMode } from "../../types/DataList/data-list.type"
 

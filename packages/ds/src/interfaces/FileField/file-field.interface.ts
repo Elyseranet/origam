@@ -1,22 +1,28 @@
+import type { IBorderProps } from '../Commons/border.interface'
+import type { IChipProps } from '../Chip/chip.interface'
+import type { IColorProps } from '../Commons/color.interface'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
 import type {
-    IBorderProps,
-    IChipProps,
-    IColorProps,
-    ICommonsComponentProps,
-    IDensityProps,
-    IElevationProps,
     IFieldEmits,
     IFieldProps,
-    IFieldSlots,
+    IFieldSlots
+} from '../Field/field.interface'
+import type {
     IInputEmits,
     IInputProps,
-    IInputSlots,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps
-} from "../../interfaces"
+    IInputSlots
+} from '../Input/input.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
 
-import type { TFile, TFileFieldDisplay, TFileSize } from "../../types"
+import type {
+    TFile,
+    TFileFieldDisplay,
+    TFileSize
+} from '../../types/FileField/file-field.type'
 
 export interface IFileFieldProps extends ICommonsComponentProps, IColorProps, IDensityProps, IFieldProps, IInputProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps {
     chips?: boolean

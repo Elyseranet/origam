@@ -1,4 +1,8 @@
-import type { ICommonsComponentEmits, IDialogProps, IDialogSlots } from '../../interfaces'
+import type { ICommonsComponentEmits } from '../Commons/commons.interface'
+import type {
+    IDialogProps,
+    IDialogSlots
+} from './dialog.interface'
 
 export interface IDialogConfirmationProps extends IDialogProps {
     cancellable?: boolean

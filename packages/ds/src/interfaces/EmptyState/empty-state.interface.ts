@@ -1,16 +1,16 @@
 import type {
     ICommonsComponentProps,
-    ITagProps,
-    ITypographyProps
-} from '../../interfaces'
+    ITagProps
+} from '../Commons/commons.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
 
 import type {
     TEmptyStateAlign,
     TEmptyStatePreset,
-    TEmptyStateSize,
-    TIcon,
-    TIntent
-} from '../../types'
+    TEmptyStateSize
+} from '../../types/EmptyState/empty-state.type'
+import type { TIcon } from '../../types/Icon/icon.type'
+import type { TIntent } from '../../types/Commons/intent.type'
 
 /**
  * Props for `<OrigamEmptyState>` — placeholder shown when a list, table

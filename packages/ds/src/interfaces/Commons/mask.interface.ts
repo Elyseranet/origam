@@ -1,6 +1,9 @@
 import type { Ref } from 'vue'
 
-import type { TMaskTokenKind, TPatternValidator } from '../../types'
+import type {
+    TMaskTokenKind,
+    TPatternValidator
+} from '../../types/TextField/text-field.type'
 
 /**
  * Configuration object accepted by `useMask` / the

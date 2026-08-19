@@ -1,12 +1,12 @@
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
 import type {
-    ICommonsComponentProps,
     IDataTableHeaderCellColumnSlot,
     IDataTableItem,
-    IDataTableItemKey,
-    IDisplayProps
-} from '../../interfaces'
+    IDataTableItemKey
+} from './items.interface'
+import type { IDisplayProps } from '../Commons/display.interface'
 
-import type { TDataTableCell } from '../../types'
+import type { TDataTableCell } from '../../types/DataTable/data-table.type'
 
 /*********************************************************
  * IDataTableRowProps / IDataTableRowEmits / IDataTableRowSlots

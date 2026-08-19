@@ -1,6 +1,11 @@
-import type { IChartBaseEmits, IChartBaseProps, IChartBaseSlots } from '../../interfaces'
+import type {
+    IChartBaseEmits,
+    IChartBaseProps,
+    IChartBaseSlots
+} from './chart-base.interface'
 
-import type { TChartTreemapAlgorithm, TIntent } from '../../types'
+import type { TChartTreemapAlgorithm } from '../../types/Chart/chart-treemap.type'
+import type { TIntent } from '../../types/Commons/intent.type'
 
 /**
  * A single data item for the treemap's series.

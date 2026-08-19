@@ -1,6 +1,9 @@
 import type { ComputedRef, Ref } from 'vue'
 
-import type { TCssFeatureName, TCssSupportMap } from '../../types'
+import type {
+    TCssFeatureName,
+    TCssSupportMap
+} from '../../types/Commons/css-support.type'
 
 /** Public API returned by `useCssSupport`. */
 export interface IUseCssSupport {

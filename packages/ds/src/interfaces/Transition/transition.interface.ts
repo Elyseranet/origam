@@ -1,6 +1,6 @@
-import type { IWindowProvide } from '../../interfaces'
+import type { IWindowProvide } from '../Window/window.interface'
 
-import type { TTransitionMode } from '../../types'
+import type { TTransitionMode } from '../../types/Transition/transition.type'
 
 /*********************************************************
  * ITransitionProps

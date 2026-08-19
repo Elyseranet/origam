@@ -1,4 +1,6 @@
-import type { ILocationProps, IProgressTypeProps, IRoundedProps } from '../../interfaces'
+import type { ILocationProps } from '../Commons/location.interface'
+import type { IProgressTypeProps } from './progress.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
 
 export interface IProgressLinearProps extends IProgressTypeProps, IRoundedProps, ILocationProps {
     bufferValue?: number | string

@@ -1,15 +1,19 @@
+import type { IBorderProps } from '../Commons/border.interface'
+import type { IBox } from '../Commons/box.interface'
 import type {
-    IBorderProps,
-    IBox,
     ICommonsComponentProps,
-    IElevationProps,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps,
     ITagProps
-} from '../../interfaces'
+} from '../Commons/commons.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
 
-import type { TAnchor, TAxis, TParallaxElementType, TParallaxEvent, TPoint } from '../../types'
+import type { TAnchor } from '../../types/Commons/anchor.type'
+import type { TAxis } from '../../types/Commons/axis.type'
+import type { TParallaxElementType } from '../../types/Parallax/parallax-element.type'
+import type { TParallaxEvent } from '../../types/Parallax/parallax.type'
+import type { TPoint } from '../../types/Commons/point.type'
 
 export interface IParallaxElementTypeProps {
     type?: TParallaxElementType

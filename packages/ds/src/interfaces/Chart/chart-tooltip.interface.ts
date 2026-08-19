@@ -1,7 +1,5 @@
-import type {
-    IChartPoint,
-    IChartSeries
-} from '../../interfaces'
+import type { IChartPoint } from './chart-point.interface'
+import type { IChartSeries } from './chart-series.interface'
 
 /**
  * Props for `<OrigamChartTooltip>` — the floating card that follows

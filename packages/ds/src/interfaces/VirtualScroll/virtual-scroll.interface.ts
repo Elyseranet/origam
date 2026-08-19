@@ -1,4 +1,6 @@
-import type { ICommonsComponentProps, IDimensionProps, IVirtualProps } from '../../interfaces'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
+import type { IVirtualProps } from '../Commons/virtual.interface'
 
 export interface IVirtualScrollProps extends ICommonsComponentProps, IDimensionProps, IVirtualProps {
     items?: Array<any>

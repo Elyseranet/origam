@@ -1,17 +1,25 @@
+import type { IBorderProps } from '../Commons/border.interface'
 import type {
-    IBorderProps,
     IBgColorProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type {
     ICommonsComponentEmits,
     ICommonsComponentProps,
+    ITagProps
+} from '../Commons/commons.interface'
+import type {
     IGroupProps,
-    IGroupProvide,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps,
-    ISlideGroupProps,
-    ITagProps, IActiveState, IHoverState
-} from '../../interfaces'
+    IGroupProvide
+} from '../Commons/group.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { ISlideGroupProps } from '../Slide/slide-group.interface'
+import type {
+    IActiveState,
+    IHoverState
+} from '../Commons/state-effect.interface'
 
 export interface IChipGroupProps extends ICommonsComponentProps, ITagProps, IGroupProps, IColorProps, IBgColorProps, IMarginProps, IPaddingProps, IBorderProps, IRoundedProps, ISlideGroupProps {
     column?: boolean

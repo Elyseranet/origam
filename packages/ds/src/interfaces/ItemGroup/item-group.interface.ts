@@ -1,11 +1,13 @@
 import type {
     ICommonsComponentEmits,
     ICommonsComponentProps,
+    ITagProps
+} from '../Commons/commons.interface'
+import type {
     IGroupItemProps,
     IGroupProps,
-    IGroupProvide,
-    ITagProps
-} from '../../interfaces'
+    IGroupProvide
+} from '../Commons/group.interface'
 
 /**
  * Props for `<OrigamItemGroup>` — the renderless selection container.

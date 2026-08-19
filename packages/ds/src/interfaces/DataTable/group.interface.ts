@@ -1,16 +1,16 @@
 import type { ComputedRef, Ref } from 'vue'
+import type { IColorProps } from '../Commons/color.interface'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
 import type {
-    IColorProps,
-    ICommonsComponentProps,
     IDataTableItem,
-    IDataTableItemBase,
-    IDataTableSelectableItem,
-    IDataTableSortItem,
-    IInternalDataTableHeader,
-    IPaddingProps
-} from '../../interfaces'
+    IDataTableItemBase
+} from './items.interface'
+import type { IDataTableSelectableItem } from './select.interface'
+import type { IDataTableSortItem } from './sort.interface'
+import type { IInternalDataTableHeader } from './data-table-header.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
 
-import type { TIcon } from '../../types'
+import type { TIcon } from '../../types/Icon/icon.type'
 
 export interface IDataTableGroupProps {
     groupBy?: Array<IDataTableSortItem>

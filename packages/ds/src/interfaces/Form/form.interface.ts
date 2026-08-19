@@ -1,6 +1,11 @@
 import type { ComponentInternalInstance, ComputedRef, Raw, Ref } from 'vue'
-import type { ICommonsComponentEmits, ICommonsComponentProps, ICommonsComponentSlots, ITypographyProps } from '../../interfaces'
-import type { TValidateOn } from '../../types'
+import type {
+    ICommonsComponentEmits,
+    ICommonsComponentProps,
+    ICommonsComponentSlots
+} from '../Commons/commons.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
+import type { TValidateOn } from '../../types/Commons/validation.type'
 
 export interface IFormProvide {
     register: (item: {

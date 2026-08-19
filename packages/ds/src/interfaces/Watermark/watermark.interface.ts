@@ -1,7 +1,7 @@
 import type {
     ICommonsComponentProps,
     ITagProps
-} from '../../interfaces'
+} from '../Commons/commons.interface'
 
 /**
  * Props for `<OrigamWatermark>` — repeating diagonal overlay used

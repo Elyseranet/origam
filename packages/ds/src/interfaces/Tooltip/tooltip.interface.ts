@@ -1,18 +1,20 @@
+import type { IActivatorProps } from '../Commons/activator.interface'
 import type {
-    IActivatorProps,
     IBgColorProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type {
     ICommonsComponentEmits,
-    ICommonsComponentProps,
-    IDimensionProps,
-    ILazyProps,
-    ILocationStrategyProps,
-    IOverlayProps,
-    IScrimProps,
-    IScrollStrategyProps,
-    ITransitionComponentProps,
-    ITypographyProps
-} from '../../interfaces'
+    ICommonsComponentProps
+} from '../Commons/commons.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
+import type { ILazyProps } from '../Commons/lazy.interface'
+import type { ILocationStrategyProps } from '../Commons/location.interface'
+import type { IOverlayProps } from '../Overlay/overlay.interface'
+import type { IScrimProps } from '../Overlay/overlay-scrim.interface'
+import type { IScrollStrategyProps } from '../Commons/scroll.interface'
+import type { ITransitionComponentProps } from '../Commons/transition-component.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
 
 export interface ITooltipProps extends ICommonsComponentProps, IOverlayProps, IColorProps, IBgColorProps, IDimensionProps, IActivatorProps, ILocationStrategyProps, IScrollStrategyProps, ILazyProps, ITransitionComponentProps, IScrimProps, ITypographyProps {
     id?: string

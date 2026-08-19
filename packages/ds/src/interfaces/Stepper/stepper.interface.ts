@@ -1,19 +1,22 @@
 import type { ComputedRef, Ref } from 'vue'
 import type {
     IBgColorProps,
-    IBorderProps,
-    IColorProps,
-    ICommonsComponentProps,
-    IDensityProps,
-    IDimensionProps,
-    IElevationProps,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps,
-    ISizeProps
-} from '../../interfaces'
-import type { TIcon } from '../../types'
-import type { TStepperItemStatus, TStepperOrientation } from '../../types'
+    IColorProps
+} from '../Commons/color.interface'
+import type { IBorderProps } from '../Commons/border.interface'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { ISizeProps } from '../Commons/size.interface'
+import type { TIcon } from '../../types/Icon/icon.type'
+import type {
+    TStepperItemStatus,
+    TStepperOrientation
+} from '../../types/Stepper/stepper.type'
 
 /*********************************************************
  * IStepperItem / IStepperProps / IStepperProvide

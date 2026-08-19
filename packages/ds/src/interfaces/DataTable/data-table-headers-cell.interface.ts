@@ -1,4 +1,7 @@
-import type { IColorProps, ICommonsComponentProps, IHeaderCellProps, IInternalDataTableHeader } from '../../interfaces'
+import type { IColorProps } from '../Commons/color.interface'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IHeaderCellProps } from './header-cell-base.interface'
+import type { IInternalDataTableHeader } from './data-table-header.interface'
 
 /*********************************************************
  * IDataTableHeadersCellProps

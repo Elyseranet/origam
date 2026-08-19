@@ -1,4 +1,4 @@
-import type { IActiveState } from '../../interfaces'
+import type { IActiveState } from './state-effect.interface'
 
 /**
  * The `active` prop accepts three shapes — same grammar as `hover`:

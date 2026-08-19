@@ -1,6 +1,10 @@
-import type { ICommonsComponentEmits, IImgProps, ILayoutItemProps, IScrollProps, IToolbarProps } from '../../interfaces'
+import type { ICommonsComponentEmits } from '../Commons/commons.interface'
+import type { IImgProps } from '../Img/img.interface'
+import type { ILayoutItemProps } from '../Commons/layout.interface'
+import type { IScrollProps } from '../Commons/scroll.interface'
+import type { IToolbarProps } from '../Toolbar/toolbar.interface'
 
-import type { TBlock } from "../../types"
+import type { TBlock } from '../../types/Commons/anchor.type'
 
 /**
  * A docked AppBar's cross-axis size (`width` for a top/bottom bar) is owned by
