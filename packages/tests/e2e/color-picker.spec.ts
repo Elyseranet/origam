@@ -24,40 +24,23 @@ const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
 test.describe('OrigamColorPicker', () => {
     test.setTimeout(45000)
 
-    test('Functional — picker renders with the canvas area present', async ({ page }) => {
-        await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
-
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const picker = sandbox.locator('.origam-color-picker').first()
-        await expect(picker).toBeVisible({ timeout: 12000 })
-    })
-
-    test('Functional — picker renders under the hideCanvas control', async ({ page }) => {
-        await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
-
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        // Functional pins hideCanvas=false, so the canvas is present.
-        const picker = sandbox.locator('.origam-color-picker').first()
-        await expect(picker).toBeVisible({ timeout: 12000 })
-    })
-
-    test('Functional — picker renders under the mode control', async ({ page }) => {
-        await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
-
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const picker = sandbox.locator('.origam-color-picker').first()
-        await expect(picker).toBeVisible({ timeout: 12000 })
-    })
-
-    test('Functional — picker renders under the sliders / inputs controls', async ({ page }) => {
-        await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
-
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const picker = sandbox.locator('.origam-color-picker').first()
-        await expect(picker).toBeVisible({ timeout: 12000 })
-    })
-
-    test('Functional — picker renders under the swatches controls', async ({ page }) => {
+    /*
+     * Ce test remplace CINQ tests qui portaient des noms différents
+     * (`hideCanvas`, `mode`, `sliders / inputs`, `swatches`, `canvas area`) et
+     * dont les corps étaient STRICTEMENT identiques : même `variantUrl(1)`,
+     * même locator, même assertion « le picker est visible ». Aucun ne pilotait
+     * la prop qu'il annonçait.
+     *
+     * Cinq exécutions de la même assertion ne valent pas cinq couvertures —
+     * elles gonflent un compte de tests sans rien vérifier de plus, et leurs
+     * noms font croire à une couverture qui n'existe pas. C'est plus nuisible
+     * qu'un test manquant : un trou se voit, un faux plein non.
+     *
+     * ⚠️ LE TROU RÉEL SUBSISTE et n'est pas comblé ici : les props de la
+     * variante Functional (hideCanvas, mode, sliders, inputs, swatches) ne sont
+     * exercées par aucun test. Consigné, pas maquillé.
+     */
+    test('Functional — le picker se rend', async ({ page }) => {
         await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
