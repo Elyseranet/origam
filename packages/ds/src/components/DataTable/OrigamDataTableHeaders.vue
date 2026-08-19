@@ -5,6 +5,7 @@
 				v-bind="slotProps"
 		>
 			<origam-data-table-headers-cell-mobile
+					:id="id"
 					ref="origamDataTableHeadersCellMobileRef"
 					:class="dataTableHeadersClasses"
 					:columns="columns"
@@ -19,6 +20,7 @@
 				v-bind="slotProps"
 		>
 			<origam-data-table-headers-cell
+					:id="id"
 					ref="origamDataTableHeadersCellRef"
 					:class="dataTableHeadersClasses"
 					:headers="headers"
@@ -151,7 +153,7 @@
 			props.style
 		] as StyleValue
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(dataTableHeadersStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableHeadersStyles, () => props.id)
 
 
 	/*********************************************************

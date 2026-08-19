@@ -7,6 +7,7 @@
 	</template>
 	<template v-else>
 		<div
+				:id="id"
 				ref="resizeRef"
 				:class="virtualScrollItemClasses"
 				:style="virtualScrollItemStyles"
@@ -84,7 +85,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(virtualScrollItemStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(virtualScrollItemStyles, () => props.id)
 
 
 	/*********************************************************

@@ -36,6 +36,7 @@
 	</template>
 	<template v-else>
 		<div
+				:id="id"
 				ref="containerRef"
 				:class="virtualScrollClasses"
 				:style="virtualScrollStyles"
@@ -175,7 +176,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(virtualScrollStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(virtualScrollStyles, () => props.id)
 
 
 	/*********************************************************

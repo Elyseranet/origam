@@ -8,6 +8,7 @@
 			<component
 					:is="tag"
 					v-if="isActive"
+					:id="id"
 					:ref="rootEl"
 					:aria-label="props.name || 'Navigation'"
 					:class="drawerClasses"
@@ -414,7 +415,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(drawerStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(drawerStyles, () => props.id)
 
 
 	/*********************************************************

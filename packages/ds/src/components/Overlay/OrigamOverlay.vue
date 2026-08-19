@@ -9,6 +9,7 @@
 				:to="teleportTarget"
 		>
 			<div
+					:id="id"
 					ref="root"
 					:class="overlayClasses"
 					:style="overlayStyles"
@@ -390,7 +391,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(overlayStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(overlayStyles, () => props.id)
 
 
 	/*********************************************************

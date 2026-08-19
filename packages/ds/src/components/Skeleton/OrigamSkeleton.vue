@@ -5,6 +5,7 @@
 
 	<div
 			v-else-if="variant === 'list-item'"
+			:id="id"
 			:class="skeletonContainerClasses"
 			:style="skeletonContainerStyles"
 			aria-busy="true"
@@ -23,6 +24,7 @@
 
 	<div
 			v-else-if="variant === 'card'"
+			:id="id"
 			:class="skeletonContainerClasses"
 			:style="skeletonContainerStyles"
 			aria-busy="true"
@@ -37,6 +39,7 @@
 
 	<div
 			v-else
+			:id="id"
 			:class="skeletonClasses"
 			:style="skeletonStyles"
 			aria-busy="true"
@@ -156,7 +159,7 @@
 
 		return [styles, colorStyles.value, roundedStyles.value, sizeStyles.value, props.style] as StyleValue
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(skeletonStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(skeletonStyles, () => props.id)
 
 
 	/*********************************************************

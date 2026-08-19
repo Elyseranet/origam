@@ -3,7 +3,10 @@
 			v-for="(row, y) in headers"
 			:key="y"
 	>
-		<tr class="origam-data-table-headers">
+		<tr
+				:id="headerRowId(y)"
+				class="origam-data-table-headers"
+		>
 			<template
 					v-for="(column, x) in row"
 					:key="x"
@@ -78,7 +81,9 @@
 			props.style
 		] as StyleValue
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(dataTableHeadersCellStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableHeadersCellStyles, () => props.id)
+
+	const headerRowId = (index: number) => (props.id ? `${props.id}-row-${index}` : undefined)
 
 
 	/*********************************************************
