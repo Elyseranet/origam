@@ -48,7 +48,6 @@
 
   import { OrigamBtn, OrigamIcon, OrigamProgress } from '../../components'
   import {
-	useDefaults,
 	useProps,
 	useStyle,
 	useTypography
@@ -69,12 +68,10 @@
    *    This variable serves as a declaration point for all events that the component can emit.
    * Slots for the component.
    ********************************************************/
-  const _props = withDefaults(defineProps<IFileFieldDragNDropItemProps>(), {
+  const props = withDefaults(defineProps<IFileFieldDragNDropItemProps>(), {
     fileIcon: MDI_ICONS.FILE,
     removeIcon: MDI_ICONS.CLOSE,
   })
-  const props = useDefaults(_props)
-
   const emits = defineEmits<IFileFieldDragNDropItemEmits>()
 
   defineSlots<IFileFieldDragNDropItemSlots>()

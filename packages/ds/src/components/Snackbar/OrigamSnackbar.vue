@@ -95,7 +95,6 @@
 
   import {
     useBothColor,
-    useDefaults,
     useLayout,
     usePosition,
     useProps,
@@ -123,7 +122,7 @@
    * @description
    * Props with defaults and filterProps utility.
    ********************************************************/
-  const _props = withDefaults(defineProps<ISnackbarProps>(), {
+  const props = withDefaults(defineProps<ISnackbarProps>(), {
     timeout: 5000,
     location: 'bottom',
     border: true,
@@ -133,11 +132,6 @@
       component: OrigamSnack
     }) as unknown as TTransitionProps
   })
-
-  // `useDefaults` resolves each prop against theme.components['origam-snackbar']
-  // (OrigamBtn pattern) — without this, theme.components['origam-snackbar']
-  // (location/border/rounded/elevation) was a silent no-op.
-  const props = useDefaults(_props)
 
   defineSlots<ISnackbarSlots>()
 

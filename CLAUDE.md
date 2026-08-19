@@ -548,9 +548,24 @@ under a theme setting `type: 'checkbox'` — no checkbox semantics, no
   themeable.** Every prop on every component is already reachable by
   `theme.components` — the resolver intercepts based on what a theme NAMES,
   not on what the component opted into.
-- **The 39 existing `useDefaults()` calls stay** — do not remove them
-  opportunistically; their removal is a separate, deliberate, batched
-  migration per ADR-005's own migration sketch, not incidental cleanup.
+- **No component calls `useDefaults()` any more, and none should again.**
+  The 40 remaining calls were removed under issue #363, which is the batched
+  migration ADR-005 sketched. The call bought nothing the resolver does not
+  already do, and cost roughly +0.07 ms per mount on Btn / Card / Chip
+  (paired interleaved measurement, negative control at +0.10 %).
+  `useDefaults` and `provideDefaults` themselves stay: `provideDefaults` is
+  what `<OrigamDefaultsProvider>` is built on.
+- **⛔ A prop read EAGERLY in the `setup()` body never sees the theme.**
+  Vue runs `setup()` BEFORE the `beforeCreate` hook where the resolver
+  writes, so a value captured into a plain local, an object literal, or a
+  composable that reads it eagerly is a snapshot taken too early — the theme
+  value never lands and nothing warns. Reads deferred into a `computed`,
+  `watch`, or event handler are evaluated at render and are safe.
+  `node packages/ds/scripts/guards/lib/setup-reads.mjs` lists the offenders;
+  it is an AST detector pinned by 20 fixtures covering precision and recall.
+  This bites hardest through shared composables — `useLink` froze `tag` into
+  a string and `useVModel` seeded its internal ref at setup, which between
+  them broke themed props on 16 components until both were made lazy.
 - **Do not reintroduce a per-prop `computed()` pass-through "for clarity."**
   It was measured at +42.6% mount cost when applied across a realistic prop
   surface and was explicitly rejected on those grounds — see ADR-005.

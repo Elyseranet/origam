@@ -75,7 +75,6 @@
 
 	import {
 		useAdjacent,
-		useDefaults,
 		useGroupItem,
 		useProps,
 		useStyle,
@@ -93,14 +92,12 @@
 	/*********************************************************
 	 * Global
 	 ********************************************************/
-	const _props = withDefaults(defineProps<ITabProps>(), {
+	const props = withDefaults(defineProps<ITabProps>(), {
 		tag: 'button',
 		value: undefined,
 		text: '',
 		variant: undefined
 	})
-
-	const props = useDefaults(_props)
 
 	defineSlots<ITabSlots>()
 

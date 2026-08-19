@@ -132,7 +132,7 @@
 >
 	import { OrigamColorPicker, OrigamMenu, OrigamSheet, OrigamTextField, OrigamTranslateScale } from "../../components"
 
-	import { useDefaults, useLocale, useProps, useTeleportTypography, useVModel , useStyle} from "../../composables"
+	import { useLocale, useProps, useTeleportTypography, useVModel , useStyle} from "../../composables"
 
 	import { COLOR_NULL, ORIGAM_FORM_KEY } from "../../consts"
 
@@ -153,7 +153,7 @@
 	 * Props, emits, composables and top-level refs.
 	 ********************************************************/
 
-	const _props = withDefaults(defineProps<IColorPickerFieldProps>(), {
+	const props = withDefaults(defineProps<IColorPickerFieldProps>(), {
 		type: TEXT_FIELD_TYPE.TEXT,
 		centerAffix: true,
 		direction: DIRECTION.HORIZONTAL,
@@ -166,11 +166,6 @@
 		openText: 'origam.open',
 		closeOnSelect: false
 	})
-
-	// `useDefaults` resolves each prop against theme.components['origam-color-picker-field']
-	// (OrigamBtn pattern). Pre-fix, the legacy `rounded: true` / `border: true`
-	// booleans always won, same forwarding-parity gap already fixed on Select.
-	const props = useDefaults(_props)
 
 	const {filterProps} = useProps<IColorPickerFieldProps>(props)
 

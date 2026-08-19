@@ -384,7 +384,6 @@
 	useAdjacent,
 	useAdjacentInner,
 	useBothColor,
-	useDefaults,
 	useDensity,
 	useFocus,
 	useLocale,
@@ -409,7 +408,7 @@
    *    This variable serves as a declaration point for all events that the component can emit.
    * Slots for the component.
    ********************************************************/
-  const _props = withDefaults(defineProps<IFileFieldProps>(), {
+  const props = withDefaults(defineProps<IFileFieldProps>(), {
     prependInnerIcon: MDI_ICONS.PAPERCLIP,
     dragndropIcon: MDI_ICONS.CLOUD_UPLOAD_OUTLINE,
     fileIcon: MDI_ICONS.FILE,
@@ -430,8 +429,6 @@
     browseText: 'origam.file_field.browse',
     maxFileSizeErrorString: 'origam.validation.max_size_error'
   })
-  const props = useDefaults(_props)
-
   /*********************************************************
    * PDF P3 — display + dropzone aliasing + error
    *

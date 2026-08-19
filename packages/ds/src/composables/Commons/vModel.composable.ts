@@ -1,5 +1,7 @@
 import { useToggleScope } from '../../composables'
 
+import { UNSEEDED } from '../../consts'
+
 import type { TEventProp, TInnerVal, TVModel } from '../../types'
 
 import { getCurrentInstance, toKebabCase } from '../../utils'
@@ -21,7 +23,30 @@ export function useVModel<
     transformOut: (value: Inner) => Props[Prop] = (v: any) => v
 ): TVModel<Props, Prop, Inner> {
     const vm = getCurrentInstance('useVModel')
-    const internal = ref(props[prop] !== undefined ? props[prop] : defaultValue) as Ref<Props[Prop]>
+
+    /*********************************************************
+     *  THE UNCONTROLLED SEED IS READ LAZILY, NOT AT SETUP
+     *
+     *  @description
+     *  `useVModel` runs during `setup()`, and Vue runs `setup()` BEFORE the
+     *  `beforeCreate` hook where the ADR-005 theme-props resolver patches
+     *  `instance.props`.
+     *  Seeding this ref with `props[prop]` right here therefore captured the
+     *  value a theme had not yet been able to set, and nothing re-read it
+     *  afterwards: the watch below only fires on a LATER change, and swapping
+     *  a property descriptor is not a reactive change the watcher can see.
+     *  So the ref starts UNSEEDED and the seed is taken on first read instead.
+     *  Every read goes through `model`, a computed that first evaluates at
+     *  render — comfortably after `beforeCreate` — so the themed value lands.
+     *  `UNSEEDED` is a symbol rather than `undefined` because `undefined` is a
+     *  legitimate model value that must not be mistaken for "never set".
+     *  Measured before this changed: a theme setting `modelValue` on Alert or
+     *  NumberField, `focused` on any field, or `indeterminate` on Switch,
+     *  produced no change in the rendered markup.
+     ********************************************************/
+    const internal = ref(UNSEEDED) as Ref<Props[Prop] | typeof UNSEEDED>
+    const seed = () => (props[prop] !== undefined ? props[prop] : defaultValue) as Props[Prop]
+    const internalValue = () => (internal.value === UNSEEDED ? seed() : internal.value as Props[Prop])
     const kebabProp = toKebabCase(prop)
     const checkKebab = kebabProp !== prop
 
@@ -56,13 +81,13 @@ export function useVModel<
         get (): any {
             const externalValue = props[prop]
 
-            return transformIn(isControlled.value ? externalValue : internal.value)
+            return transformIn(isControlled.value ? externalValue : internalValue())
         },
-        set (internalValue) {
-            const newValue = transformOut(internalValue)
-            const value = toRaw(isControlled.value ? props[prop] : internal.value)
+        set (internalValue_) {
+            const newValue = transformOut(internalValue_)
+            const value = toRaw(isControlled.value ? props[prop] : internalValue())
 
-            if (value === newValue || transformIn(value) === internalValue) {
+            if (value === newValue || transformIn(value) === internalValue_) {
                 return
             }
 
@@ -72,7 +97,7 @@ export function useVModel<
     }) as any as Ref<TInnerVal<Inner>> & { readonly externalValue: Props[Prop] }
 
     Object.defineProperty(model, 'externalValue', {
-        get: () => isControlled.value ? props[prop] : internal.value
+        get: () => isControlled.value ? props[prop] : internalValue()
     })
 
     return model

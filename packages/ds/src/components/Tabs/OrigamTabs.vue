@@ -27,7 +27,6 @@
 	import { OrigamDefaultsProvider } from '../../components'
 
 	import {
-		useDefaults,
 		useDensity,
 		useGroup,
 		usePassedProps,
@@ -49,7 +48,7 @@
 	/*********************************************************
 	 * Global
 	 ********************************************************/
-	const _props = withDefaults(defineProps<ITabsProps>(), {
+	const props = withDefaults(defineProps<ITabsProps>(), {
 		tag: 'div',
 		direction: DIRECTION.HORIZONTAL,
 		density: DENSITY.DEFAULT,
@@ -59,15 +58,6 @@
 		centered: false,
 		selectedClass: 'origam-tab--active'
 	})
-
-	// `useDefaults` resolves each prop against the closest
-	// `<OrigamDefaultsProvider>` / theme `components['origam-tabs']` entry.
-	// OrigamTabs is the SOLE owner of `variant` — without this hook a
-	// theme's `'origam-tabs': { variant: 'pills' }` was completely inert,
-	// and the `slotDefaults` forwarded to descendant `<OrigamTab>` (which
-	// reads straight off `props.variant`/`density`/`color`/`fixed`) never
-	// picked it up either (see #279).
-	const props = useDefaults(_props)
 
 	defineEmits<ITabsEmits>()
 

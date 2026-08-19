@@ -270,6 +270,7 @@
 		inject,
 		mergeProps,
 		nextTick,
+		onMounted,
 		ref,
 		shallowRef,
 		StyleValue,
@@ -293,7 +294,6 @@
 	} from '../../components'
 
 	import {
-	useDefaults,
 	useFilter,
 	useItems,
 	useLocale,
@@ -340,7 +340,7 @@
 	 * @description
 	 * Props, emits and filterProps for the Select component.
 	 ********************************************************/
-	const _props = withDefaults(defineProps<ISelectProps>(), {
+	const props = withDefaults(defineProps<ISelectProps>(), {
 		type: TEXT_FIELD_TYPE.TEXT,
 		centerAffix: true,
 		direction: DIRECTION.HORIZONTAL,
@@ -365,14 +365,6 @@
 		openText: 'origam.open',
 		noDataText: 'origam.no_data_text'
 	})
-
-	// `useDefaults` resolves each prop against theme.components['origam-select']
-	// (OrigamBtn pattern). Pre-fix, Select's own `rounded: true` / `border: true`
-	// legacy-boolean defaults always won — a theme's `rounded: 'lg'` never
-	// reached the text-field surface it forwards to (`textFieldProps` below),
-	// so a Select stayed on the boxed rounded-md fallback while a sibling
-	// text-field correctly resolved the theme's radius.
-	const props = useDefaults(_props)
 
 	defineEmits<ISelectEmits>()
 
@@ -1023,12 +1015,32 @@
 		}
 	})
 
-	watch(search, val => {
-		if (!isFocused.value || isSelecting.value) return
+	/*********************************************************
+	 *  DEFERRED TO onMounted — NOT AN OPTIMISATION
+	 *
+	 *  @description
+	 *  `watch(search, cb)` reads `search.value` synchronously the instant it
+	 *  is created, to seed `oldValue`. `search` is a `useVModel(props,
+	 *  'search', '')` model — its getter reads `props.search`. Creating this
+	 *  watch at the top level of `setup()` forced that seeding read before
+	 *  Vue's `beforeCreate` hook runs, which is where the ADR-005 theme
+	 *  resolver patches `instance.props`. A `computed` (which the `useVModel`
+	 *  model is) caches whatever its first evaluation saw and only
+	 *  invalidates on a tracked dependency change; the resolver's
+	 *  `Object.defineProperty` patch is not one on a static mount with no
+	 *  parent re-render, so `search` stayed cached at `''` forever — a theme
+	 *  naming `search` never landed. Deferring to `onMounted` delays the
+	 *  seeding read to after the component's first render, which is already
+	 *  past `beforeCreate`.
+	 ********************************************************/
+	onMounted(() => {
+		watch(search, val => {
+			if (!isFocused.value || isSelecting.value) return
 
-		if (val) menu.value = true
+			if (val) menu.value = true
 
-		isPristine.value = !val
+			isPristine.value = !val
+		})
 	})
 
 	watch(menu, () => {

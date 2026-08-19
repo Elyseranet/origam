@@ -80,7 +80,6 @@
 
   import {
     useBorder,
-    useDefaults,
     useDensity,
     useElevation,
     useHover,
@@ -109,9 +108,7 @@
    * `provideDefaults({ 'origam-selection-control': … })` injected
    * by a parent `OrigamSelectionControlGroup`.
    ********************************************************/
-  const _props = withDefaults(defineProps<ISelectionControlProps>(), {})
-
-  const props = useDefaults(_props)
+  const props = withDefaults(defineProps<ISelectionControlProps>(), {})
 
   const emits = defineEmits<ISelectionControlEmits>()
 

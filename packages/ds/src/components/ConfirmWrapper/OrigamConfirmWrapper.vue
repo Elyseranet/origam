@@ -140,7 +140,6 @@
 
 	import {
 	useAdjacent,
-	useDefaults,
 	useLocale,
 	useProps,
 	useStyle,
@@ -165,15 +164,13 @@
 	 * prop forwards arbitrary props to both. For full control, use the
 	 * `default` and `confirm` slots and render any pair of inputs you like.
 	 ********************************************************/
-	const _props = withDefaults(defineProps<IConfirmWrapperProps>(), {
+	const props = withDefaults(defineProps<IConfirmWrapperProps>(), {
 		density: DENSITY.DEFAULT,
 		direction: DIRECTION.VERTICAL,
 		modelValue: '',
 		confirm: '',
 		centerAffix: true
 	})
-	const props = useDefaults(_props)
-
 	defineEmits<IConfirmWrapperEmits>()
 
 	defineSlots<IConfirmWrapperSlots>()

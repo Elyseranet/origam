@@ -1,15 +1,15 @@
 <template>
 	<component
-			:is="link.tag"
+			:is="link.tag.value"
 			:id="id"
 			v-ripple="isRipple"
 			v-contrast
 			:data-origam-color-locked="colorLocked"
 			:class="btnClasses"
 			:disabled="isDisabled || undefined"
-			:aria-disabled="link.tag === 'a' && isDisabled ? 'true' : undefined"
-			:href="link.tag === 'a' && isDisabled ? undefined : link.href.value"
-			:type="link.tag === 'a' ? undefined : 'button'"
+			:aria-disabled="ariaDisabled"
+			:href="hrefAttr"
+			:type="typeAttr"
 			:value="valueAttr"
 			@click="handleClick"
 			@mouseenter="handleMouseenter"
@@ -134,7 +134,6 @@
 	import {
 		useActive,
 		useAdjacent,
-		useDefaults,
 		useDensity,
 		useDimension,
 		useGroupItem,
@@ -170,22 +169,13 @@
 	 ********************************************************/
 	const attrs = useAttrs()
 
-	const _props = withDefaults(defineProps<IBtnProps>(), {
+	const props = withDefaults(defineProps<IBtnProps>(), {
 		tag: 'button',
 		ripple: true,
 		active: undefined,
 		size: SIZES.DEFAULT,
 		density: DENSITY.DEFAULT
 	})
-
-	// `useDefaults` resolves each prop against the closest
-	// `<OrigamDefaultsProvider>` (or `provideDefaults({ 'origam-btn': … })`
-	// from a parent like `OrigamBtnGroup` / `OrigamBtnToggle`). Without
-	// this hook the parent's `color` / `density` / `bgColor` settings
-	// silently dropped when buttons were passed via the default slot —
-	// only the `items` prop path was honoured (and even that flipped the
-	// override semantics: parent `??` item, instead of item-wins).
-	const props = useDefaults(_props)
 
 	// When the consumer explicitly picks a foreground `color`, mark the element
 	// so `v-contrast` doesn't override that intentional colour for legibility.
@@ -243,6 +233,21 @@
 	 * Disabled
 	 ********************************************************/
 	const isDisabled = computed(() => group?.disabled.value || props.disabled)
+
+	/*********************************************************
+	 *  ANCHOR-ONLY ATTRIBUTES
+	 *
+	 *  @description
+	 *  A button rendered as `<a>` cannot carry `disabled`, so it announces the
+	 *  disabled state through `aria-disabled` and drops its `href` instead.
+	 *  Rendered as anything else it takes an explicit `type="button"`, which
+	 *  stops a button inside a form from defaulting to submit.
+	 *  Kept out of the template so the markup stays as readable as a wireframe.
+	 ********************************************************/
+	const isAnchor = computed(() => link.tag.value === 'a')
+	const ariaDisabled = computed(() => (isAnchor.value && isDisabled.value ? 'true' : undefined))
+	const hrefAttr = computed(() => (isAnchor.value && isDisabled.value ? undefined : link.href.value))
+	const typeAttr = computed(() => (isAnchor.value ? undefined : 'button'))
 
 	/*********************************************************
 	 * Value

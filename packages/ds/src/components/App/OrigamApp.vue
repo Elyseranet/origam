@@ -21,7 +21,7 @@
 >
 	import { OrigamLayout } from '../../components'
 
-	import { useDefaults, useProps, useRtl , useStyle} from "../../composables"
+	import { useProps, useRtl , useStyle} from "../../composables"
 
 	import type { IAppProps, IAppSlots } from '../../interfaces'
 
@@ -35,9 +35,7 @@
 	 * @description
 	 * Props and utility hooks for the App root component.
 	 ********************************************************/
-	const _props = withDefaults(defineProps<IAppProps>(), {fullHeight: true})
-
-	const props = useDefaults(_props)
+	const props = withDefaults(defineProps<IAppProps>(), {fullHeight: true})
 
 	const {filterProps} = useProps<IAppProps>(props)
 

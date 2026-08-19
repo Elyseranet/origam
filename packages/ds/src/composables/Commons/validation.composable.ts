@@ -126,8 +126,30 @@ export function useValidation (props: IValidationProps, name = getCurrentInstanc
         })
     })
 
-    watch([isValid, errorMessages], () => {
-        form?.update(uid.value, isValid.value, errorMessages.value)
+    /*********************************************************
+     *  DEFERRED TO onMounted — NOT AN OPTIMISATION
+     *
+     *  @description
+     *  `watch([isValid, errorMessages], cb)` reads both sources synchronously
+     *  the instant it is created, to seed `oldValue`. `isValid` is a
+     *  `computed()` that reads `props.error` (among other props). Creating
+     *  this watch at the top level of `setup()` forced that seeding read
+     *  before Vue's `beforeCreate` hook runs, which is where the ADR-005
+     *  theme resolver patches `instance.props`. A `computed` caches whatever
+     *  its first evaluation saw and only invalidates on a tracked dependency
+     *  change; the resolver's `Object.defineProperty` patch is not one on a
+     *  static mount with no parent re-render, so `isValid` stayed cached at
+     *  its pre-theme value forever — a theme naming `error` on Input (or any
+     *  other `useValidation` consumer) never flipped the `--error` class.
+     *  Deferring this watch to `onMounted` — right after the existing
+     *  `onMounted` above, which already performs the FIRST `form?.update`
+     *  call explicitly — delays its seeding read to after the component's
+     *  first render, which is already past `beforeCreate`.
+     ********************************************************/
+    onMounted(() => {
+        watch([isValid, errorMessages], () => {
+            form?.update(uid.value, isValid.value, errorMessages.value)
+        })
     })
 
     const reset = async () => {

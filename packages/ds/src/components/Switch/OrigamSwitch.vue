@@ -149,7 +149,6 @@
   } from '../../components'
 
   import {
-    useDefaults,
     useFocus,
     useHover,
     useLoader,
@@ -178,19 +177,10 @@
    * Props, emits and composables.
    ********************************************************/
 
-  const _props = withDefaults(defineProps<ISwitchProps>(), {
+  const props = withDefaults(defineProps<ISwitchProps>(), {
     density: DENSITY.DEFAULT,
     centerAffix: true
   })
-
-  // `useDefaults` resolves each prop against the closest
-  // `provideDefaults({ 'origam-switch': … })` (e.g. a marketing theme's
-  // `components` block). Without this hook a theme's `border`/`rounded`/
-  // `elevation` config for Switch is silently dropped — `OrigamSwitchTrack`
-  // already consumes these props correctly once they arrive (see its own
-  // `useBorder`/`useRounded`/`useElevation` wiring), this was the missing
-  // link one level up. Mirrors `OrigamBtn.vue`'s exact pattern.
-  const props = useDefaults(_props)
 
   defineEmits<ISwitchEmits>()
 

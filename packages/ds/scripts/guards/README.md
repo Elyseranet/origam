@@ -1,6 +1,6 @@
 # Architecture guards
 
-Four static-analysis checks over `packages/ds/src` that turn architecture
+Eight static-analysis checks over `packages/ds/src` that turn architecture
 rules already written in `CLAUDE.md` into something the CI actually enforces.
 None of them existed before this branch — every rule below was previously
 "ask nicely in the doc and hope," which is why the debt they describe
@@ -14,19 +14,20 @@ below from getting worse. The existing debt is grandfathered in a baseline
 ## Run locally
 
 ```bash
-pnpm -F origam guards                      # all seven
+pnpm -F origam guards                      # all eight
 pnpm -F origam guards:declarations         # guard 1 only
 pnpm -F origam guards:variant-css          # guard 2 only
 pnpm -F origam guards:instance-types       # guard 3 only
 pnpm -F origam guards:naming               # guard 4 only
 pnpm -F origam guards:unconsumed-props     # guard 5 only
 pnpm -F origam guards:emits-completeness   # guard 7 only
+pnpm -F origam guards:no-usedefaults       # guard 8 only
 ```
 
 No build step required — every guard parses `.vue`/`.ts`/`.scss` source
 text directly. The full suite runs in under a second.
 
-## The seven guards
+## The eight guards
 
 | # | Script | Rule | Baseline size |
 |---|---|---|---|
@@ -37,6 +38,13 @@ text directly. The full suite runs in under a second.
 | 5 | `unconsumed-props.mjs` | Every declared prop reaches the render or the behaviour — the project's "bug n°1", a documented prop that silently does nothing | 1663 |
 | 6 | `raw-props-usage.mjs` | `_props` may only feed `useDefaults()` | 0 |
 | 7 | `emits-completeness.mjs` | Every REACHABLE `update:*` — including those a relay composable emits on the component's behalf — is declared by its emits interface | 5 |
+| 8 | `no-usedefaults-in-components.mjs` | No component calls `useDefaults()` — the ADR-005 resolver already merges theme and provider defaults into `instance.props` | 0 |
+
+Guard 6 is now vacuous in practice: with guard 8 at zero, no component
+declares `_props` at all, so guard 6's "only `useDefaults` may read it"
+exception can never fire. It is kept because it still catches the
+reintroduction of a raw `_props` binding, which is the first half of
+re-adding the call guard 8 forbids.
 
 Guard 5's baseline is an order of magnitude larger than the others, and
 **72 % of it is one defect**: three cross-cutting `Commons` interfaces

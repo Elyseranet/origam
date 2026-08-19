@@ -114,6 +114,35 @@
  *     Chip     base 0.1311ms   delta +0.0829ms   +63.21 %
  *     Divider  base 0.0452ms   delta +0.0037ms    +8.21 %  (reverse: added)
  *
+ * ⚠️ THOSE PERCENTAGES ARE MEASURED AGAINST THE WRONG BASE (2026-08-19).
+ * The run above mounts the component with NO plugin installed. A real app
+ * calls `createOrigam()`, and the resolver mixin it installs runs on every
+ * mount, so a realistic base is 3-4x larger and the SAME saving is a much
+ * smaller share of it. Re-measured with the plugin installed, same paired
+ * interleaved protocol, coin-flip order within each pair, median of the
+ * per-pair deltas, n=2000:
+ *
+ *     control Btn vs Btn   base 0.7562ms   delta +0.0008ms   +0.10 %
+ *     Btn                  base 0.7226ms   delta +0.0659ms   +9.11 %
+ *     Card                 base 0.6137ms   delta +0.0660ms  +10.76 %
+ *     Chip                 base 0.6047ms   delta +0.0722ms  +11.94 %
+ *
+ * The ABSOLUTE cost reproduces across both runs (+0.059..0.083 ms then
+ * +0.066..0.072 ms) — that is the figure to trust and to quote. The
+ * percentage is not a property of `useDefaults`; it is a property of what
+ * you divide by. Both readings clear the 5 % stop rule, so the decision to
+ * remove is unaffected, but "recovers 34-52 % of mount time" overstates
+ * what a real application gets by roughly a factor of three.
+ *
+ * The harness for this second run is not committed: once the removal landed,
+ * the "with useDefaults" side of the pair no longer exists in the tree, so
+ * the A/B cannot be rebuilt from source without reverting the campaign.
+ * To reproduce, check out a commit before 7bf7ede3, generate a twin of each
+ * component with its `useDefaults` line deleted and `_props` renamed to
+ * `props`, write it NEXT TO the original (relative imports must still
+ * resolve) under a name outside the `Origam*.vue` catalogue glob, and mount
+ * both twins on one host with `createOrigam({})` installed.
+ *
  * ⚠️ The synthetic bases below are 3-4x SMALLER than those real ones, so the
  * ratios this file reports run ~2.5x HIGHER. Both readings clear 5 % by a
  * wide margin, so the verdict is identical either way — but quote the real

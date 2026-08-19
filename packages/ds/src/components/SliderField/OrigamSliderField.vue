@@ -429,7 +429,6 @@
 
 	import {
 		useBackgroundColor,
-		useDefaults,
 		useFocus,
 		useProps,
 		useRounded,
@@ -456,7 +455,7 @@
 	 * @description
 	 * Props, emits, slots and the focus + RTL composables.
 	 ********************************************************/
-	const _props = withDefaults(defineProps<ISliderFieldProps>(), {
+	const props = withDefaults(defineProps<ISliderFieldProps>(), {
 		min: 0,
 		max: 100,
 		modelValue: 0,
@@ -469,13 +468,6 @@
 		showHoverTooltip: false,
 		formatHoverTooltip: (value: number) => String(value)
 	})
-
-	// `useDefaults` resolves each prop against the closest
-	// `<OrigamDefaultsProvider>` / theme `components['origam-slider-field']`
-	// entry. Without this hook `color`/`bgColor` (and any other theme-level
-	// default for this component) were completely inert — the component
-	// only ever saw its own `withDefaults()` value (see #279).
-	const props = useDefaults(_props)
 
 	const emits = defineEmits<ISliderFieldEmits>()
 
@@ -514,10 +506,34 @@
 	const steps = useSteps(props)
 	const {min: resolvedMin, max: resolvedMax, step: resolvedStep, roundValue} = steps
 
+	/*********************************************************
+	 *  `useVModel`'s THIRD ARGUMENT IS A PLAIN VALUE, EVALUATED EAGERLY
+	 *
+	 *  @description
+	 *  `isRange.value ? [resolvedMin.value, resolvedMax.value] :
+	 *  resolvedMin.value` is a normal JS expression: as an argument to
+	 *  `useVModel(...)`, it is evaluated BEFORE the call, at the top level
+	 *  of `setup()` — before Vue's `beforeCreate` hook runs, which is where
+	 *  the ADR-005 theme resolver patches `instance.props`. That FIRST read
+	 *  of `isRange.value` / `resolvedMin.value` (both `computed()`s wrapping
+	 *  `props.range` / `props.min`) caches them at their pre-theme value —
+	 *  and since a `computed` only invalidates on a tracked-dependency
+	 *  change, and a theme naming a prop with no accompanying parent
+	 *  re-render never writes one, they stayed stuck at that snapshot
+	 *  forever, breaking the SAME `resolvedMin` / `isRange` the template
+	 *  reads for `:min="resolvedMin"` and the range/single-thumb branch.
+	 *  The argument is passed as `undefined` because it is DEAD, not merely
+	 *  harmless: `useVModel` reaches its third argument only when
+	 *  `props.modelValue === undefined`, and `withDefaults()` above declares
+	 *  `modelValue: 0`, so it never is. Naming any expression here — even a
+	 *  literal-only one like `props.range ? [0, 100] : 0` — would reintroduce
+	 *  an eager read of `props.range` for a value nothing consumes, and leave
+	 *  `setup-reads.mjs` reporting a defect that no longer exists.
+	 ********************************************************/
 	const model = useVModel(
 			props,
 			'modelValue',
-			isRange.value ? [resolvedMin.value, resolvedMax.value] : resolvedMin.value,
+			undefined,
 			(value: number | string | Array<number> | Array<string> | undefined) => {
 				if (isRange.value) {
 					const array = value as Array<number> | Array<string>

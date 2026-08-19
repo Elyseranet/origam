@@ -111,7 +111,6 @@
 	import {
 		useActive,
 		useBothColor,
-		useDefaults,
 		useDensity,
 		useGroupItem,
 		useHover,
@@ -140,13 +139,9 @@
 	 * Props resolved through the parent OrigamExpansionPanels defaults
 	 * provider, group registration, and composable setup.
 	 ********************************************************/
-	const _props = withDefaults(defineProps<IExpansionPanelProps>(), {
+	const props = withDefaults(defineProps<IExpansionPanelProps>(), {
 		tag: 'div'
 	})
-
-	// Resolve props against the closest `provideDefaults({ 'origam-expansion-panel': … })`
-	// injected by a parent `OrigamExpansionPanels`.
-	const props = useDefaults(_props)
 
 	defineEmits<IExpansionPanelEmits>()
 

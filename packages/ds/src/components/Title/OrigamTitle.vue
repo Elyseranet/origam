@@ -23,7 +23,6 @@
 	import {
 	useBorder,
 	useBothColor,
-	useDefaults,
 	useDensity,
 	useMargin,
 	usePadding,
@@ -49,13 +48,7 @@
 	// valid under a page-owned `h1`, and repeating it is legal.
 	// The right level still depends on document position, which the
 	// component cannot know — pass `tag` explicitly whenever it matters.
-	const _props = withDefaults(defineProps<ITitleProps>(), {tag: 'h2'})
-
-	// Opt into the defaults layer so `theme.components['origam-title']` (or a
-	// `<OrigamDefaultsProvider>`) can set `tag` — and every other prop —
-	// app-wide. This is also the one-line migration for anyone who relied on
-	// the previous `h1` default: `'origam-title': { tag: 'h1' }`.
-	const props = useDefaults(_props)
+	const props = withDefaults(defineProps<ITitleProps>(), {tag: 'h2'})
 
 	const {filterProps} = useProps<ITitleProps>(props)
 
