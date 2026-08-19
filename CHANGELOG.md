@@ -13,6 +13,70 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [2.16.0] - 2026-08-19
+
+A release about **things that were declared but did nothing**. Seven
+components emitted events they never declared; one prop had been inert since
+it shipped; another prop had no reason to exist at all. None of it was
+visible — that is precisely why it lasted.
+
+### Fixed
+
+- **Seven components emitted `update:*` without declaring it.** `OrigamForm`,
+  `OrigamSheet`, `OrigamBracketCompetitor`, `OrigamBracketMatch`,
+  `OrigamDialogConfirmation`, `OrigamRadioGroup` and `OrigamSnackbar` write
+  through a `useVModel` held by a composable they hand their `props` to — so
+  the emit exists without any `emit(...)` appearing in the component. Vue
+  warned on every mount, and the `onUpdate:*` handler stayed in `$attrs`,
+  where `inheritAttrs` pinned it onto the root element instead of wiring it
+  as an event. `v-model` on these components now behaves as documented, with
+  no console noise.
+
+- **`density` did nothing on `OrigamCounter`.** `ICounterProps` has extended
+  `IDensityProps` since it shipped, but the component never called
+  `useDensity` — the story even exposed a control for it. The three density
+  classes are now emitted.
+
+  ⚠️ Known limitation, tracked in
+  [#356](https://github.com/Elyseranet/origam/issues/356): the counter's font
+  size does not currently respond to **any** channel — not a prop, not a
+  token, not a theme, not even an inline style. The class is emitted and the
+  SCSS rule matches; the rendered size does not follow, and the cause is not
+  yet identified. The prop→class link is proven; the visual effect is not
+  claimed.
+
+### Removed
+
+- **`disabled` is gone from the whole `Icon` family** — `OrigamIcon`,
+  `OrigamClassIcon`, `OrigamComponentIcon`, `OrigamLigatureIcon`,
+  `OrigamSvgIcon`.
+
+  **Migration: delete it, nothing else changes.** None of the five components
+  ever read it — no class, no attribute, no style — so `<origam-icon
+  disabled>` was already a no-op. Your rendering is identical before and
+  after; only the TypeScript signature narrows, so a stale `disabled` now
+  raises a compile error instead of failing silently.
+
+  An icon renders a glyph; it does not respond to input. Paint the disabled
+  state on the control that **owns** the icon — the button, the field, the
+  list item — and the icon inherits its opacity and cursor. That is also what
+  keeps one control from showing two divergent disabled treatments.
+
+### Tooling
+
+- **New architecture guard: `emits-completeness`.** Any reachable `update:*`
+  must be declared. Precision measured at 5/5 with zero false positives —
+  every baselined entry was mounted and made to emit. What makes it work is
+  the *reachability* filter (is `onActive` actually destructured? is the
+  `useVModel` ref written or bound to a `v-model`?), not relay detection: a
+  guard without it would push you to declare emits "just in case", which
+  changes `$attrs` behaviour rather than being neutral hygiene.
+
+  Five real defects are recorded in its baseline and deliberately **not**
+  fixed in this release — `OrigamDrawer`, `OrigamColorPickerField`,
+  `OrigamDatePickerField`, `OrigamContextualMenu`, `OrigamSelect`. Tracked in
+  [#358](https://github.com/Elyseranet/origam/issues/358).
+
 ## [2.15.0] - 2026-08-14
 
 A structural release. Most of it is invisible at runtime — public typing
