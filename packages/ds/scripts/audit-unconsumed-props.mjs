@@ -442,12 +442,48 @@ function analyseComponent (file) {
     }
     if (/mergeProps\s*\(\s*props\b/.test(cleanScript)) { wildcard = true; wildcardReasons.push('mergeProps(props, …)') }
 
+    /*********************************************************
+     * shadowed — les noms lies par une destructuration LOCALE
+     *
+     * @description
+     * `scriptIds` est un simple ensemble de tokens : il ne resout aucune
+     * portee. Un composant qui ecrit
+     * `const {id, css, load} = useStyle(styles)` y place le token `id`, et
+     * la prop `id` passe donc pour consommee alors que ce local n'a aucun
+     * rapport avec elle.
+     *
+     * @description
+     * Mesure de l'angle mort : 140 composants destructurent un local nomme
+     * `id`, et 92 declarent la prop `id` sans jamais la binder dans leur
+     * template. Aucun n'apparaissait dans la baseline — l'absence se lisait
+     * a tort comme « prouve correct » alors qu'elle voulait dire « jamais
+     * regarde ».
+     *
+     * @description
+     * ⛔ ON NE RETIRE PAS une destructuration qui vient DE `props`.
+     * `const {density} = useDensity(props)` ou `const {size} = toRefs(props)`
+     * consomment reellement la prop — c'est la forme normale du depot. Seule
+     * une destructuration dont la source ne mentionne pas `props` cree un
+     * homonyme trompeur.
+     ********************************************************/
+    const shadowed = new Set()
+
+    for (const match of cleanScript.matchAll(/(?:const|let|var)\s*\{([^}]*)\}\s*=\s*([^\n;]*)/g)) {
+        if (/\bprops\b/.test(match[2])) continue
+
+        for (const raw of match[1].split(',')) {
+            const name = raw.split(':').pop().trim().replace(/^\.\.\./, '')
+
+            if (/^[A-Za-z_$][A-Za-z0-9_$]*$/.test(name)) shadowed.add(name)
+        }
+    }
+
     const unconsumed = []
     for (const [prop, from] of declared) {
         if (explicit.has(prop)) continue
         if (forwarded.has(prop)) continue
         if (tplIds.has(prop)) continue
-        if (scriptIds.has(prop)) continue
+        if (scriptIds.has(prop) && !shadowed.has(prop)) continue
         unconsumed.push({ prop, declaredBy: from })
     }
 
