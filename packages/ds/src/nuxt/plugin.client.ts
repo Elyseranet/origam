@@ -1,8 +1,8 @@
 import { watch } from 'vue'
 
-import { useTheme } from '../composables'
+import { useTheme } from '../composables/Commons/theme.composable'
 
-import type { IOrigamNuxtRuntimeConfig } from '../interfaces'
+import type { IOrigamNuxtRuntimeConfig } from '../interfaces/Commons/nuxt-module.interface'
 
 import { createOrigam } from '../origam'
 

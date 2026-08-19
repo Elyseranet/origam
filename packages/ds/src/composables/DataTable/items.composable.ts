@@ -1,7 +1,8 @@
 import { computed, Ref } from 'vue'
-import type { IDataTableItemsProps, IInternalDataTableHeader } from '../../interfaces'
+import type { IInternalDataTableHeader } from '../../interfaces/DataTable/data-table-header.interface'
+import type { IDataTableItemsProps } from '../../interfaces/DataTable/items.interface'
 
-import { transformDataTableItems } from '../../utils'
+import { transformDataTableItems } from '../../utils/DataTable/items.util'
 
 /*********************************************************
  * useDataTableItems

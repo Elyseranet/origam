@@ -1,6 +1,7 @@
 import { ref } from 'vue'
-import { SNACKBAR_GROUP_DEFAULT_DURATION } from '../../consts'
-import type { ISnackbarGroupItem, ISnackbarGroupState } from '../../interfaces'
+import { SNACKBAR_GROUP_DEFAULT_DURATION } from '../../consts/Snackbar/snackbar-group.const'
+import type { ISnackbarGroupItem } from '../../interfaces/Snackbar/snackbar-group-item.interface'
+import type { ISnackbarGroupState } from '../../interfaces/Snackbar/snackbar-group.interface'
 
 /*********************************************************
  * snackbar-group.util

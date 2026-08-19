@@ -2,8 +2,8 @@ import { computed, readonly, ref, type ComputedRef, type Ref } from 'vue'
 
 import { FEATURE_QUERIES } from '../../consts/Commons/css-support.const'
 
-import type { IUseCssSupport } from '../../interfaces'
-import type { TCssFeatureName, TCssSupportMap } from '../../types'
+import type { IUseCssSupport } from '../../interfaces/Commons/css-support.interface'
+import type { TCssFeatureName, TCssSupportMap } from '../../types/Commons/css-support.type'
 import { rawSupports, resetSupportsCache } from '../../utils/Commons/css-support.util'
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -65,8 +65,8 @@ let _initialized = false
  * la dérivation de `TCssFeatureName` étroite plutôt que `string`.
  ********************************************************/
 
-export type { TCssFeatureName, TCssSupportMap } from '../../types'
-export type { IUseCssSupport, IUseCssSupportClientOptions } from '../../interfaces'
+export type { TCssFeatureName, TCssSupportMap } from '../../types/Commons/css-support.type'
+export type { IUseCssSupport, IUseCssSupportClientOptions } from '../../interfaces/Commons/css-support.interface'
 
 // Reactive flag map — stays at all-false during SSR, hydrates at first
 // browser-side `useCssSupport()` call.

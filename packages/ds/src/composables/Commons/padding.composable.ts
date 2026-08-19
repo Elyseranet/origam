@@ -1,9 +1,13 @@
 import { computed } from 'vue'
-import { PADDING_LOGICAL_AXIS_MAP, PADDING_POSITION_MAP, PADDING_REGEX, SPACING_SCALE_STEPS } from '../../consts'
+import { PADDING_REGEX } from '../../consts/Commons/padding.const'
+import { PADDING_LOGICAL_AXIS_MAP, PADDING_POSITION_MAP, SPACING_SCALE_STEPS } from '../../consts/Commons/spacing.const'
 
-import type { IPaddingProps } from '../../interfaces'
+import type { IPaddingProps } from '../../interfaces/Commons/padding.interface'
 
-import { convertToUnit, formatPaddingStylesVar, getCurrentInstanceName, resolveSpacingValue } from '../../utils'
+import { convertToUnit } from '../../utils/Commons/commons.util'
+import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.util'
+import { formatPaddingStylesVar } from '../../utils/Commons/padding.util'
+import { resolveSpacingValue } from '../../utils/Commons/spacing.util'
 
 function isUtilityPaddingScale (value: unknown): value is string {
     return typeof value === 'string' && SPACING_SCALE_STEPS.includes(value)

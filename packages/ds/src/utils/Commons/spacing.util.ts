@@ -1,6 +1,7 @@
-import { CUSTOM_BORDER_RADIUS_REGEX, NAMED_RADIUS_TOKEN, PREDEFINED_ROUNDED, SPACING_SCALE_STEPS, UTILITY_RADIUS_FALLBACK } from '../../consts'
+import { CUSTOM_BORDER_RADIUS_REGEX, PREDEFINED_ROUNDED } from '../../consts/Commons/rounded.const'
+import { NAMED_RADIUS_TOKEN, SPACING_SCALE_STEPS, UTILITY_RADIUS_FALLBACK } from '../../consts/Commons/spacing.const'
 
-import type { TRounded } from '../../types'
+import type { TRounded } from '../../types/Commons/rounded.type'
 
 import { convertToUnit } from './commons.util'
 

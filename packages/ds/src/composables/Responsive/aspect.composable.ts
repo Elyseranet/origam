@@ -1,6 +1,6 @@
 import { computed } from 'vue'
 
-import { IN_BROWSER } from '../../consts'
+import { IN_BROWSER } from '../../consts/Commons/commons.const'
 
 /*********************************************************
  * useAspectRatio

@@ -1,6 +1,6 @@
 import { computed, useSlots } from 'vue'
-import type { IAdjacentInnerProps } from '../../interfaces'
-import { getCurrentInstance } from '../../utils'
+import type { IAdjacentInnerProps } from '../../interfaces/Commons/adjacent.interface'
+import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
 
 /*********************************************************
  * useAdjacentInner

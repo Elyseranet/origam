@@ -1,10 +1,12 @@
 import { computed, inject, reactive, shallowRef, toRefs, watchEffect } from 'vue'
-import { IN_BROWSER, ORIGAM_DISPLAY_KEY } from '../../consts'
+import { IN_BROWSER } from '../../consts/Commons/commons.const'
+import { ORIGAM_DISPLAY_KEY } from '../../consts/Commons/display.const'
 
-import type { IDisplayInstance, IDisplayOptions, IDisplayProps } from '../../interfaces'
-import type { TSSROptions } from '../../types'
+import type { IDisplayInstance, IDisplayOptions, IDisplayProps } from '../../interfaces/Commons/display.interface'
+import type { TSSROptions } from '../../types/Commons/display.type'
 
-import { getClientHeight, getClientWidth, getCurrentInstanceName, getPlatform, parseDisplayOptions } from '../../utils'
+import { getClientHeight, getClientWidth, getPlatform, parseDisplayOptions } from '../../utils/Commons/display.util'
+import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.util'
 
 /*********************************************************
  * useDisplay

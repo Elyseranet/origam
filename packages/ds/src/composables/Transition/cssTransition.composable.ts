@@ -1,6 +1,6 @@
 import type { Component } from 'vue'
 import { computed, Transition, TransitionGroup } from 'vue'
-import type { ITransitionProps } from '../../interfaces'
+import type { ITransitionProps } from '../../interfaces/Transition/transition.interface'
 import { useTransition } from './transition.composable'
 
 /*********************************************************

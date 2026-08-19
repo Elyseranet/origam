@@ -1,6 +1,6 @@
 import type { ComputedRef, Ref } from 'vue'
 import { computed, isRef } from 'vue'
-import type { TColor } from '../../types'
+import type { TColor } from '../../types/Commons/color.type'
 import { useColor } from './color.composable'
 
 /*********************************************************

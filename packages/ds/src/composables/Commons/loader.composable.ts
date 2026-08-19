@@ -1,10 +1,10 @@
 import { computed, type ComputedRef } from 'vue'
 import { LOADER_KIND } from '../../enums'
-import type { ILoaderProps, IResolvedLoader } from '../../interfaces'
-import type { TLoaderConfig, TLoaderKind } from '../../types'
-import { getCurrentInstanceName } from '../../utils'
+import type { ILoaderProps, IResolvedLoader } from '../../interfaces/Commons/loader.interface'
+import type { TLoaderConfig, TLoaderKind } from '../../types/Commons/loader.type'
+import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.util'
 
-export type { IResolvedLoader } from '../../interfaces'
+export type { IResolvedLoader } from '../../interfaces/Commons/loader.interface'
 
 /**
  * Resolve the polymorphic `loading` prop into a normalised descriptor.

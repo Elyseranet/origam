@@ -1,12 +1,12 @@
-import { useVModel } from '../../composables'
+import { useVModel } from '../Commons/vModel.composable'
 
-import { allSelectStrategy, ORIGAM_DATA_TABLE_SELECT_KEY, pageSelectStrategy, singleSelectStrategy } from '../../consts'
+import { allSelectStrategy, ORIGAM_DATA_TABLE_SELECT_KEY, pageSelectStrategy, singleSelectStrategy } from '../../consts/DataTable/data-table.const'
 
 import { DATATABLE_SELECT_STRATEGY } from '../../enums'
 
-import type { IDataTableProvideSelection, IDataTableSelectableItem, IDataTableSelectProps } from '../../interfaces'
+import type { IDataTableProvideSelection, IDataTableSelectableItem, IDataTableSelectProps } from '../../interfaces/DataTable/select.interface'
 
-import { deepEqual, wrapInArray } from '../../utils'
+import { deepEqual, wrapInArray } from '../../utils/Commons/commons.util'
 
 import { computed, inject, provide, Ref } from 'vue'
 

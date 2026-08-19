@@ -1,6 +1,6 @@
 import { SELECTED } from '../../enums'
 
-import type { TStrategySelect } from '../../types'
+import type { TStrategySelect } from '../../types/Commons/nested.type'
 import { toRaw } from 'vue'
 
 /**

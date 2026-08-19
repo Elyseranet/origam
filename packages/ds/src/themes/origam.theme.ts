@@ -1,4 +1,4 @@
-import type { IOrigamTheme } from '../interfaces'
+import type { IOrigamTheme } from '../interfaces/Commons/theme.interface'
 
 // origam's DEFAULT identity ("sobre") authored as clean IOrigamTheme objects —
 // vars (semantic + scale tokens) + per-component default props, NO CSS dump.

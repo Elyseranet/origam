@@ -1,5 +1,5 @@
-import type { IBox } from '../../interfaces'
-import { Box } from '../../classes'
+import type { IBox } from '../../interfaces/Commons/box.interface'
+import { Box } from '../../classes/Commons/box.class'
 
 /**
  * Nullify transforms.

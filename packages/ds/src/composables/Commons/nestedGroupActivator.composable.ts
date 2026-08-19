@@ -1,5 +1,5 @@
 import { inject, provide } from 'vue'
-import { EMPTY_NESTED, ORIGAM_NESTED_KEY } from '../../consts'
+import { EMPTY_NESTED, ORIGAM_NESTED_KEY } from '../../consts/Commons/nested.const'
 
 /*********************************************************
  * useNestedGroupActivator

@@ -1,39 +1,9 @@
-import {
-    BCO,
-    BLK_CLMP,
-    BLK_THRS,
-    CIELAB_FORWARD_TRANSFORM,
-    CIELAB_REVERSE_TRANSFORM,
-    COLOR_ACTIVE_MIX_PCT,
-    COLOR_DELTA_Y_MIN,
-    COLOR_HOVER_MIX_PCT,
-    COLOR_INTENTS,
-    COLOR_MAPPERS,
-    COLOR_UTILITY_INTENTS,
-    CSS_COLOR_REGEX,
-    CSS_NAMED_COLORS,
-    GCO,
-    LO_CLIP,
-    LO_CON_FACTOR,
-    LO_CON_OFFSET,
-    LO_CON_THRESH,
-    MAIN_TRC,
-    NORM_BG,
-    NORM_TXT,
-    RCO,
-    REV_BG,
-    REV_TXT,
-    SCALE_B_O_W,
-    SCALE_W_O_B,
-    SRGB_FORWARD_MATRIX,
-    SRGB_FORWARD_TRANSFORM,
-    SRGB_REVERSE_MATRIX,
-    SRGB_REVERSE_TRANSFORM
-} from '../../consts'
+import { BCO, BLK_CLMP, BLK_THRS, CIELAB_FORWARD_TRANSFORM, CIELAB_REVERSE_TRANSFORM, COLOR_ACTIVE_MIX_PCT, COLOR_DELTA_Y_MIN, COLOR_HOVER_MIX_PCT, COLOR_INTENTS, COLOR_MAPPERS, COLOR_UTILITY_INTENTS, CSS_COLOR_REGEX, CSS_NAMED_COLORS, GCO, LO_CLIP, LO_CON_FACTOR, LO_CON_OFFSET, LO_CON_THRESH, MAIN_TRC, NORM_BG, NORM_TXT, RCO, REV_BG, REV_TXT, SCALE_B_O_W, SCALE_W_O_B, SRGB_FORWARD_MATRIX, SRGB_FORWARD_TRANSFORM, SRGB_REVERSE_MATRIX, SRGB_REVERSE_TRANSFORM } from '../../consts/Commons/color.const'
 
 import { BG_FG_ROLE } from '../../enums/Commons/color.enum'
 
-import type { TBgFgRole, TColor, TColorType, THex, THSLA, THSVA, TIntent, TLAB, TRGBA, TXYZ } from '../../types'
+import type { TBgFgRole, TColor, TColorType, THex, THSLA, THSVA, TLAB, TRGBA, TXYZ } from '../../types/Commons/color.type'
+import type { TIntent } from '../../types/Commons/intent.type'
 
 // Direct imports from sibling util files (NOT the barrel) to avoid a
 // circular `utils/index → color.util → utils/index` chain. The barrel

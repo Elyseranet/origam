@@ -1,8 +1,8 @@
-import { BLOCK_ARRAY, INLINE_ARRAY } from '../../consts'
+import { BLOCK_ARRAY, INLINE_ARRAY } from '../../consts/Commons/anchor.const'
 
 import { AXIS } from '../../enums'
 
-import type { TAnchor, TBlock, TInline, TParsedAnchor } from '../../types'
+import type { TAnchor, TBlock, TInline, TParsedAnchor } from '../../types/Commons/anchor.type'
 
 /**
  * Parse anchor.

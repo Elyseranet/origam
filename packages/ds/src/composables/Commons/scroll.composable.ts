@@ -1,6 +1,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, shallowRef, watch } from 'vue'
-import type { IScrollArguments, IScrollProps } from '../../interfaces'
-import { clamp, consoleWarn } from '../../utils'
+import type { IScrollArguments, IScrollProps } from '../../interfaces/Commons/scroll.interface'
+import { clamp } from '../../utils/Commons/commons.util'
+import { consoleWarn } from '../../utils/Commons/console.util'
 
 /*********************************************************
  * useScroll

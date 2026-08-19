@@ -1,8 +1,8 @@
 import { ComputedRef, Ref, watch } from "vue"
 
-import { useVModel } from "../../composables"
+import { useVModel } from '../../composables/Commons/vModel.composable'
 
-import type { ILocaleI18n, ILocaleInstance, ILocaleMessages, ILocaleProps, TUseI18nLike } from "../../interfaces"
+import type { ILocaleI18n, ILocaleInstance, ILocaleMessages, ILocaleProps, TUseI18nLike } from '../../interfaces/Commons/locale.interface'
 
 // vue-i18n's translate-args parser is strict — it throws
 // `SyntaxError: Invalid arguments` when:

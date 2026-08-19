@@ -1,6 +1,6 @@
 import { onMounted, shallowRef } from 'vue'
-import { useDisplay } from '../../composables'
-import { IN_BROWSER } from '../../consts'
+import { useDisplay } from './display.composable'
+import { IN_BROWSER } from '../../consts/Commons/commons.const'
 
 /*********************************************************
  * useHydration

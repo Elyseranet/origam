@@ -1,6 +1,7 @@
-import type { IInternalListItem, IInternalListItemChildren, IItemProps } from '../../interfaces'
+import type { IItemProps } from '../../interfaces/Commons/item.interface'
+import type { IInternalListItem, IInternalListItemChildren } from '../../interfaces/List/list-children.interface'
 
-import { getPropertyFromItem, omit } from '../../utils'
+import { getPropertyFromItem, omit } from '../Commons/commons.util'
 
 /**
  * Transform list items.

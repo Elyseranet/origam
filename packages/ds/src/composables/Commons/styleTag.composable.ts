@@ -1,8 +1,8 @@
 import type { MaybeRef } from 'vue'
 import { readonly, shallowRef, watch } from 'vue'
-import { DEFAULT_DOCUMENT } from '../../consts'
-import type { IStyleTagOptions } from '../../interfaces'
-import { tryOnMounted, tryOnScopeDispose } from '../../utils'
+import { DEFAULT_DOCUMENT } from '../../consts/Commons/commons.const'
+import type { IStyleTagOptions } from '../../interfaces/Commons/style.interface'
+import { tryOnMounted, tryOnScopeDispose } from '../../utils/Commons/commons.util'
 
 let _id = 0
 

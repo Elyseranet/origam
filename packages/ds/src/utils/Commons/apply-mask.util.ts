@@ -1,6 +1,6 @@
 import { MASK_TOKEN_KIND } from '../../enums'
 
-import type { IMaskApplyResult, IMaskToken } from '../../interfaces'
+import type { IMaskApplyResult, IMaskToken } from '../../interfaces/Commons/mask.interface'
 
 /**
  * Token-walker that converts a raw input string into a

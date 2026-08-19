@@ -1,6 +1,8 @@
 import { EMPTY_STATE_PRESET, MDI_ICONS } from '../../enums'
 
-import type { TEmptyStateAlign, TEmptyStatePreset, TEmptyStateSize, TIcon, TIntent } from '../../types'
+import type { TIntent } from '../../types/Commons/intent.type'
+import type { TEmptyStateAlign, TEmptyStatePreset, TEmptyStateSize } from '../../types/EmptyState/empty-state.type'
+import type { TIcon } from '../../types/Icon/icon.type'
 
 /**
  * Closed list of valid `preset` values for `<OrigamEmptyState>`.

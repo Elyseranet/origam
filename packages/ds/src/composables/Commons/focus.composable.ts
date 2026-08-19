@@ -1,8 +1,8 @@
 import { computed } from 'vue'
-import { useVModel } from '../../composables'
-import type { IFocusProps } from '../../interfaces'
+import { useVModel } from './vModel.composable'
+import type { IFocusProps } from '../../interfaces/Commons/focus.interface'
 
-import { getCurrentInstanceName } from '../../utils'
+import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.util'
 
 /*********************************************************
  * useFocus

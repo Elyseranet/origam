@@ -1,5 +1,5 @@
 import { BLOCK, BORDER_LOGICAL_AXIS, INLINE } from '../../enums'
-import type { TBorderLogicalAxis } from '../../types'
+import type { TBorderLogicalAxis } from '../../types/Commons/border.type'
 
 /**
  * Parse a free-form `border` value into width / style / color groups.

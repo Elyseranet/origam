@@ -1,6 +1,7 @@
-import { useSort } from '../../composables'
+import { useSort } from './sort.composable'
 import { SORT_DIRECTION } from '../../enums'
-import type { IHeaderCellProps, IInternalDataTableHeader } from '../../interfaces'
+import type { IInternalDataTableHeader } from '../../interfaces/DataTable/data-table-header.interface'
+import type { IHeaderCellProps } from '../../interfaces/DataTable/header-cell-base.interface'
 
 /*********************************************************
  * useHeadersCell

@@ -2,17 +2,10 @@ import { computed, type ComputedRef } from 'vue'
 
 import { CALENDAR_NAVIGATE, CALENDAR_VIEW } from '../../enums'
 
-import type {
-    ICalendarAgendaEntry,
-    ICalendarTimeSlot,
-    IEvent,
-    IUseCalendarOptions
-} from '../../interfaces'
+import type { ICalendarAgendaEntry, ICalendarTimeSlot, IUseCalendarOptions } from '../../interfaces/Calendar/calendar.interface'
+import type { IEvent } from '../../interfaces/Calendar/event.interface'
 
-import type {
-    TCalendarNavigate,
-    TCalendarView
-} from '../../types'
+import type { TCalendarNavigate, TCalendarView } from '../../types/Calendar/calendar.type'
 
 import {
     addDays,
@@ -34,7 +27,7 @@ import {
 
 import { expandRecurrence } from '../../utils/Calendar/rrule.util'
 
-export type { ICalendarAgendaEntry, ICalendarTimeSlot } from '../../interfaces'
+export type { ICalendarAgendaEntry, ICalendarTimeSlot } from '../../interfaces/Calendar/calendar.interface'
 
 /**
  * Internal navigation step lookup. Reads cleaner than a `switch`

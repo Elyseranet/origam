@@ -17,7 +17,8 @@
  * Pure / SSR-safe: no `Date.now()` at module scope, no DOM access.
  */
 
-import type { ICalendarParsedRule, IEvent } from '../../interfaces'
+import type { IEvent } from '../../interfaces/Calendar/event.interface'
+import type { ICalendarParsedRule } from '../../interfaces/Calendar/rrule.interface'
 
 import { addDays, addMonths, diffMinutes, toDate } from './date.util'
 

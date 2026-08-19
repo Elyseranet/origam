@@ -1,4 +1,4 @@
-import type { IPasswordRequirement } from '../../interfaces'
+import type { IPasswordRequirement } from '../../interfaces/PasswordField/password-requirement.interface'
 
 /**
  * `DEFAULT_PASSWORD_REQUIREMENTS` — used when the consumer passes

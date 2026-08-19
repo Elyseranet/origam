@@ -1,6 +1,6 @@
-import type { IVariantProps } from '../../interfaces'
-import type { TVariant, TVariantInput } from '../../types'
-import { getCurrentInstanceName } from '../../utils'
+import type { IVariantProps } from '../../interfaces/Commons/variant.interface'
+import type { TVariant, TVariantInput } from '../../types/Commons/variant.type'
+import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.util'
 
 import { computed, isRef, Ref } from 'vue'
 

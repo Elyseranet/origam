@@ -1,8 +1,8 @@
 import { PARALLAX_EVENT } from '../../enums'
 
-import type { IParallaxElementCicle, IParallaxElementMovement } from '../../interfaces'
+import type { IParallaxElementCicle, IParallaxElementMovement } from '../../interfaces/Parallax/parallax-element.interface'
 
-import type { TPoint } from '../../types'
+import type { TPoint } from '../../types/Commons/point.type'
 
 /**
  * Element movement.

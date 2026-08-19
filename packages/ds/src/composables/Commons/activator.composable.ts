@@ -1,11 +1,14 @@
 import { computed, effectScope, EffectScope, inject, nextTick, onScopeDispose, ref, Ref, watch, watchEffect } from 'vue'
-import { useDelay } from '../../composables'
+import { useDelay } from './delay.composable'
 
-import { IN_BROWSER, ORIGAM_MENU_KEY } from '../../consts'
+import { IN_BROWSER } from '../../consts/Commons/commons.const'
+import { ORIGAM_MENU_KEY } from '../../consts/Menu/menu.const'
 
-import type { IActivatorProps } from '../../interfaces'
+import type { IActivatorProps } from '../../interfaces/Commons/activator.interface'
 
-import { activator, getCurrentInstance, getTargetActivator, matchesSelector, refElement } from '../../utils'
+import { activator, getTargetActivator } from '../../utils/Commons/activator.util'
+import { matchesSelector, refElement } from '../../utils/Commons/commons.util'
+import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
 
 /*********************************************************
  * useActivator

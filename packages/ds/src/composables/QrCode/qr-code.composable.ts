@@ -16,14 +16,9 @@ import {
     QR_CODE_OVERLAY_MAX_RATIO
 } from '../../consts/QrCode/qr-code.const'
 
-import type {
-    IQrCodeResolvedOptions,
-    IUseQrCodeOptions
-} from '../../interfaces'
+import type { IQrCodeResolvedOptions, IUseQrCodeOptions } from '../../interfaces/QrCode/qr-code.interface'
 
-import type {
-    TQrCodeErrorCorrectionLevel
-} from '../../types'
+import type { TQrCodeErrorCorrectionLevel } from '../../types/QrCode/qr-code.type'
 
 /**
  * Module-level LRU keyed on the serialised payload + options. Reuse

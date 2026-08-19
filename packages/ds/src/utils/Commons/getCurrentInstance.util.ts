@@ -1,6 +1,6 @@
 import type { ComponentInternalInstance } from 'vue'
 import { getCurrentInstance as _getCurrentInstance } from 'vue'
-import { toKebabCase } from '../../utils'
+import { toKebabCase } from './commons.util'
 
 /**
  * Get life cycle target.

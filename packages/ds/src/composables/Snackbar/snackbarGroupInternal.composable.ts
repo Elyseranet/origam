@@ -1,6 +1,6 @@
 import { computed } from 'vue'
-import { SNACKBAR_GROUP_DEFAULT_ID } from '../../consts'
-import { getStore } from '../../utils'
+import { SNACKBAR_GROUP_DEFAULT_ID } from '../../consts/Snackbar/snackbar-group.const'
+import { getStore } from '../../utils/Snackbar/snackbar-group.util'
 
 /*********************************************************
  * Internal helper for the host component

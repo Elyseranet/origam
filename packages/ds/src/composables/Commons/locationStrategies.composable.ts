@@ -1,7 +1,8 @@
 import { onScopeDispose, ref, watch } from 'vue'
-import { useToggleScope } from '../../composables'
-import { IN_BROWSER, LOCATION_STRATEGIES } from '../../consts'
-import type { ILocationStrategyData, ILocationStrategyProps } from '../../interfaces'
+import { useToggleScope } from './toggleScope.composable'
+import { IN_BROWSER } from '../../consts/Commons/commons.const'
+import { LOCATION_STRATEGIES } from '../../consts/Commons/location.const'
+import type { ILocationStrategyData, ILocationStrategyProps } from '../../interfaces/Commons/location.interface'
 
 /*********************************************************
  * useLocationStrategies

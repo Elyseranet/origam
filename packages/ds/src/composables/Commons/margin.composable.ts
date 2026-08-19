@@ -1,9 +1,13 @@
 import { computed } from 'vue'
-import { MARGIN_LOGICAL_AXIS_MAP, MARGIN_POSITION_MAP, MARGIN_REGEX, SPACING_SCALE_STEPS } from '../../consts'
+import { MARGIN_REGEX } from '../../consts/Commons/margin.const'
+import { MARGIN_LOGICAL_AXIS_MAP, MARGIN_POSITION_MAP, SPACING_SCALE_STEPS } from '../../consts/Commons/spacing.const'
 
-import type { IMarginProps } from '../../interfaces'
+import type { IMarginProps } from '../../interfaces/Commons/margin.interface'
 
-import { convertToUnit, formatMarginStylesVar, getCurrentInstanceName, resolveSpacingValue } from '../../utils'
+import { convertToUnit } from '../../utils/Commons/commons.util'
+import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.util'
+import { formatMarginStylesVar } from '../../utils/Commons/margin.util'
+import { resolveSpacingValue } from '../../utils/Commons/spacing.util'
 
 function isUtilityMarginScale (value: unknown): value is string {
     return typeof value === 'string' && SPACING_SCALE_STEPS.includes(value)

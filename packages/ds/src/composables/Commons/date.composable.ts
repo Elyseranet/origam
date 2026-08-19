@@ -1,13 +1,15 @@
 import { inject } from "vue"
-import { useLocale } from "../../composables"
+import { useLocale } from './locale.composable'
 
-import { ORIGAM_DATE_OPTIONS_KEY } from "../../consts"
+import { ORIGAM_DATE_OPTIONS_KEY } from '../../consts/Commons/date.const'
 
-import type { IDateOptions, ILocaleInstance } from "../../interfaces"
+import type { IDateOptions } from '../../interfaces/Commons/date.interface'
+import type { ILocaleInstance } from '../../interfaces/Commons/locale.interface'
 
-import { DateAdapter } from "../../classes"
+import { DateAdapter } from '../../classes/Commons/date-adapter.class'
 
-import { createInstance, mergeDeep } from "../../utils"
+import { mergeDeep } from '../../utils/Commons/commons.util'
+import { createInstance } from '../../utils/Commons/date.util'
 
 /*********************************************************
  * createDate

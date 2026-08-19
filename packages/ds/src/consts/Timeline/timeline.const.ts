@@ -1,5 +1,5 @@
 import type { InjectionKey } from 'vue'
-import type { ITimelineContext } from '../../interfaces'
+import type { ITimelineContext } from '../../interfaces/Timeline/timeline.interface'
 
 /**
  * Injection key for the OrigamTimeline → OrigamTimelineItem context.

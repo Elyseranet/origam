@@ -1,14 +1,11 @@
 import type { Ref } from 'vue'
 import { capitalize, inject, provide, ref, watchEffect } from 'vue'
-import { ORIGAM_DATA_TABLE_HEADERS_KEY } from '../../consts'
-import type {
-    IDataTableHeader,
-    IDataTableHeaderProps,
-    IDataTableSortItem,
-    IInternalDataTableHeader
-} from '../../interfaces'
-import type { TDataTableCompareFunction, TFilterKeyFunctions } from '../../types'
-import { convertToInternalHeaders, extractKeys, getHeaderDepth, parseFixedColumns, parseHeaderItems } from '../../utils'
+import { ORIGAM_DATA_TABLE_HEADERS_KEY } from '../../consts/DataTable/data-table.const'
+import type { IDataTableHeader, IDataTableHeaderProps, IInternalDataTableHeader } from '../../interfaces/DataTable/data-table-header.interface'
+import type { IDataTableSortItem } from '../../interfaces/DataTable/sort.interface'
+import type { TFilterKeyFunctions } from '../../types/Commons/filters.type'
+import type { TDataTableCompareFunction } from '../../types/DataTable/data-table.type'
+import { convertToInternalHeaders, extractKeys, getHeaderDepth, parseFixedColumns, parseHeaderItems } from '../../utils/DataTable/headers.util'
 
 /*********************************************************
  * createHeaders

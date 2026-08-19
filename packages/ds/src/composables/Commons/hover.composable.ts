@@ -1,9 +1,10 @@
 import { computed, ref, watch } from "vue"
 import type { ComputedRef } from "vue"
 
-import type { IHoverProps, IHoverState } from "../../interfaces"
+import type { IHoverProps } from '../../interfaces/Commons/hover.interface'
+import type { IHoverState } from '../../interfaces/Commons/state-effect.interface'
 
-import { getCurrentInstanceName } from "../../utils"
+import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.util'
 
 /**
  * Track whether the host element is being hovered AND expose any

@@ -1,6 +1,6 @@
 import { AXIS, PARALLAX_ELEMENT_TYPE } from '../../enums'
 
-import type { IParallaxElementProps } from '../../interfaces'
+import type { IParallaxElementProps } from '../../interfaces/Parallax/parallax-element.interface'
 
 import { computed } from 'vue'
 

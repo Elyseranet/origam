@@ -1,5 +1,5 @@
 import { TEXTAREA_TOOLBAR_COMMAND } from '../../enums'
-import type { TTextareaToolbarCommand } from '../../types'
+import type { TTextareaToolbarCommand } from '../../types/TextareaField/textarea-field-rich-toolbar.type'
 
 /**
  * Default set of toolbar buttons surfaced when the consumer enables

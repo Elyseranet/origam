@@ -1,8 +1,11 @@
 import { MaybeRef, onBeforeUnmount, toValue, watch } from "vue"
-import { IN_BROWSER, KEYBOARD_MODIFIERS } from "../../consts"
-import { IHotkeyOptions } from "../../interfaces"
-import { TKeyboardModifiers } from "../../types"
-import { consoleWarn, getCurrentInstance, splitKeyCombination, splitKeySequence } from "../../utils"
+import { IN_BROWSER } from '../../consts/Commons/commons.const'
+import { KEYBOARD_MODIFIERS } from '../../consts/Commons/hotkey.const'
+import { IHotkeyOptions } from '../../interfaces/Commons/hotkey.interface'
+import { TKeyboardModifiers } from '../../types/Commons/hotkey.type'
+import { consoleWarn } from '../../utils/Commons/console.util'
+import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
+import { splitKeyCombination, splitKeySequence } from '../../utils/Commons/hotkey.util'
 
 /*********************************************************
  * useHotkey

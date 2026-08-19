@@ -1,6 +1,7 @@
 import type { ComputedRef } from 'vue'
 import { computed } from 'vue'
-import type { TColor, TIntent } from '../../types'
+import type { TColor } from '../../types/Commons/color.type'
+import type { TIntent } from '../../types/Commons/intent.type'
 // Explicit `.ts` extension: a stale sibling `color.util.js` lingers in
 // the source tree (legacy build artefact) and the module resolver picks
 // it up first when no extension is given — that older file lacks the

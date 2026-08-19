@@ -7,11 +7,7 @@ import {
     unref
 } from 'vue'
 
-import type {
-    IUseInlineEditOptions,
-    TInlineEditRule,
-    TInlineEditValidator
-} from '../../interfaces'
+import type { IUseInlineEditOptions, TInlineEditRule, TInlineEditValidator } from '../../interfaces/InlineEdit/inline-edit.interface'
 
 /**
  * Coerce any v-model value into a string for the input draft. Numbers

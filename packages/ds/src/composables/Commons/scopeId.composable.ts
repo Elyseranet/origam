@@ -1,4 +1,4 @@
-import { getCurrentInstance } from '../../utils'
+import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
 
 /*********************************************************
  * useScopeId

@@ -1,8 +1,10 @@
 import { computed } from "vue"
-import { useDate, useVModel } from "../../composables"
-import type { ICalendarProps, IDay } from "../../interfaces"
-import { DateAdapter } from "../../classes"
-import { getWeek, wrapInArray } from "../../utils"
+import { useDate } from './date.composable'
+import { useVModel } from './vModel.composable'
+import type { ICalendarProps, IDay } from '../../interfaces/DatePicker/date-picker-calendar.interface'
+import { DateAdapter } from '../../classes/Commons/date-adapter.class'
+import { wrapInArray } from '../../utils/Commons/commons.util'
+import { getWeek } from '../../utils/Commons/date.util'
 
 /*********************************************************
  * useDatePickerCalendar

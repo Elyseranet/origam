@@ -1,9 +1,10 @@
 import { inject, provide, toRef } from 'vue'
-import { useVModel } from '../../composables'
+import { useVModel } from '../Commons/vModel.composable'
 
-import { ORIGAM_DATA_TABLE_EXPAND_KEY } from '../../consts'
+import { ORIGAM_DATA_TABLE_EXPAND_KEY } from '../../consts/DataTable/data-table.const'
 
-import type { IDataTableExpandProps, IDataTableItem, IDataTableProvideExpanded } from '../../interfaces'
+import type { IDataTableExpandProps, IDataTableProvideExpanded } from '../../interfaces/DataTable/expand.interface'
+import type { IDataTableItem } from '../../interfaces/DataTable/items.interface'
 
 /*********************************************************
  * provideExpanded

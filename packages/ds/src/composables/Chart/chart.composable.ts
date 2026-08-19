@@ -5,26 +5,15 @@ import {
     type Ref
 } from 'vue'
 
-import type {
-    IChartAnnotation,
-    IChartAnnotationGeo,
-    IChartLegendItem,
-    IChartPath,
-    IChartPlotBand,
-    IChartPlotLine,
-    IChartPoint,
-    IChartScales,
-    IChartSeries,
-    IChartTick,
-    IUseChartOptions
-} from '../../interfaces'
+import type { IChartAnnotation, IChartAnnotationGeo } from '../../interfaces/Chart/chart-annotation.interface'
+import type { IChartPlotBand } from '../../interfaces/Chart/chart-plot-band.interface'
+import type { IChartPlotLine } from '../../interfaces/Chart/chart-plot-line.interface'
+import type { IChartPoint } from '../../interfaces/Chart/chart-point.interface'
+import type { IChartSeries } from '../../interfaces/Chart/chart-series.interface'
+import type { IChartLegendItem, IChartPath, IChartScales, IChartTick, IUseChartOptions } from '../../interfaces/Chart/chart.interface'
 
-import type {
-    TChartSmoothing,
-    TChartStacking,
-    TChartType,
-    TIntent
-} from '../../types'
+import type { TChartSmoothing, TChartStacking, TChartType } from '../../types/Chart/chart.type'
+import type { TIntent } from '../../types/Commons/intent.type'
 
 import { CHART_STACKING } from '../../enums'
 

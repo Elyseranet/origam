@@ -1,6 +1,7 @@
 import { BRACKET_MATCH_STATUS, BRACKET_VARIANT } from '../../enums'
 
-import type { TBracketMatchStatus, TBracketVariant } from '../../types'
+import type { TBracketMatchStatus } from '../../types/Bracket/bracket-match.type'
+import type { TBracketVariant } from '../../types/Bracket/bracket.type'
 
 /**
  * Closed list of valid `variant` values for `OrigamBracket`. Exposed so

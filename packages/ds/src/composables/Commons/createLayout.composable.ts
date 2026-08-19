@@ -1,9 +1,11 @@
 import type { ComponentInternalInstance, CSSProperties, Ref, StyleValue } from 'vue'
 import { computed, inject, onMounted, provide, reactive, ref, shallowRef } from 'vue'
-import { useResizeObserver } from '../../composables'
-import { ORIGAM_LAYOUT_KEY, ROOT_ZINDEX } from '../../consts'
-import type { TDirectionBoth } from '../../types'
-import { convertToUnit, findChildrenWithProvide, generateLayers, getCurrentInstance, getUid, int } from '../../utils'
+import { useResizeObserver } from './resizeObserver.composable'
+import { ORIGAM_LAYOUT_KEY, ROOT_ZINDEX } from '../../consts/Commons/layout.const'
+import type { TDirectionBoth } from '../../types/Commons/anchor.type'
+import { convertToUnit, findChildrenWithProvide, int } from '../../utils/Commons/commons.util'
+import { getCurrentInstance, getUid } from '../../utils/Commons/getCurrentInstance.util'
+import { generateLayers } from '../../utils/Commons/layout.util'
 
 /*********************************************************
  * useCreateLayout

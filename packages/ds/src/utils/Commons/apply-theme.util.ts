@@ -1,6 +1,9 @@
-import type { IOrigamTheme } from '../../interfaces'
+import type { IOrigamTheme } from '../../interfaces/Commons/theme.interface'
 
-import type { ISemanticTree, IThemeVars, TInstalledThemes, TModeResolved, TSemanticLeaf, TThemeVars } from '../../types'
+import type { TInstalledThemes } from '../../types/Commons/installed-theme.type'
+import type { ISemanticTree, IThemeVars, TSemanticLeaf } from '../../types/Commons/semantic-tree.type'
+import type { TModeResolved } from '../../types/Commons/theme.type'
+import type { TThemeVars } from '../../types/Commons/token-tree.type'
 
 import { tokenPathToCssVar } from './token-name.util'
 

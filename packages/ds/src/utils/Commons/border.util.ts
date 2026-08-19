@@ -1,5 +1,8 @@
-import { BORDER_REGEX } from '../../consts'
-import type { TBorderLogicalAxis, TColor, TDirectionBoth, TIntent } from '../../types'
+import { BORDER_REGEX } from '../../consts/Commons/border.const'
+import type { TDirectionBoth } from '../../types/Commons/anchor.type'
+import type { TBorderLogicalAxis } from '../../types/Commons/border.type'
+import type { TColor } from '../../types/Commons/color.type'
+import type { TIntent } from '../../types/Commons/intent.type'
 
 import { isEmpty } from './commons.util'
 import { isCssColor, isIntent, tokenForegroundForIntent } from './color.util'

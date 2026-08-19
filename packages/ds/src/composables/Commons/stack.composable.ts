@@ -1,8 +1,8 @@
-import { useToggleScope } from '../../composables'
-import { GLOBAL_STACK, ORIGAM_STACK_KEY } from '../../consts'
-import type { IStackProvide } from "../../interfaces"
+import { useToggleScope } from './toggleScope.composable'
+import { GLOBAL_STACK, ORIGAM_STACK_KEY } from '../../consts/Commons/stack.const'
+import type { IStackProvide } from '../../interfaces/Commons/stack.interface'
 
-import { getCurrentInstance } from '../../utils'
+import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
 
 import { computed, inject, onScopeDispose, provide, reactive, readonly, Ref, shallowRef, toRaw, watchEffect } from 'vue'
 

@@ -1,10 +1,12 @@
 import { ComponentPublicInstance, computed, inject } from "vue"
-import { useRtl } from "../../composables"
-import { ORIGAM_GO_TO_KEY } from "../../consts"
+import { useRtl } from './rtl.composable'
+import { ORIGAM_GO_TO_KEY } from '../../consts/Commons/goTo.const'
 
-import type { IGoToInstance, IGoToOptions, ILocaleInstance, IRtlInstance } from "../../interfaces"
+import type { IGoToInstance, IGoToOptions } from '../../interfaces/Commons/goTo.interface'
+import type { ILocaleInstance, IRtlInstance } from '../../interfaces/Commons/locale.interface'
 
-import { genDefaults, mergeDeep, scrollTo } from "../../utils"
+import { mergeDeep } from '../../utils/Commons/commons.util'
+import { genDefaults, scrollTo } from '../../utils/Commons/goTo.util'
 
 /*********************************************************
  * createGoTo

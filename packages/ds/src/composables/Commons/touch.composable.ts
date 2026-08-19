@@ -1,6 +1,6 @@
-import { useVelocity } from '../../composables'
+import { useVelocity } from './velocity.composable'
 
-import { oops } from '../../utils'
+import { oops } from '../../utils/Commons/commons.util'
 
 import { computed, onBeforeUnmount, onMounted, Ref, shallowRef } from 'vue'
 

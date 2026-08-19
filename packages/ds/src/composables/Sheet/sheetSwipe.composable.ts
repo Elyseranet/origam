@@ -8,8 +8,9 @@ import {
 } from 'vue'
 
 import { DEFAULT_SHEET_SNAP_POINTS, SHEET_FAST_FLICK_THRESHOLD as FAST_FLICK_THRESHOLD } from '../../consts/Sheet/sheet.const'
-import type { ISheetSwipeOptions, ISheetSwipeReturn } from '../../interfaces'
-import type { TSheetSnapId, TSheetSnapPoint } from '../../types'
+import type { ISheetSwipeOptions } from '../../interfaces/Sheet/sheet-swipe-options.interface'
+import type { ISheetSwipeReturn } from '../../interfaces/Sheet/sheet-swipe-return.interface'
+import type { TSheetSnapId, TSheetSnapPoint } from '../../types/Sheet/sheet.type'
 
 // Re-export so existing `import { DEFAULT_SHEET_SNAP_POINTS } from
 // '@/composables'` callsites continue to resolve. The const itself

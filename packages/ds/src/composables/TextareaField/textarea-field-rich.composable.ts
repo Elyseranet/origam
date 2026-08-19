@@ -2,14 +2,11 @@ import { onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 
 import { TEXTAREA_TOOLBAR_COMMAND } from '../../enums'
 
-import type {
-    ITextareaRichActiveState,
-    IUseTextareaRichOptions
-} from '../../interfaces'
+import type { ITextareaRichActiveState, IUseTextareaRichOptions } from '../../interfaces/TextareaField/textarea-field-rich.interface'
 
-import type { TTextareaToolbarCommand } from '../../types'
+import type { TTextareaToolbarCommand } from '../../types/TextareaField/textarea-field-rich-toolbar.type'
 
-import { sanitizeHtml } from '../../utils'
+import { sanitizeHtml } from '../../utils/TextareaField/sanitize-html.util'
 
 /**
  * Owns the runtime contract of the rich-text textarea:

@@ -1,24 +1,16 @@
 import { computed, isRef, Ref } from 'vue'
 
-import {
-    BORDER_RADIUS_REGEX,
-    NAMED_RADIUS_TOKEN,
-    PREDEFINED_ROUNDED,
-    ROUNDED_CORNER_MAP,
-    UTILITY_RADIUS_FALLBACK
-} from '../../consts'
+import { BORDER_RADIUS_REGEX, PREDEFINED_ROUNDED } from '../../consts/Commons/rounded.const'
+import { NAMED_RADIUS_TOKEN, ROUNDED_CORNER_MAP, UTILITY_RADIUS_FALLBACK } from '../../consts/Commons/spacing.const'
 
-import type { IRoundedProps } from '../../interfaces'
+import type { IRoundedProps } from '../../interfaces/Commons/rounded.interface'
 
-import type { TRounded } from '../../types'
+import type { TRounded } from '../../types/Commons/rounded.type'
 
-import {
-    convertToUnit,
-    formatRoundedStylesVar,
-    getCurrentInstanceName,
-    isCustomBorderRadius,
-    resolveRoundedCornerValue
-} from '../../utils'
+import { convertToUnit } from '../../utils/Commons/commons.util'
+import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.util'
+import { formatRoundedStylesVar, isCustomBorderRadius } from '../../utils/Commons/rounded.util'
+import { resolveRoundedCornerValue } from '../../utils/Commons/spacing.util'
 
 /**
  * Whether `value` names a rung for which a global utility class exists in

@@ -1,7 +1,8 @@
 import type { EffectScope } from 'vue'
 import { effectScope, nextTick, onScopeDispose, watchEffect } from 'vue'
-import { IN_BROWSER, SCROLL_STRATEGIES } from '../../consts'
-import type { IScrollStrategyData, IScrollStrategyProps } from '../../interfaces'
+import { IN_BROWSER } from '../../consts/Commons/commons.const'
+import { SCROLL_STRATEGIES } from '../../consts/Commons/scroll.const'
+import type { IScrollStrategyData, IScrollStrategyProps } from '../../interfaces/Commons/scroll.interface'
 
 /*********************************************************
  * useScrollStrategies

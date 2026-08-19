@@ -3,7 +3,7 @@ import {
     type ComputedRef
 } from 'vue'
 
-import type { IChartGaugeGeometry, IUseChartGaugeOptions } from '../../interfaces'
+import type { IChartGaugeGeometry, IUseChartGaugeOptions } from '../../interfaces/Chart/chart-gauge.interface'
 
 import { arcPath } from '../../utils/Chart/path.util'
 

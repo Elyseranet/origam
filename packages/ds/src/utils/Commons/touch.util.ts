@@ -1,6 +1,6 @@
-import type { ITouchHandlers, ITouchStoredHandlers } from '../../interfaces'
+import type { ITouchHandlers, ITouchStoredHandlers } from '../../interfaces/Commons/touch.interface'
 
-import type { TTouchWrapper } from '../../types'
+import type { TTouchWrapper } from '../../types/Commons/touch.type'
 
 /**
  * Handle gesture.

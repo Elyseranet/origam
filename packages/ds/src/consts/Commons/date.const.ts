@@ -1,5 +1,5 @@
 import type { InjectionKey } from "vue"
-import type { IDateInstance, IDateOptions } from "../../interfaces"
+import type { IDateInstance, IDateOptions } from '../../interfaces/Commons/date.interface'
 
 export const ORIGAM_DATE_OPTIONS_KEY: InjectionKey<IDateOptions> = Symbol.for('origam:date-options')
 export const ORIGAM_DATE_ADAPTER_KEY: InjectionKey<IDateInstance> = Symbol.for('origam:date-adapter')

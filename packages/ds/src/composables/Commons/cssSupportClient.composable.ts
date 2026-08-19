@@ -1,8 +1,8 @@
 import type { Ref } from 'vue'
 import { onMounted, ref } from 'vue'
 import { FEATURE_QUERIES } from '../../consts/Commons/css-support.const'
-import type { IUseCssSupportClientOptions } from '../../interfaces'
-import type { TCssFeatureName } from '../../types'
+import type { IUseCssSupportClientOptions } from '../../interfaces/Commons/css-support.interface'
+import type { TCssFeatureName } from '../../types/Commons/css-support.type'
 import { rawSupports } from '../../utils/Commons/css-support.util'
 
 // ────────────────────────────────────────────────────────────────────────────

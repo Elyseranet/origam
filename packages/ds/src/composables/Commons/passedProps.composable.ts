@@ -1,4 +1,5 @@
-import { camelize, getCurrentInstance } from '../../utils'
+import { camelize } from '../../utils/Commons/commons.util'
+import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
 
 /*********************************************************
  * usePassedProps

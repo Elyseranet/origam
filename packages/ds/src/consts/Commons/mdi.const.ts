@@ -1,7 +1,7 @@
 import { h } from 'vue'
-import { OrigamClassIcon } from '../../components'
+import { OrigamClassIcon } from '../../components/Icon/index'
 import { MDI_ICONS } from '../../enums'
-import type { IIconAliases, IIconSet } from '../../interfaces'
+import type { IIconAliases, IIconSet } from '../../interfaces/Icon/icon.interface'
 
 export const MDI: IIconSet = {
     // The MDI font CSS exposes each glyph as `.mdi-<name>` (e.g. `.mdi-magnify`).

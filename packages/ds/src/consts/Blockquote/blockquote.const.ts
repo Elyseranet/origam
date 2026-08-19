@@ -1,6 +1,6 @@
 import { BLOCKQUOTE_LANG, BLOCKQUOTE_VARIANT } from '../../enums'
 
-import type { TBlockquoteAlign, TBlockquoteLang, TBlockquoteVariant } from '../../types'
+import type { TBlockquoteAlign, TBlockquoteLang, TBlockquoteVariant } from '../../types/Blockquote/blockquote.type'
 
 /**
  * Closed list of valid `variant` values for `<OrigamBlockquote>`.

@@ -20,20 +20,12 @@ import {
     VNodeChild,
     watchEffect
 } from 'vue'
-import { IN_BROWSER, ON_REGEX } from '../../consts'
+import { IN_BROWSER, ON_REGEX } from '../../consts/Commons/commons.const'
 
 import { FOCUS_LOCATION } from '../../enums'
 
-import {
-    TClientPosition,
-    TFn,
-    TFocusLocation,
-    TNotAUnion,
-    TSelectItemKey,
-    TTemplateRef,
-    TWrapInArrayResult
-} from '../../types'
-import { getLifeCycleTarget } from "../../utils"
+import { TClientPosition, TFn, TFocusLocation, TNotAUnion, TSelectItemKey, TTemplateRef, TWrapInArrayResult } from '../../types/Commons/commons.type'
+import { getLifeCycleTarget } from './getCurrentInstance.util'
 
 /**
  * Convert to unit.

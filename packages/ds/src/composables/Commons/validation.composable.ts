@@ -1,10 +1,12 @@
-import { useToggleScope, useVModel } from '../../composables'
+import { useToggleScope } from './toggleScope.composable'
+import { useVModel } from './vModel.composable'
 
-import { ORIGAM_FORM_KEY } from '../../consts'
+import { ORIGAM_FORM_KEY } from '../../consts/Form/form.const'
 
-import type { IValidationProps } from '../../interfaces'
+import type { IValidationProps } from '../../interfaces/Commons/validation.interface'
 
-import { getCurrentInstance, getCurrentInstanceName, getUid, wrapInArray } from '../../utils'
+import { wrapInArray } from '../../utils/Commons/commons.util'
+import { getCurrentInstance, getCurrentInstanceName, getUid } from '../../utils/Commons/getCurrentInstance.util'
 
 import {
     computed,

@@ -1,6 +1,6 @@
 import { computed } from 'vue'
 
-import type { ITypographyProps } from '../../interfaces'
+import type { ITypographyProps } from '../../interfaces/Commons/typography.interface'
 
 /**
  * useTypography — cross-cutting typography surface, the font counterpart of

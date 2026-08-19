@@ -1,8 +1,9 @@
 import { computed, inject, provide, ref, type Ref } from 'vue'
 
-import { ORIGAM_DEFAULTS_KEY } from '../../consts'
-import type { IDefault } from '../../interfaces'
-import { getCurrentInstanceName, mergeDeep } from '../../utils'
+import { ORIGAM_DEFAULTS_KEY } from '../../consts/Commons/defaults.const'
+import type { IDefault } from '../../interfaces/DefaultsProvider/defaults-provider.interface'
+import { mergeDeep } from '../../utils/Commons/commons.util'
+import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.util'
 import { usePassedProps } from './passedProps.composable'
 
 // ────────────────────────────────────────────────────────────────────────────

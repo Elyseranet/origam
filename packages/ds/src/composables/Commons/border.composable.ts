@@ -1,18 +1,13 @@
 import { computed, isRef, Ref } from 'vue'
-import { BORDER_LOGICAL_AXIS_MAP, BORDER_POSITION_MAP, BORDER_REGEX, DIRECTION_ARRAY } from '../../consts'
+import { DIRECTION_ARRAY } from '../../consts/Commons/anchor.const'
+import { BORDER_LOGICAL_AXIS_MAP, BORDER_POSITION_MAP, BORDER_REGEX } from '../../consts/Commons/border.const'
 
-import type { IBorderProps } from '../../interfaces'
-import { TDirectionBoth } from "../../types"
+import type { IBorderProps } from '../../interfaces/Commons/border.interface'
+import { TDirectionBoth } from '../../types/Commons/anchor.type'
 
-import {
-    convertToUnit,
-    formatBorderPositionStylesVar,
-    formatBorderStylesVar,
-    getCurrentInstanceName,
-    isEmpty,
-    parseBorderPositionValue,
-    resolveBorderSideColor
-} from '../../utils'
+import { formatBorderPositionStylesVar, formatBorderStylesVar, parseBorderPositionValue, resolveBorderSideColor } from '../../utils/Commons/border.util'
+import { convertToUnit, isEmpty } from '../../utils/Commons/commons.util'
+import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.util'
 
 /**
  * Set of border values for which a global utility class exists in

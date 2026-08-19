@@ -1,11 +1,12 @@
 import { computed, inject, Ref, unref } from 'vue'
-import { OrigamComponentIcon, OrigamSvgIcon } from '../../components'
+import { OrigamComponentIcon, OrigamSvgIcon } from '../../components/Icon/index'
 
-import { DEFAULT_SETS, MDI, MDI_ALIASES, ORIGAM_ICONS_KEY } from '../../consts'
+import { MDI, MDI_ALIASES } from '../../consts/Commons/mdi.const'
+import { DEFAULT_SETS, ORIGAM_ICONS_KEY } from '../../consts/Icon/icon.const'
 
-import type { TIcon, TIconInstance, TIconOptions } from '../../types'
+import type { TIcon, TIconInstance, TIconOptions } from '../../types/Icon/icon.type'
 
-import { mergeDeep } from '../../utils'
+import { mergeDeep } from '../../utils/Commons/commons.util'
 
 export const useIcon = (props: Ref<TIcon | undefined>) => {
     const icons = inject(ORIGAM_ICONS_KEY)

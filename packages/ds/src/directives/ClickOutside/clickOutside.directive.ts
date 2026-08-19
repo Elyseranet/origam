@@ -1,5 +1,5 @@
-import type { IClickOutsideDirectiveBinding } from '../../interfaces'
-import { checkEvent, directive, handleShadow } from '../../utils'
+import type { IClickOutsideDirectiveBinding } from '../../interfaces/Commons/clickOutside.interface'
+import { checkEvent, directive, handleShadow } from '../../utils/Commons/clickOutside.util'
 
 export const ClickOutside = {
     // [data-app] may not be found

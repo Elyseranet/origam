@@ -1,4 +1,4 @@
-import type { TNestedProvide, TStrategyOpen } from '../../types'
+import type { TNestedProvide, TStrategyOpen } from '../../types/Commons/nested.type'
 
 import type { InjectionKey } from 'vue'
 import { ref, shallowRef } from 'vue'

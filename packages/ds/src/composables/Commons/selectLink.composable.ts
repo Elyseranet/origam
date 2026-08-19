@@ -1,4 +1,4 @@
-import type { IUseLink } from '../../interfaces'
+import type { IUseLink } from '../../interfaces/Commons/link.interface'
 
 import { nextTick, onMounted, watch } from 'vue'
 

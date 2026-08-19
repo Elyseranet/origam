@@ -1,5 +1,5 @@
 import { KEYBOARD_MODIFIERS_KEY } from "../../enums"
-import { TKeyboardModifiers } from "../../types"
+import { TKeyboardModifiers } from '../../types/Commons/hotkey.type'
 
 export const KEYBOARD_MODIFIERS: TKeyboardModifiers[] = [KEYBOARD_MODIFIERS_KEY.CONTROL, KEYBOARD_MODIFIERS_KEY.SHIFT, KEYBOARD_MODIFIERS_KEY.ALT, KEYBOARD_MODIFIERS_KEY.META, KEYBOARD_MODIFIERS_KEY.COMMAND]
 

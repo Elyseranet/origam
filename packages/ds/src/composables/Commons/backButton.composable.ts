@@ -1,6 +1,6 @@
 import { nextTick, onScopeDispose } from 'vue'
 import type { NavigationGuardNext, Router } from 'vue-router'
-import { IN_BROWSER } from '../../consts'
+import { IN_BROWSER } from '../../consts/Commons/commons.const'
 
 // Module-scoped, shared across every `useBackButton` call site (there is
 // only ever one physical back button / popstate listener per app) — NOT

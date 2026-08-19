@@ -1,6 +1,7 @@
-import type { IDataTableItem, IDataTableItemsProps, IInternalDataTableHeader } from '../../interfaces'
+import type { IInternalDataTableHeader } from '../../interfaces/DataTable/data-table-header.interface'
+import type { IDataTableItem, IDataTableItemsProps } from '../../interfaces/DataTable/items.interface'
 
-import { getPropertyFromItem } from '../../utils'
+import { getPropertyFromItem } from '../Commons/commons.util'
 
 /**
  * Transform data table items.

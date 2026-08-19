@@ -1,4 +1,4 @@
-import type { IParallaxLayerProvide } from '../../interfaces'
+import type { IParallaxLayerProvide } from '../../interfaces/Parallax/parallax.interface'
 
 import type { InjectionKey } from 'vue'
 

@@ -1,8 +1,8 @@
 import { computed } from 'vue'
-import { OPPOSITE_MAP } from '../../consts'
-import type { ILocationProps } from '../../interfaces'
-import type { TAnchor } from '../../types'
-import { parseAnchor } from '../../utils'
+import { OPPOSITE_MAP } from '../../consts/Commons/location.const'
+import type { ILocationProps } from '../../interfaces/Commons/location.interface'
+import type { TAnchor } from '../../types/Commons/anchor.type'
+import { parseAnchor } from '../../utils/Commons/anchor.util'
 
 /*********************************************************
  * useLocation

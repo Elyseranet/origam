@@ -1,22 +1,11 @@
 import { computed, onBeforeUnmount, provide, ref, shallowRef } from 'vue'
-import { useVModel } from '../../composables'
-import {
-    LIST_OPEN_STRATEGY,
-    MULTIPLE_OPEN_STRATEGY,
-    ORIGAM_NESTED_KEY,
-    SINGLE_OPEN_STRATEGY
-} from '../../consts'
+import { useVModel } from './vModel.composable'
+import { LIST_OPEN_STRATEGY, MULTIPLE_OPEN_STRATEGY, ORIGAM_NESTED_KEY, SINGLE_OPEN_STRATEGY } from '../../consts/Commons/nested.const'
 import { OPEN_STRATEGY, SELECTED, SELECT_STRATEGY } from '../../enums'
-import type { INestedProps } from '../../interfaces'
-import type { TNestedProvide } from '../../types'
-import {
-    classicSelectStrategy,
-    getCurrentInstance,
-    independentSelectStrategy,
-    independentSingleSelectStrategy,
-    leafSelectStrategy,
-    leafSingleSelectStrategy
-} from '../../utils'
+import type { INestedProps } from '../../interfaces/Commons/nested.interface'
+import type { TNestedProvide } from '../../types/Commons/nested.type'
+import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
+import { classicSelectStrategy, independentSelectStrategy, independentSingleSelectStrategy, leafSelectStrategy, leafSingleSelectStrategy } from '../../utils/Commons/nested.util'
 
 /*********************************************************
  * useNested

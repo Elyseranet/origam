@@ -7,11 +7,7 @@ import {
 
 import { shouldSuppressAutoplay as shouldSuppressAutoplayBase, useMediaPlayer } from '../Media/use-media-player.composable'
 
-import type {
-    IUseVideoPlayerOptions,
-    IVideoPlayerMethods,
-    IVideoPlayerState
-} from '../../interfaces'
+import type { IUseVideoPlayerOptions, IVideoPlayerMethods, IVideoPlayerState } from '../../interfaces/Video/video.interface'
 
 /**
  * Inline default kept for the SFC `withDefaults` host — see CLAUDE.md

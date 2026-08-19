@@ -26,9 +26,9 @@
  * inside a `computed`.
  */
 
-import type { IFuzzyMatchResult } from '../../interfaces'
+import type { IFuzzyMatchResult } from '../../interfaces/CommandPalette/command.interface'
 
-export type { IFuzzyMatchResult } from '../../interfaces'
+export type { IFuzzyMatchResult } from '../../interfaces/CommandPalette/command.interface'
 
 /**
  * Bonus weights — tuned by hand against typical command-palette

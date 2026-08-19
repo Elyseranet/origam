@@ -1,6 +1,6 @@
 import type { Directive, DirectiveBinding } from 'vue'
 
-import type { IContrastOptions } from '../../interfaces'
+import type { IContrastOptions } from '../../interfaces/Commons/commons.interface'
 
 /**
  * Module-level contrast config, set once by `createOrigam({ contrast })`.

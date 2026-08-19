@@ -1,10 +1,4 @@
-import {
-    ALLOWED_ATTRIBUTES,
-    ALLOWED_CLASS_PREFIX,
-    ALLOWED_TAGS,
-    ALLOWED_URL_SCHEMES,
-    BLOCKED_TAGS
-} from '../../consts'
+import { ALLOWED_ATTRIBUTES, ALLOWED_CLASS_PREFIX, ALLOWED_TAGS, ALLOWED_URL_SCHEMES, BLOCKED_TAGS } from '../../consts/TextareaField/textarea-field.const'
 
 /**
  * In-house HTML sanitiser used by `OrigamTextareaField` in `mode="rich"`.
