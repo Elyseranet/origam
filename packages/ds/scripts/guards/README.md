@@ -40,6 +40,22 @@ text directly. The full suite runs in under a second.
 | 7 | `emits-completeness.mjs` | Every REACHABLE `update:*` — including those a relay composable emits on the component's behalf — is declared by its emits interface | 5 |
 | 8 | `no-usedefaults-in-components.mjs` | No component calls `useDefaults()` — the ADR-005 resolver already merges theme and provider defaults into `instance.props` | 0 |
 | 9 | `layer-folders.mjs` | Every sub-folder of the six declaration layers names a real component, or is `Commons` | 0 |
+| 10 | `seed-source-paths.mjs` | Every `source_file` / `sourceFile` in the marketing seed points at a file that exists | 1 |
+
+Guard 10 exists because moving a declaration file silently breaks the
+marketing catalogue, and nothing else notices. Measured on the #368 merge:
+8 dead paths before, **84 after** — 76 links broken in a single merge, with
+the full unit suite, the type-check and the other nine guards all green over
+it. The damage is not only a dead "view source" link: `source_file` is part
+of how a regeneration recognises an existing entry, so a stale path makes
+the symbol look NEW — the sync inserts a duplicate and orphans the old row.
+
+Its single baselined entry is a **real, pre-existing defect, not an
+exemption**: the Media family's token doc points at
+`packages/ds/tokens/component/media.json`, a file that has never existed
+(the real ones are `media-controller.json` and `media-scrubber.json`). It is
+baselined rather than patched because picking the replacement is a content
+decision — one of the two files, or a split — not a mechanical rewrite.
 
 Guard 9 is folder-level where guard 4 is file-level, and the pair is
 complementary: a correctly-named file inside a misspelled folder passes 4

@@ -50,9 +50,17 @@ import type { TCssFeatureName, TCssSupportMap } from '../../types'
 const _cache = new Map<string, boolean>()
 let _initialized = false
 
-// `FEATURE_QUERIES` lives in `src/consts/CssSupport/css-support.const.ts`.
-// The matrix is intentionally an `as const satisfies` literal so the
-// `TCssFeatureName` derivation below stays narrow.
+/*********************************************************
+ * FEATURE_QUERIES
+ *
+ * @description
+ * La matrice vit dans `src/consts/Commons/css-support.const.ts`, aux côtés
+ * du type et de l'interface du même sous-système — tous dans `Commons/`,
+ * puisqu'aucun composant ne s'appelle `OrigamCssSupport`.
+ * @description
+ * C'est délibérément un littéral `as const satisfies` : c'est ce qui garde
+ * la dérivation de `TCssFeatureName` étroite plutôt que `string`.
+ ********************************************************/
 
 export type { TCssFeatureName, TCssSupportMap } from '../../types'
 export type { IUseCssSupport, IUseCssSupportClientOptions } from '../../interfaces'

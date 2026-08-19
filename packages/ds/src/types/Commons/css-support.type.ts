@@ -16,11 +16,11 @@ import { FEATURE_QUERIES } from '../../consts/Commons/css-support.const'
  * exempts that directory: a file there is deliberately not tied to one
  * component, and no `OrigamCssSupport` exists to name it after).
  *
- * The matching `FEATURE_QUERIES` const sits in `consts/CssSupport/`
- * under its own documented exemption in the same guard. Sibling
- * directories would have been more symmetrical, but that needs the
- * guard's `exemptDirs` widened to `types/CssSupport` — a guard change,
- * which is a lead's call, not a side effect of moving a type.
+ * The matching `FEATURE_QUERIES` const sits in `consts/Commons/`, and the
+ * interfaces in `interfaces/Commons/`. That symmetry is recent: the three
+ * used to live in per-layer `CssSupport/` folders, each costing its own
+ * exemption in two guards. Issue #368 merged them into `Commons/`, which
+ * is what let both exemption lists collapse to `['Commons']`.
  */
 export type TCssFeatureName = keyof typeof FEATURE_QUERIES
 

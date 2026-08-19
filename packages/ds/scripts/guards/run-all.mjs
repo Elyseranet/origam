@@ -24,7 +24,8 @@ const GUARDS = [
     'raw-props-usage.mjs',
     'no-usedefaults-in-components.mjs',
     'emits-completeness.mjs',
-    'layer-folders.mjs'
+    'layer-folders.mjs',
+    'seed-source-paths.mjs'
 ]
 
 let failed = 0
