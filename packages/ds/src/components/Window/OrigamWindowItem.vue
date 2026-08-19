@@ -5,8 +5,8 @@
 	>
 		<div
 				v-show="isShown"
-				v-touch
 				:id="id"
+				v-touch
 				:class="windowItemClasses"
 				:style="windowItemStyles"
 		>

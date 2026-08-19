@@ -1,7 +1,7 @@
 <template>
 	<kbd
-			v-contrast
 			:id="id"
+			v-contrast
 			:class="kbdClasses"
 			:style="kbdStyles"
 	>
