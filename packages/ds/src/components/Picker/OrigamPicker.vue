@@ -1,5 +1,6 @@
 <template>
 	<origam-sheet
+			:id="id"
 			ref="origamSheetRef"
 			:class="pickerClasses"
 			:style="pickerStyles"
@@ -129,7 +130,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(pickerStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(pickerStyles, () => props.id)
 
 
 	/*********************************************************

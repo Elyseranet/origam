@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			ref="resizeRef"
 			:aria-label="ariaLabel"
 			:class="paginationClasses"
@@ -704,7 +705,7 @@
 			props.style
 		] as StyleValue
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(paginationStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(paginationStyles, () => props.id)
 
 
 	/*********************************************************

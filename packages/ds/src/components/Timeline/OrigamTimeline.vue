@@ -1,6 +1,7 @@
 <template>
 	<component
 		:is="tag || 'div'"
+		:id="id"
 		:class="timelineClasses"
 		:style="timelineStyles"
 		role="list"
@@ -120,7 +121,7 @@
 	const timelineStyles = computed(() => [
 		props.style
 	] as StyleValue)
-	const {id, css, load, isLoaded, unload} = useStyle(timelineStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(timelineStyles, () => props.id)
 
 
 	/*********************************************************

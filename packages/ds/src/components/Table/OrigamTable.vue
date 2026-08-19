@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="props.tag"
+			:id="id"
 			:class="tableClasses"
 			:style="tableStyles"
 			@mouseenter="onMouseenter"
@@ -135,7 +136,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(tableStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(tableStyles, () => props.id)
 
 
 	/*********************************************************

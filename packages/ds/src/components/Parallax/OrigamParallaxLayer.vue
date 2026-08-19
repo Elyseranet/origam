@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			ref="layerRef"
 			:class="layerClasses"
 			:style="layerStyles"

@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			:class="textMaskClasses"
 			:style="textMaskStyles"
 			data-cy="origam-text-mask"

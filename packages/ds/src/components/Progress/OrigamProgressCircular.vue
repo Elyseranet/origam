@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			ref="root"
 			:class="progressCircularClasses"
 			:style="progressCircularStyles"
@@ -208,7 +209,7 @@
 			loaderColorStyles.value
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(progressCircularStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(progressCircularStyles, () => props.id)
 
 
 	/*********************************************************

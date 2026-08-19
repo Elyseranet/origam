@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			ref="root"
 			:class="parallaxClasses"
 			:style="parallaxStyles"
@@ -366,7 +367,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(parallaxStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(parallaxStyles, () => props.id)
 
 	defineExpose({
 		filterProps,

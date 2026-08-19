@@ -1,5 +1,5 @@
 <template>
-	<div :class="itemClasses" :style="itemStyles" role="listitem">
+	<div :id="id" :class="itemClasses" :style="itemStyles" role="listitem">
 		<div class="origam-timeline-item__track" aria-hidden="true">
 			<div class="origam-timeline-item__dot" :style="dotStyles">
 				<slot name="dot">
@@ -176,7 +176,7 @@
 	const itemStyles = computed(() => [
 		props.style
 	] as StyleValue)
-	const {id, css, load, isLoaded, unload} = useStyle(itemStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(itemStyles, () => props.id)
 
 
 	/*********************************************************

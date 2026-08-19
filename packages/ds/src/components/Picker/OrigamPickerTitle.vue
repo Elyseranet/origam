@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			:class="pickerTitleClasses"
 			:style="pickerTitleStyles"
 	>
@@ -69,7 +70,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(pickerTitleStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(pickerTitleStyles, () => props.id)
 
 
 	/*********************************************************

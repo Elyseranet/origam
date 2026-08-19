@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			:aria-busy="isLoading || undefined"
 			:aria-label="isLoading ? 'Loading' : undefined"
 			:class="loaderClasses"
@@ -80,7 +81,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(loaderStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(loaderStyles, () => props.id)
 
 
 	/*********************************************************

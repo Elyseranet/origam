@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			class="origam-number-format"
 			:class="rootClasses"
 			:style="rootStyles"

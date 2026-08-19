@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			ref="rootEl"
 			class="origam-watermark"
 			:class="rootClasses"
