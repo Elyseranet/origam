@@ -338,9 +338,38 @@ function blankBalanced (src, openIdx) {
     return src.slice(0, openIdx) + ' '.repeat(i - openIdx) + src.slice(i)
 }
 
+/*********************************************************
+ * blankModuleSpecifiers
+ *
+ * @description
+ * Remplace par des blancs le contenu des chaînes de CHEMIN D'IMPORT, et
+ * elles seules : `from '…'`, `import '…'`, `export … from '…'`.
+ *
+ * @description
+ * Sans ça, le tokenizer ci-dessous compte les segments du chemin comme des
+ * identifiants du script. Un composant important
+ * `'../../composables/Commons/activator.composable'` produit un token
+ * `activator`, et sa prop `activator` passe pour consommée alors qu'elle ne
+ * l'est nulle part. Neuf props étaient dans ce cas — `active` (via
+ * `active.composable`), `location`, `style`, `activator` — toutes devenues
+ * invisibles à l'audit au moment où le codemod #366 a remplacé les imports
+ * de barrel par les vrais noms de fichiers.
+ *
+ * @description
+ * ⛔ NE PAS élargir aux autres chaînes. Une prop est légitimement consommée
+ * par une chaîne dans ce dépôt : `useActive(props, 'modelValue')`,
+ * `useBackgroundColor(props, 'bgColor')`, `useTextColor(props, 'color')`.
+ * Effacer toutes les chaînes transformerait ce faux négatif en une volée de
+ * faux positifs — des props bien consommées signalées comme mortes.
+ ********************************************************/
+function blankModuleSpecifiers (src) {
+    return src.replace(/(\bfrom\s*|\bimport\s*)(['"])([^'"\n]*)\2/g,
+        (_, head, quote, body) => `${head}${quote}${' '.repeat(body.length)}${quote}`)
+}
+
 /** identifiers in the script, excluding the defineProps / withDefaults header */
 function scriptIdentifiers (script) {
-    let src = stripComments(script)
+    let src = blankModuleSpecifiers(stripComments(script))
     // blank the whole `withDefaults( … )` / `defineProps( … )` call, brace-matched.
     // A regex cannot do this: the defaults object legitimately contains nested
     // braces and the lazy form over-ate ~170 lines of real code on OrigamCard.
