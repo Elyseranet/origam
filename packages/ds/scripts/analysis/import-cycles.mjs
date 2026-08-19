@@ -29,11 +29,29 @@
  * seul ordre d'entrée dans le graphe, et rien ne le signale.
  *
  * @description
- * LIMITE ASSUMÉE. Appartenir au cycle n'est pas être bogué. Un binding
+ * LIMITE ASSUMÉE №1. Appartenir au cycle n'est pas être bogué. Un binding
  * importé puis utilisé DANS un corps de fonction est sûr, l'appel ayant
  * lieu après l'initialisation complète. Le danger est la capture au
  * niveau module (`const F = imported`, littéral d'objet de haut niveau).
  * Le nombre produit ici est donc une EXPOSITION, pas un décompte de bugs.
+ *
+ * @description
+ * ⛔ LIMITE ASSUMÉE №2 — LA COLONNE « SANS BARRELS » EST OPTIMISTE.
+ * Elle SUPPRIME les arêtes vers un `index.ts` au lieu de les RÉSOUDRE. Or
+ * un fichier qui cesse d'importer du barrel n'a pas zéro dépendance : il
+ * acquiert une arête directe vers le fichier concret. La simulation perd
+ * donc cette arête, et sous-estime le graphe résultant.
+ * @description
+ * Conséquence : « sans barrels : 0 cycle » se lit « aucun cycle ne passe
+ * PAR les barrels », et non « le graphe après réécriture sera acyclique ».
+ * Constaté sur le premier lot réel du codemod #366 : la réécriture a fait
+ * apparaître des cycles `import type` entre fichiers voisins, préexistants
+ * mais masqués par cette suppression d'arêtes.
+ * @description
+ * Répondre exactement demanderait une résolution SYMBOLE par symbole à
+ * travers chaque barrel — ce que fait le codemod lui-même. Le vrai chiffre
+ * s'obtient donc en relançant cet outil APRÈS chaque lot fusionné, sur la
+ * colonne « avec barrels », qui elle ne simule rien.
  *
  * Usage : node packages/ds/scripts/analysis/import-cycles.mjs [--list]
  ********************************************************/
