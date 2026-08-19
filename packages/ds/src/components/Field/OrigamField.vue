@@ -168,7 +168,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, ref, StyleValue, useAttrs, useSlots, watch } from 'vue'
+	import { computed, onMounted, ref, StyleValue, useAttrs, useSlots, watch } from 'vue'
 	import { OrigamAvatar, OrigamExpandX, OrigamIcon, OrigamLabel, OrigamProgress, OrigamSkeleton } from '../../components'
 
 	import {
@@ -426,52 +426,76 @@
 		return props.dirty || active.value || hasPrefix.value || hasSuffix.value
 	})
 
-	watch(isFocused, (newVal, oldVal) => {
-		if (newVal !== oldVal) {
-			handleActive()
-		}
-	})
-	watch(isActive, (newVal, oldVal) => {
-		if (hasLabel.value && newVal !== oldVal) {
-			const el: HTMLElement = origamLabelRef.value!.$el
-			const targetEl: HTMLElement = origamFloatingLabelRef.value!.$el
+	/*********************************************************
+	 *  WATCHERS DEFERRED TO onMounted — NOT AN OPTIMISATION
+	 *
+	 *  @description
+	 *  `watch(source, cb)` reads `source` synchronously the instant it is
+	 *  created, to seed `oldValue` — regardless of `immediate`. `isFocused`
+	 *  and `isActive` are `computed()`s that read `props.focused` /
+	 *  `props.dirty` / `active.value` / `hasPrefix.value` / `hasSuffix.value`.
+	 *  Creating these watchers at the top level of `setup()` forced that
+	 *  seeding read before Vue's `beforeCreate` hook runs, which is where the
+	 *  ADR-005 theme resolver patches `instance.props`. A `computed` caches
+	 *  whatever its first evaluation saw and only invalidates on a tracked
+	 *  dependency change; the resolver's `Object.defineProperty` patch is not
+	 *  one on a static mount with no parent re-render, so `isFocused` /
+	 *  `isActive` stayed cached at their pre-theme value forever — a theme
+	 *  naming `focused`, `active`, `dirty`, `prefix` or `suffix` never
+	 *  flipped `--origam-field--active` / `--origam-field--focused`.
+	 *  Deferring both watchers to `onMounted` delays their first read to
+	 *  after the component's first render, which is already past
+	 *  `beforeCreate` — the template's own `fieldClasses` read gets there
+	 *  first and seeds the correct, themed value.
+	 ********************************************************/
+	onMounted(() => {
+		watch(isFocused, (newVal, oldVal) => {
+			if (newVal !== oldVal) {
+				handleActive()
+			}
+		})
+		watch(isActive, (newVal, oldVal) => {
+			if (hasLabel.value && newVal !== oldVal) {
+				const el: HTMLElement = origamLabelRef.value!.$el
+				const targetEl: HTMLElement = origamFloatingLabelRef.value!.$el
 
-			requestAnimationFrame(() => {
-				const rect = nullifyTransforms(el)
-				const targetRect = targetEl.getBoundingClientRect()
+				requestAnimationFrame(() => {
+					const rect = nullifyTransforms(el)
+					const targetRect = targetEl.getBoundingClientRect()
 
-				const x = targetRect.x - rect.x
-				const y = targetRect.y - rect.y - (rect.height / 2 - targetRect.height / 2)
+					const x = targetRect.x - rect.x
+					const y = targetRect.y - rect.y - (rect.height / 2 - targetRect.height / 2)
 
-				const targetWidth = targetRect.width / 0.75
-				const width = Math.abs(targetWidth - rect.width) > 1
-						? {maxWidth: convertToUnit(targetWidth)}
-						: undefined
+					const targetWidth = targetRect.width / 0.75
+					const width = Math.abs(targetWidth - rect.width) > 1
+							? {maxWidth: convertToUnit(targetWidth)}
+							: undefined
 
-				const style = getComputedStyle(el)
-				const targetStyle = getComputedStyle(targetEl)
-				const duration = parseFloat(style.transitionDuration) * 1000 || 150
-				const scale = parseFloat(targetStyle.getPropertyValue('--origam-field__label---font-size'))
-				const color = targetStyle.getPropertyValue('color')
+					const style = getComputedStyle(el)
+					const targetStyle = getComputedStyle(targetEl)
+					const duration = parseFloat(style.transitionDuration) * 1000 || 150
+					const scale = parseFloat(targetStyle.getPropertyValue('--origam-field__label---font-size'))
+					const color = targetStyle.getPropertyValue('color')
 
-				el.style.visibility = 'visible'
-				targetEl.style.visibility = 'hidden'
+					el.style.visibility = 'visible'
+					targetEl.style.visibility = 'hidden'
 
-				animate(el, {
-					transform: `translate(${x}px, ${y}px) scale(${scale})`,
-					color,
-					...width
-				}, {
-					duration,
-					easing: EASING.STANDARD,
-					direction: newVal ? 'normal' : 'reverse'
-				}).finished.then(() => {
-					el.style.removeProperty('visibility')
-					targetEl.style.removeProperty('visibility')
+					animate(el, {
+						transform: `translate(${x}px, ${y}px) scale(${scale})`,
+						color,
+						...width
+					}, {
+						duration,
+						easing: EASING.STANDARD,
+						direction: newVal ? 'normal' : 'reverse'
+					}).finished.then(() => {
+						el.style.removeProperty('visibility')
+						targetEl.style.removeProperty('visibility')
+					})
 				})
-			})
-		}
-	}, {flush: 'post'})
+			}
+		}, {flush: 'post'})
+	})
 
 	/*********************************************************
 	 * Class & Style

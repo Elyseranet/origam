@@ -261,8 +261,7 @@
 		toRef,
 		useAttrs,
 		useSlots,
-		watch,
-		watchEffect
+		watch
 	} from 'vue'
 	import { OrigamCounter, OrigamField, OrigamInput } from '../../components'
 
@@ -548,14 +547,30 @@
 	 * @description
 	 *
 	 ********************************************************/
-	const rows = ref(+(props.rows ?? 3))
+	/*********************************************************
+	 *  `rows` IS A COMPUTED, NOT A REF SEEDED FROM `props.rows`
+	 *
+	 *  @description
+	 *  `ref(+(props.rows ?? 3))` read `props.rows` ONCE, synchronously, at
+	 *  the top level of `setup()` — before Vue's `beforeCreate` hook runs,
+	 *  which is where the ADR-005 theme resolver patches `instance.props`.
+	 *  That snapshot never saw a theme naming `rows`, and the accompanying
+	 *  `watchEffect` only re-synced it while `!props.autoGrow`, so nothing
+	 *  ever re-read the prop on a STATIC mount with no later prop write.
+	 *  Splitting the two concerns removes the eager read entirely: the
+	 *  autoGrow measurement keeps its own plain ref (`autoGrowRows`, never
+	 *  derived from a prop, nothing to snapshot), and `rows` becomes a
+	 *  `computed` that reads `props.rows` LAZILY — its first evaluation
+	 *  happens at render, already past `beforeCreate`.
+	 ********************************************************/
+	const autoGrowRows = ref(3)
+
+	const rows = computed(() => {
+		return props.autoGrow ? autoGrowRows.value : +(props.rows ?? 3)
+	})
 
 	const isUniqueRow = computed(() => {
 		return rows.value === 1
-	})
-
-	watchEffect(() => {
-		if (!props.autoGrow) rows.value = +(props.rows ?? 3)
 	})
 
 	const parseCssFloat = (value: string, fallback = 0): number => {
@@ -658,7 +673,7 @@
 
 			if (lineHeight <= 0) return
 
-			rows.value = Math.floor((newHeight - padding) / lineHeight)
+			autoGrowRows.value = Math.floor((newHeight - padding) / lineHeight)
 		})
 	})
 

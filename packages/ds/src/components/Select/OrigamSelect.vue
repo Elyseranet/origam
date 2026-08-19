@@ -270,6 +270,7 @@
 		inject,
 		mergeProps,
 		nextTick,
+		onMounted,
 		ref,
 		shallowRef,
 		StyleValue,
@@ -1014,12 +1015,32 @@
 		}
 	})
 
-	watch(search, val => {
-		if (!isFocused.value || isSelecting.value) return
+	/*********************************************************
+	 *  DEFERRED TO onMounted — NOT AN OPTIMISATION
+	 *
+	 *  @description
+	 *  `watch(search, cb)` reads `search.value` synchronously the instant it
+	 *  is created, to seed `oldValue`. `search` is a `useVModel(props,
+	 *  'search', '')` model — its getter reads `props.search`. Creating this
+	 *  watch at the top level of `setup()` forced that seeding read before
+	 *  Vue's `beforeCreate` hook runs, which is where the ADR-005 theme
+	 *  resolver patches `instance.props`. A `computed` (which the `useVModel`
+	 *  model is) caches whatever its first evaluation saw and only
+	 *  invalidates on a tracked dependency change; the resolver's
+	 *  `Object.defineProperty` patch is not one on a static mount with no
+	 *  parent re-render, so `search` stayed cached at `''` forever — a theme
+	 *  naming `search` never landed. Deferring to `onMounted` delays the
+	 *  seeding read to after the component's first render, which is already
+	 *  past `beforeCreate`.
+	 ********************************************************/
+	onMounted(() => {
+		watch(search, val => {
+			if (!isFocused.value || isSelecting.value) return
 
-		if (val) menu.value = true
+			if (val) menu.value = true
 
-		isPristine.value = !val
+			isPristine.value = !val
+		})
 	})
 
 	watch(menu, () => {

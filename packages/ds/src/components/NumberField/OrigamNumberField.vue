@@ -275,6 +275,8 @@
 
 	import { useAdjacentInner, useFocus, useHold, useProps, useVModel , useStyle} from "../../composables"
 
+	import { UNSEEDED } from "../../consts"
+
 	import { DIRECTION, MDI_ICONS, TEXT_FIELD_TYPE } from "../../enums"
 
 	import type { INumberFieldProps, INumberFieldSlots} from "../../interfaces"
@@ -398,9 +400,47 @@
 				: fixed
 	}
 
-	const _inputText = shallowRef<string | null>(null)
+	/*********************************************************
+	 *  `_inputText` IS LAZY-SEEDED, NOT WRITTEN BY AN IMMEDIATE WATCH
+	 *
+	 *  @description
+	 *  `{immediate: true}` used to run the sync callback below synchronously
+	 *  the instant the watch was created, reading `props.modelValue` at that
+	 *  exact moment and writing the result into a plain `shallowRef` — so
+	 *  nothing re-derived it later on its own. Creating that watch at the
+	 *  top level of `setup()` ran the immediate callback before Vue's
+	 *  `beforeCreate` hook runs, which is where the ADR-005 theme resolver
+	 *  patches `instance.props`; the callback therefore saw whatever Vue
+	 *  resolved BEFORE the theme was visible, and a watch created in
+	 *  `setup()` only picks up a LATER change through the reactive proxy's
+	 *  own per-key dep — which requires a subsequent parent write
+	 *  (`props[key] = value`) to fire. A theme naming `modelValue` with no
+	 *  accompanying parent re-render never produces one, so the ref stayed
+	 *  seeded at the pre-theme value forever.
+	 *  `_inputTextRaw` starts UNSEEDED (mirrors `useVModel`'s own fix): as
+	 *  long as nothing has explicitly written to it, `_inputText`'s getter
+	 *  falls back to deriving the display text from `props.modelValue` LIVE,
+	 *  on every read — including the template's first read during render,
+	 *  which is already past `beforeCreate`. The moment any code path writes
+	 *  through `_inputText.value = …` (user input, clamping, stepping, …)
+	 *  the raw ref takes over and the getter returns that instead.
+	 ********************************************************/
+	const _inputTextRaw = shallowRef<string | null | typeof UNSEEDED>(UNSEEDED)
 
-	// Sync from external model changes (parent v-model updates)
+	const seedInputText = (): string | null => {
+		const val = props.modelValue
+		if (val == null) return null
+		if (!isNaN(val)) return correctPrecision(val)
+		return null
+	}
+
+	const _inputText = computed<string | null>({
+		get: () => _inputTextRaw.value === UNSEEDED ? seedInputText() : _inputTextRaw.value,
+		set: (val) => { _inputTextRaw.value = val }
+	})
+
+	// Sync from external model changes (parent v-model updates) — no
+	// `immediate`, the lazy seed above already covers the initial value.
 	watch(() => props.modelValue, (val) => {
 		if (isFocused.value && !controlsDisabled.value) return
 
@@ -409,7 +449,7 @@
 		} else if (!isNaN(val)) {
 			_inputText.value = correctPrecision(val)
 		}
-	}, { immediate: true })
+	})
 	const inputText = computed<string | null>({
 		get: () => _inputText.value,
 		set (val) {
