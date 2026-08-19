@@ -87,7 +87,7 @@ export * from './InfiniteScroll/infinite-scroll.enum'
 export * from './TextField/text-field.enum'
 
 export * from './TextareaField/textarea-field.enum'
-export * from './RichToolbar/rich-toolbar.enum'
+export * from './TextareaField/textarea-field-rich-toolbar.enum'
 
 export * from './Parallax/parallax.enum'
 export * from './Parallax/parallax-element.enum'

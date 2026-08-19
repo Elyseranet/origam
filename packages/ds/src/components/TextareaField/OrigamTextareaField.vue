@@ -85,7 +85,7 @@
 									name="toolbar"
 									v-bind="toolbarSlotPayload"
 							>
-								<origam-rich-toolbar
+								<origam-textarea-field-rich-toolbar
 										v-if="hasToolbar"
 										:items="resolvedToolbar"
 										:active="richActive"
@@ -118,7 +118,7 @@
 									name="toolbar"
 									v-bind="toolbarSlotPayload"
 							>
-								<origam-rich-toolbar
+								<origam-textarea-field-rich-toolbar
 										v-if="hasToolbar"
 										:items="resolvedToolbar"
 										:active="richActive"
@@ -265,7 +265,7 @@
 	} from 'vue'
 	import { OrigamCounter, OrigamField, OrigamInput } from '../../components'
 
-	import OrigamRichToolbar from './OrigamRichToolbar.vue'
+	import OrigamTextareaFieldRichToolbar from './OrigamTextareaFieldRichToolbar.vue'
 
 	import {
 	useAdjacent,

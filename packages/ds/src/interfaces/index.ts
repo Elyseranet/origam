@@ -283,8 +283,8 @@ export * from './Tabs/tab-panel.interface'
 
 export * from './TextareaField/textarea-field.interface'
 
-export * from './Textarea/textarea-rich.interface'
-export * from './Textarea/textarea-toolbar.interface'
+export * from './TextareaField/textarea-field-rich.interface'
+export * from './TextareaField/textarea-field-rich-toolbar.interface'
 
 export * from './TextField/text-field.interface'
 

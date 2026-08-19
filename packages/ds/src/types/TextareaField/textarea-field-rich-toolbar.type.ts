@@ -1,7 +1,7 @@
 import type { TEXTAREA_TOOLBAR_COMMAND, TEXTAREA_TOOLBAR_POSITION } from '../../enums'
-import { OrigamRichToolbar } from '../../components'
+import { OrigamTextareaFieldRichToolbar } from '../../components'
 
-export type TOrigamRichToolbar = InstanceType<typeof OrigamRichToolbar>
+export type TOrigamTextareaFieldRichToolbar = InstanceType<typeof OrigamTextareaFieldRichToolbar>
 
 export type TTextareaToolbarCommand = `${TEXTAREA_TOOLBAR_COMMAND}`
 

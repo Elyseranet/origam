@@ -67,8 +67,8 @@ export * from './CommandPalette/fuzzy-match.util'
 
 export * from './Code/parse-highlight-lines.util'
 
-export * from './Textarea/sanitize-html.util'
-export * from './Textarea/html-to-markdown.util'
+export * from './TextareaField/sanitize-html.util'
+export * from './TextareaField/html-to-markdown.util'
 
 export * from './Mask/apply-mask.util'
 export * from './Mask/resolve-mask-config.util'

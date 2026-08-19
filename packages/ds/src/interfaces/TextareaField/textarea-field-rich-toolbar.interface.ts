@@ -1,13 +1,13 @@
 import type { TTextareaToolbarCommand, TTextareaToolbarPosition } from '../../types'
 
-import type { ITextareaRichActiveState } from './textarea-rich.interface'
+import type { ITextareaRichActiveState } from './textarea-field-rich.interface'
 
 /**
- * Props for the internal `<OrigamRichToolbar>` sub-component. Kept
+ * Props for the internal `<OrigamTextareaFieldRichToolbar>` sub-component. Kept
  * private to the package (exposed via the `OrigamTextareaField` slots)
  * so we can iterate on the API without breaking external consumers.
  */
-export interface IRichToolbarProps {
+export interface ITextareaFieldRichToolbarProps {
     items: ReadonlyArray<TTextareaToolbarCommand>
     active: ITextareaRichActiveState
     position?: TTextareaToolbarPosition
@@ -18,7 +18,7 @@ export interface IRichToolbarProps {
  * Emits the toolbar surfaces upwards. `format` carries the command id
  * and, for link insertion, the URL the user typed.
  */
-export interface IRichToolbarEmits {
+export interface ITextareaFieldRichToolbarEmits {
     (e: 'format', command: TTextareaToolbarCommand, value?: string): void
 }
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { htmlToMarkdown } from '@origam/utils/Textarea/html-to-markdown.util'
+import { htmlToMarkdown } from '@origam/utils/TextareaField/html-to-markdown.util'
 
 describe('htmlToMarkdown', () => {
     it('returns empty string for empty input', () => {

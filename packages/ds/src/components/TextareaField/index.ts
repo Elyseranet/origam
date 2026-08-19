@@ -1,2 +1,2 @@
 export { default as OrigamTextareaField } from './OrigamTextareaField.vue'
-export { default as OrigamRichToolbar } from './OrigamRichToolbar.vue'
+export { default as OrigamTextareaFieldRichToolbar } from './OrigamTextareaFieldRichToolbar.vue'

@@ -79,8 +79,8 @@ const OrigamCounterStub = {
     template: `<div data-cy="origam-counter">{{ value }}/{{ max }}</div>`
 }
 
-const OrigamRichToolbarStub = {
-    name: 'OrigamRichToolbar',
+const OrigamTextareaFieldRichToolbarStub = {
+    name: 'OrigamTextareaFieldRichToolbar',
     props: ['items', 'active', 'position', 'disabled'],
     emits: ['format'],
     template: `<div data-cy="origam-rich-toolbar" />`
@@ -108,7 +108,7 @@ const mountTextareaField = (opts: IMountOpts = {}): VueWrapper => {
                 OrigamInput: OrigamInputStub,
                 OrigamField: OrigamFieldStub,
                 OrigamCounter: OrigamCounterStub,
-                OrigamRichToolbar: OrigamRichToolbarStub,
+                OrigamTextareaFieldRichToolbar: OrigamTextareaFieldRichToolbarStub,
                 OrigamIcon: { template: '<i />' }
             }
         }

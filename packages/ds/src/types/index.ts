@@ -266,7 +266,7 @@ export * from './Table/table.type'
 
 export * from './TextareaField/textarea-field.type'
 
-export * from './RichToolbar/rich-toolbar.type'
+export * from './TextareaField/textarea-field-rich-toolbar.type'
 
 export * from './TextField/text-field.type'
 

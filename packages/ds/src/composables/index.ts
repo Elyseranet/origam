@@ -93,7 +93,7 @@ export * from './PasswordField/passwordStrength.composable'
 export * from './Theme/theme.composable'
 export * from './Theme/installed-themes.composable'
 
-export * from './Textarea/textarea-rich.composable'
+export * from './TextareaField/textarea-field-rich.composable'
 
 export * from './CssSupport/cssSupport.composable'
 

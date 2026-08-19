@@ -22,8 +22,8 @@ import { applyModeSync, applyThemeSync, readPersistedMode, readPersistedTheme } 
 
 import { applyTheme, themeToCss } from '@origam/utils/Theme/apply-theme.util'
 
-import { sanitizeHtml } from '@origam/utils/Textarea/sanitize-html.util'
-import { htmlToMarkdown } from '@origam/utils/Textarea/html-to-markdown.util'
+import { sanitizeHtml } from '@origam/utils/TextareaField/sanitize-html.util'
+import { htmlToMarkdown } from '@origam/utils/TextareaField/html-to-markdown.util'
 
 // ───────────────────────────────────────────────────────────────────────────
 // Helper — temporarily strip browser globals to simulate Node / SSR
