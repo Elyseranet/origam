@@ -5,8 +5,8 @@
 	>
 		<component
 				:is="tag"
-				:id="id"
 				v-show="active"
+				:id="id"
 				:class="counterClasses"
 				:style="counterStyles"
 		>
