@@ -273,18 +273,7 @@
 	 ********************************************************/
 	const { t } = useLocale()
 
-	const props = withDefaults(defineProps<IVideoProps & {
-		// Belt-and-braces inline re-declaration (cf. ISliderField inset
-		// note): forces the Vue SFC compiler to resolve these in the
-		// runtime props descriptor even when HMR caches the interface.
-		skipSeconds?: number
-		showCenterControls?: boolean
-		playbackRates?: ReadonlyArray<number>
-		playbackRate?: number
-		inset?: boolean
-		allowRemotePlayback?: boolean
-		doubleTapToSkip?: boolean
-	}>(), {
+	const props = withDefaults(defineProps<IVideoProps>(), {
 		poster: undefined,
 		tracks: () => [],
 		autoplay: false,

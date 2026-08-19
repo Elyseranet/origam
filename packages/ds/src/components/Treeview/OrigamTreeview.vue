@@ -42,7 +42,7 @@
 	 * Global
 	 ********************************************************/
 
-	const props = withDefaults(defineProps<ITreeviewProps & { ariaLabel?: string }>(), {
+	const props = withDefaults(defineProps<ITreeviewProps>(), {
 		selectMode: 'none',
 		selectableNodes: 'leaf',
 		showLines: true,

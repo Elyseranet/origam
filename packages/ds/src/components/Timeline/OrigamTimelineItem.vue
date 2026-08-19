@@ -60,7 +60,7 @@
 	 * Global
 	 ********************************************************/
 
-	const props = withDefaults(defineProps<ITimelineItemProps & { description?: string }>(), {
+	const props = withDefaults(defineProps<ITimelineItemProps>(), {
 		side: 'start',
 		orientation: 'vertical',
 		isLast: false,

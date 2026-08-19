@@ -44,6 +44,12 @@ export interface ITimelineProps extends ICommonsComponentProps, ITagProps, IColo
 export interface ITimelineItemProps extends ICommonsComponentProps, IColorProps, IDensityProps, ISizeProps {
     title?: string
     subtitle?: string
+    /**
+     * Body text rendered under the title. Falls back to the `#body` slot
+     * when one is provided; when neither is set the body element is not
+     * rendered at all.
+     */
+    description?: string
     icon?: TIcon
     intent?: TIntent
     isLast?: boolean

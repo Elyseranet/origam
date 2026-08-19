@@ -456,7 +456,7 @@
 	 * @description
 	 * Props, emits, slots and the focus + RTL composables.
 	 ********************************************************/
-	const _props = withDefaults(defineProps<ISliderFieldProps & { inset?: boolean }>(), {
+	const _props = withDefaults(defineProps<ISliderFieldProps>(), {
 		min: 0,
 		max: 100,
 		modelValue: 0,

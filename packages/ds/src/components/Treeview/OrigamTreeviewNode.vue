@@ -104,13 +104,11 @@
 	useStyle
 } from '../../composables'
 
-	import type { ITreeviewNode, ITreeviewNodeProps } from '../../interfaces'
+	import type { ITreeviewNodeProps, ITreeviewNodeSlots } from '../../interfaces'
 
 	defineOptions({ name: 'OrigamTreeviewNode' })
 
-	defineSlots<{
-		node(props: { node: ITreeviewNode; depth: number; isExpanded: boolean; isSelected: boolean }): unknown
-	}>()
+	defineSlots<ITreeviewNodeSlots>()
 
 	/*********************************************************
 	 * Global

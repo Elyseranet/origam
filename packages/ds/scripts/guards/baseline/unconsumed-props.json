@@ -251,6 +251,7 @@
     "OrigamTranslateScale.mode",
     "OrigamTranslateScale.origin",
     "OrigamTreeviewNode.style",
+    "OrigamVideo.showCenterControls",
     "OrigamWatermark.id",
     "OrigamWindow.activeClass",
     "OrigamWindow.modelValue",
