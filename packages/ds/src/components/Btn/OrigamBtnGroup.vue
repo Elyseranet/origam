@@ -64,10 +64,10 @@
 	// as DEFAULTS — children that pass their own `density` / `color` /
 	// `bgColor` / etc. still win (that's the contract: parent provides
 	// defaults, child overrides). Children consume this map via
-	// `useDefaults(props)` inside `OrigamBtn.vue`.
+	// the ADR-005 resolver, which patches `instance.props` on every mount.
 	//
 	// A prop the CONSUMER never passed to `<origam-btn-group>` must NOT be
-	// forwarded — else `mergeDeep` (used by `provideDefaults`/`useDefaults`
+	// forwarded — else `mergeDeep` (used by `provideDefaults`
 	// to combine this map with an ancestor/theme `'origam-btn'` defaults
 	// entry) copies it unconditionally and silently overwrites the theme
 	// default (e.g. `origam-btn: { density: 'comfortable' }`) — see #263,
@@ -111,7 +111,7 @@
 	// The `items` array path used to manually merge with `props.x ?? item.x`,
 	// which made the parent OVERRIDE the item (the inverse of the documented
 	// "parent default, item override" contract). The merge is no longer
-	// needed — `useDefaults` inside each child enforces the correct
+	// needed — the ADR-005 resolver enforces the correct
 	// resolution order and respects per-item overrides automatically.
 	const items = computed(() => (props.items ?? []) as Array<IBtnProps>)
 

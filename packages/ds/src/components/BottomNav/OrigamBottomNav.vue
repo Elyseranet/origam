@@ -114,12 +114,11 @@
 
 	// Push visual-token props down to every descendant `<origam-btn>` (the
 	// bottom-nav button children) as DEFAULTS — items that pass their own
-	// props still win. `OrigamBtn` already calls `useDefaults` so this is
-	// picked up automatically.
+	// props still win. The ADR-005 resolver picks this up automatically.
 	// Forward ONLY what the consumer actually passed — see #263 and the same
 	// guard on `OrigamBtnGroup` / `OrigamAvatarGroup`. A prop the consumer
 	// never set must NOT be forwarded: `mergeDeep` (used by
-	// `provideDefaults`/`useDefaults` to combine this map with an
+	// `provideDefaults` to combine this map with an
 	// ancestor/theme `'origam-btn'` entry) copies it unconditionally and
 	// silently overwrites the theme default.
 	//
@@ -216,7 +215,7 @@
 		absolute: toRef(props, 'absolute')
 	})
 
-	// `useDefaults` inside each `OrigamBtn` handles the visual-token fallback —
+	// The ADR-005 resolver handles each `OrigamBtn`'s visual-token fallback —
 	// no manual merge needed here. Items are spread as-is; `provideDefaults`
 	// above supplies the group-level defaults.
 	const items = computed(() => {

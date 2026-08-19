@@ -138,7 +138,7 @@
 
 	const { colorClasses, colorStyles, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, elevationStyles, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, undefined, undefined, undefined, undefined, computed(() => !!props.disabled))
 
-	// `useDefaults` inside each `OrigamBreadcrumbItem` handles the
+	// The ADR-005 resolver handles each `OrigamBreadcrumbItem`'s
 	// density/color fallback — no manual merge needed here.
 	// `disabled` and `isActive` are structural (not visual tokens), so
 	// they remain explicitly set on the item object.

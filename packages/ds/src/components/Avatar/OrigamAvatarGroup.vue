@@ -82,7 +82,7 @@
 	// DEFAULTS — children that pass their own props still win.
 	//
 	// A prop the CONSUMER never passed to `<origam-avatar-group>` must NOT be
-	// forwarded — else `mergeDeep` (used by `provideDefaults`/`useDefaults`
+	// forwarded — else `mergeDeep` (used by `provideDefaults`
 	// to combine this map with an ancestor/theme `'origam-avatar'` defaults
 	// entry) copies it unconditionally and silently overwrites the theme
 	// default (e.g. `origam-avatar { border: true }`) — see #263.

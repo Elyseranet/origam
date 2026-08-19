@@ -85,7 +85,7 @@
 	 * the rest of the group-level surface. (Closes task #24.)
 	 ********************************************************/
 	// A prop the CONSUMER never passed must NOT be forwarded — `mergeDeep`
-	// (used by `provideDefaults`/`useDefaults` to combine this map with an
+	// (used by `provideDefaults` to combine this map with an
 	// ancestor/theme `'origam-selection-control'` entry) copies it
 	// unconditionally and silently overwrites the theme default — see #263.
 	//
