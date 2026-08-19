@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			v-contrast
 			:class="expansionPanelClasses"
 			:style="expansionPanelStyles"
@@ -301,7 +302,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(expansionPanelStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(expansionPanelStyles, () => props.id)
 
 
 	/*********************************************************

@@ -1,5 +1,6 @@
 <template>
 	<div
+			:id="id"
 			ref="intersectionRef"
 			class="origam-infinite-scroll-intersect"
 	>&nbsp;

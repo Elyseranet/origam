@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			:class="rowClasses"
 			:style="rowStyles"
 	>
@@ -101,7 +102,7 @@
 
 		return classes
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(rowStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(rowStyles, () => props.id)
 
 
 	/*********************************************************

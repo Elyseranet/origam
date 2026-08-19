@@ -1,5 +1,6 @@
 <template>
   <li
+      :id="id"
       :class="listItemClasses"
       :style="listItemStyles"
   >
@@ -135,7 +136,7 @@
   const { typographyStyles } = useTypography(props, 'file-field-list-item__name')
 
   const { filterProps } = useProps<IFileFieldListItemProps>(props)
-	const {id, css, load, isLoaded, unload} = useStyle(listItemStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(listItemStyles, () => props.id)
 
 
   defineExpose({ filterProps,

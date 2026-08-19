@@ -1,5 +1,6 @@
 <template>
 	<origam-table
+			:id="id"
 			ref="origamTableRef"
 			:class="dataTableClasses"
 			:style="dataTableStyles"
@@ -342,7 +343,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(dataTableStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableStyles, () => props.id)
 
 
 	/*********************************************************

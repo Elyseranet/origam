@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			:class="dataTableColumnClasses"
 			:scope="tag === 'th' ? 'col' : undefined"
 			:style="dataTableColumnStyles"
@@ -72,7 +73,7 @@
 			props.style
 		] as StyleValue
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(dataTableColumnStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableColumnStyles, () => props.id)
 
 
 	/*********************************************************

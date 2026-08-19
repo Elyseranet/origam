@@ -1,6 +1,7 @@
 <template>
 	<tr class="origam-data-table-headers__row">
 		<origam-data-table-column-cell
+				:id="id"
 				:class="dataTableHeadersCellClasses"
 				:colspan="colspan"
 				:style="dataTableHeadersCellStyles"
@@ -297,7 +298,7 @@
 			props.style
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(dataTableHeadersCellStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableHeadersCellStyles, () => props.id)
 
 
 	/*********************************************************

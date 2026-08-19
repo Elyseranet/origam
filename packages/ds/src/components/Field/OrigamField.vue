@@ -1,5 +1,6 @@
 <template>
 	<div
+			:id="styleId"
 			v-contrast
 			:class="fieldClasses"
 			:style="fieldStyles"

@@ -1,5 +1,6 @@
 <template>
 	<tr
+			:id="id"
 			:class="dataTableGroupHeaderRowClasses"
 			:style="dataTableGroupHeaderRowStyles"
 	>
@@ -143,7 +144,7 @@
 			props.style
 		] as StyleValue
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(dataTableGroupHeaderRowStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableGroupHeaderRowStyles, () => props.id)
 
 
 	/*********************************************************

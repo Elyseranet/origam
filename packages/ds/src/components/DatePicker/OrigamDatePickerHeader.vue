@@ -1,5 +1,6 @@
 <template>
 	<div
+			:id="id"
 			:class="datePickerHeaderClasses"
 			:style="datePickerHeaderStyles"
 			@click="handleClick"
@@ -159,7 +160,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(datePickerHeaderStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(datePickerHeaderStyles, () => props.id)
 
 
 	/*********************************************************

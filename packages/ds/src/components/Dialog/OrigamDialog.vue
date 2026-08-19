@@ -1,5 +1,6 @@
 <template>
 	<origam-overlay
+			:id="id"
 			ref="origamOverlayRef"
 			v-model="isActive"
 			:activator-props="activatorProps"
@@ -359,7 +360,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(dialogStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(dialogStyles, () => props.id)
 
 
 	/*********************************************************
