@@ -1,6 +1,6 @@
 <template>
 	<component
-			:is="link.tag"
+			:is="link.tag.value"
 			:id="props.id"
 			v-ripple="isClickable && ripple"
 			:class="listItemClasses"
@@ -120,7 +120,6 @@
 	import {
 		useAdjacent,
 		useBackgroundColor,
-		useDefaults,
 		useDensity,
 		useDimension,
 		useHover,
@@ -150,11 +149,7 @@
 	 * Global
 	 ********************************************************/
 
-	const _props = withDefaults(defineProps<IListItemProps>(), {tag: 'div'})
-
-	// Resolve props against the closest `provideDefaults({ 'origam-list-item': … })`
-	// injected by a parent `OrigamList`.
-	const props = useDefaults(_props)
+	const props = withDefaults(defineProps<IListItemProps>(), {tag: 'div'})
 
 	const emits = defineEmits<IListItemEmits>()
 

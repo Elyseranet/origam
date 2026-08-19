@@ -31,7 +31,6 @@
 >
 	import { OrigamBtn, OrigamDefaultsProvider } from '../../components'
 	import {
-		useDefaults,
 		useDensity,
 		usePassedProps,
 		useProps,
@@ -55,20 +54,7 @@
 	 * Props and slot defaults propagation to child buttons
 	 * via OrigamDefaultsProvider.
 	 ********************************************************/
-	const _props = withDefaults(defineProps<IBtnGroupProps>(), {tag: 'div', density: DENSITY.DEFAULT, items: () => []})
-
-	// `useDefaults` resolves the GROUP's OWN props (rounded/border/elevation/…)
-	// against the closest `provideDefaults({ 'origam-btn-group': … })` (a
-	// marketing theme's `components` block). Separate from `slotDefaults`/
-	// `OrigamDefaultsProvider` below, which pushes THIS component's resolved
-	// density/color down to CHILD `<origam-btn>` instances under the
-	// `'origam-btn'` key — that mechanism was already working; this hook
-	// covers the GROUP's own visual surface. Without it a theme's
-	// `elevation`/`rounded` config for the group itself was silently
-	// dropped — confirmed via computed-style (`box-shadow: none` on a
-	// themed Light/Dark toggle despite `elevation: 2` configured). Mirrors
-	// `OrigamBtn.vue`'s exact pattern.
-	const props = useDefaults(_props)
+	const props = withDefaults(defineProps<IBtnGroupProps>(), {tag: 'div', density: DENSITY.DEFAULT, items: () => []})
 
 	const {filterProps} = useProps<IBtnGroupProps>(props)
 

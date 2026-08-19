@@ -41,7 +41,6 @@
 
 	import {
 		useBorder,
-		useDefaults,
 		useDensity,
 		useMargin,
 		usePadding,
@@ -66,13 +65,11 @@
 	 * @description
 	 * Props, emits, slots and filterProps for the Messages component.
 	 ********************************************************/
-	const _props = withDefaults(defineProps<IMessagesProps>(), {
+	const props = withDefaults(defineProps<IMessagesProps>(), {
 		tag: 'div',
 		density: DENSITY.DEFAULT,
 		transition: () => ({component: OrigamSlideY}) as unknown as TTransitionProps
 	})
-	const props = useDefaults(_props)
-
 	defineSlots<IMessagesSlots>()
 
 	const {filterProps} = useProps<IMessagesProps>(props)

@@ -107,7 +107,6 @@
 	import { OrigamInput, OrigamRadioBtn } from '../../components'
 
 	import {
-		useDefaults,
 		useFocus,
 		useHover,
 		useMargin,
@@ -134,16 +133,9 @@
 	 * @description
 	 * Props, emits and filterProps for the Radio component.
 	 ********************************************************/
-	const _props = withDefaults(defineProps<IRadioProps>(), {
+	const props = withDefaults(defineProps<IRadioProps>(), {
 		density: DENSITY.DEFAULT
 	})
-
-	// `useDefaults` resolves each prop against the closest
-	// `<OrigamDefaultsProvider>` / theme `components['origam-radio']`
-	// entry. Without this, `activeBgColor` and any other theme-level
-	// default for this component were completely inert — the component
-	// only ever saw its own `withDefaults()` value (see #279).
-	const props = useDefaults(_props)
 
 	const emits = defineEmits<IRadioEmits>()
 

@@ -273,7 +273,7 @@
 	import { computed, nextTick, onMounted, ref, shallowRef, StyleValue, useSlots, watch } from "vue"
 	import { OrigamBtn, OrigamDivider, OrigamInput, OrigamTextField } from "../../components"
 
-	import { useAdjacentInner, useDefaults, useFocus, useHold, useProps, useVModel , useStyle} from "../../composables"
+	import { useAdjacentInner, useFocus, useHold, useProps, useVModel , useStyle} from "../../composables"
 
 	import { DIRECTION, MDI_ICONS, TEXT_FIELD_TYPE } from "../../enums"
 
@@ -291,7 +291,7 @@
 	 * @description
 	 * Props, emits, slots and filterProps for the NumberField component.
 	 ********************************************************/
-	const _props = withDefaults(defineProps<INumberFieldProps>(), {
+	const props = withDefaults(defineProps<INumberFieldProps>(), {
 		modelValue: null,
 		min: Number.MIN_SAFE_INTEGER,
 		max: Number.MAX_SAFE_INTEGER,
@@ -308,11 +308,6 @@
 		compact: false,
 		type: TEXT_FIELD_TYPE.NUMBER
 	})
-
-	// `useDefaults` resolves each prop against theme.components['origam-number-field']
-	// (OrigamBtn pattern). Pre-fix, the legacy `rounded: true` / `border: true`
-	// booleans always won, same forwarding-parity gap already fixed on Select.
-	const props = useDefaults(_props)
 
 	const emits = defineEmits<INumberFieldEmits>()
 

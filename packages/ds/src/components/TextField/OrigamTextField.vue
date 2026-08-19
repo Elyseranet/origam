@@ -192,7 +192,6 @@
 	import {
 	useAdjacent,
 	useAdjacentInner,
-	useDefaults,
 	useFocus,
 	useLocale,
 	useMask,
@@ -222,7 +221,7 @@
 	 * Props, emits, slots and composables.
 	 ********************************************************/
 
-	const _props = withDefaults(defineProps<ITextFieldProps>(), {
+	const props = withDefaults(defineProps<ITextFieldProps>(), {
 		type: TEXT_FIELD_TYPE.TEXT,
 		centerAffix: true,
 		direction: DIRECTION.HORIZONTAL,
@@ -230,8 +229,6 @@
 		clearIcon: MDI_ICONS.CLOSE_CIRCLE_OUTLINE,
 		rounded: true
 	})
-	const props = useDefaults(_props)
-
 	const emits = defineEmits<ITextFieldEmits>()
 
 	defineSlots<ITextFieldSlots>()

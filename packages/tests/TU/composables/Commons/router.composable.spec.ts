@@ -49,17 +49,17 @@ describe('useLink — href only (no RouterLink installed)', () => {
 
     it('tag is "a" when href is provided', () => {
         const { api } = mountLink({ href: 'https://example.com' })
-        expect(api().tag).toBe('a')
+        expect(api().tag.value).toBe('a')
     })
 
     it('tag falls back to "div" when no href and no tag prop', () => {
         const { api } = mountLink({})
-        expect(api().tag).toBe('div')
+        expect(api().tag.value).toBe('div')
     })
 
     it('tag prop is used when isLink=false', () => {
         const { api } = mountLink({ tag: 'button' })
-        expect(api().tag).toBe('button')
+        expect(api().tag.value).toBe('button')
     })
 
     it('href ref carries the provided href value', () => {

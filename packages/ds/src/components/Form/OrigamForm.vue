@@ -61,7 +61,6 @@
 	import { OrigamMessages } from '../../components'
 
 	import {
-	useDefaults,
 	useForm,
 	useMessage,
 	useProps,
@@ -82,9 +81,7 @@
 	 * @description
 	 * Props, emits, slots, and composable setup.
 	 ********************************************************/
-	const _props = withDefaults(defineProps<IFormProps>(), {})
-	const props = useDefaults(_props)
-
+	const props = withDefaults(defineProps<IFormProps>(), {})
 	const emits = defineEmits<IFormEmits>()
 
 	defineSlots<IFormSlots>()

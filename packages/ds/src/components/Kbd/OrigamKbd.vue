@@ -33,7 +33,6 @@
 	import {
 		useBorder,
 		useBothColor,
-		useDefaults,
 		useProps,
 		useRounded,
 		useSize,
@@ -51,12 +50,10 @@
 	 * @description
 	 * Props and composable setup.
 	 ********************************************************/
-	const _props = withDefaults(defineProps<IKbdProps>(), {
+	const props = withDefaults(defineProps<IKbdProps>(), {
 		separator: '+',
 		variant: 'outlined',
 	})
-
-	const props = useDefaults(_props)
 
 	const { filterProps } = useProps<IKbdProps>(props)
 

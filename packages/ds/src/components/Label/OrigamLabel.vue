@@ -22,7 +22,6 @@
 	import {
 	useBorder,
 	useBothColor,
-	useDefaults,
 	useMargin,
 	usePadding,
 	useProps,
@@ -41,11 +40,9 @@
 	 * Global
 	 ********************************************************/
 
-	const _props = withDefaults(defineProps<ILabelProps>(), {
+	const props = withDefaults(defineProps<ILabelProps>(), {
 		tag: 'label'
 	})
-	const props = useDefaults(_props)
-
 	const emits = defineEmits<ILabelEmits>()
 
 	defineSlots<ILabelSlots>()

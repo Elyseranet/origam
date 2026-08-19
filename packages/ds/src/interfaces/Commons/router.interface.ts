@@ -9,7 +9,7 @@ export interface ILinkProps {
 }
 
 export interface ILink extends Omit<Partial<ReturnType<typeof _useLink>>, 'href'> {
-    tag: string
+    tag: ComputedRef<string>
     isLink: ComputedRef<boolean>
     isClickable: ComputedRef<boolean>
     href: Ref<string | undefined>

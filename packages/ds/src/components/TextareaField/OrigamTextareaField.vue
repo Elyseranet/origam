@@ -271,7 +271,6 @@
 	import {
 	useAdjacent,
 	useAdjacentInner,
-	useDefaults,
 	useDragResizer,
 	useFocus,
 	useLocale,
@@ -312,7 +311,7 @@
 	 * Global
 	 ********************************************************/
 
-	const _props = withDefaults(defineProps<ITextareaFieldProps>(), {
+	const props = withDefaults(defineProps<ITextareaFieldProps>(), {
 		density: DENSITY.DEFAULT,
 		clearIcon: MDI_ICONS.CLOSE_CIRCLE_OUTLINE,
 		rounded: true,
@@ -322,8 +321,6 @@
 		toolbar: () => DEFAULT_TOOLBAR as ReadonlyArray<TTextareaToolbarCommand>,
 		toolbarPosition: TEXTAREA_TOOLBAR_POSITION.TOP
 	})
-	const props = useDefaults(_props)
-
 	const emits = defineEmits<ITextareaFieldEmits>()
 
 	defineSlots<ITextareaFieldSlots>()

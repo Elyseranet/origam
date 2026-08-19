@@ -53,7 +53,6 @@
 
 	import {
 		useActive,
-		useDefaults,
 		useDensity,
 		useHover,
 		useProps,
@@ -78,12 +77,7 @@
 	 * Props resolution with defaults inheritance from parent
 	 * groups (e.g. OrigamAvatarGroup via provideDefaults).
 	 ********************************************************/
-	const _props = withDefaults(defineProps<IAvatarProps>(), {tag: 'div', size: 'default'})
-
-	// Resolve props against the closest `provideDefaults({ 'origam-avatar': … })`
-	// injected by a parent like `OrigamAvatarGroup`. Props explicitly set by the
-	// parent template still win; the group's values are used only as defaults.
-	const props = useDefaults(_props)
+	const props = withDefaults(defineProps<IAvatarProps>(), {tag: 'div', size: 'default'})
 
 	defineEmits<IAvatarEmits>()
 

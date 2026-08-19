@@ -429,7 +429,6 @@
 
 	import {
 		useBackgroundColor,
-		useDefaults,
 		useFocus,
 		useProps,
 		useRounded,
@@ -456,7 +455,7 @@
 	 * @description
 	 * Props, emits, slots and the focus + RTL composables.
 	 ********************************************************/
-	const _props = withDefaults(defineProps<ISliderFieldProps>(), {
+	const props = withDefaults(defineProps<ISliderFieldProps>(), {
 		min: 0,
 		max: 100,
 		modelValue: 0,
@@ -469,13 +468,6 @@
 		showHoverTooltip: false,
 		formatHoverTooltip: (value: number) => String(value)
 	})
-
-	// `useDefaults` resolves each prop against the closest
-	// `<OrigamDefaultsProvider>` / theme `components['origam-slider-field']`
-	// entry. Without this hook `color`/`bgColor` (and any other theme-level
-	// default for this component) were completely inert — the component
-	// only ever saw its own `withDefaults()` value (see #279).
-	const props = useDefaults(_props)
 
 	const emits = defineEmits<ISliderFieldEmits>()
 

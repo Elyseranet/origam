@@ -40,7 +40,23 @@ export function useLink (props: ILinkProps & ITagProps, attrs: SetupContext['att
     const isClickable = computed(() => {
         return isLink?.value || hasEvent(attrs, 'click') || hasEvent(props, 'click')
     })
-    const tag = isLink.value ? 'a' : props.tag ?? 'div'
+
+    /*********************************************************
+     *  TAG IS RESOLVED LAZILY, NOT SNAPSHOTTED
+     *
+     *  @description
+     *  `useLink` runs during `setup()`, which Vue executes BEFORE the
+     *  `beforeCreate` hook where the ADR-005 theme-props resolver patches
+     *  `instance.props`.
+     *  Reading `props.tag` here as a plain string therefore captured the value
+     *  a theme had not yet had the chance to set, and no later change could
+     *  correct it.
+     *  A `computed` first evaluates at render, long after `beforeCreate`, so
+     *  the themed value is the one that lands.
+     *  Measured before this changed: a theme setting `tag` on Btn, Card, Chip,
+     *  ListItem or BreadcrumbItem produced no change in the rendered markup.
+     ********************************************************/
+    const tag = computed(() => (isLink.value ? 'a' : props.tag ?? 'div'))
 
     if (typeof RouterLink === 'string') {
         return {

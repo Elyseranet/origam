@@ -1,6 +1,6 @@
 <template>
 	<component
-			:is="link.tag"
+			:is="link.tag.value"
 			v-ripple="isClickable && ripple"
 			v-contrast
 			:class="cardClasses"
@@ -148,7 +148,6 @@
 	import {
 		useActive,
 		useAdjacent,
-		useDefaults,
 		useDensity,
 		useDimension,
 		useHover,
@@ -177,12 +176,7 @@
 	 * @description
 	 * Props, emits and link resolution for the Card component.
 	 ********************************************************/
-	const _props = withDefaults(defineProps<ICardProps>(), {ripple: true, density: DENSITY.DEFAULT, tag: 'div'})
-
-	// `useDefaults` resolves each prop against the closest theme
-	// `components['origam-card']` config (OrigamBtn pattern) — without this,
-	// theme entries like `rounded` / `border` / `flat` never took effect.
-	const props = useDefaults(_props)
+	const props = withDefaults(defineProps<ICardProps>(), {ripple: true, density: DENSITY.DEFAULT, tag: 'div'})
 
 	defineEmits<ICardEmits>()
 

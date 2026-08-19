@@ -91,7 +91,6 @@
 
 	import {
 		useBothColor,
-		useDefaults,
 		useProps,
 		useScopeId,
 		useStateEffect,
@@ -117,7 +116,7 @@
 	 * @description
 	 * Props, emits, filterProps and core refs for the Menu component.
 	 ********************************************************/
-	const _props = withDefaults(defineProps<IMenuProps>(), {
+	const props = withDefaults(defineProps<IMenuProps>(), {
 		closeDelay: 250,
 		closeOnContentClick: true,
 		locationStrategy: LOCATION_STRATEGIES.CONNECTED,
@@ -133,11 +132,6 @@
 		itemChildren: 'children',
 		transition: () => ({component: OrigamTranslateScale}) as unknown as TTransitionProps
 	})
-
-	// `useDefaults` resolves each prop against theme.components['origam-menu']
-	// (OrigamBtn pattern) — without this, a theme's `location` / rounded /
-	// border / elevation config on the menu surface was a silent no-op.
-	const props = useDefaults(_props)
 
 	const emit = defineEmits<IMenuEmits>()
 

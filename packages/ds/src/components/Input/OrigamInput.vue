@@ -104,7 +104,6 @@
 		useAdjacent,
 		useBorder,
 		useBothColor,
-		useDefaults,
 		useDensity,
 		useDimension,
 		useElevation,
@@ -133,13 +132,11 @@
 	 * @description
 	 * Props, emits, slots, and identity setup.
 	 ********************************************************/
-	const _props = withDefaults(defineProps<IInputProps>(), {
+	const props = withDefaults(defineProps<IInputProps>(), {
 		direction: DIRECTION.HORIZONTAL,
 		centerAffix: true,
 		density: DENSITY.DEFAULT
 	})
-	const props = useDefaults(_props)
-
 	defineEmits<IInputEmits>()
 
 	defineSlots<IInputSlots>()

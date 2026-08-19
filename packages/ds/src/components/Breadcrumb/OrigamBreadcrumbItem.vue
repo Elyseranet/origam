@@ -1,6 +1,6 @@
 <template>
 	<component
-			:is="link.tag"
+			:is="link.tag.value"
 			v-contrast
 			:aria-current="isActive ? 'page' : undefined"
 			:class="breadcrumbItemClasses"
@@ -73,7 +73,6 @@
 	import {
 		useActive,
 		useAdjacent,
-		useDefaults,
 		useDensity,
 		useHover,
 		useLink,
@@ -97,11 +96,7 @@
 	 * Props resolved against the closest OrigamBreadcrumb
 	 * defaults provider.
 	 ********************************************************/
-	const _props = withDefaults(defineProps<IBreadcrumbItemProps>(), {tag: 'span', density: DENSITY.DEFAULT})
-
-	// Resolve props against the closest `provideDefaults({ 'origam-breadcrumb-item': … })`
-	// injected by a parent `OrigamBreadcrumb`.
-	const props = useDefaults(_props)
+	const props = withDefaults(defineProps<IBreadcrumbItemProps>(), {tag: 'span', density: DENSITY.DEFAULT})
 
 	defineEmits<IBreadcrumbItemEmits>()
 

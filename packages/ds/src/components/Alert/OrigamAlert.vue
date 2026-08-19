@@ -119,7 +119,6 @@
 	import {
 		useActive,
 		useAdjacent,
-		useDefaults,
 		useDensity,
 		useDimension,
 		useHover,
@@ -145,7 +144,7 @@
 	 * @description
 	 * Props, emits and utilities for the Alert component.
 	 ********************************************************/
-	const _props = withDefaults(defineProps<IAlertProps>(), {
+	const props = withDefaults(defineProps<IAlertProps>(), {
 		tag: 'div',
 		density: DENSITY.DEFAULT,
 		closeIcon: MDI_ICONS.CLOSE,
@@ -153,8 +152,6 @@
 		modelValue: true,
 		hover: true
 	})
-
-	const props = useDefaults(_props)
 
 	const emits = defineEmits<IAlertEmits>()
 

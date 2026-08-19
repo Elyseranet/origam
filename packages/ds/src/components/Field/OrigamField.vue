@@ -175,7 +175,6 @@
 		useActive,
 		useAdjacentInner,
 		useBothColor,
-		useDefaults,
 		useDensity,
 		useFocus,
 		useLoader,
@@ -204,14 +203,12 @@
 	 * Global
 	 ********************************************************/
 
-	const _props = withDefaults(defineProps<IFieldProps>(), {
+	const props = withDefaults(defineProps<IFieldProps>(), {
 		variant: VARIANT_INPUT.OUTLINED,
 		density: DENSITY.DEFAULT,
 		centerAffix: true,
 		clearIcon: MDI_ICONS.CLOSE_CIRCLE_OUTLINE
 	})
-	const props = useDefaults(_props)
-
 	defineEmits<IFieldEmits>()
 
 	defineSlots<IFieldSlots>()

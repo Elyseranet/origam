@@ -1,6 +1,6 @@
 <template>
 	<component
-			:is="link.tag"
+			:is="link.tag.value"
 			v-ripple="rippleProps"
 			v-contrast
 			:class="chipClasses"
@@ -133,7 +133,6 @@
 	import {
 		useAdjacent,
 		useBothColor,
-		useDefaults,
 		useDensity,
 		useGroupItem,
 		useHover,
@@ -166,7 +165,7 @@
 	 * bindings for the chip.
 	 ********************************************************/
 
-	const _props = withDefaults(defineProps<IChipProps>(), {
+	const props = withDefaults(defineProps<IChipProps>(), {
 		tag: 'span',
 		closeIcon: MDI_ICONS.CLOSE_CIRCLE_OUTLINE,
 		filterIcon: MDI_ICONS.CHECK,
@@ -180,12 +179,6 @@
 		// own `size: SIZES.DEFAULT` default.
 		size: SIZES.DEFAULT
 	})
-
-	// Resolve each prop against the closest provider — typically a parent
-	// `OrigamChipGroup` injecting `'origam-chip': { color, density, … }`.
-	// Without this hook, group-level color / density never propagates to
-	// chips passed via the default slot.
-	const props = useDefaults(_props)
 
 	const emits = defineEmits<IChipEmits>()
 

@@ -315,7 +315,6 @@
 		computeStrength,
 		useAdjacent,
 		useAdjacentInner,
-		useDefaults,
 		useFocus,
 		useLocale,
 		useProps,
@@ -351,7 +350,7 @@
 	 *   - Each enabled requirement is auto-injected as a validation rule
 	 *     so consumers don't have to repeat the regex in their `rules`.
 	 ********************************************************/
-	const _props = withDefaults(defineProps<IPasswordFieldProps>(), {
+	const props = withDefaults(defineProps<IPasswordFieldProps>(), {
 		minLength: 8,
 		eager: true,
 		offIcon: MDI_ICONS.EYE_OFF,
@@ -370,8 +369,6 @@
 		density: DENSITY.DEFAULT,
 		rounded: true
 	})
-	const props = useDefaults(_props)
-
 	const emits = defineEmits<IPasswordFieldEmits>()
 
 	defineSlots<IPasswordFieldSlots>()

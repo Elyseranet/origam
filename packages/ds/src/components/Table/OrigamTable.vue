@@ -34,7 +34,6 @@
 >
 	import { computed, StyleValue, useSlots } from 'vue'
 	import {
-		useDefaults,
 		useDensity,
 		useDimension,
 		useHover,
@@ -55,29 +54,10 @@
 	 * Props with defaults, filterProps utility, and slot ref.
 	 ********************************************************/
 
-	const _props = withDefaults(defineProps<ITableProps>(), {
+	const props = withDefaults(defineProps<ITableProps>(), {
 		tag: 'div',
 		density: DENSITY.DEFAULT
 	})
-
-	// `useDefaults` resolves each prop against theme.components['origam-table']
-	// (OrigamBtn pattern) — without this, theme.components['origam-table']
-	// (tag, border, rounded, …) was a silent no-op.
-	//
-	// IMPORTANT: `<script setup>` auto-exposes every `defineProps()` key to
-	// the template as a BARE binding pointing at the component's raw
-	// `$props` — that binding is generated at compile time from the
-	// `defineProps` macro call itself, NOT from whichever local variable
-	// captures the return value. A bare `:is="tag"` in the template
-	// therefore reads the UNRESOLVED prop, silently bypassing this Proxy,
-	// even though every composable that receives the `props` variable
-	// explicitly (useBorder(props), useRounded(props), …) resolves
-	// correctly. Discovered here because `tag` is the only prop this
-	// component reads directly in the template rather than through a
-	// composable/computed — fixed by writing `props.tag` explicitly.
-	// Audit any OTHER useDefaults-wired component for the same bare
-	// binding before assuming "useDefaults(_props) is enough".
-	const props = useDefaults(_props)
 
 	defineSlots<ITableSlots>()
 
