@@ -1,7 +1,12 @@
-import { useDisplay, useGoTo, useResizeObserver } from '../../composables'
-import { BUFFER_PX, DOWN, IN_BROWSER, UP } from '../../consts'
-import type { IGoToOptions, IVirtualProps } from '../../interfaces'
-import { binaryClosest, clamp, debounce, int } from '../../utils'
+import { useDisplay } from './display.composable'
+import { useGoTo } from './goTo.composable'
+import { useResizeObserver } from './resizeObserver.composable'
+import { IN_BROWSER } from '../../consts/Commons/commons.const'
+import { BUFFER_PX, DOWN, UP } from '../../consts/Commons/virtual.const'
+import type { IGoToOptions } from '../../interfaces/Commons/goTo.interface'
+import type { IVirtualProps } from '../../interfaces/Commons/virtual.interface'
+import { clamp, debounce, int } from '../../utils/Commons/commons.util'
+import { binaryClosest } from '../../utils/Commons/virtual.util'
 
 import { computed, nextTick, onScopeDispose, ref, Ref, shallowRef, watch, watchEffect } from 'vue'
 

@@ -1,10 +1,12 @@
 import { computed, isRef, MaybeRef, ref, unref, watch } from 'vue'
 
-import type { IMaskOptions, IResolvedMaskConfig, IUseMaskReturn } from '../../interfaces'
+import type { IMaskOptions, IResolvedMaskConfig, IUseMaskReturn } from '../../interfaces/Commons/mask.interface'
 
-import type { TMask } from '../../types'
+import type { TMask } from '../../types/TextField/text-field.type'
 
-import { applyMask, resolveMaskConfig, validatePattern } from '../../utils'
+import { applyMask } from '../../utils/Commons/apply-mask.util'
+import { resolveMaskConfig } from '../../utils/Commons/resolve-mask-config.util'
+import { validatePattern } from '../../utils/Commons/validate-pattern.util'
 
 /**
  * Reactive mask engine — keeps `masked`, `unmasked`,

@@ -7,30 +7,16 @@ import { useMargin } from './margin.composable'
 import { usePadding } from './padding.composable'
 import { useRounded } from './rounded.composable'
 
-import {
-    getForeground,
-    intentBgExpr,
-    isCssColor,
-    isIntent,
-    isParsableColor,
-    isUtilityIntent,
-    parseColor,
-    rawBgExprWithState,
-    tokenForegroundForIntent,
-    tokenStylesForIntent,
-    warnLegacyColor,
-} from '../../utils'
+import { getForeground, intentBgExpr, isCssColor, isIntent, isParsableColor, isUtilityIntent, parseColor, rawBgExprWithState, tokenForegroundForIntent, tokenStylesForIntent, warnLegacyColor } from '../../utils/Commons/color.util'
 
-import type {
-    IActiveState,
-    IBorderProps,
-    IHoverState,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps,
-} from '../../interfaces'
+import type { IBorderProps } from '../../interfaces/Commons/border.interface'
+import type { IMarginProps } from '../../interfaces/Commons/margin.interface'
+import type { IPaddingProps } from '../../interfaces/Commons/padding.interface'
+import type { IRoundedProps } from '../../interfaces/Commons/rounded.interface'
+import type { IActiveState, IHoverState } from '../../interfaces/Commons/state-effect.interface'
 
-import type { TBgFgRole, TColor, TStateEffectProps } from '../../types'
+import type { TBgFgRole, TColor } from '../../types/Commons/color.type'
+import type { TStateEffectProps } from '../../types/Commons/state-effect.type'
 
 // ────────────────────────────────────────────────────────────────────────────
 // `useStateEffect` — single composable for state-aware visual styles.

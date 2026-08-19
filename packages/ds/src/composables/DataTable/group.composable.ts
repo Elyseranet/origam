@@ -1,14 +1,9 @@
 import type { Ref } from 'vue'
 import { computed, inject, provide, ref } from 'vue'
-import { useVModel } from '../../composables'
-import { ORIGAM_DATA_TABLE_GROUP_KEY } from '../../consts'
-import type {
-    IDataTableGroup,
-    IDataTableGroupableItem,
-    IDataTableGroupProps,
-    IDataTableProvideGroup,
-    IDataTableSortItem
-} from '../../interfaces'
+import { useVModel } from '../Commons/vModel.composable'
+import { ORIGAM_DATA_TABLE_GROUP_KEY } from '../../consts/DataTable/data-table.const'
+import type { IDataTableGroup, IDataTableGroupableItem, IDataTableGroupProps, IDataTableProvideGroup } from '../../interfaces/DataTable/group.interface'
+import type { IDataTableSortItem } from '../../interfaces/DataTable/sort.interface'
 
 /*********************************************************
  * createGroupBy

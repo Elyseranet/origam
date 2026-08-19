@@ -1,7 +1,7 @@
 import type { Ref } from 'vue'
 import { computed, watch } from 'vue'
-import type { IDataTableGroup } from '../../interfaces'
-import { getCurrentInstance } from '../../utils'
+import type { IDataTableGroup } from '../../interfaces/DataTable/group.interface'
+import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
 
 /*********************************************************
  * usePaginatedItems

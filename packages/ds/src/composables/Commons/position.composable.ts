@@ -1,6 +1,6 @@
-import type { IPositionProps } from '../../interfaces'
+import type { IPositionProps } from '../../interfaces/Commons/position.interface'
 
-import { getCurrentInstanceName } from '../../utils'
+import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.util'
 import { computed } from 'vue'
 
 /*********************************************************

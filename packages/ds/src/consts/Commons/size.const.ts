@@ -1,6 +1,6 @@
 import { SIZES } from '../../enums'
 
-import type { TSize } from '../../types'
+import type { TSize } from '../../types/Commons/size.type'
 
 export const SIZES_ARRAY: Array<TSize> = [
     SIZES.X_SMALL,

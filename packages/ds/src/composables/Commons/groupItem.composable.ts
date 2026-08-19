@@ -1,7 +1,7 @@
 import type { InjectionKey } from 'vue'
 import { computed, inject, onBeforeUnmount, provide, toRef, watch } from 'vue'
-import type { IGroupItemProps, IGroupItemProvide, IGroupProvide } from '../../interfaces'
-import { getCurrentInstance, getUid } from '../../utils'
+import type { IGroupItemProps, IGroupItemProvide, IGroupProvide } from '../../interfaces/Commons/group.interface'
+import { getCurrentInstance, getUid } from '../../utils/Commons/getCurrentInstance.util'
 
 /*********************************************************
  * useGroupItem

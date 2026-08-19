@@ -4,10 +4,11 @@ import { useCssSupport } from '../Commons/cssSupport.composable'
 
 import { PARALLAX_DIRECTION, PARALLAX_EASING } from '../../enums'
 
-import type { IParallaxLayerRegistry, IUseParallaxRuntimeOptions } from '../../interfaces'
-import type { TParallaxDirection } from '../../types'
+import type { IParallaxLayerRegistry } from '../../interfaces/Parallax/parallax-layer.interface'
+import type { IUseParallaxRuntimeOptions } from '../../interfaces/Parallax/parallax.interface'
+import type { TParallaxDirection } from '../../types/Parallax/parallax.type'
 
-export type { IUseParallaxRuntimeOptions } from '../../interfaces'
+export type { IUseParallaxRuntimeOptions } from '../../interfaces/Parallax/parallax.interface'
 
 /**
  * Detect `prefers-reduced-motion: reduce` once at mount time. We watch the

@@ -1,7 +1,8 @@
 import type { InjectionKey } from 'vue'
 
-import type { IDefault } from '../../interfaces'
-import type { TInstalledThemes, TModeResolved } from '../../types'
+import type { IDefault } from '../../interfaces/DefaultsProvider/defaults-provider.interface'
+import type { TInstalledThemes } from '../../types/Commons/installed-theme.type'
+import type { TModeResolved } from '../../types/Commons/theme.type'
 
 export const ORIGAM_THEME_AUTO = 'auto'
 export const ORIGAM_THEME_LIGHT = 'light'

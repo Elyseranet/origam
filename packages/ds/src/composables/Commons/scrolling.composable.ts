@@ -1,6 +1,7 @@
 import type { Ref } from 'vue'
 import { shallowRef, watch } from 'vue'
-import type { TOrigamList, TOrigamTextField } from '../../types'
+import type { TOrigamList } from '../../types/List/list.type'
+import type { TOrigamTextField } from '../../types/TextField/text-field.type'
 
 /*********************************************************
  * useScrolling

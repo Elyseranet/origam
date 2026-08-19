@@ -1,10 +1,11 @@
 import { computed, ref } from "vue"
 import type { ComputedRef } from "vue"
 
-import { useVModel } from "../../composables"
-import { IActiveProps, IActiveState } from "../../interfaces"
+import { useVModel } from './vModel.composable'
+import { IActiveProps } from '../../interfaces/Commons/active.interface'
+import { IActiveState } from '../../interfaces/Commons/state-effect.interface'
 
-import { getCurrentInstanceName } from "../../utils"
+import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.util'
 
 /**
  * Track the active (pressed / selected) state of the host element AND

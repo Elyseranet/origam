@@ -1,9 +1,10 @@
 import { computed, MaybeRef, ref, Ref, unref, watchEffect } from 'vue'
-import type { IFiltersProps, IInternalItem } from '../../interfaces'
+import type { IFiltersProps } from '../../interfaces/Commons/filters.interface'
+import type { IInternalItem } from '../../interfaces/List/list-children.interface'
 
-import type { TFilterKeyFunctions, TFilterMatch } from '../../types'
+import type { TFilterKeyFunctions, TFilterMatch } from '../../types/Commons/filters.type'
 
-import { filterItems } from '../../utils'
+import { filterItems } from '../../utils/Commons/filters.util'
 
 /*********************************************************
  * useFilter

@@ -1,8 +1,11 @@
-import { useIntersectionObserver, useMargin, usePadding, useVModel } from '../../composables'
+import { useIntersectionObserver } from '../Commons/intersectionObserver.composable'
+import { useMargin } from '../Commons/margin.composable'
+import { usePadding } from '../Commons/padding.composable'
+import { useVModel } from '../Commons/vModel.composable'
 
-import type { IProgressTypeProps } from '../../interfaces'
+import type { IProgressTypeProps } from '../../interfaces/Progress/progress.interface'
 
-import { int } from "../../utils"
+import { int } from '../../utils/Commons/commons.util'
 
 import { computed, useSlots } from 'vue'
 

@@ -1,9 +1,10 @@
-import { SIZES_ARRAY } from '../../consts'
-import type { ISizeProps } from "../../interfaces"
+import { SIZES_ARRAY } from '../../consts/Commons/size.const'
+import type { ISizeProps } from '../../interfaces/Commons/size.interface'
 
-import type { TSize } from '../../types'
+import type { TSize } from '../../types/Commons/size.type'
 
-import { convertToUnit, getCurrentInstanceName } from '../../utils'
+import { convertToUnit } from '../../utils/Commons/commons.util'
+import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.util'
 import { computed, isRef } from 'vue'
 
 /**

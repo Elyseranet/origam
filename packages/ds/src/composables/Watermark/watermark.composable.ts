@@ -21,10 +21,7 @@ import {
     WATERMARK_DEFAULT_Z_INDEX
 } from '../../consts/Watermark/watermark.const'
 
-import type {
-    IUseWatermarkOptions,
-    IWatermarkResolvedOptions
-} from '../../interfaces'
+import type { IUseWatermarkOptions, IWatermarkResolvedOptions } from '../../interfaces/Watermark/watermark.interface'
 
 /**
  * Escape the five XML metacharacters before embedding a user-controlled

@@ -1,5 +1,5 @@
 import { onBeforeUnmount, ref, shallowRef, watch } from 'vue'
-import { SUPPORTS_INTERSECTION } from '../../consts'
+import { SUPPORTS_INTERSECTION } from '../../consts/Commons/commons.const'
 
 /*********************************************************
  * useIntersectionObserver

@@ -1,5 +1,5 @@
 import { QR_CODE_ERROR_CORRECTION_LEVEL } from '../../enums'
-import type { TQrCodeErrorCorrectionLevel } from '../../types'
+import type { TQrCodeErrorCorrectionLevel } from '../../types/QrCode/qr-code.type'
 
 /**
  * Default error-correction redundancy budget (~15%). Good balance

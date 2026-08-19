@@ -1,6 +1,6 @@
-import { SUPPORTS_INTERSECTION } from '../../consts'
-import type { IIntersectDirectiveBinding, IIntersectHtmlElement } from '../../interfaces'
-import { unmountIntersect } from '../../utils'
+import { SUPPORTS_INTERSECTION } from '../../consts/Commons/commons.const'
+import type { IIntersectDirectiveBinding, IIntersectHtmlElement } from '../../interfaces/Commons/intersect.interface'
+import { unmountIntersect } from '../../utils/Commons/intersect.util'
 
 export const Intersect = {
     mounted (el: IIntersectHtmlElement, binding: IIntersectDirectiveBinding) {

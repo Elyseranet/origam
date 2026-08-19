@@ -1,4 +1,4 @@
-import type { IInternalDataTableHeader } from "../../interfaces"
+import type { IInternalDataTableHeader } from '../../interfaces/DataTable/data-table-header.interface'
 
 /*********************************************************
  * useCell

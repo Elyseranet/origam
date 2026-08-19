@@ -1,8 +1,11 @@
 import type { ComponentInternalInstance, InjectionKey, UnwrapRef } from 'vue'
 import { computed, onBeforeUnmount, onMounted, provide, reactive, toRef, unref } from 'vue'
-import { useVModel } from '../../composables'
-import type { IGroupItem, IGroupProps, IGroupProvide } from '../../interfaces'
-import { consoleWarn, findChildrenWithProvide, getCurrentInstance, getItemIndex, getIds, getValues, wrapInArray } from '../../utils'
+import { useVModel } from './vModel.composable'
+import type { IGroupItem, IGroupProps, IGroupProvide } from '../../interfaces/Commons/group.interface'
+import { findChildrenWithProvide, wrapInArray } from '../../utils/Commons/commons.util'
+import { consoleWarn } from '../../utils/Commons/console.util'
+import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
+import { getItemIndex, getIds, getValues } from '../../utils/Commons/group.util'
 
 /*********************************************************
  * useGroup

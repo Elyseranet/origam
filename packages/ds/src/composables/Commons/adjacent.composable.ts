@@ -1,7 +1,7 @@
 import type { ComputedRef, Ref } from 'vue'
 import { computed, useSlots } from 'vue'
-import type { IAdjacentProps } from '../../interfaces'
-import { getCurrentInstance } from '../../utils'
+import type { IAdjacentProps } from '../../interfaces/Commons/adjacent.interface'
+import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
 
 /*********************************************************
  * useAdjacent

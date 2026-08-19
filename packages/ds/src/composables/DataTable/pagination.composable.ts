@@ -1,9 +1,9 @@
 import type { Ref } from 'vue'
 import { computed, inject, provide, watchEffect } from 'vue'
-import { useVModel } from '../../composables'
-import { ORIGAM_DATA_TABLE_PAGINATION_KEY } from '../../consts'
-import type { IDataTableProvidePagination, IDataTablePaginationProps } from '../../interfaces'
-import { clamp } from '../../utils'
+import { useVModel } from '../Commons/vModel.composable'
+import { ORIGAM_DATA_TABLE_PAGINATION_KEY } from '../../consts/DataTable/data-table.const'
+import type { IDataTableProvidePagination, IDataTablePaginationProps } from '../../interfaces/DataTable/pagination.interface'
+import { clamp } from '../../utils/Commons/commons.util'
 
 /*********************************************************
  * createPagination

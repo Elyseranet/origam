@@ -2,15 +2,9 @@ import { createOrigam } from '../origam'
 
 import { themeToCss } from '../utils/Commons/apply-theme.util'
 
-import type { IOrigamNuxtRuntimeConfig } from '../interfaces'
+import type { IOrigamNuxtRuntimeConfig } from '../interfaces/Commons/nuxt-module.interface'
 
-import {
-    ORIGAM_MODE_ATTR,
-    ORIGAM_MODE_DARK,
-    ORIGAM_MODE_LIGHT,
-    ORIGAM_THEME_ATTR,
-    ORIGAM_THEME_AUTO
-} from '../consts'
+import { ORIGAM_MODE_ATTR, ORIGAM_MODE_DARK, ORIGAM_MODE_LIGHT, ORIGAM_THEME_ATTR, ORIGAM_THEME_AUTO } from '../consts/Commons/theme.const'
 
 import type { TMode, TTheme } from '../types/Commons/theme.type'
 

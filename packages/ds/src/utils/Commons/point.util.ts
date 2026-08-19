@@ -1,6 +1,7 @@
-import type { IBox } from '../../interfaces'
+import type { IBox } from '../../interfaces/Commons/box.interface'
 
-import type { TElementPoint, TOffset, TParsedAnchor, TPoint, TViewportPoint } from '../../types'
+import type { TParsedAnchor } from '../../types/Commons/anchor.type'
+import type { TElementPoint, TOffset, TPoint, TViewportPoint } from '../../types/Commons/point.type'
 
 /**
  * Element to viewport.

@@ -1,5 +1,5 @@
 import { computed } from 'vue'
-import type { ITransitionProps } from '../../interfaces'
+import type { ITransitionProps } from '../../interfaces/Transition/transition.interface'
 
 /*********************************************************
  * useTransition

@@ -1,9 +1,9 @@
 import { computed } from 'vue'
-import { DIMENSIONS_ARRAY } from '../../consts'
+import { DIMENSIONS_ARRAY } from '../../consts/Commons/dimension.const'
 
-import type { IDimensionProps } from '../../interfaces'
+import type { IDimensionProps } from '../../interfaces/Commons/dimension.interface'
 
-import { convertToUnit, toKebabCase } from '../../utils'
+import { convertToUnit, toKebabCase } from '../../utils/Commons/commons.util'
 
 /*********************************************************
  * useDimension

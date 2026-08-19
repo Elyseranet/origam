@@ -1,9 +1,10 @@
-import { HISTORY, HORIZON } from '../../consts'
-import type { ISample } from "../../interfaces"
+import { HISTORY, HORIZON } from '../../consts/Commons/commons.const'
+import type { ISample } from '../../interfaces/Commons/commons.interface'
 
-import { CircularBuffer } from '../../classes'
+import { CircularBuffer } from '../../classes/Commons/circular-buffer.class'
 
-import { calculateImpulseVelocity, oops } from '../../utils'
+import { oops } from '../../utils/Commons/commons.util'
+import { calculateImpulseVelocity } from '../../utils/Commons/velocity.util'
 
 /*********************************************************
  * useVelocity

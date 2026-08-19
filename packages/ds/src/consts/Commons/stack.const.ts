@@ -1,4 +1,4 @@
-import type { IStackProvide } from '../../interfaces'
+import type { IStackProvide } from '../../interfaces/Commons/stack.interface'
 
 import type { InjectionKey } from 'vue'
 import { reactive } from 'vue'

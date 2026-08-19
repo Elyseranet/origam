@@ -1,8 +1,9 @@
 import type { Ref } from 'vue'
 import { computed } from 'vue'
-import type { IDataTableSortItem, IInternalItem } from '../../interfaces'
-import type { TDataTableCompareFunction } from '../../types'
-import { sortItems } from '../../utils'
+import type { IDataTableSortItem } from '../../interfaces/DataTable/sort.interface'
+import type { IInternalItem } from '../../interfaces/List/list-children.interface'
+import type { TDataTableCompareFunction } from '../../types/DataTable/data-table.type'
+import { sortItems } from '../../utils/DataTable/sort.util'
 
 /*********************************************************
  * useSortedItems

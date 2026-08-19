@@ -24,8 +24,8 @@
  */
 
 import { PASSWORD_STRENGTH_LEVEL } from '../../enums'
-import type { IPasswordStrength } from '../../interfaces'
-import type { TPasswordStrengthLevel, TPasswordStrengthScore } from '../../types'
+import type { IPasswordStrength } from '../../interfaces/PasswordField/password-strength.interface'
+import type { TPasswordStrengthLevel, TPasswordStrengthScore } from '../../types/PasswordField/password-field.type'
 
 /**
  * Compute the strength of a password string. Pure — no side effects,
@@ -66,4 +66,4 @@ export function computeStrength (value: string | null | undefined): IPasswordStr
 // ONLY in src/consts/" rule. Re-import + re-export it here so existing
 // `import { DEFAULT_PASSWORD_REQUIREMENTS } from '@/composables'`
 // callsites keep resolving without a barrel-file change.
-export { DEFAULT_PASSWORD_REQUIREMENTS } from '../../consts'
+export { DEFAULT_PASSWORD_REQUIREMENTS } from '../../consts/PasswordField/password-field.const'

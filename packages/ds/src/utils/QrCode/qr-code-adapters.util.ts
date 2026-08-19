@@ -1,6 +1,7 @@
 import { intentBgExpr, isIntent, tokenForegroundForIntent } from '../Commons/color.util'
 
-import type { TColor, TRounded } from '../../types'
+import type { TColor } from '../../types/Commons/color.type'
+import type { TRounded } from '../../types/Commons/rounded.type'
 
 /**
  * Mapping table from the canonical `IRoundedProps` taxonomy

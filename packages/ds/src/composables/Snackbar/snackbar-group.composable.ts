@@ -1,17 +1,10 @@
 import type { Ref } from 'vue'
-import { SNACKBAR_GROUP_DEFAULT_ID } from '../../consts'
-import type {
-    ISnackbarGroupItem,
-    ISnackbarGroupItemOptions,
-    IUseSnackbarGroupOptions,
-    IUseSnackbarGroupReturn
-} from '../../interfaces'
-import { clearTimer, generateId, getStore } from '../../utils'
+import { SNACKBAR_GROUP_DEFAULT_ID } from '../../consts/Snackbar/snackbar-group.const'
+import type { ISnackbarGroupItem, ISnackbarGroupItemOptions } from '../../interfaces/Snackbar/snackbar-group-item.interface'
+import type { IUseSnackbarGroupOptions, IUseSnackbarGroupReturn } from '../../interfaces/Snackbar/snackbar-group.interface'
+import { clearTimer, generateId, getStore } from '../../utils/Snackbar/snackbar-group.util'
 
-export type {
-    IUseSnackbarGroupOptions,
-    IUseSnackbarGroupReturn
-} from '../../interfaces'
+export type { IUseSnackbarGroupOptions, IUseSnackbarGroupReturn } from '../../interfaces/Snackbar/snackbar-group.interface'
 
 /*********************************************************
  * useSnackbarGroup

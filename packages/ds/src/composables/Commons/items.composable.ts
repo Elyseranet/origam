@@ -1,7 +1,9 @@
 import { computed } from 'vue'
-import type { IInternalListItem, IItemProps } from '../../interfaces'
+import type { IItemProps } from '../../interfaces/Commons/item.interface'
+import type { IInternalListItem } from '../../interfaces/List/list-children.interface'
 
-import { deepEqual, transformListItem, transformListItems } from '../../utils'
+import { deepEqual } from '../../utils/Commons/commons.util'
+import { transformListItem, transformListItems } from '../../utils/List/list-item.util'
 
 /*********************************************************
  * useItems

@@ -1,9 +1,9 @@
-import type { IMaskOptions } from '../../interfaces'
+import type { IMaskOptions } from '../../interfaces/Commons/mask.interface'
 import { BUILT_IN_PATTERN, PATTERN_VALIDATOR } from '../../enums'
-import type { TBuiltInPattern } from '../../types'
+import type { TBuiltInPattern } from '../../types/TextField/text-field.type'
 import { TEXT_FIELD_TYPE } from "../../enums"
 
-import type { TTextFieldType } from "../../types"
+import type { TTextFieldType } from '../../types/TextField/text-field.type'
 
 export const ACTIVE_TEXT_FIELD_TYPE: Partial<Array<TTextFieldType>> = [
     TEXT_FIELD_TYPE.COLOR,

@@ -1,5 +1,6 @@
-import type { IDataTableSortItem } from '../../interfaces'
-import { deepEqual, getCurrentInstance } from '../../utils'
+import type { IDataTableSortItem } from '../../interfaces/DataTable/sort.interface'
+import { deepEqual } from '../../utils/Commons/commons.util'
+import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
 import { computed, Ref, watch } from 'vue'
 
 /*********************************************************

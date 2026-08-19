@@ -1,5 +1,6 @@
 import type { InjectionKey } from 'vue'
-import type { IGroupProvide, ITabPanelsProvide } from '../../interfaces'
+import type { IGroupProvide } from '../../interfaces/Commons/group.interface'
+import type { ITabPanelsProvide } from '../../interfaces/Tabs/tab-panels.interface'
 
 /**
  * Injection key shared by `<OrigamTabs>` (provider) and `<OrigamTab>`

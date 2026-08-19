@@ -1,5 +1,5 @@
-import type { IDelayProps } from '../../interfaces'
-import { defer } from '../../utils'
+import type { IDelayProps } from '../../interfaces/Commons/delay.interface'
+import { defer } from '../../utils/Commons/commons.util'
 
 /*********************************************************
  * useDelay

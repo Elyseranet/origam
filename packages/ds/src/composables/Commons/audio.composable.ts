@@ -1,5 +1,5 @@
 import { ref, shallowRef, watch } from 'vue'
-import type { IUseAudioProps } from '../../interfaces'
+import type { IUseAudioProps } from '../../interfaces/Commons/audio.interface'
 
 /*********************************************************
  * useAudio

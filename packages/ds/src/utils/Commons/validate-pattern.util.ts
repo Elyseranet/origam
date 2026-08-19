@@ -1,6 +1,6 @@
 import { PATTERN_VALIDATOR } from '../../enums'
 
-import type { TPatternValidator, TPatternValidatorName } from '../../types'
+import type { TPatternValidator, TPatternValidatorName } from '../../types/TextField/text-field.type'
 
 /**
  * Standard Luhn checksum used to validate credit-card,

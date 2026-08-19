@@ -1,5 +1,5 @@
 import type { InjectionKey } from 'vue'
-import type { IGroupProvide } from '../../interfaces'
+import type { IGroupProvide } from '../../interfaces/Commons/group.interface'
 
 /**
  * Injection key shared by `<OrigamItemGroup>` (provider) and

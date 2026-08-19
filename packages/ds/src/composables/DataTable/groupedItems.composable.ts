@@ -1,7 +1,8 @@
 import type { ComputedRef, Ref } from 'vue'
 import { computed } from 'vue'
-import type { IDataTableGroupableItem, IDataTableSortItem } from '../../interfaces'
-import { flattenItems, groupItems } from '../../utils'
+import type { IDataTableGroupableItem } from '../../interfaces/DataTable/group.interface'
+import type { IDataTableSortItem } from '../../interfaces/DataTable/sort.interface'
+import { flattenItems, groupItems } from '../../utils/DataTable/group.util'
 
 /*********************************************************
  * useGroupedItems

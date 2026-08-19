@@ -1,6 +1,6 @@
 import { ROUNDED } from '../../enums'
 
-import type { TRounded } from '../../types'
+import type { TRounded } from '../../types/Commons/rounded.type'
 
 /**
  * Regex used to detect a free-form CSS border-radius string the consumer

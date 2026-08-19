@@ -1,5 +1,5 @@
 import { inject } from 'vue'
-import { ORIGAM_LAYOUT_KEY } from '../../consts'
+import { ORIGAM_LAYOUT_KEY } from '../../consts/Commons/layout.const'
 
 /*********************************************************
  * useLayout

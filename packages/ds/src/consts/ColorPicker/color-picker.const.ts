@@ -1,6 +1,6 @@
-import type { IColorPickerMode } from "../../interfaces"
+import type { IColorPickerMode } from '../../interfaces/ColorPicker/color-picker.interface'
 
-import type { THSLA, TRGBA } from "../../types"
+import type { THSLA, TRGBA } from '../../types/Commons/color.type'
 
 // Deep import, NOT the `../../utils` barrel — deliberate.
 //

@@ -1,5 +1,5 @@
 import { INTENT } from '../../enums'
-import { HSLtoRGB, HSVtoRGB } from '../../utils'
+import { HSLtoRGB, HSVtoRGB } from '../../utils/Commons/color.util'
 
 export const CSS_COLOR_REGEX = /^(?<fn>(?:rgb|hsl)a?)\((?<values>.+)\)/
 

@@ -1,7 +1,8 @@
 import { STATUS_POSITION } from "../../enums"
-import type { IAdjacentProps, IStatusProps } from "../../interfaces"
-import type { TColor } from "../../types"
-import { getCurrentInstanceName } from '../../utils'
+import type { IAdjacentProps } from '../../interfaces/Commons/adjacent.interface'
+import type { IStatusProps } from '../../interfaces/Commons/status.interface'
+import type { TColor } from '../../types/Commons/color.type'
+import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.util'
 import { computed } from 'vue'
 
 // A `status` carries its own semantic surface colour. It maps to the

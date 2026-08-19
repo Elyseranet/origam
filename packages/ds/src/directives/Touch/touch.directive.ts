@@ -1,7 +1,7 @@
-import type { ITouchDirectiveBinding } from '../../interfaces'
-import type { TTouchEvent } from '../../types'
+import type { ITouchDirectiveBinding } from '../../interfaces/Commons/touch.interface'
+import type { TTouchEvent } from '../../types/Commons/touch.type'
 
-import { createHandlers } from '../../utils'
+import { createHandlers } from '../../utils/Commons/touch.util'
 
 export const Touch = {
     mounted: (el: HTMLElement, binding: ITouchDirectiveBinding) => {

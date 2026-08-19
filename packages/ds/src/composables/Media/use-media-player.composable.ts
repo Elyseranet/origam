@@ -7,11 +7,7 @@ import {
 
 import { MEDIA_DEFAULT_VOLUME } from '../../consts/Media/media.const'
 
-import type {
-    IMediaPlayerMethods,
-    IMediaPlayerState,
-    IUseMediaPlayerOptions
-} from '../../interfaces'
+import type { IMediaPlayerMethods, IMediaPlayerState, IUseMediaPlayerOptions } from '../../interfaces/Media/media-player.interface'
 
 // `MEDIA_DEFAULT_VOLUME` lives in `src/consts/Media/media.const.ts`.
 // SFC `withDefaults(...)` blocks in `<OrigamVideo>` / `<OrigamAudio>`

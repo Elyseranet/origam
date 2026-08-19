@@ -1,8 +1,9 @@
 import type { SetupContext } from 'vue'
 import { computed, resolveDynamicComponent, toRef } from 'vue'
 import type { RouterLink as _RouterLink, UseLinkOptions } from 'vue-router'
-import type { ILink, ILinkProps, ITagProps } from '../../interfaces'
-import { deepEqual, hasEvent } from '../../utils'
+import type { ITagProps } from '../../interfaces/Commons/commons.interface'
+import type { ILink, ILinkProps } from '../../interfaces/Commons/router.interface'
+import { deepEqual, hasEvent } from '../../utils/Commons/commons.util'
 import { useRoute } from './route.composable'
 
 /*********************************************************

@@ -1,7 +1,7 @@
 import type { Ref } from 'vue'
 import { computed } from 'vue'
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
-import { getCurrentInstance } from '../../utils'
+import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
 
 /*********************************************************
  * useRoute

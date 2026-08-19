@@ -1,8 +1,8 @@
 import type { Component } from 'vue'
 import { computed, inject, nextTick, shallowRef, Transition, TransitionGroup } from 'vue'
-import { ORIGAM_WINDOW_KEY } from '../../consts'
-import type { ITransitionProps } from '../../interfaces'
-import { convertToUnit } from '../../utils'
+import { ORIGAM_WINDOW_KEY } from '../../consts/Window/window.const'
+import type { ITransitionProps } from '../../interfaces/Transition/transition.interface'
+import { convertToUnit } from '../../utils/Commons/commons.util'
 import { useTransition } from './transition.composable'
 
 /*********************************************************

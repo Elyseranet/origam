@@ -1,11 +1,11 @@
 import { computed, onUnmounted, Ref, ref } from 'vue'
-import { useEventListener } from '../../composables'
+import { useEventListener } from './eventListener.composable'
 
 import { AXIS, CLIENT_POSITION } from '../../enums'
 
-import type { TAxis } from '../../types'
+import type { TAxis } from '../../types/Commons/axis.type'
 
-import { addWindowListener, clamp, getPosition } from '../../utils'
+import { addWindowListener, clamp, getPosition } from '../../utils/Commons/commons.util'
 
 /*********************************************************
  * useDragResizer

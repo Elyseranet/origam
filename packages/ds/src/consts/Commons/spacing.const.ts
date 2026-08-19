@@ -1,6 +1,7 @@
 import { BLOCK, BORDER_LOGICAL_AXIS, INLINE } from '../../enums'
 
-import type { TBorderLogicalAxis, TDirectionBoth } from '../../types'
+import type { TDirectionBoth } from '../../types/Commons/anchor.type'
+import type { TBorderLogicalAxis } from '../../types/Commons/border.type'
 
 /**
  * Spacing scale steps mirrored by the global utility classes emitted from

@@ -1,8 +1,8 @@
-import { IN_BROWSER } from '../../consts'
+import { IN_BROWSER } from '../../consts/Commons/commons.const'
 
-import type { IResizeState } from '../../interfaces'
+import type { IResizeState } from '../../interfaces/Commons/resizeObserver.interface'
 
-import { refElement } from '../../utils'
+import { refElement } from '../../utils/Commons/commons.util'
 import { onBeforeUnmount, readonly, ref, watch } from 'vue'
 
 /*********************************************************

@@ -1,6 +1,6 @@
 import type { ComputedRef } from 'vue'
 import { inject, provide, shallowRef } from 'vue'
-import { ORIGAM_LIST_KEY } from '../../consts'
+import { ORIGAM_LIST_KEY } from '../../consts/List/list.const'
 
 /*********************************************************
  * useCreateList

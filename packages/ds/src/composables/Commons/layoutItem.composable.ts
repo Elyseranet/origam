@@ -1,8 +1,8 @@
 import type { ComputedRef, CSSProperties, Ref } from 'vue'
 import { computed, inject, onActivated, onBeforeUnmount, onDeactivated, provide, shallowRef } from 'vue'
-import { ORIGAM_LAYOUT_ITEM_KEY, ORIGAM_LAYOUT_KEY } from '../../consts'
-import type { TDirectionBoth } from '../../types'
-import { getCurrentInstance, getUid } from '../../utils'
+import { ORIGAM_LAYOUT_ITEM_KEY, ORIGAM_LAYOUT_KEY } from '../../consts/Commons/layout.const'
+import type { TDirectionBoth } from '../../types/Commons/anchor.type'
+import { getCurrentInstance, getUid } from '../../utils/Commons/getCurrentInstance.util'
 
 /*********************************************************
  * useLayoutItem

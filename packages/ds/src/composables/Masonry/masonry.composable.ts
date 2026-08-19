@@ -1,19 +1,10 @@
 import { onBeforeUnmount, ref, watch } from 'vue'
 
-import type { TMasonryAlign } from '../../types'
+import type { TMasonryAlign } from '../../types/Masonry/masonry.type'
 
-import type {
-    IMasonryItemRect,
-    IMasonryLayoutResult,
-    IUseMasonryOptions,
-    TMasonryColumnBreakpoints
-} from '../../interfaces'
+import type { IMasonryItemRect, IMasonryLayoutResult, IUseMasonryOptions, TMasonryColumnBreakpoints } from '../../interfaces/Masonry/masonry.interface'
 
-export type {
-    IMasonryItemRect,
-    IMasonryLayoutResult,
-    IUseMasonryOptions
-} from '../../interfaces'
+export type { IMasonryItemRect, IMasonryLayoutResult, IUseMasonryOptions } from '../../interfaces/Masonry/masonry.interface'
 
 /**
  * Decide how many columns to use given a container width and a

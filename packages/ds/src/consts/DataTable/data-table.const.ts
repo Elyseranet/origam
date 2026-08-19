@@ -1,6 +1,10 @@
 import type { InjectionKey, Ref } from 'vue'
-import type { IDataTableItem, IDataTableGroup, IDataTableSortItem, IInternalDataTableHeader, IDataTableSelectStrategy } from '../../interfaces'
-import { provideSelection } from '../../composables'
+import type { IInternalDataTableHeader } from '../../interfaces/DataTable/data-table-header.interface'
+import type { IDataTableGroup } from '../../interfaces/DataTable/group.interface'
+import type { IDataTableItem } from '../../interfaces/DataTable/items.interface'
+import type { IDataTableSelectStrategy } from '../../interfaces/DataTable/select.interface'
+import type { IDataTableSortItem } from '../../interfaces/DataTable/sort.interface'
+import { provideSelection } from '../../composables/DataTable/select.composable'
 
 export const ORIGAM_DATA_TABLE_EXPAND_KEY: InjectionKey<{
     expand: (item: IDataTableItem, value: boolean) => void

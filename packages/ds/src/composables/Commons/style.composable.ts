@@ -1,6 +1,7 @@
 import type { ComputedRef, MaybeRefOrGetter } from 'vue'
 import { computed, onMounted, toValue } from 'vue'
-import { escapeCssIdent, getCurrentInstanceName, getUid } from '../../utils'
+import { escapeCssIdent } from '../../utils/Commons/dom.util'
+import { getCurrentInstanceName, getUid } from '../../utils/Commons/getCurrentInstance.util'
 import { useStyleTag } from './styleTag.composable'
 
 /**

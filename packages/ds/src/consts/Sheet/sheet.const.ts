@@ -1,4 +1,4 @@
-import type { TSheetSnapPoint } from '../../types'
+import type { TSheetSnapPoint } from '../../types/Sheet/sheet.type'
 
 /**
  * Default snap-point set used by `<OrigamSheet>` when the consumer

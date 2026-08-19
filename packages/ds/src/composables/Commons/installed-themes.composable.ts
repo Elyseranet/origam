@@ -1,8 +1,8 @@
 import { inject } from 'vue'
 
-import { ORIGAM_THEMES_KEY } from '../../consts'
+import { ORIGAM_THEMES_KEY } from '../../consts/Commons/theme.const'
 
-import type { TInstalledThemes } from '../../types'
+import type { TInstalledThemes } from '../../types/Commons/installed-theme.type'
 
 /**
  * `useInstalledThemes()` returns the list of brand themes installed via

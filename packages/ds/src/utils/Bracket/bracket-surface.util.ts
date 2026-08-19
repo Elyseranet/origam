@@ -3,15 +3,10 @@ import { isCssColor, isIntent, tokenForegroundForIntent, tokenStylesForIntent } 
 import { BORDER_LOGICAL_AXIS_MAP, BORDER_POSITION_MAP } from '../../consts/Commons/border.const'
 import { ROUNDED_CORNER_MAP } from '../../consts/Commons/spacing.const'
 
-import type { IBracketSurfaceInput } from '../../interfaces'
-import type {
-    TBracketBorder,
-    TBracketColor,
-    TBracketElevation,
-    TBracketRounded
-} from '../../types'
+import type { IBracketSurfaceInput } from '../../interfaces/Bracket/bracket-surface.interface'
+import type { TBracketBorder, TBracketColor, TBracketElevation, TBracketRounded } from '../../types/Bracket/bracket.type'
 
-export type { IBracketSurfaceInput } from '../../interfaces'
+export type { IBracketSurfaceInput } from '../../interfaces/Bracket/bracket-surface.interface'
 
 /**
  * Shared resolvers for the Bracket family surface. The match card's

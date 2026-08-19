@@ -1,5 +1,5 @@
-import type { ISticky } from "../../interfaces"
-import { convertToUnit } from '../../utils'
+import type { ISticky } from '../../interfaces/Commons/sticky.interface'
+import { convertToUnit } from '../../utils/Commons/commons.util'
 
 import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue'
 import type { CSSProperties } from 'vue'

@@ -1,10 +1,10 @@
 import { computed, ref } from 'vue'
 
-import type { ICommand, ICommandRegistry, IUseCommandReturn } from '../../interfaces'
+import type { ICommand, ICommandRegistry, IUseCommandReturn } from '../../interfaces/CommandPalette/command.interface'
 
-import { tryOnScopeDispose } from '../../utils'
+import { tryOnScopeDispose } from '../../utils/Commons/commons.util'
 
-export type { IUseCommandReturn } from '../../interfaces'
+export type { IUseCommandReturn } from '../../interfaces/CommandPalette/command.interface'
 
 /*********************************************************
  * Singleton registry

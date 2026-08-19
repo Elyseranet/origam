@@ -1,10 +1,12 @@
-import { useToggleScope } from '../../composables'
+import { useToggleScope } from './toggleScope.composable'
 
-import { UNSEEDED } from '../../consts'
+import { UNSEEDED } from '../../consts/Commons/vmodel.const'
 
-import type { TEventProp, TInnerVal, TVModel } from '../../types'
+import type { TEventProp, TInnerVal } from '../../types/Commons/commons.type'
+import type { TVModel } from '../../types/Commons/v-model.type'
 
-import { getCurrentInstance, toKebabCase } from '../../utils'
+import { toKebabCase } from '../../utils/Commons/commons.util'
+import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
 
 import { computed, ref, Ref, toRaw, watch } from 'vue'
 

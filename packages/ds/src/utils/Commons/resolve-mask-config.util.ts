@@ -1,8 +1,8 @@
-import { BUILT_IN_PATTERN_KEYS, BUILT_IN_PATTERNS } from '../../consts'
+import { BUILT_IN_PATTERN_KEYS, BUILT_IN_PATTERNS } from '../../consts/TextField/text-field.const'
 
-import type { IMaskOptions, IResolvedMaskConfig } from '../../interfaces'
+import type { IMaskOptions, IResolvedMaskConfig } from '../../interfaces/Commons/mask.interface'
 
-import type { TBuiltInPattern, TMask } from '../../types'
+import type { TBuiltInPattern, TMask } from '../../types/TextField/text-field.type'
 
 /**
  * Normalise the polymorphic `mask` prop / arg into a fully

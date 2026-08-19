@@ -1,5 +1,5 @@
 import type { InjectionKey, ShallowRef } from 'vue'
-import type { ILayoutProvide } from '../../interfaces'
+import type { ILayoutProvide } from '../../interfaces/Commons/layout.interface'
 
 export const ORIGAM_LAYOUT_KEY: InjectionKey<ILayoutProvide> = Symbol.for('origam:layout')
 export const ORIGAM_LAYOUT_ITEM_KEY: InjectionKey<ShallowRef<{ id: string; }>> = Symbol.for('origam:layout-item')

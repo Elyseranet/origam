@@ -1,5 +1,5 @@
 import { inject } from 'vue'
-import { ORIGAM_LIST_KEY } from '../../consts'
+import { ORIGAM_LIST_KEY } from '../../consts/List/list.const'
 
 /*********************************************************
  * useList

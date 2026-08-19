@@ -1,9 +1,11 @@
 import { computed, isRef, ref, Ref } from 'vue'
 
 import { ORIGAM_SHADOW_RUNGS, UTILITY_SHADOW_RUNGS } from '../../consts/Commons/elevation.const'
-import type { IElevationProps } from '../../interfaces'
-import { TColor, TElevation } from "../../types"
-import { getCurrentInstanceName, isCustomBoxShadow } from "../../utils"
+import type { IElevationProps } from '../../interfaces/Commons/elevation.interface'
+import { TColor } from '../../types/Commons/color.type'
+import { TElevation } from '../../types/Commons/elevation.type'
+import { isCustomBoxShadow } from '../../utils/Commons/elevation.util'
+import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.util'
 
 /**
  * Map a numeric Material-style elevation (0..24) to a token rung in the

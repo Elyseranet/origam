@@ -1,5 +1,6 @@
 import { watch } from 'vue'
-import { noop, resolveUnref, tryOnScopeDispose, unrefElement } from '../../utils'
+import { noop, tryOnScopeDispose } from '../../utils/Commons/commons.util'
+import { resolveUnref, unrefElement } from '../../utils/Commons/eventListener.util'
 
 /*********************************************************
  * useEventListener

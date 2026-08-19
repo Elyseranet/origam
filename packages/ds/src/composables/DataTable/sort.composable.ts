@@ -1,9 +1,10 @@
 import type { Ref } from 'vue'
 import { inject, provide, toRef } from 'vue'
-import { useVModel } from '../../composables'
-import { ORIGAM_DATA_TABLE_SORT_KEY } from '../../consts'
+import { useVModel } from '../Commons/vModel.composable'
+import { ORIGAM_DATA_TABLE_SORT_KEY } from '../../consts/DataTable/data-table.const'
 import { SORT_DIRECTION } from '../../enums'
-import type { IDataTableProvideSort, IDataTableSortItem, IDataTableSortProps, IInternalDataTableHeader } from '../../interfaces'
+import type { IInternalDataTableHeader } from '../../interfaces/DataTable/data-table-header.interface'
+import type { IDataTableProvideSort, IDataTableSortItem, IDataTableSortProps } from '../../interfaces/DataTable/sort.interface'
 
 /*********************************************************
  * createSort

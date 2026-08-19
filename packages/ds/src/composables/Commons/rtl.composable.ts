@@ -1,7 +1,7 @@
 import { computed, inject, ref } from 'vue'
-import { LOCALE_RTL_DEFAULT, ORIGAM_LOCALE_KEY } from '../../consts'
-import type { ILocaleInstance, IRtlInstance, IRtlOptions, IRtlProps } from '../../interfaces'
-import { getCurrentInstanceName } from '../../utils'
+import { LOCALE_RTL_DEFAULT, ORIGAM_LOCALE_KEY } from '../../consts/Commons/locale.const'
+import type { ILocaleInstance, IRtlInstance, IRtlOptions, IRtlProps } from '../../interfaces/Commons/locale.interface'
+import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.util'
 
 /*********************************************************
  * createRtl

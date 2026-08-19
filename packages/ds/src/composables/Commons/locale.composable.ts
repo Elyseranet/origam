@@ -1,8 +1,9 @@
 import { computed, inject, provide, ref } from 'vue'
 import * as origamMessages from '../../assets/locales'
-import { ORIGAM_LOCALE_KEY } from '../../consts'
-import type { ILocaleInstance, ILocaleMessages, ILocaleOptions, ILocaleProps, IRtlOptions, IRtlProps } from '../../interfaces'
-import { createBuiltinAdapter, mergeDeep } from '../../utils'
+import { ORIGAM_LOCALE_KEY } from '../../consts/Commons/locale.const'
+import type { ILocaleInstance, ILocaleMessages, ILocaleOptions, ILocaleProps, IRtlOptions, IRtlProps } from '../../interfaces/Commons/locale.interface'
+import { mergeDeep } from '../../utils/Commons/commons.util'
+import { createBuiltinAdapter } from '../../utils/Commons/locale.util'
 import { createRtl, provideRtl } from './rtl.composable'
 
 /*********************************************************
