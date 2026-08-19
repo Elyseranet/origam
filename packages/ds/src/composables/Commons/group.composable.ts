@@ -1,102 +1,20 @@
-import {
-    ComponentInternalInstance,
-    computed,
-    inject,
-    InjectionKey,
-    onBeforeUnmount,
-    onMounted,
-    provide,
-    reactive,
-    toRef,
-    unref,
-    UnwrapRef,
-    watch
-} from 'vue'
+import type { ComponentInternalInstance, InjectionKey, UnwrapRef } from 'vue'
+import { computed, onBeforeUnmount, onMounted, provide, reactive, toRef, unref } from 'vue'
 import { useVModel } from '../../composables'
-import type { IGroupItem, IGroupItemProps, IGroupItemProvide, IGroupProps, IGroupProvide } from '../../interfaces'
-
-import {
-    consoleWarn,
-    findChildrenWithProvide,
-    getCurrentInstance,
-    getIds,
-    getItemIndex,
-    getUid,
-    getValues,
-    wrapInArray
-} from '../../utils'
-
-/*********************************************************
- * useGroupItem
- ********************************************************/
-export function useGroupItem (
-    props: IGroupItemProps,
-    injectKey: InjectionKey<IGroupProvide>,
-    required = true
-): IGroupItemProvide | null {
-    const vm = getCurrentInstance('useGroupItem')
-
-    if (!vm) {
-        throw new Error(
-            '[Origam] useGroupItem composable must be used inside a component setup function'
-        )
-    }
-
-    const id = getUid()
-
-    provide(Symbol.for(`${injectKey.description}:id`), id)
-
-    const group = inject(injectKey, null)
-
-    if (!group) {
-        if (!required) return group
-
-        throw new Error(`[Origam] Could not find useGroup injection with symbol ${injectKey.description}`)
-    }
-
-    const value = toRef(props, 'value')
-    const disabled = computed(() => !!(group.disabled.value || props.disabled))
-
-    group.register({
-        id,
-        value,
-        disabled
-    }, vm)
-
-    onBeforeUnmount(() => {
-        group.unregister(id)
-    })
-
-    const isSelected = computed(() => {
-        return group.isSelected(id)
-    })
-
-    const selectedClass = computed(() => {
-        if (isSelected.value) {
-            return [group.selectedClass.value ? group.selectedClass.value : props.selectedClass]
-        }
-
-        return []
-    })
-
-    watch(isSelected, (value) => {
-        vm.emit('group:selected', {value})
-    })
-
-    return {
-        id,
-        isSelected,
-        toggle: () => group.select(id, !isSelected.value),
-        select: (value: boolean) => group.select(id, value),
-        selectedClass,
-        value,
-        disabled,
-        group
-    }
-}
+import type { IGroupItem, IGroupProps, IGroupProvide } from '../../interfaces'
+import { consoleWarn, findChildrenWithProvide, getCurrentInstance, getItemIndex, getIds, getValues, wrapInArray } from '../../utils'
 
 /*********************************************************
  * useGroup
+ *
+ * @description
+ * Root of a selectable group (tabs, chip-group, toggle-group…) —
+ * tracks registered items and the v-model selection, provides
+ * `injectKey` so `useGroupItem` consumers down the tree can register
+ * and read/write back into it.
+ * Independent from `useGroupItem` at the call level (no direct
+ * function dependency) — the two only share the `injectKey`
+ * provide/inject contract.
  ********************************************************/
 export function useGroup (
     props: IGroupProps,

@@ -12,11 +12,9 @@
 
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import {
-    resetSnackbarGroupForTesting,
-    useSnackbarGroup,
-    useSnackbarGroupInternal
-} from '@origam/composables/Snackbar/snackbar-group.composable'
+import { useSnackbarGroup } from '@origam/composables/Snackbar/snackbar-group.composable'
+import { useSnackbarGroupInternal } from '@origam/composables/Snackbar/snackbarGroupInternal.composable'
+import { resetSnackbarGroupForTesting } from '@origam/utils/Snackbar/snackbar-group.util'
 
 describe('useSnackbarGroup', () => {
     beforeEach(() => {

@@ -1,12 +1,20 @@
-import { computed, inject, provide, Ref, watch, watchEffect } from 'vue'
+import type { Ref } from 'vue'
+import { computed, inject, provide, watchEffect } from 'vue'
 import { useVModel } from '../../composables'
 import { ORIGAM_DATA_TABLE_PAGINATION_KEY } from '../../consts'
-
-import type { IDataTableGroup, IDataTablePaginationProps, IDataTableProvidePagination } from '../../interfaces'
-import { clamp, getCurrentInstance } from '../../utils'
+import type { IDataTableProvidePagination, IDataTablePaginationProps } from '../../interfaces'
+import { clamp } from '../../utils'
 
 /*********************************************************
  * createPagination
+ *
+ * @description
+ * Reads the `page` / `itemsPerPage` props into the v-model refs
+ * `providePagination` expects. Kept alongside `usePagination` /
+ * `providePagination` in this file — all three address the same
+ * `ORIGAM_DATA_TABLE_PAGINATION_KEY` contract. `usePaginatedItems`
+ * (own file) is the pure item-slicing sibling and does not depend on
+ * any of the three.
  ********************************************************/
 export function createPagination (props: IDataTablePaginationProps) {
     const page = useVModel(props, 'page', undefined, value => +(value ?? 1))
@@ -17,6 +25,12 @@ export function createPagination (props: IDataTablePaginationProps) {
 
 /*********************************************************
  * providePagination
+ *
+ * @description
+ * Provider-side hook: derives `startIndex` / `stopIndex` / `pageCount`
+ * plus the `nextPage` / `prevPage` / `setPage` / `setItemsPerPage`
+ * mutators, and provides `ORIGAM_DATA_TABLE_PAGINATION_KEY` for
+ * `usePagination` consumers down the tree.
  ********************************************************/
 export function providePagination (options: {
     page: Ref<number>
@@ -81,6 +95,11 @@ export function providePagination (options: {
 
 /*********************************************************
  * usePagination
+ *
+ * @description
+ * Reads the injected pagination state provided by `providePagination`.
+ * Independent from `usePaginatedItems` (own file) — that hook slices a
+ * plain items array and never touches this injection.
  ********************************************************/
 export function usePagination () {
     const data = inject(ORIGAM_DATA_TABLE_PAGINATION_KEY)
@@ -88,29 +107,4 @@ export function usePagination () {
     if (!data) throw new Error('Missing pagination!')
 
     return data
-}
-
-/*********************************************************
- * usePaginatedItems
- ********************************************************/
-export function usePaginatedItems<T> (options: {
-    items: Ref<readonly (T | IDataTableGroup<T>)[]>
-    startIndex: Ref<number>
-    stopIndex: Ref<number>
-    itemsPerPage: Ref<number>
-}) {
-    const vm = getCurrentInstance('usePaginatedItems')
-
-    const {items, startIndex, stopIndex, itemsPerPage} = options
-    const paginatedItems = computed(() => {
-        if (itemsPerPage.value <= 0) return items.value
-
-        return items.value.slice(startIndex.value, stopIndex.value)
-    })
-
-    watch(paginatedItems, (val) => {
-        vm.emit('update:currentItems', val)
-    })
-
-    return {paginatedItems}
 }

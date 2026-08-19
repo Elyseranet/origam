@@ -1,89 +1,7 @@
-import { DEFAULT_DOCUMENT } from "../../consts"
-import type { IStyleTagOptions } from "../../interfaces"
-import { escapeCssIdent, getCurrentInstanceName, getUid, tryOnMounted, tryOnScopeDispose } from "../../utils"
-
-import { computed, ComputedRef, MaybeRef, MaybeRefOrGetter, onMounted, readonly, shallowRef, toValue, watch } from 'vue'
-
-let _id = 0
-
-/**
- * Inject <style> element in head.
- *
- * Overload: Omitted id
- *
- * @param css
- * @param options
- */
-
-/*********************************************************
- * useStyleTag
- ********************************************************/
-export function useStyleTag (
-    css: MaybeRef<string>,
-    options: IStyleTagOptions = {}
-) {
-    const isLoaded = shallowRef(false)
-
-    const {
-        document = DEFAULT_DOCUMENT,
-        immediate = true,
-        manual = false,
-        id = `origam_styletag_${++_id}`
-    } = options
-
-    const cssRef = shallowRef(css)
-
-    let stop = () => {
-    }
-    const load = () => {
-        if (!document)
-            return
-
-        const el = (document.getElementById(id) || document.createElement('style')) as HTMLStyleElement
-
-        if (!el.isConnected) {
-            el.id = id
-            if (options.media)
-                el.media = options.media
-            document.head.appendChild(el)
-        }
-
-        if (isLoaded.value)
-            return
-
-        stop = watch(
-            cssRef,
-            (value) => {
-                el.textContent = value
-            },
-            {immediate: true}
-        )
-
-        isLoaded.value = true
-    }
-
-    const unload = () => {
-        if (!document || !isLoaded.value)
-            return
-        stop()
-        document.head.removeChild(document.getElementById(id) as HTMLStyleElement)
-        isLoaded.value = false
-    }
-
-    if (immediate && !manual)
-        tryOnMounted(load)
-
-    if (!manual)
-        tryOnScopeDispose(unload)
-
-    return {
-        id,
-        css: cssRef,
-        unload,
-        load,
-        isLoaded: readonly(isLoaded)
-    }
-}
+import type { ComputedRef, MaybeRefOrGetter } from 'vue'
+import { computed, onMounted, toValue } from 'vue'
+import { escapeCssIdent, getCurrentInstanceName, getUid } from '../../utils'
+import { useStyleTag } from './styleTag.composable'
 
 /**
  * Flatten a Vue style bag (`StyleValue`) into a list of `prop: value`
@@ -139,6 +57,12 @@ function toDeclarations (value: unknown): string[] {
 
 /*********************************************************
  * useStyle
+ *
+ * @description
+ * Serialises a reactive style bag into a scoped `#id { … }` rule and
+ * delegates the actual `<head>` injection to `useStyleTag` rather than
+ * duplicating it — this hook only owns the id resolution + style-bag
+ * flattening (`toDeclarations`).
  ********************************************************/
 export function useStyle (
     styles: ComputedRef,

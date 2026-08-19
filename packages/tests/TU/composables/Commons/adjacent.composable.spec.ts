@@ -11,7 +11,8 @@ import { describe, expect, it } from 'vitest'
 
 import type { IAdjacentProps, IAdjacentInnerProps } from '@origam/interfaces'
 
-import { useAdjacent, useAdjacentInner } from '@origam/composables/Commons/adjacent.composable'
+import { useAdjacent } from '@origam/composables/Commons/adjacent.composable'
+import { useAdjacentInner } from '@origam/composables/Commons/adjacentInner.composable'
 
 // ---------------------------------------------------------------------------
 // useAdjacent

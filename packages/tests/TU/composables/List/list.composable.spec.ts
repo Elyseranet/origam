@@ -11,7 +11,8 @@ import { computed, defineComponent, h, shallowRef } from 'vue'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 
-import { useCreateList, useList } from '@origam/composables/List/list.composable'
+import { useList } from '@origam/composables/List/list.composable'
+import { useCreateList } from '@origam/composables/List/createList.composable'
 
 // ---------------------------------------------------------------------------
 // Helpers

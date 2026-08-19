@@ -13,7 +13,10 @@ import { describe, expect, it } from 'vitest'
 
 import type { IColorProps } from '@origam/interfaces'
 
-import { useBackgroundColor, useColor, useColorEffect, useTextColor } from '@origam/composables/Commons/color.composable'
+import { useColor } from '@origam/composables/Commons/color.composable'
+import { useBackgroundColor } from '@origam/composables/Commons/backgroundColor.composable'
+import { useTextColor } from '@origam/composables/Commons/textColor.composable'
+import { useColorEffect } from '@origam/composables/Commons/colorEffect.composable'
 
 describe('useColor — classes-first', () => {
     it('utility intent on background → emits .origam--bg-{intent} class AND token style', () => {

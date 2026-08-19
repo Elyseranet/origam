@@ -30,7 +30,9 @@ import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 
 import { ORIGAM_WINDOW_KEY } from '@origam/consts'
-import { useTransition, useCssTransition, useWindowTransition } from '@origam/composables/Transition/transition.composable'
+import { useTransition } from '@origam/composables/Transition/transition.composable'
+import { useCssTransition } from '@origam/composables/Transition/cssTransition.composable'
+import { useWindowTransition } from '@origam/composables/Transition/windowTransition.composable'
 import type { ITransitionProps } from '@origam/interfaces'
 
 // ---------------------------------------------------------------------------

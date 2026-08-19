@@ -1,22 +1,20 @@
+import type { Ref } from 'vue'
+import { inject, provide, toRef } from 'vue'
 import { useVModel } from '../../composables'
-
 import { ORIGAM_DATA_TABLE_SORT_KEY } from '../../consts'
 import { SORT_DIRECTION } from '../../enums'
-
-import type {
-    IDataTableProvideSort,
-    IDataTableSortItem,
-    IDataTableSortProps,
-    IInternalDataTableHeader,
-    IInternalItem
-} from '../../interfaces'
-import type { TDataTableCompareFunction } from '../../types'
-import { sortItems } from '../../utils'
-
-import { computed, inject, provide, Ref, toRef } from 'vue'
+import type { IDataTableProvideSort, IDataTableSortItem, IDataTableSortProps, IInternalDataTableHeader } from '../../interfaces'
 
 /*********************************************************
  * createSort
+ *
+ * @description
+ * Reads the `sortBy` / `mustSort` / `multiSort` props into the v-model
+ * + refs shape `provideSort` expects. Kept alongside `useSort` /
+ * `provideSort` in this file — all three address the same
+ * `ORIGAM_DATA_TABLE_SORT_KEY` contract. `useSortedItems` (own file)
+ * is the pure item-sorting sibling and does not depend on any of the
+ * three.
  ********************************************************/
 export function createSort (props: IDataTableSortProps) {
     const sortBy = useVModel(props, 'sortBy', [])
@@ -28,6 +26,12 @@ export function createSort (props: IDataTableSortProps) {
 
 /*********************************************************
  * provideSort
+ *
+ * @description
+ * Provider-side hook: wires `toggleSort` / `isSorted` on top of the
+ * `sortBy` / `mustSort` / `multiSort` refs (typically built by
+ * `createSort`) and provides `ORIGAM_DATA_TABLE_SORT_KEY` for `useSort`
+ * consumers down the tree.
  ********************************************************/
 export function provideSort (options: {
     sortBy: Ref<Array<IDataTableSortItem>>
@@ -73,6 +77,11 @@ export function provideSort (options: {
 
 /*********************************************************
  * useSort
+ *
+ * @description
+ * Reads the injected sort state provided by `provideSort`.
+ * Independent from `useSortedItems` (own file) — that hook sorts a
+ * plain items array and never touches this injection.
  ********************************************************/
 export function useSort () {
     const data = inject(ORIGAM_DATA_TABLE_SORT_KEY)
@@ -80,35 +89,4 @@ export function useSort () {
     if (!data) throw new Error('Missing sort!')
 
     return data
-}
-
-/*********************************************************
- * useSortedItems
- ********************************************************/
-export function useSortedItems<T extends IInternalItem> (
-    props: {
-        customKeySort: TDataTableCompareFunction | undefined
-    },
-    items: Ref<T[]>,
-    sortBy: Ref<Array<IDataTableSortItem>>,
-    options?: {
-        transform?: (item: T) => Record<string, unknown>
-        sortFunctions?: Ref<Record<string, TDataTableCompareFunction> | undefined>
-        sortRawFunctions?: Ref<Record<string, TDataTableCompareFunction> | undefined>
-    }
-) {
-    const sortedItems = computed(() => {
-        if (!sortBy.value.length) return items.value
-
-        return sortItems(items.value, sortBy.value, {
-            transform: options?.transform,
-            sortFunctions: {
-                ...props.customKeySort,
-                ...options?.sortFunctions?.value
-            },
-            sortRawFunctions: options?.sortRawFunctions?.value
-        })
-    })
-
-    return {sortedItems}
 }

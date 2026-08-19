@@ -1,21 +1,26 @@
-import { capitalize, inject, provide, ref, Ref, watchEffect } from 'vue'
-import { useSort } from '../../composables'
+import type { Ref } from 'vue'
+import { capitalize, inject, provide, ref, watchEffect } from 'vue'
 import { ORIGAM_DATA_TABLE_HEADERS_KEY } from '../../consts'
-import { SORT_DIRECTION } from '../../enums'
 import type {
     IDataTableHeader,
     IDataTableHeaderProps,
     IDataTableSortItem,
-    IHeaderCellProps,
     IInternalDataTableHeader
 } from '../../interfaces'
-
 import type { TDataTableCompareFunction, TFilterKeyFunctions } from '../../types'
-
 import { convertToInternalHeaders, extractKeys, getHeaderDepth, parseFixedColumns, parseHeaderItems } from '../../utils'
 
 /*********************************************************
  * createHeaders
+ *
+ * @description
+ * Normalises the raw `headers` prop (or infers columns from the first
+ * item) into the internal multi-row header + column + sort/filter
+ * function maps, and provides `ORIGAM_DATA_TABLE_HEADERS_KEY` for
+ * `useHeaders` consumers down the tree. Kept alongside `useHeaders` in
+ * this file — the two address the same contract. `useHeadersCell` (own
+ * file) is the per-cell sort-icon sibling and depends on `useSort`
+ * instead, not on this injection.
  ********************************************************/
 export function createHeaders (
     props: IDataTableHeaderProps,
@@ -90,6 +95,11 @@ export function createHeaders (
 
 /*********************************************************
  * useHeaders
+ *
+ * @description
+ * Reads the injected headers state provided by `createHeaders`.
+ * Independent from `useHeadersCell` (own file) — that hook resolves a
+ * per-cell sort icon via `useSort` and never touches this injection.
  ********************************************************/
 export function useHeaders () {
     const data = inject(ORIGAM_DATA_TABLE_HEADERS_KEY)
@@ -97,24 +107,4 @@ export function useHeaders () {
     if (!data) throw new Error('Missing headers!')
 
     return data
-}
-
-/*********************************************************
- * useHeadersCell
- ********************************************************/
-export function useHeadersCell (props: IHeaderCellProps) {
-    const {sortBy} = useSort()
-
-    const getSortIcon = (column: IInternalDataTableHeader) => {
-        const item = sortBy.value
-            .find((sortByItem) => {
-                return sortByItem.key === column.key
-            })
-
-        if (!item) return props.sortAscIcon
-
-        return item.order === SORT_DIRECTION.ASC ? props.sortAscIcon : props.sortDescIcon
-    }
-
-    return {getSortIcon}
 }

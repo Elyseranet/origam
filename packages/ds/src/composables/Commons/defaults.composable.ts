@@ -2,7 +2,8 @@ import { computed, inject, provide, ref, type Ref } from 'vue'
 
 import { ORIGAM_DEFAULTS_KEY } from '../../consts'
 import type { IDefault } from '../../interfaces'
-import { getCurrentInstance, getCurrentInstanceName, mergeDeep } from '../../utils'
+import { getCurrentInstanceName, mergeDeep } from '../../utils'
+import { usePassedProps } from './passedProps.composable'
 
 // ────────────────────────────────────────────────────────────────────────────
 // Defaults system — ported from origam(Lot 3.0)
@@ -22,77 +23,11 @@ import { getCurrentInstance, getCurrentInstanceName, mergeDeep } from '../../uti
 //
 // SSR-safe: no DOM access. The injection key is a global symbol so multiple
 // bundle copies of origam still cooperate.
-
-/**
- * `kebab-case` → `camelCase`. Used to recognise prop names that were passed
- * as kebab-case attributes on the parent vnode.
- *
- * Exported (not just used internally by `usePassedProps`/`useDefaults`) so
- * `theme-props-resolver.composable.ts` can match `vnode.props` keys against
- * declared prop names with the EXACT same rule — see ADR-005. Two independent
- * implementations of this matching rule is exactly the kind of drift the
- * "reuse before writing" policy exists to prevent.
- */
-export function camelize (str: string): string {
-    return str.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase())
-}
-
-/**
- * Was-prop-passed factory.
- *
- * @description
- * Component-side primitive: for the CURRENT component instance, returns a
- * predicate telling whether a given prop key was explicitly written by the
- * parent template (`vnode.props`) — as opposed to resolved from a default
- * (`withDefaults()`, or Vue's own boolean-prop coercion).
- *
- * This matters beyond `useDefaults()` itself: any component that FORWARDS
- * its own props down to descendants as `<OrigamDefaultsProvider>` entries
- * (e.g. `OrigamAvatarGroup` → `origam-avatar`, `OrigamBtnGroup` → `origam-btn`)
- * must use this — not a plain `!== undefined` check — to decide whether to
- * forward a value. Reason: Vue resolves an UNSET prop whose declared type
- * *includes* `boolean` (e.g. `border?: boolean | string`, `rounded?: boolean
- * | TRounded`) to the concrete value `false`, never to `undefined`. A naive
- * `omitUndefined()` over the forwarded map therefore still ships an explicit
- * `false` for `border`/`rounded` even when the consumer never set them,
- * which then wins the `mergeDeep` against an ancestor/theme default (e.g.
- * `origam-avatar: { border: true }`) — see #263.
- *
- * MUST be re-read on every resolution (not captured once), for the same
- * reason `useDefaults()` re-reads it: a parent binding through a dynamic
- * `v-bind` whose object starts empty (`childRef?.filterProps(...)` before
- * mount) only fills `vnode.props` on a later render.
- */
-
-/*********************************************************
- * usePassedProps
- ********************************************************/
-export function usePassedProps<T extends Record<string, any>> (
-    _props: T,
-    instanceLabel = 'usePassedProps'
-): (key: Extract<keyof T, string> | string) => boolean {
-    const vm = getCurrentInstance(instanceLabel)
-
-    return (key) => {
-        const vnodeProps = vm.vnode.props || {}
-        for (const k in vnodeProps) {
-            // A key present in `vnode.props` with the value `undefined` does
-            // NOT count as passed. Vue does not omit a dynamically-bound key
-            // just because its current value is `undefined`, so the ordinary
-            // consumer pattern `:bg-color="state.bgColor"` made this return
-            // `true` while the value was empty — and the theme default was
-            // then silently skipped. The field looked unthemed for no visible
-            // reason, and nothing reported it.
-            //
-            // Requiring a non-`undefined` value aligns this with how Vue's own
-            // `withDefaults()` already behaves (an `undefined` prop falls back
-            // to the default). Distinct from the `?? {}` guard above, which is
-            // about a key ABSENT from `vnode.props` entirely.
-            if (k === key || camelize(k) === key) return vnodeProps[k] !== undefined
-        }
-        return false
-    }
-}
+//
+// `usePassedProps` (the "was this prop explicitly passed?" primitive this
+// hook depends on) lives in its own file — see `passedProps.composable.ts`.
+// `camelize` (kebab→camel prop-name matching) moved to
+// `utils/Commons/commons.util.ts`, shared with `theme-props-resolver`.
 
 /**
  * Component-side hook: resolve `props` against the closest DefaultsProvider.
@@ -109,6 +44,12 @@ export function usePassedProps<T extends Record<string, any>> (
 
 /*********************************************************
  * useDefaults
+ *
+ * @description
+ * Resolves a component's props against the closest
+ * `<OrigamDefaultsProvider>` (or global defaults), falling back to the
+ * component's own `withDefaults()` value. Delegates the "was this prop
+ * explicitly passed?" check to `usePassedProps`.
  ********************************************************/
 export function useDefaults<T extends Record<string, any>> (
     props: T,
@@ -120,8 +61,8 @@ export function useDefaults<T extends Record<string, any>> (
     if (!propNames.length) return props
 
     // Determine which props were explicitly passed by the parent template —
-    // see `usePassedProps()` above for why this can't be a plain
-    // `!== undefined` check.
+    // see `usePassedProps()` for why this can't be a plain `!== undefined`
+    // check.
     const wasPropPassed = usePassedProps(props, 'useDefaults')
 
     const result = {} as Record<string, any>

@@ -199,7 +199,7 @@ describe('createHeaders — sortFunctions / filterFunctions', () => {
 
 describe('useHeadersCell — getSortIcon', () => {
     it('returns sortAscIcon when column is not in sortBy', async () => {
-        const { useHeadersCell } = await import('@origam/composables/DataTable/headers.composable')
+        const { useHeadersCell } = await import('@origam/composables/DataTable/headersCell.composable')
 
         let icon: any
 
@@ -232,7 +232,7 @@ describe('useHeadersCell — getSortIcon', () => {
     })
 
     it('returns sortAscIcon when column is sorted ASC', async () => {
-        const { useHeadersCell } = await import('@origam/composables/DataTable/headers.composable')
+        const { useHeadersCell } = await import('@origam/composables/DataTable/headersCell.composable')
 
         let icon: any
 
@@ -265,7 +265,7 @@ describe('useHeadersCell — getSortIcon', () => {
     })
 
     it('returns sortDescIcon when column is sorted DESC', async () => {
-        const { useHeadersCell } = await import('@origam/composables/DataTable/headers.composable')
+        const { useHeadersCell } = await import('@origam/composables/DataTable/headersCell.composable')
 
         let icon: any
 

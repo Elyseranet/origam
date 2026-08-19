@@ -13,7 +13,8 @@ import { computed, defineComponent, h, ref, type MaybeRefOrGetter } from 'vue'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 
-import { useStyle, useStyleTag } from '@origam/composables/Commons/style.composable'
+import { useStyle } from '@origam/composables/Commons/style.composable'
+import { useStyleTag } from '@origam/composables/Commons/styleTag.composable'
 
 // ---------------------------------------------------------------------------
 // useStyleTag — manual mode (no DOM side-effects in setup)

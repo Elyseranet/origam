@@ -1,29 +1,35 @@
+import { computed, onBeforeUnmount, provide, ref, shallowRef } from 'vue'
 import { useVModel } from '../../composables'
 import {
-    EMPTY_NESTED,
     LIST_OPEN_STRATEGY,
     MULTIPLE_OPEN_STRATEGY,
     ORIGAM_NESTED_KEY,
     SINGLE_OPEN_STRATEGY
 } from '../../consts'
 import { OPEN_STRATEGY, SELECTED, SELECT_STRATEGY } from '../../enums'
-
 import type { INestedProps } from '../../interfaces'
-
 import type { TNestedProvide } from '../../types'
-
 import {
     classicSelectStrategy,
     getCurrentInstance,
-    getUid,
     independentSelectStrategy,
     independentSingleSelectStrategy,
     leafSelectStrategy,
     leafSingleSelectStrategy
 } from '../../utils'
 
-import { computed, inject, onBeforeUnmount, provide, Ref, ref, shallowRef, toRaw } from 'vue'
-
+/*********************************************************
+ * useNested
+ *
+ * @description
+ * Root of the nested-tree system — tracks children/parents/opened/
+ * selected state and provides `ORIGAM_NESTED_KEY` so `useNestedItem` /
+ * `useNestedGroupActivator` consumers down the tree (list items, tree
+ * nodes, menu items…) can register and read/write back into it.
+ * Independent from `useNestedItem` / `useNestedGroupActivator` at the
+ * call level (no direct function dependency) — the three only share
+ * the `ORIGAM_NESTED_KEY` provide/inject contract.
+ ********************************************************/
 export const useNested = (props: INestedProps) => {
     let isUnmounted = false
     const children = ref(new Map<unknown, Array<unknown>>())
@@ -191,74 +197,4 @@ export const useNested = (props: INestedProps) => {
     provide(ORIGAM_NESTED_KEY, nested)
 
     return nested.root
-}
-
-/*********************************************************
- * useNestedItem
- ********************************************************/
-export function useNestedItem (id: Ref<unknown>, isGroup: boolean) {
-    const parent = inject(ORIGAM_NESTED_KEY, EMPTY_NESTED)
-
-    const uidSymbol = Symbol(getUid())
-    const computedId = computed(() => id.value !== undefined ? id.value : uidSymbol)
-
-    const item = {
-        ...parent,
-        id: computedId,
-        open: (open: boolean, e: Event) => {
-            if (parent?.root) {
-                parent.root.open(computedId.value, open, e)
-            }
-        },
-        openOnSelect: (open: boolean, e?: Event) => {
-            if (parent?.root) {
-                parent.root.openOnSelect(computedId.value, open, e)
-            }
-        },
-        isOpen: computed(() => Boolean(parent?.root?.opened.value.has(computedId.value))),
-        parent: computed(() => parent?.root?.parents.value.get(computedId.value)),
-        select: (selected: boolean, e?: Event) => {
-            if (parent?.root) {
-                parent.root.select(computedId.value, selected, e)
-            }
-        },
-        isSelected: computed(() => Boolean(parent?.root?.selected.value.get(toRaw(computedId.value)) === SELECTED.ON)),
-        isIndeterminate: computed(() => Boolean(parent?.root?.selected.value.get(computedId.value) === SELECTED.INDETERMINATE)),
-        isLeaf: computed(() => Boolean(!parent?.root?.children.value.get(computedId.value))),
-        isGroupActivator: parent?.isGroupActivator
-    }
-
-    if (!parent?.isGroupActivator) {
-        if (parent?.root) {
-            parent.root.register(computedId.value, parent?.id.value, isGroup)
-        }
-    }
-
-    onBeforeUnmount(() => {
-        if (!parent?.isGroupActivator) {
-            if (parent?.root) {
-                parent.root.unregister(computedId.value)
-            }
-        }
-    })
-
-    if (isGroup) {
-        provide(ORIGAM_NESTED_KEY, item)
-    }
-
-    return item
-}
-
-/*********************************************************
- * useNestedGroupActivator
- ********************************************************/
-export function useNestedGroupActivator () {
-    const parent = inject(ORIGAM_NESTED_KEY, EMPTY_NESTED)
-
-    const item = {
-        ...parent,
-        isGroupActivator: true
-    }
-
-    provide(ORIGAM_NESTED_KEY, item)
 }

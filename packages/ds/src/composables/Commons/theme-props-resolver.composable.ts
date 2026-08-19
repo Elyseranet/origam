@@ -2,8 +2,7 @@ import { type App, getCurrentInstance, inject, ref, shallowRef } from 'vue'
 
 import { ORIGAM_DEFAULTS_KEY } from '../../consts'
 import type { IDefault } from '../../interfaces'
-import { getCurrentInstanceName } from '../../utils'
-import { camelize } from './defaults.composable'
+import { camelize, getCurrentInstanceName } from '../../utils'
 
 // ────────────────────────────────────────────────────────────────────────────
 // Theme props resolver — ADR-005
