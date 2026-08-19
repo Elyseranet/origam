@@ -1,8 +1,8 @@
 {
   "kind": "enum",
-  "exportedAt": "2026-07-09T20:01:09.738Z",
-  "sourceCommit": "a15aa8a1",
-  "entryCount": 92,
+  "exportedAt": "2026-08-19T12:24:53.907Z",
+  "sourceCommit": "1ef461dc",
+  "entryCount": 134,
   "entries": [
     {
       "entry": {
@@ -26,6 +26,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -131,6 +135,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -216,6 +224,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -289,6 +301,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -368,6 +384,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -462,6 +482,70 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "bg-fg-role",
+        "name": "BG_FG_ROLE",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum BG_FG_ROLE {\n    DEFAULT = 'default',\n    HOVER = 'hover',\n    ACTIVE = 'active',\n    DISABLED = 'disabled'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Commons/color.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "BG_FG_ROLE.DEFAULT",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "BG_FG_ROLE.HOVER",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "BG_FG_ROLE.ACTIVE",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "BG_FG_ROLE.DISABLED",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "block",
         "name": "BLOCK",
         "category": "Layout & Positioning",
@@ -481,6 +565,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -598,6 +686,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -683,6 +775,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -749,6 +845,58 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "border-logical-axis",
+        "name": "BORDER_LOGICAL_AXIS",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum BORDER_LOGICAL_AXIS {\n    BLOCK = 'block',\n    INLINE = 'inline'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Commons/border.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "BORDER_LOGICAL_AXIS.BLOCK",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "BORDER_LOGICAL_AXIS.INLINE",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "border-style",
         "name": "BORDER_STYLE",
         "category": "Shape & Appearance",
@@ -768,6 +916,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -911,7 +1063,7 @@
         "icon": null,
         "description_key": "enums.catalog.bottom_nav_position.description",
         "description_fallback": "TypeScript enum for horizontal placement of the BottomNav bar when it does not span full width (start, center, end).",
-        "definition": "export enum BOTTOM_NAV_POSITION {\n    START = 'start',\n    CENTER = 'center',\n    END = 'end'\n}",
+        "definition": "export enum BOTTOM_NAV_POSITION {\n    START = ALIGN.START,\n    CENTER = ALIGN.CENTER,\n    END = ALIGN.END\n}",
         "signature": null,
         "tag": null,
         "value": null,
@@ -923,6 +1075,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -996,6 +1152,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -1076,6 +1236,64 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "bracket-round-side",
+        "name": "BRACKET_ROUND_SIDE",
+        "category": "Bracket",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum BRACKET_ROUND_SIDE {\n    WINNER = 'winner',\n    LOSER = 'loser',\n    GRAND_FINAL = 'grand-final'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Bracket/bracket-round.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "BRACKET_ROUND_SIDE.WINNER",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "BRACKET_ROUND_SIDE.LOSER",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "BRACKET_ROUND_SIDE.GRAND_FINAL",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "bracket-variant",
         "name": "BRACKET_VARIANT",
         "category": "Data Display",
@@ -1095,6 +1313,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -1188,6 +1410,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -1249,6 +1475,64 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "calendar-navigate",
+        "name": "CALENDAR_NAVIGATE",
+        "category": "Calendar",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum CALENDAR_NAVIGATE {\n    PREV = 'prev',\n    NEXT = 'next',\n    TODAY = 'today'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Calendar/calendar.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "CALENDAR_NAVIGATE.PREV",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "CALENDAR_NAVIGATE.NEXT",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "CALENDAR_NAVIGATE.TODAY",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "calendar-strategy",
         "name": "CALENDAR_STRATEGY",
         "category": "Form & Input",
@@ -1268,6 +1552,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -1326,6 +1614,122 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "calendar-time-format",
+        "name": "CALENDAR_TIME_FORMAT",
+        "category": "Calendar",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum CALENDAR_TIME_FORMAT {\n    H12 = '12h',\n    H24 = '24h'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Calendar/calendar.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "CALENDAR_TIME_FORMAT.H12",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "CALENDAR_TIME_FORMAT.H24",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
+        "slug": "calendar-view",
+        "name": "CALENDAR_VIEW",
+        "category": "Calendar",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum CALENDAR_VIEW {\n    MONTH = 'month',\n    WEEK = 'week',\n    DAY = 'day',\n    AGENDA = 'agenda'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Calendar/calendar.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "CALENDAR_VIEW.MONTH",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "CALENDAR_VIEW.WEEK",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "CALENDAR_VIEW.DAY",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "CALENDAR_VIEW.AGENDA",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "card-type",
         "name": "CARD_TYPE",
         "category": "Data Display",
@@ -1345,6 +1749,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -1412,6 +1820,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -1498,6 +1910,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -1554,6 +1970,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -1610,6 +2030,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -1666,6 +2090,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -1722,6 +2150,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -1778,6 +2210,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -1815,6 +2251,64 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "chart-smoothing",
+        "name": "CHART_SMOOTHING",
+        "category": "Chart",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum CHART_SMOOTHING {\n    NONE = 'none',\n    CURVE = 'curve',\n    MONOTONE = 'monotone'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Chart/chart.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "CHART_SMOOTHING.NONE",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "CHART_SMOOTHING.CURVE",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "CHART_SMOOTHING.MONOTONE",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "chart-sparkline-kind",
         "name": "CHART_SPARKLINE_KIND",
         "category": "Chart",
@@ -1834,6 +2328,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -1902,6 +2400,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -1958,6 +2460,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -2007,6 +2513,64 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "chart-sunburst-label-mode",
+        "name": "CHART_SUNBURST_LABEL_MODE",
+        "category": "Chart",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum CHART_SUNBURST_LABEL_MODE {\n    INLINE = 'inline',\n    ROTATED = 'rotated',\n    LEADER = 'leader'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Chart/chart-sunburst.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "CHART_SUNBURST_LABEL_MODE.INLINE",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "CHART_SUNBURST_LABEL_MODE.ROTATED",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "CHART_SUNBURST_LABEL_MODE.LEADER",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "chart-treemap-algorithm",
         "name": "CHART_TREEMAP_ALGORITHM",
         "category": "Chart",
@@ -2026,6 +2590,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -2082,6 +2650,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -2300,6 +2872,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -2362,6 +2938,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -2418,6 +2998,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -2557,6 +3141,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -2611,6 +3199,64 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "color-mode",
+        "name": "COLOR_MODE",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum COLOR_MODE {\n    AUTO = 'auto',\n    LIGHT = 'light',\n    DARK = 'dark'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Commons/theme.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "COLOR_MODE.AUTO",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "COLOR_MODE.LIGHT",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "COLOR_MODE.DARK",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "color-modes-names",
         "name": "COLOR_MODES_NAMES",
         "category": "ColorPicker",
@@ -2630,6 +3276,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -2721,6 +3371,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -2829,6 +3483,64 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "controls-source",
+        "name": "CONTROLS_SOURCE",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum CONTROLS_SOURCE {\n    CUSTOM = 'custom',\n    NATIVE = 'native',\n    NONE = 'none'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Commons/controls.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "CONTROLS_SOURCE.CUSTOM",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "CONTROLS_SOURCE.NATIVE",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "CONTROLS_SOURCE.NONE",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "cover-position",
         "name": "COVER_POSITION",
         "category": "Audio",
@@ -2848,6 +3560,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -2915,6 +3631,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -2983,6 +3703,58 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "data-list-mode",
+        "name": "DATA_LIST_MODE",
+        "category": "DataList",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum DATA_LIST_MODE {\n    AVATAR = 'avatar',\n    KV = 'kv'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/DataList/data-list.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "DATA_LIST_MODE.AVATAR",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "DATA_LIST_MODE.KV",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "datatable-select-strategy",
         "name": "DATATABLE_SELECT_STRATEGY",
         "category": "DataTable",
@@ -3002,6 +3774,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -3075,6 +3851,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -3148,6 +3928,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": true
       },
       "props": [],
@@ -3258,6 +4042,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -3338,6 +4126,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -3425,6 +4217,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -3518,6 +4314,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -3584,6 +4384,64 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "file-field-display",
+        "name": "FILE_FIELD_DISPLAY",
+        "category": "FileField",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum FILE_FIELD_DISPLAY {\n    LIST = 'list',\n    CHIPS = 'chips',\n    COUNTER = 'counter'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/FileField/file-field.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "FILE_FIELD_DISPLAY.LIST",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "FILE_FIELD_DISPLAY.CHIPS",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "FILE_FIELD_DISPLAY.COUNTER",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "filters-mode",
         "name": "FILTERS_MODE",
         "category": "Data Display",
@@ -3603,6 +4461,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -3682,6 +4544,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -3761,6 +4627,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -3810,6 +4680,298 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "font-family",
+        "name": "FONT_FAMILY",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum FONT_FAMILY {\n    SANS = 'sans',\n    MONO = 'mono',\n    SERIF = 'serif'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Commons/font-family.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "FONT_FAMILY.SANS",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "FONT_FAMILY.MONO",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "FONT_FAMILY.SERIF",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
+        "slug": "font-size",
+        "name": "FONT_SIZE",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum FONT_SIZE {\n    XS = 'xs',\n    SM = 'sm',\n    MD = 'md',\n    LG = 'lg',\n    XL = 'xl',\n    XL_2 = '2xl',\n    XL_3 = '3xl',\n    XL_4 = '4xl',\n    XL_5 = '5xl'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Commons/font-size.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "FONT_SIZE.XS",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "FONT_SIZE.SM",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "FONT_SIZE.MD",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "FONT_SIZE.LG",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "FONT_SIZE.XL",
+          "position": 4,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "FONT_SIZE.XL_2",
+          "position": 5,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "FONT_SIZE.XL_3",
+          "position": 6,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "FONT_SIZE.XL_4",
+          "position": 7,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "FONT_SIZE.XL_5",
+          "position": 8,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
+        "slug": "font-weight",
+        "name": "FONT_WEIGHT",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum FONT_WEIGHT {\n    REGULAR = 'regular',\n    MEDIUM = 'medium',\n    SEMIBOLD = 'semibold',\n    BOLD = 'bold',\n    EXTRABOLD = 'extrabold',\n    BLACK = 'black'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Commons/font-weight.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "FONT_WEIGHT.REGULAR",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "FONT_WEIGHT.MEDIUM",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "FONT_WEIGHT.SEMIBOLD",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "FONT_WEIGHT.BOLD",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "FONT_WEIGHT.EXTRABOLD",
+          "position": 4,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "FONT_WEIGHT.BLACK",
+          "position": 5,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
+        "slug": "grid-auto-flow",
+        "name": "GRID_AUTO_FLOW",
+        "category": "Grid",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum GRID_AUTO_FLOW {\n    ROW = 'row',\n    COLUMN = 'column',\n    ROW_DENSE = 'row dense',\n    COLUMN_DENSE = 'column dense'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Grid/grid.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "GRID_AUTO_FLOW.ROW",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "GRID_AUTO_FLOW.COLUMN",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "GRID_AUTO_FLOW.ROW_DENSE",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "GRID_AUTO_FLOW.COLUMN_DENSE",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "img-state",
         "name": "IMG_STATE",
         "category": "Media",
@@ -3829,6 +4991,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -3908,6 +5074,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -3975,6 +5145,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -4048,6 +5222,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -4127,6 +5305,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -4214,6 +5396,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -4268,6 +5454,94 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "intent",
+        "name": "INTENT",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum INTENT {\n    NEUTRAL = 'neutral',\n    PRIMARY = 'primary',\n    SECONDARY = 'secondary',\n    GHOST = 'ghost',\n    SUCCESS = 'success',\n    WARNING = 'warning',\n    DANGER = 'danger',\n    INFO = 'info'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Commons/intent.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "INTENT.NEUTRAL",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "INTENT.PRIMARY",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "INTENT.SECONDARY",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "INTENT.GHOST",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "INTENT.SUCCESS",
+          "position": 4,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "INTENT.WARNING",
+          "position": 5,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "INTENT.DANGER",
+          "position": 6,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "INTENT.INFO",
+          "position": 7,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "justify",
         "name": "JUSTIFY",
         "category": "Layout & Sizing",
@@ -4287,6 +5561,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -4359,6 +5637,64 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "kbd-variant",
+        "name": "KBD_VARIANT",
+        "category": "Kbd",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum KBD_VARIANT {\n    FILLED = 'filled',\n    OUTLINED = 'outlined',\n    TONAL = 'tonal'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Kbd/kbd.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "KBD_VARIANT.FILLED",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "KBD_VARIANT.OUTLINED",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "KBD_VARIANT.TONAL",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "keyboard-modifiers-key",
         "name": "KEYBOARD_MODIFIERS_KEY",
         "category": "Interaction",
@@ -4378,6 +5714,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -4523,6 +5863,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -4741,6 +6085,152 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "letter-spacing",
+        "name": "LETTER_SPACING",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum LETTER_SPACING {\n    TIGHT = 'tight',\n    NORMAL = 'normal',\n    WIDE = 'wide',\n    WIDER = 'wider',\n    WIDEST = 'widest'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Commons/letter-spacing.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "LETTER_SPACING.TIGHT",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "LETTER_SPACING.NORMAL",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "LETTER_SPACING.WIDE",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "LETTER_SPACING.WIDER",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "LETTER_SPACING.WIDEST",
+          "position": 4,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
+        "slug": "line-height",
+        "name": "LINE_HEIGHT",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum LINE_HEIGHT {\n    NONE = 'none',\n    TIGHT = 'tight',\n    SNUG = 'snug',\n    NORMAL = 'normal',\n    RELAXED = 'relaxed',\n    LOOSE = 'loose'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Commons/line-height.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "LINE_HEIGHT.NONE",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "LINE_HEIGHT.TIGHT",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "LINE_HEIGHT.SNUG",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "LINE_HEIGHT.NORMAL",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "LINE_HEIGHT.RELAXED",
+          "position": 4,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "LINE_HEIGHT.LOOSE",
+          "position": 5,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "lines",
         "name": "LINES",
         "category": "Data Display",
@@ -4760,6 +6250,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -4833,6 +6327,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -4887,6 +6385,64 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "loader-kind",
+        "name": "LOADER_KIND",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum LOADER_KIND {\n    LINE = 'line',\n    CIRCULAR = 'circular',\n    SKELETON = 'skeleton'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Commons/loader.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "LOADER_KIND.LINE",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "LOADER_KIND.CIRCULAR",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "LOADER_KIND.SKELETON",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "location-strategies",
         "name": "LOCATION_STRATEGIES",
         "category": "Layout & Sizing",
@@ -4906,6 +6462,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -4984,6 +6544,122 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "mask-token-kind",
+        "name": "MASK_TOKEN_KIND",
+        "category": "TextField",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum MASK_TOKEN_KIND {\n    DIGIT = 'digit',\n    LETTER = 'letter',\n    ANY = 'any',\n    LITERAL = 'literal'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/TextField/text-field.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "MASK_TOKEN_KIND.DIGIT",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "MASK_TOKEN_KIND.LETTER",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "MASK_TOKEN_KIND.ANY",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "MASK_TOKEN_KIND.LITERAL",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
+        "slug": "masonry-align",
+        "name": "MASONRY_ALIGN",
+        "category": "Masonry",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum MASONRY_ALIGN {\n    TOP = 'top',\n    CENTER = 'center'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Masonry/masonry.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "MASONRY_ALIGN.TOP",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "MASONRY_ALIGN.CENTER",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "mdi-icons",
         "name": "MDI_ICONS",
         "category": "Icon",
@@ -5003,6 +6679,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -48930,6 +50610,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -49064,6 +50748,454 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "number-format-compact-display",
+        "name": "NUMBER_FORMAT_COMPACT_DISPLAY",
+        "category": "NumberFormat",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum NUMBER_FORMAT_COMPACT_DISPLAY {\n    SHORT = 'short',\n    LONG = 'long'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/NumberFormat/number-format.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "NUMBER_FORMAT_COMPACT_DISPLAY.SHORT",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "NUMBER_FORMAT_COMPACT_DISPLAY.LONG",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
+        "slug": "number-format-currency-display",
+        "name": "NUMBER_FORMAT_CURRENCY_DISPLAY",
+        "category": "NumberFormat",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum NUMBER_FORMAT_CURRENCY_DISPLAY {\n    SYMBOL = 'symbol',\n    NARROW_SYMBOL = 'narrowSymbol',\n    CODE = 'code',\n    NAME = 'name'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/NumberFormat/number-format.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "NUMBER_FORMAT_CURRENCY_DISPLAY.SYMBOL",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "NUMBER_FORMAT_CURRENCY_DISPLAY.NARROW_SYMBOL",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "NUMBER_FORMAT_CURRENCY_DISPLAY.CODE",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "NUMBER_FORMAT_CURRENCY_DISPLAY.NAME",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
+        "slug": "number-format-format",
+        "name": "NUMBER_FORMAT_FORMAT",
+        "category": "NumberFormat",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum NUMBER_FORMAT_FORMAT {\n    DECIMAL = 'decimal',\n    CURRENCY = 'currency',\n    PERCENT = 'percent',\n    UNIT = 'unit',\n    COMPACT = 'compact',\n    SCIENTIFIC = 'scientific',\n    ENGINEERING = 'engineering'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/NumberFormat/number-format.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "NUMBER_FORMAT_FORMAT.DECIMAL",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "NUMBER_FORMAT_FORMAT.CURRENCY",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "NUMBER_FORMAT_FORMAT.PERCENT",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "NUMBER_FORMAT_FORMAT.UNIT",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "NUMBER_FORMAT_FORMAT.COMPACT",
+          "position": 4,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "NUMBER_FORMAT_FORMAT.SCIENTIFIC",
+          "position": 5,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "NUMBER_FORMAT_FORMAT.ENGINEERING",
+          "position": 6,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
+        "slug": "number-format-notation",
+        "name": "NUMBER_FORMAT_NOTATION",
+        "category": "NumberFormat",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum NUMBER_FORMAT_NOTATION {\n    STANDARD = 'standard',\n    COMPACT = 'compact',\n    SCIENTIFIC = 'scientific',\n    ENGINEERING = 'engineering'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/NumberFormat/number-format.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "NUMBER_FORMAT_NOTATION.STANDARD",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "NUMBER_FORMAT_NOTATION.COMPACT",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "NUMBER_FORMAT_NOTATION.SCIENTIFIC",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "NUMBER_FORMAT_NOTATION.ENGINEERING",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
+        "slug": "number-format-sign-display",
+        "name": "NUMBER_FORMAT_SIGN_DISPLAY",
+        "category": "NumberFormat",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum NUMBER_FORMAT_SIGN_DISPLAY {\n    AUTO = 'auto',\n    ALWAYS = 'always',\n    EXCEPT_ZERO = 'except-zero',\n    NEGATIVE = 'negative',\n    NEVER = 'never'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/NumberFormat/number-format.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "NUMBER_FORMAT_SIGN_DISPLAY.AUTO",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "NUMBER_FORMAT_SIGN_DISPLAY.ALWAYS",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "NUMBER_FORMAT_SIGN_DISPLAY.EXCEPT_ZERO",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "NUMBER_FORMAT_SIGN_DISPLAY.NEGATIVE",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "NUMBER_FORMAT_SIGN_DISPLAY.NEVER",
+          "position": 4,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
+        "slug": "number-format-unit-display",
+        "name": "NUMBER_FORMAT_UNIT_DISPLAY",
+        "category": "NumberFormat",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum NUMBER_FORMAT_UNIT_DISPLAY {\n    SHORT = 'short',\n    LONG = 'long',\n    NARROW = 'narrow'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/NumberFormat/number-format.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "NUMBER_FORMAT_UNIT_DISPLAY.SHORT",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "NUMBER_FORMAT_UNIT_DISPLAY.LONG",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "NUMBER_FORMAT_UNIT_DISPLAY.NARROW",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
+        "slug": "number-format-use-grouping",
+        "name": "NUMBER_FORMAT_USE_GROUPING",
+        "category": "NumberFormat",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum NUMBER_FORMAT_USE_GROUPING {\n    ALWAYS = 'always',\n    AUTO = 'auto',\n    MIN_2 = 'min2'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/NumberFormat/number-format.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "NUMBER_FORMAT_USE_GROUPING.ALWAYS",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "NUMBER_FORMAT_USE_GROUPING.AUTO",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "NUMBER_FORMAT_USE_GROUPING.MIN_2",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "open-strategy",
         "name": "OPEN_STRATEGY",
         "category": "Behavior",
@@ -49083,6 +51215,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -49166,6 +51302,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -49239,6 +51379,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -49312,6 +51456,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -49385,6 +51533,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -49488,6 +51640,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -49542,6 +51698,70 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "password-strength-level",
+        "name": "PASSWORD_STRENGTH_LEVEL",
+        "category": "PasswordField",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum PASSWORD_STRENGTH_LEVEL {\n    WEAK = 'weak',\n    FAIR = 'fair',\n    GOOD = 'good',\n    STRONG = 'strong'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/PasswordField/password-field.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "PASSWORD_STRENGTH_LEVEL.WEAK",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "PASSWORD_STRENGTH_LEVEL.FAIR",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "PASSWORD_STRENGTH_LEVEL.GOOD",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "PASSWORD_STRENGTH_LEVEL.STRONG",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "position",
         "name": "POSITION",
         "category": "Layout & Sizing",
@@ -49561,6 +51781,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -49666,6 +51890,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -49724,6 +51952,70 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "qr-code-error-correction-level",
+        "name": "QR_CODE_ERROR_CORRECTION_LEVEL",
+        "category": "QrCode",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum QR_CODE_ERROR_CORRECTION_LEVEL {\n    L = 'L',\n    M = 'M',\n    Q = 'Q',\n    H = 'H'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/QrCode/qr-code.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "QR_CODE_ERROR_CORRECTION_LEVEL.L",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "QR_CODE_ERROR_CORRECTION_LEVEL.M",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "QR_CODE_ERROR_CORRECTION_LEVEL.Q",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "QR_CODE_ERROR_CORRECTION_LEVEL.H",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "referrer-policy",
         "name": "REFERRER_POLICY",
         "category": "Data Display",
@@ -49743,6 +52035,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -49846,6 +52142,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -49960,6 +52260,88 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "rounded-token",
+        "name": "ROUNDED_TOKEN",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum ROUNDED_TOKEN {\n    NONE = 'none',\n    XS = 'xs',\n    SM = 'sm',\n    MD = 'md',\n    LG = 'lg',\n    XL = 'xl',\n    FULL = 'full'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Commons/rounded.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "ROUNDED_TOKEN.NONE",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "ROUNDED_TOKEN.XS",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "ROUNDED_TOKEN.SM",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "ROUNDED_TOKEN.MD",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "ROUNDED_TOKEN.LG",
+          "position": 4,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "ROUNDED_TOKEN.XL",
+          "position": 5,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "ROUNDED_TOKEN.FULL",
+          "position": 6,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "scroll-behavior",
         "name": "SCROLL_BEHAVIOR",
         "category": "Behavior",
@@ -49979,6 +52361,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -50074,6 +52460,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -50173,6 +52563,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -50256,6 +52650,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -50332,6 +52730,70 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "sheet-snap-id",
+        "name": "SHEET_SNAP_ID",
+        "category": "Sheet",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum SHEET_SNAP_ID {\n    CLOSED = 'closed',\n    PEEK = 'peek',\n    HALF = 'half',\n    FULL = 'full'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Sheet/sheet.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "SHEET_SNAP_ID.CLOSED",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "SHEET_SNAP_ID.PEEK",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "SHEET_SNAP_ID.HALF",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "SHEET_SNAP_ID.FULL",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "sizes",
         "name": "SIZES",
         "category": "Layout & Sizing",
@@ -50351,6 +52813,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -50447,6 +52913,76 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "skeleton-variant",
+        "name": "SKELETON_VARIANT",
+        "category": "Skeleton",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum SKELETON_VARIANT {\n    TEXT = 'text',\n    RECTANGULAR = 'rectangular',\n    CIRCULAR = 'circular',\n    CARD = 'card',\n    LIST_ITEM = 'list-item'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Skeleton/skeleton.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "SKELETON_VARIANT.TEXT",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "SKELETON_VARIANT.RECTANGULAR",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "SKELETON_VARIANT.CIRCULAR",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "SKELETON_VARIANT.CARD",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "SKELETON_VARIANT.LIST_ITEM",
+          "position": 4,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "slider-field-variant",
         "name": "SLIDER_FIELD_VARIANT",
         "category": "Form & Input",
@@ -50466,6 +53002,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -50530,6 +53070,146 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "snackbar-group-direction",
+        "name": "SNACKBAR_GROUP_DIRECTION",
+        "category": "Snackbar",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum SNACKBAR_GROUP_DIRECTION {\n    TOP_DOWN = 'top-down',\n    BOTTOM_UP = 'bottom-up'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Snackbar/snackbar-group.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "SNACKBAR_GROUP_DIRECTION.TOP_DOWN",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "SNACKBAR_GROUP_DIRECTION.BOTTOM_UP",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
+        "slug": "snackbar-group-location",
+        "name": "SNACKBAR_GROUP_LOCATION",
+        "category": "Snackbar",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum SNACKBAR_GROUP_LOCATION {\n    TOP_LEFT = 'top-left',\n    TOP_RIGHT = 'top-right',\n    TOP_CENTER = 'top-center',\n    BOTTOM_LEFT = 'bottom-left',\n    BOTTOM_RIGHT = 'bottom-right',\n    BOTTOM_CENTER = 'bottom-center',\n    TOP = 'top',\n    BOTTOM = 'bottom'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Snackbar/snackbar-group.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "SNACKBAR_GROUP_LOCATION.TOP_LEFT",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "SNACKBAR_GROUP_LOCATION.TOP_RIGHT",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "SNACKBAR_GROUP_LOCATION.TOP_CENTER",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "SNACKBAR_GROUP_LOCATION.BOTTOM_LEFT",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "SNACKBAR_GROUP_LOCATION.BOTTOM_RIGHT",
+          "position": 4,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "SNACKBAR_GROUP_LOCATION.BOTTOM_CENTER",
+          "position": 5,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "SNACKBAR_GROUP_LOCATION.TOP",
+          "position": 6,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "SNACKBAR_GROUP_LOCATION.BOTTOM",
+          "position": 7,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "sort-direction",
         "name": "SORT_DIRECTION",
         "category": "Data Display",
@@ -50549,6 +53229,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -50616,6 +53300,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -50672,6 +53360,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -50791,6 +53483,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -50891,6 +53587,70 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "stepper-item-status",
+        "name": "STEPPER_ITEM_STATUS",
+        "category": "Stepper",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum STEPPER_ITEM_STATUS {\n    PENDING = 'pending',\n    ACTIVE = 'active',\n    DONE = 'done',\n    ERROR = 'error'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Stepper/stepper.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "STEPPER_ITEM_STATUS.PENDING",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "STEPPER_ITEM_STATUS.ACTIVE",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "STEPPER_ITEM_STATUS.DONE",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "STEPPER_ITEM_STATUS.ERROR",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "tab-variant",
         "name": "TAB_VARIANT",
         "category": "Navigation",
@@ -50910,6 +53670,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -50964,6 +53728,64 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "text-align",
+        "name": "TEXT_ALIGN",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum TEXT_ALIGN {\n    LEFT = 'left',\n    CENTER = 'center',\n    RIGHT = 'right'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Commons/align.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "TEXT_ALIGN.LEFT",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "TEXT_ALIGN.CENTER",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "TEXT_ALIGN.RIGHT",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "textarea-mode",
         "name": "TEXTAREA_MODE",
         "category": "Form & Input",
@@ -50983,6 +53805,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -51050,6 +53876,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -51117,6 +53947,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -51244,6 +54078,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -51317,6 +54155,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -51535,6 +54377,128 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "text-mask-animation",
+        "name": "TEXT_MASK_ANIMATION",
+        "category": "TextMask",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum TEXT_MASK_ANIMATION {\n    PAN = 'pan',\n    ROTATE = 'rotate',\n    PULSE = 'pulse',\n    ZOOM = 'zoom'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/TextMask/text-mask.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "TEXT_MASK_ANIMATION.PAN",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "TEXT_MASK_ANIMATION.ROTATE",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "TEXT_MASK_ANIMATION.PULSE",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "TEXT_MASK_ANIMATION.ZOOM",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
+        "slug": "timeline-side",
+        "name": "TIMELINE_SIDE",
+        "category": "Timeline",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum TIMELINE_SIDE {\n    START = 'start',\n    END = 'end',\n    ALTERNATING = 'alternating'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Timeline/timeline.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "TIMELINE_SIDE.START",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "TIMELINE_SIDE.END",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "TIMELINE_SIDE.ALTERNATING",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "touch-events",
         "name": "TOUCH_EVENTS",
         "category": "Interaction & Events",
@@ -51554,6 +54518,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -51627,6 +54595,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -51721,6 +54693,116 @@
     {
       "entry": {
         "kind": "enum",
+        "slug": "treeview-selectable-nodes",
+        "name": "TREEVIEW_SELECTABLE_NODES",
+        "category": "Treeview",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum TREEVIEW_SELECTABLE_NODES {\n    LEAF = 'leaf',\n    ALL = 'all'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Treeview/treeview.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "TREEVIEW_SELECTABLE_NODES.LEAF",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "TREEVIEW_SELECTABLE_NODES.ALL",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
+        "slug": "treeview-select-mode",
+        "name": "TREEVIEW_SELECT_MODE",
+        "category": "Treeview",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum TREEVIEW_SELECT_MODE {\n    SINGLE = 'single',\n    MULTIPLE = 'multiple',\n    NONE = 'none'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Treeview/treeview.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "TREEVIEW_SELECT_MODE.SINGLE",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "TREEVIEW_SELECT_MODE.MULTIPLE",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "TREEVIEW_SELECT_MODE.NONE",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "enum",
         "slug": "validate-on",
         "name": "VALIDATE_ON",
         "category": "Form & Input",
@@ -51740,6 +54822,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -51865,6 +54951,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -51982,6 +55072,10 @@
         "doc_url": null,
         "parent_slug": null,
         "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [],
@@ -52054,6 +55148,70 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "enum",
+        "slug": "video-track-kind",
+        "name": "VIDEO_TRACK_KIND",
+        "category": "Video",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": "export enum VIDEO_TRACK_KIND {\n    CAPTIONS = 'captions',\n    SUBTITLES = 'subtitles',\n    DESCRIPTIONS = 'descriptions',\n    CHAPTERS = 'chapters'\n}",
+        "signature": null,
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/enums/Video/video.enum.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [
+        {
+          "value": "VIDEO_TRACK_KIND.CAPTIONS",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "VIDEO_TRACK_KIND.SUBTITLES",
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "VIDEO_TRACK_KIND.DESCRIPTIONS",
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "value": "VIDEO_TRACK_KIND.CHAPTERS",
+          "position": 3,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "params": [],
+      "returns": [],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     }
   ]
 }

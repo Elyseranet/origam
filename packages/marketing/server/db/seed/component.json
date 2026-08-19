@@ -1,7 +1,7 @@
 {
   "kind": "component",
-  "exportedAt": "2026-07-09T20:01:09.567Z",
-  "sourceCommit": "a15aa8a1",
+  "exportedAt": "2026-08-19T12:24:53.746Z",
+  "sourceCommit": "1ef461dc",
   "entryCount": 194,
   "entries": [
     {
@@ -464,6 +464,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -1100,6 +1104,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -1496,6 +1504,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -2064,6 +2076,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -3112,6 +3128,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -3609,6 +3629,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -4211,6 +4235,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -4918,6 +4946,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -5485,6 +5517,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -6110,6 +6146,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -6857,6 +6897,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -7493,6 +7537,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -8009,6 +8057,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -8595,6 +8647,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -8830,16 +8886,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "breadcrumb-item",
-          "to_name": "BreadcrumbItem",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.breadcrumb_item.description",
-          "description_fallback": "Individual breadcrumb link or span. The last item is automatically disabled and aria-current=\"page\"."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "tabs",
@@ -8848,6 +8894,16 @@
           "position": 0,
           "description_key": "components.catalog.tabs.description",
           "description_fallback": "Alternative horizontal navigation pattern."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "breadcrumb-item",
+          "to_name": "BreadcrumbItem",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.breadcrumb_item.description",
+          "description_fallback": "Individual breadcrumb link or span. The last item is automatically disabled and aria-current=\"page\"."
         },
         {
           "rel_type": "family",
@@ -9108,6 +9164,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -9224,16 +9284,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "breadcrumb",
-          "to_name": "Breadcrumb",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.breadcrumb.description",
-          "description_fallback": "Parent component that renders BreadcrumbDivider between items."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "breadcrumb",
@@ -9242,6 +9292,16 @@
           "position": 0,
           "description_key": "components.catalog.breadcrumb.description",
           "description_fallback": "Hierarchical navigation trail rendered as a <nav> landmark."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "breadcrumb",
+          "to_name": "Breadcrumb",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.breadcrumb.description",
+          "description_fallback": "Parent component that renders BreadcrumbDivider between items."
         },
         {
           "rel_type": "family",
@@ -9607,6 +9667,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -10536,6 +10600,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": true
       },
       "props": [
@@ -10888,66 +10956,6 @@
           "description_fallback": "Box-shadow elevation token. Overrides the variant default elevation."
         },
         {
-          "name": "height",
-          "type_label": "string | number",
-          "type_slug": "",
-          "type_kind": "primitive",
-          "optional": false,
-          "required": false,
-          "position": 29,
-          "default_value": "undefined",
-          "description_key": "components.btn.props.height.description",
-          "description_fallback": "Overrides the button height. Accepts a CSS length or a number (converted to px)."
-        },
-        {
-          "name": "width",
-          "type_label": "string | number",
-          "type_slug": "",
-          "type_kind": "primitive",
-          "optional": false,
-          "required": false,
-          "position": 30,
-          "default_value": "undefined",
-          "description_key": "components.btn.props.width.description",
-          "description_fallback": "Overrides the button width."
-        },
-        {
-          "name": "minWidth",
-          "type_label": "string | number",
-          "type_slug": "",
-          "type_kind": "primitive",
-          "optional": false,
-          "required": false,
-          "position": 31,
-          "default_value": "undefined",
-          "description_key": "components.btn.props.min_width.description",
-          "description_fallback": "Minimum button width."
-        },
-        {
-          "name": "maxWidth",
-          "type_label": "string | number",
-          "type_slug": "",
-          "type_kind": "primitive",
-          "optional": false,
-          "required": false,
-          "position": 32,
-          "default_value": "undefined",
-          "description_key": "components.btn.props.max_width.description",
-          "description_fallback": "Maximum button width."
-        },
-        {
-          "name": "ripple",
-          "type_label": "boolean | { class: string }",
-          "type_slug": "",
-          "type_kind": "primitive",
-          "optional": false,
-          "required": false,
-          "position": 33,
-          "default_value": "true",
-          "description_key": "components.btn.props.ripple.description",
-          "description_fallback": "Enables the Material ripple effect on click. Set to false to disable."
-        },
-        {
           "name": "borderTop",
           "type_label": "boolean | number | string",
           "type_slug": "",
@@ -10960,6 +10968,18 @@
           "description_fallback": "Per-side top border override (width, or a full \"width style color\" string). Wins over the global border/borderColor/borderStyle for the top side."
         },
         {
+          "name": "height",
+          "type_label": "string | number",
+          "type_slug": "",
+          "type_kind": "primitive",
+          "optional": false,
+          "required": false,
+          "position": 29,
+          "default_value": "undefined",
+          "description_key": "components.btn.props.height.description",
+          "description_fallback": "Overrides the button height. Accepts a CSS length or a number (converted to px)."
+        },
+        {
           "name": "borderRight",
           "type_label": "boolean | number | string",
           "type_slug": "",
@@ -10970,6 +10990,18 @@
           "default_value": "undefined",
           "description_key": "components.btn.props.border_right.description",
           "description_fallback": "Per-side right border override (width, or a full \"width style color\" string). Wins over the global border/borderColor/borderStyle for the right side."
+        },
+        {
+          "name": "width",
+          "type_label": "string | number",
+          "type_slug": "",
+          "type_kind": "primitive",
+          "optional": false,
+          "required": false,
+          "position": 30,
+          "default_value": "undefined",
+          "description_key": "components.btn.props.width.description",
+          "description_fallback": "Overrides the button width."
         },
         {
           "name": "borderBottom",
@@ -10996,6 +11028,30 @@
           "description_fallback": "Per-side left border override (width, or a full \"width style color\" string). Wins over the global border/borderColor/borderStyle for the left side."
         },
         {
+          "name": "minWidth",
+          "type_label": "string | number",
+          "type_slug": "",
+          "type_kind": "primitive",
+          "optional": false,
+          "required": false,
+          "position": 31,
+          "default_value": "undefined",
+          "description_key": "components.btn.props.min_width.description",
+          "description_fallback": "Minimum button width."
+        },
+        {
+          "name": "maxWidth",
+          "type_label": "string | number",
+          "type_slug": "",
+          "type_kind": "primitive",
+          "optional": false,
+          "required": false,
+          "position": 32,
+          "default_value": "undefined",
+          "description_key": "components.btn.props.max_width.description",
+          "description_fallback": "Maximum button width."
+        },
+        {
           "name": "borderTopColor",
           "type_label": "TColor",
           "type_slug": "t-color",
@@ -11006,6 +11062,18 @@
           "default_value": "undefined",
           "description_key": "components.btn.props.border_top_color.description",
           "description_fallback": "Per-side top border colour override. Wins over borderTop's embedded colour and the global borderColor."
+        },
+        {
+          "name": "ripple",
+          "type_label": "boolean | { class: string }",
+          "type_slug": "",
+          "type_kind": "primitive",
+          "optional": false,
+          "required": false,
+          "position": 33,
+          "default_value": "true",
+          "description_key": "components.btn.props.ripple.description",
+          "description_fallback": "Enables the Material ripple effect on click. Set to false to disable."
         },
         {
           "name": "borderRightColor",
@@ -11472,6 +11540,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -11950,6 +12022,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -12167,16 +12243,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "btn",
-          "to_name": "Btn",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.btn.description",
-          "description_fallback": "Polymorphic action element with intent, variant, size and icon support."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "btn-group",
@@ -12185,6 +12251,16 @@
           "position": 0,
           "description_key": "components.catalog.btn_group.description",
           "description_fallback": "Base group container that BtnToggle extends with selection state."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "btn",
+          "to_name": "Btn",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.btn.description",
+          "description_fallback": "Polymorphic action element with intent, variant, size and icon support."
         },
         {
           "rel_type": "family",
@@ -12546,6 +12622,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -13438,6 +13518,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -13929,16 +14013,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "dialog",
-          "to_name": "Dialog",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.dialog.description",
-          "description_fallback": "Elevated card-like surface presented in an overlay."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "card-header",
@@ -13947,6 +14021,16 @@
           "position": 0,
           "description_key": "components.catalog.card_header.description",
           "description_fallback": "Card header section rendering title, subtitle and optional prepend/append icon or avatar."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "dialog",
+          "to_name": "Dialog",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.dialog.description",
+          "description_fallback": "Elevated card-like surface presented in an overlay."
         },
         {
           "rel_type": "family",
@@ -14362,6 +14446,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -14904,6 +14992,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -15374,6 +15466,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -15865,6 +15961,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -16050,16 +16150,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "carousel",
-          "to_name": "Carousel",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.carousel.description",
-          "description_fallback": "Sliding window component for cycling through a set of items, with pagination dots, optional progress bar, auto-play interval and keyboard navigation."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "window",
@@ -16068,6 +16158,16 @@
           "position": 0,
           "description_key": "components.catalog.window.description",
           "description_fallback": "Low-level sliding container that Carousel (and CarouselItem) delegates rendering to."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "carousel",
+          "to_name": "Carousel",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.carousel.description",
+          "description_fallback": "Sliding window component for cycling through a set of items, with pagination dots, optional progress bar, auto-play interval and keyboard navigation."
         },
         {
           "rel_type": "related",
@@ -16405,6 +16505,10 @@
             ]
           }
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -17273,6 +17377,10 @@
             ]
           }
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -17671,6 +17779,10 @@
             ]
           }
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -17942,16 +18054,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "chart",
-          "to_name": "Chart",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.chart.description",
-          "description_fallback": "Universal chart component with 29 visualization primitives."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "chart",
@@ -17960,6 +18062,16 @@
           "position": 0,
           "description_key": "components.catalog.chart.description",
           "description_fallback": "Universal entry-point — pass type=\"box-plot\" to route to this family member."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "chart",
+          "to_name": "Chart",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.chart.description",
+          "description_fallback": "Universal chart component with 29 visualization primitives."
         },
         {
           "rel_type": "family",
@@ -18421,6 +18533,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -19158,6 +19274,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -19489,16 +19609,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "chart",
-          "to_name": "Chart",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.chart.description",
-          "description_fallback": "Universal chart component with 29 visualization primitives."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "chart",
@@ -19507,6 +19617,16 @@
           "position": 0,
           "description_key": "components.catalog.chart.description",
           "description_fallback": "Universal entry-point that routes to ChartCandlestick when type=\"candlestick\"."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "chart",
+          "to_name": "Chart",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.chart.description",
+          "description_fallback": "Universal chart component with 29 visualization primitives."
         },
         {
           "rel_type": "family",
@@ -19785,6 +19905,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -20171,16 +20295,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "chart",
-          "to_name": "Chart",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.chart.description",
-          "description_fallback": "Universal chart component with 29 visualization primitives."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "chart",
@@ -20189,6 +20303,16 @@
           "position": 0,
           "description_key": "components.catalog.chart.description",
           "description_fallback": "Universal entry-point that routes to ChartCartesian for cartesian types."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "chart",
+          "to_name": "Chart",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.chart.description",
+          "description_fallback": "Universal chart component with 29 visualization primitives."
         },
         {
           "rel_type": "family",
@@ -20447,6 +20571,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -20689,16 +20817,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "chart",
-          "to_name": "Chart",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.chart.description",
-          "description_fallback": "Universal chart component with 29 visualization primitives."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "chart",
@@ -20709,14 +20827,14 @@
           "description_fallback": "Universal entry-point that routes to ChartGauge when type=\"gauge\"."
         },
         {
-          "rel_type": "related",
+          "rel_type": "family",
           "to_kind": "component",
-          "to_slug": "progress",
-          "to_name": "Progress",
+          "to_slug": "chart",
+          "to_name": "Chart",
           "prop_name": null,
-          "position": 1,
-          "description_key": "components.catalog.progress.description",
-          "description_fallback": "Linear and circular progress indicator — alternative for simpler use-cases."
+          "position": 0,
+          "description_key": "components.catalog.chart.description",
+          "description_fallback": "Universal chart component with 29 visualization primitives."
         },
         {
           "rel_type": "family",
@@ -20727,6 +20845,16 @@
           "position": 1,
           "description_key": "components.catalog.chart_polar.description",
           "description_fallback": "Polar chart engine: pie, donut."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "progress",
+          "to_name": "Progress",
+          "prop_name": null,
+          "position": 1,
+          "description_key": "components.catalog.progress.description",
+          "description_fallback": "Linear and circular progress indicator — alternative for simpler use-cases."
         },
         {
           "rel_type": "family",
@@ -21082,6 +21210,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -21777,6 +21909,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -22303,6 +22439,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -22833,6 +22973,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -23646,6 +23790,10 @@
             ]
           }
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -24403,6 +24551,10 @@
             ]
           }
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -25104,6 +25256,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -25424,16 +25580,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "chart",
-          "to_name": "Chart",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.chart.description",
-          "description_fallback": "Universal chart shell — delegates to per-type chart components."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "chart-polar-bar",
@@ -25442,6 +25588,16 @@
           "position": 0,
           "description_key": "components.catalog.chart_polar_bar.description",
           "description_fallback": "Nightingale-rose (polar bar) chart with variable-radius wedges."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "chart",
+          "to_name": "Chart",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.chart.description",
+          "description_fallback": "Universal chart shell — delegates to per-type chart components."
         }
       ]
     },
@@ -25754,6 +25910,10 @@
             ]
           }
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -26461,6 +26621,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -27186,6 +27350,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -27896,6 +28064,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -28633,6 +28805,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -29112,6 +29288,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -29281,6 +29461,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -29604,6 +29788,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -30255,6 +30443,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -30772,6 +30964,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -31418,6 +31614,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -31718,16 +31918,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "color-picker-field",
-          "to_name": "ColorPickerField",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.color_picker_field.description",
-          "description_fallback": "Text field that embeds ColorPicker in a dropdown popover."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "color-picker-canvas",
@@ -31736,6 +31926,16 @@
           "position": 0,
           "description_key": "components.catalog.color_picker_canvas.description",
           "description_fallback": "Gradient canvas where the user drags a cursor to pick saturation and brightness."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "color-picker-field",
+          "to_name": "ColorPickerField",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.color_picker_field.description",
+          "description_fallback": "Text field that embeds ColorPicker in a dropdown popover."
         },
         {
           "rel_type": "family",
@@ -31921,6 +32121,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -32341,6 +32545,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -32810,6 +33018,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -33384,6 +33596,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -33483,16 +33699,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "color-picker",
-          "to_name": "ColorPicker",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.color_picker.description",
-          "description_fallback": "Full-featured HSVA colour picker. Composes canvas, preview, edit and swatches."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "slider-field",
@@ -33501,6 +33707,16 @@
           "position": 0,
           "description_key": "components.catalog.slider_field.description",
           "description_fallback": "Range slider field used internally for the hue and alpha tracks."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "color-picker",
+          "to_name": "ColorPicker",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.color_picker.description",
+          "description_fallback": "Full-featured HSVA colour picker. Composes canvas, preview, edit and swatches."
         },
         {
           "rel_type": "family",
@@ -33732,6 +33948,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -34215,6 +34435,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -34656,6 +34880,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -35154,6 +35382,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -35770,6 +36002,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -36174,6 +36410,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -36683,6 +36923,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -37252,6 +37496,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -37917,6 +38165,10 @@
             "defaultSlotContent": "Tab"
           }
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -38870,6 +39122,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -39071,16 +39327,6 @@
           "description_fallback": "Feature-rich data table. DataTableFooter is always rendered inside it."
         },
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "data-table-headers",
-          "to_name": "DataTableHeaders",
-          "prop_name": null,
-          "position": 1,
-          "description_key": "components.catalog.data_table_headers.description",
-          "description_fallback": "Header row renderer — iterates over column definitions to produce <th> cells."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "pagination",
@@ -39089,6 +39335,16 @@
           "position": 1,
           "description_key": "components.catalog.pagination.description",
           "description_fallback": "Standalone pagination bar — embedded by DataTableFooter."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "data-table-headers",
+          "to_name": "DataTableHeaders",
+          "prop_name": null,
+          "position": 1,
+          "description_key": "components.catalog.data_table_headers.description",
+          "description_fallback": "Header row renderer — iterates over column definitions to produce <th> cells."
         },
         {
           "rel_type": "family",
@@ -39540,6 +39796,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -39702,16 +39962,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "data-table-column-cell",
-          "to_name": "DataTableColumnCell",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.data_table_column_cell.description",
-          "description_fallback": "Generic cell wrapper used internally by DataTableHeaderCell."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "data-table",
@@ -39722,14 +39972,14 @@
           "description_fallback": "Full-featured data table with sorting, pagination, selection and grouping."
         },
         {
-          "rel_type": "family",
+          "rel_type": "related",
           "to_kind": "component",
-          "to_slug": "data-table-headers",
-          "to_name": "DataTableHeaders",
+          "to_slug": "data-table-column-cell",
+          "to_name": "DataTableColumnCell",
           "prop_name": null,
-          "position": 1,
-          "description_key": "components.catalog.data_table_headers.description",
-          "description_fallback": "Header row container that renders all header cells and an optional loader."
+          "position": 0,
+          "description_key": "components.catalog.data_table_column_cell.description",
+          "description_fallback": "Generic cell wrapper used internally by DataTableHeaderCell."
         },
         {
           "rel_type": "related",
@@ -39740,6 +39990,16 @@
           "position": 1,
           "description_key": "components.catalog.checkbox_btn.description",
           "description_fallback": "Select-all checkbox rendered inside the header cell for the data-table-select column."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "data-table-headers",
+          "to_name": "DataTableHeaders",
+          "prop_name": null,
+          "position": 1,
+          "description_key": "components.catalog.data_table_headers.description",
+          "description_fallback": "Header row container that renders all header cells and an optional loader."
         },
         {
           "rel_type": "family",
@@ -40119,6 +40379,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -40597,6 +40861,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -40735,16 +41003,6 @@
           "description_fallback": "Full-featured data table with sorting, pagination, selection and grouping."
         },
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "checkbox-btn",
-          "to_name": "CheckboxBtn",
-          "prop_name": null,
-          "position": 1,
-          "description_key": "components.catalog.checkbox_btn.description",
-          "description_fallback": "Selection checkbox rendered in the data-table-select column."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "data-table-rows",
@@ -40753,6 +41011,16 @@
           "position": 1,
           "description_key": "components.catalog.data_table_rows.description",
           "description_fallback": "Container that iterates items and renders rows, groups, skeletons and empty/loading states."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "checkbox-btn",
+          "to_name": "CheckboxBtn",
+          "prop_name": null,
+          "position": 1,
+          "description_key": "components.catalog.checkbox_btn.description",
+          "description_fallback": "Selection checkbox rendered in the data-table-select column."
         },
         {
           "rel_type": "family",
@@ -40974,6 +41242,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -41147,16 +41419,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "data-table",
-          "to_name": "DataTable",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.data_table.description",
-          "description_fallback": "Full-featured data table with sorting, pagination, selection and grouping."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "skeleton",
@@ -41165,6 +41427,16 @@
           "position": 0,
           "description_key": "components.catalog.skeleton.description",
           "description_fallback": "Skeleton placeholder rendered per cell when loading kind is \"skeleton\"."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "data-table",
+          "to_name": "DataTable",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.data_table.description",
+          "description_fallback": "Full-featured data table with sorting, pagination, selection and grouping."
         },
         {
           "rel_type": "family",
@@ -41641,6 +41913,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -41824,16 +42100,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "data-list",
-          "to_name": "DataList",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.data_list.description",
-          "description_fallback": "Key–value list container."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "data-list",
@@ -41842,6 +42108,16 @@
           "position": 0,
           "description_key": "components.catalog.data_list.description",
           "description_fallback": "Parent container for DataTitle + DataText pairs."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "data-list",
+          "to_name": "DataList",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.data_list.description",
+          "description_fallback": "Key–value list container."
         },
         {
           "rel_type": "related",
@@ -42315,6 +42591,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -42910,6 +43190,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -43619,6 +43903,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -44272,6 +44560,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -45115,6 +45407,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -45642,6 +45938,10 @@
             ]
           }
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -46145,6 +46445,10 @@
             ]
           }
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -46509,6 +46813,10 @@
             ]
           }
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -46762,6 +47070,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -47281,6 +47593,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -47713,16 +48029,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "overlay",
-          "to_name": "Overlay",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.overlay.description",
-          "description_fallback": "Low-level overlay primitive that Dialog is built upon."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "dialog-confirmation",
@@ -47731,6 +48037,16 @@
           "position": 0,
           "description_key": "components.catalog.dialog_confirmation.description",
           "description_fallback": "Opinionated dialog with built-in Validate / Cancel footer buttons and a read-to-enable guard (isRead pattern)."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "overlay",
+          "to_name": "Overlay",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.overlay.description",
+          "description_fallback": "Low-level overlay primitive that Dialog is built upon."
         },
         {
           "rel_type": "related",
@@ -48148,6 +48464,10 @@
             "defaultSlotContent": "Content"
           }
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -48460,16 +48780,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "dialog",
-          "to_name": "Dialog",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.dialog.description",
-          "description_fallback": "Modal overlay dialog built on OrigamOverlay and OrigamCard."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "overlay",
@@ -48478,6 +48788,16 @@
           "position": 0,
           "description_key": "components.catalog.overlay.description",
           "description_fallback": "Low-level overlay primitive that Dialog (and therefore DialogConfirmation) is built upon."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "dialog",
+          "to_name": "Dialog",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.dialog.description",
+          "description_fallback": "Modal overlay dialog built on OrigamOverlay and OrigamCard."
         },
         {
           "rel_type": "related",
@@ -48760,6 +49080,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -49226,6 +49550,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -49960,6 +50288,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -50354,6 +50686,10 @@
             "defaultSlotContent": "Content"
           }
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -50713,6 +51049,10 @@
             "defaultSlotContent": "Content"
           }
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -51204,6 +51544,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -51528,16 +51872,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "dialog",
-          "to_name": "Dialog",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.dialog.description",
-          "description_fallback": "Overlay dialog for more complex expandable content."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "expansion-panels",
@@ -51546,6 +51880,16 @@
           "position": 0,
           "description_key": "components.catalog.expansion_panels.description",
           "description_fallback": "Container managing a group of ExpansionPanel items. Supports accordion, flat, popout and inset display modes."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "dialog",
+          "to_name": "Dialog",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.dialog.description",
+          "description_fallback": "Overlay dialog for more complex expandable content."
         },
         {
           "rel_type": "family",
@@ -51882,6 +52226,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -52466,6 +52814,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -53058,6 +53410,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -53642,6 +53998,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -54387,6 +54747,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -55187,6 +55551,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -55978,6 +56346,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -56490,6 +56862,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -56969,6 +57345,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -57495,6 +57875,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -57932,6 +58316,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -58260,6 +58648,10 @@
             "defaultSlotContent": "Content"
           }
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -58584,6 +58976,10 @@
             "defaultSlotContent": "Content"
           }
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -59218,6 +59614,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -59636,6 +60036,10 @@
             "defaultSlotContent": "Content"
           }
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -59971,6 +60375,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -60133,6 +60541,10 @@
             ]
           }
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -60531,6 +60943,10 @@
             "defaultSlotContent": "Content"
           }
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -61020,6 +61436,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -61308,6 +61728,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -61439,16 +61863,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "btn-toggle",
-          "to_name": "BtnToggle",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.btn_toggle.description",
-          "description_fallback": "Visual toggle group built on top of ItemGroup with Btn children."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "item",
@@ -61457,6 +61871,16 @@
           "position": 0,
           "description_key": "components.catalog.item.description",
           "description_fallback": "A single registered item inside an ItemGroup. Provides its selection state to consumers via the default slot."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "btn-toggle",
+          "to_name": "BtnToggle",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.btn_toggle.description",
+          "description_fallback": "Visual toggle group built on top of ItemGroup with Btn children."
         },
         {
           "rel_type": "related",
@@ -61787,6 +62211,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -62256,6 +62684,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -62699,6 +63131,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -63125,6 +63561,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -63704,6 +64144,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -64378,6 +64822,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -65039,6 +65487,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -65264,16 +65716,6 @@
           "description_fallback": "Container for a set of related ListItem, ListGroup and ListSubheader components."
         },
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "treeview",
-          "to_name": "Treeview",
-          "prop_name": null,
-          "position": 1,
-          "description_key": "components.catalog.treeview.description",
-          "description_fallback": "Hierarchical tree built on List and ListGroup primitives."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "list-group-activator",
@@ -65282,6 +65724,16 @@
           "position": 1,
           "description_key": "components.catalog.list_group_activator.description",
           "description_fallback": "Internal wrapper that registers the activator context for nested group expansion."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "treeview",
+          "to_name": "Treeview",
+          "prop_name": null,
+          "position": 1,
+          "description_key": "components.catalog.treeview.description",
+          "description_fallback": "Hierarchical tree built on List and ListGroup primitives."
         }
       ]
     },
@@ -65392,6 +65844,10 @@
           ],
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -65838,6 +66294,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -66503,6 +66963,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -66922,6 +67386,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -67310,6 +67778,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -67776,6 +68248,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -68258,6 +68734,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -68928,6 +69408,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -69758,6 +70242,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -70213,6 +70701,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -70708,6 +71200,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -71359,6 +71855,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -71891,6 +72391,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -72635,6 +73139,10 @@
             "defaultSlotContent": "Content"
           }
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -73007,6 +73515,10 @@
             "defaultSlotContent": "Content"
           }
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -73370,6 +73882,10 @@
             "defaultSlotContent": "Content"
           }
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -73890,6 +74406,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -73995,16 +74515,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "overlay",
-          "to_name": "Overlay",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.overlay.description",
-          "description_fallback": "Positioning layer that combines a scrim, a content panel and scroll-lock."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "dialog",
@@ -74013,6 +74523,16 @@
           "position": 0,
           "description_key": "components.overlay_scrim.related.dialog.description",
           "description_fallback": "Dialog uses OverlayScrim as its backdrop."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "overlay",
+          "to_name": "Overlay",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.overlay.description",
+          "description_fallback": "Positioning layer that combines a scrim, a content panel and scroll-lock."
         },
         {
           "rel_type": "related",
@@ -74106,6 +74626,10 @@
             ]
           }
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -74528,6 +75052,10 @@
             "defaultSlotContent": "Content"
           }
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -75044,6 +75572,10 @@
             "defaultSlotContent": "Content"
           }
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -75481,6 +76013,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -75955,6 +76491,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -76767,6 +77307,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -76945,16 +77489,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "date-picker",
-          "to_name": "DatePicker",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.date_picker.description",
-          "description_fallback": "Date picker built on top of OrigamPicker."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "picker-title",
@@ -76963,6 +77497,16 @@
           "position": 0,
           "description_key": "components.catalog.picker_title.description",
           "description_fallback": "Title strip rendered at the top of the picker panel. Supports color and bgColor theming."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "date-picker",
+          "to_name": "DatePicker",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.date_picker.description",
+          "description_fallback": "Date picker built on top of OrigamPicker."
         },
         {
           "rel_type": "related",
@@ -77235,6 +77779,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -77715,6 +78263,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -77997,16 +78549,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "skeleton",
-          "to_name": "Skeleton",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.skeleton.description",
-          "description_fallback": "Skeleton placeholder for content loading states."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "progress-linear",
@@ -78015,6 +78557,16 @@
           "position": 0,
           "description_key": "components.catalog.progress_linear.description",
           "description_fallback": "Horizontal progress bar. Supports determinate, indeterminate, buffer, stream and striped modes. Emits click when clickable=true."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "skeleton",
+          "to_name": "Skeleton",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.skeleton.description",
+          "description_fallback": "Skeleton placeholder for content loading states."
         },
         {
           "rel_type": "family",
@@ -78385,6 +78937,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -78956,6 +79512,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -79558,6 +80118,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -80202,6 +80766,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -80916,6 +81484,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -81204,16 +81776,6 @@
           "description_fallback": "Standalone radio input with label and full selection-control surface."
         },
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "checkbox",
-          "to_name": "Checkbox",
-          "prop_name": null,
-          "position": 1,
-          "description_key": "components.radio_btn.related.checkbox.description",
-          "description_fallback": "Checkbox shares the SelectionControl base with RadioBtn."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "radio-group",
@@ -81222,6 +81784,16 @@
           "position": 1,
           "description_key": "components.catalog.radio_group.description",
           "description_fallback": "Groups multiple Radio controls into a single v-model binding."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "checkbox",
+          "to_name": "Checkbox",
+          "prop_name": null,
+          "position": 1,
+          "description_key": "components.radio_btn.related.checkbox.description",
+          "description_fallback": "Checkbox shares the SelectionControl base with RadioBtn."
         }
       ]
     },
@@ -81518,6 +82090,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -81802,16 +82378,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "selection-control-group",
-          "to_name": "SelectionControlGroup",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.radio_group.related.selection_control_group",
-          "description_fallback": "RadioGroup renders SelectionControlGroup internally to lay out Radio items."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "radio",
@@ -81820,6 +82386,16 @@
           "position": 0,
           "description_key": "components.catalog.radio.description",
           "description_fallback": "Single-selection radio control with label, error and focus state support."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "selection-control-group",
+          "to_name": "SelectionControlGroup",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.radio_group.related.selection_control_group",
+          "description_fallback": "RadioGroup renders SelectionControlGroup internally to lay out Radio items."
         },
         {
           "rel_type": "family",
@@ -82170,6 +82746,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -82810,6 +83390,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -83429,6 +84013,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -83937,6 +84525,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -84481,6 +85073,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -84867,6 +85463,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -85187,6 +85787,10 @@
           ],
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -85670,6 +86274,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -86632,6 +87240,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -86937,16 +87549,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "checkbox",
-          "to_name": "Checkbox",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.selection_control.related.checkbox",
-          "description_fallback": "Checkbox uses OrigamSelectionControl with type=\"checkbox\"."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "selection-control-group",
@@ -86955,6 +87557,16 @@
           "position": 0,
           "description_key": "components.catalog.selection_control_group.description",
           "description_fallback": "Groups multiple SelectionControl instances under a shared v-model with inline layout and item-slot API."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "checkbox",
+          "to_name": "Checkbox",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.selection_control.related.checkbox",
+          "description_fallback": "Checkbox uses OrigamSelectionControl with type=\"checkbox\"."
         },
         {
           "rel_type": "related",
@@ -87240,6 +87852,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -87922,6 +88538,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -88567,6 +89187,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -89174,6 +89798,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -89734,6 +90362,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -90547,6 +91179,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -90962,6 +91598,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -91338,6 +91978,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -91576,6 +92220,10 @@
             "defaultSlotContent": "Content"
           }
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -92132,6 +92780,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -92682,6 +93334,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -93011,6 +93667,10 @@
           ],
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -93212,6 +93872,10 @@
             "defaultSlotContent": "Content"
           }
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -93791,6 +94455,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -94318,6 +94986,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -94579,6 +95251,10 @@
             "defaultSlotContent": "Content"
           }
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -95229,6 +95905,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -95432,6 +96112,10 @@
             "defaultSlotContent": "Content"
           }
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -96004,6 +96688,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -96137,16 +96825,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "tabs",
-          "to_name": "Tabs",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.tabs.description",
-          "description_fallback": "WAI-ARIA tablist container that orchestrates a group of OrigamTab elements."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "tabs",
@@ -96155,6 +96833,16 @@
           "position": 0,
           "description_key": "components.catalog.tabs.description",
           "description_fallback": "Parent tablist — required wrapper for OrigamTab."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "tabs",
+          "to_name": "Tabs",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.tabs.description",
+          "description_fallback": "WAI-ARIA tablist container that orchestrates a group of OrigamTab elements."
         },
         {
           "rel_type": "family",
@@ -96259,6 +96947,10 @@
             "defaultSlotContent": "Tab"
           }
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -96670,6 +97362,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -96760,16 +97456,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "tabs",
-          "to_name": "Tabs",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.tabs.description",
-          "description_fallback": "WAI-ARIA tablist container that orchestrates a group of OrigamTab elements."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "tab-panels",
@@ -96782,12 +97468,12 @@
         {
           "rel_type": "family",
           "to_kind": "component",
-          "to_slug": "tab",
-          "to_name": "Tab",
+          "to_slug": "tabs",
+          "to_name": "Tabs",
           "prop_name": null,
-          "position": 1,
-          "description_key": "components.catalog.tab.description",
-          "description_fallback": "Single registered tab inside an OrigamTabs tablist."
+          "position": 0,
+          "description_key": "components.catalog.tabs.description",
+          "description_fallback": "WAI-ARIA tablist container that orchestrates a group of OrigamTab elements."
         },
         {
           "rel_type": "related",
@@ -96798,6 +97484,16 @@
           "position": 1,
           "description_key": "components.catalog.tab.description",
           "description_fallback": "Sibling tab that controls this panel via matching value."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "tab",
+          "to_name": "Tab",
+          "prop_name": null,
+          "position": 1,
+          "description_key": "components.catalog.tab.description",
+          "description_fallback": "Single registered tab inside an OrigamTabs tablist."
         },
         {
           "rel_type": "family",
@@ -97044,6 +97740,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -97163,16 +97863,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "tabs",
-          "to_name": "Tabs",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.tabs.description",
-          "description_fallback": "WAI-ARIA tablist container that orchestrates a group of OrigamTab elements."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "tabs",
@@ -97181,6 +97871,16 @@
           "position": 0,
           "description_key": "components.catalog.tabs.description",
           "description_fallback": "Sibling tablist — must share the same v-model to synchronise selection."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "tabs",
+          "to_name": "Tabs",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.tabs.description",
+          "description_fallback": "WAI-ARIA tablist container that orchestrates a group of OrigamTab elements."
         },
         {
           "rel_type": "family",
@@ -97324,6 +98024,10 @@
             "defaultSlotContent": "Tab"
           }
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -97818,6 +98522,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -98448,6 +99156,10 @@
             "defaultSlotContent": "Content"
           }
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -99206,6 +99918,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -99513,6 +100229,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -99945,6 +100665,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -100532,6 +101256,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -100703,16 +101431,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "timeline",
-          "to_name": "Timeline",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.timeline.description",
-          "description_fallback": "Parent container — required wrapper for OrigamTimelineItem."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "timeline",
@@ -100721,6 +101439,16 @@
           "position": 0,
           "description_key": "components.catalog.timeline.description",
           "description_fallback": "Vertical or horizontal event timeline container that manages OrigamTimelineItem children."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "timeline",
+          "to_name": "Timeline",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.timeline.description",
+          "description_fallback": "Parent container — required wrapper for OrigamTimelineItem."
         }
       ]
     },
@@ -101062,6 +101790,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -101622,6 +102354,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -102237,6 +102973,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -102726,6 +103466,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -103292,6 +104036,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -103889,6 +104637,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -104367,6 +105119,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -105096,6 +105852,10 @@
             }
           ]
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -105382,6 +106142,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -105448,16 +106212,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "virtual-scroll",
-          "to_name": "VirtualScroll",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.virtual_scroll.description",
-          "description_fallback": "Window-based virtual list renderer that only mounts visible rows, keeping the DOM small for arbitrarily large datasets."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "virtual-scroll",
@@ -105466,6 +106220,16 @@
           "position": 0,
           "description_key": "components.catalog.virtual_scroll.description",
           "description_fallback": "Parent virtual scroller — injects OrigamVirtualScrollItem internally for each visible slot."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "virtual-scroll",
+          "to_name": "VirtualScroll",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.virtual_scroll.description",
+          "description_fallback": "Window-based virtual list renderer that only mounts visible rows, keeping the DOM small for arbitrarily large datasets."
         }
       ]
     },
@@ -105696,6 +106460,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -106240,6 +107008,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -106514,16 +107286,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "window-item",
-          "to_name": "WindowItem",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.window_item.description",
-          "description_fallback": "One slide inside a Window. Handles transition animation, lazy rendering and group membership lifecycle."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "carousel",
@@ -106532,6 +107294,16 @@
           "position": 0,
           "description_key": "components.related.carousel.description",
           "description_fallback": "Carousel is built on top of Window and adds autoplay, indicator dots and image preloading."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "window-item",
+          "to_name": "WindowItem",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.window_item.description",
+          "description_fallback": "One slide inside a Window. Handles transition animation, lazy rendering and group membership lifecycle."
         },
         {
           "rel_type": "related",
@@ -106710,6 +107482,10 @@
           },
           "previewVariants": []
         },
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
         "edited_by_user": false
       },
       "props": [
@@ -106802,16 +107578,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "window",
-          "to_name": "Window",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.window.description",
-          "description_fallback": "Slide switcher container that orchestrates the active WindowItem."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "window",
@@ -106820,6 +107586,16 @@
           "position": 0,
           "description_key": "components.catalog.window.description",
           "description_fallback": "Parent container — provides the group context this item registers into."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "window",
+          "to_name": "Window",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.window.description",
+          "description_fallback": "Slide switcher container that orchestrates the active WindowItem."
         }
       ]
     }
