@@ -16,7 +16,8 @@
 import { ref } from 'vue'
 import { describe, expect, it } from 'vitest'
 
-import { createLocale, createRtl, provideRtl } from '@origam/composables/Commons/locale.composable'
+import { createLocale } from '@origam/composables/Commons/locale.composable'
+import { createRtl, provideRtl } from '@origam/composables/Commons/rtl.composable'
 import { LOCALE_RTL_DEFAULT } from '@origam/consts/Commons/locale.const'
 
 import type { ILocaleInstance, IRtlInstance } from '@origam/interfaces'

@@ -12,7 +12,8 @@ import { defineComponent, h, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 
-import { provideSort, useSortedItems } from '@origam/composables/DataTable/sort.composable'
+import { provideSort } from '@origam/composables/DataTable/sort.composable'
+import { useSortedItems } from '@origam/composables/DataTable/sortedItems.composable'
 import { SORT_DIRECTION } from '@origam/enums'
 import type { IDataTableSortItem, IInternalDataTableHeader, IInternalItem } from '@origam/interfaces'
 

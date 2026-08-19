@@ -16,7 +16,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { ILinkProps, ITagProps } from '@origam/interfaces'
 
-import { useLink } from '@origam/composables/Commons/router.composable'
+import { useLink } from '@origam/composables/Commons/link.composable'
 
 // ─── useLink — no RouterLink (fallback string branch) ────────────────────────
 //
@@ -125,7 +125,7 @@ describe('useRoute / useRouter — missing vm', () => {
 
 // ─── useBackButton ────────────────────────────────────────────────────────────
 
-import { useBackButton } from '@origam/composables/Commons/router.composable'
+import { useBackButton } from '@origam/composables/Commons/backButton.composable'
 
 describe('useBackButton — popstate listener', () => {
     beforeEach(() => {

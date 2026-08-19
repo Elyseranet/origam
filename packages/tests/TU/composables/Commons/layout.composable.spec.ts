@@ -15,7 +15,9 @@ import { describe, expect, it } from 'vitest'
 
 import { ORIGAM_LAYOUT_KEY } from '@origam/consts/Commons/layout.const'
 
-import { useCreateLayout, useLayout, useLayoutItem } from '@origam/composables/Commons/layout.composable'
+import { useLayout } from '@origam/composables/Commons/layout.composable'
+import { useLayoutItem } from '@origam/composables/Commons/layoutItem.composable'
+import { useCreateLayout } from '@origam/composables/Commons/createLayout.composable'
 
 // ─── useLayout — missing provider ───────────────────────────────────────────
 

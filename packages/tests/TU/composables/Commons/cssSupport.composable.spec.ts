@@ -21,9 +21,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { FEATURE_QUERIES } from '@origam/consts'
 import {
     useCssSupport,
-    useCssSupportClient,
     _resetCssSupportCache
 } from '@origam/composables/Commons/cssSupport.composable'
+import { useCssSupportClient } from '@origam/composables/Commons/cssSupportClient.composable'
 
 // ---------------------------------------------------------------------------
 // Setup: stub CSS.supports before each test, restore after

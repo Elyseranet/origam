@@ -1,10 +1,16 @@
-import { computed, ComputedRef, Ref, useSlots } from 'vue'
-import type { IAdjacentInnerProps, IAdjacentProps } from '../../interfaces'
-
-import { getCurrentInstance } from "../../utils"
+import type { ComputedRef, Ref } from 'vue'
+import { computed, useSlots } from 'vue'
+import type { IAdjacentProps } from '../../interfaces'
+import { getCurrentInstance } from '../../utils'
 
 /*********************************************************
  * useAdjacent
+ *
+ * @description
+ * Resolves the prepend/append media + slot presence and click emits
+ * for a component's OUTER adjacent zone (prepend/append icon or
+ * avatar). `useAdjacentInner` is the sibling hook for the INNER zone
+ * (prependInner/appendInner/clear) — independent, no shared state.
  ********************************************************/
 export function useAdjacent (props: IAdjacentProps, prependIcon?: Ref | ComputedRef, appendIcon?: Ref | ComputedRef) {
     const vm = getCurrentInstance('OrigamAdjacent')
@@ -47,51 +53,5 @@ export function useAdjacent (props: IAdjacentProps, prependIcon?: Ref | Computed
         hasAppend,
         onClickPrepend,
         onClickAppend
-    }
-}
-
-/*********************************************************
- * useAdjacentInner
- ********************************************************/
-export function useAdjacentInner (props: IAdjacentInnerProps) {
-    const vm = getCurrentInstance('OrigamAdjacentInner')
-
-    const slots = useSlots()
-
-    const hasPrependInnerMedia = computed(() => {
-        return !!(props.prependInnerAvatar || props.prependInnerIcon)
-    })
-    const hasPrependInner = computed(() => {
-        return slots.prependInner || hasPrependInnerMedia.value
-    })
-    const hasAppendInnerMedia = computed(() => {
-        return !!(props.appendInnerAvatar || props.appendInnerIcon)
-    })
-    const hasAppendInner = computed(() => {
-        return slots.appendInner || hasAppendInnerMedia.value
-    })
-    const hasClear = computed(() => {
-        return props.clearable || slots.clear
-    })
-
-    const onClickPrependInner = (e: Event) => {
-        vm.emit('click:prependInner', e)
-    }
-    const onClickAppendInner = (e: Event) => {
-        vm.emit('click:appendInner', e)
-    }
-    const clickClear = (e: Event) => {
-        vm.emit('click:clear', e)
-    }
-
-    return {
-        hasPrependInnerMedia,
-        hasPrependInner,
-        hasAppendInnerMedia,
-        hasAppendInner,
-        hasClear,
-        onClickPrependInner,
-        onClickAppendInner,
-        clickClear
     }
 }

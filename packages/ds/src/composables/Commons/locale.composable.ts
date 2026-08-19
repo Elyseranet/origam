@@ -1,22 +1,18 @@
-import { computed, inject, provide, ref } from "vue"
-import * as origamMessages from "../../assets/locales"
-
-import { LOCALE_RTL_DEFAULT, ORIGAM_LOCALE_KEY } from "../../consts"
-
-import type {
-    ILocaleInstance,
-    ILocaleOptions,
-    ILocaleProps,
-    IRtlInstance,
-    IRtlOptions,
-    IRtlProps,
-    ILocaleMessages
-} from "../../interfaces"
-
-import { createBuiltinAdapter, getCurrentInstanceName, mergeDeep } from "../../utils"
+import { computed, inject, provide, ref } from 'vue'
+import * as origamMessages from '../../assets/locales'
+import { ORIGAM_LOCALE_KEY } from '../../consts'
+import type { ILocaleInstance, ILocaleMessages, ILocaleOptions, ILocaleProps, IRtlOptions, IRtlProps } from '../../interfaces'
+import { createBuiltinAdapter, mergeDeep } from '../../utils'
+import { createRtl, provideRtl } from './rtl.composable'
 
 /*********************************************************
  * createLocale
+ *
+ * @description
+ * Plugin-side factory used by `createOrigam()` to seed the root
+ * locale instance (i18n adapter + RTL state) from the host app's
+ * options. Delegates the RTL half to `createRtl` (own file) rather
+ * than duplicating it.
  ********************************************************/
 export function createLocale (options?: ILocaleOptions & IRtlOptions) {
     const merged = mergeDeep({
@@ -43,6 +39,12 @@ export function createLocale (options?: ILocaleOptions & IRtlOptions) {
 
 /*********************************************************
  * useLocale
+ *
+ * @description
+ * Reads the injected locale instance (i18n adapter + RTL state).
+ * Independent from `useRtl` at the call level (both inject
+ * `ORIGAM_LOCALE_KEY` separately) — kept in its own file since it is
+ * conceptually the locale-resolution half of the system, not RTL.
  ********************************************************/
 export function useLocale () {
     const locale = inject(ORIGAM_LOCALE_KEY)
@@ -54,6 +56,11 @@ export function useLocale () {
 
 /*********************************************************
  * provideLocale
+ *
+ * @description
+ * Provider-side hook: derives a subtree's locale + RTL state from
+ * props, overriding the parent injection. Delegates the RTL half to
+ * `provideRtl` (own file) rather than duplicating it.
  ********************************************************/
 export function provideLocale (props: ILocaleProps & IRtlProps) {
     const locale = inject(ORIGAM_LOCALE_KEY)
@@ -69,44 +76,3 @@ export function provideLocale (props: ILocaleProps & IRtlProps) {
 
     return data
 }
-
-/*********************************************************
- * createRtl
- ********************************************************/
-export function createRtl (i18n: ILocaleInstance, options?: IRtlOptions): IRtlInstance {
-    const rtl = ref<Record<string, boolean>>(options?.rtl ?? LOCALE_RTL_DEFAULT)
-    const isRtl = computed(() => rtl.value[i18n.current.value] ?? false)
-
-    return {
-        isRtl,
-        rtl
-    }
-}
-
-/*********************************************************
- * useRtl
- ********************************************************/
-export function useRtl (name = getCurrentInstanceName()) {
-    const locale = inject(ORIGAM_LOCALE_KEY)
-
-    if (!locale) throw new Error('[Origam] Could not find injected rtl instance')
-
-    const rtlClasses = computed(() => {
-        return `${name}--is-${locale.isRtl.value ? 'rtl' : 'ltr'}`
-    })
-
-    return {isRtl: locale.isRtl, rtlClasses}
-}
-
-/*********************************************************
- * provideRtl
- ********************************************************/
-export function provideRtl (locale: ILocaleInstance, rtl: IRtlInstance['rtl'], props: IRtlProps): IRtlInstance {
-    const isRtl = computed(() => props.rtl ?? rtl.value[locale.current.value] ?? false)
-
-    return {
-        isRtl,
-        rtl
-    }
-}
-

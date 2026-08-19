@@ -13,10 +13,8 @@ import { defineComponent, h, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 
-import {
-    providePagination,
-    usePaginatedItems
-} from '@origam/composables/DataTable/pagination.composable'
+import { providePagination } from '@origam/composables/DataTable/pagination.composable'
+import { usePaginatedItems } from '@origam/composables/DataTable/paginatedItems.composable'
 
 // ---------------------------------------------------------------------------
 // Helpers

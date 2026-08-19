@@ -1,9 +1,10 @@
-import { computed, onMounted, readonly, ref, type ComputedRef, type Ref } from 'vue'
+import { computed, readonly, ref, type ComputedRef, type Ref } from 'vue'
 
 import { FEATURE_QUERIES } from '../../consts/Commons/css-support.const'
 
-import type { IUseCssSupport, IUseCssSupportClientOptions } from '../../interfaces'
+import type { IUseCssSupport } from '../../interfaces'
 import type { TCssFeatureName, TCssSupportMap } from '../../types'
+import { rawSupports, resetSupportsCache } from '../../utils/Commons/css-support.util'
 
 // ────────────────────────────────────────────────────────────────────────────
 // CSS feature detection — `useCssSupport`
@@ -45,9 +46,11 @@ import type { TCssFeatureName, TCssSupportMap } from '../../types'
 // flip the flags. Components that gate behaviour on these flags should
 // therefore NOT prerender hydration-sensitive markup; use `<ClientOnly>`
 // or guard with `onMounted`.
+//
+// The `rawSupports` cached primitive is shared with `useCssSupportClient`
+// (its hydration-safe sibling, in its own file) — it lives in
+// `utils/Commons/css-support.util.ts` so neither hook duplicates it.
 
-// Module-level cache so every component sees the same answers.
-const _cache = new Map<string, boolean>()
 let _initialized = false
 
 /*********************************************************
@@ -64,35 +67,6 @@ let _initialized = false
 
 export type { TCssFeatureName, TCssSupportMap } from '../../types'
 export type { IUseCssSupport, IUseCssSupportClientOptions } from '../../interfaces'
-
-/**
- * Run `CSS.supports(query)` with safe handling of:
- *   - SSR / non-browser environments (returns false)
- *   - older browsers without CSS.supports (returns false)
- *   - parens-vs-paren-less queries (Selector queries need `selector(...)`,
- *     not all engines accept `display: grid` without parens — we let the
- *     caller phrase the query)
- *   - `@supports`-style boolean expressions (we DO NOT split — the caller
- *     is responsible for using a query CSS.supports accepts)
- *
- * Results are cached.
- */
-function rawSupports (query: string): boolean {
-    if (typeof window === 'undefined' || typeof CSS === 'undefined' || !CSS.supports) {
-        return false
-    }
-    if (_cache.has(query)) return _cache.get(query)!
-    let result = false
-    try {
-        // CSS.supports accepts two signatures: (property, value) or (query).
-        // We always use the single-string form for consistency.
-        result = CSS.supports(query)
-    } catch {
-        result = false
-    }
-    _cache.set(query, result)
-    return result
-}
 
 // Reactive flag map — stays at all-false during SSR, hydrates at first
 // browser-side `useCssSupport()` call.
@@ -127,6 +101,13 @@ function ensureInitialized () {
 
 /*********************************************************
  * useCssSupport
+ *
+ * @description
+ * Single feature-detection layer for the whole CSS-first / JS-fallback
+ * matrix (see `FEATURE_QUERIES`). Returns a reactive frozen flag map
+ * plus free-form `supports` / `supportsAny` / `supportsAll` helpers.
+ * `useCssSupportClient` (own file) is the hydration-safe sibling for
+ * markup-driving flags — both share the cached `rawSupports` primitive.
  ********************************************************/
 export function useCssSupport (): IUseCssSupport {
     ensureInitialized()
@@ -173,66 +154,7 @@ export function useCssSupport (): IUseCssSupport {
  * _resetCssSupportCache
  ********************************************************/
 export function _resetCssSupportCache () {
-    _cache.clear()
+    resetSupportsCache()
     _initialized = false
     _flags.value = emptyMap()
-}
-
-// ────────────────────────────────────────────────────────────────────────────
-// `useCssSupportClient` — hydration-safe variant
-// ────────────────────────────────────────────────────────────────────────────
-//
-// PROBLEM
-// ───────
-// `useCssSupport()` returns a flag that stays `false` during SSR and flips
-// to the real value after hydration. If a component renders a different
-// DOM tree based on that flag (e.g. CSS-vs-JS branch), the SSR markup
-// shows the JS fallback, the client hydrates into the CSS branch, and
-// Vue logs a hydration mismatch.
-//
-// SOLUTION
-// ────────
-// `useCssSupportClient()` returns a `Ref<boolean>` that starts at the
-// caller-provided `defaultValue` (defaults to `false`) and only flips to
-// the real `CSS.supports()` result inside an `onMounted` callback. Both
-// SSR and the first client render therefore see the same `defaultValue`
-// — no mismatch — and the runtime branch resolves a tick after mount.
-//
-// Use when a feature flag drives **markup** (template `v-if` /
-// `<component :is>` / different DOM structure). For style-only
-// branches (CSS variables, class toggles), the regular
-// `useCssSupport()` is fine because the post-hydration class flip is
-// invisible to the reconciler.
-
-/*********************************************************
- * useCssSupportClient
- *
- * @description
- * Hydration-safe single-feature gate. Returns a `Ref<boolean>` that
- * starts at `defaultValue` and flips to the real support result on
- * `onMounted`. Use to gate **markup**, not styles — for style-only
- * branches prefer `useCssSupport().css.value.X` directly.
- *
- * @example
- *   const supportsContainer = useCssSupportClient('containerQueries')
- *   // template:
- *   //   <div v-if="supportsContainer">…CSS path…</div>
- *   //   <div v-else>…JS fallback path…</div>
- ********************************************************/
-export function useCssSupportClient (
-    feature: TCssFeatureName | string,
-    options: IUseCssSupportClientOptions = {}
-): Ref<boolean> {
-    const { defaultValue = false } = options
-    const flag = ref(defaultValue)
-
-    onMounted(() => {
-        // We don't reuse `_flags` from the singleton because it might
-        // not be initialised yet (the caller may be the first consumer).
-        // Going through `rawSupports` keeps the cache warm.
-        const query = (FEATURE_QUERIES as Record<string, string>)[feature] ?? feature
-        flag.value = rawSupports(query)
-    })
-
-    return flag
 }

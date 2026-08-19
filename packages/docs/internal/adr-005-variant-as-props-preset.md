@@ -38,10 +38,11 @@ background-colour change. The mechanism is fully explained by the code:
   chain is not at fault.
 - `packages/ds/src/components/Btn/OrigamBtn.vue:714-715` declares
   `&--variant-outlined { background-color: transparent !important; }`.
-- `useColor` / `useBackgroundColor`
-  (`packages/ds/src/composables/Commons/color.composable.ts`) emit either a
-  utility **class** (tokenised value) or an **inline style** (custom value).
-  Neither is `!important`.
+- `useColor` (`packages/ds/src/composables/Commons/color.composable.ts`) /
+  `useBackgroundColor`
+  (`packages/ds/src/composables/Commons/backgroundColor.composable.ts`, which
+  delegates to `useColor`) emit either a utility **class** (tokenised value)
+  or an **inline style** (custom value). Neither is `!important`.
 
 Per the CSS cascade, an `!important` author declaration outranks a *normal*
 inline-style declaration. So the variant rule wins unconditionally, and no

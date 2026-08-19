@@ -9,13 +9,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h } from 'vue'
 import { renderToString } from '@vue/server-renderer'
 
-import {
-    _resetCssSupportCache,
-    useCssSupport,
-    useCssSupportClient
-} from '@origam/composables/Commons/cssSupport.composable'
+import { _resetCssSupportCache, useCssSupport } from '@origam/composables/Commons/cssSupport.composable'
+import { useCssSupportClient } from '@origam/composables/Commons/cssSupportClient.composable'
 
-import { useSnackbarGroup, resetSnackbarGroupForTesting } from '@origam/composables/Snackbar/snackbar-group.composable'
+import { useSnackbarGroup } from '@origam/composables/Snackbar/snackbar-group.composable'
+import { resetSnackbarGroupForTesting } from '@origam/utils/Snackbar/snackbar-group.util'
 import { useMask } from '@origam/composables/Commons/mask.composable'
 import { useCode } from '@origam/composables/Code/code.composable'
 import { applyModeSync, applyThemeSync, readPersistedMode, readPersistedTheme } from '@origam/composables/Commons/theme.composable'

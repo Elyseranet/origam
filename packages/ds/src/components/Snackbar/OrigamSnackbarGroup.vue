@@ -44,7 +44,7 @@
   import OrigamSnackbarItem from './OrigamSnackbarItem.vue'
 
   import { useProps, useStyle } from '../../composables'
-  import { useSnackbarGroupInternal } from '../../composables/Snackbar/snackbar-group.composable'
+  import { useSnackbarGroupInternal } from '../../composables/Snackbar/snackbarGroupInternal.composable'
 
   import { INTENT, SNACKBAR_GROUP_DIRECTION } from '../../enums'
 

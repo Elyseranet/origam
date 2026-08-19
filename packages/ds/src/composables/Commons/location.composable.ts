@@ -1,16 +1,18 @@
-import { computed, onScopeDispose, ref, watch } from 'vue'
-import { useToggleScope } from '../../composables'
-
-import { IN_BROWSER, LOCATION_STRATEGIES, OPPOSITE_MAP } from '../../consts'
-
-import type { ILocationProps, ILocationStrategyData, ILocationStrategyProps } from '../../interfaces'
-
+import { computed } from 'vue'
+import { OPPOSITE_MAP } from '../../consts'
+import type { ILocationProps } from '../../interfaces'
 import type { TAnchor } from '../../types'
-
 import { parseAnchor } from '../../utils'
 
 /*********************************************************
  * useLocation
+ *
+ * @description
+ * Resolves a `location` prop (e.g. `'top end'`) into absolute-position
+ * CSS declarations, with an optional offset callback and an
+ * `opposite` mode used by anchored/floating components.
+ * Independent from `useLocationStrategies` — no shared state or call
+ * dependency.
  ********************************************************/
 export function useLocation (props: ILocationProps, opposite = false, offset?: (side: string) => number) {
 
@@ -61,44 +63,4 @@ export function useLocation (props: ILocationProps, opposite = false, offset?: (
     })
 
     return {locationStyles}
-}
-
-/*********************************************************
- * useLocationStrategies
- ********************************************************/
-export function useLocationStrategies (
-    props: ILocationStrategyProps,
-    data: ILocationStrategyData
-) {
-    const contentStyles = ref({})
-    const updateLocation = ref<(e: Event) => void>()
-
-    const handleResize = (e: Event) => {
-        updateLocation.value?.(e)
-    }
-
-    if (IN_BROWSER) {
-        useToggleScope(() => !!(data.isActive.value && props.locationStrategy), reset => {
-            watch(() => props.locationStrategy, reset)
-            onScopeDispose(() => {
-                window.removeEventListener('resize', handleResize)
-                updateLocation.value = undefined
-            })
-
-            window.addEventListener('resize', handleResize, {passive: true})
-
-            if (props.locationStrategy) {
-                if (typeof props.locationStrategy === 'function') {
-                    updateLocation.value = props.locationStrategy(data, props, contentStyles)?.updateLocation
-                } else {
-                    updateLocation.value = LOCATION_STRATEGIES[props.locationStrategy](data, props, contentStyles)?.updateLocation
-                }
-            }
-        })
-    }
-
-    return {
-        contentStyles,
-        updateLocation
-    }
 }

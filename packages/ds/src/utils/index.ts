@@ -1,4 +1,5 @@
 export * from './Media/format-time.util'
+export * from './Snackbar/snackbar-group.util'
 
 export * from './Commons/anchor.util'
 export * from './Commons/border.util'
@@ -6,6 +7,7 @@ export * from './Commons/color.util'
 export * from './Commons/gradient.util'
 export * from './Commons/commons.util'
 export * from './Commons/console.util'
+export * from './Commons/css-support.util'
 export * from './Commons/date.util'
 export * from './Commons/elevation.util'
 export * from './Commons/getCurrentInstance.util'
