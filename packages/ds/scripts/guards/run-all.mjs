@@ -22,6 +22,7 @@ const GUARDS = [
     'file-naming.mjs',
     'unconsumed-props.mjs',
     'raw-props-usage.mjs',
+    'no-usedefaults-in-components.mjs',
     'emits-completeness.mjs'
 ]
 
