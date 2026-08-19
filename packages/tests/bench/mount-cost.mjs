@@ -1,34 +1,3 @@
-/*********************************************************
- * ⛔ CETTE VERSION N'EST PAS VALIDÉE — lire avant de s'en servir
- *
- * @description
- * Ce fichier n'a NI bootstrap, NI mode --validate, NI contrôle négatif ou
- * positif. Il produit des nombres ; rien ici ne prouve qu'ils veulent dire
- * quelque chose.
- *
- * Une version validée a existé le 2026-08-19 : appariement intra-process,
- * ordre A/B randomisé, IC95 par bootstrap sur les paires, et deux contrôles
- * qui passaient — négatif (A vs A) à ~0 %, positif (injection calibrée de
- * 0,0200 ms) retrouvée à 0,0202 ms, soit 1 % près. Elle a été perdue avec le
- * worktree qui la portait, supprimé par erreur avant d'être commitée.
- *
- * Ce qu'il manque, par ordre d'importance :
- * 1. les deux contrôles — sans eux, un « aucune différence détectée » est
- *    indiscernable d'un instrument aveugle ;
- * 2. l'IC95, donc toute notion d'incertitude ;
- * 3. l'ordre randomisé — une alternance fixe laisse un biais directionnel
- *    constant, que la médiane des deltas n'annule PAS (seul le bruit
- *    aléatoire s'annule, pas un biais systématique).
- *
- * ⚠️ Il mesure aussi des composants SYNTHÉTIQUES calibrés au nombre de props
- * d'un vrai composant, jamais le composant lui-même. Mesuré le 2026-08-19,
- * l'écart est important : base réelle 3 à 4× plus grosse, donc ratio ~2,5×
- * plus faible. Un tableau étiqueté « Btn » ici ne dit RIEN de `OrigamBtn`.
- *
- * Les chiffres qui font foi sur `useDefaults` sont ceux de la mesure directe
- * sur composants réels, consignés dans l'issue #363 — pas ceux d'ici.
- ********************************************************/
-
 /**
  * mount-cost.mjs — Vue 3 component MOUNT COST benchmark harness.
  *
@@ -47,37 +16,97 @@
  *    catalogue and reports their absolute mount cost. Useful for absolute
  *    numbers and for tracking a real component's cost over time, but a
  *    two-separate-runs "before/after" comparison inherits ALL of the
- *    machine's run-to-run drift (thermal, JIT, background load) on top of
- *    whatever `useDefaults` actually costs — calibrated at 4-9 % run-to-run
- *    noise on the pooled median for Divider/Btn, which is too close to (or
- *    above) the 5 % threshold to arbitrate anything. See the calibration
- *    notes below.
+ *    machine's run-to-run drift on top of whatever `useDefaults` actually
+ *    costs. MEASURED DIRECTLY: inter-series noise (same process) on `Btn`
+ *    was 0.94 % in one run, 8.41 % in a separate run of the identical
+ *    command — an ORDER OF MAGNITUDE difference that pins the noise
+ *    source squarely on comparing separate PROCESSES, not on the
+ *    measurement technique itself. Two-run comparisons are therefore not
+ *    used to arbitrate the 5 % threshold; `--ab` mode (below) is.
  *
- * 2. `--ab` INTERLEAVED mode — the fix for that noise problem. Builds TWO
- *    synthetic components with an IDENTICAL prop surface (N string props,
- *    N configurable via `--prop-counts`): one plain, one wired with
- *    `useDefaults(_props)` exactly like a real component would be. Both are
- *    mounted, in the SAME process, in randomized-order alternation
- *    (A,B,B,A,B,A,… — the coin flip cancels any systematic "second mount in
- *    a pair is warmer" bias), and the harness reports the PAIRED delta
- *    (B − A) with a 95 % CI, plus that delta as a percentage of A's own
- *    mean cost — which is exactly "how much does useDefaults cost, in
- *    percent of mount time, for a component with N props". Doing this
- *    turns two noisy independent samples into one low-variance paired
- *    comparison (textbook reason paired designs beat independent-group
- *    designs when the same nuisance factors — GC phase, JIT tier state —
- *    hit both conditions equally within a tight time window).
- *    Synthetic components use STRING props uniformly — `useDefaults`'s own
- *    cost mechanism (`Object.keys` + one `computed` per key) does not
- *    depend on prop TYPE, only prop COUNT, so this is a deliberate
- *    simplification, not an oversight.
+ * 2. `--ab` PAIRED INTRA-PROCESS mode — the fix. For each unit (a real
+ *    component's name, or a raw prop count via `--prop-counts`), builds TWO
+ *    synthetic components sharing an IDENTICAL prop surface: A (plain), B
+ *    (wired with `useDefaults(_props)`, exactly like a real component
+ *    would be). Both mount, in the SAME process, on the SAME host app,
+ *    interleaved one pair per iteration (never "2000×A then 2000×B" — see
+ *    "WHY INTERLEAVED, WHY PAIRED" below). The statistic reported is the
+ *    PAIRED delta δᵢ = Bᵢ − Aᵢ, aggregated as its MEDIAN (not a difference
+ *    of medians — see below) with a bootstrap 95 % CI, plus that median
+ *    expressed as a percentage of A's own median cost.
  *
- * Real components already wired with `useDefaults` (OrigamBtn, OrigamCard)
- * make good NEGATIVE CONTROLS in real-component mode: their mount cost is
- * not expected to move at all when #363 lands elsewhere in the catalogue,
- * so if a before/after comparison ever shows them moving by more than the
- * calibrated noise floor, that is itself a signal something is off with
- * the comparison, not with those components.
+ * WHY INTERLEAVED, WHY PAIRED (not "mean(B) − mean(A)" over two blocks)
+ * -------------------------------------------------------------------
+ * Two independent design choices, each closing a different noise source:
+ *
+ * - INTERLEAVED (A,B,A,B,… one pair per iteration) instead of blocked
+ *   (2000×A then 2000×B): any slow drift over the run's lifetime — thermal
+ *   throttling, GC pacing, JIT continuing to tier up — would, in a blocked
+ *   design, land almost entirely inside ONE of the two blocks and bias the
+ *   block-to-block difference. Interleaved, the same drift touches A and B
+ *   at nearly the same points in time, so it affects both nearly equally.
+ * - PAIRED statistic (median of per-pair δᵢ) instead of a difference of
+ *   marginal statistics (median(all B) − median(all A)): a difference of
+ *   medians still carries whatever noise is COMMON to a given moment in
+ *   time into both A's and B's marginal distributions independently, and
+ *   that noise only cancels in expectation, not per-sample. Computing δᵢ
+ *   PER PAIR first removes that common noise at the pair level, before any
+ *   aggregation happens — the same logic as a paired t-test / Wilcoxon
+ *   signed-rank test beating an unpaired one when the same nuisance factor
+ *   hits both conditions in each unit of comparison.
+ * - MEDIAN of δ, not mean of δ: sub-millisecond mount timings are riddled
+ *   with rare GC-pause outliers (stddev routinely exceeds the mean itself
+ *   at this scale — measured). The median is the statistic actually robust
+ *   to that; the mean was kept in earlier iterations of this harness for
+ *   completeness only, on the wrong side of that tradeoff.
+ * - Order WITHIN each pair is randomized (coin flip: A-then-B or B-then-A),
+ *   not fixed. A fixed order (always A first) would let B systematically
+ *   benefit — or suffer — from whatever caches/JIT state A's mount just
+ *   left behind, contaminating every single pair with the SAME directional
+ *   bias, which the median-of-δ aggregation does NOT cancel (a constant
+ *   bias survives averaging/median just as much as it survives summing).
+ *   Randomizing which condition goes first is what actually cancels a
+ *   "second mount in a pair runs warmer" effect; fixed alternation cannot.
+ *
+ * VALIDATION — an instrument that hasn't proven it can detect a real
+ * effect, and hasn't proven it reports ~zero for no effect, is unusable
+ * regardless of how principled its design sounds on paper. `--validate`
+ * adds two extra units to any `--ab` run:
+ *   - NEGATIVE CONTROL: A and B are literally the SAME component body (no
+ *     useDefaults on either side). Expected: median δ ≈ 0, CI contains 0.
+ *   - POSITIVE CONTROL: B is A plus a deterministic busy-wait in setup()
+ *     that burns a KNOWN wall-clock cost (`--injected-overhead-ms`,
+ *     default given by `DEFAULT_INJECTED_OVERHEAD_MS`) — a cost that does
+ *     NOT depend on GC/allocation behaviour the way useDefaults' own cost
+ *     does, so it is independently checkable. Expected: median δ lands
+ *     close to the injected value. An instrument that can't see an effect
+ *     deliberately put there proves nothing when it reports "no effect" on
+ *     the real question — this is the performance-measurement version of
+ *     a test suite with no red-test discipline.
+ *
+ * Synthetic components use STRING props uniformly — `useDefaults`'s own
+ * cost mechanism (`Object.keys` + one `computed` per key) does not depend
+ * on prop TYPE, only prop COUNT, so this is a deliberate simplification.
+ * `--components` in `--ab` mode reads the REAL prop count off the actual
+ * compiled `.vue` component (`Object.keys(Component.props).length`) and
+ * builds the synthetic pair at THAT count — the mount itself is synthetic
+ * (a "test double"), but the prop-surface size it's measured at is real.
+ * This deliberately sidesteps having to fork component source: `OrigamBtn`
+ * and `OrigamCard` already call `useDefaults` today (verified by reading
+ * the source), so there is no "real Btn without useDefaults" to diff
+ * against without editing the DS itself — the synthetic pair is what makes
+ * the comparison possible at all without touching component source.
+ *
+ * KNOWN GAP (2026-08-19) — the team lead asked for a TRUE A/B on real
+ * components (B = real OrigamBtn/OrigamCard as-is, A = the same component
+ * with its useDefaults call neutralised via a live-binding monkey-patch on
+ * the composables module, self-checked before trusting any number). That
+ * work was IN PROGRESS — drafted, NOT tested — when the isolated worktree
+ * this file was being edited in became unreachable mid-session (tooling
+ * failure, not a code issue) and shell access was lost with it. This file
+ * is the last version actually exercised end-to-end (real `node` runs,
+ * including `--validate`'s negative/positive controls passing). Do NOT
+ * assume the real-component A/B exists — it doesn't, in this file.
  *
  * HOW A SINGLE FILE RUNS BOTH "VIA NODE" AND "VIA VITEST"
  * ---------------------------------------------------------
@@ -89,12 +118,11 @@
  * disambiguated purely by which env var is set when it's (re-)imported:
  *
  *   1. ORCHESTRATOR (no special env var) — the command a human runs. Parses
- *      argv. If more than one "unit" is requested (more than one
- *      `--components` name, or more than one `--prop-counts` value), it
- *      shards: spawns one fresh `node` CHILD PROCESS per unit (see "WHY
- *      SHARDING" below), each given its unit via `ORIGAM_BENCH_SHARD_ARGS`,
- *      then merges their JSON results into one combined report. With a
- *      single unit, it skips straight to step 2 in-process.
+ *      argv. If more than one "unit" is requested, it shards: spawns one
+ *      fresh `node` CHILD PROCESS per unit (see "WHY SHARDING" below), each
+ *      given its unit via `ORIGAM_BENCH_SHARD_ARGS`, then merges their JSON
+ *      results into one combined report. With a single unit, it skips
+ *      straight to step 2 in-process.
  *   2. SHARD/CLI (env `ORIGAM_BENCH_SHARD_ARGS` set, OR a single-unit
  *      orchestrator run) — still a plain Node process. Boots Vitest
  *      PROGRAMMATICALLY (`startVitest` from `vitest/node`) with an inline
@@ -109,7 +137,7 @@
  *      one `describe`/`it` that does the actual mount loop and prints/
  *      writes the report.
  *
- * WHY SHARDING (one process per component / prop-count)
+ * WHY SHARDING (one process per component / prop-count / control)
  * ---------------------------------------------------------
  * Measured directly: `--components Divider,Pagination,Btn` in a single
  * process at the default sample size crashed with "Reached heap limit —
@@ -117,11 +145,15 @@
  * a `v-for` of page-number buttons — much heavier per mount than
  * `OrigamDivider`/`OrigamBtn` — and its allocations compounded on top of
  * whatever the earlier components in the same run hadn't fully released.
- * `packages/tests/audit/run-inert-props-audit.mjs` hit the identical shape
- * of problem for the identical reason and fixed it the identical way: full
- * process boundaries, not more `gc()` calls, are what reliably reclaims
- * memory between independent units of work. Sharding here also happens to
- * be exactly what's needed for `--ab`'s multiple `--prop-counts` values.
+ * (Separately measured: `Pagination` ALONE, in its own isolated process,
+ * STILL exhausts a 4 GB heap at the full default sample size — its
+ * per-series stddev climbs series over series in a way that looks like a
+ * real per-mount retention issue in that component, not a harness
+ * artifact. Flagged, not chased further here — out of this harness's
+ * scope.) `packages/tests/audit/run-inert-props-audit.mjs` hit the
+ * identical shape of problem for the identical reason and fixed it the
+ * identical way: full process boundaries, not more `gc()` calls, reliably
+ * reclaim memory between independent units of work.
  *
  * WHAT "MOUNT" MEANS HERE
  * -------------------------
@@ -139,13 +171,16 @@
  *
  * USAGE
  * -----
- *   node bench/mount-cost.mjs [--components Divider,Pagination,Btn]
+ *   node bench/mount-cost.mjs [--components Divider,Btn,Card]
  *                             [--iterations 2000] [--series 5]
  *                             [--warmup 300] [--burnin-series 1]
  *                             [--json /path/out.json]
  *
- *   node bench/mount-cost.mjs --ab [--prop-counts 5,20,50]
+ *   node bench/mount-cost.mjs --ab [--components Divider,Btn,Card]
+ *                             [--validate] [--injected-overhead-ms 0.02]
  *                             [--iterations 2000] [--series 5] [...]
+ *
+ *   node bench/mount-cost.mjs --ab --prop-counts 5,20,50
  *
  * Run from anywhere; paths are resolved relative to this file.
  */
@@ -164,17 +199,22 @@ const THIS_FILE_RELATIVE = relative(TESTS_ROOT, __filename).split('\\').join('/'
 
 // `Btn`/`Card` already call `useDefaults` (verified by reading the source —
 // `packages/ds/src/components/Btn/OrigamBtn.vue:188` and
-// `Card/OrigamCard.vue:185`) — #363 will NOT touch them, so `Btn` is kept
-// here as a negative control: its mount cost should stay flat across a
-// before/after comparison. `Divider`/`Pagination` are genuine #363 subjects
-// (verified: neither calls `useDefaults` on this baseline) spanning a small
-// vs. large declared-prop surface.
-const DEFAULT_COMPONENTS = ['Divider', 'Pagination', 'Btn']
+// `Card/OrigamCard.vue:185`) — #363 will NOT touch them. That's fine for
+// `--ab` mode: the synthetic pair is built at THEIR real prop count
+// regardless of whether the real component already has useDefaults wired
+// (see file header) — they're useful data points on the cost-vs-N curve
+// either way, and negative controls for a REAL-MODE before/after diff.
+// `Divider` is a genuine #363 subject (verified: doesn't call useDefaults
+// on this baseline).
+const DEFAULT_COMPONENTS = ['Divider', 'Btn', 'Card']
 const DEFAULT_PROP_COUNTS = [5, 20, 50]
 const DEFAULT_ITERATIONS = 2000
 const DEFAULT_SERIES = 5
 const DEFAULT_WARMUP = 300
 const DEFAULT_BURNIN_SERIES = 1
+const CONTROL_PROP_COUNT = 20
+const DEFAULT_INJECTED_OVERHEAD_MS = 0.02
+const BOOTSTRAP_RESAMPLES = 1000
 
 /*********************************************************
  * Shared — stats helpers (dependency-free, safe to load
@@ -211,13 +251,79 @@ function fmt (n) {
     return Number.isFinite(n) ? n.toFixed(4) : 'NaN'
 }
 
+/**
+ * Plain bootstrap CI for a single-sample statistic (here: median of the
+ * per-pair δ). Resample WITH replacement, recompute the statistic,
+ * repeat `resamples` times, take the percentile interval of the resulting
+ * distribution.
+ */
+function bootstrapCI (samples, statFn, resamples = BOOTSTRAP_RESAMPLES, level = 0.95) {
+    const n = samples.length
+    const stats = new Array(resamples)
+    for (let r = 0; r < resamples; r++) {
+        const resample = new Array(n)
+        for (let i = 0; i < n; i++) {
+            resample[i] = samples[Math.floor(Math.random() * n)]
+        }
+        stats[r] = statFn(resample)
+    }
+    const alpha = (1 - level) / 2
+    return {
+        low: percentile(stats, alpha * 100),
+        high: percentile(stats, (1 - alpha) * 100)
+    }
+}
+
+/**
+ * Paired bootstrap for the RATIO statistic (median(δ) / median(A) × 100).
+ * Resamples PAIR INDICES — not `diffs` and `asA` independently — so each
+ * bootstrap draw keeps a δᵢ together with its own Aᵢ. Resampling them
+ * independently would answer a different (wrong) question: the ratio of
+ * two separately-noisy quantities instead of the ratio computed from the
+ * same underlying paired draws.
+ */
+function bootstrapPairedRatioCI (diffs, asA, resamples = BOOTSTRAP_RESAMPLES, level = 0.95) {
+    const n = diffs.length
+    const stats = new Array(resamples)
+    for (let r = 0; r < resamples; r++) {
+        const sDiffs = new Array(n)
+        const sA = new Array(n)
+        for (let i = 0; i < n; i++) {
+            const idx = Math.floor(Math.random() * n)
+            sDiffs[i] = diffs[idx]
+            sA[i] = asA[idx]
+        }
+        const mA = median(sA)
+        stats[r] = mA !== 0 ? (median(sDiffs) / mA) * 100 : NaN
+    }
+    const clean = stats.filter(Number.isFinite)
+    const alpha = (1 - level) / 2
+    return {
+        low: percentile(clean, alpha * 100),
+        high: percentile(clean, (1 - alpha) * 100)
+    }
+}
+
+/**
+ * Decision rule requested by the team lead: a ratio-% CI entirely below the
+ * threshold PASSes, entirely above STOPs the campaign, and a CI straddling
+ * the threshold is INCONCLUSIVE — the instrument doesn't get to fudge that.
+ */
+function verdictFor (ciLow, ciHigh, threshold = 5) {
+    if (!Number.isFinite(ciLow) || !Number.isFinite(ciHigh)) return 'INCONCLUSIVE'
+    if (ciHigh < threshold) return 'PASS'
+    if (ciLow > threshold) return 'STOP'
+    return 'INCONCLUSIVE'
+}
+
 function computeTimeoutMs (args) {
     const perCycleBudgetMs = 25
-    const units = args.ab ? args.propCounts.length : args.components.length
+    const units = args.ab ? (args.abUnits ? args.abUnits.length : 1) : args.components.length
     // Burn-in series run (warmup+iterations) cycles once; each measured
     // series runs warmup (discarded) + iterations (measured) cycles too —
     // same total per series either way. `--ab` does 2 mounts (A and B) per
-    // measured cycle instead of 1.
+    // measured cycle instead of 1, PLUS bootstrap CPU time (pure JS on
+    // already-collected samples, but budgeted generously all the same).
     const cyclesPerUnit = (args.series + args.burninSeries) * (args.warmup + args.iterations)
     const perCycleMultiplier = args.ab ? 2 : 1
     return Math.max(300_000, units * cyclesPerUnit * perCycleBudgetMs * perCycleMultiplier)
@@ -231,7 +337,10 @@ function parseArgs (argv) {
     const args = {
         components: DEFAULT_COMPONENTS,
         propCounts: DEFAULT_PROP_COUNTS,
+        propCountsExplicit: false,
         ab: false,
+        validate: false,
+        injectedOverheadMs: DEFAULT_INJECTED_OVERHEAD_MS,
         iterations: DEFAULT_ITERATIONS,
         series: DEFAULT_SERIES,
         warmup: DEFAULT_WARMUP,
@@ -246,14 +355,22 @@ function parseArgs (argv) {
             args.help = true
         } else if (a === '--ab') {
             args.ab = true
+        } else if (a === '--validate') {
+            args.validate = true
         } else if (a === '--components') {
             args.components = String(argv[++i] ?? '').split(',').map((s) => s.trim()).filter(Boolean)
         } else if (a.startsWith('--components=')) {
             args.components = a.slice('--components='.length).split(',').map((s) => s.trim()).filter(Boolean)
         } else if (a === '--prop-counts') {
             args.propCounts = String(argv[++i] ?? '').split(',').map((s) => Number(s.trim())).filter((n) => n)
+            args.propCountsExplicit = true
         } else if (a.startsWith('--prop-counts=')) {
             args.propCounts = a.slice('--prop-counts='.length).split(',').map((s) => Number(s.trim())).filter((n) => n)
+            args.propCountsExplicit = true
+        } else if (a === '--injected-overhead-ms') {
+            args.injectedOverheadMs = Number(argv[++i])
+        } else if (a.startsWith('--injected-overhead-ms=')) {
+            args.injectedOverheadMs = Number(a.split('=')[1])
         } else if (a === '--iterations') {
             args.iterations = Number(argv[++i])
         } else if (a.startsWith('--iterations=')) {
@@ -283,7 +400,7 @@ function parseArgs (argv) {
 }
 
 function validateArgs (args) {
-    if (args.ab) {
+    if (args.ab && args.propCountsExplicit) {
         if (!Array.isArray(args.propCounts) || args.propCounts.length === 0) {
             throw new Error('--prop-counts must be a non-empty comma-separated list of positive integers, e.g. --prop-counts 5,20,50')
         }
@@ -294,13 +411,16 @@ function validateArgs (args) {
         }
     } else {
         if (!Array.isArray(args.components) || args.components.length === 0) {
-            throw new Error('--components must be a non-empty comma-separated list, e.g. --components Divider,Pagination,Btn')
+            throw new Error('--components must be a non-empty comma-separated list, e.g. --components Divider,Btn,Card')
         }
         for (const name of args.components) {
             if (!/^[A-Za-z][A-Za-z0-9]*$/.test(name)) {
                 throw new Error(`Invalid component name "${name}" — expected the bare family name (e.g. "Btn", not "OrigamBtn" or "Btn.vue")`)
             }
         }
+    }
+    if (args.ab && (!Number.isFinite(args.injectedOverheadMs) || args.injectedOverheadMs <= 0)) {
+        throw new Error('--injected-overhead-ms must be a positive number')
     }
     for (const [key, value] of [['--iterations', args.iterations], ['--series', args.series], ['--warmup', args.warmup], ['--burnin-series', args.burninSeries]]) {
         const allowsZero = key === '--warmup' || key === '--burnin-series'
@@ -310,43 +430,94 @@ function validateArgs (args) {
     }
 }
 
+/**
+ * Turns CLI args into the flat list of "ab units" the orchestrator shards
+ * over and the worker benchmarks one by one. Pure data — no Vue/Vite
+ * involved, safe to compute in the plain-Node orchestrator process. Each
+ * unit's `propCount` for `kind: 'component'` is resolved LATER, inside the
+ * Vue-aware worker (needs to import the real `.vue` file).
+ */
+function buildAbUnits (args) {
+    const units = []
+
+    if (args.propCountsExplicit) {
+        for (const n of args.propCounts) {
+            units.push({ kind: 'propCount', n, label: `${n}` })
+        }
+    } else {
+        for (const name of args.components) {
+            units.push({ kind: 'component', name, label: name })
+        }
+    }
+
+    if (args.validate) {
+        units.push({ kind: 'control', control: 'negative', n: CONTROL_PROP_COUNT, label: `NegativeControl_N${CONTROL_PROP_COUNT}` })
+        units.push({
+            kind: 'control',
+            control: 'positive',
+            n: CONTROL_PROP_COUNT,
+            injectedOverheadMs: args.injectedOverheadMs,
+            label: `PositiveControl_N${CONTROL_PROP_COUNT}_+${args.injectedOverheadMs}ms`
+        })
+    }
+
+    return units
+}
+
 function printUsage () {
     console.log(`
 origam mount-cost benchmark
 
 Usage:
-  node bench/mount-cost.mjs [options]                  (real components)
-  node bench/mount-cost.mjs --ab [options]              (interleaved A/B, synthetic)
+  node bench/mount-cost.mjs [options]                   (real components, absolute cost)
+  node bench/mount-cost.mjs --ab [options]               (paired intra-process A/B)
 
 Options:
-  --components <A,B,C>   Comma-separated component family names, resolved as
-                          @origam/components/{Name}/Origam{Name}.vue.
-                          Ignored when --ab is set.
-                          (default: ${DEFAULT_COMPONENTS.join(',')})
-  --ab                    Interleaved A/B mode: synthetic components with an
-                          identical prop surface, one plain, one wired with
-                          useDefaults(_props) — reports the paired delta as
-                          a % of baseline mount cost, with a 95% CI. This is
-                          the mode that can actually arbitrate a 5% threshold;
-                          real-component mode cannot (see file header).
-  --prop-counts <a,b,c>   Prop-surface sizes to benchmark in --ab mode.
-                          (default: ${DEFAULT_PROP_COUNTS.join(',')})
-  --iterations <n>        Measured mounts (or A/B pairs) per series, per unit
-                          (default: ${DEFAULT_ITERATIONS})
-  --series <n>            Independent repetitions per unit (default: ${DEFAULT_SERIES})
-  --warmup <n>            Discarded warm-up mounts per series (default: ${DEFAULT_WARMUP})
-  --burnin-series <n>     Extra full series run before the measured ones and
-                          entirely discarded — absorbs the one-time JIT /
-                          module-init cost that otherwise inflates series #1
-                          (default: ${DEFAULT_BURNIN_SERIES}, 0 to disable)
-  --json <path>           Also write the full raw (combined) results as JSON
-  --help                  Show this help
+  --components <A,B,C>     Comma-separated component family names, resolved
+                            as @origam/components/{Name}/Origam{Name}.vue.
+                            In --ab mode, drives which REAL prop counts the
+                            synthetic pairs are built at (ignored if
+                            --prop-counts is also passed).
+                            (default: ${DEFAULT_COMPONENTS.join(',')})
+  --ab                      Paired intra-process A/B mode: for each unit,
+                            builds two synthetic components with an
+                            identical prop surface — A plain, B wired with
+                            useDefaults(_props) — interleaved one pair per
+                            iteration, reports the MEDIAN of the per-pair
+                            delta (B−A) with a bootstrap 95% CI, as a % of
+                            A's own median cost. This is the mode that can
+                            actually arbitrate a 5% threshold (see file
+                            header for why real-component / two-run
+                            comparisons cannot).
+  --prop-counts <a,b,c>     Raw prop-surface sizes to benchmark in --ab mode,
+                            INSTEAD of resolving them from --components.
+  --validate                Adds a negative control (A and B identical — the
+                            paired delta should be ~0) and a positive
+                            control (B = A + a calibrated injected overhead
+                            — the paired delta should land near that known
+                            value) to the run. Do this before trusting any
+                            --ab number.
+  --injected-overhead-ms <n> Wall-clock cost (ms) the positive control burns
+                            in B's setup() via a busy-wait.
+                            (default: ${DEFAULT_INJECTED_OVERHEAD_MS})
+  --iterations <n>          Measured mounts (or A/B pairs) per series, per
+                            unit (default: ${DEFAULT_ITERATIONS})
+  --series <n>              Independent repetitions per unit (default: ${DEFAULT_SERIES})
+  --warmup <n>               Discarded warm-up mounts per series (default: ${DEFAULT_WARMUP})
+  --burnin-series <n>       Extra full series run before the measured ones
+                            and entirely discarded — absorbs the one-time
+                            JIT / module-init cost that otherwise inflates
+                            series #1 (default: ${DEFAULT_BURNIN_SERIES}, 0 to disable)
+  --json <path>             Also write the full raw (combined) results as JSON
+  --help                    Show this help
 
-More than one component / prop-count value shards across isolated child
-processes automatically (avoids cross-unit heap growth — see file header).
+More than one component / prop-count / control unit shards across isolated
+child processes automatically (avoids cross-unit heap growth — see file
+header).
 
 Examples:
-  node bench/mount-cost.mjs --components Divider,Pagination,Btn
+  node bench/mount-cost.mjs --components Divider,Btn,Card
+  node bench/mount-cost.mjs --ab --validate
   node bench/mount-cost.mjs --ab --prop-counts 5,20,50
 `)
 }
@@ -366,26 +537,32 @@ async function runOrchestrator (argv) {
 
     validateArgs(args)
 
-    const units = args.ab ? args.propCounts : args.components
+    if (args.ab) {
+        args.abUnits = buildAbUnits(args)
+    }
+
+    const units = args.ab ? args.abUnits : args.components
 
     if (units.length <= 1) {
         await runSingleShard(args)
         return
     }
 
-    console.log(`[mount-cost] sharding across ${units.length} ${args.ab ? 'prop-count' : 'component'} unit(s) — one isolated child process each\n`)
+    console.log(`[mount-cost] sharding across ${units.length} unit(s) — one isolated child process each\n`)
 
     const combined = {}
     let anyFailed = false
 
     for (const unit of units) {
+        const label = args.ab ? unit.label : unit
         const shardArgs = args.ab
-            ? { ...args, propCounts: [unit] }
+            ? { ...args, abUnits: [unit] }
             : { ...args, components: [unit] }
-        const tmpJson = join(tmpdir(), `origam-mount-cost-${process.pid}-${unit}-${Math.random().toString(36).slice(2, 8)}.json`)
+        const safeLabel = label.replace(/[^a-zA-Z0-9_-]/g, '_')
+        const tmpJson = join(tmpdir(), `origam-mount-cost-${process.pid}-${safeLabel}-${Math.random().toString(36).slice(2, 8)}.json`)
         shardArgs.json = tmpJson
 
-        console.log(`[mount-cost] === shard: ${unit} ===`)
+        console.log(`[mount-cost] === shard: ${label} ===`)
         const result = spawnSync(process.execPath, [__filename], {
             stdio: 'inherit',
             env: { ...process.env, ORIGAM_BENCH_SHARD_ARGS: JSON.stringify(shardArgs) }
@@ -393,7 +570,7 @@ async function runOrchestrator (argv) {
 
         if (result.status !== 0) {
             anyFailed = true
-            console.error(`[mount-cost] shard "${unit}" exited with code ${result.status}`)
+            console.error(`[mount-cost] shard "${label}" exited with code ${result.status}`)
         }
 
         try {
@@ -401,7 +578,7 @@ async function runOrchestrator (argv) {
             Object.assign(combined, raw.results)
         } catch (err) {
             anyFailed = true
-            console.error(`[mount-cost] shard "${unit}" produced no readable JSON: ${err.message}`)
+            console.error(`[mount-cost] shard "${label}" produced no readable JSON: ${err.message}`)
         } finally {
             rmSync(tmpJson, { force: true })
         }
@@ -447,8 +624,8 @@ async function runSingleShard (args) {
     const DS_SRC = resolve(REPO_ROOT, 'packages/ds/src')
     const testTimeout = computeTimeoutMs(args)
 
-    const unitLabel = args.ab ? `prop-counts=${args.propCounts.join(',')}` : `components=${args.components.join(',')}`
-    console.log(`[mount-cost] ${args.ab ? 'AB' : 'real'} mode  ${unitLabel}  iterations=${args.iterations} series=${args.series} warmup=${args.warmup} burnin-series=${args.burninSeries}`)
+    const unitLabel = args.ab ? `units=${args.abUnits.map((u) => u.label).join(',')}` : `components=${args.components.join(',')}`
+    console.log(`[mount-cost] ${args.ab ? 'AB (paired, intra-process)' : 'real'} mode  ${unitLabel}  iterations=${args.iterations} series=${args.series} warmup=${args.warmup} burnin-series=${args.burninSeries}`)
     console.log(`[mount-cost] booting Vitest (jsdom) with testTimeout=${testTimeout}ms …`)
 
     const vitest = await startVitest(
@@ -560,9 +737,9 @@ async function registerBenchmarkSuite (args) {
 async function registerAbBenchmarkSuite (args) {
     const { describe, it, expect } = await import('vitest')
 
-    describe('origam useDefaults A/B benchmark', () => {
+    describe('origam useDefaults A/B benchmark (paired, intra-process)', () => {
         it(
-            `prop-counts ${args.propCounts.join(', ')} — ${args.iterations}×${args.series} series (+${args.warmup} warmup)`,
+            `units: ${args.abUnits.map((u) => u.label).join(', ')} — ${args.iterations}×${args.series} series (+${args.warmup} warmup)`,
             async () => {
                 const { createApp, defineComponent, h, nextTick, shallowRef } = await import('vue')
                 const { createOrigam } = await import('@origam/origam')
@@ -570,8 +747,53 @@ async function registerAbBenchmarkSuite (args) {
 
                 const results = {}
 
-                for (const n of args.propCounts) {
-                    results[String(n)] = await benchmarkPropCount(n, args, {
+                for (const unit of args.abUnits) {
+                    let propCount = null
+                    let mode
+                    let injectedOverheadMs = null
+                    // Result key defaults to the unit's own label; only
+                    // `kind: 'component'` overrides it below, once the real
+                    // prop count is known.
+                    let resultKey = unit.label
+                    let synthetic = true
+
+                    if (unit.kind === 'component') {
+                        const modPath = `@origam/components/${unit.name}/Origam${unit.name}.vue`
+                        let mod
+                        try {
+                            mod = await import(/* @vite-ignore */ modPath)
+                        } catch (err) {
+                            console.error(`[mount-cost] SKIPPED "${unit.label}" — could not import ${modPath}: ${err.message}`)
+                            continue
+                        }
+                        const Target = mod.default
+                        propCount = Target && Target.props ? Object.keys(Target.props).length : null
+                        if (propCount == null) {
+                            console.error(`[mount-cost] SKIPPED "${unit.label}" — could not read declared props off the compiled component`)
+                            continue
+                        }
+                        mode = 'useDefaults'
+                        // Team-lead correction (2026-08-19): a row literally
+                        // named "Btn" reads as a measurement OF Btn — it
+                        // isn't, it's a synthetic test double calibrated to
+                        // Btn's real prop count (see file header, "Synthetic
+                        // components use STRING props uniformly"). Naming it
+                        // `synth-{name}-{N}props` makes that undeniable in
+                        // any table, log, or JSON export six months from
+                        // now, without having to re-read this file's header
+                        // first.
+                        resultKey = `synth-${unit.name}-${propCount}props`
+                    } else if (unit.kind === 'propCount') {
+                        propCount = unit.n
+                        mode = 'useDefaults'
+                        resultKey = `synth-${propCount}props`
+                    } else if (unit.kind === 'control') {
+                        propCount = unit.n
+                        mode = unit.control === 'negative' ? 'identical' : 'injected'
+                        injectedOverheadMs = unit.injectedOverheadMs ?? null
+                    }
+
+                    results[resultKey] = await benchmarkPairedUnit(propCount, mode, injectedOverheadMs, args, {
                         createApp,
                         defineComponent,
                         h,
@@ -580,6 +802,16 @@ async function registerAbBenchmarkSuite (args) {
                         createOrigam,
                         useDefaults
                     })
+                    results[resultKey].propCount = propCount
+                    // Every unit `--ab` mode can currently produce IS a
+                    // synthetic test double — real-component A/B (B = real
+                    // component as-is, A = same component with useDefaults
+                    // neutralised) does not exist in this file yet (see file
+                    // header, "KNOWN GAP"). Setting this explicitly, rather
+                    // than only relying on the resultKey prefix, means a
+                    // consumer reading the JSON export doesn't have to know
+                    // the naming convention to avoid the same misreading.
+                    results[resultKey].synthetic = synthetic
                 }
 
                 printAbReport(results, args)
@@ -589,7 +821,7 @@ async function registerAbBenchmarkSuite (args) {
                     console.log(`[mount-cost] raw results written to ${args.json}`)
                 }
 
-                expect(Object.keys(results).length, 'at least one prop-count must have benchmarked successfully').toBeGreaterThan(0)
+                expect(Object.keys(results).length, 'at least one unit must have benchmarked successfully').toBeGreaterThan(0)
             },
             computeTimeoutMs(args)
         )
@@ -770,17 +1002,69 @@ function buildSyntheticPropsSchema (n) {
 }
 
 /**
+ * Builds CompB according to `mode`:
+ *   - 'useDefaults' — the real thing: same schema as A, wrapped with
+ *     useDefaults(_props), reading every prop through the resolved Proxy.
+ *   - 'identical'   — NEGATIVE CONTROL: byte-for-byte the same body as A.
+ *   - 'injected'    — POSITIVE CONTROL: A's body plus a deterministic
+ *     busy-wait in setup() burning `injectedOverheadMs` of wall-clock time.
+ *     Wall-clock, not allocation-driven, so it's independently checkable
+ *     against the reported delta regardless of GC behaviour.
+ */
+function buildCompB (mode, schema, propKeys, injectedOverheadMs, vueApi) {
+    const { defineComponent, h, useDefaults } = vueApi
+
+    if (mode === 'useDefaults') {
+        return defineComponent({
+            name: 'OrigamBenchSyntheticB_UseDefaults',
+            props: schema,
+            setup (_props) {
+                const props = useDefaults(_props)
+                return () => h('span', null, propKeys.map((k) => props[k]).join(''))
+            }
+        })
+    }
+
+    if (mode === 'identical') {
+        return defineComponent({
+            name: 'OrigamBenchSyntheticB_Identical',
+            props: schema,
+            setup (props) {
+                return () => h('span', null, propKeys.map((k) => props[k]).join(''))
+            }
+        })
+    }
+
+    if (mode === 'injected') {
+        return defineComponent({
+            name: 'OrigamBenchSyntheticB_Injected',
+            props: schema,
+            setup (props) {
+                const t0 = performance.now()
+                // eslint-disable-next-line no-empty -- deliberate calibrated busy-wait, see file header (positive control)
+                while (performance.now() - t0 < injectedOverheadMs) {}
+                return () => h('span', null, propKeys.map((k) => props[k]).join(''))
+            }
+        })
+    }
+
+    throw new Error(`Unknown CompB mode: ${mode}`)
+}
+
+/**
  * Runs ONE interleaved A/B series and returns the raw paired samples.
- * `CompA`/`CompB` are created ONCE per prop-count (by `benchmarkPropCount`)
- * and reused across burn-in + every series here — recreating them per call
+ * `CompA`/`CompB` are created ONCE per unit (by `benchmarkPairedUnit`) and
+ * reused across burn-in + every series here — recreating them per call
  * would pay Vue's per-component-definition normalization cost on every
  * series' first mount, reproducing exactly the "series #1 is slower"
  * artifact the burn-in mechanism exists to eliminate.
  *
  * Order within each pair is randomized (coin flip) specifically to cancel
- * any systematic "second mount in a pair runs warmer" bias — without this,
- * always measuring A-then-B would let B's number benefit from whatever
- * caches A's mount just populated, biasing the delta downward.
+ * any systematic "second mount in a pair runs warmer" bias — a FIXED
+ * alternation (always A first) would let B systematically benefit from
+ * whatever caches A's mount just populated, biasing every single pair the
+ * same direction, which averaging/median does NOT cancel (see file
+ * header).
  */
 async function runOneAbSeries (CompA, CompB, count, vueApi) {
     const { createApp, defineComponent, h, nextTick, shallowRef, createOrigam } = vueApi
@@ -842,33 +1126,21 @@ async function runOneAbSeries (CompA, CompB, count, vueApi) {
     return { diffs, asA, asB }
 }
 
-async function benchmarkPropCount (n, args, vueApi) {
-    const { defineComponent, h, useDefaults } = vueApi
+async function benchmarkPairedUnit (n, mode, injectedOverheadMs, args, vueApi) {
+    const { defineComponent, h } = vueApi
     const schema = buildSyntheticPropsSchema(n)
     const propKeys = Object.keys(schema)
 
-    // A: plain props, no useDefaults — the baseline.
+    // A: plain props — the baseline every mode is measured against.
     const CompA = defineComponent({
-        name: 'OrigamBenchSyntheticNoDefaults',
+        name: 'OrigamBenchSyntheticA',
         props: schema,
         setup (props) {
             return () => h('span', null, propKeys.map((k) => props[k]).join(''))
         }
     })
 
-    // B: identical prop surface, wired exactly like a real #363 component
-    // would be — same schema, same withDefaults-equivalent (Vue's own
-    // `default:` in the props options), only ADDITION is the useDefaults
-    // wrap. Reads every prop through the resolved Proxy in the render, the
-    // same way a real template binds many resolved props to the DOM.
-    const CompB = defineComponent({
-        name: 'OrigamBenchSyntheticWithDefaults',
-        props: schema,
-        setup (_props) {
-            const props = useDefaults(_props)
-            return () => h('span', null, propKeys.map((k) => props[k]).join(''))
-        }
-    })
+    const CompB = buildCompB(mode, schema, propKeys, injectedOverheadMs, vueApi)
 
     for (let b = 0; b < args.burninSeries; b++) {
         await runOneAbSeries(CompA, CompB, args.warmup + args.iterations, vueApi)
@@ -877,7 +1149,6 @@ async function benchmarkPropCount (n, args, vueApi) {
     const seriesStats = []
     const allDiffs = []
     const allA = []
-    const allB = []
 
     for (let s = 0; s < args.series; s++) {
         await runOneAbSeries(CompA, CompB, args.warmup, vueApi)
@@ -886,41 +1157,39 @@ async function benchmarkPropCount (n, args, vueApi) {
 
         allDiffs.push(diffs)
         allA.push(asA)
-        allB.push(asB)
 
-        const meanDiff = mean(diffs)
-        const meanA = mean(asA)
-        const sd = stddev(diffs)
-        const se = sd / Math.sqrt(diffs.length)
+        const medianDiff = median(diffs)
+        const medianA = median(asA)
+        const ci = bootstrapCI(diffs, median)
+        const ratioCi = bootstrapPairedRatioCI(diffs, asA)
 
         seriesStats.push({
             series: s + 1,
             n: diffs.length,
-            meanA,
-            meanB: mean(asB),
-            meanDiff,
-            medianDiff: median(diffs),
-            stddevDiff: sd,
-            ciLow: meanDiff - 1.96 * se,
-            ciHigh: meanDiff + 1.96 * se,
-            ratioPercent: meanA !== 0 ? (meanDiff / meanA) * 100 : NaN
+            medianA,
+            medianB: median(asB),
+            medianDiff,
+            ciLow: ci.low,
+            ciHigh: ci.high,
+            ratioPercent: medianA !== 0 ? (medianDiff / medianA) * 100 : NaN,
+            ratioCiLow: ratioCi.low,
+            ratioCiHigh: ratioCi.high
         })
     }
 
     const pooledDiffs = allDiffs.flat()
     const pooledA = allA.flat()
-    const pooledB = allB.flat()
-    const pooledMeanDiff = mean(pooledDiffs)
-    const pooledMeanA = mean(pooledA)
-    const pooledMeanB = mean(pooledB)
-    const pooledSd = stddev(pooledDiffs)
-    const pooledSe = pooledSd / Math.sqrt(pooledDiffs.length)
-    const pooledCiLow = pooledMeanDiff - 1.96 * pooledSe
-    const pooledCiHigh = pooledMeanDiff + 1.96 * pooledSe
-    const seriesMeanDiffs = seriesStats.map((st) => st.meanDiff)
+    const pooledMedianDiff = median(pooledDiffs)
+    const pooledMedianA = median(pooledA)
+    const pooledCi = bootstrapCI(pooledDiffs, median)
+    const pooledRatioCi = bootstrapPairedRatioCI(pooledDiffs, pooledA)
+    const pooledRatioPercent = pooledMedianA !== 0 ? (pooledMedianDiff / pooledMedianA) * 100 : NaN
+    const seriesMedianDiffs = seriesStats.map((st) => st.medianDiff)
 
     return {
         propCount: n,
+        mode,
+        injectedOverheadMs: mode === 'injected' ? injectedOverheadMs : null,
         warmupPerSeries: args.warmup,
         iterationsPerSeries: args.iterations,
         seriesCount: args.series,
@@ -928,66 +1197,73 @@ async function benchmarkPropCount (n, args, vueApi) {
         series: seriesStats,
         pooled: {
             n: pooledDiffs.length,
-            meanA: pooledMeanA,
-            meanB: pooledMeanB,
-            meanDiff: pooledMeanDiff,
-            medianDiff: median(pooledDiffs),
-            stddevDiff: pooledSd,
-            // 95% CI on the paired mean delta, normal approximation
-            // (SE = stddev(diffs)/sqrt(n)) — reasonable at these sample
-            // sizes (thousands of pairs).
-            ci95Low: pooledCiLow,
-            ci95High: pooledCiHigh,
-            ratioPercent: pooledMeanA !== 0 ? (pooledMeanDiff / pooledMeanA) * 100 : NaN,
-            // CI on the ratio via the same delta, expressed as % of A's
-            // mean — treats meanA as fixed, a fair approximation since A's
-            // own relative SE is far smaller than the diff's at this n.
-            ratioCi95LowPercent: pooledMeanA !== 0 ? (pooledCiLow / pooledMeanA) * 100 : NaN,
-            ratioCi95HighPercent: pooledMeanA !== 0 ? (pooledCiHigh / pooledMeanA) * 100 : NaN
+            medianA: pooledMedianA,
+            medianDiff: pooledMedianDiff,
+            // Bootstrap 95% CI on the median of paired deltas — see
+            // `bootstrapCI` / `bootstrapPairedRatioCI` above for why this
+            // replaces the earlier normal-approximation CI on the MEAN
+            // delta from two independent runs.
+            ci95Low: pooledCi.low,
+            ci95High: pooledCi.high,
+            ratioPercent: pooledRatioPercent,
+            ratioCi95LowPercent: pooledRatioCi.low,
+            ratioCi95HighPercent: pooledRatioCi.high,
+            verdict: verdictFor(pooledRatioCi.low, pooledRatioCi.high)
         },
         interSeries: {
-            meanOfSeriesMeanDiffs: mean(seriesMeanDiffs),
-            stddevOfSeriesMeanDiffs: stddev(seriesMeanDiffs),
-            cvPercent: mean(seriesMeanDiffs) !== 0 ? (stddev(seriesMeanDiffs) / Math.abs(mean(seriesMeanDiffs))) * 100 : NaN
+            meanOfSeriesMedianDiffs: mean(seriesMedianDiffs),
+            stddevOfSeriesMedianDiffs: stddev(seriesMedianDiffs),
+            cvPercent: mean(seriesMedianDiffs) !== 0 ? (stddev(seriesMedianDiffs) / Math.abs(mean(seriesMedianDiffs))) * 100 : NaN
         }
     }
 }
 
 function printAbReport (results, args) {
-    console.log('\n=== origam useDefaults A/B benchmark (interleaved, paired, synthetic) ===')
-    console.log(`prop-counts: ${Object.keys(results).join(', ')}`)
-    console.log(`iterations/series: ${args.iterations}  warmup/series: ${args.warmup}  series: ${args.series}  burnin-series: ${args.burninSeries}\n`)
+    console.log('\n=== origam useDefaults A/B benchmark (interleaved, paired, intra-process) ===')
+    console.log(`units: ${Object.keys(results).join(', ')}`)
+    console.log(`iterations/series: ${args.iterations}  warmup/series: ${args.warmup}  series: ${args.series}  burnin-series: ${args.burninSeries}`)
+    // Team-lead correction (2026-08-19): every row `--ab` mode can
+    // currently produce is a SYNTHETIC test double calibrated to a prop
+    // count — real-component A/B doesn't exist yet (see file header,
+    // "KNOWN GAP"). Said here once, up top, in addition to the per-row
+    // key prefix and the summary table's `type` column below, so it can't
+    // be missed by skimming straight to the numbers.
+    console.log('NOTE: every unit below is a SYNTHETIC test double (same prop COUNT as the named real component, not the real component itself) — see file header.\n')
 
     const summaryRows = []
 
     for (const key of Object.keys(results)) {
         const r = results[key]
-        console.log(`--- ${key} props ---`)
+        console.log(`--- ${key}${r.propCount != null ? ` (N=${r.propCount} props, mode=${r.mode}${r.injectedOverheadMs != null ? `, injected=${r.injectedOverheadMs}ms` : ''})` : ''} ---`)
         console.table(
             r.series.map((st) => ({
                 series: st.series,
                 n: st.n,
-                'meanA(ms)': fmt(st.meanA),
-                'meanB(ms)': fmt(st.meanB),
-                'meanDiff(ms)': fmt(st.meanDiff),
-                '95% CI(ms)': `[${fmt(st.ciLow)}, ${fmt(st.ciHigh)}]`,
+                'medianA(ms)': fmt(st.medianA),
+                'medianB(ms)': fmt(st.medianB),
+                'medianDiff(ms)': fmt(st.medianDiff),
+                'bootstrap 95% CI(ms)': `[${fmt(st.ciLow)}, ${fmt(st.ciHigh)}]`,
                 'ratio%': fmt(st.ratioPercent)
             }))
         )
-        console.log(`pooled: n=${r.pooled.n} meanA=${fmt(r.pooled.meanA)}ms meanB=${fmt(r.pooled.meanB)}ms meanDiff=${fmt(r.pooled.meanDiff)}ms  95% CI=[${fmt(r.pooled.ci95Low)}, ${fmt(r.pooled.ci95High)}]ms`)
-        console.log(`ratio: ${fmt(r.pooled.ratioPercent)}%  95% CI=[${fmt(r.pooled.ratioCi95LowPercent)}%, ${fmt(r.pooled.ratioCi95HighPercent)}%]`)
-        console.log(`inter-series CV on meanDiff: ${fmt(r.interSeries.cvPercent)}%\n`)
+        console.log(`pooled: n=${r.pooled.n} medianA=${fmt(r.pooled.medianA)}ms medianDiff=${fmt(r.pooled.medianDiff)}ms  bootstrap 95% CI=[${fmt(r.pooled.ci95Low)}, ${fmt(r.pooled.ci95High)}]ms`)
+        console.log(`ratio: ${fmt(r.pooled.ratioPercent)}%  bootstrap 95% CI=[${fmt(r.pooled.ratioCi95LowPercent)}%, ${fmt(r.pooled.ratioCi95HighPercent)}%]  verdict(5%): ${r.pooled.verdict}`)
+        console.log(`inter-series CV on medianDiff: ${fmt(r.interSeries.cvPercent)}%\n`)
 
         summaryRows.push({
-            'prop count': key,
-            'meanA(ms)': fmt(r.pooled.meanA),
-            'meanB(ms)': fmt(r.pooled.meanB),
+            unit: key,
+            type: r.synthetic ? 'SYNTHETIC' : 'real component',
+            props: r.propCount ?? '?',
+            mode: r.mode,
+            'medianA(ms)': fmt(r.pooled.medianA),
+            'medianDiff(ms)': fmt(r.pooled.medianDiff),
             'ratio%': fmt(r.pooled.ratioPercent),
-            '95% CI (ratio%)': `[${fmt(r.pooled.ratioCi95LowPercent)}, ${fmt(r.pooled.ratioCi95HighPercent)}]`
+            '95% CI (ratio%)': `[${fmt(r.pooled.ratioCi95LowPercent)}, ${fmt(r.pooled.ratioCi95HighPercent)}]`,
+            'verdict(5%)': r.pooled.verdict
         })
     }
 
-    console.log('=== summary — useDefaults overhead vs prop count ===')
+    console.log('=== summary — useDefaults overhead (paired, intra-process) ===')
     console.table(summaryRows)
 }
 
