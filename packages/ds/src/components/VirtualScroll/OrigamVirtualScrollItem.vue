@@ -7,8 +7,8 @@
 	</template>
 	<template v-else>
 		<div
-				ref="resizeRef"
 				:id="id"
+				ref="resizeRef"
 				:class="virtualScrollItemClasses"
 				:style="virtualScrollItemStyles"
 				v-bind="{ ...attrs }"

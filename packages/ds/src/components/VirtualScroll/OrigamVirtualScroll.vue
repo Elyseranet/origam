@@ -36,8 +36,8 @@
 	</template>
 	<template v-else>
 		<div
-				ref="containerRef"
 				:id="id"
+				ref="containerRef"
 				:class="virtualScrollClasses"
 				:style="virtualScrollStyles"
 				@scrollend="handleScrollend"

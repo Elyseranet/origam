@@ -5,8 +5,8 @@
 				v-bind="slotProps"
 		>
 			<origam-data-table-headers-cell-mobile
-					ref="origamDataTableHeadersCellMobileRef"
 					:id="id"
+					ref="origamDataTableHeadersCellMobileRef"
 					:class="dataTableHeadersClasses"
 					:columns="columns"
 					:style="dataTableHeadersStyles"
@@ -20,8 +20,8 @@
 				v-bind="slotProps"
 		>
 			<origam-data-table-headers-cell
-					ref="origamDataTableHeadersCellRef"
 					:id="id"
+					ref="origamDataTableHeadersCellRef"
 					:class="dataTableHeadersClasses"
 					:headers="headers"
 					:style="dataTableHeadersStyles"

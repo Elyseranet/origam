@@ -9,8 +9,8 @@
 				:to="teleportTarget"
 		>
 			<div
-					ref="root"
 					:id="id"
+					ref="root"
 					:class="overlayClasses"
 					:style="overlayStyles"
 					v-bind="{ ...scopeId, ...$attrs }"
