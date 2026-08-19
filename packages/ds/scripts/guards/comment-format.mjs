@@ -40,6 +40,21 @@
  * les lots de conversion avancent.
  *
  * @description
+ * ⛔ L'INVARIANT EST LE TOTAL, PAS LE COMPTE PAR FICHIER. La première
+ * version échouait dès qu'un fichier dépassait son compte, ce qui rougit
+ * sur un refactor parfaitement légitime : scinder un composable en un
+ * fichier par hook DÉPLACE ses commentaires vers des fichiers neufs, dont
+ * la ligne de base vaut zéro. Constaté sur le volet composables de #364 —
+ * 12 fichiers signalés, alors que le total avait BAISSÉ (6945 → 6927) en se
+ * répartissant sur 9 fichiers de plus.
+ * @description
+ * Un garde qui rougit sur du travail correct est un garde qu'on contourne,
+ * et il aurait bloqué exactement le chantier qu'il est censé accompagner.
+ * Le gate est donc le total ; le détail par fichier sert à localiser, et
+ * une hausse locale à total constant est signalée comme une
+ * REDISTRIBUTION, pas comme un échec.
+ *
+ * @description
  * PÉRIMÈTRE. `packages/ds/src` uniquement, blocs `<script>` des `.vue`
  * inclus. Les commentaires HTML et CSS relèvent d'une autre règle du dépôt.
  * `packages/tests` et `scripts/` sont HORS périmètre tant que le mainteneur
@@ -80,42 +95,56 @@ for (const file of walk(SRC)) {
     if (offenders.length) current[relative(REPO, file)] = offenders.length
 }
 
+const baseline = existsSync(BASELINE) ? JSON.parse(readFileSync(BASELINE, 'utf8')) : {}
+const currentTotal = Object.values(current).reduce((a, b) => a + b, 0)
+const priorTotal = Object.values(baseline).reduce((a, b) => a + b, 0)
+
+/*********************************************************
+ * --update-baseline
+ *
+ * @description
+ * REFUSE de s'exécuter si le total a monté. C'est la propriété qui rend
+ * l'ensemble sûr, et elle vaut d'être comprise : le gate normal est STRICT
+ * par fichier, donc il rougit aussi bien sur un ajout de commentaire que
+ * sur une scission de fichier, qui déplace des blocs vers des fichiers
+ * neufs. La sortie légitime d'une scission est de re-dériver la baseline.
+ * @description
+ * Si ce re-calcul était inconditionnel, il deviendrait l'échappatoire
+ * universelle : n'importe quel ajout se blanchirait d'une commande. En le
+ * conditionnant au total, la scission passe (le total ne monte pas) et
+ * l'ajout reste bloqué (le total monte), sans qu'aucune heuristique n'ait
+ * à deviner l'intention.
+ ********************************************************/
 if (process.argv.includes('--update-baseline')) {
+    if (currentTotal > priorTotal) {
+        console.log(`REFUS — le total monterait de ${priorTotal} à ${currentTotal} (+${currentTotal - priorTotal}).`)
+        console.log('Une baseline ne se relève pas : convertir ou retirer les blocs ajoutés.')
+        process.exit(1)
+    }
+
     writeFileSync(BASELINE, `${JSON.stringify(current, null, 4)}\n`)
-    console.log(`baseline écrite : ${Object.keys(current).length} fichiers, ${Object.values(current).reduce((a, b) => a + b, 0)} blocs.`)
+    console.log(`baseline écrite : ${Object.keys(current).length} fichiers, ${currentTotal} blocs (plafond précédent ${priorTotal}).`)
     process.exit(0)
 }
-
-const baseline = existsSync(BASELINE) ? JSON.parse(readFileSync(BASELINE, 'utf8')) : {}
 const regressions = []
-const improvements = []
 
 for (const [file, count] of Object.entries(current)) {
     const allowed = baseline[file] ?? 0
 
     if (count > allowed) regressions.push({ file, count, allowed })
-    else if (count < allowed) improvements.push({ file, count, allowed })
-}
-
-for (const file of Object.keys(baseline)) {
-    if (!(file in current)) improvements.push({ file, count: 0, allowed: baseline[file] })
 }
 
 const line = '─'.repeat(70)
-const total = Object.values(current).reduce((a, b) => a + b, 0)
 
 console.log(line)
-console.log('Guard: comment-format (le format bloc du dépôt — le compteur ne remonte pas)')
+console.log('Guard: comment-format (le format bloc du dépôt — aucun bloc ajouté)')
 console.log(line)
 
 if (regressions.length === 0) {
-    console.log(`PASS — ${total} bloc(s) non conforme(s) connu(s), 0 nouveau.`)
+    console.log(`PASS — ${currentTotal} bloc(s) non conforme(s) connu(s), 0 ajouté.`)
 
-    if (improvements.length) {
-        const gained = improvements.reduce((n, i) => n + (i.allowed - i.count), 0)
-
-        console.log(`\n${improvements.length} fichier(s) se sont AMÉLIORÉS (${gained} blocs convertis).`)
-        console.log('Baisser la baseline pour verrouiller le gain :')
+    if (currentTotal < priorTotal) {
+        console.log(`\n${priorTotal - currentTotal} bloc(s) convertis depuis la dernière baseline. Verrouiller le gain :`)
         console.log('  node packages/ds/scripts/guards/comment-format.mjs --update-baseline')
     }
 
@@ -123,12 +152,24 @@ if (regressions.length === 0) {
     process.exit(0)
 }
 
-console.log(`\nFAIL — ${regressions.length} fichier(s) ont PLUS de blocs non conformes qu'autorisé :\n`)
+console.log(`\nFAIL — ${regressions.length} fichier(s) ont plus de blocs non conformes qu'autorisé :\n`)
 
 for (const { file, count, allowed } of regressions.sort((a, b) => (b.count - b.allowed) - (a.count - a.allowed))) {
     console.log(`  ✗ ${file}`)
     console.log(`      ${allowed} autorisé(s) → ${count} trouvé(s)  (+${count - allowed})`)
 }
+
+if (currentTotal <= priorTotal) {
+    console.log(`\nMais le TOTAL n'a pas monté (${priorTotal} → ${currentTotal}).`)
+    console.log("C'est la signature d'une SCISSION de fichiers : les blocs ont changé de")
+    console.log('fichier sans être ajoutés. Re-dériver la baseline est ici légitime :')
+    console.log('  node packages/ds/scripts/guards/comment-format.mjs --update-baseline')
+    console.log(line)
+    process.exit(1)
+}
+
+console.log(`\nEt le total MONTE : ${priorTotal} → ${currentTotal} (+${currentTotal - priorTotal}).`)
+console.log('Re-dériver la baseline sera REFUSÉ tant que ce sera le cas.')
 
 console.log('\nLe format attendu regroupe les commentaires d\'une section en UN bloc :')
 console.log('  /*********************************************************')
