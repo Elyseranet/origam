@@ -35,7 +35,7 @@
 
 	import type { ILazyComponentProps} from '../../interfaces'
 
-	import type { ILazyEmits, ILazySlots } from '../../interfaces/Commons/lazy.interface'
+	import type { ILazyEmits, ILazySlots } from '../../interfaces/Lazy/lazy.interface'
 
 	import type { TTransitionProps } from "../../types"
 

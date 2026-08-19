@@ -204,7 +204,7 @@
 
 	import type { IDataTableHeadersCellMobileProps, IInternalListItem} from '../../interfaces'
 
-	import type { IDataTableHeadersCellMobileEmits, IDataTableHeadersCellMobileSlots } from '../../interfaces/DataTable/headers.interface'
+	import type { IDataTableHeadersCellMobileEmits, IDataTableHeadersCellMobileSlots } from '../../interfaces/DataTable/data-table-headers-cell-mobile.interface'
 
 	import { computed, mergeProps, useSlots } from 'vue'
 

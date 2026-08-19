@@ -26,7 +26,9 @@ export interface IItemGroupProps extends ICommonsComponentProps, ITagProps, IGro
 /**
  * Props for `<OrigamItem>` — a single registered item inside the group.
  * Named `IItemGroupItemProps` to avoid collision with the existing
- * `IItemProps` in `List/list.interface.ts` (List's `items?` prop).
+ * `IItemProps` in `Commons/item.interface.ts` (the data-normalisation
+ * mixin shared by List/Select/Menu — unrelated to this component
+ * despite the name overlap).
  *
  * `tag` shadowed locally — see the note on `IItemGroupProps`.
  */

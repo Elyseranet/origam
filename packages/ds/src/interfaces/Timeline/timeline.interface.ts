@@ -9,6 +9,12 @@ import type { TIcon, TIntent, TTimelineOrientation, TTimelineSide } from '../../
  *
  * The matching injection key lives in
  * `src/consts/Timeline/timeline.const.ts` (TIMELINE_CONTEXT_KEY).
+ *
+ * `ITimelineItemProps` / `ITimelineItemSlots` (the actual
+ * `<OrigamTimelineItem>` component surface) moved out to
+ * `interfaces/Timeline/timeline-item.interface.ts` under issue #364 —
+ * this file used to hold both distinct component surfaces
+ * (Timeline / TimelineItem).
  */
 export interface ITimelineContext {
     side: TTimelineSide
@@ -41,39 +47,8 @@ export interface ITimelineProps extends ICommonsComponentProps, ITagProps, IColo
     ariaLabel?: string
 }
 
-export interface ITimelineItemProps extends ICommonsComponentProps, IColorProps, IDensityProps, ISizeProps {
-    title?: string
-    subtitle?: string
-    /**
-     * Body text rendered under the title. Falls back to the `#body` slot
-     * when one is provided; when neither is set the body element is not
-     * rendered at all.
-     */
-    description?: string
-    icon?: TIcon
-    intent?: TIntent
-    isLast?: boolean
-    truncateLine?: boolean
-    side?: TTimelineSide
-    /**
-     * Layout direction forwarded by the parent OrigamTimeline. When unset
-     * the item assumes vertical layout. Items rarely set this directly —
-     * they receive it via inject from the parent.
-     */
-    orientation?: TTimelineOrientation
-    index?: number
-}
-
 /** Slot signatures for `<OrigamTimeline>`. */
 export interface ITimelineSlots {
     /** Overrides the whole auto-generated `<OrigamTimelineItem>` list. */
     default?: () => any
-}
-
-/** Slot signatures for `<OrigamTimelineItem>`. */
-export interface ITimelineItemSlots {
-    dot?: () => any
-    /** Overrides the whole title/subtitle header + body block. */
-    default?: () => any
-    body?: () => any
 }

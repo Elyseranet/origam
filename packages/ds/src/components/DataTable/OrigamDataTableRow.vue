@@ -103,7 +103,7 @@
 
 	import type { IDataTableHeaderCellColumnSlot, IDataTableItemKey, IDataTableRowProps} from '../../interfaces'
 
-	import type { IDataTableRowEmits, IDataTableRowSlots } from '../../interfaces/DataTable/row.interface'
+	import type { IDataTableRowEmits, IDataTableRowSlots } from '../../interfaces/DataTable/data-table-row.interface'
 
 	import { getCurrentInstance, getObjectValueByPath } from '../../utils'
 

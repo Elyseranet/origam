@@ -11841,7 +11841,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/Commons/calendar.interface.ts",
+        "source_file": "packages/ds/src/interfaces/DatePicker/date-picker-calendar.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -31055,7 +31056,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/Commons/client-only.interface.ts",
+        "source_file": "packages/ds/src/interfaces/ClientOnly/client-only.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -31119,7 +31121,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/Commons/client-only.interface.ts",
+        "source_file": "packages/ds/src/interfaces/ClientOnly/client-only.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -38882,7 +38885,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/DataTable/headers.interface.ts",
+        "source_file": "packages/ds/src/interfaces/DataTable/data-table-header.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -39300,7 +39304,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/DataTable/headers.interface.ts",
+        "source_file": "packages/ds/src/interfaces/DataTable/data-table-header-cell.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -39435,7 +39440,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/DataTable/headers.interface.ts",
+        "source_file": "packages/ds/src/interfaces/DataTable/data-table-header-cell.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -39474,7 +39480,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/DataTable/headers.interface.ts",
+        "source_file": "packages/ds/src/interfaces/DataTable/data-table-header.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -39557,7 +39564,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/DataTable/headers.interface.ts",
+        "source_file": "packages/ds/src/interfaces/DataTable/data-table-headers-cell-mobile.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -39633,7 +39641,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/DataTable/headers.interface.ts",
+        "source_file": "packages/ds/src/interfaces/DataTable/data-table-headers-cell-mobile.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -39701,7 +39710,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/DataTable/headers.interface.ts",
+        "source_file": "packages/ds/src/interfaces/DataTable/data-table-headers-cell-mobile.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -39814,7 +39824,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/DataTable/headers.interface.ts",
+        "source_file": "packages/ds/src/interfaces/DataTable/data-table-headers-cell-mobile.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -40106,7 +40117,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/DataTable/headers.interface.ts",
+        "source_file": "packages/ds/src/interfaces/DataTable/data-table-headers-cell.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -40207,7 +40219,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/DataTable/headers.interface.ts",
+        "source_file": "packages/ds/src/interfaces/DataTable/data-table-headers.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -40325,7 +40338,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/DataTable/headers.interface.ts",
+        "source_file": "packages/ds/src/interfaces/DataTable/data-table-headers.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -40492,7 +40506,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/DataTable/headers.interface.ts",
+        "source_file": "packages/ds/src/interfaces/DataTable/data-table-headers.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -42243,7 +42258,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/DataTable/row.interface.ts",
+        "source_file": "packages/ds/src/interfaces/DataTable/data-table-row.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -42301,7 +42317,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/DataTable/row.interface.ts",
+        "source_file": "packages/ds/src/interfaces/DataTable/data-table-row.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -42404,7 +42421,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/DataTable/row.interface.ts",
+        "source_file": "packages/ds/src/interfaces/DataTable/data-table-row.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -42468,7 +42486,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/DataTable/row.interface.ts",
+        "source_file": "packages/ds/src/interfaces/DataTable/data-table-rows.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -42617,7 +42636,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/DataTable/row.interface.ts",
+        "source_file": "packages/ds/src/interfaces/DataTable/data-table-rows.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -46906,7 +46926,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/Commons/calendar.interface.ts",
+        "source_file": "packages/ds/src/interfaces/DatePicker/date-picker-calendar.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -57745,7 +57766,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/DataTable/headers.interface.ts",
+        "source_file": "packages/ds/src/interfaces/DataTable/header-cell-base.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -59565,7 +59587,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/InfiniteScroll/infinite-scroll.interface.ts",
+        "source_file": "packages/ds/src/interfaces/InfiniteScroll/infinite-scroll-intersect.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -59623,7 +59646,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/InfiniteScroll/infinite-scroll.interface.ts",
+        "source_file": "packages/ds/src/interfaces/InfiniteScroll/infinite-scroll-intersect.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -61364,7 +61388,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/DataTable/headers.interface.ts",
+        "source_file": "packages/ds/src/interfaces/DataTable/data-table-header.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -62757,7 +62782,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/List/list.interface.ts",
+        "source_file": "packages/ds/src/interfaces/Commons/item.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -64039,7 +64065,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/Commons/layout.interface.ts",
+        "source_file": "packages/ds/src/interfaces/Layout/layout.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -64399,7 +64426,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/Commons/lazy.interface.ts",
+        "source_file": "packages/ds/src/interfaces/Lazy/lazy.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -64522,7 +64550,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/Commons/lazy.interface.ts",
+        "source_file": "packages/ds/src/interfaces/Lazy/lazy.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -64691,7 +64720,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/Commons/lazy.interface.ts",
+        "source_file": "packages/ds/src/interfaces/Lazy/lazy.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -67273,7 +67303,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/Commons/loader.interface.ts",
+        "source_file": "packages/ds/src/interfaces/Loader/loader.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -90348,7 +90379,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/Stepper/stepper.interface.ts",
+        "source_file": "packages/ds/src/interfaces/Stepper/stepper-item.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -90387,7 +90419,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/Stepper/stepper.interface.ts",
+        "source_file": "packages/ds/src/interfaces/Stepper/stepper-item.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -95883,7 +95916,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/Timeline/timeline.interface.ts",
+        "source_file": "packages/ds/src/interfaces/Timeline/timeline-item.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -96102,7 +96136,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/Timeline/timeline.interface.ts",
+        "source_file": "packages/ds/src/interfaces/Timeline/timeline-item.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -97913,7 +97948,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/Transition/transition.interface.ts",
+        "source_file": "packages/ds/src/interfaces/Commons/transition-component.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -98322,7 +98358,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/Transition/transition.interface.ts",
+        "source_file": "packages/ds/src/interfaces/Transition/translate-scale.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -98615,7 +98652,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/Treeview/treeview.interface.ts",
+        "source_file": "packages/ds/src/interfaces/Treeview/treeview-node.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,
@@ -98718,7 +98756,8 @@
         "signature": null,
         "tag": null,
         "value": null,
-        "source_file": "packages/ds/src/interfaces/Treeview/treeview.interface.ts",
+        "source_file": "packages/ds/src/interfaces/Treeview/treeview-node.interface.ts",
+
         "package_note": null,
         "note_key": null,
         "note_fallback": null,

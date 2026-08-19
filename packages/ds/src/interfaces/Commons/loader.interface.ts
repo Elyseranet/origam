@@ -1,15 +1,24 @@
 import type { IColorProps, ICommonsComponentProps, ITagProps } from '../../interfaces'
 import type { TLoaderConfig, TLoaderKind, TLoadingValue } from '../../types'
 
+/*********************************************************
+ * ILoaderProps / IResolvedLoader
+ *
+ * @description
+ * Genuinely transverse — `extends ILoaderProps` by ExpansionPanel
+ * (x3: Panel, Panels, Content), Card, Field, Btn, Switch, and
+ * DataTable (Headers, Rows). `IResolvedLoader` is the `useLoader`
+ * composable's return shape, consumed the same way.
+ *
+ * @description
+ * `ILoaderSlots` (the actual `<OrigamLoader>` slot surface, single
+ * consumer) moved out to `interfaces/Loader/loader.interface.ts`
+ * under issue #364 — it was the one symbol in this file that was NOT
+ * transverse.
+ ********************************************************/
 export interface ILoaderProps extends ICommonsComponentProps, ITagProps, IColorProps {
     loading?: TLoadingValue
     loadingText?: string
-}
-
-/** Slot signatures for `<OrigamLoader>`. */
-export interface ILoaderSlots {
-    loader?: () => any
-    default?: () => any
 }
 
 /**
