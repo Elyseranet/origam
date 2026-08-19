@@ -97,16 +97,28 @@
  * against without editing the DS itself — the synthetic pair is what makes
  * the comparison possible at all without touching component source.
  *
- * KNOWN GAP (2026-08-19) — the team lead asked for a TRUE A/B on real
- * components (B = real OrigamBtn/OrigamCard as-is, A = the same component
- * with its useDefaults call neutralised via a live-binding monkey-patch on
- * the composables module, self-checked before trusting any number). That
- * work was IN PROGRESS — drafted, NOT tested — when the isolated worktree
- * this file was being edited in became unreachable mid-session (tooling
- * failure, not a code issue) and shell access was lost with it. This file
- * is the last version actually exercised end-to-end (real `node` runs,
- * including `--validate`'s negative/positive controls passing). Do NOT
- * assume the real-component A/B exists — it doesn't, in this file.
+ * KNOWN GAP (2026-08-19) — this file measures SYNTHETIC test doubles ONLY.
+ * A true real-component A/B was NOT built here: the worktree it was being
+ * drafted in was deleted mid-session (by the team lead, cleaning up after
+ * an unrelated merge), and the draft was never tested. Do NOT assume the
+ * real-component path exists in this file — it doesn't.
+ *
+ * It was measured SEPARATELY instead, directly on `develop`: B = the real
+ * component as-is, A = the same component with its `useDefaults` line
+ * removed, paired and interleaved on one host. Those numbers, not this
+ * file's, are what arbitrated the 5 % stop rule of issue #363:
+ *
+ *     control Btn vs Btn   +0.0000ms    +0.02 %   (instrument sound)
+ *     Btn      base 0.1725ms   delta +0.0594ms   +34.42 %
+ *     Card     base 0.1233ms   delta +0.0638ms   +51.76 %
+ *     Chip     base 0.1311ms   delta +0.0829ms   +63.21 %
+ *     Divider  base 0.0452ms   delta +0.0037ms    +8.21 %  (reverse: added)
+ *
+ * ⚠️ The synthetic bases below are 3-4x SMALLER than those real ones, so the
+ * ratios this file reports run ~2.5x HIGHER. Both readings clear 5 % by a
+ * wide margin, so the verdict is identical either way — but quote the real
+ * numbers, never these, or a future decision gets justified with a figure
+ * 2.5x too large.
  *
  * HOW A SINGLE FILE RUNS BOTH "VIA NODE" AND "VIA VITEST"
  * ---------------------------------------------------------
@@ -1041,7 +1053,7 @@ function buildCompB (mode, schema, propKeys, injectedOverheadMs, vueApi) {
             props: schema,
             setup (props) {
                 const t0 = performance.now()
-                // eslint-disable-next-line no-empty -- deliberate calibrated busy-wait, see file header (positive control)
+                 
                 while (performance.now() - t0 < injectedOverheadMs) {}
                 return () => h('span', null, propKeys.map((k) => props[k]).join(''))
             }
