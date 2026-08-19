@@ -77,17 +77,22 @@
 >
   import { computed, useSlots } from 'vue'
 
-  import { OrigamBtn, OrigamIcon } from '../../components'
+  import OrigamBtn from '../Btn/OrigamBtn.vue'
+  import OrigamIcon from '../Icon/OrigamIcon.vue'
 
-  import { useLocale, usePassedProps, useProps, useTypography } from '../../composables'
+  import { useLocale } from '../../composables/Commons/locale.composable'
+  import { usePassedProps } from '../../composables/Commons/passedProps.composable'
+  import { useProps } from '../../composables/Commons/props.composable'
+  import { useTypography } from '../../composables/Commons/typography.composable'
 
-  import { vContrast } from '../../directives'
+  import vContrast from '../../directives/Contrast/contrast.directive'
 
-  import { MDI_ICONS } from '../../enums'
+  import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-  import type { ISnackbarItemEmits, ISnackbarItemProps, ISnackbarItemSlots } from '../../interfaces'
-  import type { ISnackbarGroupItemAction } from '../../interfaces'
-  import type { TIcon, TIntent } from '../../types'
+  import type { ISnackbarItemEmits, ISnackbarItemProps, ISnackbarItemSlots } from '../../interfaces/Snackbar/snackbar-item.interface'
+  import type { ISnackbarGroupItemAction } from '../../interfaces/Snackbar/snackbar-group-item.interface'
+  import type { TIcon } from '../../types/Icon/icon.type'
+  import type { TIntent } from '../../types/Commons/intent.type'
 
   /*********************************************************
    * Global

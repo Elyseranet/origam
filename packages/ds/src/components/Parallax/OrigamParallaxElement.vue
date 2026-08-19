@@ -13,24 +13,24 @@
 		setup
 >
 	import { computed, inject, StyleValue } from 'vue'
-	import {
-	useBorder,
-	useElevation,
-	useMargin,
-	usePadding,
-	useParallaxTransform,
-	useProps,
-	useRounded,
-	useStyle
-} from '../../composables'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useParallaxTransform } from '../../composables/Parallax/transform.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { ORIGAM_PARALLAX_KEY } from '../../consts'
+	import { ORIGAM_PARALLAX_KEY } from '../../consts/Parallax/parallax.const'
 
-	import { AXIS, PARALLAX_ELEMENT_TYPE, PARALLAX_EVENT } from '../../enums'
+	import { AXIS } from '../../enums/Commons/drag.enum'
+	import { PARALLAX_ELEMENT_TYPE } from '../../enums/Parallax/parallax-element.enum'
+	import { PARALLAX_EVENT } from '../../enums/Parallax/parallax.enum'
 
-	import type { IParallaxElementProps, IParallaxElementSlots } from '../../interfaces'
+	import type { IParallaxElementProps, IParallaxElementSlots } from '../../interfaces/Parallax/parallax-element.interface'
 
-	import { cyclicMovement, elementMovement } from '../../utils'
+	import { cyclicMovement, elementMovement } from '../../utils/Parallax/parallax-element.util'
 
 	/*********************************************************
 	 * Global

@@ -39,22 +39,20 @@
 		setup
 >
 	import { computed, StyleValue, toRef } from 'vue'
-	import {
-		useBorder,
-		useBothColor,
-		useDimension,
-		useMargin,
-		usePadding,
-		useProps,
-		useRounded,
-		useStyle
-	} from "../../composables"
-	import { SIZES_ARRAY } from '../../consts'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { SIZES_ARRAY } from '../../consts/Commons/size.const'
 
-	import type { IIconComponentProps } from '../../interfaces'
-	import type { TSize } from '../../types'
+	import type { IIconComponentProps } from '../../interfaces/Icon/icon.interface'
+	import type { TSize } from '../../types/Commons/size.type'
 
-	import { convertToUnit } from '../../utils'
+	import { convertToUnit } from '../../utils/Commons/commons.util'
 
 	/*********************************************************
 	 * Global

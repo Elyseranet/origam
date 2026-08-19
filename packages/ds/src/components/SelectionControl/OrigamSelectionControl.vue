@@ -74,30 +74,32 @@
 >
   import { computed, inject, nextTick, ref, shallowRef, StyleValue, useAttrs } from 'vue'
 
-  import { ORIGAM_SELECTION_CONTROL_GROUP_KEY } from "../../consts";
-  import type { TOrigamLabel } from "../../types";
-  import { OrigamIcon, OrigamLabel } from '../../components'
+  import { ORIGAM_SELECTION_CONTROL_GROUP_KEY } from '../../consts/SelectionControl/selection-control.const'
+  import type { TOrigamLabel } from '../../types/Label/label.type'
+  import OrigamIcon from '../Icon/OrigamIcon.vue'
+  import OrigamLabel from '../Label/OrigamLabel.vue'
 
-  import {
-    useBorder,
-    useDensity,
-    useElevation,
-    useHover,
-    useProps,
-    useRounded,
-    useStateEffect,
-    useStyle,
-    useTextColor,
-    useVModel
-  } from '../../composables'
+  import { useBorder } from '../../composables/Commons/border.composable'
+  import { useDensity } from '../../composables/Commons/density.composable'
+  import { useElevation } from '../../composables/Commons/elevation.composable'
+  import { useHover } from '../../composables/Commons/hover.composable'
+  import { useProps } from '../../composables/Commons/props.composable'
+  import { useRounded } from '../../composables/Commons/rounded.composable'
+  import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+  import { useStyle } from '../../composables/Commons/style.composable'
+  import { useTextColor } from '../../composables/Commons/textColor.composable'
+  import { useVModel } from '../../composables/Commons/vModel.composable'
 
-  import { vRipple } from '../../directives'
+  import vRipple from '../../directives/Ripple/ripple.directive'
 
-  import type { ISelectionControlProps, ISelectionControlSlots } from "../../interfaces"
+  import type { ISelectionControlProps, ISelectionControlSlots } from '../../interfaces/SelectionControl/selection-control.interface'
 
   import type { ISelectionControlEmits } from '../../interfaces/SelectionControl/selection-control.interface'
 
-  import { deepEqual, filterInputAttrs, forwardRefs, getUid, matchesSelector, wrapInArray } from '../../utils'
+  import { deepEqual, matchesSelector, wrapInArray } from '../../utils/Commons/commons.util'
+  import { filterInputAttrs } from '../../utils/Input/input.util'
+  import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
+  import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 
   /*********************************************************
    * Global

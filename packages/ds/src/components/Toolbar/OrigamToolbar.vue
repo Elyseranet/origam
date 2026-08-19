@@ -41,25 +41,23 @@
 		setup
 >
 	import { computed, toRef, useSlots } from 'vue'
-	import { OrigamTitle } from "../../components"
-	import {
-		useActive,
-		useDensity,
-		useDimension,
-		useHover,
-		usePosition,
-		useProps,
-		useRtl,
-		useStateEffect,
-		useStyle,
-		useTypography
-	} from '../../composables'
+	import OrigamTitle from '../Title/OrigamTitle.vue'
+	import { useActive } from '../../composables/Commons/active.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useHover } from '../../composables/Commons/hover.composable'
+	import { usePosition } from '../../composables/Commons/position.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRtl } from '../../composables/Commons/rtl.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import { vContrast } from '../../directives'
+	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import { DENSITY } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { IToolbarProps, IToolbarSlots } from '../../interfaces'
+	import type { IToolbarProps, IToolbarSlots } from '../../interfaces/Toolbar/toolbar.interface'
 
 	/*********************************************************
 	 * Global

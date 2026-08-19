@@ -12,18 +12,17 @@
 		lang="ts"
 		setup
 >
-	import {
-	useBorder,
-	useBothColor,
-	useMargin,
-	usePadding,
-	useProps,
-	useStyle
-} from '../../composables'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { IColProps, ICommonsComponentSlots } from '../../interfaces'
+	import type { IColProps } from '../../interfaces/Grids/col.interface'
+	import type { ICommonsComponentSlots } from '../../interfaces/Commons/commons.interface'
 
-	import { toKebabCase } from '../../utils'
+	import { toKebabCase } from '../../utils/Commons/commons.util'
 
 	import { computed, StyleValue, toRef } from 'vue'
 

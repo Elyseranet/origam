@@ -85,22 +85,27 @@
 		lang="ts"
 		setup
 >
-	import { OrigamDataTableGroupHeaderRow, OrigamDataTableRow, OrigamSkeleton } from '../../components'
+	import OrigamDataTableGroupHeaderRow from './OrigamDataTableGroupHeaderRow.vue'
+	import OrigamDataTableRow from './OrigamDataTableRow.vue'
+	import OrigamSkeleton from '../Skeleton/OrigamSkeleton.vue'
 
-	import { useDisplay, useExpanded, useGroupBy, useHeaders, useLoader, useLocale, usePagination, useProps, useSelection } from '../../composables'
+	import { useDisplay } from '../../composables/Commons/display.composable'
+	import { useExpanded } from '../../composables/DataTable/expand.composable'
+	import { useGroupBy } from '../../composables/DataTable/group.composable'
+	import { useHeaders } from '../../composables/DataTable/headers.composable'
+	import { useLoader } from '../../composables/Commons/loader.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { usePagination } from '../../composables/DataTable/pagination.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useSelection } from '../../composables/DataTable/select.composable'
 
-	import type {
-		IDataTableGroup,
-		IDataTableGroupHeaderSlot,
-		IDataTableItemBaseSlot,
-		IDataTableItemSlot,
-		IDataTableRowsProps,
-		IDataTableRowsSlots
-	} from '../../interfaces'
+	import type { IDataTableGroup, IDataTableGroupHeaderSlot } from '../../interfaces/DataTable/group.interface'
+	import type { IDataTableItemBaseSlot, IDataTableItemSlot } from '../../interfaces/DataTable/items.interface'
+	import type { IDataTableRowsProps, IDataTableRowsSlots } from '../../interfaces/DataTable/data-table-rows.interface'
 
-	import { LOADER_KIND } from '../../enums'
+	import { LOADER_KIND } from '../../enums/Commons/loader.enum'
 
-	import { getPrefixedEventHandlers } from '../../utils'
+	import { getPrefixedEventHandlers } from '../../utils/Commons/event.util'
 
 	import { mergeProps, useAttrs } from 'vue'
 

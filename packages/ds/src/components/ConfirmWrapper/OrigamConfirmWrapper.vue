@@ -130,27 +130,26 @@
 >
 	import { computed, ref, StyleValue, useSlots, watch } from 'vue'
 
-	import {
-		OrigamAvatar,
-		OrigamDefaultsProvider,
-		OrigamIcon,
-		OrigamLabel,
-		OrigamMessages
-	} from '../../components'
+	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
+	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
+	import OrigamLabel from '../Label/OrigamLabel.vue'
+	import OrigamMessages from '../Messages/OrigamMessages.vue'
 
-	import {
-	useAdjacent,
-	useLocale,
-	useProps,
-	useStyle,
-	useVModel
-} from '../../composables'
-	import { DENSITY, DIRECTION } from '../../enums'
-	import type { IConfirmWrapperProps, IConfirmWrapperSlots} from '../../interfaces'
+	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
+	import type { IConfirmWrapperProps, IConfirmWrapperSlots } from '../../interfaces/ConfirmWrapper/confirm-wrapper.interface'
 
 	import type { IConfirmWrapperEmits } from '../../interfaces/ConfirmWrapper/confirm-wrapper.interface'
-	import type { TOrigamLabel } from '../../types'
-	import { forwardRefs, getUid, wrapInArray } from '../../utils'
+	import type { TOrigamLabel } from '../../types/Label/label.type'
+	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
+	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
+	import { wrapInArray } from '../../utils/Commons/commons.util'
 
 	/*********************************************************
 	 * Global

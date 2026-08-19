@@ -22,22 +22,21 @@
 		setup
 >
 	import { computed, StyleValue } from 'vue'
-	import { OrigamFade, OrigamTransition } from '../../components'
+	import OrigamFade from '../Transition/OrigamFade.vue'
+	import OrigamTransition from '../Transition/OrigamTransition.vue'
 
-	import {
-	useDimension,
-	useProps,
-	useStyle,
-	useVModel
-} from '../../composables'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { vIntersect } from '../../directives'
+	import vIntersect from '../../directives/Intersect/intersect.directive'
 
-	import type { ILazyComponentProps} from '../../interfaces'
+	import type { ILazyComponentProps } from '../../interfaces/Lazy/lazy.interface'
 
 	import type { ILazyEmits, ILazySlots } from '../../interfaces/Lazy/lazy.interface'
 
-	import type { TTransitionProps } from "../../types"
+	import type { TTransitionProps } from '../../types/Transition/transition.type'
 
 	/*********************************************************
 	 * Global

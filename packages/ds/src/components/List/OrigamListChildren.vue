@@ -80,13 +80,17 @@
 		setup
 >
 	import { computed, useSlots } from 'vue'
-	import { OrigamDivider, OrigamListGroup, OrigamListItem, OrigamListSubheader } from '../../components'
+	import OrigamDivider from '../Divider/OrigamDivider.vue'
+	import OrigamListGroup from './OrigamListGroup.vue'
+	import OrigamListItem from './OrigamListItem.vue'
+	import OrigamListSubheader from './OrigamListSubheader.vue'
 
-	import { useCreateList, useProps } from '../../composables'
+	import { useCreateList } from '../../composables/List/createList.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
 
-	import { LIST_ITEM_TYPE } from '../../enums'
+	import { LIST_ITEM_TYPE } from '../../enums/List/list-item.enum'
 
-	import type { IInternalListItemChildren, IListChildrenSlots, IListItemChildren } from '../../interfaces'
+	import type { IInternalListItemChildren, IListChildrenSlots, IListItemChildren } from '../../interfaces/List/list-children.interface'
 
 	/*********************************************************
 	 * Global

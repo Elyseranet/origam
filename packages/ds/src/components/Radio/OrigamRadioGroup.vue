@@ -63,21 +63,26 @@
 		setup
 >
 	import { computed, ref, StyleValue, useAttrs } from 'vue'
-	import { OrigamDefaultsProvider, OrigamInput, OrigamLabel, OrigamRadio, OrigamSelectionControlGroup } from '../../components'
+	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
+	import OrigamInput from '../Input/OrigamInput.vue'
+	import OrigamLabel from '../Label/OrigamLabel.vue'
+	import OrigamRadio from './OrigamRadio.vue'
+	import OrigamSelectionControlGroup from '../SelectionControl/OrigamSelectionControlGroup.vue'
 
-	import {
-	usePassedProps,
-	useProps,
-	useStyle,
-	useVModel
-} from '../../composables'
+	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { DENSITY } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { IRadioGroupEmits, IRadioGroupProps, IRadioGroupSlots } from '../../interfaces'
-	import type { TOrigamInput, TOrigamSelectionControlGroup } from "../../types"
+	import type { IRadioGroupEmits, IRadioGroupProps, IRadioGroupSlots } from '../../interfaces/Radio/radio-group.interface'
+	import type { TOrigamInput } from '../../types/Input/input.type'
+	import type { TOrigamSelectionControlGroup } from '../../types/SelectionControl/selection-control-group.type'
 
-	import { filterInputAttrs, getUid, omitUndefined } from '../../utils'
+	import { filterInputAttrs } from '../../utils/Input/input.util'
+	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
+	import { omitUndefined } from '../../utils/Commons/commons.util'
 
 	/*********************************************************
 	 * Global

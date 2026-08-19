@@ -55,23 +55,25 @@
 		lang="ts"
 		setup
 >
-	import { OrigamDataTableHeadersCell, OrigamDataTableHeadersCellMobile, OrigamProgress } from '../../components'
+	import OrigamDataTableHeadersCell from './OrigamDataTableHeadersCell.vue'
+	import OrigamDataTableHeadersCellMobile from './OrigamDataTableHeadersCellMobile.vue'
+	import OrigamProgress from '../Progress/OrigamProgress.vue'
 
-	import {
-	useDisplay,
-	useHeaders,
-	useHeadersCell,
-	useLoader,
-	useProps,
-	useSelection,
-	useSort,
-	useStyle
-} from '../../composables'
+	import { useDisplay } from '../../composables/Commons/display.composable'
+	import { useHeaders } from '../../composables/DataTable/headers.composable'
+	import { useHeadersCell } from '../../composables/DataTable/headersCell.composable'
+	import { useLoader } from '../../composables/Commons/loader.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useSelection } from '../../composables/DataTable/select.composable'
+	import { useSort } from '../../composables/DataTable/sort.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { LOADER_KIND, PROGRESS_TYPE } from '../../enums'
+	import { LOADER_KIND } from '../../enums/Commons/loader.enum'
+	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
 
-	import type { IDataTableHeadersProps, IDataTableHeadersSlotProps, IDataTableHeadersSlots } from '../../interfaces'
-	import type { TOrigamDataTableHeadersCell, TOrigamDataTableHeadersCellMobile } from "../../types"
+	import type { IDataTableHeadersProps, IDataTableHeadersSlotProps, IDataTableHeadersSlots } from '../../interfaces/DataTable/data-table-headers.interface'
+	import type { TOrigamDataTableHeadersCell } from '../../types/DataTable/data-table-headers-cell.type'
+	import type { TOrigamDataTableHeadersCellMobile } from '../../types/DataTable/data-table-headers-cell-mobile.type'
 
 	import { computed, ref, StyleValue } from 'vue'
 

@@ -40,27 +40,26 @@
 		watch
 	} from 'vue'
 
-	import {
-		useBorder,
-		useBothColor,
-		useCssSupport,
-		useDimension,
-		useElevation,
-		useMargin,
-		useMasonry,
-		usePadding,
-		useProps,
-		useRounded,
-		useTheme
-	} from '../../composables'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useCssSupport } from '../../composables/Commons/cssSupport.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { useMasonry } from '../../composables/Masonry/masonry.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useTheme } from '../../composables/Commons/theme.composable'
 
-	import { GRID_GAP_SIZE_VAR } from '../../consts'
+	import { GRID_GAP_SIZE_VAR } from '../../consts/Grid/grid.const'
 
-	import { MASONRY_ALIGN } from '../../enums'
+	import { MASONRY_ALIGN } from '../../enums/Masonry/masonry.enum'
 
-	import type { ICommonsComponentSlots, IMasonryProps } from '../../interfaces'
+	import type { ICommonsComponentSlots } from '../../interfaces/Commons/commons.interface'
+	import type { IMasonryProps } from '../../interfaces/Masonry/masonry.interface'
 
-	import type { TGridGapSize } from '../../types'
+	import type { TGridGapSize } from '../../types/Grid/grid.type'
 
 	/*********************************************************
 	 * Global

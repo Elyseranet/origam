@@ -31,17 +31,20 @@
 		lang="ts"
 		setup
 >
-	import { useLocale, useProps, useResizeObserver, useStyle } from "../../composables"
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useResizeObserver } from '../../composables/Commons/resizeObserver.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { COLOR_NULL } from "../../consts"
+	import { COLOR_NULL } from '../../consts/ColorPicker/color-picker.const'
 
-	import { KEYBOARD_VALUES } from "../../enums"
+	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
 
-	import type { IColorPickerCanvasProps } from "../../interfaces"
+	import type { IColorPickerCanvasProps } from '../../interfaces/ColorPicker/color-picker-canvas.interface'
 
 	import type { IColorPickerCanvasEmits } from '../../interfaces/ColorPicker/color-picker-canvas.interface'
 
-	import { clamp, convertToUnit, getEventCoordinates, int } from "../../utils"
+	import { clamp, convertToUnit, getEventCoordinates, int } from '../../utils/Commons/commons.util'
 
 	import { computed, onMounted, ref, shallowRef, StyleValue, watch } from "vue"
 

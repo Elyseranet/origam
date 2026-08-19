@@ -97,20 +97,22 @@
 	import OrigamBracketCompetitor from './OrigamBracketCompetitor.vue'
 	import OrigamDivider from '../Divider/OrigamDivider.vue'
 
-	import { useActive, useDensity, useDimension, useHover, useMargin, usePadding, useProps } from '../../composables'
+	import { useActive } from '../../composables/Commons/active.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useHover } from '../../composables/Commons/hover.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
 
 	import { bracketSurfaceVars, resolveBracketForeground } from '../../utils/Bracket/bracket-surface.util'
 
 	import type { IBracketSurfaceInput } from '../../utils/Bracket/bracket-surface.util'
 
-	import type {
-		IBracketCompetitor,
-		IBracketMatchEmits,
-		IBracketMatchProps,
-		IBracketMatchSlots
-	} from '../../interfaces'
+	import type { IBracketCompetitor } from '../../interfaces/Bracket/bracket-competitor.interface'
+	import type { IBracketMatchEmits, IBracketMatchProps, IBracketMatchSlots } from '../../interfaces/Bracket/bracket-match-component.interface'
 
-	import { BRACKET_MATCH_STATUS } from '../../enums'
+	import { BRACKET_MATCH_STATUS } from '../../enums/Bracket/bracket-match.enum'
 
 	const props = withDefaults(defineProps<IBracketMatchProps>(), {
 		tag: 'div',

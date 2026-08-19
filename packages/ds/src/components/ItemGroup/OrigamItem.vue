@@ -17,15 +17,13 @@
 >
   import { computed, StyleValue } from 'vue'
 
-  import {
-	useGroupItem,
-	useProps,
-	useStyle
-} from '../../composables'
+  import { useGroupItem } from '../../composables/Commons/groupItem.composable'
+  import { useProps } from '../../composables/Commons/props.composable'
+  import { useStyle } from '../../composables/Commons/style.composable'
 
-  import { ORIGAM_ITEM_GROUP_KEY } from '../../consts'
+  import { ORIGAM_ITEM_GROUP_KEY } from '../../consts/ItemGroup/item-group.const'
 
-  import type { IItemGroupItemProps, IItemGroupItemSlots } from '../../interfaces'
+  import type { IItemGroupItemProps, IItemGroupItemSlots } from '../../interfaces/ItemGroup/item-group.interface'
 
   /*********************************************************
    * Global

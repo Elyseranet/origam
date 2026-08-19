@@ -104,28 +104,29 @@
 		setup
 >
 	import { computed, ref, StyleValue, useAttrs, useSlots } from 'vue'
-	import { OrigamInput, OrigamRadioBtn } from '../../components'
+	import OrigamInput from '../Input/OrigamInput.vue'
+	import OrigamRadioBtn from './OrigamRadioBtn.vue'
 
-	import {
-		useFocus,
-		useHover,
-		useMargin,
-		usePadding,
-		useProps,
-		useStateEffect,
-		useStyle,
-		useVModel
-} from '../../composables'
+	import { useFocus } from '../../composables/Commons/focus.composable'
+	import { useHover } from '../../composables/Commons/hover.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { DENSITY } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { IRadioProps} from '../../interfaces'
+	import type { IRadioProps } from '../../interfaces/Radio/radio.interface'
 
 	import type { IRadioEmits, IRadioSlots } from '../../interfaces/Radio/radio.interface'
 
-	import type { TOrigamInput, TOrigamRadioBtn } from "../../types"
+	import type { TOrigamInput } from '../../types/Input/input.type'
+	import type { TOrigamRadioBtn } from '../../types/Radio/radio-btn.type'
 
-	import { filterInputAttrs, getUid } from '../../utils'
+	import { filterInputAttrs } from '../../utils/Input/input.util'
+	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 
 	/*********************************************************
 	 * Global

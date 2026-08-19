@@ -59,11 +59,11 @@
 
 	import { OrigamIcon } from '../Icon'
 
-	import { useTypography } from '../../composables'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
 	import { EMPTY_STATE_PRESET_CONFIG } from '../../consts/EmptyState/empty-state.const'
 
-	import type { IEmptyStateProps, IEmptyStateSlots } from '../../interfaces'
+	import type { IEmptyStateProps, IEmptyStateSlots } from '../../interfaces/EmptyState/empty-state.interface'
 
 	/*********************************************************
 	 * Global

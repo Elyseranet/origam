@@ -29,21 +29,21 @@
 		lang="ts"
 		setup
 >
-	import { OrigamBtn, OrigamDefaultsProvider } from '../../components'
-	import {
-		useDensity,
-		usePassedProps,
-		useProps,
-		useSize,
-		useStateEffect,
-		useStyle,
-		useVariant
-	} from '../../composables'
+	import OrigamBtn from './OrigamBtn.vue'
+	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useSize } from '../../composables/Commons/size.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useVariant } from '../../composables/Commons/variant.composable'
 
-	import { DENSITY } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { IBtnGroupProps, IBtnGroupSlots, IBtnProps } from '../../interfaces'
-	import { omitUndefined } from '../../utils'
+	import type { IBtnGroupProps, IBtnGroupSlots } from '../../interfaces/Btn/btn-group.interface'
+	import type { IBtnProps } from '../../interfaces/Btn/btn.interface'
+	import { omitUndefined } from '../../utils/Commons/commons.util'
 
 	import { computed, StyleValue, useSlots } from 'vue'
 

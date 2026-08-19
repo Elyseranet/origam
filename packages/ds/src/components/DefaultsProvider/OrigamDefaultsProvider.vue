@@ -8,8 +8,9 @@
 >
 	import { computed } from 'vue'
 
-	import { provideDefaults, useProps } from '../../composables'
-	import type { IDefaultProviderProps, IDefaultProviderSlots } from '../../interfaces'
+	import { provideDefaults } from '../../composables/Commons/defaults.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import type { IDefaultProviderProps, IDefaultProviderSlots } from '../../interfaces/DefaultsProvider/defaults-provider.interface'
 
 	/*********************************************************
 	 * Global

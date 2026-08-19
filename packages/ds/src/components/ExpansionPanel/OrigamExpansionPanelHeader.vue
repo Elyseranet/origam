@@ -95,27 +95,27 @@
 		setup
 >
 	import { computed, inject, StyleValue, toRef, useSlots } from 'vue'
-	import { OrigamAvatar, OrigamIcon } from '../../components'
+	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
 
-	import {
-		useActive,
-		useAdjacent,
-		useBothColor,
-		useDensity,
-		useHover,
-		useProps,
-		useStateEffect,
-		useStyle,
-		useTypography
-} from '../../composables'
+	import { useActive } from '../../composables/Commons/active.composable'
+	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useHover } from '../../composables/Commons/hover.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts'
+	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts/ExpansionPanel/expansion-panel.const'
 
-	import { vContrast, vRipple } from '../../directives'
+	import vContrast from '../../directives/Contrast/contrast.directive'
+	import vRipple from '../../directives/Ripple/ripple.directive'
 
-	import { MDI_ICONS } from "../../enums"
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import type { IExpansionPanelHeaderProps} from '../../interfaces'
+	import type { IExpansionPanelHeaderProps } from '../../interfaces/ExpansionPanel/expansion-panel-header.interface'
 
 	import type { IExpansionPanelHeaderEmits, IExpansionPanelHeaderSlots } from '../../interfaces/ExpansionPanel/expansion-panel-header.interface'
 

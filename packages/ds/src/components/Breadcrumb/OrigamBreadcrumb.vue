@@ -55,26 +55,27 @@
 		lang="ts"
 		setup
 >
-	import { OrigamBreadcrumbDivider, OrigamBreadcrumbItem, OrigamDefaultsProvider } from '../../components'
+	import OrigamBreadcrumbDivider from './OrigamBreadcrumbDivider.vue'
+	import OrigamBreadcrumbItem from './OrigamBreadcrumbItem.vue'
+	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
 
-	import {
-		useDensity,
-		useLocale,
-		usePassedProps,
-		useProps,
-		useStateEffect,
-		useStyle
-	} from '../../composables'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { vContrast } from '../../directives'
+	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import { omitUndefined } from '../../utils'
+	import { omitUndefined } from '../../utils/Commons/commons.util'
 
-	import { DENSITY } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { IBreadcrumbItemProps, IBreadcrumbProps, IBreadcrumbSlots } from '../../interfaces'
+	import type { IBreadcrumbItemProps } from '../../interfaces/Breadcrumb/breadcrumb-item.interface'
+	import type { IBreadcrumbProps, IBreadcrumbSlots } from '../../interfaces/Breadcrumb/breadcrumb.interface'
 
-	import type { TBreadcrumbItem } from '../../types'
+	import type { TBreadcrumbItem } from '../../types/Breadcrumb/breadcrumb.type'
 
 	import { computed, StyleValue, useSlots } from 'vue'
 

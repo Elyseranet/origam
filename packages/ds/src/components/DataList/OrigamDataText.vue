@@ -64,11 +64,18 @@
 		setup
 >
 
-	import { OrigamAvatar, OrigamIcon } from "../../components"
-	import { useAdjacent, useBothColor, useDensity, useMargin, usePadding, useProps , useStyle} from "../../composables"
-	import { vContrast } from "../../directives"
+	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
+	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import type { IDataTextProps, IDataTextSlots } from "../../interfaces"
+	import type { IDataTextProps, IDataTextSlots } from '../../interfaces/DataList/data-text.interface'
 	import { computed, shallowRef, StyleValue, toRef } from "vue"
 
 	/*********************************************************

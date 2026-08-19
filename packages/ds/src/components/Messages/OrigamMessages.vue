@@ -37,27 +37,26 @@
 		setup
 >
 	import { computed, StyleValue, toRef } from 'vue'
-	import { OrigamSlideY, OrigamTransition } from '../../components'
+	import OrigamSlideY from '../Transition/OrigamSlideY.vue'
+	import OrigamTransition from '../Transition/OrigamTransition.vue'
 
-	import {
-		useBorder,
-		useDensity,
-		useMargin,
-		usePadding,
-		useProps,
-		useRounded,
-		useSsrBoot,
-		useStyle,
-		useTextColor,
-		useTypography
-} from '../../composables'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useSsrBoot } from '../../composables/Commons/ssrBoot.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTextColor } from '../../composables/Commons/textColor.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import { DENSITY } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { IMessagesProps, IMessagesSlots } from '../../interfaces'
-	import type { TTransitionProps } from "../../types"
+	import type { IMessagesProps, IMessagesSlots } from '../../interfaces/Messages/messages.interface'
+	import type { TTransitionProps } from '../../types/Transition/transition.type'
 
-	import { toKebabCase, wrapInArray } from '../../utils'
+	import { toKebabCase, wrapInArray } from '../../utils/Commons/commons.util'
 
 	/*********************************************************
 	 * Global

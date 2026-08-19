@@ -43,25 +43,20 @@
 
   import OrigamSnackbarItem from './OrigamSnackbarItem.vue'
 
-  import { useProps, useStyle } from '../../composables'
+  import { useProps } from '../../composables/Commons/props.composable'
+  import { useStyle } from '../../composables/Commons/style.composable'
   import { useSnackbarGroupInternal } from '../../composables/Snackbar/snackbarGroupInternal.composable'
 
-  import { INTENT, SNACKBAR_GROUP_DIRECTION } from '../../enums'
+  import { INTENT } from '../../enums/Commons/intent.enum'
+  import { SNACKBAR_GROUP_DIRECTION } from '../../enums/Snackbar/snackbar-group.enum'
 
-  import {
-    SNACKBAR_GROUP_DEFAULT_DURATION,
-    SNACKBAR_GROUP_DEFAULT_ID,
-    SNACKBAR_GROUP_DEFAULT_MAX,
-    SNACKBAR_GROUP_DEFAULT_SPACING
-  } from '../../consts'
+  import { SNACKBAR_GROUP_DEFAULT_DURATION, SNACKBAR_GROUP_DEFAULT_ID, SNACKBAR_GROUP_DEFAULT_MAX, SNACKBAR_GROUP_DEFAULT_SPACING } from '../../consts/Snackbar/snackbar-group.const'
 
-  import type {
-    ISnackbarGroupItem,
-    ISnackbarGroupItemAction,
-    ISnackbarGroupProps
-  } from '../../interfaces'
+  import type { ISnackbarGroupItem, ISnackbarGroupItemAction } from '../../interfaces/Snackbar/snackbar-group-item.interface'
+  import type { ISnackbarGroupProps } from '../../interfaces/Snackbar/snackbar-group.interface'
 
-  import type { TIntent, TSnackbarGroupDirection } from '../../types'
+  import type { TIntent } from '../../types/Commons/intent.type'
+  import type { TSnackbarGroupDirection } from '../../types/Snackbar/snackbar-group.type'
 
   /*********************************************************
    * Global

@@ -146,24 +146,32 @@
 		setup
 >
 	import { computed, ref, shallowRef, StyleValue, useAttrs, useSlots } from 'vue'
-	import { OrigamBtn, OrigamInput, OrigamLabel, OrigamRatingFieldItem } from '../../components'
+	import OrigamBtn from '../Btn/OrigamBtn.vue'
+	import OrigamInput from '../Input/OrigamInput.vue'
+	import OrigamLabel from '../Label/OrigamLabel.vue'
+	import OrigamRatingFieldItem from './OrigamRatingFieldItem.vue'
 
-	import {
-	useLocale,
-	useProps,
-	useStyle,
-	useVModel
-} from '../../composables'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { BLOCK, DENSITY, MDI_ICONS, SIZES, VARIANT } from '../../enums'
+	import { BLOCK } from '../../enums/Commons/anchor.enum'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { SIZES } from '../../enums/Commons/size.enum'
+	import { VARIANT } from '../../enums/Commons/variant.enum'
 
-	import type { IRatingFieldProps} from '../../interfaces'
+	import type { IRatingFieldProps } from '../../interfaces/RatingField/rating-field.interface'
 
 	import type { IRatingFieldEmits, IRatingFieldSlots } from '../../interfaces/RatingField/rating-field.interface'
 
-	import type { TOrigamInput, TOrigamRatingFieldItem } from "../../types"
+	import type { TOrigamInput } from '../../types/Input/input.type'
+	import type { TOrigamRatingFieldItem } from '../../types/RatingField/rating-field-item.type'
 
-	import { clamp, createRange, filterInputAttrs, getUid } from '../../utils'
+	import { clamp, createRange } from '../../utils/Commons/commons.util'
+	import { filterInputAttrs } from '../../utils/Input/input.util'
+	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 
 	/*********************************************************
 	 * Global

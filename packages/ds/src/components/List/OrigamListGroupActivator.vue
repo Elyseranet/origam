@@ -13,13 +13,11 @@
 		setup
 >
 	import { computed, StyleValue } from 'vue'
-	import {
-	useNestedGroupActivator,
-	useProps,
-	useStyle
-} from '../../composables'
+	import { useNestedGroupActivator } from '../../composables/Commons/nestedGroupActivator.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { IListActivatorProps, IListActivatorSlots } from '../../interfaces'
+	import type { IListActivatorProps, IListActivatorSlots } from '../../interfaces/List/list-group.interface'
 
 	/*********************************************************
 	 * Global

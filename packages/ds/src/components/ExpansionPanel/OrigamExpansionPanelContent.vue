@@ -56,28 +56,29 @@
 		setup
 >
 	import { computed, inject, StyleValue, toRef } from 'vue'
-	import { OrigamExpandY, OrigamProgress, OrigamSkeleton } from '../../components'
+	import OrigamExpandY from '../Transition/OrigamExpandY.vue'
+	import OrigamProgress from '../Progress/OrigamProgress.vue'
+	import OrigamSkeleton from '../Skeleton/OrigamSkeleton.vue'
 
-	import { vContrast } from '../../directives'
+	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import {
-		useBorder,
-		useBothColor,
-		useDensity,
-		useLazy,
-		useLoader,
-		useMargin,
-		usePadding,
-		useProps,
-		useRounded,
-		useStyle
-} from '../../composables'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useLazy } from '../../composables/Commons/lazy.composable'
+	import { useLoader } from '../../composables/Commons/loader.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { LOADER_KIND, PROGRESS_TYPE } from '../../enums'
+	import { LOADER_KIND } from '../../enums/Commons/loader.enum'
+	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
 
-	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts'
+	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts/ExpansionPanel/expansion-panel.const'
 
-	import type { IExpansionPanelContentProps, IExpansionPanelContentSlots } from '../../interfaces'
+	import type { IExpansionPanelContentProps, IExpansionPanelContentSlots } from '../../interfaces/ExpansionPanel/expansion-panel-content.interface'
 
 	/*********************************************************
 	 * Global

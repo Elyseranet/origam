@@ -15,11 +15,11 @@
 >
 	import { computed, inject, onBeforeUnmount, onMounted, ref, StyleValue } from 'vue'
 
-	import { useProps } from '../../composables'
+	import { useProps } from '../../composables/Commons/props.composable'
 
-	import { ORIGAM_PARALLAX_LAYER_KEY } from '../../consts'
+	import { ORIGAM_PARALLAX_LAYER_KEY } from '../../consts/Parallax/parallax-layer.const'
 
-	import type { IParallaxLayerProps, IParallaxLayerRegistry, IParallaxLayerSlots } from '../../interfaces'
+	import type { IParallaxLayerProps, IParallaxLayerRegistry, IParallaxLayerSlots } from '../../interfaces/Parallax/parallax-layer.interface'
 
 	/*********************************************************
 	 * Global

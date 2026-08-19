@@ -32,15 +32,17 @@
 		lang="ts"
 		setup
 >
-	import { OrigamBtn } from "../../components"
+	import OrigamBtn from '../Btn/OrigamBtn.vue'
 
-	import { useProps , useStyle} from "../../composables"
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { COLOR_NULL, COLOR_PICKER_MODES } from "../../consts"
+	import { COLOR_NULL, COLOR_PICKER_MODES } from '../../consts/ColorPicker/color-picker.const'
 
-	import { COLOR_MODES_NAMES, MDI_ICONS } from "../../enums"
+	import { COLOR_MODES_NAMES } from '../../enums/ColorPicker/color-picker.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import type { IColorPickerEditProps} from "../../interfaces"
+	import type { IColorPickerEditProps } from '../../interfaces/ColorPicker/color-picker-edit.interface'
 
 	import type { IColorPickerEditEmits } from '../../interfaces/ColorPicker/color-picker-edit.interface'
 

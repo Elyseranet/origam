@@ -168,11 +168,11 @@
 	import { OrigamBtn } from '../Btn'
 	import { OrigamMenu } from '../Menu'
 
-	import { useLocale } from '../../composables'
+	import { useLocale } from '../../composables/Commons/locale.composable'
 
-	import { MDI_ICONS } from '../../enums'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import { formatMediaTime } from '../../utils'
+	import { formatMediaTime } from '../../utils/Media/format-time.util'
 
 	import type {
 		IMediaControllerEmits,
@@ -182,7 +182,7 @@
 
 	import type { IConfigMenuItem } from '../../interfaces/Media/media-config-menu-item.interface'
 
-	import type { TAudioLoopMode } from '../../types'
+	import type { TAudioLoopMode } from '../../types/Audio/audio.type'
 
 	import OrigamMediaScrubber from './OrigamMediaScrubber.vue'
 	import OrigamMediaVolumeControl from './OrigamMediaVolumeControl.vue'

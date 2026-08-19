@@ -14,22 +14,21 @@
 		setup
 >
 	import { computed, shallowRef, StyleValue, toRef } from "vue"
-	import {
-		useBorder,
-		useBothColor,
-		useDimension,
-		useElevation,
-		useLayoutItem,
-		useProps,
-		useRounded,
-		useSsrBoot,
-		useStyle,
-		useTypography
-	} from "../../composables"
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useLayoutItem } from '../../composables/Commons/layoutItem.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useSsrBoot } from '../../composables/Commons/ssrBoot.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import { vContrast } from "../../directives"
+	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import type { ICommonsComponentSlots, ISystemBarProps } from "../../interfaces"
+	import type { ICommonsComponentSlots } from '../../interfaces/Commons/commons.interface'
+	import type { ISystemBarProps } from '../../interfaces/SystemBar/system-bar.interface'
 
 	/*********************************************************
 	 * Global

@@ -12,9 +12,10 @@
 		lang="ts"
 		setup
 >
-	import { useCssTransition, useProps } from '../../composables'
+	import { useCssTransition } from '../../composables/Transition/cssTransition.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
 
-	import type { ITransitionProps, ITransitionSlots } from '../../interfaces'
+	import type { ITransitionProps, ITransitionSlots } from '../../interfaces/Transition/transition.interface'
 
 	/*********************************************************
 	 * Global

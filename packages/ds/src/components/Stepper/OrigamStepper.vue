@@ -36,22 +36,22 @@
 >
 	import { computed, provide, ref, StyleValue, useSlots, watch } from 'vue'
 
-	import { OrigamStepperItem } from '../../components'
-	import { ORIGAM_STEPPER_KEY } from '../../consts'
-	import { DENSITY, DIRECTION, SIZES } from '../../enums'
-	import { vContrast } from '../../directives'
-	import {
-		useDensity,
-		useDimension,
-		useLocale,
-		useProps,
-		useSize,
-		useStateEffect,
-		useStyle
-	} from '../../composables'
+	import OrigamStepperItem from './OrigamStepperItem.vue'
+	import { ORIGAM_STEPPER_KEY } from '../../consts/Stepper/stepper.const'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
+	import { SIZES } from '../../enums/Commons/size.enum'
+	import vContrast from '../../directives/Contrast/contrast.directive'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useSize } from '../../composables/Commons/size.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { IStepperEmits, IStepperProps, IStepperSlots } from '../../interfaces'
-	import type { TStepperItemStatus } from '../../types'
+	import type { IStepperEmits, IStepperProps, IStepperSlots } from '../../interfaces/Stepper/stepper.interface'
+	import type { TStepperItemStatus } from '../../types/Stepper/stepper.type'
 
 	/*********************************************************
 	 * Global

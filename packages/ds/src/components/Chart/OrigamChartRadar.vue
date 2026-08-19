@@ -146,26 +146,20 @@
 		type StyleValue
 	} from 'vue'
 
-	import {
-		useChartHeaderTypography,
-		useBackgroundColor,
-		useChart,
-		useDimension,
-		useElevation,
-		useMargin,
-		usePadding,
-		useRounded
-	} from '../../composables'
+	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
+	import { useChart } from '../../composables/Chart/chart.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
 
 	import OrigamChartLegend from './OrigamChartLegend.vue'
 
-	import type {
-		IChartPath,
-		IChartRadarEmits,
-		IChartRadarProps,
-		IChartRadarSlots,
-		IChartSeries
-	} from '../../interfaces'
+	import type { IChartPath } from '../../interfaces/Chart/chart.interface'
+	import type { IChartRadarEmits, IChartRadarProps, IChartRadarSlots } from '../../interfaces/Chart/chart-radar.interface'
+	import type { IChartSeries } from '../../interfaces/Chart/chart-series.interface'
 
 	/*********************************************************
 	 * Global

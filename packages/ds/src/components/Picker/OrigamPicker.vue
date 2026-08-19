@@ -48,13 +48,16 @@
 		setup
 >
 	import { computed, ref, StyleValue, toRef, useSlots } from "vue"
-	import { OrigamPickerTitle, OrigamSheet } from "../../components"
+	import OrigamPickerTitle from './OrigamPickerTitle.vue'
+	import OrigamSheet from '../Sheet/OrigamSheet.vue'
 
-	import { useBackgroundColor, useProps , useStyle} from "../../composables"
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { IPickerProps, IPickerSlots } from "../../interfaces"
+	import type { IPickerProps, IPickerSlots } from '../../interfaces/Picker/picker.interface'
 
-	import type { TOrigamSheet } from "../../types"
+	import type { TOrigamSheet } from '../../types/Sheet/sheet.type'
 
 	/*********************************************************
 	 * Global

@@ -39,12 +39,8 @@
 >
 	import { computed } from 'vue'
 
-	import type {
-		IChartLegendEmits,
-		IChartLegendItem,
-		IChartLegendProps,
-		IChartLegendSlots
-	} from '../../interfaces'
+	import type { IChartLegendEmits, IChartLegendProps, IChartLegendSlots } from '../../interfaces/Chart/chart-legend.interface'
+	import type { IChartLegendItem } from '../../interfaces/Chart/chart.interface'
 
 	/*********************************************************
 	 * Global

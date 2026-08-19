@@ -14,7 +14,8 @@
 >
 	import { computed, StyleValue } from 'vue'
 
-	import type { ICommonsComponentSlots, IGridItemProps, IGridLineSpec } from '../../interfaces'
+	import type { ICommonsComponentSlots } from '../../interfaces/Commons/commons.interface'
+	import type { IGridItemProps, IGridLineSpec } from '../../interfaces/Grid/grid-item.interface'
 
 	/*********************************************************
 	 * Global

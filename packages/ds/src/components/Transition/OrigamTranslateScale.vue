@@ -12,12 +12,14 @@
 		setup
 >
 	import { computed } from 'vue'
-	import { useProps } from "../../composables"
-	import { EASING, TRANSITION_MODE } from '../../enums'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { EASING, TRANSITION_MODE } from '../../enums/Transition/transition.enum'
 
-	import type { ITranslateScaleProps, ITransitionSlots } from '../../interfaces'
+	import type { ITranslateScaleProps } from '../../interfaces/Transition/translate-scale.interface'
+	import type { ITransitionSlots } from '../../interfaces/Transition/transition.interface'
 
-	import { animate, getChildren, getDimensions } from '../../utils'
+	import { animate } from '../../utils/Commons/animation.util'
+	import { getChildren, getDimensions } from '../../utils/Transition/transition.util'
 
 	/*********************************************************
 	 * Global

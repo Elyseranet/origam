@@ -18,20 +18,19 @@
 		setup
 >
 	import { computed, StyleValue, toRef } from 'vue'
-	import {
-	useBorder,
-	useBothColor,
-	useElevation,
-	useLayout,
-	useMargin,
-	usePadding,
-	useProps,
-	useRounded,
-	useSsrBoot,
-	useStyle
-} from '../../composables'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useLayout } from '../../composables/Commons/layout.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useSsrBoot } from '../../composables/Commons/ssrBoot.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { ICommonsComponentSlots, IMainProps } from '../../interfaces'
+	import type { ICommonsComponentSlots } from '../../interfaces/Commons/commons.interface'
+	import type { IMainProps } from '../../interfaces/Main/main.interface'
 
 	/*********************************************************
 	 * Global

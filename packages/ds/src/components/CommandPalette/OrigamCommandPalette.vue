@@ -169,7 +169,8 @@
 >
 	import { computed, nextTick, ref, StyleValue, useSlots, watch } from 'vue'
 
-	import { OrigamIcon, OrigamKbd } from '../../components'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
+	import OrigamKbd from '../Kbd/OrigamKbd.vue'
 
 	import { useCommand } from '../../composables/CommandPalette/command.composable'
 
@@ -179,22 +180,19 @@
 
 	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import {
-		COMMAND_PALETTE_DEFAULT_HOTKEY,
-		COMMAND_PALETTE_DEFAULT_MAX_HEIGHT,
-		COMMAND_PALETTE_DEFAULT_WIDTH,
-		IN_BROWSER
-	} from '../../consts'
+	import { COMMAND_PALETTE_DEFAULT_HOTKEY, COMMAND_PALETTE_DEFAULT_MAX_HEIGHT, COMMAND_PALETTE_DEFAULT_WIDTH } from '../../consts/CommandPalette/command-palette.const'
+	import { IN_BROWSER } from '../../consts/Commons/commons.const'
 
-	import { MDI_ICONS } from '../../enums'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import type { ICommand, ICommandPaletteProps, ICommandPaletteSlots} from '../../interfaces'
+	import type { ICommand } from '../../interfaces/CommandPalette/command.interface'
+	import type { ICommandPaletteProps, ICommandPaletteSlots } from '../../interfaces/CommandPalette/command-palette.interface'
 
 	import type { ICommandPaletteEmits } from '../../interfaces/CommandPalette/command-palette.interface'
 
 	import type { IRenderedGroup } from '../../interfaces/CommandPalette/command-palette-rendered-group.interface'
 
-	import { getUid } from '../../utils'
+	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 
 	import { fuzzyMatch, type IFuzzyMatchResult } from '../../utils/CommandPalette/fuzzy-match.util'
 

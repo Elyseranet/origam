@@ -146,20 +146,33 @@
 >
 
 	import { computed, nextTick, ref, StyleValue, useAttrs, useSlots, watch } from "vue"
-	import { OrigamField, OrigamOverlay, OrigamProgress } from "../../components"
+	import OrigamField from '../Field/OrigamField.vue'
+	import OrigamOverlay from '../Overlay/OrigamOverlay.vue'
+	import OrigamProgress from '../Progress/OrigamProgress.vue'
 	import { OrigamMessages } from "../../components/Messages"
 
-	import { useDimension, useFocus, useLocale, useProps, useTypography, useValidation, useVModel, useStyle } from "../../composables"
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useFocus } from '../../composables/Commons/focus.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
+	import { useValidation } from '../../composables/Commons/validation.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { OTP_INPUT_FIELD_TYPE, PROGRESS_TYPE } from "../../enums"
+	import { OTP_INPUT_FIELD_TYPE } from '../../enums/OtpInputField/otp-input-field.enum'
+	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
 
-	import type { IOtpInputFieldProps, IOtpInputFieldSlots } from "../../interfaces"
+	import type { IOtpInputFieldProps, IOtpInputFieldSlots } from '../../interfaces/OtpInputField/otp-input-field.interface'
 
 	import type { IOtpInputFieldEmits } from '../../interfaces/OtpInputField/otp-input-field.interface'
 
-	import type { TOrigamField } from "../../types"
+	import type { TOrigamField } from '../../types/Field/field.type'
 
-	import { filterInputAttrs, focusChild, forwardRefs, getUid, wrapInArray } from "../../utils"
+	import { filterInputAttrs } from '../../utils/Input/input.util'
+	import { focusChild, wrapInArray } from '../../utils/Commons/commons.util'
+	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
+	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 
 	/*********************************************************
 	 * Global

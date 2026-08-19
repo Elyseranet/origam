@@ -58,22 +58,21 @@
 		setup
 >
 	import { computed, nextTick, ref, StyleValue, useSlots } from 'vue'
-	import { OrigamMessages } from '../../components'
+	import OrigamMessages from '../Messages/OrigamMessages.vue'
 
-	import {
-	useForm,
-	useMessage,
-	useProps,
-	useStyle,
-	useTypography,
-	useValidation
-} from '../../composables'
+	import { useForm } from '../../composables/Form/form.composable'
+	import { useMessage } from '../../composables/Commons/message.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
+	import { useValidation } from '../../composables/Commons/validation.composable'
 
-	import type { IFormProps, IFormSlots, ISubmitEventPromise} from '../../interfaces'
+	import type { IFormProps, IFormSlots, ISubmitEventPromise } from '../../interfaces/Form/form.interface'
 
 	import type { IFormEmits } from '../../interfaces/Form/form.interface'
 
-	import { forwardRefs, getUid } from '../../utils'
+	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
+	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 
 	/*********************************************************
 	 * Global

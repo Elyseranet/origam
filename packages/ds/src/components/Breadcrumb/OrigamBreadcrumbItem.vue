@@ -66,24 +66,23 @@
 		lang="ts"
 		setup
 >
-	import { OrigamAvatar, OrigamIcon } from '../../components'
+	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
 
-	import { vContrast } from '../../directives'
+	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import {
-		useActive,
-		useAdjacent,
-		useDensity,
-		useHover,
-		useLink,
-		useProps,
-		useStateEffect,
-		useStyle
-	} from '../../composables'
+	import { useActive } from '../../composables/Commons/active.composable'
+	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useHover } from '../../composables/Commons/hover.composable'
+	import { useLink } from '../../composables/Commons/link.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { DENSITY } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { IBreadcrumbItemProps} from '../../interfaces'
+	import type { IBreadcrumbItemProps } from '../../interfaces/Breadcrumb/breadcrumb-item.interface'
 
 	import type { IBreadcrumbItemEmits, IBreadcrumbItemSlots } from '../../interfaces/Breadcrumb/breadcrumb-item.interface'
 

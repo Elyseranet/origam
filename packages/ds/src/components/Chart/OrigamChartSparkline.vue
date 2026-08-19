@@ -141,25 +141,18 @@
 		type StyleValue
 	} from 'vue'
 
-	import {
-		useBackgroundColor,
-		useElevation,
-		useMargin,
-		usePadding,
-		useRounded
-	} from '../../composables'
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
 
-	import type {
-		IChartPoint,
-		IChartSparklineEmits,
-		IChartSparklineKind,
-		IChartSparklineProps,
-		IChartSparklineSlots
-	} from '../../interfaces'
+	import type { IChartPoint } from '../../interfaces/Chart/chart-point.interface'
+	import type { IChartSparklineEmits, IChartSparklineKind, IChartSparklineProps, IChartSparklineSlots } from '../../interfaces/Chart/chart-sparkline.interface'
 
 	import { intentBgExpr, isIntent } from '../../utils/Commons/color.util'
 
-	import type { TIntent } from '../../types'
+	import type { TIntent } from '../../types/Commons/intent.type'
 
 	/*********************************************************
 	 * Global

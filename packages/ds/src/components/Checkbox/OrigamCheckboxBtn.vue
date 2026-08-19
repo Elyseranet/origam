@@ -42,21 +42,20 @@
 		lang="ts"
 		setup
 >
-	import { OrigamSelectionControl } from '../../components'
+	import OrigamSelectionControl from '../SelectionControl/OrigamSelectionControl.vue'
 
-	import {
-	useProps,
-	useStyle,
-	useVModel
-} from '../../composables'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { DENSITY, MDI_ICONS } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import type { ICheckboxBtnProps, ICheckboxBtnSlots} from '../../interfaces'
+	import type { ICheckboxBtnProps, ICheckboxBtnSlots } from '../../interfaces/Checkbox/checkbox-btn.interface'
 
 	import type { ICheckboxBtnEmits } from '../../interfaces/Checkbox/checkbox-btn.interface'
 
-	import type { TOrigamSelectionControl } from "../../types"
+	import type { TOrigamSelectionControl } from '../../types/SelectionControl/selection-control.type'
 
 	import { computed, ref, StyleValue, useSlots } from 'vue'
 

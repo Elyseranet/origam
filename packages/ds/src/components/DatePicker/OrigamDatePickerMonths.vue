@@ -20,15 +20,18 @@
 		lang="ts"
 		setup
 >
-	import { OrigamBtn } from "../../components"
+	import OrigamBtn from '../Btn/OrigamBtn.vue'
 
-	import { useDate, useProps, useVModel , useStyle} from "../../composables"
+	import { useDate } from '../../composables/Commons/date.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { IDatePickerMonthsProps} from "../../interfaces"
+	import type { IDatePickerMonthsProps } from '../../interfaces/DatePicker/date-picker-months.interface'
 
 	import type { IDatePickerMonthsEmits, IDatePickerMonthsSlots } from '../../interfaces/DatePicker/date-picker-months.interface'
 
-	import { convertToUnit, createRange, int } from "../../utils"
+	import { convertToUnit, createRange, int } from '../../utils/Commons/commons.util'
 
 	import { computed, StyleValue, watchEffect } from "vue"
 

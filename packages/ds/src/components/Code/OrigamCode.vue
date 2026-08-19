@@ -77,30 +77,28 @@
 >
 	import { computed, onMounted, ref, toRef, useSlots, watch } from 'vue'
 
-	import { OrigamBtn } from '../../components'
+	import OrigamBtn from '../Btn/OrigamBtn.vue'
 
-	import {
-		useBorder,
-		useBothColor,
-		useClipboard,
-		useCode,
-		useDimension,
-		useElevation,
-		useLocale,
-		useMargin,
-		usePadding,
-		useRounded,
-		useTypography
-	} from '../../composables'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useClipboard } from '../../composables/Clipboard/clipboard.composable'
+	import { useCode } from '../../composables/Code/code.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import { vContrast } from '../../directives'
+	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import { CODE_DEFAULTS } from '../../consts'
-	import { CODE_LANG } from '../../enums'
+	import { CODE_DEFAULTS } from '../../consts/Code/code.const'
+	import { CODE_LANG } from '../../enums/Code/code.enum'
 
-	import type { ICodeEmits, ICodeProps, ICodeSlots } from '../../interfaces'
+	import type { ICodeEmits, ICodeProps, ICodeSlots } from '../../interfaces/Code/code.interface'
 
-	import { parseHighlightLines } from '../../utils'
+	import { parseHighlightLines } from '../../utils/Code/parse-highlight-lines.util'
 
 	/*********************************************************
 	 * Global

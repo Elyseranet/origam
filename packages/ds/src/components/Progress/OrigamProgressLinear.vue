@@ -54,22 +54,22 @@
 		setup
 >
 	import { computed, StyleValue, toRef } from 'vue'
-	import { OrigamFade, OrigamSlideX, OrigamTransition } from '../../components'
+	import OrigamFade from '../Transition/OrigamFade.vue'
+	import OrigamSlideX from '../Transition/OrigamSlideX.vue'
+	import OrigamTransition from '../Transition/OrigamTransition.vue'
 
-	import {
-		useIntersectionObserver,
-		useLocation,
-		useProgress,
-		useProps,
-		useRounded,
-		useRtl,
-		useStyle,
-		useTextColor
-} from '../../composables'
+	import { useIntersectionObserver } from '../../composables/Commons/intersectionObserver.composable'
+	import { useLocation } from '../../composables/Commons/location.composable'
+	import { useProgress } from '../../composables/Progress/progress.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useRtl } from '../../composables/Commons/rtl.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTextColor } from '../../composables/Commons/textColor.composable'
 
-	import type { IProgressLinearProps, IProgressLinearSlots } from '../../interfaces'
+	import type { IProgressLinearProps, IProgressLinearSlots } from '../../interfaces/Progress/progress-linear.interface'
 
-	import { convertToUnit } from '../../utils'
+	import { convertToUnit } from '../../utils/Commons/commons.util'
 
 	/*********************************************************
 	 * Global

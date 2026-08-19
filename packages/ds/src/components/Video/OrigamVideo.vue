@@ -235,16 +235,27 @@
 	import { OrigamMediaController } from '../Media'
 	import { OrigamResponsive } from '../Responsive'
 
-	import { shouldSuppressAutoplay, useBorder, useColorEffect, useDimension, useElevation, useLocale, useMargin, usePadding, useRounded, useTypography, useVideoPlayer } from '../../composables'
+	import { shouldSuppressAutoplay } from '../../composables/Media/use-media-player.composable'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useColorEffect } from '../../composables/Commons/colorEffect.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
+	import { useVideoPlayer } from '../../composables/Video/video-player.composable'
 
-	import { MDI_ICONS, VIDEO_TRACK_KIND } from '../../enums'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { VIDEO_TRACK_KIND } from '../../enums/Video/video.enum'
 
-	import type {
-		IVideoProps, IVideoSource} from '../../interfaces'
+	import type { IVideoProps } from '../../interfaces/Video/video.interface'
+	import type { IVideoSource } from '../../interfaces/Video/video-track.interface'
 
 	import type { IVideoEmits, IVideoSlots } from '../../interfaces/Video/video.interface'
 
-	import type { TQualityOption } from '../../types'
+	import type { TQualityOption } from '../../types/Media/quality-option.type'
 
 	/*********************************************************
 	 * Global

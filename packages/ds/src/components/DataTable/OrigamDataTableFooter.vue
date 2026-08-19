@@ -44,14 +44,19 @@
 		lang="ts"
 		setup
 >
-	import { OrigamPagination, OrigamRow, OrigamSelect } from "../../components"
+	import OrigamPagination from '../Pagination/OrigamPagination.vue'
+	import OrigamRow from '../Grids/OrigamRow.vue'
+	import OrigamSelect from '../Select/OrigamSelect.vue'
 
-	import { useLocale, usePagination, useProps , useStyle} from "../../composables"
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { usePagination } from '../../composables/DataTable/pagination.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { DENSITY } from "../../enums"
+	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { IDataTableFooterProps, IDataTableFooterSlots } from "../../interfaces"
-	import type { TOrigamPagination } from "../../types"
+	import type { IDataTableFooterProps, IDataTableFooterSlots } from '../../interfaces/DataTable/footer.interface'
+	import type { TOrigamPagination } from '../../types/Pagination/pagination.type'
 
 	import { computed, ref, StyleValue } from "vue"
 

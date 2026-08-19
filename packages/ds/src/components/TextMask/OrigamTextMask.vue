@@ -21,9 +21,9 @@
 	} from 'vue'
 
 	import { resolveGradient } from '../../utils/Commons/gradient.util'
-	import { useTypography } from '../../composables'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import type { ITextMaskProps, ITextMaskSlots } from '../../interfaces'
+	import type { ITextMaskProps, ITextMaskSlots } from '../../interfaces/TextMask/text-mask.interface'
 
 	/*********************************************************
 	 * Global

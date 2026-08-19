@@ -28,19 +28,17 @@
 		lang="ts"
 		setup
 >
-	import { vContrast } from '../../directives'
+	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import {
-		useBorder,
-		useBothColor,
-		useProps,
-		useRounded,
-		useSize,
-		useStyle,
-		useTypography
-} from '../../composables'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useSize } from '../../composables/Commons/size.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import type { IKbdProps, IKbdSlots } from '../../interfaces'
+	import type { IKbdProps, IKbdSlots } from '../../interfaces/Kbd/kbd.interface'
 
 	import { computed, StyleValue, toRef } from 'vue'
 

@@ -494,17 +494,15 @@
 		watch
 	} from 'vue'
 
-	import {
-		useChartHeaderTypography,
-		useBackgroundColor,
-		useChart,
-		useChartZoom,
-		useDimension,
-		useElevation,
-		useMargin,
-		usePadding,
-		useRounded
-	} from '../../composables'
+	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
+	import { useChart } from '../../composables/Chart/chart.composable'
+	import { useChartZoom } from '../../composables/Chart/chart-zoom.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
 
 	import {
 		computeAnnotationGeometry,
@@ -521,21 +519,15 @@
 	import OrigamChartRangeSelector from './OrigamChartRangeSelector.vue'
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
-	import type {
-		IChartAnnotationGeo,
-		IChartCartesianEmits,
-		IChartCartesianProps,
-		IChartDrilldownFrame,
-		IChartDrilldownLink,
-		IChartPath,
-		IChartPlotBand,
-		IChartPlotLine,
-		IChartPoint,
-		IChartCartesianSlots,
-		IChartRangeSelectorButton,
-		IChartSeries,
-		IChartSeriesPoint
-	} from '../../interfaces'
+	import type { IChartAnnotationGeo } from '../../interfaces/Chart/chart-annotation.interface'
+	import type { IChartCartesianEmits, IChartCartesianProps, IChartCartesianSlots } from '../../interfaces/Chart/chart-cartesian.interface'
+	import type { IChartDrilldownFrame, IChartDrilldownLink } from '../../interfaces/Chart/chart-drilldown.interface'
+	import type { IChartPath } from '../../interfaces/Chart/chart.interface'
+	import type { IChartPlotBand } from '../../interfaces/Chart/chart-plot-band.interface'
+	import type { IChartPlotLine } from '../../interfaces/Chart/chart-plot-line.interface'
+	import type { IChartPoint } from '../../interfaces/Chart/chart-point.interface'
+	import type { IChartRangeSelectorButton } from '../../interfaces/Chart/chart-range-selector.interface'
+	import type { IChartSeries, IChartSeriesPoint } from '../../interfaces/Chart/chart-series.interface'
 
 	/*********************************************************
 	 * Global

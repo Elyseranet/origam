@@ -271,21 +271,33 @@
 		setup
 >
 	import { computed, nextTick, onMounted, ref, shallowRef, StyleValue, useSlots, watch } from "vue"
-	import { OrigamBtn, OrigamDivider, OrigamInput, OrigamTextField } from "../../components"
+	import OrigamBtn from '../Btn/OrigamBtn.vue'
+	import OrigamDivider from '../Divider/OrigamDivider.vue'
+	import OrigamInput from '../Input/OrigamInput.vue'
+	import OrigamTextField from '../TextField/OrigamTextField.vue'
 
-	import { useAdjacentInner, useFocus, useHold, useProps, useVModel , useStyle} from "../../composables"
+	import { useAdjacentInner } from '../../composables/Commons/adjacentInner.composable'
+	import { useFocus } from '../../composables/Commons/focus.composable'
+	import { useHold } from '../../composables/NumberField/hold.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { UNSEEDED } from "../../consts"
+	import { UNSEEDED } from '../../consts/Commons/vmodel.const'
 
-	import { DIRECTION, MDI_ICONS, TEXT_FIELD_TYPE } from "../../enums"
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { TEXT_FIELD_TYPE } from '../../enums/TextField/text-field.enum'
 
-	import type { INumberFieldProps, INumberFieldSlots} from "../../interfaces"
+	import type { INumberFieldProps, INumberFieldSlots } from '../../interfaces/NumberField/number-field.interface'
 
 	import type { INumberFieldEmits } from '../../interfaces/NumberField/number-field.interface'
 
-	import type { TOrigamInput, TOrigamTextField } from "../../types"
+	import type { TOrigamInput } from '../../types/Input/input.type'
+	import type { TOrigamTextField } from '../../types/TextField/text-field.type'
 
-	import { clamp, forwardRefs } from "../../utils"
+	import { clamp } from '../../utils/Commons/commons.util'
+	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
 
 	/*********************************************************
 	 * Global

@@ -18,16 +18,15 @@
 		setup
 >
 	import { computed, StyleValue } from 'vue'
-	import { OrigamFade, OrigamTransition } from '../../components'
-	import {
-	useBackgroundColor,
-	useProps,
-	useStyle
-} from '../../composables'
-	import type { IOverlayScrimProps} from '../../interfaces'
+	import OrigamFade from '../Transition/OrigamFade.vue'
+	import OrigamTransition from '../Transition/OrigamTransition.vue'
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import type { IOverlayScrimProps } from '../../interfaces/Overlay/overlay-scrim.interface'
 
 	import type { IOverlayScrimEmits } from '../../interfaces/Overlay/overlay-scrim.interface'
-	import type { TTransitionProps } from "../../types"
+	import type { TTransitionProps } from '../../types/Transition/transition.type'
 
 	/*********************************************************
 	 * Global

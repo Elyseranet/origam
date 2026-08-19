@@ -13,18 +13,16 @@
 		lang="ts"
 		setup
 >
-	import {
-	useDimension,
-	usePadding,
-	useProps,
-	useStyle
-} from '../../composables'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { ALIGN } from '../../enums'
+	import { ALIGN } from '../../enums/Commons/align.enum'
 
-	import type { IDataTableColumnCellSlots, IDataTableColumnProps } from '../../interfaces'
+	import type { IDataTableColumnCellSlots, IDataTableColumnProps } from '../../interfaces/DataTable/column.interface'
 
-	import { convertToUnit } from '../../utils'
+	import { convertToUnit } from '../../utils/Commons/commons.util'
 
 	import { computed, StyleValue } from 'vue'
 

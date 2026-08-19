@@ -115,33 +115,32 @@
 		setup
 >
 	import { computed, onBeforeMount, StyleValue, toRef, useAttrs, useSlots, watch } from 'vue'
-	import { OrigamAvatar, OrigamIcon } from '../../components'
+	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
 
-	import {
-		useAdjacent,
-		useBackgroundColor,
-		useDensity,
-		useDimension,
-		useHover,
-		useLink,
-		useList,
-		useNestedItem,
-		useProps,
-		useSize,
-		useStateEffect,
-		useStyle,
-		useTypography
-} from '../../composables'
+	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useHover } from '../../composables/Commons/hover.composable'
+	import { useLink } from '../../composables/Commons/link.composable'
+	import { useList } from '../../composables/List/list.composable'
+	import { useNestedItem } from '../../composables/Commons/nestedItem.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useSize } from '../../composables/Commons/size.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import { vRipple } from '../../directives'
+	import vRipple from '../../directives/Ripple/ripple.directive'
 
-	import { KEYBOARD_VALUES } from '../../enums'
+	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
 
-	import type { IListItemProps} from '../../interfaces'
+	import type { IListItemProps } from '../../interfaces/List/list-item.interface'
 
 	import type { IListItemEmits, IListItemSlots } from '../../interfaces/List/list-item.interface'
 
-	import type { TListItemSlot } from '../../types'
+	import type { TListItemSlot } from '../../types/List/list-item.type'
 
 	const attrs = useAttrs()
 

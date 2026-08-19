@@ -427,28 +427,22 @@
 	import OrigamChartTreemap from './OrigamChartTreemap.vue'
 	import OrigamChartWordCloud from './OrigamChartWordCloud.vue'
 
-	import {
-		CHART_CARTESIAN_KIND,
-		CHART_POLAR_KIND,
-		CHART_PYRAMID_KIND,
-		CHART_TYPE
-	} from '../../enums'
+	import { CHART_CARTESIAN_KIND } from '../../enums/Chart/chart-cartesian.enum'
+	import { CHART_POLAR_KIND } from '../../enums/Chart/chart-polar.enum'
+	import { CHART_PYRAMID_KIND } from '../../enums/Chart/chart-pyramid.enum'
+	import { CHART_TYPE } from '../../enums/Chart/chart.enum'
 
-	import type {
-		IChartPoint,
-		IChartProps,
-		IChartSeries
-	} from '../../interfaces'
+	import type { IChartPoint } from '../../interfaces/Chart/chart-point.interface'
+	import type { IChartProps } from '../../interfaces/Chart/chart.interface'
+	import type { IChartSeries } from '../../interfaces/Chart/chart-series.interface'
 
 	import type {
 		IChartEmits
 	} from '../../interfaces/Chart/chart.interface'
 
-	import type {
-		TChartCartesianKind,
-		TChartPolarKind,
-		TChartPyramidKind
-	} from '../../types'
+	import type { TChartCartesianKind } from '../../types/Chart/chart-cartesian.type'
+	import type { TChartPolarKind } from '../../types/Chart/chart-polar.type'
+	import type { TChartPyramidKind } from '../../types/Chart/chart-pyramid.type'
 
 	/*********************************************************
 	 * Global

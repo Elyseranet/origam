@@ -97,36 +97,38 @@
 		lang="ts"
 		setup
 >
-	import {
-		OrigamDatePickerControls,
-		OrigamDatePickerHeader,
-		OrigamDatePickerMonth,
-		OrigamDatePickerMonths,
-		OrigamDatePickerYears,
-		OrigamFade,
-		OrigamPicker,
-		OrigamReverseTranslatePicker,
-		OrigamTranslatePicker
-	} from "../../components"
+	import OrigamDatePickerControls from './OrigamDatePickerControls.vue'
+	import OrigamDatePickerHeader from './OrigamDatePickerHeader.vue'
+	import OrigamDatePickerMonth from './OrigamDatePickerMonth.vue'
+	import OrigamDatePickerMonths from './OrigamDatePickerMonths.vue'
+	import OrigamDatePickerYears from './OrigamDatePickerYears.vue'
+	import OrigamFade from '../Transition/OrigamFade.vue'
+	import OrigamPicker from '../Picker/OrigamPicker.vue'
+	import OrigamReverseTranslatePicker from '../Transition/OrigamReverseTranslatePicker.vue'
+	import OrigamTranslatePicker from '../Transition/OrigamTranslatePicker.vue'
 
-	import { useDate, useLocale, useProps, useVModel , useStyle} from "../../composables"
+	import { useDate } from '../../composables/Commons/date.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { CALENDAR_STRATEGY, DATE_MODE } from "../../enums"
+	import { CALENDAR_STRATEGY } from '../../enums/Commons/calendar.enum'
+	import { DATE_MODE } from '../../enums/DatePicker/date-picker.enum'
 
-	import type { IDatePickerControlsProps, IDatePickerProps} from "../../interfaces"
+	import type { IDatePickerControlsProps } from '../../interfaces/DatePicker/date-picker-controls.interface'
+	import type { IDatePickerProps } from '../../interfaces/DatePicker/date-picker.interface'
 
 	import type { IDatePickerEmits, IDatePickerSlots } from '../../interfaces/DatePicker/date-picker.interface'
 
-	import type {
-		TOrigamDatePickerControls,
-		TOrigamDatePickerHeader,
-		TOrigamDatePickerMonth,
-		TOrigamDatePickerMonths,
-		TOrigamDatePickerYears,
-		TOrigamPicker
-	} from "../../types"
+	import type { TOrigamDatePickerControls } from '../../types/DatePicker/date-picker-controls.type'
+	import type { TOrigamDatePickerHeader } from '../../types/DatePicker/date-picker-header.type'
+	import type { TOrigamDatePickerMonth } from '../../types/DatePicker/date-picker-month.type'
+	import type { TOrigamDatePickerMonths } from '../../types/DatePicker/date-picker-months.type'
+	import type { TOrigamDatePickerYears } from '../../types/DatePicker/date-picker-years.type'
+	import type { TOrigamPicker } from '../../types/Picker/picker.type'
 
-	import { wrapInArray } from "../../utils"
+	import { wrapInArray } from '../../utils/Commons/commons.util'
 
 	import { computed, ref, shallowRef, StyleValue, useSlots, watch } from "vue"
 

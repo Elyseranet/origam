@@ -112,29 +112,31 @@
 >
 	import type { ComputedRef, StyleValue } from 'vue'
 	import { computed, useSlots } from 'vue'
-	import { OrigamAvatar, OrigamBtn, OrigamIcon } from '../../components'
+	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
+	import OrigamBtn from '../Btn/OrigamBtn.vue'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
 
-	import { vContrast } from '../../directives'
+	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import {
-		useActive,
-		useAdjacent,
-		useDensity,
-		useDimension,
-		useHover,
-		useLocale,
-		useLocation,
-		usePosition,
-		useProps,
-		useStateEffect,
-		useStatus,
-		useStyle,
-		useTypography
-	} from '../../composables'
+	import { useActive } from '../../composables/Commons/active.composable'
+	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useHover } from '../../composables/Commons/hover.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useLocation } from '../../composables/Commons/location.composable'
+	import { usePosition } from '../../composables/Commons/position.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStatus } from '../../composables/Commons/status.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import { DENSITY, MDI_ICONS, STATUS } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { STATUS } from '../../enums/Commons/status.enum'
 
-	import type { IAlertProps} from '../../interfaces'
+	import type { IAlertProps } from '../../interfaces/Alert/alert.interface'
 
 	import type { IAlertEmits, IAlertSlots } from '../../interfaces/Alert/alert.interface'
 

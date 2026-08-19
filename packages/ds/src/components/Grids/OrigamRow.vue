@@ -13,21 +13,20 @@
 		setup
 >
 	import { computed, type Ref, StyleValue, toRef } from 'vue'
-	import {
-	useBorder,
-	useBothColor,
-	useDensity,
-	useMargin,
-	usePadding,
-	useProps,
-	useStyle
-} from '../../composables'
-	import { DENSITY } from '../../enums'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { ICommonsComponentSlots, IRowProps } from '../../interfaces'
-	import type { TColor } from '../../types'
+	import type { ICommonsComponentSlots } from '../../interfaces/Commons/commons.interface'
+	import type { IRowProps } from '../../interfaces/Grids/row.interface'
+	import type { TColor } from '../../types/Commons/color.type'
 
-	import { toKebabCase } from '../../utils'
+	import { toKebabCase } from '../../utils/Commons/commons.util'
 
 	/*********************************************************
 	 * Global

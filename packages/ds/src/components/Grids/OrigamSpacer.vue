@@ -13,9 +13,11 @@
 		setup
 >
 	import { computed, StyleValue } from 'vue'
-	import { useProps , useStyle} from "../../composables"
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { ICommonsComponentSlots, ISpacerProps } from "../../interfaces"
+	import type { ICommonsComponentSlots } from '../../interfaces/Commons/commons.interface'
+	import type { ISpacerProps } from '../../interfaces/Grids/spacer.interface'
 
 	/*********************************************************
 	 * Global

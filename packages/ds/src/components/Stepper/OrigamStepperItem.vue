@@ -46,13 +46,16 @@
 >
 	import { computed, inject } from 'vue'
 
-	import { OrigamIcon } from '../../components'
-	import { ORIGAM_STEPPER_KEY } from '../../consts'
-	import { DIRECTION, MDI_ICONS, STEPPER_ITEM_STATUS } from '../../enums'
-	import { useLocale, useProps } from '../../composables'
-	import { vContrast } from '../../directives'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
+	import { ORIGAM_STEPPER_KEY } from '../../consts/Stepper/stepper.const'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { STEPPER_ITEM_STATUS } from '../../enums/Stepper/stepper.enum'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import type { IStepperItemEmits, IStepperItemProps } from '../../interfaces'
+	import type { IStepperItemEmits, IStepperItemProps } from '../../interfaces/Stepper/stepper-item.interface'
 
 	/*********************************************************
 	 * Global

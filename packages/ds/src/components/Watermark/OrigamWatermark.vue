@@ -32,12 +32,9 @@
 		watch
 	} from 'vue'
 
-	import { useWatermark } from '../../composables'
+	import { useWatermark } from '../../composables/Watermark/watermark.composable'
 
-	import type {
-		IWatermarkProps,
-		IWatermarkSlots
-	} from '../../interfaces'
+	import type { IWatermarkProps, IWatermarkSlots } from '../../interfaces/Watermark/watermark.interface'
 
 	/*********************************************************
 	 * Global

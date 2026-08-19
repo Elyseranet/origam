@@ -29,12 +29,14 @@
 		setup
 >
 	import { computed, StyleValue } from 'vue'
-	import { OrigamProgress } from '../../components'
-	import { useProps , useStyle} from "../../composables"
+	import OrigamProgress from '../Progress/OrigamProgress.vue'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { PROGRESS_TYPE } from '../../enums'
+	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
 
-	import type { ILoaderProps, ILoaderSlots } from '../../interfaces'
+	import type { ILoaderProps } from '../../interfaces/Commons/loader.interface'
+	import type { ILoaderSlots } from '../../interfaces/Loader/loader.interface'
 
 	/*********************************************************
 	 * Global

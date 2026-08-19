@@ -64,21 +64,19 @@
 >
 	import { computed, ComputedRef, StyleValue } from 'vue'
 
-	import {
-		useActive,
-		useDensity,
-		useDimension,
-		useHover,
-		useProps,
-		useStateEffect,
-		useTypography
-	} from '../../composables'
+	import { useActive } from '../../composables/Commons/active.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useHover } from '../../composables/Commons/hover.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
 	import { isIntent, tokenForegroundForIntent } from '../../utils/Commons/color.util'
 
-	import type { IBracketCompetitorEmits, IBracketCompetitorProps } from '../../interfaces'
+	import type { IBracketCompetitorEmits, IBracketCompetitorProps } from '../../interfaces/Bracket/bracket-competitor-component.interface'
 
-	import type { TIntent } from '../../types'
+	import type { TIntent } from '../../types/Commons/intent.type'
 
 	const props = withDefaults(defineProps<IBracketCompetitorProps>(), {
 		tag: 'div',

@@ -52,18 +52,16 @@
 		setup
 >
 	import { computed, StyleValue, useSlots } from 'vue'
-	import {
-		useBackgroundColor,
-		useProps,
-		useRounded,
-		useStyle
-	} from '../../composables'
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { ISliderFieldTrackProps, ISliderFieldTrackSlots } from "../../interfaces"
+	import type { ISliderFieldTrackProps, ISliderFieldTrackSlots } from '../../interfaces/SliderField/slider-field-track.interface'
 
-	import type { TTick } from '../../types'
+	import type { TTick } from '../../types/SliderField/slider-field.type'
 
-	import { convertToUnit, int } from '../../utils'
+	import { convertToUnit, int } from '../../utils/Commons/commons.util'
 
 	const props = withDefaults(defineProps<ISliderFieldTrackProps>(), {
 		start: 0,

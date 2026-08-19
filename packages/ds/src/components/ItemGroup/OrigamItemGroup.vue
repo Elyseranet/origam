@@ -19,19 +19,17 @@
 >
 	import { computed, StyleValue } from 'vue'
 
-	import { OrigamDefaultsProvider } from '../../components'
-	import {
-	useGroup,
-	usePassedProps,
-	useProps,
-	useStyle
-} from '../../composables'
+	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
+	import { useGroup } from '../../composables/Commons/group.composable'
+	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { ORIGAM_ITEM_GROUP_KEY } from '../../consts'
+	import { ORIGAM_ITEM_GROUP_KEY } from '../../consts/ItemGroup/item-group.const'
 
-	import { omitUndefined } from '../../utils'
+	import { omitUndefined } from '../../utils/Commons/commons.util'
 
-	import type { IItemGroupProps} from '../../interfaces'
+	import type { IItemGroupProps } from '../../interfaces/ItemGroup/item-group.interface'
 
 	import type { IItemGroupEmits, IItemGroupSlots } from '../../interfaces/ItemGroup/item-group.interface'
 

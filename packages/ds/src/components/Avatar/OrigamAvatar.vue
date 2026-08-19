@@ -49,23 +49,23 @@
 		lang="ts"
 		setup
 >
-	import { OrigamIcon, OrigamImg } from '../../components'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
+	import OrigamImg from '../Img/OrigamImg.vue'
 
-	import {
-		useActive,
-		useDensity,
-		useHover,
-		useProps,
-		useSize,
-		useStateEffect,
-		useStyle,
-		useTypography
-	} from '../../composables'
+	import { useActive } from '../../composables/Commons/active.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useHover } from '../../composables/Commons/hover.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useSize } from '../../composables/Commons/size.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import type { IAvatarProps, ISrcObject} from '../../interfaces'
+	import type { IAvatarProps } from '../../interfaces/Avatar/avatar.interface'
+	import type { ISrcObject } from '../../interfaces/Img/img.interface'
 
 	import type { IAvatarEmits, IAvatarSlots } from '../../interfaces/Avatar/avatar.interface'
-	import { isEmpty } from "../../utils"
+	import { isEmpty } from '../../utils/Commons/commons.util'
 
 	import type { ComputedRef, StyleValue } from 'vue'
 	import { computed, useSlots } from 'vue'

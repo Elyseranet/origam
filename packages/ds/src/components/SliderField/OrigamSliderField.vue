@@ -425,29 +425,32 @@
 		setup
 >
 	import { computed, ref, StyleValue, useSlots, WritableComputedRef } from 'vue'
-	import { OrigamInput, OrigamLabel, OrigamSliderFieldTrack } from '../../components'
+	import OrigamInput from '../Input/OrigamInput.vue'
+	import OrigamLabel from '../Label/OrigamLabel.vue'
+	import OrigamSliderFieldTrack from './OrigamSliderFieldTrack.vue'
 
-	import {
-		useBackgroundColor,
-		useFocus,
-		useProps,
-		useRounded,
-		useRtl,
-		useSteps,
-		useStyle,
-		useTextColor,
-		useVModel
-	} from '../../composables'
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
+	import { useFocus } from '../../composables/Commons/focus.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useRtl } from '../../composables/Commons/rtl.composable'
+	import { useSteps } from '../../composables/SliderField/slider-field.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTextColor } from '../../composables/Commons/textColor.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { DENSITY, DIRECTION, SLIDER_FIELD_VARIANT } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
+	import { SLIDER_FIELD_VARIANT } from '../../enums/SliderField/slider-field.enum'
 
-	import type { ISliderFieldProps } from "../../interfaces"
+	import type { ISliderFieldProps } from '../../interfaces/SliderField/slider-field.interface'
 
 	import type { ISliderFieldEmits, ISliderFieldSlots } from '../../interfaces/SliderField/slider-field.interface'
 
-	import type { TOrigamInput, TTick } from '../../types'
+	import type { TOrigamInput } from '../../types/Input/input.type'
+	import type { TTick } from '../../types/SliderField/slider-field.type'
 
-	import { clamp, convertToUnit, createRange, omit } from '../../utils'
+	import { clamp, convertToUnit, createRange, omit } from '../../utils/Commons/commons.util'
 
 	/*********************************************************
 	 * Global

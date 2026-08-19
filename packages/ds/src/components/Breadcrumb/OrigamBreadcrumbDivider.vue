@@ -20,16 +20,22 @@
 		lang="ts"
 		setup
 >
-	import { OrigamIcon } from '../../components'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
 
-	import { useBothColor, useDensity, useMargin, usePadding, useProps, useSize, useStyle } from '../../composables'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useSize } from '../../composables/Commons/size.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { vContrast } from '../../directives'
+	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import { MDI_ICONS } from '../../enums'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import type { IBreadcrumbDividerProps, IBreadcrumbDividerSlots } from '../../interfaces'
-	import type { TValueOf } from "../../types"
+	import type { IBreadcrumbDividerProps, IBreadcrumbDividerSlots } from '../../interfaces/Breadcrumb/breadcrumb-divider.interface'
+	import type { TValueOf } from '../../types/Commons/commons.type'
 
 	import { computed, StyleValue, toRef } from 'vue'
 

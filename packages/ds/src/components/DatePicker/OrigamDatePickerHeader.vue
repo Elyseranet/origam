@@ -72,11 +72,16 @@
 		lang="ts"
 		setup
 >
-	import { OrigamAvatar, OrigamIcon, OrigamTransition } from "../../components"
+	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
+	import OrigamTransition from '../Transition/OrigamTransition.vue'
 
-	import { useAdjacent, useDensity, useProps , useStyle} from "../../composables"
+	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { IDatePickerHeaderProps} from "../../interfaces"
+	import type { IDatePickerHeaderProps } from '../../interfaces/DatePicker/date-picker-header.interface'
 
 	import type { IDatePickerHeaderEmits, IDatePickerHeaderSlots } from '../../interfaces/DatePicker/date-picker-header.interface'
 

@@ -170,33 +170,25 @@
 		type StyleValue
 	} from 'vue'
 
-	import {
-		useChartHeaderTypography,
-		useBackgroundColor,
-		useChart,
-		useDimension,
-		useElevation,
-		useMargin,
-		usePadding,
-		useRounded
-	} from '../../composables'
+	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
+	import { useChart } from '../../composables/Chart/chart.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
 
 	import { OrigamBtn } from '../Btn'
 
 	import OrigamChartLegend from './OrigamChartLegend.vue'
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
-	import type {
-		IChartDrilldownFrame,
-		IChartDrilldownLink,
-		IChartPath,
-		IChartPoint,
-		IChartPolarEmits,
-		IChartPolarProps,
-		IChartPolarSlots,
-		IChartSeries,
-		IChartSeriesPoint
-	} from '../../interfaces'
+	import type { IChartDrilldownFrame, IChartDrilldownLink } from '../../interfaces/Chart/chart-drilldown.interface'
+	import type { IChartPath } from '../../interfaces/Chart/chart.interface'
+	import type { IChartPoint } from '../../interfaces/Chart/chart-point.interface'
+	import type { IChartPolarEmits, IChartPolarProps, IChartPolarSlots } from '../../interfaces/Chart/chart-polar.interface'
+	import type { IChartSeries, IChartSeriesPoint } from '../../interfaces/Chart/chart-series.interface'
 
 	/*********************************************************
 	 * Global

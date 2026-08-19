@@ -64,21 +64,27 @@
 		lang="ts"
 		setup
 >
-	import { OrigamBtn, OrigamSliderField } from "../../components"
+	import OrigamBtn from '../Btn/OrigamBtn.vue'
+	import OrigamSliderField from '../SliderField/OrigamSliderField.vue'
 
-	import { useProps, useVModel , useStyle} from "../../composables"
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { COLOR_NULL, SUPPORTS_EYE_DROPPER } from "../../consts"
+	import { COLOR_NULL } from '../../consts/ColorPicker/color-picker.const'
+	import { SUPPORTS_EYE_DROPPER } from '../../consts/Commons/commons.const'
 
-	import { DENSITY, MDI_ICONS } from "../../enums"
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import type { IColorPickerPreviewProps} from "../../interfaces"
+	import type { IColorPickerPreviewProps } from '../../interfaces/ColorPicker/color-picker-preview.interface'
 
 	import type { IColorPickerPreviewEmits } from '../../interfaces/ColorPicker/color-picker-preview.interface'
 
-	import type { THSVA } from "../../types"
+	import type { THSVA } from '../../types/Commons/color.type'
 
-	import { consoleWarn, HSVtoCSS, parseColor, RGBtoHSV } from "../../utils"
+	import { consoleWarn } from '../../utils/Commons/console.util'
+	import { HSVtoCSS, parseColor, RGBtoHSV } from '../../utils/Commons/color.util'
 
 	import { computed, onUnmounted, StyleValue } from "vue"
 

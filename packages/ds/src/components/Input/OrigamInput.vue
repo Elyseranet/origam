@@ -96,35 +96,36 @@
 		setup
 >
 	import { computed, StyleValue, toRef, useSlots } from 'vue'
-	import { OrigamAvatar, OrigamIcon } from '../../components'
+	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
 	import { OrigamMessages } from '../../components/Messages'
-	import { vContrast } from '../../directives'
+	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import {
-		useAdjacent,
-		useBorder,
-		useBothColor,
-		useDensity,
-		useDimension,
-		useElevation,
-		useMargin,
-		usePadding,
-		useProps,
-		useRounded,
-		useRtl,
-		useSize,
-		useStyle,
-		useTypography,
-		useValidation
-} from '../../composables'
+	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useRtl } from '../../composables/Commons/rtl.composable'
+	import { useSize } from '../../composables/Commons/size.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
+	import { useValidation } from '../../composables/Commons/validation.composable'
 
-	import { DENSITY, DIRECTION } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
 
-	import type { IInputProps, IInputSlots} from '../../interfaces'
+	import type { IInputProps, IInputSlots } from '../../interfaces/Input/input.interface'
 
 	import type { IInputEmits } from '../../interfaces/Input/input.interface'
 
-	import { getUid, wrapInArray } from '../../utils'
+	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
+	import { wrapInArray } from '../../utils/Commons/commons.util'
 
 	/*********************************************************
 	 * Global

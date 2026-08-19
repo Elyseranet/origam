@@ -22,24 +22,23 @@
 >
 	import { computed, provide, ref, shallowRef, StyleValue, watch } from 'vue'
 
-	import { OrigamDefaultsProvider } from '../../components'
+	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
 
-	import {
-		useGroup,
-		usePassedProps,
-		useProps,
-		useStyle
-	} from '../../composables'
+	import { useGroup } from '../../composables/Commons/group.composable'
+	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { ORIGAM_TAB_PANELS_KEY, ORIGAM_TAB_PANELS_CTX_KEY } from '../../consts'
+	import { ORIGAM_TAB_PANELS_KEY, ORIGAM_TAB_PANELS_CTX_KEY } from '../../consts/Tabs/tabs.const'
 
-	import { omitUndefined } from '../../utils'
+	import { omitUndefined } from '../../utils/Commons/commons.util'
 
-	import { vTouch } from '../../directives'
+	import vTouch from '../../directives/Touch/touch.directive'
 
-	import { DIRECTION } from '../../enums'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
 
-	import type { ITabPanelsProps, ITouchHandlers} from '../../interfaces'
+	import type { ITabPanelsProps } from '../../interfaces/Tabs/tab-panels.interface'
+	import type { ITouchHandlers } from '../../interfaces/Commons/touch.interface'
 
 	import type { ITabPanelsEmits, ITabPanelsSlots } from '../../interfaces/Tabs/tab-panels.interface'
 
