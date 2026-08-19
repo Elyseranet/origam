@@ -25,7 +25,8 @@ const GUARDS = [
     'no-usedefaults-in-components.mjs',
     'emits-completeness.mjs',
     'layer-folders.mjs',
-    'seed-source-paths.mjs'
+    'seed-source-paths.mjs',
+    'comment-format.mjs'
 ]
 
 let failed = 0
