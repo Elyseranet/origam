@@ -1,28 +1,34 @@
 import type {
     IActiveEmits,
-    IActiveProps,
+    IActiveProps
+} from '../Commons/active.interface'
+import type {
     IAdjacentEmits,
-    IAdjacentProps,
-    IBorderProps,
+    IAdjacentProps
+} from '../Commons/adjacent.interface'
+import type { IBorderProps } from '../Commons/border.interface'
+import type {
     IBgColorProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type {
     ICommonsComponentProps,
-    IDensityProps,
-    IDimensionProps,
-    IElevationProps,
-    IHoverEmits,
-    ILinkProps,
-    ILoaderProps,
-    ILocationProps,
-    IMarginProps,
-    IPaddingProps,
-    IPositionProps,
-    IRippleProps,
-    IRoundedProps,
     ITagProps
-} from '../../interfaces'
+} from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IHoverEmits } from '../Commons/hover.interface'
+import type { ILinkProps } from '../Commons/router.interface'
+import type { ILoaderProps } from '../Commons/loader.interface'
+import type { ILocationProps } from '../Commons/location.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IPositionProps } from '../Commons/position.interface'
+import type { IRippleProps } from '../Commons/ripple.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
 
-import type { TCardType } from '../../types'
+import type { TCardType } from '../../types/Card/card.type'
 
 // `IColorProps` exposes `color` / `bgColor` / hover / active colour
 // hooks. Pre-fix `ICardProps` did NOT extend it, so a consumer

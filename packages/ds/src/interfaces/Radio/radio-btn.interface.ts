@@ -1,5 +1,12 @@
-import type { IClickLabelEmits, ICommonsComponentEmits, ICommonsComponentProps, IFocusEmits, ISelectionControlProps } from '../../interfaces'
-import type { TColor, TIcon } from '../../types'
+import type {
+    IClickLabelEmits,
+    ICommonsComponentEmits,
+    ICommonsComponentProps
+} from '../Commons/commons.interface'
+import type { IFocusEmits } from '../Commons/focus.interface'
+import type { ISelectionControlProps } from '../SelectionControl/selection-control.interface'
+import type { TColor } from '../../types/Commons/color.type'
+import type { TIcon } from '../../types/Icon/icon.type'
 
 export interface IRadioBtnProps extends ICommonsComponentProps, ISelectionControlProps {
 

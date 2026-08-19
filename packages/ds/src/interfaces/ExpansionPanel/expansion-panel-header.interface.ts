@@ -1,22 +1,26 @@
+import type { IActiveProps } from '../Commons/active.interface'
 import type {
-    IActiveProps,
     IAdjacentEmits,
-    IAdjacentProps,
+    IAdjacentProps
+} from '../Commons/adjacent.interface'
+import type {
     IBgColorProps,
-    IBorderProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type { IBorderProps } from '../Commons/border.interface'
+import type {
     ICommonsComponentProps,
-    IDensityProps,
-    IHoverProps,
-    IMarginProps,
-    IPaddingProps,
-    IRippleProps,
-    IRoundedProps,
-    ITagProps,
-    ITypographyProps
-} from '../../interfaces'
+    ITagProps
+} from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IHoverProps } from '../Commons/hover.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRippleProps } from '../Commons/ripple.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
 
-import type { TIcon } from '../../types'
+import type { TIcon } from '../../types/Icon/icon.type'
 
 export interface IExpansionPanelHeaderProps extends IColorProps, IBgColorProps, ITagProps, ICommonsComponentProps, IDensityProps, IRoundedProps, IBorderProps, IPaddingProps, IMarginProps, IAdjacentProps, IRippleProps, IActiveProps, IHoverProps, ITypographyProps {
     expandIcon?: TIcon

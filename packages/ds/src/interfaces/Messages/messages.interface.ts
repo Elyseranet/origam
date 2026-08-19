@@ -1,16 +1,16 @@
+import type { IBorderProps } from '../Commons/border.interface'
+import type { IColorProps } from '../Commons/color.interface'
 import type {
-    IBorderProps,
-    IColorProps,
     ICommonsComponentProps,
-    IDensityProps,
-    IElevationProps,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps,
-    ITagProps,
-    ITransitionComponentProps,
-    ITypographyProps
-} from '../../interfaces'
+    ITagProps
+} from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { ITransitionComponentProps } from '../Commons/transition-component.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
 
 export interface IMessagesProps extends ICommonsComponentProps, ITagProps, ITransitionComponentProps, IColorProps, IBorderProps, IPaddingProps, IMarginProps, IRoundedProps, IDensityProps, IElevationProps, ITypographyProps {
     active?: boolean

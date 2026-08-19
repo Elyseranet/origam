@@ -1,6 +1,6 @@
-import type { ICommonsComponentProps } from '../../interfaces'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
 
-import type { TInfiniteScrollSide } from '../../types'
+import type { TInfiniteScrollSide } from '../../types/InfiniteScroll/infinite-scroll.type'
 
 /*********************************************************
  * IInfiniteScrollIntersectProps / IInfiniteScrollIntersectEmits

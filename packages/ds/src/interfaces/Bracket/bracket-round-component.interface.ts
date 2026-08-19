@@ -1,6 +1,11 @@
-import type { ICommonsComponentProps, IDirectionProps, ITagProps, ITypographyProps } from '../../interfaces'
+import type {
+    ICommonsComponentProps,
+    ITagProps
+} from '../Commons/commons.interface'
+import type { IDirectionProps } from '../Commons/direction.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
 
-import type { TIntent } from '../../types'
+import type { TIntent } from '../../types/Commons/intent.type'
 
 import type { IBracketCompetitor } from './bracket-competitor.interface'
 import type { IBracketMatch } from './bracket-match.interface'

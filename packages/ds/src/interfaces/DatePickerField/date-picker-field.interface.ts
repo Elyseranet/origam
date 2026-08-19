@@ -1,11 +1,9 @@
-import type {
-    IAdjacentSlots,
-    IChipProps,
-    IFieldSlots,
-    IMenuProps,
-    ITextFieldProps,
-    ITransitionComponentProps
-} from "../../interfaces"
+import type { IAdjacentSlots } from '../Commons/adjacent.interface'
+import type { IChipProps } from '../Chip/chip.interface'
+import type { IFieldSlots } from '../Field/field.interface'
+import type { IMenuProps } from '../Menu/menu.interface'
+import type { ITextFieldProps } from '../TextField/text-field.interface'
+import type { ITransitionComponentProps } from '../Commons/transition-component.interface'
 
 export interface IDatePickerFieldProps extends ITextFieldProps, ITransitionComponentProps {
     menu?: boolean,

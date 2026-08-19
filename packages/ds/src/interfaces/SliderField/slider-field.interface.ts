@@ -1,28 +1,32 @@
+import type { IAdjacentSlots } from '../Commons/adjacent.interface'
+import type { IBorderProps } from '../Commons/border.interface'
+import type { IColorProps } from '../Commons/color.interface'
 import type {
-    IAdjacentSlots,
-    IBorderProps,
-    IColorProps,
     ICommonsComponentEmits,
-    ICommonsComponentProps,
-    IDensityProps,
-    IDirectionProps,
-    IElevationProps,
+    ICommonsComponentProps
+} from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IDirectionProps } from '../Commons/direction.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type {
     IFocusEmits,
-    IFocusProps,
-    IInputProps,
-    IMarginProps,
-    IPaddingProps,
-    IRippleProps,
-    IRoundedProps,
+    IFocusProps
+} from '../Commons/focus.interface'
+import type { IInputProps } from '../Input/input.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRippleProps } from '../Commons/ripple.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type {
     ISliderFieldTrackProps,
     ISliderFieldTrackSlots
-} from '../../interfaces'
+} from './slider-field-track.interface'
 
 import type {
     TAlways,
-    TSize,
     TSliderFieldVariant
-} from '../../types'
+} from '../../types/SliderField/slider-field.type'
+import type { TSize } from '../../types/Commons/size.type'
 
 export interface ISliderFieldProps extends ICommonsComponentProps, IDensityProps, IColorProps, IInputProps, IFocusProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, IRippleProps, IDirectionProps {
     disabled?: boolean

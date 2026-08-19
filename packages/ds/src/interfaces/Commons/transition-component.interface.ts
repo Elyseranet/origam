@@ -1,4 +1,4 @@
-import type { TTransitionProps } from '../../types'
+import type { TTransitionProps } from '../../types/Transition/transition.type'
 
 /*********************************************************
  * ITransitionComponentProps

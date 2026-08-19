@@ -1,4 +1,8 @@
-import type { IChartBaseEmits, IChartBaseProps, IChartBaseSlots } from '../../interfaces'
+import type {
+    IChartBaseEmits,
+    IChartBaseProps,
+    IChartBaseSlots
+} from './chart-base.interface'
 
 /**
  * Props for `<OrigamChartRadar>` — radar / spider chart

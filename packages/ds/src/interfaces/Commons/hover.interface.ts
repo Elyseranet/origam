@@ -1,6 +1,6 @@
 import type { DirectiveBinding } from 'vue'
 
-import type { IHoverState } from '../../interfaces'
+import type { IHoverState } from './state-effect.interface'
 
 /**
  * The `hover` prop accepts three shapes:

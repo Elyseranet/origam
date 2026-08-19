@@ -1,24 +1,24 @@
+import type { IActiveProps } from '../Commons/active.interface'
+import type { IBorderProps } from '../Commons/border.interface'
 import type {
-    IActiveProps,
-    IBorderProps,
     IClickLabelEmits,
-    IColorProps,
     ICommonsComponentEmits,
     ICommonsComponentProps,
-    IDensityProps,
-    IElevationProps,
-    IFocusEmits,
-    IHoverProps,
     IIndeterminateEmits,
-    IInputProps,
-    ILoaderProps,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps,
-    ISelectionControlProps,
-    ISwitchTrackSlotsProps,
     ITagProps
-} from '../../interfaces'
+} from '../Commons/commons.interface'
+import type { IColorProps } from '../Commons/color.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IFocusEmits } from '../Commons/focus.interface'
+import type { IHoverProps } from '../Commons/hover.interface'
+import type { IInputProps } from '../Input/input.interface'
+import type { ILoaderProps } from '../Commons/loader.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { ISelectionControlProps } from '../SelectionControl/selection-control.interface'
+import type { ISwitchTrackSlotsProps } from './switch-track.interface'
 
 export interface ISwitchProps extends ICommonsComponentProps, ITagProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IInputProps, ISelectionControlProps, ILoaderProps, IColorProps, IDensityProps, IElevationProps, IActiveProps, IHoverProps {
     indeterminate?: boolean

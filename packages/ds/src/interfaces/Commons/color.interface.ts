@@ -1,4 +1,4 @@
-import type { TColor } from "../../types"
+import type { TColor } from '../../types/Commons/color.type'
 
 /**
  * Foreground-only color contract.

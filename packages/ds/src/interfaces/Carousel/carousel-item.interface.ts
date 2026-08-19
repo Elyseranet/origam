@@ -1,4 +1,5 @@
-import type { IImgProps, IWindowItemProps } from '../../interfaces'
+import type { IImgProps } from '../Img/img.interface'
+import type { IWindowItemProps } from '../Window/window-item.interface'
 
 export interface ICarouselItemProps extends IImgProps, IWindowItemProps {
     transition?: boolean | string

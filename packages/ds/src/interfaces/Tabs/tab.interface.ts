@@ -1,12 +1,13 @@
+import type { IAdjacentProps } from '../Commons/adjacent.interface'
 import type {
-    IAdjacentProps,
     ICommonsComponentProps,
-    IGroupItemProps,
-    ITagProps,
-    ITypographyProps
-} from '../../interfaces'
+    ITagProps
+} from '../Commons/commons.interface'
+import type { IGroupItemProps } from '../Commons/group.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
 
-import type { TIcon, TTabVariant } from '../../types'
+import type { TIcon } from '../../types/Icon/icon.type'
+import type { TTabVariant } from '../../types/Tabs/tab.type'
 
 /**
  * Props for `<OrigamTab>` — a single registered tab inside an

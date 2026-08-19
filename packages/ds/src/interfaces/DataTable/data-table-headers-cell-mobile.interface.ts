@@ -1,11 +1,9 @@
-import type {
-    IAdjacentEmits,
-    IColorProps,
-    ICommonsComponentProps,
-    IHeaderCellProps,
-    IInternalDataTableHeader,
-    IInternalListItem
-} from '../../interfaces'
+import type { IAdjacentEmits } from '../Commons/adjacent.interface'
+import type { IColorProps } from '../Commons/color.interface'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IHeaderCellProps } from './header-cell-base.interface'
+import type { IInternalDataTableHeader } from './data-table-header.interface'
+import type { IInternalListItem } from '../List/list-children.interface'
 
 /*********************************************************
  * IDataTableHeadersCellMobileProps / emits / slots

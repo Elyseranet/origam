@@ -1,15 +1,17 @@
 import type {
     IAdjacentProps,
-    IAdjacentSlots,
+    IAdjacentSlots
+} from '../Commons/adjacent.interface'
+import type {
     IBgColorProps,
-    IColorProps,
-    ICommonsComponentProps,
-    IDensityProps,
-    IMarginProps,
-    IPaddingProps
-} from "../../interfaces";
+    IColorProps
+} from '../Commons/color.interface'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
 
-import type { TColor } from "../../types";
+import type { TColor } from '../../types/Commons/color.type'
 
 export interface IDataTitleProps extends ICommonsComponentProps, IAdjacentProps, IDensityProps, IMarginProps, IPaddingProps, IColorProps, IBgColorProps {
     text: string | number

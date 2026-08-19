@@ -1,21 +1,22 @@
+import type { IBorderProps } from '../Commons/border.interface'
+import type { IColorProps } from '../Commons/color.interface'
 import type {
-    IBorderProps,
-    IColorProps,
     ICommonsComponentEmits,
-    ICommonsComponentProps,
-    IDatePickerControlsProps,
-    IDatePickerHeaderProps,
-    IDatePickerMonthProps,
-    IDatePickerMonthsProps,
-    IDatePickerYearsProps,
-    IElevationProps,
-    IMarginProps,
-    IPaddingProps,
-    IPickerProps,
-    IRoundedProps
-} from "../../interfaces"
+    ICommonsComponentProps
+} from '../Commons/commons.interface'
+import type { IDatePickerControlsProps } from './date-picker-controls.interface'
+import type { IDatePickerHeaderProps } from './date-picker-header.interface'
+import type { IDatePickerMonthProps } from './date-picker-month.interface'
+import type { IDatePickerMonthsProps } from './date-picker-months.interface'
+import type { IDatePickerYearsProps } from './date-picker-years.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IPickerProps } from '../Picker/picker.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
 
-import type { TDateMode, TTransitionProps } from "../../types"
+import type { TDateMode } from '../../types/DatePicker/date-picker.type'
+import type { TTransitionProps } from '../../types/Transition/transition.type'
 
 // IPickerProps (via ISheetProps → IActiveProps) declares `active?: boolean | IActiveState`.
 // IDatePickerControlsProps declares `active?: string | Array<string> | boolean | IActiveState`.

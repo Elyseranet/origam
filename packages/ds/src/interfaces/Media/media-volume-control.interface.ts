@@ -1,4 +1,4 @@
-import type { ICommonsComponentProps } from '../../interfaces'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
 
 /**
  * Props for `<OrigamMediaVolumeControl>` — the mute / unmute button

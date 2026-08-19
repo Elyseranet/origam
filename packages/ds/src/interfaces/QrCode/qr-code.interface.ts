@@ -1,22 +1,22 @@
 import type {
     IBgColorProps,
-    IBorderProps,
-    IColorProps,
-    ICommonsComponentProps,
-    IElevationProps,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps,
-    ISizeProps,
-    ISrcObject,
-    IQrCodeLogo,
-    ITagProps
-} from '../../interfaces'
-
+    IColorProps
+} from '../Commons/color.interface'
+import type { IBorderProps } from '../Commons/border.interface'
 import type {
-    TIcon,
-    TQrCodeErrorCorrectionLevel
-} from '../../types'
+    ICommonsComponentProps,
+    ITagProps
+} from '../Commons/commons.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { ISizeProps } from '../Commons/size.interface'
+import type { ISrcObject } from '../Img/img.interface'
+import type { IQrCodeLogo } from './qr-code-logo.interface'
+
+import type { TIcon } from '../../types/Icon/icon.type'
+import type { TQrCodeErrorCorrectionLevel } from '../../types/QrCode/qr-code.type'
 
 /**
  * Per-matrix overrides — applied INSIDE the SVG (modules + quiet

@@ -1,15 +1,20 @@
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
 import type {
-    ICommonsComponentProps,
     IDataTableGroup,
-    IDataTableGroupHeaderSlot,
+    IDataTableGroupHeaderSlot
+} from './group.interface'
+import type {
     IDataTableItem,
     IDataTableItemBaseSlot,
-    IDataTableItemSlot,
-    IDisplayProps,
-    ILoaderProps
-} from '../../interfaces'
+    IDataTableItemSlot
+} from './items.interface'
+import type { IDisplayProps } from '../Commons/display.interface'
+import type { ILoaderProps } from '../Commons/loader.interface'
 
-import type { TDataTableCell, TDataTableRow } from '../../types'
+import type {
+    TDataTableCell,
+    TDataTableRow
+} from '../../types/DataTable/data-table.type'
 
 /*********************************************************
  * IDataTableRowsProps

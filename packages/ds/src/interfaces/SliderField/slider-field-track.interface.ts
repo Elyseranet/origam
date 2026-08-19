@@ -1,7 +1,15 @@
-import type { IBgColorProps,
-    IColorProps, ICommonsComponentProps, IRoundedProps, ISizeProps } from '../../interfaces'
+import type {
+    IBgColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { ISizeProps } from '../Commons/size.interface'
 
-import type { TAlways, TTick } from '../../types'
+import type {
+    TAlways,
+    TTick
+} from '../../types/SliderField/slider-field.type'
 
 export interface ISliderFieldTrackProps extends ICommonsComponentProps, IColorProps, IBgColorProps, ISizeProps, IRoundedProps {
     start?: number

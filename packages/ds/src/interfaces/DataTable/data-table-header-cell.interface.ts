@@ -1,4 +1,11 @@
-import type { IBgColorProps, IColorProps, ICommonsComponentProps, IDataTableHeaderCellColumnSlot, IHeaderCellProps, IInternalDataTableHeader } from '../../interfaces'
+import type {
+    IBgColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IDataTableHeaderCellColumnSlot } from './items.interface'
+import type { IHeaderCellProps } from './header-cell-base.interface'
+import type { IInternalDataTableHeader } from './data-table-header.interface'
 
 /*********************************************************
  * IDataTableHeaderCellProps / IDataTableHeaderCellSlots

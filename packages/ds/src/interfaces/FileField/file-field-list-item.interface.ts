@@ -1,4 +1,6 @@
-import type { IColorProps, ICommonsComponentProps, ITypographyProps } from '../../interfaces'
+import type { IColorProps } from '../Commons/color.interface'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
 
 export interface IFileFieldListItemProps extends ICommonsComponentProps, IColorProps, ITypographyProps {
     file: File

@@ -1,28 +1,34 @@
 import type {
     IAdjacentProps,
-    IAdjacentSlots,
-    IBorderProps,
+    IAdjacentSlots
+} from '../Commons/adjacent.interface'
+import type { IBorderProps } from '../Commons/border.interface'
+import type {
     IBgColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type {
     IClickCloseEmits,
-    IColorProps,
     ICommonsComponentEmits,
     ICommonsComponentProps,
-    IDensityProps,
-    IDimensionProps,
-    IElevationProps,
+    ITagProps
+} from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type {
     IHoverEmits,
-    IHoverProps,
-    ILocationProps,
-    IMarginProps,
-    IPaddingProps,
-    IPositionProps,
-    IRoundedProps,
-    IStatusProps,
-    ITagProps,
-    ITypographyProps
-} from '../../interfaces'
+    IHoverProps
+} from '../Commons/hover.interface'
+import type { ILocationProps } from '../Commons/location.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IPositionProps } from '../Commons/position.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { IStatusProps } from '../Commons/status.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
 
-import type { TIcon } from '../../types'
+import type { TIcon } from '../../types/Icon/icon.type'
 
 export interface IAlertProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IBorderProps, IDimensionProps, IPaddingProps, IMarginProps, IDensityProps, IElevationProps, ILocationProps, IPositionProps, IRoundedProps, IStatusProps, IHoverProps, IAdjacentProps, ITypographyProps {
     closable?: boolean

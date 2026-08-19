@@ -1,10 +1,8 @@
-import type {
-    IAdjacentSlots,
-    IFieldSlots,
-    IMenuProps,
-    ITextFieldProps,
-    ITransitionComponentProps
-} from "../../interfaces"
+import type { IAdjacentSlots } from '../Commons/adjacent.interface'
+import type { IFieldSlots } from '../Field/field.interface'
+import type { IMenuProps } from '../Menu/menu.interface'
+import type { ITextFieldProps } from '../TextField/text-field.interface'
+import type { ITransitionComponentProps } from '../Commons/transition-component.interface'
 
 // ITextFieldProps already includes ICommonsComponentProps, IColorProps,
 // IDensityProps, IFieldProps, IInputProps, IAdjacentProps, IAdjacentInnerProps,

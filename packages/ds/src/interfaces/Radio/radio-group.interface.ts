@@ -1,15 +1,15 @@
+import type { IBorderProps } from '../Commons/border.interface'
 import type {
-    IBorderProps,
     ICommonsComponentEmits,
-    ICommonsComponentProps,
-    IElevationProps,
-    IInputProps,
-    IMarginProps,
-    IPaddingProps,
-    IRadioProps,
-    IRoundedProps,
-    ISelectionControlGroupProps
-} from '../../interfaces'
+    ICommonsComponentProps
+} from '../Commons/commons.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IInputProps } from '../Input/input.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRadioProps } from './radio.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { ISelectionControlGroupProps } from '../SelectionControl/selection-control-group.interface'
 
 export interface IRadioGroupProps extends ICommonsComponentProps, Partial<Omit<IRadioProps, 'trueValue' | 'falseValue'>>, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, IInputProps, Partial<Omit<ISelectionControlGroupProps, 'multiple'>> {
 

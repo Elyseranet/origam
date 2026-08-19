@@ -1,4 +1,4 @@
-import type { TRounded } from '../../types'
+import type { TRounded } from '../../types/Commons/rounded.type'
 
 /**
  * Corner-radius surface.

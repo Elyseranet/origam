@@ -1,6 +1,6 @@
 import type { ComputedRef, Ref } from 'vue'
 
-import type { TIcon } from '../../types'
+import type { TIcon } from '../../types/Icon/icon.type'
 
 /**
  * A single command/action exposed by `OrigamCommandPalette`.

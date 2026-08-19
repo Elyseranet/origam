@@ -1,6 +1,10 @@
-import type { IAdjacentSlots, IAlignProps, IColorProps, ICommonsComponentProps, IPaddingProps } from "../../interfaces"
+import type { IAdjacentSlots } from '../Commons/adjacent.interface'
+import type { IAlignProps } from '../Commons/align.interface'
+import type { IColorProps } from '../Commons/color.interface'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
 
-import type { TIcon } from "../../types"
+import type { TIcon } from '../../types/Icon/icon.type'
 
 export interface IDataTableFooterProps extends ICommonsComponentProps, IColorProps, IPaddingProps, IAlignProps {
     prevIcon?: TIcon

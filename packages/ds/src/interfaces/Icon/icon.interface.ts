@@ -1,17 +1,22 @@
 import type {
     IBgColorProps,
-    IBorderProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type { IBorderProps } from '../Commons/border.interface'
+import type {
     ICommonsComponentProps,
-    IDimensionProps,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps,
-    ISizeProps,
     ITagProps
-} from '../../interfaces'
+} from '../Commons/commons.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { ISizeProps } from '../Commons/size.interface'
 
-import type { TIcon, TIconComponent } from '../../types'
+import type {
+    TIcon,
+    TIconComponent
+} from '../../types/Icon/icon.type'
 
 export interface IIconProps {
     icon?: TIcon

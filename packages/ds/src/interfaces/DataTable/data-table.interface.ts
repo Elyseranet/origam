@@ -1,30 +1,44 @@
 import type { UnwrapRef } from 'vue'
+import type { ICommonsComponentEmits } from '../Commons/commons.interface'
 import type {
-    ICommonsComponentEmits,
     IDataTableExpandProps,
-    IDataTableFooterProps,
+    IDataTableProvideExpanded
+} from './expand.interface'
+import type { IDataTableFooterProps } from './footer.interface'
+import type {
     IDataTableGroup,
     IDataTableGroupableItem,
     IDataTableGroupProps,
+    IDataTableProvideGroup
+} from './group.interface'
+import type {
     IDataTableHeaderProps,
+    IInternalDataTableHeader
+} from './data-table-header.interface'
+import type {
     IDataTableHeadersProps,
-    IDataTableHeadersSlotProps,
+    IDataTableHeadersSlotProps
+} from './data-table-headers.interface'
+import type {
     IDataTableItem,
-    IDataTableItemsProps,
+    IDataTableItemsProps
+} from './items.interface'
+import type {
     IDataTablePaginationProps,
-    IDataTableProvideExpanded,
-    IDataTableProvideGroup,
-    IDataTableProvidePagination,
+    IDataTableProvidePagination
+} from './pagination.interface'
+import type {
     IDataTableProvideSelection,
+    IDataTableSelectProps
+} from './select.interface'
+import type {
     IDataTableProvideSort,
-    IDataTableRowProps,
-    IDataTableSelectProps,
     IDataTableSortItem,
-    IDataTableSortProps,
-    IFiltersProps,
-    IInternalDataTableHeader,
-    ITableProps
-} from '../../interfaces'
+    IDataTableSortProps
+} from './sort.interface'
+import type { IDataTableRowProps } from './data-table-row.interface'
+import type { IFiltersProps } from '../Commons/filters.interface'
+import type { ITableProps } from '../Table/table.interface'
 
 export interface IDataTableProps extends ITableProps, IDataTableRowProps, IDataTableExpandProps, IDataTableGroupProps, IDataTableHeaderProps, IDataTableItemsProps, IDataTableSelectProps, IDataTableSortProps, IDataTableHeadersProps, IDataTablePaginationProps, IFiltersProps, IDataTableFooterProps {
     hideDefaultBody?: boolean

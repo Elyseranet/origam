@@ -1,13 +1,15 @@
 import type {
     IFieldEmits,
     IFieldProps,
-    IFieldSlots,
+    IFieldSlots
+} from '../Field/field.interface'
+import type {
     IInputEmits,
     IInputProps,
-    IInputSlots,
-    IVariantProps
-} from "../../interfaces"
-import type { TIcon } from "../../types"
+    IInputSlots
+} from '../Input/input.interface'
+import type { IVariantProps } from '../Commons/variant.interface'
+import type { TIcon } from '../../types/Icon/icon.type'
 
 export interface INumberFieldProps extends IFieldProps, IInputProps, IVariantProps {
     autofocus?: boolean

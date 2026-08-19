@@ -1,13 +1,14 @@
+import type { IAdjacentSlots } from '../Commons/adjacent.interface'
 import type {
-    IAdjacentSlots,
     ICommonsComponentEmits,
-    IInputProps,
-    ILabelProps,
-    IRippleProps,
     ITagProps
-} from '../../interfaces'
+} from '../Commons/commons.interface'
+import type { IInputProps } from '../Input/input.interface'
+import type { ILabelProps } from '../Label/label.interface'
+import type { IRippleProps } from '../Commons/ripple.interface'
 
-import type { TBlock, TIcon } from '../../types'
+import type { TBlock } from '../../types/Commons/anchor.type'
+import type { TIcon } from '../../types/Icon/icon.type'
 
 export interface IRatingFieldProps extends IInputProps, IRippleProps, ITagProps, ILabelProps {
     name?: string

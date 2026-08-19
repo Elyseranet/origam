@@ -1,22 +1,24 @@
+import type { IActiveProps } from '../Commons/active.interface'
 import type {
-    IActiveProps,
     IBgColorProps,
-    IBorderProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type { IBorderProps } from '../Commons/border.interface'
+import type {
     ICommonsComponentEmits,
     ICommonsComponentProps,
-    IElevationProps,
-    IHoverProps,
-    ILocationProps,
-    IMarginProps,
-    IOverlayProps,
-    IPaddingProps,
-    IPositionProps,
-    IRoundedProps,
-    IStatusProps,
-    ITagProps,
-    ITransitionComponentProps
-} from '../../interfaces'
+    ITagProps
+} from '../Commons/commons.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IHoverProps } from '../Commons/hover.interface'
+import type { ILocationProps } from '../Commons/location.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IOverlayProps } from '../Overlay/overlay.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IPositionProps } from '../Commons/position.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { IStatusProps } from '../Commons/status.interface'
+import type { ITransitionComponentProps } from '../Commons/transition-component.interface'
 
 export interface ISnackbarProps extends ICommonsComponentProps, ITagProps, IStatusProps, IColorProps, IBgColorProps, IOverlayProps, IPositionProps, ILocationProps, IRoundedProps, IBorderProps, IPaddingProps, IMarginProps, IElevationProps, ITransitionComponentProps, IActiveProps, IHoverProps {
     multiLine?: boolean

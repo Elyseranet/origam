@@ -1,17 +1,19 @@
+import type { IBorderProps } from '../Commons/border.interface'
 import type {
-    IBorderProps,
     ICommonsComponentEmits,
     ICommonsComponentProps,
-    IDirectionProps,
-    IDisplayProps,
-    IGroupProps,
-    IGroupProvide,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps,
     ITagProps
-} from '../../interfaces'
-import type { TIcon } from '../../types'
+} from '../Commons/commons.interface'
+import type { IDirectionProps } from '../Commons/direction.interface'
+import type { IDisplayProps } from '../Commons/display.interface'
+import type {
+    IGroupProps,
+    IGroupProvide
+} from '../Commons/group.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { TIcon } from '../../types/Icon/icon.type'
 
 export interface ISlideGroupProps extends ICommonsComponentProps, ITagProps, IDirectionProps, IGroupProps, IPaddingProps, IMarginProps, IRoundedProps, IBorderProps, IDisplayProps {
     centerActive?: boolean

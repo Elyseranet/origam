@@ -1,4 +1,4 @@
-import type { TJustify } from '../../types'
+import type { TJustify } from '../../types/Commons/justify.type'
 
 export interface IJustifyProps {
     justify?: TJustify,

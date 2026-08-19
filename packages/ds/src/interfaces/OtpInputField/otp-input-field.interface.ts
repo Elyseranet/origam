@@ -1,14 +1,16 @@
 import type {
     IFieldEmits,
     IFieldProps,
-    IFieldSlots,
+    IFieldSlots
+} from '../Field/field.interface'
+import type {
     IInputEmits,
     IInputProps,
-    IInputSlots,
-    IVariantProps
-} from "../../interfaces"
+    IInputSlots
+} from '../Input/input.interface'
+import type { IVariantProps } from '../Commons/variant.interface'
 
-import type { TOtpInputFieldType } from "../../types"
+import type { TOtpInputFieldType } from '../../types/OtpInputField/otp-input-field.type'
 
 export interface IOtpInputFieldProps extends IFieldProps, IInputProps, IVariantProps {
     autofocus?: boolean

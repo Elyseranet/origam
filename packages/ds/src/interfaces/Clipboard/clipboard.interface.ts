@@ -1,14 +1,16 @@
 import type {
     IBgColorProps,
-    IBorderProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type { IBorderProps } from '../Commons/border.interface'
+import type {
     ICommonsComponentProps,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps,
-    ITagProps,
-    ITypographyProps
-} from '../../interfaces'
+    ITagProps
+} from '../Commons/commons.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
 
 /**
  * Props for `<OrigamClipboard>` — copy-to-clipboard wrapper.

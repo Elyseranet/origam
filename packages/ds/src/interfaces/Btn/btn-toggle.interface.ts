@@ -1,4 +1,10 @@
-import type { IBtnGroupProps, IBtnProps, ICommonsComponentEmits, IGroupProps, IGroupProvide } from '../../interfaces'
+import type { IBtnGroupProps } from './btn-group.interface'
+import type { IBtnProps } from './btn.interface'
+import type { ICommonsComponentEmits } from '../Commons/commons.interface'
+import type {
+    IGroupProps,
+    IGroupProvide
+} from '../Commons/group.interface'
 
 export interface IBtnToggleProps extends IBtnGroupProps, IGroupProps {
 

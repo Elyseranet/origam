@@ -1,7 +1,20 @@
-import type { IBgColorProps,
-    IColorProps, ICommonsComponentProps, IDimensionProps, IDirectionProps, ITagProps, ITypographyProps } from '../../interfaces'
+import type {
+    IBgColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type {
+    ICommonsComponentProps,
+    ITagProps
+} from '../Commons/commons.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
+import type { IDirectionProps } from '../Commons/direction.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
 
-import type { TColor, TInfiniteScrollMode, TInfiniteScrollSide } from '../../types'
+import type { TColor } from '../../types/Commons/color.type'
+import type {
+    TInfiniteScrollMode,
+    TInfiniteScrollSide
+} from '../../types/InfiniteScroll/infinite-scroll.type'
 
 /*********************************************************
  * IInfiniteScrollProps

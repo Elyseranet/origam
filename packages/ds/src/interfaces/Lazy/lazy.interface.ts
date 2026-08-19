@@ -1,4 +1,10 @@
-import type { ICommonsComponentEmits, ICommonsComponentProps, IDimensionProps, ITagProps, ITransitionComponentProps } from '../../interfaces'
+import type {
+    ICommonsComponentEmits,
+    ICommonsComponentProps,
+    ITagProps
+} from '../Commons/commons.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
+import type { ITransitionComponentProps } from '../Commons/transition-component.interface'
 
 /*********************************************************
  * ILazyComponentProps / ILazyEmits / ILazySlots

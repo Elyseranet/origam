@@ -1,12 +1,15 @@
 import type {
     ICommonsComponentEmits,
     ICommonsComponentProps,
-    ICommonsComponentSlots,
-    IFocusEmits,
+    ICommonsComponentSlots
+} from '../Commons/commons.interface'
+import type { IFocusEmits } from '../Commons/focus.interface'
+import type {
     ISelectionControlEmits,
     ISelectionControlProps
-} from '../../interfaces'
-import type { TColor, TIcon } from '../../types'
+} from '../SelectionControl/selection-control.interface'
+import type { TColor } from '../../types/Commons/color.type'
+import type { TIcon } from '../../types/Icon/icon.type'
 
 export interface ICheckboxBtnProps extends ICommonsComponentProps, ISelectionControlProps {
     indeterminate?: boolean

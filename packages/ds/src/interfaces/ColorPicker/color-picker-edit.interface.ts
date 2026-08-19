@@ -1,6 +1,11 @@
-import type { IColorHsvEmits, IColorModeEmits, ICommonsComponentProps } from "../../interfaces"
+import type {
+    IColorHsvEmits,
+    IColorModeEmits
+} from './color-picker.interface'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
 
-import type { TColorModes, THSVA } from "../../types"
+import type { TColorModes } from '../../types/ColorPicker/color-picker.type'
+import type { THSVA } from '../../types/Commons/color.type'
 
 export interface IColorPickerEditProps extends ICommonsComponentProps {
     colorHsv?: THSVA | null

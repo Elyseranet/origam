@@ -1,4 +1,4 @@
-import type { ICommonsComponentProps } from '../../interfaces'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
 
 export interface IVirtualScrollItemProps extends ICommonsComponentProps {
     renderless?: boolean

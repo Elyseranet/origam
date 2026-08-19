@@ -1,4 +1,9 @@
-import type { IClickEmits, ICommonsComponentProps, ITagProps, ITransitionComponentProps } from '../../interfaces'
+import type {
+    IClickEmits,
+    ICommonsComponentProps,
+    ITagProps
+} from '../Commons/commons.interface'
+import type { ITransitionComponentProps } from '../Commons/transition-component.interface'
 
 export interface IOverlayScrimProps extends ICommonsComponentProps, ITagProps, ITransitionComponentProps, IScrimProps {
     active?: boolean

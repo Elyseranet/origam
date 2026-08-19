@@ -1,6 +1,6 @@
-import type { IActiveEmits } from '../../interfaces'
+import type { IActiveEmits } from '../Commons/active.interface'
 
-import type { TSheetSnapId } from '../../types'
+import type { TSheetSnapId } from '../../types/Sheet/sheet.type'
 
 /**
  * Emit signature for `<OrigamSheet>`.

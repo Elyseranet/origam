@@ -1,27 +1,34 @@
 import type {
     IActiveEmits,
-    IActiveProps,
-    IBorderProps,
-    IBtnProps,
+    IActiveProps
+} from '../Commons/active.interface'
+import type { IBorderProps } from '../Commons/border.interface'
+import type { IBtnProps } from '../Btn/btn.interface'
+import type {
     IBgColorProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type {
     ICommonsComponentEmits,
     ICommonsComponentProps,
-    IDensityProps,
-    IDimensionProps,
-    IElevationProps,
-    IGroupProps,
+    ITagProps
+} from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IGroupProps } from '../Commons/group.interface'
+import type {
     IHoverEmits,
-    IHoverProps,
-    ILayoutItemProps,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps,
-    ITagProps,
-    ITransitionComponentProps
-} from '../../interfaces'
+    IHoverProps
+} from '../Commons/hover.interface'
+import type { ILayoutItemProps } from '../Commons/layout.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { ITransitionComponentProps } from '../Commons/transition-component.interface'
 
-import type { TBottomNavPosition, TNavMode } from '../../types'
+import type { TBottomNavPosition } from '../../types/BottomNav/bottom-nav.type'
+import type { TNavMode } from '../../types/Commons/mode.type'
 
 export interface IBottomNavProps extends ITagProps, ICommonsComponentProps, IColorProps, IBgColorProps, IPaddingProps, IBorderProps, IElevationProps, IMarginProps, IDimensionProps, IDensityProps, IRoundedProps, ILayoutItemProps, IGroupProps, IHoverProps, IActiveProps, ITransitionComponentProps {
     grow?: boolean

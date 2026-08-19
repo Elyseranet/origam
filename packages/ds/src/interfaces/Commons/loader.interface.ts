@@ -1,5 +1,13 @@
-import type { IColorProps, ICommonsComponentProps, ITagProps } from '../../interfaces'
-import type { TLoaderConfig, TLoaderKind, TLoadingValue } from '../../types'
+import type { IColorProps } from './color.interface'
+import type {
+    ICommonsComponentProps,
+    ITagProps
+} from './commons.interface'
+import type {
+    TLoaderConfig,
+    TLoaderKind,
+    TLoadingValue
+} from '../../types/Commons/loader.type'
 
 /*********************************************************
  * ILoaderProps / IResolvedLoader

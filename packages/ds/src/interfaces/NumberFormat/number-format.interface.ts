@@ -1,7 +1,7 @@
 import type {
     ICommonsComponentProps,
     ITagProps
-} from '../../interfaces'
+} from '../Commons/commons.interface'
 
 import type {
     TNumberFormatCompactDisplay,
@@ -12,7 +12,7 @@ import type {
     TNumberFormatSignDisplay,
     TNumberFormatUnitDisplay,
     TNumberFormatUseGrouping
-} from '../../types'
+} from '../../types/NumberFormat/number-format.type'
 
 /**
  * Props for `<OrigamNumberFormat>` — pure-display i18n number renderer

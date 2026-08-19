@@ -1,4 +1,5 @@
-import type { IProgressTypeProps, ISizeProps } from '../../interfaces'
+import type { IProgressTypeProps } from './progress.interface'
+import type { ISizeProps } from '../Commons/size.interface'
 
 export interface IProgressCircularProps extends IProgressTypeProps, ISizeProps {
     rotate?: string | number

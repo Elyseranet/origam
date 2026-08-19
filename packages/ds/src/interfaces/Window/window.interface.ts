@@ -1,21 +1,21 @@
+import type { IActiveProps } from '../Commons/active.interface'
+import type { IBgColorProps } from '../Commons/color.interface'
+import type { IBorderProps } from '../Commons/border.interface'
 import type {
-    IActiveProps,
-    IBgColorProps,
-    IBorderProps,
     ICommonsComponentEmits,
     ICommonsComponentProps,
-    IDirectionProps,
-    IElevationProps,
-    IGroupProvide,
-    IHoverProps,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps,
-    ITagProps,
-    ITouchHandlers
-} from '../../interfaces'
+    ITagProps
+} from '../Commons/commons.interface'
+import type { IDirectionProps } from '../Commons/direction.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IGroupProvide } from '../Commons/group.interface'
+import type { IHoverProps } from '../Commons/hover.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { ITouchHandlers } from '../Commons/touch.interface'
 
-import type { TIcon } from '../../types'
+import type { TIcon } from '../../types/Icon/icon.type'
 
 import type { ComputedRef, Ref } from 'vue'
 

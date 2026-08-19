@@ -1,24 +1,30 @@
 import type {
     IActiveEmits,
-    IActiveProps,
-    IBorderProps,
+    IActiveProps
+} from '../Commons/active.interface'
+import type { IBorderProps } from '../Commons/border.interface'
+import type {
     IBgColorProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type {
     ICommonsComponentProps,
-    IDensityProps,
-    IElevationProps,
+    ITagProps
+} from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type {
     IHoverEmits,
-    IHoverProps,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps,
-    ISizeProps,
-    ISrcObject,
-    ITagProps,
-    ITypographyProps
-} from '../../interfaces'
+    IHoverProps
+} from '../Commons/hover.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { ISizeProps } from '../Commons/size.interface'
+import type { ISrcObject } from '../Img/img.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
 
-import type { TIcon } from '../../types'
+import type { TIcon } from '../../types/Icon/icon.type'
 
 export interface IAvatarProps extends ICommonsComponentProps, IDensityProps, IRoundedProps, ISizeProps, ITagProps, IColorProps, IBgColorProps, IPaddingProps, IMarginProps, IBorderProps, IElevationProps, IHoverProps, IActiveProps, ITypographyProps {
     /**

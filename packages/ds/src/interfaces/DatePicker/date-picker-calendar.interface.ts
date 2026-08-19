@@ -1,4 +1,4 @@
-import type { TCalendarStrategy } from "../../types"
+import type { TCalendarStrategy } from '../../types/Commons/calendar.type'
 
 /*********************************************************
  * ICalendarProps / IDay

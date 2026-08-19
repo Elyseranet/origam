@@ -1,7 +1,17 @@
 import type { Ref } from 'vue'
 
-import type { ICommonsComponentProps, ISnackbarGroupItem, ISnackbarGroupItemOptions, ITagProps } from '../../interfaces'
-import type { TSnackbarGroupDirection, TSnackbarGroupLocation } from '../../types'
+import type {
+    ICommonsComponentProps,
+    ITagProps
+} from '../Commons/commons.interface'
+import type {
+    ISnackbarGroupItem,
+    ISnackbarGroupItemOptions
+} from './snackbar-group-item.interface'
+import type {
+    TSnackbarGroupDirection,
+    TSnackbarGroupLocation
+} from '../../types/Snackbar/snackbar-group.type'
 
 /**
  * Props for `<OrigamSnackbarGroup>` — a multi-toast container that

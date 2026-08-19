@@ -1,13 +1,15 @@
 import type {
     IBgColorProps,
-    IBorderProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type { IBorderProps } from '../Commons/border.interface'
+import type {
     ICommonsComponentEmits,
     ICommonsComponentProps,
-    ICommonsComponentSlots,
-    IElevationProps,
-    IRoundedProps
-} from '../../interfaces'
+    ICommonsComponentSlots
+} from '../Commons/commons.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
 
 /**
  * Props for `<OrigamSwitchTrack>` — the rounded "rail" sitting behind the

@@ -1,9 +1,9 @@
 import type {
     ICommonsComponentProps,
     ITagProps
-} from '../../interfaces'
+} from '../Commons/commons.interface'
 
-import type { TGridPlaceSelf } from '../../types'
+import type { TGridPlaceSelf } from '../../types/Grid/grid-item.type'
 
 /**
  * Object syntax for a grid line spec. The same shape is used for

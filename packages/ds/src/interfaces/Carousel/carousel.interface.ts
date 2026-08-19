@@ -1,5 +1,22 @@
-import type { IActiveProps, IBgColorProps, IColorProps, ICommonsComponentEmits, ICommonsComponentProps, IDimensionProps, IGroupProvide, IHoverProps, ITagProps, IWindowNavBtnProps, IWindowProps } from '../../interfaces'
-import type { TIcon, TInline } from '../../types'
+import type { IActiveProps } from '../Commons/active.interface'
+import type {
+    IBgColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type {
+    ICommonsComponentEmits,
+    ICommonsComponentProps,
+    ITagProps
+} from '../Commons/commons.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
+import type { IGroupProvide } from '../Commons/group.interface'
+import type { IHoverProps } from '../Commons/hover.interface'
+import type {
+    IWindowNavBtnProps,
+    IWindowProps
+} from '../Window/window.interface'
+import type { TIcon } from '../../types/Icon/icon.type'
+import type { TInline } from '../../types/Commons/anchor.type'
 
 /** One entry of `IGroupProvide['items'].value` — the resolved (unwrapped)
  *  item descriptor iterated by `<OrigamCarousel>`'s delimiter dots. */

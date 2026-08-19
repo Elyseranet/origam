@@ -3,7 +3,7 @@ import type {
     TBracketColor,
     TBracketElevation,
     TBracketRounded
-} from '../../types'
+} from '../../types/Bracket/bracket.type'
 
 /**
  * Prop bag consumed by `bracketSurfaceVars` to paint one match card.

@@ -1,24 +1,28 @@
+import type { IBorderProps } from '../Commons/border.interface'
 import type {
-    IBorderProps,
     IBgColorProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type {
     ICommonsComponentProps,
-    IDensityProps,
-    IDimensionProps,
-    IElevationProps,
-    IInternalListItem,
-    IInternalListItemChildren,
-    IItemProps,
-    IListGroupActivatorSlotProps,
-    IMarginProps,
-    INestedProps,
-    IPaddingProps,
-    IRoundedProps,
-    ISizeProps,
     ITagProps
-} from '../../interfaces'
+} from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type {
+    IInternalListItem,
+    IInternalListItemChildren
+} from './list-children.interface'
+import type { IItemProps } from '../Commons/item.interface'
+import type { IListGroupActivatorSlotProps } from './list-group.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { INestedProps } from '../Commons/nested.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { ISizeProps } from '../Commons/size.interface'
 
-import type { TLines } from '../../types'
+import type { TLines } from '../../types/List/list.type'
 
 /**
  * `size` is a FORWARDING prop on the list: the root paints nothing from it,

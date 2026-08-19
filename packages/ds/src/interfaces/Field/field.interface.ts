@@ -1,26 +1,34 @@
 import type {
     IActiveEmits,
-    IActiveProps,
+    IActiveProps
+} from '../Commons/active.interface'
+import type {
     IAdjacentInnerEmits,
     IAdjacentInnerProps,
-    IAdjacentInnerSlots,
+    IAdjacentInnerSlots
+} from '../Commons/adjacent.interface'
+import type {
     IBgColorProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type {
     ICommonsComponentEmits,
-    ICommonsComponentProps,
-    IDensityProps,
-    IElevationProps,
+    ICommonsComponentProps
+} from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type {
     IFocusEmits,
-    IFocusProps,
-    ILabelProps,
-    ILoaderProps,
-    IRoundedProps,
-    ISizeProps,
-    ITypographyProps,
-    IVariantProps
-} from '../../interfaces'
+    IFocusProps
+} from '../Commons/focus.interface'
+import type { ILabelProps } from '../Label/label.interface'
+import type { ILoaderProps } from '../Commons/loader.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { ISizeProps } from '../Commons/size.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
+import type { IVariantProps } from '../Commons/variant.interface'
 
-import type { TColor } from '../../types'
+import type { TColor } from '../../types/Commons/color.type'
 
 export interface IFieldProps extends ICommonsComponentProps, ILoaderProps, IColorProps, IBgColorProps, IAdjacentInnerProps, IFocusProps, IDensityProps, ILabelProps, IActiveProps, IVariantProps, IRoundedProps, IElevationProps, ISizeProps, ITypographyProps {
     centerAffix?: boolean

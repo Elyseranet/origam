@@ -1,14 +1,17 @@
 import type {
     IFieldEmits,
-    IFieldSlots,
+    IFieldSlots
+} from '../Field/field.interface'
+import type {
     IInputEmits,
-    IInputSlots,
-    IMenuProps,
-    IPasswordRequirement,
-    ITextFieldProps
-} from '../../interfaces'
+    IInputSlots
+} from '../Input/input.interface'
+import type { IMenuProps } from '../Menu/menu.interface'
+import type { IPasswordRequirement } from './password-requirement.interface'
+import type { ITextFieldProps } from '../TextField/text-field.interface'
 
-import type { TIcon, TPasswordStrengthLevel } from '../../types'
+import type { TIcon } from '../../types/Icon/icon.type'
+import type { TPasswordStrengthLevel } from '../../types/PasswordField/password-field.type'
 
 /**
  * Props for `<OrigamPasswordField>` — a TextField specialised for password

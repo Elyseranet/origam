@@ -1,8 +1,16 @@
 import type { ComputedRef } from 'vue'
-import type { IBgColorProps,
-    IColorProps, ICommonsComponentProps, IDensityProps, ISizeProps } from '../../interfaces'
-import type { TIcon } from '../../types'
-import type { TTreeviewSelectMode, TTreeviewSelectableNodes } from '../../types'
+import type {
+    IBgColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { ISizeProps } from '../Commons/size.interface'
+import type { TIcon } from '../../types/Icon/icon.type'
+import type {
+    TTreeviewSelectMode,
+    TTreeviewSelectableNodes
+} from '../../types/Treeview/treeview.type'
 
 /*********************************************************
  * ITreeviewNode / ITreeviewProps / ITreeviewProvide

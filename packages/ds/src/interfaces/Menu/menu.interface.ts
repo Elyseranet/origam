@@ -1,4 +1,7 @@
-import type { ICommonsComponentEmits, IListItemProps, IListProps, IOverlayProps } from '../../interfaces'
+import type { ICommonsComponentEmits } from '../Commons/commons.interface'
+import type { IListItemProps } from '../List/list-item.interface'
+import type { IListProps } from '../List/list.interface'
+import type { IOverlayProps } from '../Overlay/overlay.interface'
 
 export interface IMenuProvide {
     register (): void

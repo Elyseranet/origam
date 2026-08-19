@@ -1,10 +1,8 @@
-import type {
-    IColorProps,
-    ICommonsComponentProps,
-    IRoundedProps
-} from '../../interfaces'
+import type { IColorProps } from '../Commons/color.interface'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
 
-import type { TMediaScrubberOrientation } from '../../types'
+import type { TMediaScrubberOrientation } from '../../types/Media/media-scrubber.type'
 
 /**
  * Props for `<OrigamMediaScrubber>` — a headless, media-agnostic

@@ -1,5 +1,6 @@
-import type { ICommonsComponentProps } from '../../interfaces'
-import type { TIcon, TStepperItemStatus } from '../../types'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { TIcon } from '../../types/Icon/icon.type'
+import type { TStepperItemStatus } from '../../types/Stepper/stepper.type'
 
 /*********************************************************
  * IStepperItemProps / IStepperItemEmits

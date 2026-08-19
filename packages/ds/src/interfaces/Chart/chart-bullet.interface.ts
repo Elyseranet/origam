@@ -1,6 +1,13 @@
-import type { IChartBaseEmits, IChartBaseProps, IChartBaseSlots, IChartPoint, IChartSeries } from '../../interfaces'
+import type {
+    IChartBaseEmits,
+    IChartBaseProps,
+    IChartBaseSlots
+} from './chart-base.interface'
+import type { IChartPoint } from './chart-point.interface'
+import type { IChartSeries } from './chart-series.interface'
 
-import type { TDirection, TIntent } from '../../types'
+import type { TDirection } from '../../types/Commons/direction.type'
+import type { TIntent } from '../../types/Commons/intent.type'
 
 /**
  * One qualitative range band in a bullet chart.

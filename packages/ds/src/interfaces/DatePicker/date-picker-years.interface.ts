@@ -1,6 +1,8 @@
-import type { IColorProps, ICommonsComponentProps, IDimensionProps } from "../../interfaces"
+import type { IColorProps } from '../Commons/color.interface'
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
 
-import type { TColor } from "../../types"
+import type { TColor } from '../../types/Commons/color.type'
 
 export interface IDatePickerYearsProps extends ICommonsComponentProps, IColorProps, IDimensionProps {
     min?: unknown

@@ -1,5 +1,12 @@
-import type { ICardProps, IClickOutsideEmits, ICommonsComponentEmits, ICommonsComponentProps, IOverlayProps, IStatusProps } from '../../interfaces'
-import type { TSize } from '../../types'
+import type { ICardProps } from '../Card/card.interface'
+import type { IClickOutsideEmits } from '../Commons/clickOutside.interface'
+import type {
+    ICommonsComponentEmits,
+    ICommonsComponentProps
+} from '../Commons/commons.interface'
+import type { IOverlayProps } from '../Overlay/overlay.interface'
+import type { IStatusProps } from '../Commons/status.interface'
+import type { TSize } from '../../types/Commons/size.type'
 
 export interface IDialogProps extends ICommonsComponentProps, IOverlayProps, ICardProps, IStatusProps {
     fullscreen?: boolean

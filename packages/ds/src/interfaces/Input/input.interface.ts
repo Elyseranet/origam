@@ -1,24 +1,28 @@
 import type {
     IAdjacentEmits,
     IAdjacentProps,
-    IAdjacentSlots,
-    IBorderProps,
+    IAdjacentSlots
+} from '../Commons/adjacent.interface'
+import type { IBorderProps } from '../Commons/border.interface'
+import type {
     IBgColorProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type {
     ICommonsComponentEmits,
-    ICommonsComponentProps,
-    IDensityProps,
-    IDimensionProps,
-    IDirectionProps,
-    IElevationProps,
-    IFocusEmits,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps,
-    ISizeProps,
-    ITypographyProps,
-    IValidationProps
-} from '../../interfaces'
+    ICommonsComponentProps
+} from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
+import type { IDirectionProps } from '../Commons/direction.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IFocusEmits } from '../Commons/focus.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { ISizeProps } from '../Commons/size.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
+import type { IValidationProps } from '../Commons/validation.interface'
 
 export interface IInputProps extends ICommonsComponentProps, IDensityProps, IPaddingProps, IMarginProps, IRoundedProps, IColorProps, IBgColorProps, IBorderProps, IElevationProps, IDimensionProps, IDirectionProps, IValidationProps, IAdjacentProps, ISizeProps, ITypographyProps {
     centerAffix?: boolean

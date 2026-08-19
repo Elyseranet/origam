@@ -1,21 +1,27 @@
+import type { IActiveProps } from '../Commons/active.interface'
 import type {
-    IActiveProps,
     IBgColorProps,
-    IBorderProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type { IBorderProps } from '../Commons/border.interface'
+import type {
     ICommonsComponentProps,
-    IDimensionProps,
-    IElevationProps,
-    IHoverProps,
-    ILocationProps,
-    IMarginProps,
-    IPaddingProps,
-    IPositionProps,
-    IRoundedProps,
     ITagProps
-} from '../../interfaces'
+} from '../Commons/commons.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IHoverProps } from '../Commons/hover.interface'
+import type { ILocationProps } from '../Commons/location.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IPositionProps } from '../Commons/position.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
 
-import type { TDirectionBoth, TSheetSnapId, TSheetSnapPoint } from '../../types'
+import type { TDirectionBoth } from '../../types/Commons/anchor.type'
+import type {
+    TSheetSnapId,
+    TSheetSnapPoint
+} from '../../types/Sheet/sheet.type'
 
 export interface ISheetProps extends ITagProps, ICommonsComponentProps, IPaddingProps, IMarginProps, IColorProps, IBgColorProps, IBorderProps, IRoundedProps, IElevationProps, IDimensionProps, ILocationProps, IPositionProps, IActiveProps, IHoverProps {
     /**

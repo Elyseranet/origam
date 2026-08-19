@@ -1,10 +1,10 @@
 import type {
     ICommonsComponentProps,
-    ITagProps,
-    ITypographyProps
-} from '../../interfaces'
+    ITagProps
+} from '../Commons/commons.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
 
-import type { TInlineEditInputType } from '../../types'
+import type { TInlineEditInputType } from '../../types/InlineEdit/inline-edit.type'
 
 /**
  * Signature of a validator passed to `<OrigamInlineEdit>` (and to the

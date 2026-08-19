@@ -1,22 +1,24 @@
+import type { IChartAnnotation } from './chart-annotation.interface'
 import type {
-    IChartAnnotation,
     IChartBaseEmits,
     IChartBaseProps,
-    IChartBaseSlots,
-    IChartDrilldownLink,
-    IChartDrilldownProps,
-    IChartPlotBand,
-    IChartPlotLine,
-    IChartPoint,
-    IChartRangeSelector,
-    IChartSecondaryYAxis
-} from '../../interfaces'
-
+    IChartBaseSlots
+} from './chart-base.interface'
 import type {
-    TChartCartesianKind,
+    IChartDrilldownLink,
+    IChartDrilldownProps
+} from './chart-drilldown.interface'
+import type { IChartPlotBand } from './chart-plot-band.interface'
+import type { IChartPlotLine } from './chart-plot-line.interface'
+import type { IChartPoint } from './chart-point.interface'
+import type { IChartRangeSelector } from './chart-range-selector.interface'
+import type { IChartSecondaryYAxis } from './chart-axis.interface'
+
+import type { TChartCartesianKind } from '../../types/Chart/chart-cartesian.type'
+import type {
     TChartSmoothing,
     TChartStacking
-} from '../../types'
+} from '../../types/Chart/chart.type'
 
 /**
  * Props for `<OrigamChartCartesian>` — the cartesian family

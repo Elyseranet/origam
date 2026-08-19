@@ -1,9 +1,9 @@
 import type {
     ICommonsComponentProps,
-    IGroupItemProps,
-    ILazyProps,
     ITagProps
-} from '../../interfaces'
+} from '../Commons/commons.interface'
+import type { IGroupItemProps } from '../Commons/group.interface'
+import type { ILazyProps } from '../Commons/lazy.interface'
 
 /**
  * Props for `<OrigamTabPanel>` — a single tab content panel.

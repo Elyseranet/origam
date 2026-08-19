@@ -1,20 +1,24 @@
 import type {
     IActiveEmits,
-    IActiveProps,
+    IActiveProps
+} from '../Commons/active.interface'
+import type {
     IBgColorProps,
-    IBorderProps,
-    IColorProps,
+    IColorProps
+} from '../Commons/color.interface'
+import type { IBorderProps } from '../Commons/border.interface'
+import type {
     ICommonsComponentProps,
-    IDensityProps,
-    IDimensionProps,
-    IElevationProps,
-    IHoverProps,
-    IMarginProps,
-    IPaddingProps,
-    IRoundedProps,
-    ITagProps,
-    ITypographyProps
-} from '../../interfaces'
+    ITagProps
+} from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IDimensionProps } from '../Commons/dimension.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IHoverProps } from '../Commons/hover.interface'
+import type { IMarginProps } from '../Commons/margin.interface'
+import type { IPaddingProps } from '../Commons/padding.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { ITypographyProps } from '../Commons/typography.interface'
 
 import type { IBracketCompetitor } from './bracket-competitor.interface'
 

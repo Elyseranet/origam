@@ -1,10 +1,11 @@
+import type { ICommonsComponentProps } from '../Commons/commons.interface'
 import type {
-    ICommonsComponentProps,
     IMediaPlayerMethods,
     IMediaPlayerState
-} from '../../interfaces'
+} from './media-player.interface'
 
-import type { TAudioLoopMode, TQualityOption } from '../../types'
+import type { TAudioLoopMode } from '../../types/Audio/audio.type'
+import type { TQualityOption } from '../../types/Media/quality-option.type'
 
 /**
  * Props for `<OrigamMediaController>` — the universal media-controls

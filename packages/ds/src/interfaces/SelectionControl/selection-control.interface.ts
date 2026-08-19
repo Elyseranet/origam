@@ -1,12 +1,20 @@
+import type { IActiveProps } from '../Commons/active.interface'
 import type {
-    IActiveProps,
     IBgColorProps,
-    IBorderProps,
-    IColorProps, ICommonsComponentEmits, ICommonsComponentProps, IDensityProps, IElevationProps, ISelectionControlGroupProps,
-    IHoverProps,
-    IRoundedProps
-} from '../../interfaces'
-import type { TColor, TIcon } from '../../types'
+    IColorProps
+} from '../Commons/color.interface'
+import type { IBorderProps } from '../Commons/border.interface'
+import type {
+    ICommonsComponentEmits,
+    ICommonsComponentProps
+} from '../Commons/commons.interface'
+import type { IDensityProps } from '../Commons/density.interface'
+import type { IElevationProps } from '../Commons/elevation.interface'
+import type { ISelectionControlGroupProps } from './selection-control-group.interface'
+import type { IHoverProps } from '../Commons/hover.interface'
+import type { IRoundedProps } from '../Commons/rounded.interface'
+import type { TColor } from '../../types/Commons/color.type'
+import type { TIcon } from '../../types/Icon/icon.type'
 
 /**
  * `border` / `rounded` / `elevation` (props-first, issue #241) — declared

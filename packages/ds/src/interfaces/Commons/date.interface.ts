@@ -1,4 +1,4 @@
-import type { TInternalAdapter } from "../../types"
+import type { TInternalAdapter } from '../../types/Commons/date.type'
 
 export interface IDateInstance extends TInternalAdapter {
     locale?: any

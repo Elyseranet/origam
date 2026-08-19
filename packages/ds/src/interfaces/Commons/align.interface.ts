@@ -1,4 +1,4 @@
-import type { TAlign } from '../../types'
+import type { TAlign } from '../../types/Commons/align.type'
 
 export interface IAlignProps {
     align?: TAlign,
