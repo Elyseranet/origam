@@ -643,6 +643,63 @@ qu'elle échoue.
   unifié) + doc + e2e (navigation avant/arrière, blocage sur step invalide,
   soumission finale) — **test-as-you-build**.
 
+### Système de validation intégré — rendre Vuelidate optionnel **(L, spec)**
+
+> Demande mainteneur (août 2026). **Statut : planifié, non implémenté.** Module `form`.
+
+**Constat, mesuré avant d'écrire cette spec** : `vuelidate` n'apparaît nulle
+part dans le dépôt — ni dépendance, ni `peerDependency`, ni import. La demande
+porte donc sur une intention, pas sur un retrait.
+
+⚠️ **Interprétation retenue, à confirmer** : le DS doit offrir une validation
+assez complète pour qu'une application n'ait *pas besoin* d'ajouter Vuelidate,
+tout en restant compatible avec elle si le consommateur en veut une. Si
+l'intention était autre — par exemple intégrer Vuelidate comme peer optionnel —
+cette entrée est à réécrire.
+
+**Ce qui existe déjà.** `useValidation` (`composables/Commons`, 217 lignes)
+couvre le cycle de vie complet : `isPristine`, `isDirty`, `isValid`,
+`isValidating`, `errorMessages`, `maxErrors`, `validateOn`
+(`input | blur | submit | lazy`), `reset`, `resetValidation`,
+`validationClasses`, et l'enregistrement auprès d'un `<OrigamForm>` parent via
+`ORIGAM_FORM_KEY`. La mécanique n'est pas le manque.
+
+**Ce qui manque vraiment : la bibliothèque de validateurs.** Une règle s'écrit
+aujourd'hui à la main — `rules: [(v) => v.length >= 3 || 'Min 3 chars']`. C'est
+exactement ce que Vuelidate apporte et que le DS n'a pas : `required`,
+`minLength`, `email`, `between`, `sameAs`, `url`…
+
+Et le dépôt en a déjà, **éparpillés et non exposés comme règles** :
+`isIbanValid`, `isLuhnValid`, `isFrDateValid`, `isUsDateValid`,
+`isIsoDateValid`, `validatePattern` (dans `utils/Mask/`), `isEmpty`,
+`isAfter`/`isBefore`/`isWithinRange`/`isWeekend` (dates). Ils existent comme
+prédicats utilitaires, pas comme validateurs composables retournant
+`true | string`.
+
+**API cible (esquisse — à affiner)** :
+- un module de validateurs, chacun retournant `true | string`, paramétrable :
+  `minLength(3)`, `between(1, 10)`, `matches(/…/)` ;
+- **messages traduisibles** — un validateur ne renvoie pas une chaîne finale
+  mais une clé i18n et ses paramètres, sinon la règle « zéro texte en dur »
+  est violée dès la première règle ;
+- **validateurs asynchrones** de première classe : `useValidation.validate` est
+  déjà `async` et attend chaque règle, le socle est là ;
+- **réutiliser les prédicats existants** plutôt que les réécrire — un
+  `iban()` s'adosse à `isIbanValid`. Règle anti-duplication du dépôt.
+
+**Point d'attention repéré** : `useInlineEdit` réimplémente sa propre
+évaluation de règles (`runRules`), avec une sémantique **différente** de
+`useValidation` — il s'arrête à la première erreur là où `useValidation`
+accumule jusqu'à `maxErrors`, et il ignore silencieusement un retour de règle
+malformé là où `useValidation` avertit. Son commentaire l'assume
+(*« mirrors the evaluation logic of useValidation without the form-provider
+coupling »*). Mutualiser le noyau ne se fait donc **pas sans trancher** laquelle
+des deux sémantiques fait foi — ce n'est pas une extraction neutre.
+
+**Livrable** : module de validateurs + interfaces + types + clés i18n + doc
+avec un tableau des validateurs + TU par validateur + e2e sur un formulaire
+réel — **test-as-you-build**.
+
 ### `OrigamTimePicker` + `OrigamTimePickerField` — sélection d'heure **(M, spec)**
 
 > Demande mainteneur (août 2026). **Statut : planifié, non implémenté.** Module `form`.
