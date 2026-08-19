@@ -59,7 +59,31 @@ describe('props read at setup() level never see the theme — pre-existing, unre
         })
     })
 
-    it('OrigamDataList drops a themed bgColor / color', () => {
-        assertThemeIgnoredButPropWorks(OrigamDataList, 'origam-data-list', { bgColor: 'primary', color: 'success' })
+    /*********************************************************
+     * OrigamDataList — CAS RETOURNÉ, le defaut est corrige
+     *
+     * @description
+     * Ce cas assertait la perte du bgColor/color themes. Il a echoue le jour
+     * de la correction, exactement comme l'en-tete de ce fichier l'annonce —
+     * c'est sa fonction, pas un accident.
+     * @description
+     * La cause n'etait PAS une lecture eager mais `toRef(props.bgColor)` :
+     * passer la VALEUR a `toRef` produit un ref fige, capture une fois pour
+     * toutes a l'execution de `setup()`. Corrige en `toRef(props, 'bgColor')`
+     * sur `OrigamDataList` et `OrigamInput`.
+     * @description
+     * L'assertion est desormais inversee : le theme DOIT atteindre le rendu.
+     * Le controle « la prop explicite change le balisage » est conserve —
+     * sans lui, « theme == explicite » se lirait pareil si la prop n'avait
+     * aucun effet visible.
+     ********************************************************/
+    it('OrigamDataList applique bien un bgColor / color themes', () => {
+        const props = { bgColor: 'primary', color: 'success' }
+        const plain = mount(OrigamDataList, { global: { plugins: [createOrigam({})] } }).html()
+        const explicit = mount(OrigamDataList, { props, global: { plugins: [createOrigam({})] } }).html()
+        const themed = mountThemed(OrigamDataList, 'origam-data-list', props).html()
+
+        expect(explicit, 'controle : passer la prop explicitement doit changer le balisage').not.toBe(plain)
+        expect(themed, 'la valeur du theme doit atteindre le rendu, comme la prop explicite').toBe(explicit)
     })
 })

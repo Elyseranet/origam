@@ -305,7 +305,7 @@
 	 * Color
 	 ********************************************************/
 
-	const {colorClasses, colorStyles} = useBothColor(toRef(props.bgColor), toRef(props.color))
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	/*********************************************************
 	 * Class & Style

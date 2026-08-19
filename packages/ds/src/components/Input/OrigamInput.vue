@@ -235,7 +235,7 @@
 	 * Color
 	 ********************************************************/
 
-	const {colorClasses, colorStyles} = useBothColor(toRef(props.bgColor), toRef(props.color))
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {rtlClasses} = useRtl()
 	const {sizeClasses} = useSize(props, 'origam-input')
 	const {typographyStyles} = useTypography(props, 'input')
