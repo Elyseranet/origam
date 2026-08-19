@@ -12,7 +12,7 @@
 
 import { describe, expect, it } from 'vitest'
 
-import { tokenPathToCssVar, tokenPathToCssVarName } from '@origam/utils/Theme/token-name.util'
+import { tokenPathToCssVar, tokenPathToCssVarName } from '@origam/utils/Commons/token-name.util'
 
 // Build-time core lives outside src/ — import via relative path.
 import {

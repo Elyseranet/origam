@@ -4,7 +4,7 @@
  * This pure, dependency-free module is the SINGLE SOURCE OF TRUTH for the
  * naming grammar. It is consumed by:
  *   - `scripts/build-tokens.mjs` (Style Dictionary `origam/name/css` transform)
- *   - `src/utils/Theme/token-name.util.ts` (runtime + Theme Builder export)
+ *   - `src/utils/Commons/token-name.util.ts` (runtime + Theme Builder export)
  *
  * Keeping both consumers on this module avoids drift between the names baked
  * into the published CSS sheets and the names a runtime/exported theme emits.

@@ -1,8 +1,8 @@
 import type { Ref } from 'vue'
 
 import type { IThemeVars, TThemeVars } from '../../types'
-import type { TMode, TTheme } from '../../types/Theme/theme.type'
-import type { IDefault } from '../DefaultProvider/default-provider.interface'
+import type { TMode, TTheme } from '../../types/Commons/theme.type'
+import type { IDefault } from '../DefaultsProvider/defaults-provider.interface'
 
 /**
  * Shape of the `useTheme()` singleton state.

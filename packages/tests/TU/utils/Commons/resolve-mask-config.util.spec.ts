@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { resolveMaskConfig } from '@origam/utils/Mask/resolve-mask-config.util'
+import { resolveMaskConfig } from '@origam/utils/Commons/resolve-mask-config.util'
 
 describe('resolveMaskConfig', () => {
     describe('null / undefined / empty string → returns null', () => {

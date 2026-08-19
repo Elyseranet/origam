@@ -1,4 +1,4 @@
-import { FEATURE_QUERIES } from '../../consts/CssSupport/css-support.const'
+import { FEATURE_QUERIES } from '../../consts/Commons/css-support.const'
 
 /**
  * Name of a feature in the monitored CSS support matrix.

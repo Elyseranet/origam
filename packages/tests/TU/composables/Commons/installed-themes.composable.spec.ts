@@ -8,7 +8,7 @@ import { defineComponent, h } from 'vue'
 import { mount } from '@vue/test-utils'
 
 import { createOrigam } from '@origam/origam'
-import { useInstalledThemes } from '@origam/composables/Theme/installed-themes.composable'
+import { useInstalledThemes } from '@origam/composables/Commons/installed-themes.composable'
 
 afterEach(() => {
     document.querySelectorAll('style[data-origam-theme]').forEach(el => el.remove())

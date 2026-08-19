@@ -13,17 +13,17 @@ import {
     _resetCssSupportCache,
     useCssSupport,
     useCssSupportClient
-} from '@origam/composables/CssSupport/cssSupport.composable'
+} from '@origam/composables/Commons/cssSupport.composable'
 
 import { useSnackbarGroup, resetSnackbarGroupForTesting } from '@origam/composables/Snackbar/snackbar-group.composable'
-import { useMask } from '@origam/composables/Mask/mask.composable'
+import { useMask } from '@origam/composables/Commons/mask.composable'
 import { useCode } from '@origam/composables/Code/code.composable'
-import { applyModeSync, applyThemeSync, readPersistedMode, readPersistedTheme } from '@origam/composables/Theme/theme.composable'
+import { applyModeSync, applyThemeSync, readPersistedMode, readPersistedTheme } from '@origam/composables/Commons/theme.composable'
 
-import { applyTheme, themeToCss } from '@origam/utils/Theme/apply-theme.util'
+import { applyTheme, themeToCss } from '@origam/utils/Commons/apply-theme.util'
 
-import { sanitizeHtml } from '@origam/utils/Textarea/sanitize-html.util'
-import { htmlToMarkdown } from '@origam/utils/Textarea/html-to-markdown.util'
+import { sanitizeHtml } from '@origam/utils/TextareaField/sanitize-html.util'
+import { htmlToMarkdown } from '@origam/utils/TextareaField/html-to-markdown.util'
 
 // ───────────────────────────────────────────────────────────────────────────
 // Helper — temporarily strip browser globals to simulate Node / SSR

@@ -27,7 +27,7 @@ pnpm -F origam guards:no-usedefaults       # guard 8 only
 No build step required — every guard parses `.vue`/`.ts`/`.scss` source
 text directly. The full suite runs in under a second.
 
-## The eight guards
+## The nine guards
 
 | # | Script | Rule | Baseline size |
 |---|---|---|---|
@@ -39,6 +39,20 @@ text directly. The full suite runs in under a second.
 | 6 | `raw-props-usage.mjs` | `_props` may only feed `useDefaults()` | 0 |
 | 7 | `emits-completeness.mjs` | Every REACHABLE `update:*` — including those a relay composable emits on the component's behalf — is declared by its emits interface | 5 |
 | 8 | `no-usedefaults-in-components.mjs` | No component calls `useDefaults()` — the ADR-005 resolver already merges theme and provider defaults into `instance.props` | 0 |
+| 9 | `layer-folders.mjs` | Every sub-folder of the six declaration layers names a real component, or is `Commons` | 0 |
+
+Guard 9 is folder-level where guard 4 is file-level, and the pair is
+complementary: a correctly-named file inside a misspelled folder passes 4
+and fails 9. It shipped with issue #368 at a baseline of zero, because that
+issue removed every violation it detects — `ExpensionPanel/`,
+`DefaultProvider/`, the three folder names `TextareaField` was split
+across, and the `Theme/` / `Mask/` / `CssSupport/` sub-system folders.
+Merging those three into `Commons/` is what let BOTH guard 4's and guard
+9's exemption lists collapse to `['Commons']`.
+
+`src/directives/` is deliberately OUT of its scope — its six sub-folders
+have no homonymous component, and the maintainer explicitly declined moving
+them to `Commons/`. Don't "fix" that omission; see the script header.
 
 Guard 6 is now vacuous in practice: with guard 8 at zero, no component
 declares `_props` at all, so guard 6's "only `useDefaults` may read it"

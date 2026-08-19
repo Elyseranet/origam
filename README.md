@@ -213,7 +213,7 @@ if (css.value.containerQueries) {
 ```
 
 The full feature matrix lives in
-[`packages/ds/src/composables/CssSupport/cssSupport.composable.ts`](./packages/ds/src/composables/CssSupport/cssSupport.composable.ts).
+[`packages/ds/src/composables/Commons/cssSupport.composable.ts`](./packages/ds/src/composables/Commons/cssSupport.composable.ts).
 Never call `CSS.supports()` directly — always go through `useCssSupport()`
 so the matrix stays auditable.
 

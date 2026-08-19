@@ -1,6 +1,6 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch, type Ref } from 'vue'
 
-import { useCssSupport } from '../CssSupport/cssSupport.composable'
+import { useCssSupport } from '../Commons/cssSupport.composable'
 
 import { PARALLAX_DIRECTION, PARALLAX_EASING } from '../../enums'
 

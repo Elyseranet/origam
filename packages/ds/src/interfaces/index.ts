@@ -147,7 +147,7 @@ export * from './DatePicker/date-picker-years.interface'
 
 export * from './DatePickerField/date-picker-field.interface'
 
-export * from './DefaultProvider/default-provider.interface'
+export * from './DefaultsProvider/defaults-provider.interface'
 
 export * from './Dialog/dialog.interface'
 export * from './Dialog/dialog-confirmation.interface'
@@ -158,10 +158,10 @@ export * from './Drawer/drawer.interface'
 
 export * from './EmptyState/empty-state.interface'
 
-export * from './ExpensionPanel/expansion-panels.interface'
-export * from './ExpensionPanel/expansion-panel.interface'
-export * from './ExpensionPanel/expansion-panel-header.interface'
-export * from './ExpensionPanel/expansion-panel-content.interface'
+export * from './ExpansionPanel/expansion-panels.interface'
+export * from './ExpansionPanel/expansion-panel.interface'
+export * from './ExpansionPanel/expansion-panel-header.interface'
+export * from './ExpansionPanel/expansion-panel-content.interface'
 
 export * from './Field/field.interface'
 
@@ -283,8 +283,8 @@ export * from './Tabs/tab-panel.interface'
 
 export * from './TextareaField/textarea-field.interface'
 
-export * from './Textarea/textarea-rich.interface'
-export * from './Textarea/textarea-toolbar.interface'
+export * from './TextareaField/textarea-field-rich.interface'
+export * from './TextareaField/textarea-field-rich-toolbar.interface'
 
 export * from './TextField/text-field.interface'
 
@@ -317,7 +317,7 @@ export * from './Timeline/timeline.interface'
 
 export * from './Treeview/treeview.interface'
 
-export * from './Mask/mask-options.interface'
+export * from './Commons/mask.interface'
 
 export * from './Commons/nuxt-module.interface'
 

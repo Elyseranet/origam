@@ -69,7 +69,7 @@ export * from './Treeview/treeview.const'
 export * from './Tabs/tabs.const'
 
 
-export * from './Theme/theme.const'
+export * from './Commons/theme.const'
 
 export * from './Media/media.const'
 export * from './Video/video.const'
@@ -83,5 +83,5 @@ export * from './Chart/chart-map.const'
 export * from './Audio/audio.const'
 export * from './Clipboard/clipboard.const'
 
-export * from './CssSupport/css-support.const'
+export * from './Commons/css-support.const'
 export * from './Commons/elevation.const'

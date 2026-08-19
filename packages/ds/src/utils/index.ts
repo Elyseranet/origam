@@ -67,17 +67,17 @@ export * from './CommandPalette/fuzzy-match.util'
 
 export * from './Code/parse-highlight-lines.util'
 
-export * from './Textarea/sanitize-html.util'
-export * from './Textarea/html-to-markdown.util'
+export * from './TextareaField/sanitize-html.util'
+export * from './TextareaField/html-to-markdown.util'
 
-export * from './Mask/apply-mask.util'
-export * from './Mask/resolve-mask-config.util'
-export * from './Mask/validate-pattern.util'
+export * from './Commons/apply-mask.util'
+export * from './Commons/resolve-mask-config.util'
+export * from './Commons/validate-pattern.util'
 
 export * from './QrCode/qr-code-adapters.util'
 
 export * from './Chart/path.util'
 export * from './Chart/mercator.util'
 
-export * from './Theme/token-name.util'
-export * from './Theme/apply-theme.util'
+export * from './Commons/token-name.util'
+export * from './Commons/apply-theme.util'

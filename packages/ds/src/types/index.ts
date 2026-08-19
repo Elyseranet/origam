@@ -266,7 +266,7 @@ export * from './Table/table.type'
 
 export * from './TextareaField/textarea-field.type'
 
-export * from './RichToolbar/rich-toolbar.type'
+export * from './TextareaField/textarea-field-rich-toolbar.type'
 
 export * from './TextField/text-field.type'
 
@@ -304,10 +304,10 @@ export * from './Tabs/tab-panels.type'
 export * from './Tabs/tab-panel.type'
 
 export * from './Window/window.type'
-export * from './Theme/theme.type'
-export * from './Theme/token-tree.type'
-export * from './Theme/semantic-tree.type'
-export * from './Theme/installed-theme.type'
+export * from './Commons/theme.type'
+export * from './Commons/token-tree.type'
+export * from './Commons/semantic-tree.type'
+export * from './Commons/installed-theme.type'
 
 export * from './ThemeProvider/theme-provider.type'
 

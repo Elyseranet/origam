@@ -6,7 +6,7 @@ import { defineComponent, h, nextTick } from 'vue'
 import { mount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { _resetThemeForTesting, applyModeSync, applyThemeSync, readPersistedMode, readPersistedTheme, useTheme } from '@origam/composables/Theme/theme.composable'
+import { _resetThemeForTesting, applyModeSync, applyThemeSync, readPersistedMode, readPersistedTheme, useTheme } from '@origam/composables/Commons/theme.composable'
 
 const STORAGE_KEY = 'origam-theme'
 const MODE_STORAGE_KEY = 'origam-mode'

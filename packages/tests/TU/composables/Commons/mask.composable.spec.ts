@@ -1,7 +1,7 @@
 import { nextTick, ref } from 'vue'
 import { describe, expect, it } from 'vitest'
 
-import { useMask } from '@origam/composables/Mask/mask.composable'
+import { useMask } from '@origam/composables/Commons/mask.composable'
 
 describe('useMask — built-in patterns', () => {
     it('formats phone:fr progressively', async () => {

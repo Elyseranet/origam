@@ -117,7 +117,7 @@
 
 	import type { IExpansionPanelHeaderProps} from '../../interfaces'
 
-	import type { IExpansionPanelHeaderEmits, IExpansionPanelHeaderSlots } from '../../interfaces/ExpensionPanel/expansion-panel-header.interface'
+	import type { IExpansionPanelHeaderEmits, IExpansionPanelHeaderSlots } from '../../interfaces/ExpansionPanel/expansion-panel-header.interface'
 
 	/*********************************************************
 	 * Global

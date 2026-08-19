@@ -35,7 +35,7 @@ register(StyleDictionary)
 // Custom transform: token path → origam CSS variable name.
 //
 // The naming grammar lives in `./token-name.mjs` — the single source of truth
-// shared with the runtime util (`src/utils/Theme/token-name.util.ts`) so the
+// shared with the runtime util (`src/utils/Commons/token-name.util.ts`) so the
 // names baked into the published CSS sheets never drift from the names a
 // runtime / exported theme emits. See that module for the full grammar.
 // ────────────────────────────────────────────────────────────────────────────
@@ -399,7 +399,7 @@ StyleDictionary.registerFormat({
 //
 // `TIntent` and `TTheme` used to be re-declared here as hardcoded literal
 // duplicates of the real public types (`src/types/Commons/intent.type.ts`,
-// `src/types/Theme/theme.type.ts`). This file is never re-exported by
+// `src/types/Commons/theme.type.ts`). This file is never re-exported by
 // `types/index.ts`, so those two duplicates were dead code — removed rather
 // than kept in sync, since this plain Node script has no TS-loader wired up
 // to import the enum-derived types directly (see git history for the prior

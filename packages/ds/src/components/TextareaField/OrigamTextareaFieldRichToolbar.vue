@@ -93,18 +93,18 @@
 	import { MDI_ICONS, TEXTAREA_TOOLBAR_COMMAND, TEXTAREA_TOOLBAR_POSITION } from '../../enums'
 
 	import type {
-		IRichToolbarProps} from '../../interfaces'
+		ITextareaFieldRichToolbarProps} from '../../interfaces'
 
-	import type { IRichToolbarEmits } from '../../interfaces/Textarea/textarea-toolbar.interface'
+	import type { ITextareaFieldRichToolbarEmits } from '../../interfaces/TextareaField/textarea-field-rich-toolbar.interface'
 
 	import type { TTextareaToolbarCommand } from '../../types'
 
-	const props = withDefaults(defineProps<IRichToolbarProps>(), {
+	const props = withDefaults(defineProps<ITextareaFieldRichToolbarProps>(), {
 		position: TEXTAREA_TOOLBAR_POSITION.TOP,
 		disabled: false
 	})
 
-	const emit = defineEmits<IRichToolbarEmits>()
+	const emit = defineEmits<ITextareaFieldRichToolbarEmits>()
 
 	const {t} = useLocale()
 

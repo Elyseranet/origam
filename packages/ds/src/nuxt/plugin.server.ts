@@ -1,6 +1,6 @@
 import { createOrigam } from '../origam'
 
-import { themeToCss } from '../utils/Theme/apply-theme.util'
+import { themeToCss } from '../utils/Commons/apply-theme.util'
 
 import type { IOrigamNuxtRuntimeConfig } from '../interfaces'
 
@@ -12,7 +12,7 @@ import {
     ORIGAM_THEME_AUTO
 } from '../consts'
 
-import type { TMode, TTheme } from '../types/Theme/theme.type'
+import type { TMode, TTheme } from '../types/Commons/theme.type'
 
 import { defineNuxtPlugin, useCookie, useHead, useRequestHeaders, useRuntimeConfig } from '#app'
 import type { NuxtApp } from '#app'

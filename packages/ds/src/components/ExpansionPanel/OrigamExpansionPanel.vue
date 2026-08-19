@@ -128,7 +128,7 @@
 
 	import type { IExpansionPanelProps} from '../../interfaces'
 
-	import type { IExpansionPanelEmits, IExpansionPanelSlots } from '../../interfaces/ExpensionPanel/expansion-panel.interface'
+	import type { IExpansionPanelEmits, IExpansionPanelSlots } from '../../interfaces/ExpansionPanel/expansion-panel.interface'
 
 	import type { TOrigamExpansionPanelContent, TOrigamExpansionPanelHeader } from "../../types"
 

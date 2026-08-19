@@ -1,6 +1,6 @@
 import { computed, onMounted, readonly, ref, type ComputedRef, type Ref } from 'vue'
 
-import { FEATURE_QUERIES } from '../../consts/CssSupport/css-support.const'
+import { FEATURE_QUERIES } from '../../consts/Commons/css-support.const'
 
 import type { IUseCssSupport, IUseCssSupportClientOptions } from '../../interfaces'
 import type { TCssFeatureName, TCssSupportMap } from '../../types'

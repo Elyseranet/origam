@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { sanitizeHtml } from '@origam/utils/Textarea/sanitize-html.util'
+import { sanitizeHtml } from '@origam/utils/TextareaField/sanitize-html.util'
 
 describe('sanitizeHtml', () => {
     it('returns an empty string for nullish / non-string inputs', () => {
