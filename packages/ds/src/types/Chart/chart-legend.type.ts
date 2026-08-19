@@ -1,4 +1,4 @@
-import { OrigamChartLegend } from '../../components'
+import OrigamChartLegend from '../../components/Chart/OrigamChartLegend.vue'
 
 import type { TDirectionBoth } from '../Commons/anchor.type'
 

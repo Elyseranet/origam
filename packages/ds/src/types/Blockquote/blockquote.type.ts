@@ -1,6 +1,7 @@
-import { OrigamBlockquote } from '../../components'
+import OrigamBlockquote from '../../components/Blockquote/OrigamBlockquote.vue'
 
-import { BLOCKQUOTE_LANG, BLOCKQUOTE_VARIANT, TEXT_ALIGN } from '../../enums'
+import { BLOCKQUOTE_LANG, BLOCKQUOTE_VARIANT } from '../../enums/Blockquote/blockquote.enum'
+import { TEXT_ALIGN } from '../../enums/Commons/align.enum'
 
 export type TOrigamBlockquote = InstanceType<typeof OrigamBlockquote>
 

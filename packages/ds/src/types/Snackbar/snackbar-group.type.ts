@@ -1,5 +1,5 @@
-import type { OrigamSnackbarGroup } from "../../components"
-import { SNACKBAR_GROUP_DIRECTION, SNACKBAR_GROUP_LOCATION } from "../../enums"
+import type OrigamSnackbarGroup from '../../components/Snackbar/OrigamSnackbarGroup.vue'
+import { SNACKBAR_GROUP_DIRECTION, SNACKBAR_GROUP_LOCATION } from '../../enums/Snackbar/snackbar-group.enum'
 
 export type TOrigamSnackbarGroup = InstanceType<typeof OrigamSnackbarGroup>
 

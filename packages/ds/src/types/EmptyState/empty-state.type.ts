@@ -1,5 +1,5 @@
-import { OrigamEmptyState } from '../../components'
-import { EMPTY_STATE_PRESET } from '../../enums'
+import OrigamEmptyState from '../../components/EmptyState/OrigamEmptyState.vue'
+import { EMPTY_STATE_PRESET } from '../../enums/EmptyState/empty-state.enum'
 import type { TTextAlign } from '../Commons/align.type'
 import type { TRoundedToken } from '../Commons/rounded.type'
 

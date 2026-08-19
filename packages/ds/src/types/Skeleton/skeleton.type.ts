@@ -1,5 +1,5 @@
-import { OrigamSkeleton } from '../../components'
-import { SKELETON_VARIANT } from '../../enums'
+import OrigamSkeleton from '../../components/Skeleton/OrigamSkeleton.vue'
+import { SKELETON_VARIANT } from '../../enums/Skeleton/skeleton.enum'
 
 export type TOrigamSkeleton = InstanceType<typeof OrigamSkeleton>
 

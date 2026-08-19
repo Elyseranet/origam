@@ -1,5 +1,6 @@
-import type { OrigamTreeview, OrigamTreeviewNode } from '../../components'
-import { TREEVIEW_SELECT_MODE, TREEVIEW_SELECTABLE_NODES } from '../../enums'
+import type OrigamTreeview from '../../components/Treeview/OrigamTreeview.vue'
+import type OrigamTreeviewNode from '../../components/Treeview/OrigamTreeviewNode.vue'
+import { TREEVIEW_SELECT_MODE, TREEVIEW_SELECTABLE_NODES } from '../../enums/Treeview/treeview.enum'
 
 export type TOrigamTreeview = InstanceType<typeof OrigamTreeview>
 export type TOrigamTreeviewNode = InstanceType<typeof OrigamTreeviewNode>

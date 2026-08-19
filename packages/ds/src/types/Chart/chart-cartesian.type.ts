@@ -1,6 +1,6 @@
-import { OrigamChartCartesian } from '../../components'
+import OrigamChartCartesian from '../../components/Chart/OrigamChartCartesian.vue'
 
-import { CHART_CARTESIAN_KIND } from '../../enums'
+import { CHART_CARTESIAN_KIND } from '../../enums/Chart/chart-cartesian.enum'
 
 /**
  * Cartesian chart topology — the subset of `TChartType` that

@@ -1,5 +1,5 @@
-import { OrigamInfiniteScroll } from "../../components"
-import { INFINITE_SCROLL_MODE, INFINITE_SCROLL_SIDE, INFINITE_SCROLL_STATUS } from '../../enums'
+import OrigamInfiniteScroll from '../../components/InfiniteScroll/OrigamInfiniteScroll.vue'
+import { INFINITE_SCROLL_MODE, INFINITE_SCROLL_SIDE, INFINITE_SCROLL_STATUS } from '../../enums/InfiniteScroll/infinite-scroll.enum'
 
 export type TInfiniteScrollSide = `${INFINITE_SCROLL_SIDE}`
 

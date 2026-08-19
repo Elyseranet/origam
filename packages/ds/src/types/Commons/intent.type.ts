@@ -1,4 +1,4 @@
-import { INTENT } from '../../enums'
+import { INTENT } from '../../enums/Commons/intent.enum'
 
 /**
  * Semantic intents accepted by `useColorEffect` and `intent`-prop components

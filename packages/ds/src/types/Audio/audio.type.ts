@@ -1,5 +1,5 @@
-import { OrigamAudio } from '../../components'
-import { AUDIO_LOOP_MODE, AUDIO_VARIANT } from '../../enums'
+import OrigamAudio from '../../components/Audio/OrigamAudio.vue'
+import { AUDIO_LOOP_MODE, AUDIO_VARIANT } from '../../enums/Audio/audio.enum'
 import type { TControlsSource } from '../Commons/controls.type'
 import type { TInline } from '../Commons/anchor.type'
 

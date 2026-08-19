@@ -1,10 +1,8 @@
-import { LOADER_KIND } from '../../enums'
+import { LOADER_KIND } from '../../enums/Commons/loader.enum'
 
-import type {
-    IProgressCircularProps,
-    IProgressLinearProps,
-    ISkeletonProps
-} from '../../interfaces'
+import type { IProgressCircularProps } from '../../interfaces/Progress/progress-circular.interface'
+import type { IProgressLinearProps } from '../../interfaces/Progress/progress-linear.interface'
+import type { ISkeletonProps } from '../../interfaces/Skeleton/skeleton.interface'
 
 /**
  * Loader kind — decides which renderer is mounted by the consumer

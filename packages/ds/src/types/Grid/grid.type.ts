@@ -1,5 +1,5 @@
-import { OrigamGrid } from '../../components'
-import { GRID_AUTO_FLOW } from '../../enums'
+import OrigamGrid from '../../components/Grid/OrigamGrid.vue'
+import { GRID_AUTO_FLOW } from '../../enums/Grid/grid.enum'
 
 import type { TAlign } from '../Commons/align.type'
 import type { TJustify } from '../Commons/justify.type'

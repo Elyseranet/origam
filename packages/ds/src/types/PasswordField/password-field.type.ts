@@ -1,5 +1,5 @@
-import { OrigamPasswordField } from "../../components"
-import { PASSWORD_STRENGTH_LEVEL } from "../../enums"
+import OrigamPasswordField from '../../components/PasswordField/OrigamPasswordField.vue'
+import { PASSWORD_STRENGTH_LEVEL } from '../../enums/PasswordField/password-field.enum'
 
 export type TOrigamPasswordField = InstanceType<typeof OrigamPasswordField>
 

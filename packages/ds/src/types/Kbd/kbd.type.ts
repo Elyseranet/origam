@@ -1,5 +1,5 @@
-import { OrigamKbd } from '../../components'
-import { KBD_VARIANT } from '../../enums'
+import OrigamKbd from '../../components/Kbd/OrigamKbd.vue'
+import { KBD_VARIANT } from '../../enums/Kbd/kbd.enum'
 
 export type TKbdVariant = `${KBD_VARIANT}`
 

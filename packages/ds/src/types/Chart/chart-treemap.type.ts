@@ -1,6 +1,6 @@
-import { OrigamChartTreemap } from '../../components'
+import OrigamChartTreemap from '../../components/Chart/OrigamChartTreemap.vue'
 
-import { CHART_TREEMAP_ALGORITHM } from '../../enums'
+import { CHART_TREEMAP_ALGORITHM } from '../../enums/Chart/chart-treemap.enum'
 
 /**
  * Treemap layout algorithm selector.

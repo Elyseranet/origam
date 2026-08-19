@@ -1,4 +1,4 @@
-import { BLOCK, INLINE, START_END } from '../../enums'
+import { BLOCK, INLINE, START_END } from '../../enums/Commons/anchor.enum'
 
 export type TStartEnd = `${START_END}`
 

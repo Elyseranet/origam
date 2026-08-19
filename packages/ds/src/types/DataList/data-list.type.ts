@@ -1,5 +1,5 @@
-import { OrigamDataList } from "../../components"
-import { DATA_LIST_MODE } from "../../enums"
+import OrigamDataList from '../../components/DataList/OrigamDataList.vue'
+import { DATA_LIST_MODE } from '../../enums/DataList/data-list.enum'
 
 export type TOrigamDataList = InstanceType<typeof OrigamDataList>
 

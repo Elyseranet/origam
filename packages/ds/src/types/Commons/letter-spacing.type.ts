@@ -1,4 +1,4 @@
-import { LETTER_SPACING } from '../../enums'
+import { LETTER_SPACING } from '../../enums/Commons/letter-spacing.enum'
 
 /**
  * Letter-spacing token keys (map to `--origam-font__letterSpacing---{key}`):

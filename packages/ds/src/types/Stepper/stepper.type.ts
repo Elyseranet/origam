@@ -1,5 +1,6 @@
-import type { OrigamStepper, OrigamStepperItem } from '../../components'
-import { STEPPER_ITEM_STATUS } from '../../enums'
+import type OrigamStepper from '../../components/Stepper/OrigamStepper.vue'
+import type OrigamStepperItem from '../../components/Stepper/OrigamStepperItem.vue'
+import { STEPPER_ITEM_STATUS } from '../../enums/Stepper/stepper.enum'
 import type { TDirection } from '../Commons/direction.type'
 
 export type TOrigamStepper = InstanceType<typeof OrigamStepper>

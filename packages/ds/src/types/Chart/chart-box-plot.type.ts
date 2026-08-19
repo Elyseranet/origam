@@ -1,3 +1,3 @@
-import { OrigamChartBoxPlot } from '../../components'
+import OrigamChartBoxPlot from '../../components/Chart/OrigamChartBoxPlot.vue'
 
 export type TOrigamChartBoxPlot = InstanceType<typeof OrigamChartBoxPlot>

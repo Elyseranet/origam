@@ -1,3 +1,3 @@
-import { DIMENSIONS } from '../../enums'
+import { DIMENSIONS } from '../../enums/Commons/dimension.enum'
 
 export type TDimensions = `${DIMENSIONS}`

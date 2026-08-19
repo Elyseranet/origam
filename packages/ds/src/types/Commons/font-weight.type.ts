@@ -1,4 +1,4 @@
-import { FONT_WEIGHT } from '../../enums'
+import { FONT_WEIGHT } from '../../enums/Commons/font-weight.enum'
 
 /**
  * Font-weight token keys (map to `--origam-font__weight---{key}`):

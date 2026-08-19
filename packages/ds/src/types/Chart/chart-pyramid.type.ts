@@ -1,5 +1,5 @@
-import { CHART_PYRAMID_KIND } from '../../enums'
-import { OrigamChartPyramid } from '../../components'
+import { CHART_PYRAMID_KIND } from '../../enums/Chart/chart-pyramid.enum'
+import OrigamChartPyramid from '../../components/Chart/OrigamChartPyramid.vue'
 
 /**
  * The two rendering modes of the pyramid / funnel family.

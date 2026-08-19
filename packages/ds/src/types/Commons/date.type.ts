@@ -1,4 +1,4 @@
-import type { IDateAdapter } from "../../interfaces"
+import type { IDateAdapter } from '../../interfaces/Commons/date.interface'
 
 export type TCustomDateFormat =
     Intl.DateTimeFormatOptions

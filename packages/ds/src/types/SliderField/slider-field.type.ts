@@ -1,5 +1,5 @@
-import { SLIDER_FIELD_VARIANT } from '../../enums'
-import { OrigamSliderField } from '../../components'
+import { SLIDER_FIELD_VARIANT } from '../../enums/SliderField/slider-field.enum'
+import OrigamSliderField from '../../components/SliderField/OrigamSliderField.vue'
 
 /**
  * Visual variant of `<OrigamSliderField>`. Drives the rendering path:

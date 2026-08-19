@@ -1,5 +1,5 @@
-import { OrigamTextMask } from "../../components"
-import { TEXT_MASK_ANIMATION } from "../../enums"
+import OrigamTextMask from '../../components/TextMask/OrigamTextMask.vue'
+import { TEXT_MASK_ANIMATION } from '../../enums/TextMask/text-mask.enum'
 
 export type TOrigamTextMask = InstanceType<typeof OrigamTextMask>
 

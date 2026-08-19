@@ -1,4 +1,4 @@
-import { ALIGN, TEXT_ALIGN } from '../../enums'
+import { ALIGN, TEXT_ALIGN } from '../../enums/Commons/align.enum'
 
 export type TAlign = `${ALIGN}`
 
