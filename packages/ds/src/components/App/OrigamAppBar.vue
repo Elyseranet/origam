@@ -147,7 +147,6 @@
 
 		return {
 			hide: behavior.has('hide'),
-			// fullyHide: behavior.has('fully-hide'),
 			inverted: behavior.has('inverted'),
 			collapse: behavior.has('collapse'),
 			elevate: behavior.has('elevate'),
@@ -193,28 +192,14 @@
 		})
 	})
 
-	// `active` scroll-behaviour: the bar engages its `active` design-state as
-	// soon as the page is scrolled away from the top. Drives the
-	// `origam-app-bar--active` class (consumer CSS hook) AND forwards a forced
-	// `active` to the inner Toolbar so its surface paints (see `toolbarActive`).
 	const isScrolled = computed(() => currentScroll.value > 0)
 
 	const isScrollActive = computed(() => scrollBehavior.value.active && isScrolled.value)
 
-	// `--active` is emitted ONLY for the `active` scroll-behaviour (engaged on
-	// scroll). It is intentionally NOT tied to `modelValue`/visibility — the bar
-	// being shown is not an "active" design-state, and binding the class to
-	// visibility painted the bar permanently (modelValue defaults to true).
-	// Visibility is handled by the layout transform, no class required.
 	const barActiveClasses = computed(() => {
 		return isScrollActive.value ? ['origam-app-bar--active'] : []
 	})
 
-	// Forwarded `active` for the Toolbar surface. The Toolbar's own design is
-	// only engaged on scroll when the consumer PROVIDED an override object
-	// (`:active="{ bgColor: 'surface' }"`). With no override we leave the
-	// surface untouched — `--active` (the class) is the only signal, so the
-	// consumer styles it however they want and nothing is imposed by default.
 	const toolbarActive = computed(() => {
 		const override = props.active && typeof props.active === 'object' ? props.active : undefined
 
@@ -231,11 +216,6 @@
 			scrollBehavior.value.elevate &&
 			(scrollBehavior.value.inverted ? currentScroll.value > 0 : currentScroll.value === 0)
 	))
-	// AppBar default height matches the toolbar's `--origam-toolbar---height`
-	// token (56 px). If the consumer overrides via `:height="…"` the prop
-	// wins. Without a default the layout reserved 0 px at the top → drawer /
-	// main covered the AppBar (user report: drawer overlaps the bar instead
-	// of starting BELOW it).
 	const height = computed(() => {
 		if (scrollBehavior.value.hide && scrollBehavior.value.inverted) return 0
 
@@ -251,13 +231,6 @@
 	 ********************************************************/
 	const {layoutItemStyles} = useLayoutItem({
 		id: props.name,
-		// `int(undefined as string)` is NaN, which silently broke the
-		// layer-chain sort in useCreateLayout (drawers ended up before
-		// the AppBar, causing the drawer to extend full-height
-		// instead of starting BELOW the bar). Fall back to 0 so AppBar
-		// reserves its top space FIRST, then drawers / side rails
-		// register after it (their own order defaults to a UID-based
-		// large number).
 		order: computed(() => {
 			const parsed = int(props.order as string)
 			return Number.isFinite(parsed) ? parsed : 0
@@ -266,9 +239,6 @@
 		layoutSize: height,
 		elementSize: shallowRef(undefined),
 		active: visible as unknown as ComputedRef,
-		// `absolute` is not part of the AppBar surface (it only toggles
-		// absolute↔fixed and never scrolls the bar away). The layout defaults
-		// to fixed for the root bar.
 		absolute: shallowRef(undefined)
 	})
 
