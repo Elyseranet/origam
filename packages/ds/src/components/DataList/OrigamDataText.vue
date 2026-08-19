@@ -1,5 +1,6 @@
 <template>
 	<dd
+			:id="id"
 			v-contrast
 			:class="dataTextClasses"
 			:style="dataTextStyles"
@@ -154,7 +155,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(dataTextStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(dataTextStyles, () => props.id)
 
 
 	/*********************************************************

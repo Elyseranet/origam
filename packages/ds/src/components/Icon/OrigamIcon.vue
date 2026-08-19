@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="iconData.component"
+			:id="id"
 			:aria-hidden="!attrs.onClick"
 			:class="iconClasses"
 			:icon="iconData.icon"
@@ -109,7 +110,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(iconStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(iconStyles, () => props.id)
 
 
 	/*********************************************************

@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			:class="spacerClasses"
 			:style="spacerStyles"
 	>
@@ -48,7 +49,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(spacerStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(spacerStyles, () => props.id)
 
 
 	/*********************************************************

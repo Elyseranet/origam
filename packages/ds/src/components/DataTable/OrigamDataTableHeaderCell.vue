@@ -1,5 +1,6 @@
 <template>
 	<origam-data-table-column-cell
+			:id="id"
 			:align="column.align"
 			:aria-sort="column.sortable && !disableSort ? (isSorted(column) ? (sortBy.find((s: IDataTableSortItem) => s.key === column.key)?.order === 'desc' ? 'descending' : 'ascending') : 'none') : undefined"
 			:class="dataTableHeaderCellClasses"
@@ -183,7 +184,7 @@
 			props.style
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(dataTableHeaderCellStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableHeaderCellStyles, () => props.id)
 
 
 	/*********************************************************

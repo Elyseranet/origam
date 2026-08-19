@@ -1,5 +1,6 @@
 <template>
 	<origam-text-field
+			:id="id"
 			ref="origamTextFieldRef"
 			v-model:focused="isFocused"
 			:aria-label="t(label)"
@@ -508,7 +509,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(datePickerFieldStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(datePickerFieldStyles, () => props.id)
 
 
 	/*********************************************************

@@ -1,5 +1,6 @@
 <template>
 	<div
+			:id="id"
 			:class="datePickerControlsClasses"
 			:style="datePickerControlsStyles"
 	>
@@ -148,7 +149,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(datePickerControlsStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(datePickerControlsStyles, () => props.id)
 
 
 	/*********************************************************

@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			:class="expansionPanelsClasses"
 			:style="expansionPanelsStyles"
 	>
@@ -245,7 +246,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(expansionPanelsStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(expansionPanelsStyles, () => props.id)
 
 
 	/*********************************************************

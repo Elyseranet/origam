@@ -1,5 +1,6 @@
 <template>
 	<div
+			:id="id"
 			:class="dataTableFooterClasses"
 			:style="dataTableFooterStyles"
 	>
@@ -153,7 +154,7 @@
 			props.style
 		] as StyleValue
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(dataTableFooterStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableFooterStyles, () => props.id)
 
 
 	/*********************************************************

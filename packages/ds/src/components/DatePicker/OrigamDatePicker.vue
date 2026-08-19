@@ -1,5 +1,6 @@
 <template>
 	<origam-picker
+			:id="id"
 			ref="origamPickerRef"
 			:class="datePickerClasses"
 			:style="datePickerStyles"
@@ -422,7 +423,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(datePickerStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(datePickerStyles, () => props.id)
 
 
 	/*********************************************************

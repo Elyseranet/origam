@@ -1,5 +1,6 @@
 <template>
 	<origam-dialog
+			:id="id"
 			ref="origamDialogRef"
 			v-model="isActive"
 			v-bind="dialogProps"

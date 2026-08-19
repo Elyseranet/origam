@@ -1,5 +1,6 @@
 <template>
 	<origam-menu
+			:id="id"
 			ref="origamMenuRef"
 			v-model:model-value="modelValue"
 			:class="contextualMenuClasses"
@@ -107,7 +108,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(contextualMenuStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(contextualMenuStyles, () => props.id)
 
 
 	/*********************************************************

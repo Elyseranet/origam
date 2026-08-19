@@ -1,5 +1,6 @@
 <template>
 	<hr
+			:id="id"
 			:aria-orientation="dividerOrientation"
 			:class="dividerClasses"
 			:role="dividerRole"
@@ -103,7 +104,7 @@
 
 		return styles as StyleValue
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(dividerStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(dividerStyles, () => props.id)
 
 
 	/*********************************************************

@@ -1,5 +1,6 @@
 <template>
 	<origam-responsive
+			:id="id"
 			v-intersect="intersect"
 			:aria-label="alt"
 			:class="imgClasses"
@@ -402,7 +403,7 @@
 			`backgroundImage: linear-gradient(${props.gradient})`
 		]
 	})
-	const {id, css, load, isLoaded: styleIsLoaded, unload} = useStyle(imgStyles)
+	const {id, css, load, isLoaded: styleIsLoaded, unload} = useStyle(imgStyles, () => props.id)
 
 
 	/*********************************************************

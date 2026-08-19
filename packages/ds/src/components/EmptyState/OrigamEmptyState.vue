@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			:class="emptyStateClasses"
 			:style="emptyStateStyles"
 			role="status"

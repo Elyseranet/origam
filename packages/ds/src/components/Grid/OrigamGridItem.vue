@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			:class="itemClasses"
 			:style="itemStyles"
 	>

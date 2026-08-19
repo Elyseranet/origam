@@ -1,5 +1,6 @@
 <template>
   <div
+      :id="id"
       :class="dragNDropItemClasses"
       :style="dragNDropItemStyles"
   >
@@ -135,7 +136,7 @@
   const { typographyStyles } = useTypography(props, 'file-field-dragndrop-item__name')
 
   const { filterProps } = useProps<IFileFieldDragNDropItemProps>(props)
-	const {id, css, load, isLoaded, unload} = useStyle(dragNDropItemStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(dragNDropItemStyles, () => props.id)
 
 
   defineExpose({ filterProps,

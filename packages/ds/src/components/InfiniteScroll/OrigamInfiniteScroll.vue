@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			ref="rootEl"
 			:class="infiniteScrollClasses"
 			:style="infiniteScrollStyles"
@@ -339,7 +340,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(infiniteScrollStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(infiniteScrollStyles, () => props.id)
 
 
 	/*********************************************************

@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			:class="iconClasses"
 			:style="iconStyles"
 	>
@@ -104,7 +105,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(iconStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(iconStyles, () => props.id)
 
 
 	/*********************************************************

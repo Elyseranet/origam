@@ -1,5 +1,6 @@
 <template>
 	<tr
+			:id="id"
 			:aria-selected="showSelect ? isSelected([item]) : undefined"
 			:class="dataTableRowClasses"
 			:style="dataTableRowStyles"
@@ -243,7 +244,7 @@
 			props.style
 		] as StyleValue
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(dataTableRowStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableRowStyles, () => props.id)
 
 
 	/*********************************************************

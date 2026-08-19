@@ -6,6 +6,7 @@
 		<component
 				:is="tag"
 				v-show="active"
+				:id="id"
 				:class="counterClasses"
 				:style="counterStyles"
 		>
@@ -139,7 +140,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(counterStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(counterStyles, () => props.id)
 
 
 	/*********************************************************
