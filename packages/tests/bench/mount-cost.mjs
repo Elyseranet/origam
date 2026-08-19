@@ -1,3 +1,34 @@
+/*********************************************************
+ * ⛔ CETTE VERSION N'EST PAS VALIDÉE — lire avant de s'en servir
+ *
+ * @description
+ * Ce fichier n'a NI bootstrap, NI mode --validate, NI contrôle négatif ou
+ * positif. Il produit des nombres ; rien ici ne prouve qu'ils veulent dire
+ * quelque chose.
+ *
+ * Une version validée a existé le 2026-08-19 : appariement intra-process,
+ * ordre A/B randomisé, IC95 par bootstrap sur les paires, et deux contrôles
+ * qui passaient — négatif (A vs A) à ~0 %, positif (injection calibrée de
+ * 0,0200 ms) retrouvée à 0,0202 ms, soit 1 % près. Elle a été perdue avec le
+ * worktree qui la portait, supprimé par erreur avant d'être commitée.
+ *
+ * Ce qu'il manque, par ordre d'importance :
+ * 1. les deux contrôles — sans eux, un « aucune différence détectée » est
+ *    indiscernable d'un instrument aveugle ;
+ * 2. l'IC95, donc toute notion d'incertitude ;
+ * 3. l'ordre randomisé — une alternance fixe laisse un biais directionnel
+ *    constant, que la médiane des deltas n'annule PAS (seul le bruit
+ *    aléatoire s'annule, pas un biais systématique).
+ *
+ * ⚠️ Il mesure aussi des composants SYNTHÉTIQUES calibrés au nombre de props
+ * d'un vrai composant, jamais le composant lui-même. Mesuré le 2026-08-19,
+ * l'écart est important : base réelle 3 à 4× plus grosse, donc ratio ~2,5×
+ * plus faible. Un tableau étiqueté « Btn » ici ne dit RIEN de `OrigamBtn`.
+ *
+ * Les chiffres qui font foi sur `useDefaults` sont ceux de la mesure directe
+ * sur composants réels, consignés dans l'issue #363 — pas ceux d'ici.
+ ********************************************************/
+
 /**
  * mount-cost.mjs — Vue 3 component MOUNT COST benchmark harness.
  *
