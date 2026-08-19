@@ -1,4 +1,4 @@
-import { BG_FG_ROLE } from '../../enums'
+import { BG_FG_ROLE } from '../../enums/Commons/color.enum'
 
 import type { IGradient } from '../../interfaces/Commons/gradient.interface'
 

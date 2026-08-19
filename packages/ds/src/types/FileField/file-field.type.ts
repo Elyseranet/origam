@@ -1,5 +1,5 @@
-import { OrigamFileField } from "../../components"
-import { FILE_FIELD_DISPLAY } from "../../enums"
+import OrigamFileField from '../../components/FileField/OrigamFileField.vue'
+import { FILE_FIELD_DISPLAY } from '../../enums/FileField/file-field.enum'
 
 export type TFileSize = boolean | 1000 | 1024
 

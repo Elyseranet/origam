@@ -1,5 +1,5 @@
-import { OrigamQrCode } from '../../components'
-import { QR_CODE_ERROR_CORRECTION_LEVEL } from '../../enums'
+import OrigamQrCode from '../../components/QrCode/OrigamQrCode.vue'
+import { QR_CODE_ERROR_CORRECTION_LEVEL } from '../../enums/QrCode/qr-code.enum'
 
 export type TOrigamQrCode = InstanceType<typeof OrigamQrCode>
 

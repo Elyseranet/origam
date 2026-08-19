@@ -1,3 +1,3 @@
-import { MODE } from '../../enums'
+import { MODE } from '../../enums/Commons/mode.enum'
 
 export type TNavMode = `${MODE}`

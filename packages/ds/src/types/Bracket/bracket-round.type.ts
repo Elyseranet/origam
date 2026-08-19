@@ -1,5 +1,5 @@
-import { OrigamBracketRound } from '../../components'
-import { BRACKET_ROUND_SIDE } from '../../enums'
+import OrigamBracketRound from '../../components/Bracket/OrigamBracketRound.vue'
+import { BRACKET_ROUND_SIDE } from '../../enums/Bracket/bracket-round.enum'
 
 /**
  * Optional side marker for double-elimination tournaments.

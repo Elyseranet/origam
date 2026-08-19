@@ -1,5 +1,5 @@
-import { OrigamCol } from "../../components"
-import { COLS } from '../../enums'
+import OrigamCol from '../../components/Grids/OrigamCol.vue'
+import { COLS } from '../../enums/Grids/col.enum'
 
 export type TCols = `${COLS}` | true | 'auto'
 

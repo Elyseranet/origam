@@ -1,13 +1,5 @@
-import { OrigamNumberFormat } from '../../components'
-import {
-    NUMBER_FORMAT_COMPACT_DISPLAY,
-    NUMBER_FORMAT_CURRENCY_DISPLAY,
-    NUMBER_FORMAT_FORMAT,
-    NUMBER_FORMAT_NOTATION,
-    NUMBER_FORMAT_SIGN_DISPLAY,
-    NUMBER_FORMAT_UNIT_DISPLAY,
-    NUMBER_FORMAT_USE_GROUPING
-} from '../../enums'
+import OrigamNumberFormat from '../../components/NumberFormat/OrigamNumberFormat.vue'
+import { NUMBER_FORMAT_COMPACT_DISPLAY, NUMBER_FORMAT_CURRENCY_DISPLAY, NUMBER_FORMAT_FORMAT, NUMBER_FORMAT_NOTATION, NUMBER_FORMAT_SIGN_DISPLAY, NUMBER_FORMAT_UNIT_DISPLAY, NUMBER_FORMAT_USE_GROUPING } from '../../enums/NumberFormat/number-format.enum'
 
 export type TOrigamNumberFormat = InstanceType<typeof OrigamNumberFormat>
 

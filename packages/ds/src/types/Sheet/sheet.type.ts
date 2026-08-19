@@ -1,5 +1,5 @@
-import { OrigamSheet } from "../../components"
-import { SHEET_SNAP_ID } from "../../enums"
+import OrigamSheet from '../../components/Sheet/OrigamSheet.vue'
+import { SHEET_SNAP_ID } from '../../enums/Sheet/sheet.enum'
 
 export type TOrigamSheet = InstanceType<typeof OrigamSheet>
 

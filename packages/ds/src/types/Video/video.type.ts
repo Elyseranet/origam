@@ -1,5 +1,5 @@
-import { OrigamVideo } from '../../components'
-import { VIDEO_TRACK_KIND } from '../../enums'
+import OrigamVideo from '../../components/Video/OrigamVideo.vue'
+import { VIDEO_TRACK_KIND } from '../../enums/Video/video.enum'
 import type { TControlsSource } from '../Commons/controls.type'
 
 export type TOrigamVideo = InstanceType<typeof OrigamVideo>

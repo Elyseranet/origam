@@ -1,5 +1,5 @@
-import { CODE_LANG, CODE_THEME } from '../../enums'
-import { OrigamCode } from '../../components'
+import { CODE_LANG, CODE_THEME } from '../../enums/Code/code.enum'
+import OrigamCode from '../../components/Code/OrigamCode.vue'
 
 export type TOrigamCode = InstanceType<typeof OrigamCode>
 

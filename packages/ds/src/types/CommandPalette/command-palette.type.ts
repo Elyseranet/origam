@@ -1,4 +1,4 @@
-import { OrigamCommandPalette } from '../../components'
+import OrigamCommandPalette from '../../components/CommandPalette/OrigamCommandPalette.vue'
 
 export type TOrigamCommandPalette = InstanceType<typeof OrigamCommandPalette>
 

@@ -1,5 +1,5 @@
-import { OrigamChartSunburst } from '../../components'
-import { CHART_SUNBURST_LABEL_MODE } from '../../enums'
+import OrigamChartSunburst from '../../components/Chart/OrigamChartSunburst.vue'
+import { CHART_SUNBURST_LABEL_MODE } from '../../enums/Chart/chart-sunburst.enum'
 
 export type TOrigamChartSunburst = InstanceType<typeof OrigamChartSunburst>
 

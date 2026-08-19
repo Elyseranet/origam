@@ -1,6 +1,6 @@
-import { OrigamChartPolar } from '../../components'
+import OrigamChartPolar from '../../components/Chart/OrigamChartPolar.vue'
 
-import { CHART_POLAR_KIND } from '../../enums'
+import { CHART_POLAR_KIND } from '../../enums/Chart/chart-polar.enum'
 
 /**
  * Polar chart topology — the subset of `TChartType` that

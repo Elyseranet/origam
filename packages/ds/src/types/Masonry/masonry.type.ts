@@ -1,5 +1,5 @@
-import { OrigamMasonry } from '../../components'
-import { MASONRY_ALIGN } from '../../enums'
+import OrigamMasonry from '../../components/Masonry/OrigamMasonry.vue'
+import { MASONRY_ALIGN } from '../../enums/Masonry/masonry.enum'
 
 export type TOrigamMasonry = InstanceType<typeof OrigamMasonry>
 

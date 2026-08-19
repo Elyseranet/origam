@@ -1,4 +1,4 @@
-import { OrigamMediaScrubber } from '../../components'
+import OrigamMediaScrubber from '../../components/Media/OrigamMediaScrubber.vue'
 import type { TDirection } from '../Commons/direction.type'
 
 export type TOrigamMediaScrubber = InstanceType<typeof OrigamMediaScrubber>

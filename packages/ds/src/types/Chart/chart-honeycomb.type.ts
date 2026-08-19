@@ -1,5 +1,5 @@
-import type { CHART_HONEYCOMB_COLOR_MODE, CHART_HONEYCOMB_ORIENTATION } from '../../enums'
-import { OrigamChartHoneycomb } from '../../components'
+import type { CHART_HONEYCOMB_COLOR_MODE, CHART_HONEYCOMB_ORIENTATION } from '../../enums/Chart/chart-honeycomb.enum'
+import OrigamChartHoneycomb from '../../components/Chart/OrigamChartHoneycomb.vue'
 
 export type TChartHoneycombColorMode = `${ CHART_HONEYCOMB_COLOR_MODE }`
 

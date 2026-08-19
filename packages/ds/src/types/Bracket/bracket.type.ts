@@ -1,11 +1,12 @@
-import type { IBracketMatch, IBracketRound } from '../../interfaces'
+import type { IBracketMatch } from '../../interfaces/Bracket/bracket-match.interface'
+import type { IBracketRound } from '../../interfaces/Bracket/bracket-round.interface'
 import type { IBorderProps } from '../../interfaces/Commons/border.interface'
 import type { IRoundedProps } from '../../interfaces/Commons/rounded.interface'
 import type { TColor } from '../Commons/color.type'
 import type { TDirection } from '../Commons/direction.type'
 import type { TElevation } from '../Commons/elevation.type'
-import { BRACKET_VARIANT } from '../../enums'
-import { OrigamBracket } from '../../components'
+import { BRACKET_VARIANT } from '../../enums/Bracket/bracket.enum'
+import OrigamBracket from '../../components/Bracket/OrigamBracket.vue'
 
 /**
  * One measured SVG connector link between two match cards

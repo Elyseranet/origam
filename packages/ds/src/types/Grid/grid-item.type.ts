@@ -1,4 +1,4 @@
-import { OrigamGridItem } from '../../components'
+import OrigamGridItem from '../../components/Grid/OrigamGridItem.vue'
 
 import type { TGridPlaceItems } from './grid.type'
 

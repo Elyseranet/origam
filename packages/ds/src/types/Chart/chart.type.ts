@@ -1,6 +1,6 @@
-import type { CHART_STACKING } from '../../enums'
-import { CHART_SMOOTHING, CHART_TYPE } from '../../enums'
-import { OrigamChart } from '../../components'
+import type { CHART_STACKING } from '../../enums/Chart/chart.enum'
+import { CHART_SMOOTHING, CHART_TYPE } from '../../enums/Chart/chart.enum'
+import OrigamChart from '../../components/Chart/OrigamChart.vue'
 
 /**
  * Loose item shape accepted by chart data arrays — either a raw

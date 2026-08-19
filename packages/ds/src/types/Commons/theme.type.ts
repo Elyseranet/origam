@@ -1,4 +1,4 @@
-import { COLOR_MODE } from '../../enums'
+import { COLOR_MODE } from '../../enums/Commons/theme.enum'
 
 /**
  * Runtime theme (brand) name applied to `<html data-theme="…">` (or to a

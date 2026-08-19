@@ -1,4 +1,4 @@
-import { LINE_HEIGHT } from '../../enums'
+import { LINE_HEIGHT } from '../../enums/Commons/line-height.enum'
 
 /**
  * Line-height token keys (map to `--origam-font__lineHeight---{key}`):

@@ -1,4 +1,4 @@
-import type { VARIANT, VARIANT_INPUT } from '../../enums'
+import type { VARIANT, VARIANT_INPUT } from '../../enums/Commons/variant.enum'
 
 /** String literal union for the `VARIANT` enum (button/card/chip variants). */
 export type TVariant = `${VARIANT}`

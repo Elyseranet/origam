@@ -1,4 +1,4 @@
-import { FONT_SIZE } from '../../enums'
+import { FONT_SIZE } from '../../enums/Commons/font-size.enum'
 
 /**
  * Font-size token keys (map to `--origam-font__size---{key}`):

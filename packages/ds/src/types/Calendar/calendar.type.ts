@@ -1,5 +1,5 @@
-import { OrigamCalendar } from '../../components'
-import { CALENDAR_NAVIGATE, CALENDAR_TIME_FORMAT, CALENDAR_VIEW } from '../../enums'
+import OrigamCalendar from '../../components/Calendar/OrigamCalendar.vue'
+import { CALENDAR_NAVIGATE, CALENDAR_TIME_FORMAT, CALENDAR_VIEW } from '../../enums/Calendar/calendar.enum'
 
 export type TOrigamCalendar = InstanceType<typeof OrigamCalendar>
 

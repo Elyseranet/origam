@@ -1,4 +1,4 @@
-import { FONT_FAMILY } from '../../enums'
+import { FONT_FAMILY } from '../../enums/Commons/font-family.enum'
 
 /**
  * Font-family token keys (map to `--origam-font__family---{key}`):

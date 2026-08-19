@@ -1,5 +1,5 @@
-import { OrigamListItem } from "../../components"
-import { LIST_ITEM_TYPE } from '../../enums'
+import OrigamListItem from '../../components/List/OrigamListItem.vue'
+import { LIST_ITEM_TYPE } from '../../enums/List/list-item.enum'
 
 export type TListItemType = `${LIST_ITEM_TYPE}`
 

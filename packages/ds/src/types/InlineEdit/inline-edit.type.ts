@@ -1,4 +1,4 @@
-import { OrigamInlineEdit } from '../../components'
+import OrigamInlineEdit from '../../components/InlineEdit/OrigamInlineEdit.vue'
 
 import type { TTextFieldType } from '../TextField/text-field.type'
 

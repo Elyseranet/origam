@@ -1,4 +1,4 @@
-import { BORDER_LOGICAL_AXIS, BORDER_STYLE } from '../../enums'
+import { BORDER_LOGICAL_AXIS, BORDER_STYLE } from '../../enums/Commons/border.enum'
 
 export type TBorderStyle = `${BORDER_STYLE}`
 

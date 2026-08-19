@@ -1,7 +1,7 @@
-import type { BUILT_IN_PATTERN, PATTERN_VALIDATOR } from '../../enums'
-import type { IMaskOptions } from '../../interfaces'
-import { OrigamTextField } from '../../components'
-import { MASK_TOKEN_KIND, TEXT_FIELD_TYPE } from "../../enums"
+import type { BUILT_IN_PATTERN, PATTERN_VALIDATOR } from '../../enums/TextField/text-field.enum'
+import type { IMaskOptions } from '../../interfaces/Commons/mask.interface'
+import OrigamTextField from '../../components/TextField/OrigamTextField.vue'
+import { MASK_TOKEN_KIND, TEXT_FIELD_TYPE } from '../../enums/TextField/text-field.enum'
 
 export type TTextFieldType = `${TEXT_FIELD_TYPE}`
 

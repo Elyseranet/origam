@@ -1,3 +1,3 @@
-import { OrigamMain } from "../../components"
+import OrigamMain from '../../components/Main/OrigamMain.vue'
 
 export type TOrigamMain = InstanceType<typeof OrigamMain>

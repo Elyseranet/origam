@@ -1,3 +1,3 @@
-import { SIZES } from '../../enums'
+import { SIZES } from '../../enums/Commons/size.enum'
 
 export type TSize = `${SIZES}`

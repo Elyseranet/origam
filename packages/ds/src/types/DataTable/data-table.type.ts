@@ -1,8 +1,8 @@
-import { OrigamDataTable } from "../../components"
+import OrigamDataTable from '../../components/DataTable/OrigamDataTable.vue'
 
-import { DATATABLE_SELECT_STRATEGY } from '../../enums'
+import { DATATABLE_SELECT_STRATEGY } from '../../enums/DataTable/data-table.enum'
 
-import type { IDataTableItemKey } from '../../interfaces'
+import type { IDataTableItemKey } from '../../interfaces/DataTable/items.interface'
 
 export type TDataTableCompareFunction<T = any> = (a: T, b: T) => number | null
 

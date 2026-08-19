@@ -1,5 +1,6 @@
-import type { OrigamTimeline, OrigamTimelineItem } from '../../components'
-import { TIMELINE_SIDE } from '../../enums'
+import type OrigamTimeline from '../../components/Timeline/OrigamTimeline.vue'
+import type OrigamTimelineItem from '../../components/Timeline/OrigamTimelineItem.vue'
+import { TIMELINE_SIDE } from '../../enums/Timeline/timeline.enum'
 import type { TDirection } from '../Commons/direction.type'
 
 export type TOrigamTimeline = InstanceType<typeof OrigamTimeline>

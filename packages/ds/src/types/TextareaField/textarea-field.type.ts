@@ -1,5 +1,5 @@
-import type { TEXTAREA_MODE, TEXTAREA_OUTPUT } from '../../enums'
-import { OrigamTextareaField } from "../../components"
+import type { TEXTAREA_MODE, TEXTAREA_OUTPUT } from '../../enums/TextareaField/textarea-field.enum'
+import OrigamTextareaField from '../../components/TextareaField/OrigamTextareaField.vue'
 
 export type TOrigamTextareaField = InstanceType<typeof OrigamTextareaField>
 

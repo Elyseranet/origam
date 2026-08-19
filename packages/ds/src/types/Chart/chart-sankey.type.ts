@@ -1,4 +1,4 @@
-import { OrigamChartSankey } from '../../components'
+import OrigamChartSankey from '../../components/Chart/OrigamChartSankey.vue'
 
 export type TOrigamChartSankey = InstanceType<typeof OrigamChartSankey>
 

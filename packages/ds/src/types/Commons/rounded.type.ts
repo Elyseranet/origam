@@ -1,4 +1,4 @@
-import { ROUNDED, ROUNDED_TOKEN } from '../../enums'
+import { ROUNDED, ROUNDED_TOKEN } from '../../enums/Commons/rounded.enum'
 
 /**
  * Every value the `rounded` prop accepts.

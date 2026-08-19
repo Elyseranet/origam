@@ -1,5 +1,5 @@
-import { CHART_SPARKLINE_KIND } from '../../enums'
-import { OrigamChartSparkline } from '../../components'
+import { CHART_SPARKLINE_KIND } from '../../enums/Chart/chart-sparkline.enum'
+import OrigamChartSparkline from '../../components/Chart/OrigamChartSparkline.vue'
 
 /**
  * The four rendering modes of the sparkline family.

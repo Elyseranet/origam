@@ -1,5 +1,5 @@
-import { OrigamBottomNav } from '../../components'
-import type { BOTTOM_NAV_POSITION } from '../../enums'
+import OrigamBottomNav from '../../components/BottomNav/OrigamBottomNav.vue'
+import type { BOTTOM_NAV_POSITION } from '../../enums/BottomNav/bottom-nav.enum'
 
 export type TOrigamBottomNav = InstanceType<typeof OrigamBottomNav>
 

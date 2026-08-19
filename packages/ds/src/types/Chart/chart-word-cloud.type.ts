@@ -1,5 +1,5 @@
 import { CHART_WORD_CLOUD_ROTATION } from '../../enums/Chart/chart-word-cloud.enum'
-import { OrigamChartWordCloud } from '../../components'
+import OrigamChartWordCloud from '../../components/Chart/OrigamChartWordCloud.vue'
 
 /**
  * Word rotation mode for `<OrigamChartWordCloud>`.

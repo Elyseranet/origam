@@ -1,5 +1,5 @@
-import { BRACKET_MATCH_STATUS } from '../../enums'
-import { OrigamBracketMatch } from '../../components'
+import { BRACKET_MATCH_STATUS } from '../../enums/Bracket/bracket-match.enum'
+import OrigamBracketMatch from '../../components/Bracket/OrigamBracketMatch.vue'
 
 export type TBracketMatchStatus = `${BRACKET_MATCH_STATUS}`
 
