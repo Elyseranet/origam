@@ -10,6 +10,7 @@
 		>
 			<div
 					ref="root"
+					:id="id"
 					:class="overlayClasses"
 					:style="overlayStyles"
 					v-bind="{ ...scopeId, ...$attrs }"
@@ -390,7 +391,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(overlayStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(overlayStyles, () => props.id)
 
 
 	/*********************************************************

@@ -6,6 +6,7 @@
 		>
 			<origam-data-table-headers-cell-mobile
 					ref="origamDataTableHeadersCellMobileRef"
+					:id="id"
 					:class="dataTableHeadersClasses"
 					:columns="columns"
 					:style="dataTableHeadersStyles"
@@ -20,6 +21,7 @@
 		>
 			<origam-data-table-headers-cell
 					ref="origamDataTableHeadersCellRef"
+					:id="id"
 					:class="dataTableHeadersClasses"
 					:headers="headers"
 					:style="dataTableHeadersStyles"
@@ -151,7 +153,7 @@
 			props.style
 		] as StyleValue
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(dataTableHeadersStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableHeadersStyles, () => props.id)
 
 
 	/*********************************************************

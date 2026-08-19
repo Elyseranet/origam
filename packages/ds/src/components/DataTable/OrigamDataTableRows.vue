@@ -3,6 +3,7 @@
 		<template v-if="loaderConfig.kind === 'skeleton'">
 			<tr
 					v-for="rowIndex in SKELETON_ROW_COUNT"
+					:id="skeletonRowId(rowIndex)"
 					:key="`skeleton-row_${rowIndex}`"
 					class="origam-data-table-rows origam-data-table-rows--skeleton"
 					aria-busy="true"
@@ -18,6 +19,7 @@
 		</template>
 		<template v-else>
 			<tr
+					:id="id"
 					key="loading"
 					class="origam-data-table-rows origam-data-table-rows--loading"
 			>
@@ -32,6 +34,7 @@
 
 	<template v-else-if="!(items && items.length) && !hideNoData">
 		<tr
+				:id="id"
 				key="no-data"
 				class="origam-data-table-rows origam-data-table-rows--no-data"
 		>
@@ -51,6 +54,7 @@
 						v-bind="groupHeaderSlotProps(item, index)"
 				>
 					<origam-data-table-group-header-row
+							:id="itemRowId(index)"
 							:key="`group-header_${item.id}`"
 							v-bind="groupHeaderSlotProps(item, index)"
 					>
@@ -64,6 +68,7 @@
 						v-bind="itemSlotProps(item, index)"
 				>
 					<origam-data-table-row
+							:id="itemRowId(index)"
 							:item="item"
 							v-bind="{...itemSlotProps(item, index).props}"
 					>
@@ -128,6 +133,9 @@
 
 	/** Fixed number of skeleton placeholder rows when kind='skeleton'. */
 	const SKELETON_ROW_COUNT = 5
+
+	const skeletonRowId = (index: number) => (props.id ? `${props.id}-skeleton-row-${index}` : undefined)
+	const itemRowId = (index: number) => (props.id ? `${props.id}-row-${index}` : undefined)
 
 	/*********************************************************
 	 * Composables
