@@ -23,7 +23,8 @@ const GUARDS = [
     'unconsumed-props.mjs',
     'raw-props-usage.mjs',
     'no-usedefaults-in-components.mjs',
-    'emits-completeness.mjs'
+    'emits-completeness.mjs',
+    'layer-folders.mjs'
 ]
 
 let failed = 0
