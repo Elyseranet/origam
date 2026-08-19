@@ -1,4 +1,4 @@
-import type { IOrigamTheme } from '../Theme/origam-theme.interface'
+import type { IOrigamTheme } from './theme.interface'
 
 /**
  * Options passed by a consumer in `nuxt.config.ts` under the `origam` key.

@@ -1,5 +1,5 @@
 import type { IBox } from '../../interfaces'
-import { Box } from '../../services'
+import { Box } from '../../classes'
 
 /**
  * Get overflow.

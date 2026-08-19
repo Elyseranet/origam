@@ -1,7 +1,7 @@
 import { computed } from "vue"
 import { useDate, useVModel } from "../../composables"
 import type { ICalendarProps, IDay } from "../../interfaces"
-import { DateAdapter } from "../../services"
+import { DateAdapter } from "../../classes"
 import { getWeek, wrapInArray } from "../../utils"
 
 /*********************************************************

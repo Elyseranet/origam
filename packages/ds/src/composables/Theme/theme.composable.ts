@@ -9,7 +9,7 @@ import {
 } from '../../consts/Theme/theme.const'
 
 import type { TMode, TModeResolved, TTheme, TThemeResolved } from '../../types/Theme/theme.type'
-import type { IOrigamThemeSingletonState } from '../../interfaces/Theme/origam-theme.interface'
+import type { IOrigamThemeSingletonState } from '../../interfaces/Commons/theme.interface'
 
 /**
  * Module-level singletons — every call to `useTheme()` shares the same Refs

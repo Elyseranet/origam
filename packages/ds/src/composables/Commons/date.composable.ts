@@ -5,7 +5,7 @@ import { ORIGAM_DATE_OPTIONS_KEY } from "../../consts"
 
 import type { IDateOptions, ILocaleInstance } from "../../interfaces"
 
-import { DateAdapter } from "../../services"
+import { DateAdapter } from "../../classes"
 
 import { createInstance, mergeDeep } from "../../utils"
 

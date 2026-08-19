@@ -3,7 +3,7 @@ import { AXIS } from '../../enums'
 
 import type { IBox, ILocationStrategyData, ILocationStrategyProps } from '../../interfaces'
 
-import { Box } from '../../services'
+import { Box } from '../../classes'
 
 import type { TAnchor } from '../../types'
 

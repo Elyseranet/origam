@@ -1,7 +1,7 @@
 import { HISTORY, HORIZON } from '../../consts'
 import type { ISample } from "../../interfaces"
 
-import { CircularBuffer } from '../../services'
+import { CircularBuffer } from '../../classes'
 
 import { calculateImpulseVelocity, oops } from '../../utils'
 

@@ -1,10 +1,10 @@
 // TU — box.util.ts
 // Exports: getOverflow, getTargetBox
-// Box service is imported from @origam/services to construct IBox instances.
+// Box class is imported from @origam/classes to construct IBox instances.
 
 import { describe, expect, it } from 'vitest'
 import { getOverflow, getTargetBox } from '@origam/utils/Commons/box.util'
-import { Box } from '@origam/services/Commons/box.service'
+import { Box } from '@origam/classes/Commons/box.class'
 
 // ─── getOverflow ─────────────────────────────────────────────────────────────
 

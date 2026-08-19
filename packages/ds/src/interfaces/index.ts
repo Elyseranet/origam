@@ -43,7 +43,7 @@ export * from './Checkbox/checkbox-btn.interface'
 export * from './Chip/chip.interface'
 export * from './Chip/chip-group.interface'
 
-export * from './ClientOnly/client-only.interface'
+export * from './Commons/client-only.interface'
 
 export * from './Clipboard/clipboard.interface'
 
@@ -319,9 +319,9 @@ export * from './Treeview/treeview.interface'
 
 export * from './Mask/mask-options.interface'
 
-export * from './Nuxt/nuxt-module.interface'
+export * from './Commons/nuxt-module.interface'
 
-export * from './Theme/origam-theme.interface'
+export * from './Commons/theme.interface'
 
 export * from './QrCode/qr-code.interface'
 export * from './QrCode/qr-code-logo.interface'
@@ -336,7 +336,7 @@ export * from './Calendar/event.interface'
 export * from './Calendar/calendar.interface'
 export * from './Calendar/rrule.interface'
 
-export * from './CssSupport/css-support.interface'
+export * from './Commons/css-support.interface'
 
 export * from './Chart/chart-series.interface'
 export * from './Chart/chart-point.interface'
