@@ -39,13 +39,18 @@ export interface IFormSlots extends ICommonsComponentSlots {
     actions?: (data: { submit: () => void, reset: () => void }) => any
 }
 
-/**
- * `useForm` ÉCRIT la validité calculée dans `modelValue`
- * (form.composable.ts:77) — c'est un canal sortant, pas seulement une valeur
- * entrante. L'émission correspondante doit donc être déclarée, sans quoi Vue
- * avertit à chaque montage et le handler `onUpdate:modelValue` reste dans
- * `$attrs`, où `inheritAttrs` le pose sur l'élément `<form>` racine.
- */
+/*********************************************************
+ * IFormEmits
+ *
+ * @description
+ * useForm ECRIT la validite calculee dans modelValue
+ * (form.composable.ts:77) — c'est un canal sortant, pas seulement une
+ * valeur entrante.
+ *
+ * L'emission correspondante doit donc etre declaree, sans quoi Vue
+ * avertit a chaque montage et le handler onUpdate:modelValue reste dans
+ * $attrs, ou inheritAttrs le pose sur l'element <form> racine.
+ ********************************************************/
 export interface IFormEmits extends ICommonsComponentEmits {
     (e: 'submit', value: any): void
     (e: 'reset', value: any): void
