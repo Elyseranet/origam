@@ -42,6 +42,33 @@ The counter appears/disappears with a transition driven by its `transition` prop
 </template>
 ```
 
+## Density
+
+`density` shifts the rendered font size by a **delta of 1px around the
+`--origam-counter---font-size` token** — the same grammar as `<OrigamCard>`
+and `<OrigamChip>`, where `--origam-{component}---density` is always a delta,
+never the value itself.
+
+| `density` | Rendered font size |
+|---|---|
+| *(not passed)* | token |
+| `default` | token (strictly identical to not passing the prop) |
+| `comfortable` | token + 1px |
+| `compact` | token − 1px |
+
+Because the delta is added to the token rather than replacing it, a theme that
+overrides `counter.font-size` keeps control of the base size at every density.
+
+```vue
+<template>
+  <OrigamCounter :value="42" :max="100" density="compact" />
+</template>
+```
+
+The font size is deliberately **not** animated: `transition-property` is
+restricted to paint properties, so a size change lands on the same frame
+instead of being interpolated over the transition duration.
+
 ## Slots
 
 `<OrigamCounter>` has no named slots — it renders text-only.
@@ -56,4 +83,6 @@ The counter appears/disappears with a transition driven by its `transition` prop
 |---|---|---|
 | `--origam-counter---color` | text-secondary | Inactive text color |
 | `--origam-counter---active-color` | text-primary | Active text color |
-| `--origam-counter---font-size` | `0.75rem` | Counter font size |
+| `--origam-counter---font-size` | `0.625rem` (`font.size.xs`) | Base font size, before the density delta |
+| `--origam-counter---density` | `0px` | Density delta added to the base font size |
+| `--origam-counter---transition-duration` | `100ms` (`motion.duration.fast`) | Duration of the colour / opacity transition |

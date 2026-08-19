@@ -188,34 +188,117 @@ test.describe('OrigamCounter', () => {
         })
     })
 
-    /*
-     * ⛔ PAS DE TEST DE DENSITÉ ICI — ET C'EST DÉLIBÉRÉ.
-     *
-     * `density` est désormais câblée côté composant : la prop produit bien
-     * `origam-counter--density-{default|comfortable|compact}`, prouvé par
-     * mutation dans TU/components/Counter/OrigamCounter.spec.ts.
-     *
-     * Le maillon suivant — classe -> rendu — n'a PAS pu être prouvé, et un
-     * test qui l'affirmerait sans l'avoir établi serait exactement le « vert
-     * vacant » que cette suite passe son temps à traquer.
-     *
-     * Ce qui a été mesuré, sur la variante Design :
-     *   - la règle compilée est bien présente dans le CSS servi et matche
-     *     l'élément (`.origam-counter--density-compact[data-v-…]`) ;
-     *   - après ajout de la classe, la variable `--origam-counter---font-size`
-     *     vaut bien `11px` sur l'élément ;
-     *   - et pourtant `getComputedStyle(el).fontSize` reste à `10px`.
-     *
-     * Le contrôle qui referme le sujet : poser `font-size: 30px` EN INLINE sur
-     * l'élément ne change ni le style calculé (`10px`) ni sa boîte
-     * (`596x14` avant comme après). Rien en CSS ne peut battre un style inline
-     * sans `!important`, et un balayage récursif des feuilles n'en trouve
-     * aucun. La police de ce composant est donc épinglée par un mécanisme que
-     * je n'ai pas identifié.
-     *
-     * Conséquence, plus large que la densité : tant que ce mécanisme n'est pas
-     * identifié, la taille de police d'OrigamCounter n'est modifiable par
-     * AUCUN canal — ni prop, ni token, ni thème, ni style inline. Suivi en
-     * tâche dédiée.
-     */
+    // ------------------------------------------------------------------ //
+    // DENSITÉ — effet visuel réel (issue #356)                            //
+    //                                                                      //
+    // La prop est pilotée par le VRAI contrôle de la story (HstSelect de   //
+    // la variante Design), pas par une classe posée à la main : c'est le   //
+    // maillon prop -> classe -> rendu qui est affirmé ici.                 //
+    //                                                                      //
+    // Contrat vérifié :                                                    //
+    //   - `density` décale la police d'un DELTA de 1px autour du token     //
+    //     `--origam-counter---font-size` ;                                 //
+    //   - `default` est NEUTRE : même taille que sans densité du tout ;    //
+    //   - `font-size` n'est jamais animée, donc une mesure synchrone lit   //
+    //     déjà la valeur finale.                                           //
+    // ------------------------------------------------------------------ //
+
+    test.describe('Density', () => {
+        /** Ouvre le picker « Density » de la variante Design et choisit une option. */
+        const pickDensity = async (page: import('@playwright/test').Page, option: string) => {
+            // Le <label> lui-même est `cursor-text` et n'ouvre rien : le
+            // déclencheur est le `.v-popper` qu'il contient.
+            const trigger = page
+                .locator('label.histoire-select', { hasText: 'Density' })
+                .first()
+                .locator('.v-popper')
+                .first()
+            await trigger.scrollIntoViewIfNeeded()
+            await trigger.click()
+            const popper = page.locator('.v-popper__popper--shown')
+            await popper.waitFor({ state: 'visible', timeout: 10000 })
+            await popper.getByText(option, { exact: true }).first().click()
+            await popper.waitFor({ state: 'hidden', timeout: 10000 })
+        }
+
+        /**
+         * `domcontentloaded` ne garantit pas que la feuille scopée du sandbox
+         * soit appliquée : WebKit rendait encore le compteur à la police
+         * héritée (16px) et `transition-property` à sa valeur initiale. On
+         * attend que le document du sandbox soit complet.
+         */
+        const waitForSandboxStyles = async (page: import('@playwright/test').Page) => {
+            const counter = page.frameLocator('iframe[src*="__sandbox"]').locator('.origam-counter').first()
+            await expect(counter).toBeVisible(VIS)
+            await expect
+                .poll(async () => counter.evaluate(el => el.ownerDocument.readyState), { timeout: 20000 })
+                .toBe('complete')
+            await expect
+                .poll(async () => counter.evaluate(el => getComputedStyle(el).transitionDuration), { timeout: 20000 })
+                .not.toBe('0s')
+        }
+
+        const fontSizeOf = async (page: import('@playwright/test').Page) => {
+            const counter = page.frameLocator('iframe[src*="__sandbox"]').locator('.origam-counter').first()
+
+            return parseFloat(await counter.evaluate(el => getComputedStyle(el).fontSize))
+        }
+
+        test('density décale la police autour du token, et "default" est neutre', async ({ page }) => {
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await waitForSandboxStyles(page)
+
+            // Référence : aucune densité posée -> la police vaut le token seul.
+            const base = await fontSizeOf(page)
+            expect(base).toBeGreaterThan(0)
+
+            await pickDensity(page, 'Comfortable')
+            await expect(sandbox.locator('.origam-counter').first())
+                .toHaveClass(/origam-counter--density-comfortable/)
+            expect(await fontSizeOf(page)).toBeCloseTo(base + 1, 1)
+
+            await pickDensity(page, 'Compact')
+            await expect(sandbox.locator('.origam-counter').first())
+                .toHaveClass(/origam-counter--density-compact/)
+            expect(await fontSizeOf(page)).toBeCloseTo(base - 1, 1)
+
+            // Le point qui pinne le correctif d'issue #356 : avant, `default`
+            // écrasait le token par un 12px en dur et rendait donc une taille
+            // DIFFÉRENTE de l'absence de densité.
+            await pickDensity(page, 'Default')
+            await expect(sandbox.locator('.origam-counter').first())
+                .toHaveClass(/origam-counter--density-default/)
+            expect(await fontSizeOf(page)).toBeCloseTo(base, 1)
+        })
+
+        test('la police n\'est pas animée — une mesure synchrone lit la valeur finale', async ({ page }) => {
+            // Cause racine de #356 : `transition-duration` déclarée seule laisse
+            // `transition-property` à sa valeur initiale `all`, ce qui anime
+            // `font-size`. Pendant toute la transition, `getComputedStyle` rend
+            // l'ANCIENNE taille — la police paraissait alors insensible à tout
+            // canal, y compris à un style inline.
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            const counter = page.frameLocator('iframe[src*="__sandbox"]').locator('.origam-counter').first()
+            await waitForSandboxStyles(page)
+
+            const transitionProperty = await counter.evaluate(el => getComputedStyle(el).transitionProperty)
+            expect(transitionProperty).not.toContain('all')
+            expect(transitionProperty).not.toContain('font-size')
+
+            // Mesure synchrone : on écrit puis on lit sans laisser passer de frame.
+            const { sync, settled } = await counter.evaluate(async (el) => {
+                el.classList.remove('origam-counter--density-compact')
+                await new Promise(r => setTimeout(r, 250))
+                el.classList.add('origam-counter--density-compact')
+                const sync = getComputedStyle(el).fontSize
+                await new Promise(r => setTimeout(r, 250))
+                const settled = getComputedStyle(el).fontSize
+                el.classList.remove('origam-counter--density-compact')
+
+                return { sync, settled }
+            })
+            expect(sync).toBe(settled)
+        })
+    })
 })

@@ -78,6 +78,30 @@
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {elevationClasses, elevationStyles} = useElevation(props)
+	/*********************************************************
+	 * Density and transition contract
+	 *
+	 * @description
+	 * `density` emits a class that shifts `--origam-counter---density`, a
+	 * DELTA in px added to the theme token — the same grammar as Card and
+	 * Chip. It must never assign `--origam-counter---font-size` itself.
+	 * @description
+	 * Assigning that token was issue #356: any density replaced the themed
+	 * value with a hardcoded px, so `counter.font-size` set by a theme was
+	 * silently dropped, and `density="default"` rendered 12px where no
+	 * density at all rendered the token's 10px.
+	 * @description
+	 * `transition-property` is declared explicitly because a lone
+	 * `transition-duration` leaves the initial value `all`, which animates
+	 * `font-size`. That is what made the font look pinned: for 150ms after
+	 * any change `getComputedStyle().fontSize` still reported the OLD size
+	 * and the box kept its old height, so every synchronous measurement —
+	 * including one taken after forcing an inline `font-size` — read a
+	 * value that had not landed yet.
+	 * @description
+	 * Font size is a layout property; animating it reflows on every theme
+	 * or density change. Only paint properties belong here.
+	 ********************************************************/
 	const {densityClasses} = useDensity(props)
 
 	const {isBooted} = useSsrBoot()
@@ -137,21 +161,24 @@
 		scoped
 >
 	.origam-counter {
+		--origam-counter---density: 0px;
+
 		color: currentColor;
 		flex: 0 1 auto;
-		font-size: var(--origam-counter---font-size, 12px);
-		transition-duration: 150ms;
+		font-size: calc(var(--origam-counter---font-size, 12px) + var(--origam-counter---density));
+		transition-property: color, opacity;
+		transition-duration: var(--origam-counter---transition-duration, 150ms);
 
 		&--density-comfortable {
-			--origam-counter---font-size: 13px;
+			--origam-counter---density: 1px;
 		}
 
 		&--density-default {
-			--origam-counter---font-size: 12px;
+			--origam-counter---density: 0px;
 		}
 
 		&--density-compact {
-			--origam-counter---font-size: 11px;
+			--origam-counter---density: -1px;
 		}
 	}
 </style>
