@@ -90,14 +90,14 @@ export * from './NumberField/hold.composable'
 
 export * from './PasswordField/passwordStrength.composable'
 
-export * from './Theme/theme.composable'
-export * from './Theme/installed-themes.composable'
+export * from './Commons/theme.composable'
+export * from './Commons/installed-themes.composable'
 
 export * from './TextareaField/textarea-field-rich.composable'
 
-export * from './CssSupport/cssSupport.composable'
+export * from './Commons/cssSupport.composable'
 
-export * from './Mask/mask.composable'
+export * from './Commons/mask.composable'
 
 export * from './QrCode/qr-code.composable'
 

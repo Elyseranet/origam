@@ -7,7 +7,7 @@ import {
     isLuhnValid,
     isUsDateValid,
     validatePattern
-} from '@origam/utils/Mask/validate-pattern.util'
+} from '@origam/utils/Commons/validate-pattern.util'
 
 describe('isLuhnValid', () => {
     // Public test card numbers (Visa, MC, Amex, Discover)

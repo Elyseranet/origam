@@ -6,9 +6,9 @@ import {
     ORIGAM_MODE_STORAGE_KEY as MODE_STORAGE_KEY,
     ORIGAM_THEME_ATTR as ATTR,
     ORIGAM_THEME_STORAGE_KEY as STORAGE_KEY
-} from '../../consts/Theme/theme.const'
+} from '../../consts/Commons/theme.const'
 
-import type { TMode, TModeResolved, TTheme, TThemeResolved } from '../../types/Theme/theme.type'
+import type { TMode, TModeResolved, TTheme, TThemeResolved } from '../../types/Commons/theme.type'
 import type { IOrigamThemeSingletonState } from '../../interfaces/Commons/theme.interface'
 
 /**

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { applyMask, parsePattern, unmaskValue } from '@origam/utils/Mask/apply-mask.util'
+import { applyMask, parsePattern, unmaskValue } from '@origam/utils/Commons/apply-mask.util'
 
 describe('parsePattern', () => {
     it('parses digits, letters, any and literals', () => {

@@ -23,7 +23,7 @@ import {
     useCssSupport,
     useCssSupportClient,
     _resetCssSupportCache
-} from '@origam/composables/CssSupport/cssSupport.composable'
+} from '@origam/composables/Commons/cssSupport.composable'
 
 // ---------------------------------------------------------------------------
 // Setup: stub CSS.supports before each test, restore after

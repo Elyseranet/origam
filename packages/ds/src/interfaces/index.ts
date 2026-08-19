@@ -317,7 +317,7 @@ export * from './Timeline/timeline.interface'
 
 export * from './Treeview/treeview.interface'
 
-export * from './Mask/mask-options.interface'
+export * from './Commons/mask.interface'
 
 export * from './Commons/nuxt-module.interface'
 

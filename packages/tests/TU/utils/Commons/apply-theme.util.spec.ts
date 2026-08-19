@@ -12,7 +12,7 @@ import {
     themeSelector,
     themeToCss,
     themeVarsToVars
-} from '@origam/utils/Theme/apply-theme.util'
+} from '@origam/utils/Commons/apply-theme.util'
 
 import { origamLightTheme } from '@origam/themes/origam.theme'
 

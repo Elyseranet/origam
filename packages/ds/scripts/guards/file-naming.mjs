@@ -68,21 +68,17 @@
  *   generated MDI icon catalogue, ~44 consumers, zero of them the Icon
  *   components themselves) live here for the same reason — not a
  *   component's props, a transverse data catalogue.
- * - `src/types/Theme/**` + `src/consts/Theme/**` — the theming ENGINE
- *   (`TTheme`, `TMode`, `TModeResolved`, the semantic/token/installed-theme
- *   trees, `theme.const.ts`'s defaults), not a component. `OrigamThemeProvider`
- *   is a real (and separately named) component, but these files are the
- *   public theming contract consumed by `useTheme()`, the Nuxt module, and
- *   `origam.ts` itself — verified zero of them are scoped to
- *   `OrigamThemeProvider` specifically. Unlike `Mask/` (which turned out
- *   to have a single real owner, `TextField`, once traced), `Theme/`
- *   genuinely has no single owning component — it is a subsystem exactly
- *   like `Commons/`, just kept in its own folder because
- *   `composables/Theme/` and `interfaces/Theme/` already use that name.
- * - `src/consts/CssSupport/**` — `css-support.const.ts` (`FEATURE_QUERIES`)
- *   backs the `useCssSupport()` feature-detection composable, not a
- *   component. Same rationale as `Theme/`: a subsystem folder, not a prop
- *   surface, exempted rather than force-renamed into a fake owner.
+ *   The theming ENGINE (`TTheme`, `TMode`, `TModeResolved`, the
+ *   semantic/token/installed-theme trees, `theme.const.ts`'s defaults) and
+ *   the `useCssSupport()` feature-detection matrix (`FEATURE_QUERIES`) both
+ *   live here too, for exactly that reason: they are subsystems, not prop
+ *   surfaces. They used to sit in their own `Theme/` and `CssSupport/`
+ *   folders under a per-directory exemption; issue #368 merged them into
+ *   `Commons/` so that ONE name means "transverse" across every layer,
+ *   which is what let this guard's exemption list shrink to `Commons` alone.
+ *   `OrigamThemeProvider` is a real (and separately named) component, but
+ *   none of those files are scoped to it — that was verified before the
+ *   merge, not assumed.
  * - `types/Media/quality-option.type.ts` + `consts/Media/media.const.ts`
  *   (single-file exemptions, not a whole-directory one — `Media/` files
  *   are otherwise in scope) — both consumed by more than one component
@@ -117,9 +113,9 @@ const REPO_ROOT = path.resolve(DS_ROOT, '../..')
 const BASELINE_PATH = path.join(__dirname, 'baseline/file-naming.json')
 
 const TARGETS = [
-    { dir: path.join(DS_ROOT, 'src/types'), suffix: '.type.ts', exemptDirs: ['Commons', 'Theme'] },
+    { dir: path.join(DS_ROOT, 'src/types'), suffix: '.type.ts', exemptDirs: ['Commons'] },
     { dir: path.join(DS_ROOT, 'src/enums'), suffix: '.enum.ts', exemptDirs: ['Commons'] },
-    { dir: path.join(DS_ROOT, 'src/consts'), suffix: '.const.ts', exemptDirs: ['Commons', 'Theme', 'CssSupport'] }
+    { dir: path.join(DS_ROOT, 'src/consts'), suffix: '.const.ts', exemptDirs: ['Commons'] }
 ]
 
 const EXCLUDED_BASENAMES = new Set(['index.ts', 'tokens.type.ts', 'quality-option.type.ts', 'media.const.ts'])
