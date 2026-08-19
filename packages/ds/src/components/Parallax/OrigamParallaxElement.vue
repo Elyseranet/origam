@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			:class="parallaxElementClasses"
 			:style="parallaxElementStyles"
 	>
@@ -218,7 +219,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(parallaxElementStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(parallaxElementStyles, () => props.id)
 
 
 	/*********************************************************

@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			v-contrast
 			:class="listSubheaderClasses"
 			:style="listSubheaderStyles"
@@ -93,7 +94,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(listSubheaderStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(listSubheaderStyles, () => props.id)
 
 
 	/*********************************************************

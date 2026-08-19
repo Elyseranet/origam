@@ -2,6 +2,7 @@
 	<origam-transition :transition="transition">
 		<div
 				v-if="active"
+				:id="id"
 				:class="scrimClasses"
 				:style="scrimStyles"
 				aria-hidden="true"
@@ -95,7 +96,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(scrimStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(scrimStyles, () => props.id)
 
 
 	/*********************************************************

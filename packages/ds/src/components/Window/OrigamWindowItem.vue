@@ -6,6 +6,7 @@
 		<div
 				v-show="isShown"
 				v-touch
+				:id="id"
 				:class="windowItemClasses"
 				:style="windowItemStyles"
 		>
@@ -186,7 +187,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(windowItemStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(windowItemStyles, () => props.id)
 
 
 	/*********************************************************

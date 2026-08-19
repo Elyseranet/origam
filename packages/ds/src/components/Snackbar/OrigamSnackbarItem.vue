@@ -1,6 +1,7 @@
 <template>
   <div
     v-contrast
+    :id="id"
     :aria-atomic="true"
     :aria-live="resolvedAriaLive"
     :class="itemClasses"

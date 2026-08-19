@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			ref="root"
 			:class="progressLinearClasses"
 			:style="progressLinearStyles"
@@ -218,7 +219,7 @@
 			loaderColorStyles.value
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(progressLinearStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(progressLinearStyles, () => props.id)
 
 
 	/*********************************************************

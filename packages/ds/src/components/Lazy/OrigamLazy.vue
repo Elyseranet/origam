@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			v-intersect="intersect"
 			:aria-busy="!isActive || undefined"
 			:class="lazyClasses"
@@ -117,7 +118,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(lazyStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(lazyStyles, () => props.id)
 
 
 	/*********************************************************

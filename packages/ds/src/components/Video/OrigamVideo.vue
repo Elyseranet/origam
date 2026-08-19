@@ -1,5 +1,6 @@
 <template>
 	<origam-responsive
+			:id="id"
 			class="origam-video"
 			:class="rootClasses"
 			:style="rootStyles"

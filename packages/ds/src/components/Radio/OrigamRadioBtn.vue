@@ -1,5 +1,6 @@
 <template>
 	<origam-selection-control
+			:id="id"
 			ref="origamSelectionControlRef"
 			v-model="model"
 			:class="radioBtnClasses"
@@ -135,7 +136,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(radioBtnStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(radioBtnStyles, () => props.id)
 
 
 	/*********************************************************

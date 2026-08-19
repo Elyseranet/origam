@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			:class="activatorClasses"
 			:style="activatorStyles"
 	>
@@ -45,7 +46,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(activatorStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(activatorStyles, () => props.id)
 
 
 	/*********************************************************

@@ -1,5 +1,6 @@
 <template>
 	<div
+			:id="id"
 			:class="responsiveClasses"
 			:style="responsiveStyles"
 	>
@@ -98,7 +99,7 @@
 			props.contentClass
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(responsiveStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(responsiveStyles, () => props.id)
 
 
 	/*********************************************************

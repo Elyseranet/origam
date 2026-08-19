@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="progressComponent"
+			:id="id"
 			ref="origamProgressRef"
 			:aria-busy="indeterminate ? true : undefined"
 			:aria-hidden="!active"
@@ -126,7 +127,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(progressStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(progressStyles, () => props.id)
 
 
 	/*********************************************************

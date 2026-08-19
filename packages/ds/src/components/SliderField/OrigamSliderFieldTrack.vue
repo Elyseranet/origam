@@ -1,5 +1,6 @@
 <template>
 	<div
+			:id="id"
 			:class="sliderFieldTrackClasses"
 			:style="sliderFieldTrackStyles"
 	>
@@ -214,7 +215,7 @@
 			}
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(sliderFieldTrackStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(sliderFieldTrackStyles, () => props.id)
 
 
 	defineExpose({

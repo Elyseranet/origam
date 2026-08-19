@@ -8,6 +8,7 @@
 		<template #activator="{ props: activatorProps }">
 			<button
 					v-bind="activatorProps"
+					:id="id"
 					type="button"
 					class="origam-media-volume-control__btn"
 					:class="rootClasses"

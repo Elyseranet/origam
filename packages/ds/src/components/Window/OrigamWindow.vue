@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			ref="rootRef"
 			v-touch="touchOptions"
 			:class="windowClasses"
@@ -296,7 +297,7 @@
 			props.style
 		] as StyleValue
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(windowStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(windowStyles, () => props.id)
 
 
 	/*********************************************************

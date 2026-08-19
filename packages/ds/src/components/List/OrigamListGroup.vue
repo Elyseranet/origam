@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="styleId"
 			v-contrast
 			:class="listGroupClasses"
 			:style="listGroupStyles"
@@ -186,7 +187,7 @@
 			props.class
 		]
 	})
-	const {id: styleId, css, load, isLoaded, unload} = useStyle(listGroupStyles)
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(listGroupStyles, () => props.id)
 
 
 	/*********************************************************

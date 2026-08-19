@@ -4,6 +4,7 @@
     role="none"
   >
     <div
+      :id="id"
       :class="rowClasses"
       :style="rowStyles"
       role="treeitem"
@@ -245,7 +246,7 @@
       }
     ] as StyleValue
   })
-  const { id, css, load, isLoaded, unload } = useStyle(rowStyles)
+  const { id, css, load, isLoaded, unload } = useStyle(rowStyles, () => props.id)
 
 
   /*********************************************************

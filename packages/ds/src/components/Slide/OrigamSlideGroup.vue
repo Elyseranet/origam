@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			:class="slideGroupClasses"
 			:style="slideGroupStyles"
 			:tabindex="(isFocused || group.selected.value.length) ? -1 : 0"
@@ -471,7 +472,7 @@
 			}
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(slideGroupStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(slideGroupStyles, () => props.id)
 
 
 	/*********************************************************

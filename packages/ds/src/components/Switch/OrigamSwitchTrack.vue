@@ -1,5 +1,6 @@
 <template>
 	<div
+			:id="id"
 			:class="switchTrackClasses"
 			:style="switchTrackStyles"
 			@click="handleClick"
@@ -165,7 +166,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(switchTrackStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(switchTrackStyles, () => props.id)
 
 
 	/*********************************************************

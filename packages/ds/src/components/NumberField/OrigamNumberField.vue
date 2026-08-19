@@ -1,6 +1,7 @@
 <template>
 	<origam-input
 			v-if="compact"
+			:id="id"
 			ref="origamCompactInputRef"
 			v-model="model"
 			:validation-value="model"
@@ -56,6 +57,7 @@
 	</origam-input>
 	<origam-text-field
 			v-else
+			:id="id"
 			ref="origamTextFieldRef"
 			v-model:model-value="inputText"
 			:class="numberFieldClasses"
@@ -776,7 +778,7 @@
 	const handleCompactDecrement = () => {
 		toggleUpDown(false)
 	}
-	const {id, css, load, isLoaded, unload} = useStyle(numberFieldStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(numberFieldStyles, () => props.id)
 
 
 	/*********************************************************

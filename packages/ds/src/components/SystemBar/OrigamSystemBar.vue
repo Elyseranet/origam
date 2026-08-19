@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			v-contrast
 			:class="systemBarClasses"
 			:style="systemBarStyles"
@@ -114,7 +115,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(systemBarStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(systemBarStyles, () => props.id)
 
 
 	/*********************************************************

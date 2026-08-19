@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="isClickable ? 'button' : 'div'"
+			:id="id"
 			:class="itemClasses"
 			:type="isClickable ? 'button' : undefined"
 			:aria-current="resolvedStatus === STEPPER_ITEM_STATUS.ACTIVE ? 'step' : undefined"

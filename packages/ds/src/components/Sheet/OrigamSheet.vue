@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			:ref="rootEl"
 			:class="sheetClasses"
 			:style="sheetStyles"
@@ -237,7 +238,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(sheetStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(sheetStyles, () => props.id)
 
 
 	/*********************************************************

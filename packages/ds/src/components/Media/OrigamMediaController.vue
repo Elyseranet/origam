@@ -1,5 +1,6 @@
 <template>
 	<div
+			:id="id"
 			class="origam-media-controller"
 			:class="rootClasses"
 			:style="style"

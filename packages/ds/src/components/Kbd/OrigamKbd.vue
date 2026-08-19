@@ -1,6 +1,7 @@
 <template>
 	<kbd
 			v-contrast
+			:id="id"
 			:class="kbdClasses"
 			:style="kbdStyles"
 	>
@@ -104,7 +105,7 @@
 			props.style,
 		] as StyleValue
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(kbdStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(kbdStyles, () => props.id)
 
 
 	/*********************************************************
