@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="props.tag"
+			:id="id"
 			v-contrast
 			:class="codeClasses"
 			:style="codeStyles"

@@ -1,5 +1,6 @@
 <template>
 	<origam-slide-group
+			:id="id"
 			ref="origamSlideGroupRef"
 			:class="chipGroupClasses"
 			:style="chipGroupStyles"
@@ -141,7 +142,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(chipGroupStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(chipGroupStyles, () => props.id)
 
 
 	/*********************************************************

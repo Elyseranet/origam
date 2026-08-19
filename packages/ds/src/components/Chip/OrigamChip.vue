@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="link.tag.value"
+			:id="id"
 			v-ripple="rippleProps"
 			v-contrast
 			:class="chipClasses"
@@ -360,7 +361,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(chipStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(chipStyles, () => props.id)
 
 
 	/*********************************************************

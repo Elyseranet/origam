@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			:class="cardTextClasses"
 			:style="cardTextStyles"
 	>
@@ -96,7 +97,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(cardTextStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(cardTextStyles, () => props.id)
 
 
 	/*********************************************************

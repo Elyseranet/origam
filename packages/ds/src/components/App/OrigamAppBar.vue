@@ -1,5 +1,6 @@
 <template>
 	<origam-toolbar
+			:id="id"
 			ref="origamToolbarRef"
 			:class="appBarClasses"
 			:collapse="isCollapsed"
@@ -264,7 +265,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(appBarStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(appBarStyles, () => props.id)
 
 
 	/*********************************************************

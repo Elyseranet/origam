@@ -1,5 +1,6 @@
 <template>
 	<div
+			:id="id"
 			class="origam-chart-streamgraph"
 			:class="rootClasses"
 			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles, headerTypographyStyles]"

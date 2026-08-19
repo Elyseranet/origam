@@ -1,5 +1,6 @@
 <template>
 	<div
+			:id="id"
 			:class="colorPickerEditClasses"
 			:style="colorPickerEditStyles"
 	>
@@ -124,7 +125,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(colorPickerEditStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(colorPickerEditStyles, () => props.id)
 
 
 	/*********************************************************

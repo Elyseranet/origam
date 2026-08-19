@@ -1,5 +1,6 @@
 <template>
 	<figure
+			:id="id"
 			class="origam-chart-sparkline"
 			:class="rootClasses"
 			:style="[rootStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles]"

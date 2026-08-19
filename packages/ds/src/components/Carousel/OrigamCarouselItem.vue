@@ -1,5 +1,6 @@
 <template>
 	<origam-window-item
+			:id="id"
 			ref="origamWindowItemRef"
 			:class="carouselItemClasses"
 			:style="carouselItemStyles"
@@ -106,7 +107,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(carouselItemStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(carouselItemStyles, () => props.id)
 
 
 	/*********************************************************

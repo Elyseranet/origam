@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="link.tag.value"
+			:id="id"
 			v-contrast
 			:aria-current="isActive ? 'page' : undefined"
 			:class="breadcrumbItemClasses"
@@ -185,7 +186,7 @@
 		]
 	})
 
-	const {id, css, load, isLoaded, unload} = useStyle(breadcrumbItemStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(breadcrumbItemStyles, () => props.id)
 
 	/*********************************************************
 	 * Expose

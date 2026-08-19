@@ -1,5 +1,6 @@
 <template>
 	<origam-picker
+			:id="id"
 			ref="origamPickerRef"
 			:class="colorPickerClasses"
 			:style="colorPickerStyles"
@@ -264,7 +265,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(colorPickerStyles)
+	const {id, css, load, isLoaded, unload} = useStyle(colorPickerStyles, () => props.id)
 
 
 	/*********************************************************
