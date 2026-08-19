@@ -85,29 +85,32 @@
 		setup
 >
 
-	import { OrigamBtn, OrigamCheckboxBtn, OrigamDataTableColumnCell } from '../../components'
+	import OrigamBtn from '../Btn/OrigamBtn.vue'
+	import OrigamCheckboxBtn from '../Checkbox/OrigamCheckboxBtn.vue'
+	import OrigamDataTableColumnCell from './OrigamDataTableColumnCell.vue'
 
-	import {
-	useCell,
-	useDisplay,
-	useExpanded,
-	useHeaders,
-	useLocale,
-	useProps,
-	useSelection,
-	useSort,
-	useStyle
-} from '../../composables'
+	import { useCell } from '../../composables/DataTable/cell.composable'
+	import { useDisplay } from '../../composables/Commons/display.composable'
+	import { useExpanded } from '../../composables/DataTable/expand.composable'
+	import { useHeaders } from '../../composables/DataTable/headers.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useSelection } from '../../composables/DataTable/select.composable'
+	import { useSort } from '../../composables/DataTable/sort.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { MDI_ICONS, SIZES } from '../../enums'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { SIZES } from '../../enums/Commons/size.enum'
 
-	import type { IDataTableHeaderCellColumnSlot, IDataTableItemKey, IDataTableRowProps} from '../../interfaces'
+	import type { IDataTableHeaderCellColumnSlot, IDataTableItemKey } from '../../interfaces/DataTable/items.interface'
+	import type { IDataTableRowProps } from '../../interfaces/DataTable/data-table-row.interface'
 
 	import type { IDataTableRowEmits, IDataTableRowSlots } from '../../interfaces/DataTable/data-table-row.interface'
 
-	import { getCurrentInstance, getObjectValueByPath } from '../../utils'
+	import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
+	import { getObjectValueByPath } from '../../utils/Commons/commons.util'
 
-	import { ORIGAM_DATA_TABLE_SHOW_SELECT_KEY } from '../../consts'
+	import { ORIGAM_DATA_TABLE_SHOW_SELECT_KEY } from '../../consts/DataTable/data-table.const'
 
 	import { computed, inject, ref, Ref, StyleValue, toDisplayString, withModifiers } from 'vue'
 

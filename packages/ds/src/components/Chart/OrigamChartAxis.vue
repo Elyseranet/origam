@@ -87,7 +87,7 @@
 		lang="ts"
 		setup
 >
-	import type { IChartAxisProps } from '../../interfaces'
+	import type { IChartAxisProps } from '../../interfaces/Chart/chart-axis.interface'
 
 	/*********************************************************
 	 * Global

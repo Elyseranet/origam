@@ -175,37 +175,32 @@
 		setup
 >
 	import { computed, isVNode, StyleValue, toRef, useSlots, type VNode } from "vue"
-	import { OrigamDataText, OrigamDataTitle } from "../../components"
+	import OrigamDataText from './OrigamDataText.vue'
+	import OrigamDataTitle from './OrigamDataTitle.vue'
 
-	import {
-		useBorder,
-		useBothColor,
-		useDensity,
-		useElevation,
-		useLoader,
-		useMargin,
-		usePadding,
-		useProps,
-		useRounded,
-		useStyle,
-		useTypography
-	} from "../../composables"
-	import type {
-		IDataItem,
-		IDataListKVItem,
-		IDataListKVItemValueComponent,
-		IDataListProps,
-		IDataListSlots,
-		IDataTextProps
-	} from "../../interfaces"
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useLoader } from '../../composables/Commons/loader.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
+	import type { IDataItem, IDataListProps, IDataListSlots } from '../../interfaces/DataList/data-list.interface'
+	import type { IDataListKVItem } from '../../interfaces/DataList/data-list-kv-item.interface'
+	import type { IDataListKVItemValueComponent } from '../../interfaces/DataList/data-list-kv-item-value-component.interface'
+	import type { IDataTextProps } from '../../interfaces/DataList/data-text.interface'
 	// `isDataListKVItemValueComponent` is a type-guard FUNCTION — it
 	// belongs in `src/utils/`, not `src/interfaces/`, per the global
 	// CLAUDE.md rule that interface directories must contain interface
 	// declarations only.
-	import { vContrast } from "../../directives"
-	import { isDataListKVItemValueComponent } from "../../utils"
+	import vContrast from '../../directives/Contrast/contrast.directive'
+	import { isDataListKVItemValueComponent } from '../../utils/DataList/data-list-kv-item-value-component.util'
 
-	import { isEmpty, toKebabCase } from "../../utils"
+	import { isEmpty, toKebabCase } from '../../utils/Commons/commons.util'
 
 	/*********************************************************
 	 * Global

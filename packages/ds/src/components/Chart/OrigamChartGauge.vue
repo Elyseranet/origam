@@ -139,21 +139,15 @@
 	} from 'vue'
 
 	import { useChartGauge } from '../../composables/Chart/chart-gauge.composable'
-	import {
-		useBackgroundColor,
-		useChartHeaderTypography,
-		useDimension,
-		useElevation,
-		useMargin,
-		usePadding,
-		useRounded
-	} from '../../composables'
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
+	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
 
-	import type {
-		IChartGaugeEmits,
-		IChartGaugeProps,
-		IChartGaugeSlots
-	} from '../../interfaces'
+	import type { IChartGaugeEmits, IChartGaugeProps, IChartGaugeSlots } from '../../interfaces/Chart/chart-gauge.interface'
 
 	/*********************************************************
 	 * Global

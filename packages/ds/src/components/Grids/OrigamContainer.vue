@@ -12,16 +12,15 @@
 		lang="ts"
 		setup
 >
-	import {
-	useBorder,
-	useMargin,
-	usePadding,
-	useProps,
-	useRtl,
-	useStyle
-} from '../../composables'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRtl } from '../../composables/Commons/rtl.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { ICommonsComponentSlots, IContainerProps } from '../../interfaces'
+	import type { ICommonsComponentSlots } from '../../interfaces/Commons/commons.interface'
+	import type { IContainerProps } from '../../interfaces/Grids/container.interface'
 
 	import { computed, StyleValue } from 'vue'
 

@@ -94,31 +94,31 @@
 		useSlots,
 		watch
 	} from 'vue'
-	import { OrigamResponsive, OrigamTransition } from '../../components'
+	import OrigamResponsive from '../Responsive/OrigamResponsive.vue'
+	import OrigamTransition from '../Transition/OrigamTransition.vue'
 
-	import {
-	useBorder,
-	useBothColor,
-	useMargin,
-	usePadding,
-	useProps,
-	useRounded,
-	useStyle
-} from '../../composables'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { IN_BROWSER, SUPPORTS_INTERSECTION } from '../../consts'
+	import { IN_BROWSER, SUPPORTS_INTERSECTION } from '../../consts/Commons/commons.const'
 
-	import { vIntersect } from '../../directives'
+	import vIntersect from '../../directives/Intersect/intersect.directive'
 
-	import { IMG_STATE } from '../../enums'
+	import { IMG_STATE } from '../../enums/Img/img.enum'
 
-	import type { IImgProps, ISrcObject} from '../../interfaces'
+	import type { IImgProps, ISrcObject } from '../../interfaces/Img/img.interface'
 
 	import type { IImgEmits, IImgSlots } from '../../interfaces/Img/img.interface'
 
-	import type { TImgState } from '../../types'
+	import type { TImgState } from '../../types/Img/img.type'
 
-	import { convertToUnit, getCurrentInstance, pick } from '../../utils'
+	import { convertToUnit, pick } from '../../utils/Commons/commons.util'
+	import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
 
 	/*********************************************************
 	 * Global

@@ -19,10 +19,11 @@
 		setup
 >
 	import { camelize } from 'vue'
-	import { useProps } from "../../composables"
-	import { TRANSITION_MODE } from '../../enums'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { TRANSITION_MODE } from '../../enums/Transition/transition.enum'
 
-	import type { IHTMLExpandElement, ITransitionProps, ITransitionSlots } from '../../interfaces'
+	import type { IHTMLExpandElement } from '../../interfaces/Transition/expand.interface'
+	import type { ITransitionProps, ITransitionSlots } from '../../interfaces/Transition/transition.interface'
 
 	/*********************************************************
 	 * Global

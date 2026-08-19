@@ -47,15 +47,14 @@
 		lang="ts"
 		setup
 >
-	import {
-	useBothColor,
-	useProps,
-	useRounded,
-	useSize,
-	useStyle
-} from '../../composables'
-	import type { ICommonsComponentSlots, ISkeletonProps } from '../../interfaces'
-	import { convertToUnit } from '../../utils'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useSize } from '../../composables/Commons/size.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import type { ICommonsComponentSlots } from '../../interfaces/Commons/commons.interface'
+	import type { ISkeletonProps } from '../../interfaces/Skeleton/skeleton.interface'
+	import { convertToUnit } from '../../utils/Commons/commons.util'
 	import { computed, toRef } from 'vue'
 	import type { StyleValue } from 'vue'
 

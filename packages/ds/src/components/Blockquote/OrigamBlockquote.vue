@@ -53,22 +53,21 @@
 		useSlots
 } from 'vue'
 
-	import {
-		useBorder,
-		useElevation,
-		useMargin,
-		usePadding,
-		useRounded,
-		useTypography
-	} from '../../composables'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
 	import { QUOTE_MARKS_BY_LANG } from '../../consts/Blockquote/blockquote.const'
 
-	import type { IBlockquoteProps, IBlockquoteSlots } from '../../interfaces'
+	import type { IBlockquoteProps, IBlockquoteSlots } from '../../interfaces/Blockquote/blockquote.interface'
 
-	import type { TBlockquoteLang, TColor } from '../../types'
+	import type { TBlockquoteLang } from '../../types/Blockquote/blockquote.type'
+	import type { TColor } from '../../types/Commons/color.type'
 
-	import { isIntent, warnDeprecatedProp } from '../../utils'
+	import { isIntent, warnDeprecatedProp } from '../../utils/Commons/color.util'
 
 	/*********************************************************
 	 * Global

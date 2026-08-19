@@ -22,13 +22,11 @@
 		setup
 >
 	import { computed, StyleValue, useAttrs, watch } from 'vue'
-	import {
-	useProps,
-	useResizeObserver,
-	useStyle
-} from '../../composables'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useResizeObserver } from '../../composables/Commons/resizeObserver.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { IVirtualScrollItemProps} from '../../interfaces'
+	import type { IVirtualScrollItemProps } from '../../interfaces/VirtualScroll/virtual-scroll-item.interface'
 
 	import type { IVirtualScrollItemEmits, IVirtualScrollItemSlots } from '../../interfaces/VirtualScroll/virtual-scroll-item.interface'
 

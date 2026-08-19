@@ -129,40 +129,49 @@
 >
 	import { computed, ref, StyleValue, toRef, useAttrs, useSlots } from 'vue'
 	import type { ComputedRef, ExtractPropTypes } from 'vue'
-	import { OrigamAvatar, OrigamIcon, OrigamLoader, OrigamProgress, OrigamSkeleton } from '../../components'
+	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
+	import OrigamLoader from '../Loader/OrigamLoader.vue'
+	import OrigamProgress from '../Progress/OrigamProgress.vue'
+	import OrigamSkeleton from '../Skeleton/OrigamSkeleton.vue'
 
-	import {
-		useActive,
-		useAdjacent,
-		useDensity,
-		useDimension,
-		useGroupItem,
-		useHover,
-		useLink,
-		useLoader,
-		useLocation,
-		usePosition,
-		useProps,
-		useSelectLink,
-		useSize,
-		useStateEffect,
-		useStatus,
-		useStyle,
-		useTypography,
-		useVariant
-	} from '../../composables'
+	import { useActive } from '../../composables/Commons/active.composable'
+	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useGroupItem } from '../../composables/Commons/groupItem.composable'
+	import { useHover } from '../../composables/Commons/hover.composable'
+	import { useLink } from '../../composables/Commons/link.composable'
+	import { useLoader } from '../../composables/Commons/loader.composable'
+	import { useLocation } from '../../composables/Commons/location.composable'
+	import { usePosition } from '../../composables/Commons/position.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useSelectLink } from '../../composables/Commons/selectLink.composable'
+	import { useSize } from '../../composables/Commons/size.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStatus } from '../../composables/Commons/status.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
+	import { useVariant } from '../../composables/Commons/variant.composable'
 
-	import { ORIGAM_BTN_TOGGLE_KEY } from '../../consts'
+	import { ORIGAM_BTN_TOGGLE_KEY } from '../../consts/Btn/btn-toggle.const'
 
-	import { vContrast, vRipple } from '../../directives'
+	import vContrast from '../../directives/Contrast/contrast.directive'
+	import vRipple from '../../directives/Ripple/ripple.directive'
 
-	import { DENSITY, LOADER_KIND, PROGRESS_TYPE, SIZES } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { LOADER_KIND } from '../../enums/Commons/loader.enum'
+	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
+	import { SIZES } from '../../enums/Commons/size.enum'
 
-	import type { IAdjacentProps, IBtnProps, IProgressProps, IStatusProps } from '../../interfaces'
+	import type { IAdjacentProps } from '../../interfaces/Commons/adjacent.interface'
+	import type { IBtnProps } from '../../interfaces/Btn/btn.interface'
+	import type { IProgressProps } from '../../interfaces/Progress/progress.interface'
+	import type { IStatusProps } from '../../interfaces/Commons/status.interface'
 
 	import type { IBtnEmits, IBtnSlots } from '../../interfaces/Btn/btn.interface'
 
-	import type { TOrigamProgress } from "../../types"
+	import type { TOrigamProgress } from '../../types/Progress/progress.type'
 
 	/*********************************************************
 	 * Global

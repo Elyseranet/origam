@@ -20,20 +20,18 @@
 		setup
 >
 	import { computed, StyleValue, toRef, useSlots } from 'vue'
-	import {
-	useBorder,
-	useBothColor,
-	useDensity,
-	useMargin,
-	usePadding,
-	useProps,
-	useStyle,
-	useTypography
-} from '../../composables'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import { vContrast } from '../../directives'
+	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import type { ITitleProps, ITitleSlots } from '../../interfaces'
+	import type { ITitleProps, ITitleSlots } from '../../interfaces/Title/title.interface'
 
 	/*********************************************************
 	 * Global

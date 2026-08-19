@@ -71,33 +71,32 @@
 		useSlots,
 		watch
 	} from 'vue'
-	import { OrigamOverlayScrim, OrigamTransition } from '../../components'
+	import OrigamOverlayScrim from '../Overlay/OrigamOverlayScrim.vue'
+	import OrigamTransition from '../Transition/OrigamTransition.vue'
 
-	import {
-		useActive,
-		useBackgroundColor,
-		useDensity,
-		useHover,
-		useLayoutItem,
-		useProps,
-		useRouter,
-		useScopeId,
-		useSsrBoot,
-		useStateEffect,
-		useSticky,
-		useStyle,
-		useToggleScope,
-		useTouch,
-		useVModel
-} from '../../composables'
+	import { useActive } from '../../composables/Commons/active.composable'
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useHover } from '../../composables/Commons/hover.composable'
+	import { useLayoutItem } from '../../composables/Commons/layoutItem.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRouter } from '../../composables/Commons/router.composable'
+	import { useScopeId } from '../../composables/Commons/scopeId.composable'
+	import { useSsrBoot } from '../../composables/Commons/ssrBoot.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useSticky } from '../../composables/Commons/sticky.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useToggleScope } from '../../composables/Commons/toggleScope.composable'
+	import { useTouch } from '../../composables/Commons/touch.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { INLINE } from '../../enums'
+	import { INLINE } from '../../enums/Commons/anchor.enum'
 
-	import type { IDrawerProps} from '../../interfaces'
+	import type { IDrawerProps } from '../../interfaces/Drawer/drawer.interface'
 
 	import type { IDrawerEmits, IDrawerSlots } from '../../interfaces/Drawer/drawer.interface'
 
-	import { int } from "../../utils"
+	import { int } from '../../utils/Commons/commons.util'
 
 	/*********************************************************
 	 * Global

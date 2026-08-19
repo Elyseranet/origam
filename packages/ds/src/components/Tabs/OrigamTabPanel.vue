@@ -29,16 +29,14 @@
 >
 	import { computed, inject, ref, StyleValue } from 'vue'
 
-	import {
-		useGroupItem,
-		useLazy,
-		useProps,
-		useStyle
-	} from '../../composables'
+	import { useGroupItem } from '../../composables/Commons/groupItem.composable'
+	import { useLazy } from '../../composables/Commons/lazy.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { ORIGAM_TABS_KEY, ORIGAM_TAB_PANELS_KEY, ORIGAM_TAB_PANELS_CTX_KEY } from '../../consts'
+	import { ORIGAM_TABS_KEY, ORIGAM_TAB_PANELS_KEY, ORIGAM_TAB_PANELS_CTX_KEY } from '../../consts/Tabs/tabs.const'
 
-	import type { ITabPanelProps, ITabPanelSlots } from '../../interfaces'
+	import type { ITabPanelProps, ITabPanelSlots } from '../../interfaces/Tabs/tab-panel.interface'
 
 	/*********************************************************
 	 * Global

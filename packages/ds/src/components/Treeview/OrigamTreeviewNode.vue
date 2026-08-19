@@ -99,14 +99,12 @@
   import { computed, inject, useSlots } from 'vue'
   import type { StyleValue } from 'vue'
 
-  import { ORIGAM_TREEVIEW_KEY } from '../../consts'
-  import { TREEVIEW_SELECT_MODE, TREEVIEW_SELECTABLE_NODES } from '../../enums'
-  import {
-    useProps,
-    useStyle
-  } from '../../composables'
+  import { ORIGAM_TREEVIEW_KEY } from '../../consts/Treeview/treeview.const'
+  import { TREEVIEW_SELECT_MODE, TREEVIEW_SELECTABLE_NODES } from '../../enums/Treeview/treeview.enum'
+  import { useProps } from '../../composables/Commons/props.composable'
+  import { useStyle } from '../../composables/Commons/style.composable'
 
-  import type { ITreeviewNodeProps, ITreeviewNodeSlots } from '../../interfaces'
+  import type { ITreeviewNodeProps, ITreeviewNodeSlots } from '../../interfaces/Treeview/treeview-node.interface'
   import { OrigamIcon } from "../Icon";
 
   defineOptions({ name: 'OrigamTreeviewNode' })

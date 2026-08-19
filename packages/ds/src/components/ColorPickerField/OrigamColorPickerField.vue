@@ -130,19 +130,37 @@
 		lang="ts"
 		setup
 >
-	import { OrigamColorPicker, OrigamMenu, OrigamSheet, OrigamTextField, OrigamTranslateScale } from "../../components"
+	import OrigamColorPicker from '../ColorPicker/OrigamColorPicker.vue'
+	import OrigamMenu from '../Menu/OrigamMenu.vue'
+	import OrigamSheet from '../Sheet/OrigamSheet.vue'
+	import OrigamTextField from '../TextField/OrigamTextField.vue'
+	import OrigamTranslateScale from '../Transition/OrigamTranslateScale.vue'
 
-	import { useLocale, useProps, useTeleportTypography, useVModel , useStyle} from "../../composables"
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useTeleportTypography } from '../../composables/Commons/teleport-typography.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { COLOR_NULL, ORIGAM_FORM_KEY } from "../../consts"
+	import { COLOR_NULL } from '../../consts/ColorPicker/color-picker.const'
+	import { ORIGAM_FORM_KEY } from '../../consts/Form/form.const'
 
-	import { BLOCK, DENSITY, DIRECTION, TEXT_FIELD_TYPE } from "../../enums"
+	import { BLOCK } from '../../enums/Commons/anchor.enum'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
+	import { TEXT_FIELD_TYPE } from '../../enums/TextField/text-field.enum'
 
-	import type { IColorPickerFieldProps, IColorPickerFieldSlots } from "../../interfaces"
+	import type { IColorPickerFieldProps, IColorPickerFieldSlots } from '../../interfaces/ColorPickerField/color-picker-field.interface'
 
-	import type { TColor, TOrigamColorPicker, TOrigamMenu, TOrigamTextField, TTransitionProps } from "../../types"
+	import type { TColor } from '../../types/Commons/color.type'
+	import type { TOrigamColorPicker } from '../../types/ColorPicker/color-picker.type'
+	import type { TOrigamMenu } from '../../types/Menu/menu.type'
+	import type { TOrigamTextField } from '../../types/TextField/text-field.type'
+	import type { TTransitionProps } from '../../types/Transition/transition.type'
 
-	import { forwardRefs, HSVtoCSS, matchesSelector } from "../../utils"
+	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
+	import { HSVtoCSS } from '../../utils/Commons/color.util'
+	import { matchesSelector } from '../../utils/Commons/commons.util'
 
 	import { computed, inject, nextTick, ref, shallowRef, StyleValue, useSlots, watch } from "vue"
 

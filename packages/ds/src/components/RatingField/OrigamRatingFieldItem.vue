@@ -40,17 +40,20 @@
 		setup
 >
 	import { computed, ref, StyleValue } from 'vue'
-	import { OrigamBtn } from '../../components'
+	import OrigamBtn from '../Btn/OrigamBtn.vue'
 
-	import { useLocale, useProps , useStyle} from "../../composables"
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { MDI_ICONS, VARIANT } from "../../enums"
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { VARIANT } from '../../enums/Commons/variant.enum'
 
-	import type { IRatingFieldItemProps, IRatingFieldItemSlots} from '../../interfaces'
+	import type { IRatingFieldItemProps, IRatingFieldItemSlots } from '../../interfaces/RatingField/rating-field-item.interface'
 
 	import type { IRatingFieldItemEmits } from '../../interfaces/RatingField/rating-field-item.interface'
 
-	import type { TOrigamBtn } from "../../types"
+	import type { TOrigamBtn } from '../../types/Btn/btn.type'
 
 	/*********************************************************
 	 * Global

@@ -80,35 +80,40 @@
 		setup
 >
 	import { computed, inject, mergeProps, nextTick, provide, ref, shallowRef, StyleValue, toRef, watch } from 'vue'
-	import {
-		OrigamList,
-		OrigamListGroup,
-		OrigamListItem,
-		OrigamListSubheader,
-		OrigamOverlay,
-		OrigamTranslateScale
-	} from '../../components'
+	import OrigamList from '../List/OrigamList.vue'
+	import OrigamListGroup from '../List/OrigamListGroup.vue'
+	import OrigamListItem from '../List/OrigamListItem.vue'
+	import OrigamListSubheader from '../List/OrigamListSubheader.vue'
+	import OrigamOverlay from '../Overlay/OrigamOverlay.vue'
+	import OrigamTranslateScale from '../Transition/OrigamTranslateScale.vue'
 
-	import {
-		useBothColor,
-		useProps,
-		useScopeId,
-		useStateEffect,
-		useStyle,
-		useVModel
-	} from '../../composables'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useScopeId } from '../../composables/Commons/scopeId.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { ORIGAM_MENU_KEY } from '../../consts'
+	import { ORIGAM_MENU_KEY } from '../../consts/Menu/menu.const'
 
-	import { INLINE, KEYBOARD_VALUES, LOCATION_STRATEGIES, MDI_ICONS, SCROLL_STRATEGIES } from '../../enums'
+	import { INLINE } from '../../enums/Commons/anchor.enum'
+	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
+	import { LOCATION_STRATEGIES } from '../../enums/Commons/location.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { SCROLL_STRATEGIES } from '../../enums/Commons/scroll.enum'
 
-	import type { IItemProps, IListItemProps, IMenuProps} from '../../interfaces'
+	import type { IItemProps } from '../../interfaces/Commons/item.interface'
+	import type { IListItemProps } from '../../interfaces/List/list-item.interface'
+	import type { IMenuProps } from '../../interfaces/Menu/menu.interface'
 
 	import type { IMenuEmits, IMenuSlots } from '../../interfaces/Menu/menu.interface'
 
-	import type { TOrigamOverlay, TTransitionProps } from '../../types'
+	import type { TOrigamOverlay } from '../../types/Overlay/overlay.type'
+	import type { TTransitionProps } from '../../types/Transition/transition.type'
 
-	import { focusableChildren, focusChild, forwardRefs, getNextElement, getPropertyFromItem, getUid, omit } from '../../utils'
+	import { focusableChildren, focusChild, getNextElement, getPropertyFromItem, omit } from '../../utils/Commons/commons.util'
+	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
+	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 
 	/*********************************************************
 	 * Global

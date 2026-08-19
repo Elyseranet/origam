@@ -187,32 +187,39 @@
 		setup
 >
 	import { computed, nextTick, ref, toRef, StyleValue, useAttrs, useSlots, watch } from 'vue'
-	import { OrigamCounter, OrigamField, OrigamInput } from '../../components'
+	import OrigamCounter from '../Counter/OrigamCounter.vue'
+	import OrigamField from '../Field/OrigamField.vue'
+	import OrigamInput from '../Input/OrigamInput.vue'
 
-	import {
-	useAdjacent,
-	useAdjacentInner,
-	useFocus,
-	useLocale,
-	useMask,
-	useProps,
-	useStyle,
-	useVModel
-} from '../../composables'
+	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
+	import { useAdjacentInner } from '../../composables/Commons/adjacentInner.composable'
+	import { useFocus } from '../../composables/Commons/focus.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useMask } from '../../composables/Commons/mask.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { ACTIVE_TEXT_FIELD_TYPE, INPUT_TEXT_FIELD_TYPE } from '../../consts'
+	import { ACTIVE_TEXT_FIELD_TYPE, INPUT_TEXT_FIELD_TYPE } from '../../consts/TextField/text-field.const'
 
-	import { vIntersect } from '../../directives'
+	import vIntersect from '../../directives/Intersect/intersect.directive'
 
-	import { DENSITY, DIRECTION, MDI_ICONS, TEXT_FIELD_TYPE } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { TEXT_FIELD_TYPE } from '../../enums/TextField/text-field.enum'
 
-	import type { ITextFieldProps, ITextFieldSlots} from '../../interfaces'
+	import type { ITextFieldProps, ITextFieldSlots } from '../../interfaces/TextField/text-field.interface'
 
 	import type { ITextFieldEmits } from '../../interfaces/TextField/text-field.interface'
 
-	import type { TOrigamField, TOrigamInput } from "../../types"
+	import type { TOrigamField } from '../../types/Field/field.type'
+	import type { TOrigamInput } from '../../types/Input/input.type'
 
-	import { applyMask, filterInputAttrs, forwardRefs, resolveMaskConfig } from '../../utils'
+	import { applyMask } from '../../utils/Commons/apply-mask.util'
+	import { filterInputAttrs } from '../../utils/Input/input.util'
+	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
+	import { resolveMaskConfig } from '../../utils/Commons/resolve-mask-config.util'
 
 	/*********************************************************
 	 * Global

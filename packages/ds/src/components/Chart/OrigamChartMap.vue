@@ -209,20 +209,16 @@
 
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
-	import {
-		useChartHeaderTypography,
-		useBackgroundColor,
-		useDimension,
-		useElevation,
-		useMargin,
-		usePadding,
-		useRounded
-	} from '../../composables'
+	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
 
-	import type {
-		IChartPoint,
-		IChartSeries
-	} from '../../interfaces'
+	import type { IChartPoint } from '../../interfaces/Chart/chart-point.interface'
+	import type { IChartSeries } from '../../interfaces/Chart/chart-series.interface'
 
 	import type {
 		IChartMapCountry,
@@ -241,7 +237,7 @@
 	import { WORLD_GEOGRAPHIC_DATA } from '../../consts/Chart/chart-map.const'
 	import { multiPolygonToSvgPath, multiPolygonCentroid } from '../../utils/Chart/mercator.util'
 
-	import type { TIntent } from '../../types'
+	import type { TIntent } from '../../types/Commons/intent.type'
 
 	/*********************************************************
 	 * Global

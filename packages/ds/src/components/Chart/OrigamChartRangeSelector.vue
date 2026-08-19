@@ -29,10 +29,7 @@
 		lang="ts"
 		setup
 >
-	import type {
-		IChartRangeSelectorEmits,
-		IChartRangeSelectorProps
-	} from '../../interfaces'
+	import type { IChartRangeSelectorEmits, IChartRangeSelectorProps } from '../../interfaces/Chart/chart-range-selector.interface'
 
 	/*********************************************************
 	 * Global

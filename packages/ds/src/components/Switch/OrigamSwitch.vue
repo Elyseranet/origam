@@ -139,36 +139,38 @@
   setup
 >
   import { computed, ref, StyleValue, useAttrs, useSlots } from 'vue'
-  import {
-    OrigamIcon,
-    OrigamInput,
-    OrigamProgress,
-    OrigamSelectionControl,
-    OrigamSwitchTrack,
-    OrigamTranslateScale
-  } from '../../components'
+  import OrigamIcon from '../Icon/OrigamIcon.vue'
+  import OrigamInput from '../Input/OrigamInput.vue'
+  import OrigamProgress from '../Progress/OrigamProgress.vue'
+  import OrigamSelectionControl from '../SelectionControl/OrigamSelectionControl.vue'
+  import OrigamSwitchTrack from './OrigamSwitchTrack.vue'
+  import OrigamTranslateScale from '../Transition/OrigamTranslateScale.vue'
 
-  import {
-    useFocus,
-    useHover,
-    useLoader,
-    useLocale,
-    useProps,
-    useRounded,
-    useStateEffect,
-    useStyle,
-    useVModel
-  } from '../../composables'
+  import { useFocus } from '../../composables/Commons/focus.composable'
+  import { useHover } from '../../composables/Commons/hover.composable'
+  import { useLoader } from '../../composables/Commons/loader.composable'
+  import { useLocale } from '../../composables/Commons/locale.composable'
+  import { useProps } from '../../composables/Commons/props.composable'
+  import { useRounded } from '../../composables/Commons/rounded.composable'
+  import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+  import { useStyle } from '../../composables/Commons/style.composable'
+  import { useVModel } from '../../composables/Commons/vModel.composable'
 
-  import { DENSITY, LOADER_KIND, PROGRESS_TYPE, SIZES } from '../../enums'
+  import { DENSITY } from '../../enums/Commons/density.enum'
+  import { LOADER_KIND } from '../../enums/Commons/loader.enum'
+  import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
+  import { SIZES } from '../../enums/Commons/size.enum'
 
-  import type { ISwitchProps } from "../../interfaces"
+  import type { ISwitchProps } from '../../interfaces/Switch/switch.interface'
 
   import type { ISwitchEmits, ISwitchSlots } from '../../interfaces/Switch/switch.interface'
 
-  import type { TOrigamInput, TOrigamSelectionControl, TOrigamSwitchTrack } from "../../types"
+  import type { TOrigamInput } from '../../types/Input/input.type'
+  import type { TOrigamSelectionControl } from '../../types/SelectionControl/selection-control.type'
+  import type { TOrigamSwitchTrack } from '../../types/Switch/switch-track.type'
 
-  import { filterInputAttrs, getUid } from '../../utils'
+  import { filterInputAttrs } from '../../utils/Input/input.util'
+  import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 
   /*********************************************************
    * Global

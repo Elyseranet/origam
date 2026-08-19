@@ -26,31 +26,32 @@
 >
 	import { computed, onBeforeUnmount, onMounted, provide, ref, StyleValue, toRef, watch } from 'vue'
 	import type { Ref } from 'vue'
-	import {
-		useAudio,
-		useBorder,
-		useBothColor,
-		useDimension,
-		useDisplay,
-		useElevation,
-		useMargin,
-		usePadding,
-		useParallaxRuntime,
-		useProps,
-		useRounded,
-		useStyle,
-		useThrottleFn
-	} from '../../composables'
+	import { useAudio } from '../../composables/Commons/audio.composable'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useDisplay } from '../../composables/Commons/display.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useParallaxRuntime } from '../../composables/Parallax/parallax.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useThrottleFn } from '../../composables/Commons/throttle.composable'
 
-	import { ORIGAM_PARALLAX_KEY, ORIGAM_PARALLAX_LAYER_KEY } from '../../consts'
+	import { ORIGAM_PARALLAX_KEY } from '../../consts/Parallax/parallax.const'
+	import { ORIGAM_PARALLAX_LAYER_KEY } from '../../consts/Parallax/parallax-layer.const'
 
-	import { PARALLAX_DIRECTION, PARALLAX_EASING, PARALLAX_EVENT } from '../../enums'
+	import { PARALLAX_DIRECTION, PARALLAX_EASING, PARALLAX_EVENT } from '../../enums/Parallax/parallax.enum'
 
-	import type { IBox, IParallaxEmits, IParallaxProps, IParallaxSlots } from '../../interfaces'
+	import type { IBox } from '../../interfaces/Commons/box.interface'
+	import type { IParallaxEmits, IParallaxProps, IParallaxSlots } from '../../interfaces/Parallax/parallax.interface'
 
-	import type { TParallaxDirection, TParallaxEasing } from '../../types'
+	import type { TParallaxDirection, TParallaxEasing } from '../../types/Parallax/parallax.type'
 
-	import { getCenter, getTargetBox, inViewport } from '../../utils'
+	import { getCenter, inViewport } from '../../utils/Commons/point.util'
+	import { getTargetBox } from '../../utils/Commons/box.util'
 
 	/*********************************************************
 	 * Global

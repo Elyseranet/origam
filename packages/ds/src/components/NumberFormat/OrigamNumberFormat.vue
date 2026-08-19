@@ -24,12 +24,9 @@
 		type StyleValue
 	} from 'vue'
 
-	import { useNumberFormat } from '../../composables'
+	import { useNumberFormat } from '../../composables/NumberFormat/number-format.composable'
 
-	import type {
-		INumberFormatProps,
-		INumberFormatSlots
-	} from '../../interfaces'
+	import type { INumberFormatProps, INumberFormatSlots } from '../../interfaces/NumberFormat/number-format.interface'
 
 	/*********************************************************
 	 * Global

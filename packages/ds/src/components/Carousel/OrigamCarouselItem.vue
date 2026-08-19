@@ -41,16 +41,16 @@
 		lang="ts"
 		setup
 >
-	import { OrigamImg, OrigamWindowItem } from '../../components'
+	import OrigamImg from '../Img/OrigamImg.vue'
+	import OrigamWindowItem from '../Window/OrigamWindowItem.vue'
 
-	import {
-	useProps,
-	useStyle
-} from '../../composables'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { ICarouselItemProps, ICarouselItemSlots } from '../../interfaces'
+	import type { ICarouselItemProps, ICarouselItemSlots } from '../../interfaces/Carousel/carousel-item.interface'
 
-	import type { TOrigamImg, TOrigamWindowItem } from "../../types"
+	import type { TOrigamImg } from '../../types/Img/img.type'
+	import type { TOrigamWindowItem } from '../../types/Window/window-item.type'
 
 	import { computed, ref, StyleValue, useAttrs, useSlots } from 'vue'
 

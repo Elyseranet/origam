@@ -61,36 +61,32 @@
 		setup
 >
 	import { computed, shallowRef, StyleValue, watch } from "vue"
-	import { OrigamFade, OrigamIcon } from "../../components"
-	import {
-		useBorder,
-		useDisplay,
-		useGoTo,
-		useGroup,
-		useMargin,
-		usePadding,
-		useProps,
-		useResizeObserver,
-		useRounded,
-		useRtl
-	, useStyle} from "../../composables"
+	import OrigamFade from '../Transition/OrigamFade.vue'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useDisplay } from '../../composables/Commons/display.composable'
+	import { useGoTo } from '../../composables/Commons/goTo.composable'
+	import { useGroup } from '../../composables/Commons/group.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useResizeObserver } from '../../composables/Commons/resizeObserver.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useRtl } from '../../composables/Commons/rtl.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { IN_BROWSER, ORIGAM_SLIDE_GROUP_KEY } from "../../consts"
+	import { IN_BROWSER } from '../../consts/Commons/commons.const'
+	import { ORIGAM_SLIDE_GROUP_KEY } from '../../consts/Slide/slide-group.const'
 
-	import { DIRECTION, MDI_ICONS } from "../../enums"
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import type { IGoToOptions, ISlideGroupProps} from "../../interfaces"
+	import type { IGoToOptions } from '../../interfaces/Commons/goTo.interface'
+	import type { ISlideGroupProps } from '../../interfaces/Slide/slide-group.interface'
 
 	import type { ISlideGroupEmits, ISlideGroupSlots } from '../../interfaces/Slide/slide-group.interface'
-	import {
-		calculateCenteredTarget,
-		calculateUpdatedTarget,
-		focusableChildren,
-		getClientSize,
-		getOffsetSize,
-		getScrollPosition,
-		getScrollSize
-	} from "../../utils"
+	import { calculateCenteredTarget, calculateUpdatedTarget, getClientSize, getOffsetSize, getScrollPosition, getScrollSize } from '../../utils/Slide/slide-group.util'
+	import { focusableChildren } from '../../utils/Commons/commons.util'
 
 	/*********************************************************
 	 * Global

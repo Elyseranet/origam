@@ -299,44 +299,39 @@
 >
 	import { computed, nextTick, ref, StyleValue, useAttrs, useSlots, watch } from 'vue'
 
-	import {
-		OrigamChip,
-		OrigamCol,
-		OrigamCounter,
-		OrigamField,
-		OrigamIcon,
-		OrigamInput,
-		OrigamMenu,
-		OrigamRow,
-		OrigamSheet
-	} from '../../components'
+	import OrigamChip from '../Chip/OrigamChip.vue'
+	import OrigamCol from '../Grids/OrigamCol.vue'
+	import OrigamCounter from '../Counter/OrigamCounter.vue'
+	import OrigamField from '../Field/OrigamField.vue'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
+	import OrigamInput from '../Input/OrigamInput.vue'
+	import OrigamMenu from '../Menu/OrigamMenu.vue'
+	import OrigamRow from '../Grids/OrigamRow.vue'
+	import OrigamSheet from '../Sheet/OrigamSheet.vue'
 
-	import {
-		computeStrength,
-		useAdjacent,
-		useAdjacentInner,
-		useFocus,
-		useLocale,
-		useProps,
-		useStyle,
-		useVModel
-} from '../../composables'
-	import {
-		DEFAULT_PASSWORD_REQUIREMENTS,
-		REQUIREMENT_MIN_LENGTH,
-		REQUIREMENT_NUMBER,
-		REQUIREMENT_SPECIAL,
-		REQUIREMENT_TINY,
-		REQUIREMENT_UPPERCASE
-	} from '../../consts'
-	import { vIntersect } from '../../directives'
-	import { DENSITY, DIRECTION, MDI_ICONS, TEXT_FIELD_TYPE } from '../../enums'
-	import type {
-		IPasswordFieldProps, IPasswordFieldSlots, IPasswordRequirement} from '../../interfaces'
+	import { computeStrength } from '../../composables/PasswordField/passwordStrength.composable'
+	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
+	import { useAdjacentInner } from '../../composables/Commons/adjacentInner.composable'
+	import { useFocus } from '../../composables/Commons/focus.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
+	import { DEFAULT_PASSWORD_REQUIREMENTS, REQUIREMENT_MIN_LENGTH, REQUIREMENT_NUMBER, REQUIREMENT_SPECIAL, REQUIREMENT_TINY, REQUIREMENT_UPPERCASE } from '../../consts/PasswordField/password-field.const'
+	import vIntersect from '../../directives/Intersect/intersect.directive'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { TEXT_FIELD_TYPE } from '../../enums/TextField/text-field.enum'
+	import type { IPasswordFieldProps, IPasswordFieldSlots } from '../../interfaces/PasswordField/password-field.interface'
+	import type { IPasswordRequirement } from '../../interfaces/PasswordField/password-requirement.interface'
 
 	import type { IPasswordFieldEmits } from '../../interfaces/PasswordField/password-field.interface'
-	import type { TOrigamField, TOrigamInput, TOrigamMenu } from '../../types'
-	import { filterInputAttrs, forwardRefs } from '../../utils'
+	import type { TOrigamField } from '../../types/Field/field.type'
+	import type { TOrigamInput } from '../../types/Input/input.type'
+	import type { TOrigamMenu } from '../../types/Menu/menu.type'
+	import { filterInputAttrs } from '../../utils/Input/input.util'
+	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
 
 	/*********************************************************
 	 * Global

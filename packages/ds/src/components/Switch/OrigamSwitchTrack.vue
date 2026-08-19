@@ -45,16 +45,14 @@
 	 ********************************************************/
 	import { computed, StyleValue, useSlots } from 'vue'
 
-	import {
-	useBackgroundColor,
-	useBorder,
-	useElevation,
-	useProps,
-	useRounded,
-	useStyle
-} from '../../composables'
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { ISwitchTrackProps, ISwitchTrackSlots} from "../../interfaces"
+	import type { ISwitchTrackProps, ISwitchTrackSlots } from '../../interfaces/Switch/switch-track.interface'
 
 	import type { ISwitchTrackEmits } from '../../interfaces/Switch/switch-track.interface'
 

@@ -19,13 +19,15 @@
 		lang="ts"
 		setup
 >
-	import { OrigamLayout } from '../../components'
+	import OrigamLayout from '../Layout/OrigamLayout.vue'
 
-	import { useProps, useRtl , useStyle} from "../../composables"
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRtl } from '../../composables/Commons/rtl.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { IAppProps, IAppSlots } from '../../interfaces'
+	import type { IAppProps, IAppSlots } from '../../interfaces/App/app.interface'
 
-	import type { TOrigamApp } from "../../types"
+	import type { TOrigamApp } from '../../types/App/app.type'
 
 	import { computed, ref, StyleValue } from 'vue'
 

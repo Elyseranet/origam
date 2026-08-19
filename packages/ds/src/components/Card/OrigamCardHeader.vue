@@ -95,21 +95,20 @@
 		lang="ts"
 		setup
 >
-	import { OrigamAvatar, OrigamIcon } from '../../components'
+	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
 
-	import {
-	useAdjacent,
-	useBorder,
-	useDensity,
-	useMargin,
-	usePadding,
-	useProps,
-	useRounded,
-	useStyle,
-	useTypography
-} from '../../composables'
+	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import type { ICardHeaderProps} from '../../interfaces'
+	import type { ICardHeaderProps } from '../../interfaces/Card/card-header.interface'
 
 	import type { ICardHeaderEmits, ICardHeaderSlots } from '../../interfaces/Card/card-header.interface'
 

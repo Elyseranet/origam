@@ -26,12 +26,18 @@
 		lang="ts"
 		setup
 >
-	import { OrigamMenu, OrigamTranslateScale } from "../../components"
-	import { useProps, useVModel , useStyle} from "../../composables"
-	import { INLINE, LOCATION_STRATEGIES, SCROLL_STRATEGIES } from "../../enums"
-	import type { IContextualMenuProps } from "../../interfaces"
-	import type { TOrigamMenu, TTransitionProps } from "../../types"
-	import { forwardRefs } from "../../utils"
+	import OrigamMenu from '../Menu/OrigamMenu.vue'
+	import OrigamTranslateScale from '../Transition/OrigamTranslateScale.vue'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { INLINE } from '../../enums/Commons/anchor.enum'
+	import { LOCATION_STRATEGIES } from '../../enums/Commons/location.enum'
+	import { SCROLL_STRATEGIES } from '../../enums/Commons/scroll.enum'
+	import type { IContextualMenuProps } from '../../interfaces/ContextualMenu/contextual-menu.interface'
+	import type { TOrigamMenu } from '../../types/Menu/menu.type'
+	import type { TTransitionProps } from '../../types/Transition/transition.type'
+	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
 
 	import { computed, ref, StyleValue } from "vue"
 

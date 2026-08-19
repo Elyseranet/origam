@@ -66,27 +66,29 @@
 		setup
 >
 	import { computed, provide, ref, shallowRef, StyleValue, watch } from 'vue'
-	import { OrigamBtn, OrigamSpacer } from '../../components'
+	import OrigamBtn from '../Btn/OrigamBtn.vue'
+	import OrigamSpacer from '../Grids/OrigamSpacer.vue'
 
-	import {
-	useBorder,
-	useElevation,
-	useGroup,
-	useLocale,
-	useMargin,
-	usePadding,
-	useProps,
-	useRounded,
-	useStyle
-} from '../../composables'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useGroup } from '../../composables/Commons/group.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { ORIGAM_WINDOW_GROUP_KEY, ORIGAM_WINDOW_KEY } from '../../consts'
+	import { ORIGAM_WINDOW_GROUP_KEY, ORIGAM_WINDOW_KEY } from '../../consts/Window/window.const'
 
-	import { vTouch } from '../../directives'
+	import vTouch from '../../directives/Touch/touch.directive'
 
-	import { AXIS, DIRECTION, MDI_ICONS } from '../../enums'
+	import { AXIS } from '../../enums/Commons/drag.enum'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import type { ITouchHandlers, IWindowProps} from '../../interfaces'
+	import type { ITouchHandlers } from '../../interfaces/Commons/touch.interface'
+	import type { IWindowProps } from '../../interfaces/Window/window.interface'
 
 	import type { IWindowEmits, IWindowSlots } from '../../interfaces/Window/window.interface'
 

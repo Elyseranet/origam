@@ -51,41 +51,48 @@
 		setup
 >
 	import { computed, mergeProps, onBeforeUnmount, ref, StyleValue, toRef, watch } from 'vue'
-	import { OrigamFade, OrigamOverlayScrim, OrigamTransition } from '../../components'
+	import OrigamFade from '../Transition/OrigamFade.vue'
+	import OrigamOverlayScrim from './OrigamOverlayScrim.vue'
+	import OrigamTransition from '../Transition/OrigamTransition.vue'
 
-	import {
-		useActivator,
-		useBackButton,
-		useBackgroundColor,
-		useDimension,
-		useHydration,
-		useLazy,
-		useLocationStrategies,
-		useProps,
-		useRouter,
-		useRtl,
-		useScopeId,
-		useScrollStrategies,
-		useStack,
-		useStyle,
-		useTeleport,
-		useToggleScope,
-		useVModel
-} from '../../composables'
+	import { useActivator } from '../../composables/Commons/activator.composable'
+	import { useBackButton } from '../../composables/Commons/backButton.composable'
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useHydration } from '../../composables/Commons/hydration.composable'
+	import { useLazy } from '../../composables/Commons/lazy.composable'
+	import { useLocationStrategies } from '../../composables/Commons/locationStrategies.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRouter } from '../../composables/Commons/router.composable'
+	import { useRtl } from '../../composables/Commons/rtl.composable'
+	import { useScopeId } from '../../composables/Commons/scopeId.composable'
+	import { useScrollStrategies } from '../../composables/Commons/scrollStrategies.composable'
+	import { useStack } from '../../composables/Commons/stack.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTeleport } from '../../composables/Commons/teleport.composable'
+	import { useToggleScope } from '../../composables/Commons/toggleScope.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { IN_BROWSER } from '../../consts'
+	import { IN_BROWSER } from '../../consts/Commons/commons.const'
 
-	import { vClickOutside } from '../../directives'
+	import vClickOutside from '../../directives/ClickOutside/clickOutside.directive'
 
-	import { BLOCK, EASING, KEYBOARD_VALUES, LOCATION_STRATEGIES, SCROLL_STRATEGIES } from '../../enums'
+	import { BLOCK } from '../../enums/Commons/anchor.enum'
+	import { EASING } from '../../enums/Transition/transition.enum'
+	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
+	import { LOCATION_STRATEGIES } from '../../enums/Commons/location.enum'
+	import { SCROLL_STRATEGIES } from '../../enums/Commons/scroll.enum'
 
-	import type { IOverlayProps} from '../../interfaces'
+	import type { IOverlayProps } from '../../interfaces/Overlay/overlay.interface'
 
 	import type { IOverlayEmits, IOverlaySlots } from '../../interfaces/Overlay/overlay.interface'
 
-	import type { TOrigamOverlayScrim, TTransitionProps } from "../../types"
+	import type { TOrigamOverlayScrim } from '../../types/Overlay/overlay-scrim.type'
+	import type { TTransitionProps } from '../../types/Transition/transition.type'
 
-	import { animate, convertToUnit, getScrollParent } from '../../utils'
+	import { animate } from '../../utils/Commons/animation.util'
+	import { convertToUnit } from '../../utils/Commons/commons.util'
+	import { getScrollParent } from '../../utils/Commons/scroll.util'
 
 	/*********************************************************
 	 * Global

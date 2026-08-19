@@ -116,29 +116,28 @@
 		setup
 >
 	import { computed, StyleValue, toRef, useSlots } from 'vue'
-	import { OrigamDefaultsProvider, OrigamExpansionPanel } from '../../components'
+	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
+	import OrigamExpansionPanel from './OrigamExpansionPanel.vue'
 
-	import {
-		useActive,
-		useBothColor,
-		useDensity,
-		useElevation,
-		useGroup,
-		useHover,
-		useLoader,
-		usePassedProps,
-		useProps,
-		useStateEffect,
-		useStyle
-} from '../../composables'
+	import { useActive } from '../../composables/Commons/active.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useGroup } from '../../composables/Commons/group.composable'
+	import { useHover } from '../../composables/Commons/hover.composable'
+	import { useLoader } from '../../composables/Commons/loader.composable'
+	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts'
+	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts/ExpansionPanel/expansion-panel.const'
 
-	import { omitUndefined } from '../../utils'
+	import { omitUndefined } from '../../utils/Commons/commons.util'
 
-	import { LOADER_KIND } from '../../enums'
+	import { LOADER_KIND } from '../../enums/Commons/loader.enum'
 
-	import type { IExpansionPanelsProps} from '../../interfaces'
+	import type { IExpansionPanelsProps } from '../../interfaces/ExpansionPanel/expansion-panels.interface'
 
 	import type { IExpansionPanelsEmits, IExpansionPanelsSlots } from '../../interfaces/ExpansionPanel/expansion-panels.interface'
 

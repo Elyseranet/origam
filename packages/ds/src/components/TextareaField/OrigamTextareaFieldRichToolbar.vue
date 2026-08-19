@@ -86,18 +86,19 @@
 >
 	import { computed, nextTick, ref } from 'vue'
 
-	import { OrigamBtn, OrigamIcon } from '../../components'
+	import OrigamBtn from '../Btn/OrigamBtn.vue'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
 
-	import { useLocale } from '../../composables'
+	import { useLocale } from '../../composables/Commons/locale.composable'
 
-	import { MDI_ICONS, TEXTAREA_TOOLBAR_COMMAND, TEXTAREA_TOOLBAR_POSITION } from '../../enums'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { TEXTAREA_TOOLBAR_COMMAND, TEXTAREA_TOOLBAR_POSITION } from '../../enums/TextareaField/textarea-field-rich-toolbar.enum'
 
-	import type {
-		ITextareaFieldRichToolbarProps} from '../../interfaces'
+	import type { ITextareaFieldRichToolbarProps } from '../../interfaces/TextareaField/textarea-field-rich-toolbar.interface'
 
 	import type { ITextareaFieldRichToolbarEmits } from '../../interfaces/TextareaField/textarea-field-rich-toolbar.interface'
 
-	import type { TTextareaToolbarCommand } from '../../types'
+	import type { TTextareaToolbarCommand } from '../../types/TextareaField/textarea-field-rich-toolbar.type'
 
 	const props = withDefaults(defineProps<ITextareaFieldRichToolbarProps>(), {
 		position: TEXTAREA_TOOLBAR_POSITION.TOP,

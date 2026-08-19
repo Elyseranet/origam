@@ -95,17 +95,26 @@
 		lang="ts"
 		setup
 >
-	import { OrigamBtn, OrigamReverseTranslatePicker, OrigamTransition, OrigamTranslatePicker } from "../../components"
+	import OrigamBtn from '../Btn/OrigamBtn.vue'
+	import OrigamReverseTranslatePicker from '../Transition/OrigamReverseTranslatePicker.vue'
+	import OrigamTransition from '../Transition/OrigamTransition.vue'
+	import OrigamTranslatePicker from '../Transition/OrigamTranslatePicker.vue'
 
-	import { useDatePickerCalendar, useDate, useProps , useStyle} from "../../composables"
+	import { useDatePickerCalendar } from '../../composables/Commons/date-picker-calendar.composable'
+	import { useDate } from '../../composables/Commons/date.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { CALENDAR_STRATEGY, DENSITY } from "../../enums"
+	import { CALENDAR_STRATEGY } from '../../enums/Commons/calendar.enum'
+	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { IDatePickerMonthProps, IDatePickerMonthSlots, IDay } from "../../interfaces"
+	import type { IDatePickerMonthProps, IDatePickerMonthSlots } from '../../interfaces/DatePicker/date-picker-month.interface'
+	import type { IDay } from '../../interfaces/DatePicker/date-picker-calendar.interface'
 
-	import type { TOrigamBtn, TTransitionProps } from "../../types"
+	import type { TOrigamBtn } from '../../types/Btn/btn.type'
+	import type { TTransitionProps } from '../../types/Transition/transition.type'
 
-	import { wrapInArray } from "../../utils"
+	import { wrapInArray } from '../../utils/Commons/commons.util'
 
 	import { computed, ref, shallowRef, StyleValue, watch } from "vue"
 

@@ -14,17 +14,15 @@
 		lang="ts"
 		setup
 >
-	import {
-		useBorder,
-		useDensity,
-		useMargin,
-		usePadding,
-		useProps,
-		useRounded,
-		useStyle,
-		useTypography
-	} from "../../composables"
-	import type { ICardTextProps, ICardTextSlots } from '../../interfaces'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
+	import type { ICardTextProps, ICardTextSlots } from '../../interfaces/Card/card-text.interface'
 
 	import { computed, StyleValue } from 'vue'
 

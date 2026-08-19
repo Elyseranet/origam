@@ -179,32 +179,32 @@
 		setup
 >
 	import { ComponentPublicInstance, computed, nextTick, ref, shallowRef, StyleValue } from "vue"
-	import { OrigamBtn } from "../../components"
+	import OrigamBtn from '../Btn/OrigamBtn.vue'
 
-	import {
-		useBorder,
-		useDensity,
-		useDisplay,
-		useElevation,
-		useLocale,
-		useMargin,
-		usePadding,
-		useProps,
-		useRefs,
-		useResizeObserver,
-		useSize,
-		useStyle,
-		useTypography,
-		useVModel
-	} from "../../composables"
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useDisplay } from '../../composables/Commons/display.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRefs } from '../../composables/Commons/refs.composable'
+	import { useResizeObserver } from '../../composables/Commons/resizeObserver.composable'
+	import { useSize } from '../../composables/Commons/size.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { KEYBOARD_VALUES, MDI_ICONS, VARIANT } from "../../enums"
+	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { VARIANT } from '../../enums/Commons/variant.enum'
 
-	import type { IPaginationProps} from "../../interfaces"
+	import type { IPaginationProps } from '../../interfaces/Pagination/pagination.interface'
 
 	import type { IPaginationEmits, IPaginationSlots } from '../../interfaces/Pagination/pagination.interface'
 
-	import { createRange, int } from "../../utils"
+	import { createRange, int } from '../../utils/Commons/commons.util'
 
 	/*********************************************************
 	 * Global

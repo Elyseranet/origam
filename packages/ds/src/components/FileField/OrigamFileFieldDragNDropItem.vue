@@ -46,17 +46,17 @@
 >
   import { computed, StyleValue } from 'vue'
 
-  import { OrigamBtn, OrigamIcon, OrigamProgress } from '../../components'
-  import {
-	useProps,
-	useStyle,
-	useTypography
-} from '../../composables'
-  import { MDI_ICONS } from '../../enums'
-  import type { IFileFieldDragNDropItemProps, IFileFieldDragNDropItemSlots} from '../../interfaces'
+  import OrigamBtn from '../Btn/OrigamBtn.vue'
+  import OrigamIcon from '../Icon/OrigamIcon.vue'
+  import OrigamProgress from '../Progress/OrigamProgress.vue'
+  import { useProps } from '../../composables/Commons/props.composable'
+  import { useStyle } from '../../composables/Commons/style.composable'
+  import { useTypography } from '../../composables/Commons/typography.composable'
+  import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+  import type { IFileFieldDragNDropItemProps, IFileFieldDragNDropItemSlots } from '../../interfaces/FileField/file-field-dragndrop-item.interface'
 
 	import type { IFileFieldDragNDropItemEmits } from '../../interfaces/FileField/file-field-dragndrop-item.interface'
-  import { humanReadableFileSize } from '../../utils'
+  import { humanReadableFileSize } from '../../utils/Commons/commons.util'
 
   /*********************************************************
    * Global

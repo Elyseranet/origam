@@ -263,48 +263,47 @@
 		useSlots,
 		watch
 	} from 'vue'
-	import { OrigamCounter, OrigamField, OrigamInput } from '../../components'
+	import OrigamCounter from '../Counter/OrigamCounter.vue'
+	import OrigamField from '../Field/OrigamField.vue'
+	import OrigamInput from '../Input/OrigamInput.vue'
 
 	import OrigamTextareaFieldRichToolbar from './OrigamTextareaFieldRichToolbar.vue'
 
-	import {
-	useAdjacent,
-	useAdjacentInner,
-	useDragResizer,
-	useFocus,
-	useLocale,
-	useProps,
-	useStyle,
-	useTextareaRich,
-	useTheme,
-	useTypography,
-	useVModel
-} from '../../composables'
+	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
+	import { useAdjacentInner } from '../../composables/Commons/adjacentInner.composable'
+	import { useDragResizer } from '../../composables/Commons/dragResizer.composable'
+	import { useFocus } from '../../composables/Commons/focus.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTextareaRich } from '../../composables/TextareaField/textarea-field-rich.composable'
+	import { useTheme } from '../../composables/Commons/theme.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { DEFAULT_TOOLBAR } from '../../consts'
+	import { DEFAULT_TOOLBAR } from '../../consts/TextareaField/textarea-field.const'
 
-	import { vIntersect } from '../../directives'
+	import vIntersect from '../../directives/Intersect/intersect.directive'
 
-	import {
-		AXIS,
-		DENSITY,
-		MDI_ICONS,
-		TEXTAREA_MODE,
-		TEXTAREA_OUTPUT,
-		TEXTAREA_TOOLBAR_POSITION
-	} from '../../enums'
+	import { AXIS } from '../../enums/Commons/drag.enum'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { TEXTAREA_MODE, TEXTAREA_OUTPUT } from '../../enums/TextareaField/textarea-field.enum'
+	import { TEXTAREA_TOOLBAR_POSITION } from '../../enums/TextareaField/textarea-field-rich-toolbar.enum'
 
-	import type { ITextareaFieldProps, ITextareaFieldSlots} from '../../interfaces'
+	import type { ITextareaFieldProps, ITextareaFieldSlots } from '../../interfaces/TextareaField/textarea-field.interface'
 
 	import type { ITextareaFieldEmits } from '../../interfaces/TextareaField/textarea-field.interface'
 
-	import type {
-		TOrigamField,
-		TOrigamInput,
-		TTextareaToolbarCommand
-	} from '../../types'
+	import type { TOrigamField } from '../../types/Field/field.type'
+	import type { TOrigamInput } from '../../types/Input/input.type'
+	import type { TTextareaToolbarCommand } from '../../types/TextareaField/textarea-field-rich-toolbar.type'
 
-	import { clamp, convertToUnit, filterInputAttrs, forwardRefs, htmlToMarkdown, sanitizeHtml } from '../../utils'
+	import { clamp, convertToUnit } from '../../utils/Commons/commons.util'
+	import { filterInputAttrs } from '../../utils/Input/input.util'
+	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
+	import { htmlToMarkdown } from '../../utils/TextareaField/html-to-markdown.util'
+	import { sanitizeHtml } from '../../utils/TextareaField/sanitize-html.util'
 
 	/*********************************************************
 	 * Global

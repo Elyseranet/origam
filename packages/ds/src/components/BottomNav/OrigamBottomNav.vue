@@ -45,34 +45,37 @@
 		lang="ts"
 		setup
 >
-	import { OrigamBtn, OrigamDefaultsProvider, OrigamTransition, OrigamTranslateBottom } from "../../components"
+	import OrigamBtn from '../Btn/OrigamBtn.vue'
+	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
+	import OrigamTransition from '../Transition/OrigamTransition.vue'
+	import OrigamTranslateBottom from '../Transition/OrigamTranslateBottom.vue'
 
-	import { vContrast } from '../../directives'
+	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import {
-		useActive,
-		useDensity,
-		useDimension,
-		useGroup,
-		useHover,
-		useLayoutItem,
-		useLocale,
-		usePassedProps,
-		useProps,
-		useSsrBoot,
-		useStateEffect,
-		useStyle
-	} from '../../composables'
+	import { useActive } from '../../composables/Commons/active.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useGroup } from '../../composables/Commons/group.composable'
+	import { useHover } from '../../composables/Commons/hover.composable'
+	import { useLayoutItem } from '../../composables/Commons/layoutItem.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useSsrBoot } from '../../composables/Commons/ssrBoot.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { ORIGAM_BTN_TOGGLE_KEY } from '../../consts'
-	import { MODE } from "../../enums"
+	import { ORIGAM_BTN_TOGGLE_KEY } from '../../consts/Btn/btn-toggle.const'
+	import { MODE } from '../../enums/Commons/mode.enum'
 
-	import type { IBottomNavProps, IBreadcrumbItemProps} from '../../interfaces'
+	import type { IBottomNavProps } from '../../interfaces/BottomNav/bottom-nav.interface'
+	import type { IBreadcrumbItemProps } from '../../interfaces/Breadcrumb/breadcrumb-item.interface'
 
 	import type { IBottomNavEmits, IBottomNavSlots } from '../../interfaces/BottomNav/bottom-nav.interface'
-	import type { TOrigamBtn, TTransitionProps } from "../../types"
+	import type { TOrigamBtn } from '../../types/Btn/btn.type'
+	import type { TTransitionProps } from '../../types/Transition/transition.type'
 
-	import { convertToUnit, int, omitUndefined } from '../../utils'
+	import { convertToUnit, int, omitUndefined } from '../../utils/Commons/commons.util'
 
 	import { computed, ref, StyleValue, toRef } from 'vue'
 	import type { ComputedRef } from 'vue'

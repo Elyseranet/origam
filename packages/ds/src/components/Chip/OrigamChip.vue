@@ -128,31 +128,35 @@
 		lang="ts"
 		setup
 >
-	import { OrigamAvatar, OrigamBtn, OrigamExpandX, OrigamIcon } from '../../components'
+	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
+	import OrigamBtn from '../Btn/OrigamBtn.vue'
+	import OrigamExpandX from '../Transition/OrigamExpandX.vue'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
 
-	import {
-		useAdjacent,
-		useBothColor,
-		useDensity,
-		useGroupItem,
-		useHover,
-		useLink,
-		useLocale,
-		useProps,
-		useSize,
-		useStateEffect,
-		useStyle,
-		useTypography,
-		useVModel
-} from '../../composables'
+	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useGroupItem } from '../../composables/Commons/groupItem.composable'
+	import { useHover } from '../../composables/Commons/hover.composable'
+	import { useLink } from '../../composables/Commons/link.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useSize } from '../../composables/Commons/size.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { ORIGAM_CHIP_GROUP_KEY } from '../../consts'
+	import { ORIGAM_CHIP_GROUP_KEY } from '../../consts/Chip/chip-group.const'
 
-	import { vContrast, vRipple } from '../../directives'
+	import vContrast from '../../directives/Contrast/contrast.directive'
+	import vRipple from '../../directives/Ripple/ripple.directive'
 
-	import { KEYBOARD_VALUES, MDI_ICONS, SIZES } from '../../enums'
+	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { SIZES } from '../../enums/Commons/size.enum'
 
-	import type { IChipProps } from '../../interfaces'
+	import type { IChipProps } from '../../interfaces/Chip/chip.interface'
 	import type { IChipEmits, IChipSlots } from '../../interfaces/Chip/chip.interface'
 
 	import { computed, StyleValue, toRef, useAttrs, useSlots } from 'vue'

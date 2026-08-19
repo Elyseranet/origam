@@ -301,21 +301,17 @@
 	import OrigamChartLegend from './OrigamChartLegend.vue'
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
-	import {
-		useChartHeaderTypography,
-		useBackgroundColor,
-		useDimension,
-		useElevation,
-		useMargin,
-		usePadding,
-		useRounded
-	} from '../../composables'
+	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
 
-	import type {
-		IChartLegendItem,
-		IChartPoint,
-		IChartSeries
-	} from '../../interfaces'
+	import type { IChartLegendItem } from '../../interfaces/Chart/chart.interface'
+	import type { IChartPoint } from '../../interfaces/Chart/chart-point.interface'
+	import type { IChartSeries } from '../../interfaces/Chart/chart-series.interface'
 
 	import type {
 		IChartPictorialColumn,
@@ -326,8 +322,9 @@
 
 	import { intentBgExpr, isIntent } from '../../utils/Commons/color.util'
 
-	import type { TIntent } from '../../types'
-	import { CHART_PICTORIAL_MODE, DIRECTION } from '../../enums'
+	import type { TIntent } from '../../types/Commons/intent.type'
+	import { CHART_PICTORIAL_MODE } from '../../enums/Chart/chart-pictorial.enum'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
 
 	/*********************************************************
 	 * Global

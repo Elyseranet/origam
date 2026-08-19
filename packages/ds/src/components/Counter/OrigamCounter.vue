@@ -23,23 +23,22 @@
 		lang="ts"
 		setup
 >
-	import { OrigamSlideY, OrigamTransition } from "../../components"
+	import OrigamSlideY from '../Transition/OrigamSlideY.vue'
+	import OrigamTransition from '../Transition/OrigamTransition.vue'
 
-	import {
-		useBorder,
-		useBothColor,
-		useDensity,
-		useElevation,
-		useMargin,
-		usePadding,
-		useProps,
-		useRounded,
-		useSsrBoot,
-		useStyle
-	} from "../../composables"
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useSsrBoot } from '../../composables/Commons/ssrBoot.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { ICounterProps, ICounterSlots } from "../../interfaces"
-	import type { TTransitionProps } from "../../types"
+	import type { ICounterProps, ICounterSlots } from '../../interfaces/Counter/counter.interface'
+	import type { TTransitionProps } from '../../types/Transition/transition.type'
 
 	import { computed, StyleValue, toRef } from "vue"
 

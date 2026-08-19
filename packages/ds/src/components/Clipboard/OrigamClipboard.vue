@@ -48,13 +48,18 @@
 
 	import { OrigamIcon } from '../Icon'
 
-	import { useBorder, useBothColor, useClipboard, useLocale, useMargin, usePadding, useRounded, useTypography } from '../../composables'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useClipboard } from '../../composables/Clipboard/clipboard.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import { MDI_ICONS } from '../../enums'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import type {
-		IClipboardProps
-	} from '../../interfaces'
+	import type { IClipboardProps } from '../../interfaces/Clipboard/clipboard.interface'
 
 	import type { IClipboardEmits, IClipboardSlots } from '../../interfaces/Clipboard/clipboard.interface'
 

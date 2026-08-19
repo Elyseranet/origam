@@ -59,26 +59,23 @@
 		lang="ts"
 		setup
 >
-	import { OrigamCheckboxBtn, OrigamDataTableColumnCell, OrigamIcon } from '../../components'
+	import OrigamCheckboxBtn from '../Checkbox/OrigamCheckboxBtn.vue'
+	import OrigamDataTableColumnCell from './OrigamDataTableColumnCell.vue'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
 
-	import {
-	useBothColor,
-	useCell,
-	useHeadersCell,
-	useProps,
-	useSelection,
-	useSort,
-	useStyle
-} from '../../composables'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useCell } from '../../composables/DataTable/cell.composable'
+	import { useHeadersCell } from '../../composables/DataTable/headersCell.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useSelection } from '../../composables/DataTable/select.composable'
+	import { useSort } from '../../composables/DataTable/sort.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type {
-		IDataTableHeaderCellProps,
-		IDataTableHeaderCellSlots,
-		IDataTableSortItem,
-		IInternalDataTableHeader
-	} from '../../interfaces'
+	import type { IDataTableHeaderCellProps, IDataTableHeaderCellSlots } from '../../interfaces/DataTable/data-table-header-cell.interface'
+	import type { IDataTableSortItem } from '../../interfaces/DataTable/sort.interface'
+	import type { IInternalDataTableHeader } from '../../interfaces/DataTable/data-table-header.interface'
 
-	import { convertToUnit } from '../../utils'
+	import { convertToUnit } from '../../utils/Commons/commons.util'
 
 	import { computed, CSSProperties, mergeProps, toRef } from 'vue'
 

@@ -69,17 +69,14 @@
 		toRef
 	} from 'vue'
 
-	import {
-		useBackgroundColor,
-		useRounded
-	} from '../../composables'
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
 
-	import { MEDIA_SCRUBBER_MIN_RANGE } from '../../consts'
+	import { MEDIA_SCRUBBER_MIN_RANGE } from '../../consts/Media/media.const'
 
-	import { DIRECTION } from '../../enums'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
 
-	import type {
-		IMediaScrubberProps, IMediaScrubberSlots} from '../../interfaces'
+	import type { IMediaScrubberProps, IMediaScrubberSlots } from '../../interfaces/Media/media-scrubber.interface'
 
 	import type { IMediaScrubberEmits } from '../../interfaces/Media/media-scrubber.interface'
 

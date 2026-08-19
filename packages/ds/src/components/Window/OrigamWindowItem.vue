@@ -22,25 +22,23 @@
 		setup
 >
 	import { computed, inject, nextTick, shallowRef, StyleValue } from 'vue'
-	import { OrigamTransition } from '../../components'
+	import OrigamTransition from '../Transition/OrigamTransition.vue'
 
-	import {
-	useGroupItem,
-	useLazy,
-	useProps,
-	useSsrBoot,
-	useStyle
-} from '../../composables'
+	import { useGroupItem } from '../../composables/Commons/groupItem.composable'
+	import { useLazy } from '../../composables/Commons/lazy.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useSsrBoot } from '../../composables/Commons/ssrBoot.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { ORIGAM_WINDOW_GROUP_KEY, ORIGAM_WINDOW_KEY } from '../../consts'
+	import { ORIGAM_WINDOW_GROUP_KEY, ORIGAM_WINDOW_KEY } from '../../consts/Window/window.const'
 
-	import { vTouch } from '../../directives'
+	import vTouch from '../../directives/Touch/touch.directive'
 
-	import type { IWindowItemProps} from '../../interfaces'
+	import type { IWindowItemProps } from '../../interfaces/Window/window-item.interface'
 
 	import type { IWindowItemEmits, IWindowItemSlots } from '../../interfaces/Window/window-item.interface'
 
-	import { convertToUnit } from '../../utils'
+	import { convertToUnit } from '../../utils/Commons/commons.util'
 
 	/*********************************************************
 	 * Global

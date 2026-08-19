@@ -106,31 +106,33 @@
 		setup
 >
 	import { computed, provide, ref, StyleValue, toRef, useSlots } from 'vue'
-	import { OrigamExpansionPanelContent, OrigamExpansionPanelHeader, OrigamProgress } from '../../components'
+	import OrigamExpansionPanelContent from './OrigamExpansionPanelContent.vue'
+	import OrigamExpansionPanelHeader from './OrigamExpansionPanelHeader.vue'
+	import OrigamProgress from '../Progress/OrigamProgress.vue'
 
-	import {
-		useActive,
-		useBothColor,
-		useDensity,
-		useGroupItem,
-		useHover,
-		useLoader,
-		useProps,
-		useStateEffect,
-		useStyle
-} from '../../composables'
+	import { useActive } from '../../composables/Commons/active.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useGroupItem } from '../../composables/Commons/groupItem.composable'
+	import { useHover } from '../../composables/Commons/hover.composable'
+	import { useLoader } from '../../composables/Commons/loader.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { vContrast } from '../../directives'
+	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts'
+	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts/ExpansionPanel/expansion-panel.const'
 
-	import { LOADER_KIND, PROGRESS_TYPE } from '../../enums'
+	import { LOADER_KIND } from '../../enums/Commons/loader.enum'
+	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
 
-	import type { IExpansionPanelProps} from '../../interfaces'
+	import type { IExpansionPanelProps } from '../../interfaces/ExpansionPanel/expansion-panel.interface'
 
 	import type { IExpansionPanelEmits, IExpansionPanelSlots } from '../../interfaces/ExpansionPanel/expansion-panel.interface'
 
-	import type { TOrigamExpansionPanelContent, TOrigamExpansionPanelHeader } from "../../types"
+	import type { TOrigamExpansionPanelContent } from '../../types/ExpansionPanel/expansion-panel-content.type'
+	import type { TOrigamExpansionPanelHeader } from '../../types/ExpansionPanel/expansion-panel-header.type'
 
 	/*********************************************************
 	 * Global

@@ -33,19 +33,17 @@
 		setup
 >
 	import { computed, StyleValue, useSlots } from 'vue'
-	import {
-		useDensity,
-		useDimension,
-		useHover,
-		useProps,
-		useStateEffect,
-		useStyle,
-		useTypography
-} from '../../composables'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useHover } from '../../composables/Commons/hover.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import { DENSITY } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { ITableProps, ITableSlots } from '../../interfaces'
+	import type { ITableProps, ITableSlots } from '../../interfaces/Table/table.interface'
 
 	/*********************************************************
 	 * Global

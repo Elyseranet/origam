@@ -24,20 +24,18 @@
 		setup
 >
 	import { computed, StyleValue, toRef, useSlots } from 'vue'
-	import {
-	useBorder,
-	useBothColor,
-	useMargin,
-	usePadding,
-	useProps,
-	useRounded,
-	useStyle,
-	useTypography
-} from '../../composables'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import { vContrast } from '../../directives'
+	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import type { IListSubheader, IListSubheaderSlots } from '../../interfaces'
+	import type { IListSubheader, IListSubheaderSlots } from '../../interfaces/List/list-subheader.interface'
 
 	/*********************************************************
 	 * Global

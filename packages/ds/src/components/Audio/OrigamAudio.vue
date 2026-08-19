@@ -248,23 +248,21 @@
 	import { OrigamMediaController } from '../Media'
 	import { OrigamSliderField } from '../SliderField'
 
-	import {
-		useBorder,
-		useColorEffect,
-		useDimension,
-		useElevation,
-		useLocale,
-		useMargin,
-		usePadding,
-		usePosition,
-		useRounded,
-		useTypography
-	} from '../../composables'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useColorEffect } from '../../composables/Commons/colorEffect.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { usePosition } from '../../composables/Commons/position.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 	import { useAudioPlayer } from '../../composables/Audio/use-audio-player.composable'
 	import { useWaveform } from '../../composables/Audio/use-waveform.composable'
 	import { shouldSuppressAutoplay } from '../../composables/Media/use-media-player.composable'
 
-	import { MDI_ICONS } from '../../enums'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
 	import type {
 		IAudioEmits,
@@ -274,9 +272,9 @@
 		IAudioTrack
 	} from '../../interfaces/Audio/audio-player.interface'
 
-	import type { TAudioLoopMode } from '../../types'
+	import type { TAudioLoopMode } from '../../types/Audio/audio.type'
 
-	import { formatMediaTime } from '../../utils'
+	import { formatMediaTime } from '../../utils/Media/format-time.util'
 
 	/*********************************************************
 	 * Global

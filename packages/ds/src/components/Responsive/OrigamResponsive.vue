@@ -22,18 +22,16 @@
 		setup
 >
 	import { computed, StyleValue, useSlots } from 'vue'
-	import {
-		useAspectRatio,
-		useBorder,
-		useDimension,
-		useMargin,
-		usePadding,
-		useProps,
-		useRounded,
-		useStyle
-} from '../../composables'
+	import { useAspectRatio } from '../../composables/Responsive/aspect.composable'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { IResponsiveProps, IResponsiveSlots } from '../../interfaces'
+	import type { IResponsiveProps, IResponsiveSlots } from '../../interfaces/Responsive/responsive.interface'
 
 	/*********************************************************
 	 * Global

@@ -27,20 +27,21 @@
 		setup
 >
 	import { computed, ref, StyleValue } from 'vue'
-	import { OrigamProgressCircular, OrigamProgressLinear } from '../../components'
+	import OrigamProgressCircular from './OrigamProgressCircular.vue'
+	import OrigamProgressLinear from './OrigamProgressLinear.vue'
 
-	import {
-	useProgress,
-	useProps,
-	useSize,
-	useStyle
-} from '../../composables'
+	import { useProgress } from '../../composables/Progress/progress.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useSize } from '../../composables/Commons/size.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { PROGRESS_TYPE, SIZES } from '../../enums'
+	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
+	import { SIZES } from '../../enums/Commons/size.enum'
 
-	import type { IProgressProps, IProgressSlots } from '../../interfaces'
+	import type { IProgressProps, IProgressSlots } from '../../interfaces/Progress/progress.interface'
 
-	import type { TOrigamProgressCircular, TOrigamProgressLinear } from "../../types"
+	import type { TOrigamProgressCircular } from '../../types/Progress/progress-circular.type'
+	import type { TOrigamProgressLinear } from '../../types/Progress/progress-linear.type'
 
 	/*********************************************************
 	 * Global

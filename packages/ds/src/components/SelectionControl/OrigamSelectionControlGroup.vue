@@ -34,23 +34,22 @@
 		setup
 >
 	import { computed, onScopeDispose, provide, StyleValue } from 'vue'
-	import { OrigamDefaultsProvider } from '../../components'
-	import {
-	usePassedProps,
-	useProps,
-	useStyle,
-	useVModel
-} from '../../composables'
+	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
+	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { ORIGAM_SELECTION_CONTROL_GROUP_KEY } from '../../consts'
+	import { ORIGAM_SELECTION_CONTROL_GROUP_KEY } from '../../consts/SelectionControl/selection-control.const'
 
-	import { DENSITY } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { ISelectionControlGroupProps, ISelectionControlGroupSlots} from "../../interfaces"
+	import type { ISelectionControlGroupProps, ISelectionControlGroupSlots } from '../../interfaces/SelectionControl/selection-control-group.interface'
 
 	import type { ISelectionControlGroupEmits } from '../../interfaces/SelectionControl/selection-control-group.interface'
 
-	import { getUid, omitUndefined } from '../../utils'
+	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
+	import { omitUndefined } from '../../utils/Commons/commons.util'
 
 	/*********************************************************
 	 * Global

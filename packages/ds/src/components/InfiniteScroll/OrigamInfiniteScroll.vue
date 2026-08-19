@@ -118,30 +118,26 @@
 		setup
 >
 	import { computed, nextTick, onMounted, ref, shallowRef, StyleValue, toRef } from 'vue'
-	import { OrigamBtn, OrigamInfiniteScrollIntersect, OrigamProgress } from '../../components'
+	import OrigamBtn from '../Btn/OrigamBtn.vue'
+	import OrigamInfiniteScrollIntersect from './OrigamInfiniteScrollIntersect.vue'
+	import OrigamProgress from '../Progress/OrigamProgress.vue'
 
-	import {
-	useBothColor,
-	useDimension,
-	useLocale,
-	useProps,
-	useStyle,
-	useTypography
-} from '../../composables'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import {
-		DIRECTION,
-		INFINITE_SCROLL_MODE,
-		INFINITE_SCROLL_SIDE,
-		INFINITE_SCROLL_STATUS,
-		PROGRESS_TYPE
-	} from '../../enums'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
+	import { INFINITE_SCROLL_MODE, INFINITE_SCROLL_SIDE, INFINITE_SCROLL_STATUS } from '../../enums/InfiniteScroll/infinite-scroll.enum'
+	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
 
-	import type { IInfiniteScrollProps} from '../../interfaces'
+	import type { IInfiniteScrollProps } from '../../interfaces/InfiniteScroll/infinite-scroll.interface'
 
 	import type { IInfiniteScrollEmits, IInfiniteScrollSlots } from '../../interfaces/InfiniteScroll/infinite-scroll.interface'
 
-	import type { TInfiniteScrollSide, TInfiniteScrollStatus } from '../../types'
+	import type { TInfiniteScrollSide, TInfiniteScrollStatus } from '../../types/InfiniteScroll/infinite-scroll.type'
 
 	/*********************************************************
 	 * Global

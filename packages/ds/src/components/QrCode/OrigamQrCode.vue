@@ -58,24 +58,22 @@
 	import { OrigamAvatar } from '../Avatar'
 	import { OrigamIcon } from '../Icon'
 
-	import {
-		useBackgroundColor,
-		useBorder,
-		useElevation,
-		useMargin,
-		usePadding,
-		useQrCode,
-		useRounded,
-		useSize,
-		useTextColor
-	} from '../../composables'
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useQrCode } from '../../composables/QrCode/qr-code.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useSize } from '../../composables/Commons/size.composable'
+	import { useTextColor } from '../../composables/Commons/textColor.composable'
 
 	import type {
 		IQrCodeProps,
 		IQrCodeSlots
 	} from '../../interfaces/QrCode/qr-code.interface'
 
-	import { resolveQrColor, resolveQrCornerRadius } from '../../utils'
+	import { resolveQrColor, resolveQrCornerRadius } from '../../utils/QrCode/qr-code-adapters.util'
 
 	/*********************************************************
 	 * Global

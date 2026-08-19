@@ -31,23 +31,21 @@
 		lang="ts"
 		setup
 >
-	import { OrigamBtnGroup } from '../../components'
+	import OrigamBtnGroup from './OrigamBtnGroup.vue'
 
-	import {
-	useGroup,
-	useProps,
-	useStyle
-} from '../../composables'
+	import { useGroup } from '../../composables/Commons/group.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { ORIGAM_BTN_TOGGLE_KEY } from '../../consts'
+	import { ORIGAM_BTN_TOGGLE_KEY } from '../../consts/Btn/btn-toggle.const'
 
-	import { DENSITY } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { IBtnToggleProps} from '../../interfaces'
+	import type { IBtnToggleProps } from '../../interfaces/Btn/btn-toggle.interface'
 
 	import type { IBtnToggleEmits, IBtnToggleSlots } from '../../interfaces/Btn/btn-toggle.interface'
 
-	import type { TOrigamBtnGroup } from "../../types"
+	import type { TOrigamBtnGroup } from '../../types/Btn/btn-group.type'
 
 	import { computed, ref, StyleValue, useSlots } from 'vue'
 

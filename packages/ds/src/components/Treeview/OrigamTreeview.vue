@@ -25,18 +25,18 @@
 	import { computed, provide, ref, watch } from 'vue'
 	import type { StyleValue } from 'vue'
 
-	import { OrigamTreeviewNode } from '../../components'
-	import { ORIGAM_TREEVIEW_KEY } from '../../consts'
-	import { DENSITY, SIZES, TREEVIEW_SELECT_MODE, TREEVIEW_SELECTABLE_NODES } from '../../enums'
-	import {
-	useDensity,
-	useProps,
-	useSize,
-	useStateEffect,
-	useStyle
-} from '../../composables'
+	import OrigamTreeviewNode from './OrigamTreeviewNode.vue'
+	import { ORIGAM_TREEVIEW_KEY } from '../../consts/Treeview/treeview.const'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { SIZES } from '../../enums/Commons/size.enum'
+	import { TREEVIEW_SELECT_MODE, TREEVIEW_SELECTABLE_NODES } from '../../enums/Treeview/treeview.enum'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useSize } from '../../composables/Commons/size.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { ITreeviewEmits, ITreeviewProps } from '../../interfaces'
+	import type { ITreeviewEmits, ITreeviewProps } from '../../interfaces/Treeview/treeview.interface'
 
 	/*********************************************************
 	 * Global

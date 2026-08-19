@@ -88,25 +88,28 @@
 		lang="ts"
 		setup
 >
-	import { OrigamBtn, OrigamProgressLinear, OrigamWindow } from '../../components'
+	import OrigamBtn from '../Btn/OrigamBtn.vue'
+	import OrigamProgressLinear from '../Progress/OrigamProgressLinear.vue'
+	import OrigamWindow from '../Window/OrigamWindow.vue'
 
-	import {
-	useDimension,
-	useLocale,
-	useProps,
-	useStyle,
-	useVModel
-} from '../../composables'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { DENSITY, MDI_ICONS, SIZES } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { SIZES } from '../../enums/Commons/size.enum'
 
 	import { intentBgExpr, isCssColor, isIntent } from '../../utils/Commons/color.util'
 
-	import type { ICarouselProps, IGroupProvide} from '../../interfaces'
+	import type { ICarouselProps } from '../../interfaces/Carousel/carousel.interface'
+	import type { IGroupProvide } from '../../interfaces/Commons/group.interface'
 
 	import type { ICarouselEmits, ICarouselSlots } from '../../interfaces/Carousel/carousel.interface'
 
-	import type { TOrigamWindow } from "../../types"
+	import type { TOrigamWindow } from '../../types/Window/window.type'
 
 
 	import { computed, onBeforeUnmount, onMounted, ref, StyleValue, useSlots, watch } from 'vue'

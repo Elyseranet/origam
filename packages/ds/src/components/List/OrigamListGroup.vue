@@ -47,27 +47,29 @@
 		setup
 >
 	import { computed, ref, StyleValue, toRef } from 'vue'
-	import { OrigamDefaultsProvider, OrigamExpandY, OrigamListGroupActivator, OrigamListItem, OrigamTransition } from '../../components'
+	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
+	import OrigamExpandY from '../Transition/OrigamExpandY.vue'
+	import OrigamListGroupActivator from './OrigamListGroupActivator.vue'
+	import OrigamListItem from './OrigamListItem.vue'
+	import OrigamTransition from '../Transition/OrigamTransition.vue'
 
-	import {
-		useBothColor,
-		useHover,
-		useList,
-		useNestedItem,
-		usePassedProps,
-		useProps,
-		useSsrBoot,
-		useStateEffect,
-		useStyle
-} from '../../composables'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useHover } from '../../composables/Commons/hover.composable'
+	import { useList } from '../../composables/List/list.composable'
+	import { useNestedItem } from '../../composables/Commons/nestedItem.composable'
+	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useSsrBoot } from '../../composables/Commons/ssrBoot.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { vContrast } from '../../directives'
+	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import { omitUndefined } from '../../utils'
+	import { omitUndefined } from '../../utils/Commons/commons.util'
 
-	import { MDI_ICONS } from "../../enums"
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import type { IListActivatorProps, IListGroupProps} from '../../interfaces'
+	import type { IListActivatorProps, IListGroupProps } from '../../interfaces/List/list-group.interface'
 
 	import type { IListGroupEmits, IListGroupSlots } from '../../interfaces/List/list-group.interface'
 

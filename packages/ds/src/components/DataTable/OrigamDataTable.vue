@@ -108,44 +108,43 @@
 		lang="ts"
 		setup
 >
-	import {
-		OrigamDataTableFooter,
-		OrigamDataTableHeaders,
-		OrigamDataTableRows,
-		OrigamDivider,
-		OrigamTable
-	} from '../../components'
+	import OrigamDataTableFooter from './OrigamDataTableFooter.vue'
+	import OrigamDataTableHeaders from './OrigamDataTableHeaders.vue'
+	import OrigamDataTableRows from './OrigamDataTableRows.vue'
+	import OrigamDivider from '../Divider/OrigamDivider.vue'
+	import OrigamTable from '../Table/OrigamTable.vue'
 
-	import {
-		createGroupBy,
-		createHeaders,
-		createPagination,
-		createSort,
-		provideExpanded,
-		provideGroupBy,
-		providePagination,
-		provideSelection,
-		provideSort,
-		useDataTableItems,
-		useFilter,
-		useGroupedItems,
-		useOptions,
-		usePaginatedItems,
-		useProps,
-		useSortedItems,
-		useStyle
-} from '../../composables'
+	import { createGroupBy, provideGroupBy } from '../../composables/DataTable/group.composable'
+	import { createHeaders } from '../../composables/DataTable/headers.composable'
+	import { createPagination, providePagination } from '../../composables/DataTable/pagination.composable'
+	import { createSort, provideSort } from '../../composables/DataTable/sort.composable'
+	import { provideExpanded } from '../../composables/DataTable/expand.composable'
+	import { provideSelection } from '../../composables/DataTable/select.composable'
+	import { useDataTableItems } from '../../composables/DataTable/items.composable'
+	import { useFilter } from '../../composables/Commons/filters.composable'
+	import { useGroupedItems } from '../../composables/DataTable/groupedItems.composable'
+	import { useOptions } from '../../composables/DataTable/options.composable'
+	import { usePaginatedItems } from '../../composables/DataTable/paginatedItems.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useSortedItems } from '../../composables/DataTable/sortedItems.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { ORIGAM_DATA_TABLE_SHOW_SELECT_KEY } from '../../consts'
+	import { ORIGAM_DATA_TABLE_SHOW_SELECT_KEY } from '../../consts/DataTable/data-table.const'
 
-	import { DENSITY, MDI_ICONS } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import type {
-		IDataTableGroup, IDataTableGroupableItem, IDataTableProps, IDataTableSelectableItem, IDataTableSortItem} from '../../interfaces'
+	import type { IDataTableGroup, IDataTableGroupableItem } from '../../interfaces/DataTable/group.interface'
+	import type { IDataTableProps } from '../../interfaces/DataTable/data-table.interface'
+	import type { IDataTableSelectableItem } from '../../interfaces/DataTable/select.interface'
+	import type { IDataTableSortItem } from '../../interfaces/DataTable/sort.interface'
 
 	import type { IDataTableEmits, IDataTableSlots } from '../../interfaces/DataTable/data-table.interface'
 
-	import type { TOrigamDataTableFooter, TOrigamDataTableHeaders, TOrigamDataTableRows, TOrigamTable } from "../../types"
+	import type { TOrigamDataTableFooter } from '../../types/DataTable/data-table-footer.type'
+	import type { TOrigamDataTableHeaders } from '../../types/DataTable/data-table-headers.type'
+	import type { TOrigamDataTableRows } from '../../types/DataTable/data-table-rows.type'
+	import type { TOrigamTable } from '../../types/Table/table.type'
 
 	import { computed, provide, Ref, ref, StyleValue, toRef, useAttrs, useSlots } from 'vue'
 

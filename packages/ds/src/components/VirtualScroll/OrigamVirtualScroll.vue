@@ -82,19 +82,19 @@
 		setup
 >
 	import { computed, onMounted, onScopeDispose, Ref, StyleValue, toRef } from 'vue'
-	import { OrigamVirtualScrollItem } from '../../components'
+	import OrigamVirtualScrollItem from './OrigamVirtualScrollItem.vue'
 
-	import {
-	useDimension,
-	useProps,
-	useStyle,
-	useToggleScope,
-	useVirtual
-} from '../../composables'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useToggleScope } from '../../composables/Commons/toggleScope.composable'
+	import { useVirtual } from '../../composables/Commons/virtual.composable'
 
-	import type { IVirtualScrollProps, IVirtualScrollSlots } from '../../interfaces'
+	import type { IVirtualScrollProps, IVirtualScrollSlots } from '../../interfaces/VirtualScroll/virtual-scroll.interface'
 
-	import { convertToUnit, getCurrentInstance, getScrollParent } from '../../utils'
+	import { convertToUnit } from '../../utils/Commons/commons.util'
+	import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
+	import { getScrollParent } from '../../utils/Commons/scroll.util'
 
 	/*********************************************************
 	 * Global

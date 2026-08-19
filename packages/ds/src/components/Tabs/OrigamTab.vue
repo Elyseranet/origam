@@ -71,21 +71,20 @@
 >
 	import { computed, inject, ref, StyleValue, toRef } from 'vue'
 
-	import { OrigamAvatar, OrigamIcon } from '../../components'
+	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
 
-	import {
-		useAdjacent,
-		useGroupItem,
-		useProps,
-		useStyle,
-		useTypography
-	} from '../../composables'
+	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
+	import { useGroupItem } from '../../composables/Commons/groupItem.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import { vContrast } from '../../directives'
+	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import { ORIGAM_TABS_KEY, ORIGAM_TAB_PANELS_KEY } from '../../consts'
+	import { ORIGAM_TABS_KEY, ORIGAM_TAB_PANELS_KEY } from '../../consts/Tabs/tabs.const'
 
-	import type { ITabProps } from '../../interfaces'
+	import type { ITabProps } from '../../interfaces/Tabs/tab.interface'
 
 	import type { ITabSlots } from '../../interfaces/Tabs/tab.interface'
 

@@ -52,14 +52,23 @@
 		setup
 >
 
-	import { OrigamAvatar, OrigamDefaultsProvider } from "../../components"
-	import { useActive, useDensity, useHover, usePassedProps, useProps, useRtl, useStateEffect, useStyle } from "../../composables"
-	import { vClickOutside } from "../../directives"
-	import { DIRECTION } from "../../enums"
-	import type { IAvatarGroupProps, IAvatarProps} from "../../interfaces"
+	import OrigamAvatar from './OrigamAvatar.vue'
+	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
+	import { useActive } from '../../composables/Commons/active.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useHover } from '../../composables/Commons/hover.composable'
+	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRtl } from '../../composables/Commons/rtl.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import vClickOutside from '../../directives/ClickOutside/clickOutside.directive'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
+	import type { IAvatarGroupProps } from '../../interfaces/Avatar/avatar-group.interface'
+	import type { IAvatarProps } from '../../interfaces/Avatar/avatar.interface'
 
 	import type { IAvatarGroupEmits, IAvatarGroupSlots } from '../../interfaces/Avatar/avatar-group.interface'
-	import { omitUndefined } from "../../utils"
+	import { omitUndefined } from '../../utils/Commons/commons.util'
 
 	import type { ComputedRef, StyleValue, VNodeProps } from 'vue'
 	import { computed, mergeProps, ref } from "vue"

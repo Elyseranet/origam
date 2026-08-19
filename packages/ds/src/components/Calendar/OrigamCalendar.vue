@@ -349,17 +349,18 @@
     type StyleValue
   } from 'vue'
 
-  import { OrigamBtn, OrigamBtnGroup } from '../../components'
+  import OrigamBtn from '../Btn/OrigamBtn.vue'
+  import OrigamBtnGroup from '../Btn/OrigamBtnGroup.vue'
 
-  import { CALENDAR_NAVIGATE, CALENDAR_VIEW, INTENT, VARIANT } from '../../enums'
+  import { CALENDAR_NAVIGATE, CALENDAR_VIEW } from '../../enums/Calendar/calendar.enum'
+  import { INTENT } from '../../enums/Commons/intent.enum'
+  import { VARIANT } from '../../enums/Commons/variant.enum'
 
-  import {
-    useCalendar,
-    useDensity,
-    useDimension,
-    useLocale,
-    useStateEffect
-  } from '../../composables'
+  import { useCalendar } from '../../composables/Calendar/calendar.composable'
+  import { useDensity } from '../../composables/Commons/density.composable'
+  import { useDimension } from '../../composables/Commons/dimension.composable'
+  import { useLocale } from '../../composables/Commons/locale.composable'
+  import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
 
   import {
     getForeground,
@@ -370,21 +371,14 @@
     tokenStylesForIntent
   } from '../../utils/Commons/color.util'
 
-  import type {
-    ICalendarComponentProps,
-    IEvent,
-    ICalendarEmits,
-    ICalendarSlots
-  } from '../../interfaces'
+  import type { ICalendarComponentProps, ICalendarEmits, ICalendarSlots } from '../../interfaces/Calendar/calendar.interface'
+  import type { IEvent } from '../../interfaces/Calendar/event.interface'
 
   import type { IDragMonthState, IDragSlotState } from '../../interfaces/Calendar/calendar-drag.interface'
 
-  import type {
-    TCalendarNavigate,
-    TCalendarView,
-    TIntent,
-    TVariant
-  } from '../../types'
+  import type { TCalendarNavigate, TCalendarView } from '../../types/Calendar/calendar.type'
+  import type { TIntent } from '../../types/Commons/intent.type'
+  import type { TVariant } from '../../types/Commons/variant.type'
 
   import {
     buildDisabledPredicate,

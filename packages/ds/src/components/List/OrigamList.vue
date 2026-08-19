@@ -90,35 +90,37 @@
 		setup
 >
 	import { computed, ref, shallowRef, StyleValue, toRef, useSlots } from 'vue'
-	import { OrigamDefaultsProvider, OrigamListChildren } from '../../components'
+	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
+	import OrigamListChildren from './OrigamListChildren.vue'
 
 
-	import {
-		useBorder,
-		useBothColor,
-		useCreateList,
-		useDensity,
-		useDimension,
-		useElevation,
-		useItems,
-		useMargin,
-		useNested,
-		usePadding,
-		usePassedProps,
-		useProps,
-		useRounded,
-		useStyle
-} from '../../composables'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useCreateList } from '../../composables/List/createList.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useItems } from '../../composables/Commons/items.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { useNested } from '../../composables/Commons/nested.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { DENSITY, KEYBOARD_VALUES, LINES, OPEN_STRATEGY, SELECT_STRATEGY } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
+	import { LINES } from '../../enums/List/list.enum'
+	import { OPEN_STRATEGY, SELECT_STRATEGY } from '../../enums/Commons/nested.enum'
 
-	import type { IListProps} from '../../interfaces'
+	import type { IListProps } from '../../interfaces/List/list.interface'
 
 	import type { IListEmits, IListSlots } from '../../interfaces/List/list.interface'
 
-	import type { TFocusLocation } from '../../types'
+	import type { TFocusLocation } from '../../types/Commons/commons.type'
 
-	import { deepEqual, focusChild, omitUndefined } from '../../utils'
+	import { deepEqual, focusChild, omitUndefined } from '../../utils/Commons/commons.util'
 
 	/*********************************************************
 	 * Global

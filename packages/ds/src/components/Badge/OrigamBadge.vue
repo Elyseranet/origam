@@ -88,28 +88,29 @@
 		lang="ts"
 		setup
 >
-	import { OrigamAvatar, OrigamFade, OrigamIcon, OrigamTransition } from '../../components'
+	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
+	import OrigamFade from '../Transition/OrigamFade.vue'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
+	import OrigamTransition from '../Transition/OrigamTransition.vue'
 
-	import {
-		useActive,
-		useAdjacent,
-		useHover,
-		useLocale,
-		useLocation,
-		useProps,
-		useStateEffect,
-		useStatus,
-		useStyle,
-		useTypography
-	} from '../../composables'
+	import { useActive } from '../../composables/Commons/active.composable'
+	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
+	import { useHover } from '../../composables/Commons/hover.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useLocation } from '../../composables/Commons/location.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStatus } from '../../composables/Commons/status.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import type { IBadgeProps } from '../../interfaces'
+	import type { IBadgeProps } from '../../interfaces/Badge/badge.interface'
 	import type { IBadgeEmits, IBadgeSlots } from '../../interfaces/Badge/badge.interface'
-	import type { TTransitionProps } from "../../types"
+	import type { TTransitionProps } from '../../types/Transition/transition.type'
 
-	import { vContrast } from '../../directives'
+	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import { omit, pick } from '../../utils'
+	import { omit, pick } from '../../utils/Commons/commons.util'
 
 	import { computed, ComputedRef, StyleValue, useAttrs } from 'vue'
 

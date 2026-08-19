@@ -52,23 +52,21 @@
 		setup
 >
 	import { computed, ref, StyleValue, toRef, watchEffect } from 'vue'
-	import {
-		useIntersectionObserver,
-		useProgress,
-		useProps,
-		useResizeObserver,
-		useSize,
-		useStyle,
-		useTextColor
-} from '../../composables'
+	import { useIntersectionObserver } from '../../composables/Commons/intersectionObserver.composable'
+	import { useProgress } from '../../composables/Progress/progress.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useResizeObserver } from '../../composables/Commons/resizeObserver.composable'
+	import { useSize } from '../../composables/Commons/size.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTextColor } from '../../composables/Commons/textColor.composable'
 
-	import { CIRCUMFERENCE, MAGIC_RADIUS } from '../../consts'
+	import { CIRCUMFERENCE, MAGIC_RADIUS } from '../../consts/Progress/progress.const'
 
-	import type { IProgressCircularProps, IProgressCircularSlots } from '../../interfaces'
+	import type { IProgressCircularProps, IProgressCircularSlots } from '../../interfaces/Progress/progress-circular.interface'
 
-	import { convertToUnit } from '../../utils'
+	import { convertToUnit } from '../../utils/Commons/commons.util'
 
-	import { SIZES } from '../../enums'
+	import { SIZES } from '../../enums/Commons/size.enum'
 
 	/*********************************************************
 	 * Global

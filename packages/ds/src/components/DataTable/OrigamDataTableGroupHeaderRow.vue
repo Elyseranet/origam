@@ -51,12 +51,18 @@
 		lang="ts"
 		setup
 >
-	import { OrigamBtn, OrigamCheckboxBtn, OrigamDataTableColumnCell } from "../../components"
+	import OrigamBtn from '../Btn/OrigamBtn.vue'
+	import OrigamCheckboxBtn from '../Checkbox/OrigamCheckboxBtn.vue'
+	import OrigamDataTableColumnCell from './OrigamDataTableColumnCell.vue'
 
-	import { useGroupBy, useHeaders, useProps, useSelection , useStyle} from "../../composables"
-	import { MDI_ICONS } from "../../enums"
+	import { useGroupBy } from '../../composables/DataTable/group.composable'
+	import { useHeaders } from '../../composables/DataTable/headers.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useSelection } from '../../composables/DataTable/select.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import type { IDataTableGroupHeaderRowProps, IDataTableGroupHeaderRowSlots } from "../../interfaces"
+	import type { IDataTableGroupHeaderRowProps, IDataTableGroupHeaderRowSlots } from '../../interfaces/DataTable/group.interface'
 
 	import { computed, StyleValue } from "vue"
 

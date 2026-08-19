@@ -19,20 +19,18 @@
 		setup
 >
 	import { computed, StyleValue, toRef } from 'vue'
-	import {
-	useBorder,
-	useBothColor,
-	useMargin,
-	usePadding,
-	useProps,
-	useRounded,
-	useStyle,
-	useTypography
-} from '../../composables'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import { vContrast } from '../../directives'
+	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import type { ILabelProps, ILabelSlots} from '../../interfaces'
+	import type { ILabelProps, ILabelSlots } from '../../interfaces/Label/label.interface'
 
 	import type { ILabelEmits } from '../../interfaces/Label/label.interface'
 

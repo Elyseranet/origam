@@ -59,26 +59,27 @@
 		lang="ts"
 		setup
 >
-	import { OrigamCheckboxBtn, OrigamInput } from '../../components'
+	import OrigamCheckboxBtn from './OrigamCheckboxBtn.vue'
+	import OrigamInput from '../Input/OrigamInput.vue'
 
-	import {
-		useFocus,
-		useMargin,
-		usePadding,
-		useProps,
-		useStyle,
-		useVModel
-} from '../../composables'
+	import { useFocus } from '../../composables/Commons/focus.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { DENSITY } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { ICheckboxProps, ICheckboxSlots} from '../../interfaces'
+	import type { ICheckboxProps, ICheckboxSlots } from '../../interfaces/Checkbox/checkbox.interface'
 
 	import type { ICheckboxEmits } from '../../interfaces/Checkbox/checkbox.interface'
 
-	import type { TOrigamCheckboxBtn, TOrigamInput } from "../../types"
+	import type { TOrigamCheckboxBtn } from '../../types/Checkbox/checkbox-btn.type'
+	import type { TOrigamInput } from '../../types/Input/input.type'
 
-	import { filterInputAttrs, getUid } from '../../utils'
+	import { filterInputAttrs } from '../../utils/Input/input.util'
+	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 
 	import { computed, ref, StyleValue, useAttrs, useSlots } from 'vue'
 

@@ -58,17 +58,14 @@
 
 	import OrigamBracketMatch from './OrigamBracketMatch.vue'
 
-	import { useProps, useTypography } from '../../composables'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import { DIRECTION } from '../../enums'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
 
-	import type {
-		IBracketCompetitor,
-		IBracketMatch,
-		IBracketRoundEmits,
-		IBracketRoundProps,
-		IBracketRoundSlots
-	} from '../../interfaces'
+	import type { IBracketCompetitor } from '../../interfaces/Bracket/bracket-competitor.interface'
+	import type { IBracketMatch } from '../../interfaces/Bracket/bracket-match.interface'
+	import type { IBracketRoundEmits, IBracketRoundProps, IBracketRoundSlots } from '../../interfaces/Bracket/bracket-round-component.interface'
 
 	const props = withDefaults(defineProps<IBracketRoundProps>(), {
 		tag: 'div',

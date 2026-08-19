@@ -56,13 +56,17 @@
 		lang="ts"
 		setup
 >
-	import { OrigamBtn, OrigamBtnGroup, OrigamSpacer } from "../../components"
+	import OrigamBtn from '../Btn/OrigamBtn.vue'
+	import OrigamBtnGroup from '../Btn/OrigamBtnGroup.vue'
+	import OrigamSpacer from '../Grids/OrigamSpacer.vue'
 
-	import { useProps , useStyle} from "../../composables"
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { DATE_MODE, MDI_ICONS } from "../../enums"
+	import { DATE_MODE } from '../../enums/DatePicker/date-picker.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import type { IDatePickerControlsProps} from "../../interfaces"
+	import type { IDatePickerControlsProps } from '../../interfaces/DatePicker/date-picker-controls.interface'
 
 	import type { IDatePickerControlsEmits } from '../../interfaces/DatePicker/date-picker-controls.interface'
 

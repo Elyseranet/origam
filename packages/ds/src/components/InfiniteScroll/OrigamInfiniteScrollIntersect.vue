@@ -11,9 +11,10 @@
 		setup
 >
 	import { watch } from 'vue'
-	import { useIntersectionObserver, useProps } from '../../composables'
+	import { useIntersectionObserver } from '../../composables/Commons/intersectionObserver.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
 
-	import type { IInfiniteScrollIntersectProps} from '../../interfaces'
+	import type { IInfiniteScrollIntersectProps } from '../../interfaces/InfiniteScroll/infinite-scroll-intersect.interface'
 
 	import type { IInfiniteScrollIntersectEmits } from '../../interfaces/InfiniteScroll/infinite-scroll-intersect.interface'
 

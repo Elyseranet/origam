@@ -53,16 +53,15 @@
 	import { computed, provide } from 'vue'
 	import type { StyleValue } from 'vue'
 
-	import { OrigamTimelineItem } from '../../components'
-	import {
-	useDensity,
-	useProps,
-	useSize,
-	useStyle
-} from '../../composables'
-	import type { ITimelineProps, ITimelineSlots } from '../../interfaces'
-	import { TIMELINE_CONTEXT_KEY } from '../../consts'
-	import { DIRECTION, TIMELINE_SIDE } from '../../enums'
+	import OrigamTimelineItem from './OrigamTimelineItem.vue'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useSize } from '../../composables/Commons/size.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import type { ITimelineProps, ITimelineSlots } from '../../interfaces/Timeline/timeline.interface'
+	import { TIMELINE_CONTEXT_KEY } from '../../consts/Timeline/timeline.const'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
+	import { TIMELINE_SIDE } from '../../enums/Timeline/timeline.enum'
 
 	/*********************************************************
 	 * Global

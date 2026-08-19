@@ -15,9 +15,12 @@
 		setup
 >
 	import { computed, StyleValue, toRef } from "vue"
-	import { useBothColor, useProps, useStyle, useTypography } from "../../composables"
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import type { IPickerTitleProps, IPickerTitleSlots } from "../../interfaces"
+	import type { IPickerTitleProps, IPickerTitleSlots } from '../../interfaces/Picker/picker-title.interface'
 
 	/*********************************************************
 	 * Global

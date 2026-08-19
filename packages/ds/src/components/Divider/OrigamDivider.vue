@@ -12,17 +12,15 @@
 		setup
 >
 	import { computed, StyleValue, toRef, useAttrs } from 'vue'
-	import {
-	useBothColor,
-	useMargin,
-	useProps,
-	useStyle
-} from '../../composables'
-	import { DIRECTION } from '../../enums'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
 
-	import type { IDividerProps } from '../../interfaces'
+	import type { IDividerProps } from '../../interfaces/Divider/divider.interface'
 
-	import { convertToUnit } from '../../utils'
+	import { convertToUnit } from '../../utils/Commons/commons.util'
 
 	/*********************************************************
 	 * Global

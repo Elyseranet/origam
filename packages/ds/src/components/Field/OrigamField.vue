@@ -169,35 +169,46 @@
 		setup
 >
 	import { computed, onMounted, ref, StyleValue, useAttrs, useSlots, watch } from 'vue'
-	import { OrigamAvatar, OrigamExpandX, OrigamIcon, OrigamLabel, OrigamProgress, OrigamSkeleton } from '../../components'
+	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
+	import OrigamExpandX from '../Transition/OrigamExpandX.vue'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
+	import OrigamLabel from '../Label/OrigamLabel.vue'
+	import OrigamProgress from '../Progress/OrigamProgress.vue'
+	import OrigamSkeleton from '../Skeleton/OrigamSkeleton.vue'
 
-	import {
-		useActive,
-		useAdjacentInner,
-		useBothColor,
-		useDensity,
-		useFocus,
-		useLoader,
-		useProps,
-		useRtl,
-		useSize,
-		useStateEffect,
-		useStyle,
-		useTypography,
-		useVariant
-} from '../../composables'
+	import { useActive } from '../../composables/Commons/active.composable'
+	import { useAdjacentInner } from '../../composables/Commons/adjacentInner.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useFocus } from '../../composables/Commons/focus.composable'
+	import { useLoader } from '../../composables/Commons/loader.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRtl } from '../../composables/Commons/rtl.composable'
+	import { useSize } from '../../composables/Commons/size.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
+	import { useVariant } from '../../composables/Commons/variant.composable'
 
-	import { vContrast } from '../../directives'
+	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import { DENSITY, EASING, KEYBOARD_VALUES, LOADER_KIND, MDI_ICONS, PROGRESS_TYPE, VARIANT_INPUT } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { EASING } from '../../enums/Transition/transition.enum'
+	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
+	import { LOADER_KIND } from '../../enums/Commons/loader.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
+	import { VARIANT_INPUT } from '../../enums/Commons/variant.enum'
 
-	import type { IFieldProps, IFieldSlots} from '../../interfaces'
+	import type { IFieldProps, IFieldSlots } from '../../interfaces/Field/field.interface'
 
 	import type { IFieldEmits } from '../../interfaces/Field/field.interface'
 
-	import type { TOrigamLabel } from "../../types"
+	import type { TOrigamLabel } from '../../types/Label/label.type'
 
-	import { animate, convertToUnit, getUid, nullifyTransforms } from '../../utils'
+	import { animate, nullifyTransforms } from '../../utils/Commons/animation.util'
+	import { convertToUnit } from '../../utils/Commons/commons.util'
+	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 
 	/*********************************************************
 	 * Global

@@ -90,31 +90,32 @@
     watch,
     watchEffect
   } from 'vue'
-  import { OrigamOverlay, OrigamSnack } from '../../components'
+  import OrigamOverlay from '../Overlay/OrigamOverlay.vue'
+  import OrigamSnack from '../Transition/OrigamSnack.vue'
   import OrigamSnackbarItem from './OrigamSnackbarItem.vue'
 
-  import {
-    useBothColor,
-    useLayout,
-    usePosition,
-    useProps,
-    useScopeId,
-    useStateEffect,
-    useStatus,
-    useStyle,
-    useToggleScope,
-    useVModel
-  } from '../../composables'
+  import { useBothColor } from '../../composables/Commons/bothColor.composable'
+  import { useLayout } from '../../composables/Commons/layout.composable'
+  import { usePosition } from '../../composables/Commons/position.composable'
+  import { useProps } from '../../composables/Commons/props.composable'
+  import { useScopeId } from '../../composables/Commons/scopeId.composable'
+  import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+  import { useStatus } from '../../composables/Commons/status.composable'
+  import { useStyle } from '../../composables/Commons/style.composable'
+  import { useToggleScope } from '../../composables/Commons/toggleScope.composable'
+  import { useVModel } from '../../composables/Commons/vModel.composable'
 
-  import { ORIGAM_LAYOUT_KEY } from '../../consts'
+  import { ORIGAM_LAYOUT_KEY } from '../../consts/Commons/layout.const'
 
-  import { SCROLL_STRATEGIES } from '../../enums'
+  import { SCROLL_STRATEGIES } from '../../enums/Commons/scroll.enum'
 
-  import type { ISnackbarEmits, ISnackbarProps, ISnackbarSlots } from '../../interfaces'
+  import type { ISnackbarEmits, ISnackbarProps, ISnackbarSlots } from '../../interfaces/Snackbar/snackbar.interface'
 
-  import type { TIntent, TOrigamOverlay, TTransitionProps } from '../../types'
+  import type { TIntent } from '../../types/Commons/intent.type'
+  import type { TOrigamOverlay } from '../../types/Overlay/overlay.type'
+  import type { TTransitionProps } from '../../types/Transition/transition.type'
 
-  import { forwardRefs } from '../../utils'
+  import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
 
   /*********************************************************
    * Global

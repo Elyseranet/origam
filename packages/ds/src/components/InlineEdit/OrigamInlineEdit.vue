@@ -201,14 +201,17 @@
 		watch
 	} from 'vue'
 
-	import { OrigamBtn, OrigamTextField, OrigamTextareaField } from '../../components'
+	import OrigamBtn from '../Btn/OrigamBtn.vue'
+	import OrigamTextField from '../TextField/OrigamTextField.vue'
+	import OrigamTextareaField from '../TextareaField/OrigamTextareaField.vue'
 
-	import { useInlineEdit, useTypography } from '../../composables'
+	import { useInlineEdit } from '../../composables/InlineEdit/inline-edit.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import { INLINE_EDIT_ACTION, MDI_ICONS } from '../../enums'
+	import { INLINE_EDIT_ACTION } from '../../enums/InlineEdit/inline-edit.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import type {
-		IInlineEditProps} from '../../interfaces'
+	import type { IInlineEditProps } from '../../interfaces/InlineEdit/inline-edit.interface'
 
 	import type { IInlineEditEmits, IInlineEditSlots } from '../../interfaces/InlineEdit/inline-edit.interface'
 

@@ -129,24 +129,29 @@
 		setup
 >
 	import { computed, mergeProps, nextTick, ref, StyleValue, useSlots, watch } from 'vue'
-	import { getUid } from '../../utils'
-	import { OrigamBtn, OrigamCard, OrigamIcon, OrigamOverlay, OrigamTranslateScale } from '../../components'
-	import {
-	useProps,
-	useScopeId,
-	useSize,
-	useStatus,
-	useStyle,
-	useVModel
-} from '../../composables'
-	import { IN_BROWSER } from '../../consts'
-	import { vIntersect } from '../../directives'
-	import { MDI_ICONS } from '../../enums'
-	import type { IDialogProps} from '../../interfaces'
+	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
+	import OrigamBtn from '../Btn/OrigamBtn.vue'
+	import OrigamCard from '../Card/OrigamCard.vue'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
+	import OrigamOverlay from '../Overlay/OrigamOverlay.vue'
+	import OrigamTranslateScale from '../Transition/OrigamTranslateScale.vue'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useScopeId } from '../../composables/Commons/scopeId.composable'
+	import { useSize } from '../../composables/Commons/size.composable'
+	import { useStatus } from '../../composables/Commons/status.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
+	import { IN_BROWSER } from '../../consts/Commons/commons.const'
+	import vIntersect from '../../directives/Intersect/intersect.directive'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import type { IDialogProps } from '../../interfaces/Dialog/dialog.interface'
 
 	import type { IDialogEmits, IDialogSlots } from '../../interfaces/Dialog/dialog.interface'
-	import type { TOrigamCard, TOrigamOverlay, TTransitionProps } from '../../types'
-	import { focusableChildren, forwardRefs } from '../../utils'
+	import type { TOrigamCard } from '../../types/Card/card.type'
+	import type { TOrigamOverlay } from '../../types/Overlay/overlay.type'
+	import type { TTransitionProps } from '../../types/Transition/transition.type'
+	import { focusableChildren } from '../../utils/Commons/commons.util'
+	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
 
 	/*********************************************************
 	 * Global

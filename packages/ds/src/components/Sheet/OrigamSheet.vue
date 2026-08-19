@@ -31,24 +31,23 @@
 		setup
 >
 	import { computed, type Ref, ref, StyleValue, toRef, watch } from 'vue'
-	import {
-		useActive,
-		useBothColor,
-		useDimension,
-		useHover,
-		useLocation,
-		usePosition,
-		useProps,
-		useSheetSwipe,
-		useStateEffect,
-		useStyle
-} from '../../composables'
+	import { useActive } from '../../composables/Commons/active.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useHover } from '../../composables/Commons/hover.composable'
+	import { useLocation } from '../../composables/Commons/location.composable'
+	import { usePosition } from '../../composables/Commons/position.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useSheetSwipe } from '../../composables/Sheet/sheetSwipe.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { ISheetProps} from "../../interfaces"
+	import type { ISheetProps } from '../../interfaces/Sheet/sheet.interface'
 
 	import type { ISheetEmits, ISheetSlots } from '../../interfaces/Sheet/sheet-emits.interface'
 
-	import type { TColor, TSheetSnapId, TSheetSnapPoint } from "../../types"
+	import type { TColor } from '../../types/Commons/color.type'
+	import type { TSheetSnapId, TSheetSnapPoint } from '../../types/Sheet/sheet.type'
 
 	/*********************************************************
 	 * Global

@@ -18,22 +18,20 @@
 		setup
 >
 	import { computed, ref, StyleValue, toRef, useAttrs, useSlots } from 'vue'
-	import {
-	useBorder,
-	useBothColor,
-	useDimension,
-	useIcon,
-	useMargin,
-	usePadding,
-	useProps,
-	useRounded,
-	useSize,
-	useStyle
-} from '../../composables'
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useIcon } from '../../composables/Icon/icon.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useSize } from '../../composables/Commons/size.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { IIconComponentProps, IIconComponentSlots } from '../../interfaces'
+	import type { IIconComponentProps, IIconComponentSlots } from '../../interfaces/Icon/icon.interface'
 
-	import { flattenFragments } from '../../utils'
+	import { flattenFragments } from '../../utils/Commons/commons.util'
 
 	/*********************************************************
 	 * Global

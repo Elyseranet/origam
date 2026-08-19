@@ -279,60 +279,57 @@
 		VNodeRef,
 		watch
 	} from 'vue'
-	import {
-		OrigamAvatar,
-		OrigamCheckboxBtn,
-		OrigamChip,
-		OrigamExpandY,
-		OrigamIcon,
-		OrigamList,
-		OrigamListItem,
-		OrigamMenu,
-		OrigamTextField,
-		OrigamTranslateScale,
-		OrigamVirtualScroll
-	} from '../../components'
+	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
+	import OrigamCheckboxBtn from '../Checkbox/OrigamCheckboxBtn.vue'
+	import OrigamChip from '../Chip/OrigamChip.vue'
+	import OrigamExpandY from '../Transition/OrigamExpandY.vue'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
+	import OrigamList from '../List/OrigamList.vue'
+	import OrigamListItem from '../List/OrigamListItem.vue'
+	import OrigamMenu from '../Menu/OrigamMenu.vue'
+	import OrigamTextField from '../TextField/OrigamTextField.vue'
+	import OrigamTranslateScale from '../Transition/OrigamTranslateScale.vue'
+	import OrigamVirtualScroll from '../VirtualScroll/OrigamVirtualScroll.vue'
 
-	import {
-	useFilter,
-	useItems,
-	useLocale,
-	useProps,
-	useScrolling,
-	useStyle,
-	useTeleportTypography,
-	useTextColor,
-	useVModel
-} from '../../composables'
+	import { useFilter } from '../../composables/Commons/filters.composable'
+	import { useItems } from '../../composables/Commons/items.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useScrolling } from '../../composables/Commons/scrolling.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTeleportTypography } from '../../composables/Commons/teleport-typography.composable'
+	import { useTextColor } from '../../composables/Commons/textColor.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { IN_BROWSER, ORIGAM_FORM_KEY } from '../../consts'
+	import { IN_BROWSER } from '../../consts/Commons/commons.const'
+	import { ORIGAM_FORM_KEY } from '../../consts/Form/form.const'
 
-	import {
-		BLOCK,
-		DENSITY,
-		DIRECTION,
-		FILTERS_MODE,
-		KEYBOARD_VALUES,
-		MDI_ICONS,
-		SELECT_STRATEGY,
-		SIZES,
-		TEXT_FIELD_TYPE
-	} from '../../enums'
+	import { BLOCK } from '../../enums/Commons/anchor.enum'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
+	import { FILTERS_MODE } from '../../enums/Commons/filters.enum'
+	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { SELECT_STRATEGY } from '../../enums/Commons/nested.enum'
+	import { SIZES } from '../../enums/Commons/size.enum'
+	import { TEXT_FIELD_TYPE } from '../../enums/TextField/text-field.enum'
 
-	import type { IInternalListItem, IItemProps, ISelectProps} from '../../interfaces'
+	import type { IInternalListItem } from '../../interfaces/List/list-children.interface'
+	import type { IItemProps } from '../../interfaces/Commons/item.interface'
+	import type { ISelectProps } from '../../interfaces/Select/select.interface'
 
 	import type { ISelectEmits, ISelectSlots } from '../../interfaces/Select/select.interface'
 
-	import type {
-		TOrigamChip,
-		TOrigamList,
-		TOrigamMenu,
-		TOrigamTextField,
-		TOrigamVirtualScroll,
-		TTransitionProps
-	} from '../../types'
+	import type { TOrigamChip } from '../../types/Chip/chip.type'
+	import type { TOrigamList } from '../../types/List/list.type'
+	import type { TOrigamMenu } from '../../types/Menu/menu.type'
+	import type { TOrigamTextField } from '../../types/TextField/text-field.type'
+	import type { TOrigamVirtualScroll } from '../../types/VirtualScroll/virtual-scroll.type'
+	import type { TTransitionProps } from '../../types/Transition/transition.type'
 
-	import { deepEqual, forwardRefs, getUid, matchesSelector, noop, wrapInArray } from '../../utils'
+	import { deepEqual, matchesSelector, noop, wrapInArray } from '../../utils/Commons/commons.util'
+	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
+	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
 
 	/*********************************************************
 	 * Global

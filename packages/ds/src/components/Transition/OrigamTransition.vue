@@ -12,12 +12,14 @@
 		setup
 >
 	import { computed, mergeProps, Transition, useAttrs } from 'vue'
-	import { OrigamFade } from '../../components'
-	import { useProps, useTransition } from '../../composables'
-	import type { ITransitionComponentProps, ITransitionSlots } from '../../interfaces'
-	import type { TTransitionProps } from '../../types'
+	import OrigamFade from './OrigamFade.vue'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useTransition } from '../../composables/Transition/transition.composable'
+	import type { ITransitionComponentProps } from '../../interfaces/Commons/transition-component.interface'
+	import type { ITransitionSlots } from '../../interfaces/Transition/transition.interface'
+	import type { TTransitionProps } from '../../types/Transition/transition.type'
 
-	import { omit } from '../../utils'
+	import { omit } from '../../utils/Commons/commons.util'
 
 	/*********************************************************
 	 * Global

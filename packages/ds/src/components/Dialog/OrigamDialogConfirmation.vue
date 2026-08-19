@@ -123,17 +123,22 @@
 		setup
 >
 	import { computed, ref, useSlots } from 'vue'
-	import { OrigamBtn, OrigamCol, OrigamContainer, OrigamDialog, OrigamRow } from '../../components'
+	import OrigamBtn from '../Btn/OrigamBtn.vue'
+	import OrigamCol from '../Grids/OrigamCol.vue'
+	import OrigamContainer from '../Grids/OrigamContainer.vue'
+	import OrigamDialog from './OrigamDialog.vue'
+	import OrigamRow from '../Grids/OrigamRow.vue'
 
-	import { useProps, useVModel } from '../../composables'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { JUSTIFY } from '../../enums'
+	import { JUSTIFY } from '../../enums/Commons/justify.enum'
 
-	import type { IDialogConfirmationProps} from '../../interfaces'
+	import type { IDialogConfirmationProps } from '../../interfaces/Dialog/dialog-confirmation.interface'
 
 	import type { IDialogConfirmationEmits, IDialogConfirmationSlots } from '../../interfaces/Dialog/dialog-confirmation.interface'
 
-	import type { TOrigamDialog } from "../../types"
+	import type { TOrigamDialog } from '../../types/Dialog/dialog.type'
 
 	/*********************************************************
 	 * Global

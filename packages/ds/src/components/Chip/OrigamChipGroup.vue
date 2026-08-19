@@ -18,21 +18,30 @@
 		lang="ts"
 		setup
 >
-	import { OrigamDefaultsProvider, OrigamSlideGroup } from '../../components'
+	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
+	import OrigamSlideGroup from '../Slide/OrigamSlideGroup.vue'
 
-	import { useBorder, useGroup, useMargin, usePadding, usePassedProps, useProps, useRounded, useStyle } from "../../composables"
+	import { useBorder } from '../../composables/Commons/border.composable'
+	import { useGroup } from '../../composables/Commons/group.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { ORIGAM_CHIP_GROUP_KEY } from "../../consts"
+	import { ORIGAM_CHIP_GROUP_KEY } from '../../consts/Chip/chip-group.const'
 
-	import { DIRECTION, MDI_ICONS } from '../../enums'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import type { IChipGroupProps} from '../../interfaces'
+	import type { IChipGroupProps } from '../../interfaces/Chip/chip-group.interface'
 
 	import type { IChipGroupEmits, IChipGroupSlots } from '../../interfaces/Chip/chip-group.interface'
 
-	import type { TOrigamSlideGroup } from "../../types"
+	import type { TOrigamSlideGroup } from '../../types/Slide/slide-group.type'
 
-	import { omitUndefined } from '../../utils'
+	import { omitUndefined } from '../../utils/Commons/commons.util'
 
 	import { computed, ref, StyleValue } from "vue";
 

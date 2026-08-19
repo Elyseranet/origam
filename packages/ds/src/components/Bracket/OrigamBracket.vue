@@ -250,22 +250,17 @@
 
 	import OrigamBracketRound from './OrigamBracketRound.vue'
 
-	import {
-		useDimension,
-		useMargin,
-		usePadding,
-		useProps,
-		useTypography
-	} from '../../composables'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useMargin } from '../../composables/Commons/margin.composable'
+	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import {
-		BRACKET_DEFAULT_MATCH_GAP,
-		BRACKET_DEFAULT_MATCH_HEIGHT,
-		BRACKET_DEFAULT_MATCH_WIDTH,
-		BRACKET_DEFAULT_ROUND_GAP
-	} from '../../consts'
+	import { BRACKET_DEFAULT_MATCH_GAP, BRACKET_DEFAULT_MATCH_HEIGHT, BRACKET_DEFAULT_MATCH_WIDTH, BRACKET_DEFAULT_ROUND_GAP } from '../../consts/Bracket/bracket.const'
 
-	import { BRACKET_ROUND_SIDE, BRACKET_VARIANT, DIRECTION } from '../../enums'
+	import { BRACKET_ROUND_SIDE } from '../../enums/Bracket/bracket-round.enum'
+	import { BRACKET_VARIANT } from '../../enums/Bracket/bracket.enum'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
 
 	import {
 		bracketDashArray,
@@ -275,18 +270,15 @@
 		resolveBracketForeground
 	} from '../../utils/Bracket/bracket-surface.util'
 
-	import type {
-		IBracketCompetitor,
-		IBracketEmits,
-		IBracketMatch,
-		IBracketProps,
-		IBracketRound,
-		IBracketSlots
-	} from '../../interfaces'
+	import type { IBracketCompetitor } from '../../interfaces/Bracket/bracket-competitor.interface'
+	import type { IBracketEmits, IBracketProps, IBracketSlots } from '../../interfaces/Bracket/bracket.interface'
+	import type { IBracketMatch } from '../../interfaces/Bracket/bracket-match.interface'
+	import type { IBracketRound } from '../../interfaces/Bracket/bracket-round.interface'
 
 	import type { IBracketSurfaceInput } from '../../utils/Bracket/bracket-surface.util'
 
-	import type { TBracketConnectorPath, TBracketDoubleSection, TIntent } from '../../types'
+	import type { TBracketConnectorPath, TBracketDoubleSection } from '../../types/Bracket/bracket.type'
+	import type { TIntent } from '../../types/Commons/intent.type'
 
 	/*********************************************************
 	 * Global

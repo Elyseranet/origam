@@ -189,20 +189,22 @@
 		lang="ts"
 		setup
 >
-	import { OrigamChip, OrigamDataTableColumnCell, OrigamSelect } from '../../components'
+	import OrigamChip from '../Chip/OrigamChip.vue'
+	import OrigamDataTableColumnCell from './OrigamDataTableColumnCell.vue'
+	import OrigamSelect from '../Select/OrigamSelect.vue'
 
-	import {
-	useHeadersCell,
-	useLocale,
-	useProps,
-	useSelection,
-	useSort,
-	useStyle
-} from '../../composables'
+	import { useHeadersCell } from '../../composables/DataTable/headersCell.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useSelection } from '../../composables/DataTable/select.composable'
+	import { useSort } from '../../composables/DataTable/sort.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { DENSITY, MDI_ICONS } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import type { IDataTableHeadersCellMobileProps, IInternalListItem} from '../../interfaces'
+	import type { IDataTableHeadersCellMobileProps } from '../../interfaces/DataTable/data-table-headers-cell-mobile.interface'
+	import type { IInternalListItem } from '../../interfaces/List/list-children.interface'
 
 	import type { IDataTableHeadersCellMobileEmits, IDataTableHeadersCellMobileSlots } from '../../interfaces/DataTable/data-table-headers-cell-mobile.interface'
 

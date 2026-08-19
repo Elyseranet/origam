@@ -17,7 +17,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 
-import type { IClientOnlyProps, IClientOnlySlots } from '../../interfaces'
+import type { IClientOnlyProps, IClientOnlySlots } from '../../interfaces/ClientOnly/client-only.interface'
 
 defineOptions({ name: 'OrigamClientOnly' })
 

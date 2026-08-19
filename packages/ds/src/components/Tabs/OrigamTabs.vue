@@ -24,24 +24,24 @@
 >
 	import { computed, ref, StyleValue } from 'vue'
 
-	import { OrigamDefaultsProvider } from '../../components'
+	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
 
-	import {
-		useDensity,
-		useGroup,
-		usePassedProps,
-		useProps,
-		useRounded,
-		useStyle
-	} from '../../composables'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useGroup } from '../../composables/Commons/group.composable'
+	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { ORIGAM_TABS_KEY } from '../../consts'
+	import { ORIGAM_TABS_KEY } from '../../consts/Tabs/tabs.const'
 
-	import { omitUndefined } from '../../utils'
+	import { omitUndefined } from '../../utils/Commons/commons.util'
 
-	import { DENSITY, DIRECTION, TAB_VARIANT } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
+	import { TAB_VARIANT } from '../../enums/Tabs/tab.enum'
 
-	import type { ITabsProps} from '../../interfaces'
+	import type { ITabsProps } from '../../interfaces/Tabs/tabs.interface'
 
 	import type { ITabsEmits, ITabsSlots } from '../../interfaces/Tabs/tabs.interface'
 

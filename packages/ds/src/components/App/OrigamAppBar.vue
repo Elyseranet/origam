@@ -50,27 +50,28 @@
 		lang="ts"
 		setup
 >
-	import { OrigamImg, OrigamToolbar } from '../../components'
+	import OrigamImg from '../Img/OrigamImg.vue'
+	import OrigamToolbar from '../Toolbar/OrigamToolbar.vue'
 
-	import {
-	useLayoutItem,
-	useProps,
-	useScroll,
-	useSsrBoot,
-	useStyle,
-	useToggleScope,
-	useVModel
-} from '../../composables'
+	import { useLayoutItem } from '../../composables/Commons/layoutItem.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useScroll } from '../../composables/Commons/scroll.composable'
+	import { useSsrBoot } from '../../composables/Commons/ssrBoot.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useToggleScope } from '../../composables/Commons/toggleScope.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { BLOCK, DENSITY } from '../../enums'
+	import { BLOCK } from '../../enums/Commons/anchor.enum'
+	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { IAppBarProps} from '../../interfaces'
+	import type { IAppBarProps } from '../../interfaces/App/app-bar.interface'
 
 	import type { IAppBarEmits, IAppBarSlots } from '../../interfaces/App/app-bar.interface'
 
-	import type { TOrigamToolbar } from "../../types"
+	import type { TOrigamToolbar } from '../../types/Toolbar/toolbar.type'
 
-	import { forwardRefs, int } from "../../utils"
+	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
+	import { int } from '../../utils/Commons/commons.util'
 
 	import { computed, ComputedRef, ref, shallowRef, StyleValue, toRef, useSlots, watchEffect } from 'vue'
 

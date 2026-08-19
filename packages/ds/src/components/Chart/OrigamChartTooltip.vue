@@ -33,7 +33,7 @@
 		type StyleValue
 	} from 'vue'
 
-	import type { IChartTooltipProps, IChartTooltipSlots } from '../../interfaces'
+	import type { IChartTooltipProps, IChartTooltipSlots } from '../../interfaces/Chart/chart-tooltip.interface'
 
 	/*********************************************************
 	 * Global

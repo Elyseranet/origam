@@ -377,26 +377,33 @@
 >
   import { computed, nextTick, ref, StyleValue, toRef, useAttrs, useSlots, watch } from 'vue'
 
-  import { OrigamChip, OrigamCounter, OrigamField, OrigamIcon, OrigamInput } from '../../components'
+  import OrigamChip from '../Chip/OrigamChip.vue'
+  import OrigamCounter from '../Counter/OrigamCounter.vue'
+  import OrigamField from '../Field/OrigamField.vue'
+  import OrigamIcon from '../Icon/OrigamIcon.vue'
+  import OrigamInput from '../Input/OrigamInput.vue'
   import OrigamFileFieldDragNDropItem from './OrigamFileFieldDragNDropItem.vue'
   import OrigamFileFieldListItem from './OrigamFileFieldListItem.vue'
-  import {
-	useAdjacent,
-	useAdjacentInner,
-	useBothColor,
-	useDensity,
-	useFocus,
-	useLocale,
-	useProps,
-	useStyle,
-	useVModel
-} from '../../composables'
-  import { DENSITY, FILE_FIELD_DISPLAY, MDI_ICONS } from '../../enums'
-  import type { IFileFieldProps, IFileFieldSlots} from '../../interfaces'
+  import { useAdjacent } from '../../composables/Commons/adjacent.composable'
+  import { useAdjacentInner } from '../../composables/Commons/adjacentInner.composable'
+  import { useBothColor } from '../../composables/Commons/bothColor.composable'
+  import { useDensity } from '../../composables/Commons/density.composable'
+  import { useFocus } from '../../composables/Commons/focus.composable'
+  import { useLocale } from '../../composables/Commons/locale.composable'
+  import { useProps } from '../../composables/Commons/props.composable'
+  import { useStyle } from '../../composables/Commons/style.composable'
+  import { useVModel } from '../../composables/Commons/vModel.composable'
+  import { DENSITY } from '../../enums/Commons/density.enum'
+  import { FILE_FIELD_DISPLAY } from '../../enums/FileField/file-field.enum'
+  import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+  import type { IFileFieldProps, IFileFieldSlots } from '../../interfaces/FileField/file-field.interface'
 
 	import type { IFileFieldEmits } from '../../interfaces/FileField/file-field.interface'
-  import type { TOrigamField, TOrigamInput } from '../../types'
-  import { filterInputAttrs, forwardRefs, humanReadableFileSize, wrapInArray } from '../../utils'
+  import type { TOrigamField } from '../../types/Field/field.type'
+  import type { TOrigamInput } from '../../types/Input/input.type'
+  import { filterInputAttrs } from '../../utils/Input/input.util'
+  import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
+  import { humanReadableFileSize, wrapInArray } from '../../utils/Commons/commons.util'
 
   /*********************************************************
    * Global

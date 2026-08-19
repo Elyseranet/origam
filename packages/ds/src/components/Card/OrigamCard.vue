@@ -143,28 +143,33 @@
 		lang="ts"
 		setup
 >
-	import { OrigamCardHeader, OrigamCardText, OrigamImg, OrigamProgress, OrigamSkeleton } from '../../components'
+	import OrigamCardHeader from './OrigamCardHeader.vue'
+	import OrigamCardText from './OrigamCardText.vue'
+	import OrigamImg from '../Img/OrigamImg.vue'
+	import OrigamProgress from '../Progress/OrigamProgress.vue'
+	import OrigamSkeleton from '../Skeleton/OrigamSkeleton.vue'
 
-	import {
-		useActive,
-		useAdjacent,
-		useDensity,
-		useDimension,
-		useHover,
-		useLink,
-		useLoader,
-		useLocation,
-		usePosition,
-		useProps,
-		useStateEffect,
-		useStyle
-} from '../../composables'
+	import { useActive } from '../../composables/Commons/active.composable'
+	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
+	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useHover } from '../../composables/Commons/hover.composable'
+	import { useLink } from '../../composables/Commons/link.composable'
+	import { useLoader } from '../../composables/Commons/loader.composable'
+	import { useLocation } from '../../composables/Commons/location.composable'
+	import { usePosition } from '../../composables/Commons/position.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { vContrast, vRipple } from '../../directives'
+	import vContrast from '../../directives/Contrast/contrast.directive'
+	import vRipple from '../../directives/Ripple/ripple.directive'
 
-	import { DENSITY, LOADER_KIND, PROGRESS_TYPE } from '../../enums'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { LOADER_KIND } from '../../enums/Commons/loader.enum'
+	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
 
-	import type { ICardProps} from '../../interfaces'
+	import type { ICardProps } from '../../interfaces/Card/card.interface'
 
 	import type { ICardEmits, ICardSlots } from '../../interfaces/Card/card.interface'
 

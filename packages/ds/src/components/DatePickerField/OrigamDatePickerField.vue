@@ -174,27 +174,41 @@
 		lang="ts"
 		setup
 >
-	import {
-		OrigamAvatar,
-		OrigamChip,
-		OrigamDatePicker,
-		OrigamIcon,
-		OrigamMenu,
-		OrigamTextField,
-		OrigamTranslateScale
-	} from "../../components"
+	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
+	import OrigamChip from '../Chip/OrigamChip.vue'
+	import OrigamDatePicker from '../DatePicker/OrigamDatePicker.vue'
+	import OrigamIcon from '../Icon/OrigamIcon.vue'
+	import OrigamMenu from '../Menu/OrigamMenu.vue'
+	import OrigamTextField from '../TextField/OrigamTextField.vue'
+	import OrigamTranslateScale from '../Transition/OrigamTranslateScale.vue'
 
-	import { useDate, useLocale, useProps, useTeleportTypography, useTextColor, useVModel , useStyle} from "../../composables"
+	import { useDate } from '../../composables/Commons/date.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useProps } from '../../composables/Commons/props.composable'
+	import { useTeleportTypography } from '../../composables/Commons/teleport-typography.composable'
+	import { useTextColor } from '../../composables/Commons/textColor.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
+	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { ORIGAM_FORM_KEY } from "../../consts"
+	import { ORIGAM_FORM_KEY } from '../../consts/Form/form.const'
 
-	import { BLOCK, DENSITY, DIRECTION, KEYBOARD_VALUES, MDI_ICONS, TEXT_FIELD_TYPE } from "../../enums"
+	import { BLOCK } from '../../enums/Commons/anchor.enum'
+	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { DIRECTION } from '../../enums/Commons/direction.enum'
+	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
+	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { TEXT_FIELD_TYPE } from '../../enums/TextField/text-field.enum'
 
-	import type { IDatePickerFieldProps, IDatePickerFieldSlots, IDatePickerProps } from "../../interfaces"
+	import type { IDatePickerFieldProps, IDatePickerFieldSlots } from '../../interfaces/DatePickerField/date-picker-field.interface'
+	import type { IDatePickerProps } from '../../interfaces/DatePicker/date-picker.interface'
 
-	import type { TOrigamDatePicker, TOrigamMenu, TOrigamTextField, TTransitionProps } from "../../types"
+	import type { TOrigamDatePicker } from '../../types/DatePicker/date-picker.type'
+	import type { TOrigamMenu } from '../../types/Menu/menu.type'
+	import type { TOrigamTextField } from '../../types/TextField/text-field.type'
+	import type { TTransitionProps } from '../../types/Transition/transition.type'
 
-	import { forwardRefs, isEmpty, matchesSelector, wrapInArray } from "../../utils"
+	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
+	import { isEmpty, matchesSelector, wrapInArray } from '../../utils/Commons/commons.util'
 
 	import { computed, inject, nextTick, ref, shallowRef, StyleValue, toRef, useSlots, watch } from "vue"
 
