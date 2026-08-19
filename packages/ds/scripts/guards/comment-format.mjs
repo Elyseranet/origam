@@ -55,11 +55,14 @@
  * REDISTRIBUTION, pas comme un échec.
  *
  * @description
- * PÉRIMÈTRE. `packages/ds/src` uniquement, blocs `<script>` des `.vue`
- * inclus. Les commentaires HTML et CSS relèvent d'une autre règle du dépôt.
- * `packages/tests` et `scripts/` sont HORS périmètre tant que le mainteneur
- * ne l'a pas tranché — l'issue #367 pose explicitement la question et y
- * répondre à sa place serait une invention.
+ * PÉRIMÈTRE — TRANCHÉ PAR LE MAINTENEUR. `packages/ds/src` uniquement,
+ * blocs `<script>` des `.vue` inclus. Les commentaires HTML et CSS relèvent
+ * d'une autre règle du dépôt.
+ * @description
+ * `packages/tests` et `scripts/` sont HORS périmètre. C'est une décision,
+ * pas un oubli : l'issue #367 laissait la question ouverte, le mainteneur a
+ * répondu « les tests et scripts sont hors périmètre ». Ne pas les ajouter
+ * à `SRC` en croyant corriger une omission.
  *
  * Usage : node packages/ds/scripts/guards/comment-format.mjs [--update-baseline]
  ********************************************************/
