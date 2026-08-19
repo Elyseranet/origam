@@ -140,7 +140,7 @@
 
 	import type { IExpansionPanelsProps} from '../../interfaces'
 
-	import type { IExpansionPanelsEmits, IExpansionPanelsSlots } from '../../interfaces/ExpensionPanel/expansion-panels.interface'
+	import type { IExpansionPanelsEmits, IExpansionPanelsSlots } from '../../interfaces/ExpansionPanel/expansion-panels.interface'
 
 	/*********************************************************
 	 * Global

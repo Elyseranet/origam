@@ -147,7 +147,7 @@ export * from './DatePicker/date-picker-years.interface'
 
 export * from './DatePickerField/date-picker-field.interface'
 
-export * from './DefaultProvider/default-provider.interface'
+export * from './DefaultsProvider/defaults-provider.interface'
 
 export * from './Dialog/dialog.interface'
 export * from './Dialog/dialog-confirmation.interface'
@@ -158,10 +158,10 @@ export * from './Drawer/drawer.interface'
 
 export * from './EmptyState/empty-state.interface'
 
-export * from './ExpensionPanel/expansion-panels.interface'
-export * from './ExpensionPanel/expansion-panel.interface'
-export * from './ExpensionPanel/expansion-panel-header.interface'
-export * from './ExpensionPanel/expansion-panel-content.interface'
+export * from './ExpansionPanel/expansion-panels.interface'
+export * from './ExpansionPanel/expansion-panel.interface'
+export * from './ExpansionPanel/expansion-panel-header.interface'
+export * from './ExpansionPanel/expansion-panel-content.interface'
 
 export * from './Field/field.interface'
 
