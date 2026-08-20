@@ -1,4 +1,4 @@
-import { computed, inject, provide, ref, type Ref } from 'vue'
+import { computed, inject, provide, ref, toValue, type MaybeRefOrGetter, type Ref } from 'vue'
 
 import { ORIGAM_DEFAULTS_KEY } from '../../consts/Commons/defaults.const'
 import type { IDefault } from '../../interfaces/DefaultsProvider/defaults-provider.interface'
@@ -138,6 +138,17 @@ export function useDefaults<T extends Record<string, any>> (
  *     defaults are visible to descendants.
  *   - `scoped` — same effect as `reset`, declarative variant.
  *   - default — deep-merge parent defaults under this provider's defaults.
+ *
+ * Each option accepts a plain value OR a `Ref`/getter (`MaybeRefOrGetter`),
+ * unwrapped via `toValue()` on every re-evaluation — same contract as
+ * `defaults`. Passing a plain literal (e.g. `{ scoped: true }`) still works
+ * and is the common case for a caller that composes `provideDefaults()`
+ * directly with a value it already knows won't change. A caller whose
+ * option is itself a component prop MUST pass a getter (`() => props.x`) —
+ * see issue #438: `<OrigamDefaultsProvider>` used to forward `props.scoped`
+ * etc. as raw booleans captured once in `setup()`, so this `computed()`
+ * never re-tracked them and a `:scoped="someRef"` binding had no effect
+ * after mount.
  */
 
 /*********************************************************
@@ -146,26 +157,26 @@ export function useDefaults<T extends Record<string, any>> (
 export function provideDefaults (
     defaults?: Ref<IDefault> | IDefault,
     options?: {
-        scoped?: boolean
-        reset?: string | number
-        root?: string | number
-        disabled?: boolean
+        scoped?: MaybeRefOrGetter<boolean | undefined>
+        reset?: MaybeRefOrGetter<string | number | undefined>
+        root?: MaybeRefOrGetter<string | number | undefined>
+        disabled?: MaybeRefOrGetter<boolean | undefined>
     }
 ) {
     const parentDefaults = inject(ORIGAM_DEFAULTS_KEY, ref({}))
 
     const provided = computed(() => {
-        if (options?.disabled) return parentDefaults.value
+        if (toValue(options?.disabled)) return parentDefaults.value
 
         const rawDefaults = defaults && 'value' in defaults ? defaults.value : defaults
 
         if (!rawDefaults) return parentDefaults.value
 
-        if (options?.reset != null || options?.root != null) {
+        if (toValue(options?.reset) != null || toValue(options?.root) != null) {
             return rawDefaults
         }
 
-        if (options?.scoped) {
+        if (toValue(options?.scoped)) {
             return rawDefaults
         }
 
