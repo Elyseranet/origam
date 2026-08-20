@@ -5,7 +5,7 @@
 			ref="root"
 			:class="progressLinearClasses"
 			:style="progressLinearStyles"
-			@click="clickable && handleClick"
+			@click="handleClick"
 	>
 		<div
 				v-if="stream"
@@ -54,7 +54,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, StyleValue, toRef } from 'vue'
+	import { computed, ref, StyleValue, toRef, watchEffect } from 'vue'
 	import OrigamFade from '../Transition/OrigamFade.vue'
 	import OrigamSlideX from '../Transition/OrigamSlideX.vue'
 	import OrigamTransition from '../Transition/OrigamTransition.vue'
@@ -101,6 +101,7 @@
 	 * Composables
 	 ********************************************************/
 
+	const root = ref<HTMLElement>()
 	const {locationStyles} = useLocation(props)
 	const {progressClasses, progressStyles, normalizedValue, thickness, progress, max, hasContent} = useProgress(props)
 	const {roundedClasses} = useRounded(props)
@@ -131,6 +132,10 @@
 		return isRtl.value !== props.reverse
 	})
 
+	watchEffect(() => {
+		intersectionRef.value = root.value
+	})
+
 	/*********************************************************
 	 * Event handlers
 	 *
@@ -139,7 +144,7 @@
 	 * click position to a normalized value.
 	 ********************************************************/
 	const handleClick = (e: MouseEvent) => {
-		if (!intersectionRef.value) return
+		if (!props.clickable || !intersectionRef.value) return
 
 		const {left, right, width} = intersectionRef.value.getBoundingClientRect()
 		const value = props.reverse ? (width - e.clientX) + (right - width) : e.clientX - left

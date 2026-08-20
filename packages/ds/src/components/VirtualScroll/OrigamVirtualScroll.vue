@@ -31,7 +31,7 @@
 
 		<div
 				class="origam-virtual-scroll__spacer"
-				style="{ 'padding-bottom': convertToUnit(paddingBottom) }"
+				:style="{ 'padding-bottom': convertToUnit(paddingBottom) }"
 		/>
 	</template>
 	<template v-else>
