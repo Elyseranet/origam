@@ -24,12 +24,13 @@ pnpm -F origam guards:emits-completeness   # guard 7 only
 pnpm -F origam guards:no-usedefaults       # guard 8 only
 pnpm -F origam guards:token-var-channels   # guard 13 only
 pnpm -F origam guards:dead-handlers        # guard 14 only
+pnpm -F origam guards:id-forwarding        # guard 15 only
 ```
 
 No build step required — every guard parses `.vue`/`.ts`/`.scss` source
 text directly. The full suite runs in under two seconds.
 
-## The fourteen guards
+## The fifteen guards
 
 | # | Script | Rule | Baseline size |
 |---|---|---|---|
@@ -47,6 +48,7 @@ text directly. The full suite runs in under two seconds.
 | 12 | `pnpm-tree-integrity.mjs` | No `node_modules/` entry is a physical copy — every package is a pnpm store link or a workspace link | 0 |
 | 13 | `token-var-channels.mjs` | Every `var(--origam-…)` a component reads is emitted by the token pipeline, or synthesised locally — and (secondary, non-fatal-by-default in spirit but still baselined) every emitted var is read by at least one component | 1275 dead / 1588 dormant |
 | 14 | `dead-handlers.mjs` | A `v-on` binding (`@click`, `@keydown`, …) must CALL the handler it names — not just reference it as an unused operand of `&&`/`||`/`?:`, or via a `withModifiers`/`withKeys` call whose return value is discarded | 6 |
+| 15 | `id-forwarding.mjs` | A bare `const {id, ...} = useStyle(xxxStyles)` (no `() => props.id` second argument) must not be the value an unshadowed `:id="id"` template binding resolves to — the generated stylesheet id silently wins over the consumer's prop | 0 |
 
 ### Guard 13 — the token pipeline can break silently, and nothing else watches for it
 
@@ -182,6 +184,67 @@ calls) — all five components were confirmed independently during the #432
 inspection (three via a real Vitest mount asserting the handler never fires;
 DataTableRow and the two List/Chip keyboard cases by direct source reading
 cross-checked against the compiled-code proof above).
+
+### Guard 15 — `useStyle()`'s generated id must not shadow the `id` prop
+
+Written for #381: 16 components destructured `const {id, css, load,
+isLoaded, unload} = useStyle(xxxStyles)` — the SAME bare name `useStyle`
+uses internally for a GENERATED identifier (`origam-xxx-0`), meant only for
+the scoped `<style>` selector it injects. That local `id` shadows the `id`
+PROP of the same name, so a template's `:id="id"` silently rendered the
+generated identifier instead of what a consumer passed via
+`<OrigamXxx id="my-id">`. No type error (both are strings), no runtime
+warning — the only signal is reading the rendered `id` attribute, which no
+existing guard or snapshot test did.
+
+**Scope, stated plainly.** This is ONE of four #381/#421 mechanisms found
+during the campaign, and the only one with a textual shape a static AST
+guard can see:
+
+1. **This guard's mechanism** — bare `useStyle` destructure, no
+   `() => props.id` second argument, unshadowed `:id="id"` binding. 16 of
+   ~20 real occurrences.
+2. `filterProps(props, [...])` excluding `id` from what reaches a CHILD
+   component that needs it to build its own id (4 occurrences, the
+   OrigamPasswordField/TextareaField/FileField/SliderField family, #421).
+3. A scoped-slot variable deliberately renamed to dodge homonym confusion
+   (`{id: styleId}`) that STILL binds the wrong one downstream
+   (OrigamField, per the #381 ticket comment).
+4. A real control with no `:id` binding AT ALL (OrigamNumberField's compact
+   `<input>`, #421).
+
+Mechanisms 2–4 have no `:id="id"` textual pattern — catching them requires
+mounting the component and reading the rendered attribute, which is out of
+scope for this guard by construction (same fast, no-build-step, no-DOM
+architecture as every other guard here). They were found and fixed by
+mounting each of `OrigamInput`'s direct consumers one at a time (#421) —
+the same split guard 5 already draws between its static
+`unconsumed-props.mjs` check and the runtime `audit:inert-props` sweep in
+`packages/tests`.
+
+**Precision from v-slot scope tracking, not a blanket text match.** A naive
+`grep ':id="id"'` false-positives on the CORRECT scoped-slot-forwarding
+shape: `<origam-input>` exposes its own properly-themed `id` via
+`#default="{id, ...}"`, and a consumer template that destructures that slot
+scope and rebinds `:id="id"` on a child INSIDE it (OrigamTextField,
+OrigamPasswordField, OrigamRatingField's own label, …) is reading the slot
+value, not the useStyle homonym. The detector walks the real
+`@vue/compiler-dom` template AST tracking every `v-slot` scope that
+destructures a same-named `id`, and only flags a binding that is NOT inside
+one — this is also why `OrigamRatingField` post-#421-fix is correctly never
+flagged even though it has BOTH a root `:id="id"` (resolving to the FIXED
+useStyle id) and a nested `#default="{id,...}"`-scoped `:for="id"` in the
+same file: two different scopes, both correct, and the detector tells them
+apart the same way the Vue runtime does.
+
+**Mutation-verified.** `id-forwarding.selftest.mjs` replays four of the 16
+real components' PRE-FIX source verbatim (Alert, Badge — id on a nested
+content pill rather than the root, Snackbar — id on a nested
+`<origam-overlay>`, Treeview) and asserts the guard catches each, alongside
+11 synthetic precision/recall cases covering the shadowing shapes above.
+Baseline is 0 — all 16 known occurrences were fixed in the same campaign
+that added this guard, so any future occurrence of this exact shape is an
+immediate new violation, not a pre-existing one to triage.
 
 Guard 12 was written after issue #382, and its value is entirely in the
 class of failure it covers: one nothing else in this repo can see. A

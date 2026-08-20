@@ -116,6 +116,7 @@
     "guards:no-usedefaults": "node scripts/guards/no-usedefaults-in-components.mjs",
     "guards:token-var-channels": "node scripts/guards/token-var-channels.mjs",
     "guards:dead-handlers": "node scripts/guards/dead-handlers.mjs",
+    "guards:id-forwarding": "node scripts/guards/id-forwarding.mjs",
     "prepublishOnly": "pnpm run build",
     "prepack": "node -e \"require('fs').copyFileSync('../../CHANGELOG.md','CHANGELOG.md')\""
   },
