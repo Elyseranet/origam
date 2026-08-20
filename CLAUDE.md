@@ -360,6 +360,21 @@ pnpm install             # installs every workspace + hoists shared deps
 Always go through `pnpm -F <name>` (filter) — never `cd packages/x && npm run …`.
 Root scripts already delegate, so the most common entries are:
 
+> ⛔ **Never run `npm install` / `yarn install` here, and never invoke a
+> package's binary from the repo root.** pnpm's isolated layout makes every
+> `node_modules/` entry a symlink into `.pnpm/`; npm writes real directories
+> *beside* those links instead of replacing them, and nothing reports the
+> collision. Issue #382: 676 stray directories from one `npm install`, among
+> them a second physical copy of playwright **1.59.1** — same version,
+> different realpath, therefore a different module to Node and a different
+> `test.describe` registry. The runner then rejected every spec with *"two
+> different versions of @playwright/test"* while the lockfile and `pnpm ls`
+> both showed exactly one. CI was never affected because it always goes
+> through `pnpm -F @origam/tests exec playwright`; only root-level
+> invocations (`npx playwright`) hit the stray copy. The
+> `pnpm-tree-integrity` guard now fails on any physical copy; the fix is
+> `rm -rf <that node_modules> && pnpm install --frozen-lockfile`.
+
 | Goal | Command |
 |---|---|
 | Build the lib | `pnpm -F origam build` *(or root `pnpm run build:lib`)* |

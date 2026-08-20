@@ -27,7 +27,7 @@ pnpm -F origam guards:no-usedefaults       # guard 8 only
 No build step required — every guard parses `.vue`/`.ts`/`.scss` source
 text directly. The full suite runs in under a second.
 
-## The nine guards
+## The twelve guards
 
 | # | Script | Rule | Baseline size |
 |---|---|---|---|
@@ -41,6 +41,42 @@ text directly. The full suite runs in under a second.
 | 8 | `no-usedefaults-in-components.mjs` | No component calls `useDefaults()` — the ADR-005 resolver already merges theme and provider defaults into `instance.props` | 0 |
 | 9 | `layer-folders.mjs` | Every sub-folder of the six declaration layers names a real component, or is `Commons` | 0 |
 | 10 | `seed-source-paths.mjs` | Every `source_file` / `sourceFile` in the marketing seed points at a file that exists | 1 |
+| 11 | `comment-format.mjs` | No comment block is ADDED outside the repo's block format (per-file counts, total may only fall) | 6925 blocks |
+| 12 | `pnpm-tree-integrity.mjs` | No `node_modules/` entry is a physical copy — every package is a pnpm store link or a workspace link | 0 |
+
+Guard 12 was written after issue #382, and its value is entirely in the
+class of failure it covers: one nothing else in this repo can see. A
+`npm install` run at the root on 17 May left **676 real directories** in
+`node_modules/`, among them `playwright`. pnpm does not delete foreign
+directories — it lays its symlinks *beside* them. So two physical copies of
+playwright **1.59.1** coexisted, identical in version and content, and Node
+keys its module cache on realpath: two copies means two `test.describe`
+registries.
+
+Every diagnostic instrument agreed the tree was healthy. `pnpm ls`, the
+lockfile and both `package.json` files reported a single version, and
+Playwright's own error message blamed *"two different versions of
+@playwright/test"* — the one hypothesis that was false. The tell was not a
+version anywhere; it was `realpathSync`.
+
+The reason CI never caught it is worth stating plainly: CI and every project
+script go through `pnpm -F @origam/tests exec playwright`, which resolves
+`packages/tests/node_modules/.bin` and therefore the correct copy. Only an
+invocation from the repo root (`npx playwright`, an agent that forgets the
+`-F`) hit the stray one. The cross test that settled it:
+
+```
+bin of packages/tests + cwd repo root        -> 102 tests listed
+bin of repo root      + cwd packages/tests   -> "did not expect test.describe()"
+```
+
+Same config, same cwd, different binary. A defect that exists only *off* the
+tooled paths cannot be caught by running the tooled paths — which is why
+this guard inspects the tree itself rather than any command.
+
+The guard assumes pnpm's **isolated** layout. Were the repo ever to move to
+`node-linker=hoisted` (real directories by design), delete this guard rather
+than loosen it: a tolerant version of this check distinguishes nothing.
 
 Guard 10 exists because moving a declaration file silently breaks the
 marketing catalogue, and nothing else notices. Measured on the #368 merge:
