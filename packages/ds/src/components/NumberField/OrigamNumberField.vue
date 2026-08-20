@@ -34,6 +34,7 @@
 				/>
 				<input
 						v-model="compactInputText"
+						:id="id"
 						type="text"
 						inputmode="numeric"
 						class="origam-number-field__compact-input"
