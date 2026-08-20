@@ -49,12 +49,31 @@
 	}
 
 	const layerRef = ref<HTMLElement>()
-	const id = Symbol('origam:parallax-layer')
+
+	/*********************************************************
+	 * registryToken — jeton d'enregistrement auprès du parent
+	 *
+	 * @description
+	 * ⛔ NE PAS RENOMMER EN `id`. Ce Symbol identifie la couche dans le
+	 * registre du host ; ce n'est PAS l'attribut DOM. Il s'est appelé `id`
+	 * jusqu'à la campagne #372, qui a ajouté `:id="id"` sur la racine de 136
+	 * composants en supposant partout que `id` désignait la prop héritée de
+	 * `ICommonsComponentProps`. Ici le local masquait la prop : Vue a tenté
+	 * de poser un Symbol en attribut, `TypeError: Cannot convert a Symbol
+	 * value to a string`, et le rendu de TOUT le sous-arbre `<origam-parallax>`
+	 * a sauté — plus aucune couche affichée.
+	 *
+	 * @description
+	 * Le nom distinct est la protection : un `const id` local dans un
+	 * composant qui binde `:id="id"` est indétectable à la lecture du
+	 * template seul.
+	 ********************************************************/
+	const registryToken = Symbol('origam:parallax-layer')
 
 	onMounted(() => {
 		if (!layerRef.value) return
 		const registry: IParallaxLayerRegistry = {
-			id,
+			id: registryToken,
 			speed: props.speed ?? 1,
 			offsetX: props.offsetX ?? 0,
 			offsetY: props.offsetY ?? 0,
@@ -64,7 +83,7 @@
 	})
 
 	onBeforeUnmount(() => {
-		parallax.unregister(id)
+		parallax.unregister(registryToken)
 	})
 
 	const layerStyles = computed(() => {
