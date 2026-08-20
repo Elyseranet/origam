@@ -339,7 +339,17 @@
     ]
   })
 
-  const { id, css, load, isLoaded, unload } = useStyle(snackbarStyles)
+  /*********************************************************
+   * useStyle
+   *
+   * @description
+   * #381 — the `id` returned by useStyle is a GENERATED identifier,
+   * only meant for the scoped stylesheet selector. Without
+   * `() => props.id` here, it shadowed the `id` PROP of the same
+   * name: the template's `:id="id"` on <origam-overlay> rendered
+   * the generated id, never the consumer's.
+   ********************************************************/
+  const { id, css, load, isLoaded, unload } = useStyle(snackbarStyles, () => props.id)
 
   /*********************************************************
    * Expose

@@ -294,7 +294,18 @@
 		]
 	})
 
-	const {id, css, load, isLoaded, unload} = useStyle(badgeContentStyles)
+	/*********************************************************
+	 * useStyle
+	 *
+	 * @description
+	 * #381 — the `id` returned by useStyle is a GENERATED identifier,
+	 * only meant for the scoped stylesheet selector. Without
+	 * `() => props.id` here, it shadowed the `id` PROP of the same
+	 * name: the template's `:id="id"` on the content pill
+	 * (.origam-badge__badge) rendered the generated id, never the
+	 * consumer's.
+	 ********************************************************/
+	const {id, css, load, isLoaded, unload} = useStyle(badgeContentStyles, () => props.id)
 
 
 	/*********************************************************
