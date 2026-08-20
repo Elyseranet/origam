@@ -803,8 +803,20 @@
    * Forwarded props
    ********************************************************/
 
+  /*********************************************************
+   * inputProps
+   *
+   * @description
+   * #421 — `id` is deliberately NOT filtered out: OrigamInput needs it to
+   * build `<id>-messages`, the target of its own `aria-describedby`, and
+   * to feed its default slot's `id` (consumed by OrigamField, then the
+   * real `<input type="file">`). Filtering it forced OrigamInput to
+   * invent an id, so a consumer passing `id` got an input unreachable by
+   * `getElementById` and a `<label for>` pointing nowhere — same fix as
+   * OrigamTextField (ce365b10).
+   ********************************************************/
   const inputProps = computed(() => {
-    return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'id', 'focused'])
+    return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'focused'])
   })
   const fieldProps = computed(() => {
     return origamFieldRef.value?.filterProps(props, ['class', 'style', 'id', 'active', 'dirty', 'disabled', 'focused', 'error'])
