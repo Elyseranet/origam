@@ -16,7 +16,9 @@
 					border: undefined,
 					borderColor: undefined,
 					borderStyle: undefined,
-					height: undefined
+					height: undefined,
+					imageSrc: '',
+					imageAlt: ''
 				})"
 		>
 			<template #default="{ state }">
@@ -34,6 +36,7 @@
 								:border-color="state.borderColor"
 								:border-style="state.borderStyle"
 								:height="state.height"
+								:image="resolveImage(state)"
 								data-cy="app-bar-design"
 						>
 							<template #prepend>
@@ -71,6 +74,10 @@
 				</StoryGroup>
 				<StoryGroup title="Dimension">
 					<HstText v-model="state.height" title="Height"/>
+				</StoryGroup>
+				<StoryGroup title="Image">
+					<HstText v-model="state.imageSrc" title="Image Src"/>
+					<HstText v-model="state.imageAlt" title="Image Alt"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -390,6 +397,13 @@
 	]
 
 	const emitModelValue = ref(true)
+
+	// The `image` prop is an object (`IImgProps`) — Histoire controls only
+	// bind primitives, so the story exposes flat `imageSrc` / `imageAlt`
+	// fields and composes the prop here.
+	const resolveImage = (s: Record<string, unknown>) => {
+		return s.imageSrc ? { src: s.imageSrc as string, alt: (s.imageAlt as string) || '' } : undefined
+	}
 </script>
 
 <style scoped>
