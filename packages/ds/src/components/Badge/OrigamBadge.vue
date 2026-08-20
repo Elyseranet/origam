@@ -15,7 +15,7 @@
 						v-show="modelValue"
 						:id="id"
 						v-contrast
-						:aria-label="t(label, content)"
+						:aria-label="badgeAriaLabel"
 						:class="badgeContentClasses"
 						:style="typographyStyles"
 						aria-atomic="true"
@@ -208,6 +208,24 @@
 		}
 
 		return `${props.max}+`
+	})
+
+	/*********************************************************
+	 * badgeAriaLabel
+	 *
+	 * @description
+	 * #380 — `t(label, content)` used to pass `content` as a POSITIONAL
+	 * interpolation argument to the `origam.badge` template ("Badge"),
+	 * which has no `{0}` placeholder: the value was silently dropped.
+	 * A badge whose content is already text (a count, "NEW", …) doesn't
+	 * need the translated prefix — announce the content directly, and
+	 * fall back to the translated generic label only when there is no
+	 * content to read (dot mode, icon-only mode).
+	 ********************************************************/
+	const badgeAriaLabel = computed(() => {
+		const hasTextContent = !props.dot && !hasIcon.value && content.value !== undefined && content.value !== null && content.value !== ''
+
+		return hasTextContent ? String(content.value) : t(props.label)
 	})
 
 	const badgeAttrs = computed<Record<string, unknown>>(() => {
