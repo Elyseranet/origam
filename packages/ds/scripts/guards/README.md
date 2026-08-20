@@ -22,12 +22,14 @@ pnpm -F origam guards:naming               # guard 4 only
 pnpm -F origam guards:unconsumed-props     # guard 5 only
 pnpm -F origam guards:emits-completeness   # guard 7 only
 pnpm -F origam guards:no-usedefaults       # guard 8 only
+pnpm -F origam guards:token-var-channels   # guard 13 only
+pnpm -F origam guards:dead-handlers        # guard 14 only
 ```
 
 No build step required — every guard parses `.vue`/`.ts`/`.scss` source
-text directly. The full suite runs in under a second.
+text directly. The full suite runs in under two seconds.
 
-## The twelve guards
+## The fourteen guards
 
 | # | Script | Rule | Baseline size |
 |---|---|---|---|
@@ -43,6 +45,143 @@ text directly. The full suite runs in under a second.
 | 10 | `seed-source-paths.mjs` | Every `source_file` / `sourceFile` in the marketing seed points at a file that exists | 1 |
 | 11 | `comment-format.mjs` | No comment block is ADDED outside the repo's block format (per-file counts, total may only fall) | 6925 blocks |
 | 12 | `pnpm-tree-integrity.mjs` | No `node_modules/` entry is a physical copy — every package is a pnpm store link or a workspace link | 0 |
+| 13 | `token-var-channels.mjs` | Every `var(--origam-…)` a component reads is emitted by the token pipeline, or synthesised locally — and (secondary, non-fatal-by-default in spirit but still baselined) every emitted var is read by at least one component | 1275 dead / 1588 dormant |
+| 14 | `dead-handlers.mjs` | A `v-on` binding (`@click`, `@keydown`, …) must CALL the handler it names — not just reference it as an unused operand of `&&`/`||`/`?:`, or via a `withModifiers`/`withKeys` call whose return value is discarded | 6 |
+
+### Guard 13 — the token pipeline can break silently, and nothing else watches for it
+
+Written for issue #435: a BEM child key containing a hyphen breaks the
+token→CSS-var naming transform. `table.cell.border-color` compiles to
+`--origam-table__cell---border-color` (correct); `table.header-cell.border-bottom-color`
+— same JSON shape, hyphenated child key — compiles to the flattened
+`--origam-table---header-cell-border-bottom-color`. The component's SCSS
+reads the BEM form, the pipeline emits the flat form, and `var(--x, fallback)`
+never errors — it just silently uses the hardcoded fallback forever. Nothing
+in this repo's test suite exercises a component through its CSS-variable
+channel; every existing spec drives behaviour through props, so this class
+of defect has no other detector.
+
+Writing this guard surfaced a second, larger, DIFFERENT root cause: **10**
+files under `packages/ds/tokens/component/` — including a fully authored
+`empty-state.json` and `chart.json` — declare at least one token whose
+top-level JSON key never appears as a `--origam-{key}` prefix anywhere in
+the generated stylesheets (`grep -c empty-state src/assets/css/tokens/*.css`
+returns 0 everywhere). `packages/ds/tokens/$themes.json` selects only 105 of
+the 110 physical files under `tokens/component/`; those 10 are simply never
+fed to the build (the other 5 unselected files declare zero tokens, or their
+top-level key differs from the filename and IS emitted under its real
+prefix — `bottom-nav.json`'s key is `bottom-bar`, which produces 665 lines —
+so counting by filename overstates the defect; counting by top-level key
+does not). See issue #436 for the audited list. Same externally observable
+symptom (a dead channel), unrelated cause (a missing source-set
+registration, not a naming-transform bug) — this guard does not
+try to tell the two apart, it only tells you the channel is dead and lets a
+human pick the fix.
+
+**Classification, not a single count.** A var read with NO fallback and
+never emitted is unambiguously broken — the declaration it's used in is
+simply dropped (measured: 87 in the current baseline). A var read WITH a
+fallback and never emitted renders correctly today and MAY be a deliberate
+extension point rather than a bug — EmptyState's typography vars are the
+concrete example: every one falls back to a real value and the component
+looks right on screen (measured: 1188). Both sub-classes share one
+violation-id space (the point is "this channel carries no token pipeline
+output", full stop) so the baseline can only shrink, but the printed detail
+line always names the sub-class so nobody force-adds a token nobody asked
+for.
+
+**Local CSS-variable synthesis is excluded, not flagged.** Several
+components declare a `--origam-{component}---resolved-*` (or `--bg-base` /
+`--fg-base`) custom property inside their OWN `<style>` block, seeded from a
+real token read, then consume that local name elsewhere in the same block
+(Pagination's derived hover/active rungs; EmptyState's per-density
+indirection layer). That name is a CSS-level `let` binding, not a token, and
+will never appear in the generated stylesheets on purpose. A name declared
+as a LHS anywhere in the SAME FILE's `<style>` content is excluded from
+dead-channel detection — scoped per-file, not repo-wide, so an unrelated
+component's local variable of the same name can never mask a genuinely dead
+cross-component reference.
+
+**Reverse direction, tracked on its own baseline.** A var the pipeline emits
+that no `.vue` reads anywhere is dead weight shipped in every stylesheet —
+real, but categorically quieter than a broken channel (nothing looks wrong,
+it's pure bytes). 1588 measured. Reported and baselined separately so it
+cannot grow unnoticed either, without conflating its urgency with the
+broken-channel count.
+
+**Mutation-verified.** `token-var-channels.selftest.mjs` proves the detector
+is sensitive to the actual regression shape, not just to its own curated
+fixtures: it starts from a stylesheet where a read resolves cleanly, renames
+ONE emitted declaration to the exact flattened form #435 measured, and
+asserts the guard flips from 0 violations to exactly 1, on exactly the
+mutated name. A selftest that only checks fixtures can pass while the
+detector itself is inert; the mutation cannot.
+
+### Guard 14 — a `v-on` that references a handler is not the same as one that calls it
+
+Written after the #432/#434 component inspection found the same mistake
+spelled five different ways across five unrelated components, none of them
+caught by any existing tool:
+
+```
+OrigamProgressLinear   @click="clickable && handleClick"
+OrigamDatePicker       @click="!viewModeIsMonth ? handleClickDate : undefined"
+OrigamChip             @keydown="isClickable && !isLink && handleKeydown"
+OrigamListItem         @keydown="isClickable && !isLink && handleKeyDown"
+OrigamDataTableRow     withModifiers(() => toggleSelect(row), ['stop'])
+                        — a bare statement inside a handler body, return discarded
+```
+
+**Verified against the real compiler, not reconstructed from memory.**
+`vue/compiler-sfc`'s own `compileTemplate()` was used to inspect the actual
+generated code for each shape before writing the detector. Vue special-cases
+exactly ONE shape — the whole `v-on` expression being a bare member-expression
+path (`handleClick`, `foo.bar`) — and auto-generates a guarded call for it.
+Every other shape compiles to `$event => (EXPR)`; `EXPR` is evaluated for its
+value and the DOM discards an event listener's return value. So
+`clickable && handleClick` evaluates to the function `handleClick` itself
+when `clickable` is true, hands it to nobody, and nothing happens. Same
+mechanism for a ternary branch, same for `withModifiers(...)` called bare (it
+returns a NEW guarded function that is then never invoked either).
+
+**The one correct shape is the main false-positive to avoid**, per the task
+brief that produced this guard: `@click="handleClick"` alone is the sole
+Vue-blessed bare reference and must never be flagged. The detector's root
+check is structural — is the WHOLE `v-on` expression a bare identifier /
+member-expression / function literal / already-invoked call? — before it
+ever looks for a dangling reference inside a `&&`/`||`/`?:`.
+
+**Precision comes from a cross-reference, not a blanket scan.** Flagging
+every `&&`/`?:` in every template would drown the four real defects in noise
+— `isOpen && somethingThatIsNotAFunction` is completely ordinary Vue code.
+The detector only flags an operand that is a bare reference to a name
+actually **declared as a function** in that same component's own
+`<script setup>` (a `FunctionDeclaration`, a `const x = () => {}`, or a name
+destructured from a composable call). `withModifiers`/`withKeys` bare calls
+are the one exception that doesn't need this cross-reference — those two
+names are always Vue's own event-modifier factories, and calling either one
+bare, inside a template string, is never correct regardless of what it
+wraps.
+
+**Two independent passes, one detector.** The template pass parses
+`<template>` via `vue/compiler-dom`'s real parser (not a hand-rolled regex —
+see the note in `lib/dead-handlers.mjs::extractTemplate` about why a naive
+`<template>…</template>` regex silently truncates at the FIRST nested
+`<template #slot>`, which is how the first draft of this guard missed
+`OrigamDatePicker` entirely). A second, script-level pass walks every
+function body in `<script setup>` for the `OrigamDataTableRow` shape: a bare
+`withModifiers(...)`/`withKeys(...)` `ExpressionStatement` whose return value
+is neither assigned, returned, nor immediately re-invoked.
+
+**Mutation-verified.** `dead-handlers.selftest.mjs` replays all four real
+bugs VERBATIM (not paraphrased) as fixtures and asserts the guard catches
+every one, alongside 24 synthetic precision/recall cases covering both
+directions. Baseline currently holds the 6 pre-existing violations (Chip,
+ListItem, DatePicker, ProgressLinear, and DataTableRow's two `withModifiers`
+calls) — all five components were confirmed independently during the #432
+inspection (three via a real Vitest mount asserting the handler never fires;
+DataTableRow and the two List/Chip keyboard cases by direct source reading
+cross-checked against the compiled-code proof above).
 
 Guard 12 was written after issue #382, and its value is entirely in the
 class of failure it covers: one nothing else in this repo can see. A

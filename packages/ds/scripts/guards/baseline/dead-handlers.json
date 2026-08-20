@@ -1,0 +1,7 @@
+[
+  "Chip:logical-operand:handleKeydown:isClickable && !isLink && handleKeydown",
+  "DataTableRow:script-factory-call:withModifiers:withModifiers(() => toggleExpand(props.item), ['stop'])",
+  "DataTableRow:script-factory-call:withModifiers:withModifiers(() => toggleSelect(props.item), ['stop'])",
+  "DatePicker:ternary-branch:handleClickDate:!viewModeIsMonth ? handleClickDate : undefined",
+  "ListItem:logical-operand:handleKeyDown:isClickable && !isLink && handleKeyDown"
+]

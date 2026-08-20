@@ -27,7 +27,9 @@ const GUARDS = [
     'layer-folders.mjs',
     'seed-source-paths.mjs',
     'comment-format.mjs',
-    'pnpm-tree-integrity.mjs'
+    'pnpm-tree-integrity.mjs',
+    'token-var-channels.mjs',
+    'dead-handlers.mjs'
 ]
 
 /*********************************************************
