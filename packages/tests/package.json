@@ -1,50 +1,51 @@
 {
-  "name": "@origam/tests",
-  "private": true,
-  "version": "0.1.0",
-  "type": "module",
-  "description": "Unit (vitest) + e2e/a11y (playwright) tests for the origam design system.",
-  "engines": {
-    "node": ">=22"
-  },
-  "scripts": {
-    "test:unit": "vitest",
-    "test:unit:run": "vitest --run",
-    "test:run": "vitest --run",
-    "test:coverage": "vitest --run --coverage",
-    "audit:inert-props": "node audit/run-inert-props-audit.mjs",
-    "test:e2e": "playwright test",
-    "test:e2e:audit": "node e2e/_support/run-guards.mjs",
-    "test:e2e:audit:self": "node e2e/_support/run-guards.mjs --self-test",
-    "test:e2e:audit:titles": "node e2e/_support/audit-variant-titles.mjs",
-    "test:e2e:audit:pins": "node e2e/_support/audit-variant-pins.mjs",
-    "pretest:e2e": "node e2e/_support/run-guards.mjs",
-    "test:e2e:ui": "playwright test --ui",
-    "test:e2e:debug": "playwright test --debug",
-    "test:e2e:report": "playwright show-report",
-    "test:a11y": "playwright test --config=playwright.a11y.config.ts",
-    "test:vrt": "playwright test --config=playwright.vrt.config.ts",
-    "test:vrt:update": "playwright test --config=playwright.vrt.config.ts --update-snapshots",
-    "test:vrt:report": "playwright show-report vrt/.report",
-    "test:vrt:docker": "bash vrt/vrt-docker.sh test",
-    "test:vrt:docker:update": "bash vrt/vrt-docker.sh update"
-  },
-  "dependencies": {
-    "@vue/server-renderer": "^3.5.39",
-    "origam": "workspace:*",
-    "vue": "3.5.39"
-  },
-  "devDependencies": {
-    "@axe-core/playwright": "^4.11.3",
-    "@histoire/shared": "^1.0.0-beta.1",
-    "@playwright/test": "^1.48.0",
-    "@vitejs/plugin-vue": "^6.0.7",
-    "@vitest/coverage-v8": "4.1.10",
-    "@vue/test-utils": "^2.4.6",
-    "axe-core": "^4.11.4",
-    "happy-dom": "^20.11.1",
-    "jsdom": "^30.0.1",
-    "vite-tsconfig-paths": "^6.1.1",
-    "vitest": "^4.1.10"
-  }
+    "name": "@origam/tests",
+    "private": true,
+    "version": "0.1.0",
+    "type": "module",
+    "description": "Unit (vitest) + e2e/a11y (playwright) tests for the origam design system.",
+    "engines": {
+        "node": ">=22"
+    },
+    "scripts": {
+        "test:unit": "vitest",
+        "test:unit:run": "vitest --run",
+        "test:run": "vitest --run",
+        "test:coverage": "vitest --run --coverage",
+        "audit:inert-props": "node audit/run-inert-props-audit.mjs",
+        "audit:id-forwarding": "node audit/id-forwarding.audit.mjs",
+        "test:e2e": "playwright test",
+        "test:e2e:audit": "node e2e/_support/run-guards.mjs",
+        "test:e2e:audit:self": "node e2e/_support/run-guards.mjs --self-test",
+        "test:e2e:audit:titles": "node e2e/_support/audit-variant-titles.mjs",
+        "test:e2e:audit:pins": "node e2e/_support/audit-variant-pins.mjs",
+        "pretest:e2e": "node e2e/_support/run-guards.mjs",
+        "test:e2e:ui": "playwright test --ui",
+        "test:e2e:debug": "playwright test --debug",
+        "test:e2e:report": "playwright show-report",
+        "test:a11y": "playwright test --config=playwright.a11y.config.ts",
+        "test:vrt": "playwright test --config=playwright.vrt.config.ts",
+        "test:vrt:update": "playwright test --config=playwright.vrt.config.ts --update-snapshots",
+        "test:vrt:report": "playwright show-report vrt/.report",
+        "test:vrt:docker": "bash vrt/vrt-docker.sh test",
+        "test:vrt:docker:update": "bash vrt/vrt-docker.sh update"
+    },
+    "dependencies": {
+        "@vue/server-renderer": "^3.5.39",
+        "origam": "workspace:*",
+        "vue": "3.5.39"
+    },
+    "devDependencies": {
+        "@axe-core/playwright": "^4.11.3",
+        "@histoire/shared": "^1.0.0-beta.1",
+        "@playwright/test": "^1.48.0",
+        "@vitejs/plugin-vue": "^6.0.7",
+        "@vitest/coverage-v8": "4.1.10",
+        "@vue/test-utils": "^2.4.6",
+        "axe-core": "^4.11.4",
+        "happy-dom": "^20.11.1",
+        "jsdom": "^30.0.1",
+        "vite-tsconfig-paths": "^6.1.1",
+        "vitest": "^4.1.10"
+    }
 }
