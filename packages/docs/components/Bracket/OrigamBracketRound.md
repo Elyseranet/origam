@@ -59,3 +59,11 @@ not consume them (no visible effect until the SCSS is extended).
 |----------------|------------------------------------|
 | `round-title`  | `{ round: IBracketRound, index: number }` |
 | `match`        | `{ match: IBracketMatch, round: IBracketRound, isFinal: boolean }` |
+| `competitor`   | `{ competitor: IBracketCompetitor \| null, match: IBracketMatch, isWinner: boolean, side: 'A' \| 'B' }` |
+
+> **`competitor` (#388)** — relayed straight through to each
+> `<OrigamBracketMatch>` this round renders via its default `match` slot
+> content. Before this fix, `OrigamBracketRound` never forwarded it: a
+> consumer providing `#competitor` at `OrigamBracket` level saw the
+> default `OrigamBracketCompetitor` row render anyway, with no way to
+> override it short of also overriding the whole `match` slot.

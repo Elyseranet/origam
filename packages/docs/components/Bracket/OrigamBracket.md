@@ -139,15 +139,24 @@ diagonal. The diagonal cells are inert.
 | `showScores`      | `boolean`                                                     | `true`                |
 | `showSeed`        | `boolean`                                                     | `false`               |
 | `interactive`     | `boolean`                                                     | `true`                |
+| `tag`             | `string`                                                      | `'div'`               |
 | `color`           | `TIntent \| <css-color>`                                     | `'primary'`           |
 | `bgColor`         | `TIntent \| <css-color>`                                     | — (none)              |
 | `rounded`         | `TRounded \| number \| string \| boolean`                    | — (match default 6px) |
+| `roundedTopLeft` / `roundedTopRight` / `roundedBottomLeft` / `roundedBottomRight` | `number \| string \| boolean` | — (overrides one corner only, `rounded` still drives the other three) |
 | `elevation`       | `number` (0–24, bucketised to the shadow ladder)             | — (match default)     |
 | `border`          | `'thin' \| 'thick' \| number \| boolean`                     | — (match default 1px) |
+| `borderTop` / `borderRight` / `borderBottom` / `borderLeft` | `'thin' \| 'thick' \| number \| boolean` | — (overrides one side only) |
+| `borderBlock` / `borderInline`  | `'thin' \| 'thick' \| number \| boolean` | — (logical-axis shorthand: block = top+bottom, inline = left+right in LTR) |
 | `borderColor`     | `TIntent \| <css-color>`                                     | — (subtle)            |
+| `borderTopColor` / `borderRightColor` / `borderBottomColor` / `borderLeftColor` | `TIntent \| <css-color>` | — (overrides one side's colour only) |
 | `borderStyle`     | `'solid' \| 'dashed' \| 'dotted' \| …`                       | `'solid'`             |
 | `winnersLabel`    | `string`                                                      | `'Winners bracket'`   |
 | `losersLabel`     | `string`                                                      | `'Losers bracket'`    |
+| `width` / `height` / `minWidth` / `minHeight` / `maxWidth` / `maxHeight` | `number \| string` | — (applied to the bracket root) |
+| `margin` / `marginTop` / `marginRight` / `marginBottom` / `marginLeft` / `marginBlock` / `marginInline` | `number \| string \| boolean` | — (applied to the bracket root) |
+| `padding` / `paddingTop` / `paddingRight` / `paddingBottom` / `paddingLeft` / `paddingBlock` / `paddingInline` | `number \| string \| boolean` | — (applied to the bracket root) |
+| `fontFamily` / `fontSize` / `fontWeight` / `letterSpacing` / `lineHeight` | `TFontFamily` / `TFontSize` / `TFontWeight` / `TLetterSpacing` / `TLineHeight` | — (see typography note below) |
 
 > **`bgColor`** paints the surface of **every match card** (including
 > hover). When a surface is painted, the match text is automatically set
@@ -156,13 +165,34 @@ diagonal. The diagonal cells are inert.
 > included). With no `bgColor`, **`color`** drives the match text on the
 > neutral surface. Both accept a tokenised intent or a raw CSS color.
 >
-> **`rounded`, `elevation` and `border*` apply to each match card**, not
-> the bracket root — every card is shaped / elevated / bordered. The
-> **connector links between matches follow the match border colour**
-> (`borderColor`, or the subtle default), so the tree and its links read
-> as one. `border` here is the match border *width* (`thin` / `thick` /
-> a number); set the colour via `borderColor` and the line style via
-> `borderStyle`.
+> **`rounded` (+ per-corner), `elevation` and `border*` (+ per-side, +
+> colours) apply to each match card**, not the bracket root — every card
+> is shaped / elevated / bordered, confirmed by reading the component:
+> these props resolve into `--origam-bracket-match---*` custom properties
+> set inline on the bracket root, which cascade via normal CSS inheritance
+> to every `.origam-bracket-match` card (`OrigamBracketMatch.vue`'s own
+> scoped SCSS reads the exact same var names). A per-corner/per-side prop
+> overrides only the corner/side it targets — `rounded="lg"` plus
+> `roundedTopLeft="0px"` flattens one corner and leaves the other three at
+> `lg`, same precedence grammar as `margin`/`padding`. The **connector
+> links between matches follow the match border colour** (`borderColor`,
+> or the subtle default), so the tree and its links read as one. `border`
+> and its per-side variants accept the same vocabulary: a bare number, a
+> named rung (`'thin'` / `'thick'`), or `true`/`''` — a raw CSS-length
+> *string* like `'8px'` is silently dropped (verified at runtime), unlike
+> `rounded`, which does accept a CSS-length string.
+>
+> **`tag`, dimension (`width`/`height`/`min*`/`max*`) and `margin*`/
+> `padding*` apply to the bracket's own root element** — a different
+> surface than the match-card props above.
+>
+> **Typography (`fontFamily`/`fontSize`/`fontWeight`/`letterSpacing`/
+> `lineHeight`) is narrower than either of those two surfaces**: it only
+> drives the `double-elimination` section labels ("Winner Bracket" /
+> "Loser Bracket" / "Grand Final" headings) via
+> `useTypography(props, 'bracket-double-label')` — it has no effect on
+> `single-elimination` / `round-robin`, and no effect on the match cards
+> or competitor rows either.
 >
 > `winnersLabel` / `losersLabel` are only rendered in the
 > `double-elimination` layout, as the heading above each bracket tree.

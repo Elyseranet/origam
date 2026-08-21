@@ -198,20 +198,14 @@ test.describe('OrigamBracket — slots', () => {
     })
 
     test('competitor slot replaces the default row', async ({ page }) => {
-        // BUG FOUND while repairing this spec's variant-title drift: the
-        // original file called `test.fixme(true, reason)` as a bare
-        // statement BEFORE this `test(...)`, outside any test body — the
-        // exact same mis-scoping bug found and documented in
-        // audio.spec.ts. That does NOT scope to "just this test";
-        // Playwright attaches it to the enclosing suite at collection
-        // time, so it was silently skipping "match slot replaces the
-        // default match card" above too (declared in the SAME describe
-        // block, even though it comes BEFORE the fixme call — verified
-        // empirically the same way as in audio.spec.ts). Moved inside
-        // this test body (the officially supported conditional-fixme
-        // pattern) so only this test is affected; the DS bug itself is
-        // still real and unfixed.
-        test.fail(true, 'DS BUG: OrigamBracketRound does not forward the #competitor slot to OrigamBracketMatch — OrigamBracketCompetitor is always rendered even when the consumer provides a #competitor slot at OrigamBracket level. Fix: OrigamBracketRound must relay $slots.competitor into each <origam-bracket-match> it renders via default #match slot.')
+        // #388 — was a real, unfixed DS bug (pinned here via `test.fail()`
+        // until the fix landed): `OrigamBracketRound` never forwarded its
+        // `#competitor` slot into the `<OrigamBracketMatch>` it renders as
+        // the default `match` slot content, so `OrigamBracketCompetitor`
+        // always rendered even when the consumer provided a custom
+        // `#competitor` slot at `OrigamBracket` level. Fixed by relaying
+        // `$slots.competitor` from `OrigamBracketRound.vue` into its
+        // fallback `<origam-bracket-match>` via a `#competitor` template.
 
         // Canonical Variant is "Slots - Competitor".
         await openVariant(page, STORY, 'Slots - Competitor')
@@ -221,14 +215,7 @@ test.describe('OrigamBracket — slots', () => {
         await expect(customRow).toBeVisible({ timeout: 8000 })
 
         const host = sandbox.locator('[data-cy="bracket-slot-competitor-host"]').first()
-        // NOT converted to `toHaveCount(0)` deliberately. This assertion sits
-        // inside a `test.fail()` pinning a real, unfixed DS bug: its job is to
-        // FAIL. Making it patient would only burn the retry budget waiting for
-        // a failure we already expect, and a transient empty DOM could flip the
-        // expected-failure into a pass — which Playwright then reports as a
-        // FAILING test. Keep the synchronous read until the DS bug is fixed.
-        const defaultCount = await host.locator('.origam-bracket-competitor').count()
-        expect(defaultCount).toBe(0)
+        await expect(host.locator('.origam-bracket-competitor')).toHaveCount(0)
     })
 })
 
@@ -265,5 +252,89 @@ test.describe('OrigamBracket — emit match-click', () => {
         await expect(matchDivider).toBeVisible({ timeout: 8000 })
         await matchDivider.dispatchEvent('click')
         await page.waitForTimeout(150)
+    })
+})
+
+// ─── OrigamBracketRound ─────────────────────────────────────────────────────
+//
+// #388 — the story had NO Events-*/Slots-* Variants at all for this
+// component's 3 emits + 2 slots (the CLAUDE.md rule: every emit and every
+// slot gets its own Variant), so nothing proved at runtime that Round
+// actually emits/forwards anything. Added here alongside the story fix.
+
+const ROUND_STORY = '/stories/story/components-stories-bracket-origambracketround-story-vue'
+
+test.describe('OrigamBracketRound — emits', () => {
+    test('match-click: clicking a match divider does not throw', async ({ page }) => {
+        await openVariant(page, ROUND_STORY, 'Events - match-click')
+        const sandbox = sandboxOf(page)
+
+        const host = sandbox.locator('[data-cy="round-emit-match-click"]').first()
+        await expect(host).toBeVisible({ timeout: 8000 })
+
+        const matchDivider = host.locator('.origam-bracket-match .origam-bracket-match__divider').first()
+        await expect(matchDivider).toBeVisible({ timeout: 8000 })
+        await matchDivider.dispatchEvent('click')
+        await page.waitForTimeout(150)
+    })
+
+    test('competitor-click: clicking a competitor row does not throw', async ({ page }) => {
+        await openVariant(page, ROUND_STORY, 'Events - competitor-click')
+        const sandbox = sandboxOf(page)
+
+        const host = sandbox.locator('[data-cy="round-emit-competitor-click"]').first()
+        await expect(host).toBeVisible({ timeout: 8000 })
+
+        const row = host.locator('.origam-bracket-competitor').first()
+        await expect(row).toBeVisible({ timeout: 8000 })
+        await row.click()
+        await page.waitForTimeout(150)
+    })
+
+    test('winner-click: clicking the winning competitor row does not throw', async ({ page }) => {
+        await openVariant(page, ROUND_STORY, 'Events - winner-click')
+        const sandbox = sandboxOf(page)
+
+        const host = sandbox.locator('[data-cy="round-emit-winner-click"]').first()
+        await expect(host).toBeVisible({ timeout: 8000 })
+
+        const winnerRow = host.locator('.origam-bracket-competitor--winner').first()
+        await expect(winnerRow).toBeVisible({ timeout: 8000 })
+        await winnerRow.click()
+        await page.waitForTimeout(150)
+    })
+})
+
+test.describe('OrigamBracketRound — slots', () => {
+    test('round-title slot replaces the default heading', async ({ page }) => {
+        await openVariant(page, ROUND_STORY, 'Slots - Round-title')
+        const sandbox = sandboxOf(page)
+
+        const custom = sandbox.locator('[data-cy="round-slot-title"]').first()
+        await expect(custom).toBeVisible({ timeout: 8000 })
+        await expect(custom).toContainText('Quarter-finals')
+    })
+
+    test('match slot replaces the default match card', async ({ page }) => {
+        await openVariant(page, ROUND_STORY, 'Slots - Match')
+        const sandbox = sandboxOf(page)
+
+        const custom = sandbox.locator('[data-cy="round-slot-match"]').first()
+        await expect(custom).toBeVisible({ timeout: 8000 })
+        await expect(custom).toContainText('T1 vs G2')
+
+        // The default match card must not ALSO render.
+        await expect(sandbox.locator('.origam-bracket-match')).toHaveCount(0)
+    })
+
+    test('competitor slot replaces the default row (#388 fix, proven again from the Round story directly)', async ({ page }) => {
+        await openVariant(page, ROUND_STORY, 'Slots - Competitor')
+        const sandbox = sandboxOf(page)
+
+        const customRows = sandbox.locator('[data-cy="round-slot-competitor"]')
+        await expect(customRows).toHaveCount(2)
+
+        // The default competitor row must not ALSO render (no duplication).
+        await expect(sandbox.locator('.origam-bracket-competitor')).toHaveCount(0)
     })
 })
