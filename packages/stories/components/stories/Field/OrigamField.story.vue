@@ -90,7 +90,7 @@
 
 		<Variant
 				title="Functional"
-				:init-state="() => useStoryInitState<Partial<IFieldProps>>({ label: 'Field label', disabled: false, error: false, dirty: false, singleLine: false, inline: false, reverse: false, required: false, persistentClear: false, clearable: false })"
+				:init-state="() => useStoryInitState<Partial<IFieldProps>>({ label: 'Field label', disabled: false, error: false, dirty: false, singleLine: false, inline: false, required: false, persistentClear: false, clearable: false })"
 		>
 			<template #default="{ state }">
 				<origam-field
@@ -100,7 +100,6 @@
 						:dirty="state.dirty"
 						:single-line="state.singleLine"
 						:inline="state.inline"
-						:reverse="state.reverse"
 						:required="state.required"
 						:persistent-clear="state.persistentClear"
 						:clearable="state.clearable"
@@ -123,7 +122,6 @@
 				<StoryGroup title="Layout">
 					<HstCheckbox v-model="state.singleLine"   title="Single Line"/>
 					<HstCheckbox v-model="state.inline"       title="Inline"/>
-					<HstCheckbox v-model="state.reverse"      title="Reverse"/>
 					<HstCheckbox v-model="state.centerAffix"  title="Center Affix"/>
 				</StoryGroup>
 				<StoryGroup title="Loading">

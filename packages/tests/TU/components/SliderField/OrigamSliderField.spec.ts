@@ -4,7 +4,7 @@
 // We exercise:
 //   - BEM root class: origam-slider-field
 //   - Modifier classes: --horizontal, --vertical, --disabled, --readonly,
-//     --error, --range, --focused, --inset, --reverse, --variant-*
+//     --error, --range, --focused, --inset, --variant-*
 //   - variant='field' → renders origam-input wrapper
 //   - variant='timer'/'audio' → bare section element (no origam-input)
 //   - Native <input type="range"> value / min / max / step attributes
@@ -144,11 +144,6 @@ describe('OrigamSliderField — BEM root class', () => {
     it('adds --inset when inset=true', () => {
         const wrapper = mountSlider({ props: { inset: true } })
         expect(wrapper.find('.origam-slider-field--inset').exists()).toBe(true)
-    })
-
-    it('adds --reverse when reverse=true', () => {
-        const wrapper = mountSlider({ props: { reverse: true } })
-        expect(wrapper.find('.origam-slider-field--reverse').exists()).toBe(true)
     })
 })
 

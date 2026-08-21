@@ -296,7 +296,17 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(listStyles)
+	/*********************************************************
+	 * useStyle
+	 *
+	 * @description
+	 * #381 — the `id` returned by useStyle is a GENERATED identifier,
+	 * only meant for the scoped stylesheet selector. Without
+	 * `() => props.id` here, it shadowed the `id` PROP of the same
+	 * name: the template's `:id="id"` on the root rendered the
+	 * generated id, never the consumer's.
+	 ********************************************************/
+	const {id, css, load, isLoaded, unload} = useStyle(listStyles, () => props.id)
 
 
 	/*********************************************************

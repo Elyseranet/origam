@@ -7,6 +7,7 @@
     "font-style":      { "$value": "normal" },
     "font-weight":     { "$type": "fontWeight", "$value": "{font.weight.regular}" },
     "line-height":     { "$type": "number",     "$value": "{font.lineHeight.relaxed}" },
+    "letter-spacing":  { "$type": "dimension",  "$value": "{font.letterSpacing.normal}" },
     "color":           { "$type": "color",      "$value": "{color.text.primary}" },
 
     "accent": {

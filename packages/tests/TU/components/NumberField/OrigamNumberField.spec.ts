@@ -125,11 +125,6 @@ describe('OrigamNumberField — root class (standard mode)', () => {
         const wrapper = mountNumberField({ hideControls: true })
         expect(wrapper.find('[data-cy="origam-text-field"]').classes()).toContain('origam-number-field--hide-controls')
     })
-
-    it('adds origam-number-field--reverse when reverse=true', () => {
-        const wrapper = mountNumberField({ reverse: true })
-        expect(wrapper.find('[data-cy="origam-text-field"]').classes()).toContain('origam-number-field--reverse')
-    })
 })
 
 describe('OrigamNumberField — value initialisation', () => {

@@ -320,14 +320,14 @@ export function parentSlotMount (Parent: any, Comp: any, parentProps: Record<str
     const Harness = defineComponent({
         components: {OrigamProbeParent: Parent, OrigamProbeChild: Comp},
         props: {childProps: {type: Object, default: () => ({})}},
+        setup () {
+            return {fixedParentProps: parentProps}
+        },
         template: `
             <origam-probe-parent v-bind="fixedParentProps">
                 <origam-probe-child v-bind="childProps"/>
             </origam-probe-parent>
-        `,
-        setup () {
-            return {fixedParentProps: parentProps}
-        }
+        `
     })
 
     return {

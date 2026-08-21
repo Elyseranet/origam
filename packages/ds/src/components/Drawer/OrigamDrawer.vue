@@ -179,10 +179,24 @@
 	const rootEl = ref<HTMLElement>()
 	const isHovering = shallowRef(false)
 
+	/*********************************************************
+	 * width
+	 *
+	 * @description
+	 * #384 — `Number(props.width)` / `Number(props.railWidth)`
+	 * returned NaN for any CSS length string (`Number('256px')`
+	 * === NaN). Unlike OrigamBottomNav/OrigamSystemBar, this
+	 * component has no `useDimension()` fallback — this value
+	 * is the ONLY source feeding `useLayoutItem`'s `elementSize`,
+	 * so the invalid `width: NaN` declaration was silently
+	 * dropped and the drawer rendered with NO explicit width at
+	 * all instead of a wrong one. `int()` parses both a bare
+	 * number and a CSS-length string (`parseInt(value, 10)`).
+	 ********************************************************/
 	const width = computed(() => {
 		return (props.rail && props.expandOnHover && isHovering.value)
-				? Number(props.width)
-				: Number(props.rail ? props.railWidth : props.width)
+				? int(props.width)
+				: int(props.rail ? props.railWidth : props.width)
 	})
 	const location = computed(() => {
 		return props.location as 'left' | 'right' | 'bottom'
@@ -241,7 +255,7 @@
 		if (!isPushing.value) return 0
 
 		const size = isTemporary.value ? 0
-				: props.rail && props.expandOnHover ? Number(props.railWidth)
+				: props.rail && props.expandOnHover ? int(props.railWidth)
 						: width.value
 
 		return isDragging.value ? size * dragProgress.value : size

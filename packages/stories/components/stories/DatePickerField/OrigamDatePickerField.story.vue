@@ -121,7 +121,6 @@
 					openOnClear: false,
 					clearable: false,
 					persistentClear: false,
-					reverse: false,
 					singleLine: false,
 					hint: '',
 					hideDetails: false,
@@ -143,7 +142,6 @@
 						:open-on-clear="state.openOnClear"
 						:clearable="state.clearable"
 						:persistent-clear="state.persistentClear"
-						:reverse="state.reverse"
 						:single-line="state.singleLine"
 						:hint="state.hint || undefined"
 						:hide-details="state.hideDetails"
@@ -162,7 +160,6 @@
 				<StoryGroup title="States">
 					<HstCheckbox v-model="state.disabled" title="Disabled"/>
 					<HstCheckbox v-model="state.readonly" title="Readonly"/>
-					<HstCheckbox v-model="state.reverse"  title="Reverse"/>
 				</StoryGroup>
 				<StoryGroup title="Selection">
 					<HstCheckbox v-model="state.range"         title="Range"/>

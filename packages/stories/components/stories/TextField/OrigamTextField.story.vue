@@ -27,7 +27,6 @@
 					height: undefined,
 					inline: false,
 					singleLine: false,
-					reverse: false,
 					centerAffix: false,
 				})"
 		>
@@ -55,7 +54,6 @@
 						:height="state.height"
 						:inline="state.inline"
 						:single-line="state.singleLine"
-						:reverse="state.reverse"
 						:center-affix="state.centerAffix"
 				/>
 			</template>
@@ -94,7 +92,6 @@
 				<StoryGroup title="Layout">
 					<HstCheckbox v-model="state.inline"       title="Inline"/>
 					<HstCheckbox v-model="state.singleLine"   title="Single Line"/>
-					<HstCheckbox v-model="state.reverse"      title="Reverse"/>
 					<HstCheckbox v-model="state.centerAffix"  title="Center Affix"/>
 				</StoryGroup>
 				<StoryGroup title="Spacing">

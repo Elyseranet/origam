@@ -200,9 +200,21 @@
 	 ********************************************************/
 	const {ssrBootStyles} = useSsrBoot()
 
+	/*********************************************************
+	 * height
+	 *
+	 * @description
+	 * #384 — `Number(props.height)` returned NaN for any CSS length
+	 * string (`Number('96px')` === NaN): the invalid `height: NaN`
+	 * declaration was silently dropped, masking that the density-aware
+	 * subtraction never applied. `int()` (parseInt-based, already used
+	 * elsewhere in this catalogue for the same "read the leading number
+	 * off a possibly-unit-suffixed prop" need) reads the numeric prefix
+	 * regardless of a trailing unit.
+	 ********************************************************/
 	const height = computed(() => {
 		if (props.height) {
-			return Number(props.height) - (props.density === 'compact' ? 8 : 0)
+			return int(props.height) - (props.density === 'compact' ? 8 : 0)
 		}
 
 		return 48
@@ -236,8 +248,24 @@
 	 ********************************************************/
 	const {densityClasses} = useDensity(props)
 	const {dimensionStyles} = useDimension(props)
+	/*********************************************************
+	 * bottomNavStyles
+	 *
+	 * @description
+	 * #383 — layoutItemStyles MUST come before dimensionStyles here.
+	 * useStyle() flattens every source into ONE #id{...} rule, so source
+	 * order (not specificity) decides which width declaration wins when
+	 * both are present. useLayoutItem unconditionally writes
+	 * width: calc(100% - left - right) while docked in an OrigamLayout —
+	 * placing it FIRST lets a consumer-supplied width (from
+	 * dimensionStyles) override it, instead of the layout's calc()
+	 * silently winning every time (the previous order, which broke the
+	 * documented default usage OrigamLayout > OrigamBottomNav and made
+	 * position decorative alongside it).
+	 ********************************************************/
 	const bottomNavStyles = computed(() => {
 		return [
+			layoutItemStyles.value,
 			// All dimension props (width / minWidth / maxWidth / minHeight /
 			// maxHeight / height). The custom `height` below overrides the
 			// plain height with the density-aware value.
@@ -248,7 +276,6 @@
 			roundedStyles.value,
 			colorStyles.value,
 			borderStyles.value,
-			layoutItemStyles.value,
 			ssrBootStyles.value,
 			paddingStyles.value,
 			marginStyles.value,
@@ -276,7 +303,17 @@
 		]
 	})
 
-	const {id, css, load, isLoaded, unload} = useStyle(bottomNavStyles)
+	/*********************************************************
+	 * useStyle
+	 *
+	 * @description
+	 * #381 — the `id` returned by useStyle is a GENERATED identifier,
+	 * only meant for the scoped stylesheet selector. Without
+	 * `() => props.id` here, it shadowed the `id` PROP of the same
+	 * name: the template's `:id="id"` on the root rendered the
+	 * generated id, never the consumer's.
+	 ********************************************************/
+	const {id, css, load, isLoaded, unload} = useStyle(bottomNavStyles, () => props.id)
 
 	/*********************************************************
 	 * Expose

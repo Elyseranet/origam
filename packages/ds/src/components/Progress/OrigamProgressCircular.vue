@@ -65,7 +65,7 @@
 
 	import type { IProgressCircularProps, IProgressCircularSlots } from '../../interfaces/Progress/progress-circular.interface'
 
-	import { convertToUnit } from '../../utils/Commons/commons.util'
+	import { convertToUnit, int } from '../../utils/Commons/commons.util'
 
 	import { SIZES } from '../../enums/Commons/size.enum'
 
@@ -84,7 +84,8 @@
 		modelValue: 0,
 		max: 100,
 		thickness: 4,
-		size: SIZES.DEFAULT
+		size: SIZES.DEFAULT,
+		rotate: 0
 	})
 
 	defineSlots<IProgressCircularSlots>()
@@ -134,9 +135,22 @@
 	 * @description
 	 * Derived dimensions for the circular SVG track.
 	 ********************************************************/
+	/*********************************************************
+	 * size
+	 *
+	 * @description
+	 * #384 — `Number(props.size)` returned NaN for any CSS
+	 * length string (`Number('48px')` === NaN). Unlike the
+	 * dimension components in this ticket, this value isn't a
+	 * CSS declaration silently dropped on an invalid value —
+	 * it feeds SVG geometry math (`diameter`, `strokeWidth`,
+	 * `svgViewBox`), so NaN poisoned all three and produced an
+	 * invalid `viewBox="0 0 NaN NaN"`. `int()` parses both a
+	 * bare number and a CSS-length string.
+	 ********************************************************/
 	const size = computed(() => {
 		if (sizeStyles.value.length) {
-			return Number(props.size)
+			return int(props.size)
 		}
 
 		if (contentRect.value) {
@@ -196,8 +210,23 @@
 			props.class
 		]
 	})
+	/*********************************************************
+	 * svgStyles
+	 *
+	 * @description
+	 * #384 (adjacent finding, not in the original scope) —
+	 * `Number(props.rotate)` ran UNCONDITIONALLY with no
+	 * default in `withDefaults`, so every instance that didn't
+	 * explicitly pass `rotate` computed `Number(undefined)` ===
+	 * NaN, rendering the entire `transform` declaration invalid
+	 * and silently dropped by the browser — losing the base
+	 * `-90deg` start-angle offset. Added the missing `rotate: 0`
+	 * default (matches the documented "no extra rotation"
+	 * behaviour) and switched to `int()` for CSS-length-string
+	 * safety, consistent with the `size` fix above.
+	 ********************************************************/
 	const svgStyles = computed(() => {
-		return [`transform: rotate(calc(-90deg + ${Number(props.rotate)}deg))`]
+		return [`transform: rotate(calc(-90deg + ${int(props.rotate)}deg))`]
 	})
 	const backgroundStyles = computed(() => {
 		return [

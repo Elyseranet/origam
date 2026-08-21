@@ -33,6 +33,7 @@
 						@click="handleCompactDecrement"
 				/>
 				<input
+						:id="id"
 						v-model="compactInputText"
 						type="text"
 						inputmode="numeric"
@@ -733,8 +734,7 @@
 				'origam-number-field--hide-input': props.hideInput,
 				'origam-number-field--inset': props.inset,
 				'origam-number-field--split': props.split,
-				'origam-number-field--hide-controls': props.hideControls,
-				'origam-number-field--reverse': props.reverse
+				'origam-number-field--hide-controls': props.hideControls
 			},
 			props.class
 		]
