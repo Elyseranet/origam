@@ -33,8 +33,8 @@
 						@click="handleCompactDecrement"
 				/>
 				<input
-						v-model="compactInputText"
 						:id="id"
+						v-model="compactInputText"
 						type="text"
 						inputmode="numeric"
 						class="origam-number-field__compact-input"
