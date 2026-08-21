@@ -933,12 +933,25 @@
 	/*********************************************************
 	 * Forwarded props
 	 ********************************************************/
+	/*********************************************************
+	 * inputProps
+	 *
+	 * @description
+	 * Strips the entire IColorProps surface so `OrigamInput` (the row
+	 * wrapper) doesn't paint the consumer's intent on its background.
+	 * `color` / `bgColor` stay strictly scoped to the slider track +
+	 * thumb (per the project's color contract).
+	 * @description
+	 * #421 — `id` is deliberately NOT in this exclude list: OrigamInput
+	 * needs it to build `<id>-messages`, the target of its own
+	 * `aria-describedby`, and to feed its default slot's `id` (consumed
+	 * by OrigamField, then the real `<input type="range">`). Excluding it
+	 * forced OrigamInput to invent an id, so a consumer passing `id` got
+	 * a range input unreachable by `getElementById` — same fix as
+	 * OrigamTextField (ce365b10).
+	 ********************************************************/
 	const inputProps = computed(() => {
-		// Strip the entire IColorProps surface so `OrigamInput` (the
-		// row wrapper) doesn't paint the consumer's intent on its
-		// background. `color` / `bgColor` stay strictly scoped to the
-		// slider track + thumb (per the project's color contract).
-		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'id', 'focused', 'centerAffix', 'color', 'bgColor', 'activeColor', 'activeBgColor', 'hoverColor', 'hoverBgColor'])
+		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'focused', 'centerAffix', 'color', 'bgColor', 'activeColor', 'activeBgColor', 'hoverColor', 'hoverBgColor'])
 	})
 	const trackProps = computed(() => {
 		return omit(props.trackProps ?? {}, ['class', 'start', 'stop', 'color', 'bgColor', 'disabled', 'error', 'isVertical', 'indexFromEnd', 'showTicks', 'tickSize', 'ticks', 'min', 'max'])

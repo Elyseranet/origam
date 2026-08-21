@@ -250,11 +250,15 @@ The full list lives in `tokens/component/badge.json`.
 - The chip carries `role="status"`, `aria-live="polite"`, and
   `aria-atomic="true"`. Screen readers announce updates as they
   happen (e.g. counter increments) without re-announcing the host.
-- The visual content (`content`, `icon`) is mirrored into
-  `aria-label` via the i18n `label` key (defaults to `origam.badge`).
-- Override `label` to pass a tailored localised string when the
-  numeric content alone is not informative ("3 unread messages"
-  rather than "3").
+- `aria-label` announces the badge's `content` directly (e.g. `"3"`,
+  `"NEW"`) when it has one, re-announcing it whenever it changes
+  (paired with `role="status"` / `aria-live="polite"`). In `dot` mode
+  and icon-only mode, where there is no textual content to read, it
+  falls back to the translated `label` i18n key (defaults to
+  `origam.badge` → `"Badge"`).
+- Override `label` to pass a tailored localised string for the
+  fallback case, or when the numeric content alone is not informative
+  enough ("3 unread messages" rather than "3").
 
 ## Theming notes
 

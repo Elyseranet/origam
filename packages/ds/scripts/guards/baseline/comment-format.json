@@ -109,7 +109,7 @@
     "packages/ds/src/components/Sheet/OrigamSheet.vue": 20,
     "packages/ds/src/components/Skeleton/OrigamSkeleton.vue": 6,
     "packages/ds/src/components/Slide/OrigamSlideGroup.vue": 40,
-    "packages/ds/src/components/SliderField/OrigamSliderField.vue": 6,
+    "packages/ds/src/components/SliderField/OrigamSliderField.vue": 2,
     "packages/ds/src/components/SliderField/OrigamSliderFieldTrack.vue": 3,
     "packages/ds/src/components/Snackbar/OrigamSnackbar.vue": 4,
     "packages/ds/src/components/Snackbar/OrigamSnackbarGroup.vue": 13,
