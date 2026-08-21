@@ -292,6 +292,7 @@ export type TTokenName =
   | '--origam-blockquote---font-size'
   | '--origam-blockquote---font-style'
   | '--origam-blockquote---font-weight'
+  | '--origam-blockquote---letter-spacing'
   | '--origam-blockquote---line-height'
   | '--origam-blockquote---padding-block'
   | '--origam-blockquote---padding-inline'

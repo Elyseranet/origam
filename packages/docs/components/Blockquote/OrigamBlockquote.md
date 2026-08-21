@@ -63,6 +63,7 @@ contrast with each other:
 | `fontSize`    | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl' \| '2xl' \| '3xl' \| '4xl' \| '5xl'` | `undefined` | Overrides `--origam-blockquote---font-size` with the matching primitive token.    |
 | `fontWeight`  | `'regular' \| 'medium' \| 'semibold' \| 'bold' \| 'extrabold' \| 'black'` | `undefined` | Overrides `--origam-blockquote---font-weight` with the matching primitive token. |
 | `lineHeight`  | `'none' \| 'tight' \| 'snug' \| 'normal' \| 'relaxed' \| 'loose'` | `undefined`    | Overrides `--origam-blockquote---line-height` with the matching primitive token.      |
+| `letterSpacing` | `'tight' \| 'normal' \| 'wide' \| 'wider' \| 'widest'`            | `undefined`    | Overrides `--origam-blockquote---letter-spacing` with the matching primitive token.   |
 | `tag`     | `string`                                                               | `'blockquote'` | Tag rendered for the root. Use `'div'` if you need to nest a blockquote inside one.    |
 
 ## Slots
