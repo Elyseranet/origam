@@ -98,6 +98,7 @@
 							:multiple="state.multiple"
 							:mandatory="state.mandatory"
 							:tag="state.tag"
+							:transition="state.transition"
 							:items="navItems"
 					/>
 				</div>
@@ -117,6 +118,9 @@
 				</StoryGroup>
 				<StoryGroup title="Tag">
 					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Transition">
+					<HstSelect v-model="state.transition" title="Transition" :options="TRANSITION_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -222,7 +226,7 @@
 >
 	import { logEvent } from 'histoire/client'
 
-	import { OrigamBottomNav, OrigamBtn } from '@origam/components'
+	import { OrigamBottomNav, OrigamBtn, OrigamFade, OrigamScaleRotate } from '@origam/components'
 	import { BOTTOM_NAV_POSITION, MDI_ICONS, MODE } from '@origam/enums'
 	import type { IBottomNavProps, IOptions } from '@origam/interfaces'
 	import type { TBottomNavPosition, TNavMode } from '@origam/types'
@@ -253,6 +257,19 @@
 		{ label: 'start',  value: BOTTOM_NAV_POSITION.START  },
 		{ label: 'center', value: BOTTOM_NAV_POSITION.CENTER },
 		{ label: 'end',    value: BOTTOM_NAV_POSITION.END    },
+	]
+
+	// `transition` accepts `boolean | string | TTransitionProps`. A bare
+	// string sets Vue's native `<Transition name="…">` — the DS doesn't
+	// ship CSS classes for arbitrary names, so a demo value here would
+	// silently do nothing. The verified-working shape is the component
+	// descriptor (`{ component: OrigamXxx }`), the same one
+	// `OrigamBottomNav`'s own default (`OrigamTranslateBottom`) uses.
+	const TRANSITION_OPTIONS = [
+		{ label: '(default — OrigamTranslateBottom)', value: undefined },
+		{ label: 'false (no transition)',              value: false },
+		{ label: 'OrigamFade',                         value: { component: OrigamFade } },
+		{ label: 'OrigamScaleRotate',                  value: { component: OrigamScaleRotate } },
 	]
 
 	const navItems: Array<IBottomNavProps['items'][number]> = [
