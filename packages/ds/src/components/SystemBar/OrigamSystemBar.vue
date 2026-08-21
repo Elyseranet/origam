@@ -90,15 +90,28 @@
 	 * @description
 	 * Root element classes and styles.
 	 ********************************************************/
+	/*********************************************************
+	 * systemBarStyles
+	 *
+	 * @description
+	 * #383 — layoutItemStyles MUST come before dimensionStyles here.
+	 * useStyle() flattens every source into ONE #id{...} rule, so source
+	 * order (not specificity) decides which width declaration wins when
+	 * both are present. useLayoutItem unconditionally writes
+	 * width: calc(100% - left - right) while docked in an OrigamLayout —
+	 * placing it FIRST lets a consumer-supplied width (from
+	 * dimensionStyles) override it, instead of the layout's calc()
+	 * silently winning every time (same root cause as OrigamBottomNav).
+	 ********************************************************/
 	const systemBarStyles = computed(() => {
 		return [
+			layoutItemStyles.value,
 			borderStyles.value,
 			roundedStyles.value,
 			dimensionStyles.value,
 			colorStyles.value,
 			typographyStyles.value,
 			ssrBootStyles.value,
-			layoutItemStyles.value,
 			props.style
 		] as StyleValue
 	})
