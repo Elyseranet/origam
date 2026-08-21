@@ -219,10 +219,19 @@ The last crumb has no divider inside its `<li>`.
 
 ## Design tokens consumed
 
-`<OrigamBreadcrumb>` reads from `tokens/component/breadcrumb.json`,
-which declares a single `breadcrumb` block with nested `item` and
-`divider` sub-blocks. Style Dictionary emits the nested entries as BEM
-children of the root component:
+`<OrigamBreadcrumb>` reads from `tokens/component/breadcrumb.json`
+(root surface only). `OrigamBreadcrumbItem` and `OrigamBreadcrumbDivider`
+are separate, independently-shipped components — each now has its own
+top-level token file, `tokens/component/breadcrumb-item.json` and
+`tokens/component/breadcrumb-divider.json` (#386), matching the
+`--origam-breadcrumb-item---*` / `--origam-breadcrumb-divider---*`
+namespace each component's own scoped `<style>` reads. Before #386 these
+were nested BEM children of `breadcrumb` (`--origam-breadcrumb__item---*`),
+a name neither component ever read — the fix moved the DTCG source to
+match the component's own naming, per the project's "one component, one
+namespace" convention (`Origam{PascalCase}.vue` files each get their own
+top-level component-token block; BEM-child naming is reserved for DOM
+parts that are *not* separate components).
 
 | CSS variable | Token reference | Consumed by |
 |---|---|---|
@@ -232,32 +241,37 @@ children of the root component:
 | `--origam-breadcrumb---box-shadow-elevated` | `{shadow.md}` | Generated in `main.css`, but **not read** by the component — the `--elevated` modifier in `OrigamBreadcrumb.vue` sets its local `--origam-breadcrumb---box-shadow` straight to `var(--origam-shadow---md, …)`, bypassing this variable entirely |
 | `--origam-breadcrumb---padding-block` / `-inline` | `{space.2}` | Generated in `main.css`, but **not read** — the component hardcodes its own local `--origam-breadcrumb---padding-{block,inline}-{start,end}` vars to a literal `8px`, ignoring these token-driven variables |
 | `--origam-breadcrumb---gap` | `{space.0}` | Generated in `main.css`, but **not read anywhere** — `&__items` has no `gap` declaration; crumbs are only spaced by the divider's own inline padding |
-| `--origam-breadcrumb__item---hover-color` | `{color.action.primary.bg}` | crumb hover affordance |
-| `--origam-breadcrumb__item---active-color` | `{color.text.secondary}` | current-page crumb |
-| `--origam-breadcrumb__item---opacity-disabled` | `{opacity.50}` | disabled crumb |
-| `--origam-breadcrumb__divider---character` | `'/'` | default divider glyph |
-| `--origam-breadcrumb__divider---padding-inline` | `{space.2}` | breathing room around the divider |
+| `--origam-breadcrumb-item---hover-color` | `{color.action.primary.bg}` | Generated, but **not read anywhere** in `OrigamBreadcrumbItem.vue` — no naming issue this time, the property is simply never wired |
+| `--origam-breadcrumb-item---active-color` | `{color.text.secondary}` | Same — generated, never read |
+| `--origam-breadcrumb-item---opacity-disabled` | `{opacity.50}` | ✅ reaches `.origam-breadcrumb-item--disabled` via `var(--origam-breadcrumb-item---opacity-disabled, 0.5)` — one of the two channels #386 actually restored |
+| `--origam-breadcrumb-divider---character` | `'/'` | Generated, but **not read** — the divider glyph is rendered as template text (`{{ divider }}`), not driven by this CSS variable at all |
+| `--origam-breadcrumb-divider---padding-inline` | `{space.2}` | ✅ reaches the divider via `var(--origam-breadcrumb-divider---padding-inline, 8px)` — the other channel #386 restored |
 | `--origam-breadcrumb---home-icon-color` | `{color.action.primary.bg}` | optional home icon (via `prependIcon` on the first item) |
 
-> **Known gap:** the generated globals above use the BEM naming
-> `--origam-breadcrumb__item---*` / `--origam-breadcrumb__divider---*`
-> (per the project's `component.card.overlay.bg` → `--origam-card__overlay---bg`
-> convention). `OrigamBreadcrumbItem.vue` and `OrigamBreadcrumbDivider.vue`'s
-> own scoped `<style>` blocks, however, read a **different, hyphenated**
-> variable family — `--origam-breadcrumb-item---*` and
-> `--origam-breadcrumb-divider---*` — which does not exist anywhere in
-> the generated stylesheet (confirmed: zero matches in
-> `packages/ds/src/assets/css/main.css`). In practice this means the
-> `item.hover-color` / `item.active-color` / `divider.character` /
-> `divider.padding-inline` design tokens declared in
-> `tokens/component/breadcrumb.json` never reach the rendered item or
-> divider — both always fall back to the hardcoded local defaults set
-> at the top of their own scoped style block (e.g. item `color: inherit`,
-> divider `padding-inline: 8px`). To actually theme an item or divider
-> today, target the **local** variable directly, e.g.:
+> **#386 fixed the naming drift, but that only restored 2 of ~26
+> item/divider properties — most remain unreachable for a *different*
+> reason.** `OrigamBreadcrumbItem.vue` / `OrigamBreadcrumbDivider.vue`'s
+> scoped `<style>` blocks **redeclare** most of these custom properties
+> locally — either as a hardcoded literal (`--origam-breadcrumb-divider---border-color: currentColor;`)
+> or as a read of a *different* name (`--origam-breadcrumb-divider---color:
+> var(--origam-breadcrumb-divider---color-token, inherit)` — note
+> `-color-token`, not `-color`). A CSS custom property follows normal
+> cascade rules: `.origam-breadcrumb-divider[data-v-xxx]` has higher
+> specificity than `:root`/`[data-theme]`, so the component's own local
+> declaration always wins **regardless of what name the token pipeline
+> uses**. Renaming/relocating the DTCG source (#386) cannot fix a
+> property that's shadowed this way — only `padding-inline` (divider)
+> and `opacity-disabled` (item) read the token via a pure `var(token,
+> fallback)` with no competing local declaration of the same name, which
+> is why those two are the only ones actually restored. The remaining
+> properties (`color`, `background`, `border-*`, `box-shadow`,
+> `transition-*`, `font-size`, `character`, `hover-color`, `active-color`)
+> need the shadowing itself fixed — tracked in a follow-up ticket
+> (measurement-first: how many properties are shadowed this way across
+> the catalogue, before committing to fix them). To theme an item or
+> divider property that's still shadowed today, target the **local**
+> variable directly, e.g.:
 > `.origam-breadcrumb-item { --origam-breadcrumb-item---color: var(--origam-color__text---secondary); }`.
-> This looks like a real naming-drift bug — flagged for a follow-up
-> ticket rather than fixed here.
 
 ## Accessibility
 
@@ -277,8 +291,9 @@ children of the root component:
 - The component is theme-aware out of the box for the **root** surface
   (background, color, radius, elevation). Switching `<html data-theme="…">`
   re-resolves those variables instantly.
-- Item/divider-level tokens have the naming-drift gap described above —
-  see the note under "Design tokens consumed".
+- Item/divider-level tokens: the naming drift is fixed (#386), but most
+  properties remain unreachable due to local shadowing — see the note
+  under "Design tokens consumed".
 - A sub-tree can opt into a different theme via `<OrigamThemeProvider>`.
 
 ## Related

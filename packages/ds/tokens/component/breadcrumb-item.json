@@ -1,0 +1,19 @@
+{
+  "breadcrumb-item": {
+    "_comment": "OrigamBreadcrumbItem — Lot 5D / #386. Independently-shipped component (packages/ds/src/components/Breadcrumb/OrigamBreadcrumbItem.vue), not a BEM child of OrigamBreadcrumb — per the project convention each Origam*.vue file gets its own top-level component-token namespace (--origam-breadcrumb-item---*), not a nested BEM-child one. Moved out of the `breadcrumb` block, where Style Dictionary emitted these as --origam-breadcrumb__item---* — a name the component never reads.",
+    "color":                    { "$type": "color",      "$value": "{color.text.primary}",       "$description": "Default color of a breadcrumb item (inherit from root)" },
+    "hover-color":              { "$type": "color",      "$value": "{color.action.primary.bg}",  "$description": "Color on hover for clickable items (link affordance)" },
+    "active-color":             { "$type": "color",      "$value": "{color.text.secondary}",     "$description": "Color of the current page item (last crumb, aria-current=page)" },
+    "opacity":                  { "$type": "number",     "$value": "{opacity.100}",              "$description": "Default opacity of a breadcrumb item" },
+    "opacity-disabled":         { "$type": "number",     "$value": "{opacity.50}",               "$description": "Opacity when the item is disabled" },
+    "text-decoration":          { "$type": "other",      "$value": "none",                       "$description": "Text decoration (none by default; can override for underlined links)" },
+    "background":               { "$type": "color",      "$value": "transparent",                "$description": "Default background (transparent)" },
+    "box-shadow":               { "$type": "shadow",     "$value": "{shadow.none}",              "$description": "Default box-shadow (none)" },
+    "border-color":             { "$type": "color",      "$value": "currentColor",               "$description": "Border color" },
+    "border-style":             { "$type": "other",      "$value": "solid",                      "$description": "Border style" },
+    "border-radius":            { "$type": "dimension",  "$value": "{radius.none}",              "$description": "Border radius of an item" },
+    "transition-property":      { "$type": "other",      "$value": "transform, color",           "$description": "Animated properties for item hover/active transitions" },
+    "transition-duration":      { "$type": "duration",   "$value": "{motion.duration.medium}",   "$description": "Duration of item transitions" },
+    "transition-timing-function":{ "$type": "cubicBezier","$value": "{motion.easing.standard}", "$description": "Easing for item transitions" }
+  }
+}
