@@ -1032,7 +1032,6 @@
 		'origam-slider-field--inset': props.inset,
 		'origam-slider-field--vertical': isVertical.value,
 		'origam-slider-field--horizontal': !isVertical.value,
-		'origam-slider-field--reverse': isReversed.value,
 		'origam-slider-field--thumb-on-hover': props.showThumbOnHoverOnly || isBareVariant.value,
 		'origam-slider-field--has-buffered': hasBuffered.value,
 		'origam-slider-field--has-peaks': hasPeaks.value

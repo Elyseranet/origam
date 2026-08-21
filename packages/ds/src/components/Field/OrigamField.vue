@@ -588,7 +588,6 @@
 				'origam-field--inline': props.inline,
 				'origam-field--persistent-clear': props.persistentClear,
 				'origam-field--prepended': hasPrependInner.value,
-				'origam-field--reverse': props.reverse,
 				'origam-field--single-line': props.singleLine,
 				'origam-field--no-label': !hasLabel.value,
 				'origam-text-field--prefixed': props.prefix,

@@ -34,7 +34,6 @@
 						:suffix="state.suffix"
 						:width="state.width"
 						:height="state.height"
-						:reverse="state.reverse"
 						:single-line="state.singleLine"
 				/>
 			</template>
@@ -70,7 +69,6 @@
 					<HstText     v-model="state.label"      title="Label"/>
 					<HstText     v-model="state.prefix"     title="Prefix"/>
 					<HstText     v-model="state.suffix"     title="Suffix"/>
-					<HstCheckbox v-model="state.reverse"    title="Reverse"/>
 					<HstCheckbox v-model="state.singleLine" title="Single Line"/>
 				</StoryGroup>
 				<StoryGroup title="Dimension">
