@@ -130,7 +130,13 @@ export * from './RatingField'
 
 export * from './Responsive'
 
-export * from './Section'
+// `./Section` n'est volontairement PAS reexporte : OrigamSection est encore un
+// stub vide (aucune prop, aucun slot, aucun style) et ne rend jamais ses
+// enfants. Tant qu'il n'est pas implemente, l'exporter revient a livrer un
+// composant qui avale silencieusement le contenu du consommateur. Ce barrel
+// pilote aussi `app.component()` dans origam.ts : la ligne retiree, un
+// `<origam-section>` ecrit sans import declenche un avertissement Vue au lieu
+// de disparaitre en silence. A retablir en meme temps que l'implementation.
 
 export * from './Select'
 
