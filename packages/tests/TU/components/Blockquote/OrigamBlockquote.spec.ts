@@ -7,9 +7,9 @@
 //
 // Props with a real visual effect (SCSS reads the generated var via the
 // --origam-blockquote---resolved-* fallback chain): fontFamily, fontSize,
-// fontWeight, lineHeight. letterSpacing is NOT exposed — the component SCSS
-// has no letter-spacing rule for the blockquote — see the rollout recipe in
-// typography.composable.ts.
+// fontWeight, lineHeight, letterSpacing (#387 — this one was the silent
+// gap: it type-checked and forwarded a CSS var, but no SCSS rule read it
+// until fixed; see blockquote-typography-attribution.spec.ts).
 
 import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'

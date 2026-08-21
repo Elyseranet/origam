@@ -20,14 +20,18 @@
 				v-if="hasAttribution"
 				class="origam-blockquote__attribution"
 		>
-			<span class="origam-blockquote__dash" aria-hidden="true">— </span>
+			<span
+					v-if="hasAuthor"
+					class="origam-blockquote__dash"
+					aria-hidden="true"
+			>— </span>
 
 			<span class="origam-blockquote__author">
 				<slot name="author">{{ author }}</slot>
 			</span>
 
 			<span
-					v-if="hasSource"
+					v-if="hasAuthor && hasSource"
 					class="origam-blockquote__separator"
 					aria-hidden="true"
 			>, </span>
@@ -276,6 +280,7 @@
 		--origam-blockquote---resolved-font-style: var(--origam-blockquote---font-style, normal);
 		--origam-blockquote---resolved-font-weight: var(--origam-blockquote---font-weight, 400);
 		--origam-blockquote---resolved-line-height: var(--origam-blockquote---line-height, 1.625);
+		--origam-blockquote---resolved-letter-spacing: var(--origam-blockquote---letter-spacing, normal);
 		--origam-blockquote---resolved-accent-color: var(--origam-blockquote__accent---color, var(--origam-color__action--primary---bg, #7c3aed));
 		--origam-blockquote---resolved-quote-mark-color: var(--origam-blockquote---quote-mark-color, var(--origam-color__action--primary---bg, #7c3aed));
 		--origam-blockquote---resolved-author-color: var(--origam-blockquote__author---color, var(--origam-color__text---secondary, #525252));
@@ -289,6 +294,7 @@
 		font-style: var(--origam-blockquote---resolved-font-style);
 		font-weight: var(--origam-blockquote---resolved-font-weight);
 		line-height: var(--origam-blockquote---resolved-line-height);
+		letter-spacing: var(--origam-blockquote---resolved-letter-spacing);
 		color: var(--origam-blockquote---color, var(--origam-color__text---primary, #171717));
 		box-sizing: border-box;
 	}
