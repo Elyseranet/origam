@@ -200,9 +200,21 @@
 	 ********************************************************/
 	const {ssrBootStyles} = useSsrBoot()
 
+	/*********************************************************
+	 * height
+	 *
+	 * @description
+	 * #384 — `Number(props.height)` returned NaN for any CSS length
+	 * string (`Number('96px')` === NaN): the invalid `height: NaN`
+	 * declaration was silently dropped, masking that the density-aware
+	 * subtraction never applied. `int()` (parseInt-based, already used
+	 * elsewhere in this catalogue for the same "read the leading number
+	 * off a possibly-unit-suffixed prop" need) reads the numeric prefix
+	 * regardless of a trailing unit.
+	 ********************************************************/
 	const height = computed(() => {
 		if (props.height) {
-			return Number(props.height) - (props.density === 'compact' ? 8 : 0)
+			return int(props.height) - (props.density === 'compact' ? 8 : 0)
 		}
 
 		return 48
