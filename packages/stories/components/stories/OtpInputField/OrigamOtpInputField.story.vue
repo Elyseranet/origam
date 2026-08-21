@@ -26,7 +26,6 @@
 						:rounded="state.rounded"
 						:elevation="state.elevation"
 						:flat="state.flat"
-						:reverse="state.reverse"
 						:single-line="state.singleLine"
 						:divider="state.divider"
 						:prefix="state.prefix"
@@ -54,7 +53,6 @@
 					<HstCheckbox v-model="state.flat"      title="Flat"/>
 				</StoryGroup>
 				<StoryGroup title="Layout">
-					<HstCheckbox v-model="state.reverse"    title="Reverse"/>
 					<HstCheckbox v-model="state.singleLine" title="Single Line"/>
 				</StoryGroup>
 				<StoryGroup title="Content">
