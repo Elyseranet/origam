@@ -50,7 +50,6 @@ export interface IFieldProps extends ICommonsComponentProps, ILoaderProps, IColo
     prefix?: string
     suffix?: string
     persistentClear?: boolean
-    reverse?: boolean
     singleLine?: boolean
     required?: boolean
     /** @deprecated Use the `active` object prop instead. Kept for back-compat. */
