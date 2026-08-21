@@ -44,7 +44,17 @@
 						@click="onMatchClick"
 						@competitor-click="onCompetitorClick"
 						@winner-click="onWinnerClick"
-				/>
+				>
+					<template
+							v-if="$slots.competitor"
+							#competitor="scope"
+					>
+						<slot
+								name="competitor"
+								v-bind="scope"
+						/>
+					</template>
+				</origam-bracket-match>
 			</slot>
 		</div>
 	</component>

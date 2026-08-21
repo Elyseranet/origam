@@ -11,7 +11,8 @@
 					showScores: true,
 					showSeed: false,
 					interactive: true,
-					color: 'primary'
+					color: 'primary',
+					direction: DIRECTION.HORIZONTAL
 				})"
 		>
 			<template #default="{ state }">
@@ -21,13 +22,16 @@
 							:index="0"
 							:total-rounds="3"
 							:color="state.color"
+							:direction="state.direction"
 							:show-round-title="state.showRoundTitle"
 							:show-scores="state.showScores"
 							:show-seed="state.showSeed"
 							:interactive="state.interactive"
+							:font-family="state.fontFamily"
 							:font-size="state.fontSize"
 							:font-weight="state.fontWeight"
 							:letter-spacing="state.letterSpacing"
+							:line-height="state.lineHeight"
 					/>
 				</div>
 			</template>
@@ -35,17 +39,104 @@
 				<StoryGroup title="Color">
 					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
 				</StoryGroup>
+				<StoryGroup title="Layout">
+					<HstSelect v-model="state.direction" title="Direction" :options="DIRECTION_OPTIONS"/>
+				</StoryGroup>
 				<StoryGroup title="Display">
 					<HstCheckbox v-model="state.showRoundTitle" title="Show Round Title"/>
 					<HstCheckbox v-model="state.showScores"    title="Show Scores"/>
 					<HstCheckbox v-model="state.showSeed"      title="Show Seed"/>
 				</StoryGroup>
 				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontFamily"    title="Font Family"     :options="FONT_FAMILY_OPTIONS"/>
 					<HstSelect v-model="state.fontSize"      title="Font Size"       :options="FONT_SIZE_OPTIONS"/>
 					<HstSelect v-model="state.fontWeight"    title="Font Weight"     :options="FONT_WEIGHT_OPTIONS"/>
 					<HstSelect v-model="state.letterSpacing" title="Letter Spacing"  :options="LETTER_SPACING_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight"    title="Line Height"     :options="LINE_HEIGHT_OPTIONS"/>
 				</StoryGroup>
 			</template>
+		</Variant>
+
+		<Variant title="Events - match-click">
+			<div class="story-round-shell" data-cy="round-emit-match-click">
+				<origam-bracket-round
+						:round="SAMPLE_ROUND"
+						:index="0"
+						:total-rounds="3"
+						@match-click="logEvent('match-click', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Events - competitor-click">
+			<div class="story-round-shell" data-cy="round-emit-competitor-click">
+				<origam-bracket-round
+						:round="SAMPLE_ROUND"
+						:index="0"
+						:total-rounds="3"
+						@competitor-click="logEvent('competitor-click', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Events - winner-click">
+			<div class="story-round-shell" data-cy="round-emit-winner-click">
+				<origam-bracket-round
+						:round="SAMPLE_ROUND"
+						:index="0"
+						:total-rounds="3"
+						@winner-click="logEvent('winner-click', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - Round-title">
+			<div class="story-round-shell">
+				<origam-bracket-round
+						:round="SAMPLE_ROUND"
+						:index="0"
+						:total-rounds="3"
+				>
+					<template #round-title="{ round }">
+						<div class="custom-round-title" data-cy="round-slot-title">
+							🏆 {{ round.title }}
+						</div>
+					</template>
+				</origam-bracket-round>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - Match">
+			<div class="story-round-shell">
+				<origam-bracket-round
+						:round="SAMPLE_ROUND"
+						:index="0"
+						:total-rounds="3"
+				>
+					<template #match="{ match }">
+						<div class="custom-match-card" data-cy="round-slot-match">
+							{{ match.competitorA.name }} vs {{ match.competitorB.name }}
+						</div>
+					</template>
+				</origam-bracket-round>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - Competitor">
+			<div class="story-round-shell">
+				<origam-bracket-round
+						:round="SAMPLE_ROUND"
+						:index="0"
+						:total-rounds="3"
+				>
+					<template #competitor="{ competitor, isWinner }">
+						<div :class="['custom-competitor', { 'custom-competitor--winner': isWinner }]" data-cy="round-slot-competitor">
+							<span>🏳️</span>
+							<span>{{ competitor?.name ?? 'TBD' }}</span>
+						</div>
+					</template>
+				</origam-bracket-round>
+			</div>
 		</Variant>
 
 		<Variant
@@ -58,13 +149,17 @@
 					showScores: true,
 					showSeed: false,
 					interactive: true,
-					color: 'primary'
+					color: 'primary',
+					direction: DIRECTION.HORIZONTAL
 				})"
 		>
 			<template #default="{ state }">
 				<div class="story-round-shell">
 					<origam-bracket-round
 							v-bind="state"
+							@match-click="logEvent('match-click', $event)"
+							@competitor-click="logEvent('competitor-click', $event)"
+							@winner-click="logEvent('winner-click', $event)"
 					/>
 				</div>
 			</template>
@@ -72,10 +167,15 @@
 				<StoryGroup title="Design">
 					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
 				</StoryGroup>
+				<StoryGroup title="Layout">
+					<HstSelect v-model="state.direction" title="Direction" :options="DIRECTION_OPTIONS"/>
+				</StoryGroup>
 				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontFamily"    title="Font Family"    :options="FONT_FAMILY_OPTIONS"/>
 					<HstSelect v-model="state.fontSize"      title="Font Size"      :options="FONT_SIZE_OPTIONS"/>
 					<HstSelect v-model="state.fontWeight"    title="Font Weight"    :options="FONT_WEIGHT_OPTIONS"/>
 					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight"    title="Line Height"    :options="LINE_HEIGHT_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Display">
 					<HstCheckbox v-model="state.showRoundTitle" title="Show Round Title"/>
@@ -94,17 +194,27 @@
 		lang="ts"
 		setup
 >
+	import { logEvent } from 'histoire/client'
+
 	import { OrigamBracketRound } from '@origam/components'
-	import type { IBracketMatch, IBracketRound, IBracketRoundProps } from '@origam/interfaces'
+	import { DIRECTION } from '@origam/enums'
+	import type { IBracketMatch, IBracketRound, IBracketRoundProps, IOptions } from '@origam/interfaces'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 	import {
 		COLOR_OPTIONS,
+		FONT_FAMILY_OPTIONS,
 		FONT_SIZE_OPTIONS,
 		FONT_WEIGHT_OPTIONS,
-		LETTER_SPACING_OPTIONS
+		LETTER_SPACING_OPTIONS,
+		LINE_HEIGHT_OPTIONS
 	} from '@stories/const'
+
+	const DIRECTION_OPTIONS: Array<IOptions<'horizontal' | 'vertical'>> = [
+		{ label: 'Horizontal', value: DIRECTION.HORIZONTAL },
+		{ label: 'Vertical',   value: DIRECTION.VERTICAL   }
+	]
 
 	const SAMPLE_MATCH: IBracketMatch = {
 		id: 'sm1',

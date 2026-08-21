@@ -9,6 +9,7 @@ import type { TIntent } from '../../types/Commons/intent.type'
 
 import type { IBracketCompetitor } from './bracket-competitor.interface'
 import type { IBracketMatch } from './bracket-match.interface'
+import type { IBracketMatchCompetitorSlot } from './bracket-match-component.interface'
 import type { IBracketRound } from './bracket-round.interface'
 
 /**
@@ -59,7 +60,18 @@ export interface IBracketRoundMatchSlot {
     isFinal: boolean
 }
 
+/*********************************************************
+ * IBracketRoundSlots
+ *
+ * @description
+ * #388 — `competitor` is relayed straight through to each
+ * `<OrigamBracketMatch>` this round renders via its default `match`
+ * slot content. Before this fix `OrigamBracketRound` never forwarded
+ * it: a consumer providing `#competitor` at `OrigamBracket` level saw
+ * the default `OrigamBracketCompetitor` row render anyway.
+ ********************************************************/
 export interface IBracketRoundSlots {
     'round-title'?: (props: IBracketRoundTitleSlot) => any
     match?: (props: IBracketRoundMatchSlot) => any
+    competitor?: (props: IBracketMatchCompetitorSlot) => any
 }
