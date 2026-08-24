@@ -299,5 +299,13 @@
 			flex-direction: column;
 			padding: 16px;
 		}
+
+    &--is-rtl {
+      direction: rtl;
+    }
+
+    &--is-ltr {
+      direction: ltr;
+    }
 	}
 </style>

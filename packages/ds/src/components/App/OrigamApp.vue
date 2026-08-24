@@ -103,5 +103,13 @@
 	.origam-app {
 		color: var(--origam-app---color, var(--origam-color__text---primary));
 		background-color: var(--origam-app---background-color, var(--origam-color__surface---default));
+
+    &--is-rtl {
+      direction: rtl;
+    }
+
+    &--is-ltr {
+      direction: ltr;
+    }
 	}
 </style>

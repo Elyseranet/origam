@@ -375,6 +375,14 @@
 			grid-area: control;
 		}
 
+    &--is-rtl {
+      direction: rtl;
+    }
+
+    &--is-ltr {
+      direction: ltr;
+    }
+
 		&--disabled {
 			pointer-events: none;
 		}

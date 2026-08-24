@@ -1247,6 +1247,14 @@
 			}
 		}
 
+    &--is-rtl {
+      direction: rtl;
+    }
+
+    &--is-ltr {
+      direction: ltr;
+    }
+
 		&--horizontal {
 			align-items: center;
 			margin-inline: 8px 8px;
