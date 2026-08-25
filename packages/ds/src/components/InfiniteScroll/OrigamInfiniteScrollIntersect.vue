@@ -16,7 +16,7 @@
 	import { useIntersectionObserver } from '../../composables/Commons/intersectionObserver.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 
-	import type { IInfiniteScrollIntersectProps, IInfiniteScrollIntersectEmits } from '../../interfaces/InfiniteScroll/infinite-scroll-intersect.interface'
+	import type { IInfiniteScrollIntersectProps, IInfiniteScrollIntersectEmits, IInfiniteScrollIntersectSlots } from '../../interfaces/InfiniteScroll/infinite-scroll-intersect.interface'
 
 	/*********************************************************
 	 * Global
@@ -25,6 +25,8 @@
 	const props = withDefaults(defineProps<IInfiniteScrollIntersectProps>(), {})
 
 	const emits = defineEmits<IInfiniteScrollIntersectEmits>()
+
+	defineSlots<IInfiniteScrollIntersectSlots>()
 
 	const {filterProps} = useProps<IInfiniteScrollIntersectProps>(props)
 

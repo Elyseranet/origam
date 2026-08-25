@@ -26,7 +26,7 @@
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import type { IOverlayScrimProps } from '../../interfaces/Overlay/overlay-scrim.interface'
 
-	import type { IOverlayScrimEmits } from '../../interfaces/Overlay/overlay-scrim.interface'
+	import type { IOverlayScrimEmits, IOverlayScrimSlots } from '../../interfaces/Overlay/overlay-scrim.interface'
 	import type { TTransitionProps } from '../../types/Transition/transition.type'
 
 	/*********************************************************
@@ -40,6 +40,8 @@
 	})
 
 	const emits = defineEmits<IOverlayScrimEmits>()
+
+	defineSlots<IOverlayScrimSlots>()
 
 	const {filterProps} = useProps<IOverlayScrimProps>(props)
 

@@ -70,6 +70,7 @@
 	import { useTextColor } from '../../composables/Commons/textColor.composable'
 
 	import type {
+		IQrCodeEmits,
 		IQrCodeProps,
 		IQrCodeSlots
 	} from '../../interfaces/QrCode/qr-code.interface'
@@ -116,6 +117,8 @@
 		image: undefined,
 		ariaLabel: undefined
 	})
+
+	defineEmits<IQrCodeEmits>()
 
 	defineSlots<IQrCodeSlots>()
 

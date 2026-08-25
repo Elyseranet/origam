@@ -108,7 +108,7 @@
 	import { CALENDAR_STRATEGY } from '../../enums/Commons/calendar.enum'
 	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { IDatePickerMonthProps, IDatePickerMonthSlots } from '../../interfaces/DatePicker/date-picker-month.interface'
+	import type { IDatePickerMonthEmits, IDatePickerMonthProps, IDatePickerMonthSlots } from '../../interfaces/DatePicker/date-picker-month.interface'
 	import type { IDay } from '../../interfaces/DatePicker/date-picker-calendar.interface'
 
 	import type { TOrigamBtn } from '../../types/Btn/btn.type'
@@ -131,6 +131,8 @@
 		transition: () => ({component: OrigamTranslatePicker}) as unknown as TTransitionProps,
 		reverseTransition: () => ({component: OrigamReverseTranslatePicker}) as unknown as TTransitionProps
 	})
+
+	defineEmits<IDatePickerMonthEmits>()
 
 	defineSlots<IDatePickerMonthSlots>()
 

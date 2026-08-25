@@ -24,7 +24,7 @@
 	import { resolveGradient } from '../../utils/Commons/gradient.util'
 	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import type { ITextMaskProps, ITextMaskSlots } from '../../interfaces/TextMask/text-mask.interface'
+	import type { ITextMaskEmits, ITextMaskProps, ITextMaskSlots } from '../../interfaces/TextMask/text-mask.interface'
 
 	/*********************************************************
 	 * Global
@@ -47,6 +47,8 @@
 		animationType: 'pan',
 		align: 'left'
 	})
+
+	defineEmits<ITextMaskEmits>()
 
 	defineSlots<ITextMaskSlots>()
 

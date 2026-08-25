@@ -23,7 +23,7 @@
 	import { useRounded } from '../../composables/Commons/rounded.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useTypography } from '../../composables/Commons/typography.composable'
-	import type { ICardTextProps, ICardTextSlots } from '../../interfaces/Card/card-text.interface'
+	import type { ICardTextEmits, ICardTextProps, ICardTextSlots } from '../../interfaces/Card/card-text.interface'
 
 	import { computed, StyleValue } from 'vue'
 
@@ -37,6 +37,8 @@
 	const props = withDefaults(defineProps<ICardTextProps>(), {tag: 'div'})
 
 	const {filterProps} = useProps<ICardTextProps>(props)
+
+	defineEmits<ICardTextEmits>()
 
 	defineSlots<ICardTextSlots>()
 
