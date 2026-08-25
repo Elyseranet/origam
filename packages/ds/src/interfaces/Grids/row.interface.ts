@@ -6,6 +6,7 @@ import type {
 import type { IBorderProps } from '../Commons/border.interface'
 import type {
     ICommonsComponentProps,
+    ICommonsComponentSlots,
     ITagProps
 } from '../Commons/commons.interface'
 import type { IDensityProps } from '../Commons/density.interface'
@@ -19,3 +20,7 @@ export interface IRowProps extends ICommonsComponentProps, ITagProps, IPaddingPr
     gutters?: string | number
     direction?: TFlexDirection
 }
+
+export interface IRowEmits {}
+
+export interface IRowSlots extends ICommonsComponentSlots {}

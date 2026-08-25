@@ -20,8 +20,11 @@
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { IColProps } from '../../interfaces/Grids/col.interface'
-	import type { ICommonsComponentSlots } from '../../interfaces/Commons/commons.interface'
+	import type {
+		IColEmits,
+		IColProps,
+		IColSlots
+	} from '../../interfaces/Grids/col.interface'
 
 	import { toKebabCase } from '../../utils/Commons/commons.util'
 
@@ -37,7 +40,9 @@
 
 	const {filterProps} = useProps<IColProps>(props)
 
-	defineSlots<ICommonsComponentSlots>()
+	defineEmits<IColEmits>()
+
+	defineSlots<IColSlots>()
 
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 

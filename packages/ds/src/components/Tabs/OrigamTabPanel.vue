@@ -36,7 +36,11 @@
 
 	import { ORIGAM_TABS_KEY, ORIGAM_TAB_PANELS_KEY, ORIGAM_TAB_PANELS_CTX_KEY } from '../../consts/Tabs/tabs.const'
 
-	import type { ITabPanelProps, ITabPanelSlots } from '../../interfaces/Tabs/tab-panel.interface'
+	import type {
+		ITabPanelEmits,
+		ITabPanelProps,
+		ITabPanelSlots
+	} from '../../interfaces/Tabs/tab-panel.interface'
 
 	/*********************************************************
 	 * Global
@@ -48,6 +52,8 @@
 	})
 
 	const {filterProps} = useProps<ITabPanelProps>(props)
+
+	defineEmits<ITabPanelEmits>()
 
 	defineSlots<ITabPanelSlots>()
 

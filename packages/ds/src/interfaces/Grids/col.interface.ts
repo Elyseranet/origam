@@ -6,6 +6,7 @@ import type {
 } from '../Commons/color.interface'
 import type {
     ICommonsComponentProps,
+    ICommonsComponentSlots,
     ITagProps
 } from '../Commons/commons.interface'
 import type { IMarginProps } from '../Commons/margin.interface'
@@ -33,3 +34,7 @@ export interface IColProps extends IColorProps, IBgColorProps, ICommonsComponent
     orderXl?: number,
     orderXxl?: number
 }
+
+export interface IColEmits {}
+
+export interface IColSlots extends ICommonsComponentSlots {}

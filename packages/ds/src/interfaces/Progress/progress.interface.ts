@@ -17,6 +17,8 @@ export interface IProgressProps extends IProgressLinearProps, IProgressCircularP
     type?: TProgressType
 }
 
+export interface IProgressEmits {}
+
 /** Slot signatures for `<OrigamProgress>`. */
 export interface IProgressSlots {
     default?: () => any

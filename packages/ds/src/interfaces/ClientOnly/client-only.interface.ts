@@ -16,6 +16,8 @@ export interface IClientOnlyProps {
     placeholderClass?: string
 }
 
+export interface IClientOnlyEmits {}
+
 /** Slot signatures for `<OrigamClientOnly>`. */
 export interface IClientOnlySlots {
     default?: () => any

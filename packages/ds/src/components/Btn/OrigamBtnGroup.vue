@@ -41,7 +41,11 @@
 
 	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { IBtnGroupProps, IBtnGroupSlots } from '../../interfaces/Btn/btn-group.interface'
+	import type {
+		IBtnGroupEmits,
+		IBtnGroupProps,
+		IBtnGroupSlots
+	} from '../../interfaces/Btn/btn-group.interface'
 	import type { IBtnProps } from '../../interfaces/Btn/btn.interface'
 	import { omitUndefined } from '../../utils/Commons/commons.util'
 
@@ -57,6 +61,8 @@
 	const props = withDefaults(defineProps<IBtnGroupProps>(), {tag: 'div', density: DENSITY.DEFAULT, items: () => []})
 
 	const {filterProps} = useProps<IBtnGroupProps>(props)
+
+	defineEmits<IBtnGroupEmits>()
 
 	defineSlots<IBtnGroupSlots>()
 

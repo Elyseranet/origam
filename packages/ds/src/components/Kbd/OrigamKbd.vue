@@ -39,7 +39,7 @@
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import type { IKbdProps, IKbdSlots } from '../../interfaces/Kbd/kbd.interface'
+	import type { IKbdEmits, IKbdProps, IKbdSlots } from '../../interfaces/Kbd/kbd.interface'
 
 	import { computed, StyleValue, toRef } from 'vue'
 
@@ -55,6 +55,8 @@
 	})
 
 	const { filterProps } = useProps<IKbdProps>(props)
+
+	defineEmits<IKbdEmits>()
 
 	defineSlots<IKbdSlots>()
 
