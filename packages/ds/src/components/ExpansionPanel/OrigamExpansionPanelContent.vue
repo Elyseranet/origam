@@ -78,7 +78,11 @@
 
 	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts/ExpansionPanel/expansion-panel.const'
 
-	import type { IExpansionPanelContentProps, IExpansionPanelContentSlots } from '../../interfaces/ExpansionPanel/expansion-panel-content.interface'
+	import type {
+		IExpansionPanelContentEmits,
+		IExpansionPanelContentProps,
+		IExpansionPanelContentSlots
+	} from '../../interfaces/ExpansionPanel/expansion-panel-content.interface'
 
 	/*********************************************************
 	 * Global
@@ -89,6 +93,8 @@
 	const props = withDefaults(defineProps<IExpansionPanelContentProps>(), {
 		tag: 'div'
 	})
+
+	defineEmits<IExpansionPanelContentEmits>()
 
 	defineSlots<IExpansionPanelContentSlots>()
 

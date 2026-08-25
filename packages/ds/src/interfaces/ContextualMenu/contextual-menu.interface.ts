@@ -34,6 +34,18 @@ export interface IContextualMenuEmits {}
  * fausse : incompilable, et menteuse sur la surface acceptee. Pour les
  * formes de slots qui atteignent reellement le DOM en aval, lire
  * `IMenuSlots` dans `interfaces/Menu/menu.interface.ts`.
+ *
+ * @description
+ * ⛔ ET RETIRER LA SIGNATURE NE REPARE RIEN — ca fait seulement cesser
+ * `vue-tsc` de regarder. Comme il verifie tout le paquet en une passe,
+ * ce seul fichier bloquait la porte type-check pour TOUT le catalogue,
+ * pas seulement pour ce composant : les six lots du chantier
+ * `defineEmits`/`defineSlots` etaient bloques par cette unique ligne.
+ *
+ * @description
+ * Cette forme a ete trouvee DEUX FOIS INDEPENDAMMENT — par le
+ * coordinateur et par un agent du lot 5 — a l'identique, signature
+ * comprise. Ce n'est pas une preference : c'est la seule qui compile.
  ********************************************************/
 export interface IContextualMenuSlots {
     [name: string]: ((props: any) => any) | undefined

@@ -20,7 +20,7 @@
 	import { useRounded } from '../../composables/Commons/rounded.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { SIZES_ARRAY } from '../../consts/Commons/size.const'
-	import type { IIconComponentProps } from '../../interfaces/Icon/icon.interface'
+	import type { IClassIconSlots, IIconComponentEmits, IIconComponentProps } from '../../interfaces/Icon/icon.interface'
 	import type { TSize } from '../../types/Commons/size.type'
 
 	import { convertToUnit } from '../../utils/Commons/commons.util'
@@ -36,6 +36,10 @@
 	const props = withDefaults(defineProps<IIconComponentProps>(), {tag: 'i'})
 
 	const {filterProps} = useProps<IIconComponentProps>(props)
+
+	defineEmits<IIconComponentEmits>()
+
+	defineSlots<IClassIconSlots>()
 
 	/*********************************************************
 	 * Composables

@@ -20,6 +20,8 @@ export interface ITableProps extends ICommonsComponentProps, IBorderProps, IRoun
     ariaRowcount?: number
 }
 
+export interface ITableEmits {}
+
 /** Slot signatures for `<OrigamTable>`. */
 export interface ITableSlots {
     top?: () => any

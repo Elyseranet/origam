@@ -27,7 +27,11 @@
 
 	import { useNumberFormat } from '../../composables/NumberFormat/number-format.composable'
 
-	import type { INumberFormatProps, INumberFormatSlots } from '../../interfaces/NumberFormat/number-format.interface'
+	import type {
+		INumberFormatEmits,
+		INumberFormatProps,
+		INumberFormatSlots
+	} from '../../interfaces/NumberFormat/number-format.interface'
 
 	/*********************************************************
 	 * Global
@@ -60,6 +64,8 @@
 		useGrouping: true,
 		signDisplay: 'auto'
 	})
+
+	defineEmits<INumberFormatEmits>()
 
 	defineSlots<INumberFormatSlots>()
 

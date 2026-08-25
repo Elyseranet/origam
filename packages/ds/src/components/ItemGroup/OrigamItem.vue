@@ -24,7 +24,7 @@
 
   import { ORIGAM_ITEM_GROUP_KEY } from '../../consts/ItemGroup/item-group.const'
 
-  import type { IItemGroupItemProps, IItemGroupItemSlots } from '../../interfaces/ItemGroup/item-group.interface'
+  import type { IItemGroupItemEmits, IItemGroupItemProps, IItemGroupItemSlots } from '../../interfaces/ItemGroup/item-group.interface'
 
   /*********************************************************
    * Global
@@ -37,6 +37,8 @@
     value: undefined,
     selectedClass: undefined
   })
+
+  defineEmits<IItemGroupItemEmits>()
 
   defineSlots<IItemGroupItemSlots>()
 

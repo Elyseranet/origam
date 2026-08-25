@@ -44,7 +44,11 @@
 
 	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { ITableProps, ITableSlots } from '../../interfaces/Table/table.interface'
+	import type {
+		ITableEmits,
+		ITableProps,
+		ITableSlots
+	} from '../../interfaces/Table/table.interface'
 
 	/*********************************************************
 	 * Global
@@ -57,6 +61,8 @@
 		tag: 'div',
 		density: DENSITY.DEFAULT
 	})
+
+	defineEmits<ITableEmits>()
 
 	defineSlots<ITableSlots>()
 

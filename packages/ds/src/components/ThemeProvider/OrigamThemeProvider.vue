@@ -18,7 +18,11 @@
 	import { ORIGAM_DEFAULTS_KEY } from '../../consts/Commons/defaults.const'
 	import { ORIGAM_THEME_DEFAULTS_KEY } from '../../consts/Commons/theme.const'
 	import type { IDefault } from '../../interfaces/DefaultsProvider/defaults-provider.interface'
-	import type { IThemeProviderProps, IThemeProviderSlots } from '../../interfaces/ThemeProvider/theme-provider.interface'
+	import type {
+		IThemeProviderEmits,
+		IThemeProviderProps,
+		IThemeProviderSlots
+	} from '../../interfaces/ThemeProvider/theme-provider.interface'
 	import type { TModeResolved } from '../../types/Commons/theme.type'
 
 	defineOptions({ inheritAttrs: false })
@@ -32,6 +36,8 @@
 		mode: 'auto',
 		tag: 'div'
 	})
+
+	defineEmits<IThemeProviderEmits>()
 
 	defineSlots<IThemeProviderSlots>()
 

@@ -68,7 +68,11 @@
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useTextColor } from '../../composables/Commons/textColor.composable'
 
-	import type { IProgressLinearProps, IProgressLinearSlots } from '../../interfaces/Progress/progress-linear.interface'
+	import type {
+		IProgressLinearEmits,
+		IProgressLinearProps,
+		IProgressLinearSlots
+	} from '../../interfaces/Progress/progress-linear.interface'
 
 	import { convertToUnit } from '../../utils/Commons/commons.util'
 
@@ -84,6 +88,8 @@
 		max: 100,
 		thickness: 4
 	})
+
+	defineEmits<IProgressLinearEmits>()
 
 	defineSlots<IProgressLinearSlots>()
 

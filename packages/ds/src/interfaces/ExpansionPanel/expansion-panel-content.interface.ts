@@ -19,6 +19,8 @@ export interface IExpansionPanelContentProps extends IColorProps, IBgColorProps,
     content?: string | Component
 }
 
+export interface IExpansionPanelContentEmits {}
+
 /** Slot signatures for `<OrigamExpansionPanelContent>`. */
 export interface IExpansionPanelContentSlots {
     loader?: () => any

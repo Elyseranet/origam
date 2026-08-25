@@ -1,6 +1,7 @@
 import type { IBorderProps } from '../Commons/border.interface'
 import type {
     ICommonsComponentProps,
+    ICommonsComponentSlots,
     ITagProps
 } from '../Commons/commons.interface'
 import type { IDimensionProps } from '../Commons/dimension.interface'
@@ -16,3 +17,7 @@ export interface IContainerProps extends ICommonsComponentProps, ITagProps, IDim
     fluid?: boolean
     fullscreen?: boolean
 }
+
+export interface IContainerEmits {}
+
+export interface IContainerSlots extends ICommonsComponentSlots {}
