@@ -35,7 +35,11 @@
 	import { INLINE } from '../../enums/Commons/anchor.enum'
 	import { LOCATION_STRATEGIES } from '../../enums/Commons/location.enum'
 	import { SCROLL_STRATEGIES } from '../../enums/Commons/scroll.enum'
-	import type { IContextualMenuProps } from '../../interfaces/ContextualMenu/contextual-menu.interface'
+  import type {
+    IContextualMenuEmits,
+    IContextualMenuProps,
+    IContextualMenuSlots
+  } from '../../interfaces/ContextualMenu/contextual-menu.interface'
 	import type { TOrigamMenu } from '../../types/Menu/menu.type'
 	import type { TTransitionProps } from '../../types/Transition/transition.type'
 	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
@@ -64,6 +68,10 @@
 		offset: 8,
 		transition: () => ({component: OrigamTranslateScale}) as unknown as TTransitionProps
 	})
+
+  defineEmits<IContextualMenuEmits>()
+
+  defineSlots<IContextualMenuSlots>()
 
 	const {filterProps} = useProps<IContextualMenuProps>(props)
 
@@ -125,20 +133,6 @@
 		unload,
 		isLoaded
 	}, origamMenuRef))
-
-	/*
-	 * No `defineSlots<IContextualMenuSlots>()` here, deliberately. Like
-	 * `<OrigamChart>`, `<OrigamContextualMenu>` is a transparent
-	 * passthrough — the template does `v-for="(_, name) in $slots"` and
-	 * forwards WHATEVER named slots the consumer provides straight to the
-	 * inner `<OrigamMenu>`. Typing `defineSlots` to `IMenuSlots` would
-	 * under-document (the consumer can pass any slot name, not just the
-	 * ones Menu documents) while a widened `Record<string, (b: any) => any>`
-	 * signature compiles but adds zero type safety. The well-known slot
-	 * shape accepted downstream is `IMenuSlots` (see
-	 * `interfaces/Menu/menu.interface.ts`) — refer to it for what actually
-	 * reaches the DOM.
-	 */
 
 </script>
 
