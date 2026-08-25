@@ -126,7 +126,7 @@
 	 * Composables
 	 ********************************************************/
 
-	const {isRtl} = useRtl()
+	const {rtlClasses} = useRtl()
 
 	/*********************************************************
 	 * Group items
@@ -269,8 +269,8 @@
 			{
 				'origam-avatar-group--expand-on-hover': props.expandOnHover,
 				'origam-avatar-group--expand-on-click': props.expandOnClick,
-				'origam-avatar-group--rtl': isRtl
 			},
+      rtlClasses.value,
 			hoverClasses.value,
 			activeClasses.value,
 			marginClasses.value,
@@ -354,6 +354,14 @@
 				transition-timing-function: var(--origam-avatar-group__avatar---transition-timing-function, cubic-bezier(0.4, 0, 0.2, 1));
 			}
 		}
+
+    &--is-rtl {
+      direction: rtl;
+    }
+
+    &--is-ltr {
+      direction: ltr;
+    }
 
 		&--expand-on-click {
 			cursor: pointer;

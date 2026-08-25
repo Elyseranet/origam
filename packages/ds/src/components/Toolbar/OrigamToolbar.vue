@@ -269,6 +269,14 @@
 		box-shadow: var(--origam-toolbar---box-shadow);
 		color: var(--origam-toolbar---color);
 
+    &--is-rtl {
+      direction: rtl;
+    }
+
+    &--is-ltr {
+      direction: ltr;
+    }
+
 		&--border {
 			--origam-toolbar---border-top-width: thin;
 			--origam-toolbar---border-right-width: thin;

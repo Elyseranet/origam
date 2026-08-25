@@ -41,7 +41,10 @@
 
 	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
 
-	import type { IColorPickerCanvasProps } from '../../interfaces/ColorPicker/color-picker-canvas.interface'
+  import type {
+    IColorPickerCanvasProps,
+    IColorPickerCanvasSlots
+  } from '../../interfaces/ColorPicker/color-picker-canvas.interface'
 
 	import type { IColorPickerCanvasEmits } from '../../interfaces/ColorPicker/color-picker-canvas.interface'
 
@@ -62,6 +65,8 @@
 	})
 
 	const emits = defineEmits<IColorPickerCanvasEmits>()
+
+  defineSlots<IColorPickerCanvasSlots>()
 
 	const {filterProps} = useProps<IColorPickerCanvasProps>(props)
 	const {t} = useLocale()

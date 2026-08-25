@@ -854,6 +854,14 @@
 			}
 		}
 
+    &--is-rtl {
+      direction: rtl;
+    }
+
+    &--is-ltr {
+      direction: ltr;
+    }
+
 		&--prefixed {
 			--origam-field---padding-start: 6px;
 		}

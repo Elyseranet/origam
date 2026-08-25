@@ -454,6 +454,14 @@
 			top: 0;
 		}
 
+    &--is-rtl {
+      direction: rtl;
+    }
+
+    &--is-ltr {
+      direction: ltr;
+    }
+
 		&--absolute {
 			position: absolute;
 		}

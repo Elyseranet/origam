@@ -1,6 +1,7 @@
-import { computed, ref, watch } from "vue"
+import { computed } from "vue"
 import type { ComputedRef } from "vue"
 
+import { useVModel } from './vModel.composable'
 import type { IHoverProps } from '../../interfaces/Commons/hover.interface'
 import type { IHoverState } from '../../interfaces/Commons/state-effect.interface'
 
@@ -42,8 +43,20 @@ import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.u
 /*********************************************************
  * useHover
  ********************************************************/
-export function useHover (props: IHoverProps, name = getCurrentInstanceName()) {
-    const isHovered = ref(false)
+export function useHover (props: IHoverProps, prop = 'hover', name = getCurrentInstanceName()) {
+    // v-model bridge — kept so callers passing plain booleans
+    // (`<BottomNav v-model="open">`) keep their two-way binding.
+    // When the prop holds an `IActiveState` object the vmodel still
+    // points at that object, but we don't surface it as `isActive` —
+    // `isActive` is derived below from `forced` + a local toggle.
+    const vmodel = useVModel(props, prop as keyof typeof props)
+
+    /** Configuration object (when the consumer passed one) or undefined. */
+    const hoverState: ComputedRef<IHoverState | undefined> = computed(() => {
+        const h = (props as any)[prop]
+        if (h && typeof h === 'object') return h
+        return undefined
+    })
 
     /**
      * `true` when the state should be locked on regardless of pointer
@@ -52,50 +65,44 @@ export function useHover (props: IHoverProps, name = getCurrentInstanceName()) {
      *   • `hover === { enabled: true, … }`
      */
     const forced = computed<boolean>(() => {
-        const h = props.hover
-        if (h === true) return true
-        if (h && typeof h === 'object') return h.enabled === true
+        const v = (props as any)[prop]
+
+        if (v === true) return true
+        if (v && typeof v === 'object') return v.enabled === true
+
         return false
     })
 
-    /**
-     * The configuration object the consumer attached, or `undefined`.
-     * Exposed as a `ComputedRef<IHoverState | undefined>` so
-     * `useStateEffect` can read it reactively.
-     */
-    const hoverState: ComputedRef<IHoverState | undefined> = computed(() => {
-        const h = props.hover
-        if (h && typeof h === 'object') return h
-        return undefined
-    })
+    const isHover = computed<boolean>(() => {
+        if (forced.value) return true
 
-    const isHover = computed(() => forced.value || isHovered.value)
+        const v = vmodel.value
+
+        if (typeof v === 'boolean') return v
+
+        return false
+    })
 
     const hoverClasses = computed(() => {
         const classes: Array<string> = []
 
         if (isHover.value) {
             classes.push(`${name}--hovered`)
+
+            if ((props as any).hoverClass) {
+                classes.push((props as any).hoverClass)
+            }
         }
 
         return classes
     })
 
     const onMouseenter = () => {
-        isHovered.value = true
+        vmodel.value = true
     }
     const onMouseleave = () => {
-        isHovered.value = false
+        vmodel.value = false
     }
-
-    // Re-evaluate `forced` if `props.hover` changes shape later (e.g.
-    // parent toggles a controlled prop). `forced` is itself a computed
-    // so it tracks `props.hover` automatically — this watch only stays
-    // for backward compat in case a consumer expected the old eager
-    // re-set behaviour; remove later if no test relies on it.
-    watch(() => props.hover, () => {
-        // no-op — computed already reactive.
-    })
 
     return {
         isHover,

@@ -22,6 +22,7 @@ import type { IHoverState } from './state-effect.interface'
  */
 export interface IHoverProps {
     hover?: boolean | IHoverState
+    hoverClass?: string
 }
 
 /**

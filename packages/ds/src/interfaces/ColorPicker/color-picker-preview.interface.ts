@@ -12,3 +12,5 @@ export interface IColorPickerPreviewProps extends ICommonsComponentProps, IDimen
 
 /** Emits fired by `<OrigamColorPickerPreview>` — alpha slider updates the HSVA. */
 export interface IColorPickerPreviewEmits extends IColorHsvEmits {}
+
+export interface IColorPickerPreviewSlots {}

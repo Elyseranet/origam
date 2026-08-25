@@ -119,6 +119,14 @@
 		margin-inline-start: var(--origam-container---margin-inline-start);
 		margin-inline-end: var(--origam-container---margin-inline-end);
 
+    &--is-rtl {
+      direction: rtl;
+    }
+
+    &--is-ltr {
+      direction: ltr;
+    }
+
 		&--border {
 			border-width: var(--origam-container--border---border-width);
 			box-shadow: var(--origam-container--border---box-shadow);

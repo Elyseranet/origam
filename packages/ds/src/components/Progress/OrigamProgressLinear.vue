@@ -250,6 +250,14 @@
 	.origam-progress {
 		$this: &;
 
+    &--is-rtl {
+      direction: rtl;
+    }
+
+    &--is-ltr {
+      direction: ltr;
+    }
+
 		&--linear {
 			background: transparent;
 			overflow: hidden;

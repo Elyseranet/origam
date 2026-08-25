@@ -74,7 +74,7 @@ export default typescriptEslint.config(
 			"@typescript-eslint/ban-ts-comment": "warn",
 			"@typescript-eslint/no-explicit-any": "off",
 			"@typescript-eslint/no-empty-object-type": ["error", {
-				"allowInterfaces": "with-single-extends"
+				"allowInterfaces": "always"
 			}],
 			"vue/valid-v-slot": "off",
 			// Slot scopes in origam intentionally re-expose internal names

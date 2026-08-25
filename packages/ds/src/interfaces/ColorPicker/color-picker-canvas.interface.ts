@@ -13,3 +13,5 @@ export interface IColorPickerCanvasProps extends ICommonsComponentProps, IDimens
 
 /** Emits fired by `<OrigamColorPickerCanvas>` — drag/click updates the HSVA. */
 export interface IColorPickerCanvasEmits extends IColorHsvEmits {}
+
+export interface IColorPickerCanvasSlots {}

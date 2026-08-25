@@ -44,7 +44,10 @@
 
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import type { IColorPickerSwatchesProps } from '../../interfaces/ColorPicker/color-picker-swatches.interface'
+  import type {
+    IColorPickerSwatchesProps,
+    IColorPickerSwatchesSlots
+  } from '../../interfaces/ColorPicker/color-picker-swatches.interface'
 
 	import type { IColorPickerSwatchesEmits } from '../../interfaces/ColorPicker/color-picker-swatches.interface'
 	import type { TColorType, TRGBA } from '../../types/Commons/color.type'
@@ -66,6 +69,8 @@
 	})
 
 	const emits = defineEmits<IColorPickerSwatchesEmits>()
+
+  defineSlots<IColorPickerSwatchesSlots>()
 
 	const {filterProps} = useProps<IColorPickerSwatchesProps>(props)
 
