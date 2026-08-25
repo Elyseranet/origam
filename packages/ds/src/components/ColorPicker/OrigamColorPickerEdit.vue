@@ -43,7 +43,10 @@
 	import { COLOR_MODES_NAMES } from '../../enums/ColorPicker/color-picker.enum'
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import type { IColorPickerEditProps } from '../../interfaces/ColorPicker/color-picker-edit.interface'
+  import type {
+    IColorPickerEditProps,
+    IColorPickerEditSlots
+  } from '../../interfaces/ColorPicker/color-picker-edit.interface'
 
 	import type { IColorPickerEditEmits } from '../../interfaces/ColorPicker/color-picker-edit.interface'
 
@@ -62,6 +65,8 @@
 	})
 
 	const emits = defineEmits<IColorPickerEditEmits>()
+
+  defineSlots<IColorPickerEditSlots>()
 
 	const {filterProps} = useProps<IColorPickerEditProps>(props)
 

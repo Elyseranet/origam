@@ -17,3 +17,5 @@ export interface IColorPickerEditProps extends ICommonsComponentProps {
 /** Emits fired by `<OrigamColorPickerEdit>` — input edits the HSVA and
  *  flips between the active mode. */
 export interface IColorPickerEditEmits extends IColorHsvEmits, IColorModeEmits {}
+
+export interface IColorPickerEditSlots {}

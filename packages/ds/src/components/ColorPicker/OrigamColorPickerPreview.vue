@@ -78,7 +78,10 @@
 	import { DENSITY } from '../../enums/Commons/density.enum'
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import type { IColorPickerPreviewProps } from '../../interfaces/ColorPicker/color-picker-preview.interface'
+  import type {
+    IColorPickerPreviewProps,
+    IColorPickerPreviewSlots
+  } from '../../interfaces/ColorPicker/color-picker-preview.interface'
 
 	import type { IColorPickerPreviewEmits } from '../../interfaces/ColorPicker/color-picker-preview.interface'
 
@@ -100,6 +103,8 @@
 	const props = withDefaults(defineProps<IColorPickerPreviewProps>(), {})
 
 	const emits = defineEmits<IColorPickerPreviewEmits>()
+
+  defineSlots<IColorPickerPreviewSlots>()
 
 	const {filterProps} = useProps<IColorPickerPreviewProps>(props)
 
