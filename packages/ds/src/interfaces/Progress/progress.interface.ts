@@ -33,9 +33,14 @@ export interface IProgressTypeProps extends ITagProps, ICommonsComponentProps, I
     max?: number | string
     striped?: boolean
     /**
-     * Accessible label for the progress bar (aria-label). When omitted,
-     * defaults to `'Loading'`. Pass a localised string via your i18n
-     * provider or the parent component's `labels` mechanism.
+     * Accessible label for the progress bar (aria-label). Carries a
+     * **locale key**, not final text — it is resolved through the DS
+     * `t()` mechanism, so it follows the active locale out of the box.
+     * Defaults to `'origam.loading'`.
+     *
+     * A raw string that matches no key is returned unchanged, so
+     * `label="Uploading photo"` still works for consumers who prefer to
+     * translate on their side.
      */
     label?: string
 }

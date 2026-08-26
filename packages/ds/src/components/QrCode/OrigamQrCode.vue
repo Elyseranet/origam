@@ -62,6 +62,7 @@
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useBorder } from '../../composables/Commons/border.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useMargin } from '../../composables/Commons/margin.composable'
 	import { usePadding } from '../../composables/Commons/padding.composable'
 	import { useQrCode } from '../../composables/QrCode/qr-code.composable'
@@ -128,6 +129,8 @@
 	 * the matrix untouched.
 	 ********************************************************/
 	const slots = useSlots()
+
+	const {t} = useLocale()
 
 	const hasCenter = computed(
 		() => !!slots.center || !!props.icon || !!props.image
@@ -203,7 +206,7 @@
 	const resolvedAriaLabel = computed<string>(() => {
 		if (props.ariaLabel) return props.ariaLabel
 		if (props.title) return props.title
-		return `QR code for ${ props.value }`
+		return t('origam.qr_code.aria_label', {value: props.value})
 	})
 
 	/*********************************************************

@@ -54,7 +54,7 @@ The component extends every standard DS transverse interface
 | `quietZone`            | `number`                               | `4`              | Quiet-zone width (in modules). ISO/IEC 18004 recommends ≥4.                                    |
 | `icon`                 | `TIcon`                                | —                | Centred `<OrigamIcon>` overlay. Mutually exclusive with `image`.                               |
 | `image`                | `string \| ISrcObject`                 | —                | Centred image overlay (URL or `ISrcObject`). Wins over `icon` when both are set.               |
-| `ariaLabel`            | `string`                               | —                | Accessible label. Defaults to `"QR code for {value}"`.                                         |
+| `ariaLabel`            | `string`                               | —                | Accessible label. When omitted, falls back to the `origam.qr_code.aria_label` locale key (`"QR code for {value}"` in English), resolved in the active locale. |
 
 ### DS transverse props
 

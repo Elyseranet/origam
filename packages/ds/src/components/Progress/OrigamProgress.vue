@@ -31,6 +31,7 @@
 	import OrigamProgressCircular from './OrigamProgressCircular.vue'
 	import OrigamProgressLinear from './OrigamProgressLinear.vue'
 
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useProgress } from '../../composables/Progress/progress.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useSize } from '../../composables/Commons/size.composable'
@@ -55,7 +56,8 @@
 		modelValue: 0,
 		max: 100,
 		thickness: 4,
-		size: SIZES.DEFAULT
+		size: SIZES.DEFAULT,
+		label: 'origam.loading'
 	})
 
 	const {filterProps} = useProps<IProgressProps>(props)
@@ -87,7 +89,9 @@
 	const {sizeClasses, sizeStyles} = useSize(props)
 	const {normalizedValue, hasContent} = useProgress(props)
 
-	const progressAriaLabel = computed(() => props.label ?? 'Loading')
+	const {t} = useLocale()
+
+	const progressAriaLabel = computed(() => t(props.label))
 
 	/*********************************************************
 	 * Component selection
