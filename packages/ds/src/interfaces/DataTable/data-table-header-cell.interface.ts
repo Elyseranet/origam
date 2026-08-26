@@ -31,7 +31,12 @@ export interface IDataTableHeaderCellSlots {
     [key: `header.${string}`]: ((props: IDataTableHeaderCellColumnSlot) => any) | undefined
 }
 
-/** `<OrigamDataTableHeaderCell>` toggles sort through `useSort` (shared
- *  provide/inject state) and toggles select-all through `useSelection` —
- *  nothing is emitted upward. */
+/*********************************************************
+ * IDataTableHeaderCellEmits
+ *
+ * @description
+ * `<OrigamDataTableHeaderCell>` toggles sort through `useSort` (shared
+ * provide/inject state) and toggles select-all through `useSelection` —
+ * nothing is emitted upward.
+ ********************************************************/
 export interface IDataTableHeaderCellEmits {}
