@@ -126,6 +126,9 @@
       "copy_aria_label": "Copy code to clipboard",
       "copied_aria_label": "Code copied to clipboard"
     },
+    "qr_code": {
+      "aria_label": "QR code for {value}"
+    },
     "clipboard": {
       "copy_aria_label": "Copy to clipboard",
       "copied_aria_label": "Value copied to clipboard"

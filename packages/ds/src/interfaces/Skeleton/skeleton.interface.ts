@@ -13,6 +13,17 @@ export interface ISkeletonProps extends ICommonsComponentProps, IColorProps, IBg
     height?: string | number
     loading?: boolean
     pulse?: boolean
+    /**
+     * Accessible label announced on the `role="status"` placeholder
+     * (aria-label). Carries a **locale key**, not final text — it is
+     * resolved through the DS `t()` mechanism, so it follows the active
+     * locale out of the box. Defaults to `'origam.loading'`.
+     *
+     * A raw string that matches no key is returned unchanged, so
+     * `label="Loading your invoices"` still works for consumers who
+     * prefer to translate on their side.
+     */
+    label?: string
 }
 
 /*********************************************************
