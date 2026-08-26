@@ -17,6 +17,11 @@ export interface ISystemBarProps extends ICommonsComponentProps, ITagProps, IEle
     window?: boolean
 }
 
-/** `<OrigamSystemBar>` is a static layout item (registers itself via
- *  `useLayoutItem`) — nothing is emitted. */
+/*********************************************************
+ * ISystemBarEmits
+ *
+ * @description
+ * `<OrigamSystemBar>` is a static layout item (registers itself via
+ * `useLayoutItem`) — nothing is emitted.
+ ********************************************************/
 export interface ISystemBarEmits {}

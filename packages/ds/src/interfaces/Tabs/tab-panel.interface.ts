@@ -20,11 +20,14 @@ export interface ITabPanelProps extends ICommonsComponentProps, ITagProps, IGrou
     tag?: string
 }
 
-/**
+/*********************************************************
+ * ITabPanelEmits
+ *
+ * @description
  * `<OrigamTabPanel>` self-registers into the `ORIGAM_TAB_PANELS_KEY`
  * group via `useGroupItem`, which genuinely emits `group:selected` on
  * this component's own instance whenever `isSelected` changes.
- */
+ ********************************************************/
 export interface ITabPanelEmits extends IGroupEmits {}
 
 /** Slot signatures for `<OrigamTabPanel>`. */

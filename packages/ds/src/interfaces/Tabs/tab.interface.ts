@@ -46,13 +46,16 @@ export interface ITabProps extends ICommonsComponentProps, ITagProps, IGroupItem
     icon?: TIcon
 }
 
-/**
+/*********************************************************
+ * ITabEmits
+ *
+ * @description
  * `<OrigamTab>` self-registers into the parent `<OrigamTabs>` group via
  * `useGroupItem`, which watches `isSelected` and emits `group:selected`
  * on this component's own instance whenever selection state changes —
  * a genuine, always-active emit (see `IGroupEmits`), not conditional
  * on a specific handler.
- */
+ ********************************************************/
 export interface ITabEmits extends IGroupEmits {}
 
 /** Scope forwarded to the `default` slot — the resolved selection

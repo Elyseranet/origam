@@ -25,6 +25,11 @@ export interface IStepperItemEmits {
     (e: 'click', index: number): void
 }
 
-/** Slot signatures for `<OrigamStepperItem>` — none. Indicator icon,
- *  title and subtitle are entirely derived from props. */
+/*********************************************************
+ * IStepperItemSlots
+ *
+ * @description
+ * Slot signatures for `<OrigamStepperItem>` — none. Indicator icon,
+ * title and subtitle are entirely derived from props.
+ ********************************************************/
 export interface IStepperItemSlots {}
