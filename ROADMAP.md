@@ -796,15 +796,17 @@ propre wrapper générique.
 - Livrable : composant + interface (`IPageProps`) + story + doc + e2e
   (présence des 3 zones, rendu sans certaines zones) — **test-as-you-build**.
 
-### `OrigamSection` — achèvement + schémas de section **(M, spec)**
+### `OrigamSection` — création + schémas de section **(M, spec)**
 
-> Demande mainteneur (août 2026). **Statut : coquille existante à achever,
-> PAS une création.**
+> Demande mainteneur (août 2026). **Statut : composant supprimé du dépôt le
+> 2026-08-26 (coquille vide, aucune valeur livrée) — à recréer entièrement
+> quand ce jalon sera pris en charge.**
 
-**Constat** : `packages/ds/src/components/Section/OrigamSection.vue` existe
-déjà mais c'est une coquille vide (14 lignes, `TODO - WIP`) — le `CLAUDE.md`
-recommande d'ailleurs d'utiliser l'élément `section` natif en attendant. Ce
-jalon **achève** le composant, il ne le crée pas.
+**Constat** : le stub `packages/ds/src/components/Section/OrigamSection.vue`
+(14 lignes, `TODO - WIP`, aucune prop/slot/style) a été retiré du dépôt en
+attendant qu'on sache quelle fonctionnalité lui donner — en attendant,
+`CLAUDE.md` recommande d'utiliser l'élément `section` natif. Ce jalon **crée**
+le composant, il ne l'achève plus.
 
 **Principe cible** : réutiliser le pattern de « schémas » déjà validé par
 `OrigamSkeleton` (`TSkeletonVariant` : `text` / `rectangular` / `circular` /

@@ -1348,7 +1348,7 @@
                 },
                 "section": {
                     "title": "OrigamSection — schémas de section",
-                    "description": "OrigamSection existe déjà aujourd'hui sous forme de coquille vide de 14 lignes — ce jalon l'achève, ce n'est pas une création. Reprend le pattern de schémas déjà éprouvé par OrigamSkeleton : des schémas de section prédéfinis comme hero, split, centered ou full-bleed, en presets de props overridables sur un vrai élément section, props d'abord."
+                    "description": "OrigamSection a été retiré du dépôt le 26/08/2026 — c'était une coquille vide de 14 lignes, sans valeur livrée. Ce jalon le crée entièrement : des schémas de section prédéfinis comme hero, split, centered ou full-bleed, en presets de props overridables sur un vrai élément section, props d'abord."
                 }
             },
             "long_term": {

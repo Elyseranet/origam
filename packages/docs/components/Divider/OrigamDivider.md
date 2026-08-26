@@ -126,5 +126,3 @@ The full list lives in
 
 - `OrigamSheet` — chrome surface frequently
   separated by dividers.
-- `OrigamSection` — semantic section
-  wrapper.

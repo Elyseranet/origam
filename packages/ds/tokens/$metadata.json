@@ -21,7 +21,6 @@
     "component/app-bar",
     "component/layout",
     "component/main",
-    "component/section",
     "component/drawer",
     "component/sheet",
     "component/system-bar",

@@ -243,8 +243,6 @@ export * from './Select/select.type'
 export * from './SelectionControl/selection-control.type'
 export * from './SelectionControl/selection-control-group.type'
 
-export * from './Section/section.type'
-
 export * from './Sheet/sheet.type'
 
 export * from './Slide/slide-group.type'
