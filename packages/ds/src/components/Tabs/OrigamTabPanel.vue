@@ -34,7 +34,11 @@
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { ORIGAM_TABS_KEY, ORIGAM_TAB_PANELS_KEY, ORIGAM_TAB_PANELS_CTX_KEY } from '../../consts/Tabs/tabs.const'
+	import {
+		ORIGAM_TABS_LINK_KEY,
+		ORIGAM_TAB_PANELS_KEY,
+		ORIGAM_TAB_PANELS_CTX_KEY
+	} from '../../consts/Tabs/tabs.const'
 
 	import type {
 		ITabPanelEmits,
@@ -61,9 +65,17 @@
 
 	/*********************************************************
 	 * Group registration
+	 *
+	 * @description
+	 * The tabs group is NOT reachable via a plain
+	 * `inject(ORIGAM_TABS_KEY)` — `<OrigamTabs>` is a SIBLING of
+	 * `<OrigamTabPanels>`, not its ancestor (#441). `<OrigamTabPanels>`
+	 * resolves the sibling once (`useGroupSiblingLink`) and re-provides
+	 * it under `ORIGAM_TABS_LINK_KEY`, down its OWN ancestor chain —
+	 * THAT is what we inject here.
 	 ********************************************************/
 	const groupItem = useGroupItem(props, ORIGAM_TAB_PANELS_KEY)
-	const tabsGroup = inject(ORIGAM_TABS_KEY, null)
+	const tabsGroupLink = inject(ORIGAM_TABS_LINK_KEY, undefined)
 	const panelsCtx = inject(ORIGAM_TAB_PANELS_CTX_KEY, null)
 
 	if (!groupItem) {
@@ -76,6 +88,7 @@
 	const panelDomId = computed(() => `origam-tab-panel-${groupItem!.id}`)
 
 	const tabLabelledBy = computed(() => {
+		const tabsGroup = tabsGroupLink?.value
 		if (!tabsGroup) return undefined
 
 		const tab = tabsGroup.items.value.find(item => item.value === groupItem!.value.value)

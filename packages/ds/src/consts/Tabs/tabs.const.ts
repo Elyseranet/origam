@@ -1,4 +1,4 @@
-import type { InjectionKey } from 'vue'
+import type { InjectionKey, Ref } from 'vue'
 import type { IGroupProvide } from '../../interfaces/Commons/group.interface'
 import type { ITabPanelsProvide } from '../../interfaces/Tabs/tab-panels.interface'
 
@@ -25,3 +25,32 @@ export const ORIGAM_TAB_PANELS_KEY: InjectionKey<IGroupProvide> = Symbol.for('or
  * props at every level.
  */
 export const ORIGAM_TAB_PANELS_CTX_KEY: InjectionKey<ITabPanelsProvide> = Symbol.for('origam:tab-panels-ctx')
+
+/*********************************************************
+ * ORIGAM_TAB_PANELS_LINK_KEY
+ *
+ * @description
+ * #441 — `<OrigamTabs>` and `<OrigamTabPanels>` are documented as
+ * SIBLINGS (OrigamTabs.md), never ancestor/descendant of one another.
+ * `ORIGAM_TABS_KEY` / `ORIGAM_TAB_PANELS_KEY` above are therefore
+ * unreachable via a plain cross-sibling `inject()` — Vue's `inject()`
+ * only walks the ANCESTOR chain.
+ * @description
+ * `<OrigamTabs>` resolves its sibling `<OrigamTabPanels>` once (via
+ * `useGroupSiblingLink`, walking the shared parent's render tree) and
+ * re-provides the result under THIS key, down its OWN (real) ancestor
+ * chain to `<OrigamTab>`. The `Ref` is `null` until the sibling has
+ * mounted and been located; `<OrigamTab>` reads it lazily inside a
+ * `computed` so the ARIA attribute updates reactively once resolved.
+ ********************************************************/
+export const ORIGAM_TAB_PANELS_LINK_KEY: InjectionKey<Ref<IGroupProvide | null>> = Symbol.for('origam:tab-panels-link')
+
+/*********************************************************
+ * ORIGAM_TABS_LINK_KEY
+ *
+ * @description
+ * #441 — symmetric counterpart of `ORIGAM_TAB_PANELS_LINK_KEY`:
+ * `<OrigamTabPanels>` resolves its sibling `<OrigamTabs>` and
+ * re-provides it under this key for `<OrigamTabPanel>` to read.
+ ********************************************************/
+export const ORIGAM_TABS_LINK_KEY: InjectionKey<Ref<IGroupProvide | null>> = Symbol.for('origam:tabs-link')

@@ -25,11 +25,17 @@
 	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
 
 	import { useGroup } from '../../composables/Commons/group.composable'
+	import { useGroupSiblingLink } from '../../composables/Commons/groupSiblingLink.composable'
 	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { ORIGAM_TAB_PANELS_KEY, ORIGAM_TAB_PANELS_CTX_KEY } from '../../consts/Tabs/tabs.const'
+	import {
+		ORIGAM_TABS_KEY,
+		ORIGAM_TABS_LINK_KEY,
+		ORIGAM_TAB_PANELS_KEY,
+		ORIGAM_TAB_PANELS_CTX_KEY
+	} from '../../consts/Tabs/tabs.const'
 
 	import { omitUndefined } from '../../utils/Commons/commons.util'
 
@@ -64,6 +70,17 @@
 	 * Group orchestration
 	 ********************************************************/
 	const {isSelected, select, next, prev, selected, items} = useGroup(props, ORIGAM_TAB_PANELS_KEY)
+
+	/*********************************************************
+	 * Sibling tabs link (#441)
+	 *
+	 * @description
+	 * Symmetric counterpart of `<OrigamTabs>`'s own sibling link —
+	 * see `useGroupSiblingLink` for why a plain `inject()` cannot
+	 * reach the `<OrigamTabs>` sibling directly.
+	 ********************************************************/
+	const tabsGroupLink = useGroupSiblingLink(ORIGAM_TAB_PANELS_KEY, ORIGAM_TABS_KEY)
+	provide(ORIGAM_TABS_LINK_KEY, tabsGroupLink)
 
 	const rootRef = ref<HTMLElement>()
 	const isReversed = shallowRef(false)

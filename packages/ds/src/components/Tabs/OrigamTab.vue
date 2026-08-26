@@ -82,7 +82,7 @@
 
 	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import { ORIGAM_TABS_KEY, ORIGAM_TAB_PANELS_KEY } from '../../consts/Tabs/tabs.const'
+	import { ORIGAM_TABS_KEY, ORIGAM_TAB_PANELS_LINK_KEY } from '../../consts/Tabs/tabs.const'
 
 	import type {
 		ITabEmits,
@@ -128,12 +128,15 @@
 	 *
 	 * @description
 	 * Self-registers in the parent `<OrigamTabs>` tablist via
-	 * `useGroupItem`. The panels group is `inject`-looked-up
-	 * (not registered against) so we can derive the matching
-	 * panel ID for `aria-controls`.
+	 * `useGroupItem`. The panels group is NOT reachable via a plain
+	 * `inject(ORIGAM_TAB_PANELS_KEY)` — `<OrigamTabPanels>` is a
+	 * SIBLING of `<OrigamTabs>`, not its ancestor (#441). `<OrigamTabs>`
+	 * resolves the sibling once (`useGroupSiblingLink`) and re-provides
+	 * it under `ORIGAM_TAB_PANELS_LINK_KEY`, down its OWN ancestor
+	 * chain — THAT is what we inject here.
 	 ********************************************************/
 	const groupItem = useGroupItem(props, ORIGAM_TABS_KEY)
-	const panelsGroup = inject(ORIGAM_TAB_PANELS_KEY, null)
+	const panelsGroupLink = inject(ORIGAM_TAB_PANELS_LINK_KEY, undefined)
 
 	if (!groupItem) {
 		throw new Error('[Origam] <OrigamTab> must be used inside an <OrigamTabs>')
@@ -160,6 +163,7 @@
 	const tabDomId = computed(() => `origam-tab-${groupItem!.id}`)
 
 	const panelId = computed(() => {
+		const panelsGroup = panelsGroupLink?.value
 		if (!panelsGroup) return undefined
 
 		const panel = panelsGroup.items.value.find(item => item.value === groupItem!.value.value)
