@@ -130,20 +130,6 @@ export * from './RatingField'
 
 export * from './Responsive'
 
-/*********************************************************
- * ./Section — VOLONTAIREMENT PAS REEXPORTE
- *
- * @description
- * OrigamSection est encore un stub vide : aucune prop, aucun slot,
- * aucun style, et il ne rend jamais ses enfants.
- * L'exporter revient a livrer un composant qui avale silencieusement le
- * contenu du consommateur.
- * Ce barrel pilote aussi app.component() dans origam.ts : la ligne
- * retiree, un <origam-section> ecrit sans import declenche un
- * avertissement Vue au lieu de disparaitre en silence.
- * A retablir en meme temps que l'implementation.
- ********************************************************/
-
 export * from './Select'
 
 export * from './SelectionControl'

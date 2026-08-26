@@ -157,7 +157,7 @@ Around 80 component families, all prefixed `Origam*`:
 |--------------|---------------------------------------------------------------------------|
 | Forms        | `OrigamTextField`, `OrigamSelect`, `OrigamCheckbox`, `OrigamRadio`, `OrigamSwitch`, `OrigamSliderField`, `OrigamRatingField`, `OrigamDatePickerField`, `OrigamColorPickerField`, `OrigamFileField`, `OrigamPasswordField`, `OrigamOtpInputField`, `OrigamNumberField`, `OrigamForm` |
 | Navigation   | `OrigamToolbar`, `OrigamBottomNav`, `OrigamBreadcrumb`, `OrigamDrawer`, `OrigamPagination`, `OrigamStepper`, `OrigamTreeview` |
-| Layout       | `OrigamApp`, `OrigamMain`, `OrigamSection`, `OrigamLayout`, `OrigamGrids`, `OrigamDivider`, `OrigamSystemBar` |
+| Layout       | `OrigamApp`, `OrigamMain`, `OrigamLayout`, `OrigamGrids`, `OrigamDivider`, `OrigamSystemBar` |
 | Feedback     | `OrigamAlert`, `OrigamSnackbar`, `OrigamProgress`, `OrigamLoader`, `OrigamSkeleton`, `OrigamBadge`, `OrigamMessages` |
 | Overlay      | `OrigamDialog`, `OrigamMenu`, `OrigamTooltip`, `OrigamSheet`, `OrigamContextualMenu`, `OrigamOverlay`, `OrigamConfirmWrapper` |
 | Data         | `OrigamDataTable`, `OrigamDataList`, `OrigamTable`, `OrigamCarousel`, `OrigamTimeline`, `OrigamExpansionPanel`, `OrigamVirtualScroll`, `OrigamInfiniteScroll` |
