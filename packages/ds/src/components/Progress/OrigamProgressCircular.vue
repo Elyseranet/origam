@@ -89,7 +89,8 @@
 		max: 100,
 		thickness: 4,
 		size: SIZES.DEFAULT,
-		rotate: 0
+		rotate: 0,
+		active: true
 	})
 
 	defineEmits<IProgressCircularEmits>()

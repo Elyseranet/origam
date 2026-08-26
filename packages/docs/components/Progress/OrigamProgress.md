@@ -101,13 +101,22 @@ interface IProgressTypeProps {
     indeterminate?: boolean
     modelValue?: string | number   // default 0
     thickness?: string | number    // default 4
-    active?: boolean
+    active?: boolean                // default true
     absolute?: boolean
     max?: number | string          // default 100
     striped?: boolean              // reserved (linear); class emitted, not yet styled
     label?: string                 // locale key, default 'origam.loading'
 }
 ```
+
+### `active` — visible / running state
+
+`active` defaults to **`true`**: a mounted progress bar is assumed to be
+currently relevant and must stay reachable to assistive tech and animated
+by default (`indeterminate` bars/streams only run while `active`). Pass
+`active="false"` explicitly to pause an off-screen or intentionally
+hidden indicator — that is the only case where it should surface as
+`aria-hidden="true"` (see Accessibility below).
 
 ### `label` — accessible name
 
@@ -147,8 +156,10 @@ itself only sets layout tokens; the visuals come from the picked child.
 - The dispatched variant is rendered with `role="progressbar"`.
 - `aria-valuemin="0"`, `aria-valuemax` follows `max`.
 - `aria-valuenow` is set when `indeterminate` is false.
-- `aria-hidden` mirrors the `active` prop (so off-screen progress bars do
-  not surface to assistive tech).
+- `aria-hidden` mirrors the `active` prop, which **defaults to `true`** —
+  a progress bar is announced to assistive tech out of the box. Set
+  `active="false"` to intentionally hide an off-screen or paused
+  indicator (`aria-hidden="true"` then applies).
 
 ## Related
 
