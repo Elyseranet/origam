@@ -141,6 +141,11 @@ export interface IGridProps extends ICommonsComponentProps, ITagProps, IDimensio
     inline?: boolean
 }
 
-/** Emits fired by `<OrigamGrid>` — none. A declarative CSS Grid
- *  container, purely presentational. */
+/*********************************************************
+ * IGridEmits
+ *
+ * @description
+ * Emits fired by `<OrigamGrid>` — none. A declarative CSS Grid
+ * container, purely presentational.
+ ********************************************************/
 export interface IGridEmits {}

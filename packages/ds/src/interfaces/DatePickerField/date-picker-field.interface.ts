@@ -19,9 +19,14 @@ export interface IDatePickerFieldProps extends ITextFieldProps, ITransitionCompo
     closableChips?: boolean
 }
 
-/** Emits fired by `<OrigamDatePickerField>` — both are `useVModel`
- *  relays (`modelValue` selection, `menu` open state), not literal
- *  `emit(...)` calls in the component body. */
+/*********************************************************
+ * IDatePickerFieldEmits
+ *
+ * @description
+ * Emits fired by `<OrigamDatePickerField>` — both are `useVModel`
+ * relays (`modelValue` selection, `menu` open state), not literal
+ * `emit(...)` calls in the component body.
+ ********************************************************/
 export interface IDatePickerFieldEmits extends ICommonsComponentEmits {
     (e: 'update:menu', value: boolean): void
 }

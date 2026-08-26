@@ -24,6 +24,11 @@ export interface IInfiniteScrollIntersectEmits {
     (e: 'intersect', value: { isIntersecting: boolean, side: TInfiniteScrollSide }): void
 }
 
-/** `<OrigamInfiniteScrollIntersect>` renders a single sentinel `<div>` —
- *  no `<slot>` in its template. */
+/*********************************************************
+ * IInfiniteScrollIntersectSlots
+ *
+ * @description
+ * `<OrigamInfiniteScrollIntersect>` renders a single sentinel `<div>` —
+ * no `<slot>` in its template.
+ ********************************************************/
 export interface IInfiniteScrollIntersectSlots {}
