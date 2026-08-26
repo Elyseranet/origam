@@ -221,13 +221,41 @@ function enforceContrast (el: HTMLElement, enabled: boolean): void {
  */
 const SETTLE_MS = 250
 
+/*********************************************************
+ * cancelScheduled
+ *
+ * @description
+ * Cancel whatever `schedule()` previously queued for `el`, if anything.
+ * Called both before scheduling a new pair (so `updated` never accumulates
+ * timers) and from `unmounted` (so nothing survives the component's death).
+ ********************************************************/
+function cancelScheduled (el: HTMLElement): void {
+    const pending = el._contrastTimers
+    if (!pending) return
+
+    if (pending.raf !== undefined && typeof cancelAnimationFrame !== 'undefined') {
+        cancelAnimationFrame(pending.raf)
+    }
+    if (pending.timeout !== undefined && typeof clearTimeout !== 'undefined') {
+        clearTimeout(pending.timeout)
+    }
+
+    delete el._contrastTimers
+}
+
 function schedule (el: HTMLElement, enabled: boolean): void {
+    cancelScheduled(el)
+
+    const pending: { raf?: number; timeout?: number } = {}
+
     if (typeof requestAnimationFrame !== 'undefined') {
-        requestAnimationFrame(() => enforceContrast(el, enabled))
+        pending.raf = requestAnimationFrame(() => enforceContrast(el, enabled))
     }
     if (typeof setTimeout !== 'undefined') {
-        setTimeout(() => enforceContrast(el, enabled), SETTLE_MS)
+        pending.timeout = setTimeout(() => enforceContrast(el, enabled), SETTLE_MS) as unknown as number
     }
+
+    el._contrastTimers = pending
 }
 
 const vContrast: Directive<HTMLElement, boolean | undefined> = {
@@ -236,6 +264,9 @@ const vContrast: Directive<HTMLElement, boolean | undefined> = {
     },
     updated (el: HTMLElement, binding: DirectiveBinding<boolean | undefined>) {
         schedule(el, config.enabled && binding.value !== false)
+    },
+    unmounted (el: HTMLElement) {
+        cancelScheduled(el)
     }
 }
 
