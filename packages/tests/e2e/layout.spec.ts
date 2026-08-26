@@ -127,6 +127,42 @@ test.describe('OrigamResponsive', () => {
         console.log('[responsive-inline] display:', display)
         expect(display).toContain('inline')
     })
+
+    /**
+     * Regression for #454 — the classic aspect-ratio-box pattern requires
+     * `__content` to be pulled back UP over `__sizer` (negative margin),
+     * so the two overlap instead of stacking. The sibling-selector rule sets
+     * `--origam-responsive__content---margin-inline-start`, but `__content`'s
+     * only margin declaration reads `--origam-responsive__content---margin`
+     * — a different custom property name — so the override is silently
+     * unconsumed and the boxes stack (double height) instead of overlaying.
+     *
+     * getBoundingClientRect is used rather than getComputedStyle('margin')
+     * because jsdom cannot resolve var()/cascade at all, and even a real
+     * browser's computed `margin-block-start` on a `%`-based value resolves
+     * to a used-value length — the layout position is the ground truth for
+     * "does content overlay the sizer", not the specified value.
+     */
+    test('content overlays the sizer instead of stacking below it', async ({ page }) => {
+        await page.goto(RESPONSIVE_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Slots - Default', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const sizer = sandbox.locator('.origam-responsive__sizer').first()
+        const content = sandbox.locator('.origam-responsive__content').first()
+        await expect(sizer).toBeVisible({ timeout: 5000 })
+        await expect(content).toBeVisible({ timeout: 5000 })
+
+        const sizerBox = await sizer.evaluate((el) => el.getBoundingClientRect().toJSON())
+        const contentBox = await content.evaluate((el) => el.getBoundingClientRect().toJSON())
+        console.log('[responsive-overlay] sizer:', sizerBox, '| content:', contentBox)
+
+        // Overlaid: content's top sits within the sizer's own box, not below it.
+        expect(contentBox.top).toBeGreaterThanOrEqual(sizerBox.top - 1)
+        expect(contentBox.top).toBeLessThan(sizerBox.bottom - 1)
+    })
 })
 
 // ─── OrigamSystemBar ──────────────────────────────────────────────────────────
