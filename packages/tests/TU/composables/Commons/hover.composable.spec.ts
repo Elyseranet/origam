@@ -14,7 +14,7 @@ import { useStateFlag } from '@origam/composables/Commons/stateFlag.composable'
 
 /**
  * `useStateFlag` accepts an explicit `name` option used verbatim in the
- * class (`${name}--hovered`). When omitted, it calls
+ * class (`${name}--hover`). When omitted, it calls
  * `getCurrentInstanceName()` which applies `toKebabCase` from the component
  * name. Here we pass an already-kebab-cased name to get predictable classes.
  *
@@ -145,21 +145,21 @@ describe('useStateFlag(hover) — classes', () => {
         expect(api().classes.value).toEqual([])
     })
 
-    it('emits <component>--hovered class when isOn=true', () => {
+    it('emits <component>--hover class when isOn=true', () => {
         const { api } = mountWithHover(true, 'origam-btn')
-        expect(api().classes.value).toContain('origam-btn--hovered')
+        expect(api().classes.value).toContain('origam-btn--hover')
     })
 
     it('class mirrors the name option verbatim (consumer is responsible for casing)', () => {
         const { api } = mountWithHover(true, 'origam-list-item')
-        expect(api().classes.value).toContain('origam-list-item--hovered')
+        expect(api().classes.value).toContain('origam-list-item--hover')
     })
 
     it('class added after set()', () => {
         const { api } = mountWithHover(undefined, 'origam-card')
         expect(api().classes.value).toEqual([])
         api().set()
-        expect(api().classes.value).toContain('origam-card--hovered')
+        expect(api().classes.value).toContain('origam-card--hover')
     })
 
     it('class removed after unset()', () => {
