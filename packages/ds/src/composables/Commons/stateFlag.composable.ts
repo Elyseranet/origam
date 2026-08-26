@@ -107,23 +107,11 @@ export function useStateFlag<S extends TStateName> (
         return internalToggle.value
     })
 
-    /*********************************************************
-     * classSuffix
-     *
-     * @description
-     * TEMPORARY (Phase A only — see CLAUDE.md task brief). `hover` keeps
-     * emitting `--hovered` (matches today's output, 0 CSS rules) instead of
-     * the styled `--hover` suffix (27 CSS rules) so this migration produces
-     * byte-identical classes. Phase B fixes the suffix and deletes this
-     * branch.
-     ********************************************************/
-    const classSuffix = state === 'hover' ? 'hovered' : state
-
     const classes = computed(() => {
         const list: Array<string> = []
 
         if (isOn.value) {
-            list.push(`${name}--${classSuffix}`)
+            list.push(`${name}--${state}`)
 
             /*********************************************************
              * extraClass

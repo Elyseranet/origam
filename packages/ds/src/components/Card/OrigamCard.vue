@@ -9,8 +9,8 @@
 			:style="cardStyles"
 			:tabindex="disabled ? -1 : undefined"
 			@click="handleClick"
-			@mouseenter="onMouseenter"
-			@mouseleave="onMouseleave"
+			@mouseenter="mouseenterHandler"
+			@mouseleave="mouseleaveHandler"
 	>
     <span
 		    v-if="isClickable"
@@ -301,6 +301,45 @@
 	const isClickable = computed(() => {
 		return !props.disabled && (props.link || link.isClickable.value)
 	})
+
+	/*********************************************************
+	 * isHoverable
+	 *
+	 * @description
+	 * Gates whether `@mouseenter`/`@mouseleave` are even wired to the root
+	 * element. Mirrors the guard the hand-rolled `origam-card--hover` class
+	 * has always carried (`props.hover && !(props.disabled || props.flat)`)
+	 * minus the `props.hover` check, since a real mouse hover — not just a
+	 * forced `hover` prop — must also respect it.
+	 *
+	 * @description
+	 * Before this, `onMouseenter`/`onMouseleave` (from `useStateFlag`) were
+	 * bound unconditionally: a `flat` or `disabled` Card still flipped
+	 * `isHover` to `true` on real mouse hover, which now that
+	 * `useStateFlag`'s hover suffix resolves to a real `&--hover` rule
+	 * (`--hover`, not the dead `--hovered`) painted `cursor:pointer` + a
+	 * ripple overlay + `box-shadow-hover` on cards that were never meant to
+	 * look interactive. This restores the original intent — a decorative
+	 * Card stops reacting to hover — without duplicating the hand-rolled
+	 * class's condition (see `cardClasses` below, still gated on
+	 * `props.hover` specifically).
+	 ********************************************************/
+	const isHoverable = computed(() => {
+		return !props.disabled && !props.flat
+	})
+
+	/*********************************************************
+	 * mouseenterHandler / mouseleaveHandler
+	 *
+	 * @description
+	 * Template-safe wrappers around `isHoverable` — keeps the conditional
+	 * out of the `<template>` (repo convention: no expressions in event
+	 * bindings). Binding `undefined` removes the native listener entirely
+	 * (Vue's `patchEvent` treats a nullish handler as "no listener"), it
+	 * does not merely no-op it.
+	 ********************************************************/
+	const mouseenterHandler = computed(() => (isHoverable.value ? onMouseenter : undefined))
+	const mouseleaveHandler = computed(() => (isHoverable.value ? onMouseleave : undefined))
 
 	// Combined click handler — drives both `isActive` (so `activeColor`
 	// / `activeBgColor` resolve via `useStateEffect`) and the link
