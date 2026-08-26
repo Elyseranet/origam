@@ -38,7 +38,7 @@ export * from './Checkbox/checkbox-btn.type'
 export * from './Chip/chip.type'
 export * from './Chip/chip-group.type'
 
-export * from './Commons/client-only.type'
+export * from './ClientOnly/client-only.type'
 
 export * from './Clipboard/clipboard.type'
 

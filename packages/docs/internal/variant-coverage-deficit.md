@@ -143,7 +143,7 @@ est vide :
 | `OrigamAvatarGroup` | `update:active`, `update:hover` |
 | `OrigamExpansionPanels` | `update:modelValue`, `group:selected` |
 | `OrigamSelectionControlGroup` | `update:modelValue` |
-| `OrigamChipGroup` / `OrigamItemGroup` / `OrigamItem` | `update:modelValue` |
+| `OrigamChipGroup` / `OrigamItemGroup` / `OrigamItemGroupItem` | `update:modelValue` |
 | `OrigamBtnToggle` / `OrigamWindow` / `OrigamAppBar` / `OrigamLazy` | `update:modelValue` |
 | `OrigamContextualMenu` | `update:modelValue`, `contextmenu` |
 | 13 stories `OrigamChart*` | `point-click`, `legend-click`, `series-toggle` |
@@ -210,7 +210,7 @@ et non seulement un manque de couverture.
 
 1. **Composants de groupe — `update:modelValue` jamais déclenché.**
    `OrigamSelectionControlGroup`, `OrigamChipGroup`, `OrigamItemGroup`,
-   `OrigamItem`, `OrigamBtnToggle`, `OrigamExpansionPanels` : aucun TU, aucun
+   `OrigamItemGroupItem`, `OrigamBtnToggle`, `OrigamExpansionPanels` : aucun TU, aucun
    e2e sur l'emit central. Un groupe qui n'émet pas est indétectable
    aujourd'hui — exactement le mode de panne d'ADR-005 sur
    `OrigamSelectionControl` (`:type="type"` rendu sans attribut, jamais

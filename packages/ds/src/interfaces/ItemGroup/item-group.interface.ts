@@ -22,7 +22,6 @@ import type {
  * the same property locally forces the runtime prop registration.
  */
 export interface IItemGroupProps extends ICommonsComponentProps, ITagProps, IGroupProps {
-    tag?: string
 }
 
 /**
@@ -35,7 +34,6 @@ export interface IItemGroupProps extends ICommonsComponentProps, ITagProps, IGro
  * `tag` shadowed locally — see the note on `IItemGroupProps`.
  */
 export interface IItemGroupItemProps extends ICommonsComponentProps, ITagProps, IGroupItemProps {
-    tag?: string
 }
 
 /** Emits fired by `<OrigamItemGroup>` — v-model on the active item set. */

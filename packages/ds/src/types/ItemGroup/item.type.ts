@@ -1,3 +1,3 @@
-import OrigamItem from '../../components/ItemGroup/OrigamItem.vue'
+import OrigamItemGroupItem from '../../components/ItemGroup/OrigamItemGroupItem.vue'
 
-export type TOrigamItem = InstanceType<typeof OrigamItem>
+export type TOrigamItem = InstanceType<typeof OrigamItemGroupItem>

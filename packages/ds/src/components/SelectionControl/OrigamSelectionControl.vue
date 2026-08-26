@@ -4,10 +4,7 @@
     :style="selectionControlStyles"
     v-bind="rootAttrs"
   >
-    <div
-      :class="selectionControlWrapperClasses"
-      :style="wrapperColorStyles"
-    >
+    <div :class="selectionControlWrapperClasses">
       <slot
         name="default"
         v-bind="{ model, color, bgColor, icon, props: { onFocus: handleFocus, onBlur: handleBlur, id } }"
@@ -72,22 +69,18 @@
   lang="ts"
   setup
 >
-  import { computed, inject, nextTick, ref, shallowRef, StyleValue, useAttrs } from 'vue'
+  import { computed, inject, nextTick, ref, shallowRef, StyleValue, toRef, useAttrs } from 'vue'
 
   import { ORIGAM_SELECTION_CONTROL_GROUP_KEY } from '../../consts/SelectionControl/selection-control.const'
   import type { TOrigamLabel } from '../../types/Label/label.type'
   import OrigamIcon from '../Icon/OrigamIcon.vue'
   import OrigamLabel from '../Label/OrigamLabel.vue'
 
-  import { useBorder } from '../../composables/Commons/border.composable'
   import { useDensity } from '../../composables/Commons/density.composable'
-  import { useElevation } from '../../composables/Commons/elevation.composable'
   import { useHover } from '../../composables/Commons/hover.composable'
   import { useProps } from '../../composables/Commons/props.composable'
-  import { useRounded } from '../../composables/Commons/rounded.composable'
   import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
   import { useStyle } from '../../composables/Commons/style.composable'
-  import { useTextColor } from '../../composables/Commons/textColor.composable'
   import { useVModel } from '../../composables/Commons/vModel.composable'
 
   import vRipple from '../../directives/Ripple/ripple.directive'
@@ -147,7 +140,6 @@
 
 
   const { isHover, hoverState } = useHover(props)
-  useStateEffect(props, isHover, undefined, hoverState, undefined)
   /*********************************************************
    * Value
    ********************************************************/
@@ -268,49 +260,12 @@
 
   const [ rootAttrs, inputAttrs ] = filterInputAttrs(attrs)
 
-  const color = computed(() => {
-    if (props.error || props.disabled) return undefined
-
-    return model.value ? (props.activeColor || props.color) : props.color
-  })
-  const bgColor = computed(() => {
-    if (props.error || props.disabled) return undefined
-
-    return model.value ? (props.activeBgColor || props.bgColor) : props.bgColor
-  })
-
-  // Phase 5 — fix Switch thumb tint regression (commit 5039394).
-  // The wrapper carries the consumer's `color` intent so that:
-  //   • The Switch thumb can pick the tint up via `currentColor` (the
-  //     SCSS rule `.origam--color-{intent} &__thumb { background-color:
-  //     currentColor }` re-instates the previous behaviour with the
-  //     class-first selector instead of the brittle `[style*="color:"]`
-  //     attribute selector).
-  //   • Legacy raw colors (hex/rgb) keep working through the inline
-  //     style fallback — `useTextColor` returns `[]` for non-tokenisable
-  //     values and pushes the inline declaration only.
-
-  /*********************************************************
-   * Color
-   ********************************************************/
-
-  const { textColorClasses: wrapperColorClasses, textColorStyles: wrapperColorStyles } = useTextColor(color)
-
-  // Props-first (lot 4 theming fix, issue #241) — `border` / `rounded` /
-  // `elevation` are declared on `ISelectionControlProps` (Commons
-  // interfaces) but were never consumed anywhere: neither Checkbox nor
-  // Radio read them, so a theme's `'origam-checkbox': { rounded: 'md' }`
-  // was a silent no-op. `__input` is the element that owns the visible
-  // state-layer box (the circular hit/hover area sitting behind the
-  // glyph) — mirrors `OrigamSwitchTrack`'s "the box owns the surface"
-  // pattern. NOTE: the checkbox/radio glyph itself is a `mdi-*` icon-font
-  // character rendered by `<origam-icon>` — a font glyph has no
-  // border-radius/border/box-shadow of its own, so these props change the
-  // state-layer box around the glyph, not the glyph's own silhouette
-  // (tracked separately, see #241 rendering aggravation note).
-  const { borderClasses, borderStyles } = useBorder(props)
-  const { roundedClasses, roundedStyles } = useRounded(props)
-  const { elevationClasses, elevationStyles } = useElevation(props)
+  const {
+    colorClasses, colorStyles,
+    borderClasses, borderStyles,
+    roundedClasses, roundedStyles,
+    elevationClasses, elevationStyles
+  } = useStateEffect(props, isHover, undefined, hoverState, undefined, toRef(props, 'disabled'))
 
   const rippleProp = computed(() => {
     if (props.ripple) {
@@ -335,7 +290,6 @@
   const selectionControlWrapperClasses = computed(() => {
     return [
       'origam-selection-control__wrapper',
-      wrapperColorClasses.value
     ]
   })
   const selectionControlInputClasses = computed(() => {
@@ -343,14 +297,16 @@
       'origam-selection-control__input',
       borderClasses.value,
       roundedClasses.value,
-      elevationClasses.value
+      elevationClasses.value,
+      colorClasses.value
     ]
   })
   const selectionControlInputStyles = computed(() => {
     return [
       borderStyles.value,
       roundedStyles.value,
-      elevationStyles.value
+      elevationStyles.value,
+      colorStyles.value
     ] as StyleValue
   })
   const selectionControlClasses = computed(() => {

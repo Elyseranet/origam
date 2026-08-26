@@ -27,7 +27,7 @@
 							data-cy="item-functional-group"
 					>
 						<div style="display: flex; gap: 12px; flex-wrap: wrap;">
-							<origam-item
+							<origam-item-group-item
 									v-for="opt in plans"
 									:key="opt.value"
 									:value="opt.value"
@@ -47,7 +47,7 @@
 										<div class="demo-card__hint">{{ opt.hint }}</div>
 									</button>
 								</template>
-							</origam-item>
+							</origam-item-group-item>
 						</div>
 					</origam-item-group>
 					<p style="margin: 12px 0 0; font-size: 0.75rem; color: var(--origam-color__text---secondary);">
@@ -85,7 +85,7 @@
 							}"
 					>
 						<div style="display: flex; gap: 12px;">
-							<origam-item v-for="opt in plans" :key="opt.value" :value="opt.value">
+							<origam-item-group-item v-for="opt in plans" :key="opt.value" :value="opt.value">
 								<template #default="{ isSelected, toggle }">
 									<button
 											:class="['demo-card', { 'demo-card--active': isSelected }]"
@@ -96,7 +96,7 @@
 										<div class="demo-card__title">{{ opt.title }}</div>
 									</button>
 								</template>
-							</origam-item>
+							</origam-item-group-item>
 						</div>
 					</origam-item-group>
 					<ul v-if="state.log.length" style="font-family: monospace; font-size: 0.8rem; margin: 12px 0 0; padding-left: 16px;">
@@ -111,7 +111,7 @@
 			<div style="padding: 24px;">
 				<origam-item-group v-model="slotModel" data-cy="item-slot-group">
 					<div style="display: flex; gap: 12px; flex-wrap: wrap;">
-						<origam-item v-for="opt in plans" :key="opt.value" :value="opt.value">
+						<origam-item-group-item v-for="opt in plans" :key="opt.value" :value="opt.value">
 							<template #default="{ isSelected, toggle, select, value, disabled, selectedClass }">
 								<button
 										:class="['demo-card', { 'demo-card--active': isSelected }]"
@@ -125,7 +125,7 @@
 									<div class="demo-card__title">{{ opt.title }}</div>
 								</button>
 							</template>
-						</origam-item>
+						</origam-item-group-item>
 					</div>
 				</origam-item-group>
 				<p style="margin: 12px 0 0; font-size: 0.75rem; color: var(--origam-color__text---secondary);">
@@ -138,7 +138,7 @@
 			<div style="padding: 24px;">
 				<origam-item-group v-model="tilesModel" multiple data-cy="item-tiles">
 					<div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px;">
-						<origam-item v-for="opt in tilePlans" :key="opt.value" :value="opt.value">
+						<origam-item-group-item v-for="opt in tilePlans" :key="opt.value" :value="opt.value">
 							<template #default="{ isSelected, toggle }">
 								<button
 										:class="['demo-tile', { 'demo-tile--active': isSelected }]"
@@ -147,7 +147,7 @@
 										:data-cy="`item-tile-${opt.value}`"
 								>{{ opt.title }}</button>
 							</template>
-						</origam-item>
+						</origam-item-group-item>
 					</div>
 				</origam-item-group>
 				<p style="margin: 12px 0 0; font-size: 0.75rem; color: var(--origam-color__text---secondary);">
@@ -175,7 +175,7 @@
 							data-cy="item-playground-group"
 					>
 						<div style="display: flex; gap: 12px; flex-wrap: wrap;">
-							<origam-item
+							<origam-item-group-item
 									v-for="opt in plans"
 									:key="opt.value"
 									:value="opt.value"
@@ -193,7 +193,7 @@
 										<div class="demo-card__price">{{ opt.price }}</div>
 									</button>
 								</template>
-							</origam-item>
+							</origam-item-group-item>
 						</div>
 					</origam-item-group>
 					<p style="margin: 12px 0 0; font-size: 0.75rem; color: var(--origam-color__text---secondary);">
@@ -223,7 +223,7 @@
 	import { ref } from 'vue'
 	import { logEvent } from 'histoire/client'
 
-	import { OrigamItem, OrigamItemGroup } from '@origam/components'
+	import { OrigamItemGroupItem, OrigamItemGroup } from '@origam/components'
 	import type { IItemGroupItemProps, IItemGroupProps } from '@origam/interfaces'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'

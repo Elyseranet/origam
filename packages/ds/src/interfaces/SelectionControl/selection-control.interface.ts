@@ -1,4 +1,3 @@
-import type { IActiveProps } from '../Commons/active.interface'
 import type {
     IBgColorProps,
     IColorProps
@@ -10,8 +9,8 @@ import type {
 } from '../Commons/commons.interface'
 import type { IDensityProps } from '../Commons/density.interface'
 import type { IElevationProps } from '../Commons/elevation.interface'
-import type { ISelectionControlGroupProps } from './selection-control-group.interface'
 import type { IHoverProps } from '../Commons/hover.interface'
+import type { IRippleProps } from "../Commons/ripple.interface";
 import type { IRoundedProps } from '../Commons/rounded.interface'
 import type { TColor } from '../../types/Commons/color.type'
 import type { TIcon } from '../../types/Icon/icon.type'
@@ -27,16 +26,23 @@ import type { TIcon } from '../../types/Icon/icon.type'
  * forward these values down automatically through `filterProps` without
  * any additional wiring.
  */
-export interface ISelectionControlProps extends ICommonsComponentProps, Partial<Omit<ISelectionControlGroupProps, 'items'>>, IColorProps, IBgColorProps, IActiveProps, IHoverProps, IDensityProps, IBorderProps, IRoundedProps, IElevationProps {
+export interface ISelectionControlProps extends ICommonsComponentProps, IColorProps, IBgColorProps, IHoverProps, IDensityProps, IBorderProps, IRoundedProps, IElevationProps, IRippleProps {
     label?: string
     trueValue?: any
     falseValue?: any
     value?: any
     required?: boolean
-    /** @deprecated Use the `active` object prop instead. Kept for back-compat. */
-    activeColor?: TColor
-    /** @deprecated Use the `active` object prop instead. Kept for back-compat. */
-    activeBgColor?: TColor
+    disabled?: boolean
+    error?: string | boolean
+    name?: string
+    readonly?: boolean
+    type?: string
+    modelValue?: any
+    valueComparator?: (a: any, b: any) => boolean
+    falseIcon?: TIcon
+    trueIcon?: TIcon
+    multiple?: boolean
+    inline?: boolean
 }
 
 export interface ISelectionControlEmits extends ICommonsComponentEmits {

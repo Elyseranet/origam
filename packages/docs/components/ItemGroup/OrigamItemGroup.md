@@ -63,7 +63,7 @@ selectable.
   setup time — but not the message the guard in `OrigamItem.vue:53-55` would
   suggest. `useGroupItem` is called with `required = true` (the default), so
   when no group injection is found, `useGroupItem` itself throws first
-  (`group.composable.ts:51-54`), before `OrigamItem.vue`'s own
+  (`group.composable.ts:51-54`), before `OrigamItemGroupItem`'s own
   `if (!groupItem)` check can ever run. The message actually thrown is:
   `[Origam] Could not find useGroup injection with symbol origam:item-group`.
 
@@ -143,7 +143,7 @@ default down, but it has **no effect here**: `<OrigamItem>` never calls
 above (through the group injection) is the only path that actually runs.
 
 The class (or array of classes) is present in the item's slot scope while
-that item is selected, and it **is** applied automatically: `OrigamItem.vue`
+that item is selected, and it **is** applied automatically: `OrigamItemGroupItem`
 pushes `groupItem.selectedClass.value` into its own root element's `class`
 binding, alongside the fixed `origam-item` class (`OrigamItem.vue:72-78`).
 Since the DS ships no CSS for `.origam-item` / `origam-item--selected` (see
@@ -278,7 +278,7 @@ the slot content, as shown in "Programmatic navigation" above.
 
 ## CSS variables
 
-None. Neither `OrigamItemGroup.vue` nor `OrigamItem.vue` ships a `<style>`
+None. Neither `OrigamItemGroup.vue` nor `OrigamItemGroupItem` ships a `<style>`
 block, and the class each renders (`origam-item-group`, `origam-item`,
 plus the resolved `selectedClass`) carries no built-in styling in the DS —
 the classes exist purely as CSS hooks for your own stylesheet.

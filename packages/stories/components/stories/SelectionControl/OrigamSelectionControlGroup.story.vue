@@ -1,12 +1,13 @@
 <template>
 	<Story
 			group="components"
+      auto-props-disabled
 			title="SelectionControl/OrigamSelectionControlGroup"
 	>
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<Partial<ISelectionControlGroupProps>>({ color: 'primary', density: 'default', trueIcon: undefined, falseIcon: undefined, inline: false, ripple: true })"
+				:init-state="() => useStoryInitState<Partial<ISelectionControlGroupProps>>({ color: 'primary', density: 'default', trueIcon: MDI_ICONS.CHECKBOX_MARKED_OUTLINE, falseIcon: MDI_ICONS.CHECKBOX_BLANK_OUTLINE, inline: false, ripple: true })"
 		>
 			<template #default="{ state }">
 				<origam-selection-control-group
@@ -56,6 +57,8 @@
 						:disabled="state.disabled"
 						:readonly="state.readonly"
 						:error="state.error"
+            :true-icon="state.multiple ? MDI_ICONS.CHECKBOX_MARKED_OUTLINE : MDI_ICONS.RADIOBOX_MARKED"
+            :false-icon="state.multiple ? MDI_ICONS.CHECKBOX_BLANK_OUTLINE : MDI_ICONS.RADIOBOX_BLANK"
 						:name="state.name || undefined"
 				>
 					<origam-selection-control value="a" label="Option A"/>
@@ -83,10 +86,14 @@
 			<origam-selection-control-group
 					v-model="emitModel"
 					type="checkbox"
+          multiple
+          :true-icon="MDI_ICONS.CHECKBOX_MARKED_OUTLINE"
+          :false-icon="MDI_ICONS.CHECKBOX_BLANK_OUTLINE"
 					@update:model-value="logEvent('update:modelValue', $event)"
 			>
-				<origam-selection-control value="a" label="Option A"/>
-				<origam-selection-control value="b" label="Option B"/>
+          <origam-selection-control value="a" label="Option A"/>
+          <origam-selection-control value="b" label="Option B"/>
+          <origam-selection-control value="c" label="Option C"/>
 			</origam-selection-control-group>
 		</Variant>
 
@@ -94,6 +101,8 @@
 			<origam-selection-control-group
 					v-model="slotDefaultModel"
 					type="radio"
+          :true-icon="MDI_ICONS.RADIOBOX_MARKED"
+          :false-icon="MDI_ICONS.RADIOBOX_BLANK"
 			>
 				<origam-selection-control value="x" label="Choice X"/>
 				<origam-selection-control value="y" label="Choice Y"/>
@@ -105,6 +114,8 @@
 			<origam-selection-control-group
 					v-model="slotItemModel"
 					type="checkbox"
+          :true-icon="MDI_ICONS.CHECKBOX_MARKED_OUTLINE"
+          :false-icon="MDI_ICONS.CHECKBOX_BLANK_OUTLINE"
 					:items="checkboxItems"
 			>
 				<template #item="{ item, index }">
@@ -118,7 +129,7 @@
 
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<Partial<ISelectionControlGroupProps>>({ color: 'primary', density: 'default', type: 'checkbox', multiple: false, inline: false, disabled: false, readonly: false, error: false, ripple: true, trueIcon: undefined, falseIcon: undefined })"
+				:init-state="() => useStoryInitState<Partial<ISelectionControlGroupProps>>({ color: 'primary', density: 'default', type: 'checkbox', multiple: false, inline: false, disabled: false, readonly: false, error: false, ripple: true, trueIcon: MDI_ICONS.CHECKBOX_MARKED_OUTLINE, falseIcon: MDI_ICONS.CHECKBOX_BLANK_OUTLINE })"
 		>
 			<template #default="{ state }">
 				<origam-selection-control-group
@@ -155,7 +166,8 @@
 		lang="ts"
 		setup
 >
-	import { ref } from 'vue'
+	import { MDI_ICONS } from "@origam/enums";
+  import { ref } from 'vue'
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamSelectionControl, OrigamSelectionControlGroup } from '@origam/components'

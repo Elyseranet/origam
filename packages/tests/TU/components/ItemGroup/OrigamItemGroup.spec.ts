@@ -24,7 +24,7 @@ import { defineComponent } from 'vue'
 import type { VueWrapper } from '@vue/test-utils'
 
 import OrigamItemGroup from '@origam/components/ItemGroup/OrigamItemGroup.vue'
-import OrigamItem from '@origam/components/ItemGroup/OrigamItem.vue'
+import OrigamItemGroupItem from '@origam/components/ItemGroup/OrigamItemGroupItem.vue'
 import { createOrigam } from '@origam/origam'
 
 const ITEM_MARKUP = `
@@ -41,7 +41,7 @@ const ITEM_MARKUP = `
 
 function mountGroup (groupAttrs = '', itemMarkup: string = ITEM_MARKUP) {
     const Host = defineComponent({
-        components: { OrigamItemGroup, OrigamItem },
+        components: { OrigamItemGroup, OrigamItem: OrigamItemGroupItem },
         template: `<origam-item-group ${groupAttrs}>${itemMarkup}</origam-item-group>`
     })
 
@@ -234,7 +234,7 @@ describe('OrigamItem — group:selected', () => {
         const wrapper = mountGroup()
         await wrapper.find('button.item-a').trigger('click')
 
-        const emitted = wrapper.findAllComponents(OrigamItem)[0].emitted('group:selected')
+        const emitted = wrapper.findAllComponents(OrigamItemGroupItem)[0].emitted('group:selected')
         expect(emitted).toBeTruthy()
         expect(emitted![0][0]).toEqual({ value: true })
     })
@@ -244,7 +244,7 @@ describe('OrigamItem — group:selected', () => {
         await wrapper.find('button.item-a').trigger('click')
         await wrapper.find('button.item-b').trigger('click')
 
-        const emitted = wrapper.findAllComponents(OrigamItem)[0].emitted('group:selected')
+        const emitted = wrapper.findAllComponents(OrigamItemGroupItem)[0].emitted('group:selected')
         expect(emitted).toHaveLength(2)
         expect(emitted![1][0]).toEqual({ value: false })
     })
@@ -253,6 +253,6 @@ describe('OrigamItem — group:selected', () => {
         const wrapper = mountGroup()
         await wrapper.find('button.item-a').trigger('click')
 
-        expect(wrapper.findAllComponents(OrigamItem)[2].emitted('group:selected')).toBeUndefined()
+        expect(wrapper.findAllComponents(OrigamItemGroupItem)[2].emitted('group:selected')).toBeUndefined()
     })
 })
