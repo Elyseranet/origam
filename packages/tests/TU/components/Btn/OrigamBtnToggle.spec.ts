@@ -87,6 +87,24 @@ describe('OrigamBtnToggle — update:modelValue (single selection)', () => {
         expect(wrapper.findAll('button.origam-btn')[1].classes()).toContain('origam-btn--active')
         expect(wrapper.findAll('button.origam-btn')[0].classes()).not.toContain('origam-btn--active')
     })
+
+    // `activeClass` must follow the SAME group-selection-aware `isActive` as
+    // `origam-btn--active` above, not useStateFlag's own narrower `isOn` (which
+    // only reflects the raw `active` prop — never `group.isSelected`). None of
+    // these buttons set an `active` prop; only the group's selection drives it.
+    it('applies a per-button activeClass only to the selected button (group-selection driven, no `active` prop set)', async () => {
+        const wrapper = mountToggle('', `
+            <origam-btn value="left" text="Left" active-class="btn-is-selected"/>
+            <origam-btn value="center" text="Center" active-class="btn-is-selected"/>
+            <origam-btn value="right" text="Right" active-class="btn-is-selected"/>
+        `)
+        await clickBtn(wrapper, 1)
+
+        const buttons = wrapper.findAll('button.origam-btn')
+        expect(buttons[1].classes()).toContain('btn-is-selected')
+        expect(buttons[0].classes()).not.toContain('btn-is-selected')
+        expect(buttons[2].classes()).not.toContain('btn-is-selected')
+    })
 })
 
 // ---------------------------------------------------------------------------

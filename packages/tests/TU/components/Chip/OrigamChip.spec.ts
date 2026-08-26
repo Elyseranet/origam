@@ -49,6 +49,48 @@ function cssOf(props: Record<string, unknown> = {}): string {
 }
 
 // ---------------------------------------------------------------------------
+// Active — IActiveProps (`active` / `activeClass`)
+//
+// Pre-fix: OrigamChip's IChipProps extended IActiveProps (active/activeClass
+// were declared and type-checked fine), but the component never called
+// useStateFlag({state: 'active'}) — `origam-chip--active` was never added to
+// chipClasses and the dead `&--active` SCSS rule never engaged. This spec is
+// the red-before / green-after proof the fix is real, not a static-guard
+// artefact (see the task brief's "angle mort" note on how easily a component
+// can fool the unconsumed-props guard's string-literal heuristic without
+// actually rendering anything different).
+// ---------------------------------------------------------------------------
+
+describe('OrigamChip — active prop', () => {
+    it('does not add origam-chip--active class by default', () => {
+        const wrapper = mountChip()
+        expect(wrapper.find('.origam-chip').classes()).not.toContain('origam-chip--active')
+    })
+
+    it('adds origam-chip--active class when active=true', () => {
+        const wrapper = mountChip({ active: true })
+        expect(wrapper.find('.origam-chip').classes()).toContain('origam-chip--active')
+    })
+
+    it('adds origam-chip--active class when active is an IActiveState config object', () => {
+        const wrapper = mountChip({ active: { enabled: true, rounded: 'lg' } })
+        expect(wrapper.find('.origam-chip').classes()).toContain('origam-chip--active')
+    })
+
+    it('applies activeClass alongside origam-chip--active when active=true', () => {
+        const wrapper = mountChip({ active: true, activeClass: 'my-active-chip' })
+        const classes = wrapper.find('.origam-chip').classes()
+        expect(classes).toContain('origam-chip--active')
+        expect(classes).toContain('my-active-chip')
+    })
+
+    it('does not apply activeClass when active is false/unset', () => {
+        const wrapper = mountChip({ activeClass: 'my-active-chip' })
+        expect(wrapper.find('.origam-chip').classes()).not.toContain('my-active-chip')
+    })
+})
+
+// ---------------------------------------------------------------------------
 // Rendering
 // ---------------------------------------------------------------------------
 

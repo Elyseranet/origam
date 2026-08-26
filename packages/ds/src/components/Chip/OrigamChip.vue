@@ -202,13 +202,19 @@
 	const {densityClasses} = useDensity(props)
 
 	const {isOn: isHover, config: hoverState} = useStateFlag(props, {state: 'hover'})
+	// `active` here is the DECORATIVE state-effect toggle from `IActiveProps`
+	// (forced highlight / color-bgColor-border-rounded-elevation override via
+	// an `IActiveState` config) — unrelated to the `isActive` v-model below,
+	// which tracks whether the chip is still mounted/dismissed. Named `active`
+	// (not `isActive`) to avoid shadowing that unrelated local.
+	const {isOn: active, config: activeState, classes: activeClasses} = useStateFlag(props, {state: 'active'})
 	const {
 		borderClasses, borderStyles,
 		roundedClasses, roundedStyles,
 		elevationClasses,
 		paddingClasses, paddingStyles,
 		marginClasses, marginStyles,
-	} = useStateEffect(props, isHover, undefined, hoverState, undefined)
+	} = useStateEffect(props, isHover, active, hoverState, activeState)
 	const {sizeClasses, sizeStyles} = useSize(props)
 	const {typographyStyles} = useTypography(props, 'chip')
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
@@ -357,6 +363,7 @@
 			sizeClasses.value,
 			paddingClasses.value,
 			marginClasses.value,
+			activeClasses.value,
 			props.class
 		]
 	})

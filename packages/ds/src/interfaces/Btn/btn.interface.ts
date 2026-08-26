@@ -1,4 +1,4 @@
-import type { IActiveState } from '../Commons/state-effect.interface'
+import type { IActiveProps } from '../Commons/active.interface'
 import type {
     IAdjacentEmits,
     IAdjacentProps,
@@ -43,8 +43,7 @@ import type {
  *  `icon` prop accepts `boolean | TIcon` (boolean = icon-only mode) which is
  *  wider than `IIconProps.icon?: TIcon`.  Pulling the two status props in
  *  directly avoids the TS2430 incompatible-extends error. */
-export interface IBtnProps extends ICommonsComponentProps, IColorProps, IBgColorProps, IBorderProps, IDensityProps, IDimensionProps, IElevationProps, IRoundedProps, ITagProps, ISizeProps, ILinkProps, IRippleProps, ILoaderProps, IPositionProps, ILocationProps, IGroupItemProps, IPaddingProps, IMarginProps, IAdjacentProps, IHoverProps, IVariantProps, ITypographyProps {
-    active?: boolean | IActiveState
+export interface IBtnProps extends ICommonsComponentProps, IColorProps, IBgColorProps, IBorderProps, IDensityProps, IDimensionProps, IElevationProps, IRoundedProps, ITagProps, ISizeProps, ILinkProps, IRippleProps, ILoaderProps, IPositionProps, ILocationProps, IGroupItemProps, IPaddingProps, IMarginProps, IAdjacentProps, IHoverProps, IActiveProps, IVariantProps, ITypographyProps {
     /** @deprecated Use `variant="flat"` instead. Kept for backward compat. */
     flat?: boolean,
     /** Pass `true` to activate icon-only mode; pass a `TIcon` value to set the icon. */
