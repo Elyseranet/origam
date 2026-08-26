@@ -1,9 +1,11 @@
 import {
     computed,
     type ComputedRef,
+    type MaybeRefOrGetter,
     nextTick,
     ref,
     type Ref,
+    toValue,
     unref
 } from 'vue'
 
@@ -43,9 +45,31 @@ const toDraft = (value: unknown): string => {
  */
 export function useInlineEdit (
     modelValue: Ref<string | number> | ComputedRef<string | number>,
-    options: IUseInlineEditOptions = {}
+    options: MaybeRefOrGetter<IUseInlineEditOptions> = {}
 ) {
-    const trim = options.trim ?? true
+    /*********************************************************
+     * options must be re-read on every call, not snapshotted (#490)
+     *
+     * @description
+     * `options` accepts `MaybeRefOrGetter` — a plain object still works
+     * unchanged (existing consumers, this file's own test suite) — but
+     * the SFC now passes a GETTER (`() => ({ rules: props.rules, … })`).
+     * `resolveOptions()` re-runs `toValue()` at every call site below,
+     * so `confirm()` always validates against the CURRENT `rules` /
+     * `validate`, not the object captured when `useInlineEdit()` was
+     * called once in `setup()`.
+     * @description
+     * Wrapping the WHOLE options bag in a getter — rather than wrapping
+     * each of `rules` / `validate` / `trim` individually in its own
+     * `MaybeRefOrGetter` — sidesteps a real footgun: `validate` is
+     * ITSELF a function (`(value: string) => …`). `toValue()` treats
+     * ANY function as a getter and calls it with zero arguments, so a
+     * per-field `toValue(options.validate)` would invoke the consumer's
+     * validator with `value === undefined` instead of returning it.
+     ********************************************************/
+    const resolveOptions = (): IUseInlineEditOptions => toValue(options)
+
+    const trim = computed(() => resolveOptions().trim ?? true)
 
     const isEditing: Ref<boolean> = ref(false)
     const draft: Ref<string> = ref('')
@@ -65,7 +89,7 @@ export function useInlineEdit (
      * emitted value. Always re-derived from `draft.value` — exposing it
      * as a computed costs nothing and keeps the contract testable.
      */
-    const normalisedDraft = computed<string>(() => trim ? draft.value.trim() : draft.value)
+    const normalisedDraft = computed<string>(() => trim.value ? draft.value.trim() : draft.value)
 
     /** True when the live draft would resolve to an empty string. */
     const isDraftEmpty = computed<boolean>(() => normalisedDraft.value.length === 0)
@@ -103,7 +127,7 @@ export function useInlineEdit (
         error.value = null
         isEditing.value = false
         draft.value = ''
-        options.onCancel?.()
+        resolveOptions().onCancel?.()
     }
 
     /**
@@ -157,16 +181,25 @@ export function useInlineEdit (
         const next = normalisedDraft.value
         error.value = null
 
-        const hasRules = options.rules && options.rules.length > 0
-        const hasValidate = !!options.validate
+        /*********************************************************
+         * Re-read NOW
+         *
+         * @description
+         * Not the object captured when useInlineEdit() was called —
+         * this is what makes a `rules`/`validate` swap after mount
+         * take effect on the very next confirm() (#490).
+         ********************************************************/
+        const currentOptions = resolveOptions()
+        const hasRules = currentOptions.rules && currentOptions.rules.length > 0
+        const hasValidate = !!currentOptions.validate
 
         if (hasRules || hasValidate) {
             isPending.value = true
             let verdict: string | null = null
             try {
-                verdict = await runRules(next, options.rules)
+                verdict = await runRules(next, currentOptions.rules)
                 if (verdict === null) {
-                    verdict = await runValidator(next, options.validate)
+                    verdict = await runValidator(next, currentOptions.validate)
                 }
             } catch (err) {
                 verdict = err instanceof Error ? err.message : String(err)
@@ -176,13 +209,13 @@ export function useInlineEdit (
             isPending.value = false
             if (verdict !== null) {
                 error.value = verdict
-                options.onError?.(verdict)
+                currentOptions.onError?.(verdict)
                 return false
             }
         }
 
         isEditing.value = false
-        options.onConfirm?.(next)
+        currentOptions.onConfirm?.(next)
         draft.value = ''
         // Yield once so consumers can observe the post-commit state.
         await nextTick()

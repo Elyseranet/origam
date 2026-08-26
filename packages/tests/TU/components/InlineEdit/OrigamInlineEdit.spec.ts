@@ -461,27 +461,28 @@ describe('OrigamInlineEdit — number modelValue', () => {
 })
 
 /********************************************************
- *  KNOWN DEFECT — rules/validate/trim captured once at setup()
+ *  FIXED DEFECT — rules/validate/trim captured once at setup()
  *
- *  @description ⛔ issue #490
+ *  @description ⛔ issue #490 (fixed)
  *  `useInlineEdit(modelRef, { rules: props.rules, validate: props.validate,
- *  trim: props.trim, ... })` is called once in `setup()`. The composable
- *  stores that object in closure and `confirm()` reads `options.rules` /
- *  `options.validate` off the SAME object later — never `props.rules`
- *  directly. A consumer that replaces `:rules` after mount (async-loaded
- *  validation, mode-dependent rule sets) keeps validating against the
- *  rules captured at mount time for the whole lifetime of the component.
+ *  trim: props.trim, ... })` used to be called once in `setup()`, with the
+ *  composable storing that object in closure and `confirm()` reading
+ *  `options.rules` / `options.validate` off the SAME frozen object later —
+ *  never `props.rules` directly. A consumer that replaced `:rules` after
+ *  mount (async-loaded validation, mode-dependent rule sets) kept
+ *  validating against the rules captured at mount time for the whole
+ *  lifetime of the component.
  *
  *  @description
- *  `it.fails` here because the CORRECT behaviour (new rule enforced) is
- *  what's asserted — it currently fails since the bug makes the old,
- *  empty rule set win instead.
- *
- *  ⚠️ When this turns RED the defect is fixed — delete the `it.fails`
- *  wrapper (keep the assertions) rather than deleting the test.
+ *  Fix: the SFC now passes a GETTER (`() => ({ rules: props.rules, … })`)
+ *  and `useInlineEdit` re-resolves it on every `confirm()`/`cancel()` call
+ *  instead of once at call time. This sonde used to be wrapped in
+ *  `it.fails` (the correct behaviour failed); now that the defect is
+ *  fixed it runs as a normal assertion — kept in the suite per the
+ *  ticket's own instruction rather than deleted.
  ********************************************************/
-describe('OrigamInlineEdit — rules captured once at setup (#490)', () => {
-    it.fails('a rule added AFTER mount is enforced on the next confirm', async () => {
+describe('OrigamInlineEdit — rules captured once at setup (#490, fixed)', () => {
+    it('a rule added AFTER mount is enforced on the next confirm', async () => {
         const wrapper = mountInlineEdit({ rules: [] }) // no rule at mount time
 
         // Consumer adds a min-length rule AFTER mount.
