@@ -68,3 +68,7 @@ export interface IMediaVolumeControlEmits {
      *  to 0 → mute). */
     (e: 'update:volume', volume: number): void
 }
+
+/** Slot signatures for `<OrigamMediaVolumeControl>` — none. The button
+ *  icon, tooltip and scrubber are entirely driven by props. */
+export interface IMediaVolumeControlSlots {}

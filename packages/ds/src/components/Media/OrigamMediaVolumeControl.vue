@@ -56,13 +56,15 @@
 
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import type { IMediaVolumeControlEmits, IMediaVolumeControlProps } from '../../interfaces/Media/media-volume-control.interface'
+	import type { IMediaVolumeControlEmits, IMediaVolumeControlProps, IMediaVolumeControlSlots } from '../../interfaces/Media/media-volume-control.interface'
 
 	const props = withDefaults(defineProps<IMediaVolumeControlProps>(), {
 		dataCy: 'origam-media-volume-control'
 	})
 
 	const emit = defineEmits<IMediaVolumeControlEmits>()
+
+	defineSlots<IMediaVolumeControlSlots>()
 
 	const ICONS = {
 		VOLUME_HIGH: MDI_ICONS.VOLUME_HIGH,

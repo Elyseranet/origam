@@ -16,7 +16,7 @@
 	import { computed, StyleValue } from 'vue'
 
 	import type { ICommonsComponentSlots } from '../../interfaces/Commons/commons.interface'
-	import type { IGridItemProps, IGridLineSpec } from '../../interfaces/Grid/grid-item.interface'
+	import type { IGridItemEmits, IGridItemProps, IGridLineSpec } from '../../interfaces/Grid/grid-item.interface'
 
 	/*********************************************************
 	 * Global
@@ -35,6 +35,8 @@
 		alignSelf: undefined,
 		justifySelf: undefined
 	})
+
+	defineEmits<IGridItemEmits>()
 
 	defineSlots<ICommonsComponentSlots>()
 

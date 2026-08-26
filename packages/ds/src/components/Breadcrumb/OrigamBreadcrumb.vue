@@ -73,7 +73,7 @@
 	import { DENSITY } from '../../enums/Commons/density.enum'
 
 	import type { IBreadcrumbItemProps } from '../../interfaces/Breadcrumb/breadcrumb-item.interface'
-	import type { IBreadcrumbProps, IBreadcrumbSlots } from '../../interfaces/Breadcrumb/breadcrumb.interface'
+	import type { IBreadcrumbEmits, IBreadcrumbProps, IBreadcrumbSlots } from '../../interfaces/Breadcrumb/breadcrumb.interface'
 
 	import type { TBreadcrumbItem } from '../../types/Breadcrumb/breadcrumb.type'
 
@@ -94,6 +94,8 @@
 	})
 
 	const {filterProps} = useProps<IBreadcrumbProps>(props)
+
+	defineEmits<IBreadcrumbEmits>()
 
 	defineSlots<IBreadcrumbSlots>()
 	const {t} = useLocale()

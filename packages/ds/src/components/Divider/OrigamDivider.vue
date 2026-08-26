@@ -19,7 +19,7 @@
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { DIRECTION } from '../../enums/Commons/direction.enum'
 
-	import type { IDividerProps } from '../../interfaces/Divider/divider.interface'
+	import type { IDividerEmits, IDividerProps, IDividerSlots } from '../../interfaces/Divider/divider.interface'
 
 	import { convertToUnit } from '../../utils/Commons/commons.util'
 
@@ -38,6 +38,10 @@
 	})
 
 	const {filterProps} = useProps<IDividerProps>(props)
+
+	defineEmits<IDividerEmits>()
+
+	defineSlots<IDividerSlots>()
 
 	/*********************************************************
 	 * Accessibility

@@ -24,6 +24,11 @@ export interface IBreadcrumbProps extends IColorProps, IBgColorProps, ITagProps,
     items?: Array<TBreadcrumbItem>
 }
 
+/** Emits fired by `<OrigamBreadcrumb>` — none. Item interaction (click,
+ *  navigation) is owned by `<OrigamBreadcrumbItem>` / the consumer's
+ *  own `item`/`href` handling, not by the list wrapper. */
+export interface IBreadcrumbEmits {}
+
 /** Slot signatures for `<OrigamBreadcrumb>`. `item.{index}` /
  *  `divider.{index}` override a single item/divider by position;
  *  `item` / `divider` are the fallback used by every index without its

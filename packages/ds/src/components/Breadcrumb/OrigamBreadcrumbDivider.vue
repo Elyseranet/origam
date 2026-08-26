@@ -35,7 +35,7 @@
 
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import type { IBreadcrumbDividerProps, IBreadcrumbDividerSlots } from '../../interfaces/Breadcrumb/breadcrumb-divider.interface'
+	import type { IBreadcrumbDividerEmits, IBreadcrumbDividerProps, IBreadcrumbDividerSlots } from '../../interfaces/Breadcrumb/breadcrumb-divider.interface'
 	import type { TValueOf } from '../../types/Commons/commons.type'
 
 	import { computed, StyleValue, toRef } from 'vue'
@@ -49,6 +49,8 @@
 	const props = withDefaults(defineProps<IBreadcrumbDividerProps>(), {tag: 'span', divider: '/'})
 
 	const {filterProps} = useProps<IBreadcrumbDividerProps>(props)
+
+	defineEmits<IBreadcrumbDividerEmits>()
 
 	defineSlots<IBreadcrumbDividerSlots>()
 

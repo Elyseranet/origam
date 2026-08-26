@@ -87,7 +87,7 @@
 		lang="ts"
 		setup
 >
-	import type { IChartAxisProps } from '../../interfaces/Chart/chart-axis.interface'
+	import type { IChartAxisEmits, IChartAxisProps, IChartAxisSlots } from '../../interfaces/Chart/chart-axis.interface'
 
 	/*********************************************************
 	 * Global
@@ -124,6 +124,10 @@
 		secondaryYTicks: undefined,
 		secondaryYAxisFormat: undefined
 	})
+
+	defineEmits<IChartAxisEmits>()
+
+	defineSlots<IChartAxisSlots>()
 
 	/*********************************************************
 	 * Format helpers — fall back to identity when the consumer

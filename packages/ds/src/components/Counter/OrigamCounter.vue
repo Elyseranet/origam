@@ -38,7 +38,7 @@
 	import { useSsrBoot } from '../../composables/Commons/ssrBoot.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { ICounterProps, ICounterSlots } from '../../interfaces/Counter/counter.interface'
+	import type { ICounterEmits, ICounterProps, ICounterSlots } from '../../interfaces/Counter/counter.interface'
 	import type { TTransitionProps } from '../../types/Transition/transition.type'
 
 	import { computed, StyleValue, toRef } from "vue"
@@ -52,6 +52,8 @@
 		tag: 'div',
 		transition: () => ({component: OrigamSlideY}) as unknown as TTransitionProps
 	})
+
+	defineEmits<ICounterEmits>()
 
 	defineSlots<ICounterSlots>()
 

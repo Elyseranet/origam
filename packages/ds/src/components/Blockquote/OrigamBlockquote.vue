@@ -67,7 +67,7 @@
 
 	import { QUOTE_MARKS_BY_LANG } from '../../consts/Blockquote/blockquote.const'
 
-	import type { IBlockquoteProps, IBlockquoteSlots } from '../../interfaces/Blockquote/blockquote.interface'
+	import type { IBlockquoteEmits, IBlockquoteProps, IBlockquoteSlots } from '../../interfaces/Blockquote/blockquote.interface'
 
 	import type { TBlockquoteLang } from '../../types/Blockquote/blockquote.type'
 	import type { TColor } from '../../types/Commons/color.type'
@@ -89,6 +89,8 @@
 		variant: 'default',
 		lang: 'auto'
 	})
+
+	defineEmits<IBlockquoteEmits>()
 
 	defineSlots<IBlockquoteSlots>()
 

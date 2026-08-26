@@ -30,6 +30,15 @@ export interface IToolbarProps extends ITagProps, ICommonsComponentProps, IBorde
 /** Slot signatures for `<OrigamToolbar>`. None are scoped — every slot
  *  is a plain content override on top of the default wrapper layout
  *  (prepend / title / content / append). */
+/**
+ * Emits fired by `<OrigamToolbar>` — none. `modelValue` is declared on
+ * `IToolbarProps` but the component never reads or emits it today (no
+ * `emit(...)` call anywhere in the SFC) — do not extend
+ * `ICommonsComponentEmits` here, that would add a phantom
+ * `update:modelValue` the component never fires.
+ */
+export interface IToolbarEmits {}
+
 export interface IToolbarSlots {
     /** Replaces the entire wrapper (prepend + title + content + append). */
     default?: () => any

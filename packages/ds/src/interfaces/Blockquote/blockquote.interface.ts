@@ -112,3 +112,7 @@ export interface IBlockquoteSlots {
     author?: () => any
     source?: () => any
 }
+
+/** Emits fired by `<OrigamBlockquote>` — none. Purely typographic,
+ *  renders a native `<blockquote>` with no interactive state. */
+export interface IBlockquoteEmits {}
