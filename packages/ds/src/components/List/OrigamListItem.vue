@@ -11,7 +11,7 @@
 			:style="listItemStyles"
 			:tabindex="listItemTabIndex"
 			@click="handleClick"
-			@keydown="isClickable && !isLink && handleKeyDown"
+			@keydown="handleKeyDown"
 	>
     <span
 		    v-if="isClickable || isActive"
@@ -311,7 +311,24 @@
 	const handleClick = (e: MouseEvent) => {
 		click(e)
 	}
+	/*********************************************************
+	 * handleKeyDown (#439)
+	 *
+	 * @description
+	 * `@keydown="isClickable && !isLink && handleKeyDown"` used to compile
+	 * to `$event => (cond && _ctx.handleKeyDown)` — Vue's inline-statement
+	 * form for anything more complex than a bare member expression. The
+	 * expression EVALUATES `handleKeyDown` (a function reference) and
+	 * stops there; it never CALLS it.
+	 * @description
+	 * Root cause fixed at the binding (`@keydown="handleKeyDown"`, the one
+	 * form Vue auto-invokes with `$event`) — the guard moves in here,
+	 * where wrapping it in `&&`/`?:` again can't silently undo the fix
+	 * (see issue #439 / #397).
+	 ********************************************************/
 	const handleKeyDown = (e: KeyboardEvent) => {
+		if (!isClickable.value || isLink.value) return
+
 		if (e.key === KEYBOARD_VALUES.ENTER || e.key === ' ') {
 			e.preventDefault()
 			click(e as any as MouseEvent)

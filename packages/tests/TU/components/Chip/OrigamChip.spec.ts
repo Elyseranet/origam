@@ -167,6 +167,41 @@ describe('OrigamChip — click event', () => {
 })
 
 // ---------------------------------------------------------------------------
+// Keyboard activation — issue #439
+//
+// `@keydown="isClickable && !isLink && handleKeydown"` compiles to
+// `$event => (cond && _ctx.handleKeydown)` — a bare function REFERENCE, never
+// invoked. The DOM discards the returned value. Root cause: `handleKeydown`
+// is a member-expression only when it is the ENTIRE inline-handler
+// expression (`@keydown="handleKeydown"`); wrapped in `&&`/`? :`, Vue
+// compiles the whole thing as a discarded inline statement. Pre-fix, this
+// spec fails: `wrapper.emitted('click')` is undefined after Enter/Space.
+// `link: true` (no href/to) makes `isClickable` true via `props.link` while
+// keeping `isLink` false, so the keydown branch is reachable without a
+// group/router context.
+// ---------------------------------------------------------------------------
+
+describe('OrigamChip — keyboard activation (#439)', () => {
+    it('emits "click" when Enter is pressed on a clickable chip', async () => {
+        const wrapper = mountChip({ link: true })
+        await wrapper.find('.origam-chip').trigger('keydown', { key: 'Enter' })
+        expect(wrapper.emitted('click')).toBeTruthy()
+    })
+
+    it('emits "click" when Space is pressed on a clickable chip', async () => {
+        const wrapper = mountChip({ link: true })
+        await wrapper.find('.origam-chip').trigger('keydown', { key: ' ' })
+        expect(wrapper.emitted('click')).toBeTruthy()
+    })
+
+    it('does not emit "click" on keydown when the chip is not clickable', async () => {
+        const wrapper = mountChip()
+        await wrapper.find('.origam-chip').trigger('keydown', { key: 'Enter' })
+        expect(wrapper.emitted('click')).toBeFalsy()
+    })
+})
+
+// ---------------------------------------------------------------------------
 // Disabled
 // ---------------------------------------------------------------------------
 

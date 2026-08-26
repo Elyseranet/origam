@@ -229,3 +229,34 @@ describe('OrigamListItem — letterSpacing prop (subtitle surface)', () => {
         )
     })
 })
+
+// ---------------------------------------------------------------------------
+// Keyboard activation — issue #439
+//
+// `@keydown="isClickable && !isLink && handleKeyDown"` compiles to
+// `$event => (cond && _ctx.handleKeyDown)` — a bare function REFERENCE,
+// never invoked. The DOM discards the returned value; nothing calls
+// `handleKeyDown`. Same shape as OrigamChip. `link: true` (no href/to)
+// makes `isClickable` true via `props.link` while `isLink` stays false, so
+// the branch is reachable without a parent list / router context.
+// ---------------------------------------------------------------------------
+
+describe('OrigamListItem — keyboard activation (#439)', () => {
+    it('emits "click" when Enter is pressed on a clickable list item', async () => {
+        const wrapper = mountListItem({ link: true })
+        await wrapper.find('.origam-list-item').trigger('keydown', { key: 'Enter' })
+        expect(wrapper.emitted('click')).toBeTruthy()
+    })
+
+    it('emits "click" when Space is pressed on a clickable list item', async () => {
+        const wrapper = mountListItem({ link: true })
+        await wrapper.find('.origam-list-item').trigger('keydown', { key: ' ' })
+        expect(wrapper.emitted('click')).toBeTruthy()
+    })
+
+    it('does not emit "click" on keydown when the item is not clickable', async () => {
+        const wrapper = mountListItem()
+        await wrapper.find('.origam-list-item').trigger('keydown', { key: 'Enter' })
+        expect(wrapper.emitted('click')).toBeFalsy()
+    })
+})

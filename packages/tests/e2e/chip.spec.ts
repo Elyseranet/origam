@@ -284,6 +284,44 @@ test.describe('OrigamChip', () => {
     })
 
     // ------------------------------------------------------------------ //
+    // KEYBOARD ACTIVATION — issue #439 (real browser, index 7)             //
+    //                                                                      //
+    // `@keydown="isClickable && !isLink && handleKeydown"` compiled to a   //
+    // discarded function REFERENCE — Enter/Space never invoked the        //
+    // handler. Runtime proof: focus a chip via keyboard, press Enter,     //
+    // assert the group-membership class (`origam-chip--selected`) that    //
+    // ONLY the click→toggle path can add actually appears. Chip's tag     //
+    // defaults to `span` here (not a native button), so this exercises    //
+    // the manual keydown path exactly as a real user's keyboard would —   //
+    // no reliance on jsdom, which cannot synthesize the UA's native       //
+    // Enter/Space-to-click behaviour for real `<button>` elements anyway. //
+    // ------------------------------------------------------------------ //
+
+    test('Keyboard: Enter on a focused chip toggles group selection', async ({ page }) => {
+        await page.goto(sandboxUrl(7), { waitUntil: 'domcontentloaded' })
+        const first = page.locator('.origam-chip').first()
+        await expect(first).toBeVisible({ timeout: 30000 })
+        await expect(first).not.toHaveClass(/origam-chip--selected/)
+
+        await first.focus()
+        await page.keyboard.press('Enter')
+
+        await expect(first).toHaveClass(/origam-chip--selected/)
+    })
+
+    test('Keyboard: Space on a focused chip toggles group selection', async ({ page }) => {
+        await page.goto(sandboxUrl(7), { waitUntil: 'domcontentloaded' })
+        const second = page.locator('.origam-chip').nth(1)
+        await expect(second).toBeVisible({ timeout: 30000 })
+        await expect(second).not.toHaveClass(/origam-chip--selected/)
+
+        await second.focus()
+        await page.keyboard.press(' ')
+
+        await expect(second).toHaveClass(/origam-chip--selected/)
+    })
+
+    // ------------------------------------------------------------------ //
     // EVENTS - update:modelValue (index 8)                                //
     // ------------------------------------------------------------------ //
 

@@ -113,7 +113,7 @@
 
 	import { ORIGAM_DATA_TABLE_SHOW_SELECT_KEY } from '../../consts/DataTable/data-table.const'
 
-	import { computed, inject, ref, Ref, StyleValue, toDisplayString, withModifiers } from 'vue'
+	import { computed, inject, ref, Ref, StyleValue, toDisplayString } from 'vue'
 
 	const vm = getCurrentInstance('dataTableRow')
 
@@ -207,12 +207,31 @@
 	 * Event handlers
 	 ********************************************************/
 
-	const handleCheckBoxClick = () => {
-		withModifiers(() => toggleSelect(props.item), ['stop'])
+	/*********************************************************
+	 * handleCheckBoxClick / handleBtnClick (#439)
+	 *
+	 * @description
+	 * `withModifiers(fn, ['stop'])` is a FACTORY: it returns a new wrapped
+	 * handler, it does not call `fn` nor stop anything on its own. Calling
+	 * it as a bare statement (pre-fix) built a throwaway function and
+	 * discarded it — `toggleSelect` / `toggleExpand` were never invoked,
+	 * while `emits('select')` / `emits('expand')` fired right after
+	 * regardless, so the row reported a selection/expansion that never
+	 * happened.
+	 * @description
+	 * `stopPropagation()` is what `.stop` compiles down to — called
+	 * directly here since these handlers already receive the real native
+	 * event (bare `@click="handleCheckBoxClick"` / `@click=
+	 * "handleBtnClick"` bindings, Vue's auto-invoked "blessed form").
+	 ********************************************************/
+	const handleCheckBoxClick = (e: MouseEvent) => {
+		e.stopPropagation()
+		toggleSelect(props.item)
 		emits('select')
 	}
-	const handleBtnClick = () => {
-		withModifiers(() => toggleExpand(props.item), ['stop'])
+	const handleBtnClick = (e: MouseEvent) => {
+		e.stopPropagation()
+		toggleExpand(props.item)
 		emits('expand')
 	}
 
