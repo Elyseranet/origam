@@ -34,11 +34,15 @@ parent field is focused.
 
 ## Transition
 
-The counter appears/disappears with a transition driven by its `transition` prop.
+The counter appears/disappears with a transition driven by its `transition`
+prop. It defaults to `{ component: OrigamSlideY }` — pass a different
+transition component descriptor to override it. A bare string (e.g.
+`"fade"`) sets Vue's native `<Transition name="…">` directly, and the DS
+ships no CSS for that literal name — it silently produces no animation.
 
 ```vue
 <template>
-  <OrigamCounter :value="10" :max="50" :active="show" transition="fade" />
+  <OrigamCounter :value="10" :max="50" :active="show" :transition="{ component: OrigamFade }" />
 </template>
 ```
 

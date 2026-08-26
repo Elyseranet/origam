@@ -2883,6 +2883,8 @@ export type TTokenName =
   | '--origam-virtual-scroll---transition-easing'
   | '--origam-window---item-fade-transition-duration'
   | '--origam-window---item-fade-transition-easing'
+  | '--origam-window---item-scale-rotate-transition-duration'
+  | '--origam-window---item-scale-rotate-transition-easing'
   | '--origam-window---item-x-transition-duration'
   | '--origam-window---item-x-transition-easing'
   | '--origam-window---item-y-transition-duration'

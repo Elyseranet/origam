@@ -138,7 +138,7 @@
 	import { ref } from 'vue'
 	import { logEvent } from 'histoire/client'
 
-	import { OrigamBtn, OrigamOverlayScrim } from '@origam/components'
+	import { OrigamBtn, OrigamFade, OrigamOverlayScrim, OrigamSlideY } from '@origam/components'
 	import type { IOverlayScrimProps } from '@origam/interfaces'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
@@ -157,11 +157,19 @@
 		{ label: 'rgba blue',                    value: 'rgba(0, 120, 255, .45)' }
 	]
 
+	// ⛔ issue #475 — bare strings ('fade' / 'slide-y') set Vue's native
+	// <Transition name="…"> directly; the DS never shipped CSS for those
+	// literal class names, so both options silently produced a hard cut
+	// with no animation. The verified-working shape is the component
+	// descriptor (`{ component: OrigamXxx }`), the same one this story's
+	// own "Design" Variant already documents as valid usage, and the same
+	// remediation already applied to OrigamBottomNav's story for the
+	// identical defect.
 	const TRANSITION_OPTIONS = [
 		{ label: 'default (OrigamFade)', value: undefined },
 		{ label: 'disabled',             value: false },
-		{ label: 'fade',                 value: 'fade' },
-		{ label: 'slide-y',              value: 'slide-y' }
+		{ label: 'OrigamFade',           value: { component: OrigamFade } },
+		{ label: 'OrigamSlideY',         value: { component: OrigamSlideY } }
 	]
 </script>
 

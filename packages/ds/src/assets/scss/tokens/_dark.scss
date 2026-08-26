@@ -1928,6 +1928,8 @@
   --origam-window---item-y-transition-easing: var(--origam-motion__easing---standard);
   --origam-window---item-fade-transition-duration: var(--origam-motion__duration---medium);
   --origam-window---item-fade-transition-easing: var(--origam-motion__easing---decelerate);
+  --origam-window---item-scale-rotate-transition-duration: var(--origam-motion__duration---slow);
+  --origam-window---item-scale-rotate-transition-easing: var(--origam-motion__easing---standard);
   --origam-window---show-arrows-on-hover-prev-transform: translateX(-200%);
   --origam-window---show-arrows-on-hover-next-transform: translateX(200%);
   --origam-window---show-arrows-on-hover-hover-transform: translateX(0);
