@@ -35,6 +35,7 @@
 								:hover="hover"
 								:active="active"
 								:hover-class="hoverClass"
+								:active-class="activeClass"
 						/>
 					</slot>
 
@@ -51,6 +52,7 @@
 								:hover="hover"
 								:active="active"
 								:hover-class="hoverClass"
+								:active-class="activeClass"
 						/>
 					</slot>
 				</slot>

@@ -457,12 +457,18 @@
 			roundedClasses.value,
 			sizeClasses.value,
 			statusClasses.value,
-			// `activeClass` mirrors the main `origam-btn--active` class above:
-			// gated on the SAME `isActive` (forced / group-selection / link-active
-			// aware), not on useStateFlag's own narrower `isOn` — a plain
-			// `activeClasses.value` from useStateFlag would miss the
-			// group/link-driven cases entirely (it only reflects the raw
-			// `props.active` v-model, never `group.isSelected` / `link.isActive`).
+			/*********************************************************
+			 * activeClass
+			 *
+			 * @description
+			 * Mirrors the main `origam-btn--active` class above: gated on
+			 * the SAME `isActive` (forced / group-selection / link-active
+			 * aware), not on useStateFlag's own narrower `isOn` — a plain
+			 * `activeClasses.value` from useStateFlag would miss the
+			 * group/link-driven cases entirely (it only reflects the raw
+			 * `props.active` v-model, never `group.isSelected` /
+			 * `link.isActive`).
+			 ********************************************************/
 			isActive.value && props.activeClass,
 			props.class
 		]

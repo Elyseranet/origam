@@ -202,11 +202,18 @@
 	const {densityClasses} = useDensity(props)
 
 	const {isOn: isHover, config: hoverState} = useStateFlag(props, {state: 'hover'})
-	// `active` here is the DECORATIVE state-effect toggle from `IActiveProps`
-	// (forced highlight / color-bgColor-border-rounded-elevation override via
-	// an `IActiveState` config) — unrelated to the `isActive` v-model below,
-	// which tracks whether the chip is still mounted/dismissed. Named `active`
-	// (not `isActive`) to avoid shadowing that unrelated local.
+	/*********************************************************
+	 * active — decorative state-effect toggle (IActiveProps)
+	 *
+	 * @description
+	 * `active` here is the DECORATIVE state-effect toggle from
+	 * `IActiveProps` (forced highlight / color-bgColor-border-rounded-
+	 * elevation override via an `IActiveState` config) — unrelated to
+	 * `closeChip` below, which reads `modelValue` (source override) under
+	 * the SAME `state: 'active'` label to drive dismiss/close, not this
+	 * decorative surface. Named `active` (not `isActive`) so neither
+	 * call's destructured names collide.
+	 ********************************************************/
 	const {isOn: active, config: activeState, classes: activeClasses} = useStateFlag(props, {state: 'active'})
 	const {
 		borderClasses, borderStyles,
