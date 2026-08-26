@@ -41,12 +41,17 @@ export interface IItemGroupItemProps extends ICommonsComponentProps, ITagProps, 
 /** Emits fired by `<OrigamItemGroup>` — v-model on the active item set. */
 export interface IItemGroupEmits extends ICommonsComponentEmits {}
 
-/** Emits fired by `<OrigamItem>`. `group:selected` is real, not a
- *  documentation guess: `useGroupItem` (`composables/Commons/groupItem.
- *  composable.ts`) watches its own computed `isSelected` and calls
- *  `vm.emit('group:selected', {value})` on the CALLING component's
- *  instance — i.e. on `<OrigamItem>` itself — every time the group
- *  toggles this item's selection state. */
+/*********************************************************
+ * IItemGroupItemEmits
+ *
+ * @description
+ * Emits fired by `<OrigamItem>`. `group:selected` is real, not a
+ * documentation guess: `useGroupItem` (`composables/Commons/groupItem.
+ * composable.ts`) watches its own computed `isSelected` and calls
+ * `vm.emit('group:selected', {value})` on the CALLING component's
+ * instance — i.e. on `<OrigamItem>` itself — every time the group
+ * toggles this item's selection state.
+ ********************************************************/
 export interface IItemGroupItemEmits {
     (e: 'group:selected', value: { value: boolean }): void
 }

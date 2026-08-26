@@ -18,8 +18,13 @@ export interface IListSubheader extends ICommonsComponentProps, ITagProps, IColo
     title?: string,
 }
 
-/** `<OrigamListSubheader>` emits nothing of its own — it's a purely
- *  presentational row (inset/sticky/title chrome). */
+/*********************************************************
+ * IListSubheaderEmits
+ *
+ * @description
+ * `<OrigamListSubheader>` emits nothing of its own — it's a purely
+ * presentational row (inset/sticky/title chrome).
+ ********************************************************/
 export interface IListSubheaderEmits {}
 
 /** Slot signatures for `<OrigamListSubheader>`. */
