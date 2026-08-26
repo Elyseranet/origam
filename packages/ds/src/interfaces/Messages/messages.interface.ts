@@ -20,3 +20,7 @@ export interface IMessagesProps extends ICommonsComponentProps, ITagProps, ITran
 export interface IMessagesSlots {
     default?: (data: { message: string }) => any
 }
+
+/** `<OrigamMessages>` renders a static list of messages inside a
+ *  transition — nothing is emitted. */
+export interface IMessagesEmits {}

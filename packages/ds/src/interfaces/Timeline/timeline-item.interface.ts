@@ -48,3 +48,7 @@ export interface ITimelineItemSlots {
     default?: () => any
     body?: () => any
 }
+
+/** `<OrigamTimelineItem>` is a static render (dot + connector + title /
+ *  subtitle / body) — nothing is emitted. */
+export interface ITimelineItemEmits {}

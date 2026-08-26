@@ -106,7 +106,7 @@
 
 	import type { IDataTableGroup, IDataTableGroupHeaderSlot } from '../../interfaces/DataTable/group.interface'
 	import type { IDataTableItemBaseSlot, IDataTableItemSlot } from '../../interfaces/DataTable/items.interface'
-	import type { IDataTableRowsProps, IDataTableRowsSlots } from '../../interfaces/DataTable/data-table-rows.interface'
+	import type { IDataTableRowsEmits, IDataTableRowsProps, IDataTableRowsSlots } from '../../interfaces/DataTable/data-table-rows.interface'
 
 	import { LOADER_KIND } from '../../enums/Commons/loader.enum'
 
@@ -124,6 +124,8 @@
 		loadingText: 'origam.data_iterator.loading_text',
 		noDataText: 'origam.no_data_text'
 	})
+
+	defineEmits<IDataTableRowsEmits>()
 
 	defineSlots<IDataTableRowsSlots>()
 

@@ -49,7 +49,7 @@
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useSize } from '../../composables/Commons/size.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
-	import type { ITimelineItemProps, ITimelineItemSlots } from '../../interfaces/Timeline/timeline-item.interface'
+	import type { ITimelineItemEmits, ITimelineItemProps, ITimelineItemSlots } from '../../interfaces/Timeline/timeline-item.interface'
 
 	import { TIMELINE_CONTEXT_KEY } from '../../consts/Timeline/timeline.const'
 	import { DIRECTION } from '../../enums/Commons/direction.enum'
@@ -72,6 +72,8 @@
 	const timelineCtx = inject(TIMELINE_CONTEXT_KEY, null)
 
 	const { filterProps } = useProps<ITimelineItemProps>(props)
+
+	defineEmits<ITimelineItemEmits>()
 
 	defineSlots<ITimelineItemSlots>()
 	/*********************************************************

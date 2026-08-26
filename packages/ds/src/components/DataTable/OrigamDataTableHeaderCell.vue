@@ -72,7 +72,7 @@
 	import { useSort } from '../../composables/DataTable/sort.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { IDataTableHeaderCellProps, IDataTableHeaderCellSlots } from '../../interfaces/DataTable/data-table-header-cell.interface'
+	import type { IDataTableHeaderCellEmits, IDataTableHeaderCellProps, IDataTableHeaderCellSlots } from '../../interfaces/DataTable/data-table-header-cell.interface'
 	import type { IDataTableSortItem } from '../../interfaces/DataTable/sort.interface'
 	import type { IInternalDataTableHeader } from '../../interfaces/DataTable/data-table-header.interface'
 
@@ -85,6 +85,8 @@
 	 ********************************************************/
 
 	const props = withDefaults(defineProps<IDataTableHeaderCellProps>(), {})
+
+	defineEmits<IDataTableHeaderCellEmits>()
 
 	defineSlots<IDataTableHeaderCellSlots>()
 

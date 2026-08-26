@@ -151,7 +151,7 @@
 	import { DIRECTION } from '../../enums/Commons/direction.enum'
 	import { TEXT_FIELD_TYPE } from '../../enums/TextField/text-field.enum'
 
-	import type { IColorPickerFieldProps, IColorPickerFieldSlots } from '../../interfaces/ColorPickerField/color-picker-field.interface'
+	import type { IColorPickerFieldEmits, IColorPickerFieldProps, IColorPickerFieldSlots } from '../../interfaces/ColorPickerField/color-picker-field.interface'
 
 	import type { TColor } from '../../types/Commons/color.type'
 	import type { TOrigamColorPicker } from '../../types/ColorPicker/color-picker.type'
@@ -187,6 +187,8 @@
 	})
 
 	const {filterProps} = useProps<IColorPickerFieldProps>(props)
+
+	defineEmits<IColorPickerFieldEmits>()
 
 	defineSlots<IColorPickerFieldSlots>()
 

@@ -74,7 +74,7 @@
 
 	import { isIntent, tokenForegroundForIntent } from '../../utils/Commons/color.util'
 
-	import type { IBracketCompetitorEmits, IBracketCompetitorProps } from '../../interfaces/Bracket/bracket-competitor-component.interface'
+	import type { IBracketCompetitorEmits, IBracketCompetitorProps, IBracketCompetitorSlots } from '../../interfaces/Bracket/bracket-competitor-component.interface'
 
 	import type { TIntent } from '../../types/Commons/intent.type'
 
@@ -88,6 +88,8 @@
 	})
 
 	const emit = defineEmits<IBracketCompetitorEmits>()
+
+	defineSlots<IBracketCompetitorSlots>()
 
 	const {filterProps} = useProps<IBracketCompetitorProps>(props)
 

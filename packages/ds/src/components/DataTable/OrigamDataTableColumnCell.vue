@@ -21,7 +21,7 @@
 
 	import { ALIGN } from '../../enums/Commons/align.enum'
 
-	import type { IDataTableColumnCellSlots, IDataTableColumnProps } from '../../interfaces/DataTable/column.interface'
+	import type { IDataTableColumnCellEmits, IDataTableColumnCellSlots, IDataTableColumnProps } from '../../interfaces/DataTable/column.interface'
 
 	import { convertToUnit } from '../../utils/Commons/commons.util'
 
@@ -35,6 +35,8 @@
 		align: ALIGN.START,
 		tag: 'td'
 	})
+
+	defineEmits<IDataTableColumnCellEmits>()
 
 	defineSlots<IDataTableColumnCellSlots>()
 

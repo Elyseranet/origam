@@ -56,7 +56,7 @@
 
 	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { IDataTableFooterProps, IDataTableFooterSlots } from '../../interfaces/DataTable/footer.interface'
+	import type { IDataTableFooterEmits, IDataTableFooterProps, IDataTableFooterSlots } from '../../interfaces/DataTable/footer.interface'
 	import type { TOrigamPagination } from '../../types/Pagination/pagination.type'
 
 	import { computed, ref, StyleValue } from "vue"
@@ -81,6 +81,8 @@
 		lastPageLabel: 'origam.data_footer.last_page',
 		showCurrentPage: true
 	})
+
+	defineEmits<IDataTableFooterEmits>()
 
 	defineSlots<IDataTableFooterSlots>()
 

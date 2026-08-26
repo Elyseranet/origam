@@ -4,6 +4,8 @@ import type { IMenuProps } from '../Menu/menu.interface'
 import type { ITextFieldProps } from '../TextField/text-field.interface'
 import type { ITransitionComponentProps } from '../Commons/transition-component.interface'
 
+import type { TColor } from '../../types/Commons/color.type'
+
 // ITextFieldProps already includes ICommonsComponentProps, IColorProps,
 // IDensityProps, IFieldProps, IInputProps, IAdjacentProps, IAdjacentInnerProps,
 // IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps.
@@ -25,4 +27,16 @@ export interface IColorPickerFieldProps extends ITextFieldProps, ITransitionComp
 export interface IColorPickerFieldSlots extends Omit<IFieldSlots, 'default'>, IAdjacentSlots {
     /** Overrides the selected color's text/swatch representation. */
     colorSelection?: () => any
+}
+
+/** Emits fired by `<OrigamColorPickerField>` — both are genuine
+ *  `useVModel(props, …)` writes (`modelValue` on selecting/clearing a
+ *  color, `menu` on opening/closing the popup), not inherited defaults.
+ *  Pre-fix neither was declared: the component emitted `update:menu` /
+ *  `update:modelValue` at runtime while `defineEmits` stayed absent —
+ *  the exact gap flagged by the `emits-completeness` guard baseline
+ *  (`ColorPickerField:update:menu,update:modelValue`). */
+export interface IColorPickerFieldEmits {
+    (e: 'update:modelValue', value: TColor): void
+    (e: 'update:menu', value: boolean): void
 }

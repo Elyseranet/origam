@@ -34,7 +34,7 @@
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { IDataTableHeadersCellProps } from '../../interfaces/DataTable/data-table-headers-cell.interface'
+	import type { IDataTableHeadersCellEmits, IDataTableHeadersCellProps, IDataTableHeadersCellSlots } from '../../interfaces/DataTable/data-table-headers-cell.interface'
 	import type { TOrigamDataTableHeaderCell } from '../../types/DataTable/data-table-header-cell.type'
 
 	import { computed, ref, StyleValue } from 'vue'
@@ -44,6 +44,10 @@
 	 ********************************************************/
 
 	const props = withDefaults(defineProps<IDataTableHeadersCellProps>(), {})
+
+	defineEmits<IDataTableHeadersCellEmits>()
+
+	defineSlots<IDataTableHeadersCellSlots>()
 
 	const {filterProps} = useProps<IDataTableHeadersCellProps>(props)
 
