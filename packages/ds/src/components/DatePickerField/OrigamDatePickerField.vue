@@ -200,7 +200,7 @@
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 	import { TEXT_FIELD_TYPE } from '../../enums/TextField/text-field.enum'
 
-	import type { IDatePickerFieldProps, IDatePickerFieldSlots } from '../../interfaces/DatePickerField/date-picker-field.interface'
+	import type { IDatePickerFieldEmits, IDatePickerFieldProps, IDatePickerFieldSlots } from '../../interfaces/DatePickerField/date-picker-field.interface'
 	import type { IDatePickerProps } from '../../interfaces/DatePicker/date-picker.interface'
 
 	import type { TOrigamDatePicker } from '../../types/DatePicker/date-picker.type'
@@ -231,6 +231,8 @@
 		range: false,
 		closeOnSelect: true
 	})
+
+	defineEmits<IDatePickerFieldEmits>()
 
 	defineSlots<IDatePickerFieldSlots>()
 

@@ -79,7 +79,7 @@
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import type { IDataTitleProps, IDataTitleSlots } from '../../interfaces/DataList/data-title.interface'
+	import type { IDataTitleEmits, IDataTitleProps, IDataTitleSlots } from '../../interfaces/DataList/data-title.interface'
 	import { computed, shallowRef, StyleValue, toRef } from "vue"
 
 	/*********************************************************
@@ -87,6 +87,8 @@
 	 ********************************************************/
 
 	const props = withDefaults(defineProps<IDataTitleProps>(), {})
+
+	defineEmits<IDataTitleEmits>()
 
 	defineSlots<IDataTitleSlots>()
 

@@ -33,6 +33,11 @@ export interface ISliderFieldTrackProps extends ICommonsComponentProps, IColorPr
     ticks?: Array<TTick>
 }
 
+/** `<OrigamSliderFieldTrack>` emits nothing of its own — it's a purely
+ *  presentational track/fill/ticks renderer driven entirely by props
+ *  computed by the parent `<OrigamSliderField>`. */
+export interface ISliderFieldTrackEmits {}
+
 /**
  * Slot signatures for `<OrigamSliderFieldTrack>`. `item` and the
  * per-tick `item.{index}` share the same `{ tick, index }` scope — the

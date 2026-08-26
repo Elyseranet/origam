@@ -105,10 +105,12 @@
   import { useProps } from '../../composables/Commons/props.composable'
   import { useStyle } from '../../composables/Commons/style.composable'
 
-  import type { ITreeviewNodeProps, ITreeviewNodeSlots } from '../../interfaces/Treeview/treeview-node.interface'
+  import type { ITreeviewNodeEmits, ITreeviewNodeProps, ITreeviewNodeSlots } from '../../interfaces/Treeview/treeview-node.interface'
   import { OrigamIcon } from "../Icon";
 
   defineOptions({ name: 'OrigamTreeviewNode' })
+
+  defineEmits<ITreeviewNodeEmits>()
 
   defineSlots<ITreeviewNodeSlots>()
 

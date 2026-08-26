@@ -58,7 +58,7 @@
 	import { useRounded } from '../../composables/Commons/rounded.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { ISliderFieldTrackProps, ISliderFieldTrackSlots } from '../../interfaces/SliderField/slider-field-track.interface'
+	import type { ISliderFieldTrackEmits, ISliderFieldTrackProps, ISliderFieldTrackSlots } from '../../interfaces/SliderField/slider-field-track.interface'
 
 	import type { TTick } from '../../types/SliderField/slider-field.type'
 
@@ -75,6 +75,8 @@
 		showTicks: false,
 		tickSize: 2
 	})
+
+	defineEmits<ISliderFieldTrackEmits>()
 
 	defineSlots<ISliderFieldTrackSlots>()
 

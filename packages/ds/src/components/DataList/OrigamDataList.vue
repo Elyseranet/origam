@@ -189,7 +189,7 @@
 	import { useRounded } from '../../composables/Commons/rounded.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useTypography } from '../../composables/Commons/typography.composable'
-	import type { IDataItem, IDataListProps, IDataListSlots } from '../../interfaces/DataList/data-list.interface'
+	import type { IDataItem, IDataListEmits, IDataListProps, IDataListSlots } from '../../interfaces/DataList/data-list.interface'
 	import type { IDataListKVItem } from '../../interfaces/DataList/data-list-kv-item.interface'
 	import type { IDataListKVItemValueComponent } from '../../interfaces/DataList/data-list-kv-item-value-component.interface'
 	import type { IDataTextProps } from '../../interfaces/DataList/data-text.interface'
@@ -209,6 +209,8 @@
 	const props = withDefaults(defineProps<IDataListProps>(), {
 		mode: 'avatar'
 	})
+
+	defineEmits<IDataListEmits>()
 
 	defineSlots<IDataListSlots>()
 

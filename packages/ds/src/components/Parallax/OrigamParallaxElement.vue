@@ -29,7 +29,7 @@
 	import { PARALLAX_ELEMENT_TYPE } from '../../enums/Parallax/parallax-element.enum'
 	import { PARALLAX_EVENT } from '../../enums/Parallax/parallax.enum'
 
-	import type { IParallaxElementProps, IParallaxElementSlots } from '../../interfaces/Parallax/parallax-element.interface'
+	import type { IParallaxElementEmits, IParallaxElementProps, IParallaxElementSlots } from '../../interfaces/Parallax/parallax-element.interface'
 
 	import { cyclicMovement, elementMovement } from '../../utils/Parallax/parallax-element.util'
 
@@ -51,6 +51,8 @@
 	})
 
 	const {filterProps} = useProps<IParallaxElementProps>(props)
+
+	defineEmits<IParallaxElementEmits>()
 
 	defineSlots<IParallaxElementSlots>()
 
