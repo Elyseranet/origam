@@ -105,9 +105,27 @@ interface ISheetProps extends ITagProps, ICommonsComponentProps,
     IPaddingProps, IMarginProps, IColorProps, IBorderProps,
     IRoundedProps, IElevationProps, IDimensionProps,
     ILocationProps, IPositionProps {
-    // No extra props — sheet IS the union of the chrome mixins.
+    side?: TDirectionBoth                     // 'bottom' unlocks the swipe
+    swipeable?: boolean                       // default false
+    snapPoints?: ReadonlyArray<TSheetSnapPoint>
+    defaultSnap?: TSheetSnapId                // default 'half'
+    open?: boolean                            // v-model:open
+    disabled?: boolean                        // default false
+    persistent?: boolean                      // default false
+    handleLabel?: string                      // locale key, default 'origam.sheet.handle.aria_label'
 }
 ```
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `side` | `TDirectionBoth` | — | Anchored edge. `'bottom'` is the only side that enables the swipe gesture and renders the handle. |
+| `swipeable` | `boolean` | `false` | Enables the drag gesture. Combined with `side="bottom"`, renders the handle. |
+| `snapPoints` | `ReadonlyArray<TSheetSnapPoint>` | closed / peek / half / full | Custom snap ladder. |
+| `defaultSnap` | `TSheetSnapId` | `'half'` | Snap applied on mount. |
+| `open` | `boolean` | — | Two-way via `v-model:open`; maps onto the closed/open snap semantics. |
+| `disabled` | `boolean` | `false` | Freezes the gesture. |
+| `persistent` | `boolean` | `false` | Prevents collapsing to `closed` — falls back to the smallest non-zero snap. |
+| `handleLabel` | `string` | `'origam.sheet.handle.aria_label'` | **Locale key**, not final text, for the drag handle's accessible name. See [Accessibility](#accessibility). |
 
 ## Anatomy
 
@@ -166,10 +184,24 @@ The full list lives in
   both <kbd>Enter</kbd> and <kbd>Space</kbd>, and exposed as a button to
   assistive technology — all from the element itself, with no `tabindex`
   and no keyboard handlers to keep in sync with UA behaviour.
-- The handle's accessible name comes from the `origam.sheet.handle.aria_label`
-  locale key (`"Drag handle"` in English, `"Poignée de déplacement"` in
-  French), so it follows the active locale. Override it centrally by
-  redefining that key in your own messages.
+- The handle's accessible name comes from the `handleLabel` prop, which
+  carries a **locale key**, not final text — it is resolved through the DS
+  `t()` mechanism and therefore follows the active locale. It defaults to
+  `origam.sheet.handle.aria_label` (`"Drag handle"` / `"Poignée de
+  déplacement"`).
+
+  ```vue
+  <!-- Default — announced in the active locale -->
+  <OrigamSheet swipeable side="bottom" />
+
+  <!-- Your own key, added to your locale files -->
+  <OrigamSheet swipeable side="bottom" handle-label="editor.resize_panel" />
+  ```
+
+  A raw string matching no key is returned unchanged, so
+  `handle-label="Resize the panel"` still works if you'd rather translate
+  on your side. Redefining `origam.sheet.handle.aria_label` in your own
+  messages changes it everywhere at once.
 - The handle only renders when the sheet is both `swipeable` and
   `side="bottom"`; there is nothing to focus otherwise.
 

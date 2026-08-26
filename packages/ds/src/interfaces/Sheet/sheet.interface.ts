@@ -74,6 +74,24 @@ export interface ISheetProps extends ITagProps, ICommonsComponentProps, IPadding
      * by default). Mirrors `OrigamDialog`'s `persistent` semantics.
      */
     persistent?: boolean
+    /*********************************************************
+     * handleLabel
+     *
+     * @description
+     * Accessible name of the drag handle (its `aria-label`). Carries a
+     * LOCALE KEY, not final text — it is resolved through the DS `t()`
+     * mechanism, so the announcement follows the active locale with no
+     * work from the consumer. Defaults to `'origam.sheet.handle.aria_label'`
+     * ("Drag handle" / "Poignée de déplacement").
+     * @description
+     * A raw string matching no key is returned unchanged, so
+     * `handle-label="Resize the panel"` still works for consumers who
+     * prefer to translate on their side.
+     * @description
+     * Only meaningful when the handle renders at all, i.e. when the sheet
+     * is both `swipeable` and `side="bottom"`.
+     ********************************************************/
+    handleLabel?: string
 }
 
 // `ISheetEmits` lives in its own file

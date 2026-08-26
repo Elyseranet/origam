@@ -58,7 +58,8 @@
 		defaultSnap: 'half',
 		open: undefined,
 		disabled: false,
-		persistent: false
+		persistent: false,
+		handleLabel: 'origam.sheet.handle.aria_label'
 	})
 
 	const emit = defineEmits<ISheetEmits>()
@@ -95,7 +96,9 @@
 
 	const {t} = useLocale()
 
-	const handleAriaLabel = computed(() => t('origam.sheet.handle.aria_label'))
+	// Resolved in a computed, never eagerly in the setup body, so a
+	// `handleLabel` supplied by `theme.components` is still seen (ADR-005).
+	const handleAriaLabel = computed(() => t(props.handleLabel))
 
 	// ───────────────────────── swipe gesture ────────────────────────────
 

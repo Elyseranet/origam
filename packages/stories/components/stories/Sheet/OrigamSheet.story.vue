@@ -101,7 +101,8 @@
 					defaultSnap: 'half',
 					open: undefined,
 					disabled: false,
-					persistent: false
+					persistent: false,
+					handleLabel: 'origam.sheet.handle.aria_label'
 				})"
 		>
 			<template #default="{ state }">
@@ -114,6 +115,7 @@
 							:open="state.open"
 							:disabled="state.disabled"
 							:persistent="state.persistent"
+							:handle-label="state.handleLabel"
 							elevation="lg"
 							style="background: var(--origam-color__surface---default); padding: 16px;"
 					>
@@ -132,6 +134,9 @@
 					<HstCheckbox v-model="state.open"        title="Open"/>
 					<HstCheckbox v-model="state.disabled"    title="Disabled"/>
 					<HstCheckbox v-model="state.persistent"  title="Persistent"/>
+				</StoryGroup>
+				<StoryGroup title="Accessibility">
+					<HstText v-model="state.handleLabel" title="Handle Label (locale key)"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -237,7 +242,8 @@
 					side: undefined,
 					defaultSnap: 'half',
 					disabled: false,
-					persistent: false
+					persistent: false,
+					handleLabel: 'origam.sheet.handle.aria_label'
 				})"
 		>
 			<template #default="{ state }">
@@ -270,6 +276,7 @@
 					<HstSelect   v-model="state.defaultSnap" title="Default Snap" :options="SNAP_OPTIONS"/>
 					<HstCheckbox v-model="state.disabled"    title="Disabled"/>
 					<HstCheckbox v-model="state.persistent"  title="Persistent"/>
+					<HstText     v-model="state.handleLabel" title="Handle Label (locale key)"/>
 				</StoryGroup>
 			</template>
 		</Variant>

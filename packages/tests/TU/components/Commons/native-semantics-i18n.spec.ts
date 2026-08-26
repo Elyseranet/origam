@@ -79,6 +79,30 @@ describe('OrigamSheet — drag handle semantics and accessible name (#461)', () 
             .toBe('Poignée de déplacement')
     })
 
+    // handleLabel — the per-instance channel Skeleton got under #462 and
+    // Sheet did not. Same contract: the prop carries a KEY, the component
+    // translates.
+    it('resolves a consumer-supplied locale key through handleLabel', () => {
+        const wrapper = mountWith(OrigamSheet, {...SWIPEABLE_BOTTOM, handleLabel: 'origam.close'})
+
+        expect(wrapper.find('[data-cy="sheet-bottom-handle"]').attributes('aria-label'))
+            .toBe('Close')
+    })
+
+    it('follows the active locale for a consumer-supplied key too', () => {
+        const wrapper = mountWith(OrigamSheet, {...SWIPEABLE_BOTTOM, handleLabel: 'origam.close'}, 'fr')
+
+        expect(wrapper.find('[data-cy="sheet-bottom-handle"]').attributes('aria-label'))
+            .toBe('Fermer')
+    })
+
+    it('passes an unknown raw string through unchanged (back-compat)', () => {
+        const wrapper = mountWith(OrigamSheet, {...SWIPEABLE_BOTTOM, handleLabel: 'Resize the panel'})
+
+        expect(wrapper.find('[data-cy="sheet-bottom-handle"]').attributes('aria-label'))
+            .toBe('Resize the panel')
+    })
+
     it('never leaks the raw key when the locale layer is present', () => {
         for (const locale of ['en', 'fr']) {
             const wrapper = mountWith(OrigamSheet, {...SWIPEABLE_BOTTOM}, locale)
