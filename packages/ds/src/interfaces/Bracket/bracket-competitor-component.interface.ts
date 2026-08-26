@@ -97,6 +97,11 @@ export interface IBracketCompetitorEmits extends IActiveEmits {
     (e: 'click', event: MouseEvent | KeyboardEvent): void
 }
 
-/** `<OrigamBracketCompetitor>` renders a static row (seed / avatar / name /
- *  forfeit / advantage / score) — no `<slot>` in the template. */
+/*********************************************************
+ * IBracketCompetitorSlots
+ *
+ * @description
+ * `<OrigamBracketCompetitor>` renders a static row (seed / avatar / name /
+ * forfeit / advantage / score) — no `<slot>` in the template.
+ ********************************************************/
 export interface IBracketCompetitorSlots {}

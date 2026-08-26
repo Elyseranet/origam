@@ -15,6 +15,11 @@ export interface ICarouselItemSlots {
     placeholder?: () => any
 }
 
-/** `<OrigamCarouselItem>` only forwards props/slots to `<OrigamWindowItem>`
- *  and `<OrigamImg>` — it never calls `emit(...)` in its own script. */
+/*********************************************************
+ * ICarouselItemEmits
+ *
+ * @description
+ * `<OrigamCarouselItem>` only forwards props/slots to `<OrigamWindowItem>`
+ * and `<OrigamImg>` — it never calls `emit(...)` in its own script.
+ ********************************************************/
 export interface ICarouselItemEmits {}

@@ -53,6 +53,11 @@ export interface IChartTooltipSlots {
     default?: (bindings: { point: IChartPoint, series: IChartSeries, category: string | number }) => any
 }
 
-/** Emits fired by `<OrigamChartTooltip>` — none. Pure renderer,
- *  positioned via `x`/`y` props; it never mutates or reports back. */
+/*********************************************************
+ * IChartTooltipEmits
+ *
+ * @description
+ * Emits fired by `<OrigamChartTooltip>` — none. Pure renderer,
+ * positioned via `x`/`y` props; it never mutates or reports back.
+ ********************************************************/
 export interface IChartTooltipEmits {}

@@ -28,6 +28,11 @@ export interface ICounterSlots {
     default?: (data: { counter: string, max?: string | number, value: string | number }) => any
 }
 
-/** Emits fired by `<OrigamCounter>` — none. Purely presentational,
- *  displays `value` / `max` without owning any interactive state. */
+/*********************************************************
+ * ICounterEmits
+ *
+ * @description
+ * Emits fired by `<OrigamCounter>` — none. Purely presentational,
+ * displays `value` / `max` without owning any interactive state.
+ ********************************************************/
 export interface ICounterEmits {}

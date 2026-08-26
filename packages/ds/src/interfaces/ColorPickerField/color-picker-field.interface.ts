@@ -29,13 +29,19 @@ export interface IColorPickerFieldSlots extends Omit<IFieldSlots, 'default'>, IA
     colorSelection?: () => any
 }
 
-/** Emits fired by `<OrigamColorPickerField>` — both are genuine
- *  `useVModel(props, …)` writes (`modelValue` on selecting/clearing a
- *  color, `menu` on opening/closing the popup), not inherited defaults.
- *  Pre-fix neither was declared: the component emitted `update:menu` /
- *  `update:modelValue` at runtime while `defineEmits` stayed absent —
- *  the exact gap flagged by the `emits-completeness` guard baseline
- *  (`ColorPickerField:update:menu,update:modelValue`). */
+/*********************************************************
+ * IColorPickerFieldEmits
+ *
+ * @description
+ * Emits fired by `<OrigamColorPickerField>` — both are genuine
+ * `useVModel(props, …)` writes (`modelValue` on selecting/clearing a
+ * color, `menu` on opening/closing the popup), not inherited defaults.
+ * @description
+ * Pre-fix neither was declared: the component emitted `update:menu` /
+ * `update:modelValue` at runtime while `defineEmits` stayed absent —
+ * the exact gap flagged by the `emits-completeness` guard baseline
+ * (`ColorPickerField:update:menu,update:modelValue`).
+ ********************************************************/
 export interface IColorPickerFieldEmits {
     (e: 'update:modelValue', value: TColor): void
     (e: 'update:menu', value: boolean): void

@@ -22,6 +22,11 @@ export interface IBreadcrumbDividerProps extends ICommonsComponentProps, ITagPro
     divider: string | TIcon
 }
 
-/** Emits fired by `<OrigamBreadcrumbDivider>` — none. Purely
- *  presentational, renders the `divider` prop verbatim. */
+/*********************************************************
+ * IBreadcrumbDividerEmits
+ *
+ * @description
+ * Emits fired by `<OrigamBreadcrumbDivider>` — none. Purely
+ * presentational, renders the `divider` prop verbatim.
+ ********************************************************/
 export interface IBreadcrumbDividerEmits {}
