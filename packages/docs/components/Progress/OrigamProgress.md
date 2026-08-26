@@ -105,8 +105,29 @@ interface IProgressTypeProps {
     absolute?: boolean
     max?: number | string          // default 100
     striped?: boolean              // reserved (linear); class emitted, not yet styled
+    label?: string                 // locale key, default 'origam.loading'
 }
 ```
+
+### `label` — accessible name
+
+`label` feeds the `aria-label` of the `role="progressbar"` element. It
+carries a **locale key**, not final text: it is resolved through the DS
+`t()` mechanism, so the announcement follows the active locale out of the
+box. It defaults to `origam.loading`, the shared key also used by
+`OrigamSkeleton`, `OrigamVideo`, `OrigamAudio` and `OrigamSwitch`.
+
+```vue
+<!-- Default — announced in the active locale -->
+<OrigamProgress :model-value="42" />
+
+<!-- Your own key, added to your locale files -->
+<OrigamProgress :model-value="42" label="upload.progress_photo" />
+```
+
+A raw string that matches no key is returned unchanged, so
+`label="Uploading photo"` still works if you'd rather translate on your
+side.
 
 ## Design tokens consumed
 
