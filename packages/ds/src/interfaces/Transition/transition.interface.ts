@@ -41,7 +41,10 @@ export interface ITransitionSlots {
     default?: () => any
 }
 
-/**
+/*********************************************************
+ * ITransitionEmits
+ *
+ * @description
  * Emit signatures shared by every `<Origam*>` transition wrapper
  * (Fade, SlideX/Y, ExpandX/Y, ScaleRotate, TranslateScale,
  * WindowXTranslate, WindowYTranslate, WindowXReverseTranslate,
@@ -51,5 +54,5 @@ export interface ITransitionSlots {
  * `emit(...)` or relay a child event, they only wire the native Vue
  * `<transition>` enter/leave hooks internally. Intra-family sharing,
  * mirroring `ITransitionSlots` above.
- */
+ ********************************************************/
 export interface ITransitionEmits {}

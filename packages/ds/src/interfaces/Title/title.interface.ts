@@ -22,5 +22,10 @@ export interface ITitleSlots {
     default?: () => any
 }
 
-/** `<OrigamTitle>` renders a static heading — nothing is emitted. */
+/*********************************************************
+ * ITitleEmits
+ *
+ * @description
+ * `<OrigamTitle>` renders a static heading — nothing is emitted.
+ ********************************************************/
 export interface ITitleEmits {}

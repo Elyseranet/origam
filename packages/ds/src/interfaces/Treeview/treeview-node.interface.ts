@@ -15,10 +15,15 @@ export interface ITreeviewNodeProps extends ICommonsComponentProps {
     depth?: number
 }
 
-/** `<OrigamTreeviewNode>` emits nothing of its own — expand/select state
- *  changes go through the injected `ITreeviewProvide.toggleExpanded` /
- *  `toggleSelected` callbacks, which mutate the ancestor `<OrigamTreeview>`'s
- *  state directly rather than emitting up the tree. */
+/*********************************************************
+ * ITreeviewNodeEmits
+ *
+ * @description
+ * `<OrigamTreeviewNode>` emits nothing of its own — expand/select state
+ * changes go through the injected `ITreeviewProvide.toggleExpanded` /
+ * `toggleSelected` callbacks, which mutate the ancestor `<OrigamTreeview>`'s
+ * state directly rather than emitting up the tree.
+ ********************************************************/
 export interface ITreeviewNodeEmits {}
 
 /** Slots exposed by `<OrigamTreeviewNode>`. */
