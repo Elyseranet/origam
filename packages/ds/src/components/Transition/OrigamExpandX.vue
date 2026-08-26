@@ -23,7 +23,7 @@
 	import { TRANSITION_MODE } from '../../enums/Transition/transition.enum'
 
 	import type { IHTMLExpandElement } from '../../interfaces/Transition/expand.interface'
-	import type { ITransitionProps, ITransitionSlots } from '../../interfaces/Transition/transition.interface'
+	import type { ITransitionEmits, ITransitionProps, ITransitionSlots } from '../../interfaces/Transition/transition.interface'
 
 	/*********************************************************
 	 * Global
@@ -37,6 +37,8 @@
 	})
 
 	const {filterProps} = useProps<ITransitionProps>(props)
+
+	defineEmits<ITransitionEmits>()
 
 	defineSlots<ITransitionSlots>()
 

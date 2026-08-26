@@ -16,7 +16,7 @@
 	import { EASING, TRANSITION_MODE } from '../../enums/Transition/transition.enum'
 
 	import type { ITranslateScaleProps } from '../../interfaces/Transition/translate-scale.interface'
-	import type { ITransitionSlots } from '../../interfaces/Transition/transition.interface'
+	import type { ITransitionEmits, ITransitionSlots } from '../../interfaces/Transition/transition.interface'
 
 	import { animate } from '../../utils/Commons/animation.util'
 	import { getChildren, getDimensions } from '../../utils/Transition/transition.util'
@@ -33,6 +33,8 @@
 	})
 
 	const {filterProps} = useProps<ITranslateScaleProps>(props)
+
+	defineEmits<ITransitionEmits>()
 
 	defineSlots<ITransitionSlots>()
 
