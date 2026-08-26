@@ -69,6 +69,11 @@ export interface IMediaVolumeControlEmits {
     (e: 'update:volume', volume: number): void
 }
 
-/** Slot signatures for `<OrigamMediaVolumeControl>` — none. The button
- *  icon, tooltip and scrubber are entirely driven by props. */
+/*********************************************************
+ * IMediaVolumeControlSlots
+ *
+ * @description
+ * Slot signatures for `<OrigamMediaVolumeControl>` — none. The button
+ * icon, tooltip and scrubber are entirely driven by props.
+ ********************************************************/
 export interface IMediaVolumeControlSlots {}

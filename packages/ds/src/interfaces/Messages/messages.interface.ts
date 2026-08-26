@@ -21,6 +21,11 @@ export interface IMessagesSlots {
     default?: (data: { message: string }) => any
 }
 
-/** `<OrigamMessages>` renders a static list of messages inside a
- *  transition — nothing is emitted. */
+/*********************************************************
+ * IMessagesEmits
+ *
+ * @description
+ * `<OrigamMessages>` renders a static list of messages inside a
+ * transition — nothing is emitted.
+ ********************************************************/
 export interface IMessagesEmits {}
