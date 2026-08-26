@@ -12,6 +12,7 @@
 		<div
 				v-if="slots.default"
 				:class="responsiveContentClasses"
+				:style="contentStyles"
 		>
 			<slot name="default"/>
 		</div>
@@ -64,7 +65,7 @@
 	 * Composables
 	 ********************************************************/
 
-	const {aspectStyles} = useAspectRatio(props)
+	const {aspectStyles, contentStyles} = useAspectRatio(props)
 	const {dimensionStyles} = useDimension(props)
 	const slots = useSlots()
 	const {roundedClasses, roundedStyles} = useRounded(props)
@@ -129,8 +130,6 @@
 		scoped
 >
 	.origam-responsive {
-		$this: &;
-
 		display: var(--origam-responsive---display);
 		flex: var(--origam-responsive---flex);
 		max-height: var(--origam-responsive---max-height);
@@ -158,10 +157,6 @@
 			transition: var(--origam-responsive__sizer---transition);
 			pointer-events: var(--origam-responsive__sizer---pointer-events);
 			padding-block-end: var(--origam-responsive__sizer---padding-block-end);
-
-			~ #{$this}__content {
-				--origam-responsive__content---margin-inline-start: -100%
-			}
 		}
 	}
 </style>

@@ -248,25 +248,24 @@ test.describe('OrigamRatingField', () => {
 
     test.describe('Slots - ItemLabel', () => {
         /**
-         * DS BUG (non-blocking): The component gates label display on
-         * `slots[\`itemLabel.${index}\`]` (per-index named slots) but the story
-         * provides the generic `#itemLabel` slot. Because the per-index check
-         * fails, the itemLabel slot body (wrapping in <strong>) is never rendered.
-         * The labels from itemLabels[] ARE rendered when the slot condition passes —
-         * this test captures the actual runtime behaviour as a regression baseline.
+         * Fixed in #452: the render guard used to check ONLY
+         * `slots[\`itemLabel.${index}\`]` (per-index named slots). The story
+         * provides the GENERIC `#itemLabel` slot (no per-index override), so
+         * the per-index check alone always evaluated false and the whole
+         * label block — including the consumer's `<strong>` wrapper — never
+         * rendered, for any index. `hasLabels` (used to decide layout) already
+         * treated the generic slot as sufficient; the render guard now matches
+         * it: `slots[\`itemLabel.${index}\`] || slots.itemLabel`.
          *
-         * Until the DS bug is fixed, the field renders without any label overlay
-         * from the slot. We assert the field itself is visible and the bug does not
-         * crash the component.
+         * One `<strong>` per rendered rating item (length defaults to 5, story
+         * doesn't override it) proves the generic slot now renders for every
+         * index, not just when a per-index override happens to exist.
          */
-        test('itemLabel slot variant renders the field without crash (DS slot-gate bug noted)', async ({ page }) => {
+        test('itemLabel generic slot renders one <strong> per item (regression for #452)', async ({ page }) => {
             await page.goto(rfUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
-            // The <strong> from the #itemLabel slot is NOT rendered because the DS
-            // only checks slots[`itemLabel.${index}`], not the generic slots.itemLabel.
-            // Asserting 0 <strong> tags documents the current (broken) state.
-            await expect(sandbox.locator('.origam-rating-field strong')).toHaveCount(0)
+            await expect(sandbox.locator('.origam-rating-field strong')).toHaveCount(5)
         })
     })
 
