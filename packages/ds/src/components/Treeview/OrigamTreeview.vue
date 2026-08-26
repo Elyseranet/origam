@@ -36,7 +36,7 @@
 	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { ITreeviewEmits, ITreeviewProps } from '../../interfaces/Treeview/treeview.interface'
+	import type { ITreeviewEmits, ITreeviewProps, ITreeviewSlots } from '../../interfaces/Treeview/treeview.interface'
 
 	/*********************************************************
 	 * Global
@@ -53,6 +53,8 @@
 	})
 
 	const emit = defineEmits<ITreeviewEmits>()
+
+	defineSlots<ITreeviewSlots>()
 
 	const { filterProps } = useProps<ITreeviewProps>(props)
 

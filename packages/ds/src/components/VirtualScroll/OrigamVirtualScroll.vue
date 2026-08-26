@@ -91,7 +91,7 @@
 	import { useToggleScope } from '../../composables/Commons/toggleScope.composable'
 	import { useVirtual } from '../../composables/Commons/virtual.composable'
 
-	import type { IVirtualScrollProps, IVirtualScrollSlots } from '../../interfaces/VirtualScroll/virtual-scroll.interface'
+	import type { IVirtualScrollEmits, IVirtualScrollProps, IVirtualScrollSlots } from '../../interfaces/VirtualScroll/virtual-scroll.interface'
 
 	import { convertToUnit } from '../../utils/Commons/commons.util'
 	import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
@@ -104,6 +104,8 @@
 	 * Props with defaults and filterProps utility.
 	 ********************************************************/
 	const props = withDefaults(defineProps<IVirtualScrollProps>(), {})
+
+	defineEmits<IVirtualScrollEmits>()
 
 	defineSlots<IVirtualScrollSlots>()
 

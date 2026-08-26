@@ -1,4 +1,5 @@
 import type {
+    IAdjacentEmits,
     IAdjacentProps,
     IAdjacentSlots
 } from '../Commons/adjacent.interface'
@@ -20,6 +21,10 @@ export interface IDataTextProps extends ICommonsComponentProps, IAdjacentProps, 
     /** @deprecated Use the `hover` object prop instead. Kept for back-compat. */
     hoverBgColor?: TColor
 }
+
+/** Emits fired by `<OrigamDataText>` — the prepend/append icon or
+ *  avatar zones relay `click:prepend` / `click:append` via `useAdjacent`. */
+export interface IDataTextEmits extends IAdjacentEmits {}
 
 /** Slot signatures for `<OrigamDataText>`. */
 export interface IDataTextSlots extends IAdjacentSlots {

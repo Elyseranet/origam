@@ -98,6 +98,11 @@ export interface IMasonryProps extends ICommonsComponentProps, ITagProps, IDimen
     align?: TMasonryAlign
 }
 
+/** `<OrigamMasonry>` emits nothing of its own — layout is either pure
+ *  CSS or driven by the internal `useMasonry` bucket-fill, with no
+ *  user-facing event surface. */
+export interface IMasonryEmits {}
+
 /**
  * Internal layout descriptor produced by the bucket-fill algorithm.
  * One entry per measured item. Coordinates are expressed in CSS px,

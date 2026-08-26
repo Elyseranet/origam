@@ -10,7 +10,7 @@
 
 	import { provideDefaults } from '../../composables/Commons/defaults.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
-	import type { IDefaultProviderProps, IDefaultProviderSlots } from '../../interfaces/DefaultsProvider/defaults-provider.interface'
+	import type { IDefaultProviderEmits, IDefaultProviderProps, IDefaultProviderSlots } from '../../interfaces/DefaultsProvider/defaults-provider.interface'
 
 	/*********************************************************
 	 * Global
@@ -28,6 +28,8 @@
 	 *   - `root`       : same as `reset`, communicates "top of defaults tree"
 	 ********************************************************/
 	const props = withDefaults(defineProps<IDefaultProviderProps>(), {})
+
+	defineEmits<IDefaultProviderEmits>()
 
 	defineSlots<IDefaultProviderSlots>()
 

@@ -76,7 +76,7 @@
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import type { IDataTextProps, IDataTextSlots } from '../../interfaces/DataList/data-text.interface'
+	import type { IDataTextEmits, IDataTextProps, IDataTextSlots } from '../../interfaces/DataList/data-text.interface'
 	import { computed, shallowRef, StyleValue, toRef } from "vue"
 
 	/*********************************************************
@@ -84,6 +84,8 @@
 	 ********************************************************/
 
 	const props = withDefaults(defineProps<IDataTextProps>(), {})
+
+	defineEmits<IDataTextEmits>()
 
 	defineSlots<IDataTextSlots>()
 
