@@ -10,13 +10,16 @@ export interface IProgressLinearProps extends IProgressTypeProps, IRoundedProps,
     stream?: boolean
 }
 
-/**
+/*********************************************************
+ * IProgressLinearEmits
+ *
+ * @description
  * `<OrigamProgressLinear>` genuinely emits `update:modelValue` — when
  * `clickable` is set, `handleClick` maps the click position to a value
  * and assigns `progress.value = ...`, which drives `useVModel`'s setter
  * (`vm.emit('update:modelValue', newValue)`) on this component's own
  * instance. Not a fantom emit — it fires under real user interaction.
- */
+ ********************************************************/
 export interface IProgressLinearEmits extends ICommonsComponentEmits {}
 
 /** Slot signatures for `<OrigamProgressLinear>`. */

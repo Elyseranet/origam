@@ -60,6 +60,11 @@ export interface IGridItemProps extends ICommonsComponentProps, ITagProps {
     justifySelf?: TGridPlaceSelf
 }
 
-/** Emits fired by `<OrigamGridItem>` — none. Purely presentational,
- *  serialises its placement props into inline CSS. */
+/*********************************************************
+ * IGridItemEmits
+ *
+ * @description
+ * Emits fired by `<OrigamGridItem>` — none. Purely presentational,
+ * serialises its placement props into inline CSS.
+ ********************************************************/
 export interface IGridItemEmits {}

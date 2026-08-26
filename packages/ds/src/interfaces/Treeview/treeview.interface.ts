@@ -57,8 +57,13 @@ export interface ITreeviewEmits {
     (e: 'toggle', id: string, expanded: boolean): void
 }
 
-/** `<OrigamTreeview>` renders no `<slot>` of its own — every node is
- *  delegated to `<OrigamTreeviewNode>` (which carries the `node` slot). */
+/*********************************************************
+ * ITreeviewSlots
+ *
+ * @description
+ * `<OrigamTreeview>` renders no `<slot>` of its own — every node is
+ * delegated to `<OrigamTreeviewNode>` (which carries the `node` slot).
+ ********************************************************/
 export interface ITreeviewSlots {}
 
 export interface ITreeviewProvide {

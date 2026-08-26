@@ -17,6 +17,11 @@ export interface IMainProps extends ITagProps, ICommonsComponentProps, IPaddingP
     scrollable?: boolean
 }
 
-/** `<OrigamMain>` emits nothing of its own — it's a layout landmark
- *  (scrollable region chrome) with no interactive behaviour. */
+/*********************************************************
+ * IMainEmits
+ *
+ * @description
+ * `<OrigamMain>` emits nothing of its own — it's a layout landmark
+ * (scrollable region chrome) with no interactive behaviour.
+ ********************************************************/
 export interface IMainEmits {}

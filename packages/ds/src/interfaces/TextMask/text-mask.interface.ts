@@ -94,6 +94,11 @@ export interface ITextMaskSlots {
     default?: () => any
 }
 
-/** `<OrigamTextMask>` only paints text via CSS `background-clip: text` —
- *  it never calls `emit(...)` in its script. */
+/*********************************************************
+ * ITextMaskEmits
+ *
+ * @description
+ * `<OrigamTextMask>` only paints text via CSS `background-clip: text` —
+ * it never calls `emit(...)` in its script.
+ ********************************************************/
 export interface ITextMaskEmits {}

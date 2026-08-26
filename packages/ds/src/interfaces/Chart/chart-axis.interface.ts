@@ -64,12 +64,22 @@ export interface IChartAxisProps {
     secondaryYAxisFormat?: (value: number) => string
 }
 
-/** Emits fired by `<OrigamChartAxis>` — none. Pure SVG renderer driven
- *  entirely by its `plot` / `ticks` props. */
+/*********************************************************
+ * IChartAxisEmits
+ *
+ * @description
+ * Emits fired by `<OrigamChartAxis>` — none. Pure SVG renderer driven
+ * entirely by its `plot` / `ticks` props.
+ ********************************************************/
 export interface IChartAxisEmits {}
 
-/** Slot signatures for `<OrigamChartAxis>` — none. The axis chrome
- *  (grid lines, tick labels) is fully derived from props. */
+/*********************************************************
+ * IChartAxisSlots
+ *
+ * @description
+ * Slot signatures for `<OrigamChartAxis>` — none. The axis chrome
+ * (grid lines, tick labels) is fully derived from props.
+ ********************************************************/
 export interface IChartAxisSlots {}
 
 /**

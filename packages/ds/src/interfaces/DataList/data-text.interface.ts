@@ -22,8 +22,13 @@ export interface IDataTextProps extends ICommonsComponentProps, IAdjacentProps, 
     hoverBgColor?: TColor
 }
 
-/** Emits fired by `<OrigamDataText>` — the prepend/append icon or
- *  avatar zones relay `click:prepend` / `click:append` via `useAdjacent`. */
+/*********************************************************
+ * IDataTextEmits
+ *
+ * @description
+ * Emits fired by `<OrigamDataText>` — the prepend/append icon or
+ * avatar zones relay `click:prepend` / `click:append` via `useAdjacent`.
+ ********************************************************/
 export interface IDataTextEmits extends IAdjacentEmits {}
 
 /** Slot signatures for `<OrigamDataText>`. */

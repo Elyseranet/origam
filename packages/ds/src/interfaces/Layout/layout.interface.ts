@@ -25,6 +25,11 @@ export interface ILayoutProps extends ICommonsComponentProps, IDimensionProps, I
     fullHeight?: boolean
 }
 
-/** `<OrigamLayout>` registers layout items via `useCreateLayout` (a
- *  provide/inject registry) — nothing is emitted. */
+/*********************************************************
+ * ILayoutEmits
+ *
+ * @description
+ * `<OrigamLayout>` registers layout items via `useCreateLayout` (a
+ * provide/inject registry) — nothing is emitted.
+ ********************************************************/
 export interface ILayoutEmits {}

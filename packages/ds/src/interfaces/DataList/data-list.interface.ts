@@ -56,10 +56,15 @@ export interface IDataItem extends IAdjacentProps {
  * signatures alongside the un-indexed fallback names (`item`, `key`,
  * `value`, `item.title`, …) the template also checks.
  */
-/** `<OrigamDataList>` emits nothing of its own — both layout modes
- *  (avatar / kv) are purely presentational, driven entirely by the
- *  `items` prop. Kept empty (not extending `ICommonsComponentEmits`)
- *  to avoid declaring a phantom `update:modelValue`. */
+/*********************************************************
+ * IDataListEmits
+ *
+ * @description
+ * `<OrigamDataList>` emits nothing of its own — both layout modes
+ * (avatar / kv) are purely presentational, driven entirely by the
+ * `items` prop. Kept empty (not extending `ICommonsComponentEmits`)
+ * to avoid declaring a phantom `update:modelValue`.
+ ********************************************************/
 export interface IDataListEmits {}
 
 export interface IDataListSlots {

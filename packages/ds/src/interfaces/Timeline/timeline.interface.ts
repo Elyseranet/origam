@@ -64,6 +64,11 @@ export interface ITimelineSlots {
     default?: () => any
 }
 
-/** `<OrigamTimeline>` renders a static list of `<OrigamTimelineItem>` —
- *  nothing is emitted. */
+/*********************************************************
+ * ITimelineEmits
+ *
+ * @description
+ * `<OrigamTimeline>` renders a static list of `<OrigamTimelineItem>` —
+ * nothing is emitted.
+ ********************************************************/
 export interface ITimelineEmits {}

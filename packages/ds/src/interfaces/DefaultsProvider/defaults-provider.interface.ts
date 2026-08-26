@@ -53,11 +53,14 @@ export interface IDefaultProviderProps extends ICommonsComponentProps {
     scoped?: boolean
 }
 
-/**
+/*********************************************************
+ * IDefaultProviderEmits
+ *
+ * @description
  * `<OrigamDefaultsProvider>` emits nothing of its own — it only calls
  * `provideDefaults()` (a `provide`, not an emit) to publish the map to
  * descendants.
- */
+ ********************************************************/
 export interface IDefaultProviderEmits {}
 
 /**

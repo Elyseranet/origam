@@ -7,9 +7,14 @@ export interface IVirtualScrollProps extends ICommonsComponentProps, IDimensionP
     renderless?: boolean
 }
 
-/** `<OrigamVirtualScroll>` emits nothing of its own — item resize and
- *  scroll handling flow through `useVirtual`'s internal state, with no
- *  `emit(...)` call on this instance. */
+/*********************************************************
+ * IVirtualScrollEmits
+ *
+ * @description
+ * `<OrigamVirtualScroll>` emits nothing of its own — item resize and
+ * scroll handling flow through `useVirtual`'s internal state, with no
+ * `emit(...)` call on this instance.
+ ********************************************************/
 export interface IVirtualScrollEmits {}
 
 /** Scope forwarded to the per-index `item.{index}` slot — the index is

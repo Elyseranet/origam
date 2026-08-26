@@ -30,18 +30,22 @@ export interface IThemeProviderProps extends ITagProps {
     tag?: string
 }
 
-/**
+/*********************************************************
+ * IThemeProviderEmits
+ *
+ * @description
  * `<OrigamThemeProvider>` declares NO own emit, and the SFC itself never
  * calls `emit(...)` nor uses a composable that would (no `useVModel`,
- * no `useGroupItem`). Note also (known, unfixed bug — out of scope for
- * this ticket): the component sets `inheritAttrs: false` but never does
- * `v-bind="$attrs"` on its root — any listener a consumer attaches
- * (`@click`, `@update:x`, …) is silently swallowed, on top of `id` /
- * `style` / `data-cy`. Even if this component DID declare an emit, a
- * consumer's matching `@xxx` handler could never reach it through the
- * current template. Confirms the empty surface below is correct, not
- * merely under-audited.
- */
+ * no `useGroupItem`).
+ * @description
+ * Known, unfixed bug — out of scope for this ticket: the component sets
+ * `inheritAttrs: false` but never does `v-bind="$attrs"` on its root —
+ * any listener a consumer attaches (`@click`, `@update:x`, …) is
+ * silently swallowed, on top of `id` / `style` / `data-cy`. Even if
+ * this component DID declare an emit, a consumer's matching `@xxx`
+ * handler could never reach it through the current template. Confirms
+ * the empty surface below is correct, not merely under-audited.
+ ********************************************************/
 export interface IThemeProviderEmits {}
 
 /** Slot signatures for `<OrigamThemeProvider>`. */

@@ -21,6 +21,11 @@ export interface IDataTableColumnCellSlots {
     default?: () => any
 }
 
-/** `<OrigamDataTableColumnCell>` renders a static `<td>`/`<th>` cell —
- *  no user interaction is wired, nothing is emitted. */
+/*********************************************************
+ * IDataTableColumnCellEmits
+ *
+ * @description
+ * `<OrigamDataTableColumnCell>` renders a static `<td>`/`<th>` cell —
+ * no user interaction is wired, nothing is emitted.
+ ********************************************************/
 export interface IDataTableColumnCellEmits {}

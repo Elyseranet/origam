@@ -136,11 +136,14 @@ export interface IWatermarkSlots {
     default?: () => any
 }
 
-/**
+/*********************************************************
+ * IWatermarkEmits
+ *
+ * @description
  * Emit signatures for `<OrigamWatermark>`. Verified empty — the
  * component never calls `emit(...)`; the anti-tamper `MutationObserver`
  * re-injects the overlay silently, it does not surface an event.
- */
+ ********************************************************/
 export interface IWatermarkEmits {}
 
 /**

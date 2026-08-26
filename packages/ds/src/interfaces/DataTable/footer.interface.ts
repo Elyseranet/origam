@@ -27,7 +27,12 @@ export interface IDataTableFooterProps extends ICommonsComponentProps, IColorPro
 export interface IDataTableFooterSlots extends IAdjacentSlots {
 }
 
-/** `<OrigamDataTableFooter>` delegates every interaction to the nested
- *  `<origam-select>` / `<origam-pagination>` (both handled internally
- *  via composables) — nothing is emitted upward. */
+/*********************************************************
+ * IDataTableFooterEmits
+ *
+ * @description
+ * `<OrigamDataTableFooter>` delegates every interaction to the nested
+ * `<origam-select>` / `<origam-pagination>` (both handled internally
+ * via composables) — nothing is emitted upward.
+ ********************************************************/
 export interface IDataTableFooterEmits {}

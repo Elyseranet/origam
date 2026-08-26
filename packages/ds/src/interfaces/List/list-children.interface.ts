@@ -25,9 +25,14 @@ export interface IInternalItem<T = any> {
     raw: T
 }
 
-/** `<OrigamListChildren>` emits nothing of its own — it is a pure
- *  recursive renderer over `items`, delegating divider/subheader/group/
- *  item chrome to child DS components. */
+/*********************************************************
+ * IListChildrenEmits
+ *
+ * @description
+ * `<OrigamListChildren>` emits nothing of its own — it is a pure
+ * recursive renderer over `items`, delegating divider/subheader/group/
+ * item chrome to child DS components.
+ ********************************************************/
 export interface IListChildrenEmits {}
 
 /** Slot signatures for `<OrigamListChildren>`. `divider` / `subheader` /
