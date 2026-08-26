@@ -54,13 +54,12 @@
 
 	import OrigamAvatar from './OrigamAvatar.vue'
 	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
-	import { useActive } from '../../composables/Commons/active.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
-	import { useHover } from '../../composables/Commons/hover.composable'
 	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useRtl } from '../../composables/Commons/rtl.composable'
 	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import vClickOutside from '../../directives/ClickOutside/clickOutside.directive'
 	import { DIRECTION } from '../../enums/Commons/direction.enum'
@@ -173,8 +172,8 @@
 	 * Hover / active state with optional expand-on-hover and
 	 * expand-on-click behaviour.
 	 ********************************************************/
-	const {hoverClasses, hoverState, isHover, onMouseleave, onMouseenter} = useHover(props)
-	const {activeClasses, activeState, isActive, onActive} = useActive(props)
+	const {classes: hoverClasses, config: hoverState, isOn: isHover, unset: onMouseleave, set: onMouseenter} = useStateFlag(props, {state: 'hover'})
+	const {classes: activeClasses, config: activeState, isOn: isActive, toggle: onActive} = useStateFlag(props, {state: 'active'})
 
 	// Avatars inherit the group's density / size / color / bgColor through the
 	// `<origam-defaults-provider :defaults="slotDefaults">` wrapper, so we must

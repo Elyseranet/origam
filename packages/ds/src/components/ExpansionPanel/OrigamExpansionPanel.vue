@@ -111,14 +111,13 @@
 	import OrigamExpansionPanelHeader from './OrigamExpansionPanelHeader.vue'
 	import OrigamProgress from '../Progress/OrigamProgress.vue'
 
-	import { useActive } from '../../composables/Commons/active.composable'
 	import { useBothColor } from '../../composables/Commons/bothColor.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
 	import { useGroupItem } from '../../composables/Commons/groupItem.composable'
-	import { useHover } from '../../composables/Commons/hover.composable'
 	import { useLoader } from '../../composables/Commons/loader.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
 	import vContrast from '../../directives/Contrast/contrast.directive'
@@ -250,8 +249,8 @@
 	 ********************************************************/
 	const {densityClasses} = useDensity(props)
 
-	const {isHover, hoverState} = useHover(props)
-	const {isActive, activeState} = useActive(props)
+	const {isOn: isHover, config: hoverState} = useStateFlag(props, {state: 'hover'})
+	const {isOn: isActive, config: activeState} = useStateFlag(props, {state: 'active'})
 	const {
 		borderClasses, borderStyles,
 		roundedClasses, roundedStyles,

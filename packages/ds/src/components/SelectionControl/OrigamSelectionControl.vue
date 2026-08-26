@@ -77,9 +77,9 @@
   import OrigamLabel from '../Label/OrigamLabel.vue'
 
   import { useDensity } from '../../composables/Commons/density.composable'
-  import { useHover } from '../../composables/Commons/hover.composable'
   import { useProps } from '../../composables/Commons/props.composable'
   import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+  import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
   import { useStyle } from '../../composables/Commons/style.composable'
   import { useVModel } from '../../composables/Commons/vModel.composable'
 
@@ -139,7 +139,7 @@
   const { densityClasses } = useDensity(props)
 
 
-  const { isHover, hoverState } = useHover(props)
+  const { isOn: isHover, config: hoverState } = useStateFlag(props, {state: 'hover'})
   /*********************************************************
    * Value
    ********************************************************/

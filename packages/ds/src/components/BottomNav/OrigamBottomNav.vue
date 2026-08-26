@@ -52,17 +52,16 @@
 
 	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import { useActive } from '../../composables/Commons/active.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useGroup } from '../../composables/Commons/group.composable'
-	import { useHover } from '../../composables/Commons/hover.composable'
 	import { useLayoutItem } from '../../composables/Commons/layoutItem.composable'
 	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useSsrBoot } from '../../composables/Commons/ssrBoot.composable'
 	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
 	import { ORIGAM_BTN_TOGGLE_KEY } from '../../consts/Btn/btn-toggle.const'
@@ -161,8 +160,8 @@
 	/*********************************************************
 	 * Composables
 	 ********************************************************/
-	const {isActive, activeClasses} = useActive(props, 'modelValue')
-	const {hoverClasses, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave} = useHover(props)
+	const {isOn: isActive, classes: activeClasses} = useStateFlag(props, {state: 'active', source: 'modelValue'})
+	const {classes: hoverClasses, set: handleMouseenter, unset: handleMouseleave} = useStateFlag(props, {state: 'hover'})
 	// Phase 3 (Vague C) — class-first companion alongside inline styles.
 	// `colorClasses` ships `.origam--bg-{intent}` / `.origam--color-{intent}`
 	// ONLY for the resting state — `useStateEffect` returns `[]` for
@@ -180,7 +179,7 @@
 	 *   • The resting bg stays on the intent's `bg` rung (same
 	 *     teinte as the child buttons in their resting state).
 	 *   • Hovering the nav doesn't darken the whole bar.
-	 *   • `isActive` from `useActive(props, 'modelValue')` means
+	 *   • `isActive` from `useStateFlag(props, {state: 'active', source: 'modelValue'})` means
 	 *     "the nav is currently displayed" (drives slide-in), NOT
 	 *     a pressed state — feeding it would resolve to `bgActive`
 	 *     (color-mix -30 %) and paint the resting bar darker than

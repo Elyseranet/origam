@@ -138,12 +138,12 @@
 	import { useBothColor } from '../../composables/Commons/bothColor.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
 	import { useGroupItem } from '../../composables/Commons/groupItem.composable'
-	import { useHover } from '../../composables/Commons/hover.composable'
 	import { useLink } from '../../composables/Commons/link.composable'
 	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useSize } from '../../composables/Commons/size.composable'
 	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useTypography } from '../../composables/Commons/typography.composable'
 	import { useVModel } from '../../composables/Commons/vModel.composable'
@@ -202,7 +202,7 @@
 
 	const {densityClasses} = useDensity(props)
 
-	const {isHover, hoverState} = useHover(props)
+	const {isOn: isHover, config: hoverState} = useStateFlag(props, {state: 'hover'})
 	const {
 		borderClasses, borderStyles,
 		roundedClasses, roundedStyles,

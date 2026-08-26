@@ -97,13 +97,12 @@
 	import OrigamBracketCompetitor from './OrigamBracketCompetitor.vue'
 	import OrigamDivider from '../Divider/OrigamDivider.vue'
 
-	import { useActive } from '../../composables/Commons/active.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
-	import { useHover } from '../../composables/Commons/hover.composable'
 	import { useMargin } from '../../composables/Commons/margin.composable'
 	import { usePadding } from '../../composables/Commons/padding.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
+	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
 
 	import { bracketSurfaceVars, resolveBracketForeground } from '../../utils/Bracket/bracket-surface.util'
 
@@ -239,8 +238,8 @@
 	// Interaction state — `hover` / `active` paint the card surface from the
 	// hover / active state objects (same as everywhere). A `live` match IS
 	// the active state, so it picks up the active surface automatically.
-	const {hoverClasses, isHover, hoverState, onMouseenter, onMouseleave} = useHover(props)
-	const {activeClasses, isActive, activeState, onActive} = useActive(props)
+	const {classes: hoverClasses, isOn: isHover, config: hoverState, set: onMouseenter, unset: onMouseleave} = useStateFlag(props, {state: 'hover'})
+	const {classes: activeClasses, isOn: isActive, config: activeState, toggle: onActive} = useStateFlag(props, {state: 'active'})
 
 	const isLive = computed<boolean>(() => resolvedStatus.value === BRACKET_MATCH_STATUS.LIVE)
 	const isActiveOrLive = computed<boolean>(() => isActive.value || isLive.value)

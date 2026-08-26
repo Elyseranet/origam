@@ -42,14 +42,13 @@
 >
 	import { computed, toRef, useSlots } from 'vue'
 	import OrigamTitle from '../Title/OrigamTitle.vue'
-	import { useActive } from '../../composables/Commons/active.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
-	import { useHover } from '../../composables/Commons/hover.composable'
 	import { usePosition } from '../../composables/Commons/position.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useRtl } from '../../composables/Commons/rtl.composable'
 	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useTypography } from '../../composables/Commons/typography.composable'
 
@@ -111,8 +110,8 @@
 	const {rtlClasses} = useRtl()
 
 
-	const {isHover, hoverState} = useHover(props)
-	const {isActive, activeState} = useActive(props)
+	const {isOn: isHover, config: hoverState} = useStateFlag(props, {state: 'hover'})
+	const {isOn: isActive, config: activeState} = useStateFlag(props, {state: 'active'})
 	// `colorClasses` / `colorStyles` MUST come from `useStateEffect` so the
 	// surface follows `hover` / `active` — e.g. a transparent sticky AppBar
 	// that paints a background once `active` engages on scroll. A plain

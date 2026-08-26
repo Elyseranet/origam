@@ -135,12 +135,10 @@
 	import OrigamProgress from '../Progress/OrigamProgress.vue'
 	import OrigamSkeleton from '../Skeleton/OrigamSkeleton.vue'
 
-	import { useActive } from '../../composables/Commons/active.composable'
 	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useGroupItem } from '../../composables/Commons/groupItem.composable'
-	import { useHover } from '../../composables/Commons/hover.composable'
 	import { useLink } from '../../composables/Commons/link.composable'
 	import { useLoader } from '../../composables/Commons/loader.composable'
 	import { useLocation } from '../../composables/Commons/location.composable'
@@ -149,6 +147,7 @@
 	import { useSelectLink } from '../../composables/Commons/selectLink.composable'
 	import { useSize } from '../../composables/Commons/size.composable'
 	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
 	import { useStatus } from '../../composables/Commons/status.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useTypography } from '../../composables/Commons/typography.composable'
@@ -207,8 +206,8 @@
 	/*********************************************************
 	 * Effect
 	 ********************************************************/
-	const {isHover, hoverState, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave} = useHover(props)
-	const {isActive: active, activeState} = useActive(props)
+	const {isOn: isHover, config: hoverState, set: handleMouseenter, unset: handleMouseleave} = useStateFlag(props, {state: 'hover'})
+	const {isOn: active, config: activeState} = useStateFlag(props, {state: 'active'})
 
 	const isActive = computed(() => {
 		// An explicitly FORCED active (`active=true` or `{ enabled: true }`)

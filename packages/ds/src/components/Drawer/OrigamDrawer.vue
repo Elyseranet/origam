@@ -75,16 +75,15 @@
 	import OrigamOverlayScrim from '../Overlay/OrigamOverlayScrim.vue'
 	import OrigamTransition from '../Transition/OrigamTransition.vue'
 
-	import { useActive } from '../../composables/Commons/active.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
-	import { useHover } from '../../composables/Commons/hover.composable'
 	import { useLayoutItem } from '../../composables/Commons/layoutItem.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useRouter } from '../../composables/Commons/router.composable'
 	import { useScopeId } from '../../composables/Commons/scopeId.composable'
 	import { useSsrBoot } from '../../composables/Commons/ssrBoot.composable'
 	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
 	import { useSticky } from '../../composables/Commons/sticky.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useToggleScope } from '../../composables/Commons/toggleScope.composable'
@@ -153,8 +152,8 @@
 	const {backgroundColorClasses, backgroundColorStyles} = useBackgroundColor(toRef(props, 'bgColor'))
 	const {densityClasses} = useDensity(props)
 
-	const {isHover, hoverState} = useHover(props)
-	const {activeState} = useActive(props)
+	const {isOn: isHover, config: hoverState} = useStateFlag(props, {state: 'hover'})
+	const {config: activeState} = useStateFlag(props, {state: 'active'})
 
 	/*********************************************************
 	 * Value

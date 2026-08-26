@@ -72,13 +72,12 @@
 
 	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import { useActive } from '../../composables/Commons/active.composable'
 	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
-	import { useHover } from '../../composables/Commons/hover.composable'
 	import { useLink } from '../../composables/Commons/link.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
 	import { DENSITY } from '../../enums/Commons/density.enum'
@@ -114,8 +113,8 @@
 	 * @description
 	 * Hover, active state and color resolution.
 	 ********************************************************/
-	const {isHover, hoverState, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave} = useHover(props)
-	const {isActive: active, activeState, activeClasses} = useActive(props)
+	const {isOn: isHover, config: hoverState, set: handleMouseenter, unset: handleMouseleave} = useStateFlag(props, {state: 'hover'})
+	const {isOn: active, config: activeState, classes: activeClasses} = useStateFlag(props, {state: 'active'})
 
 	const isActive = computed(() => {
 		return active.value || link.isActive?.value

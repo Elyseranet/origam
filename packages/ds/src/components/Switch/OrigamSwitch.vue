@@ -147,12 +147,12 @@
   import OrigamTranslateScale from '../Transition/OrigamTranslateScale.vue'
 
   import { useFocus } from '../../composables/Commons/focus.composable'
-  import { useHover } from '../../composables/Commons/hover.composable'
   import { useLoader } from '../../composables/Commons/loader.composable'
   import { useLocale } from '../../composables/Commons/locale.composable'
   import { useProps } from '../../composables/Commons/props.composable'
   import { useRounded } from '../../composables/Commons/rounded.composable'
   import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+  import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
   import { useStyle } from '../../composables/Commons/style.composable'
   import { useVModel } from '../../composables/Commons/vModel.composable'
 
@@ -189,7 +189,7 @@
   defineSlots<ISwitchSlots>()
 
 
-  const { isHover, hoverState } = useHover(props)
+  const { isOn: isHover, config: hoverState } = useStateFlag(props, {state: 'hover'})
   useStateEffect(props, isHover, undefined, hoverState, undefined)
   const { filterProps } = useProps<ISwitchProps>(props)
 

@@ -36,9 +36,9 @@
 	import { computed, StyleValue, useSlots } from 'vue'
 	import { useDensity } from '../../composables/Commons/density.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
-	import { useHover } from '../../composables/Commons/hover.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useTypography } from '../../composables/Commons/typography.composable'
 
@@ -83,7 +83,7 @@
 
 	const {densityClasses} = useDensity(props)
 	const {dimensionStyles} = useDimension(props)
-	const {isHover, hoverState, hoverClasses, onMouseenter, onMouseleave} = useHover(props)
+	const {isOn: isHover, config: hoverState, classes: hoverClasses, set: onMouseenter, unset: onMouseleave} = useStateFlag(props, {state: 'hover'})
 	const {
 		borderClasses, borderStyles,
 		roundedClasses, roundedStyles,

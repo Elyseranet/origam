@@ -177,7 +177,6 @@
 	import OrigamProgress from '../Progress/OrigamProgress.vue'
 	import OrigamSkeleton from '../Skeleton/OrigamSkeleton.vue'
 
-	import { useActive } from '../../composables/Commons/active.composable'
 	import { useAdjacentInner } from '../../composables/Commons/adjacentInner.composable'
 	import { useBothColor } from '../../composables/Commons/bothColor.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
@@ -187,6 +186,7 @@
 	import { useRtl } from '../../composables/Commons/rtl.composable'
 	import { useSize } from '../../composables/Commons/size.composable'
 	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useTypography } from '../../composables/Commons/typography.composable'
 	import { useVariant } from '../../composables/Commons/variant.composable'
@@ -432,7 +432,7 @@
 	 * isActive is a ref that holds a boolean value indicating whether the field is active.
 	 ********************************************************/
 	const {focusClasses, isFocused, onFocus: handleFocus, onBlur: handleBlur} = useFocus(props)
-	const {isActive: active, activeState, onActive: handleActive} = useActive(props)
+	const {isOn: active, config: activeState, toggle: handleActive} = useStateFlag(props, {state: 'active'})
 
 	const isActive = computed(() => {
 		return props.dirty || active.value || hasPrefix.value || hasSuffix.value

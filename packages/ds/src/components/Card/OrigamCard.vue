@@ -150,17 +150,16 @@
 	import OrigamProgress from '../Progress/OrigamProgress.vue'
 	import OrigamSkeleton from '../Skeleton/OrigamSkeleton.vue'
 
-	import { useActive } from '../../composables/Commons/active.composable'
 	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
-	import { useHover } from '../../composables/Commons/hover.composable'
 	import { useLink } from '../../composables/Commons/link.composable'
 	import { useLoader } from '../../composables/Commons/loader.composable'
 	import { useLocation } from '../../composables/Commons/location.composable'
 	import { usePosition } from '../../composables/Commons/position.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
 	import vContrast from '../../directives/Contrast/contrast.directive'
@@ -218,8 +217,8 @@
 	 * Effect
 	 ********************************************************/
 
-	const {isHover, hoverState, hoverClasses, onMouseenter, onMouseleave} = useHover(props)
-	const {isActive, activeState, activeClasses, onActive} = useActive(props)
+	const {isOn: isHover, config: hoverState, classes: hoverClasses, set: onMouseenter, unset: onMouseleave} = useStateFlag(props, {state: 'hover'})
+	const {isOn: isActive, config: activeState, classes: activeClasses, toggle: onActive} = useStateFlag(props, {state: 'active'})
 
 	/*********************************************************
 	 * Color

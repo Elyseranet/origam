@@ -108,11 +108,11 @@
 	import OrigamRadioBtn from './OrigamRadioBtn.vue'
 
 	import { useFocus } from '../../composables/Commons/focus.composable'
-	import { useHover } from '../../composables/Commons/hover.composable'
 	import { useMargin } from '../../composables/Commons/margin.composable'
 	import { usePadding } from '../../composables/Commons/padding.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useVModel } from '../../composables/Commons/vModel.composable'
 
@@ -143,7 +143,7 @@
 	defineSlots<IRadioSlots>()
 
 
-	const {isHover, hoverState} = useHover(props)
+	const {isOn: isHover, config: hoverState} = useStateFlag(props, {state: 'hover'})
 	useStateEffect(props, isHover, undefined, hoverState, undefined)
 	const {filterProps} = useProps<IRadioProps>(props)
 

@@ -64,12 +64,11 @@
 >
 	import { computed, ComputedRef, StyleValue } from 'vue'
 
-	import { useActive } from '../../composables/Commons/active.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
-	import { useHover } from '../../composables/Commons/hover.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
 	import { useTypography } from '../../composables/Commons/typography.composable'
 
 	import { isIntent, tokenForegroundForIntent } from '../../utils/Commons/color.util'
@@ -156,8 +155,8 @@
 	// elevation, padding, margin) from the props and the hover / active
 	// state objects. `bgColor` unset → transparent row inheriting the
 	// bracket's auto-contrast colour through `currentColor`.
-	const {hoverClasses, isHover, hoverState, onMouseenter, onMouseleave} = useHover(props)
-	const {activeClasses, isActive, activeState, onActive} = useActive(props)
+	const {classes: hoverClasses, isOn: isHover, config: hoverState, set: onMouseenter, unset: onMouseleave} = useStateFlag(props, {state: 'hover'})
+	const {classes: activeClasses, isOn: isActive, config: activeState, toggle: onActive} = useStateFlag(props, {state: 'active'})
 
 	// Hover wins over active: while hovering, suppress the active flag so the
 	// hover surface takes precedence (active → hover cascade).

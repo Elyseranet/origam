@@ -5,7 +5,7 @@
 			:ref="rootEl"
 			:class="sheetClasses"
 			:style="sheetStyles"
-			@click="onActive"
+			@click="onActive()"
 			@mouseenter="onMouseenter"
 			@mouseleave="onMouseleave"
 	>
@@ -17,8 +17,8 @@
 				tabindex="0"
 				aria-label="Drag handle"
 				data-cy="sheet-bottom-handle"
-				@keydown.enter.prevent="onActive"
-				@keydown.space.prevent="onActive"
+				@keydown.enter.prevent="onActive()"
+				@keydown.space.prevent="onActive()"
 		>
 			<span class="origam-sheet__handle-pill"/>
 		</div>
@@ -32,15 +32,14 @@
 		setup
 >
 	import { computed, type Ref, ref, StyleValue, toRef, watch } from 'vue'
-	import { useActive } from '../../composables/Commons/active.composable'
 	import { useBothColor } from '../../composables/Commons/bothColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
-	import { useHover } from '../../composables/Commons/hover.composable'
 	import { useLocation } from '../../composables/Commons/location.composable'
 	import { usePosition } from '../../composables/Commons/position.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useSheetSwipe } from '../../composables/Sheet/sheetSwipe.composable'
 	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
 	import type { ISheetProps } from '../../interfaces/Sheet/sheet.interface'
@@ -83,8 +82,8 @@
 		toRef(props, 'bgColor') as Ref<TColor | undefined>,
 		toRef(props, 'color') as Ref<TColor | undefined>
 	)
-	const {isHover, hoverState, hoverClasses, onMouseenter, onMouseleave} = useHover(props)
-	const {isActive, activeState, activeClasses, onActive} = useActive(props)
+	const {isOn: isHover, config: hoverState, classes: hoverClasses, set: onMouseenter, unset: onMouseleave} = useStateFlag(props, {state: 'hover'})
+	const {isOn: isActive, config: activeState, classes: activeClasses, toggle: onActive} = useStateFlag(props, {state: 'active'})
 	const {
 		borderClasses, borderStyles,
 		roundedClasses, roundedStyles,

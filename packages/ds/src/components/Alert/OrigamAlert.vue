@@ -119,16 +119,15 @@
 
   import vContrast from '../../directives/Contrast/contrast.directive'
 
-  import { useActive } from '../../composables/Commons/active.composable'
   import { useAdjacent } from '../../composables/Commons/adjacent.composable'
   import { useDensity } from '../../composables/Commons/density.composable'
   import { useDimension } from '../../composables/Commons/dimension.composable'
-  import { useHover } from '../../composables/Commons/hover.composable'
   import { useLocale } from '../../composables/Commons/locale.composable'
   import { useLocation } from '../../composables/Commons/location.composable'
   import { usePosition } from '../../composables/Commons/position.composable'
   import { useProps } from '../../composables/Commons/props.composable'
   import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+  import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
   import { useStatus } from '../../composables/Commons/status.composable'
   import { useStyle } from '../../composables/Commons/style.composable'
   import { useTypography } from '../../composables/Commons/typography.composable'
@@ -182,14 +181,14 @@
    * @description
    * Hover, active state and color resolution for the alert.
    ********************************************************/
-  const { activeClasses, isActive, activeState, onActive } = useActive(props, 'modelValue')
+  const { classes: activeClasses, isOn: isActive, config: activeState, toggle: onActive } = useStateFlag(props, {state: 'active', source: 'modelValue'})
   const {
-    isHover,
-    hoverState,
-    onMouseenter: handleMouseenter,
-    onMouseleave: handleMouseleave,
-    hoverClasses
-  } = useHover(props)
+    isOn: isHover,
+    config: hoverState,
+    set: handleMouseenter,
+    unset: handleMouseleave,
+    classes: hoverClasses
+  } = useStateFlag(props, {state: 'hover'})
 
   /*********************************************************
    * Effects

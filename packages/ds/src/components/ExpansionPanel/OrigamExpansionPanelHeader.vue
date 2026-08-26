@@ -98,13 +98,12 @@
 	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
 	import OrigamIcon from '../Icon/OrigamIcon.vue'
 
-	import { useActive } from '../../composables/Commons/active.composable'
 	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
 	import { useBothColor } from '../../composables/Commons/bothColor.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
-	import { useHover } from '../../composables/Commons/hover.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useTypography } from '../../composables/Commons/typography.composable'
 
@@ -211,8 +210,8 @@
 	 ********************************************************/
 	const {densityClasses} = useDensity(props)
 
-	const {isHover, hoverState} = useHover(props)
-	const {isActive, activeState} = useActive(props)
+	const {isOn: isHover, config: hoverState} = useStateFlag(props, {state: 'hover'})
+	const {isOn: isActive, config: activeState} = useStateFlag(props, {state: 'active'})
 	const {
 		borderClasses, borderStyles,
 		roundedClasses, roundedStyles,

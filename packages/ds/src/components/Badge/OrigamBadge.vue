@@ -93,13 +93,12 @@
 	import OrigamIcon from '../Icon/OrigamIcon.vue'
 	import OrigamTransition from '../Transition/OrigamTransition.vue'
 
-	import { useActive } from '../../composables/Commons/active.composable'
 	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
-	import { useHover } from '../../composables/Commons/hover.composable'
 	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useLocation } from '../../composables/Commons/location.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
 	import { useStatus } from '../../composables/Commons/status.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useTypography } from '../../composables/Commons/typography.composable'
@@ -148,8 +147,8 @@
 	 * @description
 	 * Hover, active state, color and location resolution.
 	 ********************************************************/
-	const {hoverClasses, isHover, hoverState, onMouseleave: handleMouseleave, onMouseenter: handleMouseenter} = useHover(props)
-	const {activeClasses, isActive, activeState} = useActive(props, 'modelValue')
+	const {classes: hoverClasses, isOn: isHover, config: hoverState, unset: handleMouseleave, set: handleMouseenter} = useStateFlag(props, {state: 'hover'})
+	const {classes: activeClasses, isOn: isActive, config: activeState} = useStateFlag(props, {state: 'active', source: 'modelValue'})
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 	// The badge pill (`__badge` span) is the visual surface; classes go
 	// there, not on the wrapper root.

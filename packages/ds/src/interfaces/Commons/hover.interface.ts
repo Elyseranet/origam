@@ -1,6 +1,6 @@
 import type { DirectiveBinding } from 'vue'
 
-import type { TStateProps } from '../../types/Commons/state-flag.type'
+import type { IStateEffectConfig } from './state-effect.interface'
 
 /**
  * The `hover` prop accepts three shapes:
@@ -13,18 +13,27 @@ import type { TStateProps } from '../../types/Commons/state-flag.type'
  *     No visual override — the state-aware styles in `useStateEffect`
  *     fall back to the resting tokens.
  *
- *   • `IHoverState` (object) → `isHover` stays reactive to mouseenter/leave
- *     (unless `enabled: true` is set inside the object, which forces it on
- *     like the bare `true` case). The object's keys (`color`, `bgColor`,
- *     `border`, `rounded`, `elevation`, `padding`, `margin`, `gap`) override
- *     the resting props ONLY while the state is engaged. See
- *     `IStateEffectConfig` for the full key set.
+ *   • `IStateEffectConfig` (object) → `isHover` stays reactive to
+ *     mouseenter/leave (unless `enabled: true` is set inside the object,
+ *     which forces it on like the bare `true` case). The object's keys
+ *     (`color`, `bgColor`, `border`, `rounded`, `elevation`, `padding`,
+ *     `margin`, `gap`) override the resting props ONLY while the state is
+ *     engaged.
  *
- * `IHoverProps` is `TStateProps<'hover'>` — the single source of truth it
- * shares with `IActiveProps` (`TStateProps<'active'>`), consumed by the
- * unified `useStateFlag({ state: 'hover' })`.
+ * `IHoverProps` shares the exact same shape as `IActiveProps` (both are
+ * `{ [state]?: boolean | IStateEffectConfig, [state]Class?: string }`),
+ * consumed by the unified `useStateFlag({ state: 'hover' })`. It is kept
+ * as a plain `interface` (not a generic mapped-type alias) because
+ * `@vue/compiler-sfc`'s macro resolver — used at actual component-compile
+ * time by every `defineProps<T>()` — cannot resolve a mapped type through
+ * an `interface … extends` clause (verified: it broke 164 spec files with
+ * "Failed to resolve extends base type" even though `vue-tsc --noEmit`
+ * accepted the mapped-type version fine). See `state-flag.type.ts`.
  */
-export type IHoverProps = TStateProps<'hover'>
+export interface IHoverProps {
+    hover?: boolean | IStateEffectConfig
+    hoverClass?: string
+}
 
 /**
  * Object config accepted by the `v-hover` directive.

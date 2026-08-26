@@ -120,16 +120,15 @@
 	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
 	import OrigamExpansionPanel from './OrigamExpansionPanel.vue'
 
-	import { useActive } from '../../composables/Commons/active.composable'
 	import { useBothColor } from '../../composables/Commons/bothColor.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
 	import { useGroup } from '../../composables/Commons/group.composable'
-	import { useHover } from '../../composables/Commons/hover.composable'
 	import { useLoader } from '../../composables/Commons/loader.composable'
 	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
 	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts/ExpansionPanel/expansion-panel.const'
@@ -194,8 +193,8 @@
 	 ********************************************************/
 	const {densityClasses} = useDensity(props)
 
-	const {isHover, hoverState} = useHover(props)
-	const {isActive, activeState} = useActive(props)
+	const {isOn: isHover, config: hoverState} = useStateFlag(props, {state: 'hover'})
+	const {isOn: isActive, config: activeState} = useStateFlag(props, {state: 'active'})
 	const {
 		borderClasses, borderStyles,
 		roundedClasses, roundedStyles,

@@ -3,7 +3,7 @@
 			:is="props.tag"
 			:id="id"
 			:class="avatarClasses"
-			@click="handleClick"
+			@click="handleClick()"
 			@mouseenter="handleMouseenter"
 			@mouseleave="handleMouseleave"
 	>
@@ -52,12 +52,11 @@
 	import OrigamIcon from '../Icon/OrigamIcon.vue'
 	import OrigamImg from '../Img/OrigamImg.vue'
 
-	import { useActive } from '../../composables/Commons/active.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
-	import { useHover } from '../../composables/Commons/hover.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useSize } from '../../composables/Commons/size.composable'
 	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useTypography } from '../../composables/Commons/typography.composable'
 
@@ -91,8 +90,8 @@
 	 * @description
 	 * Hover, active state and color resolution for the avatar.
 	 ********************************************************/
-	const {hoverClasses, isHover, hoverState, onMouseleave: handleMouseleave, onMouseenter: handleMouseenter} = useHover(props)
-	const {activeClasses, isActive, activeState, onActive: handleClick} = useActive(props)
+	const {classes: hoverClasses, isOn: isHover, config: hoverState, unset: handleMouseleave, set: handleMouseenter} = useStateFlag(props, {state: 'hover'})
+	const {classes: activeClasses, isOn: isActive, config: activeState, toggle: handleClick} = useStateFlag(props, {state: 'active'})
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 
 	/*********************************************************

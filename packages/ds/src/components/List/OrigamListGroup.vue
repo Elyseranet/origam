@@ -55,13 +55,13 @@
 	import OrigamTransition from '../Transition/OrigamTransition.vue'
 
 	import { useBothColor } from '../../composables/Commons/bothColor.composable'
-	import { useHover } from '../../composables/Commons/hover.composable'
 	import { useList } from '../../composables/List/list.composable'
 	import { useNestedItem } from '../../composables/Commons/nestedItem.composable'
 	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useSsrBoot } from '../../composables/Commons/ssrBoot.composable'
 	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
+	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
 	import vContrast from '../../directives/Contrast/contrast.directive'
@@ -89,7 +89,7 @@
 	defineSlots<IListGroupSlots>()
 
 
-	const {isHover, hoverState} = useHover(props)
+	const {isOn: isHover, config: hoverState} = useStateFlag(props, {state: 'hover'})
 	const {
 		borderClasses, borderStyles,
 		roundedClasses, roundedStyles,
