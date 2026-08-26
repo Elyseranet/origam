@@ -5,7 +5,7 @@
 			v-contrast
 			:class="labelClasses"
 			:style="labelStyles"
-			:name="name"
+			:name="resolvedName"
 			@click="handleClick"
 	>
 		<slot name="default">
@@ -27,6 +27,8 @@
 	import { useRounded } from '../../composables/Commons/rounded.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useTypography } from '../../composables/Commons/typography.composable'
+
+	import { NAME_ATTR_TAGS } from '../../consts/Commons/commons.const'
 
 	import vContrast from '../../directives/Contrast/contrast.directive'
 
@@ -52,6 +54,23 @@
 	const handleClick = (e: MouseEvent) => {
 		emits('click', e)
 	}
+
+	/*********************************************************
+	 * name attribute
+	 *
+	 * @description
+	 * `name` is only a valid content attribute on a handful of elements
+	 * (see NAME_ATTR_TAGS). The default tag here is `label`, which is NOT
+	 * one of them, so binding it unconditionally rendered
+	 * `<label name="…">` — ignored by the browser and a W3C validation
+	 * error on every page using the component (issue #458).
+	 * @description
+	 * Resolved lazily in a computed rather than read in the setup body, so
+	 * a `tag` supplied by `theme.components` is still seen (ADR-005).
+	 ********************************************************/
+	const resolvedName = computed(() => (
+		NAME_ATTR_TAGS.has(String(props.tag)) ? props.name : undefined
+	))
 
 	/*********************************************************
 	 * Class & Style

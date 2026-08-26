@@ -133,6 +133,11 @@
       "copy_aria_label": "Copy to clipboard",
       "copied_aria_label": "Value copied to clipboard"
     },
+    "sheet": {
+      "handle": {
+        "aria_label": "Drag handle"
+      }
+    },
     "snackbar": {
       "dismiss": "Dismiss notification"
     },

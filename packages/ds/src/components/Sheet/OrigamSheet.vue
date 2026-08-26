@@ -9,19 +9,16 @@
 			@mouseenter="onMouseenter"
 			@mouseleave="onMouseleave"
 	>
-		<div
+		<button
 				v-if="showHandle"
 				ref="handleEl"
+				:aria-label="handleAriaLabel"
 				class="origam-sheet__handle"
-				role="button"
-				tabindex="0"
-				aria-label="Drag handle"
 				data-cy="sheet-bottom-handle"
-				@keydown.enter.prevent="onActive()"
-				@keydown.space.prevent="onActive()"
+				type="button"
 		>
 			<span class="origam-sheet__handle-pill"/>
-		</div>
+		</button>
 
 		<slot name="default"/>
 	</component>
@@ -34,6 +31,7 @@
 	import { computed, type Ref, ref, StyleValue, toRef, watch } from 'vue'
 	import { useBothColor } from '../../composables/Commons/bothColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useLocation } from '../../composables/Commons/location.composable'
 	import { usePosition } from '../../composables/Commons/position.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
@@ -94,6 +92,10 @@
 	const {dimensionStyles} = useDimension(props)
 	const {locationStyles} = useLocation(props)
 	const {positionClasses} = usePosition(props)
+
+	const {t} = useLocale()
+
+	const handleAriaLabel = computed(() => t('origam.sheet.handle.aria_label'))
 
 	// ───────────────────────── swipe gesture ────────────────────────────
 
@@ -387,6 +389,13 @@
 		}
 
 		&__handle {
+			appearance: none;
+			margin: 0;
+			padding-inline: 0;
+			border: 0;
+			background: none;
+			color: inherit;
+			font: inherit;
 			display: flex;
 			align-items: center;
 			justify-content: center;

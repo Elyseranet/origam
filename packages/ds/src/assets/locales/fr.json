@@ -133,6 +133,11 @@
       "copy_aria_label": "Copier dans le presse-papier",
       "copied_aria_label": "Valeur copiée dans le presse-papier"
     },
+    "sheet": {
+      "handle": {
+        "aria_label": "Poignée de déplacement"
+      }
+    },
     "snackbar": {
       "dismiss": "Fermer la notification"
     },
