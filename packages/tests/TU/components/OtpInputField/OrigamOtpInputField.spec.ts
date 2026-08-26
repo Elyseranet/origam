@@ -263,3 +263,62 @@ describe('OrigamOtpInputField — typography (cell input)', () => {
         expect(cellStyle({ fontSize: 'sm' })).toContain('--origam-otp-input-field__cell---font-size: var(--origam-font__size---sm)')
     })
 })
+
+/********************************************************
+ *  KNOWN DEFECT — `label` excluded from the forwarded field props
+ *
+ *  @description ⛔ issue #491
+ *  `fieldProps(index)` calls
+ *  `origamFieldRef.value?.[index]?.filterProps(props, ['class', 'style', 'id', 'label'])`
+ *  (OrigamOtpInputField.vue ~l.316) — `label` is in the exclude list, so it
+ *  never reaches any `origam-field` cell: no rendered label, no aria-label,
+ *  even though `label` is the primary usage example in the component's own
+ *  doc. `OrigamFieldStub` above always returns `{}` from `filterProps`
+ *  regardless of input, so it cannot exercise this — this block uses a
+ *  faithful re-implementation of the real `filterProps` semantics
+ *  (packages/ds/src/composables/Commons/props.composable.ts:58-70) instead.
+ *
+ *  @description
+ *  `it.fails` here because the CORRECT behaviour (label reaches a cell) is
+ *  what's asserted — it currently fails since the real exclude list drops it.
+ *
+ *  ⚠️ When this turns RED the defect is fixed — delete the `it.fails`
+ *  wrapper (keep the assertion) rather than deleting the test.
+ ********************************************************/
+const OWN_FIELD_PROP_KEYS_491 = ['focused', 'id', 'class', 'style', 'label', 'variant', 'error', 'rounded', 'disabled']
+
+const OrigamFieldFilteringStub = {
+    name: 'OrigamField',
+    inheritAttrs: false,
+    props: OWN_FIELD_PROP_KEYS_491,
+    setup () {
+        return {
+            filterProps: (properties: Record<string, unknown>, excludes: string[] = []) => {
+                const picked: Record<string, unknown> = {}
+                for (const key of OWN_FIELD_PROP_KEYS_491) {
+                    if (!excludes.includes(key) && properties[key] !== undefined) picked[key] = properties[key]
+                }
+                return picked
+            }
+        }
+    },
+    template: `<div data-cy="origam-otp-field" :aria-label="label">{{ label }}<slot /></div>`
+}
+
+describe('OrigamOtpInputField — label forwarding (#491)', () => {
+    it.fails('label reaches at least one origam-field cell', () => {
+        const wrapper = mount(OrigamOtpInputField, {
+            attachTo: document.body,
+            props: { label: 'One-time passcode', length: 4 },
+            global: {
+                plugins: [createOrigam()],
+                stubs: { OrigamField: OrigamFieldFilteringStub, OrigamOverlay: true, OrigamProgress: true, OrigamMessages: true }
+            }
+        })
+
+        const cells = wrapper.findAll('[data-cy="origam-otp-field"]')
+        expect(cells.length).toBeGreaterThan(0)
+        const anyCellHasLabel = cells.some((c) => c.attributes('aria-label') === 'One-time passcode')
+        expect(anyCellHasLabel).toBe(true)
+    })
+})

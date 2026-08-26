@@ -459,3 +459,44 @@ describe('OrigamInlineEdit — number modelValue', () => {
         expect(emitted![0][0]).toBe(99)
     })
 })
+
+/********************************************************
+ *  KNOWN DEFECT — rules/validate/trim captured once at setup()
+ *
+ *  @description ⛔ issue #490
+ *  `useInlineEdit(modelRef, { rules: props.rules, validate: props.validate,
+ *  trim: props.trim, ... })` is called once in `setup()`. The composable
+ *  stores that object in closure and `confirm()` reads `options.rules` /
+ *  `options.validate` off the SAME object later — never `props.rules`
+ *  directly. A consumer that replaces `:rules` after mount (async-loaded
+ *  validation, mode-dependent rule sets) keeps validating against the
+ *  rules captured at mount time for the whole lifetime of the component.
+ *
+ *  @description
+ *  `it.fails` here because the CORRECT behaviour (new rule enforced) is
+ *  what's asserted — it currently fails since the bug makes the old,
+ *  empty rule set win instead.
+ *
+ *  ⚠️ When this turns RED the defect is fixed — delete the `it.fails`
+ *  wrapper (keep the assertions) rather than deleting the test.
+ ********************************************************/
+describe('OrigamInlineEdit — rules captured once at setup (#490)', () => {
+    it.fails('a rule added AFTER mount is enforced on the next confirm', async () => {
+        const wrapper = mountInlineEdit({ rules: [] }) // no rule at mount time
+
+        // Consumer adds a min-length rule AFTER mount.
+        await wrapper.setProps({
+            rules: [(v: string) => v.length >= 10 || 'Too short']
+        })
+        await nextTick()
+
+        ;(wrapper.vm as any).edit()
+        await nextTick()
+        await wrapper.find('[data-cy="origam-inline-edit-input-el"]').setValue('hi') // violates the NEW rule
+        await (wrapper.vm as any).confirm()
+        await nextTick()
+
+        expect(wrapper.emitted('validate-error')).toBeTruthy()
+        expect(wrapper.emitted('update:modelValue')).toBeFalsy()
+    })
+})
