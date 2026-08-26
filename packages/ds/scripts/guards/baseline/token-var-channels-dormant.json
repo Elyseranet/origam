@@ -1068,8 +1068,6 @@
     "--origam-overlay---transition-duration",
     "--origam-overlay---transition-easing",
     "--origam-overlay---z-index",
-    "--origam-overlay-scrim---border-radius",
-    "--origam-overlay-scrim---position",
     "--origam-overlay__absolute---position",
     "--origam-overlay__contained---scrim-position",
     "--origam-overlay__content---contain",

@@ -1,6 +1,10 @@
 <template>
-	<origam-transition :transition="transition">
-		<div
+	<origam-transition
+			:disabled="disabled"
+			:transition="transition"
+	>
+		<component
+				:is="tag"
 				v-if="active"
 				:id="id"
 				:class="scrimClasses"
@@ -36,6 +40,7 @@
 	 * Props, emits and filterProps for the OverlayScrim component.
 	 ********************************************************/
 	const props = withDefaults(defineProps<IOverlayScrimProps>(), {
+		tag: 'div',
 		transition: () => ({component: OrigamFade}) as unknown as TTransitionProps
 	})
 
@@ -126,10 +131,10 @@
 		backdrop-filter: var(--origam-overlay-scrim---backdrop-filter, none);
 		-webkit-backdrop-filter: var(--origam-overlay-scrim---backdrop-filter, none);
 		pointer-events: var(--origam-overlay-scrim---pointer-events, auto);
-		border-radius: inherit;
+		border-radius: var(--origam-overlay-scrim---border-radius, inherit);
 		inset: 0;
 		opacity: var(--origam-overlay-scrim---opacity, 0.32);
-		position: fixed;
+		position: var(--origam-overlay-scrim---position, fixed);
 		transition-property: var(--origam-overlay-scrim---transition-property, opacity);
 		transition-duration: var(--origam-overlay-scrim---transition-duration, 200ms);
 		transition-timing-function: var(--origam-overlay-scrim---transition-timing-function, cubic-bezier(0.4, 0, 0.2, 1));
