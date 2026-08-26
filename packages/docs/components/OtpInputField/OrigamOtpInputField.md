@@ -101,9 +101,15 @@ The `validateOn` prop controls when validation fires:
 
 | Slot | Scope | Description |
 |------|-------|-------------|
-| `default` | field props | Override field body |
-| `label` | `ILabelProps` | Custom label |
-| `field` | `{ id, isDisabled, isDirty, isValid, isReadonly }` | Replace individual `<input>` cells |
+| `default` | field props | Extra content appended after the cells (does not replace them) |
+| `label` | — | Custom label |
+| `floatingLabel` | — | Custom floating label |
+| `prefix` | — | Content before the cells |
+| `suffix` | — | Content after the cells |
+| `prependInner` | — | Icon/content inside the control, before the cells |
+| `appendInner` | — | Icon/content inside the control, after the cells |
+| `clear` | — | Custom clear icon (only rendered when `clearable`) |
+| `loader` | — | Custom loading indicator (shown while `loading`) |
 
 ## Emits
 
@@ -113,8 +119,9 @@ The `validateOn` prop controls when validation fires:
 | `finish` | `string` | All cells filled |
 | `focus` | `FocusEvent` | Any cell focused |
 | `blur` | `FocusEvent` | All cells blurred |
-| `click:clear` | `MouseEvent` | Clear button clicked |
-| `click:control` | `MouseEvent` | Control area clicked |
+| `click:control` | `MouseEvent` | Click on the control area (`.origam-otp-input-field__content`) |
+| `mousedown:control` | `MouseEvent` | Mousedown on the control area (`.origam-otp-input-field__content`) |
+| `click:clear` | `MouseEvent` | Clear button clicked — also resets the model to empty |
 
 ## Props (validation)
 
