@@ -1,4 +1,4 @@
-import { computed, onBeforeUnmount, provide, ref, shallowRef } from 'vue'
+import { computed, onBeforeUnmount, provide, ref, shallowRef, watch } from 'vue'
 import { useVModel } from './vModel.composable'
 import { LIST_OPEN_STRATEGY, MULTIPLE_OPEN_STRATEGY, ORIGAM_NESTED_KEY, SINGLE_OPEN_STRATEGY } from '../../consts/Commons/nested.const'
 import { OPEN_STRATEGY, SELECTED, SELECT_STRATEGY } from '../../enums'
@@ -25,6 +25,24 @@ export const useNested = (props: INestedProps) => {
     const parents = ref(new Map<unknown, unknown>())
 
     const opened = ref(new Set(props.opened))
+
+    /*********************************************************
+     * opened must track an external props.opened change (#486)
+     *
+     * @description
+     * `opened` was seeded from `props.opened` once, here, and never
+     * watched again — unlike `selected` below, which goes through
+     * `useVModel` and reacts correctly. A consumer driving `opened` as
+     * an external v-model and reassigning it from OUTSIDE the tree
+     * (not via a node click routed through `open()`) never reached
+     * this ref. `open()` itself still writes `opened.value` directly
+     * for the internal click path, so this watcher only needs to
+     * cover the external-write path — reseeding whenever the prop
+     * reference actually changes.
+     ********************************************************/
+    watch(() => props.opened, (val) => {
+        opened.value = new Set(val)
+    })
 
     const selectStrategy = computed(() => {
         if (typeof props.selectStrategy === 'object') return props.selectStrategy
