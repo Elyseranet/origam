@@ -13,3 +13,7 @@ export interface ILoaderSlots {
     loader?: () => any
     default?: () => any
 }
+
+/** Emits fired by `<OrigamLoader>` — none. Toggles between the
+ *  `#loader` and `#default` slot purely from the `loading` prop. */
+export interface ILoaderEmits {}

@@ -65,3 +65,7 @@ export interface IChartRangeSelectorEmits {
      */
     (e: 'select', index: number, start: number, end: number): void
 }
+
+/** Slot signatures for `<OrigamChartRangeSelector>` — none. The button
+ *  list is entirely data-driven from the `buttons` prop. */
+export interface IChartRangeSelectorSlots {}

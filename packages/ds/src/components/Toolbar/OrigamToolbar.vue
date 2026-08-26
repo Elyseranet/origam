@@ -57,7 +57,7 @@
 
 	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { IToolbarProps, IToolbarSlots } from '../../interfaces/Toolbar/toolbar.interface'
+	import type { IToolbarEmits, IToolbarProps, IToolbarSlots } from '../../interfaces/Toolbar/toolbar.interface'
 
 	/*********************************************************
 	 * Global
@@ -70,6 +70,8 @@
 		density: DENSITY.DEFAULT,
 		modelValue: true
 	})
+
+	defineEmits<IToolbarEmits>()
 
 	defineSlots<IToolbarSlots>()
 

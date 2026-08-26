@@ -27,7 +27,7 @@
 	import { GRID_GAP_SIZE_VAR } from '../../consts/Grid/grid.const'
 
 	import type { ICommonsComponentSlots } from '../../interfaces/Commons/commons.interface'
-	import type { IGridProps, TGridTracks } from '../../interfaces/Grid/grid.interface'
+	import type { IGridEmits, IGridProps, TGridTracks } from '../../interfaces/Grid/grid.interface'
 
 	import type { TGridGapSize } from '../../types/Grid/grid.type'
 
@@ -61,6 +61,8 @@
 	})
 
 	const {filterProps} = useProps<IGridProps>(props)
+
+	defineEmits<IGridEmits>()
 
 	defineSlots<ICommonsComponentSlots>()
 

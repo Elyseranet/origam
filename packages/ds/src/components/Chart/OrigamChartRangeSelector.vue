@@ -29,7 +29,7 @@
 		lang="ts"
 		setup
 >
-	import type { IChartRangeSelectorEmits, IChartRangeSelectorProps } from '../../interfaces/Chart/chart-range-selector.interface'
+	import type { IChartRangeSelectorEmits, IChartRangeSelectorProps, IChartRangeSelectorSlots } from '../../interfaces/Chart/chart-range-selector.interface'
 
 	/*********************************************************
 	 * Global
@@ -50,6 +50,8 @@
 	})
 
 	const emit = defineEmits<IChartRangeSelectorEmits>()
+
+	defineSlots<IChartRangeSelectorSlots>()
 
 	const onButtonClick = (index: number): void => {
 		const btn = props.buttons[index]

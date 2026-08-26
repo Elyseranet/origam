@@ -52,3 +52,7 @@ export interface IChartTooltipSlots {
     /** Replace the default tooltip body. */
     default?: (bindings: { point: IChartPoint, series: IChartSeries, category: string | number }) => any
 }
+
+/** Emits fired by `<OrigamChartTooltip>` — none. Pure renderer,
+ *  positioned via `x`/`y` props; it never mutates or reports back. */
+export interface IChartTooltipEmits {}

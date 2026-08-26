@@ -37,7 +37,7 @@
 	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
 
 	import type { ILoaderProps } from '../../interfaces/Commons/loader.interface'
-	import type { ILoaderSlots } from '../../interfaces/Loader/loader.interface'
+	import type { ILoaderEmits, ILoaderSlots } from '../../interfaces/Loader/loader.interface'
 
 	/*********************************************************
 	 * Global
@@ -47,6 +47,8 @@
 	 ********************************************************/
 
 	const props = withDefaults(defineProps<ILoaderProps>(), {tag: 'span'})
+
+	defineEmits<ILoaderEmits>()
 
 	defineSlots<ILoaderSlots>()
 

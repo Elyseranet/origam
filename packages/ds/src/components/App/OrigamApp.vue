@@ -25,7 +25,7 @@
 	import { useRtl } from '../../composables/Commons/rtl.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { IAppProps, IAppSlots } from '../../interfaces/App/app.interface'
+	import type { IAppEmits, IAppProps, IAppSlots } from '../../interfaces/App/app.interface'
 
 	import type { TOrigamApp } from '../../types/App/app.type'
 
@@ -40,6 +40,8 @@
 	const props = withDefaults(defineProps<IAppProps>(), {fullHeight: true})
 
 	const {filterProps} = useProps<IAppProps>(props)
+
+	defineEmits<IAppEmits>()
 
 	defineSlots<IAppSlots>()
 

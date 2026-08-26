@@ -56,7 +56,7 @@
 	import { useSize } from '../../composables/Commons/size.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import type { ICommonsComponentSlots } from '../../interfaces/Commons/commons.interface'
-	import type { ISkeletonProps } from '../../interfaces/Skeleton/skeleton.interface'
+	import type { ISkeletonEmits, ISkeletonProps } from '../../interfaces/Skeleton/skeleton.interface'
 	import { convertToUnit } from '../../utils/Commons/commons.util'
 	import { computed, toRef } from 'vue'
 	import type { StyleValue } from 'vue'
@@ -72,6 +72,8 @@
 	})
 
 	const {filterProps} = useProps<ISkeletonProps>(props)
+
+	defineEmits<ISkeletonEmits>()
 
 	defineSlots<ICommonsComponentSlots>()
 	/*********************************************************

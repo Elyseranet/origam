@@ -56,7 +56,7 @@
 	import { useProps } from '../../composables/Commons/props.composable'
 	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import type { IStepperItemEmits, IStepperItemProps } from '../../interfaces/Stepper/stepper-item.interface'
+	import type { IStepperItemEmits, IStepperItemProps, IStepperItemSlots } from '../../interfaces/Stepper/stepper-item.interface'
 
 	/*********************************************************
 	 * Global
@@ -79,6 +79,8 @@
 	})
 
 	const emit = defineEmits<IStepperItemEmits>()
+
+	defineSlots<IStepperItemSlots>()
 
 	const { filterProps } = useProps<IStepperItemProps>(props)
 
