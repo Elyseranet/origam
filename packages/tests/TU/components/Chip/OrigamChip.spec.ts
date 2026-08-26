@@ -88,6 +88,17 @@ describe('OrigamChip — active prop', () => {
         const wrapper = mountChip({ activeClass: 'my-active-chip' })
         expect(wrapper.find('.origam-chip').classes()).not.toContain('my-active-chip')
     })
+
+    // Proves the fix goes beyond the class name: an IActiveState config
+    // genuinely swaps a visual axis (routed through useStateEffect), not
+    // just the `origam-chip--active` marker class.
+    it('swaps the rounded axis via an active={ enabled, rounded } config with no base rounded prop', () => {
+        const withoutActive = mountChip()
+        expect(withoutActive.find('.origam-chip').classes().join(' ')).not.toMatch(/rounded/)
+
+        const withActive = mountChip({ active: { enabled: true, rounded: 'lg' } })
+        expect(withActive.find('.origam-chip').classes().join(' ')).toMatch(/rounded/)
+    })
 })
 
 // ---------------------------------------------------------------------------
