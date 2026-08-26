@@ -183,7 +183,7 @@ export * from './NumberFormat/number-format.type'
 
 export * from './Input/input.type'
 
-export * from './ItemGroup/item.type'
+export * from './ItemGroup/item-group-item.type'
 export * from './ItemGroup/item-group.type'
 
 export * from './Label/label.type'
