@@ -22,6 +22,11 @@ export interface IPickerTitleSlots {
     default?: () => any
 }
 
-/** `<OrigamPickerTitle>` only ever renders its slot/title text — it
- *  never calls `emit(...)` in its script. */
+/*********************************************************
+ * IPickerTitleEmits
+ *
+ * @description
+ * `<OrigamPickerTitle>` only ever renders its slot/title text — it
+ * never calls `emit(...)` in its script.
+ ********************************************************/
 export interface IPickerTitleEmits {}
