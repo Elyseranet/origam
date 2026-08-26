@@ -23,7 +23,7 @@ input.
 ```
 
 The `*` indicator is theme-aware — its color comes from
-`--origam-label__required-indicator---color`.
+`--origam-label---required-indicator-color`.
 
 ## Floating
 
@@ -113,6 +113,7 @@ interface ILabelEmits {
 | `fontWeight` | `TFontWeight` | — | Font weight token. Sets `--origam-label---font-weight` to `var(--origam-font__weight---{fontWeight})` (regular 400 · medium 500 · semibold 600 · bold 700 · extrabold 800 · black 900). When unset, the label keeps its theme font-weight. |
 | `lineHeight` | `TLineHeight` | — | Line-height token. Sets `--origam-label---line-height` to `var(--origam-font__lineHeight---{lineHeight})` (none 1 · tight 1.25 · snug 1.375 · normal 1.5 · relaxed 1.625 · loose 2). When unset, the label keeps its theme line-height. |
 | `letterSpacing` | `TLetterSpacing` | — | Letter-spacing token. Sets `--origam-label---letter-spacing` to `var(--origam-font__letterSpacing---{letterSpacing})` (tight · normal · wide · wider · widest). When unset, the label keeps its theme letter-spacing. |
+| `fontFamily` | `TFontFamily` | — | **No visual effect on this component.** Accepted by the type (inherited from `ITypographyProps`) and it does emit `--origam-label---font-family`, but no rule in the label stylesheet reads that variable, so the rendered font is unchanged. A label is meant to inherit the family of the form it labels. To change it anyway, set `font-family` on a wrapper, or override the variable *and* declare a rule that consumes it. |
 
 ## Anatomy
 
@@ -138,9 +139,9 @@ the document root or via a `:style` binding to re-skin a single instance.
 | `--origam-label---pointer-events` | `none` |
 | `--origam-label---transition-duration` | `{motion.duration.normal}` |
 | `--origam-label---transition-easing` | `{motion.easing.standard}` |
-| `--origam-label--floating---font-size` | `0.75em` |
-| `--origam-label--floating---visibility` | `hidden` |
-| `--origam-label__required-indicator---color` | `{color.feedback.danger.fgSubtle}` |
+| `--origam-label__floating---font-size` | `0.75em` |
+| `--origam-label__floating---visibility` | `hidden` |
+| `--origam-label---required-indicator-color` | `{color.feedback.danger.fgSubtle}` |
 
 The full list lives in
 `tokens/component/label.json`.
