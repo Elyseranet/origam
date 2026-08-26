@@ -53,7 +53,7 @@
 
 	import { DENSITY } from '../../enums/Commons/density.enum'
 
-	import type { IMessagesProps, IMessagesSlots } from '../../interfaces/Messages/messages.interface'
+	import type { IMessagesEmits, IMessagesProps, IMessagesSlots } from '../../interfaces/Messages/messages.interface'
 	import type { TTransitionProps } from '../../types/Transition/transition.type'
 
 	import { toKebabCase, wrapInArray } from '../../utils/Commons/commons.util'
@@ -69,6 +69,8 @@
 		density: DENSITY.DEFAULT,
 		transition: () => ({component: OrigamSlideY}) as unknown as TTransitionProps
 	})
+	defineEmits<IMessagesEmits>()
+
 	defineSlots<IMessagesSlots>()
 
 	const {filterProps} = useProps<IMessagesProps>(props)

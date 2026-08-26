@@ -89,3 +89,8 @@ export interface IDataTableGroupHeaderRowSlots<T = IDataTableGroup> {
     'data-table-group'?: (props: IDataTableGroupHeaderRowGroupSlot<T>) => any
     'data-table-select'?: (props: IDataTableGroupHeaderRowSelectSlot) => any
 }
+
+/** `<OrigamDataTableGroupHeaderRow>` toggles group/selection state through
+ *  `useGroupBy` / `useSelection` (shared provide/inject state) — nothing
+ *  is emitted upward. */
+export interface IDataTableGroupHeaderRowEmits {}

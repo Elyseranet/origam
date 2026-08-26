@@ -64,7 +64,7 @@
 
 	import { EMPTY_STATE_PRESET_CONFIG } from '../../consts/EmptyState/empty-state.const'
 
-	import type { IEmptyStateProps, IEmptyStateSlots } from '../../interfaces/EmptyState/empty-state.interface'
+	import type { IEmptyStateEmits, IEmptyStateProps, IEmptyStateSlots } from '../../interfaces/EmptyState/empty-state.interface'
 
 	/*********************************************************
 	 * Global
@@ -89,6 +89,8 @@
 		size: 'md',
 		align: 'center'
 	})
+
+	defineEmits<IEmptyStateEmits>()
 
 	defineSlots<IEmptyStateSlots>()
 

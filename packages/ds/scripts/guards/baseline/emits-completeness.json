@@ -1,5 +1,4 @@
 [
-    "ColorPickerField:update:menu,update:modelValue",
     "ContextualMenu:update:modelValue",
     "DatePickerField:update:menu,update:modelValue",
     "Drawer:update:modelValue",

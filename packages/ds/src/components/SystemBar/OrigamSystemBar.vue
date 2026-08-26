@@ -29,7 +29,7 @@
 	import vContrast from '../../directives/Contrast/contrast.directive'
 
 	import type { ICommonsComponentSlots } from '../../interfaces/Commons/commons.interface'
-	import type { ISystemBarProps } from '../../interfaces/SystemBar/system-bar.interface'
+	import type { ISystemBarEmits, ISystemBarProps } from '../../interfaces/SystemBar/system-bar.interface'
 
 	/*********************************************************
 	 * Global
@@ -42,6 +42,8 @@
 	})
 
 	const {filterProps} = useProps<ISystemBarProps>(props)
+
+	defineEmits<ISystemBarEmits>()
 
 	defineSlots<ICommonsComponentSlots>()
 

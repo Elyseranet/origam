@@ -16,3 +16,13 @@ import type { IInternalDataTableHeader } from './data-table-header.interface'
 export interface IDataTableHeadersCellProps extends ICommonsComponentProps, IColorProps, IHeaderCellProps {
     headers: Array<Array<IInternalDataTableHeader>>
 }
+
+/** `<OrigamDataTableHeadersCell>` renders no `<slot>` at all — it's a
+ *  pure repeater over `headers` forwarding into
+ *  `<origam-data-table-header-cell>`. */
+export interface IDataTableHeadersCellSlots {}
+
+/** `<OrigamDataTableHeadersCell>` has no click/interaction handler of its
+ *  own — every column cell forwards to `<origam-data-table-header-cell>`.
+ *  Nothing is emitted upward. */
+export interface IDataTableHeadersCellEmits {}
