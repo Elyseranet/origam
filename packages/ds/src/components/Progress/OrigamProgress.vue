@@ -39,7 +39,7 @@
 	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
 	import { SIZES } from '../../enums/Commons/size.enum'
 
-	import type { IProgressProps, IProgressSlots } from '../../interfaces/Progress/progress.interface'
+	import type { IProgressEmits, IProgressProps, IProgressSlots } from '../../interfaces/Progress/progress.interface'
 
 	import type { TOrigamProgressCircular } from '../../types/Progress/progress-circular.type'
 	import type { TOrigamProgressLinear } from '../../types/Progress/progress-linear.type'
@@ -59,6 +59,8 @@
 	})
 
 	const {filterProps} = useProps<IProgressProps>(props)
+
+	defineEmits<IProgressEmits>()
 
 	defineSlots<IProgressSlots>()
 

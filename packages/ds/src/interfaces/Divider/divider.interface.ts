@@ -11,3 +11,21 @@ export interface IDividerProps extends ICommonsComponentProps, IColorProps, IBgC
     length?: number | string
     thickness?: number | string
 }
+
+/*********************************************************
+ * IDividerEmits
+ *
+ * @description
+ * Emits fired by `<OrigamDivider>` — none. Renders a bare `<hr>`,
+ * no interactive state.
+ ********************************************************/
+export interface IDividerEmits {}
+
+/*********************************************************
+ * IDividerSlots
+ *
+ * @description
+ * Slot signatures for `<OrigamDivider>` — none. The rendered `<hr>`
+ * cannot host content.
+ ********************************************************/
+export interface IDividerSlots {}

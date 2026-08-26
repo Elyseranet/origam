@@ -90,13 +90,15 @@
 
 	import { LIST_ITEM_TYPE } from '../../enums/List/list-item.enum'
 
-	import type { IInternalListItemChildren, IListChildrenSlots, IListItemChildren } from '../../interfaces/List/list-children.interface'
+	import type { IInternalListItemChildren, IListChildrenEmits, IListChildrenSlots, IListItemChildren } from '../../interfaces/List/list-children.interface'
 
 	/*********************************************************
 	 * Global
 	 ********************************************************/
 
 	const props = withDefaults(defineProps<IListItemChildren>(), {})
+
+	defineEmits<IListChildrenEmits>()
 
 	defineSlots<IListChildrenSlots>()
 

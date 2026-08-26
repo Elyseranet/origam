@@ -20,7 +20,7 @@
 
 	import { ORIGAM_PARALLAX_LAYER_KEY } from '../../consts/Parallax/parallax-layer.const'
 
-	import type { IParallaxLayerProps, IParallaxLayerRegistry, IParallaxLayerSlots } from '../../interfaces/Parallax/parallax-layer.interface'
+	import type { IParallaxLayerEmits, IParallaxLayerProps, IParallaxLayerRegistry, IParallaxLayerSlots } from '../../interfaces/Parallax/parallax-layer.interface'
 
 	/*********************************************************
 	 * Global
@@ -39,6 +39,8 @@
 	})
 
 	const { filterProps } = useProps<IParallaxLayerProps>(props)
+
+	defineEmits<IParallaxLayerEmits>()
 
 	defineSlots<IParallaxLayerSlots>()
 

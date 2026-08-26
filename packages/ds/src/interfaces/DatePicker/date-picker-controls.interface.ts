@@ -35,3 +35,12 @@ export interface IDatePickerControlsEmits {
     (e: 'click:next', event?: MouseEvent): void
     (e: 'click:text', event?: MouseEvent): void
 }
+
+/*********************************************************
+ * IDatePickerControlsSlots
+ *
+ * @description
+ * `<OrigamDatePickerControls>` renders its own fixed toolbar (month
+ * label, mode toggle, prev/next buttons) — no `<slot>` in its template.
+ ********************************************************/
+export interface IDatePickerControlsSlots {}

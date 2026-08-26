@@ -16,3 +16,12 @@ import type { ITypographyProps } from '../Commons/typography.interface'
 export interface ISystemBarProps extends ICommonsComponentProps, ITagProps, IElevationProps, IColorProps, IBgColorProps, ILayoutItemProps, IRoundedProps, IBorderProps, IDimensionProps, ITypographyProps {
     window?: boolean
 }
+
+/*********************************************************
+ * ISystemBarEmits
+ *
+ * @description
+ * `<OrigamSystemBar>` is a static layout item (registers itself via
+ * `useLayoutItem`) — nothing is emitted.
+ ********************************************************/
+export interface ISystemBarEmits {}

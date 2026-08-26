@@ -23,6 +23,8 @@ export interface IBtnGroupProps extends ITagProps, ICommonsComponentProps, IRoun
     items?: Array<IBtnProps>
 }
 
+export interface IBtnGroupEmits {}
+
 /** Slot signatures for `<OrigamBtnGroup>`. */
 export interface IBtnGroupSlots {
     /** Overrides the whole auto-generated `<origam-btn>` list. */

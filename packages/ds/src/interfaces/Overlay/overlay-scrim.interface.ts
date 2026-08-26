@@ -20,3 +20,12 @@ export interface IOverlayScrimEmits extends IClickEmits {
     (e: 'mouseenter', event: MouseEvent): void
     (e: 'mouseleave', event: MouseEvent): void
 }
+
+/*********************************************************
+ * IOverlayScrimSlots
+ *
+ * @description
+ * `<OrigamOverlayScrim>` renders a single self-closing backdrop `<div>`
+ * (wrapped in `<OrigamTransition>`) — no `<slot>` in its template.
+ ********************************************************/
+export interface IOverlayScrimSlots {}

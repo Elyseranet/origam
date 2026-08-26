@@ -18,13 +18,15 @@
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { IListActivatorProps, IListActivatorSlots } from '../../interfaces/List/list-group.interface'
+	import type { IListActivatorEmits, IListActivatorProps, IListActivatorSlots } from '../../interfaces/List/list-group.interface'
 
 	/*********************************************************
 	 * Global
 	 ********************************************************/
 
 	const props = withDefaults(defineProps<IListActivatorProps>(), {tag: 'div'})
+
+	defineEmits<IListActivatorEmits>()
 
 	defineSlots<IListActivatorSlots>()
 

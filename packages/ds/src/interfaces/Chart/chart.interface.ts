@@ -177,19 +177,21 @@ export interface IChartEmits {
 }
 
 /**
- * Slot signatures. Replace the default tooltip card, legend
- * entry, title block, or empty state without losing the rest of
- * the chart chrome.
+ * Signature d'index volontaire. `<OrigamChart>` est un passthrough
+ * dynamique : le template forwarde tout slot nomme que le consommateur
+ * fournit (`v-for="(_, name) in $slots"`), pas seulement `tooltip` /
+ * `legend-item` / `title` / `empty`. Une interface **vide** y serait a
+ * la fois **fausse** (elle affirmerait que le composant n'accepte
+ * aucun slot) et **incompilable** — `v-for` sur `$slots` indexe avec
+ * une chaine, et TS leve `TS7053` sans signature d'index. La laxite de
+ * cette signature est inherente au passthrough, ce n'est pas un
+ * raccourci. Pour la surface reellement acceptee en aval, lire
+ * l'interface de slots du composant enfant actif (`IChartBaseSlots`
+ * dans `chart-base.interface.ts`, partagee par chaque famille
+ * cartesian / polar / radar / gauge / …).
  */
 export interface IChartSlots {
-    /** Replace the default tooltip body. */
-    tooltip?: (bindings: { point: IChartPoint, series: IChartSeries, category: string | number }) => any
-    /** Replace one legend entry. */
-    'legend-item'?: (bindings: { series: IChartSeries, index: number, visible: boolean }) => any
-    /** Replace the title block (title + subtitle). */
-    title?: () => any
-    /** Render when `series` is empty / every series is hidden. */
-    empty?: () => any
+    [name: string]: ((props: any) => any) | undefined
 }
 
 /**

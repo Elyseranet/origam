@@ -64,6 +64,24 @@ export interface IChartAxisProps {
     secondaryYAxisFormat?: (value: number) => string
 }
 
+/*********************************************************
+ * IChartAxisEmits
+ *
+ * @description
+ * Emits fired by `<OrigamChartAxis>` — none. Pure SVG renderer driven
+ * entirely by its `plot` / `ticks` props.
+ ********************************************************/
+export interface IChartAxisEmits {}
+
+/*********************************************************
+ * IChartAxisSlots
+ *
+ * @description
+ * Slot signatures for `<OrigamChartAxis>` — none. The axis chrome
+ * (grid lines, tick labels) is fully derived from props.
+ ********************************************************/
+export interface IChartAxisSlots {}
+
 /**
  * Configuration object for the secondary (right-hand) Y axis.
  * Passed as the `secondaryYAxis` prop on `<OrigamChartCartesian>`.

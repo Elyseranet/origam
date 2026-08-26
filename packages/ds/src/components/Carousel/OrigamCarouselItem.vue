@@ -48,7 +48,7 @@
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { ICarouselItemProps, ICarouselItemSlots } from '../../interfaces/Carousel/carousel-item.interface'
+	import type { ICarouselItemEmits, ICarouselItemProps, ICarouselItemSlots } from '../../interfaces/Carousel/carousel-item.interface'
 
 	import type { TOrigamImg } from '../../types/Img/img.type'
 	import type { TOrigamWindowItem } from '../../types/Window/window-item.type'
@@ -68,6 +68,8 @@
 	})
 
 	const {filterProps} = useProps<ICarouselItemProps>(props)
+
+	defineEmits<ICarouselItemEmits>()
 
 	defineSlots<ICarouselItemSlots>()
 

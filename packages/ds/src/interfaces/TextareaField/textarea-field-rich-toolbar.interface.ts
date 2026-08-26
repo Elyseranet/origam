@@ -25,6 +25,15 @@ export interface ITextareaFieldRichToolbarEmits {
     (e: 'format', command: TTextareaToolbarCommand, value?: string): void
 }
 
+/*********************************************************
+ * ITextareaFieldRichToolbarSlots
+ *
+ * @description
+ * `<OrigamTextareaFieldRichToolbar>` renders its own fixed button row
+ * (plus the link popover) — no `<slot>` in its template.
+ ********************************************************/
+export interface ITextareaFieldRichToolbarSlots {}
+
 /**
  * Public payload exposed by the `#toolbar` slot of `OrigamTextareaField`.
  * Consumers can render a fully custom toolbar while still reusing the

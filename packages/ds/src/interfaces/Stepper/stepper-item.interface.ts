@@ -24,3 +24,12 @@ export interface IStepperItemProps extends ICommonsComponentProps {
 export interface IStepperItemEmits {
     (e: 'click', index: number): void
 }
+
+/*********************************************************
+ * IStepperItemSlots
+ *
+ * @description
+ * Slot signatures for `<OrigamStepperItem>` — none. Indicator icon,
+ * title and subtitle are entirely derived from props.
+ ********************************************************/
+export interface IStepperItemSlots {}

@@ -47,6 +47,15 @@ export interface IParallaxElementMovement {
     maxY?: number,
 }
 
+/*********************************************************
+ * IParallaxElementEmits
+ *
+ * @description
+ * `<OrigamParallaxElement>` emits nothing of its own — the transform
+ * is purely reactive to the injected parent `<OrigamParallax>` state.
+ ********************************************************/
+export interface IParallaxElementEmits {}
+
 /** Slot signatures for `<OrigamParallaxElement>`. */
 export interface IParallaxElementSlots {
     default?: () => any

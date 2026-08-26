@@ -21,3 +21,12 @@ export interface IPickerTitleProps extends ICommonsComponentProps, ITagProps, IC
 export interface IPickerTitleSlots {
     default?: () => any
 }
+
+/*********************************************************
+ * IPickerTitleEmits
+ *
+ * @description
+ * `<OrigamPickerTitle>` only ever renders its slot/title text — it
+ * never calls `emit(...)` in its script.
+ ********************************************************/
+export interface IPickerTitleEmits {}

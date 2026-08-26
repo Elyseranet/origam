@@ -58,7 +58,7 @@
 	import { MASONRY_ALIGN } from '../../enums/Masonry/masonry.enum'
 
 	import type { ICommonsComponentSlots } from '../../interfaces/Commons/commons.interface'
-	import type { IMasonryProps } from '../../interfaces/Masonry/masonry.interface'
+	import type { IMasonryEmits, IMasonryProps } from '../../interfaces/Masonry/masonry.interface'
 
 	import type { TGridGapSize } from '../../types/Grid/grid.type'
 
@@ -82,6 +82,8 @@
 	})
 
 	const {filterProps} = useProps<IMasonryProps>(props)
+
+	defineEmits<IMasonryEmits>()
 
 	defineSlots<ICommonsComponentSlots>()
 

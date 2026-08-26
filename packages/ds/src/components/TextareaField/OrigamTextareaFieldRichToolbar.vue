@@ -96,7 +96,7 @@
 
 	import type { ITextareaFieldRichToolbarProps } from '../../interfaces/TextareaField/textarea-field-rich-toolbar.interface'
 
-	import type { ITextareaFieldRichToolbarEmits } from '../../interfaces/TextareaField/textarea-field-rich-toolbar.interface'
+	import type { ITextareaFieldRichToolbarEmits, ITextareaFieldRichToolbarSlots } from '../../interfaces/TextareaField/textarea-field-rich-toolbar.interface'
 
 	import type { TTextareaToolbarCommand } from '../../types/TextareaField/textarea-field-rich-toolbar.type'
 
@@ -106,6 +106,8 @@
 	})
 
 	const emit = defineEmits<ITextareaFieldRichToolbarEmits>()
+
+	defineSlots<ITextareaFieldRichToolbarSlots>()
 
 	const {t} = useLocale()
 

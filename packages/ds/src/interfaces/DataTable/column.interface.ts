@@ -20,3 +20,12 @@ export interface IDataTableColumnProps extends ICommonsComponentProps, ITagProps
 export interface IDataTableColumnCellSlots {
     default?: () => any
 }
+
+/*********************************************************
+ * IDataTableColumnCellEmits
+ *
+ * @description
+ * `<OrigamDataTableColumnCell>` renders a static `<td>`/`<th>` cell —
+ * no user interaction is wired, nothing is emitted.
+ ********************************************************/
+export interface IDataTableColumnCellEmits {}

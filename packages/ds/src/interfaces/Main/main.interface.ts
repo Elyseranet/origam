@@ -16,3 +16,12 @@ import type { IRoundedProps } from '../Commons/rounded.interface'
 export interface IMainProps extends ITagProps, ICommonsComponentProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IDimensionProps, IElevationProps, IBgColorProps, IColorProps {
     scrollable?: boolean
 }
+
+/*********************************************************
+ * IMainEmits
+ *
+ * @description
+ * `<OrigamMain>` emits nothing of its own — it's a layout landmark
+ * (scrollable region chrome) with no interactive behaviour.
+ ********************************************************/
+export interface IMainEmits {}

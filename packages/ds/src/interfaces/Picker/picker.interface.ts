@@ -14,3 +14,12 @@ export interface IPickerSlots {
     default?: () => any
     actions?: () => any
 }
+
+/*********************************************************
+ * IPickerEmits
+ *
+ * @description
+ * `<OrigamPicker>` is a pure layout shell (header / body / actions grid
+ * around `<OrigamSheet>`) — it never calls `emit(...)` in its script.
+ ********************************************************/
+export interface IPickerEmits {}

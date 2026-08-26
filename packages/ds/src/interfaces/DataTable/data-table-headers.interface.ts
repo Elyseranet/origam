@@ -43,3 +43,13 @@ export interface IDataTableHeadersSlots {
     default?: (props: IDataTableHeadersSlotProps) => any
     loader?: () => any
 }
+
+/*********************************************************
+ * IDataTableHeadersEmits
+ *
+ * @description
+ * `<OrigamDataTableHeaders>` toggles sort/select through `useSort` /
+ * `useSelection` (shared provide/inject state) — nothing is emitted
+ * upward.
+ ********************************************************/
+export interface IDataTableHeadersEmits {}

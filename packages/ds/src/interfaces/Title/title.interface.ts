@@ -21,3 +21,11 @@ export interface ITitleProps extends ITagProps, ICommonsComponentProps, IColorPr
 export interface ITitleSlots {
     default?: () => any
 }
+
+/*********************************************************
+ * ITitleEmits
+ *
+ * @description
+ * `<OrigamTitle>` renders a static heading — nothing is emitted.
+ ********************************************************/
+export interface ITitleEmits {}

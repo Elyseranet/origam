@@ -115,6 +115,8 @@ export interface INumberFormatProps extends ICommonsComponentProps, ITagProps {
     signDisplay?: TNumberFormatSignDisplay
 }
 
+export interface INumberFormatEmits {}
+
 /**
  * Bindings exposed by the scoped `#default` slot. Consumers use these
  * to highlight specific parts of the formatted output (currency symbol,

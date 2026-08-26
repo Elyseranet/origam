@@ -69,7 +69,7 @@
 
 	import type { IDatePickerControlsProps } from '../../interfaces/DatePicker/date-picker-controls.interface'
 
-	import type { IDatePickerControlsEmits } from '../../interfaces/DatePicker/date-picker-controls.interface'
+	import type { IDatePickerControlsEmits, IDatePickerControlsSlots } from '../../interfaces/DatePicker/date-picker-controls.interface'
 
 	import { computed, StyleValue } from "vue"
 
@@ -88,6 +88,8 @@
 	})
 
 	const emits = defineEmits<IDatePickerControlsEmits>()
+
+	defineSlots<IDatePickerControlsSlots>()
 
 	const {filterProps} = useProps<IDatePickerControlsProps>(props)
 

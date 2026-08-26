@@ -63,7 +63,11 @@
 
 	import { CIRCUMFERENCE, MAGIC_RADIUS } from '../../consts/Progress/progress.const'
 
-	import type { IProgressCircularProps, IProgressCircularSlots } from '../../interfaces/Progress/progress-circular.interface'
+	import type {
+		IProgressCircularEmits,
+		IProgressCircularProps,
+		IProgressCircularSlots
+	} from '../../interfaces/Progress/progress-circular.interface'
 
 	import { convertToUnit, int } from '../../utils/Commons/commons.util'
 
@@ -87,6 +91,8 @@
 		size: SIZES.DEFAULT,
 		rotate: 0
 	})
+
+	defineEmits<IProgressCircularEmits>()
 
 	defineSlots<IProgressCircularSlots>()
 

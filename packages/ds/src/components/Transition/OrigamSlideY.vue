@@ -15,7 +15,7 @@
 	import { useCssTransition } from '../../composables/Transition/cssTransition.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 
-	import type { ITransitionProps, ITransitionSlots } from '../../interfaces/Transition/transition.interface'
+	import type { ITransitionEmits, ITransitionProps, ITransitionSlots } from '../../interfaces/Transition/transition.interface'
 
 	/*********************************************************
 	 * Global
@@ -28,6 +28,8 @@
 	})
 
 	const {filterProps} = useProps<ITransitionProps>(props)
+
+	defineEmits<ITransitionEmits>()
 
 	defineSlots<ITransitionSlots>()
 

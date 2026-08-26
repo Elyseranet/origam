@@ -17,8 +17,11 @@
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { ICommonsComponentSlots } from '../../interfaces/Commons/commons.interface'
-	import type { ISpacerProps } from '../../interfaces/Grids/spacer.interface'
+	import type {
+		ISpacerEmits,
+		ISpacerProps,
+		ISpacerSlots
+	} from '../../interfaces/Grids/spacer.interface'
 
 	/*********************************************************
 	 * Global
@@ -30,7 +33,9 @@
 
 	const {filterProps} = useProps<ISpacerProps>(props)
 
-	defineSlots<ICommonsComponentSlots>()
+	defineEmits<ISpacerEmits>()
+
+	defineSlots<ISpacerSlots>()
 
 	/*********************************************************
 	 * Class & Style

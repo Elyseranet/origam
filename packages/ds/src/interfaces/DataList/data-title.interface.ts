@@ -1,4 +1,5 @@
 import type {
+    IAdjacentEmits,
     IAdjacentProps,
     IAdjacentSlots
 } from '../Commons/adjacent.interface'
@@ -20,6 +21,15 @@ export interface IDataTitleProps extends ICommonsComponentProps, IAdjacentProps,
     /** @deprecated Use the `hover` object prop instead. Kept for back-compat. */
     hoverBgColor?: TColor
 }
+
+/*********************************************************
+ * IDataTitleEmits
+ *
+ * @description
+ * Emits fired by `<OrigamDataTitle>` — the prepend/append icon or
+ * avatar zones relay `click:prepend` / `click:append` via `useAdjacent`.
+ ********************************************************/
+export interface IDataTitleEmits extends IAdjacentEmits {}
 
 /** Slot signatures for `<OrigamDataTitle>`. */
 export interface IDataTitleSlots extends IAdjacentSlots {

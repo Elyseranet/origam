@@ -21,6 +21,8 @@ export interface IKbdProps extends ICommonsComponentProps, IColorProps, IBgColor
     variant?: TKbdVariant
 }
 
+export interface IKbdEmits {}
+
 /** Slot signatures for `<OrigamKbd>`. The default slot wins over both
  *  the `combination` and `text` props. */
 export interface IKbdSlots {

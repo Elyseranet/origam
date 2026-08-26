@@ -24,7 +24,7 @@
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { SIZES_ARRAY } from '../../consts/Commons/size.const'
 
-	import type { IIconComponentProps } from '../../interfaces/Icon/icon.interface'
+	import type { IIconComponentEmits, IIconComponentProps, ILigatureIconSlots } from '../../interfaces/Icon/icon.interface'
 	import type { TSize } from '../../types/Commons/size.type'
 
 	import { convertToUnit } from '../../utils/Commons/commons.util'
@@ -38,6 +38,10 @@
 	const props = withDefaults(defineProps<IIconComponentProps>(), {tag: 'div'})
 
 	const {filterProps} = useProps<IIconComponentProps>(props)
+
+	defineEmits<IIconComponentEmits>()
+
+	defineSlots<ILigatureIconSlots>()
 
 	/*********************************************************
 	 * Class & Style

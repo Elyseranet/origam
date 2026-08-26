@@ -59,7 +59,7 @@
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useSize } from '../../composables/Commons/size.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
-	import type { ITimelineProps, ITimelineSlots } from '../../interfaces/Timeline/timeline.interface'
+	import type { ITimelineEmits, ITimelineProps, ITimelineSlots } from '../../interfaces/Timeline/timeline.interface'
 	import { TIMELINE_CONTEXT_KEY } from '../../consts/Timeline/timeline.const'
 	import { DIRECTION } from '../../enums/Commons/direction.enum'
 	import { TIMELINE_SIDE } from '../../enums/Timeline/timeline.enum'
@@ -76,6 +76,8 @@
 	})
 
 	const { filterProps } = useProps<ITimelineProps>(props)
+
+	defineEmits<ITimelineEmits>()
 
 	defineSlots<ITimelineSlots>()
 

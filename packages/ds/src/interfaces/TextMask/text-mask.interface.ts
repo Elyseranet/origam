@@ -93,3 +93,12 @@ export interface ITextMaskProps extends ICommonsComponentProps, ITagProps, ITypo
 export interface ITextMaskSlots {
     default?: () => any
 }
+
+/*********************************************************
+ * ITextMaskEmits
+ *
+ * @description
+ * `<OrigamTextMask>` only paints text via CSS `background-clip: text` —
+ * it never calls `emit(...)` in its script.
+ ********************************************************/
+export interface ITextMaskEmits {}

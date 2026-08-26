@@ -63,7 +63,7 @@
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
-	import type { IDataTableGroupHeaderRowProps, IDataTableGroupHeaderRowSlots } from '../../interfaces/DataTable/group.interface'
+	import type { IDataTableGroupHeaderRowEmits, IDataTableGroupHeaderRowProps, IDataTableGroupHeaderRowSlots } from '../../interfaces/DataTable/group.interface'
 
 	import { computed, StyleValue } from "vue"
 
@@ -72,6 +72,8 @@
 	 ********************************************************/
 
 	const props = withDefaults(defineProps<IDataTableGroupHeaderRowProps>(), {})
+
+	defineEmits<IDataTableGroupHeaderRowEmits>()
 
 	defineSlots<IDataTableGroupHeaderRowSlots>()
 

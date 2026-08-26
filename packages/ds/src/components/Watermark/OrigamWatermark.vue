@@ -35,7 +35,7 @@
 
 	import { useWatermark } from '../../composables/Watermark/watermark.composable'
 
-	import type { IWatermarkProps, IWatermarkSlots } from '../../interfaces/Watermark/watermark.interface'
+	import type { IWatermarkEmits, IWatermarkProps, IWatermarkSlots } from '../../interfaces/Watermark/watermark.interface'
 
 	/*********************************************************
 	 * Global
@@ -88,6 +88,8 @@
 		pointerEvents: props.pointerEvents,
 		zIndex: props.zIndex
 	}))
+
+	defineEmits<IWatermarkEmits>()
 
 	defineSlots<IWatermarkSlots>()
 

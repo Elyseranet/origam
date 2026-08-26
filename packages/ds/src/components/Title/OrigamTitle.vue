@@ -31,7 +31,7 @@
 
 	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import type { ITitleProps, ITitleSlots } from '../../interfaces/Title/title.interface'
+	import type { ITitleEmits, ITitleProps, ITitleSlots } from '../../interfaces/Title/title.interface'
 
 	/*********************************************************
 	 * Global
@@ -49,6 +49,8 @@
 	const props = withDefaults(defineProps<ITitleProps>(), {tag: 'h2'})
 
 	const {filterProps} = useProps<ITitleProps>(props)
+
+	defineEmits<ITitleEmits>()
 
 	defineSlots<ITitleSlots>()
 

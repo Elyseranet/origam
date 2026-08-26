@@ -14,6 +14,15 @@ export interface ICardTextSlots {
     default?: () => any
 }
 
+/*********************************************************
+ * ICardTextEmits
+ *
+ * @description
+ * `<OrigamCardText>` only renders the `text` prop / slot content — it
+ * never calls `emit(...)` in its script.
+ ********************************************************/
+export interface ICardTextEmits {}
+
 export interface ICardTextProps extends ICommonsComponentProps, ITagProps, IBorderProps, IRoundedProps, IPaddingProps, IMarginProps, IDensityProps, ITypographyProps {
     text?: string | number
 }

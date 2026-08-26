@@ -21,7 +21,7 @@
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import type { IPickerTitleProps, IPickerTitleSlots } from '../../interfaces/Picker/picker-title.interface'
+	import type { IPickerTitleEmits, IPickerTitleProps, IPickerTitleSlots } from '../../interfaces/Picker/picker-title.interface'
 
 	/*********************************************************
 	 * Global
@@ -34,6 +34,8 @@
 	})
 
 	const {filterProps} = useProps<IPickerTitleProps>(props)
+
+	defineEmits<IPickerTitleEmits>()
 
 	defineSlots<IPickerTitleSlots>()
 

@@ -32,7 +32,11 @@
 	import { useRounded } from '../../composables/Commons/rounded.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { IResponsiveProps, IResponsiveSlots } from '../../interfaces/Responsive/responsive.interface'
+	import type {
+		IResponsiveEmits,
+		IResponsiveProps,
+		IResponsiveSlots
+	} from '../../interfaces/Responsive/responsive.interface'
 
 	/*********************************************************
 	 * Global
@@ -41,6 +45,8 @@
 	 * Props and filterProps for the Responsive component.
 	 ********************************************************/
 	const props = withDefaults(defineProps<IResponsiveProps>(), {})
+
+	defineEmits<IResponsiveEmits>()
 
 	defineSlots<IResponsiveSlots>()
 

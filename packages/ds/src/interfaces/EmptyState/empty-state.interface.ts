@@ -118,3 +118,12 @@ export interface IEmptyStateSlots {
      */
     actions?: () => any
 }
+
+/*********************************************************
+ * IEmptyStateEmits
+ *
+ * @description
+ * `<OrigamEmptyState>` is a static illustration/placeholder — nothing
+ * is emitted.
+ ********************************************************/
+export interface IEmptyStateEmits {}

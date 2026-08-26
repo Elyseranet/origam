@@ -20,8 +20,11 @@
 	import { useRtl } from '../../composables/Commons/rtl.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { ICommonsComponentSlots } from '../../interfaces/Commons/commons.interface'
-	import type { IContainerProps } from '../../interfaces/Grids/container.interface'
+	import type {
+		IContainerEmits,
+		IContainerProps,
+		IContainerSlots
+	} from '../../interfaces/Grids/container.interface'
 
 	import { computed, StyleValue } from 'vue'
 
@@ -35,7 +38,9 @@
 
 	const {filterProps} = useProps<IContainerProps>(props)
 
-	defineSlots<ICommonsComponentSlots>()
+	defineEmits<IContainerEmits>()
+
+	defineSlots<IContainerSlots>()
 
 	/*********************************************************
 	 * Composables

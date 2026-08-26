@@ -76,6 +76,26 @@ export interface ISnackbarGroupProps extends ICommonsComponentProps, ITagProps {
     direction?: TSnackbarGroupDirection
 }
 
+/*********************************************************
+ * ISnackbarGroupEmits
+ *
+ * @description
+ * `<OrigamSnackbarGroup>` emits nothing of its own — dismiss/action
+ * handling mutates the shared store directly (`useSnackbarGroupInternal`),
+ * and the `onDismiss` / action `handler` callbacks come from the item
+ * descriptor passed to `notify()`, not from an emit on this instance.
+ ********************************************************/
+export interface ISnackbarGroupEmits {}
+
+/*********************************************************
+ * ISnackbarGroupSlots
+ *
+ * @description
+ * `<OrigamSnackbarGroup>` renders no `<slot>` — every visible item is
+ * a data-driven `<OrigamSnackbarItem>` built from the store's queue.
+ ********************************************************/
+export interface ISnackbarGroupSlots {}
+
 /**
  * Per-`id` singleton store backing `useSnackbarGroup`.
  *

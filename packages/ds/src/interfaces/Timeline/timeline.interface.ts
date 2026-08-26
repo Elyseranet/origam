@@ -63,3 +63,12 @@ export interface ITimelineSlots {
     /** Overrides the whole auto-generated `<OrigamTimelineItem>` list. */
     default?: () => any
 }
+
+/*********************************************************
+ * ITimelineEmits
+ *
+ * @description
+ * `<OrigamTimeline>` renders a static list of `<OrigamTimelineItem>` —
+ * nothing is emitted.
+ ********************************************************/
+export interface ITimelineEmits {}

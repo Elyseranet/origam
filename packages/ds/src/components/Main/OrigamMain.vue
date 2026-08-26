@@ -31,7 +31,7 @@
 	import { useStyle } from '../../composables/Commons/style.composable'
 
 	import type { ICommonsComponentSlots } from '../../interfaces/Commons/commons.interface'
-	import type { IMainProps } from '../../interfaces/Main/main.interface'
+	import type { IMainEmits, IMainProps } from '../../interfaces/Main/main.interface'
 
 	/*********************************************************
 	 * Global
@@ -42,6 +42,8 @@
 	const props = withDefaults(defineProps<IMainProps>(), {tag: 'main'})
 
 	const {filterProps} = useProps<IMainProps>(props)
+
+	defineEmits<IMainEmits>()
 
 	defineSlots<ICommonsComponentSlots>()
 

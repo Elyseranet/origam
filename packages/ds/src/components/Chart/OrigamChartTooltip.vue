@@ -33,7 +33,7 @@
 		type StyleValue
 	} from 'vue'
 
-	import type { IChartTooltipProps, IChartTooltipSlots } from '../../interfaces/Chart/chart-tooltip.interface'
+	import type { IChartTooltipEmits, IChartTooltipProps, IChartTooltipSlots } from '../../interfaces/Chart/chart-tooltip.interface'
 
 	/*********************************************************
 	 * Global
@@ -60,6 +60,8 @@
 		xAxisFormat: undefined,
 		yAxisFormat: undefined
 	})
+
+	defineEmits<IChartTooltipEmits>()
 
 	defineSlots<IChartTooltipSlots>()
 

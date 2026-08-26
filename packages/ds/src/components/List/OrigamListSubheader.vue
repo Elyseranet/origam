@@ -36,13 +36,15 @@
 
 	import vContrast from '../../directives/Contrast/contrast.directive'
 
-	import type { IListSubheader, IListSubheaderSlots } from '../../interfaces/List/list-subheader.interface'
+	import type { IListSubheader, IListSubheaderEmits, IListSubheaderSlots } from '../../interfaces/List/list-subheader.interface'
 
 	/*********************************************************
 	 * Global
 	 ********************************************************/
 
 	const props = withDefaults(defineProps<IListSubheader>(), {tag: 'div'})
+
+	defineEmits<IListSubheaderEmits>()
 
 	defineSlots<IListSubheaderSlots>()
 

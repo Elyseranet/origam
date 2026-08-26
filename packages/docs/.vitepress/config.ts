@@ -61,7 +61,6 @@ const COMPONENT_CATEGORIES: Record<string, string[]> = {
         'Main',
         'Masonry',
         'Responsive',
-        'Section',
         'Spacer',
         'SystemBar',
         'Toolbar',

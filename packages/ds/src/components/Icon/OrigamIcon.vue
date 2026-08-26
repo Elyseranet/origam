@@ -30,7 +30,7 @@
 	import { useSize } from '../../composables/Commons/size.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { IIconComponentProps, IIconComponentSlots } from '../../interfaces/Icon/icon.interface'
+	import type { IIconComponentEmits, IIconComponentProps, IIconComponentSlots } from '../../interfaces/Icon/icon.interface'
 
 	import { flattenFragments } from '../../utils/Commons/commons.util'
 
@@ -45,6 +45,8 @@
 	const props = withDefaults(defineProps<IIconComponentProps>(), {tag: 'i'})
 
 	const {filterProps} = useProps<IIconComponentProps>(props)
+
+	defineEmits<IIconComponentEmits>()
 
 	defineSlots<IIconComponentSlots>()
 

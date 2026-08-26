@@ -27,3 +27,12 @@ export interface ICounterProps extends ICommonsComponentProps, ITagProps, IPaddi
 export interface ICounterSlots {
     default?: (data: { counter: string, max?: string | number, value: string | number }) => any
 }
+
+/*********************************************************
+ * ICounterEmits
+ *
+ * @description
+ * Emits fired by `<OrigamCounter>` — none. Purely presentational,
+ * displays `value` / `max` without owning any interactive state.
+ ********************************************************/
+export interface ICounterEmits {}

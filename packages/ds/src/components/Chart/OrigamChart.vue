@@ -437,7 +437,8 @@
 	import type { IChartSeries } from '../../interfaces/Chart/chart-series.interface'
 
 	import type {
-		IChartEmits
+		IChartEmits,
+		IChartSlots
 	} from '../../interfaces/Chart/chart.interface'
 
 	import type { TChartCartesianKind } from '../../types/Chart/chart-cartesian.type'
@@ -501,20 +502,14 @@
 	const emit = defineEmits<IChartEmits>()
 
 	/*
-	 * No `defineSlots<IChartSlots>()` here, deliberately. Unlike every
-	 * per-type component, `<OrigamChart>` is a transparent passthrough —
-	 * the template does `v-for="(_, name) in $slots"` and forwards
-	 * WHATEVER named slots the consumer provides to whichever sub-chart
-	 * is active, not just the four documented in `IChartSlots`. Typing
-	 * `defineSlots` to that narrower shape doesn't just under-document
-	 * it, it breaks compilation (TS7053 — `$slots` string-indexing needs
-	 * an index signature that a 4-key interface doesn't have). Widening
-	 * to `Record<string, (b: any) => any>` would compile but adds zero
-	 * type safety, the exact "satisfies the guard, documents nothing"
-	 * shape this sweep is trying to avoid. `IChartSlots` stays exported
-	 * from `chart.interface.ts` as reference documentation of the
-	 * well-known slots every sub-chart accepts.
+	 * `IChartSlots` carries a deliberate index signature — see the
+	 * interface's own doc comment in `chart.interface.ts`.
+	 * `<OrigamChart>` is a transparent passthrough
+	 * (`v-for="(_, name) in $slots"`), so a narrower / empty shape
+	 * would both misdescribe the component and fail to compile
+	 * (TS7053 on the dynamic `#[name]` binding).
 	 */
+	defineSlots<IChartSlots>()
 
 	/*********************************************************
 	 * Type routing — each `CHART_TYPE` value maps to exactly

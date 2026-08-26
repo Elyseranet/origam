@@ -1,5 +1,6 @@
 import type { IAdjacentSlots } from '../Commons/adjacent.interface'
 import type { IChipProps } from '../Chip/chip.interface'
+import type { ICommonsComponentEmits } from '../Commons/commons.interface'
 import type { IFieldSlots } from '../Field/field.interface'
 import type { IMenuProps } from '../Menu/menu.interface'
 import type { ITextFieldProps } from '../TextField/text-field.interface'
@@ -16,6 +17,18 @@ export interface IDatePickerFieldProps extends ITextFieldProps, ITransitionCompo
     closeOnSelect?: boolean
     chipProps?: IChipProps
     closableChips?: boolean
+}
+
+/*********************************************************
+ * IDatePickerFieldEmits
+ *
+ * @description
+ * Emits fired by `<OrigamDatePickerField>` — both are `useVModel`
+ * relays (`modelValue` selection, `menu` open state), not literal
+ * `emit(...)` calls in the component body.
+ ********************************************************/
+export interface IDatePickerFieldEmits extends ICommonsComponentEmits {
+    (e: 'update:menu', value: boolean): void
 }
 
 /** Slot signatures for `<OrigamDatePickerField>` — the field chrome

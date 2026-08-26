@@ -21,3 +21,12 @@ export interface IBreadcrumbDividerSlots {
 export interface IBreadcrumbDividerProps extends ICommonsComponentProps, ITagProps, IPaddingProps, IMarginProps, IDensityProps, IColorProps, IBgColorProps, ISizeProps {
     divider: string | TIcon
 }
+
+/*********************************************************
+ * IBreadcrumbDividerEmits
+ *
+ * @description
+ * Emits fired by `<OrigamBreadcrumbDivider>` — none. Purely
+ * presentational, renders the `divider` prop verbatim.
+ ********************************************************/
+export interface IBreadcrumbDividerEmits {}

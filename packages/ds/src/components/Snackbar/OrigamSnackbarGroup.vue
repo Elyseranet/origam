@@ -53,7 +53,7 @@
   import { SNACKBAR_GROUP_DEFAULT_DURATION, SNACKBAR_GROUP_DEFAULT_ID, SNACKBAR_GROUP_DEFAULT_MAX, SNACKBAR_GROUP_DEFAULT_SPACING } from '../../consts/Snackbar/snackbar-group.const'
 
   import type { ISnackbarGroupItem, ISnackbarGroupItemAction } from '../../interfaces/Snackbar/snackbar-group-item.interface'
-  import type { ISnackbarGroupProps } from '../../interfaces/Snackbar/snackbar-group.interface'
+  import type { ISnackbarGroupEmits, ISnackbarGroupProps, ISnackbarGroupSlots } from '../../interfaces/Snackbar/snackbar-group.interface'
 
   import type { TIntent } from '../../types/Commons/intent.type'
   import type { TSnackbarGroupDirection } from '../../types/Snackbar/snackbar-group.type'
@@ -73,6 +73,10 @@
     defaultDuration: SNACKBAR_GROUP_DEFAULT_DURATION,
     spacing: SNACKBAR_GROUP_DEFAULT_SPACING
   })
+
+  defineEmits<ISnackbarGroupEmits>()
+
+  defineSlots<ISnackbarGroupSlots>()
 
   const { filterProps } = useProps<ISnackbarGroupProps>(props)
 

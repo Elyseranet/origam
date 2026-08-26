@@ -198,6 +198,10 @@ function scanPropReads (src, fileSrc = src) {
         // `useActive` reads its legacy `activeClass` exactly like this, which
         // was the last remaining false-positive cluster (6 components).
         for (const m of src.matchAll(new RegExp(`\\b${p}\\s+as\\s+[^)]*\\)\\s*\\??\\.\\s*([A-Za-z_$][A-Za-z0-9_$]*)`, 'g'))) direct.add(m[1])
+        // (props as any)['foo'] — le cast ET l'acces indexe, combines.
+        // La ligne au-dessus ne couvre que la forme POINTEE apres un cast ;
+        // celle-ci couvre la forme CROCHET avec cle litterale.
+        for (const m of src.matchAll(new RegExp(`\\b${p}\\s+as\\s+[^)]*\\)\\s*\\[\\s*['"]([^'"]+)['"]\\s*\\]`, 'g'))) direct.add(m[1])
         // toRef(props, 'foo') / toRefs
         for (const m of src.matchAll(new RegExp(`toRef\\s*\\(\\s*${p}\\s*,\\s*['"]([^'"]+)['"]`, 'g'))) direct.add(m[1])
         // const { a, b } = props
@@ -226,7 +230,21 @@ function scanPropReads (src, fileSrc = src) {
     // A guard's false positives block innocent PRs, so the bias here is
     // deliberately towards over-crediting: harvest every string literal that
     // appears inside an array literal in the file.
+    //
+    // ⛔ TROISIEME FORME, mesuree : `(props as any)[key]`. Le cast met une
+    // parenthese fermante entre `props` et le crochet, donc `\bprops\s*\[`
+    // ne matche pas. `useHover` est passe a cette forme (commit aa1d9f97) et
+    // le garde a rapporte 16 NOUVELLES violations `hover`/`hoverClass` —
+    // toutes fausses : une sonde runtime (6/6 verte,
+    // `TU/composables/Commons/hover.unconsumed-probe.spec.ts`) prouve que la
+    // prop est lue, forcee, reactive apres montage, et que `hoverClass`
+    // atterrit bien sur la classe rendue.
+    //
+    // Le piege est qu'une prop MORTE et un detecteur AVEUGLE produisent
+    // exactement le meme rapport. Rien dans la sortie ne les distingue —
+    // seule une mesure au runtime les separe.
     const indexed = /\bprops\s*\[\s*[A-Za-z_$]/.test(src)
+        || /\bprops\s+as\s+[^)]*\)\s*\[\s*[A-Za-z_$]/.test(src)
     if (indexed) {
         for (const [name, vals] of CONST_ARRAYS) {
             if (new RegExp(`\\b${name}\\b`).test(src)) for (const v of vals) direct.add(v)
@@ -247,6 +265,52 @@ function scanComposableCalls (src) {
     return calls
 }
 
+/*********************************************************
+ * scanPropNameArgs / propNameParamDefault — le nom de prop
+ * choisi AU SITE D'APPEL
+ *
+ * @description
+ * Plusieurs composables prennent le NOM de la prop a lire en
+ * second parametre : `useHover(props, prop = 'hover')`,
+ * `useActive(props, prop = 'active')`. Ils lisent ensuite
+ * `(props as any)[prop]` — une cle calculee, que le scan
+ * statique de `scanPropReads` ne peut pas resoudre.
+ *
+ * @description
+ * ⛔ LE DEFAUT NE SUFFIT PAS, ET LE CREDITER PARTOUT EST UNE
+ * FAUTE. `useActive` a pour defaut `'active'`, mais six
+ * composants l'appellent `useActive(props, 'modelValue')` :
+ * chez eux `active` n'est PAS lu, et leur entree de baseline
+ * est juste. Une premiere version de ce correctif moissonnait
+ * tous les defauts litteraux du fichier — elle a rendu ces six
+ * entrees « deja corrigees », c'est-a-dire qu'elle a AVEUGLE le
+ * garde sur six vrais defauts pour en debloquer treize faux.
+ *
+ * @description
+ * D'ou la resolution par site d'appel : si l'appelant passe un
+ * litteral, c'est LUI qui compte ; s'il n'en passe aucun, alors
+ * seulement le defaut du composable s'applique.
+ ********************************************************/
+function scanPropNameArgs (src) {
+    const byFn = new Map()
+    for (const p of PROP_PARAM_NAMES) {
+        for (const m of src.matchAll(new RegExp(`\\b(use[A-Z][A-Za-z0-9_]*)\\s*\\(\\s*${p}\\s*,\\s*['"]([A-Za-z_$][A-Za-z0-9_$]*)['"]`, 'g'))) {
+            if (!byFn.has(m[1])) byFn.set(m[1], new Set())
+            byFn.get(m[1]).add(m[2])
+        }
+    }
+    return byFn
+}
+
+function propNameParamDefault (src, from) {
+    const open = src.indexOf('(', from)
+    const close = src.indexOf(')', open)
+    if (open < 0 || close < 0) return null
+    const params = src.slice(open + 1, close)
+    const m = /,\s*[A-Za-z_$][A-Za-z0-9_$]*\s*=\s*['"]([A-Za-z_$][A-Za-z0-9_$]*)['"]/.exec(params)
+    return m ? m[1] : null
+}
+
 function indexComposables () {
     const files = walk(join(SRC, 'composables'), (f) => f.endsWith('.ts'))
     for (const file of files) {
@@ -255,7 +319,14 @@ function indexComposables () {
             const fn = m[1]
             const body = fnBody(src, m.index)
             const { direct, wildcard, indexed } = scanPropReads(body, src)
-            COMPOSABLES.set(fn, { file, direct, calls: scanComposableCalls(body), wildcard, indexed })
+            COMPOSABLES.set(fn, {
+                file,
+                direct,
+                calls: scanComposableCalls(body),
+                wildcard,
+                indexed,
+                propNameDefault: indexed ? propNameParamDefault(src, m.index) : null
+            })
         }
     }
 }
@@ -411,9 +482,24 @@ function analyseComponent (file) {
     const forwardedBy = new Map()
     let wildcard = false
     const wildcardReasons = []
+    // Noms de prop passes explicitement en second argument, par composable.
+    const propNameArgs = scanPropNameArgs(cleanScript)
     for (const m of cleanScript.matchAll(/\b(use[A-Z][A-Za-z0-9_]*)\s*\(\s*props\b/g)) {
         const { keys, wildcard: w } = composableKeys(m[1])
         for (const k of keys) { forwarded.add(k); if (!forwardedBy.has(k)) forwardedBy.set(k, m[1]) }
+
+        // Cle calculee : `(props as any)[prop]` dans le composable. Le nom lu
+        // vient du site d'appel s'il en fournit un, sinon du defaut declare.
+        // Crediter le defaut sans regarder l'appel serait une faute — six
+        // composants appellent `useActive(props, 'modelValue')` et ne lisent
+        // donc PAS `active`.
+        const def = COMPOSABLES.get(m[1])
+        if (def?.indexed) {
+            const explicitNames = propNameArgs.get(m[1])
+            const names = explicitNames?.size ? explicitNames : (def.propNameDefault ? [def.propNameDefault] : [])
+            for (const k of names) { forwarded.add(k); if (!forwardedBy.has(k)) forwardedBy.set(k, m[1]) }
+        }
+
         if (w) { wildcard = true; wildcardReasons.push(`${m[1]}() forwards/enumerates props`) }
     }
     // raw spreads of props

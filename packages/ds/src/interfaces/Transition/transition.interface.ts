@@ -40,3 +40,19 @@ export interface ITransitionWindowProps extends ITransitionProps {
 export interface ITransitionSlots {
     default?: () => any
 }
+
+/*********************************************************
+ * ITransitionEmits
+ *
+ * @description
+ * Emit signatures shared by every `<Origam*>` transition wrapper
+ * (Fade, SlideX/Y, ExpandX/Y, ScaleRotate, TranslateScale,
+ * WindowXTranslate, WindowYTranslate, WindowXReverseTranslate,
+ * WindowYReverseTranslate, TranslatePicker, ReverseTranslatePicker,
+ * TranslateBottom, Snack, `<OrigamTransition>` itself, …) — verified
+ * empty component by component: none of the 16 family members call
+ * `emit(...)` or relay a child event, they only wire the native Vue
+ * `<transition>` enter/leave hooks internally. Intra-family sharing,
+ * mirroring `ITransitionSlots` above.
+ ********************************************************/
+export interface ITransitionEmits {}

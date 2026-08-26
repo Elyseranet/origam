@@ -28,6 +28,16 @@ export interface IListActivatorProps extends ICommonsComponentProps, ITagProps {
 
 }
 
+/*********************************************************
+ * IListActivatorEmits
+ *
+ * @description
+ * `<OrigamListGroupActivator>` emits nothing of its own — it's a
+ * transparent chrome wrapper around the `default` slot; the actual
+ * toggle click is handled/emitted by the parent `<OrigamListGroup>`.
+ ********************************************************/
+export interface IListActivatorEmits {}
+
 /** Slot signatures for `<OrigamListGroupActivator>`. */
 export interface IListActivatorSlots {
     default?: () => any

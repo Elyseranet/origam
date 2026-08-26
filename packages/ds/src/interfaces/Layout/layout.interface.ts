@@ -24,3 +24,12 @@ export interface ILayoutProps extends ICommonsComponentProps, IDimensionProps, I
     overlaps?: Array<string>
     fullHeight?: boolean
 }
+
+/*********************************************************
+ * ILayoutEmits
+ *
+ * @description
+ * `<OrigamLayout>` registers layout items via `useCreateLayout` (a
+ * provide/inject registry) — nothing is emitted.
+ ********************************************************/
+export interface ILayoutEmits {}

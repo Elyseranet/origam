@@ -41,11 +41,49 @@ export interface IIconProps {
 export interface IIconComponentProps extends IIconProps, IColorProps, IBgColorProps, ICommonsComponentProps, ITagProps, ISizeProps, IPaddingProps, IMarginProps, IBorderProps, IDimensionProps, IRoundedProps {
 }
 
+/*********************************************************
+ * IIconComponentEmits
+ *
+ * @description
+ * Emits shared by `<OrigamIcon>` and its four leaves (ClassIcon,
+ * ComponentIcon, LigatureIcon, SvgIcon) — empty on purpose. An icon is a
+ * pure render element: none of the five components calls `emit(...)`
+ * anywhere in its script.
+ ********************************************************/
+export interface IIconComponentEmits {}
+
 /** Slot signatures shared by `<OrigamIcon>` and `<OrigamComponentIcon>` —
  *  a single unscoped `default` slot holding the icon glyph / fallback. */
 export interface IIconComponentSlots {
     default?: () => any
 }
+
+/*********************************************************
+ * IClassIconSlots
+ *
+ * @description
+ * `<OrigamClassIcon>` renders a self-closing `<component>` — no `<slot>`
+ * in its template.
+ ********************************************************/
+export interface IClassIconSlots {}
+
+/*********************************************************
+ * ILigatureIconSlots
+ *
+ * @description
+ * `<OrigamLigatureIcon>` renders `{{ icon }}` as text content — no
+ * `<slot>` in its template.
+ ********************************************************/
+export interface ILigatureIconSlots {}
+
+/*********************************************************
+ * ISvgIconSlots
+ *
+ * @description
+ * `<OrigamSvgIcon>` always renders its inline `<svg>` — no `<slot>` in
+ * its template.
+ ********************************************************/
+export interface ISvgIconSlots {}
 
 export interface IIconAliases {
     [name: string]: TIcon

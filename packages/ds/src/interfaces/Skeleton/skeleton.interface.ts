@@ -14,3 +14,13 @@ export interface ISkeletonProps extends ICommonsComponentProps, IColorProps, IBg
     loading?: boolean
     pulse?: boolean
 }
+
+/*********************************************************
+ * ISkeletonEmits
+ *
+ * @description
+ * Emits fired by `<OrigamSkeleton>` — none. `loading` drives whether
+ * the placeholder or the `#default` slot renders; no state is
+ * reported back.
+ ********************************************************/
+export interface ISkeletonEmits {}

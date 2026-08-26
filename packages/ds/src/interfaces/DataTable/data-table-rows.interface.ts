@@ -49,3 +49,14 @@ export interface IDataTableRowsSlots<T = any> {
      */
     'expanded-row'?: (props: IDataTableItemBaseSlot<T>) => any
 }
+
+/*********************************************************
+ * IDataTableRowsEmits
+ *
+ * @description
+ * `<OrigamDataTableRows>` forwards row/group interaction through
+ * `useExpanded` / `useSelection` / `useGroupBy` (shared provide/inject
+ * state) and the `:row.*` / `:group-header.*` attr-forwarded handlers —
+ * nothing is emitted upward via `defineEmits`.
+ ********************************************************/
+export interface IDataTableRowsEmits {}

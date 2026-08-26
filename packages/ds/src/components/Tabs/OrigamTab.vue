@@ -84,9 +84,11 @@
 
 	import { ORIGAM_TABS_KEY, ORIGAM_TAB_PANELS_KEY } from '../../consts/Tabs/tabs.const'
 
-	import type { ITabProps } from '../../interfaces/Tabs/tab.interface'
-
-	import type { ITabSlots } from '../../interfaces/Tabs/tab.interface'
+	import type {
+		ITabEmits,
+		ITabProps,
+		ITabSlots
+	} from '../../interfaces/Tabs/tab.interface'
 
 	/*********************************************************
 	 * Global
@@ -97,6 +99,8 @@
 		text: '',
 		variant: undefined
 	})
+
+	defineEmits<ITabEmits>()
 
 	defineSlots<ITabSlots>()
 

@@ -179,6 +179,16 @@ export interface IQrCodeSlots {
     center?: (bindings: { size: number }) => any
 }
 
+/*********************************************************
+ * IQrCodeEmits
+ *
+ * @description
+ * `<OrigamQrCode>` is a pure SVG renderer — per its own top-of-script
+ * comment it "owns NO state, NO event, NO input". It never calls
+ * `emit(...)` in its script.
+ ********************************************************/
+export interface IQrCodeEmits {}
+
 /**
  * `useQrCode`'s option bag AFTER defaulting — every field resolved to a
  * concrete value, so the SVG builders downstream never re-apply a

@@ -56,7 +56,7 @@
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { IPickerProps, IPickerSlots } from '../../interfaces/Picker/picker.interface'
+	import type { IPickerEmits, IPickerProps, IPickerSlots } from '../../interfaces/Picker/picker.interface'
 
 	import type { TOrigamSheet } from '../../types/Sheet/sheet.type'
 
@@ -70,6 +70,8 @@
 
 	const slots = useSlots()
 	const {filterProps} = useProps<IPickerProps>(props)
+
+	defineEmits<IPickerEmits>()
 
 	defineSlots<IPickerSlots>()
 

@@ -1348,7 +1348,7 @@
                 },
                 "section": {
                     "title": "OrigamSection — section schemas",
-                    "description": "OrigamSection exists today as an empty 14-line shell — this finishes it, it is not a new component. Reuses the schema pattern already proven by OrigamSkeleton: predefined section schemas such as hero, split, centered or full-bleed, as overridable prop presets on a real section element, props-first."
+                    "description": "OrigamSection was removed from the repository on 2026-08-26 — it was an empty 14-line shell with no shipped value. This milestone creates it from scratch: predefined section schemas such as hero, split, centered or full-bleed, as overridable prop presets on a real section element, props-first."
                 }
             },
             "long_term": {
