@@ -199,7 +199,7 @@ a scrollable list (`max-height` + the default `overflow: auto`).
 | `itemValue` | `TSelectItemKey` | `'value'` | Key/path/accessor read for each item's value |
 | `itemChildren` | `TSelectItemKey` | `'children'` | Key/path/accessor read for nested children |
 | `itemProps` | `TSelectItemKey` | `'props'` | Key/path/accessor read for the props forwarded to the row renderer |
-| `itemType` | `string` | `'type'` | Intended to discriminate `item` / `subheader` / `divider` (`LIST_ITEM_TYPE`) — **not currently wired through**, see known gap below |
+| `itemType` | `string` | `'type'` | Key/path/accessor read off each raw `items` entry to discriminate `item` / `subheader` / `divider` (`LIST_ITEM_TYPE`) |
 | `returnObject` | `boolean` | — | `selected` carries the raw item objects instead of their `value` |
 | `valueComparator` | `(a, b) => boolean` | `deepEqual` | Custom equality check used to match a `selected` value back to an item |
 | `selected` | `Array<unknown>` | — | v-model:selected — currently selected id(s) |
@@ -239,23 +239,23 @@ a scrollable list (`max-height` + the default `overflow: auto`).
 >   the class-generation line itself. Passing `lines` on `OrigamList` today
 >   has no visible effect; each `OrigamListItem` needs its own `lines` prop
 >   for the clamp to actually apply.
-> - `itemType` and the `type` field it's meant to read off each raw `items`
->   entry are **dropped during transform**:
->   `transformListItem` (`packages/ds/src/utils/List/list-item.util.ts`)
->   never reads `props.itemType`, and its returned object
->   (`{ title, value, props, children, raw }`) never sets a `type` field.
->   Since `OrigamListChildren.hasDivider` / `hasSubheader`
->   (`packages/ds/src/components/List/OrigamListChildren.vue`) only match on
->   `item.type === LIST_ITEM_TYPE.DIVIDER` / `.SUBHEADER`, an `items` entry
->   like `{ type: 'subheader', title: 'Fruits' }` renders as a plain
->   `OrigamListItem`, not a subheader — the discriminant is silently lost.
->   The story `OrigamList.story.vue` (`itemsWithSubheader`,
->   `itemsWithDivider`) exercises exactly this shape, which is what
->   surfaced the gap while cross-checking the code — it likely doesn't
->   render as intended today. Groups still work because `hasChildren`
->   checks for a `children` array, independent of `type`.
->
 > Flagging all of the above rather than guessing at intended behaviour.
+
+**Fixed (#424)** — `itemType` / structural `items` entries used to be dropped
+during transform: `transformListItem`
+(`packages/ds/src/utils/List/list-item.util.ts`) never read `props.itemType`
+and never set a `type` field on its returned object, so `OrigamListChildren`'s
+`hasDivider` / `hasSubheader` (which only match on `item.type ===
+LIST_ITEM_TYPE.DIVIDER` / `.SUBHEADER`) always fell through to the default
+`OrigamListItem` branch — a `{ type: 'divider' }` entry has no `title` key,
+so the un-stringified raw item leaked into the row's `title` prop and Vue
+rendered it as a literal JSON dump. Both are fixed: `type` is read and
+forwarded, and the row's resolved `title` is always coerced to a string
+before being handed to a component prop. `{ type: 'subheader', title: '…' }`
+/ `{ type: 'divider' }` entries in a plain `items` array now render as a real
+`OrigamListSubheader` / `<origam-divider role="separator">`, exactly like the
+`OrigamList.story.vue` fixtures (`itemsWithSubheader`, `itemsWithDivider`)
+intend.
 
 ## Emits
 
@@ -311,6 +311,17 @@ directly in your templates:
 
 - Root renders `role="listbox"` with a roving `tabindex` (`0` when
   focusable, `-1` when `disabled` or already focused inside).
+- Every real, selectable `OrigamListItem` row nested inside a list gets
+  `role="option"` + `aria-selected` (+ `aria-disabled` when `disabled`) —
+  **fixed in #424**, previously a `listbox` with zero `option` descendants.
+  `OrigamListSubheader` (a label, not a selectable element) and the divider
+  (`role="separator"`, via `OrigamDivider`) intentionally do **not** get
+  `role="option"`. Neither does a group's activator row — it only toggles
+  expand/collapse and never fires a selection, so claiming `role="option"`
+  on it would repeat the same "half-implemented ARIA" bug one level down.
+  A bare `OrigamListItem` rendered outside any list (`list` context absent)
+  gets no role at all — no ARIA is better than a role whose promised
+  listbox container doesn't exist.
 - Each nested collapsible group (`OrigamListGroup`) renders its items region
   as `role="group"` with `aria-labelledby` pointing at its activator.
 - Arrow key / Home / End navigation moves focus between rows without

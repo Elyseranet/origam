@@ -143,6 +143,21 @@ controls both children simultaneously.
 | `append`   | slot props                         | Trailing avatar / icon override     |
 | `wrapper`  | —                                  | Full content wrapper override       |
 
+## Accessibility
+
+- **`role="option"` (#424)** — set only when the item is nested inside a
+  list (an `OrigamList` / `OrigamListChildren` ancestor is present) AND is
+  not itself a group activator row. A bare `OrigamListItem` used outside
+  any list context gets no role: no ARIA is better than a role whose
+  promised `listbox` container doesn't exist.
+- `aria-selected` mirrors `isSelected` whenever `role="option"` is set —
+  required state for the `option` role in a listbox/combobox.
+- `aria-disabled` mirrors the `disabled` prop whenever `role="option"` is
+  set.
+- A group activator row (rendered inside `OrigamListGroupActivator`) never
+  gets `role="option"` — clicking it only toggles expand/collapse, it never
+  fires a selection (see `OrigamListGroup`'s `role="group"` region).
+
 ## Tokens
 
 | Variable                                          | Default          | Used for                              |
