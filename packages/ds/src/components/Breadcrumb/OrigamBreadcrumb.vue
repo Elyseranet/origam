@@ -122,6 +122,8 @@
 			bgColor: wasPropPassed('bgColor') ? props.bgColor : undefined,
 			hover: wasPropPassed('hover') ? props.hover : undefined,
 			active: wasPropPassed('active') ? props.active : undefined,
+			hoverClass: wasPropPassed('hoverClass') ? props.hoverClass : undefined,
+			activeClass: wasPropPassed('activeClass') ? props.activeClass : undefined,
 			disabled: wasPropPassed('disabled') ? props.disabled : undefined
 		})
 	}))

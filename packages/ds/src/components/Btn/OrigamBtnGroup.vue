@@ -110,7 +110,9 @@
 			// override to each child OrigamBtn — only when the consumer
 			// actually set it.
 			hover: wasPropPassed('hover') ? props.hover : undefined,
-			active: wasPropPassed('active') ? props.active : undefined
+			active: wasPropPassed('active') ? props.active : undefined,
+			hoverClass: wasPropPassed('hoverClass') ? props.hoverClass : undefined,
+			activeClass: wasPropPassed('activeClass') ? props.activeClass : undefined
 		})
 	}))
 

@@ -184,6 +184,7 @@
 	const {sizeClasses} = useSize(props)
 
 	const {isOn: isHover, config: hoverState} = useStateFlag(props, {state: 'hover'})
+	const {isOn: isActiveFlag} = useStateFlag(props, {state: 'active'})
 	const {
 		borderClasses, borderStyles,
 		roundedClasses, roundedStyles,
@@ -217,7 +218,7 @@
 	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
 
 	const isActive = computed(() => {
-		return props.active || link.isActive?.value || isSelected.value
+		return isActiveFlag.value || link.isActive?.value || isSelected.value
 	})
 	const isLink = computed(() => {
 		return props.link && link.isLink.value

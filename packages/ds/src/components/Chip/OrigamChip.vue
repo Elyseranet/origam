@@ -146,7 +146,6 @@
 	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { useTypography } from '../../composables/Commons/typography.composable'
-	import { useVModel } from '../../composables/Commons/vModel.composable'
 
 	import { ORIGAM_CHIP_GROUP_KEY } from '../../consts/Chip/chip-group.const'
 
@@ -224,7 +223,7 @@
 	 * Value
 	 ********************************************************/
 
-	const isActive = useVModel(props, 'modelValue')
+	const { unset: closeChip } = useStateFlag(props, {state: 'active', source: 'modelValue'})
 	const group = useGroupItem(props, ORIGAM_CHIP_GROUP_KEY, false)
 	const link = useLink(props, attrs)
 
@@ -287,7 +286,7 @@
 		e.preventDefault()
 		e.stopPropagation()
 
-		isActive.value = false
+		closeChip()
 
 		emits('click:close', e)
 	}

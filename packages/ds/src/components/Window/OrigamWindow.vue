@@ -34,6 +34,7 @@
 								:bg-color="bgColor"
 								:hover="hover"
 								:active="active"
+								:hover-class="hoverClass"
 						/>
 					</slot>
 
@@ -49,6 +50,7 @@
 								:bg-color="bgColor"
 								:hover="hover"
 								:active="active"
+								:hover-class="hoverClass"
 						/>
 					</slot>
 				</slot>
