@@ -22,18 +22,19 @@
 		lang="ts"
 		setup
 >
-	import { computed, ref, StyleValue } from 'vue'
+	import { computed, provide, ref, StyleValue } from 'vue'
 
 	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
 
 	import { useDensity } from '../../composables/Commons/density.composable'
 	import { useGroup } from '../../composables/Commons/group.composable'
+	import { useGroupSiblingLink } from '../../composables/Commons/groupSiblingLink.composable'
 	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useRounded } from '../../composables/Commons/rounded.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import { ORIGAM_TABS_KEY } from '../../consts/Tabs/tabs.const'
+	import { ORIGAM_TABS_KEY, ORIGAM_TAB_PANELS_KEY, ORIGAM_TAB_PANELS_LINK_KEY } from '../../consts/Tabs/tabs.const'
 
 	import { omitUndefined } from '../../utils/Commons/commons.util'
 
@@ -74,6 +75,20 @@
 	 * the same injection key.
 	 ********************************************************/
 	const {isSelected, select, next, prev, selected, items} = useGroup(props, ORIGAM_TABS_KEY)
+
+	/*********************************************************
+	 * Sibling panels link (#441)
+	 *
+	 * @description
+	 * `<OrigamTabPanels>` is documented as a SIBLING, never an
+	 * ancestor — `<OrigamTab>` cannot `inject(ORIGAM_TAB_PANELS_KEY)`
+	 * directly. Resolve the sibling's group once (walking the shared
+	 * parent's render tree, see `useGroupSiblingLink`) and re-provide
+	 * it down OUR OWN (real) ancestor chain so `<OrigamTab>` can read
+	 * it via a plain `inject()`.
+	 ********************************************************/
+	const panelsGroupLink = useGroupSiblingLink(ORIGAM_TABS_KEY, ORIGAM_TAB_PANELS_KEY)
+	provide(ORIGAM_TAB_PANELS_LINK_KEY, panelsGroupLink)
 
 	const rootRef = ref<HTMLElement>()
 

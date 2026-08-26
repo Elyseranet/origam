@@ -32,9 +32,16 @@ import { expect, test } from '@playwright/test'
  *
  *   - Swipe (vTouch) : deviceorientation + touch events non supportés Desktop Chromium.
  *   - Transitions CSS fade : délai asynchrone — on attend l'état final, pas la transition elle-même.
- *   - aria-controls ↔ panelId : DS BUG connu — OrigamTab injecte ORIGAM_TAB_PANELS_KEY mais
- *     OrigamTabPanels est un sibling (non ancêtre) donc inject() retourne null. Le panelId
- *     computed est toujours undefined. Marqué test.fixme ci-dessous.
+ *
+ * ## #441 — aria-controls / aria-labelledby (FIXÉ)
+ *
+ *   OrigamTabPanels est un SIBLING de OrigamTabs (jamais son ancêtre) dans
+ *   l'usage documenté — un inject() direct entre les deux ne pouvait donc
+ *   jamais aboutir. `useGroupSiblingLink` (packages/ds/src/composables/
+ *   Commons/groupSiblingLink.composable.ts) résout désormais le sibling en
+ *   parcourant l'arbre de rendu du parent commun, et re-`provide()` le
+ *   résultat vers le VRAI ancêtre de chaque enfant. Voir le test
+ *   'aria-controls points at the matching panel id' ci-dessous.
  */
 
 const STORY_ID   = 'components-stories-tabs-origamtabs-story-vue'
@@ -537,21 +544,10 @@ test.describe('OrigamTabs', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // DS BUG — aria-controls (documented, marked fixme)                  //
-    // OrigamTab injects ORIGAM_TAB_PANELS_KEY but OrigamTabPanels is a   //
-    // sibling (not an ancestor) so inject() returns null. panelId is     //
-    // therefore always undefined. Fix requires a shared wrapper.          //
+    // #441 — aria-controls / aria-labelledby sibling ARIA link (FIXÉ)     //
     // ------------------------------------------------------------------ //
 
     test('aria-controls points at the matching panel id', async ({ page }) => {
-        test.fail(
-            true,
-            'DS BUG: aria-controls is always undefined — OrigamTab injects ORIGAM_TAB_PANELS_KEY ' +
-            'but OrigamTabPanels is a sibling (not an ancestor) so inject() returns null. ' +
-            'panelId computed is therefore always undefined. Fix requires a shared wrapper ' +
-            'providing both ORIGAM_TABS_KEY and ORIGAM_TAB_PANELS_KEY to a common ancestor, ' +
-            'or a different cross-sibling communication mechanism.'
-        )
         await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const tab1 = sandbox.locator('.origam-tab').nth(1)
@@ -562,5 +558,22 @@ test.describe('OrigamTabs', () => {
         expect(controls).toMatch(/^origam-tab-panel-/)
 
         await expect(sandbox.locator(`#${controls}`)).toHaveAttribute('role', 'tabpanel')
+    })
+
+    // Symmetric half of #441 — aria-labelledby was diagnosed alongside
+    // aria-controls but had NO test coverage at all before this ticket.
+    test('aria-labelledby points at the matching tab id', async ({ page }) => {
+        await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const tab1 = sandbox.locator('.origam-tab').nth(1)
+        await expect(tab1).toBeVisible({ timeout: 12000 })
+
+        const panel1 = sandbox.locator('.origam-tab-panel').nth(1)
+        const labelledBy = await panel1.getAttribute('aria-labelledby')
+        expect(labelledBy).toBeTruthy()
+        expect(labelledBy).toMatch(/^origam-tab-/)
+
+        const tab1Id = await tab1.getAttribute('id')
+        expect(labelledBy).toBe(tab1Id)
     })
 })
