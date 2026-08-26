@@ -38,12 +38,13 @@ buffer edge.
         :model-value="35"
         :buffer-value="60"
         stream
-        active
     />
 </template>
 ```
 
-Note: the `stream` indicator only animates when `active` is true.
+Note: the `stream` indicator (and the indeterminate bar) only animates
+while `active` is true — `active` defaults to `true`, so this runs out of
+the box. Pass `:active="false"` to pause it (e.g. an off-screen bar).
 
 ## Thickness
 

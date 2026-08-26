@@ -57,7 +57,8 @@
 		max: 100,
 		thickness: 4,
 		size: SIZES.DEFAULT,
-		label: 'origam.loading'
+		label: 'origam.loading',
+		active: true
 	})
 
 	const {filterProps} = useProps<IProgressProps>(props)

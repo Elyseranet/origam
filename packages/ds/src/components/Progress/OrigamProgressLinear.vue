@@ -86,7 +86,8 @@
 		tag: 'div',
 		modelValue: 0,
 		max: 100,
-		thickness: 4
+		thickness: 4,
+		active: true
 	})
 
 	defineEmits<IProgressLinearEmits>()
