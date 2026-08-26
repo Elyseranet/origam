@@ -99,6 +99,45 @@ describe('transformListItem', () => {
     })
 })
 
+describe('transformListItem — structural entries (type)', () => {
+    const propsWithType = { ...baseProps, itemType: 'type' as any }
+
+    it('reads props.itemType off the raw item and sets it on the result (#424)', () => {
+        const item = { type: 'divider' }
+        const result = transformListItem(propsWithType, item)
+        expect(result.type).toBe('divider')
+    })
+
+    it('propagates the subheader type alongside its title (#424)', () => {
+        const item = { type: 'subheader', title: 'Section A' }
+        const result = transformListItem(propsWithType, item)
+        expect(result.type).toBe('subheader')
+        expect(result.title).toBe('Section A')
+    })
+
+    it('leaves type undefined when itemType is not configured', () => {
+        const item = { title: 'Plain item' }
+        const result = transformListItem(baseProps, item)
+        expect(result.type).toBeUndefined()
+    })
+
+    it('coerces the raw-item title fallback to a string instead of leaking the object into props (#424)', () => {
+        // A divider has no resolvable `title` key, so `title` falls back to the
+        // raw item (the intentional Vuetify-like behaviour for primitives, see
+        // the note above `transformListItem`). Before the fix, that raw object
+        // reached `_props.title` un-stringified — Vue's `toDisplayString` then
+        // rendered it as a literal JSON dump (`{ "type": "divider" }`) wherever
+        // a consumer interpolated `{{ title }}`. Both `title` and `props.title`
+        // must now be a plain, non-JSON string, in sync with each other.
+        const item = { type: 'divider' }
+        const result = transformListItem(propsWithType, item)
+        expect(typeof result.title).toBe('string')
+        expect(result.title).not.toContain('"type"')
+        expect(typeof result.props!.title).toBe('string')
+        expect(result.props!.title).toBe(result.title)
+    })
+})
+
 describe('transformListItems', () => {
     it('transforms each item in the array', () => {
         const items = [

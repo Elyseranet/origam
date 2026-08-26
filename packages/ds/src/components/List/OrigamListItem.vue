@@ -3,8 +3,11 @@
 			:is="link.tag.value"
 			:id="props.id"
 			v-ripple="isClickable && ripple"
+			:aria-disabled="itemRole === 'option' ? props.disabled : undefined"
+			:aria-selected="itemRole === 'option' ? isSelected : undefined"
 			:class="listItemClasses"
 			:href="link.href.value"
+			:role="itemRole"
 			:style="listItemStyles"
 			:tabindex="listItemTabIndex"
 			@click="handleClick"
@@ -219,6 +222,25 @@
 
 	const isActive = computed(() => {
 		return isActiveFlag.value || link.isActive?.value || isSelected.value
+	})
+	/*********************************************************
+	 * itemRole (#424)
+	 *
+	 * @description
+	 * `<OrigamList>` hard-codes `role="listbox"` on its root — a listbox
+	 * with no `role="option"` descendant is ARIA posé à moitié. Only a row
+	 * genuinely nested inside a list (`list` truthy, i.e. an
+	 * `<OrigamListChildren>`/`<OrigamList>` ancestor provided
+	 * `ORIGAM_LIST_KEY`) AND acting as a real selectable row — not a group
+	 * activator, which only toggles expand/collapse and never fires
+	 * `select()` (see `click` below) — gets `role="option"`.
+	 * @description
+	 * A bare `<OrigamListItem>` used outside any list keeps no role at
+	 * all: no ARIA is better than a role whose promised container doesn't
+	 * exist.
+	 ********************************************************/
+	const itemRole = computed(() => {
+		return list && !isGroupActivator ? 'option' : undefined
 	})
 	const isLink = computed(() => {
 		return props.link && link.isLink.value
