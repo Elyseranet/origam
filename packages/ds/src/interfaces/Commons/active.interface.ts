@@ -1,4 +1,4 @@
-import type { IActiveState } from './state-effect.interface'
+import type { TStateProps } from '../../types/Commons/state-flag.type'
 
 /**
  * The `active` prop accepts three shapes — same grammar as `hover`:
@@ -15,11 +15,12 @@ import type { IActiveState } from './state-effect.interface'
  *     object's keys (`color`, `bgColor`, `border`, `rounded`, `elevation`,
  *     `padding`, `margin`, `gap`) override the resting props ONLY while
  *     the state is engaged.
+ *
+ * `IActiveProps` is `TStateProps<'active'>` — the single source of truth it
+ * shares with `IHoverProps` (`TStateProps<'hover'>`), consumed by the
+ * unified `useStateFlag({ state: 'active' })`.
  */
-export interface IActiveProps {
-    active?: boolean | IActiveState
-    activeClass?: string
-}
+export type IActiveProps = TStateProps<'active'>
 
 /** Emit signature for components that propagate their active state. */
 export interface IActiveEmits {

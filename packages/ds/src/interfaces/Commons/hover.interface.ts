@@ -1,6 +1,6 @@
 import type { DirectiveBinding } from 'vue'
 
-import type { IHoverState } from './state-effect.interface'
+import type { TStateProps } from '../../types/Commons/state-flag.type'
 
 /**
  * The `hover` prop accepts three shapes:
@@ -19,11 +19,12 @@ import type { IHoverState } from './state-effect.interface'
  *     `border`, `rounded`, `elevation`, `padding`, `margin`, `gap`) override
  *     the resting props ONLY while the state is engaged. See
  *     `IStateEffectConfig` for the full key set.
+ *
+ * `IHoverProps` is `TStateProps<'hover'>` — the single source of truth it
+ * shares with `IActiveProps` (`TStateProps<'active'>`), consumed by the
+ * unified `useStateFlag({ state: 'hover' })`.
  */
-export interface IHoverProps {
-    hover?: boolean | IHoverState
-    hoverClass?: string
-}
+export type IHoverProps = TStateProps<'hover'>
 
 /**
  * Object config accepted by the `v-hover` directive.
