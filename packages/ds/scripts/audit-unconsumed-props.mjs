@@ -235,10 +235,15 @@ function scanPropReads (src, fileSrc = src) {
     // parenthese fermante entre `props` et le crochet, donc `\bprops\s*\[`
     // ne matche pas. `useHover` est passe a cette forme (commit aa1d9f97) et
     // le garde a rapporte 16 NOUVELLES violations `hover`/`hoverClass` —
-    // toutes fausses : une sonde runtime (6/6 verte,
-    // `TU/composables/Commons/hover.unconsumed-probe.spec.ts`) prouve que la
-    // prop est lue, forcee, reactive apres montage, et que `hoverClass`
-    // atterrit bien sur la classe rendue.
+    // toutes fausses : une sonde runtime (6/6 verte, feu
+    // `TU/composables/Commons/hover.unconsumed-probe.spec.ts`) a prouve que la
+    // prop etait lue, forcee, reactive apres montage, et que `hoverClass`
+    // atterrissait bien sur la classe rendue. `useHover`/`useActive` ont
+    // depuis fusionne dans `useStateFlag` (meme forme `(props as
+    // Record<string, unknown>)[source]`) ; la sonde a ete supprimee car sa
+    // question etroite est desormais couverte par
+    // `hover.composable.spec.ts`/`active.composable.spec.ts`, mais la forme
+    // qu'elle a fait decouvrir reste ce que ce bloc detecte.
     //
     // Le piege est qu'une prop MORTE et un detecteur AVEUGLE produisent
     // exactement le meme rapport. Rien dans la sortie ne les distingue —
