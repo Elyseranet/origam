@@ -225,4 +225,68 @@ test.describe('OrigamSheet — bottom swipeable', () => {
             expect(box.height).toBeGreaterThanOrEqual(0)
         }
     })
+
+    // ────────────────────────────────────────────────────────────────────
+    // #461 — the drag handle is a NATIVE <button>, and native keyboard
+    // activation actually reaches the handler.
+    //
+    // This lives here rather than in a unit spec on purpose: jsdom does
+    // NOT implement the UA behaviour that turns Enter/Space on a <button>
+    // into a click event, so the whole point of the conversion is
+    // unprovable at the unit layer. Only a real browser can show it.
+    // ────────────────────────────────────────────────────────────────────
+    test('#461 — handle is a native button reachable by keyboard', async ({ page }) => {
+        await driveBottomSwipeablePeek(page)
+        const sb = sandbox(page)
+
+        const handle = sb.locator('[data-cy="sheet-bottom-handle"]')
+        await expect(handle).toBeVisible({ timeout: 5000 })
+
+        // Native element, not a div wearing a role.
+        expect(await handle.evaluate((el: HTMLElement) => el.tagName)).toBe('BUTTON')
+        expect(await handle.getAttribute('role')).toBeNull()
+        expect(await handle.getAttribute('tabindex')).toBeNull()
+
+        // Focusable with no tabindex of its own — that is the free part.
+        await handle.focus()
+        const focused = await handle.evaluate((el: HTMLElement) => el === document.activeElement)
+        expect(focused).toBe(true)
+    })
+
+    test('#461 — Enter on the handle toggles the sheet EXACTLY once', async ({ page }) => {
+        await driveBottomSwipeablePeek(page)
+        const sb = sandbox(page)
+
+        const sheet = sb.locator('.origam-sheet').first()
+        const handle = sb.locator('[data-cy="sheet-bottom-handle"]')
+        await expect(handle).toBeVisible({ timeout: 5000 })
+
+        const before = await sheet.getAttribute('class')
+
+        await handle.focus()
+        await page.keyboard.press('Enter')
+        await page.waitForTimeout(300)
+
+        const after = await sheet.getAttribute('class')
+
+        // `onActive` is useStateFlag's TOGGLE and the handle has no @click
+        // of its own — the native click bubbles to the root's @click.
+        //
+        // A class CHANGE proves the activation landed exactly once; an
+        // unchanged class means it fired twice and cancelled itself out.
+        //
+        // What this actually catches, measured in this browser rather than
+        // reasoned about:
+        //   • handlers carried over WITH `.prevent`  → still passes.
+        //     `.prevent` suppresses the UA's click synthesis, so only the
+        //     handler runs and the toggle stays single.
+        //   • handlers carried over WITHOUT `.prevent` → FAILS.
+        //     Enter fires the handler AND the synthesised click: two
+        //     toggles, `class` byte-identical, keyboard silently dead.
+        //
+        // The second case is one modifier away from the first, and
+        // dropping `.prevent` looks like a harmless tidy-up on a <button>.
+        // That is the regression this test exists for.
+        expect(after).not.toBe(before)
+    })
 })

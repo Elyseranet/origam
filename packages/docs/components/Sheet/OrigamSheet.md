@@ -161,6 +161,17 @@ The full list lives in
   represents a discrete region.
 - The component does not trap focus. If you build a dialog on top of
   `<OrigamSheet>`, layer a focus-trap composable on top.
+- **The drag handle is a real `<button type="button">`**, not a `<div>`
+  carrying `role="button"`. It is therefore focusable, activable with
+  both <kbd>Enter</kbd> and <kbd>Space</kbd>, and exposed as a button to
+  assistive technology — all from the element itself, with no `tabindex`
+  and no keyboard handlers to keep in sync with UA behaviour.
+- The handle's accessible name comes from the `origam.sheet.handle.aria_label`
+  locale key (`"Drag handle"` in English, `"Poignée de déplacement"` in
+  French), so it follows the active locale. Override it centrally by
+  redefining that key in your own messages.
+- The handle only renders when the sheet is both `swipeable` and
+  `side="bottom"`; there is nothing to focus otherwise.
 
 ## Theming notes
 
