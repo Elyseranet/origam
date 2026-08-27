@@ -113,11 +113,33 @@ which is also what keeps a single control from showing two different disabled
 treatments. For a one-off greyed icon, drive `color`.
 :::
 
+::: tip Accessibility — same "direct usage" gap, now closed
+`aria-hidden` / `role="button"` used to reach this leaf only via
+`OrigamIcon`'s fallthrough. Written directly
+(`<origam-class-icon icon="mdi-home">`), a decorative glyph was fully
+exposed to the accessibility tree. The leaf now resolves its own
+`aria-hidden` (`true` unless a click handler is attached, in which case
+`role="button"` too) — see [Accessibility](#accessibility) below.
+:::
+
 ## Anatomy
 
 ```html
-<i class="origam-icon origam-icon--size-default mdi mdi-home"></i>
+<i
+    class="origam-icon origam-icon--size-default mdi mdi-home"
+    aria-hidden="true"
+></i>
 ```
+
+## Accessibility
+
+- `aria-hidden="true"` by default — the glyph is decorative and stays out
+  of the accessibility tree, whether reached through `OrigamIcon` or used
+  directly.
+- A click handler flips it to `aria-hidden="false"` + `role="button"`.
+  Pass `aria-label` or `aria-labelledby` on the same element — a
+  dev-time console warning fires otherwise (`role="button"` with no name
+  is worse than no role at all).
 
 ## When to use
 

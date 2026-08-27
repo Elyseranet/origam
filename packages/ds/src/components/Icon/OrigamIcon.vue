@@ -2,10 +2,10 @@
 	<component
 			:is="iconData.component"
 			:id="id"
-			:aria-hidden="!attrs.onClick"
+			:aria-hidden="ariaHidden"
 			:class="iconClasses"
 			:icon="iconData.icon"
-			:role="attrs.onClick ? 'button' : undefined"
+			:role="role"
 			:size="size"
 			:style="iconStyles"
 			:tag="tag"
@@ -18,11 +18,12 @@
 		lang="ts"
 		setup
 >
-	import { computed, ref, StyleValue, toRef, useAttrs, useSlots } from 'vue'
+	import { computed, ref, StyleValue, toRef, useSlots } from 'vue'
 	import { useBorder } from '../../composables/Commons/border.composable'
 	import { useBothColor } from '../../composables/Commons/bothColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useIcon } from '../../composables/Icon/icon.composable'
+	import { useIconAccessibility } from '../../composables/Icon/iconAccessibility.composable'
 	import { useMargin } from '../../composables/Commons/margin.composable'
 	import { usePadding } from '../../composables/Commons/padding.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
@@ -40,8 +41,6 @@
 	 * @description
 	 * Props, composables, and slot icon resolution.
 	 ********************************************************/
-	const attrs = useAttrs()
-
 	const props = withDefaults(defineProps<IIconComponentProps>(), {tag: 'i'})
 
 	const {filterProps} = useProps<IIconComponentProps>(props)
@@ -70,6 +69,7 @@
 	const {sizeClasses, sizeStyles} = useSize(props)
 	const slots = useSlots()
 	const {iconData} = useIcon(computed(() => slotIcon.value || props.icon))
+	const {isClickable, ariaHidden, role} = useIconAccessibility()
 
 	const slotIcon = ref<string>()
 
@@ -101,7 +101,7 @@
 		return [
 			'origam-icon',
 			{
-				'origam-icon--clickable': !!attrs.onClick
+				'origam-icon--clickable': isClickable.value
 			},
 			colorClasses.value,
 			sizeClasses.value,
