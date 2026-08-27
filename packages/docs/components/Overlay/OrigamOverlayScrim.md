@@ -51,6 +51,15 @@ Replace the default fade with any registered origam transition.
 </template>
 ```
 
+Set `disabled` to skip the enter/leave animation entirely (an instant
+show/hide instead of a fade):
+
+```vue
+<template>
+    <OrigamOverlayScrim :active="open" disabled/>
+</template>
+```
+
 ## Slots
 
 The scrim has no slot — it is a backdrop, never a container. Layer
@@ -82,6 +91,9 @@ interface IScrimProps {
 ```html
 <div class="origam-scrim"></div>
 ```
+
+The root element is a `<div>` by default; pass `tag` to render a
+different element (`IOverlayScrimProps extends ITagProps`).
 
 The element is `position: fixed; inset: 0` by default and consumes
 pointer events so clicks on the surrounding page do not leak through.
