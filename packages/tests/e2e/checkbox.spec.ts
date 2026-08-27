@@ -23,8 +23,8 @@ import { expect, test } from '@playwright/test'
  *   .origam-checkbox (.origam-input)
  *     └─ .origam-input__control
  *         └─ .origam-checkbox-btn (.origam-selection-control)
- *             └─ .origam-selection-control__wrapper  (.origam--color-primary for color=primary)
- *                 └─ .origam-selection-control__input
+ *             └─ .origam-selection-control__wrapper
+ *                 └─ .origam-selection-control__input  (.origam--color-primary for color=primary)
  *                     └─ input[type=checkbox]        ← toggle target
  *             └─ .origam-selection-control__label
  *                 └─ .origam-label
@@ -68,12 +68,12 @@ test.describe('OrigamCheckbox', () => {
             await expect(root).toHaveClass(/origam-input--density-default/)
         })
 
-        test('color=primary applies origam--color-primary on the wrapper', async ({ page }) => {
+        test('color=primary applies origam--color-primary on the control input', async ({ page }) => {
             await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
-            const wrapper = sandbox.locator('.origam-selection-control__wrapper').first()
-            await expect(wrapper).toHaveClass(/origam--color-primary/)
+            const input = sandbox.locator('.origam-selection-control__input').first()
+            await expect(input).toHaveClass(/origam--color-primary/)
         })
 
         test('label prop renders the label text "Checkbox"', async ({ page }) => {
@@ -114,12 +114,12 @@ test.describe('OrigamCheckbox', () => {
     // ------------------------------------------------------------------ //
 
     test.describe('State', () => {
-        test('renders the checkbox with color=primary wrapper class', async ({ page }) => {
+        test('renders the checkbox with color=primary on the control input', async ({ page }) => {
             await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
-            const wrapper = sandbox.locator('.origam-selection-control__wrapper').first()
-            await expect(wrapper).toHaveClass(/origam--color-primary/)
+            const input = sandbox.locator('.origam-selection-control__input').first()
+            await expect(input).toHaveClass(/origam--color-primary/)
         })
 
         test('resting state: input is not checked', async ({ page }) => {
@@ -371,8 +371,8 @@ test.describe('OrigamCheckbox', () => {
             await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-checkbox').first()).toBeVisible({ timeout: 12000 })
-            const wrapper = sandbox.locator('.origam-selection-control__wrapper').first()
-            await expect(wrapper).toHaveClass(/origam--color-primary/)
+            const input = sandbox.locator('.origam-selection-control__input').first()
+            await expect(input).toHaveClass(/origam--color-primary/)
         })
 
         test('renders label "Accept terms"', async ({ page }) => {
