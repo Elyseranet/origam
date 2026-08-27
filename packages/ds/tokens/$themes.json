@@ -108,7 +108,10 @@
       "component/video": "enabled",
       "component/audio": "enabled",
       "component/media-scrubber": "enabled",
-      "component/media-controller": "enabled"
+      "component/media-controller": "enabled",
+      "component/clipboard": "enabled",
+      "component/masonry": "enabled",
+      "component/text-mask": "enabled"
     }
   },
   {
@@ -220,7 +223,10 @@
       "component/video": "enabled",
       "component/audio": "enabled",
       "component/media-scrubber": "enabled",
-      "component/media-controller": "enabled"
+      "component/media-controller": "enabled",
+      "component/clipboard": "enabled",
+      "component/masonry": "enabled",
+      "component/text-mask": "enabled"
     }
   }
 ]

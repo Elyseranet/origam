@@ -2768,4 +2768,21 @@
   --origam-media-scrubber__tooltip---color: var(--origam-color__neutral---0);
   --origam-media-controller---color: var(--origam-color__text---primary);
   --origam-media-controller__scrubber---color: var(--origam-color__action--primary---bg);
+  --origam-clipboard__feedback---color: var(--origam-color__feedback--success---fgSubtle);
+  --origam-clipboard__feedback---bg-color: var(--origam-color__feedback--success---bgSubtle);
+  --origam-clipboard__feedback---padding-block: var(--origam-space---1);
+  --origam-clipboard__feedback---padding-inline: var(--origam-space---2);
+  --origam-clipboard__feedback---border-radius: var(--origam-radius---sm);
+  --origam-clipboard__feedback---font-size: var(--origam-font__size---xs);
+  --origam-clipboard__feedback---font-weight: var(--origam-font__weight---medium);
+  --origam-clipboard__feedback---gap: var(--origam-space---1);
+  --origam-clipboard__feedback---offset: var(--origam-space---2);
+  --origam-clipboard__feedback---transition-duration: var(--origam-motion__duration---medium);
+  --origam-masonry---animation-duration: var(--origam-motion__duration---fast);
+  --origam-masonry---animation-easing: var(--origam-motion__easing---standard);
+  --origam-text-mask---font-size-default: var(--origam-font__size---5xl);
+  --origam-text-mask---font-weight-default: var(--origam-font__weight---bold);
+  --origam-text-mask---line-height-default: var(--origam-font__lineHeight---tight);
+  --origam-text-mask__animation---duration-default: 3s;
+  --origam-text-mask__animation---easing-default: var(--origam-motion__easing---standard);
 }
