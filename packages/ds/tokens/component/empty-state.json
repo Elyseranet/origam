@@ -23,7 +23,7 @@
     "title": {
       "color":                  { "$type": "color",      "$value": "{color.text.primary}" },
       "font-family":            { "$type": "fontFamily", "$value": "{font.family.sans}" },
-      "font-weight":            { "$type": "fontWeight", "$value": "{font.weight.semiBold}" },
+      "font-weight":            { "$type": "fontWeight", "$value": "{font.weight.semibold}" },
       "line-height":            { "$type": "number",     "$value": "{font.lineHeight.snug}" },
       "font-size":              { "$type": "dimension",  "$value": "{font.size.xl}" },
       "font-size-sm":           { "$type": "dimension",  "$value": "{font.size.lg}" },
