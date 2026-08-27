@@ -819,15 +819,26 @@
 			--origam-btn---color: var(--origam-pagination---color-hover, var(--fg-base));
 		}
 
-		// NOTE: the hover rule above never actually falls through to its
-		// `color-mix(in srgb, var(--bg-base), black 20%)` fallback in the
-		// uncolored/ghost mode, even though `--bg-base` is `transparent`
-		// there — `--origam-pagination---background-color-hover` is seeded
-		// globally at `:root` (component/pagination.json → the neutral
-		// `--origam-color__action--secondary---bgHover` token), so `var()`
-		// resolves to that visible gray before the fallback is ever
-		// evaluated. Verified via getComputedStyle: no separate override
-		// needed here, unlike the active state below.
+		// Same "text-variant blocks background-color" contract as the
+		// active state below — `--origam-btn---background-color` set on
+		// `.origam-btn:hover` above has zero visual effect in uncolored/
+		// ghost mode, regardless of what it resolves to. Unlike the active
+		// state, `.origam-btn`'s NATIVE hover feedback (its own
+		// `.origam-btn__overlay`, opacity 0.12) isn't suppressed by any
+		// Pagination rule — but that overlay's default paint colour
+		// (`--origam-color__overlay---scrim`) is WHITE in the light theme,
+		// so a 12 % white tint over an already-transparent/white page is
+		// imperceptible in practice (verified via getComputedStyle: overlay
+		// background rgb(255, 255, 255) at opacity 0.12). Repaint it with
+		// the SAME `--origam-pagination---background-color-hover` token the
+		// (dead, for this branch) rule above already references — it's
+		// seeded globally at :root (→ neutral action-secondary-bgHover,
+		// #e6e6e6 in the light theme), so this is the first rule that
+		// actually surfaces the value everyone already had access to.
+		&:not(&--colored) :deep(.origam-btn:hover:not(.origam-btn--active) .origam-btn__overlay) {
+			background-color: var(--origam-pagination---background-color-hover);
+			opacity: 1;
+		}
 
 		// Active state — derived: 30 % darker than --bg-base.
 		// Consumer can override via the matching `is-active` vars.
@@ -846,34 +857,56 @@
 			);
 		}
 
-		// Unlike the hover state, no `--origam-pagination__item--is-active
-		// ---background-color` token is globally seeded — so in uncolored/
-		// ghost mode this rule's `color-mix(in srgb, var(--bg-base), black
-		// 30%)` fallback DOES get evaluated, and `--bg-base` is `transparent`
-		// there. `color-mix()` with the literal `transparent` keyword
-		// degenerates to fully transparent instead of the partially-opaque
-		// black the derivation intends (verified identically on chromium/
-		// firefox/webkit) — the active page item then rendered pixel-
-		// identical to its resting siblings, reproducing the exact
-		// "indistinguishable active page" defect this file's user-reported
-		// origin (652a770e) was fixed for. This regressed some time after
-		// cb10d654, whose own commit message recorded the then-correct
-		// `color(srgb 0 0 0 / 0.3)` result for this exact case — so either
-		// engine color-mix semantics for a fully-transparent operand
-		// tightened since, or a token change altered what `--bg-base`
-		// resolves to; either way, restore an explicit neutral fallback for
-		// the uncolored branch only. The `--colored` branch's `--bg-base` is
-		// always an opaque color, so its color-mix derivation still works
-		// there and is left untouched.
-		&:not(&--colored) &__item--is-active :deep(.origam-btn) {
-			--origam-btn---background-color: var(
+		// The `--origam-btn---background-color` derivation above (and the
+		// hover rule before it) can NEVER visually apply in uncolored/ghost
+		// mode. The origam baseline theme (packages/ds/src/themes/
+		// origam.theme.ts, since 9a082b90) sets `'origam-btn': { variant:
+		// 'text', size: 'small' }` as the default for every Btn that doesn't
+		// receive an explicit `variant` prop — which is exactly this
+		// branch's inner buttons (`variant: baseBg ? VARIANT.FLAT :
+		// undefined`, undefined here). `.origam-btn--variant-text` then
+		// unconditionally forces `background-color: transparent !important`
+		// — a deliberate, tested contract (btn.spec.ts:591, "--variant-text:
+		// background-color declaration is transparent !important"), NOT a
+		// bug this component may work around by feeding the CSS var a
+		// different value. Confirmed: overriding
+		// `--origam-btn---background-color` here has zero visual effect
+		// on a text-variant button, on any engine.
+		//
+		// Before 9a082b90 introduced that theme default, these inner
+		// buttons had no forced variant and the color-mix background fill
+		// genuinely worked (cb10d654's commit message recorded the
+		// then-correct `color(srgb 0 0 0 / 0.3)` result for this exact
+		// case) — the theme change silently broke it, reproducing the
+		// exact "indistinguishable active page" defect this file's
+		// user-reported origin (652a770e) was fixed for.
+		//
+		// The only mechanism that CAN still paint a text-variant button is
+		// its own `.origam-btn__overlay` — a separate absolutely-positioned
+		// element Btn itself uses for native hover/active feedback, exempt
+		// from the `--variant-text` rule (which only targets `.origam-btn`
+		// itself). Its default `background-color` token
+		// (`--origam-color__overlay---scrim`) is WHITE in the light theme
+		// (verified via getComputedStyle) — useless for a darkening effect
+		// — so paint it with the same neutral-200 target color instead, at
+		// full opacity, which composites to exactly the intended
+		// rgb(230, 230, 230) over the (transparent) resting surface.
+		&:not(&--colored) &__item--is-active :deep(.origam-btn__overlay) {
+			background-color: var(
 				--origam-pagination__item--is-active---background-color,
 				var(--origam-color__neutral---200, #e6e6e6)
 			);
+			opacity: var(--origam-pagination__item--is-active---active-overlay-opacity, 1);
 		}
 
 		&__item--is-active :deep(.origam-btn__overlay) {
-			// Legacy overlay collapsed — solid fill carries the contrast.
+			// Colored mode: the flat-variant background derivation above
+			// (color-mix 30 % darker) already carries the contrast on
+			// `.origam-btn` itself — collapse the overlay so it doesn't
+			// double-darken on top of that fill. The uncolored-branch rule
+			// above wins over this one for uncolored instances (extra
+			// `:not(&--colored)` specificity), so it isn't shadowed by this
+			// default.
 			opacity: var(--origam-pagination__item--is-active---active-overlay-opacity, 0);
 		}
 

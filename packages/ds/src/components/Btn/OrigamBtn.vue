@@ -703,18 +703,7 @@
 		}
 
 		&--variant-text {
-			// Read the SAME variable the base rule above (line ~531) reads,
-			// just with a "transparent" fallback instead of the default
-			// gray — NOT a hardcoded `transparent`. A hardcoded value here
-			// silently defeats any parent that overrides
-			// `--origam-btn---background-color` via a `:deep()` rule (e.g.
-			// OrigamPagination's hover/active-state derivation): the custom
-			// property resolves correctly (verified via getComputedStyle)
-			// but the literal `!important` transparent always wins anyway,
-			// so the override has zero visual effect. Routing through the
-			// var preserves "text buttons are unfilled by default" while
-			// still letting a more-specific ancestor rule tint them.
-			background-color: var(--origam-btn---background-color, transparent) !important;
+			background-color: transparent !important;
 			box-shadow: none;
 		}
 

@@ -15,6 +15,23 @@ import { test, expect } from '@playwright/test'
  * "Default" playground) is NOT used for the neutral assertion below: its
  * init-state pre-selects `color: 'primary'`, so it is ALWAYS in colored
  * mode — asserting "neutral gray" against it never reflected reality.
+ *
+ * ⚠️ The uncolored/ghost-mode assertions below read `.origam-btn__overlay`
+ * (a separate absolutely-positioned child element), NOT `.origam-btn`'s own
+ * `background-color`. `.origam-btn--variant-text` — the origam baseline
+ * theme's default variant for every Btn without an explicit `variant` prop,
+ * which is what Pagination's uncolored inner buttons get
+ * (`packages/ds/src/themes/origam.theme.ts`, since 9a082b90) — unconditionally
+ * forces `background-color: transparent !important` on `.origam-btn`
+ * itself. That is a deliberate, tested contract (btn.spec.ts:591,
+ * "--variant-text: background-color declaration is transparent !important"),
+ * NOT something Pagination (or any consumer) may override by feeding a
+ * different value into `--origam-btn---background-color` — verified: it has
+ * zero visual effect on `.origam-btn`'s actual rendered background,
+ * regardless of what the CSS var resolves to. The only mechanism that CAN
+ * still paint a text-variant button is its own `.origam-btn__overlay`
+ * (exempt from that rule), which OrigamPagination.vue now drives instead
+ * for the uncolored branch's hover/active states.
  */
 
 const STORY_ID   = 'components-stories-pagination-origampagination-story-vue'
@@ -34,7 +51,7 @@ function parseColorChannels (value: string): [number, number, number] | null {
     return null
 }
 
-test('DEBUG pagination — default mode active is neutral gray (not violet)', async ({ page }) => {
+test('DEBUG pagination — default mode active is neutral gray (not violet), painted via the overlay', async ({ page }) => {
     // "Color — default vs primary" (index 15) exposes the truly neutral
     // pagination via data-cy="pagination-default-look".
     await page.goto(variantUrl(15), { waitUntil: 'domcontentloaded' })
@@ -50,10 +67,12 @@ test('DEBUG pagination — default mode active is neutral gray (not violet)', as
         const inactive = root.querySelector('.origam-pagination__item:not(.origam-pagination__item--is-active) .origam-btn') as HTMLElement | null
         const read = (el: HTMLElement | null) => {
             if (!el) return null
-            const cs = getComputedStyle(el)
+            const overlay = el.querySelector('.origam-btn__overlay') as HTMLElement | null
+            const overlayCs = overlay ? getComputedStyle(overlay) : null
             return {
-                bg: cs.backgroundColor,
-                color: cs.color,
+                btnBg: getComputedStyle(el).backgroundColor,
+                overlayBg: overlayCs?.backgroundColor ?? null,
+                overlayOpacity: overlayCs ? Number(overlayCs.opacity) : null,
                 text: el.innerText?.trim(),
             }
         }
@@ -66,20 +85,55 @@ test('DEBUG pagination — default mode active is neutral gray (not violet)', as
     console.log('=== pagination neutral mode: active vs inactive ===')
     console.log(JSON.stringify(sample, null, 2))
 
-    // Assert: active bg is NOT transparent (the bug this file was created
-    // for: 652a770e — active page indistinguishable from siblings). This
-    // regressed a second time after cb10d654's color-mix refactor, because
-    // `color-mix(in srgb, transparent, black 30%)` degenerates to fully
-    // transparent instead of a visible partial-black overlay — fixed in
-    // OrigamPagination.vue by giving the uncolored branch's active state an
-    // explicit `--origam-color__neutral---200` (#e6e6e6) fallback.
+    // `.origam-btn` itself stays transparent either way (--variant-text
+    // contract) — the CONTRAST lives entirely in the overlay.
     expect(sample.active).not.toBeNull()
-    expect(sample.active?.bg).not.toBe('rgba(0, 0, 0, 0)')
-    // Assert active bg != inactive bg (real, visible contrast).
-    expect(sample.active?.bg).not.toBe(sample.inactive?.bg)
-    // Assert the active bg is specifically the neutral gray token
-    // (#e6e6e6 / rgb(230, 230, 230)), NOT the brand-primary violet.
-    expect(sample.active?.bg).toBe('rgb(230, 230, 230)')
+    expect(sample.inactive).not.toBeNull()
+
+    // Assert: active item's overlay is visibly opaque (the bug this file
+    // was created for: 652a770e — active page indistinguishable from
+    // siblings), while the inactive item's overlay stays collapsed.
+    expect(sample.active!.overlayOpacity).toBeGreaterThan(0.5)
+    expect(sample.inactive!.overlayOpacity ?? 0).toBeLessThan(0.5)
+
+    // Assert the active overlay's colour is specifically the neutral gray
+    // token (#e6e6e6 / rgb(230, 230, 230)), NOT the brand-primary violet.
+    expect(sample.active!.overlayBg).toBe('rgb(230, 230, 230)')
+})
+
+test('DEBUG pagination — default mode hover is visible via the overlay (not white-on-white)', async ({ page }) => {
+    await page.goto(variantUrl(15), { waitUntil: 'domcontentloaded' })
+    const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+    await sandbox.locator('.origam-pagination').first().waitFor({ state: 'visible', timeout: 30_000 })
+
+    const neutral = sandbox.locator('[data-cy="pagination-default-look"]')
+    const inactiveBtn = neutral.locator('.origam-pagination__item:not(.origam-pagination__item--is-active) .origam-btn').first()
+    await expect(inactiveBtn).toBeVisible({ timeout: 12_000 })
+
+    const before = await inactiveBtn.evaluate((el) => {
+        const overlay = el.querySelector('.origam-btn__overlay') as HTMLElement | null
+        const cs = overlay ? getComputedStyle(overlay) : null
+        return { bg: cs?.backgroundColor ?? null, opacity: cs ? Number(cs.opacity) : null }
+    })
+
+    await inactiveBtn.hover({ force: true })
+    await page.waitForTimeout(300)
+
+    const after = await inactiveBtn.evaluate((el) => {
+        const overlay = el.querySelector('.origam-btn__overlay') as HTMLElement | null
+        const cs = overlay ? getComputedStyle(overlay) : null
+        return { bg: cs?.backgroundColor ?? null, opacity: cs ? Number(cs.opacity) : null }
+    })
+
+    console.log('=== pagination neutral mode: hover overlay before/after ===')
+    console.log(JSON.stringify({ before, after }, null, 2))
+
+    // Before Btn's native overlay defaults its paint colour to WHITE
+    // (--origam-color__overlay---scrim) at 12 % opacity — imperceptible on
+    // a light page. After hover, Pagination repaints it with the neutral
+    // hover token (non-white, fully opaque on the overlay layer itself).
+    expect(after.opacity).toBeGreaterThan(before.opacity ?? 0)
+    expect(after.bg).not.toBe('rgb(255, 255, 255)')
 })
 
 test('DEBUG pagination — colored mode active is a darker shade of the primary fill', async ({ page }) => {
@@ -117,7 +171,10 @@ test('DEBUG pagination — colored mode active is a darker shade of the primary 
 
     // The inactive/resting item in colored mode is the flat primary fill
     // (--origam-color__action--primary---bg, rgb(124, 58, 237) in the
-    // origam baseline theme's light mode).
+    // origam baseline theme's light mode). Colored mode uses variant="flat"
+    // (OrigamPagination.vue: `variant: baseBg ? VARIANT.FLAT : undefined`),
+    // which is NOT subject to the text-variant's forced transparency, so
+    // `--origam-btn---background-color` paints `.origam-btn` directly here.
     expect(sample?.inactiveBg).toBe('rgb(124, 58, 237)')
 
     // The active item is NOT the same flat fill — OrigamPagination's
