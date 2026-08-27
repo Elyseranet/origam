@@ -517,8 +517,8 @@
       &--error {
         &:not(.origam-selection-control--disabled) {
           #{$this}__thumb {
-            background-color: rgba(255, 0, 0, 1);
-            color: rgba(255, 255, 255, 1);
+            background-color: var(--origam-switch__thumb---background-color-error, rgba(255, 0, 0, 1));
+            color: var(--origam-switch__thumb---color-error, rgba(255, 255, 255, 1));
           }
         }
       }

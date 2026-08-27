@@ -7,6 +7,8 @@
 
     "border-radius": { "$type": "dimension", "$value": "{radius.full}" },
 
+    "color-error": { "$type": "color", "$value": "{color.feedback.danger.fgSubtle}" },
+
     "track": {
       "height":           { "$type": "dimension", "$value": "4px" },
       "background-color": { "$type": "color",     "$value": "{color.surface.disabled}" },

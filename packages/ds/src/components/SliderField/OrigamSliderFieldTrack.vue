@@ -257,11 +257,26 @@
 		}
 
 		&__background {
-			background-color: rgb(148, 148, 148);
+			background-color: var(--origam-slider-field__track---background-color, rgb(148, 148, 148));
 		}
 
+		/*********************************************************
+		 * __fill
+		 *
+		 * @description
+		 * ⛔ issue #431 — the source token
+		 * (`slider-field.track-fill.background-color`) is affected by the
+		 * pipeline's BEM-child-hyphen bug (#435, confirmed against the
+		 * compiled CSS): the hyphenated key `track-fill` flattens to
+		 * `--origam-slider-field---track-fill-background-color` instead of
+		 * the expected `--origam-slider-field-track__fill---…` shape. The
+		 * variable below IS real and correctly resolves to
+		 * `{color.action.primary.bg}` today — reported to the coordinator /
+		 * `tableau-maj`; rename this var reference once #435's pipeline fix
+		 * lands and re-emits it correctly.
+		 ********************************************************/
 		&__fill {
-			background-color: rgba(84, 84, 84, 1);
+			background-color: var(--origam-slider-field---track-fill-background-color, rgba(84, 84, 84, 1));
 		}
 
 		&__ticks {
@@ -277,7 +292,7 @@
 		}
 
 		&__tick {
-			background-color: rgba(66, 66, 66, 1);
+			background-color: var(--origam-slider-field__tick---background-color, rgba(66, 66, 66, 1));
 			position: absolute;
 			opacity: 0;
 			transition: 0.2s opacity cubic-bezier(0.4, 0, 0.2, 1);
@@ -287,7 +302,7 @@
 			transform: translate(calc(var(--origam-slider-field-track__tick---size, 2) / -2), calc(var(--origam-slider-field-track__tick---size, 2) / -2));
 
 			&--filled {
-				background-color: rgba(238, 238, 238, 1);
+				background-color: var(--origam-slider-field__tick---background-color-active, rgba(238, 238, 238, 1));
 			}
 
 			&--first {

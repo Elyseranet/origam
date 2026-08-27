@@ -1242,7 +1242,7 @@
 
 			&--error {
 				#{$this}__container {
-					color: rgba(255, 0, 0, 1);
+					color: var(--origam-slider-field---color-error, rgba(255, 0, 0, 1));
 				}
 			}
 		}
@@ -1271,7 +1271,7 @@
 				width: 100%;
 				font-size: 0.5rem;
 				padding: 0 5px;
-				background-color: rgb(148, 148, 148);
+				background-color: var(--origam-slider-field__track---background-color, rgb(148, 148, 148));
 				height: var(--origam-slider-field---track-size, 14px);
 				transition: 0.2s background-color cubic-bezier(0.4, 0, 0.2, 1);
 
@@ -1561,7 +1561,7 @@
 	.origam-slider-field-thumb {
 		$this: &;
 
-		color: rgba(66, 66, 66, 1);
+		color: var(--origam-slider-field__thumb---background-color, rgba(66, 66, 66, 1));
 		outline: none;
 		transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
 
