@@ -9,9 +9,8 @@
  */
 
 :root:root {
-    /* Card-as-link must show a pointer. The DS base sets the card cursor to
-       inherit, but the legacy themes-all :root block still ships `auto`
-       (tracked as a DS task) — override it here so a NuxtLink-wrapped
+    /* Card-as-link must show a pointer. Explicit override kept here as a
+       guarantee independent of the DS default so a NuxtLink-wrapped
        OrigamCard inherits the link's pointer across every marketing theme. */
     --origam-card---cursor: inherit;
 

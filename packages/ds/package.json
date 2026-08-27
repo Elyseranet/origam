@@ -62,13 +62,11 @@
     "./tokens/css/light": "./dist/src/assets/css/tokens/light.css",
     "./tokens/css/dark": "./dist/src/assets/css/tokens/dark.css",
     "./tokens/css/utilities": "./dist/src/assets/css/tokens/origam-utilities.css",
-    "./tokens/css/themes-all": "./dist/src/assets/css/tokens/themes-all.css",
     "./tokens/scss": "./dist/src/assets/scss/tokens/_primitive.scss",
     "./tokens/scss/primitive": "./dist/src/assets/scss/tokens/_primitive.scss",
     "./tokens/scss/light": "./dist/src/assets/scss/tokens/_light.scss",
     "./tokens/scss/dark": "./dist/src/assets/scss/tokens/_dark.scss",
     "./tokens/scss/utilities": "./dist/src/assets/scss/tokens/_origam-utilities.scss",
-    "./tokens/scss/themes-all": "./dist/src/assets/scss/tokens/_themes-all.scss",
     "./tokens/types": "./dist/src/types/tokens.type.d.ts",
     "./origam": "./dist/src/origam.js",
     "./nuxt": {

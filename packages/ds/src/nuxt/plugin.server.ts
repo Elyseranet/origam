@@ -31,10 +31,10 @@ function resolveServerTheme (cookieValue: string | null | undefined, config: IOr
 /**
  * Resolve the color mode SSR-side to a CONCRETE value (`'light'` | `'dark'`).
  *
- * The token matrix (`themes-all.css` and the per-brand sheets) only emits
- * compound `[data-theme="X"][data-mode="Y"]` rules — there is NO bare
- * `[data-theme="X"]` fallback and no `@media (prefers-color-scheme)` block at
- * that tier. So `data-mode` MUST always be a concrete value, otherwise no
+ * The theme token matrix only emits compound `[data-theme="X"][data-mode="Y"]`
+ * rules — there is NO bare `[data-theme="X"]` fallback and no
+ * `@media (prefers-color-scheme)` block at that tier. So `data-mode` MUST
+ * always be a concrete value, otherwise no
  * token rule matches and the page renders unthemed (white). We therefore
  * never return `'auto'` here: when the user expressed no preference we pick a
  * safe default (`'light'`) for the SSR paint; the client plugin upgrades it
