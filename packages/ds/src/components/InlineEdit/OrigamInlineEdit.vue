@@ -265,7 +265,7 @@
 		confirm,
 		cancel,
 		setValue
-	} = useInlineEdit(modelRef, {
+	} = useInlineEdit(modelRef, () => ({
 		rules: props.rules,
 		validate: props.validate,
 		trim: props.trim,
@@ -283,7 +283,7 @@
 		},
 		onCancel: () => emit('cancel'),
 		onError: (message: string) => emit('validate-error', message)
-	})
+	}))
 
 	/*********************************************************
 	 * Refs / IDs

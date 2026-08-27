@@ -543,7 +543,7 @@
 	 * useHold fires toggleUpDown repeatedly while the user holds
 	 * a step button, respecting holdDelay and holdRepeat props.
 	 ********************************************************/
-	const {holdStart, holdStop} = useHold({toggleUpDown}, props.holdRepeat, props.holdDelay)
+	const {holdStart, holdStop} = useHold({toggleUpDown}, () => props.holdRepeat, () => props.holdDelay)
 
 	/*********************************************************
 	 * Event handlers
