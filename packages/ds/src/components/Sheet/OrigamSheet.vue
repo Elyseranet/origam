@@ -58,7 +58,8 @@
 		defaultSnap: 'half',
 		open: undefined,
 		disabled: false,
-		persistent: false
+		persistent: false,
+		handleLabel: 'origam.sheet.handle.aria_label'
 	})
 
 	const emit = defineEmits<ISheetEmits>()
@@ -95,7 +96,17 @@
 
 	const {t} = useLocale()
 
-	const handleAriaLabel = computed(() => t('origam.sheet.handle.aria_label'))
+	/*********************************************************
+	 * handleAriaLabel
+	 *
+	 * @description
+	 * `handleLabel` carries a locale key, not final text, so the drag
+	 * handle's accessible name follows the active locale.
+	 * @description
+	 * Resolved in a computed and never eagerly in the setup body, so a
+	 * value supplied by `theme.components` is still seen (ADR-005).
+	 ********************************************************/
+	const handleAriaLabel = computed(() => t(props.handleLabel))
 
 	// ───────────────────────── swipe gesture ────────────────────────────
 
