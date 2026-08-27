@@ -49,6 +49,310 @@ per-theme sheets, which are current and still generated on every
 
 Ref: issue #497.
 
+### ⚠️ BREAKING — 12 unused `tokens/component/*.json` files removed (206 CSS custom properties)
+
+`checkbox`, `checkbox-btn`, `radio`, `select`, `contextual-menu`, `img`,
+`rating-field`, `dialog-confirmation`, `highlight`, `date-picker-field`,
+`lazy` and `transition` are gone from `packages/ds/tokens/component/` and
+from `$themes.json`. Also removed: `qrcode` and `watermark` (handed over
+from #436-A — registered nowhere, zero lines emitted either way) and
+`sound` (same, plus the component itself no longer exists).
+
+**Why**: measured, component by component, that none of the 206 CSS
+custom properties these files declared was read by any component under
+`packages/ds/src`, under any name — not the declared name, not a
+plausible rename, not a nested `var()` fallback. `highlight.json` and
+`sound.json` are more extreme still: `OrigamHighlight` and `OrigamSound`
+do not exist anywhere in the repo (the same shape as the already-closed
+`section.json` precedent). `dialog-confirmation.json`'s target component
+(`OrigamDialogConfirmation`) has no `<style>` block at all. Full
+per-component investigation, including the 3 files that turned out to be
+divergences (real bugs) rather than vestiges and were therefore **not**
+removed, is in #436.
+
+Measured effect on the generated stylesheets:
+
+```
+light.css   187293 → 171736 bytes  (-15557, -8.3%)
+dark.css    380189 → 348663 bytes  (-31526, -8.3%)
+```
+
+**This is a breaking change if you overrode any of these variables** —
+whether from inside this repo (nothing did, verified) or from an external
+consumer we have no visibility into. If you did, the property no longer
+exists; there is no fallback to migrate to, because nothing in the DS
+ever painted with it. The full list, for anyone auditing a diff against a
+previous `origam` version:
+
+<details><summary><code>checkbox.json</code> — 26 variables</summary>
+
+```
+--origam-checkbox---flex
+--origam-checkbox---min-height
+--origam-checkbox---transition-duration
+--origam-checkbox---transition-easing
+--origam-checkbox__icon---color
+--origam-checkbox__icon---color-disabled
+--origam-checkbox__icon---color-error
+--origam-checkbox__icon---color-unchecked
+--origam-checkbox__icon---opacity
+--origam-checkbox__input---background-color
+--origam-checkbox__input---background-color-checked
+--origam-checkbox__input---background-color-disabled
+--origam-checkbox__input---background-color-error
+--origam-checkbox__input---background-color-indeterminate
+--origam-checkbox__input---border-color
+--origam-checkbox__input---border-color-checked
+--origam-checkbox__input---border-color-disabled
+--origam-checkbox__input---border-color-error
+--origam-checkbox__input---border-color-focused
+--origam-checkbox__input---border-radius
+--origam-checkbox__input---border-style
+--origam-checkbox__input---border-width
+--origam-checkbox__input---opacity-disabled
+--origam-checkbox__label---color
+--origam-checkbox__label---color-disabled
+--origam-checkbox__label---color-error
+```
+</details>
+<details><summary><code>checkbox-btn.json</code> — 20 variables</summary>
+
+```
+--origam-checkbox-btn---background-color
+--origam-checkbox-btn---background-color-checked
+--origam-checkbox-btn---background-color-disabled
+--origam-checkbox-btn---background-color-hover
+--origam-checkbox-btn---border-color
+--origam-checkbox-btn---border-color-checked
+--origam-checkbox-btn---border-color-error
+--origam-checkbox-btn---border-radius
+--origam-checkbox-btn---border-style
+--origam-checkbox-btn---border-width
+--origam-checkbox-btn---color
+--origam-checkbox-btn---color-checked
+--origam-checkbox-btn---color-disabled
+--origam-checkbox-btn---font-size
+--origam-checkbox-btn---font-weight
+--origam-checkbox-btn---opacity-disabled
+--origam-checkbox-btn---padding-block
+--origam-checkbox-btn---padding-inline
+--origam-checkbox-btn---transition-duration
+--origam-checkbox-btn---transition-easing
+```
+</details>
+<details><summary><code>radio.json</code> — 23 variables</summary>
+
+```
+--origam-radio---opacity-disabled
+--origam-radio__dot---background-color
+--origam-radio__dot---background-color-disabled
+--origam-radio__dot---background-color-error
+--origam-radio__dot---border-radius
+--origam-radio__dot---scale-from
+--origam-radio__dot---scale-to
+--origam-radio__dot---size
+--origam-radio__input---background-color
+--origam-radio__input---background-color-disabled
+--origam-radio__input---border-color
+--origam-radio__input---border-color-checked
+--origam-radio__input---border-color-disabled
+--origam-radio__input---border-color-error
+--origam-radio__input---border-radius
+--origam-radio__input---border-width
+--origam-radio__input---size
+--origam-radio__input---transition-duration
+--origam-radio__label---color
+--origam-radio__label---color-disabled
+--origam-radio__label---color-error
+--origam-radio__label---font-size
+--origam-radio__label---padding-inline
+```
+</details>
+<details><summary><code>select.json</code> — 39 variables</summary>
+
+```
+--origam-select---min-width
+--origam-select---no-data-color
+--origam-select---no-data-font-size
+--origam-select---no-data-padding
+--origam-select---no-data-text-align
+--origam-select__chevron---color
+--origam-select__chevron---color-active
+--origam-select__chevron---transition-duration
+--origam-select__chevron---transition-timing-function
+--origam-select__chip---background-color
+--origam-select__chip---border-radius
+--origam-select__chip---color
+--origam-select__chip---gap
+--origam-select__chip---max-width
+--origam-select__chip---padding-block
+--origam-select__chip---padding-inline
+--origam-select__item---background-color
+--origam-select__item---background-color-active
+--origam-select__item---background-color-hover
+--origam-select__item---background-color-selected
+--origam-select__item---color
+--origam-select__item---color-selected
+--origam-select__item---min-height
+--origam-select__item---opacity-disabled
+--origam-select__item---padding-block
+--origam-select__item---padding-inline
+--origam-select__item---transition-duration
+--origam-select__list---background-color
+--origam-select__list---border-radius
+--origam-select__list---box-shadow
+--origam-select__list---color
+--origam-select__list---max-height
+--origam-select__list---padding-block
+--origam-select__list---padding-inline
+--origam-select__list---z-index
+--origam-select__search---background-color
+--origam-select__search---border-bottom-color
+--origam-select__search---padding-block
+--origam-select__search---padding-inline
+```
+</details>
+<details><summary><code>contextual-menu.json</code> — 16 variables</summary>
+
+```
+--origam-contextual-menu---background
+--origam-contextual-menu---border-radius
+--origam-contextual-menu---box-shadow
+--origam-contextual-menu---color
+--origam-contextual-menu---max-height
+--origam-contextual-menu---offset-bottom
+--origam-contextual-menu---offset-left
+--origam-contextual-menu---offset-right
+--origam-contextual-menu---offset-top
+--origam-contextual-menu---position
+--origam-contextual-menu---transition-duration
+--origam-contextual-menu---transition-timing-function
+--origam-contextual-menu---z-index
+--origam-contextual-menu__content---max-width
+--origam-contextual-menu__content---overflow
+--origam-contextual-menu__content---padding
+```
+</details>
+<details><summary><code>img.json</code> — 14 variables</summary>
+
+```
+--origam-img---background-color
+--origam-img---border-radius
+--origam-img---border-radius-circle
+--origam-img---border-radius-rounded
+--origam-img---color
+--origam-img---opacity-loaded
+--origam-img---opacity-loading
+--origam-img---transition-duration
+--origam-img---transition-timing-function
+--origam-img--error---background-color
+--origam-img--error---color
+--origam-img__placeholder---background-color
+--origam-img__placeholder---color
+--origam-img__placeholder---font-size
+```
+</details>
+<details><summary><code>rating-field.json</code> — 13 variables</summary>
+
+```
+--origam-rating-field---gap
+--origam-rating-field---opacity-disabled
+--origam-rating-field---transition-duration
+--origam-rating-field__item---color
+--origam-rating-field__item---color-active
+--origam-rating-field__item---color-disabled
+--origam-rating-field__item---font-size
+--origam-rating-field__item---scale-active
+--origam-rating-field__item---scale-hover
+--origam-rating-field__item---transition-duration
+--origam-rating-field__label---color
+--origam-rating-field__label---font-size
+--origam-rating-field__label---padding-inline
+```
+</details>
+<details><summary><code>dialog-confirmation.json</code> — 12 variables</summary>
+
+```
+--origam-dialog-confirmation---actions-gap
+--origam-dialog-confirmation---description-color
+--origam-dialog-confirmation---description-font-size
+--origam-dialog-confirmation---icon-color-danger
+--origam-dialog-confirmation---icon-color-default
+--origam-dialog-confirmation---icon-color-info
+--origam-dialog-confirmation---icon-color-success
+--origam-dialog-confirmation---icon-color-warning
+--origam-dialog-confirmation---icon-size
+--origam-dialog-confirmation---title-color
+--origam-dialog-confirmation---title-font-size
+--origam-dialog-confirmation---title-font-weight
+```
+</details>
+<details><summary><code>highlight.json</code> — 12 variables</summary>
+
+```
+--origam-highlight---background-color
+--origam-highlight---border-radius
+--origam-highlight---color
+--origam-highlight---font-weight
+--origam-highlight---padding-block
+--origam-highlight---padding-inline
+--origam-highlight--danger---background-color
+--origam-highlight--danger---color
+--origam-highlight--info---background-color
+--origam-highlight--info---color
+--origam-highlight--success---background-color
+--origam-highlight--success---color
+```
+</details>
+<details><summary><code>date-picker-field.json</code> — 6 variables</summary>
+
+```
+--origam-date-picker-field---max-width
+--origam-date-picker-field---menu-offset
+--origam-date-picker-field---min-width
+--origam-date-picker-field__icon---color
+--origam-date-picker-field__icon---color-error
+--origam-date-picker-field__icon---color-hover
+```
+</details>
+<details><summary><code>lazy.json</code> — 4 variables</summary>
+
+```
+--origam-lazy---placeholder-background-color
+--origam-lazy---placeholder-min-height
+--origam-lazy---transition-duration
+--origam-lazy---transition-timing-function
+```
+</details>
+<details><summary><code>transition.json</code> — 21 variables</summary>
+
+```
+--origam-transition---dialog-bottom-duration
+--origam-transition---dialog-bottom-easing
+--origam-transition---dialog-bottom-translate-distance
+--origam-transition---slide-x-duration
+--origam-transition---slide-x-easing
+--origam-transition---slide-x-translate-distance
+--origam-transition---slide-y-duration
+--origam-transition---slide-y-easing
+--origam-transition---slide-y-translate-distance
+--origam-transition__default---duration
+--origam-transition__default---easing
+--origam-transition__dialog---duration
+--origam-transition__dialog---easing
+--origam-transition__expand---duration
+--origam-transition__expand---easing
+--origam-transition__expand---max-height-from
+--origam-transition__fade---duration
+--origam-transition__fade---easing
+--origam-transition__scale---duration
+--origam-transition__scale---easing
+--origam-transition__scale---scale-from
+```
+</details>
+
+Ref: issue #436.
+
 ## [2.16.0] - 2026-08-19
 
 A release about **things that were declared but did nothing**. Seven
