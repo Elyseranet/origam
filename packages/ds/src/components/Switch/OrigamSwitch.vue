@@ -538,17 +538,47 @@
       }
     }
 
-    .origam-selection-control__wrapper.origam--color-primary &__thumb,
-    .origam-selection-control__wrapper.origam--color-secondary &__thumb,
-    .origam-selection-control__wrapper.origam--color-success &__thumb,
-    .origam-selection-control__wrapper.origam--color-warning &__thumb,
-    .origam-selection-control__wrapper.origam--color-danger &__thumb,
-    .origam-selection-control__wrapper.origam--color-info &__thumb,
-    .origam-selection-control__wrapper.origam--color-neutral &__thumb {
+    /*
+     * Le canal couleur vit sur `.origam-selection-control__input`, PAS sur le
+     * wrapper. Ces règles ciblaient le wrapper et ne matchaient donc jamais :
+     * le pouce restait blanc quelle que soit la prop `color` (#512).
+     *
+     * C'est la régression décrite dans le CLAUDE.md — le contrat de style
+     * inline cassé lors de l'extraction d'`OrigamSwitchTrack` — revenue par le
+     * même mécanisme : le canal a bougé, le sélecteur est resté.
+     *
+     * `:has()` est la SEULE des trois pistes envisagées qui fonctionne ici, et
+     * c'est la structure du DOM qui l'impose, pas une préférence :
+     *
+     *     .origam-selection-control__wrapper
+     *       ├─ <slot default>  → OrigamSwitchTrack → &__thumb
+     *       └─ .origam-selection-control__input   ← porte la couleur
+     *
+     *   · sélecteur frère (`~` / `+`) : impossible — `&__thumb` PRÉCÈDE
+     *     `__input`, et CSS n'a pas de combinateur « frère précédent » ;
+     *   · custom property sur un ancêtre commun : impossible sans toucher
+     *     `OrigamSelectionControl` — la couleur est posée sur `__input`, un
+     *     ENFANT du wrapper, et les custom properties héritent vers le bas
+     *     seulement. La publier plus haut changerait le composant partagé par
+     *     Checkbox, Radio et Switch, au lieu de rester contenu ici ;
+     *   · `:has()` sur le wrapper, ancêtre commun réel : fonctionne, et le
+     *     motif est déjà employé dans le DS (OrigamCard, OrigamNumberField).
+     *
+     * Les conditions sont conservées à l'identique — sept intentions plus la
+     * porte de secours en style inline pour les couleurs personnalisées. Seule
+     * la cible du test change.
+     */
+    .origam-selection-control__wrapper:has(.origam-selection-control__input.origam--color-primary) &__thumb,
+    .origam-selection-control__wrapper:has(.origam-selection-control__input.origam--color-secondary) &__thumb,
+    .origam-selection-control__wrapper:has(.origam-selection-control__input.origam--color-success) &__thumb,
+    .origam-selection-control__wrapper:has(.origam-selection-control__input.origam--color-warning) &__thumb,
+    .origam-selection-control__wrapper:has(.origam-selection-control__input.origam--color-danger) &__thumb,
+    .origam-selection-control__wrapper:has(.origam-selection-control__input.origam--color-info) &__thumb,
+    .origam-selection-control__wrapper:has(.origam-selection-control__input.origam--color-neutral) &__thumb {
       background-color: currentColor;
     }
 
-    .origam-selection-control__wrapper[style*="color:"] &__thumb {
+    .origam-selection-control__wrapper:has(.origam-selection-control__input[style*="color:"]) &__thumb {
       background-color: currentColor;
     }
 
