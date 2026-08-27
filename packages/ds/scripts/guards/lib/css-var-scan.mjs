@@ -62,7 +62,24 @@ export function findVarReads (content) {
             reads.push({ name: nameRaw, hasFallback: commaIdx !== -1, index: m.index })
         }
 
-        callRe.lastIndex = i + 1
+        // Resume INSIDE the parens, not after them (issue #507).
+        //
+        // Skipping to `i + 1` walked past the whole call, so any `var()` in
+        // the fallback was never seen. A fallback var IS a real read: when
+        // the outer property is unset the browser evaluates the fallback and
+        // reads it. `var(--x, var(--y, 1rem))` is TWO reads, not one.
+        //
+        // This does not undo the paren-awareness above — that machinery finds
+        // the top-level comma, and it still does. `var(--x, color-mix(in srgb,
+        // var(--y), black 20%))` yields exactly two reads (`--x`, `--y`), not
+        // three: `color-mix` is not a var call, and its inner commas remain
+        // invisible to the comma scan because they sit at depth > 0.
+        //
+        // Measured before the fix: 145 of 1584 `dormant` baseline entries were
+        // read this way and wrongly listed as never-read. The generic-first
+        // pattern documented in typography.composable.ts produces exactly this
+        // shape, so the blind spot grew with every component that adopted it.
+        callRe.lastIndex = openIdx + 1
     }
 
     return reads
