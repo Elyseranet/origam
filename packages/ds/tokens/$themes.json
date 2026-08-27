@@ -99,7 +99,8 @@
       "component/media-controller": "enabled",
       "component/clipboard": "enabled",
       "component/masonry": "enabled",
-      "component/text-mask": "enabled"
+      "component/text-mask": "enabled",
+      "component/empty-state": "enabled"
     }
   },
   {
@@ -202,7 +203,8 @@
       "component/media-controller": "enabled",
       "component/clipboard": "enabled",
       "component/masonry": "enabled",
-      "component/text-mask": "enabled"
+      "component/text-mask": "enabled",
+      "component/empty-state": "enabled"
     }
   }
 ]

@@ -518,6 +518,7 @@
     "--origam-drawer__sticky---transition-property",
     "--origam-drawer__temporary---box-shadow",
     "--origam-drawer__top---border-bottom-width",
+    "--origam-empty-state__icon---margin-bottom",
     "--origam-expansion-panel---background",
     "--origam-expansion-panel---border-bottom-width",
     "--origam-expansion-panel---border-color",

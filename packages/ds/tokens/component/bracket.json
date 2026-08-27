@@ -32,13 +32,13 @@
     },
 
     "match-final": {
-      "background-color":    { "$type": "color",     "$value": "{color.surface.elevated}" },
+      "background-color":    { "$type": "color",     "$value": "{color.surface.raised}" },
       "border-color":        { "$type": "color",     "$value": "{color.action.primary.bg}" },
       "box-shadow":          { "$type": "other",     "$value": "{shadow.md}" }
     },
 
     "match-hover": {
-      "background-color":    { "$type": "color",     "$value": "{color.surface.elevated}" },
+      "background-color":    { "$type": "color",     "$value": "{color.surface.raised}" },
       "border-color":        { "$type": "color",     "$value": "{color.border.default}" }
     },
 
@@ -60,17 +60,17 @@
     },
 
     "competitor-loser": {
-      "color":               { "$type": "color",      "$value": "{color.text.tertiary}" },
+      "color":               { "$type": "color",      "$value": "{color.text.secondary}" },
       "opacity":             { "$type": "number",     "$value": 0.75 }
     },
 
     "competitor-pending": {
-      "color":               { "$type": "color",      "$value": "{color.text.tertiary}" },
+      "color":               { "$type": "color",      "$value": "{color.text.secondary}" },
       "font-style":          { "$type": "other",      "$value": "italic" }
     },
 
     "competitor-hover": {
-      "background-color":    { "$type": "color",      "$value": "{color.action.neutral.bgSubtle}" }
+      "background-color":    { "$type": "color",      "$value": "{color.action.ghost.bgHover}" }
     },
 
     "avatar": {
@@ -86,7 +86,7 @@
     },
 
     "seed": {
-      "color":               { "$type": "color",      "$value": "{color.text.tertiary}" },
+      "color":               { "$type": "color",      "$value": "{color.text.secondary}" },
       "font-size":           { "$type": "dimension",  "$value": "{font.size.xs}" },
       "font-weight":         { "$type": "fontWeight", "$value": "{font.weight.medium}" },
       "min-width":           { "$type": "dimension",  "$value": "20px" }
@@ -101,9 +101,9 @@
     "round-robin": {
       "cell-size":           { "$type": "dimension",  "$value": "72px" },
       "header-color":        { "$type": "color",      "$value": "{color.text.secondary}" },
-      "header-background":   { "$type": "color",      "$value": "{color.surface.subtle}" },
+      "header-background":   { "$type": "color",      "$value": "{color.surface.sunken}" },
       "cell-background":     { "$type": "color",      "$value": "{color.surface.default}" },
-      "cell-background-diag":{ "$type": "color",      "$value": "{color.surface.subtle}" }
+      "cell-background-diag":{ "$type": "color",      "$value": "{color.surface.sunken}" }
     }
   }
 }
