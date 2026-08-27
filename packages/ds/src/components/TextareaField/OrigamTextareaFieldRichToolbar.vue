@@ -115,9 +115,9 @@
 	const linkInput = ref('')
 	const linkInputRef = ref<HTMLInputElement>()
 
-	const toolbarLabel = computed(() => t('origam.textarea.rich.toolbar.aria_label', 'Text formatting'))
-	const linkPlaceholder = computed(() => t('origam.textarea.rich.link.placeholder', 'https://example.com'))
-	const linkApplyLabel = computed(() => t('origam.textarea.rich.link.apply', 'Apply'))
+	const toolbarLabel = computed(() => t('origam.textarea.rich.toolbar.aria_label'))
+	const linkPlaceholder = computed(() => t('origam.textarea.rich.link.placeholder'))
+	const linkApplyLabel = computed(() => t('origam.textarea.rich.link.apply'))
 
 	const ICON_MAP: Record<TTextareaToolbarCommand, string> = {
 		[TEXTAREA_TOOLBAR_COMMAND.BOLD]: MDI_ICONS.FORMAT_BOLD,

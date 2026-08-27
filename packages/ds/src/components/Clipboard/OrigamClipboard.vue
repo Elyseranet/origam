@@ -125,8 +125,8 @@
 	const defaultIcon = MDI_ICONS.CONTENT_COPY
 
 	const defaultAriaLabel = computed(() => copied.value
-		? t('origam.clipboard.copied_aria_label', 'Value copied to clipboard')
-		: t('origam.clipboard.copy_aria_label', 'Copy to clipboard')
+		? t('origam.clipboard.copied_aria_label')
+		: t('origam.clipboard.copy_aria_label')
 	)
 
 	/*********************************************************

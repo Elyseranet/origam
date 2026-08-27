@@ -115,7 +115,7 @@
    ********************************************************/
   const { t } = useLocale()
 
-  const dismissLabel = computed<string>(() => props.dismissLabel ?? t('origam.snackbar.dismiss', 'Dismiss notification'))
+  const dismissLabel = computed<string>(() => props.dismissLabel ?? t('origam.snackbar.dismiss'))
 
   const { filterProps } = useProps<ISnackbarItemProps>(props)
 

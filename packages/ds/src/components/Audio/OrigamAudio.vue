@@ -350,8 +350,8 @@
 	 * transport) lives inside `<origam-media-controller>` and
 	 * resolves there directly.
 	 ********************************************************/
-	const waveformAriaLabel = computed<string>(() => t('origam.media.seek', 'Seek'))
-	const loadingLabel = computed<string>(() => t('origam.loading', 'Loading'))
+	const waveformAriaLabel = computed<string>(() => t('origam.media.seek'))
+	const loadingLabel = computed<string>(() => t('origam.loading'))
 
 	/*********************************************************
 	 * Resolved autoplay / muted — autoplay is suppressed when the user
