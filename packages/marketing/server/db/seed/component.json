@@ -26326,54 +26326,7 @@
               }
             ]
           },
-          "tokens": {
-            "excerpt": [
-              {
-                "type": "color",
-                "value": "{color.action.primary.bg}",
-                "tokenPath": "checkbox.input.background-color-checked",
-                "descriptionKey": "components.checkbox.tokens.bg_checked",
-                "descriptionFallback": "Background when checked."
-              },
-              {
-                "type": "color",
-                "value": "{color.border.default}",
-                "tokenPath": "checkbox.input.border-color",
-                "descriptionKey": "components.checkbox.tokens.border_color",
-                "descriptionFallback": "Default border colour."
-              },
-              {
-                "type": "dimension",
-                "value": "{radius.xs}",
-                "tokenPath": "checkbox.input.border-radius",
-                "descriptionKey": "components.checkbox.tokens.border_radius",
-                "descriptionFallback": "Corner radius of the box."
-              },
-              {
-                "type": "color",
-                "value": "{color.text.onColor}",
-                "tokenPath": "checkbox.icon.color",
-                "descriptionKey": "components.checkbox.tokens.icon_color",
-                "descriptionFallback": "Checkmark icon colour."
-              },
-              {
-                "type": "color",
-                "value": "{color.text.primary}",
-                "tokenPath": "checkbox.label.color",
-                "descriptionKey": "components.checkbox.tokens.label_color",
-                "descriptionFallback": "Label text colour."
-              },
-              {
-                "type": "duration",
-                "value": "{motion.duration.medium}",
-                "tokenPath": "checkbox.transition-duration",
-                "descriptionKey": "components.checkbox.tokens.transition_duration",
-                "descriptionFallback": "Check/uncheck animation duration."
-              }
-            ],
-            "sourceFile": "packages/ds/tokens/component/checkbox.json",
-            "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
-          },
+          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"200\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <rect x=\"20\" y=\"40\" width=\"660\" height=\"120\" rx=\"4\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <rect x=\"50\" y=\"76\" width=\"40\" height=\"40\" rx=\"4\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <polyline points=\"58,97 68,108 82,84\" stroke=\"white\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/>\n  <rect x=\"110\" y=\"86\" width=\"220\" height=\"20\" rx=\"3\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.08))\"/>\n  <text x=\"220\" y=\"100\" font-size=\"12\" fill=\"var(--origam-color__text---primary, #1a0f3c)\" text-anchor=\"middle\" font-family=\"sans-serif\">Checkbox label</text>\n  <rect x=\"20\" y=\"130\" width=\"660\" height=\"20\" rx=\"3\" fill=\"none\"/>\n  <text x=\"360\" y=\"143\" font-size=\"10\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" text-anchor=\"middle\" font-family=\"sans-serif\">Hint / validation messages</text>\n  <circle cx=\"28\" cy=\"48\" r=\"10\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"28\" y=\"52\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"70\" cy=\"70\" r=\"10\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"70\" y=\"74\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <circle cx=\"220\" cy=\"80\" r=\"10\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"220\" y=\"84\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">3</text>\n  <circle cx=\"360\" cy=\"134\" r=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\"/>\n  <text x=\"360\" y=\"138\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">4</text>\n  <circle cx=\"68\" cy=\"96\" r=\"9\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"68\" y=\"100\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">5</text>\n  <text x=\"350\" y=\"185\" font-size=\"9\" fill=\"var(--origam-color__text---disabled, #b5a0d8)\" text-anchor=\"middle\" font-style=\"italic\">Checkbox wraps OrigamInput (frame) + OrigamCheckboxBtn (control)</text>\n",
             "code": "<origam-input class=\"origam-checkbox\">\n  <template #default=\"{ id, messagesId, isDisabled, isReadonly, isValid }\">\n    <origam-checkbox-btn\n      :id=\"id\"\n      :aria-describedby=\"messagesId\"\n      :disabled=\"isDisabled\"\n      :error=\"!isValid\"\n      :readonly=\"isReadonly\"\n    >\n      <!-- hidden native checkbox -->\n      <input type=\"checkbox\" class=\"origam-selection-control__input\" />\n      <!-- visual box + icon -->\n      <span class=\"origam-checkbox-btn__box\">\n        <origam-icon class=\"origam-checkbox-btn__icon\" />\n      </span>\n      <!-- label -->\n      <label class=\"origam-selection-control__label\" :for=\"id\" />\n    </origam-checkbox-btn>\n  </template>\n</origam-input>",
@@ -27068,47 +27021,7 @@
               }
             ]
           },
-          "tokens": {
-            "excerpt": [
-              {
-                "type": "color",
-                "value": "{color.action.secondary.bg}",
-                "tokenPath": "checkbox-btn.background-color",
-                "descriptionKey": "components.checkbox_btn.tokens.background_color",
-                "descriptionFallback": "Default button background."
-              },
-              {
-                "type": "color",
-                "value": "{color.action.primary.bg}",
-                "tokenPath": "checkbox-btn.background-color-checked",
-                "descriptionKey": "components.checkbox_btn.tokens.background_color_checked",
-                "descriptionFallback": "Background when checked."
-              },
-              {
-                "type": "dimension",
-                "value": "{radius.sm}",
-                "tokenPath": "checkbox-btn.border-radius",
-                "descriptionKey": "components.checkbox_btn.tokens.border_radius",
-                "descriptionFallback": "Border radius of the control."
-              },
-              {
-                "type": "fontWeight",
-                "value": "{font.weight.medium}",
-                "tokenPath": "checkbox-btn.font-weight",
-                "descriptionKey": "components.checkbox_btn.tokens.font_weight",
-                "descriptionFallback": "Label font weight."
-              },
-              {
-                "type": "duration",
-                "value": "{motion.duration.medium}",
-                "tokenPath": "checkbox-btn.transition-duration",
-                "descriptionKey": "components.checkbox_btn.tokens.transition_duration",
-                "descriptionFallback": "Transition duration for background, border and colour changes."
-              }
-            ],
-            "sourceFile": "packages/ds/tokens/component/checkbox-btn.json",
-            "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
-          },
+          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"180\" fill=\"var(--origam-color__surface---sunken, #f9fafb)\" rx=\"4\"/>\n  <rect x=\"16\" y=\"24\" width=\"668\" height=\"96\" rx=\"4\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <text x=\"350\" y=\"16\" font-size=\"10\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\" font-weight=\"700\">origam-checkbox-btn ①</text>\n  <rect x=\"32\" y=\"40\" width=\"636\" height=\"64\" rx=\"3\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.04))\" stroke=\"var(--origam-color__border---default, rgba(124,58,237,0.3))\" stroke-width=\"1\" stroke-dasharray=\"4 2\"/>\n  <text x=\"100\" y=\"72\" font-size=\"9\" fill=\"var(--origam-color__text---secondary, #6b7280)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">origam-selection-control ②</text>\n  <rect x=\"300\" y=\"50\" width=\"44\" height=\"44\" rx=\"22\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.10))\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <text x=\"322\" y=\"76\" font-size=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">icon ③</text>\n  <rect x=\"360\" y=\"60\" width=\"120\" height=\"24\" rx=\"2\" fill=\"var(--origam-color__surface---sunken, #f3f4f6)\" stroke=\"var(--origam-color__border---default, #e5e7eb)\" stroke-width=\"1\"/>\n  <text x=\"420\" y=\"76\" font-size=\"9\" fill=\"var(--origam-color__text---secondary, #6b7280)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">label / #label ④</text>\n  <text x=\"350\" y=\"148\" font-size=\"8.5\" fill=\"var(--origam-color__text---tertiary, #9ca3af)\" text-anchor=\"middle\" font-family=\"sans-serif\">Delegates all selection logic to OrigamSelectionControl (trueIcon / falseIcon / indeterminateIcon)</text>\n",
             "code": "<!-- root class carries BEM + host style -->\n<origam-selection-control\n  class=\"origam-checkbox-btn\"\n  type=\"checkbox\"\n  :true-icon=\"trueIcon\"\n  :false-icon=\"falseIcon\"\n  :aria-checked=\"indeterminate ? 'mixed' : undefined\"\n>\n  <template #default>\n    <slot name=\"default\" />\n  </template>\n  <template #label>\n    <slot name=\"label\" />\n  </template>\n  <template #input=\"{ props, icon, textColorStyles, backgroundColorStyles, model }\">\n    <slot name=\"input\" v-bind=\"{ props, icon, textColorStyles, backgroundColorStyles, model }\" />\n  </template>\n</origam-selection-control>",
@@ -36162,54 +36075,7 @@
               }
             ]
           },
-          "tokens": {
-            "excerpt": [
-              {
-                "type": "color",
-                "value": "{color.surface.raised}",
-                "tokenPath": "contextual-menu.background",
-                "descriptionKey": "components.contextual_menu.tokens.background",
-                "descriptionFallback": "Menu panel background."
-              },
-              {
-                "type": "dimension",
-                "value": "{radius.md}",
-                "tokenPath": "contextual-menu.border-radius",
-                "descriptionKey": "components.contextual_menu.tokens.border_radius",
-                "descriptionFallback": "Menu panel border-radius."
-              },
-              {
-                "type": "shadow",
-                "value": "{shadow.lg}",
-                "tokenPath": "contextual-menu.box-shadow",
-                "descriptionKey": "components.contextual_menu.tokens.box_shadow",
-                "descriptionFallback": "Menu panel elevation shadow."
-              },
-              {
-                "type": "number",
-                "value": "{zIndex.dropdown}",
-                "tokenPath": "contextual-menu.z-index",
-                "descriptionKey": "components.contextual_menu.tokens.z_index",
-                "descriptionFallback": "Stack order of the menu panel (= 1000)."
-              },
-              {
-                "type": "duration",
-                "value": "{motion.duration.fast}",
-                "tokenPath": "contextual-menu.transition-duration",
-                "descriptionKey": "components.contextual_menu.tokens.transition_duration",
-                "descriptionFallback": "Open/close animation duration."
-              },
-              {
-                "type": "dimension",
-                "value": "320px",
-                "tokenPath": "contextual-menu.content.max-width",
-                "descriptionKey": "components.contextual_menu.tokens.content_max_width",
-                "descriptionFallback": "Maximum width of the content area."
-              }
-            ],
-            "sourceFile": "packages/ds/tokens/component/contextual-menu.json",
-            "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
-          },
+          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"300\" fill=\"var(--origam-color__surface---sunken, #f5f5f5)\" rx=\"4\"/>\n  <rect x=\"20\" y=\"20\" width=\"660\" height=\"230\" rx=\"4\" fill=\"var(--origam-color__surface---raised, #fafafa)\" stroke=\"var(--origam-color__border---subtle, rgba(0,0,0,0.1))\" stroke-width=\"1\" stroke-dasharray=\"6 3\"/>\n  <text x=\"350\" y=\"135\" font-size=\"13\" fill=\"var(--origam-color__text---disabled, #bbb)\" text-anchor=\"middle\" font-family=\"system-ui\">Right-click zone (#activator)</text>\n  <circle cx=\"36\" cy=\"28\" r=\"10\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"36\" y=\"32.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <rect x=\"200\" y=\"160\" width=\"220\" height=\"120\" rx=\"8\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---subtle, rgba(0,0,0,0.12))\" stroke-width=\"1.5\" filter=\"url(#shadow)\"/>\n  <circle cx=\"216\" cy=\"168\" r=\"10\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"216\" y=\"172.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <rect x=\"208\" y=\"180\" width=\"204\" height=\"32\" rx=\"4\" fill=\"var(--origam-color__action--secondary---bg, rgba(124,58,237,0.08))\"/>\n  <text x=\"220\" y=\"200\" font-size=\"11\" fill=\"var(--origam-color__text---primary, #222)\" font-family=\"system-ui\">Cut</text>\n  <rect x=\"208\" y=\"214\" width=\"204\" height=\"32\" rx=\"4\" fill=\"none\"/>\n  <text x=\"220\" y=\"234\" font-size=\"11\" fill=\"var(--origam-color__text---primary, #222)\" font-family=\"system-ui\">Copy</text>\n  <rect x=\"208\" y=\"248\" width=\"204\" height=\"28\" rx=\"4\" fill=\"none\"/>\n  <text x=\"220\" y=\"266\" font-size=\"11\" fill=\"var(--origam-color__text---primary, #222)\" font-family=\"system-ui\">Paste</text>\n  <circle cx=\"216\" cy=\"200\" r=\"9\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"216\" y=\"204.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">3</text>\n  <text x=\"350\" y=\"290\" font-size=\"9\" fill=\"var(--origam-color__text---disabled, #b0b0b0)\" text-anchor=\"middle\" font-style=\"italic\">① = activator zone (v-bind=\"props\"). ② = menu panel (role=\"menu\"). ③ = menu items (#default slot).</text>\n",
             "code": "<!-- OrigamContextualMenu wraps OrigamMenu with preconfigured open-on-context-menu -->\n<!-- All OrigamMenu slots are forwarded transparently -->\n<origam-menu\n  open-on-context-menu\n  target=\"cursor\"\n  activator=\"cursor\"\n>\n  <!-- #default slot: your menu content -->\n  <origam-list>\n    <origam-list-item title=\"Cut\"   prepend-icon=\"mdi-content-cut\" />\n    <origam-list-item title=\"Copy\"  prepend-icon=\"mdi-content-copy\" />\n    <origam-list-item title=\"Paste\" prepend-icon=\"mdi-content-paste\" />\n  </origam-list>\n\n  <!-- #activator slot: the right-click zone -->\n  <template #activator=\"{ props }\">\n    <div v-bind=\"props\">Right-click zone</div>\n  </template>\n</origam-menu>",
@@ -44227,47 +44093,7 @@
               }
             ]
           },
-          "tokens": {
-            "excerpt": [
-              {
-                "type": "dimension",
-                "value": "200px",
-                "tokenPath": "date-picker-field.min-width",
-                "descriptionKey": "components.date_picker_field.tokens.min_width",
-                "descriptionFallback": "Minimum field width."
-              },
-              {
-                "type": "dimension",
-                "value": "320px",
-                "tokenPath": "date-picker-field.max-width",
-                "descriptionKey": "components.date_picker_field.tokens.max_width",
-                "descriptionFallback": "Maximum field width."
-              },
-              {
-                "type": "dimension",
-                "value": "{space.1}",
-                "tokenPath": "date-picker-field.menu-offset",
-                "descriptionKey": "components.date_picker_field.tokens.menu_offset",
-                "descriptionFallback": "Gap between field and calendar dropdown."
-              },
-              {
-                "type": "color",
-                "value": "{color.text.secondary}",
-                "tokenPath": "date-picker-field.icon.color",
-                "descriptionKey": "components.date_picker_field.tokens.icon_color",
-                "descriptionFallback": "Default calendar icon colour."
-              },
-              {
-                "type": "color",
-                "value": "{color.feedback.danger.fgSubtle}",
-                "tokenPath": "date-picker-field.icon.color-error",
-                "descriptionKey": "components.date_picker_field.tokens.icon_color_error",
-                "descriptionFallback": "Calendar icon colour in error state."
-              }
-            ],
-            "sourceFile": "packages/ds/tokens/component/date-picker-field.json",
-            "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Inherits TextField tokens for the field chrome and DatePicker tokens for the popup."
-          },
+          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"240\" fill=\"var(--origam-color__surface---sunken, #f9fafb)\" rx=\"4\"/>\n  <rect x=\"60\" y=\"30\" width=\"580\" height=\"54\" rx=\"8\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---default, rgba(0,0,0,0.3))\" stroke-width=\"1.5\"/>\n  <circle cx=\"76\" cy=\"38\" r=\"10\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"76\" y=\"42.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <text x=\"78\" y=\"54\" font-size=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" font-weight=\"700\" font-family=\"'JetBrains Mono',monospace\">origam-date-picker-field</text>\n  <text x=\"80\" y=\"66\" font-size=\"12\" fill=\"var(--origam-color__text---disabled, #aaa)\" font-family=\"system-ui\">DD / MM / YYYY</text>\n  <circle cx=\"620\" cy=\"57\" r=\"14\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"none\"/>\n  <text x=\"620\" y=\"61\" font-size=\"16\" fill=\"var(--origam-color__text---secondary, #888)\" text-anchor=\"middle\">📅</text>\n  <circle cx=\"636\" cy=\"42\" r=\"9\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"636\" y=\"46.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <rect x=\"60\" y=\"100\" width=\"580\" height=\"130\" rx=\"10\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---subtle, rgba(0,0,0,0.1))\" stroke-width=\"1.5\"/>\n  <circle cx=\"76\" cy=\"108\" r=\"10\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"76\" y=\"112.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">3</text>\n  <text x=\"350\" y=\"145\" font-size=\"11\" fill=\"var(--origam-color__text---secondary, #888)\" text-anchor=\"middle\" font-family=\"system-ui\">OrigamDatePicker</text>\n  <text x=\"350\" y=\"168\" font-size=\"10\" fill=\"var(--origam-color__text---disabled, #bbb)\" text-anchor=\"middle\" font-family=\"system-ui\">(calendar grid)</text>\n  <text x=\"350\" y=\"220\" font-size=\"9\" fill=\"var(--origam-color__text---disabled, #b0b0b0)\" text-anchor=\"middle\" font-style=\"italic\">① = text-field chrome. ② = appendInner calendar icon. ③ = DatePicker dropdown (OrigamMenu).</text>\n",
             "code": "<!-- DatePickerField = TextField chrome + Menu + DatePicker -->\n<origam-text-field class=\"origam-date-picker-field\" :aria-label=\"label\">\n\n  <!-- #prepend, #prependInner, #label, #prefix slots passthrough -->\n\n  <!-- selected dates as text or chips -->\n  <span class=\"origam-date-picker-field__selection-text\">\n    {{ formattedDates }}\n  </span>\n  <!-- OR chips in multiple/range mode -->\n  <origam-chip\n    v-for=\"date in selectedDates\"\n    :closable=\"closableChips\"\n    v-bind=\"chipProps\"\n  />\n\n  <!-- #suffix, #clear slots passthrough -->\n\n  <!-- calendar toggle icon -->\n  <template #appendInner>\n    <origam-icon icon=\"mdi-calendar\" />\n  </template>\n\n  <!-- #append slot passthrough -->\n\n  <!-- floating DatePicker -->\n  <origam-menu\n    v-model=\"menu\"\n    content-class=\"origam-date-picker-field__content\"\n  >\n    <origam-date-picker v-model=\"model\" />\n  </origam-menu>\n</origam-text-field>",
@@ -48128,54 +47954,7 @@
               }
             ]
           },
-          "tokens": {
-            "excerpt": [
-              {
-                "type": "dimension",
-                "value": "28px",
-                "tokenPath": "dialog-confirmation.icon-size",
-                "descriptionKey": "components.dialog_confirmation.tokens.icon_size",
-                "descriptionFallback": "Status icon size in the header prepend slot."
-              },
-              {
-                "type": "color",
-                "value": "{color.feedback.danger.fgSubtle}",
-                "tokenPath": "dialog-confirmation.icon-color-danger",
-                "descriptionKey": "components.dialog_confirmation.tokens.icon_color_danger",
-                "descriptionFallback": "Icon colour for danger status."
-              },
-              {
-                "type": "dimension",
-                "value": "{font.size.lg}",
-                "tokenPath": "dialog-confirmation.title-font-size",
-                "descriptionKey": "components.dialog_confirmation.tokens.title_font_size",
-                "descriptionFallback": "Title font size."
-              },
-              {
-                "type": "fontWeight",
-                "value": "{font.weight.semibold}",
-                "tokenPath": "dialog-confirmation.title-font-weight",
-                "descriptionKey": "components.dialog_confirmation.tokens.title_font_weight",
-                "descriptionFallback": "Title font weight."
-              },
-              {
-                "type": "color",
-                "value": "{color.text.secondary}",
-                "tokenPath": "dialog-confirmation.description-color",
-                "descriptionKey": "components.dialog_confirmation.tokens.description_color",
-                "descriptionFallback": "Body text colour."
-              },
-              {
-                "type": "dimension",
-                "value": "{space.3}",
-                "tokenPath": "dialog-confirmation.actions-gap",
-                "descriptionKey": "components.dialog_confirmation.tokens.actions_gap",
-                "descriptionFallback": "Gap between Cancel and Validate buttons in the footer."
-              }
-            ],
-            "sourceFile": "packages/ds/tokens/component/dialog-confirmation.json",
-            "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
-          },
+          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"300\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <!-- overlay scrim -->\n  <rect x=\"10\" y=\"10\" width=\"680\" height=\"280\" rx=\"4\" fill=\"rgba(0,0,0,0.08)\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.2))\" stroke-width=\"1\" stroke-dasharray=\"6 3\"/>\n  <text x=\"350\" y=\"24\" font-size=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\" font-style=\"italic\">OrigamDialog (inner overlay)</text>\n  <!-- card surface -->\n  <rect x=\"100\" y=\"36\" width=\"500\" height=\"228\" rx=\"8\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <!-- header zone -->\n  <rect x=\"100\" y=\"36\" width=\"500\" height=\"56\" rx=\"8\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.06))\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.25))\" stroke-width=\"1\"/>\n  <text x=\"350\" y=\"68\" font-size=\"10\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">header — prepend (status icon) | title | append (close)</text>\n  <!-- content zone -->\n  <rect x=\"100\" y=\"92\" width=\"500\" height=\"100\" rx=\"0\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.12))\" stroke-width=\"1\" stroke-dasharray=\"4 2\"/>\n  <text x=\"350\" y=\"146\" font-size=\"10\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">#content slot + isRead IntersectionObserver sentinel</text>\n  <!-- footer zone -->\n  <rect x=\"100\" y=\"192\" width=\"500\" height=\"72\" rx=\"8\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.04))\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.18))\" stroke-width=\"1\"/>\n  <!-- cancel button -->\n  <rect x=\"120\" y=\"212\" width=\"100\" height=\"32\" rx=\"4\" fill=\"none\" stroke=\"var(--origam-color__border---default, rgba(124,58,237,0.3))\" stroke-width=\"1\"/>\n  <text x=\"170\" y=\"232\" font-size=\"10\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" text-anchor=\"middle\" font-family=\"system-ui\">Cancel</text>\n  <!-- validate button -->\n  <rect x=\"468\" y=\"212\" width=\"112\" height=\"32\" rx=\"4\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"524\" y=\"232\" font-size=\"10\" fill=\"#fff\" text-anchor=\"middle\" font-family=\"system-ui\" font-weight=\"600\">Validate</text>\n  <text x=\"350\" y=\"247\" font-size=\"8\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-style=\"italic\">Validate enabled only when isRead = true (user scrolled to bottom)</text>\n  <!-- markers -->\n  <circle cx=\"18\" cy=\"18\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"18\" y=\"22.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"108\" cy=\"44\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"108\" y=\"48.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <circle cx=\"108\" cy=\"100\" r=\"9\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"108\" y=\"104.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">3</text>\n  <circle cx=\"108\" cy=\"200\" r=\"9\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"108\" y=\"204.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">4</text>\n",
             "code": "<origam-dialog\n  ref=\"origamDialogRef\"\n  v-model=\"isActive\"\n  v-bind=\"dialogProps\"\n  @is-read=\"handleIsRead\"\n>\n  <template #activator=\"{ props }\">\n    <slot name=\"activator\" v-bind=\"{ props }\" />\n  </template>\n\n  <!-- all header-* slots forwarded -->\n  <template #header><slot name=\"header\" /></template>\n  <template #header-prepend><slot name=\"header-prepend\" /></template>\n  <template #header-title><slot name=\"header-title\" /></template>\n  <!-- … -->\n\n  <template #content><slot name=\"content\" /></template>\n\n  <!-- built-in footer: Cancel + Validate -->\n  <template #footer>\n    <slot name=\"footer\">\n      <origam-container fluid>\n        <origam-row justify=\"space-between\">\n          <origam-col cols=\"auto\">\n            <origam-btn v-if=\"cancellable\" text=\"Cancel\" @click=\"handleCancel\" />\n          </origam-col>\n          <origam-col cols=\"auto\">\n            <origam-btn :disabled=\"!validatable\" text=\"Validate\" @click=\"handleValidate\" />\n          </origam-col>\n        </origam-row>\n      </origam-container>\n    </slot>\n  </template>\n</origam-dialog>",
@@ -50511,33 +50290,7 @@
             "roles": [],
             "keyboard": []
           },
-          "tokens": {
-            "excerpt": [
-              {
-                "type": "duration",
-                "value": "{motion.duration.slow}",
-                "tokenPath": "transition.expand.duration",
-                "descriptionKey": "components.expand_x.tokens.duration",
-                "descriptionFallback": "Expand/collapse animation duration (shared with ExpandY). Slightly slower than fade/slide to account for layout reflow."
-              },
-              {
-                "type": "cubicBezier",
-                "value": "{motion.easing.standard}",
-                "tokenPath": "transition.expand.easing",
-                "descriptionKey": "components.expand_x.tokens.easing",
-                "descriptionFallback": "Easing curve for the expand animation."
-              },
-              {
-                "type": "dimension",
-                "value": "0",
-                "tokenPath": "transition.expand.max-height-from",
-                "descriptionKey": "components.expand_x.tokens.from",
-                "descriptionFallback": "Starting dimension for the expand animation (0 → offsetWidth)."
-              }
-            ],
-            "sourceFile": "packages/ds/tokens/component/transition.json",
-            "pipelineNote": "Expand tokens share the \"expand\" group with ExpandY. Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
-          },
+          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"160\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <!-- enter phase: 0 → full width -->\n  <rect x=\"40\" y=\"40\" width=\"280\" height=\"80\" rx=\"6\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <rect x=\"40\" y=\"40\" width=\"60\" height=\"80\" rx=\"6\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.08))\" stroke=\"none\"/>\n  <text x=\"180\" y=\"76\" font-size=\"10\" fill=\"var(--origam-color__text---primary, #3b1c6e)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">enter-active</text>\n  <text x=\"180\" y=\"92\" font-size=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">width: 0 → offsetWidth</text>\n  <!-- arrow -->\n  <text x=\"350\" y=\"84\" font-size=\"22\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" text-anchor=\"middle\">→</text>\n  <!-- leave phase: full width → 0 -->\n  <rect x=\"380\" y=\"40\" width=\"280\" height=\"80\" rx=\"6\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.35))\" stroke-width=\"1\" stroke-dasharray=\"5 3\" opacity=\"0.55\"/>\n  <rect x=\"600\" y=\"40\" width=\"60\" height=\"80\" rx=\"6\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.05))\" stroke=\"none\" opacity=\"0.55\"/>\n  <text x=\"520\" y=\"76\" font-size=\"10\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\" opacity=\"0.7\">leave-active</text>\n  <text x=\"520\" y=\"92\" font-size=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\" opacity=\"0.7\">width: offsetWidth → 0</text>\n  <!-- markers -->\n  <circle cx=\"48\" cy=\"48\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"48\" y=\"52.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"388\" cy=\"48\" r=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\"/>\n  <text x=\"388\" y=\"52.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n",
             "code": "<!-- OrigamExpandX — JS-driven <transition> -->\n<transition\n  name=\"origam-transition--expand-x\"\n  mode=\"in-out\"\n  :css=\"!disabled\"\n  @before-enter=\"handleBeforeEnter\"\n  @enter=\"handleEnter\"\n  @after-enter=\"handleAfterEnter\"\n  @enter-cancelled=\"handleEnterCancelled\"\n  @leave=\"handleLeave\"\n  @after-leave=\"handleAfterLeave\"\n  @leave-cancelled=\"handleLeaveCancelled\"\n>\n  <slot name=\"default\" />\n</transition>",
@@ -50874,33 +50627,7 @@
             "roles": [],
             "keyboard": []
           },
-          "tokens": {
-            "excerpt": [
-              {
-                "type": "duration",
-                "value": "{motion.duration.slow}",
-                "tokenPath": "transition.expand.duration",
-                "descriptionKey": "components.expand_y.tokens.duration",
-                "descriptionFallback": "Expand/collapse animation duration (shared with ExpandX). Slightly slower than fade/slide to account for layout reflow."
-              },
-              {
-                "type": "cubicBezier",
-                "value": "{motion.easing.standard}",
-                "tokenPath": "transition.expand.easing",
-                "descriptionKey": "components.expand_y.tokens.easing",
-                "descriptionFallback": "Easing curve for the expand animation."
-              },
-              {
-                "type": "dimension",
-                "value": "0",
-                "tokenPath": "transition.expand.max-height-from",
-                "descriptionKey": "components.expand_y.tokens.from",
-                "descriptionFallback": "Starting dimension for the expand animation (0 → offsetHeight)."
-              }
-            ],
-            "sourceFile": "packages/ds/tokens/component/transition.json",
-            "pipelineNote": "Expand tokens share the \"expand\" group with ExpandX. Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
-          },
+          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"220\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <!-- enter phase: 0 → full height -->\n  <rect x=\"80\" y=\"20\" width=\"220\" height=\"160\" rx=\"6\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <rect x=\"80\" y=\"140\" width=\"220\" height=\"40\" rx=\"6\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.06))\" stroke=\"none\"/>\n  <text x=\"190\" y=\"100\" font-size=\"10\" fill=\"var(--origam-color__text---primary, #3b1c6e)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">enter-active</text>\n  <text x=\"190\" y=\"118\" font-size=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">height: 0 → offsetHeight</text>\n  <!-- arrow -->\n  <text x=\"350\" y=\"115\" font-size=\"22\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" text-anchor=\"middle\">→</text>\n  <!-- leave phase: full height → 0 -->\n  <rect x=\"400\" y=\"20\" width=\"220\" height=\"160\" rx=\"6\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.35))\" stroke-width=\"1\" stroke-dasharray=\"5 3\" opacity=\"0.55\"/>\n  <rect x=\"400\" y=\"20\" width=\"220\" height=\"40\" rx=\"6\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.04))\" stroke=\"none\" opacity=\"0.55\"/>\n  <text x=\"510\" y=\"100\" font-size=\"10\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\" opacity=\"0.7\">leave-active</text>\n  <text x=\"510\" y=\"118\" font-size=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\" opacity=\"0.7\">height: offsetHeight → 0</text>\n  <!-- markers -->\n  <circle cx=\"88\" cy=\"28\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"88\" y=\"32.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"408\" cy=\"28\" r=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\"/>\n  <text x=\"408\" y=\"32.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n",
             "code": "<!-- OrigamExpandY — JS-driven <transition> -->\n<transition\n  name=\"origam-transition--expand-y\"\n  mode=\"in-out\"\n  :css=\"!disabled\"\n  @before-enter=\"handleBeforeEnter\"\n  @enter=\"handleEnter\"\n  @after-enter=\"handleAfterEnter\"\n  @enter-cancelled=\"handleEnterCancelled\"\n  @leave=\"handleLeave\"\n  @after-leave=\"handleAfterLeave\"\n  @leave-cancelled=\"handleLeaveCancelled\"\n>\n  <slot name=\"default\" />\n</transition>",
@@ -53829,26 +53556,7 @@
             "roles": [],
             "keyboard": []
           },
-          "tokens": {
-            "excerpt": [
-              {
-                "type": "duration",
-                "value": "{motion.duration.medium}",
-                "tokenPath": "transition.default.duration",
-                "descriptionKey": "components.fade.tokens.duration",
-                "descriptionFallback": "Fade enter/leave transition duration (300 ms)."
-              },
-              {
-                "type": "string",
-                "value": "{motion.easing.standard}",
-                "tokenPath": "transition.default.easing",
-                "descriptionKey": "components.fade.tokens.easing",
-                "descriptionFallback": "Easing applied to the opacity transition: cubic-bezier(0.4, 0, 0.2, 1)."
-              }
-            ],
-            "sourceFile": "packages/ds/tokens/component/transition.json",
-            "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
-          },
+          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"160\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <rect x=\"40\" y=\"40\" width=\"260\" height=\"80\" rx=\"6\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <text x=\"170\" y=\"75\" font-size=\"11\" fill=\"var(--origam-color__text---primary, #3b1c6e)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">enter-active</text>\n  <text x=\"170\" y=\"91\" font-size=\"10\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">opacity: 0 → 1</text>\n  <rect x=\"400\" y=\"40\" width=\"260\" height=\"80\" rx=\"6\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.35))\" stroke-width=\"1\" stroke-dasharray=\"5 3\" opacity=\"0.45\"/>\n  <text x=\"530\" y=\"75\" font-size=\"11\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">leave-active</text>\n  <text x=\"530\" y=\"91\" font-size=\"10\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">opacity: 1 → 0</text>\n  <circle cx=\"48\" cy=\"48\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"48\" y=\"52\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"408\" cy=\"48\" r=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\"/>\n  <text x=\"408\" y=\"52\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <text x=\"350\" y=\"80\" font-size=\"20\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" text-anchor=\"middle\">→</text>\n",
             "code": "<component :is=\"tag\" :name=\"name\" v-bind=\"transitionProps\">\n  <slot name=\"default\" />\n</component>",
@@ -59255,54 +58963,7 @@
             ],
             "keyboard": []
           },
-          "tokens": {
-            "excerpt": [
-              {
-                "type": "color",
-                "value": "{color.surface.overlay}",
-                "tokenPath": "img.background-color",
-                "descriptionKey": "components.img.tokens.background_color",
-                "descriptionFallback": "Container background while loading."
-              },
-              {
-                "type": "dimension",
-                "value": "{radius.none}",
-                "tokenPath": "img.border-radius",
-                "descriptionKey": "components.img.tokens.border_radius",
-                "descriptionFallback": "Default corner radius (0 — overridden by rounded prop)."
-              },
-              {
-                "type": "duration",
-                "value": "{motion.duration.medium}",
-                "tokenPath": "img.transition-duration",
-                "descriptionKey": "components.img.tokens.transition_duration",
-                "descriptionFallback": "Fade-in duration on load."
-              },
-              {
-                "type": "color",
-                "value": "{color.surface.disabled}",
-                "tokenPath": "img.placeholder.background-color",
-                "descriptionKey": "components.img.tokens.placeholder_bg",
-                "descriptionFallback": "Background of the placeholder slot zone."
-              },
-              {
-                "type": "color",
-                "value": "{color.feedback.danger.bgSubtle}",
-                "tokenPath": "img.error.background-color",
-                "descriptionKey": "components.img.tokens.error_bg",
-                "descriptionFallback": "Background of the error slot zone."
-              },
-              {
-                "type": "color",
-                "value": "{color.feedback.danger.fgSubtle}",
-                "tokenPath": "img.error.color",
-                "descriptionKey": "components.img.tokens.error_color",
-                "descriptionFallback": "Foreground colour of the error slot zone."
-              }
-            ],
-            "sourceFile": "packages/ds/tokens/component/img.json",
-            "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
-          },
+          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"200\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <rect x=\"28\" y=\"16\" width=\"644\" height=\"168\" rx=\"4\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <rect x=\"48\" y=\"36\" width=\"604\" height=\"108\" rx=\"3\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.06))\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.2))\" stroke-width=\"1\" stroke-dasharray=\"3 2\"/>\n  <text x=\"350\" y=\"80\" font-size=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">__picture (absolute, object-fit: contain/cover)</text>\n  <rect x=\"200\" y=\"52\" width=\"300\" height=\"40\" rx=\"3\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.04))\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.2))\" stroke-width=\"1\" stroke-dasharray=\"3 2\"/>\n  <text x=\"350\" y=\"76\" font-size=\"8\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\">__placeholder (lazy load blur)</text>\n  <rect x=\"48\" y=\"156\" width=\"604\" height=\"20\" rx=\"3\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.06))\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.15))\" stroke-width=\"1\" stroke-dasharray=\"3 2\"/>\n  <text x=\"350\" y=\"170\" font-size=\"8\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\">#default slot (overlay content)</text>\n  <circle cx=\"36\" cy=\"24\" r=\"10\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"36\" y=\"28.5\" font-size=\"9\" fill=\"var(--origam-color__action--primary---fg, #fff)\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"56\" cy=\"44\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"56\" y=\"48\" font-size=\"9\" fill=\"var(--origam-color__action--primary---fg, #fff)\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <circle cx=\"200\" cy=\"56\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"200\" y=\"60\" font-size=\"9\" fill=\"var(--origam-color__action--primary---fg, #fff)\" text-anchor=\"middle\" font-weight=\"700\">3</text>\n",
             "code": "<!-- OrigamImg — wraps OrigamResponsive for aspect ratio -->\n<origam-responsive\n  v-intersect=\"intersect\"\n  :aria-label=\"alt\"\n  :aspect-ratio=\"aspectRatio\"\n  :role=\"alt ? 'img' : undefined\"\n  class=\"origam-img\"\n>\n  <template #additional>\n    <!-- main image (fade-in on load) -->\n    <origam-transition :transition=\"transition\">\n      <img v-show=\"isLoaded\" class=\"origam-img__picture origam-img__picture--cover\" />\n    </origam-transition>\n\n    <!-- lazySrc placeholder (blur filter) -->\n    <origam-transition :transition=\"transition\">\n      <img v-if=\"lazySrc && !isLoaded\" class=\"origam-img__picture origam-img__picture--preload\" />\n    </origam-transition>\n\n    <!-- #placeholder slot — v-if isLoading && slots.placeholder -->\n    <div v-if=\"(isLoading || isError) && slots.placeholder\" class=\"origam-img__placeholder\">\n      <slot name=\"placeholder\" />\n    </div>\n\n    <!-- #error slot — v-if isError && slots.error -->\n    <div v-if=\"isError && slots.error\" class=\"origam-img__error\">\n      <slot name=\"error\" />\n    </div>\n\n    <!-- gradient overlay — v-if gradient -->\n    <div v-if=\"gradient\" class=\"origam-img__gradient\" />\n  </template>\n\n  <!-- #default slot — overlay content -->\n  <template #default v-if=\"hasContent\">\n    <slot name=\"default\" />\n  </template>\n</origam-responsive>",
@@ -63399,33 +63060,7 @@
             "roles": [],
             "keyboard": []
           },
-          "tokens": {
-            "excerpt": [
-              {
-                "type": "duration",
-                "value": "{motion.duration.medium}",
-                "tokenPath": "lazy.transition-duration",
-                "descriptionKey": "components.lazy.tokens.transition_duration",
-                "descriptionFallback": "Duration of the reveal fade-in transition."
-              },
-              {
-                "type": "dimension",
-                "value": "{space.10}",
-                "tokenPath": "lazy.placeholder-min-height",
-                "descriptionKey": "components.lazy.tokens.placeholder_min_height",
-                "descriptionFallback": "Default minimum height for the placeholder zone."
-              },
-              {
-                "type": "color",
-                "value": "{color.surface.overlay}",
-                "tokenPath": "lazy.placeholder-background-color",
-                "descriptionKey": "components.lazy.tokens.placeholder_background_color",
-                "descriptionFallback": "Background color of the empty placeholder zone."
-              }
-            ],
-            "sourceFile": "packages/ds/tokens/component/lazy.json",
-            "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
-          },
+          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"200\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <rect x=\"24\" y=\"24\" width=\"300\" height=\"152\" rx=\"4\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.35))\" stroke-width=\"1.5\" stroke-dasharray=\"6 3\"/>\n  <text x=\"174\" y=\"96\" font-size=\"11\" fill=\"var(--origam-color__text---disabled, #b5a0d8)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">placeholder</text>\n  <text x=\"174\" y=\"112\" font-size=\"9\" fill=\"var(--origam-color__text---disabled, #b5a0d8)\" text-anchor=\"middle\" font-style=\"italic\">(min-height applied, children not mounted)</text>\n  <rect x=\"376\" y=\"24\" width=\"300\" height=\"152\" rx=\"4\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.06))\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <text x=\"526\" y=\"88\" font-size=\"11\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">revealed</text>\n  <text x=\"526\" y=\"104\" font-size=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-style=\"italic\">(children mounted + fade transition)</text>\n  <circle cx=\"32\" cy=\"32\" r=\"10\" fill=\"var(--origam-color__border---default, rgba(168,85,247,0.5))\"/>\n  <text x=\"32\" y=\"36.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"384\" cy=\"32\" r=\"10\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"384\" y=\"36.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n",
             "code": "<component :is=\"tag\" v-intersect=\"intersect\" :aria-busy=\"!isActive || undefined\" class=\"origam-lazy\">\n  <!-- children rendered only when isActive=true -->\n  <template v-if=\"isActive\">\n    <origam-transition :transition=\"transition\" appear>\n      <slot name=\"default\" />\n    </origam-transition>\n  </template>\n</component>",
@@ -79827,54 +79462,7 @@
             ],
             "keyboard": []
           },
-          "tokens": {
-            "excerpt": [
-              {
-                "type": "color",
-                "value": "{color.text.primary}",
-                "tokenPath": "qrcode.foreground",
-                "descriptionKey": "components.qr_code.tokens.foreground",
-                "descriptionFallback": "Default dark module fill color."
-              },
-              {
-                "type": "color",
-                "value": "{color.surface.default}",
-                "tokenPath": "qrcode.background-color",
-                "descriptionKey": "components.qr_code.tokens.background_color",
-                "descriptionFallback": "Default quiet-zone background."
-              },
-              {
-                "type": "dimension",
-                "value": "120px",
-                "tokenPath": "qrcode.size-sm",
-                "descriptionKey": "components.qr_code.tokens.size_sm",
-                "descriptionFallback": "Small wrapper size."
-              },
-              {
-                "type": "dimension",
-                "value": "240px",
-                "tokenPath": "qrcode.size-md",
-                "descriptionKey": "components.qr_code.tokens.size_md",
-                "descriptionFallback": "Medium (default) wrapper size."
-              },
-              {
-                "type": "dimension",
-                "value": "480px",
-                "tokenPath": "qrcode.size-lg",
-                "descriptionKey": "components.qr_code.tokens.size_lg",
-                "descriptionFallback": "Large wrapper size."
-              },
-              {
-                "type": "dimension",
-                "value": "0",
-                "tokenPath": "qrcode.module.corner-radius",
-                "descriptionKey": "components.qr_code.tokens.module_corner_radius",
-                "descriptionFallback": "Default module corner radius (square). Set via qrCodeProps.rounded."
-              }
-            ],
-            "sourceFile": "packages/ds/tokens/component/qrcode.json",
-            "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Module color and corner-radius are applied at SVG generation time via resolveQrColor / resolveQrCornerRadius utilities."
-          },
+          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"280\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <rect x=\"200\" y=\"20\" width=\"300\" height=\"240\" rx=\"8\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---default, rgba(124,58,237,0.3))\" stroke-width=\"1.5\"/>\n  <text x=\"350\" y=\"50\" font-size=\"9\" fill=\"var(--origam-color__text---secondary, #7c3aed)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">origam-qr-code__title</text>\n  <rect x=\"220\" y=\"58\" width=\"260\" height=\"160\" rx=\"4\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.08))\"/>\n  <text x=\"350\" y=\"135\" font-size=\"32\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" text-anchor=\"middle\">⬛</text>\n  <text x=\"350\" y=\"160\" font-size=\"8\" fill=\"var(--origam-color__text---tertiary, #9ca3af)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">origam-qr-code__svg-host</text>\n  <circle cx=\"350\" cy=\"120\" r=\"24\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---default, rgba(124,58,237,0.2))\" stroke-width=\"1\"/>\n  <text x=\"350\" y=\"125\" font-size=\"14\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" text-anchor=\"middle\">◆</text>\n  <text x=\"350\" y=\"235\" font-size=\"8\" fill=\"var(--origam-color__text---tertiary, #9ca3af)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">origam-qr-code__center (icon/image/#center slot)</text>\n  <circle cx=\"196\" cy=\"24\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"196\" y=\"28\" font-size=\"8\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"196\" cy=\"50\" r=\"9\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"196\" y=\"54\" font-size=\"8\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <circle cx=\"196\" cy=\"62\" r=\"9\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"196\" y=\"66\" font-size=\"8\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">3</text>\n  <circle cx=\"324\" cy=\"100\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"324\" y=\"104\" font-size=\"8\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">4</text>\n  <circle cx=\"196\" cy=\"232\" r=\"9\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"196\" y=\"236\" font-size=\"8\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">5</text>\n",
             "code": "<div class=\"origam-qr-code\" role=\"img\" :aria-label=\"resolvedAriaLabel\">\n  <!-- optional title above the matrix -->\n  <div v-if=\"title\" class=\"origam-qr-code__title\">{{ title }}</div>\n\n  <!-- SVG host + center overlay -->\n  <div class=\"origam-qr-code__svg-host\">\n    <!-- inline SVG generated by qrcode-generator -->\n    <!-- v-html: the SVG string is sanitized and contains only geometric elements -->\n\n    <!-- centred overlay (icon / image / #center slot) -->\n    <div class=\"origam-qr-code__center\" aria-hidden=\"true\">\n      <slot name=\"center\" :size=\"centerSize\">\n        <origam-avatar\n          v-if=\"image\"\n          class=\"origam-qr-code__center-avatar\"\n        />\n        <origam-icon\n          v-else-if=\"icon\"\n          class=\"origam-qr-code__center-icon\"\n          :icon=\"icon\"\n        />\n      </slot>\n    </div>\n  </div>\n</div>",
@@ -80439,54 +80027,7 @@
               }
             ]
           },
-          "tokens": {
-            "excerpt": [
-              {
-                "type": "dimension",
-                "value": "20px",
-                "tokenPath": "radio.input.size",
-                "descriptionKey": "components.radio.tokens.input_size",
-                "descriptionFallback": "Diameter of the circular radio input."
-              },
-              {
-                "type": "color",
-                "value": "{color.border.default}",
-                "tokenPath": "radio.input.border-color",
-                "descriptionKey": "components.radio.tokens.input_border_color",
-                "descriptionFallback": "Border color of the unchecked radio."
-              },
-              {
-                "type": "color",
-                "value": "{color.action.primary.bg}",
-                "tokenPath": "radio.input.border-color-checked",
-                "descriptionKey": "components.radio.tokens.input_border_color_checked",
-                "descriptionFallback": "Border color when checked."
-              },
-              {
-                "type": "dimension",
-                "value": "10px",
-                "tokenPath": "radio.dot.size",
-                "descriptionKey": "components.radio.tokens.dot_size",
-                "descriptionFallback": "Diameter of the inner selection dot."
-              },
-              {
-                "type": "color",
-                "value": "{color.action.primary.bg}",
-                "tokenPath": "radio.dot.background-color",
-                "descriptionKey": "components.radio.tokens.dot_background_color",
-                "descriptionFallback": "Fill color of the selection dot when checked."
-              },
-              {
-                "type": "duration",
-                "value": "{motion.duration.fast}",
-                "tokenPath": "radio.input.transition-duration",
-                "descriptionKey": "components.radio.tokens.transition_duration",
-                "descriptionFallback": "Transition duration for border and dot animations."
-              }
-            ],
-            "sourceFile": "packages/ds/tokens/component/radio.json",
-            "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
-          },
+          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"480\" height=\"180\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <rect x=\"20\" y=\"20\" width=\"440\" height=\"140\" rx=\"4\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\" stroke-dasharray=\"6 3\"/>\n  <circle cx=\"70\" cy=\"90\" r=\"30\" fill=\"none\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"2\"/>\n  <circle cx=\"70\" cy=\"90\" r=\"12\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <rect x=\"120\" y=\"78\" width=\"200\" height=\"24\" rx=\"3\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.08))\"/>\n  <text x=\"220\" y=\"95\" font-size=\"12\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">Label text</text>\n  <circle cx=\"28\" cy=\"28\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"28\" y=\"32\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"50\" cy=\"68\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"50\" y=\"72\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <circle cx=\"70\" cy=\"58\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"70\" y=\"62\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">3</text>\n  <circle cx=\"70\" cy=\"90\" r=\"9\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"70\" y=\"94\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">4</text>\n  <circle cx=\"130\" cy=\"68\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"130\" y=\"72\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">5</text>\n",
             "code": "<!-- root: OrigamInput wrapper -->\n<div class=\"origam-radio origam-input\">\n  <!-- SelectionControl owns the ripple zone + native input -->\n  <origam-radio-btn class=\"origam-radio-btn\">\n    <origam-selection-control class=\"origam-selection-control\" type=\"radio\">\n      <!-- input zone with ripple -->\n      <div class=\"origam-selection-control__input\">\n        <origam-icon :icon=\"trueIcon\" />   <!-- dot when checked -->\n        <input type=\"radio\" />\n      </div>\n      <!-- label -->\n      <div class=\"origam-selection-control__label\">\n        <origam-label />\n      </div>\n    </origam-selection-control>\n  </origam-radio-btn>\n</div>",
@@ -81192,54 +80733,7 @@
               }
             ]
           },
-          "tokens": {
-            "excerpt": [
-              {
-                "type": "dimension",
-                "value": "20px",
-                "tokenPath": "radio.input.size",
-                "descriptionKey": "components.radio_btn.tokens.input_size",
-                "descriptionFallback": "Radio ring size."
-              },
-              {
-                "type": "color",
-                "value": "{color.action.primary.bg}",
-                "tokenPath": "radio.input.border-color-checked",
-                "descriptionKey": "components.radio_btn.tokens.border_color_checked",
-                "descriptionFallback": "Ring border when checked."
-              },
-              {
-                "type": "dimension",
-                "value": "10px",
-                "tokenPath": "radio.dot.size",
-                "descriptionKey": "components.radio_btn.tokens.dot_size",
-                "descriptionFallback": "Inner dot diameter."
-              },
-              {
-                "type": "color",
-                "value": "{color.action.primary.bg}",
-                "tokenPath": "radio.dot.background-color",
-                "descriptionKey": "components.radio_btn.tokens.dot_background_color",
-                "descriptionFallback": "Inner dot fill when selected."
-              },
-              {
-                "type": "dimension",
-                "value": "{font.size.md}",
-                "tokenPath": "radio.label.font-size",
-                "descriptionKey": "components.radio_btn.tokens.label_font_size",
-                "descriptionFallback": "Label font size."
-              },
-              {
-                "type": "duration",
-                "value": "{motion.duration.fast}",
-                "tokenPath": "radio.input.transition-duration",
-                "descriptionKey": "components.radio_btn.tokens.transition_duration",
-                "descriptionFallback": "Duration of the ring border and dot scale transitions."
-              }
-            ],
-            "sourceFile": "packages/ds/tokens/component/radio.json",
-            "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
-          },
+          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"180\" fill=\"var(--origam-color__surface---sunken, #f8f9fa)\" rx=\"4\"/>\n  <rect x=\"28\" y=\"30\" width=\"400\" height=\"120\" rx=\"4\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <circle cx=\"76\" cy=\"90\" r=\"20\" fill=\"none\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"2\"/>\n  <circle cx=\"76\" cy=\"90\" r=\"8\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <rect x=\"112\" y=\"80\" width=\"200\" height=\"20\" rx=\"3\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.08))\"/>\n  <text x=\"212\" y=\"94\" font-size=\"11\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">Label / #default slot</text>\n  <circle cx=\"36\" cy=\"38\" r=\"10\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"36\" y=\"42.5\" font-size=\"9\" fill=\"var(--origam-color__action--primary---fg, #fff)\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"60\" cy=\"68\" r=\"10\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"60\" y=\"72.5\" font-size=\"9\" fill=\"var(--origam-color__action--primary---fg, #fff)\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <circle cx=\"76\" cy=\"68\" r=\"10\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"76\" y=\"72.5\" font-size=\"9\" fill=\"var(--origam-color__action--primary---fg, #fff)\" text-anchor=\"middle\" font-weight=\"700\">3</text>\n  <circle cx=\"212\" cy=\"68\" r=\"10\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"212\" y=\"72.5\" font-size=\"9\" fill=\"var(--origam-color__action--primary---fg, #fff)\" text-anchor=\"middle\" font-weight=\"700\">4</text>\n  <line x1=\"46\" y1=\"38\" x2=\"80\" y2=\"22\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1\" stroke-dasharray=\"3 2\"/>\n  <text x=\"84\" y=\"21\" font-size=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" font-weight=\"700\" font-family=\"'JetBrains Mono',monospace\">origam-radio-btn → origam-selection-control</text>\n",
             "code": "<!-- RadioBtn delegates to SelectionControl with type=\"radio\" -->\n<origam-selection-control\n  class=\"origam-radio-btn\"\n  v-model=\"model\"\n  type=\"radio\"\n  :true-icon=\"trueIcon\"\n  :false-icon=\"falseIcon\"\n  v-bind=\"controlProps\"\n  @click:label=\"handleClickLabel\"\n>\n  <template #default><slot name=\"default\" /></template>\n  <template #input=\"{ props, icon, model }\">\n    <slot name=\"input\" v-bind=\"{ props, icon, model }\" />\n  </template>\n  <template #label><slot name=\"label\" /></template>\n</origam-selection-control>",
@@ -81855,40 +81349,7 @@
               }
             ]
           },
-          "tokens": {
-            "excerpt": [
-              {
-                "type": "dimension",
-                "value": "20px",
-                "tokenPath": "radio.input.size",
-                "descriptionKey": "components.radio_group.tokens.input_size",
-                "descriptionFallback": "Diameter of each radio input circle."
-              },
-              {
-                "type": "color",
-                "value": "{color.border.default}",
-                "tokenPath": "radio.input.border-color",
-                "descriptionKey": "components.radio_group.tokens.input_border_color",
-                "descriptionFallback": "Unchecked border color."
-              },
-              {
-                "type": "color",
-                "value": "{color.action.primary.bg}",
-                "tokenPath": "radio.dot.background-color",
-                "descriptionKey": "components.radio_group.tokens.dot_bg",
-                "descriptionFallback": "Fill of the selection dot."
-              },
-              {
-                "type": "dimension",
-                "value": "{space.2}",
-                "tokenPath": "selection-control-group.gap",
-                "descriptionKey": "components.radio_group.tokens.gap",
-                "descriptionFallback": "Gap between radio items in the group (from selection-control-group tokens)."
-              }
-            ],
-            "sourceFile": "packages/ds/tokens/component/radio.json",
-            "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. RadioGroup inherits radio tokens; layout tokens come from selection-control-group.json."
-          },
+          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"560\" height=\"220\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <rect x=\"20\" y=\"20\" width=\"520\" height=\"180\" rx=\"4\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\" stroke-dasharray=\"6 3\"/>\n  <rect x=\"40\" y=\"36\" width=\"200\" height=\"20\" rx=\"3\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.08))\"/>\n  <text x=\"140\" y=\"50\" font-size=\"10\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">Label (group)</text>\n  <rect x=\"40\" y=\"68\" width=\"480\" height=\"36\" rx=\"3\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.05))\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.25))\" stroke-width=\"1\" stroke-dasharray=\"3 2\"/>\n  <circle cx=\"60\" cy=\"86\" r=\"12\" fill=\"none\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"2\"/>\n  <circle cx=\"60\" cy=\"86\" r=\"5\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"100\" y=\"90\" font-size=\"10\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" font-family=\"'JetBrains Mono',monospace\">Radio item 1</text>\n  <rect x=\"40\" y=\"114\" width=\"480\" height=\"36\" rx=\"3\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.03))\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.2))\" stroke-width=\"1\" stroke-dasharray=\"3 2\"/>\n  <circle cx=\"60\" cy=\"132\" r=\"12\" fill=\"none\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.5))\" stroke-width=\"2\"/>\n  <text x=\"100\" y=\"136\" font-size=\"10\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" font-family=\"'JetBrains Mono',monospace\">Radio item 2</text>\n  <rect x=\"40\" y=\"160\" width=\"480\" height=\"24\" rx=\"3\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.03))\"/>\n  <text x=\"280\" y=\"176\" font-size=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">messages / error</text>\n  <circle cx=\"28\" cy=\"28\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"28\" y=\"32\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"48\" cy=\"44\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"48\" y=\"48\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <circle cx=\"48\" cy=\"76\" r=\"9\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"48\" y=\"80\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">3</text>\n  <circle cx=\"60\" cy=\"86\" r=\"8\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" opacity=\"0.7\"/>\n  <text x=\"60\" y=\"90\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">4</text>\n  <circle cx=\"48\" cy=\"168\" r=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\"/>\n  <text x=\"48\" y=\"172\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">5</text>\n",
             "code": "<origam-input class=\"origam-radio-group\">\n  <template #default=\"{ id, messagesId, isDisabled, isReadonly }\">\n    <!-- optional group label -->\n    <origam-label :id=\"id\" :text=\"label\" :required=\"required\" />\n\n    <!-- DefaultsProvider pushes color/density/size to children -->\n    <origam-defaults-provider :defaults=\"radioDefaults\">\n      <origam-selection-control-group\n        v-model=\"model\"\n        :id=\"id\"\n        :items=\"items\"\n        :multiple=\"false\"\n        :disabled=\"isDisabled\"\n        :readonly=\"isReadonly\"\n        :aria-labelledby=\"label ? id : undefined\"\n        :aria-describedby=\"messagesId\"\n      >\n        <template #item=\"{ item }\">\n          <!-- #item slot or default OrigamRadio -->\n          <origam-radio v-model=\"model\" v-bind=\"item\" />\n        </template>\n      </origam-selection-control-group>\n    </origam-defaults-provider>\n  </template>\n</origam-input>",
@@ -82478,54 +81939,7 @@
               }
             ]
           },
-          "tokens": {
-            "excerpt": [
-              {
-                "type": "dimension",
-                "value": "{space.1}",
-                "tokenPath": "rating-field.gap",
-                "descriptionKey": "components.rating_field.tokens.gap",
-                "descriptionFallback": "Gap between star items in the row."
-              },
-              {
-                "type": "color",
-                "value": "{color.text.disabled}",
-                "tokenPath": "rating-field.item.color",
-                "descriptionKey": "components.rating_field.tokens.item_color",
-                "descriptionFallback": "Color of unfilled stars."
-              },
-              {
-                "type": "color",
-                "value": "{color.feedback.warning.bg}",
-                "tokenPath": "rating-field.item.color-active",
-                "descriptionKey": "components.rating_field.tokens.item_color_active",
-                "descriptionFallback": "Color of filled (selected) stars."
-              },
-              {
-                "type": "dimension",
-                "value": "{font.size.2xl}",
-                "tokenPath": "rating-field.item.font-size",
-                "descriptionKey": "components.rating_field.tokens.item_font_size",
-                "descriptionFallback": "Icon size for star items."
-              },
-              {
-                "type": "number",
-                "value": "1.15",
-                "tokenPath": "rating-field.item.scale-hover",
-                "descriptionKey": "components.rating_field.tokens.item_scale_hover",
-                "descriptionFallback": "Scale transform on hover."
-              },
-              {
-                "type": "number",
-                "value": "{opacity.32}",
-                "tokenPath": "rating-field.opacity-disabled",
-                "descriptionKey": "components.rating_field.tokens.opacity_disabled",
-                "descriptionFallback": "Opacity when the field is disabled."
-              }
-            ],
-            "sourceFile": "packages/ds/tokens/component/rating-field.json",
-            "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
-          },
+          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"560\" height=\"180\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <rect x=\"20\" y=\"20\" width=\"520\" height=\"140\" rx=\"4\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\" stroke-dasharray=\"6 3\"/>\n  <text x=\"40\" y=\"55\" font-size=\"11\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" font-family=\"'JetBrains Mono',monospace\">Rating label</text>\n  <text x=\"40\" y=\"110\" font-size=\"28\" fill=\"var(--origam-color__feedback--warning---bg, #f59e0b)\" font-family=\"'JetBrains Mono',monospace\">★★★★☆</text>\n  <rect x=\"440\" y=\"92\" width=\"28\" height=\"28\" rx=\"14\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---default, rgba(124,58,237,0.3))\" stroke-width=\"1.5\"/>\n  <text x=\"454\" y=\"112\" font-size=\"14\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">×</text>\n  <circle cx=\"28\" cy=\"28\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"28\" y=\"32\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"48\" cy=\"52\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"48\" y=\"56\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <circle cx=\"80\" cy=\"68\" r=\"9\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"80\" y=\"72\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">3</text>\n  <circle cx=\"180\" cy=\"68\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"180\" y=\"72\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">4</text>\n  <circle cx=\"454\" cy=\"68\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"454\" y=\"72\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">5</text>\n",
             "code": "<div class=\"origam-rating-field\">\n  <!-- hidden empty item for keyboard baseline -->\n  <div class=\"origam-rating-field__empty\">\n    <origam-rating-field-item :value=\"0\" :show-star=\"false\" />\n  </div>\n\n  <!-- optional clear button -->\n  <origam-btn class=\"origam-rating-field__clear\" icon=\"mdi-close-circle-outline\" />\n\n  <!-- star rows -->\n  <div v-for=\"range in ranges\" class=\"origam-rating-field__wrapper\">\n    <!-- optional top label -->\n    <span>{{ itemLabels[index] }}</span>\n    <div class=\"origam-rating-field__content\">\n      <origam-rating-field-item :value=\"range - 0.5\" />  <!-- half -->\n      <origam-rating-field-item :value=\"range\" />         <!-- full -->\n    </div>\n  </div>\n</div>",
@@ -83141,47 +82555,7 @@
               }
             ]
           },
-          "tokens": {
-            "excerpt": [
-              {
-                "type": "color",
-                "value": "{color.text.disabled}",
-                "tokenPath": "rating-field.item.color",
-                "descriptionKey": "components.rating_field_item.tokens.item_color",
-                "descriptionFallback": "Default (empty) star color."
-              },
-              {
-                "type": "color",
-                "value": "{color.feedback.warning.bg}",
-                "tokenPath": "rating-field.item.color-active",
-                "descriptionKey": "components.rating_field_item.tokens.item_color_active",
-                "descriptionFallback": "Star color when filled or hovered."
-              },
-              {
-                "type": "dimension",
-                "value": "{font.size.2xl}",
-                "tokenPath": "rating-field.item.font-size",
-                "descriptionKey": "components.rating_field_item.tokens.item_font_size",
-                "descriptionFallback": "Icon size of each star."
-              },
-              {
-                "type": "number",
-                "value": "1.15",
-                "tokenPath": "rating-field.item.scale-hover",
-                "descriptionKey": "components.rating_field_item.tokens.item_scale_hover",
-                "descriptionFallback": "Scale transform on hover."
-              },
-              {
-                "type": "duration",
-                "value": "{motion.duration.fast}",
-                "tokenPath": "rating-field.item.transition-duration",
-                "descriptionKey": "components.rating_field_item.tokens.item_transition_duration",
-                "descriptionFallback": "Animation duration for scale and color changes."
-              }
-            ],
-            "sourceFile": "packages/ds/tokens/component/rating-field.json",
-            "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. RatingFieldItem inherits item-level tokens from rating-field.json."
-          },
+          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"460\" height=\"180\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <rect x=\"20\" y=\"20\" width=\"420\" height=\"140\" rx=\"4\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\" stroke-dasharray=\"6 3\"/>\n  <rect x=\"40\" y=\"40\" width=\"60\" height=\"32\" rx=\"3\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.06))\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.3))\" stroke-width=\"1\" stroke-dasharray=\"3 2\"/>\n  <text x=\"70\" y=\"61\" font-size=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">label</text>\n  <rect x=\"110\" y=\"40\" width=\"200\" height=\"80\" rx=\"4\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.08))\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <text x=\"210\" y=\"88\" font-size=\"22\" fill=\"var(--origam-color__feedback--warning---bg, #f59e0b)\" text-anchor=\"middle\">★</text>\n  <rect x=\"120\" y=\"132\" width=\"180\" height=\"12\" rx=\"3\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.04))\"/>\n  <text x=\"210\" y=\"143\" font-size=\"8\" fill=\"var(--origam-color__text---disabled, #b5a0d8)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">hidden radio input</text>\n  <circle cx=\"28\" cy=\"28\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"28\" y=\"32\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"48\" cy=\"48\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"48\" y=\"52\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <circle cx=\"118\" cy=\"48\" r=\"9\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"118\" y=\"52\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">3</text>\n  <circle cx=\"210\" cy=\"136\" r=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\"/>\n  <text x=\"210\" y=\"140\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">4</text>\n",
             "code": "<div class=\"origam-rating-field-item\">\n  <!-- visually-hidden label for screen readers -->\n  <label :for=\"id\">\n    <span class=\"origam-rating-field-item__hidden\">Rate {{ value }} of {{ length }}</span>\n\n    <!-- the clickable star icon (OrigamBtn in text/icon mode) -->\n    <origam-btn\n      v-if=\"showStar\"\n      variant=\"text\"\n      :icon=\"isFullIcon ? fullIcon : emptyIcon\"\n      @click=\"handleClick\"\n      @mouseenter=\"handleMouseEnter\"\n      @mouseleave=\"handleMouseLeave\"\n    />\n  </label>\n\n  <!-- visually-hidden radio input, not focusable -->\n  <input\n    class=\"origam-rating-field-item__hidden\"\n    type=\"radio\"\n    :id=\"id\"\n    :name=\"name\"\n    :value=\"value\"\n    :checked=\"checked\"\n    :disabled=\"disabled\"\n    :readonly=\"readonly\"\n    tabindex=\"-1\"\n  />\n</div>",
@@ -85330,26 +84704,7 @@
             "roles": [],
             "keyboard": []
           },
-          "tokens": {
-            "excerpt": [
-              {
-                "type": "duration",
-                "value": "{motion.duration.medium}",
-                "tokenPath": "transition.default.duration",
-                "descriptionKey": "components.scale_rotate.tokens.duration",
-                "descriptionFallback": "Default enter/leave duration shared by all transition sub-components."
-              },
-              {
-                "type": "cubicBezier",
-                "value": "{motion.easing.standard}",
-                "tokenPath": "transition.default.easing",
-                "descriptionKey": "components.scale_rotate.tokens.easing",
-                "descriptionFallback": "Default easing function (cubic-bezier)."
-              }
-            ],
-            "sourceFile": "packages/ds/tokens/component/transition.json",
-            "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
-          },
+          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"180\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <rect x=\"40\" y=\"40\" width=\"260\" height=\"100\" rx=\"6\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <text x=\"170\" y=\"86\" font-size=\"11\" fill=\"var(--origam-color__text---primary, #3b1c6e)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">enter-active</text>\n  <text x=\"170\" y=\"102\" font-size=\"9\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">scale(0) rotate(−45deg) → full</text>\n  <rect x=\"400\" y=\"40\" width=\"260\" height=\"100\" rx=\"6\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.35))\" stroke-width=\"1\" stroke-dasharray=\"5 3\" opacity=\"0.5\"/>\n  <text x=\"530\" y=\"86\" font-size=\"11\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">leave-active</text>\n  <text x=\"530\" y=\"102\" font-size=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">full → opacity 0</text>\n  <circle cx=\"48\" cy=\"48\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"48\" y=\"52\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"408\" cy=\"48\" r=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\"/>\n  <text x=\"408\" y=\"52\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <text x=\"350\" y=\"95\" font-size=\"22\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" text-anchor=\"middle\">→</text>\n",
             "code": "<!-- wraps <transition> or <transition-group> via useCssTransition -->\n<component :is=\"tag\" :name=\"name\" v-bind=\"transitionProps\">\n  <slot name=\"default\" />\n</component>\n\n<!-- CSS keyframes (global, not scoped) -->\n<!-- .origam-transition--scale-rotate-enter-from { opacity: 0; transform: scale(0) rotate(-45deg); }\n     .origam-transition--scale-rotate-enter-active,\n     .origam-transition--scale-rotate-leave-active { transition-property: transform, opacity; transition-duration: 0.3s; } -->",
@@ -85721,47 +85076,7 @@
               }
             ]
           },
-          "tokens": {
-            "excerpt": [
-              {
-                "type": "dimension",
-                "value": "150px",
-                "tokenPath": "select.min-width",
-                "descriptionKey": "components.select.tokens.min_width",
-                "descriptionFallback": "Minimum width of the select field."
-              },
-              {
-                "type": "color",
-                "value": "{color.surface.raised}",
-                "tokenPath": "select.list.background-color",
-                "descriptionKey": "components.select.tokens.list_background_color",
-                "descriptionFallback": "Dropdown list background."
-              },
-              {
-                "type": "dimension",
-                "value": "{radius.md}",
-                "tokenPath": "select.list.border-radius",
-                "descriptionKey": "components.select.tokens.list_border_radius",
-                "descriptionFallback": "Dropdown panel corner radius."
-              },
-              {
-                "type": "dimension",
-                "value": "300px",
-                "tokenPath": "select.list.max-height",
-                "descriptionKey": "components.select.tokens.list_max_height",
-                "descriptionFallback": "Max scrollable height of the dropdown list."
-              },
-              {
-                "type": "shadow",
-                "value": "{shadow.lg}",
-                "tokenPath": "select.list.box-shadow",
-                "descriptionKey": "components.select.tokens.list_box_shadow",
-                "descriptionFallback": "Elevation shadow of the dropdown panel."
-              }
-            ],
-            "sourceFile": "packages/ds/tokens/component/select.json",
-            "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
-          },
+          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"560\" height=\"200\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <rect x=\"20\" y=\"20\" width=\"520\" height=\"60\" rx=\"4\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <text x=\"40\" y=\"43\" font-size=\"10\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" font-family=\"'JetBrains Mono',monospace\">Framework</text>\n  <text x=\"40\" y=\"64\" font-size=\"12\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" font-family=\"'JetBrains Mono',monospace\">Vue 3</text>\n  <text x=\"510\" y=\"56\" font-size=\"18\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">▾</text>\n  <rect x=\"20\" y=\"100\" width=\"520\" height=\"80\" rx=\"4\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---default, rgba(124,58,237,0.3))\" stroke-width=\"1\" stroke-dasharray=\"4 2\"/>\n  <text x=\"46\" y=\"122\" font-size=\"11\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" font-family=\"'JetBrains Mono',monospace\">Vue 3</text>\n  <text x=\"46\" y=\"146\" font-size=\"11\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" font-family=\"'JetBrains Mono',monospace\">React</text>\n  <text x=\"46\" y=\"166\" font-size=\"11\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" font-family=\"'JetBrains Mono',monospace\">Svelte</text>\n  <circle cx=\"28\" cy=\"28\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"28\" y=\"32\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"48\" cy=\"48\" r=\"9\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"48\" y=\"52\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <circle cx=\"120\" cy=\"68\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"120\" y=\"72\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">3</text>\n  <circle cx=\"510\" cy=\"40\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"510\" y=\"44\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">4</text>\n  <circle cx=\"28\" cy=\"108\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"28\" y=\"112\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">5</text>\n  <circle cx=\"46\" cy=\"122\" r=\"7\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"46\" y=\"126\" font-size=\"8\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">6</text>\n",
             "code": "<!-- extends TextField chrome -->\n<origam-text-field class=\"origam-select origam-select--single\">\n  <!-- dropdown via OrigamMenu -->\n  <origam-menu content-class=\"origam-select__content\">\n    <origam-list class=\"origam-select__menu-list\">\n      <origam-list-item>\n        <!-- item text with optional search highlight -->\n        <span class=\"origam-select__text\">Vue 3</span>\n      </origam-list-item>\n    </origam-list>\n  </origam-menu>\n\n  <!-- selected value display -->\n  <span class=\"origam-select__selection-text\">Vue 3</span>\n\n  <!-- menu toggle chevron (appendInner) -->\n  <origam-icon class=\"origam-select__menu-icon\" />\n</origam-text-field>",
@@ -91258,33 +90573,7 @@
             "roles": [],
             "keyboard": []
           },
-          "tokens": {
-            "excerpt": [
-              {
-                "type": "duration",
-                "value": "{motion.duration.medium}",
-                "tokenPath": "transition.slide-x.duration",
-                "descriptionKey": "components.slide_x.tokens.duration",
-                "descriptionFallback": "Enter/leave duration for the slide-x transition."
-              },
-              {
-                "type": "cubicBezier",
-                "value": "{motion.easing.decelerate}",
-                "tokenPath": "transition.slide-x.easing",
-                "descriptionKey": "components.slide_x.tokens.easing",
-                "descriptionFallback": "Easing for slide-x (decelerate)."
-              },
-              {
-                "type": "dimension",
-                "value": "100%",
-                "tokenPath": "transition.slide-x.translate-distance",
-                "descriptionKey": "components.slide_x.tokens.distance",
-                "descriptionFallback": "Token reference for the slide horizontal offset."
-              }
-            ],
-            "sourceFile": "packages/ds/tokens/component/transition.json",
-            "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
-          },
+          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"180\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <rect x=\"40\" y=\"40\" width=\"260\" height=\"100\" rx=\"6\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <text x=\"170\" y=\"83\" font-size=\"11\" fill=\"var(--origam-color__text---primary, #3b1c6e)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">enter-active</text>\n  <text x=\"170\" y=\"101\" font-size=\"9\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">translateX(−15px) → 0</text>\n  <text x=\"170\" y=\"115\" font-size=\"9\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">opacity: 0 → 1</text>\n  <rect x=\"400\" y=\"40\" width=\"260\" height=\"100\" rx=\"6\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.35))\" stroke-width=\"1\" stroke-dasharray=\"5 3\" opacity=\"0.5\"/>\n  <text x=\"530\" y=\"83\" font-size=\"11\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">leave-active</text>\n  <text x=\"530\" y=\"101\" font-size=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">0 → translateX(−15px)</text>\n  <text x=\"530\" y=\"115\" font-size=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">opacity: 1 → 0</text>\n  <circle cx=\"48\" cy=\"48\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"48\" y=\"52\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"408\" cy=\"48\" r=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\"/>\n  <text x=\"408\" y=\"52\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <text x=\"350\" y=\"95\" font-size=\"22\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" text-anchor=\"middle\">→</text>\n",
             "code": "<!-- wraps <transition> or <transition-group> via useCssTransition -->\n<component :is=\"tag\" :name=\"name\" v-bind=\"transitionProps\">\n  <slot name=\"default\" />\n</component>\n\n<!-- CSS (global, not scoped) -->\n<!-- .origam-transition--slide-x-enter-from,\n     .origam-transition--slide-x-leave-to { opacity: 0; transform: translateX(-15px); }\n     .origam-transition--slide-x-enter-active,\n     .origam-transition--slide-x-leave-active { transition-property: transform, opacity; transition-duration: 0.3s; } -->",
@@ -91638,33 +90927,7 @@
             "roles": [],
             "keyboard": []
           },
-          "tokens": {
-            "excerpt": [
-              {
-                "type": "duration",
-                "value": "{motion.duration.medium}",
-                "tokenPath": "transition.slide-y.duration",
-                "descriptionKey": "components.slide_y.tokens.duration",
-                "descriptionFallback": "Enter/leave duration for the slide-y transition."
-              },
-              {
-                "type": "cubicBezier",
-                "value": "{motion.easing.decelerate}",
-                "tokenPath": "transition.slide-y.easing",
-                "descriptionKey": "components.slide_y.tokens.easing",
-                "descriptionFallback": "Easing for slide-y (decelerate)."
-              },
-              {
-                "type": "dimension",
-                "value": "100%",
-                "tokenPath": "transition.slide-y.translate-distance",
-                "descriptionKey": "components.slide_y.tokens.distance",
-                "descriptionFallback": "Token reference for the slide vertical offset."
-              }
-            ],
-            "sourceFile": "packages/ds/tokens/component/transition.json",
-            "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
-          },
+          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"200\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <rect x=\"40\" y=\"40\" width=\"260\" height=\"120\" rx=\"6\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <text x=\"170\" y=\"93\" font-size=\"11\" fill=\"var(--origam-color__text---primary, #3b1c6e)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">enter-active</text>\n  <text x=\"170\" y=\"111\" font-size=\"9\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">translateY(−15px) → 0</text>\n  <text x=\"170\" y=\"127\" font-size=\"9\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">opacity: 0 → 1</text>\n  <rect x=\"400\" y=\"40\" width=\"260\" height=\"120\" rx=\"6\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.35))\" stroke-width=\"1\" stroke-dasharray=\"5 3\" opacity=\"0.5\"/>\n  <text x=\"530\" y=\"93\" font-size=\"11\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">leave-active</text>\n  <text x=\"530\" y=\"111\" font-size=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">0 → translateY(−15px)</text>\n  <text x=\"530\" y=\"127\" font-size=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">opacity: 1 → 0</text>\n  <circle cx=\"48\" cy=\"48\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"48\" y=\"52\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"408\" cy=\"48\" r=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\"/>\n  <text x=\"408\" y=\"52\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <text x=\"350\" y=\"105\" font-size=\"22\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" text-anchor=\"middle\">→</text>\n",
             "code": "<!-- wraps <transition> or <transition-group> via useCssTransition -->\n<component :is=\"tag\" :name=\"name\" v-bind=\"transitionProps\">\n  <slot name=\"default\" />\n</component>\n\n<!-- CSS (global, not scoped) -->\n<!-- .origam-transition--slide-y-enter-from,\n     .origam-transition--slide-y-leave-to { opacity: 0; transform: translateY(-15px); }\n     .origam-transition--slide-y-enter-active,\n     .origam-transition--slide-y-leave-active { transition-property: transform, opacity; transition-duration: 0.3s; } -->",
@@ -103086,40 +102349,7 @@
             "roles": [],
             "keyboard": []
           },
-          "tokens": {
-            "excerpt": [
-              {
-                "type": "duration",
-                "value": "{motion.duration.medium}",
-                "tokenPath": "transition.default.duration",
-                "descriptionKey": "components.transition.tokens.default_duration",
-                "descriptionFallback": "Default enter/leave duration."
-              },
-              {
-                "type": "duration",
-                "value": "{motion.duration.medium}",
-                "tokenPath": "transition.slide-x.duration",
-                "descriptionKey": "components.transition.tokens.slide_x_duration",
-                "descriptionFallback": "Slide-X duration."
-              },
-              {
-                "type": "duration",
-                "value": "{motion.duration.slow}",
-                "tokenPath": "transition.expand.duration",
-                "descriptionKey": "components.transition.tokens.expand_duration",
-                "descriptionFallback": "Expand-Y / expand-X duration (slightly slower for layout animations)."
-              },
-              {
-                "type": "number",
-                "value": "0.95",
-                "tokenPath": "transition.scale.scale-from",
-                "descriptionKey": "components.transition.tokens.scale_from",
-                "descriptionFallback": "Initial scale value for scale-based transitions."
-              }
-            ],
-            "sourceFile": "packages/ds/tokens/component/transition.json",
-            "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
-          },
+          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"160\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <rect x=\"40\" y=\"40\" width=\"280\" height=\"80\" rx=\"6\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <text x=\"180\" y=\"84\" font-size=\"11\" fill=\"var(--origam-color__text---primary, #3b1c6e)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">enter-active</text>\n  <rect x=\"380\" y=\"40\" width=\"280\" height=\"80\" rx=\"6\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.35))\" stroke-width=\"1\" stroke-dasharray=\"5 3\" opacity=\"0.5\"/>\n  <text x=\"520\" y=\"84\" font-size=\"11\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">leave-active</text>\n  <circle cx=\"48\" cy=\"48\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"48\" y=\"52\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"388\" cy=\"48\" r=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\"/>\n  <text x=\"388\" y=\"52\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <text x=\"350\" y=\"80\" font-size=\"20\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" text-anchor=\"middle\">→</text>\n",
             "code": "<!-- generic wrapper — delegates to <transition> or <transition-group> -->\n<component :is=\"group ? 'transition-group' : 'transition'\" :name=\"name\" v-bind=\"transitionProps\">\n  <slot name=\"default\" />\n</component>",
@@ -106084,40 +105314,7 @@
             "roles": [],
             "keyboard": []
           },
-          "tokens": {
-            "excerpt": [
-              {
-                "type": "color",
-                "value": "{color.text.primary}",
-                "tokenPath": "watermark.color",
-                "descriptionKey": "components.watermark.tokens.color",
-                "descriptionFallback": "Default glyph color."
-              },
-              {
-                "type": "opacity",
-                "value": "0.1",
-                "tokenPath": "watermark.opacity-medium",
-                "descriptionKey": "components.watermark.tokens.opacity_medium",
-                "descriptionFallback": "Medium opacity level."
-              },
-              {
-                "type": "dimension",
-                "value": "120px",
-                "tokenPath": "watermark.gap-medium",
-                "descriptionKey": "components.watermark.tokens.gap_medium",
-                "descriptionFallback": "Default tile gap."
-              },
-              {
-                "type": "dimension",
-                "value": "16px",
-                "tokenPath": "watermark.font-size-md",
-                "descriptionKey": "components.watermark.tokens.font_size_md",
-                "descriptionFallback": "Default glyph font size."
-              }
-            ],
-            "sourceFile": "packages/ds/tokens/component/watermark.json",
-            "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
-          },
+          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"220\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <rect x=\"60\" y=\"20\" width=\"580\" height=\"180\" rx=\"6\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <text x=\"350\" y=\"110\" font-size=\"14\" fill=\"var(--origam-color__text---primary, #3b1c6e)\" text-anchor=\"middle\" font-family=\"sans-serif\">Wrapped content</text>\n  <g opacity=\"0.10\" transform=\"translate(60,20)\">\n    <text x=\"30\" y=\"50\" font-size=\"18\" fill=\"#7c3aed\" transform=\"rotate(-30, 30, 50)\" font-family=\"sans-serif\">DRAFT</text>\n    <text x=\"180\" y=\"90\" font-size=\"18\" fill=\"#7c3aed\" transform=\"rotate(-30, 180, 90)\" font-family=\"sans-serif\">DRAFT</text>\n    <text x=\"340\" y=\"60\" font-size=\"18\" fill=\"#7c3aed\" transform=\"rotate(-30, 340, 60)\" font-family=\"sans-serif\">DRAFT</text>\n    <text x=\"100\" y=\"140\" font-size=\"18\" fill=\"#7c3aed\" transform=\"rotate(-30, 100, 140)\" font-family=\"sans-serif\">DRAFT</text>\n    <text x=\"280\" y=\"160\" font-size=\"18\" fill=\"#7c3aed\" transform=\"rotate(-30, 280, 160)\" font-family=\"sans-serif\">DRAFT</text>\n    <text x=\"440\" y=\"140\" font-size=\"18\" fill=\"#7c3aed\" transform=\"rotate(-30, 440, 140)\" font-family=\"sans-serif\">DRAFT</text>\n  </g>\n  <circle cx=\"68\" cy=\"28\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"68\" y=\"32\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"350\" cy=\"28\" r=\"9\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"350\" y=\"32\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <circle cx=\"350\" cy=\"100\" r=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\"/>\n  <text x=\"350\" y=\"104\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">3</text>\n",
             "code": "<component :is=\"tag\" ref=\"rootEl\" class=\"origam-watermark\">\n  <!-- wrapped content -->\n  <slot />\n  <!-- tiled overlay — position:absolute, inset:0 -->\n  <div ref=\"layerEl\" class=\"origam-watermark__layer\" :style=\"layerStyles\" />\n</component>",
