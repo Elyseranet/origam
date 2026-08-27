@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { MARKETING_SPEC_PATTERNS } from './e2e/_support/marketing-specs.const'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const REPO_ROOT = resolve(__dirname, '..', '..')
@@ -17,7 +18,7 @@ const REPO_ROOT = resolve(__dirname, '..', '..')
  */
 export default defineConfig({
     testDir: './e2e',
-    testMatch: ['**/marketing-theming.spec.ts', '**/marketing-theming-isolation.spec.ts', '**/marketing-theme-builder.spec.ts', '**/marketing-theming-controls.spec.ts', '**/marketing-theming-viewport-height.spec.ts', '**/marketing-theming-theme-bg-and-triggers.spec.ts', '**/marketing-brand-presets.spec.ts', '**/marketing-theming-toggle-vs-split-parity.spec.ts', '**/marketing-theme-live-switch.spec.ts', '**/theming-feedback-tokens.spec.ts', '**/home-*.spec.ts', '**/why-origam.spec.ts', '**/roadmap.spec.ts', '**/changelog.spec.ts', '**/installation.spec.ts', '**/directives.spec.ts', '**/components.spec.ts', '**/wireframe.spec.ts', '**/types.spec.ts', '**/composables.spec.ts', '**/nav-link-availability.spec.ts', '**/api-docs-generated.spec.ts'],
+    testMatch: MARKETING_SPEC_PATTERNS,
     outputDir: './e2e/.results-marketing',
 
     fullyParallel: false,
