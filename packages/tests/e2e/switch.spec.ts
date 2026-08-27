@@ -103,14 +103,15 @@ test.describe('OrigamSwitch', () => {
             await expect(sandbox.locator('.origam-switch__thumb').first()).toBeAttached()
         })
 
-        test('color=primary: wrapper carries origam--color-primary, thumb painted currentColor', async ({ page }) => {
+        test('color=primary: control input carries origam--color-primary, thumb painted currentColor', async ({ page }) => {
             await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-switch').first()).toBeVisible({ timeout: 12000 })
 
-            // The SCSS rule paints thumb when .origam-selection-control__wrapper has a color class
-            const wrapper = sandbox.locator('.origam-selection-control__wrapper').first()
-            await expect(wrapper).toHaveClass(/origam--color-primary/)
+            // Le canal couleur vit sur __input ; le SCSS le lit via :has() sur le
+            // wrapper (cf. #512). Avant correction le pouce restait blanc.
+            const input = sandbox.locator('.origam-selection-control__input').first()
+            await expect(input).toHaveClass(/origam--color-primary/)
 
             const thumbBg = await sandbox.locator('.origam-switch__thumb').first().evaluate(
                 el => getComputedStyle(el).backgroundColor
