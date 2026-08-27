@@ -26,6 +26,7 @@
 						:transition="transition"
 						appear
 						persisted
+						@after-enter="handleAfterEnter"
 						@after-leave="handleAfterLeave"
 				>
 					<div
@@ -171,9 +172,19 @@
 	 * Composables
 	 ********************************************************/
 
+	/*********************************************************
+	 * disableGlobalStack
+	 *
+	 * @description
+	 * ⛔ ADR-005 — `computed` (not `toRef`) so an optional `boolean |
+	 * undefined` prop normalises to a definite `boolean` for `useStack`'s
+	 * `Ref<boolean>` parameter, while still deferring the read past
+	 * `setup()` (see the long comment in `stack.composable.ts`).
+	 ********************************************************/
 	const {teleportTarget} = useTeleport(computed(() => props.attach || props.contained))
 	const {hasContent, onAfterLeave} = useLazy(props, isActive)
-	const {globalTop, localTop, stackStyles} = useStack(isActive, toRef(props, 'zIndex'), props.disableGlobalStack)
+	const disableGlobalStack = computed(() => !!props.disableGlobalStack)
+	const {globalTop, localTop, stackStyles} = useStack(isActive, toRef(props, 'zIndex'), disableGlobalStack)
 	const {
 		activatorEl,
 		activatorRef,
@@ -263,8 +274,18 @@
 	 * or bounces it when persistent. Attached to the window while
 	 * the overlay is active so multiple overlays each handle Escape
 	 * independently.
+	 *
+	 * @description
+	 * The `keydown` emit itself is forwarded unconditionally, ahead of the
+	 * Escape-only logic below — it documents "any key pressed while the
+	 * overlay is open" (IOverlayEmits/the doc), not only the Escape key
+	 * this handler reacts to. The window listener is only attached while
+	 * `isActive` (see the `watch` below), so "while open" is already the
+	 * natural gate.
 	 ********************************************************/
 	const handleKeydown = (e: KeyboardEvent) => {
+		emits('keydown', e)
+
 		if (e.key === KEYBOARD_VALUES.ESC && globalTop.value) {
 			if (!props.persistent) {
 				isActive.value = false
@@ -335,6 +356,10 @@
 				easing: EASING.STANDARD
 			})
 		}
+	}
+
+	const handleAfterEnter = () => {
+		emits('afterEnter')
 	}
 
 	const handleAfterLeave = () => {

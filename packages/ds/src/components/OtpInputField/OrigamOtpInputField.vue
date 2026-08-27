@@ -8,6 +8,8 @@
 				ref="contentRef"
 				:style="dimensionStyles"
 				class="origam-otp-input-field__content"
+				@click="handleControlClick"
+				@mousedown="handleControlMousedown"
 		>
 			<template
 					v-for="(_, i) in fields"
@@ -23,6 +25,7 @@
 						ref="origamFieldRef"
 						:focused="(isFocused && focusAll) || focusIndex === i"
 						v-bind="{...fieldProps(i)}"
+						@click:clear="handleClear"
 				>
 					<template
 							v-if="slots.prependInner"
@@ -419,6 +422,34 @@
 		blur()
 
 		focusIndex.value = -1
+	}
+
+	/*********************************************************
+	 * Control / clear handlers
+	 *
+	 * @description
+	 * Mirrors the sibling Field-wrapping components (TextField,
+	 * NumberField, PasswordField, Select, FileField, DatePickerField,
+	 * TextareaField, ColorPickerField): `click:control`/`mousedown:control`
+	 * relay a click/mousedown on the control area, `click:clear` relays
+	 * `<origam-field>`'s own `click:clear` and — same as TextField's
+	 * `handleClear` — actually performs the clear via the existing
+	 * `reset()` rather than only notifying.
+	 ********************************************************/
+	const handleControlClick = (e: MouseEvent) => {
+		emits('click:control', e)
+	}
+
+	const handleControlMousedown = (e: MouseEvent) => {
+		emits('mousedown:control', e)
+	}
+
+	const handleClear = (e: MouseEvent) => {
+		e.stopPropagation()
+
+		reset()
+
+		emits('click:clear', e)
 	}
 
 	const isInvalidValue = (value: string) => {

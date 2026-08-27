@@ -294,3 +294,66 @@ describe('OrigamMenu — select emit', () => {
         expect(onSelect).not.toHaveBeenCalled()
     })
 })
+
+// ---------------------------------------------------------------------------
+// `contextmenu` emit — issue #430 (2nd confirmed occurrence of #416)
+// ---------------------------------------------------------------------------
+//
+// `IMenuEmits` declares `contextmenu` ("the native contextmenu bubble
+// forwarded for parents that want to show their own context menu instead"
+// per the interface's own doc comment) but nothing ever called
+// `emit('contextmenu', …)` — `useActivator`'s `handleContextMenu` absorbs
+// the native event (stopPropagation + preventDefault) to drive `isActive`
+// internally and never re-emits. OrigamMenu now relays the native
+// `contextmenu` DOM event off the activator slot's merged props, via its
+// own handler layered alongside whatever `useActivator` contributes —
+// deliberately unconditional (not gated on `openOnContextMenu`), because a
+// parent wiring "show my OWN context menu instead" is exactly the case
+// where `openOnContextMenu` would be `false`.
+//
+// `OrigamOverlayStub` (reused from the suites above) renders the
+// `activator` slot with an EMPTY props bag (`{ props: {} }`) — it doesn't
+// implement `useActivator` at all — so any `onContextmenu` reaching the
+// real DOM element here can only be the one OrigamMenu itself merges in.
+// That isolates the fix under test from the real Overlay's own behaviour.
+async function mountMenuWithActivator(props: Record<string, unknown> = {}) {
+    const origam = createOrigam()
+    const wrapper = mount(OrigamMenu, {
+        props: { modelValue: false, ...props } as never,
+        attachTo: document.body,
+        global: makeGlobal([origam]),
+        slots: {
+            activator: ({ props: activatorProps }: any) => h('button', { class: 'menu-activator', ...activatorProps }, 'Open')
+        }
+    })
+    await nextTick()
+    return wrapper
+}
+
+describe('OrigamMenu — contextmenu emit (issue #430)', () => {
+    it('emits `contextmenu` with the native MouseEvent when the activator is right-clicked', async () => {
+        const wrapper = await mountMenuWithActivator()
+
+        await wrapper.find('.menu-activator').trigger('contextmenu')
+
+        const emitted = wrapper.emitted('contextmenu')
+        expect(emitted).toBeTruthy()
+        expect(emitted![0][0]).toBeInstanceOf(MouseEvent)
+    })
+
+    it('still emits `contextmenu` when open-on-context-menu is explicitly false (the "parent shows its own menu instead" case)', async () => {
+        const wrapper = await mountMenuWithActivator({ openOnContextMenu: false })
+
+        await wrapper.find('.menu-activator').trigger('contextmenu')
+
+        expect(wrapper.emitted('contextmenu')).toBeTruthy()
+    })
+
+    it('does not fire a consumer `@contextmenu` handler on an unrelated left click (fallthrough is gone, emit is the only channel)', async () => {
+        const wrapper = await mountMenuWithActivator()
+
+        await wrapper.find('.menu-activator').trigger('click')
+
+        expect(wrapper.emitted('contextmenu')).toBeFalsy()
+    })
+})

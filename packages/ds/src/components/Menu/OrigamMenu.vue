@@ -16,10 +16,10 @@
 			@keydown="handleKeydown"
 			@click:outside="handleClickOutside"
 	>
-		<template #activator="{props}">
+		<template #activator="{props: activatorSlotProps}">
 			<slot
 					name="activator"
-					v-bind="{props}"
+					v-bind="{props: mergeProps(activatorSlotProps, {onContextmenu: handleContextMenu})}"
 			/>
 		</template>
 
@@ -273,6 +273,25 @@
 	const handleClickOutside = () => {
 		parent?.closeParents()
 	}
+
+	/*********************************************************
+	 * handleContextMenu
+	 *
+	 * @description
+	 * Relays the native `contextmenu` DOM event as the `contextmenu`
+	 * emit. Merged onto the activator slot's props (see the template)
+	 * rather than routed through `useActivator`/`OrigamOverlay` — those
+	 * are shared by every activator-based component (Tooltip, Dialog,
+	 * Snackbar, Picker, Drawer…), so wiring the emit there would grow the
+	 * blast radius to all of them for a channel `IMenuEmits` alone
+	 * declares. Deliberately unconditional (not gated on
+	 * `openOnContextMenu`): a parent wiring "show my OWN context menu
+	 * instead" is exactly the case where `openOnContextMenu` is `false`.
+	 ********************************************************/
+	const handleContextMenu = (e: MouseEvent) => {
+		emit('contextmenu', e)
+	}
+
 	/**
 	 * Fires the `select` emit for a picked leaf row.
 	 *

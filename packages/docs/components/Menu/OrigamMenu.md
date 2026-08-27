@@ -101,7 +101,7 @@ A menu driven by the `#default` slot owns its own markup — pass `size` /
 | Name | Payload | When |
 |---|---|---|
 | `update:modelValue` | `boolean` | Menu open / close. |
-| `contextmenu` | `MouseEvent` | Right-click when `openOnContextMenu`. |
+| `contextmenu` | `MouseEvent` | Native right-click on the activator, forwarded — fires regardless of `openOnContextMenu`, so a parent can show its own context menu instead of (or alongside) the menu opening. |
 | `select` | `IListItemProps` | A leaf row of `items` was clicked. Rows that open a submenu do **not** emit — opening a submenu is navigation, not a choice. |
 
 When you render rows through the `items` prop, the menu owns the

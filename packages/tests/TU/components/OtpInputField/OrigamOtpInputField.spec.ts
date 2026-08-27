@@ -322,3 +322,96 @@ describe('OrigamOtpInputField — label forwarding (#491)', () => {
         expect(anyCellHasLabel).toBe(true)
     })
 })
+
+// ---------------------------------------------------------------------------
+// click:control / mousedown:control / click:clear — issue #445
+// ---------------------------------------------------------------------------
+//
+// `IOtpInputFieldEmits` declares all three (matching the established sibling
+// pattern shared by TextField/NumberField/PasswordField/Select/FileField/
+// DatePickerField/TextareaField/ColorPickerField — see e.g.
+// OrigamTextField.vue's handleControlClick/handleControlMousedown/
+// handleClear), and the story ships a dedicated `Events - …` Variant for
+// each, but none was ever actually emitted: no `@click`/`@mousedown`
+// listener existed anywhere in the template, and no `@click:clear` relayed
+// `<origam-field>`'s own `click:clear` emit upward.
+//
+// `click:control`/`mousedown:control` are bound directly on
+// `.origam-otp-input-field__content` (verified against
+// packages/tests/e2e/otp-input-field.spec.ts:284-308, which already
+// targets that exact selector for both). `click:clear` is relayed off
+// `<origam-field>` per cell — `OrigamFieldStub` (used everywhere else in
+// this file) never emits anything, so a dedicated stub capable of firing
+// `click:clear` is defined locally, mirroring the `OrigamFieldFilteringStub`
+// precedent above (#491).
+
+const OrigamFieldClearableStub = {
+    name: 'OrigamField',
+    inheritAttrs: false,
+    props: ['focused', 'id', 'class', 'style', 'label', 'variant', 'error', 'rounded', 'disabled', 'clearable'],
+    emits: ['click:clear'],
+    setup () {
+        return { filterProps: (_props: any, _exclude?: string[]) => ({}) }
+    },
+    template: `<div data-cy="origam-otp-field"><button type="button" class="fake-clear-btn" @click="$emit('click:clear', $event)">clear</button><slot /></div>`
+}
+
+function mountOtpFieldClearable (props: Record<string, unknown> = {}): VueWrapper {
+    return mount(OrigamOtpInputField, {
+        attachTo: document.body,
+        props,
+        global: {
+            plugins: [createOrigam()],
+            stubs: {
+                OrigamField: OrigamFieldClearableStub,
+                OrigamOverlay: OrigamOverlayStub,
+                OrigamProgress: OrigamProgressStub,
+                OrigamMessages: OrigamMessagesStub
+            }
+        }
+    })
+}
+
+describe('OrigamOtpInputField — click:control / mousedown:control emits (#445)', () => {
+    it('emits `click:control` with the real MouseEvent when the content area is clicked', async () => {
+        const wrapper = mountOtpField({ length: 4 })
+
+        await wrapper.find('.origam-otp-input-field__content').trigger('click')
+
+        const emitted = wrapper.emitted('click:control')
+        expect(emitted).toBeTruthy()
+        expect(emitted![0][0]).toBeInstanceOf(MouseEvent)
+    })
+
+    it('emits `mousedown:control` with the real MouseEvent on mousedown over the content area', async () => {
+        const wrapper = mountOtpField({ length: 4 })
+
+        await wrapper.find('.origam-otp-input-field__content').trigger('mousedown')
+
+        const emitted = wrapper.emitted('mousedown:control')
+        expect(emitted).toBeTruthy()
+        expect(emitted![0][0]).toBeInstanceOf(MouseEvent)
+    })
+})
+
+describe('OrigamOtpInputField — click:clear emit (#445)', () => {
+    it('emits `click:clear` when a cell\'s clear button fires click:clear', async () => {
+        const wrapper = mountOtpFieldClearable({ length: 4, clearable: true, modelValue: '1234' })
+        await nextTick()
+
+        await wrapper.find('.fake-clear-btn').trigger('click')
+
+        expect(wrapper.emitted('click:clear')).toBeTruthy()
+    })
+
+    it('actually clears the model (hidden input becomes empty), matching the sibling TextField/NumberField clear behaviour', async () => {
+        const wrapper = mountOtpFieldClearable({ length: 4, clearable: true, modelValue: '1234' })
+        await nextTick()
+        expect(wrapper.find('input[type="hidden"]').element.value).toBe('1234')
+
+        await wrapper.find('.fake-clear-btn').trigger('click')
+        await nextTick()
+
+        expect(wrapper.find('input[type="hidden"]').element.value).toBe('')
+    })
+})
