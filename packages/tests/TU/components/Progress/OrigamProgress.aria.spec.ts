@@ -24,6 +24,7 @@
 
 import { describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { nextTick } from 'vue'
 
 import OrigamProgress from '@origam/components/Progress/OrigamProgress.vue'
 import OrigamProgressCircular from '@origam/components/Progress/OrigamProgressCircular.vue'
@@ -149,8 +150,14 @@ describe('OrigamProgress — wrapper stops duplicating ARIA (#500)', () => {
         expect(bars).toHaveLength(1)
     })
 
-    it('the single role="progressbar" still carries a correct aria-valuenow', () => {
+    it('the single role="progressbar" still carries a correct aria-valuenow', async () => {
         const wrapper = mountWrapped({type: 'linear', modelValue: 65, max: 100})
+
+        // `aria-valuenow` now comes from the CHILD's own forwarded
+        // `modelValue` prop, reached through the template-ref `filterProps`
+        // pattern (`useProps` / props.composable.ts) — one tick after mount,
+        // same tradeoff as the rest of the 68 call sites using it.
+        await nextTick()
 
         const bar = wrapper.find('[role="progressbar"]')
         expect(bar.attributes('aria-valuenow')).toBe('65')

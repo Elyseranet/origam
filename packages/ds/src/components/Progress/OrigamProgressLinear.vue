@@ -3,8 +3,15 @@
 			:is="tag"
 			:id="id"
 			ref="root"
+			:aria-busy="indeterminate ? true : undefined"
+			:aria-hidden="!active"
+			:aria-label="progressAriaLabel"
+			:aria-valuemax="max"
+			:aria-valuenow="indeterminate ? undefined : normalizedValue"
 			:class="progressLinearClasses"
 			:style="progressLinearStyles"
+			aria-valuemin="0"
+			role="progressbar"
 			@click="handleClick"
 	>
 		<div
@@ -60,6 +67,7 @@
 	import OrigamTransition from '../Transition/OrigamTransition.vue'
 
 	import { useIntersectionObserver } from '../../composables/Commons/intersectionObserver.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useLocation } from '../../composables/Commons/location.composable'
 	import { useProgress } from '../../composables/Progress/progress.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
@@ -87,7 +95,8 @@
 		modelValue: 0,
 		max: 100,
 		thickness: 4,
-		active: true
+		active: true,
+		label: 'origam.loading'
 	})
 
 	defineEmits<IProgressLinearEmits>()
@@ -121,6 +130,19 @@
 	const {textColorStyles: backgroundColorStyles, textColorClasses: backgroundColorClasses} = useTextColor(toRef(props, 'bgColor'))
 	const {textColorStyles: loaderColorStyles, textColorClasses: loaderColorClasses} = useTextColor(toRef(props, 'color'))
 	const {isRtl, rtlClasses} = useRtl()
+
+	const {t} = useLocale()
+
+	/*********************************************************
+	 * Accessibility
+	 *
+	 * @description
+	 * #500 — own ARIA semantics (role, aria-value.., aria-label, aria-hidden)
+	 * moved down from the `<OrigamProgress>` wrapper so a consumer who
+	 * mounts this component standalone (both are exported publicly) still
+	 * gets an accessible progress bar.
+	 ********************************************************/
+	const progressAriaLabel = computed(() => t(props.label))
 
 	/*********************************************************
 	 * Computed state

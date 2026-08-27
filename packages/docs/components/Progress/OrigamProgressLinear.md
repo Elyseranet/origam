@@ -182,11 +182,28 @@ interface IProgressLinearProps extends IProgressTypeProps, IRoundedProps, ILocat
 
 ## Accessibility
 
-- Renders with `role="progressbar"` (set by parent `OrigamProgress`).
+`<OrigamProgressLinear>` owns its full ARIA contract (#500) — it is
+accessible **standalone**, with no `<OrigamProgress>` wrapper required.
+
+- Renders `role="progressbar"` on its own root.
 - `aria-valuemin="0"`, `aria-valuemax` mirrors `max`.
-- `aria-valuenow` is set when not `indeterminate`.
+- `aria-valuenow` is set to the normalised value in determinate mode.
+  In `indeterminate` mode it is **omitted entirely** (not set to `0`) —
+  the ARIA spec reserves `aria-valuenow` for a known value, and
+  `indeterminate` progress has none.
+- `aria-busy="true"` is set while `indeterminate`.
+- `aria-label` resolves the `label` prop (a locale key, default
+  `origam.loading`) through the DS `t()` mechanism.
+- `aria-hidden` mirrors the `active` prop (default `true`) — set
+  `active="false"` to intentionally hide an off-screen or paused
+  indicator.
 - When `clickable` is enabled, the bar accepts pointer input - pair with a
   visible label so the seek behaviour is discoverable.
+
+When mounted through `<OrigamProgress type="linear">`, the wrapper
+forwards `label`/`active`/`modelValue`/`max`/`indeterminate` down to this
+component via `filterProps` — the wrapper itself declares no ARIA
+attribute, so there is only ever one `role="progressbar"` in the DOM.
 
 ## Theming notes
 
