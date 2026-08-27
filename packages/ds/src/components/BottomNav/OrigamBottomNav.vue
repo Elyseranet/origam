@@ -7,7 +7,7 @@
 				v-contrast
 				:data-origam-color-locked="colorLocked"
 				:class="bottomNavClasses"
-				:aria-label="t('origam.bottom_nav.aria_label', 'Bottom navigation')"
+				:aria-label="t('origam.bottom_nav.aria_label')"
 				@mouseenter="handleMouseenter"
 				@mouseleave="handleMouseleave"
 		>

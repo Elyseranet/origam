@@ -456,15 +456,15 @@
     return t(`origam.calendar.view.${ view }`, VIEW_LABEL_FALLBACK[view])
   }
 
-  const ariaLabel = computed(() => t('origam.calendar.aria_label', 'Calendar'))
-  const ariaToolbarLabel = computed(() => t('origam.calendar.toolbar', 'Calendar toolbar'))
-  const ariaPrevLabel = computed(() => t('origam.calendar.previous', 'Previous'))
-  const ariaNextLabel = computed(() => t('origam.calendar.next', 'Next'))
-  const ariaTodayLabel = computed(() => t('origam.calendar.today', 'Today'))
-  const ariaViewListLabel = computed(() => t('origam.calendar.view_switcher', 'View'))
-  const ariaMonthLabel = computed(() => t('origam.calendar.month_grid', 'Month grid'))
-  const todayLabel = computed(() => t('origam.calendar.today', 'Today'))
-  const emptyLabel = computed(() => t('origam.calendar.empty', 'No events to display'))
+  const ariaLabel = computed(() => t('origam.calendar.aria_label'))
+  const ariaToolbarLabel = computed(() => t('origam.calendar.toolbar'))
+  const ariaPrevLabel = computed(() => t('origam.calendar.previous'))
+  const ariaNextLabel = computed(() => t('origam.calendar.next'))
+  const ariaTodayLabel = computed(() => t('origam.calendar.today'))
+  const ariaViewListLabel = computed(() => t('origam.calendar.view_switcher'))
+  const ariaMonthLabel = computed(() => t('origam.calendar.month_grid'))
+  const todayLabel = computed(() => t('origam.calendar.today'))
+  const emptyLabel = computed(() => t('origam.calendar.empty'))
 
   const slotPx = DEFAULT_SLOT_HEIGHT_PX
   const slotDuration = computed(() => props.slotDuration)

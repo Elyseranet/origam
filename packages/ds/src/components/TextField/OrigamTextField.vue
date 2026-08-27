@@ -534,7 +534,7 @@
 			// `:error` manually.
 			base.push(() => {
 				if (!model.value) return true
-				return maskIsValid.value || t('origam.validation.invalid_format', 'Invalid format')
+				return maskIsValid.value || t('origam.validation.invalid_format')
 			})
 		}
 

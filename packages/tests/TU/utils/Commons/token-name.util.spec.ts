@@ -115,11 +115,16 @@ describe('PARITY — TS util vs build-time .mjs core', () => {
  * The three are lexically identical. No regex separates them, which is why
  * the audit found "0 functional" — not a missed case, an undecidable one.
  *
- * MEASURED on origin/develop @ 1e4132d5 (2949 component token paths):
+ * MEASURED on origin/develop @ 1e4132d5. Coverage control: the three
+ * sub-populations re-sum to the raw total, so they are exhaustive and
+ * disjoint — 1548 + 172 + 132 = 1852. Without that check the first pass
+ * reported 1680 (it forgot to exclude the known states).
  *
- *   1548  segment is hyphen-free  → already takes the BEM branch, UNAFFECTED
- *    132  segment is a known intent state (TOKEN_INTENT_STATES)
- *    172  segment HAS a hyphen    → the whole blast radius
+ *   2949  component token paths in tokens/component/*.json
+ *   1852  of them have >= 3 segments, splitting into:
+ *   1548    2nd segment hyphen-free → already on the BEM branch, UNAFFECTED
+ *    172    2nd segment HAS a hyphen → the whole blast radius of #435
+ *    132    2nd segment is a known intent state (TOKEN_INTENT_STATES)
  *
  * Of those 172, classified by what components actually READ (not by shape):
  *
@@ -203,5 +208,27 @@ describe('#435 — hyphenated segments: child vs state vs split property', () =>
     it.fails('build-time core exhibits the same defect (parity holds on the bug too)', () => {
         expect(coreName(['table', 'header-cell', 'background-color'], true))
             .toBe('origam-table__header-cell---background-color')
+    })
+
+    /*********************************************************
+     * RED — the 4th mechanism, and it runs the OTHER way (#505).
+     *
+     * @description
+     * `track` is a bare word, so isBemChildKey returns TRUE and the
+     * pipeline emits the BEM form. But it is not a child element here — it
+     * is the first word of a compound PROPERTY name, and the component
+     * reads it flat:
+     *
+     *     emitted  --origam-media-scrubber__track---thickness
+     *     read     --origam-media-scrubber---track-thickness
+     *
+     * ⛔ Relaxing isBemChildKey can only let paths INTO the BEM branch,
+     * never out of it — these 12 are already inside. The #435 fix leaves
+     * them strictly unchanged, which is exactly why they need their own
+     * ticket rather than being folded into its count.
+     ********************************************************/
+    it.fails('emits the flat name for a split property that only looks like a child (#505)', () => {
+        expect(tokenPathToCssVarName(['media-scrubber', 'track', 'thickness'], true))
+            .toBe('origam-media-scrubber---track-thickness')
     })
 })

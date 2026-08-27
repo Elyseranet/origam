@@ -305,12 +305,12 @@
 	 * Keys live under `origam.code.*` in the shipped locale messages.
 	 ********************************************************/
 	const copyButtonLabel = computed(() => copied.value
-		? t('origam.code.copied', 'Copied!')
-		: t('origam.code.copy', 'Copy')
+		? t('origam.code.copied')
+		: t('origam.code.copy')
 	)
 	const copyAriaLabel = computed(() => copied.value
-		? t('origam.code.copied_aria_label', 'Code copied to clipboard')
-		: t('origam.code.copy_aria_label', 'Copy code to clipboard')
+		? t('origam.code.copied_aria_label')
+		: t('origam.code.copy_aria_label')
 	)
 
 	const copyBtnStyle = {

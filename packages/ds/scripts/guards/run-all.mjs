@@ -30,7 +30,8 @@ const GUARDS = [
     'pnpm-tree-integrity.mjs',
     'token-var-channels.mjs',
     'dead-handlers.mjs',
-    'id-forwarding.mjs'
+    'id-forwarding.mjs',
+    't-fallback.mjs'
 ]
 
 /*********************************************************
