@@ -2,7 +2,7 @@ import 'vue/jsx'
 
 // Types
 import type { Events } from 'vue'
-import type { TouchStoredHandlers } from './directives/touch'
+import type { ITouchStoredEntry } from './interfaces/Commons/touch.interface'
 
 declare global {
     interface HTMLCollection {
@@ -41,7 +41,11 @@ declare global {
             target?: EventTarget
         } | undefined>
         _touchHandlers?: {
-            [_uid: number]: TouchStoredHandlers
+            [_uid: number]: ITouchStoredEntry
+        }
+        _contrastTimers?: {
+            raf?: number
+            timeout?: number
         }
         _transitionInitialStyles?: {
             position: string

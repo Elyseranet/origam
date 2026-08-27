@@ -243,7 +243,6 @@
     "packages/ds/src/directives/ClickOutside/clickOutside.directive.ts": 5,
     "packages/ds/src/directives/Contrast/contrast.directive.ts": 23,
     "packages/ds/src/directives/Intersect/intersect.directive.ts": 3,
-    "packages/ds/src/directives/Touch/touch.directive.ts": 1,
     "packages/ds/src/enums/Audio/audio.enum.ts": 5,
     "packages/ds/src/enums/BottomNav/bottom-nav.enum.ts": 1,
     "packages/ds/src/enums/Bracket/bracket-round.enum.ts": 1,
