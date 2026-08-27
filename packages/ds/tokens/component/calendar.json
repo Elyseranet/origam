@@ -10,17 +10,40 @@
     "gap":                 { "$type": "dimension", "$value": "{space.0}" },
     "padding":             { "$type": "dimension", "$value": "{space.0}" },
 
-    "day-cell": {
-      "height":              { "$type": "dimension", "$value": "120px" },
-      "padding":             { "$type": "dimension", "$value": "{space.2}" },
-      "color":               { "$type": "color",     "$value": "{color.text.primary}" },
-      "color-muted":         { "$type": "color",     "$value": "{color.text.secondary}" },
-      "color-disabled":      { "$type": "color",     "$value": "{color.text.disabled}" },
-      "border-color":        { "$type": "color",     "$value": "{color.border.subtle}" },
-      "bg-color-today":      { "$type": "color",     "$value": "{color.action.primary.bgSubtle}" },
-      "bg-color-weekend":    { "$type": "color",     "$value": "{color.surface.sunken}" },
-      "bg-color-outside":    { "$type": "color",     "$value": "{color.surface.sunken}" },
-      "bg-color-hover":      { "$type": "color",     "$value": "{color.surface.overlay}" }
+    "$child": {
+      "day-cell": {
+        "height":              { "$type": "dimension", "$value": "120px" },
+        "padding":             { "$type": "dimension", "$value": "{space.2}" },
+        "color":               { "$type": "color",     "$value": "{color.text.primary}" },
+        "color-muted":         { "$type": "color",     "$value": "{color.text.secondary}" },
+        "color-disabled":      { "$type": "color",     "$value": "{color.text.disabled}" },
+        "border-color":        { "$type": "color",     "$value": "{color.border.subtle}" },
+        "bg-color-today":      { "$type": "color",     "$value": "{color.action.primary.bgSubtle}" },
+        "bg-color-weekend":    { "$type": "color",     "$value": "{color.surface.sunken}" },
+        "bg-color-outside":    { "$type": "color",     "$value": "{color.surface.sunken}" },
+        "bg-color-hover":      { "$type": "color",     "$value": "{color.surface.overlay}" }
+      },
+      "timeline": {
+        "slot-height":         { "$type": "dimension", "$value": "32px" },
+        "$child": {
+          "hour-label": {
+            "color":             { "$type": "color",     "$value": "{color.text.secondary}" },
+            "font-size":         { "$type": "dimension", "$value": "{font.size.xs}" },
+            "width":             { "$type": "dimension", "$value": "56px" }
+          }
+        },
+
+        "grid-line-color":     { "$type": "color",     "$value": "{color.border.subtle}" }
+      },
+      "range-select": {
+        "bg-color":            { "$type": "color",     "$value": "{color.action.primary.bgSubtle}" },
+        "border-color":        { "$type": "color",     "$value": "{color.action.primary.bg}" }
+      },
+      "week-number": {
+        "color":               { "$type": "color",     "$value": "{color.text.secondary}" },
+        "font-size":           { "$type": "dimension", "$value": "{font.size.xs}" },
+        "width":               { "$type": "dimension", "$value": "32px" }
+      }
     },
 
     "event": {
@@ -39,27 +62,6 @@
       "title-color":         { "$type": "color",     "$value": "{color.text.primary}" },
       "title-font-size":     { "$type": "dimension", "$value": "{font.size.md}" },
       "title-font-weight":   { "$type": "fontWeight","$value": "{font.weight.semibold}" }
-    },
-
-    "timeline": {
-      "slot-height":         { "$type": "dimension", "$value": "32px" },
-      "hour-label": {
-        "color":             { "$type": "color",     "$value": "{color.text.secondary}" },
-        "font-size":         { "$type": "dimension", "$value": "{font.size.xs}" },
-        "width":             { "$type": "dimension", "$value": "56px" }
-      },
-      "grid-line-color":     { "$type": "color",     "$value": "{color.border.subtle}" }
-    },
-
-    "range-select": {
-      "bg-color":            { "$type": "color",     "$value": "{color.action.primary.bgSubtle}" },
-      "border-color":        { "$type": "color",     "$value": "{color.action.primary.bg}" }
-    },
-
-    "week-number": {
-      "color":               { "$type": "color",     "$value": "{color.text.secondary}" },
-      "font-size":           { "$type": "dimension", "$value": "{font.size.xs}" },
-      "width":               { "$type": "dimension", "$value": "32px" }
     },
 
     "agenda": {

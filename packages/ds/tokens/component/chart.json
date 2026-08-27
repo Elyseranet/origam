@@ -43,8 +43,10 @@
       "gap":               { "$type": "dimension", "$value": "{space.3}" }
     },
 
-    "legend-swatch": {
-      "border-radius":     { "$type": "dimension", "$value": "{radius.xs}" }
+    "$child": {
+      "legend-swatch": {
+        "border-radius":     { "$type": "dimension", "$value": "{radius.xs}" }
+      }
     },
 
     "point": {

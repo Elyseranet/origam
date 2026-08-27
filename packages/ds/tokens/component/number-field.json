@@ -40,9 +40,12 @@
       "cursor-disabled":           { "$type": "other",  "$value": "not-allowed" }
     },
 
-    "compact": {
-      "gap":         { "$type": "dimension", "$value": "{space.2}", "$description": "Gap between − input + buttons in compact horizontal layout" },
-      "input-width": { "$type": "dimension", "$value": "3em",       "$description": "Width of the centered numeric input in compact mode" }
+    "$state": {
+      "compact": {
+        "gap":         { "$type": "dimension", "$value": "{space.2}", "$description": "Gap between − input + buttons in compact horizontal layout" },
+        "input-width": { "$type": "dimension", "$value": "3em",       "$description": "Width of the centered numeric input in compact mode" }
+      }
     }
+
   }
 }

@@ -39,9 +39,11 @@
       "offset":               { "$type": "dimension",    "$value": "0px",                          "$description": "Outline offset of the focus ring" }
     },
 
-    "variant-solo": {
-      "_comment": "Tokens for the &-solo variant.",
-      "box-shadow":           { "$type": "shadow",       "$value": "{shadow.sm}",                  "$description": "Elevation shadow on solo variants" }
+    "$state": {
+      "variant-solo": {
+        "_comment": "Tokens for the &-solo variant.",
+        "box-shadow":           { "$type": "shadow",       "$value": "{shadow.sm}",                  "$description": "Elevation shadow on solo variants" }
+      }
     },
 
     "variant-outlined": {

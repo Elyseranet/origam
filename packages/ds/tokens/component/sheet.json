@@ -37,16 +37,17 @@
     "margin-inline-start":  { "$type": "dimension",  "$value": "{space.0}" },
     "margin-inline-end":    { "$type": "dimension",  "$value": "{space.0}" },
 
-    "border": {
-      "border-top-width":   { "$type": "dimension",  "$value": "{border.width.thin}" },
-      "border-left-width":  { "$type": "dimension",  "$value": "{border.width.thin}" },
-      "border-bottom-width":{ "$type": "dimension",  "$value": "{border.width.thin}" },
-      "border-right-width": { "$type": "dimension",  "$value": "{border.width.thin}" },
-      "box-shadow":         { "$type": "shadow",     "$value": "{shadow.none}" }
-    },
-
-    "rounded": {
-      "border-radius":      { "$type": "dimension",  "$value": "{radius.sm}" }
+    "$state": {
+      "border": {
+        "border-top-width":   { "$type": "dimension",  "$value": "{border.width.thin}" },
+        "border-left-width":  { "$type": "dimension",  "$value": "{border.width.thin}" },
+        "border-bottom-width":{ "$type": "dimension",  "$value": "{border.width.thin}" },
+        "border-right-width": { "$type": "dimension",  "$value": "{border.width.thin}" },
+        "box-shadow":         { "$type": "shadow",     "$value": "{shadow.none}" }
+      },
+      "rounded": {
+        "border-radius":      { "$type": "dimension",  "$value": "{radius.sm}" }
+      }
     },
 
     "swipeable": {

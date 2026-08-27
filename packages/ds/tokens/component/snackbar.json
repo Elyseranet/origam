@@ -35,16 +35,16 @@
       "transition-easing":     { "$type": "cubicBezier","$value": "{motion.easing.linear}" }
     },
 
-    "multi-line": {
-      "wrapper-min-height":    { "$type": "dimension",  "$value": "68px" }
-    },
-
-    "vertical": {
-      "actions-margin-bottom": { "$type": "dimension",  "$value": "{space.2}" }
-    },
-
-    "absolute": {
-      "z-index":               { "$type": "number",     "$value": "{zIndex.raised}" }
+    "$state": {
+      "multi-line": {
+        "wrapper-min-height":    { "$type": "dimension",  "$value": "68px" }
+      },
+      "vertical": {
+        "actions-margin-bottom": { "$type": "dimension",  "$value": "{space.2}" }
+      },
+      "absolute": {
+        "z-index":               { "$type": "number",     "$value": "{zIndex.raised}" }
+      }
     },
 
     "success": {

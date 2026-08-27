@@ -63,8 +63,10 @@
       "btn-icon-size":           { "$type": "dimension",  "$value": "20px" }
     },
 
-    "play-btn": {
-      "size":                    { "$type": "dimension",  "$value": "48px" }
+    "$child": {
+      "play-btn": {
+        "size":                    { "$type": "dimension",  "$value": "48px" }
+      }
     },
 
     "compact": {

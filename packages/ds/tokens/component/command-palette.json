@@ -35,14 +35,15 @@
       "description-color":       { "$type": "color",      "$value": "{color.text.secondary}" }
     },
 
-    "item-kbd": {
-      "gap":                  { "$type": "dimension",  "$value": "{space.1}" }
-    },
-
-    "group-title": {
-      "padding":              { "$type": "other",      "$value": "10px 12px 6px" },
-      "color":                { "$type": "color",      "$value": "{color.text.secondary}" },
-      "font-size":            { "$type": "dimension",  "$value": "{font.size.xs}" }
+    "$child": {
+      "item-kbd": {
+        "gap":                  { "$type": "dimension",  "$value": "{space.1}" }
+      },
+      "group-title": {
+        "padding":              { "$type": "other",      "$value": "10px 12px 6px" },
+        "color":                { "$type": "color",      "$value": "{color.text.secondary}" },
+        "font-size":            { "$type": "dimension",  "$value": "{font.size.xs}" }
+      }
     },
 
     "empty": {
@@ -55,9 +56,12 @@
       "color":                { "$type": "color",      "$value": "{color.text.secondary}" }
     },
 
-    "backdrop": {
-      "background-color":     { "$type": "color",      "$value": "rgba(0, 0, 0, 0.45)" },
-      "backdrop-filter":      { "$type": "other",      "$value": "blur(6px)" }
+    "$state": {
+      "backdrop": {
+        "background-color":     { "$type": "color",      "$value": "rgba(0, 0, 0, 0.45)" },
+        "backdrop-filter":      { "$type": "other",      "$value": "blur(6px)" }
+      }
     }
+
   }
 }

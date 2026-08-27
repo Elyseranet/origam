@@ -15,10 +15,13 @@
     "transition-duration":   { "$type": "duration",  "$value": "{motion.duration.medium}" },
     "transition-timing-function": { "$type": "cubicBezier", "$value": "{motion.easing.standard}" },
 
-    "title": {
-      "color":       { "$type": "color",      "$value": "{color.text.secondary}" },
-      "font-size":   { "$type": "dimension",  "$value": "{font.size.md}" },
-      "font-weight": { "$type": "fontWeight", "$value": "{font.weight.medium}" }
+    "$state": {
+      "title": {
+        "color":       { "$type": "color",      "$value": "{color.text.secondary}" },
+        "font-size":   { "$type": "dimension",  "$value": "{font.size.md}" },
+        "font-weight": { "$type": "fontWeight", "$value": "{font.weight.medium}" }
+      }
     }
+
   }
 }

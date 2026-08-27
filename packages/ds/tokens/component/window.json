@@ -44,11 +44,14 @@
       "easing":                { "$type": "cubicBezier","$value": "{motion.easing.standard}" }
     },
 
-    "show-arrows-on-hover": {
-      "prev-transform":        { "$type": "other",      "$value": "translateX(-200%)" },
-      "next-transform":        { "$type": "other",      "$value": "translateX(200%)" },
-      "hover-transform":       { "$type": "other",      "$value": "translateX(0)" }
+    "$state": {
+      "show-arrows-on-hover": {
+        "prev-transform":        { "$type": "other",      "$value": "translateX(-200%)" },
+        "next-transform":        { "$type": "other",      "$value": "translateX(200%)" },
+        "hover-transform":       { "$type": "other",      "$value": "translateX(0)" }
+      }
     }
+
   },
 
   "window-item": {

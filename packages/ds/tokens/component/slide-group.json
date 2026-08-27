@@ -41,10 +41,13 @@
       "white-space":           { "$type": "other",      "$value": "nowrap" }
     },
 
-    "vertical": {
-      "max-height":            { "$type": "other",      "$value": "inherit" },
-      "content-overflow-x":   { "$type": "other",      "$value": "hidden" },
-      "content-overflow-y":   { "$type": "other",      "$value": "auto" }
+    "$state": {
+      "vertical": {
+        "max-height":            { "$type": "other",      "$value": "inherit" },
+        "content-overflow-x":   { "$type": "other",      "$value": "hidden" },
+        "content-overflow-y":   { "$type": "other",      "$value": "auto" }
+      }
     }
+
   }
 }
