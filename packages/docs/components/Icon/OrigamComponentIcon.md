@@ -92,10 +92,22 @@ interface IIconComponentProps {
 ## Anatomy
 
 ```html
-<div class="origam-icon origam-icon--component origam-icon--size-default">
+<div
+    class="origam-icon origam-icon--component origam-icon--size-default"
+    aria-hidden="true"
+>
     <!-- inner Vue component renders its own SVG / element here -->
 </div>
 ```
+
+## Accessibility
+
+- `aria-hidden="true"` by default, whether reached through `OrigamIcon` or
+  used directly — this protects the whole subtree even if the
+  consumer-supplied inner component doesn't manage its own accessibility.
+- A click handler flips it to `aria-hidden="false"` + `role="button"`.
+  Pass `aria-label` or `aria-labelledby` on the same element — a
+  dev-time console warning fires otherwise.
 
 ## When to use
 

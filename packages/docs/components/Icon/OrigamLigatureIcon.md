@@ -86,7 +86,10 @@ interface IIconComponentProps {
 ## Anatomy
 
 ```html
-<div class="origam-icon origam-icon--ligature origam-icon--size-default">
+<div
+    class="origam-icon origam-icon--ligature origam-icon--size-default"
+    aria-hidden="true"
+>
     home
 </div>
 ```
@@ -107,6 +110,21 @@ The leaf applies the Material font via SCSS:
   class names ("mdi-settings-outline").
 - When you want the markup to stay **readable in source** without
   pre-loading a class-mapping font CSS.
+
+## Accessibility
+
+- ⛔ Without a font that supports the ligature substitution (or before it
+  loads), the rendered node is a literal text node — `home`, `settings`,
+  `account_circle` — words a screen reader would read verbatim if left
+  unprotected. `aria-hidden="true"` is applied automatically whenever no
+  click handler is registered, matching `OrigamIcon`'s own contract —
+  this leaf defends itself even though `OrigamIcon`'s dispatcher never
+  routes to it today (see "Related" below), because it is exported on
+  the public barrel and can be used directly.
+- When a click handler IS attached: `aria-hidden="false"` + `role="button"`.
+  The ligature text itself is not a substitute for a real accessible
+  name — pass `aria-label` or `aria-labelledby`, or a dev-time console
+  warning fires.
 
 ## Theming notes
 

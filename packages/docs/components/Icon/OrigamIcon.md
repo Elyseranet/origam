@@ -169,10 +169,13 @@ type TIcon =
 
 - `aria-hidden="true"` is applied automatically when **no click handler** is
   registered — purely-decorative icons stay invisible to screen readers.
-- When a click handler IS attached: `role="button"` + the consumer must
-  provide `aria-label`.
-- Inline SVG is rendered with `role="img"` + `aria-hidden="true"` (the
-  outer wrapper is the announce target).
+- When a click handler IS attached: `role="button"` + `aria-hidden="false"`.
+  The icon itself carries no accessible name — pass `aria-label` or
+  `aria-labelledby` on the same element, or a dev-time console warning
+  fires (`role="button"` with no name is worse than no role at all).
+- The inline `<svg>` leaf (`OrigamSvgIcon`) always renders its glyph with
+  `aria-hidden="true"` — no `role` — it never carries meaning on its own;
+  the accessible name lives on the interactive ancestor, not the glyph.
 
 ## Theming notes
 

@@ -2,7 +2,9 @@
 	<component
 			:is="tag"
 			:id="id"
+			:aria-hidden="ariaHidden"
 			:class="iconClasses"
+			:role="role"
 			:style="iconStyles"
 	/>
 </template>
@@ -14,6 +16,7 @@
 	import { useBorder } from '../../composables/Commons/border.composable'
 	import { useBothColor } from '../../composables/Commons/bothColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useIconAccessibility } from '../../composables/Icon/iconAccessibility.composable'
 	import { useMargin } from '../../composables/Commons/margin.composable'
 	import { usePadding } from '../../composables/Commons/padding.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
@@ -62,6 +65,7 @@
 	const {marginClasses, marginStyles} = useMargin(props)
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {dimensionStyles} = useDimension(props)
+	const {ariaHidden, role} = useIconAccessibility()
 
 	/*********************************************************
 	 * Class & Style

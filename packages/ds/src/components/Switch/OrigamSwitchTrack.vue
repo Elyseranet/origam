@@ -243,14 +243,19 @@
 			opacity: var(--origam-switch---opacity-disabled, 0.32);
 		}
 
+		&--readonly {
+			cursor: default;
+			pointer-events: none;
+		}
+
 		&--dirty#{$this}--disabled {
 			background-color: var(--origam-switch__track---background-color-disabled, rgb(163, 163, 163));
 		}
 
 		&--error {
 			&:not(#{$this}--disabled) {
-				background-color: rgba(255, 0, 0, 1);
-				color: rgba(255, 255, 255, 1);
+				background-color: var(--origam-switch__track---background-color-error, rgba(255, 0, 0, 1));
+				color: var(--origam-switch__track---color-error, rgba(255, 255, 255, 1));
 			}
 		}
 

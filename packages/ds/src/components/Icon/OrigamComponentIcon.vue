@@ -2,7 +2,9 @@
 	<component
 			:is="tag"
 			:id="id"
+			:aria-hidden="ariaHidden"
 			:class="iconClasses"
+			:role="role"
 			:style="iconStyles"
 	>
 		<slot name="default">
@@ -21,6 +23,7 @@
 	import { useBorder } from '../../composables/Commons/border.composable'
 	import { useBothColor } from '../../composables/Commons/bothColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useIconAccessibility } from '../../composables/Icon/iconAccessibility.composable'
 	import { useMargin } from '../../composables/Commons/margin.composable'
 	import { usePadding } from '../../composables/Commons/padding.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
@@ -55,6 +58,8 @@
 	const iconComponent = computed(() => {
 		return props.icon as Component
 	})
+
+	const {ariaHidden, role} = useIconAccessibility()
 
 	/*********************************************************
 	 * Class & Style
