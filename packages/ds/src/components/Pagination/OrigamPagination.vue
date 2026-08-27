@@ -819,6 +819,16 @@
 			--origam-btn---color: var(--origam-pagination---color-hover, var(--fg-base));
 		}
 
+		// NOTE: the hover rule above never actually falls through to its
+		// `color-mix(in srgb, var(--bg-base), black 20%)` fallback in the
+		// uncolored/ghost mode, even though `--bg-base` is `transparent`
+		// there — `--origam-pagination---background-color-hover` is seeded
+		// globally at `:root` (component/pagination.json → the neutral
+		// `--origam-color__action--secondary---bgHover` token), so `var()`
+		// resolves to that visible gray before the fallback is ever
+		// evaluated. Verified via getComputedStyle: no separate override
+		// needed here, unlike the active state below.
+
 		// Active state — derived: 30 % darker than --bg-base.
 		// Consumer can override via the matching `is-active` vars.
 		&__item--is-active :deep(.origam-btn) {
@@ -833,6 +843,32 @@
 			--origam-btn---border-color: var(
 				--origam-pagination__item--is-active---border-color,
 				transparent
+			);
+		}
+
+		// Unlike the hover state, no `--origam-pagination__item--is-active
+		// ---background-color` token is globally seeded — so in uncolored/
+		// ghost mode this rule's `color-mix(in srgb, var(--bg-base), black
+		// 30%)` fallback DOES get evaluated, and `--bg-base` is `transparent`
+		// there. `color-mix()` with the literal `transparent` keyword
+		// degenerates to fully transparent instead of the partially-opaque
+		// black the derivation intends (verified identically on chromium/
+		// firefox/webkit) — the active page item then rendered pixel-
+		// identical to its resting siblings, reproducing the exact
+		// "indistinguishable active page" defect this file's user-reported
+		// origin (652a770e) was fixed for. This regressed some time after
+		// cb10d654, whose own commit message recorded the then-correct
+		// `color(srgb 0 0 0 / 0.3)` result for this exact case — so either
+		// engine color-mix semantics for a fully-transparent operand
+		// tightened since, or a token change altered what `--bg-base`
+		// resolves to; either way, restore an explicit neutral fallback for
+		// the uncolored branch only. The `--colored` branch's `--bg-base` is
+		// always an opaque color, so its color-mix derivation still works
+		// there and is left untouched.
+		&:not(&--colored) &__item--is-active :deep(.origam-btn) {
+			--origam-btn---background-color: var(
+				--origam-pagination__item--is-active---background-color,
+				var(--origam-color__neutral---200, #e6e6e6)
 			);
 		}
 
