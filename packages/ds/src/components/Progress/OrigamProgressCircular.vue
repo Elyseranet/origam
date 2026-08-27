@@ -90,6 +90,13 @@
 	 * `.origam-progress--circular.origam-progress--size-default`
 	 * pins width/height — without this the SVG (position: absolute)
 	 * collapses to 0×0 and the component renders invisible.
+	 *
+	 * Why not the native `<progress>` element (#500): it has no
+	 * circular rendering model at all — per the HTML spec it is an
+	 * inherently horizontal-bar element, so it cannot express a ring.
+	 * The ARIA `role="progressbar"` + `aria-value*` contract below
+	 * gives assistive tech the exact same semantics natively-supported
+	 * `<progress>` would, without requiring one.
 	 ********************************************************/
 	const props = withDefaults(defineProps<IProgressCircularProps>(), {
 		tag: 'div',

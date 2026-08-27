@@ -84,6 +84,21 @@ describe('OrigamProgressCircular — standalone ARIA semantics (#500)', () => {
 
         expect(wrapper.attributes('aria-hidden')).toBe('true')
     })
+
+    // Antecedent in this repo (#66, OrigamMediaScrubber): `aria-valuemax`
+    // leaked an epsilon sentinel (`1e-7`) instead of a clean integer because
+    // of arithmetic performed on the declared maximum. Verify the RENDERED
+    // ATTRIBUTE VALUE on full defaults (no props at all beyond a bare
+    // mount), not just its presence — this component does no such
+    // arithmetic (`max` is read straight off the prop), but the value is
+    // the thing that must be checked, not assumed.
+    it('renders a clean aria-valuemax="100" / aria-valuenow="0" on bare defaults, no epsilon artefact', () => {
+        const wrapper = mountStandalone(OrigamProgressCircular, {})
+
+        expect(wrapper.attributes('aria-valuemax')).toBe('100')
+        expect(wrapper.attributes('aria-valuenow')).toBe('0')
+        expect(wrapper.attributes('aria-valuemin')).toBe('0')
+    })
 })
 
 describe('OrigamProgressLinear — standalone ARIA semantics (#500)', () => {
@@ -125,6 +140,21 @@ describe('OrigamProgressLinear — standalone ARIA semantics (#500)', () => {
         const wrapper = mountStandalone(OrigamProgressLinear, {modelValue: 10, active: false})
 
         expect(wrapper.attributes('aria-hidden')).toBe('true')
+    })
+
+    // Antecedent in this repo (#66, OrigamMediaScrubber): `aria-valuemax`
+    // leaked an epsilon sentinel (`1e-7`) instead of a clean integer because
+    // of arithmetic performed on the declared maximum. Verify the RENDERED
+    // ATTRIBUTE VALUE on full defaults (no props at all beyond a bare
+    // mount), not just its presence — this component does no such
+    // arithmetic (`max` is read through the parsed `useProgress().max`),
+    // but the value is the thing that must be checked, not assumed.
+    it('renders a clean aria-valuemax="100" / aria-valuenow="0" on bare defaults, no epsilon artefact', () => {
+        const wrapper = mountStandalone(OrigamProgressLinear, {})
+
+        expect(wrapper.attributes('aria-valuemax')).toBe('100')
+        expect(wrapper.attributes('aria-valuenow')).toBe('0')
+        expect(wrapper.attributes('aria-valuemin')).toBe('0')
     })
 })
 

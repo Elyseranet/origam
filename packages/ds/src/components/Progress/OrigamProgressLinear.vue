@@ -89,6 +89,17 @@
 	 *
 	 * @description
 	 * Props and filterProps for the ProgressLinear component.
+	 *
+	 * Why not the native `<progress>` element (#500): it renders
+	 * consistently only in its determinate/indeterminate value, with no
+	 * cross-browser-reliable way to theme thickness, rounded corners,
+	 * a buffer/stream ghost segment, RTL reverse animation, or the DS
+	 * color-token system — all of which this component already ships.
+	 * Reaching for it here would fragment the shared `useProgress()` /
+	 * ARIA contract across the Progress family (Circular has no native
+	 * equivalent at all — see its own file). The `role="progressbar"`
+	 * + `aria-value*` attributes below reproduce the same semantics
+	 * `<progress>` gives for free, without the styling ceiling.
 	 ********************************************************/
 	const props = withDefaults(defineProps<IProgressLinearProps>(), {
 		tag: 'div',
