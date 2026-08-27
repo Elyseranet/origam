@@ -284,7 +284,10 @@ test.describe('OrigamSelectionControlGroup — Emit: update:modelValue', () => {
         await openVariant(page, 'Events - update:modelValue')
         const sandbox = sandboxOf(page)
         await expect(group(sandbox)).toBeVisible({ timeout: 8000 })
-        await expect(group(sandbox).locator('.origam-selection-control')).toHaveCount(2)
+        // The "Events - update:modelValue" Variant renders 3 controls
+        // (Option A/B/C) — a third one (C) was added to the story at some
+        // point without updating this count, drifting the assertion.
+        await expect(group(sandbox).locator('.origam-selection-control')).toHaveCount(3)
     })
 
     test('checking a control fires update:modelValue (verified via the Events tab)', async ({ page }) => {

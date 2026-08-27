@@ -154,6 +154,7 @@
 				<origam-btn text="BgColor primary" bg-color="primary" data-cy="btn-color-primary"/>
 				<origam-btn text="BgColor success" bg-color="success"/>
 				<origam-btn text="BgColor danger"  bg-color="danger"/>
+				<origam-btn variant="flat" text="Flat bgColor primary" bg-color="primary" data-cy="btn-flat-color-primary"/>
 			</div>
 		</Variant>
 
