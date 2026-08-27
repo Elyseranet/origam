@@ -636,50 +636,7 @@ async function build () {
         }
     }
 
-    // ────────────────────────────────────────────────────────────────────
-    // Aggregated `themes-all.css` — concatenates every brand-* combo file
-    // so marketing consumers can `<link rel="stylesheet" href=".../themes-all.css">`
-    // once and flip themes with `<html data-theme="sobre" data-mode="dark">`.
-    //
-    // Skipped in dry-run (no underlying CSS files exist).
-    // ────────────────────────────────────────────────────────────────────
     if (!isDryRun) {
-        const cssOutDir = resolve(projectRoot, 'src/assets/css/tokens')
-        const scssOutDir = resolve(projectRoot, 'src/assets/scss/tokens')
-        const brandCombos = Object.keys(themesMap)
-            .map(n => n.toLowerCase())
-            .filter(n => parseBrandTheme(n))
-            .sort()
-
-        if (brandCombos.length > 0) {
-            const aggregateHeader = [
-                '/* origam tokens — themes-all (auto-generated, do not edit) */',
-                '/*                                                           */',
-                '/* Aggregates every <brand>-<mode> CSS combo behind a single */',
-                '/* import. Activate via:                                     */',
-                '/*   <html data-theme="sobre" data-mode="dark">              */',
-                ''
-            ].join('\n')
-
-            const cssParts = [aggregateHeader]
-            const scssParts = [aggregateHeader]
-            for (const combo of brandCombos) {
-                const cssPath = resolve(cssOutDir, `${combo}.css`)
-                const scssPath = resolve(scssOutDir, `_${combo}.scss`)
-                if (existsSync(cssPath)) {
-                    cssParts.push(`\n/* ── ${combo} ───────────────────────────────── */`)
-                    cssParts.push(readFileSync(cssPath, 'utf-8'))
-                }
-                if (existsSync(scssPath)) {
-                    scssParts.push(`\n/* ── ${combo} ───────────────────────────────── */`)
-                    scssParts.push(readFileSync(scssPath, 'utf-8'))
-                }
-            }
-            writeFileSync(resolve(cssOutDir, 'themes-all.css'), cssParts.join('\n'))
-            writeFileSync(resolve(scssOutDir, '_themes-all.scss'), scssParts.join('\n'))
-            console.log(`[tokens] aggregated ${brandCombos.length} brand combo(s) → themes-all.css`)
-        }
-
         console.log('[tokens] all themes built successfully')
     }
 }

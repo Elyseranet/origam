@@ -13,6 +13,42 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### ⚠️ BREAKING — `origam/tokens/css/themes-all` and `origam/tokens/scss/themes-all` removed
+
+Both export subpaths, their two generated files
+(`dist/src/assets/css/tokens/themes-all.css`,
+`dist/src/assets/scss/tokens/_themes-all.scss`), and the dead aggregation
+step in `build-tokens.mjs` that produced them are gone.
+
+**Why**: `$themes.json` has held only 2 entries (`light`, `dark`) for a
+while, with zero `<brand>-<mode>` combos — the generator's aggregation
+branch only ran when at least one combo existed, so it had become a
+silent no-op. The ~2.1 MB CSS file and ~2.1 MB SCSS file left on disk
+were a stale hand-edited snapshot from when brand combos still existed,
+not a build output: no `tokens:build` run touched them, and nothing in
+the codebase actually loaded them (`grep`'d for `@import` / `href` /
+`url()` — zero hits; the two "references" found were comments). Shipping
+them cost every install ~4.5 MB of dead weight (`files: ["dist/src/", …]`
+embeds the whole directory) for zero runtime benefit.
+
+**Migration** — anyone who imported the aggregate switches to the
+per-theme sheets, which are current and still generated on every
+`tokens:build`:
+
+```diff
+- import 'origam/tokens/css/themes-all'
++ import 'origam/tokens/css/light'
++ import 'origam/tokens/css/dark'
+```
+
+```diff
+- @use 'origam/tokens/scss/themes-all';
++ @use 'origam/tokens/scss/light';
++ @use 'origam/tokens/scss/dark';
+```
+
+Ref: issue #497.
+
 ## [2.16.0] - 2026-08-19
 
 A release about **things that were declared but did nothing**. Seven
