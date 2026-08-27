@@ -3,15 +3,8 @@
 			:is="progressComponent"
 			:id="id"
 			ref="origamProgressRef"
-			:aria-busy="indeterminate ? true : undefined"
-			:aria-hidden="!active"
-			:aria-label="progressAriaLabel"
-			:aria-valuemax="max"
-			:aria-valuenow="indeterminate ? undefined : normalizedValue"
 			:class="progressClasses"
 			:style="progressStyles"
-			aria-valuemin="0"
-			role="progressbar"
 			v-bind="progressProps"
 	>
 		<template
@@ -31,7 +24,6 @@
 	import OrigamProgressCircular from './OrigamProgressCircular.vue'
 	import OrigamProgressLinear from './OrigamProgressLinear.vue'
 
-	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useProgress } from '../../composables/Progress/progress.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useSize } from '../../composables/Commons/size.composable'
@@ -80,7 +72,20 @@
 	 * Decorators & progress state
 	 *
 	 * @description
-	 * Size utilities and normalized value / hasContent flags.
+	 * Size utilities and hasContent flag (used to render the
+	 * default slot as an overlay on top of the dispatched bar).
+	 *
+	 * #500 — this wrapper no longer carries any ARIA semantics
+	 * (role, aria-value*, aria-busy, aria-label, aria-hidden). It
+	 * delegates its ENTIRE render to whichever concrete component
+	 * `type` selects (`<component :is="progressComponent">` — a
+	 * single root, never an extra wrapping DOM node), and both
+	 * `OrigamProgressCircular` and `OrigamProgressLinear` now own
+	 * their own ARIA contract so they stay accessible when mounted
+	 * standalone. Re-declaring it here would either be dead code or,
+	 * worse, a second conflicting `role="progressbar"` on the same
+	 * element — see the anti-duplication tests in
+	 * OrigamProgress.aria.spec.ts.
 	 ********************************************************/
 
 	/*********************************************************
@@ -88,11 +93,7 @@
 	 ********************************************************/
 
 	const {sizeClasses, sizeStyles} = useSize(props)
-	const {normalizedValue, hasContent} = useProgress(props)
-
-	const {t} = useLocale()
-
-	const progressAriaLabel = computed(() => t(props.label))
+	const {hasContent} = useProgress(props)
 
 	/*********************************************************
 	 * Component selection

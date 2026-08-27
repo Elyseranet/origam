@@ -9,6 +9,17 @@ Use it when the surface that owns the spinner needs to be configurable
 (circular for buttons / inline placeholders, linear for top bars and
 upload progress).
 
+> **Accessibility ownership (#500).** `<OrigamProgress>` is a pure layout
+> dispatcher — it carries **no ARIA semantics of its own**. `role`,
+> `aria-value*`, `aria-busy`, `aria-label` and `aria-hidden` all live on
+> whichever concrete component it delegates to
+> (`<OrigamProgressCircular>` / `<OrigamProgressLinear>`), because it
+> delegates its entire render to that component (`<component :is="…">`,
+> a single DOM root — never an extra wrapping node). Both concrete
+> components are exported publicly and documented separately, and both
+> are fully accessible **standalone**, with no wrapper required. See
+> their own docs' Accessibility sections for details.
+
 ## Basic usage
 
 ```vue
@@ -153,13 +164,29 @@ itself only sets layout tokens; the visuals come from the picked child.
 
 ## Accessibility
 
-- The dispatched variant is rendered with `role="progressbar"`.
+`<OrigamProgress>` itself carries **no ARIA attribute** (#500) — it
+delegates its entire render to the picked variant
+(`<component :is="…">`, a single DOM root), so declaring `role`/`aria-*`
+here too would either be dead code or, worse, a second conflicting
+`role="progressbar"` on the same element. The dispatched variant
+(`OrigamProgressCircular` or `OrigamProgressLinear`) owns the full
+contract:
+
+- `role="progressbar"` on the rendered root.
 - `aria-valuemin="0"`, `aria-valuemax` follows `max`.
-- `aria-valuenow` is set when `indeterminate` is false.
+- `aria-valuenow` is set when `indeterminate` is false, and **omitted**
+  (not `0`) when it is true.
+- `aria-busy="true"` while `indeterminate`.
+- `aria-label` resolves `label` through `t()`.
 - `aria-hidden` mirrors the `active` prop, which **defaults to `true`** —
   a progress bar is announced to assistive tech out of the box. Set
   `active="false"` to intentionally hide an off-screen or paused
   indicator (`aria-hidden="true"` then applies).
+
+This holds identically whether the bar is reached through
+`<OrigamProgress>` or mounted directly as `<OrigamProgressCircular>` /
+`<OrigamProgressLinear>` — both are exported publicly and are fully
+accessible standalone.
 
 ## Related
 

@@ -15,9 +15,23 @@
 //
 // The locale-switch cases are the ones that would have caught the original
 // bug: before the fix they returned English under `fr` too.
+//
+// Updated for #500: `OrigamProgress` no longer resolves `aria-label`
+// itself — it forwards `label` to the concrete `OrigamProgressCircular` /
+// `OrigamProgressLinear` component it delegates to, which now owns the
+// ARIA contract (and resolves it through `t()` on its own). That
+// forwarding goes through the template-ref `filterProps` pattern
+// documented in `useProps` (props.composable.ts), which needs one tick
+// after mount before the wrapper's actual `label` value lands on the
+// child — a deliberate, measured, invisible-to-real-users tradeoff shared
+// by 68 other call sites in this codebase. The `OrigamProgress` cases
+// below `await nextTick()` for that reason; `OrigamSkeleton` and
+// `OrigamQrCode` resolve their own `aria-label` directly and need no such
+// wait.
 
 import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { nextTick } from 'vue'
 
 import OrigamProgress from '@origam/components/Progress/OrigamProgress.vue'
 import OrigamSkeleton from '@origam/components/Skeleton/OrigamSkeleton.vue'
@@ -46,26 +60,30 @@ function ariaLabelOf (wrapper: ReturnType<typeof mount>, selector: string): stri
 
 describe('accessible names resolve through the locale layer (#450, #451, #462)', () => {
     describe('OrigamProgress (#450)', () => {
-        it('falls back to the shared origam.loading key, not a baked English string', () => {
+        it('falls back to the shared origam.loading key, not a baked English string', async () => {
             const wrapper = mountWith(OrigamProgress, {modelValue: 42, max: 100})
+            await nextTick()
 
             expect(ariaLabelOf(wrapper, '[role="progressbar"]')).toBe('Loading...')
         })
 
-        it('follows the active locale', () => {
+        it('follows the active locale', async () => {
             const wrapper = mountWith(OrigamProgress, {modelValue: 42, max: 100}, 'fr')
+            await nextTick()
 
             expect(ariaLabelOf(wrapper, '[role="progressbar"]')).toBe('Chargement...')
         })
 
-        it('resolves a consumer-supplied locale key', () => {
+        it('resolves a consumer-supplied locale key', async () => {
             const wrapper = mountWith(OrigamProgress, {modelValue: 42, label: 'origam.close'})
+            await nextTick()
 
             expect(ariaLabelOf(wrapper, '[role="progressbar"]')).toBe('Close')
         })
 
-        it('passes an unknown raw string through unchanged (back-compat)', () => {
+        it('passes an unknown raw string through unchanged (back-compat)', async () => {
             const wrapper = mountWith(OrigamProgress, {modelValue: 42, label: 'Uploading photo'})
+            await nextTick()
 
             expect(ariaLabelOf(wrapper, '[role="progressbar"]')).toBe('Uploading photo')
         })

@@ -3,8 +3,15 @@
 			:is="tag"
 			:id="id"
 			ref="root"
+			:aria-busy="indeterminate ? true : undefined"
+			:aria-hidden="!active"
+			:aria-label="progressAriaLabel"
+			:aria-valuemax="max"
+			:aria-valuenow="indeterminate ? undefined : normalizedValue"
 			:class="progressCircularClasses"
 			:style="progressCircularStyles"
+			aria-valuemin="0"
+			role="progressbar"
 	>
 		<svg
 				:style="svgStyles"
@@ -54,6 +61,7 @@
 >
 	import { computed, ref, StyleValue, toRef, watchEffect } from 'vue'
 	import { useIntersectionObserver } from '../../composables/Commons/intersectionObserver.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useProgress } from '../../composables/Progress/progress.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useResizeObserver } from '../../composables/Commons/resizeObserver.composable'
@@ -82,6 +90,13 @@
 	 * `.origam-progress--circular.origam-progress--size-default`
 	 * pins width/height — without this the SVG (position: absolute)
 	 * collapses to 0×0 and the component renders invisible.
+	 *
+	 * Why not the native `<progress>` element (#500): it has no
+	 * circular rendering model at all — per the HTML spec it is an
+	 * inherently horizontal-bar element, so it cannot express a ring.
+	 * The ARIA `role="progressbar"` + `aria-value*` contract below
+	 * gives assistive tech the exact same semantics natively-supported
+	 * `<progress>` would, without requiring one.
 	 ********************************************************/
 	const props = withDefaults(defineProps<IProgressCircularProps>(), {
 		tag: 'div',
@@ -90,7 +105,8 @@
 		thickness: 4,
 		size: SIZES.DEFAULT,
 		rotate: 0,
-		active: true
+		active: true,
+		label: 'origam.loading'
 	})
 
 	defineEmits<IProgressCircularEmits>()
@@ -128,6 +144,19 @@
 	const {resizeRef, contentRect} = useResizeObserver()
 	const {intersectionRef} = useIntersectionObserver()
 	const {sizeStyles, sizeClasses} = useSize(props, 'origam-progress')
+
+	const {t} = useLocale()
+
+	/*********************************************************
+	 * Accessibility
+	 *
+	 * @description
+	 * #500 — own ARIA semantics (role, aria-value.., aria-label, aria-hidden)
+	 * moved down from the `<OrigamProgress>` wrapper so a consumer who
+	 * mounts this component standalone (both are exported publicly) still
+	 * gets an accessible progress bar.
+	 ********************************************************/
+	const progressAriaLabel = computed(() => t(props.label))
 
 	/*********************************************************
 	 * Color
