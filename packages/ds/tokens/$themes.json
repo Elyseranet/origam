@@ -111,10 +111,7 @@
       "component/media-controller": "enabled",
       "component/clipboard": "enabled",
       "component/masonry": "enabled",
-      "component/qrcode": "enabled",
-      "component/sound": "enabled",
-      "component/text-mask": "enabled",
-      "component/watermark": "enabled"
+      "component/text-mask": "enabled"
     }
   },
   {
@@ -229,10 +226,7 @@
       "component/media-controller": "enabled",
       "component/clipboard": "enabled",
       "component/masonry": "enabled",
-      "component/qrcode": "enabled",
-      "component/sound": "enabled",
-      "component/text-mask": "enabled",
-      "component/watermark": "enabled"
+      "component/text-mask": "enabled"
     }
   }
 ]
