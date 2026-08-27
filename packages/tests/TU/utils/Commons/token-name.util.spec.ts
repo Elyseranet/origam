@@ -95,3 +95,113 @@ describe('PARITY — TS util vs build-time .mjs core', () => {
         expect(tokenPathToCssVar(path, component)).toBe(coreVar(path, component))
     })
 })
+
+/*********************************************************
+ * #435 — the child / state / property distinction is UNDECIDABLE
+ *        from the key string alone
+ *
+ * `isBemChildKey` decides "is this segment a BEM child or part of a
+ * property name?" with:
+ *
+ *     /^[a-zA-Z]+$/.test(key) && !key.includes('-')
+ *
+ * i.e. "does it contain a hyphen". Its own docstring gives the game away:
+ * "Property keys TYPICALLY contain hyphens". Typically is not always:
+ *
+ *     header-cell      → BEM child      WITH a hyphen
+ *     background-color → property       WITH a hyphen
+ *     variant-solo     → component variant, WITH a hyphen
+ *
+ * The three are lexically identical. No regex separates them, which is why
+ * the audit found "0 functional" — not a missed case, an undecidable one.
+ *
+ * MEASURED on origin/develop @ 1e4132d5 (2949 component token paths):
+ *
+ *   1548  segment is hyphen-free  → already takes the BEM branch, UNAFFECTED
+ *    132  segment is a known intent state (TOKEN_INTENT_STATES)
+ *    172  segment HAS a hyphen    → the whole blast radius
+ *
+ * Of those 172, classified by what components actually READ (not by shape):
+ *
+ *     70  read as `__child---prop`  → genuinely broken, this is #435
+ *      7  read as `--variant---prop`→ want a STATE name, not a child
+ *     13  read as `---child-prop`   → the CURRENT flat name is correct
+ *     82  read nowhere              → dormant (see #501 / #503)
+ *
+ * So relaxing the predicate wholesale repairs 70 and BREAKS 20. The cases
+ * below pin all three shapes so that any future fix has to satisfy them
+ * simultaneously.
+ *
+ * ⛔ SCOPE — `calendar` and `chart` are listed in #435's own table but are
+ * NOT in this scope: their token file exists yet is not registered in
+ * $themes.json, so nothing is emitted for them at all. Fixing this transform
+ * will never make them reachable; that is #436-A, a different correction
+ * (wire the file up, rather than rename what it emits).
+ ********************************************************/
+describe('#435 — hyphenated segments: child vs state vs split property', () => {
+    /*********************************************************
+     * GREEN today, and MUST STAY GREEN.
+     *
+     * @description
+     * These are the 13 paths whose flat name is the one components read.
+     * A blanket "treat every hyphenated segment as a BEM child" would
+     * rename them and silently break rendering — this block is the
+     * anti-regression that makes such a fix go red.
+     ********************************************************/
+    it.each([
+        [['label', 'required-indicator', 'color'], 'origam-label---required-indicator-color'],
+        [['field', 'focus-ring', 'width'], 'origam-field---focus-ring-width'],
+        [['code', 'line-number', 'padding-right'], 'origam-code---line-number-padding-right'],
+        [['video', 'poster-btn', 'background-color'], 'origam-video---poster-btn-background-color'],
+        [['blockquote', 'quote-mark', 'color'], 'origam-blockquote---quote-mark-color']
+    ])('keeps the flat name for split properties: %j', (path, expected) => {
+        expect(tokenPathToCssVarName(path as Array<string>, true)).toBe(expected)
+    })
+
+    /** GREEN today — hyphen-free child and known intent state are unaffected. */
+    it('still resolves a hyphen-free BEM child', () => {
+        expect(tokenPathToCssVarName(['table', 'cell', 'border-color'], true))
+            .toBe('origam-table__cell---border-color')
+    })
+
+    it('still resolves a known intent state', () => {
+        expect(tokenPathToCssVarName(['btn', 'hover', 'background-color'], true))
+            .toBe('origam-btn--hover---background-color')
+    })
+
+    /*********************************************************
+     * RED — the 70 hyphenated BEM children.
+     *
+     * @description
+     * `OrigamTable.vue` reads `--origam-table__header-cell---background-color`
+     * and `OrigamTable.md` documents it as the override token. The pipeline
+     * emits `--origam-table---header-cell-background-color`. The two names
+     * never meet, so the token is unreachable in every theme.
+     ********************************************************/
+    it.fails('resolves a hyphenated BEM child to the __ form the component reads', () => {
+        expect(tokenPathToCssVarName(['table', 'header-cell', 'background-color'], true))
+            .toBe('origam-table__header-cell---background-color')
+    })
+
+    /*********************************************************
+     * RED — the 7 component-local variants.
+     *
+     * @description
+     * `variant-solo` is a VARIANT of the field, not a child element, and it
+     * is read as `--origam-field--variant-solo---box-shadow`. It cannot be
+     * rescued by TOKEN_INTENT_STATES: that set holds GLOBAL intents
+     * (primary, hover, danger…), and these variants are component-local by
+     * definition. This case is why the fix cannot be "add them to the set"
+     * either — the set would have to grow without bound.
+     ********************************************************/
+    it.fails('resolves a component-local variant to the -- state form', () => {
+        expect(tokenPathToCssVarName(['field', 'variant-solo', 'box-shadow'], true))
+            .toBe('origam-field--variant-solo---box-shadow')
+    })
+
+    /** The build-time core must fail identically — the defect is shared. */
+    it.fails('build-time core exhibits the same defect (parity holds on the bug too)', () => {
+        expect(coreName(['table', 'header-cell', 'background-color'], true))
+            .toBe('origam-table__header-cell---background-color')
+    })
+})
