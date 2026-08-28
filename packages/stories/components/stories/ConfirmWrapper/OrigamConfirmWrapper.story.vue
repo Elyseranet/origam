@@ -417,13 +417,14 @@
 				})"
 		>
 			<template #default="{ state }">
-				<div style="padding: 24px; max-width: 500px;">
+				<div style="padding: 24px; max-width: 500px;" data-cy="confirm-wrapper-playground">
 					<origam-confirm-wrapper
 							v-model="playgroundValue"
 							v-model:confirm="playgroundConfirm"
 							v-bind="state"
 							field="text-field"
 							:defaults="{ label: state.label }"
+							data-cy="confirm-wrapper-playground-input"
 							@update:model-value="logEvent('update:modelValue', $event)"
 							@update:confirm="logEvent('update:confirm', $event)"
 					/>

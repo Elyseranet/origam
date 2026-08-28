@@ -24,17 +24,33 @@ test.setTimeout(180_000)
 
 test('DEBUG btn — hover and active produce DIFFERENT bg colors for primary intent', async ({ page }) => {
     // Navigate directly to the Variant that renders btns with bgColor="primary".
-    // "Prop — color & bgColor" (index 3) has data-cy="btn-color-primary" with
-    // bg-color="primary" — this is the only Variant where colorStyles
-    // emits an inline background-color that changes per state
-    // (rest / hover / active via tokenStylesForIntent + bgRole).
+    // "Prop — color & bgColor" (index 3).
+    //
+    // ⚠️ This test used `data-cy="btn-color-primary"` until 2026-08-27. That
+    // fixture has no explicit `variant`, so — since the origam baseline
+    // theme started defaulting every unvarianted Btn to `variant: 'text'`
+    // (packages/ds/src/themes/origam.theme.ts, commit 9a082b90, 2026-06-27,
+    // AFTER this test and its underlying feature ff894221 were written) —
+    // it resolves to `.origam-btn--variant-text`, which unconditionally
+    // forces `background-color: transparent !important`
+    // (btn.spec.ts:591, a deliberate, tested contract). bgColor has never
+    // painted a visible fill on it since, in ANY state — rest, hover AND
+    // active were all identical `rgb(245, 245, 245)` (the resting
+    // secondary-token fallback, not even primary). The theme change quietly
+    // broke this test's premise without anyone re-verifying it — a classic
+    // "test périmé": correct when written, invalidated by a later,
+    // deliberate architecture decision.
+    //
+    // Repointed at `data-cy="btn-flat-color-primary"` (variant="flat",
+    // bg-color="primary"), added specifically for this test — flat isn't
+    // subject to the text-variant contract, so it actually exercises the
+    // hover/active color-mix derivation (ff894221: hover = 20 % darker,
+    // active = 30 % darker) this test was created to guard.
     await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
 
     const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 
-    // Target the primary btn that has bg-color="primary" applied.
-    // This btn has a data-cy attribute set directly in the story.
-    const btn = sandbox.locator('[data-cy="btn-color-primary"]')
+    const btn = sandbox.locator('[data-cy="btn-flat-color-primary"]')
     await expect(btn).toBeVisible({ timeout: 12000 })
 
     const btnCount = await btn.count().catch(() => 0)

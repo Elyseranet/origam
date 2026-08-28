@@ -122,17 +122,27 @@ test.describe('OrigamSelectionControlGroup — Type', () => {
 // ─── Color ────────────────────────────────────────────────────────────────────
 
 test.describe('OrigamSelectionControlGroup — Color', () => {
-    test('color prop applies the color utility class to each control', async ({ page }) => {
+    test('color prop applies the color utility class to each control input', async ({ page }) => {
         // "Prop — color" is now the "Design" Variant's "Color" HstSelect,
         // init-state = 'primary'.
+        //
+        // Same defect as #496 (checkbox.spec.ts, fixed in 733739e3): the
+        // color channel lives on `.origam-selection-control__input`, not on
+        // `.origam-selection-control__wrapper` (a single hardcoded class,
+        // no `:style`/color binding). Verified `grep -c "origam--color"` on
+        // OrigamSelectionControl.vue's SCSS returns 0 — no dependency on the
+        // wrapper carrying the class, unlike Switch's SCSS (#512, left
+        // deliberately unfixed there because its thumb rendering DEPENDS on
+        // the wrapper class — moving the assertion would have gone green on
+        // a genuinely broken render).
         await openVariant(page, 'Design')
         const sandbox = sandboxOf(page)
         await expect(group(sandbox)).toBeVisible({ timeout: 8000 })
         await expect(group(sandbox).locator('.origam-selection-control')).not.toHaveCount(0)
-        const wrappers = await group(sandbox).locator('.origam-selection-control__wrapper').evaluateAll(els =>
+        const inputs = await group(sandbox).locator('.origam-selection-control__input').evaluateAll(els =>
             els.map(el => el.className)
         )
-        for (const cls of wrappers) {
+        for (const cls of inputs) {
             expect(cls).toContain('origam--color-primary')
         }
     })
@@ -284,7 +294,10 @@ test.describe('OrigamSelectionControlGroup — Emit: update:modelValue', () => {
         await openVariant(page, 'Events - update:modelValue')
         const sandbox = sandboxOf(page)
         await expect(group(sandbox)).toBeVisible({ timeout: 8000 })
-        await expect(group(sandbox).locator('.origam-selection-control')).toHaveCount(2)
+        // The "Events - update:modelValue" Variant renders 3 controls
+        // (Option A/B/C) — a third one (C) was added to the story at some
+        // point without updating this count, drifting the assertion.
+        await expect(group(sandbox).locator('.origam-selection-control')).toHaveCount(3)
     })
 
     test('checking a control fires update:modelValue (verified via the Events tab)', async ({ page }) => {

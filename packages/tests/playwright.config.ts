@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { MARKETING_SPEC_PATTERNS } from './e2e/_support/marketing-specs.const'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const REPO_ROOT = resolve(__dirname, '..', '..')
@@ -112,6 +113,16 @@ export default defineConfig({
 
     // CI gates on the migrated subset; locally the full suite still runs.
     testMatch: process.env.E2E_GREEN_ONLY === '1' ? GREEN_SPECS : undefined,
+
+    // Marketing-only specs target the Nuxt dev server (:3000) via
+    // playwright.marketing.config.ts and its own `MARKETING_BASE_URL`. They
+    // live in the same `./e2e` directory, so a full local run of THIS config
+    // (no `E2E_GREEN_ONLY`) would otherwise pick them up too and point them
+    // at Histoire's baseURL, where their DOM never exists — every test in
+    // the file then times out identically on chromium/firefox/webkit,
+    // masquerading as a cross-engine product defect. See
+    // e2e/_support/marketing-specs.const.ts for the full rationale.
+    testIgnore: MARKETING_SPEC_PATTERNS,
 
     // One spec per file; specs inside a file run sequentially (consistent
     // visual-regression baselines), but separate files parallelise.

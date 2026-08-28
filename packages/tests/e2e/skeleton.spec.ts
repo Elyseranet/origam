@@ -206,13 +206,20 @@ test.describe('OrigamSkeleton', () => {
             expect(ariaBusy).toBe('true')
         })
 
-        test('aria-label="Loading" present on skeleton element', async ({ page }) => {
+        test('aria-label="Loading..." present on skeleton element', async ({ page }) => {
             await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const el = sandbox.locator('.origam-skeleton').first()
             await expect(el).toBeVisible({ timeout: 12000 })
             const ariaLabel = await el.getAttribute('aria-label')
-            expect(ariaLabel).toBe('Loading')
+            // The component's `label` prop defaults to the shared i18n key
+            // `origam.loading`, whose en.json value is "Loading..." (with
+            // ellipsis) — the same string OrigamProgress, OrigamVideo,
+            // OrigamSwitch and OrigamCard's loading state all render (see
+            // card.spec.ts:306 asserting the identical "Loading..."). This
+            // test asserted the bare "Loading" (no ellipsis), which never
+            // matched the real shipped copy on any engine.
+            expect(ariaLabel).toBe('Loading...')
         })
     })
 
