@@ -951,7 +951,7 @@
 	 * OrigamTextField (ce365b10).
 	 ********************************************************/
 	const inputProps = computed(() => {
-		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'focused', 'centerAffix', 'color', 'bgColor', 'activeColor', 'activeBgColor', 'hoverColor', 'hoverBgColor'])
+		return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'focused', 'centerAffix', 'color', 'bgColor'])
 	})
 	const trackProps = computed(() => {
 		return omit(props.trackProps ?? {}, ['class', 'start', 'stop', 'color', 'bgColor', 'disabled', 'error', 'isVertical', 'indexFromEnd', 'showTicks', 'tickSize', 'ticks', 'min', 'max'])

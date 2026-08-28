@@ -28,8 +28,6 @@ import type { ISizeProps } from '../Commons/size.interface'
 import type { ITypographyProps } from '../Commons/typography.interface'
 import type { IVariantProps } from '../Commons/variant.interface'
 
-import type { TColor } from '../../types/Commons/color.type'
-
 export interface IFieldProps extends ICommonsComponentProps, ILoaderProps, IColorProps, IBgColorProps, IAdjacentInnerProps, IFocusProps, IDensityProps, ILabelProps, IActiveProps, IVariantProps, IRoundedProps, IElevationProps, ISizeProps, ITypographyProps {
     centerAffix?: boolean
     dirty?: boolean
@@ -52,10 +50,6 @@ export interface IFieldProps extends ICommonsComponentProps, ILoaderProps, IColo
     persistentClear?: boolean
     singleLine?: boolean
     required?: boolean
-    /** @deprecated Use the `active` object prop instead. Kept for back-compat. */
-    activeColor?: TColor
-    /** @deprecated Use the `active` object prop instead. Kept for back-compat. */
-    activeBgColor?: TColor
 }
 
 /**

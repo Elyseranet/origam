@@ -377,8 +377,7 @@
 		// JS-side bg is the same intent the SCSS already paints, so the
 		// inline declaration is harmless (same value), and the fg now
 		// wins by virtue of being on the same axis as the synthesised
-		// bg. Symmetric mirroring for hoverColor / activeColor keeps the
-		// per-state contrast consistent.
+		// bg.
 		// NB: `TColor = string | false | null | undefined`, and Vue's
 		// defineProps emits `false` (not `undefined`) when a TColor prop
 		// is omitted. We MUST use `||` (truthy fallback), NOT `??`
@@ -386,20 +385,17 @@
 		// synthesis silently no-ops, while `false || "primary"` falls
 		// through to the consumer's chosen intent as intended.
 		//
-		// We ONLY synthesise `bgColor`. Forwarding `hoverBgColor` /
-		// `activeBgColor` as the synthesised intent would defeat the
-		// inner btn's bgRole logic:
-		//     bgRole = isActive && !props.activeBgColor ? 'active' : 'default'
-		// A truthy synthesised activeBgColor falls back to the 'default'
-		// slot → no darken on the active page → hover and active become
-		// visually identical to rest. By leaving these props at `false`
-		// the inner btn promotes bgRole to 'hover' / 'active' and
-		// emits the proper bgHover / bgActive token cascade (color-mix
-		// fallback included). Auto-contrast on the fg still works
-		// because color.value defaults to props.color when hoverColor
-		// is missing, and bgColor.value defaults to props.bgColor when
-		// hoverBgColor is missing — so both axes carry the same intent
-		// in each state and the clash detection kicks for white text.
+		// hover / active are NOT forwarded here: the inner `<OrigamBtn>`
+		// derives its own hover/active darken cascade (bgHover / bgActive
+		// token rungs) from ITS OWN `hover` / `active` state via
+		// `useStateFlag` + `useStateEffect` — Pagination never had a
+		// `hover` / `active` object prop of its own to relay, and the
+		// legacy flat `hoverColor` / `hoverBgColor` / `activeColor` /
+		// `activeBgColor` props this comment used to describe forwarding
+		// were removed (`OrigamBtn` had already stopped reading them —
+		// this forwarding was dead code). The active PAGE item still
+		// differentiates itself via the per-item `active: true` boolean
+		// (see `controls` below), which IS live.
 		const baseBg = props.bgColor || props.color
 		return {
 			// In colored mode force `flat` so the btn actually PAINTS the
@@ -410,10 +406,6 @@
 			variant: baseBg ? VARIANT.FLAT : undefined,
 			color: props.color,
 			bgColor: baseBg,
-			hoverColor: props.hoverColor,
-			hoverBgColor: props.hoverBgColor,
-			activeColor: props.activeColor,
-			activeBgColor: props.activeBgColor,
 			// Size / density flow through to every nav btn so the whole row
 			// scales consistently — matches the PDF spec which shows the
 			// pagination at sm / default / lg sizes (no per-btn override).

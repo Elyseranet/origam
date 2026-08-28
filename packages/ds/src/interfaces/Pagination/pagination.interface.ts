@@ -15,7 +15,6 @@ import type { IPaddingProps } from '../Commons/padding.interface'
 import type { ISizeProps } from '../Commons/size.interface'
 import type { ITypographyProps } from '../Commons/typography.interface'
 
-import type { TColor } from '../../types/Commons/color.type'
 import type { TIcon } from '../../types/Icon/icon.type'
 
 /**
@@ -92,14 +91,6 @@ export interface IPaginationProps extends ICommonsComponentProps, ITagProps, ICo
      * @default 'origam.pagination.aria_label.page_number'
      */
     pageNumberAriaLabel?: string
-    /** @deprecated Use the `hover` object prop instead. Kept for back-compat. */
-    hoverColor?: TColor
-    /** @deprecated Use the `hover` object prop instead. Kept for back-compat. */
-    hoverBgColor?: TColor
-    /** @deprecated Use the `active` object prop instead. Kept for back-compat. */
-    activeColor?: TColor
-    /** @deprecated Use the `active` object prop instead. Kept for back-compat. */
-    activeBgColor?: TColor
 }
 
 /** Emits fired by `<OrigamPagination>` — current page v-model + the four
