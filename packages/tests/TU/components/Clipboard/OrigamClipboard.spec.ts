@@ -121,6 +121,35 @@ describe('OrigamClipboard', () => {
         })
     })
 
+    // Regression for #400 — `IClipboardSlots.feedback` was declared and
+    // documented but never rendered (`<slot name="feedback">` was absent
+    // from the template). Vue silently drops content passed to an
+    // undeclared slot: a consumer following the doc/story got nothing.
+    it('renders custom #feedback content instead of feedbackText when copied is true', async () => {
+        const wrapper = mountClipboard({
+            slots: {
+                feedback: (props: any) => `custom:${ props.copied }`
+            }
+        })
+
+        await wrapper.get('[data-cy="origam-clipboard-default-trigger"]').trigger('click')
+        await vi.waitFor(() => expect(navigator.clipboard.writeText).toHaveBeenCalled())
+        await nextTick()
+
+        expect(wrapper.text()).toContain('custom:true')
+        expect(wrapper.find('.origam-clipboard__default-label').exists()).toBe(false)
+    })
+
+    it('does not render the #feedback slot before a successful copy', () => {
+        const wrapper = mountClipboard({
+            slots: {
+                feedback: () => 'custom feedback'
+            }
+        })
+
+        expect(wrapper.text()).not.toContain('custom feedback')
+    })
+
     it('short-circuits when disabled — neither writes nor emits @copy', async () => {
         const wrapper = mountClipboard({ disabled: true })
         await wrapper.get('[data-cy="origam-clipboard-default-trigger"]').trigger('click')

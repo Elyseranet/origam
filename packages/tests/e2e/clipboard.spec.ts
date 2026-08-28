@@ -35,10 +35,10 @@ import { expect, test, type Page } from '@playwright/test'
  *   On ne peut pas intercepter `logEvent` (console Histoire privé) — on vérifie
  *   que le trigger reste en état non-copied.
  *
- * BUG DS signalé : slot #feedback non implémenté dans OrigamClipboard.vue.
- *   La story Variant "Slots - Feedback" utilise <template #feedback="{ copied }">
- *   mais ce slot n'est pas déclaré dans le composant. Vue ignore silencieusement
- *   les slots inconnus → le contenu n'est jamais rendu. Test marqué test.fixme.
+ * #400 (corrigé) — le slot `#feedback` est désormais rendu à l'intérieur du
+ *   trigger par défaut, à la place du label `feedbackText`. Ne s'applique
+ *   qu'au trigger intégré : un `#default` personnalisé n'a pas de bouton
+ *   où l'insérer.
  */
 
 const STORY_ID   = 'components-stories-clipboard-origamclipboard-story-vue'
@@ -346,26 +346,20 @@ test.describe('OrigamClipboard', () => {
     // ─────────────────────────────────────────────────────────────── //
     // SLOTS - Feedback (index 5)                                       //
     //                                                                  //
-    // BUG DS — le slot nommé #feedback n'est pas défini dans           //
-    // OrigamClipboard.vue : le composant n'expose qu'un seul slot      //
-    // (#default). La story utilise <template #feedback="..."> mais     //
-    // Vue ignore silencieusement les slots non déclarés.               //
-    // → le trigger par défaut s'affiche, la span "Done!" jamais.       //
-    // Le slot #feedback doit être ajouté au composant.                 //
+    // #400 (corrigé) — <slot name="feedback"> est rendu à l'intérieur  //
+    // du trigger par défaut, à la place du span feedbackText, tant que //
+    // #default n'est pas surchargé.                                   //
     // ─────────────────────────────────────────────────────────────── //
 
     test.describe('Slots - Feedback — variant 5', () => {
-        test('le trigger par défaut est rendu (slot #feedback ignoré — bug DS)', async ({ page }) => {
+        test('le trigger par défaut est rendu avant la copie', async ({ page }) => {
             await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             await waitForRoot(page)
             const trigger = sandbox(page).locator('[data-cy="origam-clipboard-default-trigger"]').first()
             await expect(trigger).toBeVisible({ timeout: 8000 })
         })
 
-        // BUG DS : slot #feedback non déclaré dans OrigamClipboard.vue.
-        // Vue ignore le contenu → "Done!" n'est jamais rendu.
-        // Déverrouiller quand le slot #feedback est ajouté au composant.
-        test.fail('après clic, le slot #feedback affiche "Done!" [BUG DS: slot non implémenté]', async ({ page }) => {
+        test('après clic, le slot #feedback affiche "Done!" au lieu du label par défaut', async ({ page }) => {
             await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
             await waitForRoot(page)
             const trigger = sandbox(page).locator('[data-cy="origam-clipboard-default-trigger"]').first()
