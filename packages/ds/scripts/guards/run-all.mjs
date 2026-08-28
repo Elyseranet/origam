@@ -31,7 +31,8 @@ const GUARDS = [
     'token-var-channels.mjs',
     'dead-handlers.mjs',
     'id-forwarding.mjs',
-    't-fallback.mjs'
+    't-fallback.mjs',
+    'setup-reads-composables.mjs'
 ]
 
 /*********************************************************
