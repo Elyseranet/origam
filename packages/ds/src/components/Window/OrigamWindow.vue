@@ -194,12 +194,12 @@
 	const canMoveBack = computed(() => props.continuous || activeIndex.value !== 0)
 	const canMoveForward = computed(() => props.continuous || activeIndex.value !== group.items.value.length - 1)
 
-	const prevProps = {
+	const prevProps = computed(() => ({
 		icon: props.prevIcon,
-		class: `origam-window__prev`,
+		class: 'origam-window__prev',
 		onClick: group.prev,
 		'aria-label': t('origam.carousel.prev')
-	}
+	}))
 
 	const prev = () => {
 		if (canMoveBack.value) {
@@ -208,12 +208,12 @@
 		}
 	}
 
-	const nextProps = {
+	const nextProps = computed(() => ({
 		icon: props.nextIcon,
-		class: `origam-window__next`,
+		class: 'origam-window__next',
 		onClick: group.next,
 		'aria-label': t('origam.carousel.next')
-	}
+	}))
 
 	const next = () => {
 		if (canMoveForward.value) {
