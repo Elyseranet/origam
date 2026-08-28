@@ -34,7 +34,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, provide, ref, StyleValue, useSlots, watch } from 'vue'
+	import { computed, provide, StyleValue, useSlots } from 'vue'
 
 	import OrigamStepperItem from './OrigamStepperItem.vue'
 	import { ORIGAM_STEPPER_KEY } from '../../consts/Stepper/stepper.const'
@@ -49,6 +49,7 @@
 	import { useSize } from '../../composables/Commons/size.composable'
 	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
 	import type { IStepperEmits, IStepperProps, IStepperSlots } from '../../interfaces/Stepper/stepper.interface'
 	import type { TStepperItemStatus } from '../../types/Stepper/stepper.type'
@@ -72,7 +73,7 @@
 	 ********************************************************/
 	const { t } = useLocale()
 
-	const emit = defineEmits<IStepperEmits>()
+	defineEmits<IStepperEmits>()
 
 	defineSlots<IStepperSlots>()
 
@@ -80,12 +81,22 @@
 
 	const slots = useSlots()
 
-	// Internal reactive model (writable ref synced with prop)
-	const internalModel = ref<number>(props.modelValue ?? 0)
-
-	watch(() => props.modelValue, (val) => {
-		if (val !== undefined) internalModel.value = val
-	})
+	/*********************************************************
+	 * internalModel — synced with the `modelValue` prop
+	 *
+	 * @description
+	 * Uses `useVModel` rather than a hand-rolled `ref(props.modelValue ?? 0)`
+	 * + `watch(...)` pair: that pattern seeded the ref with a one-time
+	 * snapshot taken during `setup()`, BEFORE the ADR-005 theme-props
+	 * resolver patches `instance.props` in `beforeCreate` (which runs AFTER
+	 * `setup()`). A theme naming `'origam-stepper': { modelValue: 2 }` then
+	 * had zero effect on the initial step — see #470.
+	 * @description
+	 * `useVModel`'s internal ref starts UNSEEDED and only reads
+	 * `props.modelValue` lazily, at render time, which lands after the
+	 * resolver runs.
+	 ********************************************************/
+	const internalModel = useVModel(props, 'modelValue', 0)
 
 	// Provide stepper context for child items
 	provide(ORIGAM_STEPPER_KEY, {
@@ -102,7 +113,6 @@
 	const handleItemClick = (index: number) => {
 		if (!props.clickable) return
 		internalModel.value = index
-		emit('update:modelValue', index)
 	}
 
 	// Items either from prop or from slot
