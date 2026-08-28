@@ -193,8 +193,9 @@
 		// `false` in its union, so the compiler-generated default mirrors
 		// plain `boolean` props) — `!== undefined` would therefore always
 		// be true and permanently short-circuit the `bgColor` fallback.
-		// Same idiom as `useColorEffect`'s `hoverColor`/`hoverBgColor`
-		// resolution (`props.hoverBgColor ? props.hoverBgColor : props.bgColor`).
+		// Same truthy-fallback idiom used across the DS color composables
+		// (e.g. `props.bgColor || props.color`) to route around the `false`
+		// default rather than `undefined`.
 		if (props.accentColor) return props.accentColor
 		if (props.bgColor) {
 			warnDeprecatedProp('OrigamBlockquote', 'bgColor', 'accentColor')

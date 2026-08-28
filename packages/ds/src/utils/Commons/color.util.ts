@@ -724,7 +724,7 @@ const _warnedColorKeys = new Set<string>()
  * support is deprecated and will be removed in v3.0.0.
  */
 export function warnLegacyColor (
-    kind: 'color' | 'bgColor' | 'hoverColor' | 'hoverBgColor' | 'activeColor' | 'activeBgColor',
+    kind: 'color' | 'bgColor',
     value: string,
 ): void {
     if (typeof console === 'undefined') return

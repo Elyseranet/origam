@@ -80,7 +80,7 @@
 	import vContrast from '../../directives/Contrast/contrast.directive'
 
 	import type { IDataTitleEmits, IDataTitleProps, IDataTitleSlots } from '../../interfaces/DataList/data-title.interface'
-	import { computed, shallowRef, StyleValue, toRef } from "vue"
+	import { computed, StyleValue, toRef } from "vue"
 
 	/*********************************************************
 	 * Global
@@ -113,32 +113,17 @@
 		hasPrepend
 	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
 
-	const isHover = shallowRef(false)
-
-	// `||` (not `??`) to fall back through the Vue-coerced `false` value
-	// that an unset TColor prop ends up with — `??` only catches null /
-	// undefined and would leak `false` downstream, where `useColor`
-	// silently no-ops on falsy backgrounds.
-	const hoverColor = computed(() => {
-		return props.hoverColor || props.color
-	})
-	const color = computed(() => {
-		return isHover.value ? hoverColor.value : props.color
-	})
-	const hoverBgColor = computed(() => {
-		return props.hoverBgColor || props.color
-	})
-	const bgColor = computed(() => {
-		return isHover.value ? hoverBgColor.value : props.bgColor
-	})
-
-	// Phase 3 (Vague D) — class-first companion alongside inline styles.
+	// `hoverColor` / `hoverBgColor` (flat props) were removed — this
+	// component never wired an `isHover` state to them (no `useStateFlag`,
+	// no `@mouseenter`), so the override was dead code: `color`/`bgColor`
+	// always resolved to `props.color`/`props.bgColor`. Reading the base
+	// props directly is behaviourally identical, not a regression.
 
 	/*********************************************************
 	 * Color
 	 ********************************************************/
 
-	const {colorClasses, colorStyles} = useBothColor(bgColor, color)
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	/*********************************************************
 	 * Class & Style

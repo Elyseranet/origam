@@ -165,19 +165,24 @@ export const materialLightTheme: IOrigamTheme = {
         'origam-checkbox': { rounded: 'md', color: 'primary' },
         // Radio — NEW. IRadioProps extends IColorProps → dot #6750a4/#d0bcff.
         'origam-radio': { color: 'primary' },
-        // Switch — track off/on M3. `activeBgColor` est le SEUL hook effectivement
-        // câblé à `model.value` dans OrigamSelectionControl.vue (`bgColor = model.value
-        // ? (activeBgColor||bgColor) : bgColor`) — le prop moderne `active:{bgColor}`
-        // n'est PAS lu par ce calcul. `activeBgColor` est @deprecated mais reste le seul
-        // chemin fonctionnel, utilisé en connaissance de cause.
+        // Switch — track off/on M3. ⛔ `activeBgColor` retiré (purge DS des
+        // props d'état à plat). Re-vérifié empiriquement (mount + thème,
+        // off ET on) : le track a EXACTEMENT le même style inline
+        // (`background-color: var(--origam-material---switch-track-off)`)
+        // à l'état coché et non coché — `activeBgColor: 'primary'` était
+        // déjà totalement inerte avant son retrait de l'API. Le on/off M3
+        // (`#e6e0e9` → `#6750a4`) N'A JAMAIS ÉTÉ atteint par cette
+        // configuration ; ce n'est donc pas une régression introduite par
+        // la purge mais un gap DS préexistant — track uniformément
+        // `switch-track-off` quel que soit l'état, à traiter en ticket DS
+        // séparé si le contraste M3 doit être restauré.
         // Thumb 16→24px à l'ON (signature M3) : BLOQUÉ — `--origam-switch__thumb---size`
         // est un var UNIQUE (pas de state `:checked` dédié, grep vérifié OrigamSwitch.vue)
         // → impossible de faire varier la taille par état sans toucher le composant DS.
         // Ticket DS à ouvrir : `--origam-switch__thumb--checked---size`.
         'origam-switch': {
             rounded: 'lg',
-            bgColor: 'var(--origam-material---switch-track-off)',
-            activeBgColor: 'primary'
+            bgColor: 'var(--origam-material---switch-track-off)'
         },
         'origam-snackbar': { rounded: 'lg', elevation: 3 },
         // Slider — ISliderFieldProps extends IColorProps + trackProps (color/bgColor/

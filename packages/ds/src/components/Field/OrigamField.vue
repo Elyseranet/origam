@@ -516,11 +516,19 @@
 	 * fieldClasses is a computed property that returns an array of classes for the field element.
 	 * fieldStyles is a computed property that returns an array of styles for the field element.
 	 ********************************************************/
+	// `activeColor` / `activeBgColor` (flat props) were removed — the
+	// override now reads from the `active` object prop (`activeState`,
+	// already resolved above by `useStateFlag` for the rounded/elevation
+	// axes at line ~541). Gate stays `isActive.value && isFocused.value`
+	// exactly as before: `isActive` alone also turns true on dirty/prefix/
+	// suffix WITHOUT focus, and the accent colour is deliberately a
+	// focus-only affordance (unlike rounded/elevation, which persist once
+	// the field carries content).
 	const color = computed(() => {
-		return isActive.value && isFocused.value && props.activeColor ? props.activeColor : props.color
+		return isActive.value && isFocused.value && activeState.value?.color ? activeState.value.color : props.color
 	})
 	const bgColor = computed(() => {
-		return isActive.value && isFocused.value && props.activeBgColor ? props.activeBgColor : props.bgColor
+		return isActive.value && isFocused.value && activeState.value?.bgColor ? activeState.value.bgColor : props.bgColor
 	})
 
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.

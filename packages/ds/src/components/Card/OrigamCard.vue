@@ -202,14 +202,14 @@
 	 ********************************************************/
 	// `useStateEffect` produces inline `color: …` / `background-color: …`
 	// declarations from intent props (`color`, `bgColor`) and also reacts
-	// to hover/active states by swapping in `hoverBgColor` / `hoverColor`
-	// / `activeBgColor` / `activeColor` overrides (or auto-darken via
-	// color-mix when no explicit override is provided).
+	// to hover/active states by swapping in the `hover` / `active` object
+	// prop's `color` / `bgColor` overrides (or auto-darken via color-mix
+	// when no explicit override is provided).
 	//
 	// Pre-fix Card used `useBothColor` — the legacy composable — which
-	// is stateless: passing `<origam-card hover-color="success">` was a
-	// silent no-op because the composable never saw `isHover.value`.
-	// We now wire `useHover` + `useActive` so the resting / hover /
+	// is stateless: passing `<origam-card :hover="{ color: 'success' }">`
+	// was a silent no-op because the composable never saw `isHover.value`.
+	// We now wire `useStateFlag` (hover + active) so the resting / hover /
 	// pressed cycles cascade through the same intent system as Btn /
 	// BottomNav / Alert.
 

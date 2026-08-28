@@ -13,6 +13,57 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### ⚠️ BREAKING — `activeBgColor` / `hoverBgColor` / `activeColor` / `hoverBgColor` removed
+
+The flat per-state color override props — `activeBgColor`, `hoverBgColor`,
+`activeColor`, `hoverColor` — no longer exist on any component
+(`Pagination`, `Field`, `DataText`, `DataTitle` were the last ones still
+declaring them, all marked `@deprecated`). They were folded into the
+`hover` / `active` object props during the `useStateFlag` refactor, and
+the deprecated flat props were left behind by mistake instead of being
+purged in the same pass.
+
+**Migration** — pass the override as a key on the `hover` / `active`
+object prop instead of a separate flat prop:
+
+```diff
+- <Btn hover-color="success" />
++ <Btn :hover="{ color: 'success' }" />
+
+- <Btn active-color="success" />
++ <Btn :active="{ color: 'success' }" />
+
+- <Card hover-bg-color="success" />
++ <Card :hover="{ bgColor: 'success' }" />
+
+- <Card active-bg-color="success" />
++ <Card :active="{ bgColor: 'success' }" />
+```
+
+(See `packages/ds/src/interfaces/Commons/color.interface.ts` for the
+canonical documentation of this mapping.)
+
+**No functional regression measured**: every real call site was audited
+individually before removal. `Field` was the only component where the
+override still painted something live (focus + active state); its
+`color` / `bgColor` axis now reads from the `active` object instead of
+the removed flat props, with the exact same `isActive && isFocused` gate
+preserved. Every other declared instance (`Pagination`, `DataText`,
+`DataTitle`) had already gone dead independently of this removal —
+either forwarded to a child that no longer read the prop, or gated by an
+`isHover` flag that was never actually toggled — so no visible behaviour
+changes there. `useColorEffect`'s own flat-prop resolution path is also
+removed: its only two real callers (`OrigamAudio`, `OrigamVideo`) never
+declared these props and call the composable without `isHover`/`isActive`
+refs, so the path was unreachable in practice; the only place it was
+still exercised was a unit test using `as any` to bypass the type system.
+
+**Known pre-existing gaps surfaced, not fixed by this change** (tracked
+separately): `OrigamRadio` has no prop that colors the checked glyph
+per active state (only a static `bgColor`); `OrigamSwitch`'s track never
+visually distinguished the active/checked state via the removed props
+either, in this DS version or the marketing themes that configured it.
+
 ### ⚠️ BREAKING — `origam/tokens/css/themes-all` and `origam/tokens/scss/themes-all` removed
 
 Both export subpaths, their two generated files

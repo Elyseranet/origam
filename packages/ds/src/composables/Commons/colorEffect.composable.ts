@@ -1,7 +1,7 @@
 import type { ComputedRef, Ref } from 'vue'
 import { computed, ref } from 'vue'
 import type { IBgColorProps, IColorProps } from '../../interfaces/Commons/color.interface'
-import type { TBgFgRole, TColor } from '../../types/Commons/color.type'
+import type { TBgFgRole } from '../../types/Commons/color.type'
 import type { TIntent } from '../../types/Commons/intent.type'
 // Explicit `.ts` extension: a stale sibling `color.util.js` lingers in
 // the source tree (legacy build artefact) and the module resolver picks
@@ -31,45 +31,38 @@ import { isGradient, resolveGradient } from '../../utils/Commons/gradient.util'
  * Hover/active/disabled-aware bg+fg colour resolver — refactored for
  * design-tokens / intent support (Lot 1).
  * Deliberately independent from `useColor`: the role/state derivation
- * (default / hover / active slots, per-axis override detection) is a
- * different algorithm from the legacy static resolver, not a variant
- * of it — kept in its own file rather than forced to share a base.
+ * (default / hover / active slots) is a different algorithm from the
+ * legacy static resolver, not a variant of it — kept in its own file
+ * rather than forced to share a base.
  *
  * Returns the same shape as before — `{ colorStyles, color, bgColor }` —
- * so existing callers (OrigamBtn, etc.) keep working without changes.
+ * so existing callers (`OrigamAudio`, `OrigamVideo`) keep working
+ * without changes.
  *
  * `colorStyles` is an array of CSS declarations like
  * `'background-color: …'`, either pointing to a token
  * (`var(--origam-color__action--primary---bg)`) when `props.color` is
  * an intent, or to a raw value when it's a hex/rgb (legacy).
  *
- * State resolution:
- *   - `isHover.value` and `isActive.value` swap to `hoverColor` /
- *     `activeColor` when those are explicitly set on props.
- *   - When in hover state with no `hoverColor` override, intent values
- *     use the `bgHover`/`fgHover` slot of the same intent's action set.
+ * State resolution: `isHover.value` / `isActive.value` bump an intent
+ * `bgColor` to its `bgHover` / `bgActive` token rung (color-mix
+ * fallback when the token is missing). The flat `hoverColor` /
+ * `activeColor` / `hoverBgColor` / `activeBgColor` per-state override
+ * props were removed (folded into the `hover` / `active` object props
+ * on components that support them — see `color.interface.ts`); neither
+ * real caller of this composable (`OrigamAudio`, `OrigamVideo`) ever
+ * declared them, so the foreground/background scalars are now just
+ * `props.color` / `props.bgColor` — only the darken-derivation role
+ * (`bgRole`) still reacts to `isHover` / `isActive`.
  ********************************************************/
 export function useColorEffect (
-    props: IColorProps & IBgColorProps & {
-        hoverColor?: TColor
-        activeColor?: TColor
-        hoverBgColor?: TColor
-        activeBgColor?: TColor
-    },
+    props: IColorProps & IBgColorProps,
     isHover: Ref<boolean> | ComputedRef<boolean> = ref(false),
     isActive: Ref<boolean> | ComputedRef<boolean> = ref(false),
     isDisabled: Ref<boolean> | ComputedRef<boolean> = ref(false)
 ) {
-    const activeColor = computed(() => props.activeColor ? props.activeColor : props.color)
-    const hoverColor = computed(() => props.hoverColor ? props.hoverColor : props.color)
-    const color = computed(() => {
-        return isHover.value ? hoverColor.value : isActive.value ? activeColor.value : props.color
-    })
-    const activeBgColor = computed(() => props.activeBgColor ? props.activeBgColor : props.bgColor)
-    const hoverBgColor = computed(() => props.hoverBgColor ? props.hoverBgColor : props.bgColor)
-    const bgColor = computed(() => {
-        return isHover.value ? hoverBgColor.value : isActive.value ? activeBgColor.value : props.bgColor
-    })
+    const color = computed(() => props.color)
+    const bgColor = computed(() => props.bgColor)
 
     // Utility classes for the resting state ONLY. When the component is
     // in hover / active state, slot resolution kicks the bg/fg to their
@@ -129,45 +122,15 @@ export function useColorEffect (
         // We still read `isDisabled.value` to keep the param wired —
         // in case a future iteration wants per-intent disabled tokens.
         void isDisabled.value
-        // ── State role per axis ──────────────────────────────────────────
+        // ── State role ────────────────────────────────────────────────────
         // hover and active resolve to DIFFERENT roles so the cross-
-        // component spec ("hover -20 %, active -30 %") holds. The
-        // previous code collapsed isActive into the 'hover' slot, which
-        // was wrong: the two states landed on the same darkening rung
-        // (designer-tuned bgHover) and were visually indistinguishable.
-        //
-        // Per-axis selection is preserved: an explicit hover/activeBgColor
-        // takes precedence over the role bump for THAT axis only.
-        //
-        // Same-intent rule (user spec): when the consumer passes the
-        // SAME intent on hoverBgColor / activeBgColor as on the resting
-        // bgColor (e.g. `bgColor="primary" hoverBgColor="primary"`),
-        // we treat it AS IF the override was absent — i.e. we still
-        // bump to the matching `bgHover` / `bgActive` rung so the user
-        // gets the canonical -20 % / -30 % darken instead of "nothing
-        // happens on hover because the override resolves to the same
-        // resting token". Mirror logic applies to `color` / `hoverColor`
-        // / `activeColor` for the foreground axis.
-        const sameIntentBg = (a: TColor | undefined | null, b: TColor | undefined | null) => {
-            return !!a && !!b && a === b && isIntent(a)
-        }
-        const sameIntentFg = (a: TColor | undefined | null, b: TColor | undefined | null) => {
-            return !!a && !!b && a === b && isIntent(a)
-        }
-
+        // component spec ("hover -20 %, active -30 %") holds. There is no
+        // per-state override anymore (see the composable's JSDoc) — the
+        // role is purely a function of `isHover` / `isActive`.
         const bgRole: TBgFgRole =
-            isHover.value && (!props.hoverBgColor || sameIntentBg(props.hoverBgColor, props.bgColor)) ? 'hover' :
-            isActive.value && (!props.activeBgColor || sameIntentBg(props.activeBgColor, props.bgColor)) ? 'active' :
+            isHover.value ? 'hover' :
+            isActive.value ? 'active' :
             'default'
-        // `fgRole` is intentionally kept in the closure for API symmetry
-        // — future intents may differentiate fg slots per state. Today
-        // every fg token lives on the same `fg` rung regardless of state
-        // (per intentFgExpr), so we reference but don't consume it.
-        const _fgRole: TBgFgRole =
-            isHover.value && (!props.hoverColor || sameIntentFg(props.hoverColor, props.color)) ? 'hover' :
-            isActive.value && (!props.activeColor || sameIntentFg(props.activeColor, props.color)) ? 'active' :
-            'default'
-        void _fgRole
 
         let bgDecl: string | null = null
         let fgDecl: string | null = null

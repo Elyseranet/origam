@@ -212,15 +212,6 @@ describe('useColorEffect — hover / active darken derivation', () => {
         expect(activeBg).toContain('bgActive')
     })
 
-    it('explicit hoverBgColor short-circuits the derivation', () => {
-        const props = { bgColor: 'primary' as const, hoverBgColor: 'danger' as const }
-        const { colorStyles } = useColorEffect(props as any, ref(true), ref(false), ref(false))
-        const bg = colorStyles.value.find((s) => s.startsWith('background-color:'))
-        // hover uses danger (the explicit override) instead of derived primary.
-        expect(bg).toContain('var(--origam-color__feedback--danger---bg)')
-        expect(bg).not.toContain('color-mix')
-    })
-
     it('raw bgColor + hover → math 20 % derive (no token cascade)', () => {
         const props = { bgColor: '#abcdef' }
         const { colorStyles } = useColorEffect(props as any, ref(true), ref(false), ref(false))
@@ -240,6 +231,36 @@ describe('useColorEffect — hover / active darken derivation', () => {
         const { colorStyles } = useColorEffect(props as any, ref(true), ref(false), ref(false))
         const bg = colorStyles.value.find((s) => s.startsWith('background-color:'))
         expect(bg).toBe('background-color: color-mix(in srgb, transparent, black 20%)')
+    })
+})
+
+// `hoverColor` / `activeColor` / `hoverBgColor` / `activeBgColor` (flat
+// per-state override props) were removed from `useColorEffect`'s
+// signature — folded into the `hover` / `active` object props on
+// components that support them (see `color.interface.ts`). Neither real
+// caller of this composable (`OrigamAudio`, `OrigamVideo`) ever declared
+// those props, nor passes `isHover`/`isActive` refs — both call
+// `useColorEffect(props)` with a single argument, so `isHover`/`isActive`
+// default to `ref(false)` and the darken-derivation branch never engages
+// for them either. This block pins that exact call shape so a future
+// change to the composable's defaults can't silently regress it.
+describe('useColorEffect — real caller shape (OrigamAudio / OrigamVideo)', () => {
+    it('single-arg call (no isHover/isActive) resolves the resting intent, unaffected by removed override props', () => {
+        const props = { color: 'primary' as const, bgColor: 'primary' as const }
+        const { colorStyles, color, bgColor } = useColorEffect(props)
+        expect(color.value).toBe('primary')
+        expect(bgColor.value).toBe('primary')
+        const bg = colorStyles.value.find((s) => s.startsWith('background-color:'))
+        // Resting slot — no hover/active darken, since isHover/isActive default to false.
+        expect(bg).toContain('var(--origam-color__action--primary---bg)')
+        expect(bg).not.toContain('color-mix')
+    })
+
+    it('single-arg call with a raw hex bgColor still resolves (legacy path, no crash from the removed props)', () => {
+        const props = { bgColor: '#112233' }
+        const { colorStyles } = useColorEffect(props)
+        const bg = colorStyles.value.find((s) => s.startsWith('background-color:'))
+        expect(bg).toBe('background-color: #112233')
     })
 })
 

@@ -265,7 +265,7 @@
    ********************************************************/
 
   const inputProps = computed(() => {
-    return origamInputRef.value?.filterProps(props, [ 'modelValue', 'class', 'focused', 'id', 'style', 'color', 'bgColor', 'activeColor', 'activeBgColor', 'hoverColor', 'hoverBgColor' ])
+    return origamInputRef.value?.filterProps(props, [ 'modelValue', 'class', 'focused', 'id', 'style', 'color', 'bgColor' ])
   })
   const controlProps = computed(() => {
     return origamSelectionControlRef.value?.filterProps(props, [ 'modelValue', 'type', 'disabled', 'readonly', 'class', 'style', 'id' ])

@@ -149,16 +149,16 @@ export const editorialLightTheme: IOrigamTheme = {
         // Switch harmony (lot 4) — mirrors `origam-text-field`'s rounded/
         // border so the track reads as the same visual family as the
         // theme's fields (see cartoon.theme.ts for the full rationale).
-        // `activeBgColor` (NOT `bgColor`) — verified via OrigamSelectionControl's
-        // `bgColor` computed (`model ? (activeBgColor || bgColor) : bgColor`,
-        // SelectionControl.vue) + switch.spec.ts's documented State variant
-        // ("bgColor colors the track regardless of checked state"): `bgColor`
-        // alone would paint the track prune ALWAYS, `activeBgColor` gates it to
-        // the checked state only, leaving the resting rail neutral grey. Raw
-        // var() reference (not a token keyword) so it self-adapts to both
-        // modes from this single mode-agnostic `components` block — mirrors
-        // apple.theme.ts's breadcrumb-item pattern (verified working #266).
-        'origam-switch': { rounded: 'none', border: true, activeBgColor: 'var(--origam-color__action--primary---bg)' },
+        // ⛔ `activeBgColor` retiré (purge DS des props d'état à plat).
+        // Cette entrée s'appuyait sur un mécanisme de `OrigamSelectionControl.vue`
+        // (`model ? (activeBgColor || bgColor) : bgColor`) qui n'existe plus
+        // du tout dans la source actuelle — re-vérifié empiriquement (mount +
+        // thème) que `.origam-switch-track` n'a aucun style inline sous ce
+        // thème : la prop était déjà inerte avant son retrait de l'API. Pas
+        // d'équivalent `bgColor`-toujours-actif à poser à la place — ce
+        // serait un changement visuel différent (rail coloré en permanence,
+        // pas seulement à l'état coché), hors du périmètre d'une purge.
+        'origam-switch': { rounded: 'none', border: true },
         // Slider (Refs #35) — `rounded:'none'` set per spec intent, but flagged
         // BLOQUÉ visually: OrigamSliderField/OrigamSliderFieldTrack never call
         // `useRounded` (grep confirmed 0 hits across both files) — thumb

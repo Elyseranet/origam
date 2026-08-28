@@ -37,11 +37,11 @@ import type { TCardType } from '../../types/Card/card.type'
 // Reported by the user in the audit pass that surfaced the Switch
 // `color` regression.
 //
-// `IActiveProps` adds `active?: boolean` / `activeClass?: string` so
-// `useActive` (wired since the hoverColor / activeColor support) can
-// vmodel the pressed state and `useColorEffect` resolves `activeColor`
-// / `activeBgColor`. The `hover` boolean already lives locally on the
-// component (legacy — used as a force-hover flag by `useHover`).
+// `IActiveProps` adds `active?: boolean | IStateEffectConfig` /
+// `activeClass?: string` so `useStateFlag` can vmodel the pressed state
+// and `useStateEffect` resolves the `active` object's `color` /
+// `bgColor` overrides. The `hover` boolean already lives locally on the
+// component (legacy — used as a force-hover flag, see `OrigamCard.vue`).
 export interface ICardProps extends ICommonsComponentProps, ITagProps, IBorderProps, IColorProps, IBgColorProps, IDensityProps, IDimensionProps, IElevationProps, ILoaderProps, ILocationProps, IPositionProps, IRoundedProps, IMarginProps, IPaddingProps, ILinkProps, IRippleProps, IAdjacentProps, IActiveProps {
     disabled?: boolean
     flat?: boolean

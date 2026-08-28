@@ -183,9 +183,10 @@
 	 *     "the nav is currently displayed" (drives slide-in), NOT
 	 *     a pressed state — feeding it would resolve to `bgActive`
 	 *     (color-mix -30 %) and paint the resting bar darker than
-	 *     its buttons. `hoverColor` / `activeColor` props are still
+	 *     its buttons. The `hover` / `active` object props are still
 	 *     propagated to the child OrigamBtn instances via
-	 *     `slotDefaults` — that's where they take visual effect.
+	 *     `slotDefaults` (see above) — that's where they take visual
+	 *     effect.
 	 ********************************************************/
 
 	const { colorClasses, colorStyles, borderClasses, borderStyles, roundedClasses, roundedStyles, elevationClasses, paddingClasses, paddingStyles, marginClasses, marginStyles } = useStateEffect(props, ref(false), ref(false))

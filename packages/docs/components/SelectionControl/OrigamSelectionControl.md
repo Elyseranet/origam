@@ -137,15 +137,23 @@ element) today.
 ```
 
 `color` also drives the label text and the thumb/icon via `currentColor`.
-`activeColor` / `activeBgColor` are legacy props marked `@deprecated` on the
-interface, but they are the ones that actually work today: the computed
-`color` / `bgColor` used for rendering read `props.activeColor || props.color`
-/ `props.activeBgColor || props.bgColor` once the control is checked
-(`OrigamSelectionControl.vue:255-264`). The suggested replacement — the
-shared `active` / `IActiveState` prop — is **not** wired to anything visible
-in this component (see "Hover / active state-effect (currently inert)"
-below), so despite the deprecation notice, `activeColor` / `activeBgColor`
-remain the only functional way to change color on check today.
+The checked glyph itself (the `<origam-icon>` rendered inside the
+state-layer box once `trueIcon` / `falseIcon` resolves) is painted with a
+**static** `:color="bgColor"` binding (`OrigamSelectionControl.vue:26`) —
+it always reflects `bgColor`, independent of any interaction state.
+`ISelectionControlProps` has no `active` prop at all (this component never
+had one to fold into an object — see "Hover state-effect" below), so there
+is no way to give the checked glyph a distinct color while pressed today.
+
+::: warning No `activeColor` / `activeBgColor`
+Earlier revisions of this doc described `activeColor` / `activeBgColor` as
+legacy-but-functional props. Both were removed in the DS-wide state-color
+purge (folded into the `hover` / `active` object props elsewhere in the
+system) — but this component's interface never extended `IActiveProps` to
+begin with, so there is no `:active="{ bgColor: ... }"` equivalent to
+migrate to here. If you need the checked glyph to change color on press,
+that's a feature gap, not a migration — raise it with the DS lead.
+:::
 
 ## Rounded / border / elevation
 
@@ -172,23 +180,30 @@ with `border` (which draws a ring on the box), combined with `elevation`
 your own.
 :::
 
-## Hover / active state-effect (currently inert)
+## Hover state-effect
 
-`hover` (`boolean | IHoverState`) and `active` / `activeClass`
-(`boolean | IActiveState` / `string`) are declared on `ISelectionControlProps`
-and the component does call `useHover(props)` and `useStateEffect(…)`
-(`OrigamSelectionControl.vue:145-147`) — but the `useStateEffect` call never
-captures its return value, and `isHover` / `hoverState` are not read
-anywhere else in the file. Since `useStateEffect` only produces `computed`
-refs and nothing accesses them, none of that resolution ever runs, and
-nothing it would have produced (color/border/rounded/elevation swaps on
-hover or active) reaches the template.
+`hover` (`boolean | IHoverState`) is declared on `ISelectionControlProps`
+and IS wired: `useStateFlag(props, {state: 'hover'})` drives `isHover` /
+`hoverState`, which feed `useStateEffect(…)` (`OrigamSelectionControl.vue:268`).
+Its `colorClasses` / `colorStyles` / `borderClasses` / `borderStyles` /
+`roundedClasses` / `roundedStyles` / `elevationClasses` / `elevationStyles`
+apply to `.origam-selection-control__input` — the state-layer box that sits
+behind the icon glyph — so `:hover="{ bgColor: 'success', border: 'thick' }"`
+does produce a visible change on that box while hovered.
 
-Practically: passing `hover` or `active` to `<origam-selection-control>` has
-**no observable effect** today. The state-layer box still gets a plain-CSS
-hover cue independent of this prop — `.origam-selection-control__input:hover
-{ &:before { opacity: 0.04 } }` — but that's native `:hover`, not the
-programmatic override `hover` / `active` are meant to provide.
+```vue
+<template>
+  <origam-selection-control
+    :hover="{ bgColor: 'success', rounded: 'lg' }"
+    label="Custom hover surface"
+  />
+</template>
+```
+
+There is **no `active` prop** on this component (`ISelectionControlProps`
+does not extend `IActiveProps`) — only `hover` participates in the
+state-effect system here. The checked glyph's color (`bgColor`, see "Color"
+above) is unaffected by hover: it is a separate, static binding.
 
 ## Density
 
@@ -293,12 +308,8 @@ a standalone control too.
 | `error` | `string \| boolean` | — | Tints the label/icon with the danger token |
 | `inline` | `boolean` | — | Lays the control out inline instead of `flex: 1` |
 | `color` | `TColor` | — | Text/label/icon intent color |
-| `bgColor` | `TColor` | — | Background intent color |
-| `activeColor` | `TColor` | — | **Deprecated**, but the one that actually changes color on check (see Color above) |
-| `activeBgColor` | `TColor` | — | **Deprecated**, but the one that actually changes background on check (see Color above) |
-| `active` | `boolean \| IActiveState` | — | Declared, but currently inert — no observable effect (see "Hover / active state-effect" above) |
-| `activeClass` | `string` | — | Declared, but currently inert — same reason |
-| `hover` | `boolean \| IHoverState` | — | Declared, but currently inert — same reason (native CSS `:hover` still applies independently) |
+| `bgColor` | `TColor` | — | Background intent color; also paints the checked glyph (see Color above) |
+| `hover` | `boolean \| IHoverState` | — | Wired to the state-layer box's color/border/rounded/elevation (see "Hover state-effect" above) |
 | `density` | `TDensity` | — | `compact` \| `default` \| `comfortable` |
 | `rounded` | `TRounded \| boolean \| number \| string` | — | Corner radius of the state-layer box (see warning above) |
 | `border` | `boolean \| number \| string \| …` | — | Border of the state-layer box |

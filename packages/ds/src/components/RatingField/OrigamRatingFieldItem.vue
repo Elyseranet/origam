@@ -109,7 +109,7 @@
 	const ratingBtnProps = computed(() => {
 		const isFullIcon = props.isHovering ? props.isHovered : props.isFilled
 		const icon = isFullIcon ? props.fullIcon : props.emptyIcon
-		const btnProps = origamBtnRef.value?.filterProps(props, ['class', 'style', 'id', 'bgColor', 'activeBgColor', 'hoverBgColor'])
+		const btnProps = origamBtnRef.value?.filterProps(props, ['class', 'style', 'id', 'bgColor'])
 
 		return {variant: VARIANT.TEXT, ...btnProps, icon}
 	})
