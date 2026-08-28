@@ -45,6 +45,33 @@ export interface IColorProps {
  *
  *     <Card :hover="{ bgColor: 'success' }" />       (was hover-bg-color)
  *     <Card :active="{ bgColor: 'success' }" />      (was active-bg-color)
+ *
+ * ⛔ `bgColor` PAINTS THE SURFACE — NEVER THE PART THAT SITS ON IT.
+ *
+ * When a component has an inner part resting ON its coloured surface —
+ * the Switch thumb, the BottomNav active pill, the Checkbox tick — that
+ * part is driven by `color`, not by `bgColor`. This is a deliberate
+ * contract decision, not an oversight:
+ *
+ *     <Switch bg-color="primary" />   track  = --…--primary---bg
+ *                                     thumb  = UNCHANGED (stays white)
+ *
+ *     <Switch color="primary" />      thumb  = --…--primary---fg
+ *
+ *     <Switch bg-color="primary"      the complete rendering
+ *             color="primary" />
+ *
+ * Why the two axes are not merged: making `bgColor` paint the inner part
+ * too would need auto-contrast (pick `fg` against the surface), and the
+ * utility class cannot carry that choice — it cannot know whether `fg`
+ * or `fgSubtle` is the right pick for a given surface. That tension is
+ * open architecture debt, not something a single component may settle
+ * on its own.
+ *
+ * So the burden sits on the consumer: `bgColor` alone leaves the inner
+ * part at its default. **Both props are required for a fully themed
+ * rendering.** Say so in each such component's doc — this trap is
+ * silent, and nothing in the type system reveals it.
  */
 export interface IBgColorProps {
     bgColor?: TColor

@@ -19,12 +19,48 @@ const enabled = ref(false)
 
 ## Color
 
+`OrigamSwitch` has **two independent colour axes**, and they paint two
+different parts:
+
+| prop | paints | token read |
+|---|---|---|
+| `color` | the **thumb** — the knob that slides | `--origam-color__…--{intent}---fg` |
+| `bgColor` | the **track** — the surface underneath | `--origam-color__…--{intent}---bg` |
+
 ```vue
 <template>
   <OrigamSwitch color="primary" label="Primary" :model-value="true" />
   <OrigamSwitch color="success" label="Success" :model-value="true" />
 </template>
 ```
+
+### ⛔ `bgColor` alone leaves the thumb white
+
+This trap is silent: the prop is accepted, typed, and has no effect on
+the thumb. Nothing warns you.
+
+```vue
+<template>
+  <!-- track painted, thumb still white -->
+  <OrigamSwitch bg-color="primary" :model-value="true" />
+
+  <!-- thumb painted, track at its default grey -->
+  <OrigamSwitch color="primary" :model-value="true" />
+
+  <!-- ✅ both axes — the complete rendering -->
+  <OrigamSwitch bg-color="primary" color="primary" :model-value="true" />
+</template>
+```
+
+The rule is general, not specific to Switch: **`bgColor` paints a
+surface, never the part resting on it.** The same holds for the
+BottomNav active pill and the Checkbox tick. Making `bgColor` paint the
+inner part too would require auto-contrast — picking `fg` against the
+surface — and a static utility class cannot make that choice, since it
+cannot know whether `fg` or `fgSubtle` suits a given surface.
+
+See `IBgColorProps` in `interfaces/Commons/color.interface.ts` for the
+canonical statement of this contract.
 
 ## Density
 
