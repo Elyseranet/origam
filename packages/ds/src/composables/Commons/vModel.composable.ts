@@ -8,7 +8,7 @@ import type { TVModel } from '../../types/Commons/v-model.type'
 import { toKebabCase } from '../../utils/Commons/commons.util'
 import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
 
-import { computed, ref, Ref, toRaw, watch } from 'vue'
+import { computed, MaybeRefOrGetter, ref, Ref, toRaw, toValue, watch } from 'vue'
 
 /*********************************************************
  * useVModel
@@ -20,7 +20,7 @@ export function useVModel<
 > (
     props: Props,
     prop: Prop,
-    defaultValue?: Props[Prop],
+    defaultValue?: MaybeRefOrGetter<Props[Prop] | undefined>,
     transformIn: (value?: Props[Prop]) => Inner = (v: any) => v,
     transformOut: (value: Inner) => Props[Prop] = (v: any) => v
 ): TVModel<Props, Prop, Inner> {
@@ -45,9 +45,18 @@ export function useVModel<
      *  Measured before this changed: a theme setting `modelValue` on Alert or
      *  NumberField, `focused` on any field, or `indeterminate` on Switch,
      *  produced no change in the rendered markup.
+     *
+     *  `defaultValue` itself accepts `MaybeRefOrGetter` for the same reason
+     *  (#448): a caller passing a raw `props.xxx` expression as the THIRD
+     *  ARGUMENT evaluates it at the `useVModel(...)` call site — i.e. during
+     *  the host's own `setup()`, still before `beforeCreate` — freezing the
+     *  pre-theme value forever. Resolving it via `toValue()` HERE, inside
+     *  `seed()`, defers that read to first actual access, mirroring the
+     *  `useHold` fix for `holdRepeat` / `holdDelay` (#487). Callers pass
+     *  `() => props.xxx` to opt in; a plain value still works unchanged.
      ********************************************************/
     const internal = ref(UNSEEDED) as Ref<Props[Prop] | typeof UNSEEDED>
-    const seed = () => (props[prop] !== undefined ? props[prop] : defaultValue) as Props[Prop]
+    const seed = () => (props[prop] !== undefined ? props[prop] : toValue(defaultValue)) as Props[Prop]
     const internalValue = () => (internal.value === UNSEEDED ? seed() : internal.value as Props[Prop])
     const kebabProp = toKebabCase(prop)
     const checkKebab = kebabProp !== prop

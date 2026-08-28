@@ -41,14 +41,14 @@ test.describe('OrigamPagination', () => {
         await page.goto(variantUrl(21), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        await expect(sandbox.locator('[role="navigation"]').first()).toBeVisible({ timeout: 12000 })
+        await expect(sandbox.getByRole('navigation').first()).toBeVisible({ timeout: 12000 })
     })
 
     test('Basic variant — page buttons are rendered', async ({ page }) => {
         await page.goto(variantUrl(21), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const nav = sandbox.locator('[role="navigation"]').first()
+        const nav = sandbox.getByRole('navigation').first()
         await expect(nav).toBeVisible({ timeout: 12000 })
         const buttons = nav.getByRole('button')
         await expect(buttons.first()).toBeVisible({ timeout: 12000 })
@@ -58,7 +58,7 @@ test.describe('OrigamPagination', () => {
         await page.goto(variantUrl(13), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        await expect(sandbox.locator('[role="navigation"]').first()).toBeVisible({ timeout: 12000 })
+        await expect(sandbox.getByRole('navigation').first()).toBeVisible({ timeout: 12000 })
     })
 
     test('First / last page buttons variant — first/last buttons are present', async ({ page }) => {
@@ -72,14 +72,14 @@ test.describe('OrigamPagination', () => {
         await page.goto(variantUrl(15), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        await expect(sandbox.locator('[role="navigation"]').first()).toBeVisible({ timeout: 12000 })
+        await expect(sandbox.getByRole('navigation').first()).toBeVisible({ timeout: 12000 })
     })
 
     test('Disabled variant — pagination buttons are disabled', async ({ page }) => {
         await page.goto(variantUrl(16), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const nav = sandbox.locator('[role="navigation"]').first()
+        const nav = sandbox.getByRole('navigation').first()
         await expect(nav).toBeVisible({ timeout: 12000 })
     })
 
@@ -87,21 +87,105 @@ test.describe('OrigamPagination', () => {
         await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        await expect(sandbox.locator('[role="navigation"]').first()).toBeVisible({ timeout: 12000 })
+        await expect(sandbox.getByRole('navigation').first()).toBeVisible({ timeout: 12000 })
     })
 
     test('Emit — update:modelValue variant renders pagination', async ({ page }) => {
         await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        await expect(sandbox.locator('[role="navigation"]').first()).toBeVisible({ timeout: 12000 })
+        await expect(sandbox.getByRole('navigation').first()).toBeVisible({ timeout: 12000 })
     })
 
     test('Playground — pagination renders with all controls', async ({ page }) => {
         await page.goto(variantUrl(21), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        await expect(sandbox.locator('[role="navigation"]').first()).toBeVisible({ timeout: 12000 })
+        await expect(sandbox.getByRole('navigation').first()).toBeVisible({ timeout: 12000 })
+    })
+
+    // ════ Events - first / prev / next / last (#448) ════
+    //
+    // `logEvent()` (histoire/client) writes into Histoire's OWN internal
+    // event log, not into the sandboxed component's DOM — the outer test
+    // page cannot observe that call (same limitation documented in
+    // btn.spec.ts for `Events - click`). What IS observable, and coupled
+    // to the exact same code path in ONE function (`setValue()` in
+    // OrigamPagination.vue: sets `page.value` THEN calls `emits(event,
+    // value)` when an event name is given), is the resulting
+    // enabled/disabled state of the nav buttons — `prevDisabled` /
+    // `nextDisabled` are both derived from `page.value`. A click that
+    // didn't reach the handler at all would leave that state unchanged.
+
+    test('Events - first — clicking first returns to page 1 and re-disables first/prev', async ({ page }) => {
+        await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const firstBtn = sandbox.locator('.origam-pagination__first button')
+        const prevBtn = sandbox.locator('.origam-pagination__prev button')
+        const nextBtn = sandbox.locator('.origam-pagination__next button')
+        await expect(nextBtn).toBeVisible({ timeout: 12000 })
+
+        // Page starts at 1 — first/prev disabled.
+        await expect(firstBtn).toHaveAttribute('aria-disabled', 'true')
+        await expect(prevBtn).toHaveAttribute('aria-disabled', 'true')
+
+        // Move away from page 1 via `next` (not under test) so `first` has
+        // somewhere to navigate FROM.
+        await nextBtn.click()
+        await expect(prevBtn).toHaveAttribute('aria-disabled', 'false')
+
+        // Click first — assert the handler ran: page returns to 1.
+        await firstBtn.click()
+        await expect(firstBtn).toHaveAttribute('aria-disabled', 'true')
+        await expect(prevBtn).toHaveAttribute('aria-disabled', 'true')
+    })
+
+    test('Events - prev — clicking prev decrements the page and re-disables prev at the start', async ({ page }) => {
+        await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const prevBtn = sandbox.locator('.origam-pagination__prev button')
+        const nextBtn = sandbox.locator('.origam-pagination__next button')
+        await expect(nextBtn).toBeVisible({ timeout: 12000 })
+
+        await expect(prevBtn).toHaveAttribute('aria-disabled', 'true')
+
+        await nextBtn.click()
+        await expect(prevBtn).toHaveAttribute('aria-disabled', 'false')
+
+        await prevBtn.click()
+        await expect(prevBtn).toHaveAttribute('aria-disabled', 'true')
+    })
+
+    test('Events - next — clicking next advances the page and enables prev', async ({ page }) => {
+        await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const prevBtn = sandbox.locator('.origam-pagination__prev button')
+        const nextBtn = sandbox.locator('.origam-pagination__next button')
+        await expect(nextBtn).toBeVisible({ timeout: 12000 })
+
+        await expect(prevBtn).toHaveAttribute('aria-disabled', 'true')
+
+        await nextBtn.click()
+        await expect(prevBtn).toHaveAttribute('aria-disabled', 'false')
+    })
+
+    test('Events - last — clicking last jumps to the final page and disables next/last', async ({ page }) => {
+        await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const nextBtn = sandbox.locator('.origam-pagination__next button')
+        const lastBtn = sandbox.locator('.origam-pagination__last button')
+        await expect(lastBtn).toBeVisible({ timeout: 12000 })
+
+        await expect(nextBtn).toHaveAttribute('aria-disabled', 'false')
+        await expect(lastBtn).toHaveAttribute('aria-disabled', 'false')
+
+        await lastBtn.click()
+        await expect(nextBtn).toHaveAttribute('aria-disabled', 'true')
+        await expect(lastBtn).toHaveAttribute('aria-disabled', 'true')
     })
 
     // ════ COMPACT variant ════
