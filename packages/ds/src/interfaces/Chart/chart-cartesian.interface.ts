@@ -106,6 +106,21 @@ export interface IChartCartesianProps extends IChartBaseProps {
      * Default `false`.
      */
     zoomable?: boolean
+    /*********************************************************
+     * zoomResetLabel
+     *
+     * @description
+     * Accessible name for the "Reset zoom" control (aria-label) shown
+     * when `zoomable` is active and the plot is currently zoomed.
+     * Carries a locale key, not final text — it is resolved through the
+     * DS `t()` mechanism. Defaults to `'origam.chart.zoom.reset_aria_label'`
+     * (#477).
+     * @description
+     * A raw string that matches no key is returned unchanged, so
+     * `zoomResetLabel="Reset the view"` still works for consumers who
+     * prefer to translate on their side.
+     ********************************************************/
+    zoomResetLabel?: string
     /**
      * Optional band-style range-selector toolbar rendered above the chart.
      * Provides preset zoom buttons (`1w`, `1m`, `3m`, `6m`, `1y`, `all`).

@@ -214,6 +214,20 @@
     "breadcrumb": {
       "aria_label": "Fil d'Ariane"
     },
+    "chart": {
+      "range_selector": {
+        "aria_label": "Sélecteur de plage du graphique"
+      },
+      "drilldown": {
+        "aria_label": "Navigation d'exploration"
+      },
+      "zoom": {
+        "reset_aria_label": "Réinitialiser le zoom"
+      }
+    },
+    "dialog": {
+      "close_aria_label": "Fermer la boîte de dialogue"
+    },
     "textarea": {
       "rich": {
         "toolbar": {

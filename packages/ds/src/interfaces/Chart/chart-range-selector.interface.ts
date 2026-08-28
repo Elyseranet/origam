@@ -53,6 +53,20 @@ export interface IChartRangeSelectorProps {
     activeIndex?: number
     /** Total category count — the window each button computes against. */
     dataLength?: number
+    /*********************************************************
+     * ariaLabel
+     *
+     * @description
+     * Accessible name for the toolbar `<nav>` landmark (aria-label).
+     * Carries a locale key, not final text — it is resolved through the
+     * DS `t()` mechanism, so it follows the active locale out of the box.
+     * Defaults to `'origam.chart.range_selector.aria_label'` (#477).
+     * @description
+     * A raw string that matches no key is returned unchanged, so
+     * `ariaLabel="Preset ranges"` still works for consumers who prefer
+     * to translate on their side.
+     ********************************************************/
+    ariaLabel?: string
 }
 
 /**

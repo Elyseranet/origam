@@ -41,7 +41,7 @@
 		<nav
 				v-if="hasDrilldown && isDrilled"
 				class="origam-chart-cartesian__breadcrumb"
-				aria-label="Drilldown navigation"
+				:aria-label="drilldownNavAriaLabel"
 				data-cy="origam-chart-cartesian-breadcrumb"
 		>
 			<origam-btn
@@ -302,7 +302,7 @@
 							:style="{ fill: 'var(--origam-chart__zoom-reset---bg, rgba(59,130,246,0.9))', cursor: 'pointer' }"
 							tabindex="0"
 							role="button"
-							aria-label="Reset zoom"
+							:aria-label="zoomResetAriaLabel"
 							data-cy="origam-chart-zoom-reset-btn"
 							@click="onZoomReset"
 							@keydown.enter.prevent="onZoomReset"
@@ -501,6 +501,7 @@
 	import { useChartZoom } from '../../composables/Chart/chart-zoom.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useMargin } from '../../composables/Commons/margin.composable'
 	import { usePadding } from '../../composables/Commons/padding.composable'
 	import { useRounded } from '../../composables/Commons/rounded.composable'
@@ -578,12 +579,19 @@
 		annotations: () => [],
 		drilldown: undefined,
 		zoomable: false,
+		zoomResetLabel: 'origam.chart.zoom.reset_aria_label',
 		rangeSelector: undefined
 	})
 
 	const emit = defineEmits<IChartCartesianEmits>()
 
 	defineSlots<IChartCartesianSlots>()
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
+	const {t} = useLocale()
 
 	/*********************************************************
 	 * Drilldown state — a navigation stack where index 0 is the
@@ -620,6 +628,8 @@
 	})
 
 	const drilldownBackLabel = computed(() => props.drilldown?.backLabel ?? '← Back')
+	const drilldownNavAriaLabel = computed(() => t(props.drilldown?.navAriaLabel ?? 'origam.chart.drilldown.aria_label'))
+	const zoomResetAriaLabel = computed(() => t(props.zoomResetLabel))
 
 	const resolveDrilldownLink = (link: IChartDrilldownLink): IChartDrilldownFrame | null => {
 		if (!props.drilldown) return null

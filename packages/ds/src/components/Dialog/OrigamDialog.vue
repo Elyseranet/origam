@@ -46,7 +46,7 @@
 							<origam-btn
 									:icon="MDI_ICONS.CLOSE"
 									:rounded="0"
-									aria-label="Close dialog"
+									:aria-label="t(closeLabel)"
 									bg-color="transparent"
 									@click="handleClose"
 							/>
@@ -136,6 +136,7 @@
 	import OrigamIcon from '../Icon/OrigamIcon.vue'
 	import OrigamOverlay from '../Overlay/OrigamOverlay.vue'
 	import OrigamTranslateScale from '../Transition/OrigamTranslateScale.vue'
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useScopeId } from '../../composables/Commons/scopeId.composable'
 	import { useSize } from '../../composables/Commons/size.composable'
@@ -188,7 +189,8 @@
 		// scrim: true })` default and the backdrop never renders,
 		// regardless of theme/consumer intent. Anchoring the default
 		// here lines up the resolved prop with OrigamOverlay's (see #279).
-		scrim: true
+		scrim: true,
+		closeLabel: 'origam.close'
 	})
 
 	const emits = defineEmits<IDialogEmits>()
@@ -208,6 +210,7 @@
 	 ********************************************************/
 
 	const {scopeId} = useScopeId()
+	const {t} = useLocale()
 	const slots = useSlots()
 	const uid = getUid()
 	const dialogTitleId = computed(() => `origam-dialog-title-${uid}`)

@@ -32,7 +32,7 @@
 		<nav
 				v-if="hasDrilldown && isDrilled"
 				class="origam-chart-polar__breadcrumb"
-				aria-label="Drilldown navigation"
+				:aria-label="drilldownNavAriaLabel"
 				data-cy="origam-chart-polar-breadcrumb"
 		>
 			<origam-btn
@@ -176,6 +176,7 @@
 	import { useChart } from '../../composables/Chart/chart.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useMargin } from '../../composables/Commons/margin.composable'
 	import { usePadding } from '../../composables/Commons/padding.composable'
 	import { useRounded } from '../../composables/Commons/rounded.composable'
@@ -232,6 +233,12 @@
 	defineSlots<IChartPolarSlots>()
 
 	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
+	const {t} = useLocale()
+
+	/*********************************************************
 	 * Drilldown state — mirrors the cartesian implementation.
 	 * Pie / donut slices can carry a drilldown link on their
 	 * object-form data entry; clicking such a slice replaces the
@@ -259,6 +266,7 @@
 	})
 
 	const drilldownBackLabel = computed(() => props.drilldown?.backLabel ?? '← Back')
+	const drilldownNavAriaLabel = computed(() => t(props.drilldown?.navAriaLabel ?? 'origam.chart.drilldown.aria_label'))
 
 	const resolveDrilldownLink = (link: IChartDrilldownLink): IChartDrilldownFrame | null => {
 		if (!props.drilldown) return null

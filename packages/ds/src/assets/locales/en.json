@@ -214,6 +214,20 @@
     "breadcrumb": {
       "aria_label": "Breadcrumb"
     },
+    "chart": {
+      "range_selector": {
+        "aria_label": "Chart range selector"
+      },
+      "drilldown": {
+        "aria_label": "Drilldown navigation"
+      },
+      "zoom": {
+        "reset_aria_label": "Reset zoom"
+      }
+    },
+    "dialog": {
+      "close_aria_label": "Close dialog"
+    },
     "textarea": {
       "rich": {
         "toolbar": {

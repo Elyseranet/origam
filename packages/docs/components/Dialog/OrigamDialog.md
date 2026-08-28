@@ -104,3 +104,4 @@ Keep focus inside the dialog. Enabled by default (`retainFocus`).
 - Focus moves into the dialog on open and returns to the activator on close.
 - `ESC` closes non-persistent dialogs.
 - `retainFocus` (default `true`) loops focus inside the dialog with Tab / Shift+Tab.
+- `closeLabel` (`string`, default `'origam.close'`) is the accessible name of the built-in close button. It carries a **locale key**, not final text — resolved through the DS `t()` mechanism, the same key `OrigamAlert` and `OrigamChip` use for their own close control. A raw string that matches no key is returned unchanged, so `closeLabel="Dismiss this dialog"` still works for consumers who prefer to translate on their side.
