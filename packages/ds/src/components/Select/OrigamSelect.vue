@@ -1,5 +1,6 @@
 <template>
 	<origam-text-field
+			:id="id"
 			ref="origamTextFieldRef"
 			v-model:focused="isFocused"
 			v-model:model-value="search"
@@ -1126,7 +1127,21 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(selectStyles)
+	/*********************************************************
+	 * useStyle
+	 *
+	 * @description
+	 * #372 — `id` must be seeded with `() => props.id`: without it, the id
+	 * returned here is a purely GENERATED one for the scoped stylesheet
+	 * selector, and the template's `:id="id"` on `<origam-text-field>`
+	 * would forward that generated id instead of the consumer's.
+	 * @description
+	 * `id` was already excluded from `textFieldProps` below
+	 * (`filterProps(props, [..., 'id', ...])`) because it needed this
+	 * explicit binding instead of the generic spread — the explicit
+	 * binding was simply missing.
+	 ********************************************************/
+	const {id, css, load, isLoaded, unload} = useStyle(selectStyles, () => props.id)
 
 
 	/*********************************************************

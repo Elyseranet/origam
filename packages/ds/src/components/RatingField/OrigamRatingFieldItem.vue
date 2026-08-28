@@ -98,8 +98,18 @@
 	 * le background". Spread last so a consumer override on
 	 * the item itself still wins.
 	 ********************************************************/
+	/*********************************************************
+	 * id
+	 *
+	 * @description
+	 * #372 — a consumer-supplied `id` must win over the per-item generated
+	 * one. Without the `props.id ||` fallback here, `props.id` was a
+	 * homonym-shadowed dead prop: this local `id` (used below for the
+	 * `<label for>` / `<input id>` pairing) never read it, so it was
+	 * silently accepted and discarded.
+	 ********************************************************/
 	const id = computed(() => {
-		return `${props.name}-${String(props.value).replace('.', '-')}`
+		return props.id || `${props.name}-${String(props.value).replace('.', '-')}`
 	})
 
 	/*********************************************************

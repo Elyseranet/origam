@@ -1,6 +1,6 @@
 <template>
 	<component
-			:is="props.tag"
+			:is="tag"
 			:id="id"
 			role="group"
 			:class="btnGroupClasses"

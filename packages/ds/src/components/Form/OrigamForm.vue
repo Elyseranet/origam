@@ -1,5 +1,6 @@
 <template>
 	<form
+			:id="id"
 			ref="formRef"
 			:class="formClasses"
 			:style="formStyles"
@@ -212,7 +213,16 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(formStyles)
+	/*********************************************************
+	 * useStyle
+	 *
+	 * @description
+	 * #372 — `id` must be seeded with `() => props.id`: without it, the id
+	 * returned here is a purely GENERATED one for the scoped stylesheet
+	 * selector, and the template's `:id="id"` on the root would render
+	 * that generated id instead of the consumer's.
+	 ********************************************************/
+	const {id, css, load, isLoaded, unload} = useStyle(formStyles, () => props.id)
 
 
 	/*********************************************************

@@ -4,8 +4,8 @@
 			:transition="transition"
 	>
 		<component
-				:is="props.tag"
-				:id="props.id"
+				:is="tag"
+				:id="id"
 				:class="messagesClasses"
 				:style="[messagesStyles, rootTypographyStyles]"
 				aria-live="polite"
@@ -145,7 +145,19 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(messagesStyles)
+	/*********************************************************
+	 * useStyle
+	 *
+	 * @description
+	 * #375 — the template used to write `:id="props.id"` explicitly to
+	 * dodge the homonym shadowing `id` (the local below, from `useStyle`)
+	 * would otherwise have caused. Seeding `useStyle` with
+	 * `() => props.id` makes the local `id` genuinely resolve to the
+	 * consumer's id (falling back to the generated one), so the bare
+	 * `:id="id"` binding is both rule-compliant and correct — see also
+	 * #372.
+	 ********************************************************/
+	const {id, css, load, isLoaded, unload} = useStyle(messagesStyles, () => props.id)
 
 
 	/*********************************************************

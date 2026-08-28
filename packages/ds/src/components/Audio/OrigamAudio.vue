@@ -162,7 +162,7 @@
 			>
 				<slot
 						name="playlist"
-						:tracks="props.playlist"
+						:tracks="playlist"
 						:current-index="safeTrackIndex"
 						:select="setActiveTrack"
 				>
@@ -171,7 +171,7 @@
 						data-cy="origam-audio-playlist"
 					>
 						<origam-list-item
-								v-for="(track, index) in props.playlist"
+								v-for="(track, index) in playlist"
 								:key="track.id ?? index"
 								:active="index === safeTrackIndex"
 								:title="track.title ?? `Track ${ index + 1 }`"
@@ -392,7 +392,7 @@
 	 * Playlist state machine
 	 *
 	 * @description
-	 * When `props.playlist` is set, the active track drives the
+	 * When `playlist` is set, the active track drives the
 	 * `<audio>` source AND the metadata strip. The component owns
 	 * an internal `currentTrackIndex` ref that v-models against the
 	 * parent so consumers can either read it or control it externally.

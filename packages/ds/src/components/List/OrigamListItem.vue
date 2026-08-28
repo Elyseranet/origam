@@ -1,9 +1,9 @@
 <template>
 	<component
 			:is="link.tag.value"
-			:id="props.id"
+			:id="styleId"
 			v-ripple="isClickable && ripple"
-			:aria-disabled="itemRole === 'option' ? props.disabled : undefined"
+			:aria-disabled="itemRole === 'option' ? disabled : undefined"
 			:aria-selected="itemRole === 'option' ? isSelected : undefined"
 			:class="listItemClasses"
 			:href="link.href.value"
@@ -401,7 +401,22 @@
 			props.class
 		]
 	})
-	const {id: styleId, css, load, isLoaded, unload} = useStyle(listItemStyles)
+	/*********************************************************
+	 * useStyle
+	 *
+	 * @description
+	 * #375 — the template used to write `:id="props.id"` explicitly,
+	 * because the bare name `id` is ALREADY a local (the nested-item
+	 * registration key computed above from `value`/`href` — DO NOT feed
+	 * `props.id` into that one, `useNestedItem` uses it synchronously as
+	 * a Map key, see #372/#442).
+	 * @description
+	 * Renaming this SEPARATE `useStyle` local to `styleId` and seeding it
+	 * with `() => props.id` gives the template an unambiguous,
+	 * rule-compliant binding (`:id="styleId"`) without touching the
+	 * registration identity at all.
+	 ********************************************************/
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(listItemStyles, () => props.id)
 
 
 	/*********************************************************

@@ -1,5 +1,6 @@
 <template>
 	<dl
+			:id="id"
 			v-contrast
 			:class="dataListClasses"
 			:style="dataListStyles"
@@ -339,7 +340,16 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(dataListStyles)
+	/*********************************************************
+	 * useStyle
+	 *
+	 * @description
+	 * #372 — `id` must be seeded with `() => props.id`: without it, the id
+	 * returned here is a purely GENERATED one for the scoped stylesheet
+	 * selector, and the template's `:id="id"` on the root would render
+	 * that generated id instead of the consumer's.
+	 ********************************************************/
+	const {id, css, load, isLoaded, unload} = useStyle(dataListStyles, () => props.id)
 
 
 	/*********************************************************
