@@ -4,10 +4,10 @@
 			ref="origamAppRef"
 			:class="appClasses"
 			:style="appStyles"
-			:color="props.color"
-			:bg-color="props.bgColor"
-			:full-height="props.fullHeight"
-			:overlaps="props.overlaps"
+			:color="color"
+			:bg-color="bgColor"
+			:full-height="fullHeight"
+			:overlaps="overlaps"
 	>
 		<template #default>
 			<slot name="default"/>

@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			v-click-outside="clickOutsideArgs"
 			:class="avatarGroupClasses"
 			:style="avatarGroupStyles"
@@ -279,7 +280,16 @@
 		]
 	})
 
-	const {id, css, load, isLoaded, unload} = useStyle(avatarGroupStyles)
+	/*********************************************************
+	 * useStyle
+	 *
+	 * @description
+	 * #372 — `id` must be seeded with `() => props.id`: without it, the id
+	 * returned here is a purely GENERATED one for the scoped stylesheet
+	 * selector, and the template's `:id="id"` on the root would render
+	 * that generated id instead of the consumer's.
+	 ********************************************************/
+	const {id, css, load, isLoaded, unload} = useStyle(avatarGroupStyles, () => props.id)
 
 	/*********************************************************
 	 * Expose

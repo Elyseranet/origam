@@ -3,6 +3,7 @@
 		<transition name="origam-command-palette--fade">
 			<div
 					v-if="isActive"
+					:id="id"
 					ref="rootRef"
 					:class="rootClasses"
 					:style="rootStyles"

@@ -10,7 +10,7 @@
 					v-if="isActive"
 					:id="id"
 					:ref="rootEl"
-					:aria-label="props.name || 'Navigation'"
+					:aria-label="name || 'Navigation'"
 					:class="drawerClasses"
 					:style="drawerStyles"
 					v-bind="{...scopeId, ...$attrs}"

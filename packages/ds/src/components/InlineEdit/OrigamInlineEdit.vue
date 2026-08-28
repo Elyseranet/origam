@@ -1,6 +1,7 @@
 <template>
 	<component
 			:is="tag"
+			:id="id"
 			class="origam-inline-edit"
 			:class="rootClasses"
 			:style="rootStyles"
