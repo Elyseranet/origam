@@ -101,7 +101,7 @@
     "packages/ds/src/components/Picker/OrigamPickerTitle.vue": 1,
     "packages/ds/src/components/Radio/OrigamRadio.vue": 4,
     "packages/ds/src/components/Radio/OrigamRadioGroup.vue": 16,
-    "packages/ds/src/components/Select/OrigamSelect.vue": 99,
+    "packages/ds/src/components/Select/OrigamSelect.vue": 96,
     "packages/ds/src/components/SelectionControl/OrigamSelectionControl.vue": 8,
     "packages/ds/src/components/SelectionControl/OrigamSelectionControlGroup.vue": 11,
     "packages/ds/src/components/Sheet/OrigamSheet.vue": 20,

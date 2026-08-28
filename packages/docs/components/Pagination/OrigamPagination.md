@@ -81,6 +81,10 @@ const page = ref(1)
 | Event | Payload | Description |
 |---|---|---|
 | `update:modelValue` | `number` | Active page changed |
+| `first` | `number` | The first-page button was clicked (payload is `start`) |
+| `prev` | `number` | The previous-page button was clicked (payload is `page - 1`) |
+| `next` | `number` | The next-page button was clicked (payload is `page + 1`) |
+| `last` | `number` | The last-page button was clicked (payload is `start + length - 1`) |
 
 ## Design tokens
 

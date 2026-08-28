@@ -71,7 +71,7 @@ const OrigamBtnStub = {
     props: ['icon', 'disabled', 'size', 'height', 'tabindex', 'flat',
         'ariaHidden', 'ariaLabel'],
     emits: ['click', 'pointerdown', 'pointerup'],
-    template: `<button :disabled="disabled" v-bind="$attrs" @click="$emit('click', $event)" data-stub="btn" />`
+    template: `<button :disabled="disabled" :aria-label="ariaLabel" v-bind="$attrs" @click="$emit('click', $event)" data-stub="btn" />`
 }
 
 const OrigamDividerStub = {
@@ -290,5 +290,97 @@ describe('OrigamNumberField — useDefaults (theme components wiring)', () => {
         const field = wrapper.find('.origam-field')
         expect(field.classes()).toContain('origam--rounded-sm')
         expect(field.classes()).not.toContain('origam--rounded-lg')
+    })
+})
+
+// ---------------------------------------------------------------------------
+// #459 — click:prepend / click:append were declared (inherited via
+// IInputEmits -> IAdjacentEmits) but never wired: NumberField never
+// listened for the child <origam-text-field>'s own click:prepend /
+// click:append (which IS correctly emitted, via its own useAdjacent()
+// call, when its outer prepend/append slot area is clicked). Mounts the
+// REAL component tree (no TextField stub) so the relay is exercised
+// end-to-end, exactly like OrigamSelect's click:control/mousedown:control
+// tests above.
+// ---------------------------------------------------------------------------
+describe('OrigamNumberField — click:prepend / click:append relay (#459)', () => {
+    it('emits click:prepend when the outer prepend area is clicked', async () => {
+        const wrapper = await mountNumberFieldThemed({}, { prependIcon: 'mdi-heart' })
+
+        await wrapper.find('.origam-input__prepend').trigger('click')
+
+        expect(wrapper.emitted('click:prepend')).toBeTruthy()
+        expect(wrapper.emitted('click:prepend')?.[0]?.[0]).toBeInstanceOf(MouseEvent)
+    })
+
+    it('emits click:append when the outer append area is clicked', async () => {
+        const wrapper = await mountNumberFieldThemed({}, { appendIcon: 'mdi-heart' })
+
+        await wrapper.find('.origam-input__append').trigger('click')
+
+        expect(wrapper.emitted('click:append')).toBeTruthy()
+        expect(wrapper.emitted('click:append')?.[0]?.[0]).toBeInstanceOf(MouseEvent)
+    })
+})
+
+// ---------------------------------------------------------------------------
+// #459 — role="spinbutton" + aria-valuenow/valuemin/valuemax/valuetext on
+// the value-bearing <input>, in BOTH render modes.
+// ---------------------------------------------------------------------------
+describe('OrigamNumberField — spinbutton ARIA (#459)', () => {
+    it('non-compact mode: the real native input carries role=spinbutton and aria-value*', async () => {
+        const wrapper = await mountNumberFieldThemed({}, { modelValue: 7, min: 0, max: 10 })
+        // The escape-hatch watchEffect runs post-render; one more tick to be safe.
+        await nextTick()
+
+        const input = wrapper.find('input')
+        expect(input.attributes('role')).toBe('spinbutton')
+        expect(input.attributes('aria-valuenow')).toBe('7')
+        expect(input.attributes('aria-valuemin')).toBe('0')
+        expect(input.attributes('aria-valuemax')).toBe('10')
+        expect(input.attributes('aria-valuetext')).toBe('7')
+    })
+
+    it('compact mode: the native input carries role=spinbutton and aria-value*', () => {
+        const wrapper = mountNumberField({ compact: true, modelValue: 3, min: 0, max: 10 })
+        const input = wrapper.find('[data-cy="numberfield-compact-input"]')
+
+        expect(input.attributes('role')).toBe('spinbutton')
+        expect(input.attributes('aria-valuenow')).toBe('3')
+        expect(input.attributes('aria-valuemin')).toBe('0')
+        expect(input.attributes('aria-valuemax')).toBe('10')
+        expect(input.attributes('aria-valuetext')).toBe('3')
+    })
+})
+
+// ---------------------------------------------------------------------------
+// #459 — the compact-mode Decrement/Increment buttons carried hardcoded
+// English `aria-label` literals. They now resolve through `t()` from
+// `decrementAriaLabel` / `incrementAriaLabel` (i18n keys, default English
+// locale still reads "Decrement"/"Increment" — the fix is that a consumer
+// can now override the KEY or the active locale, not a visible text
+// change in the default locale).
+// ---------------------------------------------------------------------------
+describe('OrigamNumberField — i18n aria-labels on compact controls (#459)', () => {
+    it('decrement button aria-label resolves via t(decrementAriaLabel)', () => {
+        const wrapper = mountNumberField({ compact: true })
+        const btn = wrapper.find('[data-cy="numberfield-compact-decrement"]')
+        expect(btn.attributes('aria-label')).toBe('Decrement')
+    })
+
+    it('increment button aria-label resolves via t(incrementAriaLabel)', () => {
+        const wrapper = mountNumberField({ compact: true })
+        const btn = wrapper.find('[data-cy="numberfield-compact-increment"]')
+        expect(btn.attributes('aria-label')).toBe('Increment')
+    })
+
+    it('a custom decrementAriaLabel/incrementAriaLabel key is honoured', () => {
+        const wrapper = mountNumberField({
+            compact: true,
+            decrementAriaLabel: 'origam.pagination.aria_label.previous',
+            incrementAriaLabel: 'origam.pagination.aria_label.next'
+        })
+        expect(wrapper.find('[data-cy="numberfield-compact-decrement"]').attributes('aria-label')).toBe('Previous page')
+        expect(wrapper.find('[data-cy="numberfield-compact-increment"]').attributes('aria-label')).toBe('Next page')
     })
 })

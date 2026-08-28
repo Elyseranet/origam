@@ -6,7 +6,6 @@
 			:aria-label="ariaLabel"
 			:class="paginationClasses"
 			:style="paginationStyles"
-			role="navigation"
 			@keydown="handleKeydown"
 	>
 		<span
@@ -218,7 +217,7 @@
 		nextIcon: MDI_ICONS.CHEVRON_RIGHT,
 		firstIcon: MDI_ICONS.CHEVRON_DOUBLE_LEFT,
 		lastIcon: MDI_ICONS.CHEVRON_DOUBLE_RIGHT,
-		tag: 'div',
+		tag: 'nav',
 		ellipsis: '...',
 		length: 1,
 		start: 1,
@@ -253,8 +252,14 @@
 	 * @description
 	 * page is the controlled current-page number.
 	 * width / maxButtons support the responsive total-visible calculation.
+	 * The uncontrolled seed is passed as `() => props.start`, not
+	 * `props.start` (#448): a plain read right here, in the setup body,
+	 * would freeze the pre-theme value, since `useVModel` runs before the
+	 * ADR-005 theme-props resolver patches `instance.props`. The getter
+	 * form defers the read to `useVModel`'s internal `seed()`, which only
+	 * runs on first actual access — after the resolver has already run.
 	 ********************************************************/
-	const page = useVModel(props, 'modelValue', props.start)
+	const page = useVModel(props, 'modelValue', () => props.start)
 
 	/*********************************************************
 	 * Composables

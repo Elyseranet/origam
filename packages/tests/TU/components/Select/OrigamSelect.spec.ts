@@ -86,3 +86,56 @@ describe('OrigamSelect — useDefaults (theme components wiring)', () => {
         expect(field.classes()).not.toContain('origam--rounded-lg')
     })
 })
+
+// ---------------------------------------------------------------------------
+// #456 — click:control / mousedown:control were declared in ISelectEmits but
+// never fired: `defineEmits<ISelectEmits>()`'s return value was never
+// captured (no `emit(...)` call existed anywhere in the file). Regression
+// tests below mount the component directly (no theme) and assert the
+// control surface fires both.
+// ---------------------------------------------------------------------------
+describe('OrigamSelect — click:control / mousedown:control (#456)', () => {
+    it('emits click:control when the field control is clicked', async () => {
+        const wrapper = await mountSelectThemed({}, {items: ['a', 'b']})
+
+        await wrapper.find('.origam-field').trigger('click')
+
+        expect(wrapper.emitted('click:control')).toBeTruthy()
+        expect(wrapper.emitted('click:control')?.[0]?.[0]).toBeInstanceOf(MouseEvent)
+    })
+
+    it('emits mousedown:control when the field control receives a mousedown', async () => {
+        const wrapper = await mountSelectThemed({}, {items: ['a', 'b']})
+
+        await wrapper.find('.origam-field').trigger('mousedown')
+
+        expect(wrapper.emitted('mousedown:control')).toBeTruthy()
+        expect(wrapper.emitted('mousedown:control')?.[0]?.[0]).toBeInstanceOf(MouseEvent)
+    })
+})
+
+// ---------------------------------------------------------------------------
+// #456 — the `chips` mode default chip carried hardcoded RGB literals
+// (`bgColor: 'rgba(168, 168, 168, 1)'`, `color: 'rgb(255, 255, 255)'`),
+// bypassing the theme regardless of which theme was active. `chipSlotProps`
+// now omits both so `<OrigamChip>` resolves its own themed default
+// (`--origam-chip---background-color` / `--origam-chip---color`, both
+// emitted by the token pipeline).
+// ---------------------------------------------------------------------------
+describe('OrigamSelect — chip default color is theme-driven, not hardcoded (#456)', () => {
+    it('does not force an inline background-color / color on the default chip', async () => {
+        const wrapper = await mountSelectThemed({}, {
+            items: ['a', 'b'],
+            multiple: true,
+            chips: true,
+            modelValue: ['a']
+        })
+
+        const chip = wrapper.find('.origam-chip')
+        expect(chip.exists()).toBe(true)
+
+        const style = chip.attributes('style') ?? ''
+        expect(style).not.toContain('168, 168, 168')
+        expect(style).not.toContain('255, 255, 255')
+    })
+})

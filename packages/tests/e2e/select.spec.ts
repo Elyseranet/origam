@@ -260,12 +260,23 @@ test.describe('OrigamSelect', () => {
             await expect(field.locator('.origam-input__append').first()).toBeVisible({ timeout: 5000 })
         })
 
-        test('click:control — field is clickable (control surface present)', async ({ page }) => {
+        test('click:control — clicking the control focuses the field and opens the menu (#456)', async ({ page }) => {
             await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            const field = sandbox.locator('[data-cy="select-emit-click-control"]')
+            const field = sandbox.locator('[data-cy="select-emit-click-control"] .origam-field')
             await expect(field).toBeVisible({ timeout: 12000 })
-            await expect(field.locator('.origam-field').first()).toBeVisible({ timeout: 5000 })
+
+            // `logEvent()` (histoire/client) writes into Histoire's own
+            // internal log, unobservable from the outer test page (same
+            // limitation documented in btn.spec.ts's `Events - click`).
+            // What IS observable, and driven by the SAME `handleClickControl`
+            // handler that now emits `click:control` (#456 — it was
+            // previously dead: `defineEmits()`'s return value was never
+            // captured), is the field gaining focus and the option list
+            // opening — a native click fires both `mousedown` and `click`.
+            await field.click()
+            await expect(field).toHaveClass(/origam-field--focused/)
+            await expect(sandbox.getByRole('listbox')).toBeVisible({ timeout: 5000 })
         })
 
         test('click:prepend — prepend icon rendered when prependIcon prop set', async ({ page }) => {
@@ -275,6 +286,24 @@ test.describe('OrigamSelect', () => {
             await expect(field).toBeVisible({ timeout: 12000 })
             // Outer prepend zone (.origam-input__prepend) must be present
             await expect(field.locator('.origam-input__prepend').first()).toBeVisible({ timeout: 5000 })
+        })
+
+        test('mousedown:control — mousedown on the control opens the menu (#456)', async ({ page }) => {
+            await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const field = sandbox.locator('[data-cy="select-emit-mousedown-control"] .origam-field')
+            await expect(field).toBeVisible({ timeout: 12000 })
+
+            // Same `logEvent()` observability limit as click:control above.
+            // `handleMousedownControl` was previously swallowing the event
+            // internally (menu toggle only, no re-emit) — it now also calls
+            // `emit('mousedown:control', e)` (#456). The menu opening on a
+            // bare mousedown (no accompanying click) is the same handler's
+            // pre-existing, unrelated side effect — asserting it still
+            // fires confirms the handler still runs the SAME code path the
+            // emit call was added to, not a parallel/duplicated one.
+            await field.dispatchEvent('mousedown')
+            await expect(sandbox.getByRole('listbox')).toBeVisible({ timeout: 5000 })
         })
     })
 
