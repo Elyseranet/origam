@@ -62,9 +62,19 @@ export default defineConfig({
          * - `.claude/worktrees/**` holds throwaway git worktrees spawned
          *   by parallel Claude agents — must NOT be collected (would
          *   multiply the run by N and surface unrelated branch failures).
+         * - `**\/.probe/**` is the scratch area for throwaway diagnostic
+         *   probes (`TU/probe/.gitignore` ignores it deliberately). It was
+         *   NOT excluded here, so vitest collected it anyway: 12 untracked
+         *   files adding 24 tests to every local run. CI clones fresh and
+         *   never sees them, so the local gate and the CI gate were not the
+         *   same gate — and the pass/fail counts quoted from local runs
+         *   silently included work no reviewer could reproduce. A stale
+         *   probe asserting «OrigamMenu never emits contextmenu» reddened
+         *   the local suite long after that emit had been implemented.
+         *   Ignored by git MUST mean ignored by the runner.
          */
         include: ['TU/**/*.spec.ts'],
-        exclude: ['node_modules/**', 'dist/**', 'e2e/**', 'a11y/**', '.claude/**', '../../**/node_modules/**', '../../.claude/**'],
+        exclude: ['node_modules/**', 'dist/**', 'e2e/**', 'a11y/**', '.claude/**', '**/.probe/**', '../../**/node_modules/**', '../../.claude/**'],
         globals: true,
         environment: 'jsdom',
         /*
