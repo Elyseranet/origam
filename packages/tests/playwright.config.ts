@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { MARKETING_SPEC_PATTERNS } from './e2e/_support/marketing-specs.const'
-import { SCRATCH_DIR_PATTERNS } from './scratch-dirs.const'
+import { scratchDirPatterns } from './scratch-dirs.const'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const REPO_ROOT = resolve(__dirname, '..', '..')
@@ -123,7 +123,7 @@ export default defineConfig({
     // the file then times out identically on chromium/firefox/webkit,
     // masquerading as a cross-engine product defect. See
     // e2e/_support/marketing-specs.const.ts for the full rationale.
-    testIgnore: [...MARKETING_SPEC_PATTERNS, ...SCRATCH_DIR_PATTERNS],
+    testIgnore: [...MARKETING_SPEC_PATTERNS, ...scratchDirPatterns('./e2e')],
 
     // One spec per file; specs inside a file run sequentially (consistent
     // visual-regression baselines), but separate files parallelise.
