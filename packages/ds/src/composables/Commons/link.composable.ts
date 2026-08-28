@@ -50,7 +50,29 @@ export function useLink (props: ILinkProps & ITagProps, attrs: SetupContext['att
         }
     }
 
-    const link = props.to ? RouterLink.useLink(props as UseLinkOptions) : undefined
+    /*********************************************************
+     *  useLink() IS ALWAYS CALLED, NOT GATED ON `props.to`
+     *
+     *  @description
+     *  `RouterLink.useLink(props)` used to run only when `props.to` was
+     *  already truthy AT THE MOMENT `useLink()` (this composable) was
+     *  called — `const link = props.to ? RouterLink.useLink(...) :
+     *  undefined`. If `to` started unset, `link` was frozen at
+     *  `undefined` forever: a `to` set on the component AFTER mount
+     *  never activated routing, since nothing re-evaluated the gate.
+     *  Measured: `href`, `route`, `navigate` and `isActive` all stayed
+     *  inert (#504).
+     *  @description
+     *  vue-router's OWN `useLink` is already internally lazy — its
+     *  `route` is a `computed(() => { const to = unref(props.to); ...
+     *  })`, so it re-reads `to` on every access. Calling it
+     *  unconditionally is safe: the underlying `computed` is NEVER
+     *  evaluated until something reads `link.route` / `link.isActive`,
+     *  and every read site below already guards on `props.to` (or
+     *  `link?.`) before touching them — so an unset `to` never triggers
+     *  `router.resolve(undefined)`.
+     ********************************************************/
+    const link = RouterLink.useLink(props as UseLinkOptions)
     const route = useRoute()
 
     return {
