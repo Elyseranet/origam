@@ -353,7 +353,8 @@
 		elevationClasses.value,
 		paddingClasses.value,
 		marginClasses.value,
-		colorClasses.value
+		colorClasses.value,
+		props.class
 	])
 
 	const codeStyles = computed(() => [
