@@ -4,7 +4,7 @@
       :is="tag"
       :id="resolvedDomId"
       ref="rootRef"
-      :aria-label="'Notifications'"
+      :aria-label="groupAriaLabel"
       :class="stackClasses"
       :style="stackStyles"
       role="region"
@@ -20,7 +20,6 @@
           :actions="item.actions"
           :aria-live="resolveAriaLive(item.intent)"
           :data-cy="`origam-snackbar-group-item-${item.id}`"
-          :dismiss-label="'Dismiss notification'"
           :dismissible="resolveDismissible(item)"
           :icon="item.icon"
           :intent="item.intent ?? 'info'"
@@ -43,6 +42,7 @@
 
   import OrigamSnackbarItem from './OrigamSnackbarItem.vue'
 
+  import { useLocale } from '../../composables/Commons/locale.composable'
   import { useProps } from '../../composables/Commons/props.composable'
   import { useStyle } from '../../composables/Commons/style.composable'
   import { useSnackbarGroupInternal } from '../../composables/Snackbar/snackbarGroupInternal.composable'
@@ -78,6 +78,8 @@
 
   defineSlots<ISnackbarGroupSlots>()
 
+  const { t } = useLocale()
+
   const { filterProps } = useProps<ISnackbarGroupProps>(props)
 
   const rootRef = ref<HTMLElement>()
@@ -91,7 +93,7 @@
    * public `useSnackbarGroup({ id }).notify / dismiss /
    * dismissAll` composable — this side only reads them.
    ********************************************************/
-  const { rawItems, registerDefaultDuration } = useSnackbarGroupInternal(props.id)
+  const { rawItems, registerDefaultDuration } = useSnackbarGroupInternal(() => props.id)
 
   // Publishes `defaultDuration` into the shared store so `notify()` —
   // called from ANY `useSnackbarGroup({ id })` instance targeting this
@@ -128,6 +130,8 @@
 
     return props.location.startsWith('top') ? SNACKBAR_GROUP_DIRECTION.TOP_DOWN : SNACKBAR_GROUP_DIRECTION.BOTTOM_UP
   })
+
+  const groupAriaLabel = computed<string>(() => t('origam.snackbar_group.notifications'))
 
   const resolveAriaRole = (intent?: TIntent): 'status' | 'alert' => {
     return intent === INTENT.WARNING || intent === INTENT.DANGER ? 'alert' : 'status'

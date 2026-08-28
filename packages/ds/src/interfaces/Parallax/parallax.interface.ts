@@ -153,6 +153,14 @@ export interface IParallaxLayerProvide {
      */
     register: (layer: IParallaxLayerRegistry) => void
     unregister: (id: symbol) => void
+    /**
+     * Patches a REGISTERED layer's `speed`/`offsetX`/`offsetY` in place —
+     * see #449. `register()` only runs once, at mount; without this, a
+     * reactive change to those props after mount never reaches the
+     * running rAF loop / CSS scroll-driven animation, which both read the
+     * registry entry directly rather than through Vue reactivity.
+     */
+    update: (id: symbol, patch: Pick<IParallaxLayerRegistry, 'speed' | 'offsetX' | 'offsetY'>) => void
 }
 
 /*********************************************************

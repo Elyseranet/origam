@@ -141,6 +141,9 @@
     "snackbar": {
       "dismiss": "Dismiss notification"
     },
+    "snackbar_group": {
+      "notifications": "Notifications"
+    },
     "stepper": {
       "next": "Next",
       "prev": "Previous",

@@ -306,7 +306,8 @@
 		cssScrollDriven,
 		reducedMotion,
 		register,
-		unregister
+		unregister,
+		update
 	} = useParallaxRuntime({
 		target: root,
 		direction: toRef(props, 'direction') as Ref<TParallaxDirection>,
@@ -328,7 +329,8 @@
 		cssScrollDriven,
 		reducedMotion,
 		register,
-		unregister
+		unregister,
+		update
 	})
 
 	/*********************************************************

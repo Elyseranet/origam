@@ -33,30 +33,38 @@ function mountThemed (Comp: any, name: string, props: Record<string, unknown>) {
     return mount(Comp, { global: { plugins: [origam] } })
 }
 
-/*
- * Each case carries its own control. "Themed markup equals unthemed markup"
- * proves nothing on its own — it reads the same whether the theme was ignored
- * or the prop simply has no visible effect. The control passes the identical
- * value EXPLICITLY and requires the markup to change, which establishes the
- * prop is observable in the first place. Only then does the themed case mean
- * the theme was dropped.
- */
-function assertThemeIgnoredButPropWorks (Comp: any, name: string, props: Record<string, unknown>) {
-    const plain = mount(Comp, { global: { plugins: [createOrigam({})] } }).html()
-    const explicit = mount(Comp, { props, global: { plugins: [createOrigam({})] } }).html()
-    const themed = mountThemed(Comp, name, props).html()
-
-    expect(explicit, 'control: passing the prop explicitly must change the markup').not.toBe(plain)
-    expect(themed, 'the themed value is dropped — it renders as if unset').toBe(plain)
-}
-
 describe('props read at setup() level never see the theme — pre-existing, unrelated to the useDefaults removal', () => {
-    it('OrigamWindow drops a themed prevIcon / nextIcon', () => {
-        assertThemeIgnoredButPropWorks(OrigamWindow, 'origam-window', {
+    /*********************************************************
+     * OrigamWindow — CAS RETOURNÉ, le defaut est corrige (#473)
+     *
+     * @description
+     * Ce cas assertait la perte du prevIcon/nextIcon themes. Il a echoue le
+     * jour de la correction, exactement comme l'en-tete de ce fichier
+     * l'annonce — c'est sa fonction, pas un accident.
+     * @description
+     * La cause etait bien une lecture eager : `prevProps`/`nextProps`
+     * etaient des litteraux d'objet construits une fois au niveau racine de
+     * `setup()`, capturant `props.prevIcon`/`props.nextIcon` avant que le
+     * resolveur de theme ADR-005 ne patche `instance.props` dans
+     * `beforeCreate`. Corrige en enveloppant les deux dans `computed()`.
+     * @description
+     * L'assertion est desormais inversee : le theme DOIT atteindre le rendu.
+     * Le controle « la prop explicite change le balisage » est conserve —
+     * sans lui, « theme == explicite » se lirait pareil si la prop n'avait
+     * aucun effet visible.
+     ********************************************************/
+    it('OrigamWindow applique bien un prevIcon / nextIcon themes', () => {
+        const props = {
             showArrows: true,
             prevIcon: 'mdi-chevron-double-left',
             nextIcon: 'mdi-chevron-double-right'
-        })
+        }
+        const plain = mount(OrigamWindow, { global: { plugins: [createOrigam({})] } }).html()
+        const explicit = mount(OrigamWindow, { props, global: { plugins: [createOrigam({})] } }).html()
+        const themed = mountThemed(OrigamWindow, 'origam-window', props).html()
+
+        expect(explicit, 'controle : passer la prop explicitement doit changer le balisage').not.toBe(plain)
+        expect(themed, 'la valeur du theme doit atteindre le rendu, comme la prop explicite').toBe(explicit)
     })
 
     /*********************************************************
