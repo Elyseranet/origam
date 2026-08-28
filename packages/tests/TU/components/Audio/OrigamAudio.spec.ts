@@ -309,6 +309,68 @@ describe('OrigamAudio — slot overrides', () => {
         expect(meta.text()).toContain('Custom metadata')
         expect(wrapper.find('[data-cy="origam-audio-title"]').exists()).toBe(false)
     })
+
+    // Regression for #378 — `IAudioSlots.controls` was declared and
+    // documented ("Override the entire controls, replaces the default
+    // `<OrigamMediaController>`") but the template never rendered
+    // `<slot name="controls">`: Vue silently drops content passed to an
+    // undeclared slot, so a consumer following the doc got nothing.
+    it('replaces the default <OrigamMediaController> when the #controls slot is provided', () => {
+        const wrapper = mountAudio({
+            slots: {
+                controls: (bindings: Record<string, unknown>) => h(
+                    'div',
+                    { 'data-cy': 'custom-controls' },
+                    bindings.playing ? 'Playing' : 'Paused'
+                )
+            }
+        })
+
+        expect(wrapper.find('[data-cy="custom-controls"]').exists()).toBe(true)
+        expect(wrapper.find('[data-cy="custom-controls"]').text()).toBe('Paused')
+        expect(wrapper.find('[data-cy="origam-audio-controls"]').exists()).toBe(false)
+    })
+
+    it('forwards the live state + methods bindings to the #controls slot', () => {
+        let received: Record<string, unknown> | undefined
+
+        mountAudio({
+            slots: {
+                controls: (bindings: Record<string, unknown>) => {
+                    received = bindings
+                    return h('div', { 'data-cy': 'custom-controls' })
+                }
+            }
+        })
+
+        expect(received).toBeDefined()
+        expect(received).toMatchObject({
+            playing: false,
+            paused: true,
+            currentTime: expect.any(Number),
+            duration: expect.any(Number),
+            buffered: expect.any(Number),
+            volume: expect.any(Number),
+            muted: expect.any(Boolean),
+            playbackRate: expect.any(Number),
+            loading: expect.any(Boolean),
+            error: null
+        })
+        expect(typeof (received!.methods as Record<string, unknown>).play).toBe('function')
+        expect(typeof (received!.methods as Record<string, unknown>).pause).toBe('function')
+    })
+
+    it('does NOT render the #controls slot when controls="native" (native <audio controls> takes over)', () => {
+        const wrapper = mountAudio({
+            props: { controls: 'native' },
+            slots: {
+                controls: () => h('div', { 'data-cy': 'custom-controls' }, 'Should not render')
+            }
+        })
+
+        expect(wrapper.find('[data-cy="custom-controls"]').exists()).toBe(false)
+        expect(wrapper.find('[data-cy="origam-audio-controls"]').exists()).toBe(false)
+    })
 })
 
 describe('OrigamAudio — dimension props', () => {

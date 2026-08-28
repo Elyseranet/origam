@@ -42,156 +42,162 @@
 			/>
 		</audio>
 
-		<origam-media-controller
-				v-if="isCustomControls"
-				v-model:loop-mode="internalLoopMode"
-				v-model:shuffle="internalShuffle"
-				:state="state"
-				:methods="methods"
-				:playback-rates="playbackRates"
-				:allow-remote-playback="allowRemotePlayback"
-				:downloadable="downloadable"
-				:download-url="downloadUrl"
-				:download-filename="downloadFilename"
-				:show-previous="hasPlaylist"
-				:show-next="hasPlaylist"
-				:show-loop="true"
-				:show-shuffle="hasPlaylist"
-				class="origam-audio__controller"
-				data-cy="origam-audio-controls"
-				@previous="onPrevious"
-				@next="onNext"
-				@download="onDownloadClick"
-		>
-			<template #header>
-				<slot name="header">
-					<div
-							v-if="hasCover || hasMetadata"
-							class="origam-audio__header"
-							:class="{ 'origam-audio__header--no-cover': !hasCover }"
-					>
-						<figure
-								v-if="hasCover"
-								class="origam-audio__cover"
-								data-cy="origam-audio-cover-figure"
-						>
-							<slot name="cover">
-								<img
-										:src="resolvedCover!"
-										:alt="coverAlt"
-										:width="coverSizePx"
-										:height="coverSizePx"
-										class="origam-audio__cover-img"
-										data-cy="origam-audio-cover"
-										loading="lazy"
-										decoding="async"
-								/>
-							</slot>
-						</figure>
-
-						<header
-								v-if="hasMetadata"
-								class="origam-audio__metadata"
-								data-cy="origam-audio-metadata"
-						>
-							<slot name="metadata">
-								<slot name="title">
-									<strong
-											v-if="resolvedTitle"
-											class="origam-audio__title"
-											data-cy="origam-audio-title"
-											:style="typographyTitleStyles"
-									>{{ resolvedTitle }}</strong>
-								</slot>
-								<span
-										v-if="hasMetaLine"
-										class="origam-audio__meta"
-										:style="typographyMetaStyles"
-								>
-									<span
-											v-if="resolvedArtist"
-											class="origam-audio__artist"
-											data-cy="origam-audio-artist"
-									>{{ resolvedArtist }}</span>
-									<span
-											v-if="resolvedAlbum"
-											class="origam-audio__album"
-											data-cy="origam-audio-album"
-									>{{ resolvedAlbum }}</span>
-									<span
-											v-if="hasDurationLabel"
-											class="origam-audio__duration"
-											data-cy="origam-audio-duration"
-									>{{ formattedDuration }}</span>
-								</span>
-							</slot>
-						</header>
-					</div>
-				</slot>
-			</template>
-
-			<template #waveform>
-				<slot
-						name="waveform"
-						:peaks="peaks"
-						:current-time="state.currentTime.value"
-						:duration="state.duration.value"
-				>
-					<origam-slider-field
-							:model-value="state.currentTime.value"
-							:max="scrubberMax"
-							:step="0.1"
-							:buffered="state.buffered.value"
-							:peaks="isCompactVariant ? undefined : displayedPeaks"
-							:aria-label="waveformAriaLabel"
-							:variant="isCompactVariant ? 'timer' : 'audio'"
-							show-thumb-on-hover-only
-							show-hover-tooltip
-							:format-hover-tooltip="formatTimeTooltip"
-							class="origam-audio__waveform-slider"
-							:style="{ color: 'inherit' }"
-							data-cy="origam-audio-waveform-slider"
-							@update:model-value="onWaveformSeek"
-					/>
-				</slot>
-			</template>
-
-			<template
-					v-if="hasPlaylist"
-					#footer
+		<template v-if="isCustomControls">
+			<slot
+					name="controls"
+					v-bind="controlsSlotBindings"
 			>
-				<slot
-						name="playlist"
-						:tracks="props.playlist"
-						:current-index="safeTrackIndex"
-						:select="setActiveTrack"
+				<origam-media-controller
+						v-model:loop-mode="internalLoopMode"
+						v-model:shuffle="internalShuffle"
+						:state="state"
+						:methods="methods"
+						:playback-rates="playbackRates"
+						:allow-remote-playback="allowRemotePlayback"
+						:downloadable="downloadable"
+						:download-url="downloadUrl"
+						:download-filename="downloadFilename"
+						:show-previous="hasPlaylist"
+						:show-next="hasPlaylist"
+						:show-loop="true"
+						:show-shuffle="hasPlaylist"
+						class="origam-audio__controller"
+						data-cy="origam-audio-controls"
+						@previous="onPrevious"
+						@next="onNext"
+						@download="onDownloadClick"
 				>
-					<origam-list
-						class="origam-audio__playlist"
-						data-cy="origam-audio-playlist"
-					>
-						<origam-list-item
-								v-for="(track, index) in props.playlist"
-								:key="track.id ?? index"
-								:active="index === safeTrackIndex"
-								:title="track.title ?? `Track ${ index + 1 }`"
-								:subtitle="track.artist"
-								:prepend-avatar="track.cover"
-								class="origam-audio__playlist-item"
-								:data-cy="`origam-audio-playlist-item-${ index }`"
-								@click="setActiveTrack(index)"
-						>
-							<template
-									v-if="track.duration"
-									#append
+					<template #header>
+						<slot name="header">
+							<div
+									v-if="hasCover || hasMetadata"
+									class="origam-audio__header"
+									:class="{ 'origam-audio__header--no-cover': !hasCover }"
 							>
-								<span class="origam-audio__playlist-duration">{{ formatMediaTime(track.duration) }}</span>
-							</template>
-						</origam-list-item>
-					</origam-list>
-				</slot>
-			</template>
-		</origam-media-controller>
+								<figure
+										v-if="hasCover"
+										class="origam-audio__cover"
+										data-cy="origam-audio-cover-figure"
+								>
+									<slot name="cover">
+										<img
+												:src="resolvedCover!"
+												:alt="coverAlt"
+												:width="coverSizePx"
+												:height="coverSizePx"
+												class="origam-audio__cover-img"
+												data-cy="origam-audio-cover"
+												loading="lazy"
+												decoding="async"
+										/>
+									</slot>
+								</figure>
+
+								<header
+										v-if="hasMetadata"
+										class="origam-audio__metadata"
+										data-cy="origam-audio-metadata"
+								>
+									<slot name="metadata">
+										<slot name="title">
+											<strong
+													v-if="resolvedTitle"
+													class="origam-audio__title"
+													data-cy="origam-audio-title"
+													:style="typographyTitleStyles"
+											>{{ resolvedTitle }}</strong>
+										</slot>
+										<span
+												v-if="hasMetaLine"
+												class="origam-audio__meta"
+												:style="typographyMetaStyles"
+										>
+											<span
+													v-if="resolvedArtist"
+													class="origam-audio__artist"
+													data-cy="origam-audio-artist"
+											>{{ resolvedArtist }}</span>
+											<span
+													v-if="resolvedAlbum"
+													class="origam-audio__album"
+													data-cy="origam-audio-album"
+											>{{ resolvedAlbum }}</span>
+											<span
+													v-if="hasDurationLabel"
+													class="origam-audio__duration"
+													data-cy="origam-audio-duration"
+											>{{ formattedDuration }}</span>
+										</span>
+									</slot>
+								</header>
+							</div>
+						</slot>
+					</template>
+
+					<template #waveform>
+						<slot
+								name="waveform"
+								:peaks="peaks"
+								:current-time="state.currentTime.value"
+								:duration="state.duration.value"
+						>
+							<origam-slider-field
+									:model-value="state.currentTime.value"
+									:max="scrubberMax"
+									:step="0.1"
+									:buffered="state.buffered.value"
+									:peaks="isCompactVariant ? undefined : displayedPeaks"
+									:aria-label="waveformAriaLabel"
+									:variant="isCompactVariant ? 'timer' : 'audio'"
+									show-thumb-on-hover-only
+									show-hover-tooltip
+									:format-hover-tooltip="formatTimeTooltip"
+									class="origam-audio__waveform-slider"
+									:style="{ color: 'inherit' }"
+									data-cy="origam-audio-waveform-slider"
+									@update:model-value="onWaveformSeek"
+							/>
+						</slot>
+					</template>
+
+					<template
+							v-if="hasPlaylist"
+							#footer
+					>
+						<slot
+								name="playlist"
+								:tracks="props.playlist"
+								:current-index="safeTrackIndex"
+								:select="setActiveTrack"
+						>
+							<origam-list
+								class="origam-audio__playlist"
+								data-cy="origam-audio-playlist"
+							>
+								<origam-list-item
+										v-for="(track, index) in props.playlist"
+										:key="track.id ?? index"
+										:active="index === safeTrackIndex"
+										:title="track.title ?? `Track ${ index + 1 }`"
+										:subtitle="track.artist"
+										:prepend-avatar="track.cover"
+										class="origam-audio__playlist-item"
+										:data-cy="`origam-audio-playlist-item-${ index }`"
+										@click="setActiveTrack(index)"
+								>
+									<template
+											v-if="track.duration"
+											#append
+									>
+										<span class="origam-audio__playlist-duration">{{ formatMediaTime(track.duration) }}</span>
+									</template>
+								</origam-list-item>
+							</origam-list>
+						</slot>
+					</template>
+				</origam-media-controller>
+			</slot>
+		</template>
 
 		<div
 				v-if="state.loading.value && !state.error.value"
@@ -268,6 +274,7 @@
 	import type {
 		IAudioEmits,
 		IAudioProps,
+		IAudioScopedSlotBindings,
 		IAudioSlots,
 		IAudioSource,
 		IAudioTrack
@@ -576,6 +583,33 @@
 		loop: props.loop,
 		preload: props.preload
 	})
+
+	/*********************************************************
+	 * controlsSlotBindings — #378
+	 *
+	 * @description
+	 * `IAudioSlots.controls` was declared and documented ("Override the
+	 * entire controls, replaces the default `<OrigamMediaController>`")
+	 * but never rendered in the template: a consumer following the doc
+	 * got total silence. Bindings mirror `IAudioScopedSlotBindings`
+	 * exactly — unwrapped snapshots of the internal `state` refs plus
+	 * the imperative `methods` object already driving the default
+	 * `<OrigamMediaController>`, so a custom transport has the same
+	 * capability as the built-in one.
+	 ********************************************************/
+	const controlsSlotBindings = computed<IAudioScopedSlotBindings>(() => ({
+		playing: state.playing.value,
+		paused: state.paused.value,
+		currentTime: state.currentTime.value,
+		duration: state.duration.value,
+		buffered: state.buffered.value,
+		volume: state.volume.value,
+		muted: state.muted.value,
+		playbackRate: state.playbackRate.value,
+		loading: state.loading.value,
+		error: state.error.value,
+		methods
+	}))
 
 	/*********************************************************
 	 * Resume playback once the new track is ready — paired with

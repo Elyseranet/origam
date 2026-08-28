@@ -100,9 +100,12 @@ export interface IClipboardSlots {
      */
     default?: (bindings: IClipboardScopedSlotBindings) => any
     /**
-     * Custom feedback marker rendered when `showFeedback` is true and
-     * `copied` is true. Scoped — receives the boolean for symmetry
-     * with the default slot.
+     * Custom feedback marker rendered inside the built-in trigger
+     * button while `copied` is true, replacing the default
+     * `feedbackText` label. Only applies to the built-in trigger —
+     * has no effect when `#default` is overridden with a custom
+     * trigger (there's no button to render it in). Scoped — receives
+     * the boolean for symmetry with the default slot.
      */
     feedback?: (bindings: { copied: boolean }) => any
 }

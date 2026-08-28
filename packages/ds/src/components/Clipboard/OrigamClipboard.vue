@@ -27,11 +27,16 @@
 						class="origam-clipboard__default-icon"
 						aria-hidden="true"
 				/>
-				<span
+				<slot
 						v-if="copied"
-						class="origam-clipboard__default-label"
-						aria-live="polite"
-				>{{ resolvedFeedbackText }}</span>
+						name="feedback"
+						:copied="copied"
+				>
+					<span
+							class="origam-clipboard__default-label"
+							aria-live="polite"
+					>{{ resolvedFeedbackText }}</span>
+				</slot>
 			</button>
 		</slot>
 	</component>

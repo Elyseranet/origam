@@ -252,6 +252,47 @@ test.describe('OrigamAudio — controls=native', () => {
     })
 })
 
+test.describe('OrigamAudio — Slots - controls (#378)', () => {
+    // Regression for #378 — `IAudioSlots.controls` was declared and
+    // documented ("Override the entire controls, replaces the default
+    // `<OrigamMediaController>`") but `<slot name="controls">` was
+    // absent from the template: Vue silently drops content passed to
+    // an undeclared slot, so the story's own "Slots - controls" Variant
+    // rendered nothing where the custom transport should be.
+    test('replaces the default <OrigamMediaController> with the custom slot content', async ({ page }) => {
+        await openVariant(page, 'Slots - controls')
+        const sandbox = sandboxOf(page)
+
+        const host = sandbox.locator('[data-cy="origam-audio"]').first()
+        await expect(host).toBeVisible({ timeout: 8000 })
+
+        // The story's #controls template renders a single "Play"/"Pause"
+        // button and nothing else — the default MediaController transport
+        // must be entirely absent.
+        await expect(host.locator('[data-cy="origam-audio-controls"]')).toHaveCount(0)
+
+        const customButton = sandbox.locator('.story-slot-controls button')
+        await expect(customButton).toBeVisible({ timeout: 8000 })
+        await expect(customButton).toHaveText('Play')
+    })
+
+    test('the slot receives live playing state + methods (button toggles Play ⇄ Pause)', async ({ page }) => {
+        await openVariant(page, 'Slots - controls')
+        const sandbox = sandboxOf(page)
+        const host = sandbox.locator('[data-cy="origam-audio"]').first()
+        await expect(host).toBeVisible({ timeout: 8000 })
+
+        const customButton = sandbox.locator('.story-slot-controls button')
+        await expect(customButton).toHaveText('Play')
+
+        await customButton.click()
+        await expect(customButton).toHaveText('Pause', { timeout: 5000 })
+
+        await customButton.click()
+        await expect(customButton).toHaveText('Play', { timeout: 5000 })
+    })
+})
+
 test.describe('OrigamAudio — downloadable', () => {
     test('the Download row appears in the cog menu when downloadable is true', async ({ page }) => {
         // Dedicated fixture folded into "Functional" — Downloadable

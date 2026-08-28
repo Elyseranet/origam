@@ -25,11 +25,13 @@ non-HTTPS contexts and pre-permissions Safari / WebView builds.
 
 When no slot is provided the component renders a single button
 (`mdi:mdi-content-copy` icon) whose label appears next to the icon
-and flips to `feedbackText` while `copied` is true. That's the only
-feedback surface the component owns — there is no separate pill, no
-mode prop, no double rendering. If you need a richer feedback (toast,
-inline status, custom animation), pass a `#default` scoped slot and
-render whatever you want from `{ copy, copied, error }`.
+and flips to `feedbackText` while `copied` is true. There is no
+separate pill, no mode prop, no double rendering. If you only want a
+different label/marker inside that same built-in button, pass a
+`#feedback` scoped slot (see below). If you need a richer feedback
+(toast, inline status, custom animation) — or a different trigger
+altogether — pass a `#default` scoped slot and render whatever you
+want from `{ copy, copied, error }`.
 
 ## Props
 
@@ -51,15 +53,33 @@ render whatever you want from `{ copy, copied, error }`.
 | `copy`           | `(value: string)`| After a successful write (modern API or execCommand fallback).             |
 | `error`          | `(err: Error)`   | After both paths failed (permissions denied, blocked context, …).          |
 
-## Slot scoped API
+## Slots
 
-The default slot exposes the following bindings:
+| Slot       | Bindings                          | Notes                                                                                                    |
+|------------|------------------------------------|-----------------------------------------------------------------------------------------------------------|
+| `default`  | `{ copy, copied, error }`           | Custom trigger. Replaces the built-in icon button entirely.                                              |
+| `feedback` | `{ copied: boolean }`               | Custom marker rendered inside the **built-in** trigger while `copied` is true, replacing `feedbackText`. Only applies when `#default` is NOT overridden — a custom trigger has no button to render it in. |
+
+### `default` scoped bindings
 
 | Binding  | Type                            | Notes                                                            |
 |----------|---------------------------------|------------------------------------------------------------------|
 | `copy`   | `() => Promise<boolean>`        | Triggers the pipeline. Resolves `true` on success.               |
 | `copied` | `boolean`                       | True for `feedbackDuration` ms after a successful copy.          |
 | `error`  | `Error \| null`                 | Set when the last attempt failed; null after a fresh successful attempt. |
+
+### `feedback` example
+
+```vue
+<template>
+    <!-- Built-in icon + button chrome, custom marker instead of "Copied!" -->
+    <origam-clipboard :value="apiKey">
+        <template #feedback="{ copied }">
+            <span>{{ copied ? '✓ Done' : '' }}</span>
+        </template>
+    </origam-clipboard>
+</template>
+```
 
 ## `useClipboard` composable
 
