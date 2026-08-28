@@ -2,13 +2,16 @@
 	<component
 			:is="link.tag.value"
 			:id="id"
+			ref="root"
 			v-ripple="isClickable && ripple"
 			v-contrast
 			:class="cardClasses"
 			:href="link.href.value"
+			:role="cardRole"
 			:style="cardStyles"
-			:tabindex="disabled ? -1 : undefined"
+			:tabindex="cardTabindex"
 			@click="handleClick"
+			@keydown="handleKeydown"
 			@mouseenter="mouseenterHandler"
 			@mouseleave="mouseleaveHandler"
 	>
@@ -166,6 +169,7 @@
 	import vRipple from '../../directives/Ripple/ripple.directive'
 
 	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
 	import { LOADER_KIND } from '../../enums/Commons/loader.enum'
 	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
 
@@ -173,7 +177,7 @@
 
 	import type { ICardEmits, ICardSlots } from '../../interfaces/Card/card.interface'
 
-	import { computed, StyleValue, toRef, useAttrs, useSlots } from 'vue'
+	import { computed, ref, StyleValue, toRef, useAttrs, useSlots } from 'vue'
 
 	/*********************************************************
 	 * Global
@@ -192,6 +196,8 @@
 	const attrs = useAttrs()
 
 	const link = useLink(props, attrs)
+
+	const root = ref<HTMLElement>()
 
 	/*********************************************************
 	 * Adjacent (prepend / append) & clickability
@@ -348,6 +354,64 @@
 		onActive()
 		if (isClickable.value && link.navigate) {
 			link.navigate(event)
+		}
+	}
+
+	/*********************************************************
+	 * cardRole / cardTabindex (#392)
+	 *
+	 * @description
+	 * A Card rendered with `href`/`to` is a native `<a>` — already
+	 * focusable, already announced as a link, `role="button"` on top of
+	 * that would misrepresent it. A Card made clickable only through a
+	 * `@click` listener or the `link` prop (no URL to navigate to) stays
+	 * a `<div>` (or `tag`): a `<button>` is not an option here because
+	 * it is phrasing content and cannot legally contain the flow content
+	 * a Card renders (header, image, footer slots, …) — the content
+	 * model rejects it outright, so ARIA is the only remaining option,
+	 * not a shortcut around the native element. `role="button"` +
+	 * `tabindex="0"` restore the semantics a native control would have
+	 * given for free.
+	 * @description
+	 * A purely decorative Card (`isClickable` false) must NOT become
+	 * focusable — the symmetric defect flagged in #392 alongside the
+	 * missing tabindex/role.
+	 ********************************************************/
+	const cardRole = computed(() => {
+		return isClickable.value && !link.isLink.value ? 'button' : undefined
+	})
+	const cardTabindex = computed(() => {
+		if (props.disabled) return -1
+		return isClickable.value && !link.isLink.value ? 0 : undefined
+	})
+
+	/*********************************************************
+	 * handleKeydown (#392)
+	 *
+	 * @description
+	 * Native `<a href>` already activates on Enter and needs no help;
+	 * this handler only runs for the ARIA-button `<div>` path
+	 * (`isClickable && !link.isLink`). Enter AND Space both activate —
+	 * Space is prevented from scrolling the page, matching the WAI-ARIA
+	 * button pattern.
+	 * @description
+	 * Dispatches a real `click()` on the root element instead of
+	 * re-implementing the click behaviour here: Card never declares
+	 * `click` as its own emit (see `ICardEmits`), so a consumer's
+	 * `@click="fn"` reaches the root purely through Vue's automatic
+	 * `$attrs` fallthrough merge, not through anything this component's
+	 * script can call directly. A synthetic `click()` re-triggers that
+	 * exact same native event path — both `handleClick` and the
+	 * consumer's own listener — instead of guessing at how to invoke an
+	 * attrs-only handler by hand (same bridging pattern already used by
+	 * `OrigamFileField` / `OrigamSwitch`).
+	 ********************************************************/
+	const handleKeydown = (event: KeyboardEvent) => {
+		if (!isClickable.value || link.isLink.value) return
+
+		if (event.key === KEYBOARD_VALUES.ENTER || event.key === ' ') {
+			event.preventDefault()
+			root.value?.click()
 		}
 	}
 
