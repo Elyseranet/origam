@@ -13,6 +13,7 @@
     "test:run": "vitest --run",
     "test:coverage": "vitest --run --coverage",
     "audit:inert-props": "node audit/run-inert-props-audit.mjs",
+    "audit:id-forwarding": "node audit/id-forwarding.audit.mjs",
     "test:e2e": "playwright test",
     "test:e2e:audit": "node e2e/_support/run-guards.mjs",
     "test:e2e:audit:self": "node e2e/_support/run-guards.mjs --self-test",

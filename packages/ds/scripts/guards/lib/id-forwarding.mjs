@@ -32,7 +32,9 @@
  *      channel — see below).
  *
  * THE SHAPE THIS GUARD DELIBERATELY DOES NOT FLAG (three OTHER #381/#421
- * mechanisms, all runtime-only — see the ticket and `id-forwarding.audit.mjs`)
+ * mechanisms, all runtime-only — see the ticket and
+ * `packages/tests/audit/id-forwarding.audit.mjs`, runnable via
+ * `pnpm -F @origam/tests audit:id-forwarding`)
  * -------------------------------------------------------------------------
  *   A. LOCAL COMPUTED SHADOWING — `const id = computed(() => props.id ||
  *      fallback)` declared SEPARATELY from useStyle (which is then renamed
@@ -59,10 +61,13 @@
  *      control with NO `:id` binding at all) — these have no `:id="id"`
  *      textual shape to detect; they require mounting the component and
  *      reading the rendered attribute. Out of scope for a static AST guard
- *      by construction — see `id-forwarding.audit.mjs` (packages/tests) for
- *      the runtime cross-check, following the same split as guard 5
+ *      by construction — see `packages/tests/audit/id-forwarding.audit.mjs`
+ *      (`pnpm -F @origam/tests audit:id-forwarding`) for the runtime
+ *      cross-check, following the same split as guard 5
  *      (`unconsumed-props.mjs` static guard + `audit:inert-props` runtime
- *      sweep in packages/tests).
+ *      sweep in packages/tests). That audit currently reports 10 components
+ *      losing a consumer-supplied `id` outright — the mechanism-C population
+ *      this guard cannot see.
  *
  * Selftest: `id-forwarding.selftest.mjs` pins both directions AND replays
  * the 16 real components found+fixed during the #381 campaign as a
