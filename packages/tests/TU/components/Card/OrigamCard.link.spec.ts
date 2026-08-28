@@ -28,7 +28,7 @@
 //    `link.href.value`. `OrigamChip` carried the identical defect and is
 //    covered at the bottom of this file.
 
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { defineComponent } from 'vue'
 import type { VueWrapper } from '@vue/test-utils'
@@ -122,6 +122,85 @@ describe('OrigamCard — href attribute', () => {
         const wrapper = mountCard()
 
         expect(root(wrapper).attributes('href')).toBeUndefined()
+    })
+})
+
+// ---------------------------------------------------------------------------
+// Keyboard reachability & activation — issue #392
+//
+// A clickable Card with no `href`/`to` rendered a `<div>` with neither
+// `tabindex` nor `role`: reachable by mouse only. `<button>` is not an
+// option — Card's content (header, image, footer slots) is flow content,
+// and `<button>` only accepts phrasing content, so the content model
+// rejects it outright. `role="button"` + `tabindex="0"` on the `<div>`
+// restore what a native control would have given for free; Enter/Space
+// activation is wired by hand since a `<div>` has none natively. A Card
+// resolving to a real `<a href>` needs none of this — natively focusable,
+// natively Enter-activated, and `role="button"` on it would misrepresent
+// its actual (link) semantics.
+// ---------------------------------------------------------------------------
+
+describe('OrigamCard — keyboard reachability (#392)', () => {
+    it('is NOT focusable and carries no role when purely decorative', () => {
+        const wrapper = mountCard()
+
+        expect(root(wrapper).attributes('tabindex')).toBeUndefined()
+        expect(root(wrapper).attributes('role')).toBeUndefined()
+    })
+
+    it('is focusable with role="button" when clickable via a bound click listener', () => {
+        const wrapper = mountCard('', { click: () => {} })
+
+        expect(root(wrapper).attributes('tabindex')).toBe('0')
+        expect(root(wrapper).attributes('role')).toBe('button')
+    })
+
+    it('is focusable with role="button" when clickable via the `link` prop', () => {
+        const wrapper = mountCard('link')
+
+        expect(root(wrapper).attributes('tabindex')).toBe('0')
+        expect(root(wrapper).attributes('role')).toBe('button')
+    })
+
+    it('stays tabindex=-1 when disabled, even though a click listener is bound', () => {
+        const wrapper = mountCard('disabled', { click: () => {} })
+
+        expect(root(wrapper).attributes('tabindex')).toBe('-1')
+        expect(root(wrapper).attributes('role')).toBeUndefined()
+    })
+
+    it('does not carry role="button" on a real <a href> card (native semantics already correct)', () => {
+        const wrapper = mountCard('href="/somewhere"')
+
+        expect(root(wrapper).element.tagName).toBe('A')
+        expect(root(wrapper).attributes('role')).toBeUndefined()
+    })
+
+    it('emits click on Enter for a click-only card', async () => {
+        const onClick = vi.fn()
+        const wrapper = mountCard('', { click: onClick })
+
+        await root(wrapper).trigger('keydown', { key: 'Enter' })
+
+        expect(onClick).toHaveBeenCalledTimes(1)
+    })
+
+    it('emits click on Space for a click-only card', async () => {
+        const onClick = vi.fn()
+        const wrapper = mountCard('', { click: onClick })
+
+        await root(wrapper).trigger('keydown', { key: ' ' })
+
+        expect(onClick).toHaveBeenCalledTimes(1)
+    })
+
+    it('does not emit click on keydown when the card is not clickable', async () => {
+        const onClick = vi.fn()
+        const wrapper = mountCard('disabled', { click: onClick })
+
+        await root(wrapper).trigger('keydown', { key: 'Enter' })
+
+        expect(onClick).not.toHaveBeenCalled()
     })
 })
 

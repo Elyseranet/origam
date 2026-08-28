@@ -4,6 +4,7 @@ import type { RouterLink as _RouterLink, UseLinkOptions } from 'vue-router'
 import type { ITagProps } from '../../interfaces/Commons/commons.interface'
 import type { ILink, ILinkProps } from '../../interfaces/Commons/router.interface'
 import { deepEqual, hasEvent } from '../../utils/Commons/commons.util'
+import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
 import { useRoute } from './route.composable'
 
 /*********************************************************
@@ -18,10 +19,37 @@ import { useRoute } from './route.composable'
  ********************************************************/
 export function useLink (props: ILinkProps & ITagProps, attrs: SetupContext['attrs']): ILink {
     const RouterLink = resolveDynamicComponent('RouterLink') as typeof _RouterLink | string
+    const vm = getCurrentInstance('useLink')
 
     const isLink = computed(() => !!(props.href || props.to))
+
+    /*********************************************************
+     *  ISCLICKABLE ALSO READS vnode.props, NOT ONLY $attrs (#397)
+     *
+     *  @description
+     *  `hasEvent(attrs, 'click')` is blind whenever the HOST component
+     *  declares `click` as its OWN emit (`OrigamChip`, `OrigamListItem`):
+     *  Vue strips any listener matching a declared emit out of `$attrs`
+     *  entirely — on purpose, so the same click doesn't fire twice (once
+     *  via the component's `emit()`, once via attrs fallthrough).
+     *  `vm.vnode.props` is the raw props object the parent actually
+     *  wrote, BEFORE that emit-declaration filtering runs; reading it
+     *  directly sees the `onClick` the emit declaration hides from
+     *  `$attrs`.
+     *  Verified empirically (issue #397): mounting `OrigamChip` with only
+     *  `onClick` (no `link` prop, no group) reported `Object.keys($attrs)`
+     *  EMPTY and `tabindex` `undefined` — the chip was clickable by mouse
+     *  (Vue's own emit-forwarding still fired the handler) yet permanently
+     *  invisible to `isClickable`, so no tabindex/ripple/keyboard
+     *  activation ever appeared.
+     *  `OrigamCard`, which does not declare `click` as an emit, never hit
+     *  this: its `onClick` stays in `$attrs`, which is exactly why the
+     *  negative control in #397 showed Card detecting a plain `@click`
+     *  correctly while Chip/ListItem did not — two different components,
+     *  two distinct bugs, not one defect copy-pasted.
+     ********************************************************/
     const isClickable = computed(() => {
-        return isLink?.value || hasEvent(attrs, 'click') || hasEvent(props, 'click')
+        return isLink?.value || hasEvent(attrs, 'click') || hasEvent(props, 'click') || hasEvent(vm.vnode.props ?? {}, 'click')
     })
 
     /*********************************************************

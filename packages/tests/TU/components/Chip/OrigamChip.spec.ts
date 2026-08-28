@@ -202,6 +202,46 @@ describe('OrigamChip — keyboard activation (#439)', () => {
 })
 
 // ---------------------------------------------------------------------------
+// isClickable blind to a declared-emit `@click` — second defect, issue #397
+//
+// OrigamChip declares `click` as its OWN emit. Vue strips any listener
+// matching a declared emit out of `$attrs` entirely (so it isn't handled
+// twice — once via emit, once via fallthrough), which made
+// `hasEvent(attrs, 'click')` permanently blind to a plain `@click` with no
+// `link` prop and no group. Confirmed empirically pre-fix: `Object.keys
+// ($attrs)` was EMPTY and `tabindex` was `undefined` on a chip mounted with
+// only `onClick` — reachable by mouse (Vue's own emit-forwarding still
+// invoked the handler) but invisible to Tab, and Enter/Space did nothing
+// because `isClickable` never went true.
+// ---------------------------------------------------------------------------
+
+describe('OrigamChip — isClickable via a plain @click, no `link` prop (#397)', () => {
+    it('is focusable (tabindex=0) from a bare onClick listener alone', () => {
+        const wrapper = mountChip({ onClick: () => {} })
+        expect(wrapper.find('.origam-chip').attributes('tabindex')).toBe('0')
+    })
+
+    it('carries the --link modifier class from a bare onClick listener alone', () => {
+        const wrapper = mountChip({ onClick: () => {} })
+        expect(wrapper.find('.origam-chip').classes()).toContain('origam-chip--link')
+    })
+
+    it('emits "click" on Enter from a bare onClick listener alone', async () => {
+        const onClick = vi.fn()
+        const wrapper = mountChip({ onClick })
+        await wrapper.find('.origam-chip').trigger('keydown', { key: 'Enter' })
+        expect(onClick).toHaveBeenCalledTimes(1)
+    })
+
+    it('emits "click" on Space from a bare onClick listener alone', async () => {
+        const onClick = vi.fn()
+        const wrapper = mountChip({ onClick })
+        await wrapper.find('.origam-chip').trigger('keydown', { key: ' ' })
+        expect(onClick).toHaveBeenCalledTimes(1)
+    })
+})
+
+// ---------------------------------------------------------------------------
 // Disabled
 // ---------------------------------------------------------------------------
 
