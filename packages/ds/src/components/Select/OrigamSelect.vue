@@ -17,6 +17,7 @@
 			@keydown="handleKeydown"
 			@update:model-value="handleModelUpdate"
 			@click:clear="handleClear"
+			@click:control="handleClickControl"
 			@mousedown:control="handleMousedownControl"
 	>
 		<template
@@ -363,7 +364,7 @@
 		noDataText: 'origam.no_data_text'
 	})
 
-	defineEmits<ISelectEmits>()
+	const emit = defineEmits<ISelectEmits>()
 
 	defineSlots<ISelectSlots>()
 
@@ -658,7 +659,12 @@
 			search.value = ''
 		}
 	}
-	const handleMousedownControl = () => {
+	const handleClickControl = (e: MouseEvent) => {
+		emit('click:control', e)
+	}
+	const handleMousedownControl = (e: MouseEvent) => {
+		emit('mousedown:control', e)
+
 		if (menuDisabled.value) return
 
 		menu.value = !menu.value
@@ -913,15 +919,26 @@
 		return props.chips || slots.chip
 	})
 
-	// Return typed as Record<string, unknown> so vue-tsc does not try to
-	// validate the event-handler keys ('onClick:close', 'onKeydown', …)
-	// against IChipProps when the object is spread via v-bind on <origam-chip>.
+	/*********************************************************
+	 * chipSlotProps
+	 *
+	 * @description
+	 * Return typed as Record<string, unknown> so vue-tsc does not try to
+	 * validate the event-handler keys ('onClick:close', 'onKeydown', …)
+	 * against IChipProps when the object is spread via v-bind on <origam-chip>.
+	 * `bgColor` / `color` are deliberately OMITTED (#456) — they used to be
+	 * hardcoded RGB literals, hiding the chip behind whatever theme was
+	 * active. `OrigamChip`'s own SCSS already reads
+	 * `var(--origam-chip---background-color)` / `var(--origam-chip---color)`
+	 * with no inline fallback, and the token pipeline emits both
+	 * (`packages/ds/tokens/component/chip.json` → `color.surface.overlay` /
+	 * `color.text.primary`) — so leaving them unset lets Chip resolve its
+	 * own themed default instead of this component overriding it.
+	 ********************************************************/
 	const chipSlotProps = (item: IInternalListItem): Record<string, unknown> => {
 		return {
 			closable: props.closableChips,
 			disabled: item.props?.disabled,
-			bgColor: 'rgba(168, 168, 168, 1)',
-			color: 'rgb(255, 255, 255)',
 			border: true,
 			rounded: true,
 			'onClick:close': (e: Event) => handleChipClose(e, item),
