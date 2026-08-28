@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { SCRATCH_DIR_PATTERNS } from './scratch-dirs.const'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const REPO_ROOT = resolve(__dirname, '..', '..')
@@ -23,6 +24,7 @@ const HISTOIRE_PORT = process.env.E2E_HISTOIRE_PORT ?? '6006'
  */
 export default defineConfig({
     testDir: './a11y',
+    testIgnore: SCRATCH_DIR_PATTERNS,
     outputDir: './a11y/.results',
 
     // Same `reuseExistingServer` exposure as the e2e config: a foreign or
