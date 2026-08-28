@@ -121,6 +121,8 @@
 					holdRepeat: undefined,
 					incrementIcon: undefined,
 					decrementIcon: undefined,
+					decrementAriaLabel: undefined,
+					incrementAriaLabel: undefined,
 				})"
 		>
 			<template #default="{ state }">
@@ -145,6 +147,8 @@
 						:hold-repeat="state.holdRepeat"
 						:increment-icon="state.incrementIcon || undefined"
 						:decrement-icon="state.decrementIcon || undefined"
+						:decrement-aria-label="state.decrementAriaLabel || undefined"
+						:increment-aria-label="state.incrementAriaLabel || undefined"
 						label="Quantity"
 				/>
 				<div>value = {{ functionalModel }}</div>
@@ -180,6 +184,10 @@
 				<StoryGroup title="Icons">
 					<HstSelect v-model="state.incrementIcon" title="Increment Icon" :options="ICON_OPTIONS"/>
 					<HstSelect v-model="state.decrementIcon" title="Decrement Icon" :options="ICON_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Accessibility">
+					<HstText v-model="state.decrementAriaLabel" title="Decrement Aria Label (i18n key)"/>
+					<HstText v-model="state.incrementAriaLabel" title="Increment Aria Label (i18n key)"/>
 				</StoryGroup>
 			</template>
 		</Variant>

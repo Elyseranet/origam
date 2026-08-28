@@ -415,16 +415,21 @@
 		onClickAppendInner: handleClickAppendInner
 	} = useAdjacentInner(props)
 
-	// `click:prepend` / `click:append` are declared (inherited via
-	// `IInputEmits extends IAdjacentEmits`) but were never wired (#459):
-	// `<origam-text-field>` DOES emit both — via ITS OWN `useAdjacent()`
-	// call, on its outer prepend/append slot wrapper — but NumberField
-	// never listened for them, so the events reached NumberField's
-	// instance and stopped there. `useAdjacent(props)` here re-uses the
-	// SAME composable to emit on NumberField's OWN instance once the
-	// child's event is relayed to it (see the `@click:prepend` /
-	// `@click:append` listeners on `<origam-text-field>` below) —
-	// mirroring the *Inner relay above exactly.
+	/*********************************************************
+	 * click:prepend / click:append relay
+	 *
+	 * @description
+	 * `click:prepend` / `click:append` are declared (inherited via
+	 * `IInputEmits extends IAdjacentEmits`) but were never wired (#459):
+	 * `<origam-text-field>` DOES emit both — via ITS OWN `useAdjacent()`
+	 * call, on its outer prepend/append slot wrapper — but NumberField
+	 * never listened for them, so the events reached NumberField's
+	 * instance and stopped there. `useAdjacent(props)` here re-uses the
+	 * SAME composable to emit on NumberField's OWN instance once the
+	 * child's event is relayed to it (see the `@click:prepend` /
+	 * `@click:append` listeners on `<origam-text-field>` below) —
+	 * mirroring the *Inner relay above exactly.
+	 ********************************************************/
 	const {
 		onClickPrepend: handleClickPrepend,
 		onClickAppend: handleClickAppend

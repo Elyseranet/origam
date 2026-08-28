@@ -89,6 +89,32 @@ const qty = ref<number | null>(0)
 </template>
 ```
 
+## Accessibility
+
+The value-bearing `<input>` (both compact and non-compact rendering) carries
+`role="spinbutton"` with `aria-valuenow` / `aria-valuemin` / `aria-valuemax` /
+`aria-valuetext` kept in sync with the current value and the `min` / `max`
+props.
+
+The compact-mode decrement/increment buttons' `aria-label` is driven by two
+i18n-key props rather than a hardcoded string:
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `decrementAriaLabel` | `string` | `'origam.number_field.aria_label.decrement'` | i18n key for the compact decrement button |
+| `incrementAriaLabel` | `string` | `'origam.number_field.aria_label.increment'` | i18n key for the compact increment button |
+
+```vue
+<template>
+  <OrigamNumberField
+    compact
+    label="Quantity"
+    decrement-aria-label="myApp.qty.decrement"
+    increment-aria-label="myApp.qty.increment"
+  />
+</template>
+```
+
 ## Slots
 
 | Slot | Scope | Description |
@@ -113,6 +139,8 @@ const qty = ref<number | null>(0)
 | `blur` | `FocusEvent` | Input blurred |
 | `click:clear` | `MouseEvent` | Clear button clicked |
 | `click:control` | `MouseEvent` | Control area clicked |
+| `click:prepend` | `MouseEvent` | Outer prepend area clicked |
+| `click:append` | `MouseEvent` | Outer append area clicked |
 
 ## Design tokens
 

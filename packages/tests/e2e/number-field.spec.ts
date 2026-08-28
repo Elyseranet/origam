@@ -321,6 +321,22 @@ test.describe('OrigamNumberField', () => {
             // OrigamInput renders prepend as .origam-input__prepend, not .origam-field__prepend
             await expect(sandbox.locator('.origam-input__prepend').first()).toBeAttached({ timeout: 8000 })
         })
+
+        // click:prepend was DECLARED but structurally dead (#459) — NumberField
+        // never listened for the child <origam-text-field>'s own emit. The real
+        // assertion (wrapper.emitted('click:prepend')) lives in
+        // OrigamNumberField.spec.ts (TU), where it's directly observable.
+        // logEvent() itself is a Histoire-internal side effect that cannot be
+        // read from the outer test page (same limitation as btn.spec.ts's
+        // `Events - click`) — this e2e test only confirms the click reaches
+        // the relay handler without throwing.
+        test('click on prepend area does not throw', async ({ page }) => {
+            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const prepend = sandbox.locator('.origam-input__prepend').first()
+            await expect(prepend).toBeVisible({ timeout: 8000 })
+            await prepend.click()
+        })
     })
 
     test.describe('Events - click:append', () => {
@@ -330,6 +346,68 @@ test.describe('OrigamNumberField', () => {
             await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
             // OrigamInput renders append as .origam-input__append, not .origam-field__append
             await expect(sandbox.locator('.origam-input__append').first()).toBeAttached({ timeout: 8000 })
+        })
+
+        // Same relay fix as click:prepend above — see OrigamNumberField.spec.ts
+        // (TU) for the real emitted-event assertion.
+        test('click on append area does not throw', async ({ page }) => {
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const append = sandbox.locator('.origam-input__append').first()
+            await expect(append).toBeVisible({ timeout: 8000 })
+            await append.click()
+        })
+    })
+
+    // ------------------------------------------------------------------ //
+    // ARIA — spinbutton role + aria-value* (#459)                          //
+    // ------------------------------------------------------------------ //
+
+    test.describe('ARIA — spinbutton role', () => {
+        test('Design variant (non-compact): input carries role=spinbutton and aria-value*', async ({ page }) => {
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const input = sandbox.locator('input').first()
+            await expect(input).toBeVisible({ timeout: 12000 })
+
+            await expect(input).toHaveAttribute('role', 'spinbutton')
+            // Design variant init-state seeds v-model=42 (see header note).
+            await expect(input).toHaveAttribute('aria-valuenow', '42')
+            await expect(input).toHaveAttribute('aria-valuemin')
+            await expect(input).toHaveAttribute('aria-valuemax')
+            await expect(input).toHaveAttribute('aria-valuetext', '42')
+        })
+
+        test('Compact mode: input carries role=spinbutton and aria-value*', async ({ page }) => {
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
+
+            await toggleHstCheckbox(page, 'Compact')
+            await page.waitForTimeout(600)
+
+            const input = sandbox.locator('[data-cy="numberfield-compact-input"]')
+            await expect(input).toBeVisible({ timeout: 8000 })
+            await expect(input).toHaveAttribute('role', 'spinbutton')
+            await expect(input).toHaveAttribute('aria-valuemin')
+            await expect(input).toHaveAttribute('aria-valuemax')
+        })
+
+        test('Compact mode: decrement/increment buttons carry a non-empty aria-label', async ({ page }) => {
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-number-field, .origam-text-field').first()).toBeVisible({ timeout: 12000 })
+
+            await toggleHstCheckbox(page, 'Compact')
+            await page.waitForTimeout(600)
+
+            const decBtn = sandbox.locator('[data-cy="numberfield-compact-decrement"]')
+            const incBtn = sandbox.locator('[data-cy="numberfield-compact-increment"]')
+            await expect(decBtn).toBeVisible({ timeout: 8000 })
+            await expect(incBtn).toBeVisible({ timeout: 8000 })
+
+            await expect(decBtn).toHaveAttribute('aria-label', 'Decrement')
+            await expect(incBtn).toHaveAttribute('aria-label', 'Increment')
         })
     })
 
