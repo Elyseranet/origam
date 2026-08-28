@@ -1,7 +1,7 @@
 <template>
 	<nav
 			class="origam-chart-range-selector"
-			aria-label="Chart range selector"
+			:aria-label="t(ariaLabel)"
 			data-cy="origam-chart-range-selector"
 	>
 		<ul
@@ -29,6 +29,7 @@
 		lang="ts"
 		setup
 >
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import type { IChartRangeSelectorEmits, IChartRangeSelectorProps, IChartRangeSelectorSlots } from '../../interfaces/Chart/chart-range-selector.interface'
 
 	/*********************************************************
@@ -46,12 +47,19 @@
 
 	const props = withDefaults(defineProps<IChartRangeSelectorProps>(), {
 		activeIndex: -1,
-		dataLength: 0
+		dataLength: 0,
+		ariaLabel: 'origam.chart.range_selector.aria_label'
 	})
 
 	const emit = defineEmits<IChartRangeSelectorEmits>()
 
 	defineSlots<IChartRangeSelectorSlots>()
+
+	/*********************************************************
+	 * Composables
+	 ********************************************************/
+
+	const {t} = useLocale()
 
 	const onButtonClick = (index: number): void => {
 		const btn = props.buttons[index]

@@ -13,6 +13,21 @@ export interface IDialogProps extends ICommonsComponentProps, IOverlayProps, ICa
     retainFocus?: boolean
     scrollable?: boolean
     size?: TSize
+    /*********************************************************
+     * closeLabel
+     *
+     * @description
+     * Accessible name for the header's close button (aria-label). Carries
+     * a locale key, not final text — it is resolved through the DS `t()`
+     * mechanism, so it follows the active locale out of the box. Defaults
+     * to `'origam.close'`, the same key `OrigamAlert` and `OrigamChip`
+     * already use for their own close/dismiss control (#477).
+     * @description
+     * A raw string that matches no key is returned unchanged, so
+     * `closeLabel="Dismiss this dialog"` still works for consumers who
+     * prefer to translate on their side.
+     ********************************************************/
+    closeLabel?: string
 }
 
 /** Emits fired by `<OrigamDialog>` — v-model on the open state, outside

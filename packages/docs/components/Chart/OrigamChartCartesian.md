@@ -87,6 +87,19 @@ function onPointClick(point: IChartPoint) {
 | `xAxisFormat` | `(value: string \| number) => string` | `String(value)` | Formatter for X-axis tick labels. |
 | `yAxisFormat` | `(value: number) => string` | `String(value)` | Formatter for Y-axis tick labels. |
 
+### Drilldown and zoom — accessible names
+
+The `drilldown` and `zoomable` features each render a control whose
+accessible name is resolved through the DS `t()` mechanism (see
+[Behaviour notes](#behaviour-notes)):
+
+| Name | Type | Default | Description |
+|---|---|---|---|
+| `drilldown.navAriaLabel` | `string` | `'origam.chart.drilldown.aria_label'` | Locale key for the breadcrumb `<nav>` landmark shown while drilled in. Shared with `<OrigamChartPolar>`. |
+| `zoomResetLabel` | `string` | `'origam.chart.zoom.reset_aria_label'` | Locale key for the "Reset zoom" control shown when `zoomable` is active and the plot is currently zoomed. |
+
+The `rangeSelector` toolbar rendered above the plot is the standalone `<OrigamChartRangeSelector>` component internally; its own `ariaLabel` prop (default `'origam.chart.range_selector.aria_label'`) is not yet forwarded through `rangeSelector` config here — pass it directly when using `<OrigamChartRangeSelector>` on its own.
+
 ## Emits
 
 | Name | Payload | Description |
@@ -121,6 +134,8 @@ function onPointClick(point: IChartPoint) {
 **`spline` smoothing override.** `spline` calls the monotone path generator by default. Pass `smoothing='curve'` to switch to Catmull-Rom, or `smoothing='none'` to collapse back to straight segments (at which point it is identical to `line`).
 
 **Stacked bar / column.** `stacked=true` accumulates series values per data index. The Y scale is computed over the stacked totals — the global `yMin` / `yMax` overrides still apply after stacking. Stacking on `line`, `area`, or `scatter` has no visual effect.
+
+**Accessibility — drilldown & zoom.** `drilldown.navAriaLabel` and `zoomResetLabel` carry **locale keys**, not final text — they resolve through the DS `t()` mechanism, so the breadcrumb `<nav>` and the "Reset zoom" control follow the active locale out of the box. A raw string that matches no key is returned unchanged, so a literal override (`zoomResetLabel="Reset the view"`) still works for consumers who prefer to translate on their side.
 
 **Mix charts.** Each series can set its own `type` to override the chart-level type. A common pattern: a `column` chart with a `line` overlay on top. The series-level type must be a `TChartType` value; there is no restriction to cartesian-only values at the series level, but using polar or gauge types on a series in a cartesian chart has undefined behaviour.
 

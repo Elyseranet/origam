@@ -78,7 +78,8 @@
 					scrollable: false,
 					retainFocus: true,
 					persistent: false,
-					disabled: false
+					disabled: false,
+					closeLabel: 'origam.close'
 				})"
 		>
 			<template #default="{ state }">
@@ -91,6 +92,7 @@
 							:retain-focus="state.retainFocus"
 							:persistent="state.persistent"
 							:disabled="state.disabled"
+							:close-label="state.closeLabel"
 					>
 						<template #activator="{ props: a }">
 							<origam-btn v-bind="a" text="Open (Functional)"/>
@@ -117,6 +119,9 @@
 				</StoryGroup>
 				<StoryGroup title="States">
 					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+				</StoryGroup>
+				<StoryGroup title="Accessibility">
+					<HstText v-model="state.closeLabel" title="Close Label (locale key)"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -375,7 +380,8 @@
 					title: 'Dialog',
 					fullscreen: false,
 					scrollable: false,
-					retainFocus: true
+					retainFocus: true,
+					closeLabel: 'origam.close'
 				})"
 		>
 			<template #default="{ state }">
@@ -419,6 +425,7 @@
 					<HstCheckbox v-model="state.retainFocus" title="Retain Focus"/>
 					<HstCheckbox v-model="state.persistent"  title="Persistent"/>
 					<HstCheckbox v-model="state.disabled"    title="Disabled"/>
+					<HstText     v-model="state.closeLabel"  title="Close Label (locale key)"/>
 				</StoryGroup>
 			</template>
 		</Variant>

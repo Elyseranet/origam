@@ -80,6 +80,7 @@
 					showLegend: true,
 					showTooltip: true,
 					zoomable: false,
+					zoomResetLabel: 'origam.chart.zoom.reset_aria_label',
 					yMin: undefined,
 					yMax: undefined,
 					series: FIXTURE_SALES_SERIES,
@@ -103,6 +104,7 @@
 							:show-legend="state.showLegend"
 							:show-tooltip="state.showTooltip"
 							:zoomable="state.zoomable"
+							:zoom-reset-label="state.zoomResetLabel"
 							:y-min="state.yMin"
 							:y-max="state.yMax"
 					/>
@@ -126,6 +128,9 @@
 					<HstCheckbox v-model="state.showLegend"  title="Show Legend"/>
 					<HstCheckbox v-model="state.showTooltip" title="Show Tooltip"/>
 					<HstCheckbox v-model="state.zoomable"    title="Zoomable"/>
+				</StoryGroup>
+				<StoryGroup title="Accessibility">
+					<HstText v-model="state.zoomResetLabel" title="Zoom Reset Label (locale key)"/>
 				</StoryGroup>
 				<StoryGroup title="Y Axis Range">
 					<HstNumber v-model="state.yMin" title="Y Min"/>
