@@ -127,6 +127,49 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
         layers.value = layers.value.filter(l => l.id !== id)
     }
 
+    /*********************************************************
+     * update — reactive prop → running registry (#449)
+     *
+     * @description
+     * `register()` stores a PLAIN SNAPSHOT of `speed`/`offsetX`/`offsetY`
+     * read once at the layer's `onMounted`. `applyLayerTransforms` (rAF
+     * loop) and `startCss` (CSS scroll-driven path) both read those three
+     * fields straight off that same object on every frame / re-publish —
+     * neither is a Vue effect, so nothing re-runs them when the layer's
+     * props change later. `<OrigamParallaxLayer>` calls this from a
+     * `watch()` on its own props so a live speed/offset change reaches the
+     * animation that is already running, instead of only affecting the
+     * layer's own first-paint `layerStyles` computed (which the next
+     * frame overwrites anyway).
+     * @description
+     * Mutates the registry entry IN PLACE rather than replacing it — the
+     * rAF loop and `layerLerp` WeakMap key off the same object/`target`
+     * identity, so a fresh object would silently reset the spring-easing
+     * state on every prop change.
+     * @description
+     * The CSS scroll-driven path does not repaint every frame like the JS
+     * path does — it publishes custom properties once (`startCss`, on
+     * viewport-enter) and lets the browser's own scroll-driven animation
+     * timeline read them continuously. If a change lands while that path
+     * is active, the custom properties on `layer.target` must be
+     * re-published here too, or the CSS animation keeps interpolating
+     * against the stale amplitude until the layer re-enters the viewport.
+     ********************************************************/
+    const update = (id: symbol, patch: Pick<IParallaxLayerRegistry, 'speed' | 'offsetX' | 'offsetY'>) => {
+        const layer = layers.value.find(l => l.id === id)
+        if (!layer) return
+
+        layer.speed = patch.speed
+        layer.offsetX = patch.offsetX
+        layer.offsetY = patch.offsetY
+
+        if (cssScrollDriven.value) {
+            layer.target.style.setProperty('--origam-parallax__layer---speed', String(layer.speed))
+            layer.target.style.setProperty('--origam-parallax__layer---offset-x', `${layer.offsetX}px`)
+            layer.target.style.setProperty('--origam-parallax__layer---offset-y', `${layer.offsetY}px`)
+        }
+    }
+
     const updateProgress = () => {
         const host = options.target.value
         if (!host) return
@@ -317,6 +360,7 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
         cssScrollDriven,
         reducedMotion,
         register,
-        unregister
+        unregister,
+        update
     }
 }

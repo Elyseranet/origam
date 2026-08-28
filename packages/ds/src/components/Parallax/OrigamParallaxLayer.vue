@@ -14,7 +14,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, inject, onBeforeUnmount, onMounted, ref, StyleValue } from 'vue'
+	import { computed, inject, onBeforeUnmount, onMounted, ref, StyleValue, watch } from 'vue'
 
 	import { useProps } from '../../composables/Commons/props.composable'
 
@@ -87,6 +87,33 @@
 	onBeforeUnmount(() => {
 		parallax.unregister(registryToken)
 	})
+
+	/*********************************************************
+	 * Reactive speed / offset — see #449
+	 *
+	 * @description
+	 * `register()` above only runs once, at mount. The parent's rAF loop
+	 * and CSS scroll-driven path both read `speed`/`offsetX`/`offsetY`
+	 * straight off that ONE registry object on every frame — a later
+	 * change to these props was captured nowhere, so it had zero effect
+	 * on the ongoing animation. Only `layerStyles` (the layer's own
+	 * first-paint style, below) reacted, and got overwritten by the very
+	 * next frame the runtime painted.
+	 * @description
+	 * `parallax.update` patches the SAME registry entry in place —
+	 * `register()` already ran by the time any of these props can change,
+	 * so there's no ADR-005 ordering concern here to defer against.
+	 ********************************************************/
+	watch(
+		() => [props.speed, props.offsetX, props.offsetY] as const,
+		([speed, offsetX, offsetY]) => {
+			parallax.update(registryToken, {
+				speed: speed ?? 1,
+				offsetX: offsetX ?? 0,
+				offsetY: offsetY ?? 0
+			})
+		}
+	)
 
 	const layerStyles = computed(() => {
 		const styles: Record<string, string> = {
