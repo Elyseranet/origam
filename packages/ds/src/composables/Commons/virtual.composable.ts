@@ -8,7 +8,7 @@ import type { IVirtualProps } from '../../interfaces/Commons/virtual.interface'
 import { clamp, debounce, int } from '../../utils/Commons/commons.util'
 import { binaryClosest } from '../../utils/Commons/virtual.util'
 
-import { computed, nextTick, onScopeDispose, ref, Ref, shallowRef, watch, watchEffect } from 'vue'
+import { computed, nextTick, onMounted, onScopeDispose, ref, Ref, shallowRef, watch, watchEffect } from 'vue'
 
 /*********************************************************
  * useVirtual
@@ -23,10 +23,43 @@ export function useVirtual<T> (props: IVirtualProps, items: Ref<readonly T[]>) {
         itemHeight.value = parseFloat(props.itemHeight || 0)
     })
 
+    /*********************************************************
+     * estimateLast — the anti-flash first-paint guess
+     *
+     * @description
+     * How many items to assume visible BEFORE the container/marker have
+     * been measured, so the very first paint doesn't render a single
+     * item then jump. Deliberately kept as a plain function (not a
+     * `computed`) so it can be re-invoked from `onMounted` below,
+     * re-reading `props.height` post-`beforeCreate` (#504) — see there
+     * for why the FIRST synchronous call, at `shallowRef()` creation
+     * time, cannot itself be theme-safe.
+     ********************************************************/
+    const estimateLast = () => Math.ceil((int(props.height!) || display.height.value) / (itemHeight.value || 16)) || 1
+
     const first = shallowRef(0)
-    const last = shallowRef(Math.ceil((int(props.height!) || display.height.value) / (itemHeight.value || 16)) || 1)
+    const last = shallowRef(estimateLast())
     const paddingTop = shallowRef(0)
     const paddingBottom = shallowRef(0)
+
+    /*********************************************************
+     * `last`'s FIRST guess is re-applied once mounted (#504)
+     *
+     * @description
+     * `shallowRef(estimateLast())` above runs during `setup()`, which
+     * Vue executes BEFORE the `beforeCreate` hook where the ADR-005
+     * theme-props resolver patches `instance.props` — so that FIRST
+     * guess can read a pre-theme `props.height`. `onMounted` runs after
+     * `beforeCreate` (and still before the browser's next paint, so
+     * this does not introduce a visible flash): re-running the SAME
+     * estimate there picks up whatever `props.height` a theme set,
+     * without waiting for `viewportHeight` to CHANGE (its own watcher,
+     * below, only reacts to a later change — it does not correct a
+     * wrong INITIAL value on its own).
+     ********************************************************/
+    onMounted(() => {
+        last.value = estimateLast()
+    })
 
     /** The scrollable element */
     const containerRef = ref<HTMLElement>()

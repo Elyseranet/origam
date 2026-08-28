@@ -76,10 +76,20 @@ export const useNested = (props: INestedProps) => {
         }
     })
 
+    /*********************************************************
+     * selected
+     *
+     * @description
+     * ⛔ Pas de `props.selected` en 3e argument — meme forme que
+     * `provideExpanded` (`expand.composable.ts`) et `provideSelection`
+     * (`select.composable.ts`) : l'argument était mort et forçait une
+     * lecture pendant le `setup()` de l'appelant (#504). Mesuré, cas du
+     * thème compris : `vmodel-default-value.spec.ts`.
+     ********************************************************/
     const selected = useVModel(
         props,
         'selected',
-        props.selected,
+        undefined,
         v => selectStrategy.value.in(v, children.value, parents.value),
         v => selectStrategy.value.out(v, children.value, parents.value)
     )
