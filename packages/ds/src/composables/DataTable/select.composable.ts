@@ -39,7 +39,15 @@ export function provideSelection (
         }
     })
 
-    const selected = useVModel(props, 'modelValue', props.modelValue, (v) => {
+    /*********************************************************
+     * selected
+     *
+     * @description
+     * ⛔ Pas de `props.modelValue` en 3e argument — voir `provideExpanded`
+     * dans `expand.composable.ts` : l'argument était mort et forçait une
+     * lecture pendant le `setup()` de l'appelant (#504).
+     ********************************************************/
+    const selected = useVModel(props, 'modelValue', undefined, (v) => {
         return new Set(wrapInArray(v).map(v => {
             return allItems.value.find((item) => valueComparator.value(v, item.value))?.value ?? v
         }))

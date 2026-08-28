@@ -185,7 +185,7 @@ const COMPOSABLES = new Map()
 
 const PROP_PARAM_NAMES = ['props', 'properties']
 
-function scanPropReads (src, fileSrc = src) {
+export function scanPropReads (src, fileSrc = src) {
     const direct = new Set()
     let wildcard = false
 
@@ -204,6 +204,19 @@ function scanPropReads (src, fileSrc = src) {
         for (const m of src.matchAll(new RegExp(`\\b${p}\\s+as\\s+[^)]*\\)\\s*\\[\\s*['"]([^'"]+)['"]\\s*\\]`, 'g'))) direct.add(m[1])
         // toRef(props, 'foo') / toRefs
         for (const m of src.matchAll(new RegExp(`toRef\\s*\\(\\s*${p}\\s*,\\s*['"]([^'"]+)['"]`, 'g'))) direct.add(m[1])
+        /*
+         * pick(props, ['a', 'b', …]) — an EXPLICIT key list, unlike
+         * `filterProps(props, …)` which is wholesale forwarding and is
+         * treated as a wildcard. `OrigamImg` builds `responsiveProps` this
+         * way and `v-bind`s it onto its child: six of its props are read
+         * through nothing else.
+         */
+        for (const m of src.matchAll(new RegExp(`\\bpick\\s*\\(\\s*${p}\\s*,\\s*\\[([^\\]]*)\\]`, 'g'))) {
+            for (const lit of m[1].matchAll(/['"]([A-Za-z_$][A-Za-z0-9_$]*)['"]/g)) direct.add(lit[1])
+        }
+        // useX(props, 'foo') INSIDE a composable body — `useDatePickerCalendar`
+        // reaches `month` / `year` only through `useVModel(props, 'month')`.
+        for (const m of src.matchAll(new RegExp(`\\buse[A-Z][A-Za-z0-9_]*\\s*\\(\\s*${p}\\s*,\\s*['"]([A-Za-z_$][A-Za-z0-9_$]*)['"]`, 'g'))) direct.add(m[1])
         // const { a, b } = props
         for (const m of src.matchAll(new RegExp(`(?:const|let|var)\\s*\\{([^}]*)\\}\\s*=\\s*(?:toRefs\\s*\\(\\s*)?${p}\\b`, 'g'))) {
             for (const part of m[1].split(',')) {
@@ -296,12 +309,29 @@ function scanComposableCalls (src) {
  * litteral, c'est LUI qui compte ; s'il n'en passe aucun, alors
  * seulement le defaut du composable s'applique.
  ********************************************************/
-function scanPropNameArgs (src) {
+export function scanPropNameArgs (src) {
     const byFn = new Map()
+    const add = (fn, name) => {
+        if (!byFn.has(fn)) byFn.set(fn, new Set())
+        byFn.get(fn).add(name)
+    }
     for (const p of PROP_PARAM_NAMES) {
+        // useX(props, 'name')
         for (const m of src.matchAll(new RegExp(`\\b(use[A-Z][A-Za-z0-9_]*)\\s*\\(\\s*${p}\\s*,\\s*['"]([A-Za-z_$][A-Za-z0-9_$]*)['"]`, 'g'))) {
-            if (!byFn.has(m[1])) byFn.set(m[1], new Set())
-            byFn.get(m[1]).add(m[2])
+            add(m[1], m[2])
+        }
+        /*
+         * useX(props, { state: 'active', source: 'modelValue' }) — #499.
+         * The option-object form was unmodelled, so `useStateFlag`'s two
+         * callers were credited only because the word appeared in a string.
+         * Every value in the object is taken as a candidate prop name: the
+         * options that are NOT prop names (a label, a class) simply credit a
+         * name no interface declares, which changes nothing.
+         */
+        for (const m of src.matchAll(new RegExp(`\\b(use[A-Z][A-Za-z0-9_]*)\\s*\\(\\s*${p}\\s*,\\s*\\{([^}]*)\\}`, 'g'))) {
+            for (const kv of m[2].matchAll(/[A-Za-z_$][A-Za-z0-9_$]*\s*:\s*['"]([A-Za-z_$][A-Za-z0-9_$]*)['"]/g)) {
+                add(m[1], kv[1])
+            }
         }
     }
     return byFn
@@ -432,19 +462,49 @@ function blankBalanced (src, openIdx) {
  * de barrel par les vrais noms de fichiers.
  *
  * @description
- * ⛔ NE PAS élargir aux autres chaînes. Une prop est légitimement consommée
- * par une chaîne dans ce dépôt : `useActive(props, 'modelValue')`,
- * `useBackgroundColor(props, 'bgColor')`, `useTextColor(props, 'color')`.
- * Effacer toutes les chaînes transformerait ce faux négatif en une volée de
- * faux positifs — des props bien consommées signalées comme mortes.
+ * ⛔ CETTE FONCTION N'EST PLUS LE SEUL EFFACEMENT — voir
+ * `blankStringBodies` juste en dessous, qui efface le contenu de TOUTES les
+ * chaînes. Elle reste néanmoins distincte et appliquée d'abord : elle est le
+ * cas le plus lisible du défaut et le seul documenté par une mesure.
  ********************************************************/
 function blankModuleSpecifiers (src) {
     return src.replace(/(\bfrom\s*|\bimport\s*)(['"])([^'"\n]*)\2/g,
         (_, head, quote, body) => `${head}${quote}${' '.repeat(body.length)}${quote}`)
 }
 
+/*********************************************************
+ * blankStringBodies — #499
+ *
+ * @description
+ * Le flux de tokens ci-dessous est un simple `matchAll(/[A-Za-z_$]\w* /g)` sur
+ * le texte du script : il ne distingue pas un IDENTIFIANT d'un mot à
+ * l'intérieur d'une CHAÎNE. Toute prop dont le nom apparaît quelque part entre
+ * guillemets — un nom de classe CSS, une clé i18n, un nom d'évènement, une
+ * option sans rapport — passait donc pour consommée.
+ *
+ * @description
+ * ⛔ C'EST LE SENS DANGEREUX. Un garde qui CRÉDITE à tort n'ennuie personne :
+ * il excuse silencieusement de la vraie dette, et son compte descend sans que
+ * rien ne soit réparé. MESURÉ : 177 paires (composant, prop) ne tenaient leur
+ * crédit que d'une chaîne, sur 4820 créditées.
+ *
+ * @description
+ * L'objection historique était juste et c'est pour ça que ce n'est pas un
+ * simple effacement : une prop EST légitimement consommée par une chaîne dans
+ * ce dépôt — `useBackgroundColor(props, 'bgColor')`, `toRef(props, 'color')`,
+ * `useStateFlag(props, {state: 'active'})`, `props[prop]` itérant une table de
+ * noms. La réponse n'est pas de garder toutes les chaînes ni de les jeter
+ * toutes : c'est de les retirer du flux de tokens ET de MODÉLISER chacun de
+ * ces canaux, ce que fait `scanPropReads` — déjà écrit, mais qui n'était
+ * appliqué qu'aux composables, jamais au script du composant lui-même.
+ ********************************************************/
+export function blankStringBodies (src) {
+    return src.replace(/(['"`])((?:\\.|(?!\1)[^\\\n])*)\1/g,
+        (_, quote, body) => `${quote}${' '.repeat(body.length)}${quote}`)
+}
+
 /** identifiers in the script, excluding the defineProps / withDefaults header */
-function scriptIdentifiers (script) {
+export function scriptIdentifiers (script) {
     let src = blankModuleSpecifiers(stripComments(script))
     // blank the whole `withDefaults( … )` / `defineProps( … )` call, brace-matched.
     // A regex cannot do this: the defaults object legitimately contains nested
@@ -458,8 +518,15 @@ function scriptIdentifiers (script) {
             src = before + ' '.repeat(kw.length) + blankBalanced(src, open).slice(idx + kw.length)
         }
     }
+    /*
+     * `ids` is the NAIVE token stream and must never see string content
+     * (#499). `src` is returned UNBLANKED because every caller downstream
+     * matches on shapes that legitimately quote a prop name —
+     * `props['x']`, `toRef(props, 'x')`, `useX(props, 'x')`. Blanking the
+     * returned source would swap one defect for the opposite one.
+     */
     const ids = new Set()
-    for (const m of src.matchAll(/[A-Za-z_$][A-Za-z0-9_$]*/g)) ids.add(m[0])
+    for (const m of blankStringBodies(src).matchAll(/[A-Za-z_$][A-Za-z0-9_$]*/g)) ids.add(m[0])
     return { ids, src }
 }
 
@@ -477,16 +544,32 @@ function analyseComponent (file) {
     const { ids: scriptIds, src: cleanScript } = scriptIdentifiers(script)
     const tplIds = templateExpressionIdentifiers(template)
 
-    // explicit props.X reads
-    const explicit = new Set()
-    for (const m of cleanScript.matchAll(/\bprops\s*\??\.\s*([A-Za-z_$][A-Za-z0-9_$]*)/g)) explicit.add(m[1])
-    for (const m of cleanScript.matchAll(/\bprops\s*\[\s*['"]([^'"]+)['"]\s*\]/g)) explicit.add(m[1])
+    /*********************************************************
+     * explicit — les lectures MODÉLISÉES de `props` dans le script
+     *
+     * @description
+     * Ces deux lignes ne couvraient que `props.x` et `props['x']`. Tout le
+     * reste — `toRef(props, 'x')`, `const {x} = toRefs(props)`,
+     * `(props as any).x`, `props[key]` itérant une table de noms — n'était
+     * crédité que par le flux de tokens brut, c'est-à-dire par le simple fait
+     * que le mot apparaissait dans une chaîne. En retirant les chaînes du flux
+     * (#499), ces formes seraient devenues des faux positifs en masse :
+     * `OrigamCol` à lui seul lit 22 props ainsi, dont ses cinq points de
+     * rupture via `props[prop]` sur une table locale.
+     *
+     * @description
+     * ⛔ Ne pas réécrire ces formes ici : `scanPropReads` les modélise déjà
+     * toutes, il n'était simplement jamais appliqué au script du composant —
+     * seulement aux composables. C'est la même fonction, pas une seconde.
+     ********************************************************/
+    const { direct: explicit, wildcard: readWildcard } = scanPropReads(cleanScript, cleanScript)
 
     // composables handed the whole props object
     const forwarded = new Set()
     const forwardedBy = new Map()
     let wildcard = false
     const wildcardReasons = []
+    if (readWildcard) { wildcard = true; wildcardReasons.push('props spread / Object.keys(props) in script') }
     // Noms de prop passes explicitement en second argument, par composable.
     const propNameArgs = scanPropNameArgs(cleanScript)
     for (const m of cleanScript.matchAll(/\b(use[A-Z][A-Za-z0-9_]*)\s*\(\s*props\b/g)) {
@@ -499,10 +582,21 @@ function analyseComponent (file) {
         // composants appellent `useActive(props, 'modelValue')` et ne lisent
         // donc PAS `active`.
         const def = COMPOSABLES.get(m[1])
-        if (def?.indexed) {
-            const explicitNames = propNameArgs.get(m[1])
-            const names = explicitNames?.size ? explicitNames : (def.propNameDefault ? [def.propNameDefault] : [])
-            for (const k of names) { forwarded.add(k); if (!forwardedBy.has(k)) forwardedBy.set(k, m[1]) }
+        /*
+         * A prop NAME handed as a string to a composable that also received
+         * `props` IS a read, whatever that composable does internally — that
+         * is the entire point of passing the pair. Crediting it was gated on
+         * `def.indexed` and therefore silent for `useBackgroundColor(props,
+         * 'bgColor')` & co, which the raw token stream happened to cover.
+         * The gate stays where it belongs: on the composable's DEFAULT, which
+         * only applies when the call site names nothing.
+         */
+        const explicitNames = propNameArgs.get(m[1])
+        for (const k of explicitNames ?? []) { forwarded.add(k); if (!forwardedBy.has(k)) forwardedBy.set(k, m[1]) }
+        if (def?.indexed && !explicitNames?.size && def.propNameDefault) {
+            const k = def.propNameDefault
+            forwarded.add(k)
+            if (!forwardedBy.has(k)) forwardedBy.set(k, m[1])
         }
 
         if (w) { wildcard = true; wildcardReasons.push(`${m[1]}() forwards/enumerates props`) }

@@ -11,7 +11,25 @@ import type { IDataTableItem } from '../../interfaces/DataTable/items.interface'
  ********************************************************/
 export function provideExpanded (props: IDataTableExpandProps): IDataTableProvideExpanded {
     const expandOnClick = toRef(props, 'expandOnClick')
-    const expanded = useVModel(props, 'expanded', props.expanded, v => {
+    /*********************************************************
+     * expanded
+     *
+     * @description
+     * ⛔ PAS de `props.expanded` en 3e argument (#504). Il était évalué à
+     * l'appel, donc pendant le `setup()` de l'appelant — avant que le
+     * résolveur ADR-005 n'écrive — et c'était la seule chose qui rendait ce
+     * composable « lecture précoce ».
+     *
+     * @description
+     * Il ne servait à rien : `useVModel` amorce avec
+     * `props[prop] !== undefined ? props[prop] : defaultValue`, si bien que
+     * l'argument n'est consulté QUE quand la prop vaut `undefined` — cas où
+     * il valait lui-même `undefined`, puisqu'il l'avait lue au setup.
+     *
+     * @description
+     * Mesuré, cas du thème compris : `vmodel-default-value.spec.ts`.
+     ********************************************************/
+    const expanded = useVModel(props, 'expanded', undefined, v => {
         return new Set(v)
     }, v => {
         return [...v.values()]
