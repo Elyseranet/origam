@@ -217,68 +217,86 @@ If you're spawning an agent on a component, **the agent prompt
 MUST include this rule explicitly** so the deliverable lands
 story + doc + implementation together — not as a follow-up.
 
-## ⛔ Stash before ANY branch / checkout / reset operation (mandatory)
+## ⛔ NEVER `git stash` — commit instead (mandatory)
 
-**If you have uncommitted changes (working tree dirty) and you're
-about to do anything that could touch the working tree — switch
-branches, reset, checkout files, `git flow feature start/finish`,
-spawn an agent in a worktree, run a command that might be cancelled
-mid-flight — `git stash push -m "<descriptive label>"` FIRST.**
+**`refs/stash` is a SINGLE ref shared by every worktree of this
+repository. There are 53 of them. A `git stash push` from one worktree
+lands on the same stack a `git stash pop` in another worktree will pull
+from. Two agents have already swapped their work this way.**
 
-This isn't optional. Lost work because of a `git checkout` that
-silently failed, an agent worktree that rolled the parent tree back,
-or a commit that "looked successful but the merge said Already up to
-date" is the most common avoidable disaster in this repo's history.
-It has happened multiple times in this codebase already — stop
-relearning it.
+They caught it themselves, and labelled the entries:
+
+```
+stash@{0}: FOUND-NOT-MINE: OrigamChip.vue keydown guard fix — belongs to
+           another concurrent agent, accidentally picked up via shared
+           stash ref during my own stash pop
+stash@{1}: RECOVERED-NOT-MINE: emits/slots WIP (33 files) — accidental
+           stash collision, belongs to another agent
+```
+
+A third entry — the architect's `INoEmits`/`INoSlots` convention, a
+scanner and 3 reactivity probes, 464 insertions — sat there for weeks.
+Nobody knew: a shared ref belongs to no branch, so no `git log`, no
+`git status`, no review ever surfaces it. Recovered on
+`recover/no-emits-convention`.
+
+⛔ **The previous version of this rule MANDATED stashing.** It caused the
+exact disaster it claimed to prevent. Stash is a single-worktree tool;
+this repository has not been a single-worktree repository for a long
+time.
 
 ### The mandatory flow
 
 ```bash
-# Step 1 — ALWAYS stash if dirty
-git stash push -m "wip: <what you were doing>"
+# Step 1 — commit, even a half-finished state
+git commit -am "wip: <what you were doing>"
 
 # Step 2 — do the risky operation
 git checkout <branch>          # or merge, reset, flow op, …
 
-# Step 3 — pop the stash back
-git stash pop
-
-# Step 4 — if pop conflicted, resolve, don't discard
-#         the original stash entry stays in `git stash list`
-#         until you `git stash drop` explicitly
+# Step 3 — nothing to restore. The WIP stayed on ITS branch,
+#          in YOUR worktree, reachable by name.
 ```
 
-### When to stash (non-exhaustive)
+A commit is attached to a branch, and a branch is checked out by exactly
+one worktree. It cannot migrate to a neighbour. That is the whole
+argument.
 
-- Before `git checkout <branch>` when dirty.
+A WIP commit is not a promise: reword it, squash it, or `git reset
+--soft HEAD~1` later. None of that costs anything. Losing someone
+else's afternoon does.
+
+### When to commit
+
+- Before `git checkout <branch>` on a dirty tree.
 - Before `git flow feature start | finish | rebase`.
-- Before `git reset --hard | --mixed` on a dirty tree.
-- Before `git pull` on a dirty tree.
-- Before spawning a parallel agent that might create a worktree on
-  the same repo.
+- Before `git reset` / `git pull` on a dirty tree.
+- Before handing back control at the end of a turn — sessions are cut
+  without warning, and **an uncommitted worktree has survived nothing.**
 - Before any "let me just check the other branch real quick" move.
 
-### When stash is NOT enough
+### Destructive operations
 
-If you're about to do something destructive (force-push a tag,
-delete a branch with unpushed commits, `git clean -fd`), stash
-AND save a tag pointing at the current commit:
+Before a force-push, a branch deletion carrying unpushed commits, or a
+`git clean -fd`, commit AND tag:
 
 ```bash
-git stash push -m "before <op>"
+git commit -am "wip: before <op>"
 git tag -a backup/<date>-<topic> -m "safety net"
 # … do the risky thing …
-# if you need to recover: git checkout backup/<date>-<topic>
+# to recover: git checkout backup/<date>-<topic>
 ```
 
-### Why this matters
+### If you find entries in `git stash list`
 
-The runtime that hosts this repo has historically rolled back file
-edits between agent turns when worktrees collide or when an agent
-runs in an isolated copy that doesn't sync. The stash entry is the
-only artefact that survives those rollbacks — it lives in the local
-git object DB and is independent of the working tree state.
+They are not yours to pop. Popping is how the collisions above happened.
+Check whether the content already landed (`git stash show -p`, then grep
+the target files on `develop`); if it did, the entry is redundant. If it
+did not, promote it to a real branch — never into your working tree:
+
+```bash
+git stash branch recover/<topic> stash@{N}
+```
 
 ## Tech stack (snapshot)
 
