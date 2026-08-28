@@ -225,3 +225,88 @@ test.describe('OrigamSnackbarItem — ARIA contract', () => {
         await expect(item(sandbox)).toHaveAttribute('aria-atomic', 'true')
     })
 })
+
+/**
+ * origam#501 — fontWeight/lineHeight/letterSpacing wired (pilot family).
+ *
+ * Each prop gets one "unset" assertion proving the PRE-EXISTING default is
+ * unchanged (the regression check the ticket cares about most) and one
+ * "passed" assertion proving the override actually paints. `fontWeight` is
+ * the generic-first case: it must move BOTH `__title` and `__message`
+ * together (there is a single root-level override channel for the two
+ * BEM-scoped defaults), which the "unset" test also pins as 600 / 400 so a
+ * future change to either literal is caught here, not by a screenshot diff.
+ */
+test.describe('OrigamSnackbarItem — Prop: typography (origam#501)', () => {
+    test('fontWeight unset preserves the title/message weight hierarchy (no regression)', async ({ page }) => {
+        await openVariant(page, 'Design')
+        const sandbox = sandboxOf(page)
+
+        const title = item(sandbox).locator('.origam-snackbar-item__title')
+        const message = item(sandbox).locator('.origam-snackbar-item__message')
+
+        await expect(title).toHaveCSS('font-weight', '600')
+        await expect(message).toHaveCSS('font-weight', '400')
+    })
+
+    test('fontWeight, when passed, overrides both title and message to the same weight', async ({ page }) => {
+        await openVariant(page, 'Design')
+        const sandbox = sandboxOf(page)
+
+        await selectHstOption(page, 'Font Weight', 'Bold 700')
+        await page.waitForTimeout(200)
+
+        const title = item(sandbox).locator('.origam-snackbar-item__title')
+        const message = item(sandbox).locator('.origam-snackbar-item__message')
+
+        await expect(title).toHaveCSS('font-weight', '700')
+        await expect(message).toHaveCSS('font-weight', '700')
+    })
+
+    test('lineHeight unset preserves the pre-existing 1.4 default (no regression)', async ({ page }) => {
+        await openVariant(page, 'Design')
+        const sandbox = sandboxOf(page)
+
+        const root = item(sandbox)
+        const ratio = await root.evaluate((el) => {
+            const cs = getComputedStyle(el)
+            return parseFloat(cs.lineHeight) / parseFloat(cs.fontSize)
+        })
+        expect(ratio).toBeCloseTo(1.4, 1)
+    })
+
+    test('lineHeight, when passed, overrides the root default', async ({ page }) => {
+        await openVariant(page, 'Design')
+        const sandbox = sandboxOf(page)
+
+        await selectHstOption(page, 'Line Height', 'loose (2)')
+        await page.waitForTimeout(200)
+
+        const root = item(sandbox)
+        const ratio = await root.evaluate((el) => {
+            const cs = getComputedStyle(el)
+            return parseFloat(cs.lineHeight) / parseFloat(cs.fontSize)
+        })
+        expect(ratio).toBeCloseTo(2, 1)
+    })
+
+    test('letterSpacing, when passed, overrides the root default', async ({ page }) => {
+        await openVariant(page, 'Design')
+        const sandbox = sandboxOf(page)
+
+        const root = item(sandbox)
+        const before = await root.evaluate((el) => getComputedStyle(el).letterSpacing)
+
+        await selectHstOption(page, 'Letter Spacing', 'widest (0.0893em)')
+        await page.waitForTimeout(200)
+
+        const after = await root.evaluate((el) => getComputedStyle(el).letterSpacing)
+        expect(after).not.toBe(before)
+    })
+
+    test('fontFamily is not exposed as a story control (origam#501 — deliberately unwired)', async ({ page }) => {
+        await openVariant(page, 'Design')
+
+        await expect(page.getByText('Font Family', { exact: true })).toHaveCount(0)
+    })
+})

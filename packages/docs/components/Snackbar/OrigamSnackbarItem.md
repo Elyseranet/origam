@@ -64,23 +64,52 @@ The dismiss (✕) button is shown by default. Pass `dismissible=false` to hide i
 
 ## Typography
 
-`fontSize` overrides the font-size of the entire item surface via
-`--origam-snackbar-item---font-size`. When unset the SCSS default (`0.875rem`)
-applies.
+All five `ITypographyProps` props paint (origam#501):
 
-> Note: `fontWeight` in `ITypographyProps` is typed and emits its CSS var, but
-> the SCSS scopes font-weight per BEM child (`__title` at `600`,
-> `__message` at `400`). A single `useTypography('snackbar-item')` call cannot
-> target those sub-surfaces; per-child control requires dedicated story props.
-> In this release only `fontSize` is exposed in the story controls.
+- `fontSize` overrides the font-size of the entire item surface via
+  `--origam-snackbar-item---font-size`. When unset, the SCSS default
+  (`0.875rem`) applies.
+- `lineHeight` and `letterSpacing` override the root's line-height / letter-
+  spacing via `--origam-snackbar-item---line-height` /
+  `--origam-snackbar-item---letter-spacing`, inherited by `__title` and
+  `__message` normally (both are CSS-inherited properties). Unset, they fall
+  back to the existing defaults — `1.4` for line-height, and the ambient
+  inherited value for letter-spacing (there was no `letter-spacing` rule at
+  all before this prop was wired, so `inherit` reproduces that exactly).
+- `fontWeight` is **generic-first**: the root's
+  `--origam-snackbar-item---font-weight` (only set when the prop is passed)
+  overrides the BEM-child defaults that otherwise drive the title/message
+  hierarchy (`__title` at `600`, `__message` at `400`) — same convention as
+  the per-size override documented in `typography.composable.ts`. Passing
+  `fontWeight` makes both the title and the message adopt that single
+  weight; leaving it unset preserves the built-in hierarchy.
+- `fontFamily` is intentionally **not** wired. This component has no
+  font-family rule at all — it inherits the surrounding app's font — and
+  origam#501 classifies `fontFamily` as global-by-default: a bare override
+  here would have no named reason to diverge, unlike `OrigamCode` /
+  `OrigamKbd` (monospace) or `OrigamBlockquote` (editorial serif).
+
+> None of these four vars (`font-weight`, `line-height`, `letter-spacing` at
+> the generic/root level) are backed by a themed default in
+> `packages/ds/tokens/component/` — this component has no token file at all
+> (tracked under origam#503, out of scope for this change). They resolve
+> purely from the literal SCSS fallback unless a consumer passes the prop.
+> The root `font-weight` channel additionally must never gain a themed
+> default on its own: doing so would always resolve and silently collapse
+> the title/message weight distinction, the same failure mode the Chip/Kbd
+> per-size `font-size` fix avoided (see `typography.composable.ts`'s
+> generic-first convention).
 
 ```vue
 <template>
     <OrigamSnackbarItem
         intent="info"
         title="Large text"
-        message="Body at xl scale."
+        message="Body at xl scale, tracked out, single weight."
         font-size="xl"
+        font-weight="bold"
+        line-height="relaxed"
+        letter-spacing="wide"
     />
 </template>
 ```
@@ -123,10 +152,11 @@ interface ISnackbarItemProps extends ICommonsComponentProps, ITypographyProps {
 
 | Prop | Type | Default | Effect | Note |
 |---|---|---|---|---|
-| `fontSize` | `TFontSize` | — | `--origam-snackbar-item---font-size` | Real visual effect — root reads this var. |
-| `fontWeight` | `TFontWeight` | — | `--origam-snackbar-item---font-weight` | Emitted but **not read** at root level; `__title`/`__message` use their own namespaced vars. |
-| `lineHeight` | `TLineHeight` | — | `--origam-snackbar-item---line-height` | Emitted but not read — root `line-height` is hardcoded `1.4`. |
-| `letterSpacing` | `TLetterSpacing` | — | `--origam-snackbar-item---letter-spacing` | Emitted but not read — no `letter-spacing` SCSS rule on the item. |
+| `fontSize` | `TFontSize` | — | `--origam-snackbar-item---font-size` | Root reads this var directly. |
+| `fontWeight` | `TFontWeight` | — | `--origam-snackbar-item---font-weight` | Generic-first override read by both `__title` and `__message`, ahead of their own namespaced defaults (`600` / `400`). |
+| `lineHeight` | `TLineHeight` | — | `--origam-snackbar-item---line-height` | Root reads this var directly (default `1.4`). |
+| `letterSpacing` | `TLetterSpacing` | — | `--origam-snackbar-item---letter-spacing` | Root reads this var directly (default `inherit`). |
+| `fontFamily` | `TFontFamily` | — | — | **Not wired.** No font-family rule exists on this component; see the Typography section above. |
 
 ## Anatomy
 
@@ -149,13 +179,16 @@ interface ISnackbarItemProps extends ICommonsComponentProps, ITypographyProps {
 | CSS variable | Purpose |
 |---|---|
 | `--origam-snackbar-item---font-size` | Item font-size (default `0.875rem`). |
+| `--origam-snackbar-item---font-weight` | Generic title+message weight override (unset by default — see Typography). |
+| `--origam-snackbar-item---line-height` | Item line-height (default `1.4`). |
+| `--origam-snackbar-item---letter-spacing` | Item letter-spacing (default `inherit`). |
 | `--origam-snackbar-item---background-color` | Surface background. |
 | `--origam-snackbar-item---border-color` | Surface border. |
 | `--origam-snackbar-item---color` | Foreground / text colour. |
 | `--origam-snackbar-item---box-shadow` | Drop shadow. |
 | `--origam-snackbar-item---border-radius` | Corner radius. |
-| `--origam-snackbar-item__title---font-weight` | Title weight (default `600`). |
-| `--origam-snackbar-item__message---font-weight` | Message weight (default `400`). |
+| `--origam-snackbar-item__title---font-weight` | Title weight fallback (default `600`, overridden by the generic var above when set). |
+| `--origam-snackbar-item__message---font-weight` | Message weight fallback (default `400`, overridden by the generic var above when set). |
 | `--origam-color__feedback--{intent}---bgSubtle` | Per-intent background. |
 | `--origam-color__feedback--{intent}---border` | Per-intent border. |
 | `--origam-color__feedback--{intent}---fgSubtle` | Per-intent foreground. |

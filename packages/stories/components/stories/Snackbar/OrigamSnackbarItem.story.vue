@@ -11,7 +11,10 @@
 					title: 'Notification title',
 					message: 'A body message with more context.',
 					icon: undefined,
-					fontSize: undefined
+					fontSize: undefined,
+					fontWeight: undefined,
+					lineHeight: undefined,
+					letterSpacing: undefined
 				})"
 		>
 			<template #default="{ state }">
@@ -21,6 +24,9 @@
 						:message="state.message"
 						:icon="state.icon"
 						:font-size="state.fontSize"
+						:font-weight="state.fontWeight"
+						:line-height="state.lineHeight"
+						:letter-spacing="state.letterSpacing"
 				/>
 			</template>
 			<template #controls="{ state }">
@@ -29,6 +35,9 @@
 				</StoryGroup>
 				<StoryGroup title="Typography">
 					<HstSelect v-model="state.fontSize" title="Font Size" :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight" title="Font Weight" :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight" title="Line Height" :options="LINE_HEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Icons">
 					<HstSelect v-model="state.icon" title="Icon Override" :options="ICON_OPTIONS"/>
@@ -154,6 +163,9 @@
 				</StoryGroup>
 				<StoryGroup title="Typography">
 					<HstSelect v-model="state.fontSize" title="Font Size" :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight" title="Font Weight" :options="FONT_WEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.lineHeight" title="Line Height" :options="LINE_HEIGHT_OPTIONS"/>
+					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.dismissible" title="Dismissible"/>
@@ -178,8 +190,11 @@
 	import { useStoryInitState } from '@stories/composables'
 	import {
 		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
 		ICON_OPTIONS,
-		INTENT_OPTIONS
+		INTENT_OPTIONS,
+		LETTER_SPACING_OPTIONS,
+		LINE_HEIGHT_OPTIONS
 	} from '@stories/const'
 
 	const ROLE_OPTIONS = [

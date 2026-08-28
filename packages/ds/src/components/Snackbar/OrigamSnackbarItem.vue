@@ -138,12 +138,19 @@
    * Typography
    *
    * @description
-   * Only `fontSize` has a real visual effect: the root element
-   * reads `--origam-snackbar-item---font-size`. `fontWeight` is
-   * scoped to BEM children (`__title`, `__message`) with their
-   * own namespaced vars — a single `useTypography('snackbar-item')`
-   * cannot address both surfaces; expose via story only when
-   * per-surface control is added.
+   * All five typed props paint (origam#501). `fontSize`,
+   * `lineHeight` and `letterSpacing` read directly on the root
+   * (inherited by `__title` / `__message` normally). `fontWeight`
+   * is generic-first: the root's `--origam-snackbar-item---font-weight`
+   * (set only when the prop is passed) overrides the BEM-child
+   * defaults (`__title` 600, `__message` 400) that otherwise drive
+   * the title/message hierarchy — same convention as the Chip/Kbd
+   * per-size override documented in `typography.composable.ts`.
+   * `fontFamily` is intentionally NOT wired: this component has no
+   * font-family rule at all (inherits the app font), and origam#501
+   * classifies `fontFamily` as global-by-default — a bare literal
+   * override here would have no named reason to diverge, unlike
+   * Code/Kbd (monospace) or Blockquote (editorial serif).
    ********************************************************/
   const { typographyStyles } = useTypography(props, 'snackbar-item')
 
@@ -278,7 +285,8 @@
     backdrop-filter: var(--origam-snackbar-item---backdrop-filter, none);
     -webkit-backdrop-filter: var(--origam-snackbar-item---backdrop-filter, none);
     font-size: var(--origam-snackbar-item---font-size, 0.875rem);
-    line-height: 1.4;
+    line-height: var(--origam-snackbar-item---line-height, 1.4);
+    letter-spacing: var(--origam-snackbar-item---letter-spacing, inherit);
 
     &__content {
       display: flex;
@@ -306,11 +314,11 @@
     }
 
     &__title {
-      font-weight: var(--origam-snackbar-item__title---font-weight, 600);
+      font-weight: var(--origam-snackbar-item---font-weight, var(--origam-snackbar-item__title---font-weight, 600));
     }
 
     &__message {
-      font-weight: var(--origam-snackbar-item__message---font-weight, 400);
+      font-weight: var(--origam-snackbar-item---font-weight, var(--origam-snackbar-item__message---font-weight, 400));
       color: var(--origam-snackbar-item__message---color, currentColor);
       opacity: var(--origam-snackbar-item__message---opacity, 0.85);
     }
