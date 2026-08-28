@@ -33,7 +33,7 @@
  *     separately as a `transitive` candidate, never counted as a defect.
  */
 
-import { readFileSync } from 'node:fs'
+import { readFileSync, readdirSync, statSync } from 'node:fs'
 import path from 'node:path'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
@@ -113,14 +113,32 @@ export function analyseSource (source, filename = 'component.vue') {
     // Reads through the RESOLVED variable are safe by construction; only the
     // raw `withDefaults(...)` result is at risk.
     const atRisk = propsVars
+    const { eager, transitive } = collectEagerReads({
+        sf, root: sf, atRisk, lineAt: node => lineOf(source, block.start + node.getStart(sf))
+    })
+
+    return { propsVars: [...propsVars], callsUseDefaults, resolvedPropsVar, eager, transitive }
+}
+
+/*********************************************************
+ * collectEagerReads — le coeur partagé
+ *
+ * @description
+ * Le même parcours sert deux racines différentes. Dans un composant, la
+ * profondeur 0 est le corps de `setup()`. Dans un COMPOSABLE, c'est le corps
+ * de la fonction exportée — puisqu'elle est appelée DEPUIS `setup()`, tout
+ * ce qui s'y trouve à profondeur 0 s'exécute pendant `setup()`, donc avant
+ * que le résolveur ADR-005 n'écrive. La règle est identique ; seule la
+ * racine et la variable à risque changent.
+ ********************************************************/
+function collectEagerReads ({ sf, root, atRisk, lineAt }) {
     const eager = []
     const transitive = []
 
     const record = (kind, prop, text, node) => {
-        eager.push({ kind, prop, text, line: lineOf(source, block.start + node.getStart(sf)) })
+        eager.push({ kind, prop, text, line: lineAt(node) })
     }
 
-    // ── Pass 2: walk, tracking function-nesting depth.
     const walk = (node, depth) => {
         const nextDepth = FUNCTION_KINDS.has(node.kind) ? depth + 1 : depth
 
@@ -150,11 +168,7 @@ export function analyseSource (source, filename = 'component.vue') {
                 if (callee && !LAZY_CALLEES.has(callee)) {
                     for (const arg of node.arguments) {
                         if (ts.isIdentifier(arg) && atRisk.has(arg.text)) {
-                            transitive.push({
-                                callee,
-                                text: `${callee}(${arg.text})`,
-                                line: lineOf(source, block.start + node.getStart(sf))
-                            })
+                            transitive.push({ callee, text: `${callee}(${arg.text})`, line: lineAt(node) })
                         }
                     }
                 }
@@ -163,9 +177,102 @@ export function analyseSource (source, filename = 'component.vue') {
 
         ts.forEachChild(node, c => walk(c, nextDepth))
     }
-    walk(sf, 0)
 
-    return { propsVars: [...propsVars], callsUseDefaults, resolvedPropsVar, eager, transitive }
+    // The root itself is the depth-0 frame: its own children start at 0, and a
+    // nested function among them takes them to 1.
+    ts.forEachChild(root, c => walk(c, 0))
+
+    return { eager, transitive }
+}
+
+/*********************************************************
+ * analyseComposableSource — #504
+ *
+ * @description
+ * Le scanner ne regardait que les `Origam*.vue` : `getRealComponents()`
+ * filtre sur l'extension `.vue` ET le préfixe `Origam`, donc AUCUN fichier de
+ * `src/composables/` n'a jamais été analysé. Or c'est là que le défaut
+ * ADR-005 mord le plus fort, parce qu'un composable est partagé : `useLink`
+ * figeait `tag` dans une chaîne et `useVModel` amorçait sa ref au setup, ce
+ * qui a cassé les props thématisées de 16 composants à elles deux.
+ *
+ * @description
+ * La règle est la même, la racine change. Un composable est APPELÉ depuis
+ * `setup()` : tout ce qui se trouve à profondeur de fonction 0 dans son corps
+ * s'exécute donc pendant `setup()`, avant que le résolveur n'écrive. La
+ * variable à risque n'est plus le retour de `withDefaults()` mais le
+ * PARAMÈTRE qui reçoit l'objet props de l'appelant.
+ *
+ * @description
+ * ⛔ Un paramètre nommé `props` ne suffit pas à conclure. Il n'est à risque
+ * que si l'appelant lui passe vraiment l'objet réactif du composant, ce que
+ * ce détecteur ne vérifie pas — il rapporte donc des CANDIDATS, et chacun se
+ * tranche en regardant si la valeur lue est ensuite figée (un local, un
+ * argument évalué) ou relue à chaque accès.
+ ********************************************************/
+const PROPS_PARAM_NAMES = new Set(['props', 'properties'])
+
+export function analyseComposableSource (source, filename = 'composable.ts') {
+    const sf = ts.createSourceFile(filename, source, ts.ScriptTarget.ESNext, true, ts.ScriptKind.TS)
+    const fns = []
+
+    const isExported = node => node.modifiers?.some(m => m.kind === ts.SyntaxKind.ExportKeyword)
+
+    const visit = (node) => {
+        let name = null
+        let fn = null
+
+        if (ts.isFunctionDeclaration(node) && node.name && isExported(node)) {
+            name = node.name.text
+            fn = node
+        } else if (ts.isVariableStatement(node) && isExported(node)) {
+            for (const decl of node.declarationList.declarations) {
+                if (ts.isIdentifier(decl.name) && decl.initializer &&
+                    (ts.isArrowFunction(decl.initializer) || ts.isFunctionExpression(decl.initializer))) {
+                    name = decl.name.text
+                    fn = decl.initializer
+                }
+            }
+        }
+
+        if (name && fn?.body) {
+            const propsParam = fn.parameters.find(
+                p => ts.isIdentifier(p.name) && PROPS_PARAM_NAMES.has(p.name.text)
+            )
+            if (propsParam) {
+                const atRisk = new Set([propsParam.name.text])
+                const { eager, transitive } = collectEagerReads({
+                    sf, root: fn.body, atRisk, lineAt: n => lineOf(source, n.getStart(sf))
+                })
+                fns.push({ fn: name, param: propsParam.name.text, eager, transitive })
+            } else {
+                fns.push({ fn: name, param: null, eager: [], transitive: [] })
+            }
+        }
+
+        ts.forEachChild(node, visit)
+    }
+    visit(sf)
+
+    return fns
+}
+
+/** Analyse every composable under `src/composables`. */
+export function analyseComposables () {
+    const dir = path.join(DS_ROOT, 'src/composables')
+    const out = []
+    const walkDir = (d) => {
+        for (const entry of readdirSync(d)) {
+            const full = path.join(d, entry)
+            if (statSync(full).isDirectory()) { walkDir(full); continue }
+            if (!full.endsWith('.ts') || full.endsWith('index.ts')) continue
+            for (const row of analyseComposableSource(readFileSync(full, 'utf8'), path.basename(full))) {
+                out.push({ ...row, relative: path.relative(DS_ROOT, full) })
+            }
+        }
+    }
+    walkDir(dir)
+    return out
 }
 
 /** Analyse the whole shipped catalogue. */
@@ -194,6 +301,23 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.a
         for (const r of broken.sort((a, b) => b.eager.length - a.eager.length)) {
             const props = [...new Set(r.eager.map(e => e.prop))].join(', ')
             console.log(`  ${r.pascalName.padEnd(28)} ${String(r.eager.length).padStart(2)}  [${props}]`)
+        }
+
+        /*
+         * #504 — la moitié qui manquait. Aucun fichier de src/composables
+         * n'était analysé, alors que c'est là que le défaut porte le plus
+         * loin : un composable est partagé par des dizaines de composants.
+         */
+        const fns = analyseComposables()
+        const candidates = fns.filter(r => r.param)
+        const offenders = candidates.filter(r => r.eager.length)
+        console.log('')
+        console.log(`exported use*() in src/composables: ${fns.length}`)
+        console.log(`  taking a props parameter ....... ${candidates.length}`)
+        console.log(`eager reads of that parameter: ${offenders.length}`)
+        for (const r of offenders) {
+            const props = [...new Set(r.eager.map(e => e.prop))].join(', ')
+            console.log(`  ${r.fn.padEnd(24)} ${String(r.eager.length).padStart(2)}  [${props}]  ${r.relative}`)
         }
     }
 }
