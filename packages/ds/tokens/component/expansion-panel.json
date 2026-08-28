@@ -38,52 +38,54 @@
       "z-index":               { "$type": "number",    "$value": -1 }
     },
 
-    "header": {
-      "font-size":             { "$type": "dimension", "$value": "0.9375rem",
-                                 "$description": "15px — between font.size.md (16px) and font.size.sm (14px). Kept as literal pending a font.size.base-minus token." },
-      "font-weight":           { "$type": "fontWeight","$value": "{font.weight.regular}" },
-      "line-height":           { "$type": "number",    "$value": 1 },
-      "min-height":            { "$type": "dimension", "$value": "48px" },
-      "min-height-active":     { "$type": "dimension", "$value": "64px" },
-      "width":                 { "$type": "other",     "$value": "100%" },
-      "border":                { "$type": "other",     "$value": "none" },
-      "outline":               { "$type": "other",     "$value": "none" },
-      "border-radius":         { "$type": "other",     "$value": "inherit" },
-      "hover-overlay-opacity": { "$type": "number",    "$value": "{opacity.0}",
-                                 "$description": "calc(0.04 * 1) applied via scoped style" },
-      "focus-overlay-opacity": { "$type": "number",    "$value": "{opacity.12}",
-                                 "$description": "calc(0.12 * 1) applied via scoped style" },
+    "$child": {
+      "header": {
+        "font-size":             { "$type": "dimension", "$value": "0.9375rem",
+                                   "$description": "15px — between font.size.md (16px) and font.size.sm (14px). Kept as literal pending a font.size.base-minus token." },
+        "font-weight":           { "$type": "fontWeight","$value": "{font.weight.regular}" },
+        "line-height":           { "$type": "number",    "$value": 1 },
+        "min-height":            { "$type": "dimension", "$value": "48px" },
+        "min-height-active":     { "$type": "dimension", "$value": "64px" },
+        "width":                 { "$type": "other",     "$value": "100%" },
+        "border":                { "$type": "other",     "$value": "none" },
+        "outline":               { "$type": "other",     "$value": "none" },
+        "border-radius":         { "$type": "other",     "$value": "inherit" },
+        "hover-overlay-opacity": { "$type": "number",    "$value": "{opacity.0}",
+                                   "$description": "calc(0.04 * 1) applied via scoped style" },
+        "focus-overlay-opacity": { "$type": "number",    "$value": "{opacity.12}",
+                                   "$description": "calc(0.12 * 1) applied via scoped style" },
 
-      "wrapper": {
-        "padding-block":       { "$type": "dimension", "$value": "{space.4}" },
-        "padding-inline":      { "$type": "dimension", "$value": "{space.6}" },
-        "display":             { "$type": "other",     "$value": "flex" },
-        "align-items":         { "$type": "other",     "$value": "center" },
-        "justify-content":     { "$type": "other",     "$value": "space-between" },
-        "transition-duration": { "$type": "duration",  "$value": "{motion.duration.slow}" },
-        "transition-easing":   { "$type": "cubicBezier", "$value": "{motion.easing.standard}" }
-      },
+        "$child": {
+          "wrapper": {
+            "padding-block":       { "$type": "dimension", "$value": "{space.4}" },
+            "padding-inline":      { "$type": "dimension", "$value": "{space.6}" },
+            "display":             { "$type": "other",     "$value": "flex" },
+            "align-items":         { "$type": "other",     "$value": "center" },
+            "justify-content":     { "$type": "other",     "$value": "space-between" },
+            "transition-duration": { "$type": "duration",  "$value": "{motion.duration.slow}" },
+            "transition-easing":   { "$type": "cubicBezier", "$value": "{motion.easing.standard}" }
+          },
+          "overlay": {
+            "position":            { "$type": "other",     "$value": "absolute" },
+            "top":                 { "$type": "dimension", "$value": "{space.0}" },
+            "left":                { "$type": "dimension", "$value": "{space.0}" },
+            "width":               { "$type": "other",     "$value": "100%" },
+            "height":              { "$type": "other",     "$value": "100%" },
+            "border-radius":       { "$type": "other",     "$value": "inherit" },
+            "opacity":             { "$type": "number",    "$value": "{opacity.0}" }
+          },
+          "prepend": {
+            "margin-inline-end":   { "$type": "dimension", "$value": "{space.2}" },
+            "margin-block":        { "$type": "dimension", "$value": "-4px",
+                                     "$description": "Negative margin to vertically align icons with the wrapper. No space token for negative values." }
+          },
+          "append": {
+            "margin-inline-start": { "$type": "other",     "$value": "auto" },
+            "margin-block":        { "$type": "dimension", "$value": "-4px",
+                                     "$description": "Negative margin to vertically align icons with the wrapper." }
+          }
+        }
 
-      "overlay": {
-        "position":            { "$type": "other",     "$value": "absolute" },
-        "top":                 { "$type": "dimension", "$value": "{space.0}" },
-        "left":                { "$type": "dimension", "$value": "{space.0}" },
-        "width":               { "$type": "other",     "$value": "100%" },
-        "height":              { "$type": "other",     "$value": "100%" },
-        "border-radius":       { "$type": "other",     "$value": "inherit" },
-        "opacity":             { "$type": "number",    "$value": "{opacity.0}" }
-      },
-
-      "prepend": {
-        "margin-inline-end":   { "$type": "dimension", "$value": "{space.2}" },
-        "margin-block":        { "$type": "dimension", "$value": "-4px",
-                                 "$description": "Negative margin to vertically align icons with the wrapper. No space token for negative values." }
-      },
-
-      "append": {
-        "margin-inline-start": { "$type": "other",     "$value": "auto" },
-        "margin-block":        { "$type": "dimension", "$value": "-4px",
-                                 "$description": "Negative margin to vertically align icons with the wrapper." }
       }
     },
 

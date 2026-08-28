@@ -81,10 +81,13 @@
       "user-select": { "$type": "other",     "$value": "none" },
       "flex":        { "$type": "other",     "$value": "0 1 auto" }
     },
-    "filter": {
-      "transition-property":       { "$type": "other",      "$value": "transform, opacity" },
-      "transition-duration":       { "$type": "duration",   "$value": "{motion.duration.normal}" },
-      "transition-timing-function":{ "$type": "cubicBezier","$value": "{motion.easing.standard}" }
+    "$child": {
+      "filter": {
+        "transition-property":       { "$type": "other",      "$value": "transform, opacity" },
+        "transition-duration":       { "$type": "duration",   "$value": "{motion.duration.normal}" },
+        "transition-timing-function":{ "$type": "cubicBezier","$value": "{motion.easing.standard}" }
+      }
     }
+
   }
 }

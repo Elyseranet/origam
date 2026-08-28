@@ -18,11 +18,13 @@
       "z-index":               { "$type": "number",     "$value": "{zIndex.raised}" }
     },
 
-    "controls-item": {
-      "margin-inline":         { "$type": "dimension",  "$value": "{space.2}" },
-      "opacity":               { "$type": "number",     "$value": "{opacity.50}" },
-      "opacity-active":        { "$type": "number",     "$value": "{opacity.100}" },
-      "opacity-hover":         { "$type": "number",     "$value": "{opacity.87}" }
+    "$child": {
+      "controls-item": {
+        "margin-inline":         { "$type": "dimension",  "$value": "{space.2}" },
+        "opacity":               { "$type": "number",     "$value": "{opacity.50}" },
+        "opacity-active":        { "$type": "number",     "$value": "{opacity.100}" },
+        "opacity-hover":         { "$type": "number",     "$value": "{opacity.87}" }
+      }
     },
 
     "delimiters": {
@@ -42,12 +44,14 @@
       "margin":                { "$type": "dimension",  "$value": "{space.0}" }
     },
 
-    "hide-delimiter-background": {
-      "controls-background":   { "$type": "color",      "$value": "transparent" }
-    },
-
-    "vertical-delimiters": {
-      "controls-width":        { "$type": "dimension",  "$value": "50px" }
+    "$state": {
+      "hide-delimiter-background": {
+        "controls-background":   { "$type": "color",      "$value": "transparent" }
+      },
+      "vertical-delimiters": {
+        "controls-width":        { "$type": "dimension",  "$value": "50px" }
+      }
     }
+
   }
 }

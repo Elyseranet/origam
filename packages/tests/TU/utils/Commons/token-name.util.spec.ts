@@ -12,7 +12,12 @@
 
 import { describe, expect, it } from 'vitest'
 
-import { tokenPathToCssVar, tokenPathToCssVarName } from '@origam/utils/Commons/token-name.util'
+import {
+    TOKEN_GROUP_CHILD,
+    TOKEN_GROUP_STATE,
+    tokenPathToCssVar,
+    tokenPathToCssVarName
+} from '@origam/utils/Commons/token-name.util'
 
 // Build-time core lives outside src/ — import via relative path.
 import {
@@ -115,33 +120,43 @@ describe('PARITY — TS util vs build-time .mjs core', () => {
  * The three are lexically identical. No regex separates them, which is why
  * the audit found "0 functional" — not a missed case, an undecidable one.
  *
- * MEASURED on origin/develop @ 1e4132d5. Coverage control: the three
- * sub-populations re-sum to the raw total, so they are exhaustive and
- * disjoint — 1548 + 172 + 132 = 1852. Without that check the first pass
- * reported 1680 (it forgot to exclude the known states).
+ * FIXED by the reserved marker groups `$child` / `$state` (decision of
+ * 2026-08-27, form B). A source declares its intent instead of hoping the
+ * guesser lands right; a path carrying NO marker still goes through the
+ * legacy heuristic, byte for byte. That opt-in property is what makes the
+ * change auditable, and it is pinned below.
  *
- *   2949  component token paths in tokens/component/*.json
- *   1852  of them have >= 3 segments, splitting into:
- *   1548    2nd segment hyphen-free → already on the BEM branch, UNAFFECTED
- *    172    2nd segment HAS a hyphen → the whole blast radius of #435
- *    132    2nd segment is a known intent state (TOKEN_INTENT_STATES)
+ * MEASURED on the whole catalogue, before → after, by resolving every leaf
+ * path under both grammars and cross-checking against what the DS actually
+ * READS (findVarReads over packages/ds/src):
  *
- * Of those 172, classified by what components actually READ (not by shape):
+ *   2955  component token paths in tokens/component/*.json
+ *   2815    name UNCHANGED byte for byte
+ *    140    name changed, of which:
+ *      126      dead before → wired after   (the repair)
+ *       14      dead before → dead after    (collateral: a never-read
+ *               sibling that moved with the key it lives under)
+ *        0      wired before → dead after   (no regression)
  *
- *     70  read as `__child---prop`  → genuinely broken, this is #435
- *      7  read as `--variant---prop`→ want a STATE name, not a child
- *     13  read as `---child-prop`   → the CURRENT flat name is correct
- *     82  read nowhere              → dormant (see #501 / #503)
+ * Two regressions DID exist mid-flight and this control is what caught them:
+ * `file-field.dropzone.error.*` was resolved correctly by the heuristic (via
+ * TOKEN_INTENT_STATES) and my first marker pass knocked it out, because once
+ * a path carries any marker EVERY child / state on it must be marked. That
+ * constraint is pinned by the last case in this block.
  *
- * So relaxing the predicate wholesale repairs 70 and BREAKS 20. The cases
- * below pin all three shapes so that any future fix has to satisfy them
- * simultaneously.
+ * On the emitted sheets the same change reads as 121 in / 121 out with 2664
+ * names untouched, identical in light.css, dark.css, _light.scss, _dark.scss.
+ * The remaining 19 changes are real but invisible: `calendar` and `chart` are
+ * in no theme's selectedTokenSets, so nothing is emitted for them at all.
+ * That is #436-A, a different correction (wire the file up, rather than
+ * rename what it emits) — the marked sources here start producing output the
+ * day it lands, and not before.
  *
- * ⛔ SCOPE — `calendar` and `chart` are listed in #435's own table but are
- * NOT in this scope: their token file exists yet is not registered in
- * $themes.json, so nothing is emitted for them at all. Fixing this transform
- * will never make them reachable; that is #436-A, a different correction
- * (wire the file up, rather than rename what it emits).
+ * ⛔ The earlier breakdown in this header (70 / 7 / 13 / 82) was not wrong,
+ * it was PARTIAL: it enumerated only two of the six directions a path can be
+ * misgrouped in (flat→child, flat→state), and missed nested child, state
+ * under a child, child→state and state→child. 70 + 7 = 77 is the figure the
+ * ticket carried; the full population is 126.
  ********************************************************/
 describe('#435 — hyphenated segments: child vs state vs split property', () => {
     /*********************************************************
@@ -175,39 +190,109 @@ describe('#435 — hyphenated segments: child vs state vs split property', () =>
     })
 
     /*********************************************************
-     * RED — the 70 hyphenated BEM children.
+     * THE OPT-IN PROPERTY — an UNMARKED path is still resolved by the
+     * heuristic, wrong answer included.
+     *
+     * @description
+     * This is not an oversight, it is the whole reason the change is safe:
+     * `$child` / `$state` override, they do not migrate. 2815 of 2955 paths
+     * carry no marker and keep their name byte for byte. If a future
+     * "cleanup" makes the marker implicit — every hyphenated segment a child,
+     * say — this case goes red first, and so do the five flat properties
+     * above it.
+     ********************************************************/
+    it('leaves an UNMARKED hyphenated segment on the flat branch', () => {
+        expect(tokenPathToCssVarName(['table', 'header-cell', 'background-color'], true))
+            .toBe('origam-table---header-cell-background-color')
+    })
+
+    /*********************************************************
+     * GREEN — the 126 repairs, one case per direction.
      *
      * @description
      * `OrigamTable.vue` reads `--origam-table__header-cell---background-color`
-     * and `OrigamTable.md` documents it as the override token. The pipeline
-     * emits `--origam-table---header-cell-background-color`. The two names
-     * never meet, so the token is unreachable in every theme.
+     * and `OrigamTable.md` documents it as the override token. Before the
+     * marker the pipeline emitted `--origam-table---header-cell-background-
+     * color`, so the two names never met and the token was unreachable in
+     * every theme.
      ********************************************************/
-    it.fails('resolves a hyphenated BEM child to the __ form the component reads', () => {
-        expect(tokenPathToCssVarName(['table', 'header-cell', 'background-color'], true))
+    it('$child resolves a hyphenated BEM child to the __ form components read', () => {
+        expect(tokenPathToCssVarName(['table', TOKEN_GROUP_CHILD, 'header-cell', 'background-color'], true))
             .toBe('origam-table__header-cell---background-color')
     })
 
     /*********************************************************
-     * RED — the 7 component-local variants.
-     *
-     * @description
      * `variant-solo` is a VARIANT of the field, not a child element, and it
-     * is read as `--origam-field--variant-solo---box-shadow`. It cannot be
-     * rescued by TOKEN_INTENT_STATES: that set holds GLOBAL intents
-     * (primary, hover, danger…), and these variants are component-local by
-     * definition. This case is why the fix cannot be "add them to the set"
-     * either — the set would have to grow without bound.
+     * is read as `--origam-field--variant-solo---box-shadow`. It could never
+     * have been rescued by TOKEN_INTENT_STATES: that set holds GLOBAL intents
+     * (primary, hover, danger…) and these variants are component-local by
+     * definition, so the set would have had to grow without bound.
      ********************************************************/
-    it.fails('resolves a component-local variant to the -- state form', () => {
-        expect(tokenPathToCssVarName(['field', 'variant-solo', 'box-shadow'], true))
+    it('$state resolves a component-local variant to the -- form', () => {
+        expect(tokenPathToCssVarName(['field', TOKEN_GROUP_STATE, 'variant-solo', 'box-shadow'], true))
             .toBe('origam-field--variant-solo---box-shadow')
     })
 
-    /** The build-time core must fail identically — the defect is shared. */
-    it.fails('build-time core exhibits the same defect (parity holds on the bug too)', () => {
-        expect(coreName(['table', 'header-cell', 'background-color'], true))
+    /*********************************************************
+     * Two-level nesting — the case the single-`__` heuristic could not
+     * express AT ALL, in either direction.
+     *
+     * @description
+     * `OrigamCalendar.vue:1346` reads
+     * `--origam-calendar__timeline__hour-label---width`. No relaxation of
+     * `isBemChildKey` produces two `__` separators, which is why this case
+     * alone disqualified every "better predicate" proposal.
+     ********************************************************/
+    it('$child nests, producing a two-level child', () => {
+        expect(tokenPathToCssVarName(
+            ['calendar', TOKEN_GROUP_CHILD, 'timeline', TOKEN_GROUP_CHILD, 'hour-label', 'width'], true
+        )).toBe('origam-calendar__timeline__hour-label---width')
+    })
+
+    it('$state nests under $child — state of a child element', () => {
+        expect(tokenPathToCssVarName(
+            ['file-field', TOKEN_GROUP_CHILD, 'dropzone', TOKEN_GROUP_STATE, 'dragging', 'border-color'], true
+        )).toBe('origam-file-field__dropzone--dragging---border-color')
+    })
+
+    /*********************************************************
+     * ⛔ THE CONSTRAINT THAT COST TWO REGRESSIONS.
+     *
+     * @description
+     * Once a path carries a marker it is resolved ENTIRELY by the marker
+     * branch — the heuristic no longer runs on any of its segments. So a
+     * state the heuristic used to catch for free (`error`, a member of
+     * TOKEN_INTENT_STATES) silently collapses into the property name unless
+     * it is marked too. That is exactly what happened to
+     * `file-field.dropzone.error.*`, and only the before/after read
+     * cross-check surfaced it — the build stayed green and the count of
+     * moved lines still looked plausible.
+     ********************************************************/
+    it('a marker DISABLES the heuristic for the rest of the path', () => {
+        expect(tokenPathToCssVarName(['file-field', TOKEN_GROUP_CHILD, 'dropzone', 'error', 'fg'], true))
+            .toBe('origam-file-field__dropzone---error-fg')
+        expect(tokenPathToCssVarName(
+            ['file-field', TOKEN_GROUP_CHILD, 'dropzone', TOKEN_GROUP_STATE, 'error', 'fg'], true
+        )).toBe('origam-file-field__dropzone--error---fg')
+    })
+
+    /** The build-time core must agree on the marked forms too. */
+    it('build-time core resolves the markers identically', () => {
+        expect(coreName(['table', TOKEN_GROUP_CHILD, 'header-cell', 'background-color'], true))
             .toBe('origam-table__header-cell---background-color')
+        expect(coreName(['field', TOKEN_GROUP_STATE, 'variant-solo', 'box-shadow'], true))
+            .toBe('origam-field--variant-solo---box-shadow')
+    })
+
+    /*********************************************************
+     * Markers are COMPONENT-only. Primitive / semantic paths resolve by
+     * length and must ignore them — nothing in tokens/primitive.json or
+     * tokens/semantic/* carries one, and the emitted primitive sheet did not
+     * move by a single byte.
+     ********************************************************/
+    it('ignores the marker outside a component source', () => {
+        expect(tokenPathToCssVarName(['color', 'neutral', '500'], false))
+            .toBe('origam-color__neutral---500')
     })
 
     /*********************************************************

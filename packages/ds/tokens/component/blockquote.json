@@ -36,12 +36,14 @@
       "line-height":   { "$type": "number",    "$value": "{font.lineHeight.none}" }
     },
 
-    "quoted": {
-      "glyph-size":         { "$type": "dimension", "$value": "8rem" },
-      "glyph-opacity":      { "$type": "number",    "$value": 0.08 },
-      "glyph-offset-top":   { "$type": "dimension", "$value": "-0.1em" },
-      "glyph-offset-left":  { "$type": "dimension", "$value": "-0.05em" },
-      "glyph-padding-extra":{ "$type": "dimension", "$value": "1rem" }
+    "$state": {
+      "quoted": {
+        "glyph-size":         { "$type": "dimension", "$value": "8rem" },
+        "glyph-opacity":      { "$type": "number",    "$value": 0.08 },
+        "glyph-offset-top":   { "$type": "dimension", "$value": "-0.1em" },
+        "glyph-offset-left":  { "$type": "dimension", "$value": "-0.05em" },
+        "glyph-padding-extra":{ "$type": "dimension", "$value": "1rem" }
+      }
     },
 
     "elegant": {
