@@ -204,13 +204,42 @@
 	 * height
 	 *
 	 * @description
-	 * #384 — `Number(props.height)` returned NaN for any CSS length
-	 * string (`Number('96px')` === NaN): the invalid `height: NaN`
-	 * declaration was silently dropped, masking that the density-aware
-	 * subtraction never applied. `int()` (parseInt-based, already used
-	 * elsewhere in this catalogue for the same "read the leading number
-	 * off a possibly-unit-suffixed prop" need) reads the numeric prefix
-	 * regardless of a trailing unit.
+	 * Two DIFFERENT consumers need "the height minus 8px in compact
+	 * density", and they must NOT share the same value:
+	 *
+	 * - `height` (numeric, px) — feeds `useLayoutItem`'s internal
+	 *   offset/geometry math, which needs a plain number (it cannot
+	 *   reactively resolve `vh`/`rem`/`%` to a live pixel value without
+	 *   a `ResizeObserver`). #384 — `Number(props.height)` returned NaN
+	 *   for any CSS length string (`Number('96px')` === NaN); replaced
+	 *   with `int()` (parseInt-based, already used elsewhere in this
+	 *   catalogue for the same "read the leading number off a
+	 *   possibly-unit-suffixed prop" need), which reads the numeric
+	 *   prefix regardless of a trailing unit.
+	 *
+	 * - `heightStyle` (CSS declaration string) — what the browser
+	 *   actually paints. This one MUST preserve the consumer's original
+	 *   unit. #384's first fix pass reused the numeric `height` above
+	 *   for BOTH purposes (`convertToUnit(height.value)`), which
+	 *   silently re-serialised ANY unit as a bare px number: passing
+	 *   `height="50vh"` rendered a fixed `50px`, not `50vh` — a
+	 *   regression proven at runtime (Playwright against a live
+	 *   Histoire `Design` variant): computed height measured `50px`
+	 *   against a 612px-tall sandbox instead of the expected ~306px
+	 *   (50% of viewport), a 256px miss. When `density` isn't
+	 *   `'compact'` no override is needed at all — `dimensionStyles`
+	 *   (via `useDimension`/`convertToUnit`) already emits the correct,
+	 *   unit-preserving `height` declaration, so `heightStyle` stays
+	 *   `undefined` and lets it win. When `density === 'compact'`, the
+	 *   subtraction is expressed as a native CSS `calc()` on the
+	 *   unit-preserving value (`convertToUnit(props.height)`, e.g.
+	 *   `50vh` / `10rem` / `96px`) instead of pre-computing in JS —
+	 *   the browser resolves `calc(50vh - 8px)` correctly for any unit,
+	 *   which a JS numeric subtraction cannot (CSS-first per this
+	 *   repo's engineering principles). For an already-px value this is
+	 *   mathematically identical to the previous plain-number result
+	 *   (`calc(96px - 8px)` computes to `88px`, matching the documented
+	 *   "height - 8px" contract).
 	 ********************************************************/
 	const height = computed(() => {
 		if (props.height) {
@@ -218,6 +247,13 @@
 		}
 
 		return 48
+	})
+
+	const heightStyle = computed(() => {
+		if (!props.height) return undefined
+		if (props.density !== 'compact') return undefined
+
+		return `calc(${convertToUnit(props.height)} - 8px)`
 	})
 
 	const {layoutItemStyles} = useLayoutItem({
@@ -267,11 +303,11 @@
 		return [
 			layoutItemStyles.value,
 			// All dimension props (width / minWidth / maxWidth / minHeight /
-			// maxHeight / height). The custom `height` below overrides the
-			// plain height with the density-aware value.
+			// maxHeight / height). `heightStyle` only overrides `height` in
+			// `density="compact"` — otherwise it stays `undefined` and this wins.
 			dimensionStyles.value,
 			{
-				height: props.height ? convertToUnit(height.value) : undefined
+				height: heightStyle.value
 			},
 			roundedStyles.value,
 			colorStyles.value,
