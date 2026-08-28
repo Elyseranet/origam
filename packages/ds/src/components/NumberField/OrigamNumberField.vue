@@ -29,7 +29,7 @@
 						:disabled="!canDecrease"
 						size="small"
 						data-cy="numberfield-compact-decrement"
-						aria-label="Decrement"
+						:aria-label="t(decrementAriaLabel)"
 						@click="handleCompactDecrement"
 				/>
 				<input
@@ -37,8 +37,13 @@
 						v-model="compactInputText"
 						type="text"
 						inputmode="numeric"
+						role="spinbutton"
 						class="origam-number-field__compact-input"
 						:aria-label="label"
+						:aria-valuenow="model ?? undefined"
+						:aria-valuemin="min"
+						:aria-valuemax="max"
+						:aria-valuetext="compactInputText || undefined"
 						data-cy="numberfield-compact-input"
 						@blur="handleBlur"
 						@focus="handleFocus"
@@ -50,7 +55,7 @@
 						:disabled="!canIncrease"
 						size="small"
 						data-cy="numberfield-compact-increment"
-						aria-label="Increment"
+						:aria-label="t(incrementAriaLabel)"
 						@click="handleCompactIncrement"
 				/>
 			</div>
@@ -65,6 +70,10 @@
 			:style="numberFieldStyles"
 			:validation-value="model"
 			inputmode="decimal"
+			:aria-valuenow="model ?? undefined"
+			:aria-valuemin="min"
+			:aria-valuemax="max"
+			:aria-valuetext="inputText || undefined"
 			v-bind="textFieldProps"
 			@beforeinput="handleBeforeInput"
 			@blur="handleBlur"
@@ -73,6 +82,8 @@
 			@keydown="handleKeydown"
 			@mousedown="handleMousedown"
 			@click:clear="handleClear"
+			@click:prepend="handleClickPrepend"
+			@click:append="handleClickAppend"
 			@click:prepend-inner="handleClickPrependInner"
 			@click:append-inner="handleClickAppendInner"
 	>
@@ -273,15 +284,17 @@
 		lang="ts"
 		setup
 >
-	import { computed, nextTick, onMounted, ref, shallowRef, StyleValue, useSlots, watch } from "vue"
+	import { computed, getCurrentInstance, nextTick, onMounted, ref, shallowRef, StyleValue, useSlots, watch, watchEffect } from "vue"
 	import OrigamBtn from '../Btn/OrigamBtn.vue'
 	import OrigamDivider from '../Divider/OrigamDivider.vue'
 	import OrigamInput from '../Input/OrigamInput.vue'
 	import OrigamTextField from '../TextField/OrigamTextField.vue'
 
+	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
 	import { useAdjacentInner } from '../../composables/Commons/adjacentInner.composable'
 	import { useFocus } from '../../composables/Commons/focus.composable'
 	import { useHold } from '../../composables/NumberField/hold.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useVModel } from '../../composables/Commons/vModel.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
@@ -323,7 +336,9 @@
 		centerAffix: true,
 		split: false,
 		compact: false,
-		type: TEXT_FIELD_TYPE.NUMBER
+		type: TEXT_FIELD_TYPE.NUMBER,
+		decrementAriaLabel: 'origam.number_field.aria_label.decrement',
+		incrementAriaLabel: 'origam.number_field.aria_label.increment'
 	})
 
 	const emits = defineEmits<INumberFieldEmits>()
@@ -331,6 +346,10 @@
 	defineSlots<INumberFieldSlots>()
 
 	const {filterProps} = useProps<INumberFieldProps>(props)
+
+	const {t} = useLocale()
+
+	const vm = getCurrentInstance()
 
 	const slots = useSlots()
 
@@ -395,6 +414,21 @@
 		onClickPrependInner: handleClickPrependInner,
 		onClickAppendInner: handleClickAppendInner
 	} = useAdjacentInner(props)
+
+	// `click:prepend` / `click:append` are declared (inherited via
+	// `IInputEmits extends IAdjacentEmits`) but were never wired (#459):
+	// `<origam-text-field>` DOES emit both — via ITS OWN `useAdjacent()`
+	// call, on its outer prepend/append slot wrapper — but NumberField
+	// never listened for them, so the events reached NumberField's
+	// instance and stopped there. `useAdjacent(props)` here re-uses the
+	// SAME composable to emit on NumberField's OWN instance once the
+	// child's event is relayed to it (see the `@click:prepend` /
+	// `@click:append` listeners on `<origam-text-field>` below) —
+	// mirroring the *Inner relay above exactly.
+	const {
+		onClickPrepend: handleClickPrepend,
+		onClickAppend: handleClickAppend
+	} = useAdjacent(props)
 
 	const correctPrecision = (val: number | string, precision = props.precision) => {
 		// `val` arrives as a number from the model in the happy path,
@@ -501,6 +535,38 @@
 	onMounted(() => {
 		clampModel()
 	})
+
+	/*********************************************************
+	 * Spinbutton role (non-compact input)
+	 *
+	 * @description
+	 * The compact-mode `<input>` sets `role="spinbutton"` directly in the
+	 * template (#459) — it is NumberField's own native element. The
+	 * non-compact `<input>` is rendered two components deep
+	 * (`<origam-text-field>` → `<origam-field>` → the real `<input>`), and
+	 * `role` is ALSO a DECLARED prop on `ITextFieldProps` — TextField binds
+	 * it to its own `<origam-field>` wrapper (`:role="role"`, matching the
+	 * `role="combobox"` pattern OrigamSelect uses), not to the input. That
+	 * makes a plain `role="spinbutton"` attribute on `<origam-text-field>`
+	 * land on the WRONG element — the field chrome div, not the value-
+	 * bearing input `aria-valuenow`/`aria-valuemin`/`aria-valuemax` are
+	 * bound to just above (those are NOT declared TextField props, so they
+	 * correctly fall through to the real `<input>` via `filterInputAttrs`).
+	 * Reaching the real input for `role` specifically needs the same
+	 * DOM-querySelector escape hatch already established in
+	 * `OrigamSelect.vue`'s `handleMousedownControl` for the same class of
+	 * problem. `flush: 'post'` re-runs after the compact/non-compact
+	 * branch swaps in the DOM, so toggling `compact` at runtime keeps it
+	 * correct instead of only applying once at mount.
+	 ********************************************************/
+	watchEffect(() => {
+		if (props.compact) return
+
+		const root = vm?.proxy?.$el as HTMLElement | undefined
+		const input = root?.querySelector?.('input') as HTMLInputElement | null
+
+		input?.setAttribute('role', 'spinbutton')
+	}, {flush: 'post'})
 
 	const inferPrecision = (value: number | null) => {
 		if (value == null) return 0

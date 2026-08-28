@@ -103,6 +103,12 @@
       "pm": "PM",
       "title": "Select Time"
     },
+    "number_field": {
+      "aria_label": {
+        "decrement": "Decrement",
+        "increment": "Increment"
+      }
+    },
     "pagination": {
       "aria_label": {
         "root": "Pagination Navigation",

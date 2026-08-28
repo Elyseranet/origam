@@ -31,6 +31,16 @@ export interface INumberFieldProps extends IFieldProps, IInputProps, IVariantPro
     split?: boolean
     hideControls?: boolean
     compact?: boolean
+    /**
+     * i18n key for the compact-mode decrement button's `aria-label`.
+     * @default 'origam.number_field.aria_label.decrement'
+     */
+    decrementAriaLabel?: string
+    /**
+     * i18n key for the compact-mode increment button's `aria-label`.
+     * @default 'origam.number_field.aria_label.increment'
+     */
+    incrementAriaLabel?: string
 }
 
 export interface INumberFieldEmits extends IFieldEmits, IInputEmits {
