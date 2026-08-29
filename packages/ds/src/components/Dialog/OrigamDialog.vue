@@ -7,6 +7,7 @@
 			:class="dialogClasses"
 			:style="dialogStyles"
 			v-bind="{...overlayProps, ...scopeId}"
+			@click:outside="handleClickOutside"
 	>
 			<template #activator="{props}">
 			<slot
@@ -23,6 +24,7 @@
 				<origam-card
 						ref="origamCardRef"
 						:aria-labelledby="dialogTitleId"
+						:title-id="dialogTitleId"
 						aria-modal="true"
 						role="dialog"
 						v-bind="cardProps"
@@ -41,7 +43,19 @@
 						<slot name="header"/>
 					</template>
 
-					<template #header-append>
+					<!--
+						#412 — the target names below (`#header.append`, …) address
+						`<OrigamCard>`'s OWN slots, which it reads as `slots['header.append']`
+						(point notation, `OrigamCard.vue:70`). Dialog's PUBLIC slot names
+						exposed to ITS OWN consumers stay dash-named (`<slot name="header-append">`
+						right below) — the two are independent identifiers: a named
+						template's target must match the CHILD's slot name, not whatever
+						name this component re-exposes upward. Pre-fix these were both
+						written as `#header-append` (dash) — a literal string that never
+						matched Card's `header.append`, so the five header zones (including
+						the default close button) were silently discarded. See #412.
+					-->
+					<template #header.append>
 						<slot name="header-append">
 							<origam-btn
 									:icon="MDI_ICONS.CLOSE"
@@ -55,7 +69,7 @@
 
 					<template
 							v-if="hasPrepend"
-							#header-prepend
+							#header.prepend
 					>
 						<slot name="header-prepend">
 							<origam-icon
@@ -69,7 +83,7 @@
 
 					<template
 							v-if="slots['header-title']"
-							#header-title
+							#header.title
 					>
 						<slot
 								name="header-title"
@@ -79,14 +93,14 @@
 
 					<template
 							v-if="slots['header-subtitle']"
-							#header-subtitle
+							#header.subtitle
 					>
 						<slot name="header-subtitle"/>
 					</template>
 
 					<template
 							v-if="slots['header-content']"
-							#header-content
+							#header.content
 					>
 						<slot name="header-content"/>
 					</template>
@@ -333,6 +347,25 @@
 	 ********************************************************/
 	const handleClose = () => {
 		isActive.value = false
+	}
+	/*********************************************************
+	 * handleClickOutside (#416)
+	 *
+	 * @description
+	 * `IDialogEmits extends IClickOutsideEmits` puts `click:outside` in
+	 * Dialog's OWN `emits` option. From that point on Vue strips any
+	 * `onClick:outside` LISTENER out of `$attrs` before the fallthrough
+	 * merge — on purpose, so the same event can't fire twice (once via
+	 * `emit()`, once via attrs fallthrough). Since Dialog's template
+	 * never called `emits('click:outside', …)` itself, declaring the
+	 * emit without ever firing it silently cut the one channel that used
+	 * to carry the event by accident (attrs fallthrough onto
+	 * `<origam-overlay>`, which DOES emit it — see
+	 * `OrigamOverlay.vue:259`). Relaying it explicitly here restores the
+	 * channel without giving up the typed `emits` declaration.
+	 ********************************************************/
+	const handleClickOutside = (e: MouseEvent) => {
+		emits('click:outside', e)
 	}
 	const handleIntersect = (_isIntersecting: boolean, entries: Array<IntersectionObserverEntry>) => {
 		if (entries[entries.length - 1].isIntersecting) {

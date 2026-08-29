@@ -198,6 +198,10 @@ describe('accessible names resolve through the locale layer (#477)', () => {
     // authored today. This isolates what THIS ticket changed (the
     // translated label) from what #412 owns (making the slot reach Card).
     describe('OrigamDialog — close button', () => {
+        // #412 — the real `<OrigamCard>` reads this slot under the POINT
+        // name (`slots['header.append']`) — this stub used to read the DASH
+        // name Dialog wrongly provided pre-fix, which made this spec pass
+        // for the wrong reason (both sides encoded the same mismatch).
         const CardPassthroughStub = {
             name: 'OrigamCard',
             setup (_: unknown, {slots, expose}: {slots: Record<string, (() => unknown) | undefined>, expose: (exposed: object) => void}) {
@@ -205,7 +209,7 @@ describe('accessible names resolve through the locale layer (#477)', () => {
                 return () => h('div', {
                     role: 'dialog',
                     'aria-labelledby': 'stub-title'
-                }, [slots['header-append']?.()])
+                }, [slots['header.append']?.()])
             }
         }
 

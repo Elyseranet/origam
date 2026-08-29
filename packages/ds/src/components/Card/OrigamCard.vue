@@ -62,6 +62,7 @@
 								:prepend-icon="prependIcon"
 								:subtitle="subtitle"
 								:title="title"
+								:title-id="titleId"
 								class="origam-card__header"
 								@click:prepend="handleClickPrepend"
 								@click:append="handleClickAppend"

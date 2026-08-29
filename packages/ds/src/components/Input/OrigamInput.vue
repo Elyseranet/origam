@@ -1,5 +1,6 @@
 <template>
 	<div
+			:id="styleId"
 			v-contrast
 			:class="inputClasses"
 			:style="inputStyles"
@@ -297,6 +298,25 @@
 	})
 	const inputControlStyles = computed<StyleValue>(() => [])
 
+	/*********************************************************
+	 * useStyle
+	 *
+	 * @description
+	 * #421 — the ROOT `.origam-input` wrapper binds `styleId` (this
+	 * component's OWN generated scoped-style id), NOT `id` (the
+	 * consumer's real id). `id` is exposed to the `#default` slot
+	 * (`inputProps.id` above) so the CONTROL the consumer actually cares
+	 * about (the real `<input>`/`<checkbox-btn>`/…, whatever a `<label
+	 * for>` targets) carries it — exactly the split `OrigamField` already
+	 * establishes between its own root `:id="styleId"` and its
+	 * `slotProps.id`. Binding `id` on BOTH the wrapper and the real
+	 * control would paint the SAME value on two DOM elements at once —
+	 * measured directly: mounting `OrigamCheckbox` with a consumer `id`
+	 * produced exactly that duplicate before this was caught. The
+	 * wrapper still gets a real, stable id (fixing "no id at all on the
+	 * root" — the defect #421 reports) — just not the SAME string as the
+	 * functional control's.
+	 ********************************************************/
 	/*********************************************************
 	 * Expose
 	 *

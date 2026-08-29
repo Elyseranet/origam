@@ -61,19 +61,24 @@ const OrigamOverlayStub = defineComponent({
     }
 })
 
-// OrigamCard stub — renders its `#header-append` slot (close button) and
-// `#default` / `#footer` slots.
+// OrigamCard stub — renders its `#header.append` slot (close button) and
+// `#default` / `#footer` slots. #412 — the REAL `<OrigamCard>` reads this
+// slot under the POINT name (`slots['header.append']`, `OrigamCard.vue`);
+// this stub used to read the DASH name Dialog wrongly provided pre-fix,
+// which made this spec pass for the wrong reason (it exercised a mismatch
+// that happened to line up between two wrongs, not the real contract).
 const OrigamCardStub = defineComponent({
     name: 'OrigamCard',
     props: {
         ariaLabelledby: String,
         ariaModal: String,
-        role: String
+        role: String,
+        titleId: String
     },
     setup(_props, { slots, expose }) {
         expose({ filterProps: (_props: any) => ({}) })
         return () => h('div', { 'data-stub': 'card' }, [
-            slots['header-append']?.(),
+            slots['header.append']?.(),
             slots.default?.(),
             slots.footer?.()
         ])

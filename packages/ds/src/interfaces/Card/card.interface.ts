@@ -52,6 +52,16 @@ export interface ICardProps extends ICommonsComponentProps, ITagProps, IBorderPr
     text?: string | number
     title?: string | number
     type?: TCardType
+    /*********************************************************
+     * titleId
+     *
+     * @description
+     * Forwarded to the nested `<OrigamCardHeader>` as its own `titleId`
+     * (#412) — lets a consumer (e.g. `<OrigamDialog>`) give the rendered
+     * title element a stable DOM id to target with `aria-labelledby`,
+     * without overloading `id` (already the Card's own root/style id).
+     ********************************************************/
+    titleId?: string
 }
 
 /** Emits fired by `<OrigamCard>` — prepend/append clicks + active/hover
