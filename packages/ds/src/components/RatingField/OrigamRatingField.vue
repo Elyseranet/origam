@@ -1,5 +1,6 @@
 <template>
 	<origam-input
+			:id="id"
 			ref="origamInputRef"
 			v-model="model"
 			:class="ratingFieldClasses"
@@ -301,24 +302,8 @@
 	 ********************************************************/
 	const [rootAttrs, _controlAttrs] = filterInputAttrs(attrs)
 
-	/*********************************************************
-	 * inputProps
-	 *
-	 * @description
-	 * #421 — `id` is deliberately NOT filtered out any more: OrigamInput
-	 * needs it to build `<id>-messages` and to feed its default slot's
-	 * `id` (consumed above for `:for` on the label). RatingField used to
-	 * bind `:id="id"` explicitly on `<origam-input>` (its OWN resolved
-	 * id, `useStyle(ratingFieldStyles, () => props.id)` below) AND
-	 * exclude `id` here — a redundant second path that, once
-	 * `OrigamInput`'s root started rendering its own `:id` (#421), would
-	 * have painted the SAME id on two DOM elements at once. Letting `id`
-	 * flow through this single forwarded-props channel (same pattern as
-	 * OrigamTextField / OrigamPasswordField / OrigamTextareaField /
-	 * OrigamFileField / OrigamSliderField) removes the duplicate path.
-	 ********************************************************/
 	const inputProps = computed(() => {
-		return origamInputRef.value?.filterProps(props, ['class', 'style', 'modelValue', 'focused'])
+		return origamInputRef.value?.filterProps(props, ['class', 'style', 'modelValue', 'id', 'focused'])
 	})
 
 	/*********************************************************

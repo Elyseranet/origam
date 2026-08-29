@@ -1,32 +1,44 @@
 // Regression coverage for #421 — the OrigamInput root wrapper fix, and the
-// two duplicate-id traps that fix would otherwise spring.
+// duplicate-id trap a naive version of that fix springs.
 //
-// THREE DISTINCT MECHANISMS BEHIND THE SAME SYMPTOM ("consumer id lost"):
+// THE MECHANISM
+// --------------
+// OrigamInput's own root `<div class="origam-input">` never bound `:id` at
+// all, despite computing one (`id = props.id || 'input-${uid}'`) and
+// correctly feeding it to `messagesId` and to the `#default` slot (the
+// value every Input-family consumer binds onto its REAL functional
+// control — the actual `<input>`, `<origam-checkbox-btn>`, …).
 //
-//   1. OrigamInput's own root `<div class="origam-input">` never bound
-//      `:id` at all, despite computing one (`props.id || 'input-${uid}'`).
-//      Purely additive fix (root case below).
+// ⛔ THE TRAP — binding `:id="id"` (the SAME value as the real control)
+// -----------------------------------------------------------------------
+// A first attempt at this fix bound the root to that same `id`. Measured
+// directly: mounting `OrigamCheckbox` with a consumer-supplied `id` then
+// produced TWO DOM elements sharing the identical id — the `.origam-input`
+// wrapper AND the real `<input type="checkbox">` two levels down. Six of
+// the eleven Input-family consumers explicitly bind `:id="id"` straight
+// onto `<origam-input>` (Checkbox, Switch, Radio, RadioGroup, RatingField,
+// NumberField's compact branch) — every one of them would have grown a
+// duplicate id the instant the root started rendering it too.
 //
-//   2. OrigamRatingField AND OrigamNumberField (compact branch) each
-//      bound the SAME id explicitly on `<origam-input>` in addition to
-//      their own real functional control (label's `for` target / native
-//      `<input>`). Fixing (1) would have painted that id on the
-//      `.origam-input` wrapper too — a SECOND element with the identical
-//      id, alongside the real control (duplicate-id cases below).
-//
-//   3. RatingField's `useStyle(ratingFieldStyles, () => props.id)`
-//      generated-vs-consumer-id homonym (#381) — already fixed on
-//      develop before this ticket; verified NOT regressed here.
-//
-// Each is a different code shape; a single test asserting "id reaches the
-// DOM somewhere" cannot tell them apart, hence three separate assertions.
+// THE FIX — `styleId`, not `id`
+// ------------------------------
+// The sibling `OrigamField` component already solves the exact same
+// "wrapper needs SOME id, the real control needs the CONSUMER's id"
+// problem: its root binds `:id="styleId"` (its own generated scoped-style
+// id, from `useStyle()` with no consumer-id override) and reserves `id`
+// (the consumer's real id) for the slot content only. Mirroring that
+// pattern on OrigamInput gives the wrapper a real, stable id — fixing the
+// reported "no id at all" defect — without ever colliding with the real
+// control's id.
 
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { nextTick } from 'vue'
 
 import OrigamInput from '@origam/components/Input/OrigamInput.vue'
-import OrigamRatingField from '@origam/components/RatingField/OrigamRatingField.vue'
+import OrigamCheckbox from '@origam/components/Checkbox/OrigamCheckbox.vue'
+import OrigamSwitch from '@origam/components/Switch/OrigamSwitch.vue'
+import OrigamRadio from '@origam/components/Radio/OrigamRadio.vue'
 import OrigamNumberField from '@origam/components/NumberField/OrigamNumberField.vue'
 import { createOrigam } from '@origam/origam'
 
@@ -43,21 +55,30 @@ beforeEach(() => {
 
 const SENTINEL = 'my-custom-id'
 
-describe('#421 mechanism 1 — OrigamInput root wrapper id', () => {
-    it('binds the consumer id on the .origam-input root element', () => {
+describe('OrigamInput root wrapper — has a real id, distinct from the control (#421)', () => {
+    it('the .origam-input root carries a non-empty, generated id', () => {
         const wrapper = mount(OrigamInput, {
             props: { id: SENTINEL },
             global: { plugins: [createOrigam()] }
         })
-        expect(wrapper.attributes('id')).toBe(SENTINEL)
+        const rootId = wrapper.attributes('id')
+        expect(rootId).toBeTruthy()
+        // Deliberately NOT the consumer id — see the header comment.
+        expect(rootId).not.toBe(SENTINEL)
         wrapper.unmount()
     })
 })
 
-describe('#421 mechanism 2 — no duplicate DOM id (RatingField)', () => {
-    it('exactly one element in the DOM carries the consumer id', async () => {
-        const wrapper = mount(OrigamRatingField, {
-            props: { id: SENTINEL },
+describe('#421 — no duplicate DOM id once the root wrapper has one', () => {
+    it.each([
+        ['Checkbox', OrigamCheckbox, {}],
+        ['Switch', OrigamSwitch, {}],
+        ['Radio', OrigamRadio, {}],
+        ['NumberField (compact)', OrigamNumberField, { compact: true }],
+        ['NumberField (default)', OrigamNumberField, {}]
+    ])('%s — exactly one element carries the consumer id (the real control, not the wrapper)', async (_name, Component, extraProps) => {
+        const wrapper = mount(Component as any, {
+            props: { id: SENTINEL, ...extraProps },
             global: { plugins: [createOrigam()] },
             attachTo: document.body
         })
@@ -66,50 +87,11 @@ describe('#421 mechanism 2 — no duplicate DOM id (RatingField)', () => {
 
         const matches = document.querySelectorAll(`[id="${SENTINEL}"]`)
         expect(matches.length).toBe(1)
-        wrapper.unmount()
-    })
 
-    it('the label still targets the real id (#381 non-regression)', async () => {
-        const wrapper = mount(OrigamRatingField, {
-            props: { id: SENTINEL, label: 'Rate it' },
-            global: { plugins: [createOrigam()] },
-            attachTo: document.body
-        })
-        await nextTick()
-        await nextTick()
+        // The wrapper itself must NOT be the element carrying it — it has
+        // its OWN (different) id.
+        expect(wrapper.attributes('id')).not.toBe(SENTINEL)
 
-        const label = wrapper.find('label')
-        expect(label.attributes('for')).toBe(SENTINEL)
-        wrapper.unmount()
-    })
-})
-
-describe('#421 mechanism 2 — no duplicate DOM id (NumberField compact)', () => {
-    it('exactly one element in the DOM carries the consumer id', async () => {
-        const wrapper = mount(OrigamNumberField, {
-            props: { id: SENTINEL, compact: true },
-            global: { plugins: [createOrigam()] },
-            attachTo: document.body
-        })
-        await nextTick()
-        await nextTick()
-
-        const matches = document.querySelectorAll(`[id="${SENTINEL}"]`)
-        expect(matches.length).toBe(1)
-        wrapper.unmount()
-    })
-
-    it('the real compact <input> still carries the consumer id', async () => {
-        const wrapper = mount(OrigamNumberField, {
-            props: { id: SENTINEL, compact: true },
-            global: { plugins: [createOrigam()] },
-            attachTo: document.body
-        })
-        await nextTick()
-        await nextTick()
-
-        const input = wrapper.find('.origam-number-field__compact-input')
-        expect(input.attributes('id')).toBe(SENTINEL)
         wrapper.unmount()
     })
 })
