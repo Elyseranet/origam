@@ -3,9 +3,9 @@
 		<component
 				:is="tag"
 				v-show="isSelected"
-				:id="`expansion-panel-content-${expansionPanel.id}`"
+				:id="contentDomId"
 				v-contrast
-				:aria-labelledby="`expansion-panel-header-${expansionPanel.id}`"
+				:aria-labelledby="expansionPanel.headerId.value"
 				:class="expansionPanelContentClasses"
 				:style="expansionPanelContentStyles"
 				role="region"
@@ -55,7 +55,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, inject, StyleValue, toRef } from 'vue'
+	import { computed, inject, StyleValue, toRef, watchEffect } from 'vue'
 	import OrigamExpandY from '../Transition/OrigamExpandY.vue'
 	import OrigamProgress from '../Progress/OrigamProgress.vue'
 	import OrigamSkeleton from '../Skeleton/OrigamSkeleton.vue'
@@ -110,6 +110,24 @@
 	 * @description
 	 * Deferred content rendering tied to the panel's selection state.
 	 ********************************************************/
+
+	/*********************************************************
+	 * ARIA wiring
+	 *
+	 * @description
+	 * `contentDomId` is this content's own resolved DOM id —
+	 * `props.id` when the consumer supplies one, a generated
+	 * fallback otherwise. Published onto the shared
+	 * `expansionPanel.contentId` slot so the sibling
+	 * `<OrigamExpansionPanelHeader>` can point its
+	 * `aria-controls` at the REAL id instead of guessing the
+	 * generated-fallback naming scheme (#519, #520).
+	 ********************************************************/
+	const contentDomId = computed(() => props.id || `expansion-panel-content-${expansionPanel.id}`)
+
+	watchEffect(() => {
+		expansionPanel.contentId.value = contentDomId.value
+	})
 
 	/*********************************************************
 	 * Composables

@@ -69,7 +69,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, inject, ref, StyleValue, toRef } from 'vue'
+	import { computed, inject, ref, StyleValue, toRef, watchEffect } from 'vue'
 
 	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
 	import OrigamIcon from '../Icon/OrigamIcon.vue'
@@ -154,21 +154,38 @@
 	 * ARIA wiring
 	 *
 	 * @description
-	 * `tabDomId` is the DOM id of THIS tab (referenced by the
-	 * panel via `aria-labelledby`). `panelId` is the DOM id of
-	 * the sibling panel — derived by reading the panels group's
-	 * registry and matching on `value` (the user-supplied
-	 * identifier, not the internal numeric id).
+	 * `tabDomId` is the DOM id of THIS tab — `props.id` when the
+	 * consumer supplies one, a generated fallback otherwise
+	 * (referenced by the panel via `aria-labelledby`). It is
+	 * published onto this tab's OWN entry in the tabs group's
+	 * `items` registry (`domId`, see `IGroupItem`) so the sibling
+	 * `<OrigamTabPanel>` can read the REAL id instead of guessing
+	 * the generated-fallback naming scheme — otherwise a consumer
+	 * `id` on one side without a matching guess on the other would
+	 * silently break the pairing (#519-#522).
+	 *
+	 * `panelId` is the DOM id of the sibling panel — derived by
+	 * reading the panels group's registry and matching on `value`
+	 * (the user-supplied identifier, not the internal numeric id),
+	 * then reading THAT panel's own published `domId`. The
+	 * generated-fallback string is kept as a defensive default for
+	 * the brief window before the panel's own effect has run.
 	 ********************************************************/
-	const tabDomId = computed(() => `origam-tab-${groupItem!.id}`)
+	const tabDomId = computed(() => props.id || `origam-tab-${groupItem!.id}`)
+
+	watchEffect(() => {
+		const self = groupItem!.group.items.value.find(item => item.id === groupItem!.id)
+		if (self) self.domId = tabDomId.value
+	})
 
 	const panelId = computed(() => {
 		const panelsGroup = panelsGroupLink?.value
 		if (!panelsGroup) return undefined
 
 		const panel = panelsGroup.items.value.find(item => item.value === groupItem!.value.value)
+		if (!panel) return undefined
 
-		return panel ? `origam-tab-panel-${panel.id}` : undefined
+		return panel.domId || `origam-tab-panel-${panel.id}`
 	})
 
 	const ariaSelected = computed(() => (groupItem!.isSelected.value ? 'true' : 'false'))

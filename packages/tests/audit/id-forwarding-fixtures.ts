@@ -55,7 +55,8 @@ import {
     ORIGAM_DATA_TABLE_SORT_KEY
 } from '@origam/consts/DataTable/data-table.const'
 
-import type { IGroupItemProvide, IGroupProvide } from '@origam/interfaces/Commons/group.interface'
+import type { IGroupProvide } from '@origam/interfaces/Commons/group.interface'
+import type { IExpansionPanelGroupItemProvide } from '@origam/interfaces/ExpansionPanel/expansion-panel.interface'
 import type { IInternalDataTableHeader } from '@origam/interfaces/DataTable/data-table-header.interface'
 
 /*********************************************************
@@ -90,8 +91,13 @@ function stubGroupProvide (): IGroupProvide {
  * `<OrigamExpansionPanelContent>` (`inject(ORIGAM_EXPANSION_PANEL_KEY)`
  * SANS passer par `useGroupItem`) — c'est la valeur qu'un VRAI
  * `<OrigamExpansionPanel>` re-fournit à ses enfants sous la MÊME clé.
+ *
+ * `headerId` / `contentId` (#519, #520) are the mutable cross-reference
+ * slots the real Header/Content write their own resolved DOM id into —
+ * without them here, mounting either component standalone would throw
+ * on `expansionPanel.headerId.value = …` / `.contentId.value = …`.
  */
-function stubGroupItemProvide (): IGroupItemProvide {
+function stubGroupItemProvide (): IExpansionPanelGroupItemProvide {
     return {
         id: 1,
         isSelected: ref(false),
@@ -100,7 +106,9 @@ function stubGroupItemProvide (): IGroupItemProvide {
         selectedClass: ref([]),
         value: ref(undefined),
         disabled: ref(false),
-        group: stubGroupProvide()
+        group: stubGroupProvide(),
+        headerId: ref(undefined),
+        contentId: ref(undefined)
     }
 }
 
