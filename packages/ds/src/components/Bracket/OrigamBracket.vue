@@ -253,6 +253,7 @@
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useMargin } from '../../composables/Commons/margin.composable'
 	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useTypography } from '../../composables/Commons/typography.composable'
 
@@ -305,10 +306,37 @@
 	const resolvedId = computed(() => props.id ?? 'origam-bracket')
 	const ariaLabel = 'Tournament bracket'
 
-	// `IBracketRoundProps.color` expects `TIntent | undefined` but `IBracketProps`
-	// inherits `color` from `IColorProps` (TColor). Cast to the narrower type
-	// expected by child round components — type-only, no runtime change.
-	const roundColor = computed<TIntent | undefined>(() => props.color as TIntent | undefined)
+	/*********************************************************
+	 * roundColor (#428)
+	 *
+	 * @description
+	 * `withDefaults` gives `props.color` a hard default (`'primary'`), so
+	 * reading it directly here ALWAYS produced a concrete value — never
+	 * `undefined` — even when THIS component's own consumer never set
+	 * `color` at all. Forwarded unconditionally onto every
+	 * `<origam-bracket-round>` below, that concrete value permanently
+	 * outranked any `theme.components['origam-bracket-round'].color`
+	 * (the resolver's own precedence: an explicit passed value always
+	 * wins — see ADR-005 / #411). Measured: mounting a Round standalone
+	 * under a theme naming `origam-bracket-round: { color: 'danger' }`
+	 * resolved `'danger'`; the SAME Round nested inside `<origam-bracket>`
+	 * resolved `'primary'` instead — forced by this binding.
+	 * `usePassedProps` distinguishes "the consumer of THIS Bracket wrote
+	 * `color=…`" from "Bracket's own default resolved it" — only the
+	 * former forwards down, letting Round's own theme/default apply
+	 * otherwise. Same guard already used by `OrigamBottomNav` /
+	 * `OrigamRadioGroup` / `OrigamChipGroup` / `OrigamBtnGroup` for the
+	 * identical class of problem.
+	 * @description
+	 * `IBracketRoundProps.color` expects `TIntent | undefined` but
+	 * `IBracketProps` inherits `color` from `IColorProps` (`TColor`).
+	 * Cast to the narrower type expected by child round components —
+	 * type-only, no runtime change.
+	 ********************************************************/
+	const wasPropPassed = usePassedProps(props)
+	const roundColor = computed<TIntent | undefined>(() => {
+		return wasPropPassed('color') ? (props.color as TIntent | undefined) : undefined
+	})
 
 	/*********************************************************
 	 * Display rounds

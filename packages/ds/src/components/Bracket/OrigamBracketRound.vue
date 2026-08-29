@@ -32,7 +32,7 @@
 			>
 				<origam-bracket-match
 						:key="match.id"
-						:color="color"
+						:color="matchColor"
 						:data-cy="`origam-bracket-match-${match.id}`"
 						:data-match-id="match.id"
 						:interactive="interactive"
@@ -68,6 +68,7 @@
 
 	import OrigamBracketMatch from './OrigamBracketMatch.vue'
 
+	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useTypography } from '../../composables/Commons/typography.composable'
 
@@ -97,6 +98,23 @@
 
 	const resolvedId = computed(() => props.id ?? `origam-bracket-round-${props.round.id}`)
 	const titleId = computed(() => `${resolvedId.value}-title`)
+
+	/*********************************************************
+	 * matchColor (#428)
+	 *
+	 * @description
+	 * Same mechanism as `OrigamBracket.vue`'s `roundColor`, one level
+	 * down: `props.color` here ALSO carries a hard `withDefaults`
+	 * default (`'primary'`), so binding it straight onto every
+	 * `<origam-bracket-match>` below always forwarded a concrete value —
+	 * whether THIS Round's own consumer (which may be `OrigamBracket`
+	 * itself, forwarding only when ITS consumer set `color` explicitly —
+	 * see `roundColor`) actually passed one or not. Only an explicitly
+	 * passed value cascades to Match; otherwise Match's own theme/default
+	 * applies.
+	 ********************************************************/
+	const wasPropPassed = usePassedProps(props)
+	const matchColor = computed(() => (wasPropPassed('color') ? props.color : undefined))
 
 	const isFinalRound = computed<boolean>(() => props.index === props.totalRounds - 1)
 
