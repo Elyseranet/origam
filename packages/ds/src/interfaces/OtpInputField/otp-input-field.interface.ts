@@ -24,7 +24,7 @@ import type { TOtpInputFieldType } from '../../types/OtpInputField/otp-input-fie
  * `.origam-otp-input-field__field` cell). `Omit` strips the inherited
  * surface back down before re-adding exactly what this component supports.
  */
-export interface IOtpInputFieldProps extends Omit<IFieldProps, keyof ITypographyProps>, Omit<IInputProps, keyof ITypographyProps>, IVariantProps, Pick<ITypographyProps, 'fontSize'> {
+export interface IOtpInputFieldProps extends Omit<IFieldProps, 'fontFamily' | 'fontWeight' | 'lineHeight' | 'letterSpacing'>, Omit<IInputProps, 'fontFamily' | 'fontWeight' | 'lineHeight' | 'letterSpacing'>, IVariantProps, Pick<ITypographyProps, 'fontSize'> {
     autofocus?: boolean
     divider?: string
     focusAll?: boolean

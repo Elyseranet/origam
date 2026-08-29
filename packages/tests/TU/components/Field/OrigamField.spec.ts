@@ -1,5 +1,7 @@
 // Unit tests for <OrigamField> — typography prop on the BEM child surface
-// (ITypographyProps wired by useTypography with the 'field__label' varPrefix).
+// (ITypographyProps, narrowed to Pick<'fontSize'|'fontWeight'|'lineHeight'|
+// 'letterSpacing'> — issue #501 removed `fontFamily`, the only one confirmed
+// dead on every path).
 //
 // ⚠️ BEM-CHILD: typographyStyles is NOT spread into the field root styles.
 // It is merged into `labelProps.style` and `floatingLabelProps.style` so
@@ -9,7 +11,18 @@
 // The SCSS reads `--origam-field__label---font-size` on the
 // `&__label--floating` modifier (font-size of the animated floating label)
 // AND the JS animation scale reads it via `getPropertyValue(...)`.
-// Only fontSize has a real visual effect — no other __label vars exist.
+//
+// ⛔ fontWeight / lineHeight / letterSpacing are NOT read via the
+// `field__label` prefix, but they are NOT inert (issue #501 correction —
+// this file previously asserted the opposite, which is why the ticket's
+// static var-read scanner alone is not sufficient ground truth). `<OrigamField>`
+// forwards its full prop set to the nested `<OrigamLabel>` via
+// `origamLabelRef.value.filterProps(props, …)`; `OrigamLabel` has its OWN
+// `useTypography(props, 'label')` call that DOES read those three
+// (`--origam-label---font-weight` / `---line-height` / `---letter-spacing`).
+// The forward only lands on the SECOND render (`useProps`'s own doc:
+// the template ref is `undefined` on the first) — assertions below await
+// `nextTick()` to observe the state a real paint would see.
 //
 // OrigamLabel uses `:style="labelStyles"` inline binding on its root element,
 // so in jsdom the var appears in the `style=""` attribute — assertion via
@@ -17,6 +30,7 @@
 
 import { describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { nextTick } from 'vue'
 
 import OrigamField from '@origam/components/Field/OrigamField.vue'
 import { createOrigam } from '@origam/origam'
@@ -64,6 +78,36 @@ describe('OrigamField — fontSize prop (BEM child __label)', () => {
 
     it('fontSize="xs" sets the font-size var to the xs token on the label', () => {
         expect(labelStyleOf({ fontSize: 'xs' })).toContain('--origam-field__label---font-size: var(--origam-font__size---xs)')
+    })
+})
+
+// ---------------------------------------------------------------------------
+// fontWeight / lineHeight / letterSpacing — forwarded to the nested
+// <OrigamLabel>, which paints them via its OWN `--origam-label---*` prefix
+// (issue #501 correction — see the file header comment).
+// ---------------------------------------------------------------------------
+
+async function labelStyleAfterForward (props: Record<string, unknown>): Promise<string> {
+    const wrapper = mountField(props)
+    await nextTick()
+    await nextTick()
+    return wrapper.find('.origam-field__label').attributes('style') || ''
+}
+
+describe('OrigamField — fontWeight / lineHeight / letterSpacing forward to OrigamLabel', () => {
+    it('fontWeight="bold" reaches the label via --origam-label---font-weight', async () => {
+        const style = await labelStyleAfterForward({ fontWeight: 'bold' })
+        expect(style).toContain('--origam-label---font-weight: var(--origam-font__weight---bold)')
+    })
+
+    it('lineHeight="loose" reaches the label via --origam-label---line-height', async () => {
+        const style = await labelStyleAfterForward({ lineHeight: 'loose' })
+        expect(style).toContain('--origam-label---line-height: var(--origam-font__lineHeight---loose)')
+    })
+
+    it('letterSpacing="widest" reaches the label via --origam-label---letter-spacing', async () => {
+        const style = await labelStyleAfterForward({ letterSpacing: 'widest' })
+        expect(style).toContain('--origam-label---letter-spacing: var(--origam-font__letterSpacing---widest)')
     })
 })
 
