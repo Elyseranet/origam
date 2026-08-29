@@ -103,7 +103,23 @@
    * `provideDefaults({ 'origam-selection-control': … })` injected
    * by a parent `OrigamSelectionControlGroup`.
    ********************************************************/
-  const props = withDefaults(defineProps<ISelectionControlProps>(), {})
+  /*********************************************************
+   * multiple: undefined (#396)
+   *
+   * @description
+   * NOT a no-op default. `multiple` is typed `boolean`, and Vue's own
+   * runtime boolean-cast rule turns an ABSENT Boolean-typed prop into the
+   * concrete value `false` whenever no `default` is declared for it.
+   * @description
+   * Declaring one (even `undefined`) disables that cast (`hasDefault`
+   * becomes true), so `props.multiple` stays genuinely `undefined` when
+   * nobody set it — which is what lets `isMultiple` below tell "nobody
+   * said anything" apart from "explicitly false" and fall back to
+   * auto-detecting array-based `modelValue`, as documented.
+   ********************************************************/
+  const props = withDefaults(defineProps<ISelectionControlProps>(), {
+    multiple: undefined
+  })
 
   const emits = defineEmits<ISelectionControlEmits>()
 
@@ -152,9 +168,6 @@
   const falseValue = computed(() => {
     return props.falseValue !== undefined ? props.falseValue : false
   })
-  const isMultiple = computed(() => {
-    return !!props.multiple || (props.multiple == null && Array.isArray(modelValue.value))
-  })
   const valueComparator = computed(() => {
     return props.valueComparator ?? deepEqual
   })
@@ -168,6 +181,31 @@
   // filtered an empty array. Read it fresh on each access; both callers are
   // inside a computed's accessor, so the dependency stays tracked.
   const currentModel = () => group ? group.modelValue.value : modelValue.value
+
+  /*********************************************************
+   * isMultiple auto-detect (#396)
+   *
+   * @description
+   * Must look at the SAME source as the getter/setter above. It used to
+   * read `modelValue.value` unconditionally — the control's own, private
+   * v-model — which inside a group is never bound (the group forwards
+   * `density`/`color`/`type`/… as defaults, never `modelValue`), so it
+   * stayed `undefined` forever and `Array.isArray()` was always false.
+   * @description
+   * Result: on the officially documented path
+   * (`<origam-selection-control-group v-model="selected">` with NO
+   * explicit `multiple`, `selected` initialised as `[]`), auto-detect
+   * never turned on multiple mode, and the setter below overwrote the
+   * group's array with a bare scalar on every click — PERTE DE DONNEES.
+   * @description
+   * Reading `currentModel()` (group-aware) instead repairs the
+   * auto-detect for the grouped case without changing the standalone
+   * case (`currentModel() === modelValue.value` there, `group` being
+   * undefined).
+   ********************************************************/
+  const isMultiple = computed(() => {
+    return !!props.multiple || (props.multiple == null && Array.isArray(currentModel()))
+  })
 
   const model = computed({
     get() {
