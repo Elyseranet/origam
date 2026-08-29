@@ -15,7 +15,7 @@
 
 import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
-import { computed, ref } from 'vue'
+import { computed, nextTick, ref } from 'vue'
 
 import OrigamCarouselItem from '@origam/components/Carousel/OrigamCarouselItem.vue'
 import { createOrigam } from '@origam/origam'
@@ -39,7 +39,13 @@ function stubProvide() {
             unregister: () => {},
             select: () => {},
             selected: ref([]),
-            isSelected: () => false,
+            // `<OrigamWindowItem>` (CarouselItem's direct child) gates its
+            // `#default` slot behind `hasContent`/`isShown`, both derived
+            // from `groupItem.isSelected` — always `false` here would mean
+            // the slot (and with it `<OrigamImg>`) never renders at all.
+            // This item must read as "the active one" for the DOM to have
+            // anything to assert on.
+            isSelected: () => true,
             prev: () => {},
             next: () => {},
             selectedClass: ref(undefined),
@@ -57,51 +63,59 @@ function themedOrigam(componentDefaults: Record<string, unknown>) {
     return origam
 }
 
-const mountItem = (origam: ReturnType<typeof createOrigam>, props: Record<string, unknown> = {}) => {
-    return mount(OrigamCarouselItem, {
+// `imgProps`/`windowItemProps` (OrigamCarouselItem.vue) go through the
+// template-ref-forwarding pattern documented in `props.composable.ts` —
+// `origamImgRef` / `origamWindowItemRef` are `undefined` on the FIRST
+// render, so the forwarded props only reach `<origam-img>` from the
+// SECOND render onward. Two `nextTick()`s settle it.
+const mountItem = async (origam: ReturnType<typeof createOrigam>, props: Record<string, unknown> = {}) => {
+    const wrapper = mount(OrigamCarouselItem, {
         props,
         global: { plugins: [origam], provide: stubProvide() }
     })
+    await nextTick()
+    await nextTick()
+    return wrapper
 }
 
 describe('OrigamCarouselItem -> OrigamImg — boolean-coerced prop forwarding (#428)', () => {
-    it('lets rounded theme reach Img when the consumer never set it', () => {
-        const wrapper = mountItem(themedOrigam({ rounded: 'lg' }))
+    it('lets rounded theme reach Img when the consumer never set it', async () => {
+        const wrapper = await mountItem(themedOrigam({ rounded: 'lg' }))
         const img = wrapper.findComponent({ name: 'OrigamImg' })
         expect((img.vm as any).$.props.rounded).toBe('lg')
         wrapper.unmount()
     })
 
-    it('lets border theme reach Img when the consumer never set it', () => {
-        const wrapper = mountItem(themedOrigam({ border: true }))
+    it('lets border theme reach Img when the consumer never set it', async () => {
+        const wrapper = await mountItem(themedOrigam({ border: true }))
         const img = wrapper.findComponent({ name: 'OrigamImg' })
         expect((img.vm as any).$.props.border).toBe(true)
         wrapper.unmount()
     })
 
-    it('lets bgColor theme reach Img when the consumer never set it', () => {
-        const wrapper = mountItem(themedOrigam({ bgColor: 'primary' }))
+    it('lets bgColor theme reach Img when the consumer never set it', async () => {
+        const wrapper = await mountItem(themedOrigam({ bgColor: 'primary' }))
         const img = wrapper.findComponent({ name: 'OrigamImg' })
         expect((img.vm as any).$.props.bgColor).toBe('primary')
         wrapper.unmount()
     })
 
-    it('lets color theme reach Img when the consumer never set it', () => {
-        const wrapper = mountItem(themedOrigam({ color: 'success' }))
+    it('lets color theme reach Img when the consumer never set it', async () => {
+        const wrapper = await mountItem(themedOrigam({ color: 'success' }))
         const img = wrapper.findComponent({ name: 'OrigamImg' })
         expect((img.vm as any).$.props.color).toBe('success')
         wrapper.unmount()
     })
 
-    it('an explicit consumer rounded value still wins over the theme', () => {
-        const wrapper = mountItem(themedOrigam({ rounded: 'lg' }), { rounded: 'sm' })
+    it('an explicit consumer rounded value still wins over the theme', async () => {
+        const wrapper = await mountItem(themedOrigam({ rounded: 'lg' }), { rounded: 'sm' })
         const img = wrapper.findComponent({ name: 'OrigamImg' })
         expect((img.vm as any).$.props.rounded).toBe('sm')
         wrapper.unmount()
     })
 
-    it('an explicit consumer border=false still wins over a theme border=true', () => {
-        const wrapper = mountItem(themedOrigam({ border: true }), { border: false })
+    it('an explicit consumer border=false still wins over a theme border=true', async () => {
+        const wrapper = await mountItem(themedOrigam({ border: true }), { border: false })
         const img = wrapper.findComponent({ name: 'OrigamImg' })
         expect((img.vm as any).$.props.border).toBe(false)
         wrapper.unmount()

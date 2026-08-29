@@ -16,7 +16,7 @@
 
 import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
-import { defineComponent, h, ref } from 'vue'
+import { defineComponent, h, nextTick, ref } from 'vue'
 
 import OrigamDialog from '@origam/components/Dialog/OrigamDialog.vue'
 import { createOrigam } from '@origam/origam'
@@ -52,8 +52,14 @@ const OrigamOverlayStub = defineComponent({
     }
 })
 
-const mountDialog = (props: Record<string, unknown> = {}, slots: Record<string, unknown> = {}) => {
-    return mount(OrigamDialog, {
+// `origamCardRef.value?.filterProps(props)` (OrigamDialog.vue) is the
+// template-ref-forwarding pattern documented in `props.composable.ts`:
+// the ref is `undefined` on the FIRST render, so `cardProps` (and with it
+// `title`, `role`, every forwarded prop) only reaches `<origam-card>` from
+// the SECOND render onward. Two `nextTick()`s settle it — see the same
+// pattern already used in `dialog-scrim-defaults.spec.ts`.
+const mountDialog = async (props: Record<string, unknown> = {}, slots: Record<string, unknown> = {}) => {
+    const wrapper = mount(OrigamDialog, {
         props: { modelValue: true, ...props },
         slots,
         attachTo: document.body,
@@ -65,11 +71,14 @@ const mountDialog = (props: Record<string, unknown> = {}, slots: Record<string, 
             }
         }
     })
+    await nextTick()
+    await nextTick()
+    return wrapper
 }
 
 describe('OrigamDialog + real OrigamCard — header slot names (#412)', () => {
-    it('renders the default close button (header-append fallback) even with no custom header slot', () => {
-        const wrapper = mountDialog({ title: 'Settings' })
+    it('renders the default close button (header-append fallback) even with no custom header slot', async () => {
+        const wrapper = await mountDialog({ title: 'Settings' })
 
         // The close button is OrigamBtn with MDI_ICONS.CLOSE and no visible
         // text — assert on the icon class + aria-label rather than text
@@ -80,8 +89,8 @@ describe('OrigamDialog + real OrigamCard — header slot names (#412)', () => {
         wrapper.unmount()
     })
 
-    it('renders a custom #header-prepend slot through to the real Card header', () => {
-        const wrapper = mountDialog(
+    it('renders a custom #header-prepend slot through to the real Card header', async () => {
+        const wrapper = await mountDialog(
             { title: 'Settings' },
             { 'header-prepend': () => h('span', { 'data-cy': 'custom-prepend' }, 'P') }
         )
@@ -89,8 +98,8 @@ describe('OrigamDialog + real OrigamCard — header slot names (#412)', () => {
         wrapper.unmount()
     })
 
-    it('renders a custom #header-subtitle slot through to the real Card header', () => {
-        const wrapper = mountDialog(
+    it('renders a custom #header-subtitle slot through to the real Card header', async () => {
+        const wrapper = await mountDialog(
             { title: 'Settings' },
             { 'header-subtitle': () => h('span', { 'data-cy': 'custom-subtitle' }, 'S') }
         )
@@ -98,8 +107,8 @@ describe('OrigamDialog + real OrigamCard — header slot names (#412)', () => {
         wrapper.unmount()
     })
 
-    it('renders a custom #header-content slot through to the real Card header', () => {
-        const wrapper = mountDialog(
+    it('renders a custom #header-content slot through to the real Card header', async () => {
+        const wrapper = await mountDialog(
             { title: 'Settings' },
             { 'header-content': () => h('span', { 'data-cy': 'custom-content' }, 'C') }
         )
@@ -107,8 +116,8 @@ describe('OrigamDialog + real OrigamCard — header slot names (#412)', () => {
         wrapper.unmount()
     })
 
-    it('renders a custom #header-title slot through to the real Card header', () => {
-        const wrapper = mountDialog(
+    it('renders a custom #header-title slot through to the real Card header', async () => {
+        const wrapper = await mountDialog(
             {},
             { 'header-title': () => h('span', { 'data-cy': 'custom-title' }, 'T') }
         )
@@ -116,8 +125,8 @@ describe('OrigamDialog + real OrigamCard — header slot names (#412)', () => {
         wrapper.unmount()
     })
 
-    it('gives the default title element a real id that aria-labelledby actually resolves to', () => {
-        const wrapper = mountDialog({ title: 'Settings' })
+    it('gives the default title element a real id that aria-labelledby actually resolves to', async () => {
+        const wrapper = await mountDialog({ title: 'Settings' })
 
         const card = wrapper.find('[role="dialog"]')
         const labelledby = card.attributes('aria-labelledby')
