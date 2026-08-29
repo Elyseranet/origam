@@ -800,21 +800,31 @@
 		}
 	})
 
-	// BEM-child surface: var is read by .origam-textarea-field__rich
-	// (line-height only — rich mode). Bound directly on that element, not the root.
-	//
-	// ⛔ font-size / font-weight / letter-spacing have no rule on THIS prefix,
-	// but they are NOT inert (issue #501 correction) — `inputProps` /
-	// `fieldProps` below forward the full prop set to the nested
-	// `<OrigamInput>` AND `<OrigamField>` (which forwards again to
-	// `<OrigamLabel>`). `fontWeight` additionally cascades from
-	// `<OrigamInput>`'s own painted root `font-weight` into the rich-mode
-	// contenteditable div (CSS inheritance, unblocked — verified via
-	// `getComputedStyle` in a live Histoire render: 400→700 on both the
-	// input root AND the rich div). `fontSize`/`fontWeight`/`letterSpacing`
-	// also reach the visible field label via the Field→Label forward
-	// (see `OrigamField.vue`'s own typography comment). Confirmed dead on
-	// every path: `fontFamily` only (neither Input nor Label paint it).
+	/*********************************************************
+	 * Typography — BEM-child surface (issue #501 correction)
+	 *
+	 * @description
+	 * The var is read by `.origam-textarea-field__rich` (line-height only,
+	 * rich mode). Bound directly on that element, not the root.
+	 *
+	 * @description
+	 * `fontSize` / `fontWeight` / `letterSpacing` have no rule on THIS
+	 * prefix, but they are NOT inert. `inputProps` / `fieldProps` below
+	 * forward the full prop set to the nested `<OrigamInput>` AND
+	 * `<OrigamField>` (which forwards again to `<OrigamLabel>`).
+	 *
+	 * @description
+	 * `fontWeight` additionally cascades from `<OrigamInput>`'s own painted
+	 * root `font-weight` into the rich-mode contenteditable div (CSS
+	 * inheritance, unblocked — verified via `getComputedStyle` in a live
+	 * Histoire render: 400→700 on both the input root AND the rich div).
+	 *
+	 * @description
+	 * `fontSize` / `fontWeight` / `letterSpacing` also reach the visible
+	 * field label via the Field→Label forward (see `OrigamField.vue`'s own
+	 * typography comment). Confirmed dead on every path: `fontFamily` only
+	 * (neither Input nor Label paint it).
+	 ********************************************************/
 	const { typographyStyles } = useTypography(props, 'textarea-field__rich-content')
 
 	/*********************************************************
