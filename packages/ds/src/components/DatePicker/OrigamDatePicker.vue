@@ -14,10 +14,7 @@
 			<slot name="title"/>
 		</template>
 
-		<template
-				v-if="slots.header"
-				#header
-		>
+		<template #header>
 			<slot
 					name="header"
 					v-bind="headerProps"
@@ -26,7 +23,7 @@
 						key="header"
 						ref="origamDatePickerHeaderRef"
 						v-bind="{ ...datePickerHeaderProps, ...headerProps }"
-						@click="!viewModeIsMonth ? handleClickDate : undefined"
+						@click="handleHeaderClick"
 				/>
 			</slot>
 		</template>
@@ -307,6 +304,21 @@
 	}
 	const handleClickDate = () => {
 		viewMode.value = DATE_MODE.MONTH
+	}
+	/*********************************************************
+	 * handleHeaderClick (#410)
+	 *
+	 * @description
+	 * The header's `@click` used to bind a ternary expression
+	 * (`!viewModeIsMonth ? handleClickDate : undefined`) directly — a
+	 * non-trivial expression on an event binding is evaluated once and
+	 * its RESULT (a function reference, or `undefined`) becomes the
+	 * handler; `handleClickDate` itself was therefore returned, never
+	 * invoked. A dedicated named handler keeps the branch out of the
+	 * template (repo convention) and actually calls it.
+	 ********************************************************/
+	const handleHeaderClick = () => {
+		if (!viewModeIsMonth.value) handleClickDate()
 	}
 	const handleClickMonth = () => {
 		viewMode.value = viewModeIsMonths.value ? DATE_MODE.MONTH : DATE_MODE.MONTHS
