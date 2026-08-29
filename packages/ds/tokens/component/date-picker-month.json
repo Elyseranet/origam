@@ -1,0 +1,14 @@
+{
+  "date-picker-month": {
+    "_comment": "OrigamDatePickerMonth.vue announces itself under its OWN prefix (`date-picker-month`, its file name), not under `date-picker__month` the way date-picker.json's `month` BEM child assumes (issue #508, case 1 — 'the BEM prefix takes the sub-component's name'). `weekday` had a dormant twin under date-picker.json; `day` and `weeks` were never authored anywhere. Values below are the component's pre-existing literal fallback (.85rem), carried over unchanged so wiring this channel does not also change the render.",
+    "weeks": {
+      "font-size": { "$type": "dimension", "$value": ".85rem" }
+    },
+    "weekday": {
+      "font-size": { "$type": "dimension", "$value": ".85rem" }
+    },
+    "day": {
+      "font-size": { "$type": "dimension", "$value": ".85rem" }
+    }
+  }
+}

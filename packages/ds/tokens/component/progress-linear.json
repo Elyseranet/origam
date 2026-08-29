@@ -1,6 +1,6 @@
 {
   "progress-linear": {
-    "background":           { "$type": "color",      "$value": "transparent" },
+    "_comment":             "overflow/position/width below are NOT read by OrigamProgressLinear.vue — its SCSS hardcodes these as SCSS literals matching the same values, so they are kept but dormant. This block used to also have a flat `background: transparent` leaf here; it collided in NAME with the `__background` BEM child the component actually reads (issue #508, case 3) and was itself dormant (the component hardcodes `background: transparent` as a literal, never reading this var), so it was removed rather than renamed. `loader` was never declared at all — added below.",
     "overflow":             { "$type": "other",      "$value": "hidden" },
     "position":             { "$type": "other",      "$value": "relative" },
     "width":                { "$type": "dimension",  "$value": "100%" },
@@ -12,11 +12,14 @@
 
     "rounded-border-radius":{ "$type": "dimension",  "$value": "{radius.full}" },
 
-    "background-track": {
-      "_comment":           "Background track (buffer / remaining zone).",
-      "background":         { "$type": "color",      "$value": "currentColor", "$description": "Inherits color from the component's color prop via useTextColor (backgroundColorClasses)." },
-      "opacity":            { "$type": "number",     "$value": "{opacity.50}" },
-      "position":           { "$type": "other",      "$value": "absolute" }
+    "background": {
+      "_comment":  "Background track (buffer / remaining zone) — .origam-progress__background. Bare child key (no hyphen), so the plain heuristic already resolves it; no $child marker needed.",
+      "color":     { "$type": "color",  "$value": "currentColor", "$description": "Inherits color from the component's color prop via useTextColor (backgroundColorClasses)." },
+      "opacity":   { "$type": "number", "$value": "{opacity.50}" }
+    },
+    "loader": {
+      "_comment": ".origam-progress__loader — read with no fallback other than the CSS keyword `inherit` prior to this token existing.",
+      "color":    { "$type": "color",   "$value": "inherit" }
     },
 
     "bar": {

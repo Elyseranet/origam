@@ -1,0 +1,12 @@
+{
+  "picker-title": {
+    "_comment": "Standalone ROOT-prefix component (own .vue file, own IPickerTitleProps) — see the 'ROOT prefix' listing in typography.composable.ts. NOT a BEM child of `picker`: it owns its own top-level token file so its var prefix (`--origam-picker-title---*`) matches what OrigamPickerTitle.vue already reads, instead of nesting under `picker` and producing a `--origam-picker__title---*` / `--origam-picker--title---*` name the component never asked for (issue #433). Values below are the literal defaults the component already renders today, carried over unchanged so wiring this channel does not also change the render.",
+    "color":           { "$type": "color",      "$value": "{color.text.secondary}" },
+    "font-size":       { "$type": "dimension",  "$value": ".75rem" },
+    "font-weight":     { "$type": "fontWeight", "$value": "400" },
+    "letter-spacing":  { "$type": "dimension",  "$value": ".1666666667em" },
+    "padding-inline":  { "$type": "dimension",  "$value": "24px 12px" },
+    "padding-block":   { "$type": "dimension",  "$value": "16px" },
+    "text-transform":  { "$type": "other",      "$value": "uppercase" }
+  }
+}

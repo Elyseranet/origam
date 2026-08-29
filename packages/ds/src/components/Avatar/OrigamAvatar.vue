@@ -243,7 +243,7 @@
 		overflow: var(--origam-avatar---overflow);
 		position: var(--origam-avatar---position);
 
-		transition: var(--origam-avatar---transition);
+		transition: var(--origam-avatar---transition-property) var(--origam-avatar---transition-duration) var(--origam-avatar---transition-timing-function);
 
 		border-color: var(--origam-avatar---border-color);
 		border-style: var(--origam-avatar---border-style);

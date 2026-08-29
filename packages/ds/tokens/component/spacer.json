@@ -1,0 +1,7 @@
+{
+  "spacer": {
+    "_comment": "Was nested under `grids.spacer` — the pipeline emitted --origam-grids__spacer---* while OrigamSpacer.vue reads --origam-spacer---* under its own name (issue #417 / #508). Split into its own top-level file so the emitted prefix matches the component. No values changed.",
+    "flex-grow": { "$type": "number",    "$value": 1 },
+    "min-size":  { "$type": "dimension", "$value": "{space.0}" }
+  }
+}

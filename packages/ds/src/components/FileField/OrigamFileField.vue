@@ -989,7 +989,7 @@
       }
 
       &--dragging {
-        background-color: var(--origam-file-field__dropzone---bg-dragging, var(--origam-file-field__dropzone--dragging---background-color, var(--origam-color__feedback--info---bg-subtle)));
+        background-color: var(--origam-file-field__dropzone---bg-dragging, var(--origam-file-field__dropzone--dragging---background-color, var(--origam-color__feedback--info---bgSubtle)));
         border-color: var(--origam-file-field__dropzone---border-color-dragging, var(--origam-file-field__dropzone--dragging---border-color, var(--origam-color__feedback--info---bg)));
       }
 
@@ -998,12 +998,12 @@
 
         .origam-file-field__dropzone-icon,
         .origam-file-field__dropzone-title {
-          color: var(--origam-file-field__dropzone--error---fg, var(--origam-color__feedback--danger---fg-subtle));
+          color: var(--origam-file-field__dropzone--error---fg, var(--origam-color__feedback--danger---fgSubtle));
         }
       }
 
       &-error {
-        color: var(--origam-file-field__dropzone--error---fg, var(--origam-color__feedback--danger---fg-subtle));
+        color: var(--origam-file-field__dropzone--error---fg, var(--origam-color__feedback--danger---fgSubtle));
         font-size: var(--origam-file-field__dropzone---subtitle-font-size, 0.75rem);
         margin-top: var(--origam-file-field__dropzone---gap-deck, 8px);
       }

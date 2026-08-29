@@ -480,7 +480,7 @@
 			&:not(#{$this}--disabled) {
 				#{$this}__details {
 					> .origam-messages {
-						color: var(--origam-input---error-color, var(--origam-color__feedback--danger---fg-subtle));
+						color: var(--origam-input---error-color, var(--origam-color__feedback--danger---fgSubtle));
 					}
 				}
 
@@ -488,7 +488,7 @@
 				#{$this}__prepend,
 				#{$this}__append {
 					> .origam-icon {
-						color: var(--origam-input---error-color, var(--origam-color__feedback--danger---fg-subtle));
+						color: var(--origam-input---error-color, var(--origam-color__feedback--danger---fgSubtle));
 					}
 				}
 			}

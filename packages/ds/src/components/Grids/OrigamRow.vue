@@ -143,10 +143,10 @@
 		justify-content: var(--origam-row---justify-content);
 		box-sizing: var(--origam-row---box-sizing);
 
-		padding-block-start: var(--origam-container---padding-block-start);
-		padding-block-end: var(--origam-container---padding-block-end);
-		padding-inline-start: var(--origam-container---padding-inline-start);
-		padding-inline-end: var(--origam-container---padding-inline-end);
+		padding-block-start: var(--origam-row---padding-block-start);
+		padding-block-end: var(--origam-row---padding-block-end);
+		padding-inline-start: var(--origam-row---padding-inline-start);
+		padding-inline-end: var(--origam-row---padding-inline-end);
 
 		margin-block-start: calc(var(--origam-row---margin-block-start) + var(--origam-row---density));
 		margin-block-end: calc(var(--origam-row---margin-block-end) + var(--origam-row---density));

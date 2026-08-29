@@ -1,0 +1,9 @@
+{
+  "col": {
+    "_comment": "Was nested under `grids.col` (a Bootstrap-style umbrella block that does not exist as a CSS block) — the pipeline emitted --origam-grids__col---* while OrigamCol.vue reads --origam-col---* under its own name. Split into its own top-level file so the emitted prefix matches the component (issue #417 / #508). No values changed.",
+    "padding-inline-start": { "$type": "dimension", "$value": "{space.2}" },
+    "padding-inline-end":   { "$type": "dimension", "$value": "{space.2}" },
+    "padding-block-start":  { "$type": "dimension", "$value": "{space.2}" },
+    "padding-block-end":    { "$type": "dimension", "$value": "{space.2}" }
+  }
+}
