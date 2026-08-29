@@ -341,7 +341,7 @@
 
 			position: var(--origam-badge__badge---position);
 			pointer-events: var(--origam-badge__badge---pointer-events);
-			transition: var(--origam-badge__badge---transition);
+			transition: var(--origam-badge__badge---transition-property) var(--origam-badge__badge---transition-duration) var(--origam-badge__badge---transition-timing-function);
 
 			border-width: var(--origam-badge__badge---border-width);
 			border-style: var(--origam-badge__badge---border-style);

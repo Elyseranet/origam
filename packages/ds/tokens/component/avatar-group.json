@@ -17,17 +17,17 @@
     "avatar": {
       "transition-duration":       { "$type": "duration",   "$value": "{motion.duration.medium}" },
       "transition-timing-function":{ "$type": "cubicBezier","$value": "{motion.easing.standard}" },
-      "transition-property":       { "$type": "other",      "$value": "margin" },
-      "margin-inline-start":       { "$type": "dimension",  "$value": "{space.0}" },
-      "margin-inline-end":         { "$type": "dimension",  "$value": "{space.0}" },
-      "margin-block-start":        { "$type": "dimension",  "$value": "{space.0}" },
-      "margin-block-end":          { "$type": "dimension",  "$value": "{space.0}" }
+      "transition-property":       { "$type": "other",      "$value": "margin" }
     },
 
     "item": {
       "outline-color": { "$type": "color",     "$value": "{color.surface.default}" },
       "outline-style": { "$type": "other",     "$value": "solid" },
-      "outline-width": { "$type": "dimension", "$value": "2px" }
+      "outline-width": { "$type": "dimension", "$value": "2px" },
+      "margin-inline-start":       { "$type": "dimension",  "$value": "{space.0}" },
+      "margin-inline-end":         { "$type": "dimension",  "$value": "{space.0}" },
+      "margin-block-start":        { "$type": "dimension",  "$value": "{space.0}" },
+      "margin-block-end":          { "$type": "dimension",  "$value": "{space.0}" }
     }
   }
 }

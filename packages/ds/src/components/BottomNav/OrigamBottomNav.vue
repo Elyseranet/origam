@@ -384,7 +384,7 @@
 		bottom: 0;
 		width: 100%;
 
-		transition: var(--origam-bottom-bar---transition);
+		transition: var(--origam-bottom-bar---transition-property) var(--origam-bottom-bar---transition-duration) var(--origam-bottom-bar---transition-timing-function);
 
 		max-width: var(--origam-bottom-bar---max-width);
 		min-height: calc(var(--origam-bottom-bar---height) - var(--origam-bottom-bar---density));

@@ -102,6 +102,6 @@
 		padding-block: var(--origam-picker-title---padding-block, 16px);
 		font-weight: var(--origam-picker-title---font-weight, 400);
 		letter-spacing: var(--origam-picker-title---letter-spacing, .1666666667em);
-		color: var(--origam-picker-title---color, var(--origam-picker--title---color, inherit));
+		color: var(--origam-picker-title---color, inherit);
 	}
 </style>

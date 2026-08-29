@@ -618,7 +618,7 @@
 		&--error {
 			#{$this}__details {
 				> .origam-messages {
-					color: var(--origam-otp-input-field---error-color, var(--origam-color__feedback--danger---fg-subtle));
+					color: var(--origam-otp-input-field---error-color, var(--origam-color__feedback--danger---fgSubtle));
 					opacity: 1;
 				}
 			}

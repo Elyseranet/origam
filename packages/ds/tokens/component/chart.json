@@ -80,9 +80,7 @@
       "color":             { "$type": "color",     "$value": "{color.text.secondary}" }
     },
 
-    "animation": {
-      "duration":          { "$type": "duration",  "$value": "600ms" },
-      "easing":            { "$type": "cubicBezier", "$value": "cubic-bezier(0.4, 0, 0.2, 1)" }
-    }
+    "animation-duration":  { "$type": "duration",  "$value": "600ms", "$description": "Flat (issue #505): every OrigamChart*.vue reads --origam-chart---animation-duration flat, not a nested `animation` BEM child. Note this channel is ALSO shadowed today by every chart component setting this exact var inline from its own `animationDuration` prop (out['--origam-chart---animation-duration'] = ...), which always wins over any :root/theme value regardless of this fix — flagged, not resolved here (component-level change, out of scope for a token-naming fix)." },
+    "animation-easing":    { "$type": "cubicBezier", "$value": "cubic-bezier(0.4, 0, 0.2, 1)" }
   }
 }

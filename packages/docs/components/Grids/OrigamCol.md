@@ -157,7 +157,7 @@ or per-instance via a `:style` binding.
 | `--origam-col---margin-inline-start` | `0` |
 | `--origam-col---margin-inline-end` | `0` |
 | `--origam-col---background-color` | `transparent` |
-| `--origam-col---color` | `currentColor` |
+| `--origam-col---color` | `#000` (hardcoded hex in the component's local `:root` block, not sourced from a token yet — separate issue, see `col.json`) |
 
 ## Accessibility
 
