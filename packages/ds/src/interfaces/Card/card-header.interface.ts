@@ -17,6 +17,19 @@ import type { ITypographyProps } from '../Commons/typography.interface'
 export interface ICardHeaderProps extends ITagProps, ICommonsComponentProps, IBorderProps, IRoundedProps, IPaddingProps, IMarginProps, IDensityProps, IAdjacentProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'> {
     subtitle?: string | number
     title?: string | number
+    /*********************************************************
+     * titleId
+     *
+     * @description
+     * DOM id posed on the rendered `.origam-card-header__title` element
+     * — distinct from `id` (already claimed by `ICommonsComponentProps`
+     * for the header's OWN root/style id). A consumer that needs an
+     * `aria-labelledby` target pointing at the title (e.g. `<OrigamDialog>`
+     * for its `role="dialog"`) passes this instead of reusing `id`, the
+     * same separation `OrigamRatingField` already applies for its own
+     * `useStyle` id vs. the consumer's `id` prop (#381/#412).
+     ********************************************************/
+    titleId?: string
 }
 
 /** Emits fired by `<OrigamCardHeader>` — clicks on prepend/append slots. */
