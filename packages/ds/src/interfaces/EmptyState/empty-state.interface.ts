@@ -30,7 +30,7 @@ import type { TIntent } from '../../types/Commons/intent.type'
  * `letterSpacing` is inert here — neither text surface reads a
  * `letter-spacing` rule.
  */
-export interface IEmptyStateProps extends ICommonsComponentProps, ITagProps, ITypographyProps {
+export interface IEmptyStateProps extends ICommonsComponentProps, ITagProps, Pick<ITypographyProps, 'fontFamily' | 'fontSize' | 'fontWeight' | 'lineHeight'> {
     /**
      * Visual preset. Bundles a default icon and intent — see
      * `EMPTY_STATE_PRESET_CONFIG`. The preset is the starting point;

@@ -12,7 +12,7 @@ import type { IPaddingProps } from '../Commons/padding.interface'
 import type { IRoundedProps } from '../Commons/rounded.interface'
 import type { ITypographyProps } from '../Commons/typography.interface'
 
-export interface ITableProps extends ICommonsComponentProps, IBorderProps, IRoundedProps, IElevationProps, IPaddingProps, IMarginProps, IHoverProps, IDimensionProps, IDensityProps, ITagProps, ITypographyProps {
+export interface ITableProps extends ICommonsComponentProps, IBorderProps, IRoundedProps, IElevationProps, IPaddingProps, IMarginProps, IHoverProps, IDimensionProps, IDensityProps, ITagProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight'> {
     fixedHeader?: boolean
     fixedFooter?: boolean
     caption?: string

@@ -223,9 +223,11 @@ typography without custom CSS. Unset props keep the theme / size value.
 | `lineHeight` | `TLineHeight` | — | Sets `--origam-btn---line-height` to `var(--origam-font__lineHeight---{lineHeight})` (none 1 → loose 2). |
 | `letterSpacing` | `TLetterSpacing` | — | Sets `--origam-btn---letter-spacing` to `var(--origam-font__letterSpacing---{letterSpacing})` (tight → widest). |
 
-> `fontFamily` is part of the surface but has no effect on `<OrigamBtn>`: the
-> component's SCSS has no `font-family` rule (buttons inherit the page font by
-> design). Use `fontFamily` on text components (`OrigamTitle`, `OrigamCode`, …).
+> `fontFamily` was removed from `IBtnProps` (issue #501): the component's SCSS
+> has no `font-family` rule, and `fontFamily` is a project-level setting
+> configured once on `OrigamApp` — not a per-instance override. Use
+> `fontFamily` on text components (`OrigamTitle`, `OrigamCode`, …) where it
+> still has an effect.
 
 ## Anatomy
 

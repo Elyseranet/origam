@@ -16,7 +16,7 @@ import type { IScrollStrategyProps } from '../Commons/scroll.interface'
 import type { ITransitionComponentProps } from '../Commons/transition-component.interface'
 import type { ITypographyProps } from '../Commons/typography.interface'
 
-export interface ITooltipProps extends ICommonsComponentProps, IOverlayProps, IColorProps, IBgColorProps, IDimensionProps, IActivatorProps, ILocationStrategyProps, IScrollStrategyProps, ILazyProps, ITransitionComponentProps, IScrimProps, ITypographyProps {
+export interface ITooltipProps extends ICommonsComponentProps, IOverlayProps, IColorProps, IBgColorProps, IDimensionProps, IActivatorProps, ILocationStrategyProps, IScrollStrategyProps, ILazyProps, ITransitionComponentProps, IScrimProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight'> {
     id?: string
     text?: string
 }

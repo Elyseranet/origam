@@ -93,9 +93,11 @@ variable via `useTypography`.
 | `__input` (search field) | `--origam-command-palette__input---font-size` | `fontSize` |
 | `__group-title` (group header) | `--origam-command-palette__group-title---font-size` | `fontSize` |
 
-`fontWeight` and `letterSpacing` have hardcoded values in the SCSS
-(`600` and `0.04em` on `__group-title`) — they are NOT token-driven and
-passing those props has no visual effect.
+`fontFamily`, `fontWeight`, `lineHeight` and `letterSpacing` were removed
+from `ICommandPaletteProps` (issue #501): `fontWeight` and `letterSpacing`
+have hardcoded values in the SCSS (`600` and `0.04em` on `__group-title`,
+NOT token-driven), `lineHeight` has no matching SCSS rule on either surface,
+and `fontFamily` is a project-level setting configured once on `OrigamApp`.
 
 ```vue
 <OrigamCommandPalette v-model="open" :commands="commands" font-size="sm"/>
@@ -117,10 +119,6 @@ passing those props has no visual effect.
 | `closeOnEscape` | `boolean` | `true` | Close on `Escape`. |
 | `closeOnBackdrop` | `boolean` | `true` | Close when the user clicks the backdrop. |
 | `fontSize` | `TFontSize` | — | Font size token applied to both `__input` and `__group-title` surfaces. |
-| `fontFamily` | `TFontFamily` | — | Font family token (emitted but no SCSS rule on these surfaces — no visual effect). |
-| `fontWeight` | `TFontWeight` | — | Font weight token (emitted but hardcoded in SCSS — no visual effect). |
-| `lineHeight` | `TLineHeight` | — | Line-height token (emitted but no SCSS rule on these surfaces — no visual effect). |
-| `letterSpacing` | `TLetterSpacing` | — | Letter-spacing token (emitted but hardcoded in SCSS — no visual effect). |
 
 ## Events
 

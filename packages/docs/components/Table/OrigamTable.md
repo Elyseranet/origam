@@ -200,8 +200,10 @@ both the table body and the visible caption; `fontWeight` targets header cells.
 | `fontSize` | `--origam-table__caption---font-size` | `<caption>` element | Overrides the default `0.875rem` caption font size (only visible when `captionVisible` is `true`) |
 | `fontWeight` | `--origam-table__header-cell---font-weight` | `<th>` cells (via cascade from root) | Overrides the default `600` header cell font weight |
 
-`fontFamily`, `lineHeight`, and `letterSpacing` are not exposed — the
-component SCSS does not read those variables on any surface.
+`fontFamily`, `lineHeight`, and `letterSpacing` were removed from
+`ITableProps` (issue #501) — the component SCSS does not read those
+variables on any surface. `fontFamily` is a project-level setting
+configured once on `OrigamApp`.
 
 ```vue
 <template>

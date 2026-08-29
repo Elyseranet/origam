@@ -48,7 +48,10 @@ interface ICardTextProps extends ICommonsComponentProps, ITagProps,
 | `fontWeight` | `TFontWeight` | — | Font weight token. Sets `--origam-card-text---font-weight` to `var(--origam-font__weight---{fontWeight})` (regular 400 · medium 500 · semibold 600 · bold 700 · extrabold 800 · black 900). When unset, the card text keeps its theme font-weight. |
 | `letterSpacing` | `TLetterSpacing` | — | Letter-spacing token. Sets `--origam-card-text---letter-spacing` to `var(--origam-font__letterSpacing---{letterSpacing})` (tight · normal · wide · wider · widest). When unset, the card text keeps its theme letter-spacing. |
 
-`lineHeight` and `fontFamily` are available via `ITypographyProps` but the card-text SCSS has no matching rules — they have no visual effect at this time.
+`lineHeight` and `fontFamily` were removed from `ICardTextProps` (issue #501)
+— the card-text SCSS has no matching rules for either, and `fontFamily` is a
+project-level setting configured once on `OrigamApp`, not a per-instance
+override.
 
 ## Anatomy
 

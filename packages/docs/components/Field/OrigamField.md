@@ -103,13 +103,27 @@ The floor is capped at the control height, so an intentional pill
 
 ## Props — Typography (label surface)
 
-The `fontSize` prop targets the floating label only (BEM child `__label--floating`).
-It sets `--origam-field__label---font-size` on the `.origam-field__label` element,
-which the SCSS reads for the floating label text size and the JS animation scale.
+`fontSize` sets `--origam-field__label---font-size` on the `.origam-field__label`
+element directly, which the SCSS reads for the floating label text size and the
+JS animation scale.
 
-| Prop       | Type        | Default | Description                                                                       |
-|------------|-------------|---------|-----------------------------------------------------------------------------------|
-| `fontSize` | `TFontSize` | —       | Font-size token (xs · sm · md · lg · xl · 2xl · …). Sets `--origam-field__label---font-size`. When unset the theme default applies. |
+`fontWeight`, `lineHeight` and `letterSpacing` reach the SAME label element by a
+different path: `<OrigamField>` forwards its own props to the nested
+`<OrigamLabel>` (`origamLabelRef.value.filterProps(props, …)`), and `OrigamLabel`
+paints those three itself via its own `--origam-label---*` variables. Field's OWN
+`--origam-field__label---*` var for these three is written but unread — the
+visible effect comes from `OrigamLabel`'s prefix, not Field's. See issue #501.
+
+| Prop            | Type             | Default | Description                                                                       |
+|-----------------|------------------|---------|-----------------------------------------------------------------------------------|
+| `fontSize`      | `TFontSize`      | —       | Font-size token (xs · sm · md · lg · xl · 2xl · …). Sets `--origam-field__label---font-size`. When unset the theme default applies. |
+| `fontWeight`    | `TFontWeight`    | —       | Font-weight token, forwarded to the nested `<OrigamLabel>`. When unset the theme default applies. |
+| `lineHeight`    | `TLineHeight`    | —       | Line-height token, forwarded to the nested `<OrigamLabel>`. When unset the theme default applies. |
+| `letterSpacing` | `TLetterSpacing` | —       | Letter-spacing token, forwarded to the nested `<OrigamLabel>`. When unset the theme default applies. |
+
+> `fontFamily` was removed from `IFieldProps` (issue #501) — neither Field's
+> own `__label` prefix nor the forwarded `OrigamLabel` reads a `font-family`
+> var. `fontFamily` is a project-level setting configured once on `OrigamApp`.
 
 ## Slots
 

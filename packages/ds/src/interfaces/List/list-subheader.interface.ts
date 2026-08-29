@@ -12,7 +12,7 @@ import type { IPaddingProps } from '../Commons/padding.interface'
 import type { IRoundedProps } from '../Commons/rounded.interface'
 import type { ITypographyProps } from '../Commons/typography.interface'
 
-export interface IListSubheader extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, ITypographyProps {
+export interface IListSubheader extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight'> {
     inset?: boolean,
     sticky?: boolean,
     title?: string,

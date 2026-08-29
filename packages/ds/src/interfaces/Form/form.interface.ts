@@ -25,7 +25,7 @@ export interface IFormProvide {
     validateOn: Ref<TValidateOn | undefined>
 }
 
-export interface IFormProps extends ICommonsComponentProps, ITypographyProps {
+export interface IFormProps extends ICommonsComponentProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'> {
     disabled?: boolean
     fastFail?: boolean
     readonly?: boolean

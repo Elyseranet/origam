@@ -28,7 +28,7 @@ import type { TIcon } from '../../types/Icon/icon.type'
  * `IBtnProps.IAdjacentProps` being consumed by the child, not a surface
  * this component itself exposes.
  */
-export interface IPaginationProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IBorderProps, IPaddingProps, IMarginProps, IElevationProps, ISizeProps, IDensityProps, ITypographyProps {
+export interface IPaginationProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IBorderProps, IPaddingProps, IMarginProps, IElevationProps, ISizeProps, IDensityProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight'> {
     start?: number
     modelValue?: number
     disabled?: boolean

@@ -33,7 +33,7 @@ import type { TTabVariant } from '../../types/Tabs/tab.type'
  * `lineHeight` is intentionally excluded — the SCSS hard-codes `line-height: 1`
  * with no CSS-var hook.
  */
-export interface ITabProps extends ICommonsComponentProps, ITagProps, IGroupItemProps, ITypographyProps, IAdjacentProps {
+export interface ITabProps extends ICommonsComponentProps, ITagProps, IGroupItemProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'letterSpacing'>, IAdjacentProps {
     tag?: string
     /** Text label — used when the `default` slot is not provided. */
     text?: string

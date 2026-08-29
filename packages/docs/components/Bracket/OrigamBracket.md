@@ -156,7 +156,7 @@ diagonal. The diagonal cells are inert.
 | `width` / `height` / `minWidth` / `minHeight` / `maxWidth` / `maxHeight` | `number \| string` | — (applied to the bracket root) |
 | `margin` / `marginTop` / `marginRight` / `marginBottom` / `marginLeft` / `marginBlock` / `marginInline` | `number \| string \| boolean` | — (applied to the bracket root) |
 | `padding` / `paddingTop` / `paddingRight` / `paddingBottom` / `paddingLeft` / `paddingBlock` / `paddingInline` | `number \| string \| boolean` | — (applied to the bracket root) |
-| `fontFamily` / `fontSize` / `fontWeight` / `letterSpacing` / `lineHeight` | `TFontFamily` / `TFontSize` / `TFontWeight` / `TLetterSpacing` / `TLineHeight` | — (see typography note below) |
+| `fontSize` / `fontWeight` / `letterSpacing` | `TFontSize` / `TFontWeight` / `TLetterSpacing` | — (see typography note below) |
 
 > **`bgColor`** paints the surface of **every match card** (including
 > hover). When a surface is painted, the match text is automatically set
@@ -186,13 +186,15 @@ diagonal. The diagonal cells are inert.
 > `padding*` apply to the bracket's own root element** — a different
 > surface than the match-card props above.
 >
-> **Typography (`fontFamily`/`fontSize`/`fontWeight`/`letterSpacing`/
-> `lineHeight`) is narrower than either of those two surfaces**: it only
-> drives the `double-elimination` section labels ("Winner Bracket" /
-> "Loser Bracket" / "Grand Final" headings) via
-> `useTypography(props, 'bracket-double-label')` — it has no effect on
-> `single-elimination` / `round-robin`, and no effect on the match cards
-> or competitor rows either.
+> **Typography (`fontSize`/`fontWeight`/`letterSpacing`) is narrower than
+> either of those two surfaces**: it only drives the `double-elimination`
+> section labels ("Winner Bracket" / "Loser Bracket" / "Grand Final"
+> headings) via `useTypography(props, 'bracket-double-label')` — it has no
+> effect on `single-elimination` / `round-robin`, and no effect on the
+> match cards or competitor rows either. `fontFamily` and `lineHeight` were
+> removed from `IBracketProps` (issue #501) — the section-label SCSS never
+> read either var. `fontFamily` is a project-level setting configured once
+> on `OrigamApp`, not a per-instance override.
 >
 > `winnersLabel` / `losersLabel` are only rendered in the
 > `double-elimination` layout, as the heading above each bracket tree.

@@ -29,7 +29,7 @@ import type {
     TTextareaToolbarPosition
 } from '../../types/TextareaField/textarea-field-rich-toolbar.type'
 
-export interface ITextareaFieldProps extends ICommonsComponentProps, IColorProps, IDensityProps, IFieldProps, IInputProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, IAdjacentInnerProps, ITypographyProps {
+export interface ITextareaFieldProps extends ICommonsComponentProps, IColorProps, IDensityProps, IFieldProps, IInputProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, IAdjacentInnerProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'> {
     autoGrow?: boolean
     autofocus?: boolean
     counter?: boolean | number | string

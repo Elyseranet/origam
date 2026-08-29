@@ -33,7 +33,7 @@ import type { ITypographyProps } from '../Commons/typography.interface'
 
 import type { TIcon } from '../../types/Icon/icon.type'
 
-export interface IChipProps extends ICommonsComponentProps, IAdjacentProps, ITagProps, IColorProps, IBgColorProps, IRippleProps, IBorderProps, IRoundedProps, IPaddingProps, IMarginProps, IDensityProps, IGroupItemProps, ILinkProps, ISizeProps, IElevationProps, IActiveProps, IHoverProps, ITypographyProps {
+export interface IChipProps extends ICommonsComponentProps, IAdjacentProps, ITagProps, IColorProps, IBgColorProps, IRippleProps, IBorderProps, IRoundedProps, IPaddingProps, IMarginProps, IDensityProps, IGroupItemProps, ILinkProps, ISizeProps, IElevationProps, IActiveProps, IHoverProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight'> {
     closable?: boolean
     closeIcon?: TIcon
     closeLabel?: string

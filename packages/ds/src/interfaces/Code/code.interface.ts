@@ -25,7 +25,7 @@ import type { TCodeLang } from '../../types/Code/code.type'
  * conservative default so existing call sites keep their behaviour
  * (plain-text, no line numbers, copy button visible).
  */
-export interface ICodeProps extends ICommonsComponentProps, ITagProps, IBorderProps, IRoundedProps, IElevationProps, IPaddingProps, IMarginProps, IDimensionProps, IColorProps, IBgColorProps, ITypographyProps {
+export interface ICodeProps extends ICommonsComponentProps, ITagProps, IBorderProps, IRoundedProps, IElevationProps, IPaddingProps, IMarginProps, IDimensionProps, IColorProps, IBgColorProps, Pick<ITypographyProps, 'fontFamily' | 'fontSize' | 'lineHeight'> {
     /**
      * The code to highlight. When omitted, the default slot is used as the
      * source — useful for multi-line snippets that are nicer to read in

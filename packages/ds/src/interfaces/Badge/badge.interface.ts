@@ -32,7 +32,7 @@ import type { ITypographyProps } from '../Commons/typography.interface'
  * effect at all despite the SCSS already anticipating an avatar image
  * (`:deep(img)` sizing rule). Only the `prepend` / `append` slots worked.
  */
-export interface IBadgeProps extends ICommonsComponentProps, ITagProps, IBorderProps, IColorProps, IBgColorProps, ILocationProps, IRoundedProps, ITransitionComponentProps, IStatusProps, IHoverProps, IElevationProps, ITypographyProps, IAdjacentProps {
+export interface IBadgeProps extends ICommonsComponentProps, ITagProps, IBorderProps, IColorProps, IBgColorProps, ILocationProps, IRoundedProps, ITransitionComponentProps, IStatusProps, IHoverProps, IElevationProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight'>, IAdjacentProps {
     content?: number | string
     dot?: boolean
     floating?: boolean

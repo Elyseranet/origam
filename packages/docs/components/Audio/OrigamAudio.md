@@ -127,8 +127,10 @@ A single set of `ITypographyProps` drives all four text surfaces. Each surface r
 | `fontSize`      | `TFontSize`   | `undefined` | `audio__title` (font-size), `audio__meta` (font-size), `audio__loading` (font-size), `audio--error` (font-size) |
 | `fontWeight`    | `TFontWeight` | `undefined` | `audio__title` (font-weight) only                                                                |
 | `lineHeight`    | `TLineHeight` | `undefined` | `audio__title` (line-height) only                                                                |
-| `letterSpacing` | `TLetterSpacing` | `undefined` | No SCSS rule in current surfaces — prop accepted, var emitted, no visible effect               |
-| `fontFamily`    | `TFontFamily` | `undefined` | No SCSS rule in current surfaces — prop accepted, var emitted, no visible effect               |
+
+> `letterSpacing` and `fontFamily` were removed from `IAudioProps` (issue #501) — no
+> surface read either var. `fontFamily` is a project-level setting configured once
+> on `OrigamApp`, not a per-instance override.
 
 > `audio__loading` and `audio--error` are state overlays — only visible when the player is loading or in error state. The CSS var is always set via inline `:style`; the rendered effect requires triggering the matching player state.
 

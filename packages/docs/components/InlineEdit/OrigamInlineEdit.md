@@ -46,7 +46,8 @@ buttons are placed inside the field via its `appendInner` slot.
 
 These props set CSS custom properties on the **root element** so they cascade
 to the BEM surfaces that read them. Only props with a real visual effect are
-exposed (`fontFamily`, `letterSpacing`, `lineHeight` have no rule in the SCSS).
+exposed — `fontFamily`, `letterSpacing` and `lineHeight` were removed from
+`IInlineEditProps` (issue #501); no rule in the SCSS read any of them.
 
 | Prop | Type | Values | Effect |
 |---|---|---|---|

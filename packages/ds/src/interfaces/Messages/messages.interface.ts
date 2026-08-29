@@ -12,7 +12,7 @@ import type { IRoundedProps } from '../Commons/rounded.interface'
 import type { ITransitionComponentProps } from '../Commons/transition-component.interface'
 import type { ITypographyProps } from '../Commons/typography.interface'
 
-export interface IMessagesProps extends ICommonsComponentProps, ITagProps, ITransitionComponentProps, IColorProps, IBorderProps, IPaddingProps, IMarginProps, IRoundedProps, IDensityProps, IElevationProps, ITypographyProps {
+export interface IMessagesProps extends ICommonsComponentProps, ITagProps, ITransitionComponentProps, IColorProps, IBorderProps, IPaddingProps, IMarginProps, IRoundedProps, IDensityProps, IElevationProps, Pick<ITypographyProps, 'fontSize' | 'lineHeight'> {
     active?: boolean
     messages?: Array<string> | string
 }

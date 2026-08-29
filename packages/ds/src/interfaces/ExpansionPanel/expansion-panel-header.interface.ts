@@ -22,7 +22,7 @@ import type { ITypographyProps } from '../Commons/typography.interface'
 
 import type { TIcon } from '../../types/Icon/icon.type'
 
-export interface IExpansionPanelHeaderProps extends IColorProps, IBgColorProps, ITagProps, ICommonsComponentProps, IDensityProps, IRoundedProps, IBorderProps, IPaddingProps, IMarginProps, IAdjacentProps, IRippleProps, IActiveProps, IHoverProps, ITypographyProps {
+export interface IExpansionPanelHeaderProps extends IColorProps, IBgColorProps, ITagProps, ICommonsComponentProps, IDensityProps, IRoundedProps, IBorderProps, IPaddingProps, IMarginProps, IAdjacentProps, IRippleProps, IActiveProps, IHoverProps, Pick<ITypographyProps, 'fontSize' | 'lineHeight'> {
     expandIcon?: TIcon
     collapseIcon?: TIcon
     hideActions?: boolean

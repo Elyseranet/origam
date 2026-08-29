@@ -24,7 +24,7 @@ import type { ISizeProps } from '../Commons/size.interface'
 import type { ITypographyProps } from '../Commons/typography.interface'
 import type { IValidationProps } from '../Commons/validation.interface'
 
-export interface IInputProps extends ICommonsComponentProps, IDensityProps, IPaddingProps, IMarginProps, IRoundedProps, IColorProps, IBgColorProps, IBorderProps, IElevationProps, IDimensionProps, IDirectionProps, IValidationProps, IAdjacentProps, ISizeProps, ITypographyProps {
+export interface IInputProps extends ICommonsComponentProps, IDensityProps, IPaddingProps, IMarginProps, IRoundedProps, IColorProps, IBgColorProps, IBorderProps, IElevationProps, IDimensionProps, IDirectionProps, IValidationProps, IAdjacentProps, ISizeProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight'> {
     centerAffix?: boolean
     hideDetails?: boolean | string
     hideSpinButtons?: boolean

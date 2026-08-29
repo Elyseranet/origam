@@ -26,7 +26,7 @@ import type { ITypographyProps } from '../Commons/typography.interface'
 
 import type { TIcon } from '../../types/Icon/icon.type'
 
-export interface IAvatarProps extends ICommonsComponentProps, IDensityProps, IRoundedProps, ISizeProps, ITagProps, IColorProps, IBgColorProps, IPaddingProps, IMarginProps, IBorderProps, IElevationProps, IHoverProps, IActiveProps, ITypographyProps {
+export interface IAvatarProps extends ICommonsComponentProps, IDensityProps, IRoundedProps, ISizeProps, ITagProps, IColorProps, IBgColorProps, IPaddingProps, IMarginProps, IBorderProps, IElevationProps, IHoverProps, IActiveProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'> {
     /**
      * Renders an icon inside the avatar (centered). Mutually exclusive
      * with `image` and `text`: image wins, then icon, then text.

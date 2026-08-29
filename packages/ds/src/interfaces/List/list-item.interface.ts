@@ -41,7 +41,7 @@ import type { TListItemSlot } from '../../types/List/list-item.type'
  * same expression `.origam-field__input` uses, floor included, so a `small` row
  * at `compact` density holds 28px instead of collapsing to 20px.
  */
-export interface IListItemProps extends IBorderProps, ICommonsComponentProps, IDensityProps, IDimensionProps, IElevationProps, IRoundedProps, ISizeProps, ITagProps, ILinkProps, IColorProps, IBgColorProps, IRippleProps, IPaddingProps, IMarginProps, IAdjacentProps, IActiveProps, IHoverProps, ITypographyProps {
+export interface IListItemProps extends IBorderProps, ICommonsComponentProps, IDensityProps, IDimensionProps, IElevationProps, IRoundedProps, ISizeProps, ITagProps, ILinkProps, IColorProps, IBgColorProps, IRippleProps, IPaddingProps, IMarginProps, IAdjacentProps, IActiveProps, IHoverProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'> {
     active?: boolean
     activeClass?: string
     disabled?: boolean
