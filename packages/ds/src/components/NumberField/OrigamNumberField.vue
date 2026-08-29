@@ -1,7 +1,6 @@
 <template>
 	<origam-input
 			v-if="compact"
-			:id="id"
 			ref="origamCompactInputRef"
 			v-model="model"
 			:validation-value="model"
@@ -849,6 +848,19 @@
 	const handleCompactDecrement = () => {
 		toggleUpDown(false)
 	}
+	/*********************************************************
+	 * useStyle
+	 *
+	 * @description
+	 * #421 — the compact branch's `<origam-input>` deliberately does NOT
+	 * bind this `id` as a prop (see its template): the real compact
+	 * control (the native `<input>`, bound to this SAME `id`) sits inside
+	 * a `#default` slot with no scope, so it never depended on
+	 * `OrigamInput` echoing the id back. Forwarding it there too would,
+	 * once `OrigamInput`'s own root started rendering `:id` (#421), paint
+	 * the identical id on two DOM elements at once (the wrapper AND the
+	 * real input).
+	 ********************************************************/
 	const {id, css, load, isLoaded, unload} = useStyle(numberFieldStyles, () => props.id)
 
 

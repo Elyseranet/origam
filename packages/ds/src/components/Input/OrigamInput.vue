@@ -1,5 +1,6 @@
 <template>
 	<div
+			:id="id"
 			v-contrast
 			:class="inputClasses"
 			:style="inputStyles"
