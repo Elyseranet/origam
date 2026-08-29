@@ -264,7 +264,7 @@
 		emits('click:clear', e)
 	}
 	const handleAppendCLick = (e: MouseEvent) => {
-		selectAll(!allSelected)
+		selectAll(!allSelected.value)
 		emits('click:append', e)
 	}
 	// No "select all" business logic attached here — unlike the append

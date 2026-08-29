@@ -112,8 +112,8 @@
 
 	const sortedItems = (column: IInternalDataTableHeader) => {
 		return sortBy.value.findIndex((x: IDataTableSortItem) => {
-			return x.key === column.key! + 1
-		})
+			return x.key === column.key
+		}) + 1
 	}
 
 	const getFixedStyles = (column: IInternalDataTableHeader, y: number): CSSProperties | undefined => {
