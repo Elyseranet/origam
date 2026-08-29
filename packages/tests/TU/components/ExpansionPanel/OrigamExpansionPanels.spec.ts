@@ -164,3 +164,56 @@ describe('OrigamExpansionPanels — disabled', () => {
         expect(modelUpdates(wrapper)).toHaveLength(0)
     })
 })
+
+// ---------------------------------------------------------------------------
+// #420 — a CLOSED panel's #default-slot body must stay hidden. `hasContent`
+// on `<OrigamExpansionPanel>` used to check `slots.content` (never true: this
+// container forwards its own `content`/`content.{index}` slot to the
+// CHILD's `#default`, never to a slot literally named `content`) instead of
+// `slots.default`. Without a true `hasContent`, the template fell through
+// to `<slot v-else name="default"/>` — bypassing `<origam-expansion-panel
+// -content>` (and its `v-show`, `role="region"`, `aria-labelledby`, lazy
+// mount, transition) entirely. The body rendered fully visible even though
+// the panel was never opened.
+// ---------------------------------------------------------------------------
+
+describe('OrigamExpansionPanels — #420 closed panel hides its #default-slot body', () => {
+    // Content is lazy by default (`useLazy`): a never-opened panel does not
+    // even MOUNT its slot content, so `.secret` legitimately does not exist
+    // in the DOM yet. That is a stronger guarantee than merely hidden — the
+    // pre-fix defect was that the text rendered (and was visible) regardless.
+    it('never opened: the body text is absent and the panel carries no --active class', () => {
+        const wrapper = mountPanels('', `
+            <origam-expansion-panel value="one" title="One">
+                <p class="secret">Secret body text</p>
+            </origam-expansion-panel>
+        `)
+
+        expect(wrapper.text()).not.toContain('Secret body text')
+        expect(wrapper.html()).not.toContain('origam-expansion-panel--active')
+    })
+
+    it('is wrapped by origam-expansion-panel-content (not the raw v-else passthrough)', () => {
+        const wrapper = mountPanels('', `
+            <origam-expansion-panel value="one" title="One">
+                <p class="secret">Secret body text</p>
+            </origam-expansion-panel>
+        `)
+
+        expect(wrapper.find('.origam-expansion-panel-content').exists()).toBe(true)
+        expect(wrapper.find('.origam-expansion-panel-content[role="region"]').exists()).toBe(true)
+    })
+
+    it('opening the panel reveals the body', async () => {
+        const wrapper = mountPanels('', `
+            <origam-expansion-panel value="one" title="One">
+                <p class="secret">Secret body text</p>
+            </origam-expansion-panel>
+        `)
+
+        await clickHeader(wrapper, 0)
+
+        expect(wrapper.find('.secret').isVisible()).toBe(true)
+        expect(wrapper.html()).toContain('origam-expansion-panel--active')
+    })
+})

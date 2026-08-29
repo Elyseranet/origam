@@ -233,8 +233,26 @@
 	 * @description
 	 * Determines which structural sections to render.
 	 ********************************************************/
+	/*********************************************************
+	 * hasContent (#420)
+	 *
+	 * @description
+	 * `<OrigamExpansionPanels>` forwards its own `content` /
+	 * `content.{index}` slot to this component's `#default` slot (see
+	 * `OrigamExpansionPanels.vue`, the `<template v-if="slots[…] ||
+	 * slots.content" #default>` block) — never to a slot literally named
+	 * `content` on THIS component. No consumer of `<origam-expansion-panel>`
+	 * anywhere in the DS passes a slot named `content`, so `slots.content`
+	 * was always `false` and this computed only ever turned true via the
+	 * `content` PROP. Without a slot or that prop, the template fell to the
+	 * `v-else` branch (`<slot v-else name="default"/>`), which bypasses
+	 * `<origam-expansion-panel-content>` entirely — no `v-show`, no `role=
+	 * "region"`, no `aria-labelledby`, no lazy mount, no transition. A
+	 * closed panel's body rendered anyway because it was never wrapped in
+	 * the component that hides it at rest.
+	 ********************************************************/
 	const hasContent = computed(() => {
-		return slots.content || !!props.content
+		return slots.default || !!props.content
 	})
 	const hasHeader = computed(() => {
 		return slots.header || slots.title || slots.prepend || slots.append || !!props.title
