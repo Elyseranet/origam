@@ -40,8 +40,8 @@
 			>
 				<div
 						v-if="hasTitle"
-						key="title"
 						:id="titleId"
+						key="title"
 						class="origam-card-header__title"
 						:style="titleTypographyStyles"
 				>
