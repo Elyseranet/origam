@@ -36,7 +36,7 @@
  * DataTableRows, DefaultsProvider) : ils ne sont PAS corrigés ici.
  */
 
-import { computed, ref } from 'vue'
+import { computed, h, ref } from 'vue'
 
 import { ORIGAM_EXPANSION_PANEL_KEY } from '@origam/consts/ExpansionPanel/expansion-panel.const'
 import { ORIGAM_ITEM_GROUP_KEY } from '@origam/consts/ItemGroup/item-group.const'
@@ -352,6 +352,9 @@ export type TIdForwardingFixture = {
     props?: Record<string, unknown>
     /** Factory — jamais un objet partagé entre montages. */
     provide?: () => Record<symbol, unknown>
+    /** Slots — nécessaire pour les composants qui ne délèguent l'id qu'au
+     *  contenu du slot `default` (ex. `<OrigamField>` via `slotProps.id`). */
+    slots?: Record<string, (scope: any) => unknown>
 }
 
 export const ID_FORWARDING_FIXTURES: Record<string, TIdForwardingFixture> = {
@@ -439,5 +442,19 @@ export const ID_FORWARDING_FIXTURES: Record<string, TIdForwardingFixture> = {
     OrigamOverlayScrim: {props: {active: true}},
 
     /* ---------- not-rendered — renderless structural component ---------- */
-    OrigamDefaultsProvider: {}
+    OrigamDefaultsProvider: {},
+
+    /* ---------- controle de validation — les 2 faux positifs connus ----------
+     * #372/#375 : NE PAS "corriger" ces deux composants — leur code est deja
+     * correct. Un balayage a `{ id: SENTINEL }` nu ne peut pas le voir :
+     *   - OrigamField delegue l'id au VRAI controle via le slot `default`
+     *     (`slotProps.id`) — jamais rempli par le balayage isole.
+     *   - OrigamCommandPalette a `modelValue: false` par defaut ; `v-if`
+     *     empeche tout rendu, et le stub `teleport: true` de VTU laisse une
+     *     coquille non vide sans la sentinelle (faux `lost`, pas un vrai).
+     * Si le harnais est correct, les DEUX basculent en root/descendant. */
+    OrigamField: {
+        slots: {default: (scope: any) => h('input', {id: scope?.id})}
+    },
+    OrigamCommandPalette: {props: {modelValue: true}}
 }

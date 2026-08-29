@@ -130,6 +130,7 @@ for (const [path, mod] of Object.entries(modules)) {
         try {
             wrapper = mount(Cmp, {
                 props: { id: SENTINEL, ...fixture?.props },
+                slots: fixture?.slots,
                 global: {
                     plugins: [origam],
                     stubs: { teleport: true, transition: false },
