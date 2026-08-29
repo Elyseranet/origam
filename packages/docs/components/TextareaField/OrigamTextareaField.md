@@ -219,6 +219,37 @@ Markdown. Sanitise once on read (`sanitizeHtml`) if your stored
 content predates origam — the editor will then take over and keep
 everything inside the allowlist.
 
+## Typography
+
+`lineHeight` sets `--origam-textarea-field__rich-content---line-height`,
+read directly by the rich-content SCSS.
+
+`fontWeight`, `fontSize` and `letterSpacing` reach the visible surfaces by a
+different path than their own `textarea-field__rich-content` prefix (which
+none of them are read from): `<OrigamTextareaField>` forwards its own props
+to the nested `<OrigamInput>` AND `<OrigamField>` (which itself forwards
+again to `<OrigamLabel>`). `fontWeight` cascades from the `<OrigamInput>`
+root's own painted `font-weight` into the rich-mode contenteditable div
+(inherited CSS property, unblocked); `fontWeight`, `fontSize` and
+`letterSpacing` also all reach the field's visible label via the
+`OrigamField` → `OrigamLabel` forward (see the `OrigamField` doc). In the
+default **plain** mode (a native `<textarea>`), `fontSize`/`fontWeight`/
+`fontFamily` do NOT inherit from `<OrigamInput>`'s root — form controls
+don't inherit font metrics from ancestors by default — so only the label
+and (in `mode="rich"`) the rich content's `fontWeight` show the effect.
+
+| Prop            | Type             | Default | Description |
+|------------------|------------------|---------|-------------|
+| `fontSize`      | `TFontSize`      | —       | Reaches the visible label via the `OrigamField` → `OrigamLabel` forward. |
+| `fontWeight`    | `TFontWeight`    | —       | Reaches the visible label (as above) AND, in `mode="rich"` only, the editable content via CSS inheritance from `OrigamInput`'s root. |
+| `lineHeight`    | `TLineHeight`    | —       | Sets `--origam-textarea-field__rich-content---line-height` directly. |
+| `letterSpacing` | `TLetterSpacing` | —       | Reaches the visible label via the `OrigamField` → `OrigamLabel` forward. |
+
+> `fontFamily` was removed from `ITextareaFieldProps` (issue #501) — no
+> surface reads it, including the forwarded `OrigamLabel` (whose own
+> `fontFamily` is likewise unread). `fontFamily` is a project-level setting
+> configured once on `OrigamApp`.
+
 ## Design tokens
 
 | CSS variable | Default | Description |

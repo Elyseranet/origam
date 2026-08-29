@@ -96,7 +96,7 @@ export interface IVideoSlots {
 /**
  * Props for `<OrigamVideo>`.
  */
-export interface IVideoProps extends ICommonsComponentProps, IColorProps, IBgColorProps, IDimensionProps, IRoundedProps, IBorderProps, IMarginProps, IPaddingProps, IElevationProps, ITypographyProps {
+export interface IVideoProps extends ICommonsComponentProps, IColorProps, IBgColorProps, IDimensionProps, IRoundedProps, IBorderProps, IMarginProps, IPaddingProps, IElevationProps, Pick<ITypographyProps, 'fontSize'> {
     /**
      * Media URL — either a single string for `<video src>`, or an array
      * of `<source>` descriptors when multiple formats are provided. The

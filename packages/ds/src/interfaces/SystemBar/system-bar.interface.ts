@@ -13,7 +13,7 @@ import type { ILayoutItemProps } from '../Commons/layout.interface'
 import type { IRoundedProps } from '../Commons/rounded.interface'
 import type { ITypographyProps } from '../Commons/typography.interface'
 
-export interface ISystemBarProps extends ICommonsComponentProps, ITagProps, IElevationProps, IColorProps, IBgColorProps, ILayoutItemProps, IRoundedProps, IBorderProps, IDimensionProps, ITypographyProps {
+export interface ISystemBarProps extends ICommonsComponentProps, ITagProps, IElevationProps, IColorProps, IBgColorProps, ILayoutItemProps, IRoundedProps, IBorderProps, IDimensionProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'> {
     window?: boolean
 }
 

@@ -150,7 +150,7 @@ export interface IAudioProps
         IPositionProps,
         IColorProps,
         IBgColorProps,
-        ITypographyProps {
+        Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight'> {
     /**
      * Visual variant of the audio surface.
      *

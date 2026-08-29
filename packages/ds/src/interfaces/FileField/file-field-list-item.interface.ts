@@ -2,7 +2,7 @@ import type { IColorProps } from '../Commons/color.interface'
 import type { ICommonsComponentProps } from '../Commons/commons.interface'
 import type { ITypographyProps } from '../Commons/typography.interface'
 
-export interface IFileFieldListItemProps extends ICommonsComponentProps, IColorProps, ITypographyProps {
+export interface IFileFieldListItemProps extends ICommonsComponentProps, IColorProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight'> {
     file: File
     index: number
     progress?: number

@@ -28,7 +28,7 @@ import type { ISizeProps } from '../Commons/size.interface'
 import type { ITypographyProps } from '../Commons/typography.interface'
 import type { IVariantProps } from '../Commons/variant.interface'
 
-export interface IFieldProps extends ICommonsComponentProps, ILoaderProps, IColorProps, IBgColorProps, IAdjacentInnerProps, IFocusProps, IDensityProps, ILabelProps, IActiveProps, IVariantProps, IRoundedProps, IElevationProps, ISizeProps, ITypographyProps {
+export interface IFieldProps extends ICommonsComponentProps, ILoaderProps, IColorProps, IBgColorProps, IAdjacentInnerProps, IFocusProps, IDensityProps, ILabelProps, IActiveProps, IVariantProps, IRoundedProps, IElevationProps, ISizeProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'> {
     centerAffix?: boolean
     dirty?: boolean
     disabled?: boolean

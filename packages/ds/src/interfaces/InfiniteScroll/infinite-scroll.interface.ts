@@ -27,7 +27,7 @@ import type {
  * under issue #364 — this file used to hold both distinct component
  * surfaces.
  ********************************************************/
-export interface IInfiniteScrollProps extends ICommonsComponentProps, IColorProps, IBgColorProps, IDimensionProps, ITagProps, IDirectionProps, ITypographyProps {
+export interface IInfiniteScrollProps extends ICommonsComponentProps, IColorProps, IBgColorProps, IDimensionProps, ITagProps, IDirectionProps, Pick<ITypographyProps, 'fontSize'> {
     side?: TInfiniteScrollSide
     mode?: TInfiniteScrollMode
     loadMoreText?: string

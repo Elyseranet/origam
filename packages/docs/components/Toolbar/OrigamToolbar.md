@@ -97,7 +97,9 @@ Renders inline (`display: inline-flex`) rather than stretching full width.
 These props override the matching `--origam-toolbar__title---*` CSS variable via an inline
 custom property on `div.origam-toolbar__title`. The `.origam-title` inside that div reads
 the vars so all four props have a real visual effect.
-`fontFamily` is not exposed (no `font-family` rule in `__title .origam-title`).
+`fontFamily` was removed from `IToolbarProps` (issue #501) — no `font-family`
+rule in `__title .origam-title`. `fontFamily` is a project-level setting
+configured once on `OrigamApp`.
 
 | Prop | Type | Values | CSS variable overridden |
 |---|---|---|---|

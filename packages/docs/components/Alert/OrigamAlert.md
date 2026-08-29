@@ -73,8 +73,10 @@ const visible = ref(true)
 corresponding CSS variables on the `__title` BEM child (`<span class="origam-alert__title">`).
 The styles are bound inline on that element via `useTypography(props, 'alert__title')`.
 
-> `fontFamily` is part of `ITypographyProps` but is not read by the `__title`
-> SCSS — it emits its var but has no visual effect on this component.
+> `fontFamily` is not part of this component's typed surface — `IAlertProps`
+> narrows `ITypographyProps` to the props the `__title` SCSS actually reads
+> (issue #501). `fontFamily` is a project-level setting (configured once on
+> `OrigamApp`), not a per-instance override.
 
 ```vue
 <template>
@@ -190,7 +192,7 @@ The styles are bound inline on that element via `useTypography(props, 'alert__ti
 
 `fontSize`, `fontWeight`, `letterSpacing` and `lineHeight` target the `__title`
 BEM child — see [Typography props](#typography-props) above. `fontFamily` is
-declared by `ITypographyProps` but has no visual effect here.
+not part of this component's props (project-level setting, see issue #501).
 
 ### Identity
 

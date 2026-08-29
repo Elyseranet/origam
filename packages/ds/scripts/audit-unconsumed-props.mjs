@@ -54,7 +54,44 @@ function stripComments (src) {
 /* 1. interface graph                                                  */
 /* ------------------------------------------------------------------ */
 
-/** name -> { own: Set<string>, extends: string[], file } */
+/**
+ * Split a heritage clause on top-level commas only — a naive `.split(',')`
+ * breaks apart the SECOND argument of `Pick<X, 'a' | 'b'>` / `Omit<X, 'a'>`,
+ * corrupting every other parent listed after it (issue #501: measured on
+ * `IAudioProps extends …, Pick<ITypographyProps, 'fontSize' | 'fontWeight'
+ * | 'lineHeight'> {` — the naive split turned this into two bogus parent
+ * tokens, `Pick` and `'fontSize' | 'fontWeight' | 'lineHeight'>`, neither of
+ * which resolves, silently dropping all three picked props from every
+ * consumer of `IAudioProps`, e.g. `IParallaxProps`).
+ */
+function splitTopLevel (str, sep = ',') {
+    const parts = []
+    let depth = 0
+    let current = ''
+    for (const ch of str) {
+        if (ch === '<' || ch === '(' || ch === '[') depth++
+        else if (ch === '>' || ch === ')' || ch === ']') depth--
+        if (ch === sep && depth === 0) {
+            parts.push(current)
+            current = ''
+        } else {
+            current += ch
+        }
+    }
+    if (current) parts.push(current)
+    return parts
+}
+
+/** Parses `Pick<Base, 'a' | 'b'>` / `Omit<Base, 'a' | 'b'>` → { kind, base, keys }, else null. */
+function parseNarrowing (token) {
+    const m = /^(Pick|Omit)<\s*([A-Za-z0-9_]+)\s*,\s*(.+)>$/.exec(token)
+    if (!m) return null
+    const [, kind, base, keysExpr] = m
+    const keys = [...keysExpr.matchAll(/'([^']+)'|"([^"]+)"/g)].map((k) => k[1] ?? k[2])
+    return { kind: kind === 'Pick' ? 'pick' : 'omit', base, keys }
+}
+
+/** name -> { own: Set<string>, extends: string[], narrowed: Array<{kind,base,keys}>, file } */
 const INTERFACES = new Map()
 
 function indexInterfaces () {
@@ -65,10 +102,14 @@ function indexInterfaces () {
         let m
         while ((m = re.exec(src))) {
             const name = m[1]
-            const ext = (m[2] || '')
-                .split(',')
-                .map((s) => s.trim().replace(/<.*$/, ''))
-                .filter(Boolean)
+            const rawParents = splitTopLevel(m[2] || ',').map((s) => s.trim()).filter(Boolean)
+            const ext = []
+            const narrowed = []
+            for (const raw of rawParents) {
+                const pick = parseNarrowing(raw)
+                if (pick) narrowed.push(pick)
+                else ext.push(raw.replace(/<.*$/, ''))
+            }
             // capture the body with brace matching
             let depth = 1
             let i = re.lastIndex
@@ -78,7 +119,7 @@ function indexInterfaces () {
                 i++
             }
             const body = src.slice(re.lastIndex, i - 1)
-            INTERFACES.set(name, { own: ownMembers(body), extends: ext, file })
+            INTERFACES.set(name, { own: ownMembers(body), extends: ext, narrowed, file })
         }
     }
 }
@@ -124,6 +165,14 @@ function resolveInterface (name, seen = new Set()) {
     if (!def) return out
     for (const parent of def.extends) {
         for (const [k, v] of resolveInterface(parent, seen)) if (!out.has(k)) out.set(k, v)
+    }
+    for (const { kind, base, keys } of def.narrowed) {
+        const baseMembers = resolveInterface(base, seen)
+        if (kind === 'pick') {
+            for (const key of keys) if (baseMembers.has(key) && !out.has(key)) out.set(key, baseMembers.get(key))
+        } else {
+            for (const [k, v] of baseMembers) if (!keys.includes(k) && !out.has(k)) out.set(k, v)
+        }
     }
     for (const k of def.own) out.set(k, name)
     if (seen.size === 1) RESOLVED.set(name, out)

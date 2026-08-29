@@ -10,7 +10,7 @@ import type { ITypographyProps } from '../Commons/typography.interface'
 
 import type { TKbdVariant } from '../../types/Kbd/kbd.type'
 
-export interface IKbdProps extends ICommonsComponentProps, IColorProps, IBgColorProps, ISizeProps, IBorderProps, IRoundedProps, ITypographyProps {
+export interface IKbdProps extends ICommonsComponentProps, IColorProps, IBgColorProps, ISizeProps, IBorderProps, IRoundedProps, Pick<ITypographyProps, 'fontFamily' | 'fontSize' | 'fontWeight'> {
     /** Single key label (e.g. "⌘", "Ctrl", "A"). Overridden by the default slot. */
     text?: string
     /** Composed shortcut rendered as individual nested `<kbd>` elements (e.g. ['Ctrl', 'Shift', 'Z']). */

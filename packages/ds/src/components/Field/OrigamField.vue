@@ -318,8 +318,18 @@
 	 * The SCSS reads this var on &__label--floating (the animated floating
 	 * label). The var is also consumed by the JS animation scale calculation
 	 * (line: `getPropertyValue('--origam-field__label---font-size')`).
-	 * Only fontSize has a real visual effect — fontWeight / lineHeight / etc.
-	 * are not read by the __label SCSS.
+	 *
+	 * ⛔ fontWeight / lineHeight / letterSpacing are NOT read via THIS
+	 * `field__label` prefix — but they are NOT inert either (issue #501
+	 * correction). `labelProps` / `floatingLabelProps` below forward the
+	 * full prop set to the nested `<OrigamLabel>` via
+	 * `origamLabelRef.value.filterProps(props, …)`, and `OrigamLabel` has
+	 * its OWN `useTypography(props, 'label')` call that DOES read those
+	 * three (`--origam-label---font-weight` / `---line-height` /
+	 * `---letter-spacing`) — confirmed via `@vue/test-utils` + `nextTick`
+	 * (the ref is `undefined` on the first render; the forward lands on
+	 * the second, invisible-to-paint render per `useProps`'s own doc
+	 * comment). Only `fontFamily` is genuinely dead on both prefixes.
 	 ********************************************************/
 	const {typographyStyles} = useTypography(props, 'field__label')
 

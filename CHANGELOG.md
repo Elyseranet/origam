@@ -13,6 +13,130 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### ⚠️ BREAKING — 88 dead typography (component, prop) pairs removed across 40 components
+
+`useTypography(props, prefix)` writes an inline CSS custom property per
+typography prop passed (`fontFamily` / `fontSize` / `fontWeight` /
+`lineHeight` / `letterSpacing`) — but writing the variable paints nothing
+until some stylesheet rule reads it back. Issue #501 measured 94 (component,
+prop) pairs across 40 components where no rule ever did: typed, offered by
+autocompletion, documented — and completely inert. The arbitrated fix is the
+opposite of wiring 94 SCSS rules to force an effect: these props are
+**removed** from the components that never painted them. `fontSize` is
+untouched everywhere (98 % already painted); it was never part of this cut.
+
+**The real count is 88, not 94** — re-measuring found the ticket's own
+scanner had 2 false positives, both from the SAME blind spot: it checks
+whether a component's OWN CSS-var prefix is read, but cannot see a prop
+value reaching ANOTHER component's prefix through prop-forwarding.
+`<OrigamField>` forwards its full prop set to a nested `<OrigamLabel>`
+(`useProps().filterProps()`), and `OrigamLabel` has its own
+`useTypography(props, 'label')` call that DOES read `fontWeight` /
+`lineHeight` / `letterSpacing` — confirmed with `@vue/test-utils` +
+`nextTick()` (the forward lands on the second render; `useTypography`'s own
+doc explains why that's still what a real paint sees). `<OrigamTextareaField>`
+forwards to both `<OrigamInput>` and `<OrigamField>` (which forwards again to
+`<OrigamLabel>`), so it inherits the same three, plus `fontSize`, plus a
+second live path: `fontWeight` cascades from `<OrigamInput>`'s own painted
+root `font-weight` into the `mode="rich"` contenteditable div (an ordinary
+CSS-inherited property, unblocked — confirmed via `getComputedStyle` against
+a live Histoire render, 400→700 on both elements). Only `fontFamily` is
+genuinely dead on every path for both components. `OrigamOtpInputField` was
+independently verified NOT to share this leak (it forwards only to
+`<origam-field>` with `label` excluded, so no nested `<OrigamLabel>` renders
+in the default case) — its 4 dead props stand as measured. See
+`packages/ds/scripts/audit-unconsumed-props.mjs` for the parser bug this
+also surfaced (a `Pick<X, 'a' | 'b'>` heritage clause was mis-split on its
+internal comma, corrupting sibling parents — fixed alongside this removal).
+
+**GLOBAL vs SPECIFIC** — the triage the removal follows:
+- **`fontFamily` (37 of the 88) is a project-level setting**: every origam
+  app is wrapped in `<OrigamApp>`, so the font family is configured once,
+  globally — never per component instance. All 37 dead `fontFamily`
+  occurrences are removed without a case-by-case visual-effect argument;
+  the architecture argument alone is sufficient. Migration: set the family
+  via your theme's `vars.typo.family.*` (see
+  `packages/ds/src/themes/origam.theme.ts`), not via a component prop.
+- **`fontWeight` (8) / `lineHeight` (20) / `letterSpacing` (23) are
+  component-specific** and were judged one at a time: a pair is removed
+  only where no stylesheet rule — including through a forwarding chain —
+  ever reads the resulting CSS variable. Migration: there is no drop-in
+  prop replacement; restyle via the component's own semantic tokens
+  (`--origam-{component}---*`) in your theme, or via the component's
+  `color`/`variant`/`density` props where the effect is actually themeable.
+
+**Removed, by component:**
+
+| Component | Removed props |
+|---|---|
+| `OrigamAlert` | `fontFamily` |
+| `OrigamAudio` | `fontFamily`, `letterSpacing` |
+| `OrigamAvatar` | `fontFamily` |
+| `OrigamBadge` | `fontFamily`, `lineHeight`, `letterSpacing` |
+| `OrigamBracket` | `fontFamily`, `lineHeight` |
+| `OrigamBracketCompetitor` | `fontFamily`, `lineHeight`, `letterSpacing` |
+| `OrigamBracketRound` | `fontFamily`, `lineHeight` |
+| `OrigamBtn` | `fontFamily` |
+| `OrigamCardHeader` | `fontFamily` |
+| `OrigamCardText` | `fontFamily`, `lineHeight` |
+| `OrigamChip` | `fontFamily`, `lineHeight`, `letterSpacing` |
+| `OrigamClipboard` | `fontFamily`, `lineHeight`, `letterSpacing` |
+| `OrigamCode` | `fontWeight`, `letterSpacing` |
+| `OrigamCommandPalette` | `fontFamily`, `fontWeight`, `lineHeight`, `letterSpacing` |
+| `OrigamDataList` | `fontFamily` |
+| `OrigamEmptyState` | `letterSpacing` |
+| `OrigamExpansionPanelHeader` | `fontFamily`, `fontWeight`, `letterSpacing` |
+| `OrigamField` | `fontFamily` |
+| `OrigamFileFieldDragNDropItem` | `fontFamily`, `lineHeight`, `letterSpacing` |
+| `OrigamFileFieldListItem` | `fontFamily`, `lineHeight`, `letterSpacing` |
+| `OrigamForm` | `fontFamily` |
+| `OrigamInfiniteScroll` | `fontFamily`, `fontWeight`, `lineHeight`, `letterSpacing` |
+| `OrigamInlineEdit` | `fontFamily`, `lineHeight`, `letterSpacing` |
+| `OrigamInput` | `fontFamily`, `letterSpacing` |
+| `OrigamKbd` | `lineHeight`, `letterSpacing` |
+| `OrigamLabel` | `fontFamily` |
+| `OrigamListItem` | `fontFamily` |
+| `OrigamListSubheader` | `fontFamily`, `letterSpacing` |
+| `OrigamMessages` | `fontFamily`, `fontWeight`, `letterSpacing` |
+| `OrigamOtpInputField` | `fontFamily`, `fontWeight`, `lineHeight`, `letterSpacing` |
+| `OrigamPagination` | `fontFamily`, `lineHeight`, `letterSpacing` |
+| `OrigamPickerTitle` | `fontFamily`, `lineHeight` |
+| `OrigamSnackbarItem` | `fontFamily`, `fontWeight`, `lineHeight`, `letterSpacing` |
+| `OrigamSystemBar` | `fontFamily` |
+| `OrigamTab` | `fontFamily`, `lineHeight` |
+| `OrigamTable` | `fontFamily`, `lineHeight`, `letterSpacing` |
+| `OrigamTextareaField` | `fontFamily` |
+| `OrigamToolbar` | `fontFamily` |
+| `OrigamTooltip` | `fontFamily`, `letterSpacing` |
+| `OrigamVideo` | `fontFamily`, `fontWeight`, `lineHeight`, `letterSpacing` |
+
+**Migration:**
+
+```diff
+- <OrigamBtn font-family="mono">Copy</OrigamBtn>
++ <!-- fontFamily is a project-level setting — configure it once via -->
++ <!-- your theme's vars.typo.family, not per component instance. -->
++ <OrigamBtn>Copy</OrigamBtn>
+```
+
+```diff
+- <OrigamBadge line-height="tight" letter-spacing="wide">3</OrigamBadge>
++ <!-- no drop-in replacement — line-height/letter-spacing on Badge never -->
++ <!-- read a stylesheet rule on any surface. Restyle via a theme override -->
++ <!-- of --origam-badge__badge---line-height / ---letter-spacing directly. -->
++ <OrigamBadge>3</OrigamBadge>
+```
+
+**Not affected** — `OrigamCode` (`fontFamily`/`fontSize`/`lineHeight`
+kept), `OrigamKbd` (`fontFamily`/`fontSize`/`fontWeight` kept), `OrigamTitle`,
+`OrigamBlockquote`, `OrigamTextMask` (fully painted, untouched) all keep
+their full typed surface — every prop on those genuinely reaches a
+stylesheet rule. `OrigamField` / `OrigamTextareaField` keep `fontSize` /
+`fontWeight` / `lineHeight` / `letterSpacing` (see above) — only
+`fontFamily` was removed from either.
+
+Ref: issue #501.
+
 ### ⚠️ BREAKING — `activeBgColor` / `hoverBgColor` / `activeColor` / `hoverBgColor` removed
 
 The flat per-state color override props — `activeBgColor`, `hoverBgColor`,

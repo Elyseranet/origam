@@ -12,7 +12,7 @@ import type { ITypographyProps } from '../Commons/typography.interface'
 // PickerTitle SCSS read `var(--origam-picker-title---color)` from
 // tokens, but the consumer-facing `<origam-picker-title color="primary">`
 // was a silent no-op because the prop wasn't declared on the interface.
-export interface IPickerTitleProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, ITypographyProps {
+export interface IPickerTitleProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'letterSpacing'> {
     title?: string
 }
 

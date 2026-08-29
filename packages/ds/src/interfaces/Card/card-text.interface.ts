@@ -23,6 +23,6 @@ export interface ICardTextSlots {
  ********************************************************/
 export interface ICardTextEmits {}
 
-export interface ICardTextProps extends ICommonsComponentProps, ITagProps, IBorderProps, IRoundedProps, IPaddingProps, IMarginProps, IDensityProps, ITypographyProps {
+export interface ICardTextProps extends ICommonsComponentProps, ITagProps, IBorderProps, IRoundedProps, IPaddingProps, IMarginProps, IDensityProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'letterSpacing'> {
     text?: string | number
 }

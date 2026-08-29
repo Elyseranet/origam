@@ -14,7 +14,7 @@ import type { IPaddingProps } from '../Commons/padding.interface'
 import type { IRoundedProps } from '../Commons/rounded.interface'
 import type { ITypographyProps } from '../Commons/typography.interface'
 
-export interface ICardHeaderProps extends ITagProps, ICommonsComponentProps, IBorderProps, IRoundedProps, IPaddingProps, IMarginProps, IDensityProps, IAdjacentProps, ITypographyProps {
+export interface ICardHeaderProps extends ITagProps, ICommonsComponentProps, IBorderProps, IRoundedProps, IPaddingProps, IMarginProps, IDensityProps, IAdjacentProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'> {
     subtitle?: string | number
     title?: string | number
 }

@@ -51,9 +51,17 @@ describe('props declared only in an imported interface reach the runtime descrip
     // that made `OrigamTimelineItem.description` disappear when its inline
     // declaration was first removed (it lived ONLY there; `ITimelineEntry`
     // declares a same-named field, which is a different interface entirely).
+    //
+    // 92 → 90 (SliderField) and 70 → 66 (Video): issue #501 — `IInputProps`
+    // (SliderField extends it) narrowed `ITypographyProps` down to its
+    // confirmed-painted subset (fontSize/fontWeight/lineHeight — dropped
+    // fontFamily + letterSpacing, -2); `IVideoProps` narrowed to fontSize
+    // only (dropped fontFamily/fontWeight/lineHeight/letterSpacing, -4).
+    // Both were typed-but-unread on every reachable var — an intentional
+    // API removal, not a regression.
     it.each([
-        [OrigamSliderField, 'OrigamSliderField', 92],
-        [OrigamVideo, 'OrigamVideo', 70],
+        [OrigamSliderField, 'OrigamSliderField', 90],
+        [OrigamVideo, 'OrigamVideo', 66],
         [OrigamTimelineItem, 'OrigamTimelineItem', 16],
         [OrigamTreeview, 'OrigamTreeview', 15],
         [OrigamClientOnly, 'OrigamClientOnly', 2]

@@ -19,7 +19,7 @@ import type { TDataListMode } from '../../types/DataList/data-list.type'
 
 export type { TDataListMode } from "../../types/DataList/data-list.type"
 
-export interface IDataListProps extends ICommonsComponentProps, IAdjacentProps, IColorProps, IBgColorProps, IMarginProps, IPaddingProps, IDensityProps, IBorderProps, IRoundedProps, IElevationProps, ITypographyProps {
+export interface IDataListProps extends ICommonsComponentProps, IAdjacentProps, IColorProps, IBgColorProps, IMarginProps, IPaddingProps, IDensityProps, IBorderProps, IRoundedProps, IElevationProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'> {
     /**
      * Selects the layout. Defaults to `"avatar"` so existing call sites
      * keep their current rendering. Set to `"kv"` for the PDF-aligned

@@ -31,19 +31,21 @@ a full `OrigamBracket` tree.
 
 ### Typography
 
-Props applied to the round title heading (`__title`). Only `fontSize`,
+Props applied to the round title heading (`__title`). `fontSize`,
 `fontWeight`, and `letterSpacing` have a visual effect — the `__title`
 SCSS block reads the corresponding `--origam-bracket-round-title---*`
-variables. `fontFamily` and `lineHeight` emit their var but the SCSS does
-not consume them (no visible effect until the SCSS is extended).
+variables.
 
 | Prop            | Type            | CSS variable emitted                                |
 |-----------------|-----------------|-----------------------------------------------------|
 | `fontSize`      | `TFontSize`     | `--origam-bracket-round-title---font-size`          |
 | `fontWeight`    | `TFontWeight`   | `--origam-bracket-round-title---font-weight`        |
 | `letterSpacing` | `TLetterSpacing`| `--origam-bracket-round-title---letter-spacing`     |
-| `fontFamily`    | `TFontFamily`   | `--origam-bracket-round-title---font-family` (no SCSS rule yet) |
-| `lineHeight`    | `TLineHeight`   | `--origam-bracket-round-title---line-height` (no SCSS rule yet) |
+
+> `fontFamily` and `lineHeight` were removed from `IBracketRoundProps`
+> (issue #501) — the SCSS never read either var. `fontFamily` is a
+> project-level setting configured once on `OrigamApp`, not a per-instance
+> override.
 
 ## Emits
 

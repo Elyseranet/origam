@@ -41,7 +41,7 @@ export type TInlineEditRule = (value: string) => true | string | Promise<true | 
  * is true) — wrapping a heavier component (TextField, …) is not
  * needed and would defeat the keyboard-driven UX.
  */
-export interface IInlineEditProps extends ICommonsComponentProps, ITagProps, ITypographyProps {
+export interface IInlineEditProps extends ICommonsComponentProps, ITagProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight'> {
     /**
      * Current value (v-model target). Accepts both `string` and
      * `number` for ergonomics — the internal draft is normalised to a

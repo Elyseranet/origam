@@ -27,11 +27,9 @@
 							:show-scores="state.showScores"
 							:show-seed="state.showSeed"
 							:interactive="state.interactive"
-							:font-family="state.fontFamily"
 							:font-size="state.fontSize"
 							:font-weight="state.fontWeight"
 							:letter-spacing="state.letterSpacing"
-							:line-height="state.lineHeight"
 					/>
 				</div>
 			</template>
@@ -48,11 +46,9 @@
 					<HstCheckbox v-model="state.showSeed"      title="Show Seed"/>
 				</StoryGroup>
 				<StoryGroup title="Typography">
-					<HstSelect v-model="state.fontFamily"    title="Font Family"     :options="FONT_FAMILY_OPTIONS"/>
 					<HstSelect v-model="state.fontSize"      title="Font Size"       :options="FONT_SIZE_OPTIONS"/>
 					<HstSelect v-model="state.fontWeight"    title="Font Weight"     :options="FONT_WEIGHT_OPTIONS"/>
 					<HstSelect v-model="state.letterSpacing" title="Letter Spacing"  :options="LETTER_SPACING_OPTIONS"/>
-					<HstSelect v-model="state.lineHeight"    title="Line Height"     :options="LINE_HEIGHT_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -171,11 +167,9 @@
 					<HstSelect v-model="state.direction" title="Direction" :options="DIRECTION_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Typography">
-					<HstSelect v-model="state.fontFamily"    title="Font Family"    :options="FONT_FAMILY_OPTIONS"/>
 					<HstSelect v-model="state.fontSize"      title="Font Size"      :options="FONT_SIZE_OPTIONS"/>
 					<HstSelect v-model="state.fontWeight"    title="Font Weight"    :options="FONT_WEIGHT_OPTIONS"/>
 					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
-					<HstSelect v-model="state.lineHeight"    title="Line Height"    :options="LINE_HEIGHT_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Display">
 					<HstCheckbox v-model="state.showRoundTitle" title="Show Round Title"/>
@@ -204,11 +198,9 @@
 	import { useStoryInitState } from '@stories/composables'
 	import {
 		COLOR_OPTIONS,
-		FONT_FAMILY_OPTIONS,
 		FONT_SIZE_OPTIONS,
 		FONT_WEIGHT_OPTIONS,
-		LETTER_SPACING_OPTIONS,
-		LINE_HEIGHT_OPTIONS
+		LETTER_SPACING_OPTIONS
 	} from '@stories/const'
 
 	const DIRECTION_OPTIONS: Array<IOptions<'horizontal' | 'vertical'>> = [
