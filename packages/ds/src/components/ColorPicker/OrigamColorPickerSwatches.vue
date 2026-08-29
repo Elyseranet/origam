@@ -18,7 +18,7 @@
 							@click="handleUpdateColor(color)"
 					>
 						<div :style="{ 'background-color': background(color)}">
-							<template v-if="colorHsv && deepEqual(colorHsv, hsva)">
+							<template v-if="colorHsv && deepEqual(colorHsv, hsva(color))">
 								<origam-icon
 										:color="getContrast(color, '#FFFFFF') > 2 ? 'white' : 'black'"
 										:icon="MDI_ICONS.CHECK_CIRCLE_OUTLINE"
@@ -91,7 +91,18 @@
 	 * Event handlers
 	 ********************************************************/
 
+	/*********************************************************
+	 * handleUpdateColor — disabled guard (#401)
+	 *
+	 * @description
+	 * `disabled` is declared on `IColorPickerSwatchesProps` and forwarded
+	 * by the parent color picker, but was never read anywhere in this
+	 * component — a swatch click emitted `update:colorHsv` regardless of
+	 * the prop's value.
+	 ********************************************************/
 	const handleUpdateColor = (color: TColorType) => {
+		if (props.disabled) return
+
 		const colorUpdate = hsva(color)
 
 		if (colorUpdate) {
