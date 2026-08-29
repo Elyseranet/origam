@@ -49,6 +49,8 @@ import { nextTick } from 'vue'
 import { createOrigam } from '@origam/origam'
 import { writeFileSync } from 'node:fs'
 
+import { ID_FORWARDING_FIXTURES } from './id-forwarding-fixtures'
+
 Object.defineProperty(window, 'matchMedia', {
     writable: true,
     value: vi.fn().mockImplementation((query: string) => ({
@@ -120,11 +122,20 @@ for (const [path, mod] of Object.entries(modules)) {
     if (!declared.includes('id')) continue
 
     it(`${name} — l'id du consommateur atteint le DOM`, async () => {
+        // Harnais — voir id-forwarding-fixtures.ts. Sans entrée pour `name`,
+        // le montage est strictement identique à avant (juste `{ id }`).
+        const fixture = ID_FORWARDING_FIXTURES[name]
+
         let wrapper: any
         try {
             wrapper = mount(Cmp, {
-                props: { id: SENTINEL },
-                global: { plugins: [origam], stubs: { teleport: true, transition: false } }
+                props: { id: SENTINEL, ...fixture?.props },
+                slots: fixture?.slots,
+                global: {
+                    plugins: [origam],
+                    stubs: { teleport: true, transition: false },
+                    provide: fixture?.provide?.()
+                }
             })
         } catch (err) {
             rows.push({
