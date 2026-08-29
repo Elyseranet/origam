@@ -197,8 +197,22 @@
 		})
 	})
 
+	/*********************************************************
+	 * Header/content ARIA cross-reference
+	 *
+	 * @description
+	 * `<OrigamExpansionPanelHeader>` / `<OrigamExpansionPanelContent>` don't
+	 * self-register into a group — they both `inject` this SAME shared
+	 * object. `headerId` / `contentId` are mutable slots each side writes
+	 * its own resolved DOM id into, so the OTHER side can read the REAL
+	 * id for `aria-controls` / `aria-labelledby` instead of guessing the
+	 * generated-fallback naming scheme (#519, #520).
+	 ********************************************************/
+	const headerId = ref<string>()
+	const contentId = ref<string>()
+
 	if (groupItem !== null) {
-		provide(ORIGAM_EXPANSION_PANEL_KEY, groupItem)
+		provide(ORIGAM_EXPANSION_PANEL_KEY, {...groupItem, headerId, contentId})
 	}
 
 	/*********************************************************

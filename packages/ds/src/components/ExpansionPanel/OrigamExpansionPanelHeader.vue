@@ -1,10 +1,10 @@
 <template>
 	<component
 			:is="tag"
-			:id="`expansion-panel-header-${expansionPanel.id}`"
+			:id="headerDomId"
 			v-ripple="ripple"
 			v-contrast
-			:aria-controls="`expansion-panel-content-${expansionPanel.id}`"
+			:aria-controls="expansionPanel.contentId.value"
 			:aria-expanded="isSelected"
 			:class="expansionPanelHeaderClasses"
 			:disabled="isDisabled"
@@ -94,7 +94,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, inject, StyleValue, toRef, useSlots } from 'vue'
+	import { computed, inject, StyleValue, toRef, useSlots, watchEffect } from 'vue'
 	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
 	import OrigamIcon from '../Icon/OrigamIcon.vue'
 
@@ -148,6 +148,24 @@
 	 * @description
 	 * Selection state, expand/collapse toggle, and slot props.
 	 ********************************************************/
+
+	/*********************************************************
+	 * ARIA wiring
+	 *
+	 * @description
+	 * `headerDomId` is this header's own resolved DOM id —
+	 * `props.id` when the consumer supplies one, a generated
+	 * fallback otherwise. Published onto the shared
+	 * `expansionPanel.headerId` slot so the sibling
+	 * `<OrigamExpansionPanelContent>` can point its
+	 * `aria-labelledby` at the REAL id instead of guessing the
+	 * generated-fallback naming scheme (#519, #520).
+	 ********************************************************/
+	const headerDomId = computed(() => props.id || `expansion-panel-header-${expansionPanel.id}`)
+
+	watchEffect(() => {
+		expansionPanel.headerId.value = headerDomId.value
+	})
 
 	/*********************************************************
 	 * Event handlers
