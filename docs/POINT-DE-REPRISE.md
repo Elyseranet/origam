@@ -89,7 +89,7 @@ un faux négatif (#517).
 ### Audit TERMINÉ — dernier lot (session pair `audit-lot-tokens-1`)
 
 Rapport complet : `docs/audit-tableau-2026-08-30.md`, branche **`audit/tableau`**,
-commit **`336fb2af`** (⚠️ non mergé dans `develop`).
+commit **`d6f93e8f`** (⚠️ non mergé dans `develop`).
 
 | ticket | verdict | chiffre remesuré |
 |---|---|---|
