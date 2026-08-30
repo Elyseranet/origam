@@ -43,7 +43,10 @@
 				v-if="hasPrepend"
 				key="prepend"
 				class="origam-chip__prepend"
+				:role="isPrependZoneFocusable ? 'button' : undefined"
+				:tabindex="isPrependZoneFocusable ? 0 : undefined"
 				@click="handleClickPrepend"
+				@keydown="handleKeydownPrepend"
 		>
 			<slot name="prepend">
 				<origam-avatar
@@ -77,7 +80,10 @@
 				v-if="hasAppend"
 				key="append"
 				class="origam-chip__append"
+				:role="isAppendZoneFocusable ? 'button' : undefined"
+				:tabindex="isAppendZoneFocusable ? 0 : undefined"
 				@click="handleClickAppend"
+				@keydown="handleKeydownAppend"
 		>
 			<slot name="append">
 				<origam-avatar
@@ -247,9 +253,22 @@
 	const {
 		onClickPrepend: handleClickPrepend,
 		onClickAppend: handleClickAppend,
+		onKeydownPrepend: handleKeydownPrepend,
+		onKeydownAppend: handleKeydownAppend,
+		isPrependClickable,
+		isAppendClickable,
 		hasPrepend,
 		hasAppend
 	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
+
+	// issue #443 — root renders `<component :is="link.tag.value">`, which is
+	// `<a>` whenever `link.isLink` is true regardless of the `link` PROP
+	// (that prop only gates the chip's OWN `isLink` computed below, not the
+	// tag resolution). A <button>/<a> content model forbids any descendant
+	// with a `tabindex` attribute specified, so the prepend/append zone can
+	// only become its own tab stop when the root is NOT actually an <a>.
+	const isPrependZoneFocusable = computed(() => isPrependClickable.value && !link.isLink.value)
+	const isAppendZoneFocusable = computed(() => isAppendClickable.value && !link.isLink.value)
 
 	const isLink = computed(() => {
 		return props.link && link.isLink.value

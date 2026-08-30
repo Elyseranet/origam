@@ -16,7 +16,10 @@
 					v-if="hasPrepend"
 					key="prepend"
 					class="origam-card-header__prepend"
+					:role="isPrependClickable ? 'button' : undefined"
+					:tabindex="isPrependClickable ? 0 : undefined"
 					@click="handleClickPrepend"
+					@keydown="handleKeydownPrepend"
 			>
 				<slot name="prepend">
 					<origam-avatar
@@ -72,7 +75,10 @@
 					v-if="hasAppend"
 					key="append"
 					class="origam-card-header__append"
+					:role="isAppendClickable ? 'button' : undefined"
+					:tabindex="isAppendClickable ? 0 : undefined"
 					@click="handleClickAppend"
+					@keydown="handleKeydownAppend"
 			>
 				<slot name="append">
 					<origam-avatar
@@ -182,6 +188,10 @@
 	const {
 		onClickPrepend: handleClickPrepend,
 		onClickAppend: handleClickAppend,
+		onKeydownPrepend: handleKeydownPrepend,
+		onKeydownAppend: handleKeydownAppend,
+		isPrependClickable,
+		isAppendClickable,
 		hasPrepend,
 		hasAppend
 	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
