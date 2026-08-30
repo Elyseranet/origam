@@ -105,7 +105,9 @@
       "component/clipboard": "enabled",
       "component/masonry": "enabled",
       "component/text-mask": "enabled",
-      "component/empty-state": "enabled"
+      "component/empty-state": "enabled",
+      "component/calendar": "enabled",
+      "component/chart": "enabled"
     }
   },
   {
@@ -214,7 +216,9 @@
       "component/clipboard": "enabled",
       "component/masonry": "enabled",
       "component/text-mask": "enabled",
-      "component/empty-state": "enabled"
+      "component/empty-state": "enabled",
+      "component/calendar": "enabled",
+      "component/chart": "enabled"
     }
   }
 ]
