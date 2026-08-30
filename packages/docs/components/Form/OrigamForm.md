@@ -60,6 +60,19 @@ Stop validation at the first failed field.
 </template>
 ```
 
+## Hint
+
+A static hint is shown in the same `__details` row as form-level messages
+whenever no error takes priority over it.
+
+```vue
+<template>
+  <OrigamForm hint="All fields are optional unless marked otherwise">
+    <OrigamTextField label="Name" />
+  </OrigamForm>
+</template>
+```
+
 ## Actions slot
 
 ```vue
@@ -102,7 +115,7 @@ Applied to the `__details` area (form-level messages row). All four props have a
 | `letterSpacing` | `TLetterSpacing` | `--origam-form__details---letter-spacing` |
 | `lineHeight` | `TLineHeight` | `--origam-form__details---line-height` |
 
-The `__details` div is only rendered when `hasMessages` is true (form has `errorMessages`, `messages`, or a `#message` slot).
+The `__details` div is only rendered when `hasMessages` is true (form has `errorMessages`, `messages`, `hint`, or a `#message` slot). Priority when several are set: `errorMessages` first, then `hint`, then `messages`.
 
 ## Design tokens
 

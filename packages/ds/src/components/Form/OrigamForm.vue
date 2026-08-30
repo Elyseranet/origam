@@ -161,6 +161,7 @@
 		e.preventDefault()
 		form.reset()
 		resetFormValidation()
+		emits('reset', e)
 	}
 
 	const handleSubmit = (_e: Event) => {
