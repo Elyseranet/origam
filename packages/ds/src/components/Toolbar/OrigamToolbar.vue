@@ -246,7 +246,7 @@
 		overflow: var(--origam-toolbar---overflow);
 
 		position: var(--origam-toolbar---position);
-		z-index: var(--origam-toolbar---zIndex);
+		z-index: var(--origam-toolbar---z-index);
 
 		transform: var(--origam-toolbar---transform);
 		transition-duration: var(--origam-toolbar---transition-duration);
@@ -399,13 +399,20 @@
 			> #{$this}__title {
 				--origam-toolbar__title---margin-inline-start: 16px;
 			}
+			// NOTE: the shorthand --origam-toolbar__{title,prepend,append}---margin-inline
+			// / ---padding-block / ---padding-inline vars used to be read directly by
+			// __title / __prepend / __append below. The pipeline only ever emits the
+			// split -start / -end variants (never the shorthand), so those reads were
+			// unresolvable custom properties with no fallback — the declaration was
+			// silently dropped, not applied. Removed as dead code (#440-2): spacing
+			// is provided by `gap` on __wrapper (see above) plus the -start/-end
+			// vars consumed elsewhere. Confirmed zero visual change before removal.
 		}
 
 		&__prepend {
 			align-items: var(--origam-toolbar__prepend---align-items);
 			align-self: var(--origam-toolbar__prepend---align-self);
 			display: var(--origam-toolbar__prepend---display);
-			margin-inline: var(--origam-toolbar__prepend---margin-inline);
 			height: var(--origam-toolbar__prepend---height);
 			flex-grow: var(--origam-toolbar__prepend---flex-grow);
 			flex-shrink: var(--origam-toolbar__prepend---flex-shrink);
@@ -416,7 +423,6 @@
 			align-items: var(--origam-toolbar__append---align-items);
 			align-self: var(--origam-toolbar__append---align-self);
 			display: var(--origam-toolbar__append---display);
-			margin-inline: var(--origam-toolbar__append---margin-inline);
 			height: var(--origam-toolbar__append---height);
 			flex-grow: var(--origam-toolbar__append---flex-grow);
 			flex-shrink: var(--origam-toolbar__append---flex-shrink);
@@ -430,10 +436,7 @@
 			flex-shrink: var(--origam-toolbar__title---flex-shrink);
 			flex-basis: var(--origam-toolbar__title---flex-basis);
 			align-self: var(--origam-toolbar__title---align-self);
-			padding-block: var(--origam-toolbar__title---padding-block);
-			padding-inline: var(--origam-toolbar__title---padding-inline);
 			min-width: var(--origam-toolbar__title---min-width);
-			margin-inline: var(--origam-toolbar__title---margin-inline);
 			display: var(--origam-toolbar__title---display);
 
 			.origam-title {

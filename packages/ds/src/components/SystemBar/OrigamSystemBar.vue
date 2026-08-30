@@ -76,12 +76,32 @@
 
 	const {ssrBootStyles} = useSsrBoot()
 	const height = computed(() => props.height ?? (props.window ? 32 : 24))
+	/*********************************************************
+	 * explicitElementSize
+	 *
+	 * @description
+	 * #440-3 — `elementSize` (unlike `layoutSize`) makes useLayoutItem
+	 * write a literal `height: {n}px` inline style, flattened by
+	 * useStyle() into a `#origam-system-bar-{n} { height: … }` rule.
+	 * An ID selector always beats the component's own
+	 * `.origam-system-bar--window { height: var(--origam-system-bar---
+	 * height-window, 32px) }` class rule, so the token was dead in the
+	 * one documented usage of the component (inside an OrigamLayout):
+	 * no theme override of the height token could ever apply.
+	 * Only force the literal when the consumer passed an explicit
+	 * `height` prop — an intentional override that should win over the
+	 * theme, same as everywhere else in the DS. Otherwise `elementSize`
+	 * stays undefined so no inline height is emitted and the CSS var /
+	 * theme resolves the visual height; `layoutSize` still carries the
+	 * JS default (24 / 32) for sibling offset math, unchanged.
+	 ********************************************************/
+	const explicitElementSize = computed(() => props.height !== undefined ? height.value : undefined)
 	const {layoutItemStyles} = useLayoutItem({
 		id: props.name,
 		order: computed(() => parseInt(String(props.order ?? 0), 10)),
 		position: shallowRef('top'),
 		layoutSize: height,
-		elementSize: height,
+		elementSize: explicitElementSize,
 		active: computed(() => true),
 		absolute: toRef(props, 'absolute')
 	})
