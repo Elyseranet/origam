@@ -314,6 +314,7 @@
 	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useMargin } from '../../composables/Commons/margin.composable'
 	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
 	import { useRounded } from '../../composables/Commons/rounded.composable'
 
 	import type { IChartLegendItem } from '../../interfaces/Chart/chart.interface'
@@ -422,6 +423,24 @@
 
 	const resolvedBarColor = computed<string>(() => resolveColor(props.barColor))
 	const resolvedLineColor = computed<string>(() => resolveColor(props.lineColor))
+
+	/**
+	 * `barColor` carries a hard `withDefaults()` default ('primary'), so
+	 * `props.barColor` is NEVER `undefined` at render time — a plain
+	 * `props.barColor ?? colorScheme[...]` fallback could never fire.
+	 * Same shadowing shape `useChartAnimationStyle` documents for
+	 * `animationDuration` (#505): the distinguishing test is whether the
+	 * CONSUMER (or a theme) actually touched the prop, not whether the
+	 * resolved value is falsy.
+	 */
+	const wasBarColorPassed = usePassedProps(props, 'OrigamChartPareto')
+
+	const barColorAt = (i: number): string => {
+		if (!wasBarColorPassed('barColor') && props.colorScheme?.length) {
+			return resolveColor(props.colorScheme[i % props.colorScheme.length])
+		}
+		return resolvedBarColor.value
+	}
 
 	/*********************************************************
 	 * Data normalisation — accepts IChartParetoDatum objects
@@ -545,7 +564,7 @@
 				formattedValue: props.yAxisFormat ? props.yAxisFormat(safeValue) : String(safeValue),
 				share,
 				cumulative,
-				color: resolvedBarColor.value,
+				color: barColorAt(i),
 				x,
 				y: barTop,
 				w: barWidth,
