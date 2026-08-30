@@ -1,7 +1,9 @@
 <template>
 	<div
+			:aria-label="label || undefined"
 			:class="otpInputFieldClasses"
 			:style="otpInputFieldStyles"
+			role="group"
 			v-bind="{ ...rootAttrs }"
 	>
 		<div

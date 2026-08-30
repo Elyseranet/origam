@@ -141,6 +141,16 @@ The `validateOn` prop controls when validation fires:
 - The component also fires `validate()` automatically when the `finish` event fires (all cells filled).
 - The `origam-otp-input-field--error` CSS class is applied to the root when `isValid === false`.
 
+## Accessibility
+
+- The root wrapper carries `role="group"`, and `aria-label` sourced from
+  `label` when set — one accessible name for the whole widget.
+- Each individual cell ALSO carries its own accessible name (`t('origam.
+  input.otp', i + 1)`, "Please enter OTP character N") — the two combine
+  the same way a `<fieldset><legend>` groups individually-labelled inputs.
+- `label` is intentionally NOT forwarded onto individual cells: doing so
+  would render it as a visible floating label repeated once per digit box.
+
 ## Design tokens
 
 | CSS variable | Default | Description |

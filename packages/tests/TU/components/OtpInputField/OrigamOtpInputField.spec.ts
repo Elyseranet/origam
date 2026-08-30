@@ -265,25 +265,32 @@ describe('OrigamOtpInputField — typography (cell input)', () => {
 })
 
 /********************************************************
- *  KNOWN DEFECT — `label` excluded from the forwarded field props
+ *  FIXED — `label` was excluded from the forwarded field props AND from
+ *  every accessible surface
  *
  *  @description ⛔ issue #491
  *  `fieldProps(index)` calls
  *  `origamFieldRef.value?.[index]?.filterProps(props, ['class', 'style', 'id', 'label'])`
- *  (OrigamOtpInputField.vue ~l.316) — `label` is in the exclude list, so it
- *  never reaches any `origam-field` cell: no rendered label, no aria-label,
- *  even though `label` is the primary usage example in the component's own
- *  doc. `OrigamFieldStub` above always returns `{}` from `filterProps`
- *  regardless of input, so it cannot exercise this — this block uses a
- *  faithful re-implementation of the real `filterProps` semantics
- *  (packages/ds/src/composables/Commons/props.composable.ts:58-70) instead.
+ *  (OrigamOtpInputField.vue ~l.318) — `label` is in the exclude list, so it
+ *  never reached any `origam-field` cell, and nothing else on the component
+ *  read it either: no rendered label, no aria-label anywhere, even though
+ *  `label` is the primary usage example in the component's own doc.
  *
- *  @description
- *  `it.fails` here because the CORRECT behaviour (label reaches a cell) is
- *  what's asserted — it currently fails since the real exclude list drops it.
- *
- *  ⚠️ When this turns RED the defect is fixed — delete the `it.fails`
- *  wrapper (keep the assertion) rather than deleting the test.
+ *  @description Verdict: cabler, but NOT by forwarding to every cell.
+ *  Each cell already carries its own per-index aria-label
+ *  (`t('origam.input.otp', i + 1)`, "Please enter OTP character N" —
+ *  OrigamOtpInputField.vue l.61). Dropping `label` from the per-cell
+ *  exclude list would render the CONSUMER's label as a visible floating
+ *  label repeated once per digit cell (e.g. "One-time passcode" stacked
+ *  N times above N single-character boxes) — worse UX than the original
+ *  gap. Fixed instead by exposing `label` as a group-level `aria-label` on
+ *  the root wrapper (`role="group"`), the standard ARIA pattern for a
+ *  segmented control: one name for the group, one more specific name per
+ *  member (mirrors `<fieldset><legend>` + per-input `<label>` semantics —
+ *  a full `<fieldset>` conversion of the root tag was considered but is a
+ *  bigger structural change, out of scope for this fix, and left for its
+ *  own ticket if wanted). `label` STAYS excluded from the per-cell
+ *  `fieldProps` — verified below that it is NOT duplicated onto any cell.
  ********************************************************/
 const OWN_FIELD_PROP_KEYS_491 = ['focused', 'id', 'class', 'style', 'label', 'variant', 'error', 'rounded', 'disabled']
 
@@ -306,7 +313,18 @@ const OrigamFieldFilteringStub = {
 }
 
 describe('OrigamOtpInputField — label forwarding (#491)', () => {
-    it.fails('label reaches at least one origam-field cell', () => {
+    it('exposes label as a group-level aria-label on the root wrapper', () => {
+        const wrapper = mountOtpField({ label: 'One-time passcode', length: 4 })
+        expect(wrapper.attributes('role')).toBe('group')
+        expect(wrapper.attributes('aria-label')).toBe('One-time passcode')
+    })
+
+    it('sets no aria-label on the root when label is unset', () => {
+        const wrapper = mountOtpField({ length: 4 })
+        expect(wrapper.attributes('aria-label')).toBeUndefined()
+    })
+
+    it('does NOT duplicate label onto any individual origam-field cell (intentional — avoids N repeated floating labels)', () => {
         const wrapper = mount(OrigamOtpInputField, {
             attachTo: document.body,
             props: { label: 'One-time passcode', length: 4 },
@@ -319,7 +337,15 @@ describe('OrigamOtpInputField — label forwarding (#491)', () => {
         const cells = wrapper.findAll('[data-cy="origam-otp-field"]')
         expect(cells.length).toBeGreaterThan(0)
         const anyCellHasLabel = cells.some((c) => c.attributes('aria-label') === 'One-time passcode')
-        expect(anyCellHasLabel).toBe(true)
+        expect(anyCellHasLabel).toBe(false)
+    })
+
+    it('still gives each individual cell its own per-index accessible name (unaffected by this fix)', () => {
+        const wrapper = mountOtpField({ label: 'One-time passcode', length: 4 })
+        const inputs = wrapper.findAll('input[class="origam-otp-input-field__field"]')
+        expect(inputs.length).toBe(4)
+        expect(inputs[0].attributes('aria-label')).toBe('Please enter OTP character 1')
+        expect(inputs[3].attributes('aria-label')).toBe('Please enter OTP character 4')
     })
 })
 
