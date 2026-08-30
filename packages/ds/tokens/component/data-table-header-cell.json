@@ -1,0 +1,37 @@
+{
+  "_comment": "OrigamDataTableHeaderCell component tokens — issue #503 (Paquet 1, cause C). The component's own CSS class (.origam-data-table-header-cell, verified in the .vue template/style root selector) is a standalone compound block, NOT a BEM child of data-table (contrast with data-table.json's existing 'header' key, which is nested under 'data-table' and therefore emits the mismatched --origam-data-table__header---* — never read by this component). Values copied verbatim from OrigamDataTableHeaderCell.vue's SCSS fallbacks, all of which already reference live, currently-emitted modern semantic vars (--origam-color__text---primary, --origam-color__surface---raised, --origam-color__border---default, --origam-space---1, --origam-radius---full) — so this file mirrors those exact semantic references for true zero-visual-change. NOTE: --origam-data-table-sortable---cursor (read at the same call site, line 246) is a DISTINCT top-level block name ('data-table-sortable', not 'data-table-header-cell') and is intentionally left out of this file — flagged separately, see delivery report.",
+
+  "data-table-header-cell": {
+    "color":      { "$type": "color", "$value": "{color.text.primary}" },
+    "background": { "$type": "color", "$value": "{color.surface.raised}" },
+
+    "content": { "gap": { "$type": "dimension", "$value": "{space.1}", "$description": "Literal fallback 4px matches space.1 exactly." } },
+
+    "$child": {
+      "sort-icon": {
+        "color":          { "$type": "color",  "$value": "{color.text.primary}" },
+        "opacity":        { "$type": "number", "$value": "{opacity.0}" },
+        "opacity-hover":  { "$type": "number", "$value": "{opacity.50}", "$description": "Flat property name (not a $state) — mirrors the component's own literal 'opacity-hover' CSS var segment." },
+        "opacity-active": { "$type": "number", "$value": "{opacity.100}", "$description": "Flat property name, same reasoning as opacity-hover." },
+
+        "$state": {
+          "active": {
+            "color": { "$type": "color", "$value": "{color.text.primary}" }
+          }
+        }
+      },
+
+      "sort-badge": {
+        "font-size":     { "$type": "dimension", "$value": "{font.size.md}", "$description": "Literal fallback 0.875rem matches font.size.md exactly." },
+        "padding":       { "$type": "dimension", "$value": "{space.1}" },
+        "border-radius": { "$type": "dimension", "$value": "{radius.full}" },
+        "background":    { "$type": "color",     "$value": "{color.border.default}" },
+        "color":         { "$type": "color",     "$value": "{color.text.primary}" },
+        "min-width":     { "$type": "dimension", "$value": "{space.5}", "$description": "Literal fallback 20px matches space.5 exactly." },
+        "min-height":    { "$type": "dimension", "$value": "{space.5}" },
+        "width":         { "$type": "dimension", "$value": "{space.5}" },
+        "height":        { "$type": "dimension", "$value": "{space.5}" }
+      }
+    }
+  }
+}
