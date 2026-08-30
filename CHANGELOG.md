@@ -13,6 +13,35 @@ This project follows [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+### ⚠️ BREAKING — `<OrigamContainer>` breakpoint `max-width` scale realigned to the design tokens
+
+The component's responsive `max-width` ladder was hardcoded as SCSS literals
+(`900/1200/1800/2400px`) that had silently drifted away from
+`component/container.json`'s `max-width-{md,lg,xl,xxl}` tokens
+(`768/992/1280/1440px`) — the token file even carried its own comment
+flagging the gap. The fix makes the component read the tokens (with a
+matching literal fallback), which is a **visible breakpoint-value change**
+for every consumer, not a null-op:
+
+| Min viewport | Old `max-width` | New `max-width` |
+|---|---|---|
+| `>= 960px` | `900px` | `768px` |
+| `>= 1280px` | `1200px` | `992px` |
+| `>= 1920px` | `1800px` | `1280px` |
+| `>= 2560px` | `2400px` | `1440px` |
+
+The viewport thresholds themselves (`960/1280/1920/2560px`) are unchanged —
+only the resulting `max-width` at each rung. A 5th token,
+`max-width-sm` (`576px`), is declared in the same token file but was
+**not** wired into the ladder: `OrigamContainer`'s own doc has always
+documented `< 960px → 100%` (no cap), never a `576px` tier — the token
+stays dormant by design (naming-scale completeness with the Bootstrap-style
+`sm/md/lg/xl/xxl` set, not a missing rung).
+
+Any consumer relying on the exact prior pixel values (custom layouts tuned
+to `900/1200/1800/2400px` breakpoints) should audit their layout after
+upgrading.
+
 ### ⚠️ BREAKING — 88 dead typography (component, prop) pairs removed across 40 components
 
 `useTypography(props, prefix)` writes an inline CSS custom property per

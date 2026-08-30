@@ -22,15 +22,28 @@ structural element of any page or section.
 </template>
 ```
 
-By default, `max-width` follows the breakpoint ladder:
+By default, `max-width` follows the breakpoint ladder. Each rung reads its
+value from a design token (`component.container.max-width-{md,lg,xl,xxl}` —
+see the Design Tokens table below) instead of a hardcoded literal:
 
-| Min viewport | `max-width` |
-|---|---|
-| `< 960px` | `100%` |
-| `>= 960px` | `900px` |
-| `>= 1280px` | `1200px` |
-| `>= 1920px` | `1800px` |
-| `>= 2560px` | `2400px` |
+| Min viewport | `max-width` | Token |
+|---|---|---|
+| `< 960px` | `100%` | — |
+| `>= 960px` | `768px` | `max-width-md` |
+| `>= 1280px` | `992px` | `max-width-lg` |
+| `>= 1920px` | `1280px` | `max-width-xl` |
+| `>= 2560px` | `1440px` | `max-width-xxl` |
+
+> ⚠️ **Breaking change** — prior to this fix the component read hardcoded
+> literals (`900/1200/1800/2400px`) that had silently drifted away from the
+> token file. See `CHANGELOG.md` for the before/after scale and the
+> migration note.
+>
+> A fifth token, `max-width-sm` (`576px`), is declared in
+> `component/container.json` but intentionally NOT wired into this ladder —
+> the documented behaviour below `960px` has always been `100%` (no cap),
+> not a `576px` tier. The token exists for naming-scale completeness
+> (Bootstrap-style `sm/md/lg/xl/xxl`) and is currently dormant by design.
 
 ## Fluid
 
@@ -101,7 +114,12 @@ Container deliberately does **not** extend `IColorProps` or `IRoundedProps`.
 |---|---|
 | `--origam-container---box-sizing` | `border-box` |
 | `--origam-container---width` | `auto` |
-| `--origam-container---max-width` | breakpoint-driven |
+| `--origam-container---max-width` | breakpoint-driven (see the ladder above) |
+| `--origam-container---max-width-md` | `768px` |
+| `--origam-container---max-width-lg` | `992px` |
+| `--origam-container---max-width-xl` | `1280px` |
+| `--origam-container---max-width-xxl` | `1440px` |
+| `--origam-container---max-width-sm` | `576px` (declared, not wired — see note above) |
 | `--origam-container---min-width` | `0` |
 | `--origam-container---height` | `auto` |
 | `--origam-container---max-height` | `100%` |
