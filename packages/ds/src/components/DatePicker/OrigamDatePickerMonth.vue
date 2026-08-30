@@ -399,8 +399,8 @@
 			justify-content: center;
 			position: relative;
 			height: 40px;
-			background-color: rgb(255, 255, 255);
-			color: rgb(0, 0, 0);
+			background-color: var(--origam-date-picker__day---background-color, transparent);
+			color: var(--origam-date-picker__day---color, var(--origam-color__text---primary));
 
 			:deep(.origam-btn) {
 				--origam-btn---height: 24px;
@@ -417,8 +417,8 @@
 
 			&--selected {
 				:deep(.origam-btn) {
-					background-color: rgb(163, 163, 163);
-					color: rgb(255, 255, 255);
+					background-color: var(--origam-date-picker__day---background-color-selected, var(--origam-color__action--primary---bg));
+					color: var(--origam-date-picker__day---color-selected, var(--origam-color__action--primary---fg));
 				}
 
 				+ #{$this}__day--selected {
@@ -432,7 +432,7 @@
 						top: 50%;
 						left: -2px;
 						transform: translate(-50%, -50%);
-						background-color: rgb(143, 143, 143); // TODO make variable for background
+						background-color: var(--origam-date-picker__day---background-color-in-range, var(--origam-color__surface---overlay));
 					}
 
 					&#{$this}__day--week-end {
@@ -446,7 +446,7 @@
 							top: 50%;
 							left: 2px;
 							transform: translate(50%, -50%);
-							background-color: rgb(143, 143, 143); // TODO make variable for background
+							background-color: var(--origam-date-picker__day---background-color-in-range, var(--origam-color__surface---overlay));
 						}
 					}
 				}

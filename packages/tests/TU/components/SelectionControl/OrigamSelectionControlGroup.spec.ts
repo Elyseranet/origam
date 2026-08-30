@@ -230,3 +230,63 @@ describe('OrigamSelectionControlGroup — type cascaded from the group', () => {
             .toContain('origam-selection-control--density-compact')
     })
 })
+
+// ---------------------------------------------------------------------------
+// #396 — PERTE DE DONNEES: auto-detected `multiple` (no explicit prop), the
+// DOCUMENTED default path (`OrigamSelectionControl.md`: "multiple — when left
+// unset, multiple mode is auto-detected from whether the current modelValue
+// is an array"). Every test above forces `multiple` explicitly on the group,
+// which side-steps the actual defect entirely.
+//
+// Root cause: `multiple` is typed `boolean` on `ISelectionControlProps`.
+// Vue's own runtime resolves an ABSENT prop whose declared type includes
+// Boolean to the concrete value `false` (never `undefined`) whenever no
+// `default` is declared for it — so `isMultiple`'s guard
+// (`props.multiple == null`) could never see the "nobody set it" case: it
+// was always comparing `false == null`, which is `false`. Auto-detect from
+// the array-shaped model was therefore DEAD CODE for as long as this
+// component has existed with this guard. Fixed by declaring an explicit
+// `multiple: undefined` default (disables Vue's boolean-cast) AND reading
+// the GROUP-aware `currentModel()` instead of the control's own (never
+// bound) local `modelValue` for the auto-detect check.
+// ---------------------------------------------------------------------------
+
+describe('OrigamSelectionControlGroup — #396 multiple auto-detected from an array v-model (no explicit `multiple` prop anywhere)', () => {
+    function mountBoundGroup (initial: any[] = []) {
+        const Host = defineComponent({
+            components: { OrigamSelectionControlGroup, OrigamSelectionControl },
+            template: `<origam-selection-control-group v-model="selected">
+                <origam-selection-control value="a" type="checkbox" label="A"/>
+                <origam-selection-control value="b" type="checkbox" label="B"/>
+            </origam-selection-control-group>`,
+            data () {
+                return { selected: initial }
+            }
+        })
+
+        return mount(Host, { global: { plugins: [createOrigam()] } })
+    }
+
+    it('accumulates ["a","b"] instead of overwriting to a bare scalar', async () => {
+        const wrapper = mountBoundGroup([])
+        const inputs = wrapper.findAll('input')
+
+        await inputs[0].setValue(true)
+        expect((wrapper.vm as any).selected).toEqual(['a'])
+
+        await inputs[1].setValue(true)
+        expect((wrapper.vm as any).selected).toEqual(['a', 'b'])
+    })
+
+    it('unchecking one of two still leaves an array behind, not a scalar', async () => {
+        const wrapper = mountBoundGroup([])
+        const inputs = wrapper.findAll('input')
+
+        await inputs[0].setValue(true)
+        await inputs[1].setValue(true)
+        expect((wrapper.vm as any).selected).toEqual(['a', 'b'])
+
+        await inputs[0].setValue(false)
+        expect((wrapper.vm as any).selected).toEqual(['b'])
+    })
+})
