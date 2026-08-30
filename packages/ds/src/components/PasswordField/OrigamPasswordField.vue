@@ -152,9 +152,13 @@
 							v-if="!minimal"
 							#appendInner
 					>
-						<div
+						<button
+								type="button"
 								class="origam-password-field__toggle-icon"
-								@mousedown="handleToggleShow"
+								:aria-label="toggleLabel"
+								:aria-pressed="show"
+								@mousedown.prevent="handleToggleShow"
+								@keydown="handleToggleKeydown"
 						>
 							<slot
 									name="appendInner"
@@ -162,7 +166,7 @@
 							>
 								<origam-icon :icon="currentIcon"/>
 							</slot>
-						</div>
+						</button>
 					</template>
 
 					<template
@@ -321,6 +325,7 @@
 	import vIntersect from '../../directives/Intersect/intersect.directive'
 	import { DENSITY } from '../../enums/Commons/density.enum'
 	import { DIRECTION } from '../../enums/Commons/direction.enum'
+	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 	import { TEXT_FIELD_TYPE } from '../../enums/TextField/text-field.enum'
 	import type { IPasswordFieldProps, IPasswordFieldSlots } from '../../interfaces/PasswordField/password-field.interface'
@@ -612,8 +617,24 @@
 	const currentType = computed(() => {
 		return show.value ? TEXT_FIELD_TYPE.TEXT : TEXT_FIELD_TYPE.PASSWORD
 	})
+	// issue #443 — the toggle was a bare <div @mousedown>: mouse-only, no
+	// accessible name, no tabindex (OrigamIcon never sets one either, so
+	// nothing inside it was reachable). Now a real <button type="button">;
+	// the trigger stays `@mousedown` (`.prevent` added to stop the native
+	// button from shifting focus off the input on click — the div never
+	// could) so mouse timing is unchanged. `@keydown` is a MANUAL
+	// Enter/Space handler, not `@click` — the button's native keyboard
+	// activation synthesizes a `click` DOM event nothing listens for, so
+	// there is no double-fire risk between the two paths.
+	const toggleLabel = computed(() => t(show.value ? 'origam.password_field.hide' : 'origam.password_field.show'))
 	const handleToggleShow = () => {
 		show.value = !show.value
+	}
+	const handleToggleKeydown = (e: KeyboardEvent) => {
+		if (e.key !== KEYBOARD_VALUES.ENTER && e.key !== KEYBOARD_VALUES.EMPTY) return
+
+		e.preventDefault()
+		handleToggleShow()
 	}
 
 	/*********************************************************
@@ -727,6 +748,15 @@
 		&__toggle-icon {
 			cursor: var(--origam-password-field__toggle-icon---cursor, pointer);
 			opacity: var(--origam-password-field__toggle-icon---opacity, 1);
+
+			// issue #443 — now a real <button> (was a bare <div>): reset the
+			// UA button chrome. `padding-bottom` alone, never the `padding`
+			// shorthand, to avoid clobbering any padding set elsewhere.
+			border: none;
+			background: none;
+			padding-bottom: 0;
+			font: inherit;
+			color: inherit;
 		}
 
 		&__details {

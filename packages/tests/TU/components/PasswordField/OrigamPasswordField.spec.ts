@@ -190,6 +190,53 @@ describe('OrigamPasswordField — show/hide toggle', () => {
     })
 })
 
+// ---------------------------------------------------------------------------
+// issue #443 — the toggle was a bare <div @mousedown>: mouse-only, no
+// accessible name, no tabindex (OrigamIcon never sets one). Now a real
+// <button type="button">, mousedown timing unchanged (`.prevent` only stops
+// the NEW focus-shift a real button introduces), plus a manual Enter/Space
+// keydown path — NOT `@click`, to avoid double-firing against the button's
+// own native keyboard-activation click synthesis.
+// ---------------------------------------------------------------------------
+
+describe('OrigamPasswordField — toggle keyboard + accessible name (issue #443)', () => {
+    it('renders a real <button type="button">, not a <div>', () => {
+        const wrapper = mountPasswordField()
+        const toggle = wrapper.find('.origam-password-field__toggle-icon')
+        expect(toggle.element.tagName).toBe('BUTTON')
+        expect(toggle.attributes('type')).toBe('button')
+    })
+
+    it('carries a non-empty aria-label reflecting the current state', async () => {
+        const wrapper = mountPasswordField()
+        const toggle = wrapper.find('.origam-password-field__toggle-icon')
+        expect(toggle.attributes('aria-label')).toBeTruthy()
+        expect(toggle.attributes('aria-pressed')).toBe('false')
+
+        await toggle.trigger('mousedown')
+        expect(wrapper.find('.origam-password-field__toggle-icon').attributes('aria-pressed')).toBe('true')
+    })
+
+    it('Enter keydown flips the type from "password" to "text" (keyboard path)', async () => {
+        const wrapper = mountPasswordField()
+        expect(wrapper.find('input').attributes('type')).toBe('password')
+        await wrapper.find('.origam-password-field__toggle-icon').trigger('keydown', { key: 'Enter' })
+        expect(wrapper.find('input').attributes('type')).toBe('text')
+    })
+
+    it('Space keydown ALSO flips the type', async () => {
+        const wrapper = mountPasswordField()
+        await wrapper.find('.origam-password-field__toggle-icon').trigger('keydown', { key: ' ' })
+        expect(wrapper.find('input').attributes('type')).toBe('text')
+    })
+
+    it('unrelated keydown (Tab) does not toggle', async () => {
+        const wrapper = mountPasswordField()
+        await wrapper.find('.origam-password-field__toggle-icon').trigger('keydown', { key: 'Tab' })
+        expect(wrapper.find('input').attributes('type')).toBe('password')
+    })
+})
+
 describe('OrigamPasswordField — disabled / readonly', () => {
     it.skip('sets disabled on the native input when disabled=true — stub filterProps circular ref not sync', () => {
         // disabled flows via filterProps(props)→OrigamInput slot :is-disabled→input :disabled="isDisabled"

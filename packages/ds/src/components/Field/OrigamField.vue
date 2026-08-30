@@ -116,8 +116,8 @@
 						:aria-label="clearLabel"
 						@blur="handleBlur"
 						@focus="handleFocus"
-						@mousedown.prevent
-						@click="handleClickClear"
+						@mousedown="handleMousedownClear"
+						@keydown="handleKeydownClear"
 				>
 					<slot name="clear">
 						<origam-icon :icon="clearIcon"/>
@@ -202,6 +202,7 @@
 
 	import { DENSITY } from '../../enums/Commons/density.enum'
 	import { EASING } from '../../enums/Transition/transition.enum'
+	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
 	import { LOADER_KIND } from '../../enums/Commons/loader.enum'
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
@@ -302,13 +303,32 @@
 	 * @description
 	 * Was a bare `<div @mousedown>` wrapping an `aria-hidden` icon whose
 	 * own `@keydown`/`@focus`/`@blur` listeners could never fire —
-	 * `OrigamIcon` never sets `tabindex`, so the icon was never
-	 * reachable by Tab in the first place. Now a real `<button
-	 * type="button">`: native Enter/Space activation replaces the
-	 * hand-rolled keydown check, `@mousedown.prevent` alone (no handler
-	 * body needed) keeps the input from blurring when the clear button
-	 * is clicked — exactly the previous UX, expressed with less code.
+	 * `OrigamIcon` never sets `tabindex`, so the icon was never reachable
+	 * by Tab in the first place. Now a real `<button type="button">`
+	 * (Tab-reachable, has an accessible name), but the trigger stays
+	 * `@mousedown` — NOT `@click` — to preserve the exact pre-existing
+	 * mouse behaviour: `handleMousedownClear` calls `preventDefault()` +
+	 * `stopPropagation()` so clearing never blurs the input nor bubbles
+	 * into the field root's own `@click`. A manual `@keydown` handler
+	 * (Enter/Space) gives keyboard users the same action WITHOUT also
+	 * binding `@click` — the button's native keyboard activation
+	 * synthesizes a `click` DOM event nothing listens for, so there is no
+	 * double-fire risk between the two paths.
 	 ********************************************************/
+	const handleKeydownClear = (e: KeyboardEvent) => {
+		if (e.key !== KEYBOARD_VALUES.ENTER && e.key !== KEYBOARD_VALUES.EMPTY) return
+
+		e.preventDefault()
+		e.stopPropagation()
+
+		handleClickClear(new MouseEvent('click'))
+	}
+	const handleMousedownClear = (e: MouseEvent) => {
+		e.preventDefault()
+		e.stopPropagation()
+
+		handleClickClear(e)
+	}
 
 	/*********************************************************
 	 * Slot Props

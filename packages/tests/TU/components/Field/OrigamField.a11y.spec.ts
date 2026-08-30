@@ -71,10 +71,28 @@ describe('OrigamField — clear button (issue #443)', () => {
         expect(clearable.attributes('tabindex')).not.toBe('-1')
     })
 
-    it('clicking it emits click:clear (native <button> click, not a mousedown hack)', async () => {
+    it('mousedown emits click:clear — trigger stays mousedown (not click) to preserve the pre-existing no-blur behaviour', async () => {
         const wrapper = mountField()
-        await wrapper.find('.origam-field__clearable').trigger('click')
+        await wrapper.find('.origam-field__clearable').trigger('mousedown')
         expect(wrapper.emitted('click:clear')).toBeTruthy()
+    })
+
+    it('Enter keydown ALSO emits click:clear — the keyboard path', async () => {
+        const wrapper = mountField()
+        await wrapper.find('.origam-field__clearable').trigger('keydown', { key: 'Enter' })
+        expect(wrapper.emitted('click:clear')).toBeTruthy()
+    })
+
+    it('Space keydown ALSO emits click:clear', async () => {
+        const wrapper = mountField()
+        await wrapper.find('.origam-field__clearable').trigger('keydown', { key: ' ' })
+        expect(wrapper.emitted('click:clear')).toBeTruthy()
+    })
+
+    it('unrelated keydown (Tab) does not emit click:clear', async () => {
+        const wrapper = mountField()
+        await wrapper.find('.origam-field__clearable').trigger('keydown', { key: 'Tab' })
+        expect(wrapper.emitted('click:clear')).toBeFalsy()
     })
 })
 
