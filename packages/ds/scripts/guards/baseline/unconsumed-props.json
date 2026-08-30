@@ -149,7 +149,6 @@
     "OrigamListGroup.appendAvatar",
     "OrigamListGroup.prependAvatar",
     "OrigamListItem.replace",
-    "OrigamLoader.loadingText",
     "OrigamMain.height",
     "OrigamMain.maxHeight",
     "OrigamMain.maxWidth",

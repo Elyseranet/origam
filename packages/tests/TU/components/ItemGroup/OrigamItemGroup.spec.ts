@@ -222,12 +222,21 @@ describe('OrigamItemGroup — next / prev emit through the same channel', () => 
 })
 
 // ---------------------------------------------------------------------------
-// OrigamItem — group:selected
+// OrigamItem — group:selected (issue #425 — fixed)
 // ---------------------------------------------------------------------------
-// `useGroupItem` fires `vm.emit('group:selected', { value })` on the ITEM.
-// OrigamItem.vue declares NO `defineEmits` at all, so this event is entirely
-// undeclared — it still reaches listeners (Vue's emit does not require a
-// declaration) but it is absent from the component's public type surface.
+// `useGroupItem` fires `vm.emit('group:selected', { value })` on the ITEM
+// (OrigamItemGroupItem.vue). This used to be entirely undeclared: it still
+// reached listeners (Vue's emit does not require a declaration) but was
+// absent from the component's public type surface, and from
+// `inspection-harness.mjs`'s declared-vs-emitted comparison (it can only
+// compare what's DECLARED against what's emitted — nothing to compare
+// against here meant the harness could never see this one). Fixed:
+// `OrigamItemGroupItem.vue` now calls `defineEmits<IItemGroupItemEmits>()`
+// with `group:selected` typed in `interfaces/ItemGroup/item-group.interface.ts`.
+// The tests below still pass unchanged — declaring the emit does not alter
+// runtime emission, only removes the corresponding listener from $attrs
+// fallthrough (verified: no test here asserts on an `onGroupSelected`-style
+// attr, so nothing depended on the old fallthrough behaviour).
 
 describe('OrigamItem — group:selected', () => {
     it('emits group:selected with { value: true } when the item becomes selected', async () => {

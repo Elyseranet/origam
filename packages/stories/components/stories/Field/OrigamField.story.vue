@@ -94,6 +94,7 @@
 		>
 			<template #default="{ state }">
 				<origam-field
+						data-cy="field-functional"
 						:label="state.label"
 						:disabled="state.disabled"
 						:error="state.error"
@@ -107,8 +108,16 @@
 						:loading="state.loading"
 						:center-affix="state.centerAffix"
 				>
-					<template #default="{ id, onFocus, onBlur }">
-						<input :id="id" class="origam-field__input" value="Some value" @focus="onFocus" @blur="onBlur"/>
+					<template #default="{ id, onFocus, onBlur, 'aria-required': ariaRequired }">
+						<input
+								:id="id"
+								class="origam-field__input"
+								value="Some value"
+								:aria-required="ariaRequired"
+								data-cy="field-functional-input"
+								@focus="onFocus"
+								@blur="onBlur"
+						/>
 					</template>
 				</origam-field>
 			</template>

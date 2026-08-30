@@ -54,6 +54,30 @@ test.describe('OrigamOtpInputField', () => {
             await expect(root).toBeVisible({ timeout: 12000 })
         })
 
+        // issue #491 — `label` was excluded from the per-cell forwarded
+        // props AND read nowhere else: a consumer following the doc's own
+        // usage example got no accessible name at all anywhere on the
+        // widget. Fixed as a group-level aria-label (root carries
+        // role="group"), not per-cell forwarding (which would have
+        // repeated the text as a visible floating label on every digit box).
+        test('label reaches the root as a group-level aria-label', async ({ page }) => {
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const root = sandbox.locator('.origam-otp-input-field').first()
+            await expect(root).toBeVisible({ timeout: 12000 })
+            await expect(root).toHaveAttribute('role', 'group')
+            await expect(root).toHaveAttribute('aria-label', 'Verification code')
+        })
+
+        test('each individual cell keeps its own per-index accessible name', async ({ page }) => {
+            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const root = sandbox.locator('.origam-otp-input-field').first()
+            await expect(root).toBeVisible({ timeout: 12000 })
+            const firstCell = root.locator('.origam-otp-input-field__field').first()
+            await expect(firstCell).toHaveAttribute('aria-label', 'Please enter OTP character 1')
+        })
+
         test('length=6 renders exactly 6 visible cell inputs', async ({ page }) => {
             await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

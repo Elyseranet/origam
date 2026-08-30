@@ -3,7 +3,7 @@
 			:is="tag"
 			:id="id"
 			:aria-busy="isLoading || undefined"
-			:aria-label="isLoading ? 'Loading' : undefined"
+			:aria-label="isLoading ? t(loadingText) : undefined"
 			:class="loaderClasses"
 			:style="loaderStyles"
 	>
@@ -31,28 +31,52 @@
 >
 	import { computed, StyleValue } from 'vue'
 	import OrigamProgress from '../Progress/OrigamProgress.vue'
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
 	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
 
-	import type { ILoaderProps } from '../../interfaces/Commons/loader.interface'
-	import type { ILoaderEmits, ILoaderSlots } from '../../interfaces/Loader/loader.interface'
+	import type { ILoaderComponentProps, ILoaderEmits, ILoaderSlots } from '../../interfaces/Loader/loader.interface'
 
 	/*********************************************************
 	 * Global
 	 *
 	 * @description
 	 * Props and composables.
+	 *
+	 * @description
+	 * #444 — `loadingText` defaults to the shared `'origam.loading'` key,
+	 * matching the default already used by OrigamProgress(Circular/Linear)/
+	 * OrigamSkeleton/OrigamSwitch/OrigamAudio/OrigamVideo for the exact
+	 * same aria-label role.
 	 ********************************************************/
 
-	const props = withDefaults(defineProps<ILoaderProps>(), {tag: 'span'})
+	const props = withDefaults(defineProps<ILoaderComponentProps>(), {
+		tag: 'span',
+		loadingText: 'origam.loading'
+	})
+
+	/*********************************************************
+	 * Locale — non-strict (issue #444)
+	 *
+	 * @description
+	 * `<OrigamLoader>` sits unconditionally in `<OrigamBtn>`'s render tree
+	 * (`origam-btn__loader`, no `v-if`), so simply MOUNTING a button must
+	 * not hard-fail when no `createOrigam()` plugin is installed.
+	 *
+	 * @description
+	 * Falls back to the raw translation key (still not a hardcoded
+	 * literal) when there is no locale instance to resolve it.
+	 ********************************************************/
+	const locale = useLocale(false)
+	const t = (key: string) => locale?.t(key) ?? key
 
 	defineEmits<ILoaderEmits>()
 
 	defineSlots<ILoaderSlots>()
 
-	const {filterProps} = useProps<ILoaderProps>(props)
+	const {filterProps} = useProps<ILoaderComponentProps>(props)
 
 	/*********************************************************
 	 * Loader state
@@ -80,6 +104,9 @@
 	const loaderClasses = computed(() => {
 		return [
 			'origam-loader',
+			{
+				'origam-loader--fullscreen': props.fullscreen
+			},
 			props.class
 		]
 	})

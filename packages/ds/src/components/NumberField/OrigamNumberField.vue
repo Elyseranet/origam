@@ -44,6 +44,7 @@
 						:aria-valuemin="min"
 						:aria-valuemax="max"
 						:aria-valuetext="compactInputText || undefined"
+						:aria-required="required ? 'true' : undefined"
 						data-cy="numberfield-compact-input"
 						@blur="handleBlur"
 						@focus="handleFocus"

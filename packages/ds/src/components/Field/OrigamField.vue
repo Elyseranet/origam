@@ -297,11 +297,29 @@
 	 ********************************************************/
 	const controlRef = ref<HTMLElement>()
 
+	/*********************************************************
+	 * slotProps — default-slot channel to every consumer's real <input>
+	 *
+	 * @description
+	 * #422 — `required` was declared on IFieldProps and read nowhere: no
+	 * asterisk (the label side already worked via the template-ref
+	 * forwarding to OrigamLabel, one render tick later — verified with
+	 * nextTick before assuming otherwise), but NO aria-required at all on
+	 * any of the field-family inputs.
+	 *
+	 * @description
+	 * `slotProps` is the one channel every `<origam-field>` consumer
+	 * (TextField, NumberField, PasswordField, FileField) already
+	 * destructures via `#default="{class, ref, ...fieldSlotProps}"` and
+	 * spreads onto its real `<input>` — wiring `aria-required` here fixes
+	 * all of them at once instead of duplicating it in each consumer.
+	 ********************************************************/
 	const slotProps = computed(() => {
 		return {
 			class: 'origam-field__input',
 			id: id.value,
 			'aria-describedby': messagesId.value,
+			'aria-required': props.required || undefined,
 			isActive: isActive.value,
 			isFocused: isFocused.value,
 			ref: controlRef.value,

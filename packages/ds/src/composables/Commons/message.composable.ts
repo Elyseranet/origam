@@ -7,7 +7,7 @@ export function useMessage (props: any, otherMessages: Ref<Array<any>> | Compute
     const $slots = useSlots()
 
     const hasMessages = computed(() => {
-        return Boolean(props.messages) || Boolean(props.errorMessages) || otherMessages.value.length > 0 || Boolean($slots.message)
+        return Boolean(props.messages) || Boolean(props.errorMessages) || Boolean(props.hint) || otherMessages.value.length > 0 || Boolean($slots.message)
     })
 
     const messages = computed(() => {

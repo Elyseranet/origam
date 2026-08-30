@@ -72,14 +72,27 @@ The wrapper element defaults to `<span>` but can be any tag.
 </template>
 ```
 
+## Fullscreen
+
+`fullscreen` switches the wrapper to `position: fixed`, covering the whole
+viewport — a full-page loading overlay. Combine with `tag="div"` for a block
+container.
+
+```vue
+<template>
+    <OrigamLoader tag="div" fullscreen loading />
+</template>
+```
+
 ## States
 
-| Prop          | Type                          | Description                                                  |
-|---------------|-------------------------------|--------------------------------------------------------------|
-| `loading`     | `boolean \| number`           | Truthy renders the `#loader` slot; falsy renders `#default`. |
-| `loadingText` | `string`                      | Optional aria/visual hint shown alongside the spinner.       |
-| `tag`         | `string`                      | Wrapper tag, defaults to `span`.                             |
-| `color`       | `TIntent`                     | Forwarded to the inner spinner.                              |
+| Prop          | Type                          | Description                                                                        |
+|---------------|-------------------------------|-------------------------------------------------------------------------------------|
+| `loading`     | `boolean \| number`           | Truthy renders the `#loader` slot; falsy renders `#default`.                        |
+| `loadingText` | `string`                      | Translation **key** for the `aria-label`, resolved through `useLocale()`. Pass a key, not a literal. Defaults to `'origam.loading'` (the same key shared by `OrigamProgress`/`OrigamSkeleton`/`OrigamSwitch`). |
+| `fullscreen`  | `boolean`                     | Renders the wrapper as a fixed, viewport-covering overlay.                          |
+| `tag`         | `string`                      | Wrapper tag, defaults to `span`.                                                     |
+| `color`       | `TIntent`                     | Forwarded to the inner spinner.                                                      |
 
 ## Slots
 
@@ -94,6 +107,14 @@ The wrapper element defaults to `<span>` but can be any tag.
 interface ILoaderProps extends ICommonsComponentProps, ITagProps, IColorProps {
     loading?: boolean | number
     loadingText?: string
+}
+
+// <OrigamLoader>-only — see the interface file comment for why `fullscreen`
+// does NOT live on the transverse ILoaderProps (ExpansionPanel/Card/Field/
+// Btn/Switch/DataTable also extend it, and full-viewport positioning makes
+// no sense for their inline loading states).
+interface ILoaderComponentProps extends ILoaderProps {
+    fullscreen?: boolean
 }
 ```
 
@@ -117,7 +138,7 @@ is layout-only; the spinner color comes from `OrigamProgress`.
 |-------------------------------------------|---------------------------------|
 | `--origam-loader---height`                | `100%`                          |
 | `--origam-loader__progress---margin`      | `auto`                          |
-| `--origam-loader__fullscreen---position`  | `fixed`                         |
+| `--origam-loader__fullscreen---position`  | `fixed` (only applied when `fullscreen` is true) |
 | `--origam-loader__fullscreen---height`    | `100vh`                         |
 | `--origam-loader__fullscreen---width`     | `100vw`                         |
 
@@ -125,10 +146,11 @@ The full list lives in `tokens/component/loader.json`.
 
 ## Accessibility
 
-- The wrapper does not impose an ARIA role — semantics come from the inner
-  `OrigamProgress` (`role="progressbar"`).
-- Provide `loadingText` if the surrounding context needs an extra hint for
-  screen readers.
+- The wrapper carries `aria-busy` while loading, and an `aria-label` sourced
+  from `t(loadingText)` (default key `'origam.loading'`) — swap `loadingText`
+  for a more specific key when the surrounding context needs a more precise
+  announcement (e.g. "Loading invoice details...").
+- Further semantics come from the inner `OrigamProgress` (`role="progressbar"`).
 
 ## Theming notes
 

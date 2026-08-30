@@ -201,6 +201,18 @@ describe('OrigamTextField — name / required', () => {
         const wrapper = mountTextField({ props: { required: true } })
         expect(wrapper.find('input').element.required).toBe(true)
     })
+
+    // issue #422 — TextField already wired this correctly (unlike its
+    // sibling field-family components); locked in as a regression guard.
+    it('sets aria-required="true" on the native input when required is true', () => {
+        const wrapper = mountTextField({ props: { required: true } })
+        expect(wrapper.find('input').attributes('aria-required')).toBe('true')
+    })
+
+    it('sets no aria-required on the native input when required is unset', () => {
+        const wrapper = mountTextField({ props: {} })
+        expect(wrapper.find('input').attributes('aria-required')).toBeUndefined()
+    })
 })
 
 describe('OrigamTextField — counter', () => {

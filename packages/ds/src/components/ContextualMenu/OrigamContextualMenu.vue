@@ -4,10 +4,10 @@
 			ref="origamMenuRef"
 			v-model:model-value="modelValue"
 			:class="contextualMenuClasses"
-			:open-on-click="false"
+			:open-on-click="openOnClick"
+			:open-on-context-menu="openOnContextMenu"
 			:style="contextualMenuStyles"
 			activator="cursor"
-			open-on-context-menu
 			target="cursor"
 			v-bind="menuProps"
 	>
@@ -95,7 +95,7 @@
 	 ********************************************************/
 
 	const menuProps = computed(() => {
-		return origamMenuRef.value?.filterProps(props, ['class', 'id', 'style', 'modelValue', 'activator', 'target', 'openOnClick', 'openOnContextualMenu'])
+		return origamMenuRef.value?.filterProps(props, ['class', 'id', 'style', 'modelValue', 'activator', 'target', 'openOnClick', 'openOnContextMenu'])
 	})
 
 	/*********************************************************
