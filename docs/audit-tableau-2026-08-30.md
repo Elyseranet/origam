@@ -49,6 +49,11 @@ principal, cf. #357).
 | 514 | Strategy A (colorStyles vide si tokenisé) contredite par le code | ARBITRAGE | confirmé par lecture de code — `fgDecl` est poussé dans `styles` même pour une valeur tokenisée ; CLAUDE.md affirme toujours le contraire aujourd'hui |
 | 515 | CLAUDE.md dit l'inverse du resolveur (union vs intersection) | ARBITRAGE / PARTIEL | confirmé par lecture de code — le guard `if (!(key in rawProps)) continue` fait une INTERSECTION ; CLAUDE.md dit toujours "not on what the component opted into" (union). Mesure de l'ampleur non faite |
 
+| 399 | Tokens `code.syntax.*` inatteignables (shiki figé) | VALIDE | 12 tokens toujours morts, aucun fix |
+| 407 | Counter : exemple doc invisible, doc trompeuse, tokens morts | VALIDE (4/4) | inchangé sur les 4 sous-défauts |
+| 411 | Couleurs en dur passées aux chips (Select/DatePickerField/ChartMap) | PARTIEL | 1/3 corrigé (Select, via #456) |
+| 413 | Détecteur C8 aveugle aux props d'affichage | VALIDE | inchangé : 3 occurrences, 48 au total |
+
 *(tableau complété au fur et à mesure des lots suivants)*
 
 ---
@@ -570,6 +575,82 @@ traiter séparément et rapidement, contrairement au reste du ticket.
 sont bien un thème de test mal formé (`activeBgColor` sur un composant qui
 ne le déclare pas), pas un défaut produit — cohérent avec le point 1 du
 ticket.
+
+---
+
+### #399 — Tokens `code.syntax.*` inatteignables par construction — VALIDE
+
+**Preuve.** `grep -c "origam-code__syntax" packages/ds/src/components/Code/OrigamCode.vue`
+→ toujours **0**. `consts/Code/code.const.ts` déclare toujours
+`CODE_LIGHT_THEME = 'github-light'` / `CODE_DARK_THEME = 'github-dark'`, des
+thèmes shiki figés qui peignent directement via `--shiki-light`/`--shiki-dark`
+inline sur chaque span. Les 12 tokens `code.syntax.*` continuent d'être
+générés (fichier enregistré dans `$themes.json`) sans qu'aucun code ne les
+lise. Aucun commit depuis l'ouverture. Le ticket lui-même présente 2 issues
+possibles (faire lire shiki depuis les tokens origam, ou retirer/déprécier
+les 12 tokens) — c'est un **arbitrage à trancher**, mais en l'état actuel
+c'est un vrai défaut (surface configurable qui ne fait rien), pas un non-sujet.
+
+---
+
+### #407 — OrigamCounter : exemple "Basic usage" invisible, tokens morts — VALIDE (4/4 sous-défauts confirmés)
+
+1. **Composant invisible par défaut.** `withDefaults` sur `OrigamCounter.vue`
+   ne fixe une valeur que pour `value` (0), `tag` ('div') et `transition` —
+   `active` reste `undefined`. Le template a toujours `v-show="active"` en
+   racine. Un montage avec seulement `{value: 42, max: 100}` (l'exemple exact
+   de la doc) rend donc `display: none`.
+2. **Doc décrit un dégradé qui n'existe pas.** Toujours aucune trace de
+   dimming/opacity progressif dans le code — le comportement reste un tout-ou-
+   rien `v-show`.
+3. **7/10 tokens jamais lus.** `grep "counter---"` dans le SCSS ne trouve que
+   `font-size`, `transition-duration`, `density` — `color`, `color-active`,
+   `color-error`, `font-weight`, `letter-spacing`, `padding-inline`,
+   `opacity`, `opacity-active` restent sans lecteur (8 non 7 par mon compte,
+   proche de l'annonce du ticket).
+4. **Classe `--error` sans règle SCSS.** `origam-counter--error` est toujours
+   posée dynamiquement dans les classes calculées, mais aucune règle
+   `&--error` n'existe dans le `<style>` du composant — dépasser `max` reste
+   visuellement indétectable.
+
+Aucun commit de fix trouvé (`git log --grep="407"` ne retourne rien de
+pertinent). Les 4 sous-défauts sont VALIDES, inchangés.
+
+---
+
+### #411 — Couleurs en dur passées aux chips (Select, DatePickerField, ChartMap) — PARTIEL
+
+**Preuve.** `OrigamSelect.vue` a été corrigé — commit `331d9b62 fix(select):
+capture defineEmits so click:control/mousedown:control actually fire, drop
+hardcoded chip colors (#456)`. Le code porte maintenant un commentaire
+explicite : *"`bgColor` / `color` are deliberately OMITTED (#456)"*.
+
+**`OrigamDatePickerField.vue` reste inchangé** : `bgColor:
+'rgba(168, 168, 168, 1)'` et `color: 'rgb(255, 255, 255)'` toujours présents
+(lignes 405-406), littéraux identiques à ceux que Select avait avant #456 —
+la factorisation suggérée par le ticket (un seul jeu de props de chip
+partagé) n'a pas eu lieu, seul Select a été traité.
+
+**`OrigamChartMap.vue` reste inchangé** : `borderColor: 'rgba(0,0,0,0.2)'`
+toujours présent (ligne 270).
+
+**Verdict : 1/3 composants corrigés** (Select, via #456 — pas directement via
+#411). DatePickerField et ChartMap restent à faire.
+
+---
+
+### #413 — Détecteur C8 aveugle aux props d'affichage — VALIDE
+
+**Preuve.** `TARGET_ATTRS` dans
+`packages/ds/scripts/analysis/lib/hardcoded-strings.mjs` est toujours limité
+à `['aria-label', 'title', 'placeholder', 'alt']` — aucune extension aux
+props d'affichage (`text`, `label`, etc.) via `DISPLAY_PROP_NAME_RE` (qui
+existe dans le fichier mais reste non appliquée aux attributs statiques de
+composant). Les 3 occurrences citées sont toutes encore présentes tel quel :
+`OrigamDialogConfirmation.vue:103` (`text="Cancel"`), `:111`
+(`text="Validate"`), `OrigamInfiniteScroll.vue:43` (`text="Load more"`).
+Aucun commit de fix. Chiffre inchangé (3 occurrences, 48 au total en comptant
+les 45 déjà connus du détecteur).
 
 ---
 
