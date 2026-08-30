@@ -2,7 +2,7 @@
 	<div
 			v-if="point && series"
 			class="origam-chart__tooltip"
-			role="tooltip"
+			aria-hidden="true"
 			:style="tooltipStyle"
 			data-cy="origam-chart-tooltip"
 	>
@@ -48,6 +48,21 @@
 	 * to the chart body). No `popper.js`, no measurement of the
 	 * floating element — the legacy shell's behaviour reproduced
 	 * verbatim.
+	 *
+	 * @description
+	 * ⛔ `aria-hidden="true"`, not `role="tooltip"` (#426). The trigger
+	 * element (the hovered bar/point/slice in the parent chart) already
+	 * carries a complete `aria-label` announcing the same category/value
+	 * pair this card renders visually. A `role="tooltip"` with no `id`
+	 * wired to the trigger's `aria-describedby` is an orphaned ARIA role —
+	 * assistive tech gets no benefit from it and the APG explicitly warns
+	 * against unconnected `role="tooltip"`. Rather than retrofitting a
+	 * unique id + `aria-describedby` link across every point element in
+	 * 18+ consuming files (Bullet, Cartesian, Polar, Radar, …, each with
+	 * its own trigger markup), this card is marked purely decorative:
+	 * `aria-hidden="true"` hides it from the accessibility tree entirely,
+	 * which is correct BECAUSE the information already reaches AT users
+	 * through the trigger's own `aria-label`.
 	 ********************************************************/
 	defineOptions({
 		name: 'OrigamChartTooltip'
