@@ -183,7 +183,7 @@ describe('OrigamChartCartesian / OrigamChartPolar — remaining fallbacks follow
             global: {plugins: [createOrigam({locale: {locale: 'fr'}})]}
         })
 
-        expect(wrapper.find('[role="figure"]').attributes('aria-label')).toBe('Graphique')
+        expect(wrapper.find('figure').attributes('aria-label')).toBe('Graphique')
         wrapper.unmount()
     })
 
@@ -193,7 +193,7 @@ describe('OrigamChartCartesian / OrigamChartPolar — remaining fallbacks follow
             global: {plugins: [createOrigam({locale: {locale: 'fr'}})]}
         })
 
-        expect(wrapper.find('[role="figure"]').attributes('aria-label')).toBe('Graphique')
+        expect(wrapper.find('figure').attributes('aria-label')).toBe('Graphique')
         wrapper.unmount()
     })
 
