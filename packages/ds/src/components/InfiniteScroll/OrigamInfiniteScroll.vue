@@ -40,7 +40,7 @@
 					>
 						<origam-btn
 								:color="color"
-								text="Load more"
+								:text="t(loadMoreText)"
 								@click="intersecting(INFINITE_SCROLL_SIDE.START)"
 						/>
 					</slot>
@@ -71,7 +71,7 @@
 		</template>
 
 		<div class="origam-infinite-scroll__side" role="status" aria-live="polite" :style="typographyStyles">
-			<template v-if="hasStartIntersect">
+			<template v-if="hasEndIntersect">
 				<slot
 						name="error"
 						v-bind="{side: INFINITE_SCROLL_SIDE.END, props: { onClick: () => intersecting(INFINITE_SCROLL_SIDE.END), color }}"

@@ -70,16 +70,13 @@ test.describe('OrigamInfiniteScroll', () => {
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const scroll = sandbox.locator('.origam-infinite-scroll').first()
         await expect(scroll).toBeVisible({ timeout: 5000 })
-        // The story renders the #empty slot with "No more items" text.
-        // However, the OrigamInfiniteScroll template wraps the bottom #empty slot
-        // inside v-if="hasStartIntersect" (not hasEndIntersect), so for the default
-        // side="end" the empty message never renders to the DOM — this is a known
-        // component-template limitation (template bug: should use hasEndIntersect).
-        // TODO: when the component template is fixed, un-skip this assertion:
-        // await expect(sandbox.getByText('No more items')).toBeVisible({ timeout: 8000 })
-        //
-        // For now, assert the minimal contract: scroll container renders and has content.
         await expect(sandbox.getByText('Only item')).toBeVisible({ timeout: 5000 })
+        // #423 — the bottom `__side` div (scoped to side="end", the story's
+        // default) was gated by `v-if="hasStartIntersect"` instead of
+        // `hasEndIntersect`, so the #empty slot content below never
+        // rendered. Fixed — this is the real assertion, previously
+        // commented out as a known template limitation.
+        await expect(sandbox.getByText('No more items to load')).toBeVisible({ timeout: 8000 })
     })
 
     test('Emit — load variant renders scroll container', async ({ page }) => {
