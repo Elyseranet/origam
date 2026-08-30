@@ -172,6 +172,7 @@
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
@@ -240,6 +241,7 @@
 	const { paddingStyles } = usePadding(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
 	const { headerTypographyStyles } = useChartHeaderTypography(props)
+	const chartAnimationStyle = useChartAnimationStyle(props)
 
 	/*********************************************************
 	 * Static SVG box — fixed 600 × 400 coordinate space.
@@ -550,7 +552,7 @@
 		if (props.aspectRatio) {
 			out.aspectRatio = props.aspectRatio
 		}
-		out['--origam-chart---animation-duration'] = `${ props.animationDuration }ms`
+		Object.assign(out, chartAnimationStyle.value)
 		return out
 	})
 

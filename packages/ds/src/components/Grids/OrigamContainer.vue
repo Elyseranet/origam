@@ -138,19 +138,19 @@
 		}
 
 		@media (min-width: 960px) {
-			--origam-container---max-width: 900px;
+			--origam-container---max-width: var(--origam-container---max-width-md, 768px);
 		}
 
 		@media (min-width: 1280px) {
-			--origam-container---max-width: 1200px;
+			--origam-container---max-width: var(--origam-container---max-width-lg, 992px);
 		}
 
 		@media (min-width: 1920px) {
-			--origam-container---max-width: 1800px;
+			--origam-container---max-width: var(--origam-container---max-width-xl, 1280px);
 		}
 
 		@media (min-width: 2560px) {
-			--origam-container---max-width: 2400px;
+			--origam-container---max-width: var(--origam-container---max-width-xxl, 1440px);
 		}
 
 		&--fluid {

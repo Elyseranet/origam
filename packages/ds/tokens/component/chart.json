@@ -33,7 +33,7 @@
 
     "tooltip": {
       "background-color":  { "$type": "color",     "$value": "{color.surface.inverse}" },
-      "color":             { "$type": "color",     "$value": "{color.text.onInverse}" },
+      "color":             { "$type": "color",     "$value": "{color.text.inverse}" },
       "padding":           { "$type": "dimension", "$value": "{space.2}" },
       "border-radius":     { "$type": "dimension", "$value": "{radius.sm}" },
       "shadow":            { "$type": "boxShadow", "$value": "{shadow.md}" }

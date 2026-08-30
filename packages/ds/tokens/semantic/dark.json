@@ -5,7 +5,8 @@
       "raised":    { "$type": "color", "$value": "{color.neutral.900}" },
       "overlay":   { "$type": "color", "$value": "{color.neutral.800}" },
       "sunken":    { "$type": "color", "$value": "{color.neutral.950}" },
-      "disabled":  { "$type": "color", "$value": "{color.neutral.800}" }
+      "disabled":  { "$type": "color", "$value": "{color.neutral.800}" },
+      "inverse":   { "$type": "color", "$value": "{color.neutral.0}" }
     },
     "text": {
       "primary":   { "$type": "color", "$value": "{color.neutral.50}" },
