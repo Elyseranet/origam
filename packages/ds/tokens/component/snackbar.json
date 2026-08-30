@@ -70,7 +70,55 @@
   },
 
   "snackbar-item": {
-    "_comment": "OrigamSnackbarItem owns the visible painted surface consumed via --origam-snackbar-item---* (background-color/border/box-shadow already read by the SCSS with raw fallbacks, undeclared here — out of #253 scope). Only backdrop-filter is declared as a baseline token (#253, pattern #238).",
-    "backdrop-filter":         { "$type": "other",      "$value": "none" }
+    "_comment": "OrigamSnackbarItem owns the visible painted surface consumed via --origam-snackbar-item---*. #253 declared only backdrop-filter; issue #503 (Paquet 1, cause C) completes the remaining ~20 vars the SCSS already read with raw fallbacks. Values copied verbatim from OrigamSnackbarItem.vue. Several inner var() fallbacks already point at live, currently-emitted modern semantic vars (--origam-color__surface---default, --origam-color__border---subtle, --origam-color__text---primary, --origam-color__action--primary---fg) — those semantic tokens are referenced here directly so the resolved color matches exactly what renders today (the component's own deep-literal fallback, e.g. #1a1a1a for color, is NEVER actually reached since the semantic var is already defined globally).",
+    "backdrop-filter":         { "$type": "other",      "$value": "none" },
+
+    "gap":              { "$type": "dimension", "$value": "{space.3}", "$description": "Literal fallback 12px matches space.3 exactly." },
+    "min-width":        { "$type": "dimension", "$value": "288px", "$description": "No space.* primitive matches 288px." },
+    "max-width":        { "$type": "dimension", "$value": "420px", "$description": "No space.* primitive matches 420px." },
+    "padding":          { "$type": "dimension", "$value": "12px 14px", "$description": "Compound shorthand — no single space.* token applies." },
+    "border-radius":    { "$type": "dimension", "$value": "{radius.md}", "$description": "Literal fallback 8px matches radius.md exactly." },
+    "border-width":     { "$type": "dimension", "$value": "{border.width.thin}", "$description": "Literal fallback 1px matches border.width.thin exactly." },
+    "background-color": { "$type": "color",     "$value": "{color.surface.default}", "$description": "Inner fallback var(--origam-color__surface---default) is live/emitted (= neutral.0 = #fff) — matches the deep literal #fff exactly, semantic ref used." },
+    "border-color":     { "$type": "color",     "$value": "{color.border.subtle}", "$description": "Inner fallback var(--origam-color__border---subtle) is live/emitted (= neutral.300 = #D4D4D4), which is what currently renders — NOT the deep literal rgba(0,0,0,0.12), which is never reached." },
+    "color":            { "$type": "color",     "$value": "{color.text.primary}", "$description": "Inner fallback var(--origam-color__text---primary) is live/emitted (= neutral.900 = #171717), which is what currently renders — NOT the deep literal #1a1a1a, which is never reached." },
+    "box-shadow":       { "$type": "other",      "$value": "0 4px 12px rgba(0, 0, 0, 0.12)", "$description": "No shadow.* primitive matches this single-layer shadow shape." },
+    "font-size":        { "$type": "dimension", "$value": "{font.size.md}", "$description": "Literal fallback 0.875rem matches font.size.md exactly." },
+
+    "$child": {
+      "content": {
+        "gap": { "$type": "dimension", "$value": "10px", "$description": "No space.* primitive matches 10px." }
+      },
+      "prepend": {
+        "color": { "$type": "color", "$value": "currentColor" }
+      },
+      "text": {
+        "gap": { "$type": "dimension", "$value": "2px", "$description": "No space.* primitive matches 2px." }
+      },
+      "title": {
+        "font-weight": { "$type": "fontWeight", "$value": "{font.weight.semibold}", "$description": "Literal fallback 600 matches font.weight.semibold exactly." }
+      },
+      "message": {
+        "font-weight": { "$type": "fontWeight", "$value": "{font.weight.regular}", "$description": "Literal fallback 400 matches font.weight.regular exactly." },
+        "color":       { "$type": "color",      "$value": "currentColor" },
+        "opacity":     { "$type": "number",      "$value": 0.85, "$description": "No opacity.* primitive matches 0.85 exactly (closest is opacity.87)." }
+      },
+      "action": {
+        "color": { "$type": "color", "$value": "{color.action.primary.fg}", "$description": "Inner fallback var(--origam-color__action--primary---fg) is live/emitted (= neutral.0 = white), which is what currently renders — NOT the deep literal #1976d2, which is never reached." },
+
+        "$state": {
+          "hover": {
+            "background-color": { "$type": "color", "$value": "rgba(0, 0, 0, 0.04)" }
+          }
+        }
+      },
+      "dismiss": {
+        "$state": {
+          "hover": {
+            "background-color": { "$type": "color", "$value": "rgba(0, 0, 0, 0.04)" }
+          }
+        }
+      }
+    }
   }
 }
