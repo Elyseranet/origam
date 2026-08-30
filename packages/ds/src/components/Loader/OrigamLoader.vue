@@ -44,21 +44,31 @@
 	 *
 	 * @description
 	 * Props and composables.
+	 *
+	 * @description
+	 * #444 — `loadingText` defaults to the shared `'origam.loading'` key,
+	 * matching the default already used by OrigamProgress(Circular/Linear)/
+	 * OrigamSkeleton/OrigamSwitch/OrigamAudio/OrigamVideo for the exact
+	 * same aria-label role.
 	 ********************************************************/
 
 	const props = withDefaults(defineProps<ILoaderComponentProps>(), {
 		tag: 'span',
-		// #444 — matches the shared 'origam.loading' key already defaulted
-		// by OrigamProgress(Circular/Linear)/OrigamSkeleton/OrigamSwitch/
-		// OrigamAudio/OrigamVideo for the exact same aria-label role.
 		loadingText: 'origam.loading'
 	})
 
-	// `strict: false` — <OrigamLoader> sits unconditionally in
-	// <OrigamBtn>'s render tree (`origam-btn__loader`, no `v-if`), so
-	// simply MOUNTING a button must not hard-fail when no `createOrigam()`
-	// plugin is installed. Falls back to the raw translation key (still
-	// not a hardcoded literal) when there is no locale instance to resolve it.
+	/*********************************************************
+	 * Locale — non-strict (issue #444)
+	 *
+	 * @description
+	 * `<OrigamLoader>` sits unconditionally in `<OrigamBtn>`'s render tree
+	 * (`origam-btn__loader`, no `v-if`), so simply MOUNTING a button must
+	 * not hard-fail when no `createOrigam()` plugin is installed.
+	 *
+	 * @description
+	 * Falls back to the raw translation key (still not a hardcoded
+	 * literal) when there is no locale instance to resolve it.
+	 ********************************************************/
 	const locale = useLocale(false)
 	const t = (key: string) => locale?.t(key) ?? key
 
