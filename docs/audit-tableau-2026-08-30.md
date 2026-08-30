@@ -35,6 +35,11 @@ principal, cf. #357).
 | 357 | Flakes e2e de contention | JE N'Y ARRIVE PAS (remesure) | n/a — e2e complet interdit pendant l'audit |
 | 370 | Seed Media pointe vers un fichier de tokens inexistant | VALIDE | inchangé : 1 (baseline `seed-source-paths.json`) |
 | 371 | DataTable : closure dans le DOM + ADR-005 + a11y + story manquante | VALIDE (5/5 sous-défauts confirmés) | 5 sous-défauts, tous encore présents |
+| 383 | `useLayoutItem` écrase le `width` du consommateur | **RÉSOLU** | PR #464 |
+| 387 | Blockquote : `letterSpacing` mort + tiret/virgule orphelins | **RÉSOLU** | PR #460 |
+| 388 | Bracket : slot `competitor` perdu, doc/story en retard | **RÉSOLU** | PR #481 (fontFamily/lineHeight retirés par #501, pas un oubli) |
+| 389 | 10 fichiers de tokens component non référencés | PARTIEL | 6/10 fichiers corrigés (127 tokens) ; 4/10 encore orphelins : bracket/sound/qrcode/watermark = **117 tokens** |
+| 391 | Stratégie classes-first perdante face au sélecteur scopé (Btn) | VALIDE | cas concret (Btn) confirmé inchangé ; portée "92 composants" non re-mesurée indépendamment |
 
 *(tableau complété au fur et à mesure des lots suivants)*
 
@@ -161,11 +166,143 @@ piste pour un futur garde, hors périmètre de fermeture de ce ticket).
 
 ---
 
+### #383 — `useLayoutItem` écrase le `width` du consommateur (BottomNav, SystemBar) — RÉSOLU
+
+**Preuve.** `OrigamBottomNav.vue` et `OrigamSystemBar.vue` placent désormais
+tous deux `layoutItemStyles.value` **avant** `dimensionStyles.value` dans le
+tableau passé à `useStyle()`, avec un commentaire explicite référençant
+`#383` expliquant l'ordre correct ("layoutItemStyles MUST come before
+dimensionStyles"). Commit `0a1edd00 fix(ds): BottomNav/SystemBar —
+useLayoutItem n'ecrase plus le width du consommateur (#383)`, mergé via PR
+#464.
+
+**Commentaire de fermeture proposé** :
+> Confirmé résolu (PR #464, commit `0a1edd00`). `OrigamBottomNav.vue` et
+> `OrigamSystemBar.vue` posent maintenant `layoutItemStyles` avant
+> `dimensionStyles` dans `useStyle()`, si bien que le `width` explicite du
+> consommateur l'emporte sur le `calc()` du layout. Vérifié par lecture de
+> code sur les deux composants (audit du 2026-08-30).
+
+---
+
+### #387 — Blockquote : `letterSpacing` mort + tiret/virgule orphelins — RÉSOLU
+
+**Preuve.** `letter-spacing: var(--origam-blockquote---resolved-letter-spacing);`
+est désormais câblé dans le `<style>` scoped, au même niveau que les 4 autres
+propriétés typographiques. Le tiret (`v-if="hasAuthor"`) et le séparateur
+(`v-if="hasAuthor && hasSource"`) sont maintenant correctement conditionnés
+sur la présence de l'auteur. Commit `1a45582c fix(ds): OrigamBlockquote —
+wire dead letterSpacing prop, fix orphaned dash/separator (#387)`, PR #460.
+
+**Commentaire de fermeture proposé** :
+> Confirmé résolu (PR #460, commit `1a45582c`). `letterSpacing` est câblé en
+> SCSS au même titre que les 4 autres axes typographiques, et le tiret /
+> séparateur de l'attribution sont désormais conditionnés sur `hasAuthor`.
+> Vérifié par lecture de code (audit du 2026-08-30).
+
+---
+
+### #388 — Bracket : slot `competitor` perdu par Round, doc/story en retard — RÉSOLU
+
+**Preuve.** Les 3 sous-défauts sont corrigés :
+1. `OrigamBracketRound.vue` relaie désormais `$slots.competitor` vers son
+   `<origam-bracket-match>` interne (`v-if="$slots.competitor" #competitor="scope"`).
+   Le test e2e `bracket.spec.ts:200` ("competitor slot replaces the default
+   row") n'a plus de `test.fail()` — c'est un test vert normal, avec un
+   commentaire documentant le fix.
+2. La story `OrigamBracketRound.story.vue` a maintenant les 3 Variants
+   `Events - match-click / competitor-click / winner-click` et les Variants
+   `Slots - Round-title / Match / Competitor`.
+3. `OrigamBracket.md` documente désormais `roundedTopLeft`/etc,
+   `borderTop`/etc, `tag`, `margin*`/`padding*`, `width`/`height`/`min*`/`max*`,
+   et `fontSize`/`fontWeight`/`letterSpacing`, avec une note explicite sur la
+   portée réduite de la typographie.
+
+Commit `c912fd37 fix(ds): Bracket family — Round forwards #competitor slot,
+story/doc coverage (#388)`, PR #481.
+
+**Point résiduel, non un oubli** : `fontFamily` et `lineHeight` n'ont
+toujours aucun contrôle de story — mais la doc explique que ces deux props
+ont été **retirées** de `IBracketProps` par le ticket #501 (props typo
+inertes), pas oubliées : "`fontFamily` and `lineHeight` were removed from
+`IBracketProps` (issue #501)".
+
+**Commentaire de fermeture proposé** :
+> Confirmé résolu (PR #481, commit `c912fd37`) : forwarding du slot
+> `competitor` par `OrigamBracketRound`, story avec tous les emits/slots de
+> Round, doc `.md` mise à jour avec la vingtaine de props manquantes.
+> `fontFamily`/`lineHeight` ont été retirés de l'API par #501 (décision
+> distincte, documentée), donc leur absence de contrôle story n'est pas un
+> oubli. Vérifié par lecture de code + spec e2e (audit du 2026-08-30).
+
+---
+
+### #389 — 10 fichiers de tokens component non référencés dans `$themes.json` — PARTIEL
+
+**Preuve.** Rebuild réel des tokens (`node scripts/build-tokens.mjs`) puis
+mesure précise dans `packages/ds/src/assets/css/tokens/light.css` :
+
+| famille | tokens annoncés (ticket) | présents aujourd'hui dans le CSS compilé |
+|---|---|---|
+| bracket | 63 | **0 — toujours orphelin** |
+| calendar | 43 | 43 ✅ |
+| sound | 35 | **0 — toujours orphelin** |
+| empty-state | 34 | 34 ✅ |
+| chart | 33 | 85 ✅ (dépasse le chiffre initial : sous-familles chart-pareto/range-selector/sparkline/variwide/streamgraph enregistrées en plus) |
+| watermark | 11 | **0 — toujours orphelin** |
+| clipboard | 10 | 10 ✅ |
+| qrcode | 8 | **0 — toujours orphelin** |
+| text-mask | 5 | 5 ✅ |
+| masonry | 2 | 2 ✅ |
+
+6 des 10 fichiers sont maintenant enregistrés dans `$themes.json` et
+génèrent bien leurs variables (commit `50abb42d feat(tokens): register the 10
+new #503 token files + rebuild`, `f4d4b16d fix(ds): register
+clipboard/masonry/qrcode/sound/text-mask/watermark token sets (#436-A)`).
+Mais **`bracket`, `sound`, `qrcode`, `watermark` restent absents de
+`$themes.json`** — confirmé par `grep` direct (aucune occurrence) et par
+l'absence totale de leurs variables dans `light.css` compilé. Fait notable :
+un commit `d0464f87 fix(ds): drop qrcode/sound/watermark from #436-A, keep
+only wired files` montre que ce n'est pas un oubli mais un **retrait
+délibéré** — les enregistrer seuls ne suffisait pas (probablement d'autres
+décalages de nommage à régler d'abord, cf. #503 qui porte peut-être
+exactement sur ce reste : à recouper, voir section correspondante).
+
+**Chiffre remesuré : 117 tokens sur 4 familles restent orphelins** (63 + 35
++ 11 + 8), contre 244 sur 10 familles annoncées à l'origine. Le ticket doit
+rester **ouvert**, reformulé sur ce périmètre réduit.
+
+---
+
+### #391 — Stratégie classes-first perdante face au sélecteur scopé Vue (Btn) — VALIDE
+
+**Preuve.** `OrigamBtn.vue` a toujours, sans garde conditionnelle, à la racine
+`.origam-btn` : `border-width: var(--origam-btn-group---border-width);`
+(inchangé). Le modificateur `&--border { --origam-btn---border-width: thin; }`
+écrit dans une variable (`--origam-btn---border-width`) que cette règle ne lit
+**pas** (elle lit `--origam-btn-group---border-width`) — la même divergence de
+nom que décrite dans le ticket, non corrigée. `git log --grep="391"` et
+l'historique du fichier ne montrent aucun commit de fix depuis l'ouverture.
+Le sous-défaut `border="top"/"right"/etc` sur Btn est également confirmé :
+aucune règle SCSS pour `.origam-btn--border-top` n'existe dans le fichier.
+
+**Non remesuré** : la portée annoncée de "92 composants" est une mesure
+d'exposition obtenue par un outillage ad hoc du rapporteur, que je n'ai pas
+reproduit (nécessiterait de récrire le même scanner AST) — je ne peux ni la
+confirmer ni l'infirmer indépendamment. Le cas concret documenté (OrigamBtn)
+est en revanche confirmé inchangé à 100 %.
+
+**Nature du ticket** : au-delà du bug ponctuel sur Btn, la question de fond
+("la stratégie classes-first CLAUDE.md est-elle tenable ?") est un
+**arbitrage architectural** à trancher par l'utilisateur (3 options
+proposées par le rapporteur lui-même) — à traiter séparément du bug Btn
+ponctuel, qui lui est un fix mécanique classique.
+
 ## 3. Fermetures proposées
 
-Aucune fermeture proposée dans ce lot — les 5 tickets traités sont soit
-encore VALIDES (335, 370, 371), soit non tranchables avec les moyens de cet
-audit (320 partiellement, 357 entièrement).
+- **#383** — voir commentaire de fermeture ci-dessus.
+- **#387** — voir commentaire de fermeture ci-dessus.
+- **#388** — voir commentaire de fermeture ci-dessus.
 
 ## 4. Ce que je n'ai pas pu trancher
 
@@ -176,5 +313,8 @@ audit (320 partiellement, 357 entièrement).
 - **#357** : remesure explicitement impossible pendant cet audit (interdiction
   de lancer l'e2e complet, contention avec la passe en cours sur le dépôt
   principal).
+- **#391** : le chiffre de portée "92 composants" n'a pas été reproduit
+  indépendamment (outillage ad hoc non disponible) ; seul le cas concret Btn
+  est vérifié avec certitude.
 
 *(section mise à jour à chaque lot)*
