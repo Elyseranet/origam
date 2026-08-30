@@ -721,13 +721,7 @@
     "packages/ds/src/components/Toolbar/OrigamToolbar.vue::--origam-toolbar---btn-border-radius",
     "packages/ds/src/components/Toolbar/OrigamToolbar.vue::--origam-toolbar---btn-color",
     "packages/ds/src/components/Toolbar/OrigamToolbar.vue::--origam-toolbar---padding-inline",
-    "packages/ds/src/components/Toolbar/OrigamToolbar.vue::--origam-toolbar---zIndex",
-    "packages/ds/src/components/Toolbar/OrigamToolbar.vue::--origam-toolbar__append---margin-inline",
-    "packages/ds/src/components/Toolbar/OrigamToolbar.vue::--origam-toolbar__prepend---margin-inline",
     "packages/ds/src/components/Toolbar/OrigamToolbar.vue::--origam-toolbar__title---color",
-    "packages/ds/src/components/Toolbar/OrigamToolbar.vue::--origam-toolbar__title---margin-inline",
-    "packages/ds/src/components/Toolbar/OrigamToolbar.vue::--origam-toolbar__title---padding-block",
-    "packages/ds/src/components/Toolbar/OrigamToolbar.vue::--origam-toolbar__title---padding-inline",
     "packages/ds/src/components/Toolbar/OrigamToolbar.vue::--origam-toolbar__wrapper---gap",
     "packages/ds/src/components/Video/OrigamVideo.vue::--origam-font---family"
 ]

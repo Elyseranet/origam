@@ -1101,7 +1101,6 @@
     "--origam-toolbar---border-variant-border-width",
     "--origam-toolbar---border-variant-box-shadow",
     "--origam-toolbar---height-prominent",
-    "--origam-toolbar---z-index",
     "--origam-toolbar__append---margin-inline-end",
     "--origam-toolbar__append---margin-inline-start",
     "--origam-toolbar__collapse---border-end-end-radius",
