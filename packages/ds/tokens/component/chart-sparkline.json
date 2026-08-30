@@ -1,0 +1,28 @@
+{
+  "_comment": "OrigamChartSparkline component tokens — issue #503 (Paquet 1, cause C). Values copied verbatim from OrigamChartSparkline.vue's SCSS fallbacks. The shared --origam-chart__tooltip---background-color/color and --origam-chart__empty---color vars used by this component belong to chart.json (#436-A), out of scope here.",
+
+  "chart-sparkline": {
+    "bar": { "border-radius": { "$type": "number", "$value": 1, "$description": "Used as an SVG rx (unitless), not a dimension — kept as a bare number to match the literal fallback." } },
+
+    "$child": {
+      "marker-min": {
+        "stroke": { "$type": "color", "$value": "transparent" }
+      },
+      "marker-max": {
+        "stroke": { "$type": "color", "$value": "transparent" }
+      },
+      "marker-last": {
+        "stroke":       { "$type": "color",     "$value": "white", "$description": "Literal fallback is the CSS named color 'white', kept as-is (distinct from #ffffff / color.white in the source, not remapped)." },
+        "stroke-width": { "$type": "number",    "$value": 1 }
+      },
+      "tooltip": {
+        "padding":       { "$type": "dimension", "$value": "2px 6px", "$description": "Compound shorthand — no single space.* token applies." },
+        "border-radius": { "$type": "dimension", "$value": "{radius.sm}", "$description": "Literal fallback 4px matches radius.sm exactly." },
+        "font-size":     { "$type": "dimension", "$value": "0.6875rem" }
+      },
+      "empty": {
+        "font-size": { "$type": "dimension", "$value": "{font.size.sm}", "$description": "Literal fallback 0.75rem matches font.size.sm exactly." }
+      }
+    }
+  }
+}

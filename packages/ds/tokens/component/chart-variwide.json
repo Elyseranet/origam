@@ -1,0 +1,25 @@
+{
+  "_comment": "OrigamChartVariwide component tokens — issue #503 (Paquet 1, cause C). Values copied verbatim from OrigamChartVariwide.vue's SCSS fallbacks. Shared chart.json vars are out of scope (tracked by #436-A).",
+
+  "chart-variwide": {
+    "grid":     { "stroke": { "$type": "color", "$value": "#e5e7eb", "$description": "No origam token matches #e5e7eb — legacy stale ref var(--origam-color-border-subtle, #e5e7eb) kept as literal." } },
+    "axis":     { "stroke": { "$type": "color", "$value": "#d1d5db", "$description": "No origam token matches #d1d5db." } },
+    "tick":     { "stroke": { "$type": "color", "$value": "#d1d5db" } },
+    "bar": {
+      "stroke-color": { "$type": "color", "$value": "{color.surface.default}", "$description": "#ffffff matches color.surface.default (neutral.0)." },
+      "stroke-width": { "$type": "number", "$value": 1 }
+    },
+
+    "$child": {
+      "tick-label": {
+        "font-size": { "$type": "dimension", "$value": "0.6875rem" },
+        "fill":      { "$type": "color",     "$value": "#6b7280", "$description": "No origam token matches #6b7280." }
+      },
+      "bar-label": {
+        "font-size":   { "$type": "dimension",  "$value": "0.6875rem" },
+        "font-weight": { "$type": "fontWeight", "$value": "{font.weight.semibold}" },
+        "fill":        { "$type": "color",      "$value": "currentColor" }
+      }
+    }
+  }
+}

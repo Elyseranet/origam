@@ -107,7 +107,17 @@
       "component/text-mask": "enabled",
       "component/empty-state": "enabled",
       "component/calendar": "enabled",
-      "component/chart": "enabled"
+      "component/chart": "enabled",
+      "component/chart-pareto": "enabled",
+      "component/chart-range-selector": "enabled",
+      "component/chart-sparkline": "enabled",
+      "component/chart-variwide": "enabled",
+      "component/chart-streamgraph": "enabled",
+      "component/data-table-header-cell": "enabled",
+      "component/data-table-footer": "enabled",
+      "component/data-table-row": "enabled",
+      "component/list-group": "enabled",
+      "component/tab-panels": "enabled"
     }
   },
   {
@@ -218,7 +228,17 @@
       "component/text-mask": "enabled",
       "component/empty-state": "enabled",
       "component/calendar": "enabled",
-      "component/chart": "enabled"
+      "component/chart": "enabled",
+      "component/chart-pareto": "enabled",
+      "component/chart-range-selector": "enabled",
+      "component/chart-sparkline": "enabled",
+      "component/chart-variwide": "enabled",
+      "component/chart-streamgraph": "enabled",
+      "component/data-table-header-cell": "enabled",
+      "component/data-table-footer": "enabled",
+      "component/data-table-row": "enabled",
+      "component/list-group": "enabled",
+      "component/tab-panels": "enabled"
     }
   }
 ]

@@ -1,0 +1,28 @@
+{
+  "_comment": "OrigamDataTableRow component tokens — issue #503 (Paquet 1, cause C). The component's own CSS class (.origam-data-table-row) is a standalone compound block, NOT a BEM child of data-table (contrast with data-table.json's existing 'row' key, nested under 'data-table', which emits the mismatched --origam-data-table__row---* — never read by this component). Values copied verbatim from OrigamDataTableRow.vue's SCSS fallbacks, all of which reference live, currently-emitted modern semantic vars. NOTE: an orphan fallback --origam-data-table-row--mobile__column (line 335, no property suffix, itself a dead sub-fallback of --mobile__column-min-height) is intentionally left untokenised — flagged separately, see delivery report; defining --mobile__column-min-height below makes it unreachable in practice.",
+
+  "data-table-row": {
+    "background-color":  { "$type": "color",    "$value": "{color.surface.default}" },
+    "color":              { "$type": "color",    "$value": "{color.text.primary}" },
+    "transition-duration":{ "$type": "duration", "$value": "{motion.duration.fast}", "$description": "Literal fallback 100ms matches motion.duration.fast exactly." },
+    "transition-easing":  { "$type": "cubicBezier", "$value": "{motion.easing.standard}", "$description": "Literal fallback cubic-bezier(0.4, 0, 0.2, 1) matches motion.easing.standard exactly." },
+
+    "hover": {
+      "background-color": { "$type": "color", "$value": "{color.surface.overlay}" }
+    },
+
+    "$child": {
+      "column-title": {
+        "font-weight": { "$type": "fontWeight", "$value": "{font.weight.medium}", "$description": "Literal fallback 500 matches font.weight.medium exactly." }
+      }
+    },
+
+    "$state": {
+      "mobile": {
+        "$child": {
+          "column-min-height": { "$type": "dimension", "$value": "52px", "$description": "No space.* primitive matches 52px. The component's own CSS var segment is '__column-min-height' with no further property suffix (--origam-data-table-row--mobile__column-min-height) — modelled here as a $child leaf carrying the value directly, matching the exact grammar mechanism (see token-name.mjs)." }
+        }
+      }
+    }
+  }
+}

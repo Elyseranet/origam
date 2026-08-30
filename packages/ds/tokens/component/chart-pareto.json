@@ -1,0 +1,31 @@
+{
+  "_comment": "OrigamChartPareto component tokens — issue #503 (Paquet 1, cause C: no file existed). Values copied verbatim from the SCSS fallbacks already present in OrigamChartPareto.vue (zero visual change by construction). Shared chart.json vars (--origam-chart---*, --origam-chart__title/subtitle/body/tooltip/empty/legend*---*) are OUT of this file's scope — chart.json exists already and its registration is tracked by #436-A, not #503.",
+
+  "chart-pareto": {
+    "grid":     { "stroke": { "$type": "color", "$value": "#e5e7eb", "$description": "Fallback var(--origam-color-border-subtle, #e5e7eb) in the SCSS references a legacy single-dash semantic name never emitted by the current pipeline — it always falls through to this literal hex. No origam primitive/semantic token carries #e5e7eb, so the literal is kept as-is (foreign Tailwind-gray palette, out of scope to remap)." } },
+    "axis":     { "stroke": { "$type": "color", "$value": "#d1d5db", "$description": "Same legacy-fallback situation as grid.stroke — no origam token matches #d1d5db." } },
+    "tick":     { "stroke": { "$type": "color", "$value": "#d1d5db", "$description": "Same value/situation as axis.stroke." } },
+    "bar": {
+      "stroke-color": { "$type": "color", "$value": "{color.surface.default}", "$description": "Fallback var(--origam-color-surface-default, #ffffff) — the legacy ref name is stale but the literal #ffffff DOES match color.surface.default (neutral.0), so the semantic token is used." },
+      "stroke-width": { "$type": "number", "$value": 1 }
+    },
+    "line": {
+      "stroke-width": { "$type": "number", "$value": 2 }
+    },
+
+    "$child": {
+      "tick-label": {
+        "font-size": { "$type": "dimension", "$value": "0.6875rem", "$description": "No font.size.* primitive matches 0.6875rem (11px) — kept literal." },
+        "fill":      { "$type": "color",     "$value": "#6b7280", "$description": "Legacy stale ref var(--origam-color-text-secondary, #6b7280) — no origam token matches #6b7280." }
+      },
+      "bar-label": {
+        "font-size":   { "$type": "dimension",  "$value": "0.6875rem" },
+        "font-weight": { "$type": "fontWeight", "$value": "{font.weight.semibold}", "$description": "Literal fallback was 600, which matches font.weight.semibold exactly." },
+        "fill":        { "$type": "color",      "$value": "currentColor", "$description": "Fallback var(--origam-color-text-primary, currentColor) — deepest fallback is the CSS keyword currentColor, kept as-is (no color scale applies to a keyword)." }
+      },
+      "line-dot": {
+        "stroke": { "$type": "color", "$value": "{color.surface.default}", "$description": "Same #ffffff → color.surface.default mapping as bar.stroke-color." }
+      }
+    }
+  }
+}
