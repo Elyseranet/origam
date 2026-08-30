@@ -148,6 +148,7 @@
 	} from 'vue'
 
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useChart } from '../../composables/Chart/chart.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
@@ -201,6 +202,7 @@
 	const { paddingClasses, paddingStyles } = usePadding(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
 	const { headerTypographyStyles } = useChartHeaderTypography(props)
+	const chartAnimationStyle = useChartAnimationStyle(props)
 
 	const SVG_WIDTH = 600
 	const SVG_HEIGHT = 360
@@ -301,7 +303,7 @@
 		if (props.aspectRatio) {
 			out.aspectRatio = props.aspectRatio
 		}
-		out['--origam-chart---animation-duration'] = `${ props.animationDuration }ms`
+		Object.assign(out, chartAnimationStyle.value)
 		return out
 	})
 

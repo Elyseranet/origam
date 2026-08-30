@@ -1013,7 +1013,6 @@
 	const sliderFieldStyles = computed(() => {
 		return [
 			{
-				'--origam-slider-field---thumb-size': convertToUnit(20),
 				'--origam-slider-field---track-size': convertToUnit(typeof props.trackProps?.size === 'number' ? props.trackProps.size : 4)
 			},
 			props.style
@@ -1127,8 +1126,8 @@
 			&::-webkit-slider-thumb {
 				-webkit-appearance: none;
 				appearance: none;
-				width: var(--origam-slider-field---thumb-size, 20px);
-				height: var(--origam-slider-field---thumb-size, 20px);
+				width: var(--origam-slider-field__thumb---size, 20px);
+				height: var(--origam-slider-field__thumb---size, 20px);
 				background: transparent;
 				border: none;
 				cursor: grab;
@@ -1136,8 +1135,8 @@
 			}
 
 			&::-moz-range-thumb {
-				width: var(--origam-slider-field---thumb-size, 20px);
-				height: var(--origam-slider-field---thumb-size, 20px);
+				width: var(--origam-slider-field__thumb---size, 20px);
+				height: var(--origam-slider-field__thumb---size, 20px);
 				background: transparent;
 				border: none;
 				cursor: grab;
@@ -1164,8 +1163,8 @@
 		&__thumb {
 			position: absolute;
 			pointer-events: none;
-			width: var(--origam-slider-field---thumb-size, 20px);
-			height: var(--origam-slider-field---thumb-size, 20px);
+			width: var(--origam-slider-field__thumb---size, 20px);
+			height: var(--origam-slider-field__thumb---size, 20px);
 			transform: translate(-50%, -50%);
 			top: 50%;
 			transition: 0.15s 0.05s transform cubic-bezier(0, 0, 0.2, 1);
@@ -1306,7 +1305,7 @@
 			#{$this}__input {
 				inset-inline-start: 0;
 				width: 100%;
-				height: var(--origam-slider-field---thumb-size, 20px);
+				height: var(--origam-slider-field__thumb---size, 20px);
 			}
 		}
 
@@ -1360,7 +1359,7 @@
 				writing-mode: vertical-lr;
 				-webkit-appearance: slider-vertical;
 				appearance: slider-vertical;
-				width: var(--origam-slider-field---thumb-size, 20px);
+				width: var(--origam-slider-field__thumb---size, 20px);
 				height: 100%;
 				top: 0;
 			}
@@ -1515,7 +1514,7 @@
 		}
 
 		.origam-slider-field__thumb {
-			--origam-slider-field---thumb-size: var(--origam-slider-field--bare---thumb-size, 12px);
+			--origam-slider-field__thumb---size: var(--origam-slider-field--bare---thumb-size, 12px);
 			background: currentColor;
 		}
 
@@ -1566,8 +1565,8 @@
 		transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
 
 		&__surface {
-			width: var(--origam-slider-field---thumb-size, 20px);
-			height: var(--origam-slider-field---thumb-size, 20px);
+			width: var(--origam-slider-field__thumb---size, 20px);
+			height: var(--origam-slider-field__thumb---size, 20px);
 			border: 1px solid var(--origam-slider-field-thumb__surface---border-color, rgba(0, 0, 0, 0.18));
 			border-radius: 50%;
 			user-select: none;

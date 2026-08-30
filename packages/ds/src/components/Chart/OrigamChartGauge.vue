@@ -142,6 +142,7 @@
 	import { useChartGauge } from '../../composables/Chart/chart-gauge.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
 	import { useMargin } from '../../composables/Commons/margin.composable'
@@ -201,6 +202,7 @@
 	const { paddingClasses, paddingStyles } = usePadding(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
 	const { headerTypographyStyles } = useChartHeaderTypography(props)
+	const chartAnimationStyle = useChartAnimationStyle(props)
 
 	/*********************************************************
 	 * Static SVG box
@@ -314,7 +316,7 @@
 		if (props.aspectRatio) {
 			out.aspectRatio = props.aspectRatio
 		}
-		out['--origam-chart---animation-duration'] = `${ props.animationDuration }ms`
+		Object.assign(out, chartAnimationStyle.value)
 		// Expose the arc fraction as a CSS variable so the entrance
 		// animation can transition `stroke-dashoffset` from full to
 		// the value-arc length on first paint.

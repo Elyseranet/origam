@@ -155,6 +155,7 @@
 		IChartWordCloudWord
 	} from '../../interfaces/Chart/chart-word-cloud.interface'
 
+	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
@@ -449,6 +450,8 @@
 	/*********************************************************
 	 * Root classes / styles
 	 ********************************************************/
+	const chartAnimationStyle = useChartAnimationStyle(props)
+
 	const rootClasses = computed(() => [
 		{
 			[`origam-chart-word-cloud--legend-${ props.legendPosition }`]: true,
@@ -466,7 +469,7 @@
 		if (props.aspectRatio) {
 			out.aspectRatio = props.aspectRatio
 		}
-		out['--origam-chart---animation-duration'] = `${ props.animationDuration }ms`
+		Object.assign(out, chartAnimationStyle.value)
 		return out
 	})
 

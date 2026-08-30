@@ -496,6 +496,7 @@
 	} from 'vue'
 
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
+	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useChart } from '../../composables/Chart/chart.composable'
 	import { useChartZoom } from '../../composables/Chart/chart-zoom.composable'
@@ -677,6 +678,7 @@
 	const { paddingClasses, paddingStyles } = usePadding(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
 	const { headerTypographyStyles } = useChartHeaderTypography(props)
+	const chartAnimationStyle = useChartAnimationStyle(props)
 
 	/*********************************************************
 	 * Static — viewBox geometry. SVG renders into a fixed coordinate
@@ -933,7 +935,7 @@
 		if (props.aspectRatio) {
 			out.aspectRatio = props.aspectRatio
 		}
-		out['--origam-chart---animation-duration'] = `${ props.animationDuration }ms`
+		Object.assign(out, chartAnimationStyle.value)
 		return out
 	})
 
