@@ -69,15 +69,20 @@ export function useAdjacent (props: IAdjacentProps, prependIcon?: Ref | Computed
         vm.emit('click:append', e)
     }
 
-    // `hasEvent(vm.attrs, …)` ALONE is blind here: `defineEmits<IAdjacentEmits>()`
-    // declares `click:prepend`/`click:append`, so Vue strips any matching
-    // listener out of `$attrs` before this composable ever sees it (verified
-    // empirically — see `useLink`'s `isClickable` / issue #397 for the same
-    // defect on the plain `click` event, on OrigamChip/OrigamListItem
-    // specifically because THEY declare `click` as an emit while OrigamCard
-    // doesn't). `vm.vnode.props` is the raw, pre-split object the parent
-    // template actually wrote and sees the listener regardless of the emit
-    // declaration — checking both mirrors `useLink` exactly.
+    /*********************************************************
+     * isPrependClickable / isAppendClickable
+     *
+     * @description
+     * `hasEvent(vm.attrs, …)` ALONE is blind here: `defineEmits<IAdjacentEmits>()`
+     * declares `click:prepend`/`click:append`, so Vue strips any matching
+     * listener out of `$attrs` before this composable ever sees it (verified
+     * empirically — see `useLink`'s `isClickable` / issue #397 for the same
+     * defect on the plain `click` event, on OrigamChip/OrigamListItem
+     * specifically because THEY declare `click` as an emit while OrigamCard
+     * doesn't). `vm.vnode.props` is the raw, pre-split object the parent
+     * template actually wrote and sees the listener regardless of the emit
+     * declaration — checking both mirrors `useLink` exactly.
+     ********************************************************/
     const isPrependClickable = computed(() => {
         return hasEvent(vm.attrs, 'click:prepend') || hasEvent(vm.vnode.props ?? {}, 'click:prepend')
     })

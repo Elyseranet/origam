@@ -609,6 +609,17 @@
 
 	/*********************************************************
 	 * Show / hide toggle
+	 *
+	 * @description
+	 * issue #443 — the toggle was a bare <div @mousedown>: mouse-only, no
+	 * accessible name, no tabindex (OrigamIcon never sets one either, so
+	 * nothing inside it was reachable). Now a real <button type="button">;
+	 * the trigger stays `@mousedown` (`.prevent` added to stop the native
+	 * button from shifting focus off the input on click — the div never
+	 * could) so mouse timing is unchanged. `@keydown` is a MANUAL
+	 * Enter/Space handler, not `@click` — the button's native keyboard
+	 * activation synthesizes a `click` DOM event nothing listens for, so
+	 * there is no double-fire risk between the two paths.
 	 ********************************************************/
 	const show = ref(false)
 	const currentIcon = computed(() => {
@@ -617,15 +628,6 @@
 	const currentType = computed(() => {
 		return show.value ? TEXT_FIELD_TYPE.TEXT : TEXT_FIELD_TYPE.PASSWORD
 	})
-	// issue #443 — the toggle was a bare <div @mousedown>: mouse-only, no
-	// accessible name, no tabindex (OrigamIcon never sets one either, so
-	// nothing inside it was reachable). Now a real <button type="button">;
-	// the trigger stays `@mousedown` (`.prevent` added to stop the native
-	// button from shifting focus off the input on click — the div never
-	// could) so mouse timing is unchanged. `@keydown` is a MANUAL
-	// Enter/Space handler, not `@click` — the button's native keyboard
-	// activation synthesizes a `click` DOM event nothing listens for, so
-	// there is no double-fire risk between the two paths.
 	const toggleLabel = computed(() => t(show.value ? 'origam.password_field.hide' : 'origam.password_field.show'))
 	const handleToggleShow = () => {
 		show.value = !show.value

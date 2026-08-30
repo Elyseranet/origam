@@ -230,9 +230,14 @@
 		hasPrepend
 	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
 
-	// issue #443 — same <a>-content-model gating as OrigamChip/OrigamBreadcrumbItem:
-	// the root is `<a>` whenever `link.isLink` is true, and a <button>/<a>
-	// forbids any descendant with a `tabindex` attribute specified.
+	/*********************************************************
+	 * isPrependZoneFocusable / isAppendZoneFocusable
+	 *
+	 * @description
+	 * issue #443 — same <a>-content-model gating as OrigamChip/OrigamBreadcrumbItem:
+	 * the root is `<a>` whenever `link.isLink` is true, and a <button>/<a>
+	 * forbids any descendant with a `tabindex` attribute specified.
+	 ********************************************************/
 	const isPrependZoneFocusable = computed(() => isPrependClickable.value && !link.isLink.value)
 	const isAppendZoneFocusable = computed(() => isAppendClickable.value && !link.isLink.value)
 

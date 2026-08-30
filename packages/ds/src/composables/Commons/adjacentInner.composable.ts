@@ -56,10 +56,15 @@ export function useAdjacentInner (props: IAdjacentInnerProps) {
         vm.emit('click:clear', e)
     }
 
-    // See `useAdjacent.isPrependClickable` — same #397-shaped gap:
-    // `defineEmits<IAdjacentInnerEmits>()` declares these, so `$attrs`
-    // alone misses a listener the parent DID attach; `vm.vnode.props`
-    // (raw, pre-split) still has it.
+    /*********************************************************
+     * isPrependInnerClickable / isAppendInnerClickable
+     *
+     * @description
+     * See `useAdjacent.isPrependClickable` — same #397-shaped gap:
+     * `defineEmits<IAdjacentInnerEmits>()` declares these, so `$attrs`
+     * alone misses a listener the parent DID attach; `vm.vnode.props`
+     * (raw, pre-split) still has it.
+     ********************************************************/
     const isPrependInnerClickable = computed(() => {
         return hasEvent(vm.attrs, 'click:prependInner') || hasEvent(vm.vnode.props ?? {}, 'click:prependInner')
     })

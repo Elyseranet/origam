@@ -261,12 +261,17 @@
 		hasAppend
 	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
 
-	// issue #443 — root renders `<component :is="link.tag.value">`, which is
-	// `<a>` whenever `link.isLink` is true regardless of the `link` PROP
-	// (that prop only gates the chip's OWN `isLink` computed below, not the
-	// tag resolution). A <button>/<a> content model forbids any descendant
-	// with a `tabindex` attribute specified, so the prepend/append zone can
-	// only become its own tab stop when the root is NOT actually an <a>.
+	/*********************************************************
+	 * isPrependZoneFocusable / isAppendZoneFocusable
+	 *
+	 * @description
+	 * issue #443 — root renders `<component :is="link.tag.value">`, which is
+	 * `<a>` whenever `link.isLink` is true regardless of the `link` PROP
+	 * (that prop only gates the chip's OWN `isLink` computed below, not the
+	 * tag resolution). A <button>/<a> content model forbids any descendant
+	 * with a `tabindex` attribute specified, so the prepend/append zone can
+	 * only become its own tab stop when the root is NOT actually an <a>.
+	 ********************************************************/
 	const isPrependZoneFocusable = computed(() => isPrependClickable.value && !link.isLink.value)
 	const isAppendZoneFocusable = computed(() => isAppendClickable.value && !link.isLink.value)
 
