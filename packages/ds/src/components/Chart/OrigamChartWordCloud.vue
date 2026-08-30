@@ -3,7 +3,7 @@
 			:id="id"
 			class="origam-chart-word-cloud"
 			:class="rootClasses"
-			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles]"
+			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles, headerTypographyStyles]"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-word-cloud"
 	>
@@ -155,6 +155,7 @@
 	} from '../../interfaces/Chart/chart-word-cloud.interface'
 
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
@@ -215,6 +216,7 @@
 	const { marginClasses, marginStyles } = useMargin(props)
 	const { paddingClasses, paddingStyles } = usePadding(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
+	const { headerTypographyStyles } = useChartHeaderTypography(props)
 
 	/*********************************************************
 	 * Static SVG box — fixed 800 × 500 coordinate space;
