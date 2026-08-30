@@ -245,43 +245,6 @@ inertes), pas oubliées : "`fontFamily` and `lineHeight` were removed from
 
 ---
 
-### #389 — 10 fichiers de tokens component non référencés dans `$themes.json` — PARTIEL
-
-**Preuve.** Rebuild réel des tokens (`node scripts/build-tokens.mjs`) puis
-mesure précise dans `packages/ds/src/assets/css/tokens/light.css` :
-
-| famille | tokens annoncés (ticket) | présents aujourd'hui dans le CSS compilé |
-|---|---|---|
-| bracket | 63 | **0 — toujours orphelin** |
-| calendar | 43 | 43 ✅ |
-| sound | 35 | **0 — toujours orphelin** |
-| empty-state | 34 | 34 ✅ |
-| chart | 33 | 85 ✅ (dépasse le chiffre initial : sous-familles chart-pareto/range-selector/sparkline/variwide/streamgraph enregistrées en plus) |
-| watermark | 11 | **0 — toujours orphelin** |
-| clipboard | 10 | 10 ✅ |
-| qrcode | 8 | **0 — toujours orphelin** |
-| text-mask | 5 | 5 ✅ |
-| masonry | 2 | 2 ✅ |
-
-6 des 10 fichiers sont maintenant enregistrés dans `$themes.json` et
-génèrent bien leurs variables (commit `50abb42d feat(tokens): register the 10
-new #503 token files + rebuild`, `f4d4b16d fix(ds): register
-clipboard/masonry/qrcode/sound/text-mask/watermark token sets (#436-A)`).
-Mais **`bracket`, `sound`, `qrcode`, `watermark` restent absents de
-`$themes.json`** — confirmé par `grep` direct (aucune occurrence) et par
-l'absence totale de leurs variables dans `light.css` compilé. Fait notable :
-un commit `d0464f87 fix(ds): drop qrcode/sound/watermark from #436-A, keep
-only wired files` montre que ce n'est pas un oubli mais un **retrait
-délibéré** — les enregistrer seuls ne suffisait pas (probablement d'autres
-décalages de nommage à régler d'abord, cf. #503 qui porte peut-être
-exactement sur ce reste : à recouper, voir section correspondante).
-
-**Chiffre remesuré : 117 tokens sur 4 familles restent orphelins** (63 + 35
-+ 11 + 8), contre 244 sur 10 familles annoncées à l'origine. Le ticket doit
-rester **ouvert**, reformulé sur ce périmètre réduit.
-
----
-
 ### #391 — Stratégie classes-first perdante face au sélecteur scopé Vue (Btn) — VALIDE
 
 **Preuve.** `OrigamBtn.vue` a toujours, sans garde conditionnelle, à la racine
