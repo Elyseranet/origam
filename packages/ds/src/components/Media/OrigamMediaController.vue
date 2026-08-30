@@ -738,10 +738,10 @@
 	}
 
 	.origam-media-controller__time-sep {
-		opacity: 0.6;
+		color: var(--origam-media-controller__time-sep---color, var(--origam-color__text---secondary));
 	}
 
 	.origam-media-controller__time-total {
-		opacity: 0.7;
+		color: var(--origam-media-controller__time-total---color, var(--origam-color__text---secondary));
 	}
 </style>

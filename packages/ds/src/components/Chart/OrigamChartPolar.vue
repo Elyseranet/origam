@@ -636,7 +636,6 @@
 
 			&:not(:last-child)::after {
 				content: "/";
-				opacity: 0.5;
 			}
 		}
 

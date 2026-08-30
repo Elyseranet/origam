@@ -91,7 +91,8 @@
       "counter_size": "{0} files ({1} in total)",
       "dropzone_title": "Drag and drop files here",
       "dropzone_subtitle": "or click to browse",
-      "browse": "Browse Files"
+      "browse": "Browse Files",
+      "remove_aria_label": "Remove {0}"
     },
     "file_upload": {
       "title": "Drag and drop files here",
@@ -218,6 +219,12 @@
       "canvas": {
         "aria_label": "Saturation and lightness",
         "value": "Saturation {0}%, lightness {1}%"
+      },
+      "edit": {
+        "cycle_mode_aria_label": "Switch color format"
+      },
+      "preview": {
+        "eye_dropper_aria_label": "Pick color from screen"
       }
     },
     "breadcrumb": {

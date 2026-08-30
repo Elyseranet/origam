@@ -8,6 +8,7 @@ export interface IColorPickerPreviewProps extends ICommonsComponentProps, IDimen
     colorHsv?: THSVA | null
     disabled?: boolean
     hideAlpha?: boolean
+    ariaLabel?: string
 }
 
 /** Emits fired by `<OrigamColorPickerPreview>` — alpha slider updates the HSVA. */

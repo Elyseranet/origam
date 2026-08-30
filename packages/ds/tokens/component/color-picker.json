@@ -36,7 +36,10 @@
       "input-width": { "$type": "dimension", "$value": "48px" },
       "gap":         { "$type": "dimension", "$value": "{space.2}" },
       "label-color": { "$type": "color",     "$value": "{color.text.secondary}" },
-      "label-font-size": { "$type": "dimension", "$value": "{font.size.xs}" }
+      "label-font-size": { "$type": "dimension", "$value": "{font.size.xs}" },
+      "input-border-color":     { "$type": "color", "$value": "{color.border.default}", "$description": "#402 — was a hardcoded rgba(163, 163, 163), unthemable and identical to color.border.default (#A3A3A3)." },
+      "input-background-color": { "$type": "color", "$value": "{color.surface.default}", "$description": "#402 — was a hardcoded rgba(255, 255, 255): a solid white rectangle regardless of theme." },
+      "input-color":             { "$type": "color", "$value": "{color.text.secondary}", "$description": "#402 — was a hardcoded rgba(0, 0, 0, .5): 3.98:1 on white, fails AA 4.5:1 (same alpha-over-surface mechanism as #513); color.text.secondary is 7.81:1, independently verified." }
     },
 
     "swatches": {

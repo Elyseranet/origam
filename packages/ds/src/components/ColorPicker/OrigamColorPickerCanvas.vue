@@ -2,6 +2,7 @@
 	<div
 			:id="id"
 			ref="resizeRef"
+			:aria-disabled="disabled"
 			:aria-label="canvasAriaLabel"
 			:aria-valuetext="canvasAriaValueText"
 			:class="colorPickerCanvasClasses"

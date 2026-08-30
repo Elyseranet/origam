@@ -12,6 +12,7 @@ export interface IColorPickerEditProps extends ICommonsComponentProps {
     disabled?: boolean
     mode?: TColorModes
     modes?: Array<TColorModes>
+    ariaLabel?: string
 }
 
 /** Emits fired by `<OrigamColorPickerEdit>` — input edits the HSVA and
