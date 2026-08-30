@@ -229,21 +229,29 @@
 		return typeof entry === 'number' ? entry : entry.y
 	})
 
+	/*********************************************************
+	 * valueColor
+	 *
+	 * @description
+	 * Falls back to the action-primary intent token when the series
+	 * doesn't pin its own colour.
+	 *
+	 * @description
+	 * ⛔ #529 — the two `var(--origam-color__action--…---bg, …)` fallback
+	 * chains below used to nest a SECOND rung, `var(--origam-color--${c})`
+	 * — a single-tiret name the token pipeline has never emitted. It was
+	 * dead the moment `c`/`first.color` is a valid `TIntent` (the only
+	 * case either branch is reached for): the primary rung always resolves
+	 * first. Removed rather than "fixed" into a real token — it never
+	 * carried a distinct semantic, `currentColor` was already the intended
+	 * final fallback.
+	 ********************************************************/
 	const valueColor = computed<string>(() => {
 		const first = props.series?.[0]
-		// Fall back to the action-primary intent token when the series
-		// doesn't pin its own colour.
 		if (first?.color) {
 			if (/^(#|rgb|rgba|hsl|hsla|var|currentColor)/i.test(first.color)) {
 				return first.color
 			}
-			// #529 — the middle fallback rung used to read
-			// `--origam-color--${first.color}`, a single-tiret name the
-			// token pipeline has never emitted (dead the moment `first.color`
-			// is a valid TIntent, which is the only case this branch is
-			// reached for). Removed rather than "fixed" into a real token:
-			// it never carried a distinct semantic, `currentColor` was
-			// always the intended final fallback.
 			return `var(--origam-color__action--${ first.color }---bg, currentColor)`
 		}
 		const scheme = props.colorScheme

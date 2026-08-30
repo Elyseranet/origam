@@ -423,15 +423,20 @@
 	const resolvedBarColor = computed<string>(() => resolveColor(props.barColor))
 	const resolvedLineColor = computed<string>(() => resolveColor(props.lineColor))
 
-	/**
+	/*********************************************************
+	 * wasBarColorPassed / barColorAt
+	 *
+	 * @description
 	 * `barColor` carries a hard `withDefaults()` default ('primary'), so
 	 * `props.barColor` is NEVER `undefined` at render time — a plain
 	 * `props.barColor ?? colorScheme[...]` fallback could never fire.
+	 *
+	 * @description
 	 * Same shadowing shape `useChartAnimationStyle` documents for
 	 * `animationDuration` (#505): the distinguishing test is whether the
 	 * CONSUMER (or a theme) actually touched the prop, not whether the
-	 * resolved value is falsy.
-	 */
+	 * resolved value is falsy (#426).
+	 ********************************************************/
 	const wasBarColorPassed = usePassedProps(props, 'OrigamChartPareto')
 
 	const barColorAt = (i: number): string => {
