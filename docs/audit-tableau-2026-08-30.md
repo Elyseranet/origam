@@ -38,8 +38,16 @@ principal, cf. #357).
 | 383 | `useLayoutItem` écrase le `width` du consommateur | **RÉSOLU** | PR #464 |
 | 387 | Blockquote : `letterSpacing` mort + tiret/virgule orphelins | **RÉSOLU** | PR #460 |
 | 388 | Bracket : slot `competitor` perdu, doc/story en retard | **RÉSOLU** | PR #481 (fontFamily/lineHeight retirés par #501, pas un oubli) |
-| 389 | 10 fichiers de tokens component non référencés | PARTIEL | 6/10 fichiers corrigés (127 tokens) ; 4/10 encore orphelins : bracket/sound/qrcode/watermark = **117 tokens** |
+| 389 | 10 fichiers de tokens component non référencés | PARTIEL — **chiffre corrigé, voir note ci-dessous** | **1/10** orphelin restant (`bracket`) — sound/qrcode/watermark n'existent plus du tout dans `tokens/component/` (supprimés par #436-B, commit `651a3a90`), donc ne sont plus "orphelins", ils sont retirés |
 | 391 | Stratégie classes-first perdante face au sélecteur scopé (Btn) | VALIDE | cas concret (Btn) confirmé inchangé ; portée "92 composants" non re-mesurée indépendamment |
+| 393 | 13 composants déclarent leurs défauts dans un `:root{}` du `.vue` | VALIDE (composition changée) | 11 composants à couverture nulle + 3 partiels (Col/Row/BtnGroup) = **235 vars non couvertes** (contre 215 annoncés) ; Tab/Tabs/SnackbarGroup/Spacer sont désormais à 100 % |
+| 394 | Transform Style Dictionary casse le nommage BEM sur les clés enfant à tiret | PARTIEL | mécanisme réparé par #435 (`$child`/`$state`) — vérifié corrigé sur les 2 exemples cités par le ticket (carousel.controls-item, calendar.day-cell) ; Audio reste cassé (migration non faite, encore dans la baseline dead) |
+| 405 | 338 déclarations CSS lisent une variable inexistante sans repli | PARTIEL | **34** (guard `--why`, catégorie "sans repli — rendu cassé"), contre 338 annoncés — les 2 exemples nommés du ticket (Avatar, AvatarGroup) sont vérifiés corrigés |
+| 436 | Tokens orphelins : 10 non construits + 12 construits sans lecteur | PARTIEL (quasi soldé) | Population A : **1/10** orphelin restant (`bracket`, bloqué sur la migration `$child`). Population B : **0/12** restant. Les 3 divergences que le dernier commentaire du ticket disait encore ouvertes (grids/progress-linear/date-picker) sont désormais réparées — vérifié dans le code |
+| 479 | Chiffrer (pas corriger) le masquage local des tokens component-level | VALIDE (non commencé) | 0/4 familles mesurées (List/DataTable/Picker/Field) ; seul Breadcrumb, hors périmètre de CE ticket, a un chiffre (24/26, PR #478) |
+| 492 | ThemeProvider : `inheritAttrs:false` sans `v-bind`, attrs perdus | VALIDE | inchangé — sonde `it.fails` toujours "1 expected fail" à l'exécution réelle du jour |
+| 514 | Strategy A (colorStyles vide si tokenisé) contredite par le code | ARBITRAGE | confirmé par lecture de code — `fgDecl` est poussé dans `styles` même pour une valeur tokenisée ; CLAUDE.md affirme toujours le contraire aujourd'hui |
+| 515 | CLAUDE.md dit l'inverse du resolveur (union vs intersection) | ARBITRAGE / PARTIEL | confirmé par lecture de code — le guard `if (!(key in rawProps)) continue` fait une INTERSECTION ; CLAUDE.md dit toujours "not on what the component opted into" (union). Mesure de l'ampleur non faite |
 
 *(tableau complété au fur et à mesure des lots suivants)*
 
