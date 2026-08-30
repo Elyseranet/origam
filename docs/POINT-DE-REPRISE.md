@@ -108,8 +108,39 @@ commit **`d6f93e8f`** (⚠️ non mergé dans `develop`).
 ### Correction en cours (session pair `audit-lot-composants-1`)
 `#532` (docker-compose), `#423` (InfiniteScroll), `#524` (contraste), `#419` (Dialog/Divider/Drawer)
 
-### Mesure en cours (session pair `audit-lot-archi`)
-`#530` — livrable attendu : `docs/audit-530-conflits-root-token.md`
+### #530 — MESURE TERMINÉE (session pair `audit-lot-archi`)
+
+Livrable : `docs/audit-530-conflits-root-token.md`, commit **`7541b4a6`**,
+branche **`audit/530-conflits`** (⚠️ non mergée).
+
+**9 conflits réels**, pas 41. Sur 280 déclarations `:root` dans 20 fichiers,
+46 partagent leur nom avec `light.css`, 42 diffèrent en **texte brut** — mais
+après résolution complète des chaînes `var()` (fusion `primitive.css` +
+`light.css`), **9 seulement diffèrent en valeur rendue**. Les 29 autres sont des
+conflits fantômes : `0` vs `var(--origam-space---0)` = 0px, `transparent` vs
+`rgba(0,0,0,0)`, `solid` vs une var valant `solid`.
+
+⛔ **CORRECTION DE MA LECTURE DU CAS `OrigamCol`.** Mesuré au navigateur
+(port dédié 6199, identité vérifiée par `lsof`, lecture de
+`getComputedStyle().getPropertyValue('--nom')` — pas la propriété finale) :
+**9 conflits sur 9, c'est le TOKEN qui s'affiche, jamais le `:root`.** Confirmé
+sur 3 familles indépendantes.
+
+Le `:root` d'`OrigamCol` ne gagnait donc **pas par priorité de cascade** — il
+gagnait par **absence de token concurrent sur le même nom**. Une fois les noms
+alignés (#417), le token gagne systématiquement. J'avais écrit l'inverse.
+
+**Conséquence pratique** : pour ces 9, « aligner le composant sur le token » =
+**zéro changement visuel** (c'est déjà ce qui s'affiche) ; « aligner le token sur
+le `:root` » **ferait bouger le rendu actuellement publié**.
+
+⚠️ Mes chiffres Tabs=15 / Tab=9 sont **inversés** : le fichier à 15 déclarations
+est `OrigamTab.vue`, celui à 9 est `OrigamTabs.vue`. Et le bucket « divers 3 »
+n'est **pas reproductible** — aucun `:root` conflictuel hors de
+Tab/Tabs/SnackbarGroup/BtnGroup/Row/Col.
+
+**Caveat non levé** : mesuré contre Histoire dev (Vite), **pas contre le bundle
+npm publié** — l'ordre d'insertion CSS pourrait différer en production.
 
 ---
 
