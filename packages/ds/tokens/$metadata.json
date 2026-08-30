@@ -108,7 +108,17 @@
     "component/video",
     "component/audio",
     "component/media-scrubber",
-    "component/media-controller"
+    "component/media-controller",
+    "component/chart-pareto",
+    "component/chart-range-selector",
+    "component/chart-sparkline",
+    "component/chart-variwide",
+    "component/chart-streamgraph",
+    "component/data-table-header-cell",
+    "component/data-table-footer",
+    "component/data-table-row",
+    "component/list-group",
+    "component/tab-panels"
   ],
   "_note": "ADR-004 (Implemented): brand themes live in the consumer app (e.g. marketing package), not in the DS. The DS ships only `light` and `dark` as token sets. Consumer apps author brand themes as IOrigamTheme objects (semantic JSON) and pass them to createOrigam / the Nuxt module."
 }
