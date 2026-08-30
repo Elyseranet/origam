@@ -230,10 +230,17 @@ The palette implements the ARIA combobox pattern.
 
 | Element | Roles / attributes |
 |---|---|
-| Overlay root | `role="dialog"` + `aria-modal="true"` + `aria-labelledby` pointing at the input |
+| Overlay root | `role="dialog"` + `aria-modal="true"` + `aria-label` naming the dialog ("Command palette", `origam.command_palette.aria_label`) |
 | Search input | `role="combobox"` + `aria-expanded` + `aria-controls` + `aria-activedescendant` + `aria-autocomplete="list"` |
 | Results container | `role="listbox"` |
 | Each command | `role="option"` + `aria-selected` + `aria-disabled` |
+
+Note (issue #404): the dialog used to point `aria-labelledby` at the
+search input, relying on the input's `placeholder` to supply a name.
+Measured against real Chromium via Playwright's `ariaSnapshot()`: this
+produced an UNNAMED dialog — a `placeholder` names the element that
+carries it, not an element that merely references it via
+`aria-labelledby`. `aria-label` on the dialog itself is the fix.
 
 The dialog also:
 

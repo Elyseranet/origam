@@ -237,6 +237,9 @@
     "breadcrumb": {
       "aria_label": "Breadcrumb"
     },
+    "command_palette": {
+      "aria_label": "Command palette"
+    },
     "chart": {
       "aria_label": "Chart",
       "no_data_text": "No data to display",

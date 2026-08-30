@@ -13,7 +13,7 @@
 			>
 				<div
 						ref="dialogRef"
-						:aria-labelledby="inputId"
+						:aria-label="dialogAriaLabel"
 						:class="dialogClasses"
 						:style="dialogStyles"
 						aria-modal="true"
@@ -176,6 +176,7 @@
 	import { useCommand } from '../../composables/CommandPalette/command.composable'
 
 	import { useHotkey } from '../../composables/Commons/hotkey.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
 
 	import { useTypography } from '../../composables/Commons/typography.composable'
 
@@ -250,6 +251,23 @@
 	const inputId = computed(() => `origam-command-palette-input-${uid}`)
 	const listboxId = computed(() => `origam-command-palette-listbox-${uid}`)
 	const dataCy = computed(() => 'origam-command-palette')
+
+	/*********************************************************
+	 * Dialog accessible name (issue #404)
+	 *
+	 * @description
+	 * Was `aria-labelledby="inputId"`, pointing the dialog's name at the
+	 * `<input>`. Measured with a real Playwright `ariaSnapshot()` against
+	 * Chromium: the dialog announced with NO name at all — a placeholder
+	 * does not reliably promote to the accessible name of an ELEMENT
+	 * REFERENCING it via `aria-labelledby` (it only names the input
+	 * itself). `aria-label` and `aria-labelledby` can't coexist —
+	 * `aria-labelledby` always wins when both are present — so the fix
+	 * replaces it outright with a dedicated, always-present label rather
+	 * than keeping a dead attribute alongside a working one.
+	 ********************************************************/
+	const {t} = useLocale()
+	const dialogAriaLabel = computed(() => t('origam.command_palette.aria_label'))
 
 	const rootRef = ref<HTMLElement>()
 	const dialogRef = ref<HTMLElement>()

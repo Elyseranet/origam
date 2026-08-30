@@ -237,6 +237,9 @@
     "breadcrumb": {
       "aria_label": "Fil d'Ariane"
     },
+    "command_palette": {
+      "aria_label": "Palette de commandes"
+    },
     "chart": {
       "aria_label": "Graphique",
       "no_data_text": "Aucune donnée à afficher",
