@@ -115,10 +115,10 @@
 			align-items: center;
 			justify-content: center;
 			padding: var(--origam-chart-range-selector__btn---padding, 3px 8px);
-			border: 1px solid var(--origam-chart-range-selector__btn---border-color, var(--origam-color-border-default, #d1d5db));
+			border: 1px solid var(--origam-chart-range-selector__btn---border-color, var(--origam-color__border---default, #d1d5db));
 			border-radius: var(--origam-chart-range-selector__btn---border-radius, 4px);
 			background-color: var(--origam-chart-range-selector__btn---background-color, transparent);
-			color: var(--origam-chart-range-selector__btn---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart-range-selector__btn---color, var(--origam-color__text---secondary, #6b7280));
 			font-size: var(--origam-chart-range-selector__btn---font-size, 0.75rem);
 			font-weight: 500;
 			cursor: pointer;
@@ -129,22 +129,22 @@
 			&:hover,
 			&:focus-visible {
 				background-color: var(--origam-chart-range-selector__btn--hover---background-color, rgba(0, 0, 0, 0.06));
-				color: var(--origam-chart-range-selector__btn--hover---color, var(--origam-color-text-primary, #111827));
+				color: var(--origam-chart-range-selector__btn--hover---color, var(--origam-color__text---primary, #111827));
 				outline: none;
 			}
 
 			&:focus-visible {
-				box-shadow: 0 0 0 2px var(--origam-color-focus-ring, rgba(59, 130, 246, 0.5));
+				box-shadow: 0 0 0 2px var(--origam-color__border---focus, rgba(59, 130, 246, 0.5));
 			}
 
 			&--active {
-				background-color: var(--origam-chart-range-selector__btn--active---background-color, var(--origam-color-action-primary-bg-default, #3b82f6));
+				background-color: var(--origam-chart-range-selector__btn--active---background-color, var(--origam-color__action--primary---bg, #3b82f6));
 				border-color: var(--origam-chart-range-selector__btn--active---border-color, transparent);
 				color: var(--origam-chart-range-selector__btn--active---color, #ffffff);
 
 				&:hover,
 				&:focus-visible {
-					background-color: var(--origam-chart-range-selector__btn--active--hover---background-color, var(--origam-color-action-primary-bg-hover, #2563eb));
+					background-color: var(--origam-chart-range-selector__btn--active--hover---background-color, var(--origam-color__action--primary---bgHover, #2563eb));
 					color: var(--origam-chart-range-selector__btn--active--hover---color, #ffffff);
 				}
 			}

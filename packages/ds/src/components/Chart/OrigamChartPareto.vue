@@ -852,7 +852,7 @@
 
 		&__subtitle {
 			font-size: var(--origam-chart__subtitle---font-size, 0.875rem);
-			color: var(--origam-chart__subtitle---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__subtitle---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		&__body {
@@ -878,31 +878,31 @@
 		}
 
 		&__grid-line {
-			stroke: var(--origam-chart-pareto__grid---stroke, var(--origam-color-border-subtle, #e5e7eb));
+			stroke: var(--origam-chart-pareto__grid---stroke, var(--origam-color__border---subtle, #e5e7eb));
 			stroke-width: 1;
 			stroke-dasharray: 4 4;
 		}
 
 		&__axis-line {
-			stroke: var(--origam-chart-pareto__axis---stroke, var(--origam-color-border-default, #d1d5db));
+			stroke: var(--origam-chart-pareto__axis---stroke, var(--origam-color__border---default, #d1d5db));
 			stroke-width: 1;
 		}
 
 		&__tick-mark {
-			stroke: var(--origam-chart-pareto__tick---stroke, var(--origam-color-border-default, #d1d5db));
+			stroke: var(--origam-chart-pareto__tick---stroke, var(--origam-color__border---default, #d1d5db));
 			stroke-width: 1;
 		}
 
 		&__tick-label {
 			font-size: var(--origam-chart-pareto__tick-label---font-size, 0.6875rem);
-			fill: var(--origam-chart-pareto__tick-label---fill, var(--origam-color-text-secondary, #6b7280));
+			fill: var(--origam-chart-pareto__tick-label---fill, var(--origam-color__text---secondary, #6b7280));
 			user-select: none;
 		}
 
 		&__bar {
 			cursor: pointer;
 			transition: opacity 150ms ease, filter 150ms ease;
-			stroke: var(--origam-chart-pareto__bar---stroke-color, var(--origam-color-surface-default, #ffffff));
+			stroke: var(--origam-chart-pareto__bar---stroke-color, var(--origam-color__surface---default, #ffffff));
 			stroke-width: var(--origam-chart-pareto__bar---stroke-width, 1);
 
 			&:hover,
@@ -917,7 +917,7 @@
 			pointer-events: none;
 			font-size: var(--origam-chart-pareto__bar-label---font-size, 0.6875rem);
 			font-weight: var(--origam-chart-pareto__bar-label---font-weight, 600);
-			fill: var(--origam-chart-pareto__bar-label---fill, var(--origam-color-text-primary, currentColor));
+			fill: var(--origam-chart-pareto__bar-label---fill, var(--origam-color__text---primary, currentColor));
 			user-select: none;
 		}
 
@@ -930,7 +930,7 @@
 
 		&__line-dot {
 			pointer-events: none;
-			stroke: var(--origam-chart-pareto__line-dot---stroke, var(--origam-color-surface-default, #ffffff));
+			stroke: var(--origam-chart-pareto__line-dot---stroke, var(--origam-color__surface---default, #ffffff));
 			stroke-width: 2;
 		}
 
@@ -949,7 +949,7 @@
 		:deep(.origam-chart__tooltip) {
 			position: absolute;
 			pointer-events: none;
-			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color-surface-overlay, #1f2937));
+			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color__surface---overlay, #1f2937));
 			color: var(--origam-chart__tooltip---color, #ffffff);
 			padding: var(--origam-chart__tooltip---padding, 8px 12px);
 			border-radius: var(--origam-chart__tooltip---border-radius, 6px);
@@ -987,7 +987,7 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			color: var(--origam-chart__empty---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__empty---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		:deep(.origam-chart__legend) {

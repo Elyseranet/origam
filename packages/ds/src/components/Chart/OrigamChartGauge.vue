@@ -238,13 +238,20 @@
 			if (/^(#|rgb|rgba|hsl|hsla|var|currentColor)/i.test(first.color)) {
 				return first.color
 			}
-			return `var(--origam-color__action--${ first.color }---bg, var(--origam-color--${ first.color }, currentColor))`
+			// #529 — the middle fallback rung used to read
+			// `--origam-color--${first.color}`, a single-tiret name the
+			// token pipeline has never emitted (dead the moment `first.color`
+			// is a valid TIntent, which is the only case this branch is
+			// reached for). Removed rather than "fixed" into a real token:
+			// it never carried a distinct semantic, `currentColor` was
+			// always the intended final fallback.
+			return `var(--origam-color__action--${ first.color }---bg, currentColor)`
 		}
 		const scheme = props.colorScheme
 		if (scheme.length) {
 			const c = scheme[0] as string
 			if (/^(#|rgb|rgba|hsl|hsla|var|currentColor)/i.test(c)) return c
-			return `var(--origam-color__action--${ c }---bg, var(--origam-color--${ c }, currentColor))`
+			return `var(--origam-color__action--${ c }---bg, currentColor)`
 		}
 		return 'var(--origam-color__action--primary---bg, currentColor)'
 	})
@@ -375,7 +382,7 @@
 
 		&__subtitle {
 			font-size: var(--origam-chart__subtitle---font-size, 0.875rem);
-			color: var(--origam-chart__subtitle---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__subtitle---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		&__body {
@@ -397,7 +404,7 @@
 		}
 
 		.origam-chart__gauge-track {
-			fill: var(--origam-chart__gauge-track---color, var(--origam-color-border-subtle, #e5e7eb));
+			fill: var(--origam-chart__gauge-track---color, var(--origam-color__border---subtle, #e5e7eb));
 			stroke: none;
 		}
 
@@ -407,12 +414,12 @@
 		}
 
 		.origam-chart__gauge-endpoint {
-			fill: var(--origam-chart__axis-label---color, var(--origam-color-text-secondary, #6b7280));
+			fill: var(--origam-chart__axis-label---color, var(--origam-color__text---secondary, #6b7280));
 			font-size: var(--origam-chart__axis-label---font-size, 0.75rem);
 		}
 
 		.origam-chart__gauge-label {
-			fill: var(--origam-chart__gauge-label---color, var(--origam-color-text-primary, currentColor));
+			fill: var(--origam-chart__gauge-label---color, var(--origam-color__text---primary, currentColor));
 			font-size: var(--origam-chart__gauge-label---font-size, 1.5rem);
 			font-weight: var(--origam-chart__gauge-label---font-weight, 700);
 		}
@@ -427,7 +434,7 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			color: var(--origam-chart__empty---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__empty---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		&--no-animation .origam-chart__gauge-value {

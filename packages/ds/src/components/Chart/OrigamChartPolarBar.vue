@@ -659,7 +659,7 @@
 
 		&__subtitle {
 			font-size: var(--origam-chart__subtitle---font-size, 0.875rem);
-			color: var(--origam-chart__subtitle---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__subtitle---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		&__body {
@@ -685,7 +685,7 @@
 		}
 
 		.origam-chart__polar-bar-wedge {
-			stroke: var(--origam-chart__polar-bar---stroke-color, var(--origam-color-surface-default, #ffffff));
+			stroke: var(--origam-chart__polar-bar---stroke-color, var(--origam-color__surface---default, #ffffff));
 			stroke-width: var(--origam-chart__polar-bar---stroke-width, 1.5);
 			cursor: pointer;
 			transition: opacity 150ms ease, filter 150ms ease;
@@ -702,7 +702,7 @@
 			pointer-events: none;
 			font-size: var(--origam-chart__polar-bar-label---font-size, 0.6875rem);
 			font-weight: var(--origam-chart__polar-bar-label---font-weight, 500);
-			fill: var(--origam-chart__polar-bar-label---color, var(--origam-color-text-primary, currentColor));
+			fill: var(--origam-chart__polar-bar-label---color, var(--origam-color__text---primary, currentColor));
 			user-select: none;
 		}
 
@@ -721,7 +721,7 @@
 		:deep(.origam-chart__tooltip) {
 			position: absolute;
 			pointer-events: none;
-			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color-surface-overlay, #1f2937));
+			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color__surface---overlay, #1f2937));
 			color: var(--origam-chart__tooltip---color, #ffffff);
 			padding: var(--origam-chart__tooltip---padding, 8px 12px);
 			border-radius: var(--origam-chart__tooltip---border-radius, 6px);
@@ -759,7 +759,7 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			color: var(--origam-chart__empty---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__empty---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		:deep(.origam-chart__legend) {
