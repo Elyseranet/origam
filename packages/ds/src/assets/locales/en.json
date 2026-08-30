@@ -86,6 +86,10 @@
       "counter": "{0} files",
       "counter_size": "{0} files ({1} in total)"
     },
+    "password_field": {
+      "show": "Show password",
+      "hide": "Hide password"
+    },
     "file_field": {
       "counter": "{0} files",
       "counter_size": "{0} files ({1} in total)",
@@ -225,10 +229,16 @@
       },
       "preview": {
         "eye_dropper_aria_label": "Pick color from screen"
+      },
+      "swatches": {
+        "aria_label": "Select color {0}"
       }
     },
     "breadcrumb": {
       "aria_label": "Breadcrumb"
+    },
+    "command_palette": {
+      "aria_label": "Command palette"
     },
     "chart": {
       "aria_label": "Chart",

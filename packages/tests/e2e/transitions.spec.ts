@@ -347,3 +347,88 @@ test.describe('OrigamSnack', () => {
         await expectToggleLeave(page, 'target-playground')
     })
 })
+
+// ─── prefers-reduced-motion (issue #494) ─────────────────────────────────────
+//
+// Every `-enter-active`/`-leave-active` class in the family is fast-vanishing
+// once a transition completes (0.15s-0.5s), and under `reduced-motion` it
+// completes in ~0.01ms — trying to catch the LIVE transient class via
+// polling (the way `expectToggleEnter` above does for the happy path) would
+// be a race against the very thing we're testing. Instead this queries the
+// browser's OWN parsed CSSOM (`document.styleSheets`) for the compiled
+// `@media (prefers-reduced-motion: reduce)` rule and asserts its
+// `transition-duration` directly — proving the rule actually shipped to a
+// real browser (Chromium via Playwright, not jsdom, which never loads the
+// stylesheet at all — see OrigamCalendar's `getComputedStyle` note elsewhere
+// in this suite for why jsdom is the wrong tool for this class of check).
+
+/**
+ * Reads, from a REAL element's stylesheet set, the `transition-duration`
+ * declared for `selectorFragment` INSIDE a `prefers-reduced-motion: reduce`
+ * media rule. Returns `null` if no such rule/selector is found.
+ */
+async function reducedMotionDuration (
+    anyElementInSandbox: ReturnType<FrameLocator['locator']>,
+    selectorFragment: string
+): Promise<string | null> {
+    return anyElementInSandbox.evaluate((el, fragment) => {
+        const doc = el.ownerDocument
+        for (const sheet of Array.from(doc.styleSheets)) {
+            let rules: CSSRuleList
+            try {
+                rules = sheet.cssRules
+            } catch {
+                continue // cross-origin sheet — never the case here, but skip defensively
+            }
+            for (const rule of Array.from(rules)) {
+                if (!(rule instanceof CSSMediaRule)) continue
+                if (!rule.media.mediaText.includes('prefers-reduced-motion')) continue
+
+                for (const inner of Array.from(rule.cssRules)) {
+                    if (inner instanceof CSSStyleRule && inner.selectorText.includes(fragment)) {
+                        return inner.style.transitionDuration || null
+                    }
+                }
+            }
+        }
+        return null
+    }, selectorFragment)
+}
+
+const REDUCED_MOTION_TARGETS: ReadonlyArray<{ label: string; story: string; classFragment: string }> = [
+    { label: 'OrigamFade',                     story: STORIES.fade,                    classFragment: 'origam-transition--fade-enter-active' },
+    { label: 'OrigamScaleRotate',              story: STORIES.scaleRotate,              classFragment: 'origam-transition--scale-rotate-enter-active' },
+    { label: 'OrigamExpandX',                  story: STORIES.expandX,                  classFragment: 'origam-transition--expand-x-enter-active' },
+    { label: 'OrigamExpandY',                  story: STORIES.expandY,                  classFragment: 'origam-transition--expand-y-enter-active' },
+    { label: 'OrigamSlideX',                   story: STORIES.slideX,                   classFragment: 'origam-transition--slide-x-enter-active' },
+    { label: 'OrigamSlideY',                   story: STORIES.slideY,                   classFragment: 'origam-transition--slide-y-enter-active' },
+    { label: 'OrigamTranslateScale',           story: STORIES.translateScale,           classFragment: 'origam-transition--transform-scale-enter-active' },
+    { label: 'OrigamTranslateBottom',          story: STORIES.translateBottom,          classFragment: 'origam-transition--translate-bottom-enter-active' },
+    { label: 'OrigamTranslatePicker',          story: STORIES.translatePicker,          classFragment: 'origam-transition--translate-picker-enter-active' },
+    { label: 'OrigamReverseTranslatePicker',   story: STORIES.reverseTranslatePicker,   classFragment: 'origam-transition--reverse-translate-picker-enter-active' },
+    { label: 'OrigamWindowXTranslate',         story: STORIES.windowXTranslate,         classFragment: 'origam-transition--window-x-translate-enter-active' },
+    { label: 'OrigamWindowXReverseTranslate',  story: STORIES.windowXReverseTranslate,  classFragment: 'origam-transition--window-x-reverse-translate-enter-active' },
+    { label: 'OrigamWindowYTranslate',         story: STORIES.windowYTranslate,         classFragment: 'origam-transition--window-y-translate-enter-active' },
+    { label: 'OrigamWindowYReverseTranslate',  story: STORIES.windowYReverseTranslate,  classFragment: 'origam-transition--window-y-reverse-translate-enter-active' },
+    { label: 'OrigamSnack',                    story: STORIES.snack,                    classFragment: 'origam-transition--snack-enter-active' }
+]
+
+test.describe('prefers-reduced-motion — Transition family (issue #494)', () => {
+    for (const { label, story, classFragment } of REDUCED_MOTION_TARGETS) {
+        test(`${label} — ships a @media (prefers-reduced-motion: reduce) rule collapsing its duration`, async ({ page }) => {
+            await gotoVariant(page, story)
+            const sb = sandbox(page)
+            // Any already-rendered element in the sandbox iframe reaches the
+            // same document/stylesheet set — the toggle button is always present.
+            const anyEl = sb.locator('[data-cy="toggle-playground"]').first()
+            await expect(anyEl).toBeVisible({ timeout: 5000 })
+
+            const duration = await reducedMotionDuration(anyEl, classFragment)
+
+            expect(duration, `no prefers-reduced-motion rule found for .${classFragment}`).not.toBeNull()
+            // Anything sub-millisecond counts as "collapsed" — the mixin emits
+            // 0.01ms specifically (not 0) so transitionend still fires.
+            expect(duration).toMatch(/^0(\.\d+)?ms$/)
+        })
+    }
+})

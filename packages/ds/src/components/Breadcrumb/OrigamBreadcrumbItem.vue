@@ -15,7 +15,10 @@
       <span
 		      key="prepend"
 		      class="origam-breadcrumb-item__prepend"
+		      :role="isPrependZoneFocusable ? 'button' : undefined"
+		      :tabindex="isPrependZoneFocusable ? 0 : undefined"
 		      @click="handleClickPrepend"
+		      @keydown="handleKeydownPrepend"
       >
         <slot name="prepend">
           <origam-avatar
@@ -42,7 +45,10 @@
       <span
 		      key="append"
 		      class="origam-breadcrumb-item__append"
+		      :role="isAppendZoneFocusable ? 'button' : undefined"
+		      :tabindex="isAppendZoneFocusable ? 0 : undefined"
 		      @click="handleClickAppend"
+		      @keydown="handleKeydownAppend"
       >
        <slot name="append">
          <origam-avatar
@@ -147,8 +153,31 @@
 		hasAppend,
 		hasPrepend,
 		onClickPrepend: handleClickPrepend,
-		onClickAppend: handleClickAppend
+		onClickAppend: handleClickAppend,
+		onKeydownPrepend: handleKeydownPrepend,
+		onKeydownAppend: handleKeydownAppend,
+		isPrependClickable,
+		isAppendClickable
 	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
+
+	/*********************************************************
+	 * isPrependZoneFocusable / isAppendZoneFocusable
+	 *
+	 * @description
+	 * issue #443 — a <button>/<a> content model forbids ANY descendant with
+	 * a `tabindex` attribute specified (WHATWG: "no descendant with the
+	 * tabindex attribute specified"). The root renders as `<a>` whenever
+	 * `link.isLink` is true (useLink: `tag = isLink ? 'a' : props.tag`),
+	 * so the zone can only become its own tab stop when the root is NOT
+	 * a link — otherwise the fix would ship invalid, non-conformant markup
+	 * (and most browsers won't let the nested tabindex receive focus via
+	 * Tab anyway). Same reasoning applies to OrigamChip/OrigamListItem
+	 * (also useLink-based) and is why OrigamBtn/OrigamExpansionPanelHeader
+	 * (root ALWAYS a real <button>) are deliberately left untouched by
+	 * this ticket — see the audit note in the PR description.
+	 ********************************************************/
+	const isPrependZoneFocusable = computed(() => isPrependClickable.value && !link.isLink?.value)
+	const isAppendZoneFocusable = computed(() => isAppendClickable.value && !link.isLink?.value)
 
 	/*********************************************************
 	 * Class & Style

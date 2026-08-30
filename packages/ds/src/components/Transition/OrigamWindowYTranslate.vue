@@ -59,6 +59,8 @@
 </script>
 
 <style lang="scss">
+	@use '../../assets/scss/helpers' as ds;
+
 	.origam-transition--window-y-translate {
 		&-enter-active,
 		&-leave-active {
@@ -78,6 +80,13 @@
 
 		&-leave-to {
 			transform: translateY(-100%);
+		}
+
+		@include ds.ds-reduced-motion {
+			&-enter-active,
+			&-leave-active {
+				transition-duration: 0.01ms !important;
+			}
 		}
 	}
 </style>

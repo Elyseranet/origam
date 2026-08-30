@@ -184,9 +184,9 @@ cal.positionEvent(event, dayStart, pxPerMin)  // { top, height }
 
 | Slot         | Scoped bindings                                                            | Notes                                                       |
 |--------------|----------------------------------------------------------------------------|-------------------------------------------------------------|
-| `header`     | `{ title, view, currentDate, navigate, setView }`                          | Replace the built-in toolbar (title + nav + view switcher). |
+| `header`     | `{ view, title, canPrev, canNext, setView, navigate }`                     | Replace the built-in toolbar (title + nav + view switcher). |
 | `event`      | `{ event, view, isPast, isToday }`                                         | Replace the event card body. Rendered for every visible event in month/week/day/agenda views. |
-| `day`        | `{ date, events, isToday, isPast, isOutside, isWeekend }`                  | Replace a month-view day cell content (the date label + events chips). |
+| `day`        | `{ date, events, isToday, isPast, isOutside, isWeekend, isDisabled }`      | Replace a month-view day cell content (the date label + events chips). |
 | `dayHeader`  | `{ date }`                                                                 | Replace a day header (week / day views).                    |
 | `empty`      | `{ view }`                                                                 | Rendered when the agenda view has no events in range.       |
 
@@ -218,13 +218,29 @@ cal.positionEvent(event, dayStart, pxPerMin)  // { top, height }
 
 - Root: `role="application"` + `aria-label="Calendar"`.
 - Toolbar: `role="toolbar"`.
-- View switcher: `role="tablist"` + `role="tab"` + `aria-selected`.
-- Day cells: `role="gridcell"` + full `aria-label` (weekday, month, day, year).
-- Event chips: `role="button"` + `aria-label` combining title + start time.
-- Keyboard:
-    - `←` / `→` move the current date by 1 day.
-    - `↑` / `↓` move it by 7 days.
-    - `Page Up` / `Page Down` move it by 1 month.
+- View switcher: `role="group"` (named via `aria-label`) wrapping native
+  `<button type="button" aria-pressed>` toggle buttons — deliberately
+  **not** a `tablist`. Each view is its own tab stop (no roving
+  tabindex): a tablist would owe its user `←`/`→` between tabs, but
+  those keys are already claimed by date navigation (see below), and
+  only the active view has a DOM node to point `aria-controls` at
+  (`v-if`, not `v-show`). See `OrigamCalendar.aria.spec.ts` for the
+  full reasoning — that file is the guard against silently
+  reintroducing `role="tab"`.
+- Month grid: `role="grid"` > `role="row"` > `role="gridcell"`, full
+  `aria-label` per day (weekday, month, day, year). **Roving
+  tabindex**: exactly ONE day cell is a tab stop (`tabindex="0"`,
+  matching `currentDate`) — every other cell is `tabindex="-1"`, per
+  the WAI-ARIA APG grid pattern. Pressing an arrow key moves both the
+  tab stop AND real DOM focus to the new cell.
+- Event chips: native `<button type="button">` + `aria-label`
+  combining title + start time.
+- Keyboard, when focus is on a day cell:
+    - `←` / `→` move the current date by 1 day (and moves focus with it).
+    - `↑` / `↓` move it by 7 days (and moves focus with it).
+    - `Page Up` / `Page Down` move it by 1 month (and moves focus with it).
+    - `Enter` / `Space` activate the focused day cell (same effect as
+      clicking it — fires `date-click` unless the cell is disabled).
 
 ## i18n
 

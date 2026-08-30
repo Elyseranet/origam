@@ -59,6 +59,8 @@
 </script>
 
 <style lang="scss">
+	@use '../../assets/scss/helpers' as ds;
+
 	.origam-transition--snack {
 		&-enter-active,
 		&-leave-active {
@@ -81,6 +83,13 @@
 
 		&-leave-to {
 			opacity: 0;
+		}
+
+		@include ds.ds-reduced-motion {
+			&-enter-active,
+			&-leave-active {
+				transition-duration: 0.01ms !important;
+			}
 		}
 	}
 </style>

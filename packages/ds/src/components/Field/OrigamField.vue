@@ -40,7 +40,10 @@
 					v-if="hasPrependInner"
 					key="prependInner"
 					class="origam-field__prepend-inner"
+					:role="isPrependInnerClickable ? 'button' : undefined"
+					:tabindex="isPrependInnerClickable ? 0 : undefined"
 					@click="handleClickPrependInner"
+					@keydown="handleKeydownPrependInner"
 			>
 				<slot name="prependInner">
 					<origam-avatar
@@ -106,27 +109,30 @@
 					v-if="hasClear"
 					key="clear"
 			>
-				<div
+				<button
 						v-show="dirty"
+						type="button"
 						class="origam-field__clearable"
+						:aria-label="clearLabel"
+						@blur="handleBlur"
+						@focus="handleFocus"
 						@mousedown="handleMousedownClear"
+						@keydown="handleKeydownClear"
 				>
 					<slot name="clear">
-						<origam-icon
-								:icon="clearIcon"
-								@blur="handleBlur"
-								@focus="handleFocus"
-								@keydown="handleKeydownClear"
-						/>
+						<origam-icon :icon="clearIcon"/>
 					</slot>
-				</div>
+				</button>
 			</origam-expand-x>
 
 			<div
 					v-if="hasAppendInner"
 					key="appendInner"
 					class="origam-field__append-inner"
+					:role="isAppendInnerClickable ? 'button' : undefined"
+					:tabindex="isAppendInnerClickable ? 0 : undefined"
 					@click="handleClickAppendInner"
+					@keydown="handleKeydownAppendInner"
 			>
 				<slot name="appendInner">
 					<origam-avatar
@@ -182,6 +188,7 @@
 	import { useDensity } from '../../composables/Commons/density.composable'
 	import { useFocus } from '../../composables/Commons/focus.composable'
 	import { useLoader } from '../../composables/Commons/loader.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useRtl } from '../../composables/Commons/rtl.composable'
 	import { useSize } from '../../composables/Commons/size.composable'
@@ -228,6 +235,8 @@
 
 	const attrs = useAttrs()
 
+	const {t} = useLocale()
+
 	/*********************************************************
 	 * Adjacent
 	 *
@@ -243,10 +252,23 @@
 		hasAppendInner,
 		onClickAppendInner: handleClickAppendInner,
 		onClickPrependInner: handleClickPrependInner,
+		onKeydownAppendInner: handleKeydownAppendInner,
+		onKeydownPrependInner: handleKeydownPrependInner,
+		isAppendInnerClickable,
+		isPrependInnerClickable,
 		clickClear: handleClickClear,
 		hasPrependInner,
 		hasClear
 	} = useAdjacentInner(props)
+
+	/*********************************************************
+	 * Clear button — accessible name (issue #443)
+	 *
+	 * @description
+	 * Reuses the pre-existing, previously-unwired `origam.input.clear`
+	 * locale key ("Clear {0}").
+	 ********************************************************/
+	const clearLabel = computed(() => t('origam.input.clear', props.label ?? ''))
 
 	/*********************************************************
 	 * Input
@@ -274,8 +296,27 @@
 			e.preventDefault()
 		}
 	}
+
+	/*********************************************************
+	 * Clear button (issue #443)
+	 *
+	 * @description
+	 * Was a bare `<div @mousedown>` wrapping an `aria-hidden` icon whose
+	 * own `@keydown`/`@focus`/`@blur` listeners could never fire —
+	 * `OrigamIcon` never sets `tabindex`, so the icon was never reachable
+	 * by Tab in the first place. Now a real `<button type="button">`
+	 * (Tab-reachable, has an accessible name), but the trigger stays
+	 * `@mousedown` — NOT `@click` — to preserve the exact pre-existing
+	 * mouse behaviour: `handleMousedownClear` calls `preventDefault()` +
+	 * `stopPropagation()` so clearing never blurs the input nor bubbles
+	 * into the field root's own `@click`. A manual `@keydown` handler
+	 * (Enter/Space) gives keyboard users the same action WITHOUT also
+	 * binding `@click` — the button's native keyboard activation
+	 * synthesizes a `click` DOM event nothing listens for, so there is no
+	 * double-fire risk between the two paths.
+	 ********************************************************/
 	const handleKeydownClear = (e: KeyboardEvent) => {
-		if (e.key !== KEYBOARD_VALUES.ENTER && e.key !== ' ') return
+		if (e.key !== KEYBOARD_VALUES.ENTER && e.key !== KEYBOARD_VALUES.EMPTY) return
 
 		e.preventDefault()
 		e.stopPropagation()
@@ -836,6 +877,18 @@
 			margin-inline: 4px;
 			transition: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 			transition-property: opacity, transform, width;
+
+			// issue #443 — now a real <button> (was a bare <div>): reset the
+			// UA button chrome the shared prepend/append/clear rule above
+			// doesn't cover (it only sets padding-top + padding-inline).
+			// `padding-bottom` alone, never the `padding` shorthand — that
+			// would clobber the token-driven padding-top/padding-inline set
+			// two rules up.
+			border: none;
+			background: none;
+			padding-bottom: 0;
+			font: inherit;
+			color: inherit;
 		}
 
 		&__label {

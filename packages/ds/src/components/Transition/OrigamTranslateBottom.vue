@@ -59,6 +59,8 @@
 </script>
 
 <style lang="scss">
+	@use '../../assets/scss/helpers' as ds;
+
 	.origam-transition--translate-bottom {
 		&-enter-active {
 			transition-duration: 225ms;
@@ -78,6 +80,13 @@
 
 		&-enter-from, &-leave-to {
 			transform: translateY(calc(50vh + 50%));
+		}
+
+		@include ds.ds-reduced-motion {
+			&-enter-active,
+			&-leave-active {
+				transition-duration: 0.01ms !important;
+			}
 		}
 	}
 </style>

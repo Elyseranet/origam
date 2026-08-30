@@ -13,20 +13,25 @@
 						v-for="(color, _colorIndex) in swatch"
 						:key="_colorIndex"
 				>
-					<div
+					<button
+							type="button"
 							class="origam-color-picker-swatches__color"
+							:aria-label="swatchLabel(color)"
+							:aria-pressed="isSelected(color)"
+							:disabled="disabled"
 							@click="handleUpdateColor(color)"
 					>
 						<div :style="{ 'background-color': background(color)}">
-							<template v-if="colorHsv && deepEqual(colorHsv, hsva(color))">
+							<template v-if="isSelected(color)">
 								<origam-icon
 										:color="getContrast(color, '#FFFFFF') > 2 ? 'white' : 'black'"
 										:icon="MDI_ICONS.CHECK_CIRCLE_OUTLINE"
+										aria-hidden="true"
 										size="x-small"
 								/>
 							</template>
 						</div>
-					</div>
+					</button>
 				</template>
 			</div>
 		</template>
@@ -39,6 +44,7 @@
 >
 	import OrigamIcon from '../Icon/OrigamIcon.vue'
 
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
@@ -74,6 +80,8 @@
 
 	const {filterProps} = useProps<IColorPickerSwatchesProps>(props)
 
+	const {t} = useLocale()
+
 	// `swatches` items are typed as TColorType (string | number | THSVA | TRGBA | THSLA)
 	// in the interface. At runtime the consumer always passes RGBA objects, so the
 	// cast via unknown is safe and avoids TS2345 on the template bindings.
@@ -85,6 +93,26 @@
 	}
 	const background = (color: TColorType) => {
 		return RGBtoCSS(rgba(color))
+	}
+
+	/*********************************************************
+	 * Accessibility (issue #443)
+	 *
+	 * @description
+	 * Each swatch was a bare `<div @click>` — no accessible name (a
+	 * screen reader announced nothing distinguishing one swatch from
+	 * another), no tabindex, no keyboard path. Now a real
+	 * `<button type="button">`: `isSelected` also fixes the pre-existing
+	 * `deepEqual(colorHsv, hsva)` bug (#401, comparing against the
+	 * FUNCTION `hsva` itself rather than its return value) by
+	 * centralising the comparison in one place instead of repeating it
+	 * inline in the template twice.
+	 ********************************************************/
+	const isSelected = (color: TColorType) => {
+		return !!props.colorHsv && deepEqual(props.colorHsv, hsva(color))
+	}
+	const swatchLabel = (color: TColorType) => {
+		return t('origam.color_picker.swatches.aria_label', background(color))
 	}
 
 	/*********************************************************
@@ -183,6 +211,19 @@
 			overflow: hidden;
 			background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAAXNSR0IArs4c6QAAACRJREFUKFNjPHTo0H8GJGBnZ8eIzGekgwJk+0BsdCtRHEQbBQBbbh0dIGKknQAAAABJRU5ErkJggg==) repeat;
 			cursor: pointer;
+
+			// issue #443 — now a real <button> (was a bare <div>): reset the
+			// UA button chrome so the checkerboard background + dimensions
+			// aren't disturbed by a default border/padding/font.
+			border: none;
+			padding: 0;
+			font: inherit;
+			color: inherit;
+
+			&:disabled {
+				cursor: default;
+				opacity: 0.5;
+			}
 
 			> div {
 				display: flex;

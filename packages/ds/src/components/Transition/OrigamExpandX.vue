@@ -152,6 +152,8 @@
 </script>
 
 <style lang="scss">
+	@use '../../assets/scss/helpers' as ds;
+
 	.origam-transition--expand-x-enter-active {
 		transition-duration: var(--origam-transition--expand-x-enter-active---transition-duration);
 		transition-timing-function: var(--origam-transition--expand-x-enter-active---transition-timing-function);
@@ -168,6 +170,14 @@
 		transition-duration: var(--origam-transition--expand-x-move---transition-duration);
 		transition-property: var(--origam-transition--expand-x-move---transition-property);
 		transition-timing-function: var(--origam-transition--expand-x-move---transition-timing-function);
+	}
+
+	@include ds.ds-reduced-motion {
+		.origam-transition--expand-x-enter-active,
+		.origam-transition--expand-x-leave-active,
+		.origam-transition--expand-x-move {
+			transition-duration: 0.01ms !important;
+		}
 	}
 </style>
 

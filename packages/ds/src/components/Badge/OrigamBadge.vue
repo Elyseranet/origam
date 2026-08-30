@@ -29,7 +29,10 @@
 								<span
 										key="prepend"
 										class="origam-badge__prepend"
+										:role="isPrependClickable ? 'button' : undefined"
+										:tabindex="isPrependClickable ? 0 : undefined"
 										@click="handleClickPrepend"
+										@keydown="handleKeydownPrepend"
 								>
 									<slot name="prepend">
 										<origam-avatar
@@ -60,7 +63,10 @@
 								<span
 										key="append"
 										class="origam-badge__append"
+										:role="isAppendClickable ? 'button' : undefined"
+										:tabindex="isAppendClickable ? 0 : undefined"
 										@click="handleClickAppend"
+										@keydown="handleKeydownAppend"
 								>
 									<slot name="append">
 										<origam-avatar
@@ -172,6 +178,10 @@
 	const {
 		onClickPrepend: handleClickPrepend,
 		onClickAppend: handleClickAppend,
+		onKeydownPrepend: handleKeydownPrepend,
+		onKeydownAppend: handleKeydownAppend,
+		isPrependClickable,
+		isAppendClickable,
 		hasAppend,
 		hasPrepend
 	} = useAdjacent(props, prependIcon, appendIcon)

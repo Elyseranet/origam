@@ -28,7 +28,10 @@
 					v-if="hasPrepend"
 					key="prepend"
 					class="origam-list-item__prepend"
+					:role="isPrependZoneFocusable ? 'button' : undefined"
+					:tabindex="isPrependZoneFocusable ? 0 : undefined"
 					@click="handleClickPrepend"
+					@keydown="handleKeydownPrepend"
 			>
 				<slot
 						name="prepend"
@@ -89,7 +92,10 @@
 					v-if="hasAppend"
 					key="append"
 					class="origam-list-item__append"
+					:role="isAppendZoneFocusable ? 'button' : undefined"
+					:tabindex="isAppendZoneFocusable ? 0 : undefined"
 					@click="handleClickAppend"
+					@keydown="handleKeydownAppend"
 			>
 				<slot
 						name="append"
@@ -216,9 +222,24 @@
 	const {
 		onClickPrepend: handleClickPrepend,
 		onClickAppend: handleClickAppend,
+		onKeydownPrepend: handleKeydownPrepend,
+		onKeydownAppend: handleKeydownAppend,
+		isPrependClickable,
+		isAppendClickable,
 		hasAppend,
 		hasPrepend
 	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
+
+	/*********************************************************
+	 * isPrependZoneFocusable / isAppendZoneFocusable
+	 *
+	 * @description
+	 * issue #443 — same <a>-content-model gating as OrigamChip/OrigamBreadcrumbItem:
+	 * the root is `<a>` whenever `link.isLink` is true, and a <button>/<a>
+	 * forbids any descendant with a `tabindex` attribute specified.
+	 ********************************************************/
+	const isPrependZoneFocusable = computed(() => isPrependClickable.value && !link.isLink.value)
+	const isAppendZoneFocusable = computed(() => isAppendClickable.value && !link.isLink.value)
 
 	const isActive = computed(() => {
 		return isActiveFlag.value || link.isActive?.value || isSelected.value

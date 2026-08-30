@@ -9,7 +9,10 @@
 		    v-if="hasPrepend"
 		    key="prepend"
 		    class="origam-input__prepend"
+		    :role="isPrependClickable ? 'button' : undefined"
+		    :tabindex="isPrependClickable ? 0 : undefined"
 		    @click="handleClickPrepend"
+		    @keydown="handleKeydownPrepend"
     >
       <slot name="prepend">
         <origam-avatar
@@ -41,7 +44,10 @@
 				v-if="hasAppend"
 				key="append"
 				class="origam-input__append"
+				:role="isAppendClickable ? 'button' : undefined"
+				:tabindex="isAppendClickable ? 0 : undefined"
 				@click="handleClickAppend"
+				@keydown="handleKeydownAppend"
 		>
       <slot name="append">
        <origam-avatar
@@ -179,7 +185,11 @@
 		hasPrepend,
 		hasAppend,
 		onClickPrepend: handleClickPrepend,
-		onClickAppend: handleClickAppend
+		onClickAppend: handleClickAppend,
+		onKeydownPrepend: handleKeydownPrepend,
+		onKeydownAppend: handleKeydownAppend,
+		isPrependClickable,
+		isAppendClickable
 	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
 
 	const messages = computed(() => {

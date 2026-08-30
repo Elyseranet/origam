@@ -59,6 +59,8 @@
 </script>
 
 <style lang="scss">
+	@use '../../assets/scss/helpers' as ds;
+
 	.origam-transition--reverse-translate-picker {
 		&-enter-active {
 			transition-duration: 0.3s !important;
@@ -98,6 +100,14 @@
 
 		&-leave-to {
 			transform: translate(100%, 0);
+		}
+
+		@include ds.ds-reduced-motion {
+			&-enter-active,
+			&-leave-active,
+			&-move {
+				transition-duration: 0.01ms !important;
+			}
 		}
 	}
 </style>
