@@ -1,3 +1,5 @@
+import type { ILoaderProps } from '../Commons/loader.interface'
+
 /*********************************************************
  * ILoaderSlots
  *
@@ -12,6 +14,22 @@
 export interface ILoaderSlots {
     loader?: () => any
     default?: () => any
+}
+
+/*********************************************************
+ * ILoaderComponentProps
+ *
+ * @description
+ * `<OrigamLoader>`-only prop surface (issue #444). `fullscreen` mirrors
+ * the `--origam-loader__fullscreen---*` SCSS block (position: fixed,
+ * covering the viewport) — meaningful ONLY for the standalone
+ * `<OrigamLoader>` wrapper, never for the transverse `ILoaderProps`
+ * consumers (Btn/Field/Card/Switch/DataTable/ExpansionPanel loading
+ * states are inline, never full-viewport), so it does NOT belong on
+ * the shared `ILoaderProps` in `Commons/loader.interface.ts`.
+ ********************************************************/
+export interface ILoaderComponentProps extends ILoaderProps {
+    fullscreen?: boolean
 }
 
 /*********************************************************

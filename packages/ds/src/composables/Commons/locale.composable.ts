@@ -46,11 +46,21 @@ export function createLocale (options?: ILocaleOptions & IRtlOptions) {
  * Independent from `useRtl` at the call level (both inject
  * `ORIGAM_LOCALE_KEY` separately) — kept in its own file since it is
  * conceptually the locale-resolution half of the system, not RTL.
+ *
+ * `strict` (default `true`) preserves the exact behaviour every one of
+ * the 50+ existing call sites already depends on: throw when no
+ * `createOrigam()` plugin is installed. Pass `strict: false` ONLY for a
+ * component that MUST keep mounting without the plugin (e.g. it sits in
+ * another component's unconditionally-rendered tree, so simply mounting
+ * that parent must not hard-fail) — the caller then gets `null` back and
+ * is responsible for its own fallback (issue #444, `OrigamLoader`).
  ********************************************************/
-export function useLocale () {
-    const locale = inject(ORIGAM_LOCALE_KEY)
+export function useLocale (strict?: true): ILocaleInstance
+export function useLocale (strict: false): ILocaleInstance | null
+export function useLocale (strict: boolean = true): ILocaleInstance | null {
+    const locale = inject(ORIGAM_LOCALE_KEY, null)
 
-    if (!locale) throw new Error('[Origam] Could not find injected locale instance')
+    if (!locale && strict) throw new Error('[Origam] Could not find injected locale instance')
 
     return locale
 }
