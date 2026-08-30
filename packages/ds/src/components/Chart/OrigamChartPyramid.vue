@@ -234,8 +234,8 @@
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
 	const { elevationClasses, elevationStyles } = useElevation(props)
-	const { marginStyles } = useMargin(props)
-	const { paddingStyles } = usePadding(props)
+	const { marginClasses, marginStyles } = useMargin(props)
+	const { paddingClasses, paddingStyles } = usePadding(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
 	const { headerTypographyStyles } = useChartHeaderTypography(props)
 	const chartAnimationStyle = useChartAnimationStyle(props)
@@ -534,6 +534,8 @@
 		},
 		backgroundColorClasses.value,
 		elevationClasses.value,
+		marginClasses.value,
+		paddingClasses.value,
 		roundedClasses.value
 	])
 
