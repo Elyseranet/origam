@@ -100,13 +100,16 @@
 
 		<Variant
 				title="Functional"
-				:init-state="() => useStoryInitState<Partial<ICalendarComponentProps>>({
+				:init-state="() => useStoryInitState<Partial<ICalendarComponentProps> & { disabledDatesText: string }>({
 					view: 'month',
 					currentDate: FIXTURE_REFERENCE_DATE.toISOString(),
 					selectable: true,
 					eventColorKey: 'category',
 					weekendHighlight: true,
-					showWeekNumbers: false
+					showWeekNumbers: false,
+					minDate: '',
+					maxDate: '',
+					disabledDatesText: ''
 				})"
 		>
 			<template #default="{ state }">
@@ -118,6 +121,9 @@
 							:event-color-key="state.eventColorKey"
 							:weekend-highlight="state.weekendHighlight"
 							:show-week-numbers="state.showWeekNumbers"
+							:min-date="state.minDate || undefined"
+							:max-date="state.maxDate || undefined"
+							:disabled-dates="parseDisabledDates(state.disabledDatesText)"
 							:events="FIXTURE_EVENTS"
 							:category-colors="CATEGORY_COLORS"
 					/>
@@ -137,6 +143,7 @@
 				<StoryGroup title="Bounds">
 					<HstText v-model="state.minDate" title="Min Date (ISO / YYYY-MM-DD)"/>
 					<HstText v-model="state.maxDate" title="Max Date (ISO / YYYY-MM-DD)"/>
+					<HstText v-model="state.disabledDatesText" title="Disabled Dates (comma-separated ISO)"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -441,6 +448,18 @@
 		personal: 'warning',
 		offsite:  'danger',
 		travel:   'info'
+	}
+
+	// issue #390 — `disabledDates` had no control at all in this story
+	// (minDate/maxDate's siblings) even though the doc covers it. Accepts
+	// a comma-separated list of ISO dates typed into a single HstText —
+	// the prop itself takes Array<Date | string>, so an empty entry per
+	// stray comma is filtered rather than handed to the component.
+	function parseDisabledDates (text: string): Array<string> {
+		return text
+			.split(',')
+			.map((entry) => entry.trim())
+			.filter((entry) => entry.length > 0)
 	}
 
 	const FIXTURE_REFERENCE_DATE = new Date(2026, 4, 14)

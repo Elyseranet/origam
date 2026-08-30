@@ -130,10 +130,11 @@
           <div
             v-for="dayCell in weekRow"
             :key="dayCell.toISOString()"
+            :ref="(el) => setDayCellRef(dayCell, el)"
             class="origam-calendar__day-cell"
             :class="dayCellClasses(dayCell)"
             role="gridcell"
-            tabindex="0"
+            :tabindex="isRovingTabStop(dayCell) ? 0 : -1"
             :aria-label="ariaDayLabel(dayCell)"
             :aria-selected="isInDragSelection(dayCell)"
             :aria-disabled="isDayDisabled(dayCell)"
@@ -345,6 +346,7 @@
 >
   import {
     computed,
+    nextTick,
     ref,
     watch,
     type StyleValue
@@ -354,6 +356,7 @@
   import OrigamBtnGroup from '../Btn/OrigamBtnGroup.vue'
 
   import { CALENDAR_NAVIGATE, CALENDAR_VIEW } from '../../enums/Calendar/calendar.enum'
+  import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
   import { INTENT } from '../../enums/Commons/intent.enum'
   import { VARIANT } from '../../enums/Commons/variant.enum'
 
@@ -634,6 +637,38 @@
 
   function dayCellKey(date: Date): string {
     return `${ date.getFullYear() }-${ String(date.getMonth() + 1).padStart(2, '0') }-${ String(date.getDate()).padStart(2, '0') }`
+  }
+
+  /*********************************************************
+   * Roving tabindex (issue #390) — WAI-ARIA APG grid pattern.
+   *
+   * @description
+   * Every `.origam-calendar__day-cell` used to carry `tabindex="0"`
+   * unconditionally (35-42 tab stops per month). Only the cell matching
+   * `resolvedDate` — the SAME value the existing arrow-key handler
+   * already navigates — is now a tab stop; every other cell is `-1`.
+   * `resolvedDate` is always inside the currently rendered `monthGrid`
+   * by construction (`buildMonthGrid(resolvedDate.value)`), so exactly
+   * one cell is always reachable by Tab.
+   *
+   * `dayCellRefs` is a plain Map (not a ref) populated via the `:ref`
+   * callback on each cell — it never needs to be reactive itself, only
+   * READ imperatively from `focusDayCell` after a keyboard move.
+   ********************************************************/
+  const dayCellRefs = new Map<string, HTMLElement>()
+
+  function setDayCellRef(date: Date, el: Element | { $el?: Element } | null): void {
+    const key = dayCellKey(date)
+    if (el instanceof HTMLElement) dayCellRefs.set(key, el)
+    else dayCellRefs.delete(key)
+  }
+
+  function isRovingTabStop(date: Date): boolean {
+    return isSameDay(date, resolvedDate.value)
+  }
+
+  function focusDayCell(date: Date): void {
+    dayCellRefs.get(dayCellKey(date))?.focus()
   }
 
   function isCellToday(date: Date): boolean {
@@ -979,10 +1014,35 @@
   /*********************************************************
    * Keyboard navigation — arrow keys move the current date by the
    * unit relevant to the view. Page Up / Page Down jump month.
+   *
+   * @description
+   * ⛔ issue #390 — moving `internalDate` alone changed no visible
+   * focus: `document.activeElement` never moved because nothing ever
+   * called `.focus()` on the new cell (measured: `ArrowRight` on a
+   * focused cell left `activeElement` unchanged). `focusDayCell` closes
+   * that gap — `nextTick` because the roving tabindex (`isRovingTabStop`)
+   * must repaint to `0` on the new cell before it becomes a valid
+   * `.focus()` target for AT / Tab semantics, even though a script-driven
+   * `.focus()` call itself would technically still land on a `tabindex="-1"`
+   * element.
+   *
+   * ⛔ issue #443 — Enter/Space on a day cell had NO keyboard equivalent
+   * to a mouse click (`onDayClick`) at all. Gated on the event target
+   * actually being a grid cell so it doesn't fire from Enter/Space
+   * pressed on the toolbar buttons or an event chip that also bubble
+   * through this ONE delegated root listener.
    ********************************************************/
   function onKeydown(event: KeyboardEvent): void {
     const target = event.target as HTMLElement | null
     if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) return
+
+    if (event.key === KEYBOARD_VALUES.ENTER || event.key === KEYBOARD_VALUES.EMPTY) {
+      if (target?.getAttribute('role') !== 'gridcell') return
+      event.preventDefault()
+      onDayClick(resolvedDate.value, event as unknown as MouseEvent)
+      return
+    }
+
     let next: Date | null = null
     const current = resolvedDate.value
     switch (event.key) {
@@ -1009,6 +1069,9 @@
       event.preventDefault()
       internalDate.value = next
       emit('update:currentDate', next)
+
+      const focusTarget = next
+      void nextTick(() => focusDayCell(focusTarget))
     }
   }
 
