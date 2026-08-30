@@ -1,0 +1,31 @@
+{
+  "_comment": "OrigamDataTableFooter component tokens — issue #503 (Paquet 1, cause C). The component's own CSS class (.origam-data-table-footer) is a standalone compound block, NOT a BEM child of data-table (contrast with data-table.json's existing 'footer' key, nested under 'data-table', which emits the mismatched --origam-data-table__footer---* — never read by this component). Values copied verbatim from OrigamDataTableFooter.vue's SCSS fallbacks, all of which reference live, currently-emitted modern semantic vars.",
+
+  "data-table-footer": {
+    "align-items":     { "$type": "other",     "$value": "center" },
+    "background-color":{ "$type": "color",     "$value": "{color.surface.default}" },
+    "color":           { "$type": "color",     "$value": "{color.text.primary}" },
+    "display":         { "$type": "other",     "$value": "flex" },
+    "flex-wrap":       { "$type": "other",     "$value": "wrap" },
+    "justify-content": { "$type": "other",     "$value": "flex-end" },
+    "padding-block":   { "$type": "dimension", "$value": "{space.2}", "$description": "Literal fallback 8px matches space.2 exactly." },
+    "padding-inline":  { "$type": "dimension", "$value": "{space.1}", "$description": "Literal fallback 4px matches space.1 exactly." },
+
+    "pagination": {
+      "margin-inline-start": { "$type": "dimension", "$value": "{space.4}" }
+    },
+
+    "$child": {
+      "info": {
+        "_comment": "Forced under $child — 'info' collides with the built-in INTENT_STATES set (token-name.mjs), which would otherwise emit --data-table-footer--info---* (state form) instead of the correct BEM-child --data-table-footer__info---*.",
+        "justify-content": { "$type": "other",     "$value": "flex-end" },
+        "min-width":       { "$type": "dimension", "$value": "116px", "$description": "No space.* primitive matches 116px." },
+        "padding-inline":  { "$type": "dimension", "$value": "{space.4}", "$description": "Literal fallback 16px matches space.4 exactly." }
+      },
+      "items-per-page": {
+        "gap":                 { "$type": "dimension", "$value": "{space.2}" },
+        "padding-inline-end":  { "$type": "dimension", "$value": "{space.2}" }
+      }
+    }
+  }
+}
