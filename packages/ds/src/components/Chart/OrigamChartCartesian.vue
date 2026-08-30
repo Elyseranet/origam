@@ -459,7 +459,7 @@
 					data-cy="origam-chart-cartesian-empty"
 			>
 				<slot name="empty">
-					<span>No data to display</span>
+					<span>{{ t('origam.chart.no_data_text') }}</span>
 				</slot>
 			</div>
 		</div>
@@ -624,11 +624,11 @@
 	const isDrilled = computed(() => drillStack.value.length > 0)
 
 	const breadcrumbItems = computed<Array<{ name: string, depth: number }>>(() => {
-		const root = { name: props.title ?? 'Root', depth: -1 }
+		const root = { name: props.title ?? t('origam.chart.drilldown.root_label'), depth: -1 }
 		return [root, ...drillStack.value.map((frame, i) => ({ name: frame.name, depth: i }))]
 	})
 
-	const drilldownBackLabel = computed(() => props.drilldown?.backLabel ?? '← Back')
+	const drilldownBackLabel = computed(() => props.drilldown?.backLabel ?? t('origam.chart.drilldown.back_label'))
 	const drilldownNavAriaLabel = computed(() => t(props.drilldown?.navAriaLabel ?? 'origam.chart.drilldown.aria_label'))
 	const zoomResetAriaLabel = computed(() => t(props.zoomResetLabel))
 
@@ -1209,7 +1209,7 @@
 	/*********************************************************
 	 * ARIA
 	 ********************************************************/
-	const ariaLabel = computed(() => props.title ?? 'Chart')
+	const ariaLabel = computed(() => props.title ?? t('origam.chart.aria_label'))
 	const svgAriaLabel = computed(() => props.title ?? `${ props.type } chart`)
 	const svgTitle = computed(() => props.title ?? `${ props.type } chart`)
 	const svgDesc = computed(() => {
