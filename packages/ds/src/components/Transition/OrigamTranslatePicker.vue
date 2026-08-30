@@ -59,6 +59,8 @@
 </script>
 
 <style lang="scss">
+	@use '../../assets/scss/helpers' as ds;
+
 	.origam-transition--translate-picker {
 		&-enter-active {
 			transition-duration: 0.3s !important;
@@ -98,6 +100,17 @@
 
 		&-leave-to {
 			transform: translate(-100%, 0);
+		}
+
+		// Placed AFTER the `!important` base rules above: equal specificity,
+		// equal importance — the later declaration in source order wins
+		// when the media query matches.
+		@include ds.ds-reduced-motion {
+			&-enter-active,
+			&-leave-active,
+			&-move {
+				transition-duration: 0.01ms !important;
+			}
 		}
 	}
 </style>

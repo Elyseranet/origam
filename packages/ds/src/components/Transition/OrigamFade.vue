@@ -58,6 +58,8 @@
 </script>
 
 <style lang="scss">
+	@use '../../assets/scss/helpers' as ds;
+
 	.origam-transition--fade {
 		&-enter-active {
 			transition-duration: 0.3s;
@@ -82,6 +84,14 @@
 		&-enter-active,
 		&-leave-active {
 			transition-property: opacity;
+		}
+
+		@include ds.ds-reduced-motion {
+			&-enter-active,
+			&-leave-active,
+			&-move {
+				transition-duration: 0.01ms !important;
+			}
 		}
 	}
 </style>

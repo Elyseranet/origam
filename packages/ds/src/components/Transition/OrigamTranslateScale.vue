@@ -146,6 +146,8 @@
 </script>
 
 <style lang="scss">
+	@use '../../assets/scss/helpers' as ds;
+
 	.origam-transition--transform-scale {
 		&-enter-active {
 			transition-duration: 225ms;
@@ -170,6 +172,13 @@
 
 		&-enter-to, &-leave-from {
 			opacity: 1;
+		}
+
+		@include ds.ds-reduced-motion {
+			&-enter-active,
+			&-leave-active {
+				transition-duration: 0.01ms !important;
+			}
 		}
 	}
 </style>
