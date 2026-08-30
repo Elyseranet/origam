@@ -405,7 +405,7 @@
 			}
 
 			&--pending {
-				color: var(--origam-color__text---tertiary, rgba(0, 0, 0, 0.5));
+				color: var(--origam-color__text---tertiary, var(--origam-color__text---secondary));
 			}
 
 			&--live {
@@ -444,7 +444,7 @@
 		}
 
 		&__schedule {
-			color: var(--origam-color__text---tertiary, rgba(0, 0, 0, 0.5));
+			color: var(--origam-color__text---tertiary, var(--origam-color__text---secondary));
 		}
 
 		&__body {

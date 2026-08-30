@@ -91,7 +91,8 @@
       "counter_size": "{0} fichier(s) ({1} au total)",
       "dropzone_title": "Glissez et déposez vos fichiers ici",
       "dropzone_subtitle": "ou cliquez pour parcourir",
-      "browse": "Parcourir les fichiers"
+      "browse": "Parcourir les fichiers",
+      "remove_aria_label": "Supprimer {0}"
     },
     "file_upload": {
       "title": "Drag and drop files here",
@@ -218,6 +219,12 @@
       "canvas": {
         "aria_label": "Saturation et luminosité",
         "value": "Saturation {0}%, luminosité {1}%"
+      },
+      "edit": {
+        "cycle_mode_aria_label": "Changer le format de couleur"
+      },
+      "preview": {
+        "eye_dropper_aria_label": "Prélever une couleur à l'écran"
       }
     },
     "breadcrumb": {

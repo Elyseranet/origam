@@ -21,6 +21,8 @@
 
 		<template v-if="enabledModes.length > 1">
 			<origam-btn
+					:aria-label="cycleModeAriaLabel"
+					:disabled="disabled"
 					:icon="MDI_ICONS.UNFOLD_LESS_HORIZONTAL"
 					size="x-small"
 					@click="handleUpdateMode"
@@ -35,6 +37,7 @@
 >
 	import OrigamBtn from '../Btn/OrigamBtn.vue'
 
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
@@ -69,9 +72,14 @@
   defineSlots<IColorPickerEditSlots>()
 
 	const {filterProps} = useProps<IColorPickerEditProps>(props)
+	const {t} = useLocale()
 
 	const enabledModes = computed(() => {
 		return props.modes.map((key) => ({...COLOR_PICKER_MODES[key], name: key}))
+	})
+
+	const cycleModeAriaLabel = computed(() => {
+		return props.ariaLabel ?? t('origam.color_picker.edit.cycle_mode_aria_label')
 	})
 
 	const inputsProps = computed((): Array<Record<string, unknown>> => {
@@ -174,14 +182,14 @@
 			#{$this}__input {
 				border-radius: 4px;
 				margin-bottom: 8px;
-				border: 1px solid rgba(163, 163, 163);
+				border: 1px solid var(--origam-color-picker-edit__input---border-color, var(--origam-color__border---default));
 				min-width: 0;
 				outline: none;
 				text-align: center;
 				width: 100%;
 				height: 32px;
-				background: rgba(255, 255, 255);
-				color: rgba(0, 0, 0, .5);
+				background: var(--origam-color-picker-edit__input---background-color, var(--origam-color__surface---default));
+				color: var(--origam-color-picker-edit__input---color, var(--origam-color__text---secondary));
 			}
 
 			#{$this}__label {

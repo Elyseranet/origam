@@ -27,9 +27,8 @@ const files = ref(null)
 |---|---|---|---|
 | `multiple` | `boolean` | `false` | Allow multiple file selection |
 | `chips` | `boolean` | `false` | Display files as chips |
-| `showSize` | `TFileSize` | `false` | Show file size next to name |
+| `showSize` | `TFileSize` | `false` | Show file size next to name (`false` hides it, `true` picks an auto unit, `1000`/`1024` force SI/IEC) |
 | `chipProps` | `IChipProps` | `undefined` | Props forwarded to chip elements |
-| `divider` | `string` | `','` | Separator between file names in text mode |
 
 ## Drag-and-drop mode
 
@@ -105,6 +104,13 @@ When `dragndrop` is set, the field renders as a dropzone instead of a standard f
 | `click:download` | `{ file, index }` | Download button clicked |
 | `drop` | `{ files, event }` | Files dropped on the dropzone |
 | `error:max-size` | `{ files, maxFileSize, message }` | Files exceeded `maxFileSize` |
+| `click:prepend` | `MouseEvent` | Prepend adornment clicked (inherited from `OrigamInput`) |
+| `click:append` | `MouseEvent` | Append adornment clicked (inherited from `OrigamInput`) |
+| `click:prependInner` | `MouseEvent` | Inner prepend adornment clicked (inherited from `OrigamField`) |
+| `click:appendInner` | `MouseEvent` | Inner append adornment clicked (inherited from `OrigamField`) |
+| `click:clear` | `MouseEvent` | Clear button clicked (inherited from `OrigamField`) |
+| `update:focused` | `boolean` | Focus state changed (inherited from `OrigamField` / `OrigamInput`) |
+| `update:active` | `boolean` | Active state changed (inherited from `OrigamField`) |
 
 ## Composition
 

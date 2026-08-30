@@ -61,7 +61,7 @@
         "border":   { "$type": "color", "$value": "{color.amber.600}" }
       },
       "danger": {
-        "bg":       { "$type": "color", "$value": "{color.red.500}" },
+        "bg":       { "$type": "color", "$value": "{color.red.600}", "$description": "#487/#506 — was {color.red.500} (3.76:1 on white, fails AA 4.5:1 for the white text painted on top). red.600 measures 4.83:1, independently verified (WCAG 2.x relative-luminance formula)." },
         "bgSubtle": { "$type": "color", "$value": "{color.neutral.900}" },
         "fg":       { "$type": "color", "$value": "{color.neutral.0}" },
         "fgSubtle": { "$type": "color", "$value": "{color.red.400}" },

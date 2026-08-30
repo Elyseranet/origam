@@ -1304,10 +1304,10 @@
 
 			&#{$this}--selected {
 				#{$this}__selection {
-					opacity: 0.7;
+					color: var(--origam-select__selection---color, var(--origam-color__text---secondary));
 
 					&--selected {
-						opacity: 1;
+						color: inherit;
 					}
 				}
 			}

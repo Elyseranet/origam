@@ -16,7 +16,10 @@
         >
           {{ file.name }}
         </div>
-        <div class="origam-file-field-dragndrop-item__meta">
+        <div
+            v-if="hasSize"
+            class="origam-file-field-dragndrop-item__meta"
+        >
           {{ humanReadableFileSize(file.size, base) }}
         </div>
         <origam-progress
@@ -30,6 +33,7 @@
       </div>
       <div class="origam-file-field-dragndrop-item__actions">
         <origam-btn
+            :aria-label="removeAriaLabel"
             :icon="removeIcon"
             flat
             size="small"
@@ -50,6 +54,7 @@
   import OrigamBtn from '../Btn/OrigamBtn.vue'
   import OrigamIcon from '../Icon/OrigamIcon.vue'
   import OrigamProgress from '../Progress/OrigamProgress.vue'
+  import { useLocale } from '../../composables/Commons/locale.composable'
   import { useProps } from '../../composables/Commons/props.composable'
   import { useStyle } from '../../composables/Commons/style.composable'
   import { useTypography } from '../../composables/Commons/typography.composable'
@@ -77,6 +82,8 @@
 
   defineSlots<IFileFieldDragNDropItemSlots>()
 
+  const { t } = useLocale()
+
   /*********************************************************
    * Events
    *
@@ -101,8 +108,23 @@
   const base = computed(() => {
     return typeof props.showSize !== 'boolean' ? props.showSize : undefined
   })
+  /*********************************************************
+   * hasSize
+   *
+   * @description
+   * #418 — `showSize` accepts `boolean | 1000 | 1024`. `false` must hide
+   * the size line entirely; only the numeric bases pick a unit system.
+   * Nothing previously gated the render on this, so `false` and `true`
+   * produced the same visible text.
+   ********************************************************/
+  const hasSize = computed(() => {
+    return props.showSize !== false
+  })
   const hasProgress = computed(() => {
     return typeof props.progress === 'number'
+  })
+  const removeAriaLabel = computed(() => {
+    return t('origam.file_field.remove_aria_label', props.file.name)
   })
 
   /*********************************************************

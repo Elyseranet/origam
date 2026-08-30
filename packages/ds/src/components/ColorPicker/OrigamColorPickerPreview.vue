@@ -10,7 +10,9 @@
 					class="origam-color-picker-preview__eye-dropper"
 			>
 				<origam-btn
+						:aria-label="eyeDropperAriaLabel"
 						:density="DENSITY.DEFAULT"
+						:disabled="disabled"
 						:icon="MDI_ICONS.EYEDROPPER"
 						@click="openEyeDropper"
 				/>
@@ -68,6 +70,7 @@
 	import OrigamBtn from '../Btn/OrigamBtn.vue'
 	import OrigamSliderField from '../SliderField/OrigamSliderField.vue'
 
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useVModel } from '../../composables/Commons/vModel.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
@@ -107,6 +110,7 @@
   defineSlots<IColorPickerPreviewSlots>()
 
 	const {filterProps} = useProps<IColorPickerPreviewProps>(props)
+	const {t} = useLocale()
 
 	const abortController = new AbortController()
 
@@ -116,8 +120,12 @@
 
 	const colorHsv = useVModel(props, 'colorHsv', COLOR_NULL)
 
+	const eyeDropperAriaLabel = computed(() => {
+		return props.ariaLabel ?? t('origam.color_picker.preview.eye_dropper_aria_label')
+	})
+
 	const openEyeDropper = async () => {
-		if (!SUPPORTS_EYE_DROPPER) return
+		if (!SUPPORTS_EYE_DROPPER || props.disabled) return
 
 		const eyeDropper = new window.EyeDropper()
 

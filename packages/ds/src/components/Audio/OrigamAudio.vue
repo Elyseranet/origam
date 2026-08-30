@@ -1411,13 +1411,12 @@
 			}
 
 			:deep(.origam-list-item__content),
-			:deep(.origam-list-item__title),
-			:deep(.origam-list-item__subtitle) {
+			:deep(.origam-list-item__title) {
 				color: inherit;
 			}
 
 			:deep(.origam-list-item__subtitle) {
-				opacity: 0.7;
+				color: var(--origam-audio__playlist-subtitle---color, var(--origam-color__text---secondary));
 			}
 		}
 
@@ -1518,17 +1517,17 @@
 		}
 
 		&__playlist-artist {
+			color: var(--origam-audio__playlist-artist---color, var(--origam-color__text---secondary));
 			font-size: 12px;
-			opacity: 0.65;
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
 		}
 
 		&__playlist-duration {
+			color: var(--origam-audio__playlist-duration---color, var(--origam-color__text---secondary));
 			font-variant-numeric: tabular-nums;
 			font-size: 12px;
-			opacity: 0.6;
 			flex: 0 0 auto;
 		}
 

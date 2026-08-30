@@ -163,4 +163,16 @@ describe('OrigamColorPickerCanvas — keyboard', () => {
 
         expect(wrapper.emitted('update:modelValue')).toBeFalsy()
     })
+
+    // #402 — the canvas stayed focusable and keyboard-blocked correctly when
+    // disabled, but never announced the state: `aria-disabled` was always
+    // `undefined`, on a `role="application"` element with no native
+    // `disabled` attribute to fall back on for assistive tech.
+    it('exposes aria-disabled reflecting the disabled prop (#402 — it was undefined in both states before)', async () => {
+        const disabledWrapper = await mountPicker({ modelValue: null, disabled: true })
+        expect(canvasOf(disabledWrapper).attributes('aria-disabled')).toBe('true')
+
+        const enabledWrapper = await mountPicker({ modelValue: null, disabled: false })
+        expect(canvasOf(enabledWrapper).attributes('aria-disabled')).toBe('false')
+    })
 })

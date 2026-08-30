@@ -40,7 +40,7 @@
   --origam-color__feedback--warning---fg: var(--origam-color__neutral---0);
   --origam-color__feedback--warning---fgSubtle: var(--origam-color__amber---400);
   --origam-color__feedback--warning---border: var(--origam-color__amber---600);
-  --origam-color__feedback--danger---bg: var(--origam-color__red---500);
+  --origam-color__feedback--danger---bg: var(--origam-color__red---600);
   --origam-color__feedback--danger---bgSubtle: var(--origam-color__neutral---900);
   --origam-color__feedback--danger---fg: var(--origam-color__neutral---0);
   --origam-color__feedback--danger---fgSubtle: var(--origam-color__red---400);
@@ -2066,6 +2066,9 @@
   --origam-color-picker__edit---gap: var(--origam-space---2);
   --origam-color-picker__edit---label-color: var(--origam-color__text---secondary);
   --origam-color-picker__edit---label-font-size: var(--origam-font__size---xs);
+  --origam-color-picker__edit---input-border-color: var(--origam-color__border---default);
+  --origam-color-picker__edit---input-background-color: var(--origam-color__surface---default);
+  --origam-color-picker__edit---input-color: var(--origam-color__text---secondary);
   --origam-color-picker__swatches---item-size: 20px;
   --origam-color-picker__swatches---gap: var(--origam-space---1);
   --origam-color-picker__swatches---border-radius: var(--origam-radius---sm);

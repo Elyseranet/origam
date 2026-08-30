@@ -401,8 +401,8 @@
 
 		&__subtitle {
 			-webkit-box-orient: vertical;
+			color: var(--origam-card-header__subtitle---color);
 			display: var(--origam-card-header__subtitle---display);
-			opacity: var(--origam-card-header__subtitle---opacity);
 			overflow: var(--origam-card-header__subtitle---overflow);
 			padding-block-start: var(--origam-card-header__subtitle---padding-block-start);
 			padding-block-end: var(--origam-card-header__subtitle---padding-block-end);
@@ -500,8 +500,8 @@
 		--origam-card-header__title---line-height: 1.5rem;
 		--origam-card-header__title---text-transform: none;
 
+		--origam-card-header__subtitle---color: var(--origam-color__text---secondary);
 		--origam-card-header__subtitle---display: -webkit-box;
-		--origam-card-header__subtitle---opacity: 0.6;
 		--origam-card-header__subtitle---overflow: hidden;
 
 		--origam-card-header__subtitle---padding-block-start: 0;

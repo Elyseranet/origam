@@ -36,8 +36,6 @@ export interface IFileFieldProps extends ICommonsComponentProps, IColorProps, ID
     showSize?: TFileSize
     modelValue?: TFile
     chipProps?: IChipProps
-    divider?: string
-    iconColor?: string
     maxFileSize?: number
     dragndrop?: boolean
     dragndropIcon?: string
@@ -48,7 +46,6 @@ export interface IFileFieldProps extends ICommonsComponentProps, IColorProps, ID
     progress?: Array<number>
     dropzoneTitle?: string
     dropzoneSubtitle?: string
-    browseText?: string
     maxFileSizeErrorString?: string
     /**
      * How a multi-file selection is rendered:

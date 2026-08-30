@@ -97,6 +97,29 @@
 	const {typographyStyles: scoreTypographyStyles} = useTypography(props, 'bracket-score')
 	const {typographyStyles: advantageTypographyStyles} = useTypography(props, 'bracket-advantage')
 
+	/*********************************************************
+	 * #513 — opacity-based de-emphasis destroyed contrast
+	 *
+	 * @description
+	 * `__seed`, `--loser`, `--tbd` (its CSS vars are named `--pending`, the
+	 * class is `--tbd`) and `--forfeit .__name` used to de-emphasise their
+	 * text via `opacity` on top of `currentColor`. Contrast is a property
+	 * of the COMPOSITED color, not the declared one: opacity multiplies
+	 * whatever hue `currentColor` carries (any `TIntent` the row is given)
+	 * against the surface behind it.
+	 * @description
+	 * Measured live (Playwright, Histoire, resolved `getComputedStyle`):
+	 * with `color="primary"` the `__name` text sits at 7.10:1 unstyled but
+	 * composites to 3.84:1 once dimmed to opacity 0.7 (fails AA 4.5:1); the
+	 * same 0.7/0.85 opacities are harmless only against the undyed default
+	 * (near-black) text.
+	 * @description
+	 * Since the row accepts any intent, no single opacity constant is safe
+	 * for all of them — the four rules now paint a fixed, pre-vetted
+	 * neutral (`--origam-color__text---secondary`, 7.81:1 on white,
+	 * independently verified) instead of dimming whatever color was
+	 * already there.
+	 ********************************************************/
 	const isTbd = computed<boolean>(() => props.competitor === null)
 
 	const displayName = computed<string>(() => {
@@ -249,8 +272,7 @@
 			min-width: var(--origam-bracket-seed---min-width, 20px);
 			font-size: var(--origam-bracket-seed---font-size, 0.75rem);
 			font-weight: var(--origam-bracket-seed---font-weight, 500);
-			color: var(--origam-bracket-seed---color, currentColor);
-			opacity: var(--origam-bracket-seed---opacity, 0.7);
+			color: var(--origam-bracket-seed---color, var(--origam-color__text---secondary));
 			text-align: end;
 			flex: 0 0 auto;
 		}
@@ -298,8 +320,8 @@
 
 		&--forfeit {
 			.origam-bracket-competitor__name {
+				color: var(--origam-bracket-competitor--forfeit---color, var(--origam-color__text---secondary));
 				text-decoration: line-through;
-				opacity: 0.7;
 			}
 		}
 
@@ -336,13 +358,11 @@
 		}
 
 		&--loser {
-			color: var(--origam-bracket-competitor--loser---color, currentColor);
-			opacity: var(--origam-bracket-competitor--loser---opacity, 0.85);
+			color: var(--origam-bracket-competitor--loser---color, var(--origam-color__text---secondary));
 		}
 
 		&--tbd {
-			color: var(--origam-bracket-competitor--pending---color, currentColor);
-			opacity: var(--origam-bracket-competitor--pending---opacity, 0.7);
+			color: var(--origam-bracket-competitor--pending---color, var(--origam-color__text---secondary));
 			font-style: var(--origam-bracket-competitor--pending---font-style, italic);
 		}
 

@@ -27,7 +27,6 @@
 					display: 'list',
 					dropzoneTitle: undefined,
 					dropzoneSubtitle: undefined,
-					browseText: undefined,
 					width: undefined,
 					height: undefined,
 				})"
@@ -57,7 +56,6 @@
 						:display="state.display"
 						:dropzone-title="state.dropzoneTitle"
 						:dropzone-subtitle="state.dropzoneSubtitle"
-						:browse-text="state.browseText"
 						:width="state.width"
 						:height="state.height"
 						style="max-width: 400px"
@@ -99,7 +97,6 @@
 					<HstText v-model="state.label"            title="Label"/>
 					<HstText v-model="state.dropzoneTitle"    title="Dropzone Title"/>
 					<HstText v-model="state.dropzoneSubtitle" title="Dropzone Subtitle"/>
-					<HstText v-model="state.browseText"       title="Browse Text"/>
 				</StoryGroup>
 				<StoryGroup title="Dimension">
 					<HstText v-model="state.width"  title="Width"/>
