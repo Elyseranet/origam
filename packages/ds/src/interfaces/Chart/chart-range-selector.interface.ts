@@ -44,6 +44,16 @@ export interface IChartRangeSelector {
  * `rangeSelector.enabled` is `true`. Distinct from `IChartRangeSelector`
  * above, which is the *configuration object* a consumer passes to
  * `<OrigamChartCartesian rangeSelector="…">`; this is the standalone
+ *
+ * ⛔ Deliberately does NOT `extend IChartBaseProps` (#403). Every other
+ * `OrigamChart*` plots a `series` against `categories` and inherits the
+ * layout/legend/tooltip/animation surface that comes with it. This
+ * component plots nothing — it's a self-contained toolbar control (closer
+ * to a segmented control than a chart) that only exists to pair with
+ * `<OrigamChartCartesian rangeSelector="...">`. Extending the base
+ * interface would inherit a dozen props it would silently ignore — the
+ * exact "half-implemented surface" bug the rest of the family is being
+ * fixed for. See `OrigamChartRangeSelector.md` for the full rationale.
  * sub-component's own prop surface.
  */
 export interface IChartRangeSelectorProps {

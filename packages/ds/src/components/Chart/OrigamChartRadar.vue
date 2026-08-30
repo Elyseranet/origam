@@ -1,10 +1,9 @@
 <template>
-	<div
+	<figure
 			:id="id"
 			class="origam-chart-radar"
 			:class="rootClasses"
 			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles, headerTypographyStyles]"
-			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-radar"
 	>
@@ -112,7 +111,7 @@
 					data-cy="origam-chart-radar-empty"
 			>
 				<slot name="empty">
-					<span>No data to display</span>
+					<span>{{ t('origam.chart.no_data_text') }}</span>
 				</slot>
 			</div>
 		</div>
@@ -134,7 +133,7 @@
 				/>
 			</template>
 		</origam-chart-legend>
-	</div>
+	</figure>
 </template>
 
 <script
@@ -153,6 +152,7 @@
 	import { useChart } from '../../composables/Chart/chart.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useMargin } from '../../composables/Commons/margin.composable'
 	import { usePadding } from '../../composables/Commons/padding.composable'
 	import { useRounded } from '../../composables/Commons/rounded.composable'
@@ -195,6 +195,7 @@
 
 	defineSlots<IChartRadarSlots>()
 
+	const { t } = useLocale()
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
 	const { elevationClasses, elevationStyles } = useElevation(props)
@@ -413,7 +414,7 @@
 
 		&__subtitle {
 			font-size: var(--origam-chart__subtitle---font-size, 0.875rem);
-			color: var(--origam-chart__subtitle---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__subtitle---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		&__body {
@@ -437,12 +438,12 @@
 		.origam-chart__radar-ring,
 		.origam-chart__radar-spoke {
 			fill: none;
-			stroke: var(--origam-chart__grid---color, var(--origam-color-border-subtle, #e5e7eb));
+			stroke: var(--origam-chart__grid---color, var(--origam-color__border---subtle, #e5e7eb));
 			stroke-width: 1;
 		}
 
 		.origam-chart__radar-label {
-			fill: var(--origam-chart__axis-label---color, var(--origam-color-text-secondary, #6b7280));
+			fill: var(--origam-chart__axis-label---color, var(--origam-color__text---secondary, #6b7280));
 			font-size: var(--origam-chart__axis-label---font-size, 0.75rem);
 		}
 
@@ -465,7 +466,7 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			color: var(--origam-chart__empty---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__empty---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		:deep(.origam-chart__legend) {

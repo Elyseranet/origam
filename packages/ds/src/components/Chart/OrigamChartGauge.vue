@@ -1,10 +1,9 @@
 <template>
-	<div
+	<figure
 			:id="id"
 			class="origam-chart-gauge"
 			:class="rootClasses"
 			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles, headerTypographyStyles]"
-			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-gauge"
 	>
@@ -123,11 +122,11 @@
 					data-cy="origam-chart-gauge-empty"
 			>
 				<slot name="empty">
-					<span>No data to display</span>
+					<span>{{ t('origam.chart.no_data_text') }}</span>
 				</slot>
 			</div>
 		</div>
-	</div>
+	</figure>
 </template>
 
 <script
@@ -145,6 +144,7 @@
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useMargin } from '../../composables/Commons/margin.composable'
 	import { usePadding } from '../../composables/Commons/padding.composable'
 	import { useRounded } from '../../composables/Commons/rounded.composable'
@@ -195,6 +195,7 @@
 
 	defineSlots<IChartGaugeSlots>()
 
+	const { t } = useLocale()
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
 	const { elevationClasses, elevationStyles } = useElevation(props)
@@ -228,21 +229,36 @@
 		return typeof entry === 'number' ? entry : entry.y
 	})
 
+	/*********************************************************
+	 * valueColor
+	 *
+	 * @description
+	 * Falls back to the action-primary intent token when the series
+	 * doesn't pin its own colour.
+	 *
+	 * @description
+	 * ⛔ #529 — the two `var(--origam-color__action--…---bg, …)` fallback
+	 * chains below used to nest a SECOND rung, `var(--origam-color--${c})`
+	 * — a single-tiret name the token pipeline has never emitted. It was
+	 * dead the moment `c`/`first.color` is a valid `TIntent` (the only
+	 * case either branch is reached for): the primary rung always resolves
+	 * first. Removed rather than "fixed" into a real token — it never
+	 * carried a distinct semantic, `currentColor` was already the intended
+	 * final fallback.
+	 ********************************************************/
 	const valueColor = computed<string>(() => {
 		const first = props.series?.[0]
-		// Fall back to the action-primary intent token when the series
-		// doesn't pin its own colour.
 		if (first?.color) {
 			if (/^(#|rgb|rgba|hsl|hsla|var|currentColor)/i.test(first.color)) {
 				return first.color
 			}
-			return `var(--origam-color__action--${ first.color }---bg, var(--origam-color--${ first.color }, currentColor))`
+			return `var(--origam-color__action--${ first.color }---bg, currentColor)`
 		}
 		const scheme = props.colorScheme
 		if (scheme.length) {
 			const c = scheme[0] as string
 			if (/^(#|rgb|rgba|hsl|hsla|var|currentColor)/i.test(c)) return c
-			return `var(--origam-color__action--${ c }---bg, var(--origam-color--${ c }, currentColor))`
+			return `var(--origam-color__action--${ c }---bg, currentColor)`
 		}
 		return 'var(--origam-color__action--primary---bg, currentColor)'
 	})
@@ -373,7 +389,7 @@
 
 		&__subtitle {
 			font-size: var(--origam-chart__subtitle---font-size, 0.875rem);
-			color: var(--origam-chart__subtitle---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__subtitle---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		&__body {
@@ -395,7 +411,7 @@
 		}
 
 		.origam-chart__gauge-track {
-			fill: var(--origam-chart__gauge-track---color, var(--origam-color-border-subtle, #e5e7eb));
+			fill: var(--origam-chart__gauge-track---color, var(--origam-color__border---subtle, #e5e7eb));
 			stroke: none;
 		}
 
@@ -405,12 +421,12 @@
 		}
 
 		.origam-chart__gauge-endpoint {
-			fill: var(--origam-chart__axis-label---color, var(--origam-color-text-secondary, #6b7280));
+			fill: var(--origam-chart__axis-label---color, var(--origam-color__text---secondary, #6b7280));
 			font-size: var(--origam-chart__axis-label---font-size, 0.75rem);
 		}
 
 		.origam-chart__gauge-label {
-			fill: var(--origam-chart__gauge-label---color, var(--origam-color-text-primary, currentColor));
+			fill: var(--origam-chart__gauge-label---color, var(--origam-color__text---primary, currentColor));
 			font-size: var(--origam-chart__gauge-label---font-size, 1.5rem);
 			font-weight: var(--origam-chart__gauge-label---font-weight, 700);
 		}
@@ -425,7 +441,7 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			color: var(--origam-chart__empty---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__empty---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		&--no-animation .origam-chart__gauge-value {

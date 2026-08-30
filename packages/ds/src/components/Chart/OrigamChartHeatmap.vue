@@ -1,10 +1,9 @@
 <template>
-	<div
+	<figure
 			:id="id"
 			class="origam-chart-heatmap"
 			:class="rootClasses"
 			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles, headerTypographyStyles]"
-			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-heatmap"
 	>
@@ -212,11 +211,11 @@
 					data-cy="origam-chart-heatmap-empty"
 			>
 				<slot name="empty">
-					<span>No data to display</span>
+					<span>{{ t('origam.chart.no_data_text') }}</span>
 				</slot>
 			</div>
 		</div>
-	</div>
+	</figure>
 </template>
 
 <script
@@ -240,6 +239,7 @@
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useMargin } from '../../composables/Commons/margin.composable'
 	import { usePadding } from '../../composables/Commons/padding.composable'
 	import { useRounded } from '../../composables/Commons/rounded.composable'
@@ -298,6 +298,7 @@
 
 	defineSlots<IChartHeatmapSlots>()
 
+	const { t } = useLocale()
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
 	const { elevationClasses, elevationStyles } = useElevation(props)
@@ -683,7 +684,7 @@
 
 		&__subtitle {
 			font-size: var(--origam-chart__subtitle---font-size, 0.875rem);
-			color: var(--origam-chart__subtitle---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__subtitle---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		&__body {
@@ -709,7 +710,7 @@
 		}
 
 		.origam-chart__heatmap-cell {
-			stroke: var(--origam-chart__heatmap---stroke-color, var(--origam-color-surface-default, #ffffff));
+			stroke: var(--origam-chart__heatmap---stroke-color, var(--origam-color__surface---default, #ffffff));
 			stroke-width: var(--origam-chart__heatmap---stroke-width, 0.5);
 			cursor: pointer;
 			transition: opacity 150ms ease, filter 150ms ease;
@@ -734,14 +735,14 @@
 		.origam-chart__heatmap-axis-label {
 			pointer-events: none;
 			font-size: var(--origam-chart__heatmap-axis-label---font-size, 0.625rem);
-			fill: var(--origam-chart__heatmap-axis-label---color, var(--origam-color-text-secondary, #6b7280));
+			fill: var(--origam-chart__heatmap-axis-label---color, var(--origam-color__text---secondary, #6b7280));
 			user-select: none;
 		}
 
 		.origam-chart__heatmap-legend-label {
 			pointer-events: none;
 			font-size: var(--origam-chart__heatmap-legend-label---font-size, 0.625rem);
-			fill: var(--origam-chart__heatmap-legend-label---color, var(--origam-color-text-secondary, #6b7280));
+			fill: var(--origam-chart__heatmap-legend-label---color, var(--origam-color__text---secondary, #6b7280));
 			user-select: none;
 		}
 
@@ -752,7 +753,7 @@
 		:deep(.origam-chart__tooltip) {
 			position: absolute;
 			pointer-events: none;
-			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color-surface-overlay, #1f2937));
+			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color__surface---overlay, #1f2937));
 			color: var(--origam-chart__tooltip---color, #ffffff);
 			padding: var(--origam-chart__tooltip---padding, 8px 12px);
 			border-radius: var(--origam-chart__tooltip---border-radius, 6px);
@@ -790,7 +791,7 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			color: var(--origam-chart__empty---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__empty---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		&--no-animation .origam-chart__heatmap-cell {

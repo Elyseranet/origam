@@ -231,11 +231,15 @@
       "aria_label": "Fil d'Ariane"
     },
     "chart": {
+      "aria_label": "Graphique",
+      "no_data_text": "Aucune donnée à afficher",
       "range_selector": {
         "aria_label": "Sélecteur de plage du graphique"
       },
       "drilldown": {
-        "aria_label": "Navigation d'exploration"
+        "aria_label": "Navigation d'exploration",
+        "back_label": "← Retour",
+        "root_label": "Racine"
       },
       "zoom": {
         "reset_aria_label": "Réinitialiser le zoom"

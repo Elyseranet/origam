@@ -69,7 +69,7 @@ test.describe('OrigamChartPictorial — Default', () => {
         const sandbox = sandboxOf(page)
         const host = sandbox.locator('[data-cy="pictorial-playground-chart"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
-        await expect(host).toHaveAttribute('role', 'figure')
+        await expect(host).toHaveRole('figure') // #426 — root is a native <figure>, role is implicit, no explicit attribute any more
     })
 
     test('SVG carries role=img, title and desc', async ({ page }) => {

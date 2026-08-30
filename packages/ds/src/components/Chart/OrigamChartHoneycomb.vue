@@ -1,10 +1,9 @@
 <template>
-	<div
+	<figure
 			:id="id"
 			class="origam-chart-honeycomb"
 			:class="rootClasses"
 			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles, headerTypographyStyles]"
-			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-honeycomb"
 	>
@@ -116,7 +115,7 @@
 					data-cy="origam-chart-honeycomb-empty"
 			>
 				<slot name="empty">
-					<span>No data to display</span>
+					<span>{{ t('origam.chart.no_data_text') }}</span>
 				</slot>
 			</div>
 		</div>
@@ -138,7 +137,7 @@
 				/>
 			</template>
 		</origam-chart-legend>
-	</div>
+	</figure>
 </template>
 
 <script
@@ -159,6 +158,7 @@
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useMargin } from '../../composables/Commons/margin.composable'
 	import { usePadding } from '../../composables/Commons/padding.composable'
 	import { useRounded } from '../../composables/Commons/rounded.composable'
@@ -218,6 +218,7 @@
 
 	defineSlots<IChartHoneycombSlots>()
 
+	const { t } = useLocale()
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
 	const { elevationClasses, elevationStyles } = useElevation(props)
@@ -638,7 +639,7 @@
 
 		&__subtitle {
 			font-size: var(--origam-chart__subtitle---font-size, 0.875rem);
-			color: var(--origam-chart__subtitle---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__subtitle---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		&__body {
@@ -664,7 +665,7 @@
 		}
 
 		.origam-chart__honeycomb-tile {
-			stroke: var(--origam-chart__honeycomb---stroke-color, var(--origam-color-surface-default, #ffffff));
+			stroke: var(--origam-chart__honeycomb---stroke-color, var(--origam-color__surface---default, #ffffff));
 			stroke-width: var(--origam-chart__honeycomb---stroke-width, 2);
 			cursor: pointer;
 			transition: opacity 150ms ease, filter 150ms ease;
@@ -692,7 +693,7 @@
 		:deep(.origam-chart__tooltip) {
 			position: absolute;
 			pointer-events: none;
-			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color-surface-overlay, #1f2937));
+			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color__surface---overlay, #1f2937));
 			color: var(--origam-chart__tooltip---color, #ffffff);
 			padding: var(--origam-chart__tooltip---padding, 8px 12px);
 			border-radius: var(--origam-chart__tooltip---border-radius, 6px);
@@ -730,7 +731,7 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			color: var(--origam-chart__empty---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__empty---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		:deep(.origam-chart__legend) {

@@ -1,10 +1,9 @@
 <template>
-	<div
+	<figure
 			:id="id"
 			class="origam-chart-pareto"
 			:class="rootClasses"
 			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles, headerTypographyStyles]"
-			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-pareto"
 	>
@@ -268,7 +267,7 @@
 					data-cy="origam-chart-pareto-empty"
 			>
 				<slot name="empty">
-					<span>No data to display</span>
+					<span>{{ t('origam.chart.no_data_text') }}</span>
 				</slot>
 			</div>
 		</div>
@@ -290,7 +289,7 @@
 				/>
 			</template>
 		</origam-chart-legend>
-	</div>
+	</figure>
 </template>
 
 <script
@@ -311,8 +310,10 @@
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useMargin } from '../../composables/Commons/margin.composable'
 	import { usePadding } from '../../composables/Commons/padding.composable'
+	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
 	import { useRounded } from '../../composables/Commons/rounded.composable'
 
 	import type { IChartLegendItem } from '../../interfaces/Chart/chart.interface'
@@ -376,6 +377,7 @@
 
 	defineSlots<IChartParetoSlots>()
 
+	const { t } = useLocale()
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
 	const { elevationClasses, elevationStyles } = useElevation(props)
@@ -420,6 +422,29 @@
 
 	const resolvedBarColor = computed<string>(() => resolveColor(props.barColor))
 	const resolvedLineColor = computed<string>(() => resolveColor(props.lineColor))
+
+	/*********************************************************
+	 * wasBarColorPassed / barColorAt
+	 *
+	 * @description
+	 * `barColor` carries a hard `withDefaults()` default ('primary'), so
+	 * `props.barColor` is NEVER `undefined` at render time — a plain
+	 * `props.barColor ?? colorScheme[...]` fallback could never fire.
+	 *
+	 * @description
+	 * Same shadowing shape `useChartAnimationStyle` documents for
+	 * `animationDuration` (#505): the distinguishing test is whether the
+	 * CONSUMER (or a theme) actually touched the prop, not whether the
+	 * resolved value is falsy (#426).
+	 ********************************************************/
+	const wasBarColorPassed = usePassedProps(props, 'OrigamChartPareto')
+
+	const barColorAt = (i: number): string => {
+		if (!wasBarColorPassed('barColor') && props.colorScheme?.length) {
+			return resolveColor(props.colorScheme[i % props.colorScheme.length])
+		}
+		return resolvedBarColor.value
+	}
 
 	/*********************************************************
 	 * Data normalisation — accepts IChartParetoDatum objects
@@ -543,7 +568,7 @@
 				formattedValue: props.yAxisFormat ? props.yAxisFormat(safeValue) : String(safeValue),
 				share,
 				cumulative,
-				color: resolvedBarColor.value,
+				color: barColorAt(i),
 				x,
 				y: barTop,
 				w: barWidth,
@@ -831,7 +856,7 @@
 
 		&__subtitle {
 			font-size: var(--origam-chart__subtitle---font-size, 0.875rem);
-			color: var(--origam-chart__subtitle---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__subtitle---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		&__body {
@@ -857,31 +882,31 @@
 		}
 
 		&__grid-line {
-			stroke: var(--origam-chart-pareto__grid---stroke, var(--origam-color-border-subtle, #e5e7eb));
+			stroke: var(--origam-chart-pareto__grid---stroke, var(--origam-color__border---subtle, #e5e7eb));
 			stroke-width: 1;
 			stroke-dasharray: 4 4;
 		}
 
 		&__axis-line {
-			stroke: var(--origam-chart-pareto__axis---stroke, var(--origam-color-border-default, #d1d5db));
+			stroke: var(--origam-chart-pareto__axis---stroke, var(--origam-color__border---default, #d1d5db));
 			stroke-width: 1;
 		}
 
 		&__tick-mark {
-			stroke: var(--origam-chart-pareto__tick---stroke, var(--origam-color-border-default, #d1d5db));
+			stroke: var(--origam-chart-pareto__tick---stroke, var(--origam-color__border---default, #d1d5db));
 			stroke-width: 1;
 		}
 
 		&__tick-label {
 			font-size: var(--origam-chart-pareto__tick-label---font-size, 0.6875rem);
-			fill: var(--origam-chart-pareto__tick-label---fill, var(--origam-color-text-secondary, #6b7280));
+			fill: var(--origam-chart-pareto__tick-label---fill, var(--origam-color__text---secondary, #6b7280));
 			user-select: none;
 		}
 
 		&__bar {
 			cursor: pointer;
 			transition: opacity 150ms ease, filter 150ms ease;
-			stroke: var(--origam-chart-pareto__bar---stroke-color, var(--origam-color-surface-default, #ffffff));
+			stroke: var(--origam-chart-pareto__bar---stroke-color, var(--origam-color__surface---default, #ffffff));
 			stroke-width: var(--origam-chart-pareto__bar---stroke-width, 1);
 
 			&:hover,
@@ -896,7 +921,7 @@
 			pointer-events: none;
 			font-size: var(--origam-chart-pareto__bar-label---font-size, 0.6875rem);
 			font-weight: var(--origam-chart-pareto__bar-label---font-weight, 600);
-			fill: var(--origam-chart-pareto__bar-label---fill, var(--origam-color-text-primary, currentColor));
+			fill: var(--origam-chart-pareto__bar-label---fill, var(--origam-color__text---primary, currentColor));
 			user-select: none;
 		}
 
@@ -909,7 +934,7 @@
 
 		&__line-dot {
 			pointer-events: none;
-			stroke: var(--origam-chart-pareto__line-dot---stroke, var(--origam-color-surface-default, #ffffff));
+			stroke: var(--origam-chart-pareto__line-dot---stroke, var(--origam-color__surface---default, #ffffff));
 			stroke-width: 2;
 		}
 
@@ -928,7 +953,7 @@
 		:deep(.origam-chart__tooltip) {
 			position: absolute;
 			pointer-events: none;
-			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color-surface-overlay, #1f2937));
+			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color__surface---overlay, #1f2937));
 			color: var(--origam-chart__tooltip---color, #ffffff);
 			padding: var(--origam-chart__tooltip---padding, 8px 12px);
 			border-radius: var(--origam-chart__tooltip---border-radius, 6px);
@@ -966,7 +991,7 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			color: var(--origam-chart__empty---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__empty---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		:deep(.origam-chart__legend) {

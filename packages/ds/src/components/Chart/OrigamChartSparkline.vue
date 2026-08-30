@@ -530,7 +530,7 @@
 		&__tooltip {
 			position: absolute;
 			pointer-events: none;
-			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color-surface-overlay, #1f2937));
+			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color__surface---overlay, #1f2937));
 			color: var(--origam-chart__tooltip---color, #ffffff);
 			padding: var(--origam-chart-sparkline__tooltip---padding, 2px 6px);
 			border-radius: var(--origam-chart-sparkline__tooltip---border-radius, 4px);
@@ -549,7 +549,7 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			color: var(--origam-chart__empty---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__empty---color, var(--origam-color__text---secondary, #6b7280));
 			font-size: var(--origam-chart-sparkline__empty---font-size, 0.75rem);
 		}
 	}

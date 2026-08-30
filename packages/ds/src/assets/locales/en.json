@@ -231,11 +231,15 @@
       "aria_label": "Breadcrumb"
     },
     "chart": {
+      "aria_label": "Chart",
+      "no_data_text": "No data to display",
       "range_selector": {
         "aria_label": "Chart range selector"
       },
       "drilldown": {
-        "aria_label": "Drilldown navigation"
+        "aria_label": "Drilldown navigation",
+        "back_label": "← Back",
+        "root_label": "Root"
       },
       "zoom": {
         "reset_aria_label": "Reset zoom"

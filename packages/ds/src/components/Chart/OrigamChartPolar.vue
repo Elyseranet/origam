@@ -1,10 +1,9 @@
 <template>
-	<div
+	<figure
 			:id="id"
 			class="origam-chart-polar"
 			:class="rootClasses"
 			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles, headerTypographyStyles]"
-			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-polar"
 	>
@@ -136,7 +135,7 @@
 					data-cy="origam-chart-polar-empty"
 			>
 				<slot name="empty">
-					<span>No data to display</span>
+					<span>{{ t('origam.chart.no_data_text') }}</span>
 				</slot>
 			</div>
 		</div>
@@ -158,7 +157,7 @@
 				/>
 			</template>
 		</origam-chart-legend>
-	</div>
+	</figure>
 </template>
 
 <script
@@ -262,11 +261,11 @@
 	const isDrilled = computed(() => drillStack.value.length > 0)
 
 	const breadcrumbItems = computed<Array<{ name: string, depth: number }>>(() => {
-		const root = { name: props.title ?? 'Root', depth: -1 }
+		const root = { name: props.title ?? t('origam.chart.drilldown.root_label'), depth: -1 }
 		return [root, ...drillStack.value.map((frame, i) => ({ name: frame.name, depth: i }))]
 	})
 
-	const drilldownBackLabel = computed(() => props.drilldown?.backLabel ?? '← Back')
+	const drilldownBackLabel = computed(() => props.drilldown?.backLabel ?? t('origam.chart.drilldown.back_label'))
 	const drilldownNavAriaLabel = computed(() => t(props.drilldown?.navAriaLabel ?? 'origam.chart.drilldown.aria_label'))
 
 	const resolveDrilldownLink = (link: IChartDrilldownLink): IChartDrilldownFrame | null => {
@@ -503,7 +502,7 @@
 	/*********************************************************
 	 * ARIA
 	 ********************************************************/
-	const ariaLabel = computed(() => props.title ?? 'Chart')
+	const ariaLabel = computed(() => props.title ?? t('origam.chart.aria_label'))
 	const svgAriaLabel = computed(() => props.title ?? `${ props.type } chart`)
 	const svgTitle = computed(() => props.title ?? `${ props.type } chart`)
 	const svgDesc = computed(() => {
@@ -597,7 +596,7 @@
 			align-items: center;
 			gap: var(--origam-chart__breadcrumb---gap, 8px);
 			font-size: var(--origam-chart__breadcrumb---font-size, 0.8125rem);
-			color: var(--origam-chart__breadcrumb---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__breadcrumb---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		&__breadcrumb-back {
@@ -605,7 +604,7 @@
 			align-items: center;
 			gap: 4px;
 			padding: 4px 10px;
-			border: 1px solid var(--origam-chart__breadcrumb-back---border-color, var(--origam-color-border-default, #d1d5db));
+			border: 1px solid var(--origam-chart__breadcrumb-back---border-color, var(--origam-color__border---default, #d1d5db));
 			border-radius: var(--origam-chart__breadcrumb-back---border-radius, 4px);
 			background-color: var(--origam-chart__breadcrumb-back---background-color, transparent);
 			color: var(--origam-chart__breadcrumb-back---color, inherit);
@@ -645,7 +644,7 @@
 			background: none;
 			border: none;
 			padding: 0;
-			color: var(--origam-chart__breadcrumb-link---color, var(--origam-color-action-primary-text, #3b82f6));
+			color: var(--origam-chart__breadcrumb-link---color, var(--origam-color__action--ghost---fg, #3b82f6));
 			font-size: inherit;
 			cursor: pointer;
 			text-decoration: underline;
@@ -671,7 +670,7 @@
 
 		&__subtitle {
 			font-size: var(--origam-chart__subtitle---font-size, 0.875rem);
-			color: var(--origam-chart__subtitle---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__subtitle---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		&__body {
@@ -697,7 +696,7 @@
 		}
 
 		.origam-chart__slice {
-			stroke: var(--origam-chart__pie---stroke-color, var(--origam-color-surface-default, #ffffff));
+			stroke: var(--origam-chart__pie---stroke-color, var(--origam-color__surface---default, #ffffff));
 			stroke-width: var(--origam-chart__pie---stroke-width, 2);
 			cursor: pointer;
 			transition: transform 150ms ease;
@@ -718,7 +717,7 @@
 		:deep(.origam-chart__tooltip) {
 			position: absolute;
 			pointer-events: none;
-			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color-surface-overlay, #1f2937));
+			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color__surface---overlay, #1f2937));
 			color: var(--origam-chart__tooltip---color, #ffffff);
 			padding: var(--origam-chart__tooltip---padding, 8px 12px);
 			border-radius: var(--origam-chart__tooltip---border-radius, 6px);
@@ -756,7 +755,7 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			color: var(--origam-chart__empty---color, var(--origam-color-text-secondary, #6b7280));
+			color: var(--origam-chart__empty---color, var(--origam-color__text---secondary, #6b7280));
 		}
 
 		:deep(.origam-chart__legend) {
