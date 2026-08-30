@@ -1,5 +1,7 @@
 import { computed, useSlots } from 'vue'
 import type { IAdjacentInnerProps } from '../../interfaces/Commons/adjacent.interface'
+import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
+import { hasEvent } from '../../utils/Commons/commons.util'
 import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
 
 /*********************************************************
@@ -11,6 +13,17 @@ import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
  * text-field's clear button, sitting inside the input's border rather
  * than outside it). `useAdjacent` is the sibling hook for the OUTER
  * zone — independent, no shared state.
+ *
+ * @description
+ * ⛔ issue #443 — same gap as `useAdjacent`: `click:prependInner` /
+ * `click:appendInner` only ever fired from a literal DOM click inside
+ * the zone, never from a keyboard activation of an ancestor. See the
+ * long comment on `useAdjacent` for the full reasoning; mirrored here
+ * for the inner zone. `isClearClickable` stays permanently true when
+ * `hasClear` is — the clear zone only renders (`v-show="dirty"`) when
+ * there is something to clear, so it is unconditionally actionable
+ * whenever visible, unlike prependInner/appendInner whose
+ * actionability depends on whether the consumer wired a listener.
  ********************************************************/
 export function useAdjacentInner (props: IAdjacentInnerProps) {
     const vm = getCurrentInstance('OrigamAdjacentInner')
@@ -43,14 +56,44 @@ export function useAdjacentInner (props: IAdjacentInnerProps) {
         vm.emit('click:clear', e)
     }
 
+    // See `useAdjacent.isPrependClickable` — same #397-shaped gap:
+    // `defineEmits<IAdjacentInnerEmits>()` declares these, so `$attrs`
+    // alone misses a listener the parent DID attach; `vm.vnode.props`
+    // (raw, pre-split) still has it.
+    const isPrependInnerClickable = computed(() => {
+        return hasEvent(vm.attrs, 'click:prependInner') || hasEvent(vm.vnode.props ?? {}, 'click:prependInner')
+    })
+    const isAppendInnerClickable = computed(() => {
+        return hasEvent(vm.attrs, 'click:appendInner') || hasEvent(vm.vnode.props ?? {}, 'click:appendInner')
+    })
+
+    const onKeydownPrependInner = (e: KeyboardEvent) => {
+        if (!isPrependInnerClickable.value) return
+        if (e.key !== KEYBOARD_VALUES.ENTER && e.key !== KEYBOARD_VALUES.EMPTY) return
+
+        e.preventDefault()
+        onClickPrependInner(e)
+    }
+    const onKeydownAppendInner = (e: KeyboardEvent) => {
+        if (!isAppendInnerClickable.value) return
+        if (e.key !== KEYBOARD_VALUES.ENTER && e.key !== KEYBOARD_VALUES.EMPTY) return
+
+        e.preventDefault()
+        onClickAppendInner(e)
+    }
+
     return {
         hasPrependInnerMedia,
         hasPrependInner,
         hasAppendInnerMedia,
         hasAppendInner,
         hasClear,
+        isPrependInnerClickable,
+        isAppendInnerClickable,
         onClickPrependInner,
         onClickAppendInner,
+        onKeydownPrependInner,
+        onKeydownAppendInner,
         clickClear
     }
 }
