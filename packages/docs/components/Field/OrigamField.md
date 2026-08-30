@@ -101,6 +101,19 @@ The floor is capped at the control height, so an intentional pill
 </template>
 ```
 
+## Required
+
+`required` renders an asterisk (`<sup>*</sup>`) on the nested `<OrigamLabel>`
+and exposes `aria-required="true"` through the default-slot props consumed by
+every field-family component (TextField, NumberField, PasswordField,
+FileField) on their real `<input>`.
+
+```vue
+<template>
+  <OrigamField label="Email" required />
+</template>
+```
+
 ## Props — Typography (label surface)
 
 `fontSize` sets `--origam-field__label---font-size` on the `.origam-field__label`

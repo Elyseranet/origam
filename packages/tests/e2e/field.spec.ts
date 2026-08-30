@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { toggleHstCheckbox } from './_support/histoire-controls'
 
 const STORY_PATH = '/stories/story/components-stories-field-origamfield-story-vue'
 
@@ -83,6 +84,29 @@ test.describe('OrigamField', () => {
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         await expect(sandbox.locator('[data-cy="field-slot-inner"]')).toBeVisible({ timeout: 5000 })
         await expect(sandbox.locator('.origam-field__prepend-inner').first()).toBeVisible({ timeout: 3000 })
+    })
+
+    // issue #422 — the "Required" checkbox on this Variant was wired to a
+    // real prop that had NO effect at all: no asterisk, no aria-required.
+    // Fixed centrally in OrigamField's slotProps; the story's default slot
+    // now forwards the resulting `aria-required` onto its plain <input>
+    // (previously it destructured only id/onFocus/onBlur, discarding it —
+    // exactly why the checkbox looked inert even after the component fix).
+    test('Required — toggling the checkbox sets aria-required on the input', async ({ page }) => {
+        await page.goto(STORY_PATH)
+        await page.waitForLoadState('networkidle')
+        await page.getByText('Functional', { exact: true }).first().click()
+        await page.waitForTimeout(800)
+
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const input = sandbox.locator('[data-cy="field-functional-input"]')
+        await expect(input).toBeVisible({ timeout: 5000 })
+        await expect(input).not.toHaveAttribute('aria-required', 'true')
+
+        await toggleHstCheckbox(page, 'Required')
+        await page.waitForTimeout(300)
+
+        await expect(input).toHaveAttribute('aria-required', 'true')
     })
 
     test('Emit focus / blur — focusing input fires events', async ({ page }) => {
