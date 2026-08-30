@@ -86,15 +86,24 @@ un faux négatif (#517).
 `#320 #335 #357 #370 #371 #383 #387 #388 #391 #399 #407 #411 #413 #419 #423 #429
 #432 #434 #440 #468 #482 #503 #505 #507 #508 #524 #528 #530`
 
-### Audit en cours (session pair `audit-lot-tokens-1`)
-`#389 #393 #394 #405 #436 #479 #492 #514 #515`
+### Audit TERMINÉ — dernier lot (session pair `audit-lot-tokens-1`)
 
-Mesures partielles à **vérifier et non reprendre** :
-- #389 : 10 annoncés → **1** réel (`bracket` seul)
-- #436-B : 12 → **3**
-- #393 : 13 fichiers / 215 vars → **18 / 281** (dont 42 conflits, 234 sans émission)
-- #405 : 338 → **62** avant les correctifs du jour, **43** après
-- #394 : **déjà réglé** par la grammaire de #435
+Rapport complet : `docs/audit-tableau-2026-08-30.md`, branche **`audit/tableau`**,
+commit **`336fb2af`** (⚠️ non mergé dans `develop`).
+
+| ticket | verdict | chiffre remesuré |
+|---|---|---|
+| #389 | PARTIEL | **1/10** — `sound`/`qrcode`/`watermark` **n'existent plus** (supprimés par `651a3a90`). Seul `bracket.json` reste non enregistré (vérifié : 0 occurrence dans `$themes.json`), bloqué sur sa migration `$child` |
+| #393 | VALIDE | **235 vars** — 11 composants à 0 % + 3 partiels. ⛔ **Population changée** : Tab/Tabs/SnackbarGroup/Spacer **sortis**, `Img` (37 vars, jamais cité) **entré** |
+| #394 | PARTIEL | mécanisme racine réparé par #435 (2 exemples du ticket vérifiés) ; **Audio reste cassé** (11 vars). Les 46 autres composants **non vérifiés un par un** |
+| #405 | PARTIEL | **34**, pas 338 ni 43. Liste nommée non extraite (le garde ne l'expose pas en CLI) |
+| #436 | PARTIEL, quasi soldé | population A : 1/10 (`bracket`) ; population B : **0/12** — les 3 divergences sont réparées. Commentaire de fermeture rédigé, **à valider** |
+| #479 | VALIDE, **non commencé** | 0/4 familles mesurées. Aucun commit depuis l'ouverture |
+| #492 | **VALIDE — seul vrai bug du lot** | ⛔ vérifié par moi : `inheritAttrs: false` l.28, **zéro `v-bind="$attrs"`**. Le test `it.fails` reste vert = le bug est là |
+| #514 | **ARBITRAGE** | `colorEffect.composable.ts:235,257-259` pousse `fgDecl` dans `styles` **même pour une valeur tokenisée**. Le CLAUDE.md affirme le contraire |
+| #515 | ⛔ **PAS un arbitrage — fait FAUX à corriger** | vérifié : `theme-props-resolver.composable.ts:557` fait `if (!(key in rawProps)) continue` = **intersection**. Le CLAUDE.md l.582 dit *« the resolver intercepts based on what a theme NAMES »* = **union**. La phrase est objectivement fausse. (Les questions « faut-il un `console.warn` » et « combien de clés affectées » restent, elles, des arbitrages) |
+
+**Aucun RÉSOLU pur dans ce lot.**
 
 ### Correction en cours (session pair `audit-lot-composants-1`)
 `#532` (docker-compose), `#423` (InfiniteScroll), `#524` (contraste), `#419` (Dialog/Divider/Drawer)
@@ -161,6 +170,15 @@ Mesures partielles à **vérifier et non reprendre** :
   46→117, 338→62, 41→9, 35→61.
 - ⛔ **JAMAIS `git stash`** — `refs/stash` est partagé par tous les worktrees. Deux
   agents y ont échangé leur travail, 464 insertions y dormaient depuis des semaines.
+- ⛔ **NOUVEAU MODE DE COLLISION, constaté ce soir : le checkout de branche.** Un
+  agent travaillant sur `audit/tableau` a vu son répertoire basculer seul sur
+  `fix/lot-confirmes` — `git reflog` montre `checkout: moving from audit/tableau to
+  fix/lot-confirmes` juste après son commit. **Deux sessions partageaient le même
+  répertoire physique.** Rien n'a été perdu (le commit `336fb2af` existe et
+  `audit/tableau` pointe dessus), et l'agent a eu le bon réflexe : constater par
+  `git cat-file`/`git show` **sans re-checkout**, pour ne pas perturber l'autre.
+  C'est la même famille que le stash partagé, par un autre canal. **Isoler chaque
+  session dans un worktree dédié.**
 
 ---
 
