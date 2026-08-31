@@ -133,6 +133,26 @@ The outlined variant resolves its colour from
 `var(--origam-btn---border-color, currentColor)`, so per-instance overrides
 work via the prop, a token, or an inline `--origam-btn---border-color`.
 
+### `border` on the default (non-outlined) variant
+
+The `border` shorthand also works standalone, without `variant="outlined"` —
+`true` (or the `'thin'` / `'thick'` utility keywords) paints all four sides;
+`'top'` / `'right'` / `'bottom'` / `'left'` paints a single edge only:
+
+```vue
+<template>
+    <OrigamBtn border      text="All sides" />
+    <OrigamBtn border="thick" text="Thick" />
+    <OrigamBtn border="top"    text="Top only" />
+    <OrigamBtn border="bottom" text="Bottom only" />
+</template>
+```
+
+Width is resolved per physical side
+(`--origam-btn---border-{top,right,bottom,left}-width`, each falling back to
+the general `--origam-btn---border-width` token), so a direction only ever
+paints the side it names — the other three stay at `0`.
+
 ## Polymorphic tag
 
 ```vue
