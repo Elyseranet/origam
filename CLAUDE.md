@@ -625,8 +625,9 @@ under a theme setting `type: 'checkbox'` — no checkbox semantics, no
   place in the `.vue` file you're reading.
 - **You do NOT need to call `useDefaults()` for a new component to be
   themeable.** Any prop a component already declares is reachable by
-  `theme.components` — the resolver intercepts based on what a theme NAMES,
-  not on what the component opted into.
+  `theme.components`. "Opting in" here means *calling `useDefaults()`* — that
+  is what became unnecessary. **Declaring the prop is still required**, and
+  is the subject of the next point.
 - **⛔ This is an INTERSECTION, not a union.** The resolver only patches a
   key that is BOTH named by a theme (or an ancestor `<OrigamDefaultsProvider>`)
   AND declared as one of the component's own props — guarded by the
