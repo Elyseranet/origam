@@ -304,9 +304,10 @@ git stash branch recover/<topic> stash@{N}
 - **Vite + Histoire + VitePress** for dev, stories, and docs.
 - **unbuild** for the published library (consumed by external apps).
 - **Playwright** (e2e + a11y), **Vitest** (unit tests, jsdom).
-- **Style Dictionary v4** + **@tokens-studio/sd-transforms** for design
-  tokens (multi-theme, multi-output: CSS, SCSS, TS types).
-- **pnpm workspaces** — monorepo, 6 packages under `packages/`.
+- **No design-token build step.** The token stylesheets are plain
+  hand-maintained CSS/SCSS committed under `packages/ds/src/assets/` — see
+  "Design tokens" below.
+- **pnpm workspaces** — monorepo, 5 packages under `packages/`.
 
 The project requires **Node >= 22** (see `.nvmrc`). The unit tests do not
 run on Node 18 because `@vitejs/plugin-vue` calls `crypto.hash()` (Node 21+).
@@ -315,16 +316,15 @@ run on Node 18 because `@vitejs/plugin-vue` calls `crypto.hash()` (Node 21+).
 
 ## Project structure (monorepo)
 
-The repo is a **pnpm workspace** with 6 packages. The only package
+The repo is a **pnpm workspace** with 5 packages. The only package
 published to npm is `packages/ds/` (as `origam`). Everything else stays
-private and supports the lib (docs, stories, tests, marketing, Figma
-sync).
+private and supports the lib (docs, stories, tests, marketing).
 
 ```
 packages/
   ds/                — Published Vue 3 library (npm: origam)
     src/
-      assets/css/    — main.css + generated token sheets
+      assets/css/    — main.css + hand-maintained token sheets
       assets/scss/   — main.scss + tokens (_primitive.scss, _light.scss, …)
       components/    — Origam{PascalCase}.vue (~80 families)
       composables/   — use{CamelCase}.ts (~80 transversal hooks)
@@ -336,8 +336,7 @@ packages/
       types/         — kebab-case.type.ts (T prefix)
       utils/         — kebab-case.util.ts
       nuxt/          — official Nuxt module sub-export
-    tokens/          — Tokens Studio DTCG sources (primitive + semantic + component)
-    scripts/         — build-tokens.mjs, tokens.config.mjs
+    scripts/         — guards/ (architecture guards), token-name.mjs, analysis/
     build.config.ts  — unbuild entry
   marketing/         — Nuxt 4 marketing site (landing + showcase + docs hub)
     pages/, components/, scripts/
@@ -350,8 +349,6 @@ packages/
     TU/              — Vitest unit specs
     e2e/             — Playwright e2e + a11y specs
     vitest.config.ts, playwright.config.ts, playwright.a11y.config.ts
-  figma-plugin/      — Figma DS Sync plugin (variables ⇄ Origam tokens)
-    src/, esbuild.config.mjs
 ```
 
 The root holds only:
@@ -397,7 +394,6 @@ Root scripts already delegate, so the most common entries are:
 |---|---|
 | Build the lib | `pnpm -F origam build` *(or root `pnpm run build:lib`)* |
 | Build everything | `pnpm -r build` *(or root `pnpm run build:all`)* |
-| Tokens rebuild | `pnpm -F origam tokens:build` |
 | Run stories locally | `pnpm -F @origam/stories dev` *(`http://localhost:6006`)* |
 | Run docs locally | `pnpm -F @origam/docs dev` |
 | Run marketing locally | `pnpm -F @origam/marketing dev` *(`http://localhost:3000`)* |
@@ -420,7 +416,7 @@ Root scripts already delegate, so the most common entries are:
 - `packages/ds/` follows the historical `origam` semver
   (`2.5.x → 2.6.x → 3.0.0`). It is the single npm publish.
 - `@origam/marketing`, `@origam/stories`, `@origam/docs`,
-  `@origam/tests`, `@origam/figma-plugin` are all `private: true`,
+  and `@origam/tests` are all `private: true`,
   versioned independently (`0.x.y`). They never publish to npm; tags
   reference the lib version only.
 
@@ -489,40 +485,60 @@ keeps bundles smaller, performance better, and theming free.
 
 ## Design tokens
 
-Source of truth: `packages/ds/tokens/` (Tokens Studio JSON, DTCG format).
+⛔ **There is no token build step, and no token source format.** The
+Style Dictionary v4 + Tokens Studio pipeline (`packages/ds/tokens/`,
+`scripts/build-tokens.mjs`, `scripts/tokens.config.mjs`, the `tokens:build`
+/ `tokens:watch` / `tokens:lint` scripts, the `tokens` CI job and the
+`tokens-sync` workflow) was **removed on 2026-08-31**, along with the Figma
+sync plugin. Do not reintroduce any of it without an explicit decision — a
+pipeline may be rebuilt later, once the DS is stable.
 
-Three tiers — agents must respect the boundary:
+**Source of truth is now the committed stylesheets themselves**, which are
+plain hand-editable files:
 
 ```
-primitive    →  raw values (color.neutral.500, space.4, …)        – packages/ds/tokens/primitive.json
-semantic     →  intent (color.surface.default, color.action.primary.bg)  – packages/ds/tokens/semantic/{theme}.json
-component    →  per-component refs (btn.background-color)         – packages/ds/tokens/component/{name}.json
+packages/ds/src/assets/css/tokens/primitive.css          — raw values (:root)
+packages/ds/src/assets/css/tokens/light.css              — light theme
+packages/ds/src/assets/css/tokens/dark.css               — dark theme
+packages/ds/src/assets/css/tokens/origam-utilities.css   — utility classes
+packages/ds/src/assets/scss/tokens/_*.scss               — SCSS twins of the above
+packages/ds/src/types/tokens.type.ts                     — TTokenName union
 ```
 
-Naming convention emitted in CSS (handled by Style Dictionary transform):
+Each carries a header explaining its provenance. They were last generated
+from `packages/ds/tokens/` at commit `d87842c9`; their content is byte-for-byte
+that output. **Edit them directly** — there is no regeneration step and the
+old "do not edit" rule no longer applies. The SCSS twin and the CSS file are
+identical in content, so a change to one must be mirrored in the other; the
+same goes for adding a name to `tokens.type.ts`.
 
-| Layer | Path in JSON | CSS variable |
-|---|---|---|
-| Primitive | `color.neutral.500` | `--origam-color-neutral-500` |
-| Semantic | `color.surface.default` | `--origam-color-surface-default` |
-| Component | `component.btn.background-color` | `--origam-btn---background-color` |
-| Component (state) | `component.btn.primary.background-color` | `--origam-btn--primary---background-color` |
-| Component (BEM child) | `component.card.overlay.bg` | `--origam-card__overlay---bg` |
+The CSS variable naming grammar is unchanged and still lives in
+`packages/ds/scripts/token-name.mjs`, kept as the build-time twin of
+`src/utils/Theme/token-name.util.ts` with a parity unit test
+(`packages/tests/TU/utils/Theme/token-name.util.spec.ts`) pinning the two
+together:
 
-Build:
-- `pnpm -F origam tokens:build` — one-shot rebuild of CSS + SCSS + TS types.
-- `pnpm -F origam tokens:watch` — rebuild on `packages/ds/tokens/**/*.json` change.
-- `pnpm -F origam tokens:lint` — dry-run validation.
-- Auto-prereq of the lib build.
+| Layer | CSS variable |
+|---|---|
+| Primitive | `--origam-color__neutral---500` |
+| Semantic | `--origam-color__surface---default` |
+| Component | `--origam-btn---background-color` |
+| Component (state) | `--origam-btn--primary---background-color` |
+| Component (BEM child) | `--origam-card__overlay---bg` |
+
+The `token-var-channels` guard still checks both directions — every
+`var(--origam-…)` a component reads must be declared in one of the
+stylesheets above, and every declared token should be read by someone.
 
 When migrating a component:
 1. Audit every `--origam-{cmp}---*` var the SCSS uses.
-2. Make sure `packages/ds/tokens/component/{cmp}.json` declares each (with full
-   property names, e.g. `background-color` not `bg`).
+2. Make sure each is declared in `light.css` / `dark.css` / `primitive.css`
+   (and the matching `_*.scss`), with full property names — e.g.
+   `background-color`, not `bg`.
 3. Replace any hardcoded hex/rgb in the SCSS by `var(--origam-color-…)`
    references (or `var(--origam-shadow-{rung})` for elevation).
-4. Remove the global `<style>:root{}` block — defaults now come from the
-   generated `:root, [data-theme="light"] { … }` rules.
+4. Remove the global `<style>:root{}` block — defaults come from the
+   `:root, [data-theme="light"] { … }` rules in `light.css`.
 5. Keep calc-based vars that depend on instance-level state (size variant,
    density modifier, …) inside the scoped `<style>` block.
 
@@ -539,13 +555,13 @@ Runtime helpers:
 - `<OrigamThemeProvider theme="dark">…</OrigamThemeProvider>` — sub-tree
   override (e.g. a brand-X Card inside a neutral page).
 
-To add a brand theme:
-1. Drop a `packages/ds/tokens/semantic/brand-{name}.json` overriding the semantics
-   you need.
-2. Optionally add `packages/ds/tokens/{name}/primitive-override.json` if the brand
-   needs a different primary ramp.
-3. Register the theme in `packages/ds/tokens/$themes.json`.
-4. Rebuild — `[data-theme="brand-{name}"] { … }` is auto-emitted.
+To add a brand theme, prefer the runtime route — an `IOrigamTheme` object
+registered through `createOrigam()`, props first (`components` block), CSS
+vars only for what props cannot express. See `packages/ds/src/themes/`.
+
+If a brand genuinely needs its own stylesheet, hand-write a
+`[data-theme="brand-{name}"] { … }` block: there is no longer a generator
+that emits one from JSON.
 
 ---
 
@@ -719,8 +735,8 @@ The global pre-delivery policy (TU + e2e + security) applies. Specific to
 origam:
 - Run tests on **Node 22** (`.nvmrc`); Node 18 produces unrelated
   `crypto.hash` failures.
-- `pnpm -F origam tokens:build` must succeed and not produce a token
-  resolution warning ("token collisions detected" is acceptable — caused
-  by cross-theme name reuse, expected).
+- `pnpm -F origam guards` must stay at 17/17. If a change touches the token
+  stylesheets, `token-var-channels` is the guard that will catch a variable
+  read but never declared (or the reverse).
 - `pnpm audit --prod` should be clean to ship; dev tree contains
   pre-existing histoire-alpha vulns documented as accepted risk.

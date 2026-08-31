@@ -16,9 +16,7 @@ export default typescriptEslint.config(
 			// `.claude/worktrees/<agent>/` are stale git worktree copies
 			// from earlier agent runs (`isolation: "worktree"`). They
 			// contain duplicates of files we already lint at the repo
-			// root — including the figma-plugin TSX/JSX which needs its
-			// own parser config (cf. figma-plugin/** ignore below).
-			// Linting them produces ~200 parse errors that block every
+			// root. Linting them produces ~200 parse errors that block every
 			// commit while having no semantic value (after merge the
 			// worktree dir is just leftover scaffolding).
 			'.claude/worktrees/**',
@@ -40,12 +38,6 @@ export default typescriptEslint.config(
 			// cache tree.
 			'docs/.vitepress/cache/**',
 			'docs/.vitepress/dist/**',
-			// The Figma plugin ships its own TSX/JSX UI that requires a
-			// separate parser config (it's NOT part of the published origam
-			// library and has its own lifecycle). Excluded from the lib
-			// lint to keep `package origam` cleanly typed.
-			'figma-plugin/**',
-			'packages/figma-plugin/**',
 		],
 	},
 	{

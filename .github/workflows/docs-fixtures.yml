@@ -85,11 +85,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # Generated token types (src/types/tokens.type.ts) are imported across the
-      # DS source; rebuild them so the doc extractor resolves every reference.
-      - name: Build tokens
-        run: pnpm -F origam tokens:build
-
       - name: Apply migrations
         run: pnpm -F @origam/marketing db:migrate
 
