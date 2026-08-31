@@ -61,6 +61,14 @@ export interface IChartBaseProps
      * Palette used when a series does not pin its own `color`.
      * Pass intent strings (cycled in order) or raw CSS colours.
      * Default cycles through the 8 origam intents.
+     *
+     * ⛔ #426 — has **no effect** on `OrigamChartBullet`,
+     * `OrigamChartCandlestick`, `OrigamChartHeatmap`, `OrigamChartMap`:
+     * each has its own colour model (uniform fill + range palette,
+     * binary bullish/bearish, or continuous gradient) with no
+     * per-series identity axis for a rotating palette to drive.
+     * Passing it on those four warns once in dev builds (see
+     * `useChartUnsupportedProp`) instead of silently doing nothing.
      */
     colorScheme?: Array<TIntent | string>
     /**

@@ -211,6 +211,7 @@
 
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartUnsupportedProp } from '../../composables/Chart/chart-prop-warning.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
@@ -352,6 +353,19 @@
 		const end = resolveColor(props.colorRange[1])
 		return `color-mix(in srgb, ${ end } ${ pct }%, ${ start })`
 	}
+
+	// ⛔ #426 — `colorScheme` is inherited from `IChartBaseProps` but has no
+	// effect here: choropleth colour is a CONTINUOUS gradient (`colorRange`),
+	// and flight-routes colour is a single `lineColor` overridable per route —
+	// neither mode has a per-series identity a rotating discrete palette could
+	// drive. See #426 decision: neither wiring a fake behaviour nor removing
+	// the prop — warn instead.
+	useChartUnsupportedProp(
+		'OrigamChartMap',
+		'colorScheme',
+		'colour is a continuous gradient (colorRange, choropleth mode) or a single lineColor (flight-routes mode) — a rotating discrete palette does not apply to either.',
+		() => !!props.colorScheme?.length
+	)
 
 	/*********************************************************
 	 * Choropleth data

@@ -68,6 +68,7 @@ Bands are rendered in array order. Each band covers `[previous.to, this.to]`. St
 | `rangeColors` | `Array<TIntent \| string>` | `['danger', 'warning', 'success']` | Fallback palette used when `range.color` is omitted. Cycled in array order. |
 | `orientation` | `TDirection` | `'horizontal'` | `'horizontal'` renders labels left, bars right. `'vertical'` renders labels bottom, bars upward. |
 | `barThickness` | `number` | `0.45` | Fraction of the slot height (horizontal) or slot width (vertical) used for the value bar. Range `[0, 1]`. |
+| `colorScheme` | `Array<TIntent \| string>` | `[]` | Inherited from `IChartBaseProps`. **No effect on this component** — see [Caveats](#caveats). |
 
 ### Behaviour
 
@@ -84,7 +85,9 @@ Bands are rendered in array order. Each band covers `[previous.to, this.to]`. St
 
 ### Inherited from `IChartBaseProps`
 
-`height`, `colorScheme`, `aspectRatio`, and all dimension / margin / padding / rounded / elevation / bgColor props.
+`height`, `aspectRatio`, and all dimension / margin / padding / rounded / elevation / bgColor props.
+
+`colorScheme` is also inherited but has **no effect** on this component (see [Caveats](#caveats)).
 
 ## Emits
 
@@ -154,6 +157,10 @@ const series = [{
   }]
 }]
 ```
+
+## Caveats
+
+- **`colorScheme` has no effect** (#426). It's inherited from `IChartBaseProps` and stays on the public API for consistency across chart types, but the value bar uses a single uniform fill (`barColor`) and the range bands use their own dedicated palette (`rangeColors`) — there's no per-series identity a rotating palette could drive. Passing it logs `[origam] <OrigamChartBullet> prop "colorScheme" has no effect on this component: …` once to the console in dev builds (silent in production). Neither wiring a fake behaviour nor removing the prop was on the table — see the #426 decision.
 
 ## Composable reference
 
