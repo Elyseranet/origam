@@ -440,6 +440,36 @@ Modern CSS is powerful. Use it.
 | Color blending | `color-mix(in srgb, …)` | JS color math |
 | Form controls | `accent-color` | JS-painted custom controls |
 | Smooth transitions | `view-transition-name` | JS animation libs |
+| Cascade priority | `@layer` (a later layer wins at any specificity) | specificity bumps, `!important` |
+| Custom-property semantics | `@property` (`syntax` / `inherits` / `initial-value`) | naming conventions + hope |
+| Zero-specificity defaults | `:where(…)` | `:not(#a)` and other hacks |
+| Light/dark pairs | `light-dark(l, d)` | duplicated `[data-theme]` blocks |
+| Derived colours | relative colour syntax `rgb(from … r g b / .5)` | pre-computed variants |
+| Anchored overlays | `anchor()` / `position-anchor` | JS position calculation |
+| Entry transitions | `@starting-style` (+ `overlay`, `transition-behavior`) | JS mount-then-animate |
+| Animating to `auto` | `interpolate-size` / `calc-size()` | JS measure-then-set-px |
+| Scroll-linked motion | `animation-timeline: scroll()` / `view()` | JS scroll listeners |
+| Style-conditional children | `@container style(--x: y)` | prop drilling + class toggling |
+| Style isolation | `@scope` | BEM discipline alone |
+
+⛔ **This table is a floor, not a ceiling.** The rule (user directive,
+2026-08-31) is: *use every CSS feature the target browsers actually support* —
+do not stop at what is listed here. The single criterion is **does it make the
+code simpler**, never "is it new". Two entries above exist because they answer
+open architecture problems in this repo:
+
+- **`@layer`** dissolves the "classes-first loses to Vue's scoped selector"
+  problem (#391) — a later layer beats an earlier one regardless of
+  specificity, so utilities can win without a single specificity bump.
+- **`@property` with `inherits: false`** restores the difference between *"no
+  ancestor set this"* and *"an ancestor set it to 0"*. That distinction is
+  currently lost: a token declared on `:root, [data-theme="light"]` inherits
+  onto every element, so `var(--token, fallback)` **never** reaches its
+  fallback. Verified on `--origam-btn-group---border-width`
+  (`light.css:122`) — the direct cause of the dead `border` prop on Btn.
+
+⛔ Whatever you use, **declare it in `FEATURE_QUERIES`** (see below) in the
+same delivery. Never call `CSS.supports()` from a component.
 
 Concretely, every component that previously needed JS for one of those tasks
 should:
