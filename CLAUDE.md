@@ -727,14 +727,52 @@ with **double-tiret** as the utility-root separator
    in v2.0 → v2.1 came from breaking exactly this rule when `OrigamSwitchTrack`
    was extracted.
 
-### Strategy A — classes AND styles in parallel (transition)
+### Strategy A — classes AND styles in parallel
 
-For one major cycle (v2.x), every refactored composable returns BOTH
-`*Classes` and `*Styles`. When the value is tokenised, `*Styles` is
-empty and the class does the work; when it's custom, `*Classes` is
-empty and the style does. This is intentional — it lets components
-migrate at their own pace without breaking external consumers. v3.0.0
-will retire the `*Styles` returns.
+Every refactored composable returns BOTH `*Classes` and `*Styles`. On the
+**background** channel, a tokenised value fills `*Classes` and leaves
+`*Styles` empty; a custom value does the reverse.
+
+⛔ **The foreground (`color`) channel does NOT work that way, and cannot.**
+The previous version of this section claimed *"when the value is tokenised,
+`*Styles` is empty and the class does the work"* — universally. That was
+false, and issue #514 measured why it is not merely unimplemented but
+**unreachable with the current architecture**:
+
+1. **The class and the inline declaration do not emit the same token.**
+   `.origam--color-{intent}` resolves `…--{intent}---fg` — the white-on-
+   saturated pair. `tokenForegroundForIntent()` resolves **`fgSubtle`** — the
+   intent's own hue, meant for a neutral surface. Measured in Chromium across
+   the DS's real stylesheet, **7 of 8 intents render a different colour**
+   (`primary`: `rgb(255,255,255)` vs `rgb(109,40,217)`). Only `secondary`
+   matches. They are opposite roles, not two spellings of one colour.
+2. **The utility class loses the cascade, by design.** A Vue scoped rule is
+   `.class[data-v-hash]` = specificity (0,2,0); a utility is (0,1,0). The
+   utility loses even though it is loaded later — that is specificity, not
+   order. The header of `origam-utilities.css` states the intent plainly:
+   utilities are *"intended to be loaded BEFORE component-scoped SCSS so
+   that `.origam-btn--variant-flat` can override `.origam--bg-primary`"*.
+   **73 of the 101 affected components declare a `color:` in their scoped
+   SCSS.** Only the inline declaration outranks them.
+
+So `fgDecl` is pushed into `styles` on the tokenised path **on purpose**:
+remove it and the `color` prop stops painting. Verified by applying the
+change and photographing the result — `OrigamSwitch`'s thumb turns white on
+a light track (invisible), `OrigamAlert` renders `rgb(10,10,10)` for all 8
+intents.
+
+**Blast radius, previously listed as "unknown" in the ticket: 101 of 216
+components.** `fgDecl` exists in **three copies** —
+`colorEffect.composable.ts:235` (2 consumers), `stateEffect.composable.ts:215`
+(30), `color.composable.ts:152` (74, reached via `useTextColor` /
+`useBackgroundColor` / `useBothColor`).
+
+**Consequence: the "v3.0.0 retires `*Styles`" plan does not hold for the
+foreground channel** as long as utilities sit in the weakest cascade
+position. Making the class able to win is a real option — CSS `@layer` beats
+any specificity from a later layer, and would settle #391 at the same time —
+but it changes the cascade of the entire DS and needs its own decision, not
+a drive-by edit.
 
 ---
 
