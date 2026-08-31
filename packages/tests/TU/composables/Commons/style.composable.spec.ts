@@ -276,8 +276,8 @@ describe('useStyle — uniq resolution', () => {
     it('no uniq → falls back to a generated `<name>-<uid>` id', () => {
         const api = styleHost(undefined)
 
-        expect(api.id.value).toMatch(/^origam-style-uniq-resolution-host-\d+$/)
-        expect(api.css.value).toMatch(/^#origam-style-uniq-resolution-host-\d+ \{/)
+        expect(api.id.value).toMatch(/^origam-style-uniq-resolution-host-.+$/)
+        expect(api.css.value).toMatch(/^#origam-style-uniq-resolution-host-[^\s{]+ \{/)
     })
 
     it('a plain string uniq wins over the generated id', () => {
@@ -298,7 +298,7 @@ describe('useStyle — uniq resolution', () => {
         const uniq = ref<string | undefined>(undefined)
         const api = styleHost(uniq)
 
-        expect(api.id.value).toMatch(/^origam-style-uniq-resolution-host-\d+$/)
+        expect(api.id.value).toMatch(/^origam-style-uniq-resolution-host-.+$/)
 
         uniq.value = 'late-id'
 

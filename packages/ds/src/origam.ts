@@ -29,7 +29,7 @@ import { setContrastConfig } from './directives/Contrast/contrast.directive'
 
 import type { IDefault, INuxtAwareApp, IOrigamOptions, IOrigamTheme } from './interfaces'
 import type { TIconOptions, TModeResolved } from './types'
-import { applyThemes, getUid, installedThemesFromList, mergeDeep } from './utils'
+import { applyThemes, installedThemesFromList, mergeDeep } from './utils'
 
 import { origamTheme } from './themes/origam.theme'
 
@@ -163,7 +163,22 @@ export function createOrigam (origam: IOrigamOptions = {}) {
                 }
             }
 
-            getUid.reset()
+            /*********************************************************
+             * ⛔ No `getUid.reset()` here — do not reintroduce it
+             *
+             * @description
+             * It used to sit on this line, and it was the direct cause of the
+             * cross-request id bleed documented in
+             * `utils/Commons/getCurrentInstance.util.ts`.
+             * @description
+             * Nuxt's server plugin calls `createOrigam()` + `app.use()` ONCE
+             * PER REQUEST, so this line rewound module-global state in the
+             * middle of a DIFFERENT request's render.
+             * @description
+             * `getUid()` now derives its value from the component instance
+             * (Vue's `useId()`), which is already scoped per app: there is
+             * nothing left to reset, and nothing one request can do to another.
+             ********************************************************/
 
             if (typeof __VUE_OPTIONS_API__ !== 'boolean' || __VUE_OPTIONS_API__) {
                 app.mixin({

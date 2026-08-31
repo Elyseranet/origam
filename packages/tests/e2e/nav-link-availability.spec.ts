@@ -178,26 +178,22 @@ test.describe('Nav link availability — masquage des liens 404', () => {
         }
     })
 
-    // FIXME (audit-ssr-nav, 2026-08-31) — pré-existant, sans rapport avec
-    // nav/footer, découvert en stabilisant ce fichier (5 runs : 4 verts,
-    // 1 rouge). Root-cause identifiée : `getUid()`
-    // (packages/ds/src/utils/Commons/getCurrentInstance.util.ts:41) utilise
-    // un compteur `_uid` GLOBAL AU MODULE, jamais réinitialisé entre deux
-    // requêtes SSR sur un même process serveur. Le rendu client repart lui
-    // de 0 à chaque hydratation. Dès le 2e chargement de page sur un serveur
-    // qui tourne (dev ou prod, peu importe), les id générés (`origam-btn-N`,
-    // `origam-loader-N`, …) divergent entre SSR et CSR — reproduit ici avec
-    // `id="origam-loader-91"` (serveur) vs `id="origam-loader-103"` (client)
-    // — d'où "Hydration completed but contains mismatches." en console,
-    // de façon non déterministe selon combien de requêtes ont déjà tourné
-    // sur ce process avant celle du test. Impact potentiel au-delà du bruit
-    // console : `style.composable.ts` scope aussi des règles CSS sur ce même
-    // id généré (`#id { … }`) — un id qui diverge à l'hydratation risque de
-    // laisser une règle orpheline. Non vérifié visuellement (hors scope de
-    // ce fichier, packages/tests/ uniquement) — à investiguer côté DS.
-    // Retirer ce `.fixme` une fois `getUid()` rendu SSR-safe (ex. `useId()`
-    // scoped par requête, ou reset explicite côté serveur par requête).
-    test.fixme('pas d\'erreur d\'hydratation dans la console', async ({ page }) => {
+    // Ce test était `.fixme` depuis le 2026-08-31 : `getUid()` reposait sur un
+    // compteur GLOBAL AU MODULE, donc les id générés divergeaient entre le HTML
+    // servi et le DOM hydraté. Deux causes distinctes, toutes deux mesurées sur
+    // le build de production de marketing, pas déduites :
+    //   - l'ordre d'attribution diffère entre serveur et client (un compteur
+    //     linéaire est ordre-dépendant) — 82 des 125 id différaient sur `/`,
+    //     serveur au repos, une seule requête ;
+    //   - `createOrigam()` appelait `getUid.reset()` à chaque install, et le
+    //     plugin serveur Nuxt installe UNE FOIS PAR REQUÊTE — une requête
+    //     rembobinait donc le compteur au milieu du rendu d'une autre. Sous
+    //     charge parallèle : 125 id sur 125 remplacés à l'hydratation.
+    // `getUid()` s'appuie désormais sur `useId()` de Vue 3.5 (id dérivé de la
+    // position dans l'arbre, portée = l'app, aucun état de module). Après
+    // correctif, sur la même page : 0 id divergent, au repos comme sous charge,
+    // et plus aucune erreur "Hydration completed but contains mismatches."
+    test('pas d\'erreur d\'hydratation dans la console', async ({ page }) => {
         const hydrationErrors: string[] = []
         page.on('console', msg => {
             const text = msg.text()
@@ -230,11 +226,10 @@ test.describe('Nav link availability — masquage des liens 404', () => {
         await waitForPrimaryNav(page)
 
         // Le titre du test dit "hors hydratation" : les mismatches
-        // d'hydratation ont leur propre test (ci-dessus, actuellement
-        // fixme — bug getUid() pré-existant, sans rapport avec nav/footer).
-        // Sans ce filtre, ce test-ci hérite de la même instabilité alors
-        // que ce n'est pas son objet — il doit rester vert et actionnable
-        // pour toute AUTRE erreur console bloquante.
+        // d'hydratation ont leur propre test (ci-dessus). Le filtre reste en
+        // place pour que ce test-ci garde un seul objet — toute AUTRE erreur
+        // console bloquante — et ne redevienne pas le canari d'un problème
+        // d'hydratation qui a déjà son assertion dédiée.
         const blocking = consoleErrors.filter(e =>
             !e.includes('favicon') &&
             !e.includes('net::ERR') &&

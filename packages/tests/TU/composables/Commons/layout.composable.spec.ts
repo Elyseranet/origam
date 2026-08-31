@@ -133,7 +133,7 @@ describe('useCreateLayout — API shape', () => {
 
     it('layoutId defaults to "layout-{uid}"', () => {
         const { api } = mountLayout()
-        expect(api().layoutId.value).toMatch(/^layout-\d+$/)
+        expect(api().layoutId.value).toMatch(/^layout-.+$/)
     })
 
     it('custom id prop is used as layoutId', () => {
