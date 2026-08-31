@@ -154,9 +154,9 @@
     "vite": "^8.2.1",
     "vite-plugin-commonjs": "^0.10.4",
     "vite-tsconfig-paths": "^6.1.1",
-    "vue": "3.5.39",
-    "vue-router": "^4.6.4",
-    "vue-sfc-transformer": "^0.1.16",
+    "vue": "3.5.42",
+    "vue-router": "^5.3.0",
+    "vue-sfc-transformer": "^0.2.5",
     "vue-tsc": "^3.3.6"
   }
 }
