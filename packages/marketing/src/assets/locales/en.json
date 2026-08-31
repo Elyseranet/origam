@@ -738,7 +738,6 @@
             "discord": "Discord",
             "discussions": "Discussions",
             "twitter": "Twitter",
-            "rss": "RSS",
             "support": "Support origam"
         },
         "legal": {
@@ -1056,10 +1055,8 @@
     },
     "nav": {
         "components": "Components",
-        "playground": "Playground",
         "docs": "Docs",
         "stories": "Stories",
-        "blog": "Blog",
         "changelog": "Changelog",
         "github": "GitHub",
         "why_origam": "Why origam?",
@@ -1081,7 +1078,8 @@
         },
         "a11y": {
             "open_section": "Open {section} menu",
-            "nav_primary": "Primary navigation"
+            "nav_primary": "Primary navigation",
+            "sitemap": "Site map"
         }
     },
     "roadmap": {

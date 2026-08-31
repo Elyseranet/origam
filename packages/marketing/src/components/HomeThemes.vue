@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue'
 import { useTheme } from 'origam/composables'
 import { useT } from '~/composables/useT'
-import { useLinkAvailability } from '~/composables/useLinkAvailability'
 import {
     THEMES_TOOLING_TEXT,
     THEME_CHIPS,
@@ -12,10 +10,6 @@ import {
 
 const { t } = useT()
 const { theme, setTheme } = useTheme()
-
-const { availability } = useLinkAvailability([HOME_THEMES_BUILDER_HREF])
-
-const showBuilderCta = computed(() => availability[HOME_THEMES_BUILDER_HREF] === true)
 </script>
 
 <template>
@@ -88,7 +82,6 @@ const showBuilderCta = computed(() => availability[HOME_THEMES_BUILDER_HREF] ===
                 </p>
 
                 <nav
-                    v-if="showBuilderCta"
                     class="home-themes__actions"
                     :aria-label="t('home.themes.actions_label', 'Try the theme builder')"
                 >

@@ -78,6 +78,18 @@ export default defineNuxtConfig({
         enabled: false
     },
 
+    // The /admin backoffice is not public-facing. It is already gated (client
+    // middleware on the pages, server middleware on the API), so listing it is
+    // not a vulnerability — but an administration surface has no business in a
+    // public sitemap, and advertising it only invites probing.
+    sitemap: {
+        exclude: ['/admin', '/admin/**']
+    },
+
+    robots: {
+        disallow: ['/admin']
+    },
+
     components: [
         { path: '~/components', pathPrefix: false }
     ],
