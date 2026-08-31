@@ -24,7 +24,13 @@ const HISTOIRE_PORT = process.env.E2E_HISTOIRE_PORT ?? '6006'
  */
 export default defineConfig({
     testDir: './a11y',
-    testIgnore: scratchDirPatterns('./a11y'),
+    // 'marketing-a11y.spec.ts' targets the Nuxt marketing app (:3000) via
+    // `playwright.a11y.marketing.config.ts` and its own `MARKETING_BASE_URL`.
+    // It lives in the same `./a11y` directory, so without this it would also
+    // run here against Histoire's baseURL, where its DOM never exists — the
+    // exact harness-scoping bug `e2e/_support/marketing-specs.const.ts`
+    // documents for the e2e side.
+    testIgnore: [...scratchDirPatterns('./a11y'), '**/marketing-a11y.spec.ts'],
     outputDir: './a11y/.results',
 
     // Same `reuseExistingServer` exposure as the e2e config: a foreign or
