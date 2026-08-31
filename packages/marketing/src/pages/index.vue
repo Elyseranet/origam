@@ -43,11 +43,6 @@ useSeoMeta({
             data-cy="section-themes"
         />
 
-        <home-figma
-            id="figma"
-            data-cy="section-figma"
-        />
-
         <home-cta
             id="cta"
             data-cy="section-cta"

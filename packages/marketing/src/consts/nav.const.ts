@@ -26,8 +26,7 @@ export const NAV_SECTIONS: INavSection[] = [
         titleFallback: 'Getting started',
         items: [
             { i18nKey: 'nav.installation', i18nFallback: 'Installation', href: '/installation' },
-            { i18nKey: 'nav.wireframe', i18nFallback: 'Wireframe', href: '/wireframe' },
-            { i18nKey: 'nav.figma_plugin', i18nFallback: 'Figma plugin', href: '/figma-plugin' }
+            { i18nKey: 'nav.wireframe', i18nFallback: 'Wireframe', href: '/wireframe' }
         ]
     },
     {
@@ -86,7 +85,6 @@ export const FOOTER_COLUMNS: IFooterColumn[] = [
             { i18nKey: 'footer.resources.discussions', i18nFallback: 'Discussions', href: `${MARKETING_DEFAULTS.githubRepo}/discussions`, external: true },
             { i18nKey: 'footer.resources.twitter', i18nFallback: 'Twitter', href: TWITTER_LINK, external: true },
             { i18nKey: 'footer.resources.rss', i18nFallback: 'RSS', href: RSS_LINK },
-            { i18nKey: 'footer.resources.figma_plugin', i18nFallback: 'Figma plugin', href: '/figma-plugin' },
             { i18nKey: 'footer.resources.support', i18nFallback: 'Support origam', href: '/support' }
         ]
     },

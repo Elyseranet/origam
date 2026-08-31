@@ -16,7 +16,7 @@
 
 import { expect, test, type Page } from '@playwright/test'
 
-const DEAD_HREFS = ['/stories', '/docs', '/playground', '/blog']
+const DEAD_HREFS = ['/stories', '/docs', '/playground', '/blog', '/figma-plugin']
 
 async function waitForNavReady (page: Page): Promise<void> {
     await page.locator('[data-nav-ready="true"]').waitFor({ state: 'attached', timeout: 15_000 })
