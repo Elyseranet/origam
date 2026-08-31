@@ -702,39 +702,36 @@
 			--origam-btn---border-left-width: thin;
 		}
 
-		// #391 (user directive) — "de base on utilise la variable group,
-		// et si elle n'existe pas, on prend la variable btn", implemented
-		// via PARENT DETECTION (a plain CSS ancestor combinator), not a
-		// `var()` fallback chain. A fallback chain can't express this:
-		// `--origam-btn-group---border-width` is registered GLOBALLY on
-		// `:root`/`[data-theme]` by the generated tokens
-		// (`src/assets/css/tokens/light.css` / `dark.css`, from
-		// `tokens/component/btn-group.json`) — it is therefore inherited
-		// on EVERY element, standalone or not, always "defined" (`0` at
-		// rest), so `var(--origam-btn-group---border-width,
-		// var(--origam-btn---border-width))` would never reach its second
-		// branch — same class of bug as the one this ticket fixes, see the
-		// #391/#530 root-vs-token audit under `docs/mesures/`. Only a real
-		// `.origam-btn-group` ancestor makes THIS selector match, so the
-		// base rule above (own var, no group reference) is what a
-		// standalone `<origam-btn>` uses — this block only ever applies to
-		// a Btn actually nested in a group.
+		// #391 — there is DELIBERATELY no `.origam-btn-group &` border rule
+		// here, and it must not be reintroduced without reading this first.
 		//
-		// Currently a no-op in a REAL `<origam-btn-group>`: the group's
-		// own `:deep(.origam-btn) { border-width: 0 !important; … }` (see
-		// OrigamBtnGroup.vue) still wins by `!important` — intentional,
-		// documented there ("reads as ONE button with internal
-		// separators"). This rule exists so the variable graph is correct
-		// should that override ever be relaxed; it costs nothing today.
-		// Vue's `scoped` attribute stamps only the RIGHTMOST compound
-		// selector (`.origam-btn` here), so `.origam-btn-group` matches
-		// any ancestor carrying that class regardless of which
-		// component's `<style scoped>` block this rule lives in.
-		.origam-btn-group & {
-			border-color: var(--origam-btn-group---border-color, var(--origam-btn---border-color, currentColor));
-			border-style: var(--origam-btn-group---border-style, var(--origam-btn---border-style, solid));
-			border-width: var(--origam-btn-group---border-width, var(--origam-btn---border-width, 0));
-		}
+		// A group-aware rule was written and removed. It could not work,
+		// for two independent reasons:
+		//
+		// 1. `OrigamBtnGroup.vue` already paints the group's border and
+		//    zeroes its children with `border-width: 0 !important` — so a
+		//    non-important rule here loses, always. That override is
+		//    intentional and documented there ("reads as ONE button with
+		//    internal separators").
+		// 2. Its body would have been
+		//    `var(--origam-btn-group---border-width, var(--origam-btn---border-width))`,
+		//    which is the very dead-fallback this ticket exists to fix.
+		//    `--origam-btn-group---border-width` is declared GLOBALLY on
+		//    `:root` / `[data-theme]` (`assets/css/tokens/light.css`), so it
+		//    is inherited by every element and ALWAYS defined — at `0`. The
+		//    second branch is unreachable. Such a rule would therefore not
+		//    be merely inert: the day someone relaxes the `!important` above
+		//    as a cleanup, it would silently force the border back to `0`
+		//    and reopen this exact bug somewhere new.
+		//
+		// The base rule above reads the BUTTON's own variables and nothing
+		// else. That is what makes `&--border` visible, and it is enough.
+		// Should group-over-button precedence ever be genuinely wanted, the
+		// lever is `@property { inherits: false }` on the group variable —
+		// which restores the difference between "no ancestor set this" and
+		// "an ancestor set it to 0" — plus removing the `!important`. That
+		// changes the rendering of every button group and needs its own
+		// decision.
 
 		&--absolute {
 			--origam-btn---position: absolute;
