@@ -724,59 +724,6 @@
             "enum": "enum"
         }
     },
-    "figma_plugin": {
-        "meta": {
-            "title": "Figma plugin · origam design system",
-            "description": "Sync origam design tokens and components into Figma. Install the Origam DS Sync plugin via its manifest and keep your Figma file in sync with the token layer."
-        },
-        "hero": {
-            "badge": "Origam DS Sync",
-            "title_line1": "Figma meets",
-            "title_line2": "origam tokens.",
-            "subtitle": "Origam DS Sync is a Figma plugin that generates 14 ComponentSets bound to your design tokens, and exports them back to the repo as Tokens Studio JSON or SCSS — keeping designers and developers in perfect sync.",
-            "actions_label": "Get the plugin",
-            "cta_download": "Download plugin",
-            "cta_github": "View on GitHub"
-        },
-        "install": {
-            "eyebrow": "SETUP",
-            "title_line1": "Import via",
-            "title_line2": "manifest.",
-            "subtitle": "Origam DS Sync is a development plugin — it is not published to the Figma Community. You install it locally by importing its manifest.json in Figma desktop.",
-            "desktop_note": "Figma desktop app required — the browser version cannot load local manifests.",
-            "steps_label": "Installation steps",
-            "steps": {
-                "download": {
-                    "title": "1. Download the plugin",
-                    "description": "Download the zip archive containing the plugin manifest and built artefacts (dist/code.js + dist/ui.html).",
-                    "btn": "origam-figma-plugin.zip"
-                },
-                "unzip": {
-                    "title": "2. Unzip the archive",
-                    "description": "Extract the zip to a permanent location on your machine. Figma reads the manifest from disk — do not move the folder after importing."
-                },
-                "menu": {
-                    "title": "3. Open Figma desktop → Plugins → Development",
-                    "description": "Open any Figma file in the desktop app. In the top menu, go to Plugins → Development → Import plugin from manifest…"
-                },
-                "manifest": {
-                    "title": "4. Select manifest.json",
-                    "description": "In the file picker that opens, navigate to the unzipped folder and select manifest.json. Figma registers the plugin immediately."
-                },
-                "run": {
-                    "title": "5. Run Origam DS Sync",
-                    "description": "Go to Plugins → Development → Origam DS Sync. The plugin opens with three tabs: Generate (create ComponentSets), Export (Tokens Studio JSON or SCSS), and Sync (v2 placeholder)."
-                }
-            }
-        },
-        "cta": {
-            "title": "Ready to sync?",
-            "description": "Download the plugin, explore the source, or browse the origam component catalogue to see what gets generated.",
-            "actions_label": "Get started with the Figma plugin",
-            "cta_download": "Download plugin",
-            "cta_components": "Browse components"
-        }
-    },
     "footer": {
         "tagline": "The Vue 3 design system that just works.",
         "product": {
@@ -792,7 +739,6 @@
             "discussions": "Discussions",
             "twitter": "Twitter",
             "rss": "RSS",
-            "figma_plugin": "Figma plugin",
             "support": "Support origam"
         },
         "legal": {
@@ -952,20 +898,6 @@
             "preview_button": "Button",
             "actions_label": "Try the theme builder",
             "cta_builder": "Try the theme builder"
-        },
-        "figma": {
-            "eyebrow": "DESIGN TOOLING",
-            "title_line1": "Design in Figma.",
-            "title_line2": "Ship the same tokens.",
-            "subtitle": "Origam DS Sync is a free Figma plugin that turns your design tokens into real Figma components, and exports Figma Variables back out in a format origam already understands.",
-            "highlight_generate_title": "Generate components",
-            "highlight_generate_description": "14 production-ready ComponentSets, bound to your design tokens, built directly in your Figma file.",
-            "highlight_export_title": "Export tokens",
-            "highlight_export_description": "Figma Variables export back out as Tokens Studio JSON or origam SCSS — ready to drop into the repo.",
-            "mapping_label": "token.json ⇄ Figma Variable",
-            "actions_label": "Get the Figma plugin",
-            "cta_explore": "Explore the plugin",
-            "cta_download": "Download plugin"
         },
         "cta": {
             "title": "Ready to ship faster?",
@@ -1136,7 +1068,6 @@
         "wireframe": "Wireframe",
         "directives": "Directives",
         "theming": "Theming",
-        "figma_plugin": "Figma plugin",
         "composables": "Composables",
         "types": "Types",
         "enums": "Enums",
