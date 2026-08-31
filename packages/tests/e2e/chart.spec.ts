@@ -40,11 +40,18 @@ const openVariant = async (page: Page, title: string) => {
 
 test.describe('OrigamChart — Default (root + ARIA)', () => {
     test('renders the figure root with the expected aria-label', async ({ page }) => {
+        // #426 migrated the chart root from `<div role="figure">` to a native
+        // `<figure>` element across the whole Chart family (20 components) —
+        // `<figure>` already carries the "figure" accessible role implicitly
+        // (HTML-AAM), so the explicit `role="figure"` attribute was correctly
+        // DROPPED rather than kept redundant (see project rule: "ARIA en
+        // complement, pas en remplacement"). Assert the native tag instead of
+        // a DOM attribute that is intentionally no longer present.
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
         const host = sandbox.locator('[data-cy~="origam-chart--line"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
-        await expect(host).toHaveAttribute('role', 'figure')
+        expect(await host.evaluate(el => el.tagName.toLowerCase())).toBe('figure')
         await expect(host).toHaveAttribute('aria-label', /sales/i)
     })
 

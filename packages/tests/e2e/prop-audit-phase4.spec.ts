@@ -160,19 +160,25 @@ test.describe('DOM audit — OrigamCard', () => {
         )
     })
 
-    test('the inline border-radius companion is load-bearing, not redundant with the utility class', async ({ page }) => {
-        // Pins the measurement that justified raising the cap above, so the
-        // justification cannot rot silently. Suppressing ONLY the inline
-        // `border-radius` (leaving `origam--rounded-lg` in place) must
-        // collapse the computed radius to 0px — that is the proof the class
-        // alone loses the cascade against Card's scoped logical-corner
-        // longhands.
+    test('the inline border-radius companion is redundant with the utility class for Card', async ({ page }) => {
+        // Re-measured 2026-08-31 (chromium, live DOM, not jsdom — getComputedStyle
+        // under jsdom never resolves var(), see #398). The cascade this test
+        // used to pin has changed FOR CARD SPECIFICALLY: suppressing ONLY the
+        // inline `border-radius` (leaving `origam--rounded-lg` in place) no
+        // longer collapses the computed radius to 0px — it stays 12px, meaning
+        // `.origam--rounded-lg` now wins the cascade on its own for Card.
+        // `--origam-card---transition-property` is `box-shadow, opacity,
+        // background` (no radius channel), so this is not a transition-settle
+        // artifact — confirmed with the same result after an extra 500ms wait.
         //
-        // If this test ever fails with radiusWithoutCompanion === '12px',
-        // that is GOOD NEWS, not a regression: it means the cascade got
-        // fixed (utility class promoted, or Card's scoped longhands
-        // removed) and `useRounded`'s companion emission can finally be
-        // retired — along with the cap of 3 above, back down to 2.
+        // The comment this replaced predicted exactly this outcome and called
+        // it "good news, not a regression." It is NOT, however, blanket
+        // permission to retire `useRounded`'s inline-companion emission
+        // globally: the same pinned measurement table found the companion
+        // REQUIRED for `table` and `expansion-panel` (8px vs 4px without it).
+        // Only Card was re-verified here — table/expansion-panel were not
+        // re-measured, so the composable-level emission stays as-is and the
+        // cap of 3 above is left untouched pending that separate check.
         const sb = await gotoVariant(page, STORIES.card, 'Design')
         const card = sb.locator('.origam-card').first()
         await expect(card).toBeVisible({ timeout: 5000 })
@@ -186,7 +192,7 @@ test.describe('DOM audit — OrigamCard', () => {
         })
 
         expect(measured.withCompanion, 'radius with the companion').not.toBe('0px')
-        expect(measured.withoutCompanion, 'radius without the companion').toBe('0px')
+        expect(measured.withoutCompanion, 'radius without the companion (now redundant for Card)').toBe('12px')
     })
 })
 

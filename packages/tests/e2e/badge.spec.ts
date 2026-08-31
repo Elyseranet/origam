@@ -193,17 +193,29 @@ test.describe('OrigamBadge', () => {
         test('SCSS --dot: injecting the class sets pill height to 9px', async ({ page }) => {
             // Verifies the SCSS --dot override compiles correctly.
             // The CSS var --origam-badge__badge---height is set to 9px inside &--dot.
+            //
+            // `.origam-badge__badge` carries `transition-property: all` (225ms,
+            // see packages/ds/tokens/component/badge.json). Reading
+            // getComputedStyle() in the SAME tick as the classList.add() below
+            // captures the pre-transition value (20px) — a real, reproducible
+            // browser behaviour (confirmed live: querying the CSS custom
+            // property itself already resolves to 9px at that instant, but the
+            // transitioned `height` property does not until the transition
+            // settles). Splitting the mutation and the read across a wait for
+            // the transition duration observes the settled end-state instead.
             await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
             const pill = root.locator('.origam-badge__badge').first()
             await expect(pill).toBeVisible({ timeout: 5000 })
-            const height = await pill.evaluate(el => {
+            await pill.evaluate(el => {
                 el.closest('.origam-badge')?.classList.add('origam-badge--dot')
-                return getComputedStyle(el).height
             })
-            expect(height, 'dot pill height must be 9px').toBe('9px')
+            await expect(async () => {
+                const height = await pill.evaluate(el => getComputedStyle(el).height)
+                expect(height, 'dot pill height must be 9px').toBe('9px')
+            }).toPass({ timeout: 1000 })
         })
 
         test('SCSS --floating: adding the class is accepted without error', async ({ page }) => {
@@ -445,14 +457,20 @@ test.describe('OrigamBadge', () => {
 
     test.describe('Rounded SCSS rules', () => {
         test('--rounded-shaped: TL+BR rounded, TR+BL = 0 (pill)', async ({ page }) => {
+            // Same transition-settle caveat as the --dot test above:
+            // `.origam-badge__badge` has `transition-property: all` (225ms), so
+            // the class injection and the computed-style read are split across
+            // a wait for the transition to reach its end-state.
             await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
             const pill = root.locator('.origam-badge__badge').first()
             await expect(pill).toBeVisible({ timeout: 5000 })
-            const radii = await pill.evaluate(el => {
+            await pill.evaluate(el => {
                 el.classList.add('origam-badge--rounded-shaped')
+            })
+            const readRadii = () => pill.evaluate(el => {
                 const cs = getComputedStyle(el)
                 return {
                     tl: cs.borderTopLeftRadius,
@@ -461,22 +479,32 @@ test.describe('OrigamBadge', () => {
                     bl: cs.borderBottomLeftRadius
                 }
             })
+            await expect(async () => {
+                const radii = await readRadii()
+                expect(radii.tr, 'top-right should be 0').toBe('0px')
+                expect(radii.bl, 'bottom-left should be 0').toBe('0px')
+            }).toPass({ timeout: 1000 })
+            const radii = await readRadii()
             expect(radii.tl, 'top-left should be rounded').not.toBe('0px')
             expect(radii.br, 'bottom-right should be rounded').not.toBe('0px')
-            expect(radii.tr, 'top-right should be 0').toBe('0px')
-            expect(radii.bl, 'bottom-left should be 0').toBe('0px')
             expect(radii.tl).toBe(radii.br)
         })
 
         test('--rounded-shaped-invert: TR+BL rounded, TL+BR = 0 (pill)', async ({ page }) => {
+            // Same transition-settle caveat as the --dot test above:
+            // `.origam-badge__badge` has `transition-property: all` (225ms), so
+            // the class injection and the computed-style read are split across
+            // a wait for the transition to reach its end-state.
             await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-badge').first()
             await expect(root).toBeVisible({ timeout: 30000 })
             const pill = root.locator('.origam-badge__badge').first()
             await expect(pill).toBeVisible({ timeout: 5000 })
-            const radii = await pill.evaluate(el => {
+            await pill.evaluate(el => {
                 el.classList.add('origam-badge--rounded-shaped-invert')
+            })
+            const readRadii = () => pill.evaluate(el => {
                 const cs = getComputedStyle(el)
                 return {
                     tl: cs.borderTopLeftRadius,
@@ -485,10 +513,14 @@ test.describe('OrigamBadge', () => {
                     bl: cs.borderBottomLeftRadius
                 }
             })
+            await expect(async () => {
+                const radii = await readRadii()
+                expect(radii.tl, 'top-left should be 0').toBe('0px')
+                expect(radii.br, 'bottom-right should be 0').toBe('0px')
+            }).toPass({ timeout: 1000 })
+            const radii = await readRadii()
             expect(radii.tr, 'top-right should be rounded').not.toBe('0px')
             expect(radii.bl, 'bottom-left should be rounded').not.toBe('0px')
-            expect(radii.tl, 'top-left should be 0').toBe('0px')
-            expect(radii.br, 'bottom-right should be 0').toBe('0px')
             expect(radii.tr).toBe(radii.bl)
         })
     })

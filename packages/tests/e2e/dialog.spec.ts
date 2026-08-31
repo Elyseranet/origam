@@ -471,16 +471,19 @@ test.describe('OrigamDialog', () => {
 		})
 
 		/**
-		 * BUG DS — OrigamCard ne route pas le slot #header-subtitle.
+		 * Ex-BUG DS (#412) — OrigamCard route maintenant correctement le slot
+		 * #header-subtitle.
 		 *
-		 * Même problème que #header-content : OrigamDialog passe le slot à
-		 * OrigamCard mais OrigamCard ignore le routage. Le texte
-		 * "Custom subtitle slot" n'apparait pas dans le rendu — seul le titre
-		 * de la card ("With subtitle") est visible.
-		 *
-		 * Ticket de remédiation : corriger `OrigamCard` pour router ce slot.
+		 * Ce test etait un `test.fail()` documentant que OrigamCard ignorait
+		 * le routage de ce slot. Constate en reproduisant : le fix #412 a
+		 * corrige le mapping dash -> dot (`#header-subtitle` -> `#header.subtitle`)
+		 * cote OrigamDialog, et `hasHeader`/`hasSubtitle` cote OrigamCard tiennent
+		 * compte de `slots['header.subtitle']` (title="With subtitle" pose de
+		 * toute facon `hasHeader` a true). Le slot rend bien "Custom subtitle
+		 * slot" — `test.fail()` etait devenu un faux rouge (« Expected to fail,
+		 * but passed »). Repasse en test normal ; non-regression sur le routage.
 		 */
-		test.fail('le slot #header-subtitle rend du contenu dans la zone sous-titre [DS BUG - OrigamCard ne route pas #header-subtitle]', async ({ page }) => {
+		test('le slot #header-subtitle rend du contenu dans la zone sous-titre', async ({ page }) => {
 			await page.goto(variantUrl(14), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
@@ -502,21 +505,19 @@ test.describe('OrigamDialog', () => {
 		})
 
 		/**
-		 * BUG DS — OrigamCard ne route pas le slot #header-title.
+		 * Ex-BUG DS (#412) — OrigamCard route maintenant correctement le slot
+		 * #header-title.
 		 *
-		 * OrigamDialog définit le slot `header-title` (lines 69-77 de
-		 * OrigamDialog.vue) avec un `v-if="slots['header-title']"` conditionnel
-		 * et le passe à OrigamCard. Cependant OrigamCard ne possède pas de
-		 * `<template #header-title>` de routage — le markup riche
-		 * `<strong>Custom title slot</strong>` n'est pas rendu.
-		 * Le `.origam-overlay__content` contient uniquement `"Content here."`.
-		 *
-		 * Note : ce slot est nécessaire pour remplacer le texte du titre par du
-		 * markup arbitraire (liens, icônes inlines, etc.).
-		 *
-		 * Ticket de remédiation : corriger `OrigamCard` pour router #header-title.
+		 * Ce test etait un `test.fail()` documentant que OrigamCard ignorait
+		 * le routage de ce slot. Constate en reproduisant : le fix #412 a
+		 * corrige le mapping dash -> dot (`#header-title` -> `#header.title`)
+		 * cote OrigamDialog, et `hasTitle`/`hasHeader` cote OrigamCard voient
+		 * `slots['header.title']` meme sans prop `title`. Le markup riche
+		 * `<strong>Custom title slot</strong>` rend bien — `test.fail()` etait
+		 * devenu un faux rouge (« Expected to fail, but passed »). Repasse en
+		 * test normal ; non-regression sur le routage.
 		 */
-		test.fail('le slot #header-title rend du markup riche dans le titre [DS BUG - OrigamCard ne route pas #header-title]', async ({ page }) => {
+		test('le slot #header-title rend du markup riche dans le titre', async ({ page }) => {
 			await page.goto(variantUrl(15), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
