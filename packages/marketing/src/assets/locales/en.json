@@ -857,7 +857,9 @@
             },
             "switch": {
                 "title": "Switch",
-                "caption": "inset · flat · default"
+                "caption": "inset · flat · default",
+                "state_off": "Off",
+                "state_on": "On"
             },
             "chips": {
                 "title": "Chips",

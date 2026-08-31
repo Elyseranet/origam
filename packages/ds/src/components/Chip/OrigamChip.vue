@@ -1,6 +1,6 @@
 <template>
 	<component
-			:is="link.tag.value"
+			:is="rootTag"
 			:id="id"
 			v-ripple="rippleProps"
 			v-contrast
@@ -10,6 +10,7 @@
 			:href="link.href.value"
 			:style="chipStyles"
 			:tabindex="isClickable ? 0 : undefined"
+			:type="typeAttr"
 			@click="handleClick"
 			@keydown="handleKeydown"
 	>
@@ -275,6 +276,48 @@
 	const isPrependZoneFocusable = computed(() => isPrependClickable.value && !link.isLink.value)
 	const isAppendZoneFocusable = computed(() => isAppendClickable.value && !link.isLink.value)
 
+	/*********************************************************
+	 * rootTag / typeAttr — issue #530 (a11y sweep)
+	 *
+	 * @description
+	 * The root used to render whatever `useLink` resolved — `<a>` when
+	 * linked, `<span>` (the `tag` default) otherwise — even when the chip
+	 * was clickable. A clickable, non-link `<span>` carries no implicit
+	 * role at all: nothing is announced to assistive tech beyond a bare
+	 * tab stop, and any `type="button"` attribute a consumer forwarded
+	 * (expecting button semantics) landed on the `<span>` as an INVALID
+	 * attribute (axe: `aria-allowed-attr`, `type` is not allowed outside
+	 * `<button>`/`<input>`/…).
+	 *
+	 * Root cause fix, not an attribute strip: when the chip is purely
+	 * clickable — not a link, no close button, no focusable prepend/append
+	 * zone — swap the DEFAULT `span` for a real `<button>`. `<button>` is
+	 * *phrasing content that forbids interactive descendants* (no nested
+	 * `<a>`/`<button>`/`tabindex` element), so the swap only happens when
+	 * none of those descendants can exist: `hasClose` renders an
+	 * `<origam-btn>` (a real `<button>`) inside, and a focusable
+	 * prepend/append zone renders `tabindex="0"` — both would make a
+	 * `<button>` root invalid content. An explicit non-default `tag` (e.g.
+	 * a chip deliberately rendered as `li`) is left untouched — the
+	 * upgrade only applies to the unstyled `span` default, never overrides
+	 * a consumer's own semantic choice.
+	 *
+	 * @description
+	 * `typeAttr` is hardcoded, not read off a prop — mirrors `OrigamBtn`'s
+	 * own `typeAttr`: without it, a chip-as-button inside a `<form>` would
+	 * default to `type="submit"` and submit the form on click.
+	 ********************************************************/
+	const isButtonSafe = computed(() => {
+		return props.tag === 'span' &&
+			isClickable.value &&
+			!link.isLink.value &&
+			!hasClose.value &&
+			!isPrependZoneFocusable.value &&
+			!isAppendZoneFocusable.value
+	})
+	const rootTag = computed(() => (isButtonSafe.value ? 'button' : link.tag.value))
+	const typeAttr = computed(() => (rootTag.value === 'button' ? 'button' : undefined))
+
 	const isLink = computed(() => {
 		return props.link && link.isLink.value
 	})
@@ -344,9 +387,17 @@
 	 * form Vue auto-invokes with `$event`) — the guard moves in here,
 	 * where wrapping it in `&&`/`?:` again can't silently undo the fix
 	 * (see issue #439 / #397).
+	 *
+	 * @description
+	 * #530 — also bails when `rootTag` resolved to a real `<button>`: it
+	 * already activates on Enter/Space natively and fires its own `click`
+	 * event, so re-firing `onClick` here would double-invoke every handler
+	 * downstream. Verified empirically against a real browser (Chromium):
+	 * pressing Enter then Space on the button-tagged "Events - click" chip
+	 * produced exactly one `click` per key, not two.
 	 ********************************************************/
 	const handleKeydown = (e: KeyboardEvent) => {
-		if (!isClickable.value || isLink.value) return
+		if (!isClickable.value || isLink.value || rootTag.value === 'button') return
 
 		if (e.key === KEYBOARD_VALUES.ENTER || e.key === ' ') {
 			e.preventDefault()
@@ -444,6 +495,16 @@
 
 		align-items: center;
 		display: inline-flex;
+		// Every `&--size-*` height below is a CONTENT-box measurement (chip
+		// only ever rendered as `<span>`/`<a>`, both `content-box` under the
+		// UA stylesheet, when those were authored). #530 made a purely
+		// clickable chip render as a real `<button>` — and `button` is
+		// `box-sizing: border-box` by default in the UA stylesheet, which
+		// would silently shrink every bordered/outlined chip by its own
+		// border-width (measured: 26px → 24px with `border: true` + `thin`).
+		// Pinning `content-box` here keeps the token math identical no
+		// matter which tag ends up on the root.
+		box-sizing: content-box;
 		font-weight: var(--origam-chip---font-weight, 400);
 		max-width: 100%;
 		min-width: 0;

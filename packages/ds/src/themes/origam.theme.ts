@@ -163,7 +163,19 @@ export const origamLightTheme: IOrigamTheme = {
     components: {
         'origam-alert': { tag: 'div', density: 'default' },
         'origam-audio': { tag: 'article', variant: 'expanded', position: 'relative' },
-        'origam-avatar': { tag: 'div', size: 'default', rounded: 'full', color: 'primary' },
+        /*********************************************************
+         * origam-avatar — no forced `color` (#530)
+         *
+         * @description
+         * A global constant foreground can't stay readable against every
+         * `bgColor` a consumer picks (a text-secondary grey by default is
+         * fine unstyled; violet-on-amber or violet-on-blue once a consumer
+         * sets `bgColor="warning"`/`"info"` is not). Leaving `color` unset
+         * lets `OrigamAvatar`'s own per-instance auto-contrast
+         * (`useStateEffect`, `bgColor` → matching `fg` token) do the job it
+         * was built for instead of being pre-empted by a static default.
+         ********************************************************/
+        'origam-avatar': { tag: 'div', size: 'default', rounded: 'full' },
         'origam-badge': { tag: 'div', location: 'top right' },
         'origam-blockquote': { tag: 'blockquote', variant: 'default' },
         'origam-bottom-nav': { tag: 'nav', position: 'start' },
@@ -317,7 +329,19 @@ export const origamDarkTheme: IOrigamTheme = {
     components: {
         'origam-alert': { tag: 'div', density: 'default' },
         'origam-audio': { tag: 'article', variant: 'expanded', position: 'relative' },
-        'origam-avatar': { tag: 'div', size: 'default', rounded: 'full', color: 'primary' },
+        /*********************************************************
+         * origam-avatar — no forced `color` (#530)
+         *
+         * @description
+         * A global constant foreground can't stay readable against every
+         * `bgColor` a consumer picks (a text-secondary grey by default is
+         * fine unstyled; violet-on-amber or violet-on-blue once a consumer
+         * sets `bgColor="warning"`/`"info"` is not). Leaving `color` unset
+         * lets `OrigamAvatar`'s own per-instance auto-contrast
+         * (`useStateEffect`, `bgColor` → matching `fg` token) do the job it
+         * was built for instead of being pre-empted by a static default.
+         ********************************************************/
+        'origam-avatar': { tag: 'div', size: 'default', rounded: 'full' },
         'origam-badge': { tag: 'div', location: 'top right' },
         'origam-blockquote': { tag: 'blockquote', variant: 'default' },
         'origam-bottom-nav': { tag: 'nav', position: 'start' },
