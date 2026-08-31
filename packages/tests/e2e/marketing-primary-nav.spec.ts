@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test'
 import AxeBuilder from '@axe-core/playwright'
 
-const BASE_URL = process.env.MARKETING_E2E_URL ?? 'http://localhost:3015'
+const BASE_URL = process.env.MARKETING_BASE_URL ?? 'http://localhost:3000'
 
 const THEMES = [
   { name: 'glass', mode: 'light' },

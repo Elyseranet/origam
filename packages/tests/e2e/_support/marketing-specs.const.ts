@@ -31,6 +31,7 @@ export const MARKETING_SPEC_PATTERNS = [
     '**/marketing-brand-presets.spec.ts',
     '**/marketing-theming-toggle-vs-split-parity.spec.ts',
     '**/marketing-theme-live-switch.spec.ts',
+    '**/marketing-primary-nav.spec.ts',
     '**/theming-feedback-tokens.spec.ts',
     '**/home-*.spec.ts',
     '**/why-origam.spec.ts',
