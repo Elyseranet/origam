@@ -80,26 +80,28 @@ test.describe('Marketing a11y — landmarks and headings, real pages, JS enabled
         })
     }
 
-    // FIXME (audit-ssr-nav, 2026-08-31) — 5 real, pre-existing violations
-    // found on `/`, unrelated to nav/footer SSR (out of this branch's scope:
-    // packages/tests/ only, not packages/ds/src or packages/marketing/src).
-    // Kept failing-and-documented rather than silently dropped, so the next
-    // person doesn't have to re-discover them from scratch:
-    //   - aria-allowed-attr (critical) — 8 theme-picker `OrigamChip` (span)
-    //     carry `type="button"`; `type` is not a valid attribute outside
-    //     <button>/<input>/... on a non-form element.
-    //   - color-contrast (serious) — `OrigamAvatar` initials text (e.g.
-    //     "LB", "JD", "MC" in the testimonials section) fails WCAG AA
-    //     contrast against its background.
-    //   - label / label-title-only (critical/serious) — 2 `OrigamSwitch`
-    //     inputs (`#switch-119`, `#switch-124`) have no accessible name at
-    //     all (only `aria-describedby` pointing at a hint, no label).
-    //   - list (serious) — `.home-themes__grid` renders as `<ul>`
-    //     (`OrigamGrid` with a list tag) whose direct children are not
-    //     `<li>` — violates the `<ul>` content model.
-    // Re-run `pnpm -F @origam/tests exec playwright test --config=playwright.a11y.marketing.config.ts --grep "other serious"`
-    // for the current node-level detail (this spec logs `target`/`html` for
-    // each violation before asserting).
+    // FIXME (#530, 2026-08-31) — of the 5 violations originally documented
+    // here, 4 are fixed at the source in the DS (`packages/ds/src`) and 1 in
+    // the marketing usage site (`packages/marketing/src`) — see the
+    // dedicated, scoped regression tests below ("Marketing a11y — #530
+    // fixes") for the closed-scope proof. This aggregate test stays
+    // `.fixme` because the full-page sweep, run under the SAME
+    // `devices['Desktop Chrome']` viewport as this config, additionally
+    // caught 2 further violations that were NOT part of the original 5 and
+    // are OUT OF SCOPE for #530 (unrelated component — `HomeHero`'s code
+    // sample, not Chip/Avatar/Switch/Grid):
+    //   - color-contrast (serious) — `HomeHero`'s Vue code sample: 2 Shiki
+    //     syntax-highlight token colors (`#22863a` green / `#d73a49` red)
+    //     on the code block's light background (`#fbf5ff`) measure 4.31:1
+    //     and 4.27:1 — just under the 4.5:1 AA threshold for 14px normal
+    //     text (11 node instances across the sample).
+    //   - scrollable-region-focusable (serious) — `.origam-code__scroller`
+    //     (the horizontal-scroll wrapper for that same code sample) has no
+    //     focusable content and isn't itself focusable, so a keyboard user
+    //     can't scroll it.
+    // Needs its own ticket/decision (likely also a DS-level `OrigamCode`
+    // fix, given the scroller + Shiki token colors are DS surface, not
+    // marketing markup) before this aggregate assertion can go green.
     test.fixme('/ has no other serious/critical a11y violations', async ({ page }) => {
         await page.goto('/')
         await settle(page)
@@ -117,6 +119,69 @@ test.describe('Marketing a11y — landmarks and headings, real pages, JS enabled
         }
 
         expect(blocking, `/ has ${blocking.length} serious/critical a11y violation(s)`).toHaveLength(0)
+    })
+
+})
+
+test.describe('Marketing a11y — #530 fixes (Chip / Avatar / Switch / Grid)', () => {
+
+    test('theme-picker OrigamChip renders a real <button>, not a <span type="button">', async ({ page }) => {
+        await page.goto('/')
+        await settle(page)
+
+        const chip = page.locator('[data-cy="themes-chip-sobre"]')
+        await expect(chip).toHaveCount(1)
+        await expect(chip).toHaveJSProperty('tagName', 'BUTTON')
+        await expect(chip).toHaveAttribute('type', 'button')
+
+        const results = await scanPage(page)
+            .include('[data-cy="themes-chip-sobre"]')
+            .analyze()
+        const chipViolations = results.violations.filter(v => v.id === 'aria-allowed-attr')
+        expect(chipViolations, JSON.stringify(chipViolations)).toHaveLength(0)
+    })
+
+    test('OrigamShowcase avatars (bgColor set, no explicit color) meet AA contrast', async ({ page }) => {
+        await page.goto('/')
+        await settle(page)
+
+        const results = await scanPage(page)
+            .include('#avatar-1')
+            .include('#avatar-2')
+            .include('#avatar-3')
+            .analyze()
+        const contrastViolations = results.violations.filter(v => v.id === 'color-contrast')
+        expect(contrastViolations, JSON.stringify(contrastViolations)).toHaveLength(0)
+    })
+
+    test('showcase OrigamSwitch demo inputs have an accessible name', async ({ page }) => {
+        await page.goto('/')
+        await settle(page)
+
+        const results = await scanPage(page)
+            .include('.home-showcase__switch-row')
+            .analyze()
+        const labelViolations = results.violations.filter(v => v.id === 'label' || v.id === 'label-title-only')
+        expect(labelViolations, JSON.stringify(labelViolations)).toHaveLength(0)
+
+        const switchInputs = page.locator('.home-showcase__switch-row input[type="checkbox"]')
+        await expect(switchInputs).toHaveCount(2)
+        await expect(switchInputs.nth(0)).toHaveAttribute('aria-label', /.+/)
+        await expect(switchInputs.nth(1)).toHaveAttribute('aria-label', /.+/)
+    })
+
+    test('.home-themes__grid is not a <ul> with non-<li> children', async ({ page }) => {
+        await page.goto('/')
+        await settle(page)
+
+        const grid = page.locator('.home-themes__grid')
+        await expect(grid).toHaveJSProperty('tagName', 'DIV')
+
+        const results = await scanPage(page)
+            .include('.home-themes__grid')
+            .analyze()
+        const listViolations = results.violations.filter(v => v.id === 'list')
+        expect(listViolations, JSON.stringify(listViolations)).toHaveLength(0)
     })
 
 })

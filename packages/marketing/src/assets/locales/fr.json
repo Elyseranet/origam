@@ -857,7 +857,9 @@
             },
             "switch": {
                 "title": "Switch",
-                "caption": "inset · plat · défaut"
+                "caption": "inset · plat · défaut",
+                "state_off": "Désactivé",
+                "state_on": "Activé"
             },
             "chips": {
                 "title": "Chips",

@@ -403,13 +403,22 @@ test.describe('OrigamChip', () => {
     // DEFAULT playground (index 14)                                       //
     // ------------------------------------------------------------------ //
 
-    test('Default (playground): bgColor=primary, text "Chip", tag=span', async ({ page }) => {
+    // #530 — a purely clickable chip (has a `@click` listener, not a link,
+    // not closable, no focusable prepend/append zone) now renders a real
+    // `<button type="button">` instead of a `<span>` playing pretend at
+    // interactivity: a `<span>` carried a `type="button"` attribute that
+    // axe correctly flagged as invalid outside `<button>`/`<input>`/…, and
+    // had no implicit role at all for assistive tech. See `OrigamChip.vue`'s
+    // `isButtonSafe` / `rootTag` computeds for the exact content-model
+    // guard (link / close / focusable zones still keep `span`/`a`).
+    test('Default (playground): bgColor=primary, text "Chip", clickable → tag=button', async ({ page }) => {
         await page.goto(sandboxUrl(14), { waitUntil: 'domcontentloaded' })
         const chip = page.locator('.origam-chip').first()
         await expect(chip).toBeVisible({ timeout: 30000 })
         await expect(chip).toHaveClass(/origam--bg-primary/)
         await expect(chip).toContainText('Chip')
         const tag = await chip.evaluate(el => el.tagName.toLowerCase())
-        expect(tag).toBe('span')
+        expect(tag).toBe('button')
+        await expect(chip).toHaveAttribute('type', 'button')
     })
 })

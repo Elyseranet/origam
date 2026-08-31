@@ -18,6 +18,7 @@ const { theme, setTheme } = useTheme()
         aria-labelledby="themes-title"
     >
         <origam-grid
+            tag="div"
             columns="repeat(auto-fit, minmax(320px, 1fr))"
             gap="xl"
             align-items="center"

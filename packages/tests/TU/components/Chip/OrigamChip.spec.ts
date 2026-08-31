@@ -181,23 +181,50 @@ describe('OrigamChip — click event', () => {
 // group/router context.
 // ---------------------------------------------------------------------------
 
+// #530 — a plain clickable, non-link chip with no close button and no
+// focusable prepend/append zone (exactly the `link: true` shape below) now
+// renders a real `<button type="button">` instead of a `<span>` (see
+// `OrigamChip.vue`'s `isButtonSafe` / `rootTag`). `handleKeydown` correctly
+// bails out for that case (`rootTag.value === 'button'`) and lets the
+// browser's own native Enter/Space→click activation run instead — verified
+// with zero double-firing in a real browser: pressing Enter then Space on
+// the "Events - click" story variant produced exactly 1 click each (2
+// cumulative), not 2/4. jsdom does not implement that native default
+// action for a synthetic `trigger('keydown', …)` (a well-documented jsdom
+// gap, not an origam one), so the actual keyboard-activation contract for
+// THIS scenario is proven in `packages/tests/e2e/chip.spec.ts` ("Keyboard:
+// Enter/Space on a focused chip toggles group selection") against real
+// Chromium instead. What jsdom CAN prove is asserted below: the tag/type.
 describe('OrigamChip — keyboard activation (#439)', () => {
-    it('emits "click" when Enter is pressed on a clickable chip', async () => {
+    it('renders a real <button type="button"> for a plain clickable, non-link chip (#530)', () => {
         const wrapper = mountChip({ link: true })
-        await wrapper.find('.origam-chip').trigger('keydown', { key: 'Enter' })
-        expect(wrapper.emitted('click')).toBeTruthy()
-    })
-
-    it('emits "click" when Space is pressed on a clickable chip', async () => {
-        const wrapper = mountChip({ link: true })
-        await wrapper.find('.origam-chip').trigger('keydown', { key: ' ' })
-        expect(wrapper.emitted('click')).toBeTruthy()
+        expect(wrapper.find('.origam-chip').element.tagName).toBe('BUTTON')
+        expect(wrapper.find('.origam-chip').attributes('type')).toBe('button')
     })
 
     it('does not emit "click" on keydown when the chip is not clickable', async () => {
         const wrapper = mountChip()
         await wrapper.find('.origam-chip').trigger('keydown', { key: 'Enter' })
         expect(wrapper.emitted('click')).toBeFalsy()
+    })
+
+    // The manual keydown→click fallback (the actual #439 fix) is still
+    // reachable and still jsdom-testable for a clickable chip that does NOT
+    // qualify for the native-button upgrade — here, `closable` renders a
+    // nested `<origam-btn>` close button, which `<button>`'s content model
+    // (no interactive descendants) forbids, so the root stays `<span>` and
+    // `handleKeydown` still fires the manual activation path itself.
+    it('emits "click" when Enter is pressed on a clickable-but-not-button-eligible chip (closable)', async () => {
+        const wrapper = mountChip({ link: true, closable: true })
+        expect(wrapper.find('.origam-chip').element.tagName).toBe('SPAN')
+        await wrapper.find('.origam-chip').trigger('keydown', { key: 'Enter' })
+        expect(wrapper.emitted('click')).toBeTruthy()
+    })
+
+    it('emits "click" when Space is pressed on a clickable-but-not-button-eligible chip (closable)', async () => {
+        const wrapper = mountChip({ link: true, closable: true })
+        await wrapper.find('.origam-chip').trigger('keydown', { key: ' ' })
+        expect(wrapper.emitted('click')).toBeTruthy()
     })
 })
 
@@ -226,16 +253,30 @@ describe('OrigamChip — isClickable via a plain @click, no `link` prop (#397)',
         expect(wrapper.find('.origam-chip').classes()).toContain('origam-chip--link')
     })
 
-    it('emits "click" on Enter from a bare onClick listener alone', async () => {
+    // #530 — a bare `onClick` with no other props makes the chip
+    // button-eligible (`isButtonSafe`), so keyboard activation for THIS
+    // exact shape is now native-browser behaviour, unprovable via jsdom's
+    // synthetic `trigger('keydown', …)` — see the `#530` comment above the
+    // sibling `describe` block for the full rationale and the e2e spec that
+    // proves it. `closable: true` below keeps the manual #439 fallback path
+    // (and thus jsdom-testability) reachable, same technique as above.
+    it('renders a real <button type="button"> from a bare onClick listener alone (#530)', () => {
+        const wrapper = mountChip({ onClick: () => {} })
+        expect(wrapper.find('.origam-chip').element.tagName).toBe('BUTTON')
+        expect(wrapper.find('.origam-chip').attributes('type')).toBe('button')
+    })
+
+    it('emits "click" on Enter from a bare onClick listener, closable (button-ineligible)', async () => {
         const onClick = vi.fn()
-        const wrapper = mountChip({ onClick })
+        const wrapper = mountChip({ onClick, closable: true })
+        expect(wrapper.find('.origam-chip').element.tagName).toBe('SPAN')
         await wrapper.find('.origam-chip').trigger('keydown', { key: 'Enter' })
         expect(onClick).toHaveBeenCalledTimes(1)
     })
 
-    it('emits "click" on Space from a bare onClick listener alone', async () => {
+    it('emits "click" on Space from a bare onClick listener, closable (button-ineligible)', async () => {
         const onClick = vi.fn()
-        const wrapper = mountChip({ onClick })
+        const wrapper = mountChip({ onClick, closable: true })
         await wrapper.find('.origam-chip').trigger('keydown', { key: ' ' })
         expect(onClick).toHaveBeenCalledTimes(1)
     })
