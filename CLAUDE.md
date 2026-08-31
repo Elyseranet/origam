@@ -629,10 +629,10 @@ under a theme setting `type: 'checkbox'` — no checkbox semantics, no
   not on what the component opted into.
 - **⛔ This is an INTERSECTION, not a union.** The resolver only patches a
   key that is BOTH named by a theme (or an ancestor `<OrigamDefaultsProvider>`)
-  AND declared as one of the component's own props — guarded by
-  `if (!(key in rawProps)) continue`
-  (`theme-props-resolver.composable.ts:557`). A theme naming a prop the
-  target component does not declare is silently skipped: not written to
+  AND declared as one of the component's own props — guarded by the
+  `if (!(key in rawProps))` check inside `installThemePropsResolver`'s
+  per-key loop, in `theme-props-resolver.composable.ts`. A theme naming a
+  prop the target component does not declare is skipped: not written to
   `instance.attrs`, not a crash. Since #515, this mismatch also logs a
   dev-only, once-per-(component, prop) `console.warn` (via
   `warnUnsupportedProp`, reused from `utils/Commons/color.util.ts`) — silent
