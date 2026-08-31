@@ -624,9 +624,20 @@ under a theme setting `type: 'checkbox'` — no checkbox semantics, no
   BEFORE assuming a bug.** The value did not necessarily come from either
   place in the `.vue` file you're reading.
 - **You do NOT need to call `useDefaults()` for a new component to be
-  themeable.** Every prop on every component is already reachable by
+  themeable.** Any prop a component already declares is reachable by
   `theme.components` — the resolver intercepts based on what a theme NAMES,
   not on what the component opted into.
+- **⛔ This is an INTERSECTION, not a union.** The resolver only patches a
+  key that is BOTH named by a theme (or an ancestor `<OrigamDefaultsProvider>`)
+  AND declared as one of the component's own props — guarded by
+  `if (!(key in rawProps)) continue`
+  (`theme-props-resolver.composable.ts:557`). A theme naming a prop the
+  target component does not declare is silently skipped: not written to
+  `instance.attrs`, not a crash. Since #515, this mismatch also logs a
+  dev-only, once-per-(component, prop) `console.warn` (via
+  `warnUnsupportedProp`, reused from `utils/Commons/color.util.ts`) — silent
+  in production. This is what let a test theme name `activeBgColor` on
+  `Radio` (a prop `Radio` never declares) go unnoticed in #496.
 - **No component calls `useDefaults()` any more, and none should again.**
   The 40 remaining calls were removed under issue #363, which is the batched
   migration ADR-005 sketched. The call bought nothing the resolver does not

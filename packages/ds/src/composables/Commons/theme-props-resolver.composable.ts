@@ -3,6 +3,7 @@ import { type App, getCurrentInstance, inject, ref, shallowRef } from 'vue'
 import { ORIGAM_DEFAULTS_KEY } from '../../consts/Commons/defaults.const'
 import type { IDefault } from '../../interfaces/DefaultsProvider/defaults-provider.interface'
 import { camelize } from '../../utils/Commons/commons.util'
+import { warnUnsupportedProp } from '../../utils/Commons/color.util'
 import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.util'
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -405,8 +406,12 @@ import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.u
 //   same source this hook snapshots — so both independently arrive at
 //   the same answer without either needing to know the other exists.
 // - A key a theme names that the target component does NOT declare as a prop
-//   is silently skipped (not written to `instance.attrs`, not a crash) — a
-//   theme cannot accidentally rewire fallthrough attributes.
+//   is skipped — not written to `instance.attrs`, not a crash — so a theme
+//   cannot accidentally rewire fallthrough attributes. Since #515 this is no
+//   longer SILENT in dev builds: `warnUnsupportedProp` logs it once per
+//   (component, prop) via `console.warn`, gated on `import.meta.env?.DEV`
+//   and a no-op in production. See the guard at `if (!(key in rawProps))`
+//   below.
 
 /**
  * Compute the set of prop keys, per component name (plus the special
@@ -553,8 +558,17 @@ export function installThemePropsResolver (app: App, themedKeysUnion: Map<string
                 // A theme naming a prop the component doesn't declare is a
                 // theme-authoring mistake, not a crash — and MUST NOT touch
                 // `instance.attrs` (that's a different object with its own
-                // fallthrough semantics).
-                if (!(key in rawProps)) continue
+                // fallthrough semantics). Surfaced via `warnUnsupportedProp`
+                // (dev-only, once per (component, prop) — same dedup cache
+                // strategy as `warnLegacyColor` / `warnDeprecatedProp` in
+                // `color.util.ts`, reused rather than duplicated) — this is
+                // the #496 case: a test theme named `activeBgColor` on
+                // `Radio`, which does not declare that prop, and the mismatch
+                // went unnoticed because it was silent.
+                if (!(key in rawProps)) {
+                    warnUnsupportedProp(name, key, `theme names this prop but <${name}> does not declare it`)
+                    continue
+                }
 
                 // Mirror of what Vue itself resolved (explicit value, or the
                 // component's own `withDefaults()`). Kept LIVE by the setter
