@@ -873,6 +873,64 @@ disponible plutôt que de rester centré en cluster compact.
 
 ## 2.3 — Long terme (>6 mois)
 
+### ⏸️ GELÉ — Design tokens & Figma : à reprendre à zéro, DS stabilisé d'abord **(XL)**
+
+**Décision du 2026-08-31.** Le pipeline de tokens (sources Tokens Studio DTCG +
+Style Dictionary) et le plugin Figma sont **retirés du dépôt**. Ils seront
+repris **proprement**, plus tard, et la condition d'entrée est explicite :
+**quand le DS sera stable et sans bug.** Pas avant.
+
+**Pourquoi.** Le sujet consommait une part disproportionnée du temps d'ingénierie
+pour un bénéfice qui ne se voyait pas à l'écran. Mesuré le 2026-08-31 :
+**18 des 83 tickets ouverts** mentionnent les tokens ou Figma dans leur titre
+(`gh issue list --state open`), pour une couche que l'utilisateur final ne
+touche jamais directement. On arrête d'y investir tant que le socle composant
+n'est pas sain.
+
+**Ce qui a été retiré**
+- `packages/ds/tokens/` — sources DTCG (primitive, semantic, component).
+- `packages/ds/scripts/build-tokens.mjs`, `tokens.config.mjs`, et les scripts
+  `tokens:build` / `tokens:watch` / `tokens:lint`.
+- Les dépendances `style-dictionary` / `@tokens-studio/sd-transforms`.
+- `packages/figma-plugin/` en entier.
+- La surface Figma du site vitrine (page `/figma-plugin`, `HomeFigma`, le `.zip`).
+
+**Ce qui RESTE, et pourquoi c'est sûr**
+Les 4 feuilles générées — `packages/ds/src/assets/css/tokens/{primitive,light,
+dark,origam-utilities}.css` — étaient **déjà versionnées dans git**. Elles
+restent en place et deviennent du **source maintenu à la main**. C'est ce qui
+rend l'opération sans risque : **155 des 216 composants lisent
+`var(--origam-…)`, 17 882 occurrences dans le DS**, et pas une seule ne change.
+Le theming reste pleinement fonctionnel : `data-theme`, `useTheme()`,
+`OrigamThemeProvider`, le bloc `IOrigamTheme.components` et le Theme Builder
+`/theming` du site vitrine sont **conservés et hors périmètre du gel**.
+
+⛔ **Ce que le gel ne règle PAS — à ne pas se raconter d'histoire.** Les
+variables mortes ne disparaissent pas : elles se **figent dans le CSS**. Les
+189 variables jamais lues par feuille livrée (#436), les 12 `code.syntax.*`
+inatteignables (#399), les ~35 noms morts de `data-table`/`list`/`tabs` (#528)
+sont toujours émis — simplement, plus personne ne les régénère. Le nettoyage
+de ces feuilles est un chantier **à part entière**, à planifier à la reprise.
+
+**Tickets gelés** — fermés avec renvoi ici, à rouvrir à la reprise :
+`#334 #370 #389 #393 #394 #399 #436 #479 #503 #510 #525 #528 #530 #531`
+
+**Restent ouverts** — ils contiennent de vrais défauts produit hors tokens, et
+seule leur part « tokens » est gelée : `#407` (Counter invisible par défaut,
+classe `--error` sans règle SCSS), `#419` (prop `scrollable` morte, 4 docs
+trompeuses), `#429` (défauts de thème perdus au montage sur MediaController,
+2 props mortes documentées comme actives), `#485` (8 tests `describe.skip` sur
+`useCode`, un problème de hoisting pnpm sans rapport avec les tokens).
+
+**Conditions de reprise**
+1. Le socle composant est stable : suite e2e verte sur les 3 moteurs, zéro
+   défaut produit connu sur les familles principales.
+2. La grammaire de nommage est réactée d'abord, **sur le papier**, avant tout
+   code — c'est son absence qui a produit les trois populations divergentes de
+   #435 / #436 / #503.
+3. La reprise repart des feuilles CSS figées comme **source de vérité**, pas
+   des anciens JSON : ce sont elles qui décrivent ce qui est réellement livré.
+
 ### v4.0 — Vue Vapor mode **(XL, exploratoire)**
 - Vapor (compilation no-virtual-DOM) → -40 % overhead runtime.
 - POC sur 5 composants pivots (Btn, Input, Card, Menu, Dialog), benchmarks,
