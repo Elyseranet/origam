@@ -249,6 +249,111 @@ describe('installThemePropsResolver — a theme naming a prop the component does
     })
 })
 
+describe('installThemePropsResolver — dev-only warning when a theme names an undeclared prop (#515)', () => {
+    // #515: the `if (!(key in rawProps)) continue` guard at
+    // theme-props-resolver.composable.ts is an INTERSECTION (theme ∩
+    // component props), not a union — the CLAUDE.md ADR-005 section wrongly
+    // described it as a union. This is exactly what let a test theme name
+    // `activeBgColor` on `Radio` (#496) go unnoticed: `Radio`'s own `active`
+    // prop takes an `IStateEffectConfig` OBJECT whose `bgColor` key lives
+    // nested inside it, so a themed *top-level* `activeBgColor` key is not
+    // one of `Radio`'s declared props and was silently skipped.
+    //
+    // `warnUnsupportedProp` (dedup by Set, gated on `import.meta.env?.DEV`)
+    // is the SAME mechanism `color.util.ts` already ships for
+    // `warnLegacyColor` / `warnDeprecatedProp` — reused here rather than a
+    // second warn cache, per the project's anti-duplication rule.
+    afterEach(() => {
+        vi.unstubAllEnvs()
+    })
+
+    it('warns when a theme names a prop the component does not declare', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+        const theme: IOrigamTheme = {
+            name: 'brandx-warn-undeclared',
+            components: { 'fake-card': { color: 'primary', undeclaredSentinel515A: 'oops' } },
+            vars: {}
+        }
+        const origam = createOrigam({ themes: [theme] })
+        origam._defaultsRef.value = origam._activeDefaultsFor('brandx-warn-undeclared', undefined)
+
+        mount(FakeCard, { global: { plugins: [origam] } })
+
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining('fake-card'))
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining('undeclaredSentinel515A'))
+        warn.mockRestore()
+    })
+
+    it('does not warn when every themed key is a prop the component actually declares', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+        const theme: IOrigamTheme = {
+            name: 'brandx-warn-declared',
+            components: { 'fake-card': { color: 'primary', rounded: 'lg' } },
+            vars: {}
+        }
+        const origam = createOrigam({ themes: [theme] })
+        origam._defaultsRef.value = origam._activeDefaultsFor('brandx-warn-declared', undefined)
+
+        mount(FakeCard, { global: { plugins: [origam] } })
+
+        expect(warn).not.toHaveBeenCalled()
+        warn.mockRestore()
+    })
+
+    it('warns only once for the same (component, prop) couple, across several mounts', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+        const theme: IOrigamTheme = {
+            name: 'brandx-warn-dedup',
+            components: { 'fake-card': { color: 'primary', undeclaredSentinel515B: 'oops' } },
+            vars: {}
+        }
+        const origam = createOrigam({ themes: [theme] })
+        origam._defaultsRef.value = origam._activeDefaultsFor('brandx-warn-dedup', undefined)
+
+        mount(FakeCard, { global: { plugins: [origam] } })
+        mount(FakeCard, { global: { plugins: [origam] } })
+        mount(FakeCard, { global: { plugins: [origam] } })
+
+        const matching = warn.mock.calls.filter(call => String(call[0]).includes('undeclaredSentinel515B'))
+        expect(matching).toHaveLength(1)
+        warn.mockRestore()
+    })
+
+    it('does not warn in production builds', () => {
+        vi.stubEnv('DEV', false)
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+        const theme: IOrigamTheme = {
+            name: 'brandx-warn-prod',
+            components: { 'fake-card': { color: 'primary', undeclaredSentinel515C: 'oops' } },
+            vars: {}
+        }
+        const origam = createOrigam({ themes: [theme] })
+        origam._defaultsRef.value = origam._activeDefaultsFor('brandx-warn-prod', undefined)
+
+        mount(FakeCard, { global: { plugins: [origam] } })
+
+        expect(warn).not.toHaveBeenCalled()
+        warn.mockRestore()
+    })
+
+    it('#496 concrete case: a theme naming activeBgColor on Radio (a prop Radio does not declare at top level) now warns', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+        const theme: IOrigamTheme = {
+            name: 'brandx-496-repro',
+            components: { 'origam-radio': { activeBgColor: '#ff0000' } },
+            vars: {}
+        }
+        const origam = createOrigam({ themes: [theme] })
+        origam._defaultsRef.value = origam._activeDefaultsFor('brandx-496-repro', undefined)
+
+        mount(OrigamRadio, { global: { plugins: [origam] } })
+
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining('origam-radio'))
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining('activeBgColor'))
+        warn.mockRestore()
+    })
+})
+
 describe('installThemePropsResolver — Function-typed props', () => {
     it('a theme can supply a function as a prop default, and it is callable', () => {
         const FakeAction = defineComponent({
