@@ -537,9 +537,32 @@
 		user-select: none;
 		opacity: var(--origam-btn---opacity, 1);
 
-		border-width: var(--origam-btn-group---border-width);
-		border-style: var(--origam-btn-group---border-style);
-		border-color: var(--origam-btn-group---border-color);
+		// #391 — the base rule used to read `--origam-btn-group---border-*`
+		// EXCLUSIVELY, but `&--border` (below) only ever wrote
+		// `--origam-btn---border-width` — two different custom properties,
+		// so the `border` prop painted nothing. A naive
+		// `var(--origam-btn-group---border-width, var(--origam-btn---border-width))`
+		// fallback does NOT fix this: the group token is registered
+		// GLOBALLY at `:root`/`[data-theme]` (`tokens/component/btn-group.json`
+		// → `light.css`/`dark.css`), always defined (`0` at rest), so the
+		// `var()` fallback never falls through to the btn's own value —
+		// measured, see the #391/#530 root-vs-token audit
+		// (`docs/mesures/`): on every conflict of this shape checked in a
+		// real browser, the globally-registered token wins, never the
+		// component-local declaration. So the STANDALONE default below
+		// reads the BTN's OWN var directly (no group fallback) — this is
+		// what actually makes `&--border`'s write visible.
+		//
+		// Width is split per physical side so the `border="top|right|
+		// bottom|left"` sub-values (useBorder's `${name}--border-{side}`
+		// classes below) can zero the other three sides — mirrors
+		// OrigamCard's identical `border-{side}-width` pattern.
+		border-color: var(--origam-btn---border-color, currentColor);
+		border-style: var(--origam-btn---border-style, solid);
+		border-top-width: var(--origam-btn---border-top-width, var(--origam-btn---border-width, 0));
+		border-right-width: var(--origam-btn---border-right-width, var(--origam-btn---border-width, 0));
+		border-bottom-width: var(--origam-btn---border-bottom-width, var(--origam-btn---border-width, 0));
+		border-left-width: var(--origam-btn---border-left-width, var(--origam-btn---border-width, 0));
 		border-radius: var(
 			--origam-btn---border-radius,
 			var(--origam-btn-group---border-radius, 4px)
@@ -641,6 +664,76 @@
 
 		&--border {
 			--origam-btn---border-width: thin;
+		}
+
+		// #391 — sub-defaults for `border="top|right|bottom|left"`
+		// (useBorder's `${name}--border-{side}` classes). No SCSS rule
+		// existed for these at all — the class was emitted but never
+		// consumed. Mirrors OrigamCard's identical `&--border-{side}`
+		// pattern one-for-one (thin on the target side, zero on the
+		// other three, so a direction genuinely isolates one edge
+		// instead of leaving the others at whatever `border-width`
+		// last resolved to).
+		&--border-top {
+			--origam-btn---border-top-width: thin;
+			--origam-btn---border-right-width: 0;
+			--origam-btn---border-bottom-width: 0;
+			--origam-btn---border-left-width: 0;
+		}
+
+		&--border-right {
+			--origam-btn---border-top-width: 0;
+			--origam-btn---border-right-width: thin;
+			--origam-btn---border-bottom-width: 0;
+			--origam-btn---border-left-width: 0;
+		}
+
+		&--border-bottom {
+			--origam-btn---border-top-width: 0;
+			--origam-btn---border-right-width: 0;
+			--origam-btn---border-bottom-width: thin;
+			--origam-btn---border-left-width: 0;
+		}
+
+		&--border-left {
+			--origam-btn---border-top-width: 0;
+			--origam-btn---border-right-width: 0;
+			--origam-btn---border-bottom-width: 0;
+			--origam-btn---border-left-width: thin;
+		}
+
+		// #391 (user directive) — "de base on utilise la variable group,
+		// et si elle n'existe pas, on prend la variable btn", implemented
+		// via PARENT DETECTION (a plain CSS ancestor combinator), not a
+		// `var()` fallback chain. A fallback chain can't express this:
+		// `--origam-btn-group---border-width` is registered GLOBALLY on
+		// `:root`/`[data-theme]` by the generated tokens
+		// (`src/assets/css/tokens/light.css` / `dark.css`, from
+		// `tokens/component/btn-group.json`) — it is therefore inherited
+		// on EVERY element, standalone or not, always "defined" (`0` at
+		// rest), so `var(--origam-btn-group---border-width,
+		// var(--origam-btn---border-width))` would never reach its second
+		// branch — same class of bug as the one this ticket fixes, see the
+		// #391/#530 root-vs-token audit under `docs/mesures/`. Only a real
+		// `.origam-btn-group` ancestor makes THIS selector match, so the
+		// base rule above (own var, no group reference) is what a
+		// standalone `<origam-btn>` uses — this block only ever applies to
+		// a Btn actually nested in a group.
+		//
+		// Currently a no-op in a REAL `<origam-btn-group>`: the group's
+		// own `:deep(.origam-btn) { border-width: 0 !important; … }` (see
+		// OrigamBtnGroup.vue) still wins by `!important` — intentional,
+		// documented there ("reads as ONE button with internal
+		// separators"). This rule exists so the variable graph is correct
+		// should that override ever be relaxed; it costs nothing today.
+		// Vue's `scoped` attribute stamps only the RIGHTMOST compound
+		// selector (`.origam-btn` here), so `.origam-btn-group` matches
+		// any ancestor carrying that class regardless of which
+		// component's `<style scoped>` block this rule lives in.
+		.origam-btn-group & {
+			border-color: var(--origam-btn-group---border-color, var(--origam-btn---border-color, currentColor));
+			border-style: var(--origam-btn-group---border-style, var(--origam-btn---border-style, solid));
+			border-width: var(--origam-btn-group---border-width, var(--origam-btn---border-width, 0));
 		}
 
 		&--absolute {

@@ -30,11 +30,12 @@
  *   5. ORPHAN CUSTOM PROPERTY (static) — the one class of "markup
  *      changed but it's still dead" bug reachable without a real
  *      browser (issue #391). Both a literal-SCSS unit check and the
- *      live end-to-end touchstone on `OrigamBtn` are included, so a
- *      future edit to `OrigamBtn.vue` that fixes #391 is caught (the
- *      live case would then start failing MUST_FLAG, which is the
- *      correct, desired outcome — the pinned literal case keeps the
- *      static analyser itself honest either way).
+ *      live end-to-end touchstone on `OrigamBtn` are included. #391 is
+ *      now FIXED, so the live touchstone flipped from MUST_FLAG to
+ *      MUST_NOT_FLAG — exactly the "correct, desired outcome" this
+ *      comment used to predict — while the pinned literal cases (5a)
+ *      keep the static analyser itself honest independently of
+ *      `OrigamBtn.vue`'s current source.
  ********************************************************/
 
 import {resolve} from 'node:path'
@@ -234,7 +235,7 @@ describe('props-harness self-test', () => {
     /*****************************************************
      * 5. ORPHAN CUSTOM PROPERTY (static, issue #391 pattern)
      *****************************************************/
-    describe('5. orphan custom property — the touchstones (OrigamBtn.border dead, OrigamBtn.variant alive)', () => {
+    describe('5. orphan custom property — the touchstones (OrigamBtn.border FIXED #391, OrigamBtn.variant alive)', () => {
         // 5a. Pinned literal-SCSS unit checks — independent of the live
         // source file, so a refactor of OrigamBtn.vue can't silently
         // disable this analyser without a DIFFERENT test (5b) noticing.
@@ -282,10 +283,24 @@ describe('props-harness self-test', () => {
         })
 
         // 5b. Live end-to-end touchstones — the actual mandate: prove the
-        // harness distinguishes OrigamBtn's real `border` (issue #391,
-        // dead) from its real `variant` (alive), sourced from the SHIPPED
-        // component, not a fixture.
-        it('MUST_FLAG — live OrigamBtn.border (issue #391): markup changes, but ONLY an orphaned custom property', async () => {
+        // harness distinguishes OrigamBtn's real `border` from its real
+        // `variant` (both alive as of the #391 fix), sourced from the
+        // SHIPPED component, not a fixture.
+        //
+        // #391 FIXED — this touchstone flipped from MUST_FLAG to
+        // MUST_NOT_FLAG, exactly as the module doc above promised it
+        // would ("the live case would then start failing MUST_FLAG,
+        // which is the correct, desired outcome"). Root cause was two
+        // DIFFERENT custom properties: the base `.origam-btn` rule read
+        // `--origam-btn-group---border-width` while `&--border` wrote
+        // `--origam-btn---border-width`. The base rule now reads the
+        // BTN's own var directly (`border-{side}-width: var(--origam-btn
+        // ---border-{side}-width, var(--origam-btn---border-width, 0))`),
+        // so `&--border`'s write is consumed in the SAME <style> block —
+        // no longer an orphan. See OrigamBtn.vue's `#391` comments for
+        // the full analysis (incl. why the group-var fallback is a
+        // documented no-op, not a live fallback path).
+        it('MUST_NOT_FLAG — live OrigamBtn.border (issue #391, fixed): markup changes AND the custom property it sets is consumed', async () => {
             const [result] = await probeComponentProps(OrigamBtn, {
                 only: ['border'],
                 baseProps: {text: 'X'},
@@ -294,12 +309,14 @@ describe('props-harness self-test', () => {
             // Honest reporting, not a forced verdict: jsdom cannot load the
             // component's own <style scoped> block (measured — see module
             // doc), so a class-driven effect's real visual outcome is out
-            // of reach here. What IS provable, and asserted below, is the
-            // static signature: the class border={true} adds sets ONLY a
-            // custom property that nothing in OrigamBtn.vue ever reads —
-            // the exact, confirmed root cause of issue #391.
+            // of reach here (the actual paint is proven separately, in a
+            // real browser, against a running Histoire instance — see the
+            // #391 PR). What IS provable, and asserted below, is the
+            // static signature: the class border={true} adds sets a
+            // custom property (`--origam-btn---border-width`) that
+            // OrigamBtn.vue's base rule now reads.
             expect(result.addedClasses).toContain('origam-btn--border')
-            expect(result.orphanCustomProperty, 'expected this case to be flagged, it was not').toBe('--origam-btn---border-width')
+            expect(result.orphanCustomProperty, 'expected this case NOT to be flagged, it was').toBeNull()
         }, 20000)
 
         it('MUST_NOT_FLAG — live OrigamBtn.variant: a real property, not an orphan', async () => {
