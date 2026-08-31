@@ -103,7 +103,7 @@
                 "descriptionFallback": "Font size of the title area."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/alert.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -919,7 +919,7 @@
                 "descriptionFallback": "Always flex so the layout renders as a column."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/app.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -1296,7 +1296,7 @@
                 "descriptionFallback": "Duration of scroll-driven animations."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/app-bar.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -1857,7 +1857,7 @@
                 "descriptionFallback": "Player container border-radius."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/audio.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -2798,7 +2798,7 @@
                 "descriptionFallback": "Transition duration for size, dimension and color changes."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/avatar.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -3446,7 +3446,7 @@
                 "descriptionFallback": "Density offset applied to overlap margin calculation."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/avatar.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -3952,7 +3952,7 @@
                 "descriptionFallback": "Badge position/opacity transition duration."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/badge.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -4617,7 +4617,7 @@
                 "descriptionFallback": "Background glyph size in quoted variant."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/blockquote.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -5267,7 +5267,7 @@
                 "descriptionFallback": "Compact density offset (+8 px reduction)."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/bottom-nav.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4. CSS key namespace: --origam-bottom-bar--- (legacy \"bar\" key retained for backward compat)."
           },
           "anatomy": {
@@ -5934,7 +5934,7 @@
                 "descriptionFallback": "Round title text transform."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/bracket.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -8385,7 +8385,7 @@
                 "descriptionFallback": "Divider horizontal padding."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/breadcrumb.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -8970,7 +8970,7 @@
                 "descriptionFallback": "Horizontal padding around the divider character."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/breadcrumb.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -9390,7 +9390,7 @@
                 "descriptionFallback": "Color of the current-page item (last crumb, disabled state)."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/breadcrumb.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -10115,7 +10115,7 @@
                 "descriptionFallback": "Background when color=\"primary\"."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/btn.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types. Figma variables sync via packages/figma-plugin."
           },
           "anatomy": {
@@ -11302,7 +11302,7 @@
                 "descriptionFallback": "Default border width (none until border prop is set)."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/btn.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "BtnGroup shares the btn token file. Group-level tokens use the btn-group namespace."
           },
           "anatomy": {
@@ -11833,7 +11833,7 @@
                 "descriptionFallback": "Default border radius for the toggle container."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/btn.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "BtnToggle shares the btn and btn-group token namespaces. No separate token file."
           },
           "anatomy": {
@@ -12392,7 +12392,7 @@
                 "descriptionFallback": "Timeline slot row height."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/calendar.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -13201,7 +13201,7 @@
                 "descriptionFallback": "Card opacity when disabled."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/card.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -14127,7 +14127,7 @@
                 "descriptionFallback": "Subtitle text size."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/card.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. CardHeader tokens are namespaced under card-header.*."
           },
           "anatomy": {
@@ -14769,7 +14769,7 @@
                 "descriptionFallback": "Horizontal padding of the card text area."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/card.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. CardText tokens are namespaced under card-text.*."
           },
           "anatomy": {
@@ -15227,7 +15227,7 @@
                 "descriptionFallback": "Slide transition duration."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/carousel.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -16294,7 +16294,7 @@
                 "descriptionFallback": "Radar polygon fill opacity."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/chart.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -17261,7 +17261,7 @@
                 "descriptionFallback": "Grid line stroke width."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/chart.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. ChartAxis uses shared chart.* tokens."
           },
           "anatomy": {
@@ -17637,7 +17637,7 @@
                 "descriptionFallback": "Tooltip background."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/chart.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. ChartBoxPlot uses shared chart.* tokens."
           },
           "anatomy": {
@@ -19021,7 +19021,7 @@
                 "descriptionFallback": "Tooltip background."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/chart.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Shares the chart.json token file. Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -19752,7 +19752,7 @@
                 "descriptionFallback": "Tooltip background."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/chart.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Shares the chart.json token file. Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -20416,7 +20416,7 @@
                 "descriptionFallback": "Title text colour."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/chart.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Shares the chart.json token file. Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -23427,7 +23427,7 @@
                 "descriptionFallback": "Gap between legend items."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/chart.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -24272,7 +24272,7 @@
                 "descriptionFallback": "Gap between legend items."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/chart.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -25000,7 +25000,7 @@
                 "descriptionFallback": "Padding of the chart container."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/chart.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -25684,7 +25684,7 @@
                 "descriptionFallback": "Gap between legend items."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/chart.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -27623,7 +27623,7 @@
                 "descriptionFallback": "Transition duration for overlay opacity animation."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/chip.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -28528,7 +28528,7 @@
                 "descriptionFallback": "Chip transition duration (hover, selection)."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/chip.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. ChipGroup shares the chip.json token file with OrigamChip."
           },
           "anatomy": {
@@ -29539,7 +29539,7 @@
                 "descriptionFallback": "Color/background transition duration."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/clipboard.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -30046,7 +30046,7 @@
                 "descriptionFallback": "Highlighted line background."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/code.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -31304,7 +31304,7 @@
                 "descriptionFallback": "Gap between edit input fields."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/color-picker.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -32265,7 +32265,7 @@
                 "descriptionFallback": "Channel label font size."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/color-picker.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "ColorPickerEdit shares the color-picker.json token file. Relevant section: color-picker.edit.*."
           },
           "anatomy": {
@@ -32681,7 +32681,7 @@
                 "descriptionFallback": "Chevron icon colour."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/color-picker-field.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -33345,7 +33345,7 @@
                 "descriptionFallback": "Border width of the preview swatch."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/color-picker.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Preview-specific tokens live under the color-picker.preview namespace."
           },
           "anatomy": {
@@ -33741,7 +33741,7 @@
                 "descriptionFallback": "Border colour of swatch tiles."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/color-picker.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Swatch-specific tokens live under the color-picker.swatches namespace."
           },
           "anatomy": {
@@ -34097,7 +34097,7 @@
                 "descriptionFallback": "Backdrop overlay color."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/command-palette.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -34988,7 +34988,7 @@
                 "descriptionFallback": "Opacity applied to both fields when disabled."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/confirm-wrapper.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -36606,7 +36606,7 @@
                 "descriptionFallback": "Default counter opacity."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/counter.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -37079,7 +37079,7 @@
                 "descriptionFallback": "Item background on hover."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/data-list.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -37725,7 +37725,7 @@
                 "descriptionFallback": "Sort icon default opacity (hidden at rest, revealed on hover/active)."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/data-table.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -39321,7 +39321,7 @@
                 "descriptionFallback": "Sort badge border-radius (pill shape)."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/data-table.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Header cell tokens live under the data-table.header namespace."
           },
           "anatomy": {
@@ -39964,7 +39964,7 @@
                 "descriptionFallback": "Block (top/bottom) padding for header cells."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/data-table.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Header tokens live under the data-table.header namespace."
           },
           "anatomy": {
@@ -40552,7 +40552,7 @@
                 "descriptionFallback": "Minimum cell height in mobile stacked layout."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/data-table.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Row tokens live under the data-table.row namespace."
           },
           "anatomy": {
@@ -40989,7 +40989,7 @@
                 "descriptionFallback": "Row separator colour."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/data-table.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Row, empty and loading tokens live under data-table.row, data-table.empty and data-table.loading-row namespaces."
           },
           "anatomy": {
@@ -41403,7 +41403,7 @@
                 "descriptionFallback": "Value text letter spacing."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/data-list.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. DataText uses the data-list.text.* sub-namespace."
           },
           "anatomy": {
@@ -42081,7 +42081,7 @@
                 "descriptionFallback": "Term label letter spacing."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/data-list.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. DataTitle uses the data-list.title.* sub-namespace."
           },
           "anatomy": {
@@ -42801,7 +42801,7 @@
                 "descriptionFallback": "Days in range background (range mode)."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/date-picker.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -43487,7 +43487,7 @@
                 "descriptionFallback": "Controls bar padding."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/date-picker.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4. DatePickerControls consumes the date-picker.controls.* sub-namespace."
           },
           "anatomy": {
@@ -44957,7 +44957,7 @@
                 "descriptionFallback": "Header minimum height."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/date-picker.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4. DatePickerHeader uses the date-picker.header.* sub-namespace."
           },
           "anatomy": {
@@ -45552,7 +45552,7 @@
                 "descriptionFallback": "Background of cells within a date-range selection."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/date-picker.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Tokens are shared with the parent DatePicker component. Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -46139,7 +46139,7 @@
                 "descriptionFallback": "Active month button background (driven by the color prop)."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/date-picker.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Tokens are shared with the parent DatePicker component. Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -46507,7 +46507,7 @@
                 "descriptionFallback": "Active year button background (driven by the color prop)."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/date-picker.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Tokens are shared with the parent DatePicker component. Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -46835,7 +46835,7 @@
           },
           "tokens": {
             "excerpt": [],
-            "sourceFile": "packages/ds/tokens/component/defaults-provider.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. This component has no visual chrome — the token file is present for token-set ordering consistency only."
           },
           "anatomy": {
@@ -47136,7 +47136,7 @@
                 "descriptionFallback": "Horizontal padding of the dialog body content."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/dialog.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -48659,7 +48659,7 @@
                 "descriptionFallback": "Default block margin (0). Use the margin prop for spacing."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/divider.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -49081,7 +49081,7 @@
                 "descriptionFallback": "Scrim opacity in temporary mode. Tracks drag progress during touch open/close."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/drawer.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -49775,7 +49775,7 @@
                 "descriptionFallback": "Description text colour."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/empty-state.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -51034,7 +51034,7 @@
                 "descriptionFallback": "Header minimum height when panel is expanded."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/expansion-panel.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -51733,7 +51733,7 @@
                 "descriptionFallback": "Flex shorthand of the inner wrapper."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/expansion-panel.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -52287,7 +52287,7 @@
                 "descriptionFallback": "Base overlay opacity on hover (resolved via scoped style to 0.04)."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/expansion-panel.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -52952,7 +52952,7 @@
                 "descriptionFallback": "Transition duration for border-radius animation in accordion header overlay."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/expansion-panel.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -53942,7 +53942,7 @@
                 "descriptionFallback": "Border colour in error state."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/field.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -55000,7 +55000,7 @@
                 "descriptionFallback": "Dropzone border in error state."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/file-field.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -55821,7 +55821,7 @@
                 "descriptionFallback": "File size / meta text color."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/file-field-dragndrop-item.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -56307,7 +56307,7 @@
                 "descriptionFallback": "Gap between icon, content and actions (12px)."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/file-field-list-item.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -56836,7 +56836,7 @@
                 "descriptionFallback": "Error message colour."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/form.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -57358,7 +57358,7 @@
                 "descriptionFallback": "Gap size xl (32px)."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/grid.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -57919,7 +57919,7 @@
                 "descriptionFallback": "Medium gap token shared with parent OrigamGrid."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/grid.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -59952,7 +59952,7 @@
                 "descriptionFallback": "Text color for the empty-state message shown when no more items are available."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/infinite-scroll.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -61640,7 +61640,7 @@
                 "descriptionFallback": "Gap between keys in combination mode."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/kbd.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -62110,7 +62110,7 @@
                 "descriptionFallback": "Color of the asterisk required indicator."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/label.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -62604,7 +62604,7 @@
                 "descriptionFallback": "Wrapper height in full-height mode."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/layout.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Layout position offsets are emitted as CSS custom properties at runtime by useCreateLayout — they are not in the token file."
           },
           "anatomy": {
@@ -63435,7 +63435,7 @@
                 "descriptionFallback": "Icon color when disabled."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/icon.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -64095,7 +64095,7 @@
                 "descriptionFallback": "Subheader text color."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/list.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -64970,7 +64970,7 @@
                 "descriptionFallback": "Overlay opacity on the activator item when the group is open."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/list.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -65642,7 +65642,7 @@
                 "descriptionFallback": "Subtitle font size (0.875rem)."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/list.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Tokens are namespaced under list.item.* in the source JSON."
           },
           "anatomy": {
@@ -66437,7 +66437,7 @@
                 "descriptionFallback": "Transition duration for min-height changes."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/list.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Tokens are namespaced under list.subheader.* in the source JSON."
           },
           "anatomy": {
@@ -66823,7 +66823,7 @@
                 "descriptionFallback": "Height in fullscreen mode."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/loader.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. The loader token file is a stub — visual rendering is fully delegated to OrigamProgress."
           },
           "anatomy": {
@@ -67220,7 +67220,7 @@
                 "descriptionFallback": "Default foreground color."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/main.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -67688,7 +67688,7 @@
                 "descriptionFallback": "Easing of the animated position-change transition."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/masonry.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. The token file is minimal — most visual configuration is expressed as CSS vars injected inline by the component."
           },
           "anatomy": {
@@ -68195,7 +68195,7 @@
                 "descriptionFallback": "Border-radius of the track, progress and thumb (pill by default)."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/media.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -68833,7 +68833,7 @@
                 "descriptionFallback": "Override color for the inner MediaScrubber timeline bar."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/media-controller.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -69559,7 +69559,7 @@
                 "descriptionFallback": "Hover tooltip text color (white)."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/media-scrubber.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -70597,7 +70597,7 @@
                 "descriptionFallback": "Maximum width of the scrollable content inner area."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/menu.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -71249,7 +71249,7 @@
                 "descriptionFallback": "Slide-y transition duration for individual message rows."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/messages.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -71795,7 +71795,7 @@
                 "descriptionFallback": "Increment button hover background."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/number-field.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -73906,7 +73906,7 @@
                 "descriptionFallback": "Positioning strategy — always fixed to cover the viewport."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/overlay-scrim.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -75012,7 +75012,7 @@
                 "descriptionFallback": "Default transform-origin for the host container. Elements can override via the transformOrigin prop."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/parallax.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -75552,7 +75552,7 @@
                 "descriptionFallback": "Spring-like easing curve available for the multi-layer scroll path."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/parallax.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -75847,7 +75847,7 @@
                 "descriptionFallback": "Glyph icon font-size — intentionally larger than standard token."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/password-field.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -76636,7 +76636,7 @@
                 "descriptionFallback": "Transition duration for the picker panel enter/leave."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/picker.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Base abstraction — concrete pickers (DatePicker, ColorPicker) extend with their own component tokens."
           },
           "anatomy": {
@@ -77621,7 +77621,7 @@
                 "descriptionFallback": "Opacity of the background ring."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/progress.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Three token files: progress.json (shared), progress-linear.json, progress-circular.json. Built with Style Dictionary v4."
           },
           "anatomy": {
@@ -78302,7 +78302,7 @@
                 "descriptionFallback": "Duration of the indeterminate spin/dash SVG animations."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/progress-circular.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -78881,7 +78881,7 @@
                 "descriptionFallback": "Duration of the indeterminate bar CSS animations."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/progress-linear.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -83154,7 +83154,7 @@
                 "descriptionFallback": "Overflow mode — hidden clips content to the ratio box."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/responsive.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -86038,7 +86038,7 @@
                 "descriptionFallback": "Transition duration for icon/color animations."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/selection-control.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -86789,7 +86789,7 @@
                 "descriptionFallback": "Gap between child controls."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/selection-control-group.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -87373,7 +87373,7 @@
                 "descriptionFallback": "Default half-expanded snap-point height."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/sheet.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -88031,7 +88031,7 @@
                 "descriptionFallback": "Gap in list-item composite layout."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/skeleton.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -88561,7 +88561,7 @@
                 "descriptionFallback": "Minimum width of the prev/next arrow affixes."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/slide-group.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -89248,7 +89248,7 @@
                 "descriptionFallback": "Opacity when disabled."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/slider-field.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -89942,7 +89942,7 @@
                 "descriptionFallback": "Tick dot color in the filled zone."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/slider-field.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Track tokens are nested under slider-field.track.*."
           },
           "anatomy": {
@@ -91650,7 +91650,7 @@
                 "descriptionFallback": "Distance from the right edge for *-right locations."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/snackbar-group.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -92088,7 +92088,7 @@
                 "descriptionFallback": "Opacity of the message text."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/snackbar-group.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Item tokens live under the snackbar-group.item sub-object."
           },
           "anatomy": {
@@ -93266,7 +93266,7 @@
                 "descriptionFallback": "Colour of the step subtitle."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/stepper.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types."
           },
           "anatomy": {
@@ -93722,7 +93722,7 @@
                 "descriptionFallback": "Transition duration for colour changes."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/icon.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Outputs: CSS custom properties, SCSS variables, TypeScript types. SvgIcon shares the icon token namespace with ClassIcon, LigatureIcon and ComponentIcon."
           },
           "anatomy": {
@@ -94680,7 +94680,7 @@
                 "descriptionFallback": "Track background in error state."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/switch.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Track tokens live under the switch.track sub-object."
           },
           "anatomy": {
@@ -95430,7 +95430,7 @@
                 "descriptionFallback": "Thickness of the underline indicator."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/tabs.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Tab-level tokens live under the tabs.item and tabs.indicator keys."
           },
           "anatomy": {
@@ -96320,7 +96320,7 @@
                 "descriptionFallback": "Duration of the fade transition when switching panels."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/tabs.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Panel-level tokens live under the tabs.panel key."
           },
           "anatomy": {
@@ -96647,7 +96647,7 @@
                 "descriptionFallback": "Duration of the fade transition between panels."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/tabs.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. Container tokens live under the tabs.panel key."
           },
           "anatomy": {
@@ -97410,7 +97410,7 @@
                 "descriptionFallback": "Rich toolbar border radius."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/textarea-field.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -98746,7 +98746,7 @@
                 "descriptionFallback": "Default animation cycle duration."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/text-mask.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -99232,7 +99232,7 @@
                 "descriptionFallback": "ThemeProvider has no visible chrome — display:contents is its only CSS rule."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/theme-provider.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. The theme-provider token file only documents display:contents — all visual tokens come from the active theme."
           },
           "anatomy": {
@@ -99481,7 +99481,7 @@
                 "descriptionFallback": "Title font weight."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/timeline.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -99989,7 +99989,7 @@
                 "descriptionFallback": "Color of subtitle and body text."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/timeline.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. All item-level tokens inherit from the root timeline token group."
           },
           "anatomy": {
@@ -100620,7 +100620,7 @@
                 "descriptionFallback": "Heading letter-spacing."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/title.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -101090,7 +101090,7 @@
                 "descriptionFallback": "Height/shadow transition duration."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/toolbar.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -101832,7 +101832,7 @@
                 "descriptionFallback": "Z-index layer."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/tooltip.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -102791,7 +102791,7 @@
                 "descriptionFallback": "Guide line color."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/treeview.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -103390,7 +103390,7 @@
                 "descriptionFallback": "Color of the vertical guide lines."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/treeview.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. All node-level tokens inherit from the root treeview token group."
           },
           "anatomy": {
@@ -103863,7 +103863,7 @@
                 "descriptionFallback": "Size of the centered play button on the poster overlay."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/video.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -104720,7 +104720,7 @@
                 "descriptionFallback": "Scroll container scroll-padding."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/virtual-scroll.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -105084,7 +105084,7 @@
                 "descriptionFallback": "Easing for virtual scroll item transitions."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/virtual-scroll.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. OrigamVirtualScrollItem has no intrinsic visual tokens; it inherits layout tokens from the parent virtual-scroll token group."
           },
           "anatomy": {
@@ -105761,7 +105761,7 @@
                 "descriptionFallback": "Horizontal slide transition duration per item."
               }
             ],
-            "sourceFile": "packages/ds/tokens/component/window.json",
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
             "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms."
           },
           "anatomy": {
@@ -106372,8 +106372,7 @@
             "keyboard": []
           },
           "tokens": {
-            "source": "packages/ds/tokens/component/window.json",
-            "tokens": [
+            "excerpt": [
               {
                 "type": "duration",
                 "value": "{motion.duration.slow}",
@@ -106388,7 +106387,9 @@
                 "descriptionKey": "components.window_item.tokens.y_transition_duration",
                 "descriptionFallback": "Vertical transition duration."
               }
-            ]
+            ],
+            "sourceFile": "packages/ds/src/assets/css/tokens/light.css",
+            "pipelineNote": "Built with Style Dictionary v4 + @tokens-studio/sd-transforms. WindowItem shares the window token file."
           },
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"200\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <rect x=\"20\" y=\"20\" width=\"660\" height=\"160\" rx=\"6\" fill=\"none\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.3))\" stroke-width=\"1.5\" stroke-dasharray=\"5 3\"/>\n  <rect x=\"44\" y=\"44\" width=\"612\" height=\"112\" rx=\"4\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <text x=\"350\" y=\"104\" font-size=\"11\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">Active pane content (#default slot)</text>\n  <circle cx=\"28\" cy=\"28\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"28\" y=\"32\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"52\" cy=\"52\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"52\" y=\"56\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n",
