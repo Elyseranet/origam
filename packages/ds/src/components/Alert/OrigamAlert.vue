@@ -545,6 +545,28 @@
       margin-inline-end: calc(var(--origam-alert__prepend---margin-inline-end) - var(--origam-alert---density));
     }
 
+    /**
+     * Title/icon vertical alignment — the prepend icon and the
+     * title live in separate grid cells (prepend vs content) with no
+     * shared flex/grid `align-items` between them, so nothing keeps
+     * their vertical centres in sync. Both boxes are flush to the same
+     * grid-row top edge (empirically verified — no slack to redistribute
+     * via `align-self`), so any centre offset comes purely from a height
+     * mismatch between the icon's own box and the title's line-height
+     * box. Bind the prepend box's min-height to the SAME font-size /
+     * line-height tokens the title reads, so the two boxes share one
+     * height and `align-items: center` (already on __prepend) centres
+     * the icon glyph on that height — landing it on the title's centre
+     * exactly, token-driven, no magic number. Scoped via :has() to only
+     * a title being present — an icon-only alert (no title) keeps its
+     * natural intrinsic height.
+     */
+    &:has(#{$this}__title) {
+      #{$this}__prepend {
+        min-height: calc(var(--origam-alert__title---font-size) * var(--origam-alert__title---line-height));
+      }
+    }
+
     &__underlay {
       grid-area: none;
       position: absolute;
