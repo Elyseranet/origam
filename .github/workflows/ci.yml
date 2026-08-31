@@ -359,6 +359,140 @@ jobs:
           retention-days: 7
           if-no-files-found: ignore
 
+  test-e2e-marketing:
+    name: E2E tests — marketing nav/footer (Playwright / Chromium)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # MARKETING_GREEN_ONLY: run only the specs verified green + stable on
+    #   this config (MARKETING_GREEN_SPECS in playwright.marketing.config.ts)
+    #   — same GREEN_ONLY pattern as `test-e2e` above, kept in its own job
+    #   because this config boots the Nuxt marketing dev server (:3000),
+    #   not Histoire (:6006), and `playwright.config.ts` cannot target both.
+    # Was previously in NO CI job at all — `nav-link-availability.spec.ts`
+    # existed but nothing ever invoked `playwright.marketing.config.ts` on
+    # a merge, so a real SSR regression (nav/footer rendering empty — see
+    # `marketing-nav-ssr.spec.ts`) could ship without a single red check.
+    env:
+      MARKETING_GREEN_ONLY: '1'
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Resolve Playwright version
+        id: pw
+        run: |
+          version=$(node -p "require('./packages/tests/package.json').devDependencies['@playwright/test'].replace(/[^\d.]/g,'')")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        id: pw-cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: pw-${{ runner.os }}-${{ steps.pw.outputs.version }}-chromium
+
+      - name: Install Playwright Chromium
+        if: steps.pw-cache.outputs.cache-hit != 'true'
+        run: pnpm -F @origam/tests exec playwright install --with-deps chromium
+
+      - name: Install Playwright OS deps only
+        if: steps.pw-cache.outputs.cache-hit == 'true'
+        run: pnpm -F @origam/tests exec playwright install-deps chromium
+
+      # `nuxt dev` resolves `origam/nuxt` from packages/ds/dist at startup —
+      # without this step the marketing webServer fails at boot. Captured as
+      # a plain `run:` (no pipe) on purpose: piping `pnpm build` output
+      # through `tail`/`grep` swallows a non-zero exit code, which is
+      # exactly how a broken build ran green here once already (see the
+      # `build-marketing` job's own comment on this same failure mode).
+      - name: Build library (marketing imports `origam`)
+        run: pnpm -F origam build
+
+      - name: Run Playwright (marketing nav/footer, chromium)
+        run: pnpm -F @origam/tests exec playwright test --config=playwright.marketing.config.ts --project=chromium
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report-marketing
+          path: |
+            packages/tests/e2e/.report-marketing
+            packages/tests/e2e/.results-marketing
+          retention-days: 7
+          if-no-files-found: ignore
+
+  test-a11y-marketing:
+    name: A11y tests — marketing pages (axe-core / Chromium)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Sweeps real marketing pages (landmarks, skip link, no-JS nav) — the
+    # existing `a11y/components.spec.ts` only ever scans a component inside
+    # a Histoire story iframe and explicitly ignores `region` /
+    # `landmark-one-main` / `page-has-heading-one` as iframe noise. Neither
+    # that suite nor this one ran in CI before this job existed.
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Resolve Playwright version
+        id: pw
+        run: |
+          version=$(node -p "require('./packages/tests/package.json').devDependencies['@playwright/test'].replace(/[^\d.]/g,'')")
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Playwright browsers
+        id: pw-cache
+        uses: actions/cache@v6
+        with:
+          path: ~/.cache/ms-playwright
+          key: pw-${{ runner.os }}-${{ steps.pw.outputs.version }}-chromium
+
+      - name: Install Playwright Chromium
+        if: steps.pw-cache.outputs.cache-hit != 'true'
+        run: pnpm -F @origam/tests exec playwright install --with-deps chromium
+
+      - name: Install Playwright OS deps only
+        if: steps.pw-cache.outputs.cache-hit == 'true'
+        run: pnpm -F @origam/tests exec playwright install-deps chromium
+
+      # Same rationale as `test-e2e-marketing` above — plain `run:`, no pipe,
+      # so a broken build fails this job instead of running green.
+      - name: Build library (marketing imports `origam`)
+        run: pnpm -F origam build
+
+      - name: Run Playwright (marketing a11y, chromium)
+        run: pnpm -F @origam/tests exec playwright test --config=playwright.a11y.marketing.config.ts --project=chromium
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-report-a11y-marketing
+          path: |
+            packages/tests/a11y/.report-marketing
+            packages/tests/a11y/.results-marketing
+          retention-days: 7
+          if-no-files-found: ignore
+
   vrt:
     name: Visual regression (OrigamBtn variants)
     runs-on: ubuntu-latest
