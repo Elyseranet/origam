@@ -45,13 +45,13 @@
     "shiki": "^4.3.1",
     "typeorm": "^0.3.31",
     "typeorm-naming-strategies": "^4.1.0",
-    "vue": "3.5.39",
+    "vue": "3.5.42",
     "vue-i18n": "^11.4.6",
-    "vue-router": "^4.5.0"
+    "vue-router": "^5.3.0"
   },
   "devDependencies": {
-    "@vue/compiler-dom": "3.5.39",
-    "@vue/compiler-sfc": "3.5.39",
+    "@vue/compiler-dom": "3.5.42",
+    "@vue/compiler-sfc": "3.5.42",
     "tsx": "^4.23.5",
     "typescript": "^6.0.3",
     "vue-tsc": "^3.3.6"
