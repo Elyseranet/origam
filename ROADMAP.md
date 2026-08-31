@@ -912,7 +912,10 @@ inatteignables (#399), les ~35 noms morts de `data-table`/`list`/`tabs` (#528)
 sont toujours émis — simplement, plus personne ne les régénère. Le nettoyage
 de ces feuilles est un chantier **à part entière**, à planifier à la reprise.
 
-**Tickets gelés** — fermés avec renvoi ici, à rouvrir à la reprise :
+**Tickets à geler** — ⛔ **encore OUVERTS au 2026-08-31**, vérifié par
+`gh issue view`. La version précédente de cette ligne disait « fermés avec
+renvoi ici » : c'était faux, aucun ne l'a été. À fermer avec renvoi ici, puis à
+rouvrir à la reprise :
 `#334 #370 #389 #393 #394 #399 #436 #479 #503 #510 #525 #528 #530 #531`
 
 **Restent ouverts** — ils contiennent de vrais défauts produit hors tokens, et

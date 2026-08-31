@@ -442,7 +442,9 @@ always done it right, and only local runs went the slow way.
 
 ⛔ **Do NOT use `pnpm -F @origam/tests test:e2e`** — the `pretest:e2e` hook
 fails on a guard and **blocks Playwright before a single spec starts, while
-still returning `exit 0`** to the caller. That is ticket #46. Same family: a
+still returning `exit 0`** to the caller. ⛔ This has **no ticket** — the
+`#46` cited for it across this repo's docs is a *merged pull request* about a
+CSS typo, unrelated. Open one. Same family: a
 piped `pnpm build | tail -30` returns `exit 0` while the build fails. **Capture
 the real `$?`.**
 
