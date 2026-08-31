@@ -390,12 +390,12 @@
               v-for="item in section.items"
               :key="item.href"
             >
-              <nuxt-link
-                :to="item.href"
+              <a
+                :href="item.href"
                 class="site-footer__link"
               >
                 {{ t(item.i18nKey, item.i18nFallback) }}
-              </nuxt-link>
+              </a>
             </li>
           </ul>
         </template>
