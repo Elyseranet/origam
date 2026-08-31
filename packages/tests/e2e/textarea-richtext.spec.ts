@@ -3,7 +3,18 @@ import { expect, test, type Page } from '@playwright/test'
 const STORY_ID = 'components-stories-textareafield-origamtextareafield-story-vue'
 const STORY_PATH = '/stories/story/' + STORY_ID
 
-const ARROW_TIMEOUT = 5000
+// This spec exercises variants of the same OrigamTextareaField.story.vue
+// chunk as textarea-field.spec.ts, which already uses 12000ms for the
+// identical reason: Histoire's live dev server compiles the story on
+// first hit, and that compile is contended under full-suite parallel
+// workers. The richtext variants pull in extra weight on top (sanitize-html,
+// markdown conversion, the rich toolbar) so they are at least as expensive.
+// 5000ms was fine in isolation (100/100 passed mono-worker, --repeat-each=10)
+// but produced a 25% failure rate (20/80) under --workers=8 --repeat-each=8,
+// every failure an identical `toBeVisible` timeout with no async/lazy
+// mounting in the component to blame — a harness timeout too tight for
+// contended CI load, not a product race. Matching the sibling spec's value.
+const ARROW_TIMEOUT = 12000
 
 // Deep-link straight to a variant. The previous per-test navigation used
 // `page.goto(STORY_PATH)` + `waitForLoadState('networkidle')` — which NEVER
