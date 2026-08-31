@@ -399,9 +399,52 @@ Root scripts already delegate, so the most common entries are:
 | Run marketing locally | `pnpm -F @origam/marketing dev` *(`http://localhost:3000`)* |
 | Unit tests (watch) | `pnpm -F @origam/tests test:unit` |
 | Unit tests (CI) | `pnpm -F @origam/tests test:unit:run` |
-| E2E tests | `pnpm -F @origam/tests test:e2e` |
+| E2E — one spec, while iterating | `pnpm -F @origam/tests exec playwright test <spec>` |
+| E2E — the full suite | see **Running the full e2e suite** below |
 | A11y tests | `pnpm -F @origam/tests test:a11y` |
 | Lint (root) | `pnpm run lint:fix` |
+
+### ⛔ Running the full e2e suite — measured, 2026-08-31
+
+**Build the static Histoire first and run against it, exactly like CI:**
+
+```sh
+pnpm -F @origam/stories build
+cd packages/tests
+E2E_STATIC=1 pnpm exec playwright test --project=chromium
+```
+
+Same commit, same machine, chromium, full suite — the only variable is which
+server the specs hit:
+
+| | live `histoire dev` | prebuilt `histoire preview` |
+|---|---|---|
+| duration | **53.9 min** | **15.7 min** |
+| failures | **7** | **2** |
+
+**3.4× faster, and most "flaky" specs stop being flaky.** Against the dev
+server every spec pays a per-story Vite cold compile, so parallel workers
+starve each other; the failures that follow are uniform `toBeVisible` /
+`page.goto` timeouts that look exactly like product defects and are not.
+`playwright.config.ts` already says this in its `webServer` comment — CI has
+always done it right, and only local runs went the slow way.
+
+⛔ **Two traps that cost a full day of triage:**
+
+- **Timeout whack-a-mole moves the flake, it does not fix it.** Raising
+  `textarea-richtext`'s timeout from 5 s to 12 s made those tests hold their
+  worker twice as long; the run went 37 → 54 min and `carousel.spec.ts` — green
+  in the three previous runs — took its place with 7 failures. Re-run alone,
+  carousel was **33/33**. Under `E2E_STATIC=1` all 7 vanish.
+- **Never measure suite stability while other work loads the machine.** Three
+  agents building packages and running Nuxt/Postgres servers were enough to
+  manufacture failures. That measures your own load, not your code.
+
+⛔ **Do NOT use `pnpm -F @origam/tests test:e2e`** — the `pretest:e2e` hook
+fails on a guard and **blocks Playwright before a single spec starts, while
+still returning `exit 0`** to the caller. That is ticket #46. Same family: a
+piped `pnpm build | tail -30` returns `exit 0` while the build fails. **Capture
+the real `$?`.**
 
 ### Adding dependencies
 
