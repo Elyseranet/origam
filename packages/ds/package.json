@@ -148,7 +148,7 @@
     "sass": "^1.102.0",
     "style-dictionary": "^5.5.0",
     "ts-transformer-keys": "^0.4.4",
-    "typescript": "^6.0.3",
+    "typescript": "^7.0.2",
     "unbuild": "^3.5.0",
     "unplugin-vue-components": "^32.1.0",
     "vite": "^8.2.1",
