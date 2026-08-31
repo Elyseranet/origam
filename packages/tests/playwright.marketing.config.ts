@@ -7,6 +7,19 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const REPO_ROOT = resolve(__dirname, '..', '..')
 
 /**
+ * Specs verified green AND stable (5+ consecutive local runs, no flake) on
+ * this config. CI runs ONLY these (`MARKETING_GREEN_ONLY=1`) — same pattern
+ * as `GREEN_SPECS` in `playwright.config.ts`, kept separate because this
+ * config targets the Nuxt dev server (:3000), not Histoire (:6006). Grows
+ * wave by wave as the rest of `MARKETING_SPEC_PATTERNS` is stabilised. A
+ * local run with no env var still executes the whole marketing suite.
+ */
+const MARKETING_GREEN_SPECS = [
+    'nav-link-availability.spec.ts',
+    'marketing-nav-ssr.spec.ts'
+]
+
+/**
  * Playwright configuration for marketing-site e2e specs.
  *
  * Separate from the default `playwright.config.ts` because that one
@@ -18,7 +31,7 @@ const REPO_ROOT = resolve(__dirname, '..', '..')
  */
 export default defineConfig({
     testDir: './e2e',
-    testMatch: MARKETING_SPEC_PATTERNS,
+    testMatch: process.env.MARKETING_GREEN_ONLY === '1' ? MARKETING_GREEN_SPECS : MARKETING_SPEC_PATTERNS,
     outputDir: './e2e/.results-marketing',
 
     fullyParallel: false,

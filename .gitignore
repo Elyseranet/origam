@@ -46,6 +46,8 @@ packages/tests/e2e/.report-marketing
 packages/tests/e2e/.results-marketing
 packages/tests/a11y/.report
 packages/tests/a11y/.results
+packages/tests/a11y/.report-marketing
+packages/tests/a11y/.results-marketing
 packages/tests/vrt/.report
 packages/tests/vrt/.results
 
