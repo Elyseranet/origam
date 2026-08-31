@@ -116,3 +116,6 @@ packages/ds/CHANGELOG.md
 .env.local
 .env.*.local
 *.token
+
+# Fichiers d environnement — jamais suivis (cf. politique globale)
+.env
