@@ -20,7 +20,6 @@ COPY packages/docs/package.json packages/docs/package.json
 COPY packages/stories/package.json packages/stories/package.json
 COPY packages/tests/package.json packages/tests/package.json
 COPY packages/marketing/package.json packages/marketing/package.json
-COPY packages/figma-plugin/package.json packages/figma-plugin/package.json
 
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
     pnpm install --frozen-lockfile
@@ -30,8 +29,6 @@ COPY tsconfig*.json ./
 COPY packages/ds packages/ds
 COPY packages/docs packages/docs
 
-# Build tokens first (the docs site imports the generated CSS).
-RUN pnpm -F origam tokens:build
 RUN pnpm -F @origam/docs build
 
 # -----------------------------------------------------------------------------

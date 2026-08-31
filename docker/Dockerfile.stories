@@ -19,7 +19,6 @@ COPY packages/docs/package.json packages/docs/package.json
 COPY packages/stories/package.json packages/stories/package.json
 COPY packages/tests/package.json packages/tests/package.json
 COPY packages/marketing/package.json packages/marketing/package.json
-COPY packages/figma-plugin/package.json packages/figma-plugin/package.json
 
 RUN --mount=type=cache,target=/root/.local/share/pnpm/store \
     pnpm install --frozen-lockfile
@@ -30,8 +29,7 @@ COPY packages/docs packages/docs
 COPY packages/stories packages/stories
 
 # Stories embed component docs (`<docs src="@docs/...">`), so the docs
-# folder must be present at build time. Tokens are still a prerequisite.
-RUN pnpm -F origam tokens:build
+# folder must be present at build time.
 RUN pnpm -F @origam/stories build
 
 # -----------------------------------------------------------------------------

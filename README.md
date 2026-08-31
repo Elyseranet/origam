@@ -141,11 +141,11 @@ The `origam-utilities.css` sheet generates 66 utility classes
 (`.origam--bg-*`, `.origam--color-*`, `.origam--shadow-*`,
 `.origam--rounded-*`, ...) that map 1:1 to semantic tokens.
 
-Tokens are sourced from Tokens Studio (DTCG JSON) and compiled with
-Style Dictionary v4. See [`packages/ds/tokens/`](./packages/ds/tokens)
-for the source and
-[`packages/ds/scripts/build-tokens.mjs`](./packages/ds/scripts/build-tokens.mjs)
-for the build.
+There is **no token build step**. The Tokens Studio / Style Dictionary
+pipeline was removed on 2026-08-31; the stylesheets under
+[`packages/ds/src/assets/css/tokens/`](./packages/ds/src/assets/css/tokens)
+(and their SCSS twins) are now plain hand-maintained source that you edit
+directly. See the "Design tokens" section of [`CLAUDE.md`](./CLAUDE.md).
 
 ---
 
@@ -266,7 +266,6 @@ The repo is a pnpm monorepo with six packages.
 | [`packages/stories`](./packages/stories) | Histoire stories (~208 specs, used as the visual sandbox). | private |
 | [`packages/docs`](./packages/docs) | VitePress documentation site. | private |
 | [`packages/tests`](./packages/tests) | Vitest (unit) + Playwright (e2e + a11y) suites. | private |
-| [`packages/figma-plugin`](./packages/figma-plugin) | Figma plugin syncing Origam tokens ⇄ Figma Variables. | private |
 
 Cross-package dependencies use pnpm's `workspace:*` protocol.
 `packages/ds` is the only package published to npm; tags trigger
@@ -278,9 +277,9 @@ Cross-package dependencies use pnpm's `workspace:*` protocol.
 
 Engineering principles, naming conventions, the classes-first contract,
 and the "test-as-you-build" rule live in [`CLAUDE.md`](./CLAUDE.md).
-Token authoring (Tokens Studio JSON, Style Dictionary pipeline) lives in
-[`packages/ds/tokens/`](./packages/ds/tokens) and is documented in
-[`packages/ds/tokens/CHANGELOG.md`](./packages/ds/tokens/CHANGELOG.md).
+Token authoring is now direct editing of the stylesheets under
+[`packages/ds/src/assets/`](./packages/ds/src/assets) — see the "Design
+tokens" section of [`CLAUDE.md`](./CLAUDE.md).
 
 ### Local setup (~5 min on a fresh clone)
 
@@ -327,7 +326,6 @@ also works.
 |---|---|---|---|
 | Build the library | `pnpm -F origam build` | `npm run build --workspace=origam` | `yarn workspace origam build` |
 | Build every package | `pnpm -r build` | `npm run build --workspaces` | `yarn workspaces run build` |
-| Rebuild tokens | `pnpm -F origam tokens:build` | `npm run tokens:build --workspace=origam` | `yarn workspace origam tokens:build` |
 | Run unit tests | `pnpm -F @origam/tests test:unit:run` | `npm run test:unit:run --workspace=@origam/tests` | `yarn workspace @origam/tests test:unit:run` |
 | Run e2e tests | `pnpm -F @origam/tests test:e2e` | (idem) | (idem) |
 | Run a11y tests | `pnpm -F @origam/tests test:a11y` | (idem) | (idem) |

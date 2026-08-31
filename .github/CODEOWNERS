@@ -5,9 +5,9 @@
 /.github/               @arnaudprioul
 /docker/                @arnaudprioul
 
-# Design tokens (machine-generated; review extra carefully)
-/tokens/                @arnaudprioul
-/scripts/build-tokens.mjs @arnaudprioul
+# Design tokens (frozen hand-maintained stylesheets; review extra carefully)
+/packages/ds/src/assets/css/tokens/  @arnaudprioul
+/packages/ds/src/assets/scss/tokens/ @arnaudprioul
 
 # Public API surface
 /src/origam.ts          @arnaudprioul

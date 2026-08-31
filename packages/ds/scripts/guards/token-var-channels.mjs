@@ -233,19 +233,19 @@ function run () {
     }
 
     const deadExit = report({
-        guardName: 'token-var-channels (dead) — every var(--origam-…) a component reads must be emitted by the token pipeline, or synthesised locally',
+        guardName: 'token-var-channels (dead) — every var(--origam-…) a component reads must be declared in a token stylesheet, or synthesised locally',
         baselinePath: DEAD_BASELINE_PATH,
         currentIds: new Set(deadChannels.keys()),
         detailsById: deadChannels,
-        fixHint: 'Either wire the missing key in packages/ds/tokens/component/{name}.json (and confirm it is listed under packages/ds/tokens/$themes.json\'s selectedTokenSets) so pnpm -F origam tokens:build emits it, or — if this is a deliberate extension point never meant to be tokenised — leave the fallback as-is and record that decision in the component\'s doc.'
+        fixHint: 'Either declare the missing variable directly in the matching frozen stylesheet under packages/ds/src/assets/css/tokens/ (light.css / dark.css / primitive.css — these are hand-maintained source since the Style Dictionary pipeline was removed), or — if this is a deliberate extension point never meant to be tokenised — leave the fallback as-is and record that decision in the component\'s doc.'
     })
 
     const dormantExit = report({
-        guardName: 'token-var-channels (dormant) — every var(--origam-…) the pipeline emits should be read by at least one component',
+        guardName: 'token-var-channels (dormant) — every var(--origam-…) the token stylesheets declare should be read by at least one component',
         baselinePath: DORMANT_BASELINE_PATH,
         currentIds: new Set(dormantTokens.keys()),
         detailsById: dormantTokens,
-        fixHint: 'Either wire this token into the component\'s SCSS (var(--origam-…)), or remove the unused key from the matching packages/ds/tokens/component/*.json.'
+        fixHint: 'Either wire this token into the component\'s SCSS (var(--origam-…)), or delete the unused declaration from the matching frozen stylesheet under packages/ds/src/assets/css/tokens/.'
     })
 
     if (showWhy) {

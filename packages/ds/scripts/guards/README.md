@@ -43,7 +43,7 @@ text directly. The full suite runs in under two seconds.
 | 7 | `emits-completeness.mjs` | Every REACHABLE `update:*` — including those a relay composable emits on the component's behalf — is declared by its emits interface | 5 |
 | 8 | `no-usedefaults-in-components.mjs` | No component calls `useDefaults()` — the ADR-005 resolver already merges theme and provider defaults into `instance.props` | 0 |
 | 9 | `layer-folders.mjs` | Every sub-folder of the six declaration layers names a real component, or is `Commons` | 0 |
-| 10 | `seed-source-paths.mjs` | Every `source_file` / `sourceFile` in the marketing seed points at a file that exists | 1 |
+| 10 | `seed-source-paths.mjs` | Every `source_file` / `sourceFile` in the marketing seed points at a file that exists | 82 |
 | 11 | `comment-format.mjs` | No comment block is ADDED outside the repo's block format (per-file counts, total may only fall) | 6925 blocks |
 | 12 | `pnpm-tree-integrity.mjs` | No `node_modules/` entry is a physical copy — every package is a pnpm store link or a workspace link | 0 |
 | 13 | `token-var-channels.mjs` | Every `var(--origam-…)` a component reads is emitted by the token pipeline, or synthesised locally — and (secondary, non-fatal-by-default in spirit but still baselined) every emitted var is read by at least one component | 1275 dead / 1588 dormant |
@@ -288,12 +288,26 @@ it. The damage is not only a dead "view source" link: `source_file` is part
 of how a regeneration recognises an existing entry, so a stale path makes
 the symbol look NEW — the sync inserts a duplicate and orphans the old row.
 
-Its single baselined entry is a **real, pre-existing defect, not an
-exemption**: the Media family's token doc points at
+Its baselined entries are **real, pre-existing defects, not exemptions**.
+
+The original single entry: the Media family's token doc points at
 `packages/ds/tokens/component/media.json`, a file that has never existed
-(the real ones are `media-controller.json` and `media-scrubber.json`). It is
+(the real ones were `media-controller.json` and `media-scrubber.json`). It is
 baselined rather than patched because picking the replacement is a content
 decision — one of the two files, or a split — not a mechanical rewrite.
+
+The other **81 entries were added on 2026-08-31** when the design-token
+pipeline was removed (`packages/ds/tokens/` deleted, see the root
+`CLAUDE.md`). The marketing catalogue records a `source_file` per component
+pointing at that component's `tokens/component/{slug}.json`; every one of
+those 81 paths is now dead. **This is unfixed debt, deliberately parked, not
+resolved**: the marketing site will render 81 broken "view source" links
+until the seed is regenerated without a token `source_file`. Baselining it
+here keeps the guard honest about *new* breakage while the fix — which lives
+in `packages/marketing/server/db/seed/component.json` and the `db-seed.sql`
+dump built from it — is owned by whoever next touches the marketing
+catalogue. Retire these 82 entries in the same change that regenerates the
+seed.
 
 Guard 9 is folder-level where guard 4 is file-level, and the pair is
 complementary: a correctly-named file inside a misspelled folder passes 4

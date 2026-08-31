@@ -130,8 +130,7 @@ docker run -d --name origam-stories --restart unless-stopped \
 - The images do **not** run a Node process; they only serve the pre-built
   static assets through nginx. The build stage runs `npm ci
   --legacy-peer-deps` (required while `histoire@1.0.0-beta.1` pins
-  Vite 6 peer) and `npm run tokens:build` before delegating to
-  `docs:build` / `story:build`.
+  Vite 6 peer) before delegating to `docs:build` / `story:build`.
 - For local development with hot-reload, run `npm run docs:dev` or
   `npm run story:dev` on the host — the compose file is for previewing
   the *built* artefact, not for editing.

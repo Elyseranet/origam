@@ -32,9 +32,6 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build tokens (prereq for component specs)
-        run: pnpm -F origam tokens:build
-
       - name: Unit tests with coverage
         # Emits coverage/lcov.info at the repo root with SF: paths relative to
         # the repo root (see packages/tests/vitest.config.ts) — exactly what

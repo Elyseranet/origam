@@ -82,9 +82,6 @@ jobs:
           fi
           echo "version=$pkg" >> "$GITHUB_ENV"
 
-      - name: Build tokens
-        run: pnpm -F origam tokens:build
-
       - name: Build library
         run: pnpm -F origam build
 
