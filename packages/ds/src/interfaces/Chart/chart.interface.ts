@@ -91,6 +91,12 @@ export interface IChartProps
      * Palette used when a series does not pin its own `color`.
      * Pass intent strings (cycled in order) or raw CSS colours.
      * Default cycles through the 8 origam intents.
+     *
+     * ⛔ #426 — has **no effect** when `type` resolves to `'bullet'`,
+     * `'candlestick'`, `'heatmap'`, or `'map'` (delegated to
+     * `OrigamChartBullet` / `OrigamChartCandlestick` /
+     * `OrigamChartHeatmap` / `OrigamChartMap` — see their own
+     * `colorScheme` JSDoc in `chart-base.interface.ts`).
      */
     colorScheme?: Array<TIntent | string>
     /** Formatter applied to X-axis tick labels. */

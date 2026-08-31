@@ -105,6 +105,7 @@ import { OrigamChartMap } from '@origam/ds'
 | `lineColor` | `TIntent \| string` | `'primary'` | Default stroke colour for flight-route arcs. Overridden per route. |
 | `nodeRadius` | `number` | `4` | Radius of the endpoint circles in flight-routes mode. |
 | `routeCurvature` | `number` | `0.3` | Bezier offset as a fraction of chord length `[0..1]`. `0` = straight. |
+| `colorScheme` | `Array<TIntent \| string>` | `[]` | Inherited from `IChartBaseProps`. **No effect on this component** — see [Behaviour notes](#behaviour-notes). |
 
 ### Legend
 
@@ -124,7 +125,9 @@ import { OrigamChartMap } from '@origam/ds'
 
 ### Inherited from `IChartBaseProps`
 
-`bgColor`, `elevation`, `rounded`, `margin`, `padding`, `colorScheme` — see base props.
+`bgColor`, `elevation`, `rounded`, `margin`, `padding` — see base props.
+
+`colorScheme` is also inherited but has **no effect** on this component (see [Behaviour notes](#behaviour-notes)).
 
 ## Emits
 
@@ -168,6 +171,7 @@ Countries included in the simplified map (35 total):
 - **Keyboard navigation** — choropleth countries with data and route arcs are keyboard-focusable (`tabindex="0"`, Enter/Space activate `point-click`). Countries without data are `tabindex="-1"`.
 - **Animation** — `prefers-reduced-motion: reduce` disables all animations automatically.
 - **Route curvature edge cases** — at `routeCurvature=0` the arc degenerates to a straight line. At values above `0.6` the perpendicular offset may push the control point outside the SVG viewport on short inter-country chords; `0.3`–`0.4` is the recommended range.
+- **`colorScheme` has no effect** (#426). It's inherited from `IChartBaseProps` and stays on the public API for consistency across chart types, but colour is a continuous gradient in choropleth mode (`colorRange`) or a single `lineColor` in flight-routes mode — neither has a per-series identity a rotating discrete palette could drive. Passing it logs `[origam] <OrigamChartMap> prop "colorScheme" has no effect on this component: …` once to the console in dev builds (silent in production). Neither wiring a fake behaviour nor removing the prop was on the table — see the #426 decision.
 
 ## Composable
 

@@ -57,6 +57,7 @@ import { OrigamChartCandlestick } from '@origam/ds'
 | `bearishColor` | `TIntent \| string` | `'danger'` | Fill colour for candles where close < open. |
 | `candleWidth` | `number` | `0.6` | Fraction of the per-slot width occupied by the body rectangle `[0..1]`. |
 | `wickWidth` | `number` | `1` | Wick stroke width in SVG user-units. |
+| `colorScheme` | `Array<TIntent \| string>` | `[]` | Inherited from `IChartBaseProps`. **No effect on this component** — candle colour is a *binary* choice (`bullishColor` / `bearishColor`), not a per-series identity a rotating palette could drive. Passing it logs a one-time dev warning (see [#426](#caveats)). |
 
 ### Behaviour
 
@@ -130,6 +131,7 @@ const series = [{
 
 ## Caveats
 
+- **`colorScheme` has no effect** (#426). It's inherited from `IChartBaseProps` and stays on the public API for consistency across chart types, but candle colour is a binary bullish/bearish choice — there's no per-series identity for a rotating palette to drive. Passing it logs `[origam] <OrigamChartCandlestick> prop "colorScheme" has no effect on this component: …` once to the console in dev builds (silent in production). Neither wiring a fake behaviour nor removing the prop was on the table — see the #426 decision.
 - **Volume bars** are not rendered — this is a price-only OHLC view. A `volumeSeries` prop is planned for a future minor release.
 - **HLC variant** (no body, wick only) is not yet implemented. Use `candleWidth: 0` as a workaround — the body collapses to 1 px high.
 - Only `series[0]` is consumed. Multi-series overlay (e.g. comparison stocks) is not yet supported.

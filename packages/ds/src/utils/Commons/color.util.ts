@@ -768,3 +768,41 @@ export function warnDeprecatedProp (
         `"${oldProp}" keeps working as an alias and will be removed in ${removalVersion}.`
     )
 }
+
+// ── Unsupported-prop warning (dev-only) ─────────────────────────────────────
+// Same once-per-key cache strategy as `warnLegacyColor` / `warnDeprecatedProp`
+// above, but for a prop that IS part of a component's public surface (it's
+// declared on the interface, usually inherited from a shared base like
+// `IChartBaseProps`) yet has no rendering effect on that particular
+// component — the prop is neither wired to a fake behaviour (nothing to
+// invent) nor removed (would break existing consumers). First use case:
+// `colorScheme` (a rotating discrete palette) on chart types whose colour
+// model is binary or a continuous gradient (`OrigamChartBullet`,
+// `OrigamChartCandlestick`, `OrigamChartHeatmap`, `OrigamChartMap` — #426).
+//
+// Gated on `import.meta.env.DEV` (mirrors `useIconAccessibility`'s dev-time
+// a11y warning) — unlike the two warnings above, this one must stay silent
+// in production builds per the #426 decision.
+
+const _warnedUnsupportedPropKeys = new Set<string>()
+
+/**
+ * Warn (once per component / prop, dev builds only) that a prop was passed
+ * but has no effect on this particular component. `reason` should name the
+ * mechanism that makes the prop inapplicable (e.g. "binary colour model via
+ * bullishColor/bearishColor").
+ */
+export function warnUnsupportedProp (
+    component: string,
+    prop: string,
+    reason: string,
+): void {
+    if (typeof console === 'undefined') return
+    if (!import.meta.env?.DEV) return
+    const key = `${component}::${prop}`
+    if (_warnedUnsupportedPropKeys.has(key)) return
+    _warnedUnsupportedPropKeys.add(key)
+    console.warn(
+        `[origam] <${component}> prop "${prop}" has no effect on this component: ${reason}`
+    )
+}

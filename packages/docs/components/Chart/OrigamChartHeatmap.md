@@ -61,6 +61,7 @@ const activityData = days.flatMap((day) =>
 | `aspectRatio` | `string` | `undefined` | CSS `aspect-ratio` shorthand. Overrides `height`. |
 | `title` | `string` | `undefined` | Optional title above the chart. Replaceable via the `#title` slot. |
 | `subtitle` | `string` | `undefined` | Optional subtitle below the title. |
+| `colorScheme` | `Array<TIntent \| string>` | `[]` | Inherited from `IChartBaseProps`. **No effect on this component** — see [Behaviour notes](#behaviour-notes). |
 
 ### Behaviour
 
@@ -104,6 +105,8 @@ const activityData = days.flatMap((day) =>
 **Category ordering.** Pass `xCategories` and `yCategories` to lock axis order (e.g. weekday order). Without them, unique values are sorted ascending (alphabetically for strings, numerically for numeric strings).
 
 **Colour interpolation.** Each cell's colour is computed as `color-mix(in srgb, <endColour> <pct>%, <startColour>)` where `pct = ((value - min) / (max - min)) * 100`. When all values are equal, every cell renders as the start colour.
+
+**`colorScheme` has no effect** (#426). It's inherited from `IChartBaseProps` and stays on the public API for consistency across chart types, but cell colour is a *continuous* two-stop gradient (`colorRange`) — a rotating discrete palette doesn't apply to a continuous scale. Passing it logs `[origam] <OrigamChartHeatmap> prop "colorScheme" has no effect on this component: …` once to the console in dev builds (silent in production). Neither wiring a fake behaviour nor removing the prop was on the table — see the #426 decision.
 
 **Cell labels.** A value is rendered inside the cell only when both `showLabel=true` and the cell is at least 18 SVG-px wide and tall. For dense grids (e.g. 24 × 7) cells are typically too small to show labels; set `showLabel=false` for performance and readability.
 
