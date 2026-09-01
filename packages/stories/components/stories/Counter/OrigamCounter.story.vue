@@ -112,7 +112,7 @@
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="States">
-					<HstCheckbox v-model="state.active"   title="Active (visible)"/>
+					<HstCheckbox v-model="state.active"   title="Active (lit)"/>
 					<HstCheckbox v-model="state.disabled" title="Disabled"/>
 				</StoryGroup>
 				<StoryGroup title="Data">

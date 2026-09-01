@@ -11,25 +11,25 @@ import OrigamThemeProvider from '@origam/components/ThemeProvider/OrigamThemePro
 import { createOrigam } from '@origam/origam'
 
 /********************************************************
- *  KNOWN DEFECT — inheritAttrs:false without v-bind="$attrs"
+ *  FIXED DEFECT — inheritAttrs:false without v-bind="$attrs"
  *
  *  @description ⛔ issue #492
- *  `OrigamThemeProvider.vue` sets `defineOptions({ inheritAttrs: false })`
- *  and manually re-applies ONLY `class` via a computed
- *  (`themeProviderClasses`). There is no `v-bind="$attrs"` anywhere on the
- *  root `<component :is="tag">`. Every other attribute a consumer passes —
- *  `id`, `style`, `data-cy`, DOM event listeners — is silently dropped.
- *  Measured as the only component in the catalogue in this shape.
+ *  `OrigamThemeProvider.vue` set `defineOptions({ inheritAttrs: false })`
+ *  and manually re-applied ONLY `class` via a computed
+ *  (`themeProviderClasses`). There was no `v-bind="$attrs"` anywhere on the
+ *  root `<component :is="tag">`, so every other attribute a consumer
+ *  passed — `id`, `style`, `data-cy`, DOM event listeners — was silently
+ *  dropped. Measured as the only component in the catalogue in this shape.
  *
  *  @description
- *  `it.fails` here because the CORRECT behaviour (attrs reach the root) is
- *  what's asserted — it currently fails since only `class` survives.
+ *  Fix: `v-bind="restAttrs"` on the root, where `restAttrs` is `$attrs`
+ *  minus `class` (already merged separately into `themeProviderClasses` to
+ *  avoid emitting the class twice).
  *
- *  ⚠️ When this turns RED the defect is fixed — delete the `it.fails`
- *  wrapper (keep the assertions) rather than deleting the test.
+ *  ⚠️ Kept as a permanent regression probe per the ticket — do not delete.
  ********************************************************/
 describe('OrigamThemeProvider — inheritAttrs:false without v-bind="$attrs" (#492)', () => {
-    it.fails('id, style, data-cy and a click listener reach the root', async () => {
+    it('id, style, data-cy and a click listener reach the root', async () => {
         const onClick = vi.fn()
 
         const wrapper = mount(OrigamThemeProvider, {

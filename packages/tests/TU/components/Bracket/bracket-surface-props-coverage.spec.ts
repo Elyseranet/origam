@@ -67,15 +67,25 @@ describe('OrigamBracket — rounded*/border* style the match cards via inherited
         wrapper.unmount()
     })
 
-    it('borderTop sets ONLY the top-side match-card border-width var, not left', () => {
-        // resolveBracketBorderWidth only accepts a bare number, `true`/''`,
-        // or a named rung ('thin'/'thick') — a CSS-length STRING like '8px'
-        // falls through to `null` and is silently dropped. Confirmed by
-        // reading bracket-surface.util.ts before writing this test.
+    it('borderTop sets ONLY the top-side match-card border-width var, not left (bare number)', () => {
         const wrapper = mountBracket({ borderTop: 8 })
         const style = wrapper.find('.origam-bracket').attributes('style') ?? ''
         expect(style).toContain('--origam-bracket-match---border-top-width: 8px')
         expect(style).not.toContain('--origam-bracket-match---border-left-width:')
+        wrapper.unmount()
+    })
+
+    // #482 — `resolveBracketBorderWidth` used to accept ONLY a bare number,
+    // `true`/`''`, or a named rung ('thin'/'thick'): a free-form CSS-length
+    // STRING like '8px' fell through to `null` and was silently dropped —
+    // no error, no visibly broken render (the 1px default kept applying),
+    // so nothing signalled the value was ignored. `resolveBracketRadius`
+    // (the `rounded*` counterpart, same file) already accepted a free-form
+    // string; width now mirrors it via the same `convertToUnit` fallback.
+    it('borderTop="8px" (CSS-length STRING) sets the top-side match-card border-width var — #482', () => {
+        const wrapper = mountBracket({ borderTop: '8px' })
+        const style = wrapper.find('.origam-bracket').attributes('style') ?? ''
+        expect(style).toContain('--origam-bracket-match---border-top-width: 8px')
         wrapper.unmount()
     })
 

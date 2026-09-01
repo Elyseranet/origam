@@ -147,8 +147,16 @@ Defined in `tokens/component/window.json`.
 
 ## Accessibility
 
+- The root carries `role="region"` and `aria-roledescription="carousel"`,
+  per the WAI-ARIA Authoring Practices carousel pattern. Pass an
+  `aria-label` (it falls through automatically) to give the region an
+  accessible name when a page has more than one carousel.
 - Prev / next buttons receive an `aria-label` from the locale (default
   `origam.carousel.prev` / `origam.carousel.next`).
+- A visually-hidden `role="status"` / `aria-live="polite"` live region
+  announces the active slide (`origam.carousel.aria_label.delimiter`,
+  e.g. "Carousel slide 2 of 3") whenever it changes — via the prev/next
+  buttons, a swipe, or programmatic `v-model` navigation.
 - The active item is the only one rendered in the DOM transition phase;
   screen readers see one slide at a time.
 - Pair `direction="horizontal"` with `prefers-reduced-motion` and bind

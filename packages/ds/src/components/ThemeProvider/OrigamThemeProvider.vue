@@ -4,6 +4,7 @@
 			:class="themeProviderClasses"
 			:data-theme="dataTheme"
 			:data-mode="dataMode"
+			v-bind="restAttrs"
 	>
 		<slot/>
 	</component>
@@ -24,6 +25,7 @@
 		IThemeProviderSlots
 	} from '../../interfaces/ThemeProvider/theme-provider.interface'
 	import type { TModeResolved } from '../../types/Commons/theme.type'
+	import { omit } from '../../utils/Commons/commons.util'
 
 	defineOptions({ inheritAttrs: false })
 
@@ -48,6 +50,12 @@
 	const themeProviderClasses = computed(() => {
 		return ['origam-theme-provider', attrs.class]
 	})
+	// `class` is merged explicitly into `themeProviderClasses` above — strip it
+	// from the raw `$attrs` fallthrough so it isn't applied twice. Everything
+	// else (`id`, `style`, `data-cy`, event listeners, …) reaches the root
+	// unmodified. Issue #492: `inheritAttrs: false` was set with no fallthrough
+	// binding at all, so every non-`class` attribute was silently dropped.
+	const restAttrs = computed(() => omit(attrs as Record<string, unknown>, ['class']))
 
 	// Re-apply the named brand's per-component DEFAULT PROPS (`theme.components`)
 	// to this sub-tree, so props-first theming works in a scoped sub-tree — not

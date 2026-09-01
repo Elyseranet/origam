@@ -85,12 +85,23 @@ export function resolveBracketShadow (value: TBracketElevation): string | null {
     return typeof value === 'string' ? value : null
 }
 
-/** `border` → `border-width` (utility keyword / number / boolean). */
+/**
+ * `border` → `border-width` (utility keyword / number / boolean / free-form
+ * CSS length).
+ *
+ * #482 — this used to `return null` for any string outside the
+ * `none`/`thin`/`thick` table, silently dropping a free-form CSS length
+ * like `'8px'` (no error, no visual break — the 1px default kept applying,
+ * so nothing signalled the value was ignored). `resolveBracketRadius`
+ * above already falls through free-form strings via `convertToUnit`; this
+ * mirrors the same catch-all for width so the two stay consistent.
+ */
 export function resolveBracketBorderWidth (value: TBracketBorder): string | null {
     if (value == null || value === false) return null
     if (typeof value === 'string' && value in BORDER_WIDTH_VARS) return BORDER_WIDTH_VARS[value]
     if (value === true || value === '') return 'var(--origam-border__width---thin)'
     if (typeof value === 'number') return convertToUnit(value) ?? null
+    if (typeof value === 'string') return convertToUnit(value) ?? value
 
     return null
 }

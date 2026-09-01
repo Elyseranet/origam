@@ -63,12 +63,21 @@ treated as `px`.
 
 ```ts
 interface IDividerProps extends ICommonsComponentProps, IColorProps,
-    IMarginProps, IDirectionProps {
+    IBgColorProps, IMarginProps, IDirectionProps {
     inset?: boolean
     length?: number | string
     thickness?: number | string
 }
 ```
+
+| Prop | Type | Description |
+|---|---|---|
+| `direction` | `'horizontal' \| 'vertical'` | Orientation of the line (default `horizontal`). |
+| `inset` | `boolean` | Offsets the line's start (and, when vertical, both ends) by a fixed margin — see the tokens table. |
+| `length` | `number \| string` | Clamps the main axis (`max-width` horizontal / `max-height` vertical). Numbers are `px`, strings pass through verbatim. |
+| `thickness` | `number \| string` | Overrides the border width on the active edge (`border-top-width` horizontal / `border-right-width` vertical). Numbers are `px`. |
+| `color` / `bgColor` | `TIntent \| string` | Text/background intent forwarded to the `<hr>` via `useBothColor` — `color` tints the line through `currentColor`, `bgColor` paints a background behind it. |
+| `margin*` | (`IMarginProps`) | Standard spacing props. |
 
 ## Anatomy
 
@@ -80,31 +89,35 @@ interface IDividerProps extends ICommonsComponentProps, IColorProps,
 
 ## Design tokens consumed
 
-`<OrigamDivider>` reads from `tokens/component/divider.json`. Override
-at the document root or via a `:style` binding to re-skin a single
-instance.
+⛔ **Corrected 2026-08-31 (issue #419)** — the table below previously listed
+8 tokens the component's SCSS never reads (`--origam-divider---color`,
+`---margin-block`, the four `---padding-*` entries, and a `label` feature
+that does not exist in this component at all — `grep -n "label"
+OrigamDivider.vue` returns zero matches). Overriding those at the
+document root has **no visible effect**. The list below is the actually
+consumed set, verified against
+`packages/ds/src/components/Divider/OrigamDivider.vue`'s `<style>` block.
+Override via a `:style` binding on the instance, or the matching entry in
+`packages/ds/src/assets/css/tokens/light.css` / `dark.css` (and their
+`_light.scss` / `_dark.scss` twins) to re-skin every divider.
 
-| CSS variable | Token reference |
-|---|---|
-| `--origam-divider---color` | `{color.border.subtle}` |
-| `--origam-divider---thickness` | `{border.width.thin}` |
-| `--origam-divider---border-style` | `solid` |
-| `--origam-divider---opacity` | `{opacity.100}` |
-| `--origam-divider---margin-block` | `{space.0}` |
-| `--origam-divider---padding-block-start` | `{space.0}` |
-| `--origam-divider---padding-block-end` | `{space.0}` |
-| `--origam-divider---padding-inline-start` | `{space.0}` |
-| `--origam-divider---padding-inline-end` | `{space.0}` |
-| `--origam-divider---max-width` | (set inline by `length`, horizontal) |
-| `--origam-divider---max-height` | (set inline by `length`, vertical) |
-| `--origam-divider---border-top-width` | (set inline by `thickness`, horizontal) |
-| `--origam-divider---border-right-width` | (set inline by `thickness`, vertical) |
-| `--origam-divider__label---color` | `{color.text.secondary}` |
-| `--origam-divider__label---font-size` | `{font.size.sm}` |
-| `--origam-divider__label---padding-inline` | `{space.3}` |
+| CSS variable | Default | Read by |
+|---|---|---|
+| `--origam-divider---opacity` | `100%` | base rule, `opacity` |
+| `--origam-divider---border-top-width` | `thin` | base rule (horizontal), `border-top-width` — overridden inline when `thickness` is set |
+| `--origam-divider---border-right-width` | *(unset, falls to `thin`)* | `&--vertical`, `border-right-width` — overridden inline when `thickness` is set (vertical) |
+| `--origam-divider---max-width` | `100%` | base rule, `max-width` — overridden inline when `length` is set (horizontal) |
+| `--origam-divider---max-height` | `100%` | `&--vertical`, `max-height` — overridden inline when `length` is set (vertical) |
+| `--origam-divider--inset---margin-inline-start` | `16px` | `&--inset`, `margin-inline-start` / clamps `max-width` |
+| `--origam-divider--inset---margin-block-start` | `8px` | `&--inset.origam-divider--vertical`, `margin-block-start` / clamps `max-height` |
 
-The full list lives in
-`tokens/component/divider.json`.
+Declared in the token sheets but **not currently read** by this
+component (kept for a future revision — do not rely on them today):
+`--origam-divider---color`, `---thickness`, `---border-style`,
+`---margin-block`, the four `---padding-*` entries, and the three
+`--origam-divider__label---*` entries. `color`/`bgColor` styling is real
+but goes through `useBothColor` (inline `color`/`background-color`, not
+these named tokens) — see the Props table above.
 
 ## Accessibility
 

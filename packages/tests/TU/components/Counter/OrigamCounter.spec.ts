@@ -106,29 +106,47 @@ describe('OrigamCounter — error class', () => {
     })
 })
 
-describe('OrigamCounter — active prop (v-show)', () => {
-    it('is hidden via display:none when active=false', async () => {
-        const wrapper = mountCounter({ props: { active: false, value: 5 } })
+// FIX #407 — `active` used to be an undefined-by-default prop consumed by a
+// binary `v-show="active"`, so the doc's very first "Basic usage" example
+// (no `active` passed) rendered `display: none`. The doc's "Active /
+// inactive" section describes a DIM/LIT gradient ("dims when active is
+// false (default)... lights up when focused") backed by real tokens
+// (`color` / `color-active` / `opacity` / `opacity-active`) that were
+// declared but never read. The component now always renders — `active`
+// only toggles the `--active` class (opacity/color), never visibility.
+describe('OrigamCounter — active prop (dim / lit, no longer v-show)', () => {
+    it('defaults to false and stays VISIBLE (dimmed, not display:none)', async () => {
+        const wrapper = mountCounter({ props: { value: 5 } })
         await nextTick()
         const counter = wrapper.find('.origam-counter')
-        // v-show renders the element but hides it with display:none
         expect(counter.exists()).toBe(true)
-        expect(counter.isVisible()).toBe(false)
+        expect(counter.isVisible()).toBe(true)
+        expect(counter.classes()).not.toContain('origam-counter--active')
     })
 
-    it('is visible when active=true', async () => {
+    it('is visible and carries --active when active=false is not passed vs true', async () => {
         const wrapper = mountCounter({ props: { active: true, value: 5 } })
         await nextTick()
+        const counter = wrapper.find('.origam-counter')
+        expect(counter.isVisible()).toBe(true)
+        expect(counter.classes()).toContain('origam-counter--active')
+    })
+
+    it('stays visible (never display:none) when active=false is explicit', async () => {
+        const wrapper = mountCounter({ props: { active: false, value: 3 } })
+        await nextTick()
         expect(wrapper.find('.origam-counter').isVisible()).toBe(true)
     })
 
-    it('re-shows when active flips from false to true', async () => {
+    it('toggles the --active class at runtime rather than hiding/showing', async () => {
         const wrapper = mountCounter({ props: { active: false, value: 3 } })
         await nextTick()
-        expect(wrapper.find('.origam-counter').isVisible()).toBe(false)
+        expect(wrapper.find('.origam-counter').classes()).not.toContain('origam-counter--active')
         await wrapper.setProps({ active: true })
         await nextTick()
-        expect(wrapper.find('.origam-counter').isVisible()).toBe(true)
+        const counter = wrapper.find('.origam-counter')
+        expect(counter.isVisible()).toBe(true)
+        expect(counter.classes()).toContain('origam-counter--active')
     })
 })
 

@@ -38,13 +38,11 @@ export interface IThemeProviderProps extends ITagProps {
  * calls `emit(...)` nor uses a composable that would (no `useVModel`,
  * no `useGroupItem`).
  * @description
- * Known, unfixed bug — out of scope for this ticket: the component sets
- * `inheritAttrs: false` but never does `v-bind="$attrs"` on its root —
- * any listener a consumer attaches (`@click`, `@update:x`, …) is
- * silently swallowed, on top of `id` / `style` / `data-cy`. Even if
- * this component DID declare an emit, a consumer's matching `@xxx`
- * handler could never reach it through the current template. Confirms
- * the empty surface below is correct, not merely under-audited.
+ * The component sets `inheritAttrs: false` and re-applies `$attrs` (minus
+ * `class`, merged explicitly into the root's class list) via
+ * `v-bind="restAttrs"` — see issue #492. A consumer's `@click` / `@update:x`
+ * listener therefore lands on the root as a native DOM event listener, not
+ * as a component emit; this component still declares none of its own.
  ********************************************************/
 export interface IThemeProviderEmits {}
 
