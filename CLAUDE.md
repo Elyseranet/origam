@@ -108,6 +108,71 @@ Before claiming a fix:
 When in doubt, **stop and ask** rather than claim correctness. A wrong
 "it's fixed" wastes the user's testing cycle and erodes trust.
 
+## ⛔ `getComputedStyle` under jsdom NEVER resolves `var()` (mandatory) — #398
+
+**Under Vitest/jsdom, `getComputedStyle(el).someProperty` resolves LITERAL
+CSS values but never a `var(--x)` reference — the declaration is silently
+ignored and jsdom falls back to a fabricated UA default.** Measured,
+reproduced:
+
+```
+div NU              border-top-width = 16px
+div .avec-var       border-top-width = 16px    (règle : border-width: var(--tok), --tok = 3px)
+div .en-dur         border-top-width = 7px     (règle : border-width: 7px)
+--tok lue directement                = 3px
+```
+
+The default jsdom returns is **`16px`** — not `0`, not an empty string. It
+*looks* like a real measurement, which is what makes this trap dangerous in
+both directions:
+
+- **False "conforme"**: a test asserting `border-top-width === '16px'`
+  passes on an element that has **no border at all**.
+- **False "défaut"**: a test comparing two `var()`-driven values (e.g. two
+  `rounded` rungs) gets `16px` on both sides and concludes "the prop does
+  nothing" — on a prop that works correctly in a real browser.
+
+The custom property ITSELF stays readable
+(`getComputedStyle(el).getPropertyValue('--tok')` → `'3px'`), which is what
+completes the illusion: you can confirm the token is set correctly and
+wrongly conclude the property consuming it is too.
+
+Since this DS consumes tokens almost exclusively via `var(--origam-…)`,
+`getComputedStyle` under Vitest is **structurally blind** to most of the
+component style surface — not a rare edge case.
+
+**Plain literal declarations DO resolve correctly** (`border-width: 3px`, no
+`var()`) — this trap is specific to the `var()` indirection, not to
+`getComputedStyle` in general. It is also specific to styles that come from
+a **stylesheet rule**: an INLINE style set directly on the element
+(`el.style.x = '3px'` / a Vue `:style` binding with a literal value) resolves
+fine, because there is no cascade/custom-property resolution involved — only
+`var()` references inside a `<style>` block's declarations are affected.
+`<style scoped>` itself is ALSO never injected into jsdom's `document.head`
+at all — `document.head` after mounting a component only carries token
+sheets and `useStyle()`-generated rules, never the SFC's own scoped CSS.
+
+| Question | Reliable tool |
+|---|---|
+| Is a class emitted? | `wrapper.classes()` |
+| Does a `useStyle()`-generated rule contain the declaration? | Read the text of the `<style>` tag(s) `useStyle()` injects into `<head>` |
+| Does the **computed** property actually change? | **Playwright against Histoire — real browser, the only valid verdict** (`E2E_STATIC=1`, see "Running the full e2e suite" above) |
+
+This is the technical reason behind the existing "Don't claim it's fixed"
+rule above (§2, "grep the rendered class output OR ask for a screenshot") —
+it isn't a preference for rigor, it's that `getComputedStyle` under jsdom
+**measures something else** whenever `var()` is involved.
+
+A pre-existing internal harness already documents and works around this at
+length: `packages/tests/TU/probe/props-harness.ts` (search "jsdom does not
+implement CSS Custom Property resolution"). No blanket static-analysis guard
+enforces this repo-wide — most `getComputedStyle` calls in `TU/` assert on
+literal/inline values (legitimate), and distinguishing those from a
+`var()`-driven stylesheet assertion is not reliably inferable by grep alone
+without a high false-positive rate. Treat this section as the check to run
+by eye before trusting any `getComputedStyle` assertion on a CSS property
+this DS themes via a token.
+
 ## ⛔ `withDefaults()` — inline literals only (mandatory)
 
 Vue 3 SFC compiler statically analyses `withDefaults(defineProps<T>(), {…})`
