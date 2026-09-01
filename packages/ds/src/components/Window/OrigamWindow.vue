@@ -6,7 +6,18 @@
 			v-touch="touchOptions"
 			:class="windowClasses"
 			:style="windowStyles"
+			aria-roledescription="carousel"
+			role="region"
 	>
+		<p
+				class="origam-window__live-region"
+				role="status"
+				aria-atomic="true"
+				aria-live="polite"
+		>
+			{{ slideAnnouncement }}
+		</p>
+
 		<div
 				:style="windowContainerStyles"
 				class="origam-window__container"
@@ -157,6 +168,19 @@
 
 	const activeIndex = computed(() => {
 		return group.items.value.findIndex(item => group.selected.value.includes(item.id))
+	})
+
+	// #474 — the `origam.carousel.aria_label.delimiter` locale string
+	// ("Carousel slide {0} of {1}") was translated but never read anywhere
+	// in this component. A visually-hidden `role="status"` live region now
+	// renders it with the 1-based current slide / total substituted in, so
+	// assistive tech is told the slide changed after prev()/next()/swipe —
+	// not just that the (correctly labelled) nav buttons exist.
+	const slideAnnouncement = computed(() => {
+		const total = group.items.value.length
+		if (total === 0 || activeIndex.value < 0) return ''
+
+		return t('origam.carousel.aria_label.delimiter', activeIndex.value + 1, total)
 	})
 
 	watch(activeIndex, (newVal, oldVal) => {
@@ -329,6 +353,18 @@
 		$this: &;
 
 		overflow: var(--origam-window---overflow, hidden);
+
+		&__live-region {
+			position: absolute;
+			width: 1px;
+			height: 1px;
+			padding: 0;
+			margin: -1px;
+			overflow: hidden;
+			clip: rect(0, 0, 0, 0);
+			white-space: nowrap;
+			border: 0;
+		}
 
 		&__container {
 			display: var(--origam-window__container---display, flex);
