@@ -1337,7 +1337,7 @@
 				}
 
 				.origam-slider-field-track__tick {
-					margin-inline-start: calc(calc(var(--origam-slider-field-track---size) + 2px) / 2);
+					margin-inline-start: calc(calc(var(--origam-slider-field-track---size, 2) + 2px) / 2);
 					transform: translate(calc(var(--origam-slider-field-track---size, 2) / -2), calc(var(--origam-slider-field-track---size, 2) / 2));
 				}
 

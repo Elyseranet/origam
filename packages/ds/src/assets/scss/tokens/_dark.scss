@@ -29,6 +29,7 @@
   --origam-color__border---strong: var(--origam-color__neutral---400);
   --origam-color__border---focus: var(--origam-color__primary---400);
   --origam-color__action--primary---bg: var(--origam-color__primary---500);
+  --origam-color__accent---base: var(--origam-color__action--primary---bg);
   --origam-color__action--primary---bgHover: var(--origam-color__primary---400);
   --origam-color__action--primary---bgSubtle: var(--origam-color__primary---900);
   --origam-color__action--primary---bgDisabled: var(--origam-color__neutral---800);
@@ -39,6 +40,7 @@
   --origam-color__action--secondary---bgHover: var(--origam-color__neutral---700);
   --origam-color__action--secondary---bgDisabled: var(--origam-color__neutral---900);
   --origam-color__action--secondary---fg: var(--origam-color__neutral---100);
+  --origam-color__action--secondary---fgSubtle: var(--origam-color__neutral---300);
   --origam-color__action--secondary---fgDisabled: var(--origam-color__neutral---600);
   --origam-color__action--ghost---bg: rgba(0, 0, 0, 0);
   --origam-color__action--ghost---bgHover: var(--origam-color__neutral---800);
@@ -204,6 +206,7 @@
   --origam-card__before---opacity: var(--origam-opacity---100);
   --origam-card__before---z-index: -1;
   --origam-card__before---box-shadow: var(--origam-shadow---sm);
+  --origam-card---before-box-shadow: none;
   --origam-card__after---border-radius: inherit;
   --origam-card__after---bottom: var(--origam-space---0);
   --origam-card__after---content: "";
@@ -217,6 +220,7 @@
   --origam-card__after---z-index: 1;
   --origam-card__after---opacity: var(--origam-opacity---0);
   --origam-card__after---box-shadow: var(--origam-shadow---lg);
+  --origam-card---after-box-shadow: none;
   --origam-chip---background-color: var(--origam-color__surface---overlay);
   --origam-chip---color: var(--origam-color__text---primary);
   --origam-chip---backdrop-filter: none;
@@ -736,6 +740,7 @@
   --origam-drawer---flex-direction: column;
   --origam-drawer---position: absolute;
   --origam-drawer---z-index: var(--origam-zIndex---dropdown);
+  --origam-layout---transform: none;
   --origam-drawer---height: 100%;
   --origam-drawer---width: 100%;
   --origam-drawer---max-width: 100%;
@@ -2239,6 +2244,23 @@
   --origam-responsive---aspect-ratio-portrait: 0.75;
   --origam-responsive---max-width: 100%;
   --origam-responsive---overflow: hidden;
+  --origam-responsive---display: flex;
+  --origam-responsive---flex: inherit;
+  --origam-responsive---height: inherit;
+  --origam-responsive---max-height: inherit;
+  --origam-responsive---min-height: inherit;
+  --origam-responsive---min-width: inherit;
+  --origam-responsive---position: relative;
+  --origam-responsive---width: inherit;
+  --origam-responsive--inline---display: inline-flex;
+  --origam-responsive--inline---flex: inherit;
+  --origam-responsive__content---flex: 1 1 auto;
+  --origam-responsive__content---margin: inherit;
+  --origam-responsive__content---max-width: 100%;
+  --origam-responsive__sizer---flex: inherit;
+  --origam-responsive__sizer---padding-block-end: inherit;
+  --origam-responsive__sizer---pointer-events: none;
+  --origam-responsive__sizer---transition: inherit;
   --origam-parallax---aspect-ratio: 1.7778;
   --origam-parallax---transition-duration: var(--origam-motion__duration---slow);
   --origam-parallax---transition-timing-function: var(--origam-motion__easing---standard);
@@ -2291,6 +2313,7 @@
   --origam-grid---gap-xs: var(--origam-space---1);
   --origam-grid---gap-sm: var(--origam-space---2);
   --origam-grid---gap-md: var(--origam-space---4);
+  --origam-grid---gap: var(--origam-grid---gap-md);
   --origam-grid---gap-lg: var(--origam-space---6);
   --origam-grid---gap-xl: var(--origam-space---8);
   --origam-skeleton---background-color: var(--origam-color__surface---overlay);

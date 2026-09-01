@@ -192,7 +192,18 @@
 	const {scopeId} = useScopeId()
 
 	const uid = getUid()
-	const id = computed(() => props.id || `origam-menu--${uid}`)
+
+	/*********************************************************
+	 * id
+	 *
+	 * @description
+	 * Single tiret: this is a generated ELEMENT ID, not a BEM state
+	 * modifier — the repo's double-tiret grammar (`--{state}`) does not
+	 * apply here. See OrigamTooltip / OrigamConfirmWrapper /
+	 * OrigamCommandPalette for the same `${block}-${uid}` pattern.
+	 * Confirmed via #536.
+	 ********************************************************/
+	const id = computed(() => props.id || `origam-menu-${uid}`)
 
 	const origamOverlayRef = ref<TOrigamOverlay>()
 

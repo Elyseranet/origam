@@ -135,7 +135,7 @@
 		max-height: var(--origam-responsive---max-height);
 		max-width: var(--origam-responsive---max-width);
 		min-width: var(--origam-responsive---min-width);
-		min-height: var(--origam-responsive---min-width);
+		min-height: var(--origam-responsive---min-height);
 		overflow: var(--origam-responsive---overflow);
 		position: var(--origam-responsive---position);
 		width: var(--origam-responsive---width);

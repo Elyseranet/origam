@@ -1160,8 +1160,6 @@
     "--origam-zIndex---fixed",
     "--origam-zIndex---modal",
     "--origam-zIndex---overlay",
-    "--origam-zIndex---raised",
     "--origam-zIndex---sticky",
-    "--origam-zIndex---toast",
     "--origam-zIndex---tooltip"
 ]

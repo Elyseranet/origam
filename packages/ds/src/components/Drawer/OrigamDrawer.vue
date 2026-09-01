@@ -568,7 +568,7 @@
 			transition-property: var(--origam-drawer__scrim---transition-property, opacity);
 			transition-duration: var(--origam-drawer__scrim---transition-duration, var(--origam-motion__duration---medium));
 			transition-timing-function: var(--origam-drawer__scrim---transition-timing-function, var(--origam-motion__easing---standard));
-			z-index: var(--origam-drawer__scrim---z-index, var(--origam-z-index-raised));
+			z-index: var(--origam-drawer__scrim---z-index, var(--origam-zIndex---raised));
 		}
 
 		&__prepend,

@@ -164,6 +164,7 @@
 
 	const colorPickerPreviewStyles = computed(() => {
 		return [
+			{'--origam-color-picker-color-hsv': HSVtoCSS({...(colorHsv.value ?? COLOR_NULL), a: 1})},
 			props.style
 		] as StyleValue
 	})

@@ -239,7 +239,7 @@
 >
   .origam-snackbar-group {
     position: fixed;
-    z-index: var(--origam-snackbar-group---z-index, var(--origam-z-index-toast, 1060));
+    z-index: var(--origam-snackbar-group---z-index, var(--origam-zIndex---toast, 1060));
     pointer-events: none;
     max-width: var(--origam-snackbar-group---max-width, 420px);
     width: max-content;
