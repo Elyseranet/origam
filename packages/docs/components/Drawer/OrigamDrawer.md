@@ -92,14 +92,34 @@ Pass `scrim` (boolean or color) for the backdrop shown in temporary mode.
 
 ## Design tokens
 
+⛔ **Corrected 2026-08-31 (issue #419)** — 4 of the 6 entries below were
+written with a **double** tiret (`--origam-drawer--background`, `--color`,
+`--box-shadow`, `--transition-duration`), which in this project's naming
+convention denotes a *state modifier*
+(`--{component}--{state}---{property}`). The component's SCSS uses the
+**triple**-tiret plain form throughout
+(`packages/ds/src/components/Drawer/OrigamDrawer.vue`, verified against
+its `<style>` block). Copy-pasting the double-tiret spelling from the old
+table changed nothing, silently. Only `--origam-drawer---width` and
+`--origam-drawer__scrim---opacity` were already correct. The table below
+also adds the tokens the component reads that the old table omitted
+entirely.
+
 | CSS variable | Description |
 |---|---|
-| `--origam-drawer--background` | Drawer background. |
-| `--origam-drawer--color` | Drawer text color. |
-| `--origam-drawer--box-shadow` | Shadow in temporary mode. |
+| `--origam-drawer---background` | Drawer background. |
+| `--origam-drawer---color` | Drawer text color. |
+| `--origam-drawer---box-shadow` | Shadow in temporary mode. |
 | `--origam-drawer---width` | Drawer width (layout-driven). |
-| `--origam-drawer--transition-duration` | Open/close transition. |
+| `--origam-drawer---height` | Drawer height. |
+| `--origam-drawer---max-width` | Drawer max width. |
+| `--origam-drawer---border-color` / `---border-style` | Border color/style (all 4 sides). |
+| `--origam-drawer---border-{top,right,bottom,left}-width` | Per-side border width (`0` by default). |
+| `--origam-drawer---border-{start-start,start-end,end-start,end-end}-radius` | Per-corner logical radius (`none` by default). |
+| `--origam-drawer---transition-duration` / `---transition-property` / `---transition-timing-function` | Open/close transition. |
+| `--origam-drawer__scrim---background` | Backdrop color (default `color.overlay.scrim`). |
 | `--origam-drawer__scrim---opacity` | Backdrop opacity. |
+| `--origam-drawer__scrim---transition-duration` / `---transition-property` / `---transition-timing-function` | Backdrop fade transition. |
 
 ## Accessibility
 

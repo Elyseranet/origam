@@ -20,6 +20,38 @@ manages focus trapping, ARIA attributes, scroll blocking, and keyboard dismissal
 </template>
 ```
 
+## Props
+
+⛔ **Added 2026-08-31 (issue #419)** — this component had no Props table at
+all despite exposing ~20 props through `IOverlayProps` / `ICardProps` /
+`IStatusProps`. Grouped to mirror the story's own control groups
+(`packages/stories/components/stories/Dialog/OrigamDialog.story.vue`,
+Design + Functional Variants) rather than re-deriving an ad-hoc grouping.
+
+| Group | Prop | Type | Description |
+|---|---|---|---|
+| Behaviour | `fullscreen` | `boolean` | Dialog fills the viewport, no margin/rounding. |
+| | `scrollable` | `boolean` | Declared, forwarded to a `origam-dialog--scrollable` modifier class — no SCSS rule currently targets it, so it has **no visible effect** either way (issue #419, tracked open). The content area already scrolls internally regardless of this prop. |
+| | `retainFocus` | `boolean` | Loops focus inside the dialog with Tab / Shift+Tab. Default `true`. |
+| | `persistent` | `boolean` (from `IOverlayProps`) | Disables closing on `ESC` / outside click. |
+| | `disabled` | `boolean` (from `IOverlayProps`) | Prevents the activator from opening the dialog. |
+| Sizing | `size` | `'x-small' \| 'small' \| 'default' \| 'large' \| 'x-large'` | Preset width rung — see `--origam-dialog---width-*` tokens. |
+| | `density` | (from `ICardProps`) | Forwarded to the inner `<OrigamCard>`. |
+| Color | `color` / `bgColor` | `TIntent \| string` (from `ICardProps`) | Forwarded to the inner `<OrigamCard>`. |
+| Shape | `rounded`, `elevation`, `flat` | (from `ICardProps`) | Forwarded to the inner `<OrigamCard>`. |
+| Border | `border`, `borderColor`, `borderStyle` | (from `ICardProps`) | Forwarded to the inner `<OrigamCard>`. |
+| Status | `status`, `statusIconPosition` | (from `IStatusProps`) | Built-in status icon — see [Status / icon](#status--icon). |
+| Icons | `prependIcon`, `appendIcon`, `icon` | `TIcon` (from `ICardProps`) | Forwarded to the inner `<OrigamCard>` header. |
+| Content | `title`, `subtitle`, `text`, `image` | `string` (from `ICardProps`) | Forwarded to the inner `<OrigamCard>`. |
+| Dimension | `width`, `height` | `number \| string` (from `IOverlayProps` / `IDimensionProps`) | Sizes the content container. |
+| Accessibility | `closeLabel` | `string` | Accessible name (locale key) of the built-in close button — see [Accessibility](#accessibility). |
+
+`IDialogProps` also extends the full `IOverlayProps` surface (activator,
+location strategy, scroll strategy, lazy mount, transition, scrim — see
+[`OrigamOverlay`'s doc](../Overlay/OrigamOverlay.md)) and the full
+`ICardProps` surface beyond what's listed above — this table covers the
+props exercised by the component's own story, not every inherited prop.
+
 ## Fullscreen
 
 ```vue
@@ -30,7 +62,18 @@ manages focus trapping, ARIA attributes, scroll blocking, and keyboard dismissal
 
 ## Scrollable
 
-Enables scrolling inside the content area when it overflows.
+⛔ **Corrected 2026-08-31 (issue #419)** — `scrollable` is a real, typed
+prop that reaches a `origam-dialog--scrollable` class, but no SCSS rule
+in the codebase targets that class
+(`grep -rn "origam-dialog--scrollable" packages/ds/src/` returns exactly
+one line — the class assignment itself). Passing it, or not, currently
+produces **identical output**: the content area (`.origam-card__content`)
+already scrolls internally by default, unconditionally, whenever it
+exceeds the dialog's `max-height`. This is an open, unresolved defect —
+tracked in issue #419, not silently patched, since giving the prop a
+concrete meaning (e.g. toggling between "content scrolls internally" and
+"the whole dialog grows with the page") is a behaviour decision, not a
+one-line CSS fix.
 
 ```vue
 <template>
