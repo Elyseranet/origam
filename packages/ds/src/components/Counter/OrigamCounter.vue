@@ -5,7 +5,6 @@
 	>
 		<component
 				:is="tag"
-				v-show="active"
 				:id="id"
 				:class="counterClasses"
 				:style="counterStyles"
@@ -50,6 +49,7 @@
 	const props = withDefaults(defineProps<ICounterProps>(), {
 		value: 0,
 		tag: 'div',
+		active: false,
 		transition: () => ({component: OrigamSlideY}) as unknown as TTransitionProps
 	})
 
@@ -130,6 +130,7 @@
 		return [
 			'origam-counter',
 			{
+				'origam-counter--active': props.active,
 				'origam-counter--error': props.max && !props.disabled && parseFloat(props.value) > parseFloat(props.max)
 			},
 			colorClasses.value,
@@ -165,9 +166,13 @@
 	.origam-counter {
 		--origam-counter---density: 0px;
 
-		color: currentColor;
+		color: var(--origam-counter---color);
 		flex: 0 1 auto;
 		font-size: calc(var(--origam-counter---font-size, 12px) + var(--origam-counter---density));
+		font-weight: var(--origam-counter---font-weight);
+		letter-spacing: var(--origam-counter---letter-spacing);
+		padding-inline: var(--origam-counter---padding-inline);
+		opacity: var(--origam-counter---opacity);
 		transition-property: color, opacity;
 		transition-duration: var(--origam-counter---transition-duration, 150ms);
 
@@ -181,6 +186,15 @@
 
 		&--density-compact {
 			--origam-counter---density: -1px;
+		}
+
+		&--active {
+			color: var(--origam-counter---color-active);
+			opacity: var(--origam-counter---opacity-active);
+		}
+
+		&--error {
+			color: var(--origam-counter---color-error);
 		}
 	}
 </style>

@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test'
 
+import { fillHstNumber, toggleHstCheckbox } from './_support/histoire-controls'
+
 /**
  * OrigamCounter — suite e2e canonique
  *
@@ -185,6 +187,53 @@ test.describe('OrigamCounter', () => {
             const counter = sandbox.locator('.origam-counter').first()
             await expect(counter).toBeVisible(VIS)
             await expect(counter).toHaveClass(/origam-counter/)
+        })
+    })
+
+    // ------------------------------------------------------------------ //
+    // #407 — active toggle DIMS/LIGHTS UP the counter, never hides it,     //
+    // and value>max PAINTS an actual error colour (SCSS rule was missing) //
+    // Utilise la variante Functional (index 1) : init { active: true,     //
+    // value: 50, max: 100 }, contrôles "Active (lit)" (HstCheckbox) et    //
+    // "Value" / "Max" (HstNumber).                                        //
+    // ------------------------------------------------------------------ //
+
+    test.describe('#407 — active (dim/lit) & error colour', () => {
+        test('active=false DIMS the counter (lower opacity) but keeps it visible — no display:none', async ({ page }) => {
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const counter = sandbox.locator('.origam-counter').first()
+            await expect(counter).toBeVisible(VIS)
+
+            const activeOpacity = parseFloat(await counter.evaluate(el => getComputedStyle(el).opacity))
+            expect(activeOpacity).toBeCloseTo(1, 1)
+
+            await toggleHstCheckbox(page, 'Active (lit)')
+            // Toujours dans le DOM, toujours visible — plus jamais display:none.
+            await expect(counter).toBeVisible(VIS)
+            const display = await counter.evaluate(el => getComputedStyle(el).display)
+            expect(display).not.toBe('none')
+
+            const dimmedOpacity = parseFloat(await counter.evaluate(el => getComputedStyle(el).opacity))
+            expect(dimmedOpacity).toBeGreaterThan(0)
+            expect(dimmedOpacity).toBeLessThan(activeOpacity)
+        })
+
+        test('value > max paints origam-counter--error with a real (non-transparent) colour distinct from the base colour', async ({ page }) => {
+            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const counter = sandbox.locator('.origam-counter').first()
+            await expect(counter).toBeVisible(VIS)
+
+            const baseColor = await counter.evaluate(el => getComputedStyle(el).color)
+
+            await fillHstNumber(page, 'Value', 150)
+            await expect(counter).toHaveClass(/origam-counter--error/)
+
+            const errorColor = await counter.evaluate(el => getComputedStyle(el).color)
+            expect(errorColor).not.toBe('rgba(0, 0, 0, 0)')
+            expect(errorColor).not.toBe('transparent')
+            expect(errorColor).not.toBe(baseColor)
         })
     })
 
