@@ -398,12 +398,21 @@
 
 	/*********************************************************
 	 * Chips
+	 *
+	 * @description
+	 * `bgColor` / `color` are deliberately OMITTED (#411, same defect and
+	 * same fix as OrigamSelect's chips under #456 — commit 331d9b62) —
+	 * they used to be hardcoded RGB literals, identical to Select's,
+	 * hiding the chip behind whatever theme was active. `OrigamChip`'s
+	 * own SCSS already reads `var(--origam-chip---background-color)` /
+	 * `var(--origam-chip---color)` with no inline fallback, and the
+	 * token stylesheets declare both (`light.css`/`dark.css`), so
+	 * leaving them unset lets Chip resolve its own themed default
+	 * instead of this component overriding it.
 	 ********************************************************/
 	const chipSlotProps = (item: string): Record<string, unknown> => {
 		return {
 			closable: props.closableChips,
-			bgColor: 'rgba(168, 168, 168, 1)',
-			color: 'rgb(255, 255, 255)',
 			border: true,
 			rounded: true,
 			'onClick:close': (e: Event) => handleChipClose(e, item),
