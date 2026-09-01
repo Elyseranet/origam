@@ -9,7 +9,7 @@ non-HTTPS contexts and pre-permissions Safari / WebView builds.
 
 ```vue
 <template>
-    <!-- Built-in trigger: icon + "Copied!" label flip on success -->
+    <!-- Built-in trigger: an <origam-btn> whose icon swaps on success -->
     <origam-clipboard :value="userEmail" />
 
     <!-- Custom trigger via scoped slot -->
@@ -23,9 +23,18 @@ non-HTTPS contexts and pre-permissions Safari / WebView builds.
 </template>
 ```
 
-When no slot is provided the component renders a single button
-(`mdi:mdi-content-copy` icon) whose label appears next to the icon
-and flips to `feedbackText` while `copied` is true. There is no
+When no slot is provided the component renders a single
+**`<origam-btn>`** (icon `mdi:mdi-content-copy`, configurable via the
+`icon` prop). On success the button swaps to `copiedIcon`
+(`mdi:mdi-check`) and the feedback text appears in a **tooltip**, not
+inside the button.
+
+> **Changed.** The trigger used to be a raw `<button>` carrying the
+> feedback text inline, which widened it mid-interaction and placed a
+> transient `aria-live` region inside a control. The icon was a
+> module-level constant no consumer — and no theme — could reach.
+
+There is no
 separate pill, no mode prop, no double rendering. If you only want a
 different label/marker inside that same built-in button, pass a
 `#feedback` scoped slot (see below). If you need a richer feedback
@@ -39,7 +48,9 @@ want from `{ copy, copied, error }`.
 |--------------------|-----------|-------------|------------------------------------------------------------------------------------------------|
 | `value`            | `string`  | required    | Text written to the clipboard on `copy()`.                                                     |
 | `feedbackDuration` | `number`  | `2000`      | Duration (ms) the `copied` flag stays true after a successful write.                           |
-| `feedbackText`     | `string`  | `'Copied!'` | Label rendered in the built-in trigger while `copied` is true. Wrap with `t()` for full i18n.  |
+| `icon`             | `TIcon`   | `'mdi:mdi-content-copy'` | Icon of the built-in trigger at rest. Reachable by a theme.                        |
+| `copiedIcon`       | `TIcon`   | `'mdi:mdi-check'` | Icon swapped in while `copied` is true.                                                   |
+| `feedbackText`     | `string`  | `origam.clipboard.copied` | Text shown in the **tooltip** while `copied` is true. Falls back to the DS locale key. |
 | `successText`      | `string`  | `undefined` | Alias for `feedbackText`. Takes precedence when both are passed.                               |
 | `disabled`         | `boolean` | `false`     | Disables the trigger; `copy()` short-circuits.                                                 |
 | `tag`              | `string`  | `'span'`    | Root element tag.                                                                              |

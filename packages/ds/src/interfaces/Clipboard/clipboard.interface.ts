@@ -11,6 +11,7 @@ import type { IMarginProps } from '../Commons/margin.interface'
 import type { IPaddingProps } from '../Commons/padding.interface'
 import type { IRoundedProps } from '../Commons/rounded.interface'
 import type { ITypographyProps } from '../Commons/typography.interface'
+import type { TIcon } from '../../types/Icon/icon.type'
 
 /**
  * Props for `<OrigamClipboard>` — copy-to-clipboard wrapper.
@@ -54,6 +55,25 @@ export interface IClipboardProps extends ICommonsComponentProps, ITagProps, ICol
      * codebase.
      */
     successText?: string
+    /**
+     * Icon rendered by the built-in trigger at rest.
+     *
+     * Was a module-level constant (`MDI_ICONS.CONTENT_COPY`) with no way
+     * for a consumer to change it — the classeur flagged it, and an icon
+     * a consumer cannot pick is a dead surface. Now a real prop, so the
+     * theme's `components['origam-clipboard']` block can set it too.
+     *
+     * @default 'mdi:mdi-content-copy'
+     */
+    icon?: TIcon
+    /**
+     * Icon swapped in while `copied` is true. Lets the trigger acknowledge
+     * the copy on its own, without the label change that used to widen the
+     * button mid-interaction.
+     *
+     * @default 'mdi:mdi-check'
+     */
+    copiedIcon?: TIcon
     /**
      * Disables the copy action. The default trigger becomes
      * non-interactive (`disabled` attribute) and `copy()` becomes a
@@ -100,12 +120,18 @@ export interface IClipboardSlots {
      */
     default?: (bindings: IClipboardScopedSlotBindings) => any
     /**
-     * Custom feedback marker rendered inside the built-in trigger
-     * button while `copied` is true, replacing the default
-     * `feedbackText` label. Only applies to the built-in trigger —
-     * has no effect when `#default` is overridden with a custom
-     * trigger (there's no button to render it in). Scoped — receives
-     * the boolean for symmetry with the default slot.
+     * Custom feedback content rendered **inside the tooltip** that opens
+     * while `copied` is true, replacing the default `feedbackText`.
+     *
+     * It used to render inside the trigger button itself, which widened
+     * the button mid-interaction and put a transient `aria-live` region
+     * inside a control. The acknowledgement now lives in a tooltip and
+     * the button only swaps its icon.
+     *
+     * Only applies to the built-in trigger — has no effect when
+     * `#default` is overridden with a custom trigger (there is no
+     * tooltip to render it in). Scoped — receives the boolean for
+     * symmetry with the default slot.
      */
     feedback?: (bindings: { copied: boolean }) => any
 }

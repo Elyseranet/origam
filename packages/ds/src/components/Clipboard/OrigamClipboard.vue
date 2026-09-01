@@ -12,32 +12,31 @@
 				:copied="copied"
 				:error="error"
 		>
-			<button
-					type="button"
-					class="origam-clipboard__default-trigger"
-					:class="{ 'origam-clipboard__default-trigger--copied': copied }"
-					:style="typographyStyles"
-					:disabled="disabled"
-					:aria-label="defaultAriaLabel"
-					data-cy="origam-clipboard-default-trigger"
-					@click="handleCopy"
+			<origam-tooltip
+					:model-value="copied"
+					:text="resolvedFeedbackText"
+					location="top"
 			>
-				<origam-icon
-						:icon="defaultIcon"
-						class="origam-clipboard__default-icon"
-						aria-hidden="true"
-				/>
-				<slot
-						v-if="copied"
-						name="feedback"
-						:copied="copied"
-				>
-					<span
-							class="origam-clipboard__default-label"
-							aria-live="polite"
-					>{{ resolvedFeedbackText }}</span>
-				</slot>
-			</button>
+				<template #activator="{props: tooltipProps}">
+					<origam-btn
+							v-bind="tooltipProps"
+							class="origam-clipboard__default-trigger"
+							:class="{ 'origam-clipboard__default-trigger--copied': copied }"
+							:icon="triggerIcon"
+							:disabled="disabled"
+							:aria-label="defaultAriaLabel"
+							data-cy="origam-clipboard-default-trigger"
+							@click="handleCopy"
+					/>
+				</template>
+
+				<template #default>
+					<slot
+							name="feedback"
+							:copied="copied"
+					>{{ resolvedFeedbackText }}</slot>
+				</template>
+			</origam-tooltip>
 		</slot>
 	</component>
 </template>
@@ -52,7 +51,8 @@
 		type StyleValue
 	} from 'vue'
 
-	import { OrigamIcon } from '../Icon'
+	import { OrigamBtn } from '../Btn'
+	import { OrigamTooltip } from '../Tooltip'
 
 	import { useBorder } from '../../composables/Commons/border.composable'
 	import { useBothColor } from '../../composables/Commons/bothColor.composable'
@@ -63,7 +63,6 @@
 	import { useRounded } from '../../composables/Commons/rounded.composable'
 	import { useTypography } from '../../composables/Commons/typography.composable'
 
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
 	import type { IClipboardProps } from '../../interfaces/Clipboard/clipboard.interface'
 
@@ -87,9 +86,11 @@
 	const props = withDefaults(defineProps<IClipboardProps>(), {
 		tag: 'span',
 		feedbackDuration: 2000,
-		feedbackText: 'Copied!',
+		feedbackText: undefined,
 		successText: undefined,
-		disabled: false
+		disabled: false,
+		icon: 'mdi:mdi-content-copy',
+		copiedIcon: 'mdi:mdi-check'
 	})
 
 	const emit = defineEmits<IClipboardEmits>()
@@ -109,7 +110,9 @@
 	const { marginClasses, marginStyles } = useMargin(props)
 	const { paddingClasses, paddingStyles } = usePadding(props)
 	// BEM-child surface: vars are read by .origam-clipboard__default-trigger
-	// (font-size / font-weight). Bound directly on that element, not the root.
+	// (font-size / font-weight), but BOUND ON THE ROOT — custom properties
+	// inherit, and a DS component does not necessarily forward a received
+	// :style down to its rendered root element.
 	const { typographyStyles } = useTypography(props, 'clipboard__feedback')
 
 	/*********************************************************
@@ -125,9 +128,23 @@
 	 ********************************************************/
 	const { t } = useLocale()
 
-	const resolvedFeedbackText = computed(() => props.successText ?? props.feedbackText ?? 'Copied!')
+	const resolvedFeedbackText = computed(() => props.successText ?? props.feedbackText ?? t('origam.clipboard.copied'))
 
-	const defaultIcon = MDI_ICONS.CONTENT_COPY
+	/*********************************************************
+	 * triggerIcon — swaps to the acknowledgement icon while `copied`.
+	 *
+	 * @description
+	 * Both sides are now props (`icon` / `copiedIcon`) instead of the
+	 * module-level `MDI_ICONS.CONTENT_COPY` constant this component used
+	 * to hardcode: an icon a consumer could not pick was a dead surface,
+	 * and a theme could not reach it either.
+	 *
+	 * @description
+	 * Read inside a `computed`, never eagerly in the `setup()` body —
+	 * ADR-005: the theme props resolver writes in `beforeCreate`, AFTER
+	 * `setup()` runs, so a value captured eagerly never sees the theme.
+	 ********************************************************/
+	const triggerIcon = computed(() => copied.value ? props.copiedIcon : props.icon)
 
 	const defaultAriaLabel = computed(() => copied.value
 		? t('origam.clipboard.copied_aria_label')
@@ -166,6 +183,13 @@
 	])
 
 	const rootStyles = computed<StyleValue>(() => [
+		// Les --origam-clipboard__feedback---* vivent sur la RACINE, pas sur le
+		// declencheur : ce sont des proprietes personnalisees, donc elles
+		// HERITENT jusqu'au bouton, ou la regle SCSS
+		// .origam-clipboard__default-trigger les lit. Les poser sur
+		// <origam-btn> ne fonctionnait pas — un composant DS ne fait pas
+		// forcement redescendre un :style recu jusqu'a l'element racine rendu.
+		typographyStyles.value,
 		colorStyles.value,
 		borderStyles.value,
 		roundedStyles.value,
@@ -199,50 +223,32 @@
 		cursor: not-allowed;
 	}
 
+	/*********************************************************
+	 * __default-trigger — now an <origam-btn>, not a raw <button>.
+	 *
+	 * @description
+	 * The reset that used to live here (`all: unset` + a hand-rolled
+	 * hover / focus-visible / disabled chrome) existed only because the
+	 * trigger was a bare `<button>`. Applied to an `<origam-btn>` it would
+	 * strip the DS button's own surface — its variant, density, focus ring
+	 * and disabled treatment — and we would be re-implementing in this file
+	 * what the DS already owns. It is gone.
+	 *
+	 * @description
+	 * What remains is what the CLIPBOARD, and only it, has to say: the
+	 * typography channel its own `--origam-clipboard__feedback---*` tokens
+	 * drive, and the acknowledged state. Everything else is the button's.
+	 ********************************************************/
 	.origam-clipboard__default-trigger {
-		all: unset;
-		box-sizing: border-box;
-		cursor: pointer;
-		display: inline-flex;
-		align-items: center;
-		gap: var(--origam-clipboard__feedback---gap, 4px);
-		padding: var(--origam-clipboard__feedback---padding-block, 4px)
-		         var(--origam-clipboard__feedback---padding-inline, 8px);
-		border-radius: var(--origam-clipboard__feedback---border-radius, 4px);
 		font-size: var(--origam-clipboard__feedback---font-size, 0.75rem);
 		font-weight: var(--origam-clipboard__feedback---font-weight, 500);
-		color: var(--origam-color__text---secondary);
 		transition: color var(--origam-clipboard__feedback---transition-duration, 160ms) ease,
 		            background-color var(--origam-clipboard__feedback---transition-duration, 160ms) ease;
-	}
-
-	.origam-clipboard__default-trigger:hover:not(:disabled) {
-		color: var(--origam-color__text---primary);
-		background-color: var(--origam-color__surface---raised);
-	}
-
-	.origam-clipboard__default-trigger:focus-visible {
-		outline: 2px solid var(--origam-color__action--primary---bg);
-		outline-offset: 2px;
-	}
-
-	.origam-clipboard__default-trigger:disabled {
-		opacity: 0.5;
-		cursor: not-allowed;
 	}
 
 	.origam-clipboard__default-trigger--copied {
 		color: var(--origam-clipboard__feedback---color);
 		background-color: var(--origam-clipboard__feedback---bg-color);
-	}
-
-	.origam-clipboard__default-icon {
-		font-size: 1.125em;
-		line-height: 1;
-	}
-
-	.origam-clipboard__default-label {
-		font: inherit;
 	}
 
 </style>

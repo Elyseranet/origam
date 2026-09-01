@@ -1,0 +1,23 @@
+Ligne	Composant	Colonne	Ancien	Nouveau	Preuve (commit + verification)
+L188	OrigamThemeProvider	C6	defaut	conforme	#492 — v-bind="restAttrs" sur la racine, class extraite pour ne pas etre appliquee 2x. Verifie sur develop.
+L188	OrigamThemeProvider	Gravite max	bloquant	aucun	seul defaut de la ligne, corrige
+L55	OrigamChip	C6	defaut	conforme	a11y — la racine rend un vrai <button type=button> quand le content model l'autorise (pas si closable/zone focusable). 80/80 e2e.
+L55	OrigamChip	Gravite max	majeur	aucun	seul defaut de la ligne, corrige
+L117	OrigamInfiniteScroll	C1	defaut	conforme	#423 — hasStartIntersect->hasEndIntersect : le bloc de fin ne s'affichait JAMAIS avec side=end (le defaut). 7/7 e2e.
+L117	OrigamInfiniteScroll	C8	defaut	conforme	#423 — text="Load more" en dur -> t(loadMoreText), cle presente en/fr.
+L117	OrigamInfiniteScroll	Gravite max	majeur	aucun	les 2 defauts de la ligne corriges
+L89	OrigamDatePickerField	C2	defaut	conforme	#411 — couleurs de chip en dur retirees, le canal du theme les atteint.
+L89	OrigamDatePickerField	Gravite max	majeur	aucun	seul defaut de la ligne, corrige
+L6	OrigamAvatar	C6	defaut	conforme	contraste — cause dans origam.theme.ts (color:'primary' force pre-emptait l'auto-contraste). Mesure Chromium : 5,17 / 6,59 / 4,83:1, AA partout.
+L176	OrigamSwitch	C2	defaut	conforme	#471 — couleur d'etat erreur en dur (rouge/blanc) retiree du canal theme.
+L176	OrigamSwitch	Gravite max	mineur	aucun	seul defaut de la ligne, corrige
+L169	OrigamSliderField	C2	defaut	conforme	#465 — 3 couleurs brutes en dur retirees (erreur, rail).
+L169	OrigamSliderField	C5	defaut	conforme	#468 — couverture reverse/indexFromEnd retablie (perdue par #466).
+L216	OrigamWindow	C6	defaut	conforme	#474 — cle de locale a11y cablee, la live-region annonce enfin.
+L69	OrigamCounter	C1	defaut	conforme	#407 — v-show sur une prop undefined rendait le composant INVISIBLE ; 0 occurrence restante. Classe --error : regle SCSS ecrite.
+L69	OrigamCounter	C7	defaut	conforme	#407 — la doc decrivait un degrade inexistant, corrigee.
+L18	OrigamBtn	C1	defaut	conforme	#391 — border peignait dans le vide (2 variables differentes). Mesure navigateur : 0px sans border, 1px sur 4 cotes avec, border=top peint le seul cote haut.
+L18	OrigamBtn	C7	defaut	conforme	#391 — border standalone n'etait pas documente (il ne marchait pas).
+L30	OrigamChartBullet	C7	defaut	conforme	#426 — colorScheme documente comme sans effet + console.warn dev. La doc cesse de mentir.
+L31	OrigamChartCandlestick	C7	defaut	conforme	#426 — idem.
+L37	OrigamChartMap	C7	defaut	conforme	#426 — idem.

@@ -141,6 +141,7 @@
       "aria_label": "QR code pour {value}"
     },
     "clipboard": {
+      "copied": "Copié !",
       "copy_aria_label": "Copier dans le presse-papier",
       "copied_aria_label": "Valeur copiée dans le presse-papier"
     },
