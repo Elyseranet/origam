@@ -466,6 +466,20 @@
 			opacity: 0.95;
 		}
 
+		// #511 — `origam-bracket-match--final` was posed on `is-final` matches
+		// (OrigamBracketRound.vue wires it for the last match of the last
+		// round) with NO matching rule: a final rendered pixel-identical to
+		// any other match. Follows the same `--{state}---{prop}` var grammar
+		// as `&--hover` above; the fallback chain matches the token #436
+		// proposed (`color.surface.raised`) plus a primary-accent border/
+		// shadow so a final is visually distinguishable even before that
+		// component-token file exists.
+		&--final {
+			background-color: var(--origam-bracket-match--final---background-color, var(--origam-color__surface---raised, #fff));
+			border-color: var(--origam-bracket-match--final---border-color, var(--origam-color__action--primary---bg, #7c3aed));
+			box-shadow: var(--origam-bracket-match--final---box-shadow, 0 2px 8px rgba(124, 58, 237, 0.24));
+		}
+
 		&--density-compact {
 			--origam-bracket-match---min-height: 56px;
 			--origam-bracket-competitor---height: 28px;

@@ -232,3 +232,26 @@ describe('OrigamBracketMatch — click emits', () => {
         wrapper.unmount()
     })
 })
+
+// ---------------------------------------------------------------------------
+// #511 — `isFinal` -> `origam-bracket-match--final` class wiring.
+//
+// This only proves the prop -> class link (jsdom never resolves scoped SCSS
+// custom properties — see root CLAUDE.md). The class -> real computed style
+// link (background/border/box-shadow actually differ from a non-final
+// match) is proven separately, against a real browser, in
+// packages/tests/e2e/bracket.spec.ts.
+// ---------------------------------------------------------------------------
+describe('OrigamBracketMatch — #511 isFinal class wiring', () => {
+    it('adds origam-bracket-match--final when isFinal=true', () => {
+        const wrapper = mountMatch({}, { isFinal: true })
+        expect(wrapper.classes()).toContain('origam-bracket-match--final')
+        wrapper.unmount()
+    })
+
+    it('does NOT add origam-bracket-match--final when isFinal=false (default)', () => {
+        const wrapper = mountMatch()
+        expect(wrapper.classes()).not.toContain('origam-bracket-match--final')
+        wrapper.unmount()
+    })
+})
