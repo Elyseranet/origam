@@ -20,6 +20,7 @@ import { mount, type VueWrapper } from '@vue/test-utils'
 import { computed, defineComponent, nextTick } from 'vue'
 
 import OrigamSliderField from '@origam/components/SliderField/OrigamSliderField.vue'
+import OrigamSliderFieldTrack from '@origam/components/SliderField/OrigamSliderFieldTrack.vue'
 import { createOrigam } from '@origam/origam'
 
 // ---------------------------------------------------------------------------
@@ -281,5 +282,84 @@ describe('OrigamSliderField — vertical direction', () => {
     it('does NOT add --horizontal when direction=vertical', () => {
         const wrapper = mountSlider({ props: { direction: 'vertical' } })
         expect(wrapper.find('.origam-slider-field--horizontal').exists()).toBe(false)
+    })
+})
+
+/*
+ * #468 — `reverse` was left uncovered after #466 removed the only test
+ * that mentioned it (correctly: that test asserted a dead `--reverse`
+ * class with no matching SCSS rule — vacant green). The prop is real:
+ * `indexFromEnd = isVertical !== isReversed` is computed in
+ * OrigamSliderField.vue and consumed by OrigamSliderFieldTrack's
+ * `startDir` (`inset-{inline|block}-{start|end}`).
+ *
+ * Two layers, both required per the ticket's explicit pitfall warning
+ * (comparing two renders' `.html()` passes even when the prop is dead,
+ * because auto-generated `id`s already differ):
+ *   1. WIRING — OrigamSliderField really passes the right `indexFromEnd`
+ *      boolean down to the (stubbed) Track for every reverse × direction
+ *      combination — proves the computed, not just "something changed".
+ *   2. OUTPUT — the REAL OrigamSliderFieldTrack (not the stub) turns
+ *      `indexFromEnd` into the actual `inset-inline-*` / `inset-block-*`
+ *      inline style the ticket asks to observe.
+ */
+describe('OrigamSliderField — #468 reverse wiring (indexFromEnd)', () => {
+    const trackOf = (wrapper: VueWrapper) => wrapper.findComponent(OrigamSliderFieldTrackStub)
+
+    it('reverse=false, horizontal (default) — indexFromEnd is false', () => {
+        const wrapper = mountSlider({ props: { reverse: false } })
+        expect(trackOf(wrapper).props('indexFromEnd')).toBe(false)
+    })
+
+    it('reverse=true, horizontal — indexFromEnd is true', () => {
+        const wrapper = mountSlider({ props: { reverse: true } })
+        expect(trackOf(wrapper).props('indexFromEnd')).toBe(true)
+    })
+
+    it('reverse=false, vertical — indexFromEnd is true (isVertical !== isReversed)', () => {
+        const wrapper = mountSlider({ props: { reverse: false, direction: 'vertical' } })
+        expect(trackOf(wrapper).props('indexFromEnd')).toBe(true)
+    })
+
+    it('reverse=true, vertical — indexFromEnd is false (XOR cancels out)', () => {
+        const wrapper = mountSlider({ props: { reverse: true, direction: 'vertical' } })
+        expect(trackOf(wrapper).props('indexFromEnd')).toBe(false)
+    })
+})
+
+describe('OrigamSliderFieldTrack — #468 startDir renders the actual inset side', () => {
+    function mountTrack (props: Record<string, unknown>) {
+        return mount(OrigamSliderFieldTrack, {
+            global: { plugins: [createOrigam()] },
+            props
+        })
+    }
+
+    it('indexFromEnd=false, horizontal — background renders inset-inline-start, not inset-inline-end', () => {
+        const wrapper = mountTrack({ isVertical: false, indexFromEnd: false })
+        const style = wrapper.find('.origam-slider-field-track__background').attributes('style') ?? ''
+        expect(style).toContain('inset-inline-start')
+        expect(style).not.toContain('inset-inline-end')
+    })
+
+    it('indexFromEnd=true, horizontal — background renders inset-inline-end, not inset-inline-start', () => {
+        const wrapper = mountTrack({ isVertical: false, indexFromEnd: true })
+        const style = wrapper.find('.origam-slider-field-track__background').attributes('style') ?? ''
+        expect(style).toContain('inset-inline-end')
+        expect(style).not.toContain('inset-inline-start')
+    })
+
+    it('indexFromEnd=false, vertical — background renders inset-block-start', () => {
+        const wrapper = mountTrack({ isVertical: true, indexFromEnd: false })
+        const style = wrapper.find('.origam-slider-field-track__background').attributes('style') ?? ''
+        expect(style).toContain('inset-block-start')
+        expect(style).not.toContain('inset-block-end')
+    })
+
+    it('indexFromEnd=true, vertical — background renders inset-block-end (reverse=true + direction=vertical combo)', () => {
+        const wrapper = mountTrack({ isVertical: true, indexFromEnd: true })
+        const style = wrapper.find('.origam-slider-field-track__background').attributes('style') ?? ''
+        expect(style).toContain('inset-block-end')
+        expect(style).not.toContain('inset-block-start')
     })
 })
