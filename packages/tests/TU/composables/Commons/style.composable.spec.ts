@@ -374,3 +374,37 @@ describe('useStyle — declaration filtering', () => {
         expect(api.css.value).toBe('#obj-id {color: red;font-size: 14px}')
     })
 })
+
+// ---------------------------------------------------------------------------
+// useStyle — camelCase → kebab-case (#536)
+//
+// REGRESSION. Vue's `StyleValue` objects carry JS-side camelCase keys
+// (`zIndex`, `backgroundColor`) because that's what `element.style[key] = …`
+// and `:style="…"` bindings accept — the DOM normalises camelCase for you.
+// `useStack()`'s `stackStyles` (`{ zIndex: N }`) is a real, shipping example
+// fed straight into `useStyle()` (`OrigamSnackbarGroup.vue`, `OrigamOverlay`'s
+// stack machinery). Serialised verbatim, `zIndex: 2000` is not valid CSS —
+// only `z-index: 2000` is — so the declaration silently dropped and the
+// z-index never applied. Confirmed while investigating issue #536.
+// ---------------------------------------------------------------------------
+
+describe('useStyle — camelCase keys are kebab-cased (#536)', () => {
+    it('a camelCase JS style key (zIndex) is serialised as valid kebab-case CSS', () => {
+        const api = styleHost('z-index-id', [{ zIndex: 2000 }])
+
+        expect(api.css.value).toBe('#z-index-id {z-index: 2000}')
+        expect(api.css.value).not.toContain('zIndex')
+    })
+
+    it('multiple camelCase keys are all converted', () => {
+        const api = styleHost('multi-camel-id', [{ backgroundColor: 'red', borderTopWidth: '2px' }])
+
+        expect(api.css.value).toBe('#multi-camel-id {background-color: red;border-top-width: 2px}')
+    })
+
+    it('a CSS custom property key is left untouched (case-sensitive, never camelCase)', () => {
+        const api = styleHost('custom-prop-id', [{ '--origam-btn---zIndexLike': '3' }])
+
+        expect(api.css.value).toBe('#custom-prop-id {--origam-btn---zIndexLike: 3}')
+    })
+})

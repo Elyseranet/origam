@@ -372,10 +372,9 @@
     $this: &;
 
     justify-content: center;
-    z-index: var(--origam-snackbar---z-index, var(--origam-z-index-toast, 1060));
+    z-index: var(--origam-snackbar---z-index, var(--origam-zIndex---toast, 1060));
     margin: var(--origam-snackbar---margin, 8px);
     margin-inline-end: calc(var(--origam-snackbar---margin, 8px) + 0px);
-    padding: var(--origam-layout---position-top) var(--origam-layout---position-right) var(--origam-layout---position-bottom) var(--origam-layout---position-left);
 
     &:not(#{$this}--center) {
       &:not(#{$this}--top) {
@@ -487,7 +486,7 @@
 
     &--absolute {
       position: absolute;
-      z-index: var(--origam-snackbar--absolute---z-index, var(--origam-z-index-raised, 1));
+      z-index: var(--origam-snackbar--absolute---z-index, var(--origam-zIndex---raised, 1));
     }
 
     &__item--multi-line {

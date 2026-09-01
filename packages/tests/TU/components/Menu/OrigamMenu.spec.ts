@@ -83,6 +83,28 @@ async function mountMenuThemed(componentDefaults: Record<string, unknown>, props
     return wrapper
 }
 
+// REGRESSION (#536). The generated element id used a double tiret
+// (`origam-menu--${uid}`), which in this repo's CSS variable/BEM grammar
+// codes a STATE modifier (`--{state}`), not an identity. Every other
+// component generating a fallback id (OrigamTooltip, OrigamConfirmWrapper,
+// OrigamCommandPalette, …) uses a single tiret (`${block}-${uid}`); Menu was
+// the only outlier. Verified against the fix in OrigamMenu.vue.
+describe('OrigamMenu — generated id grammar (#536)', () => {
+    it('the auto-generated id uses a single tiret, matching every other component\'s `${block}-${uid}` pattern', async () => {
+        const origam = createOrigam({})
+        const wrapper = mount(OrigamMenu, {
+            props: { modelValue: true },
+            attachTo: document.body,
+            global: makeGlobal([origam])
+        })
+        await nextTick()
+
+        const id = (wrapper.vm as unknown as { id: string }).id
+        expect(id).toMatch(/^origam-menu-[^-]/)
+        expect(id).not.toMatch(/^origam-menu--/)
+    })
+})
+
 describe('OrigamMenu — useDefaults (theme components wiring)', () => {
     it('resolves rounded="lg" from theme.components[\'origam-menu\'] on the __content BEM-child (not the teleport root)', async () => {
         const wrapper = await mountMenuThemed({ rounded: 'lg' })

@@ -23,6 +23,28 @@ import { useStyleTag } from './styleTag.composable'
  * discards the whole sheet with "Could not parse CSS stylesheet". Same
  * reasoning for numbers — a bare `0` is not a declaration either.
  */
+/*********************************************************
+ * toKebabCase
+ *
+ * @description
+ * Vue's `StyleValue` objects carry JS-side camelCase keys (`zIndex`,
+ * `backgroundColor`) because that's what `element.style[key] = …` and
+ * `:style="…"` bindings accept — the DOM normalises camelCase to the real
+ * CSS property for you.
+ *
+ * @description
+ * `toDeclarations` below serialises the SAME bag into literal CSS text
+ * instead, which the DOM never sees and never normalises: `zIndex: 2000` is
+ * not a CSS declaration, `z-index: 2000` is. A custom property
+ * (`--origam-…`) is left untouched — its name is case-sensitive and is
+ * never camelCase to begin with. Confirmed as a real, shipping bug while
+ * investigating issue #536 (`useStack()`'s `stackStyles` feeds `{ zIndex }`
+ * straight into `useStyle()`).
+ ********************************************************/
+function toKebabCase (key: string): string {
+    return key.startsWith('--') ? key : key.replace(/[A-Z]/g, (letter) => `-${letter.toLowerCase()}`)
+}
+
 function toDeclarations (value: unknown): string[] {
     if (value == null || typeof value === 'boolean' || typeof value === 'number') return []
 
@@ -35,7 +57,7 @@ function toDeclarations (value: unknown): string[] {
 
         return Object.keys(bag)
             .filter((key) => typeof bag[key] !== 'undefined')
-            .map((key) => `${key}: ${bag[key]}`)
+            .map((key) => `${toKebabCase(key)}: ${bag[key]}`)
     }
 
     return []
