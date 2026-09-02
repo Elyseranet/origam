@@ -2,14 +2,15 @@
 	<origam-selection-control
 			:id="id"
 			ref="origamSelectionControlRef"
+			v-bind="controlProps"
 			v-model="model"
 			:aria-checked="indeterminate ? 'mixed' : undefined"
 			:class="checkboxBtnClasses"
 			:false-icon="falseIcon"
 			:style="checkboxBtnStyles"
 			:true-icon="trueIcon"
+			:value="value"
 			type="checkbox"
-			v-bind="controlProps"
 			@update:model-value="handleChange"
 			@click:label="handleClickLabel"
 	>
