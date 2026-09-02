@@ -107,10 +107,28 @@ const rules = [(v: boolean) => v || 'You must accept']
 
 | Event | Payload | Description |
 |-------|---------|-------------|
-| `update:modelValue` | `any` | Fired when the checkbox is toggled |
+| `update:modelValue` | `any` | Fired when the checkbox is toggled. Carries the **array** in accumulation mode. |
+| `update:focused` | `boolean` | Focus state, emitted through `useFocus` → `useVModel(props, 'focused')`. `<OrigamCheckboxBtn>` does **not** emit it — it has no focus handling — so bind it here. |
 | `focus` | `FocusEvent` | Native focus on the inner input |
 | `blur` | `FocusEvent` | Native blur on the inner input |
 | `click:label` | `MouseEvent` | Label element was clicked |
+
+## Accumulation sur un v-model partagé
+
+Plusieurs cases liées au **même** `v-model` de tableau accumulent :
+
+```vue
+<origam-checkbox v-model="selected" value="a" label="A" />
+<origam-checkbox v-model="selected" value="b" label="B" />
+<!-- selected === ['a', 'b'] une fois les deux cochées -->
+```
+
+> ⛔ **Ne passez pas `multiple` « pour être explicite ».** La coercition des
+> props booléennes de Vue résout une prop *non passée* à la valeur concrète
+> `false`, jamais à `null`. L'auto-détection du mode tableau teste
+> `props.multiple == null && Array.isArray(model)` : un `false` non voulu
+> **coupe l'accumulation** et chaque clic écrase le précédent, en silence.
+> C'est le trajet exact du bug de perte de données #396.
 
 ## Design tokens
 

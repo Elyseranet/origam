@@ -118,3 +118,35 @@ describe('OrigamCheckboxGroup — cascade vers les enfants', () => {
         expect(defaults['origam-checkbox'].color).toBe('primary')
     })
 })
+
+// ---------------------------------------------------------------------------
+// ⛔ Surface morte retirée — ligne L54 du classeur, critère C5.
+//
+// `ICheckboxBtnEmits` héritait de `IFocusEmits`, qui déclare
+// `update:focused`. Or `<OrigamCheckboxBtn>` n'a AUCUNE gestion du focus — ni
+// handler `focus`/`blur`, ni appel à `useFocus` — et `focused` n'est même pas
+// une de ses props. L'événement ne pouvait donc jamais partir.
+//
+// `<OrigamCheckbox>` est le cas inverse : il appelle `useFocus(props)`, dont
+// le `useVModel(props, 'focused')` émet réellement `update:focused`. Les deux
+// assertions ci-dessous épinglent cette asymétrie, qui est voulue.
+// ---------------------------------------------------------------------------
+describe('Famille Checkbox — update:focused déclaré uniquement là où il part', () => {
+    it("OrigamCheckboxBtn ne déclare PLUS update:focused (il ne peut pas l'émettre)", async () => {
+        const { OrigamCheckboxBtn } = await import('@origam/components')
+        const wrapper = mount(OrigamCheckboxBtn, { global: { plugins: [createOrigam()] } })
+        const declared = (wrapper.vm.$options.emits ?? []) as string[] | Record<string, unknown>
+        const names = Array.isArray(declared) ? declared : Object.keys(declared)
+
+        expect(names).not.toContain('update:focused')
+    })
+
+    it('OrigamCheckbox le déclare, lui — il appelle useFocus', async () => {
+        const { OrigamCheckbox } = await import('@origam/components')
+        const wrapper = mount(OrigamCheckbox, { global: { plugins: [createOrigam()] } })
+        const declared = (wrapper.vm.$options.emits ?? []) as string[] | Record<string, unknown>
+        const names = Array.isArray(declared) ? declared : Object.keys(declared)
+
+        expect(names).toContain('update:focused')
+    })
+})
