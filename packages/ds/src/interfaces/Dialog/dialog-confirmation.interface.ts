@@ -6,6 +6,26 @@ import type {
 
 export interface IDialogConfirmationProps extends IDialogProps {
     cancellable?: boolean
+    /**
+     * Clé i18n du libellé du bouton d'annulation.
+     *
+     * ⛔ Une CLÉ, pas la chaîne finale — c'est le composant qui traduit.
+     * Les deux libellés étaient écrits en dur dans le template (`text="Cancel"`,
+     * `text="Validate"`) et l'interface n'exposait que `cancellable` : un
+     * consommateur non anglophone ne pouvait ni traduire ni renommer, sinon en
+     * remplaçant le pied de dialogue ENTIER. Sur un dialogue de confirmation —
+     * celui qui demande de valider une action — c'est le pire endroit possible.
+     *
+     * @default 'origam.dialog.confirmation.cancel'
+     */
+    cancelTextKey?: string
+    /**
+     * Clé i18n du libellé du bouton de validation. Mêmes règles que
+     * `cancelTextKey`.
+     *
+     * @default 'origam.dialog.confirmation.validate'
+     */
+    validateTextKey?: string
 }
 
 /* `handleValidate` / `handleCancel` referment le dialogue en écrivant

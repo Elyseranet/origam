@@ -257,7 +257,11 @@
       }
     },
     "dialog": {
-      "close_aria_label": "Fermer la boîte de dialogue"
+      "close_aria_label": "Fermer la boîte de dialogue",
+      "confirmation": {
+        "cancel": "Annuler",
+        "validate": "Valider"
+      }
     },
     "textarea": {
       "rich": {

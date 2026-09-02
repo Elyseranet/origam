@@ -257,7 +257,11 @@
       }
     },
     "dialog": {
-      "close_aria_label": "Close dialog"
+      "close_aria_label": "Close dialog",
+      "confirmation": {
+        "cancel": "Cancel",
+        "validate": "Validate"
+      }
     },
     "textarea": {
       "rich": {

@@ -27,11 +27,25 @@ API below.
 `persistent`, `size`, `status`, `color`/`bgColor`, `rounded`, `border*`,
 `title`/`subtitle`/`text`/`image`, `width`/`height`, `closeLabel`, …, see
 the `OrigamDialog` Props table) is forwarded to
-the inner `<OrigamDialog>` via `filterProps`, plus one own prop:
+the inner `<OrigamDialog>` via `filterProps`, plus its own props:
 
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `cancellable` | `boolean` | `true` | Shows the Cancel button in the built-in footer. When `false`, only Validate is rendered. |
+| `cancelTextKey` | `string` | `origam.dialog.confirmation.cancel` | **i18n key** for the Cancel label — not the final string. The component translates it. |
+| `validateTextKey` | `string` | `origam.dialog.confirmation.validate` | **i18n key** for the Validate label. Same rule. |
+
+> ⛔ **Changed.** Both labels used to be hardcoded in the template
+> (`text="Cancel"`, `text="Validate"`) with no prop to change them — the
+> interface exposed only `cancellable`. A non-English consumer could neither
+> translate nor rename them except by replacing the **whole** footer through
+> the `#footer` slot. On a confirmation dialog — the one asking the user to
+> approve an action — that is the worst possible place for it.
+>
+> ⚠️ It survived because **no tool could see it**: the C8 detector of the
+> inspection grid only scans `aria-label`, `title`, `placeholder` and `alt`,
+> so a string passed as a *display prop* escapes it entirely. Three such cases
+> existed in the whole repo; this is two of them.
 
 ## Emits
 

@@ -35,7 +35,7 @@ provider it still renders standalone (stories, modal previews, tests) —
 ## Color, elevation, rounded, border, density
 
 Forwarded straight through to the internal `<OrigamToolbar>` — same behaviour
-as documented on [`OrigamToolbar`](../Toolbar/OrigamToolbar.md).
+as documented on `OrigamToolbar`.
 
 ```vue
 <template>
@@ -133,7 +133,7 @@ does nothing on its own.
 | `img` | Overrides the `image` prop — background content behind the prepend area. |
 | `content` | Full override of the toolbar's main content region. |
 | `append` | Trailing area (action buttons, avatars, …). |
-| `title` | Inherited from `OrigamToolbar` — overrides the rendered title (see [`OrigamToolbar`](../Toolbar/OrigamToolbar.md#slots)). |
+| `title` | Inherited from `OrigamToolbar` — overrides the rendered title (see `OrigamToolbar`). |
 
 ## Emits
 
@@ -146,7 +146,7 @@ does nothing on its own.
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `title` | `string` | — | Rendered by the inherited `OrigamToolbar` title region. |
-| `image` | `IImgProps` | — | Background image behind the prepend area. See [`OrigamImg`](../Img/OrigamImg.md). |
+| `image` | `IImgProps` | — | Background image behind the prepend area. See `OrigamImg`. |
 | `color` / `bgColor` | `TIntent \| string` | — | Text / background intent. |
 | `density` | `TDensity` | `default` | `compact \| default \| comfortable`. |
 | `elevation` | `TElevation` | — | Shadow rung; no-op while `flat`. |
@@ -175,7 +175,7 @@ rationale.
 No AppBar-scoped CSS variables — the chrome (btn shape, transparent surface,
 prepend/append gutters, title color) lives entirely in `OrigamToolbar`'s
 scoped styles and applies to every Toolbar consumer. See
-[`OrigamToolbar` → Design tokens](../Toolbar/OrigamToolbar.md#design-tokens)
+`OrigamToolbar` → Design tokens
 for the full `--origam-toolbar---*` variable list.
 
 ## Accessibility

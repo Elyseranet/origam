@@ -81,6 +81,8 @@
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IDialogConfirmationProps>>({
 					cancellable: true,
+					cancelTextKey: 'origam.dialog.confirmation.cancel',
+					validateTextKey: 'origam.dialog.confirmation.validate',
 					fullscreen: false,
 					disabled: false,
 					loading: false,
@@ -96,7 +98,9 @@
 							v-model="functionalOpen"
 							title="Functional dialog"
 							text="Adjust controls to test behaviour."
+							:cancel-text-key="state.cancelTextKey"
 							:cancellable="state.cancellable"
+							:validate-text-key="state.validateTextKey"
 							:fullscreen="state.fullscreen"
 							:disabled="state.disabled"
 							:loading="state.loading"
@@ -109,6 +113,10 @@
 			<template #controls="{ state }">
 				<StoryGroup title="Confirmation">
 					<HstCheckbox v-model="state.cancellable" title="Cancellable"/>
+				</StoryGroup>
+				<StoryGroup title="Libelles (cles i18n)">
+					<HstText v-model="state.cancelTextKey"   title="Cancel key"/>
+					<HstText v-model="state.validateTextKey" title="Validate key"/>
 				</StoryGroup>
 				<StoryGroup title="States">
 					<HstCheckbox v-model="state.disabled" title="Disabled"/>
