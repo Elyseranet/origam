@@ -146,6 +146,12 @@ HTMLMediaElement scrubber UX.
 ### `variant="audio"`
 
 Same as `timer`, plus a waveform background painted from `peaks` via
+`<OrigamAudioWaveform>` — a dedicated component under `components/Audio/`
+since 2026-09-02. It used to be an inline `<svg>` here, and it was the only
+markup this component's second template branch actually owned. See its own
+doc for the clamping contract and the accessibility rationale.
+
+Historical note kept because it explains the shape of this file:
 inline SVG. Bars left of the thumb use the active color; bars right
 use a 35 %-mixed fade so the played-vs-remaining split reads
 instantly. The track area defaults to 48 px tall to give the bars
