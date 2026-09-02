@@ -379,3 +379,54 @@ describe('OrigamMenu — contextmenu emit (issue #430)', () => {
         expect(wrapper.emitted('contextmenu')).toBeFalsy()
     })
 })
+
+// ---------------------------------------------------------------------------
+// ⛔ EMIT `contextmenu` — ligne du classeur OrigamMenu, critère C5.
+//
+// Le classeur le décrivait comme la « DEUXIÈME OCCURRENCE CONFIRMÉE du
+// mécanisme de #416, et la plus parlante des deux » : parce que l'emit est
+// DÉCLARÉ dans `IMenuEmits`, Vue retire `onContextmenu` de `$attrs` de façon
+// inconditionnelle. Le listener du consommateur ne peut donc plus être invoqué
+// par fallthrough — et si le composant ne l'émet jamais, le handler ne part
+// NULLE PART. Déclarer un emit sans l'émettre ne laisse pas les choses en
+// l'état : ça les casse.
+//
+// Le relais existe (`handleContextMenu`, mergé sur les props du slot
+// `#activator`). Ce qui manquait, c'est le test qui l'épingle — exactement le
+// trou qui avait laissé revenir la perte de données d'OrigamCheckbox.
+// ---------------------------------------------------------------------------
+describe('OrigamMenu — emit contextmenu (classeur C5)', () => {
+    it('relaie le clic droit sur l\'activateur en emit `contextmenu`', async () => {
+        const wrapper = mount(OrigamMenu, {
+            props: { modelValue: false } as never,
+            attachTo: document.body,
+            global: makeGlobal([createOrigam()]),
+            slots: {
+                activator: (scope: any) => h('button', { ...scope.props, 'data-cy': 'act' }, 'ouvrir')
+            }
+        })
+        await nextTick()
+
+        await wrapper.get('[data-cy="act"]').trigger('contextmenu')
+
+        expect(wrapper.emitted('contextmenu')).toBeTruthy()
+        expect(wrapper.emitted('contextmenu')!.length).toBe(1)
+    })
+
+    it('le payload est bien l\'événement natif, pas un objet reconstruit', async () => {
+        const wrapper = mount(OrigamMenu, {
+            props: { modelValue: false } as never,
+            attachTo: document.body,
+            global: makeGlobal([createOrigam()]),
+            slots: {
+                activator: (scope: any) => h('button', { ...scope.props, 'data-cy': 'act' }, 'ouvrir')
+            }
+        })
+        await nextTick()
+
+        await wrapper.get('[data-cy="act"]').trigger('contextmenu')
+
+        const payload = wrapper.emitted('contextmenu')![0][0]
+        expect(payload).toBeInstanceOf(Event)
+    })
+})
