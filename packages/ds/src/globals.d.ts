@@ -13,6 +13,14 @@ declare global {
         _clickOutside?: Record<number, {
             onClick: EventListener
             onMousedown: EventListener
+            /*
+             * Binding COURANT, rafraichi par le hook `updated` de la
+             * directive. Les closures d'ecouteurs le relisent a chaque
+             * evenement au lieu de capturer celui du montage : Vue construit
+             * un nouvel objet binding a chaque mise a jour, donc une closure
+             * qui retient le premier lit un `binding.value` fige.
+             */
+            binding: import('./interfaces/Commons/clickOutside.interface').IClickOutsideDirectiveBinding
         } | undefined> & { lastMousedownWasOutside: boolean }
         _onResize?: Record<number, {
             handler: () => void
