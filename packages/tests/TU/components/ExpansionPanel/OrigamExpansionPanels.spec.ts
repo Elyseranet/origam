@@ -217,3 +217,55 @@ describe('OrigamExpansionPanels — #420 closed panel hides its #default-slot bo
         expect(wrapper.html()).toContain('origam-expansion-panel--active')
     })
 })
+
+// ---------------------------------------------------------------------------
+// ⛔ EMIT `group:selected` — critère C5 du classeur.
+//
+// L'émission est RÉELLE : `useGroupItem` fait `vm.emit('group:selected',
+// {value})` sur l'instance du composant appelant (groupItem.composable.ts:94),
+// donc la déclaration héritée d'`IGroupEmits` est légitime.
+//
+// Ce qui manquait, c'est un test qui le PROUVE. Le seul existant est un e2e
+// dont le titre affirme ce que le corps ne vérifie pas :
+//
+//   test('click does not throw (group:selected fires)', …)
+//       await header.click()          ← et rien d'autre
+//
+// Il clique et n'assert RIEN. C'est le motif exact que le classeur reprochait
+// à `form.spec.ts` — « LE TEST QUI PRÉTEND LE PROUVER NE PROUVE RIEN ». Un
+// test qui ne peut pas rougir est une décoration.
+// ---------------------------------------------------------------------------
+describe('OrigamExpansionPanel — emit group:selected (classeur C5)', () => {
+    it('ouvrir un panneau émet group:selected avec value: true', async () => {
+        const wrapper = mountPanels()
+        await clickHeader(wrapper, 0)
+
+        const panel = wrapper.findAllComponents(OrigamExpansionPanel)[0]
+        const events = panel.emitted('group:selected') as unknown[][] | undefined
+
+        expect(events).toBeTruthy()
+        expect(events![events!.length - 1][0]).toEqual({ value: true })
+    })
+
+    it('refermer le même panneau émet group:selected avec value: false', async () => {
+        const wrapper = mountPanels()
+        await clickHeader(wrapper, 0)
+        await clickHeader(wrapper, 0)
+
+        const panel = wrapper.findAllComponents(OrigamExpansionPanel)[0]
+        const events = panel.emitted('group:selected') as unknown[][]
+
+        expect(events.length).toBeGreaterThanOrEqual(2)
+        expect(events[events.length - 1][0]).toEqual({ value: false })
+    })
+
+    it("un panneau qu'on n'a jamais touché n'émet rien", async () => {
+        const wrapper = mountPanels()
+        await clickHeader(wrapper, 0)
+
+        const others = wrapper.findAllComponents(OrigamExpansionPanel).slice(1)
+        const untouched = others.filter(p => !p.emitted('group:selected'))
+
+        expect(untouched.length).toBe(others.length)
+    })
+})
