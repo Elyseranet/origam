@@ -121,7 +121,10 @@ test.describe('OrigamChipGroup — mandatory', () => {
 
 test.describe('OrigamChipGroup — filter', () => {
     test('filter group renders chips and selecting one shows filter icon', async ({ page }) => {
-        test.fail(true, 'DS BUG: OrigamChipGroup\'s `filter` prop is declared on IChipGroupProps but never read anywhere in OrigamChipGroup.vue\'s script (verified via grep — zero occurrences of `props.filter`/`.filter` outside the type declaration). It does not cascade to child chips via `slotDefaults` (which only forwards color/bgColor/active/hover) nor gate anything else at the group level. OrigamChip.vue only shows `.origam-chip__filter` when the CHIP\'S OWN `filter` prop is true (`hasFilter = (slots.filter || props.filter) && group`) — toggling the group\'s "Filter (check icon)" control has no observable effect. Needs a DS fix: add `filter` to OrigamChipGroup\'s slotDefaults so it cascades like color/bgColor/active/hover.')
+        // #400/L55 — la prop `filter` d'OrigamChipGroup etait declaree sur
+        // IChipGroupProps et lue NULLE PART. Elle cascade desormais vers les
+        // chips enfants via slotDefaults, comme color / bgColor / active /
+        // hover. Le test.fail() qui documentait le bug est retire : il passe.
         await openVariant(page, STORY, 'Functional')
         const sandbox = sandboxOf(page)
         await toggleHstCheckbox(page, 'Filter (check icon)')

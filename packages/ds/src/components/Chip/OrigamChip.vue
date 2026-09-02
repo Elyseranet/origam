@@ -142,7 +142,6 @@
 	import OrigamIcon from '../Icon/OrigamIcon.vue'
 
 	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
-	import { useBothColor } from '../../composables/Commons/bothColor.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
 	import { useGroupItem } from '../../composables/Commons/groupItem.composable'
 	import { useLink } from '../../composables/Commons/link.composable'
@@ -223,6 +222,7 @@
 	 ********************************************************/
 	const {isOn: active, config: activeState, classes: activeClasses} = useStateFlag(props, {state: 'active'})
 	const {
+		colorClasses, colorStyles,
 		borderClasses, borderStyles,
 		roundedClasses, roundedStyles,
 		elevationClasses,
@@ -234,10 +234,21 @@
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 
 	/*********************************************************
-	 * Color
+	 * Color — porte par useStateEffect, PAS par useBothColor.
+	 *
+	 * @description
+	 * useStateEffect etait deja appele juste au-dessus, mais on ne lui
+	 * prenait que border / rounded / elevation / padding / margin : son
+	 * canal COULEUR etait jete, et la couleur repassait par useBothColor,
+	 * qui est statique. Consequence : les surcharges de couleur declarees
+	 * dans la config d'etat (hover / active) ne peignaient jamais — le
+	 * chip lisait props.color et props.bgColor bruts quoi qu'il arrive.
+	 *
+	 * @description
+	 * On consomme desormais colorClasses / colorStyles du meme
+	 * useStateEffect que les autres axes. Un seul canal, coherent avec
+	 * border / rounded / elevation qui, eux, respectaient deja l'etat.
 	 ********************************************************/
-
-	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	/*********************************************************
 	 * Value

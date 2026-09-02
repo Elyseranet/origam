@@ -48,7 +48,7 @@ Design + Functional Variants) rather than re-deriving an ad-hoc grouping.
 
 `IDialogProps` also extends the full `IOverlayProps` surface (activator,
 location strategy, scroll strategy, lazy mount, transition, scrim — see
-[`OrigamOverlay`'s doc](../Overlay/OrigamOverlay.md)) and the full
+the `OrigamOverlay` doc) and the full
 `ICardProps` surface beyond what's listed above — this table covers the
 props exercised by the component's own story, not every inherited prop.
 

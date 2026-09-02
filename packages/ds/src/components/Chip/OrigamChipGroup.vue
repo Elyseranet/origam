@@ -101,7 +101,15 @@
 			color: wasPropPassed('color') ? props.color : undefined,
 			bgColor: wasPropPassed('bgColor') ? props.bgColor : undefined,
 			active: wasPropPassed('active') ? props.active : undefined,
-			hover: wasPropPassed('hover') ? props.hover : undefined
+			hover: wasPropPassed('hover') ? props.hover : undefined,
+			// `filter` etait declaree sur IChipGroupProps et lue NULLE PART :
+			// zero occurrence de props.filter dans ce script hors la
+			// declaration de type. Elle ne cascadait pas vers les chips
+			// enfants, et OrigamChip n'affiche .origam-chip__filter que si SA
+			// PROPRE prop filter est vraie — activer la case du groupe
+			// n'avait donc aucun effet observable. Prop morte, cascadee ici
+			// comme color / bgColor / active / hover.
+			filter: wasPropPassed('filter') ? props.filter : undefined
 		})
 	}))
 

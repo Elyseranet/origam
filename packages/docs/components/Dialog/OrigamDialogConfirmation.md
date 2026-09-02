@@ -26,7 +26,7 @@ API below.
 `<OrigamDialog>` accepts (`fullscreen`, `scrollable`, `retainFocus`,
 `persistent`, `size`, `status`, `color`/`bgColor`, `rounded`, `border*`,
 `title`/`subtitle`/`text`/`image`, `width`/`height`, `closeLabel`, …, see
-[`OrigamDialog`'s Props table](./OrigamDialog.md#props)) is forwarded to
+the `OrigamDialog` Props table) is forwarded to
 the inner `<OrigamDialog>` via `filterProps`, plus one own prop:
 
 | Prop | Type | Default | Description |
@@ -73,7 +73,7 @@ its own button state).
 Inherits everything `<OrigamDialog>` provides (`role="dialog"`,
 `aria-modal`, focus trap via `retainFocus`, `ESC` to close non-persistent
 dialogs, `closeLabel` locale key on the built-in close button) — see
-[`OrigamDialog`'s Accessibility section](./OrigamDialog.md#accessibility).
+`OrigamDialog`'s Accessibility section (voir la doc `OrigamDialog`).
 The Cancel/Validate footer buttons use plain `text` labels (not yet
 routed through the DS `t()` locale mechanism — pass a `footer` slot
 override if translated button labels are required today).
