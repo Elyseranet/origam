@@ -129,18 +129,22 @@ describe('DEFECT — usePosition offsets never reach OrigamCard', () => {
     )
 })
 
-describe('DEFECT — IChipGroupProps.filter never cascades to the chips', () => {
+describe('FIXED — IChipGroupProps.filter cascades to the chips', () => {
     /*
-     * The homonym trap. `grep filter packages/ds/src/components/Chip/OrigamChipGroup.vue`
-     * returns 4 hits and every one of them is `filterProps` — the unrelated
-     * prop-filtering helper returned by `useProps`. The declared prop
-     * (chip-group.interface.ts:18) is read nowhere.
+     * Etait un DEFECT, corrige le 2026-09-01 (remarque utilisateur, ligne L55
+     * du classeur d'inspection). Ces tests gardent desormais le correctif au
+     * lieu de documenter le bug.
      *
-     * That it was MEANT to cascade is not a guess: `IChipProps` carries
-     * `filter` and `filterIcon` (chip.interface.ts:35-36) and `OrigamChip`
-     * renders the check affordance from them (OrigamChip.vue:310,339). The
-     * group-level switch that would turn it on for all children was never
-     * wired.
+     * Le piege etait un homonyme : `grep filter OrigamChipGroup.vue` renvoyait
+     * 4 resultats, tous `filterProps` — l'aide de filtrage de props renvoyee
+     * par `useProps`, sans aucun rapport. La prop declaree
+     * (chip-group.interface.ts:18) n'etait lue nulle part.
+     *
+     * Qu'elle DEVAIT cascader n'etait pas une supposition : `IChipProps` porte
+     * `filter` et `filterIcon` (chip.interface.ts:35-36) et `OrigamChip` rend
+     * l'affordance de coche a partir d'elles. Seul l'interrupteur au niveau du
+     * groupe manquait. Il est desormais dans `slotDefaults`, comme
+     * color / bgColor / active / hover.
      */
     const renderGroup = (props: Record<string, unknown>) => {
         document.head.innerHTML = ''
@@ -155,12 +159,16 @@ describe('DEFECT — IChipGroupProps.filter never cascades to the chips', () => 
         return out.replace(/(origam-[a-z-]+?)-\d+/g, '$1-N')
     }
 
-    it('filter=true and filter=false render the same chips', () => {
-        expect(renderGroup({ filter: true })).toBe(renderGroup({ filter: false }))
+    it('filter=true and filter=false render DIFFERENT chips (la prop cascade)', () => {
+        expect(renderGroup({ filter: true })).not.toBe(renderGroup({ filter: false }))
     })
 
-    it('no chip carries the filter affordance under filter=true', () => {
-        expect(renderGroup({ filter: true })).not.toContain('origam-chip--filter')
+    it('les chips portent l affordance de filtre sous filter=true', () => {
+        expect(renderGroup({ filter: true })).toContain('origam-chip--filter')
+    })
+
+    it('et ne la portent PAS sous filter=false — la cascade est bien pilotee', () => {
+        expect(renderGroup({ filter: false })).not.toContain('origam-chip--filter')
     })
 
     it('CONTROL — the chip DOES render it when filter is set on the chip itself', () => {
