@@ -37,7 +37,13 @@ export interface IOtpInputFieldProps extends Omit<IFieldProps, 'fontFamily' | 'f
     length?: number | string
     modelValue?: number | string | null
     placeholder?: string
-    persistentPlaceholder?: boolean
+    /**
+     * Rôle ARIA de la racine.
+     *
+     * ⛔ Était déclarée mais JAMAIS lue : le template codait `role="group"`
+     * en dur, donc la passer n'avait aucun effet. Elle est désormais liée,
+     * avec `'group'` pour défaut — la valeur qui était figée.
+     */
     role?: string
     type?: TOtpInputFieldType
 }

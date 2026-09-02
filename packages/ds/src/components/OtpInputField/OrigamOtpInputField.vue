@@ -3,7 +3,7 @@
 			:aria-label="label || undefined"
 			:class="otpInputFieldClasses"
 			:style="otpInputFieldStyles"
-			role="group"
+			:role="role"
 			v-bind="{ ...rootAttrs }"
 	>
 		<div
@@ -187,7 +187,8 @@
 	 ********************************************************/
 	const props = withDefaults(defineProps<IOtpInputFieldProps>(), {
 		type: OTP_INPUT_FIELD_TYPE.NUMBER,
-		length: 6
+		length: 6,
+		role: 'group'
 	})
 
 	const emits = defineEmits<IOtpInputFieldEmits>()

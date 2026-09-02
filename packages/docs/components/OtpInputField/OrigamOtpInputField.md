@@ -153,10 +153,26 @@ The `validateOn` prop controls when validation fires:
 
 ## Design tokens
 
-| CSS variable | Default | Description |
-|---|---|---|
-| `--origam-otp-input---cell-width` | `48px` | Width per cell |
-| `--origam-otp-input---cell-gap` | `8px` | Gap between cells |
-| `--origam-field---border-color` | semantic border | Cell outline |
-| `--origam-otp-input-field__details---padding-inline` | `4px` | Horizontal padding of the details / messages zone |
-| `--origam-otp-input-field---error-color` | `var(--origam-color__feedback--danger---fg-subtle)` | Text color of error messages |
+Ces cinq variables sont les **seules** que le composant lit réellement —
+liste établie par `grep -oE "--origam-otp-input-field[a-z-]*"` sur son
+`.vue`, pas recopiée d'un fichier de tokens.
+
+| CSS variable | Description |
+|---|---|
+| `--origam-otp-input-field---gap` | Espace entre les cellules |
+| `--origam-otp-input-field---border-radius` | Rayon des cellules |
+| `--origam-otp-input-field---padding-block` | Padding vertical |
+| `--origam-otp-input-field---error-color` | Couleur du texte des messages d'erreur |
+| `--origam-otp-input-field__details---padding-inline` | Padding horizontal de la zone details / messages |
+
+> ⛔ **Corrigé le 2026-09-02.** Cette table citait
+> `--origam-otp-input---cell-width` et `--origam-otp-input---cell-gap`, qui
+> n'existent **nulle part** — ni dans le SCSS, ni dans les feuilles de
+> tokens. Le préfixe réel porte `-field`. Elle citait aussi
+> `--origam-field---border-color`, que ce composant ne lit pas, et une
+> variable de largeur par cellule qui n'existe pas non plus : la largeur des
+> cellules n'est pas thémable aujourd'hui.
+>
+> Une doc de tokens ne se recopie pas d'un fichier de tokens : elle se
+> **mesure sur le composant**. C'est précisément l'écart que le critère C7 du
+> classeur appelle « doc MENSONGÈRE », par opposition à « doc absente ».
