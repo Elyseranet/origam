@@ -96,6 +96,22 @@
 	 * JS default (24 / 32) for sibling offset math, unchanged.
 	 ********************************************************/
 	const explicitElementSize = computed(() => props.height !== undefined ? height.value : undefined)
+	/*********************************************************
+	 * ⛔ `props.name` est lu EAGERLY ici, et c'est VOULU (ADR-005).
+	 *
+	 * @description
+	 * `useLayoutItem` se sert de cet `id` pour `provide(
+	 * ORIGAM_LAYOUT_ITEM_KEY, {id})`, `layout.register(vm, {..., id})` et
+	 * `layout.unregister(id)` au demontage : il exige une valeur STABLE des
+	 * le setup. Le differer laisserait un element fantome dans le layout et
+	 * n'en desenregistrerait aucun.
+	 *
+	 * @description
+	 * `name` est une IDENTITE, pas un reglage visuel — au meme titre qu'un
+	 * `id`. Arbitrage utilisateur du 2026-09-02 : un theme n'a pas vocation
+	 * a nommer un element de layout. L'exception est actee dans
+	 * `scripts/guards/lib/setup-reads.exceptions.mjs`, avec sa raison.
+	 ********************************************************/
 	const {layoutItemStyles} = useLayoutItem({
 		id: props.name,
 		order: computed(() => parseInt(String(props.order ?? 0), 10)),

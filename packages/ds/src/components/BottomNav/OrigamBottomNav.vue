@@ -256,6 +256,30 @@
 		return `calc(${convertToUnit(props.height)} - 8px)`
 	})
 
+	/*********************************************************
+	 * ⛔ `props.name` est lu EAGERLY ici, et c'est VOULU (ADR-005).
+	 *
+	 * @description
+	 * `setup-reads.mjs` signale cette lecture, a juste titre : le resolveur
+	 * de props de theme ecrit dans `beforeCreate`, APRES l'execution de
+	 * `setup()`. Une valeur capturee ici ne verra donc jamais celle du
+	 * theme.
+	 *
+	 * @description
+	 * Elle ne peut pas etre differee pour autant. `useLayoutItem` se sert
+	 * de cet `id` pour trois choses qui exigent une valeur STABLE des le
+	 * setup : `provide(ORIGAM_LAYOUT_ITEM_KEY, {id})`, `layout.register(vm,
+	 * {..., id})` et `layout.unregister(id)` au demontage. Un identifiant
+	 * qui changerait apres l'enregistrement laisserait un element fantome
+	 * dans le layout et n'en desenregistrerait aucun.
+	 *
+	 * @description
+	 * La vraie question n'est donc pas « comment differer cette lecture »
+	 * mais « un theme a-t-il vocation a nommer un element de layout ? ».
+	 * `name` est une IDENTITE, pas un reglage visuel — au meme titre qu'un
+	 * `id`. Tant que la reponse est non, cette lecture est correcte et le
+	 * signalement de l'outil est un faux positif a connaitre.
+	 ********************************************************/
 	const {layoutItemStyles} = useLayoutItem({
 		id: props.name,
 		order: computed(() => int(props.order ?? 0)),

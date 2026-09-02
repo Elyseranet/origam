@@ -42,6 +42,8 @@ import { getRealComponents, DS_ROOT } from './components.mjs'
 const require_ = createRequire(import.meta.url)
 const ts = require_('typescript')
 
+import { isJustifiedSetupRead, SETUP_READ_EXCEPTIONS } from './setup-reads.exceptions.mjs'
+
 const FUNCTION_KINDS = new Set([
     ts.SyntaxKind.FunctionDeclaration,
     ts.SyntaxKind.FunctionExpression,
@@ -277,12 +279,28 @@ export function analyseComposables () {
 
 /** Analyse the whole shipped catalogue. */
 export function analyseCatalogue () {
-    return getRealComponents().map(({ pascalName, kebabName, file }) => ({
-        pascalName,
-        kebabName,
-        relative: path.relative(DS_ROOT, file),
-        ...analyseSource(readFileSync(file, 'utf8'), path.basename(file))
-    }))
+    return getRealComponents().map(({ pascalName, kebabName, file }) => {
+        const row = {
+            pascalName,
+            kebabName,
+            relative: path.relative(DS_ROOT, file),
+            ...analyseSource(readFileSync(file, 'utf8'), path.basename(file))
+        }
+
+        /*
+         * Les lectures eager JUSTIFIEES sortent de `eager` et vont dans
+         * `justified`. Elles restent visibles — l'outil les compte et les
+         * affiche a part — mais elles cessent de polluer la liste des
+         * defauts a traiter. Voir setup-reads.exceptions.mjs pour la regle
+         * d'admission : une identite dont le differement casserait ce
+         * qu'elle enregistre, jamais un simple reglage.
+         */
+        const short = pascalName.replace(/^Origam/, '')
+        row.justified = row.eager.filter(e => isJustifiedSetupRead(short, e.prop))
+        row.eager = row.eager.filter(e => !isJustifiedSetupRead(short, e.prop))
+
+        return row
+    })
 }
 
 // ── CLI ─────────────────────────────────────────────────────────────────────
@@ -297,10 +315,22 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === path.resolve(process.a
         console.log(`components ................. ${rows.length}`)
         console.log(`  calls useDefaults ........ ${withUD.length}`)
         console.log(`  does not ................. ${withoutUD.length}`)
+        const justifiedRows = withoutUD.filter(r => r.justified?.length)
+        const justifiedCount = justifiedRows.reduce((n, r) => n + r.justified.length, 0)
         console.log(`eager setup() reads, no useDefaults: ${broken.length}`)
         for (const r of broken.sort((a, b) => b.eager.length - a.eager.length)) {
             const props = [...new Set(r.eager.map(e => e.prop))].join(', ')
             console.log(`  ${r.pascalName.padEnd(28)} ${String(r.eager.length).padStart(2)}  [${props}]`)
+        }
+
+        if (justifiedCount) {
+            console.log('')
+            console.log(`eager reads JUSTIFIES (exceptions actees) : ${justifiedCount}`)
+            for (const r of justifiedRows) {
+                const props = [...new Set(r.justified.map(e => e.prop))].join(', ')
+                console.log(`  ${r.pascalName.padEnd(28)} ${String(r.justified.length).padStart(2)}  [${props}]`)
+            }
+            console.log(`  (raisons dans lib/setup-reads.exceptions.mjs — ${SETUP_READ_EXCEPTIONS.length} entrees)`)
         }
 
         /*
