@@ -38,6 +38,7 @@ export * from './Carousel/carousel.interface'
 export * from './Carousel/carousel-item.interface'
 
 export * from './Checkbox/checkbox.interface'
+export * from './Checkbox/checkbox-group.interface'
 export * from './Checkbox/checkbox-btn.interface'
 
 export * from './Chip/chip.interface'
