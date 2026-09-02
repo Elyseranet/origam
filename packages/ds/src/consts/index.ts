@@ -81,6 +81,7 @@ export * from './Chart/chart.const'
 export * from './Chart/chart-pictorial.const'
 export * from './Chart/chart-map.const'
 export * from './Audio/audio.const'
+export * from './Audio/audio-waveform.const'
 export * from './Clipboard/clipboard.const'
 
 export * from './Commons/css-support.const'

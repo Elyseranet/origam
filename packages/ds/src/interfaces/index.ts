@@ -193,6 +193,7 @@ export * from './Masonry/masonry.interface'
 export * from './Media'
 
 export * from './Audio/audio-player.interface'
+export * from './Audio/audio-waveform.interface'
 
 export * from './Icon/icon.interface'
 

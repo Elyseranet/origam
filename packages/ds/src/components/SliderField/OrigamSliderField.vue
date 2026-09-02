@@ -247,23 +247,11 @@
 				@pointermove="handleHoverPointerMove"
 				@pointerleave="handleHoverPointerLeave"
 		>
-			<svg
-					v-if="hasPeaks"
+			<origam-audio-waveform
 					class="origam-slider-field__waveform"
-					:viewBox="waveformViewBox"
-					preserveAspectRatio="none"
-					aria-hidden="true"
-			>
-				<rect
-						v-for="(peak, index) in normalizedPeaks"
-						:key="index"
-						:x="(index / normalizedPeaks.length) * 100"
-						:y="50 - (peak * 50)"
-						:width="100 / normalizedPeaks.length"
-						:height="peak * 100"
-						:class="waveformBarClass(index)"
-				/>
-			</svg>
+					:peaks="peaks"
+					:progress="modelPercentage"
+			/>
 
 			<origam-slider-field-track
 					:bg-color="bgColor"
@@ -428,6 +416,7 @@
 	import OrigamInput from '../Input/OrigamInput.vue'
 	import OrigamLabel from '../Label/OrigamLabel.vue'
 	import OrigamSliderFieldTrack from './OrigamSliderFieldTrack.vue'
+	import { OrigamAudioWaveform } from '../Audio'
 
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useFocus } from '../../composables/Commons/focus.composable'
@@ -632,20 +621,6 @@
 		const peaks = props.peaks
 		return Array.isArray(peaks) && peaks.length > 0
 	})
-
-	const normalizedPeaks = computed(() => {
-		const peaks = props.peaks ?? []
-		return peaks.map((p) => clamp(Number.isFinite(p) ? p : 0, 0, 1))
-	})
-
-	const waveformViewBox = computed(() => '0 0 100 100')
-
-	const waveformBarClass = (index: number) => {
-		const barPct = (index / Math.max(1, normalizedPeaks.value.length)) * 100
-		return barPct <= modelPercentage.value
-				? 'origam-slider-field__waveform-bar origam-slider-field__waveform-bar--active'
-				: 'origam-slider-field__waveform-bar origam-slider-field__waveform-bar--inactive'
-	}
 
 	/*********************************************************
 	 * Hover tooltip (RAF-throttled)
@@ -1188,16 +1163,6 @@
 			inset: 0;
 			width: 100%;
 			height: 100%;
-		}
-
-		&__waveform-bar {
-			&--active {
-				fill: currentColor;
-			}
-
-			&--inactive {
-				fill: color-mix(in srgb, currentColor 35%, transparent);
-			}
 		}
 
 		&__hover-tooltip {
