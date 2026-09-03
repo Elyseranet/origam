@@ -21,7 +21,7 @@
  * par un garde CI et par un harnais de mesure vit dans `guards/lib/`, pas
  * dans `analysis/lib/`.
  *
- * QUATRE FAÇONS DONT UN ÉVÉNEMENT DÉCLARÉ PEUT ÊTRE ÉMIS
+ * CINQ FAÇONS DONT UN ÉVÉNEMENT DÉCLARÉ PEUT ÊTRE ÉMIS
  * ---------------------------------------------------------------------
  *   1. Littéralement, `emitVar('nom', …)` — dans le `<script setup>` OU
  *      dans le `<template>` (Vue autorise `@click="emit('foo')"` en
@@ -31,11 +31,18 @@
  *      `const x = …`) — Avatar/AvatarGroup/Badge/Btn font exactement ça :
  *      aucune variable n'existe pour appeler l'émetteur à la main.
  *   2. Par un des QUATRE relais `update:*` d'`emits-completeness.mjs`
- *      (`useVModel`/`useActive`/`useFocus`/`useValidation`/`useForm`) —
+ *      (`useVModel`/`useActive`/`useFocus`/`useValidation`/`useForm` —
+ *      `useActive` n'y matche plus RIEN dans ce dépôt aujourd'hui, voir la
+ *      section `useStateFlag` plus bas, mais reste dans la liste PARTAGÉE
+ *      avec `emits-completeness.mjs`, hors du périmètre de ce fichier) —
  *      `computeEmittable()`.
  *   3. Par un des relais SUPPLÉMENTAIRES ci-dessous (`EXTRA_RELAYS`),
  *      propres à cette analyse — voir la section dédiée.
- *   4. Dynamiquement — `emitVar(someVariable, …)` où le premier argument
+ *   4. Par `useStateFlag(props, { state, source })` — relais-d'un-relais
+ *      dynamique (l'événement dépend de `source`, pas d'un nom fixe),
+ *      couvert séparément par `computeStateFlagEmitted()` — voir la section
+ *      dédiée plus bas.
+ *   5. Dynamiquement — `emitVar(someVariable, …)` où le premier argument
  *      n'est pas un littéral. Un tel appel PEUT couvrir n'importe quel
  *      événement déclaré ; on ne devine pas lequel. Un composant qui en
  *      contient au moins un fait basculer tout événement non prouvé de
@@ -63,17 +70,52 @@
  * son propre baseline — hors du périmètre d'un harnais de MESURE. Ils
  * vivent donc ici, séparément.
  *
- * CE QUE `useHover` PROUVE (validation empirique, pas supposition)
+ * CE QUE `useHover`/`useActive` PROUVAIENT (historique — composables
+ * SUPPRIMÉS depuis, voir `useStateFlag` juste en dessous)
  * ---------------------------------------------------------------------
- * `useHover(props)` ne prend JAMAIS d'`emit` et n'appelle jamais
- * `getCurrentInstance().emit` — lu dans
- * `packages/ds/src/composables/Commons/hover.composable.ts`. Pourtant
- * `IHoverEmits` déclare `update:hover`, et `IHoverEmits` est étendu par
- * `IAlertEmits`, `IAvatarEmits`, `IAvatarGroupEmits`, `ICardEmits`,
- * `IBottomNavEmits`, entre autres — vérifié composant par composant, PAS un
- * cas inventé. Note : `IBadgeEmits` n'étend PAS `IHoverEmits` (seul
- * `IBadgeProps` étend `IHoverProps`) — Badge n'a donc PAS de `update:hover`
- * mort, malgré ce qu'un premier repérage manuel avait supposé.
+ * `useHover(props)` ne prenait JAMAIS d'`emit` et n'appelait jamais
+ * `getCurrentInstance().emit` directement. Pourtant `IHoverEmits` déclare
+ * `update:hover`, et `IHoverEmits` est étendu par `IAlertEmits`,
+ * `IAvatarEmits`, `IAvatarGroupEmits`, `ICardEmits`, `IBottomNavEmits`, entre
+ * autres — vérifié composant par composant, PAS un cas inventé. Note :
+ * `IBadgeEmits` n'étend PAS `IHoverEmits` (seul `IBadgeProps` étend
+ * `IHoverProps`) — Badge n'a donc PAS de `update:hover` mort par cette
+ * chaîne, malgré ce qu'un premier repérage manuel avait supposé.
+ *
+ * `useHover(props)`/`useActive(props)` N'EXISTENT PLUS DANS LE DÉPÔT —
+ * remplacés par `useStateFlag`, un angle mort trouvé par mutation
+ * ---------------------------------------------------------------------
+ * Signalé par un agent en LOT parallèle (composants Alert/Avatar/
+ * AvatarGroup/BottomNav/Card/Sheet/Bracket*), confirmé ici par grep avant
+ * tout correctif : `useActive(`/`useHover(` — **0** occurrence dans
+ * `src/components/` ; `useStateFlag(` — **24**. La migration est TOTALE,
+ * pas partielle (`stateFlag.composable.ts` : « useHover and useActive were
+ * the same algorithm written twice… This is the merge »).
+ *
+ * `useStateFlag(props, { state, source = state })` est un relais-d'un-relais
+ * de la MÊME famille que `useGroup` ci-dessus : il appelle EN INTERNE
+ * `useVModel(props, source)` (jamais `.emit(` directement, donc invisible à
+ * `grep -rl '\.emit('`), et son `set()`/`unset()`/`toggle()` retourné écrit
+ * `vmodel.value = …` — dont l'événement réel est `update:${source}`, PAS
+ * `update:${state}` quand `source` est explicite (`OrigamAlert`/
+ * `OrigamBottomNav`/`OrigamBadge`/`OrigamChip` passent `source: 'modelValue'`
+ * pour l'axe `active`). `computeStateFlagEmitted()` ci-dessous couvre ce
+ * relais, séparément d'`EXTRA_RELAYS` car sa cible dépend du contenu de
+ * l'appel (state/source), pas d'un nom fixe.
+ *
+ * Vérifié composant par composant sur `OrigamAvatar` avant d'écrire le
+ * détecteur (pas une supposition) : `useStateFlag(props, {state: 'hover'})`
+ * déstructure `unset: handleMouseleave, set: handleMouseenter`, tous deux
+ * câblés dans le template (`@mouseenter="handleMouseenter"`,
+ * `@mouseleave="handleMouseleave"`) ; `useStateFlag(props, {state: 'active'})`
+ * déstructure `toggle: handleClick`, câblé (`@click="handleClick()"`). Les
+ * deux émissions sont donc RÉELLES au runtime — avant ce correctif, le garde
+ * les classait `neverEmitted` à tort. Contre-exemple RÉEL, pas un blind
+ * spot : `OrigamBottomNav` appelle `useStateFlag(props, {state: 'active',
+ * source: 'modelValue'})` sans déstructurer NI `set` NI `unset` NI `toggle`
+ * — cette instance-là n'écrit jamais rien, `update:modelValue` (ou
+ * `update:active`, selon l'interface) reste un mort AUTHENTIQUE pour cet
+ * axe précis.
  *
  * LIMITES ASSUMÉES
  * ---------------------------------------------------------------------
@@ -209,6 +251,61 @@ function computeExtraRelayEmitted (src) {
     return found
 }
 
+/**
+ * `useStateFlag(props, { state, source })` — voir le header ("useHover/
+ * useActive N'EXISTENT PLUS") pour le contexte complet. Chaque appel est sa
+ * PROPRE unité d'analyse : la paire `(state, source)` fixe QUEL canal
+ * `update:*` est concerné, et le bloc de déstructuration associé
+ * (capturé dans le MÊME match, jamais re-cherché globalement dans le
+ * fichier) dit si `set`/`unset`/`toggle` — les trois seules méthodes qui
+ * écrivent le v-model interne — sont exposées ET câblées quelque part.
+ *
+ * ⚠️ Le bloc de déstructuration est capturé PAR APPEL, pas recherché
+ * globalement comme le fait `isHandlerWired` pour les autres relais : un
+ * fichier appelle typiquement `useStateFlag` deux fois (`hover` et
+ * `active`), avec des clés `set`/`unset`/`toggle` qui peuvent apparaître
+ * dans les DEUX blocs sous des noms locaux différents. Une recherche
+ * globale associerait la mauvaise instance à la mauvaise déstructuration.
+ */
+const STATE_FLAG_CALL_RE = /const\s*\{([^}]*)\}\s*=\s*useStateFlag\(\s*props\s*,\s*\{([^}]*)\}\s*\)/g
+
+function computeStateFlagEmitted (src) {
+    const found = new Set()
+    let m
+    STATE_FLAG_CALL_RE.lastIndex = 0
+    while ((m = STATE_FLAG_CALL_RE.exec(src))) {
+        const [, destructure, options] = m
+
+        const stateMatch = options.match(/\bstate\s*:\s*'([^']+)'/)
+        if (!stateMatch) continue // pas un appel reconnu — pas de `state` littéral
+        const sourceMatch = options.match(/\bsource\s*:\s*'([^']+)'/)
+        const channel = sourceMatch ? sourceMatch[1] : stateMatch[1]
+        const event = `update:${channel}`
+
+        // set() / unset() / toggle() sont les SEULES méthodes que
+        // `useStateFlag` retourne qui écrivent le v-model interne (voir
+        // `stateFlag.composable.ts`) — n'importe laquelle des trois,
+        // déstructurée ET câblée, prouve que ce canal PEUT émettre.
+        for (const key of ['set', 'unset', 'toggle']) {
+            const renamed = destructure.match(new RegExp(`\\b${key}\\s*:\\s*([A-Za-z0-9_$]+)`))
+            const boundBare = new RegExp(`[{,]\\s*${key}\\s*[,}]`).test(`{${destructure}}`)
+            if (!renamed && !boundBare) continue
+            const localName = renamed ? renamed[1] : key
+            // > 1 : une occurrence est la déstructuration elle-même, il en
+            // faut au moins une seconde — le câblage réel (@click="…", un
+            // appel direct, …). Compté sur `localName`, PAS sur `key` : une
+            // recherche par `key` re-matcherait n'importe quel autre appel
+            // `useStateFlag` du même fichier (voir le commentaire au-dessus
+            // de cette fonction).
+            if (countOccurrences(src, localName) > 1) {
+                found.add(event)
+                break
+            }
+        }
+    }
+    return found
+}
+
 // `emitVar` (group 1) is OPTIONAL: `defineEmits<IXxxEmits>()` used as a bare
 // statement (no `const x =`) is a legitimate, common shape in this codebase
 // — Avatar/AvatarGroup/Badge/Btn all register the emits option this way and
@@ -262,7 +359,11 @@ export function analyseDeadEmits (rawSource, interfaceIndex) {
     // 3. Relais additionnels, propres à cette analyse (voir header).
     const extraRelayEmitted = computeExtraRelayEmitted(stripped)
 
-    const emitted = new Set([...literalEmitted, ...relayEmitted, ...extraRelayEmitted])
+    // 4. useStateFlag(props, { state, source }) — relais dynamique, voir
+    //    header ("useHover/useActive N'EXISTENT PLUS") et la fonction elle-même.
+    const stateFlagEmitted = computeStateFlagEmitted(stripped)
+
+    const emitted = new Set([...literalEmitted, ...relayEmitted, ...extraRelayEmitted, ...stateFlagEmitted])
     const dead = [...declared].filter(e => !emitted.has(e)).sort()
 
     return {
