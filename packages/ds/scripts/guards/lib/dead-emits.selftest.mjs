@@ -19,6 +19,17 @@
  * `pnpm-tree-integrity.selftest.mjs`) : un détecteur qui crie sur du code
  * correct est ignoré en une semaine.
  *
+ * `useStateFlag` (2026-09-03) — signalé par un agent d'un lot parallèle,
+ * confirmé par grep avant tout correctif : `useActive`/`useHover` ont été
+ * SUPPRIMÉS du dépôt (0 appel), remplacés par `useStateFlag` (24 appels).
+ * `computeStateFlagEmitted()` dans `dead-emits.mjs` couvre ce relais
+ * dynamique (l'événement dépend de `state`/`source`, pas d'un nom fixe) ;
+ * les cas ci-dessous couvrent le rappel (rien câblé -> mort, y compris le
+ * cas RÉEL `source` explicite d'OrigamBottomNav qui reste un mort
+ * AUTHENTIQUE) et la précision (set/unset/toggle câblés -> pas de faux
+ * positif, y compris deux appels dans le même fichier réutilisant la même
+ * clé sous des noms locaux différents).
+ *
  * Run: node packages/ds/scripts/guards/lib/dead-emits.selftest.mjs
  */
 
@@ -104,6 +115,36 @@ const MUST_FLAG = [
         // appelé) -> défaut, ET c'est celui venu de deux niveaux d'héritage
         // plus haut que l'interface nommée dans defineEmits<>.
         ['update:hover', 'update:modelValue']
+    ],
+    [
+        // useStateFlag REMPLACE useActive/useHover depuis leur fusion
+        // (0 appel des deux anciens composables dans src/components/,
+        // 24 useStateFlag — vérifié par grep avant d'écrire ce cas).
+        // Appelé mais AUCUN de set/unset/toggle n'est déstructuré : rien ne
+        // peut écrire le v-model interne, donc rien n'atteint jamais
+        // `update:active`.
+        'useStateFlag(props, {state:\'active\'}) appelé mais set/unset/toggle jamais déstructurés',
+        wrapVue('<div/>', `
+            defineEmits<ITestEmits>()
+            const { isOn: isActive, config: activeState } = useStateFlag(props, {state: 'active'})
+        `),
+        fakeIndex({ ITestEmits: { events: ['update:active'] } }),
+        ['update:active']
+    ],
+    [
+        // Le cas RÉEL OrigamBottomNav, tel que rapporté par l'agent du lot
+        // parallèle : `source: 'modelValue'` explicite déplace le canal réel
+        // loin du nom de state, ET set/unset/toggle ne sont PAS déstructurés
+        // pour cette instance précise — donc `update:active` (ou
+        // `update:modelValue`, selon l'interface) reste un mort AUTHENTIQUE,
+        // pas un angle mort du détecteur.
+        'useStateFlag(props, {state:\'active\', source:\'modelValue\'}) sans set/unset/toggle — mort réel (cas OrigamBottomNav)',
+        wrapVue('<div/>', `
+            defineEmits<ITestEmits>()
+            const { isOn: isActive, classes: activeClasses } = useStateFlag(props, {state: 'active', source: 'modelValue'})
+        `),
+        fakeIndex({ ITestEmits: { events: ['update:modelValue'] } }),
+        ['update:modelValue']
     ]
 ]
 
@@ -194,6 +235,54 @@ const MUST_NOT_FLAG = [
         `),
         fakeIndex({ ITestEmits: { events: ['foo'] } }),
         'neverEmitted' // doit être vide ; le test vérifie aussi indeterminate séparément
+    ],
+    [
+        // Le cas RÉEL OrigamAvatar (source par défaut = state) : set/unset
+        // câblés sur mouseenter/mouseleave.
+        'useStateFlag(props, {state:\'hover\'}) avec set/unset câblés (cas OrigamAvatar)',
+        wrapVue('<div @mouseenter="handleMouseenter" @mouseleave="handleMouseleave"/>', `
+            defineEmits<ITestEmits>()
+            const { unset: handleMouseleave, set: handleMouseenter } = useStateFlag(props, {state: 'hover'})
+        `),
+        fakeIndex({ ITestEmits: { events: ['update:hover'] } }),
+        'neverEmitted'
+    ],
+    [
+        // toggle() câblé plutôt que set()/unset() — cas OrigamAvatar (active)
+        // et OrigamCard.
+        'useStateFlag(props, {state:\'active\'}) avec toggle câblé',
+        wrapVue('<div @click="handleClick()"/>', `
+            defineEmits<ITestEmits>()
+            const { toggle: handleClick } = useStateFlag(props, {state: 'active'})
+        `),
+        fakeIndex({ ITestEmits: { events: ['update:active'] } }),
+        'neverEmitted'
+    ],
+    [
+        // `source` explicite déplace le canal réel — l'événement suit
+        // `source`, pas `state`, et doit être reconnu émis quand câblé.
+        'useStateFlag(props, {state:\'active\', source:\'modelValue\'}) avec toggle câblé — le canal suit `source`',
+        wrapVue('<div @click="onActive"/>', `
+            defineEmits<ITestEmits>()
+            const { toggle: onActive } = useStateFlag(props, {state: 'active', source: 'modelValue'})
+        `),
+        fakeIndex({ ITestEmits: { events: ['update:modelValue'] } }),
+        'neverEmitted'
+    ],
+    [
+        // PRÉCISION — deux appels useStateFlag dans le MÊME fichier, la clé
+        // `set` apparaît dans les DEUX déstructurations sous des noms locaux
+        // DIFFÉRENTS. Une recherche globale par nom de clé (au lieu du bloc
+        // de déstructuration capturé PAR APPEL) associerait le mauvais
+        // câblage au mauvais canal — ce cas doit rester correct malgré ça.
+        'deux appels useStateFlag dans le même fichier, la clé `set` réutilisée sous deux noms locaux différents',
+        wrapVue('<div @mouseenter="handleMouseenter" @click="handleActiveSet"/>', `
+            defineEmits<ITestEmits>()
+            const { set: handleMouseenter } = useStateFlag(props, {state: 'hover'})
+            const { set: handleActiveSet } = useStateFlag(props, {state: 'active'})
+        `),
+        fakeIndex({ ITestEmits: { events: ['update:hover', 'update:active'] } }),
+        'neverEmitted'
     ]
 ]
 
@@ -220,9 +309,12 @@ for (const [label, source, index, field] of MUST_NOT_FLAG) {
 }
 
 // Cas séparé : l'appel dynamique doit REPORTER l'événement en indéterminé,
-// pas le faire disparaître silencieusement.
+// pas le faire disparaître silencieusement. Retrouvé PAR LABEL, pas par
+// position (`.at(-1)`) — un ajout de cas après lui dans MUST_NOT_FLAG ne
+// doit pas faire pointer ce bloc sur le mauvais fixture.
 {
-    const [, source, index] = MUST_NOT_FLAG.at(-1)
+    const dynamicCase = MUST_NOT_FLAG.find(([label]) => label.startsWith('appel dynamique présent'))
+    const [, source, index] = dynamicCase
     const { indeterminate, hasDynamicEmit } = analyseDeadEmits(source, index)
     if (!hasDynamicEmit || JSON.stringify(indeterminate) !== JSON.stringify(['foo'])) {
         fail(`appel dynamique — attendu indeterminate=['foo'], obtenu ${JSON.stringify(indeterminate)} (hasDynamicEmit=${hasDynamicEmit})`)

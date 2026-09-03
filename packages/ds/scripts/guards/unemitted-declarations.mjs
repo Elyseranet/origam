@@ -95,13 +95,25 @@ function run () {
     for (const { pascalName, file } of getRealComponents()) {
         const raw = readFileSync(file, 'utf8')
         const { neverEmitted } = analyseDeadEmits(raw, index)
-        if (neverEmitted.length === 0) continue
 
-        const id = `${pascalName}:${neverEmitted.join(',')}`
-        violations.set(
-            id,
-            `Origam${pascalName} (${path.relative(REPO_ROOT, file)}) déclare ${neverEmitted.map(e => `\`${e}\``).join(', ')} sans jamais l'émettre — Vue retire son handler de $attrs, le consommateur ne recevra jamais l'événement`
-        )
+        // Un ID par (composant, événement) — PAS un ID par composant qui
+        // rassemble tous ses événements morts (`join(',')`) : quand un
+        // composant a PLUSIEURS événements morts et qu'un seul se corrige,
+        // l'ID joint change ENTIER, donc l'ancien devient stale ET un
+        // nouvel ID apparaît pour ce qui reste — un garde vert bruite alors
+        // un fix partiel en (1 stale + 1 new) au lieu du diff réel (0 stale,
+        // 0 new pour l'événement corrigé). Constaté en pratique sur
+        // OrigamBottomNav en ajoutant le relais `useStateFlag` : `hover`
+        // s'est corrigé, `active` restait mort, et l'ID joint a fait
+        // disparaître ET réapparaître la ligne au lieu de ne rien bouger
+        // côté `hover`.
+        for (const event of neverEmitted) {
+            const id = `${pascalName}:${event}`
+            violations.set(
+                id,
+                `Origam${pascalName} (${path.relative(REPO_ROOT, file)}) déclare \`${event}\` sans jamais l'émettre — Vue retire son handler de $attrs, le consommateur ne recevra jamais l'événement`
+            )
+        }
     }
 
     if (process.argv.includes('--update-baseline')) {
