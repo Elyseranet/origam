@@ -1,4 +1,4 @@
-import { computed, onBeforeUnmount, provide, ref, shallowRef, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, provide, ref, shallowRef, watch } from 'vue'
 import { useVModel } from './vModel.composable'
 import { LIST_OPEN_STRATEGY, MULTIPLE_OPEN_STRATEGY, ORIGAM_NESTED_KEY, SINGLE_OPEN_STRATEGY } from '../../consts/Commons/nested.const'
 import { OPEN_STRATEGY, SELECTED, SELECT_STRATEGY } from '../../enums'
@@ -21,6 +21,16 @@ import { classicSelectStrategy, independentSelectStrategy, independentSingleSele
  ********************************************************/
 export const useNested = (props: INestedProps) => {
     let isUnmounted = false
+
+    /*********************************************************
+     * openedTouchedBeforeMount
+     *
+     * @description
+     * Flips the moment `open()`/`openOnSelect()` writes `opened.value` for
+     * the first time — guards the `onMounted` reseed below from clobbering
+     * a legitimate pre-mount write (see the comment there).
+     ********************************************************/
+    let openedTouchedBeforeMount = false
     const children = ref(new Map<unknown, Array<unknown>>())
     const parents = ref(new Map<unknown, unknown>())
 
@@ -42,6 +52,38 @@ export const useNested = (props: INestedProps) => {
      ********************************************************/
     watch(() => props.opened, (val) => {
         opened.value = new Set(val)
+    })
+
+    /*********************************************************
+     * opened's FIRST seed is re-applied once mounted (ADR-005)
+     *
+     * @description
+     * `ref(new Set(props.opened))` above runs during the caller's
+     * `setup()`, BEFORE `beforeCreate` installs the ADR-005 theme-props
+     * accessor on `instance.props` — so a theme-only `opened` default
+     * (`theme.components['origam-list'].opened`, the same shape `selected`
+     * already supports via `useVModel`) is invisible to this first
+     * snapshot. The `watch` just above does not correct it either: its
+     * own baseline read runs at the same `setup()` instant, so it only
+     * ever fires for a LATER change coming from the parent (#486), never
+     * for the theme value landing for the first time. Measured, not
+     * assumed — `nested-opened-theme-race.spec.ts` reproduced the miss
+     * against the real `createOrigam({ themes })` mechanism before this
+     * fix, mirroring `useVirtual.estimateLast`'s already-shipped pattern
+     * for the exact same class of defect.
+     *
+     * @description
+     * Re-applying the seed unconditionally would clobber a legitimate
+     * `open()`/`openOnSelect()` call a CHILD's own `onMounted`/watcher may
+     * have already routed through this ref — Vue mounts children before
+     * their parent, so that ordering is possible. `openedTouchedBeforeMount`
+     * flips the moment either handler writes `opened.value`, and the
+     * reseed below only runs while it is still untouched.
+     ********************************************************/
+    onMounted(() => {
+        if (!openedTouchedBeforeMount) {
+            opened.value = new Set(props.opened)
+        }
     })
 
     const selectStrategy = computed(() => {
@@ -168,6 +210,7 @@ export const useNested = (props: INestedProps) => {
                 })
 
                 if (newOpened) {
+                    openedTouchedBeforeMount = true
                     opened.value = new Set(newOpened)
                     vm.emit('update:opened', newOpened)
                 }
@@ -184,6 +227,7 @@ export const useNested = (props: INestedProps) => {
                 })
 
                 if (newOpened) {
+                    openedTouchedBeforeMount = true
                     opened.value = newOpened
                 }
             },

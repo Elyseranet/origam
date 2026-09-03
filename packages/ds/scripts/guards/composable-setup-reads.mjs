@@ -76,10 +76,26 @@ const BASELINE_PATH = path.join(__dirname, 'baseline/composable-setup-reads.json
  * `useNested.opened` — `const opened = ref(new Set(props.opened))`.
  * #486 (ticket distinct) a ajoute un `watch(() => props.opened, …)`
  * JUSTE APRES cette ligne pour suivre un changement EXTERNE survenant
- * apres le montage, mais n'a pas differe l'amorce initiale elle-meme —
- * celle-ci reste eager. Tres probablement inoffensif (aucun theme
- * livre ne configure `opened`), mais non mesure : laisse baseline
- * plutot que corrige a l'aveugle.
+ * apres le montage, mais n'avait pas differe l'amorce initiale elle-meme
+ * — celle-ci reste structurellement eager, donc reste dans cette
+ * baseline (meme situation que `useVirtual.estimateLast`, jamais retire
+ * non plus : la premiere valeur DOIT etre calculee de facon synchrone,
+ * seule une correction ulterieure est possible).
+ *
+ * @description
+ * ⛔ AUDIT ADR-005 (lot B, sans numero de ticket confirme) A MESURE LE CAS LAISSE OUVERT ICI ET CORRIGE : sous un
+ * theme configurant `opened` (jamais passe par le consommateur),
+ * `root.opened` restait vide au montage — reproduit dans
+ * `nested-opened-theme-race.spec.ts` AVANT correctif. Le correctif ajoute
+ * un `onMounted()` qui re-applique le meme seed (`new Set(props.opened)`)
+ * une fois que `beforeCreate` a eu la possibilite d'ecrire — mecanisme
+ * identique a `useVirtual.estimateLast`, garde par un flag
+ * `openedTouchedBeforeMount` pour ne pas ecraser un `open()`/
+ * `openOnSelect()` legitime survenu avant le montage du parent. Verifie,
+ * cas du theme compris, dans `nested-opened-theme-race.spec.ts`. La ligne
+ * reste baselinee ici parce que le DETECTEUR AST voit toujours la meme
+ * lecture eager brute a la ligne d'origine — c'est la correction en aval
+ * (`onMounted`), pas la disparition de la lecture, qui referme le defaut.
  *
  * @description
  * Deux autres candidats de la meme famille (`props.x` passe en 3e
