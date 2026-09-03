@@ -1,6 +1,11 @@
 import { MaybeRef, onBeforeUnmount, toValue, watch } from "vue"
 import { IN_BROWSER } from '../../consts/Commons/commons.const'
-import { KEYBOARD_MODIFIERS } from '../../consts/Commons/hotkey.const'
+import {
+    HOTKEY_NO_AUTO_CLEANUP_WARNING,
+    HOTKEY_SEQUENCE_TIMEOUT,
+    KEYBOARD_MODIFIERS,
+    MACINTOSH_UA_TOKEN
+} from '../../consts/Commons/hotkey.const'
 import { IHotkeyOptions } from '../../interfaces/Commons/hotkey.interface'
 import { TKeyboardModifiers } from '../../types/Commons/hotkey.type'
 import { consoleWarn } from '../../utils/Commons/console.util'
@@ -22,10 +27,10 @@ export function useHotkey (
         event = 'keydown',
         inputs = false,
         preventDefault = true,
-        sequenceTimeout = 1000
+        sequenceTimeout = HOTKEY_SEQUENCE_TIMEOUT
     } = options
 
-    const isMac = navigator?.userAgent?.includes('Macintosh') ?? false
+    const isMac = navigator?.userAgent?.includes(MACINTOSH_UA_TOKEN) ?? false
     let timeout = 0
     let keyGroups: string[]
     let isSequence = false
@@ -115,7 +120,7 @@ export function useHotkey (
         onBeforeUnmount(cleanup)
     } catch {
         // Not in Vue setup context
-        consoleWarn("Can't cleanup")
+        consoleWarn(HOTKEY_NO_AUTO_CLEANUP_WARNING)
     }
 
     const parseKeyGroup = (group: string) => {

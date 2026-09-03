@@ -29,6 +29,40 @@ export const QR_CODE_DEFAULT_LOGO_SIZE = 0.2
 export const QR_CODE_DEFAULT_LOGO_PADDING = 6
 
 /**
+ * Default module / quiet-zone paint. `currentColor` lets the matrix
+ * inherit the surrounding text colour (so it follows the theme without
+ * a token lookup), and a transparent quiet zone lets the host surface
+ * show through instead of punching a white rectangle into a dark theme.
+ */
+export const QR_CODE_DEFAULT_FOREGROUND = 'currentColor'
+export const QR_CODE_DEFAULT_BACKGROUND = 'transparent'
+
+/**
+ * Square modules by default — `rx`/`ry` are omitted entirely at 0 so
+ * the emitted SVG stays as small as possible.
+ */
+export const QR_CODE_DEFAULT_CORNER_RADIUS = 0
+
+/**
+ * Backdrop painted behind a logo overlay when neither `logo.background`
+ * nor a solid `background` is supplied. Scanners need an opaque plate
+ * under the overlay to keep the surrounding modules readable, so this
+ * one cannot be a theme token: the value is embedded verbatim in the
+ * generated SVG string, where `var(--origam-…)` would resolve against
+ * whatever host the markup lands in — including none at all when the
+ * SVG is exported or downloaded.
+ */
+export const QR_CODE_DEFAULT_LOGO_BACKGROUND = '#ffffff'
+
+/**
+ * Pixels per module assumed when converting `logo.padding` (expressed
+ * in px by the consumer) into the module units of the SVG viewBox. The
+ * true ratio depends on the final rendered size, which is unknown at
+ * build time — see the note in `buildSvg`.
+ */
+export const QR_CODE_LOGO_PADDING_PX_PER_MODULE = 16
+
+/**
  * Module-level LRU keyed on the serialised payload + options.
  *
  * Reusing the matrix across renders is the cheap path — encoding cost

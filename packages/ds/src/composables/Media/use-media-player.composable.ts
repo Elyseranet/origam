@@ -5,7 +5,17 @@ import {
     type Ref
 } from 'vue'
 
-import { MEDIA_DEFAULT_VOLUME } from '../../consts/Media/media.const'
+import { REDUCED_MOTION_QUERY } from '../../consts/Commons/commons.const'
+import {
+    MEDIA_AUTOPLAY_SUPPRESSED_WARNING,
+    MEDIA_DEFAULT_PLAYBACK_RATE,
+    MEDIA_DEFAULT_VOLUME,
+    MEDIA_MAX_PLAYBACK_RATE,
+    MEDIA_MAX_VOLUME,
+    MEDIA_MIN_PLAYBACK_RATE,
+    MEDIA_MIN_VOLUME,
+    MEDIA_UNKNOWN_ERROR_MESSAGE
+} from '../../consts/Media/media.const'
 
 import type { IMediaPlayerMethods, IMediaPlayerState, IUseMediaPlayerOptions } from '../../interfaces/Media/media-player.interface'
 
@@ -24,7 +34,7 @@ function prefersReducedMotion (): boolean {
     if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
         return false
     }
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    return window.matchMedia(REDUCED_MOTION_QUERY).matches
 }
 
 /**
@@ -82,7 +92,7 @@ export function useMediaPlayer (options: IUseMediaPlayerOptions = {}): {
     const loading: Ref<boolean> = ref(false)
     const error: Ref<MediaError | Error | null> = ref(null)
     /** Current playback rate. 1 = normal speed. */
-    const playbackRate: Ref<number> = ref(1)
+    const playbackRate: Ref<number> = ref(MEDIA_DEFAULT_PLAYBACK_RATE)
     /** Remote Playback availability + connection state. Backed by the
      *  browser's `HTMLMediaElement.remote` (RemotePlayback API). */
     const remoteAvailable: Ref<boolean> = ref(false)
@@ -124,14 +134,14 @@ export function useMediaPlayer (options: IUseMediaPlayerOptions = {}): {
     const setVolume = (value: number): void => {
         const el = mediaRef.value
         if (!el) return
-        const clamped = Math.max(0, Math.min(1, value))
+        const clamped = Math.max(MEDIA_MIN_VOLUME, Math.min(MEDIA_MAX_VOLUME, value))
         el.volume = clamped
         // Native browsers do NOT auto-unmute when you raise the volume
         // — they keep `muted=true` until the user toggles it. We mirror
         // that behaviour so the inline volume slider doesn't appear to
         // do nothing when the player is muted (and surface a UX hint
         // by clearing muted when the volume is raised from zero).
-        if (clamped > 0 && el.muted) {
+        if (clamped > MEDIA_MIN_VOLUME && el.muted) {
             el.muted = false
         }
     }
@@ -167,7 +177,7 @@ export function useMediaPlayer (options: IUseMediaPlayerOptions = {}): {
     const setPlaybackRate = (rate: number): void => {
         const el = mediaRef.value
         if (!el) return
-        const clamped = Math.max(0.25, Math.min(4, rate))
+        const clamped = Math.max(MEDIA_MIN_PLAYBACK_RATE, Math.min(MEDIA_MAX_PLAYBACK_RATE, rate))
         el.playbackRate = clamped
         // Sync state immediately (the native `ratechange` event fires
         // asynchronously and we want consumers to see the new value on
@@ -265,7 +275,7 @@ export function useMediaPlayer (options: IUseMediaPlayerOptions = {}): {
         loading.value = false
         const el = mediaRef.value
         if (el?.error) error.value = el.error
-        else error.value = new Error('Unknown media error')
+        else error.value = new Error(MEDIA_UNKNOWN_ERROR_MESSAGE)
     }
     const onRateChange = () => {
         const el = mediaRef.value
@@ -335,9 +345,7 @@ export function useMediaPlayer (options: IUseMediaPlayerOptions = {}): {
         // here to log a one-time warning that the consumer's intent
         // was overridden.
         if (options.autoplay && prefersReducedMotion()) {
-            console.warn(
-                '[origam:media] `autoplay` requested but the user prefers reduced motion; autoplay was suppressed.'
-            )
+            console.warn(MEDIA_AUTOPLAY_SUPPRESSED_WARNING)
         }
     }
 

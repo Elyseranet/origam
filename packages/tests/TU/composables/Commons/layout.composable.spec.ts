@@ -13,7 +13,15 @@ import { defineComponent, h, nextTick, provide, reactive, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 
-import { ORIGAM_LAYOUT_KEY } from '@origam/consts/Commons/layout.const'
+import {
+    LAYOUT_DEFAULT_OFFSET,
+    LAYOUT_ITEM_HIDDEN_OFFSET,
+    LAYOUT_ITEM_ZINDEX_STEP,
+    LAYOUT_OVERLAP_SEPARATOR,
+    LAYOUT_SCRIM_ZINDEX_OFFSET,
+    ORIGAM_LAYOUT_KEY,
+    ROOT_ZINDEX
+} from '@origam/consts/Commons/layout.const'
 
 import { useLayout } from '@origam/composables/Commons/layout.composable'
 import { useLayoutItem } from '@origam/composables/Commons/layoutItem.composable'
@@ -147,6 +155,149 @@ describe('useCreateLayout — API shape', () => {
         const styles = (api().layoutStyles as unknown as { value: Record<string, unknown> }).value
             ?? (api().layoutStyles as unknown as Record<string, unknown>)
         expect(styles).toHaveProperty('--origam-layout---position-left')
+    })
+
+    it('reserved-space custom properties default to LAYOUT_DEFAULT_OFFSET with no item registered', () => {
+        const { api } = mountLayout()
+        const styles = (api().layoutStyles as unknown as { value: Record<string, unknown> }).value
+        expect(styles['--origam-layout---position-left']).toBe(LAYOUT_DEFAULT_OFFSET)
+        expect(styles['--origam-layout---position-right']).toBe(LAYOUT_DEFAULT_OFFSET)
+        expect(styles['--origam-layout---position-top']).toBe(LAYOUT_DEFAULT_OFFSET)
+        expect(styles['--origam-layout---position-bottom']).toBe(LAYOUT_DEFAULT_OFFSET)
+    })
+})
+
+// ─── useCreateLayout — registered item (stacking + offsets) ──────────────────
+//
+// The describes above never register a real item, so the whole
+// `register()` closure — z-index ladder, scrim offset, off-screen
+// transform, overlaps parsing — was uncovered. These constants now live in
+// consts/Commons/layout.const.ts; the tests below pin their effect on the
+// emitted styles.
+
+describe('useCreateLayout — registered layout item', () => {
+    function mountWithItems (
+        layoutProps: Parameters<typeof useCreateLayout>[0] = {},
+        items: Array<{ id: string; position: 'top' | 'bottom' | 'left' | 'right'; order: number; size: number; active?: boolean }> = []
+    ) {
+        const apis: Record<string, ReturnType<typeof useLayoutItem>> = {}
+
+        const Inner = defineComponent({
+            name: 'OrigamLayoutItemRegistered',
+            setup () {
+                for (const item of items) {
+                    apis[item.id] = useLayoutItem({
+                        id: item.id,
+                        order: ref(item.order),
+                        position: ref(item.position),
+                        layoutSize: ref(item.size),
+                        elementSize: ref(item.size),
+                        active: ref(item.active ?? true),
+                        absolute: ref(false)
+                    })
+                }
+                return () => h('div')
+            }
+        })
+        const Outer = defineComponent({
+            name: 'OrigamCreateLayoutRoot',
+            setup () {
+                useCreateLayout(layoutProps)
+                return () => h(Inner)
+            }
+        })
+
+        mount(Outer)
+        return { apis }
+    }
+
+    function stylesOf (api: ReturnType<typeof useLayoutItem>) {
+        return api.layoutItemStyles.value as Record<string, unknown>
+    }
+
+    // The assertions below express the emitted styles in terms of the
+    // constants, which guards the composable/const wiring but not the
+    // values themselves — hence this explicit pin.
+    it('layout constants hold their historical values', () => {
+        expect(ROOT_ZINDEX).toBe(1000)
+        expect(LAYOUT_ITEM_ZINDEX_STEP).toBe(2)
+        expect(LAYOUT_SCRIM_ZINDEX_OFFSET).toBe(1)
+        expect(LAYOUT_ITEM_HIDDEN_OFFSET).toBe(-110)
+        expect(LAYOUT_OVERLAP_SEPARATOR).toBe(':')
+        expect(LAYOUT_DEFAULT_OFFSET).toBe('0px')
+    })
+
+    it('item z-index sits above ROOT_ZINDEX on the LAYOUT_ITEM_ZINDEX_STEP ladder', () => {
+        const { apis } = mountWithItems({}, [{ id: 'drawer', position: 'left', order: 0, size: 240 }])
+        const zIndex = stylesOf(apis.drawer)['z-index'] as number
+
+        expect(typeof zIndex).toBe('number')
+        expect(zIndex).toBeGreaterThan(ROOT_ZINDEX)
+        expect((zIndex - ROOT_ZINDEX) % LAYOUT_ITEM_ZINDEX_STEP).toBe(0)
+    })
+
+    it('scrim sits exactly LAYOUT_SCRIM_ZINDEX_OFFSET below its own item', () => {
+        const { apis } = mountWithItems({}, [{ id: 'drawer', position: 'left', order: 0, size: 240 }])
+        const zIndex = stylesOf(apis.drawer)['z-index'] as number
+        const scrimZIndex = (apis.drawer.layoutItemScrimStyles.value as Record<string, unknown>)['z-index'] as number
+
+        expect(scrimZIndex).toBe(zIndex - LAYOUT_SCRIM_ZINDEX_OFFSET)
+    })
+
+    it('two items on the same side are separated by LAYOUT_ITEM_ZINDEX_STEP', () => {
+        const { apis } = mountWithItems({}, [
+            { id: 'first', position: 'left', order: 0, size: 240 },
+            { id: 'second', position: 'left', order: 1, size: 100 }
+        ])
+        const first = stylesOf(apis.first)['z-index'] as number
+        const second = stylesOf(apis.second)['z-index'] as number
+
+        expect(Math.abs(first - second)).toBe(LAYOUT_ITEM_ZINDEX_STEP)
+    })
+
+    it('an ACTIVE item is not translated off screen', () => {
+        const { apis } = mountWithItems({}, [{ id: 'drawer', position: 'left', order: 0, size: 240, active: true }])
+        expect(stylesOf(apis.drawer).transform).toBe('translateX(0%)')
+    })
+
+    it('an INACTIVE item is pushed off screen by LAYOUT_ITEM_HIDDEN_OFFSET', () => {
+        const { apis } = mountWithItems({}, [{ id: 'drawer', position: 'left', order: 0, size: 240, active: false }])
+        expect(stylesOf(apis.drawer).transform).toBe(`translateX(${LAYOUT_ITEM_HIDDEN_OFFSET}%)`)
+    })
+
+    it('an INACTIVE item on the opposite side is pushed the other way', () => {
+        const { apis } = mountWithItems({}, [{ id: 'drawer', position: 'right', order: 0, size: 240, active: false }])
+        expect(stylesOf(apis.drawer).transform).toBe(`translateX(${-LAYOUT_ITEM_HIDDEN_OFFSET}%)`)
+    })
+
+    it('a vertical item translates on the Y axis', () => {
+        const { apis } = mountWithItems({}, [{ id: 'bar', position: 'top', order: 0, size: 64, active: false }])
+        expect(stylesOf(apis.bar).transform).toBe(`translateY(${LAYOUT_ITEM_HIDDEN_OFFSET}%)`)
+    })
+
+    it('an overlaps entry joined by LAYOUT_OVERLAP_SEPARATOR shifts the overlapped item', () => {
+        const items: Parameters<typeof mountWithItems>[1] = [
+            { id: 'bar', position: 'top', order: 0, size: 64 },
+            { id: 'drawer', position: 'left', order: 1, size: 240 }
+        ]
+        const withoutOverlap = mountWithItems({}, items)
+        const withOverlap = mountWithItems(
+            { overlaps: [`bar${LAYOUT_OVERLAP_SEPARATOR}drawer`] },
+            items
+        )
+
+        expect(stylesOf(withOverlap.apis.drawer).top).not.toBe(stylesOf(withoutOverlap.apis.drawer).top)
+    })
+
+    it('an overlaps entry WITHOUT the separator is ignored', () => {
+        const items: Parameters<typeof mountWithItems>[1] = [
+            { id: 'bar', position: 'top', order: 0, size: 64 },
+            { id: 'drawer', position: 'left', order: 1, size: 240 }
+        ]
+        const withoutOverlap = mountWithItems({}, items)
+        const malformed = mountWithItems({ overlaps: ['bar-drawer'] }, items)
+
+        expect(stylesOf(malformed.apis.drawer).top).toBe(stylesOf(withoutOverlap.apis.drawer).top)
     })
 })
 

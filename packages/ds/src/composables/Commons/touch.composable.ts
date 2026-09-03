@@ -1,4 +1,12 @@
 import { useVelocity } from './velocity.composable'
+import {
+    TOUCH_DRAG_THRESHOLD_PX,
+    TOUCH_EDGE_ZONE_PX,
+    TOUCH_FLING_VELOCITY_X,
+    TOUCH_FLING_VELOCITY_Y,
+    TOUCH_OPEN_DIRECTION_BY_POSITION,
+    TOUCH_SETTLE_PROGRESS
+} from '../../consts/Commons/touch.const'
 
 import { oops } from '../../utils/Commons/commons.util'
 
@@ -62,12 +70,11 @@ export function useTouch ({isActive, isTemporary, width, touchless, position}: {
         const touchX = e.changedTouches[0].clientX
         const touchY = e.changedTouches[0].clientY
 
-        const touchZone = 25
         const inTouchZone: boolean =
-            position.value === 'left' ? touchX < touchZone
-                : position.value === 'right' ? touchX > document.documentElement.clientWidth - touchZone
-                    : position.value === 'top' ? touchY < touchZone
-                        : position.value === 'bottom' ? touchY > document.documentElement.clientHeight - touchZone
+            position.value === 'left' ? touchX < TOUCH_EDGE_ZONE_PX
+                : position.value === 'right' ? touchX > document.documentElement.clientWidth - TOUCH_EDGE_ZONE_PX
+                    : position.value === 'top' ? touchY < TOUCH_EDGE_ZONE_PX
+                        : position.value === 'bottom' ? touchY > document.documentElement.clientHeight - TOUCH_EDGE_ZONE_PX
                             : oops()
 
         const inElement: boolean = isActive.value && (
@@ -107,13 +114,13 @@ export function useTouch ({isActive, isTemporary, width, touchless, position}: {
             const dy = Math.abs(touchY - start![1])
 
             const thresholdMet = isHorizontal.value
-                ? dx > dy && dx > 3
-                : dy > dx && dy > 3
+                ? dx > dy && dx > TOUCH_DRAG_THRESHOLD_PX
+                : dy > dx && dy > TOUCH_DRAG_THRESHOLD_PX
 
             if (thresholdMet) {
                 isDragging.value = true
                 maybeDragging = false
-            } else if ((isHorizontal.value ? dy : dx) > 3) {
+            } else if ((isHorizontal.value ? dy : dx) > TOUCH_DRAG_THRESHOLD_PX) {
                 maybeDragging = false
             }
         }
@@ -145,18 +152,13 @@ export function useTouch ({isActive, isTemporary, width, touchless, position}: {
         const vx = Math.abs(velocity.x)
         const vy = Math.abs(velocity.y)
         const thresholdMet = isHorizontal.value
-            ? vx > vy && vx > 400
-            : vy > vx && vy > 3
+            ? vx > vy && vx > TOUCH_FLING_VELOCITY_X
+            : vy > vx && vy > TOUCH_FLING_VELOCITY_Y
 
         if (thresholdMet) {
-            isActive.value = velocity.direction === ({
-                left: 'right',
-                right: 'left',
-                top: 'down',
-                bottom: 'up'
-            }[position.value] || oops())
+            isActive.value = velocity.direction === (TOUCH_OPEN_DIRECTION_BY_POSITION[position.value] || oops())
         } else {
-            isActive.value = dragProgress.value > 0.5
+            isActive.value = dragProgress.value > TOUCH_SETTLE_PROGRESS
         }
     }
 

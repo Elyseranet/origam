@@ -8,6 +8,16 @@ import { AUDIO_VARIANT, COVER_POSITION, POSITION } from '../../enums'
 export const WAVEFORM_DEFAULT_BINS = 200
 
 /**
+ * FFT window size handed to the `AnalyserNode` built by `useAudio`.
+ *
+ * Must be a power of two between 32 and 32768 (Web Audio spec). 256
+ * yields `frequencyBinCount === 128` usable bins — enough resolution for
+ * the visualiser bars while keeping one `getByteFrequencyData` call per
+ * animation frame cheap.
+ */
+export const AUDIO_ANALYSER_FFT_SIZE = 256
+
+/**
  * Canonical defaults for `<OrigamAudio>` — exported for story-side
  * iteration and consumer reference. **Never** referenced from
  * `withDefaults()` itself (the Vue SFC compiler only resolves inline

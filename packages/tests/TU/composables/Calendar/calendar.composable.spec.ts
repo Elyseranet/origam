@@ -48,6 +48,15 @@ describe('useCalendar — visibleDateRange', () => {
         const range = cal.visibleDateRange.value
         expect(range.start.getDate()).toBe(range.end.getDate())
     })
+
+    it('day view ends at the last millisecond of the day', () => {
+        const cal = useCalendar(options({ view: 'day' }))
+        const { start, end } = cal.visibleDateRange.value
+        expect([start.getHours(), start.getMinutes(), start.getSeconds(), start.getMilliseconds()])
+            .toEqual([0, 0, 0, 0])
+        expect([end.getHours(), end.getMinutes(), end.getSeconds(), end.getMilliseconds()])
+            .toEqual([23, 59, 59, 999])
+    })
 })
 
 describe('useCalendar — expandedEvents', () => {
@@ -191,5 +200,30 @@ describe('useCalendar — positionEvent', () => {
         const out = cal.positionEvent(event, dayStart, 1)!
         expect(out.top).toBe(600)
         expect(out.height).toBeGreaterThanOrEqual(60)
+    })
+
+    it('assumes CALENDAR_DEFAULT_EVENT_DURATION_MIN (30 min) when the event has no end', () => {
+        const cal = useCalendar(options())
+        const dayStart = new Date(2026, 4, 14, 0, 0)
+        const event: IEvent = {
+            id: 1,
+            title: 'No end',
+            start: new Date(2026, 4, 14, 10, 0)
+        }
+        const out = cal.positionEvent(event, dayStart, 1)!
+        expect(out.height).toBe(30)
+    })
+
+    it('floors the height at CALENDAR_MIN_EVENT_HEIGHT_MIN (15 min) × pxPerMin', () => {
+        const cal = useCalendar(options())
+        const dayStart = new Date(2026, 4, 14, 0, 0)
+        const event: IEvent = {
+            id: 1,
+            title: '1 min',
+            start: new Date(2026, 4, 14, 10, 0),
+            end: new Date(2026, 4, 14, 10, 1)
+        }
+        expect(cal.positionEvent(event, dayStart, 1)!.height).toBe(15)
+        expect(cal.positionEvent(event, dayStart, 2)!.height).toBe(30)
     })
 })

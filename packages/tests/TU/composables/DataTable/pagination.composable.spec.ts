@@ -13,8 +13,13 @@ import { defineComponent, h, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 
-import { providePagination } from '@origam/composables/DataTable/pagination.composable'
+import { createPagination, providePagination } from '@origam/composables/DataTable/pagination.composable'
 import { usePaginatedItems } from '@origam/composables/DataTable/paginatedItems.composable'
+import {
+    DATA_TABLE_DEFAULT_ITEMS_PER_PAGE,
+    DATA_TABLE_DEFAULT_PAGE,
+    DATA_TABLE_PAGINATION_MISSING_ERROR
+} from '@origam/consts/DataTable/data-table.const'
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -42,6 +47,43 @@ function mountPagination (opts: {
     mount(Host)
     return { page, itemsPerPage, itemsLength, api: () => api }
 }
+
+// ---------------------------------------------------------------------------
+// createPagination — prop coercion + defaults
+// ---------------------------------------------------------------------------
+
+function mountCreatePagination (propsData: { page?: number | string, itemsPerPage?: number | string }) {
+    let api!: ReturnType<typeof createPagination>
+
+    const Host = defineComponent({
+        name: 'CreatePaginationHost',
+        props: {
+            page: { type: [Number, String], default: undefined },
+            itemsPerPage: { type: [Number, String], default: undefined }
+        },
+        setup (props) {
+            api = createPagination(props)
+            return () => h('div')
+        }
+    })
+
+    mount(Host, { props: propsData })
+    return () => api
+}
+
+describe('createPagination — defaults', () => {
+    it('falls back to DATA_TABLE_DEFAULT_PAGE / DATA_TABLE_DEFAULT_ITEMS_PER_PAGE when both props are undefined', () => {
+        const api = mountCreatePagination({})
+        expect(api().page.value).toBe(DATA_TABLE_DEFAULT_PAGE)
+        expect(api().itemsPerPage.value).toBe(DATA_TABLE_DEFAULT_ITEMS_PER_PAGE)
+    })
+
+    it('coerces string props to numbers rather than applying the defaults', () => {
+        const api = mountCreatePagination({ page: '3', itemsPerPage: '25' })
+        expect(api().page.value).toBe(3)
+        expect(api().itemsPerPage.value).toBe(25)
+    })
+})
 
 // ---------------------------------------------------------------------------
 // providePagination — computed indices
@@ -233,7 +275,7 @@ describe('usePagination — missing provide', () => {
         const Orphan = defineComponent({
             name: 'PaginationOrphan',
             setup () {
-                expect(() => usePagination()).toThrow('Missing pagination!')
+                expect(() => usePagination()).toThrow(DATA_TABLE_PAGINATION_MISSING_ERROR)
                 return () => h('div')
             }
         })

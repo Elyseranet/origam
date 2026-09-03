@@ -1,5 +1,7 @@
 import { type MaybeRefOrGetter, onScopeDispose, toValue } from "vue"
 
+import { NUMBER_FIELD_DEFAULT_HOLD_DELAY, NUMBER_FIELD_DEFAULT_HOLD_REPEAT } from '../../consts/NumberField/number-field.const'
+
 /*********************************************************
  * useHold
  *
@@ -15,7 +17,7 @@ import { type MaybeRefOrGetter, onScopeDispose, toValue } from "vue"
  ********************************************************/
 export function useHold ({toggleUpDown}: {
     toggleUpDown: (increment: boolean) => void
-}, holdRepeat: MaybeRefOrGetter<number> = 50, holdDelay: MaybeRefOrGetter<number> = 500) {
+}, holdRepeat: MaybeRefOrGetter<number> = NUMBER_FIELD_DEFAULT_HOLD_REPEAT, holdDelay: MaybeRefOrGetter<number> = NUMBER_FIELD_DEFAULT_HOLD_DELAY) {
     let timeout = -1
     let interval = -1
 

@@ -1,7 +1,20 @@
 import type { ComponentInternalInstance, CSSProperties, Ref, StyleValue } from 'vue'
 import { computed, inject, onMounted, provide, reactive, ref, shallowRef } from 'vue'
 import { useResizeObserver } from './resizeObserver.composable'
-import { ORIGAM_LAYOUT_KEY, ROOT_ZINDEX } from '../../consts/Commons/layout.const'
+import {
+    LAYOUT_CLASS,
+    LAYOUT_DEFAULT_OFFSET,
+    LAYOUT_FULL_HEIGHT_CLASS,
+    LAYOUT_ID_PREFIX,
+    LAYOUT_ITEM_HIDDEN_OFFSET,
+    LAYOUT_ITEM_ZINDEX_STEP,
+    LAYOUT_OVERLAP_SEPARATOR,
+    LAYOUT_POSITION_VARS,
+    LAYOUT_SCRIM_ZINDEX_OFFSET,
+    NESTED_LAYOUT_ZINDEX_STEP,
+    ORIGAM_LAYOUT_KEY,
+    ROOT_ZINDEX
+} from '../../consts/Commons/layout.const'
 import type { TDirectionBoth } from '../../types/Commons/anchor.type'
 import { convertToUnit, findChildrenWithProvide, int } from '../../utils/Commons/commons.util'
 import { getCurrentInstance, getUid } from '../../utils/Commons/getCurrentInstance.util'
@@ -23,9 +36,9 @@ export function useCreateLayout (props: { id?: string, overlaps?: Array<string>,
     const parentLayout = inject(ORIGAM_LAYOUT_KEY, null)
 
     const uid = getUid()
-    const layoutId = computed(() => props.id || `layout-${uid}`)
+    const layoutId = computed(() => props.id || `${LAYOUT_ID_PREFIX}${uid}`)
 
-    const rootZIndex = computed(() => parentLayout ? parentLayout.rootZIndex.value - 100 : ROOT_ZINDEX)
+    const rootZIndex = computed(() => parentLayout ? parentLayout.rootZIndex.value - NESTED_LAYOUT_ZINDEX_STEP : ROOT_ZINDEX)
     const registered = ref<Array<string>>([])
     const positions = reactive(new Map<string, Ref<TDirectionBoth>>())
     const layoutSizes = reactive(new Map<string, Ref<number | string>>())
@@ -37,8 +50,8 @@ export function useCreateLayout (props: { id?: string, overlaps?: Array<string>,
     const computedOverlaps = computed(() => {
         const map = new Map<string, { position: TDirectionBoth, amount: number }>()
         const overlaps = props.overlaps ?? []
-        for (const overlap of overlaps.filter(item => item.includes(':'))) {
-            const [top, bottom] = overlap.split(':')
+        for (const overlap of overlaps.filter(item => item.includes(LAYOUT_OVERLAP_SEPARATOR))) {
+            const [top, bottom] = overlap.split(LAYOUT_OVERLAP_SEPARATOR)
             if (!registered.value.includes(top) || !registered.value.includes(bottom)) continue
 
             const topPosition = positions.get(top)
@@ -76,10 +89,10 @@ export function useCreateLayout (props: { id?: string, overlaps?: Array<string>,
     })
 
     const mainStyles = computed<CSSProperties>(() => {
-        const left = convertToUnit(mainRect.value.left) ?? '0px'
-        const right = convertToUnit(mainRect.value.right) ?? '0px'
-        const top = convertToUnit(mainRect.value.top) ?? '0px'
-        const bottom = convertToUnit(mainRect.value.bottom) ?? '0px'
+        const left = convertToUnit(mainRect.value.left) ?? LAYOUT_DEFAULT_OFFSET
+        const right = convertToUnit(mainRect.value.right) ?? LAYOUT_DEFAULT_OFFSET
+        const top = convertToUnit(mainRect.value.top) ?? LAYOUT_DEFAULT_OFFSET
+        const bottom = convertToUnit(mainRect.value.bottom) ?? LAYOUT_DEFAULT_OFFSET
         // Emit BOTH:
         //   • the standard `left / right / top / bottom` props for
         //     consumers that use `position: absolute` (e.g.
@@ -96,10 +109,10 @@ export function useCreateLayout (props: { id?: string, overlaps?: Array<string>,
             'right': right,
             'top': top,
             'bottom': bottom,
-            '--origam-layout---position-left': left,
-            '--origam-layout---position-right': right,
-            '--origam-layout---position-top': top,
-            '--origam-layout---position-bottom': bottom,
+            [LAYOUT_POSITION_VARS.left]: left,
+            [LAYOUT_POSITION_VARS.right]: right,
+            [LAYOUT_POSITION_VARS.top]: top,
+            [LAYOUT_POSITION_VARS.bottom]: bottom,
             ...(transitionsEnabled.value ? undefined : {transition: 'none'})
         } as CSSProperties
     })
@@ -192,7 +205,7 @@ export function useCreateLayout (props: { id?: string, overlaps?: Array<string>,
             else registered.value.push(id)
 
             const index = computed(() => items.value.findIndex(i => i.id === id))
-            const zIndex = computed(() => rootZIndex.value + (layers.value.length * 2) - (index.value * 2))
+            const zIndex = computed(() => rootZIndex.value + (layers.value.length * LAYOUT_ITEM_ZINDEX_STEP) - (index.value * LAYOUT_ITEM_ZINDEX_STEP))
 
             const layoutItemStyles = computed<CSSProperties>(() => {
                 const isHorizontal = position.value === 'left' || position.value === 'right'
@@ -201,7 +214,7 @@ export function useCreateLayout (props: { id?: string, overlaps?: Array<string>,
                 const styles = {
                     [position.value]: 0,
                     'z-index': zIndex.value,
-                    'transform': `translate${isHorizontal ? 'X' : 'Y'}(${(active.value ? 0 : -110) * (isOppositeHorizontal || isOppositeVertical ? -1 : 1)}%)`,
+                    'transform': `translate${isHorizontal ? 'X' : 'Y'}(${(active.value ? 0 : LAYOUT_ITEM_HIDDEN_OFFSET) * (isOppositeHorizontal || isOppositeVertical ? -1 : 1)}%)`,
                     'position': absolute.value || rootZIndex.value !== ROOT_ZINDEX ? 'absolute' : 'fixed',
                     ...(transitionsEnabled.value ? undefined : {'transition': 'none'})
                 } as const
@@ -244,7 +257,7 @@ export function useCreateLayout (props: { id?: string, overlaps?: Array<string>,
             })
 
             const layoutItemScrimStyles = computed<CSSProperties>(() => ({
-                'z-index': zIndex.value - 1
+                'z-index': zIndex.value - LAYOUT_SCRIM_ZINDEX_OFFSET
             }))
 
             return {layoutItemStyles, layoutItemScrimStyles, zIndex}
@@ -268,16 +281,16 @@ export function useCreateLayout (props: { id?: string, overlaps?: Array<string>,
 
     const layoutClasses = computed(() => {
         return [
-            'origam-layout',
-            {'origam-layout--full-height': props.fullHeight}
+            LAYOUT_CLASS,
+            {[LAYOUT_FULL_HEIGHT_CLASS]: props.fullHeight}
         ]
     })
 
     const layoutStyles = computed(() => {
-        const left = convertToUnit(mainRect.value.left) ?? '0px'
-        const right = convertToUnit(mainRect.value.right) ?? '0px'
-        const top = convertToUnit(mainRect.value.top) ?? '0px'
-        const bottom = convertToUnit(mainRect.value.bottom) ?? '0px'
+        const left = convertToUnit(mainRect.value.left) ?? LAYOUT_DEFAULT_OFFSET
+        const right = convertToUnit(mainRect.value.right) ?? LAYOUT_DEFAULT_OFFSET
+        const top = convertToUnit(mainRect.value.top) ?? LAYOUT_DEFAULT_OFFSET
+        const bottom = convertToUnit(mainRect.value.bottom) ?? LAYOUT_DEFAULT_OFFSET
         // Expose the layout's reserved-space (drawer width, toolbar height,
         // …) via CSS custom properties on the LAYOUT ROOT so every
         // descendant inherits them (toolbar, main, footer, snackbar, …).
@@ -290,10 +303,10 @@ export function useCreateLayout (props: { id?: string, overlaps?: Array<string>,
             'position': parentLayout ? 'relative' as const : undefined,
             'overflow': parentLayout ? 'hidden' : undefined,
         }
-        out['--origam-layout---position-left'] = left
-        out['--origam-layout---position-right'] = right
-        out['--origam-layout---position-top'] = top
-        out['--origam-layout---position-bottom'] = bottom
+        out[LAYOUT_POSITION_VARS.left] = left
+        out[LAYOUT_POSITION_VARS.right] = right
+        out[LAYOUT_POSITION_VARS.top] = top
+        out[LAYOUT_POSITION_VARS.bottom] = bottom
         return out as StyleValue
     })
 

@@ -82,6 +82,23 @@ describe('useChartGauge — geometry', () => {
         const { outerRadius, innerRadius } = geometry.value
         expect(outerRadius - innerRadius).toBe(30)
     })
+
+    it('outerRadius shaves CHART_GAUGE_RADIUS_INSET (4) off the half plot box', () => {
+        // availableH = 200 - 10 - 10 = 180 → 180 / 2 - 4 = 86
+        const { geometry } = useChartGauge(makeOptions({ width: 300, height: 200 }))
+        expect(geometry.value.outerRadius).toBe(86)
+    })
+
+    it('floors thickness at CHART_GAUGE_MIN_THICKNESS (1) for zero / negative input', () => {
+        expect(
+            useChartGauge(makeOptions({ thickness: 0 })).geometry.value.outerRadius
+            - useChartGauge(makeOptions({ thickness: 0 })).geometry.value.innerRadius
+        ).toBe(1)
+        expect(
+            useChartGauge(makeOptions({ thickness: -5 })).geometry.value.outerRadius
+            - useChartGauge(makeOptions({ thickness: -5 })).geometry.value.innerRadius
+        ).toBe(1)
+    })
 })
 
 // ---------------------------------------------------------------------------

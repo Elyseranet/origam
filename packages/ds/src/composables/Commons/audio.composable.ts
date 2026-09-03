@@ -1,4 +1,5 @@
 import { ref, shallowRef, watch } from 'vue'
+import { AUDIO_ANALYSER_FFT_SIZE } from '../../consts/Audio/audio.const'
 import type { IUseAudioProps } from '../../interfaces/Commons/audio.interface'
 
 /*********************************************************
@@ -38,7 +39,7 @@ export function useAudio (props: IUseAudioProps) {
 
         src.connect(analyserNode)
         analyserNode.connect(context.destination)
-        analyserNode.fftSize = 256
+        analyserNode.fftSize = AUDIO_ANALYSER_FFT_SIZE
 
         audioArray.value = new Uint8Array(analyserNode.frequencyBinCount)
         analyser.value = analyserNode
