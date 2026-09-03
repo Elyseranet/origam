@@ -54,3 +54,14 @@ interface ITranslateScaleProps extends ITransitionProps {
 - During the JS path, `pointer-events: none` is applied so users don't
   click on a moving target.
 - For pure CSS animation, omit `target`.
+- `disabled` (inherited from `ITransitionProps`) neutralises **both**
+  paths: with `target`, the WAAPI enter/leave hooks are skipped entirely
+  (no `el.animate()` call); without `target`, the CSS `enter`/`leave`
+  classes never get applied. Either way the slotted content mounts/
+  unmounts instantly, matching `<OrigamExpandX>`'s `:css="!disabled"`
+  behaviour.
+- Independently of `disabled`, the JS path already respects the
+  OS-level `prefers-reduced-motion: reduce` setting: `animate()`
+  (`utils/Commons/animation.util.ts`) shrinks the WAAPI duration to a
+  near-zero value rather than running it at full speed — the CSS path
+  is covered by the `ds.ds-reduced-motion` SCSS mixin.

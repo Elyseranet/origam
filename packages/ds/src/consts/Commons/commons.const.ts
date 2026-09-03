@@ -31,6 +31,20 @@ export const SUPPORTS_EYE_DROPPER = IN_BROWSER && 'EyeDropper' in window
 export const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)'
 
 /*********************************************************
+ * REDUCED_MOTION_ANIMATION_DURATION
+ *
+ * @description
+ * The WAAPI (`el.animate()`) twin of the `0.01ms` duration every
+ * `@include ds.ds-reduced-motion { transition-duration: 0.01ms !important }`
+ * block in the DS's SCSS uses (see `assets/scss/_helpers.scss`). Kept as a
+ * near-zero duration rather than `0` on purpose: `Animation.finished` must
+ * keep resolving so `done()` callbacks in Vue `<transition>` hooks still
+ * fire — skipping `el.animate()` outright (as a naive "respect reduced
+ * motion" fix would) leaves any code awaiting `.finished` hanging forever.
+ ********************************************************/
+export const REDUCED_MOTION_ANIMATION_DURATION = 0.01
+
+/*********************************************************
  * NAME_ATTR_TAGS
  *
  * @description

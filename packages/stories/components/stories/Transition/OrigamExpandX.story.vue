@@ -27,6 +27,7 @@
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<ITransitionProps>>({
 					name: 'origam-transition--expand-x',
+					mode: 'in-out',
 					disabled: false,
 					group: false,
 					hideOnLeave: false,
@@ -38,6 +39,7 @@
 					<button class="story-toggle" data-cy="toggle-functional" @click="toggleFunctional = !toggleFunctional">Toggle</button>
 					<origam-expand-x
 							:name="state.name"
+							:mode="state.mode"
 							:disabled="state.disabled"
 							:group="state.group"
 							:hide-on-leave="state.hideOnLeave"
