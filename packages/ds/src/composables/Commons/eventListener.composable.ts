@@ -1,22 +1,41 @@
+import type { Ref } from 'vue'
 import { watch } from 'vue'
+import type { MaybeRefOrGetter } from 'vue'
 import { noop, tryOnScopeDispose } from '../../utils/Commons/commons.util'
 import { resolveUnref, unrefElement } from '../../utils/Commons/eventListener.util'
+
+import type { TEventListenerTarget } from '../../types/Commons/event.type'
+
+type TEventListenerEvents = string | Array<string>
+type TEventListenerListeners = EventListenerOrEventListenerObject | Array<EventListenerOrEventListenerObject>
+type TEventListenerOptions = MaybeRefOrGetter<AddEventListenerOptions | undefined>
 
 /*********************************************************
  * useEventListener
  ********************************************************/
-export function useEventListener (...args: Array<any>) {
-    let target
-    let events
-    let listeners
-    let options
+export function useEventListener (
+    events: TEventListenerEvents,
+    listeners: TEventListenerListeners,
+    options?: TEventListenerOptions
+): () => void
+export function useEventListener (
+    target: TEventListenerTarget,
+    events: TEventListenerEvents,
+    listeners: TEventListenerListeners,
+    options?: TEventListenerOptions
+): () => void
+export function useEventListener (...args: Array<unknown>): () => void {
+    let target: TEventListenerTarget
+    let events: TEventListenerEvents
+    let listeners: TEventListenerListeners
+    let options: TEventListenerOptions
 
     if (typeof args[0] === 'string' || Array.isArray(args[0])) {
-        [events, listeners, options] = args
+        [events, listeners, options] = args as [TEventListenerEvents, TEventListenerListeners, TEventListenerOptions]
 
         target = typeof window !== 'undefined' ? window : void 0
     } else {
-        [target, events, listeners, options] = args
+        [target, events, listeners, options] = args as [TEventListenerTarget, TEventListenerEvents, TEventListenerListeners, TEventListenerOptions]
     }
 
     if (!target) {
@@ -31,7 +50,7 @@ export function useEventListener (...args: Array<any>) {
         listeners = [listeners]
     }
 
-    const cleanups: Array<any> = []
+    const cleanups: Array<() => void> = []
 
     const cleanup = () => {
         cleanups.forEach((fn) => fn())
@@ -43,7 +62,19 @@ export function useEventListener (...args: Array<any>) {
         return () => el.removeEventListener(event, listener, opt)
     }
 
-    const stopWatch = watch(() => [unrefElement(target), resolveUnref(options)], ([el, options2]) => {
+    /*********************************************************
+     * target / options resolution
+     *
+     * @description
+     * `unrefElement` / `resolveUnref` (utils/Commons/eventListener.util.ts)
+     * predate `TEventListenerTarget` and only accept a bare `Ref`. They are
+     * not part of this pass's 18 composables, and both already gracefully
+     * no-op on a non-Ref value (`unref()` returns its argument unchanged
+     * when it isn't a Ref) — the cast below is a narrow, internal bridge to
+     * that pre-existing loose utility, not part of this composable's own
+     * public signature.
+     ********************************************************/
+    const stopWatch = watch(() => [unrefElement(target as unknown as Ref), resolveUnref(options as unknown as Ref | (() => unknown))], ([el, options2]) => {
         cleanup()
 
         if (!el) return

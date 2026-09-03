@@ -14,7 +14,7 @@ export function useToggleScope (source: WatchSource<boolean>, fn: (reset: () => 
                 scope?.stop()
                 start()
             })
-            : (fn as any)()
+            : (fn as () => void)()
         )
     }
 

@@ -35,7 +35,7 @@ import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
  * other way round — moving it alongside `useDefaults` would make the
  * dependency direction backwards to read.
  ********************************************************/
-export function usePassedProps<T extends Record<string, any>> (
+export function usePassedProps<T extends object> (
     _props: T,
     instanceLabel = 'usePassedProps'
 ): (key: Extract<keyof T, string> | string) => boolean {

@@ -1,9 +1,11 @@
 import { computed, ComputedRef, Ref, ref, useSlots } from 'vue'
 
+import type { IMessageProps } from '../../interfaces/Commons/message.interface'
+
 /*********************************************************
  * useMessage
  ********************************************************/
-export function useMessage (props: any, otherMessages: Ref<Array<any>> | ComputedRef<Array<any>> = ref([])) {
+export function useMessage (props: IMessageProps, otherMessages: Ref<Array<string>> | ComputedRef<Array<string>> = ref([])) {
     const $slots = useSlots()
 
     const hasMessages = computed(() => {

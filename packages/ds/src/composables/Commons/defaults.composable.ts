@@ -52,7 +52,7 @@ import { usePassedProps } from './passedProps.composable'
  * component's own `withDefaults()` value. Delegates the "was this prop
  * explicitly passed?" check to `usePassedProps`.
  ********************************************************/
-export function useDefaults<T extends Record<string, any>> (
+export function useDefaults<T extends object> (
     props: T,
     name = getCurrentInstanceName()
 ): T {
