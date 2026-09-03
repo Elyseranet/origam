@@ -401,6 +401,22 @@ with guard 7 rather than reimplemented (see `guards/lib/dead-emits.selftest.mjs`
 for a fixture pinning exactly this two-level cascade, both flagged and
 covered).
 
+**Fixed by mutation, 2026-09-03 — a second `defineEmits<T>()` member syntax
+was a blind spot.** Vue accepts two member shapes inside an `*Emits`
+interface: the call-signature form this repo uses everywhere
+(`(e: 'name', ...args): void`) and the "type-based" form Vue >= 3.3 also
+supports (`'name': [arg: T]` or `name: (arg: T) => void`). The events
+extractor inside `buildInterfaceIndex()` only ever recognized the first —
+proven by mutation: rewriting `IHoverEmits` in the second form made
+`update:hover` disappear from every interface that extends it, and
+`unemitted-declarations.mjs` reported the 5 already-known violations that
+depend on it as *stale* ("already fixed!") with nothing in the component
+actually changed. No interface in this repo uses the second form today
+(0/196, measured), so this closed a real blind spot without moving the
+baseline — see `guards/lib/emits.selftest.mjs` for the fixtures (both forms,
+root position and inherited position, recall and precision) and
+`extractEmitNames()`'s header in `guards/lib/emits.mjs` for the mechanism.
+
 **Measured baseline: 29 components.** Every one carries at least one
 declared-but-dead emit; the full list and events are in
 `baseline/unemitted-declarations.json`. A separate, small set of components

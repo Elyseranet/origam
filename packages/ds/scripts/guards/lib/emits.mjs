@@ -121,6 +121,92 @@ export function extractBody (src, openIdx) {
     return ''
 }
 
+/**
+ * Découpe le CORPS d'une interface en membres de NIVEAU SUPÉRIEUR — séparés
+ * par `;` ou un saut de ligne, en ignorant tout séparateur imbriqué dans
+ * `()`, `[]` ou `{}` (un élément de tuple, la liste de paramètres d'un type
+ * fonction, un type objet…).
+ *
+ * ⚠️ Les chevrons `<`/`>` ne sont VOLONTAIREMENT PAS suivis. Un type
+ * fonction `(el: HTMLElement, e: Event) => void` contient un `>` nu (la
+ * flèche `=>`) qui n'est PAS une fermeture de générique — le compter comme
+ * tel désynchronise le compteur de profondeur pour tout le reste du corps.
+ * Aucun générique n'apparaît dans les corps `*Emits` de ce dépôt ; ne pas
+ * les suivre est le choix le plus sûr, pas une simplification hasardeuse.
+ */
+function splitTopLevelMembers (body) {
+    const members = []
+    let depth = 0
+    let current = ''
+    for (const ch of body) {
+        if (ch === '(' || ch === '[' || ch === '{') depth++
+        else if (ch === ')' || ch === ']' || ch === '}') depth--
+        if (depth === 0 && (ch === ';' || ch === '\n')) {
+            if (current.trim()) members.push(current.trim())
+            current = ''
+        } else {
+            current += ch
+        }
+    }
+    if (current.trim()) members.push(current.trim())
+    return members
+}
+
+// Forme 1 — signature d'appel, LA convention de ce dépôt (196/196
+// interfaces `*Emits` au moment de l'écriture) : `(e: 'nom', ...): void`.
+const CALL_SIGNATURE_EVENT_RE = /^\(\s*e\s*:\s*'([^']+)'/
+
+// Forme 2 — membre de type objet (déclaration "type-based", Vue >= 3.3),
+// jamais utilisée dans ce dépôt aujourd'hui mais valide pour
+// `defineEmits<T>()` et donc pas quelque chose qu'on peut refuser de
+// reconnaître : `'nom': [arg: T]` ou `nom: (arg: T) => void`. La clé peut
+// être une chaîne entre quotes (le seul cas réaliste ici — tous les noms
+// d'événement de ce DS contiennent `:` ou `-`, illégal dans un identifiant
+// nu) ou un identifiant nu.
+const PROPERTY_EVENT_RE = /^(?:'([^']+)'|"([^"]+)"|([A-Za-z_$][\w$]*))\s*\??\s*:/
+
+/**
+ * Extrait tous les noms d'événement déclarés comme membres PROPRES (pas
+ * hérités) d'un corps d'interface `*Emits` — quelle que soit la forme
+ * utilisée (voir les deux regex ci-dessus).
+ *
+ * POURQUOI CETTE FONCTION EXISTE — bug #reporté par mutation, 2026-09-03
+ * ---------------------------------------------------------------------
+ * L'ancienne extraction ne cherchait QUE la forme 1, sur le corps ENTIER
+ * (pas membre par membre) : `body.matchAll(/\(\s*e:\s*'([^']+)'/g)`. Un
+ * corps écrit dans la forme 2 ne produit AUCUN match — pas une erreur,
+ * juste un ensemble d'événements PROPRES vide pour cette interface. Prouvé
+ * par mutation : réécrire `IHoverEmits` (`(e: 'update:hover', …): void`) en
+ * forme 2 (`'update:hover': [value: boolean]`) fait disparaître
+ * `update:hover` de TOUTE la chaîne d'héritage qui l'étend — et
+ * `unemitted-declarations.mjs` a signalé les 5 violations déjà connues
+ * (Alert, Avatar, AvatarGroup, BottomNav, Card) comme *STALE* (« déjà
+ * corrigées ! ») alors que rien n'avait changé dans le composant lui-même.
+ * Un faux « corrigé » est pire qu'un faux positif : personne ne revérifie
+ * une ligne que le garde dit résolue.
+ *
+ * Aucune interface de ce dépôt n'utilise la forme 2 aujourd'hui (mesuré :
+ * 0/196 — voir `emits.selftest.mjs`), donc ce correctif ne change PAS le
+ * chiffre de baseline actuel. Il ferme un angle mort qu'une future
+ * interface pourrait heurter sans qu'aucun garde ne le remarque — Vue
+ * accepte la forme 2 nativement, rien dans ce dépôt ne l'interdit.
+ */
+export function extractEmitNames (body) {
+    const names = []
+    for (const member of splitTopLevelMembers(body)) {
+        const callMatch = member.match(CALL_SIGNATURE_EVENT_RE)
+        if (callMatch) {
+            names.push(callMatch[1])
+            continue
+        }
+        const propMatch = member.match(PROPERTY_EVENT_RE)
+        if (propMatch) {
+            names.push(propMatch[1] ?? propMatch[2] ?? propMatch[3])
+        }
+    }
+    return names
+}
+
 export function buildInterfaceIndex () {
     const files = walk(INTERFACES_DIR, f => f.endsWith('.interface.ts'))
     const index = new Map()
@@ -132,7 +218,7 @@ export function buildInterfaceIndex () {
             const [, name, heritage] = m
             const body = extractBody(src, re.lastIndex - 1)
             const parents = [...heritage.matchAll(/(I[A-Za-z0-9]*Emits)/g)].map(x => x[1])
-            const events = [...body.matchAll(/\(\s*e:\s*'([^']+)'/g)].map(x => x[1])
+            const events = extractEmitNames(body)
             index.set(name, { parents, events })
         }
     }
