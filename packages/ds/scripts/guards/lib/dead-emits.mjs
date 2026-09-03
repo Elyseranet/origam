@@ -7,8 +7,19 @@
  * Cette question-ci est l'autre sens : « tout ce qui est DÉCLARÉ est-il
  * réellement ÉMIS quelque part ? ». Les deux partagent la même mécanique de
  * résolution d'interface — `buildInterfaceIndex` / `resolveDeclared` /
- * `computeEmittable`, importés depuis `../../guards/lib/emits.mjs` plutôt
- * que réécrits (règle du dépôt : chercher l'existant avant d'écrire).
+ * `computeEmittable`, importés depuis `./emits.mjs` plutôt que réécrits
+ * (règle du dépôt : chercher l'existant avant d'écrire).
+ *
+ * DEUX CONSOMMATEURS, D'OÙ L'EMPLACEMENT DANS `guards/lib/`
+ * ---------------------------------------------------------------------
+ * Ce fichier vivait sous `analysis/lib/dead-emits.mjs` (mesure seule, pas de
+ * baseline) tant que rien ne bloquait dessus. Le garde CI
+ * `guards/unemitted-declarations.mjs` en fait maintenant un SECOND
+ * consommateur, au même titre qu'`analysis/inspection-harness.mjs` — même
+ * raison que celle qui a fait déménager `emits.mjs` lui-même dans
+ * `guards/lib/` en premier lieu (voir son propre header). Un fichier utilisé
+ * par un garde CI et par un harnais de mesure vit dans `guards/lib/`, pas
+ * dans `analysis/lib/`.
  *
  * QUATRE FAÇONS DONT UN ÉVÉNEMENT DÉCLARÉ PEUT ÊTRE ÉMIS
  * ---------------------------------------------------------------------
@@ -86,8 +97,8 @@
  *     sont).
  */
 
-import { stripComments } from '../../guards/lib/scss-scan.mjs'
-import { computeEmittable, resolveDeclared } from '../../guards/lib/emits.mjs'
+import { stripComments } from './scss-scan.mjs'
+import { computeEmittable, resolveDeclared } from './emits.mjs'
 
 function escapeRegExp (s) {
     return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')

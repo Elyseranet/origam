@@ -1,19 +1,24 @@
 /**
- * Self-test — C5 (`lib/dead-emits.mjs`) et C8 (`lib/hardcoded-strings.mjs`).
+ * Self-test — C4/C5 délégués, C8 (`lib/hardcoded-strings.mjs`) testé ici.
  *
- * C4 N'EST PAS RE-TESTÉ ICI. Ce critère délègue entièrement à
- * `guards/lib/setup-reads.mjs`, déjà épinglé par 20 fixtures dans
- * `guards/lib/setup-reads.selftest.mjs` (rappel ET précision). Réécrire ces
- * 20 cas ici serait une duplication, pas une vérification supplémentaire —
- * ce fichier appelle `setup-reads.selftest.mjs` en sous-processus pour
- * PROUVER qu'il passe, plutôt que de le supposer silencieusement.
+ * NI C4 NI C5 NE SONT RE-TESTÉS ICI. Les deux délèguent entièrement à un
+ * fichier `guards/lib/*.selftest.mjs` déjà épinglé par ses propres
+ * fixtures (rappel ET précision) :
+ *   - C4 -> `guards/lib/setup-reads.selftest.mjs` (20 fixtures)
+ *   - C5 -> `guards/lib/dead-emits.selftest.mjs` (déménagé avec
+ *     `dead-emits.mjs` lui-même quand le garde CI
+ *     `guards/unemitted-declarations.mjs` en a fait un second consommateur)
+ * Réécrire ces cas ici serait une duplication, pas une vérification
+ * supplémentaire — ce fichier appelle chaque self-test délégué en
+ * sous-processus pour PROUVER qu'il passe, plutôt que de le supposer
+ * silencieusement.
  *
- * Chaque cas MUST_FLAG est un vrai piège de RAPPEL (un défaut réel que le
- * détecteur DOIT voir) ; chaque cas MUST_NOT_FLAG est un vrai piège de
- * PRÉCISION (un cas correct que le détecteur DOIT laisser tranquille). La
- * précision compte plus que le rappel (cf. header du dépôt sur
- * `pnpm-tree-integrity.selftest.mjs`) : un détecteur qui crie sur du code
- * correct est ignoré en une semaine.
+ * Chaque cas MUST_FLAG (C8, ci-dessous) est un vrai piège de RAPPEL (un
+ * défaut réel que le détecteur DOIT voir) ; chaque cas MUST_NOT_FLAG est un
+ * vrai piège de PRÉCISION (un cas correct que le détecteur DOIT laisser
+ * tranquille). La précision compte plus que le rappel (cf. header du dépôt
+ * sur `pnpm-tree-integrity.selftest.mjs`) : un détecteur qui crie sur du
+ * code correct est ignoré en une semaine.
  *
  * Run: node packages/ds/scripts/analysis/inspection-harness.selftest.mjs
  */
@@ -22,7 +27,6 @@ import { execFileSync } from 'node:child_process'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-import { analyseDeadEmits } from './lib/dead-emits.mjs'
 import { analyseHardcodedStrings } from './lib/hardcoded-strings.mjs'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
@@ -31,7 +35,7 @@ let failures = 0
 const fail = (msg) => { console.log(`  FAIL  ${msg}`); failures++ }
 
 console.log('─'.repeat(70))
-console.log('Self-test: inspection-harness (C5 + C8)')
+console.log('Self-test: inspection-harness (C4 + C5 délégués, C8)')
 console.log('─'.repeat(70))
 
 /* ════════════════════════════════════════════════════════════════════
@@ -50,158 +54,19 @@ try {
 }
 
 /* ════════════════════════════════════════════════════════════════════
- * C5 — dead-emits
+ * C5 — délégation prouvée, pas redemontrée
  * ════════════════════════════════════════════════════════════════════ */
-
-/** Construit un index d'interfaces minimal et hermétique — aucune
- *  dépendance au vrai `src/interfaces/`, pour que ces fixtures ne dérivent
- *  jamais avec le catalogue réel. */
-function fakeIndex (events, parents = []) {
-    const index = new Map()
-    index.set('ITestEmits', { parents, events })
-    return index
+console.log('\nC5 (délégué à dead-emits.mjs) — preuve que son propre self-test passe :')
+try {
+    const out = execFileSync('node', [path.join(__dirname, '../guards/lib/dead-emits.selftest.mjs')], { stdio: 'pipe' }).toString()
+    const passLine = out.trim().split('\n').at(-1)
+    console.log(`  ok    dead-emits.selftest.mjs — ${passLine}`)
+} catch (err) {
+    fail(`dead-emits.selftest.mjs a échoué — sortie:\n${err.stdout}${err.stderr}`)
 }
 
 const wrapVue = (templateHtml, scriptBody) =>
     `<template>\n${templateHtml}\n</template>\n<script setup lang="ts">\n${scriptBody}\n</script>\n`
-
-const C5_MUST_FLAG = [
-    [
-        'événement déclaré, jamais appelé littéralement, aucun relais',
-        wrapVue('<div/>', `
-            const emit = defineEmits<ITestEmits>()
-            emit('foo')
-        `),
-        fakeIndex(['foo', 'bar']),
-        ['bar']
-    ],
-    [
-        'defineEmits<T>() nu (pas de variable captée) — aucun appel littéral n\'est possible',
-        wrapVue('<div/>', `
-            defineEmits<ITestEmits>()
-        `),
-        fakeIndex(['foo']),
-        ['foo']
-    ],
-    [
-        'useActive(props) appelé MAIS `onActive` jamais déstructuré/câblé — le cas useHover',
-        wrapVue('<div/>', `
-            defineEmits<ITestEmits>()
-            const { isActive } = useActive(props)
-        `),
-        fakeIndex(['update:active']),
-        ['update:active']
-    ],
-    [
-        'useAdjacent(props) appelé MAIS le handler retourné n\'est câblé nulle part',
-        wrapVue('<div/>', `
-            defineEmits<ITestEmits>()
-            const { onClickPrepend } = useAdjacent(props)
-        `),
-        fakeIndex(['click:prepend']),
-        ['click:prepend']
-    ]
-]
-
-const C5_MUST_NOT_FLAG = [
-    [
-        'appel littéral direct',
-        wrapVue('<div/>', `
-            const emit = defineEmits<ITestEmits>()
-            emit('foo')
-        `),
-        fakeIndex(['foo']),
-        'neverEmitted'
-    ],
-    [
-        'appel littéral dans le TEMPLATE, pas dans le script (cas OrigamAudio play/pause)',
-        wrapVue('<button @click="emit(\'foo\')">go</button>', `
-            const emit = defineEmits<ITestEmits>()
-        `),
-        fakeIndex(['foo']),
-        'neverEmitted'
-    ],
-    [
-        'relais useVModel — écrit .value=, jamais un emit(...) littéral',
-        wrapVue('<div/>', `
-            defineEmits<ITestEmits>()
-            const model = useVModel(props, 'modelValue')
-            model.value = 1
-        `),
-        fakeIndex(['update:modelValue']),
-        'neverEmitted'
-    ],
-    [
-        'relais useActive AVEC onActive câblé (@click="onActive")',
-        wrapVue('<div @click="onActive"/>', `
-            defineEmits<ITestEmits>()
-            const { isActive, onActive } = useActive(props)
-        `),
-        fakeIndex(['update:active']),
-        'neverEmitted'
-    ],
-    [
-        'relais useAdjacent AVEC le handler renommé et câblé',
-        wrapVue('<div @click="handlePrepend"/>', `
-            defineEmits<ITestEmits>()
-            const { onClickPrepend: handlePrepend } = useAdjacent(props)
-        `),
-        fakeIndex(['click:prepend']),
-        'neverEmitted'
-    ],
-    [
-        'relais useGroup (relais-d\'un-relais : useVModel interne à useGroup, jamais dans le .vue)',
-        wrapVue('<div/>', `
-            defineEmits<ITestEmits>()
-            const { selected } = useGroup(props, KEY)
-        `),
-        fakeIndex(['update:modelValue']),
-        'neverEmitted'
-    ],
-    [
-        'appel dynamique présent — événement non prouvé bascule en indéterminé, PAS en neverEmitted',
-        wrapVue('<div/>', `
-            const emit = defineEmits<ITestEmits>()
-            emit(dynamicName, payload)
-        `),
-        fakeIndex(['foo']),
-        'neverEmitted' // doit être vide ; le test vérifie aussi indeterminate séparément
-    ]
-]
-
-console.log('\nC5 — MUST FLAG (rappel) :')
-for (const [label, source, index, expected] of C5_MUST_FLAG) {
-    const { neverEmitted } = analyseDeadEmits(source, index)
-    const got = [...neverEmitted].sort()
-    const want = [...expected].sort()
-    if (JSON.stringify(got) !== JSON.stringify(want)) {
-        fail(`${label} — attendu [${want}], obtenu [${got}]`)
-    } else {
-        console.log(`  ok    ${label}`)
-    }
-}
-
-console.log('\nC5 — MUST NOT FLAG (précision) :')
-for (const [label, source, index, field] of C5_MUST_NOT_FLAG) {
-    const result = analyseDeadEmits(source, index)
-    if (result[field].length) {
-        fail(`${label} — faussement signalé dans ${field}: [${result[field]}]`)
-    } else {
-        console.log(`  ok    ${label}`)
-    }
-}
-
-// Cas séparé : l'appel dynamique doit REPORTER l'événement en indéterminé,
-// pas le faire disparaître silencieusement.
-{
-    const [, source, index] = C5_MUST_NOT_FLAG.at(-1)
-    const { indeterminate, hasDynamicEmit } = analyseDeadEmits(source, index)
-    if (!hasDynamicEmit || JSON.stringify(indeterminate) !== JSON.stringify(['foo'])) {
-        fail(`appel dynamique — attendu indeterminate=['foo'], obtenu ${JSON.stringify(indeterminate)} (hasDynamicEmit=${hasDynamicEmit})`)
-    } else {
-        console.log('  ok    appel dynamique reporté en indeterminate=[\'foo\'], pas en neverEmitted')
-    }
-}
 
 /* ════════════════════════════════════════════════════════════════════
  * C8 — hardcoded-strings
@@ -314,9 +179,9 @@ for (const [label, source, check] of C8_MUST_NOT_FLAG) {
 }
 
 console.log('')
-const total = C5_MUST_FLAG.length + C5_MUST_NOT_FLAG.length + 1 + C8_MUST_FLAG.length + C8_MUST_NOT_FLAG.length
+const total = C8_MUST_FLAG.length + C8_MUST_NOT_FLAG.length
 if (failures) {
-    console.log(`FAIL — ${failures}/${total} cas en échec (+ la délégation C4).`)
+    console.log(`FAIL — ${failures}/${total} cas C8 en échec (+ délégations C4/C5).`)
     process.exit(1)
 }
-console.log(`PASS — ${total} cas C5+C8 (+ délégation C4 vérifiée), précision et rappel pinnés des deux côtés.`)
+console.log(`PASS — ${total} cas C8 (+ délégations C4/C5 vérifiées), précision et rappel pinnés des deux côtés.`)

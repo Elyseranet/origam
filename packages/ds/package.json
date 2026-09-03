@@ -109,6 +109,7 @@
     "guards:token-var-channels": "node scripts/guards/token-var-channels.mjs",
     "guards:dead-handlers": "node scripts/guards/dead-handlers.mjs",
     "guards:id-forwarding": "node scripts/guards/id-forwarding.mjs",
+    "guards:unemitted-declarations": "node scripts/guards/unemitted-declarations.mjs",
     "prepublishOnly": "pnpm run build",
     "prepack": "node -e \"require('fs').copyFileSync('../../CHANGELOG.md','CHANGELOG.md')\""
   },
