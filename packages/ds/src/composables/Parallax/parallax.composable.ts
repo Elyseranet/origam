@@ -28,15 +28,15 @@ function usePrefersReducedMotion (): Ref<boolean> {
     // Both API shapes (legacy addListener and modern addEventListener)
     if (typeof mql.addEventListener === 'function') {
         mql.addEventListener('change', onChange)
-    } else if (typeof (mql as any).addListener === 'function') {
-        (mql as any).addListener(onChange)
+    } else if (typeof mql.addListener === 'function') {
+        mql.addListener(onChange)
     }
 
     onBeforeUnmount(() => {
         if (typeof mql.removeEventListener === 'function') {
             mql.removeEventListener('change', onChange)
-        } else if (typeof (mql as any).removeListener === 'function') {
-            (mql as any).removeListener(onChange)
+        } else if (typeof mql.removeListener === 'function') {
+            mql.removeListener(onChange)
         }
     })
 

@@ -25,7 +25,7 @@ export function useItems (props: IItemProps & { itemType?: string }) {
         return props.valueComparator ? props.valueComparator : deepEqual
     })
 
-    const transformIn = (value: any[]): IInternalListItem[] => {
+    const transformIn = (value: Array<unknown>): IInternalListItem[] => {
         if (!hasNullItem.value) {
             // When the model value is null, return an InternalItem
             // based on null only if null is one of the items
@@ -45,7 +45,7 @@ export function useItems (props: IItemProps & { itemType?: string }) {
         }) as IInternalListItem[]
     }
 
-    const transformOut = (value: IInternalListItem[]): any[] => {
+    const transformOut = (value: IInternalListItem[]): Array<unknown> => {
         return props.returnObject
             ? value.map(({raw}) => raw)
             : value.map(({value}) => value)

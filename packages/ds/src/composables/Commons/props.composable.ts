@@ -52,7 +52,7 @@ import { ExtractPropTypes } from "vue"
  * value, which IS reachable unlike the paint), state that reason: it is not
  * this one.
  ********************************************************/
-export function useProps<T extends Record<string, any>> (props: T): IFilterPropsOptions<T> {
+export function useProps<T extends object> (props: T): IFilterPropsOptions<T> {
     const defaultExcludes = ['class', 'style', 'id']
 
     const filterProps = <U extends Partial<ExtractPropTypes<T>>> (

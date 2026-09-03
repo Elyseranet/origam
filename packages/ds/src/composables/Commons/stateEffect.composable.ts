@@ -142,7 +142,7 @@ export function useStateEffect (
     const padding  = pickEffective(() => props.padding, isHover, isActive, hoverState, activeState, 'padding')
     const margin   = pickEffective(() => props.margin, isHover, isActive, hoverState, activeState, 'margin')
     const gap      = pickEffective<boolean | number | string>(
-        () => (props as any).gap, isHover, isActive, hoverState, activeState, 'gap',
+        () => props.gap, isHover, isActive, hoverState, activeState, 'gap',
     )
 
     // ── Color axis (preserved verbatim from useColorEffect) ──────────

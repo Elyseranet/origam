@@ -13,8 +13,8 @@ import { addWindowListener, clamp, getPosition } from '../../utils/Commons/commo
 export function useDragResizer (el: HTMLElement | undefined, value: Ref<number>, min: number, max: number, axis: TAxis) {
     const resizing = ref(false)
 
-    const removeListeners: Array<any> = []
-    const onUnmountedCleanupFns: Array<any> = []
+    const removeListeners: Array<() => void> = []
+    const onUnmountedCleanupFns: Array<() => void> = []
 
     onUnmounted(() => {
         onUnmountedCleanupFns.forEach((fn) => fn())
@@ -80,8 +80,18 @@ export function useDragResizer (el: HTMLElement | undefined, value: Ref<number>,
         ])
     }
 
+    /*********************************************************
+     * mousedown / touchstart wiring
+     *
+     * @description
+     * Cast to the generic `Event` handler shape `useEventListener` expects
+     * — same pattern already used above for `addWindowListener`. Vue always
+     * delivers a `MouseEvent` / `TouchEvent` for these events, the handler
+     * signatures are just narrower than the generic listener type the
+     * composable declares.
+     ********************************************************/
     if (el) {
-        useEventListener(el, 'mousedown', onMouseDown)
-        useEventListener(el, 'touchstart', onTouchStart)
+        useEventListener(el, 'mousedown', onMouseDown as (e: Event) => void)
+        useEventListener(el, 'touchstart', onTouchStart as (e: Event) => void)
     }
 }

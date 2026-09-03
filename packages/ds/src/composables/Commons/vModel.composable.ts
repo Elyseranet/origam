@@ -21,8 +21,8 @@ export function useVModel<
     props: Props,
     prop: Prop,
     defaultValue?: MaybeRefOrGetter<Props[Prop] | undefined>,
-    transformIn: (value?: Props[Prop]) => Inner = (v: any) => v,
-    transformOut: (value: Inner) => Props[Prop] = (v: any) => v
+    transformIn: (value?: Props[Prop]) => Inner = (v?: Props[Prop]) => v as Inner,
+    transformOut: (value: Inner) => Props[Prop] = (v: Inner) => v as Props[Prop]
 ): TVModel<Props, Prop, Inner> {
     const vm = getCurrentInstance('useVModel')
 
@@ -89,7 +89,7 @@ export function useVModel<
     })
 
     const model = computed({
-        get (): any {
+        get (): Inner {
             const externalValue = props[prop]
 
             return transformIn(isControlled.value ? externalValue : internalValue())
@@ -105,7 +105,7 @@ export function useVModel<
             internal.value = newValue
             vm?.emit(`update:${prop}`, newValue)
         }
-    }) as any as Ref<TInnerVal<Inner>> & { readonly externalValue: Props[Prop] }
+    }) as unknown as Ref<TInnerVal<Inner>> & { readonly externalValue: Props[Prop] }
 
     Object.defineProperty(model, 'externalValue', {
         get: () => isControlled.value ? props[prop] : internalValue()

@@ -80,7 +80,7 @@ export function useWindowTransition (props: ITransitionProps) {
     }
 
     const transitionProps = computed(() => {
-        const bind: { [key: string]: any } = {
+        const bind: { [key: string]: unknown } = {
             css: !isDisabled.value
         }
 
