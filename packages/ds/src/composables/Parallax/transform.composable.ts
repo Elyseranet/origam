@@ -49,11 +49,14 @@ export function useParallaxTransform (props: IParallaxElementProps) {
         return transform
     }
 
-    /**
+    /*********************************************************
+     * toMovement
+     *
+     * @description
      * Convert a raw pointer offset into a movement amount (px, deg, or a
      * scale ratio depending on the caller) — the single formula every
      * movement helper below shares.
-     */
+     ********************************************************/
     const toMovement = (offset: number) => {
         return (strength.value * offset) / PARALLAX_ELEMENT_MOVEMENT_DIVISOR + PARALLAX_ELEMENT_MOVEMENT_BASE
     }
