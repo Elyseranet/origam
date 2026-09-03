@@ -1,9 +1,12 @@
 import OrigamAudio from '../../components/Audio/OrigamAudio.vue'
+import OrigamAudioWaveform from '../../components/Audio/OrigamAudioWaveform.vue'
 import { AUDIO_LOOP_MODE, AUDIO_VARIANT } from '../../enums/Audio/audio.enum'
 import type { TControlsSource } from '../Commons/controls.type'
 import type { TInline } from '../Commons/anchor.type'
 
 export type TOrigamAudio = InstanceType<typeof OrigamAudio>
+
+export type TOrigamAudioWaveform = InstanceType<typeof OrigamAudioWaveform>
 
 /**
  * Controls rendering strategy for `<OrigamAudio>`.
