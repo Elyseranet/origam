@@ -88,14 +88,23 @@ export interface IDataTableSlotProps<T> {
     headers: Array<Array<IInternalDataTableHeader>>
 }
 
-/** Emits fired by `<OrigamDataTable>` — pagination, sorting, grouping,
- *  expansion, selection, and the v-model that ties them together. */
+/** Emits fired by `<OrigamDataTable>` — pagination, sorting, expansion,
+ *  selection, and the v-model that ties them together.
+ *
+ *  ⛔ `update:groupBy` is deliberately NOT declared here. `groupBy` is a
+ *  read-only-from-the-inside prop: `toggleGroup()` (exposed via
+ *  `provideGroupBy`) only opens/closes an already-grouped section — it
+ *  never writes `groupBy.value`, and nothing else in the component tree
+ *  does either (`grep -rn "groupBy\.value\s*=" packages/ds/src/` → zero
+ *  matches). Declaring an emit Vue never fires only removes a consumer's
+ *  `@update:group-by` listener from `$attrs` for nothing — see
+ *  `unemitted-declarations` guard. Removed under the same audit that
+ *  fixed #373/#376/#416/#430/#446. */
 export interface IDataTableEmits extends ICommonsComponentEmits {
     (e: 'update:page', value: number): void
     (e: 'update:itemsPerPage', value: number): void
     (e: 'update:sortBy', value: UnwrapRef<IDataTableProvideSort['sortBy']>): void
     (e: 'update:options', value: Record<string, unknown>): void
-    (e: 'update:groupBy', value: UnwrapRef<IDataTableProvideGroup['groupBy']>): void
     (e: 'update:expanded', value: ReadonlySet<unknown>): void
     (e: 'update:currentItems', value: Array<IDataTableItem>): void
 }
