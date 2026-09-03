@@ -1,5 +1,8 @@
 import type {
-    IFieldEmits,
+    IAdjacentInnerEmits
+} from '../Commons/adjacent.interface'
+import type { IFocusEmits } from '../Commons/focus.interface'
+import type {
     IFieldProps,
     IFieldSlots
 } from '../Field/field.interface'
@@ -44,7 +47,20 @@ export interface INumberFieldProps extends IFieldProps, IInputProps, IVariantPro
     incrementAriaLabel?: string
 }
 
-export interface INumberFieldEmits extends IFieldEmits, IInputEmits {
+/**
+ * ⛔ Extends `IFocusEmits` + `IAdjacentInnerEmits` directly rather than the
+ * full `IFieldEmits` — `<OrigamNumberField>` calls its OWN `useFocus(props)`
+ * and its OWN `useAdjacentInner(props)` / `useAdjacent(props)` (see the
+ * component's "click:prepend / click:append relay" comment), so
+ * `update:focused` / `click:appendInner` / `click:prependInner` are
+ * genuinely emitted at THIS level. `IFieldEmits` also carries
+ * `IActiveEmits` (`update:active`), deliberately excluded: NumberField
+ * wraps `<origam-text-field>` (not `<origam-field>` directly) with no
+ * `@update:active` listener anywhere in the template — declaring it here
+ * promised an event nobody ever fired (issue: guard
+ * `unemitted-declarations`, `NumberField:update:active`).
+ */
+export interface INumberFieldEmits extends IFocusEmits, IAdjacentInnerEmits, IInputEmits {
     (e: 'click:control', event: MouseEvent): void
     (e: 'mousedown:control', event: MouseEvent): void
     (e: 'click:clear', event: MouseEvent): void

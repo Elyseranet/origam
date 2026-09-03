@@ -1,10 +1,13 @@
 import type {
-    IFieldEmits,
+    IAdjacentInnerEmits
+} from '../Commons/adjacent.interface'
+import type { ICommonsComponentEmits } from '../Commons/commons.interface'
+import type { IFocusEmits } from '../Commons/focus.interface'
+import type {
     IFieldProps,
     IFieldSlots
 } from '../Field/field.interface'
 import type {
-    IInputEmits,
     IInputProps,
     IInputSlots
 } from '../Input/input.interface'
@@ -48,11 +51,35 @@ export interface IOtpInputFieldProps extends Omit<IFieldProps, 'fontFamily' | 'f
     type?: TOtpInputFieldType
 }
 
-export interface IOtpInputFieldEmits extends IFieldEmits, IInputEmits {
+/**
+ * ⛔ Extends `ICommonsComponentEmits` + `IFocusEmits` + `IAdjacentInnerEmits`
+ * directly — NOT `IFieldEmits` nor `IInputEmits` wholesale.
+ *
+ *   - `update:modelValue` (`ICommonsComponentEmits`) — genuinely alive:
+ *     `useVModel(props, 'modelValue', …)` (own call, line ~232).
+ *   - `update:focused` (`IFocusEmits`) — genuinely alive: `useFocus(props)`
+ *     (own call, line ~222).
+ *   - `click:appendInner` / `click:prependInner` / `click:clear`
+ *     (`IAdjacentInnerEmits`) — `<origam-field>` (one per OTP cell) already
+ *     emits all three via its own `useAdjacentInner`; `click:clear` was
+ *     already relayed explicitly (`handleClear`); `click:appendInner` /
+ *     `click:prependInner` are now relayed the same way (see the
+ *     `@click:append-inner` / `@click:prepend-inner` listeners added to
+ *     every `<origam-field>` cell in the template).
+ *   - `IActiveEmits` (`update:active`) is deliberately EXCLUDED: with N
+ *     `<origam-field>` cells per OTP, there is no single coherent "active"
+ *     value to expose, and none is wired.
+ *   - `IAdjacentEmits` (`click:append` / `click:prepend`, from
+ *     `IInputEmits`) is deliberately EXCLUDED: `<OrigamOtpInputField>`
+ *     never mounts an `<origam-input>` and renders no outer prepend/append
+ *     UI at all — there is no path that could ever fire either event
+ *     (issue: guard `unemitted-declarations`,
+ *     `OtpInputField:click:append,click:prepend`).
+ */
+export interface IOtpInputFieldEmits extends ICommonsComponentEmits, IFocusEmits, IAdjacentInnerEmits {
     (e: 'finish', value: string): void
     (e: 'click:control', event: MouseEvent): void
     (e: 'mousedown:control', event: MouseEvent): void
-    (e: 'click:clear', event: MouseEvent): void
 }
 
 export interface IOtpInputFieldSlots extends Omit<IFieldSlots, 'default'>, Omit<IInputSlots, 'default'> {

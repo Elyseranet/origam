@@ -13,19 +13,11 @@
     "DataTable:update:expanded,update:groupBy,update:itemsPerPage,update:modelValue,update:page,update:sortBy",
     "DatePickerControls:click:text",
     "DatePickerMonth:update:date",
-    "Field:update:active,update:modelValue",
-    "FileField:update:active",
-    "Input:update:focused",
-    "NumberField:update:active",
-    "OtpInputField:click:append,click:appendInner,click:prepend,click:prependInner,update:active",
-    "PasswordField:update:active",
+    "Field:update:active",
     "ProgressLinear:update:modelValue",
     "RadioBtn:update:focused",
-    "Select:click:append,click:appendInner,click:clear,click:prepend,click:prependInner,update:focused",
     "SelectionControlGroup:update:modelValue",
     "Sheet:update:active",
     "Switch:click:label",
-    "SwitchTrack:update:modelValue",
-    "TextField:update:active",
-    "TextareaField:update:active"
+    "SwitchTrack:update:modelValue"
 ]

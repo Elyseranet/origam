@@ -1,11 +1,14 @@
+import type {
+    IAdjacentInnerEmits
+} from '../Commons/adjacent.interface'
 import type { IBorderProps } from '../Commons/border.interface'
 import type { IChipProps } from '../Chip/chip.interface'
 import type { IColorProps } from '../Commons/color.interface'
 import type { ICommonsComponentProps } from '../Commons/commons.interface'
 import type { IDensityProps } from '../Commons/density.interface'
 import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IFocusEmits } from '../Commons/focus.interface'
 import type {
-    IFieldEmits,
     IFieldProps,
     IFieldSlots
 } from '../Field/field.interface'
@@ -67,7 +70,19 @@ export interface IFileFieldProps extends ICommonsComponentProps, IColorProps, ID
     dropzone?: boolean
 }
 
-export interface IFileFieldEmits extends IFieldEmits, IInputEmits {
+/**
+ * ⛔ Extends `IFocusEmits` + `IAdjacentInnerEmits` directly rather than the
+ * full `IFieldEmits` — `<OrigamFileField>` wraps `<origam-field>` directly
+ * and calls its OWN `useFocus(props)` and its OWN `useAdjacent(props)` /
+ * `useAdjacentInner(props)`, so `update:focused` / `click:appendInner` /
+ * `click:prependInner` are genuinely emitted at THIS level. `IActiveEmits`
+ * (`update:active`) is deliberately excluded: this component passes its
+ * OWN `isActive || isDirty` computed DOWN to `<origam-field>` as a plain
+ * prop, with no `@update:active` listener wired to relay the child's
+ * internal toggle — declaring it here promised an event nobody ever fired
+ * (issue: guard `unemitted-declarations`, `FileField:update:active`).
+ */
+export interface IFileFieldEmits extends IFocusEmits, IAdjacentInnerEmits, IInputEmits {
     (e: 'click:control', value: MouseEvent): void
     (e: 'mousedown:control', value: MouseEvent): void
     (e: 'click:remove', value: { file: File, index: number }): void

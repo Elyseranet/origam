@@ -16,7 +16,6 @@ import type { IDensityProps } from '../Commons/density.interface'
 import type { IDimensionProps } from '../Commons/dimension.interface'
 import type { IDirectionProps } from '../Commons/direction.interface'
 import type { IElevationProps } from '../Commons/elevation.interface'
-import type { IFocusEmits } from '../Commons/focus.interface'
 import type { IMarginProps } from '../Commons/margin.interface'
 import type { IPaddingProps } from '../Commons/padding.interface'
 import type { IRoundedProps } from '../Commons/rounded.interface'
@@ -34,12 +33,23 @@ export interface IInputProps extends ICommonsComponentProps, IDensityProps, IPad
 }
 
 /**
- * Aggregate emits for `<OrigamInput>` — re-exports the v-model echo, the
- * outer prepend/append clicks, and the focus state. Consumers
- * (`<OrigamField>`, downstream typed inputs) consolidate these via
- * `defineEmits<IInputEmits>()`.
+ * Aggregate emits for `<OrigamInput>` — re-exports the v-model echo (via
+ * `useValidation` → `useVModel`) and the outer prepend/append clicks (via
+ * `useAdjacent`, both real `vm.emit` calls).
+ *
+ * ⛔ Does NOT extend `IFocusEmits` (`update:focused`). `<OrigamInput>`
+ * reads a `focused` value purely to decide whether to show `hint` (line
+ * `props.hint && (props.persistentHint || props.focused)`) — it never
+ * calls `useFocus`, `useVModel(props, 'focused')`, or any `emit(...)`, so
+ * `update:focused` was declared and never fired (issue: guard
+ * `unemitted-declarations`, `Input:update:focused`). The wrappers that
+ * actually own focus (TextField, NumberField, PasswordField,
+ * TextareaField, FileField, OtpInputField, Select) each call `useFocus`
+ * or `useStateFlag`/`useVModel` at THEIR OWN level and declare
+ * `update:focused` there directly — they don't depend on this interface
+ * for it.
  */
-export interface IInputEmits extends ICommonsComponentEmits, IAdjacentEmits, IFocusEmits {
+export interface IInputEmits extends ICommonsComponentEmits, IAdjacentEmits {
 }
 
 /**

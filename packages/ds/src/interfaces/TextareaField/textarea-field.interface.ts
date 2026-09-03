@@ -1,11 +1,14 @@
-import type { IAdjacentInnerProps } from '../Commons/adjacent.interface'
+import type {
+    IAdjacentInnerEmits,
+    IAdjacentInnerProps
+} from '../Commons/adjacent.interface'
 import type { IBorderProps } from '../Commons/border.interface'
 import type { IColorProps } from '../Commons/color.interface'
 import type { ICommonsComponentProps } from '../Commons/commons.interface'
 import type { IDensityProps } from '../Commons/density.interface'
 import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IFocusEmits } from '../Commons/focus.interface'
 import type {
-    IFieldEmits,
     IFieldProps,
     IFieldSlots
 } from '../Field/field.interface'
@@ -69,8 +72,20 @@ export interface ITextareaFieldProps extends ICommonsComponentProps, IColorProps
 /**
  * Aggregate emits for `<OrigamTextareaField>` — re-exports field/input events
  * plus the height update event (auto-grow) and control click events.
+ *
+ * ⛔ Extends `IFocusEmits` + `IAdjacentInnerEmits` directly rather than the
+ * full `IFieldEmits` — `<OrigamTextareaField>` wraps `<origam-field>`
+ * directly and calls its OWN `useFocus(props)` and its OWN
+ * `useAdjacent(props)` / `useAdjacentInner(props)`, so `update:focused` /
+ * `click:appendInner` / `click:prependInner` are genuinely emitted at THIS
+ * level. `IActiveEmits` (`update:active`) is deliberately excluded: this
+ * component passes its OWN `isActive || isDirty` computed DOWN to
+ * `<origam-field>` as a plain prop, with no `@update:active` listener
+ * wired to relay the child's internal toggle — declaring it here promised
+ * an event nobody ever fired (issue: guard `unemitted-declarations`,
+ * `TextareaField:update:active`).
  */
-export interface ITextareaFieldEmits extends IFieldEmits, IInputEmits {
+export interface ITextareaFieldEmits extends IFocusEmits, IAdjacentInnerEmits, IInputEmits {
     (e: 'update:height', height: number): void
     (e: 'click:control', event: MouseEvent): void
     (e: 'mousedown:control', event: MouseEvent): void

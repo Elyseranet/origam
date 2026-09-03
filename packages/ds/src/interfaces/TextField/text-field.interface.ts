@@ -1,10 +1,13 @@
+import type {
+    IAdjacentInnerEmits
+} from '../Commons/adjacent.interface'
 import type { IBorderProps } from '../Commons/border.interface'
 import type { IColorProps } from '../Commons/color.interface'
 import type { ICommonsComponentProps } from '../Commons/commons.interface'
 import type { IDensityProps } from '../Commons/density.interface'
 import type { IElevationProps } from '../Commons/elevation.interface'
+import type { IFocusEmits } from '../Commons/focus.interface'
 import type {
-    IFieldEmits,
     IFieldProps,
     IFieldSlots
 } from '../Field/field.interface'
@@ -44,8 +47,23 @@ export interface ITextFieldProps extends ICommonsComponentProps, IColorProps, ID
 /**
  * Aggregate emits for `<OrigamTextField>` — re-exports field/input lifecycle
  * events plus the click events on the control surface.
+ *
+ * ⛔ Extends `IFocusEmits` + `IAdjacentInnerEmits` DIRECTLY rather than the
+ * full `IFieldEmits` — `<OrigamTextField>` calls its OWN `useFocus(props)`
+ * (line ~253) and its OWN `useAdjacentInner(props)`, so `update:focused` /
+ * `click:appendInner` / `click:prependInner` / `click:clear` are genuinely
+ * emitted at THIS level. `IFieldEmits` also carries `IActiveEmits`
+ * (`update:active`), deliberately excluded: the nested `<origam-field>`
+ * lives inside a scoped-slot template (not this component's own root), so
+ * Vue's automatic attrs-fallthrough never reaches it, and this component
+ * computes its OWN `isActive` (`isActive || isDirty`, passed DOWN to
+ * `<origam-field>` as a plain prop) rather than relaying the child's
+ * internal toggle — no `@update:active` listener is wired on
+ * `<origam-field>` anywhere in the template. Declaring it here promised an
+ * event nobody ever fired (issue: guard `unemitted-declarations`,
+ * `TextField:update:active`).
  */
-export interface ITextFieldEmits extends IFieldEmits, IInputEmits {
+export interface ITextFieldEmits extends IFocusEmits, IAdjacentInnerEmits, IInputEmits {
     (e: 'click:control', value: MouseEvent): void
     (e: 'mousedown:control', value: MouseEvent): void
     /**
