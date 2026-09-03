@@ -18,7 +18,9 @@ import {
     WATERMARK_DEFAULT_GAP_PX,
     WATERMARK_DEFAULT_OPACITY,
     WATERMARK_DEFAULT_POINTER_EVENTS,
-    WATERMARK_DEFAULT_Z_INDEX
+    WATERMARK_DEFAULT_Z_INDEX,
+    WATERMARK_MIN_FONT_SIZE_PX,
+    WATERMARK_MIN_IMAGE_SIZE_PX
 } from '../../consts/Watermark/watermark.const'
 
 import type { IUseWatermarkOptions, IWatermarkResolvedOptions } from '../../interfaces/Watermark/watermark.interface'
@@ -52,7 +54,7 @@ function escapeXml (raw: string): string {
  * data-URL limit.
  */
 function buildPatternUrl (options: IWatermarkResolvedOptions): string {
-    const tile = options.gap + Math.max(options.fontSize, 1)
+    const tile = options.gap + Math.max(options.fontSize, WATERMARK_MIN_FONT_SIZE_PX)
     const cx = tile / 2
     const cy = tile / 2
     const opacityAttr = `opacity="${options.opacity}"`
@@ -60,7 +62,7 @@ function buildPatternUrl (options: IWatermarkResolvedOptions): string {
     let glyph: string
     if (options.image) {
         const safeHref = escapeXml(options.image)
-        const imgSize = Math.max(options.fontSize, 16)
+        const imgSize = Math.max(options.fontSize, WATERMARK_MIN_IMAGE_SIZE_PX)
         glyph = `<image href="${safeHref}" x="${cx - imgSize / 2}" y="${cy - imgSize / 2}" width="${imgSize}" height="${imgSize}" preserveAspectRatio="xMidYMid meet" ${opacityAttr}/>`
     } else {
         const safeText = escapeXml(options.text)

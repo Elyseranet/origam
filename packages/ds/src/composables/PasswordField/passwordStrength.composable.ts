@@ -23,9 +23,20 @@
  * __strength---bg-{level}`).
  */
 
+import {
+    PASSWORD_MIN_LENGTH,
+    PASSWORD_PATTERN_DIGIT,
+    PASSWORD_PATTERN_LOWERCASE,
+    PASSWORD_PATTERN_SPECIAL,
+    PASSWORD_PATTERN_UPPERCASE,
+    PASSWORD_STRENGTH_LEVEL_BY_SCORE,
+    PASSWORD_STRENGTH_MAX_SCORE,
+    PASSWORD_STRONG_LENGTH
+} from '../../consts/PasswordField/password-field.const'
+
 import { PASSWORD_STRENGTH_LEVEL } from '../../enums'
 import type { IPasswordStrength } from '../../interfaces/PasswordField/password-strength.interface'
-import type { TPasswordStrengthLevel, TPasswordStrengthScore } from '../../types/PasswordField/password-field.type'
+import type { TPasswordStrengthScore } from '../../types/PasswordField/password-field.type'
 
 /**
  * Compute the strength of a password string. Pure — no side effects,
@@ -43,22 +54,16 @@ export function computeStrength (value: string | null | undefined): IPasswordStr
     }
 
     let raw = 0
-    if (v.length >= 8) raw += 1
-    if (v.length >= 12) raw += 1
-    if (/\d/.test(v)) raw += 1
-    if (/[a-z]/.test(v) && /[A-Z]/.test(v)) raw += 1
-    if (/[^A-Za-z0-9]/.test(v)) raw += 1
+    if (v.length >= PASSWORD_MIN_LENGTH) raw += 1
+    if (v.length >= PASSWORD_STRONG_LENGTH) raw += 1
+    if (PASSWORD_PATTERN_DIGIT.test(v)) raw += 1
+    if (PASSWORD_PATTERN_LOWERCASE.test(v) && PASSWORD_PATTERN_UPPERCASE.test(v)) raw += 1
+    if (PASSWORD_PATTERN_SPECIAL.test(v)) raw += 1
 
-    // Clamp 0..4 so the bar never exceeds 4 segments.
-    const score = (raw > 4 ? 4 : raw) as TPasswordStrengthScore
+    // Clamp so the bar never exceeds its segment count.
+    const score = (raw > PASSWORD_STRENGTH_MAX_SCORE ? PASSWORD_STRENGTH_MAX_SCORE : raw) as TPasswordStrengthScore
 
-    let level: TPasswordStrengthLevel
-    if (score <= 1) level = PASSWORD_STRENGTH_LEVEL.WEAK
-    else if (score === 2) level = PASSWORD_STRENGTH_LEVEL.FAIR
-    else if (score === 3) level = PASSWORD_STRENGTH_LEVEL.GOOD
-    else level = PASSWORD_STRENGTH_LEVEL.STRONG
-
-    return { score, level }
+    return { score, level: PASSWORD_STRENGTH_LEVEL_BY_SCORE[score] }
 }
 
 // `DEFAULT_PASSWORD_REQUIREMENTS` lives in `src/consts/PasswordField/

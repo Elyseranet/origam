@@ -1,3 +1,8 @@
+import {
+    TELEPORT_TYPOGRAPHY_MEASURE_SELECTOR,
+    TELEPORT_TYPOGRAPHY_NEUTRAL_FONT_SIZE
+} from '../../consts/Commons/teleport-typography.const'
+
 import { nextTick, ref, watch } from 'vue'
 
 import type { Ref } from 'vue'
@@ -86,8 +91,8 @@ export function useTeleportTypography (
     fieldRef: Ref<{ $el?: HTMLElement } | undefined>,
     isOpen: Ref<boolean>,
     extraVars: (fontSize: string) => Record<string, string>,
-    measureSelector = '.origam-field',
-    neutralFontSize = '16px'
+    measureSelector = TELEPORT_TYPOGRAPHY_MEASURE_SELECTOR,
+    neutralFontSize: string = TELEPORT_TYPOGRAPHY_NEUTRAL_FONT_SIZE
 ) {
     const typographyStyles = ref<Record<string, string>>({})
 

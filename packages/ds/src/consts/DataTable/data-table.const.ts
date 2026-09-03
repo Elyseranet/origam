@@ -44,6 +44,56 @@ export const ORIGAM_DATA_TABLE_PAGINATION_KEY: InjectionKey<{
     setItemsPerPage: (value: number) => void
 }> = Symbol.for('origam:data-table-pagination')
 
+/*********************************************************
+ * DATA_TABLE_DEFAULT_PAGE
+ *
+ * @description
+ * Pagination in this DS is ONE-based: the first page is `1`, never `0`.
+ * The value doubles as the fallback `createPagination` coerces an
+ * undefined `page` prop to, as the lower clamp bound of `nextPage` /
+ * `prevPage` / `setPage`, and as the page `setItemsPerPage` resets to.
+ ********************************************************/
+export const DATA_TABLE_DEFAULT_PAGE = 1
+
+/*********************************************************
+ * DATA_TABLE_DEFAULT_ITEMS_PER_PAGE
+ *
+ * @description
+ * Rows rendered per page when the consumer passes no `itemsPerPage`.
+ ********************************************************/
+export const DATA_TABLE_DEFAULT_ITEMS_PER_PAGE = 10
+
+/*********************************************************
+ * DATA_TABLE_ITEMS_PER_PAGE_ALL
+ *
+ * @description
+ * Sentinel `itemsPerPage` value meaning "no pagination — show every
+ * row". It is NOT a count: `startIndex` collapses to `0`, `stopIndex`
+ * to `itemsLength`, and `pageCount` to `DATA_TABLE_MIN_PAGE_COUNT`.
+ * `-1` rather than `0` because `0` is a legitimate "empty page" value
+ * a consumer could reach by binding a numeric input.
+ ********************************************************/
+export const DATA_TABLE_ITEMS_PER_PAGE_ALL = -1
+
+/*********************************************************
+ * DATA_TABLE_MIN_PAGE_COUNT
+ *
+ * @description
+ * Floor of `pageCount`. An empty table still has one (empty) page —
+ * returning `0` would make the one-based `page` ref unclampable and
+ * `watchEffect` would drive it to `0`, a page that cannot exist.
+ ********************************************************/
+export const DATA_TABLE_MIN_PAGE_COUNT = 1
+
+/*********************************************************
+ * DATA_TABLE_PAGINATION_MISSING_ERROR
+ *
+ * @description
+ * Thrown by `usePagination` when no ancestor called
+ * `providePagination`.
+ ********************************************************/
+export const DATA_TABLE_PAGINATION_MISSING_ERROR = 'Missing pagination!'
+
 export const ORIGAM_DATA_TABLE_SELECT_KEY: InjectionKey<ReturnType<typeof provideSelection>> = Symbol.for('origam:data-table-selection')
 
 export const ORIGAM_DATA_TABLE_SHOW_SELECT_KEY: InjectionKey<Ref<boolean>> = Symbol.for('origam:data-table-show-select')

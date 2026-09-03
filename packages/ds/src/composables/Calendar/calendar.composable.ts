@@ -1,5 +1,14 @@
 import { computed, type ComputedRef } from 'vue'
 
+import {
+    CALENDAR_DAYS_PER_WEEK,
+    CALENDAR_DEFAULT_EVENT_DURATION_MIN,
+    CALENDAR_MIN_EVENT_HEIGHT_MIN,
+    CALENDAR_MINUTES_PER_HOUR,
+    CALENDAR_MONTH_GRID_WEEKS,
+    CALENDAR_MS_PER_MINUTE
+} from '../../consts/Calendar/calendar.const'
+
 import { CALENDAR_NAVIGATE, CALENDAR_VIEW } from '../../enums'
 
 import type { ICalendarAgendaEntry, ICalendarTimeSlot, IUseCalendarOptions } from '../../interfaces/Calendar/calendar.interface'
@@ -24,6 +33,8 @@ import {
     startOfWeekFixed,
     toDate
 } from '../../utils/Calendar/date.util'
+
+import { endOfDay } from '../../utils/Commons/date.util'
 
 import { expandRecurrence } from '../../utils/Calendar/rrule.util'
 
@@ -77,7 +88,7 @@ export function useCalendar (
                 const gridStart = startOfWeekFixed(monthStart, firstDayOfWeek)
                 // The month grid always renders 6 rows × 7 cols so the
                 // calendar height stays stable across short months.
-                const gridEnd = addDays(gridStart, 6 * 7 - 1)
+                const gridEnd = addDays(gridStart, CALENDAR_MONTH_GRID_WEEKS * CALENDAR_DAYS_PER_WEEK - 1)
                 return { start: gridStart, end: gridEnd }
             }
             case CALENDAR_VIEW.WEEK:
@@ -86,12 +97,8 @@ export function useCalendar (
                     end: endOfWeekFixed(date, firstDayOfWeek)
                 }
             case CALENDAR_VIEW.DAY:
-            default: {
-                const start = startOfDay(date)
-                const end = new Date(start)
-                end.setHours(23, 59, 59, 999)
-                return { start, end }
-            }
+            default:
+                return { start: startOfDay(date), end: endOfDay(date) }
         }
     })
 
@@ -165,7 +172,7 @@ export function useCalendar (
         const slotDuration = options.slotDuration()
         const slots: Array<ICalendarTimeSlot> = []
         const base = startOfDay(date)
-        const totalMinutes = (endHour - startHour) * 60
+        const totalMinutes = (endHour - startHour) * CALENDAR_MINUTES_PER_HOUR
         for (let offsetMin = 0; offsetMin < totalMinutes; offsetMin += slotDuration) {
             const slotDate = new Date(base)
             slotDate.setHours(startHour, 0, 0, 0)
@@ -187,7 +194,7 @@ export function useCalendar (
         const firstDayOfWeek = options.firstDayOfWeek()
         const start = startOfWeekFixed(date, firstDayOfWeek)
         const columns: Array<Array<ICalendarTimeSlot>> = []
-        for (let i = 0; i < 7; i++) {
+        for (let i = 0; i < CALENDAR_DAYS_PER_WEEK; i++) {
             columns.push(buildDayGrid(addDays(start, i)))
         }
         return columns
@@ -242,10 +249,12 @@ export function useCalendar (
     function positionEvent (event: IEvent, dayStart: Date, pxPerMin: number): { top: number, height: number } | null {
         const start = toDate(event.start)
         if (!start) return null
-        const end = event.end ? toDate(event.end) : new Date(start.getTime() + 30 * 60000)
+        const end = event.end
+            ? toDate(event.end)
+            : new Date(start.getTime() + CALENDAR_DEFAULT_EVENT_DURATION_MIN * CALENDAR_MS_PER_MINUTE)
         if (!end) return null
         const top = Math.max(0, diffMinutes(dayStart, start) * pxPerMin)
-        const height = Math.max(pxPerMin * 15, diffMinutes(start, end) * pxPerMin)
+        const height = Math.max(pxPerMin * CALENDAR_MIN_EVENT_HEIGHT_MIN, diffMinutes(start, end) * pxPerMin)
         return { top, height }
     }
 

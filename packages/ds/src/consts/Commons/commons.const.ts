@@ -19,6 +19,18 @@ export const SUPPORTS_TOUCH = IN_BROWSER && ('ontouchstart' in window || window.
 export const SUPPORTS_EYE_DROPPER = IN_BROWSER && 'EyeDropper' in window
 
 /*********************************************************
+ * REDUCED_MOTION_QUERY
+ *
+ * @description
+ * The media query every composable that gates motion behind the
+ * OS-level accessibility setting must pass to `window.matchMedia`.
+ * Kept here rather than re-typed per composable — a typo in the query
+ * string does not throw, it just returns `matches: false` forever, so
+ * the failure mode is motion that silently ignores the user's setting.
+ ********************************************************/
+export const REDUCED_MOTION_QUERY = '(prefers-reduced-motion: reduce)'
+
+/*********************************************************
  * NAME_ATTR_TAGS
  *
  * @description

@@ -1,5 +1,11 @@
 import { nextTick, onScopeDispose, shallowRef } from 'vue'
 
+import {
+    SNACKBAR_COUNTDOWN_FALLBACK_INTERVAL_MS,
+    SNACKBAR_COUNTDOWN_FALLBACK_TRANSITION_S,
+    SNACKBAR_COUNTDOWN_MS_PER_SECOND
+} from '../../consts/Snackbar/snackbar.const'
+
 /*********************************************************
  * useCountdown
  ********************************************************/
@@ -18,8 +24,9 @@ export function useCountdown (milliseconds: number) {
     }
 
     const start = (el?: HTMLElement) => {
-        const style = el ? getComputedStyle(el) : {transitionDuration: 0.2}
-        const interval = parseFloat(style.transitionDuration) * 1000 || 200
+        const style = el ? getComputedStyle(el) : {transitionDuration: SNACKBAR_COUNTDOWN_FALLBACK_TRANSITION_S}
+        const interval = parseFloat(style.transitionDuration) * SNACKBAR_COUNTDOWN_MS_PER_SECOND
+            || SNACKBAR_COUNTDOWN_FALLBACK_INTERVAL_MS
 
         clear()
 

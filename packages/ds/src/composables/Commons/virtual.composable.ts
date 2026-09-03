@@ -2,7 +2,15 @@ import { useDisplay } from './display.composable'
 import { useGoTo } from './goTo.composable'
 import { useResizeObserver } from './resizeObserver.composable'
 import { IN_BROWSER } from '../../consts/Commons/commons.const'
-import { BUFFER_PX, DOWN, UP } from '../../consts/Commons/virtual.const'
+import {
+    BUFFER_PX,
+    DOWN,
+    UP,
+    VIRTUAL_FALLBACK_ITEM_HEIGHT_PX,
+    VIRTUAL_SCROLL_DURATION_MS,
+    VIRTUAL_SCROLL_EASING,
+    VIRTUAL_SCROLL_SEQUENCE_MS
+} from '../../consts/Commons/virtual.const'
 import type { IGoToOptions } from '../../interfaces/Commons/goTo.interface'
 import type { IVirtualProps } from '../../interfaces/Commons/virtual.interface'
 import { clamp, debounce, int } from '../../utils/Commons/commons.util'
@@ -35,7 +43,7 @@ export function useVirtual<T> (props: IVirtualProps, items: Ref<readonly T[]>) {
      * for why the FIRST synchronous call, at `shallowRef()` creation
      * time, cannot itself be theme-safe.
      ********************************************************/
-    const estimateLast = () => Math.ceil((int(props.height!) || display.height.value) / (itemHeight.value || 16)) || 1
+    const estimateLast = () => Math.ceil((int(props.height!) || display.height.value) / (itemHeight.value || VIRTUAL_FALLBACK_ITEM_HEIGHT_PX)) || 1
 
     const first = shallowRef(0)
     const last = shallowRef(estimateLast())
@@ -177,7 +185,7 @@ export function useVirtual<T> (props: IVirtualProps, items: Ref<readonly T[]>) {
         const scrollTime = performance.now()
         const scrollDeltaT = scrollTime - lastScrollTime
 
-        if (scrollDeltaT > 500) {
+        if (scrollDeltaT > VIRTUAL_SCROLL_SEQUENCE_MS) {
             scrollVelocity = Math.sign(scrollTop - lastScrollTop)
 
             // Not super important, only update at the
@@ -256,8 +264,8 @@ export function useVirtual<T> (props: IVirtualProps, items: Ref<readonly T[]>) {
         // defaults; the per-call `options` argument lets a consumer
         // override (e.g. instant scroll for a "jump to top" button while
         // the rest of the app keeps the smooth feel).
-        const duration = options.duration ?? props.scrollDuration ?? 300
-        const easing = options.easing ?? props.scrollEasing ?? 'easeInOutCubic'
+        const duration = options.duration ?? props.scrollDuration ?? VIRTUAL_SCROLL_DURATION_MS
+        const easing = options.easing ?? props.scrollEasing ?? VIRTUAL_SCROLL_EASING
 
         // `duration: 0` skips the rAF loop in `useGoTo` and falls through
         // to a plain assignment — we expose it as the "instant" escape

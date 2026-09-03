@@ -1,5 +1,5 @@
 import { useToggleScope } from './toggleScope.composable'
-import { GLOBAL_STACK, ORIGAM_STACK_KEY } from '../../consts/Commons/stack.const'
+import { GLOBAL_STACK, ORIGAM_STACK_KEY, STACK_Z_INDEX_STEP } from '../../consts/Commons/stack.const'
 import type { IStackProvide } from '../../interfaces/Commons/stack.interface'
 
 import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
@@ -41,7 +41,7 @@ export function useStack (
     const _zIndex = shallowRef(+zIndex.value)
     useToggleScope(isActive, () => {
         const lastZIndex = GLOBAL_STACK.at(-1)?.[1]
-        _zIndex.value = lastZIndex ? lastZIndex + 10 : +zIndex.value
+        _zIndex.value = lastZIndex ? lastZIndex + STACK_Z_INDEX_STEP : +zIndex.value
 
         if (createStackEntry.value) {
             GLOBAL_STACK.push([vm.uid, _zIndex.value])

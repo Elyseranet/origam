@@ -15,7 +15,7 @@ import type { IChartLegendItem, IChartPath, IChartScales, IChartTick, IUseChartO
 import type { TChartSmoothing, TChartStacking, TChartType } from '../../types/Chart/chart.type'
 import type { TIntent } from '../../types/Commons/intent.type'
 
-import { CHART_STACKING } from '../../enums'
+import { CHART_SMOOTHING, CHART_STACKING, CHART_TYPE, INTENT } from '../../enums'
 
 import {
     arcPath,
@@ -31,28 +31,50 @@ import {
     type TPathPoint
 } from '../../utils/Chart/path.util'
 
-import { CHART_Y_TICK_COUNT } from '../../consts/Chart/chart.const'
+import {
+    CHART_ANNOTATION_ARROWHEAD_MIN_SIZE,
+    CHART_ANNOTATION_ARROWHEAD_PRECISION,
+    CHART_ANNOTATION_ARROWHEAD_SPREAD,
+    CHART_ANNOTATION_ARROWHEAD_WIDTH_FACTOR,
+    CHART_ANNOTATION_DEFAULT_DY,
+    CHART_ANNOTATION_DEFAULT_RADIUS,
+    CHART_ANNOTATION_DEFAULT_WIDTH,
+    CHART_ANNOTATION_LABEL_CHAR_WIDTH,
+    CHART_ANNOTATION_LABEL_HEIGHT,
+    CHART_ANNOTATION_LABEL_MIN_WIDTH,
+    CHART_ANNOTATION_LABEL_PADDING,
+    CHART_BAR_SLOT_FILL_RATIO,
+    CHART_COLOR_FALLBACK,
+    CHART_DASH_ARRAY_DASHED,
+    CHART_DASH_ARRAY_DOTTED,
+    CHART_DASH_ARRAY_SOLID,
+    CHART_DEFAULT_PALETTE,
+    CHART_EPSILON,
+    CHART_NICE_STEP_LADDER,
+    CHART_PERCENT_MAX,
+    CHART_PERCENT_MIN,
+    CHART_PERCENT_TICK_STEP,
+    CHART_PIE_MIN_RADIUS,
+    CHART_PIE_RADIUS_INSET,
+    CHART_PLOT_BAND_DEFAULT_OPACITY,
+    CHART_PLOT_LINE_DEFAULT_WIDTH,
+    CHART_PLOT_LINE_LABEL_OFFSET,
+    CHART_PLOT_LINE_LABEL_TOP_OFFSET,
+    CHART_POINT_MARKER_RADIUS,
+    CHART_RADAR_MARKER_RADIUS,
+    CHART_RADAR_MIN_RADIUS,
+    CHART_RADAR_RADIUS_INSET,
+    CHART_SCATTER_DEFAULT_RADIUS,
+    CHART_SCATTER_MAX_RADIUS,
+    CHART_SCATTER_MIN_RADIUS,
+    CHART_SLICE_LABEL_PREFIX,
+    CHART_TICK_LABEL_PRECISION_FACTOR,
+    CHART_Y_TICK_COUNT
+} from '../../consts/Chart/chart.const'
 
 import { intentBgExpr, isIntent } from '../../utils/Commons/color.util'
 
-/**
- * Default palette cycled through when a series doesn't pin its own
- * `color`. Mirrors the eight `TIntent` values declared in
- * `src/types/Commons/intent.type.ts` — the runtime resolution to
- * CSS happens in `resolveColor` below.
- */
-const DEFAULT_PALETTE: Array<TIntent> = [
-    'primary',
-    'success',
-    'warning',
-    'danger',
-    'info',
-    'secondary',
-    'ghost',
-    'neutral'
-]
-
-// `Y_TICK_COUNT` (CHART_Y_TICK_COUNT) lives in `src/consts/Chart/chart.const.ts`.
+// Every literal this engine used to inline lives in `src/consts/Chart/chart.const.ts`.
 
 /**
  * Resolve a colour string to a usable CSS value.
@@ -71,7 +93,7 @@ const DEFAULT_PALETTE: Array<TIntent> = [
  * - Anything else (an unknown string) falls back to `currentColor`.
  */
 const resolveColor = (raw: TIntent | string | undefined): string => {
-    if (!raw) return 'currentColor'
+    if (!raw) return CHART_COLOR_FALLBACK
     // Raw CSS values — hex, rgb, hsl, named keywords, gradients, var().
     if (/^(#|rgb|hsl|var|currentColor|transparent|linear-gradient|radial-gradient|conic-gradient)/i.test(raw)) {
         return raw
@@ -83,16 +105,16 @@ const resolveColor = (raw: TIntent | string | undefined): string => {
     if (isIntent(raw)) {
         return intentBgExpr(raw, 'default')
     }
-    return 'currentColor'
+    return CHART_COLOR_FALLBACK
 }
 
 /**
  * Resolve a dash pattern to an SVG `stroke-dasharray` value.
  */
 const dashArray = (dash: IChartPlotLine['dash']): string => {
-    if (dash === 'dotted') return '2 4'
-    if (dash === 'solid') return 'none'
-    return '6 4'
+    if (dash === 'dotted') return CHART_DASH_ARRAY_DOTTED
+    if (dash === 'solid') return CHART_DASH_ARRAY_SOLID
+    return CHART_DASH_ARRAY_DASHED
 }
 
 /**
@@ -140,8 +162,8 @@ export const computePlotBandGeometry = (
     labelColor: string
 } | null => {
     const axis = band.axis ?? 'y'
-    const fill = resolveColor(band.color ?? 'warning')
-    const opacity = band.opacity ?? 0.15
+    const fill = resolveColor(band.color ?? INTENT.WARNING)
+    const opacity = band.opacity ?? CHART_PLOT_BAND_DEFAULT_OPACITY
     const labelColor = resolveColor(band.labelColor ?? undefined)
 
     if (axis === 'y') {
@@ -216,8 +238,8 @@ export const computePlotLineGeometry = (
     labelAnchor: string
 } | null => {
     const axis = line.axis ?? 'y'
-    const stroke = resolveColor(line.color ?? 'danger')
-    const strokeWidth = line.width ?? 1.5
+    const stroke = resolveColor(line.color ?? INTENT.DANGER)
+    const strokeWidth = line.width ?? CHART_PLOT_LINE_DEFAULT_WIDTH
     const strokeDasharray = dashArray(line.dash)
 
     if (axis === 'y') {
@@ -234,7 +256,7 @@ export const computePlotLineGeometry = (
             strokeDasharray,
             label: line.label,
             labelX: isRight ? plotX1 : plotX0,
-            labelY: py - 4,
+            labelY: py - CHART_PLOT_LINE_LABEL_OFFSET,
             labelAnchor: isRight ? 'end' : 'start'
         }
     }
@@ -250,8 +272,8 @@ export const computePlotLineGeometry = (
         strokeWidth,
         strokeDasharray,
         label: line.label,
-        labelX: px + 4,
-        labelY: plotY0 + 12,
+        labelX: px + CHART_PLOT_LINE_LABEL_OFFSET,
+        labelY: plotY0 + CHART_PLOT_LINE_LABEL_TOP_OFFSET,
         labelAnchor: 'start'
     }
 }
@@ -264,14 +286,15 @@ export const computePlotLineGeometry = (
  */
 const arrowheadPoints = (tx: number, ty: number, hx: number, hy: number, size: number): string => {
     const angle = Math.atan2(hy - ty, hx - tx)
-    const spread = Math.PI / 5
+    const spread = CHART_ANNOTATION_ARROWHEAD_SPREAD
     const left = angle + Math.PI - spread
     const right = angle + Math.PI + spread
     const lx = hx + size * Math.cos(left)
     const ly = hy + size * Math.sin(left)
     const rx = hx + size * Math.cos(right)
     const ry = hy + size * Math.sin(right)
-    return `${hx.toFixed(2)},${hy.toFixed(2)} ${lx.toFixed(2)},${ly.toFixed(2)} ${rx.toFixed(2)},${ry.toFixed(2)}`
+    const p = CHART_ANNOTATION_ARROWHEAD_PRECISION
+    return `${hx.toFixed(p)},${hy.toFixed(p)} ${lx.toFixed(p)},${ly.toFixed(p)} ${rx.toFixed(p)},${ry.toFixed(p)}`
 }
 
 /**
@@ -287,11 +310,11 @@ export const computeAnnotationGeometry = (
     categories: Array<string>,
     categoryCount: number
 ): IChartAnnotationGeo | null => {
-    const stroke = resolveColor(anno.color ?? 'primary')
-    const strokeWidth = anno.width ?? 1.5
+    const stroke = resolveColor(anno.color ?? INTENT.PRIMARY)
+    const strokeWidth = anno.width ?? CHART_ANNOTATION_DEFAULT_WIDTH
     const dx = anno.dx ?? 0
-    const dy = anno.dy ?? -14
-    const radius = anno.radius ?? 12
+    const dy = anno.dy ?? CHART_ANNOTATION_DEFAULT_DY
+    const radius = anno.radius ?? CHART_ANNOTATION_DEFAULT_RADIUS
 
     const ax = scales.x(anno.x, typeof anno.x === 'number' ? anno.x : categories.indexOf(anno.x), categoryCount)
     const ay = scales.y(anno.y)
@@ -318,7 +341,10 @@ export const computeAnnotationGeometry = (
     }
 
     if (anno.kind === 'arrow') {
-        const size = Math.max(6, strokeWidth * 4)
+        const size = Math.max(
+            CHART_ANNOTATION_ARROWHEAD_MIN_SIZE,
+            strokeWidth * CHART_ANNOTATION_ARROWHEAD_WIDTH_FACTOR
+        )
         return {
             ...base,
             arrowPoints: arrowheadPoints(ax, ay, base.bx, base.by, size)
@@ -327,10 +353,13 @@ export const computeAnnotationGeometry = (
 
     if (anno.kind === 'label') {
         const text = anno.text ?? ''
-        const charWidth = 7
-        const padding = 8
-        const boxW = Math.max(48, text.length * charWidth + padding * 2)
-        const boxH = 24
+        const charWidth = CHART_ANNOTATION_LABEL_CHAR_WIDTH
+        const padding = CHART_ANNOTATION_LABEL_PADDING
+        const boxW = Math.max(
+            CHART_ANNOTATION_LABEL_MIN_WIDTH,
+            text.length * charWidth + padding * 2
+        )
+        const boxH = CHART_ANNOTATION_LABEL_HEIGHT
         const calloutX = ax + dx - boxW / 2
         const calloutY = ay + dy - boxH
         return {
@@ -379,7 +408,7 @@ const computeYRange = (
     if (!visible.length) return { min: 0, max: 1 }
 
     if (stacked && stacking === CHART_STACKING.PERCENT) {
-        return { min: 0, max: 100 }
+        return { min: CHART_PERCENT_MIN, max: CHART_PERCENT_MAX }
     }
 
     if (stacked) {
@@ -436,12 +465,9 @@ const niceStep = (range: number, count: number): number => {
     const rough = range / count
     const pow10 = Math.pow(10, Math.floor(Math.log10(rough)))
     const norm = rough / pow10
-    let nice
-    if (norm < 1.5) nice = 1
-    else if (norm < 3) nice = 2
-    else if (norm < 7) nice = 5
-    else nice = 10
-    return nice * pow10
+    const rung = CHART_NICE_STEP_LADDER.find(({ below }) => norm < below)
+        ?? CHART_NICE_STEP_LADDER[CHART_NICE_STEP_LADDER.length - 1]
+    return rung.step * pow10
 }
 
 /**
@@ -542,7 +568,7 @@ export const useChart = (options: IUseChartOptions) => {
         const { x0, x1, y0, y1 } = plot.value
         const { min, max } = yRange.value
         const cats = categories.value
-        const yPxPerUnit = (y1 - y0) / Math.max(1e-9, max - min)
+        const yPxPerUnit = (y1 - y0) / Math.max(CHART_EPSILON, max - min)
 
         const x = (value: number | string, dataIndex?: number, categoryCount?: number): number => {
             // 1. Numeric x — linear scale 0..count-1.
@@ -579,7 +605,7 @@ export const useChart = (options: IUseChartOptions) => {
     const scaleY1 = computed(() => {
         const { y0, y1 } = plot.value
         const { min, max } = secondaryYRange.value
-        const yPxPerUnit = (y1 - y0) / Math.max(1e-9, max - min)
+        const yPxPerUnit = (y1 - y0) / Math.max(CHART_EPSILON, max - min)
         return (value: number): number => {
             const px = y1 - (value - min) * yPxPerUnit
             if (px < y0) return y0
@@ -612,9 +638,9 @@ export const useChart = (options: IUseChartOptions) => {
         let step: number
 
         if (isPercentMode) {
-            niceMin = 0
-            niceMax = 100
-            step = 25
+            niceMin = CHART_PERCENT_MIN
+            niceMax = CHART_PERCENT_MAX
+            step = CHART_PERCENT_TICK_STEP
         } else {
             const { min, max } = yRange.value
             step = niceStep(max - min, CHART_Y_TICK_COUNT)
@@ -624,23 +650,23 @@ export const useChart = (options: IUseChartOptions) => {
 
         const cats = categories.value
         const allSeries = options.series()
-        const isBarMode = options.type() === 'bar' || allSeries.some((s) => s.type === 'bar')
+        const isBarMode = options.type() === CHART_TYPE.BAR || allSeries.some((s) => s.type === CHART_TYPE.BAR)
 
         // Value-axis tick descriptors — position depends on orientation:
         //   bar (horizontal) → along X using `scales.x` interpolated value mapping
         //   everything else  → along Y using `scales.y`
         const valueTicks: Array<IChartTick> = []
-        for (let v = niceMin; v <= niceMax + 1e-9; v += step) {
+        for (let v = niceMin; v <= niceMax + CHART_EPSILON; v += step) {
             const label = isPercentMode
                 ? `${Math.round(v)}%`
-                : String(Math.round(v * 1000) / 1000)
+                : String(Math.round(v * CHART_TICK_LABEL_PRECISION_FACTOR) / CHART_TICK_LABEL_PRECISION_FACTOR)
             valueTicks.push({
                 value: v,
                 label,
                 position: isBarMode
                     ? (() => {
                         const { x0, x1 } = plot.value
-                        const range = Math.max(1e-9, niceMax - niceMin)
+                        const range = Math.max(CHART_EPSILON, niceMax - niceMin)
                         const ratio = (v - niceMin) / range
                         return x0 + ratio * (x1 - x0)
                     })()
@@ -681,7 +707,7 @@ export const useChart = (options: IUseChartOptions) => {
         const secondary = options.secondaryYAxis?.()
         const axis1Series = options.series().filter((s) => (s.yAxis ?? 0) === 1 && s.visible !== false)
         const allSeries = options.series()
-        const isBarMode = options.type() === 'bar' || allSeries.some((s) => s.type === 'bar')
+        const isBarMode = options.type() === CHART_TYPE.BAR || allSeries.some((s) => s.type === CHART_TYPE.BAR)
 
         if (isBarMode) return []
         if (!secondary && !axis1Series.length) return []
@@ -691,10 +717,10 @@ export const useChart = (options: IUseChartOptions) => {
         const niceMin = Math.floor(min / step) * step
         const niceMax = Math.ceil(max / step) * step
         const out: Array<IChartTick> = []
-        for (let v = niceMin; v <= niceMax + 1e-9; v += step) {
+        for (let v = niceMin; v <= niceMax + CHART_EPSILON; v += step) {
             out.push({
                 value: v,
-                label: String(Math.round(v * 1000) / 1000),
+                label: String(Math.round(v * CHART_TICK_LABEL_PRECISION_FACTOR) / CHART_TICK_LABEL_PRECISION_FACTOR),
                 position: scaleY1.value(v)
             })
         }
@@ -708,7 +734,7 @@ export const useChart = (options: IUseChartOptions) => {
     const colorFor = (series: IChartSeries, index: number): string => {
         if (series.color) return resolveColor(series.color)
         const scheme = options.colorScheme()
-        const palette = scheme.length ? scheme : DEFAULT_PALETTE
+        const palette = scheme.length ? scheme : CHART_DEFAULT_PALETTE
         return resolveColor(palette[index % palette.length])
     }
 
@@ -732,9 +758,9 @@ export const useChart = (options: IUseChartOptions) => {
      */
     const legend: ComputedRef<Array<IChartLegendItem>> = computed(() => {
         const allSeries = options.series()
-        const pieSeriesList = allSeries.filter((s) => effectiveType(s) === 'pie' || effectiveType(s) === 'donut')
+        const pieSeriesList = allSeries.filter((s) => effectiveType(s) === CHART_TYPE.PIE || effectiveType(s) === CHART_TYPE.DONUT)
         const cats = options.categories()
-        const scheme = options.colorScheme().length ? options.colorScheme() : DEFAULT_PALETTE
+        const scheme = options.colorScheme().length ? options.colorScheme() : CHART_DEFAULT_PALETTE
         const hidden = options.hiddenLabels?.() ?? new Set<string>()
 
         // Single-series pie / donut → expose each slice as a legend
@@ -746,7 +772,7 @@ export const useChart = (options: IUseChartOptions) => {
             const s = pieSeriesList[0]
             const data = s.data as Array<number | { x: number | string, y: number }>
             return data.map((entry, i) => {
-                const label = cats[i] ?? (typeof entry === 'object' && entry !== null ? String(entry.x) : `Slice ${ i + 1 }`)
+                const label = cats[i] ?? (typeof entry === 'object' && entry !== null ? String(entry.x) : `${ CHART_SLICE_LABEL_PREFIX } ${ i + 1 }`)
                 const labelStr = String(label)
                 const sliceSeries: IChartSeries = {
                     ...s,
@@ -829,7 +855,7 @@ export const useChart = (options: IUseChartOptions) => {
                     const y = typeof entry === 'number' ? entry : entry?.y ?? 0
                     if (!offsets.has(i)) offsets.set(i, [])
                     offsets.get(i)![dataIdx] = runningPct
-                    if (y > 0) runningPct += (y / safeTot) * 100
+                    if (y > 0) runningPct += (y / safeTot) * CHART_PERCENT_MAX
                 }
             }
         } else {
@@ -875,7 +901,7 @@ export const useChart = (options: IUseChartOptions) => {
                 const entry = s.data[dataIdx]
                 const y = typeof entry === 'number' ? entry : entry?.y ?? 0
                 if (!pctMap.has(i)) pctMap.set(i, [])
-                pctMap.get(i)![dataIdx] = y > 0 ? (y / safeTot) * 100 : 0
+                pctMap.get(i)![dataIdx] = y > 0 ? (y / safeTot) * CHART_PERCENT_MAX : 0
             }
         }
         return pctMap
@@ -893,7 +919,7 @@ export const useChart = (options: IUseChartOptions) => {
         const { x0, x1, y0, y1, cx, cy } = plot.value
         const smoothing = options.smoothing()
 
-        const pieSeriesList = series.filter((s) => effectiveType(s) === 'pie' || effectiveType(s) === 'donut')
+        const pieSeriesList = series.filter((s) => effectiveType(s) === CHART_TYPE.PIE || effectiveType(s) === CHART_TYPE.DONUT)
         if (pieSeriesList.length > 0) {
             /*
              * Pie / donut path generator. Two rendering modes:
@@ -917,10 +943,13 @@ export const useChart = (options: IUseChartOptions) => {
              * is preserved (central hole). The remaining annulus
              * `[innerR..outerR]` is divided into N equal bands.
              */
-            const outerR = Math.max(10, Math.min(x1 - x0, y1 - y0) / 2 - 4)
-            const isDonut = effectiveType(pieSeriesList[0]) === 'donut'
+            const outerR = Math.max(
+                CHART_PIE_MIN_RADIUS,
+                Math.min(x1 - x0, y1 - y0) / 2 - CHART_PIE_RADIUS_INSET
+            )
+            const isDonut = effectiveType(pieSeriesList[0]) === CHART_TYPE.DONUT
             const baseInner = isDonut ? outerR * options.donutHoleSize() : 0
-            const scheme = options.colorScheme().length ? options.colorScheme() : DEFAULT_PALETTE
+            const scheme = options.colorScheme().length ? options.colorScheme() : CHART_DEFAULT_PALETTE
             const visibleSeries = pieSeriesList.filter((s) => s.visible !== false)
 
             if (visibleSeries.length === 0) return out
@@ -941,7 +970,7 @@ export const useChart = (options: IUseChartOptions) => {
             const labelFor = (i: number, entry: number | { x: number | string, y: number } | undefined): string => {
                 if (cats[i] != null) return String(cats[i])
                 if (entry != null && typeof entry === 'object') return String(entry.x)
-                return `Slice ${ i + 1 }`
+                return `${ CHART_SLICE_LABEL_PREFIX } ${ i + 1 }`
             }
 
             for (let ringIdx = 0; ringIdx < visibleSeries.length; ringIdx++) {
@@ -1003,10 +1032,10 @@ export const useChart = (options: IUseChartOptions) => {
             const seriesBaseline = yFn(Math.max(0, seriesRange.min))
 
             if (
-                kind === 'line'
-                || kind === 'area'
-                || kind === 'spline'
-                || kind === 'stepped-line'
+                kind === CHART_TYPE.LINE
+                || kind === CHART_TYPE.AREA
+                || kind === CHART_TYPE.SPLINE
+                || kind === CHART_TYPE.STEPPED_LINE
             ) {
                 const pts: Array<TPathPoint> = normalised.map((p) => [
                     scales.value.x(p.x, p.dataIndex, slotCount.value),
@@ -1018,17 +1047,19 @@ export const useChart = (options: IUseChartOptions) => {
                 // consumer explicitly picks another mode. `stepped-line`
                 // is its own topology (no smoothing applies).
                 const effectiveSmoothing: TChartSmoothing =
-                    kind === 'spline' && smoothing === 'none' ? 'monotone' : smoothing
+                    kind === CHART_TYPE.SPLINE && smoothing === CHART_SMOOTHING.NONE
+                        ? CHART_SMOOTHING.MONOTONE
+                        : smoothing
 
                 let dLine: string
                 let areaMode: boolean | 'monotone' | 'stepped' = false
-                if (kind === 'stepped-line') {
+                if (kind === CHART_TYPE.STEPPED_LINE) {
                     dLine = steppedPath(pts)
                     areaMode = 'stepped'
-                } else if (effectiveSmoothing === 'monotone') {
+                } else if (effectiveSmoothing === CHART_SMOOTHING.MONOTONE) {
                     dLine = monotonePath(pts)
                     areaMode = 'monotone'
-                } else if (effectiveSmoothing === 'curve') {
+                } else if (effectiveSmoothing === CHART_SMOOTHING.CURVE) {
                     dLine = smoothPath(pts)
                     areaMode = true
                 } else {
@@ -1044,11 +1075,11 @@ export const useChart = (options: IUseChartOptions) => {
              * `stepped-line` uses the Manhattan helper because its
              * `d` includes both horizontal AND vertical legs.
              */
-            const length = kind === 'stepped-line'
+            const length = kind === CHART_TYPE.STEPPED_LINE
                 ? steppedPathLength(pts)
                 : computePathLength(pts)
 
-                if (kind === 'area') {
+                if (kind === CHART_TYPE.AREA) {
                     out.push({
                         seriesIndex: seriesIdx,
                         kind: 'path',
@@ -1067,7 +1098,7 @@ export const useChart = (options: IUseChartOptions) => {
                     color,
                     series: s,
                     pathLength: length,
-                    variant: kind === 'area' ? 'stroke' : undefined
+                    variant: kind === CHART_TYPE.AREA ? 'stroke' : undefined
                 })
 
                 // Emit one descriptor per data point — `<circle>` markers
@@ -1077,7 +1108,11 @@ export const useChart = (options: IUseChartOptions) => {
                         out.push({
                             seriesIndex: seriesIdx,
                             kind: 'circle',
-                            circle: { cx: pts[dataIdx][0], cy: pts[dataIdx][1], r: 4 },
+                            circle: {
+                                cx: pts[dataIdx][0],
+                                cy: pts[dataIdx][1],
+                                r: CHART_POINT_MARKER_RADIUS
+                            },
                             color,
                             series: s,
                             dataIndex: dataIdx
@@ -1087,10 +1122,10 @@ export const useChart = (options: IUseChartOptions) => {
                 continue
             }
 
-            if (kind === 'bar' || kind === 'column') {
+            if (kind === CHART_TYPE.BAR || kind === CHART_TYPE.COLUMN) {
                 const visibleCount = series.filter((other) => other.visible !== false).length
                 const groupCount = slotCount.value
-                const slotPx = kind === 'column'
+                const slotPx = kind === CHART_TYPE.COLUMN
                     ? (x1 - x0) / Math.max(1, groupCount)
                     : (y1 - y0) / Math.max(1, groupCount)
                 const stacked = options.stacked()
@@ -1105,7 +1140,7 @@ export const useChart = (options: IUseChartOptions) => {
                 // already absorbs `yMin`/`yMax` overrides + stacked
                 // accumulation so we just normalise into [0..1].
                 const horizRange = yRange.value
-                const horizSpan = Math.max(1e-9, horizRange.max - horizRange.min)
+                const horizSpan = Math.max(CHART_EPSILON, horizRange.max - horizRange.min)
                 const xValuePx = (v: number): number => {
                     const ratio = (v - horizRange.min) / horizSpan
                     const px = x0 + ratio * (x1 - x0)
@@ -1125,7 +1160,7 @@ export const useChart = (options: IUseChartOptions) => {
                         ? (percentValues.value.get(seriesIdx)?.[dataIdx] ?? 0)
                         : p.y
 
-                    if (kind === 'column') {
+                    if (kind === CHART_TYPE.COLUMN) {
                         /*
                          * Column slots use the "band" scale (each slot
                          * occupies `slotPx` of the plot, centred on its
@@ -1139,11 +1174,11 @@ export const useChart = (options: IUseChartOptions) => {
                          */
                         const centerX = x0 + (dataIdx + 0.5) * slotPx
                         const barWidth = stacked
-                            ? slotPx * 0.7
-                            : (slotPx * 0.7) / Math.max(1, visibleCount)
+                            ? slotPx * CHART_BAR_SLOT_FILL_RATIO
+                            : (slotPx * CHART_BAR_SLOT_FILL_RATIO) / Math.max(1, visibleCount)
                         const left = stacked
                             ? centerX - barWidth / 2
-                            : centerX - (slotPx * 0.7) / 2 + visibleIdxInGroup * barWidth
+                            : centerX - (slotPx * CHART_BAR_SLOT_FILL_RATIO) / 2 + visibleIdxInGroup * barWidth
                         const offset = stacked ? stackOff[dataIdx] ?? 0 : 0
                         const top = yFn(renderY + offset)
                         const base = yFn(offset)
@@ -1170,11 +1205,11 @@ export const useChart = (options: IUseChartOptions) => {
                             ? (y0 + y1) / 2
                             : y0 + (dataIdx + 0.5) * slotPx
                         const barHeight = stacked
-                            ? slotPx * 0.7
-                            : (slotPx * 0.7) / Math.max(1, visibleCount)
+                            ? slotPx * CHART_BAR_SLOT_FILL_RATIO
+                            : (slotPx * CHART_BAR_SLOT_FILL_RATIO) / Math.max(1, visibleCount)
                         const top = stacked
                             ? slotCenterY - barHeight / 2
-                            : slotCenterY - (slotPx * 0.7) / 2 + visibleIdxInGroup * barHeight
+                            : slotCenterY - (slotPx * CHART_BAR_SLOT_FILL_RATIO) / 2 + visibleIdxInGroup * barHeight
                         const offset = stacked ? stackOff[dataIdx] ?? 0 : 0
                         const rightPx = xValuePx(renderY + offset)
                         const basePx = xValuePx(offset)
@@ -1196,7 +1231,7 @@ export const useChart = (options: IUseChartOptions) => {
                 continue
             }
 
-            if (kind === 'scatter') {
+            if (kind === CHART_TYPE.SCATTER) {
                 /*
                  * Scatter — (x, y) dots with optional `z` third
                  * dimension that drives the dot RADIUS (bubble-style
@@ -1220,11 +1255,7 @@ export const useChart = (options: IUseChartOptions) => {
                  *     in the chart has `z`, all dots keep the default
                  *     fixed radius — standard scatter behaviour.
                  */
-                const SCATTER_DEFAULT_R = 5
-                const SCATTER_MIN_R = 5
-                const SCATTER_MAX_R = 36
-
-                const scatterSeries = series.filter((other) => effectiveType(other) === 'scatter' && other.visible !== false)
+                const scatterSeries = series.filter((other) => effectiveType(other) === CHART_TYPE.SCATTER && other.visible !== false)
                 let xMin = Infinity
                 let xMax = -Infinity
                 let zMin = Infinity
@@ -1243,7 +1274,7 @@ export const useChart = (options: IUseChartOptions) => {
                         }
                     }
                 }
-                const xSpan = Math.max(1e-9, xMax - xMin)
+                const xSpan = Math.max(CHART_EPSILON, xMax - xMin)
                 const xPx = (v: number): number => {
                     const ratio = (v - xMin) / xSpan
                     const px = x0 + ratio * (x1 - x0)
@@ -1251,11 +1282,11 @@ export const useChart = (options: IUseChartOptions) => {
                     if (px > x1) return x1
                     return px
                 }
-                const zSpan = Math.max(1e-9, zMax - zMin)
+                const zSpan = Math.max(CHART_EPSILON, zMax - zMin)
                 const radiusFor = (z: number | undefined): number => {
-                    if (!hasZ || typeof z !== 'number' || !Number.isFinite(z)) return SCATTER_DEFAULT_R
+                    if (!hasZ || typeof z !== 'number' || !Number.isFinite(z)) return CHART_SCATTER_DEFAULT_RADIUS
                     const ratio = zSpan === 0 ? 0.5 : (z - zMin) / zSpan
-                    return SCATTER_MIN_R + ratio * (SCATTER_MAX_R - SCATTER_MIN_R)
+                    return CHART_SCATTER_MIN_RADIUS + ratio * (CHART_SCATTER_MAX_RADIUS - CHART_SCATTER_MIN_RADIUS)
                 }
 
                 for (let dataIdx = 0; dataIdx < normalised.length; dataIdx++) {
@@ -1277,12 +1308,15 @@ export const useChart = (options: IUseChartOptions) => {
                 continue
             }
 
-            if (kind === 'radar') {
+            if (kind === CHART_TYPE.RADAR) {
                 const axes = Math.max(cats.length, normalised.length)
                 if (!axes) continue
-                const radius = Math.max(10, Math.min(x1 - x0, y1 - y0) / 2 - 8)
+                const radius = Math.max(
+                    CHART_RADAR_MIN_RADIUS,
+                    Math.min(x1 - x0, y1 - y0) / 2 - CHART_RADAR_RADIUS_INSET
+                )
                 const pts: Array<TPathPoint> = normalised.map((p, i) => {
-                    const yRangeSize = Math.max(1e-9, yRange.value.max - yRange.value.min)
+                    const yRangeSize = Math.max(CHART_EPSILON, yRange.value.max - yRange.value.min)
                     const ratio = (p.y - yRange.value.min) / yRangeSize
                     const angle = (i / axes) * Math.PI * 2
                     return polarToCartesian(cx, cy, radius * ratio, angle)
@@ -1299,7 +1333,7 @@ export const useChart = (options: IUseChartOptions) => {
                     out.push({
                         seriesIndex: seriesIdx,
                         kind: 'circle',
-                        circle: { cx: pts[i][0], cy: pts[i][1], r: 3.5 },
+                        circle: { cx: pts[i][0], cy: pts[i][1], r: CHART_RADAR_MARKER_RADIUS },
                         color,
                         series: s,
                         dataIndex: i

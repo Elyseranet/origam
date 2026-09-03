@@ -25,6 +25,10 @@ import { nextTick, ref } from 'vue'
 import { describe, expect, it, vi } from 'vitest'
 
 import { useTeleportTypography } from '@origam/composables/Commons/teleport-typography.composable'
+import {
+    TELEPORT_TYPOGRAPHY_MEASURE_SELECTOR,
+    TELEPORT_TYPOGRAPHY_NEUTRAL_FONT_SIZE
+} from '@origam/consts'
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -267,5 +271,26 @@ describe('useTeleportTypography — defensive branches', () => {
         await flush()
 
         expect(typographyStyles.value).toEqual({})
+    })
+})
+
+/*********************************************************
+ * Le contrat des deux consts extraites
+ *
+ * @description
+ * Repris du lot C8 lors de la resolution du conflit de merge : ces deux
+ * valeurs ne sont PAS des parametres libres. `.origam-field` est
+ * l element que rend `OrigamField`, et 16px est le `font-size` que son
+ * propre SCSS lui donne sans condition. Changer l une sans changer ce
+ * SCSS transforme silencieusement le pont en no-op, ou en surcharge
+ * permanente. Epinglees comme litteraux pour cette raison.
+ ********************************************************/
+describe('useTeleportTypography — le contrat des defauts extraits', () => {
+    it('mesure `.origam-field`', () => {
+        expect(TELEPORT_TYPOGRAPHY_MEASURE_SELECTOR).toBe('.origam-field')
+    })
+
+    it('traite 16px comme la ligne de base neutre', () => {
+        expect(TELEPORT_TYPOGRAPHY_NEUTRAL_FONT_SIZE).toBe('16px')
     })
 })

@@ -1,4 +1,50 @@
+import { PASSWORD_STRENGTH_LEVEL } from '../../enums/PasswordField/password-field.enum'
+
 import type { IPasswordRequirement } from '../../interfaces/PasswordField/password-requirement.interface'
+import type {
+    TPasswordStrengthLevel,
+    TPasswordStrengthScore
+} from '../../types/PasswordField/password-field.type'
+
+/**
+ * Length thresholds of the `computeStrength()` heuristic. `MIN` is also
+ * the length the default `min-length` requirement below checks, so the
+ * checklist and the strength bar can never drift apart.
+ */
+export const PASSWORD_MIN_LENGTH = 8
+export const PASSWORD_STRONG_LENGTH = 12
+
+/**
+ * Character-class probes shared by `computeStrength()` and the default
+ * requirement checklist. None carries the `g` flag, so the same object
+ * is safe to `.test()` repeatedly (a sticky/global regex would carry
+ * `lastIndex` between calls).
+ */
+export const PASSWORD_PATTERN_DIGIT = /\d/
+export const PASSWORD_PATTERN_LOWERCASE = /[a-z]/
+export const PASSWORD_PATTERN_UPPERCASE = /[A-Z]/
+export const PASSWORD_PATTERN_SPECIAL = /[^A-Za-z0-9]/
+
+/**
+ * Highest score `computeStrength()` can return — also the number of
+ * segments the strength bar paints, so the two are the same number by
+ * construction rather than by coincidence.
+ */
+export const PASSWORD_STRENGTH_MAX_SCORE = 4
+
+/**
+ * Score → colour-tier mapping. Replaces the chain of bare numeric
+ * comparisons the heuristic used to carry: the whole 0..4 domain is
+ * enumerated here, so an added score rung cannot silently fall through
+ * to the wrong tier.
+ */
+export const PASSWORD_STRENGTH_LEVEL_BY_SCORE: Record<TPasswordStrengthScore, TPasswordStrengthLevel> = {
+    0: PASSWORD_STRENGTH_LEVEL.WEAK,
+    1: PASSWORD_STRENGTH_LEVEL.WEAK,
+    2: PASSWORD_STRENGTH_LEVEL.FAIR,
+    3: PASSWORD_STRENGTH_LEVEL.GOOD,
+    4: PASSWORD_STRENGTH_LEVEL.STRONG
+}
 
 /**
  * `DEFAULT_PASSWORD_REQUIREMENTS` — used when the consumer passes
@@ -19,23 +65,23 @@ import type { IPasswordRequirement } from '../../interfaces/PasswordField/passwo
 export const DEFAULT_PASSWORD_REQUIREMENTS: IPasswordRequirement[] = [
     {
         id: 'min-length',
-        label: 'At least 8 characters',
-        test: (v: string) => (v ?? '').length >= 8
+        label: `At least ${PASSWORD_MIN_LENGTH} characters`,
+        test: (v: string) => (v ?? '').length >= PASSWORD_MIN_LENGTH
     },
     {
         id: 'uppercase',
         label: 'At least 1 uppercase letter',
-        test: (v: string) => /[A-Z]/.test(v ?? '')
+        test: (v: string) => PASSWORD_PATTERN_UPPERCASE.test(v ?? '')
     },
     {
         id: 'number',
         label: 'At least 1 number',
-        test: (v: string) => /\d/.test(v ?? '')
+        test: (v: string) => PASSWORD_PATTERN_DIGIT.test(v ?? '')
     },
     {
         id: 'special',
         label: 'At least 1 special character',
-        test: (v: string) => /[^A-Za-z0-9]/.test(v ?? '')
+        test: (v: string) => PASSWORD_PATTERN_SPECIAL.test(v ?? '')
     }
 ]
 

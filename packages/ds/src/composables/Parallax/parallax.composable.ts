@@ -2,6 +2,17 @@ import { computed, onBeforeUnmount, onMounted, ref, watch, type Ref } from 'vue'
 
 import { useCssSupport } from '../Commons/cssSupport.composable'
 
+import {
+    PARALLAX_MOUSE_AMPLITUDE_FACTOR,
+    PARALLAX_SPRING_DAMPING,
+    PARALLAX_TRANSFORM_PRECISION
+} from '../../consts/Parallax/parallax.const'
+import {
+    PARALLAX_LAYER_VAR_OFFSET_X,
+    PARALLAX_LAYER_VAR_OFFSET_Y,
+    PARALLAX_LAYER_VAR_SPEED
+} from '../../consts/Parallax/parallax-layer.const'
+
 import { PARALLAX_DIRECTION, PARALLAX_EASING } from '../../enums'
 
 import type { IParallaxLayerRegistry } from '../../interfaces/Parallax/parallax-layer.interface'
@@ -76,7 +87,7 @@ function composeLayerTransform (
         case PARALLAX_DIRECTION.BOTH:
             // For "both" we mix scroll-progress on Y and mouse-ratio on X
             // when available. mouseRatio.x defaults to 0 (no mouse data).
-            tx += mouseRatio.x * hostWidth * 0.5 * layer.speed
+            tx += mouseRatio.x * hostWidth * PARALLAX_MOUSE_AMPLITUDE_FACTOR * layer.speed
             ty += centred * hostHeight * layer.speed
             break
         case PARALLAX_DIRECTION.VERTICAL:
@@ -85,7 +96,7 @@ function composeLayerTransform (
             break
     }
 
-    return `translate3d(${tx.toFixed(2)}px, ${ty.toFixed(2)}px, 0)`
+    return `translate3d(${tx.toFixed(PARALLAX_TRANSFORM_PRECISION)}px, ${ty.toFixed(PARALLAX_TRANSFORM_PRECISION)}px, 0)`
 }
 
 /*********************************************************
@@ -119,6 +130,17 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
     let observer: IntersectionObserver | null = null
     // Per-layer current (smoothed) position for the spring easing.
     const layerLerp = new WeakMap<HTMLElement, { tx: number, ty: number }>()
+
+    /**
+     * Publish the three per-layer custom properties the CSS scroll-driven
+     * path animates against. Shared by `startCss` (viewport-enter) and
+     * `update` (live prop change while that path is already running).
+     */
+    const publishLayerVars = (layer: IParallaxLayerRegistry) => {
+        layer.target.style.setProperty(PARALLAX_LAYER_VAR_SPEED, String(layer.speed))
+        layer.target.style.setProperty(PARALLAX_LAYER_VAR_OFFSET_X, `${layer.offsetX}px`)
+        layer.target.style.setProperty(PARALLAX_LAYER_VAR_OFFSET_Y, `${layer.offsetY}px`)
+    }
 
     const register = (layer: IParallaxLayerRegistry) => {
         layers.value.push(layer)
@@ -164,9 +186,7 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
         layer.offsetY = patch.offsetY
 
         if (cssScrollDriven.value) {
-            layer.target.style.setProperty('--origam-parallax__layer---speed', String(layer.speed))
-            layer.target.style.setProperty('--origam-parallax__layer---offset-x', `${layer.offsetX}px`)
-            layer.target.style.setProperty('--origam-parallax__layer---offset-y', `${layer.offsetY}px`)
+            publishLayerVars(layer)
         }
     }
 
@@ -240,12 +260,11 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
             const targetTy = parseFloat(match[2])
 
             const current = layerLerp.get(layer.target) ?? { tx: targetTx, ty: targetTy }
-            const damping = 0.12  // tighter = faster spring; 0.08-0.15 feels natural
-            current.tx += (targetTx - current.tx) * damping
-            current.ty += (targetTy - current.ty) * damping
+            current.tx += (targetTx - current.tx) * PARALLAX_SPRING_DAMPING
+            current.ty += (targetTy - current.ty) * PARALLAX_SPRING_DAMPING
             layerLerp.set(layer.target, current)
 
-            layer.target.style.transform = `translate3d(${current.tx.toFixed(2)}px, ${current.ty.toFixed(2)}px, 0)`
+            layer.target.style.transform = `translate3d(${current.tx.toFixed(PARALLAX_TRANSFORM_PRECISION)}px, ${current.ty.toFixed(PARALLAX_TRANSFORM_PRECISION)}px, 0)`
         }
     }
 
@@ -287,9 +306,7 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
         const host = options.target.value
         if (!host) return
         for (const layer of layers.value) {
-            layer.target.style.setProperty('--origam-parallax__layer---speed', String(layer.speed))
-            layer.target.style.setProperty('--origam-parallax__layer---offset-x', `${layer.offsetX}px`)
-            layer.target.style.setProperty('--origam-parallax__layer---offset-y', `${layer.offsetY}px`)
+            publishLayerVars(layer)
         }
     }
 

@@ -20,6 +20,21 @@ export const WATERMARK_DEFAULT_Z_INDEX = 1
 export const WATERMARK_DEFAULT_POINTER_EVENTS: 'none' | 'auto' = 'none'
 
 /**
+ * Floors applied when building the repeating pattern tile.
+ *
+ * `MIN_FONT_SIZE_PX` guards the tile geometry: `gap + fontSize` must
+ * stay strictly positive, otherwise a `fontSize: 0` collapses the tile
+ * to `gap × gap` and, with `gap: 0` too, to a zero-sized SVG the
+ * browser refuses to paint.
+ *
+ * `MIN_IMAGE_SIZE_PX` is the smallest an image glyph is drawn at — a
+ * logo scaled down to a text-sized box is unreadable, so an image
+ * watermark never renders below this even when `fontSize` is lower.
+ */
+export const WATERMARK_MIN_FONT_SIZE_PX = 1
+export const WATERMARK_MIN_IMAGE_SIZE_PX = 16
+
+/**
  * Marker attribute applied to every layer created via
  * `install()` / `<OrigamWatermark>`. Used by the anti-tamper
  * MutationObserver to detect "is this MY layer that just got removed?"
