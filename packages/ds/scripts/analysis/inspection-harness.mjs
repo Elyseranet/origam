@@ -23,7 +23,7 @@
  * PAS un garde. Il ne fait JAMAIS `process.exit(1)`, n'a PAS de baseline,
  * et ne bloque aucun push. Il MESURE et rapporte — le tri entre "défaut
  * réel" et "faux positif à born" reste un jugement HUMAIN, particulièrement
- * pour C5 (voir les limites documentées dans `lib/dead-emits.mjs`) et C8
+ * pour C5 (voir les limites documentées dans `../guards/lib/dead-emits.mjs`) et C8
  * (voir `lib/hardcoded-strings.mjs`). Il ne modifie AUCUN composant.
  *
  * RÉUTILISATION — rien n'est réécrit ici
@@ -34,10 +34,13 @@
  *     logique de détection, seulement le VERDICT (violation ⟺ des lectures
  *     eager existent ET `useDefaults()` n'est pas appelé — le seul
  *     correctif connu, cf. le header de `setup-reads.mjs`).
- *   - C5 délègue à `analysis/lib/dead-emits.mjs`, qui réutilise à son tour
+ *   - C5 délègue à `guards/lib/dead-emits.mjs`, qui réutilise à son tour
  *     `guards/lib/emits.mjs` (partagé avec le garde CI
  *     `emits-completeness.mjs` — même index d'interfaces, même mécanique
- *     de relais `update:*`).
+ *     de relais `update:*`). Ce même `dead-emits.mjs` alimente aussi le
+ *     garde CI `guards/unemitted-declarations.mjs` — la version BLOQUANTE
+ *     de ce critère C5, avec sa propre baseline (voir son header pour la
+ *     distinction mesure/garde).
  *   - C8 est un détecteur neuf, `analysis/lib/hardcoded-strings.mjs`,
  *     appuyé sur le vrai parseur `vue/compiler-sfc` (pas une regex sur du
  *     HTML) et sur le compilateur TypeScript pour `withDefaults`.
@@ -54,7 +57,7 @@ import { fileURLToPath } from 'node:url'
 import { getRealComponents, DS_ROOT } from '../guards/lib/components.mjs'
 import { analyseSource as analyseSetupReads } from '../guards/lib/setup-reads.mjs'
 import { buildInterfaceIndex } from '../guards/lib/emits.mjs'
-import { analyseDeadEmits } from './lib/dead-emits.mjs'
+import { analyseDeadEmits } from '../guards/lib/dead-emits.mjs'
 import { analyseHardcodedStrings } from './lib/hardcoded-strings.mjs'
 
 /*********************************************************

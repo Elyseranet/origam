@@ -25,6 +25,7 @@ pnpm -F origam guards:no-usedefaults       # guard 8 only
 pnpm -F origam guards:token-var-channels   # guard 13 only
 pnpm -F origam guards:dead-handlers        # guard 14 only
 pnpm -F origam guards:id-forwarding        # guard 15 only
+pnpm -F origam guards:unemitted-declarations  # guard 18 only
 ```
 
 No build step required — every guard parses `.vue`/`.ts`/`.scss` source
@@ -49,6 +50,9 @@ text directly. The full suite runs in under two seconds.
 | 13 | `token-var-channels.mjs` | Every `var(--origam-…)` a component reads is emitted by the token pipeline, or synthesised locally — and (secondary, non-fatal-by-default in spirit but still baselined) every emitted var is read by at least one component | 1275 dead / 1588 dormant |
 | 14 | `dead-handlers.mjs` | A `v-on` binding (`@click`, `@keydown`, …) must CALL the handler it names — not just reference it as an unused operand of `&&`/`||`/`?:`, or via a `withModifiers`/`withKeys` call whose return value is discarded | 6 |
 | 15 | `id-forwarding.mjs` | A bare `const {id, ...} = useStyle(xxxStyles)` (no `() => props.id` second argument) must not be the value an unshadowed `:id="id"` template binding resolves to — the generated stylesheet id silently wins over the consumer's prop | 0 |
+| 16 | `t-fallback.mjs` | (undocumented in this table — see the script header) | — |
+| 17 | `composable-setup-reads.mjs` | (undocumented in this table — see the script header) | — |
+| 18 | `unemitted-declarations.mjs` | Every emit DECLARED by `IXxxEmits` — its full `extends` chain resolved — must actually be EMITTED (literally, or by a known relay composable): the inverse of guard 7 | 29 |
 
 ### Guard 13 — the token pipeline can break silently, and nothing else watches for it
 
@@ -359,6 +363,62 @@ mis-classified as a local read. The correction is documented in the script
 header, together with why the original precision measurement failed to
 catch it (the forwarding-heavy components are overlays, which render
 nothing while closed and were therefore outside the measured population).
+
+### Guard 18 — a declared emit that is never fired is not a harmless leftover
+
+`emits-completeness.mjs` (guard 7) answers "is everything REACHABLE
+declared?". This guard answers the other direction: "is everything DECLARED
+actually EMITTED?". Both questions existed in this repo before this guard —
+only the first one blocked anything. The second was measured by
+`analysis/inspection-harness.mjs` (criterion C5), a harness that explicitly
+never exits non-zero and carries no baseline. This guard is the blocking
+version of that same criterion; it does not reimplement any detection logic,
+it wraps `guards/lib/dead-emits.mjs` (shared with the measurement harness)
+in the same `report()`/`writeBaseline()` mechanic every other guard uses.
+
+**Why this is not cosmetic.** Vue unconditionally strips from `$attrs` any
+listener matching a declared emit, as soon as the component has an `emits`
+option at all. Declaring an emit the component never fires breaks a
+fallthrough path that used to work: a consumer's `@update:active` is
+stripped from attrs, never re-emitted, and never fires — no error, no
+warning, ever.
+
+**Six tickets closed for exactly this defect, on six different components**,
+before this guard existed to catch a seventh: #373/#430 (`OrigamMenu`'s
+`contextmenu`), #376 (`update:hover` on four components), #416 (the ticket
+that established the rule, `click:outside`), #446 (`OrigamOverlay`'s
+`afterEnter`/`keydown`), and `OrigamCheckboxBtn`'s `update:focused`. Six
+closures for one recurring shape is a systemic defect, not six unrelated
+bugs — and it kept recurring precisely because nothing blocked on it.
+
+**The actual difficulty is the `extends` chain, not the emit call.** A
+scanner that only reads the interface NAMED in `defineEmits<…>()` misses
+almost every real case — `IBottomNavEmits extends ICommonsComponentEmits,
+IActiveEmits, IHoverEmits` declares `update:hover` and `update:active` two
+levels up from the name in the `defineEmits<>()` call. `dead-emits.mjs`
+resolves the full chain via `buildInterfaceIndex`/`resolveDeclared`, shared
+with guard 7 rather than reimplemented (see `guards/lib/dead-emits.selftest.mjs`
+for a fixture pinning exactly this two-level cascade, both flagged and
+covered).
+
+**Measured baseline: 29 components.** Every one carries at least one
+declared-but-dead emit; the full list and events are in
+`baseline/unemitted-declarations.json`. A separate, small set of components
+(`OrigamPagination` at the time of writing) call a relay
+(`useNested`/`useOptions`/`usePaginatedItems`) whose reachability crosses a
+file boundary the detector cannot follow — these are reported as
+`indeterminate` by `dead-emits.mjs` and deliberately excluded from this
+guard's violation set: an unproven case is not the same as a proven one, and
+this guard signals ONLY what it can prove dead (`neverEmitted`), never a
+guess.
+
+**Do not "emit at random" to silence this guard.** A dead-code
+`emit('foo')` that fires unconditionally, wired to nothing real, makes the
+line disappear without fixing the underlying gap — usually the actual
+absence of the feature the emit was meant to carry (`OrigamMenu` genuinely
+had no context-menu behavior before #373). The correct fix is case by case:
+implement the missing behavior, or remove the event from the interface if
+the component will never carry it.
 
 ### Guard 7 — precision, and why the reachability filter is the whole point
 
