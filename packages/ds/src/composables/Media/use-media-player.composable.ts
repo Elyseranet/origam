@@ -5,7 +5,6 @@ import {
     type Ref
 } from 'vue'
 
-import { REDUCED_MOTION_QUERY } from '../../consts/Commons/commons.const'
 import {
     MEDIA_AUTOPLAY_SUPPRESSED_WARNING,
     MEDIA_DEFAULT_PLAYBACK_RATE,
@@ -19,23 +18,19 @@ import {
 
 import type { IMediaPlayerMethods, IMediaPlayerState, IUseMediaPlayerOptions } from '../../interfaces/Media/media-player.interface'
 
+/*********************************************************
+ * prefersReducedMotion (import)
+ *
+ * @description
+ * Shared with `animate()` — see `utils/Commons/animation.util.ts` for the
+ * doc; kept as a single implementation rather than duplicated per
+ * consumer (cf. CLAUDE.md "reuse before writing" rule).
+ ********************************************************/
+import { prefersReducedMotion } from '../../utils/Commons/animation.util'
+
 // `MEDIA_DEFAULT_VOLUME` lives in `src/consts/Media/media.const.ts`.
 // SFC `withDefaults(...)` blocks in `<OrigamVideo>` / `<OrigamAudio>`
 // keep the literal inline (cf. CLAUDE.md "inline literals only" rule).
-
-/**
- * Predicate that returns true when the user has explicitly requested
- * reduced motion through the OS-level accessibility setting. Used to
- * suppress autoplay — chasing motion is a top complaint from users
- * with vestibular sensitivity, and autoplay is the worst offender in
- * any media player.
- */
-function prefersReducedMotion (): boolean {
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
-        return false
-    }
-    return window.matchMedia(REDUCED_MOTION_QUERY).matches
-}
 
 /**
  * Resolve the end of the buffered range to a single number. The native

@@ -1,7 +1,7 @@
 <template>
 	<transition
 			:name="name"
-			v-bind="{...events, css: !hasTarget}"
+			v-bind="{...events, css: !hasTarget && !disabled}"
 	>
 		<slot name="default"/>
 	</transition>
@@ -119,8 +119,18 @@
 		(el as HTMLElement).style.removeProperty('pointer-events')
 	}
 
+	/*********************************************************
+	 * events
+	 *
+	 * @description
+	 * `disabled` (from `ITransitionProps`) short-circuits both paths: no
+	 * WAAPI hooks bound (this computed returns `{}`) AND `css` is forced
+	 * `false` in the template — same combination Vue's `<transition>`
+	 * uses to skip the transition outright and settle instantly, mirroring
+	 * `<OrigamExpandX>`'s `:css="!disabled"`.
+	 ********************************************************/
 	const events = computed(() => {
-		if (hasTarget.value) {
+		if (hasTarget.value && !props.disabled) {
 			return {
 				onBeforeEnter: handleBeforeEnter,
 				onEnter: handleEnter,

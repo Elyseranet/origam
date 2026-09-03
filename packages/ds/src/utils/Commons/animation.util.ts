@@ -1,5 +1,26 @@
 import type { IBox } from '../../interfaces/Commons/box.interface'
 import { Box } from '../../classes/Commons/box.class'
+import { REDUCED_MOTION_ANIMATION_DURATION, REDUCED_MOTION_QUERY } from '../../consts/Commons/commons.const'
+
+/*********************************************************
+ * prefersReducedMotion
+ *
+ * @description
+ * Predicate that returns true when the user has explicitly requested
+ * reduced motion through the OS-level accessibility setting.
+ * @description
+ * Shared primitive — reused by `animate()` below AND by
+ * `useMediaPlayer`'s `shouldSuppressAutoplay()`
+ * (`composables/Media/use-media-player.composable.ts`), which imports
+ * this instead of keeping its own copy (cf. CLAUDE.md "reuse before
+ * writing" rule). SSR / no-`matchMedia` environments resolve to `false`.
+ ********************************************************/
+export function prefersReducedMotion (): boolean {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+        return false
+    }
+    return window.matchMedia(REDUCED_MOTION_QUERY).matches
+}
 
 /**
  * Nullify transforms.
@@ -56,9 +77,28 @@ export function animate (
 ) {
     if (typeof el.animate === 'undefined') return {finished: Promise.resolve()}
 
+    /*********************************************************
+     * resolvedOptions
+     *
+     * @description
+     * WCAG 2.3.3 (Animation from Interactions) — the CSS transition path
+     * is covered by the `ds.ds-reduced-motion` SCSS mixin, but this WAAPI
+     * path bypasses CSS entirely (`el.animate()`), so it must honour the
+     * OS-level setting itself. Duration is shrunk to near-zero rather
+     * than the call being skipped: `animation.finished` must still
+     * resolve, otherwise any `done()` awaiting it never fires and the
+     * transitioning element stays stuck (pointer-events/visibility left
+     * mid-toggle).
+     ********************************************************/
+    const resolvedOptions = prefersReducedMotion()
+        ? (options == null || typeof options === 'number'
+            ? REDUCED_MOTION_ANIMATION_DURATION
+            : {...options, duration: REDUCED_MOTION_ANIMATION_DURATION})
+        : options
+
     let animation: Animation
     try {
-        animation = el.animate(keyframes, options)
+        animation = el.animate(keyframes, resolvedOptions)
     } catch {
         return {finished: Promise.resolve()}
     }
