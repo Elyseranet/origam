@@ -374,7 +374,9 @@ git stash branch recover/<topic> stash@{N}
   "Design tokens" below.
 - **pnpm workspaces** — monorepo, 5 packages under `packages/`.
 
-The project requires **Node >= 22** (see `.nvmrc`). The unit tests do not
+The published package declares `engines.node >= 22` — that is the
+CONSUMER contract and it has not moved. Development and CI run on the
+version `.nvmrc` pins, **Node 24** since 2026-09-03. The unit tests do not
 run on Node 18 because `@vitejs/plugin-vue` calls `crypto.hash()` (Node 21+).
 
 ---
@@ -923,7 +925,7 @@ touches — a test-runner major is a *medium feature*, not a patch.
 
 The global pre-delivery policy (TU + e2e + security) applies. Specific to
 origam:
-- Run tests on **Node 22** (`.nvmrc`); Node 18 produces unrelated
+- Run tests on **Node 24** (`.nvmrc`); Node 18 produces unrelated
   `crypto.hash` failures.
 - `pnpm -F origam guards` must stay at 17/17. If a change touches the token
   stylesheets, `token-var-channels` is the guard that will catch a variable
