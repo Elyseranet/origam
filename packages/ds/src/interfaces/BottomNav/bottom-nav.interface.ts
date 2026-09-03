@@ -1,7 +1,4 @@
-import type {
-    IActiveEmits,
-    IActiveProps
-} from '../Commons/active.interface'
+import type { IActiveProps } from '../Commons/active.interface'
 import type { IBorderProps } from '../Commons/border.interface'
 import type { IBtnProps } from '../Btn/btn.interface'
 import type {
@@ -44,9 +41,22 @@ export interface IBottomNavProps extends ITagProps, ICommonsComponentProps, ICol
     position?: TBottomNavPosition
 }
 
-/** Emits fired by `<OrigamBottomNav>` — active item v-model + hover/active
- *  propagation. */
-export interface IBottomNavEmits extends ICommonsComponentEmits, IActiveEmits, IHoverEmits {}
+/** Emits fired by `<OrigamBottomNav>` — visibility v-model (`modelValue`) +
+ *  hover propagation.
+ *
+ *  ⛔ Does NOT extend `IActiveEmits` (#unemitted-declarations lot 2/4).
+ *  `active` state is sourced from `modelValue`
+ *  (`useStateFlag(props, {state: 'active', source: 'modelValue'})` in
+ *  `OrigamBottomNav.vue`), not from the `active` prop — the `active` /
+ *  `activeClass` props (via `IActiveProps`, still extended by
+ *  `IBottomNavProps`) are a PASS-THROUGH default forwarded to child
+ *  `<origam-btn>` items, never a v-model the nav itself writes back to. A
+ *  `update:active` emit therefore had no real writer: verified by mutation
+ *  (`packages/tests/TU/origam/bottom-nav-active-dead.spec.ts`) that no
+ *  interaction ever fires it, while `update:hover` (kept) genuinely does via
+ *  the `useStateFlag`/`useVModel` relay — see
+ *  `guards/lib/dead-emits.mjs`'s `computeStateFlagEmitted()`. */
+export interface IBottomNavEmits extends ICommonsComponentEmits, IHoverEmits {}
 
 /** Slot signatures for `<OrigamBottomNav>`. `item.{index}` (e.g.
  *  `item.0`) overrides a single button by position; `item` is the
