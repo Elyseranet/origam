@@ -52,7 +52,7 @@ text directly. The full suite runs in under two seconds.
 | 15 | `id-forwarding.mjs` | A bare `const {id, ...} = useStyle(xxxStyles)` (no `() => props.id` second argument) must not be the value an unshadowed `:id="id"` template binding resolves to — the generated stylesheet id silently wins over the consumer's prop | 0 |
 | 16 | `t-fallback.mjs` | (undocumented in this table — see the script header) | — |
 | 17 | `composable-setup-reads.mjs` | (undocumented in this table — see the script header) | — |
-| 18 | `unemitted-declarations.mjs` | Every emit DECLARED by `IXxxEmits` — its full `extends` chain resolved — must actually be EMITTED (literally, or by a known relay composable): the inverse of guard 7 | 29 |
+| 18 | `unemitted-declarations.mjs` | Every emit DECLARED by `IXxxEmits` — its full `extends` chain resolved — must actually be EMITTED (literally, or by a known relay composable): the inverse of guard 7 | 35 (21 components) |
 
 ### Guard 13 — the token pipeline can break silently, and nothing else watches for it
 
@@ -417,8 +417,43 @@ baseline — see `guards/lib/emits.selftest.mjs` for the fixtures (both forms,
 root position and inherited position, recall and precision) and
 `extractEmitNames()`'s header in `guards/lib/emits.mjs` for the mechanism.
 
-**Measured baseline: 29 components.** Every one carries at least one
-declared-but-dead emit; the full list and events are in
+**Fixed by report, 2026-09-03 — `useActive`/`useHover` don't exist any
+more.** An agent working a parallel batch of these violations (Alert,
+Avatar, AvatarGroup, BottomNav, Card, Sheet, BracketCompetitor,
+BracketMatch) found that both composables were merged into
+`useStateFlag(props, { state, source = state })` — verified by grep before
+any fix: `useActive(`/`useHover(` — 0 call sites left in
+`src/components/`; `useStateFlag(` — 24. `useStateFlag` calls
+`useVModel(props, source)` internally (a relay-of-a-relay, the same shape
+already documented for `useGroup`) and its returned `set()`/`unset()`/
+`toggle()` are the only paths that actually write the v-model — none of
+that was recognized by anything in `dead-emits.mjs`, so every migrated
+component's `update:active`/`update:hover` (or whatever `source` renames
+the channel to — `OrigamAlert`/`OrigamBottomNav`/`OrigamBadge`/`OrigamChip`
+pass an explicit `source: 'modelValue'`) looked dead even when a click or a
+hover genuinely fired it. `computeStateFlagEmitted()` now resolves each
+`useStateFlag` call as its OWN unit — the `(state, source)` pair fixes
+which channel is concerned, and the paired destructuring block (captured in
+the same regex match, never re-searched globally) says whether `set`/
+`unset`/`toggle` are exposed AND wired. The real, still-genuine dead case
+this closes right up against: `OrigamBottomNav` calls `useStateFlag(props,
+{state: 'active', source: 'modelValue'})` without destructuring `set`,
+`unset`, or `toggle` at all for that instance — nothing can ever write that
+channel, so it correctly stays flagged.
+
+**Baseline entries are now one per (component, event), not one per
+component.** The original `${pascalName}:${neverEmitted.join(',')}` id
+churned on a PARTIAL fix — `OrigamBottomNav` losing only its `hover` half
+made the whole joined id go stale AND a new one appear for what still
+resolves to `active`, even though nothing about `active` changed. Each
+event now gets its own id, matching the granularity `dead-handlers.mjs`
+already uses for its own findings.
+
+**Measured baseline: 35 events across 21 components** (was 29
+components/49 events before the `useStateFlag` relay — 8 components
+dropped out entirely: Alert, Avatar, AvatarGroup, BracketCompetitor,
+BracketMatch, Card, Chip, Sheet; `OrigamBottomNav` and `OrigamField` each
+kept one real dead event out of two). The full list is in
 `baseline/unemitted-declarations.json`. A separate, small set of components
 (`OrigamPagination` at the time of writing) call a relay
 (`useNested`/`useOptions`/`usePaginatedItems`) whose reachability crosses a
