@@ -5,7 +5,7 @@ import {
     type Ref
 } from 'vue'
 
-import { shouldSuppressAutoplay as shouldSuppressAutoplayBase, useMediaPlayer } from '../Media/use-media-player.composable'
+import { useMediaPlayer } from '../Media/use-media-player.composable'
 
 import type { IUseVideoPlayerOptions, IVideoPlayerMethods, IVideoPlayerState } from '../../interfaces/Video/video.interface'
 
@@ -191,14 +191,4 @@ export function useVideoPlayer (options: IUseVideoPlayerOptions = {}): {
     }
 }
 
-/**
- * Reduced-motion check exported for the host component — kept here
- * so the single source of truth for "should autoplay run?" stays in
- * the composable, even when the decision is made by the SFC at
- * attribute resolution time (i.e. before the composable's onMounted
- * has fired). Re-exported from the media-shared base.
- */
-export function shouldSuppressAutoplay (): boolean {
-    return shouldSuppressAutoplayBase()
-}
 

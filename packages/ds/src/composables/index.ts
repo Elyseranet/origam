@@ -133,11 +133,13 @@ export * from './QrCode/qr-code.composable'
 export * from './Watermark/watermark.composable'
 
 export * from './Media/use-media-player.composable'
-// `video-player.composable` exposes `shouldSuppressAutoplay` as a thin
-// pass-through to the Media base — exporting it again from the barrel
-// triggers `conflicting star exports` at module-link time. Re-export
-// only the Video-specific surface (`VIDEO_DEFAULT_PRELOAD` now lives in
-// `src/consts/Video/video.const.ts` — composables don't host consts).
+// `video-player.composable` n'expose plus que `useVideoPlayer`. Son
+// `shouldSuppressAutoplay` etait un pass-through d'une ligne vers la base
+// Media, exclu de ce barrel pour eviter un `conflicting star exports` —
+// donc joignable par personne, et les deux composants qui en ont besoin
+// (OrigamVideo, OrigamAudio) importaient deja la version Media. Supprime
+// le 2026-09-03, mesure C1/C2 du classeur. Le star-export reste evite :
+// `VIDEO_DEFAULT_PRELOAD` vit dans `src/consts/Video/video.const.ts`.
 export { useVideoPlayer } from './Video/video-player.composable'
 
 export * from './Audio/use-waveform.composable'

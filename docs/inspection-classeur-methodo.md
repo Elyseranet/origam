@@ -197,3 +197,62 @@ Ou en est l inspection : a faire / inspecte / sans objet (le symbole n appelle
 pas d inspection : outillage de test, ou re-export d une const declaree dans
 src/consts/). Ecrit plutot que laisse vide : une cellule vide ne dit pas si le
 travail reste a faire.
+
+---
+
+## Décalage de la colonne C2 (onglet `Composables`) — corrigé le 2026-09-03
+
+La passe de mesure du critère **C2 « Doublon »** avait été écrite avec un
+**décalage de +2 lignes à partir de la ligne 23**. Les 20 premières
+justifications (L3–L22) étaient correctement placées ; les **29 suivantes
+étaient attribuées au mauvais composable**.
+
+Exemples relevés avant correction :
+
+| Ligne | Symbole | Justification qu'elle portait | Appartenait à |
+|---|---|---|---|
+| L23 | `useColorEffect` | « sibling de useCssSupportClient » | `useCssSupport` (L25) |
+| L33 | `useDisplay` | « résolution box-shadow/elevation » | `useElevation` (L35) |
+| L36 | `useEventListener` | « axe d'état focus » | `useFocus` (L38) |
+| L43 | `useHover` | « registre des thèmes de marque installés » | `useInstalledThemes` (L45) |
+| L51 | `useLink` | « indépendant de useRtl » | `useLocale` (L53) |
+
+Le décalage est **constant à +2** de L23 à L51, ce qui a permis de le
+redresser mécaniquement. Vérification après correction : chaque justification
+décrit désormais le symbole de sa propre ligne — `useCssSupport` ← « sibling
+de useCssSupportClient », `useDragResizer` ← « drag/touch de
+redimensionnement », `useHydration` ← « flag SSR-hydration ». Les 29
+correspondances sont sémantiquement exactes, ce qui confirme l'amplitude.
+
+**Le verdict n'a pas bougé.** Les 49 justifications commençaient toutes par
+« Non — », donc « pas de doublon », donc `conforme`. Seule l'**attribution**
+était fausse : un lecteur cherchant pourquoi `useDisplay` est conforme
+tombait sur un raisonnement portant sur `useElevation`.
+
+Deux lignes perdent leur justification (`useColorEffect`, `useCreateLayout` :
+elles n'en avaient jamais, le décalage leur en prêtait une) et deux la
+gagnent (`useLoader`, `useLocale`).
+
+## Deux lignes fantômes (onglet `Composables`) — corrigées le 2026-09-03
+
+Le classeur comptait 174 lignes pour **177 symboles réellement exportés** par
+un `*.composable.ts`. Deux lignes pointaient un **fichier qui n'existe pas** :
+
+| Ligne | Symbole listé | Fichier listé | État réel |
+|---|---|---|---|
+| L14 | `useActive` | `composables/Commons/active.composable.ts` | supprimé |
+| L43 | `useHover` | `composables/Commons/hover.composable.ts` | supprimé |
+
+Les deux ont été fusionnés en **`useStateFlag`**
+(`composables/Commons/stateFlag.composable.ts`), ce que
+`packages/docs/guide/composables.md:13` documente explicitement : *«
+useStateFlag — Gère un état active ou hover (fusion de useActive et useHover)
+»*. Le guide était donc juste ; c'est le classeur qui était périmé.
+
+Leurs verdicts D–L portaient sur des symboles inexistants : effacés plutôt
+que recyclés.
+
+Cinq symboles exportés n'étaient listés nulle part : `useStateFlag`,
+`useGroupSiblingLink`, `useChartAnimationStyle`, `useChartUnsupportedProp`,
+`useIconAccessibility`. Les deux premiers reprennent les lignes fantômes ; les
+trois autres sont à ajouter.
