@@ -1,6 +1,8 @@
 // Tests for the DataTable pagination composable.
 //
 // Covers:
+//   - createPagination: v-model seed from page/itemsPerPage props (C5 audit,
+//     #classeur composables — flagged `defaut`, zero coverage until now)
 //   - providePagination: startIndex, stopIndex, pageCount computeds
 //   - nextPage / prevPage / setPage boundary clamping
 //   - setItemsPerPage resets page to 1
@@ -13,7 +15,7 @@ import { defineComponent, h, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 
-import { providePagination } from '@origam/composables/DataTable/pagination.composable'
+import { createPagination, providePagination } from '@origam/composables/DataTable/pagination.composable'
 import { usePaginatedItems } from '@origam/composables/DataTable/paginatedItems.composable'
 
 // ---------------------------------------------------------------------------
@@ -42,6 +44,68 @@ function mountPagination (opts: {
     mount(Host)
     return { page, itemsPerPage, itemsLength, api: () => api }
 }
+
+// ---------------------------------------------------------------------------
+// createPagination — v-model seed
+// ---------------------------------------------------------------------------
+
+function mountCreatePagination (props: { page?: number | string; itemsPerPage?: number | string }) {
+    let api!: ReturnType<typeof createPagination>
+
+    const Host = defineComponent({
+        name: 'CreatePaginationHost',
+        props: {
+            page: { type: [Number, String], default: undefined },
+            itemsPerPage: { type: [Number, String], default: undefined }
+        },
+        emits: ['update:page', 'update:itemsPerPage'],
+        setup (hostProps) {
+            api = createPagination(hostProps as never)
+            return () => h('div')
+        }
+    })
+
+    mount(Host, { props })
+    return () => api
+}
+
+describe('createPagination', () => {
+    it('defaults page to 1 when the prop is unset', () => {
+        const api = mountCreatePagination({})
+        expect(api().page.value).toBe(1)
+    })
+
+    it('defaults itemsPerPage to 10 when the prop is unset', () => {
+        const api = mountCreatePagination({})
+        expect(api().itemsPerPage.value).toBe(10)
+    })
+
+    it('seeds page from a numeric prop', () => {
+        const api = mountCreatePagination({ page: 3 })
+        expect(api().page.value).toBe(3)
+    })
+
+    it('coerces a STRING page prop to a number (+value transform)', () => {
+        const api = mountCreatePagination({ page: '5' })
+        expect(api().page.value).toBe(5)
+        expect(typeof api().page.value).toBe('number')
+    })
+
+    it('coerces a STRING itemsPerPage prop to a number', () => {
+        const api = mountCreatePagination({ itemsPerPage: '25' })
+        expect(api().itemsPerPage.value).toBe(25)
+        expect(typeof api().itemsPerPage.value).toBe('number')
+    })
+
+    it('the returned page/itemsPerPage refs are writable and independent', async () => {
+        const api = mountCreatePagination({ page: 1, itemsPerPage: 10 })
+        api().page.value = 7
+        api().itemsPerPage.value = 50
+        await nextTick()
+        expect(api().page.value).toBe(7)
+        expect(api().itemsPerPage.value).toBe(50)
+    })
+})
 
 // ---------------------------------------------------------------------------
 // providePagination — computed indices

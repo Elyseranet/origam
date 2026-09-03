@@ -1,6 +1,9 @@
 // Tests for the DataTable sort composable.
 //
 // Covers:
+//   - createSort: v-model seed from sortBy/mustSort/multiSort props (C5
+//     audit, #classeur composables — flagged `defaut`, zero coverage until
+//     now)
 //   - provideSort / useSort (provide + inject lifecycle)
 //   - toggleSort: ASC → DESC → remove (default), mustSort prevents removal,
 //     multiSort accumulates entries, page reset on toggle
@@ -12,7 +15,7 @@ import { defineComponent, h, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 
-import { provideSort } from '@origam/composables/DataTable/sort.composable'
+import { createSort, provideSort } from '@origam/composables/DataTable/sort.composable'
 import { useSortedItems } from '@origam/composables/DataTable/sortedItems.composable'
 import { SORT_DIRECTION } from '@origam/enums'
 import type { IDataTableSortItem, IInternalDataTableHeader, IInternalItem } from '@origam/interfaces'
@@ -66,6 +69,70 @@ function mountSort (opts: {
     mount(Host)
     return { sortBy, api: () => api }
 }
+
+// ---------------------------------------------------------------------------
+// createSort — v-model seed
+// ---------------------------------------------------------------------------
+
+function mountCreateSort (props: { sortBy?: IDataTableSortItem[]; mustSort?: boolean; multiSort?: boolean }) {
+    let api!: ReturnType<typeof createSort>
+
+    const Host = defineComponent({
+        name: 'CreateSortHost',
+        props: {
+            sortBy: { type: Array, default: undefined },
+            mustSort: { type: Boolean, default: false },
+            multiSort: { type: Boolean, default: false }
+        },
+        emits: ['update:sortBy'],
+        setup (hostProps) {
+            api = createSort(hostProps as never)
+            return () => h('div')
+        }
+    })
+
+    mount(Host, { props })
+    return () => api
+}
+
+describe('createSort', () => {
+    it('defaults sortBy to an empty array when the prop is unset', () => {
+        const api = mountCreateSort({})
+        expect(api().sortBy.value).toEqual([])
+    })
+
+    it('seeds sortBy from the prop when provided', () => {
+        const api = mountCreateSort({ sortBy: [{ key: 'name', order: SORT_DIRECTION.ASC }] })
+        expect(api().sortBy.value).toEqual([{ key: 'name', order: SORT_DIRECTION.ASC }])
+    })
+
+    it('mustSort tracks the prop (defaults to false)', () => {
+        const api = mountCreateSort({})
+        expect(api().mustSort.value).toBe(false)
+    })
+
+    it('mustSort=true is reflected', () => {
+        const api = mountCreateSort({ mustSort: true })
+        expect(api().mustSort.value).toBe(true)
+    })
+
+    it('multiSort tracks the prop (defaults to false)', () => {
+        const api = mountCreateSort({})
+        expect(api().multiSort.value).toBe(false)
+    })
+
+    it('multiSort=true is reflected', () => {
+        const api = mountCreateSort({ multiSort: true })
+        expect(api().multiSort.value).toBe(true)
+    })
+
+    it('sortBy is a writable v-model ref', async () => {
+        const api = mountCreateSort({})
+        api().sortBy.value = [{ key: 'age', order: SORT_DIRECTION.DESC }]
+        await nextTick()
+        expect(api().sortBy.value).toEqual([{ key: 'age', order: SORT_DIRECTION.DESC }])
+    })
+})
 
 // ---------------------------------------------------------------------------
 // provideSort — toggleSort
