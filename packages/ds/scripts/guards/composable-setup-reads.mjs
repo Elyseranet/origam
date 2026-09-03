@@ -83,7 +83,7 @@ const BASELINE_PATH = path.join(__dirname, 'baseline/composable-setup-reads.json
  * seule une correction ulterieure est possible).
  *
  * @description
- * ⛔ #530 (lot B) A MESURE LE CAS LAISSE OUVERT ICI ET CORRIGE : sous un
+ * ⛔ AUDIT ADR-005 (lot B, sans numero de ticket confirme) A MESURE LE CAS LAISSE OUVERT ICI ET CORRIGE : sous un
  * theme configurant `opened` (jamais passe par le consommateur),
  * `root.opened` restait vide au montage — reproduit dans
  * `nested-opened-theme-race.spec.ts` AVANT correctif. Le correctif ajoute

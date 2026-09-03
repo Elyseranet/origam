@@ -1,5 +1,5 @@
 /*********************************************************
- * #530 (lot B) — useNested.opened : mesure du cas theme laisse ouvert par
+ * audit ADR-005 (lot B, sans numero de ticket confirme) — useNested.opened : mesure du cas theme laisse ouvert par
  * la baseline `composable-setup-reads.json`, puis correction.
  *
  * @description
@@ -43,7 +43,7 @@ import { useNested } from '@origam/composables/Commons/nested.composable'
 
 type NestedRoot = ReturnType<typeof useNested>
 
-describe('#530 — useNested.opened : un theme fournissant `opened` (jamais passe par le consommateur)', () => {
+describe('audit ADR-005 — useNested.opened : un theme fournissant `opened` (jamais passe par le consommateur)', () => {
     it('atteint `opened` apres le montage — corrige, verifie contre le vrai mecanisme', async () => {
         let root!: NestedRoot
 

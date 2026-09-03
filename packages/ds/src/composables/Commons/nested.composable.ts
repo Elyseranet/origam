@@ -49,7 +49,7 @@ export const useNested = (props: INestedProps) => {
     })
 
     /*********************************************************
-     * opened's FIRST seed is re-applied once mounted (ADR-005 / #530)
+     * opened's FIRST seed is re-applied once mounted (ADR-005)
      *
      * @description
      * `ref(new Set(props.opened))` above runs during the caller's
