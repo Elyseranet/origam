@@ -21,9 +21,15 @@ import { classicSelectStrategy, independentSelectStrategy, independentSingleSele
  ********************************************************/
 export const useNested = (props: INestedProps) => {
     let isUnmounted = false
-    /** Flips the moment `open()`/`openOnSelect()` writes `opened.value` for
+
+    /*********************************************************
+     * openedTouchedBeforeMount
+     *
+     * @description
+     * Flips the moment `open()`/`openOnSelect()` writes `opened.value` for
      * the first time — guards the `onMounted` reseed below from clobbering
-     * a legitimate pre-mount write (see the comment there). */
+     * a legitimate pre-mount write (see the comment there).
+     ********************************************************/
     let openedTouchedBeforeMount = false
     const children = ref(new Map<unknown, Array<unknown>>())
     const parents = ref(new Map<unknown, unknown>())
