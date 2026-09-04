@@ -144,9 +144,9 @@
 			</template>
 		</Variant>
 
-		<Variant title="Events - focus">
+		<Variant title="Native — focus / blur (DOM fallthrough)">
 			<origam-field
-					label="Focus & blur events"
+					label="Focus & blur — not component emits, relayed via $attrs fallthrough"
 					data-cy="field-emit-focus"
 					@focus="logEvent('focus', $event)"
 					@blur="logEvent('blur', $event)"

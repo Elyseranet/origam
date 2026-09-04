@@ -88,8 +88,18 @@ need the messages + validation chrome around a fully custom control.
 | `update:modelValue` | `any` | Value echo |
 | `click:prepend` | `MouseEvent` | Outer prepend clicked |
 | `click:append` | `MouseEvent` | Outer append clicked |
-| `focus` | `FocusEvent` | Focus propagated |
-| `blur` | `FocusEvent` | Blur propagated |
+
+`focus` and `blur` are not component emits — `IInputEmits` does not declare
+them. They reach the consumer as plain DOM events, relayed by Vue's
+attribute fallthrough: `@focus` / `@blur` bound on `<origam-input>` work
+the normal HTML way, they just aren't part of the typed `emits` contract.
+`<OrigamInput>` also does **not** emit `update:focused`: its `focused` prop
+is read-only input that only decides whether `hint` stays visible
+(`props.hint && (props.persistentHint || props.focused)`) — it is never
+written back by the component. Components that own real focus state
+(TextField, NumberField, PasswordField, TextareaField, FileField,
+OtpInputField, Select) call `useFocus` and declare `update:focused` at
+their own level.
 
 ## Typography props
 
