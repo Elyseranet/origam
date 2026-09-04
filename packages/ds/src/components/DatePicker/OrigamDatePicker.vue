@@ -464,9 +464,6 @@
 
 		overflow: hidden;
 		width: 328px;
-		background-color: var(--origam-date-picker---background-color);
-		color: var(--origam-date-picker---color);
-		border-radius: var(--origam-date-picker---border-radius);
 
 		&--show-week {
 			width: 368px;

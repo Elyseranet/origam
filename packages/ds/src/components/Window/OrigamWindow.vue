@@ -369,7 +369,7 @@
 		&__container {
 			display: var(--origam-window__container---display, flex);
 			flex-direction: var(--origam-window__container---flex-direction, column);
-			height: inherit;
+			height: var(--origam-window__container---height, inherit);
 			position: var(--origam-window__container---position, relative);
 			transition:
 				var(--origam-window---transition-duration, 0.3s)
