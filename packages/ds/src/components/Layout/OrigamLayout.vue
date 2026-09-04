@@ -148,8 +148,8 @@
 			// overflowed any story / consumer container with a fixed
 			// height ("le drawer dépasse de son layout").
 			height: 100%;
-			max-height: 100%;
-			max-width: 100%;
+			max-height: var(--origam-layout__wrapper---max-height, 100%);
+			max-width: var(--origam-layout__wrapper---max-width, 100%);
 		}
 
 		&--full-height &__wrapper {
