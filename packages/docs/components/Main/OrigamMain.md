@@ -92,17 +92,17 @@ sibling drawer / app-bar.
 
 | CSS variable | Default |
 |---|---|
-| `--origam-main--flex` | `1 0 auto` |
-| `--origam-main--max-width` | `100%` |
-| `--origam-main--width` | `100%` |
-| `--origam-main--height` | `100%` |
-| `--origam-main--display` | `flex` |
-| `--origam-main--position` | `absolute` |
-| `--origam-main--position-top` | `0` |
-| `--origam-main--position-left` | `0` |
-| `--origam-main--transition-duration` | inherits motion.duration.medium |
-| `--origam-main--transition-property` | `all` |
-| `--origam-main--transition-timing-function` | inherits motion.easing.standard |
+| `--origam-main---flex` | `1 0 auto` |
+| `--origam-main---max-width` | `100%` |
+| `--origam-main---width` | `100%` |
+| `--origam-main---height` | `100%` |
+| `--origam-main---display` | `flex` |
+| `--origam-main---position` | `absolute` |
+| `--origam-main---position-top` | `0` |
+| `--origam-main---position-left` | `0` |
+| `--origam-main---transition-duration` | inherits motion.duration.medium |
+| `--origam-main---transition-property` | `all` |
+| `--origam-main---transition-timing-function` | inherits motion.easing.standard |
 | `--origam-main__scroller--max-width` | `100%` |
 | `--origam-main__scroller--position` | `relative` |
 
