@@ -1,5 +1,8 @@
 import type {
-    IFieldEmits,
+    IAdjacentInnerEmits
+} from '../Commons/adjacent.interface'
+import type { IFocusEmits } from '../Commons/focus.interface'
+import type {
     IFieldSlots
 } from '../Field/field.interface'
 import type {
@@ -91,7 +94,23 @@ export interface IPasswordFieldProps extends ITextFieldProps {
     minimal?: boolean
 }
 
-export interface IPasswordFieldEmits extends IFieldEmits, IInputEmits {
+/*********************************************************
+ * IPasswordFieldEmits
+ *
+ * @description
+ * ⛔ Extends `IFocusEmits` + `IAdjacentInnerEmits` directly rather than the
+ * full `IFieldEmits` — `<OrigamPasswordField>` wraps `<origam-field>`
+ * directly (same shape as TextField) and calls its OWN `useFocus(props)`
+ * and its OWN `useAdjacent(props)` / `useAdjacentInner(props)`, so
+ * `update:focused` / `click:appendInner` / `click:prependInner` are
+ * genuinely emitted at THIS level. `IActiveEmits` (`update:active`) is
+ * deliberately excluded: PasswordField passes its OWN `isActive || isDirty`
+ * computed DOWN to `<origam-field>` as a plain prop, with no
+ * `@update:active` listener wired to relay the child's internal toggle —
+ * declaring it here promised an event nobody ever fired (issue: guard
+ * `unemitted-declarations`, `PasswordField:update:active`).
+ ********************************************************/
+export interface IPasswordFieldEmits extends IFocusEmits, IAdjacentInnerEmits, IInputEmits {
     (e: 'click:control', event: MouseEvent): void
     (e: 'mousedown:control', event: MouseEvent): void
     /** Fires when the computed strength level changes (v-model:strength). */

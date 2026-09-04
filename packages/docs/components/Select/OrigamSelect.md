@@ -187,7 +187,12 @@ forwarded value for consumers who want the popup to diverge on purpose.
 | `update:search` | `string` | Search text changed |
 | `focus` | `FocusEvent` | Field focused |
 | `blur` | `FocusEvent` | Field blurred |
+| `update:focused` | `boolean` | Focus state changed (relayed from the nested `<origam-text-field>`) |
 | `click:clear` | `MouseEvent` | Clear clicked |
+| `click:append` | `MouseEvent` | Outer append adornment clicked (relayed from `<origam-text-field>`) |
+| `click:prepend` | `MouseEvent` | Outer prepend adornment clicked (relayed from `<origam-text-field>`) |
+| `click:appendInner` | `MouseEvent` | Inner append adornment clicked (relayed from `<origam-text-field>`) |
+| `click:prependInner` | `MouseEvent` | Inner prepend adornment clicked (relayed from `<origam-text-field>`) |
 
 ## Design tokens
 

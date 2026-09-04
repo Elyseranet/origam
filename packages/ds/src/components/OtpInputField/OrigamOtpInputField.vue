@@ -28,6 +28,8 @@
 						:focused="(isFocused && focusAll) || focusIndex === i"
 						v-bind="{...fieldProps(i)}"
 						@click:clear="handleClear"
+						@click:append-inner="handleClickAppendInner"
+						@click:prepend-inner="handleClickPrependInner"
 				>
 					<template
 							v-if="slots.prependInner"
@@ -453,6 +455,25 @@
 		reset()
 
 		emits('click:clear', e)
+	}
+
+	/*********************************************************
+	 * click:appendInner / click:prependInner relay
+	 *
+	 * @description
+	 * `<origam-field>` (one per OTP cell) already emits both via its own
+	 * `useAdjacentInner` when a consumer sets `appendInnerIcon` /
+	 * `prependInnerIcon`, but nothing here listened for them — declared,
+	 * never fired (issue: guard `unemitted-declarations`,
+	 * `OtpInputField:click:appendInner,click:prependInner`). Mirrors
+	 * `handleClear` above: relay on THIS component's own instance whichever
+	 * cell the click came from.
+	 ********************************************************/
+	const handleClickAppendInner = (e: MouseEvent) => {
+		emits('click:appendInner', e)
+	}
+	const handleClickPrependInner = (e: MouseEvent) => {
+		emits('click:prependInner', e)
 	}
 
 	const isInvalidValue = (value: string) => {

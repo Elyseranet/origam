@@ -20,6 +20,10 @@
 			@click:clear="handleClear"
 			@click:control="handleClickControl"
 			@mousedown:control="handleMousedownControl"
+			@click:append="handleClickAppend"
+			@click:prepend="handleClickPrepend"
+			@click:append-inner="handleClickAppendInner"
+			@click:prepend-inner="handleClickPrependInner"
 	>
 		<template
 				v-if="slots.prepend"
@@ -651,7 +655,7 @@
 			})
 		}
 	}
-	const handleClear = () => {
+	const handleClear = (e: MouseEvent) => {
 		if (props.openOnClear) {
 			menu.value = true
 		}
@@ -659,9 +663,35 @@
 		if (props.autocomplete) {
 			search.value = ''
 		}
+
+		emit('click:clear', e)
 	}
 	const handleClickControl = (e: MouseEvent) => {
 		emit('click:control', e)
+	}
+	/*********************************************************
+	 * click:append / click:prepend / click:appendInner /
+	 * click:prependInner relay
+	 *
+	 * @description
+	 * `<origam-text-field>` already emits all four via its own
+	 * `useAdjacent` / `useAdjacentInner` calls, but nothing here listened
+	 * for them — declared, never fired (issue: guard
+	 * `unemitted-declarations`, `Select:click:append,click:appendInner,
+	 * click:prepend,click:prependInner`). Mirrors `handleClickControl`
+	 * above: relay on THIS component's own instance.
+	 ********************************************************/
+	const handleClickAppend = (e: MouseEvent) => {
+		emit('click:append', e)
+	}
+	const handleClickPrepend = (e: MouseEvent) => {
+		emit('click:prepend', e)
+	}
+	const handleClickAppendInner = (e: MouseEvent) => {
+		emit('click:appendInner', e)
+	}
+	const handleClickPrependInner = (e: MouseEvent) => {
+		emit('click:prependInner', e)
 	}
 	const handleMousedownControl = (e: MouseEvent) => {
 		emit('mousedown:control', e)
@@ -972,6 +1002,17 @@
 
 	watch(isFocused, (val, oldVal) => {
 		if (val === oldVal) return
+
+		/*********************************************************
+		 * unemitted-declarations — update:focused relay
+		 *
+		 * @description
+		 * `update:focused` was declared but never fired:
+		 * `v-model:focused="isFocused"` only CONSUMES the echo from the
+		 * nested `<origam-text-field>` into this local ref, it never
+		 * relays it back out to Select's own consumers.
+		 ********************************************************/
+		emit('update:focused', val)
 
 		if (val) {
 			isSelecting.value = true

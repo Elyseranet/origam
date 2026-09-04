@@ -185,6 +185,24 @@
 			/>
 		</Variant>
 
+		<Variant title="Events - click:appendInner">
+			<origam-otp-input-field
+					:length="4"
+					label="Append inner click"
+					append-inner-icon="mdi:mdi-check"
+					@click:append-inner="logEvent('click:appendInner', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - click:prependInner">
+			<origam-otp-input-field
+					:length="4"
+					label="Prepend inner click"
+					prepend-inner-icon="mdi:mdi-lock"
+					@click:prepend-inner="logEvent('click:prependInner', $event)"
+			/>
+		</Variant>
+
 		<Variant title="Events - click:control">
 			<origam-otp-input-field
 					:length="6"
