@@ -157,6 +157,18 @@
 			</origam-field>
 		</Variant>
 
+		<Variant title="Events - update:active">
+			<origam-field
+					label="Active state (focus/dirty toggles it)"
+					data-cy="field-emit-update-active"
+					@update:active="logEvent('update:active', $event)"
+			>
+				<template #default="{ id, onFocus, onBlur }">
+					<input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/>
+				</template>
+			</origam-field>
+		</Variant>
+
 		<Variant title="Events - click:clear">
 			<origam-field
 					label="Clearable field"

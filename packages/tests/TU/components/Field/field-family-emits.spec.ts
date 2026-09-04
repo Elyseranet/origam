@@ -1,9 +1,31 @@
-// TEMP — mutation-testing probe for LOT 1/4 (Field family unemitted-declarations fix).
+// Regression pin — guard `unemitted-declarations` (LOT 1/4, issue family
+// #373/#376/#416/#430/#446 + Field-family follow-up).
+//
 // Asserts the COMPILED runtime `emits` option (derived by the Vue SFC
 // compiler from `defineEmits<IXxxEmits>()`'s resolved TS interface) no
-// longer contains the dead names, and still contains the live ones.
+// longer declares an event the component never fires — Vue strips any
+// `@event` listener matching a DECLARED emit from `$attrs` unconditionally,
+// so a dead declaration silently breaks fallthrough for real consumers.
+//
+// Each assertion below mirrors one line of the guard's baseline entry that
+// this lot resolved:
+//   Field:update:active,update:modelValue
+//   Input:update:focused
+//   TextField / NumberField / PasswordField / TextareaField / FileField:update:active
+//   OtpInputField:click:append,click:appendInner,click:prepend,click:prependInner,update:active
+//   Select:click:append,click:appendInner,click:clear,click:prepend,click:prependInner,update:focused
+//
+// `Field:update:active` is intentionally KEPT declared — mutating it away
+// was proven wrong by `emits update:active when focus toggles isActive via
+// useStateFlag` below: the guard's static relay list (`RELAYS` in
+// `guards/lib/emits.mjs`) only recognises a literal `useActive(props)` call,
+// not `useStateFlag(props, {state: 'active'})` (the composable `useActive`
+// was merged into). `<OrigamField>` genuinely emits it via
+// `useStateFlag` -> `useVModel` -> `vm.emit('update:active', …)`.
 
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
+import { mount } from '@vue/test-utils'
+import { h, nextTick } from 'vue'
 
 import OrigamField from '@origam/components/Field/OrigamField.vue'
 import OrigamInput from '@origam/components/Input/OrigamInput.vue'
@@ -14,13 +36,28 @@ import OrigamTextareaField from '@origam/components/TextareaField/OrigamTextarea
 import OrigamFileField from '@origam/components/FileField/OrigamFileField.vue'
 import OrigamOtpInputField from '@origam/components/OtpInputField/OrigamOtpInputField.vue'
 import OrigamSelect from '@origam/components/Select/OrigamSelect.vue'
+import { createOrigam } from '@origam/origam'
+
+Object.defineProperty(window, 'matchMedia', {
+    writable: true,
+    value: vi.fn().mockImplementation((query: string) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
+        addEventListener: vi.fn(),
+        removeEventListener: vi.fn(),
+        dispatchEvent: vi.fn()
+    }))
+})
 
 function declaredEmits (component: any): string[] {
     const raw = component.emits
     return Array.isArray(raw) ? raw : Object.keys(raw ?? {})
 }
 
-describe('LOT1 — compiled emits option no longer declares dead events', () => {
+describe('Field family — compiled emits option no longer declares dead events', () => {
     it('OrigamField — keeps update:active, drops update:modelValue', () => {
         const emits = declaredEmits(OrigamField)
         expect(emits).toContain('update:active')
@@ -94,5 +131,29 @@ describe('LOT1 — compiled emits option no longer declares dead events', () => 
         expect(emits).toContain('click:prependInner')
         expect(emits).toContain('click:clear')
         expect(emits).toContain('update:focused')
+    })
+})
+
+describe('OrigamField — update:active is genuinely emitted at runtime (guard false-positive, kept intentionally)', () => {
+    it('emits update:active when focus toggles isActive via useStateFlag', async () => {
+        const wrapper = mount(OrigamField, {
+            props: { label: 'Test label' },
+            slots: {
+                default: (slotProps: any) => h('input', {
+                    class: 'origam-field__input',
+                    onFocus: slotProps.onFocus,
+                    onBlur: slotProps.onBlur
+                })
+            },
+            global: { plugins: [createOrigam()] }
+        })
+
+        const input = wrapper.find('input')
+        await input.trigger('focus')
+        await nextTick()
+        await input.trigger('blur')
+        await nextTick()
+
+        expect(wrapper.emitted('update:active')).toEqual([[true], [false]])
     })
 })

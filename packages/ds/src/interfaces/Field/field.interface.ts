@@ -49,21 +49,24 @@ export interface IFieldProps extends ICommonsComponentProps, ILoaderProps, IColo
     required?: boolean
 }
 
-/**
+/*********************************************************
+ * IFieldEmits
+ *
+ * @description
  * Aggregate of every emit `<OrigamField>` itself actually relays: focus
  * (`useFocus`), the inner adjacent clicks (`useAdjacentInner` — real
  * `vm.emit` calls, see `adjacentInner.composable.ts`), and the activation
  * lifecycle (`useStateFlag(props, {state: 'active'})` → `useVModel` →
  * `vm.emit('update:active', …)`, verified by mounting `<OrigamField>` and
  * toggling focus — see `packages/tests/TU/components/Field/`).
- *
+ * @description
  * ⛔ Does NOT extend `ICommonsComponentEmits` (`update:modelValue`).
  * `<OrigamField>` is pure chrome around a consumer-supplied control (the
  * `default` slot) — it never reads or writes a `modelValue` of its own, so
  * declaring that emit only ever stripped a real `@update:modelValue`
  * listener from `$attrs` without anyone ever firing it back (issue: guard
  * `unemitted-declarations`, `Field:update:modelValue`).
- *
+ * @description
  * ⚠️ Downstream wrappers (TextField, NumberField, PasswordField,
  * TextareaField, FileField, OtpInputField) do NOT `extends IFieldEmits`
  * wholesale — each nests `<origam-field>` inside a scoped-slot template
@@ -73,7 +76,7 @@ export interface IFieldProps extends ICommonsComponentProps, ILoaderProps, IColo
  * `isActive` locally instead). Inheriting `IActiveEmits` there would
  * declare an emit nobody fires — they extend `IFocusEmits` +
  * `IAdjacentInnerEmits` directly instead. See each file's own comment.
- */
+ ********************************************************/
 export interface IFieldEmits extends IFocusEmits, IAdjacentInnerEmits, IActiveEmits {
 }
 

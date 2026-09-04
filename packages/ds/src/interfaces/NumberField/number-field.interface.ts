@@ -47,7 +47,10 @@ export interface INumberFieldProps extends IFieldProps, IInputProps, IVariantPro
     incrementAriaLabel?: string
 }
 
-/**
+/*********************************************************
+ * INumberFieldEmits
+ *
+ * @description
  * ⛔ Extends `IFocusEmits` + `IAdjacentInnerEmits` directly rather than the
  * full `IFieldEmits` — `<OrigamNumberField>` calls its OWN `useFocus(props)`
  * and its OWN `useAdjacentInner(props)` / `useAdjacent(props)` (see the
@@ -59,7 +62,7 @@ export interface INumberFieldProps extends IFieldProps, IInputProps, IVariantPro
  * `@update:active` listener anywhere in the template — declaring it here
  * promised an event nobody ever fired (issue: guard
  * `unemitted-declarations`, `NumberField:update:active`).
- */
+ ********************************************************/
 export interface INumberFieldEmits extends IFocusEmits, IAdjacentInnerEmits, IInputEmits {
     (e: 'click:control', event: MouseEvent): void
     (e: 'mousedown:control', event: MouseEvent): void

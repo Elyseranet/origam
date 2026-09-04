@@ -139,3 +139,29 @@ describe('OrigamSelect — chip default color is theme-driven, not hardcoded (#4
         expect(style).not.toContain('255, 255, 255')
     })
 })
+
+// ---------------------------------------------------------------------------
+// LOT1/4 emits fix — `update:focused` / `click:clear` / `click:append` /
+// `click:prepend` / `click:appendInner` / `click:prependInner` were declared
+// in `ISelectEmits` but never fired: `v-model:focused="isFocused"` on the
+// nested `<origam-text-field>` only CONSUMED the echo into a local ref, and
+// `handleClear` never re-emitted after doing its own clearing logic. Guard
+// `unemitted-declarations` — see `packages/ds/scripts/guards/unemitted-declarations.mjs`.
+// ---------------------------------------------------------------------------
+describe('OrigamSelect — update:focused / click:clear relay (LOT1 emits fix)', () => {
+    it('emits update:focused when the underlying input focuses/blurs', async () => {
+        const wrapper = mount(OrigamSelect, {
+            props: { label: 'Country' } as never,
+            global: { plugins: [createOrigam()] }
+        })
+        await nextTick()
+
+        const input = wrapper.find('input')
+        await input.trigger('focus')
+        await nextTick()
+        await input.trigger('blur')
+        await nextTick()
+
+        expect(wrapper.emitted('update:focused')).toEqual([[true], [false]])
+    })
+})

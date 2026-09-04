@@ -375,11 +375,16 @@ const OrigamFieldClearableStub = {
     name: 'OrigamField',
     inheritAttrs: false,
     props: ['focused', 'id', 'class', 'style', 'label', 'variant', 'error', 'rounded', 'disabled', 'clearable'],
-    emits: ['click:clear'],
+    emits: ['click:clear', 'click:appendInner', 'click:prependInner'],
     setup () {
         return { filterProps: (_props: any, _exclude?: string[]) => ({}) }
     },
-    template: `<div data-cy="origam-otp-field"><button type="button" class="fake-clear-btn" @click="$emit('click:clear', $event)">clear</button><slot /></div>`
+    template: `<div data-cy="origam-otp-field">
+        <button type="button" class="fake-clear-btn" @click="$emit('click:clear', $event)">clear</button>
+        <button type="button" class="fake-append-inner-btn" @click="$emit('click:appendInner', $event)">append</button>
+        <button type="button" class="fake-prepend-inner-btn" @click="$emit('click:prependInner', $event)">prepend</button>
+        <slot />
+    </div>`
 }
 
 function mountOtpFieldClearable (props: Record<string, unknown> = {}): VueWrapper {
@@ -439,5 +444,32 @@ describe('OrigamOtpInputField — click:clear emit (#445)', () => {
         await nextTick()
 
         expect(wrapper.find('input[type="hidden"]').element.value).toBe('')
+    })
+})
+
+// ---------------------------------------------------------------------------
+// LOT1/4 emits fix — `click:appendInner` / `click:prependInner` were
+// declared in `IOtpInputFieldEmits` but never fired: each per-cell
+// `<origam-field>` already emits both via its own `useAdjacentInner`, but
+// nothing here listened for them. Guard `unemitted-declarations` — see
+// `packages/ds/scripts/guards/unemitted-declarations.mjs`.
+// ---------------------------------------------------------------------------
+describe('OrigamOtpInputField — click:appendInner / click:prependInner relay (LOT1 emits fix)', () => {
+    it('emits `click:appendInner` when a cell relays click:appendInner', async () => {
+        const wrapper = mountOtpFieldClearable({ length: 4 })
+        await nextTick()
+
+        await wrapper.find('.fake-append-inner-btn').trigger('click')
+
+        expect(wrapper.emitted('click:appendInner')).toBeTruthy()
+    })
+
+    it('emits `click:prependInner` when a cell relays click:prependInner', async () => {
+        const wrapper = mountOtpFieldClearable({ length: 4 })
+        await nextTick()
+
+        await wrapper.find('.fake-prepend-inner-btn').trigger('click')
+
+        expect(wrapper.emitted('click:prependInner')).toBeTruthy()
     })
 })

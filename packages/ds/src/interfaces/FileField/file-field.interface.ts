@@ -70,7 +70,10 @@ export interface IFileFieldProps extends ICommonsComponentProps, IColorProps, ID
     dropzone?: boolean
 }
 
-/**
+/*********************************************************
+ * IFileFieldEmits
+ *
+ * @description
  * ⛔ Extends `IFocusEmits` + `IAdjacentInnerEmits` directly rather than the
  * full `IFieldEmits` — `<OrigamFileField>` wraps `<origam-field>` directly
  * and calls its OWN `useFocus(props)` and its OWN `useAdjacent(props)` /
@@ -81,7 +84,7 @@ export interface IFileFieldProps extends ICommonsComponentProps, IColorProps, ID
  * prop, with no `@update:active` listener wired to relay the child's
  * internal toggle — declaring it here promised an event nobody ever fired
  * (issue: guard `unemitted-declarations`, `FileField:update:active`).
- */
+ ********************************************************/
 export interface IFileFieldEmits extends IFocusEmits, IAdjacentInnerEmits, IInputEmits {
     (e: 'click:control', value: MouseEvent): void
     (e: 'mousedown:control', value: MouseEvent): void

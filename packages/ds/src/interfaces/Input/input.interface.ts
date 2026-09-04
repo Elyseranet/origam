@@ -32,11 +32,14 @@ export interface IInputProps extends ICommonsComponentProps, IDensityProps, IPad
     messages?: Array<string> | string
 }
 
-/**
+/*********************************************************
+ * IInputEmits
+ *
+ * @description
  * Aggregate emits for `<OrigamInput>` — re-exports the v-model echo (via
  * `useValidation` → `useVModel`) and the outer prepend/append clicks (via
  * `useAdjacent`, both real `vm.emit` calls).
- *
+ * @description
  * ⛔ Does NOT extend `IFocusEmits` (`update:focused`). `<OrigamInput>`
  * reads a `focused` value purely to decide whether to show `hint` (line
  * `props.hint && (props.persistentHint || props.focused)`) — it never
@@ -48,7 +51,7 @@ export interface IInputProps extends ICommonsComponentProps, IDensityProps, IPad
  * or `useStateFlag`/`useVModel` at THEIR OWN level and declare
  * `update:focused` there directly — they don't depend on this interface
  * for it.
- */
+ ********************************************************/
 export interface IInputEmits extends ICommonsComponentEmits, IAdjacentEmits {
 }
 

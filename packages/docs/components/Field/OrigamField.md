@@ -155,8 +155,8 @@ visible effect comes from `OrigamLabel`'s prefix, not Field's. See issue #501.
 
 | Event | Payload | Description |
 |-------|---------|-------------|
-| `update:modelValue` | `any` | Value echo |
 | `update:focused` | `boolean` | Focus state changed |
+| `update:active` | `boolean` | Active (chrome) state changed — driven by `useStateFlag(props, {state: 'active'})`, toggles alongside focus/dirty/prefix/suffix |
 | `click:clear` | `MouseEvent` | Clear icon clicked |
 | `click:prependInner` | `MouseEvent` | Inner prepend clicked |
 | `click:appendInner` | `MouseEvent` | Inner append clicked |

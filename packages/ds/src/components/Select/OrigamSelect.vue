@@ -1003,10 +1003,15 @@
 	watch(isFocused, (val, oldVal) => {
 		if (val === oldVal) return
 
-		// #unemitted-declarations — `update:focused` was declared but never
-		// fired: `v-model:focused="isFocused"` only CONSUMES the echo from
-		// the nested `<origam-text-field>` into this local ref, it never
-		// relays it back out to Select's own consumers.
+		/*********************************************************
+		 * unemitted-declarations — update:focused relay
+		 *
+		 * @description
+		 * `update:focused` was declared but never fired:
+		 * `v-model:focused="isFocused"` only CONSUMES the echo from the
+		 * nested `<origam-text-field>` into this local ref, it never
+		 * relays it back out to Select's own consumers.
+		 ********************************************************/
 		emit('update:focused', val)
 
 		if (val) {

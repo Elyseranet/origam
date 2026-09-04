@@ -94,7 +94,10 @@ export interface IPasswordFieldProps extends ITextFieldProps {
     minimal?: boolean
 }
 
-/**
+/*********************************************************
+ * IPasswordFieldEmits
+ *
+ * @description
  * ⛔ Extends `IFocusEmits` + `IAdjacentInnerEmits` directly rather than the
  * full `IFieldEmits` — `<OrigamPasswordField>` wraps `<origam-field>`
  * directly (same shape as TextField) and calls its OWN `useFocus(props)`
@@ -106,7 +109,7 @@ export interface IPasswordFieldProps extends ITextFieldProps {
  * `@update:active` listener wired to relay the child's internal toggle —
  * declaring it here promised an event nobody ever fired (issue: guard
  * `unemitted-declarations`, `PasswordField:update:active`).
- */
+ ********************************************************/
 export interface IPasswordFieldEmits extends IFocusEmits, IAdjacentInnerEmits, IInputEmits {
     (e: 'click:control', event: MouseEvent): void
     (e: 'mousedown:control', event: MouseEvent): void

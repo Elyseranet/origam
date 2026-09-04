@@ -122,6 +122,8 @@ The `validateOn` prop controls when validation fires:
 | `click:control` | `MouseEvent` | Click on the control area (`.origam-otp-input-field__content`) |
 | `mousedown:control` | `MouseEvent` | Mousedown on the control area (`.origam-otp-input-field__content`) |
 | `click:clear` | `MouseEvent` | Clear button clicked — also resets the model to empty |
+| `click:appendInner` | `MouseEvent` | Append-inner adornment clicked (relayed from the focused cell's `<origam-field>`) |
+| `click:prependInner` | `MouseEvent` | Prepend-inner adornment clicked (relayed from the focused cell's `<origam-field>`) |
 
 ## Props (validation)
 

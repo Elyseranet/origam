@@ -109,8 +109,7 @@ When `dragndrop` is set, the field renders as a dropzone instead of a standard f
 | `click:prependInner` | `MouseEvent` | Inner prepend adornment clicked (inherited from `OrigamField`) |
 | `click:appendInner` | `MouseEvent` | Inner append adornment clicked (inherited from `OrigamField`) |
 | `click:clear` | `MouseEvent` | Clear button clicked (inherited from `OrigamField`) |
-| `update:focused` | `boolean` | Focus state changed (inherited from `OrigamField` / `OrigamInput`) |
-| `update:active` | `boolean` | Active state changed (inherited from `OrigamField`) |
+| `update:focused` | `boolean` | Focus state changed (own `useFocus(props)` call) |
 
 ## Composition
 

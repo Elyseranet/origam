@@ -221,23 +221,6 @@
 			</origam-input>
 		</Variant>
 
-		<Variant title="Events - update:focused">
-			<origam-input
-					v-model="emitFocusModel"
-					label="Focus / blur me"
-					@update:focused="logEvent('update:focused', $event)"
-			>
-				<template #default="{ id, isDisabled }">
-					<input
-							:id="id"
-							v-model="emitFocusModel"
-							:disabled="isDisabled"
-							style="border: none; outline: none; background: transparent; width: 100%;"
-					/>
-				</template>
-			</origam-input>
-		</Variant>
-
 		<Variant title="Events - click:prepend">
 			<origam-input
 					v-model="emitPrependModel"
@@ -565,7 +548,6 @@
 
 	const functionalModel  = ref('')
 	const emitUpdateModel  = ref('')
-	const emitFocusModel   = ref('')
 	const emitPrependModel = ref('')
 	const emitAppendModel  = ref('')
 	const slotDefaultModel  = ref('')
