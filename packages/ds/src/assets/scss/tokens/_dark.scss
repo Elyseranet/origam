@@ -1125,7 +1125,7 @@
   --origam-file-field-list-item__meta---font-size: var(--origam-font__size---sm);
   --origam-file-field-list-item__progress---margin-top: var(--origam-space---1);
   --origam-file-field-list-item__remove---size: small;
-  --origam-password-field---input-transition: 0.15s opacity cubic-bezier(0.4, 0, 0.2, 1);
+  --origam-password-field__input---transition: 0.15s opacity cubic-bezier(0.4, 0, 0.2, 1);
   --origam-password-field__toggle-icon---cursor: pointer;
   --origam-password-field__toggle-icon---opacity: 1;
   --origam-password-field__item---padding: var(--origam-space---2);
@@ -1134,8 +1134,8 @@
   --origam-password-field__item---overflow: visible;
   --origam-password-field__item--valid---icon-opacity: 1;
   --origam-password-field__item-icon---opacity: 0.2;
-  --origam-password-field__item-icon---font-size: 45px;
-  --origam-password-field__item-icon---font-weight: var(--origam-font__weight---bold);
+  --origam-password-field__icon---font-size: 45px;
+  --origam-password-field__icon---font-weight: var(--origam-font__weight---bold);
   --origam-password-field__details---padding-inline: var(--origam-space---4);
   --origam-password-field__infos---padding: var(--origam-space---0);
   --origam-password-field__infos---padding-inline: var(--origam-space---3);

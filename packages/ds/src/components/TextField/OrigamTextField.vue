@@ -604,9 +604,9 @@
 
 		input {
 			color: inherit;
-			opacity: 0;
+			opacity: var(--origam-text-field__input---opacity, 0);
 			flex: 1;
-			transition: 0.15s opacity cubic-bezier(0.4, 0, 0.2, 1);
+			transition: var(--origam-text-field__input---transition-duration, 0.15s) opacity var(--origam-text-field__input---transition-easing, cubic-bezier(0.4, 0, 0.2, 1));
 			min-width: 0;
 
 			&:focus,
@@ -627,7 +627,7 @@
 			&.origam-field--no-label,
 			&.origam-field--active {
 				input {
-					opacity: 1;
+					opacity: var(--origam-text-field__input---opacity-active, 1);
 				}
 			}
 
