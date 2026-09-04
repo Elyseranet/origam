@@ -55,8 +55,35 @@
 	 * Event handlers
 	 ********************************************************/
 
+	/*********************************************************
+	 * applyOrigin
+	 *
+	 * @description
+	 * `origin` (from `ITransitionProps`, inherited by `ITranslateScaleProps`)
+	 * sets `transform-origin` on the transitioned element BEFORE the scale
+	 * runs — the only sibling in the 8-component `origin` audit (#538/#548)
+	 * where the prop has something to anchor on, since this is the only
+	 * transition whose keyframes/CSS class include an actual `scale(...)`.
+	 * Applied on BOTH paths:
+	 *   - CSS-only (`!hasTarget`): the inline style wins the cascade over
+	 *     the `.origam-transition--transform-scale-enter-from` SCSS rule's
+	 *     `transform: scale(0.9)`, so the browser anchors that scale on the
+	 *     custom origin instead of its `50% 50%` default.
+	 *   - WAAPI (`hasTarget`): set before `getDimensions()` is called so its
+	 *     `getComputedStyle(el).transformOrigin` read (transition.util.ts)
+	 *     picks up the custom value — that function's `x`/`y` math already
+	 *     generically accounts for whatever `transform-origin` is current,
+	 *     it was simply never given anything but the browser default.
+	 ********************************************************/
+	const applyOrigin = (el: Element) => {
+		if (props.origin) {
+			(el as HTMLElement).style.transformOrigin = props.origin
+		}
+	}
+
 	const handleBeforeEnter = (el: Element) => {
-		(el as HTMLElement).style.pointerEvents = 'none'
+		applyOrigin(el)
+		;(el as HTMLElement).style.pointerEvents = 'none'
 		;(el as HTMLElement).style.visibility = 'hidden'
 	}
 	const handleEnter = async (el: Element, done: () => void) => {
@@ -89,7 +116,8 @@
 		(el as HTMLElement).style.removeProperty('pointer-events')
 	}
 	const handleBeforeLeave = (el: Element) => {
-		(el as HTMLElement).style.pointerEvents = 'none'
+		applyOrigin(el)
+		;(el as HTMLElement).style.pointerEvents = 'none'
 	}
 	const handleLeave = async (el: Element, done: () => void) => {
 		await new Promise(resolve => requestAnimationFrame(resolve))
@@ -124,13 +152,25 @@
 	 *
 	 * @description
 	 * `disabled` (from `ITransitionProps`) short-circuits both paths: no
-	 * WAAPI hooks bound (this computed returns `{}`) AND `css` is forced
+	 * hooks bound at all (this computed returns `{}`) AND `css` is forced
 	 * `false` in the template — same combination Vue's `<transition>`
 	 * uses to skip the transition outright and settle instantly, mirroring
 	 * `<OrigamExpandX>`'s `:css="!disabled"`.
+	 *
+	 * When NOT disabled, exactly one of the two remaining branches binds:
+	 *   - `hasTarget` -> the full WAAPI hook set (unchanged).
+	 *   - `!hasTarget` -> only `applyOrigin`, so the CSS-only path still
+	 *     gets `transform-origin` set on the element before its native
+	 *     `<transition>` CSS classes kick in the `scale(0.9)`. Nothing is
+	 *     bound at all if `origin` isn't set, identical to pre-#548
+	 *     behaviour (this branch used to unconditionally return `{}`).
 	 ********************************************************/
 	const events = computed(() => {
-		if (hasTarget.value && !props.disabled) {
+		if (props.disabled) {
+			return {}
+		}
+
+		if (hasTarget.value) {
 			return {
 				onBeforeEnter: handleBeforeEnter,
 				onEnter: handleEnter,
@@ -138,6 +178,13 @@
 				onBeforeLeave: handleBeforeLeave,
 				onLeave: handleLeave,
 				onAfterLeave: handleAfterLeave
+			}
+		}
+
+		if (props.origin) {
+			return {
+				onBeforeEnter: applyOrigin,
+				onBeforeLeave: applyOrigin
 			}
 		}
 
