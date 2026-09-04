@@ -504,8 +504,8 @@
 		}
 
 		&--error {
-			--origam-badge__badge---background-color: var(--origam-badge--danger---background-color, var(--origam-color__feedback--danger---bg));
-			--origam-badge__badge---color: var(--origam-badge--danger---color, var(--origam-color__feedback--danger---fg));
+			--origam-badge__badge---background-color: var(--origam-badge--danger---background-color, var(--origam-badge--error---background-color, var(--origam-color__feedback--danger---bg)));
+			--origam-badge__badge---color: var(--origam-badge--danger---color, var(--origam-badge--error---color, var(--origam-color__feedback--danger---fg)));
 		}
 	}
 </style>
