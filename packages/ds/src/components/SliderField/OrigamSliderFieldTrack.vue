@@ -238,7 +238,7 @@
 		$this: &;
 
 		position: relative;
-		border-radius: 9999px;
+		border-radius: var(--origam-slider-field__track---border-radius, 9999px);
 		pointer-events: none;
 
 		@media (forced-colors: active) {
