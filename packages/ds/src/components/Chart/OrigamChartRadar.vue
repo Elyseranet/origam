@@ -449,6 +449,7 @@
 
 		.origam-chart__polygon {
 			stroke-width: var(--origam-chart__polygon---stroke-width, 1.5);
+			fill-opacity: var(--origam-chart__radar---fill-opacity, 0.18);
 		}
 
 		.origam-chart__point {
