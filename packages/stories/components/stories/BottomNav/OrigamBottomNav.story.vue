@@ -140,16 +140,6 @@
 			</template>
 		</Variant>
 
-		<Variant title="Events - update:active">
-			<div class="story-bottom-nav-shell">
-				<origam-bottom-nav
-						:model-value="true"
-						:items="navItems"
-						@update:active="logEvent('update:active', $event)"
-				/>
-			</div>
-		</Variant>
-
 		<Variant title="Events - update:hover">
 			<div class="story-bottom-nav-shell">
 				<origam-bottom-nav
@@ -195,7 +185,6 @@
 							:model-value="true"
 							:items="navItems"
 							@update:model-value="logEvent('update:modelValue', $event)"
-							@update:active="logEvent('update:active', $event)"
 					/>
 				</div>
 			</template>

@@ -1,6 +1,5 @@
 [
     "Audio:update:shuffle",
-    "BottomNav:update:active",
     "ChartSparkline:point-click",
     "ConfirmWrapper:update:focused",
     "DataTable:update:expanded",

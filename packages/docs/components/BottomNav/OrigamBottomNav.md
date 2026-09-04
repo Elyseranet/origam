@@ -189,8 +189,13 @@ it.
 | Event | Payload | Description |
 |---|---|---|
 | `update:modelValue` | `any` | Visibility / group-selection changes (see the note above). |
-| `update:active` | `any` | Propagated from `IActiveProps` state. |
 | `update:hover` | `boolean` | Propagated from `IHoverProps` state. |
+
+Note: `IBottomNavProps` still accepts `active` / `activeClass` (`IActiveProps`)
+as a default forwarded to child `<OrigamBtn>` items, but the nav itself does
+not emit `update:active` — its own "active" (shown/hidden) state is sourced
+from `modelValue`, not from `active`. See the interface comment on
+`IBottomNavEmits` (`bottom-nav.interface.ts`) for the full reasoning.
 
 ## Props (interface)
 
