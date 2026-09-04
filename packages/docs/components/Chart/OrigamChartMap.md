@@ -134,8 +134,8 @@ import { OrigamChartMap } from '@origam/ds'
 | Event | Payload | Description |
 |---|---|---|
 | `point-click` | `(point: IChartPoint, event: MouseEvent \| KeyboardEvent)` | Fires when a choropleth country with data (or a flight-route arc) is activated by click or Enter/Space. |
-| `legend-click` | `(series: IChartSeries, index: number)` | Fires when a legend entry is clicked (not applicable in current gradient legend). |
-| `series-toggle` | `(series: IChartSeries, visible: boolean)` | Fires when a series visibility is toggled (not applicable in current gradient legend). |
+
+`IChartMapEmits` does **not** include `legend-click` / `series-toggle` (#545) — the map's series represent choropleth regions / flight routes, not a discrete toggleable legend list, so there is no legend entry for either event to report.
 
 ## Slots
 

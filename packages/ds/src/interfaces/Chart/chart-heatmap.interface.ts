@@ -1,5 +1,4 @@
 import type {
-    IChartBaseEmits,
     IChartBaseProps,
     IChartBaseSlots
 } from './chart-base.interface'
@@ -73,8 +72,21 @@ export interface IChartHeatmapProps extends IChartBaseProps {
     yAxisFormat?: (value: number) => string
 }
 
-/** Emits surfaced by `<OrigamChartHeatmap>`. Mirrors the base family. */
-export type IChartHeatmapEmits = IChartBaseEmits
+/**
+ * `<OrigamChartHeatmap>` emits — `point-click` only, NOT the full base
+ * family. Was `export type IChartHeatmapEmits = IChartBaseEmits` until
+ * #545 — an alias `buildInterfaceIndex()` never resolved, so the guard
+ * never even saw this component. Once fixed, `legend-click` and
+ * `series-toggle` measured genuinely dead: the heatmap renders a
+ * continuous colour-gradient legend (min/max labels + a gradient swatch,
+ * see `IChartHeatmapSlots`'s `Omit<IChartBaseSlots, 'legend-item'>` above),
+ * not a discrete per-series legend list — there is no toggleable entry for
+ * either event to report. `point-click` stays: cells ARE individually
+ * clickable/keyboard-activatable (see `onCellActivate` in the component).
+ */
+export interface IChartHeatmapEmits {
+    (e: 'point-click', point: IChartPoint, originalEvent: MouseEvent | KeyboardEvent): void
+}
 
 /**
  * Slot signatures exposed by `<OrigamChartHeatmap>`.

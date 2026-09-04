@@ -44,11 +44,32 @@ export interface IChartBaseProps
     title?: string
     /** Optional subtitle rendered below the title. */
     subtitle?: string
-    /** Toggle the legend block. Default `true`. */
+    /**
+     * Toggle the legend block. Default `true`.
+     *
+     * ⛔ #545 — has **no effect** on `OrigamChartGauge`: a gauge is a
+     * single-value visualisation (only `series[0].data[0]` is read, extra
+     * series are ignored) with no legend markup in its template at all.
+     * Passing it warns once in dev builds (see `useChartUnsupportedProp`)
+     * instead of silently doing nothing — same treatment as `colorScheme`
+     * on Bullet/Candlestick/Heatmap/Map (#426).
+     */
     showLegend?: boolean
-    /** Anchor of the legend block. Default `'bottom'`. */
+    /**
+     * Anchor of the legend block. Default `'bottom'`.
+     *
+     * ⛔ #545 — has **no effect** on `OrigamChartGauge`, for the same
+     * reason as `showLegend` just above: no legend exists to anchor.
+     */
     legendPosition?: TChartLegendPosition
-    /** Toggle the hover tooltip. Default `true`. */
+    /**
+     * Toggle the hover tooltip. Default `true`.
+     *
+     * ⛔ #545 — has **no effect** on `OrigamChartGauge`: no tooltip markup
+     * exists in its template, and `IChartGaugeSlots` deliberately `Omit`s
+     * the `tooltip` slot the base family would otherwise expose. Passing
+     * it warns once in dev builds — same treatment as `colorScheme` (#426).
+     */
     showTooltip?: boolean
     /**
      * Animate paths / bars / slices on first paint and on data

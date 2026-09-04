@@ -43,7 +43,7 @@
  * Run: node packages/ds/scripts/guards/lib/emits.selftest.mjs
  */
 
-import { extractEmitNames, resolveDeclared } from './emits.mjs'
+import { extractEmitNames, resolveDeclared, parseEmitsInterfacesFromSource } from './emits.mjs'
 import { analyseDeadEmits } from './dead-emits.mjs'
 
 let failures = 0
@@ -176,10 +176,96 @@ const wrapVue = (templateHtml, scriptBody) =>
     }
 }
 
+/* ════════════════════════════════════════════════════════════════════
+ * `export type IXxxEmits = <RHS>` — angle mort trouvé le 2026-09-04 :
+ * `buildInterfaceIndex()` ne matchait QUE `export interface`, donc un alias
+ * de type n'entrait JAMAIS dans l'index. Reproduit par mutation par le
+ * coordinateur : `export type IChartGaugeEmits = IChartBaseEmits` (garde :
+ * PASS, 0 violation) vs `export interface IChartGaugeEmits extends
+ * IChartBaseEmits {}` (garde : FAIL, 3 NOUVELLES violations) — même
+ * sémantique TypeScript, verdict du garde opposé.
+ *
+ * Les cas ci-dessous appellent `parseEmitsInterfacesFromSource()` — la
+ * fonction RÉELLEMENT utilisée par `buildInterfaceIndex()` sur le contenu
+ * d'un fichier — sur une chaîne fabriquée, JAMAIS un index construit à la
+ * main. C'est le même principe que la section "BOUT EN BOUT" ci-dessus,
+ * un cran plus bas : celle-là exerçait déjà `extractEmitNames()` en bout
+ * réel, mais construisait l'entrée d'index EX-NIHILO (`index.set(...)`),
+ * court-circuitant la regex `export interface …` / `export type …` — donc
+ * incapable de reproduire CE bug précis, qui vit dans cette regex, pas
+ * dans `extractEmitNames()`.
+ * ════════════════════════════════════════════════════════════════════ */
+console.log('\nALIAS DE TYPE (`export type IXxxEmits = …`) — via parseEmitsInterfacesFromSource réel :')
+
+// Forme 1 — alias vers une AUTRE interface (18 cas Chart réels :
+// `IChartXxxEmits = IChartBaseEmits`). Doit résoudre la chaîne complète.
+{
+    const src = `
+        export interface IChartBaseEmits {
+            (e: 'point-click', point: unknown): void
+        }
+        export type IChartGaugeEmits = IChartBaseEmits
+    `
+    const index = new Map(parseEmitsInterfacesFromSource(src))
+    const declared = resolveDeclared('IChartGaugeEmits', index)
+    if (!declared.has('point-click')) {
+        fail(`alias vers une interface — resolveDeclared('IChartGaugeEmits') n'a pas vu point-click (obtenu ${[...declared]})`)
+    } else {
+        console.log('  ok    alias `= IChartBaseEmits` -> resolveDeclared voit point-click à travers l\'alias')
+    }
+
+    // MUST_FLAG — jamais émis -> le garde doit le voir.
+    const sourceNeverEmitted = `<template><div/></template>\n<script setup lang="ts">\ndefineEmits<IChartGaugeEmits>()\n</script>`
+    const { neverEmitted } = analyseDeadEmits(sourceNeverEmitted, index)
+    if (JSON.stringify(neverEmitted) !== JSON.stringify(['point-click'])) {
+        fail(`alias vers une interface, jamais émis — attendu ['point-click'], obtenu ${JSON.stringify(neverEmitted)} (repro exact du ticket : IChartGaugeEmits = IChartBaseEmits)`)
+    } else {
+        console.log('  ok    alias `= IChartBaseEmits`, JAMAIS ÉMIS -> signalé (le vrai bug ChartGauge)')
+    }
+
+    // MUST_NOT_FLAG — réellement émis -> pas de faux positif introduit.
+    const sourceEmitted = `<template><div/></template>\n<script setup lang="ts">\nconst emit = defineEmits<IChartGaugeEmits>()\nemit('point-click', {})\n</script>`
+    const { neverEmitted: neverEmittedWhenEmitted } = analyseDeadEmits(sourceEmitted, index)
+    if (neverEmittedWhenEmitted.length) {
+        fail(`alias vers une interface, RÉELLEMENT émis — faussement signalé : ${JSON.stringify(neverEmittedWhenEmitted)}`)
+    } else {
+        console.log('  ok    alias `= IChartBaseEmits`, RÉELLEMENT ÉMIS -> pas signalé (pas de faux positif)')
+    }
+}
+
+// Forme 2 — alias vers une signature de fonction NUE, pas vers une autre
+// interface (le cas réel `IDatePickerHeaderEmits`).
+{
+    const src = `export type IDatePickerHeaderEmits = (e: 'click', event?: MouseEvent) => void`
+    const index = new Map(parseEmitsInterfacesFromSource(src))
+    const declared = resolveDeclared('IDatePickerHeaderEmits', index)
+    if (!declared.has('click')) {
+        fail(`alias vers une signature de fonction nue — resolveDeclared n'a pas vu 'click' (obtenu ${[...declared]})`)
+    } else {
+        console.log('  ok    alias `= (e: \'click\', …) => void` -> resolveDeclared voit click (forme signature nue, pas une interface)')
+    }
+
+    const sourceNeverEmitted = `<template><div/></template>\n<script setup lang="ts">\ndefineEmits<IDatePickerHeaderEmits>()\n</script>`
+    const { neverEmitted } = analyseDeadEmits(sourceNeverEmitted, index)
+    if (JSON.stringify(neverEmitted) !== JSON.stringify(['click'])) {
+        fail(`alias vers signature nue, jamais émis — attendu ['click'], obtenu ${JSON.stringify(neverEmitted)}`)
+    } else {
+        console.log('  ok    alias `= (e: \'click\', …) => void`, JAMAIS ÉMIS -> signalé')
+    }
+
+    const sourceEmitted = `<template><div/></template>\n<script setup lang="ts">\nconst emit = defineEmits<IDatePickerHeaderEmits>()\nemit('click')\n</script>`
+    const { neverEmitted: neverEmittedWhenEmitted } = analyseDeadEmits(sourceEmitted, index)
+    if (neverEmittedWhenEmitted.length) {
+        fail(`alias vers signature nue, RÉELLEMENT émis — faussement signalé : ${JSON.stringify(neverEmittedWhenEmitted)}`)
+    } else {
+        console.log('  ok    alias `= (e: \'click\', …) => void`, RÉELLEMENT ÉMIS -> pas signalé (pas de faux positif)')
+    }
+}
+
 console.log('')
-const total = RECALL_CASES.length + PRECISION_CASES.length + 4
+const total = RECALL_CASES.length + PRECISION_CASES.length + 4 + 6
 if (failures) {
     console.log(`FAIL — ${failures}/${total} cas en échec.`)
     process.exit(1)
 }
-console.log(`PASS — ${total} cas, les deux formes defineEmits<T>() reconnues des deux côtés (rappel/précision), bout en bout via le vrai extractEmitNames.`)
+console.log(`PASS — ${total} cas, les deux formes defineEmits<T>() ET les deux formes d'alias de type reconnues des deux côtés (rappel/précision), bout en bout via le vrai extractEmitNames / parseEmitsInterfacesFromSource.`)

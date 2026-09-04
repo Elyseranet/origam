@@ -1,5 +1,4 @@
 import type {
-    IChartBaseEmits,
     IChartBaseProps,
     IChartBaseSlots
 } from './chart-base.interface'
@@ -51,8 +50,24 @@ export interface IChartGaugeProps extends IChartBaseProps {
     gaugeShowValue?: boolean
 }
 
-/** Emits surfaced by `<OrigamChartGauge>`. Mirrors the base family. */
-export type IChartGaugeEmits = IChartBaseEmits
+/**
+ * `<OrigamChartGauge>` emits — deliberately EMPTY, not an alias of
+ * `IChartBaseEmits`.
+ *
+ * ⛔ Was `export type IChartGaugeEmits = IChartBaseEmits` until #545 —
+ * an alias `buildInterfaceIndex()` never resolved (it only matched `export
+ * interface`), so `unemitted-declarations` never even SAW this component,
+ * let alone flagged it. Once the guard was taught to follow the alias, all
+ * three inherited events (`point-click`, `legend-click`, `series-toggle`)
+ * measured genuinely dead: the template has no per-point interactivity (no
+ * `@click`/`@keydown` on the arc paths, no `role`/`tabindex`), no legend
+ * markup at all, and `series` beyond the first entry is silently ignored —
+ * there is no "series" axis for a toggle to flip. Same reasoning as
+ * `IChartGaugeSlots`'s `Omit<IChartBaseSlots, 'tooltip' | 'legend-item'>`
+ * just below, applied to the emits side: a gauge is a single-value
+ * visualisation with neither points, a legend, nor a tooltip.
+ */
+export interface IChartGaugeEmits {}
 
 /**
  * Slot signatures exposed by `<OrigamChartGauge>`.

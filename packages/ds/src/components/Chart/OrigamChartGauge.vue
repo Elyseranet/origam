@@ -142,6 +142,7 @@
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
+	import { useChartUnsupportedProp } from '../../composables/Chart/chart-prop-warning.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
 	import { useLocale } from '../../composables/Commons/locale.composable'
@@ -190,8 +191,7 @@
 		gaugeShowValue: true
 	})
 
-	const emit = defineEmits<IChartGaugeEmits>()
-	void emit
+	defineEmits<IChartGaugeEmits>()
 
 	defineSlots<IChartGaugeSlots>()
 
@@ -204,6 +204,38 @@
 	const { roundedClasses, roundedStyles } = useRounded(props)
 	const { headerTypographyStyles } = useChartHeaderTypography(props)
 	const chartAnimationStyle = useChartAnimationStyle(props)
+
+	/*********************************************************
+	 * Unsupported base props (#545)
+	 *
+	 * @description
+	 * `showLegend` / `legendPosition` / `showTooltip` are inherited from
+	 * `IChartBaseProps` but have no effect here: a gauge reads a single
+	 * value (`series[0].data[0]`, extra series ignored) and renders
+	 * neither a legend nor a tooltip.
+	 * @description
+	 * Same treatment as `colorScheme` on Bullet/Candlestick/Heatmap/Map
+	 * (#426): neither wiring a fake behaviour nor removing the prop —
+	 * warn instead.
+	 ********************************************************/
+	useChartUnsupportedProp(
+		'OrigamChartGauge',
+		'showLegend',
+		'a gauge reads a single value from the first series and renders no legend markup at all.',
+		() => props.showLegend === true
+	)
+	useChartUnsupportedProp(
+		'OrigamChartGauge',
+		'legendPosition',
+		'no legend is ever rendered on a gauge, so there is nothing to anchor.',
+		() => props.legendPosition !== undefined && props.legendPosition !== 'bottom'
+	)
+	useChartUnsupportedProp(
+		'OrigamChartGauge',
+		'showTooltip',
+		'a gauge renders no per-point tooltip — the centre label already shows the current value.',
+		() => props.showTooltip === true
+	)
 
 	/*********************************************************
 	 * Static SVG box

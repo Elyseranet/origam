@@ -98,8 +98,13 @@
 								:cy="path.circle!.cy"
 								:r="path.circle!.r"
 								:fill="path.color"
+								tabindex="0"
+								role="button"
 								:aria-label="pointAriaLabel(path)"
 								:data-cy="`origam-chart-point-${ path.seriesIndex }-${ path.dataIndex }`"
+								@click="onPointActivate(path, $event)"
+								@keydown.enter.prevent="onPointActivate(path, $event)"
+								@keydown.space.prevent="onPointActivate(path, $event)"
 						/>
 					</template>
 				</g>
@@ -160,6 +165,7 @@
 	import OrigamChartLegend from './OrigamChartLegend.vue'
 
 	import type { IChartPath } from '../../interfaces/Chart/chart.interface'
+	import type { IChartPoint } from '../../interfaces/Chart/chart-point.interface'
 	import type { IChartRadarEmits, IChartRadarProps, IChartRadarSlots } from '../../interfaces/Chart/chart-radar.interface'
 	import type { IChartSeries } from '../../interfaces/Chart/chart-series.interface'
 
@@ -336,6 +342,21 @@
 		return `${ path.series.name }, ${ cat }: ${ y }`
 	}
 
+	const onPointActivate = (path: IChartPath, originalEvent: MouseEvent | KeyboardEvent): void => {
+		const dataIndex = path.dataIndex ?? 0
+		const entry = path.series.data[dataIndex]
+		const y = typeof entry === 'number' ? entry : entry.y
+		const point: IChartPoint = {
+			seriesIndex: path.seriesIndex,
+			seriesName: path.series.name,
+			dataIndex,
+			x: props.categories[dataIndex] ?? dataIndex,
+			y,
+			color: path.color
+		}
+		emit('point-click', point, originalEvent)
+	}
+
 	const onLegendClick = (series: IChartSeries, index: number): void => {
 		emit('legend-click', series, index)
 	}
@@ -453,6 +474,13 @@
 
 		.origam-chart__point {
 			cursor: pointer;
+			transition: filter 150ms ease;
+
+			&:hover,
+			&:focus-visible {
+				outline: none;
+				filter: brightness(1.15);
+			}
 		}
 
 		.origam-chart__svg--animated .origam-chart__polygon,
