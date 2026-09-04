@@ -139,18 +139,23 @@
 		max-width: var(--origam-divider---max-width, 100%);
 		opacity: var(--origam-divider---opacity, 0.12);
 		transition: inherit;
-		border-style: solid;
+		border-style: var(--origam-divider---border-style, solid);
 
-		border-top-width: var(--origam-divider---border-top-width, thin);
+		border-top-width: var(--origam-divider---border-top-width, var(--origam-divider---thickness, thin));
 		border-right-width: 0;
 		border-bottom-width: 0;
 		border-left-width: 0;
 		margin: 0;
+		margin-block: var(--origam-divider---margin-block, 0);
+		padding-block-start: var(--origam-divider---padding-block-start, 0);
+		padding-block-end: var(--origam-divider---padding-block-end, 0);
+		padding-inline-start: var(--origam-divider---padding-inline-start, 0);
+		padding-inline-end: var(--origam-divider---padding-inline-end, 0);
 
 		&--vertical {
 			align-self: stretch;
 			border-top-width: 0;
-			border-right-width: var(--origam-divider---border-right-width, thin);
+			border-right-width: var(--origam-divider---border-right-width, var(--origam-divider---thickness, thin));
 			border-bottom-width: 0;
 			border-left-width: 0;
 			display: inline-flex;

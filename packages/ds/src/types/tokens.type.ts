@@ -2050,7 +2050,7 @@ export type TTokenName =
   | '--origam-number-field---transition-duration'
   | '--origam-number-field---transition-easing'
   | '--origam-number-field--compact---gap'
-  | '--origam-number-field--compact---input-width'
+  | '--origam-number-field--compact__input---width'
   | '--origam-number-field__control---background-color'
   | '--origam-number-field__control---border-radius'
   | '--origam-number-field__control---cursor'

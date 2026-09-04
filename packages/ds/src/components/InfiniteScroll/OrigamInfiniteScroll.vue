@@ -372,7 +372,7 @@
 			justify-content: center;
 			flex-direction: column;
 			gap: var(--origam-infinite-scroll__loader---gap, 12px);
-			padding-block: var(--origam-infinite-scroll__loader---padding-block, 12px);
+			padding-block: var(--origam-infinite-scroll__empty---padding-block, var(--origam-infinite-scroll__loader---padding-block, 12px));
 			padding-inline: var(--origam-infinite-scroll__loader---padding-inline, 0px);
 			font-size: var(--origam-infinite-scroll__loader---font-size, 0.875rem);
 			color: var(--origam-infinite-scroll__empty---color, var(--origam-color__text---secondary));

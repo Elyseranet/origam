@@ -421,7 +421,6 @@
     "packages/ds/src/components/Media/OrigamMediaVolumeControl.vue::--origam-media-volume-control---hover-background-color",
     "packages/ds/src/components/Media/OrigamMediaVolumeControl.vue::--origam-media-volume-control---icon-size",
     "packages/ds/src/components/Media/OrigamMediaVolumeControl.vue::--origam-media-volume-control---tooltip-background-color",
-    "packages/ds/src/components/NumberField/OrigamNumberField.vue::--origam-number-field--compact__input---width",
     "packages/ds/src/components/OtpInputField/OrigamOtpInputField.vue::--origam-otp-input-field---error-color",
     "packages/ds/src/components/OtpInputField/OrigamOtpInputField.vue::--origam-otp-input-field__cell---background",
     "packages/ds/src/components/OtpInputField/OrigamOtpInputField.vue::--origam-otp-input-field__cell---border",

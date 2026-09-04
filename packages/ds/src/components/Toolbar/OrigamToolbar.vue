@@ -314,10 +314,10 @@
 		}
 
 		&--rounded {
-			--origam-toolbar---border-start-start-radius: 4px;
-			--origam-toolbar---border-start-end-radius: 4px;
-			--origam-toolbar---border-end-end-radius: 4px;
-			--origam-toolbar---border-end-start-radius: 4px;
+			--origam-toolbar---border-start-start-radius: var(--origam-toolbar__rounded---border-radius, 4px);
+			--origam-toolbar---border-start-end-radius: var(--origam-toolbar__rounded---border-radius, 4px);
+			--origam-toolbar---border-end-end-radius: var(--origam-toolbar__rounded---border-radius, 4px);
+			--origam-toolbar---border-end-start-radius: var(--origam-toolbar__rounded---border-radius, 4px);
 		}
 
 		&--absolute {
@@ -333,9 +333,9 @@
 		}
 
 		&--collapse {
-			--origam-toolbar---max-width: 112px;
-			--origam-toolbar---overflow: hidden;
-			--origam-toolbar---border-end-end-radius: 24px;
+			--origam-toolbar---max-width: var(--origam-toolbar__collapse---max-width, 112px);
+			--origam-toolbar---overflow: var(--origam-toolbar__collapse---overflow, hidden);
+			--origam-toolbar---border-end-end-radius: var(--origam-toolbar__collapse---border-end-end-radius, 24px);
 
 			#{$this}__title {
 				--origam-toolbar__title---display: none;
@@ -351,11 +351,11 @@
 		}
 
 		&--flat {
-			--origam-toolbar---box-shadow: none;
+			--origam-toolbar---box-shadow: var(--origam-toolbar__flat---box-shadow, none);
 		}
 
 		&--floating {
-			--origam-toolbar---display: inline-flex;
+			--origam-toolbar---display: var(--origam-toolbar__floating---display, inline-flex);
 		}
 
 		&__wrapper {

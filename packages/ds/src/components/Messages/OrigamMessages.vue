@@ -179,7 +179,7 @@
 <style lang="scss" scoped>
 	.origam-messages {
 		color: var(--origam-messages---color, currentColor);
-		padding: var(--origam-messages---density, 0);
+		padding: var(--origam-messages---padding, var(--origam-messages---density, 0));
 		flex: var(--origam-messages---flex, 1 1 auto);
 		font-size: var(--origam-messages---font-size, 12px);
 		min-height: var(--origam-messages---min-height, 14px);

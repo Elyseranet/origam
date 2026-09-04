@@ -328,6 +328,38 @@
         transform: none;
       }
     }
+
+    // #436 — `--origam-snackbar-group__item---*` was declared in the token
+    // sheet but never consumed: `OrigamSnackbarItem` only ever reads its
+    // OWN `--origam-snackbar-item---*` channel (used both standalone via
+    // `<OrigamSnackbar>` and stacked here). Rather than renaming either
+    // family — `--origam-snackbar-item---*` is already live and correct —
+    // this lets the GROUP override the item's presentation specifically
+    // when stacked, same pattern as Toolbar's `:deep(.origam-btn)` block.
+    // Each fallback is the item's OWN already-declared value, so this is
+    // zero-change until a theme actually sets a `__item` token. The 3
+    // tokens whose declared value does NOT match what SnackbarItem
+    // currently renders (box-shadow, content-gap, text-gap — see the
+    // ticket write-up) are deliberately left out: wiring them would change
+    // today's rendering, not just make it themeable.
+    :deep(.origam-snackbar-item) {
+      --origam-snackbar-item---gap: var(--origam-snackbar-group__item---gap, var(--origam-space---3, 12px));
+      --origam-snackbar-item---min-width: var(--origam-snackbar-group__item---min-width, 288px);
+      --origam-snackbar-item---max-width: var(--origam-snackbar-group__item---max-width, 420px);
+      --origam-snackbar-item---padding: var(--origam-snackbar-group__item---padding, 12px 14px);
+      --origam-snackbar-item---border-radius: var(--origam-snackbar-group__item---border-radius, var(--origam-radius---md, 8px));
+      --origam-snackbar-item---border-width: var(--origam-snackbar-group__item---border-width, var(--origam-border__width---thin, 1px));
+      --origam-snackbar-item---background-color: var(--origam-snackbar-group__item---background-color, var(--origam-color__surface---default));
+      --origam-snackbar-item---border-color: var(--origam-snackbar-group__item---border-color, var(--origam-color__border---subtle));
+      --origam-snackbar-item---color: var(--origam-snackbar-group__item---color, var(--origam-color__text---primary));
+      --origam-snackbar-item---font-size: var(--origam-snackbar-group__item---font-size, var(--origam-font__size---md, 0.875rem));
+      --origam-snackbar-item__prepend---color: var(--origam-snackbar-group__item---prepend-color, currentColor);
+      --origam-snackbar-item__title---font-weight: var(--origam-snackbar-group__item---title-font-weight, var(--origam-font__weight---semibold, 600));
+      --origam-snackbar-item__message---font-weight: var(--origam-snackbar-group__item---message-font-weight, var(--origam-font__weight---regular, 400));
+      --origam-snackbar-item__message---color: var(--origam-snackbar-group__item---message-color, currentColor);
+      --origam-snackbar-item__message---opacity: var(--origam-snackbar-group__item---message-opacity, 0.85);
+      --origam-snackbar-item__action---color: var(--origam-snackbar-group__item---action-color, var(--origam-color__action--primary---fg));
+    }
   }
 </style>
 

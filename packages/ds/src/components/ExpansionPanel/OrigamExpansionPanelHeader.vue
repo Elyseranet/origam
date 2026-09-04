@@ -323,8 +323,8 @@
 			position: var(--origam-expansion-panel__header__overlay---position, absolute);
 			top: var(--origam-expansion-panel__header__overlay---top, 0);
 			left: var(--origam-expansion-panel__header__overlay---left, 0);
-			width: 100%;
-			height: 100%;
+			width: var(--origam-expansion-panel__header__overlay---width, 100%);
+			height: var(--origam-expansion-panel__header__overlay---height, 100%);
 			background-color: currentColor;
 			border-radius: var(--origam-expansion-panel__header__overlay---border-radius, inherit);
 			opacity: var(--origam-expansion-panel__header__overlay---opacity, 0);
@@ -343,6 +343,8 @@
 		}
 
 		&__prepend {
+			margin-bottom: var(--origam-expansion-panel__header__prepend---margin-block, -4px);
+			margin-top: var(--origam-expansion-panel__header__prepend---margin-block, -4px);
 			margin-inline-end: var(--origam-expansion-panel__header__prepend---margin-inline-end, 8px);
 		}
 
