@@ -398,7 +398,7 @@
 			display: flex;
 			justify-content: center;
 			position: relative;
-			height: 40px;
+			height: var(--origam-date-picker__day---size, 40px);
 			background-color: var(--origam-date-picker__day---background-color, transparent);
 			color: var(--origam-date-picker__day---color, var(--origam-color__text---primary));
 

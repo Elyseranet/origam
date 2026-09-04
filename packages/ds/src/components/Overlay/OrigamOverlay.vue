@@ -451,32 +451,32 @@
 	.origam-overlay {
 		$this: &;
 
-		border-radius: inherit;
-		display: flex;
+		border-radius: var(--origam-overlay---border-radius, inherit);
+		display: var(--origam-overlay---display, flex);
 		left: 0;
-		pointer-events: none;
-		position: fixed;
+		pointer-events: var(--origam-overlay---pointer-events, none);
+		position: var(--origam-overlay---position, fixed);
 		top: 0;
 		bottom: 0;
 		right: 0;
 
 		&__content {
-			outline: none;
-			position: absolute;
-			pointer-events: auto;
-			contain: layout;
+			outline: var(--origam-overlay__content---outline, none);
+			position: var(--origam-overlay__content---position, absolute);
+			pointer-events: var(--origam-overlay__content---pointer-events, auto);
+			contain: var(--origam-overlay__content---contain, layout);
 		}
 
 		&__scrim {
 			pointer-events: var(--origam-overlay__scrim---pointer-events, auto);
 			background-color: var(--origam-overlay__scrim---background-color, var(--origam-color__overlay---scrim)); // TODO: rename to color.overlay.backdrop once #arbitration2 resolved
-			border-radius: inherit;
-			bottom: 0;
-			left: 0;
+			border-radius: var(--origam-overlay__scrim---border-radius, inherit);
+			bottom: var(--origam-overlay__scrim---position-bottom, 0);
+			left: var(--origam-overlay__scrim---position-left, 0);
 			opacity: var(--origam-overlay__scrim---opacity, 0.32);
-			position: fixed;
-			right: 0;
-			top: 0;
+			position: var(--origam-overlay__scrim---position, fixed);
+			right: var(--origam-overlay__scrim---position-right, 0);
+			top: var(--origam-overlay__scrim---position-top, 0);
 		}
 
     &--is-rtl {
@@ -488,12 +488,12 @@
     }
 
 		&--absolute {
-			position: absolute;
+			position: var(--origam-overlay__absolute---position, absolute);
 		}
 
 		&--contained {
 			#{$this}__scrim {
-				position: absolute;
+				position: var(--origam-overlay__contained---scrim-position, absolute);
 			}
 		}
 

@@ -230,7 +230,7 @@
 		$this: &;
 
 		align-items: flex-end;
-		height: 70px;
+		height: var(--origam-date-picker__header---min-height, 70px);
 		display: grid;
 		grid-template-areas: "prepend content append";
 		grid-template-columns: min-content minmax(0, 1fr) min-content;
