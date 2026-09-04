@@ -301,78 +301,78 @@
 		$this: &;
 
 		&--circular {
-			align-items: center;
-			display: inline-flex;
-			justify-content: center;
-			position: relative;
-			vertical-align: middle;
+			align-items: var(--origam-progress-circular---align-items, center);
+			display: var(--origam-progress-circular---display, inline-flex);
+			justify-content: var(--origam-progress-circular---justify-content, center);
+			position: var(--origam-progress-circular---position, relative);
+			vertical-align: var(--origam-progress-circular---vertical-align, middle);
 
 			> svg {
-				width: 100%;
-				height: 100%;
+				width: var(--origam-progress-circular__svg---width, 100%);
+				height: var(--origam-progress-circular__svg---height, 100%);
 				margin: auto;
-				position: absolute;
+				position: var(--origam-progress-circular__svg---position, absolute);
 				top: 0;
 				bottom: 0;
 				left: 0;
 				right: 0;
-				z-index: 0;
+				z-index: var(--origam-progress-circular__svg---z-index, 0);
 			}
 
 			#{$this}__content {
-				align-items: center;
-				display: flex;
-				justify-content: center;
+				align-items: var(--origam-progress-circular__content---align-items, center);
+				display: var(--origam-progress-circular__content---display, flex);
+				justify-content: var(--origam-progress-circular__content---justify-content, center);
 			}
 
 			#{$this}__underlay {
 				color: var(--origam-progress-circular__underlay---color, var(--origam-color__surface---disabled));
 				stroke: currentColor;
 				opacity: var(--origam-progress-circular__underlay---opacity, 0.5);
-				z-index: 1;
+				z-index: var(--origam-progress-circular__underlay---z-index, 1);
 			}
 
 			#{$this}__overlay {
 				color: var(--origam-progress-circular__overlay---color, inherit);
 				stroke: currentColor;
 				transition: all var(--origam-progress-circular---transition-duration, 0.2s) var(--origam-progress-circular---transition-easing, ease-in-out), stroke-width 0s;
-				z-index: 2;
+				z-index: var(--origam-progress-circular__overlay---z-index, 2);
 			}
 
 			&#{$this}--size-x-small {
-				height: 16px;
-				width: 16px;
+				height: var(--origam-progress-circular---size-xs, 16px);
+				width: var(--origam-progress-circular---size-xs, 16px);
 			}
 
 			&#{$this}--size-small {
-				height: 24px;
-				width: 24px;
+				height: var(--origam-progress-circular---size-sm, 24px);
+				width: var(--origam-progress-circular---size-sm, 24px);
 			}
 
 			&#{$this}--size-default {
-				height: 32px;
-				width: 32px;
+				height: var(--origam-progress-circular---size-md, 32px);
+				width: var(--origam-progress-circular---size-md, 32px);
 			}
 
 			&#{$this}--size-large {
-				height: 48px;
-				width: 48px;
+				height: var(--origam-progress-circular---size-lg, 48px);
+				width: var(--origam-progress-circular---size-lg, 48px);
 			}
 
 			&#{$this}--size-x-large {
-				height: 64px;
-				width: 64px;
+				height: var(--origam-progress-circular---size-xl, 64px);
+				width: var(--origam-progress-circular---size-xl, 64px);
 			}
 
 			&#{$this}--indeterminate {
 				> svg {
-					animation: progress-circular-rotate 1.4s linear infinite;
+					animation: progress-circular-rotate var(--origam-progress-circular---indeterminate-duration, 1.4s) linear infinite;
 					transform-origin: center center;
 					transition: all 0.2s ease-in-out;
 				}
 
 				#{$this}__overlay {
-					animation: progress-circular-dash 1.4s ease-in-out infinite, progress-circular-rotate 1.4s linear infinite;
+					animation: progress-circular-dash var(--origam-progress-circular---indeterminate-duration, 1.4s) ease-in-out infinite, progress-circular-rotate var(--origam-progress-circular---indeterminate-duration, 1.4s) linear infinite;
 					stroke-dasharray: 25, 200;
 					stroke-dashoffset: 0;
 					stroke-linecap: round;
