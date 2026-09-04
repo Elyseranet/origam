@@ -320,9 +320,9 @@
 			}
 
 			#{$this}__content {
-				align-items: center;
-				display: flex;
-				justify-content: center;
+				align-items: var(--origam-progress__content---align-items, center);
+				display: var(--origam-progress__content---display, flex);
+				justify-content: var(--origam-progress__content---justify-content, center);
 			}
 
 			#{$this}__underlay {

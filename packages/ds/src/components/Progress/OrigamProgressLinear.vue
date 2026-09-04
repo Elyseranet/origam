@@ -303,7 +303,7 @@
 			overflow: hidden;
 			position: relative;
 			transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-			width: 100%;
+			width: var(--origam-progress---width, 100%);
 
 			#{$this}__background {
 				background: currentColor;
@@ -317,15 +317,15 @@
 			}
 
 			#{$this}__content {
-				align-items: center;
-				display: flex;
-				height: 100%;
-				justify-content: center;
-				left: 0;
-				pointer-events: none;
-				position: absolute;
-				top: 0;
-				width: 100%;
+				align-items: var(--origam-progress__content---align-items, center);
+				display: var(--origam-progress__content---display, flex);
+				height: var(--origam-progress__content---height, 100%);
+				justify-content: var(--origam-progress__content---justify-content, center);
+				left: var(--origam-progress__content---left, 0);
+				pointer-events: var(--origam-progress__content---pointer-events, none);
+				position: var(--origam-progress__content---position, absolute);
+				top: var(--origam-progress__content---top, 0);
+				width: var(--origam-progress__content---width, 100%);
 			}
 
 			#{$this}__loader {
