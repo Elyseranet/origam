@@ -207,19 +207,77 @@ export function extractEmitNames (body) {
     return names
 }
 
+// Forme "alias" — `export type IXxxEmits = <RHS>`, jamais suivie avant ce
+// correctif (#voir dead-emits.selftest.mjs / emits.selftest.mjs) : la seule
+// regex de `buildInterfaceIndex()` cherchait `export interface`, donc un
+// alias n'entrait JAMAIS dans l'index. `resolveDeclared('IChartGaugeEmits',
+// index)` renvoyait un Set VIDE -> `analyseDeadEmits` retournait tôt
+// (`declared.size === 0`, voir son corps) -> le composant était INVISIBLE au
+// garde, pas seulement non signalé. 19 interfaces de ce dépôt utilisent
+// cette forme au moment de l'écriture (18 `IChartXxxEmits = IChartBaseEmits`
+// + `IDatePickerHeaderEmits`, alias vers une signature nue), sous DEUX formes
+// distinctes de RHS :
+//   1. Un identifiant NU `IYyyEmits` (alias vers une AUTRE interface) — on
+//      pointe l'entrée d'index vers cette cible via `parents`, exactement
+//      comme le ferait `extends` ; `resolveDeclared` fait déjà la
+//      récursion, aucun changement nécessaire de ce côté.
+//   2. Une signature de fonction NUE, `(e: 'nom', ...) => ReturnType` — pas
+//      d'accolades, donc pas de "corps" au sens d'`extractBody`. Le RHS
+//      entier tient sur UN SEUL membre valide pour `extractEmitNames` (elle
+//      découpe déjà sur `;`/`\n` de niveau supérieur et reconnaît la forme
+//      "signature d'appel" en tête de membre) : lui passer le RHS brut
+//      fonctionne SANS aucune fonction d'extraction séparée.
+const TYPE_ALIAS_EMITS_RE = /export\s+type\s+(I[A-Za-z0-9]*Emits)\s*=\s*([^\n;]+)/g
+const BARE_INTERFACE_NAME_RE = /^(I[A-Za-z0-9]*Emits)$/
+
+/**
+ * Parse le contenu (déjà `stripComments`) d'UN fichier `*.interface.ts` et
+ * renvoie les entrées `[name, {parents, events}]` qu'il déclare — pour les
+ * deux formes, `export interface IXxxEmits extends … {}` ET
+ * `export type IXxxEmits = <RHS>`.
+ *
+ * Extraite en fonction PURE (aucun accès disque) exprès pour que le
+ * selftest puisse l'appeler directement sur une chaîne fabriquée — la même
+ * classe de piège que celle documentée plus haut sur `extractEmitNames` :
+ * un selftest qui construit l'index à la main (`index.set(...)`) ne passe
+ * JAMAIS par cette regex, et un bug dedans resterait invisible à la suite
+ * de tests aussi longtemps qu'au premier passage.
+ */
+export function parseEmitsInterfacesFromSource (src) {
+    const entries = []
+
+    const interfaceRe = /export\s+interface\s+(I[A-Za-z0-9]*Emits)([^{]*)\{/g
+    let m
+    while ((m = interfaceRe.exec(src))) {
+        const [, name, heritage] = m
+        const body = extractBody(src, interfaceRe.lastIndex - 1)
+        const parents = [...heritage.matchAll(/(I[A-Za-z0-9]*Emits)/g)].map(x => x[1])
+        const events = extractEmitNames(body)
+        entries.push([name, { parents, events }])
+    }
+
+    TYPE_ALIAS_EMITS_RE.lastIndex = 0
+    while ((m = TYPE_ALIAS_EMITS_RE.exec(src))) {
+        const [, name, rhsRaw] = m
+        const rhs = rhsRaw.trim()
+        const bareInterfaceMatch = rhs.match(BARE_INTERFACE_NAME_RE)
+        if (bareInterfaceMatch) {
+            entries.push([name, { parents: [bareInterfaceMatch[1]], events: [] }])
+        } else {
+            entries.push([name, { parents: [], events: extractEmitNames(rhs) }])
+        }
+    }
+
+    return entries
+}
+
 export function buildInterfaceIndex () {
     const files = walk(INTERFACES_DIR, f => f.endsWith('.interface.ts'))
     const index = new Map()
     for (const file of files) {
         const src = stripComments(readFileSync(file, 'utf8'))
-        const re = /export\s+interface\s+(I[A-Za-z0-9]*Emits)([^{]*)\{/g
-        let m
-        while ((m = re.exec(src))) {
-            const [, name, heritage] = m
-            const body = extractBody(src, re.lastIndex - 1)
-            const parents = [...heritage.matchAll(/(I[A-Za-z0-9]*Emits)/g)].map(x => x[1])
-            const events = extractEmitNames(body)
-            index.set(name, { parents, events })
+        for (const [name, entry] of parseEmitsInterfacesFromSource(src)) {
+            index.set(name, entry)
         }
     }
     return index
