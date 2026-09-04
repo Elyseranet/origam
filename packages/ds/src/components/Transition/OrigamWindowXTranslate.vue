@@ -15,7 +15,7 @@
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useWindowTransition } from '../../composables/Transition/windowTransition.composable'
 
-	import type { ITransitionEmits, ITransitionProps, ITransitionSlots } from '../../interfaces/Transition/transition.interface'
+	import type { ITransitionEmits, ITransitionNoOriginProps, ITransitionSlots } from '../../interfaces/Transition/transition.interface'
 
 	/*********************************************************
 	 * Global
@@ -23,11 +23,11 @@
 	 * @description
 	 * Props with defaults and filterProps utility.
 	 ********************************************************/
-	const props = withDefaults(defineProps<ITransitionProps>(), {
+	const props = withDefaults(defineProps<ITransitionNoOriginProps>(), {
 		name: 'origam-transition--window-x-translate'
 	})
 
-	const {filterProps} = useProps<ITransitionProps>(props)
+	const {filterProps} = useProps<ITransitionNoOriginProps>(props)
 
 	defineEmits<ITransitionEmits>()
 

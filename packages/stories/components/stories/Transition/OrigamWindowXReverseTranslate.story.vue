@@ -6,7 +6,7 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<Partial<ITransitionProps>>({ name: 'origam-transition--window-x-reverse-translate', origin: '' })"
+				:init-state="() => useStoryInitState<Partial<ITransitionNoOriginProps>>({ name: 'origam-transition--window-x-reverse-translate' })"
 		>
 			<template #default="{ state }">
 				<div class="story-shell">
@@ -14,7 +14,6 @@
 					<div class="story-window">
 						<origam-window-x-reverse-translate
 								:name="state.name"
-								:origin="state.origin || undefined"
 						>
 							<div v-if="toggleDesign" class="story-target" data-cy="target-design">Design preview</div>
 						</origam-window-x-reverse-translate>
@@ -24,14 +23,13 @@
 			<template #controls="{ state }">
 				<StoryGroup title="Animation">
 					<HstText v-model="state.name"   title="Name (CSS class prefix)"/>
-					<HstText v-model="state.origin" title="Origin (transform-origin)"/>
 				</StoryGroup>
 			</template>
 		</Variant>
 
 		<Variant
 				title="Functional"
-				:init-state="() => useStoryInitState<Partial<ITransitionProps>>({ disabled: false, group: false, mode: undefined, hideOnLeave: false, leaveAbsolute: false })"
+				:init-state="() => useStoryInitState<Partial<ITransitionNoOriginProps>>({ disabled: false, group: false, mode: undefined, hideOnLeave: false, leaveAbsolute: false })"
 		>
 			<template #default="{ state }">
 				<div class="story-shell">
@@ -77,7 +75,7 @@
 
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<ITransitionProps>({ name: 'origam-transition--window-x-reverse-translate', disabled: false, group: false, hideOnLeave: false, leaveAbsolute: false })"
+				:init-state="() => useStoryInitState<ITransitionNoOriginProps>({ name: 'origam-transition--window-x-reverse-translate', disabled: false, group: false, hideOnLeave: false, leaveAbsolute: false })"
 		>
 			<template #default="{ state }">
 				<div class="story-shell">
@@ -92,7 +90,6 @@
 			<template #controls="{ state }">
 				<StoryGroup title="Content">
 					<HstText v-model="state.name"   title="Name (CSS class prefix)"/>
-					<HstText v-model="state.origin" title="Origin (transform-origin)"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.disabled"      title="Disabled"/>
@@ -114,7 +111,7 @@
 
 	import { OrigamWindowXReverseTranslate } from '@origam/components'
 	import { TRANSITION_MODE } from '@origam/enums'
-	import type { ITransitionProps } from '@origam/interfaces'
+	import type { ITransitionNoOriginProps } from '@origam/interfaces'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'

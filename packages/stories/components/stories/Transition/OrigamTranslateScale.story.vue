@@ -14,7 +14,11 @@
 			<template #default="{ state }">
 				<div class="story-shell">
 					<button class="story-toggle" data-cy="toggle-design" @click="toggleDesign = !toggleDesign">Toggle</button>
-					<origam-translate-scale :name="state.name" :origin="state.origin">
+					<origam-translate-scale
+							:name="state.name"
+							:origin="state.origin"
+							:target="useTargetDesign ? ([targetXDesign, targetYDesign] as [number, number]) : undefined"
+					>
 						<div v-if="toggleDesign" class="story-target" data-cy="target-design">Animate me</div>
 					</origam-translate-scale>
 				</div>
@@ -23,6 +27,11 @@
 				<StoryGroup title="Animation">
 					<HstText v-model="state.name"   title="Name (CSS class)"/>
 					<HstText v-model="state.origin" title="Origin"/>
+				</StoryGroup>
+				<StoryGroup title="Target (WAAPI path)">
+					<HstCheckbox v-model="useTargetDesign" title="Use target (switches CSS path to WAAPI)"/>
+					<HstNumber   v-model="targetXDesign"   title="Target X" data-cy="target-x-design"/>
+					<HstNumber   v-model="targetYDesign"   title="Target Y" data-cy="target-y-design"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -128,6 +137,10 @@
 	const toggleFunctional = ref(false)
 	const toggleSlotDefault = ref(false)
 	const togglePlayground  = ref(false)
+
+	const useTargetDesign = ref(false)
+	const targetXDesign   = ref(0)
+	const targetYDesign   = ref(0)
 
 	const TRANSITION_MODE_OPTIONS = [
 		{ label: 'in-out',  value: TRANSITION_MODE.IN_OUT },

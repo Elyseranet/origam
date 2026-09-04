@@ -6,9 +6,8 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<ITransitionProps>({
-					name: 'origam-transition--window-y-translate',
-					origin: undefined
+				:init-state="() => useStoryInitState<ITransitionNoOriginProps>({
+					name: 'origam-transition--window-y-translate'
 				})"
 		>
 			<template #default="{ state }">
@@ -18,7 +17,6 @@
 						<origam-window-y-translate
 								:name="state.name"
 								:mode="state.mode"
-								:origin="state.origin"
 						>
 							<div v-if="toggleDesign" class="story-target" data-cy="target-design">Window Y Translate</div>
 						</origam-window-y-translate>
@@ -29,14 +27,13 @@
 				<StoryGroup title="Transition">
 					<HstText   v-model="state.name"   title="Name"/>
 					<HstSelect v-model="state.mode"   title="Mode"   :options="TRANSITION_MODE_OPTIONS"/>
-					<HstText   v-model="state.origin" title="Origin"/>
 				</StoryGroup>
 			</template>
 		</Variant>
 
 		<Variant
 				title="Functional"
-				:init-state="() => useStoryInitState<ITransitionProps>({
+				:init-state="() => useStoryInitState<ITransitionNoOriginProps>({
 					disabled: false,
 					group: false,
 					hideOnLeave: false,
@@ -85,13 +82,12 @@
 
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<ITransitionProps>({
+				:init-state="() => useStoryInitState<ITransitionNoOriginProps>({
 					name: 'origam-transition--window-y-translate',
 					disabled: false,
 					group: false,
 					hideOnLeave: false,
-					leaveAbsolute: false,
-					origin: undefined
+					leaveAbsolute: false
 				})"
 		>
 			<template #default="{ state }">
@@ -108,7 +104,6 @@
 				<StoryGroup title="Design">
 					<HstText   v-model="state.name"   title="Name"/>
 					<HstSelect v-model="state.mode"   title="Mode"   :options="TRANSITION_MODE_OPTIONS"/>
-					<HstText   v-model="state.origin" title="Origin"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.disabled"      title="Disabled"/>
@@ -129,7 +124,7 @@
 
 	import { OrigamWindowYTranslate } from '@origam/components'
 	import { TRANSITION_MODE } from '@origam/enums'
-	import type { ITransitionProps } from '@origam/interfaces'
+	import type { ITransitionNoOriginProps } from '@origam/interfaces'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'

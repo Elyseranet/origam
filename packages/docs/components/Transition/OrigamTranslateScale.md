@@ -65,3 +65,17 @@ interface ITranslateScaleProps extends ITransitionProps {
   (`utils/Commons/animation.util.ts`) shrinks the WAAPI duration to a
   near-zero value rather than running it at full speed — the CSS path
   is covered by the `ds.ds-reduced-motion` SCSS mixin.
+- **`origin` (inherited from `ITransitionProps`) is implemented on BOTH
+  paths (#538/#548)** — this is the only member of the 8-component
+  `origin` audit where the prop has something to anchor on, since this
+  is the only transition whose keyframes/CSS class include an actual
+  `scale(...)`. Set as `el.style.transformOrigin` before the scale
+  runs:
+  - **CSS-only** (`!target`): the inline style wins the cascade over
+    the `.origam-transition--transform-scale-enter-from` rule's
+    `transform: scale(0.9)`.
+  - **WAAPI** (`target` set): set before `getDimensions()` runs so its
+    `getComputedStyle(el).transformOrigin` read
+    (`utils/Transition/transition.util.ts`) picks up the custom value —
+    that function's `x`/`y` offset math already generically accounts
+    for whatever `transform-origin` is current on the element.

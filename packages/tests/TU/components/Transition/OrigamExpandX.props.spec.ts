@@ -14,9 +14,10 @@
 // support `mode` on `TransitionGroup`, so it must be omitted, not just
 // forwarded, when `group` is true).
 //
-// `origin` is NOT covered here — see the ticket report: it sets
-// `transform-origin`, which has no effect on a width-only animation, so it
-// is recommended for removal rather than implemented.
+// `origin` is NOT covered here — it set `transform-origin`, which has no
+// effect on a width-only animation, so it was REMOVED from this component's
+// props (breaking change, #538/#548) rather than implemented — see
+// `ITransitionNoOriginProps` in `interfaces/Transition/transition.interface.ts`.
 
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'

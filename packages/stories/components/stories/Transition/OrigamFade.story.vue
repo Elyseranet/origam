@@ -6,7 +6,7 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<ITransitionProps>({ name: 'origam-transition--fade', origin: '' })"
+				:init-state="() => useStoryInitState<ITransitionNoOriginProps>({ name: 'origam-transition--fade' })"
 		>
 			<template #default="{ state }">
 				<div class="story-shell">
@@ -19,7 +19,6 @@
 					</button>
 					<origam-fade
 							:name="state.name"
-							:origin="state.origin || undefined"
 					>
 						<div
 								v-if="toggleDesign"
@@ -34,14 +33,13 @@
 			<template #controls="{ state }">
 				<StoryGroup title="Animation">
 					<HstText v-model="state.name"   title="Name (BEM class)"/>
-					<HstText v-model="state.origin" title="Origin (transformOrigin)"/>
 				</StoryGroup>
 			</template>
 		</Variant>
 
 		<Variant
 				title="Functional"
-				:init-state="() => useStoryInitState<ITransitionProps>({ disabled: false, group: false, hideOnLeave: false, leaveAbsolute: false, mode: undefined })"
+				:init-state="() => useStoryInitState<ITransitionNoOriginProps>({ disabled: false, group: false, hideOnLeave: false, leaveAbsolute: false, mode: undefined })"
 		>
 			<template #default="{ state }">
 				<div class="story-shell">
@@ -131,7 +129,7 @@
 
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<ITransitionProps>({ name: 'origam-transition--fade', disabled: false, group: false, hideOnLeave: false, leaveAbsolute: false, origin: '' })"
+				:init-state="() => useStoryInitState<ITransitionNoOriginProps>({ name: 'origam-transition--fade', disabled: false, group: false, hideOnLeave: false, leaveAbsolute: false })"
 		>
 			<template #default="{ state }">
 				<div class="story-shell">
@@ -182,7 +180,6 @@
 			<template #controls="{ state }">
 				<StoryGroup title="Design">
 					<HstText v-model="state.name"   title="Name (BEM class)"/>
-					<HstText v-model="state.origin" title="Origin (transformOrigin)"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.disabled"      title="Disabled"/>
@@ -203,7 +200,7 @@
 	import { ref } from 'vue'
 
 	import { OrigamFade } from '@origam/components'
-	import type { ITransitionProps } from '@origam/interfaces'
+	import type { ITransitionNoOriginProps } from '@origam/interfaces'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
