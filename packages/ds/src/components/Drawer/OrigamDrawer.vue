@@ -485,7 +485,7 @@
 		transition-timing-function: var(--origam-drawer---transition-timing-function);
 
 		position: var(--origam-layout---position, var(--origam-drawer---position));
-		z-index: var(--origam-layout---zIndex, 1000);
+		z-index: var(--origam-layout---zIndex, var(--origam-drawer---z-index, 1000));
 
 		border-color: var(--origam-drawer---border-color);
 		border-style: var(--origam-drawer---border-style);
@@ -503,34 +503,35 @@
 		color: var(--origam-drawer---color);
 
 		&--border {
-			--origam-drawer---border-top-width: thin;
-			--origam-drawer---border-right-width: thin;
-			--origam-drawer---border-bottom-width: thin;
-			--origam-drawer---border-left-width: thin;
+			--origam-drawer---border-top-width: var(--origam-drawer__border---border-width, thin);
+			--origam-drawer---border-right-width: var(--origam-drawer__border---border-width, thin);
+			--origam-drawer---border-bottom-width: var(--origam-drawer__border---border-width, thin);
+			--origam-drawer---border-left-width: var(--origam-drawer__border---border-width, thin);
+			--origam-drawer---box-shadow: var(--origam-drawer__border---box-shadow, var(--origam-shadow---none));
 		}
 
 		&--top {
 			top: 0;
-			--origam-drawer---border-bottom-width: thin;
+			--origam-drawer---border-bottom-width: var(--origam-drawer__top---border-bottom-width, thin);
 		}
 
 		&--bottom {
 			left: 0;
-			--origam-drawer---border-top-width: thin;
+			--origam-drawer---border-top-width: var(--origam-drawer__bottom---border-top-width, thin);
 		}
 
 		&--left {
 			top: 0;
 			left: 0;
 			right: auto;
-			--origam-drawer---border-right-width: thin;
+			--origam-drawer---border-right-width: var(--origam-drawer__left---border-right-width, thin);
 		}
 
 		&--right {
 			top: 0;
 			left: auto;
 			right: 0;
-			--origam-drawer---border-left-width: thin;
+			--origam-drawer---border-left-width: var(--origam-drawer__right---border-left-width, thin);
 		}
 
 		&--floating {
@@ -538,12 +539,12 @@
 		}
 
 		&--temporary {
-			--origam-drawer---box-shadow: var(--origam-shadow---lg);
+			--origam-drawer---box-shadow: var(--origam-drawer__temporary---box-shadow, var(--origam-shadow---lg));
 		}
 
 		&--sticky {
-			--origam-drawer---height: auto;
-			--origam-drawer---transition-property: box-shadow, transform, visibility, width, height, left, right;
+			--origam-drawer---height: var(--origam-drawer__sticky---height, auto);
+			--origam-drawer---transition-property: var(--origam-drawer__sticky---transition-property, box-shadow, transform, visibility, width, height, left, right);
 		}
 
 		&:deep(.origam-list) {
@@ -551,20 +552,20 @@
 		}
 
 		&__content {
-			flex: 0 1 auto;
-			height: 100%;
-			max-width: 100%;
-			overflow-x: hidden;
-			overflow-y: auto;
+			flex: var(--origam-drawer__content---flex, 0 1 auto);
+			height: var(--origam-drawer__content---height, 100%);
+			max-width: var(--origam-drawer__content---max-width, 100%);
+			overflow-x: var(--origam-drawer__content---overflow-x, hidden);
+			overflow-y: var(--origam-drawer__content---overflow-y, auto);
 		}
 
 		&__img {
-			height: 100%;
+			height: var(--origam-drawer__img---height, 100%);
 			left: 0;
-			position: absolute;
+			position: var(--origam-drawer__img---position, absolute);
 			top: 0;
-			width: 100%;
-			z-index: -1;
+			width: var(--origam-drawer__img---width, 100%);
+			z-index: var(--origam-drawer__img---z-index, -1);
 
 			img {
 				height: inherit;
