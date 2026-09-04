@@ -286,18 +286,18 @@
 	.origam-data-table-row {
 		$this: &;
 
-		background-color: var(--origam-data-table-row---background-color, var(--origam-color__surface---default));
-		color: var(--origam-data-table-row---color, var(--origam-color__text---primary));
+		background-color: var(--origam-data-table-row---background-color, var(--origam-data-table__row---background-color, var(--origam-color__surface---default)));
+		color: var(--origam-data-table-row---color, var(--origam-data-table__row---color, var(--origam-color__text---primary)));
 		transition-property: background-color;
-		transition-duration: var(--origam-data-table-row---transition-duration, 100ms);
-		transition-timing-function: var(--origam-data-table-row---transition-easing, cubic-bezier(0.4, 0, 0.2, 1));
+		transition-duration: var(--origam-data-table-row---transition-duration, var(--origam-data-table__row---transition-duration, 100ms));
+		transition-timing-function: var(--origam-data-table-row---transition-easing, var(--origam-data-table__row---transition-easing, cubic-bezier(0.4, 0, 0.2, 1)));
 
 		&:hover {
-			background-color: var(--origam-data-table-row--hover---background-color, var(--origam-color__surface---overlay));
+			background-color: var(--origam-data-table-row--hover---background-color, var(--origam-data-table__row---hover-background-color, var(--origam-color__surface---overlay)));
 		}
 
 		&__column-title {
-			font-weight: var(--origam-data-table-row__column-title---font-weight, 500);
+			font-weight: var(--origam-data-table-row__column-title---font-weight, var(--origam-data-table__row---column-title-font-weight, 500));
 		}
 
 		&--clickable {
@@ -332,7 +332,7 @@
 				column-gap: 4px;
 				display: grid;
 				grid-template-columns: repeat(2, 1fr);
-				min-height: var(--origam-data-table-row--mobile__column-min-height, var(--origam-data-table-row--mobile__column, 52px));
+				min-height: var(--origam-data-table-row--mobile__column-min-height, var(--origam-data-table-row--mobile__column, var(--origam-data-table__row---mobile-column-min-height, 52px)));
 
 				&:not(:last-child) {
 					border-bottom: 0;
