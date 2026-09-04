@@ -33,8 +33,14 @@ origam-transition--window-x-translate-leave-to     { position: absolute; top: 0;
 
 ## Props
 
-`ITransitionProps` — `name`, `disabled`. Reads from the
-`ORIGAM_WINDOW_KEY` context if available.
+`ITransitionNoOriginProps` (`ITransitionProps` minus `origin`) — `name`,
+`disabled`. Reads from the `ORIGAM_WINDOW_KEY` context if available.
+
+⛔ **`origin` was removed (breaking change, #538/#548).** This transition
+only ever animates a plain `translate(...)` — `transform-origin` has
+nothing to anchor on and never produced any observable effect. Consumers
+passing `origin` now get a compile-time TypeScript error rather than a
+silent no-op.
 
 ## Notes
 

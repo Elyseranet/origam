@@ -23,7 +23,7 @@
 	import { TRANSITION_MODE } from '../../enums/Transition/transition.enum'
 
 	import type { IHTMLExpandElement } from '../../interfaces/Transition/expand.interface'
-	import type { ITransitionEmits, ITransitionProps, ITransitionSlots } from '../../interfaces/Transition/transition.interface'
+	import type { ITransitionEmits, ITransitionNoOriginProps, ITransitionSlots } from '../../interfaces/Transition/transition.interface'
 
 	/*********************************************************
 	 * Global
@@ -31,12 +31,12 @@
 	 * @description
 	 * Props with defaults and filterProps utility.
 	 ********************************************************/
-	const props = withDefaults(defineProps<ITransitionProps>(), {
+	const props = withDefaults(defineProps<ITransitionNoOriginProps>(), {
 		name: 'origam-transition--expand-x',
 		mode: TRANSITION_MODE.IN_OUT
 	})
 
-	const {filterProps} = useProps<ITransitionProps>(props)
+	const {filterProps} = useProps<ITransitionNoOriginProps>(props)
 
 	defineEmits<ITransitionEmits>()
 

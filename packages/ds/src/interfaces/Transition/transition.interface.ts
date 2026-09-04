@@ -34,6 +34,26 @@ export interface ITransitionWindowProps extends ITransitionProps {
     window?: IWindowProvide
 }
 
+/*********************************************************
+ * ITransitionNoOriginProps
+ *
+ * @description
+ * `ITransitionProps` minus `origin` — for the 7 family members whose
+ * transition never touches a `scale`/`rotate` transform (`ExpandX`/`Y`
+ * animate `width`/`height`, `Fade` animates `opacity`,
+ * `Window{X,Y}{,Reverse}Translate` animate a plain `translate`).
+ * `transform-origin` has nothing to anchor on a translate/width/height/
+ * opacity change, so the prop was declared but never produced any
+ * observable effect (issue #538/#548). Removed here rather than at the
+ * root `ITransitionProps` because 7 OTHER family members sharing that
+ * same interface (`ScaleRotate`, `Snack` via a real `scale`/`rotate`,
+ * plus `SlideX`/`SlideY`/`TranslatePicker`/`ReverseTranslatePicker`/
+ * `TranslateBottom`) still declare it — `ScaleRotate` and `Snack` in
+ * particular have a legitimate use for it. See
+ * `docs/mesures/` for the full per-component audit.
+ ********************************************************/
+export interface ITransitionNoOriginProps extends Omit<ITransitionProps, 'origin'> {}
+
 /** Slot signatures shared by every `<Origam*>` transition wrapper
  *  (Fade, SlideX/Y, ExpandX/Y, ScaleRotate, TranslateScale, …) — a
  *  single unscoped `default` slot holding the transitioned content. */

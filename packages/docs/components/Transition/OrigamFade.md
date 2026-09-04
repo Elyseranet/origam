@@ -45,16 +45,22 @@ Default `transition-duration` is **0.3s** with the standard easing
 ## Props
 
 ```ts
-interface ITransitionProps {
+interface ITransitionNoOriginProps {
     mode?: 'in-out' | 'out-in' | 'default'
     disabled?: boolean
     name?: string                // override the BEM name
     group?: boolean              // → TransitionGroup
     hideOnLeave?: boolean
     leaveAbsolute?: boolean
-    origin?: string              // transformOrigin
 }
 ```
+
+⛔ **`origin` was removed (breaking change, #538/#548).** It set
+`transform-origin`, which is meaningless for an opacity-only animation
+(no `transform: scale(...)` anywhere in this component) — the prop was
+declared but never produced any observable effect. Consumers passing
+`origin` now get a compile-time TypeScript error rather than a silent
+no-op.
 
 ## Accessibility
 

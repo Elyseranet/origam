@@ -58,7 +58,7 @@ Override at the document root or on a specific instance:
 
 ## Props
 
-`ITransitionProps`:
+`ITransitionNoOriginProps` (`ITransitionProps` minus `origin`):
 
 | Prop | Effect |
 |---|---|
@@ -69,11 +69,12 @@ Override at the document root or on a specific instance:
 | `leaveAbsolute` | On leave, pulls the element out of flow (`position: absolute`, frozen at its current box) so siblings reflow immediately instead of waiting for the width to reach `0`. Restored once the leave completes. |
 | `hideOnLeave` | Skips the visible width-collapse on leave entirely — the element is hidden (`display: none`) instantly instead. |
 
-`origin` is declared on `ITransitionProps` but has **no effect here** —
-it sets `transform-origin`, which is meaningless for a width-only
-animation (no `transform: scale(...)` anywhere in this component's
-enter/leave). Flagged for removal from the public API rather than
-implemented; see ticket #538.
+⛔ **`origin` was removed (breaking change, #538/#548).** It set
+`transform-origin`, which is meaningless for a width-only animation (no
+`transform: scale(...)` anywhere in this component's enter/leave) — the
+prop was declared but never produced any observable effect. Consumers
+passing `origin` now get a compile-time TypeScript error rather than a
+silent no-op.
 
 ## Notes
 
