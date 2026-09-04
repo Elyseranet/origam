@@ -116,14 +116,19 @@ The `validateOn` prop controls when validation fires:
 | Event | Payload | Description |
 |-------|---------|-------------|
 | `update:modelValue` | `string \| number \| null` | Partial / full value |
+| `update:focused` | `boolean` | Focus state changed (own `useFocus(props)` call) |
 | `finish` | `string` | All cells filled |
-| `focus` | `FocusEvent` | Any cell focused |
-| `blur` | `FocusEvent` | All cells blurred |
 | `click:control` | `MouseEvent` | Click on the control area (`.origam-otp-input-field__content`) |
 | `mousedown:control` | `MouseEvent` | Mousedown on the control area (`.origam-otp-input-field__content`) |
 | `click:clear` | `MouseEvent` | Clear button clicked — also resets the model to empty |
 | `click:appendInner` | `MouseEvent` | Append-inner adornment clicked (relayed from the focused cell's `<origam-field>`) |
 | `click:prependInner` | `MouseEvent` | Prepend-inner adornment clicked (relayed from the focused cell's `<origam-field>`) |
+
+`focus` and `blur` are not component emits — `IOtpInputFieldEmits` does not
+declare them. They reach the consumer as plain DOM events, relayed by
+Vue's attribute fallthrough: `@focus` / `@blur` bound on
+`<origam-otp-input-field>` work the normal HTML way, they just aren't part
+of the typed `emits` contract.
 
 ## Props (validation)
 

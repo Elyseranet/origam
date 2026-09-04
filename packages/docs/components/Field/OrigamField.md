@@ -160,8 +160,11 @@ visible effect comes from `OrigamLabel`'s prefix, not Field's. See issue #501.
 | `click:clear` | `MouseEvent` | Clear icon clicked |
 | `click:prependInner` | `MouseEvent` | Inner prepend clicked |
 | `click:appendInner` | `MouseEvent` | Inner append clicked |
-| `focus` | `FocusEvent` | Field focused |
-| `blur` | `FocusEvent` | Field blurred |
+
+`focus` and `blur` are not component emits — `IFieldEmits` does not declare
+them. They reach the consumer as plain DOM events, relayed by Vue's
+attribute fallthrough: `@focus` / `@blur` bound on `<origam-field>` work
+the normal HTML way, they just aren't part of the typed `emits` contract.
 
 ## Design tokens
 
