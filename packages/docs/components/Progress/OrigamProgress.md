@@ -151,7 +151,9 @@ side.
 
 ## Design tokens consumed
 
-`<OrigamProgress>` reads from `tokens/component/progress.json`. The wrapper
+`<OrigamProgress>` reads its variables from
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
+under `packages/ds/src/assets/scss/tokens/`). The wrapper
 itself only sets layout tokens; the visuals come from the picked child.
 
 | CSS variable                                        | Token reference                |

@@ -247,9 +247,9 @@ own prop still wins.
 | `--origam-expansion-panel__content---padding-block-start` / `-end` | `space.2` / `space.4` | Content vertical padding |
 | `--origam-expansion-panel__content---padding-inline-start` / `-end` | `space.6` | Content horizontal padding |
 
-> **Known gap** — `packages/ds/tokens/component/expansion-panel.json` also
-> declares a `header.hover-overlay-opacity` token
-> (`--origam-expansion-panel__header---hover-overlay-opacity`), but
+> **Known gap** — `packages/ds/src/assets/css/tokens/light.css` (and
+> `dark.css`) also declares a
+> `--origam-expansion-panel__header---hover-overlay-opacity` variable, but
 > `OrigamExpansionPanelHeader.vue`'s hover rule uses a hardcoded
 > `opacity: calc(0.04 * 1)` with no matching `var(...)` — the token exists
 > but isn't actually wired as a CSS custom property override point.

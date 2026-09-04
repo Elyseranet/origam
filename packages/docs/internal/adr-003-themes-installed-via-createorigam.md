@@ -9,6 +9,14 @@
 
 ---
 
+> **Note (2026-09-04)**: this ADR was written while the Style Dictionary v4
+> + Tokens Studio token pipeline (`ds/tokens/`) was still the declared
+> source of truth for the preset objects (§1) and for contrast fixes (§7).
+> That pipeline was removed on 2026-08-31; the text below is left
+> unmodified as the historical record of the decision. The token sheets it
+> used to generate are now the hand-maintained source of truth — see the
+> "Design tokens" section of the repository `CLAUDE.md`.
+
 ## Context
 
 Stage 1 wired the marketing themes to the **pre-generated CSS matrix**

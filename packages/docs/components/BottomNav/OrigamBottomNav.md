@@ -242,9 +242,10 @@ interface IBottomNavProps extends ITagProps, ICommonsComponentProps,
 
 ## Design tokens consumed
 
-`<OrigamBottomNav>` reads from `tokens/component/bottom-nav.json`, under
-the `bottom-bar` key — note the CSS variable prefix is
-`--origam-bottom-bar---*`, not `--origam-bottom-nav---*`.
+`<OrigamBottomNav>` reads its variables from
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
+under `packages/ds/src/assets/scss/tokens/`), under the `--origam-bottom-bar---*`
+prefix — note it is `bottom-bar`, not `--origam-bottom-nav---*`.
 
 | CSS variable | Token reference |
 |---|---|
@@ -260,7 +261,8 @@ the `bottom-bar` key — note the CSS variable prefix is
 | `--origam-bottom-bar__content---transform` | Generic content-level transform override hook (`OrigamBottomNav.vue:359`). Naming matches the generated token exactly — no mismatch. **Not** what powers `shift` mode, though: `&--shift`'s label fade/slide (`OrigamBottomNav.vue:501-513`) sets a literal `transform: translateY(0.5rem)` directly on the more specific `.origam-btn__content` selector, so overriding this variable has no visible effect while `shift` is active — see `bottom-nav-shift.spec.ts` for the non-regression coverage of that mode. |
 | `--origam-bottom-bar---padding-*`, `--origam-bottom-bar---margin-*` | spacing (also driven by the `padding` / `margin` props) |
 
-The full list lives in `tokens/component/bottom-nav.json`.
+The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
+`dark.css` — grep for `--origam-bottom-bar`.
 
 ## Accessibility
 

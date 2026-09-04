@@ -56,9 +56,10 @@ interface IGridLineSpec {
 
 ## Tokens
 
-`tokens/component/grid.json` exposes the gap-size matrix:
+`packages/ds/src/assets/css/tokens/light.css` / `dark.css` (SCSS twins
+under `packages/ds/src/assets/scss/tokens/`) expose the gap-size matrix:
 
-| Token  | CSS variable                  | Resolves to (`primitive.json`) |
+| Token  | CSS variable                  | Resolves to (primitive tier)   |
 |--------|-------------------------------|--------------------------------|
 | `xs`   | `--origam-grid---gap-xs`      | `space.1`  →  4 px             |
 | `sm`   | `--origam-grid---gap-sm`      | `space.2`  →  8 px             |

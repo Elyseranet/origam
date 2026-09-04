@@ -255,8 +255,10 @@ because French speakers reading mixed-locale calendars expect it.
 
 ## Tokens
 
-Component-level CSS variables live under
-`tokens/component/calendar.json`. Override them on
+Component-level CSS variables are declared in
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
+under `packages/ds/src/assets/scss/tokens/`), under the
+`--origam-calendar---*` prefix. Override them on
 `<OrigamThemeProvider>` or a single instance via inline style.
 
 Notable variables:

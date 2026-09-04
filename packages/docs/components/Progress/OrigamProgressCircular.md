@@ -124,7 +124,9 @@ interface IProgressCircularProps extends IProgressTypeProps, ISizeProps {
 
 ## Design tokens consumed
 
-`<OrigamProgressCircular>` reads from `tokens/component/progress-circular.json`.
+`<OrigamProgressCircular>` reads its variables from
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
+under `packages/ds/src/assets/scss/tokens/`).
 
 | CSS variable                                            | Token reference                          |
 |---------------------------------------------------------|------------------------------------------|

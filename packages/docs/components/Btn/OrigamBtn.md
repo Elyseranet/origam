@@ -274,9 +274,11 @@ typography without custom CSS. Unset props keep the theme / size value.
 
 ## Design tokens consumed
 
-`<OrigamBtn>` reads from `tokens/component/btn.json` (and
-`btn-group.json` when grouped). Override at the document root or via
-a `:style` binding to re-skin a single instance.
+`<OrigamBtn>` reads its variables from
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
+under `packages/ds/src/assets/scss/tokens/`) — the `--origam-btn---*`
+prefix (and `--origam-btn-group---*` when grouped). Override at the
+document root or via a `:style` binding to re-skin a single instance.
 
 | CSS variable | Token reference |
 |---|---|
@@ -291,8 +293,8 @@ a `:style` binding to re-skin a single instance.
 | `--origam-btn---transition-duration` | `{motion.duration.slow}` |
 | `--origam-btn--{intent}---background-color` | `{color.action.{intent}.bg}` |
 
-The full list lives in
-`tokens/component/btn.json`.
+The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
+`dark.css` — grep for `--origam-btn`.
 
 ## Accessibility
 

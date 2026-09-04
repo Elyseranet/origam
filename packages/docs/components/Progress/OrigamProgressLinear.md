@@ -167,7 +167,9 @@ interface IProgressLinearProps extends IProgressTypeProps, IRoundedProps, ILocat
 
 ## Design tokens consumed
 
-`<OrigamProgressLinear>` reads from `tokens/component/progress-linear.json`.
+`<OrigamProgressLinear>` reads its variables from
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
+under `packages/ds/src/assets/scss/tokens/`).
 
 | CSS variable                                                 | Token reference                          |
 |--------------------------------------------------------------|------------------------------------------|

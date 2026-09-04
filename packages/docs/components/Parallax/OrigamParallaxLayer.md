@@ -135,8 +135,10 @@ interface IParallaxLayerProps extends ICommonsComponentProps, ITagProps {
 
 ## Design tokens consumed
 
-`<OrigamParallaxLayer>` shares the `tokens/component/parallax.json` file
-with its host.
+`<OrigamParallaxLayer>` shares the `--origam-parallax---*` /
+`--origam-parallax__layer---*` variables declared in
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` with its
+host.
 
 | CSS variable | Token reference |
 |---|---|
@@ -146,7 +148,8 @@ with its host.
 | `--origam-parallax__layer---offset-x` | published by `useParallaxRuntime` (CSS-driven path only) |
 | `--origam-parallax__layer---offset-y` | published by `useParallaxRuntime` (CSS-driven path only) |
 
-The full list lives in `tokens/component/parallax.json`.
+The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
+`dark.css` — grep for `--origam-parallax`.
 
 ## Accessibility
 

@@ -153,7 +153,9 @@ type TIcon =
 
 ## Design tokens consumed
 
-`<OrigamIcon>` reads from `tokens/component/icon.json`:
+`<OrigamIcon>` reads its variables from
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
+under `packages/ds/src/assets/scss/tokens/`):
 
 | CSS variable | Token reference |
 |---|---|

@@ -3,9 +3,10 @@
 `<OrigamTable>` is the chrome wrapper around a native `<table>`. It
 renders a polymorphic outer container, an inner scroll wrapper, and the
 `<table>` itself — leaving header / body / footer authoring to the
-consumer. Hover, header chrome, and row separators come from
-`tokens/component/table.json` so the table stays theme-aware out of the
-box.
+consumer. Hover, header chrome, and row separators come from the
+`--origam-table---*` variables declared in
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` so the
+table stays theme-aware out of the box.
 
 It is intentionally **structural**: no intent / color prop. Use the
 `--origam-table---*` CSS variables (or wrap in a `<OrigamSheet>`) when
@@ -144,8 +145,10 @@ interface ITableProps extends ICommonsComponentProps, IBorderProps,
 
 ## Design tokens consumed
 
-`<OrigamTable>` reads from `tokens/component/table.json`. Override at
-the document root or via a `:style` binding to re-skin a single instance.
+`<OrigamTable>` reads its variables from
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
+under `packages/ds/src/assets/scss/tokens/`). Override at the document
+root or via a `:style` binding to re-skin a single instance.
 
 | CSS variable | Token reference |
 |---|---|
@@ -166,8 +169,8 @@ the document root or via a `:style` binding to re-skin a single instance.
 | `--origam-table__cell---border-width` | `{border.width.thin}` |
 | `--origam-table__row---hover-background-color` | `{color.surface.sunken}` |
 
-The full list lives in
-`tokens/component/table.json`.
+The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
+`dark.css` — grep for `--origam-table`.
 
 ## Accessibility
 
