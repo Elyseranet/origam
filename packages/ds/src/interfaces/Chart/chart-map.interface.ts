@@ -1,5 +1,4 @@
 import type {
-    IChartBaseEmits,
     IChartBaseProps,
     IChartBaseSlots
 } from './chart-base.interface'
@@ -132,8 +131,20 @@ export interface IChartMapProps extends IChartBaseProps {
     yAxisFormat?: (value: number) => string
 }
 
-/** Emits surfaced by `<OrigamChartMap>`. Mirrors the base family. */
-export type IChartMapEmits = IChartBaseEmits
+/**
+ * `<OrigamChartMap>` emits — `point-click` only, NOT the full base family.
+ * Was `export type IChartMapEmits = IChartBaseEmits` until #545 — an alias
+ * `buildInterfaceIndex()` never resolved, so the guard never even saw this
+ * component. Once fixed, `legend-click` and `series-toggle` measured
+ * genuinely dead: the map's series represent choropleth regions / flight
+ * routes, not a discrete toggleable legend list (see `IChartMapSlots`'s
+ * `Omit<IChartBaseSlots, 'legend-item'>` above) — there is no toggleable
+ * entry for either event to report. `point-click` stays: countries / route
+ * nodes ARE individually clickable/keyboard-activatable.
+ */
+export interface IChartMapEmits {
+    (e: 'point-click', point: IChartPoint, originalEvent: MouseEvent | KeyboardEvent): void
+}
 
 /**
  * Slot signatures exposed by `<OrigamChartMap>`.

@@ -87,8 +87,8 @@ const activityData = days.flatMap((day) =>
 | Name | Payload | Description |
 |---|---|---|
 | `point-click` | `(point: IChartPoint, event: MouseEvent \| KeyboardEvent)` | Click or keyboard activation on a cell. `point.x` is the column key, `point.y` is the raw value. |
-| `legend-click` | `(series: IChartSeries, index: number)` | Click on a legend entry (not applicable to the gradient legend — reserved for future categorical legend). |
-| `series-toggle` | `(series: IChartSeries, visible: boolean)` | Visibility flip after a legend click. |
+
+`IChartHeatmapEmits` does **not** include `legend-click` / `series-toggle` (#545) — the heatmap renders a continuous colour-gradient legend (min/max labels + a gradient swatch), not a discrete per-series list, so there is no legend entry for either event to report.
 
 ## Slots
 
