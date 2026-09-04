@@ -61,7 +61,7 @@ A tiny inline chart for table cells, KPI cards, and dashboards. Renders a single
 
 | Event | Payload | Description |
 |---|---|---|
-| `point-click` | `(point: IChartPoint, event: MouseEvent \| KeyboardEvent)` | Fired when a data point is activated (reserved for future interactive variant) |
+| `point-click` | `(point: IChartPoint, event: MouseEvent \| KeyboardEvent)` | Fired when a data point is activated — click anywhere on the SVG (nearest point), or click / <kbd>Enter</kbd> / <kbd>Space</kbd> on a rendered marker, special (min/max/last) marker, or bar |
 
 ## Slots
 
@@ -69,6 +69,17 @@ A tiny inline chart for table cells, KPI cards, and dashboards. Renders a single
 |---|---|---|
 | `tooltip` | `{ point: IChartPoint, series: IChartSeries, index: number }` | Replace the default hover tooltip body |
 | `empty` | — | Render when `series` is empty or contains no numeric data |
+
+## Behaviour notes
+
+- **Point interaction** — every rendered marker (`showMarkers`), special
+  marker (`showMin` / `showMax` / `showLast`), and bar (`type="column"` /
+  `type="bar"`) is individually focusable (`tabindex="0"`, `role="button"`,
+  a value-carrying `aria-label`) and activates on click, <kbd>Enter</kbd>,
+  or <kbd>Space</kbd>. Clicking anywhere else on the SVG — e.g. a plain
+  `line`/`area` sparkline with no markers shown — falls back to the
+  nearest data point by horizontal position, so `point-click` stays
+  reachable by mouse even with no visible marks.
 
 ## Types
 

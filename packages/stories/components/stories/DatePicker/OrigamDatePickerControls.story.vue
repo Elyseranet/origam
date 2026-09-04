@@ -107,17 +107,6 @@
 			</div>
 		</Variant>
 
-		<Variant title="Events - click:text">
-			<div style="padding: 24px;">
-				<origam-date-picker-controls
-						:active="['date']"
-						text="May 2026"
-						data-cy="dp-controls-emit-text"
-						@click:text="logEvent('click:text', $event)"
-				/>
-			</div>
-		</Variant>
-
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<Partial<IDatePickerControlsProps>>({ text: 'May 2026', disabled: false, disabledMonth: false, disabledYear: false, disabledNext: false, disabledPrev: false, viewMode: 'month' })"
@@ -131,7 +120,6 @@
 							@click:year="logEvent('click:year', $event)"
 							@click:prev="logEvent('click:prev', $event)"
 							@click:next="logEvent('click:next', $event)"
-							@click:text="logEvent('click:text', $event)"
 					/>
 				</div>
 			</template>

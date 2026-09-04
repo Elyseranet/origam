@@ -24,8 +24,11 @@ export interface IDatePickerControlsProps extends ICommonsComponentProps {
     viewMode?: TDateMode
 }
 
-/** Emits fired by `<OrigamDatePickerControls>` — clicks on the five
- *  toolbar buttons (year / month / prev / next / text label).
+/** Emits fired by `<OrigamDatePickerControls>` — clicks on the four
+ *  toolbar buttons (year / month / prev / next). The month button
+ *  itself carries the `text` label (see `IDatePickerControlsProps.text`);
+ *  there is no button dedicated solely to the label, so there is no
+ *  separate `click:text` — a click on the label fires `click:month`.
  *  `event` is optional: the click handlers call `emits('click:prev')`
  *  etc. without forwarding the originating MouseEvent. */
 export interface IDatePickerControlsEmits {
@@ -33,7 +36,6 @@ export interface IDatePickerControlsEmits {
     (e: 'click:month', event?: MouseEvent): void
     (e: 'click:prev', event?: MouseEvent): void
     (e: 'click:next', event?: MouseEvent): void
-    (e: 'click:text', event?: MouseEvent): void
 }
 
 /*********************************************************

@@ -230,18 +230,6 @@
 			</div>
 		</Variant>
 
-		<Variant title="Events - update:focused">
-			<div style="padding: 24px; max-width: 400px;">
-				<origam-confirm-wrapper
-						v-model="emitFocusedValue"
-						v-model:confirm="emitFocusedConfirm"
-						field="text-field"
-						:defaults="{ label: 'Email' }"
-						@update:focused="logEvent('update:focused', $event)"
-				/>
-			</div>
-		</Variant>
-
 		<Variant title="Events - click:prepend">
 			<div style="padding: 24px; max-width: 400px;">
 				<origam-confirm-wrapper
@@ -504,9 +492,6 @@
 
 	const emitConfirmValue = ref('')
 	const emitConfirmConfirm = ref('')
-
-	const emitFocusedValue = ref('')
-	const emitFocusedConfirm = ref('')
 
 	const emitPrependValue = ref('')
 	const emitPrependConfirm = ref('')
