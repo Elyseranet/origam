@@ -204,7 +204,7 @@
 		&--variant-tonal &__key {
 			--origam-kbd---background-color: color-mix(in srgb, currentColor 8%, transparent);
 			--origam-kbd---border-color: transparent;
-			--origam-kbd---border-width: 0px;
+			--origam-kbd---border-width: var(--origam-kbd__tonal---border-width, 0px);
 			--origam-kbd---box-shadow: none;
 		}
 
