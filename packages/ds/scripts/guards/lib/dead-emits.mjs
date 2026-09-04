@@ -234,6 +234,47 @@ const EXTRA_RELAYS = [
         events: [{ name: 'update:options', handler: null }]
     },
     {
+        // `useDatePickerCalendar` calls `useVModel(props, 'date', …)`
+        // INTERNALLY (`date-picker-calendar.composable.ts`) and returns
+        // `model` — a relay of a relay, one layer below what
+        // `directVModelEvents` can see (it only recognises a LITERAL
+        // `const x = useVModel(props, 'prop')` inside the component's own
+        // source). Same blind spot as `useGroup` above.
+        // `OrigamDatePickerMonth.vue` is the sole caller (verified —
+        // `grep -rl useDatePickerCalendar src/components/`) and writes
+        // `model.value = …` unconditionally in every branch of its
+        // `handleClick` (single / multiple / range selection) — proven at
+        // runtime by `packages/tests/TU/components/DatePicker/
+        // OrigamDatePickerMonth.spec.ts` (click a day, assert
+        // `wrapper.emitted('update:date')`), including a mutation test
+        // (deleting the write turns the spec red).
+        composable: 'useDatePickerCalendar',
+        callPattern: /\buseDatePickerCalendar\(\s*props\b/,
+        events: [{ name: 'update:date', handler: null }]
+    },
+    {
+        // `useProgress` calls `useVModel(props, 'modelValue')` INTERNALLY
+        // (`progress.composable.ts`) and returns `progress` — same
+        // relay-of-relay blind spot as `useGroup` / `useDatePickerCalendar`
+        // above. Three callers (`grep -rl useProgress\\( src/components/`):
+        // `OrigamProgressLinear.vue` writes `progress.value = …` in
+        // `handleClick` when `clickable` is set — proven at runtime by
+        // `packages/tests/TU/components/Progress/OrigamProgressLinear.spec.ts`
+        // (issue #434 regression test; a mutation test deleting that write
+        // turns it red). `OrigamProgressCircular.vue` and `OrigamProgress.vue`
+        // never write `progress.value` and their OWN emits interfaces
+        // (`IProgressCircularEmits` / `IProgressEmits`) are both `{}` — they
+        // don't declare `update:modelValue` at all, so this relay cannot
+        // mask a dead emit for them today. If either interface ever grows
+        // `update:modelValue` without also writing `progress.value`, this
+        // entry would need a real `written` check (not just `callPattern`)
+        // — none exists yet, so `handler: null` (unconditional on call) is
+        // the same verified-by-reading shape as the `useGroup` entry above.
+        composable: 'useProgress',
+        callPattern: /\buseProgress\(\s*props\b/,
+        events: [{ name: 'update:modelValue', handler: null }]
+    },
+    {
         composable: 'usePaginatedItems',
         callPattern: /\busePaginatedItems\(/,
         events: [{ name: 'update:currentItems', handler: null }]

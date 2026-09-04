@@ -170,6 +170,7 @@ A single set of `ITypographyProps` drives all four text surfaces. Each surface r
 | `loadedmetadata`         | `Event`                                | Fires once metadata has loaded and `duration` is finite.                                                               |
 | `error`                  | `Event \| MediaError \| Error`         | Wraps the native `<audio>` `error` event with the resolved `MediaError` when available.                                |
 | `update:playbackRate`    | `number`                               | Listener picked a rate from the cog menu.                                                                              |
+| `update:shuffle`         | `boolean`                              | Listener toggled the shuffle button in the controls (`v-model:shuffle` two-way binding).                               |
 | `download`               | `string` (URL)                         | Listener clicked the Download row. Payload is the file URL.                                                            |
 | `waveform`               | `Array<number>` (200 0..1 amplitudes)   | Fires once per recomputation (typically on `src` change).                                                              |
 | `previous`               | —                                      | Listener clicked the `⏮` button. The component ALSO skips -10 s internally so isolated players keep working.            |

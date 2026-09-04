@@ -17,6 +17,7 @@
 				data-cy="origam-chart-sparkline-svg"
 				@mousemove="onSvgMouseMove"
 				@mouseleave="onSvgMouseLeave"
+				@click="onSvgClick"
 		>
 			<title>{{ svgTitle }}</title>
 			<desc>{{ svgDesc }}</desc>
@@ -35,7 +36,13 @@
 						:width="bar.width"
 						:height="bar.height"
 						:style="{ fill: resolvedColor }"
+						tabindex="0"
+						role="button"
+						:aria-label="pointAriaLabel(bar.index)"
 						:data-cy="`origam-chart-sparkline-bar-${ bar.index }`"
+						@click.stop="onPointClick(bar.index, $event)"
+						@keydown.enter.prevent="onPointClick(bar.index, $event)"
+						@keydown.space.prevent="onPointClick(bar.index, $event)"
 				/>
 			</g>
 
@@ -53,7 +60,13 @@
 						:width="bar.width"
 						:height="bar.height"
 						:style="{ fill: resolvedColor }"
+						tabindex="0"
+						role="button"
+						:aria-label="pointAriaLabel(bar.index)"
 						:data-cy="`origam-chart-sparkline-hbar-${ bar.index }`"
+						@click.stop="onPointClick(bar.index, $event)"
+						@keydown.enter.prevent="onPointClick(bar.index, $event)"
+						@keydown.space.prevent="onPointClick(bar.index, $event)"
 				/>
 			</g>
 
@@ -86,7 +99,13 @@
 						:cy="pt.cy"
 						:r="markerSize"
 						:style="{ fill: resolvedColor }"
+						tabindex="0"
+						role="button"
+						:aria-label="pointAriaLabel(pt.index)"
 						:data-cy="`origam-chart-sparkline-marker-${ pt.index }`"
+						@click.stop="onPointClick(pt.index, $event)"
+						@keydown.enter.prevent="onPointClick(pt.index, $event)"
+						@keydown.space.prevent="onPointClick(pt.index, $event)"
 				/>
 			</g>
 
@@ -99,7 +118,13 @@
 					:cy="m.cy"
 					:r="m.r"
 					:style="{ fill: m.fill }"
+					tabindex="0"
+					role="button"
+					:aria-label="pointAriaLabel(m.dataIndex)"
 					:data-cy="`origam-chart-sparkline-special-${ m.role }`"
+					@click.stop="onPointClick(m.dataIndex, $event)"
+					@keydown.enter.prevent="onPointClick(m.dataIndex, $event)"
+					@keydown.space.prevent="onPointClick(m.dataIndex, $event)"
 			/>
 		</svg>
 
@@ -193,7 +218,7 @@
 		aspectRatio: undefined
 	})
 
-	defineEmits<IChartSparklineEmits>()
+	const emit = defineEmits<IChartSparklineEmits>()
 
 	defineSlots<IChartSparklineSlots>()
 
@@ -411,18 +436,23 @@
 	const mousePos = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 	const hoveredIndex = ref<number | null>(null)
 
-	const tooltipPoint = computed<IChartPoint | null>(() => {
-		if (hoveredIndex.value === null || !activeSeries.value) return null
-		const v = values.value[hoveredIndex.value]
+	const pointAt = (index: number): IChartPoint | null => {
+		if (!activeSeries.value) return null
+		const v = values.value[index]
 		if (v === undefined) return null
 		return {
 			seriesIndex: 0,
 			seriesName: activeSeries.value.name,
-			dataIndex: hoveredIndex.value,
-			x: hoveredIndex.value,
+			dataIndex: index,
+			x: index,
 			y: v,
 			color: resolvedColor.value
 		}
+	}
+
+	const tooltipPoint = computed<IChartPoint | null>(() => {
+		if (hoveredIndex.value === null) return null
+		return pointAt(hoveredIndex.value)
 	})
 
 	const tooltipStyle = computed<StyleValue>(() => ({
@@ -430,24 +460,62 @@
 		top: `${ mousePos.value.y - 28 }px`
 	}))
 
+	/*********************************************************
+	 * nearestIndexFromEvent
+	 *
+	 * @description
+	 * Nearest data-point index for a mouse position on the SVG — shared
+	 * by hover (tooltip) and click (`point-click`) so both agree on
+	 * which point the pointer is over.
+	 ********************************************************/
+	const nearestIndexFromEvent = (event: MouseEvent): number | null => {
+		const target = svgRef.value
+		if (!target) return null
+		const n = values.value.length
+		if (!n) return null
+		const rect = target.getBoundingClientRect()
+		const relX = event.clientX - rect.left
+		const ratio = relX / rect.width
+		return Math.min(n - 1, Math.max(0, Math.round(ratio * (n - 1))))
+	}
+
 	const onSvgMouseMove = (event: MouseEvent) => {
 		if (!props.showTooltip) return
 		const target = svgRef.value
 		if (!target) return
 		const rect = target.getBoundingClientRect()
-		const relX = event.clientX - rect.left
-		mousePos.value = { x: relX, y: event.clientY - rect.top }
-
-		const n = values.value.length
-		if (!n) return
-
-		const ratio = relX / rect.width
-		const idx = Math.min(n - 1, Math.max(0, Math.round(ratio * (n - 1))))
-		hoveredIndex.value = idx
+		mousePos.value = { x: event.clientX - rect.left, y: event.clientY - rect.top }
+		hoveredIndex.value = nearestIndexFromEvent(event)
 	}
 
 	const onSvgMouseLeave = () => {
 		hoveredIndex.value = null
+	}
+
+	/*********************************************************
+	 * `point-click` — mouse / keyboard activation on a data point.
+	 * Individually-rendered marks (markers, special min/max/last,
+	 * bars) carry their own click/keydown handlers (see template);
+	 * clicking anywhere else on the SVG falls back to the nearest
+	 * point, so `line`/`area` sparklines without visible markers stay
+	 * clickable too.
+	 ********************************************************/
+	const onPointClick = (index: number, event: MouseEvent | KeyboardEvent) => {
+		const point = pointAt(index)
+		if (!point) return
+		emit('point-click', point, event)
+	}
+
+	const onSvgClick = (event: MouseEvent) => {
+		const idx = nearestIndexFromEvent(event)
+		if (idx === null) return
+		onPointClick(idx, event)
+	}
+
+	const pointAriaLabel = (index: number): string => {
+		const point = pointAt(index)
+		if (!point) return ''
+		return `${ point.seriesName ?? '' }, ${ index }: ${ point.y }`.trim()
 	}
 
 	/*********************************************************

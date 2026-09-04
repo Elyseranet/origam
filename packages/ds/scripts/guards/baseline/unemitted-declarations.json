@@ -1,8 +1,1 @@
-[
-    "Audio:update:shuffle",
-    "ChartSparkline:point-click",
-    "ConfirmWrapper:update:focused",
-    "DatePickerControls:click:text",
-    "DatePickerMonth:update:date",
-    "ProgressLinear:update:modelValue"
-]
+[]

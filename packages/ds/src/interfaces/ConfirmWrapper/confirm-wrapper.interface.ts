@@ -11,10 +11,7 @@ import type {
 import type { IDensityProps } from '../Commons/density.interface'
 import type { IDirectionProps } from '../Commons/direction.interface'
 import type { IElevationProps } from '../Commons/elevation.interface'
-import type {
-    IFocusEmits,
-    IFocusProps
-} from '../Commons/focus.interface'
+import type { IFocusProps } from '../Commons/focus.interface'
 import type { IRoundedProps } from '../Commons/rounded.interface'
 import type { IVariantProps } from '../Commons/variant.interface'
 
@@ -48,8 +45,21 @@ export interface IConfirmWrapperProps extends ICommonsComponentProps,
     label?: string
 }
 
+/*********************************************************
+ * IConfirmWrapperEmits
+ *
+ * @description
+ * Does NOT extend `IFocusEmits`: the component reads the `focused` prop
+ * (from `IFocusProps`, kept below) purely as an externally-driven display
+ * hint — showing the hint text while a consumer says the field is focused
+ * — but never tracks focus itself. There is no `useFocus(props)` call, no
+ * focus/blur listener, nowhere `update:focused` could fire from.
+ * Declaring it anyway would silently break the `@update:focused`
+ * fallthrough for any consumer that tried to listen — same defect class
+ * as the `OrigamCheckboxBtn` `update:focused` fix.
+ ********************************************************/
 export interface IConfirmWrapperEmits extends ICommonsComponentEmits,
-    IAdjacentEmits, IFocusEmits {
+    IAdjacentEmits {
     (e: 'update:confirm', value: any): void
 }
 

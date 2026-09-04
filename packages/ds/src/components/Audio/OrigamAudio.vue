@@ -49,7 +49,7 @@
 			>
 				<origam-media-controller
 						v-model:loop-mode="internalLoopMode"
-						v-model:shuffle="internalShuffle"
+						:shuffle="internalShuffle"
 						:state="state"
 						:methods="methods"
 						:playback-rates="playbackRates"
@@ -66,6 +66,7 @@
 						@previous="onPrevious"
 						@next="onNext"
 						@download="onDownloadClick"
+						@update:shuffle="onShuffleChange"
 				>
 					<template #header>
 						<slot name="header">
@@ -549,6 +550,19 @@
 			internalShuffle.value = next
 		}
 	})
+	/*********************************************************
+	 * onShuffleChange
+	 *
+	 * @description
+	 * The shuffle toggle lives in `<origam-media-controller>` — its
+	 * `update:shuffle` is relayed here (rather than v-modelled) so the
+	 * consumer's own `v-model:shuffle` / `update:shuffle` listener on
+	 * `<OrigamAudio>` actually fires when the user clicks the button.
+	 ********************************************************/
+	const onShuffleChange = (next: boolean) => {
+		internalShuffle.value = next
+		emit('update:shuffle', next)
+	}
 
 	/*********************************************************
 	 * Source resolution — when a playlist is active the `<audio>`
