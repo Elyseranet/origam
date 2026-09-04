@@ -579,11 +579,11 @@
 			background-color: var(--origam-chip__overlay---background-color, currentColor);
 			border-radius: var(--origam-chip__overlay---border-radius, inherit);
 			pointer-events: var(--origam-chip__overlay---pointer-events, none);
-			opacity: var(--origam-chip__overlay---opacity, 0);
+			opacity: var(--origam-chip__overlay---opacity, var(--origam-chip---overlay-opacity, 0));
 			transition:
 				var(--origam-chip__overlay---transition-property, opacity)
-				var(--origam-chip__overlay---transition-duration, 0.2s)
-				var(--origam-chip__overlay---transition-timing-function, ease-in-out);
+				var(--origam-chip__overlay---transition-duration, var(--origam-chip---transition-duration, 0.2s))
+				var(--origam-chip__overlay---transition-timing-function, var(--origam-chip---transition-easing, ease-in-out));
 		}
 
 		&--disabled {
