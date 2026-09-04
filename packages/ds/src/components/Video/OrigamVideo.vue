@@ -1265,7 +1265,7 @@
 	}
 
 	:deep(.origam-video__btn.origam-btn) {
-		--origam-btn---color: #ffffff;
+		--origam-btn---color: var(--origam-video__btn---color, #ffffff);
 		--origam-btn---min-width: 36px;
 		--origam-btn---width: 36px;
 		--origam-btn---height: 36px;
