@@ -365,20 +365,20 @@
 		}
 
 		&--size-x-small {
-			--origam-avatar---height: 24px;
-			--origam-avatar---width: 24px;
+			--origam-avatar---height: var(--origam-avatar---size-xs, 24px);
+			--origam-avatar---width: var(--origam-avatar---size-xs, 24px);
 			--origam-avatar---font-size: 1rem;
 		}
 
 		&--size-small {
-			--origam-avatar---height: 32px;
-			--origam-avatar---width: 32px;
+			--origam-avatar---height: var(--origam-avatar---size-sm, 32px);
+			--origam-avatar---width: var(--origam-avatar---size-sm, 32px);
 			--origam-avatar---font-size: 1.25rem;
 		}
 
 		&--size-default {
-			--origam-avatar---height: 40px;
-			--origam-avatar---width: 40px;
+			--origam-avatar---height: var(--origam-avatar---size-md, 40px);
+			--origam-avatar---width: var(--origam-avatar---size-md, 40px);
 			--origam-avatar---font-size: 1.5rem;
 		}
 
@@ -410,8 +410,8 @@
 		}
 
 		&--error {
-			--origam-avatar---background-color: var(--origam-avatar--danger---background-color, var(--origam-color__feedback--danger---bg));
-			--origam-avatar---color: var(--origam-avatar--danger---color, var(--origam-color__feedback--danger---fg));
+			--origam-avatar---background-color: var(--origam-avatar--danger---background-color, var(--origam-avatar--error---background-color, var(--origam-color__feedback--danger---bg)));
+			--origam-avatar---color: var(--origam-avatar--danger---color, var(--origam-avatar--error---color, var(--origam-color__feedback--danger---fg)));
 		}
 	}
 </style>
