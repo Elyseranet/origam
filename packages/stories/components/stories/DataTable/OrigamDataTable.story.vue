@@ -177,14 +177,6 @@
 			/>
 		</Variant>
 
-		<Variant title="Events - update:groupBy">
-			<origam-data-table
-					:headers="headers"
-					:items="items"
-					@update:group-by="logEvent('update:groupBy', $event)"
-			/>
-		</Variant>
-
 		<Variant title="Events - update:itemsPerPage">
 			<origam-data-table
 					:headers="headers"

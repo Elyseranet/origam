@@ -237,7 +237,77 @@ const EXTRA_RELAYS = [
         composable: 'usePaginatedItems',
         callPattern: /\busePaginatedItems\(/,
         events: [{ name: 'update:currentItems', handler: null }]
+    },
+    {
+        // `provideSort` (`DataTable/sort.composable.ts`) écrit
+        // `sortBy.value = newSortBy` sans condition dans `toggleSort()` —
+        // `sortBy` est le `useVModel(props, 'sortBy', [])` construit UNE
+        // COUCHE PLUS HAUT par `createSort(props)`. `OrigamDataTable.vue`
+        // n'appelle jamais `useVModel` littéralement lui-même — seulement
+        // `createSort(props)` puis `provideSort({sortBy, …})` — donc le
+        // scan `directVModelEvents` (qui exige `const x = useVModel(props,
+        // 'prop')` dans le MÊME fichier) ne peut pas le voir. Même famille
+        // de piège que `useGroup` ci-dessus, une fonction plus loin.
+        // Seul consommateur du repo (`grep -rln 'provideSort('
+        // src/components/` → OrigamDataTable.vue uniquement), donc aucun
+        // risque de faux-négatif ailleurs. Vérifié au RUNTIME (pas
+        // seulement à la lecture) : `wrapper.emitted('update:sortBy')`
+        // après `toggleSort(header)` — voir
+        // `packages/tests/TU/components/DataTable/OrigamDataTable.spec.ts`.
+        composable: 'provideSort',
+        callPattern: /\bprovideSort\(/,
+        events: [{ name: 'update:sortBy', handler: null }]
+    },
+    {
+        // `providePagination` (`DataTable/pagination.composable.ts`) écrit
+        // `page.value =` / `itemsPerPage.value =` sans condition dans
+        // `setPage`/`nextPage`/`prevPage`/`setItemsPerPage` — les deux refs
+        // sont le `useVModel(props, 'page'|'itemsPerPage')` construit une
+        // couche plus haut par `createPagination(props)`. Même famille que
+        // `provideSort` ci-dessus. Seul consommateur du repo :
+        // OrigamDataTable.vue. Vérifié au runtime — voir
+        // `OrigamDataTable.spec.ts` (`update:page` via le v-model
+        // `<origam-pagination>` de `OrigamDataTableFooter`, `update:itemsPerPage`
+        // via `setItemsPerPage`).
+        composable: 'providePagination',
+        callPattern: /\bprovidePagination\(/,
+        events: [
+            { name: 'update:page', handler: null },
+            { name: 'update:itemsPerPage', handler: null }
+        ]
+    },
+    {
+        // `provideSelection` (`DataTable/select.composable.ts`) écrit
+        // `selected.value = newSelected` sans condition dans
+        // `select()`/`selectAll()` — `selected` est le
+        // `useVModel(props, 'modelValue', …)` construit DANS la même
+        // fonction (pas une couche plus haut cette fois, mais toujours
+        // invisible à `directVModelEvents` qui exige `const x =
+        // useVModel(...)` dans le fichier du COMPOSANT, pas dans un
+        // composable qu'il appelle). Seul consommateur du repo :
+        // OrigamDataTable.vue. Vérifié au runtime — voir
+        // `OrigamDataTable.spec.ts` (`update:modelValue` via `toggleSelect`).
+        composable: 'provideSelection',
+        callPattern: /\bprovideSelection\(/,
+        events: [{ name: 'update:modelValue', handler: null }]
+    },
+    {
+        // `provideExpanded` (`DataTable/expand.composable.ts`) écrit
+        // `expanded.value = newExpanded` sans condition dans `expand()` —
+        // `expanded` est le `useVModel(props, 'expanded', …)` construit DANS
+        // la même fonction. Seul consommateur du repo : OrigamDataTable.vue.
+        // Vérifié au runtime — voir `OrigamDataTable.spec.ts`
+        // (`update:expanded` via `toggleExpand`).
+        composable: 'provideExpanded',
+        callPattern: /\bprovideExpanded\(/,
+        events: [{ name: 'update:expanded', handler: null }]
     }
+    // ⛔ `provideGroupBy` (même fichier que `provideSort`) N'EST PAS listé
+    // ici volontairement : `toggleGroup()` n'écrit QUE dans `opened` (état
+    // ouverture/fermeture d'un groupe), jamais dans `groupBy.value`. Vérifié
+    // par `grep -rn "groupBy\.value\s*=" packages/ds/src/` — zéro résultat
+    // dans tout le DS. `update:groupBy` est un emit réellement mort — voir
+    // sa suppression de `IDataTableEmits` dans `data-table.interface.ts`.
 ]
 
 function computeExtraRelayEmitted (src) {
@@ -306,6 +376,46 @@ function computeStateFlagEmitted (src) {
     return found
 }
 
+/**
+ * A `useVModel(props, 'prop')` ref that's never WRITTEN LOCALLY (so
+ * `directVModelEvents` in `emits.mjs` misses it) can still be reachable if
+ * the component hands the live Ref object to a DESCENDANT via
+ * `provide(KEY, { ref, … })` — Vue shares the SAME Ref instance through
+ * `inject()`, so a child writing `injected.ref.value = …` mutates it just
+ * as validly as a local write, and the `useVModel` computed setter (which
+ * captured `getCurrentInstance()` in THIS file, during THIS component's own
+ * `setup()`) still fires `vm.emit('update:prop', …)` on THIS component.
+ *
+ * Same "reachable once provided, not proven, documented as an assumption"
+ * tolerance the codebase already applies to `useNested` / `useOptions` /
+ * `usePaginatedItems` above (see LIMITES ASSUMÉES in the header) — this
+ * generalises it to a component's OWN `useVModel` ref instead of a shared
+ * composable's internal one.
+ *
+ * Verified case (not a blanket claim, checked by hand): `useVModel(props,
+ * 'modelValue')` in `OrigamSelectionControlGroup.vue`, `modelValue` provided
+ * under `ORIGAM_SELECTION_CONTROL_GROUP_KEY`. The ONLY other file injecting
+ * that key, `OrigamSelectionControl.vue`, writes
+ * `group.modelValue.value = newVal` unconditionally in its `model`
+ * computed's `set()` (`grep -rln 'ORIGAM_SELECTION_CONTROL_GROUP_KEY'
+ * src/components/` → exactly these two files). Confirmed at RUNTIME too,
+ * not just by reading: `packages/tests/TU/components/SelectionControl/
+ * OrigamSelectionControlGroup.spec.ts` — 20 assertions on
+ * `wrapper.emitted('update:modelValue')`, all green before this guard
+ * change existed.
+ */
+function computeProvidedVModelEvents (src) {
+    const found = new Set()
+    const re = /const\s+([A-Za-z0-9_$]+)\s*=\s*useVModel\(\s*props\s*,\s*'([^']+)'/g
+    let m
+    while ((m = re.exec(src))) {
+        const [, ref, prop] = m
+        const provided = new RegExp(`provide\\([^,]+,\\s*\\{[^}]*\\b${escapeRegExp(ref)}\\b`, 's').test(src)
+        if (provided) found.add(`update:${prop}`)
+    }
+    return found
+}
+
 // `emitVar` (group 1) is OPTIONAL: `defineEmits<IXxxEmits>()` used as a bare
 // statement (no `const x =`) is a legitimate, common shape in this codebase
 // — Avatar/AvatarGroup/Badge/Btn all register the emits option this way and
@@ -363,7 +473,11 @@ export function analyseDeadEmits (rawSource, interfaceIndex) {
     //    header ("useHover/useActive N'EXISTENT PLUS") et la fonction elle-même.
     const stateFlagEmitted = computeStateFlagEmitted(stripped)
 
-    const emitted = new Set([...literalEmitted, ...relayEmitted, ...extraRelayEmitted, ...stateFlagEmitted])
+    // 5. useVModel ref never written LOCALLY but PROVIDED to a descendant —
+    //    voir `computeProvidedVModelEvents` ci-dessus.
+    const providedVModelEmitted = computeProvidedVModelEvents(stripped)
+
+    const emitted = new Set([...literalEmitted, ...relayEmitted, ...extraRelayEmitted, ...stateFlagEmitted, ...providedVModelEmitted])
     const dead = [...declared].filter(e => !emitted.has(e)).sort()
 
     return {

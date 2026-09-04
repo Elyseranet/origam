@@ -50,7 +50,7 @@ const OrigamSelectionControlStub = defineComponent({
         readonly: Boolean,
         type: String
     },
-    emits: ['update:modelValue', 'focus', 'blur'],
+    emits: ['update:modelValue', 'focus', 'blur', 'click:label'],
     setup (_, { expose }) {
         expose({
             filterProps: (_p: any, _e?: string[]) => ({}),
@@ -195,6 +195,24 @@ describe('OrigamSwitch — indeterminate toggling', () => {
         await wrapper.setProps({ indeterminate: true })
         await nextTick()
         expect(wrapper.find('.origam-switch--indeterminate').exists()).toBe(true)
+    })
+})
+
+// LOT 3 (unemitted-declarations guard) — `ISwitchEmits` extends
+// `IClickLabelEmits` (`click:label`), but nothing wired the underlying
+// `<origam-selection-control>`'s own `click:label` up to `<origam-switch>`:
+// the declaration was dead, a consumer binding `@click:label` never
+// received it. Fixed by capturing `defineEmits` into `emits` and wiring
+// `@click:label="handleClickLabel"` — same pattern as OrigamRadioBtn.
+describe('OrigamSwitch — click:label forwarded from the underlying SelectionControl', () => {
+    it('emits click:label when the SelectionControl fires it', async () => {
+        const wrapper = mountSwitch()
+        const control = wrapper.findComponent({ name: 'OrigamSelectionControl' })
+        const event = new MouseEvent('click')
+        await control.vm.$emit('click:label', event)
+
+        expect(wrapper.emitted('click:label')).toBeTruthy()
+        expect(wrapper.emitted('click:label')?.[0][0]).toBe(event)
     })
 })
 

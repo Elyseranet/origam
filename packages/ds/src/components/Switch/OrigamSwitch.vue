@@ -34,6 +34,7 @@
         type="checkbox"
         v-bind="{ ...controlProps, ...controlAttrs }"
         @blur="handleBlur"
+        @click:label="handleClickLabel"
         @focus="handleFocus"
         @update:model-value="handleChange"
       >
@@ -184,7 +185,7 @@
     centerAffix: true
   })
 
-  defineEmits<ISwitchEmits>()
+  const emits = defineEmits<ISwitchEmits>()
 
   defineSlots<ISwitchSlots>()
 
@@ -236,6 +237,20 @@
     if (indeterminate.value) {
       indeterminate.value = false
     }
+  }
+  /*********************************************************
+   * Label click forwarded up — mirrors OrigamRadioBtn/OrigamRadio.
+   *
+   * @description
+   * `ISwitchEmits` extends `IClickLabelEmits`, but nothing ever wired
+   * `<origam-selection-control>`'s own `click:label` (fired from the
+   * native `<label>` click, see `OrigamSelectionControl.vue`) up to this
+   * component — the declaration was dead: consumers binding
+   * `@click:label` on `<origam-switch>` never received anything (LOT 3,
+   * unemitted-declarations guard).
+   ********************************************************/
+  const handleClickLabel = (e: MouseEvent) => {
+    emits('click:label', e)
   }
   const handleTrackClick = (_e: MouseEvent) => {
     // `OrigamSwitchTrack` already calls `stopPropagation` /
