@@ -213,7 +213,7 @@
 		color: var(--origam-data-table-header-cell---color, var(--origam-color__text---primary));
 
 		&__sort-icon {
-			opacity: var(--origam-data-table-header-cell__sort-icon---opacity, 0);
+			opacity: var(--origam-data-table-header-cell__sort-icon---opacity, var(--origam-data-table__header---sort-icon-opacity, 0));
 			color: var(--origam-data-table-header-cell__sort-icon---color, var(--origam-color__text---primary));
 
 			&--active {
@@ -231,30 +231,30 @@
 			display: inline-flex;
 			justify-content: center;
 			align-items: center;
-			font-size: var(--origam-data-table-header-cell__sort-badge---font-size, 0.875rem);
-			padding: var(--origam-data-table-header-cell__sort-badge---padding, var(--origam-space---1, 4px));
-			border-radius: var(--origam-data-table-header-cell__sort-badge---border-radius, var(--origam-radius---full, 9999px));
-			background: var(--origam-data-table-header-cell__sort-badge---background, var(--origam-color__border---default));
+			font-size: var(--origam-data-table-header-cell__sort-badge---font-size, var(--origam-data-table__header---sort-badge-font-size, 0.875rem));
+			padding: var(--origam-data-table-header-cell__sort-badge---padding, var(--origam-data-table__header---sort-badge-padding, var(--origam-space---1, 4px)));
+			border-radius: var(--origam-data-table-header-cell__sort-badge---border-radius, var(--origam-data-table__header---sort-badge-border-radius, var(--origam-radius---full, 9999px)));
+			background: var(--origam-data-table-header-cell__sort-badge---background, var(--origam-data-table__header---sort-badge-background-color, var(--origam-color__border---default)));
 			color: var(--origam-data-table-header-cell__sort-badge---color, var(--origam-color__text---primary));
-			min-width: var(--origam-data-table-header-cell__sort-badge---min-width, 20px);
-			min-height: var(--origam-data-table-header-cell__sort-badge---min-height, 20px);
-			width: var(--origam-data-table-header-cell__sort-badge---width, 20px);
-			height: var(--origam-data-table-header-cell__sort-badge---height, 20px)
+			min-width: var(--origam-data-table-header-cell__sort-badge---min-width, var(--origam-data-table__header---sort-badge-min-width, 20px));
+			min-height: var(--origam-data-table-header-cell__sort-badge---min-height, var(--origam-data-table__header---sort-badge-min-height, 20px));
+			width: var(--origam-data-table-header-cell__sort-badge---width, var(--origam-data-table__header---sort-badge-width, 20px));
+			height: var(--origam-data-table-header-cell__sort-badge---height, var(--origam-data-table__header---sort-badge-height, 20px))
 		}
 
 		&#{$this}--sortable {
-			cursor: var(--origam-data-table-sortable---cursor, pointer);
+			cursor: var(--origam-data-table-sortable---cursor, var(--origam-data-table__sortable---cursor, pointer));
 
 			&:hover {
 				#{$this}__sort-icon {
-					opacity: var(--origam-data-table-header-cell__sort-icon---opacity-hover, 0.5);
+					opacity: var(--origam-data-table-header-cell__sort-icon---opacity-hover, var(--origam-data-table__header---sort-icon-opacity-hover, 0.5));
 				}
 			}
 		}
 
 		&#{$this}--sorted {
 			#{$this}__sort-icon {
-				opacity: var(--origam-data-table-header-cell__sort-icon---opacity-active, 1);
+				opacity: var(--origam-data-table-header-cell__sort-icon---opacity-active, var(--origam-data-table__header---sort-icon-opacity-active, 1));
 			}
 		}
 
@@ -263,7 +263,7 @@
 		}
 
 		&:deep(.origam-data-table-cell) {
-			background: var(--origam-data-table-header-cell---background, var(--origam-color__surface---raised));
+			background: var(--origam-data-table-header-cell---background, var(--origam-data-table__header---background-color, var(--origam-color__surface---raised)));
 			color: var(--origam-data-table-header-cell---color, var(--origam-color__text---primary));
 		}
 	}

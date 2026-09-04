@@ -177,37 +177,37 @@
 		scoped
 >
 	.origam-data-table-footer {
-		align-items: var(--origam-data-table-footer---align-items, center);
-		background-color: var(--origam-data-table-footer---background-color, var(--origam-color__surface---default));
-		color: var(--origam-data-table-footer---color, var(--origam-color__text---primary));
-		display: var(--origam-data-table-footer---display, flex);
-		flex-wrap: var(--origam-data-table-footer---flex-wrap, wrap);
-		justify-content: var(--origam-data-table-footer---justify-content, flex-end);
-		padding-block: var(--origam-data-table-footer---padding-block, var(--origam-space---2, 8px));
-		padding-inline: var(--origam-data-table-footer---padding-inline, var(--origam-space---1, 4px));
+		align-items: var(--origam-data-table-footer---align-items, var(--origam-data-table__footer---align-items, center));
+		background-color: var(--origam-data-table-footer---background-color, var(--origam-data-table__footer---background-color, var(--origam-color__surface---default)));
+		color: var(--origam-data-table-footer---color, var(--origam-data-table__footer---color, var(--origam-color__text---primary)));
+		display: var(--origam-data-table-footer---display, var(--origam-data-table__footer---display, flex));
+		flex-wrap: var(--origam-data-table-footer---flex-wrap, var(--origam-data-table__footer---flex-wrap, wrap));
+		justify-content: var(--origam-data-table-footer---justify-content, var(--origam-data-table__footer---justify-content, flex-end));
+		padding-block: var(--origam-data-table-footer---padding-block, var(--origam-data-table__footer---padding-block, var(--origam-space---2, 8px)));
+		padding-inline: var(--origam-data-table-footer---padding-inline, var(--origam-data-table__footer---padding-inline, var(--origam-space---1, 4px)));
 
 		&__items-per-page {
 			align-items: center;
 			display: flex;
 			justify-content: center;
-			gap: var(--origam-data-table-footer__items-per-page---gap, var(--origam-space---2, 8px));
+			gap: var(--origam-data-table-footer__items-per-page---gap, var(--origam-data-table__footer---items-per-page-gap, var(--origam-space---2, 8px)));
 
 			> span {
-				padding-inline-end: var(--origam-data-table-footer__items-per-page---padding-inline-end, var(--origam-space---2, 8px));
+				padding-inline-end: var(--origam-data-table-footer__items-per-page---padding-inline-end, var(--origam-data-table__footer---items-per-page-padding-inline-end, var(--origam-space---2, 8px)));
 			}
 		}
 
 		&__info {
 			display: flex;
-			justify-content: var(--origam-data-table-footer__info---justify-content, flex-end);
-			min-width: var(--origam-data-table-footer__info---min-width, 116px);
-			padding-inline: var(--origam-data-table-footer__info---padding-inline, var(--origam-space---4, 16px));
+			justify-content: var(--origam-data-table-footer__info---justify-content, var(--origam-data-table__footer--info---justify-content, flex-end));
+			min-width: var(--origam-data-table-footer__info---min-width, var(--origam-data-table__footer--info---min-width, 116px));
+			padding-inline: var(--origam-data-table-footer__info---padding-inline, var(--origam-data-table__footer--info---padding-inline, var(--origam-space---4, 16px)));
 		}
 
 		&__pagination {
 			align-items: center;
 			display: flex;
-			margin-inline-start: var(--origam-data-table-footer__pagination---margin-inline-start, var(--origam-space---4, 16px));
+			margin-inline-start: var(--origam-data-table-footer__pagination---margin-inline-start, var(--origam-data-table__footer---pagination-margin-inline-start, var(--origam-space---4, 16px)));
 		}
 	}
 </style>
