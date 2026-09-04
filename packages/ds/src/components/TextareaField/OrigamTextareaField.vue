@@ -873,7 +873,7 @@
 			&.origam-field--no-label,
 			&.origam-field--active {
 				textarea {
-					opacity: 1;
+					opacity: var(--origam-textarea-field__textarea---opacity-active, 1);
 				}
 			}
 
@@ -885,11 +885,11 @@
 		}
 
 		:deep(textarea) {
-			opacity: 0;
+			opacity: var(--origam-textarea-field__textarea---opacity, 0);
 			flex: 1;
 			min-width: 0;
-			transition: 0.15s opacity cubic-bezier(0.4, 0, 0.2, 1);
-			line-height: 1;
+			transition: var(--origam-textarea-field__textarea---transition-duration, 0.15s) opacity var(--origam-textarea-field__textarea---transition-easing, cubic-bezier(0.4, 0, 0.2, 1));
+			line-height: var(--origam-textarea-field__textarea---line-height, 1);
 
 			&:focus,
 			&:active {

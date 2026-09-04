@@ -300,10 +300,10 @@
 
 		&--linear {
 			background: transparent;
-			overflow: hidden;
-			position: relative;
-			transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-			width: 100%;
+			overflow: var(--origam-progress-linear---overflow, hidden);
+			position: var(--origam-progress-linear---position, relative);
+			transition: var(--origam-progress-linear---transition-duration, 0.2s) var(--origam-progress-linear---transition-easing, cubic-bezier(0.4, 0, 0.2, 1));
+			width: var(--origam-progress-linear---width, 100%);
 
 			#{$this}__background {
 				background: currentColor;
@@ -337,16 +337,16 @@
 			}
 
 			#{$this}__bar {
-				height: 100%;
-				left: 0;
-				position: absolute;
+				height: var(--origam-progress-linear__bar---height, 100%);
+				left: var(--origam-progress-linear__bar---left, 0);
+				position: var(--origam-progress-linear__bar---position, absolute);
 				transition: inherit;
 			}
 
 			&#{$this}--indeterminate {
 				#{$this}__bar {
 					animation-play-state: paused;
-					animation-duration: 2.2s;
+					animation-duration: var(--origam-progress-linear---indeterminate-duration, 2.2s);
 					animation-iteration-count: infinite;
 					bottom: 0;
 					right: auto;
@@ -368,9 +368,9 @@
 				animation-play-state: paused;
 				bottom: 0;
 				left: auto;
-				opacity: 0.3;
-				pointer-events: none;
-				position: absolute;
+				opacity: var(--origam-progress-linear__stream---opacity, 0.3);
+				pointer-events: var(--origam-progress-linear__stream---pointer-events, none);
+				position: var(--origam-progress-linear__stream---position, absolute);
 				transition: inherit;
 			}
 
@@ -403,22 +403,20 @@
 				}
 			}
 
-			&#{$this}--absolute,
-			&#{$this}--fixed {
-				left: 0;
-				z-index: 1;
-			}
-
 			&#{$this}--absolute {
-				position: absolute;
+				left: var(--origam-progress-linear__absolute---left, 0);
+				z-index: var(--origam-progress-linear__absolute---z-index, 1);
+				position: var(--origam-progress-linear__absolute---position, absolute);
 			}
 
 			&#{$this}--fixed {
-				position: fixed;
+				left: var(--origam-progress-linear__fixed---left, 0);
+				z-index: var(--origam-progress-linear__fixed---z-index, 1);
+				position: var(--origam-progress-linear__fixed---position, fixed);
 			}
 
 			&#{$this}--rounded {
-				border-radius: 9999px;
+				border-radius: var(--origam-progress-linear---rounded-border-radius, 9999px);
 
 				#{$this}__loader {
 					border-radius: inherit;
