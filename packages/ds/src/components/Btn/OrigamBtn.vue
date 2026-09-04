@@ -593,10 +593,10 @@
 		}
 
 		&--size-x-small {
-			--origam-btn---height: 20px;
+			--origam-btn---height: var(--origam-btn---height-xs, 20px);
 			--origam-btn---font-size: 0.625rem;
 			--origam-btn---min-width: 36px;
-			padding: 0 calc(8px + var(--origam-btn---density-padding-x, 0px));
+			padding: 0 calc(var(--origam-btn---padding-xs, 8px) + var(--origam-btn---density-padding-x, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 16px;
@@ -604,10 +604,10 @@
 		}
 
 		&--size-small {
-			--origam-btn---height: 28px;
+			--origam-btn---height: var(--origam-btn---height-sm, 28px);
 			--origam-btn---font-size: 0.75rem;
 			--origam-btn---min-width: 50px;
-			padding: 0 calc(12px + var(--origam-btn---density-padding-x, 0px));
+			padding: 0 calc(var(--origam-btn---padding-sm, 12px) + var(--origam-btn---density-padding-x, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 20px;
@@ -615,10 +615,10 @@
 		}
 
 		&--size-default {
-			--origam-btn---height: 36px;
+			--origam-btn---height: var(--origam-btn---height-md, 36px);
 			--origam-btn---font-size: 0.875rem;
 			--origam-btn---min-width: 64px;
-			padding: 0 calc(16px + var(--origam-btn---density-padding-x, 0px));
+			padding: 0 calc(var(--origam-btn---padding-md, 16px) + var(--origam-btn---density-padding-x, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 24px;
@@ -626,10 +626,10 @@
 		}
 
 		&--size-large {
-			--origam-btn---height: 44px;
+			--origam-btn---height: var(--origam-btn---height-lg, 44px);
 			--origam-btn---font-size: 1rem;
 			--origam-btn---min-width: 78px;
-			padding: 0 calc(20px + var(--origam-btn---density-padding-x, 0px));
+			padding: 0 calc(var(--origam-btn---padding-lg, 20px) + var(--origam-btn---density-padding-x, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 28px;
@@ -637,10 +637,10 @@
 		}
 
 		&--size-x-large {
-			--origam-btn---height: 52px;
+			--origam-btn---height: var(--origam-btn---height-xl, 52px);
 			--origam-btn---font-size: 1.125rem;
 			--origam-btn---min-width: 92px;
-			padding: 0 calc(24px + var(--origam-btn---density-padding-x, 0px));
+			padding: 0 calc(var(--origam-btn---padding-xl, 24px) + var(--origam-btn---density-padding-x, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 32px;

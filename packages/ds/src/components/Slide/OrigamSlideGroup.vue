@@ -502,10 +502,9 @@
 		display: var(--origam-slide-group---display, flex);
 		overflow: var(--origam-slide-group---overflow, hidden);
 
-		&__prev,
-		&__next {
-			align-items: center;
-			display: flex;
+		&__prev {
+			align-items: var(--origam-slide-group__prev---align-items, center);
+			display: var(--origam-slide-group__prev---display, flex);
 			flex: 0 1 var(--origam-slide-group__prev---min-width, 52px);
 			justify-content: center;
 			min-width: var(--origam-slide-group__prev---min-width, 52px);
@@ -515,6 +514,21 @@
 			&--disabled {
 				pointer-events: none;
 				opacity: var(--origam-slide-group__prev---opacity-disabled, 0.6);
+			}
+		}
+
+		&__next {
+			align-items: var(--origam-slide-group__next---align-items, center);
+			display: var(--origam-slide-group__next---display, flex);
+			flex: 0 1 var(--origam-slide-group__next---min-width, 52px);
+			justify-content: center;
+			min-width: var(--origam-slide-group__next---min-width, 52px);
+			cursor: var(--origam-slide-group__next---cursor, pointer);
+			color: var(--origam-slide-group__next---color, inherit);
+
+			&--disabled {
+				pointer-events: none;
+				opacity: var(--origam-slide-group__next---opacity-disabled, 0.6);
 			}
 		}
 

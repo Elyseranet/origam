@@ -968,7 +968,7 @@
     &__dropzone {
       align-items: center;
       background-color: var(--origam-file-field__dropzone---background-color, transparent);
-      border: var(--origam-file-field__dropzone---border-width, 2px) var(--origam-file-field__dropzone---border-style, dashed) var(--origam-file-field__dropzone---color, var(--origam-color__border---default));
+      border: var(--origam-file-field__dropzone---border-width, 2px) var(--origam-file-field__dropzone---border-style, dashed) var(--origam-file-field__dropzone---border-color, var(--origam-file-field__dropzone---color, var(--origam-color__border---default)));
       border-radius: var(--origam-file-field__dropzone---border-radius, 8px);
       color: var(--origam-file-field__dropzone---color, inherit);
       cursor: var(--origam-file-field__dropzone---cursor, pointer);
@@ -978,6 +978,7 @@
       justify-content: center;
       min-height: calc(var(--origam-file-field__dropzone---min-height, 140px) + var(--origam-file-field__dropzone---density, 0px));
       padding: calc(var(--origam-file-field__dropzone---padding, 24px) + var(--origam-file-field__dropzone---density, 0px));
+      padding-block: calc(var(--origam-file-field__dropzone---padding-block, var(--origam-file-field__dropzone---padding, 24px)) + var(--origam-file-field__dropzone---density, 0px));
       position: relative;
       text-align: center;
       transition: border-color var(--origam-file-field---transition-duration, 200ms) ease, background-color var(--origam-file-field---transition-duration, 200ms) ease;

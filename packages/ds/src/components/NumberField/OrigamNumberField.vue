@@ -914,6 +914,7 @@
 			.origam-btn {
 				background-color: var(--origam-number-field__control---background-color, transparent);
 				border-radius: var(--origam-number-field__control---border-radius, 0);
+				cursor: var(--origam-number-field__control---cursor, pointer);
 			}
 		}
 
