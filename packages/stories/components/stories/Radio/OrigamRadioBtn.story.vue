@@ -152,15 +152,6 @@
 			/>
 		</Variant>
 
-		<Variant title="Events - update:focused">
-			<origam-radio-btn
-					v-model="emitModel"
-					value="emitted"
-					label="Focus / blur to trigger"
-					@update:focused="logEvent('update:focused', $event)"
-			/>
-		</Variant>
-
 		<Variant title="Slots - Default">
 			<origam-radio-btn v-model="slotModel" value="custom">
 				<strong>Custom</strong> slot content

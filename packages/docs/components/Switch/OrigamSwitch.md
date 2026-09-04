@@ -139,6 +139,7 @@ block set on a marketing theme.
 | `update:modelValue` | `any` | Fired on toggle |
 | `focus` | `FocusEvent` | Native focus |
 | `blur` | `FocusEvent` | Native blur |
+| `click:label` | `MouseEvent` | Fired when the user clicks the associated `<label>` rather than the track/thumb |
 
 ## Design tokens
 

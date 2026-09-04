@@ -376,6 +376,46 @@ function computeStateFlagEmitted (src) {
     return found
 }
 
+/**
+ * A `useVModel(props, 'prop')` ref that's never WRITTEN LOCALLY (so
+ * `directVModelEvents` in `emits.mjs` misses it) can still be reachable if
+ * the component hands the live Ref object to a DESCENDANT via
+ * `provide(KEY, { ref, … })` — Vue shares the SAME Ref instance through
+ * `inject()`, so a child writing `injected.ref.value = …` mutates it just
+ * as validly as a local write, and the `useVModel` computed setter (which
+ * captured `getCurrentInstance()` in THIS file, during THIS component's own
+ * `setup()`) still fires `vm.emit('update:prop', …)` on THIS component.
+ *
+ * Same "reachable once provided, not proven, documented as an assumption"
+ * tolerance the codebase already applies to `useNested` / `useOptions` /
+ * `usePaginatedItems` above (see LIMITES ASSUMÉES in the header) — this
+ * generalises it to a component's OWN `useVModel` ref instead of a shared
+ * composable's internal one.
+ *
+ * Verified case (not a blanket claim, checked by hand): `useVModel(props,
+ * 'modelValue')` in `OrigamSelectionControlGroup.vue`, `modelValue` provided
+ * under `ORIGAM_SELECTION_CONTROL_GROUP_KEY`. The ONLY other file injecting
+ * that key, `OrigamSelectionControl.vue`, writes
+ * `group.modelValue.value = newVal` unconditionally in its `model`
+ * computed's `set()` (`grep -rln 'ORIGAM_SELECTION_CONTROL_GROUP_KEY'
+ * src/components/` → exactly these two files). Confirmed at RUNTIME too,
+ * not just by reading: `packages/tests/TU/components/SelectionControl/
+ * OrigamSelectionControlGroup.spec.ts` — 20 assertions on
+ * `wrapper.emitted('update:modelValue')`, all green before this guard
+ * change existed.
+ */
+function computeProvidedVModelEvents (src) {
+    const found = new Set()
+    const re = /const\s+([A-Za-z0-9_$]+)\s*=\s*useVModel\(\s*props\s*,\s*'([^']+)'/g
+    let m
+    while ((m = re.exec(src))) {
+        const [, ref, prop] = m
+        const provided = new RegExp(`provide\\([^,]+,\\s*\\{[^}]*\\b${escapeRegExp(ref)}\\b`, 's').test(src)
+        if (provided) found.add(`update:${prop}`)
+    }
+    return found
+}
+
 // `emitVar` (group 1) is OPTIONAL: `defineEmits<IXxxEmits>()` used as a bare
 // statement (no `const x =`) is a legitimate, common shape in this codebase
 // — Avatar/AvatarGroup/Badge/Btn all register the emits option this way and
@@ -433,7 +473,11 @@ export function analyseDeadEmits (rawSource, interfaceIndex) {
     //    header ("useHover/useActive N'EXISTENT PLUS") et la fonction elle-même.
     const stateFlagEmitted = computeStateFlagEmitted(stripped)
 
-    const emitted = new Set([...literalEmitted, ...relayEmitted, ...extraRelayEmitted, ...stateFlagEmitted])
+    // 5. useVModel ref never written LOCALLY but PROVIDED to a descendant —
+    //    voir `computeProvidedVModelEvents` ci-dessus.
+    const providedVModelEmitted = computeProvidedVModelEvents(stripped)
+
+    const emitted = new Set([...literalEmitted, ...relayEmitted, ...extraRelayEmitted, ...stateFlagEmitted, ...providedVModelEmitted])
     const dead = [...declared].filter(e => !emitted.has(e)).sort()
 
     return {

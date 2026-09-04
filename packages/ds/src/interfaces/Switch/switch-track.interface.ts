@@ -4,7 +4,6 @@ import type {
 } from '../Commons/color.interface'
 import type { IBorderProps } from '../Commons/border.interface'
 import type {
-    ICommonsComponentEmits,
     ICommonsComponentProps,
     ICommonsComponentSlots
 } from '../Commons/commons.interface'
@@ -56,7 +55,22 @@ export interface ISwitchTrackProps extends ICommonsComponentProps, IColorProps, 
     inset?: boolean
 }
 
-export interface ISwitchTrackEmits extends ICommonsComponentEmits {
+/**
+ * ⛔ Does NOT extend `ICommonsComponentEmits` (LOT 3, unemitted-declarations
+ * guard). That interface only declares `update:modelValue`, which this
+ * component cannot emit: `modelValue` is a plain, read-only display prop
+ * here — `props.modelValue: boolean`, driving the `--dirty` CSS modifier —
+ * there is no `useVModel` call, no `modelValue.value =` write, nothing.
+ * The track only ever forwards a raw `click` upward; `OrigamSwitch` decides
+ * whether that toggles the real `modelValue` it owns (`v-model="model"` on
+ * `<origam-selection-control>`, several layers above). Same reasoning as
+ * `ICheckboxBtnEmits` for `update:focused` — dead surface, not an
+ * observable break: a consumer binding `@update:model-value` on
+ * `<origam-switch-track>` directly received nothing before and receives
+ * nothing after; the listener now flows through `$attrs` instead of being
+ * swallowed by a declaration that lied about firing it.
+ */
+export interface ISwitchTrackEmits {
     (e: 'click', event: MouseEvent): void
 }
 
