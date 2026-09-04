@@ -2086,7 +2086,7 @@ export type TTokenName =
   | '--origam-otp-input-field---padding-block'
   | '--origam-otp-input-field---transition-duration'
   | '--origam-otp-input-field---transition-easing'
-  | '--origam-otp-input-field__cell---background-color'
+  | '--origam-otp-input-field__cell---background'
   | '--origam-otp-input-field__cell---border-color'
   | '--origam-otp-input-field__cell---border-color-error'
   | '--origam-otp-input-field__cell---border-color-filled'
