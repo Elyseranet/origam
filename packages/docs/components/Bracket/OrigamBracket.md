@@ -284,8 +284,10 @@ For `round-robin`:
 
 ## Tokens
 
-All visual values are exposed via `tokens/component/bracket.json`. The
-generated CSS variables follow the standard `--origam-bracket---*`,
+All visual values are exposed as CSS variables declared in
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
+under `packages/ds/src/assets/scss/tokens/`), following the standard
+`--origam-bracket---*`,
 `--origam-bracket-match---*`, `--origam-bracket-competitor---*`,
 `--origam-bracket-connector---*`, `--origam-bracket-round-robin---*`
 naming. Override at the consumer level for theming.

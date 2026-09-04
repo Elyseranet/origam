@@ -89,7 +89,10 @@ of the rendered element (visible to assistive tech, not painted).
 
 Each variant materialises through a `.origam-blockquote--variant-{name}`
 modifier class that swaps token overrides in the SCSS layer; consumers
-can theme any of them via `tokens/component/blockquote.json`.
+can theme any of them by editing the `--origam-blockquote---*` /
+`--origam-blockquote--{variant}---*` declarations in
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
+under `packages/ds/src/assets/scss/tokens/`).
 
 ## I18n quotes
 

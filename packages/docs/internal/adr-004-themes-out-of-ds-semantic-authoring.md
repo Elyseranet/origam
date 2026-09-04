@@ -9,6 +9,18 @@
 
 ---
 
+> **Note (2026-09-04)**: this ADR was written while the Style Dictionary v4
+> + Tokens Studio token pipeline was still active, including the gradient
+> generation described under "Resolved item — gradient preset palette"
+> below (`tokens/semantic/gradient-{light,dark}.json`, `$metadata.json` /
+> `$themes.json`). That pipeline was removed on 2026-08-31 and gradient
+> tokens no longer "generate" — the `--origam-gradient---*` variables are
+> now declared directly and by hand in
+> `packages/ds/src/assets/css/tokens/light.css` / `dark.css`. The text
+> below is left unmodified as the historical record of the decision — see
+> the "Design tokens" section of the repository `CLAUDE.md` for the
+> current mechanism.
+
 ## Context
 
 ADR-003 shipped the 8 brand presets **inside the DS** as a generated

@@ -179,7 +179,9 @@ interface ISrcObject {
 
 ## Design tokens consumed
 
-`<OrigamImg>` reads from `tokens/component/img.json`. The defaults are
+`<OrigamImg>` reads its variables from
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
+under `packages/ds/src/assets/scss/tokens/`). The defaults are
 unopinionated (positioning, fit, blur for the `lazySrc`) so the
 component blends into any surface.
 

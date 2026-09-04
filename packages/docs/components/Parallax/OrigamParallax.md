@@ -162,7 +162,9 @@ without a page reload.
 
 ## Design tokens consumed
 
-`<OrigamParallax>` reads from `tokens/component/parallax.json`. The
+`<OrigamParallax>` reads its variables from
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
+under `packages/ds/src/assets/scss/tokens/`). The
 relevant additions for the multi-layer path are:
 
 | CSS variable | Token |

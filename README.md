@@ -92,8 +92,12 @@ origam ships three built-in modes: `light`, `dark`, and `auto`
 <html data-theme="dark">
 ```
 
-Omit the attribute to fall back to `auto`. Brand themes can be registered
-by dropping a `tokens/semantic/brand-{name}.json` file and rebuilding.
+Omit the attribute to fall back to `auto`. Brand themes are registered at
+runtime as an `IOrigamTheme` object passed to `createOrigam()` (props
+first, CSS vars only for what props can't express — see "Multi-theme" in
+`CLAUDE.md`). A brand that needs its own stylesheet instead hand-writes a
+`[data-theme="brand-{name}"]` block — there is no generator that emits
+one from a token file.
 
 ### Runtime switch
 
@@ -127,11 +131,11 @@ sub-tree.
 
 Three tiers, in order of specificity:
 
-| Tier         | Lives in                          | Example CSS variable                       |
-|--------------|-----------------------------------|--------------------------------------------|
-| Primitive    | `tokens/primitive.json`           | `--origam-color-neutral-500`               |
-| Semantic     | `tokens/semantic/{theme}.json`    | `--origam-color-surface-default`           |
-| Component    | `tokens/component/{name}.json`    | `--origam-btn---background-color`          |
+| Tier         | Lives in                                                    | Example CSS variable                       |
+|--------------|---------------------------------------------------------------|--------------------------------------------|
+| Primitive    | `packages/ds/src/assets/css/tokens/primitive.css`             | `--origam-color-neutral-500`               |
+| Semantic     | `packages/ds/src/assets/css/tokens/light.css` / `dark.css`    | `--origam-color-surface-default`           |
+| Component    | `packages/ds/src/assets/css/tokens/light.css` / `dark.css`    | `--origam-btn---background-color`          |
 
 Semantic tokens reference primitives. Components reference semantics. App
 code should consume **semantic** tokens or component variables — never

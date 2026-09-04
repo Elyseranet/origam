@@ -74,7 +74,9 @@ override.
 | `--origam-card-text---padding-inline-start` | `1rem` |
 | `--origam-card-text---padding-inline-end` | `1rem` |
 
-The full list lives in `tokens/component/card-text.json`.
+The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
+`dark.css` (SCSS twins under `packages/ds/src/assets/scss/tokens/`) — grep
+for `--origam-card-text`.
 
 ## Accessibility
 

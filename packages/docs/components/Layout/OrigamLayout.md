@@ -94,7 +94,9 @@ interface ILayoutProps extends ICommonsComponentProps {
 
 ## Design tokens consumed
 
-`<OrigamLayout>` reads from `tokens/component/layout.json`. The
+`<OrigamLayout>` reads its variables from
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
+under `packages/ds/src/assets/scss/tokens/`). The
 component itself is mostly transparent; the layout-aware children
 (drawer, app-bar, system-bar, …) consume their own tokens once
 positioned.

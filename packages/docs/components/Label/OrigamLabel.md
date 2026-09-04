@@ -130,8 +130,10 @@ interface ILabelEmits {
 
 ## Design tokens consumed
 
-`<OrigamLabel>` reads from `tokens/component/label.json`. Override at
-the document root or via a `:style` binding to re-skin a single instance.
+`<OrigamLabel>` reads its variables from
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
+under `packages/ds/src/assets/scss/tokens/`). Override at the document
+root or via a `:style` binding to re-skin a single instance.
 
 | CSS variable | Token reference |
 |---|---|
@@ -147,8 +149,8 @@ the document root or via a `:style` binding to re-skin a single instance.
 | `--origam-label__floating---visibility` | `hidden` |
 | `--origam-label---required-indicator-color` | `{color.feedback.danger.fgSubtle}` |
 
-The full list lives in
-`tokens/component/label.json`.
+The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
+`dark.css` — grep for `--origam-label`.
 
 ## Accessibility
 

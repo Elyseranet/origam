@@ -138,9 +138,10 @@ interface ISheetProps extends ITagProps, ICommonsComponentProps,
 
 ## Design tokens consumed
 
-`<OrigamSheet>` reads from `tokens/component/sheet.json`. Override at
-the document root or via a `:style` binding to re-skin a single
-instance.
+`<OrigamSheet>` reads its variables from
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
+under `packages/ds/src/assets/scss/tokens/`). Override at the document
+root or via a `:style` binding to re-skin a single instance.
 
 | CSS variable | Token reference |
 |---|---|
@@ -169,8 +170,8 @@ instance.
 | `--origam-sheet--border---box-shadow` | `{shadow.none}` |
 | `--origam-sheet--rounded---border-radius` | `{radius.sm}` |
 
-The full list lives in
-`tokens/component/sheet.json`.
+The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
+`dark.css` — grep for `--origam-sheet`.
 
 ## Accessibility
 

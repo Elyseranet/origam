@@ -127,9 +127,10 @@ The grid template flips between portrait and landscape:
 
 ## Design tokens consumed
 
-`<OrigamPicker>` reads from `tokens/component/picker.json`. Override at
-the document root or via a `:style` binding to re-skin a single
-instance.
+`<OrigamPicker>` reads its variables from
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
+under `packages/ds/src/assets/scss/tokens/`). Override at the document
+root or via a `:style` binding to re-skin a single instance.
 
 | CSS variable | Token reference |
 |---|---|

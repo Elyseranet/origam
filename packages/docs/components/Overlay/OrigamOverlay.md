@@ -134,7 +134,9 @@ interface IOverlayProps extends ICommonsComponentProps, IDimensionProps,
 
 ## Design tokens consumed
 
-`<OrigamOverlay>` reads from `tokens/component/overlay.json`. The
+`<OrigamOverlay>` reads its variables from
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
+under `packages/ds/src/assets/scss/tokens/`). The
 content layer is intentionally transparent — the surface inside the
 default slot owns its own chrome (`<OrigamSheet>`, `<OrigamCard>`).
 

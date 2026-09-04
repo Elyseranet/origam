@@ -243,7 +243,9 @@ Bound on the `__badge` pill (the visible surface). Both props have a real visual
 | `--origam-badge--{intent}---background-color` / `--origam-badge--{intent}---color` | Per-status palette. |
 | `--origam-badge__wrapper---*` | Host wrapper layout (display, padding, margin). |
 
-The full list lives in `tokens/component/badge.json`.
+The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
+`dark.css` (SCSS twins under `packages/ds/src/assets/scss/tokens/`) — grep
+for `--origam-badge`.
 
 ## Accessibility
 

@@ -219,13 +219,14 @@ The last crumb has no divider inside its `<li>`.
 
 ## Design tokens consumed
 
-`<OrigamBreadcrumb>` reads from `tokens/component/breadcrumb.json`
-(root surface only). `OrigamBreadcrumbItem` and `OrigamBreadcrumbDivider`
-are separate, independently-shipped components — each now has its own
-top-level token file, `tokens/component/breadcrumb-item.json` and
-`tokens/component/breadcrumb-divider.json` (#386), matching the
-`--origam-breadcrumb-item---*` / `--origam-breadcrumb-divider---*`
-namespace each component's own scoped `<style>` reads. Before #386 these
+`<OrigamBreadcrumb>` reads its variables from
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
+under `packages/ds/src/assets/scss/tokens/`) — root surface only, under
+the `--origam-breadcrumb---*` prefix. `OrigamBreadcrumbItem` and
+`OrigamBreadcrumbDivider` are separate, independently-shipped components
+— each now has its own top-level namespace in the same stylesheets,
+`--origam-breadcrumb-item---*` and `--origam-breadcrumb-divider---*`
+(#386), matching each component's own scoped `<style>` reads. Before #386 these
 were nested BEM children of `breadcrumb` (`--origam-breadcrumb__item---*`),
 a name neither component ever read — the fix moved the DTCG source to
 match the component's own naming, per the project's "one component, one

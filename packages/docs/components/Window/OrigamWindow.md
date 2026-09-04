@@ -130,7 +130,8 @@ interface IWindowProps extends ICommonsComponentProps, ITagProps,
 
 ## Design tokens consumed
 
-Defined in `tokens/component/window.json`.
+Defined in `packages/ds/src/assets/css/tokens/light.css` and `dark.css`
+(SCSS twins under `packages/ds/src/assets/scss/tokens/`).
 
 | CSS variable | Default |
 |---|---|

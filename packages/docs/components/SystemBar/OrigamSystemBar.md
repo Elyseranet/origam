@@ -132,7 +132,9 @@ interface ISystemBarProps extends ICommonsComponentProps, ITagProps,
 
 ## Design tokens consumed
 
-`<OrigamSystemBar>` reads from `tokens/component/system-bar.json`.
+`<OrigamSystemBar>` reads its variables from
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
+under `packages/ds/src/assets/scss/tokens/`).
 
 | CSS variable | Default |
 |---|---|
@@ -157,8 +159,8 @@ interface ISystemBarProps extends ICommonsComponentProps, ITagProps,
 | `--origam-system-bar__icon---opacity` | `0.7` |
 | `--origam-system-bar--rounded---border-radius` | inherits |
 
-The full list lives in
-`tokens/component/system-bar.json`.
+The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
+`dark.css` — grep for `--origam-system-bar`.
 
 ## Accessibility
 

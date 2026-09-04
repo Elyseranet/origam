@@ -214,11 +214,10 @@ internal `internalLoopMode` ref rather than being that ref itself,
 
 ## CSS variables
 
-Confirmed against `packages/ds/tokens/component/media-controller.json`
-and the generated token sheets (`packages/ds/src/assets/css/tokens/light.css`).
-Two variables are seeded by the token build; the others are local SCSS
-override hooks with no token entry (their "Default" below is the SCSS
-fallback literal).
+Confirmed against `packages/ds/src/assets/css/tokens/light.css` (and its
+`dark.css` / SCSS twins). Two variables are declared there; the others
+are local SCSS override hooks with no token entry (their "Default" below
+is the SCSS fallback literal).
 
 | Variable | Default (light theme) | Notes |
 |---|---|---|

@@ -131,7 +131,9 @@ interface ILoaderComponentProps extends ILoaderProps {
 
 ## Design tokens consumed
 
-`<OrigamLoader>` reads from `tokens/component/loader.json`. The wrapper itself
+`<OrigamLoader>` reads its variables from
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
+under `packages/ds/src/assets/scss/tokens/`). The wrapper itself
 is layout-only; the spinner color comes from `OrigamProgress`.
 
 | CSS variable                              | Token reference                 |
@@ -142,7 +144,8 @@ is layout-only; the spinner color comes from `OrigamProgress`.
 | `--origam-loader__fullscreen---height`    | `100vh`                         |
 | `--origam-loader__fullscreen---width`     | `100vw`                         |
 
-The full list lives in `tokens/component/loader.json`.
+The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
+`dark.css` — grep for `--origam-loader`.
 
 ## Accessibility
 

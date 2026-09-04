@@ -83,7 +83,9 @@ interface IMainProps extends ITagProps, ICommonsComponentProps,
 
 ## Design tokens consumed
 
-`<OrigamMain>` reads from `tokens/component/main.json`. The component
+`<OrigamMain>` reads its variables from
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
+under `packages/ds/src/assets/scss/tokens/`). The component
 also re-exports the `--origam-layout---position-*` family written by
 the surrounding `<OrigamLayout>` so its inner padding tracks every
 sibling drawer / app-bar.

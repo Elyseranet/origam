@@ -100,7 +100,9 @@ pointer events so clicks on the surrounding page do not leak through.
 
 ## Design tokens consumed
 
-`<OrigamOverlayScrim>` reads from `tokens/component/overlay-scrim.json`.
+`<OrigamOverlayScrim>` reads its variables from
+`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
+under `packages/ds/src/assets/scss/tokens/`).
 
 | CSS variable | Token reference |
 |---|---|

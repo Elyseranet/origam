@@ -145,7 +145,9 @@ interface IAvatarGroupProps extends ICommonsComponentProps,
 | `--origam-avatar-group__item---outline-width` | Separation-ring width. Default: `2px`. |
 | `--origam-avatar-group__item---outline-style` | Separation-ring style. Default: `solid`. |
 
-The full list lives in `tokens/component/avatar-group.json`.
+The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
+`dark.css` (SCSS twins under `packages/ds/src/assets/scss/tokens/`) — grep
+for `--origam-avatar-group---`.
 
 ## Accessibility
 
