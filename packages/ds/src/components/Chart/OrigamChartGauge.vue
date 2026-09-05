@@ -203,6 +203,22 @@
 	const { paddingClasses, paddingStyles } = usePadding(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
 	const { headerTypographyStyles } = useChartHeaderTypography(props)
+
+	/*********************************************************
+	 * Props heritees sans effet ici (#426)
+	 *
+	 * @description
+	 * ⛔ Ces props sont declarees par `IChartBaseProps` et n'ont aucun
+	 * effet sur ce composant. Elles ne sont ni retirees ni cablees a un
+	 * comportement fictif : elles avertissent une fois, en dev, avec la
+	 * raison exacte. Meme traitement que `OrigamChartGauge`.
+	 ********************************************************/
+	useChartUnsupportedProp(
+		'OrigamChartGauge',
+		'categories',
+		'a gauge reads a single value from the first series and draws no category axis.',
+		() => (props.categories?.length ?? 0) > 0
+	)
 	const chartAnimationStyle = useChartAnimationStyle(props)
 
 	/*********************************************************

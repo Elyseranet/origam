@@ -68,7 +68,7 @@ Bands are rendered in array order. Each band covers `[previous.to, this.to]`. St
 | `rangeColors` | `Array<TIntent \| string>` | `['danger', 'warning', 'success']` | Fallback palette used when `range.color` is omitted. Cycled in array order. |
 | `orientation` | `TDirection` | `'horizontal'` | `'horizontal'` renders labels left, bars right. `'vertical'` renders labels bottom, bars upward. |
 | `barThickness` | `number` | `0.45` | Fraction of the slot height (horizontal) or slot width (vertical) used for the value bar. Range `[0, 1]`. |
-| `colorScheme` | `Array<TIntent \| string>` | `[]` | Inherited from `IChartBaseProps`. **No effect on this component** — see [Caveats](#caveats). |
+| `colorScheme` | `Array<TIntent \| string>` | ⛔ **Sans effet sur ce composant** — the value bar uses a single uniform fill (barColor) and range bands use their own palette (rangeColors) — there is no per-series identity for a rotating palette to drive. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
 
 ### Behaviour
 

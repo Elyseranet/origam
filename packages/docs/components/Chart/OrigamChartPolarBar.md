@@ -69,7 +69,7 @@ import { OrigamChartPolarBar } from '@origam/ds'
 
 | Name | Type | Default | Description |
 |---|---|---|---|
-| `xAxisFormat` | `(value: string \| number) => string` | `String(value)` | Applied to the tooltip X label. |
+| `xAxisFormat` | `(value: string \| number) => string` | ⛔ **Sans effet sur ce composant** — only `yAxisFormat` is forwarded to the axis and applied in `labelFor`. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
 | `yAxisFormat` | `(value: number) => string` | `String(value)` | Applied to in-wedge value labels and the tooltip Y value. |
 
 ## Emits

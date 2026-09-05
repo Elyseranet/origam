@@ -105,14 +105,14 @@ import { OrigamChartMap } from '@origam/ds'
 | `lineColor` | `TIntent \| string` | `'primary'` | Default stroke colour for flight-route arcs. Overridden per route. |
 | `nodeRadius` | `number` | `4` | Radius of the endpoint circles in flight-routes mode. |
 | `routeCurvature` | `number` | `0.3` | Bezier offset as a fraction of chord length `[0..1]`. `0` = straight. |
-| `colorScheme` | `Array<TIntent \| string>` | `[]` | Inherited from `IChartBaseProps`. **No effect on this component** — see [Behaviour notes](#behaviour-notes). |
+| `colorScheme` | `Array<TIntent \| string>` | ⛔ **Sans effet sur ce composant** — colour is a continuous gradient (colorRange, choropleth mode) or a single lineColor (flight-routes mode) — a rotating discrete palette does not apply to either. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
 
 ### Legend
 
 | Name | Type | Default | Description |
 |---|---|---|---|
 | `showLegend` | `boolean` | `true` | Toggle the gradient legend bar (choropleth). Has no visible effect in flight-routes mode (no legend rendered). |
-| `legendPosition` | `TChartLegendPosition` | `'bottom'` | Anchor of the legend. |
+| `legendPosition` | `TChartLegendPosition` | `'bottom'` | ⛔ **Sans effet sur ce composant** — the legend gradient is placed by the fixed coordinates of `gradientRect`, which never read the anchor. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
 
 ### Behaviour
 

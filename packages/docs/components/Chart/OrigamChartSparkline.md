@@ -42,8 +42,8 @@ A tiny inline chart for table cells, KPI cards, and dashboards. Renders a single
 |---|---|---|---|
 | `series` | `Array<IChartSeries>` | required | Single data series. Data must be `Array<number>` |
 | `showTooltip` | `boolean` | `false` | Enable a minimal value tooltip on hover |
-| `animated` | `boolean` | `false` | Animate on paint (respects `prefers-reduced-motion`) |
-| `animationDuration` | `number` | `600` | Animation duration in ms |
+| `animated` | `boolean` | `false` | ⛔ **Sans effet sur ce composant** — no animation is ever emitted — neither a CSS class nor an inline `animation` declaration. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
+| `animationDuration` | `number` | `600` | ⛔ **Sans effet sur ce composant** — nothing is animated, so there is no duration to apply. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
 
 ### Layout (inherited from `IChartBaseProps`)
 
@@ -55,7 +55,7 @@ A tiny inline chart for table cells, KPI cards, and dashboards. Renders a single
 | `elevation` | `TElevation` | — | Shadow token |
 | `bgColor` | `TIntent \| string` | — | Background colour |
 | `title` | `string` | — | ARIA label / accessible title for the chart |
-| `aspectRatio` | `string` | — | CSS `aspect-ratio` shortcut |
+| `aspectRatio` | `string` | — | ⛔ **Sans effet sur ce composant** — the root sizes itself from `width` / `height`; no `aspect-ratio` declaration is emitted. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
 
 ## Emits
 

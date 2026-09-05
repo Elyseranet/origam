@@ -66,9 +66,9 @@ import { OrigamChartGauge } from '@origam/ds'
 |---|---|---|---|
 | `animated` | `boolean` | `true` | Animate the filled arc on first paint and on value changes. Respects `prefers-reduced-motion`. |
 | `animationDuration` | `number` | `600` | Animation duration in ms. |
-| `showLegend` | `boolean` | `false` | Inherited from `IChartBaseProps`. **No effect on this component** — see [Caveats](#caveats). |
-| `legendPosition` | `TChartLegendPosition` | `'bottom'` | Inherited from `IChartBaseProps`. **No effect on this component** — see [Caveats](#caveats). |
-| `showTooltip` | `boolean` | `false` | Inherited from `IChartBaseProps`. **No effect on this component** — see [Caveats](#caveats). |
+| `showLegend` | `boolean` | `false` | ⛔ **Sans effet sur ce composant** — a gauge reads a single value from the first series and renders no legend markup at all. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
+| `legendPosition` | `TChartLegendPosition` | `'bottom'` | ⛔ **Sans effet sur ce composant** — no legend is ever rendered on a gauge, so there is nothing to anchor. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
+| `showTooltip` | `boolean` | `false` | ⛔ **Sans effet sur ce composant** — a gauge renders no per-point tooltip — the centre label already shows the current value. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
 
 ## Emits
 

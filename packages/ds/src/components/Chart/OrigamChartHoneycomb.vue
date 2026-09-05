@@ -83,7 +83,15 @@
 								dominant-baseline="middle"
 								:data-cy="`origam-chart-honeycomb-label-${ tile.index }`"
 						>
-							{{ tile.label }}
+							<slot
+									name="tile-label"
+									:color="tile.color"
+									:index="tile.index"
+									:name="tile.label"
+									:value="tile.value"
+									:x="tile.cx"
+									:y="tile.cy"
+							>{{ tile.label }}</slot>
 						</text>
 					</g>
 				</g>
@@ -153,6 +161,7 @@
 	import OrigamChartLegend from './OrigamChartLegend.vue'
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
+	import { useChartUnsupportedProp } from '../../composables/Chart/chart-prop-warning.composable'
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
@@ -226,6 +235,28 @@
 	const { paddingStyles } = usePadding(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
 	const { headerTypographyStyles } = useChartHeaderTypography(props)
+
+	/*********************************************************
+	 * Props heritees sans effet ici (#426)
+	 *
+	 * @description
+	 * ⛔ Ces props sont declarees par `IChartBaseProps` et n'ont aucun
+	 * effet sur ce composant. Elles ne sont ni retirees ni cablees a un
+	 * comportement fictif : elles avertissent une fois, en dev, avec la
+	 * raison exacte. Meme traitement que `OrigamChartGauge`.
+	 ********************************************************/
+	useChartUnsupportedProp(
+		'OrigamChartHoneycomb',
+		'categories',
+		'a honeycomb lays its cells out on a hex grid — there is no category axis to label.',
+		() => props.categories !== undefined
+	)
+	useChartUnsupportedProp(
+		'OrigamChartHoneycomb',
+		'xAxisFormat',
+		'`labelFor` only ever applies `yAxisFormat`; a hex grid has no x axis.',
+		() => props.xAxisFormat !== undefined
+	)
 	const chartAnimationStyle = useChartAnimationStyle(props)
 
 	/*********************************************************

@@ -170,6 +170,7 @@
 	import OrigamChartLegend from './OrigamChartLegend.vue'
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
+	import { useChartUnsupportedProp } from '../../composables/Chart/chart-prop-warning.composable'
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
@@ -242,6 +243,22 @@
 	const { paddingStyles } = usePadding(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
 	const { headerTypographyStyles } = useChartHeaderTypography(props)
+
+	/*********************************************************
+	 * Props heritees sans effet ici (#426)
+	 *
+	 * @description
+	 * ⛔ Ces props sont declarees par `IChartBaseProps` et n'ont aucun
+	 * effet sur ce composant. Elles ne sont ni retirees ni cablees a un
+	 * comportement fictif : elles avertissent une fois, en dev, avec la
+	 * raison exacte. Meme traitement que `OrigamChartGauge`.
+	 ********************************************************/
+	useChartUnsupportedProp(
+		'OrigamChartTreemap',
+		'categories',
+		'a treemap labels each tile from its own datum — there is no category axis.',
+		() => (props.categories?.length ?? 0) > 0
+	)
 	const chartAnimationStyle = useChartAnimationStyle(props)
 
 	/*********************************************************

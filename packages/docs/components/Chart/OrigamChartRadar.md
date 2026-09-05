@@ -64,7 +64,7 @@ const series: Array<IChartSeries> = [
 | `animationDuration` | `number` | `600` | Animation duration in ms. |
 | `showLegend` | `boolean` | `true` | Toggle the legend block. |
 | `legendPosition` | `TChartLegendPosition` | `'bottom'` | Legend anchor: `'top'`, `'bottom'`, `'left'`, `'right'`. |
-| `showTooltip` | `boolean` | `true` | Toggle the hover tooltip on vertex markers. |
+| `showTooltip` | `boolean` | `true` | ⛔ **Sans effet sur ce composant** — no tooltip component is rendered by the radar — `ChartTooltip` appears nowhere in its template. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
 
 ## Emits
 

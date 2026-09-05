@@ -61,7 +61,7 @@ const activityData = days.flatMap((day) =>
 | `aspectRatio` | `string` | `undefined` | CSS `aspect-ratio` shorthand. Overrides `height`. |
 | `title` | `string` | `undefined` | Optional title above the chart. Replaceable via the `#title` slot. |
 | `subtitle` | `string` | `undefined` | Optional subtitle below the title. |
-| `colorScheme` | `Array<TIntent \| string>` | `[]` | Inherited from `IChartBaseProps`. **No effect on this component** — see [Behaviour notes](#behaviour-notes). |
+| `colorScheme` | `Array<TIntent \| string>` | ⛔ **Sans effet sur ce composant** — cell colour is a continuous gradient (colorRange) — a rotating discrete palette does not apply to a continuous scale. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
 
 ### Behaviour
 

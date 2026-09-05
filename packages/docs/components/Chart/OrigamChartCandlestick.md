@@ -57,7 +57,7 @@ import { OrigamChartCandlestick } from '@origam/ds'
 | `bearishColor` | `TIntent \| string` | `'danger'` | Fill colour for candles where close < open. |
 | `candleWidth` | `number` | `0.6` | Fraction of the per-slot width occupied by the body rectangle `[0..1]`. |
 | `wickWidth` | `number` | `1` | Wick stroke width in SVG user-units. |
-| `colorScheme` | `Array<TIntent \| string>` | `[]` | Inherited from `IChartBaseProps`. **No effect on this component** — candle colour is a *binary* choice (`bullishColor` / `bearishColor`), not a per-series identity a rotating palette could drive. Passing it logs a one-time dev warning (see [#426](#caveats)). |
+| `colorScheme` | `Array<TIntent \| string>` | ⛔ **Sans effet sur ce composant** — candle colour is binary (bullishColor / bearishColor) — there is no per-series identity for a rotating palette to drive. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
 
 ### Behaviour
 

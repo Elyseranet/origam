@@ -154,6 +154,7 @@
 		IChartWordCloudWord
 	} from '../../interfaces/Chart/chart-word-cloud.interface'
 
+	import { useChartUnsupportedProp } from '../../composables/Chart/chart-prop-warning.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
@@ -216,6 +217,22 @@
 	const { marginClasses, marginStyles } = useMargin(props)
 	const { paddingClasses, paddingStyles } = usePadding(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
+
+	/*********************************************************
+	 * Props heritees sans effet ici (#426)
+	 *
+	 * @description
+	 * ⛔ Ces props sont declarees par `IChartBaseProps` et n'ont aucun
+	 * effet sur ce composant. Elles ne sont ni retirees ni cablees a un
+	 * comportement fictif : elles avertissent une fois, en dev, avec la
+	 * raison exacte. Meme traitement que `OrigamChartGauge`.
+	 ********************************************************/
+	useChartUnsupportedProp(
+		'OrigamChartWordCloud',
+		'categories',
+		'a word cloud places words by weight — there is no category axis.',
+		() => (props.categories?.length ?? 0) > 0
+	)
 	/*********************************************************
 	 * Header typography — projection, NOT `props` wholesale (#546)
 	 *

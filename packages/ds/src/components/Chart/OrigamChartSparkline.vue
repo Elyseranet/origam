@@ -167,6 +167,7 @@
 		type StyleValue
 	} from 'vue'
 
+	import { useChartUnsupportedProp } from '../../composables/Chart/chart-prop-warning.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
@@ -534,6 +535,58 @@
 	])
 
 	const {dimensionStyles} = useDimension(props)
+
+	/*********************************************************
+	 * Props heritees sans effet ici (#426)
+	 *
+	 * @description
+	 * ⛔ Ces props sont declarees par `IChartBaseProps` et n'ont aucun
+	 * effet sur ce composant. Elles ne sont ni retirees ni cablees a un
+	 * comportement fictif : elles avertissent une fois, en dev, avec la
+	 * raison exacte. Meme traitement que `OrigamChartGauge`.
+	 ********************************************************/
+	useChartUnsupportedProp(
+		'OrigamChartSparkline',
+		'categories',
+		'a sparkline is a bare trend line: it draws no axis and no labels.',
+		() => props.categories !== undefined
+	)
+	useChartUnsupportedProp(
+		'OrigamChartSparkline',
+		'animated',
+		'no animation is ever emitted — neither a CSS class nor an inline `animation` declaration.',
+		() => props.animated === true
+	)
+	useChartUnsupportedProp(
+		'OrigamChartSparkline',
+		'animationDuration',
+		'nothing is animated, so there is no duration to apply.',
+		() => props.animationDuration !== undefined && props.animationDuration !== 600
+	)
+	useChartUnsupportedProp(
+		'OrigamChartSparkline',
+		'aspectRatio',
+		'the root sizes itself from `width` / `height`; no `aspect-ratio` declaration is emitted.',
+		() => props.aspectRatio !== undefined
+	)
+	useChartUnsupportedProp(
+		'OrigamChartSparkline',
+		'fontSize',
+		'a sparkline renders no text at all.',
+		() => props.fontSize !== undefined
+	)
+	useChartUnsupportedProp(
+		'OrigamChartSparkline',
+		'fontWeight',
+		'a sparkline renders no text at all.',
+		() => props.fontWeight !== undefined
+	)
+	useChartUnsupportedProp(
+		'OrigamChartSparkline',
+		'subtitle',
+		'a sparkline renders no header — neither title nor subtitle.',
+		() => props.subtitle !== undefined
+	)
 
 	/*********************************************************
 	 * rootStyles
