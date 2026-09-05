@@ -315,7 +315,6 @@
     "packages/ds/src/components/Chart/OrigamChartWordCloud.vue::--origam-chart__legend---side-gap",
     "packages/ds/src/components/Checkbox/OrigamCheckbox.vue::--origam-input---density",
     "packages/ds/src/components/Chip/OrigamChip.vue::--origam-chip---border-radius-rounded",
-    "packages/ds/src/components/Chip/OrigamChip.vue::--origam-chip---border-width-outlined",
     "packages/ds/src/components/Chip/OrigamChip.vue::--origam-chip---font-size",
     "packages/ds/src/components/Chip/OrigamChip.vue::--origam-chip---height-lg",
     "packages/ds/src/components/Chip/OrigamChip.vue::--origam-chip---height-md",

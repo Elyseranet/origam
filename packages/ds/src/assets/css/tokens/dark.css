@@ -266,7 +266,7 @@
   --origam-chip--info---color: var(--origam-color__feedback--info---fgSubtle);
   --origam-chip--info---border-color: var(--origam-color__feedback--info---border);
   --origam-chip--outlined---background-color: rgba(0, 0, 0, 0);
-  --origam-chip--outlined---border-width: var(--origam-border__width---thin);
+  --origam-chip---border-width-outlined: var(--origam-border__width---thin);
   --origam-chip--outlined---border-color: currentColor;
   --origam-chip__overlay---background-color: var(--origam-color__overlay---scrim);
   --origam-chip__overlay---border-radius: inherit;
@@ -3108,7 +3108,7 @@
     --origam-chip--info---color: var(--origam-color__feedback--info---fgSubtle);
     --origam-chip--info---border-color: var(--origam-color__feedback--info---border);
     --origam-chip--outlined---background-color: rgba(0, 0, 0, 0);
-    --origam-chip--outlined---border-width: var(--origam-border__width---thin);
+    --origam-chip---border-width-outlined: var(--origam-border__width---thin);
     --origam-chip--outlined---border-color: currentColor;
     --origam-chip__overlay---background-color: var(--origam-color__overlay---scrim);
     --origam-chip__overlay---border-radius: inherit;
