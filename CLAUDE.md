@@ -507,6 +507,38 @@ always done it right, and only local runs went the slow way.
   agents building packages and running Nuxt/Postgres servers were enough to
   manufacture failures. That measures your own load, not your code.
 
+⛔ **YOU MAY BE MEASURING ANOTHER WORKTREE'S BUILD. Check the port owner first.**
+Measured 2026-09-05, three false diagnoses in one session, in both directions:
+a correct fix looked broken, and a stale bundle looked green. `histoire preview`
+binds :6006 from *whichever* worktree started it, and there are ~55 of them.
+Playwright's `reuseExistingServer` then happily attaches to the neighbour's
+build. The manifest guard in `e2e-global-setup.ts` catches the case — **but it
+returns `exit 0`**, so a caller checking only the exit code sees success.
+
+```sh
+lsof -ti :6006                              # is anyone there?
+lsof -p <pid> -a -d cwd -Fn | grep '^n'     # WHICH worktree is serving
+E2E_HISTOIRE_PORT=6009 E2E_STATIC=1 pnpm exec playwright test …   # or just isolate
+```
+
+Same session, same cause, two more ways to fool yourself:
+
+- **A stories build whose `$?` you did not capture may have left a stale
+  bundle.** `pnpm -F @origam/stories build >/dev/null 2>&1` without `echo $?`
+  is how a fix "fails" three runs in a row on correct code.
+- **Before concluding a CSS fix does not take, look at what is actually
+  served**: `curl` the `style-*.css` the page links and `grep` the token name
+  in it. If the corrected name is there, the fix is not the problem.
+
+⛔ **The `alert.spec.ts` pattern — set a class in the DOM, then assert with
+`toHaveCSS` — breaks whenever that class is bound to a `computed`.** Vue
+re-patches the class list between the `evaluate` and the assertion, and
+`toHaveCSS` polls for 5 s, so it ends up measuring Vue's element, not yours.
+On `OrigamSwitch`'s density (#553) that returned `40px` on correct code. **Do
+the mutation AND the measurement inside a single `evaluate`.** Verified: the
+same sequence fails in two steps and passes in one, on identical code. See
+`packages/tests/e2e/switch-density.spec.ts` for the working shape.
+
 ⛔ **Do NOT use `pnpm -F @origam/tests test:e2e`** — the `pretest:e2e` hook
 fails on a guard and **blocks Playwright before a single spec starts, while
 still returning `exit 0`** to the caller. ⛔ This has **no ticket** — the
