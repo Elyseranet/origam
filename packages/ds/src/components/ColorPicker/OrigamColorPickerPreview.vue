@@ -70,6 +70,7 @@
 	import OrigamBtn from '../Btn/OrigamBtn.vue'
 	import OrigamSliderField from '../SliderField/OrigamSliderField.vue'
 
+	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useVModel } from '../../composables/Commons/vModel.composable'
@@ -162,8 +163,11 @@
 	 * Composes BEM modifier classes and passes through host styles.
 	 ********************************************************/
 
+	const {dimensionStyles} = useDimension(props)
+
 	const colorPickerPreviewStyles = computed(() => {
 		return [
+			dimensionStyles.value,
 			{'--origam-color-picker-color-hsv': HSVtoCSS({...(colorHsv.value ?? COLOR_NULL), a: 1})},
 			props.style
 		] as StyleValue

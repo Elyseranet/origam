@@ -33,6 +33,7 @@
 		lang="ts"
 		setup
 >
+	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useResizeObserver } from '../../composables/Commons/resizeObserver.composable'
@@ -335,8 +336,11 @@
 	 * Composes BEM classes and passes through host styles.
 	 ********************************************************/
 
+	const {dimensionStyles} = useDimension(props)
+
 	const colorPickerCanvasStyles = computed(() => {
 		return [
+			dimensionStyles.value,
 			props.style
 		] as StyleValue
 	})

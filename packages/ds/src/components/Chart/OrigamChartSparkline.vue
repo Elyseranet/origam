@@ -167,6 +167,7 @@
 		type StyleValue
 	} from 'vue'
 
+	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
 	import { useMargin } from '../../composables/Commons/margin.composable'
@@ -531,15 +532,28 @@
 		roundedClasses.value
 	])
 
-	const rootStyles = computed<StyleValue>(() => {
-		const w = typeof props.width === 'number' ? `${ props.width }px` : props.width
-		const h = typeof props.height === 'number' ? `${ props.height }px` : props.height
-		return {
-			width: w,
-			height: h,
-			display: 'inline-block'
-		}
-	})
+	const {dimensionStyles} = useDimension(props)
+
+	/*********************************************************
+	 * rootStyles
+	 *
+	 * @description
+	 * ⛔ Ce bloc convertissait `width` / `height` a la main — et ignorait les
+	 * cinq autres props de dimension qu'`IDimensionProps` declare. Un
+	 * consommateur passant `maxHeight` ne voyait rien se produire, sans
+	 * avertissement : la « half-implemented surface » que le CLAUDE.md du
+	 * projet decrit nommement.
+	 *
+	 * @description
+	 * `useDimension` couvre les sept, et son `convertToUnit` gere des cas
+	 * qu'un convertisseur maison finit toujours par manquer : nombres,
+	 * longueurs CSS, references a une propriete personnalisee, raccourcis
+	 * d'`aspect-ratio`.
+	 ********************************************************/
+	const rootStyles = computed<StyleValue>(() => [
+		dimensionStyles.value,
+		{ display: 'inline-block' }
+	])
 
 	/*********************************************************
 	 * ARIA.

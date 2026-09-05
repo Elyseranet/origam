@@ -13,6 +13,7 @@
 		lang="ts"
 		setup
 >
+	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useBorder } from '../../composables/Commons/border.composable'
 	import { useMargin } from '../../composables/Commons/margin.composable'
 	import { usePadding } from '../../composables/Commons/padding.composable'
@@ -57,8 +58,11 @@
 	 * @description
 	 * Composable-driven class and style composition.
 	 ********************************************************/
+	const {dimensionStyles} = useDimension(props)
+
 	const containerStyles = computed(() => {
 		return [
+			dimensionStyles.value,
 			borderStyles.value,
 			paddingStyles.value,
 			marginStyles.value,

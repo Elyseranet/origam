@@ -172,12 +172,26 @@ describe('useCssTransition — transitionProps', () => {
         expect(api().transitionProps.value).not.toHaveProperty('mode')
     })
 
-    it('no JS hooks when disabled=false (css-driven)', () => {
+    // ⛔ Ce test assertait l'INVERSE jusqu'a #549 : « no JS hooks when
+    // disabled=false (css-driven) ». Il decrivait le code, il ne le
+    // specifiait pas — et le code avait la condition a l'envers.
+    //
+    // Les trois hooks ne portent PAS l'animation, que le CSS assure : ils
+    // portent `origin` (transform-origin a poser avant l'entree),
+    // `leaveAbsolute` (figer la boite pendant la sortie) et `hideOnLeave`.
+    // Ces trois besoins existent que la transition soit CSS ou non. Les lier
+    // seulement quand elle est DESACTIVEE rendait les trois props mortes en
+    // usage normal.
+    //
+    // Chaque hook garde deja sa propre prop en interne, donc une liaison
+    // inconditionnelle ne coute rien quand les props sont absentes — ce que
+    // le dernier test de ce bloc verifie.
+    it('les hooks JS sont lies meme quand la transition est ACTIVE (#549)', () => {
         const { api } = mountCssTransition({ name: 'fade', disabled: false })
         const tp = api().transitionProps.value
-        expect(tp).not.toHaveProperty('onBeforeEnter')
-        expect(tp).not.toHaveProperty('onLeave')
-        expect(tp).not.toHaveProperty('onAfterLeave')
+        expect(typeof tp.onBeforeEnter).toBe('function')
+        expect(typeof tp.onLeave).toBe('function')
+        expect(typeof tp.onAfterLeave).toBe('function')
     })
 
     it('JS hooks are set when disabled=true', () => {

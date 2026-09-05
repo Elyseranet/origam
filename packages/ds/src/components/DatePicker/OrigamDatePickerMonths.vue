@@ -23,6 +23,7 @@
 >
 	import OrigamBtn from '../Btn/OrigamBtn.vue'
 
+	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useDate } from '../../composables/Commons/date.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useVModel } from '../../composables/Commons/vModel.composable'
@@ -135,8 +136,11 @@
 	 * Root element classes and inline styles.
 	 ********************************************************/
 
+	const {dimensionStyles} = useDimension(props)
+
 	const datePickerMonthsStyles = computed(() => {
 		return [
+			dimensionStyles.value,
 			{
 				height: convertToUnit(props.height)
 			},

@@ -44,6 +44,7 @@
 >
 	import OrigamIcon from '../Icon/OrigamIcon.vue'
 
+	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
@@ -145,8 +146,11 @@
 	 * Composes BEM classes and injects maxHeight style.
 	 ********************************************************/
 
+	const {dimensionStyles} = useDimension(props)
+
 	const colorPickerSwatchesStyles = computed(() => {
 		return [
+			dimensionStyles.value,
 			{
 				maxHeight: convertToUnit(props.maxHeight)
 			},

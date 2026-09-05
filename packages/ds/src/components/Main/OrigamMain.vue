@@ -19,6 +19,7 @@
 		setup
 >
 	import { computed, StyleValue, toRef } from 'vue'
+	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useBorder } from '../../composables/Commons/border.composable'
 	import { useBothColor } from '../../composables/Commons/bothColor.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
@@ -75,8 +76,11 @@
 	 * mainStyles aggregates layout, ssr-boot and decorator styles.
 	 * mainClasses emits BEM modifiers.
 	 ********************************************************/
+	const {dimensionStyles} = useDimension(props)
+
 	const mainStyles = computed(() => {
 		return [
+			dimensionStyles.value,
 			mainLayoutStyles.value,
 			ssrBootStyles.value,
 			colorStyles.value,

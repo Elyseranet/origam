@@ -66,11 +66,28 @@ export function useCssTransition (props: ITransitionProps) {
             bind.mode = props.mode
         }
 
-        if (isDisabled.value) {
-            bind.onBeforeEnter = handleBeforeEnter
-            bind.onLeave = handleLeave
-            bind.onAfterLeave = handleAfterLeave
-        }
+        /*********************************************************
+         * Liaison des hooks JS
+         *
+         * @description
+         * ⛔ Cette liaison etait gardee par `if (isDisabled.value)` — donc les
+         * hooks ne s'attachaient QUE lorsque la transition etait DESACTIVEE,
+         * c'est-a-dire quand il n'y a plus rien a animer. En usage normal ils
+         * ne partaient jamais, et les props qu'ils consomment etaient mortes.
+         *
+         * @description
+         * Chaque hook garde deja sa PROPRE prop en interne (`if (props.origin)`,
+         * `if (props.leaveAbsolute)`, `if (props.hideOnLeave)`) : la condition
+         * externe n'ajoutait aucune protection, elle inversait le contrat.
+         *
+         * @description
+         * La liaison est donc inconditionnelle. Le chemin desactive garde
+         * exactement le comportement qu'il avait — c'est le chemin ACTIF qui
+         * cesse d'ignorer ses props. Issue #549.
+         ********************************************************/
+        bind.onBeforeEnter = handleBeforeEnter
+        bind.onLeave = handleLeave
+        bind.onAfterLeave = handleAfterLeave
 
         return bind
     })
