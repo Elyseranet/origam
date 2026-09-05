@@ -132,6 +132,7 @@
 	.origam-responsive {
 		display: var(--origam-responsive---display);
 		flex: var(--origam-responsive---flex);
+		flex-direction: var(--origam-responsive---flex-direction);
 		max-height: var(--origam-responsive---max-height);
 		max-width: var(--origam-responsive---max-width);
 		min-width: var(--origam-responsive---min-width);

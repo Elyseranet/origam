@@ -109,10 +109,16 @@ test.describe('OrigamField', () => {
         await expect(input).toHaveAttribute('aria-required', 'true')
     })
 
-    test('Emit focus / blur — focusing input fires events', async ({ page }) => {
+    test('Native focus / blur — focusing input fires DOM fallthrough events', async ({ page }) => {
+        // focus/blur are NOT declared emits on OrigamField (only `update:focused`
+        // is, via IFocusEmits) — they reach the consumer through Vue's native
+        // $attrs fallthrough. The story Variant was renamed from "Events - focus"
+        // to "Native — focus / blur (DOM fallthrough)" in 617246fe to stop
+        // implying these are component emits; this spec's selector had not been
+        // updated to match (#554).
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Events - focus', { exact: true }).first().click()
+        await page.getByText('Native — focus / blur (DOM fallthrough)', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
