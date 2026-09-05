@@ -28,7 +28,7 @@
  */
 
 import { findVarReads, findVarDeclarations } from './lib/css-var-scan.mjs'
-import { analyseChannels } from './token-var-channels.mjs'
+import { analyseChannels, readNamesFromScriptSources } from './token-var-channels.mjs'
 
 let failures = 0
 const fail = (msg) => { console.log(`  FAIL  ${msg}`); failures++ }
@@ -162,6 +162,68 @@ console.log('\nanalyseChannels — dormant tokens (reverse direction):')
 }
 
 /*********************************************************
+ * Part 3b — the SECOND read channel: `var()` written in a `.ts` (#552)
+ *
+ * The regression this pins: the read set used to be built from `.vue` files
+ * alone, so a token resolved in TypeScript and shipped as an inline style
+ * was reported dormant while it was demonstrably reaching the DOM. Four of
+ * Grid's six gap tokens were reported dead on exactly that artefact.
+ *
+ * ⛔ Every case below goes through the REAL `readNamesFromScriptSources`.
+ * Hand-building the name set here would test nothing: the scanner is the
+ * part that can be wrong. That shortcut is precisely what let a blind spot
+ * survive in the emits guard's self-test.
+ ********************************************************/
+console.log('\nreadNamesFromScriptSources — a token read from a .ts is a real read (#552):')
+{
+    const gridConst = new Map([['consts/Grid/grid.const.ts', `
+        export const GRID_GAP_SIZE_VAR = {
+            xs: 'var(--origam-grid---gap-xs)',
+            lg: 'var(--origam-grid---gap-lg)'
+        }
+    `]])
+
+    const scriptReadNames = readNamesFromScriptSources(gridConst)
+
+    if (scriptReadNames.has('--origam-grid---gap-xs') && scriptReadNames.has('--origam-grid---gap-lg')) {
+        ok('var() inside a string literal in a .ts is collected')
+    } else {
+        fail(`expected both grid gap names — got [${[...scriptReadNames].join(', ')}]`)
+    }
+
+    // The regression, end to end: no .vue reads these, only the .ts does.
+    const vueStyles = new Map([['Comp/Grid.vue', 'a { gap: var(--origam-grid---gap); }']])
+    const emittedVars = new Set(['--origam-grid---gap', '--origam-grid---gap-xs', '--origam-grid---gap-lg'])
+
+    const withoutTs = analyseChannels({ vueStyles, emittedVars })
+    const withTs = analyseChannels({ vueStyles, emittedVars, scriptReadNames })
+
+    if (withoutTs.dormantTokens.size !== 2) {
+        fail(`pre-#552 behaviour should report 2 dormant tokens — got ${withoutTs.dormantTokens.size}`)
+    } else if (withTs.dormantTokens.size === 0) {
+        ok('the same two tokens stop being dormant once the .ts read set is supplied')
+    } else {
+        fail(`expected 0 dormant with the .ts read set — got [${[...withTs.dormantTokens.keys()].join(', ')}]`)
+    }
+
+    // ⛔ Precision: the .ts read set must NOT silence the dead-channel
+    // direction. A component reading a var nothing declares is still broken,
+    // whatever some .ts happens to mention.
+    const orphan = new Map([['Comp/Orphan.vue', 'a { color: var(--origam-orphan---color); }']])
+    const stillDead = analyseChannels({
+        vueStyles: orphan,
+        emittedVars: new Set(),
+        scriptReadNames: new Set(['--origam-orphan---color'])
+    })
+
+    if (stillDead.deadChannels.size === 1) {
+        ok('a .ts mention does not mask a genuinely undeclared channel')
+    } else {
+        fail(`dead-channel direction must stay .vue-only — got ${stillDead.deadChannels.size} violation(s)`)
+    }
+}
+
+/*********************************************************
  * Part 4 — MUTATION: prove the guard is sensitive to a #435-shaped
  * regression, not just to its own curated fixtures.
  *
@@ -206,4 +268,4 @@ if (failures) {
     console.log(`FAIL — ${failures} self-test case(s) failed.`)
     process.exit(1)
 }
-console.log(`PASS — ${MUST_FLAG.length + MUST_NOT_FLAG.length} classification cases, 1 dormant case, 1 mutation case, plus scanner unit checks.`)
+console.log(`PASS — ${MUST_FLAG.length + MUST_NOT_FLAG.length} classification cases, 1 dormant case, 3 script-read cases (#552), 1 mutation case, plus scanner unit checks.`)

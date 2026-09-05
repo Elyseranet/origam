@@ -50,9 +50,16 @@
  * under `packages/ds/src`, checks whether that exact variable name is
  * DECLARED (as a `--name: value;` left-hand side) anywhere in the generated
  * stylesheets under `packages/ds/src/assets/css/tokens/*.css`. It also
- * checks the REVERSE direction: a variable the pipeline emits that no
- * `.vue` file ever reads is dead weight in every shipped stylesheet (a
- * separate, non-blocking-by-default report — see DORMANT TOKENS below).
+ * checks the REVERSE direction: a variable the pipeline emits that nothing
+ * ever reads is dead weight in every shipped stylesheet (a separate,
+ * non-blocking-by-default report — see DORMANT TOKENS below).
+ *
+ * ⛔ THE TWO DIRECTIONS DO NOT SCAN THE SAME FILES, AND THAT IS DELIBERATE.
+ * The dead-channel direction reads `<style>` blocks of `.vue` files only.
+ * The dormant direction ALSO counts `var(--origam-…)` written in `.ts`
+ * sources, because a token can be resolved in TypeScript and shipped as an
+ * inline style without ever appearing in any SCSS — see `#552` and
+ * `readNamesFromScriptSources` below for the measurement that forced this.
  *
  * CLASSIFICATION, NOT JUST A COUNT
  * ----------------------------------
@@ -93,8 +100,9 @@
  *
  * DORMANT TOKENS (the reverse direction, tracked separately)
  * -------------------------------------------------------------
- * A variable the pipeline emits that no `.vue` file reads anywhere is dead
- * weight shipped in every stylesheet — real, but categorically less urgent
+ * A variable the pipeline emits that neither a `.vue` `<style>` block nor a
+ * `.ts` source reads anywhere (#552) is dead weight shipped in every
+ * stylesheet — real, but categorically less urgent
  * than a broken channel (nothing LOOKS wrong; it is pure bytes). Reported
  * and baselined on its own, so it cannot silently grow either, without
  * gating the primary (broken-channel) exit code as hard.
@@ -137,19 +145,64 @@ function walkFiles (dir, predicate) {
 }
 
 /*********************************************************
+ * readNamesFromScriptSources — the SECOND read channel (#552)
+ *
+ * @description
+ * ⛔ A token is not only read from a `<style>` block. A component can
+ * resolve one in TypeScript and hand it to Vue as an inline style, and
+ * that reference never appears in any SCSS:
+ *
+ *     // consts/Grid/grid.const.ts
+ *     export const GRID_GAP_SIZE_VAR = { xs: 'var(--origam-grid---gap-xs)', … }
+ *     // components/Grid/OrigamGrid.vue
+ *     style['--origam-grid---gap'] = gapCss.value   // ← the var() ships in the DOM
+ *
+ * @description
+ * Before this function existed, the read set was built from `.vue` files
+ * ALONE, so those references were invisible and the tokens were reported
+ * dormant. Measured on the real tree: **8 false positives out of 908**, four
+ * of them on Grid — enough to flip that component's C2 verdict to red on an
+ * artefact of the tool rather than a defect of the code. `gap-md` escaped
+ * only because the SCSS happens to name it as a fallback; that is luck, not
+ * a rule.
+ *
+ * @description
+ * ⛔ This feeds the DORMANT direction only. The dead-channel direction stays
+ * `.vue`-only on purpose: its identifier is `file::var` and its verdict
+ * depends on `<style>`-local `--x:` declarations, which a `.ts` file has no
+ * equivalent of. Widening it would compare things that are not comparable.
+ *
+ * @param sources  Map<relPath, sourceText> — the `.ts` / `.mts` files to scan
+ * @returns Set<string> every `--origam-…` referenced through `var(…)`
+ ********************************************************/
+export function readNamesFromScriptSources (sources) {
+    const names = new Set()
+
+    for (const content of sources.values()) {
+        for (const read of findVarReads(content)) names.add(read.name)
+    }
+
+    return names
+}
+
+/*********************************************************
  * Pure analysis — no filesystem access, so the self-test can feed it
  * synthetic in-memory fixtures instead of real files.
  *
- * @param vueStyles    Map<relPath, styleBlockContent>  (comments already
- *                     stripped; concatenation of every `<style>` block in
- *                     that file, in source order)
- * @param emittedVars  Set<string>  every `--origam-…` declared anywhere in
- *                     the generated token stylesheets
+ * @param vueStyles       Map<relPath, styleBlockContent>  (comments already
+ *                        stripped; concatenation of every `<style>` block in
+ *                        that file, in source order)
+ * @param emittedVars     Set<string>  every `--origam-…` declared anywhere in
+ *                        the generated token stylesheets
+ * @param scriptReadNames Set<string>  names referenced from `.ts` sources —
+ *                        see `readNamesFromScriptSources` (#552). Optional:
+ *                        omitting it reproduces the pre-#552 `.vue`-only
+ *                        behaviour, which is what the older fixtures assert.
  * @returns { deadChannels: Map<id, detail>, dormantTokens: Map<id, detail> }
  ********************************************************/
-export function analyseChannels ({ vueStyles, emittedVars }) {
+export function analyseChannels ({ vueStyles, emittedVars, scriptReadNames = new Set() }) {
     const deadChannels = new Map()
-    const readNamesGlobal = new Set()
+    const readNamesGlobal = new Set(scriptReadNames)
 
     for (const [relFile, content] of vueStyles) {
         const localDecls = new Set(findVarDeclarations(content).map((d) => d.name))
@@ -182,7 +235,7 @@ export function analyseChannels ({ vueStyles, emittedVars }) {
     const dormantTokens = new Map()
     for (const name of emittedVars) {
         if (!readNamesGlobal.has(name)) {
-            dormantTokens.set(name, `\`${name}\` est émis par le pipeline de tokens mais n'est lu par aucun fichier .vue sous packages/ds/src.`)
+            dormantTokens.set(name, `\`${name}\` est émis par le pipeline de tokens mais n'est lu par aucun fichier .vue ni .ts sous packages/ds/src.`)
         }
     }
 
@@ -223,7 +276,23 @@ function run () {
         vueStyles.set(relFile, merged)
     }
 
-    const { deadChannels, dormantTokens } = analyseChannels({ vueStyles, emittedVars })
+    // ---- second read set: every var(--origam-*) referenced from a .ts (#552) ----
+    // `types/tokens.type.ts` is excluded because it DECLARES the union of token
+    // names as string literals; it does not consume any. `assets/` holds the
+    // stylesheets themselves, which are the emitting side, not a reader.
+    const tsFiles = walkFiles(SRC_DIR, (f) => (
+        (f.endsWith('.ts') || f.endsWith('.mts'))
+        && !f.endsWith('.d.ts')
+        && !f.endsWith(path.join('types', 'tokens.type.ts'))
+        && !f.includes(`${path.sep}assets${path.sep}`)
+    ))
+    const tsSources = new Map()
+    for (const file of tsFiles) {
+        tsSources.set(path.relative(REPO_ROOT, file), readFileSync(file, 'utf8'))
+    }
+    const scriptReadNames = readNamesFromScriptSources(tsSources)
+
+    const { deadChannels, dormantTokens } = analyseChannels({ vueStyles, emittedVars, scriptReadNames })
 
     if (updateBaseline) {
         writeBaseline(DEAD_BASELINE_PATH, new Set(deadChannels.keys()))
