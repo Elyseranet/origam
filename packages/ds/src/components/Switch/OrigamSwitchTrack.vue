@@ -205,7 +205,7 @@
 		backdrop-filter: var(--origam-switch__track---backdrop-filter, none);
 		-webkit-backdrop-filter: var(--origam-switch__track---backdrop-filter, none);
 		cursor: pointer;
-		transition: 0.2s background-color cubic-bezier(0.4, 0, 0.2, 1);
+		transition: var(--origam-switch---transition-duration, 0.2s) background-color var(--origam-switch---transition-timing-function, cubic-bezier(0.4, 0, 0.2, 1));
 		overflow: hidden;
 
 		@media (prefers-reduced-motion: reduce) {

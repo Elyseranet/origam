@@ -366,12 +366,12 @@
 		&__details {
 			align-items: flex-end;
 			display: flex;
-			font-size: 0.75rem;
-			font-weight: 400;
+			font-size: var(--origam-input__details---font-size, 0.75rem);
+			font-weight: var(--origam-input__details---font-weight, 400);
 			grid-area: messages;
-			letter-spacing: 0.0333333333em;
-			line-height: 1;;
-			min-height: 22px;
+			letter-spacing: var(--origam-input__details---letter-spacing, 0.0333333333em);
+			line-height: var(--origam-input__details---line-height, 1);
+			min-height: var(--origam-input__details---min-height, 22px);
 			padding-top: 6px;
 			overflow: hidden;
 			justify-content: space-between;
@@ -389,7 +389,14 @@
 		&__append {
 			display: flex;
 			align-items: flex-start;
-			padding-top: 8px;
+		}
+
+		&__prepend {
+			padding-top: var(--origam-input__prepend---padding-top, 8px);
+		}
+
+		&__append {
+			padding-top: var(--origam-input__append---padding-top, 8px);
 		}
 
 		&__prepend {
@@ -418,11 +425,11 @@
 		}
 
 		&--density-default {
-			--origam-input---density: 0px;
+			--origam-input---density: var(--origam-input---density-default-density, 0px);
 		}
 
 		&--density-compact {
-			--origam-input---density: -8px;
+			--origam-input---density: var(--origam-input---density-compact-density, -8px);
 		}
 
 		&--density-comfortable {
@@ -473,11 +480,11 @@
 			grid-template-rows: auto auto;
 
 			#{$this}__prepend {
-				margin-inline-end: 16px;
+				margin-inline-end: var(--origam-input__prepend---margin-inline-end, 16px);
 			}
 
 			#{$this}__append {
-				margin-inline-start: 16px;
+				margin-inline-start: var(--origam-input__append---margin-inline-start, 16px);
 			}
 		}
 
