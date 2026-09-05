@@ -118,7 +118,7 @@
 					content-class="origam-otp-input-field__loader"
 					persistent
 			>
-				<template #loader>
+				<template #default>
 					<slot name="loader">
 						<origam-progress
 								:color="typeof loading === 'string' ? loading : undefined"
