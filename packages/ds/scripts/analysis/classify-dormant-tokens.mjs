@@ -11,14 +11,29 @@ const vues = walk(`${SRC}/components`).filter(f => f.endsWith('.vue'))
 const slugOf = (f) => path.basename(f, '.vue').replace(/^Origam/, '')
     .replace(/([a-z0-9])([A-Z])/g, '$1-$2').replace(/([A-Z])([A-Z][a-z])/g, '$1-$2').toLowerCase()
 
-// slug -> { style: texte des <style>, hasStyle }
-const byslug = new Map()
+// slug -> { style, hasStyle }
+//
+// ⛔ Le style d un composant n est PAS seulement dans le fichier qui porte son
+// nom. DatePicker peint __day et __header depuis OrigamDatePickerMonth.vue et
+// OrigamDatePickerHeader.vue, ses voisins de repertoire. Grouper par fichier
+// faisait conclure « aucun selecteur __day » et aurait fait supprimer 44 tokens
+// en service. On agrege donc par REPERTOIRE, qui est l unite reelle d un
+// composant dans ce depot.
+const byDir = new Map()
 for (const f of vues) {
     const src = readFileSync(f, 'utf8')
     const styles = [...src.matchAll(/<style[^>]*>([\s\S]*?)<\/style>/g)].map(m => m[1]).join('\n')
+    const d = path.dirname(f)
+    const prev = byDir.get(d) || { style: '', hasStyle: false }
+    byDir.set(d, { style: prev.style + '\n' + styles, hasStyle: prev.hasStyle || styles.trim().length > 0 })
+}
+
+const byslug = new Map()
+for (const f of vues) {
+    const agg = byDir.get(path.dirname(f))
     const s = slugOf(f)
     const prev = byslug.get(s) || { style: '', hasStyle: false, files: [] }
-    byslug.set(s, { style: prev.style + '\n' + styles, hasStyle: prev.hasStyle || styles.trim().length > 0, files: [...prev.files, f] })
+    byslug.set(s, { style: agg.style, hasStyle: agg.hasStyle, files: [...prev.files, f] })
 }
 const slugs = [...byslug.keys()].sort((a, b) => b.length - a.length)
 
@@ -29,7 +44,7 @@ const readEverywhere = new Set()
 for (const f of walk(SRC).filter(x => /\.(vue|ts)$/.test(x) && !x.endsWith('tokens.type.ts') && !x.includes('/assets/')))
     for (const m of readFileSync(f, 'utf8').matchAll(/var\(\s*(--origam-[A-Za-z0-9_-]+)/g)) readEverywhere.add(m[1])
 
-const canon = (t) => t.replace(/^--origam-/, '').split(/-+/).filter(Boolean).sort().join('|')
+const canon = (t) => t.replace(/^--origam-/, '').split(/[-_]+/).filter(Boolean).sort().join('|')
 const canonRead = new Map()
 for (const r of readEverywhere) { const k = canon(r); if (!canonRead.has(k)) canonRead.set(k, []); canonRead.get(k).push(r) }
 

@@ -235,8 +235,8 @@
 		grid-template-areas: "prepend content append";
 		grid-template-columns: min-content minmax(0, 1fr) min-content;
 		overflow: hidden;
-		padding-inline: 24px 12px;
-		padding-bottom: 12px;
+		padding-inline: var(--origam-date-picker__header---padding-inline, 24px 12px);
+		padding-block: var(--origam-date-picker__header---padding-block, 0 12px);
 
 		&__append {
 			grid-area: append;
@@ -250,7 +250,7 @@
 		&__content {
 			align-items: center;
 			display: inline-flex;
-			font-size: 32px;
+			font-size: var(--origam-date-picker__header---font-size, 32px);
 			line-height: 40px;
 			grid-area: content;
 			justify-content: space-between;
