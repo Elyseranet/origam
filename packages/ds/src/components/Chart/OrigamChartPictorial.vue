@@ -840,7 +840,7 @@
 			out.aspectRatio = props.aspectRatio
 		}
 		Object.assign(out, chartAnimationStyle.value)
-		return out
+return [ out, props.style as StyleValue ]
 	})
 
 	const bodyClasses = computed(() => ({

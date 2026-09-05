@@ -356,7 +356,8 @@
 		elevationClasses.value,
 		marginClasses.value,
 		paddingClasses.value,
-		roundedClasses.value
+		roundedClasses.value,
+		props.class
 	])
 
 	const rootStyles = computed<StyleValue>(() => {
@@ -369,7 +370,7 @@
 		// animation can transition `stroke-dashoffset` from full to
 		// the value-arc length on first paint.
 		out['--origam-chart-gauge---ratio'] = String(geometry.value.ratio)
-		return out
+return [ out, props.style as StyleValue ]
 	})
 
 	const svgClasses = computed(() => ({

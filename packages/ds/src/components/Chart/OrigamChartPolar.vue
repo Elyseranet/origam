@@ -411,7 +411,8 @@
 		elevationClasses.value,
 		marginClasses.value,
 		paddingClasses.value,
-		roundedClasses.value
+		roundedClasses.value,
+		props.class
 	])
 
 	const rootStyles = computed<StyleValue>(() => {
@@ -420,7 +421,7 @@
 			out.aspectRatio = props.aspectRatio
 		}
 		Object.assign(out, chartAnimationStyle.value)
-		return out
+return [ out, props.style as StyleValue ]
 	})
 
 	const bodyClasses = computed(() => ({

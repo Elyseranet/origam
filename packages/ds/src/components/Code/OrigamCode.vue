@@ -387,7 +387,8 @@
 		marginStyles.value,
 		colorStyles.value,
 		dimensionStyles.value,
-		typographyStyles.value
+		typographyStyles.value,
+		props.style
 	])
 
 	const preClasses = computed(() => ({

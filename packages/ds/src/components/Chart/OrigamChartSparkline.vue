@@ -529,7 +529,8 @@
 		},
 		backgroundColorClasses.value,
 		elevationClasses.value,
-		roundedClasses.value
+		roundedClasses.value,
+		props.class
 	])
 
 	const {dimensionStyles} = useDimension(props)
@@ -552,7 +553,8 @@
 	 ********************************************************/
 	const rootStyles = computed<StyleValue>(() => [
 		dimensionStyles.value,
-		{ display: 'inline-block' }
+		{ display: 'inline-block' },
+		props.style as StyleValue
 	])
 
 	/*********************************************************
