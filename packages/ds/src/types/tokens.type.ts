@@ -2307,6 +2307,7 @@ export type TTokenName =
   | '--origam-responsive---aspect-ratio-default'
   | '--origam-responsive---aspect-ratio-portrait'
   | '--origam-responsive---aspect-ratio-square'
+  | '--origam-responsive---flex-direction'
   | '--origam-responsive---max-width'
   | '--origam-responsive---overflow'
   | '--origam-row---gap-comfortable'
