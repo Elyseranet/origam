@@ -189,11 +189,22 @@ test.describe('OrigamChartPictorial — iconsPerUnit', () => {
     // Expected fix: raise MAX_SLOTS or use a fixture where iconsPerUnit values produce
     // rawSlotsPerColumn below the cap (e.g., iconsPerUnit=1 vs iconsPerUnit=10 with max=9).
     test.fail('iconsPerUnit=1 renders more filled icons than iconsPerUnit=5 for same data', async ({ page }) => {
-        // Dedicated side-by-side fixture folded into "Design" — a single
-        // dynamic "Icons Per Unit" control (default 5), driven
-        // sequentially instead. Kept as test.fixme — the DS bug this test
-        // documents (MAX_SLOTS cap) is unrelated to the story migration
-        // and still unfixed.
+        // ⛔ MISE A JOUR #426 — ce test reste rouge, mais ce n'est plus un
+        // BUG : c'est un plafond ASSUME. Au-dela de MAX_SLOTS (8) icones par
+        // colonne, le composant recalcule son propre pas (`maxValue / 8`)
+        // pour garder la colonne lisible, et `iconsPerUnit` est ignoree.
+        // Dessiner des centaines d'icones par colonne n'aurait pas de sens.
+        //
+        // Ce qui MANQUAIT, et qui est corrige : le plafond etait silencieux.
+        // Il emet desormais un avertissement de developpement nommant la
+        // raison, et la doc le porte (`OrigamChartPictorial.md`). La
+        // couverture du contrat reel — pas d'avertissement sous le plafond,
+        // avertissement au-dessus — est dans
+        // `TU/components/Chart/chart-426-residuals.spec.ts`.
+        //
+        // Pour rendre CE test vert il faudrait une fixture sous le plafond
+        // (son propre commentaire d'origine le disait) ; la story actuelle
+        // n'en expose pas, et la fabriquer depasse le perimetre de #426.
         await openVariant(page, 'Design')
         const sandbox = sandboxOf(page)
         const filled = sandbox.locator(`${ CHART } .origam-chart-pictorial__icon--filled`)

@@ -301,6 +301,7 @@
 	import OrigamChartLegend from './OrigamChartLegend.vue'
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
+	import { useChartUnsupportedProp } from '../../composables/Chart/chart-prop-warning.composable'
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
@@ -479,6 +480,28 @@
 		if (raw <= MAX_SLOTS) return Math.max(1, props.iconsPerUnit)
 		return maxValue.value / MAX_SLOTS
 	})
+
+	/*********************************************************
+	 * iconsPerUnit — plafond de rendu, desormais annonce (#426)
+	 *
+	 * @description
+	 * ⛔ `iconsPerUnit` n est honoree que tant que la colonne tient en
+	 * `MAX_SLOTS` icones. Au-dela, le composant RECALCULE son propre pas
+	 * (`maxValue / MAX_SLOTS`) pour garder la colonne lisible, et la valeur
+	 * demandee est ignoree — silencieusement jusqu ici.
+	 *
+	 * @description
+	 * Ce n est pas un defaut : dessiner des centaines d icones par colonne
+	 * n aurait aucun sens. Mais un plafond qui ne se declare pas ressemble a
+	 * une prop cassee vue du consommateur. Il s annonce donc, une fois, en
+	 * dev — meme traitement que les props inertes de cette famille.
+	 ********************************************************/
+	useChartUnsupportedProp(
+		'OrigamChartPictorial',
+		'iconsPerUnit',
+		`the column is capped at ${ MAX_SLOTS } icons: past that the component recomputes its own unit (maxValue / ${ MAX_SLOTS }) to keep the column readable, and the requested value is overridden.`,
+		() => rawSlotsPerColumn.value > MAX_SLOTS
+	)
 
 	const categoryCount = computed<number>(() => {
 		if (!props.series?.length) return 0

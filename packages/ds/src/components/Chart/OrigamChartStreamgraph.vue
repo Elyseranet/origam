@@ -753,11 +753,38 @@ return [ out, props.style as StyleValue ]
 		onRibbonLeave()
 	}
 
+	/*********************************************************
+	 * onRibbonActivate
+	 *
+	 * @description
+	 * ⛔ Cette fonction n emettait RIEN au clavier. Elle passait par
+	 * `hoveredPoint`, qui exige `hoveredXIndex` — un ref que SEUL le
+	 * `mousemove` renseigne. A l activation par Enter ou Espace il valait
+	 * donc `null`, `hoveredPoint` valait `null`, et `point-click` ne partait
+	 * jamais. Le ruban portait pourtant `tabindex="0"` et `role="button"` :
+	 * l activation etait invitee, puis ignoree. Issue #426.
+	 *
+	 * @description
+	 * Le point est desormais resolu depuis le RUBAN lui-meme, sans dependre
+	 * d un etat de survol. On garde l abscisse survolee quand la souris l a
+	 * posee, et on retombe sinon sur l indice 0 — la premiere valeur, celle
+	 * que `ribbonAriaLabel` annonce en tete, puisque ce libelle enumere toute
+	 * la serie. Ce n est donc pas un choix arbitraire : c est la valeur que
+	 * l utilisateur au clavier a entendue en premier.
+	 ********************************************************/
 	const onRibbonActivate = (ribbon: IChartStreamgraphRibbon, event: MouseEvent | KeyboardEvent) => {
 		hoveredSeriesIndex.value = ribbon.seriesIndex
-		if (hoveredPoint.value) {
-			emit('point-click', hoveredPoint.value, event)
-		}
+
+		const dataIndex = hoveredXIndex.value ?? 0
+
+		emit('point-click', {
+			seriesIndex: ribbon.seriesIndex,
+			seriesName: ribbon.name,
+			dataIndex,
+			x: props.categories[dataIndex] ?? dataIndex,
+			y: ribbon.values[dataIndex] ?? 0,
+			color: ribbon.color
+		}, event)
 	}
 
 	const onLegendClick = (series: IChartSeries, index: number): void => {
