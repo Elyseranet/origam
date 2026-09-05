@@ -216,7 +216,33 @@
 	const { marginClasses, marginStyles } = useMargin(props)
 	const { paddingClasses, paddingStyles } = usePadding(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
-	const { headerTypographyStyles } = useChartHeaderTypography(props)
+	/*********************************************************
+	 * Header typography — projection, NOT `props` wholesale (#546)
+	 *
+	 * @description
+	 * ⛔ `IChartWordCloudProps` redeclares `fontFamily` and `fontWeight` with a
+	 * DOMAIN meaning: the typeface and weight of the words INSIDE the cloud,
+	 * as free-form strings/numbers. `ITypographyProps` means something else by
+	 * those names — design tokens for the chart HEADER
+	 * (`sans|mono|serif`, `regular|medium|…`).
+	 *
+	 * @description
+	 * Passing `props` wholesale was not merely a type error, it was a rendering
+	 * bug waiting to happen: `useTypography` interpolates the value straight
+	 * into a token reference, so a domain `fontFamily: 'Inter, sans-serif'`
+	 * would have emitted `var(--origam-font__family---Inter, sans-serif)` — a
+	 * name that does not exist, silently falling back to the second argument.
+	 *
+	 * @description
+	 * Only `fontSize` is inherited from `IChartBaseProps` with the token
+	 * meaning intact, so it is the only key forwarded. It is exposed through a
+	 * GETTER, never a snapshot: the ADR-005 theme resolver patches
+	 * `instance.props` AFTER `setup()` runs, so an eager read here would freeze
+	 * the pre-theme value and no warning would ever fire.
+	 ********************************************************/
+	const { headerTypographyStyles } = useChartHeaderTypography({
+		get fontSize () { return props.fontSize }
+	})
 
 	/*********************************************************
 	 * Static SVG box — fixed 800 × 500 coordinate space;
