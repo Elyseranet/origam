@@ -313,7 +313,7 @@
 			font-weight: 700;
 			text-transform: uppercase;
 			letter-spacing: 0.04em;
-			color: var(--origam-color__feedback--warning---bg, #ed6c02);
+			color: var(--origam-color__feedback--warning---fgSubtle, #b45309);
 			border: 1px solid currentColor;
 			border-radius: 4px;
 		}

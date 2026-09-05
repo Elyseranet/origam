@@ -135,7 +135,8 @@
       "copy": "Copier",
       "copied": "Copié !",
       "copy_aria_label": "Copier le code dans le presse-papier",
-      "copied_aria_label": "Code copié dans le presse-papier"
+      "copied_aria_label": "Code copié dans le presse-papier",
+      "scroller_aria_label": "Bloc de code, zone défilante"
     },
     "qr_code": {
       "aria_label": "QR code pour {value}"

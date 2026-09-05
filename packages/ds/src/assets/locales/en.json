@@ -135,7 +135,8 @@
       "copy": "Copy",
       "copied": "Copied!",
       "copy_aria_label": "Copy code to clipboard",
-      "copied_aria_label": "Code copied to clipboard"
+      "copied_aria_label": "Code copied to clipboard",
+      "scroller_aria_label": "Code block, scrollable region"
     },
     "qr_code": {
       "aria_label": "QR code for {value}"

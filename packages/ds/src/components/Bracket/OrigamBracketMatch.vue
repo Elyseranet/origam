@@ -409,7 +409,7 @@
 			}
 
 			&--live {
-				color: var(--origam-color__feedback--danger---bg, #d32f2f);
+				color: var(--origam-color__feedback--danger---fgSubtle, #d32f2f);
 
 				&::before {
 					box-shadow: 0 0 0 0 currentColor;
@@ -418,11 +418,11 @@
 			}
 
 			&--completed {
-				color: var(--origam-color__feedback--success---bg, #2e7d32);
+				color: var(--origam-color__feedback--success---fgSubtle, #2e7d32);
 			}
 
 			&--forfeited {
-				color: var(--origam-color__feedback--warning---bg, #ed6c02);
+				color: var(--origam-color__feedback--warning---fgSubtle, #b45309);
 			}
 		}
 
@@ -430,7 +430,7 @@
 			display: inline-flex;
 			align-items: center;
 			gap: 2px;
-			color: var(--origam-color__feedback--danger---bg, #d32f2f);
+			color: var(--origam-color__feedback--danger---fgSubtle, #d32f2f);
 			font-weight: 600;
 			text-decoration: none;
 

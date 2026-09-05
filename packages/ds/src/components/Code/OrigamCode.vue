@@ -44,7 +44,13 @@
 
 		<span v-if="compact && prompt" class="origam-code__prompt" aria-hidden="true" data-cy="origam-code-prompt">{{ prompt }}</span>
 
-		<div class="origam-code__scroller" :style="scrollerStyles">
+		<div
+				class="origam-code__scroller"
+				:aria-label="scrollerLabel"
+				:style="scrollerStyles"
+				role="region"
+				tabindex="0"
+		>
 			<pre class="origam-code__pre" :class="preClasses"><code
 					ref="codeRef"
 					class="origam-code__code"
@@ -152,6 +158,23 @@
 	const { typographyStyles } = useTypography(props, 'code')
 	const { highlight } = useCode()
 	const { t } = useLocale()
+
+	/*********************************************************
+	 * Zone defilante — accessibilite (#535)
+	 *
+	 * @description
+	 * ⛔ Un conteneur qui defile doit etre atteignable au clavier : sans
+	 * `tabindex`, un utilisateur qui ne se sert pas d'une souris ne peut pas
+	 * lire un bloc de code plus large que sa colonne. C'est la regle axe
+	 * `scrollable-region-focusable`, et c'etait la seconde violation relevee
+	 * par la suite a11y marketing du 2026-08-31.
+	 *
+	 * @description
+	 * `role="region"` accompagne le `tabindex` : une zone focusable sans nom
+	 * accessible est annoncee « groupe, vide » par un lecteur d'ecran. Le
+	 * couple role + `aria-label` la nomme.
+	 ********************************************************/
+	const scrollerLabel = computed(() => t('origam.code.scroller_aria_label'))
 
 	/*********************************************************
 	 * Source extraction — prop wins over slot, slot used as fallback.
