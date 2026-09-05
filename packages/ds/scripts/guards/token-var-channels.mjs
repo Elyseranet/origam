@@ -195,6 +195,69 @@ export function readNamesFromScriptSources (sources) {
     return names
 }
 
+/*********************************************************
+ * propagateThroughTokenGraph — the FOURTH read channel
+ *
+ * @description
+ * ⛔ A primitive is almost never read by a component directly. It is read by a
+ * SEMANTIC token, inside the stylesheet itself:
+ *
+ *     --origam-btn---background-color: var(--origam-color__primary---600);
+ *
+ * `--origam-color__primary---600` appears in no `.vue` and no `.ts`, so it was
+ * reported dormant — while every primary button on screen resolves through it.
+ * The guard was measuring the last hop of the chain and calling the rest dead.
+ *
+ * @description
+ * ⛔ THE NAIVE FIX IS WRONG, and measurably so. "Referenced by a var() anywhere
+ * in the sheets" removes 83 tokens; **9 of those deserve to stay**, because
+ * their only consumers are themselves dormant — a dead semantic token pointing
+ * at a primitive does not bring that primitive to life. Counting them as read
+ * would launder a whole dead branch.
+ *
+ * The correct question is REACHABILITY, not adjacency: starting from the names
+ * something real reads (a `<style>` block, a `<script>`, a `.ts`), walk the
+ * token graph to a fixpoint. Anything never reached stays dormant, however
+ * many dead neighbours point at it.
+ *
+ * @param sheetSources  Map<file, cssText>  the token stylesheets themselves
+ * @param roots         Set<string>  names read from real consumers
+ * @returns Set<string> every name reachable from `roots` through the graph
+ ********************************************************/
+export function propagateThroughTokenGraph (sheetSources, roots) {
+    // edge: declaredName -> [names it references on its own declaration]
+    const edges = new Map()
+
+    for (const content of sheetSources.values()) {
+        for (const line of content.split('\n')) {
+            const declaration = line.match(/^\s*(--origam-[A-Za-z0-9_-]+)\s*:/)
+            if (!declaration) continue
+
+            const referenced = [ ...line.matchAll(/var\(\s*(--origam-[A-Za-z0-9_-]+)/g) ].map((m) => m[1])
+            if (!referenced.length) continue
+
+            const from = declaration[1]
+            if (!edges.has(from)) edges.set(from, [])
+            edges.get(from).push(...referenced)
+        }
+    }
+
+    const reached = new Set(roots)
+    const queue = [ ...roots ]
+
+    while (queue.length) {
+        const current = queue.pop()
+
+        for (const next of edges.get(current) || []) {
+            if (reached.has(next)) continue
+            reached.add(next)
+            queue.push(next)
+        }
+    }
+
+    return reached
+}
+
 /** A `var(--origam-…)` whose name is built by SCSS interpolation. */
 const INTERPOLATED_READ = /var\(\s*(--origam-[A-Za-z0-9_-]*#\{[^}]*\}[A-Za-z0-9_#{}$.-]*)/g
 
@@ -330,8 +393,10 @@ function run () {
         .map((f) => path.join(TOKENS_CSS_DIR, f))
 
     const emittedVars = new Set()
+    const sheetSources = new Map()
     for (const file of cssFiles) {
         const content = readFileSync(file, 'utf8')
+        sheetSources.set(path.relative(REPO_ROOT, file), content)
         for (const decl of findVarDeclarations(content)) emittedVars.add(decl.name)
     }
 
@@ -379,13 +444,22 @@ function run () {
     }
     // Script reads come from BOTH standalone .ts files and the <script> block
     // of every SFC — #552 only covered the first half.
-    const scriptReadNames = new Set([
+    const directReads = new Set([
         ...readNamesFromScriptSources(tsSources),
         ...readNamesFromScriptSources(vueScripts),
         // …and names a Sass loop assembles by interpolation, which never appear
         // literally in the raw SCSS this guard reads.
         ...expandInterpolatedReads(vueStyles, emittedVars)
     ])
+    // The `<style>` blocks are roots too: `analyseChannels` walks them for the
+    // dead-channel verdict, but the graph walk needs their names up front.
+    for (const content of vueStyles.values()) {
+        for (const read of findVarReads(content)) directReads.add(read.name)
+    }
+
+    // Finally, follow the token graph: a primitive consumed by a LIVE semantic
+    // token is read; one consumed only by dead tokens stays dormant.
+    const scriptReadNames = propagateThroughTokenGraph(sheetSources, directReads)
 
     const { deadChannels, dormantTokens } = analyseChannels({ vueStyles, emittedVars, scriptReadNames })
 

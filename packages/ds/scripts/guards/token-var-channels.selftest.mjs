@@ -28,7 +28,7 @@
  */
 
 import { findVarReads, findVarDeclarations } from './lib/css-var-scan.mjs'
-import { analyseChannels, expandInterpolatedReads, readNamesFromScriptSources } from './token-var-channels.mjs'
+import { analyseChannels, expandInterpolatedReads, propagateThroughTokenGraph, readNamesFromScriptSources } from './token-var-channels.mjs'
 
 let failures = 0
 const fail = (msg) => { console.log(`  FAIL  ${msg}`); failures++ }
@@ -276,6 +276,59 @@ console.log('\nexpandInterpolatedReads — a name built by a Sass loop is a real
 }
 
 /*********************************************************
+ * Part 3d — the FOURTH read channel: reachability through the token graph
+ *
+ * A primitive is almost never read by a component. It is read by a SEMANTIC
+ * token inside the stylesheet — so it appeared in no `.vue` and no `.ts`, and
+ * was reported dormant while every button on screen resolved through it.
+ *
+ * ⛔ The precision case below is the whole point, and the reason the naive
+ * "referenced anywhere in the sheets" version was rejected: it removed 83
+ * tokens on the real tree where only 74 deserved it. A DEAD semantic token
+ * pointing at a primitive must not bring that primitive back to life.
+ ********************************************************/
+console.log('\npropagateThroughTokenGraph — a primitive read by a LIVE token is read (and only then):')
+{
+    const sheets = new Map([[ 'tokens/light.css', `
+        :root {
+            --origam-btn---background-color: var(--origam-color__primary---600);
+            --origam-ghost---background-color: var(--origam-color__ghost---500);
+            --origam-color__primary---600: #7c3aed;
+            --origam-color__ghost---500: #abcdef;
+        }
+    ` ]])
+
+    // Only the Btn token is read by a real component.
+    const roots = new Set([ '--origam-btn---background-color' ])
+    const reached = propagateThroughTokenGraph(sheets, roots)
+
+    if (reached.has('--origam-color__primary---600')) {
+        ok('the primitive behind a live semantic token counts as read')
+    } else fail('the graph walk did not reach the primitive behind a live token')
+
+    // ⛔ THE PRECISION CASE. `--origam-ghost---background-color` is itself
+    // dormant, so the primitive it points at must stay dormant too.
+    if (!reached.has('--origam-color__ghost---500')) {
+        ok('a primitive whose only consumer is DORMANT stays dormant — no laundering')
+    } else fail('a dead branch laundered its primitive into the read set')
+
+    const emitted = new Set([
+        '--origam-btn---background-color',
+        '--origam-ghost---background-color',
+        '--origam-color__primary---600',
+        '--origam-color__ghost---500'
+    ])
+    const styles = new Map([[ 'Comp/Btn.vue', 'a { background: var(--origam-btn---background-color); }' ]])
+    const { dormantTokens } = analyseChannels({ vueStyles: styles, emittedVars: emitted, scriptReadNames: reached })
+
+    if (!dormantTokens.has('--origam-color__primary---600')
+        && dormantTokens.has('--origam-color__ghost---500')
+        && dormantTokens.has('--origam-ghost---background-color')) {
+        ok('end to end: the live chain is silent, the dead chain is reported whole')
+    } else fail(`end-to-end graph case — dormant = [${[ ...dormantTokens.keys() ].join(', ')}]`)
+}
+
+/*********************************************************
  * Part 4 — MUTATION: prove the guard is sensitive to a #435-shaped
  * regression, not just to its own curated fixtures.
  *
@@ -320,4 +373,4 @@ if (failures) {
     console.log(`FAIL — ${failures} self-test case(s) failed.`)
     process.exit(1)
 }
-console.log(`PASS — ${MUST_FLAG.length + MUST_NOT_FLAG.length} classification cases, 1 dormant case, 3 script-read cases (#552), 3 interpolation cases, 1 mutation case, plus scanner unit checks.`)
+console.log(`PASS — ${MUST_FLAG.length + MUST_NOT_FLAG.length} classification cases, 1 dormant case, 3 script-read cases (#552), 3 interpolation cases, 3 graph-reachability cases, 1 mutation case, plus scanner unit checks.`)
