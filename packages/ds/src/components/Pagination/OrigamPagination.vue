@@ -753,8 +753,8 @@
 		// will hoist nested rules above bare declarations, so keeping
 		// the order is "declarations → nested rules" prevents the
 		// `mixed-decls` deprecation warning.
-		--bg-base: var(--origam-pagination---background-color, transparent);
-		--fg-base: var(--origam-pagination---color, currentColor);
+		--bg-base: var(--origam-pagination---background-color, var(--origam-pagination__item---background-color, transparent));
+		--fg-base: var(--origam-pagination---color, var(--origam-pagination__item---color, currentColor));
 
 		display: flex;
 		flex-wrap: wrap;
@@ -811,7 +811,8 @@
 		:deep(.origam-btn:hover:not(.origam-btn--active)) {
 			--origam-btn---background-color: var(
 				--origam-pagination---background-color-hover,
-				color-mix(in srgb, var(--bg-base), black 20%)
+				var(--origam-pagination__item---background-color-hover,
+				color-mix(in srgb, var(--bg-base), black 20%))
 			);
 			--origam-btn---color: var(--origam-pagination---color-hover, var(--fg-base));
 		}

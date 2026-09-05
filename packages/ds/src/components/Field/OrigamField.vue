@@ -714,7 +714,7 @@
 		display: grid;
 		grid-template-areas: "prepend-inner field clear append-inner";
 		grid-template-columns: min-content minmax(0, 1fr) min-content min-content;
-		font-size: 16px;
+		font-size: var(--origam-field---font-size, 16px);
 		letter-spacing: 0.009375em;
 		max-width: 100%;
 		border-radius: var(--origam-field---border-radius, 8px);
@@ -763,7 +763,7 @@
 			display: flex;
 			flex-wrap: wrap;
 			letter-spacing: 0.009375em;
-			opacity: 0.7;
+			opacity: var(--origam-field__input---opacity, 0.7);
 			box-sizing: border-box;
 			min-height: max(calc(var(--origam-input__control---height, 36px) + var(--origam-input---density, 0px)), 1.5rem + var(--origam-field__input---padding-top) + var(--origam-field__input---padding-bottom));
 			min-width: 0;
@@ -831,10 +831,12 @@
 
 		&__prefix {
 			padding-inline-start: var(--origam-field---padding-start, 16px);
+			opacity: var(--origam-field__prefix---opacity, 0);
 		}
 
 		&__suffix {
 			padding-inline-end: var(--origam-field---padding-end, 16px);
+			opacity: var(--origam-field__suffix---opacity, 0);
 		}
 
 		&__field {
@@ -870,12 +872,20 @@
 			}
 		}
 
+		&__prepend-inner > .origam-icon {
+			opacity: var(--origam-field---prepend-inner-icon-opacity, 0.7);
+		}
+
+		&__append-inner > .origam-icon {
+			opacity: var(--origam-field---append-inner-icon-opacity, 0.7);
+		}
+
 		&__clearable {
 			cursor: pointer;
-			opacity: 0;
+			opacity: var(--origam-field__clearable---opacity, 0);
 			overflow: hidden;
-			margin-inline: 4px;
-			transition: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+			margin-inline: var(--origam-field__clearable---margin-inline, 4px);
+			transition: var(--origam-field__clearable---transition-duration, 150ms) var(--origam-field__clearable---transition-easing, cubic-bezier(0.4, 0, 0.2, 1));
 			transition-property: opacity, transform, width;
 
 			// issue #443 — now a real <button> (was a bare <div>): reset the
@@ -901,7 +911,7 @@
 			position: absolute;
 			top: calc(var(--origam-input---padding-top, 16px) + var(--origam-input---density, 0px) - 8px);
 			transform-origin: left center;
-			transition: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+			transition: var(--origam-field__label---transition-duration, 150ms) var(--origam-field__label---transition-easing, cubic-bezier(0.4, 0, 0.2, 1));
 			transition-property: opacity, transform;
 			z-index: 1;
 
@@ -987,14 +997,17 @@
 				}
 			}
 
-			#{$this}__prefix,
+			#{$this}__prefix {
+				opacity: var(--origam-field__prefix---opacity-active, 1);
+			}
+
 			#{$this}__suffix {
-				opacity: 1;
+				opacity: var(--origam-field__suffix---opacity-active, 1);
 			}
 		}
 
 		&--disabled {
-			opacity: 0.5;
+			opacity: var(--origam-field---opacity-disabled, 0.5);
 			pointer-events: none;
 
 			#{$this}__prefix,
@@ -1071,7 +1084,7 @@
 		&--focused,
 		&--persistent-clear {
 			#{$this}__clearable {
-				opacity: 1;
+				opacity: var(--origam-field__clearable---opacity-visible, 1);
 			}
 		}
 
@@ -1175,12 +1188,12 @@
 			&-outlined {
 				--origam-field---border-width: var(--origam-field---border-width-outlined, 1px);
 				--origam-field---border-opacity: var(--origam-field---border-opacity-outlined, .38);
-				background: var(--origam-field---background-color, transparent);
+				background: var(--origam-field---background-color, var(--origam-field---variant-outlined-background-color, transparent));
 
 				#{$this}__outline {
-					border-color: var(--origam-field---border-color, currentColor);
-					border-style: solid;
-					opacity: var(--origam-field---border-opacity);
+					border-color: var(--origam-field---border-color, var(--origam-field__outline---border-color, currentColor));
+					border-style: var(--origam-field__outline---border-style, solid);
+					opacity: var(--origam-field---border-opacity, var(--origam-field__outline---border-opacity, .38));
 
 					&--start {
 						border-top-width: var(--origam-field---border-width);
@@ -1245,10 +1258,10 @@
 				--origam-field---border-opacity: .38;
 
 				#{$this}__outline {
-					border-color: var(--origam-field---border-color, currentColor);
-					border-style: solid;
-					opacity: var(--origam-field---border-opacity);
-					transition: opacity .25s cubic-bezier(.4, 0, .2, 1);
+					border-color: var(--origam-field---border-color, var(--origam-field__outline---border-color, currentColor));
+					border-style: var(--origam-field__outline---border-style, solid);
+					opacity: var(--origam-field---border-opacity, var(--origam-field__outline---border-opacity, .38));
+					transition: opacity var(--origam-field__outline---transition-duration, .25s) var(--origam-field__outline---transition-easing, cubic-bezier(.4, 0, .2, 1));
 					border-width: 0;
 
 					&--start {
@@ -1266,7 +1279,7 @@
 
 				&:hover,
 				&#{$this}--focused {
-					--origam-field---border-opacity: 1;
+					--origam-field---border-opacity: var(--origam-field__outline---border-opacity-hover, 1);
 				}
 			}
 		}

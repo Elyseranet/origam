@@ -216,14 +216,19 @@
 		&--x-transition-enter-active,
 		&--x-transition-leave-active,
 		&--x-reverse-transition-enter-active,
-		&--x-reverse-transition-leave-active,
+		&--x-reverse-transition-leave-active {
+			transition:
+				var(--origam-window-item---x-transition-duration, 0.3s)
+				var(--origam-window-item---x-transition-easing, cubic-bezier(0.25, 0.8, 0.5, 1));
+		}
+
 		&--y-transition-enter-active,
 		&--y-transition-leave-active,
 		&--y-reverse-transition-enter-active,
 		&--y-reverse-transition-leave-active {
 			transition:
-				var(--origam-window-item---x-transition-duration, 0.3s)
-				var(--origam-window-item---x-transition-easing, cubic-bezier(0.25, 0.8, 0.5, 1));
+				var(--origam-window-item---y-transition-duration, 0.3s)
+				var(--origam-window-item---y-transition-easing, cubic-bezier(0.25, 0.8, 0.5, 1));
 		}
 
 		&--x-transition-leave-from,

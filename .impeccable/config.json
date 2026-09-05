@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "broken-image",
+        "value": "*",
+        "files": [
+          "packages/ds/src/components/Avatar/OrigamAvatar.vue"
+        ],
+        "createdAt": "2026-09-04T22:18:11.568Z",
+        "reason": "false positive: line 287 is a SCSS comment mentioning <img> in prose (explaining OrigamImg's z-index stacking), not an actual <img> tag"
+      }
+    ]
+  }
+}

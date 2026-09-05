@@ -404,8 +404,8 @@
     }
 
     &__wrapper {
-      width: calc(40px + 1.5 * var(--origam-selection-control--density, 0px));
-      height: calc(40px + 1.5 * var(--origam-selection-control--density, 0px));
+      width: calc(var(--origam-selection-control__wrapper---width, 40px) + 1.5 * var(--origam-selection-control---density, 0px));
+      height: calc(var(--origam-selection-control__wrapper---height, 40px) + 1.5 * var(--origam-selection-control---density, 0px));
       display: inline-flex;
       align-items: center;
       position: relative;
@@ -414,14 +414,14 @@
     }
 
     &__input {
-      width: calc(40px + 1.5 * var(--origam-selection-control--density, 0px));
-      height: calc(40px + 1.5 * var(--origam-selection-control--density, 0px));
+      width: calc(40px + 1.5 * var(--origam-selection-control---density, 0px));
+      height: calc(40px + 1.5 * var(--origam-selection-control---density, 0px));
       align-items: center;
       display: flex;
       flex: none;
       justify-content: center;
       position: relative;
-      border-radius: 50%;
+      border-radius: var(--origam-selection-control__input---border-radius, 50%);
       backdrop-filter: var(--origam-selection-control__input---backdrop-filter, none);
       -webkit-backdrop-filter: var(--origam-selection-control__input---backdrop-filter, none);
 
@@ -451,7 +451,7 @@
         // pouvait peindre au repos ignorait la prop. `inherit` reprend le
         // border-radius résolu par `useRounded` sur `__input`.
         border-radius: inherit;
-        background-color: currentColor;
+        background-color: var(--origam-selection-control__input---overlay-background-color, currentColor);
         opacity: 0;
         pointer-events: none;
       }
@@ -468,7 +468,7 @@
     &--error {
       #{$this}__input {
         > .origam-icon {
-          opacity: 1;
+          opacity: var(--origam-selection-control__icon---opacity-active, 1);
         }
       }
     }
@@ -476,12 +476,12 @@
     &--error,
     &--disabled {
       .origam-label {
-        opacity: 1;
+        opacity: var(--origam-selection-control__label---opacity-disabled, 1);
       }
     }
 
     &--disabled {
-      opacity: 0.5;
+      opacity: var(--origam-selection-control---opacity-disabled, 0.5);
       pointer-events: none;
     }
 
@@ -513,25 +513,25 @@
     &--focus-visible {
       #{$this}__input {
         &:before {
-          opacity: calc(0.12 * 1);
+          opacity: var(--origam-selection-control__input---overlay-opacity-focus, 0.12);
         }
 
         outline: var(--origam-border__width---2, 2px) solid var(--origam-color__border---focus, currentColor);
         outline-offset: var(--origam-space---1, 2px);
-        border-radius: 50%;
+        border-radius: var(--origam-selection-control__input---border-radius, 50%);
       }
     }
 
     &--density-default {
-      --origam-selection-control--density: 0px;
+      --origam-selection-control---density: 0px;
     }
 
     &--density-compact {
-      --origam-selection-control--density: -8px;
+      --origam-selection-control---density: -8px;
     }
 
     &--density-comfortable {
-      --origam-selection-control--density: 8px;
+      --origam-selection-control---density: 8px;
     }
   }
 </style>

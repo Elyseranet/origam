@@ -594,10 +594,10 @@
 		&__field {
 			color: var(--origam-otp-input-field__cell---color, inherit);
 			font-size: var(--origam-otp-input-field__cell---font-size, 1.25rem);
-			height: 100%;
+			height: var(--origam-otp-input-field__cell---height, 100%);
 			outline: var(--origam-otp-input-field__cell---outline, none);
 			text-align: var(--origam-otp-input-field__cell---text-align, center);
-			width: 100%;
+			width: var(--origam-otp-input-field__cell---width, 100%);
 			border: var(--origam-otp-input-field__cell---border, none);
 			background: var(--origam-otp-input-field__cell---background, transparent);
 

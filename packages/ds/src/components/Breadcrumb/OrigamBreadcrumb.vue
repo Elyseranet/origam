@@ -252,10 +252,10 @@
 		--origam-breadcrumb---margin-inline-end: 0px;
 		--origam-breadcrumb---margin-block-start: 0px;
 		--origam-breadcrumb---margin-block-end: 0px;
-		--origam-breadcrumb---padding-block-start: 8px;
-		--origam-breadcrumb---padding-block-end: 8px;
-		--origam-breadcrumb---padding-inline-start: 8px;
-		--origam-breadcrumb---padding-inline-end: 8px;
+		--origam-breadcrumb---padding-block-start: var(--origam-breadcrumb---padding-block, 8px);
+		--origam-breadcrumb---padding-block-end: var(--origam-breadcrumb---padding-block, 8px);
+		--origam-breadcrumb---padding-inline-start: var(--origam-breadcrumb---padding-inline, 8px);
+		--origam-breadcrumb---padding-inline-end: var(--origam-breadcrumb---padding-inline, 8px);
 		--origam-breadcrumb---transition-duration: 0.2s, 0.1s;
 		--origam-breadcrumb---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 		--origam-breadcrumb---transition-property: transform, color;
@@ -297,7 +297,7 @@
 		}
 
 		&--elevated {
-			--origam-breadcrumb---box-shadow: var(--origam-shadow---md, 0px 6px 24px 0px rgba(0,0,0,0.05), 0px 0px 0px 1px rgba(0,0,0,0.08));
+			--origam-breadcrumb---box-shadow: var(--origam-breadcrumb---box-shadow-elevated, var(--origam-shadow---md, 0px 6px 24px 0px rgba(0,0,0,0.05), 0px 0px 0px 1px rgba(0,0,0,0.08)));
 		}
 
 		&--border {

@@ -1031,7 +1031,7 @@
   --origam-otp-input-field__cell---border-color-filled: var(--origam-color__border---strong);
   --origam-otp-input-field__cell---border-color-focused: var(--origam-color__border---focus);
   --origam-otp-input-field__cell---border-color-error: var(--origam-color__feedback--danger---border);
-  --origam-otp-input-field__cell---background-color: rgba(0, 0, 0, 0);
+  --origam-otp-input-field__cell---background: rgba(0, 0, 0, 0);
   --origam-otp-input-field__cell---font-size: var(--origam-font__size---2xl);
   --origam-otp-input-field__cell---text-align: center;
   --origam-otp-input-field__cell---outline: none;
@@ -1125,7 +1125,7 @@
   --origam-file-field-list-item__meta---font-size: var(--origam-font__size---sm);
   --origam-file-field-list-item__progress---margin-top: var(--origam-space---1);
   --origam-file-field-list-item__remove---size: small;
-  --origam-password-field---input-transition: 0.15s opacity cubic-bezier(0.4, 0, 0.2, 1);
+  --origam-password-field__input---transition: 0.15s opacity cubic-bezier(0.4, 0, 0.2, 1);
   --origam-password-field__toggle-icon---cursor: pointer;
   --origam-password-field__toggle-icon---opacity: 1;
   --origam-password-field__item---padding: var(--origam-space---2);
@@ -1134,8 +1134,8 @@
   --origam-password-field__item---overflow: visible;
   --origam-password-field__item--valid---icon-opacity: 1;
   --origam-password-field__item-icon---opacity: 0.2;
-  --origam-password-field__item-icon---font-size: 45px;
-  --origam-password-field__item-icon---font-weight: var(--origam-font__weight---bold);
+  --origam-password-field__icon---font-size: 45px;
+  --origam-password-field__icon---font-weight: var(--origam-font__weight---bold);
   --origam-password-field__details---padding-inline: var(--origam-space---4);
   --origam-password-field__infos---padding: var(--origam-space---0);
   --origam-password-field__infos---padding-inline: var(--origam-space---3);
@@ -2437,8 +2437,8 @@
   --origam-tabs__item---transition-easing: var(--origam-motion__easing---standard);
   --origam-tabs__indicator---color: var(--origam-color__action--primary---bg);
   --origam-tabs__indicator---height: var(--origam-border__width---2);
-  --origam-tabs__panel---padding-block: var(--origam-space---4);
-  --origam-tabs__panel---padding-inline: var(--origam-space---0);
+  --origam-tab-panels__panel---padding-block: var(--origam-space---4);
+  --origam-tab-panels__panel---padding-inline: var(--origam-space---0);
   --origam-tabs__panel---transition-duration: var(--origam-motion__duration---fast);
   --origam-snackbar-group---z-index: var(--origam-zIndex---toast);
   --origam-snackbar-group---gap: var(--origam-space---3);
@@ -3873,7 +3873,7 @@
     --origam-otp-input-field__cell---border-color-filled: var(--origam-color__border---strong);
     --origam-otp-input-field__cell---border-color-focused: var(--origam-color__border---focus);
     --origam-otp-input-field__cell---border-color-error: var(--origam-color__feedback--danger---border);
-    --origam-otp-input-field__cell---background-color: rgba(0, 0, 0, 0);
+    --origam-otp-input-field__cell---background: rgba(0, 0, 0, 0);
     --origam-otp-input-field__cell---font-size: var(--origam-font__size---2xl);
     --origam-otp-input-field__cell---text-align: center;
     --origam-otp-input-field__cell---outline: none;
@@ -3967,7 +3967,7 @@
     --origam-file-field-list-item__meta---font-size: var(--origam-font__size---sm);
     --origam-file-field-list-item__progress---margin-top: var(--origam-space---1);
     --origam-file-field-list-item__remove---size: small;
-    --origam-password-field---input-transition: 0.15s opacity cubic-bezier(0.4, 0, 0.2, 1);
+    --origam-password-field__input---transition: 0.15s opacity cubic-bezier(0.4, 0, 0.2, 1);
     --origam-password-field__toggle-icon---cursor: pointer;
     --origam-password-field__toggle-icon---opacity: 1;
     --origam-password-field__item---padding: var(--origam-space---2);
@@ -3976,8 +3976,8 @@
     --origam-password-field__item---overflow: visible;
     --origam-password-field__item--valid---icon-opacity: 1;
     --origam-password-field__item-icon---opacity: 0.2;
-    --origam-password-field__item-icon---font-size: 45px;
-    --origam-password-field__item-icon---font-weight: var(--origam-font__weight---bold);
+    --origam-password-field__icon---font-size: 45px;
+    --origam-password-field__icon---font-weight: var(--origam-font__weight---bold);
     --origam-password-field__details---padding-inline: var(--origam-space---4);
     --origam-password-field__infos---padding: var(--origam-space---0);
     --origam-password-field__infos---padding-inline: var(--origam-space---3);
@@ -5279,8 +5279,8 @@
     --origam-tabs__item---transition-easing: var(--origam-motion__easing---standard);
     --origam-tabs__indicator---color: var(--origam-color__action--primary---bg);
     --origam-tabs__indicator---height: var(--origam-border__width---2);
-    --origam-tabs__panel---padding-block: var(--origam-space---4);
-    --origam-tabs__panel---padding-inline: var(--origam-space---0);
+    --origam-tab-panels__panel---padding-block: var(--origam-space---4);
+    --origam-tab-panels__panel---padding-inline: var(--origam-space---0);
     --origam-tabs__panel---transition-duration: var(--origam-motion__duration---fast);
     --origam-snackbar-group---z-index: var(--origam-zIndex---toast);
     --origam-snackbar-group---gap: var(--origam-space---3);
