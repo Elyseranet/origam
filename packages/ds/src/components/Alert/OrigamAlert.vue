@@ -383,7 +383,7 @@
 
     &--border {
       &#{$this}--border-left {
-        --origam-alert---border-left-width: calc(24px - var(--origam-alert---density));
+        --origam-alert---border-left-width: calc(var(--origam-alert---accent-width, 24px) - var(--origam-alert---density));
 
         #{$this}__underlay {
           --origam-alert__underlay---border-top-left-radius: 0;
@@ -392,7 +392,7 @@
       }
 
       &#{$this}--border-right {
-        --origam-alert---border-right-width: calc(24px - var(--origam-alert---density));
+        --origam-alert---border-right-width: calc(var(--origam-alert---accent-width, 24px) - var(--origam-alert---density));
 
         #{$this}__underlay {
           --origam-alert__underlay---border-top-right-radius: 0;
@@ -401,7 +401,7 @@
       }
 
       &#{$this}--border-top {
-        --origam-alert---border-top-width: calc(24px - var(--origam-alert---density));
+        --origam-alert---border-top-width: calc(var(--origam-alert---accent-width, 24px) - var(--origam-alert---density));
 
         #{$this}__underlay {
           --origam-alert__underlay---border-top-left-radius: 0;
@@ -410,7 +410,7 @@
       }
 
       &#{$this}--border-bottom {
-        --origam-alert---border-bottom-width: calc(24px - var(--origam-alert---density));
+        --origam-alert---border-bottom-width: calc(var(--origam-alert---accent-width, 24px) - var(--origam-alert---density));
 
         #{$this}__underlay {
           --origam-alert__underlay---border-bottom-left-radius: 0;

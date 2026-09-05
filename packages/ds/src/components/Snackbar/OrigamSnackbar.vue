@@ -451,7 +451,7 @@
 
         :deep(#{$this}__wrapper) {
           background-color: var(--origam-color__feedback--#{$status}---bgSubtle);
-          border-color: var(--origam-color__feedback--#{$status}---border);
+          border-color: var(--origam-snackbar--#{$status}---border, var(--origam-color__feedback--#{$status}---border));
           color: var(--origam-color__feedback--#{$status}---fgSubtle);
         }
 

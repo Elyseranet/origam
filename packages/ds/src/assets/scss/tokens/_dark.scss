@@ -266,7 +266,7 @@
   --origam-chip--info---color: var(--origam-color__feedback--info---fgSubtle);
   --origam-chip--info---border-color: var(--origam-color__feedback--info---border);
   --origam-chip--outlined---background-color: rgba(0, 0, 0, 0);
-  --origam-chip--outlined---border-width: var(--origam-border__width---thin);
+  --origam-chip---border-width-outlined: var(--origam-border__width---thin);
   --origam-chip--outlined---border-color: currentColor;
   --origam-chip__overlay---background-color: var(--origam-color__overlay---scrim);
   --origam-chip__overlay---border-radius: inherit;
@@ -2107,9 +2107,9 @@
   --origam-color-picker__edit---gap: var(--origam-space---2);
   --origam-color-picker__edit---label-color: var(--origam-color__text---secondary);
   --origam-color-picker__edit---label-font-size: var(--origam-font__size---xs);
-  --origam-color-picker__edit---input-border-color: var(--origam-color__border---default);
-  --origam-color-picker__edit---input-background-color: var(--origam-color__surface---default);
-  --origam-color-picker__edit---input-color: var(--origam-color__text---secondary);
+  --origam-color-picker-edit__input---border-color: var(--origam-color__border---default);
+  --origam-color-picker-edit__input---background-color: var(--origam-color__surface---default);
+  --origam-color-picker-edit__input---color: var(--origam-color__text---secondary);
   --origam-color-picker__swatches---item-size: 20px;
   --origam-color-picker__swatches---gap: var(--origam-space---1);
   --origam-color-picker__swatches---border-radius: var(--origam-radius---sm);
@@ -2733,7 +2733,7 @@
   --origam-chart__subtitle---color: var(--origam-color__text---secondary);
   --origam-chart__subtitle---font-size: var(--origam-font__size---sm);
   --origam-chart__axis---color: var(--origam-color__border---default);
-  --origam-chart__axis---label-color: var(--origam-color__text---secondary);
+  --origam-chart__axis-label---color: var(--origam-color__text---secondary);
   --origam-chart__axis---label-font-size: var(--origam-font__size---xs);
   --origam-chart__grid---color: var(--origam-color__border---subtle);
   --origam-chart__grid---stroke-width: 1px;

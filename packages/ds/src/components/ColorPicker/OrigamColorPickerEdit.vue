@@ -176,7 +176,7 @@
 			text-align: center;
 
 			&:not(:last-child) {
-				margin-inline-end: 8px;
+				margin-inline-end: var(--origam-color-picker__edit---gap, 8px);
 			}
 
 			#{$this}__input {
