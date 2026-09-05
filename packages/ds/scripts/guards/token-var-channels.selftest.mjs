@@ -28,7 +28,7 @@
  */
 
 import { findVarReads, findVarDeclarations } from './lib/css-var-scan.mjs'
-import { analyseChannels, readNamesFromScriptSources } from './token-var-channels.mjs'
+import { analyseChannels, expandInterpolatedReads, readNamesFromScriptSources } from './token-var-channels.mjs'
 
 let failures = 0
 const fail = (msg) => { console.log(`  FAIL  ${msg}`); failures++ }
@@ -224,6 +224,58 @@ console.log('\nreadNamesFromScriptSources — a token read from a .ts is a real 
 }
 
 /*********************************************************
+ * Part 3c — the THIRD read channel: a name assembled by a Sass loop
+ *
+ * The guard reads RAW SCSS, never the compiled output, so a token named by
+ * interpolation is literally absent from every file it scans:
+ *
+ *     @each $status in (success, info, warning, danger) {
+ *         border-color: var(--origam-snackbar--#{$status}---border, …);
+ *     }
+ *
+ * `findVarReads` stops at the `#`, so those four real reads were invisible
+ * and the four declared tokens were accused of being dormant. Measured on
+ * the real tree: 10 false positives, Snackbar and the feedback palette.
+ ********************************************************/
+console.log('\nexpandInterpolatedReads — a name built by a Sass loop is a real read:')
+{
+    const styles = new Map([[ 'Comp/Snackbar.vue', `
+        @each $status in (success, danger) {
+            &--#{$status} { border-color: var(--origam-snackbar--#{$status}---border, red); }
+        }
+    ` ]])
+
+    const emitted = new Set([
+        '--origam-snackbar--success---border',
+        '--origam-snackbar--danger---border',
+        '--origam-snackbar---border',          // ⛔ must NOT match: no segment where #{…} is
+        '--origam-alert--success---border'     // ⛔ must NOT match: different component
+    ])
+
+    const expanded = expandInterpolatedReads(styles, emitted)
+
+    const wanted = expanded.has('--origam-snackbar--success---border') && expanded.has('--origam-snackbar--danger---border')
+    const unwanted = expanded.has('--origam-snackbar---border') || expanded.has('--origam-alert--success---border')
+
+    if (wanted && !unwanted) ok('the loop\'s two rungs count as read, neighbours do not')
+    else fail(`interpolation expansion — got [${[ ...expanded ].join(', ')}]`)
+
+    // End to end: without the expansion the two tokens are dormant, with it they are not.
+    const withoutExpansion = analyseChannels({ vueStyles: styles, emittedVars: emitted })
+    const withExpansion = analyseChannels({ vueStyles: styles, emittedVars: emitted, scriptReadNames: expanded })
+
+    if (withoutExpansion.dormantTokens.has('--origam-snackbar--success---border')
+        && !withExpansion.dormantTokens.has('--origam-snackbar--success---border')) {
+        ok('a token named only through interpolation stops being reported dormant')
+    } else fail('end-to-end interpolation case did not flip')
+
+    // ⛔ Precision: an interpolated read must never SILENCE an unrelated token.
+    if (withExpansion.dormantTokens.has('--origam-alert--success---border')) {
+        ok('an unrelated declared token stays dormant — the wildcard is scoped, not global')
+    } else fail('the interpolation wildcard leaked onto an unrelated token')
+}
+
+/*********************************************************
  * Part 4 — MUTATION: prove the guard is sensitive to a #435-shaped
  * regression, not just to its own curated fixtures.
  *
@@ -268,4 +320,4 @@ if (failures) {
     console.log(`FAIL — ${failures} self-test case(s) failed.`)
     process.exit(1)
 }
-console.log(`PASS — ${MUST_FLAG.length + MUST_NOT_FLAG.length} classification cases, 1 dormant case, 3 script-read cases (#552), 1 mutation case, plus scanner unit checks.`)
+console.log(`PASS — ${MUST_FLAG.length + MUST_NOT_FLAG.length} classification cases, 1 dormant case, 3 script-read cases (#552), 3 interpolation cases, 1 mutation case, plus scanner unit checks.`)

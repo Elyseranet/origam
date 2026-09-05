@@ -172,7 +172,17 @@ function walkFiles (dir, predicate) {
  * depends on `<style>`-local `--x:` declarations, which a `.ts` file has no
  * equivalent of. Widening it would compare things that are not comparable.
  *
- * @param sources  Map<relPath, sourceText> — the `.ts` / `.mts` files to scan
+ * @description
+ * ⛔ #552 FIXED THIS ONE LEVEL TOO HIGH. It scanned standalone `.ts` / `.mts`
+ * files and stopped there — but a `.vue`'s own `<script setup>` block is
+ * script too, and it was still invisible. `OrigamCode.vue` builds an inline
+ * style object in its `<script>` naming
+ * `--origam-code__copy---padding-{block,inline}`; both were reported dormant
+ * while shipping in the DOM. The caller therefore feeds this function BOTH
+ * standalone scripts and `<script>` blocks lifted out of SFCs.
+ *
+ * @param sources  Map<relPath, sourceText> — script sources: standalone
+ *                 `.ts`/`.mts` files AND the `<script>` blocks of `.vue` SFCs
  * @returns Set<string> every `--origam-…` referenced through `var(…)`
  ********************************************************/
 export function readNamesFromScriptSources (sources) {
@@ -180,6 +190,74 @@ export function readNamesFromScriptSources (sources) {
 
     for (const content of sources.values()) {
         for (const read of findVarReads(content)) names.add(read.name)
+    }
+
+    return names
+}
+
+/** A `var(--origam-…)` whose name is built by SCSS interpolation. */
+const INTERPOLATED_READ = /var\(\s*(--origam-[A-Za-z0-9_-]*#\{[^}]*\}[A-Za-z0-9_#{}$.-]*)/g
+
+/*********************************************************
+ * expandInterpolatedReads — the THIRD read channel
+ *
+ * @description
+ * ⛔ This guard scans RAW SCSS, never the compiled output. A token whose name
+ * is assembled by a Sass loop therefore never appears literally anywhere:
+ *
+ *     @each $status in (success, info, warning, danger) {
+ *         border-color: var(--origam-snackbar--#{$status}---border, …);
+ *     }
+ *
+ * `findVarReads` stops at the `#`, so the four real reads were invisible and
+ * the four declared tokens were reported dormant — a pure artefact of reading
+ * the source instead of the output. Measured: 4 false positives on Snackbar.
+ *
+ * @description
+ * Rather than evaluate Sass (which would mean compiling, and coupling this
+ * guard to a build step it deliberately avoids), each `#{…}` is treated as a
+ * wildcard over one token name segment and matched against the names the
+ * stylesheets actually declare. An interpolated read therefore marks as read
+ * every declared token it COULD produce.
+ *
+ * ⛔ That is deliberately generous, and only safe in this direction: it can
+ * hide a genuinely dormant token, never invent a violation. The alternative —
+ * leaving the reads invisible — produces false ACCUSATIONS, which cost far
+ * more (someone deletes a token that is in use). If a loop ever needs to be
+ * audited precisely, expand it by hand.
+ *
+ * @param sources      Map<relPath, styleText>  the same `<style>` contents the
+ *                     dead-channel pass consumes
+ * @param emittedVars  Set<string>  every `--origam-…` the stylesheets declare
+ * @returns Set<string> declared names reachable through an interpolated read
+ ********************************************************/
+export function expandInterpolatedReads (sources, emittedVars) {
+    const names = new Set()
+    const patterns = []
+
+    for (const content of sources.values()) {
+        for (const match of content.matchAll(INTERPOLATED_READ)) {
+            // `--origam-snackbar--#{$status}---border` → /^--origam-snackbar--[A-Za-z0-9_-]+---border$/
+            const source = match[1]
+                .replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+                .replace(/\\\$\\\{/g, '#{')
+                .replace(/#\\\{[^}]*\\\}/g, '[A-Za-z0-9_-]+')
+                .replace(/#\{[^}]*\}/g, '[A-Za-z0-9_-]+')
+
+            try {
+                patterns.push(new RegExp(`^${source}$`))
+            } catch {
+                // An interpolation shape we cannot turn into a regex is skipped
+                // rather than crashing the guard — it degrades to the old
+                // behaviour for that one read.
+            }
+        }
+    }
+
+    if (!patterns.length) return names
+
+    for (const declared of emittedVars) {
+        if (patterns.some((p) => p.test(declared))) names.add(declared)
     }
 
     return names
@@ -260,6 +338,9 @@ function run () {
     // ---- read set: every var(--origam-*) inside every .vue <style> block ----
     const vueFiles = walkFiles(SRC_DIR, (f) => f.endsWith('.vue') && !f.endsWith('.story.vue'))
     const vueStyles = new Map()
+    // `<script>` / `<script setup>` blocks of the same SFCs — script, not style,
+    // so they feed the DORMANT direction only, exactly like a standalone `.ts`.
+    const vueScripts = new Map()
     for (const file of vueFiles) {
         const content = readFileSync(file, 'utf8')
         const relFile = path.relative(REPO_ROOT, file)
@@ -271,6 +352,12 @@ function run () {
             process.exitCode = 1
             continue
         }
+
+        const scriptBlocks = [ descriptor.script, descriptor.scriptSetup ].filter(Boolean)
+        if (scriptBlocks.length) {
+            vueScripts.set(relFile, scriptBlocks.map((s) => s.content).join('\n'))
+        }
+
         if (descriptor.styles.length === 0) continue
         const merged = descriptor.styles.map((s) => stripComments(s.content)).join('\n')
         vueStyles.set(relFile, merged)
@@ -290,7 +377,15 @@ function run () {
     for (const file of tsFiles) {
         tsSources.set(path.relative(REPO_ROOT, file), readFileSync(file, 'utf8'))
     }
-    const scriptReadNames = readNamesFromScriptSources(tsSources)
+    // Script reads come from BOTH standalone .ts files and the <script> block
+    // of every SFC — #552 only covered the first half.
+    const scriptReadNames = new Set([
+        ...readNamesFromScriptSources(tsSources),
+        ...readNamesFromScriptSources(vueScripts),
+        // …and names a Sass loop assembles by interpolation, which never appear
+        // literally in the raw SCSS this guard reads.
+        ...expandInterpolatedReads(vueStyles, emittedVars)
+    ])
 
     const { deadChannels, dormantTokens } = analyseChannels({ vueStyles, emittedVars, scriptReadNames })
 
