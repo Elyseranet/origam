@@ -909,8 +909,6 @@
     "--origam-window---item-y-transition-duration",
     "--origam-window---item-y-transition-easing",
     "--origam-window---position",
-    "--origam-window-item---y-transition-duration",
-    "--origam-window-item---y-transition-easing",
     "--origam-window__container---height",
     "--origam-window__controls---hover-color",
     "--origam-zIndex---base",
