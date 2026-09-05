@@ -116,8 +116,13 @@
 	 * locale helper for ARIA labels on navigation buttons.
 	 ********************************************************/
 	const props = withDefaults(defineProps<IWindowProps>(), {
-		// Affix icons were swapped: prev pointed right, next pointed left.
-		// Reversed so the chevrons match the scroll/navigation direction.
+		/*********************************************************
+		 * prevIcon
+		 *
+		 * @description
+		 * Affix icons were swapped: prev pointed right, next pointed left.
+		 * Reversed so the chevrons match the scroll/navigation direction.
+		 ********************************************************/
 		prevIcon: MDI_ICONS.CHEVRON_LEFT,
 		nextIcon: MDI_ICONS.CHEVRON_RIGHT,
 		touch: undefined,
@@ -125,12 +130,17 @@
 		selectedClass: 'origam-window-item--active',
 		mandatory: true,
 		tag: 'div',
-		// Vue 3 coerces unset Boolean-union props to `false` at runtime,
-		// which made `showArrows !== false` evaluate false on every variant
-		// that didn't explicitly opt-in — the entire `__controls` block
-		// was collapsed to a `<!--v-if-->` placeholder and there was no
-		// way to navigate. Default to `true` so navigation works out of
-		// the box; consumers can still pass `:show-arrows="false"` to hide.
+		/*********************************************************
+		 * showArrows
+		 *
+		 * @description
+		 * Vue 3 coerces unset Boolean-union props to `false` at runtime,
+		 * which made `showArrows !== false` evaluate false on every variant
+		 * that didn't explicitly opt-in — the entire `__controls` block
+		 * was collapsed to a `<!--v-if-->` placeholder and there was no
+		 * way to navigate. Default to `true` so navigation works out of
+		 * the box; consumers can still pass `:show-arrows="false"` to hide.
+		 ********************************************************/
 		showArrows: true
 	})
 
@@ -170,12 +180,17 @@
 		return group.items.value.findIndex(item => group.selected.value.includes(item.id))
 	})
 
-	// #474 — the `origam.carousel.aria_label.delimiter` locale string
-	// ("Carousel slide {0} of {1}") was translated but never read anywhere
-	// in this component. A visually-hidden `role="status"` live region now
-	// renders it with the 1-based current slide / total substituted in, so
-	// assistive tech is told the slide changed after prev()/next()/swipe —
-	// not just that the (correctly labelled) nav buttons exist.
+	/*********************************************************
+	 * slideAnnouncement
+	 *
+	 * @description
+	 * #474 — the `origam.carousel.aria_label.delimiter` locale string
+	 * ("Carousel slide {0} of {1}") was translated but never read anywhere
+	 * in this component. A visually-hidden `role="status"` live region now
+	 * renders it with the 1-based current slide / total substituted in, so
+	 * assistive tech is told the slide changed after prev()/next()/swipe —
+	 * not just that the (correctly labelled) nav buttons exist.
+	 ********************************************************/
 	const slideAnnouncement = computed(() => {
 		const total = group.items.value.length
 		if (total === 0 || activeIndex.value < 0) return ''
@@ -282,11 +297,16 @@
 	 * Root, container, and show-arrows-on-hover modifier
 	 * classes and styles for the window shell.
 	 ********************************************************/
-	// Cross-cutting SURFACE props (rounded / border / elevation / padding /
-	// margin) are consumed here so they actually paint the window shell —
-	// previously they were declared on the interface but silently ignored.
-	// color / bgColor / hover / active intentionally stay OUT (they're
-	// forwarded to the nav buttons, not the container).
+	/*********************************************************
+	 * const
+	 *
+	 * @description
+	 * Cross-cutting SURFACE props (rounded / border / elevation / padding /
+	 * margin) are consumed here so they actually paint the window shell —
+	 * previously they were declared on the interface but silently ignored.
+	 * color / bgColor / hover / active intentionally stay OUT (they're
+	 * forwarded to the nav buttons, not the container).
+	 ********************************************************/
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {elevationClasses, elevationStyles} = useElevation(props)

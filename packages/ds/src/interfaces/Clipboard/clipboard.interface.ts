@@ -13,9 +13,13 @@ import type { IRoundedProps } from '../Commons/rounded.interface'
 import type { ITypographyProps } from '../Commons/typography.interface'
 import type { TIcon } from '../../types/Icon/icon.type'
 
-/**
+/*********************************************************
+ * IClipboardProps
+ *
+ * @description
  * Props for `<OrigamClipboard>` — copy-to-clipboard wrapper.
  *
+ * @description
  * The component is intentionally chrome-less: it owns the copy
  * pipeline (`navigator.clipboard.writeText` + `execCommand` fallback)
  * and the auto-resetting `copied` flag, but it does NOT impose any
@@ -25,7 +29,7 @@ import type { TIcon } from '../../types/Icon/icon.type'
  * component owns. Consumers needing a different feedback shape (toast,
  * inline pill, animation, …) pass a `#default` scoped slot exposing
  * `{ copy, copied, error }` and render whatever they want.
- */
+ ********************************************************/
 export interface IClipboardProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IBorderProps, IRoundedProps, IMarginProps, IPaddingProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight'> {
     /**
      * Text payload written to the clipboard on `copy()`. Required.
@@ -85,9 +89,12 @@ export interface IClipboardProps extends ICommonsComponentProps, ITagProps, ICol
     disabled?: boolean
 }
 
-/**
+/*********************************************************
+ * IClipboardEmits
+ *
+ * @description
  * Emits for `<OrigamClipboard>`.
- */
+ ********************************************************/
 export interface IClipboardEmits {
     /** Fired after a successful write. Carries the payload string. */
     (e: 'copy', value: string): void
@@ -95,11 +102,14 @@ export interface IClipboardEmits {
     (e: 'error', err: Error): void
 }
 
-/**
+/*********************************************************
+ * IClipboardScopedSlotBindings
+ *
+ * @description
  * Bindings exposed via the `#default` scoped slot. Consumers use these
  * to wire any trigger — button, icon, span, custom widget — to the
  * copy pipeline without re-implementing the timing logic.
- */
+ ********************************************************/
 export interface IClipboardScopedSlotBindings {
     /** Triggers the copy pipeline. Promise resolves true on success. */
     copy: () => Promise<boolean>
@@ -109,9 +119,12 @@ export interface IClipboardScopedSlotBindings {
     error: Error | null
 }
 
-/**
+/*********************************************************
+ * IClipboardSlots
+ *
+ * @description
  * Slot signatures for `<OrigamClipboard>`.
- */
+ ********************************************************/
 export interface IClipboardSlots {
     /**
      * Custom trigger. Scoped — receives `{ copy, copied, error }`.
@@ -136,9 +149,12 @@ export interface IClipboardSlots {
     feedback?: (bindings: { copied: boolean }) => any
 }
 
-/**
+/*********************************************************
+ * IUseClipboardOptions
+ *
+ * @description
  * Options for the `useClipboard` composable.
- */
+ ********************************************************/
 export interface IUseClipboardOptions {
     /**
      * Duration (ms) the returned `copied` ref stays true after a

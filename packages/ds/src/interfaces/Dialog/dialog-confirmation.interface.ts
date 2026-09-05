@@ -35,16 +35,29 @@ export interface IDialogConfirmationProps extends IDialogProps {
  * confirmation ou annulation, et `onUpdate:modelValue` restait dans
  * `$attrs`. Même défaut que `IFormEmits` (commit 5b8ef33f). Prouvé au
  * runtime dans `packages/tests/TU/origam/relay-emits-declaration.spec.ts`. */
-/** Emits fired by `<OrigamDialogConfirmation>` — confirm/cancel buttons. */
+/*********************************************************
+ * IDialogConfirmationEmits
+ *
+ * @description
+ * Emits fired by `<OrigamDialogConfirmation>` — confirm/cancel buttons.
+ ********************************************************/
 export interface IDialogConfirmationEmits extends ICommonsComponentEmits {
     (e: 'validate', event?: MouseEvent): void
     (e: 'cancel', event?: MouseEvent): void
 }
 
-/** Slot signatures for `<OrigamDialogConfirmation>` — same chrome slots
- *  as `<OrigamDialog>`, but `default` and `header-title` are forwarded
- *  unscoped here (the template does `<slot name="…"/>` with no
- *  `v-bind`, unlike `<OrigamDialog>`'s own versions of those slots). */
+/*********************************************************
+ * IDialogConfirmationSlots
+ *
+ * @description
+ * Slot signatures for `<OrigamDialogConfirmation>` — same chrome slots as
+ * `<OrigamDialog>`.
+ *
+ * @description
+ * `default` and `header-title` sont transmis SANS scope ici : le template
+ * fait `<slot name="…"/>` sans `v-bind`, contrairement aux versions
+ * d'`<OrigamDialog>`.
+ ********************************************************/
 export interface IDialogConfirmationSlots extends Omit<IDialogSlots, 'default' | 'header-title'> {
     default?: () => any
     'header-title'?: () => any

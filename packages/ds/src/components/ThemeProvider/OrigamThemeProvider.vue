@@ -50,18 +50,28 @@
 	const themeProviderClasses = computed(() => {
 		return ['origam-theme-provider', attrs.class]
 	})
-	// `class` is merged explicitly into `themeProviderClasses` above — strip it
-	// from the raw `$attrs` fallthrough so it isn't applied twice. Everything
-	// else (`id`, `style`, `data-cy`, event listeners, …) reaches the root
-	// unmodified. Issue #492: `inheritAttrs: false` was set with no fallthrough
-	// binding at all, so every non-`class` attribute was silently dropped.
+	/*********************************************************
+	 * restAttrs
+	 *
+	 * @description
+	 * `class` is merged explicitly into `themeProviderClasses` above — strip it
+	 * from the raw `$attrs` fallthrough so it isn't applied twice. Everything
+	 * else (`id`, `style`, `data-cy`, event listeners, …) reaches the root
+	 * unmodified. Issue #492: `inheritAttrs: false` was set with no fallthrough
+	 * binding at all, so every non-`class` attribute was silently dropped.
+	 ********************************************************/
 	const restAttrs = computed(() => omit(attrs as Record<string, unknown>, ['class']))
 
-	// Re-apply the named brand's per-component DEFAULT PROPS (`theme.components`)
-	// to this sub-tree, so props-first theming works in a scoped sub-tree — not
-	// only the CSS-variable re-scoping done by `data-theme`. When `theme="auto"`
-	// (no brand) or the resolver is unavailable (component used outside
-	// `createOrigam`), fall back to the inherited parent defaults (no-op).
+	/*********************************************************
+	 * resolveThemeDefaults
+	 *
+	 * @description
+	 * Re-apply the named brand's per-component DEFAULT PROPS (`theme.components`)
+	 * to this sub-tree, so props-first theming works in a scoped sub-tree — not
+	 * only the CSS-variable re-scoping done by `data-theme`. When `theme="auto"`
+	 * (no brand) or the resolver is unavailable (component used outside
+	 * `createOrigam`), fall back to the inherited parent defaults (no-op).
+	 ********************************************************/
 	const resolveThemeDefaults = inject(ORIGAM_THEME_DEFAULTS_KEY, null)
 	const parentDefaults = inject(ORIGAM_DEFAULTS_KEY, ref<IDefault>({}))
 	const scopedDefaults = computed<IDefault>(() => {
@@ -78,10 +88,15 @@
 >
 	.origam-theme-provider {
 		display: contents;
-		// Base text color for the sub-tree (#201): `color` is inherited and passes
-		// through `display: contents`, so a local `data-mode="dark"` sub-tree gets
-		// readable default text (and currentColor icons) without painting a box.
-		// No background here — a provider is not a surface.
+		/*********************************************************
+		 * color
+		 *
+		 * @description
+		 * Base text color for the sub-tree (#201): `color` is inherited and passes
+		 * through `display: contents`, so a local `data-mode="dark"` sub-tree gets
+		 * readable default text (and currentColor icons) without painting a box.
+		 * No background here — a provider is not a surface.
+		 ********************************************************/
 		color: var(--origam-color__text---primary);
 	}
 </style>

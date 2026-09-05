@@ -109,10 +109,15 @@
 	const { roundedClasses, roundedStyles } = useRounded(props)
 	const { marginClasses, marginStyles } = useMargin(props)
 	const { paddingClasses, paddingStyles } = usePadding(props)
-	// BEM-child surface: vars are read by .origam-clipboard__default-trigger
-	// (font-size / font-weight), but BOUND ON THE ROOT — custom properties
-	// inherit, and a DS component does not necessarily forward a received
-	// :style down to its rendered root element.
+	/*********************************************************
+	 * const
+	 *
+	 * @description
+	 * BEM-child surface: vars are read by .origam-clipboard__default-trigger
+	 * (font-size / font-weight), but BOUND ON THE ROOT — custom properties
+	 * inherit, and a DS component does not necessarily forward a received
+	 * :style down to its rendered root element.
+	 ********************************************************/
 	const { typographyStyles } = useTypography(props, 'clipboard__feedback')
 
 	/*********************************************************
@@ -182,13 +187,21 @@
 		props.class
 	])
 
+	/*********************************************************
+	 * rootStyles
+	 *
+	 * @description
+	 * Les `--origam-clipboard__feedback---*` vivent sur la RACINE, pas sur le
+	 * declencheur : ce sont des proprietes personnalisees, donc elles HERITENT
+	 * jusqu'au bouton, ou la regle SCSS `.origam-clipboard__default-trigger`
+	 * les lit.
+	 *
+	 * @description
+	 * ⛔ Les poser sur `<origam-btn>` ne fonctionnait pas — un composant DS ne
+	 * fait pas forcement redescendre un `:style` recu jusqu'a l'element racine
+	 * rendu.
+	 ********************************************************/
 	const rootStyles = computed<StyleValue>(() => [
-		// Les --origam-clipboard__feedback---* vivent sur la RACINE, pas sur le
-		// declencheur : ce sont des proprietes personnalisees, donc elles
-		// HERITENT jusqu'au bouton, ou la regle SCSS
-		// .origam-clipboard__default-trigger les lit. Les poser sur
-		// <origam-btn> ne fonctionnait pas — un composant DS ne fait pas
-		// forcement redescendre un :style recu jusqu'a l'element racine rendu.
 		typographyStyles.value,
 		colorStyles.value,
 		borderStyles.value,

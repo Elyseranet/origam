@@ -305,10 +305,15 @@
 	const bullishColorResolved = computed(() => resolveColor(props.bullishColor))
 	const bearishColorResolved = computed(() => resolveColor(props.bearishColor))
 
-	// ⛔ #426 — `colorScheme` is inherited from `IChartBaseProps` but has no
-	// effect here: candle colour is a BINARY choice (bullishColor / bearishColor),
-	// not a per-series identity a rotating palette could drive. See #426 decision:
-	// neither wiring a fake behaviour nor removing the prop — warn instead.
+	/*********************************************************
+	 * useChartUnsupportedProp
+	 *
+	 * @description
+	 * ⛔ #426 — `colorScheme` is inherited from `IChartBaseProps` but has no
+	 * effect here: candle colour is a BINARY choice (bullishColor / bearishColor),
+	 * not a per-series identity a rotating palette could drive. See #426 decision:
+	 * neither wiring a fake behaviour nor removing the prop — warn instead.
+	 ********************************************************/
 	useChartUnsupportedProp(
 		'OrigamChartCandlestick',
 		'colorScheme',
@@ -493,12 +498,15 @@
 		hoveredCandle.value?.datum.date ?? ''
 	)
 
-	/**
+	/*********************************************************
+	 * enrichedTooltipBindings
+	 *
+	 * @description
 	 * Builds the `IChartCandlestickSlots['tooltip']` scope. The
 	 * template only invokes this while `v-if="$slots.tooltip &&
 	 * hoveredCandle"` holds, so `hoveredCandle.value` is non-null here
 	 * — the `!` reflects that guard, not an unchecked assumption.
-	 */
+	 ********************************************************/
 	const enrichedTooltipBindings = (bindings: { point: IChartPoint, series: IChartSeries, category: string | number }) => {
 		const c = hoveredCandle.value!
 		return {

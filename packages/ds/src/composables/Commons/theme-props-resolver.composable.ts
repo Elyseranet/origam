@@ -413,11 +413,15 @@ import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.u
 //   and a no-op in production. See the guard at `if (!(key in rawProps))`
 //   below.
 
-/**
+/*********************************************************
+ * themedPropKeysUnion
+ *
+ * @description
  * Compute the set of prop keys, per component name (plus the special
  * `'global'` key), that AT LEAST ONE registered theme names in its
  * `components` block.
  *
+ * @description
  * Scoped to the UNION across every theme `createOrigam` installs — not just
  * the brand×mode active at mount. A prop named only by a theme that becomes
  * active LATER (via a runtime brand switch) still needs interception wired
@@ -425,9 +429,10 @@ import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.u
  * in ADR-005: `rounded` stayed `'none'` after swapping to a theme that was
  * the first to name it).
  *
+ * @description
  * Pure — no Vue/DOM access — so it is called once, synchronously, at
  * `createOrigam()` install time.
- */
+ ********************************************************/
 export function themedPropKeysUnion (themes: IDefault[]): Map<string, Set<string>> {
     const union = new Map<string, Set<string>>()
 
@@ -450,19 +455,24 @@ export function themedPropKeysUnion (themes: IDefault[]): Map<string, Set<string
     return union
 }
 
-/**
+/*********************************************************
+ * passedPropValue
+ *
+ * @description
  * The value the parent EXPLICITLY bound for `key` on a given vnode, or
  * `undefined` when it bound nothing — or bound `undefined` itself, which
  * deliberately does NOT count as "passed" and falls through to the theme
  * (manifestation 1's fix; mirrors `usePassedProps()`).
  *
+ * @description
  * Matches both the camelCase key and its raw (possibly hyphenated) template
  * spelling, because `vnode.props` holds keys exactly as the template wrote
  * them while `instance.props` holds them camelized.
  *
+ * @description
  * Called only from the accessor's SETTER — never from its getter. See
  * "Why the passed value is a snapshot" at the top of this file.
- */
+ ********************************************************/
 function passedPropValue (vnodeProps: Record<string, unknown> | null, key: string): unknown {
     if (!vnodeProps) return undefined
 
@@ -473,12 +483,17 @@ function passedPropValue (vnodeProps: Record<string, unknown> | null, key: strin
     return undefined
 }
 
-/**
+/*********************************************************
+ * installThemePropsResolver
+ *
+ * @description
  * Install the global `beforeCreate` hook described at the top of this file.
  * Called once by `createOrigam()` per app instance.
  *
+ * @description
  * ⚠️ ALWAYS calls `app.mixin()`, even for an empty `themedKeysUnion`.
  *
+ * @description
  * It used to early-out on an empty union, on the grounds that a theme naming
  * nothing means nothing to intercept. That stopped being true once this hook
  * also resolves the `provideDefaults` cascade (see "Two key sources" in the
@@ -488,59 +503,75 @@ function passedPropValue (vnodeProps: Record<string, unknown> | null, key: strin
  * whether one will ever mount, so the union being empty no longer implies
  * there is nothing to do.
  *
+ * @description
  * The per-instance early-out inside the hook is unchanged in spirit and still
  * carries the cost argument: an instance that neither a theme nor an ancestor
  * provider names returns after a Map lookup and one property lookup.
- */
+ ********************************************************/
 export function installThemePropsResolver (app: App, themedKeysUnion: Map<string, Set<string>>): void {
     app.mixin({
         beforeCreate () {
-            // `getCurrentInstance()` (and `inject()` below) are valid here:
-            // `finishComponentSetup` wraps the WHOLE `applyOptions()` call —
-            // which is what invokes merged mixin `beforeCreate` hooks — in
-            // `setCurrentInstance(instance)`. See the "pinned Vue internal"
-            // note above for what to do if a Vue upgrade breaks this.
+            /*********************************************************
+             * instance
+             *
+             * @description
+             * `getCurrentInstance()` (and `inject()` below) are valid here:
+             * `finishComponentSetup` wraps the WHOLE `applyOptions()` call —
+             * which is what invokes merged mixin `beforeCreate` hooks — in
+             * `setCurrentInstance(instance)`. See the "pinned Vue internal"
+             * note above for what to do if a Vue upgrade breaks this.
+             ********************************************************/
             const instance = getCurrentInstance()
             if (!instance) return
 
             const name = getCurrentInstanceName('theme-props-resolver')
 
-            // Per-instance injection (NOT the root `defaultsRef` closed over
-            // by `createOrigam`) so a `<OrigamThemeProvider scoped>` ancestor
-            // correctly overrides this instance's resolution — same source
-            // `useDefaults()` reads.
-            //
-            // Read BEFORE the early-out, because the DefaultsProvider cascade
-            // (see "Two key sources" below) is only knowable from here.
+            /*********************************************************
+             * defaults
+             *
+             * @description
+             * Per-instance injection (NOT the root `defaultsRef` closed over
+             * by `createOrigam`) so a `<OrigamThemeProvider scoped>` ancestor
+             * correctly overrides this instance's resolution — same source
+             * `useDefaults()` reads.
+             *
+             * Read BEFORE the early-out, because the DefaultsProvider cascade
+             * (see "Two key sources" below) is only knowable from here.
+             ********************************************************/
             const defaults = inject(ORIGAM_DEFAULTS_KEY, ref<IDefault>({}))
 
             const ownKeys = themedKeysUnion.get(name)
             const globalKeys = themedKeysUnion.get('global')
 
-            // Two key sources, ONE mechanism.
-            //
-            // `themedKeysUnion` is static: the keys any REGISTERED THEME names,
-            // computed once at install time. It cannot see the OTHER writer of
-            // the very same defaults map — `provideDefaults`, which a group
-            // component fills at runtime from its own props (e.g.
-            // `OrigamSelectionControlGroup` → `{'origam-selection-control':
-            // {type, disabled, name, …}}`).
-            //
-            // Both write the same map and the getter below already reads both
-            // indistinguishably — so a cascaded prop reached the template only
-            // when a theme HAPPENED to name the same key. Verified consequence
-            // before this widening: `<origam-selection-control-group
-            // type="checkbox">` rendered `<input>` with NO `type` attribute at
-            // all, `disabled` painted the child without disabling it, and `name`
-            // never reached the radios that need it to be mutually exclusive —
-            // while `density`, which the origam theme happens to name for
-            // `origam-selection-control`, arrived fine. That split is an
-            // artefact of the gate, not a designed behaviour.
-            //
-            // Reading the provider's key set here costs one property lookup on
-            // a plain object per instance. It is NOT a walk of the component's
-            // prop surface: only the handful of keys an ancestor actually
-            // names are patched — see "Cost" above, the same argument applies.
+            /*********************************************************
+             * providerOwnKeys
+             *
+             * @description
+             * Two key sources, ONE mechanism.
+             *
+             * `themedKeysUnion` is static: the keys any REGISTERED THEME names,
+             * computed once at install time. It cannot see the OTHER writer of
+             * the very same defaults map — `provideDefaults`, which a group
+             * component fills at runtime from its own props (e.g.
+             * `OrigamSelectionControlGroup` → `{'origam-selection-control':
+             * {type, disabled, name, …}}`).
+             *
+             * Both write the same map and the getter below already reads both
+             * indistinguishably — so a cascaded prop reached the template only
+             * when a theme HAPPENED to name the same key. Verified consequence
+             * before this widening: `<origam-selection-control-group
+             * type="checkbox">` rendered `<input>` with NO `type` attribute at
+             * all, `disabled` painted the child without disabling it, and `name`
+             * never reached the radios that need it to be mutually exclusive —
+             * while `density`, which the origam theme happens to name for
+             * `origam-selection-control`, arrived fine. That split is an
+             * artefact of the gate, not a designed behaviour.
+             *
+             * Reading the provider's key set here costs one property lookup on
+             * a plain object per instance. It is NOT a walk of the component's
+             * prop surface: only the handful of keys an ancestor actually
+             * names are patched — see "Cost" above, the same argument applies.
+             ********************************************************/
             const providerOwnKeys = defaults.value?.[name]
             const providerGlobalKeys = defaults.value?.global
 
@@ -555,56 +586,76 @@ export function installThemePropsResolver (app: App, themedKeysUnion: Map<string
 
 
             for (const key of targetKeys) {
-                // A theme naming a prop the component doesn't declare is a
-                // theme-authoring mistake, not a crash — and MUST NOT touch
-                // `instance.attrs` (that's a different object with its own
-                // fallthrough semantics). Surfaced via `warnUnsupportedProp`
-                // (dev-only, once per (component, prop) — same dedup cache
-                // strategy as `warnLegacyColor` / `warnDeprecatedProp` in
-                // `color.util.ts`, reused rather than duplicated) — this is
-                // the #496 case: a test theme named `activeBgColor` on
-                // `Radio`, which does not declare that prop, and the mismatch
-                // went unnoticed because it was silent.
+                /*********************************************************
+                 * if
+                 *
+                 * @description
+                 * A theme naming a prop the component doesn't declare is a
+                 * theme-authoring mistake, not a crash — and MUST NOT touch
+                 * `instance.attrs` (that's a different object with its own
+                 * fallthrough semantics). Surfaced via `warnUnsupportedProp`
+                 * (dev-only, once per (component, prop) — same dedup cache
+                 * strategy as `warnLegacyColor` / `warnDeprecatedProp` in
+                 * `color.util.ts`, reused rather than duplicated) — this is
+                 * the #496 case: a test theme named `activeBgColor` on
+                 * `Radio`, which does not declare that prop, and the mismatch
+                 * went unnoticed because it was silent.
+                 ********************************************************/
                 if (!(key in rawProps)) {
                     warnUnsupportedProp(name, key, `theme names this prop but <${name}> does not declare it`)
                     continue
                 }
 
-                // Mirror of what Vue itself resolved (explicit value, or the
-                // component's own `withDefaults()`). Kept LIVE by the setter
-                // below — see "Why the setter matters" above.
-                //
-                // A `shallowRef`, NOT a plain closure variable: this is the
-                // ONLY reactive dependency the getter can offer for the two
-                // branches that read non-reactive sources. See "Why this is a
-                // shallowRef" above before changing it back.
+                /*********************************************************
+                 * fallbackValue
+                 *
+                 * @description
+                 * Mirror of what Vue itself resolved (explicit value, or the
+                 * component's own `withDefaults()`). Kept LIVE by the setter
+                 * below — see "Why the setter matters" above.
+                 *
+                 * A `shallowRef`, NOT a plain closure variable: this is the
+                 * ONLY reactive dependency the getter can offer for the two
+                 * branches that read non-reactive sources. See "Why this is a
+                 * shallowRef" above before changing it back.
+                 ********************************************************/
                 const fallbackValue = shallowRef(rawProps[key])
 
-                // SNAPSHOT of what the parent explicitly bound for this key,
-                // NOT a live read of `instance.vnode.props`. `undefined` means
-                // "not passed" (a present-but-`undefined` binding included —
-                // manifestation 1's fix). Refreshed by the setter, i.e. at the
-                // exact moment Vue pushes a new resolution into this slot.
-                //
-                // ⛔ A LIVE read here silently kills Vue's OWN `trigger` for
-                // this key — see "Why the passed value is a snapshot" above.
-                // Do not "simplify" this back into the getter.
+                /*********************************************************
+                 * passedValue
+                 *
+                 * @description
+                 * SNAPSHOT of what the parent explicitly bound for this key,
+                 * NOT a live read of `instance.vnode.props`. `undefined` means
+                 * "not passed" (a present-but-`undefined` binding included —
+                 * manifestation 1's fix). Refreshed by the setter, i.e. at the
+                 * exact moment Vue pushes a new resolution into this slot.
+                 *
+                 * ⛔ A LIVE read here silently kills Vue's OWN `trigger` for
+                 * this key — see "Why the passed value is a snapshot" above.
+                 * Do not "simplify" this back into the getter.
+                 ********************************************************/
                 let passedValue = passedPropValue(instance.vnode.props as Record<string, unknown> | null, key)
 
                 Object.defineProperty(rawProps, key, {
                     configurable: true,
                     enumerable: true,
                     get () {
-                        // Read FIRST and UNCONDITIONALLY, before any branch can
-                        // return early. This read is what subscribes the calling
-                        // effect — and it is the whole point of the shallowRef.
-                        // Vue writes this slot (`setFullProps` → `props[key] =
-                        // value`) on every parent re-render that changes an
-                        // explicit value, and again when a parent STOPS passing
-                        // a prop and Vue re-resolves the default. Without this
-                        // line, the branches below read sources Vue never
-                        // tracks, and nothing invalidates a `computed` built on
-                        // this prop.
+                        /*********************************************************
+                         * fallback
+                         *
+                         * @description
+                         * Read FIRST and UNCONDITIONALLY, before any branch can
+                         * return early. This read is what subscribes the calling
+                         * effect — and it is the whole point of the shallowRef.
+                         * Vue writes this slot (`setFullProps` → `props[key] =
+                         * value`) on every parent re-render that changes an
+                         * explicit value, and again when a parent STOPS passing
+                         * a prop and Vue re-resolves the default. Without this
+                         * line, the branches below read sources Vue never
+                         * tracks, and nothing invalidates a `computed` built on
+                         * this prop.
+                         ********************************************************/
                         const fallback = fallbackValue.value
 
                         if (passedValue !== undefined) return passedValue
@@ -622,14 +673,19 @@ export function installThemePropsResolver (app: App, themedKeysUnion: Map<string
                         return fallback
                     },
                     set (value: unknown) {
-                        // ORDER MATTERS. `instance.vnode` is ALREADY the new
-                        // vnode when Vue writes this slot (`updateComponentPreRender`
-                        // assigns `instance.vnode = nextVNode` BEFORE calling
-                        // `updateProps`), so this is the correct moment — and
-                        // the only one — to re-snapshot. It must land BEFORE
-                        // the ref write, because that write is what fires
-                        // `flush: 'sync'` watchers synchronously; they would
-                        // otherwise read a stale snapshot.
+                        /*********************************************************
+                         * passedValue
+                         *
+                         * @description
+                         * ORDER MATTERS. `instance.vnode` is ALREADY the new
+                         * vnode when Vue writes this slot (`updateComponentPreRender`
+                         * assigns `instance.vnode = nextVNode` BEFORE calling
+                         * `updateProps`), so this is the correct moment — and
+                         * the only one — to re-snapshot. It must land BEFORE
+                         * the ref write, because that write is what fires
+                         * `flush: 'sync'` watchers synchronously; they would
+                         * otherwise read a stale snapshot.
+                         ********************************************************/
                         passedValue = passedPropValue(instance.vnode.props as Record<string, unknown> | null, key)
                         fallbackValue.value = value
                     }

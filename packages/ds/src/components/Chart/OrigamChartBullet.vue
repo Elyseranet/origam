@@ -344,12 +344,17 @@
 		return resolveColor(palette[bandIndex % palette.length])
 	}
 
-	// ⛔ #426 — `colorScheme` is inherited from `IChartBaseProps` but has no
-	// effect here: the value bar is a single UNIFORM fill (`barColor`) shared
-	// by every bullet, and the qualitative range bands use their own dedicated
-	// palette (`rangeColors`) — there is no per-series identity a rotating
-	// palette could drive. See #426 decision: neither wiring a fake behaviour
-	// nor removing the prop — warn instead.
+	/*********************************************************
+	 * useChartUnsupportedProp
+	 *
+	 * @description
+	 * ⛔ #426 — `colorScheme` is inherited from `IChartBaseProps` but has no
+	 * effect here: the value bar is a single UNIFORM fill (`barColor`) shared
+	 * by every bullet, and the qualitative range bands use their own dedicated
+	 * palette (`rangeColors`) — there is no per-series identity a rotating
+	 * palette could drive. See #426 decision: neither wiring a fake behaviour
+	 * nor removing the prop — warn instead.
+	 ********************************************************/
 	useChartUnsupportedProp(
 		'OrigamChartBullet',
 		'colorScheme',

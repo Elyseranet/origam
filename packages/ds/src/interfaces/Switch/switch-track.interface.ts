@@ -10,13 +10,17 @@ import type {
 import type { IElevationProps } from '../Commons/elevation.interface'
 import type { IRoundedProps } from '../Commons/rounded.interface'
 
-/**
+/*********************************************************
+ * ISwitchTrackProps
+ *
+ * @description
  * Props for `<OrigamSwitchTrack>` — the rounded "rail" sitting behind the
  * Switch thumb. The track owns its own visual surface (background, border,
  * inset variant, error state, rounded/elevation identity) and exposes slots
  * for content shown on the `true` (left) and `false` (right) sides of the
  * rail.
  *
+ * @description
  * Color contract — strict channel separation:
  *  • `bgColor` paints the rail (the box behind the thumb).
  *  • `color`   is the foreground intent inherited from the parent
@@ -24,6 +28,7 @@ import type { IRoundedProps } from '../Commons/rounded.interface'
  *              not the track) — exposed here so the slot content can
  *              react to it (e.g. an icon inside `track.true`).
  *
+ * @description
  * `border` / `rounded` / `elevation` (props-first, lot 4 theming fix):
  * previously declared on `ISwitchProps` (inherited from the Commons
  * interfaces) but never consumed anywhere — `OrigamSwitch.vue` accepted
@@ -33,7 +38,7 @@ import type { IRoundedProps } from '../Commons/rounded.interface'
  * and nothing would render differently. Declared here now because the
  * track is the element that owns the visual surface these props target —
  * `OrigamSwitch` forwards its own values down via `filterProps`.
- */
+ ********************************************************/
 export interface ISwitchTrackProps extends ICommonsComponentProps, IColorProps, IBgColorProps, IBorderProps, IRoundedProps, IElevationProps {
     /** Whether the switch is currently ON. Drives the `--dirty` modifier. */
     modelValue?: boolean
@@ -55,7 +60,10 @@ export interface ISwitchTrackProps extends ICommonsComponentProps, IColorProps, 
     inset?: boolean
 }
 
-/**
+/*********************************************************
+ * ISwitchTrackEmits
+ *
+ * @description
  * ⛔ Does NOT extend `ICommonsComponentEmits` (LOT 3, unemitted-declarations
  * guard). That interface only declares `update:modelValue`, which this
  * component cannot emit: `modelValue` is a plain, read-only display prop
@@ -69,15 +77,18 @@ export interface ISwitchTrackProps extends ICommonsComponentProps, IColorProps, 
  * `<origam-switch-track>` directly received nothing before and receives
  * nothing after; the listener now flows through `$attrs` instead of being
  * swallowed by a declaration that lied about firing it.
- */
+ ********************************************************/
 export interface ISwitchTrackEmits {
     (e: 'click', event: MouseEvent): void
 }
 
-/**
+/*********************************************************
+ * ISwitchTrackSlotsProps
+ *
+ * @description
  * Slot payload — `model` and `isValid` are forwarded so the consumer can
  * render contextual content (a checkmark on ON, an `x` on OFF, …).
- */
+ ********************************************************/
 export interface ISwitchTrackSlotsProps {
     model: boolean
     isValid: boolean | null

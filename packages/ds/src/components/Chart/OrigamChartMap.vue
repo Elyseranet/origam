@@ -354,12 +354,17 @@
 		return `color-mix(in srgb, ${ end } ${ pct }%, ${ start })`
 	}
 
-	// ⛔ #426 — `colorScheme` is inherited from `IChartBaseProps` but has no
-	// effect here: choropleth colour is a CONTINUOUS gradient (`colorRange`),
-	// and flight-routes colour is a single `lineColor` overridable per route —
-	// neither mode has a per-series identity a rotating discrete palette could
-	// drive. See #426 decision: neither wiring a fake behaviour nor removing
-	// the prop — warn instead.
+	/*********************************************************
+	 * useChartUnsupportedProp
+	 *
+	 * @description
+	 * ⛔ #426 — `colorScheme` is inherited from `IChartBaseProps` but has no
+	 * effect here: choropleth colour is a CONTINUOUS gradient (`colorRange`),
+	 * and flight-routes colour is a single `lineColor` overridable per route —
+	 * neither mode has a per-series identity a rotating discrete palette could
+	 * drive. See #426 decision: neither wiring a fake behaviour nor removing
+	 * the prop — warn instead.
+	 ********************************************************/
 	useChartUnsupportedProp(
 		'OrigamChartMap',
 		'colorScheme',
@@ -373,12 +378,15 @@
 	const choroplethData = computed<Array<IChartMapChoroplethDatum>>(() => {
 		const series = props.series?.[0]
 		if (!series?.data?.length) return []
-		/*
+		/*********************************************************
+		 * if
+		 *
+		 * @description
 		 * Only iterate the data when this series is in choropleth mode.
 		 * Flight-route data has `{ from, to, value }` instead of
 		 * `{ code, value }`; touching `.code` on those would throw on
 		 * `undefined.toUpperCase()`.
-		 */
+		 ********************************************************/
 		if (props.mode !== 'choropleth') return []
 		return series.data as unknown as Array<IChartMapChoroplethDatum>
 	})

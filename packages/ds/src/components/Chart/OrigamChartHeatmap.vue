@@ -342,11 +342,16 @@
 		return `color-mix(in srgb, ${ end } ${ pct }%, ${ start })`
 	}
 
-	// ⛔ #426 — `colorScheme` is inherited from `IChartBaseProps` but has no
-	// effect here: cell colour is a CONTINUOUS two-stop gradient (`colorRange`),
-	// not a per-series identity a rotating discrete palette could drive. See
-	// #426 decision: neither wiring a fake behaviour nor removing the prop —
-	// warn instead.
+	/*********************************************************
+	 * useChartUnsupportedProp
+	 *
+	 * @description
+	 * ⛔ #426 — `colorScheme` is inherited from `IChartBaseProps` but has no
+	 * effect here: cell colour is a CONTINUOUS two-stop gradient (`colorRange`),
+	 * not a per-series identity a rotating discrete palette could drive. See
+	 * #426 decision: neither wiring a fake behaviour nor removing the prop —
+	 * warn instead.
+	 ********************************************************/
 	useChartUnsupportedProp(
 		'OrigamChartHeatmap',
 		'colorScheme',
@@ -553,14 +558,17 @@
 		return `${ c.xCat } × ${ c.yCat }`
 	})
 
-	/**
+	/*********************************************************
+	 * enrichedTooltipBindings
+	 *
+	 * @description
 	 * Enriches the default `{ point, series, category }` tooltip scope
 	 * with the cell-level fields `IChartHeatmapSlots['tooltip']`
 	 * promises (`color`, `xLabel`, `yLabel`, `value`) — sourced from
 	 * `hoveredCell`, which already carries them. Was previously
 	 * forwarding the raw `bindings` unmodified, silently never
 	 * fulfilling the documented tooltip slot signature.
-	 */
+	 ********************************************************/
 	const enrichedTooltipBindings = (bindings: { point: IChartPoint, series: IChartSeries, category: string | number }) => {
 		const c = hoveredCell.value
 		return {
