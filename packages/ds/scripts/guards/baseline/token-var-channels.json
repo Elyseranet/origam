@@ -456,7 +456,6 @@
     "packages/ds/src/components/Snackbar/OrigamSnackbar.vue::--origam-snackbar__timer-bar---opacity",
     "packages/ds/src/components/Snackbar/OrigamSnackbar.vue::--origam-snackbar__timer-bar---opacity-status",
     "packages/ds/src/components/Switch/OrigamSwitch.vue::--origam-input---density",
-    "packages/ds/src/components/Switch/OrigamSwitch.vue::--origam-selection-control--density",
     "packages/ds/src/components/Switch/OrigamSwitch.vue::--origam-switch__selection-control---min-height",
     "packages/ds/src/components/Switch/OrigamSwitch.vue::--origam-switch__skeleton---height",
     "packages/ds/src/components/Switch/OrigamSwitch.vue::--origam-switch__skeleton---width",

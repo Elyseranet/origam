@@ -508,8 +508,8 @@
       :deep(.origam-selection-control__wrapper) {
         width: max-content;
         height: max-content;
-        min-width: calc(40px + 1.5 * var(--origam-selection-control--density, 0px));
-        min-height: calc(40px + 1.5 * var(--origam-selection-control--density, 0px));
+        min-width: calc(40px + 1.5 * var(--origam-selection-control---density, 0px));
+        min-height: calc(40px + 1.5 * var(--origam-selection-control---density, 0px));
       }
 
       :deep(.origam-selection-control__input) {
