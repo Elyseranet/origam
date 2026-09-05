@@ -19,18 +19,27 @@ import { expect, test } from '@playwright/test'
  *   3  → Events - update:modelValue
  *   4  → Events - finish
  *   5  → Events - click:clear
- *   6  → Events - click:control
- *   7  → Events - mousedown:control
- *   8  → Slots - Default
- *   9  → Slots - Label
- *  10  → Slots - FloatingLabel
- *  11  → Slots - Prefix
- *  12  → Slots - Suffix
- *  13  → Slots - PrependInner
- *  14  → Slots - AppendInner
- *  15  → Slots - Clear
- *  16  → Slots - Loader
- *  17  → Default (playground)
+ *   6  → Events - click:appendInner
+ *   7  → Events - click:prependInner
+ *   8  → Events - click:control
+ *   9  → Events - mousedown:control
+ *  10  → Slots - Default
+ *  11  → Slots - Label
+ *  12  → Slots - FloatingLabel
+ *  13  → Slots - Prefix
+ *  14  → Slots - Suffix
+ *  15  → Slots - PrependInner
+ *  16  → Slots - AppendInner
+ *  17  → Slots - Clear
+ *  18  → Slots - Loader
+ *  19  → Default (playground)
+ *
+ * issue #554 — indices 8..17 drifted by +2 once the story gained two real
+ * Variants (`Events - click:appendInner` / `Events - click:prependInner`),
+ * both backed by real component emits — see `handleClickAppendInner` /
+ * `handleClickPrependInner` in OrigamOtpInputField.vue. The story is the
+ * living API and was correct; this spec's hardcoded indices were stale.
+ * Fixed here (indices only), never by weakening an assertion.
  */
 
 const STORY_ID   = 'components-stories-otpinputfield-origamotpinputfield-story-vue'
@@ -312,7 +321,7 @@ test.describe('OrigamOtpInputField', () => {
 
     test.describe('Events - click:control', () => {
         test('clicking the field content does not throw', async ({ page }) => {
-            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -327,7 +336,7 @@ test.describe('OrigamOtpInputField', () => {
 
     test.describe('Events - mousedown:control', () => {
         test('mousedown on the field content does not throw', async ({ page }) => {
-            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -342,7 +351,7 @@ test.describe('OrigamOtpInputField', () => {
 
     test.describe('Slots - Default', () => {
         test('default slot renders custom content inside the field content area', async ({ page }) => {
-            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -353,7 +362,7 @@ test.describe('OrigamOtpInputField', () => {
 
     test.describe('Slots - Label', () => {
         test('label slot renders custom strong element (one per cell — first is sufficient)', async ({ page }) => {
-            await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -366,7 +375,7 @@ test.describe('OrigamOtpInputField', () => {
 
     test.describe('Slots - FloatingLabel', () => {
         test('floating label slot renders custom em element (one per cell — first is sufficient)', async ({ page }) => {
-            await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(12), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -378,7 +387,7 @@ test.describe('OrigamOtpInputField', () => {
 
     test.describe('Slots - Prefix', () => {
         test('prefix slot renders the + span', async ({ page }) => {
-            await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(13), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -389,7 +398,7 @@ test.describe('OrigamOtpInputField', () => {
 
     test.describe('Slots - Suffix', () => {
         test('suffix slot renders the OTP span', async ({ page }) => {
-            await page.goto(variantUrl(12), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(14), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -400,7 +409,7 @@ test.describe('OrigamOtpInputField', () => {
 
     test.describe('Slots - PrependInner', () => {
         test('prepend inner slot renders an origam-icon', async ({ page }) => {
-            await page.goto(variantUrl(13), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(15), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -410,7 +419,7 @@ test.describe('OrigamOtpInputField', () => {
 
     test.describe('Slots - AppendInner', () => {
         test('append inner slot renders an origam-icon', async ({ page }) => {
-            await page.goto(variantUrl(14), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(16), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -420,7 +429,7 @@ test.describe('OrigamOtpInputField', () => {
 
     test.describe('Slots - Clear', () => {
         test('clear slot renders a custom close icon when clearable', async ({ page }) => {
-            await page.goto(variantUrl(15), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(17), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -431,8 +440,8 @@ test.describe('OrigamOtpInputField', () => {
     })
 
     test.describe('Slots - Loader', () => {
-        test('loading=true mounts an overlay with a progress indicator', async ({ page }) => {
-            await page.goto(variantUrl(16), { waitUntil: 'domcontentloaded' })
+        test('loading=true mounts a loader overlay', async ({ page }) => {
+            await page.goto(variantUrl(18), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -443,32 +452,32 @@ test.describe('OrigamOtpInputField', () => {
         })
 
         /**
-         * DS BUG — slot #loader is NOT forwarded to OrigamOverlay.
+         * REGRESSION for issue #554 — the #loader slot custom content used to be
+         * silently dropped.
          *
-         * OrigamOtpInputField passes <template #loader> to <origam-overlay>, but
-         * OrigamOverlay only exposes #default and #activator slots — it has no #loader
-         * slot in its API. The custom slot content (<span>Loading…</span>) is therefore
-         * silently dropped; only the default OrigamProgress circular indicator renders.
+         * OrigamOtpInputField passed <template #loader> to <origam-overlay>, but
+         * OrigamOverlay only ever exposed #default and #activator slots — it had
+         * no #loader slot in its API. The custom slot content (<span>Loading…</span>)
+         * was therefore silently dropped; only the default OrigamProgress circular
+         * indicator rendered.
          *
-         * This test documents the observed (broken) behaviour so a regression test
-         * can be written once the bug is fixed:
-         *   Expected: sandbox.locator('.origam-otp-input-field__loader').toContainText('Loading')
-         *   Observed: loader div is empty; custom slot content is not rendered.
-         *
-         * Severité: Medium — consumer cannot customise the OTP loading indicator.
-         * Ticket: to open against OrigamOtpInputField (OrigamOverlay slot wiring).
+         * Fixed by targeting OrigamOverlay's real #default slot instead of the
+         * non-existent #loader one (OrigamOtpInputField.vue, the
+         * <origam-overlay> block around the loading overlay). This test now
+         * asserts the custom slot content actually reaches the DOM — it must
+         * fail again if that wiring regresses.
          */
-        test('loader overlay div is present (custom slot text not rendered — DS bug)', async ({ page }) => {
-            await page.goto(variantUrl(16), { waitUntil: 'domcontentloaded' })
+        test('loader slot custom content renders inside the overlay (issue #554 regression)', async ({ page }) => {
+            await page.goto(variantUrl(18), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
             // Confirm the overlay content div is present (loading prop active)
             const loaderDiv = sandbox.locator('.origam-otp-input-field__loader')
             await expect(loaderDiv).toBeAttached()
-            // Confirm the custom slot text is NOT rendered (the bug described above)
-            const text = await loaderDiv.textContent()
-            expect(text?.trim(), 'DS bug: custom #loader slot text should not appear until slot is fixed').toBe('')
+            // Story passes <template #loader><span>Loading…</span></template> —
+            // it must now render, not the default OrigamProgress fallback.
+            await expect(loaderDiv).toContainText('Loading')
         })
     })
 
@@ -479,7 +488,7 @@ test.describe('OrigamOtpInputField', () => {
 
     test.describe('Default (playground)', () => {
         test('renders root with 6 cells and value display', async ({ page }) => {
-            await page.goto(variantUrl(17), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(19), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -488,7 +497,7 @@ test.describe('OrigamOtpInputField', () => {
         })
 
         test('typing fills cells and the value display shows the typed digits', async ({ page }) => {
-            await page.goto(variantUrl(17), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(19), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
