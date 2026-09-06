@@ -1,5 +1,6 @@
 import type { IPositionProps } from '../../interfaces/Commons/position.interface'
 
+import { convertToUnit } from '../../utils/Commons/commons.util'
 import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.util'
 import { computed } from 'vue'
 
@@ -30,7 +31,7 @@ export function usePosition (props: IPositionProps, name = getCurrentInstanceNam
 
         layers.forEach((layer) => {
             if (props[layer as keyof IPositionProps]) {
-                styles.push(`${layer}: ${props[layer as keyof IPositionProps]}`)
+                styles.push(`${layer}: ${convertToUnit(props[layer as keyof IPositionProps] as string | number)}`)
             }
         })
 

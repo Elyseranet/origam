@@ -1965,11 +1965,16 @@ pas la propriete CSS `position: sticky`) contre le layout ambiant
 hauteur de l'element vs la fenetre, et `stickyStyles` traduit cet etat
 en declarations `top`/`bottom` inline.
 
-⛔ `onScroll` lit `getComputedStyle(rootEl).getPropertyValue('--v-body-scroll-y')`
-— un nom de variable prefixe `--v-`, pas `--origam-`. Aucune regle CSS
-de ce depot ne declare cette custom property : `bodyScroll` vaut donc
-TOUJOURS `0` (`parseFloat(NaN) || 0`) en l'etat actuel du code, sauf si
-un consommateur externe la pose lui-meme sur `rootEl`.
+`onScroll` compense le decalage fige par un overlay qui bloque le
+defilement, en lisant la custom property `--origam-body-scroll-y` que
+`useScroll` pose sur chaque parent defilant.
+
+⛔ Cette lecture visait `--v-body-scroll-y` jusqu'a #556 — prefixe `--v-`,
+la grammaire d'un autre design system, vestige de portage. Ce nom n'etant
+declare nulle part, `bodyScroll` valait TOUJOURS `0` et la branche de
+compensation etait morte. Corrige le 2026-09-06 ; le test
+`TU/composables/position-sticky-556-557.spec.ts` verrouille l'accord entre
+le nom pose et le nom lu.
 
 **Source** : `packages/ds/src/composables/Commons/sticky.composable.ts`
 

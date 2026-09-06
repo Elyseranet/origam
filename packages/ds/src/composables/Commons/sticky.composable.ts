@@ -16,11 +16,17 @@ import type { CSSProperties } from 'vue'
  * en declarations `top`/`bottom` inline.
  *
  * @description
- * ⛔ `onScroll` lit `getComputedStyle(rootEl).getPropertyValue('--v-body-scroll-y')`
- * — un nom de variable prefixe `--v-`, pas `--origam-`. Aucune regle CSS
- * de ce depot ne declare cette custom property : `bodyScroll` vaut donc
- * TOUJOURS `0` (`parseFloat(NaN) || 0`) en l'etat actuel du code, sauf si
- * un consommateur externe la pose lui-meme sur `rootEl`.
+ * `onScroll` compense le decalage fige par un overlay qui bloque le
+ * defilement, en lisant la custom property `--origam-body-scroll-y` que
+ * `useScroll` pose sur chaque parent defilant.
+ *
+ * @description
+ * ⛔ Cette lecture visait `--v-body-scroll-y` jusqu'a #556 — prefixe `--v-`,
+ * la grammaire d'un autre design system, vestige de portage. Ce nom n'etant
+ * declare nulle part, `bodyScroll` valait TOUJOURS `0` et la branche de
+ * compensation etait morte. Corrige le 2026-09-06 ; le test
+ * `TU/composables/position-sticky-556-557.spec.ts` verrouille l'accord entre
+ * le nom pose et le nom lu.
  ********************************************************/
 export function useSticky ({rootEl, isSticky, layoutItemStyles}: ISticky) {
     const isStuck = shallowRef<boolean | 'top' | 'bottom'>(false)
@@ -62,7 +68,26 @@ export function useSticky ({rootEl, isSticky, layoutItemStyles}: ISticky) {
             Math.max(stuckPosition.value, layoutTop) -
             window.scrollY -
             window.innerHeight
-        const bodyScroll = parseFloat(getComputedStyle(rootEl.value!).getPropertyValue('--v-body-scroll-y')) || 0
+        /*********************************************************
+         * bodyScroll
+         *
+         * @description
+         * Decalage de defilement FIGE par un overlay qui bloque le scroll.
+         * `useScroll` le pose sur chaque parent defilant sous la forme
+         * `-el.scrollTop`, donc une valeur NEGATIVE, et le restaure au
+         * demontage.
+         *
+         * @description
+         * ⛔ Cette ligne lisait `--v-body-scroll-y` — prefixe `--v-`, la
+         * grammaire d'un AUTRE design system, vestige de portage. Ce nom
+         * n'est declare nulle part dans le depot : `getPropertyValue` rendait
+         * la chaine vide, `parseFloat('')` un `NaN`, et le `|| 0` le
+         * convertissait en zero. `bodyScroll` valait donc TOUJOURS 0, et la
+         * branche `else if` plus bas etait morte. Le nom correct,
+         * `--origam-body-scroll-y`, est bien pose par
+         * `utils/Commons/scroll.util.ts`. Issue #556.
+         ********************************************************/
+        const bodyScroll = parseFloat(getComputedStyle(rootEl.value!).getPropertyValue('--origam-body-scroll-y')) || 0
 
         if (rect.height < window.innerHeight - layoutTop) {
             isStuck.value = 'top'
