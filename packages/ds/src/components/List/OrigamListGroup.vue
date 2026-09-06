@@ -241,7 +241,7 @@
 
 					&:hover {
 						#{$item}__overlay {
-							opacity: var(--origam-list-group__header--active--hover---opacity, calc(0.04 * 1));
+							opacity: var(--origam-list-group__header--active--hover---opacity, var(--origam-list__group---header-active-hover-opacity, calc(0.04 * 1)));
 						}
 					}
 				}
