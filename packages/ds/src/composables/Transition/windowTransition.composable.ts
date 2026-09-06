@@ -98,9 +98,17 @@ export function useWindowTransition (props: ITransitionProps) {
          * ne partaient jamais, et les props qu'ils consomment etaient mortes.
          *
          * @description
-         * Chaque hook garde deja sa PROPRE prop en interne (`if (props.origin)`,
-         * `if (props.leaveAbsolute)`, `if (props.hideOnLeave)`) : la condition
-         * externe n'ajoutait aucune protection, elle inversait le contrat.
+         * Les hooks de CE composable font du suivi de HAUTEUR — ils mesurent et
+         * figent la boite du conteneur pendant la transition pour que les
+         * etapes intermediaires ne sautent pas. La condition externe
+         * n'ajoutait aucune protection, elle inversait le contrat.
+         *
+         * @description
+         * ⛔ NE PAS confondre avec `useCssTransition`, dont les hooks portent
+         * `origin`, `leaveAbsolute` et `hideOnLeave`. Une version anterieure de
+         * ce commentaire attribuait ces trois props a CE composable : c'etait
+         * faux, il ne les lit nulle part. Les composants qui passent par
+         * `useWindowTransition` ne doivent donc pas les declarer.
          *
          * @description
          * La liaison est donc inconditionnelle. Le chemin desactive garde

@@ -1,4 +1,4 @@
-import type { ITransitionProps } from './transition.interface'
+import type { ITransitionTranslateScaleProps } from './transition.interface'
 
 /*********************************************************
  * ITranslateScaleProps
@@ -11,6 +11,6 @@ import type { ITransitionProps } from './transition.interface'
  * `ITransitionProps` itself (shared verbatim by 14 sibling wrapper
  * components), this one is specific to a single component.
  ********************************************************/
-export interface ITranslateScaleProps extends ITransitionProps {
+export interface ITranslateScaleProps extends ITransitionTranslateScaleProps {
     target?: HTMLElement | [x: number, y: number]
 }

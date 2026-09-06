@@ -54,6 +54,40 @@ export interface ITransitionWindowProps extends ITransitionProps {
  ********************************************************/
 export interface ITransitionNoOriginProps extends Omit<ITransitionProps, 'origin'> {}
 
+/*********************************************************
+ * ITransitionWindowProps
+ *
+ * @description
+ * `ITransitionNoOriginProps` moins `hideOnLeave` et `leaveAbsolute` — pour
+ * les quatre `Window{X,Y}{,Reverse}Translate`, qui passent par
+ * `useWindowTransition`.
+ *
+ * @description
+ * ⛔ Ce composable-la ne lit NI l'une NI l'autre : ses hooks font du suivi de
+ * HAUTEUR (mesurer et figer la boite du conteneur pendant la transition).
+ * Ce sont ceux de `useCssTransition` qui portent `hideOnLeave` et
+ * `leaveAbsolute` — d'ou `ExpandX`/`ExpandY`/`Fade`, qui passent par lui,
+ * gardent les deux props.
+ *
+ * @description
+ * Les declarer sur les quatre Window etait donc une promesse que rien ne
+ * tenait. Verifie le 2026-09-06 : les deux noms n'apparaissent nulle part
+ * dans `windowTransition.composable.ts`, hors commentaire. Issue #550,
+ * critere C1.
+ ********************************************************/
+export interface ITransitionWindowProps extends Omit<ITransitionNoOriginProps, 'hideOnLeave' | 'leaveAbsolute'> {}
+
+/*********************************************************
+ * ITransitionTranslateScaleProps
+ *
+ * @description
+ * `ITransitionProps` moins `group`, `mode`, `hideOnLeave` et
+ * `leaveAbsolute` — pour `OrigamTranslateScale`, qui n'appelle NI
+ * `useCssTransition` NI `useWindowTransition` : il implemente ses propres
+ * hooks et ne lit que `origin`, `target` et `disabled`.
+ ********************************************************/
+export interface ITransitionTranslateScaleProps extends Omit<ITransitionProps, 'group' | 'mode' | 'hideOnLeave' | 'leaveAbsolute'> {}
+
 /** Slot signatures shared by every `<Origam*>` transition wrapper
  *  (Fade, SlideX/Y, ExpandX/Y, ScaleRotate, TranslateScale, …) — a
  *  single unscoped `default` slot holding the transitioned content. */

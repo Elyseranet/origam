@@ -121,7 +121,31 @@ const skipped = results.filter((r) => r.wildcard)
  * radius across all 210 components, and would need its own before/after
  * measurement.
  */
+/*********************************************************
+ * PROVEN_CONSUMED_INDIRECTLY
+ *
+ * @description
+ * Props que l'audit ne sait pas suivre, et dont la consommation a ete
+ * ETABLIE A LA MAIN. Chaque entree doit citer OU la lecture a lieu — une
+ * liste d'exemptions sans preuve redeviendrait vite un tapis sous lequel on
+ * pousse les vrais defauts.
+ *
+ * @description
+ * ⛔ `OrigamOverlay` : ses quatre props de placement partent dans une
+ * FONCTION STOCKEE DANS UN DICTIONNAIRE —
+ * `LOCATION_STRATEGIES[props.locationStrategy](data, props, contentStyles)`.
+ * L'audit suit `useX(props)` vers un composable, pas un appel indirect a
+ * travers une table. Les quatre sont lues dans
+ * `utils/Commons/location.util.ts` : `props.location`, `props.offset`,
+ * `props.origin` en clair, et `viewportMargin` derriere un cast
+ * `(props as { viewportMargin?: number }).viewportMargin ?? 12` (ligne 118).
+ * Verifie le 2026-09-06 ; les retirer aurait casse le placement de tout
+ * composant flottant.
+ ********************************************************/
 const PROVEN_CONSUMED_INDIRECTLY = new Set([
+    'OrigamOverlay.location', 'OrigamOverlay.offset',
+    'OrigamOverlay.origin', 'OrigamOverlay.viewportMargin',
+
     'OrigamBracket.border', 'OrigamBracket.borderTop', 'OrigamBracket.borderRight',
     'OrigamBracket.borderBottom', 'OrigamBracket.borderLeft',
     'OrigamBracket.borderBlock', 'OrigamBracket.borderInline',
