@@ -1266,9 +1266,6 @@
   --origam-overlay__scrim---position-bottom: var(--origam-space---0);
   --origam-overlay__scrim---position-left: var(--origam-space---0);
   --origam-overlay__scrim---position-right: var(--origam-space---0);
-  --origam-overlay__scrim---transition-property: opacity;
-  --origam-overlay__scrim---transition-duration: var(--origam-motion__duration---medium);
-  --origam-overlay__scrim---transition-timing-function: var(--origam-motion__easing---standard);
   --origam-overlay__content---outline: none;
   --origam-overlay__content---position: absolute;
   --origam-overlay__content---pointer-events: auto;
@@ -2690,7 +2687,6 @@
   --origam-chart__subtitle---font-size: var(--origam-font__size---sm);
   --origam-chart__axis---color: var(--origam-color__border---default);
   --origam-chart__axis-label---color: var(--origam-color__text---secondary);
-  --origam-chart__axis---label-font-size: var(--origam-font__size---xs);
   --origam-chart__grid---color: var(--origam-color__border---subtle);
   --origam-chart__grid---stroke-width: 1px;
   --origam-chart__tooltip---background-color: var(--origam-color__surface---inverse);
