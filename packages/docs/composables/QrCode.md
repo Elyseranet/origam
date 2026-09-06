@@ -13,9 +13,8 @@
 export function __clearQrCodeCache (): void
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/QrCode/qr-code.composable.ts`, puis regenerer.
+Test helper — clears the module-level matrix LRU. Exposed for the
+unit-test suite and not advertised publicly.
 
 **Source** : `packages/ds/src/composables/QrCode/qr-code.composable.ts`
 
@@ -27,9 +26,24 @@ export function __clearQrCodeCache (): void
 export function useQrCode ( value: MaybeRefOrGetter<string>, options: MaybeRefOrGetter<IUseQrCodeOptions> =
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/QrCode/qr-code.composable.ts`, puis regenerer.
+Headless QR-code composable. Encodes `value` through
+`qrcode-generator` (Reed-Solomon + matrix masking handled by the
+library) and rebuilds an SVG fragment on every reactive change.
+
+The composable is SSR-safe — no DOM API is touched, the encoder is
+pure JS, and the SVG string is suitable for `v-html` on both client
+and server.
+
+**Exemple**
+
+```ts
+const value = ref('https://origam.dev')
+const { svg, modules, size } = useQrCode(value, {
+    errorCorrectionLevel: 'M',
+    foreground: '#000',
+    background: '#fff'
+})
+```
 
 **Source** : `packages/ds/src/composables/QrCode/qr-code.composable.ts`
 

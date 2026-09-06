@@ -27,9 +27,16 @@ export function useCountdown (milliseconds: number)
 export function useSnackbarGroup (options: IUseSnackbarGroupOptions =
 ```
 
-Public API. Returns an interface to push / pop items from a named stack. The returned `items` ref is the same reactive reference shared with the matching `<OrigamSnackbarGroup id="…">` instance, so direct mutation outside of `notify` / `dismiss` is discouraged.
+Public API. Returns an interface to push / pop items
+from a named stack. The returned `items` ref is the
+same reactive reference shared with the matching
+`<OrigamSnackbarGroup id="…">` instance, so direct
+mutation outside of `notify` / `dismiss` is discouraged.
 
-The store singleton (`getStore` / `generateId` / `clearTimer`) lives in `utils/Snackbar/snackbar-group.util.ts`, shared with `useSnackbarGroupInternal` (own file) — both hooks address the same per-id stack and must never own separate copies of it.
+The store singleton (`getStore` / `generateId` / `clearTimer`) lives
+in `utils/Snackbar/snackbar-group.util.ts`, shared with
+`useSnackbarGroupInternal` (own file) — both hooks address the same
+per-id stack and must never own separate copies of it.
 
 **Source** : `packages/ds/src/composables/Snackbar/snackbar-group.composable.ts`
 
@@ -41,13 +48,39 @@ The store singleton (`getStore` / `generateId` / `clearTimer`) lives in `utils/S
 export function useSnackbarGroupInternal (id: MaybeRefOrGetter<string> = SNACKBAR_GROUP_DEFAULT_ID)
 ```
 
-`<OrigamSnackbarGroup>` needs a *writable* ref to the items list (it reads them to render and the composable mutates them). Exposed under a separate name so the public `useSnackbarGroup` API stays read-only on `items`. Components outside the library should never import this.
+`<OrigamSnackbarGroup>` needs a *writable* ref to the
+items list (it reads them to render and the composable
+mutates them). Exposed under a separate name so the
+public `useSnackbarGroup` API stays read-only on
+`items`. Components outside the library should never
+import this.
 
-Shares the store singleton (`getStore`) with `useSnackbarGroup` (own file) via `utils/Snackbar/snackbar-group.util.ts` — both hooks address the same per-id stack and must never own separate copies of it.
+Shares the store singleton (`getStore`) with `useSnackbarGroup` (own
+file) via `utils/Snackbar/snackbar-group.util.ts` — both hooks
+address the same per-id stack and must never own separate copies of
+it.
 
-`id` accepts a `MaybeRefOrGetter<string>` rather than a plain `string` — see #469. The host component calls `getStore(props.id)` indirectly through this composable; if `id` were captured as a one-time snapshot at the top of `setup()`, a theme naming `'origam-snackbar-group': { id: 'custom' }` would never be seen (the ADR-005 theme-props resolver patches `instance.props` in `beforeCreate`, which runs AFTER `setup()`). Resolving `toValue(id)` lazily, INSIDE each returned accessor, defers the read to render time, after the resolver has run, and also makes the store follow `id` if it changes reactively later.
+`id` accepts a `MaybeRefOrGetter<string>` rather than a plain
+`string` — see #469. The host component calls `getStore(props.id)`
+indirectly through this composable; if `id` were captured as a
+one-time snapshot at the top of `setup()`, a theme naming
+`'origam-snackbar-group': { id: 'custom' }` would never be seen
+(the ADR-005 theme-props resolver patches `instance.props` in
+`beforeCreate`, which runs AFTER `setup()`). Resolving `toValue(id)`
+lazily, INSIDE each returned accessor, defers the read to render
+time, after the resolver has run, and also makes the store follow
+`id` if it changes reactively later.
 
-Deliberately NOT a single shared `computed(() => getStore(toValue(id)))` memoized once and reused by every accessor below. The host component's `watch(() => props.defaultDuration, …, { immediate: true })` calls `registerDefaultDuration` SYNCHRONOUSLY during `setup()` — before the ADR-005 resolver runs. A shared computed would be forced to evaluate right then, permanently caching the PRE-theme store on `rawItems` too (Vue's computed cache does not get invalidated by the resolver's `defineProperty` patch). Each accessor below re-resolves the store independently so an early, unavoidable read by one of them never poisons the others.
+Deliberately NOT a single shared `computed(() => getStore(toValue(id)))`
+memoized once and reused by every accessor below. The host component's
+`watch(() => props.defaultDuration, …, { immediate: true })` calls
+`registerDefaultDuration` SYNCHRONOUSLY during `setup()` — before the
+ADR-005 resolver runs. A shared computed would be forced to evaluate
+right then, permanently caching the PRE-theme store on `rawItems` too
+(Vue's computed cache does not get invalidated by the resolver's
+`defineProperty` patch). Each accessor below re-resolves the store
+independently so an early, unavoidable read by one of them never
+poisons the others.
 
 **Source** : `packages/ds/src/composables/Snackbar/snackbarGroupInternal.composable.ts`
 

@@ -13,9 +13,14 @@
 export function useCalendar ( options: IUseCalendarOptions, setView?: (view: TCalendarView)
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Calendar/calendar.composable.ts`, puis regenerer.
+Public composable. Stateless over the inputs (every getter is a
+`() => …` thunk), so `<OrigamCalendar>` can drive it from props or
+a parent store without re-instantiation.
+
+Methods (`navigate`, `setView`, `buildXxxGrid`) are intentionally
+**not** wrapped in computeds — they're pure functions / side-effect
+channels. The reactive surface is `expandedEvents` +
+`visibleDateRange`, which depend on every input thunk.
 
 **Source** : `packages/ds/src/composables/Calendar/calendar.composable.ts`
 

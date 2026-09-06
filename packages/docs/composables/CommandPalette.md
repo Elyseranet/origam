@@ -13,7 +13,9 @@
 export function resetCommandRegistryForTesting (): void
 ```
 
-Vitest needs to wipe the singleton between specs so the registry does not leak between cases. Not part of the public surface — do not import in product code.
+Vitest needs to wipe the singleton between specs so the registry
+does not leak between cases. Not part of the public surface — do
+not import in product code.
 
 **Source** : `packages/ds/src/composables/CommandPalette/command.composable.ts`
 

@@ -13,7 +13,12 @@
 export function useCreateList ()
 ```
 
-Root of a list — tracks whether any item registered a prepend/append slot (so the list can reserve gutter space consistently across all its items) and provides `ORIGAM_LIST_KEY` for `useList` consumers. Independent from `useList` at the call level (no direct function dependency) — the two only share the `ORIGAM_LIST_KEY` provide/inject contract.
+Root of a list — tracks whether any item registered a prepend/append
+slot (so the list can reserve gutter space consistently across all
+its items) and provides `ORIGAM_LIST_KEY` for `useList` consumers.
+Independent from `useList` at the call level (no direct function
+dependency) — the two only share the `ORIGAM_LIST_KEY`
+provide/inject contract.
 
 **Source** : `packages/ds/src/composables/List/createList.composable.ts`
 
@@ -25,7 +30,11 @@ Root of a list — tracks whether any item registered a prepend/append slot (so 
 export function useList ()
 ```
 
-Reads the nearest `ORIGAM_LIST_KEY` injection provided by `useCreateList`, or `null` when rendered outside a list. Independent from `useCreateList` at the call level (no direct function dependency) — the two only share the `ORIGAM_LIST_KEY` provide/inject contract.
+Reads the nearest `ORIGAM_LIST_KEY` injection provided by
+`useCreateList`, or `null` when rendered outside a list.
+Independent from `useCreateList` at the call level (no direct
+function dependency) — the two only share the `ORIGAM_LIST_KEY`
+provide/inject contract.
 
 **Source** : `packages/ds/src/composables/List/list.composable.ts`
 

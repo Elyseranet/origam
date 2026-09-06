@@ -13,7 +13,14 @@
 export function useHold (
 ```
 
-`holdRepeat` / `holdDelay` accept `MaybeRefOrGetter<number>` (a plain number still works) and are read via `toValue()` inside `holdStart` — at the moment a NEW hold sequence begins — rather than once when `useHold()` itself is called. The caller (`OrigamNumberField.vue`) passes `() => props.holdRepeat` / `() => props.holdDelay`, so a prop change reaching the component after mount is honoured by the next press-and-hold, instead of being silently frozen for the component's whole lifetime (#487).
+`holdRepeat` / `holdDelay` accept `MaybeRefOrGetter<number>` (a plain
+number still works) and are read via `toValue()` inside `holdStart` —
+at the moment a NEW hold sequence begins — rather than once when
+`useHold()` itself is called. The caller (`OrigamNumberField.vue`)
+passes `() => props.holdRepeat` / `() => props.holdDelay`, so a prop
+change reaching the component after mount is honoured by the next
+press-and-hold, instead of being silently frozen for the component's
+whole lifetime (#487).
 
 **Source** : `packages/ds/src/composables/NumberField/hold.composable.ts`
 

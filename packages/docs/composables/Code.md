@@ -13,9 +13,8 @@
 export function resetCodeHighlighterForTesting (): void
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Code/code.composable.ts`, puis regenerer.
+Test-only: drop the singleton so a fresh dynamic import runs next call.
+Production code should never need this.
 
 **Source** : `packages/ds/src/composables/Code/code.composable.ts`
 
@@ -27,9 +26,7 @@ export function resetCodeHighlighterForTesting (): void
 export function useCode (): IUseCodeReturn
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Code/code.composable.ts`, puis regenerer.
+Public hook — see `IUseCodeReturn` for the surface contract.
 
 **Source** : `packages/ds/src/composables/Code/code.composable.ts`
 

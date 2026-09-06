@@ -13,9 +13,18 @@
 export function useClipboard (options: IUseClipboardOptions =
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Clipboard/clipboard.composable.ts`, puis regenerer.
+Headless clipboard composable. Wraps the modern Clipboard API + a
+legacy execCommand fallback and exposes a self-resetting `copied`
+flag so consumers don't have to wire the timeout themselves.
+
+**Exemple**
+
+```ts
+const { copy, copied, error, isSupported } = useClipboard({ feedbackDuration: 2000 })
+
+await copy('hello world')
+// copied.value === true for 2000ms, then auto-resets to false
+```
 
 **Source** : `packages/ds/src/composables/Clipboard/clipboard.composable.ts`
 

@@ -13,9 +13,26 @@
 export function useWatermark ( options: MaybeRefOrGetter<IUseWatermarkOptions> =
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Watermark/watermark.composable.ts`, puis regenerer.
+Headless watermark composable. Returns the data-URL pattern (for
+consumers who want to bind it manually via `:style`) plus
+`install()` / `uninstall()` helpers for programmatic use without
+mounting `<OrigamWatermark>`.
+
+The composable is SSR-safe — pure-string SVG construction, no DOM
+access. `install()` short-circuits when `document` is undefined.
+
+**Exemple**
+
+```ts
+const { patternUrl, install, uninstall } = useWatermark({
+    text: 'CONFIDENTIAL — john.doe@example.com',
+    opacity: 0.08,
+    angle: -30,
+    gap: 120
+})
+onMounted(() => install(document.body))
+onBeforeUnmount(() => uninstall())
+```
 
 **Source** : `packages/ds/src/composables/Watermark/watermark.composable.ts`
 

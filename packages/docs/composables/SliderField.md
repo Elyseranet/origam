@@ -13,7 +13,14 @@
 export function useSteps (props: ISliderFieldProps)
 ```
 
-Pure-function stepping math used by `<OrigamSliderField>`. Returns reactive min / max / step / decimals refs and a `roundValue` helper that snaps any raw number to the nearest valid step (clamped to [min, max]). The browser owns drag now — `useSlider` (the legacy JS drag pipeline) was deleted with the native `<input type="range">` migration. This file used to be 280 LOC.
+Pure-function stepping math used by `<OrigamSliderField>`.
+Returns reactive min / max / step / decimals refs and a
+`roundValue` helper that snaps any raw number to the
+nearest valid step (clamped to [min, max]).
+
+The browser owns drag now — `useSlider` (the legacy JS
+drag pipeline) was deleted with the native `<input
+type="range">` migration. This file used to be 280 LOC.
 
 **Source** : `packages/ds/src/composables/SliderField/slider-field.composable.ts`
 

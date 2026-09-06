@@ -46,19 +46,35 @@ const walk = (dir, filter, acc = []) => {
 /** Les lignes `@description` de la banniere qui precede immediatement le symbole. */
 const descriptionAbove = (source, index) => {
     const before = source.slice(0, index)
-    const open = before.lastIndexOf('/*****')
-    const close = before.lastIndexOf('***/')
+
+    // ⛔ Deux styles de commentaire coexistent dans ce dossier : la banniere
+    // `/***** … *****/` du depot, et le JSDoc `/** … */` classique. Ma
+    // premiere version ne cherchait que la premiere et rapportait « aucune
+    // description » sur des symboles PARFAITEMENT documentes — Masonry,
+    // QrCode et NumberFormat ecrivent tous en JSDoc. Un generateur qui ne
+    // voit qu'un style fabrique un faux manque, ce qui est exactement le
+    // genre d'erreur que ce ticket cherche a eviter.
+    const open = Math.max(before.lastIndexOf('/*****'), before.lastIndexOf('/**\n'), before.lastIndexOf('/** '))
+    const close = Math.max(before.lastIndexOf('***/'), before.lastIndexOf('*/'))
     if (open === -1 || close < open) return null
     // Rien d'autre que du blanc entre la banniere et le symbole.
     if (before.slice(close + 4).trim().length) return null
 
     const body = before.slice(open, close)
 
+    // ⛔ On PRESERVE les retours a la ligne. Ma premiere version joignait
+    // tout avec des espaces : les listes numerotees et les blocs `@example`
+    // se retrouvaient ecrases en un seul paragraphe illisible (mesure sur
+    // `bucketFill`, dont l'algorithme en 4 etapes devenait une phrase de six
+    // lignes). Markdown recolle les retours simples de toute facon ; ceux qui
+    // portent une structure survivent.
     const clean = (chunk) => chunk
         .split('\n')
         .map((l) => l.replace(/^\s*\*+\s?/, '').trimEnd())
-        .filter((l) => l && !/^\*+$/.test(l))
-        .join(' ')
+        .filter((l, i, arr) => !/^\*+$/.test(l) && !(l === '' && arr[i - 1] === ''))
+        .join('\n')
+        .replace(/\n@example\s*/g, '\n\n**Exemple**\n\n')
+        .replace(/\n{3,}/g, '\n\n')
         .trim()
 
     // Forme canonique du depot : des paragraphes `@description`.
@@ -67,15 +83,19 @@ const descriptionAbove = (source, index) => {
     }
 
     // ⛔ Toutes les bannieres ne suivent pas cette forme — beaucoup ecrivent
-    // en prose sous un titre. On prend alors le corps SANS sa premiere ligne
-    // (le titre, qui repete le nom du symbole), plutot que de laisser le
-    // symbole sans description alors que le code en porte une.
+    // en prose. Deux cas a distinguer :
+    //
+    //   - banniere du depot `/***** … *****/` : sa premiere ligne est un
+    //     TITRE qui repete le nom du symbole, on la saute ;
+    //   - JSDoc `/** … */` : la premiere ligne est deja de la prose, la
+    //     sauter mangerait le debut de la description.
+    const isRepoBanner = body.startsWith('/*****')
     const lines = body.split('\n').slice(1)
     const firstMeaningful = lines.findIndex((l) => clean(l))
     if (firstMeaningful === -1) return null
 
-    const withoutTitle = lines.slice(firstMeaningful + 1)
-    const prose = clean(withoutTitle.join('\n'))
+    const kept = isRepoBanner ? lines.slice(firstMeaningful + 1) : lines.slice(firstMeaningful)
+    const prose = clean(kept.join('\n'))
 
     return prose ? [ prose ] : null
 }

@@ -13,7 +13,11 @@
 export function useParallaxRuntime (options: IUseParallaxRuntimeOptions)
 ```
 
-Headless runtime for the enriched OrigamParallax. Maintains a registry of layers, tracks scroll progress / mouse-ratio, decides between the CSS-first scroll-driven path and a JS rAF fallback, honours `prefers-reduced-motion`, and emits enter / leave / progress hooks via the options bag.
+Headless runtime for the enriched OrigamParallax. Maintains a registry
+of layers, tracks scroll progress / mouse-ratio, decides between the
+CSS-first scroll-driven path and a JS rAF fallback, honours
+`prefers-reduced-motion`, and emits enter / leave / progress hooks via
+the options bag.
 
 **Source** : `packages/ds/src/composables/Parallax/parallax.composable.ts`
 

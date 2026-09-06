@@ -13,9 +13,24 @@
 export function useTextareaRich(options: IUseTextareaRichOptions)
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/TextareaField/textarea-field-rich.composable.ts`, puis regenerer.
+Owns the runtime contract of the rich-text textarea:
+
+ - mounts a `contenteditable` host (caller binds the returned ref);
+ - applies formatting commands via `document.execCommand` (the simplest
+   contenteditable API still supported by all evergreen browsers — we
+   deliberately avoid Selection / Range hand-rolling to keep the
+   surface tiny without an external library);
+ - tracks the active formatting state at the caret via
+   `document.queryCommandState` for the toolbar UI;
+ - sanitises every emit so the consumer's `v-model` can never carry
+   a `<script>` or a `javascript:` href;
+ - registers Cmd/Ctrl keyboard shortcuts (B / I / U / K / E and the
+   list shortcuts) on the host.
+
+`execCommand` is "deprecated" by spec but stays the only first-party
+way to do this without a 100 KB library; we accept the tradeoff and
+document the limitations (no IME-safe undo stack, no granular
+collaborative cursor) downstream.
 
 **Source** : `packages/ds/src/composables/TextareaField/textarea-field-rich.composable.ts`
 

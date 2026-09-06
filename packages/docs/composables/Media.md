@@ -13,9 +13,11 @@
 export function shouldSuppressAutoplay (): boolean
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Media/use-media-player.composable.ts`, puis regenerer.
+Reduced-motion check exported for the host components — kept here
+so the single source of truth for "should autoplay run?" stays in
+the composable, even when the decision is made by the SFC at
+attribute resolution time (i.e. before the composable's onMounted
+has fired).
 
 **Source** : `packages/ds/src/composables/Media/use-media-player.composable.ts`
 
@@ -27,9 +29,26 @@ export function shouldSuppressAutoplay (): boolean
 export function useMediaPlayer (options: IUseMediaPlayerOptions =
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Media/use-media-player.composable.ts`, puis regenerer.
+Headless media-player composable. Owns the media-shared runtime
+state (`playing`, `paused`, `currentTime`, `duration`, `buffered`,
+`volume`, `muted`, `playbackRate`, `ready`, `loading`, `error`,
+`remoteAvailable`, `remoteState`) and exposes imperative methods
+that wrap the standard `HTMLMediaElement` API.
+
+Works for BOTH `HTMLVideoElement` and `HTMLAudioElement` — the
+composable types its element ref against `HTMLMediaElement`, the
+common ancestor. `useVideoPlayer` and `useAudioPlayer` layer their
+own specialisations on top of this base.
+
+**Exemple**
+
+```ts
+const audioRef = ref<HTMLAudioElement | null>(null)
+const { state, methods } = useMediaPlayer({ mediaRef: audioRef })
+
+// template:
+// <audio ref="audioRef" src="…" />
+```
 
 **Source** : `packages/ds/src/composables/Media/use-media-player.composable.ts`
 

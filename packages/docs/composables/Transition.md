@@ -13,7 +13,11 @@
 export function useCssTransition (props: ITransitionProps)
 ```
 
-CSS-driven transition wiring (leaveAbsolute / hideOnLeave / origin hooks) for a plain `<transition>` / `<transition-group>` — delegates the disabled/name resolution to `useTransition` rather than duplicating it. `useWindowTransition` is the height-tracking sibling of this hook and lives in its own file.
+CSS-driven transition wiring (leaveAbsolute / hideOnLeave / origin
+hooks) for a plain `<transition>` / `<transition-group>` — delegates
+the disabled/name resolution to `useTransition` rather than
+duplicating it. `useWindowTransition` is the height-tracking sibling
+of this hook and lives in its own file.
 
 **Source** : `packages/ds/src/composables/Transition/cssTransition.composable.ts`
 
@@ -25,7 +29,11 @@ CSS-driven transition wiring (leaveAbsolute / hideOnLeave / origin hooks) for a 
 export function useTransition (props: ITransitionProps)
 ```
 
-Base transition-name resolver: turns the `disabled` prop into an empty transition name so the `<transition>` / `<transition-group>` wrapper effectively no-ops without the consumer having to branch. `useCssTransition` and `useWindowTransition` both delegate to this hook rather than duplicating the disabled/name derivation.
+Base transition-name resolver: turns the `disabled` prop into an
+empty transition name so the `<transition>` / `<transition-group>`
+wrapper effectively no-ops without the consumer having to branch.
+`useCssTransition` and `useWindowTransition` both delegate to this
+hook rather than duplicating the disabled/name derivation.
 
 **Source** : `packages/ds/src/composables/Transition/transition.composable.ts`
 
@@ -37,7 +45,12 @@ Base transition-name resolver: turns the `disabled` prop into an empty transitio
 export function useWindowTransition (props: ITransitionProps)
 ```
 
-Height-tracking transition wiring for a windowed container (e.g. a multi-step form / carousel) — measures and freezes the container height across the transition so intermediate steps don't jump. Delegates the disabled/name resolution to `useTransition` rather than duplicating it. `useCssTransition` is the CSS-only sibling of this hook and lives in its own file.
+Height-tracking transition wiring for a windowed container (e.g. a
+multi-step form / carousel) — measures and freezes the container
+height across the transition so intermediate steps don't jump.
+Delegates the disabled/name resolution to `useTransition` rather
+than duplicating it. `useCssTransition` is the CSS-only sibling of
+this hook and lives in its own file.
 
 **Source** : `packages/ds/src/composables/Transition/windowTransition.composable.ts`
 

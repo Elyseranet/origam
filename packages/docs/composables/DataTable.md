@@ -13,7 +13,11 @@
 export function createGroupBy (props: IDataTableGroupProps)
 ```
 
-Reads the `groupBy` prop into the v-model ref `provideGroupBy` expects. Kept alongside `useGroupBy` / `provideGroupBy` in this file — all three address the same `ORIGAM_DATA_TABLE_GROUP_KEY` contract. `useGroupedItems` (own file) is the pure item-grouping sibling and does not depend on any of the three.
+Reads the `groupBy` prop into the v-model ref `provideGroupBy`
+expects. Kept alongside `useGroupBy` / `provideGroupBy` in this file
+— all three address the same `ORIGAM_DATA_TABLE_GROUP_KEY` contract.
+`useGroupedItems` (own file) is the pure item-grouping sibling and
+does not depend on any of the three.
 
 **Source** : `packages/ds/src/composables/DataTable/group.composable.ts`
 
@@ -25,7 +29,13 @@ Reads the `groupBy` prop into the v-model ref `provideGroupBy` expects. Kept alo
 export function createHeaders ( props: IDataTableHeaderProps, options?:
 ```
 
-Normalises the raw `headers` prop (or infers columns from the first item) into the internal multi-row header + column + sort/filter function maps, and provides `ORIGAM_DATA_TABLE_HEADERS_KEY` for `useHeaders` consumers down the tree. Kept alongside `useHeaders` in this file — the two address the same contract. `useHeadersCell` (own file) is the per-cell sort-icon sibling and depends on `useSort` instead, not on this injection.
+Normalises the raw `headers` prop (or infers columns from the first
+item) into the internal multi-row header + column + sort/filter
+function maps, and provides `ORIGAM_DATA_TABLE_HEADERS_KEY` for
+`useHeaders` consumers down the tree. Kept alongside `useHeaders` in
+this file — the two address the same contract. `useHeadersCell` (own
+file) is the per-cell sort-icon sibling and depends on `useSort`
+instead, not on this injection.
 
 **Source** : `packages/ds/src/composables/DataTable/headers.composable.ts`
 
@@ -37,7 +47,12 @@ Normalises the raw `headers` prop (or infers columns from the first item) into t
 export function createPagination (props: IDataTablePaginationProps)
 ```
 
-Reads the `page` / `itemsPerPage` props into the v-model refs `providePagination` expects. Kept alongside `usePagination` / `providePagination` in this file — all three address the same `ORIGAM_DATA_TABLE_PAGINATION_KEY` contract. `usePaginatedItems` (own file) is the pure item-slicing sibling and does not depend on any of the three.
+Reads the `page` / `itemsPerPage` props into the v-model refs
+`providePagination` expects. Kept alongside `usePagination` /
+`providePagination` in this file — all three address the same
+`ORIGAM_DATA_TABLE_PAGINATION_KEY` contract. `usePaginatedItems`
+(own file) is the pure item-slicing sibling and does not depend on
+any of the three.
 
 **Source** : `packages/ds/src/composables/DataTable/pagination.composable.ts`
 
@@ -49,7 +64,12 @@ Reads the `page` / `itemsPerPage` props into the v-model refs `providePagination
 export function createSort (props: IDataTableSortProps)
 ```
 
-Reads the `sortBy` / `mustSort` / `multiSort` props into the v-model + refs shape `provideSort` expects. Kept alongside `useSort` / `provideSort` in this file — all three address the same `ORIGAM_DATA_TABLE_SORT_KEY` contract. `useSortedItems` (own file) is the pure item-sorting sibling and does not depend on any of the three.
+Reads the `sortBy` / `mustSort` / `multiSort` props into the v-model
++ refs shape `provideSort` expects. Kept alongside `useSort` /
+`provideSort` in this file — all three address the same
+`ORIGAM_DATA_TABLE_SORT_KEY` contract. `useSortedItems` (own file)
+is the pure item-sorting sibling and does not depend on any of the
+three.
 
 **Source** : `packages/ds/src/composables/DataTable/sort.composable.ts`
 
@@ -75,7 +95,10 @@ export function provideExpanded (props: IDataTableExpandProps): IDataTableProvid
 export function provideGroupBy (options:
 ```
 
-Provider-side hook: derives `sortByWithGroups` plus the `toggleGroup` / `isGroupOpen` / `extractRows` helpers, and provides `ORIGAM_DATA_TABLE_GROUP_KEY` for `useGroupBy` consumers down the tree.
+Provider-side hook: derives `sortByWithGroups` plus the
+`toggleGroup` / `isGroupOpen` / `extractRows` helpers, and provides
+`ORIGAM_DATA_TABLE_GROUP_KEY` for `useGroupBy` consumers down the
+tree.
 
 **Source** : `packages/ds/src/composables/DataTable/group.composable.ts`
 
@@ -87,7 +110,10 @@ Provider-side hook: derives `sortByWithGroups` plus the `toggleGroup` / `isGroup
 export function providePagination (options:
 ```
 
-Provider-side hook: derives `startIndex` / `stopIndex` / `pageCount` plus the `nextPage` / `prevPage` / `setPage` / `setItemsPerPage` mutators, and provides `ORIGAM_DATA_TABLE_PAGINATION_KEY` for `usePagination` consumers down the tree.
+Provider-side hook: derives `startIndex` / `stopIndex` / `pageCount`
+plus the `nextPage` / `prevPage` / `setPage` / `setItemsPerPage`
+mutators, and provides `ORIGAM_DATA_TABLE_PAGINATION_KEY` for
+`usePagination` consumers down the tree.
 
 **Source** : `packages/ds/src/composables/DataTable/pagination.composable.ts`
 
@@ -113,7 +139,10 @@ export function provideSelection ( props: IDataTableSelectProps,
 export function provideSort (options:
 ```
 
-Provider-side hook: wires `toggleSort` / `isSorted` on top of the `sortBy` / `mustSort` / `multiSort` refs (typically built by `createSort`) and provides `ORIGAM_DATA_TABLE_SORT_KEY` for `useSort` consumers down the tree.
+Provider-side hook: wires `toggleSort` / `isSorted` on top of the
+`sortBy` / `mustSort` / `multiSort` refs (typically built by
+`createSort`) and provides `ORIGAM_DATA_TABLE_SORT_KEY` for `useSort`
+consumers down the tree.
 
 **Source** : `packages/ds/src/composables/DataTable/sort.composable.ts`
 
@@ -167,7 +196,9 @@ export function useExpanded ()
 export function useGroupBy ()
 ```
 
-Reads the injected group state provided by `provideGroupBy`. Independent from `useGroupedItems` (own file) — that hook groups a plain items array and never touches this injection.
+Reads the injected group state provided by `provideGroupBy`.
+Independent from `useGroupedItems` (own file) — that hook groups a
+plain items array and never touches this injection.
 
 **Source** : `packages/ds/src/composables/DataTable/group.composable.ts`
 
@@ -179,7 +210,12 @@ Reads the injected group state provided by `provideGroupBy`. Independent from `u
 export function useGroupedItems<T extends IDataTableGroupableItem> ( items: ComputedRef<Array<T>>, groupBy: Ref<Array<IDataTableSortItem>>, opened: Ref<Set<string>> )
 ```
 
-Pure item-grouping hook: builds the grouped tree (via `groupItems`) and flattens it back to a display list honouring `opened` groups. Independent from `useGroupBy` / `provideGroupBy` / `createGroupBy` (own file) — it consumes `groupBy` / `opened` refs as plain arguments, never the `ORIGAM_DATA_TABLE_GROUP_KEY` injection those manage.
+Pure item-grouping hook: builds the grouped tree (via `groupItems`)
+and flattens it back to a display list honouring `opened` groups.
+Independent from `useGroupBy` / `provideGroupBy` / `createGroupBy`
+(own file) — it consumes `groupBy` / `opened` refs as plain
+arguments, never the `ORIGAM_DATA_TABLE_GROUP_KEY` injection those
+manage.
 
 **Source** : `packages/ds/src/composables/DataTable/groupedItems.composable.ts`
 
@@ -191,7 +227,9 @@ Pure item-grouping hook: builds the grouped tree (via `groupItems`) and flattens
 export function useHeaders ()
 ```
 
-Reads the injected headers state provided by `createHeaders`. Independent from `useHeadersCell` (own file) — that hook resolves a per-cell sort icon via `useSort` and never touches this injection.
+Reads the injected headers state provided by `createHeaders`.
+Independent from `useHeadersCell` (own file) — that hook resolves a
+per-cell sort icon via `useSort` and never touches this injection.
 
 **Source** : `packages/ds/src/composables/DataTable/headers.composable.ts`
 
@@ -203,7 +241,11 @@ Reads the injected headers state provided by `createHeaders`. Independent from `
 export function useHeadersCell (props: IHeaderCellProps)
 ```
 
-Resolves which sort icon (asc/desc) a header cell should show for the current `sortBy` state — reads `useSort`'s injection, NOT the `ORIGAM_DATA_TABLE_HEADERS_KEY` injection `useHeaders` (own file) manages, so the two hooks are independent despite living in the same domain folder.
+Resolves which sort icon (asc/desc) a header cell should show for
+the current `sortBy` state — reads `useSort`'s injection, NOT the
+`ORIGAM_DATA_TABLE_HEADERS_KEY` injection `useHeaders` (own file)
+manages, so the two hooks are independent despite living in the
+same domain folder.
 
 **Source** : `packages/ds/src/composables/DataTable/headersCell.composable.ts`
 
@@ -229,7 +271,12 @@ export function useOptions (
 export function usePaginatedItems<T> (options:
 ```
 
-Pure item-slicing hook: slices a plain items array to the current `[startIndex, stopIndex)` window and emits `update:currentItems`. Independent from `usePagination` / `providePagination` / `createPagination` (own file) — it consumes `startIndex` / `stopIndex` / `itemsPerPage` refs as plain arguments, never the `ORIGAM_DATA_TABLE_PAGINATION_KEY` injection those manage.
+Pure item-slicing hook: slices a plain items array to the current
+`[startIndex, stopIndex)` window and emits `update:currentItems`.
+Independent from `usePagination` / `providePagination` /
+`createPagination` (own file) — it consumes `startIndex` / `stopIndex`
+/ `itemsPerPage` refs as plain arguments, never the
+`ORIGAM_DATA_TABLE_PAGINATION_KEY` injection those manage.
 
 **Source** : `packages/ds/src/composables/DataTable/paginatedItems.composable.ts`
 
@@ -241,7 +288,9 @@ Pure item-slicing hook: slices a plain items array to the current `[startIndex, 
 export function usePagination ()
 ```
 
-Reads the injected pagination state provided by `providePagination`. Independent from `usePaginatedItems` (own file) — that hook slices a plain items array and never touches this injection.
+Reads the injected pagination state provided by `providePagination`.
+Independent from `usePaginatedItems` (own file) — that hook slices a
+plain items array and never touches this injection.
 
 **Source** : `packages/ds/src/composables/DataTable/pagination.composable.ts`
 
@@ -267,7 +316,9 @@ export function useSelection ()
 export function useSort ()
 ```
 
-Reads the injected sort state provided by `provideSort`. Independent from `useSortedItems` (own file) — that hook sorts a plain items array and never touches this injection.
+Reads the injected sort state provided by `provideSort`.
+Independent from `useSortedItems` (own file) — that hook sorts a
+plain items array and never touches this injection.
 
 **Source** : `packages/ds/src/composables/DataTable/sort.composable.ts`
 
@@ -279,7 +330,11 @@ Reads the injected sort state provided by `provideSort`. Independent from `useSo
 export function useSortedItems<T extends IInternalItem> ( props:
 ```
 
-Pure item-sorting hook: applies `sortBy` (+ optional custom compare functions) to a plain items array. Independent from `useSort` / `provideSort` / `createSort` (own file) — it consumes a `sortBy` ref as a plain argument, never the `ORIGAM_DATA_TABLE_SORT_KEY` injection those manage.
+Pure item-sorting hook: applies `sortBy` (+ optional custom compare
+functions) to a plain items array. Independent from `useSort` /
+`provideSort` / `createSort` (own file) — it consumes a `sortBy` ref
+as a plain argument, never the `ORIGAM_DATA_TABLE_SORT_KEY`
+injection those manage.
 
 **Source** : `packages/ds/src/composables/DataTable/sortedItems.composable.ts`
 

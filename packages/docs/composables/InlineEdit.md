@@ -13,9 +13,27 @@
 export function useInlineEdit ( modelValue: Ref<string | number> | ComputedRef<string | number>, options: MaybeRefOrGetter<IUseInlineEditOptions> =
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/InlineEdit/inline-edit.composable.ts`, puis regenerer.
+Headless edit-in-place state machine.
+
+The composable owns the four states — IDLE / EDITING / VALIDATING /
+ERROR — and the four transitions: `edit`, `confirm`, `cancel`,
+`setValue`. It is **input-agnostic** (no DOM references) and only
+reads the v-model value through the passed-in `Ref`. Components
+plug their `<input>` value/oninput on the returned `draft` ref and
+forward keyboard events to `confirm` / `cancel`.
+
+**Exemple**
+
+```ts
+const model = ref('hello')
+const {
+    isEditing, draft, error, isPending,
+    edit, confirm, cancel, setValue
+} = useInlineEdit(model, {
+    validate: (v) => v.length >= 3 || 'Min 3 chars',
+    onConfirm: (v) => (model.value = v),
+})
+```
 
 **Source** : `packages/ds/src/composables/InlineEdit/inline-edit.composable.ts`
 

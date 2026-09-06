@@ -13,9 +13,28 @@
 export function useVideoPlayer (options: IUseVideoPlayerOptions =
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Video/video-player.composable.ts`, puis regenerer.
+Headless video player composable. Composes the media-shared
+`useMediaPlayer` base and layers on the video-only state
+(`fullscreen`, `pip`) + methods (`enterFullscreen`,
+`exitFullscreen`, `toggleFullscreen`, `requestPip`, `exitPip`,
+`togglePip`) + native event bindings
+(`enterpictureinpicture` / `leavepictureinpicture` /
+document-level `fullscreenchange`).
+
+The composable does NOT mount the `<video>` element — consumers pass
+a ref (or accept the one the composable creates) and bind it on the
+`<video>` tag themselves. This keeps the headless / styled split
+clean: `<OrigamVideo>` is just a default skin on top of this state.
+
+**Exemple**
+
+```ts
+const videoRef = ref<HTMLVideoElement | null>(null)
+const { state, methods } = useVideoPlayer({ videoRef, autoplay: false })
+
+// template:
+// <video ref="videoRef" src="…" />
+```
 
 **Source** : `packages/ds/src/composables/Video/video-player.composable.ts`
 
