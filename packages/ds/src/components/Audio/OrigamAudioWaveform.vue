@@ -2,7 +2,8 @@
 	<svg
 			v-if="hasPeaks"
 			:id="id"
-			class="origam-audio-waveform"
+			:class="rootClasses"
+			:style="rootStyles"
 			:viewBox="WAVEFORM_VIEW_BOX"
 			preserveAspectRatio="none"
 			aria-hidden="true"
@@ -24,7 +25,7 @@
 		lang="ts"
 		setup
 >
-	import { computed } from 'vue'
+	import { computed, StyleValue } from 'vue'
 
 	import { clamp } from '../../utils/Commons/commons.util'
 
@@ -60,6 +61,9 @@
 	 * (vue/no-parsing-error). Les declarer dans ICommonsComponentProps
 	 * suffit — le consommateur les passe, Vue les pose.
 	 ********************************************************/
+	const rootClasses = computed(() => [ 'origam-audio-waveform', props.class ])
+	const rootStyles = computed<StyleValue>(() => props.style as StyleValue)
+
 	const hasPeaks = computed(() => Array.isArray(props.peaks) && props.peaks.length > 0)
 
 	/*********************************************************

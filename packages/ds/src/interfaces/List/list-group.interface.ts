@@ -16,7 +16,23 @@ import type { IRoundedProps } from '../Commons/rounded.interface'
 
 import type { TIcon } from '../../types/Icon/icon.type'
 
-export interface IListGroupProps extends ITagProps, ICommonsComponentProps, IColorProps, IBgColorProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IAdjacentProps, IActiveProps, IHoverProps {
+/*********************************************************
+ * IListGroupProps
+ *
+ * @description
+ * ⛔ `active` est retire d'`IActiveProps` — pas oublie, ECARTE. La ligne
+ * d'activation du groupe lie `:active="isOpen"` en dur : son etat actif EST
+ * son etat ouvert, par construction. Un consommateur qui passait `active`
+ * n'obtenait donc rien, et rien ne le lui disait.
+ *
+ * @description
+ * `activeClass` reste, lui : il est bien consomme.
+ *
+ * @description
+ * Pour piloter l'ouverture, c'est `v-model` sur le groupe qu'il faut
+ * utiliser. Issue #550, critere C1.
+ ********************************************************/
+export interface IListGroupProps extends ITagProps, ICommonsComponentProps, IColorProps, IBgColorProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IAdjacentProps, Omit<IActiveProps, 'active'>, IHoverProps {
     collapseIcon?: TIcon
     expandIcon?: TIcon
     fluid?: boolean

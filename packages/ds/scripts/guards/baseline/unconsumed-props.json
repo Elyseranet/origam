@@ -1,8 +1,6 @@
 [
     "OrigamAudio.tag",
     "OrigamAudio.waveformColor",
-    "OrigamAudioWaveform.class",
-    "OrigamAudioWaveform.style",
     "OrigamBadge.disabled",
     "OrigamBottomNav.location",
     "OrigamCard.loadingText",
@@ -22,9 +20,6 @@
     "OrigamInput.label",
     "OrigamLazy.disabled",
     "OrigamListChildren.returnObject",
-    "OrigamListGroup.active",
-    "OrigamListGroup.appendAvatar",
-    "OrigamListGroup.prependAvatar",
     "OrigamMessages.active",
     "OrigamMessages.disabled",
     "OrigamMessages.elevation",

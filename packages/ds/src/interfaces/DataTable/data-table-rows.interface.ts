@@ -24,7 +24,22 @@ import type {
  * `interfaces/DataTable/row.interface.ts` under issue #364, which used
  * to hold two distinct component surfaces (Rows / Row) in one file.
  ********************************************************/
-export interface IDataTableRowsProps extends ICommonsComponentProps, ILoaderProps, IDisplayProps {
+/*********************************************************
+ * IDataTableRowsProps
+ *
+ * @description
+ * ⛔ N'etend PAS `ICommonsComponentProps` : `<OrigamDataTableRows>` rend un
+ * FRAGMENT — plusieurs `<tr>` cote a cote, sans racine unique. `id`, `class`
+ * et `style` n'ont aucun element sur lequel atterrir, et Vue n'a rien a quoi
+ * appliquer un fallthrough.
+ *
+ * @description
+ * Les declarer etait pire que de les omettre : une prop declaree sort de
+ * `$attrs`, donc un consommateur qui ecrivait `class="x"` perdait sa classe
+ * en silence. Meme cas structurel qu'`<OrigamDefaultsProvider>`, dont le
+ * template est un `<slot/>` nu. Issue #550, critere C1.
+ ********************************************************/
+export interface IDataTableRowsProps extends ILoaderProps, IDisplayProps {
     hideNoData?: boolean
     items?: Array<IDataTableItem | IDataTableGroup> | readonly (IDataTableItem | IDataTableGroup)[]
     noDataText?: string

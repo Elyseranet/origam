@@ -15,7 +15,9 @@
 					>
 						<origam-list-item
 								:active="isOpen"
+								:append-avatar="appendAvatar"
 								:append-icon="appendActivatorIcon"
+								:prepend-avatar="prependAvatar"
 								:prepend-icon="prependActivatorIcon"
 								:title="title"
 								:value="value"
