@@ -209,7 +209,7 @@
 			max-height: 18px;
 			width: 45px;
 			margin: 2px 4px;
-			border-radius: 2px;
+			border-radius: var(--origam-color-picker__swatches__color---border-radius, 2px);
 			-webkit-user-select: none;
 			user-select: none;
 			overflow: hidden;
