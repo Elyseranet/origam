@@ -1,4 +1,3 @@
-import type { IAudioProps } from '../Audio/audio-player.interface'
 import type { IBorderProps } from '../Commons/border.interface'
 import type { IBox } from '../Commons/box.interface'
 import type {
@@ -31,7 +30,28 @@ import type { Ref } from 'vue'
 // `--color` from the design tokens (added in 2931d43); declaring the
 // props here lets the consumer override them per-instance via inline
 // styles, matching every other coloured component.
-export interface IParallaxProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, IDimensionProps, IAudioProps, IUseAudioProps {
+/*********************************************************
+ * IParallaxProps
+ *
+ * @description
+ * ⛔ Cette interface etendait `IAudioProps`, la surface COMPLETE
+ * d'`<OrigamAudio>` : `playlist`, `tracks`, `waveform`, `controls`, `cover`,
+ * `artist`, `album`, `playbackRates`… **29 props declarees et jamais lues**,
+ * a elles seules un quart de la baseline `unconsumed-props` du depot.
+ *
+ * @description
+ * `<OrigamParallax>` a bien un `<audio>`, mais minimal : une bande-son de
+ * fond, pilotee par la seule URL `audio` et le booleen `playAudio`. C'est
+ * exactement ce que `IUseAudioProps` declare, et c'est tout ce que
+ * `useAudio(props)` lit — verifie : le composable ne touche que `props.audio`
+ * et `props.playAudio`.
+ *
+ * @description
+ * L'`extends IAudioProps` est donc retire. Rupture de type pour qui passait
+ * une de ces 29 props — mais elle ne faisait deja rien, silencieusement.
+ * Issue #550, critere C1.
+ ********************************************************/
+export interface IParallaxProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, IDimensionProps, IUseAudioProps {
     /**
      * @deprecated Use `duration` instead. `animationDuration` is kept as a
      * silent alias for backwards-compat and will be removed in v3.0.0.

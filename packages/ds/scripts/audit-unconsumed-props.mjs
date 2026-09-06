@@ -415,17 +415,55 @@ function indexComposables () {
     }
 }
 
+/*********************************************************
+ * fnBody
+ *
+ * @description
+ * ⛔ Cette fonction prenait la PREMIERE accolade apres le nom. Faux des que la
+ * signature en contient une : un second parametre destructure, ou son
+ * annotation de type inline. Sur
+ *
+ *     export function useActivator (props: IActivatorProps, {isActive, isTop}: {…})
+ *
+ * elle extrayait l'objet `{isActive, isTop}` au lieu du corps, donc
+ * `scanPropReads` n'y voyait AUCUN `props.x` et le composable etait indexe
+ * comme ne lisant rien.
+ *
+ * @description
+ * Consequence mesuree : les 13 props d'`OrigamOverlay` — `activator`,
+ * `openOnHover`, `openOnClick`, `location`, `offset`, `origin`… — etaient
+ * comptees mortes alors qu'`useActivator`, `useLocationStrategies` et
+ * `useLazy` les lisent toutes. Un quart de la baseline C1 etait faux, et
+ * « corriger » ces composants en retirant leurs props les aurait casses.
+ *
+ * @description
+ * On saute donc d'abord la liste de parametres, en equilibrant les
+ * parentheses, puis on prend l'accolade qui suit.
+ ********************************************************/
 function fnBody (src, from) {
-    const open = src.indexOf('{', from)
-    if (open < 0) return ''
-    let depth = 1
-    let i = open + 1
-    while (i < src.length && depth > 0) {
-        if (src[i] === '{') depth++
-        else if (src[i] === '}') depth--
-        i++
+    const paren = src.indexOf('(', from)
+    if (paren < 0) return ''
+
+    let depth = 0
+    let i = paren
+
+    for (; i < src.length; i++) {
+        if (src[i] === '(') depth++
+        else if (src[i] === ')') { depth--; if (depth === 0) { i++; break } }
     }
-    return src.slice(open, i)
+
+    const open = src.indexOf('{', i)
+    if (open < 0) return ''
+
+    depth = 1
+    let j = open + 1
+    while (j < src.length && depth > 0) {
+        if (src[j] === '{') depth++
+        else if (src[j] === '}') depth--
+        j++
+    }
+
+    return src.slice(open, j)
 }
 
 const COMPOSABLE_KEYS = new Map()
