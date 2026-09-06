@@ -85,12 +85,7 @@
 						>
 							<slot
 									name="tile-label"
-									:color="tile.color"
-									:index="tile.index"
-									:name="tile.label"
-									:value="tile.value"
-									:x="tile.cx"
-									:y="tile.cy"
+									v-bind="{ color: tile.color, index: tile.index, name: tile.label, value: tile.value, x: tile.cx, y: tile.cy }"
 							>{{ tile.label }}</slot>
 						</text>
 					</g>
