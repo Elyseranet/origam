@@ -397,8 +397,8 @@
 			width: 15px;
 			height: 15px;
 			background: transparent;
-			border-radius: 50%;
-			box-shadow: 0 0 0 1.5px #fff, inset 0 0 1px 1.5px #0000004d;
+			border-radius: var(--origam-color-picker__canvas__dot---border-radius, 50%);
+			box-shadow: var(--origam-color-picker__canvas__dot---box-shadow, 0 0 0 1.5px #fff, inset 0 0 1px 1.5px #0000004d);
 
 			&--disabled {
 				box-shadow: 0 0 0 1.5px #ffffffb3, inset 0 0 1px 1.5px #0000004d

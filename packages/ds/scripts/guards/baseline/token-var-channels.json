@@ -324,7 +324,6 @@
     "packages/ds/src/components/Chip/OrigamChip.vue::--origam-chip__close---margin-inline-end",
     "packages/ds/src/components/Chip/OrigamChip.vue::--origam-chip__close---margin-inline-start",
     "packages/ds/src/components/Code/OrigamCode.vue::--origam-code---max-height",
-    "packages/ds/src/components/ColorPicker/OrigamColorPickerEdit.vue::--origam-color-picker-edit__label---font-size",
     "packages/ds/src/components/ColorPicker/OrigamColorPickerPreview.vue::--origam-color-picker-color-hsv",
     "packages/ds/src/components/CommandPalette/OrigamCommandPalette.vue::--origam-color__action--neutral---bgSubtle",
     "packages/ds/src/components/CommandPalette/OrigamCommandPalette.vue::--origam-color__surface---elevated",

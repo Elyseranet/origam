@@ -297,7 +297,8 @@
 		&__controls {
 			display: flex;
 			flex-direction: column;
-			padding: 16px;
+			padding-block: var(--origam-color-picker__controls---padding-block, 16px);
+			padding-inline: var(--origam-color-picker__controls---padding-inline, 16px);
 		}
 
     &--is-rtl {
