@@ -56,7 +56,24 @@ export function createLocale (options?: ILocaleOptions & IRtlOptions) {
  * is responsible for its own fallback (issue #444, `OrigamLoader`).
  ********************************************************/
 export function useLocale (strict?: true): ILocaleInstance
+/*********************************************************
+ * useLocale (surcharge `strict: false`)
+ *
+ * @description
+ * Variante non stricte : retourne `null` plutot que de lever quand aucun
+ * `createOrigam()` n'est installe. Voir la banniere au-dessus de la
+ * premiere surcharge pour le comportement complet et son unique usage
+ * legitime (#444, `OrigamLoader`).
+ ********************************************************/
 export function useLocale (strict: false): ILocaleInstance | null
+/*********************************************************
+ * useLocale (implementation)
+ *
+ * @description
+ * Lit l'instance de locale injectee sous `ORIGAM_LOCALE_KEY` ; leve si
+ * absente et `strict` (defaut `true`), retourne `null` sinon. Voir la
+ * banniere au-dessus de la premiere surcharge pour le detail du contrat.
+ ********************************************************/
 export function useLocale (strict: boolean = true): ILocaleInstance | null {
     const locale = inject(ORIGAM_LOCALE_KEY, null)
 

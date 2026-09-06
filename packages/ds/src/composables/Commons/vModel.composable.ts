@@ -12,6 +12,25 @@ import { computed, MaybeRefOrGetter, ref, Ref, toRaw, toValue, watch } from 'vue
 
 /*********************************************************
  * useVModel
+ *
+ * @description
+ * V-model generique pour n'importe quelle prop (pas seulement
+ * `modelValue`) : detecte si `prop` est CONTROLE (le parent a fourni a la
+ * fois la prop et son `onUpdate:{prop}`) ou NON CONTROLE (le composant
+ * gere son propre etat interne, seede depuis `props[prop]` ou
+ * `defaultValue`). `transformIn`/`transformOut` convertissent entre la
+ * forme externe (celle de la prop) et la forme interne utilisee par le
+ * composant — identite par defaut.
+ *
+ * @description
+ * ⛔ Le seed non controle est lu PARESSEUSEMENT (au premier acces via
+ * `model`, pas a l'appel de `useVModel()`) — voir la banniere "THE
+ * UNCONTROLLED SEED IS READ LAZILY, NOT AT SETUP" juste en dessous : le
+ * meme piege ADR-005 que `useSelectLink`/`useValidation`/`useVirtual`,
+ * ici avec deux consequences (le seed lui-meme ET `defaultValue` passe en
+ * argument, qui doit etre un getter `() => props.xxx` pour rester
+ * theme-safe). `UNSEEDED` est un symbole distinct de `undefined`, qui est
+ * une valeur de modele legitime.
  ********************************************************/
 export function useVModel<
     Props extends object & { [key in Prop as `onUpdate:${Prop}`]?: TEventProp | undefined },

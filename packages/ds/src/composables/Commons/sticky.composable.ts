@@ -6,6 +6,21 @@ import type { CSSProperties } from 'vue'
 
 /*********************************************************
  * useSticky
+ *
+ * @description
+ * Cale `rootEl` en `sticky` manuel (via un listener `scroll` passif,
+ * pas la propriete CSS `position: sticky`) contre le layout ambiant
+ * (`layoutItemStyles.value.top`) : `isStuck` bascule entre `false`,
+ * `true`, `'top'` ou `'bottom'` selon la direction de scroll et la
+ * hauteur de l'element vs la fenetre, et `stickyStyles` traduit cet etat
+ * en declarations `top`/`bottom` inline.
+ *
+ * @description
+ * ⛔ `onScroll` lit `getComputedStyle(rootEl).getPropertyValue('--v-body-scroll-y')`
+ * — un nom de variable prefixe `--v-`, pas `--origam-`. Aucune regle CSS
+ * de ce depot ne declare cette custom property : `bodyScroll` vaut donc
+ * TOUJOURS `0` (`parseFloat(NaN) || 0`) en l'etat actuel du code, sauf si
+ * un consommateur externe la pose lui-meme sur `rootEl`.
  ********************************************************/
 export function useSticky ({rootEl, isSticky, layoutItemStyles}: ISticky) {
     const isStuck = shallowRef<boolean | 'top' | 'bottom'>(false)

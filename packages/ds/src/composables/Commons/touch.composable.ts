@@ -15,6 +15,24 @@ import { computed, onBeforeUnmount, onMounted, Ref, shallowRef } from 'vue'
 
 /*********************************************************
  * useTouch
+ *
+ * @description
+ * Geste tactile swipe-to-open/close pour un panneau ancre a un `position`
+ * (`left|right|top|bottom`, ex. Navigation Drawer) : ecoute
+ * `touchstart`/`touchmove`/`touchend` sur `window`, ne se declenche que si
+ * le doigt part depuis la zone de bord (`TOUCH_EDGE_ZONE_PX`) ou depuis
+ * le panneau deja ouvert, decide de la direction de drag (horizontal vs
+ * vertical) au premier depassement de `TOUCH_DRAG_THRESHOLD_PX`, et bascule
+ * `isActive` a la fin du geste selon la VELOCITE (fling, via
+ * `useVelocity`) ou a defaut selon `dragProgress > TOUCH_SETTLE_PROGRESS`.
+ *
+ * @description
+ * `dragStyles` emet une `transform: translate(...)` directement liee a
+ * `dragProgress` PENDANT le drag (`transition: none` pour suivre le doigt
+ * sans latence) — c'est au composant appelant de reprendre la transition
+ * normale une fois `isDragging` retombe a `false`. `touchless.value` a
+ * `true` desactive l'ouverture par swipe des `touchstart`, sans retirer
+ * les listeners.
  ********************************************************/
 export function useTouch ({isActive, isTemporary, width, touchless, position}: {
     isActive: Ref<boolean>

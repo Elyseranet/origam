@@ -24,6 +24,26 @@ import {
 
 /*********************************************************
  * useValidation
+ *
+ * @description
+ * Moteur de validation d'un champ : execute `props.rules` contre
+ * `validationValue`/`modelValue`, s'enregistre aupres du `OrigamForm`
+ * ambiant (`ORIGAM_FORM_KEY`) via `register`/`unregister`/`update`, et
+ * expose `isValid`/`isDirty`/`isPristine`/`errorMessages`/`validationClasses`.
+ * `validateOn` (`'input'|'blur'|'submit'|'lazy'`, ou heritee du form
+ * parent) pilote QUAND `validate()` se redeclenche automatiquement — via
+ * `useToggleScope` pour n'ecouter que les axes concernes.
+ *
+ * @description
+ * `isValid` peut valoir `undefined` (ni valide ni invalide) : c'est l'etat
+ * "pas encore juge" d'un champ vierge (`isPristine`) sans erreur interne
+ * ni mode `lazy` — a distinguer explicitement de `true`/`false` cote
+ * consommateur. Le `watch([isValid, errorMessages], …)` qui notifie le
+ * form est deliberement differe a `onMounted` (voir la banniere
+ * "DEFERRED TO onMounted" plus bas dans le corps) pour la meme raison
+ * ADR-005 que `useSelectLink` : une lecture
+ * `immediate` en plein `setup()` figerait `isValid` AVANT que le
+ * resolveur de theme ait patché `props.error`.
  ********************************************************/
 export function useValidation (props: IValidationProps, name = getCurrentInstanceName(), id: MaybeRef<string | number> = getUid()) {
     const model = useVModel(props, 'modelValue')

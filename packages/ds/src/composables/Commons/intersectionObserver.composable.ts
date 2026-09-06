@@ -3,6 +3,19 @@ import { SUPPORTS_INTERSECTION } from '../../consts/Commons/commons.const'
 
 /*********************************************************
  * useIntersectionObserver
+ *
+ * @description
+ * Expose `intersectionRef` (a poser en template ref sur l'element a
+ * observer) et `isIntersecting` — un `IntersectionObserver` est cree une
+ * fois, re-attache automatiquement quand `intersectionRef` change
+ * d'element (desobserve l'ancien, observe le nouveau), et deconnecte a
+ * `onBeforeUnmount`.
+ *
+ * @description
+ * Si `SUPPORTS_INTERSECTION` est faux (navigateur sans l'API, ou SSR),
+ * AUCUN observer n'est cree — `isIntersecting` reste fige a `false` et
+ * `callback` n'est jamais appele, silencieusement. Aucun fallback
+ * polyfill.
  ********************************************************/
 export function useIntersectionObserver (callback?: IntersectionObserverCallback, options?: IntersectionObserverInit) {
     const intersectionRef = ref<HTMLElement>()

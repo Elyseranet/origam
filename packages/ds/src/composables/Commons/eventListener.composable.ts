@@ -11,19 +11,50 @@ type TEventListenerListeners = EventListenerOrEventListenerObject | Array<EventL
 type TEventListenerOptions = MaybeRefOrGetter<AddEventListenerOptions | undefined>
 
 /*********************************************************
- * useEventListener
+ * useEventListener (surcharge sans cible — `window` implicite)
+ *
+ * @description
+ * Forme courte : sans premier argument cible, attache sur `window` (ou
+ * ne fait rien en SSR, ou `window` n'existe pas). Voir la banniere de
+ * l'implementation ci-dessous pour le comportement complet.
  ********************************************************/
 export function useEventListener (
     events: TEventListenerEvents,
     listeners: TEventListenerListeners,
     options?: TEventListenerOptions
 ): () => void
+/*********************************************************
+ * useEventListener (surcharge avec cible explicite)
+ *
+ * @description
+ * Forme longue : `target` peut etre un element, un `Ref`/getter d'element,
+ * `document`/`window`, ou une valeur nullable — voir la banniere de
+ * l'implementation ci-dessous pour le comportement complet.
+ ********************************************************/
 export function useEventListener (
     target: TEventListenerTarget,
     events: TEventListenerEvents,
     listeners: TEventListenerListeners,
     options?: TEventListenerOptions
 ): () => void
+/*********************************************************
+ * useEventListener (implementation)
+ *
+ * @description
+ * Attache un ou plusieurs listeners a un ou plusieurs evenements sur une
+ * cible reactive (`target` peut etre un `Ref`/getter, re-resolue via
+ * `unrefElement`/`resolveUnref` a chaque changement) et retourne une
+ * fonction `stop()` qui detache tout. Se detache aussi automatiquement a
+ * la destruction du scope (`tryOnScopeDispose`).
+ *
+ * @description
+ * ⛔ Le `watch` sur `[target, options]` tourne en `flush: 'post'` et
+ * re-attache TOUS les listeners a chaque changement de cible ou
+ * d'options (nettoyage puis re-registration complete), jamais un diff
+ * incremental — un `options` recree a chaque render (objet litteral
+ * non stable) detache/rattache les listeners a chaque tick plutot que de
+ * les laisser en place.
+ ********************************************************/
 export function useEventListener (...args: Array<unknown>): () => void {
     let target: TEventListenerTarget
     let events: TEventListenerEvents

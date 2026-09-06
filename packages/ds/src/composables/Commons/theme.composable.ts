@@ -160,35 +160,27 @@ function applyModeToDocument (resolvedMode: TModeResolved) {
     document.documentElement.setAttribute(MODE_ATTR, resolvedMode)
 }
 
-/**
- * `useTheme()` returns a shared, reactive handle over the two theming axes.
- *
- * ### Brand axis (`theme` / `data-theme`)
- * - `theme` (read-only ref): the current brand — `'auto' | 'light' | 'dark' | string`.
- * - `setTheme(t)`: imperative setter. Persists to `localStorage` and applies
- *   `data-theme` to `<html>`.
- * - `resolved` (computed): the effective theme after resolving `'auto'`
- *   against `prefers-color-scheme`. Useful for SVG asset switching.
- * - `toggle()`: convenience to flip the brand light ↔ dark (treats `'auto'`
- *   as light). Kept for back-compat with the single-axis API.
- *
- * ### Mode axis (`mode` / `data-mode`)
- * - `mode` (read-only ref): the current color mode — `'auto' | 'light' | 'dark'`.
- * - `setMode(m)`: imperative setter. Persists to `localStorage` and applies
- *   `data-mode` to `<html>`.
- * - `resolvedMode` (computed): the effective mode after resolving `'auto'`
- *   against `prefers-color-scheme`.
- * - `toggleMode()`: flip the color mode light ↔ dark (treats `'auto'` as the
- *   current system preference).
- *
- * The media-query listener is a lazily-initialised SINGLETON (see
- * `ensureSystemPreference`) rather than an `onMounted` hook, so `resolvedMode`
- * is correct even when `useTheme()` is first called outside a component (e.g.
- * a Nuxt plugin). SSR stays safe — the init is a no-op without `window`.
- */
-
 /*********************************************************
  * useTheme
+ *
+ * @description
+ * Handle reactif partage (singleton) sur DEUX axes de theming
+ * independants : `theme`/`setTheme`/`resolved`/`toggle` pour la marque
+ * (`data-theme`, `'auto'|'light'|'dark'|string`), et `mode`/`setMode`/
+ * `resolvedMode`/`toggleMode` pour le clair/sombre (`data-mode`,
+ * `'auto'|'light'|'dark'`). Chaque setter persiste dans `localStorage` et
+ * applique l'attribut correspondant sur `<html>`. `resolved`/`resolvedMode`
+ * ramenent `'auto'` a une valeur concrete via `prefers-color-scheme`.
+ *
+ * @description
+ * Le listener `prefers-color-scheme` est un SINGLETON initialise
+ * paresseusement (`ensureSystemPreference`), pas un `onMounted` — donc
+ * `resolvedMode` reste correct meme quand `useTheme()` est appele hors
+ * d'un composant (ex. un plugin Nuxt, ou aucun cycle de vie n'existe pour
+ * driver `onMounted`). `data-mode` ne perd JAMAIS son attribut (retombe
+ * toujours sur une valeur concrete) — contrairement a `data-theme`, qui
+ * est retire quand `theme === 'auto'`, car la matrice de tokens n'a pas
+ * d'equivalent "sans mode".
  ********************************************************/
 export function useTheme () {
     const state = themeSingleton()
@@ -261,28 +253,30 @@ export function useTheme () {
     }
 }
 
-/**
- * Internal helper for SSR / no-flash plugins: apply a theme (brand) to the
- * document synchronously (called BEFORE first render). Bypasses Vue reactivity.
- */
-
 /*********************************************************
  * applyThemeSync
+ *
+ * @description
+ * Aide interne pour plugins SSR / anti-flash : applique une marque
+ * (`theme`) au document SYNCHRONEMENT, avant le premier rendu, en
+ * court-circuitant la reactivite Vue — utile pour poser `data-theme`
+ * avant que l'hydratation ne demarre et eviter un flash de theme au
+ * chargement.
  ********************************************************/
 export function applyThemeSync (theme: TTheme) {
     applyToDocument(theme)
 }
 
-/**
- * Internal helper for SSR / no-flash plugins: apply a CONCRETE mode to the
- * document synchronously. Bypasses Vue reactivity. An `'auto'` argument is
- * resolved against the current `prefers-color-scheme` (falling back to
- * `'light'` when unavailable) so `data-mode` always ends up concrete — the
- * token matrix has no mode-less fallback.
- */
-
 /*********************************************************
  * applyModeSync
+ *
+ * @description
+ * Aide interne pour plugins SSR / anti-flash : applique un mode CONCRET
+ * au document synchronement, en court-circuitant la reactivite Vue. Un
+ * argument `'auto'` est resolu contre `prefers-color-scheme` courant
+ * (repli sur `'light'` si indisponible) — `data-mode` finit toujours
+ * concret, jamais `'auto'` litteral, car la matrice de tokens n'a pas de
+ * repli sans mode.
  ********************************************************/
 export function applyModeSync (mode: TMode) {
     if (mode === 'light' || mode === 'dark') {
@@ -293,38 +287,38 @@ export function applyModeSync (mode: TMode) {
     applyModeToDocument(prefersDark ? 'dark' : 'light')
 }
 
-/**
- * Internal helper for SSR / no-flash plugins: read the persisted theme (brand)
- * from localStorage without instantiating the composable.
- */
-
 /*********************************************************
  * readPersistedTheme
+ *
+ * @description
+ * Aide interne pour plugins SSR / anti-flash : lit la marque persistee
+ * dans `localStorage` SANS instancier `useTheme()` (pas de Ref cree, pas
+ * de singleton touche) — retourne `'auto'` si rien n'est persiste ou hors
+ * navigateur.
  ********************************************************/
 export function readPersistedTheme (): TTheme {
     return readPersisted()
 }
 
-/**
- * Internal helper for SSR / no-flash plugins: read the persisted mode from
- * localStorage without instantiating the composable.
- */
-
 /*********************************************************
  * readPersistedMode
+ *
+ * @description
+ * Aide interne pour plugins SSR / anti-flash : lit le mode persiste dans
+ * `localStorage` SANS instancier `useTheme()` — retourne `'auto'` si rien
+ * n'est persiste ou hors navigateur.
  ********************************************************/
 export function readPersistedMode (): TMode {
     return readPersistedModeValue()
 }
 
-/**
- * Test-only: clear the module-level singletons (theme / mode refs and the
- * `prefers-color-scheme` cache) so each spec starts from a clean slate. Not
- * part of the public API.
- */
-
 /*********************************************************
  * _resetThemeForTesting
+ *
+ * @description
+ * Aide de test : vide les singletons module (`theme`, `mode`,
+ * `systemPrefersDark`, `mediaInitDone`) pour que chaque spec reparte
+ * d'un etat propre. Hors API publique.
  ********************************************************/
 export function _resetThemeForTesting () {
     const state = themeSingleton()

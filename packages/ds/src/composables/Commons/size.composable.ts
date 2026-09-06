@@ -31,6 +31,22 @@ const LEGACY_SIZE_TO_UTILITY: Readonly<Record<string, string>> = {
 
 /*********************************************************
  * useSize
+ *
+ * @description
+ * Pour une valeur d'enum connue (`SIZES_ARRAY`), emet une classe
+ * `{name}--size-{valeur}` PLUS, via `LEGACY_SIZE_TO_UTILITY`, la classe
+ * utilitaire typographique `origam--text-{xs|sm|md|lg|xl}` correspondante.
+ * Pour une valeur custom (nombre ou longueur CSS non reconnue de l'enum),
+ * `sizeStyles` emet `width`/`height` inline via `convertToUnit` — jamais
+ * les deux canaux a la fois pour une meme valeur.
+ *
+ * @description
+ * ⛔ `useSize` pilote historiquement `width`/`height`, PAS `font-size` —
+ * la classe `origam--text-*` n'est donc pertinente QUE pour un composant
+ * dont `size` implique aussi une echelle typographique (Btn, Chip). Un
+ * composant qui traite `size` comme une pure dimension de boite ne doit
+ * pas consommer `sizeClasses` dans son `:class` : `sizeStyles` reste seul
+ * autoritaire pour la geometrie.
  ********************************************************/
 export function useSize (props: ISizeProps, name = getCurrentInstanceName()) {
     const sizeClasses = computed(() => {

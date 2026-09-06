@@ -6,6 +6,12 @@ import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.u
 
 /*********************************************************
  * useFocus
+ *
+ * @description
+ * Etat de focus v-modelisable (`props.focused`, via `useVModel` — donc
+ * `update:focused` remonte au parent) plus une classe `{name}--focused`
+ * et deux handlers `onFocus`/`onBlur` prets a poser sur un `@focus`/`@blur`
+ * de template. `name` par defaut le nom kebab-case du composant courant.
  ********************************************************/
 export function useFocus (props: IFocusProps, name = getCurrentInstanceName()) {
     const isFocused = useVModel(props, 'focused', false as unknown as IFocusProps['focused'])
