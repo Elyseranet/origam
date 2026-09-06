@@ -146,6 +146,17 @@ const PROVEN_CONSUMED_INDIRECTLY = new Set([
     'OrigamOverlay.location', 'OrigamOverlay.offset',
     'OrigamOverlay.origin', 'OrigamOverlay.viewportMargin',
 
+    /*
+     * `replace` part dans une fonction TIERCE : `useLink` passe l'objet props
+     * entier a `RouterLink.useLink(props as UseLinkOptions)`
+     * (`link.composable.ts:81`), et `UseLinkOptions` de vue-router est
+     * exactement `{ to, replace }`. L'audit ne suit pas un appel vers une
+     * dependance externe — il ne peut pas, il ne lit que ce depot.
+     * Verifie le 2026-09-06 sur les quatre composants concernes.
+     */
+    'OrigamCard.replace', 'OrigamChip.replace',
+    'OrigamListItem.replace', 'OrigamBreadcrumbItem.replace',
+
     'OrigamBracket.border', 'OrigamBracket.borderTop', 'OrigamBracket.borderRight',
     'OrigamBracket.borderBottom', 'OrigamBracket.borderLeft',
     'OrigamBracket.borderBlock', 'OrigamBracket.borderInline',

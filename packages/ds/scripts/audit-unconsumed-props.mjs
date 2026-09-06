@@ -452,18 +452,48 @@ function fnBody (src, from) {
         else if (src[i] === ')') { depth--; if (depth === 0) { i++; break } }
     }
 
-    const open = src.indexOf('{', i)
-    if (open < 0) return ''
+    /*********************************************************
+     * Sauter l'annotation de type de RETOUR
+     *
+     * @description
+     * ⛔ Troisieme variante du meme piege. Apres la liste de parametres peut
+     * venir un type de retour qui contient lui-meme des accolades :
+     *
+     *     export function useLoader (props, kind, name): {
+     *         loaderClasses: ComputedRef<…>
+     *     } {
+     *
+     * Prendre « la premiere accolade apres la parenthese » attrape alors le
+     * TYPE, pas le corps. `useLoader` etait indexe comme ne lisant rien, donc
+     * `loading` passait pour morte sur Card, ExpansionPanels et
+     * ExpansionPanelContent.
+     *
+     * @description
+     * La regle qui distingue les deux : on equilibre la premiere accolade
+     * rencontree ; si un `{` la suit immediatement, la premiere etait le type
+     * et la seconde est le corps. Sinon la premiere ETAIT le corps.
+     ********************************************************/
+    const balance = (start) => {
+        let d = 1
+        let k = start + 1
+        while (k < src.length && d > 0) {
+            if (src[k] === '{') d++
+            else if (src[k] === '}') d--
+            k++
+        }
 
-    depth = 1
-    let j = open + 1
-    while (j < src.length && depth > 0) {
-        if (src[j] === '{') depth++
-        else if (src[j] === '}') depth--
-        j++
+        return k
     }
 
-    return src.slice(open, j)
+    let open = src.indexOf('{', i)
+    if (open < 0) return ''
+
+    const afterFirst = balance(open)
+    const next = src.slice(afterFirst).search(/\S/)
+
+    if (next !== -1 && src[afterFirst + next] === '{') open = afterFirst + next
+
+    return src.slice(open, balance(open))
 }
 
 const COMPOSABLE_KEYS = new Map()
