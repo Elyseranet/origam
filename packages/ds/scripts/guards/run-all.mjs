@@ -33,7 +33,8 @@ const GUARDS = [
     'id-forwarding.mjs',
     't-fallback.mjs',
     'composable-setup-reads.mjs',
-    'unemitted-declarations.mjs'
+    'unemitted-declarations.mjs',
+    'composables-doc-sync.mjs'
 ]
 
 /*********************************************************

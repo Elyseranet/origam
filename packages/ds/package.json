@@ -111,7 +111,9 @@
     "guards:id-forwarding": "node scripts/guards/id-forwarding.mjs",
     "guards:unemitted-declarations": "node scripts/guards/unemitted-declarations.mjs",
     "prepublishOnly": "pnpm run build",
-    "prepack": "node -e \"require('fs').copyFileSync('../../CHANGELOG.md','CHANGELOG.md')\""
+    "prepack": "node -e \"require('fs').copyFileSync('../../CHANGELOG.md','CHANGELOG.md')\"",
+    "guards:composables-doc": "node scripts/guards/composables-doc-sync.mjs",
+    "docs:composables": "node scripts/analysis/gen-composables-doc.mjs --write"
   },
   "dependencies": {
     "@mdi/font": "^7.4.47",
