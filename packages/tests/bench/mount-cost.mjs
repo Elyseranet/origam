@@ -191,7 +191,21 @@
  * per-series stddev climbs series over series in a way that looks like a
  * real per-mount retention issue in that component, not a harness
  * artifact. Flagged, not chased further here — out of this harness's
- * scope.) `packages/tests/audit/run-inert-props-audit.mjs` hit the
+ * scope.)
+ *
+ * ⛔ UPDATE 2026-09-06, issue #365 — THE RETENTION HYPOTHESIS ABOVE DID NOT
+ * SURVIVE MEASUREMENT. Five independent measurements, all flat: injected
+ * `<style>` count is constant over 200 mount/unmount cycles; the
+ * ResizeObserver disconnects more often than it observes; heap grows 0.4 %
+ * over 4x500 cycles, and 0.3 % over 5x2000 using THIS harness's own protocol
+ * (persistent host + `v-if` toggle). No OOM at the full default sample size.
+ * See `TU/components/Pagination/pagination-heap-365.spec.ts`.
+ *
+ * What remains true is the FIRST half of this note: Pagination allocates far
+ * more per mount than its neighbours (a `v-for` of page buttons), so it is
+ * the component most likely to be the one standing when a shared process
+ * runs out. That is an allocation PEAK, not a retention leak — and sharding
+ * is the right answer to it either way. `packages/tests/audit/run-inert-props-audit.mjs` hit the
  * identical shape of problem for the identical reason and fixed it the
  * identical way: full process boundaries, not more `gc()` calls, reliably
  * reclaim memory between independent units of work.
