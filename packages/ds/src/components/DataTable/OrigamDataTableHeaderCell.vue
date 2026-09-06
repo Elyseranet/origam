@@ -210,14 +210,14 @@
 		$this: &;
 
 		align-items: center;
-		color: var(--origam-data-table-header-cell---color, var(--origam-color__text---primary));
+		color: var(--origam-data-table-header-cell---color, var(--origam-data-table__header---color, var(--origam-color__text---primary)));
 
 		&__sort-icon {
 			opacity: var(--origam-data-table-header-cell__sort-icon---opacity, var(--origam-data-table__header---sort-icon-opacity, 0));
-			color: var(--origam-data-table-header-cell__sort-icon---color, var(--origam-color__text---primary));
+			color: var(--origam-data-table-header-cell__sort-icon---color, var(--origam-data-table__header---sort-icon-color, var(--origam-data-table__sortable---icon-color, var(--origam-color__text---primary))));
 
 			&--active {
-				color: var(--origam-data-table-header-cell__sort-icon--active---color, var(--origam-color__text---primary));
+				color: var(--origam-data-table-header-cell__sort-icon--active---color, var(--origam-data-table__header---sort-icon-color-active, var(--origam-data-table__sortable---icon-color-active, var(--origam-color__text---primary))));
 			}
 		}
 
@@ -235,7 +235,7 @@
 			padding: var(--origam-data-table-header-cell__sort-badge---padding, var(--origam-data-table__header---sort-badge-padding, var(--origam-space---1, 4px)));
 			border-radius: var(--origam-data-table-header-cell__sort-badge---border-radius, var(--origam-data-table__header---sort-badge-border-radius, var(--origam-radius---full, 9999px)));
 			background: var(--origam-data-table-header-cell__sort-badge---background, var(--origam-data-table__header---sort-badge-background-color, var(--origam-color__border---default)));
-			color: var(--origam-data-table-header-cell__sort-badge---color, var(--origam-color__text---primary));
+			color: var(--origam-data-table-header-cell__sort-badge---color, var(--origam-data-table__header---sort-badge-color, var(--origam-color__text---primary)));
 			min-width: var(--origam-data-table-header-cell__sort-badge---min-width, var(--origam-data-table__header---sort-badge-min-width, 20px));
 			min-height: var(--origam-data-table-header-cell__sort-badge---min-height, var(--origam-data-table__header---sort-badge-min-height, 20px));
 			width: var(--origam-data-table-header-cell__sort-badge---width, var(--origam-data-table__header---sort-badge-width, 20px));
@@ -264,7 +264,7 @@
 
 		&:deep(.origam-data-table-cell) {
 			background: var(--origam-data-table-header-cell---background, var(--origam-data-table__header---background-color, var(--origam-color__surface---raised)));
-			color: var(--origam-data-table-header-cell---color, var(--origam-color__text---primary));
+			color: var(--origam-data-table-header-cell---color, var(--origam-data-table__header---color, var(--origam-color__text---primary)));
 		}
 	}
 </style>

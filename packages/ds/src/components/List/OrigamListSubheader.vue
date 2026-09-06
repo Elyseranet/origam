@@ -121,7 +121,7 @@
 		background: inherit;
 		color: var(--origam-list-subheader---color, var(--origam-color__text---secondary));
 		display: flex;
-		font-size: var(--origam-list-subheader---font-size, 0.875rem);
+		font-size: var(--origam-list-subheader---font-size, var(--origam-list__subheader---font-size, 0.875rem));
 		font-weight: var(--origam-list-subheader---font-weight, 400);
 		line-height: var(--origam-list-subheader---line-height, 1.375rem);
 		padding-inline-end: var(--origam-list-subheader---padding-inline-end, 16px);

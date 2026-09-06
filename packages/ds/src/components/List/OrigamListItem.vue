@@ -496,7 +496,7 @@
 		// `.origam-field__input`'s own `min-height: max(height + density, …)`.
 		// Under `border-box` this min-height IS the row height, so the rungs
 		// below hand it the FULL rung, not the rung minus its padding.
-		min-height: max(calc(var(--origam-list-item---min-height, 56px) + var(--origam-list---density, 0px)), 1.5rem);
+		min-height: max(calc(var(--origam-list-item---min-height, var(--origam-list__item---min-height, 56px)) + var(--origam-list---density, 0px)), 1.5rem);
 
 		text-decoration: var(--origam-list-item---text-decoration, none);
 
@@ -660,9 +660,9 @@
 		}
 
 		&__overlay {
-			background-color: var(--origam-list-item__overlay---background-color, currentColor);
+			background-color: var(--origam-list-item__overlay---background-color, var(--origam-list__item---overlay-background-color, currentColor));
 			border-radius: var(--origam-list-item__overlay---border-radius, inherit);
-			opacity: var(--origam-list-item__overlay---opacity, 0);
+			opacity: var(--origam-list-item__overlay---opacity, var(--origam-list__item---overlay-opacity, 0));
 			pointer-events: var(--origam-list-item__overlay---pointer-events, none);
 			position: var(--origam-list-item__overlay---position, absolute);
 			bottom: var(--origam-list-item__overlay---position-bottom, 0);
@@ -671,7 +671,7 @@
 			top: var(--origam-list-item__overlay---position-top, 0);
 			transition-property: var(--origam-list-item__overlay---transition-property, opacity);
 			transition-duration: var(--origam-list-item__overlay---transition-duration, 0.2s);
-			transition-timing-function: var(--origam-list-item__overlay---transition-timing-function, ease-in-out);
+			transition-timing-function: var(--origam-list-item__overlay---transition-timing-function, var(--origam-list__item---overlay-transition-timing-function, ease-in-out));
 		}
 
 		&__underlay {
@@ -724,7 +724,7 @@
 			text-overflow: var(--origam-list-item__title---text-overflow, ellipsis);
 			word-break: var(--origam-list-item__title---word-break, normal);
 			word-wrap: var(--origam-list-item__title---word-wrap, break-word);
-			font-size: var(--origam-list-item__title---font-size, 1rem);
+			font-size: var(--origam-list-item__title---font-size, var(--origam-list__item---title-font-size, 1rem));
 			font-weight: var(--origam-list-item__title---font-weight, 400);
 			letter-spacing: var(--origam-list-item__title---letter-spacing, 0.009375em);
 			line-height: var(--origam-list-item__title---line-height, 1.5rem);
@@ -742,7 +742,7 @@
 			padding-inline-end: var(--origam-list-item__subtitle---padding-inline-end, 0);
 			text-overflow: var(--origam-list-item__subtitle---text-overflow, ellipsis);
 			word-break: var(--origam-list-item__subtitle---word-break, break-all);
-			font-size: var(--origam-list-item__subtitle---font-size, 0.875rem);
+			font-size: var(--origam-list-item__subtitle---font-size, var(--origam-list__item---subtitle-font-size, 0.875rem));
 			font-weight: var(--origam-list-item__subtitle---font-weight, 400);
 			letter-spacing: var(--origam-list-item__subtitle---letter-spacing, 0.0178571429em);
 			line-height: var(--origam-list-item__subtitle---line-height, 1rem);
