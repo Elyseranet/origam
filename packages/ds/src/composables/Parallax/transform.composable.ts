@@ -14,6 +14,20 @@ import { computed } from 'vue'
 /*********************************************************
  * useParallaxTransform
  ********************************************************/
+/*********************************************************
+ * useParallaxTransform
+ *
+ * @description
+ * Traduit une position de defilement en declaration `transform` pour un
+ * `<origam-parallax-element>`, selon son `type` : `translate`, `rotate`,
+ * `scale`, `depth` et `depth-inv`.
+ *
+ * @description
+ * ⛔ Les deux types de profondeur forcent `Math.abs(strength)`. Une force
+ * negative y serait contradictoire — c'est `depth-inv` qui porte l'inversion,
+ * pas le signe — et laisserait deux facons d'exprimer la meme chose, dont une
+ * qui annulerait l'autre.
+ ********************************************************/
 export function useParallaxTransform (props: IParallaxElementProps) {
     const strength = computed(() => {
         const str = props.strength ?? PARALLAX_ELEMENT_DEFAULT_STRENGTH

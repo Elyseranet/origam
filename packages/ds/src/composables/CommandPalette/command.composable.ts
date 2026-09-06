@@ -47,6 +47,19 @@ const removeById = (id: string): void => {
  ********************************************************/
 
 
+/*********************************************************
+ * useCommand
+ *
+ * @description
+ * Registre des commandes de `<origam-command-palette>`. `register` ajoute ou
+ * remplace une commande par son `id` et retourne sa fonction de retrait.
+ *
+ * @description
+ * Le retrait est aussi branche sur `tryOnScopeDispose` : une commande
+ * enregistree depuis un `setup()` disparait avec le composant, sans que
+ * l'appelant ait a garder la fonction retournee. Hors d'un scope Vue, cet
+ * accrochage ne fait rien et c'est au consommateur d'appeler le retrait.
+ ********************************************************/
 export function useCommand (): IUseCommandReturn {
     const register = (cmd: ICommand): () => void => {
         upsert(cmd)

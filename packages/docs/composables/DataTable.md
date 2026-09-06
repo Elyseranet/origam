@@ -81,9 +81,17 @@ three.
 export function provideExpanded (props: IDataTableExpandProps): IDataTableProvideExpanded
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/DataTable/expand.composable.ts`, puis regenerer.
+Cree l'etat « quelles lignes sont depliees » d'un `<origam-data-table>` et
+le `provide` sous `ORIGAM_DATA_TABLE_EXPAND_KEY`, pour que les lignes le
+consomment sans que le tableau ait a le faire descendre par props.
+
+L'etat est un `Set` de valeurs de ligne, expose en v-model via `useVModel`
+avec conversion dans les deux sens : tableau cote consommateur, `Set` en
+interne. Le consommateur n'a donc jamais a manipuler un `Set`.
+
+Retourne `{ expand, expanded, expandOnClick, isExpanded, toggleExpand }` —
+le meme objet que celui qui est fourni, pour que le composant appelant
+puisse s'en servir directement sans re-injecter.
 
 **Source** : `packages/ds/src/composables/DataTable/expand.composable.ts`
 
@@ -125,9 +133,23 @@ mutators, and provides `ORIGAM_DATA_TABLE_PAGINATION_KEY` for
 export function provideSelection ( props: IDataTableSelectProps,
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/DataTable/select.composable.ts`, puis regenerer.
+Cree l'etat de selection d'un `<origam-data-table>` et le `provide` sous
+`ORIGAM_DATA_TABLE_SELECT_KEY`. Prend en second argument `allItems` et
+`currentPage` : la selection a besoin des deux, puisque « tout selectionner »
+ne veut pas dire la meme chose selon la strategie.
+
+La strategie vient de `props.selectStrategy` : `single`, `all`, ou `page`
+(le defaut). Un OBJET peut aussi etre passe a la place d'un mot-cle, auquel
+cas il est utilise tel quel — c'est le point d'extension pour une regle de
+selection maison.
+
+Seuls les elements dont `selectable` est vrai entrent dans les calculs :
+`allSelectable` et `currentPageSelectable` filtrent en amont, donc une ligne
+non selectionnable ne fausse jamais l'etat « tout est selectionne ».
+
+La comparaison des valeurs passe par `props.valueComparator`, avec
+`deepEqual` par defaut — necessaire des que la valeur d'une ligne est un
+objet plutot qu'une cle primitive.
 
 **Source** : `packages/ds/src/composables/DataTable/select.composable.ts`
 
@@ -154,9 +176,18 @@ consumers down the tree.
 export function useCell ()
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/DataTable/cell.composable.ts`, puis regenerer.
+Resout le `padding` d'une cellule de `<origam-data-table>` a partir de sa
+colonne. Retourne `{ getPadding }`.
+
+⛔ Les deux colonnes de chrome — `data-table-select` et `data-table-expand`
+— recoivent un padding FIXE de `'0 8'` qui prime sur `column.padding`. Ce
+sont des colonnes de controle, pas de donnees : leur largeur doit rester
+constante quel que soit le reglage du consommateur, sinon la case a cocher
+et le chevron se decalent d'une ligne a l'autre.
+
+Pour toute autre colonne, `column.padding` est rendu tel quel, et
+`undefined` quand rien n'est defini — la cellule garde alors le padding de
+la feuille de style.
 
 **Source** : `packages/ds/src/composables/DataTable/cell.composable.ts`
 
@@ -168,9 +199,14 @@ export function useCell ()
 export function useDataTableItems (props: IDataTableItemsProps, columns: Ref<Array<IInternalDataTableHeader>>)
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/DataTable/items.composable.ts`, puis regenerer.
+Transforme les donnees brutes de `props.items` en lignes internes de
+`<origam-data-table>`, via `transformDataTableItems`. Retourne `{ items }`.
+
+Depend des COLONNES autant que des donnees : la transformation extrait une
+valeur par colonne declaree. Les colonnes sont donc passees en `Ref` et non
+en valeur, pour que le calcul se refasse quand elles changent — un tableau
+dont les colonnes sont dynamiques recalculerait sinon ses lignes sur
+l'ancien jeu.
 
 **Source** : `packages/ds/src/composables/DataTable/items.composable.ts`
 
@@ -182,9 +218,13 @@ export function useDataTableItems (props: IDataTableItemsProps, columns: Ref<Arr
 export function useExpanded ()
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/DataTable/expand.composable.ts`, puis regenerer.
+Cote consommateur de `provideExpanded` : recupere l'etat de depliage fourni
+par le `<origam-data-table>` ancetre.
+
+⛔ LEVE si aucun ancetre ne l'a fourni (`Missing expand!`), plutot que de
+retourner `undefined`. Un composant de ligne utilise hors d'un tableau est
+une erreur de montage, pas un cas a gerer : echouer bruyamment au montage
+vaut mieux qu'un `isExpanded` qui repond toujours `false` sans rien dire.
 
 **Source** : `packages/ds/src/composables/DataTable/expand.composable.ts`
 
@@ -257,9 +297,19 @@ same domain folder.
 export function useOptions (
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/DataTable/options.composable.ts`, puis regenerer.
+Regroupe pagination, tri, groupement et recherche en un seul objet
+`options`, et emet `update:options` sur `<origam-data-table>` a chaque
+changement reel. C'est le point unique par lequel un consommateur en mode
+serveur apprend qu'il doit recharger.
+
+Ne retourne RIEN : ce composable est un effet de bord, pas une source de
+valeur. Les refs qu'il surveille appartiennent deja a l'appelant.
+
+⛔ Deux protections contre les emissions parasites. Un `deepEqual` avec
+l'objet precedent evite d'emettre quand une ref a ete reassignee sans que
+son contenu change. Et un changement de `search` REMET LA PAGE A 1 avant
+d'emettre — sans quoi une recherche depuis la page 4 demanderait la page 4
+d'un jeu de resultats qui n'en a peut-etre qu'une.
 
 **Source** : `packages/ds/src/composables/DataTable/options.composable.ts`
 
@@ -302,9 +352,12 @@ plain items array and never touches this injection.
 export function useSelection ()
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/DataTable/select.composable.ts`, puis regenerer.
+Cote consommateur de `provideSelection` : recupere l'etat de selection
+fourni par le `<origam-data-table>` ancetre.
+
+⛔ LEVE si aucun ancetre ne l'a fourni, pour la meme raison que
+`useExpanded` : une ligne montee hors de son tableau est une erreur de
+structure, et un echec silencieux la rendrait invisible.
 
 **Source** : `packages/ds/src/composables/DataTable/select.composable.ts`
 

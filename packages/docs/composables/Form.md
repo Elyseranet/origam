@@ -13,9 +13,16 @@
 export function useForm (props: IFormProps)
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Form/form.composable.ts`, puis regenerer.
+Etat d'un `<origam-form>` : agrege les champs qui s'y enregistrent et
+expose la validation d'ensemble, `reset` et `resetValidation`.
+
+La validite globale n'est pas calculee par le formulaire mais DELEGUEE aux
+champs : `validate` appelle chacun d'eux et rassemble les erreurs. Un champ
+ajoute dynamiquement participe donc sans que le formulaire ait a le
+connaitre a l'avance.
+
+`disabled` et `readonly` descendent aux champs enregistres — les poser sur
+le formulaire evite de les repeter sur chaque champ.
 
 **Source** : `packages/ds/src/composables/Form/form.composable.ts`
 

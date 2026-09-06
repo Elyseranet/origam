@@ -13,9 +13,20 @@
 export function useCountdown (milliseconds: number)
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Snackbar/snackbar.composable.ts`, puis regenerer.
+Compte a rebours reactif : expose `time` (millisecondes restantes) plus
+`start`, `clear` et `reset`. `start` accepte un element optionnel dont la
+`transitionDuration` calculee fixe le PAS du compteur — cadencer le tic sur
+la transition evite qu'un rendu tombe entre deux images.
+
+⛔ AUCUN composant du DS ne l'utilise, contrairement a ce que la doc
+historique affirmait. `OrigamSnackbar` implemente son propre minuteur avec
+`window.setTimeout` et n'appelle jamais ce composable — verifie par
+recherche le 2026-09-06, zero consommateur hors de son propre fichier. Le
+ticket #545 cite precisement cette phrase comme exemple de doc mensongere.
+
+Il reste exporte pour les consommateurs externes. `onScopeDispose` annule
+l'intervalle, donc l'utiliser dans un `setup()` ne demande aucun nettoyage
+manuel.
 
 **Source** : `packages/ds/src/composables/Snackbar/snackbar.composable.ts`
 

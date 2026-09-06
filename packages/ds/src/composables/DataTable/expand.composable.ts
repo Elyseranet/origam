@@ -8,6 +8,21 @@ import type { IDataTableItem } from '../../interfaces/DataTable/items.interface'
 
 /*********************************************************
  * provideExpanded
+ *
+ * @description
+ * Cree l'etat « quelles lignes sont depliees » d'un `<origam-data-table>` et
+ * le `provide` sous `ORIGAM_DATA_TABLE_EXPAND_KEY`, pour que les lignes le
+ * consomment sans que le tableau ait a le faire descendre par props.
+ *
+ * @description
+ * L'etat est un `Set` de valeurs de ligne, expose en v-model via `useVModel`
+ * avec conversion dans les deux sens : tableau cote consommateur, `Set` en
+ * interne. Le consommateur n'a donc jamais a manipuler un `Set`.
+ *
+ * @description
+ * Retourne `{ expand, expanded, expandOnClick, isExpanded, toggleExpand }` —
+ * le meme objet que celui qui est fourni, pour que le composant appelant
+ * puisse s'en servir directement sans re-injecter.
  ********************************************************/
 export function provideExpanded (props: IDataTableExpandProps): IDataTableProvideExpanded {
     const expandOnClick = toRef(props, 'expandOnClick')
@@ -62,6 +77,16 @@ export function provideExpanded (props: IDataTableExpandProps): IDataTableProvid
 
 /*********************************************************
  * useExpanded
+ *
+ * @description
+ * Cote consommateur de `provideExpanded` : recupere l'etat de depliage fourni
+ * par le `<origam-data-table>` ancetre.
+ *
+ * @description
+ * ⛔ LEVE si aucun ancetre ne l'a fourni (`Missing expand!`), plutot que de
+ * retourner `undefined`. Un composant de ligne utilise hors d'un tableau est
+ * une erreur de montage, pas un cas a gerer : echouer bruyamment au montage
+ * vaut mieux qu'un `isExpanded` qui repond toujours `false` sans rien dire.
  ********************************************************/
 export function useExpanded () {
     const data = inject(ORIGAM_DATA_TABLE_EXPAND_KEY)

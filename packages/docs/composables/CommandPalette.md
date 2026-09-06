@@ -27,9 +27,13 @@ not import in product code.
 export function useCommand (): IUseCommandReturn
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/CommandPalette/command.composable.ts`, puis regenerer.
+Registre des commandes de `<origam-command-palette>`. `register` ajoute ou
+remplace une commande par son `id` et retourne sa fonction de retrait.
+
+Le retrait est aussi branche sur `tryOnScopeDispose` : une commande
+enregistree depuis un `setup()` disparait avec le composant, sans que
+l'appelant ait a garder la fonction retournee. Hors d'un scope Vue, cet
+accrochage ne fait rien et c'est au consommateur d'appeler le retrait.
 
 **Source** : `packages/ds/src/composables/CommandPalette/command.composable.ts`
 

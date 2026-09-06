@@ -29,9 +29,14 @@ the options bag.
 export function useParallaxTransform (props: IParallaxElementProps)
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Parallax/transform.composable.ts`, puis regenerer.
+Traduit une position de defilement en declaration `transform` pour un
+`<origam-parallax-element>`, selon son `type` : `translate`, `rotate`,
+`scale`, `depth` et `depth-inv`.
+
+⛔ Les deux types de profondeur forcent `Math.abs(strength)`. Une force
+negative y serait contradictoire — c'est `depth-inv` qui porte l'inversion,
+pas le signe — et laisserait deux facons d'exprimer la meme chose, dont une
+qui annulerait l'autre.
 
 **Source** : `packages/ds/src/composables/Parallax/transform.composable.ts`
 

@@ -12,6 +12,27 @@ import { computed, useSlots } from 'vue'
 /*********************************************************
  * useProgress
  ********************************************************/
+/*********************************************************
+ * useProgress
+ *
+ * @description
+ * Socle partage par `<origam-progress-linear>` et
+ * `<origam-progress-circular>` : normalise la valeur, resout l'epaisseur et
+ * le maximum, et compose les classes et styles de la racine. Retourne
+ * `{ progressClasses, progressStyles, normalizedValue, thickness, max,
+ * progress, hasContent }`.
+ *
+ * @description
+ * `normalizedValue` ramene toujours a un POURCENTAGE (`value / max * 100`),
+ * quel que soit le `max` du consommateur — les deux implementations
+ * raisonnent ensuite sur la meme echelle, l'une en largeur, l'autre en arc.
+ *
+ * @description
+ * ⛔ La classe `--visible` est pilotee par un `IntersectionObserver`, pas par
+ * une prop : une barre hors de l'ecran n'anime pas. Consequence a connaitre
+ * en test — hors d'un vrai navigateur l'observateur ne se declenche pas, donc
+ * la classe reste absente et ce n'est pas un defaut du composant.
+ ********************************************************/
 export function useProgress (props: IProgressTypeProps) {
     const progress = useVModel(props, 'modelValue')
     const slots = useSlots()

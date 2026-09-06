@@ -84,6 +84,24 @@ function resolveHeightPx (height: number | string): number {
 /*********************************************************
  * useSheetSwipe
  ********************************************************/
+/*********************************************************
+ * useSheetSwipe
+ *
+ * @description
+ * Geste de glissement d'un `<origam-sheet>` : suit le doigt sur l'element ou
+ * sur sa poignee, puis s'aimante au point d'accroche le plus proche a la
+ * relache.
+ *
+ * @description
+ * Les points d'accroche sont TRIES PAR HAUTEUR CROISSANTE avant usage. C'est
+ * ce qui permet aux recherches d'index (`snaps[i+1]`, `snaps[i-1]`) de
+ * designer les voisins visuels ; sur une liste non triee, glisser vers le haut
+ * pourrait aimanter vers le bas.
+ *
+ * @description
+ * `persistent` empeche la fermeture par glissement — le dernier cran reste le
+ * plus bas point d'accroche au lieu d'etre l'etat ferme.
+ ********************************************************/
 export function useSheetSwipe (options: ISheetSwipeOptions): ISheetSwipeReturn {
     const {
         el,

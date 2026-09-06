@@ -12,6 +12,28 @@ import { computed, inject, provide, Ref } from 'vue'
 
 /*********************************************************
  * provideSelection
+ *
+ * @description
+ * Cree l'etat de selection d'un `<origam-data-table>` et le `provide` sous
+ * `ORIGAM_DATA_TABLE_SELECT_KEY`. Prend en second argument `allItems` et
+ * `currentPage` : la selection a besoin des deux, puisque « tout selectionner »
+ * ne veut pas dire la meme chose selon la strategie.
+ *
+ * @description
+ * La strategie vient de `props.selectStrategy` : `single`, `all`, ou `page`
+ * (le defaut). Un OBJET peut aussi etre passe a la place d'un mot-cle, auquel
+ * cas il est utilise tel quel — c'est le point d'extension pour une regle de
+ * selection maison.
+ *
+ * @description
+ * Seuls les elements dont `selectable` est vrai entrent dans les calculs :
+ * `allSelectable` et `currentPageSelectable` filtrent en amont, donc une ligne
+ * non selectionnable ne fausse jamais l'etat « tout est selectionne ».
+ *
+ * @description
+ * La comparaison des valeurs passe par `props.valueComparator`, avec
+ * `deepEqual` par defaut — necessaire des que la valeur d'une ligne est un
+ * objet plutot qu'une cle primitive.
  ********************************************************/
 export function provideSelection (
     props: IDataTableSelectProps,
@@ -116,6 +138,15 @@ export function provideSelection (
 
 /*********************************************************
  * useSelection
+ *
+ * @description
+ * Cote consommateur de `provideSelection` : recupere l'etat de selection
+ * fourni par le `<origam-data-table>` ancetre.
+ *
+ * @description
+ * ⛔ LEVE si aucun ancetre ne l'a fourni, pour la meme raison que
+ * `useExpanded` : une ligne montee hors de son tableau est une erreur de
+ * structure, et un echec silencieux la rendrait invisible.
  ********************************************************/
 export function useSelection () {
     const data = inject(ORIGAM_DATA_TABLE_SELECT_KEY)

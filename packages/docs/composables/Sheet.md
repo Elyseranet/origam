@@ -13,9 +13,17 @@
 export function useSheetSwipe (options: ISheetSwipeOptions): ISheetSwipeReturn
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Sheet/sheetSwipe.composable.ts`, puis regenerer.
+Geste de glissement d'un `<origam-sheet>` : suit le doigt sur l'element ou
+sur sa poignee, puis s'aimante au point d'accroche le plus proche a la
+relache.
+
+Les points d'accroche sont TRIES PAR HAUTEUR CROISSANTE avant usage. C'est
+ce qui permet aux recherches d'index (`snaps[i+1]`, `snaps[i-1]`) de
+designer les voisins visuels ; sur une liste non triee, glisser vers le haut
+pourrait aimanter vers le bas.
+
+`persistent` empeche la fermeture par glissement — le dernier cran reste le
+plus bas point d'accroche au lieu d'etre l'etat ferme.
 
 **Source** : `packages/ds/src/composables/Sheet/sheetSwipe.composable.ts`
 

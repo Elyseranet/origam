@@ -8,6 +8,20 @@ import type { TIcon, TIconInstance, TIconOptions } from '../../types/Icon/icon.t
 
 import { mergeDeep } from '../../utils/Commons/commons.util'
 
+/*********************************************************
+ * useIcon
+ *
+ * @description
+ * Resout une valeur de prop `icon` en composant a rendre : suit les alias,
+ * choisit le jeu, et retombe sur `OrigamComponentIcon` quand la valeur est
+ * absente.
+ *
+ * @description
+ * ⛔ LEVE si `createOrigam()` n'a pas installe la configuration d'icones
+ * (`Missing Origam Icons provide!`). C'est deliberement bruyant : une icone
+ * qui ne resout pas silencieusement laisserait un trou dans l'interface sans
+ * que rien ne l'explique.
+ ********************************************************/
 export const useIcon = (props: Ref<TIcon | undefined>) => {
     const icons = inject(ORIGAM_ICONS_KEY)
 
@@ -73,6 +87,19 @@ export const useIcon = (props: Ref<TIcon | undefined>) => {
 
 /*********************************************************
  * createIcons
+ ********************************************************/
+/*********************************************************
+ * createIcons
+ *
+ * @description
+ * Construit la configuration d'icones fournie a l'application par
+ * `createOrigam()` : jeu par defaut, jeux disponibles et alias. Les options du
+ * consommateur sont fusionnees en profondeur sur les valeurs du DS, donc
+ * declarer un alias n'efface pas les autres.
+ *
+ * @description
+ * Le jeu par defaut est `mdi`, et les alias MDI sont pre-charges — c'est ce
+ * qui permet d'ecrire `icon="mdi-account"` sans configuration prealable.
  ********************************************************/
 export function createIcons (options?: TIconOptions) {
     return mergeDeep({

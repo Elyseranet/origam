@@ -46,6 +46,25 @@ import type { TPasswordStrengthScore } from '../../types/PasswordField/password-
 /*********************************************************
  * computeStrength
  ********************************************************/
+/*********************************************************
+ * computeStrength
+ *
+ * @description
+ * Fonction PURE — pas un composable malgre son emplacement. Note un mot de
+ * passe et retourne `{ score, level }`, ou `level` est une valeur de
+ * `PASSWORD_STRENGTH_LEVEL`.
+ *
+ * @description
+ * Le score additionne des criteres independants : longueur minimale, longueur
+ * forte, presence de chiffres, melange de casse. Une chaine vide, `null` ou
+ * `undefined` donnent 0 et `WEAK` — l'appelant n'a donc jamais a garder la
+ * valeur avant d'appeler.
+ *
+ * @description
+ * ⛔ Ce n'est pas une mesure d'entropie et ca ne pretend pas en etre une :
+ * c'est un indicateur d'interface, a ne pas confondre avec une politique de
+ * securite cote serveur.
+ ********************************************************/
 export function computeStrength (value: string | null | undefined): IPasswordStrength {
     const v = (value ?? '').toString()
 
