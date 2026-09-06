@@ -1,4 +1,3 @@
-import type { ICommonsComponentProps } from '../Commons/commons.interface'
 
 /**
  * Defaults map shape consumed by `<OrigamDefaultsProvider>` and resolved
@@ -25,7 +24,22 @@ export interface IDefault {
     [key: string]: Record<string, unknown> | undefined
 }
 
-export interface IDefaultProviderProps extends ICommonsComponentProps {
+/*********************************************************
+ * IDefaultProviderProps
+ *
+ * @description
+ * ⛔ N'etend PAS `ICommonsComponentProps`, et c'est structurel :
+ * `<OrigamDefaultsProvider>` est SANS RACINE — son template est un `<slot/>`
+ * nu. `id`, `class` et `style` n'ont aucun element sur lequel atterrir.
+ *
+ * @description
+ * Les declarer les rendait invisibles a Vue (une prop declaree sort de
+ * `$attrs`) sans rien peindre : un consommateur qui ecrivait
+ * `<origam-defaults-provider class="x">` perdait sa classe en silence, la ou
+ * l'absence de declaration l'aurait au moins fait retomber sur l'enfant.
+ * Trois entrees de la baseline C1. Issue #550.
+ ********************************************************/
+export interface IDefaultProviderProps {
     /** Map of defaults keyed by `global` or component name. */
     defaults?: IDefault
     /**

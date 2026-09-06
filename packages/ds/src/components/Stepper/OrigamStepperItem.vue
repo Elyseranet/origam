@@ -3,6 +3,7 @@
 			:is="isClickable ? 'button' : 'div'"
 			:id="id"
 			:class="itemClasses"
+			:style="rootStyles"
 			:type="isClickable ? 'button' : undefined"
 			:aria-current="resolvedStatus === STEPPER_ITEM_STATUS.ACTIVE ? 'step' : undefined"
 			:aria-label="stepAriaLabel"
@@ -45,7 +46,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, inject } from 'vue'
+	import { StyleValue, computed, inject } from 'vue'
 
 	import OrigamIcon from '../Icon/OrigamIcon.vue'
 	import { ORIGAM_STEPPER_KEY } from '../../consts/Stepper/stepper.const'
@@ -126,6 +127,9 @@
 	 * Class & Style
 	 ********************************************************/
 	const orientation = computed(() => stepper?.orientation.value ?? DIRECTION.HORIZONTAL)
+
+	const rootStyles = computed<StyleValue>(() => props.style as StyleValue)
+
 
 	const itemClasses = computed(() => [
 		'origam-stepper-item',

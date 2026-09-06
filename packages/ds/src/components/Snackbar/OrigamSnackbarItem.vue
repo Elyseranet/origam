@@ -7,7 +7,7 @@
     :class="itemClasses"
     :data-cy="dataCy"
     :role="resolvedRole"
-    :style="typographyStyles"
+    :style="rootStyles"
   >
     <div class="origam-snackbar-item__content">
       <div
@@ -76,7 +76,7 @@
   lang="ts"
   setup
 >
-  import { computed, useSlots } from 'vue'
+  import { StyleValue, computed, useSlots } from 'vue'
 
   import OrigamBtn from '../Btn/OrigamBtn.vue'
   import OrigamIcon from '../Icon/OrigamIcon.vue'
@@ -234,6 +234,8 @@
   /*********************************************************
    * Classes
    ********************************************************/
+  const rootStyles = computed<StyleValue>(() => [ typographyStyles.value, props.style as StyleValue ])
+
   const itemClasses = computed(() => {
     const intent: TIntent = props.intent ?? 'info'
 

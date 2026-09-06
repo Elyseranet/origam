@@ -1,6 +1,7 @@
 <template>
   <div
     :class="nodeWrapperClasses"
+    :style="rootStyles"
     role="none"
   >
     <div
@@ -213,6 +214,8 @@
   /*********************************************************
    * Class & Style
    ********************************************************/
+  const rootStyles = computed<StyleValue>(() => props.style as StyleValue)
+
   const nodeWrapperClasses = computed(() => [
     'origam-treeview-node',
     {

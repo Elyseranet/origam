@@ -2,7 +2,8 @@
 	<div
 			:id="id"
 			ref="intersectionRef"
-			class="origam-infinite-scroll-intersect"
+			:class="rootClasses"
+			:style="rootStyles"
 	>&nbsp;
 	</div>
 </template>
@@ -11,7 +12,7 @@
 		lang="ts"
 		setup
 >
-	import { watch } from 'vue'
+	import { computed, StyleValue, watch } from 'vue'
 
 	import { useIntersectionObserver } from '../../composables/Commons/intersectionObserver.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
@@ -34,8 +35,35 @@
 	 * Composables
 	 ********************************************************/
 
+	/*********************************************************
+	 * observerOptions
+	 *
+	 * @description
+	 * ⛔ `rootRef` etait declaree OBLIGATOIRE et n'etait lue nulle part :
+	 * l'observateur restait sur le viewport quel que soit l'element passe.
+	 * Un `<origam-infinite-scroll>` place dans un conteneur defilant ne
+	 * declenchait donc jamais — le consommateur devait fournir un element
+	 * pour rien.
+	 *
+	 * @description
+	 * Les options sont transmises telles quelles a `IntersectionObserver`,
+	 * qui accepte `root`. La sentinelle observe desormais le conteneur
+	 * annonce. Issue #550, critere C1.
+	 ********************************************************/
+	const rootClasses = computed(() => [ 'origam-infinite-scroll-intersect', props.class ])
+	const rootStyles = computed<StyleValue>(() => props.style as StyleValue)
+
+	const observerOptions = computed<IntersectionObserverInit | undefined>(() => {
+		const options: IntersectionObserverInit = {}
+
+		if (props.rootRef) options.root = props.rootRef
+		if (props.margin) options.rootMargin = props.margin
+
+		return Object.keys(options).length ? options : undefined
+	})
+
 	const {intersectionRef, isIntersecting} = useIntersectionObserver(() => {
-	}, props.margin ? {rootMargin: props.margin} : undefined)
+	}, observerOptions.value)
 
 	watch(isIntersecting, async (val) => {
 		if (!props.side) return
