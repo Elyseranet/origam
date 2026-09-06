@@ -1,7 +1,7 @@
 {
   "kind": "component",
-  "exportedAt": "2026-08-19T12:24:53.746Z",
-  "sourceCommit": "1ef461dc",
+  "exportedAt": "2026-09-06T21:13:28.390Z",
+  "sourceCommit": "911d3725",
   "entryCount": 193,
   "entries": [
     {
@@ -1193,16 +1193,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "app-bar",
-          "to_name": "AppBar",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.app_bar.description",
-          "description_fallback": "Top application bar with title, navigation and action slots."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "layout",
@@ -1211,6 +1201,16 @@
           "position": 0,
           "description_key": "components.catalog.layout.description",
           "description_fallback": "Inner layout engine that App delegates to."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "app-bar",
+          "to_name": "AppBar",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.app_bar.description",
+          "description_fallback": "Top application bar with title, navigation and action slots."
         }
       ]
     },
@@ -8886,16 +8886,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "tabs",
-          "to_name": "Tabs",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.tabs.description",
-          "description_fallback": "Alternative horizontal navigation pattern."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "breadcrumb-item",
@@ -8904,6 +8894,16 @@
           "position": 0,
           "description_key": "components.catalog.breadcrumb_item.description",
           "description_fallback": "Individual breadcrumb link or span. The last item is automatically disabled and aria-current=\"page\"."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "tabs",
+          "to_name": "Tabs",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.tabs.description",
+          "description_fallback": "Alternative horizontal navigation pattern."
         },
         {
           "rel_type": "family",
@@ -9964,16 +9964,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "breadcrumb",
-          "to_name": "Breadcrumb",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.breadcrumb.description",
-          "description_fallback": "Hierarchical navigation trail rendered as a <nav> landmark."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "breadcrumb",
@@ -9982,6 +9972,16 @@
           "position": 0,
           "description_key": "components.catalog.breadcrumb.description",
           "description_fallback": "Parent that renders BreadcrumbItem inside an ordered list."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "breadcrumb",
+          "to_name": "Breadcrumb",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.breadcrumb.description",
+          "description_fallback": "Hierarchical navigation trail rendered as a <nav> landmark."
         },
         {
           "rel_type": "family",
@@ -10992,18 +10992,6 @@
           "description_fallback": "Per-side right border override (width, or a full \"width style color\" string). Wins over the global border/borderColor/borderStyle for the right side."
         },
         {
-          "name": "width",
-          "type_label": "string | number",
-          "type_slug": "",
-          "type_kind": "primitive",
-          "optional": false,
-          "required": false,
-          "position": 30,
-          "default_value": "undefined",
-          "description_key": "components.btn.props.width.description",
-          "description_fallback": "Overrides the button width."
-        },
-        {
           "name": "borderBottom",
           "type_label": "boolean | number | string",
           "type_slug": "",
@@ -11014,6 +11002,18 @@
           "default_value": "undefined",
           "description_key": "components.btn.props.border_bottom.description",
           "description_fallback": "Per-side bottom border override (width, or a full \"width style color\" string). Wins over the global border/borderColor/borderStyle for the bottom side."
+        },
+        {
+          "name": "width",
+          "type_label": "string | number",
+          "type_slug": "",
+          "type_kind": "primitive",
+          "optional": false,
+          "required": false,
+          "position": 30,
+          "default_value": "undefined",
+          "description_key": "components.btn.props.width.description",
+          "description_fallback": "Overrides the button width."
         },
         {
           "name": "borderLeft",
@@ -12243,16 +12243,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "btn-group",
-          "to_name": "BtnGroup",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.btn_group.description",
-          "description_fallback": "Base group container that BtnToggle extends with selection state."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "btn",
@@ -12261,6 +12251,16 @@
           "position": 0,
           "description_key": "components.catalog.btn.description",
           "description_fallback": "Polymorphic action element with intent, variant, size and icon support."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "btn-group",
+          "to_name": "BtnGroup",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.btn_group.description",
+          "description_fallback": "Base group container that BtnToggle extends with selection state."
         },
         {
           "rel_type": "family",
@@ -14033,16 +14033,6 @@
           "description_fallback": "Elevated card-like surface presented in an overlay."
         },
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "card-text",
-          "to_name": "CardText",
-          "prop_name": null,
-          "position": 1,
-          "description_key": "components.catalog.card_text.description",
-          "description_fallback": "Card body text section with density-aware padding."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "sheet",
@@ -14051,6 +14041,16 @@
           "position": 1,
           "description_key": "components.catalog.sheet.description",
           "description_fallback": "Simpler flat surface without interactive affordances."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "card-text",
+          "to_name": "CardText",
+          "prop_name": null,
+          "position": 1,
+          "description_key": "components.catalog.card_text.description",
+          "description_fallback": "Card body text section with density-aware padding."
         }
       ]
     },
@@ -15789,16 +15789,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "window",
-          "to_name": "Window",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.window.description",
-          "description_fallback": "Low-level sliding container that Carousel delegates rendering to."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "carousel-item",
@@ -15807,6 +15797,16 @@
           "position": 0,
           "description_key": "components.catalog.carousel_item.description",
           "description_fallback": "A single slide inside OrigamCarousel — wraps OrigamWindowItem and OrigamImg."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "window",
+          "to_name": "Window",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.window.description",
+          "description_fallback": "Low-level sliding container that Carousel delegates rendering to."
         }
       ]
     },
@@ -19609,16 +19609,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "chart",
-          "to_name": "Chart",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.chart.description",
-          "description_fallback": "Universal entry-point that routes to ChartCandlestick when type=\"candlestick\"."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "chart",
@@ -19627,6 +19617,16 @@
           "position": 0,
           "description_key": "components.catalog.chart.description",
           "description_fallback": "Universal chart component with 29 visualization primitives."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "chart",
+          "to_name": "Chart",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.chart.description",
+          "description_fallback": "Universal entry-point that routes to ChartCandlestick when type=\"candlestick\"."
         },
         {
           "rel_type": "family",
@@ -20295,16 +20295,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "chart",
-          "to_name": "Chart",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.chart.description",
-          "description_fallback": "Universal entry-point that routes to ChartCartesian for cartesian types."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "chart",
@@ -20313,6 +20303,16 @@
           "position": 0,
           "description_key": "components.catalog.chart.description",
           "description_fallback": "Universal chart component with 29 visualization primitives."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "chart",
+          "to_name": "Chart",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.chart.description",
+          "description_fallback": "Universal entry-point that routes to ChartCartesian for cartesian types."
         },
         {
           "rel_type": "family",
@@ -26326,7 +26326,6 @@
               }
             ]
           },
-          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"200\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <rect x=\"20\" y=\"40\" width=\"660\" height=\"120\" rx=\"4\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <rect x=\"50\" y=\"76\" width=\"40\" height=\"40\" rx=\"4\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <polyline points=\"58,97 68,108 82,84\" stroke=\"white\" stroke-width=\"3\" fill=\"none\" stroke-linecap=\"round\"/>\n  <rect x=\"110\" y=\"86\" width=\"220\" height=\"20\" rx=\"3\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.08))\"/>\n  <text x=\"220\" y=\"100\" font-size=\"12\" fill=\"var(--origam-color__text---primary, #1a0f3c)\" text-anchor=\"middle\" font-family=\"sans-serif\">Checkbox label</text>\n  <rect x=\"20\" y=\"130\" width=\"660\" height=\"20\" rx=\"3\" fill=\"none\"/>\n  <text x=\"360\" y=\"143\" font-size=\"10\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" text-anchor=\"middle\" font-family=\"sans-serif\">Hint / validation messages</text>\n  <circle cx=\"28\" cy=\"48\" r=\"10\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"28\" y=\"52\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"70\" cy=\"70\" r=\"10\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"70\" y=\"74\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <circle cx=\"220\" cy=\"80\" r=\"10\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"220\" y=\"84\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">3</text>\n  <circle cx=\"360\" cy=\"134\" r=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\"/>\n  <text x=\"360\" y=\"138\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">4</text>\n  <circle cx=\"68\" cy=\"96\" r=\"9\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"68\" y=\"100\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">5</text>\n  <text x=\"350\" y=\"185\" font-size=\"9\" fill=\"var(--origam-color__text---disabled, #b5a0d8)\" text-anchor=\"middle\" font-style=\"italic\">Checkbox wraps OrigamInput (frame) + OrigamCheckboxBtn (control)</text>\n",
             "code": "<origam-input class=\"origam-checkbox\">\n  <template #default=\"{ id, messagesId, isDisabled, isReadonly, isValid }\">\n    <origam-checkbox-btn\n      :id=\"id\"\n      :aria-describedby=\"messagesId\"\n      :disabled=\"isDisabled\"\n      :error=\"!isValid\"\n      :readonly=\"isReadonly\"\n    >\n      <!-- hidden native checkbox -->\n      <input type=\"checkbox\" class=\"origam-selection-control__input\" />\n      <!-- visual box + icon -->\n      <span class=\"origam-checkbox-btn__box\">\n        <origam-icon class=\"origam-checkbox-btn__icon\" />\n      </span>\n      <!-- label -->\n      <label class=\"origam-selection-control__label\" :for=\"id\" />\n    </origam-checkbox-btn>\n  </template>\n</origam-input>",
@@ -27021,7 +27020,6 @@
               }
             ]
           },
-          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"180\" fill=\"var(--origam-color__surface---sunken, #f9fafb)\" rx=\"4\"/>\n  <rect x=\"16\" y=\"24\" width=\"668\" height=\"96\" rx=\"4\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <text x=\"350\" y=\"16\" font-size=\"10\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\" font-weight=\"700\">origam-checkbox-btn ①</text>\n  <rect x=\"32\" y=\"40\" width=\"636\" height=\"64\" rx=\"3\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.04))\" stroke=\"var(--origam-color__border---default, rgba(124,58,237,0.3))\" stroke-width=\"1\" stroke-dasharray=\"4 2\"/>\n  <text x=\"100\" y=\"72\" font-size=\"9\" fill=\"var(--origam-color__text---secondary, #6b7280)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">origam-selection-control ②</text>\n  <rect x=\"300\" y=\"50\" width=\"44\" height=\"44\" rx=\"22\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.10))\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <text x=\"322\" y=\"76\" font-size=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">icon ③</text>\n  <rect x=\"360\" y=\"60\" width=\"120\" height=\"24\" rx=\"2\" fill=\"var(--origam-color__surface---sunken, #f3f4f6)\" stroke=\"var(--origam-color__border---default, #e5e7eb)\" stroke-width=\"1\"/>\n  <text x=\"420\" y=\"76\" font-size=\"9\" fill=\"var(--origam-color__text---secondary, #6b7280)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">label / #label ④</text>\n  <text x=\"350\" y=\"148\" font-size=\"8.5\" fill=\"var(--origam-color__text---tertiary, #9ca3af)\" text-anchor=\"middle\" font-family=\"sans-serif\">Delegates all selection logic to OrigamSelectionControl (trueIcon / falseIcon / indeterminateIcon)</text>\n",
             "code": "<!-- root class carries BEM + host style -->\n<origam-selection-control\n  class=\"origam-checkbox-btn\"\n  type=\"checkbox\"\n  :true-icon=\"trueIcon\"\n  :false-icon=\"falseIcon\"\n  :aria-checked=\"indeterminate ? 'mixed' : undefined\"\n>\n  <template #default>\n    <slot name=\"default\" />\n  </template>\n  <template #label>\n    <slot name=\"label\" />\n  </template>\n  <template #input=\"{ props, icon, textColorStyles, backgroundColorStyles, model }\">\n    <slot name=\"input\" v-bind=\"{ props, icon, textColorStyles, backgroundColorStyles, model }\" />\n  </template>\n</origam-selection-control>",
@@ -36075,7 +36073,6 @@
               }
             ]
           },
-          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"300\" fill=\"var(--origam-color__surface---sunken, #f5f5f5)\" rx=\"4\"/>\n  <rect x=\"20\" y=\"20\" width=\"660\" height=\"230\" rx=\"4\" fill=\"var(--origam-color__surface---raised, #fafafa)\" stroke=\"var(--origam-color__border---subtle, rgba(0,0,0,0.1))\" stroke-width=\"1\" stroke-dasharray=\"6 3\"/>\n  <text x=\"350\" y=\"135\" font-size=\"13\" fill=\"var(--origam-color__text---disabled, #bbb)\" text-anchor=\"middle\" font-family=\"system-ui\">Right-click zone (#activator)</text>\n  <circle cx=\"36\" cy=\"28\" r=\"10\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"36\" y=\"32.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <rect x=\"200\" y=\"160\" width=\"220\" height=\"120\" rx=\"8\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---subtle, rgba(0,0,0,0.12))\" stroke-width=\"1.5\" filter=\"url(#shadow)\"/>\n  <circle cx=\"216\" cy=\"168\" r=\"10\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"216\" y=\"172.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <rect x=\"208\" y=\"180\" width=\"204\" height=\"32\" rx=\"4\" fill=\"var(--origam-color__action--secondary---bg, rgba(124,58,237,0.08))\"/>\n  <text x=\"220\" y=\"200\" font-size=\"11\" fill=\"var(--origam-color__text---primary, #222)\" font-family=\"system-ui\">Cut</text>\n  <rect x=\"208\" y=\"214\" width=\"204\" height=\"32\" rx=\"4\" fill=\"none\"/>\n  <text x=\"220\" y=\"234\" font-size=\"11\" fill=\"var(--origam-color__text---primary, #222)\" font-family=\"system-ui\">Copy</text>\n  <rect x=\"208\" y=\"248\" width=\"204\" height=\"28\" rx=\"4\" fill=\"none\"/>\n  <text x=\"220\" y=\"266\" font-size=\"11\" fill=\"var(--origam-color__text---primary, #222)\" font-family=\"system-ui\">Paste</text>\n  <circle cx=\"216\" cy=\"200\" r=\"9\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"216\" y=\"204.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">3</text>\n  <text x=\"350\" y=\"290\" font-size=\"9\" fill=\"var(--origam-color__text---disabled, #b0b0b0)\" text-anchor=\"middle\" font-style=\"italic\">① = activator zone (v-bind=\"props\"). ② = menu panel (role=\"menu\"). ③ = menu items (#default slot).</text>\n",
             "code": "<!-- OrigamContextualMenu wraps OrigamMenu with preconfigured open-on-context-menu -->\n<!-- All OrigamMenu slots are forwarded transparently -->\n<origam-menu\n  open-on-context-menu\n  target=\"cursor\"\n  activator=\"cursor\"\n>\n  <!-- #default slot: your menu content -->\n  <origam-list>\n    <origam-list-item title=\"Cut\"   prepend-icon=\"mdi-content-cut\" />\n    <origam-list-item title=\"Copy\"  prepend-icon=\"mdi-content-copy\" />\n    <origam-list-item title=\"Paste\" prepend-icon=\"mdi-content-paste\" />\n  </origam-list>\n\n  <!-- #activator slot: the right-click zone -->\n  <template #activator=\"{ props }\">\n    <div v-bind=\"props\">Right-click zone</div>\n  </template>\n</origam-menu>",
@@ -37602,16 +37599,6 @@
           "description_fallback": "Semantic <table> for tabular data — use DataList for definition/description layouts."
         },
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "data-title",
-          "to_name": "DataTitle",
-          "prop_name": null,
-          "position": 1,
-          "description_key": "components.catalog.data_title.description",
-          "description_fallback": "Title row inside a DataList avatar-mode item (<dt> element with optional icon/avatar)."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "data-table",
@@ -37620,6 +37607,16 @@
           "position": 1,
           "description_key": "components.catalog.data_table.description",
           "description_fallback": "Feature-rich data table with sorting, grouping and pagination."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "data-title",
+          "to_name": "DataTitle",
+          "prop_name": null,
+          "position": 1,
+          "description_key": "components.catalog.data_title.description",
+          "description_fallback": "Title row inside a DataList avatar-mode item (<dt> element with optional icon/avatar)."
         }
       ]
     },
@@ -38595,16 +38592,6 @@
           "description_fallback": "Semantic description list. Use for key/value or avatar layouts, not tabular data."
         },
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "table",
-          "to_name": "Table",
-          "prop_name": null,
-          "position": 1,
-          "description_key": "components.catalog.table.description",
-          "description_fallback": "Plain semantic <table> without built-in sorting or pagination."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "data-table-footer",
@@ -38613,6 +38600,16 @@
           "position": 1,
           "description_key": "components.catalog.data_table_footer.description",
           "description_fallback": "Pagination and items-per-page footer bar."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "table",
+          "to_name": "Table",
+          "prop_name": null,
+          "position": 1,
+          "description_key": "components.catalog.table.description",
+          "description_fallback": "Plain semantic <table> without built-in sorting or pagination."
         },
         {
           "rel_type": "related",
@@ -39193,16 +39190,6 @@
           "description_fallback": "Feature-rich data table. DataTableFooter is always rendered inside it."
         },
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "pagination",
-          "to_name": "Pagination",
-          "prop_name": null,
-          "position": 1,
-          "description_key": "components.catalog.pagination.description",
-          "description_fallback": "Standalone pagination bar — embedded by DataTableFooter."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "data-table-headers",
@@ -39211,6 +39198,16 @@
           "position": 1,
           "description_key": "components.catalog.data_table_headers.description",
           "description_fallback": "Header row renderer — iterates over column definitions to produce <th> cells."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "pagination",
+          "to_name": "Pagination",
+          "prop_name": null,
+          "position": 1,
+          "description_key": "components.catalog.pagination.description",
+          "description_fallback": "Standalone pagination bar — embedded by DataTableFooter."
         },
         {
           "rel_type": "family",
@@ -39828,16 +39825,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "data-table",
-          "to_name": "DataTable",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.data_table.description",
-          "description_fallback": "Full-featured data table with sorting, pagination, selection and grouping."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "data-table-column-cell",
@@ -39848,14 +39835,14 @@
           "description_fallback": "Generic cell wrapper used internally by DataTableHeaderCell."
         },
         {
-          "rel_type": "related",
+          "rel_type": "family",
           "to_kind": "component",
-          "to_slug": "checkbox-btn",
-          "to_name": "CheckboxBtn",
+          "to_slug": "data-table",
+          "to_name": "DataTable",
           "prop_name": null,
-          "position": 1,
-          "description_key": "components.catalog.checkbox_btn.description",
-          "description_fallback": "Select-all checkbox rendered inside the header cell for the data-table-select column."
+          "position": 0,
+          "description_key": "components.catalog.data_table.description",
+          "description_fallback": "Full-featured data table with sorting, pagination, selection and grouping."
         },
         {
           "rel_type": "family",
@@ -39866,6 +39853,16 @@
           "position": 1,
           "description_key": "components.catalog.data_table_headers.description",
           "description_fallback": "Header row container that renders all header cells and an optional loader."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "checkbox-btn",
+          "to_name": "CheckboxBtn",
+          "prop_name": null,
+          "position": 1,
+          "description_key": "components.catalog.checkbox_btn.description",
+          "description_fallback": "Select-all checkbox rendered inside the header cell for the data-table-select column."
         },
         {
           "rel_type": "family",
@@ -40849,16 +40846,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "data-table-column-cell",
-          "to_name": "DataTableColumnCell",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.data_table_column_cell.description",
-          "description_fallback": "Generic cell wrapper used for each column in the row."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "data-table",
@@ -40869,14 +40856,14 @@
           "description_fallback": "Full-featured data table with sorting, pagination, selection and grouping."
         },
         {
-          "rel_type": "family",
+          "rel_type": "related",
           "to_kind": "component",
-          "to_slug": "data-table-rows",
-          "to_name": "DataTableRows",
+          "to_slug": "data-table-column-cell",
+          "to_name": "DataTableColumnCell",
           "prop_name": null,
-          "position": 1,
-          "description_key": "components.catalog.data_table_rows.description",
-          "description_fallback": "Container that iterates items and renders rows, groups, skeletons and empty/loading states."
+          "position": 0,
+          "description_key": "components.catalog.data_table_column_cell.description",
+          "description_fallback": "Generic cell wrapper used for each column in the row."
         },
         {
           "rel_type": "related",
@@ -40887,6 +40874,16 @@
           "position": 1,
           "description_key": "components.catalog.checkbox_btn.description",
           "description_fallback": "Selection checkbox rendered in the data-table-select column."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "data-table-rows",
+          "to_name": "DataTableRows",
+          "prop_name": null,
+          "position": 1,
+          "description_key": "components.catalog.data_table_rows.description",
+          "description_fallback": "Container that iterates items and renders rows, groups, skeletons and empty/loading states."
         },
         {
           "rel_type": "family",
@@ -41986,16 +41983,6 @@
           "description_fallback": "Key–value list container."
         },
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "data-title",
-          "to_name": "DataTitle",
-          "prop_name": null,
-          "position": 1,
-          "description_key": "components.catalog.data_title.description",
-          "description_fallback": "Paired term label for this value cell."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "data-title",
@@ -42004,6 +41991,16 @@
           "position": 1,
           "description_key": "components.catalog.data_title.description",
           "description_fallback": "Term label cell rendered as a <dt> element."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "data-title",
+          "to_name": "DataTitle",
+          "prop_name": null,
+          "position": 1,
+          "description_key": "components.catalog.data_title.description",
+          "description_fallback": "Paired term label for this value cell."
         }
       ]
     },
@@ -42644,16 +42641,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "data-list",
-          "to_name": "DataList",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.data_list.description",
-          "description_fallback": "Key–value list container."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "data-list",
@@ -42664,14 +42651,14 @@
           "description_fallback": "Parent container for DataTitle + DataText pairs."
         },
         {
-          "rel_type": "related",
+          "rel_type": "family",
           "to_kind": "component",
-          "to_slug": "data-text",
-          "to_name": "DataText",
+          "to_slug": "data-list",
+          "to_name": "DataList",
           "prop_name": null,
-          "position": 1,
-          "description_key": "components.catalog.data_text.description",
-          "description_fallback": "Paired value cell for this term label."
+          "position": 0,
+          "description_key": "components.catalog.data_list.description",
+          "description_fallback": "Key–value list container."
         },
         {
           "rel_type": "family",
@@ -42682,6 +42669,16 @@
           "position": 1,
           "description_key": "components.catalog.data_text.description",
           "description_fallback": "Value cell rendered as a <dd> element."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "data-text",
+          "to_name": "DataText",
+          "prop_name": null,
+          "position": 1,
+          "description_key": "components.catalog.data_text.description",
+          "description_fallback": "Paired value cell for this term label."
         }
       ]
     },
@@ -43342,16 +43339,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "date-picker-field",
-          "to_name": "DatePickerField",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.date_picker_field.description",
-          "description_fallback": "TextField + DatePicker dropdown in a single field component."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "date-picker-controls",
@@ -43360,6 +43347,16 @@
           "position": 0,
           "description_key": "components.catalog.date_picker_controls.description",
           "description_fallback": "Navigation bar with prev/next and view-mode (month/year) toggle buttons."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "date-picker-field",
+          "to_name": "DatePickerField",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.date_picker_field.description",
+          "description_fallback": "TextField + DatePicker dropdown in a single field component."
         },
         {
           "rel_type": "family",
@@ -43973,16 +43970,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "date-picker",
-          "to_name": "DatePicker",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.date_picker.description",
-          "description_fallback": "Parent component that orchestrates the controls, header, and grids."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "date-picker",
@@ -43991,6 +43978,16 @@
           "position": 0,
           "description_key": "components.catalog.date_picker.description",
           "description_fallback": "Full calendar date-picker component."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "date-picker",
+          "to_name": "DatePicker",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.date_picker.description",
+          "description_fallback": "Parent component that orchestrates the controls, header, and grids."
         },
         {
           "rel_type": "family",
@@ -44093,7 +44090,6 @@
               }
             ]
           },
-          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"240\" fill=\"var(--origam-color__surface---sunken, #f9fafb)\" rx=\"4\"/>\n  <rect x=\"60\" y=\"30\" width=\"580\" height=\"54\" rx=\"8\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---default, rgba(0,0,0,0.3))\" stroke-width=\"1.5\"/>\n  <circle cx=\"76\" cy=\"38\" r=\"10\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"76\" y=\"42.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <text x=\"78\" y=\"54\" font-size=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" font-weight=\"700\" font-family=\"'JetBrains Mono',monospace\">origam-date-picker-field</text>\n  <text x=\"80\" y=\"66\" font-size=\"12\" fill=\"var(--origam-color__text---disabled, #aaa)\" font-family=\"system-ui\">DD / MM / YYYY</text>\n  <circle cx=\"620\" cy=\"57\" r=\"14\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"none\"/>\n  <text x=\"620\" y=\"61\" font-size=\"16\" fill=\"var(--origam-color__text---secondary, #888)\" text-anchor=\"middle\">📅</text>\n  <circle cx=\"636\" cy=\"42\" r=\"9\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"636\" y=\"46.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <rect x=\"60\" y=\"100\" width=\"580\" height=\"130\" rx=\"10\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---subtle, rgba(0,0,0,0.1))\" stroke-width=\"1.5\"/>\n  <circle cx=\"76\" cy=\"108\" r=\"10\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"76\" y=\"112.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">3</text>\n  <text x=\"350\" y=\"145\" font-size=\"11\" fill=\"var(--origam-color__text---secondary, #888)\" text-anchor=\"middle\" font-family=\"system-ui\">OrigamDatePicker</text>\n  <text x=\"350\" y=\"168\" font-size=\"10\" fill=\"var(--origam-color__text---disabled, #bbb)\" text-anchor=\"middle\" font-family=\"system-ui\">(calendar grid)</text>\n  <text x=\"350\" y=\"220\" font-size=\"9\" fill=\"var(--origam-color__text---disabled, #b0b0b0)\" text-anchor=\"middle\" font-style=\"italic\">① = text-field chrome. ② = appendInner calendar icon. ③ = DatePicker dropdown (OrigamMenu).</text>\n",
             "code": "<!-- DatePickerField = TextField chrome + Menu + DatePicker -->\n<origam-text-field class=\"origam-date-picker-field\" :aria-label=\"label\">\n\n  <!-- #prepend, #prependInner, #label, #prefix slots passthrough -->\n\n  <!-- selected dates as text or chips -->\n  <span class=\"origam-date-picker-field__selection-text\">\n    {{ formattedDates }}\n  </span>\n  <!-- OR chips in multiple/range mode -->\n  <origam-chip\n    v-for=\"date in selectedDates\"\n    :closable=\"closableChips\"\n    v-bind=\"chipProps\"\n  />\n\n  <!-- #suffix, #clear slots passthrough -->\n\n  <!-- calendar toggle icon -->\n  <template #appendInner>\n    <origam-icon icon=\"mdi-calendar\" />\n  </template>\n\n  <!-- #append slot passthrough -->\n\n  <!-- floating DatePicker -->\n  <origam-menu\n    v-model=\"menu\"\n    content-class=\"origam-date-picker-field__content\"\n  >\n    <origam-date-picker v-model=\"model\" />\n  </origam-menu>\n</origam-text-field>",
@@ -45405,16 +45401,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "date-picker",
-          "to_name": "DatePicker",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.date_picker.description",
-          "description_fallback": "Full calendar date-picker component."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "date-picker",
@@ -45423,6 +45409,16 @@
           "position": 0,
           "description_key": "components.catalog.date_picker.description",
           "description_fallback": "Parent component that renders this header."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "date-picker",
+          "to_name": "DatePicker",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.date_picker.description",
+          "description_fallback": "Full calendar date-picker component."
         },
         {
           "rel_type": "family",
@@ -47855,16 +47851,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "dialog-confirmation",
-          "to_name": "DialogConfirmation",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.dialog_confirmation.description",
-          "description_fallback": "Opinionated dialog with built-in Validate / Cancel footer buttons and a read-to-enable guard (isRead pattern)."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "overlay",
@@ -47873,6 +47859,16 @@
           "position": 0,
           "description_key": "components.catalog.overlay.description",
           "description_fallback": "Low-level overlay primitive that Dialog is built upon."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "dialog-confirmation",
+          "to_name": "DialogConfirmation",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.dialog_confirmation.description",
+          "description_fallback": "Opinionated dialog with built-in Validate / Cancel footer buttons and a read-to-enable guard (isRead pattern)."
         },
         {
           "rel_type": "related",
@@ -47954,7 +47950,6 @@
               }
             ]
           },
-          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"300\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <!-- overlay scrim -->\n  <rect x=\"10\" y=\"10\" width=\"680\" height=\"280\" rx=\"4\" fill=\"rgba(0,0,0,0.08)\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.2))\" stroke-width=\"1\" stroke-dasharray=\"6 3\"/>\n  <text x=\"350\" y=\"24\" font-size=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\" font-style=\"italic\">OrigamDialog (inner overlay)</text>\n  <!-- card surface -->\n  <rect x=\"100\" y=\"36\" width=\"500\" height=\"228\" rx=\"8\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <!-- header zone -->\n  <rect x=\"100\" y=\"36\" width=\"500\" height=\"56\" rx=\"8\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.06))\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.25))\" stroke-width=\"1\"/>\n  <text x=\"350\" y=\"68\" font-size=\"10\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">header — prepend (status icon) | title | append (close)</text>\n  <!-- content zone -->\n  <rect x=\"100\" y=\"92\" width=\"500\" height=\"100\" rx=\"0\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.12))\" stroke-width=\"1\" stroke-dasharray=\"4 2\"/>\n  <text x=\"350\" y=\"146\" font-size=\"10\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">#content slot + isRead IntersectionObserver sentinel</text>\n  <!-- footer zone -->\n  <rect x=\"100\" y=\"192\" width=\"500\" height=\"72\" rx=\"8\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.04))\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.18))\" stroke-width=\"1\"/>\n  <!-- cancel button -->\n  <rect x=\"120\" y=\"212\" width=\"100\" height=\"32\" rx=\"4\" fill=\"none\" stroke=\"var(--origam-color__border---default, rgba(124,58,237,0.3))\" stroke-width=\"1\"/>\n  <text x=\"170\" y=\"232\" font-size=\"10\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" text-anchor=\"middle\" font-family=\"system-ui\">Cancel</text>\n  <!-- validate button -->\n  <rect x=\"468\" y=\"212\" width=\"112\" height=\"32\" rx=\"4\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"524\" y=\"232\" font-size=\"10\" fill=\"#fff\" text-anchor=\"middle\" font-family=\"system-ui\" font-weight=\"600\">Validate</text>\n  <text x=\"350\" y=\"247\" font-size=\"8\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-style=\"italic\">Validate enabled only when isRead = true (user scrolled to bottom)</text>\n  <!-- markers -->\n  <circle cx=\"18\" cy=\"18\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"18\" y=\"22.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"108\" cy=\"44\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"108\" y=\"48.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <circle cx=\"108\" cy=\"100\" r=\"9\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"108\" y=\"104.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">3</text>\n  <circle cx=\"108\" cy=\"200\" r=\"9\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"108\" y=\"204.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">4</text>\n",
             "code": "<origam-dialog\n  ref=\"origamDialogRef\"\n  v-model=\"isActive\"\n  v-bind=\"dialogProps\"\n  @is-read=\"handleIsRead\"\n>\n  <template #activator=\"{ props }\">\n    <slot name=\"activator\" v-bind=\"{ props }\" />\n  </template>\n\n  <!-- all header-* slots forwarded -->\n  <template #header><slot name=\"header\" /></template>\n  <template #header-prepend><slot name=\"header-prepend\" /></template>\n  <template #header-title><slot name=\"header-title\" /></template>\n  <!-- … -->\n\n  <template #content><slot name=\"content\" /></template>\n\n  <!-- built-in footer: Cancel + Validate -->\n  <template #footer>\n    <slot name=\"footer\">\n      <origam-container fluid>\n        <origam-row justify=\"space-between\">\n          <origam-col cols=\"auto\">\n            <origam-btn v-if=\"cancellable\" text=\"Cancel\" @click=\"handleCancel\" />\n          </origam-col>\n          <origam-col cols=\"auto\">\n            <origam-btn :disabled=\"!validatable\" text=\"Validate\" @click=\"handleValidate\" />\n          </origam-col>\n        </origam-row>\n      </origam-container>\n    </slot>\n  </template>\n</origam-dialog>",
@@ -48559,16 +48554,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "overlay",
-          "to_name": "Overlay",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.overlay.description",
-          "description_fallback": "Low-level overlay primitive that Dialog (and therefore DialogConfirmation) is built upon."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "dialog",
@@ -48577,6 +48562,16 @@
           "position": 0,
           "description_key": "components.catalog.dialog.description",
           "description_fallback": "Modal overlay dialog built on OrigamOverlay and OrigamCard."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "overlay",
+          "to_name": "Overlay",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.overlay.description",
+          "description_fallback": "Low-level overlay primitive that Dialog (and therefore DialogConfirmation) is built upon."
         },
         {
           "rel_type": "related",
@@ -50290,7 +50285,6 @@
             "roles": [],
             "keyboard": []
           },
-          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"160\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <!-- enter phase: 0 → full width -->\n  <rect x=\"40\" y=\"40\" width=\"280\" height=\"80\" rx=\"6\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <rect x=\"40\" y=\"40\" width=\"60\" height=\"80\" rx=\"6\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.08))\" stroke=\"none\"/>\n  <text x=\"180\" y=\"76\" font-size=\"10\" fill=\"var(--origam-color__text---primary, #3b1c6e)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">enter-active</text>\n  <text x=\"180\" y=\"92\" font-size=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">width: 0 → offsetWidth</text>\n  <!-- arrow -->\n  <text x=\"350\" y=\"84\" font-size=\"22\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" text-anchor=\"middle\">→</text>\n  <!-- leave phase: full width → 0 -->\n  <rect x=\"380\" y=\"40\" width=\"280\" height=\"80\" rx=\"6\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.35))\" stroke-width=\"1\" stroke-dasharray=\"5 3\" opacity=\"0.55\"/>\n  <rect x=\"600\" y=\"40\" width=\"60\" height=\"80\" rx=\"6\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.05))\" stroke=\"none\" opacity=\"0.55\"/>\n  <text x=\"520\" y=\"76\" font-size=\"10\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\" opacity=\"0.7\">leave-active</text>\n  <text x=\"520\" y=\"92\" font-size=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\" opacity=\"0.7\">width: offsetWidth → 0</text>\n  <!-- markers -->\n  <circle cx=\"48\" cy=\"48\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"48\" y=\"52.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"388\" cy=\"48\" r=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\"/>\n  <text x=\"388\" y=\"52.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n",
             "code": "<!-- OrigamExpandX — JS-driven <transition> -->\n<transition\n  name=\"origam-transition--expand-x\"\n  mode=\"in-out\"\n  :css=\"!disabled\"\n  @before-enter=\"handleBeforeEnter\"\n  @enter=\"handleEnter\"\n  @after-enter=\"handleAfterEnter\"\n  @enter-cancelled=\"handleEnterCancelled\"\n  @leave=\"handleLeave\"\n  @after-leave=\"handleAfterLeave\"\n  @leave-cancelled=\"handleLeaveCancelled\"\n>\n  <slot name=\"default\" />\n</transition>",
@@ -50516,16 +50510,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "transition",
-          "to_name": "Transition",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.transition.description",
-          "description_fallback": "Generic CSS-driven Vue transition wrapper."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "expansion-panel",
@@ -50534,6 +50518,16 @@
           "position": 0,
           "description_key": "components.catalog.expansion_panel.description",
           "description_fallback": "Accordion component that uses ExpandY internally to animate the panel body."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "transition",
+          "to_name": "Transition",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.transition.description",
+          "description_fallback": "Generic CSS-driven Vue transition wrapper."
         },
         {
           "rel_type": "family",
@@ -50627,7 +50621,6 @@
             "roles": [],
             "keyboard": []
           },
-          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"220\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <!-- enter phase: 0 → full height -->\n  <rect x=\"80\" y=\"20\" width=\"220\" height=\"160\" rx=\"6\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <rect x=\"80\" y=\"140\" width=\"220\" height=\"40\" rx=\"6\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.06))\" stroke=\"none\"/>\n  <text x=\"190\" y=\"100\" font-size=\"10\" fill=\"var(--origam-color__text---primary, #3b1c6e)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">enter-active</text>\n  <text x=\"190\" y=\"118\" font-size=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">height: 0 → offsetHeight</text>\n  <!-- arrow -->\n  <text x=\"350\" y=\"115\" font-size=\"22\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" text-anchor=\"middle\">→</text>\n  <!-- leave phase: full height → 0 -->\n  <rect x=\"400\" y=\"20\" width=\"220\" height=\"160\" rx=\"6\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.35))\" stroke-width=\"1\" stroke-dasharray=\"5 3\" opacity=\"0.55\"/>\n  <rect x=\"400\" y=\"20\" width=\"220\" height=\"40\" rx=\"6\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.04))\" stroke=\"none\" opacity=\"0.55\"/>\n  <text x=\"510\" y=\"100\" font-size=\"10\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\" opacity=\"0.7\">leave-active</text>\n  <text x=\"510\" y=\"118\" font-size=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\" opacity=\"0.7\">height: offsetHeight → 0</text>\n  <!-- markers -->\n  <circle cx=\"88\" cy=\"28\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"88\" y=\"32.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"408\" cy=\"28\" r=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\"/>\n  <text x=\"408\" y=\"32.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n",
             "code": "<!-- OrigamExpandY — JS-driven <transition> -->\n<transition\n  name=\"origam-transition--expand-y\"\n  mode=\"in-out\"\n  :css=\"!disabled\"\n  @before-enter=\"handleBeforeEnter\"\n  @enter=\"handleEnter\"\n  @after-enter=\"handleAfterEnter\"\n  @enter-cancelled=\"handleEnterCancelled\"\n  @leave=\"handleLeave\"\n  @after-leave=\"handleAfterLeave\"\n  @leave-cancelled=\"handleLeaveCancelled\"\n>\n  <slot name=\"default\" />\n</transition>",
@@ -51599,16 +51592,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "expansion-panels",
-          "to_name": "ExpansionPanels",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.expansion_panels.description",
-          "description_fallback": "Container managing a group of ExpansionPanel items. Supports accordion, flat, popout and inset display modes."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "dialog",
@@ -51617,6 +51600,16 @@
           "position": 0,
           "description_key": "components.catalog.dialog.description",
           "description_fallback": "Overlay dialog for more complex expandable content."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "expansion-panels",
+          "to_name": "ExpansionPanels",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.expansion_panels.description",
+          "description_fallback": "Container managing a group of ExpansionPanel items. Supports accordion, flat, popout and inset display modes."
         },
         {
           "rel_type": "family",
@@ -53556,7 +53549,6 @@
             "roles": [],
             "keyboard": []
           },
-          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"160\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <rect x=\"40\" y=\"40\" width=\"260\" height=\"80\" rx=\"6\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <text x=\"170\" y=\"75\" font-size=\"11\" fill=\"var(--origam-color__text---primary, #3b1c6e)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">enter-active</text>\n  <text x=\"170\" y=\"91\" font-size=\"10\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">opacity: 0 → 1</text>\n  <rect x=\"400\" y=\"40\" width=\"260\" height=\"80\" rx=\"6\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.35))\" stroke-width=\"1\" stroke-dasharray=\"5 3\" opacity=\"0.45\"/>\n  <text x=\"530\" y=\"75\" font-size=\"11\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">leave-active</text>\n  <text x=\"530\" y=\"91\" font-size=\"10\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">opacity: 1 → 0</text>\n  <circle cx=\"48\" cy=\"48\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"48\" y=\"52\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"408\" cy=\"48\" r=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\"/>\n  <text x=\"408\" y=\"52\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <text x=\"350\" y=\"80\" font-size=\"20\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" text-anchor=\"middle\">→</text>\n",
             "code": "<component :is=\"tag\" :name=\"name\" v-bind=\"transitionProps\">\n  <slot name=\"default\" />\n</component>",
@@ -58137,16 +58129,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "col",
-          "to_name": "Col",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.col.description",
-          "description_fallback": "Flexbox column used with the Grids/Row system."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "grid",
@@ -58155,6 +58137,16 @@
           "position": 0,
           "description_key": "components.catalog.grid.description",
           "description_fallback": "CSS Grid container with token-driven gap, areas, columns and rows."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "col",
+          "to_name": "Col",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.col.description",
+          "description_fallback": "Flexbox column used with the Grids/Row system."
         }
       ]
     },
@@ -58963,7 +58955,6 @@
             ],
             "keyboard": []
           },
-          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"200\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <rect x=\"28\" y=\"16\" width=\"644\" height=\"168\" rx=\"4\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <rect x=\"48\" y=\"36\" width=\"604\" height=\"108\" rx=\"3\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.06))\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.2))\" stroke-width=\"1\" stroke-dasharray=\"3 2\"/>\n  <text x=\"350\" y=\"80\" font-size=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">__picture (absolute, object-fit: contain/cover)</text>\n  <rect x=\"200\" y=\"52\" width=\"300\" height=\"40\" rx=\"3\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.04))\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.2))\" stroke-width=\"1\" stroke-dasharray=\"3 2\"/>\n  <text x=\"350\" y=\"76\" font-size=\"8\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\">__placeholder (lazy load blur)</text>\n  <rect x=\"48\" y=\"156\" width=\"604\" height=\"20\" rx=\"3\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.06))\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.15))\" stroke-width=\"1\" stroke-dasharray=\"3 2\"/>\n  <text x=\"350\" y=\"170\" font-size=\"8\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\">#default slot (overlay content)</text>\n  <circle cx=\"36\" cy=\"24\" r=\"10\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"36\" y=\"28.5\" font-size=\"9\" fill=\"var(--origam-color__action--primary---fg, #fff)\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"56\" cy=\"44\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"56\" y=\"48\" font-size=\"9\" fill=\"var(--origam-color__action--primary---fg, #fff)\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <circle cx=\"200\" cy=\"56\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"200\" y=\"60\" font-size=\"9\" fill=\"var(--origam-color__action--primary---fg, #fff)\" text-anchor=\"middle\" font-weight=\"700\">3</text>\n",
             "code": "<!-- OrigamImg — wraps OrigamResponsive for aspect ratio -->\n<origam-responsive\n  v-intersect=\"intersect\"\n  :aria-label=\"alt\"\n  :aspect-ratio=\"aspectRatio\"\n  :role=\"alt ? 'img' : undefined\"\n  class=\"origam-img\"\n>\n  <template #additional>\n    <!-- main image (fade-in on load) -->\n    <origam-transition :transition=\"transition\">\n      <img v-show=\"isLoaded\" class=\"origam-img__picture origam-img__picture--cover\" />\n    </origam-transition>\n\n    <!-- lazySrc placeholder (blur filter) -->\n    <origam-transition :transition=\"transition\">\n      <img v-if=\"lazySrc && !isLoaded\" class=\"origam-img__picture origam-img__picture--preload\" />\n    </origam-transition>\n\n    <!-- #placeholder slot — v-if isLoading && slots.placeholder -->\n    <div v-if=\"(isLoading || isError) && slots.placeholder\" class=\"origam-img__placeholder\">\n      <slot name=\"placeholder\" />\n    </div>\n\n    <!-- #error slot — v-if isError && slots.error -->\n    <div v-if=\"isError && slots.error\" class=\"origam-img__error\">\n      <slot name=\"error\" />\n    </div>\n\n    <!-- gradient overlay — v-if gradient -->\n    <div v-if=\"gradient\" class=\"origam-img__gradient\" />\n  </template>\n\n  <!-- #default slot — overlay content -->\n  <template #default v-if=\"hasContent\">\n    <slot name=\"default\" />\n  </template>\n</origam-responsive>",
@@ -61524,16 +61515,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "item",
-          "to_name": "Item",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.item.description",
-          "description_fallback": "A single registered item inside an ItemGroup. Provides its selection state to consumers via the default slot."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "btn-toggle",
@@ -61542,6 +61523,16 @@
           "position": 0,
           "description_key": "components.catalog.btn_toggle.description",
           "description_fallback": "Visual toggle group built on top of ItemGroup with Btn children."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "item",
+          "to_name": "Item",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.item.description",
+          "description_fallback": "A single registered item inside an ItemGroup. Provides its selection state to consumers via the default slot."
         },
         {
           "rel_type": "related",
@@ -63060,7 +63051,6 @@
             "roles": [],
             "keyboard": []
           },
-          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"200\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <rect x=\"24\" y=\"24\" width=\"300\" height=\"152\" rx=\"4\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.35))\" stroke-width=\"1.5\" stroke-dasharray=\"6 3\"/>\n  <text x=\"174\" y=\"96\" font-size=\"11\" fill=\"var(--origam-color__text---disabled, #b5a0d8)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">placeholder</text>\n  <text x=\"174\" y=\"112\" font-size=\"9\" fill=\"var(--origam-color__text---disabled, #b5a0d8)\" text-anchor=\"middle\" font-style=\"italic\">(min-height applied, children not mounted)</text>\n  <rect x=\"376\" y=\"24\" width=\"300\" height=\"152\" rx=\"4\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.06))\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <text x=\"526\" y=\"88\" font-size=\"11\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">revealed</text>\n  <text x=\"526\" y=\"104\" font-size=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-style=\"italic\">(children mounted + fade transition)</text>\n  <circle cx=\"32\" cy=\"32\" r=\"10\" fill=\"var(--origam-color__border---default, rgba(168,85,247,0.5))\"/>\n  <text x=\"32\" y=\"36.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"384\" cy=\"32\" r=\"10\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"384\" y=\"36.5\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n",
             "code": "<component :is=\"tag\" v-intersect=\"intersect\" :aria-busy=\"!isActive || undefined\" class=\"origam-lazy\">\n  <!-- children rendered only when isActive=true -->\n  <template v-if=\"isActive\">\n    <origam-transition :transition=\"transition\" appear>\n      <slot name=\"default\" />\n    </origam-transition>\n  </template>\n</component>",
@@ -64836,16 +64826,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "select",
-          "to_name": "Select",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.select.description",
-          "description_fallback": "Dropdown that uses OrigamList internally to render the options menu."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "list-item",
@@ -64858,12 +64838,12 @@
         {
           "rel_type": "related",
           "to_kind": "component",
-          "to_slug": "menu",
-          "to_name": "Menu",
+          "to_slug": "select",
+          "to_name": "Select",
           "prop_name": null,
-          "position": 1,
-          "description_key": "components.catalog.menu.description",
-          "description_fallback": "Context menu or dropdown surface — typically wraps an OrigamList."
+          "position": 0,
+          "description_key": "components.catalog.select.description",
+          "description_fallback": "Dropdown that uses OrigamList internally to render the options menu."
         },
         {
           "rel_type": "family",
@@ -64874,6 +64854,16 @@
           "position": 1,
           "description_key": "components.catalog.list_group.description",
           "description_fallback": "Collapsible group of list items with an activator header."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "menu",
+          "to_name": "Menu",
+          "prop_name": null,
+          "position": 1,
+          "description_key": "components.catalog.menu.description",
+          "description_fallback": "Context menu or dropdown surface — typically wraps an OrigamList."
         },
         {
           "rel_type": "family",
@@ -65351,16 +65341,6 @@
           "description_fallback": "Container for a set of related ListItem, ListGroup and ListSubheader components."
         },
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "list-group-activator",
-          "to_name": "ListGroupActivator",
-          "prop_name": null,
-          "position": 1,
-          "description_key": "components.catalog.list_group_activator.description",
-          "description_fallback": "Internal wrapper that registers the activator context for nested group expansion."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "treeview",
@@ -65369,6 +65349,16 @@
           "position": 1,
           "description_key": "components.catalog.treeview.description",
           "description_fallback": "Hierarchical tree built on List and ListGroup primitives."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "list-group-activator",
+          "to_name": "ListGroupActivator",
+          "prop_name": null,
+          "position": 1,
+          "description_key": "components.catalog.list_group_activator.description",
+          "description_fallback": "Internal wrapper that registers the activator context for nested group expansion."
         }
       ]
     },
@@ -68718,16 +68708,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "media-scrubber",
-          "to_name": "MediaScrubber",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.media_scrubber.description",
-          "description_fallback": "Headless track + thumb widget for timeline and volume scrubbing. Emits update:modelValue, change, dragstart, dragend, hover."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "audio",
@@ -68736,6 +68716,16 @@
           "position": 0,
           "description_key": "components.catalog.audio.description",
           "description_fallback": "Full audio player built on top of MediaController."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "media-scrubber",
+          "to_name": "MediaScrubber",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.media_scrubber.description",
+          "description_fallback": "Headless track + thumb widget for timeline and volume scrubbing. Emits update:modelValue, change, dragstart, dragend, hover."
         },
         {
           "rel_type": "family",
@@ -78184,16 +78174,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "progress-linear",
-          "to_name": "ProgressLinear",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.progress_linear.description",
-          "description_fallback": "Horizontal progress bar. Supports determinate, indeterminate, buffer, stream and striped modes. Emits click when clickable=true."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "skeleton",
@@ -78202,6 +78182,16 @@
           "position": 0,
           "description_key": "components.catalog.skeleton.description",
           "description_fallback": "Skeleton placeholder for content loading states."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "progress-linear",
+          "to_name": "ProgressLinear",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.progress_linear.description",
+          "description_fallback": "Horizontal progress bar. Supports determinate, indeterminate, buffer, stream and striped modes. Emits click when clickable=true."
         },
         {
           "rel_type": "family",
@@ -79462,7 +79452,6 @@
             ],
             "keyboard": []
           },
-          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"280\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <rect x=\"200\" y=\"20\" width=\"300\" height=\"240\" rx=\"8\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---default, rgba(124,58,237,0.3))\" stroke-width=\"1.5\"/>\n  <text x=\"350\" y=\"50\" font-size=\"9\" fill=\"var(--origam-color__text---secondary, #7c3aed)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">origam-qr-code__title</text>\n  <rect x=\"220\" y=\"58\" width=\"260\" height=\"160\" rx=\"4\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.08))\"/>\n  <text x=\"350\" y=\"135\" font-size=\"32\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" text-anchor=\"middle\">⬛</text>\n  <text x=\"350\" y=\"160\" font-size=\"8\" fill=\"var(--origam-color__text---tertiary, #9ca3af)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">origam-qr-code__svg-host</text>\n  <circle cx=\"350\" cy=\"120\" r=\"24\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---default, rgba(124,58,237,0.2))\" stroke-width=\"1\"/>\n  <text x=\"350\" y=\"125\" font-size=\"14\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" text-anchor=\"middle\">◆</text>\n  <text x=\"350\" y=\"235\" font-size=\"8\" fill=\"var(--origam-color__text---tertiary, #9ca3af)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">origam-qr-code__center (icon/image/#center slot)</text>\n  <circle cx=\"196\" cy=\"24\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"196\" y=\"28\" font-size=\"8\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"196\" cy=\"50\" r=\"9\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"196\" y=\"54\" font-size=\"8\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <circle cx=\"196\" cy=\"62\" r=\"9\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"196\" y=\"66\" font-size=\"8\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">3</text>\n  <circle cx=\"324\" cy=\"100\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"324\" y=\"104\" font-size=\"8\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">4</text>\n  <circle cx=\"196\" cy=\"232\" r=\"9\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"196\" y=\"236\" font-size=\"8\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">5</text>\n",
             "code": "<div class=\"origam-qr-code\" role=\"img\" :aria-label=\"resolvedAriaLabel\">\n  <!-- optional title above the matrix -->\n  <div v-if=\"title\" class=\"origam-qr-code__title\">{{ title }}</div>\n\n  <!-- SVG host + center overlay -->\n  <div class=\"origam-qr-code__svg-host\">\n    <!-- inline SVG generated by qrcode-generator -->\n    <!-- v-html: the SVG string is sanitized and contains only geometric elements -->\n\n    <!-- centred overlay (icon / image / #center slot) -->\n    <div class=\"origam-qr-code__center\" aria-hidden=\"true\">\n      <slot name=\"center\" :size=\"centerSize\">\n        <origam-avatar\n          v-if=\"image\"\n          class=\"origam-qr-code__center-avatar\"\n        />\n        <origam-icon\n          v-else-if=\"icon\"\n          class=\"origam-qr-code__center-icon\"\n          :icon=\"icon\"\n        />\n      </slot>\n    </div>\n  </div>\n</div>",
@@ -80027,7 +80016,6 @@
               }
             ]
           },
-          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"480\" height=\"180\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <rect x=\"20\" y=\"20\" width=\"440\" height=\"140\" rx=\"4\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\" stroke-dasharray=\"6 3\"/>\n  <circle cx=\"70\" cy=\"90\" r=\"30\" fill=\"none\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"2\"/>\n  <circle cx=\"70\" cy=\"90\" r=\"12\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <rect x=\"120\" y=\"78\" width=\"200\" height=\"24\" rx=\"3\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.08))\"/>\n  <text x=\"220\" y=\"95\" font-size=\"12\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">Label text</text>\n  <circle cx=\"28\" cy=\"28\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"28\" y=\"32\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"50\" cy=\"68\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"50\" y=\"72\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <circle cx=\"70\" cy=\"58\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"70\" y=\"62\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">3</text>\n  <circle cx=\"70\" cy=\"90\" r=\"9\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"70\" y=\"94\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">4</text>\n  <circle cx=\"130\" cy=\"68\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"130\" y=\"72\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">5</text>\n",
             "code": "<!-- root: OrigamInput wrapper -->\n<div class=\"origam-radio origam-input\">\n  <!-- SelectionControl owns the ripple zone + native input -->\n  <origam-radio-btn class=\"origam-radio-btn\">\n    <origam-selection-control class=\"origam-selection-control\" type=\"radio\">\n      <!-- input zone with ripple -->\n      <div class=\"origam-selection-control__input\">\n        <origam-icon :icon=\"trueIcon\" />   <!-- dot when checked -->\n        <input type=\"radio\" />\n      </div>\n      <!-- label -->\n      <div class=\"origam-selection-control__label\">\n        <origam-label />\n      </div>\n    </origam-selection-control>\n  </origam-radio-btn>\n</div>",
@@ -80733,7 +80721,6 @@
               }
             ]
           },
-          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"180\" fill=\"var(--origam-color__surface---sunken, #f8f9fa)\" rx=\"4\"/>\n  <rect x=\"28\" y=\"30\" width=\"400\" height=\"120\" rx=\"4\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <circle cx=\"76\" cy=\"90\" r=\"20\" fill=\"none\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"2\"/>\n  <circle cx=\"76\" cy=\"90\" r=\"8\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <rect x=\"112\" y=\"80\" width=\"200\" height=\"20\" rx=\"3\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.08))\"/>\n  <text x=\"212\" y=\"94\" font-size=\"11\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">Label / #default slot</text>\n  <circle cx=\"36\" cy=\"38\" r=\"10\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"36\" y=\"42.5\" font-size=\"9\" fill=\"var(--origam-color__action--primary---fg, #fff)\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"60\" cy=\"68\" r=\"10\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"60\" y=\"72.5\" font-size=\"9\" fill=\"var(--origam-color__action--primary---fg, #fff)\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <circle cx=\"76\" cy=\"68\" r=\"10\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"76\" y=\"72.5\" font-size=\"9\" fill=\"var(--origam-color__action--primary---fg, #fff)\" text-anchor=\"middle\" font-weight=\"700\">3</text>\n  <circle cx=\"212\" cy=\"68\" r=\"10\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"212\" y=\"72.5\" font-size=\"9\" fill=\"var(--origam-color__action--primary---fg, #fff)\" text-anchor=\"middle\" font-weight=\"700\">4</text>\n  <line x1=\"46\" y1=\"38\" x2=\"80\" y2=\"22\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1\" stroke-dasharray=\"3 2\"/>\n  <text x=\"84\" y=\"21\" font-size=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" font-weight=\"700\" font-family=\"'JetBrains Mono',monospace\">origam-radio-btn → origam-selection-control</text>\n",
             "code": "<!-- RadioBtn delegates to SelectionControl with type=\"radio\" -->\n<origam-selection-control\n  class=\"origam-radio-btn\"\n  v-model=\"model\"\n  type=\"radio\"\n  :true-icon=\"trueIcon\"\n  :false-icon=\"falseIcon\"\n  v-bind=\"controlProps\"\n  @click:label=\"handleClickLabel\"\n>\n  <template #default><slot name=\"default\" /></template>\n  <template #input=\"{ props, icon, model }\">\n    <slot name=\"input\" v-bind=\"{ props, icon, model }\" />\n  </template>\n  <template #label><slot name=\"label\" /></template>\n</origam-selection-control>",
@@ -81349,7 +81336,6 @@
               }
             ]
           },
-          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"560\" height=\"220\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <rect x=\"20\" y=\"20\" width=\"520\" height=\"180\" rx=\"4\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\" stroke-dasharray=\"6 3\"/>\n  <rect x=\"40\" y=\"36\" width=\"200\" height=\"20\" rx=\"3\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.08))\"/>\n  <text x=\"140\" y=\"50\" font-size=\"10\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">Label (group)</text>\n  <rect x=\"40\" y=\"68\" width=\"480\" height=\"36\" rx=\"3\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.05))\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.25))\" stroke-width=\"1\" stroke-dasharray=\"3 2\"/>\n  <circle cx=\"60\" cy=\"86\" r=\"12\" fill=\"none\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"2\"/>\n  <circle cx=\"60\" cy=\"86\" r=\"5\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"100\" y=\"90\" font-size=\"10\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" font-family=\"'JetBrains Mono',monospace\">Radio item 1</text>\n  <rect x=\"40\" y=\"114\" width=\"480\" height=\"36\" rx=\"3\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.03))\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.2))\" stroke-width=\"1\" stroke-dasharray=\"3 2\"/>\n  <circle cx=\"60\" cy=\"132\" r=\"12\" fill=\"none\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.5))\" stroke-width=\"2\"/>\n  <text x=\"100\" y=\"136\" font-size=\"10\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" font-family=\"'JetBrains Mono',monospace\">Radio item 2</text>\n  <rect x=\"40\" y=\"160\" width=\"480\" height=\"24\" rx=\"3\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.03))\"/>\n  <text x=\"280\" y=\"176\" font-size=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">messages / error</text>\n  <circle cx=\"28\" cy=\"28\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"28\" y=\"32\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"48\" cy=\"44\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"48\" y=\"48\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <circle cx=\"48\" cy=\"76\" r=\"9\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"48\" y=\"80\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">3</text>\n  <circle cx=\"60\" cy=\"86\" r=\"8\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" opacity=\"0.7\"/>\n  <text x=\"60\" y=\"90\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">4</text>\n  <circle cx=\"48\" cy=\"168\" r=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\"/>\n  <text x=\"48\" y=\"172\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">5</text>\n",
             "code": "<origam-input class=\"origam-radio-group\">\n  <template #default=\"{ id, messagesId, isDisabled, isReadonly }\">\n    <!-- optional group label -->\n    <origam-label :id=\"id\" :text=\"label\" :required=\"required\" />\n\n    <!-- DefaultsProvider pushes color/density/size to children -->\n    <origam-defaults-provider :defaults=\"radioDefaults\">\n      <origam-selection-control-group\n        v-model=\"model\"\n        :id=\"id\"\n        :items=\"items\"\n        :multiple=\"false\"\n        :disabled=\"isDisabled\"\n        :readonly=\"isReadonly\"\n        :aria-labelledby=\"label ? id : undefined\"\n        :aria-describedby=\"messagesId\"\n      >\n        <template #item=\"{ item }\">\n          <!-- #item slot or default OrigamRadio -->\n          <origam-radio v-model=\"model\" v-bind=\"item\" />\n        </template>\n      </origam-selection-control-group>\n    </origam-defaults-provider>\n  </template>\n</origam-input>",
@@ -81839,16 +81825,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "radio",
-          "to_name": "Radio",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.radio.description",
-          "description_fallback": "Single-selection radio control with label, error and focus state support."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "selection-control-group",
@@ -81861,12 +81837,12 @@
         {
           "rel_type": "family",
           "to_kind": "component",
-          "to_slug": "radio-btn",
-          "to_name": "RadioBtn",
+          "to_slug": "radio",
+          "to_name": "Radio",
           "prop_name": null,
-          "position": 1,
-          "description_key": "components.catalog.radio_btn.description",
-          "description_fallback": "Low-level radio button control wrapping OrigamSelectionControl."
+          "position": 0,
+          "description_key": "components.catalog.radio.description",
+          "description_fallback": "Single-selection radio control with label, error and focus state support."
         },
         {
           "rel_type": "related",
@@ -81877,6 +81853,16 @@
           "position": 1,
           "description_key": "components.radio_group.related.input",
           "description_fallback": "RadioGroup wraps OrigamInput to inherit label, error and messages orchestration."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "radio-btn",
+          "to_name": "RadioBtn",
+          "prop_name": null,
+          "position": 1,
+          "description_key": "components.catalog.radio_btn.description",
+          "description_fallback": "Low-level radio button control wrapping OrigamSelectionControl."
         }
       ]
     },
@@ -81939,7 +81925,6 @@
               }
             ]
           },
-          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"560\" height=\"180\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <rect x=\"20\" y=\"20\" width=\"520\" height=\"140\" rx=\"4\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\" stroke-dasharray=\"6 3\"/>\n  <text x=\"40\" y=\"55\" font-size=\"11\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" font-family=\"'JetBrains Mono',monospace\">Rating label</text>\n  <text x=\"40\" y=\"110\" font-size=\"28\" fill=\"var(--origam-color__feedback--warning---bg, #f59e0b)\" font-family=\"'JetBrains Mono',monospace\">★★★★☆</text>\n  <rect x=\"440\" y=\"92\" width=\"28\" height=\"28\" rx=\"14\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---default, rgba(124,58,237,0.3))\" stroke-width=\"1.5\"/>\n  <text x=\"454\" y=\"112\" font-size=\"14\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">×</text>\n  <circle cx=\"28\" cy=\"28\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"28\" y=\"32\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"48\" cy=\"52\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"48\" y=\"56\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <circle cx=\"80\" cy=\"68\" r=\"9\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"80\" y=\"72\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">3</text>\n  <circle cx=\"180\" cy=\"68\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"180\" y=\"72\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">4</text>\n  <circle cx=\"454\" cy=\"68\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"454\" y=\"72\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">5</text>\n",
             "code": "<div class=\"origam-rating-field\">\n  <!-- hidden empty item for keyboard baseline -->\n  <div class=\"origam-rating-field__empty\">\n    <origam-rating-field-item :value=\"0\" :show-star=\"false\" />\n  </div>\n\n  <!-- optional clear button -->\n  <origam-btn class=\"origam-rating-field__clear\" icon=\"mdi-close-circle-outline\" />\n\n  <!-- star rows -->\n  <div v-for=\"range in ranges\" class=\"origam-rating-field__wrapper\">\n    <!-- optional top label -->\n    <span>{{ itemLabels[index] }}</span>\n    <div class=\"origam-rating-field__content\">\n      <origam-rating-field-item :value=\"range - 0.5\" />  <!-- half -->\n      <origam-rating-field-item :value=\"range\" />         <!-- full -->\n    </div>\n  </div>\n</div>",
@@ -82481,16 +82466,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "input",
-          "to_name": "Input",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.rating_field.related.input",
-          "description_fallback": "RatingField wraps OrigamInput to inherit label, error and messages orchestration."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "rating-field-item",
@@ -82499,6 +82474,16 @@
           "position": 0,
           "description_key": "components.catalog.rating_field_item.description",
           "description_fallback": "Individual star item in a RatingField. Handles filled/hovered state and half-increment layout."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "input",
+          "to_name": "Input",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.rating_field.related.input",
+          "description_fallback": "RatingField wraps OrigamInput to inherit label, error and messages orchestration."
         }
       ]
     },
@@ -82555,7 +82540,6 @@
               }
             ]
           },
-          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"460\" height=\"180\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <rect x=\"20\" y=\"20\" width=\"420\" height=\"140\" rx=\"4\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\" stroke-dasharray=\"6 3\"/>\n  <rect x=\"40\" y=\"40\" width=\"60\" height=\"32\" rx=\"3\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.06))\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.3))\" stroke-width=\"1\" stroke-dasharray=\"3 2\"/>\n  <text x=\"70\" y=\"61\" font-size=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">label</text>\n  <rect x=\"110\" y=\"40\" width=\"200\" height=\"80\" rx=\"4\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.08))\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <text x=\"210\" y=\"88\" font-size=\"22\" fill=\"var(--origam-color__feedback--warning---bg, #f59e0b)\" text-anchor=\"middle\">★</text>\n  <rect x=\"120\" y=\"132\" width=\"180\" height=\"12\" rx=\"3\" fill=\"var(--origam-color__action--primary---bgSubtle, rgba(124,58,237,0.04))\"/>\n  <text x=\"210\" y=\"143\" font-size=\"8\" fill=\"var(--origam-color__text---disabled, #b5a0d8)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">hidden radio input</text>\n  <circle cx=\"28\" cy=\"28\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"28\" y=\"32\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"48\" cy=\"48\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"48\" y=\"52\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <circle cx=\"118\" cy=\"48\" r=\"9\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"118\" y=\"52\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">3</text>\n  <circle cx=\"210\" cy=\"136\" r=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\"/>\n  <text x=\"210\" y=\"140\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">4</text>\n",
             "code": "<div class=\"origam-rating-field-item\">\n  <!-- visually-hidden label for screen readers -->\n  <label :for=\"id\">\n    <span class=\"origam-rating-field-item__hidden\">Rate {{ value }} of {{ length }}</span>\n\n    <!-- the clickable star icon (OrigamBtn in text/icon mode) -->\n    <origam-btn\n      v-if=\"showStar\"\n      variant=\"text\"\n      :icon=\"isFullIcon ? fullIcon : emptyIcon\"\n      @click=\"handleClick\"\n      @mouseenter=\"handleMouseEnter\"\n      @mouseleave=\"handleMouseLeave\"\n    />\n  </label>\n\n  <!-- visually-hidden radio input, not focusable -->\n  <input\n    class=\"origam-rating-field-item__hidden\"\n    type=\"radio\"\n    :id=\"id\"\n    :name=\"name\"\n    :value=\"value\"\n    :checked=\"checked\"\n    :disabled=\"disabled\"\n    :readonly=\"readonly\"\n    tabindex=\"-1\"\n  />\n</div>",
@@ -83073,16 +83057,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "rating-field",
-          "to_name": "RatingField",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.rating_field.description",
-          "description_fallback": "Star-rating input with configurable length, half-increment support, hover preview and clearable option."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "btn",
@@ -83091,6 +83065,16 @@
           "position": 0,
           "description_key": "components.rating_field_item.related.btn",
           "description_fallback": "RatingFieldItem renders an OrigamBtn in variant=\"text\" icon mode as the interactive star surface."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "rating-field",
+          "to_name": "RatingField",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.rating_field.description",
+          "description_fallback": "Star-rating input with configurable length, half-increment support, hover preview and clearable option."
         }
       ]
     },
@@ -83990,16 +83974,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "textarea-field",
-          "to_name": "TextareaField",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.textarea_field.description",
-          "description_fallback": "Multi-line text input with optional rich-text editing support and this toolbar."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "btn",
@@ -84008,6 +83982,16 @@
           "position": 0,
           "description_key": "components.rich_toolbar.related.btn.description",
           "description_fallback": "Each command button inside the toolbar is an OrigamBtn with variant=\"text\" and icon=true."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "textarea-field",
+          "to_name": "TextareaField",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.textarea_field.description",
+          "description_fallback": "Multi-line text input with optional rich-text editing support and this toolbar."
         }
       ]
     },
@@ -84704,7 +84688,6 @@
             "roles": [],
             "keyboard": []
           },
-          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"180\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <rect x=\"40\" y=\"40\" width=\"260\" height=\"100\" rx=\"6\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <text x=\"170\" y=\"86\" font-size=\"11\" fill=\"var(--origam-color__text---primary, #3b1c6e)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">enter-active</text>\n  <text x=\"170\" y=\"102\" font-size=\"9\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">scale(0) rotate(−45deg) → full</text>\n  <rect x=\"400\" y=\"40\" width=\"260\" height=\"100\" rx=\"6\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.35))\" stroke-width=\"1\" stroke-dasharray=\"5 3\" opacity=\"0.5\"/>\n  <text x=\"530\" y=\"86\" font-size=\"11\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">leave-active</text>\n  <text x=\"530\" y=\"102\" font-size=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">full → opacity 0</text>\n  <circle cx=\"48\" cy=\"48\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"48\" y=\"52\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"408\" cy=\"48\" r=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\"/>\n  <text x=\"408\" y=\"52\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <text x=\"350\" y=\"95\" font-size=\"22\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" text-anchor=\"middle\">→</text>\n",
             "code": "<!-- wraps <transition> or <transition-group> via useCssTransition -->\n<component :is=\"tag\" :name=\"name\" v-bind=\"transitionProps\">\n  <slot name=\"default\" />\n</component>\n\n<!-- CSS keyframes (global, not scoped) -->\n<!-- .origam-transition--scale-rotate-enter-from { opacity: 0; transform: scale(0) rotate(-45deg); }\n     .origam-transition--scale-rotate-enter-active,\n     .origam-transition--scale-rotate-leave-active { transition-property: transform, opacity; transition-duration: 0.3s; } -->",
@@ -85076,7 +85059,6 @@
               }
             ]
           },
-          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"560\" height=\"200\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <rect x=\"20\" y=\"20\" width=\"520\" height=\"60\" rx=\"4\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <text x=\"40\" y=\"43\" font-size=\"10\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" font-family=\"'JetBrains Mono',monospace\">Framework</text>\n  <text x=\"40\" y=\"64\" font-size=\"12\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" font-family=\"'JetBrains Mono',monospace\">Vue 3</text>\n  <text x=\"510\" y=\"56\" font-size=\"18\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">▾</text>\n  <rect x=\"20\" y=\"100\" width=\"520\" height=\"80\" rx=\"4\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---default, rgba(124,58,237,0.3))\" stroke-width=\"1\" stroke-dasharray=\"4 2\"/>\n  <text x=\"46\" y=\"122\" font-size=\"11\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" font-family=\"'JetBrains Mono',monospace\">Vue 3</text>\n  <text x=\"46\" y=\"146\" font-size=\"11\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" font-family=\"'JetBrains Mono',monospace\">React</text>\n  <text x=\"46\" y=\"166\" font-size=\"11\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" font-family=\"'JetBrains Mono',monospace\">Svelte</text>\n  <circle cx=\"28\" cy=\"28\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"28\" y=\"32\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"48\" cy=\"48\" r=\"9\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"48\" y=\"52\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <circle cx=\"120\" cy=\"68\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"120\" y=\"72\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">3</text>\n  <circle cx=\"510\" cy=\"40\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"510\" y=\"44\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">4</text>\n  <circle cx=\"28\" cy=\"108\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"28\" y=\"112\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">5</text>\n  <circle cx=\"46\" cy=\"122\" r=\"7\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"46\" y=\"126\" font-size=\"8\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">6</text>\n",
             "code": "<!-- extends TextField chrome -->\n<origam-text-field class=\"origam-select origam-select--single\">\n  <!-- dropdown via OrigamMenu -->\n  <origam-menu content-class=\"origam-select__content\">\n    <origam-list class=\"origam-select__menu-list\">\n      <origam-list-item>\n        <!-- item text with optional search highlight -->\n        <span class=\"origam-select__text\">Vue 3</span>\n      </origam-list-item>\n    </origam-list>\n  </origam-menu>\n\n  <!-- selected value display -->\n  <span class=\"origam-select__selection-text\">Vue 3</span>\n\n  <!-- menu toggle chevron (appendInner) -->\n  <origam-icon class=\"origam-select__menu-icon\" />\n</origam-text-field>",
@@ -86675,16 +86657,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "selection-control-group",
-          "to_name": "SelectionControlGroup",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.selection_control_group.description",
-          "description_fallback": "Groups multiple SelectionControl instances under a shared v-model with inline layout and item-slot API."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "checkbox",
@@ -86693,6 +86665,16 @@
           "position": 0,
           "description_key": "components.selection_control.related.checkbox",
           "description_fallback": "Checkbox uses OrigamSelectionControl with type=\"checkbox\"."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "selection-control-group",
+          "to_name": "SelectionControlGroup",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.selection_control_group.description",
+          "description_fallback": "Groups multiple SelectionControl instances under a shared v-model with inline layout and item-slot API."
         },
         {
           "rel_type": "related",
@@ -87232,16 +87214,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "selection-control",
-          "to_name": "SelectionControl",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.selection_control.description",
-          "description_fallback": "Base selection-control primitive used by Checkbox, Radio and Switch."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "checkbox",
@@ -87250,6 +87222,16 @@
           "position": 0,
           "description_key": "components.selection_control_group.related.checkbox",
           "description_fallback": "Checkbox uses SelectionControlGroup as its internal list container."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "selection-control",
+          "to_name": "SelectionControl",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.selection_control.description",
+          "description_fallback": "Base selection-control primitive used by Checkbox, Radio and Switch."
         },
         {
           "rel_type": "related",
@@ -90573,7 +90555,6 @@
             "roles": [],
             "keyboard": []
           },
-          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"180\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <rect x=\"40\" y=\"40\" width=\"260\" height=\"100\" rx=\"6\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <text x=\"170\" y=\"83\" font-size=\"11\" fill=\"var(--origam-color__text---primary, #3b1c6e)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">enter-active</text>\n  <text x=\"170\" y=\"101\" font-size=\"9\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">translateX(−15px) → 0</text>\n  <text x=\"170\" y=\"115\" font-size=\"9\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">opacity: 0 → 1</text>\n  <rect x=\"400\" y=\"40\" width=\"260\" height=\"100\" rx=\"6\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.35))\" stroke-width=\"1\" stroke-dasharray=\"5 3\" opacity=\"0.5\"/>\n  <text x=\"530\" y=\"83\" font-size=\"11\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">leave-active</text>\n  <text x=\"530\" y=\"101\" font-size=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">0 → translateX(−15px)</text>\n  <text x=\"530\" y=\"115\" font-size=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">opacity: 1 → 0</text>\n  <circle cx=\"48\" cy=\"48\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"48\" y=\"52\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"408\" cy=\"48\" r=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\"/>\n  <text x=\"408\" y=\"52\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <text x=\"350\" y=\"95\" font-size=\"22\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" text-anchor=\"middle\">→</text>\n",
             "code": "<!-- wraps <transition> or <transition-group> via useCssTransition -->\n<component :is=\"tag\" :name=\"name\" v-bind=\"transitionProps\">\n  <slot name=\"default\" />\n</component>\n\n<!-- CSS (global, not scoped) -->\n<!-- .origam-transition--slide-x-enter-from,\n     .origam-transition--slide-x-leave-to { opacity: 0; transform: translateX(-15px); }\n     .origam-transition--slide-x-enter-active,\n     .origam-transition--slide-x-leave-active { transition-property: transform, opacity; transition-duration: 0.3s; } -->",
@@ -90927,7 +90908,6 @@
             "roles": [],
             "keyboard": []
           },
-          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"200\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <rect x=\"40\" y=\"40\" width=\"260\" height=\"120\" rx=\"6\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <text x=\"170\" y=\"93\" font-size=\"11\" fill=\"var(--origam-color__text---primary, #3b1c6e)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">enter-active</text>\n  <text x=\"170\" y=\"111\" font-size=\"9\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">translateY(−15px) → 0</text>\n  <text x=\"170\" y=\"127\" font-size=\"9\" fill=\"var(--origam-color__text---secondary, #5b3e8c)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">opacity: 0 → 1</text>\n  <rect x=\"400\" y=\"40\" width=\"260\" height=\"120\" rx=\"6\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.35))\" stroke-width=\"1\" stroke-dasharray=\"5 3\" opacity=\"0.5\"/>\n  <text x=\"530\" y=\"93\" font-size=\"11\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">leave-active</text>\n  <text x=\"530\" y=\"111\" font-size=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">0 → translateY(−15px)</text>\n  <text x=\"530\" y=\"127\" font-size=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">opacity: 1 → 0</text>\n  <circle cx=\"48\" cy=\"48\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"48\" y=\"52\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"408\" cy=\"48\" r=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\"/>\n  <text x=\"408\" y=\"52\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <text x=\"350\" y=\"105\" font-size=\"22\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" text-anchor=\"middle\">→</text>\n",
             "code": "<!-- wraps <transition> or <transition-group> via useCssTransition -->\n<component :is=\"tag\" :name=\"name\" v-bind=\"transitionProps\">\n  <slot name=\"default\" />\n</component>\n\n<!-- CSS (global, not scoped) -->\n<!-- .origam-transition--slide-y-enter-from,\n     .origam-transition--slide-y-leave-to { opacity: 0; transform: translateY(-15px); }\n     .origam-transition--slide-y-enter-active,\n     .origam-transition--slide-y-leave-active { transition-property: transform, opacity; transition-duration: 0.3s; } -->",
@@ -95899,16 +95879,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "tabs",
-          "to_name": "Tabs",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.tabs.description",
-          "description_fallback": "Parent tablist — required wrapper for OrigamTab."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "tabs",
@@ -95917,6 +95887,16 @@
           "position": 0,
           "description_key": "components.catalog.tabs.description",
           "description_fallback": "WAI-ARIA tablist container that orchestrates a group of OrigamTab elements."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "tabs",
+          "to_name": "Tabs",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.tabs.description",
+          "description_fallback": "Parent tablist — required wrapper for OrigamTab."
         },
         {
           "rel_type": "family",
@@ -96937,16 +96917,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "tabs",
-          "to_name": "Tabs",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.tabs.description",
-          "description_fallback": "Sibling tablist — must share the same v-model to synchronise selection."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "tabs",
@@ -96955,6 +96925,16 @@
           "position": 0,
           "description_key": "components.catalog.tabs.description",
           "description_fallback": "WAI-ARIA tablist container that orchestrates a group of OrigamTab elements."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "tabs",
+          "to_name": "Tabs",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.tabs.description",
+          "description_fallback": "Sibling tablist — must share the same v-model to synchronise selection."
         },
         {
           "rel_type": "family",
@@ -100505,16 +100485,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "family",
-          "to_kind": "component",
-          "to_slug": "timeline",
-          "to_name": "Timeline",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.timeline.description",
-          "description_fallback": "Vertical or horizontal event timeline container that manages OrigamTimelineItem children."
-        },
-        {
           "rel_type": "related",
           "to_kind": "component",
           "to_slug": "timeline",
@@ -100523,6 +100493,16 @@
           "position": 0,
           "description_key": "components.catalog.timeline.description",
           "description_fallback": "Parent container — required wrapper for OrigamTimelineItem."
+        },
+        {
+          "rel_type": "family",
+          "to_kind": "component",
+          "to_slug": "timeline",
+          "to_name": "Timeline",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.timeline.description",
+          "description_fallback": "Vertical or horizontal event timeline container that manages OrigamTimelineItem children."
         }
       ]
     },
@@ -102349,7 +102329,6 @@
             "roles": [],
             "keyboard": []
           },
-          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"160\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <rect x=\"40\" y=\"40\" width=\"280\" height=\"80\" rx=\"6\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <text x=\"180\" y=\"84\" font-size=\"11\" fill=\"var(--origam-color__text---primary, #3b1c6e)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">enter-active</text>\n  <rect x=\"380\" y=\"40\" width=\"280\" height=\"80\" rx=\"6\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__border---default, rgba(168,85,247,0.35))\" stroke-width=\"1\" stroke-dasharray=\"5 3\" opacity=\"0.5\"/>\n  <text x=\"520\" y=\"84\" font-size=\"11\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\" text-anchor=\"middle\" font-family=\"'JetBrains Mono',monospace\">leave-active</text>\n  <circle cx=\"48\" cy=\"48\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"48\" y=\"52\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"388\" cy=\"48\" r=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\"/>\n  <text x=\"388\" y=\"52\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <text x=\"350\" y=\"80\" font-size=\"20\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\" text-anchor=\"middle\">→</text>\n",
             "code": "<!-- generic wrapper — delegates to <transition> or <transition-group> -->\n<component :is=\"group ? 'transition-group' : 'transition'\" :name=\"name\" v-bind=\"transitionProps\">\n  <slot name=\"default\" />\n</component>",
@@ -105253,16 +105232,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "virtual-scroll",
-          "to_name": "VirtualScroll",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.catalog.virtual_scroll.description",
-          "description_fallback": "Parent virtual scroller — injects OrigamVirtualScrollItem internally for each visible slot."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "virtual-scroll",
@@ -105271,6 +105240,16 @@
           "position": 0,
           "description_key": "components.catalog.virtual_scroll.description",
           "description_fallback": "Window-based virtual list renderer that only mounts visible rows, keeping the DOM small for arbitrarily large datasets."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "virtual-scroll",
+          "to_name": "VirtualScroll",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.catalog.virtual_scroll.description",
+          "description_fallback": "Parent virtual scroller — injects OrigamVirtualScrollItem internally for each visible slot."
         }
       ]
     },
@@ -105314,7 +105293,6 @@
             "roles": [],
             "keyboard": []
           },
-          
           "anatomy": {
             "svg": "\n  <rect x=\"0\" y=\"0\" width=\"700\" height=\"220\" fill=\"var(--origam-color__surface---sunken, #fbf5ff)\" rx=\"4\"/>\n  <rect x=\"60\" y=\"20\" width=\"580\" height=\"180\" rx=\"6\" fill=\"var(--origam-color__surface---raised, #fff)\" stroke=\"var(--origam-color__action--primary---bg, #7c3aed)\" stroke-width=\"1.5\"/>\n  <text x=\"350\" y=\"110\" font-size=\"14\" fill=\"var(--origam-color__text---primary, #3b1c6e)\" text-anchor=\"middle\" font-family=\"sans-serif\">Wrapped content</text>\n  <g opacity=\"0.10\" transform=\"translate(60,20)\">\n    <text x=\"30\" y=\"50\" font-size=\"18\" fill=\"#7c3aed\" transform=\"rotate(-30, 30, 50)\" font-family=\"sans-serif\">DRAFT</text>\n    <text x=\"180\" y=\"90\" font-size=\"18\" fill=\"#7c3aed\" transform=\"rotate(-30, 180, 90)\" font-family=\"sans-serif\">DRAFT</text>\n    <text x=\"340\" y=\"60\" font-size=\"18\" fill=\"#7c3aed\" transform=\"rotate(-30, 340, 60)\" font-family=\"sans-serif\">DRAFT</text>\n    <text x=\"100\" y=\"140\" font-size=\"18\" fill=\"#7c3aed\" transform=\"rotate(-30, 100, 140)\" font-family=\"sans-serif\">DRAFT</text>\n    <text x=\"280\" y=\"160\" font-size=\"18\" fill=\"#7c3aed\" transform=\"rotate(-30, 280, 160)\" font-family=\"sans-serif\">DRAFT</text>\n    <text x=\"440\" y=\"140\" font-size=\"18\" fill=\"#7c3aed\" transform=\"rotate(-30, 440, 140)\" font-family=\"sans-serif\">DRAFT</text>\n  </g>\n  <circle cx=\"68\" cy=\"28\" r=\"9\" fill=\"var(--origam-color__action--primary---bg, #7c3aed)\"/>\n  <text x=\"68\" y=\"32\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">1</text>\n  <circle cx=\"350\" cy=\"28\" r=\"9\" fill=\"var(--origam-color__action--primary---bgHover, #a855f7)\"/>\n  <text x=\"350\" y=\"32\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">2</text>\n  <circle cx=\"350\" cy=\"100\" r=\"9\" fill=\"var(--origam-color__text---tertiary, #7e5fb0)\"/>\n  <text x=\"350\" y=\"104\" font-size=\"9\" fill=\"#fff\" text-anchor=\"middle\" font-weight=\"700\">3</text>\n",
             "code": "<component :is=\"tag\" ref=\"rootEl\" class=\"origam-watermark\">\n  <!-- wrapped content -->\n  <slot />\n  <!-- tiled overlay — position:absolute, inset:0 -->\n  <div ref=\"layerEl\" class=\"origam-watermark__layer\" :style=\"layerStyles\" />\n</component>",
@@ -106294,16 +106272,6 @@
       "directiveModifiers": [],
       "relations": [
         {
-          "rel_type": "related",
-          "to_kind": "component",
-          "to_slug": "carousel",
-          "to_name": "Carousel",
-          "prop_name": null,
-          "position": 0,
-          "description_key": "components.related.carousel.description",
-          "description_fallback": "Carousel is built on top of Window and adds autoplay, indicator dots and image preloading."
-        },
-        {
           "rel_type": "family",
           "to_kind": "component",
           "to_slug": "window-item",
@@ -106312,6 +106280,16 @@
           "position": 0,
           "description_key": "components.catalog.window_item.description",
           "description_fallback": "One slide inside a Window. Handles transition animation, lazy rendering and group membership lifecycle."
+        },
+        {
+          "rel_type": "related",
+          "to_kind": "component",
+          "to_slug": "carousel",
+          "to_name": "Carousel",
+          "prop_name": null,
+          "position": 0,
+          "description_key": "components.related.carousel.description",
+          "description_fallback": "Carousel is built on top of Window and adds autoplay, indicator dots and image preloading."
         },
         {
           "rel_type": "related",

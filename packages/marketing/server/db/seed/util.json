@@ -1,8 +1,8 @@
 {
   "kind": "util",
-  "exportedAt": "2026-08-19T12:24:54.042Z",
-  "sourceCommit": "1ef461dc",
-  "entryCount": 355,
+  "exportedAt": "2026-09-06T21:13:28.624Z",
+  "sourceCommit": "911d3725",
+  "entryCount": 364,
   "entries": [
     {
       "entry": {
@@ -2575,6 +2575,63 @@
     {
       "entry": {
         "kind": "util",
+        "slug": "camelize",
+        "name": "camelize",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function camelize(str: string): string",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Commons/commons.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "str",
+          "type": "string",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "string",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "util",
         "slug": "check-event",
         "name": "checkEvent",
         "category": "Commons",
@@ -3184,6 +3241,72 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "clear-timer",
+        "name": "clearTimer",
+        "category": "Snackbar",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "const clearTimer: (state: ISnackbarGroupState, itemId: string) => void",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Snackbar/snackbar-group.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "state",
+          "type": "ISnackbarGroupState",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "itemId",
+          "type": "string",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "void",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {
@@ -8484,6 +8607,63 @@
     {
       "entry": {
         "kind": "util",
+        "slug": "generate-id",
+        "name": "generateId",
+        "category": "Snackbar",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "const generateId: (state: ISnackbarGroupState) => string",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Snackbar/snackbar-group.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "state",
+          "type": "ISnackbarGroupState",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "string",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "util",
         "slug": "generate-layers",
         "name": "generateLayers",
         "category": "Commons",
@@ -12734,6 +12914,63 @@
     {
       "entry": {
         "kind": "util",
+        "slug": "get-store",
+        "name": "getStore",
+        "category": "Snackbar",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "const getStore: (id: string) => ISnackbarGroupState",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Snackbar/snackbar-group.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "id",
+          "type": "string",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "ISnackbarGroupState",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "util",
         "slug": "get-target",
         "name": "getTarget",
         "category": "Commons",
@@ -13009,7 +13246,7 @@
         "description_key": "utils.catalog.get_uid.description",
         "description_fallback": "Returns a stable numeric UID for the calling Vue component instance. The same instance always receives the same integer; different instances receive different integers. Useful for generating unique DOM id attributes (aria-controls, aria-labelledby, …).",
         "definition": null,
-        "signature": "function getUid(): number",
+        "signature": "function getUid(): string",
         "tag": null,
         "value": null,
         "source_file": "packages/ds/src/utils/Commons/getCurrentInstance.util.ts",
@@ -13032,7 +13269,7 @@
       "returns": [
         {
           "name": null,
-          "type": "number",
+          "type": "string",
           "position": 0,
           "description_key": "utils.detail.get_uid.returns",
           "description_fallback": "A positive integer unique to the current component instance for the lifetime of the application."
@@ -23826,6 +24063,53 @@
     {
       "entry": {
         "kind": "util",
+        "slug": "prefers-reduced-motion",
+        "name": "prefersReducedMotion",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function prefersReducedMotion(): boolean",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Commons/animation.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [],
+      "returns": [
+        {
+          "name": null,
+          "type": "boolean",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "util",
         "slug": "priority-queue",
         "name": "priorityQueue",
         "category": "DataTable",
@@ -24013,6 +24297,63 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "raw-supports",
+        "name": "rawSupports",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function rawSupports(query: string): boolean",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Commons/css-support.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "query",
+          "type": "string",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "boolean",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {
@@ -24329,6 +24670,100 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "reset-snackbar-group-for-testing",
+        "name": "resetSnackbarGroupForTesting",
+        "category": "Snackbar",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function resetSnackbarGroupForTesting(): void",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Snackbar/snackbar-group.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [],
+      "returns": [
+        {
+          "name": null,
+          "type": "void",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "reset-supports-cache",
+        "name": "resetSupportsCache",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function resetSupportsCache(): void",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Commons/css-support.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [],
+      "returns": [
+        {
+          "name": null,
+          "type": "void",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {
@@ -30331,7 +30766,7 @@
         "description_key": "utils.catalog.transform_list_item.description",
         "description_fallback": "Convert one raw item (string or object) to a normalised IInternalListItem with resolved title, value, optional children array, itemProps, and the original raw reference.",
         "definition": null,
-        "signature": "function transformListItem(props: Omit<IItemProps, 'items'>, item: any): IInternalListItem",
+        "signature": "function transformListItem(props: Omit<IItemProps, 'items'> & { itemType?: string }, item: any): IInternalListItemChildren",
         "tag": null,
         "value": null,
         "source_file": "packages/ds/src/utils/List/list-item.util.ts",
@@ -30353,7 +30788,7 @@
       "params": [
         {
           "name": "props",
-          "type": "Omit<IItemProps, 'items'>",
+          "type": "Omit<IItemProps, 'items'> & { itemType?: string }",
           "required": true,
           "default_value": null,
           "position": 0,
@@ -30373,7 +30808,7 @@
       "returns": [
         {
           "name": null,
-          "type": "IInternalListItem",
+          "type": "IInternalListItemChildren",
           "position": 0,
           "description_key": "utils.detail.transform_list_item.returns",
           "description_fallback": "A normalised object with `title` (string), `value`, `props`, `children` (recursively transformed array or undefined), and `raw` (original item)."
@@ -31617,7 +32052,7 @@
         "description_key": "utils.catalog.warn_legacy_color.description",
         "description_fallback": "Emit a console.warn (once per unique kind+value pair) when a raw CSS color is passed to a color prop that expects a TIntent. Deprecated raw-color support will be removed in v3.0.0.",
         "definition": null,
-        "signature": "function warnLegacyColor(kind: 'color' | 'bgColor' | 'hoverColor' | 'hoverBgColor' | 'activeColor' | 'activeBgColor', value: string): void",
+        "signature": "function warnLegacyColor(kind: 'color' | 'bgColor', value: string): void",
         "tag": null,
         "value": null,
         "source_file": "packages/ds/src/utils/Commons/color.util.ts",
@@ -31639,7 +32074,7 @@
       "params": [
         {
           "name": "kind",
-          "type": "'color' | 'bgColor' | 'hoverColor' | 'hoverBgColor' | 'activeColor' | 'activeBgColor'",
+          "type": "'color' | 'bgColor'",
           "required": true,
           "default_value": null,
           "position": 0,
@@ -31690,6 +32125,81 @@
           "description_fallback": null
         }
       ]
+    },
+    {
+      "entry": {
+        "kind": "util",
+        "slug": "warn-unsupported-prop",
+        "name": "warnUnsupportedProp",
+        "category": "Commons",
+        "domain": null,
+        "icon": null,
+        "description_key": null,
+        "description_fallback": null,
+        "definition": null,
+        "signature": "function warnUnsupportedProp(component: string, prop: string, reason: string): void",
+        "tag": null,
+        "value": null,
+        "source_file": "packages/ds/src/utils/Commons/color.util.ts",
+        "package_note": null,
+        "note_key": null,
+        "note_fallback": null,
+        "story_url": null,
+        "doc_url": null,
+        "parent_slug": null,
+        "kind_extra": null,
+        "svg_title_key": null,
+        "svg_title_fallback": null,
+        "svg_desc_key": null,
+        "svg_desc_fallback": null,
+        "edited_by_user": false
+      },
+      "props": [],
+      "values": [],
+      "params": [
+        {
+          "name": "component",
+          "type": "string",
+          "required": true,
+          "default_value": null,
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "prop",
+          "type": "string",
+          "required": true,
+          "default_value": null,
+          "position": 1,
+          "description_key": null,
+          "description_fallback": null
+        },
+        {
+          "name": "reason",
+          "type": "string",
+          "required": true,
+          "default_value": null,
+          "position": 2,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "returns": [
+        {
+          "name": null,
+          "type": "void",
+          "position": 0,
+          "description_key": null,
+          "description_fallback": null
+        }
+      ],
+      "emits": [],
+      "slots": [],
+      "examples": [],
+      "directiveArgs": [],
+      "directiveModifiers": [],
+      "relations": []
     },
     {
       "entry": {
