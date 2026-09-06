@@ -5,6 +5,20 @@ import { computed, Ref } from 'vue'
 
 /*********************************************************
  * useTeleport
+ *
+ * @description
+ * Resout `target` (`true` = pas de teleport ; `false` = `document.body` ;
+ * une chaine = selecteur CSS ; un `Element` direct) en conteneur reel a
+ * `<teleport :to="teleportTarget">`. Cree paresseusement UN conteneur
+ * `.origam-overlay-container` par cible parente et le REUTILISE si un
+ * autre composant a deja teleporte dans la meme cible — pas un
+ * conteneur par instance.
+ *
+ * @description
+ * Un selecteur qui ne matche rien produit un `console.warn` et
+ * `teleportTarget` reste `undefined` — le composant appelant retombe
+ * alors sur son rendu non-teleporte plutot que de crasher. En SSR
+ * (`!IN_BROWSER`), toujours `undefined`, sans avertissement.
  ********************************************************/
 export function useTeleport (target: Ref<boolean | string | Element>) {
     const teleportTarget = computed(() => {

@@ -96,6 +96,28 @@ const noopRef = computed(() => false)
 
 /*********************************************************
  * useStateEffect
+ *
+ * @description
+ * Composable unique remplacant la chaine `useColorEffect` +
+ * `useBorder` + `useRounded` + `useElevation` + `usePadding` + `useMargin`
+ * que chaque composant visuel devait repeter. Lit les etats `isHover`/
+ * `isActive`/`isDisabled` (et leurs overrides `hoverState`/`activeState`)
+ * et resout 8 axes state-aware : color, bgColor, border, rounded,
+ * elevation, padding, margin, gap — chacun avec classes ET styles.
+ * Priorite de resolution par axe : HOVER gagne sur ACTIVE (survoler un
+ * element presse/selectionne montre la surface hover), qui gagne sur la
+ * valeur de repos (`props.xxx`).
+ *
+ * @description
+ * ⛔ `status` (`success|info|warning|error`) ECRASE `color`/`bgColor` —
+ * il n'est PAS surchargeable par les props de couleur du consommateur,
+ * sinon le statut serait cosmetiquement sans effet. Les props directionnelles
+ * (`borderTop`, `paddingBlock`, `marginInline`, les coins `roundedTopLeft`…)
+ * ne sont PAS state-swappables : elles sont lues directement depuis
+ * `props` via un objet `reactive` a accesseurs `get` — jamais un litteral
+ * plat, qui figerait la valeur au moment de l'appel et casserait la
+ * reactivite sur un changement de prop ulterieur (meme piege que
+ * `pickEffective` documente plus haut pour la valeur de repos).
  ********************************************************/
 export function useStateEffect (
     props: TStateEffectProps,

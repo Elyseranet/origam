@@ -126,33 +126,27 @@ export function useDefaults<T extends object> (
     })
 }
 
-/**
- * Provider-side hook: declare a defaults map for the current component
- * subtree. Consumed by `<OrigamDefaultsProvider>` but also callable directly
- * for advanced cases (e.g. providing defaults from inside a renderless
- * component).
- *
- * Options control how this provider composes with any ancestor provider:
- *   - `disabled` — pass through the parent map unchanged.
- *   - `reset` / `root` — ignore the parent map; only this provider's
- *     defaults are visible to descendants.
- *   - `scoped` — same effect as `reset`, declarative variant.
- *   - default — deep-merge parent defaults under this provider's defaults.
- *
- * Each option accepts a plain value OR a `Ref`/getter (`MaybeRefOrGetter`),
- * unwrapped via `toValue()` on every re-evaluation — same contract as
- * `defaults`. Passing a plain literal (e.g. `{ scoped: true }`) still works
- * and is the common case for a caller that composes `provideDefaults()`
- * directly with a value it already knows won't change. A caller whose
- * option is itself a component prop MUST pass a getter (`() => props.x`) —
- * see issue #438: `<OrigamDefaultsProvider>` used to forward `props.scoped`
- * etc. as raw booleans captured once in `setup()`, so this `computed()`
- * never re-tracked them and a `:scoped="someRef"` binding had no effect
- * after mount.
- */
-
 /*********************************************************
  * provideDefaults
+ *
+ * @description
+ * Cote fournisseur : declare une map de defauts pour le sous-arbre courant,
+ * injectee sous `ORIGAM_DEFAULTS_KEY` et lue par `useDefaults()` chez les
+ * descendants. Utilise par `<OrigamDefaultsProvider>` mais aussi appelable
+ * directement (composant renderless, cas avances). `disabled` laisse passer
+ * la map parente inchangee ; `reset`/`root`/`scoped` l'ignorent entierement
+ * (seuls les defauts de ce provider sont visibles) ; par defaut, fusion
+ * profonde (`mergeDeep`) des defauts parents sous ceux de ce provider.
+ *
+ * @description
+ * Chaque option accepte une valeur brute OU un `Ref`/getter
+ * (`MaybeRefOrGetter`), deroule via `toValue()` a chaque re-evaluation.
+ * ⛔ Un appelant dont l'option est une PROP de composant doit passer un
+ * getter (`() => props.scoped`), jamais la valeur nue capturee une fois —
+ * #438 : `<OrigamDefaultsProvider>` forwardait `props.scoped` comme un
+ * booleen brut fige au `setup()`, donc ce `computed()` ne re-trackait
+ * jamais les changements et `:scoped="uneRef"` restait sans effet apres le
+ * montage initial.
  ********************************************************/
 export function provideDefaults (
     defaults?: Ref<IDefault> | IDefault,
@@ -188,13 +182,14 @@ export function provideDefaults (
     return provided
 }
 
-/**
- * Plugin-side factory used by `createOrigam()` to seed the root defaults
- * map from the host app's options.
- */
-
 /*********************************************************
  * createDefaults
+ *
+ * @description
+ * Fabrique installee par `createOrigam()` : seme le `Ref<IDefault>` racine
+ * a partir des `options.components` fournies par l'app hote (ou un objet
+ * vide) — c'est ce Ref que `provideDefaults()` recoit comme premiere
+ * valeur parente au sommet de l'arbre.
  ********************************************************/
 export function createDefaults (options?: IDefault): Ref<IDefault> {
     return ref(options ?? {})

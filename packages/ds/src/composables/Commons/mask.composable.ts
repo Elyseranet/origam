@@ -8,20 +8,24 @@ import { applyMask } from '../../utils/Commons/apply-mask.util'
 import { resolveMaskConfig } from '../../utils/Commons/resolve-mask-config.util'
 import { validatePattern } from '../../utils/Commons/validate-pattern.util'
 
-/**
- * Reactive mask engine — keeps `masked`, `unmasked`,
- * `isValid` and `complete` in sync with a source string
- * (`modelValue`) and a (possibly polymorphic) mask spec.
+/*********************************************************
+ * useMask
  *
- * Both the value and the mask are accepted as a `MaybeRef`
- * so the composable plays well with `props.modelValue` and
- * a static `props.mask` alike.
+ * @description
+ * Moteur de masque reactif : maintient `masked`, `unmasked`, `isValid` et
+ * `complete` synchronises avec une chaine source (`modelValue`) et une
+ * config de masque (possiblement polymorphe, resolue par
+ * `resolveMaskConfig`). `modelValue` et `mask` sont tous deux acceptes en
+ * `MaybeRef`, donc utilisables directement avec `props.modelValue`/
+ * `props.mask`. Un changement de `mask` re-resout la config ET reformate
+ * la valeur courante ; un changement de `modelValue` reformate seulement.
  *
- * Reactivity:
- *   - When `modelValue` changes → reformat + revalidate.
- *   - When `mask` changes      → re-resolve config, reformat
- *                                the current value.
- */
+ * @description
+ * `isValid` sans config de masque est toujours `true` (rien a valider).
+ * Avec config : vide et non requis → valide ; requis et incomplet →
+ * invalide ; un `validator` present tranche pour le cas incomplet non
+ * requis ; sinon la validite suit simplement `complete`.
+ ********************************************************/
 export function useMask (
     modelValue: MaybeRef<string | null | undefined>,
     mask: MaybeRef<TMask | undefined>

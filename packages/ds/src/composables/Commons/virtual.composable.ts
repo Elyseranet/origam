@@ -20,6 +20,27 @@ import { computed, nextTick, onMounted, onScopeDispose, ref, Ref, shallowRef, wa
 
 /*********************************************************
  * useVirtual
+ *
+ * @description
+ * Virtualisation de liste : ne rend que la tranche `[first, last[` de
+ * `items` réellement visible (`computedItems`), en maintenant des
+ * `offsets` par index (recalcules via `updateOffsets`, debattus) et un
+ * padding haut/bas qui simule la hauteur totale de la liste. La fenetre
+ * visible est recalculee sur scroll (`handleScroll`/`calcVisibleItems`,
+ * via `requestAnimationFrame`) et sur redimensionnement du conteneur
+ * (`useResizeObserver`). `scrollToIndex` delegue l'animation a `useGoTo`,
+ * ou differe le scroll si la liste n'a pas encore mesure sa mise en page
+ * (`targetScrollIndex`).
+ *
+ * @description
+ * Le PREMIER `estimateLast()` (au moment du `shallowRef()`, en plein
+ * `setup()`) peut lire un `props.height` PRE-THEME — voir la banniere
+ * "the anti-flash first-paint guess" et "last's FIRST guess is
+ * re-applied once mounted (#504)" juste en dessous : le meme piege
+ * ADR-005 que `useSelectLink`/`useValidation`, corrige ici en
+ * re-executant la meme estimation dans un `onMounted`. `itemHeight` n'est
+ * jamais fige : `handleItemResize` le retrecit au minimum observe parmi
+ * les items reellement mesures.
  ********************************************************/
 export function useVirtual<T> (props: IVirtualProps, items: Ref<readonly T[]>) {
     const display = useDisplay()

@@ -27,6 +27,22 @@ import { nextTick, onMounted, watch } from 'vue'
 
 /*********************************************************
  * useSelectLink
+ *
+ * @description
+ * Relie un lien de navigation (`link`, la valeur retournee par `useLink`)
+ * a un groupe selectionnable (`select`, ex. `useGroupItem`) : quand le
+ * lien devient actif (route courante correspond a `link.isActive`) ET que
+ * `link.isLink` est vrai, appelle `select(true)` au `nextTick` — utilise
+ * par `OrigamBtn` pour se marquer selectionne quand il agit comme lien de
+ * navigation actif dans un `OrigamBtnGroup`.
+ *
+ * @description
+ * Le `watch` est deliberement enveloppe dans `onMounted` — voir la
+ * banniere juste au-dessus ("DEFERRED TO onMounted — NOT AN
+ * OPTIMISATION") : cree en plein `setup()`, son evaluation `immediate`
+ * lirait `link.isLink`/`link.isActive` AVANT que le resolveur de props
+ * ADR-005 ait patché `instance.props`, figeant `isLink` a `false` pour
+ * toujours.
  ********************************************************/
 export function useSelectLink (link: IUseLink, select?: (value: boolean, e?: Event) => void) {
     onMounted(() => {

@@ -6,26 +6,25 @@ import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.u
 
 export type { IResolvedLoader } from '../../interfaces/Commons/loader.interface'
 
-/**
- * Resolve the polymorphic `loading` prop into a normalised descriptor.
- *
- * Accepts `boolean | number | TLoaderConfig` and produces:
- * - `loaderClasses` — backward-compatible class map containing
- *   `${name}--loading` when active.
- * - `isLoading` — boolean ref, true when any loading state is active.
- * - `loaderConfig` — full `IResolvedLoader` descriptor used by the
- *   consumer to mount the correct renderer with the correct props.
- *
- * @param props - The component props extending `ILoaderProps`.
- * @param defaultKind - Renderer to use when the user passes `true` or a
- *   number (i.e. when no `type` discriminant was provided). Each consumer
- *   picks its preferred kind: `'circular'` for Btn, `'line'` for Card, etc.
- * @param name - Override the kebab-case component name used to build the
- *   `${name}--loading` class. Defaults to `getCurrentInstanceName()`.
- */
-
 /*********************************************************
  * useLoader
+ *
+ * @description
+ * Resout la prop polymorphe `loading` (`boolean | number | TLoaderConfig`)
+ * en un descripteur normalise : `loaderClasses` (`{name}--loading`),
+ * `isLoading` (booleen), et `loaderConfig` (kind, `modelValue`,
+ * `indeterminate`, `overrides`) que le composant utilise pour monter le
+ * bon renderer. `defaultKind` est choisi par CHAQUE consommateur —
+ * `'circular'` pour Btn, `'line'` pour Card, etc. — utilise quand
+ * `loading` est `true`/un nombre plutot qu'un objet `{ type }`.
+ *
+ * @description
+ * Determinisme derive de la FORME de la valeur, pas d'un flag explicite :
+ * `loading={true}` → indetermine ; `loading={42}` → determine a 42 ;
+ * `loading={{ type: 'line', modelValue: 42 }}` → determine ; `loading=
+ * {{ type: 'line' }}` (sans `modelValue`) → indetermine. Un objet SANS
+ * `type` est traite comme "pas d'objet reconnu" et retombe sur l'etat
+ * inactif.
  ********************************************************/
 export function useLoader (
     props: ILoaderProps,

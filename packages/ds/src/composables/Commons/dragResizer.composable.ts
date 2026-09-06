@@ -9,6 +9,19 @@ import { addWindowListener, clamp, getPosition } from '../../utils/Commons/commo
 
 /*********************************************************
  * useDragResizer
+ *
+ * @description
+ * Attache un drag mousedown/touchstart sur `el` qui fait varier `value`
+ * (un `Ref<number>`, borne a `[min, max]` via `clamp`) le long de `axis` —
+ * utilise pour les poignees de redimensionnement (panneau, colonne…).
+ * `resizing` reste `true` tant que le geste (souris ou tactile) n'est pas
+ * termine.
+ *
+ * @description
+ * ⛔ Seul l'axe `X` (`AXIS.X`) est reellement gere : `isVertical` est
+ * commente en mort dans le code et un `// TODO - Rework for both axis`
+ * l'annonce explicitement. Passer `AXIS.Y` fait juste tomber dans la
+ * branche verticale de `getPosition` sans etre teste par ce composable.
  ********************************************************/
 export function useDragResizer (el: HTMLElement | undefined, value: Ref<number>, min: number, max: number, axis: TAxis) {
     const resizing = ref(false)

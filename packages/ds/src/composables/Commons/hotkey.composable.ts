@@ -14,6 +14,22 @@ import { splitKeyCombination, splitKeySequence } from '../../utils/Commons/hotke
 
 /*********************************************************
  * useHotkey
+ *
+ * @description
+ * Enregistre un raccourci clavier global (`window.addEventListener`) pour
+ * `keys` (une combinaison `"ctrl+k"` ou une SEQUENCE `"g g"` separee par
+ * espace, avec un `sequenceTimeout` entre chaque groupe). Traduit `cmd`/`meta`
+ * selon la plateforme detectee (`navigator.userAgent`) : `ctrl` attendu sur
+ * non-Mac, `meta` attendu sur Mac. Ignore l'evenement quand un champ de
+ * saisie a le focus, sauf `options.inputs`.
+ *
+ * @description
+ * ⛔ En dehors d'un contexte `setup()` Vue, AUCUN nettoyage automatique
+ * n'est enregistre (pas de `onBeforeUnmount` possible) — un
+ * `console.warn` (`HOTKEY_NO_AUTO_CLEANUP_WARNING`) le signale, et
+ * l'appelant DOIT invoquer lui-meme la fonction `cleanup` retournee.
+ * Hors navigateur (`!IN_BROWSER`), la fonction est un no-op immediat, y
+ * compris pour le retour (fonction vide, pas d'erreur).
  ********************************************************/
 export function useHotkey (
     keys: MaybeRef<string | undefined>,

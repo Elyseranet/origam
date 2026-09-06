@@ -138,6 +138,27 @@ const TYPOGRAPHY_TOKEN_MAP = [
 
 /*********************************************************
  * useTypography
+ *
+ * @description
+ * Volet typographique de `useMargin`/`useBorder`/`useColor` : pour
+ * chacune des cinq `ITypographyProps` (`fontFamily`, `fontSize`,
+ * `fontWeight`, `lineHeight`, `letterSpacing`) que le consommateur a
+ * fixee, emet une custom property inline `--origam-{varPrefix}---{prop}`
+ * qui repointe vers le token primitif correspondant. Une prop non fixee
+ * n'emet rien — le theme/la variante du composant garde la main.
+ *
+ * @description
+ * INLINE UNIQUEMENT (pas de classe utilitaire — `origam-utilities.css`
+ * n'a pas de famille `.origam--font-*`), et `typographyStyles` est un
+ * objet PLAT `{ '--var': valeur }` (jamais un tableau) : `useStyle()`
+ * (consomme par Btn) serialise le tableau de styles au premier niveau
+ * seulement, un objet imbrique y fuirait en `[object Object]`. ⛔ Le
+ * var GENERIQUE emis ici (`--origam-{prefix}---font-size`, sans suffixe)
+ * est le canal via lequel `fontSize` ecrase une variante `size`/`density`
+ * du composant — un token statique portant ce meme nom generique
+ * ecraserait TOUJOURS la variante (bug historique Chip/Kbd) ; la SCSS du
+ * composant doit lire ce generique EN PREMIER, avec le token par taille
+ * en repli.
  ********************************************************/
 export function useTypography (props: ITypographyProps, varPrefix: string) {
 

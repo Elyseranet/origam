@@ -8,6 +8,21 @@ import { getWeek } from '../../utils/Commons/date.util'
 
 /*********************************************************
  * useDatePickerCalendar
+ *
+ * @description
+ * Derive la grille de jours d'un calendrier (semaine ou mois) a partir de
+ * `props` : modele de date(s) selectionnee(s) (`model`, toujours un
+ * tableau via `useVModel`), annee/mois pilotables independamment
+ * (`year`/`month`), et les jours enrichis (`daysInMonth`/`daysInWeek`) avec
+ * leur statut (`isToday`, `isSelected`, `isAdjacent`, `isDisabled`, `isHidden`…).
+ * Toute l'arithmetique de date passe par `useDate()` (l'adaptateur), jamais
+ * par `Date` directement.
+ *
+ * @description
+ * `weeksInMonth` complete la derniere semaine avec des jours du mois
+ * suivant quand `props.weeksInMonth === 'static'`, pour garantir 6 semaines
+ * pleines meme si le mois affiche n'en a que 4 ou 5 — une grille a hauteur
+ * constante evite un calendrier qui change de taille d'un mois a l'autre.
  ********************************************************/
 export function useDatePickerCalendar (props: ICalendarProps) {
     const adapter = useDate()

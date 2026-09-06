@@ -143,15 +143,15 @@ export function useCssSupport (): IUseCssSupport {
     }
 }
 
-/**
- * Test-only helper — clear the internal cache + re-detect on next call.
- * Not part of the public API; consumers must not depend on it.
- *
- * @internal
- */
-
 /*********************************************************
  * _resetCssSupportCache
+ *
+ * @description
+ * Aide de test : vide le cache partage de `rawSupports`, remet
+ * `_initialized` a `false` et `_flags` a la carte tout-`false`, pour que le
+ * prochain `useCssSupport()` re-detecte au lieu de lire l'etat fige d'un
+ * spec precedent. Hors API publique — les consommateurs ne doivent pas en
+ * dependre.
  ********************************************************/
 export function _resetCssSupportCache () {
     resetSupportsCache()

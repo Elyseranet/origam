@@ -13,9 +13,11 @@
 export function _resetCssSupportCache ()
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/cssSupport.composable.ts`, puis regenerer.
+Aide de test : vide le cache partage de `rawSupports`, remet
+`_initialized` a `false` et `_flags` a la carte tout-`false`, pour que le
+prochain `useCssSupport()` re-detecte au lieu de lire l'etat fige d'un
+spec precedent. Hors API publique — les consommateurs ne doivent pas en
+dependre.
 
 **Source** : `packages/ds/src/composables/Commons/cssSupport.composable.ts`
 
@@ -27,9 +29,9 @@ export function _resetCssSupportCache ()
 export function _resetThemeForTesting ()
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/theme.composable.ts`, puis regenerer.
+Aide de test : vide les singletons module (`theme`, `mode`,
+`systemPrefersDark`, `mediaInitDone`) pour que chaque spec reparte
+d'un etat propre. Hors API publique.
 
 **Source** : `packages/ds/src/composables/Commons/theme.composable.ts`
 
@@ -41,9 +43,12 @@ export function _resetThemeForTesting ()
 export function applyModeSync (mode: TMode)
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/theme.composable.ts`, puis regenerer.
+Aide interne pour plugins SSR / anti-flash : applique un mode CONCRET
+au document synchronement, en court-circuitant la reactivite Vue. Un
+argument `'auto'` est resolu contre `prefers-color-scheme` courant
+(repli sur `'light'` si indisponible) — `data-mode` finit toujours
+concret, jamais `'auto'` litteral, car la matrice de tokens n'a pas de
+repli sans mode.
 
 **Source** : `packages/ds/src/composables/Commons/theme.composable.ts`
 
@@ -55,9 +60,11 @@ export function applyModeSync (mode: TMode)
 export function applyThemeSync (theme: TTheme)
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/theme.composable.ts`, puis regenerer.
+Aide interne pour plugins SSR / anti-flash : applique une marque
+(`theme`) au document SYNCHRONEMENT, avant le premier rendu, en
+court-circuitant la reactivite Vue — utile pour poser `data-theme`
+avant que l'hydratation ne demarre et eviter un flash de theme au
+chargement.
 
 **Source** : `packages/ds/src/composables/Commons/theme.composable.ts`
 
@@ -69,9 +76,13 @@ export function applyThemeSync (theme: TTheme)
 export function createDate (options: IDateOptions | undefined, locale: ILocaleInstance)
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/date.composable.ts`, puis regenerer.
+Fabrique installee au niveau app (voir `createOrigam()`), pas un hook de
+composant : fusionne les `options` fournies avec un adaptateur par
+defaut (`DateAdapter`) et une table de locales BCP-47 par langue (`fr`,
+`es`, `ar` en sont deliberement absents, commentes en code — leur valeur
+differe selon la variante regionale), puis construit l'instance
+d'adaptateur via `createInstance`. `useDate()` consomme ce resultat, il
+ne le recree pas.
 
 **Source** : `packages/ds/src/composables/Commons/date.composable.ts`
 
@@ -83,9 +94,10 @@ export function createDate (options: IDateOptions | undefined, locale: ILocaleIn
 export function createDefaults (options?: IDefault): Ref<IDefault>
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/defaults.composable.ts`, puis regenerer.
+Fabrique installee par `createOrigam()` : seme le `Ref<IDefault>` racine
+a partir des `options.components` fournies par l'app hote (ou un objet
+vide) — c'est ce Ref que `provideDefaults()` recoit comme premiere
+valeur parente au sommet de l'arbre.
 
 **Source** : `packages/ds/src/composables/Commons/defaults.composable.ts`
 
@@ -97,9 +109,18 @@ export function createDefaults (options?: IDefault): Ref<IDefault>
 export function createDisplay (options?: IDisplayOptions, ssr?: TSSROptions): IDisplayInstance
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/display.composable.ts`, puis regenerer.
+Fabrique installee par `createOrigam()` : suit `window.innerWidth/Height`
+(via un listener `resize` passif) et derive dans un `reactive` unique
+l'ensemble des breakpoints (`xs`..`xxl`, `smAndUp`, `mdAndDown`…), la
+plateforme (`getPlatform`) et le flag `mobile` selon
+`options.mobileBreakpoint`. Une seule instance est creee au niveau app ;
+`useDisplay()` la lit plutot que d'en recreer une par composant.
+
+Cote SSR, `height`/`width` sont seedes depuis `ssr` (dimensions
+supposees du client) plutot que `window`, et le listener `resize` n'est
+jamais attache (`IN_BROWSER` garde) — l'instance retournee porte
+`ssr: true` pour que l'appelant sache que ces valeurs sont une
+approximation tant que l'hydratation n'a pas tourne.
 
 **Source** : `packages/ds/src/composables/Commons/display.composable.ts`
 
@@ -111,9 +132,11 @@ export function createDisplay (options?: IDisplayOptions, ssr?: TSSROptions): ID
 export function createGoTo ( options: IGoToOptions | undefined, locale: ILocaleInstance & IRtlInstance ): IGoToInstance
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/goTo.composable.ts`, puis regenerer.
+Fabrique installee par `createOrigam()` : fusionne les `options` de
+scroll fournies par l'app hote avec les defauts (`genDefaults()`) et
+capture le sens RTL courant (`locale.isRtl`) dans l'instance injectee
+— c'est cette instance que `useGoTo()` recupere via
+`ORIGAM_GO_TO_KEY`.
 
 **Source** : `packages/ds/src/composables/Commons/goTo.composable.ts`
 
@@ -184,9 +207,22 @@ provider names returns after a Map lookup and one property lookup.
 export function provideDefaults ( defaults?: Ref<IDefault> | IDefault, options?:
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/defaults.composable.ts`, puis regenerer.
+Cote fournisseur : declare une map de defauts pour le sous-arbre courant,
+injectee sous `ORIGAM_DEFAULTS_KEY` et lue par `useDefaults()` chez les
+descendants. Utilise par `<OrigamDefaultsProvider>` mais aussi appelable
+directement (composant renderless, cas avances). `disabled` laisse passer
+la map parente inchangee ; `reset`/`root`/`scoped` l'ignorent entierement
+(seuls les defauts de ce provider sont visibles) ; par defaut, fusion
+profonde (`mergeDeep`) des defauts parents sous ceux de ce provider.
+
+Chaque option accepte une valeur brute OU un `Ref`/getter
+(`MaybeRefOrGetter`), deroule via `toValue()` a chaque re-evaluation.
+⛔ Un appelant dont l'option est une PROP de composant doit passer un
+getter (`() => props.scoped`), jamais la valeur nue capturee une fois —
+#438 : `<OrigamDefaultsProvider>` forwardait `props.scoped` comme un
+booleen brut fige au `setup()`, donc ce `computed()` ne re-trackait
+jamais les changements et `:scoped="uneRef"` restait sans effet apres le
+montage initial.
 
 **Source** : `packages/ds/src/composables/Commons/defaults.composable.ts`
 
@@ -228,9 +264,9 @@ contract.
 export function readPersistedMode (): TMode
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/theme.composable.ts`, puis regenerer.
+Aide interne pour plugins SSR / anti-flash : lit le mode persiste dans
+`localStorage` SANS instancier `useTheme()` — retourne `'auto'` si rien
+n'est persiste ou hors navigateur.
 
 **Source** : `packages/ds/src/composables/Commons/theme.composable.ts`
 
@@ -242,9 +278,10 @@ export function readPersistedMode (): TMode
 export function readPersistedTheme (): TTheme
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/theme.composable.ts`, puis regenerer.
+Aide interne pour plugins SSR / anti-flash : lit la marque persistee
+dans `localStorage` SANS instancier `useTheme()` (pas de Ref cree, pas
+de singleton touche) — retourne `'auto'` si rien n'est persiste ou hors
+navigateur.
 
 **Source** : `packages/ds/src/composables/Commons/theme.composable.ts`
 
@@ -280,9 +317,19 @@ Pure — no Vue/DOM access — so it is called once, synchronously, at
 export function useActivator (props: IActivatorProps,
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/activator.composable.ts`, puis regenerer.
+Cablage complet de l'activateur pour les composants flottants (Menu,
+Tooltip, Dialog…) : derive depuis les props (`openOnHover`,
+`openOnFocus`, `openOnClick`, `openOnContextMenu`) les gestionnaires
+click/contextmenu/hover/focus a poser sur l'activateur, le contenu et le
+scrim, et resout la cible de positionnement (`target`, y compris le mode
+`'cursor'` qui suit les coordonnees du dernier clic).
+
+Le delai d'ouverture/fermeture est delegue a `useDelay` — ce composable
+ne fait que decider QUAND appeler `runOpenDelay`/`runCloseDelay`, jamais
+le minutage lui-meme. Quand `props.activator` (selecteur externe) est
+fourni, un `EffectScope` dedie est demarre/arrete au fil du temps via un
+`watch` sur sa presence — pas de scope permanent quand aucun activateur
+externe n'est utilise.
 
 **Source** : `packages/ds/src/composables/Commons/activator.composable.ts`
 
@@ -354,9 +401,16 @@ actionability depends on whether the consumer wired a listener.
 export function useAudio (props: IUseAudioProps)
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/audio.composable.ts`, puis regenerer.
+Pilote un `<audio>` via `props.playAudio` (play/pause) et expose des
+donnees de frequence (`audioData`, via un `AnalyserNode` du Web Audio
+API) rafraichies a chaque frame (`requestAnimationFrame`) tant que la
+lecture est active — utile pour un rendu de visualiseur audio.
+
+L'`AudioContext` et l'`AnalyserNode` ne sont crees qu'a la PREMIERE
+lecture (`wasPlayed`), pas a l'appel du composable. Un changement de
+`props.audio` reinitialise `wasPlayed` a `false`, donc une nouvelle
+lecture recree un `AudioContext` complet plutot que de reutiliser
+l'ancien.
 
 **Source** : `packages/ds/src/composables/Commons/audio.composable.ts`
 
@@ -559,9 +613,15 @@ const supportsContainer = useCssSupportClient('containerQueries')
 export function useDate ()
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/date.composable.ts`, puis regenerer.
+Recupere les options de date injectees par `createDate()` (cle
+`ORIGAM_DATE_OPTIONS_KEY`) et la locale active (`useLocale()`), puis
+retourne l'instance d'adaptateur de date (`createInstance`) que les
+composants Date/DatePicker consomment pour toute arithmetique de date.
+
+Leve une erreur explicite si les options ne sont pas injectees — signe
+que l'app n'a pas ete initialisee via `createOrigam()`. Ce n'est pas une
+valeur par defaut silencieuse : sans adaptateur enregistre, aucune
+hypothese de locale/format n'est fiable.
 
 **Source** : `packages/ds/src/composables/Commons/date.composable.ts`
 
@@ -573,9 +633,18 @@ export function useDate ()
 export function useDatePickerCalendar (props: ICalendarProps)
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/date-picker-calendar.composable.ts`, puis regenerer.
+Derive la grille de jours d'un calendrier (semaine ou mois) a partir de
+`props` : modele de date(s) selectionnee(s) (`model`, toujours un
+tableau via `useVModel`), annee/mois pilotables independamment
+(`year`/`month`), et les jours enrichis (`daysInMonth`/`daysInWeek`) avec
+leur statut (`isToday`, `isSelected`, `isAdjacent`, `isDisabled`, `isHidden`…).
+Toute l'arithmetique de date passe par `useDate()` (l'adaptateur), jamais
+par `Date` directement.
+
+`weeksInMonth` complete la derniere semaine avec des jours du mois
+suivant quand `props.weeksInMonth === 'static'`, pour garantir 6 semaines
+pleines meme si le mois affiche n'en a que 4 ou 5 — une grille a hauteur
+constante evite un calendrier qui change de taille d'un mois a l'autre.
 
 **Source** : `packages/ds/src/composables/Commons/date-picker-calendar.composable.ts`
 
@@ -602,9 +671,16 @@ explicitly passed?" check to `usePassedProps`.
 export function useDelay (props: IDelayProps, cb?: (value: boolean)
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/delay.composable.ts`, puis regenerer.
+Temporise l'ouverture/fermeture d'un composant flottant selon
+`props.openDelay` / `props.closeDelay` (via `defer`), et invoque `cb`
+avec `true`/`false` une fois le delai ecoule. `useActivator` s'en sert
+pour decider QUAND declencher son propre changement d'etat — ce
+composable ne connait rien du hover/focus/click qui l'appelle.
+
+Chaque appel a `runOpenDelay`/`runCloseDelay` ANNULE le delai en cours
+(`cancelRef.current()`) avant d'en programmer un nouveau — un
+enter/leave rapide (survol qui repasse) ne declenche donc jamais les
+deux callbacks empiles, seul le dernier delai programme aboutit.
 
 **Source** : `packages/ds/src/composables/Commons/delay.composable.ts`
 
@@ -616,9 +692,17 @@ export function useDelay (props: IDelayProps, cb?: (value: boolean)
 export function useDensity (props: IDensityProps | Ref<number | string | undefined>, name = getCurrentInstanceName())
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/density.composable.ts`, puis regenerer.
+Traduit `props.density` (ou un `Ref` de densite passe directement) en une
+classe utilitaire `{name}--density-{valeur}` — `name` par defaut le nom
+kebab-case du composant courant, surchargeable pour un enfant qui
+emprunte le canal densite d'un parent.
+
+N'emet une classe QUE si la valeur figure dans `PREDEFINED_DENSITY`. Une
+valeur `null`/`undefined` ne produit aucune classe (densite par defaut du
+composant), et une valeur hors catalogue est silencieusement ignoree —
+ce composable ne genere pas de style custom, contrairement a
+`useDimension` ou `useMargin` qui basculent en style inline pour une
+valeur non tokenisee.
 
 **Source** : `packages/ds/src/composables/Commons/density.composable.ts`
 
@@ -630,9 +714,18 @@ export function useDensity (props: IDensityProps | Ref<number | string | undefin
 export function useDimension (props: IDimensionProps)
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/dimension.composable.ts`, puis regenerer.
+Traduit les six props de `IDimensionProps` (`height`, `maxHeight`,
+`maxWidth`, `minHeight`, `minWidth`, `width`) en declarations CSS inline
+(`dimensionStyles`, un tableau de chaines `"propriete: valeur"`) via
+`convertToUnit` — qui accepte un nombre (`→ "Npx"`), une longueur CSS
+deja unite, une reference a une custom property, ou un raccourci
+`aspect-ratio`.
+
+Contrairement aux composables de couleur/rounded/elevation, il n'y a pas
+de canal "tokenise → classe" ici : toute dimension produit du style
+inline, jamais de classe utilitaire — c'est le composable de reference a
+`extends`-er (cf. CLAUDE.md racine) plutot que de parser `height`/`width`
+a la main dans un nouveau composant.
 
 **Source** : `packages/ds/src/composables/Commons/dimension.composable.ts`
 
@@ -644,9 +737,15 @@ export function useDimension (props: IDimensionProps)
 export function useDisplay ( props: IDisplayProps =
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/display.composable.ts`, puis regenerer.
+Cote composant : lit l'instance de display globale (injectee sous
+`ORIGAM_DISPLAY_KEY`, creee par `createDisplay()`) et y superpose un
+`mobile`/`displayClasses` propre au composant quand `props.mobileBreakpoint`
+derode le seuil global — sinon retombe sur `display.mobile` partage.
+
+Leve si aucune instance n'est injectee : signe que l'app n'a pas ete
+initialisee via `createOrigam()`, meme logique de garde que `useDate()`.
+`displayClasses` ne produit une entree que si `name` est fourni (par
+defaut le nom kebab-case du composant courant).
 
 **Source** : `packages/ds/src/composables/Commons/display.composable.ts`
 
@@ -658,9 +757,16 @@ export function useDisplay ( props: IDisplayProps =
 export function useDragResizer (el: HTMLElement | undefined, value: Ref<number>, min: number, max: number, axis: TAxis)
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/dragResizer.composable.ts`, puis regenerer.
+Attache un drag mousedown/touchstart sur `el` qui fait varier `value`
+(un `Ref<number>`, borne a `[min, max]` via `clamp`) le long de `axis` —
+utilise pour les poignees de redimensionnement (panneau, colonne…).
+`resizing` reste `true` tant que le geste (souris ou tactile) n'est pas
+termine.
+
+⛔ Seul l'axe `X` (`AXIS.X`) est reellement gere : `isVertical` est
+commente en mort dans le code et un `// TODO - Rework for both axis`
+l'annonce explicitement. Passer `AXIS.Y` fait juste tomber dans la
+branche verticale de `getPosition` sans etre teste par ce composable.
 
 **Source** : `packages/ds/src/composables/Commons/dragResizer.composable.ts`
 
@@ -672,9 +778,22 @@ export function useDragResizer (el: HTMLElement | undefined, value: Ref<number>,
 export function useElevation ( props: IElevationProps | Ref<TElevation | undefined>, flat: Ref<boolean> = ref(false), bgColor: Ref<TColor> = ref(ELEVATION_LEGACY_BG_COLOR), name = getCurrentInstanceName() )
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/elevation.composable.ts`, puis regenerer.
+Traduit `elevation` (`TElevation` : soit un echelon origam natif
+`'none'|'xs'|'sm'|'md'|'lg'|'xl'|'2xl'|'3xl'`, soit un nombre Material
+`0..24`, soit un `box-shadow` custom en clair) en `elevationClasses`
+(utilitaire quand l'echelon est couvert par la Phase 1 des utilitaires)
+ET `elevationStyles` (toujours une declaration `box-shadow: var(--origam-shadow-*)`
+ou la valeur custom telle quelle) — les deux canaux emis en parallele,
+jamais l'un a la place de l'autre (strategie A, cf. CLAUDE.md racine).
+
+`bgColor` est accepte pour compatibilite mais IGNORE (n'affecte plus
+ni `elevationClasses` ni `elevationStyles`) — passer une valeur autre
+que `ELEVATION_LEGACY_BG_COLOR` declenche un `console.warn` de
+depreciation une seule fois via `warnBgColorUsage`. La detection du
+`box-shadow` custom passe AVANT le `parseInt` de secours : sans cet
+ordre, `parseInt('0 4px 12px rgba(0,0,0,.24)', 10)` lirait `0` (chiffre
+de tete) et resoudrait silencieusement vers l'echelon `none`, perdant
+l'ombre custom.
 
 **Source** : `packages/ds/src/composables/Commons/elevation.composable.ts`
 
@@ -686,9 +805,9 @@ export function useElevation ( props: IElevationProps | Ref<TElevation | undefin
 export function useEventListener ( events: TEventListenerEvents, listeners: TEventListenerListeners, options?: TEventListenerOptions ): ()
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/eventListener.composable.ts`, puis regenerer.
+Forme courte : sans premier argument cible, attache sur `window` (ou
+ne fait rien en SSR, ou `window` n'existe pas). Voir la banniere de
+l'implementation ci-dessous pour le comportement complet.
 
 **Source** : `packages/ds/src/composables/Commons/eventListener.composable.ts`
 
@@ -700,9 +819,9 @@ export function useEventListener ( events: TEventListenerEvents, listeners: TEve
 export function useEventListener ( target: TEventListenerTarget, events: TEventListenerEvents, listeners: TEventListenerListeners, options?: TEventListenerOptions ): ()
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/eventListener.composable.ts`, puis regenerer.
+Forme longue : `target` peut etre un element, un `Ref`/getter d'element,
+`document`/`window`, ou une valeur nullable — voir la banniere de
+l'implementation ci-dessous pour le comportement complet.
 
 **Source** : `packages/ds/src/composables/Commons/eventListener.composable.ts`
 
@@ -714,9 +833,18 @@ export function useEventListener ( target: TEventListenerTarget, events: TEventL
 export function useEventListener (...args: Array<unknown>): ()
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/eventListener.composable.ts`, puis regenerer.
+Attache un ou plusieurs listeners a un ou plusieurs evenements sur une
+cible reactive (`target` peut etre un `Ref`/getter, re-resolue via
+`unrefElement`/`resolveUnref` a chaque changement) et retourne une
+fonction `stop()` qui detache tout. Se detache aussi automatiquement a
+la destruction du scope (`tryOnScopeDispose`).
+
+⛔ Le `watch` sur `[target, options]` tourne en `flush: 'post'` et
+re-attache TOUS les listeners a chaque changement de cible ou
+d'options (nettoyage puis re-registration complete), jamais un diff
+incremental — un `options` recree a chaque render (objet litteral
+non stable) detache/rattache les listeners a chaque tick plutot que de
+les laisser en place.
 
 **Source** : `packages/ds/src/composables/Commons/eventListener.composable.ts`
 
@@ -728,9 +856,17 @@ export function useEventListener (...args: Array<unknown>): ()
 export function useFilter<T extends IInternalItem> ( props: IFiltersProps, items: MaybeRef<T[]>, query: Ref<string | undefined> | (()
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/filters.composable.ts`, puis regenerer.
+Filtre reactivement `items` selon `query` (Ref ou getter) et les props de
+filtre (`filterKeys`, `filterMode`, `customFilter`, `noFilter`), en
+deleguant le matching a `filterItems` (util). Expose `filteredItems`,
+`filteredMatches` (une `Map` cle par `item.value` → matches par champ) et
+`getMatches(item)` pour surligner les portions qui matchent (List,
+Select, Autocomplete…).
+
+`options.transform` permet de filtrer sur une projection de l'item
+(ex. un champ derive) plutot que l'item brut, et `options.customKeyFilter`
+se fusionne PAR-DESSUS `props.customKeyFilter` — la valeur passee en
+options gagne sur celle de la prop en cas de cle en commun.
 
 **Source** : `packages/ds/src/composables/Commons/filters.composable.ts`
 
@@ -742,9 +878,10 @@ export function useFilter<T extends IInternalItem> ( props: IFiltersProps, items
 export function useFocus (props: IFocusProps, name = getCurrentInstanceName())
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/focus.composable.ts`, puis regenerer.
+Etat de focus v-modelisable (`props.focused`, via `useVModel` — donc
+`update:focused` remonte au parent) plus une classe `{name}--focused`
+et deux handlers `onFocus`/`onBlur` prets a poser sur un `@focus`/`@blur`
+de template. `name` par defaut le nom kebab-case du composant courant.
 
 **Source** : `packages/ds/src/composables/Commons/focus.composable.ts`
 
@@ -756,9 +893,15 @@ export function useFocus (props: IFocusProps, name = getCurrentInstanceName())
 export function useGoTo (_options: Partial<IGoToOptions> =
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/goTo.composable.ts`, puis regenerer.
+Retourne une fonction `go(target, options)` qui scrolle vers un
+composant, un element, un selecteur ou une position (`scrollTo` util),
+verticalement par defaut. `go.horizontal(...)` est la meme fonction en
+mode scroll horizontal — meme signature, meme fusion d'options.
+
+Le sens RTL effectif recalcule `goToInstance.rtl.value || isRtl.value`
+plutot que de ne lire que l'instance injectee au niveau app : un
+`<OrigamThemeProvider>` local peut inverser le RTL pour un sous-arbre
+sans que l'instance globale de `createGoTo()` le sache.
 
 **Source** : `packages/ds/src/composables/Commons/goTo.composable.ts`
 
@@ -840,9 +983,19 @@ during their own `setup()` body.
 export function useHotkey ( keys: MaybeRef<string | undefined>, callback: (e: KeyboardEvent)
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/hotkey.composable.ts`, puis regenerer.
+Enregistre un raccourci clavier global (`window.addEventListener`) pour
+`keys` (une combinaison `"ctrl+k"` ou une SEQUENCE `"g g"` separee par
+espace, avec un `sequenceTimeout` entre chaque groupe). Traduit `cmd`/`meta`
+selon la plateforme detectee (`navigator.userAgent`) : `ctrl` attendu sur
+non-Mac, `meta` attendu sur Mac. Ignore l'evenement quand un champ de
+saisie a le focus, sauf `options.inputs`.
+
+⛔ En dehors d'un contexte `setup()` Vue, AUCUN nettoyage automatique
+n'est enregistre (pas de `onBeforeUnmount` possible) — un
+`console.warn` (`HOTKEY_NO_AUTO_CLEANUP_WARNING`) le signale, et
+l'appelant DOIT invoquer lui-meme la fonction `cleanup` retournee.
+Hors navigateur (`!IN_BROWSER`), la fonction est un no-op immediat, y
+compris pour le retour (fonction vide, pas d'erreur).
 
 **Source** : `packages/ds/src/composables/Commons/hotkey.composable.ts`
 
@@ -854,9 +1007,14 @@ export function useHotkey ( keys: MaybeRef<string | undefined>, callback: (e: Ke
 export function useHydration ()
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/hydration.composable.ts`, puis regenerer.
+Retourne un `Ref<boolean>` qui vaut `false` jusqu'a l'hydratation cote
+client puis bascule a `true` dans un `onMounted` — utile pour retarder un
+rendu sensible a l'hydratation sans passer par `<ClientOnly>`.
+
+Le flag SSR vient de `useDisplay().ssr` : si l'instance de display n'a
+jamais ete creee en mode SSR (`ssr` falsy), le Ref demarre directement a
+`true` — pas de delai artificiel dans une app 100% client. Hors
+navigateur (`!IN_BROWSER`), retourne un Ref fige a `false`.
 
 **Source** : `packages/ds/src/composables/Commons/hydration.composable.ts`
 
@@ -868,9 +1026,17 @@ export function useHydration ()
 export function useInstalledThemes (): TInstalledThemes
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/installed-themes.composable.ts`, puis regenerer.
+Retourne la liste des themes de marque installes via
+`createOrigam({ themes })` — une entree par `name` de marque distincte,
+chacune listant les modes concrets pour lesquels elle a ete installee.
+Un consommateur (ex. un switch de theme) itere sur cette liste au lieu
+de coder en dur les marques disponibles.
+
+Retourne un tableau vide (jamais `undefined`) si aucun theme n'a ete
+installe, ou hors d'une app qui a execute `createOrigam()` — aucun
+garde-nul necessaire cote appelant. La liste est un instantane STATIQUE
+pris a l'installation ; a coupler avec `useTheme()` pour lire/changer la
+marque et le mode actifs.
 
 **Source** : `packages/ds/src/composables/Commons/installed-themes.composable.ts`
 
@@ -882,9 +1048,16 @@ export function useInstalledThemes (): TInstalledThemes
 export function useIntersectionObserver (callback?: IntersectionObserverCallback, options?: IntersectionObserverInit)
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/intersectionObserver.composable.ts`, puis regenerer.
+Expose `intersectionRef` (a poser en template ref sur l'element a
+observer) et `isIntersecting` — un `IntersectionObserver` est cree une
+fois, re-attache automatiquement quand `intersectionRef` change
+d'element (desobserve l'ancien, observe le nouveau), et deconnecte a
+`onBeforeUnmount`.
+
+Si `SUPPORTS_INTERSECTION` est faux (navigateur sans l'API, ou SSR),
+AUCUN observer n'est cree — `isIntersecting` reste fige a `false` et
+`callback` n'est jamais appele, silencieusement. Aucun fallback
+polyfill.
 
 **Source** : `packages/ds/src/composables/Commons/intersectionObserver.composable.ts`
 
@@ -896,9 +1069,18 @@ export function useIntersectionObserver (callback?: IntersectionObserverCallback
 export function useItems (props: IItemProps &
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/items.composable.ts`, puis regenerer.
+Normalise `props.items` (formats varies : chaine, objet, `itemTitle`/
+`itemValue` custom…) en `IInternalListItem[]` via `transformListItems`,
+et fournit `transformIn`/`transformOut` pour convertir entre le
+v-model brut (valeurs primitives ou objets selon `props.returnObject`)
+et ces items internes — utilise par Select/Autocomplete/Combobox.
+
+`transformIn` filtre les `null` du modele SAUF si `null` est lui-meme
+une valeur d'item valide (`hasNullItem`) — sans cette exception, un item
+"Aucun" dont la valeur est `null` ne pourrait jamais etre selectionne.
+`valueComparator` (par defaut `deepEqual`) est ce qui decide si une
+valeur du modele correspond a un item existant plutot que de creer un
+item ad hoc.
 
 **Source** : `packages/ds/src/composables/Commons/items.composable.ts`
 
@@ -947,9 +1129,17 @@ Independent from `useLayout` / `useCreateLayout` at the call level
 export function useLazy (props:
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/lazy.composable.ts`, puis regenerer.
+Rendu paresseux du contenu d'un composant flottant/conditionnel :
+`hasContent` ne devient vrai qu'apres la PREMIERE activation de
+`active` (ou immediatement si `props.eager`), et reste vrai ensuite
+(`isBooted`) meme quand `active` repasse a `false` — le contenu n'est
+donc monte qu'une fois, puis conserve.
+
+`onAfterLeave` (a cabler sur la fin de transition de sortie) remet
+`isBooted` a `false` pour un composant NON `eager` — c'est ce hook qui
+demonte reellement le contenu apres la fermeture, pas le changement de
+`active` lui-meme. Un composant `eager` ignore ce reset : son contenu
+reste toujours monte.
 
 **Source** : `packages/ds/src/composables/Commons/lazy.composable.ts`
 
@@ -977,9 +1167,20 @@ variant of it.
 export function useLoader ( props: ILoaderProps, defaultKind: TLoaderKind = LOADER_KIND.CIRCULAR, name = getCurrentInstanceName() ):
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/loader.composable.ts`, puis regenerer.
+Resout la prop polymorphe `loading` (`boolean | number | TLoaderConfig`)
+en un descripteur normalise : `loaderClasses` (`{name}--loading`),
+`isLoading` (booleen), et `loaderConfig` (kind, `modelValue`,
+`indeterminate`, `overrides`) que le composant utilise pour monter le
+bon renderer. `defaultKind` est choisi par CHAQUE consommateur —
+`'circular'` pour Btn, `'line'` pour Card, etc. — utilise quand
+`loading` est `true`/un nombre plutot qu'un objet `{ type }`.
+
+Determinisme derive de la FORME de la valeur, pas d'un flag explicite :
+`loading={true}` → indetermine ; `loading={42}` → determine a 42 ;
+`loading={{ type: 'line', modelValue: 42 }}` → determine ; `loading=
+{{ type: 'line' }}` (sans `modelValue`) → indetermine. Un objet SANS
+`type` est traite comme "pas d'objet reconnu" et retombe sur l'etat
+inactif.
 
 **Source** : `packages/ds/src/composables/Commons/loader.composable.ts`
 
@@ -988,7 +1189,7 @@ export function useLoader ( props: ILoaderProps, defaultKind: TLoaderKind = LOAD
 ## `useLocale`
 
 ```ts
-export function useLocale (strict?: true): ILocaleInstance export function useLocale (strict: false): ILocaleInstance | null export function useLocale (strict: boolean = true): ILocaleInstance | null
+export function useLocale (strict?: true): ILocaleInstance /********************************************************* * useLocale (surcharge `strict: false`) * * @description * Variante non stricte : retourne `null` plutot que de lever quand aucun * `createOrigam()` n'est installe. Voir la banniere au-dessus de la * premiere surcharge pour le comportement complet et son unique usage * legitime (#444, `OrigamLoader`). ********************************************************/ export function useLocale (strict: false): ILocaleInstance | null /********************************************************* * useLocale (implementation) * * @description * Lit l'instance de locale injectee sous `ORIGAM_LOCALE_KEY` ; leve si * absente et `strict` (defaut `true`), retourne `null` sinon. Voir la * banniere au-dessus de la premiere surcharge pour le detail du contrat. ********************************************************/ export function useLocale (strict: boolean = true): ILocaleInstance | null
 ```
 
 Reads the injected locale instance (i18n adapter + RTL state).
@@ -1011,12 +1212,13 @@ is responsible for its own fallback (issue #444, `OrigamLoader`).
 ## `useLocale`
 
 ```ts
-export function useLocale (strict: false): ILocaleInstance | null export function useLocale (strict: boolean = true): ILocaleInstance | null
+export function useLocale (strict: false): ILocaleInstance | null /********************************************************* * useLocale (implementation) * * @description * Lit l'instance de locale injectee sous `ORIGAM_LOCALE_KEY` ; leve si * absente et `strict` (defaut `true`), retourne `null` sinon. Voir la * banniere au-dessus de la premiere surcharge pour le detail du contrat. ********************************************************/ export function useLocale (strict: boolean = true): ILocaleInstance | null
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/locale.composable.ts`, puis regenerer.
+Variante non stricte : retourne `null` plutot que de lever quand aucun
+`createOrigam()` n'est installe. Voir la banniere au-dessus de la
+premiere surcharge pour le comportement complet et son unique usage
+legitime (#444, `OrigamLoader`).
 
 **Source** : `packages/ds/src/composables/Commons/locale.composable.ts`
 
@@ -1028,9 +1230,9 @@ export function useLocale (strict: false): ILocaleInstance | null export functio
 export function useLocale (strict: boolean = true): ILocaleInstance | null
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/locale.composable.ts`, puis regenerer.
+Lit l'instance de locale injectee sous `ORIGAM_LOCALE_KEY` ; leve si
+absente et `strict` (defaut `true`), retourne `null` sinon. Voir la
+banniere au-dessus de la premiere surcharge pour le detail du contrat.
 
 **Source** : `packages/ds/src/composables/Commons/locale.composable.ts`
 
@@ -1120,18 +1322,18 @@ and 3 below implement.)
 export function useMask ( modelValue: MaybeRef<string | null | undefined>, mask: MaybeRef<TMask | undefined> ): IUseMaskReturn
 ```
 
-Reactive mask engine — keeps `masked`, `unmasked`,
-`isValid` and `complete` in sync with a source string
-(`modelValue`) and a (possibly polymorphic) mask spec.
+Moteur de masque reactif : maintient `masked`, `unmasked`, `isValid` et
+`complete` synchronises avec une chaine source (`modelValue`) et une
+config de masque (possiblement polymorphe, resolue par
+`resolveMaskConfig`). `modelValue` et `mask` sont tous deux acceptes en
+`MaybeRef`, donc utilisables directement avec `props.modelValue`/
+`props.mask`. Un changement de `mask` re-resout la config ET reformate
+la valeur courante ; un changement de `modelValue` reformate seulement.
 
-Both the value and the mask are accepted as a `MaybeRef`
-so the composable plays well with `props.modelValue` and
-a static `props.mask` alike.
-
-Reactivity:
-  - When `modelValue` changes → reformat + revalidate.
-  - When `mask` changes      → re-resolve config, reformat
-                               the current value.
+`isValid` sans config de masque est toujours `true` (rien a valider).
+Avec config : vide et non requis → valide ; requis et incomplet →
+invalide ; un `validator` present tranche pour le cas incomplet non
+requis ; sinon la validite suit simplement `complete`.
 
 **Source** : `packages/ds/src/composables/Commons/mask.composable.ts`
 
@@ -1143,9 +1345,16 @@ Reactivity:
 export function useMessage (props: IMessageProps, otherMessages: Ref<Array<string>> | ComputedRef<Array<string>> = ref([]))
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/message.composable.ts`, puis regenerer.
+Resout les messages a afficher sous un champ (Field, TextField…) par
+ordre de priorite : `props.errorMessages`/`otherMessages` (erreurs
+externes, ex. validation) d'abord, sinon `props.hint`, sinon
+`props.messages`. `hasMessages` vaut vrai des qu'une SOURCE existe —
+y compris le slot `#message`, meme si les props textuelles sont vides.
+
+`otherMessages` (typiquement les erreurs de `useValidation`) est un
+parametre separe plutot qu'une prop, pour que ce composable reste
+utilisable sans dependre du systeme de validation complet — un appelant
+qui n'a pas de validateur passe simplement le defaut `ref([])`.
 
 **Source** : `packages/ds/src/composables/Commons/message.composable.ts`
 
@@ -1284,9 +1493,16 @@ dependency direction backwards to read.
 export function usePosition (props: IPositionProps, name = getCurrentInstanceName())
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/position.composable.ts`, puis regenerer.
+`positionClasses` traduit `props.position` (`'absolute'|'fixed'|'relative'|'sticky'|'static'`)
+en classe `{name}--{position}`. `positionStyles` emet une declaration
+inline par cote present parmi `top`/`bottom`/`left`/`right`.
+
+⛔ Contrairement a `useDimension`, AUCUNE conversion via `convertToUnit`
+n'est appliquee sur `top`/`bottom`/`left`/`right` : bien que
+`IPositionProps` les type `number | string`, un nombre est interpole
+TEL QUEL (`"top: 8"`, pas `"top: 8px"`) — declaration CSS invalide.
+Passer une chaine unitee (`"8px"`) est le seul usage sur qui marche
+aujourd'hui.
 
 **Source** : `packages/ds/src/composables/Commons/position.composable.ts`
 
@@ -1353,9 +1569,16 @@ this one.
 export function useRefs<T extends object> ()
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/refs.composable.ts`, puis regenerer.
+Collecte un tableau de template refs pour une liste `v-for` (`:ref`
+pointant vers `(e) => updateRef(e, index)`) — pattern standard pour
+recuperer les instances/elements enfants d'une boucle dans un ordre
+stable.
+
+Le tableau est REINITIALISE a vide a chaque `onBeforeUpdate` : c'est ce
+qui evite d'accumuler des references perimees quand la liste retrecit
+(sans ce reset, un index au-dela de la nouvelle longueur garderait
+l'ancien element). Vue re-remplit ensuite les index via `updateRef`
+pendant le re-render qui suit.
 
 **Source** : `packages/ds/src/composables/Commons/refs.composable.ts`
 
@@ -1367,9 +1590,15 @@ export function useRefs<T extends object> ()
 export function useResizeObserver (callback?: ResizeObserverCallback, box: 'content' | 'border' = 'content'): IResizeState
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/resizeObserver.composable.ts`, puis regenerer.
+Expose `resizeRef` (template ref a poser sur l'element observe) et
+`contentRect` (lecture seule) via un `ResizeObserver` re-attache
+automatiquement quand `resizeRef` change d'element, meme pattern que
+`useIntersectionObserver`. `box: 'border'` lit `getBoundingClientRect()`
+de la cible plutot que l'`entries[0].contentRect` du callback natif.
+
+Hors navigateur (`!IN_BROWSER`), aucun observer n'est cree —
+`contentRect` reste `undefined` en permanence, silencieusement, meme
+comportement de garde que `useIntersectionObserver`.
 
 **Source** : `packages/ds/src/composables/Commons/resizeObserver.composable.ts`
 
@@ -1478,9 +1707,15 @@ resolution itself.
 export function useScopeId ()
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/scopeId.composable.ts`, puis regenerer.
+Lit `vm.vnode.scopeId` (l'attribut `data-v-xxxx` que Vue attache aux
+elements d'un `<style scoped>`) et le retourne sous forme d'un objet
+d'attribut pret a `v-bind` (`{scopeId: ''}`), ou `undefined` si le
+composant courant n'a pas de scope.
+
+Utile pour du contenu TELEPORTE (Menu, Tooltip, Dialog…) : un noeud
+deplace hors de l'arbre DOM du composant perd l'heritage naturel de
+l'attribut scoped, donc le style scoped du parent ne s'appliquerait
+plus sans le re-poser explicitement sur la racine teleportee.
 
 **Source** : `packages/ds/src/composables/Commons/scopeId.composable.ts`
 
@@ -1540,9 +1775,19 @@ call dependency.
 export function useSelectLink (link: IUseLink, select?: (value: boolean, e?: Event)
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/selectLink.composable.ts`, puis regenerer.
+Relie un lien de navigation (`link`, la valeur retournee par `useLink`)
+a un groupe selectionnable (`select`, ex. `useGroupItem`) : quand le
+lien devient actif (route courante correspond a `link.isActive`) ET que
+`link.isLink` est vrai, appelle `select(true)` au `nextTick` — utilise
+par `OrigamBtn` pour se marquer selectionne quand il agit comme lien de
+navigation actif dans un `OrigamBtnGroup`.
+
+Le `watch` est deliberement enveloppe dans `onMounted` — voir la
+banniere juste au-dessus ("DEFERRED TO onMounted — NOT AN
+OPTIMISATION") : cree en plein `setup()`, son evaluation `immediate`
+lirait `link.isLink`/`link.isActive` AVANT que le resolveur de props
+ADR-005 ait patché `instance.props`, figeant `isLink` a `false` pour
+toujours.
 
 **Source** : `packages/ds/src/composables/Commons/selectLink.composable.ts`
 
@@ -1554,9 +1799,19 @@ export function useSelectLink (link: IUseLink, select?: (value: boolean, e?: Eve
 export function useSize (props: ISizeProps, name = getCurrentInstanceName())
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/size.composable.ts`, puis regenerer.
+Pour une valeur d'enum connue (`SIZES_ARRAY`), emet une classe
+`{name}--size-{valeur}` PLUS, via `LEGACY_SIZE_TO_UTILITY`, la classe
+utilitaire typographique `origam--text-{xs|sm|md|lg|xl}` correspondante.
+Pour une valeur custom (nombre ou longueur CSS non reconnue de l'enum),
+`sizeStyles` emet `width`/`height` inline via `convertToUnit` — jamais
+les deux canaux a la fois pour une meme valeur.
+
+⛔ `useSize` pilote historiquement `width`/`height`, PAS `font-size` —
+la classe `origam--text-*` n'est donc pertinente QUE pour un composant
+dont `size` implique aussi une echelle typographique (Btn, Chip). Un
+composant qui traite `size` comme une pure dimension de boite ne doit
+pas consommer `sizeClasses` dans son `:class` : `sizeStyles` reste seul
+autoritaire pour la geometrie.
 
 **Source** : `packages/ds/src/composables/Commons/size.composable.ts`
 
@@ -1568,9 +1823,17 @@ export function useSize (props: ISizeProps, name = getCurrentInstanceName())
 export function useSsrBoot ()
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/ssrBoot.composable.ts`, puis regenerer.
+Empeche un flash de transition CSS entre le rendu SSR et l'hydratation :
+tant que `isBooted` est faux, `ssrBootStyles` force `transition: none
+!important`. `isBooted` bascule a `true` un frame apres le montage
+(`onMounted` + `requestAnimationFrame`), pas au montage lui-meme — le
+temps que la mise en page initiale se stabilise avant d'autoriser les
+transitions.
+
+`ssrBootStyles` retourne un OBJET quand la transition doit etre
+bloquee, et un TABLEAU VIDE une fois booted — deux formes differentes
+pour la meme cle de retour, a bind sans normalisation prealable (Vue
+accepte les deux formes dans un `:style`).
 
 **Source** : `packages/ds/src/composables/Commons/ssrBoot.composable.ts`
 
@@ -1605,9 +1868,25 @@ must not snapshot `disableGlobalStack` either.
 export function useStateEffect ( props: TStateEffectProps, isHover: Ref<boolean> | ComputedRef<boolean> = noopRef, isActive: Ref<boolean> | ComputedRef<boolean> = noopRef, hoverState: ComputedRef<IHoverState | undefined> = computed(()
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/stateEffect.composable.ts`, puis regenerer.
+Composable unique remplacant la chaine `useColorEffect` +
+`useBorder` + `useRounded` + `useElevation` + `usePadding` + `useMargin`
+que chaque composant visuel devait repeter. Lit les etats `isHover`/
+`isActive`/`isDisabled` (et leurs overrides `hoverState`/`activeState`)
+et resout 8 axes state-aware : color, bgColor, border, rounded,
+elevation, padding, margin, gap — chacun avec classes ET styles.
+Priorite de resolution par axe : HOVER gagne sur ACTIVE (survoler un
+element presse/selectionne montre la surface hover), qui gagne sur la
+valeur de repos (`props.xxx`).
+
+⛔ `status` (`success|info|warning|error`) ECRASE `color`/`bgColor` —
+il n'est PAS surchargeable par les props de couleur du consommateur,
+sinon le statut serait cosmetiquement sans effet. Les props directionnelles
+(`borderTop`, `paddingBlock`, `marginInline`, les coins `roundedTopLeft`…)
+ne sont PAS state-swappables : elles sont lues directement depuis
+`props` via un objet `reactive` a accesseurs `get` — jamais un litteral
+plat, qui figerait la valeur au moment de l'appel et casserait la
+reactivite sur un changement de prop ulterieur (meme piege que
+`pickEffective` documente plus haut pour la valeur de repos).
 
 **Source** : `packages/ds/src/composables/Commons/stateEffect.composable.ts`
 
@@ -1657,9 +1936,17 @@ free.
 export function useStatus (props: IStatusProps & IAdjacentProps, name = getCurrentInstanceName())
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/status.composable.ts`, puis regenerer.
+Traduit `props.status` (`success|info|warning|error`) en icone
+(`$success`, `$error`…), position (`prependIcon`/`appendIcon`/`icon`
+selon `statusIconPosition`), classe `{name}--{status}` et intention de
+couleur forcee (`statusIntent`, non surchargeable par `color`/`bgColor`
+— `error` mappe sur l'intent `danger`, les autres 1:1).
+
+Sans `statusIconPosition` explicite, la position par defaut est
+PREPEND, pas "partout" : l'ancienne logique traitait `undefined` comme
+"rendre a chaque emplacement", peignant l'icone en double (prepend ET
+append) dans `OrigamAlert`. Une icone `prependIcon`/`appendIcon`/`icon`
+deja fournie par le consommateur passe toujours avant l'icone de statut.
 
 **Source** : `packages/ds/src/composables/Commons/status.composable.ts`
 
@@ -1671,9 +1958,18 @@ export function useStatus (props: IStatusProps & IAdjacentProps, name = getCurre
 export function useSticky (
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/sticky.composable.ts`, puis regenerer.
+Cale `rootEl` en `sticky` manuel (via un listener `scroll` passif,
+pas la propriete CSS `position: sticky`) contre le layout ambiant
+(`layoutItemStyles.value.top`) : `isStuck` bascule entre `false`,
+`true`, `'top'` ou `'bottom'` selon la direction de scroll et la
+hauteur de l'element vs la fenetre, et `stickyStyles` traduit cet etat
+en declarations `top`/`bottom` inline.
+
+⛔ `onScroll` lit `getComputedStyle(rootEl).getPropertyValue('--v-body-scroll-y')`
+— un nom de variable prefixe `--v-`, pas `--origam-`. Aucune regle CSS
+de ce depot ne declare cette custom property : `bodyScroll` vaut donc
+TOUJOURS `0` (`parseFloat(NaN) || 0`) en l'etat actuel du code, sauf si
+un consommateur externe la pose lui-meme sur `rootEl`.
 
 **Source** : `packages/ds/src/composables/Commons/sticky.composable.ts`
 
@@ -1716,9 +2012,17 @@ the head-injection logic.
 export function useTeleport (target: Ref<boolean | string | Element>)
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/teleport.composable.ts`, puis regenerer.
+Resout `target` (`true` = pas de teleport ; `false` = `document.body` ;
+une chaine = selecteur CSS ; un `Element` direct) en conteneur reel a
+`<teleport :to="teleportTarget">`. Cree paresseusement UN conteneur
+`.origam-overlay-container` par cible parente et le REUTILISE si un
+autre composant a deja teleporte dans la meme cible — pas un
+conteneur par instance.
+
+Un selecteur qui ne matche rien produit un `console.warn` et
+`teleportTarget` reste `undefined` — le composant appelant retombe
+alors sur son rendu non-teleporte plutot que de crasher. En SSR
+(`!IN_BROWSER`), toujours `undefined`, sans avertissement.
 
 **Source** : `packages/ds/src/composables/Commons/teleport.composable.ts`
 
@@ -1730,81 +2034,26 @@ export function useTeleport (target: Ref<boolean | string | Element>)
 export function useTeleportTypography ( fieldRef: Ref<
 ```
 
-Floating surfaces (`OrigamMenu` and everything built on it — Select's
-option list, ColorPickerField's channel editor, DatePickerField's
-calendar) are teleported out of the field's DOM subtree, to escape
-`overflow` and stacking contexts. A CSS rule the consuming application
-writes against the field — `.my-field * { font-size: 13px }`, a compact
-form theme, a scaled container — therefore never reaches the popup: the
-selector simply does not match nodes outside the field's subtree.
+Fait passer la typographie REELLE d'un champ (mesuree via
+`getComputedStyle`, pas les props — les props ne voient pas le
+stylesheet du consommateur) vers une surface teleportee (menu de
+Select, calendrier de DatePickerField…), qui sinon ne recoit ni les
+regles CSS ecrites contre le champ (le selecteur ne matche pas hors du
+sous-arbre) ni un `font-size` `rem`-based coherent (un `rem` descendant
+se resout contre la racine du document, pas contre l'ancetre
+teleporte). Republie `font-family`/`font-size`/`letter-spacing` en CSS
+generique PLUS les tokens specifiques de la surface via `extraVars`.
 
-Re-inheriting `font-size` on the teleported root is NOT enough on its
-own, either. Descendant text that sizes itself with a `rem`-based token
-(`var(--origam-list-item__title---font-size, 1rem)`,
-`var(--origam-picker-title---font-size, .75rem)`, …) resolves `rem`
-against the DOCUMENT ROOT, not the inherited value — it would keep the
-root size whatever the teleported ancestor inherits.
-
-So this composable measures the typography that ACTUALLY WON on the
-field when the surface opens (`getComputedStyle`, not the props — the
-props can't see a consumer's own stylesheet) and hands back a plain
-style object the caller republishes on the teleported content root as
-both generic CSS (`font-family` / `font-size` / `letter-spacing`, for
-whatever inherits normally) AND the specific component tokens the
-surface's own `rem`-sized text reads (via `extraVars`), so the two
-layers of the bug are closed together. Originates from `OrigamSelect`
-(commit `8354407c`) — extracted here so `OrigamColorPickerField` /
-`OrigamDatePickerField` don't reimplement the same measurement.
-
-Measured on `.origam-field` (NOT the raw `<input>`), which is the one
-element every `<origam-text-field>`-based field renders with a plain,
-unconditional `font-size: 16px` (no prop/token influences it — see
-`OrigamField`'s own SCSS). The raw `<input>` is NOT a safe measurement
-point: on `OrigamColorPickerField` / `OrigamDatePickerField` it is
-deliberately taken out of flow and carries none of `OrigamInput`'s
-classes, so it renders at the BROWSER's own default control font
-(13.3333px in Chrome) rather than the design system's — a value with
-nothing to do with the field's real typography.
-
-That same "16px, unconditionally" fact is also what keeps this bridge a
-true no-op absent a consumer override: `neutralFontSize` (default
-`'16px'`) is the value `.origam-field` would show with zero consuming-app
-CSS involved. When the measured size still equals it, nothing diverges —
-`typographyStyles` stays empty and every surface keeps its OWN historical
-default (`.75rem` list-item text, `.85rem` calendar cells, …), instead of
-being forced to 16px on every open. Only an ACTUAL divergence (a
-consumer's stylesheet, a different field wrapper with its own baseline)
-republishes the tokens.
-
-@param fieldRef  ref to the field sub-component (e.g. the wrapped
-                 `<origam-text-field>`). Its `$el` is the DOM root the
-                 typography is measured FROM.
-@param isOpen    ref toggled when the teleported surface opens; the
-                 measurement re-runs on every open (the consumer's CSS
-                 can change between opens — a live theme switch, a
-                 responsive breakpoint, …).
-@param extraVars given the resolved `font-size`, returns the extra
-                 `{ '--origam-…---font-size': value }` entries for the
-                 specific tokens the surface's own `rem`-sized text
-                 reads. Read the surface's SCSS before adding one —
-                 republishing a var nothing consumes is a no-op.
-@param measureSelector  selector for the element the typography is read
-                 from, resolved within `fieldRef`'s root (defaults to
-                 `'.origam-field'`). Falls back to the root itself when
-                 no match is found.
-@param neutralFontSize  the `measureSelector` element's OWN unstyled
-                 `font-size` (defaults to `'16px'`, `.origam-field`'s
-                 literal default). When the measured value still equals
-                 this, the bridge is a no-op for this open — see above.
-
-**Exemple**
-
-const { typographyStyles } = useTeleportTypography(origamTextFieldRef, menu, (fontSize) => ({
-    '--origam-list-item__title---font-size': fontSize,
-    '--origam-list-item__subtitle---font-size': `calc(${ fontSize } * 0.875)`
-}))
-// …
-contentProps: { style: [typographyStyles.value, consumerContentProps.style] }
+Mesure sur `.origam-field` (pas le `<input>` brut, qui sur
+ColorPickerField/DatePickerField est hors flux et rend la police par
+defaut du NAVIGATEUR, sans rapport avec le design system). Quand la
+taille mesuree egale `neutralFontSize` (defaut `'16px'`, la valeur non
+stylee de `.origam-field`), `typographyStyles` reste VIDE — chaque
+surface garde alors son propre defaut historique (`.75rem` liste,
+`.85rem` calendrier) au lieu d'etre forcee a 16px a chaque ouverture.
+Seule une divergence REELLE (stylesheet consommateur, wrapper de champ
+different) republie les tokens. Origine : `OrigamSelect` (commit
+`8354407c`), extrait ici pour eviter la reimplementation.
 
 **Source** : `packages/ds/src/composables/Commons/teleport-typography.composable.ts`
 
@@ -1831,9 +2080,22 @@ logic.
 export function useTheme ()
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/theme.composable.ts`, puis regenerer.
+Handle reactif partage (singleton) sur DEUX axes de theming
+independants : `theme`/`setTheme`/`resolved`/`toggle` pour la marque
+(`data-theme`, `'auto'|'light'|'dark'|string`), et `mode`/`setMode`/
+`resolvedMode`/`toggleMode` pour le clair/sombre (`data-mode`,
+`'auto'|'light'|'dark'`). Chaque setter persiste dans `localStorage` et
+applique l'attribut correspondant sur `<html>`. `resolved`/`resolvedMode`
+ramenent `'auto'` a une valeur concrete via `prefers-color-scheme`.
+
+Le listener `prefers-color-scheme` est un SINGLETON initialise
+paresseusement (`ensureSystemPreference`), pas un `onMounted` — donc
+`resolvedMode` reste correct meme quand `useTheme()` est appele hors
+d'un composant (ex. un plugin Nuxt, ou aucun cycle de vie n'existe pour
+driver `onMounted`). `data-mode` ne perd JAMAIS son attribut (retombe
+toujours sur une valeur concrete) — contrairement a `data-theme`, qui
+est retire quand `theme === 'auto'`, car la matrice de tokens n'a pas
+d'equivalent "sans mode".
 
 **Source** : `packages/ds/src/composables/Commons/theme.composable.ts`
 
@@ -1845,9 +2107,17 @@ export function useTheme ()
 export function useThrottleFn<T extends unknown[], R = void> (fn: (...args: T)
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/throttle.composable.ts`, puis regenerer.
+Limite `fn` a un appel toutes les `wait` ms — pattern LEADING-edge :
+le premier appel dans une fenetre passe immediatement, les suivants
+dans la meme fenetre sont ignores (pas mis en file). Contrairement a
+un debounce, `fn` n'est jamais appele "en retard" apres la derniere
+invocation.
+
+Aucun mecanisme de nettoyage n'est retourne : le `setTimeout` interne
+n'est pas annule si le composant se demonte avant `wait`. Sans
+consequence sur `fn` elle-meme — le timer ne fait que reinitialiser le
+flag interne (`timer = null`), il ne rappelle jamais `fn` — mais le
+timer continue de tourner en memoire jusqu'a son echeance.
 
 **Source** : `packages/ds/src/composables/Commons/throttle.composable.ts`
 
@@ -1859,9 +2129,16 @@ export function useThrottleFn<T extends unknown[], R = void> (fn: (...args: T)
 export function useToggleScope (source: WatchSource<boolean>, fn: (reset: ()
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/toggleScope.composable.ts`, puis regenerer.
+Execute `fn` dans un `EffectScope` dedie tant que `source` (un booleen
+reactif) est vrai, et arrete ce scope (`scope.stop()` — donc tous les
+effets/watchers crees a l'interieur de `fn`) des que `source` repasse a
+faux. Utile pour n'activer des effets reactifs QUE pendant une periode
+conditionnelle, sans les laisser tourner en arriere-plan.
+
+Si `fn` declare un parametre (`fn.length > 0`), elle recoit une
+fonction `reset` qui arrete le scope courant ET en redemarre un
+nouveau immediatement — a appeler depuis l'interieur de `fn` pour
+relancer ses propres effets sans attendre un cycle `source` false→true.
 
 **Source** : `packages/ds/src/composables/Commons/toggleScope.composable.ts`
 
@@ -1873,9 +2150,21 @@ export function useToggleScope (source: WatchSource<boolean>, fn: (reset: ()
 export function useTouch (
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/touch.composable.ts`, puis regenerer.
+Geste tactile swipe-to-open/close pour un panneau ancre a un `position`
+(`left|right|top|bottom`, ex. Navigation Drawer) : ecoute
+`touchstart`/`touchmove`/`touchend` sur `window`, ne se declenche que si
+le doigt part depuis la zone de bord (`TOUCH_EDGE_ZONE_PX`) ou depuis
+le panneau deja ouvert, decide de la direction de drag (horizontal vs
+vertical) au premier depassement de `TOUCH_DRAG_THRESHOLD_PX`, et bascule
+`isActive` a la fin du geste selon la VELOCITE (fling, via
+`useVelocity`) ou a defaut selon `dragProgress > TOUCH_SETTLE_PROGRESS`.
+
+`dragStyles` emet une `transform: translate(...)` directement liee a
+`dragProgress` PENDANT le drag (`transition: none` pour suivre le doigt
+sans latence) — c'est au composant appelant de reprendre la transition
+normale une fois `isDragging` retombe a `false`. `touchless.value` a
+`true` desactive l'ouverture par swipe des `touchstart`, sans retirer
+les listeners.
 
 **Source** : `packages/ds/src/composables/Commons/touch.composable.ts`
 
@@ -1887,9 +2176,24 @@ export function useTouch (
 export function useTypography (props: ITypographyProps, varPrefix: string)
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/typography.composable.ts`, puis regenerer.
+Volet typographique de `useMargin`/`useBorder`/`useColor` : pour
+chacune des cinq `ITypographyProps` (`fontFamily`, `fontSize`,
+`fontWeight`, `lineHeight`, `letterSpacing`) que le consommateur a
+fixee, emet une custom property inline `--origam-{varPrefix}---{prop}`
+qui repointe vers le token primitif correspondant. Une prop non fixee
+n'emet rien — le theme/la variante du composant garde la main.
+
+INLINE UNIQUEMENT (pas de classe utilitaire — `origam-utilities.css`
+n'a pas de famille `.origam--font-*`), et `typographyStyles` est un
+objet PLAT `{ '--var': valeur }` (jamais un tableau) : `useStyle()`
+(consomme par Btn) serialise le tableau de styles au premier niveau
+seulement, un objet imbrique y fuirait en `[object Object]`. ⛔ Le
+var GENERIQUE emis ici (`--origam-{prefix}---font-size`, sans suffixe)
+est le canal via lequel `fontSize` ecrase une variante `size`/`density`
+du composant — un token statique portant ce meme nom generique
+ecraserait TOUJOURS la variante (bug historique Chip/Kbd) ; la SCSS du
+composant doit lire ce generique EN PREMIER, avec le token par taille
+en repli.
 
 **Source** : `packages/ds/src/composables/Commons/typography.composable.ts`
 
@@ -1901,9 +2205,23 @@ export function useTypography (props: ITypographyProps, varPrefix: string)
 export function useValidation (props: IValidationProps, name = getCurrentInstanceName(), id: MaybeRef<string | number> = getUid())
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/validation.composable.ts`, puis regenerer.
+Moteur de validation d'un champ : execute `props.rules` contre
+`validationValue`/`modelValue`, s'enregistre aupres du `OrigamForm`
+ambiant (`ORIGAM_FORM_KEY`) via `register`/`unregister`/`update`, et
+expose `isValid`/`isDirty`/`isPristine`/`errorMessages`/`validationClasses`.
+`validateOn` (`'input'|'blur'|'submit'|'lazy'`, ou heritee du form
+parent) pilote QUAND `validate()` se redeclenche automatiquement — via
+`useToggleScope` pour n'ecouter que les axes concernes.
+
+`isValid` peut valoir `undefined` (ni valide ni invalide) : c'est l'etat
+"pas encore juge" d'un champ vierge (`isPristine`) sans erreur interne
+ni mode `lazy` — a distinguer explicitement de `true`/`false` cote
+consommateur. Le `watch([isValid, errorMessages], …)` qui notifie le
+form est deliberement differe a `onMounted` (voir la banniere
+"DEFERRED TO onMounted" plus bas dans le corps) pour la meme raison
+ADR-005 que `useSelectLink` : une lecture
+`immediate` en plein `setup()` figerait `isValid` AVANT que le
+resolveur de theme ait patché `props.error`.
 
 **Source** : `packages/ds/src/composables/Commons/validation.composable.ts`
 
@@ -1915,9 +2233,11 @@ export function useValidation (props: IValidationProps, name = getCurrentInstanc
 export function useVariant (props: IVariantProps | Ref<TVariant | TVariantInput | string | undefined>, name = getCurrentInstanceName())
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/variant.composable.ts`, puis regenerer.
+Traduit `props.variant` (ou un `Ref` passe directement) en une seule
+classe `{name}--variant-{valeur}`. Accepte n'importe quelle chaine —
+contrairement a `useDensity`/`useSize`, il n'y a pas de liste blanche
+(`*_ARRAY`) a matcher : toute valeur non-nulle produit une classe, y
+compris une variante que le composant ne connait pas.
 
 **Source** : `packages/ds/src/composables/Commons/variant.composable.ts`
 
@@ -1929,9 +2249,18 @@ export function useVariant (props: IVariantProps | Ref<TVariant | TVariantInput 
 export function useVelocity ()
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/velocity.composable.ts`, puis regenerer.
+Suit un historique glissant (`CircularBuffer`, taille `HISTORY`) de
+positions par identifiant de touch (`addMovement`) et calcule une
+vitesse d'impulsion (`getVelocity`) a partir des seuls echantillons
+dans la fenetre `HORIZON` la plus recente — utilise par `useTouch` pour
+detecter un "fling" (swipe rapide) en fin de geste.
+
+⛔ `getVelocity(id)` LEVE si aucun echantillon n'existe pour cet `id` —
+un appelant doit avoir appele `addMovement` au moins une fois pour ce
+touch avant, et ne jamais appeler `getVelocity` apres `endTouch` (qui
+supprime l'historique de l'id). `direction` est une propriete calculee
+a chaque lecture (pas mise en cache), derivee du plus grand des deux
+axes x/y.
 
 **Source** : `packages/ds/src/composables/Commons/velocity.composable.ts`
 
@@ -1943,9 +2272,24 @@ export function useVelocity ()
 export function useVirtual<T> (props: IVirtualProps, items: Ref<readonly T[]>)
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/virtual.composable.ts`, puis regenerer.
+Virtualisation de liste : ne rend que la tranche `[first, last[` de
+`items` réellement visible (`computedItems`), en maintenant des
+`offsets` par index (recalcules via `updateOffsets`, debattus) et un
+padding haut/bas qui simule la hauteur totale de la liste. La fenetre
+visible est recalculee sur scroll (`handleScroll`/`calcVisibleItems`,
+via `requestAnimationFrame`) et sur redimensionnement du conteneur
+(`useResizeObserver`). `scrollToIndex` delegue l'animation a `useGoTo`,
+ou differe le scroll si la liste n'a pas encore mesure sa mise en page
+(`targetScrollIndex`).
+
+Le PREMIER `estimateLast()` (au moment du `shallowRef()`, en plein
+`setup()`) peut lire un `props.height` PRE-THEME — voir la banniere
+"the anti-flash first-paint guess" et "last's FIRST guess is
+re-applied once mounted (#504)" juste en dessous : le meme piege
+ADR-005 que `useSelectLink`/`useValidation`, corrige ici en
+re-executant la meme estimation dans un `onMounted`. `itemHeight` n'est
+jamais fige : `handleItemResize` le retrecit au minimum observe parmi
+les items reellement mesures.
 
 **Source** : `packages/ds/src/composables/Commons/virtual.composable.ts`
 
@@ -1957,9 +2301,22 @@ export function useVirtual<T> (props: IVirtualProps, items: Ref<readonly T[]>)
 export function useVModel< Props extends object &
 ```
 
-> ⛔ **Aucune description dans le code.** Ce symbole n'a pas de banniere
-> `@description` au-dessus de sa declaration. Le generateur ne l'invente pas :
-> ecrire la banniere dans `packages/ds/src/composables/Commons/vModel.composable.ts`, puis regenerer.
+V-model generique pour n'importe quelle prop (pas seulement
+`modelValue`) : detecte si `prop` est CONTROLE (le parent a fourni a la
+fois la prop et son `onUpdate:{prop}`) ou NON CONTROLE (le composant
+gere son propre etat interne, seede depuis `props[prop]` ou
+`defaultValue`). `transformIn`/`transformOut` convertissent entre la
+forme externe (celle de la prop) et la forme interne utilisee par le
+composant — identite par defaut.
+
+⛔ Le seed non controle est lu PARESSEUSEMENT (au premier acces via
+`model`, pas a l'appel de `useVModel()`) — voir la banniere "THE
+UNCONTROLLED SEED IS READ LAZILY, NOT AT SETUP" juste en dessous : le
+meme piege ADR-005 que `useSelectLink`/`useValidation`/`useVirtual`,
+ici avec deux consequences (le seed lui-meme ET `defaultValue` passe en
+argument, qui doit etre un getter `() => props.xxx` pour rester
+theme-safe). `UNSEEDED` est un symbole distinct de `undefined`, qui est
+une valeur de modele legitime.
 
 **Source** : `packages/ds/src/composables/Commons/vModel.composable.ts`
 
