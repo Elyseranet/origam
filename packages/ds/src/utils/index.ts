@@ -75,6 +75,7 @@ export * from './TextareaField/html-to-markdown.util'
 export * from './Commons/apply-mask.util'
 export * from './Commons/resolve-mask-config.util'
 export * from './Commons/validate-pattern.util'
+export * from './Commons/validation.util'
 
 export * from './QrCode/qr-code-adapters.util'
 

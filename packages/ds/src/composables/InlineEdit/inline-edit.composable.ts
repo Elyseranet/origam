@@ -9,7 +9,9 @@ import {
     unref
 } from 'vue'
 
-import type { IUseInlineEditOptions, TInlineEditRule, TInlineEditValidator } from '../../interfaces/InlineEdit/inline-edit.interface'
+import type { IUseInlineEditOptions, TInlineEditValidator } from '../../interfaces/InlineEdit/inline-edit.interface'
+
+import { collectRuleErrors } from '../../utils/Commons/validation.util'
 
 /**
  * Coerce any v-model value into a string for the input draft. Numbers
@@ -146,25 +148,6 @@ export function useInlineEdit (
     }
 
     /**
-     * Run the `rules` array sequentially. Returns the first error
-     * message found, or `null` when all rules pass (or no rules
-     * are provided). Mirrors the evaluation logic of `useValidation`
-     * but without the form-provider lifecycle coupling.
-     */
-    const runRules = async (
-        value: string,
-        rules?: Array<TInlineEditRule>
-    ): Promise<string | null> => {
-        if (!rules || rules.length === 0) return null
-        for (const rule of rules) {
-            const result = await rule(value)
-            if (result === true) continue
-            if (typeof result === 'string') return result
-        }
-        return null
-    }
-
-    /**
      * Validate the draft and, on success, commit it through `onConfirm`
      * (which is wired to `emit('update:modelValue', value)` by the SFC).
      *
@@ -173,6 +156,14 @@ export function useInlineEdit (
      * 2. `validate` is only evaluated if all rules pass.
      * This ensures the declarative contract (`rules`) takes precedence
      * and the imperative callback (`validate`) is the last gate.
+     *
+     * The `rules` pass is `collectRuleErrors(…, 1)` — the SAME loop
+     * `useValidation.validate()` runs, capped at one error. This file
+     * used to carry its own `runRules()` copy, which had silently
+     * diverged: a rule returning `false` passed here and failed there.
+     * Only the LOOP is shared — it is a pure util, so `useInlineEdit`
+     * keeps its deliberate independence from `ORIGAM_FORM_KEY` and from
+     * every lifecycle hook `useValidation` installs.
      */
     const confirm = async (): Promise<boolean> => {
         if (!isEditing.value) return false
@@ -197,7 +188,7 @@ export function useInlineEdit (
             isPending.value = true
             let verdict: string | null = null
             try {
-                verdict = await runRules(next, currentOptions.rules)
+                verdict = (await collectRuleErrors(currentOptions.rules, next, 1))[0] ?? null
                 if (verdict === null) {
                     verdict = await runValidator(next, currentOptions.validate)
                 }

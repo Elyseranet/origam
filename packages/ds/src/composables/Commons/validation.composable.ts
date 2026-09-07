@@ -7,6 +7,7 @@ import type { IValidationProps } from '../../interfaces/Commons/validation.inter
 
 import { wrapInArray } from '../../utils/Commons/commons.util'
 import { getCurrentInstance, getCurrentInstanceName, getUid } from '../../utils/Commons/getCurrentInstance.util'
+import { collectRuleErrors } from '../../utils/Commons/validation.util'
 
 import {
     computed,
@@ -190,33 +191,10 @@ export function useValidation (props: IValidationProps, name = getCurrentInstanc
     }
 
     const validate = async (silent = false) => {
-        const results = []
-
         isValidating.value = true
 
-        if (props.rules) {
-            for (const rule of props.rules) {
-                if (results.length >= +(props.maxErrors ?? 1)) {
-                    break
-                }
+        internalErrorMessages.value = await collectRuleErrors(props.rules, validationModel.value, +(props.maxErrors ?? 1))
 
-                const handler = typeof rule === 'function' ? rule : () => rule
-                const result = await handler(validationModel.value)
-
-                if (result === true) continue
-
-                if (result !== false && typeof result !== 'string') {
-
-                    console.warn(`${result} is not a valid value. Rule functions must return boolean true or a string.`)
-
-                    continue
-                }
-
-                results.push(result || '')
-            }
-        }
-
-        internalErrorMessages.value = results
         isValidating.value = false
         isPristine.value = silent
 
