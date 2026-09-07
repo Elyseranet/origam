@@ -55,21 +55,36 @@
 
 	const {isSelected, select, next, prev, selected} = useGroup(props, ORIGAM_ITEM_GROUP_KEY)
 
-	// ⛔ INERT as written — kept only because removing the provider would
-	// change the rendered DOM. The map is keyed `'origam-item'`, but the
-	// theme/defaults resolver identifies the child by ITS OWN kebab name,
-	// `origam-item-group-item` (`toKebabCase(vm.aliasName ?? vm.name ??
-	// vm.__name)`, getCurrentInstance.util.ts:38). The keys never match, so
-	// the entry is skipped before any prop is inspected and #515's
-	// unsupported-prop warning never fires either. `selectedClass` still
-	// reaches every item — through the group INJECTION, in `useGroupItem`
-	// (`group.selectedClass.value ? … : props.selectedClass`), which is the
-	// only path that runs. Re-keying this map is NOT a free fix: it would
-	// let an explicitly-emptied group `selected-class=""` overwrite an
-	// item's own prop, breaking the documented per-item fallback.
-	// Forward ONLY what the consumer actually passed — see #263. `selectedClass`
-	// carries a `withDefaults` value today, so nothing junk leaks through in
-	// practice, but the guard keeps every forwarder on one single shape.
+	/*********************************************************
+	 * slotDefaults
+	 *
+	 * @description
+	 * ⛔ INERTE tel qu'ecrit, et conserve uniquement parce que retirer le
+	 * fournisseur changerait le DOM rendu. La table est indexee sur
+	 * `'origam-item'`, alors que le resolveur de defauts identifie l'enfant par
+	 * SON PROPRE nom kebab, `origam-item-group-item`
+	 * (`toKebabCase(vm.aliasName ?? vm.name ?? vm.__name)`,
+	 * `getCurrentInstance.util.ts:38`). Les cles ne coincident jamais : l'entree
+	 * est ecartee avant qu'aucune prop ne soit examinee, et l'avertissement de
+	 * prop non supportee introduit par #515 ne part pas davantage.
+	 *
+	 * @description
+	 * `selectedClass` atteint pourtant bien chaque item — par l'INJECTION de
+	 * groupe, dans `useGroupItem` (`group.selectedClass.value ? … :
+	 * props.selectedClass`), qui est le seul chemin reellement emprunte.
+	 *
+	 * @description
+	 * ⛔ Re-indexer cette table n'est PAS un correctif gratuit : un groupe dont
+	 * la classe a ete explicitement videe (`selected-class=""`) ecraserait alors
+	 * la prop propre de l'item, ce qui casserait le repli par item que la doc
+	 * decrit.
+	 *
+	 * @description
+	 * Ne transmet QUE ce que le consommateur a reellement passe (#263).
+	 * `selectedClass` porte aujourd'hui une valeur de `withDefaults`, donc rien
+	 * d'indesirable ne fuit en pratique ; la garde maintient simplement tous les
+	 * transmetteurs sur une seule et meme forme.
+	 ********************************************************/
 	const wasPropPassed = usePassedProps(props)
 	const slotDefaults = computed(() => ({
 		'origam-item': omitUndefined({
