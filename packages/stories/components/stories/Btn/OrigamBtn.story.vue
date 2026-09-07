@@ -191,7 +191,10 @@
 		</Variant>
 
 		<Variant title="Events - group:selected">
-			<origam-btn color="primary" text="Group item" @group:selected="logEvent('group:selected', $event)"/>
+			<origam-btn-toggle>
+				<origam-btn color="primary" text="First"  @group:selected="logEvent('group:selected', $event)"/>
+				<origam-btn color="primary" text="Second" @group:selected="logEvent('group:selected', $event)"/>
+			</origam-btn-toggle>
 		</Variant>
 
 		<Variant title="Slots - Default">
@@ -288,7 +291,7 @@
 >
 	import { logEvent } from 'histoire/client'
 
-	import { OrigamBtn, OrigamIcon } from '@origam/components'
+	import { OrigamBtn, OrigamBtnToggle, OrigamIcon } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
 	import type {
 		IBgColorProps,

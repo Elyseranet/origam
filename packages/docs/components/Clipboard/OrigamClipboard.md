@@ -137,13 +137,22 @@ embedded scenarios.
 
 - The default trigger is a native `<button>` — keyboard / focus /
   disabled semantics come for free.
-- The label that appears next to the icon while `copied` is true is
-  marked `aria-live="polite"` so screen readers announce the state
-  change without interrupting the user.
-- The default trigger's `aria-label` flips between
-  `"Copy to clipboard"` and `"Value copied to clipboard"` to surface
-  the state transition to assistive tech that does not pick up the
-  visual label.
+- ⛔ **There is no live region.** The confirmation text is rendered
+  inside an `<origam-tooltip>` — not in a label next to the icon — and
+  neither `OrigamClipboard` nor `OrigamTooltip` sets `aria-live`
+  anywhere. The transient live region that used to sit inside the
+  control was removed on purpose along with the raw `<button>` trigger
+  (see *Changed* at the top of this page).
+- The state change is surfaced through the trigger's **`aria-label`**
+  instead, which flips between `origam.clipboard.copy_aria_label` and
+  `origam.clipboard.copied_aria_label` (`"Copy to clipboard"` /
+  `"Value copied to clipboard"` in the shipped English messages). A
+  screen reader on the focused button announces the new label; the swap
+  is what assistive tech picks up, since the visual feedback lives in a
+  tooltip.
+- If your flow needs a guaranteed announcement even when focus has moved
+  away, render your own live region from the `#default` scoped slot,
+  driven by the `copied` binding.
 - Custom triggers passed through `#default` keep their own ARIA
   contract — make sure to add a label (`aria-label` or visible text)
   when the trigger is icon-only.
