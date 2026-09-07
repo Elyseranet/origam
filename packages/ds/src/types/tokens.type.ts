@@ -1209,6 +1209,8 @@ export type TTokenName =
   | '--origam-data-table__sortable---cursor'
   | '--origam-data-table__sortable---icon-color'
   | '--origam-data-table__sortable---icon-color-active'
+  | '--origam-date-picker---width'
+  | '--origam-date-picker--show-week---width'
   | '--origam-date-picker-month__day---font-size'
   | '--origam-date-picker-month__weekday---font-size'
   | '--origam-date-picker-month__weeks---font-size'

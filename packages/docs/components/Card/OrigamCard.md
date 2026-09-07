@@ -50,6 +50,35 @@ to populate the header automatically. Use the named header slots for full contro
 </template>
 ```
 
+### Link props
+
+`ICardProps` extends `ILinkProps`, so the four router-link props are real
+and forwarded to `vue-router`'s own `useLink`.
+
+| Prop      | Type               | Effect                                                                                     |
+|-----------|--------------------|--------------------------------------------------------------------------------------------|
+| `href`    | `string`           | Renders the root as `<a href>`. No router involved.                                          |
+| `to`      | `RouteLocationRaw` | Renders as `<a>` with the resolved route href and navigates on click through the router.     |
+| `replace` | `boolean`          | With `to`, navigates with `router.replace()` instead of `router.push()` — no history entry.  |
+| `exact`   | `boolean`          | Narrows the active-state derivation to an exact match, query string included.                 |
+| `link`    | `boolean`          | Forces the clickable affordance (cursor, ripple, `--link` modifier) without a URL.            |
+
+```vue
+<template>
+    <OrigamCard :to="{ name: 'invoice', params: { id } }" replace title="Open invoice"/>
+</template>
+```
+
+> **`replace`, `to` and `exact` need an installed router.** `useLink`
+> resolves `RouterLink` dynamically; when the app has no `vue-router`
+> instance the resolution falls back to a plain string and the composable
+> returns early with only `href`. That is exactly the case inside the
+> Histoire sandbox — the `Replace` / `To` / `Exact` controls in the story's
+> **Link** group are inert there, not because the props are dead but because
+> the sandbox installs no router. With a router present, `replace: true`
+> routes through `router.replace()` (verified in
+> `packages/tests/TU/components/Card/OrigamCard.link.spec.ts`).
+
 ## Loading state
 
 Accepts a boolean or a number (progress percentage) for `loading`.

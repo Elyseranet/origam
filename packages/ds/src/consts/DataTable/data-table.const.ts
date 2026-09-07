@@ -94,6 +94,59 @@ export const DATA_TABLE_MIN_PAGE_COUNT = 1
  ********************************************************/
 export const DATA_TABLE_PAGINATION_MISSING_ERROR = 'Missing pagination!'
 
+/*********************************************************
+ * DATA_TABLE_ROWS_SLOT_NAMES
+ *
+ * @description
+ * Slot names `<OrigamDataTable>` relays verbatim down to
+ * `<OrigamDataTableRows>`, which owns the loading / empty / per-row
+ * rendering. `data-table-group` and `data-table-select` travel one hop
+ * further, to `<OrigamDataTableGroupHeaderRow>`.
+ *
+ * @description
+ * They are listed rather than inferred because the relay is an
+ * INTERSECTION: only a name a descendant actually renders is worth
+ * forwarding, and a `v-for` over `$slots` would also push `top` /
+ * `bottom` / `thead` — names `<OrigamDataTableRows>` does not declare —
+ * into its `$slots`.
+ ********************************************************/
+export const DATA_TABLE_ROWS_SLOT_NAMES = [
+    'loading',
+    'no-data',
+    'item',
+    'group-header',
+    'expanded-row',
+    'data-table-group',
+    'data-table-select'
+] as const
+
+/*********************************************************
+ * DATA_TABLE_ITEM_SLOT_PREFIX / DATA_TABLE_HEADER_SLOT_PREFIX
+ *
+ * @description
+ * Prefixes of the two COLUMN-DRIVEN slot families. Their full names
+ * (`item.commits`, `header.commits`, …) are only known at runtime — one
+ * per column definition — so every relay in the chain matches on the
+ * prefix instead of an enumerated list.
+ ********************************************************/
+export const DATA_TABLE_ITEM_SLOT_PREFIX = 'item.'
+export const DATA_TABLE_HEADER_SLOT_PREFIX = 'header.'
+
+/*********************************************************
+ * DATA_TABLE_RESERVED_HEADER_SLOT_NAMES
+ *
+ * @description
+ * The two `header.` names that are NOT column-driven. They address
+ * `<OrigamDataTableHeaders>`'s own `mobile` / `loader` slots and are
+ * already forwarded explicitly by `<OrigamDataTable>`; matching them on
+ * the prefix would send them a second time, to a column that cannot
+ * exist.
+ ********************************************************/
+export const DATA_TABLE_RESERVED_HEADER_SLOT_NAMES = [
+    'header.mobile',
+    'header.loader'
+] as const
+
 export const ORIGAM_DATA_TABLE_SELECT_KEY: InjectionKey<ReturnType<typeof provideSelection>> = Symbol.for('origam:data-table-selection')
 
 export const ORIGAM_DATA_TABLE_SHOW_SELECT_KEY: InjectionKey<Ref<boolean>> = Symbol.for('origam:data-table-show-select')

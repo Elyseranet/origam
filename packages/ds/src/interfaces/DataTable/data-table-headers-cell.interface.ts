@@ -1,5 +1,6 @@
 import type { IColorProps } from '../Commons/color.interface'
 import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IDataTableHeaderCellColumnSlot } from './items.interface'
 import type { IHeaderCellProps } from './header-cell-base.interface'
 import type { IInternalDataTableHeader } from './data-table-header.interface'
 
@@ -21,11 +22,14 @@ export interface IDataTableHeadersCellProps extends ICommonsComponentProps, ICol
  * IDataTableHeadersCellSlots
  *
  * @description
- * `<OrigamDataTableHeadersCell>` renders no `<slot>` at all — it's a
- * pure repeater over `headers` forwarding into
- * `<origam-data-table-header-cell>`.
+ * `<OrigamDataTableHeadersCell>` owns no slot CONTENT — it is a repeater
+ * over `headers` — but it is a link in the `header.{key}` relay, so it
+ * must declare the family to hand it to
+ * `<origam-data-table-header-cell>`, which renders it.
  ********************************************************/
-export interface IDataTableHeadersCellSlots {}
+export interface IDataTableHeadersCellSlots {
+    [key: `header.${string}`]: ((props: IDataTableHeaderCellColumnSlot) => any) | undefined
+}
 
 /*********************************************************
  * IDataTableHeadersCellEmits

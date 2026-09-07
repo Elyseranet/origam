@@ -162,14 +162,28 @@ describe('useCssTransition — transitionProps', () => {
         expect(api().transitionProps.value.css).toBe(false)
     })
 
-    it('mode is included in transitionProps when group=true and mode is set', () => {
+    // ⛔ Ces deux tests assertaient l'INVERSE — « mode included when group=true »,
+    // « NOT included when group=false » — c'est-a-dire exactement le bug. Le
+    // composable ecrivait `if (props.group)`, et le spec l'a fidelement epingle,
+    // ce qui a fait passer la suite au vert pendant tout ce temps sur une prop
+    // morte dans les DEUX branches.
+    //
+    // `mode` n'existe que sur `<Transition>` : `'mode' in TransitionGroup.props`
+    // vaut `false`. Le poser sur un groupe produisait un attribut DOM inerte ;
+    // ne pas le poser hors groupe le laissait sans destination, puisqu'une prop
+    // declaree par l'hote ne retombe pas dans `$attrs`.
+    //
+    // Meme famille que le test voisin corrige sous #549. Un spec qui reproduit
+    // le comportement observe au lieu du comportement voulu ne protege de rien :
+    // il verrouille le defaut.
+    it('mode is NOT included when group=true — TransitionGroup has no such prop', () => {
         const { api } = mountCssTransition({ name: 'fade', group: true, mode: 'out-in' })
-        expect(api().transitionProps.value.mode).toBe('out-in')
+        expect(api().transitionProps.value).not.toHaveProperty('mode')
     })
 
-    it('mode is NOT included when group=false', () => {
+    it('mode IS included when group=false — this is the only place it works', () => {
         const { api } = mountCssTransition({ name: 'fade', group: false, mode: 'out-in' })
-        expect(api().transitionProps.value).not.toHaveProperty('mode')
+        expect(api().transitionProps.value.mode).toBe('out-in')
     })
 
     // ⛔ Ce test assertait l'INVERSE jusqu'a #549 : « no JS hooks when
