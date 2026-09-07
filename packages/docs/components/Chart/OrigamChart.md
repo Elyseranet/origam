@@ -59,7 +59,7 @@ function onPointClick(point: IChartPoint) {
 | `type` | `TChartType` | `'line'` | Visualisation primitive. One of `'line'`, `'area'`, `'bar'`, `'column'`, `'scatter'`, `'spline'`, `'stepped-line'`, `'pie'`, `'donut'`, `'radar'`, `'gauge'`, `'funnel'`, `'pyramid'`, `'honeycomb'`, `'treemap'`, `'sankey'`, `'word-cloud'`, `'heatmap'`, `'sunburst'`, `'box-plot'`, `'pictorial'`, `'candlestick'`, `'streamgraph'`, `'variwide'`, `'polar-bar'`, `'bullet'`, `'pareto'`, `'map'`, `'sparkline'`. |
 | `height` | `number \| string` | `360` | Chart height. A plain number is interpreted as `px`. Any valid CSS length is accepted. Ignored when `aspectRatio` is set. |
 | `aspectRatio` | `string` | `undefined` | CSS `aspect-ratio` shorthand (`'16/9'`, `'4/3'`, `'1/1'`). When set, overrides `height` and the chart scales with its container width. |
-| `colorScheme` | `Array<TIntent \| string>` | 8-intent cycle | Palette applied when a series omits its own `color`. Pass intent names (e.g. `'primary'`) or raw CSS values. Cycles by index. |
+| `colorScheme` | `Array<TIntent \| string>` | 8-intent cycle | Palette applied when a series omits its own `color`. Pass intent names (e.g. `'primary'`) or raw CSS values. Cycles by index. **No effect when `type` is `'bullet'`, `'candlestick'`, `'heatmap'` or `'map'`** — see the behaviour note below (#426). |
 | `title` | `string` | `undefined` | Optional title rendered above the plotting area. Replaceable via the `#title` slot. |
 | `subtitle` | `string` | `undefined` | Optional subtitle rendered below the title. |
 | `fontSize` | `TFontSize` | `undefined` | Header typography token applied to the title + subtitle (`xs` → `5xl`). Inherited from `IChartBaseProps`. |
@@ -147,6 +147,17 @@ function onPointClick(point: IChartPoint) {
 **Keyboard access.** Each data point is focusable via `Tab` / `Shift+Tab`. `Enter` or `Space` fires `point-click` with a synthetic `KeyboardEvent`. Legend entries are also keyboard-navigable and announce their visibility state to screen readers.
 
 **`showAxis` / `showGrid` on polar / gauge types.** These props are accepted by the shell for API uniformity but have no visual effect when `type` is `pie`, `donut`, `radar`, or `gauge`.
+
+**`colorScheme` is not universal (#426).** Four types own a colour model that has no per-series identity axis for a rotating palette to drive, so the prop is inert on them:
+
+| `type` | Colour model that replaces `colorScheme` |
+|---|---|
+| `'bullet'` | uniform `barColor` for the value bar + `rangeColors` for the bands |
+| `'candlestick'` | binary `bullishColor` / `bearishColor` |
+| `'heatmap'` | continuous gradient driven by `colorRange` |
+| `'map'` | continuous `colorRange` (choropleth) or a single `lineColor` (flight routes) |
+
+Passing a non-empty `colorScheme` on one of those four is not silent: the delegated sub-component warns once per component in development builds (`useUnsupportedProp`) and stays quiet in production.
 
 ## Composable — `useChart`
 

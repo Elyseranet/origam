@@ -147,29 +147,6 @@
 			</div>
 		</Variant>
 
-		<Variant title="Slots - legend-item">
-			<div
-					class="story-shell"
-					data-cy="heatmap-slot-legend-item"
-			>
-				<origam-chart-heatmap
-						:series="FIXTURE_ACTIVITY"
-						:x-categories="HOURS"
-						:y-categories="DAYS"
-						:height="400"
-						:show-legend="true"
-						title="Custom legend item"
-						data-cy="heatmap-slot-legend-item-chart"
-				>
-					<template #legend-item="{ series, index, visible }">
-						<span :style="{ opacity: visible ? 1 : 0.4 }">
-							[{{ index }}] {{ series.name }}
-						</span>
-					</template>
-				</origam-chart-heatmap>
-			</div>
-		</Variant>
-
 		<Variant title="Slots - title">
 			<div
 					class="story-shell"
