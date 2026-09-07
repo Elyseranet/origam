@@ -13,7 +13,7 @@
 //   - les `<style>` injectes dans `<head>` par `useStyle`
 //   - les `ResizeObserver` instancies et jamais deconnectes
 //
-// Un compteur qui revient a son point de depart apres 200 cycles
+// Un compteur qui revient a son point de depart apres CYCLES cycles
 // mount/unmount ne prouve pas l'absence de toute fuite, mais il elimine les
 // deux candidats que le ticket cite en tete de sa liste.
 
@@ -23,7 +23,26 @@ import { mount } from '@vue/test-utils'
 import OrigamPagination from '@origam/components/Pagination/OrigamPagination.vue'
 import { createOrigam } from '@origam/origam'
 
-const CYCLES = 200
+/*********************************************************
+ * CYCLES
+ *
+ * @description
+ * ⛔ 60, pas 200. Une fuite ici est d'UNE unite PAR instance : elle se voit au
+ * premier cycle et croit lineairement. Le verdict est « le compte est-il
+ * plat ? », pas « depasse-t-on un seuil ». 200 cycles ne prouvaient donc
+ * rien de plus que 60, et coutaient trois fois plus.
+ *
+ * @description
+ * Ce que les 200 coutaient : ~5,4 a 5,9 s contre un plafond de 5 s des qu'une
+ * autre tache occupait la machine, soit un echec rouge sans defaut derriere.
+ * ⛔ Le plafond n'a PAS ete releve pour autant. Le CLAUDE.md consigne pourquoi :
+ * porter le delai de `textarea-richtext` de 5 a 12 s a fait tenir ces tests
+ * deux fois plus longtemps a leur worker, la suite est passee de 37 a 54 min,
+ * et `carousel.spec.ts` — vert aux trois executions precedentes — a pris leur
+ * place avec 7 echecs. Relance seul : 33/33. Gonfler un plafond deplace le
+ * flottement, il ne le supprime pas ; reduire le travail, si.
+ ********************************************************/
+const CYCLES = 60
 
 // ⛔ `createOrigam()` injecte DEUX <style> de theme (`origam-theme`,
 // `origam-theme-dark`) au premier appel, et une seule fois pour toute la
@@ -64,7 +83,7 @@ describe('#365 — OrigamPagination, cycles mount/unmount', () => {
         for (let i = 0; i < CYCLES; i++) mountOnce().unmount()
 
         // `useStyle` injecte un <style> par instance. S'il n'etait pas
-        // retire, 200 cycles laisseraient 200 balises — la forme de fuite la
+        // retire, N cycles laisseraient N balises — la forme de fuite la
         // plus directe pour ce composant. Mesure : le compte est plat.
         expect(componentStyleTags()).toBe(before)
     })
@@ -80,7 +99,7 @@ describe('#365 — OrigamPagination, cycles mount/unmount', () => {
     it('aucun ResizeObserver n\'est laisse connecte', () => {
         for (let i = 0; i < CYCLES; i++) mountOnce().unmount()
 
-        // ⛔ Mesure : `observed` vaut 0 et `disconnected` vaut 200. Le
+        // ⛔ Mesure : `observed` vaut 0 et `disconnected` vaut CYCLES. Le
         // composant deconnecte PLUS qu'il n'observe — l'inverse exact d'une
         // fuite.
         //

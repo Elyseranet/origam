@@ -88,14 +88,34 @@ export function createProvideFunction (data: {
     }
 }
 
-/**
- * Use provided.
+/*********************************************************
+ * useProvided
  *
- * @param props    …
- * @param prop     …
- * @param provided …
- * @returns …
- */
+ * @description
+ * Resout une valeur qui peut venir de DEUX sources : la prop du consommateur,
+ * qui l'emporte, ou la valeur heritee d'un ancetre. Les deux peuvent changer
+ * apres le montage, et les deux doivent etre suivies.
+ *
+ * @description
+ * ⛔ Le troisieme cas — la prop qui REPASSE a nullish — a longtemps rendu la
+ * chaine « undefined » a l'ecran. Le watch de `useVModel` recopie fidelement la
+ * nouvelle valeur de la prop dans le ref interne, `undefined` compris, et le
+ * watch sur `provided` ci-dessous ne se declenche pas : c'est la PROP qui a
+ * bouge, pas l'heritage. Un consommateur ecrivant `:locale="choix || undefined"`
+ * pour dire « reprends celle du parent » obtenait donc le mot undefined.
+ * Mesure dans `TU/composables/Commons/provide-locale-reactivity.spec.ts`.
+ *
+ * @description
+ * L'ordre des deux watchers n'est pas un detail : celui de `useVModel` est
+ * enregistre en premier, a la ligne au-dessus, donc il ecrit `undefined` avant
+ * que celui-ci ne retablisse l'heritage. Inverser les deux lignes reintroduirait
+ * le defaut.
+ *
+ * @param props    Les props du composant hote.
+ * @param prop     Le nom de la prop a resoudre.
+ * @param provided La valeur heritee, utilisee quand la prop est absente.
+ * @returns Un ref suivant la source active des deux.
+ ********************************************************/
 export function useProvided<T> (props: any, prop: string, provided: Ref<T>): Ref<T> {
     const internal = useVModel(props, prop)
 
@@ -104,6 +124,12 @@ export function useProvided<T> (props: any, prop: string, provided: Ref<T>): Ref
     watch(provided, v => {
         if (props[prop] == null) {
             internal.value = v
+        }
+    })
+
+    watch(() => props[prop], v => {
+        if (v == null) {
+            internal.value = provided.value
         }
     })
 
