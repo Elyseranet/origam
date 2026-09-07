@@ -463,10 +463,10 @@
 		$this: &;
 
 		overflow: hidden;
-		width: 328px;
+		width: var(--origam-date-picker---width);
 
 		&--show-week {
-			width: 368px;
+			width: var(--origam-date-picker--show-week---width);
 		}
 
 		&--year {

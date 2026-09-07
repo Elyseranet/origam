@@ -224,15 +224,29 @@
 	 * event (bare `@click="handleCheckBoxClick"` / `@click=
 	 * "handleBtnClick"` bindings, Vue's auto-invoked "blessed form").
 	 ********************************************************/
+	/*********************************************************
+	 * Charge utile de `select` / `expand` (#550, critere C7)
+	 *
+	 * @description
+	 * `IDataTableRowEmits` annonce depuis toujours un objet
+	 * `{ item, value }` optionnel ; le code emettait sans rien. Un
+	 * consommateur qui ecoutait `@expand` recevait `undefined` et ne
+	 * pouvait pas savoir QUELLE ligne avait bascule — la seule
+	 * information que l'evenement porte au-dela de `update:expanded`.
+	 *
+	 * @description
+	 * L'etat est lu APRES la bascule : `value` est donc l'etat resultant,
+	 * pas l'ancien.
+	 ********************************************************/
 	const handleCheckBoxClick = (e: MouseEvent) => {
 		e.stopPropagation()
 		toggleSelect(props.item)
-		emits('select')
+		emits('select', {item: props.item, value: isSelected([props.item])})
 	}
 	const handleBtnClick = (e: MouseEvent) => {
 		e.stopPropagation()
 		toggleExpand(props.item)
-		emits('expand')
+		emits('expand', {item: props.item, value: isExpanded(props.item)})
 	}
 
 	const dataTableColumnCellClasses = (key: string | null) => {

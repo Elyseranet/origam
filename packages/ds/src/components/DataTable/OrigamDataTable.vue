@@ -56,6 +56,17 @@
 						>
 							<slot name="header.loader"/>
 						</template>
+
+						<template
+								v-for="name in headerColumnSlotNames"
+								:key="name"
+								#[name]="columnProps"
+						>
+							<slot
+									:name="name"
+									v-bind="columnProps"
+							/>
+						</template>
 					</origam-data-table-headers>
 					</thead>
 				</template>
@@ -79,7 +90,19 @@
 								ref="origamDataTableRowsRef"
 								:items="paginatedItems"
 								v-bind="dataTableRowsBindProps"
+								@expand="emit('expand', $event)"
+								@select="emit('select', $event)"
 						>
+							<template
+									v-for="name in rowsSlotNames"
+									:key="name"
+									#[name]="rowsProps"
+							>
+								<slot
+										:name="name"
+										v-bind="rowsProps"
+								/>
+							</template>
 						</origam-data-table-rows>
 					</slot>
 					<slot
@@ -132,6 +155,11 @@
 
 	import { ORIGAM_DATA_TABLE_SHOW_SELECT_KEY } from '../../consts/DataTable/data-table.const'
 
+	import {
+		pickDataTableHeaderColumnSlotNames,
+		pickDataTableRowsSlotNames
+	} from '../../utils/DataTable/slot-name.util'
+
 	import { DENSITY } from '../../enums/Commons/density.enum'
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
@@ -178,7 +206,7 @@
 		sortDescIcon: MDI_ICONS.ARROW_DOWN
 	})
 
-	defineEmits<IDataTableEmits>()
+	const emit = defineEmits<IDataTableEmits>()
 
 	defineSlots<IDataTableSlots>()
 
@@ -323,6 +351,29 @@
 
 	const dataTableFooterProps = computed(() => {
 		return origamDataTableFooterRef.value?.filterProps(props, ['class', 'style', 'id'])
+	})
+
+	/*********************************************************
+	 * Forwarded slots (#550, critere C7)
+	 *
+	 * @description
+	 * `<origam-data-table-rows>` et `<origam-data-table-headers>` etaient
+	 * montes SANS enfant : les slots `loading` / `no-data` / `item` /
+	 * `group-header` / `expanded-row`, ceux du GroupHeaderRow et toute la
+	 * famille colonne (`item.{cle}` / `header.{cle}`) etaient declares plus
+	 * bas dans l'arbre et inatteignables depuis `<origam-data-table>`.
+	 *
+	 * @description
+	 * Le relais est une INTERSECTION : seuls les noms que le consommateur a
+	 * reellement passes sont renvoyes, et uniquement vers l'enfant qui les
+	 * rend. `header.mobile` et `header.loader` sont deja forwardes
+	 * explicitement plus haut, d'ou leur exclusion des noms de colonne.
+	 ********************************************************/
+	const rowsSlotNames = computed(() => {
+		return pickDataTableRowsSlotNames(Object.keys(slots))
+	})
+	const headerColumnSlotNames = computed(() => {
+		return pickDataTableHeaderColumnSlotNames(Object.keys(slots))
 	})
 
 	/*********************************************************
