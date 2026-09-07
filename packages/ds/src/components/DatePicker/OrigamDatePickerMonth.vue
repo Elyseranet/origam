@@ -115,6 +115,9 @@
 	import type { TOrigamBtn } from '../../types/Btn/btn.type'
 	import type { TTransitionProps } from '../../types/Transition/transition.type'
 
+	import type { TIntent } from '../../types/Commons/intent.type'
+
+	import { isCssColor, isIntent, tokenForegroundForIntent } from '../../utils/Commons/color.util'
 	import { wrapInArray } from '../../utils/Commons/commons.util'
 
 	import { computed, ref, shallowRef, StyleValue, watch } from "vue"
@@ -307,6 +310,63 @@
 	}
 
 	/*********************************************************
+	 * Color
+	 *
+	 * @description
+	 * ⛔ #550 (critere C1) — `color` etait declaree (`IColorProps`) et
+	 * exposee dans la story, mais lue nulle part : la prop ne peignait
+	 * rien.
+	 * @description
+	 * Le canal transversal habituel (`useTextColor` sur la racine) ne
+	 * pouvait PAS la servir ici, et c'est mesurable : la regle scopee
+	 * `&__day` declare `color: var(--origam-date-picker__day---color, …)`
+	 * sur CHAQUE cellule, et `--origam-date-picker__day---color` est
+	 * declaree globalement dans `light.css` / `dark.css` — donc le
+	 * fallback ne sert jamais et une couleur posee sur la racine, qui
+	 * n'agit que par heritage, perd contre cette declaration directe.
+	 * @description
+	 * On alimente donc le TOKEN plutot que la propriete `color` : une
+	 * custom property posee sur la racine est heritee par les cellules et
+	 * l'emporte sur celle de `:root` (ancetre le plus proche), sans aucun
+	 * conflit de specificite. Meme geste que `OrigamCalendar`
+	 * (`--origam-calendar__day-cell---color` / `__weekday---color`), qui
+	 * est l'analogue direct de cette grille.
+	 * @description
+	 * `--origam-btn---color` est pose en meme temps parce que le libelle
+	 * d'un jour est rendu par un `<origam-btn>` : `.origam-btn` declare
+	 * `color: var(--origam-btn---color, …)` sur lui-meme, donc il ignore
+	 * le token du jour. Les deux variables ne sont emises QUE si `color`
+	 * est fournie — sans la prop, le rendu est strictement celui d'avant
+	 * (les deux tokens ont des defauts differents : `text---primary` vs
+	 * `action--secondary---fg`).
+	 * @description
+	 * Les degrades (`TColor` accepte `isGradient`) ne sont pas couverts :
+	 * un `linear-gradient()` n'est pas une valeur de `color` et demande
+	 * le triptyque `background-clip: text`, hors sujet pour une grille de
+	 * jours. Meme perimetre que `OrigamCalendar`.
+	 ********************************************************/
+
+	const dayColorVars = computed<Record<string, string>>(() => {
+		const vars: Record<string, string> = {}
+		const fg = props.color
+
+		let resolved: string | undefined
+
+		if (isIntent(fg)) {
+			resolved = tokenForegroundForIntent(fg as TIntent)
+		} else if (typeof fg === 'string' && isCssColor(fg)) {
+			resolved = fg
+		}
+
+		if (resolved) {
+			vars['--origam-date-picker__day---color'] = resolved
+			vars['--origam-btn---color'] = resolved
+		}
+
+		return vars
+	})
+
+	/*********************************************************
 	 * Class & Style
 	 *
 	 * @description
@@ -315,6 +375,7 @@
 
 	const datePickerMonthStyles = computed(() => {
 		return [
+			dayColorVars.value,
 			props.style
 		] as StyleValue
 	})
