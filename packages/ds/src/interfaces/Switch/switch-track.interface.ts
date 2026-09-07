@@ -10,6 +10,8 @@ import type {
 import type { IElevationProps } from '../Commons/elevation.interface'
 import type { IRoundedProps } from '../Commons/rounded.interface'
 
+import type { TColor } from '../../types/Commons/color.type'
+
 /*********************************************************
  * ISwitchTrackProps
  *
@@ -88,8 +90,19 @@ export interface ISwitchTrackEmits {
  * @description
  * Slot payload — `model` and `isValid` are forwarded so the consumer can
  * render contextual content (a checkmark on ON, an `x` on OFF, …).
+ *
+ * @description
+ * ⛔ `color` is part of the payload AT RUNTIME (`slotProps` in
+ * `OrigamSwitchTrack.vue` spreads `color: props.color`) but was missing
+ * from this type, so a TypeScript consumer destructuring
+ * `#track.true="{ color }"` got an error on a value that is genuinely
+ * there. Declared here to close the gap — the track still does NOT paint
+ * with it (the foreground channel lives on the surrounding
+ * SelectionControl, see the note on `ISwitchTrackProps`); it is forwarded
+ * precisely so slot content can react to it.
  ********************************************************/
 export interface ISwitchTrackSlotsProps {
+    color?: TColor
     model: boolean
     isValid: boolean | null
 }

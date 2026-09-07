@@ -86,7 +86,22 @@ instead of being interpolated over the transition duration.
 
 ## Slots
 
-`<OrigamCounter>` has no named slots — it renders text-only.
+| Slot | Scope | Description |
+|---|---|---|
+| `default` | `{ counter, max, value }` | Replaces the rendered text. `counter` is the already-formatted string (`"12"` or `"12 / 100"` when `max` is set); `value` and `max` are the raw props, so a consumer can re-format or add markup. Falls back to `{{ counter }}` when the slot is absent. |
+
+```vue
+<template>
+  <OrigamCounter :value="12" :max="100">
+    <template #default="{ counter, value, max }">
+      <strong :class="{ over: Number(value) > Number(max) }">{{ counter }}</strong>
+    </template>
+  </OrigamCounter>
+</template>
+```
+
+`value` defaults to `0` via `withDefaults`, so it is always defined at
+runtime; `max` has no default and stays `undefined` unless passed.
 
 ## Emits
 
