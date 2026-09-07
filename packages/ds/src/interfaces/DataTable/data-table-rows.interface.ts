@@ -1,4 +1,3 @@
-import type { ICommonsComponentProps } from '../Commons/commons.interface'
 import type {
     IDataTableGroup,
     IDataTableGroupHeaderSlot
@@ -28,18 +27,30 @@ import type {
  * IDataTableRowsProps
  *
  * @description
- * ⛔ N'etend PAS `ICommonsComponentProps` : `<OrigamDataTableRows>` rend un
- * FRAGMENT — plusieurs `<tr>` cote a cote, sans racine unique. `id`, `class`
- * et `style` n'ont aucun element sur lequel atterrir, et Vue n'a rien a quoi
- * appliquer un fallthrough.
+ * ⛔ `class`, `style` et `tag` sont RETIRES de la surface heritee de
+ * `ILoaderProps` (qui etend lui-meme `ICommonsComponentProps` et
+ * `ITagProps`). `<OrigamDataTableRows>` rend un FRAGMENT — jusqu'a cinq
+ * `<tr>` squelettes, ou une ligne par item — sans racine unique, donc sans
+ * rien sur quoi Vue puisse appliquer un fallthrough. `tag` n'a pas d'objet
+ * non plus : le contenu d'un `<tbody>` ne peut etre qu'un `<tr>`.
  *
  * @description
- * Les declarer etait pire que de les omettre : une prop declaree sort de
+ * Les declarer etait PIRE que de les omettre : une prop declaree sort de
  * `$attrs`, donc un consommateur qui ecrivait `class="x"` perdait sa classe
- * en silence. Meme cas structurel qu'`<OrigamDefaultsProvider>`, dont le
- * template est un `<slot/>` nu. Issue #550, critere C1.
+ * en silence, sans meme l'avertissement « Extraneous non-props attributes »
+ * que Vue emet sur un fragment. Mesure : `packages/tests/TU/components/
+ * DataTable/data-table-rows-dead-props.spec.ts`. Meme cas structurel
+ * qu'`<OrigamDefaultsProvider>`, dont le template est un `<slot/>` nu.
+ * Issue #550, critere C1.
+ *
+ * @description
+ * `id` reste : il sert de racine aux identifiants de ligne generes
+ * (`${id}-row-${index}`, `${id}-skeleton-row-${index}`). `color` reste et
+ * est desormais CABLE — il peint la ligne de chargement et la ligne
+ * « aucune donnee » via `useTextColor`, ce que le controle « Loader Color »
+ * de la story annoncait deja sans effet.
  ********************************************************/
-export interface IDataTableRowsProps extends ILoaderProps, IDisplayProps {
+export interface IDataTableRowsProps extends Omit<ILoaderProps, 'class' | 'style' | 'tag'>, IDisplayProps {
     hideNoData?: boolean
     items?: Array<IDataTableItem | IDataTableGroup> | readonly (IDataTableItem | IDataTableGroup)[]
     noDataText?: string

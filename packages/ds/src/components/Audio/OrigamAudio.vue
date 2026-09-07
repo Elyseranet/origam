@@ -1,5 +1,6 @@
 <template>
-	<article
+	<component
+			:is="tag"
 			:id="id"
 			class="origam-audio"
 			:class="rootClasses"
@@ -236,7 +237,7 @@
 				<span class="origam-audio__error-msg">{{ errorMessage }}</span>
 			</slot>
 		</div>
-	</article>
+	</component>
 </template>
 
 <script
