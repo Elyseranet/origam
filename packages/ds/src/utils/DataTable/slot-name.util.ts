@@ -5,11 +5,11 @@ import {
     DATA_TABLE_ROWS_SLOT_NAMES
 } from '../../consts/DataTable/data-table.const'
 
+import type { TDataTableRowsSlotName } from '../../types/DataTable/data-table.type'
 import type {
     TDataTableHeaderColumnSlotName,
-    TDataTableItemColumnSlotName,
-    TDataTableRowsSlotName
-} from '../../types/DataTable/data-table-slot-name.type'
+    TDataTableItemColumnSlotName
+} from '../../types/DataTable/data-table-rows.type'
 
 /*********************************************************
  * Relais de slots de la famille DataTable

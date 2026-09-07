@@ -94,18 +94,32 @@ export interface IDataTableSlotProps<T> {
     headers: Array<Array<IInternalDataTableHeader>>
 }
 
-/** Emits fired by `<OrigamDataTable>` — pagination, sorting, expansion,
- *  selection, and the v-model that ties them together.
+/*********************************************************
+ * IDataTableEmits
  *
- *  ⛔ `update:groupBy` is deliberately NOT declared here. `groupBy` is a
- *  read-only-from-the-inside prop: `toggleGroup()` (exposed via
- *  `provideGroupBy`) only opens/closes an already-grouped section — it
- *  never writes `groupBy.value`, and nothing else in the component tree
- *  does either (`grep -rn "groupBy\.value\s*=" packages/ds/src/` → zero
- *  matches). Declaring an emit Vue never fires only removes a consumer's
- *  `@update:group-by` listener from `$attrs` for nothing — see
- *  `unemitted-declarations` guard. Removed under the same audit that
- *  fixed #373/#376/#416/#430/#446. */
+ * @description
+ * Emits de `<OrigamDataTable>` — pagination, tri, expansion, selection, et
+ * le v-model qui les relie.
+ *
+ * @description
+ * `expand` et `select` signalent l'activation de la bascule de depliage et
+ * de la case a cocher d'une ligne, relayees depuis `<OrigamDataTableRow>` a
+ * travers `<OrigamDataTableRows>` ; leur charge nomme la ligne et l'etat
+ * atteint. ⛔ Leur relation aux `update:` correspondants est constante :
+ * `update:expanded` et `update:modelValue` portent l'ENSEMBLE resultant,
+ * ces deux-la portent la ligne qui l'a provoque.
+ *
+ * @description
+ * ⛔ `update:groupBy` n'est deliberement PAS declare ici. `groupBy` est une
+ * prop en lecture seule vue de l'interieur : `toggleGroup()` (expose par
+ * `provideGroupBy`) ne fait qu'ouvrir ou fermer une section deja groupee —
+ * il n'ecrit jamais `groupBy.value`, et rien d'autre dans l'arbre ne le fait
+ * (`grep -rn "groupBy\.value\s*=" packages/ds/src/` ne rend aucune ligne).
+ * Declarer un emit que Vue n'emet jamais ne fait que retirer l'ecouteur
+ * `@update:group-by` d'un consommateur de `$attrs`, pour rien — voir le
+ * garde `unemitted-declarations`. Retire par l'audit qui a corrige
+ * #373/#376/#416/#430/#446.
+ ********************************************************/
 export interface IDataTableEmits extends ICommonsComponentEmits {
     (e: 'update:page', value: number): void
     (e: 'update:itemsPerPage', value: number): void
@@ -113,28 +127,50 @@ export interface IDataTableEmits extends ICommonsComponentEmits {
     (e: 'update:options', value: Record<string, unknown>): void
     (e: 'update:expanded', value: ReadonlySet<unknown>): void
     (e: 'update:currentItems', value: Array<IDataTableItem>): void
-    /**
-     * A row's expand toggle was activated. Relayed from
-     * `<OrigamDataTableRow>` through `<OrigamDataTableRows>`; the payload
-     * names the row and the state it moved to. `update:expanded` carries
-     * the resulting SET — this one carries the row that caused it.
-     */
     (e: 'expand', payload?: { item: IDataTableItem, value: boolean }): void
-    /**
-     * A row's select checkbox was activated. Same relay and same
-     * relationship to `update:modelValue` as `expand` has to
-     * `update:expanded`.
-     */
     (e: 'select', payload?: { item: IDataTableItem, value: boolean }): void
 }
 
-/** Slot signatures for `<OrigamDataTable>`. `default` / `colgroup` /
- *  `thead` / `prepend` / `body` / `append` all share `IDataTableSlotProps`
- *  (pagination, sort, selection and expansion state + actions). `header`
- *  and `header.mobile` forward `<OrigamDataTableHeaders>`'s own scope
- *  1:1. `top`, `header.loader` and `bottom` render with no scope — the
- *  header's own `loader` slot (forwarded as `header.loader`) never binds
- *  props from its default `<origam-progress>` render either. */
+/*********************************************************
+ * IDataTableSlots
+ *
+ * @description
+ * Signatures de slots pour `<OrigamDataTable>`. `default` / `colgroup` /
+ * `thead` / `prepend` / `body` / `append` partagent tous
+ * `IDataTableSlotProps` (etat et actions de pagination, tri, selection,
+ * expansion). `header` et `header.mobile` relaient 1:1 la portee propre
+ * d'`<OrigamDataTableHeaders>`. `top`, `header.loader` et `bottom` rendent
+ * sans portee — le slot `loader` de l'en-tete, relaye en `header.loader`,
+ * ne lie rien non plus depuis son `<origam-progress>` par defaut.
+ *
+ * @description
+ * Les quatre slots de LIGNE sont relayes a `<OrigamDataTableRows>`, qui les
+ * possede : `loading` remplace la ligne « chargement », `no-data` la ligne
+ * « aucune donnee », `item` une ligne de donnees entiere (`<tr>` compris,
+ * avec la liaison exacte qu'aurait recue le `<OrigamDataTableRow>` par
+ * defaut), et `expanded-row` la ligne supplementaire rendue sous une ligne
+ * depliee. ⛔ Tous rendent DANS `<tbody>` : leur contenu doit avoir la forme
+ * d'un `<tr>`.
+ *
+ * @description
+ * `group-header` remplace une ligne d'en-tete de groupe. Ses deux cellules
+ * — `data-table-group` (la bascule) et `data-table-select` (le tout
+ * selectionner) — voyagent sur DEUX sauts, via `<OrigamDataTableRows>` puis
+ * `<OrigamDataTableGroupHeaderRow>`.
+ *
+ * @description
+ * Deux familles indexees par colonne ferment l'interface. `item.{cle}` porte
+ * le contenu d'une cellule, `{cle}` etant la `key` d'une definition de
+ * colonne ; `item.data-table-select` et `item.data-table-expand` adressent
+ * les deux colonnes systeme integrees. `header.{cle}` porte le contenu d'un
+ * en-tete et atteint les DEUX bouts de la table : le `<th>`, et le titre par
+ * cellule dans la disposition mobile.
+ *
+ * @description
+ * ⛔ `header.mobile` et `header.loader` ne font PAS partie de cette derniere
+ * famille : ce sont les deux slots nommes plus haut, adresses a
+ * `<OrigamDataTableHeaders>` lui-meme.
+ ********************************************************/
 export interface IDataTableSlots<T = any> {
     top?: () => any
     default?: (props: IDataTableSlotProps<T>) => any
@@ -147,47 +183,13 @@ export interface IDataTableSlots<T = any> {
     body?: (props: IDataTableSlotProps<T>) => any
     append?: (props: IDataTableSlotProps<T>) => any
     bottom?: () => any
-    /**
-     * Replaces the single "loading…" row. Relayed to
-     * `<OrigamDataTableRows>`, which owns it. Renders inside `<tbody>`,
-     * so the content must be `<tr>`-shaped.
-     */
     loading?: () => any
-    /** Replaces the single "no data" row. Same relay and same `<tr>` shape. */
     'no-data'?: () => any
-    /**
-     * Replaces a whole data row (the `<tr>` included). Relayed to
-     * `<OrigamDataTableRows>`; `props` carries the exact binding the
-     * default `<OrigamDataTableRow>` would have received.
-     */
     item?: (props: IDataTableItemSlot<T>) => any
-    /** Replaces a whole group-header row. Relayed to `<OrigamDataTableRows>`. */
     'group-header'?: (props: IDataTableGroupHeaderSlot) => any
-    /** Extra row rendered under an expanded row. Relayed to `<OrigamDataTableRows>`. */
     'expanded-row'?: (props: IDataTableItemBaseSlot<T>) => any
-    /**
-     * The group-header's toggle cell. Travels two hops — through
-     * `<OrigamDataTableRows>` to `<OrigamDataTableGroupHeaderRow>`.
-     */
     'data-table-group'?: (props: IDataTableGroupHeaderRowGroupSlot) => any
-    /** The group-header's select-all cell. Same two-hop relay. */
     'data-table-select'?: (props: IDataTableGroupHeaderRowSelectSlot) => any
-    /**
-     * Per-column cell content, `{key}` being a column definition's `key`.
-     * Relayed through `<OrigamDataTableRows>` to `<OrigamDataTableRow>`.
-     * `item.data-table-select` / `item.data-table-expand` address the two
-     * built-in system columns.
-     */
     [key: `item.${string}`]: ((props: IDataTableItemKey) => any) | undefined
-    /**
-     * Per-column header content. Reaches BOTH ends of the table: the
-     * `<th>` (through `<OrigamDataTableHeaders>` →
-     * `<OrigamDataTableHeadersCell>` → `<OrigamDataTableHeaderCell>`) and,
-     * in mobile layout, the per-cell title inside each row.
-     *
-     * ⛔ `header.mobile` and `header.loader` are NOT part of this family
-     * — they are the two named slots above, addressed to
-     * `<OrigamDataTableHeaders>` itself.
-     */
     [key: `header.${string}`]: ((props: any) => any) | undefined
 }

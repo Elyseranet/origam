@@ -62,44 +62,33 @@ export interface IDataTableRowsProps extends Omit<ILoaderProps, 'class' | 'style
     cellProps?: TDataTableCell<any>
 }
 
-/** Slot signatures for `<OrigamDataTableRows>` — the list-level renderer
- *  (loading / empty states, then one `group-header` or `item` per row). */
+/*********************************************************
+ * IDataTableRowsSlots
+ *
+ * @description
+ * Signatures de slots pour `<OrigamDataTableRows>` — le rendu au niveau de
+ * la liste : lignes de chargement, d'absence de donnees, d'items, de groupes
+ * et de depliage.
+ *
+ * @description
+ * ⛔ Quatre entrees ne sont rendues par AUCUN `<slot>` de ce composant : elles
+ * sont declarees ici pour que leur nom survive au saut depuis
+ * `<OrigamDataTable>`. `data-table-group` (la bascule du groupe) et
+ * `data-table-select` (sa case tout selectionner) repartent vers
+ * `<OrigamDataTableGroupHeaderRow>` ; la famille indexee `item.{cle}` — ou
+ * `{cle}` est la `key` d'une definition de colonne, connue au seul runtime —
+ * et le titre de colonne de la disposition mobile repartent vers
+ * `<OrigamDataTableRow>`.
+ ********************************************************/
 export interface IDataTableRowsSlots<T = any> {
     loading?: () => any
     'no-data'?: () => any
     'group-header'?: (props: IDataTableGroupHeaderSlot) => any
     item?: (props: IDataTableItemSlot<T>) => any
-    /**
-     * Same base scope as `group-header` / `item` (index, item,
-     * internalItem, columns + expand/select actions). The template used
-     * to forward the local `slotProps` FUNCTION reference unevaluated
-     * (`v-bind="slotProps"` instead of `v-bind="slotProps(item, index)"`),
-     * which passed an empty object at runtime — fixed alongside this type
-     * so declared and actual scope match.
-     */
     'expanded-row'?: (props: IDataTableItemBaseSlot<T>) => any
-    /**
-     * Relayed verbatim to `<OrigamDataTableGroupHeaderRow>` — the group's
-     * own toggle cell. Declared here so the name survives the hop from
-     * `<OrigamDataTable>`; this component renders no `<slot>` under that
-     * name itself.
-     */
     'data-table-group'?: (props: IDataTableGroupHeaderRowGroupSlot) => any
-    /**
-     * Relayed verbatim to `<OrigamDataTableGroupHeaderRow>` — the group's
-     * select-all checkbox cell. Same relay-only status as
-     * `data-table-group`.
-     */
     'data-table-select'?: (props: IDataTableGroupHeaderRowSelectSlot) => any
-    /**
-     * Column-driven cell content, relayed to `<OrigamDataTableRow>`. The
-     * `{key}` half is a column definition's `key`, known only at runtime.
-     */
     [key: `item.${string}`]: ((props: IDataTableItemKey) => any) | undefined
-    /**
-     * Column title rendered next to the value once the row flips to the
-     * mobile layout, relayed to `<OrigamDataTableRow>`.
-     */
     [key: `header.${string}`]: ((props: IDataTableHeaderCellColumnSlot) => any) | undefined
 }
 

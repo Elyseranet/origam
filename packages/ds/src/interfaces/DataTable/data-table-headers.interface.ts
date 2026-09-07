@@ -36,19 +36,25 @@ export interface IDataTableHeadersSlotProps {
     isSorted: (column: IInternalDataTableHeader) => boolean
 }
 
-/** Slot signatures for `<OrigamDataTableHeaders>` — `mobile` renders
- *  instead of `default` once `useDisplay` flips to the mobile layout;
- *  `loader` (the in-progress sort indicator row) carries no scope. */
+/*********************************************************
+ * IDataTableHeadersSlots
+ *
+ * @description
+ * Signatures de slots pour `<OrigamDataTableHeaders>`. `mobile` rend a la
+ * place de `default` des que `useDisplay` bascule en disposition mobile ;
+ * `loader` — la ligne d'indicateur de tri en cours — ne porte aucune portee.
+ *
+ * @description
+ * ⛔ La famille indexee `header.{cle}` porte le contenu d'un `<th>` pilote
+ * par une colonne, et n'est rendue NULLE PART dans ce composant : elle est
+ * relayee telle quelle a `<OrigamDataTableHeadersCell>`, qui la relaie a son
+ * tour a `<OrigamDataTableHeaderCell>` — le seul maillon qui possede un
+ * `<slot name="header.{cle}">`.
+ ********************************************************/
 export interface IDataTableHeadersSlots {
     mobile?: (props: IDataTableHeadersSlotProps) => any
     default?: (props: IDataTableHeadersSlotProps) => any
     loader?: () => any
-    /**
-     * Column-driven `<th>` content. Rendered nowhere in this component —
-     * relayed verbatim to `<OrigamDataTableHeadersCell>`, which relays it
-     * again to `<OrigamDataTableHeaderCell>`, the only link that owns a
-     * `<slot name="header.{key}">`.
-     */
     [key: `header.${string}`]: ((props: IDataTableHeaderCellColumnSlot) => any) | undefined
 }
 
