@@ -158,14 +158,38 @@
 
 	const {filterProps} = useProps<IExpansionPanelsProps>(props)
 
-	// Push visual-token props down to every descendant `<origam-expansion-panel>`
-	// as DEFAULTS — panels that pass their own props still win.
-	// Forward ONLY what the consumer actually passed — see #263. `rounded` /
-	// `border` are boolean-inclusive and `color` / `bgColor` are `TColor`
-	// (which includes `false`), so Vue coerces all four to a concrete `false`
-	// when unset; `omitUndefined` alone cannot see it. `density` additionally
-	// leaked a bare `undefined`, which `mergeDeep` copies unconditionally and
-	// which therefore ERASED any ancestor/theme density.
+	/*********************************************************
+	 * Slot defaults — what this container pushes down
+	 *
+	 * @description
+	 * Push props down to every descendant `<origam-expansion-panel>` as
+	 * DEFAULTS — panels that pass their own props still win.
+	 *
+	 * @description
+	 * Forward ONLY what the consumer actually passed — see #263. `rounded` /
+	 * `border` are boolean-inclusive and `color` / `bgColor` are `TColor`
+	 * (which includes `false`), so Vue coerces all four to a concrete `false`
+	 * when unset; `omitUndefined` alone cannot see it. `density` additionally
+	 * leaked a bare `undefined`, which `mergeDeep` copies unconditionally and
+	 * which therefore ERASED any ancestor/theme density.
+	 *
+	 * @description
+	 * `eager` and `loadingText` join the cascade for the same reason the
+	 * other five are there: this component is a CONTAINER — it owns no
+	 * content of its own to keep mounted and paints no loading indicator
+	 * (its `loading` prop only emits the `--loading` class hook). Both are
+	 * declared here through `ILazyProps` / `ILoaderProps`, and the only
+	 * place they can mean anything is one level down, where
+	 * `<origam-expansion-panel>` forwards them to
+	 * `<origam-expansion-panel-content>`: `eager` into `useLazy(props, …)`
+	 * (content stays rendered while collapsed) and `loadingText` into the
+	 * loading renderer's `label`.
+	 *
+	 * @description
+	 * `eager` is a plain boolean, so it is exactly the coercion case above —
+	 * `wasPropPassed` is mandatory, `omitUndefined` alone would ship a hard
+	 * `false` and erase an ancestor/theme value.
+	 ********************************************************/
 	const wasPropPassed = usePassedProps(props)
 	const slotDefaults = computed(() => ({
 		'origam-expansion-panel': omitUndefined({
@@ -173,7 +197,9 @@
 			color: wasPropPassed('color') ? props.color : undefined,
 			bgColor: wasPropPassed('bgColor') ? props.bgColor : undefined,
 			rounded: wasPropPassed('rounded') ? props.rounded : undefined,
-			border: wasPropPassed('border') ? props.border : undefined
+			border: wasPropPassed('border') ? props.border : undefined,
+			eager: wasPropPassed('eager') ? props.eager : undefined,
+			loadingText: wasPropPassed('loadingText') ? props.loadingText : undefined
 		})
 	}))
 

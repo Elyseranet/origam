@@ -171,7 +171,8 @@
 					enabled: false,
 					kind: 'bool',
 					progress: 42,
-					circularSize: 24
+					circularSize: 24,
+					loadingText: ''
 				})"
 		>
 			<template #default="{ state }">
@@ -180,6 +181,7 @@
 						:text="state.text"
 						:disabled="state.disabled"
 						:loading="resolveLoading(state)"
+						:loading-text="state.loadingText || undefined"
 						:link="state.link"
 						:href="state.href"
 						:to="state.to"
@@ -199,6 +201,7 @@
 					<HstSelect   v-model="state.kind"         title="Loading Kind" :options="LOADING_KIND_OPTIONS"/>
 					<HstNumber   v-model="state.progress"     title="Progress (number)"  :min="0"  :max="100" :step="1"/>
 					<HstNumber   v-model="state.circularSize" title="Size (circular)"    :min="12" :max="64"  :step="2"/>
+					<HstText     v-model="state.loadingText"  title="Loading Text"/>
 				</StoryGroup>
 				<StoryGroup title="Link">
 					<HstCheckbox v-model="state.link"    title="Link"/>
@@ -366,6 +369,24 @@
 					text="Each side reads its own width (borderTop/Right/Bottom/Left) and color (borderTopColor/…) — issue #215. Specific per-side props win over the global border/borderColor shorthand for the physical side they target."
 					style="width: 280px;"
 			/>
+		</Variant>
+
+		<Variant title="Prop — loadingText">
+			<div style="display: flex; gap: 16px;" data-cy="card-loading-text">
+				<origam-card
+						loading
+						title="Default announcement"
+						text="No loadingText — the indicator falls back to the shared 'origam.loading' key. Inspect the progress bar: aria-label reads Loading…"
+						style="width: 280px;"
+				/>
+				<origam-card
+						loading
+						loading-text="origam.data_iterator.loading_text"
+						title="Custom announcement"
+						text="loadingText carries a LOCALE KEY, handed to the renderer's own label prop. Inspect: aria-label reads Loading items…"
+						style="width: 280px;"
+				/>
+			</div>
 		</Variant>
 
 		<Variant

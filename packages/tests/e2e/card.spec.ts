@@ -29,7 +29,8 @@ import type { Page } from '@playwright/test'
  *  18  → Slots - Text
  *  19  → Prop — elevation custom (static demo of the free-form box-shadow escape hatch)
  *  20  → Prop — border per-side (static demo of borderTop/Right/Bottom/Left + *Color, issue #215)
- *  21  → Default (playground)
+ *  21  → Prop — loadingText (static demo: default 'origam.loading' key vs a custom one)
+ *  22  → Default (playground)
  *
  * NE PAS utiliser waitForLoadState('networkidle') — Histoire garde un websocket
  * HMR ouvert → networkidle ne résout jamais → timeout garanti.
@@ -512,26 +513,26 @@ test.describe('OrigamCard', () => {
 
     test.describe('Default (Playground)', () => {
         test('playground renders card root with origam-card class', async ({ page }) => {
-            await page.goto(variantUrl(21), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(22), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card').first()).toHaveClass(/origam-card/)
         })
 
         test('playground bgColor=primary applies utility class', async ({ page }) => {
-            await page.goto(variantUrl(21), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(22), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card').first()).toHaveClass(/origam--bg-primary/)
         })
 
         test('playground renders title and text', async ({ page }) => {
-            await page.goto(variantUrl(21), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(22), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card__header')).toContainText('Card title')
             await expect(sandbox.locator('.origam-card__text')).toContainText('Body text.')
         })
 
         test('playground has density-default modifier class', async ({ page }) => {
-            await page.goto(variantUrl(21), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(22), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             await expect(sandbox.locator('.origam-card').first()).toHaveClass(/origam-card--density-default/)
         })

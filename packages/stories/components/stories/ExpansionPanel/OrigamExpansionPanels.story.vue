@@ -100,6 +100,9 @@
 					inset: false,
 					multiple: false,
 					mandatory: false,
+					eager: false,
+					loading: false,
+					loadingText: '',
 					tag: 'div',
 				})"
 		>
@@ -110,9 +113,11 @@
 						:inset="state.inset"
 						:multiple="state.multiple"
 						:mandatory="state.mandatory"
+						:eager="state.eager"
+						:loading-text="state.loadingText || undefined"
 						:tag="state.tag"
 				>
-					<origam-expansion-panel title="Step 1" content="First step content."/>
+					<origam-expansion-panel :loading="state.loading" title="Step 1" content="First step content."/>
 					<origam-expansion-panel title="Step 2" content="Second step content."/>
 					<origam-expansion-panel title="Step 3" content="Third step content."/>
 				</origam-expansion-panels>
@@ -126,6 +131,11 @@
 				<StoryGroup title="Selection">
 					<HstCheckbox v-model="state.multiple"  title="Multiple"/>
 					<HstCheckbox v-model="state.mandatory" title="Mandatory"/>
+				</StoryGroup>
+				<StoryGroup title="Cascade">
+					<HstCheckbox v-model="state.eager"       title="Eager"/>
+					<HstCheckbox v-model="state.loading"     title="Loading (first panel)"/>
+					<HstText     v-model="state.loadingText" title="Loading Text"/>
 				</StoryGroup>
 				<StoryGroup title="Tag">
 					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
@@ -251,6 +261,26 @@
 				<template #content>
 					<span>Custom slot content</span>
 				</template>
+			</origam-expansion-panels>
+		</Variant>
+
+		<Variant title="Prop — eager & loadingText cascade">
+			<origam-expansion-panels
+					eager
+					loading-text="origam.data_iterator.loading_text"
+					data-cy="panels-cascade"
+			>
+				<origam-expansion-panel
+						:loading="true"
+						title="Inherits the group's loadingText"
+						content="This body is rendered while the panel is collapsed because the GROUP set eager. The loading indicator announces the group's loadingText: aria-label reads Loading items…"
+				/>
+				<origam-expansion-panel
+						:loading="true"
+						loading-text="origam.loading"
+						title="Overrides it"
+						content="A panel that sets its own loadingText still wins over the group's: aria-label reads Loading…"
+				/>
 			</origam-expansion-panels>
 		</Variant>
 

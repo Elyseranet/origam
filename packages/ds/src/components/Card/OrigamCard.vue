@@ -33,6 +33,7 @@
 								v-if="loaderConfig.kind === 'skeleton'"
 								variant="card"
 								:loading="true"
+								:label="loadingText"
 								v-bind="loaderConfig.overrides"
 						/>
 						<origam-progress
@@ -43,6 +44,7 @@
 								:model-value="loaderConfig.modelValue"
 								:type="loaderConfig.kind === 'circular' ? PROGRESS_TYPE.CIRCULAR : PROGRESS_TYPE.LINEAR"
 								:class="cardProgressClasses"
+								:label="loadingText"
 								thickness="4"
 								v-bind="loaderConfig.overrides"
 						/>
@@ -421,6 +423,15 @@
 	 *
 	 * @description
 	 * Controls the card loader slot and progress renderer.
+	 *
+	 * @description
+	 * `loadingText` is handed to the ACTIVE renderer's `label` prop in the
+	 * template — `<origam-skeleton>` and `<origam-progress>` both already
+	 * own the "locale key -> aria-label" wiring (`t(props.label)`, default
+	 * key `'origam.loading'`), so nothing is re-implemented here and the
+	 * default announcement stays the shared one. Bound BEFORE
+	 * `v-bind="loaderConfig.overrides"` so a per-instance
+	 * `loading="{ type, label }"` still wins.
 	 ********************************************************/
 	const {loaderClasses, loaderConfig} = useLoader(props, LOADER_KIND.LINE)
 

@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test'
 const STORY_PATH = '/stories/story/components-stories-input-origaminput-story-vue'
 
 test.describe('OrigamInput', () => {
-    test('Color variant — renders outer wrapper with label', async ({ page }) => {
+    test('Color variant — renders outer wrapper and its control', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
         await page.getByText('Prop — color', { exact: true }).first().click()
