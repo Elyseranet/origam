@@ -47,7 +47,7 @@
   const groupItem = useGroupItem(props, ORIGAM_ITEM_GROUP_KEY)
 
   if (!groupItem) {
-    throw new Error('[Origam] <OrigamItem> must be used inside an <OrigamItemGroup>')
+    throw new Error('[Origam] <OrigamItemGroupItem> must be used inside an <OrigamItemGroup>')
   }
 
   const slotProps = computed(() => ({

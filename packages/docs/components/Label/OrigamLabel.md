@@ -40,10 +40,37 @@ charge of the actual transform / positioning animation.
 
 ## Color
 
-`color` and `bgColor` accept any CSS-color value. Intent strings are
-typed but resolved as raw CSS values by `useColor` here (no intent →
-SCSS mapping). Use a `:style` binding on a component CSS variable for
-semantic tinting:
+`color` and `bgColor` accept **either** a semantic intent (`'primary'`,
+`'danger'`, `'success'`, …) **or** a raw CSS color. `OrigamLabel` runs both
+through `useBothColor`, so intents resolve to theme tokens — no `:style`
+workaround is needed.
+
+```vue
+<template>
+    <OrigamLabel text="Email" color="primary"/>
+    <OrigamLabel text="Required" bg-color="danger"/>
+</template>
+```
+
+What each form emits on the root element:
+
+| Value | Class | Inline style |
+|---|---|---|
+| `color="primary"` | `origam--color-primary` | `color: var(--origam-color__action--primary---fgSubtle)` |
+| `color="#ff00aa"` | — | `color: rgb(255, 0, 170)` |
+| `bg-color="primary"` | `origam--bg-primary` | `background-color: var(--origam-color__action--primary---bg)` plus the paired `color: …---fg` |
+| `bg-color="#ff00aa"` | — | `background-color: rgb(255, 0, 170)` plus an auto-contrast `color` |
+
+An intent fills both the utility class **and** the inline declaration — that
+is deliberate on the foreground channel: a Vue scoped rule outranks a utility
+class, so only the inline declaration reliably paints (see the
+"Classes-first" note in the repo's `CLAUDE.md`). Setting the same intent on
+both channels (`color="danger" bg-color="danger"`) swaps the foreground to
+the background's paired contrast token instead of a hue-on-hue pair.
+
+To reach a token outside the intent scale, set the component variable
+directly — but leave `color` unset, since the prop's inline declaration
+outranks the SCSS rule that reads `--origam-label---color`:
 
 ```vue
 <template>
