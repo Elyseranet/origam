@@ -13,9 +13,9 @@
 			<div class="origam-expansion-panel-content__wrapper">
 				<template v-if="loaderConfig.isActive && loaderConfig.kind === 'skeleton'">
 					<slot name="loader">
-						<origam-skeleton variant="text" :loading="true" v-bind="loaderConfig.overrides"/>
-						<origam-skeleton variant="text" :loading="true" v-bind="loaderConfig.overrides"/>
-						<origam-skeleton variant="text" :loading="true" v-bind="loaderConfig.overrides"/>
+						<origam-skeleton variant="text" :loading="true" :label="loadingText" v-bind="loaderConfig.overrides"/>
+						<origam-skeleton variant="text" :loading="true" :label="loadingText" v-bind="loaderConfig.overrides"/>
+						<origam-skeleton variant="text" :loading="true" :label="loadingText" v-bind="loaderConfig.overrides"/>
 					</slot>
 				</template>
 
@@ -27,6 +27,7 @@
 								:model-value="loaderConfig.modelValue"
 								:type="loaderConfig.kind === 'circular' ? PROGRESS_TYPE.CIRCULAR : PROGRESS_TYPE.LINEAR"
 								:class="expansionPanelContentProgressClasses"
+								:label="loadingText"
 								thickness="4"
 								v-bind="loaderConfig.overrides"
 						/>
@@ -147,6 +148,14 @@
 	 *
 	 * @description
 	 * Line/circular/skeleton loading state for the content area.
+	 *
+	 * @description
+	 * `loadingText` reaches the render through the ACTIVE renderer's
+	 * `label` prop (template). `<origam-skeleton>` and `<origam-progress>`
+	 * already resolve `label` as a locale key into their own `aria-label`
+	 * (default `'origam.loading'`), so there is no second translation path
+	 * to maintain here. Bound BEFORE `v-bind="loaderConfig.overrides"` so a
+	 * per-instance `loading="{ type, label }"` keeps the last word.
 	 ********************************************************/
 	const {loaderClasses, loaderConfig} = useLoader(props, LOADER_KIND.LINE)
 

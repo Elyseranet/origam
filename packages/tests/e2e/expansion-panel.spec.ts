@@ -31,7 +31,8 @@ import { expect, test } from '@playwright/test'
  *   8  Slots - Append
  *   9  Slots - Loader
  *  10  Slots - Wrapper
- *  11  Default (playground)
+ *  11  Prop — loadingText (static demo: default 'origam.loading' key vs a custom one)
+ *  12  Default (playground)
  *
  * DS bug fixed: `OrigamExpansionPanelHeader` had no `<slot name="title">` — the
  * `#title` forwarded by `OrigamExpansionPanel` (and `OrigamExpansionPanels`) landed
@@ -609,7 +610,7 @@ test.describe('OrigamExpansionPanel', () => {
 
     test.describe('Default (playground)', () => {
         test('renders panel with title "Panel title"', async ({ page }) => {
-            await page.goto(panelVariantUrl(11), { waitUntil: 'domcontentloaded' })
+            await page.goto(panelVariantUrl(12), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const title = sandbox.locator('.origam-expansion-panel-header__title').first()
             await expect(title).toBeVisible({ timeout: 12000 })
@@ -617,7 +618,7 @@ test.describe('OrigamExpansionPanel', () => {
         })
 
         test('expand icon (chevron) is visible in the append area', async ({ page }) => {
-            await page.goto(panelVariantUrl(11), { waitUntil: 'domcontentloaded' })
+            await page.goto(panelVariantUrl(12), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const panel = sandbox.locator('.origam-expansion-panel').first()
             await expect(panel).toBeVisible({ timeout: 12000 })
@@ -625,7 +626,7 @@ test.describe('OrigamExpansionPanel', () => {
         })
 
         test('toggle: click expands then collapses', async ({ page }) => {
-            await page.goto(panelVariantUrl(11), { waitUntil: 'domcontentloaded' })
+            await page.goto(panelVariantUrl(12), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })

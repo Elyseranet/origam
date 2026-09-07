@@ -10,8 +10,24 @@ import type { IRippleProps } from '../Commons/ripple.interface'
 import type { TBlock } from '../../types/Commons/anchor.type'
 import type { TIcon } from '../../types/Icon/icon.type'
 
+/*********************************************************
+ * IRatingFieldProps
+ *
+ * @description
+ * `label` is the text of the field's own `<origam-label>`, rendered above
+ * the star row (`OrigamRatingField.vue`, `<origam-label :text="label">`).
+ *
+ * @description
+ * It is declared HERE since the `label` that used to arrive through
+ * `IInputProps → IValidationProps` was removed: a validation mixin carries
+ * no display surface, and `<OrigamInput>` — the one component built from
+ * that mixin alone — renders no label at all. `ILabelProps` below
+ * contributes `text`, which is `<OrigamLabel>`'s OWN prop, not this
+ * field's.
+ ********************************************************/
 export interface IRatingFieldProps extends IInputProps, IRippleProps, ITagProps, ILabelProps {
     name?: string
+    label?: string
     itemAriaLabel?: string
     clearable?: boolean
     disabled?: boolean

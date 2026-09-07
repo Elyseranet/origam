@@ -7,11 +7,42 @@ the messages / hint / error row, and the validation pipeline.
 `OrigamInput` is rarely used directly — prefer the typed atoms. Use it when you
 need the messages + validation chrome around a fully custom control.
 
+## No `label` prop — the control owns its label
+
+`<OrigamInput>` has **no `label` prop**. Its root is a four-area grid
+(prepend / control / append / messages) with no label area, and the accessible
+name belongs to the control you hand it through the `#default` slot, not to the
+wrapper `<div>`.
+
+Until 2026-09-07 a `label` was declared here — inherited from the
+`IValidationProps` mixin — and rendered nothing at all. It was removed rather
+than wired: every component that forwards it already draws its own `<label>`
+(measured one tick after mount with `label="PROBE_LABEL"`: Checkbox 1, Switch 1,
+TextField 2 — static + floating, RatingField 1, SliderField 1, RadioGroup 1,
+`<OrigamInput>` alone **0**), so painting one here would have produced a
+duplicate on all six.
+
+Put the label where it renders:
+
+```vue
+<template>
+  <OrigamField label="Email">…</OrigamField>
+  <OrigamSelectionControl label="Accept terms" />
+
+  <OrigamInput hint="Helper text">
+    <template #default="{ id }">
+      <OrigamLabel :for="id" text="Email" />
+      <input :id="id" />
+    </template>
+  </OrigamInput>
+</template>
+```
+
 ## Basic usage
 
 ```vue
 <template>
-  <OrigamInput label="Custom" hint="Helper text" :rules="[v => !!v || 'Required']">
+  <OrigamInput hint="Helper text" :rules="[v => !!v || 'Required']">
     <template #default="{ id, isDisabled, isDirty, isValid, isReadonly }">
       <input :id="id" :disabled="isDisabled" />
     </template>
@@ -23,8 +54,8 @@ need the messages + validation chrome around a fully custom control.
 
 ```vue
 <template>
-  <OrigamInput color="primary"   label="Primary" />
-  <OrigamInput color="secondary" label="Secondary" />
+  <OrigamInput color="primary" />
+  <OrigamInput color="secondary" />
 </template>
 ```
 
@@ -32,9 +63,9 @@ need the messages + validation chrome around a fully custom control.
 
 ```vue
 <template>
-  <OrigamInput density="compact"     label="Compact" />
-  <OrigamInput density="default"     label="Default" />
-  <OrigamInput density="comfortable" label="Comfortable" />
+  <OrigamInput density="compact" />
+  <OrigamInput density="default" />
+  <OrigamInput density="comfortable" />
 </template>
 ```
 
@@ -42,7 +73,7 @@ need the messages + validation chrome around a fully custom control.
 
 ```vue
 <template>
-  <OrigamInput prepend-icon="mdi-account" append-icon="mdi-chevron-down" label="With icons" />
+  <OrigamInput prepend-icon="mdi-account" append-icon="mdi-chevron-down" />
 </template>
 ```
 
@@ -50,7 +81,7 @@ need the messages + validation chrome around a fully custom control.
 
 ```vue
 <template>
-  <OrigamInput label="Email" hint="We never share your email" persistent-hint />
+  <OrigamInput hint="We never share your email" persistent-hint />
 </template>
 ```
 
@@ -58,7 +89,7 @@ need the messages + validation chrome around a fully custom control.
 
 ```vue
 <template>
-  <OrigamInput label="Compact row" hide-details />
+  <OrigamInput hide-details />
 </template>
 ```
 
@@ -66,7 +97,7 @@ need the messages + validation chrome around a fully custom control.
 
 ```vue
 <template>
-  <OrigamInput label="Invalid" :error="true" error-messages="This field is invalid" />
+  <OrigamInput :error="true" error-messages="This field is invalid" />
 </template>
 ```
 

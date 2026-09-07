@@ -98,6 +98,25 @@ design system.
 </template>
 ```
 
+`loadingText` names what that indicator announces to a screen reader. It
+carries a **locale key**, not final text: the panel and its content hand it
+to the active renderer's `label` prop (`<OrigamProgress>` /
+`<OrigamSkeleton>`), which resolves it through the DS `t()` mechanism.
+Defaults to the shared `'origam.loading'` key; a raw string matching no key
+is returned unchanged. Set on the parent `<origam-expansion-panels>` it
+cascades to every panel as a **default**, exactly like `density` / `color`
+below — a panel's own `loading-text` still wins. A per-instance
+`loading="{ type, label }"` wins over both.
+
+```vue
+<template>
+    <origam-expansion-panels loading-text="origam.data_iterator.loading_text">
+        <origam-expansion-panel :loading="true" title="Announces the group's text" content="…" />
+        <origam-expansion-panel :loading="true" loading-text="my.own.key" title="Announces its own" content="…" />
+    </origam-expansion-panels>
+</template>
+```
+
 ## Disabled / readonly
 
 `disabled` (or the parent's `disabled`) blocks interaction entirely and
@@ -127,8 +146,10 @@ reactive to pointer/click, `true` = forced on, or an object overriding
 variants and `borderColor` / `borderStyle`) and `padding` / `margin` (+
 per-side variants) follow the standard cross-cutting composables. When set
 on the parent `OrigamExpansionPanels`, `density`, `color`, `bgColor`,
-`rounded` and `border` cascade to every panel as **defaults** — a panel's
-own prop still wins.
+`rounded`, `border` — plus the behavioural `eager` and `loadingText` — cascade
+to every panel as **defaults**; a panel's own prop still wins. The container
+itself owns no content and paints no loading indicator, so those last two only
+mean anything one level down.
 
 ```vue
 <template>
@@ -156,9 +177,9 @@ own prop still wins.
 | `readonly` | `boolean` | `false` | Disables the open/close click handler without dimming the panel |
 | `disabled` | `boolean` | `false` | Disables the panel entirely (via the group item context) |
 | `value` | `any` | — | Selection value registered with the parent group (`IGroupItemProps`) |
-| `eager` | `boolean` | `false` | Keeps the content mounted even while collapsed |
+| `eager` | `boolean` | `false` | Keeps the content mounted even while collapsed. Cascades from the parent `OrigamExpansionPanels` as a default |
 | `loading` | `boolean \| number \| TLoaderConfig` | — | Loading state — see Loading state |
-| `loadingText` | `string` | — | Declared on `ILoaderProps` but **not currently read** by the panel, header or content (see note below) |
+| `loadingText` | `string` | `'origam.loading'` (renderer default) | Locale **key** announced by the loading indicator — forwarded to `<OrigamProgress>` / `<OrigamSkeleton>`'s `label`. Cascades from the parent `OrigamExpansionPanels` as a default. See Loading state |
 | `selectedClass` | `string` | — | Declared on `IGroupItemProps` but **not currently read** by the panel (see note below) |
 | `hover` | `boolean \| IHoverState` | — | Hover state override — see Hover / active |
 | `active` | `boolean \| IActiveState` | — | Active state override — see Hover / active |
@@ -174,13 +195,16 @@ own prop still wins.
 | `ripple` | `boolean \| { class: string }` | — | Header click-ripple override (forwarded to the header) |
 | `fontFamily` / `fontSize` / `fontWeight` / `lineHeight` / `letterSpacing` | typography tokens | — | Header typography overrides (forwarded to the header) — see `OrigamExpansionPanelHeader` |
 
-> **Known gap** — `loadingText` (from `ILoaderProps`) and `selectedClass`
-> (from `IGroupItemProps`, the "class applied while selected" analogue of
-> `Btn`/`ItemGroup`'s selected styling) are both part of
+> **Known gap** — `selectedClass` (from `IGroupItemProps`, the "class applied
+> while selected" analogue of `Btn`/`ItemGroup`'s selected styling) is part of
 > `IExpansionPanelProps` but neither `OrigamExpansionPanel.vue`,
 > `OrigamExpansionPanelHeader.vue` nor `OrigamExpansionPanelContent.vue`
-> reads them. Passing either today has no effect — flagging this rather
-> than guessing at intended behaviour.
+> reads it. Passing it today has no effect — flagging this rather than
+> guessing at intended behaviour.
+>
+> `loadingText` was listed here too until 2026-09-07; it is now wired — the
+> panel and its content forward it to the loading renderer's `label` (see
+> Loading state).
 
 ## Emits
 

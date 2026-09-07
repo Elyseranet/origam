@@ -61,6 +61,23 @@ Accepts a boolean or a number (progress percentage) for `loading`.
 </template>
 ```
 
+`loadingText` names what the loading indicator announces to a screen reader.
+It carries a **locale key**, not final text — it is handed to the active
+renderer's `label` prop (`<OrigamProgress>` or `<OrigamSkeleton>`), which
+resolves it through the DS `t()` mechanism. Defaults to the shared
+`'origam.loading'` key. A raw string that matches no key is returned
+unchanged, so `loading-text="Fetching your invoices"` also works if you
+prefer to translate on your side.
+
+```vue
+<template>
+    <OrigamCard loading loading-text="origam.data_iterator.loading_text" />
+</template>
+```
+
+A per-instance `loading="{ type: 'line', label: '…' }"` still wins over
+`loadingText`.
+
 ## Disabled
 
 ```vue

@@ -58,7 +58,7 @@
     "packages/ds/src/components/ExpansionPanel/OrigamExpansionPanel.vue": 1,
     "packages/ds/src/components/ExpansionPanel/OrigamExpansionPanelContent.vue": 1,
     "packages/ds/src/components/ExpansionPanel/OrigamExpansionPanelHeader.vue": 1,
-    "packages/ds/src/components/ExpansionPanel/OrigamExpansionPanels.vue": 9,
+    "packages/ds/src/components/ExpansionPanel/OrigamExpansionPanels.vue": 1,
     "packages/ds/src/components/Field/OrigamField.vue": 40,
     "packages/ds/src/components/FileField/OrigamFileField.vue": 12,
     "packages/ds/src/components/FileField/OrigamFileFieldDragNDropItem.vue": 2,

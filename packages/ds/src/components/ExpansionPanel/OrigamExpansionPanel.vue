@@ -21,6 +21,7 @@
 							:model-value="loaderConfig.modelValue"
 							:type="loaderConfig.kind === 'circular' ? PROGRESS_TYPE.CIRCULAR : PROGRESS_TYPE.LINEAR"
 							:class="expansionPanelProgressClasses"
+							:label="loadingText"
 							thickness="4"
 							v-bind="loaderConfig.overrides"
 					/>
