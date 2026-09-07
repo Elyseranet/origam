@@ -1,10 +1,14 @@
 import type {
     IDataTableGroup,
+    IDataTableGroupHeaderRowGroupSlot,
+    IDataTableGroupHeaderRowSelectSlot,
     IDataTableGroupHeaderSlot
 } from './group.interface'
 import type {
+    IDataTableHeaderCellColumnSlot,
     IDataTableItem,
     IDataTableItemBaseSlot,
+    IDataTableItemKey,
     IDataTableItemSlot
 } from './items.interface'
 import type { IDisplayProps } from '../Commons/display.interface'
@@ -74,15 +78,46 @@ export interface IDataTableRowsSlots<T = any> {
      * so declared and actual scope match.
      */
     'expanded-row'?: (props: IDataTableItemBaseSlot<T>) => any
+    /**
+     * Relayed verbatim to `<OrigamDataTableGroupHeaderRow>` — the group's
+     * own toggle cell. Declared here so the name survives the hop from
+     * `<OrigamDataTable>`; this component renders no `<slot>` under that
+     * name itself.
+     */
+    'data-table-group'?: (props: IDataTableGroupHeaderRowGroupSlot) => any
+    /**
+     * Relayed verbatim to `<OrigamDataTableGroupHeaderRow>` — the group's
+     * select-all checkbox cell. Same relay-only status as
+     * `data-table-group`.
+     */
+    'data-table-select'?: (props: IDataTableGroupHeaderRowSelectSlot) => any
+    /**
+     * Column-driven cell content, relayed to `<OrigamDataTableRow>`. The
+     * `{key}` half is a column definition's `key`, known only at runtime.
+     */
+    [key: `item.${string}`]: ((props: IDataTableItemKey) => any) | undefined
+    /**
+     * Column title rendered next to the value once the row flips to the
+     * mobile layout, relayed to `<OrigamDataTableRow>`.
+     */
+    [key: `header.${string}`]: ((props: IDataTableHeaderCellColumnSlot) => any) | undefined
 }
 
 /*********************************************************
  * IDataTableRowsEmits
  *
  * @description
- * `<OrigamDataTableRows>` forwards row/group interaction through
- * `useExpanded` / `useSelection` / `useGroupBy` (shared provide/inject
- * state) and the `:row.*` / `:group-header.*` attr-forwarded handlers —
- * nothing is emitted upward via `defineEmits`.
+ * Group interaction travels through `useExpanded` / `useSelection` /
+ * `useGroupBy` (shared provide/inject state) and the `:row.*` /
+ * `:group-header.*` attr-forwarded handlers.
+ *
+ * @description
+ * `expand` / `select` are the exception: they are ROW-level events, and
+ * `<OrigamDataTableRow>` is mounted here, so this component is the only
+ * place that can carry them up to `<OrigamDataTable>`. Both are re-fired
+ * verbatim — same payload, no enrichment.
  ********************************************************/
-export interface IDataTableRowsEmits {}
+export interface IDataTableRowsEmits {
+    (e: 'expand', payload?: { item: IDataTableItem, value: boolean }): void
+    (e: 'select', payload?: { item: IDataTableItem, value: boolean }): void
+}

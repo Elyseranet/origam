@@ -14,7 +14,17 @@
 				:node="node"
 				:depth="0"
 				:data-cy="`treeview-node-${node.id}`"
-		/>
+		>
+			<template
+					v-if="$slots.node"
+					#node="nodeProps"
+			>
+				<slot
+						name="node"
+						v-bind="nodeProps"
+				/>
+			</template>
+		</origam-treeview-node>
 	</div>
 </template>
 

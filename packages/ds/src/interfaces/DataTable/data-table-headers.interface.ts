@@ -1,6 +1,7 @@
 import type { ComputedRef, Ref, UnwrapRef } from 'vue'
 import type { IColorProps } from '../Commons/color.interface'
 import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IDataTableHeaderCellColumnSlot } from './items.interface'
 import type { IDataTableSortItem } from './sort.interface'
 import type { IDisplayProps } from '../Commons/display.interface'
 import type { IHeaderCellProps } from './header-cell-base.interface'
@@ -42,6 +43,13 @@ export interface IDataTableHeadersSlots {
     mobile?: (props: IDataTableHeadersSlotProps) => any
     default?: (props: IDataTableHeadersSlotProps) => any
     loader?: () => any
+    /**
+     * Column-driven `<th>` content. Rendered nowhere in this component —
+     * relayed verbatim to `<OrigamDataTableHeadersCell>`, which relays it
+     * again to `<OrigamDataTableHeaderCell>`, the only link that owns a
+     * `<slot name="header.{key}">`.
+     */
+    [key: `header.${string}`]: ((props: IDataTableHeaderCellColumnSlot) => any) | undefined
 }
 
 /*********************************************************

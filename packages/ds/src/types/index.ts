@@ -121,6 +121,7 @@ export * from './DataTable/data-table-headers-cell.type'
 export * from './DataTable/data-table-headers-cell-mobile.type'
 export * from './DataTable/data-table-row.type'
 export * from './DataTable/data-table-rows.type'
+export * from './DataTable/data-table-slot-name.type'
 
 export * from './DatePicker/date-picker.type'
 export * from './DatePicker/date-picker-controls.type'

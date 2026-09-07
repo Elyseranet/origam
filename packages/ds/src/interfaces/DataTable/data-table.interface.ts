@@ -8,6 +8,9 @@ import type { IDataTableFooterProps } from './footer.interface'
 import type {
     IDataTableGroup,
     IDataTableGroupableItem,
+    IDataTableGroupHeaderRowGroupSlot,
+    IDataTableGroupHeaderRowSelectSlot,
+    IDataTableGroupHeaderSlot,
     IDataTableGroupProps,
     IDataTableProvideGroup
 } from './group.interface'
@@ -21,6 +24,9 @@ import type {
 } from './data-table-headers.interface'
 import type {
     IDataTableItem,
+    IDataTableItemBaseSlot,
+    IDataTableItemKey,
+    IDataTableItemSlot,
     IDataTableItemsProps
 } from './items.interface'
 import type {
@@ -107,6 +113,19 @@ export interface IDataTableEmits extends ICommonsComponentEmits {
     (e: 'update:options', value: Record<string, unknown>): void
     (e: 'update:expanded', value: ReadonlySet<unknown>): void
     (e: 'update:currentItems', value: Array<IDataTableItem>): void
+    /**
+     * A row's expand toggle was activated. Relayed from
+     * `<OrigamDataTableRow>` through `<OrigamDataTableRows>`; the payload
+     * names the row and the state it moved to. `update:expanded` carries
+     * the resulting SET — this one carries the row that caused it.
+     */
+    (e: 'expand', payload?: { item: IDataTableItem, value: boolean }): void
+    /**
+     * A row's select checkbox was activated. Same relay and same
+     * relationship to `update:modelValue` as `expand` has to
+     * `update:expanded`.
+     */
+    (e: 'select', payload?: { item: IDataTableItem, value: boolean }): void
 }
 
 /** Slot signatures for `<OrigamDataTable>`. `default` / `colgroup` /
@@ -128,4 +147,47 @@ export interface IDataTableSlots<T = any> {
     body?: (props: IDataTableSlotProps<T>) => any
     append?: (props: IDataTableSlotProps<T>) => any
     bottom?: () => any
+    /**
+     * Replaces the single "loading…" row. Relayed to
+     * `<OrigamDataTableRows>`, which owns it. Renders inside `<tbody>`,
+     * so the content must be `<tr>`-shaped.
+     */
+    loading?: () => any
+    /** Replaces the single "no data" row. Same relay and same `<tr>` shape. */
+    'no-data'?: () => any
+    /**
+     * Replaces a whole data row (the `<tr>` included). Relayed to
+     * `<OrigamDataTableRows>`; `props` carries the exact binding the
+     * default `<OrigamDataTableRow>` would have received.
+     */
+    item?: (props: IDataTableItemSlot<T>) => any
+    /** Replaces a whole group-header row. Relayed to `<OrigamDataTableRows>`. */
+    'group-header'?: (props: IDataTableGroupHeaderSlot) => any
+    /** Extra row rendered under an expanded row. Relayed to `<OrigamDataTableRows>`. */
+    'expanded-row'?: (props: IDataTableItemBaseSlot<T>) => any
+    /**
+     * The group-header's toggle cell. Travels two hops — through
+     * `<OrigamDataTableRows>` to `<OrigamDataTableGroupHeaderRow>`.
+     */
+    'data-table-group'?: (props: IDataTableGroupHeaderRowGroupSlot) => any
+    /** The group-header's select-all cell. Same two-hop relay. */
+    'data-table-select'?: (props: IDataTableGroupHeaderRowSelectSlot) => any
+    /**
+     * Per-column cell content, `{key}` being a column definition's `key`.
+     * Relayed through `<OrigamDataTableRows>` to `<OrigamDataTableRow>`.
+     * `item.data-table-select` / `item.data-table-expand` address the two
+     * built-in system columns.
+     */
+    [key: `item.${string}`]: ((props: IDataTableItemKey) => any) | undefined
+    /**
+     * Per-column header content. Reaches BOTH ends of the table: the
+     * `<th>` (through `<OrigamDataTableHeaders>` →
+     * `<OrigamDataTableHeadersCell>` → `<OrigamDataTableHeaderCell>`) and,
+     * in mobile layout, the per-cell title inside each row.
+     *
+     * ⛔ `header.mobile` and `header.loader` are NOT part of this family
+     * — they are the two named slots above, addressed to
+     * `<OrigamDataTableHeaders>` itself.
+     */
+    [key: `header.${string}`]: ((props: any) => any) | undefined
 }

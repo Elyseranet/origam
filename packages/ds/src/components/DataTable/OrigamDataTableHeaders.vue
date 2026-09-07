@@ -26,7 +26,18 @@
 					:headers="headers"
 					:style="dataTableHeadersStyles"
 					v-bind="dataTableHeadersCellProps"
-			/>
+			>
+				<template
+						v-for="name in headerColumnSlotNames"
+						:key="name"
+						#[name]="columnProps"
+				>
+					<slot
+							:name="name"
+							v-bind="columnProps"
+					/>
+				</template>
+			</origam-data-table-headers-cell>
 		</slot>
 	</template>
 
@@ -77,7 +88,9 @@
 	import type { TOrigamDataTableHeadersCell } from '../../types/DataTable/data-table-headers-cell.type'
 	import type { TOrigamDataTableHeadersCellMobile } from '../../types/DataTable/data-table-headers-cell-mobile.type'
 
-	import { computed, ref, StyleValue } from 'vue'
+	import { pickDataTableHeaderColumnSlotNames } from '../../utils/DataTable/slot-name.util'
+
+	import { computed, ref, StyleValue, useSlots } from 'vue'
 
 	/*********************************************************
 	 * Global
@@ -90,6 +103,8 @@
 	defineSlots<IDataTableHeadersSlots>()
 
 	const {filterProps} = useProps<IDataTableHeadersProps>(props)
+
+	const slots = useSlots()
 
 	const origamDataTableHeadersCellRef = ref<TOrigamDataTableHeadersCell>()
 	const origamDataTableHeadersCellMobileRef = ref<TOrigamDataTableHeadersCellMobile>()
@@ -134,6 +149,20 @@
 	})
 	const dataTableHeadersCellMobileProps = computed(() => {
 		return origamDataTableHeadersCellMobileRef.value?.filterProps(props)
+	})
+
+	/*********************************************************
+	 * Forwarded slots (#550, critere C7)
+	 *
+	 * @description
+	 * `header.{cle}` est rendu tout au bout de la chaine, par
+	 * `<origam-data-table-header-cell>`. Ce composant et
+	 * `<origam-data-table-headers-cell>` ne font que le convoyer : sans ce
+	 * relais, un `<template #header.commits>` ecrit sur
+	 * `<origam-data-table>` n'atteignait jamais le `<th>`.
+	 ********************************************************/
+	const headerColumnSlotNames = computed(() => {
+		return pickDataTableHeaderColumnSlotNames(Object.keys(slots))
 	})
 
 	/*********************************************************
