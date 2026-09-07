@@ -1892,6 +1892,8 @@
   --origam-picker-title---padding-inline: 24 12pxpx;
   --origam-picker-title---padding-block: 16px;
   --origam-picker-title---text-transform: uppercase;
+  --origam-date-picker---width: 328px;
+  --origam-date-picker--show-week---width: 368px;
   --origam-date-picker__header---padding-block: 0 var(--origam-space---3);
   --origam-date-picker__header---padding-inline: var(--origam-space---6) var(--origam-space---3);
   --origam-date-picker__header---font-size: 32px;
@@ -4588,6 +4590,8 @@
     --origam-picker-title---padding-inline: 24 12pxpx;
     --origam-picker-title---padding-block: 16px;
     --origam-picker-title---text-transform: uppercase;
+    --origam-date-picker---width: 328px;
+    --origam-date-picker--show-week---width: 368px;
     --origam-date-picker__header---padding-block: 0 var(--origam-space---3);
     --origam-date-picker__header---padding-inline: var(--origam-space---6) var(--origam-space---3);
     --origam-date-picker__header---font-size: 32px;
