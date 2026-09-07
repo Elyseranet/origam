@@ -101,3 +101,37 @@ export interface IBgColorProps {
 export interface IAccentColorProps {
     accentColor?: TColor
 }
+
+/**
+ * Options du resolveur d'axe couleur partage
+ * (`src/utils/Commons/color-axis.util.ts`), consomme par `useColorEffect`
+ * et `useStateEffect`.
+ *
+ * ⛔ `gradients` n'est PAS une preference de style : il fige un ecart de
+ * comportement historique entre les deux appelants, et le rend visible au
+ * lieu de le laisser dormir dans deux copies d'un meme algorithme.
+ *
+ * `useColorEffect` a toujours reconnu les degrades sur les deux canaux
+ * (`bgColor` → `background-image`, `color` → triptyque
+ * `background-clip: text`). `useStateEffect` ne l'a jamais fait : une
+ * valeur `linear-gradient(...)` y echoue `isIntent`, echoue `isCssColor`
+ * — qui exclut deliberement les degrades — et disparait sans un mot.
+ *
+ * Mesure sur la matrice de reference
+ * (`packages/tests/TU/composables/Commons/color-axis-baseline.json`) :
+ * sur 1 620 combinaisons communes, les deux composables rendent une sortie
+ * identique 1 280 fois et divergent 340 fois — et les 340 divergences
+ * portent TOUTES sur un degrade, sans exception.
+ *
+ * Le drapeau preserve donc exactement ce qui existait de part et d'autre.
+ * L'activer pour `useStateEffect` donnerait le support des degrades a 33
+ * composants d'un coup : c'est une decision produit, pas un nettoyage.
+ */
+export interface IColorAxisOptions {
+    /**
+     * Reconnaitre les degrades (chaine `linear-gradient(...)`, preset
+     * `gradient-*`, objet `IGradient`) sur les canaux fond et premier plan.
+     * Par defaut `false` — le comportement de `useStateEffect`.
+     */
+    gradients?: boolean
+}

@@ -7,7 +7,8 @@ import { useMargin } from './margin.composable'
 import { usePadding } from './padding.composable'
 import { useRounded } from './rounded.composable'
 
-import { getForeground, intentBgExpr, isCssColor, isIntent, isParsableColor, isUtilityIntent, parseColor, rawBgExprWithState, tokenForegroundForIntent, tokenStylesForIntent, warnLegacyColor } from '../../utils/Commons/color.util'
+import { intentBgExpr, isIntent } from '../../utils/Commons/color.util'
+import { resolveBgRole, resolveColorAxisClasses, resolveColorAxisStyles } from '../../utils/Commons/color-axis.util'
 
 import type { IBorderProps } from '../../interfaces/Commons/border.interface'
 import type { IMarginProps } from '../../interfaces/Commons/margin.interface'
@@ -15,7 +16,7 @@ import type { IPaddingProps } from '../../interfaces/Commons/padding.interface'
 import type { IRoundedProps } from '../../interfaces/Commons/rounded.interface'
 import type { IActiveState, IHoverState } from '../../interfaces/Commons/state-effect.interface'
 
-import type { TBgFgRole, TColor } from '../../types/Commons/color.type'
+import type { TColor } from '../../types/Commons/color.type'
 import type { TStateEffectProps } from '../../types/Commons/state-effect.type'
 
 // ────────────────────────────────────────────────────────────────────────────
@@ -37,12 +38,16 @@ import type { TStateEffectProps } from '../../types/Commons/state-effect.type'
 //   7. margin         — outer spacing (single scalar)
 //   8. gap            — flex / grid gap (single scalar)
 //
-// Color resolution keeps the existing `useColorEffect` semantics
-// verbatim (intent darkening at -20 % hover / -30 % active, same-intent
-// rule, color-clash auto-contrast). Only the WIRING changes: instead
-// of reading `props.hoverColor` / `props.hoverBgColor` / etc., we read
-// `hoverState.value?.color` / `hoverState.value?.bgColor` and the
-// active-state mirror.
+// La resolution de l'axe couleur (assombrissement d'intention -20 % au
+// survol / -30 % a l'appui, regle du meme intent, auto-contraste en cas de
+// collision) N'EST PLUS RECOPIEE ICI : elle vit dans
+// `utils/Commons/color-axis.util.ts`, que `useColorEffect` appelle aussi.
+// Ce fichier en portait une copie et l'annoncait — «preserved verbatim
+// from useColorEffect» — alors qu'elle pilotait 33 composants contre 2
+// pour l'original. Seul le CABLAGE reste ici : au lieu de props plates
+// `props.hoverColor` / `props.hoverBgColor`, on lit
+// `hoverState.value?.color` / `hoverState.value?.bgColor` et leur miroir
+// actif, et le role de surface tient compte de la regle du meme intent.
 //
 // Other axes simply delegate to the existing per-axis composables —
 // `useBorder`, `useRounded`, `useElevation`, `usePadding`, `useMargin`
@@ -167,92 +172,56 @@ export function useStateEffect (
         () => props.gap, isHover, isActive, hoverState, activeState, 'gap',
     )
 
-    // ── Color axis (preserved verbatim from useColorEffect) ──────────
-    // Helper: same intent on the override slot is equivalent to no
-    // override → bump to bgHover / bgActive rung (canonical -20 % / -30 %
-    // darken). Matches the rule introduced in commit d62cc4e.
+    // ── Axe couleur — implementation unique, partagee ────────────────
+    // La resolution vit dans `utils/Commons/color-axis.util.ts` : c'est
+    // exactement le meme algorithme que `useColorEffect`, qui l'appelle
+    // aussi. Ce fichier en portait une copie, et l'annoncait
+    // («preserved verbatim from useColorEffect») — sauf que la copie
+    // pilotait 33 composants contre 2 pour l'original.
+    //
+    // Ce qui reste ici est le CABLAGE, et lui seul est propre a ce
+    // composable : d'ou viennent `color` / `bgColor` (etat + `status`,
+    // resolus plus haut par `pickEffective`) et comment se derive le role
+    // de surface.
+
+    // Une surcharge d'etat qui reprend l'intention DEJA portee par la prop
+    // de repos n'est pas une surcharge : `:hover="{ bgColor: 'primary' }"`
+    // sur un `bg-color="primary"` ne demande pas la meme couleur, il
+    // demande le rung de survol de cette couleur. On ramene donc le role au
+    // rung canonique (-20 % / -30 %) au lieu de traiter la valeur comme un
+    // choix explicite du consommateur.
     const sameIntent = (a: TColor | undefined | null, b: TColor | undefined | null) => {
         return !!a && !!b && a === b && isIntent(a)
     }
 
-    const colorClasses = computed<string[]>(() => {
-        // Bypass utility layer in hover/active/disabled — resolved token
-        // is no longer the resting `--origam-color__action--*---bg`.
-        if (isHover.value || isActive.value || isDisabled.value) return []
-
-        const classes: string[] = []
-        const bgVal = bgColor.value
-        const fgVal = color.value
-
-        if (bgVal && isUtilityIntent(bgVal)) classes.push(`origam--bg-${bgVal}`)
-        if (fgVal && isUtilityIntent(fgVal)) classes.push(`origam--color-${fgVal}`)
-
-        return classes
-    })
+    // Le canal des classes utilitaires se coupe des qu'un etat est engage :
+    // le token resolu n'est plus le `--origam-color__action--*---bg` de
+    // repos auquel renvoie la classe.
+    const colorClasses = computed<string[]>(() => resolveColorAxisClasses(
+        color.value,
+        bgColor.value,
+        isHover.value || isActive.value || isDisabled.value,
+    ))
 
     const colorStyles = computed<string[]>(() => {
-        void isDisabled.value // accepted for API symmetry; disabled is an opacity veil, not a token swap
+        void isDisabled.value // accepte par symetrie d'API ; disabled est un voile d'opacite, pas un echange de token
 
-        // Display priority: normal → active → HOVER. Hover takes precedence
-        // over active, so a simultaneous press+hover lands on the hover
-        // surface (matches `pickEffective`).
         const hoverHasOwnBg  = hoverState.value?.bgColor != null && !sameIntent(hoverState.value.bgColor, props.bgColor)
         const activeHasOwnBg = activeState.value?.bgColor != null && !sameIntent(activeState.value.bgColor, props.bgColor)
 
-        const bgRole: TBgFgRole =
-            isHover.value && !hoverHasOwnBg ? 'hover' :
-            isActive.value && !activeHasOwnBg ? 'active' :
-            'default'
-
-        let bgDecl: string | null = null
-        let fgDecl: string | null = null
-        let bgIntentFg: string | null = null
-
-        // ── Background resolution ───────────────────────────────────
-        if (bgColor.value && isIntent(bgColor.value)) {
-            const m = tokenStylesForIntent(bgColor.value, bgRole)
-            bgDecl = `background-color: ${m['background-color']}`
-            // Intent's contrast fg is fixed across roles (text never darkens with bg)
-            bgIntentFg = tokenStylesForIntent(bgColor.value, 'default').color
-        } else if (bgColor.value === 'transparent') {
-            bgDecl = `background-color: ${rawBgExprWithState('transparent', bgRole)}`
-        } else if (bgColor.value && typeof bgColor.value === 'string' && isCssColor(bgColor.value)) {
-            warnLegacyColor('bgColor', bgColor.value)
-            bgDecl = `background-color: ${rawBgExprWithState(bgColor.value, bgRole)}`
-        }
-
-        // ── Foreground resolution ───────────────────────────────────
-        if (color.value && isIntent(color.value)) {
-            // Color-clash auto-contrast: same intent on both axes →
-            // swap to bg's paired contrast token instead of intent's
-            // own hue (unreadable hue-on-hue otherwise).
-            if (
-                bgIntentFg &&
-                bgColor.value &&
-                isIntent(bgColor.value) &&
-                color.value === bgColor.value
-            ) {
-                fgDecl = `color: ${bgIntentFg}`
-            } else {
-                fgDecl = `color: ${tokenForegroundForIntent(color.value)}`
-            }
-        } else if (color.value && typeof color.value === 'string' && isCssColor(color.value)) {
-            if (color.value !== 'transparent') warnLegacyColor('color', color.value)
-            fgDecl = `color: ${color.value}`
-        } else if (!color.value && bgIntentFg) {
-            fgDecl = `color: ${bgIntentFg}`
-        } else if (!color.value && bgColor.value && typeof bgColor.value === 'string'
-                   && bgColor.value !== 'transparent' && isParsableColor(bgColor.value)) {
-            const parsed = parseColor(bgColor.value)
-            if (parsed.a == null || parsed.a === 1) {
-                fgDecl = `color: ${getForeground(parsed)}`
-            }
-        }
-
-        const styles: string[] = []
-        if (bgDecl) styles.push(bgDecl)
-        if (fgDecl) styles.push(fgDecl)
-        return styles
+        return resolveColorAxisStyles(
+            color.value,
+            bgColor.value,
+            resolveBgRole(
+                isHover.value && !hoverHasOwnBg,
+                isActive.value && !activeHasOwnBg,
+            ),
+            // ⛔ Pas de degrade ici — ce composable ne les a jamais
+            // reconnus. Cf. `IColorAxisOptions` : les activer donnerait le
+            // support des degrades a 33 composants d'un coup, ce qui est une
+            // decision produit, pas un nettoyage de refactor.
+            { gradients: false },
+        )
     })
 
     // Silence unused-var warning — `intentBgExpr` is re-exported for
