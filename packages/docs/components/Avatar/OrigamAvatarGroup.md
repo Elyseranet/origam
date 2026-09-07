@@ -66,12 +66,29 @@ behaviour after a hover preview.
 
 ## Density
 
-The density mixin reaches every avatar in the cluster and tightens the
-overlap accordingly (compact / comfortable both shave 8 pixels).
+`density` retunes the overlap between consecutive avatars. The base
+overlap is a flat `-18px` (`margin-inline-start` on `horizontal`,
+`margin-block-start` on `vertical`, applied to every child but the
+first); `density` contributes an offset to that value through
+`--origam-avatar-group---density`:
+
+| `density` | `--origam-avatar-group---density` | Resulting margin | Effect |
+|---|---|---|---|
+| `compact` | `-6px` | `calc(-18px + -6px)` = **-24px** | tightens the cluster by 6px per avatar |
+| `default` | `0px` | `calc(-18px + 0px)` = **-18px** | the baseline overlap |
+| `comfortable` | `10px` | `calc(-18px + 10px)` = **-8px** | **loosens** the cluster by 10px per avatar |
+
+> ⛔ An earlier version of this page claimed *"compact / comfortable both
+> shave 8 pixels"*. Neither figure was right, and `comfortable` does not
+> shave anything — it is the one rung that spreads the avatars apart.
+
+`expandOnHover` / `expandOnClick` override the whole calculation while
+engaged: the margin drops to `0`, whatever the density.
 
 ```vue
 <template>
     <OrigamAvatarGroup :items="people" density="compact" />
+    <OrigamAvatarGroup :items="people" density="comfortable" />
 </template>
 ```
 

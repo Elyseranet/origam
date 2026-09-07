@@ -59,6 +59,29 @@ becomes selected and stays mounted thereafter (see `useLazy`).
 </template>
 ```
 
+## Emits
+
+| Emit | Payload | Description |
+|---|---|---|
+| `group:selected` | `{ value: boolean }` | Fired whenever the item's own selection state flips — `true` when it becomes the visible slide, `false` when it leaves. Emitted from the `isSelected` watcher in `useGroupItem`, so it fires on every change, never on mount. |
+
+`IWindowItemEmits` extends `IGroupEmits`; the signature is shared with
+every group-item component of the DS.
+
+```vue
+<template>
+    <OrigamWindow v-model="step">
+        <OrigamWindowItem :value="1" @group:selected="onSelected">Step 1</OrigamWindowItem>
+    </OrigamWindow>
+</template>
+
+<script setup lang="ts">
+    function onSelected (payload: { value: boolean }) {
+        console.log(payload.value ? 'shown' : 'hidden')
+    }
+</script>
+```
+
 ## Slots
 
 | Slot | Slot props | Description |

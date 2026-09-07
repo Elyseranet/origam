@@ -62,6 +62,46 @@
 		</Variant>
 
 		<Variant
+				title="State"
+				:init-state="() => useStoryInitState<Partial<IWindowProps>>({
+					bgColor: 'primary',
+					hoverClass: '',
+					activeClass: '',
+				})"
+		>
+			<template #default="{ state }">
+				<div class="story-shell">
+					<origam-window
+							v-model="stateStep"
+							show-arrows
+							:bg-color="state.bgColor"
+							:hover="resolveHoverState(state.hover)"
+							:active="resolveActiveState(state.active)"
+							:hover-class="state.hoverClass || undefined"
+							:active-class="state.activeClass || undefined"
+							:style="hostStyle"
+					>
+						<origam-window-item v-for="n in 3" :key="n" :value="n">
+							<div :style="slideStyle(n)">Slide {{ n }}</div>
+						</origam-window-item>
+					</origam-window>
+					<div class="story-status">bgColor / hover / active paint the prev &amp; next buttons, not the window.</div>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Surface">
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
+				</StoryGroup>
+				<StoryGroup title="Interaction">
+					<HstSelect v-model="state.hover"       title="Hover"        :options="HOVER_OPTIONS"/>
+					<HstSelect v-model="state.active"      title="Active"       :options="ACTIVE_OPTIONS"/>
+					<HstText   v-model="state.hoverClass"  title="Hover Class"/>
+					<HstText   v-model="state.activeClass" title="Active Class"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IWindowProps> & { step: number }>({
 					step: 1,
@@ -255,15 +295,21 @@
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 	import {
+		ACTIVE_OPTIONS,
 		BORDER_OPTIONS,
 		BORDER_STYLE_OPTIONS,
+		COLOR_OPTIONS,
 		ELEVATION_OPTIONS,
+		HOVER_OPTIONS,
 		ICON_OPTIONS,
+		resolveActiveState,
+		resolveHoverState,
 		ROUNDED_OPTIONS,
 		TAG_OPTIONS
 	} from '@stories/const'
 
 	const designStep    = ref(1)
+	const stateStep     = ref(1)
 	const slotStep      = ref(1)
 	const emitStep      = ref(1)
 	const playgroundStep = ref(1)

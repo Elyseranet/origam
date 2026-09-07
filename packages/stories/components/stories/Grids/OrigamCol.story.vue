@@ -218,12 +218,12 @@
 					<HstSelect v-model="state.xxl"  title="xxl (≥2560px)" :options="COLS_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Offset">
-					<HstSelect v-model="state.offset"    title="Offset (default)"  :options="COLS_OPTIONS"/>
-					<HstSelect v-model="state.offsetSm"  title="Offset sm"         :options="COLS_OPTIONS"/>
-					<HstSelect v-model="state.offsetMd"  title="Offset md"         :options="COLS_OPTIONS"/>
-					<HstSelect v-model="state.offsetLg"  title="Offset lg"         :options="COLS_OPTIONS"/>
-					<HstSelect v-model="state.offsetXl"  title="Offset xl"         :options="COLS_OPTIONS"/>
-					<HstSelect v-model="state.offsetXxl" title="Offset xxl"        :options="COLS_OPTIONS"/>
+					<HstSelect v-model="state.offset"    title="Offset (default)"  :options="OFFSET_OPTIONS"/>
+					<HstSelect v-model="state.offsetSm"  title="Offset sm"         :options="OFFSET_OPTIONS"/>
+					<HstSelect v-model="state.offsetMd"  title="Offset md"         :options="OFFSET_OPTIONS"/>
+					<HstSelect v-model="state.offsetLg"  title="Offset lg"         :options="OFFSET_OPTIONS"/>
+					<HstSelect v-model="state.offsetXl"  title="Offset xl"         :options="OFFSET_OPTIONS"/>
+					<HstSelect v-model="state.offsetXxl" title="Offset xxl"        :options="OFFSET_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Order">
 					<HstNumber v-model="state.order"    title="Order (default)" :min="0" :max="12" :step="1"/>
@@ -325,7 +325,7 @@
 					<HstSelect v-model="state.lg"     title="lg (≥1280px)"    :options="COLS_OPTIONS"/>
 					<HstSelect v-model="state.xl"     title="xl (≥1920px)"    :options="COLS_OPTIONS"/>
 					<HstSelect v-model="state.xxl"    title="xxl (≥2560px)"   :options="COLS_OPTIONS"/>
-					<HstSelect v-model="state.offset" title="Offset"          :options="COLS_OPTIONS"/>
+					<HstSelect v-model="state.offset" title="Offset"          :options="OFFSET_OPTIONS"/>
 					<HstNumber v-model="state.order"  title="Order" :min="0" :max="12" :step="1"/>
 					<HstSelect v-model="state.align"  title="Align (self)"    :options="ALIGN_OPTIONS"/>
 				</StoryGroup>
@@ -357,6 +357,7 @@
 		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,
 		COLS_OPTIONS,
+		OFFSET_OPTIONS,
 		TAG_OPTIONS
 	} from '@stories/const'
 </script>

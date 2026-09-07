@@ -171,6 +171,14 @@
 			--origam-col---max-width: 100%;
 		}
 
+		&--true {
+			@extend %default;
+
+			--origam-col---flex-grow: 1;
+			--origam-col---flex-basis: 0;
+			--origam-col---max-width: 100%;
+		}
+
 		@each $size in $sizes {
 			&--#{$size} {
 				@extend %default;
@@ -210,6 +218,16 @@
 					flex: 0 0 auto;
 					width: auto;
 					max-width: 100%;
+				}
+			}
+
+			&--#{$breakpoint}-true {
+				@extend %default;
+
+				@media (min-width: $breakpointSize) {
+					--origam-col---flex-grow: 1;
+					--origam-col---flex-basis: 0;
+					--origam-col---max-width: 100%;
 				}
 			}
 

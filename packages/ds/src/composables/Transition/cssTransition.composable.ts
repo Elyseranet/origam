@@ -62,7 +62,27 @@ export function useCssTransition (props: ITransitionProps) {
             css: !isDisabled.value
         }
 
-        if (props.group) {
+        /*********************************************************
+         * Liaison de `mode`
+         *
+         * @description
+         * ⛔ La condition etait `if (props.group)` — soit l'INVERSE du
+         * contrat. `mode` n'existe que sur `Transition` (enfant unique) ;
+         * Vue ne le declare PAS sur `TransitionGroup`. Or `tag` rend
+         * `TransitionGroup` quand `group` est vrai et `Transition` quand il
+         * est faux : `mode` n'etait donc lie QUE sur le composant qui ne
+         * sait pas le lire, et jamais sur celui qui le sait. La prop etait
+         * morte pour les 8 composants qui passent par ce hook.
+         *
+         * @description
+         * `mode` est RETIRE de l'objet (et pas seulement mis a `undefined`)
+         * sur le chemin `group` : `:mode="undefined"` declenche quand meme
+         * l'avertissement « Extraneous non-props attributes » de Vue sur
+         * `TransitionGroup`, la cle etant presente dans les props du vnode
+         * quelle que soit sa valeur. C'est exactement la forme deja livree
+         * par `OrigamExpandX` / `OrigamExpandY`. Issue #550, critere C7.
+         ********************************************************/
+        if (!props.group) {
             bind.mode = props.mode
         }
 

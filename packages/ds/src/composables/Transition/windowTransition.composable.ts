@@ -84,7 +84,24 @@ export function useWindowTransition (props: ITransitionProps) {
             css: !isDisabled.value
         }
 
-        if (props.group) {
+        /*********************************************************
+         * Liaison de `mode`
+         *
+         * @description
+         * ⛔ Meme inversion que dans `useCssTransition`, corrigee en meme
+         * temps : la condition etait `if (props.group)`. `mode` n'est
+         * declare que sur `Transition` (enfant unique), jamais sur
+         * `TransitionGroup` — et `tag` rend `TransitionGroup` precisement
+         * quand `group` est vrai. La prop n'etait donc liee que la ou elle
+         * ne peut rien faire.
+         *
+         * @description
+         * `mode` est RETIRE de l'objet (pas mis a `undefined`) sur le chemin
+         * `group`, sans quoi Vue avertit « Extraneous non-props attributes »
+         * sur `TransitionGroup`. Forme identique a `OrigamExpandX` /
+         * `OrigamExpandY`. Issue #550, critere C7.
+         ********************************************************/
+        if (!props.group) {
             bind.mode = props.mode
         }
 

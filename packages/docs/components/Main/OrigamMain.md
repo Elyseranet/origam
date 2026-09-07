@@ -103,8 +103,8 @@ sibling drawer / app-bar.
 | `--origam-main---transition-duration` | inherits motion.duration.medium |
 | `--origam-main---transition-property` | `all` |
 | `--origam-main---transition-timing-function` | inherits motion.easing.standard |
-| `--origam-main__scroller--max-width` | `100%` |
-| `--origam-main__scroller--position` | `relative` |
+| `--origam-main__scroller---max-width` | `100%` |
+| `--origam-main__scroller---position` | `relative` |
 
 The component also reads the layout-bound positions:
 `--origam-layout---position-top`, `--origam-layout---position-bottom`,

@@ -31,7 +31,7 @@ export {
 } from './font.const'
 
 export { alignList as ALIGN_OPTIONS } from './align.const'
-export { colsList as COLS_OPTIONS } from './cols.const'
+export { colsList as COLS_OPTIONS, offsetList as OFFSET_OPTIONS } from './cols.const'
 export { justifyList as JUSTIFY_OPTIONS } from './justify.const'
 export { positionList as POSITION_OPTIONS } from './position.const'
 export { progressTypeList as PROGRESS_TYPE_OPTIONS } from './progress.const'
