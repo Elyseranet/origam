@@ -43,6 +43,7 @@
 	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useBorder } from '../../composables/Commons/border.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useElevation } from '../../composables/Commons/elevation.composable'
 	import { useMargin } from '../../composables/Commons/margin.composable'
 	import { usePadding } from '../../composables/Commons/padding.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
@@ -132,6 +133,23 @@
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
 	const {densityClasses} = useDensity(props)
+	/*********************************************************
+	 * elevation
+	 *
+	 * @description
+	 * #550 (critere C1) — `elevation` etait DECLAREE (via `IElevationProps`,
+	 * exposee par la story) et lue nulle part : `<origam-messages
+	 * elevation="lg">` ne posait aucune ombre. Les deux canaux sont branches
+	 * en parallele (strategie A) : `elevationClasses`
+	 * (`origam-messages--elevated` + l'utilitaire `.origam--shadow-{echelon}`
+	 * quand l'echelon en a un) et `elevationStyles` (la declaration
+	 * `box-shadow: var(--origam-shadow---{echelon})`, ou la valeur libre
+	 * telle quelle). C'est la declaration inline qui peint : le SCSS scope de
+	 * `.origam-messages` n'ecrit aucun `box-shadow`, et l'utilitaire
+	 * (0,1,0) perdrait de toute facon contre une regle scopee — meme
+	 * cablage que sur `OrigamCard`.
+	 ********************************************************/
+	const {elevationClasses, elevationStyles} = useElevation(props)
 
 	const {isBooted} = useSsrBoot()
 
@@ -148,6 +166,7 @@
 			paddingStyles.value,
 			marginStyles.value,
 			textColorStyles.value,
+			elevationStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -158,6 +177,7 @@
 			densityClasses.value,
 			roundedClasses.value,
 			borderClasses.value,
+			elevationClasses.value,
 			paddingClasses.value,
 			marginClasses.value,
 			props.class

@@ -140,11 +140,15 @@ group out of the box — clicking one applies `selectedClass`
 ## Layout placement
 
 `<OrigamBottomNav>` is layout-aware, using the standard `name` / `order`
-/ `absolute` triple from `ILayoutItemProps`:
+/ `location` / `absolute` quadruple from `ILayoutItemProps`:
 
 - `name` (default `'bottom-navigation'`) — unique id used by the layout
   machinery.
 - `order` — relative order against sibling layout items.
+- `location` (default `'bottom'`) — which edge of the `<OrigamLayout>`
+  the bar docks against: `'top'` · `'bottom'` · `'left'` · `'right'`.
+  It drives the anchor, the direction the bar slides in from, the
+  `calc()` height/width, and how much room sibling regions give up.
 - `absolute` — opt out of pushing/pulling sibling regions; the bar then
   floats over the main slot instead.
 
@@ -156,6 +160,21 @@ group out of the box — clicking one applies `selectedClass`
     </OrigamLayout>
 </template>
 ```
+
+::: warning `location` and `position` are two different axes
+`location` is the **edge** the bar docks against inside the layout
+(`top` / `bottom` / `left` / `right`). `position` is the **horizontal
+alignment** of the bar within that edge when it does not span the full
+width (`start` / `center` / `end`). They only interact when `location`
+is itself horizontal (`'left'` / `'right'`), where the
+`origam-bottom-nav--position-*` rule and the layout anchor compete for
+the same axis — the family's supported rendering stays
+`location="bottom"`.
+
+The default `transition` (`OrigamTranslateBottom`) always slides in from
+the bottom. Pair a non-default `location` with a matching transition, or
+`:transition="false"`.
+:::
 
 ## Transition
 
@@ -225,7 +244,7 @@ interface IBottomNavProps extends ITagProps, ICommonsComponentProps,
 | `padding*`, `margin*` | — | — | Standard spacing surface — see `IPaddingProps` / `IMarginProps`. |
 | `height`, `width`, `min/maxHeight`, `min/maxWidth` | — | — | Standard dimension surface — see `IDimensionProps`. When `height` is set, the actual applied height is `height` minus `8px` in `compact` density. |
 | `name`, `order`, `absolute` | — | `name: 'bottom-navigation'` | Layout placement — see [Layout placement](#layout-placement). |
-| `location` | `TDirectionBoth` | — | Declared on `ILayoutItemProps` and inherited onto `IBottomNavProps`, but never read by `OrigamBottomNav.vue` — the `useLayoutItem()` call hardcodes `position: computed(() => 'bottom')` (`OrigamBottomNav.vue:214`). Passing `location` has no effect. |
+| `location` | `TDirectionBoth` | `'bottom'` | Edge of the `<OrigamLayout>` the bar docks against (`top` · `bottom` · `left` · `right`). Distinct from `position` — see [Layout placement](#layout-placement). |
 | `modelValue`, `disabled`, `multiple`, `mandatory`, `max`, `selectedClass` | — | `modelValue: true`, `selectedClass: 'origam-bottom-nav__btn--selected'` | Visibility + group selection — see [Visibility](#visibility) / [Group selection](#group-selection-multiple--mandatory--disabled). |
 | `hover`, `active`, `activeClass` | `boolean \| IHoverState` / `boolean \| IActiveState` | — | State-aware overrides forwarded to child buttons — see [Color](#color). |
 | `transition` | `boolean \| string \| TTransitionProps` | `{ component: OrigamTranslateBottom }` | Enter/leave animation — see [Transition](#transition). |

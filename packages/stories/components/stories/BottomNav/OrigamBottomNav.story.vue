@@ -126,6 +126,36 @@
 		</Variant>
 
 		<Variant
+				title="Functional - Location"
+				:init-state="() => useStoryInitState<Partial<IBottomNavProps>>({ location: BLOCK.BOTTOM, position: BOTTOM_NAV_POSITION.START })"
+		>
+			<template #default="{ state }">
+				<div class="story-bottom-nav-layout-shell">
+					<origam-layout>
+						<origam-bottom-nav
+								:model-value="true"
+								absolute
+								:location="state.location"
+								:position="state.position"
+								:transition="false"
+								:items="navItems"
+								name="bottom-nav-location"
+						/>
+						<origam-main>
+							<p class="story-bottom-nav-layout-hint">location={{ state.location }} — position={{ state.position }}</p>
+						</origam-main>
+					</origam-layout>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Layout">
+					<HstSelect v-model="state.location" title="Location" :options="LOCATION_OPTIONS"/>
+					<HstSelect v-model="state.position" title="Position" :options="POSITION_OPTIONS"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
 				title="Events - update:modelValue"
 				:init-state="() => useStoryInitState<{ visible: boolean }>({ visible: true })"
 		>
@@ -215,10 +245,10 @@
 >
 	import { logEvent } from 'histoire/client'
 
-	import { OrigamBottomNav, OrigamBtn, OrigamFade, OrigamScaleRotate } from '@origam/components'
-	import { BOTTOM_NAV_POSITION, MDI_ICONS, MODE } from '@origam/enums'
+	import { OrigamBottomNav, OrigamBtn, OrigamFade, OrigamLayout, OrigamMain, OrigamScaleRotate } from '@origam/components'
+	import { BLOCK, BOTTOM_NAV_POSITION, INLINE, MDI_ICONS, MODE } from '@origam/enums'
 	import type { IBottomNavProps, IOptions } from '@origam/interfaces'
-	import type { TBottomNavPosition, TNavMode } from '@origam/types'
+	import type { TBottomNavPosition, TDirectionBoth, TNavMode } from '@origam/types'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
@@ -240,6 +270,18 @@
 		{ label: 'vertical',   value: MODE.VERTICAL   },
 		{ label: 'horizontal', value: MODE.HORIZONTAL },
 		{ label: 'shift',      value: MODE.SHIFT      },
+	]
+
+	// `location` (`ILayoutItemProps`) — le cote d'accroche dans
+	// l'`<origam-layout>`, a ne pas confondre avec `POSITION_OPTIONS`
+	// ci-dessous qui est l'alignement HORIZONTAL de la barre sur ce cote
+	// (#550). Liste locale, meme forme que `OrigamDrawer.story.vue` — il
+	// n'existe pas d'ensemble partage pour cette union.
+	const LOCATION_OPTIONS: Array<IOptions<TDirectionBoth>> = [
+		{ label: 'bottom', value: BLOCK.BOTTOM },
+		{ label: 'top',    value: BLOCK.TOP    },
+		{ label: 'left',   value: INLINE.LEFT  },
+		{ label: 'right',  value: INLINE.RIGHT },
 	]
 
 	const POSITION_OPTIONS: Array<IOptions<TBottomNavPosition>> = [
@@ -274,5 +316,17 @@
 		width: 100%;
 		height: 80px;
 		overflow: hidden;
+	}
+
+	.story-bottom-nav-layout-shell {
+		position: relative;
+		width: 100%;
+		height: 240px;
+		overflow: hidden;
+		border: 1px dashed var(--origam-color__border---default, #ccc);
+	}
+
+	.story-bottom-nav-layout-hint {
+		padding: 12px;
 	}
 </style>

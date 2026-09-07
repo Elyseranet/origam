@@ -65,6 +65,7 @@
 	import { useStyle } from '../../composables/Commons/style.composable'
 
 	import { ORIGAM_BTN_TOGGLE_KEY } from '../../consts/Btn/btn-toggle.const'
+	import { BLOCK } from '../../enums/Commons/anchor.enum'
 	import { MODE } from '../../enums/Commons/mode.enum'
 
 	import type { IBottomNavProps } from '../../interfaces/BottomNav/bottom-nav.interface'
@@ -93,6 +94,7 @@
 		selectedClass: 'origam-bottom-nav__btn--selected',
 		mode: MODE.VERTICAL,
 		position: 'start',
+		location: BLOCK.BOTTOM,
 		items: () => [] as Array<TOrigamBtn>,
 		// Default transition — slide up from the bottom of the viewport.
 		// Passed as a component descriptor (not just a name string) so the
@@ -280,10 +282,36 @@
 	 * `id`. Tant que la reponse est non, cette lecture est correcte et le
 	 * signalement de l'outil est un faux positif a connaitre.
 	 ********************************************************/
+	/*********************************************************
+	 * position — `location`, plus l'echelon du layout
+	 *
+	 * @description
+	 * #550 (critere C1) — `location` etait DECLAREE (via `ILayoutItemProps`)
+	 * et jamais lue : le cote d'accroche etait fige a
+	 * `computed(() => 'bottom')`. `useCreateLayout` s'en sert pour tout :
+	 * l'ancre (`{[position]: 0}`), le sens de la translation d'entree/sortie,
+	 * le `height`/`width` en `calc()` et le decalage des freres. Cablee comme
+	 * sur `OrigamAppBar`, avec `BLOCK.BOTTOM` en defaut — comportement
+	 * actuel a l'identique pour qui ne passe rien.
+	 *
+	 * @description
+	 * ⛔ Ne pas confondre avec la prop `position` du composant
+	 * (`'start' | 'center' | 'end'`), qui regle le placement HORIZONTAL de la
+	 * barre quand elle n'occupe pas toute la largeur. `location` regle le
+	 * COTE d'accroche dans l'`<origam-layout>` (`top`/`bottom`/`left`/
+	 * `right`). Les deux ne se rencontrent que si `location` est horizontal,
+	 * cas ou la classe `origam-bottom-nav--position-*` (left/right) et
+	 * l'ancre du layout se disputent le meme axe : le rendu par defaut de la
+	 * famille reste `location="bottom"`.
+	 *
+	 * @description
+	 * `toRef` (et non `props.location` lu ici) : ADR-005, le resolveur de
+	 * props de theme ecrit dans `beforeCreate`, APRES `setup()`.
+	 ********************************************************/
 	const {layoutItemStyles} = useLayoutItem({
 		id: props.name,
 		order: computed(() => int(props.order ?? 0)),
-		position: computed(() => 'bottom'),
+		position: toRef(props, 'location'),
 		layoutSize: computed(() => isActive.value ? height.value : 0),
 		elementSize: height,
 		active: isActive as ComputedRef<boolean>,

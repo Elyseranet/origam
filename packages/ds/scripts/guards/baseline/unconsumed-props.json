@@ -1,6 +1,5 @@
 [
     "OrigamAudio.tag",
-    "OrigamBottomNav.location",
     "OrigamCard.loadingText",
     "OrigamDataTableRows.class",
     "OrigamDataTableRows.color",
@@ -11,8 +10,5 @@
     "OrigamExpansionPanelContent.loadingText",
     "OrigamExpansionPanels.eager",
     "OrigamExpansionPanels.loadingText",
-    "OrigamInput.label",
-    "OrigamMessages.elevation",
-    "OrigamSystemBar.location",
-    "OrigamTabs.bgColor"
+    "OrigamInput.label"
 ]

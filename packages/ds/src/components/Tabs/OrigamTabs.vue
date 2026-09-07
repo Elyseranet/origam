@@ -22,10 +22,11 @@
 		lang="ts"
 		setup
 >
-	import { computed, provide, ref, StyleValue } from 'vue'
+	import { computed, provide, ref, StyleValue, toRef } from 'vue'
 
 	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
 
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
 	import { useGroup } from '../../composables/Commons/group.composable'
 	import { useGroupSiblingLink } from '../../composables/Commons/groupSiblingLink.composable'
@@ -194,11 +195,41 @@
 	const {roundedClasses, roundedStyles} = useRounded(props)
 
 	/*********************************************************
+	 * bgColor
+	 *
+	 * @description
+	 * #550 (critere C1) — `bgColor` etait DECLAREE (via `IBgColorProps`),
+	 * exposee par DEUX controles de la story et documentee, et lue nulle
+	 * part : la barre d'onglets restait sur son
+	 * `--origam-tabs---background-color` quoi qu'on passe. Seul `color`
+	 * etait lu, et uniquement pour etre RE-DIFFUSE aux `<origam-tab>`
+	 * enfants via `slotDefaults` — jamais pour peindre le tablist lui-meme.
+	 *
+	 * @description
+	 * `useBackgroundColor` (et non `useBothColor`) : le perimetre est
+	 * `bgColor`. Y adjoindre `color` changerait le contrat de `color`, qui
+	 * est aujourd'hui une valeur PROPAGEE aux onglets, pas une couleur de
+	 * texte du conteneur. La paire de contraste reste assuree : quand
+	 * `bgColor` est une intention, `useColor` emet aussi le `color:` associe
+	 * (`bgIntentFg`), donc le texte reste lisible sur la surface peinte.
+	 *
+	 * @description
+	 * La declaration inline est celle qui peint : la regle scopee
+	 * `.origam-tabs { background-color: var(--origam-tabs---background-color,
+	 * transparent) }` vaut (0,2,0) et battrait l'utilitaire
+	 * `.origam--bg-{intention}` (0,1,0) — cf. « Strategie A » dans le
+	 * CLAUDE.md racine. Les deux canaux sont branches quand meme, en
+	 * parallele, comme partout ailleurs.
+	 ********************************************************/
+	const {backgroundColorClasses, backgroundColorStyles} = useBackgroundColor(toRef(props, 'bgColor'))
+
+	/*********************************************************
 	 * Class & Style
 	 ********************************************************/
 	const tabsStyles = computed(() => {
 		return [
 			roundedStyles.value,
+			backgroundColorStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -211,6 +242,7 @@
 				'origam-tabs--fixed': props.fixed,
 				'origam-tabs--centered': props.centered
 			},
+			backgroundColorClasses.value,
 			densityClasses.value,
 			roundedClasses.value,
 			props.class

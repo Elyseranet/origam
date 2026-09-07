@@ -106,8 +106,8 @@ On touch devices, enable horizontal swipe between panels with
 | `centered`    | `boolean`                  | `false`        | Centers the tablist in its container. |
 | `mandatory`   | `boolean`                  | `true`         | Forbids the empty selection (ARIA-recommended). |
 | `disabled`    | `boolean`                  | `false`        | Disables the entire tablist.          |
-| `color`       | `TIntent`                  | —              | Foreground intent.                    |
-| `bgColor`     | `TIntent`                  | —              | Background intent.                    |
+| `color`       | `TIntent`                  | —              | Forwarded as a default to every child `<OrigamTab>`; does **not** paint the tablist itself. |
+| `bgColor`     | `TIntent \| string`        | —              | Paints the tablist surface. An intent resolves to `--origam-color__{base}---bg` and auto-pairs its contrast foreground; a raw CSS colour is emitted verbatim. |
 
 ### `<OrigamTab>`
 
