@@ -183,7 +183,7 @@
 	import type { IChartSankeyEmits, IChartSankeyLink, IChartSankeyNode, IChartSankeyProps, IChartSankeySlots } from '../../interfaces/Chart/chart-sankey.interface'
 	import type { IChartSeries } from '../../interfaces/Chart/chart-series.interface'
 
-	import { useChartUnsupportedProp } from '../../composables/Chart/chart-prop-warning.composable'
+	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
@@ -257,7 +257,7 @@
 	 * comportement fictif : elles avertissent une fois, en dev, avec la
 	 * raison exacte. Meme traitement que `OrigamChartGauge`.
 	 ********************************************************/
-	useChartUnsupportedProp(
+	useUnsupportedProp(
 		'OrigamChartSankey',
 		'categories',
 		'a sankey draws nodes and links — there is no category axis.',

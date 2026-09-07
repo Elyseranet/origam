@@ -203,7 +203,7 @@
 
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
-	import { useChartUnsupportedProp } from '../../composables/Chart/chart-prop-warning.composable'
+	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
@@ -306,7 +306,7 @@
 	const bearishColorResolved = computed(() => resolveColor(props.bearishColor))
 
 	/*********************************************************
-	 * useChartUnsupportedProp
+	 * useUnsupportedProp
 	 *
 	 * @description
 	 * ⛔ #426 — `colorScheme` is inherited from `IChartBaseProps` but has no
@@ -314,7 +314,7 @@
 	 * not a per-series identity a rotating palette could drive. See #426 decision:
 	 * neither wiring a fake behaviour nor removing the prop — warn instead.
 	 ********************************************************/
-	useChartUnsupportedProp(
+	useUnsupportedProp(
 		'OrigamChartCandlestick',
 		'colorScheme',
 		'candle colour is binary (bullishColor / bearishColor) — there is no per-series identity for a rotating palette to drive.',

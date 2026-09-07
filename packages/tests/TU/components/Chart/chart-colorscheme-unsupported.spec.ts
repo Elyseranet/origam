@@ -22,8 +22,8 @@
 // Per the #426 decision: neither wire a fake behaviour (nothing spec'd —
 // there's no "rotating palette on a 2-colour model" design) nor remove the
 // prop (breaking change) — document + warn once in dev builds instead
-// (`useChartUnsupportedProp` → `warnUnsupportedProp`, see
-// `chart-prop-warning.composable.spec.ts` for the mechanism itself).
+// (`useUnsupportedProp` → `warnUnsupportedProp`, see
+// `unsupportedProp.composable.spec.ts` for the mechanism itself).
 
 import { describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'

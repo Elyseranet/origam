@@ -156,7 +156,7 @@
 	import OrigamChartLegend from './OrigamChartLegend.vue'
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
-	import { useChartUnsupportedProp } from '../../composables/Chart/chart-prop-warning.composable'
+	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
@@ -240,13 +240,13 @@
 	 * comportement fictif : elles avertissent une fois, en dev, avec la
 	 * raison exacte. Meme traitement que `OrigamChartGauge`.
 	 ********************************************************/
-	useChartUnsupportedProp(
+	useUnsupportedProp(
 		'OrigamChartHoneycomb',
 		'categories',
 		'a honeycomb lays its cells out on a hex grid — there is no category axis to label.',
 		() => props.categories !== undefined
 	)
-	useChartUnsupportedProp(
+	useUnsupportedProp(
 		'OrigamChartHoneycomb',
 		'xAxisFormat',
 		'`labelFor` only ever applies `yAxisFormat`; a hex grid has no x axis.',

@@ -142,7 +142,7 @@
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
-	import { useChartUnsupportedProp } from '../../composables/Chart/chart-prop-warning.composable'
+	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
 	import { useLocale } from '../../composables/Commons/locale.composable'
@@ -213,7 +213,7 @@
 	 * comportement fictif : elles avertissent une fois, en dev, avec la
 	 * raison exacte. Meme traitement que `OrigamChartGauge`.
 	 ********************************************************/
-	useChartUnsupportedProp(
+	useUnsupportedProp(
 		'OrigamChartGauge',
 		'categories',
 		'a gauge reads a single value from the first series and draws no category axis.',
@@ -234,19 +234,19 @@
 	 * (#426): neither wiring a fake behaviour nor removing the prop —
 	 * warn instead.
 	 ********************************************************/
-	useChartUnsupportedProp(
+	useUnsupportedProp(
 		'OrigamChartGauge',
 		'showLegend',
 		'a gauge reads a single value from the first series and renders no legend markup at all.',
 		() => props.showLegend === true
 	)
-	useChartUnsupportedProp(
+	useUnsupportedProp(
 		'OrigamChartGauge',
 		'legendPosition',
 		'no legend is ever rendered on a gauge, so there is nothing to anchor.',
 		() => props.legendPosition !== undefined && props.legendPosition !== 'bottom'
 	)
-	useChartUnsupportedProp(
+	useUnsupportedProp(
 		'OrigamChartGauge',
 		'showTooltip',
 		'a gauge renders no per-point tooltip — the centre label already shows the current value.',

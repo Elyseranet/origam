@@ -1,4 +1,4 @@
-// #426 — `useChartUnsupportedProp`: dev-time warning for a chart prop that
+// #426 — `useUnsupportedProp`: dev-time warning for a chart prop that
 // is publicly exposed (inherited from `IChartBaseProps`) but has no
 // rendering effect on a particular chart type. First consumer: `colorScheme`
 // on OrigamChartBullet / OrigamChartCandlestick / OrigamChartHeatmap /
@@ -15,13 +15,13 @@ import { describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 
-import { useChartUnsupportedProp } from '@origam/composables/Chart/chart-prop-warning.composable'
+import { useUnsupportedProp } from '@origam/composables/Commons/unsupportedProp.composable'
 
 const FakeChartHost = defineComponent({
     name: 'FakeChartUnsupportedPropHost',
     props: {colorScheme: {type: Array, default: () => []}},
     setup (props) {
-        useChartUnsupportedProp(
+        useUnsupportedProp(
             'FakeChartUnsupportedPropHost',
             'colorScheme',
             'test reason — binary colour model',
@@ -35,7 +35,7 @@ const RerenderFakeChartHost = defineComponent({
     name: 'RerenderFakeChartUnsupportedPropHost',
     props: {colorScheme: {type: Array, default: () => []}},
     setup (props) {
-        useChartUnsupportedProp(
+        useUnsupportedProp(
             'RerenderFakeChartUnsupportedPropHost',
             'colorScheme',
             'test reason — rerender dedup',
@@ -49,7 +49,7 @@ const LazyFakeChartHost = defineComponent({
     name: 'LazyFakeChartUnsupportedPropHost',
     setup () {
         const scheme = ref<Array<string>>([])
-        useChartUnsupportedProp(
+        useUnsupportedProp(
             'LazyFakeChartUnsupportedPropHost',
             'colorScheme',
             'test reason — lazy',
@@ -59,7 +59,7 @@ const LazyFakeChartHost = defineComponent({
     }
 })
 
-describe('useChartUnsupportedProp', () => {
+describe('useUnsupportedProp', () => {
     it('does not warn when isPassed() is false', () => {
         const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
         mount(FakeChartHost, {props: {colorScheme: []}})

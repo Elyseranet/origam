@@ -167,7 +167,7 @@
 		type StyleValue
 	} from 'vue'
 
-	import { useChartUnsupportedProp } from '../../composables/Chart/chart-prop-warning.composable'
+	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
@@ -545,43 +545,43 @@
 	 * comportement fictif : elles avertissent une fois, en dev, avec la
 	 * raison exacte. Meme traitement que `OrigamChartGauge`.
 	 ********************************************************/
-	useChartUnsupportedProp(
+	useUnsupportedProp(
 		'OrigamChartSparkline',
 		'categories',
 		'a sparkline is a bare trend line: it draws no axis and no labels.',
 		() => props.categories !== undefined
 	)
-	useChartUnsupportedProp(
+	useUnsupportedProp(
 		'OrigamChartSparkline',
 		'animated',
 		'no animation is ever emitted — neither a CSS class nor an inline `animation` declaration.',
 		() => props.animated === true
 	)
-	useChartUnsupportedProp(
+	useUnsupportedProp(
 		'OrigamChartSparkline',
 		'animationDuration',
 		'nothing is animated, so there is no duration to apply.',
 		() => props.animationDuration !== undefined && props.animationDuration !== 600
 	)
-	useChartUnsupportedProp(
+	useUnsupportedProp(
 		'OrigamChartSparkline',
 		'aspectRatio',
 		'the root sizes itself from `width` / `height`; no `aspect-ratio` declaration is emitted.',
 		() => props.aspectRatio !== undefined
 	)
-	useChartUnsupportedProp(
+	useUnsupportedProp(
 		'OrigamChartSparkline',
 		'fontSize',
 		'a sparkline renders no text at all.',
 		() => props.fontSize !== undefined
 	)
-	useChartUnsupportedProp(
+	useUnsupportedProp(
 		'OrigamChartSparkline',
 		'fontWeight',
 		'a sparkline renders no text at all.',
 		() => props.fontWeight !== undefined
 	)
-	useChartUnsupportedProp(
+	useUnsupportedProp(
 		'OrigamChartSparkline',
 		'subtitle',
 		'a sparkline renders no header — neither title nor subtitle.',

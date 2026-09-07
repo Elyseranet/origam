@@ -7,9 +7,8 @@ import { warnUnsupportedProp } from '../../utils/Commons/color.util'
  *
  * @description
  * Avertit, une fois et en developpement seulement, qu'une prop declaree par un
- * composant n'a aucun effet sur lui. Generalisation de
- * `useChartUnsupportedProp`, qui rendait le meme service a la seule famille
- * Chart.
+ * composant n'a aucun effet sur lui. Sert tout le catalogue ; la famille Chart
+ * en fut le premier consommateur.
  *
  * @description
  * ⛔ Pourquoi avertir plutot que retirer. Ces props sont exposees dans les

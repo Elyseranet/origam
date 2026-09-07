@@ -211,7 +211,7 @@
 
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
-	import { useChartUnsupportedProp } from '../../composables/Chart/chart-prop-warning.composable'
+	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
@@ -305,13 +305,13 @@
 	 * comportement fictif : elles avertissent une fois, en dev, avec la
 	 * raison exacte. Meme traitement que `OrigamChartGauge`.
 	 ********************************************************/
-	useChartUnsupportedProp(
+	useUnsupportedProp(
 		'OrigamChartMap',
 		'categories',
 		'a geographic map positions its shapes by region id — there is no category axis.',
 		() => (props.categories?.length ?? 0) > 0
 	)
-	useChartUnsupportedProp(
+	useUnsupportedProp(
 		'OrigamChartMap',
 		'legendPosition',
 		'the legend gradient is placed by the fixed coordinates of `gradientRect`, which never read the anchor.',
@@ -377,7 +377,7 @@
 	}
 
 	/*********************************************************
-	 * useChartUnsupportedProp
+	 * useUnsupportedProp
 	 *
 	 * @description
 	 * ⛔ #426 — `colorScheme` is inherited from `IChartBaseProps` but has no
@@ -387,7 +387,7 @@
 	 * drive. See #426 decision: neither wiring a fake behaviour nor removing
 	 * the prop — warn instead.
 	 ********************************************************/
-	useChartUnsupportedProp(
+	useUnsupportedProp(
 		'OrigamChartMap',
 		'colorScheme',
 		'colour is a continuous gradient (colorRange, choropleth mode) or a single lineColor (flight-routes mode) — a rotating discrete palette does not apply to either.',

@@ -50,7 +50,7 @@ export interface IChartBaseProps
      * ⛔ #545 — has **no effect** on `OrigamChartGauge`: a gauge is a
      * single-value visualisation (only `series[0].data[0]` is read, extra
      * series are ignored) with no legend markup in its template at all.
-     * Passing it warns once in dev builds (see `useChartUnsupportedProp`)
+     * Passing it warns once in dev builds (see `useUnsupportedProp`)
      * instead of silently doing nothing — same treatment as `colorScheme`
      * on Bullet/Candlestick/Heatmap/Map (#426).
      */
@@ -89,7 +89,7 @@ export interface IChartBaseProps
      * binary bullish/bearish, or continuous gradient) with no
      * per-series identity axis for a rotating palette to drive.
      * Passing it on those four warns once in dev builds (see
-     * `useChartUnsupportedProp`) instead of silently doing nothing.
+     * `useUnsupportedProp`) instead of silently doing nothing.
      */
     colorScheme?: Array<TIntent | string>
     /**

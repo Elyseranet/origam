@@ -236,7 +236,7 @@
 
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
-	import { useChartUnsupportedProp } from '../../composables/Chart/chart-prop-warning.composable'
+	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useElevation } from '../../composables/Commons/elevation.composable'
@@ -317,7 +317,7 @@
 	 * comportement fictif : elles avertissent une fois, en dev, avec la
 	 * raison exacte. Meme traitement que `OrigamChartGauge`.
 	 ********************************************************/
-	useChartUnsupportedProp(
+	useUnsupportedProp(
 		'OrigamChartHeatmap',
 		'categories',
 		'a heatmap labels its axes from the cell coordinates carried by `series[].data`, never from a separate category list.',
@@ -359,7 +359,7 @@
 	}
 
 	/*********************************************************
-	 * useChartUnsupportedProp
+	 * useUnsupportedProp
 	 *
 	 * @description
 	 * ⛔ #426 — `colorScheme` is inherited from `IChartBaseProps` but has no
@@ -368,7 +368,7 @@
 	 * #426 decision: neither wiring a fake behaviour nor removing the prop —
 	 * warn instead.
 	 ********************************************************/
-	useChartUnsupportedProp(
+	useUnsupportedProp(
 		'OrigamChartHeatmap',
 		'colorScheme',
 		'cell colour is a continuous gradient (colorRange) — a rotating discrete palette does not apply to a continuous scale.',

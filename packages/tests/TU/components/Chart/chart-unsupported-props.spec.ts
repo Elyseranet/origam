@@ -9,7 +9,7 @@
 //
 // C'est le troisieme qui a ete retenu (decision utilisateur, 2026-09-06),
 // sur le modele deja en place dans `OrigamChartGauge` : la prop reste
-// declaree, et `useChartUnsupportedProp` emet UN avertissement de
+// declaree, et `useUnsupportedProp` emet UN avertissement de
 // developpement portant la raison exacte.
 //
 // ## Ce que ce spec verifie

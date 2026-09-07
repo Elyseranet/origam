@@ -2211,9 +2211,8 @@ export function useUnsupportedProp ( component: string, prop: string, reason: st
 ```
 
 Avertit, une fois et en developpement seulement, qu'une prop declaree par un
-composant n'a aucun effet sur lui. Generalisation de
-`useChartUnsupportedProp`, qui rendait le meme service a la seule famille
-Chart.
+composant n'a aucun effet sur lui. Sert tout le catalogue ; la famille Chart
+en fut le premier consommateur.
 
 ⛔ Pourquoi avertir plutot que retirer. Ces props sont exposees dans les
 stories, parfois documentees : les supprimer casserait la story et le type
@@ -2234,7 +2233,7 @@ morte, ce qui est exact — elle est desormais surveillee, pas ignoree.
 
 **Source** : `packages/ds/src/composables/Commons/unsupportedProp.composable.ts`
 
-**Consommateurs** (7) : `components/Audio/OrigamAudio.vue`, `components/DatePicker/OrigamDatePickerControls.vue`, `components/Grids/OrigamRow.vue`, `components/List/OrigamListChildren.vue`, `components/Messages/OrigamMessages.vue`, `components/Toolbar/OrigamToolbar.vue`, `components/Video/OrigamVideo.vue`
+**Consommateurs** (21) : `components/Audio/OrigamAudio.vue`, `components/Chart/OrigamChartBullet.vue`, `components/Chart/OrigamChartCandlestick.vue`, `components/Chart/OrigamChartGauge.vue`, `components/Chart/OrigamChartHeatmap.vue`, `components/Chart/OrigamChartHoneycomb.vue`, `components/Chart/OrigamChartMap.vue`, `components/Chart/OrigamChartPictorial.vue`, …
 
 ## `useValidation`
 

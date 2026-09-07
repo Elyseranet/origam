@@ -301,7 +301,7 @@
 	import OrigamChartLegend from './OrigamChartLegend.vue'
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
-	import { useChartUnsupportedProp } from '../../composables/Chart/chart-prop-warning.composable'
+	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
 	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
@@ -496,7 +496,7 @@
 	 * une prop cassee vue du consommateur. Il s annonce donc, une fois, en
 	 * dev — meme traitement que les props inertes de cette famille.
 	 ********************************************************/
-	useChartUnsupportedProp(
+	useUnsupportedProp(
 		'OrigamChartPictorial',
 		'iconsPerUnit',
 		`the column is capped at ${ MAX_SLOTS } icons: past that the component recomputes its own unit (maxValue / ${ MAX_SLOTS }) to keep the column readable, and the requested value is overridden.`,
