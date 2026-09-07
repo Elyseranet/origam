@@ -37,25 +37,40 @@ selected. The icon is driven by `filterIcon` (default: checkmark).
 </template>
 ```
 
-## Pill
+## Shape — `pill` and `label`
 
-`pill` removes the inner horizontal padding and makes the chip fully round.
+**A chip is fully round by default.** The base rule is
+`border-radius: var(--origam-chip---border-radius, 9999px)`, so
+`<OrigamChip text="…"/>` is already a pill and needs no prop.
 
-```vue
-<template>
-    <OrigamChip pill text="Pill chip" />
-</template>
-```
-
-## Label
-
-`label` switches to a rectangular chip (border-radius: 4px) — useful for tags.
+`label` is the **opt-out**: it switches to a rectangular chip
+(`var(--origam-chip---border-radius-label, 4px)`) — useful for tags.
 
 ```vue
 <template>
     <OrigamChip label text="Tag" />
 </template>
 ```
+
+`pill` is the **explicit opt-in**: it restores the full radius over anything
+that squared it. On a chip that sets neither, `pill` changes nothing visible —
+it is only load-bearing when it has to win against `label` or against a
+`rounded` token.
+
+```vue
+<template>
+    <!-- Identical rendering: round is the default. -->
+    <OrigamChip text="Pill chip" />
+    <OrigamChip pill text="Pill chip" />
+
+    <!-- Here `pill` matters: it wins over `label`. -->
+    <OrigamChip pill label text="Round despite label" />
+</template>
+```
+
+⛔ `pill` does **not** remove the chip's inner horizontal padding. Earlier
+revisions of this page said it did; no rule ever implemented that, and the
+padding stays governed by the `--origam-chip---padding-{size}` tokens.
 
 ## Draggable
 
@@ -108,7 +123,75 @@ Pass any `TIntent` value via `color` or `bgColor`.
 </template>
 ```
 
-## Props — Typography
+## Props
+
+`IChipProps` layers eleven own props on top of sixteen Commons interfaces.
+The tables below cover the whole surface.
+
+### Content
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `text` | `string` | — | Chip body. Overridden by the `#default` slot. |
+| `tag` | `string` | `'span'` | Root element. Note: a purely clickable chip renders a real `<button>` regardless (#530). |
+| `prependIcon` / `appendIcon` | `TIcon` | — | Icons on either side of the body (`IAdjacentProps`). |
+| `prependAvatar` / `appendAvatar` | `string` | — | Avatar image URLs on either side (`IAdjacentProps`). |
+
+### Shape
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `pill` | `boolean` | `false` | Explicit full-radius opt-in. Round is already the default, so this only matters against `label` or a `rounded` token — see [Shape](#shape-pill-and-label). |
+| `label` | `boolean` | `false` | Rectangular chip (`--origam-chip---border-radius-label`, `4px`). |
+| `rounded` (+ per-corner) | `TRounded` | — | Radius token (`IRoundedProps`). Emits a utility class, which sits below the component's scoped rules in the cascade. |
+| `border` (+ `borderColor`, `borderStyle`, per-edge) | `IBorderProps` | — | Border surface. |
+| `elevation` | `TElevation` | — | Shadow token. |
+
+### Colour
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `color` | `TColor` | — | Foreground colour — intent token or raw CSS. |
+| `bgColor` | `TColor` | — | Background colour. |
+
+### Sizing
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `size` | `TSize \| number` | `'default'` | `x-small` → `x-large`. Each rung declares the chip's height, padding and font-size, so this default is load-bearing — without it no `--size-*` class is emitted and the chip collapses. |
+| `density` | `TDensity` | — | Compacts the size rung. |
+| `padding*` / `margin*` | `IPaddingProps` / `IMarginProps` | — | Spacing surface. |
+
+### Behaviour
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `modelValue` | `boolean` | `true` | Visibility. Set to `false` by the close button. |
+| `closable` | `boolean` | `false` | Renders the close button. |
+| `closeIcon` | `TIcon` | `'mdi:mdi-close-circle-outline'` | Icon inside the close button. |
+| `closeLabel` | `string` | `'origam.close'` | i18n **key** for the close button's accessible name — not a literal string. |
+| `filter` | `boolean` | `false` | Renders the selection check when the chip is selected in a group. |
+| `filterIcon` | `TIcon` | `'mdi:mdi-check'` | Icon used by `filter`. |
+| `draggable` | `boolean` | — | Native drag on the root. |
+| `link` | `boolean` | — | Forces clickable behaviour without an `href` / `to`. `isClickable` is `!disabled && (belongs to a group \|\| link \|\| has a router target)`. |
+| `href` / `to` / `replace` / `exact` | `ILinkProps` | — | Router / anchor target. A chip with any of these becomes clickable. |
+| `value` / `disabled` / `selectedClass` | `IGroupItemProps` | — | Group membership inside `<OrigamChipGroup>`. |
+| `ripple` | `boolean \| { class: string }` | — | Ripple on activation. |
+
+### State effects
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `hover` (+ `hoverClass`) | `boolean \| IStateEffectConfig` | — | Forced / configured hover appearance (`IHoverProps`). |
+| `active` (+ `activeClass`) | `boolean \| IStateEffectConfig` | — | Decorative forced-highlight state (`IActiveProps`). Unrelated to `modelValue` and to group selection. |
+
+### Host
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `id` / `class` / `style` | `ICommonsComponentProps` | — | Host identity and style passthrough. |
+
+### Typography
 
 | Prop         | Type        | Default | Description                                                                          |
 |--------------|-------------|---------|--------------------------------------------------------------------------------------|
