@@ -40,11 +40,24 @@ if you want the skeleton body.
 | `rowProps` | `TDataTableRow<any>` | — | Props applied to every data row. Either a plain object, or a function receiving `{ index, item, internalItem }` and returning the props for that row. |
 | `cellProps` | `TDataTableCell<any>` | — | Props applied to every cell, with the same object-or-function shape. |
 | `mobileBreakpoint` | `number \| TBreakpoint` | — | Width under which rows switch to their mobile layout. |
-| `color` | `TColor` | — | Inherited from `ILoaderProps`; scopes the loader's intent. |
-| `tag` | `string` | — | Inherited from `ILoaderProps`. The body renders bare `<tr>`s, so this has no root to apply to. |
-| `id` | `string` | — | Root `id`. |
-| `class` | `string \| Array<string> \| object` | — | Merged into the root class list. |
-| `style` | `string \| Array<string> \| object \| StyleValue` | — | Merged into the root style. |
+| `color` | `TColor` | — | Intent applied to the **loading row** and the **empty row** — the only two rows this component paints itself. Data rows are rendered by `OrigamDataTableRow`; colour them through `rowProps`. |
+| `id` | `string` | — | Prefix for the generated row ids (`{id}-row-{index}`, `{id}-skeleton-row-{index}`). Not applied to a wrapper — there is none. |
+
+### Props this component deliberately does NOT accept
+
+`OrigamDataTableRows` renders a **fragment** — up to five skeleton `<tr>`s, or
+one row per item — so there is no single root for Vue to fall attributes
+through to. Three props inherited from `ILoaderProps` were removed from the
+surface in the same change that wired `color`:
+
+| Prop | Why it is gone |
+|---|---|
+| `tag` | The content model of `<tbody>` admits only `<tr>`. There was never a tag to substitute. |
+| `class` | Declaring a prop **removes it from `$attrs`**, so a consumer's `class="x"` was swallowed with no warning at all. Removed, it now either falls through (single-row branches) or triggers Vue's *"Extraneous non-props attributes"* warning (multi-row branches). Loud beats silent. |
+| `style` | Same reasoning as `class`. |
+
+For per-row classes and styles, use `rowProps` / `cellProps`, which are
+applied to the elements that actually exist.
 
 ## Emits
 

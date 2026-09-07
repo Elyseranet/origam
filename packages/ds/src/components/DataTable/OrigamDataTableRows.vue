@@ -22,6 +22,8 @@
 					:id="id"
 					key="loading"
 					class="origam-data-table-rows origam-data-table-rows--loading"
+					:class="textColorClasses"
+					:style="textColorStyles"
 			>
 				<td :colspan="columns.length">
 					<slot name="loading">
@@ -37,6 +39,8 @@
 				:id="id"
 				key="no-data"
 				class="origam-data-table-rows origam-data-table-rows--no-data"
+				:class="textColorClasses"
+				:style="textColorStyles"
 		>
 			<td :colspan="columns.length">
 				<slot name="no-data">
@@ -103,6 +107,7 @@
 	import { usePagination } from '../../composables/DataTable/pagination.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useSelection } from '../../composables/DataTable/select.composable'
+	import { useTextColor } from '../../composables/Commons/textColor.composable'
 
 	import type { IDataTableGroup, IDataTableGroupHeaderSlot } from '../../interfaces/DataTable/group.interface'
 	import type { IDataTableItemBaseSlot, IDataTableItemSlot } from '../../interfaces/DataTable/items.interface'
@@ -144,6 +149,25 @@
 	 ********************************************************/
 
 	const {loaderConfig} = useLoader(props, LOADER_KIND.LINE)
+
+	/*********************************************************
+	 * Couleur des lignes propres au composant (#550)
+	 *
+	 * @description
+	 * `color` etait declaree (heritee d'`ILoaderProps`) et lue nulle part,
+	 * alors que la story expose un controle de couleur qui la traverse.
+	 *
+	 * @description
+	 * Elle peint desormais les deux seules lignes que ce composant rend
+	 * lui-meme : la ligne de chargement et la ligne « aucune donnee ». Les
+	 * lignes d'items sont rendues par `<origam-data-table-row>` et se
+	 * colorent via `rowProps`.
+	 *
+	 * @description
+	 * `useTextColor` lit la prop dans un `computed` : la valeur ecrite par
+	 * le resolveur de theme en `beforeCreate` (ADR-005) reste visible.
+	 ********************************************************/
+	const {textColorClasses, textColorStyles} = useTextColor(props, 'color')
 
 	const {columns} = useHeaders()
 	const {expandOnClick, toggleExpand, isExpanded} = useExpanded()

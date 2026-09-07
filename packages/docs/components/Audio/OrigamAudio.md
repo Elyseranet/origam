@@ -116,7 +116,7 @@ are all unset (and no `#metadata` slot is provided), only the cover
 | `border`        | `IBorderProps['border']`                                         | `undefined`   | Picks a border token.                                                                                                                                  |
 | `padding`       | `IPaddingProps['padding']`                                       | `undefined`   | Padding tokens (axis or per-side).                                                                                                                     |
 | `margin`        | `IMarginProps['margin']`                                         | `undefined`   | Margin tokens (axis or per-side).                                                                                                                      |
-| `tag`           | `string`                                                         | `'article'`   | `IAudioProps` extends `ITagProps`. The root is always rendered as `<article>` for HTML semantics; the prop is preserved for typed consumers.            |
+| `tag`           | `string`                                                         | `'article'`   | Element rendered as the root. Defaults to `<article>` — a player with its own cover, title and transport is self-contained content. Override it only when the surrounding document demands another element; keep an element that may contain flow content.            |
 
 ### Typography props (`ITypographyProps`) — per-surface
 
