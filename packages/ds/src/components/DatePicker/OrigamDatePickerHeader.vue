@@ -90,6 +90,7 @@
 	import { useDensity } from '../../composables/Commons/density.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTextColor } from '../../composables/Commons/textColor.composable'
 
 	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
 
@@ -127,6 +128,24 @@
 	 ********************************************************/
 
 	const {densityClasses} = useDensity(props)
+
+	/*********************************************************
+	 * Color
+	 *
+	 * @description
+	 * ⛔ #550 (critere C1) — `color` etait declaree (`IColorProps`) et
+	 * exposee dans la story, mais lue nulle part : la prop ne peignait
+	 * rien. Elle est desormais servie par le canal transversal standard
+	 * (`useTextColor`), comme `OrigamMessages`.
+	 * @description
+	 * Le canal racine SUFFIT ici, contrairement a `OrigamDatePickerMonth` :
+	 * ni `.origam-date-picker-header`, ni `__content`, ni `__prepend` /
+	 * `__append` ne declarent de `color`, donc la valeur posee sur la
+	 * racine descend par heritage jusqu'au texte et aux icones (qui
+	 * peignent en `currentColor`). Aucune regle scopee a battre.
+	 ********************************************************/
+
+	const {textColorClasses, textColorStyles} = useTextColor(toRef(props, 'color'))
 
 	/*********************************************************
 	 * Icon
@@ -192,6 +211,7 @@
 
 	const datePickerHeaderStyles = computed(() => {
 		return [
+			textColorStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -199,6 +219,7 @@
 		return [
 			'origam-date-picker-header',
 			densityClasses.value,
+			textColorClasses.value,
 			props.class
 		]
 	})
