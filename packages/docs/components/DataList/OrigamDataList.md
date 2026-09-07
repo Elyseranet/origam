@@ -8,6 +8,43 @@
 | `"avatar"` (default) | Stacked title + multi-row text items, optionally with prepend/append icons or avatars | `IDataItem`           |
 | `"kv"`         | PDF-aligned key / value rows — label on the left, value on the right                       | `IDataListKVItem`     |
 
+## Props
+
+### Own props
+
+| Prop    | Type                                                              | Default    | Description                                                       |
+|---------|-------------------------------------------------------------------|------------|-------------------------------------------------------------------|
+| `mode`  | `TDataListMode` — `'avatar' \| 'kv'`                              | `'avatar'` | Selects the layout. `'kv'` switches to the key/value rows.         |
+| `items` | `IDataItem[] \| Record<string, IDataItem> \| IDataListKVItem[] \| Record<string, IDataListKVItem>` | — | Source list. Shape is gated by `mode`. Keyed objects are flattened with `Object.values`. |
+
+### Adjacent props (`IAdjacentProps`) — forwarded to each `OrigamDataTitle`
+
+| Prop            | Type      | Description                        |
+|-----------------|-----------|------------------------------------|
+| `prependIcon`   | `TIcon`   | Icon before the title              |
+| `appendIcon`    | `TIcon`   | Icon after the title               |
+| `prependAvatar` | `string`  | Avatar image before the title      |
+| `appendAvatar`  | `string`  | Avatar image after the title       |
+
+> These four are only read in **avatar** mode — KV rows render no title
+> component, so they have no effect when `mode="kv"`.
+
+### Transversal props
+
+All of these are consumed on the root `<dl>` through the shared composables.
+
+| Group      | Props                                                                                                                             | Composable            |
+|------------|-----------------------------------------------------------------------------------------------------------------------------------|-----------------------|
+| Color      | `color`, `bgColor`                                                                                                                | `useBothColor`        |
+| Density    | `density`                                                                                                                          | `useDensity`          |
+| Elevation  | `elevation`                                                                                                                        | `useElevation`        |
+| Rounded    | `rounded`, `roundedTopLeft`, `roundedTopRight`, `roundedBottomLeft`, `roundedBottomRight`                                          | `useRounded`          |
+| Border     | `border`, `borderTop`, `borderRight`, `borderBottom`, `borderLeft`, `borderBlock`, `borderInline`, `borderColor`, `borderStyle`, `borderTopColor`, `borderRightColor`, `borderBottomColor`, `borderLeftColor` | `useBorder` |
+| Padding    | `padding`, `paddingTop`, `paddingRight`, `paddingBottom`, `paddingLeft`, `paddingBlock`, `paddingInline`                           | `usePadding`          |
+| Margin     | `margin`, `marginTop`, `marginRight`, `marginBottom`, `marginLeft`, `marginBlock`, `marginInline`                                  | `useMargin`           |
+| Typography | `fontSize`, `fontWeight`, `lineHeight`, `letterSpacing` — see [Typography props](#typography-props)                                | `useTypography` (×2)  |
+| Commons    | `id`, `class`, `style`                                                                                                             | —                     |
+
 ## Avatar mode (default — back-compatible)
 
 ```vue
@@ -146,24 +183,55 @@ elements where the matching SCSS rules consume them.
 
 ## Design tokens
 
-### Shared (avatar + kv)
+Every variable below is read by `OrigamDataList.vue`'s own scoped SCSS and
+declared in `packages/ds/src/assets/css/tokens/light.css` (and its `dark.css`
+twin). Overriding one at the document root — or on any ancestor — re-skins
+every list.
 
-| Token                                  | Description       |
-|----------------------------------------|-------------------|
-| `--origam-data-list---display`         | Display mode      |
-| `--origam-data-list---overflow`        | Overflow rule     |
-| `--origam-data-list---gap`             | Gap between items |
-| `--origam-data-list__title---font-size`| Title font size   |
-| `--origam-data-list__text---font-size` | Text font size    |
+### Root (`<dl>`, both modes)
 
-### KV-specific
+| Token                                     | Description                    |
+|-------------------------------------------|--------------------------------|
+| `--origam-data-list---display`            | Display mode of the `<dl>`     |
+| `--origam-data-list---overflow`           | Overflow rule                  |
+| `--origam-data-list---gap`                | Gap between items              |
+| `--origam-data-list---padding`            | Padding of the `<dl>`          |
+| `--origam-data-list---background-color`   | Background of the `<dl>`       |
+| `--origam-data-list---color`              | Inherited text color           |
+| `--origam-data-list---border-radius`      | Corner radius                  |
 
-| Token                                       | Description                          |
-|---------------------------------------------|--------------------------------------|
-| `--origam-data-list--kv---row-padding-block`| Vertical padding per row             |
-| `--origam-data-list--kv---row-divider`      | Color of the 1px row divider         |
-| `--origam-data-list--kv---key-width`        | Width reserved for the key column    |
-| `--origam-data-list--kv---key-color`        | Key (label) text color               |
-| `--origam-data-list--kv---value-color`      | Value text color                     |
-| `--origam-data-list--kv---gap-key-value`    | Column gap between key and value     |
-| `--origam-data-list--kv---value-inline-gap` | Gap between inline value items (chips, …) |
+### Avatar mode — `__title` / `__text`
+
+| Token                                        | Description            |
+|----------------------------------------------|------------------------|
+| `--origam-data-list__title---font-size`      | Title font size        |
+| `--origam-data-list__title---font-weight`    | Title font weight      |
+| `--origam-data-list__title---line-height`    | Title line height      |
+| `--origam-data-list__title---letter-spacing` | Title letter spacing   |
+| `--origam-data-list__title---color`          | Title color            |
+| `--origam-data-list__text---font-size`       | Text row font size     |
+| `--origam-data-list__text---line-height`     | Text row line height   |
+| `--origam-data-list__text---letter-spacing`  | Text row letter spacing|
+| `--origam-data-list__text---color`           | Text row color         |
+
+### KV mode
+
+The separator is `__kv` (BEM child), **not** `--kv`: `__kv` is the block's
+child element, whereas `--` would designate a state variant. Copying a
+`--origam-data-list--kv---*` spelling has no effect — the SCSS never reads it.
+
+| Token                                        | Description                          |
+|----------------------------------------------|--------------------------------------|
+| `--origam-data-list__kv---display`           | Display of the `--mode-kv` root      |
+| `--origam-data-list__kv---row-padding-block` | Vertical padding per row             |
+| `--origam-data-list__kv---row-divider`       | Color of the 1px row divider         |
+| `--origam-data-list__kv---key-width`         | Width reserved for the key column    |
+| `--origam-data-list__kv---key-color`         | Key (label) text color               |
+| `--origam-data-list__kv---key-font-size`     | Key font size                        |
+| `--origam-data-list__kv---key-font-weight`   | Key font weight                      |
+| `--origam-data-list__kv---key-line-height`   | Key line height                      |
+| `--origam-data-list__kv---value-color`       | Value text color                     |
+| `--origam-data-list__kv---value-font-size`   | Value font size                      |
+| `--origam-data-list__kv---value-line-height` | Value line height                    |
+| `--origam-data-list__kv---gap-key-value`     | Column gap between key and value     |
+| `--origam-data-list__kv---value-inline-gap`  | Gap between inline value items (chips, …) |

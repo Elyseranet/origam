@@ -55,8 +55,18 @@
 
 	const {isSelected, select, next, prev, selected} = useGroup(props, ORIGAM_ITEM_GROUP_KEY)
 
-	// Push the selectedClass down to every descendant `<origam-item>` as
-	// DEFAULTS — items that pass their own props still win.
+	// ⛔ INERT as written — kept only because removing the provider would
+	// change the rendered DOM. The map is keyed `'origam-item'`, but the
+	// theme/defaults resolver identifies the child by ITS OWN kebab name,
+	// `origam-item-group-item` (`toKebabCase(vm.aliasName ?? vm.name ??
+	// vm.__name)`, getCurrentInstance.util.ts:38). The keys never match, so
+	// the entry is skipped before any prop is inspected and #515's
+	// unsupported-prop warning never fires either. `selectedClass` still
+	// reaches every item — through the group INJECTION, in `useGroupItem`
+	// (`group.selectedClass.value ? … : props.selectedClass`), which is the
+	// only path that runs. Re-keying this map is NOT a free fix: it would
+	// let an explicitly-emptied group `selected-class=""` overwrite an
+	// item's own prop, breaking the documented per-item fallback.
 	// Forward ONLY what the consumer actually passed — see #263. `selectedClass`
 	// carries a `withDefaults` value today, so nothing junk leaks through in
 	// practice, but the guard keeps every forwarder on one single shape.
