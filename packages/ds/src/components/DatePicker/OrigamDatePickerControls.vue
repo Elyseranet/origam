@@ -108,7 +108,7 @@
 		'OrigamDatePickerControls',
 		'viewMode',
 		'the displayed mode comes from the picker through `mode`, never from this prop.',
-		() => props.viewMode !== undefined
+		() => props.viewMode !== DATE_MODE.MONTH
 	)
 
 	const emits = defineEmits<IDatePickerControlsEmits>()

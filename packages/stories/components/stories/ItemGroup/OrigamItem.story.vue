@@ -1,7 +1,7 @@
 <template>
 	<Story
 			group="components"
-			title="ItemGroup/OrigamItem"
+			title="ItemGroup/OrigamItemGroupItem"
 	>
 
 		<Variant
@@ -103,6 +103,47 @@
 						<li v-for="(l, i) in state.log" :key="i">{{ l }}</li>
 					</ul>
 					<p v-else style="margin: 8px 0 0; font-size: 0.75rem; color: var(--origam-color__text---secondary);">Click a card to see events.</p>
+				</div>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Events - group:selected"
+				:init-state="() => useStoryInitState<{ log: string[] }>({ log: [] })"
+		>
+			<template #default="{ state }">
+				<div style="padding: 24px;">
+					<origam-item-group
+							v-model="groupSelectedModel"
+							data-cy="item-group-selected-group"
+					>
+						<div style="display: flex; gap: 12px;">
+							<origam-item-group-item
+									v-for="opt in plans"
+									:key="opt.value"
+									:value="opt.value"
+									@group:selected="(v: { value: boolean }) => {
+										state.log = [`group:selected (${opt.value}) → ${JSON.stringify(v)}`, ...state.log].slice(0, 6)
+										logEvent('group:selected', v)
+									}"
+							>
+								<template #default="{ isSelected, toggle }">
+									<button
+											:class="['demo-card', { 'demo-card--active': isSelected }]"
+											:aria-pressed="isSelected"
+											@click="toggle"
+											:data-cy="`item-group-selected-${opt.value}`"
+									>
+										<div class="demo-card__title">{{ opt.title }}</div>
+									</button>
+								</template>
+							</origam-item-group-item>
+						</div>
+					</origam-item-group>
+					<ul v-if="state.log.length" style="font-family: monospace; font-size: 0.8rem; margin: 12px 0 0; padding-left: 16px;">
+						<li v-for="(l, i) in state.log" :key="i">{{ l }}</li>
+					</ul>
+					<p v-else style="margin: 8px 0 0; font-size: 0.75rem; color: var(--origam-color__text---secondary);">Click a card — each item logs its own selection flip.</p>
 				</div>
 			</template>
 		</Variant>
@@ -245,6 +286,7 @@
 
 	const functionalModel = ref<any>(undefined)
 	const emitModel = ref<any>(undefined)
+	const groupSelectedModel = ref<any>(undefined)
 	const slotModel = ref<any>(undefined)
 	const playgroundModel = ref<any>('pro')
 	const tilesModel = ref<any>([])
@@ -294,4 +336,4 @@
 .demo-card__hint  { font-size: 0.75rem; color: var(--origam-color__text---secondary); }
 </style>
 
-<docs lang="md" src="@docs/components/ItemGroup/OrigamItem.md"/>
+<docs lang="md" src="@docs/components/ItemGroup/OrigamItemGroupItem.md"/>
