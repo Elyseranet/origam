@@ -1,9 +1,10 @@
 # OrigamSystemBar
 
 `<OrigamSystemBar>` is the OS-style status bar that sits above the
-application's `<OrigamAppBar>`. It registers itself as a top-positioned
-layout item with the surrounding `<OrigamLayout>` so that
-`<OrigamMain>` and other items push down by its height.
+application's `<OrigamAppBar>`. It registers itself as a layout item with
+the surrounding `<OrigamLayout>` so that `<OrigamMain>` and other items
+give up room equal to its height — docked to the top by default, to any
+other edge via `location`.
 
 Two heights are supported out of the box:
 
@@ -70,10 +71,16 @@ shells.
 ## Layout placement
 
 `<OrigamSystemBar>` is layout-aware. It uses the standard
-`name` / `order` / `absolute` triple from `ILayoutItemProps`:
+`name` / `order` / `location` / `absolute` quadruple from
+`ILayoutItemProps`:
 
 - `name` — unique id used by the layout machinery.
 - `order` — relative order against siblings (lower = closer to the edge).
+- `location` (default `'top'`) — which edge of the `<OrigamLayout>` the
+  bar docks against: `'top'` · `'bottom'` · `'left'` · `'right'`. It
+  drives the anchor, the `calc()` height/width, and how much room
+  sibling regions give up. `'bottom'` is the desktop status-bar
+  placement.
 - `absolute` — opt out of pushing siblings; the bar then floats over
   the main slot.
 
@@ -83,6 +90,7 @@ shells.
         <OrigamSystemBar name="status" order="0" />
         <OrigamAppBar    name="app"    order="1" />
         <OrigamMain>…</OrigamMain>
+        <OrigamSystemBar name="footer" order="0" location="bottom" />
     </OrigamLayout>
 </template>
 ```
@@ -110,6 +118,15 @@ interface ISystemBarProps extends ICommonsComponentProps, ITagProps,
     window?: boolean
 }
 ```
+
+### Layout props (`ILayoutItemProps`)
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `name` | `string` | — | Unique id used by the layout machinery. |
+| `order` | `string \| number` | `0` | Relative order against siblings (lower = closer to the edge). |
+| `location` | `TDirectionBoth` | `'top'` | Edge of the `<OrigamLayout>` the bar docks against (`top` · `bottom` · `left` · `right`) — see [Layout placement](#layout-placement). |
+| `absolute` | `boolean` | — | Float over the main slot instead of pushing siblings. |
 
 ### Typography props
 

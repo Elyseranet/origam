@@ -57,6 +57,26 @@ the messages appear without animation on first render.
 </template>
 ```
 
+## Elevation
+
+`elevation` (from `IElevationProps`) drops a shadow under the message
+block. It accepts the origam rungs (`none` · `xs` · `sm` · `md` · `lg` ·
+`xl` · `2xl` · `3xl`), a Material level (`0`…`24`, mapped onto the same
+ladder), or a free-form `box-shadow` string passed through verbatim.
+
+The component emits both channels: the `origam-messages--elevated` state
+class plus the `.origam--shadow-{rung}` utility when the rung has one,
+and the `box-shadow: var(--origam-shadow---{rung})` declaration that
+actually paints.
+
+```vue
+<template>
+    <OrigamMessages elevation="md" :messages="['Saved.']" />
+    <OrigamMessages :elevation="8" :messages="['Saved.']" />
+    <OrigamMessages elevation="0 4px 12px rgba(0,0,0,.24)" :messages="['Saved.']" />
+</template>
+```
+
 ## Slots
 
 | Slot      | Scope              | Description                              |

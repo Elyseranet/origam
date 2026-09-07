@@ -1,11 +1,7 @@
 [
-    "OrigamBottomNav.location",
     "OrigamCard.loadingText",
     "OrigamExpansionPanelContent.loadingText",
     "OrigamExpansionPanels.eager",
     "OrigamExpansionPanels.loadingText",
-    "OrigamInput.label",
-    "OrigamMessages.elevation",
-    "OrigamSystemBar.location",
-    "OrigamTabs.bgColor"
+    "OrigamInput.label"
 ]

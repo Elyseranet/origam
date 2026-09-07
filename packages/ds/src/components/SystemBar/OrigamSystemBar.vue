@@ -14,7 +14,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, shallowRef, StyleValue, toRef } from "vue"
+	import { computed, StyleValue, toRef } from "vue"
 	import { useBorder } from '../../composables/Commons/border.composable'
 	import { useBothColor } from '../../composables/Commons/bothColor.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
@@ -28,6 +28,8 @@
 
 	import vContrast from '../../directives/Contrast/contrast.directive'
 
+	import { BLOCK, INLINE } from '../../enums/Commons/anchor.enum'
+
 	import type { ICommonsComponentSlots } from '../../interfaces/Commons/commons.interface'
 	import type { ISystemBarEmits, ISystemBarProps } from '../../interfaces/SystemBar/system-bar.interface'
 
@@ -38,7 +40,8 @@
 	 * Props with defaults and filterProps utility.
 	 ********************************************************/
 	const props = withDefaults(defineProps<ISystemBarProps>(), {
-		tag: 'div'
+		tag: 'div',
+		location: BLOCK.TOP
 	})
 
 	const {filterProps} = useProps<ISystemBarProps>(props)
@@ -94,8 +97,27 @@
 	 * stays undefined so no inline height is emitted and the CSS var /
 	 * theme resolves the visual height; `layoutSize` still carries the
 	 * JS default (24 / 32) for sibling offset math, unchanged.
+	 *
+	 * @description
+	 * #550 — sur un ancrage HORIZONTAL (`location="left"` / `"right"`),
+	 * `useCreateLayout` inverse les roles : c'est `width` qu'il derive de
+	 * `elementSize`, et `height` qui devient `calc(100% - top - bottom)`.
+	 * Avec `elementSize` a `undefined`, aucune largeur n'etait ecrite et la
+	 * regle scopee `.origam-system-bar { width: var(--origam-system-bar---
+	 * width, 100%) }` reprenait la main : la barre occupait TOUTE la largeur
+	 * tout en n'ayant reserve que son epaisseur aux freres. Mesure Playwright
+	 * (Chromium, Histoire statique) avant correctif : `left` donnait
+	 * height 176 -> OK mais width 594 (inchangee) au lieu de 24.
+	 *
+	 * @description
+	 * Forcer la valeur ici ne contredit pas #440-3, dont l'objet est de
+	 * laisser le TOKEN resoudre la HAUTEUR sur un ancrage vertical : aucune
+	 * variable ne porte l'epaisseur horizontale de la barre
+	 * (`--origam-system-bar---width` vaut `100%`, c'est une largeur de
+	 * remplissage, pas une epaisseur). Le cas vertical est inchange.
 	 ********************************************************/
-	const explicitElementSize = computed(() => props.height !== undefined ? height.value : undefined)
+	const isHorizontalDock = computed(() => props.location === INLINE.LEFT || props.location === INLINE.RIGHT)
+	const explicitElementSize = computed(() => (props.height !== undefined || isHorizontalDock.value) ? height.value : undefined)
 	/*********************************************************
 	 * ⛔ `props.name` est lu EAGERLY ici, et c'est VOULU (ADR-005).
 	 *
@@ -112,10 +134,30 @@
 	 * a nommer un element de layout. L'exception est actee dans
 	 * `scripts/guards/lib/setup-reads.exceptions.mjs`, avec sa raison.
 	 ********************************************************/
+	/*********************************************************
+	 * position — `location`, plus l'echelon du layout
+	 *
+	 * @description
+	 * #550 (critere C1) — `location` etait DECLAREE (via `ILayoutItemProps`)
+	 * et jamais lue : le cote d'accroche etait fige a `shallowRef('top')`, si
+	 * bien que `<origam-system-bar location="bottom">` restait en haut sans
+	 * le moindre signal. `useCreateLayout` s'en sert pour tout : l'ancre
+	 * (`{[position]: 0}`), le sens de la translation d'entree/sortie, le
+	 * `height`/`width` en `calc()` et le decalage des freres. Cablee comme
+	 * sur `OrigamAppBar` (`position: toRef(props, 'location')`), avec
+	 * `BLOCK.TOP` en defaut — le comportement actuel a l'identique pour tout
+	 * consommateur qui ne passe rien.
+	 *
+	 * @description
+	 * `toRef` (et non `props.location` lu ici) : ADR-005, le resolveur de
+	 * props de theme ecrit dans `beforeCreate`, APRES `setup()`. Une lecture
+	 * eager figerait la valeur avant le theme ; `toRef` la differe a chaque
+	 * acces.
+	 ********************************************************/
 	const {layoutItemStyles} = useLayoutItem({
 		id: props.name,
 		order: computed(() => parseInt(String(props.order ?? 0), 10)),
-		position: shallowRef('top'),
+		position: toRef(props, 'location'),
 		layoutSize: height,
 		elementSize: explicitElementSize,
 		active: computed(() => true),
