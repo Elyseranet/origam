@@ -107,7 +107,24 @@
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {elevationClasses, elevationStyles} = useElevation(props)
 
+	/*********************************************************
+	 * slotProps
+	 *
+	 * @description
+	 * ⛔ `color` y est ajoute pour rendre VRAIE la note quinze lignes plus
+	 * haut, qui affirmait deja que « the `color` prop is exposed for slot
+	 * consumers ». Elle ne l'etait pas : `slotProps` ne portait que `model`
+	 * et `isValid`, et la prop n'apparaissait nulle part ailleurs — un
+	 * consommateur de slot n'avait aucun moyen de la lire.
+	 *
+	 * @description
+	 * Le contrat reste celui que la note decrit : `bgColor` peint le rail,
+	 * `color` n'est PAS applique ici — le premier plan est gere par le
+	 * `SelectionControl` englobant via `currentColor`. La prop est
+	 * transmise, pas consommee.
+	 ********************************************************/
 	const slotProps = computed(() => ({
+		color: props.color,
 		model: props.modelValue,
 		isValid: props.isValid
 	}))

@@ -237,6 +237,7 @@
 	import { OrigamResponsive } from '../Responsive'
 
 	import { shouldSuppressAutoplay } from '../../composables/Media/use-media-player.composable'
+	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useBorder } from '../../composables/Commons/border.composable'
 	import { useColorEffect } from '../../composables/Commons/colorEffect.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
@@ -834,6 +835,23 @@
 	 * leaving illegible text on a saturated surface.
 	 ********************************************************/
 	const { colorClasses, colorStyles } = useColorEffect(props)
+
+	/*********************************************************
+	 * Props declarees sans effet (#550, critere C1)
+	 *
+	 * @description
+	 * ⛔ Exposees dans la story, parfois documentees, et pourtant lues
+	 * nulle part. Elles ne sont ni retirees — ca casserait la story et le
+	 * type d'un consommateur pour une prop qui ne faisait deja rien — ni
+	 * cablees a un comportement invente. Elles avertissent une fois, en
+	 * dev, avec la raison exacte. Meme traitement que la famille Chart.
+	 ********************************************************/
+	useUnsupportedProp(
+		'OrigamVideo',
+		'showCenterControls',
+		'no centre overlay is rendered; the controls live in the bottom bar only.',
+		() => props.showCenterControls === true
+	)
 
 	const hasColorProp = computed(() => !!props.color)
 	const hasBgColorProp = computed(() => !!props.bgColor)

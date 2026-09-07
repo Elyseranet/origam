@@ -40,6 +40,7 @@
 	import OrigamSlideY from '../Transition/OrigamSlideY.vue'
 	import OrigamTransition from '../Transition/OrigamTransition.vue'
 
+	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useBorder } from '../../composables/Commons/border.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
 	import { useMargin } from '../../composables/Commons/margin.composable'
@@ -103,6 +104,23 @@
 	// fontSize is read by the root .origam-messages rule; lineHeight is read by
 	// the .origam-messages__message child rule — each call targets its surface.
 	const {typographyStyles: rootTypographyStyles} = useTypography(props, 'messages')
+
+	/*********************************************************
+	 * Props declarees sans effet (#550, critere C1)
+	 *
+	 * @description
+	 * ⛔ Exposees dans la story, parfois documentees, et pourtant lues
+	 * nulle part. Elles ne sont ni retirees — ca casserait la story et le
+	 * type d'un consommateur pour une prop qui ne faisait deja rien — ni
+	 * cablees a un comportement invente. Elles avertissent une fois, en
+	 * dev, avec la raison exacte. Meme traitement que la famille Chart.
+	 ********************************************************/
+	useUnsupportedProp(
+		'OrigamMessages',
+		'active',
+		'visibility is driven by `messages` being non-empty, never by this prop.',
+		() => props.active !== undefined
+	)
 	const {typographyStyles: childTypographyStyles} = useTypography(props, 'messages__message')
 
 	/*********************************************************

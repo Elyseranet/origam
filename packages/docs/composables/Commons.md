@@ -5,7 +5,7 @@
 > rien n'est redige ici. Corriger une description se fait dans la banniere du symbole,
 > puis en regenerant. Issue #545.
 
-106 symbole(s) exporte(s).
+107 symbole(s) exporte(s).
 
 ## `_resetCssSupportCache`
 
@@ -414,7 +414,7 @@ l'ancien.
 
 **Source** : `packages/ds/src/composables/Commons/audio.composable.ts`
 
-**Consommateurs** (3) : `components/Parallax/OrigamParallax.vue`, `consts/Audio/audio.const.ts`, `interfaces/Commons/audio.interface.ts`
+**Consommateurs** (4) : `components/Parallax/OrigamParallax.vue`, `consts/Audio/audio.const.ts`, `interfaces/Commons/audio.interface.ts`, `interfaces/Parallax/parallax.interface.ts`
 
 ## `useBackButton`
 
@@ -2203,6 +2203,38 @@ en repli.
 **Source** : `packages/ds/src/composables/Commons/typography.composable.ts`
 
 **Consommateurs** (47) : `components/Alert/OrigamAlert.vue`, `components/Audio/OrigamAudio.vue`, `components/Avatar/OrigamAvatar.vue`, `components/Badge/OrigamBadge.vue`, `components/Blockquote/OrigamBlockquote.vue`, `components/Bracket/OrigamBracket.vue`, `components/Bracket/OrigamBracketCompetitor.vue`, `components/Bracket/OrigamBracketRound.vue`, …
+
+## `useUnsupportedProp`
+
+```ts
+export function useUnsupportedProp ( component: string, prop: string, reason: string, isPassed: ()
+```
+
+Avertit, une fois et en developpement seulement, qu'une prop declaree par un
+composant n'a aucun effet sur lui. Generalisation de
+`useChartUnsupportedProp`, qui rendait le meme service a la seule famille
+Chart.
+
+⛔ Pourquoi avertir plutot que retirer. Ces props sont exposees dans les
+stories, parfois documentees : les supprimer casserait la story et le type
+d'un consommateur, pour une prop qui ne faisait deja rien. Les cabler a un
+comportement invente serait pire encore. L'avertissement dit la verite sans
+rien casser, et il porte la RAISON — un « prop non supportee » nu obligerait
+le lecteur a aller lire le source.
+
+⛔ Le predicat doit comparer au DEFAUT REEL de la prop, pas a `undefined`.
+`props.x !== undefined` est toujours vrai des que `withDefaults` fixe une
+valeur, et l'avertissement partirait a chaque montage — mesure sur la
+famille Chart, ou `animated: false` et `animationDuration: 600` criaient
+sans arret. Un avertissement permanent est ignore en deux jours.
+
+Effet de bord utile : lire la prop dans le predicat la rend CONSOMMEE au
+sens du garde `unconsumed-props`. La surface cesse donc d'etre comptee
+morte, ce qui est exact — elle est desormais surveillee, pas ignoree.
+
+**Source** : `packages/ds/src/composables/Commons/unsupportedProp.composable.ts`
+
+**Consommateurs** (7) : `components/Audio/OrigamAudio.vue`, `components/DatePicker/OrigamDatePickerControls.vue`, `components/Grids/OrigamRow.vue`, `components/List/OrigamListChildren.vue`, `components/Messages/OrigamMessages.vue`, `components/Toolbar/OrigamToolbar.vue`, `components/Video/OrigamVideo.vue`
 
 ## `useValidation`
 

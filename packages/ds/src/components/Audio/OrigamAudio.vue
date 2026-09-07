@@ -256,6 +256,7 @@
 	import { OrigamMediaController } from '../Media'
 	import { OrigamSliderField } from '../SliderField'
 
+	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useBorder } from '../../composables/Commons/border.composable'
 	import { useColorEffect } from '../../composables/Commons/colorEffect.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
@@ -940,6 +941,23 @@
 	 * supplied so the consumer's intent is always respected.
 	 ********************************************************/
 	const { colorClasses, colorStyles } = useColorEffect(props)
+
+	/*********************************************************
+	 * Props declarees sans effet (#550, critere C1)
+	 *
+	 * @description
+	 * ⛔ Exposees dans la story, parfois documentees, et pourtant lues
+	 * nulle part. Elles ne sont ni retirees — ca casserait la story et le
+	 * type d'un consommateur pour une prop qui ne faisait deja rien — ni
+	 * cablees a un comportement invente. Elles avertissent une fois, en
+	 * dev, avec la raison exacte. Meme traitement que la famille Chart.
+	 ********************************************************/
+	useUnsupportedProp(
+		'OrigamAudio',
+		'waveformColor',
+		'the waveform paints from `currentColor`; this prop reaches no declaration.',
+		() => props.waveformColor !== undefined
+	)
 	const hasColorProp = computed(() => !!props.color)
 	const hasBgColorProp = computed(() => !!props.bgColor)
 	const scrubberColorStyle = computed<Record<string, string>>(() => {

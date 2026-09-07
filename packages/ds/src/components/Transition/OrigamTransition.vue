@@ -15,7 +15,7 @@
 	import OrigamFade from './OrigamFade.vue'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useTransition } from '../../composables/Transition/transition.composable'
-	import type { ITransitionComponentProps } from '../../interfaces/Commons/transition-component.interface'
+	import type { ITransitionHostProps } from '../../interfaces/Commons/transition-component.interface'
 	import type { ITransitionEmits, ITransitionSlots } from '../../interfaces/Transition/transition.interface'
 	import type { TTransitionProps } from '../../types/Transition/transition.type'
 
@@ -27,11 +27,11 @@
 	 * @description
 	 * Props with defaults and filterProps utility.
 	 ********************************************************/
-	const props = withDefaults(defineProps<ITransitionComponentProps>(), {
+	const props = withDefaults(defineProps<ITransitionHostProps>(), {
 		transition: () => ({component: OrigamFade}) as unknown as TTransitionProps
 	})
 
-	const {filterProps} = useProps<ITransitionComponentProps>(props)
+	const {filterProps} = useProps<ITransitionHostProps>(props)
 
 	defineEmits<ITransitionEmits>()
 

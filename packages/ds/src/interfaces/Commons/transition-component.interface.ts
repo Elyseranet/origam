@@ -24,5 +24,29 @@ import type { TTransitionProps } from '../../types/Transition/transition.type'
  ********************************************************/
 export interface ITransitionComponentProps {
     transition?: boolean | string | TTransitionProps
+}
+
+/*********************************************************
+ * ITransitionHostProps
+ *
+ * @description
+ * `ITransitionComponentProps` plus le `disabled` qui coupe la transition.
+ * Reserve a `<OrigamTransition>` lui-meme.
+ *
+ * @description
+ * ⛔ `disabled` vivait dans le mixin, donc les 13 familles qui acceptent une
+ * surcharge de `transition` le declaraient aussi — sans jamais le lire. Verifie
+ * sur les cinq que le garde signalait : Badge, Drawer, Img, Lazy et Messages
+ * rendent bien un `<origam-transition :disabled="…">`, mais avec LEUR PROPRE
+ * valeur calculee (`isLayoutOrphan`, `!isBooted`), jamais `props.disabled`. Le
+ * transmettre aurait ecrase cette logique ; le laisser declare promettait un
+ * effet inexistant.
+ *
+ * @description
+ * La doc de ce fichier disait deja que le mixin repond a « ce composant
+ * accepte-t-il une surcharge de `transition` ? ». `disabled` n'a jamais fait
+ * partie de cette question. Issue #550, critere C1.
+ ********************************************************/
+export interface ITransitionHostProps extends ITransitionComponentProps {
     disabled?: boolean
 }

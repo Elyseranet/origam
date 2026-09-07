@@ -42,6 +42,7 @@
 >
 	import { computed, toRef, useSlots } from 'vue'
 	import OrigamTitle from '../Title/OrigamTitle.vue'
+	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { usePosition } from '../../composables/Commons/position.composable'
@@ -111,6 +112,23 @@
 
 
 	const {isOn: isHover, config: hoverState} = useStateFlag(props, {state: 'hover'})
+
+	/*********************************************************
+	 * Props declarees sans effet (#550, critere C1)
+	 *
+	 * @description
+	 * ⛔ Exposees dans la story, parfois documentees, et pourtant lues
+	 * nulle part. Elles ne sont ni retirees — ca casserait la story et le
+	 * type d'un consommateur pour une prop qui ne faisait deja rien — ni
+	 * cablees a un comportement invente. Elles avertissent une fois, en
+	 * dev, avec la raison exacte. Meme traitement que la famille Chart.
+	 ********************************************************/
+	useUnsupportedProp(
+		'OrigamToolbar',
+		'modelValue',
+		'the toolbar has no open/closed state to bind — nothing reads this value.',
+		() => props.modelValue !== undefined
+	)
 	const {isOn: isActive, config: activeState} = useStateFlag(props, {state: 'active'})
 	// `colorClasses` / `colorStyles` MUST come from `useStateEffect` so the
 	// surface follows `hover` / `active` — e.g. a transparent sticky AppBar

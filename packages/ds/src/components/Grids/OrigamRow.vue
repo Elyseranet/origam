@@ -14,6 +14,7 @@
 		setup
 >
 	import { computed, type Ref, StyleValue, toRef } from 'vue'
+	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useBorder } from '../../composables/Commons/border.composable'
 	import { useBothColor } from '../../composables/Commons/bothColor.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
@@ -62,6 +63,23 @@
 	 ********************************************************/
 
 	const {densityClasses} = useDensity(props)
+
+	/*********************************************************
+	 * Props declarees sans effet (#550, critere C1)
+	 *
+	 * @description
+	 * ⛔ Exposees dans la story, parfois documentees, et pourtant lues
+	 * nulle part. Elles ne sont ni retirees — ca casserait la story et le
+	 * type d'un consommateur pour une prop qui ne faisait deja rien — ni
+	 * cablees a un comportement invente. Elles avertissent une fois, en
+	 * dev, avec la raison exacte. Meme traitement que la famille Chart.
+	 ********************************************************/
+	useUnsupportedProp(
+		'OrigamRow',
+		'gutters',
+		'the row spaces its columns through `padding` / `margin`; no gutter declaration is emitted.',
+		() => props.gutters !== undefined
+	)
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)

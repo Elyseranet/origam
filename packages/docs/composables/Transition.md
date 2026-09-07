@@ -21,7 +21,7 @@ of this hook and lives in its own file.
 
 **Source** : `packages/ds/src/composables/Transition/cssTransition.composable.ts`
 
-**Consommateurs** (10) : `components/Transition/OrigamExpandX.vue`, `components/Transition/OrigamExpandY.vue`, `components/Transition/OrigamFade.vue`, `components/Transition/OrigamReverseTranslatePicker.vue`, `components/Transition/OrigamScaleRotate.vue`, `components/Transition/OrigamSlideX.vue`, `components/Transition/OrigamSlideY.vue`, `components/Transition/OrigamSnack.vue`, …
+**Consommateurs** (11) : `components/Transition/OrigamExpandX.vue`, `components/Transition/OrigamExpandY.vue`, `components/Transition/OrigamFade.vue`, `components/Transition/OrigamReverseTranslatePicker.vue`, `components/Transition/OrigamScaleRotate.vue`, `components/Transition/OrigamSlideX.vue`, `components/Transition/OrigamSlideY.vue`, `components/Transition/OrigamSnack.vue`, …
 
 ## `useTransition`
 
@@ -54,5 +54,5 @@ this hook and lives in its own file.
 
 **Source** : `packages/ds/src/composables/Transition/windowTransition.composable.ts`
 
-**Consommateurs** (4) : `components/Transition/OrigamWindowXReverseTranslate.vue`, `components/Transition/OrigamWindowXTranslate.vue`, `components/Transition/OrigamWindowYReverseTranslate.vue`, `components/Transition/OrigamWindowYTranslate.vue`
+**Consommateurs** (5) : `components/Transition/OrigamWindowXReverseTranslate.vue`, `components/Transition/OrigamWindowXTranslate.vue`, `components/Transition/OrigamWindowYReverseTranslate.vue`, `components/Transition/OrigamWindowYTranslate.vue`, `interfaces/Transition/transition.interface.ts`
 

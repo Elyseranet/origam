@@ -3,9 +3,9 @@ import type {
     ICommonsComponentProps,
     ITagProps
 } from '../Commons/commons.interface'
-import type { ITransitionComponentProps } from '../Commons/transition-component.interface'
+import type { ITransitionHostProps } from '../Commons/transition-component.interface'
 
-export interface IOverlayScrimProps extends ICommonsComponentProps, ITagProps, ITransitionComponentProps, IScrimProps {
+export interface IOverlayScrimProps extends ICommonsComponentProps, ITagProps, ITransitionHostProps, IScrimProps {
     active?: boolean
 }
 

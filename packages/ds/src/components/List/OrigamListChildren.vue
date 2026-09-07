@@ -85,6 +85,7 @@
 	import OrigamListItem from './OrigamListItem.vue'
 	import OrigamListSubheader from './OrigamListSubheader.vue'
 
+	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useCreateList } from '../../composables/List/createList.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 
@@ -113,6 +114,23 @@
 			return {children: item.children, props: item.props, type: item.type, raw: item}
 		})
 	})
+
+	/*********************************************************
+	 * Props declarees sans effet (#550, critere C1)
+	 *
+	 * @description
+	 * ⛔ Exposees dans la story, parfois documentees, et pourtant lues
+	 * nulle part. Elles ne sont ni retirees — ca casserait la story et le
+	 * type d'un consommateur pour une prop qui ne faisait deja rien — ni
+	 * cablees a un comportement invente. Elles avertissent une fois, en
+	 * dev, avec la raison exacte. Meme traitement que la famille Chart.
+	 ********************************************************/
+	useUnsupportedProp(
+		'OrigamListChildren',
+		'returnObject',
+		'this renderer emits nothing — selection payload shape is decided by `<origam-list>` upstream.',
+		() => props.returnObject !== undefined
+	)
 
 	/*********************************************************
 	 * Slots
