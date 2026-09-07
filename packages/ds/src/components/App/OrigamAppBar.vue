@@ -32,6 +32,13 @@
 		</template>
 
 		<template
+				v-if="hasTitle"
+				#title
+		>
+			<slot name="title"/>
+		</template>
+
+		<template
 				v-if="hasContent"
 				#content
 		>
@@ -118,6 +125,16 @@
 	})
 	const hasPrepend = computed(() => {
 		return hasImage.value || slots.prepend
+	})
+	/*********************************************************
+	 * ⛔ `title` etait documente et expose par la story (« Slots - Title »),
+	 * mais aucun `<template #title>` n'etait transmis a `<origam-toolbar>` :
+	 * le contenu du slot etait perdu, jamais rendu. Le Toolbar declare bien
+	 * un slot `title` (`IToolbarSlots.title`) — il ne manquait que le relais,
+	 * identique a ceux de `append` / `prepend` / `content` / `default`.
+	 ********************************************************/
+	const hasTitle = computed(() => {
+		return slots.title
 	})
 	const hasContent = computed(() => {
 		return slots.content

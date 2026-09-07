@@ -142,11 +142,28 @@
 		return slots.groupActivator
 	})
 
+	/*********************************************************
+	 * Branchement par item — c'est le `type` de l'item qui decide
+	 *
+	 * @description
+	 * ⛔ Ces deux predicats testaient AUSSI la presence du slot
+	 * (`slots.divider || item.type === DIVIDER`). Le slot n'appartient pas
+	 * a un item : le fournir faisait donc matcher CHAQUE ligne, et une
+	 * liste de 4 items rendue avec un `#divider` ne rendait que 4
+	 * separateurs — plus aucun item, plus aucun subheader (`divider`
+	 * gagnant le `v-else-if`). Le slot est un OVERRIDE de rendu pour les
+	 * items de ce type, pas un selecteur de branche.
+	 *
+	 * @description
+	 * Le motif correct pour « le consommateur fournit-il ce slot ? » reste
+	 * `hasSubheaderTitle` / `hasGroupActivator` ci-dessus : ils pilotent un
+	 * slot d'un composant enfant, pas le choix de branche d'une ligne.
+	 ********************************************************/
 	const hasDivider = (item: IInternalListItemChildren) => {
-		return slots.divider || item.type === LIST_ITEM_TYPE.DIVIDER
+		return item.type === LIST_ITEM_TYPE.DIVIDER
 	}
 	const hasSubheader = (item: IInternalListItemChildren) => {
-		return slots.subheader || item.type === LIST_ITEM_TYPE.SUBHEADER
+		return item.type === LIST_ITEM_TYPE.SUBHEADER
 	}
 	const hasChildren = (item: IInternalListItemChildren) => {
 		return item.children && item.children.length

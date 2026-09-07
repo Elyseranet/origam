@@ -90,17 +90,35 @@ When a `<OrigamSelectionControl>` is nested inside a
 `trueIcon` and `valueComparator` as **defaults** — any of these passed
 directly on the child still wins.
 
-::: warning `OrigamSelectionControlGroup` ships no layout CSS of its own
-The group component renders a plain `<div role="group">` around its children
-— it does not emit any `display: flex` / `gap` rule, and the `inline` prop
-toggles a `origam-selection-control-group--inline` class that currently has
-no matching style rule either. Design tokens named
-`--origam-selection-control-group---*` (gap, flex-direction, padding…) are
-generated in the theme sheet but are not consumed anywhere in the component.
-In practice, children stack according to normal block flow (each
-`origam-selection-control` is itself `display: flex`), and any spacing/row-vs-column
-layout you want has to come from your own CSS on the group (or a wrapping
-element) today.
+### Group layout
+
+`<OrigamSelectionControlGroup>` owns its layout. Its scoped block declares
+`display: flex`, `flex-direction: column`, `flex-wrap: wrap`, `gap` and
+block/inline padding, each behind a `--origam-selection-control-group---*`
+variable declared in `packages/ds/src/assets/css/tokens/light.css` (and its
+`dark.css` twin). The `inline` prop toggles
+`.origam-selection-control-group--inline`, whose only job is to swap
+`flex-direction` to `row`.
+
+| Variable | Default | Drives |
+|---|---|---|
+| `--origam-selection-control-group---display` | `flex` | Layout mode of the group |
+| `--origam-selection-control-group---flex-direction` | `column` | Stacking axis (default) |
+| `--origam-selection-control-group---flex-direction-inline` | `row` | Axis under the `inline` prop |
+| `--origam-selection-control-group---flex-wrap` | `wrap` | Wrapping of the row when `inline` |
+| `--origam-selection-control-group---gap` | `var(--origam-space---2)` | Space between controls |
+| `--origam-selection-control-group---padding-block` | `var(--origam-space---0)` | Group block padding |
+| `--origam-selection-control-group---padding-inline` | `var(--origam-space---0)` | Group inline padding |
+
+Override any of them on the group instance (or in your theme) rather than
+writing layout CSS around it.
+
+::: warning Documentation history
+An earlier version of this page stated the exact opposite — that the group
+shipped no layout CSS, that `inline` toggled a class with no rule, and that
+these tokens were generated but never consumed. That described the state
+**before** commit `7d5809b8` (2026-07-31), which added the style block; the
+paragraph was written after the fix and never re-checked against the code.
 :::
 
 ## Value & v-model

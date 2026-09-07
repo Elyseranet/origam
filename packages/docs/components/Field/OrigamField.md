@@ -161,10 +161,32 @@ visible effect comes from `OrigamLabel`'s prefix, not Field's. See issue #501.
 | `click:prependInner` | `MouseEvent` | Inner prepend clicked |
 | `click:appendInner` | `MouseEvent` | Inner append clicked |
 
-`focus` and `blur` are not component emits — `IFieldEmits` does not declare
-them. They reach the consumer as plain DOM events, relayed by Vue's
-attribute fallthrough: `@focus` / `@blur` bound on `<origam-field>` work
-the normal HTML way, they just aren't part of the typed `emits` contract.
+### `focus` / `blur` — use `update:focused`
+
+⛔ **`@focus` and `@blur` bound on `<origam-field>` never fire.** They are not
+component emits (`IFieldEmits` does not declare them), and attribute
+fallthrough does not save them either: the field root is a plain `<div>` with
+no `tabindex`, so it is never focused itself, and `focus` / `blur` **do not
+bubble** (unlike `focusin` / `focusout`). Measured on the real component: a
+root-level `onFocus` / `onBlur` is called **0 times** when the nested control
+takes and loses focus.
+
+The working channel is **`@update:focused`**, wired by the `onFocus` /
+`onBlur` handlers the `default` slot hands to your control:
+
+```vue
+<template>
+    <OrigamField label="Email" @update:focused="isFocused = $event">
+        <template #default="{ id, onFocus, onBlur }">
+            <input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur">
+        </template>
+    </OrigamField>
+</template>
+```
+
+The same state is reflected on the root as `origam-field--focused`. If you
+genuinely need the raw DOM events at field level, listen for `focusin` /
+`focusout`, which do bubble.
 
 ## Design tokens
 

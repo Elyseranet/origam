@@ -144,12 +144,11 @@
 			</template>
 		</Variant>
 
-		<Variant title="Native — focus / blur (DOM fallthrough)">
+		<Variant title="Events - update:focused">
 			<origam-field
-					label="Focus & blur — not component emits, relayed via $attrs fallthrough"
+					label="Focus the input — @focus/@blur on the root never fire, @update:focused does"
 					data-cy="field-emit-focus"
-					@focus="logEvent('focus', $event)"
-					@blur="logEvent('blur', $event)"
+					@update:focused="logEvent('update:focused', $event)"
 			>
 				<template #default="{ id, onFocus, onBlur }">
 					<input :id="id" class="origam-field__input" @focus="onFocus" @blur="onBlur"/>
@@ -440,8 +439,7 @@
 				<origam-field
 						v-bind="state"
 						data-cy="field-playground"
-						@focus="logEvent('focus', $event)"
-						@blur="logEvent('blur', $event)"
+						@update:focused="logEvent('update:focused', $event)"
 						@click:clear="logEvent('click:clear', $event)"
 				>
 					<template #default="{ id, onFocus, onBlur }">
