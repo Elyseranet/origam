@@ -138,8 +138,31 @@
 	 * Forwarded props
 	 ********************************************************/
 
+	/*********************************************************
+	 * Libelles de navigation (#550, critere C7)
+	 *
+	 * @description
+	 * `firstPageLabel` / `prevPageLabel` / `nextPageLabel` /
+	 * `lastPageLabel` etaient declarees, defaultees sur de vraies cles
+	 * i18n, exposees par la story — et mortes. `filterProps` interroge le
+	 * schema de `<origam-pagination>`, dont les props homologues
+	 * s'appellent `firstAriaLabel` / `previousAriaLabel` /
+	 * `nextAriaLabel` / `lastAriaLabel` : `pick()` ne retenait donc jamais
+	 * ces quatre cles, qui n'atterrissaient meme pas en attribut HTML.
+	 *
+	 * @description
+	 * Le renommage se fait ici plutot que sur l'interface : retirer les
+	 * quatre props casserait le type d'un consommateur pour une prop qui,
+	 * elle, a manifestement un sens.
+	 ********************************************************/
 	const paginationProps = computed(() => {
-		return origamPaginationRef.value?.filterProps(props, ['class', 'style', 'id', 'totalVisible', 'modelValue', 'length', 'rounded', 'showFirstLastPage', 'density'])
+		return {
+			...origamPaginationRef.value?.filterProps(props, ['class', 'style', 'id', 'totalVisible', 'modelValue', 'length', 'rounded', 'showFirstLastPage', 'density']),
+			firstAriaLabel: t(props.firstPageLabel),
+			previousAriaLabel: t(props.prevPageLabel),
+			nextAriaLabel: t(props.nextPageLabel),
+			lastAriaLabel: t(props.lastPageLabel)
+		}
 	})
 
 	/*********************************************************

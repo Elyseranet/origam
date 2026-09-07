@@ -29,9 +29,12 @@ export interface ITreeviewNodeEmits {}
 /** Slots exposed by `<OrigamTreeviewNode>`. */
 export interface ITreeviewNodeSlots {
     /**
-     * Replaces the default row rendering for a node. Receives the node
-     * itself plus its resolved state, so a custom row can mirror the
-     * built-in affordances (chevron, selection) without recomputing them.
+     * Extra content rendered UNDER a node's row — the built-in row
+     * (guides, chevron, icon, label, size) is always rendered and is not
+     * replaceable. Receives the node itself plus its resolved state, so
+     * the added content can mirror the built-in affordances without
+     * recomputing them. Forwarded down every recursion level, and
+     * relayed from `<OrigamTreeview>`.
      */
     node (props: {
         node: ITreeviewNode

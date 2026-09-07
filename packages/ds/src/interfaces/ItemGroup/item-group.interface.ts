@@ -25,7 +25,7 @@ export interface IItemGroupProps extends ICommonsComponentProps, ITagProps, IGro
 }
 
 /**
- * Props for `<OrigamItem>` — a single registered item inside the group.
+ * Props for `<OrigamItemGroupItem>` — a single registered item inside the group.
  * Named `IItemGroupItemProps` to avoid collision with the existing
  * `IItemProps` in `Commons/item.interface.ts` (the data-normalisation
  * mixin shared by List/Select/Menu — unrelated to this component
@@ -43,18 +43,18 @@ export interface IItemGroupEmits extends ICommonsComponentEmits {}
  * IItemGroupItemEmits
  *
  * @description
- * Emits fired by `<OrigamItem>`. `group:selected` is real, not a
+ * Emits fired by `<OrigamItemGroupItem>`. `group:selected` is real, not a
  * documentation guess: `useGroupItem` (`composables/Commons/groupItem.
  * composable.ts`) watches its own computed `isSelected` and calls
  * `vm.emit('group:selected', {value})` on the CALLING component's
- * instance — i.e. on `<OrigamItem>` itself — every time the group
+ * instance — i.e. on `<OrigamItemGroupItem>` itself — every time the group
  * toggles this item's selection state.
  ********************************************************/
 export interface IItemGroupItemEmits {
     (e: 'group:selected', value: { value: boolean }): void
 }
 
-/** Scope forwarded to `<OrigamItem>`'s `default` slot — the resolved
+/** Scope forwarded to `<OrigamItemGroupItem>`'s `default` slot — the resolved
  *  selection state from the enclosing `<OrigamItemGroup>`. */
 export interface IItemGroupItemSlotProps {
     isSelected: boolean
@@ -65,14 +65,14 @@ export interface IItemGroupItemSlotProps {
     disabled: boolean | undefined
 }
 
-/** Slot signatures for `<OrigamItem>`. */
+/** Slot signatures for `<OrigamItemGroupItem>`. */
 export interface IItemGroupItemSlots {
     default?: (data: IItemGroupItemSlotProps) => any
 }
 
 /** Slot signatures for `<OrigamItemGroup>` — the raw `useGroup()`
  *  selection API, forwarded as-is (its `selected` field stays a `Ref`,
- *  unlike `OrigamItem`'s own unwrapped `default` scope). */
+ *  unlike `OrigamItemGroupItem`'s own unwrapped `default` scope). */
 export interface IItemGroupSlots {
     default?: (data: Pick<IGroupProvide, 'isSelected' | 'select' | 'next' | 'prev' | 'selected'>) => any
 }

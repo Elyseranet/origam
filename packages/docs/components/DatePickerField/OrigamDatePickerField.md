@@ -136,24 +136,81 @@ is already open is picked up at the next opening.
 | `--origam-date-picker-month__day---font-size` | Republished by the typography bridge at open time; falls back to `.85rem` |
 | `--origam-picker-title---font-size` | Republished by the typography bridge when the popup has a `title`; falls back to `.75rem` |
 
+## Transition
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `transition` | `boolean \| string \| TTransitionProps` | `undefined` | Overrides the transition used for the picker's appearance. From the transversal `ITransitionComponentProps` mixin |
+
+## Inherited surface
+
+`IDatePickerFieldProps extends ITextFieldProps`, so the whole text-field API
+is available on this component and is documented once, on its owner:
+
+- **Field chrome** (`IFieldProps`) — `label`, `hint`, `prefix`, `suffix`,
+  `variant`, `size`, `density`, `rounded`, `elevation`, `flat`, `inline`,
+  `singleLine`, `centerAffix`, `persistentClear`, `required`, `error`,
+  `disabled`, `dirty`, `clearable` / `clearIcon` and the other adjacent-inner
+  icons, plus the loader, colour, active/focus and typography mixins. See
+  [`OrigamField`](../Field/OrigamField.md).
+- **Input** (`IInputProps`) — `hint`, `persistentHint`, `messages`,
+  `hideDetails`, the dimension / direction mixins, and the validation surface
+  (`rules`, `validateOn`, `errorMessages`, `readonly`) documented above. See
+  [`OrigamInput`](../Input/OrigamInput.md).
+- **Text field's own** — `placeholder`, `persistentPlaceholder`, `counter`,
+  `counterValue`, `persistentCounter`, `autofocus`, `role`, spacing and border
+  mixins. See [`OrigamTextField`](../TextField/OrigamTextField.md).
+
+`type`, `mask` and `modelModifiers` are inherited by type but meaningless
+here: the visible control is not a free-text input — it renders the selection
+as text or chips and defers editing to the picker.
+
 ## Slots
 
-| Slot | Description |
-|---|---|
-| `prepend` | Content outside the field, left side |
-| `append` | Content outside the field, right side |
-| `prependInner` | Content inside the field, left |
-| `appendInner` | Content inside the field, right |
-| `floatingLabel` | Custom floating label |
-| `label` | Custom label |
-| `prefix` | Text prefix |
-| `suffix` | Text suffix |
-| `clear` | Custom clear control |
-| `loader` | Custom loader |
+### Field chrome
+
+Forwarded verbatim to the nested `<OrigamTextField>`.
+
+| Slot | Bindings | Description |
+|---|---|---|
+| `prepend` | — | Content outside the field, left side |
+| `append` | — | Content outside the field, right side |
+| `prependInner` | — | Content inside the field, left |
+| `appendInner` | — | Content inside the field, right |
+| `floatingLabel` | `ILabelProps` | Custom floating label |
+| `label` | `ILabelProps` | Custom label |
+| `prefix` | — | Text prefix |
+| `suffix` | — | Text suffix |
+| `clear` | — | Custom clear control |
+| `loader` | — | Custom loader |
+
+### Selection display
+
+These three are this component's own, and they are the reason `IFieldSlots`'
+scoped `default` is omitted: `<OrigamDatePickerField>` fills the field body
+itself with the selection markup rather than handing it to the consumer.
+
+| Slot | Bindings | Description |
+|---|---|---|
+| `selection` | — | Overrides the text representation of a single selected date |
+| `rangeSelection` | — | Overrides the formatted "start → end" text in `range` mode |
+| `chip` | `{ item: string, index: number, props: Record<string, unknown> }` | Overrides one selected-date chip in `multiple` mode. `props` carries the pre-wired `<OrigamChip>` binding — spread it so `closableChips` keeps removing the right date |
 
 ## Emits
+
+Both declared emits are `useVModel` relays, not literal `emit(…)` calls in the
+component body.
 
 | Event | Payload | Description |
 |---|---|---|
 | `update:modelValue` | `string \| Date \| Array<...>` | Date selection changed |
 | `update:menu` | `boolean` | Picker opened or closed |
+
+The field-level events — `update:focused`, `click:clear`, `click:prepend`,
+`click:append`, `click:prependInner`, `click:appendInner` — are **not**
+declared on `IDatePickerFieldEmits`. They still reach you: `<OrigamTextField>`
+is this component's root, so an undeclared listener falls through to it and
+fires from there. `<OrigamDatePickerField>` binds its own `@click:clear`
+handler on that same root for its bookkeeping (empty the selection, and
+re-open the picker when `openOnClear` is set); Vue merges the two, so both run
+— yours does not replace it.

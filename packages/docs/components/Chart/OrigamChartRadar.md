@@ -78,10 +78,11 @@ const series: Array<IChartSeries> = [
 
 | Name | Bindings | Description |
 |---|---|---|
-| `tooltip` | `{ point: IChartPoint, series: IChartSeries, category: string \| number }` | Replace the default tooltip. `category` is `categories[point.dataIndex]`. |
-| `legend-item` | `{ series: IChartSeries, index: number, visible: boolean }` | Replace one legend entry. |
+| `legend-item` | `{ series: IChartSeries, index: number, visible: boolean }` | Replace one legend entry. Forwarded verbatim to the embedded `<OrigamChartLegend>`. |
 | `title` | — | Replace the title + subtitle block. |
 | `empty` | — | Rendered when `series` is empty or every series is hidden. |
+
+`IChartRadarSlots` is `Omit<IChartBaseSlots, 'tooltip'>` — **there is no `tooltip` slot.** The radar renders no tooltip at all (no `<origam-chart-tooltip>` anywhere in its template), which is the same reason `showTooltip` is inert. A `<template #tooltip>` passed to this component is silently discarded.
 
 ## Behaviour notes
 
@@ -91,7 +92,7 @@ const series: Array<IChartSeries> = [
 
 **Polygon fill.** Each polygon is rendered with a semi-transparent fill (opacity controlled by the SCSS token `--origam-chart---radar-fill-opacity`, default `0.15`). The fill order matches the series array — later series paint on top of earlier ones.
 
-**Circle markers.** Each vertex emits a `<circle>` marker of radius `3.5` in addition to the polygon path. The markers are the interactive targets for tooltip + click events.
+**Circle markers.** Each vertex emits a `<circle class="origam-chart__point">` marker in addition to the polygon path. Each marker carries `tabindex="0"`, `role="button"` and an `aria-label`, and is the interactive target for `point-click` — via mouse click, `Enter` or `Space`. There is **no** hover tooltip on the radar: the markers are click targets only.
 
 **No axes, grid, or tick labels.** Radar charts draw axis spokes (lines from centre to each vertex) and concentric grid rings instead of cartesian axes. These are rendered by the component internally and are not configurable via props on this version.
 
@@ -125,7 +126,10 @@ const series: Array<IChartSeries> = [
 </script>
 ```
 
-### Custom tooltip showing axis name and value
+### Custom legend entries
+
+The radar exposes no `tooltip` slot; `legend-item` is the slot that customises
+a per-series render.
 
 ```vue
 <template>
@@ -135,11 +139,10 @@ const series: Array<IChartSeries> = [
     :height="320"
     title="Performance radar"
   >
-    <template #tooltip="{ point, series, category }">
-      <div class="radar-tip">
-        <strong>{{ series.name }}</strong>
-        <span>{{ category }}: {{ point.y }}</span>
-      </div>
+    <template #legend-item="{ series, index, visible }">
+      <span :style="{ opacity: visible ? 1 : 0.4 }">
+        #{{ index + 1 }} — {{ series.name }}
+      </span>
     </template>
   </origam-chart-radar>
 </template>
@@ -152,5 +155,34 @@ const axes = ['Speed', 'Power', 'Agility', 'Stamina', 'Skill', 'Defence']
 const series: Array<IChartSeries> = [
   { name: 'Hero', data: [88, 72, 95, 80, 77, 65], color: 'primary' }
 ]
+</script>
+```
+
+### Reacting to a vertex click
+
+```vue
+<template>
+  <origam-chart-radar
+    :series="series"
+    :categories="axes"
+    :height="320"
+    title="Performance radar"
+    @point-click="onPointClick"
+  />
+</template>
+
+<script setup lang="ts">
+import { OrigamChartRadar } from '@origam/ds'
+import type { IChartPoint, IChartSeries } from '@origam/ds'
+
+const axes = ['Speed', 'Power', 'Agility', 'Stamina', 'Skill', 'Defence']
+const series: Array<IChartSeries> = [
+  { name: 'Hero', data: [88, 72, 95, 80, 77, 65], color: 'primary' }
+]
+
+function onPointClick (point: IChartPoint): void {
+  // point.dataIndex identifies the axis, point.x is its category label
+  console.info(axes[point.dataIndex], point.y)
+}
 </script>
 ```

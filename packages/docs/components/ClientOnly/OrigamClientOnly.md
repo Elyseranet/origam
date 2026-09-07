@@ -41,11 +41,15 @@ import { OrigamClientOnly } from '@origam/components'
 | `placeholderTag` | `string \| undefined` | `undefined` | Tag rendered as the SSR/pre-mount placeholder when no `#fallback` slot is given. Left `undefined`, the SSR output is empty (no reserved layout). Set it (e.g. `'div'`) when the absence of a placeholder would cause layout shift on hydration. Rendered with `aria-hidden="true"`. |
 | `placeholderClass` | `string \| undefined` | `undefined` | Class applied to the `placeholderTag` element. Pair the two to reserve dimensions matching the eventual client render and avoid cumulative layout shift. |
 
-Both props are declared inline in the component's own
-`defineProps<{ … }>()` rather than via a shared `I*Props` interface
-under `src/interfaces/` — that is a deviation from this repo's "no type
-declared in a `.vue` file" rule; flagged here as observed, not
-corrected (out of scope for this doc task).
+Both props come from `IClientOnlyProps`, declared in
+`packages/ds/src/interfaces/ClientOnly/client-only.interface.ts` and
+consumed as `defineProps<IClientOnlyProps>()` — nothing is declared inline
+in the `.vue`. The same file holds `IClientOnlyEmits` (empty) and
+`IClientOnlySlots`.
+
+Neither prop has a `withDefaults` entry, so both are genuinely `undefined`
+until the consumer sets them: with `placeholderTag` unset, the pre-mount
+branch renders **nothing at all**.
 
 ## Slots
 
