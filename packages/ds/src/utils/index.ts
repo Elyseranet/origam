@@ -63,6 +63,7 @@ export * from './DataTable/headers.util'
 export * from './DataTable/items.util'
 export * from './DataTable/sort.util'
 export * from './DataTable/group.util'
+export * from './DataTable/slot-name.util'
 
 
 export * from './CommandPalette/fuzzy-match.util'

@@ -62,6 +62,25 @@
 							:key="`group-header_${item.id}`"
 							v-bind="groupHeaderSlotProps(item, index)"
 					>
+						<template
+								v-if="$slots['data-table-group']"
+								#data-table-group="groupProps"
+						>
+							<slot
+									name="data-table-group"
+									v-bind="groupProps"
+							/>
+						</template>
+
+						<template
+								v-if="$slots['data-table-select']"
+								#data-table-select="selectProps"
+						>
+							<slot
+									name="data-table-select"
+									v-bind="selectProps"
+							/>
+						</template>
 					</origam-data-table-group-header-row>
 				</slot>
 			</template>
@@ -75,7 +94,30 @@
 							:id="itemRowId(index)"
 							:item="item"
 							v-bind="{...itemSlotProps(item, index).props}"
+							@expand="emit('expand', $event)"
+							@select="emit('select', $event)"
 					>
+						<template
+								v-for="name in itemColumnSlotNames"
+								:key="name"
+								#[name]="cellProps"
+						>
+							<slot
+									:name="name"
+									v-bind="cellProps"
+							/>
+						</template>
+
+						<template
+								v-for="name in headerColumnSlotNames"
+								:key="name"
+								#[name]="titleProps"
+						>
+							<slot
+									:name="name"
+									v-bind="titleProps"
+							/>
+						</template>
 					</origam-data-table-row>
 				</slot>
 
@@ -116,8 +158,12 @@
 	import { LOADER_KIND } from '../../enums/Commons/loader.enum'
 
 	import { getPrefixedEventHandlers } from '../../utils/Commons/event.util'
+	import {
+		pickDataTableHeaderColumnSlotNames,
+		pickDataTableItemColumnSlotNames
+	} from '../../utils/DataTable/slot-name.util'
 
-	import { mergeProps, useAttrs } from 'vue'
+	import { computed, mergeProps, useAttrs, useSlots } from 'vue'
 
 	const attrs = useAttrs()
 
@@ -130,9 +176,30 @@
 		noDataText: 'origam.no_data_text'
 	})
 
-	defineEmits<IDataTableRowsEmits>()
+	const emit = defineEmits<IDataTableRowsEmits>()
 
 	defineSlots<IDataTableRowsSlots>()
+
+	/*********************************************************
+	 * Forwarded slots (#550, critere C7)
+	 *
+	 * @description
+	 * `<origam-data-table-row>` rend `item.{cle}` (valeur de cellule) et,
+	 * en disposition mobile, `header.{cle}` (titre de colonne). Aucun des
+	 * deux n'etait relaye : le contenu du consommateur s'arretait ici.
+	 *
+	 * @description
+	 * `useSlots()` n'est pas une prop — la lecture ci-dessous ne tombe pas
+	 * sous la reserve ADR-005 sur les lectures eager du corps de `setup`.
+	 ********************************************************/
+	const slots = useSlots()
+
+	const itemColumnSlotNames = computed(() => {
+		return pickDataTableItemColumnSlotNames(Object.keys(slots))
+	})
+	const headerColumnSlotNames = computed(() => {
+		return pickDataTableHeaderColumnSlotNames(Object.keys(slots))
+	})
 
 	const {filterProps} = useProps<IDataTableRowsProps>(props)
 
