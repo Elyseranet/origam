@@ -94,9 +94,11 @@ const activityData = days.flatMap((day) =>
 
 | Name | Bindings | Description |
 |---|---|---|
-| `tooltip` | `{ point: IChartPoint, series: IChartSeries, category: string \| number }` | Replace the default tooltip body. |
+| `tooltip` | `{ point: IChartPoint, series: IChartSeries, category: string \| number, color: string, xLabel: string, yLabel: string, value: number }` | Replace the default tooltip body. The base `{ point, series, category }` scope is enriched with the hovered cell's resolved colour and its formatted x / y / value strings. |
 | `title` | — | Replace the title + subtitle block. |
 | `empty` | — | Rendered when `series` is empty or has no data. |
+
+`IChartHeatmapSlots` is `Omit<IChartBaseSlots, 'legend-item'>` — **there is no `legend-item` slot**, for the same reason the two legend emits are absent: the legend is a continuous gradient bar, not a list of per-series entries, so there is no `<slot name="legend-item">` in the template to forward a template to. Passing one is silently discarded.
 
 ## Behaviour notes
 

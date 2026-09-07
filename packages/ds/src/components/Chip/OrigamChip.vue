@@ -596,6 +596,19 @@
 			border-radius: var(--origam-chip---border-radius-label, 4px);
 		}
 
+		// C7 — `origam-chip--pill` was emitted by the template and targeted by
+		// NO rule anywhere in the DS: the prop was inert. The base class is
+		// already fully round, so "pill makes the chip round" (what the doc
+		// claimed) describes the DEFAULT, not this prop. What `pill` does own
+		// is the explicit opt-IN, the twin of `--label`'s opt-out: it restores
+		// the full radius over anything that squared it — `label`, or a
+		// `rounded` utility class (weaker cascade, but a theme can raise it).
+		// Declared AFTER `--label` on purpose: both selectors carry the same
+		// specificity, so source order is what decides `pill label`.
+		&--pill {
+			border-radius: var(--origam-chip---border-radius, 9999px);
+		}
+
 		&--selected {
 			background-color: var(--origam-chip--selected---background-color);
 			color: var(--origam-chip--selected---color);

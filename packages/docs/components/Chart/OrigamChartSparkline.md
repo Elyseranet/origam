@@ -54,8 +54,13 @@ A tiny inline chart for table cells, KPI cards, and dashboards. Renders a single
 | `rounded` | `TRounded` | — | Border radius token |
 | `elevation` | `TElevation` | — | Shadow token |
 | `bgColor` | `TIntent \| string` | — | Background colour |
-| `title` | `string` | — | ARIA label / accessible title for the chart |
+| `minWidth` / `maxWidth` / `minHeight` / `maxHeight` | `number \| string` | — | Dimension bounds. The root consumes the full `IDimensionProps` surface through `useDimension(props).dimensionStyles`, so all seven dimension props take effect — not just `width` / `height`. |
+| `title` | `string` | — | Accessible title. Rendered as no visible header at all: it feeds the root `aria-label`, the SVG `aria-label`, and the SVG `<title>`. Falls back to `'sparkline chart'` / `'{type} sparkline'` when absent. |
 | `aspectRatio` | `string` | — | ⛔ **Sans effet sur ce composant** — the root sizes itself from `width` / `height`; no `aspect-ratio` declaration is emitted. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
+| `subtitle` | `string` | — | ⛔ **Sans effet sur ce composant** — a sparkline renders no header, neither title nor subtitle. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
+| `categories` | `Array<string>` | — | ⛔ **Sans effet sur ce composant** — a sparkline is a bare trend line: it draws no axis and no labels. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
+| `fontSize` | `TFontSize` | — | ⛔ **Sans effet sur ce composant** — a sparkline renders no text at all. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
+| `fontWeight` | `TFontWeight` | — | ⛔ **Sans effet sur ce composant** — a sparkline renders no text at all. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
 
 ## Emits
 
@@ -176,5 +181,5 @@ The component uses a `<figure>` root (semantic landmark for a self-contained cha
 
 - Only the **first** entry of the `series` array is rendered. Multi-series is not supported — use `<OrigamChartCartesian>` for that.
 - Data must be `Array<number>`. Object-form entries (`{ x, y }`) are accepted and the `y` value is extracted, but the `x` is ignored (no X axis).
-- `animated` defaults to `false` — animation on such small surfaces is typically distracting. Set `true` if the consumer explicitly wants it.
+- `animated` is inert, not merely defaulted to `false`. There is no animation path in this component at all — no CSS class, no inline `animation` declaration — so setting `animated="true"` does nothing beyond raising a dev-build warning. `animationDuration` is inert for the same reason. See the Props table above and #426.
 - The tooltip (`showTooltip`) tracks the nearest column index by horizontal proximity; it does not snap to the exact SVG circle — this is intentional for the tiny surface area.

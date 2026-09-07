@@ -62,7 +62,7 @@
 				</StoryGroup>
 				<StoryGroup title="Color">
 					<HstSelect v-model="state.bgColor"     title="Bg Color"     :options="COLOR_OPTIONS"/>
-					<HstSelect v-model="state.colorScheme" title="Color Scheme" :options="COLOR_SCHEME_OPTIONS"/>
+					<HstSelect v-model="state.colorScheme" title="Color Scheme (no effect: bullet / candlestick / heatmap / map)" :options="COLOR_SCHEME_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Shape">
 					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
