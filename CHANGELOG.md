@@ -1,10 +1,15 @@
 # origam — Changelog
 
-This changelog tracks releases of the `origam` package itself. Token-value
-churn (Tokens Studio sync from Figma, semantic primitive shifts) lives in
-[`tokens/CHANGELOG.md`](./tokens/CHANGELOG.md) — keep them separate so
-"the design moved" never blocks a release of "the code shipped a new
-component".
+This changelog tracks releases of the `origam` package itself.
+
+⛔ It used to point token-value churn at `tokens/CHANGELOG.md`, on the
+grounds that "the design moved" should never block a release of "the code
+shipped a new component". That file no longer exists: the Style Dictionary
++ Tokens Studio pipeline, and the whole `packages/ds/tokens/` tree with it,
+were removed on 2026-08-31. Token values are now hand-maintained directly in
+`packages/ds/src/assets/css/tokens/*.css` and their SCSS twins, so a token
+change is an ordinary code change and belongs in the sections below like any
+other.
 
 Format inspired by [Keep a Changelog](https://keepachangelog.com).
 This project follows [Semantic Versioning](https://semver.org).
@@ -12,6 +17,37 @@ This project follows [Semantic Versioning](https://semver.org).
 ---
 
 ## [Unreleased]
+
+### ⚠️ BREAKING — `label` removed from `IValidationProps` (so from `<OrigamInput>`)
+
+**No rendered output changes.** The prop painted nothing: measured at mount
+plus one tick with `label="PROBE_LABEL"`, `<OrigamInput>` produced **zero**
+`<label>` elements. What changes is the type — `<origam-input label="…">` is
+no longer a declared prop and now falls through to `$attrs`.
+
+A validation mixin has no display surface. `useValidation` never read
+`label`, and the one component whose prop set comes from this mixin —
+`<OrigamInput>` — is layout chrome: a four-area grid (prepend / control /
+append / messages) whose accessible name belongs to the control handed in
+through its `#default` slot, not to the wrapper `<div>`.
+
+The two alternatives were tried and **measured wrong**, not argued away:
+
+- **Wiring it** would have given six components a DUPLICATE label. Each
+  already renders its own — Checkbox 1, Switch 1, TextField 2 (static +
+  floating), RatingField 1, SliderField 1, RadioGroup 1.
+- **Warning on it** fired on `<OrigamCheckbox label>`, `<OrigamTextField
+  label>` and `<OrigamSwitch label>` — **correct** calls. Each forwards its
+  own props into `<origam-input>` through `filterProps`, which carries
+  exactly the keys the wrapper declares. Dropping the declaration is what
+  stops that forwarding at its source.
+
+**Migration:** none for the six components above — they keep their `label`,
+which now lives on the interfaces whose components actually render one:
+`IFieldProps`, `ISelectionControlProps`, `ISliderFieldProps`, and
+`IRatingFieldProps` (added here, since the mixin was its only source).
+A consumer passing `label` to a bare `<origam-input>` was passing a no-op and
+should move it to the control inside the slot.
 
 ### ⚠️ BREAKING — `<OrigamContainer>` breakpoint `max-width` scale realigned to the design tokens
 
