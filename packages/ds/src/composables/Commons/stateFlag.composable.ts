@@ -4,6 +4,8 @@ import type { ComputedRef } from 'vue'
 import { useVModel } from './vModel.composable'
 
 import type { IStateFlagOptions, IStateFlagReturn } from '../../interfaces/Commons/state-flag.interface'
+import type { IActiveProps } from '../../interfaces/Commons/active.interface'
+import type { IHoverProps } from '../../interfaces/Commons/hover.interface'
 import type { IStateEffectConfig } from '../../interfaces/Commons/state-effect.interface'
 import type { TStateName } from '../../types/Commons/state-flag.type'
 
@@ -117,10 +119,10 @@ export function useStateFlag<S extends TStateName> (
              * extraClass
              *
              * @description
-             * Written as `(props as any).hoverClass` / `(props as
-             * any).activeClass` — NOT a templated `props[`${state}Class`]`
-             * access — because the `unconsumed-props` guard's static
-             * heuristic (scripts/audit-unconsumed-props.mjs,
+             * Written as `(props as IHoverProps).hoverClass` / `(props as
+             * IActiveProps).activeClass` — NOT a templated
+             * `props[`${state}Class`]` access — because the `unconsumed-props`
+             * guard's static heuristic (scripts/audit-unconsumed-props.mjs,
              * `scanPropReads`) recognises exactly this `(props as
              * TYPE).literal` cast shape (its own comments say so: "`useActive`
              * reads its legacy `activeClass` exactly like this"). A templated
@@ -128,9 +130,19 @@ export function useStateFlag<S extends TStateName> (
              * `hoverClass`/`activeClass` into 30 NEW unconsumed-props
              * violations across the 24 migrated components — caught by
              * running `pnpm -F origam guards`, not by reasoning about it.
+             *
+             * The cast target is the OWNING interface rather than `any`: the
+             * guard only needs the `(props as TYPE).literal` SHAPE, never `any`
+             * specifically, and `IHoverProps.hoverClass` /
+             * `IActiveProps.activeClass` already declare these two exact
+             * members. `stateEffect.composable.ts` casts the same way for
+             * `status`. `any` would have silently accepted a typo here.
              ********************************************************/
-            const extraClass = state === 'hover' ? (props as any).hoverClass : (props as any).activeClass
-            if (extraClass) list.push(extraClass as string)
+            const extraClass = state === 'hover'
+                ? (props as IHoverProps).hoverClass
+                : (props as IActiveProps).activeClass
+
+            if (extraClass) list.push(extraClass)
         }
 
         return list
