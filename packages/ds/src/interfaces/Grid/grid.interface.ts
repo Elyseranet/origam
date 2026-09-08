@@ -65,7 +65,8 @@ export interface IGridProps extends ICommonsComponentProps, ITagProps, IDimensio
      * Both-axis gap. Accepts:
      *
      * - one of the size tokens `'xs' | 'sm' | 'md' | 'lg' | 'xl'`
-     *   (resolved via `tokens/component/grid.json`).
+     *   (resolved to `var(--origam-grid---gap-{token})`, declared in
+     *   `assets/css/tokens/light.css` / `dark.css`).
      * - any CSS length string (`'24px'`, `'1rem'`, `'1rem 2rem'`).
      * - a plain `number` interpreted as pixels.
      *

@@ -48,7 +48,7 @@
 		>
 			<slot
 					name="actions"
-					v-bind="{submit: () => handleSubmit, reset: () => handleReset}"
+					v-bind="{submit: handleSubmit, reset: handleReset}"
 			/>
 		</div>
 	</form>

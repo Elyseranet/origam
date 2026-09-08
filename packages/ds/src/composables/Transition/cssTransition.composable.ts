@@ -63,24 +63,46 @@ export function useCssTransition (props: ITransitionProps) {
         }
 
         /*********************************************************
-         * Liaison de `mode`
+         * mode
          *
          * @description
-         * ⛔ La condition etait `if (props.group)` — soit l'INVERSE du
-         * contrat. `mode` n'existe que sur `Transition` (enfant unique) ;
-         * Vue ne le declare PAS sur `TransitionGroup`. Or `tag` rend
-         * `TransitionGroup` quand `group` est vrai et `Transition` quand il
-         * est faux : `mode` n'etait donc lie QUE sur le composant qui ne
-         * sait pas le lire, et jamais sur celui qui le sait. La prop etait
-         * morte pour les 8 composants qui passent par ce hook.
+         * ⛔ La condition etait `if (props.group)` — exactement a l'envers, ce
+         * qui rendait la prop morte dans les DEUX branches :
+         *
+         * - `group: true` posait `mode` sur un `<TransitionGroup>`, qui ne le
+         *   declare pas (`'mode' in TransitionGroup.props` vaut `false`, contre
+         *   `true` pour `Transition`). Il finissait en attribut DOM inerte.
+         * - `group: false` ne le posait pas du tout. Et comme le composant hote
+         *   DECLARE `mode` comme prop, il ne retombe pas en `$attrs` : il
+         *   n'atteignait donc jamais le `<Transition>`.
          *
          * @description
-         * `mode` est RETIRE de l'objet (et pas seulement mis a `undefined`)
-         * sur le chemin `group` : `:mode="undefined"` declenche quand meme
+         * `mode` n'a de sens que sur `<Transition>` : il ordonne l'entree et la
+         * sortie de DEUX elements qui se remplacent. Un `<TransitionGroup>` gere
+         * une liste, il n'y a rien a ordonner.
+         *
+         * @description
+         * Portee du correctif, mesuree : sur les dix consommateurs de ce
+         * composable, huit ne declarent aucun defaut pour `mode` — rien ne
+         * change chez eux tant que le consommateur ne passe pas la prop. Seuls
+         * `OrigamExpandX` et `OrigamExpandY` posent `mode: TRANSITION_MODE.IN_OUT`
+         * et se mettent donc a enchainer leurs animations. Ce n'est pas une
+         * regression : c'est ce que leur auteur avait ecrit, et que ce bug
+         * empechait d'agir depuis toujours.
+         *
+         * @description
+         * ⛔ Le garde `unconsumed-props` ne pouvait pas voir ce defaut : la
+         * lecture `props.mode` existait bel et bien, c'est son EFFET qui etait
+         * nul. Une prop lue puis jetee dans une branche morte compte comme
+         * consommee pour une analyse statique.
+         *
+         * @description
+         * ⛔ La cle est RETIREE de l'objet, pas seulement mise a `undefined`, sur
+         * le chemin `group`. Un `:mode="undefined"` declencherait quand meme
          * l'avertissement « Extraneous non-props attributes » de Vue sur
-         * `TransitionGroup`, la cle etant presente dans les props du vnode
-         * quelle que soit sa valeur. C'est exactement la forme deja livree
-         * par `OrigamExpandX` / `OrigamExpandY`. Issue #550, critere C7.
+         * `TransitionGroup` : la cle est presente dans les props du vnode quelle
+         * que soit sa valeur. C'est pourquoi le `if` entoure l'affectation au
+         * lieu de choisir la valeur affectee.
          ********************************************************/
         if (!props.group) {
             bind.mode = props.mode

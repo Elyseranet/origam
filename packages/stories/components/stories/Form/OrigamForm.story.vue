@@ -101,7 +101,11 @@
 		</Variant>
 
 		<Variant title="Slots - Actions">
-			<origam-form data-cy="form-slot-actions">
+			<origam-form
+					data-cy="form-slot-actions"
+					@submit.prevent="logEvent('submit', $event)"
+					@reset="logEvent('reset', $event)"
+			>
 				<origam-text-field v-model="actionsName" label="Name" data-cy="form-slot-actions-field"/>
 				<template #actions="{ submit, reset }">
 					<origam-btn

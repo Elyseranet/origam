@@ -32,11 +32,27 @@ export interface IAppBarProps extends Omit<IToolbarProps, 'width' | 'minWidth' |
 /** Emits fired by `<OrigamAppBar>` — v-model on the rail/expanded state. */
 export interface IAppBarEmits extends ICommonsComponentEmits {}
 
-/** Slot signatures for `<OrigamAppBar>`. */
+/*********************************************************
+ * IAppBarSlots
+ *
+ * @description
+ * Signatures des slots de `<OrigamAppBar>`. Tous sont RELAYES a
+ * `<origam-toolbar>`, sauf `img` qui est rendu par l'AppBar elle-meme dans
+ * la zone `prepend`.
+ *
+ * @description
+ * ⛔ `title` etait documente et expose par la story (« Slots - Title »)
+ * sans etre declare ici, et le template ne transmettait aucun
+ * `<template #title>` : le contenu du slot etait perdu, jamais rendu. Le
+ * Toolbar declare pourtant bien ce slot (`IToolbarSlots.title`) — il ne
+ * manquait que le relais. Comme sur le Toolbar, le slot l'emporte sur la
+ * prop `title`.
+ ********************************************************/
 export interface IAppBarSlots {
     append?: () => any
     prepend?: () => any
     img?: () => any
+    title?: () => any
     content?: () => any
     default?: () => any
 }

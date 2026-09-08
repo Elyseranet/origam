@@ -63,6 +63,7 @@ export * from './DataTable/headers.util'
 export * from './DataTable/items.util'
 export * from './DataTable/sort.util'
 export * from './DataTable/group.util'
+export * from './DataTable/slot-name.util'
 
 
 export * from './CommandPalette/fuzzy-match.util'
@@ -75,6 +76,7 @@ export * from './TextareaField/html-to-markdown.util'
 export * from './Commons/apply-mask.util'
 export * from './Commons/resolve-mask-config.util'
 export * from './Commons/validate-pattern.util'
+export * from './Commons/validation.util'
 
 export * from './QrCode/qr-code-adapters.util'
 

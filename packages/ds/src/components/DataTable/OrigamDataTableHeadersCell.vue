@@ -19,7 +19,18 @@
 						:x="x"
 						:y="y"
 						v-bind="dataTableHeaderCellProps"
-				/>
+				>
+					<template
+							v-for="name in headerColumnSlotNames"
+							:key="name"
+							#[name]="columnProps"
+					>
+						<slot
+								:name="name"
+								v-bind="columnProps"
+						/>
+					</template>
+				</origam-data-table-header-cell>
 			</template>
 		</tr>
 	</template>
@@ -37,7 +48,9 @@
 	import type { IDataTableHeadersCellEmits, IDataTableHeadersCellProps, IDataTableHeadersCellSlots } from '../../interfaces/DataTable/data-table-headers-cell.interface'
 	import type { TOrigamDataTableHeaderCell } from '../../types/DataTable/data-table-header-cell.type'
 
-	import { computed, ref, StyleValue } from 'vue'
+	import { pickDataTableHeaderColumnSlotNames } from '../../utils/DataTable/slot-name.util'
+
+	import { computed, ref, StyleValue, useSlots } from 'vue'
 
 	/*********************************************************
 	 * Global
@@ -51,7 +64,23 @@
 
 	const {filterProps} = useProps<IDataTableHeadersCellProps>(props)
 
+	const slots = useSlots()
+
 	const origamDataTableHeaderCellRef = ref<Array<TOrigamDataTableHeaderCell>>()
+
+	/*********************************************************
+	 * Forwarded slots (#550, critere C7)
+	 *
+	 * @description
+	 * Dernier maillon avant `<origam-data-table-header-cell>`, qui rend
+	 * `header.{cle}`. `IDataTableHeadersCellSlots` etait declaree VIDE et
+	 * decrivait le composant comme un « pur relais » — il relayait les
+	 * props, pas les slots, et le contenu d'en-tete personnalise mourait
+	 * ici.
+	 ********************************************************/
+	const headerColumnSlotNames = computed(() => {
+		return pickDataTableHeaderColumnSlotNames(Object.keys(slots))
+	})
 
 	/*********************************************************
 	 * Forwarded props

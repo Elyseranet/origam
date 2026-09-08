@@ -1,6 +1,7 @@
 import type { ComputedRef, Ref, UnwrapRef } from 'vue'
 import type { IColorProps } from '../Commons/color.interface'
 import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IDataTableHeaderCellColumnSlot } from './items.interface'
 import type { IDataTableSortItem } from './sort.interface'
 import type { IDisplayProps } from '../Commons/display.interface'
 import type { IHeaderCellProps } from './header-cell-base.interface'
@@ -35,13 +36,26 @@ export interface IDataTableHeadersSlotProps {
     isSorted: (column: IInternalDataTableHeader) => boolean
 }
 
-/** Slot signatures for `<OrigamDataTableHeaders>` — `mobile` renders
- *  instead of `default` once `useDisplay` flips to the mobile layout;
- *  `loader` (the in-progress sort indicator row) carries no scope. */
+/*********************************************************
+ * IDataTableHeadersSlots
+ *
+ * @description
+ * Signatures de slots pour `<OrigamDataTableHeaders>`. `mobile` rend a la
+ * place de `default` des que `useDisplay` bascule en disposition mobile ;
+ * `loader` — la ligne d'indicateur de tri en cours — ne porte aucune portee.
+ *
+ * @description
+ * ⛔ La famille indexee `header.{cle}` porte le contenu d'un `<th>` pilote
+ * par une colonne, et n'est rendue NULLE PART dans ce composant : elle est
+ * relayee telle quelle a `<OrigamDataTableHeadersCell>`, qui la relaie a son
+ * tour a `<OrigamDataTableHeaderCell>` — le seul maillon qui possede un
+ * `<slot name="header.{cle}">`.
+ ********************************************************/
 export interface IDataTableHeadersSlots {
     mobile?: (props: IDataTableHeadersSlotProps) => any
     default?: (props: IDataTableHeadersSlotProps) => any
     loader?: () => any
+    [key: `header.${string}`]: ((props: IDataTableHeaderCellColumnSlot) => any) | undefined
 }
 
 /*********************************************************

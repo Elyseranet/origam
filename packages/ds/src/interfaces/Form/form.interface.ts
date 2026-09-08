@@ -38,10 +38,28 @@ export interface IFormProps extends ICommonsComponentProps, Pick<ITypographyProp
     scrollToError?: boolean | ScrollIntoViewOptions
 }
 
+/*********************************************************
+ * IFormSlots
+ *
+ * @description
+ * ⛔ `actions` exposes the form's REAL handlers, so `@click="submit"`
+ * runs validation and fires the `submit` emit. Until this was fixed the
+ * template bound `{ submit: () => handleSubmit, reset: () => handleReset }`
+ * — arrow functions RETURNING the handler instead of being it. Clicking
+ * the button documented on `OrigamForm.md` evaluated the reference and
+ * threw it away: no validation, no emit, nothing.
+ *
+ * @description
+ * Both take the originating `Event`. It is the native `SubmitEvent` when
+ * the form is submitted by a `type="submit"` button, and whatever event
+ * you forward (typically a `MouseEvent`) when you call the slot helper
+ * yourself — `handleSubmit` only needs an object it can hang
+ * `then`/`catch`/`finally` on before emitting it.
+ ********************************************************/
 export interface IFormSlots extends ICommonsComponentSlots {
     messages?: () => any
     message?: () => any
-    actions?: (data: { submit: () => void, reset: () => void }) => any
+    actions?: (data: { submit: (e: Event) => void, reset: (e: Event) => void }) => any
 }
 
 /*********************************************************

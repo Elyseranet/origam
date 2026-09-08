@@ -100,6 +100,9 @@
 					inset: false,
 					multiple: false,
 					mandatory: false,
+					max: undefined,
+					disabled: false,
+					selectedClass: '',
 					eager: false,
 					loading: false,
 					loadingText: '',
@@ -113,6 +116,9 @@
 						:inset="state.inset"
 						:multiple="state.multiple"
 						:mandatory="state.mandatory"
+						:max="state.max"
+						:disabled="state.disabled"
+						:selected-class="state.selectedClass || undefined"
 						:eager="state.eager"
 						:loading-text="state.loadingText || undefined"
 						:tag="state.tag"
@@ -129,8 +135,11 @@
 					<HstCheckbox v-model="state.inset"     title="Inset"/>
 				</StoryGroup>
 				<StoryGroup title="Selection">
-					<HstCheckbox v-model="state.multiple"  title="Multiple"/>
-					<HstCheckbox v-model="state.mandatory" title="Mandatory"/>
+					<HstCheckbox v-model="state.multiple"      title="Multiple"/>
+					<HstCheckbox v-model="state.mandatory"     title="Mandatory"/>
+					<HstNumber   v-model="state.max"           title="Max open (multiple only)"/>
+					<HstCheckbox v-model="state.disabled"      title="Disabled"/>
+					<HstText     v-model="state.selectedClass" title="Selected Class"/>
 				</StoryGroup>
 				<StoryGroup title="Cascade">
 					<HstCheckbox v-model="state.eager"       title="Eager"/>
@@ -379,3 +388,5 @@
 		{ title: 'Item C', content: 'Content for item C' },
 	]
 </script>
+
+<docs lang="md" src="@docs/components/ExpansionPanel/OrigamExpansionPanels.md"/>

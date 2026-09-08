@@ -108,9 +108,11 @@ Two behaviours worth knowing:
 Each rung is overridable per theme through
 `--origam-list-item---height-{sm,md,lg,xl}` and
 `--origam-list-item---padding-block-{sm,md,lg,xl}`. The rung is the **total**
-row height; because the row is a `content-box`, it is split internally between
-`--origam-list-item---min-height` (`rung - 2 × padding`) and the block padding,
-which sum back to the rung.
+row height: the row declares `box-sizing: border-box` on its own base rule
+(it does not rely on the consumer's reset), so the rung goes into
+`--origam-list-item---min-height` **whole** — that min-height *is* the
+rendered height. The block padding does not subtract from it; it only
+positions the 24px title line box inside the row.
 
 ### Props — Typography (title and subtitle surfaces)
 
@@ -170,7 +172,7 @@ controls both children simultaneously.
 | `--origam-list-item__subtitle---font-weight`      | `400`            | subtitle font weight                  |
 | `--origam-list-item__subtitle---letter-spacing`   | `0.0178571429em` | subtitle letter spacing               |
 | `--origam-list-item__subtitle---line-height`      | `1rem`           | subtitle line height                  |
-| `--origam-list-item---min-height`                 | `40px`           | row minimum **content** height (density-adjusted) |
+| `--origam-list-item---min-height`                 | undeclared — resolves through `--origam-list__item---min-height` (`56px`) | row minimum **border-box** height, i.e. the rendered row height (density-adjusted). Set to the whole rung by the `size` prop's `--size-*` rules; padding does **not** subtract from it |
 | `--origam-list-item---padding-block-start`        | `8px`            | top padding                           |
 | `--origam-list-item---padding-inline-start`       | `16px`           | left padding (indent-adjusted)        |
 | `--origam-list-item---height-sm` / `-md` / `-lg` / `-xl` | `28px` / `36px` / `44px` / `52px` | total row height per `size` rung |

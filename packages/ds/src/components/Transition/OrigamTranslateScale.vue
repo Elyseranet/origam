@@ -13,7 +13,7 @@
 >
 	import { computed } from 'vue'
 	import { useProps } from '../../composables/Commons/props.composable'
-	import { EASING, TRANSITION_MODE } from '../../enums/Transition/transition.enum'
+	import { EASING } from '../../enums/Transition/transition.enum'
 
 	import type { ITranslateScaleProps } from '../../interfaces/Transition/translate-scale.interface'
 	import type { ITransitionEmits, ITransitionSlots } from '../../interfaces/Transition/transition.interface'
@@ -27,9 +27,20 @@
 	 * @description
 	 * Props with defaults and filterProps utility.
 	 ********************************************************/
+	/*********************************************************
+	 * ⛔ No `mode` default here.
+	 *
+	 * @description
+	 * `mode` was removed from `ITranslateScaleProps` on 2026-09-06, but a
+	 * `mode: TRANSITION_MODE.IN_OUT` entry survived in this object. It was
+	 * dead weight AND a lie about the surface: measured on the compiled
+	 * descriptor, `Object.keys(OrigamTranslateScale.props)` is
+	 * `['target','disabled','name','origin']` — the SFC compiler drops a
+	 * `withDefaults` key that has no matching member in the props type, so
+	 * the default never existed at runtime.
+	 ********************************************************/
 	const props = withDefaults(defineProps<ITranslateScaleProps>(), {
-		name: 'origam-transition--transform-scale',
-		mode: TRANSITION_MODE.IN_OUT
+		name: 'origam-transition--transform-scale'
 	})
 
 	const {filterProps} = useProps<ITranslateScaleProps>(props)

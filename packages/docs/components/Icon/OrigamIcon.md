@@ -44,11 +44,11 @@ Five named tiers are mapped to the typographic scale tokens:
 
 ```vue
 <template>
-    <OrigamIcon icon="mdi-home" size="x-small" />  <!-- font.size.xs -->
-    <OrigamIcon icon="mdi-home" size="small"   />  <!-- font.size.sm -->
-    <OrigamIcon icon="mdi-home" size="default" />  <!-- font.size.md -->
-    <OrigamIcon icon="mdi-home" size="large"   />  <!-- font.size.lg -->
-    <OrigamIcon icon="mdi-home" size="x-large" />  <!-- font.size.xl -->
+    <OrigamIcon icon="mdi-home" size="x-small" />  <!-- --origam-icon---font-size-xs -->
+    <OrigamIcon icon="mdi-home" size="small"   />  <!-- --origam-icon---font-size-sm -->
+    <OrigamIcon icon="mdi-home" size="default" />  <!-- --origam-icon---font-size-md -->
+    <OrigamIcon icon="mdi-home" size="large"   />  <!-- --origam-icon---font-size-lg -->
+    <OrigamIcon icon="mdi-home" size="x-large" />  <!-- --origam-icon---font-size-xl -->
 
     <!-- Numeric override (pixels) -->
     <OrigamIcon icon="mdi-home" :size="48" />
@@ -82,13 +82,21 @@ For a one-off custom colour, use a `:style` binding instead of a raw hex:
 
 ```vue
 <template>
-    <!-- Default — <i> for class-icons, <div> for SVG/component/ligature -->
+    <!-- Default — <i>, for EVERY notation -->
     <OrigamIcon icon="mdi-home" />
+    <OrigamIcon icon="M12 2 L17 8 …" />
 
     <!-- Force a different tag -->
     <OrigamIcon icon="mdi-home" tag="span" />
 </template>
 ```
+
+⚠️ The root is `<i>` whatever the notation. `<OrigamIcon>` declares
+`withDefaults(…, { tag: 'i' })` and forwards `:tag="tag"` to the leaf it
+dispatched to, so `OrigamSvgIcon` / `OrigamComponentIcon` /
+`OrigamLigatureIcon`'s own `tag: 'div'` default is never reached through the
+dispatcher. Mounting a leaf directly *does* give you a `<div>`. Pinned by
+`packages/tests/TU/components/Icon/icon-root-tag.spec.ts`.
 
 ## Click handler (button mode)
 
@@ -111,12 +119,71 @@ semantics: `role="button"`, `cursor: pointer`, no `aria-hidden`.
 |---|---|
 | `default` | Override the icon by passing its **string name** as the slot's text content. Useful for `<OrigamIcon>$success</OrigamIcon>`. |
 
+## Props
+
+### Content
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `icon` | `TIcon` | `undefined` | The glyph. See the dispatch table at the top for every accepted form. Overridden by the `default` slot when that slot resolves to a text node |
+| `tag` | `string` | `'i'` | Element the root renders as |
+
+### Color
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `color` | `TColor` | `undefined` | Foreground. Falls back to `--origam-icon---color`, i.e. `currentColor` |
+| `bgColor` | `TColor` | `undefined` | Surface behind the glyph. Both channels go through `useBothColor` |
+
+### Sizing
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `size` | `TSize \| number` | `undefined` | One of `x-small` · `small` · `default` · `large` · `x-large`. Emits `origam-icon--size-{value}`, whose rule reads `--origam-icon---font-size-{xs\|sm\|md\|lg\|xl}`. A number or an unrecognised length goes to `sizeStyles` as inline `width` / `height` instead — never both channels at once. **Unset means no class and no rule**: the glyph keeps the inherited `font-size` |
+
+### Dimension (`IDimensionProps`)
+
+Consumed by `useDimension(props)` — inline declarations on the root, so they
+outrank the size rung.
+
+| Prop | Type | Description |
+|---|---|---|
+| `width` / `height` | `number \| string` | Explicit box size |
+| `minWidth` / `minHeight` | `number \| string` | |
+| `maxWidth` / `maxHeight` | `number \| string` | |
+
+### Shape, border and spacing
+
+| Group | Props | Composable |
+|---|---|---|
+| Shape | `rounded`, `roundedTopLeft` / `TopRight` / `BottomLeft` / `BottomRight` | `useRounded` |
+| Border | `border`, `borderBlock`, `borderInline`, `borderTop` / `Right` / `Bottom` / `Left`, `borderColor`, `borderStyle`, the four per-side `border*Color` | `useBorder` |
+| Padding | `padding`, `paddingBlock`, `paddingInline`, `paddingTop` / `Right` / `Bottom` / `Left` | `usePadding` |
+| Margin | `margin`, `marginBlock`, `marginInline`, `marginTop` / `Right` / `Bottom` / `Left` | `useMargin` |
+| Commons | `id`, `class`, `style` | — |
+
+### Not a prop
+
+`disabled` is deliberately absent. None of the five icon components ever read
+it, and an icon is a render element, not a control — there is nothing to
+disable. Paint the disabled state on whatever *carries* the icon (button,
+field, list item); the icon inherits its opacity and cursor. That also stops a
+single control from showing two divergent disabled treatments.
+
+## Emits
+
+**None.** `IIconComponentEmits` is empty on purpose: none of the five
+components calls `emit(…)` anywhere. A `@click` listener you attach is a
+plain DOM listener — which is exactly what `useIconAccessibility` detects to
+switch the icon into button mode (see **Accessibility**).
+
 ## Props (interface)
 
 ```ts
 interface IIconComponentProps extends IIconProps,
-    IColorProps, ICommonsComponentProps, ITagProps,
-    ISizeProps, IPaddingProps, IMarginProps, IBorderProps {
+    IColorProps, IBgColorProps, ICommonsComponentProps, ITagProps,
+    ISizeProps, IPaddingProps, IMarginProps, IBorderProps,
+    IDimensionProps, IRoundedProps {
 }
 
 interface IIconProps {
@@ -131,24 +198,31 @@ type TIcon =
 
 ## Anatomy
 
+Through `<OrigamIcon>` the root is always `<i>` (see **Polymorphic tag**), and
+the `--size-*` class only appears when `size` is set.
+
 ```html
-<!-- Class icon (mdi/fa) -->
+<!-- Class icon (mdi/fa) — <OrigamIcon icon="mdi-home" size="default" /> -->
 <i class="origam-icon origam-icon--size-default mdi mdi-home"></i>
 
-<!-- SVG icon -->
-<div class="origam-icon origam-icon--svg origam-icon--size-default">
-    <svg class="origam-icon__svg" viewBox="0 0 24 24">
+<!-- SVG icon — <OrigamIcon icon="M12 …" /> -->
+<i class="origam-icon origam-icon--svg">
+    <svg class="origam-icon__svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
         <path d="…" />
     </svg>
-</div>
+</i>
 
-<!-- Ligature icon -->
-<div class="origam-icon origam-icon--ligature origam-icon--size-default">home</div>
-
-<!-- Component icon (Vue component) -->
-<div class="origam-icon origam-icon--component origam-icon--size-default">
+<!-- Component icon — <OrigamIcon :icon="LucideHome" /> -->
+<i class="origam-icon origam-icon--component">
     <!-- inner Vue component -->
-</div>
+</i>
+```
+
+Mounted directly rather than through the dispatcher, each leaf keeps its own
+`tag: 'div'` default:
+
+```html
+<div class="origam-icon origam-icon--ligature">home</div>
 ```
 
 ## Design tokens consumed
@@ -157,15 +231,18 @@ type TIcon =
 `packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
 under `packages/ds/src/assets/scss/tokens/`):
 
-| CSS variable | Token reference |
+| CSS variable | Declared value |
 |---|---|
 | `--origam-icon---color` | `currentColor` |
-| `--origam-icon---transition-duration` | `{motion.duration.fast}` |
-| `--origam-icon---font-size-xs` | `{font.size.xs}` |
-| `--origam-icon---font-size-sm` | `{font.size.sm}` |
-| `--origam-icon---font-size-md` | `{font.size.md}` |
-| `--origam-icon---font-size-lg` | `{font.size.lg}` |
-| `--origam-icon---font-size-xl` | `{font.size.xl}` |
+| `--origam-icon---transition-duration` | `var(--origam-motion__duration---fast)` |
+| `--origam-icon---transition-timing-function` | `var(--origam-motion__easing---standard)` |
+| `--origam-icon---font-size-xs` … `-4xl` | `var(--origam-font__size---{rung})`, for `xs` `sm` `md` `lg` `xl` `2xl` `3xl` `4xl` |
+| `--origam-icon---color-primary` | `var(--origam-color__action--primary---bg)` |
+| `--origam-icon---color-success` | `var(--origam-color__feedback--success---bg)` |
+| `--origam-icon---color-warning` | `var(--origam-color__feedback--warning---bg)` |
+| `--origam-icon---color-danger` | `var(--origam-color__feedback--danger---bg)` |
+| `--origam-icon---color-info` | `var(--origam-color__feedback--info---bg)` |
+| `--origam-icon---color-disabled` | `var(--origam-color__text---disabled)` |
 
 ## Accessibility
 

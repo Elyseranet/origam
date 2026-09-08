@@ -25,7 +25,7 @@
 					/>
 				</StoryGroup>
 				<StoryGroup title="Behaviour">
-					<HstCheckbox v-model="state.returnObject" title="Return Object"/>
+					<HstCheckbox v-model="state.returnObject" title="Return Object (declared, no effect — warns in dev)"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -51,14 +51,14 @@
 					/>
 				</StoryGroup>
 				<StoryGroup title="States">
-					<HstCheckbox v-model="state.returnObject" title="Return Object"/>
+					<HstCheckbox v-model="state.returnObject" title="Return Object (declared, no effect — warns in dev)"/>
 				</StoryGroup>
 			</template>
 		</Variant>
 
 		<Variant title="Slots - Children">
 			<origam-list>
-				<origam-list-children :items="flatItems" return-object>
+				<origam-list-children :items="flatItems">
 					<template #children="{ item }">
 						<span>Custom child: {{ item.title }}</span>
 					</template>
@@ -68,7 +68,7 @@
 
 		<Variant title="Slots - Default">
 			<origam-list>
-				<origam-list-children :items="flatItems" return-object>
+				<origam-list-children :items="flatItems">
 					<span>Custom slot content</span>
 				</origam-list-children>
 			</origam-list>
@@ -76,7 +76,7 @@
 
 		<Variant title="Slots - Divider">
 			<origam-list>
-				<origam-list-children :items="flatItems" return-object>
+				<origam-list-children :items="typedItems">
 					<template #divider>
 						<hr style="border-color: var(--origam-color__border---subtle); margin: 4px 0;"/>
 					</template>
@@ -106,7 +106,7 @@
 
 		<Variant title="Slots - Item">
 			<origam-list>
-				<origam-list-children :items="flatItems" return-object>
+				<origam-list-children :items="flatItems">
 					<template #item="{ item }">
 						<origam-list-item :title="item.title" :prepend-icon="item.prependIcon"/>
 					</template>
@@ -116,7 +116,7 @@
 
 		<Variant title="Slots - Subheader">
 			<origam-list>
-				<origam-list-children :items="flatItems" return-object>
+				<origam-list-children :items="typedItems">
 					<template #subheader>
 						<span style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; padding: 4px 16px;">Custom subheader</span>
 					</template>
@@ -126,7 +126,7 @@
 
 		<Variant title="Slots - SubheaderTitle">
 			<origam-list>
-				<origam-list-children :items="flatItems" return-object>
+				<origam-list-children :items="typedItems">
 					<template #subheaderTitle>
 						<span>Custom subheader title</span>
 					</template>
@@ -152,7 +152,7 @@
 					/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
-					<HstCheckbox v-model="state.returnObject" title="Return Object"/>
+					<HstCheckbox v-model="state.returnObject" title="Return Object (declared, no effect — warns in dev)"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -164,43 +164,59 @@
 		setup
 >
 	import { OrigamList, OrigamListChildren, OrigamListItem } from '@origam/components'
-	import { MDI_ICONS } from '@origam/enums'
+	import { LIST_ITEM_TYPE, MDI_ICONS } from '@origam/enums'
 	import type { IListItemChildren } from '@origam/interfaces'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 
+	/*
+		`<origam-list-children>` consumes ALREADY-NORMALISED items — the shape
+		`transformListItem()` produces for `<origam-list :items>`: the row's own
+		props live under `props`, and the branch (item / subheader / divider) is
+		decided by `type`. Passing raw `{ title, prependIcon }` objects renders
+		empty rows, because the renderer only ever spreads `item.props`.
+	*/
 	const flatItems = [
-		{ title: 'Inbox',   prependIcon: MDI_ICONS.INBOX },
-		{ title: 'Starred', prependIcon: MDI_ICONS.STAR },
-		{ title: 'Sent',    prependIcon: MDI_ICONS.SEND },
-		{ title: 'Drafts',  prependIcon: MDI_ICONS.FILE_DOCUMENT_OUTLINE },
+		{ title: 'Inbox',   props: { title: 'Inbox',   prependIcon: MDI_ICONS.INBOX } },
+		{ title: 'Starred', props: { title: 'Starred', prependIcon: MDI_ICONS.STAR } },
+		{ title: 'Sent',    props: { title: 'Sent',    prependIcon: MDI_ICONS.SEND } },
+		{ title: 'Drafts',  props: { title: 'Drafts',  prependIcon: MDI_ICONS.FILE_DOCUMENT_OUTLINE } },
+	]
+
+	const typedItems = [
+		{ title: 'Folders', type: LIST_ITEM_TYPE.SUBHEADER, props: { title: 'Folders' } },
+		{ title: 'Inbox',   props: { title: 'Inbox',   prependIcon: MDI_ICONS.INBOX } },
+		{ title: 'Starred', props: { title: 'Starred', prependIcon: MDI_ICONS.STAR } },
+		{ title: 'divider', type: LIST_ITEM_TYPE.DIVIDER },
+		{ title: 'Sent',    props: { title: 'Sent',    prependIcon: MDI_ICONS.SEND } },
 	]
 
 	const nestedItems = [
 		{
 			title: 'Mail',
-			prependIcon: MDI_ICONS.EMAIL_OUTLINE,
+			props: { title: 'Mail', prependIcon: MDI_ICONS.EMAIL_OUTLINE },
 			children: [
-				{ title: 'Inbox',   prependIcon: MDI_ICONS.INBOX },
-				{ title: 'Sent',    prependIcon: MDI_ICONS.SEND },
-				{ title: 'Drafts',  prependIcon: MDI_ICONS.FILE_DOCUMENT_OUTLINE },
+				{ title: 'Inbox',  props: { title: 'Inbox',  prependIcon: MDI_ICONS.INBOX } },
+				{ title: 'Sent',   props: { title: 'Sent',   prependIcon: MDI_ICONS.SEND } },
+				{ title: 'Drafts', props: { title: 'Drafts', prependIcon: MDI_ICONS.FILE_DOCUMENT_OUTLINE } },
 			],
 		},
 		{
 			title: 'Calendar',
-			prependIcon: MDI_ICONS.CALENDAR,
+			props: { title: 'Calendar', prependIcon: MDI_ICONS.CALENDAR },
 			children: [
-				{ title: 'Today',    prependIcon: MDI_ICONS.CALENDAR_TODAY },
-				{ title: 'Upcoming', prependIcon: MDI_ICONS.CALENDAR_CLOCK },
+				{ title: 'Today',    props: { title: 'Today',    prependIcon: MDI_ICONS.CALENDAR_TODAY } },
+				{ title: 'Upcoming', props: { title: 'Upcoming', prependIcon: MDI_ICONS.CALENDAR_CLOCK } },
 			],
 		},
-		{ title: 'Settings', prependIcon: MDI_ICONS.COG_OUTLINE },
+		{ title: 'Settings', props: { title: 'Settings', prependIcon: MDI_ICONS.COG_OUTLINE } },
 	]
 
 	const ITEMS_PRESET_OPTIONS = [
 		{ label: 'Flat list',    value: flatItems },
 		{ label: 'Nested items', value: nestedItems },
+		{ label: 'Typed items (subheader + divider)', value: typedItems },
 	]
 </script>
 

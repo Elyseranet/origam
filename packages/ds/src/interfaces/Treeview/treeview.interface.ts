@@ -61,10 +61,20 @@ export interface ITreeviewEmits {
  * ITreeviewSlots
  *
  * @description
- * `<OrigamTreeview>` renders no `<slot>` of its own — every node is
- * delegated to `<OrigamTreeviewNode>` (which carries the `node` slot).
+ * `<OrigamTreeview>` owns no slot content — every node is delegated to
+ * `<OrigamTreeviewNode>`, which renders `node`. It does relay that one
+ * name down, so a consumer can write `<template #node>` on the tree
+ * itself rather than on each node; `<OrigamTreeviewNode>` then carries
+ * it through every recursion level.
  ********************************************************/
-export interface ITreeviewSlots {}
+export interface ITreeviewSlots {
+    node?: (props: {
+        node: ITreeviewNode
+        depth: number
+        isExpanded: boolean
+        isSelected: boolean
+    }) => any
+}
 
 export interface ITreeviewProvide {
     toggleExpanded: (id: string) => void

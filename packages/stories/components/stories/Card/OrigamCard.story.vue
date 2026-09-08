@@ -190,6 +190,13 @@
 						:tag="state.tag"
 						:ripple="state.ripple"
 				/>
+				<p style="margin: 12px 0 0; font-size: 0.75rem; color: var(--origam-color__text---secondary);">
+					The Histoire sandbox installs no vue-router, so <code>To</code>,
+					<code>Replace</code> and <code>Exact</code> are inert here.
+					They are real props — with a router installed,
+					<code>replace</code> routes through <code>router.replace()</code>.
+					<code>Href</code> works in the sandbox.
+				</p>
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="States">
