@@ -1,0 +1,217 @@
+Ligne	Composant	C7	Raison
+3	OrigamAlert	defaut	1 prop(s) sans controle
+4	OrigamApp	conforme	
+5	OrigamAppBar	conforme	
+6	OrigamAudio	defaut	3 prop(s) sans controle, 4 prop(s) sans ligne de doc, 7 emit(s) sans Variant, 9 slot(s) sans Variant
+7	OrigamAvatar	defaut	1 prop(s) sans ligne de doc
+8	OrigamAvatarGroup	defaut	4 prop(s) sans ligne de doc
+9	OrigamBadge	defaut	9 prop(s) sans ligne de doc
+10	OrigamBlockquote	conforme	
+11	OrigamBottomNav	conforme	
+12	OrigamBracket	defaut	1 prop(s) sans controle
+13	OrigamBracketCompetitor	defaut	1 prop(s) sans controle
+14	OrigamBracketMatch	conforme	
+15	OrigamBracketRound	defaut	2 prop(s) sans controle, 1 slot(s) sans Variant
+16	OrigamBreadcrumb	defaut	1 slot(s) sans Variant
+17	OrigamBreadcrumbDivider	defaut	doc absente
+18	OrigamBreadcrumbItem	defaut	doc absente
+19	OrigamBtn	defaut	8 prop(s) sans ligne de doc
+20	OrigamBtnGroup	defaut	2 prop(s) sans ligne de doc
+21	OrigamBtnToggle	conforme	
+22	OrigamCalendar	defaut	2 emit(s) sans Variant
+23	OrigamCard	defaut	1 prop(s) sans controle, 8 prop(s) sans ligne de doc
+24	OrigamCardHeader	defaut	1 prop(s) sans controle, 1 prop(s) sans ligne de doc
+25	OrigamCardText	conforme	
+26	OrigamCarousel	conforme	
+27	OrigamCarouselItem	conforme	
+28	OrigamChart	defaut	7 prop(s) sans controle, 6 prop(s) sans ligne de doc
+29	OrigamChartAxis	conforme	
+30	OrigamChartBoxPlot	defaut	3 prop(s) sans controle, 1 slot(s) sans Variant
+31	OrigamChartBullet	defaut	2 prop(s) sans controle, 4 slot(s) sans Variant
+32	OrigamChartCandlestick	defaut	2 prop(s) sans controle, 1 slot(s) sans Variant
+33	OrigamChartCartesian	defaut	7 prop(s) sans controle, 8 prop(s) sans ligne de doc, 2 emit(s) sans Variant, 1 slot(s) sans Variant
+34	OrigamChartGauge	defaut	2 prop(s) sans controle, 5 slot(s) sans Variant
+35	OrigamChartHeatmap	defaut	2 prop(s) sans controle, 3 slot(s) sans Variant
+36	OrigamChartHoneycomb	defaut	3 prop(s) sans controle, 2 slot(s) sans Variant
+37	OrigamChartLegend	defaut	1 slot(s) sans Variant
+38	OrigamChartMap	defaut	1 prop(s) sans controle
+39	OrigamChartPareto	defaut	3 prop(s) sans controle, 1 slot(s) sans Variant
+40	OrigamChartPictorial	defaut	2 prop(s) sans controle, 1 prop(s) sans ligne de doc, 1 slot(s) sans Variant
+41	OrigamChartPolar	defaut	3 prop(s) sans controle, 1 prop(s) sans ligne de doc, 1 slot(s) sans Variant
+42	OrigamChartPolarBar	defaut	3 prop(s) sans controle, 1 slot(s) sans Variant
+43	OrigamChartPyramid	defaut	2 prop(s) sans controle, 2 slot(s) sans Variant
+44	OrigamChartRadar	defaut	1 slot(s) sans Variant
+45	OrigamChartRangeSelector	defaut	1 prop(s) sans controle
+46	OrigamChartSankey	defaut	2 prop(s) sans controle, 5 slot(s) sans Variant
+47	OrigamChartSparkline	conforme	
+48	OrigamChartStreamgraph	defaut	2 prop(s) sans controle, 1 slot(s) sans Variant
+49	OrigamChartSunburst	defaut	1 prop(s) sans controle, 1 slot(s) sans Variant
+50	OrigamChartTooltip	conforme	
+51	OrigamChartTreemap	defaut	1 prop(s) sans controle, 2 slot(s) sans Variant
+52	OrigamChartVariwide	defaut	2 prop(s) sans controle, 4 slot(s) sans Variant
+53	OrigamChartWordCloud	defaut	2 prop(s) sans controle, 1 slot(s) sans Variant
+54	OrigamCheckbox	defaut	1 emit(s) sans Variant
+55	OrigamCheckboxBtn	conforme	
+56	OrigamChip	defaut	1 prop(s) sans controle
+57	OrigamChipGroup	defaut	3 prop(s) sans controle, 1 prop(s) sans ligne de doc
+58	OrigamClientOnly	conforme	
+59	OrigamClipboard	conforme	
+60	OrigamCode	defaut	1 prop(s) sans controle
+61	OrigamColorPicker	defaut	1 prop(s) sans controle, 1 prop(s) sans ligne de doc
+62	OrigamColorPickerCanvas	conforme	
+63	OrigamColorPickerEdit	defaut	1 prop(s) sans controle
+64	OrigamColorPickerPreview	defaut	1 prop(s) sans controle
+65	OrigamColorPickerSwatches	conforme	
+66	OrigamColorPickerField	defaut	4 prop(s) sans controle
+67	OrigamCommandPalette	defaut	1 prop(s) sans controle
+68	OrigamConfirmWrapper	defaut	2 prop(s) sans controle, 14 prop(s) sans ligne de doc
+69	OrigamContextualMenu	conforme	
+70	OrigamCounter	defaut	4 prop(s) sans ligne de doc
+71	OrigamDataList	conforme	
+72	OrigamDataText	conforme	
+73	OrigamDataTitle	conforme	
+74	OrigamDataTable	defaut	1 prop(s) sans ligne de doc, 2 emit(s) sans Variant, 7 slot(s) sans Variant
+75	OrigamDataTableColumnCell	defaut	5 prop(s) sans ligne de doc
+76	OrigamDataTableFooter	defaut	12 prop(s) sans ligne de doc
+77	OrigamDataTableGroupHeaderRow	defaut	5 prop(s) sans controle, 2 slot(s) sans Variant
+78	OrigamDataTableHeaderCell	defaut	3 prop(s) sans controle, 3 prop(s) sans ligne de doc
+79	OrigamDataTableHeaders	conforme	
+80	OrigamDataTableHeadersCell	defaut	1 prop(s) sans ligne de doc
+81	OrigamDataTableHeadersCellMobile	defaut	1 prop(s) sans controle, 2 prop(s) sans ligne de doc, 21 slot(s) sans Variant
+82	OrigamDataTableRow	defaut	2 prop(s) sans controle, 2 prop(s) sans ligne de doc, 2 slot(s) sans Variant
+83	OrigamDataTableRows	defaut	2 prop(s) sans controle, 2 emit(s) sans Variant, 5 slot(s) sans Variant
+84	OrigamDatePicker	defaut	1 prop(s) sans controle
+85	OrigamDatePickerControls	defaut	1 prop(s) sans controle
+86	OrigamDatePickerHeader	conforme	
+87	OrigamDatePickerMonth	conforme	
+88	OrigamDatePickerMonths	defaut	1 slot(s) sans Variant
+89	OrigamDatePickerYears	defaut	1 slot(s) sans Variant
+90	OrigamDatePickerField	defaut	5 prop(s) sans controle
+91	OrigamDefaultsProvider	conforme	
+92	OrigamDialog	defaut	5 prop(s) sans ligne de doc, 5 slot(s) sans Variant
+93	OrigamDialogConfirmation	defaut	5 slot(s) sans Variant
+94	OrigamDivider	conforme	
+95	OrigamDrawer	defaut	1 prop(s) sans controle, 14 prop(s) sans ligne de doc
+96	OrigamEmptyState	conforme	
+97	OrigamExpansionPanel	conforme	
+98	OrigamExpansionPanelContent	conforme	
+99	OrigamExpansionPanelHeader	conforme	
+100	OrigamExpansionPanels	conforme	
+101	OrigamField	defaut	9 prop(s) sans ligne de doc
+102	OrigamFileField	defaut	10 prop(s) sans controle, 7 prop(s) sans ligne de doc, 6 emit(s) sans Variant
+103	OrigamFileFieldDragNDropItem	defaut	1 prop(s) sans controle
+104	OrigamFileFieldListItem	defaut	1 prop(s) sans controle
+105	OrigamForm	defaut	3 prop(s) sans controle, 1 emit(s) sans Variant
+106	OrigamGrid	conforme	
+107	OrigamGridItem	defaut	story absente, doc absente
+108	OrigamCol	defaut	13 prop(s) sans ligne de doc
+109	OrigamContainer	defaut	2 prop(s) sans ligne de doc
+110	OrigamRow	defaut	2 prop(s) sans ligne de doc
+111	OrigamSpacer	conforme	
+112	OrigamClassIcon	conforme	
+113	OrigamComponentIcon	conforme	
+114	OrigamIcon	conforme	
+115	OrigamLigatureIcon	conforme	
+116	OrigamSvgIcon	conforme	
+117	OrigamImg	defaut	12 prop(s) sans ligne de doc
+118	OrigamInfiniteScroll	defaut	2 prop(s) sans ligne de doc
+119	OrigamInfiniteScrollIntersect	defaut	1 prop(s) sans controle, 3 prop(s) sans ligne de doc
+120	OrigamInlineEdit	defaut	1 prop(s) sans controle, 1 emit(s) sans Variant
+121	OrigamInput	defaut	5 prop(s) sans ligne de doc
+122	OrigamItemGroupItem	defaut	story absente
+123	OrigamItemGroup	conforme	
+124	OrigamKbd	conforme	
+125	OrigamLabel	defaut	4 prop(s) sans ligne de doc
+126	OrigamLayout	conforme	
+127	OrigamLazy	conforme	
+128	OrigamList	defaut	4 prop(s) sans controle, 2 prop(s) sans ligne de doc
+129	OrigamListChildren	defaut	2 prop(s) sans ligne de doc
+130	OrigamListGroup	defaut	doc absente
+131	OrigamListGroupActivator	conforme	
+132	OrigamListItem	conforme	
+133	OrigamListSubheader	conforme	
+134	OrigamLoader	conforme	
+135	OrigamMain	defaut	1 prop(s) sans ligne de doc
+136	OrigamMasonry	conforme	
+137	OrigamMediaController	defaut	15 prop(s) sans controle, 6 emit(s) sans Variant, 8 slot(s) sans Variant
+138	OrigamMediaScrubber	conforme	
+139	OrigamMediaVolumeControl	defaut	story absente, doc absente
+140	OrigamMenu	defaut	1 prop(s) sans controle, 1 prop(s) sans ligne de doc
+141	OrigamMessages	defaut	2 prop(s) sans ligne de doc
+142	OrigamNumberField	defaut	5 prop(s) sans controle, 19 prop(s) sans ligne de doc, 4 emit(s) sans Variant
+143	OrigamNumberFormat	conforme	
+144	OrigamOtpInputField	defaut	2 prop(s) sans controle, 8 prop(s) sans ligne de doc, 1 emit(s) sans Variant, 4 slot(s) sans Variant
+145	OrigamOverlay	defaut	4 prop(s) sans controle, 11 prop(s) sans ligne de doc
+146	OrigamOverlayScrim	defaut	1 prop(s) sans ligne de doc
+147	OrigamPagination	defaut	20 prop(s) sans controle, 10 prop(s) sans ligne de doc
+148	OrigamParallax	defaut	1 prop(s) sans controle
+149	OrigamParallaxElement	defaut	11 prop(s) sans ligne de doc
+150	OrigamParallaxLayer	defaut	4 prop(s) sans ligne de doc
+151	OrigamPasswordField	defaut	4 prop(s) sans controle, 16 prop(s) sans ligne de doc, 6 emit(s) sans Variant
+152	OrigamPicker	defaut	2 prop(s) sans ligne de doc
+153	OrigamPickerTitle	conforme	
+154	OrigamProgress	defaut	1 prop(s) sans ligne de doc
+155	OrigamProgressCircular	defaut	1 prop(s) sans ligne de doc
+156	OrigamProgressLinear	defaut	4 prop(s) sans ligne de doc, 1 emit(s) sans Variant
+157	OrigamQrCode	defaut	2 prop(s) sans ligne de doc, 1 slot(s) sans Variant
+158	OrigamRadio	conforme	
+159	OrigamRadioBtn	conforme	
+160	OrigamRadioGroup	conforme	
+161	OrigamRatingField	defaut	3 prop(s) sans controle, 2 prop(s) sans ligne de doc, 2 slot(s) sans Variant
+162	OrigamRatingFieldItem	defaut	2 prop(s) sans controle
+163	OrigamResponsive	defaut	3 prop(s) sans ligne de doc
+164	OrigamSelect	defaut	11 prop(s) sans controle, 19 prop(s) sans ligne de doc, 2 slot(s) sans Variant
+165	OrigamSelectionControl	defaut	3 prop(s) sans controle, 2 prop(s) sans ligne de doc, 1 emit(s) sans Variant
+166	OrigamSelectionControlGroup	defaut	doc absente, 2 prop(s) sans controle
+167	OrigamSheet	defaut	1 prop(s) sans controle
+168	OrigamSkeleton	conforme	
+169	OrigamSlideGroup	defaut	4 prop(s) sans ligne de doc
+170	OrigamSliderField	defaut	5 prop(s) sans controle, 1 prop(s) sans ligne de doc, 3 slot(s) sans Variant
+171	OrigamSliderFieldTrack	defaut	1 slot(s) sans Variant
+172	OrigamSnackbar	defaut	4 prop(s) sans ligne de doc, 2 slot(s) sans Variant
+173	OrigamSnackbarGroup	conforme	
+174	OrigamSnackbarItem	defaut	1 prop(s) sans controle, 7 prop(s) sans ligne de doc, 3 slot(s) sans Variant
+175	OrigamStepper	conforme	
+176	OrigamStepperItem	conforme	
+177	OrigamSwitch	defaut	3 prop(s) sans ligne de doc, 2 slot(s) sans Variant
+178	OrigamSwitchTrack	defaut	4 slot(s) sans Variant
+179	OrigamSystemBar	conforme	
+180	OrigamTable	conforme	
+181	OrigamTab	defaut	story absente, doc absente
+182	OrigamTabPanel	defaut	story absente, doc absente
+183	OrigamTabPanels	defaut	story absente, doc absente
+184	OrigamTabs	defaut	1 prop(s) sans controle
+185	OrigamTextField	defaut	4 prop(s) sans controle, 9 prop(s) sans ligne de doc, 1 emit(s) sans Variant
+186	OrigamTextMask	defaut	6 prop(s) sans ligne de doc
+187	OrigamTextareaField	defaut	8 prop(s) sans controle, 14 prop(s) sans ligne de doc, 6 emit(s) sans Variant, 2 slot(s) sans Variant
+188	OrigamTextareaFieldRichToolbar	defaut	story absente, doc absente
+189	OrigamThemeProvider	conforme	
+190	OrigamTimeline	conforme	
+191	OrigamTimelineItem	defaut	10 prop(s) sans ligne de doc
+192	OrigamTitle	defaut	1 prop(s) sans ligne de doc
+193	OrigamToolbar	defaut	4 prop(s) sans ligne de doc
+194	OrigamTooltip	defaut	1 prop(s) sans controle, 2 prop(s) sans ligne de doc
+195	OrigamExpandX	conforme	
+196	OrigamExpandY	conforme	
+197	OrigamFade	conforme	
+198	OrigamReverseTranslatePicker	defaut	7 prop(s) sans ligne de doc
+199	OrigamScaleRotate	defaut	7 prop(s) sans ligne de doc
+200	OrigamSlideX	defaut	7 prop(s) sans ligne de doc
+201	OrigamSlideY	defaut	7 prop(s) sans ligne de doc
+202	OrigamSnack	defaut	7 prop(s) sans ligne de doc
+203	OrigamTransition	defaut	1 prop(s) sans ligne de doc
+204	OrigamTranslateBottom	conforme	
+205	OrigamTranslatePicker	conforme	
+206	OrigamTranslateScale	defaut	1 prop(s) sans controle
+207	OrigamWindowXReverseTranslate	conforme	
+208	OrigamWindowXTranslate	conforme	
+209	OrigamWindowYReverseTranslate	conforme	
+210	OrigamWindowYTranslate	conforme	
+211	OrigamTreeview	defaut	2 prop(s) sans controle, 1 prop(s) sans ligne de doc
+212	OrigamTreeviewNode	defaut	2 prop(s) sans controle, 1 slot(s) sans Variant
+213	OrigamVideo	defaut	2 prop(s) sans controle, 4 emit(s) sans Variant
+214	OrigamVirtualScroll	conforme	
+215	OrigamVirtualScrollItem	conforme	
+216	OrigamWatermark	conforme	
+217	OrigamWindow	defaut	2 prop(s) sans controle, 10 prop(s) sans ligne de doc
+218	OrigamWindowItem	defaut	2 prop(s) sans ligne de doc

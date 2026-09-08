@@ -105,6 +105,64 @@ const DOCS_DIR = path.join(REPO, 'packages/docs/components')
 /** Props presentes partout et qui n'apprennent rien — cf. limite 1. */
 const IGNORED_PROPS = new Set(['class', 'style'])
 
+const INTERFACES_DIR = path.join(DS_ROOT, 'src/interfaces')
+
+/*
+ * Index nom-de-prop -> type declare, construit a la volee sur
+ * `src/interfaces/`.
+ *
+ * ⛔ POURQUOI UN INDEX LOCAL PLUTOT QUE `declaredPropsFor`
+ * ---------------------------------------------------------------------
+ * `declaredPropsFor` rend une Map prop -> interface DECLARANTE, pas le
+ * TYPE. L'etendre imposerait de modifier `audit-unconsumed-props.mjs`,
+ * qui alimente AUSSI le garde bloquant `guards/unconsumed-props.mjs` :
+ * toute retouche la-bas deplace le garde. Ce detecteur ne bloque rien et
+ * n'a aucune raison de faire bouger un garde de CI.
+ *
+ * L'index est volontairement approximatif — il indexe par NOM de prop,
+ * sans resoudre l'interface d'origine, donc deux interfaces qui declarent
+ * `items` avec des types differents se collisionnent (le premier vu
+ * gagne). C'est acceptable ici : il ne sert qu'a repondre « ce type est-il
+ * un objet/tableau/fonction ? », un verdict qui ne varie pas entre deux
+ * declarations homonymes dans ce depot.
+ */
+let PROP_TYPES = null
+
+function propTypeIndex () {
+    if (PROP_TYPES) return PROP_TYPES
+
+    PROP_TYPES = new Map()
+
+    const walk = (dir) => {
+        for (const entry of readdirSync(dir, { withFileTypes: true })) {
+            const full = path.join(dir, entry.name)
+            if (entry.isDirectory()) { walk(full); continue }
+            if (!entry.name.endsWith('.interface.ts')) continue
+
+            const body = readFileSync(full, 'utf8')
+            for (const m of body.matchAll(/^\s{4}([a-z][A-Za-z0-9]*)\??:\s*([^\n]+?)\s*$/gm)) {
+                if (!PROP_TYPES.has(m[1])) PROP_TYPES.set(m[1], m[2].replace(/,$/, ''))
+            }
+        }
+    }
+    walk(INTERFACES_DIR)
+
+    return PROP_TYPES
+}
+
+/**
+ * Le type de cette prop interdit-il un controle Histoire ?
+ *
+ * Les controles Histoire (`HstText` / `HstNumber` / `HstSelect` /
+ * `HstCheckbox`) ne bindent que des PRIMITIFS. Un objet, un tableau ou une
+ * fonction n'a donc aucun controle possible a son nom.
+ */
+function refuseUnControle (prop) {
+    const t = propTypeIndex().get(prop)
+
+    return !!t && /\[\]|Array<|ReadonlyArray<|Record<|\{|=>|^I[A-Z]|^T[A-Z]/.test(t)
+}
+
 /*********************************************************
  * stripComments
  *
@@ -334,6 +392,71 @@ function docPropRowNames (doc, artifactName) {
     return names
 }
 
+const kebabCase = (name) => name.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)
+
+/*
+ * Une prop est-elle PILOTEE par les controles de la story ?
+ *
+ * Le cas direct est `state.<prop>` : le `v-model` d'un `HstText` /
+ * `HstSelect` / `HstCheckbox` / `HstNumber` porte litteralement ce nom.
+ *
+ * ⛔ MAIS les controles Histoire ne bindent que des PRIMITIFS. Une prop
+ * de type objet ne peut donc pas avoir de controle a son nom : la story
+ * correcte expose des controles APLATIS et les recompose au binding.
+ * `OrigamAppBar` le documente dans son propre code :
+ *
+ *     // The `image` prop is an object (`IImgProps`) — Histoire controls only
+ *     // bind primitives, so the story exposes flat `imageSrc` / `imageAlt`
+ *     :image="resolveImage(state)"
+ *     <HstText v-model="state.imageSrc" title="Image Src"/>
+ *     <HstText v-model="state.imageAlt" title="Image Alt"/>
+ *
+ * Chercher `state.image"` y echoue et accuse une story exacte. Mesure :
+ * 13 props sur 4 composants (`OrigamAppBar.image`,
+ * `OrigamDatePickerHeader.transition`, `OrigamDatePickerMonth.transition`
+ * + `reverseTransition`, `OrigamLayout.overlaps`, `OrigamCalendar.disabledDates`,
+ * `OrigamChartTooltip.point` + `series`, `OrigamConfirmWrapper.confirm`,
+ * `OrigamDataTableRows.items`, `OrigamFileField*Item.file`,
+ * `OrigamTextareaField.toolbar`).
+ *
+ * La forme aplatie est reconnue sous DEUX conditions cumulatives, pour ne
+ * pas fabriquer de vert : la prop doit etre BINDEE dans le template
+ * (`:prop=` ou `:kebab-prop=`) ET un controle prefixe `state.<prop><Suffixe>`
+ * doit exister. Un `state.imageSrc` seul, sans `:image=` en face, ne
+ * suffit pas — il pourrait appartenir a une tout autre prop.
+ */
+function hasControl (story, prop) {
+    if (story.includes(`state.${prop}"`) || story.includes(`state.${prop}'`)) return true
+
+    const bound = story.includes(`:${prop}=`) || story.includes(`:${kebabCase(prop)}=`)
+    if (!bound) return false
+
+    if (new RegExp(`state\\.${prop}[A-Z][A-Za-z0-9]*["']`).test(story)) return true
+
+    /*
+     * ARBITRAGE UTILISATEUR, 2026-09-08 — « exempter les objets/tableaux
+     * seulement ».
+     *
+     * 84 props sont bindees a une fixture statique de la story
+     * (`:items="navItems"`, `:code="shortSnippet"`) sans controle
+     * manipulable. Mesure du partage :
+     *
+     *   44 de type objet / tableau / fonction  -> controle IMPOSSIBLE
+     *   40 de type primitif                    -> controle possible, absent
+     *
+     * Compter les 44 en defaut rendait le critere insatisfiable : aucune
+     * story ne peut les verdir tant qu'Histoire ne binde que des primitifs,
+     * et un rouge qui ne dit pas quoi corriger est du bruit. Les 40 autres
+     * restent rouges — `OrigamCode.code: string` n'attend qu'un `HstText`.
+     *
+     * L'exemption exige la BINDURE : une prop objet ni bindee ni controlee
+     * n'est demontree nulle part, et reste un defaut.
+     *
+     * Colonne C7 : strict 58/158 · cette regle 73/143 · tout-bindee 80/136.
+     */
+    return refuseUnControle(prop)
+}
+
 function analyse () {
     const emitsIndex = buildInterfaceIndex()
     const openInterfaces = buildOpenInterfaceSet()
@@ -383,9 +506,7 @@ function analyse () {
 
         if (storyFile) {
             for (const prop of ownProps) {
-                if (!story.includes(`state.${prop}"`) && !story.includes(`state.${prop}'`)) {
-                    missing.controls.push(prop)
-                }
+                if (!hasControl(story, prop)) missing.controls.push(prop)
             }
             for (const emit of emits) {
                 if (!story.includes(`Events - ${emit}`)) missing.eventVariants.push(emit)
