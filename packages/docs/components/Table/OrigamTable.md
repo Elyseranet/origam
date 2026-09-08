@@ -121,11 +121,29 @@ scrollable body without breaking the outer chrome.
 ```ts
 interface ITableProps extends ICommonsComponentProps, IBorderProps,
     IRoundedProps, IElevationProps, IPaddingProps, IMarginProps,
-    IHoverProps, IDimensionProps, IDensityProps, ITagProps {
+    IHoverProps, IDimensionProps, IDensityProps, ITagProps,
+    Pick<ITypographyProps, 'fontSize' | 'fontWeight'> {
     fixedHeader?: boolean
     fixedFooter?: boolean
+    caption?: string
+    captionVisible?: boolean
+    ariaRowcount?: number
 }
 ```
+
+### Table-specific props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `fixedHeader` | `boolean` | `false` | Pins `<thead>` while the scroll wrapper scrolls. Flags the root `origam-table--fixed-header`. |
+| `fixedFooter` | `boolean` | `false` | Pins `<tfoot>` the same way. |
+| `caption` | `string` | — | Renders a real `<caption>` as the first child of `<table>`. Empty / omitted → no `<caption>` element at all. |
+| `captionVisible` | `boolean` | `false` | Adds `origam-table__caption--visible`. **The caption is announced by assistive tech either way** — this only decides whether it is painted on screen. |
+| `ariaRowcount` | `number` | — | Sets `aria-rowcount` on the `<table>`. Use it when the DOM holds one page of a larger, virtualised or paginated dataset. Falsy values emit no attribute. |
+
+`fontSize` / `fontWeight` are the only two `ITypographyProps` members on the
+surface — see [Typography props](#typography-props) below for the exact
+variables each one writes.
 
 ## Anatomy
 
@@ -174,13 +192,18 @@ The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
 
 ## Accessibility
 
-- Always author a real `<caption>` or pair the table with a heading +
-  `aria-labelledby` so assistive tech announces the dataset.
+- Name the dataset: pass `caption` (the component renders a real
+  `<caption>`; add `captionVisible` to show it on screen), author your own
+  `<caption>` in the default slot, or pair the table with a heading +
+  `aria-labelledby`.
 - `<th scope="col">` (or `scope="row"`) is the consumer's
   responsibility — `<OrigamTable>` does not inject any header markup.
 - The scroll wrapper exposes `overflow-x: auto` on small viewports;
   combine with `<caption>` so the focusable scroll region remains
   discoverable.
+- When the rendered rows are one page of a larger set (pagination,
+  virtualisation), pass `ariaRowcount` with the **total** count so screen
+  readers announce "row 3 of 4 812" rather than "row 3 of 25".
 
 ## Theming notes
 

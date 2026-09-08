@@ -45,11 +45,13 @@ const entries: ITimelineEntry[] = [
 |---|---|---|---|
 | `title` | `string` | `undefined` | Entry title (bold, monospace) |
 | `subtitle` | `string` | `undefined` | Typically a date or secondary label |
+| `description` | `string` | `undefined` | Body text under the title. The `#body` slot wins over it; when neither is set the body element is not rendered at all. |
 | `icon` | `TIcon` | `undefined` | Replaces the plain dot with an icon |
 | `intent` | `TIntent` | `'primary'` | Dot color intent |
 | `isLast` | `boolean` | `false` | Marks the final item (hides connector when `truncateLine=true`) |
 | `truncateLine` | `boolean` | `false` | Per-item override (usually set by parent context) |
 | `side` | `'start' \| 'end' \| 'alternating'` | `'start'` | Track position |
+| `orientation` | `'vertical' \| 'horizontal'` | `'vertical'` | Layout axis. Emits `origam-timeline-item--orientation-{value}`, which drives the horizontal layout rules. **The parent wins**: when an `<OrigamTimeline>` ancestor provides an `orientation`, the injected value takes precedence over the prop — set it on the parent, not per item. |
 | `index` | `number` | `0` | Used for alternating layout computation |
 
 ## Slots — OrigamTimelineItem
