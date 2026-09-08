@@ -56,6 +56,7 @@ import { fileURLToPath } from 'node:url'
 
 import { getRealComponents, DS_ROOT } from '../guards/lib/components.mjs'
 import { analyseSource as analyseSetupReads } from '../guards/lib/setup-reads.mjs'
+import { isJustifiedSetupRead } from '../guards/lib/setup-reads.exceptions.mjs'
 import { buildInterfaceIndex } from '../guards/lib/emits.mjs'
 import { analyseDeadEmits } from '../guards/lib/dead-emits.mjs'
 import { analyseHardcodedStrings } from './lib/hardcoded-strings.mjs'
@@ -75,9 +76,30 @@ function analyseComponent ({ pascalName, kebabName, file }, emitsIndex) {
 
     // ── C4 ───────────────────────────────────────────────────────────
     const setupReads = analyseSetupReads(source, path.basename(file))
-    const eagerProps = [...new Set(setupReads.eager.map(e => e.prop))]
+
+    /*
+     * ⛔ Les exceptions actées doivent être retirées ICI aussi.
+     * `setup-reads.mjs` ne les applique que sur son propre chemin CLI ;
+     * `analyseSource` rend la liste BRUTE. Ce fichier l'a longtemps
+     * recopiée telle quelle et a donc annoncé 16 composants là où le
+     * détecteur en annonce 12 — quatre `name` justifiés
+     * (AppBar / BottomNav / Drawer / SystemBar, identités de layout)
+     * comptés comme des défauts. Une colonne versée depuis ce chiffre
+     * portait quatre faux rouges sur du code qui argumente déjà contre.
+     */
+    const eagerProps = [...new Set(
+        setupReads.eager
+            .filter(e => !isJustifiedSetupRead(pascalName.replace(/^Origam/, ''), e.prop))
+            .map(e => e.prop)
+    )]
+    const justifiedProps = [...new Set(
+        setupReads.eager
+            .filter(e => isJustifiedSetupRead(pascalName.replace(/^Origam/, ''), e.prop))
+            .map(e => e.prop)
+    )]
     const c4 = {
         eagerProps,
+        justifiedProps,
         callsUseDefaults: setupReads.callsUseDefaults,
         // Le SEUL correctif connu est `useDefaults()` (cf. header de
         // setup-reads.mjs) — une lecture eager SANS lui est un défaut ;
