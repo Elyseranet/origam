@@ -60,7 +60,7 @@
 					<origam-data-table-group-header-row
 							:id="itemRowId(index)"
 							:key="`group-header_${item.id}`"
-							v-bind="groupHeaderSlotProps(item, index)"
+							v-bind="groupHeaderRowProps(item, index)"
 					>
 						<template
 								v-if="$slots['data-table-group']"
@@ -270,6 +270,36 @@
 			toggleGroup,
 			isGroupOpen
 		})
+	}
+	/*********************************************************
+	 * Props reellement declarees par la ligne d'en-tete de groupe
+	 *
+	 * @description
+	 * ⛔ Ne PAS spreader `groupHeaderSlotProps()` sur le composant. Le
+	 * scope de slot porte volontairement plus de cles que l'interface du
+	 * composant n'en declare (`internalItem`, `isExpanded`, `toggleExpand`,
+	 * `toggleSelect`, `isGroupOpen`) : elles servent au consommateur qui
+	 * remplace le rendu via `#group-header`.
+	 *
+	 * @description
+	 * Une cle non declaree ne disparait pas — elle tombe dans `$attrs` et
+	 * atterrit sur la racine du composant, un `<tr>`, ou Vue la pose en
+	 * ATTRIBUT DOM. Une fonction y serait serialisee en chaine
+	 * (`toggleexpand="(item) => {…}"`). D'ou ce second constructeur, borne
+	 * a ce que `IDataTableGroupHeaderRowProps` declare, plus les
+	 * gestionnaires prefixes `:group-header` qui, eux, doivent bien passer.
+	 ********************************************************/
+	const groupHeaderRowProps = (item: IDataTableGroup, index: number) => {
+		const slotPropsLocal = slotProps(item, index)
+
+		return {
+			index,
+			item,
+			columns: columns.value,
+			isSelected,
+			toggleGroup,
+			...getPrefixedEventHandlers(attrs, ':group-header', () => slotPropsLocal)
+		}
 	}
 	const itemSlotProps = (item: any, index: number): IDataTableItemSlot => {
 		const slotPropsLocal = slotProps(item, index)

@@ -1,8 +1,8 @@
 <template>
 	<tr
 			:id="id"
-			:class="dataTableGroupHeaderRowClasses"
-			:style="dataTableGroupHeaderRowStyles"
+			:class="[dataTableGroupHeaderRowClasses, textColorClasses]"
+			:style="[dataTableGroupHeaderRowStyles, textColorStyles]"
 	>
 		<template
 				v-for="(column, index) in columns"
@@ -61,6 +61,7 @@
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useSelection } from '../../composables/DataTable/select.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useTextColor } from '../../composables/Commons/textColor.composable'
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
 	import type { IDataTableGroupHeaderRowEmits, IDataTableGroupHeaderRowProps, IDataTableGroupHeaderRowSlots } from '../../interfaces/DataTable/group.interface'
@@ -87,6 +88,23 @@
 	const {isSelected, isSomeSelected, select} = useSelection()
 	const {columns} = useHeaders()
 
+	/*********************************************************
+	 * Couleur de la ligne d'en-tete de groupe
+	 *
+	 * @description
+	 * `color` etait declaree (heritee d'`IColorProps`) et lue nulle part :
+	 * le garde `unconsumed-props` la signalait comme prop inerte. Le SCSS
+	 * scope declare deja `color:` sur le `<tr>` — c'est donc bien cet
+	 * element qui porte la couleur de texte du groupe, heritee par ses
+	 * cellules.
+	 *
+	 * @description
+	 * Meme forme que `<OrigamDataTableRows>` (#550) : `useTextColor` lit la
+	 * prop dans un `computed`, donc la valeur ecrite par le resolveur de
+	 * theme en `beforeCreate` (ADR-005) reste visible.
+	 ********************************************************/
+	const {textColorClasses, textColorStyles} = useTextColor(props, 'color')
+
 	const rows = computed(() => {
 		return extractRows([props.item])
 	})
@@ -98,10 +116,26 @@
 	 * Event handlers
 	 ********************************************************/
 
-	const handleClick = () => toggleGroup(props.item)
+	/*********************************************************
+	 * Props d'abord, contexte en repli
+	 *
+	 * @description
+	 * `toggleGroup` et `isSelected` sont declarees ET fournies par
+	 * `useGroupBy()` / `useSelection()`. Le binding `<script setup>`
+	 * l'emportait sur la prop du meme nom (famille d'homonymes #372), donc
+	 * ce que le parent passait etait accepte puis jete en silence.
+	 *
+	 * @description
+	 * La prop passe devant, le contexte reste le repli — c'est ce qui rend
+	 * le composant utilisable hors `<OrigamDataTable>`, la ou il n'y a
+	 * aucun provide a injecter. Les deux lectures sont differees dans un
+	 * handler / un `computed` : la valeur ecrite par le resolveur de theme
+	 * en `beforeCreate` (ADR-005) reste donc visible.
+	 ********************************************************/
+	const handleClick = () => (props.toggleGroup ?? toggleGroup)(props.item)
 
 	const modelValue = computed(() => {
-		return isSelected(rows.value)
+		return (props.isSelected ?? isSelected)(rows.value)
 	})
 	const indeterminate = computed(() => {
 		return isSomeSelected(rows.value) && !modelValue.value

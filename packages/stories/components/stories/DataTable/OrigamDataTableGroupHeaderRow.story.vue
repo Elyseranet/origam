@@ -21,11 +21,6 @@
 				<StoryGroup title="Color">
 					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
 				</StoryGroup>
-				<StoryGroup title="Spacing">
-					<HstText v-model="state.padding"       title="Padding"/>
-					<HstText v-model="state.paddingInline" title="Padding Inline"/>
-					<HstText v-model="state.paddingBlock"  title="Padding Block"/>
-				</StoryGroup>
 			</template>
 		</Variant>
 
@@ -70,24 +65,6 @@
 			</origam-data-table>
 		</Variant>
 
-		<Variant title="Slots - group-header">
-			<origam-data-table
-					:headers="headers"
-					:items="items"
-					:group-by="[{ key: 'team', order: 'asc' }]"
-					data-cy="group-header-slot-group-header"
-			>
-				<template #group-header="{ group, items: groupItems, isOpen, toggleGroup }">
-					<tr @click="toggleGroup(group)">
-						<td colspan="3">
-							<strong>{{ group }}</strong>
-							<small>{{ groupItems.length }} member(s) — {{ isOpen ? '▼' : '▶' }}</small>
-						</td>
-					</tr>
-				</template>
-			</origam-data-table>
-		</Variant>
-
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IDataTableGroupHeaderRowPlaygroundState>({ groupMode: 'single' })"
@@ -120,13 +97,13 @@
 		setup
 >
 	import { OrigamDataTable } from '@origam/components'
-	import type { IColorProps, IPaddingProps } from '@origam/interfaces'
+	import type { IColorProps } from '@origam/interfaces'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 	import { COLOR_OPTIONS } from '@stories/const'
 
-	interface IDataTableGroupHeaderRowDesignState extends IColorProps, IPaddingProps {}
+	interface IDataTableGroupHeaderRowDesignState extends IColorProps {}
 
 	interface IDataTableGroupHeaderRowPlaygroundState extends IColorProps {
 		groupMode: 'single' | 'nested'
@@ -182,10 +159,7 @@
 
 	const buildGroupHeaderRowStyle = (state: Partial<IDataTableGroupHeaderRowDesignState>) => {
 		return {
-			...(state.color      ? { '--origam-data-table-group-header-row---color':            `var(--origam-color--${state.color})` } : {}),
-			...(state.padding      ? { '--origam-data-table-group-header-row---padding':         state.padding      } : {}),
-			...(state.paddingInline ? { '--origam-data-table-group-header-row---padding-inline': state.paddingInline } : {}),
-			...(state.paddingBlock  ? { '--origam-data-table-group-header-row---padding-block':  state.paddingBlock  } : {})
+			...(state.color ? { '--origam-data-table-group-header-row---color': `var(--origam-color--${state.color})` } : {})
 		}
 	}
 </script>
