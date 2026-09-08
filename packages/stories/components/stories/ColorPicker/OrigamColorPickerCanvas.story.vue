@@ -103,6 +103,4 @@
 	const defaultColor = { h: 210, s: 0.7, v: 0.8, a: 1 }
 </script>
 
-<docs lang="md">
-ColorPickerCanvas sub-component — the 2-D HSV gradient canvas for hue/saturation picking.
-</docs>
+<docs lang="md" src="@docs/components/ColorPicker/OrigamColorPickerCanvas.md"/>

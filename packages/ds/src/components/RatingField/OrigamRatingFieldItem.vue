@@ -4,7 +4,10 @@
 			:class="ratingFieldItemClasses"
 			:style="ratingFieldItemStyles"
 	>
-		<label :for="id">
+		<label
+				:for="id"
+				class="origam-rating-field-item__label"
+		>
 			<span class="origam-rating-field-item__hidden">{{ t(itemAriaLabel, value, length) }}</span>
 			<slot
 					v-if="showStar"

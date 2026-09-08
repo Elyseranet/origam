@@ -106,3 +106,5 @@
 		['#FFEB3B', '#FF9800', '#FF5722'],
 	]
 </script>
+
+<docs lang="md" src="@docs/components/ColorPicker/OrigamColorPickerSwatches.md"/>
