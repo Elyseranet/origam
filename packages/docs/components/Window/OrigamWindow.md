@@ -72,6 +72,31 @@ icon system accepts (an `mdi-*` string, a component, etc.).
 </template>
 ```
 
+## Arrow surface — `bgColor`, `hover`, `active`
+
+`bgColor`, `hover` / `hoverClass` and `active` / `activeClass` are NOT
+painted on the window root: they are forwarded verbatim to the two
+default `<OrigamBtn>` prev / next controls. Use them to tune the
+affordances without replacing them through the `prev` / `next` / `arrows`
+slots.
+
+`hover` and `active` follow the usual grammar of `IHoverProps` /
+`IActiveProps` — `true` forces the state on, an `IStateEffectConfig`
+object overrides the resting `color` / `bgColor` / `border` / `rounded` /
+`elevation` / `padding` / `margin` / `gap` only while the state is
+engaged.
+
+```vue
+<template>
+    <OrigamWindow bg-color="primary" show-arrows>…</OrigamWindow>
+    <OrigamWindow :hover="{ bgColor: 'primary' }" show-arrows>…</OrigamWindow>
+    <OrigamWindow active-class="my-pressed-arrow" show-arrows>…</OrigamWindow>
+</template>
+```
+
+> Because these props reach the buttons only, they have no effect when
+> the `prev` / `next` / `arrows` slots replace the default controls.
+
 ## Touch
 
 `touch` enables (or replaces) the swipe handlers. Pass `false` to
@@ -100,7 +125,8 @@ object overriding individual handlers from `ITouchHandlers`.
 ```ts
 interface IWindowProps extends ICommonsComponentProps, ITagProps,
     IDirectionProps, IBorderProps, IPaddingProps, IMarginProps,
-    IRoundedProps, IElevationProps {
+    IRoundedProps, IElevationProps, IBgColorProps, IHoverProps,
+    IActiveProps {
     continuous?: boolean
     nextIcon?: TIcon
     prevIcon?: TIcon

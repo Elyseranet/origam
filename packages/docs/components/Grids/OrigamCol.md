@@ -18,8 +18,21 @@ polymorphic (`tag` prop, defaults to `<div>`).
 
 ## Cols & breakpoints
 
-`cols` sets the base width (1 to 12, `'auto'`, or `true` for grow-as-needed).
-`sm` / `md` / `lg` / `xl` / `xxl` override `cols` from each breakpoint up.
+`cols` sets the base width. `sm` / `md` / `lg` / `xl` / `xxl` override
+`cols` from each breakpoint up, and accept the same three shapes:
+
+| Value | Emitted class | Flex behaviour |
+|---|---|---|
+| `'1'` … `'12'` | `.origam-col--{n}` | fixed `flex-basis` / `max-width` of `n/12` of the row |
+| `'auto'` | `.origam-col--auto` | shrink-wraps its content — `flex-grow: 0`, `flex-basis: auto`, `width: auto` |
+| `true` | `.origam-col--true` | grows to fill the remaining space — `flex-grow: 1`, `flex-basis: 0` |
+
+> ⛔ `true` was documented as *"grow-as-needed"* long before it worked.
+> The component pushed `origam-col--true` and **no SCSS rule matched it**,
+> so the value was a total visual no-op — including on the five
+> per-breakpoint props. The rules (`&--true` and `&--{bp}-true`) were
+> added on 2026-09-07 under #550 (C7), mirroring the shape of the
+> existing `auto` rules.
 
 ```vue
 <template>
@@ -44,6 +57,12 @@ polymorphic (`tag` prop, defaults to `<div>`).
 
 Push a column away from the inline-start edge. Per-breakpoint variants
 follow the same naming convention as `cols`.
+
+⛔ **The accepted range is `'1'` to `'11'` only** — narrower than `cols`.
+The SCSS loop that emits `.origam-col--offset-{n}` is guarded with
+`@if ($size != 12)`, and there is no offset counterpart to `'auto'` or
+`true`. Those three values type-check but produce a class no rule
+matches, i.e. no offset at all.
 
 ```vue
 <template>

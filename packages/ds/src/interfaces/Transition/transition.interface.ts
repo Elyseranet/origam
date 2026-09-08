@@ -1,5 +1,3 @@
-import type { IWindowProvide } from '../Window/window.interface'
-
 import type { TTransitionMode } from '../../types/Transition/transition.type'
 
 /*********************************************************
@@ -28,10 +26,6 @@ export interface ITransitionProps {
     hideOnLeave?: boolean
     leaveAbsolute?: boolean
     origin?: string
-}
-
-export interface ITransitionWindowProps extends ITransitionProps {
-    window?: IWindowProvide
 }
 
 /*********************************************************
@@ -74,6 +68,23 @@ export interface ITransitionNoOriginProps extends Omit<ITransitionProps, 'origin
  * tenait. Verifie le 2026-09-06 : les deux noms n'apparaissent nulle part
  * dans `windowTransition.composable.ts`, hors commentaire. Issue #550,
  * critere C1.
+ *
+ * @description
+ * ⛔ CE `Omit` A ETE NEUTRALISE PENDANT DEUX SEMAINES par une SECONDE
+ * declaration du meme nom, plus haut dans CE fichier
+ * (`interface ITransitionWindowProps extends ITransitionProps { window?:
+ * IWindowProvide }`). La fusion de declarations d'interfaces de TypeScript
+ * REUNIT les clauses `extends` de toutes les declarations homonymes : le
+ * type resultant reportait donc `origin`, `hideOnLeave` et `leaveAbsolute`
+ * malgre le `Omit`, et le litteral `{origin, hideOnLeave, leaveAbsolute}`
+ * compilait sans une erreur. Verifie par sonde `tsc --strict` isolee.
+ * La declaration parasite a ete supprimee le 2026-09-07 ; elle portait au
+ * passage un prop `window` que rien ne lisait — `useWindowTransition`
+ * recupere le contexte par `inject(ORIGAM_WINDOW_KEY)`, jamais par les
+ * props. Issue #550, critere C7.
+ *
+ * ⛔ NE PAS reintroduire une seconde declaration de ce nom : un `Omit`
+ * n'est pas defendu contre la fusion, et rien ne signale la collision.
  ********************************************************/
 export interface ITransitionWindowProps extends Omit<ITransitionNoOriginProps, 'hideOnLeave' | 'leaveAbsolute'> {}
 

@@ -95,6 +95,14 @@ export function useCssTransition (props: ITransitionProps) {
          * lecture `props.mode` existait bel et bien, c'est son EFFET qui etait
          * nul. Une prop lue puis jetee dans une branche morte compte comme
          * consommee pour une analyse statique.
+         *
+         * @description
+         * ⛔ La cle est RETIREE de l'objet, pas seulement mise a `undefined`, sur
+         * le chemin `group`. Un `:mode="undefined"` declencherait quand meme
+         * l'avertissement « Extraneous non-props attributes » de Vue sur
+         * `TransitionGroup` : la cle est presente dans les props du vnode quelle
+         * que soit sa valeur. C'est pourquoi le `if` entoure l'affectation au
+         * lieu de choisir la valeur affectee.
          ********************************************************/
         if (!props.group) {
             bind.mode = props.mode

@@ -189,6 +189,8 @@ forwarded value for consumers who want the popup to diverge on purpose.
 | `blur` | `FocusEvent` | Field blurred |
 | `update:focused` | `boolean` | Focus state changed (relayed from the nested `<origam-text-field>`) |
 | `click:clear` | `MouseEvent` | Clear clicked |
+| `click:control` | `MouseEvent` | The field control area was clicked. Relayed from the nested `<origam-text-field>` and re-emitted on this instance; purely informational — it does not open the menu. |
+| `mousedown:control` | `MouseEvent` | Pointer went down on the field control area. Relayed from the nested `<origam-text-field>`. **This is the event that toggles the dropdown**: the handler emits first, then flips `menu` unless the menu is disabled. |
 | `click:append` | `MouseEvent` | Outer append adornment clicked (relayed from `<origam-text-field>`) |
 | `click:prepend` | `MouseEvent` | Outer prepend adornment clicked (relayed from `<origam-text-field>`) |
 | `click:appendInner` | `MouseEvent` | Inner append adornment clicked (relayed from `<origam-text-field>`) |

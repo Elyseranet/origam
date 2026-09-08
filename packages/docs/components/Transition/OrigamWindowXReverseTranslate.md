@@ -25,14 +25,49 @@ origam-transition--window-x-reverse-translate-*-active   { transition: 0.3s cubi
 
 ## Props
 
-`ITransitionNoOriginProps` (`ITransitionProps` minus `origin`) — `name`,
-`disabled`. Reads from the `ORIGAM_WINDOW_KEY` context.
+`ITransitionWindowProps` — `ITransitionProps` minus `origin`,
+`hideOnLeave` and `leaveAbsolute` (see the removals below). The component
+also reads the `ORIGAM_WINDOW_KEY` context when one is provided; that
+context arrives by `inject`, never as a prop.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `name` | `string` | `'origam-transition--window-x-reverse-translate'` | Transition class prefix. Override to swap the whole animation for a bespoke one. |
+| `mode` | `'in-out' \| 'out-in' \| 'default'` | `undefined` | Vue's transition ordering. **Only bound when `group` is `false`** — Vue does not declare `mode` on `TransitionGroup`, so it is dropped from the vnode entirely on the `group` path rather than passed as `undefined` (which would still raise the *Extraneous non-props attributes* warning). |
+| `disabled` | `boolean` | `false` | Turns CSS off (`:css="false"`). The height-tracking JS hooks stay bound either way. |
+| `group` | `boolean` | `false` | Renders `<TransitionGroup>` instead of `<Transition>`, for a keyed list. |
+
+## Emits
+
+None. `ITransitionEmits` is empty — no member of the transition family
+calls `emit()`; they only wire Vue's native enter / leave hooks
+internally.
+
+## Slots
+
+| Slot | Slot props | Description |
+|---|---|---|
+| `default` | — | The transitioned content. Unscoped. |
+
+## Removed props
 
 ⛔ **`origin` was removed (breaking change, #538/#548).** This transition
 only ever animates a plain `translate(...)` — `transform-origin` has
-nothing to anchor on and never produced any observable effect. Consumers
-passing `origin` now get a compile-time TypeScript error rather than a
-silent no-op.
+nothing to anchor on and never produced any observable effect.
+
+⛔ **`hideOnLeave` and `leaveAbsolute` were removed (#550).** Both are
+implemented by `useCssTransition`'s JS hooks; this component goes through
+`useWindowTransition`, whose hooks do height tracking and read neither
+name. Declaring them here was a promise nothing kept.
+
+> These three names now raise a compile-time TypeScript error instead of
+> being silent no-ops. That was **not** true until 2026-09-07: a stale
+> second declaration of `ITransitionWindowProps` sat higher in
+> `transition.interface.ts`, and TypeScript's interface **declaration
+> merging** unions the `extends` clauses of same-named declarations — so
+> the `Omit` was neutralised and `{ origin, hideOnLeave, leaveAbsolute }`
+> compiled clean. The duplicate has been deleted; verified with an
+> isolated `tsc --strict` probe (4 `TS2353` errors after, 0 before).
 
 ## Notes
 
