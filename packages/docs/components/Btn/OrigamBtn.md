@@ -195,9 +195,10 @@ paints the side it names — the other three stay at `0`.
 
 | Event           | Payload      | Description |
 |-----------------|--------------|-------------|
-| `click`         | `MouseEvent` | Standard button click. Fires for `<a>` tags too. |
-| `click:prepend` | `MouseEvent` | Clicked the prepend slot. Stops propagation upstream. |
-| `click:append`  | `MouseEvent` | Clicked the append slot. |
+| `click`          | `MouseEvent`         | Standard button click. Fires for `<a>` tags too. |
+| `click:prepend`  | `MouseEvent`         | Clicked the prepend slot. Stops propagation upstream. |
+| `click:append`   | `MouseEvent`         | Clicked the append slot. |
+| `group:selected` | `{ value: boolean }` | The button's selection inside its group changed — `value` is the new state. Only fires when the button is registered in a group. `<OrigamBtnToggle>` is the only component that provides one (`ORIGAM_BTN_TOGGLE_KEY`) — `<OrigamBtnGroup>` is purely visual and does not. A button outside a toggle calls `useGroupItem(…, false)`, gets `null`, and never registers the watcher, so nothing is ever emitted. Inside one, the emit comes from `useGroupItem`'s `watch(isSelected, …)`, so a programmatic change to the toggle's `modelValue` fires it exactly like a click. |
 
 ```vue
 <template>

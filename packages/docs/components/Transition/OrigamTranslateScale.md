@@ -43,18 +43,50 @@ origam-transition--transform-scale-enter-from    { transform: scale(.9); opacity
 
 ## Props
 
+`<OrigamTranslateScale>` does **not** take the whole shared
+`ITransitionProps` surface. It implements its own enter / leave hooks
+instead of going through `useCssTransition` or `useWindowTransition`, so
+four members of that surface were removed from its type on 2026-09-06:
+
 ```ts
-interface ITranslateScaleProps extends ITransitionProps {
+interface ITransitionTranslateScaleProps
+    extends Omit<ITransitionProps, 'group' | 'mode' | 'hideOnLeave' | 'leaveAbsolute'> {}
+
+interface ITranslateScaleProps extends ITransitionTranslateScaleProps {
     target?: HTMLElement | [x: number, y: number]
 }
 ```
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `name` | `string` | `'origam-transition--transform-scale'` | Transition class prefix for the CSS-only path. |
+| `disabled` | `boolean` | `undefined` | Neutralises both paths — see the note below. |
+| `origin` | `string` | `undefined` | `transform-origin` applied before the scale runs, on both paths. |
+| `target` | `HTMLElement \| [x, y]` | `undefined` | Switches to the JS/WAAPI shared-element path and names the rect to animate from / to. |
+
+### What the removed four do now
+
+| Prop | Behaviour if you pass it anyway |
+|---|---|
+| `group` / `hideOnLeave` / `leaveAbsolute` | Nothing. They are not declared, so they fall through as raw DOM attributes onto the transitioned element (`group="true" hideonleave="true" leaveabsolute="true"` — visible in the rendered markup). Use `<OrigamTranslateBottom>` or another `useCssTransition` member if you need them. |
+| `mode` | ⛔ **It still works, by accident.** This component's root *is* a native `<transition>`, so an undeclared `mode` falls through to it and Vue's `Transition` — which declares `mode` — picks it up. Measured: passing `mode="out-in"` yields `Transition.$props.mode === 'out-in'`. TypeScript will reject it, since it is no longer part of `ITranslateScaleProps`. Do not rely on this; it is a gap between the type and the runtime, not a supported API. |
+
+## Emits
+
+None. `ITransitionEmits` is empty for every member of the family.
+
+## Slots
+
+| Slot | Scope | Description |
+|---|---|---|
+| `default` | — | The transitioned content. |
 
 ## Notes
 
 - During the JS path, `pointer-events: none` is applied so users don't
   click on a moving target.
 - For pure CSS animation, omit `target`.
-- `disabled` (inherited from `ITransitionProps`) neutralises **both**
+- `disabled` neutralises **both**
   paths: with `target`, the WAAPI enter/leave hooks are skipped entirely
   (no `el.animate()` call); without `target`, the CSS `enter`/`leave`
   classes never get applied. Either way the slotted content mounts/
@@ -65,7 +97,7 @@ interface ITranslateScaleProps extends ITransitionProps {
   (`utils/Commons/animation.util.ts`) shrinks the WAAPI duration to a
   near-zero value rather than running it at full speed — the CSS path
   is covered by the `ds.ds-reduced-motion` SCSS mixin.
-- **`origin` (inherited from `ITransitionProps`) is implemented on BOTH
+- **`origin` is implemented on BOTH
   paths (#538/#548)** — this is the only member of the 8-component
   `origin` audit where the prop has something to anchor on, since this
   is the only transition whose keyframes/CSS class include an actual
