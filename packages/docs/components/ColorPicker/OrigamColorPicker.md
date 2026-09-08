@@ -123,10 +123,10 @@ covers the props that reach them through the parent
 
 | Component | Role |
 |---|---|
-| [`OrigamColorPickerCanvas`](./OrigamColorPickerCanvas.md) | 2-D saturation / value gradient, mouse + touch + keyboard. |
-| [`OrigamColorPickerPreview`](./OrigamColorPickerPreview.md) | Colour swatch, hue and alpha sliders, eye-dropper. |
-| [`OrigamColorPickerEdit`](./OrigamColorPickerEdit.md) | Per-channel numeric / hex inputs and the mode cycle button. |
-| [`OrigamColorPickerSwatches`](./OrigamColorPickerSwatches.md) | Preset colour grid. |
+| [`OrigamColorPickerCanvas`](/components/ColorPicker/OrigamColorPickerCanvas) | 2-D saturation / value gradient, mouse + touch + keyboard. |
+| [`OrigamColorPickerPreview`](/components/ColorPicker/OrigamColorPickerPreview) | Colour swatch, hue and alpha sliders, eye-dropper. |
+| [`OrigamColorPickerEdit`](/components/ColorPicker/OrigamColorPickerEdit) | Per-channel numeric / hex inputs and the mode cycle button. |
+| [`OrigamColorPickerSwatches`](/components/ColorPicker/OrigamColorPickerSwatches) | Preset colour grid. |
 
 All four are **controlled**: they store nothing and push every change up
 the shared `update:colorHsv` channel (`IColorHsvEmits`), which the parent

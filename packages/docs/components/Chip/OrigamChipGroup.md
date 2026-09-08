@@ -1,7 +1,7 @@
 # OrigamChipGroup
 
 `<OrigamChipGroup>` wraps `<OrigamChip>` elements in a scrollable
-[`<OrigamSlideGroup>`](../Slide/OrigamSlideGroup.md) with optional single or
+[`<OrigamSlideGroup>`](/components/Slide/OrigamSlideGroup) with optional single or
 multiple selection. Child chips register through `useGroup` and receive the
 class named by `selectedClass` — `origam-chip--selected` by default — while
 they are selected.
@@ -161,11 +161,11 @@ overflow axes.
 `<OrigamChipGroup>` declares **no tokens of its own** — it has no stylesheet.
 What you see comes from two other components:
 
-- the root, from [`OrigamSlideGroup`](../Slide/OrigamSlideGroup.md)'s
+- the root, from [`OrigamSlideGroup`](/components/Slide/OrigamSlideGroup)'s
   `--origam-slide-group*` surface (including
   `--origam-slide-group--vertical---max-height` and the two
   `--origam-slide-group--vertical---content-overflow-*` channels);
-- each chip, from [`OrigamChip`](./OrigamChip.md)'s `--origam-chip*` surface —
+- each chip, from [`OrigamChip`](/components/Chip/OrigamChip)'s `--origam-chip*` surface —
   e.g. `--origam-chip---background-color`
   (`var(--origam-color__surface---overlay)`) and
   `--origam-chip---border-radius` (`var(--origam-radius---full)`, i.e.

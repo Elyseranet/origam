@@ -1,7 +1,7 @@
 # OrigamColorPickerPreview
 
 `<OrigamColorPickerPreview>` is the strip under
-[`<OrigamColorPicker>`](./OrigamColorPicker.md)'s canvas: a colour swatch,
+[`<OrigamColorPicker>`](/components/ColorPicker/OrigamColorPicker)'s canvas: a colour swatch,
 a hue slider, an optional alpha slider, and — where the browser supports
 it — an eye-dropper button that samples a colour from anywhere on screen.
 

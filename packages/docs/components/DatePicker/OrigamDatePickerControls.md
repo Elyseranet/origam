@@ -1,7 +1,7 @@
 # OrigamDatePickerControls
 
 `<OrigamDatePickerControls>` is the navigation toolbar of
-[`<OrigamDatePicker>`](./OrigamDatePicker.md): a month label doubling as a
+[`<OrigamDatePicker>`](/components/DatePicker/OrigamDatePicker): a month label doubling as a
 button, a view-mode toggle, and the previous / next arrows. It renders that
 row and nothing else — it holds no date state and performs no navigation of
 its own. Every button only emits; the parent decides what the click means.

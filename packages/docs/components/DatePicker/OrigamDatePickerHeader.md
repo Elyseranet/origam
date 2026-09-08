@@ -1,7 +1,7 @@
 # OrigamDatePickerHeader
 
 `<OrigamDatePickerHeader>` is the large title row of
-[`<OrigamDatePicker>`](./OrigamDatePicker.md) — the formatted date, optionally
+[`<OrigamDatePicker>`](/components/DatePicker/OrigamDatePicker) — the formatted date, optionally
 flanked by an icon or avatar on either side, with a transition between two
 consecutive values.
 

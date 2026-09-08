@@ -105,7 +105,7 @@ Stacks the action below the text.
 
 `<OrigamSnackbar>` owns the overlay shell, the wrapper box and the timer bar.
 Everything inside the box — text, icon, actions, their font size, padding and
-colours — is rendered by [`OrigamSnackbarItem`](./OrigamSnackbarItem.md) and
+colours — is rendered by [`OrigamSnackbarItem`](/components/Snackbar/OrigamSnackbarItem) and
 themed through the `--origam-snackbar-item---*` family documented there.
 
 ### Read by `OrigamSnackbar.vue`

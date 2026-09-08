@@ -1,7 +1,7 @@
 # OrigamItemGroupItem
 
 `<OrigamItemGroupItem>` is the child half of the
-[`OrigamItemGroup`](./OrigamItemGroup.md) selection primitive. It registers
+[`OrigamItemGroup`](/components/ItemGroup/OrigamItemGroup) selection primitive. It registers
 itself with the nearest group, renders **no chrome of its own**, and hands
 you the resolved selection state through its default slot so you paint the
 option however you like.

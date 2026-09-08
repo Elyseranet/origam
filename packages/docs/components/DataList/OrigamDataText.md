@@ -2,7 +2,7 @@
 
 `<OrigamDataText>` renders a definition description (`<dd>`) with an
 optional prepend / append zone (icon or avatar). It is the value half of
-[`OrigamDataList`](./OrigamDataList.md)'s **avatar** mode, but it is a
+[`OrigamDataList`](/components/DataList/OrigamDataList)'s **avatar** mode, but it is a
 public export and can be used on its own inside any `<dl>`.
 
 ```vue

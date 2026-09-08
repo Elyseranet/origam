@@ -1,7 +1,7 @@
 # OrigamColorPickerSwatches
 
 `<OrigamColorPickerSwatches>` is the preset grid of
-[`<OrigamColorPicker>`](./OrigamColorPicker.md): a scrollable set of
+[`<OrigamColorPicker>`](/components/ColorPicker/OrigamColorPicker): a scrollable set of
 colour tiles, one row per inner array, each tile a real `<button>` that
 commits its colour on click.
 

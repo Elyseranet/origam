@@ -1,7 +1,7 @@
 # OrigamDatePickerMonths
 
 `<OrigamDatePickerMonths>` is the month-picking panel of
-[`<OrigamDatePicker>`](./OrigamDatePicker.md): a 2-column grid of twelve
+[`<OrigamDatePicker>`](/components/DatePicker/OrigamDatePicker): a 2-column grid of twelve
 short month names, each rendered as an `<OrigamBtn>`. It is what the picker
 swaps in when `viewMode` becomes `'months'`.
 

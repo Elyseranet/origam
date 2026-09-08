@@ -7,8 +7,8 @@ wrapper over `<OrigamSelectionControl type="radio">` that pins the
 
 It carries **no** field chrome: no `<OrigamInput>` wrapper, no validation
 messages, no `prepend` / `append` adjacent slots. Use
-[`<OrigamRadio>`](./OrigamRadio.md) when you want the full field, or
-[`<OrigamRadioGroup>`](./OrigamRadioGroup.md) for a set of mutually
+[`<OrigamRadio>`](/components/Radio/OrigamRadio) when you want the full field, or
+[`<OrigamRadioGroup>`](/components/Radio/OrigamRadioGroup) for a set of mutually
 exclusive options.
 
 ```vue

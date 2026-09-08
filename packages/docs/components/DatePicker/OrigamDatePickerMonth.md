@@ -1,7 +1,7 @@
 # OrigamDatePickerMonth
 
 `<OrigamDatePickerMonth>` is the day grid of
-[`<OrigamDatePicker>`](./OrigamDatePicker.md): an optional week-number column,
+[`<OrigamDatePicker>`](/components/DatePicker/OrigamDatePicker): an optional week-number column,
 an optional weekday header row, and one cell per day rendered as an
 `<OrigamBtn>`. It owns the selection logic (single, multiple, range) and
 pushes the result up through `update:date`.

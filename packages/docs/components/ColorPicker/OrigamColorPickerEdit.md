@@ -1,7 +1,7 @@
 # OrigamColorPickerEdit
 
 `<OrigamColorPickerEdit>` is the numeric / hexadecimal input row of
-[`<OrigamColorPicker>`](./OrigamColorPicker.md). It renders one labelled
+[`<OrigamColorPicker>`](/components/ColorPicker/OrigamColorPicker). It renders one labelled
 `<input>` per channel of the **active mode** (`R G B` for `rgb`, a single
 field for `hex`, …) plus a button that cycles to the next enabled mode.
 

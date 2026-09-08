@@ -152,14 +152,14 @@ is available on this component and is documented once, on its owner:
   `singleLine`, `centerAffix`, `persistentClear`, `required`, `error`,
   `disabled`, `dirty`, `clearable` / `clearIcon` and the other adjacent-inner
   icons, plus the loader, colour, active/focus and typography mixins. See
-  [`OrigamField`](../Field/OrigamField.md).
+  [`OrigamField`](/components/Field/OrigamField).
 - **Input** (`IInputProps`) — `hint`, `persistentHint`, `messages`,
   `hideDetails`, the dimension / direction mixins, and the validation surface
   (`rules`, `validateOn`, `errorMessages`, `readonly`) documented above. See
-  [`OrigamInput`](../Input/OrigamInput.md).
+  [`OrigamInput`](/components/Input/OrigamInput).
 - **Text field's own** — `placeholder`, `persistentPlaceholder`, `counter`,
   `counterValue`, `persistentCounter`, `autofocus`, `role`, spacing and border
-  mixins. See [`OrigamTextField`](../TextField/OrigamTextField.md).
+  mixins. See [`OrigamTextField`](/components/TextField/OrigamTextField).
 
 `type`, `mask` and `modelModifiers` are inherited by type but meaningless
 here: the visible control is not a free-text input — it renders the selection

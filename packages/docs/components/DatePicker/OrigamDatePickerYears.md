@@ -1,7 +1,7 @@
 # OrigamDatePickerYears
 
 `<OrigamDatePickerYears>` is the year-picking panel of
-[`<OrigamDatePicker>`](./OrigamDatePicker.md): a scrollable 3-column grid of
+[`<OrigamDatePicker>`](/components/DatePicker/OrigamDatePicker): a scrollable 3-column grid of
 year tiles, each rendered as an `<OrigamBtn>`. It is what the picker swaps in
 when `viewMode` becomes `'years'`.
 

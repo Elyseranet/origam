@@ -1,7 +1,7 @@
 # OrigamColorPickerCanvas
 
 `<OrigamColorPickerCanvas>` is the 2-D saturation / value gradient of
-[`<OrigamColorPicker>`](./OrigamColorPicker.md): a `<canvas>` painted for
+[`<OrigamColorPicker>`](/components/ColorPicker/OrigamColorPicker): a `<canvas>` painted for
 the current hue, plus a draggable dot. Mouse, touch and keyboard all
 write back through a single `update:colorHsv` channel.
 

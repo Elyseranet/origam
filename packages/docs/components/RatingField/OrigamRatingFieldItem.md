@@ -1,7 +1,7 @@
 # OrigamRatingFieldItem
 
 `<OrigamRatingFieldItem>` is one star of an
-[`<OrigamRatingField>`](./OrigamRatingField.md). It renders a `<label>`
+[`<OrigamRatingField>`](/components/RatingField/OrigamRatingField). It renders a `<label>`
 wrapping an icon-only `<OrigamBtn>`, plus a visually-hidden
 `<input type="radio">` that carries the item's value and its accessible
 name.

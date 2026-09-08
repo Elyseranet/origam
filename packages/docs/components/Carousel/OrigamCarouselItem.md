@@ -145,6 +145,6 @@ convention used across the DS for components that host a style block.
 
 ## Related
 
-- [`OrigamCarousel`](./OrigamCarousel.md) — the container that owns navigation, delimiters and auto-play.
-- [`OrigamWindowItem`](../Window/OrigamWindowItem.md) — the root this component renders.
-- [`OrigamImg`](../Img/OrigamImg.md) — the default slide content.
+- [`OrigamCarousel`](/components/Carousel/OrigamCarousel) — the container that owns navigation, delimiters and auto-play.
+- [`OrigamWindowItem`](/components/Window/OrigamWindowItem) — the root this component renders.
+- [`OrigamImg`](/components/Img/OrigamImg) — the default slide content.

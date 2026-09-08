@@ -56,7 +56,7 @@ The rows below are the ones you reach for in practice.
 | `required` | `boolean` | Marks the label as required. |
 | `disabled` / `readonly` | `boolean` | Forwarded down to every radio. |
 | `error` | `string \| boolean` | Error state; a string doubles as the message. |
-| `messages`, `hint`, `rules`, … | `IInputProps` | The rest of the standard field surface — see [`OrigamInput`](../Input/OrigamInput.md). |
+| `messages`, `hint`, `rules`, … | `IInputProps` | The rest of the standard field surface — see [`OrigamInput`](/components/Input/OrigamInput). |
 
 ### Design
 
