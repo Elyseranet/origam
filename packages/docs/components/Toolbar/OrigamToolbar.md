@@ -116,8 +116,11 @@ configured once on `OrigamApp`.
 | `--origam-toolbar---color` | Toolbar text color. |
 | `--origam-toolbar---box-shadow` | Shadow. |
 | `--origam-toolbar---height` | Toolbar height. |
-| `--origam-toolbar---border-radius` | Border radius. |
-| `--origam-toolbar---zIndex` | Z-index. |
+| `--origam-toolbar---border-start-start-radius` | Top-inline-start corner radius. There is **no** `border-radius` shorthand token — the component reads the four logical longhands (`border-{start-start,start-end,end-start,end-end}-radius`) individually, so override the corner you need. |
+| `--origam-toolbar---border-start-end-radius` | Top-inline-end corner radius. |
+| `--origam-toolbar---border-end-start-radius` | Bottom-inline-start corner radius. |
+| `--origam-toolbar---border-end-end-radius` | Bottom-inline-end corner radius. |
+| `--origam-toolbar---z-index` | Z-index. |
 | `--origam-toolbar__wrapper---display` | Wrapper flex layout. |
 | `--origam-toolbar__content---flex-grow` | Content flex-grow. |
 | `--origam-toolbar__title---font-size` | Title font size. |

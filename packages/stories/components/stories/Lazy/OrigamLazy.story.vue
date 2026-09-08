@@ -49,7 +49,6 @@
 							:model-value="state.modelValue"
 							:options="state.options"
 							:transition="state.transition"
-							:disabled="state.disabled"
 							height="120"
 					>
 						<div style="padding: 16px; background: var(--origam-color__surface---default); border-radius: 4px; font-weight: bold;">
@@ -59,9 +58,6 @@
 				</div>
 			</template>
 			<template #controls="{ state }">
-				<StoryGroup title="States">
-					<HstCheckbox v-model="state.disabled" title="Disabled (transition)"/>
-				</StoryGroup>
 				<StoryGroup title="Data">
 					<HstCheckbox v-model="state.modelValue" title="Model Value (visible)"/>
 				</StoryGroup>
@@ -162,7 +158,6 @@
 				<StoryGroup title="Functional">
 					<HstSelect   v-model="state.tag"        title="Tag"       :options="TAG_OPTIONS"/>
 					<HstCheckbox v-model="state.modelValue" title="Model Value (visible)"/>
-					<HstCheckbox v-model="state.disabled"   title="Disabled (transition)"/>
 				</StoryGroup>
 			</template>
 		</Variant>

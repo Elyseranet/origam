@@ -39,8 +39,9 @@ see the Design Tokens table below) instead of a hardcoded literal:
 > token file. See `CHANGELOG.md` for the before/after scale and the
 > migration note.
 >
-> A fifth token, `max-width-sm` (`576px`), is declared in
-> `component/container.json` but intentionally NOT wired into this ladder —
+> A fifth token, `--origam-container---max-width-sm` (`576px`), is declared in
+> `packages/ds/src/assets/css/tokens/light.css` (and its `dark.css` /
+> `_*.scss` twins) but intentionally NOT wired into this ladder —
 > the documented behaviour below `960px` has always been `100%` (no cap),
 > not a `576px` tier. The token exists for naming-scale completeness
 > (Bootstrap-style `sm/md/lg/xl/xxl`) and is currently dormant by design.

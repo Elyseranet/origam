@@ -109,24 +109,32 @@ test.describe('OrigamField', () => {
         await expect(input).toHaveAttribute('aria-required', 'true')
     })
 
-    test('Native focus / blur — focusing input fires DOM fallthrough events', async ({ page }) => {
-        // focus/blur are NOT declared emits on OrigamField (only `update:focused`
-        // is, via IFocusEmits) — they reach the consumer through Vue's native
-        // $attrs fallthrough. The story Variant was renamed from "Events - focus"
-        // to "Native — focus / blur (DOM fallthrough)" in 617246fe to stop
-        // implying these are component emits; this spec's selector had not been
-        // updated to match (#554).
+    test('Events update:focused — focusing the input toggles the focused state', async ({ page }) => {
+        // focus/blur are NOT emits on OrigamField, and $attrs fallthrough does
+        // NOT rescue them either: the root is a <div> with no tabindex and
+        // focus/blur do not bubble. The previous version of this spec navigated
+        // to a Variant titled "Native — focus / blur (DOM fallthrough)" and
+        // asserted nothing at all ("no throw = success") — it pinned the lie
+        // instead of the intent. Both the Variant and this spec now exercise
+        // `update:focused`, the channel that actually works, and assert the
+        // observable consequence on the root.
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Native — focus / blur (DOM fallthrough)', { exact: true }).first().click()
+        await page.getByText('Events - update:focused', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const input = sandbox.locator('[data-cy="field-emit-focus"] input').first()
+        const field = sandbox.locator('[data-cy="field-emit-focus"]').first()
+        const input = field.locator('input').first()
         await expect(input).toBeVisible({ timeout: 5000 })
+
+        await expect(field).not.toHaveClass(/origam-field--focused/)
+
         await input.focus()
+        await expect(field).toHaveClass(/origam-field--focused/)
+
         await input.blur()
-        // logEvent called — no throw = success
+        await expect(field).not.toHaveClass(/origam-field--focused/)
     })
 
     test('Prop rounded — themed default radius resolves (non-zero) and prop overrides it', async ({ page }) => {

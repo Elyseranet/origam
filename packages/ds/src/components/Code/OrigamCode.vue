@@ -174,7 +174,28 @@
 	 * accessible est annoncee « groupe, vide » par un lecteur d'ecran. Le
 	 * couple role + `aria-label` la nomme.
 	 ********************************************************/
-	const scrollerLabel = computed(() => t('origam.code.scroller_aria_label'))
+	/*********************************************************
+	 * @description
+	 * ⛔ Le nom etait la chaine statique « Code block, scrollable region »
+	 * pour TOUTES les instances. Une page qui en aligne cinq presentait donc
+	 * cinq regions rigoureusement homonymes dans la liste des reperes d'un
+	 * lecteur d'ecran — un nom qui ne distingue rien ne nomme rien. La doc
+	 * annoncait deja « an `aria-label` that includes the filename (or
+	 * language fallback) » ; c'est cette promesse qui est ici tenue.
+	 *
+	 * @description
+	 * Ordre de resolution : `filename` s'il est fourni (c'est ce que
+	 * l'auteur a choisi de montrer dans l'en-tete), sinon `lang` tant qu'il
+	 * n'est pas `plaintext` (qui ne distingue rien non plus), sinon le nom
+	 * generique d'origine.
+	 ********************************************************/
+	const scrollerLabel = computed(() => {
+		if (props.filename) return t('origam.code.scroller_aria_label_filename', {filename: props.filename})
+
+		if (props.lang && props.lang !== CODE_LANG.PLAINTEXT) return t('origam.code.scroller_aria_label_lang', {lang: props.lang})
+
+		return t('origam.code.scroller_aria_label')
+	})
 
 	/*********************************************************
 	 * Source extraction — prop wins over slot, slot used as fallback.

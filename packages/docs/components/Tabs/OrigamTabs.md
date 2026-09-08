@@ -108,6 +108,11 @@ On touch devices, enable horizontal swipe between panels with
 | `disabled`    | `boolean`                  | `false`        | Disables the entire tablist.          |
 | `color`       | `TIntent`                  | —              | Forwarded as a default to every child `<OrigamTab>`; does **not** paint the tablist itself. |
 | `bgColor`     | `TIntent \| string`        | —              | Paints the tablist surface. An intent resolves to `--origam-color__{base}---bg` and auto-pairs its contrast foreground; a raw CSS colour is emitted verbatim. |
+| `rounded`     | `TRounded`                 | —              | Corner-radius rung (`IRoundedProps`).  |
+| `tag`         | `string`                   | `'div'`        | Element rendered as the tablist root.  |
+| `multiple`    | `boolean`                  | `false`        | Inherited from `IGroupProps` — allows several tabs to be selected at once. |
+| `max`         | `number`                   | —              | Inherited from `IGroupProps` — caps the number of simultaneous selections when `multiple`. |
+| `selectedClass` | `string`                 | `'origam-tab--active'` | Class applied to the selected `<OrigamTab>`. |
 
 ### `<OrigamTab>`
 
@@ -115,11 +120,22 @@ On touch devices, enable horizontal swipe between panels with
 |---------------|-----------------|---------|------------------------------------------|
 | `value`       | `number \| string` | —    | Required. Identifier matched by the panel. |
 | `disabled`    | `boolean`       | `false` | Disables this tab (skipped by keyboard). |
-| `icon`        | `TIcon`         | —       | Leading icon.                            |
+| `selectedClass` | `string`      | —       | Inherited from `IGroupItemProps` — per-tab override of the parent's `selectedClass`. |
+| `text`        | `string`        | `''`    | Text label, used when the `default` slot is not provided. |
+| `variant`     | `'default' \| 'pills' \| 'underline'` | — | Visual treatment, normally mirrored down from the parent `<OrigamTabs>`. |
+| `tag`         | `string`        | `'button'` | Element rendered as the tab root. |
+| `prependIcon` | `TIcon`         | —       | Leading icon (`IAdjacentProps` — the same contract as `OrigamBtn` / `OrigamChip` / `OrigamListItem`). |
 | `appendIcon`  | `TIcon`         | —       | Trailing icon (badge, close, …).         |
+| `prependAvatar` | `string`      | —       | Leading avatar image, rendered by `<OrigamAvatar>` in the prepend slot. |
+| `appendAvatar`  | `string`      | —       | Trailing avatar image, rendered by `<OrigamAvatar>` in the append slot. |
+| `icon`        | `TIcon`         | —       | **Deprecated** — use `prependIcon`. Same leading-icon position, kept for backward compatibility; **ignored when `prependIcon` is set** (`resolvedPrependIcon = prependIcon ?? icon`). |
 | `fontSize`    | `TFontSize`     | —       | Font size token override (`xs` · `sm` · `md` · `lg` · `xl` · …). Maps to `--origam-tabs__item---font-size`. |
 | `fontWeight`  | `TFontWeight`   | —       | Font weight token override (`regular` · `medium` · `semibold` · `bold` · …). Maps to `--origam-tabs__item---font-weight`. |
 | `letterSpacing` | `TLetterSpacing` | —   | Letter-spacing token override (`tight` · `normal` · `wide` · `wider` · `widest`). Maps to `--origam-tabs__item---letter-spacing`. |
+
+`lineHeight` is deliberately **not** part of the surface: the tab SCSS
+hard-codes `line-height: 1` with no CSS-variable hook, so the prop would have
+had nothing to write to.
 
 ### `<OrigamTabPanels>`
 
@@ -128,6 +144,10 @@ On touch devices, enable horizontal swipe between panels with
 | `modelValue` | `number \| string` | — | Active panel — same value as `<OrigamTabs>`.  |
 | `transition` | `string \| false` | `'fade'` | Transition name. `false` disables.        |
 | `swipeable`  | `boolean`       | `false` | Allow horizontal touch swipe between panels. |
+| `direction`  | `'horizontal' \| 'vertical'` | `'horizontal'` | Layout axis, inherited from `IDirectionProps`. |
+| `tag`        | `string`        | `'div'` | Element rendered as the panels container root. |
+| `mandatory`  | `boolean`       | `true`  | Inherited from `IGroupProps` — forbids the empty selection. |
+| `selectedClass` | `string`     | `'origam-tab-panel--active'` | Class applied to the active `<OrigamTabPanel>`. |
 
 ### `<OrigamTabPanel>`
 
@@ -135,6 +155,9 @@ On touch devices, enable horizontal swipe between panels with
 |--------------|-----------------|---------|-----------------------------------------------|
 | `value`      | `number \| string` | — | Required. Must match a sibling `<OrigamTab>`. |
 | `eager`      | `boolean`       | `false` | Mount the panel content from the start instead of on first activation. |
+| `disabled`   | `boolean`       | `false` | Inherited from `IGroupItemProps` — excludes the panel from group selection. |
+| `selectedClass` | `string`     | —       | Inherited from `IGroupItemProps` — class applied while this panel is the selected one. |
+| `tag`        | `string`        | `'div'` | Element rendered as the panel root. |
 
 ## Events
 
@@ -142,6 +165,32 @@ On touch devices, enable horizontal swipe between panels with
 |-------------------|--------------------|------------------|
 | `<OrigamTabs>`    | `update:modelValue` | new active value |
 | `<OrigamTabPanels>` | `update:modelValue` | new active value |
+| `<OrigamTab>`     | `group:selected`   | `{ value: boolean }` — `true` when this tab becomes the selected one, `false` when it stops being it |
+| `<OrigamTabPanel>`| `group:selected`   | `{ value: boolean }` — same contract, on the panel side |
+
+`group:selected` is not optional chrome: both `<OrigamTab>` and
+`<OrigamTabPanel>` self-register through `useGroupItem`, which `watch`es
+`isSelected` and calls `vm.emit('group:selected', { value })` on the
+registering component's own instance. It fires on **every** selection change,
+whether or not a handler is bound — it is the per-item counterpart of the
+container's `update:modelValue`, and the only way to react to selection on the
+item itself rather than on the tablist.
+
+```vue
+<template>
+    <OrigamTabs v-model="tab">
+        <OrigamTab value="one" text="One" @group:selected="onTabSelected" />
+        <OrigamTab value="two" text="Two" @group:selected="onTabSelected" />
+    </OrigamTabs>
+</template>
+
+<script setup lang="ts">
+    function onTabSelected (payload: { value: boolean }) {
+        // payload.value === true  → this tab just became active
+        // payload.value === false → this tab just lost the selection
+    }
+</script>
+```
 
 ## Slots
 
