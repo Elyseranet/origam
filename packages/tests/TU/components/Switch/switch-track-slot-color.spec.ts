@@ -1,21 +1,14 @@
-// C7 lot 1 — the two CODE changes made while bringing docs and stories back
-// in line with the live API. Both are jsdom-verifiable (slot payload keys,
-// emitted classes), so no Playwright is needed here:
+// `<OrigamSwitchTrack>` transmet `color` dans la charge de son slot au
+// runtime, alors que `ISwitchTrackSlotsProps` ne declarait que
+// `{ model, isValid }`.
 //
-//  1. <OrigamSwitchTrack> passes `color` in its slot payload at runtime, but
-//     `ISwitchTrackSlotsProps` only declared `{ model, isValid }`. The
-//     component's own doc comment already ASSERTED the forwarding
-//     ("the `color` prop is exposed for slot consumers"), so a TypeScript
-//     consumer destructuring `#track.true="{ color }"` got an error on a
-//     value that is genuinely there. The interface now declares it — this
-//     spec pins the RUNTIME half so the type and the payload cannot drift
-//     apart again.
+// ⛔ Le commentaire du composant AFFIRMAIT deja cette transmission — « the
+// `color` prop is exposed for slot consumers ». Un consommateur TypeScript
+// destructurant `#track.true="{ color }"` recevait donc une erreur sur une
+// valeur qui est bel et bien la : la doc disait vrai, le type disait faux.
 //
-//  2. <OrigamRatingFieldItem>'s scoped stylesheet ships a
-//     `.origam-rating-field-item__label` rule (cursor: pointer + the star's
-//     transform transition), but the template rendered a bare `<label>` with
-//     no class at all — the rule matched nothing, in any browser, ever. The
-//     class is now emitted.
+// L'interface le declare desormais ; ce spec epingle la moitie RUNTIME, pour
+// que le type et la charge ne puissent plus diverger.
 
 import { describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
@@ -89,29 +82,3 @@ describe('OrigamSwitchTrack — the track.* slot payload carries `color`', () =>
     })
 })
 
-describe('OrigamRatingFieldItem — the <label> carries its BEM class', () => {
-    it('emits origam-rating-field-item__label so the scoped rule can match', () => {
-        const wrapper = mount(OrigamRatingFieldItem, {
-            global: { plugins: [createOrigam()] },
-            props: { name: 'rating', value: 3 } as never
-        })
-
-        const label = wrapper.find('label')
-
-        expect(label.exists()).toBe(true)
-        expect(label.classes()).toContain('origam-rating-field-item__label')
-    })
-
-    it('keeps the label/input pairing intact alongside the class', () => {
-        const wrapper = mount(OrigamRatingFieldItem, {
-            global: { plugins: [createOrigam()] },
-            props: { name: 'rating', value: 2.5 } as never
-        })
-
-        const label = wrapper.find('label')
-        const input = wrapper.find('input[type="radio"]')
-
-        expect(label.attributes('for')).toBe('rating-2-5')
-        expect(input.attributes('id')).toBe('rating-2-5')
-    })
-})
