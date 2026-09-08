@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { eventLogItems, openEventsTab } from './_support/histoire-controls'
 
 /**
  * OrigamExpansionPanel / OrigamExpansionPanelHeader — e2e spec
@@ -244,12 +245,19 @@ test.describe('OrigamExpansionPanelHeader', () => {
             await expect(header.locator('.origam-expansion-panel-header__append .origam-icon').first()).toBeAttached()
         })
 
-        test('click on the append area does not throw', async ({ page }) => {
+        // Was `click on the append area does not throw` — a click with no
+        // assertion after it. Same decorative pattern as the panel's
+        // `group:selected` test below; replaced by a real Events-tab readback.
+        test('clicking the append icon emits click:append', async ({ page }) => {
             await page.goto(headerVariantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const append = sandbox.locator('.origam-expansion-panel-header__append').first()
             await expect(append).toBeVisible({ timeout: 20000 })
             await append.click()
+            await page.waitForTimeout(300)
+
+            await openEventsTab(page)
+            await expect(eventLogItems(page).filter({ hasText: 'click:append' })).toHaveCount(1)
         })
     })
 
@@ -264,12 +272,18 @@ test.describe('OrigamExpansionPanelHeader', () => {
             await expect(header.locator('.origam-expansion-panel-header__prepend .origam-icon').first()).toBeAttached()
         })
 
-        test('click on the prepend area does not throw', async ({ page }) => {
+        // Was `click on the prepend area does not throw` — see the append
+        // test above; same repair.
+        test('clicking the prepend icon emits click:prepend', async ({ page }) => {
             await page.goto(headerVariantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const prepend = sandbox.locator('.origam-expansion-panel-header__prepend').first()
             await expect(prepend).toBeVisible({ timeout: 20000 })
             await prepend.click()
+            await page.waitForTimeout(300)
+
+            await openEventsTab(page)
+            await expect(eventLogItems(page).filter({ hasText: 'click:prepend' })).toHaveCount(1)
         })
     })
 
@@ -475,12 +489,59 @@ test.describe('OrigamExpansionPanel', () => {
             await expect(header.locator('.origam-expansion-panel-header__title')).toContainText('Select me')
         })
 
-        test('click does not throw (group:selected fires)', async ({ page }) => {
+    // ⛔ The test that used to live here was titled `click does not throw
+    // (group:selected fires)` and its whole body was `await header.click()`
+    // — it asserted NOTHING. It was green from the day it was written and
+    // would have stayed green if the emit had never fired at all. Exactly the
+    // pattern the inspection ledger flagged on `form.spec.ts` ("le test qui
+    // prétend le prouver ne prouve rien"): a test that cannot go red is a
+    // decoration, not a safety net.
+    //
+    // The emit itself is real — `useGroupItem` calls `vm.emit('group:selected',
+    // { value })` (groupItem.composable.ts) — and is pinned at unit level in
+    // `TU/components/ExpansionPanel/OrigamExpansionPanels.spec.ts`. What was
+    // missing here is the browser-level proof, read from Histoire's own Events
+    // tab, the only place a `logEvent()` fired INSIDE the sandboxed iframe is
+    // observable from the outer Playwright page.
+
+        test('clicking the header emits group:selected once, with value true', async ({ page }) => {
             await page.goto(panelVariantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const header = sandbox.locator('.origam-expansion-panel-header').first()
             await expect(header).toBeVisible({ timeout: 12000 })
             await header.click()
+            await page.waitForTimeout(300)
+
+            await openEventsTab(page)
+            const logged = eventLogItems(page).filter({ hasText: 'group:selected' })
+            await expect(logged).toHaveCount(1)
+            await expect(logged.first()).toContainText('true')
+        })
+
+        test('collapsing again emits a second group:selected, with value false', async ({ page }) => {
+            await page.goto(panelVariantUrl(3), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const header = sandbox.locator('.origam-expansion-panel-header').first()
+            await expect(header).toBeVisible({ timeout: 12000 })
+            await header.click()
+            await expect(header).toHaveAttribute('aria-expanded', 'true')
+            await header.click()
+            await expect(header).toHaveAttribute('aria-expanded', 'false')
+            await page.waitForTimeout(300)
+
+            await openEventsTab(page)
+            const logged = eventLogItems(page).filter({ hasText: 'group:selected' })
+            await expect(logged).toHaveCount(2)
+            await expect(logged.first()).toContainText('false')
+        })
+
+        test('no group:selected is logged before any interaction', async ({ page }) => {
+            await page.goto(panelVariantUrl(3), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-expansion-panel-header').first()).toBeVisible({ timeout: 12000 })
+
+            await openEventsTab(page)
+            await expect(eventLogItems(page).filter({ hasText: 'group:selected' })).toHaveCount(0)
         })
     })
 
@@ -529,6 +590,70 @@ test.describe('OrigamExpansionPanel', () => {
             await header.click()
             await expect(header).toHaveAttribute('aria-expanded', 'true')
             await expect(sandbox.locator('.origam-expansion-panel').first()).toHaveClass(/origam-expansion-panel--active/)
+        })
+
+        // ─────────────────────────────────────────────────────────────────────
+        // #420 — AT-REST state. Every test above (and the whole pre-existing
+        // spec) exercises the panel by ACTIONING it: click, then assert what
+        // appeared. None of them ever asked the opposite question — does a
+        // panel that was never opened keep its body hidden? That blind spot is
+        // precisely how the defect survived a first inspection that declared
+        // the component "entirely conforming".
+        //
+        // The defect: `hasContent` read `slots.content`, a slot name no
+        // consumer in the DS ever passes to `<origam-expansion-panel>` (the
+        // `<origam-expansion-panels>` container forwards its own `content` /
+        // `content.{index}` slot to the CHILD's `#default`). So for a panel
+        // driven by the default slot and no `content` PROP — the shape this
+        // very Variant renders, and the shape the doc RECOMMENDS for rich
+        // markup — `hasContent` was false and the template fell through to
+        // `<slot v-else name="default"/>`. That branch bypasses
+        // `<origam-expansion-panel-content>` entirely, losing its `v-show`,
+        // `role="region"`, `aria-labelledby`, lazy mount and expand
+        // transition at once: a closed panel rendered its body in plain view.
+        //
+        // These three run as a set on purpose. The first two go red against
+        // the pre-fix component; the third is the counter-test that stops
+        // them passing for the trivial wrong reason (content that never
+        // exists at all would also satisfy "not visible").
+        // ─────────────────────────────────────────────────────────────────────
+
+        test('#420 at rest — a never-opened panel does not show its default-slot body', async ({ page }) => {
+            await page.goto(panelVariantUrl(5), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-expansion-panel-header').first()).toBeVisible({ timeout: 12000 })
+
+            // `toBeHidden` is satisfied both by "absent from the DOM" (lazy
+            // content never mounted) and by "present but display:none"
+            // (`v-show`). Either is correct; what the pre-fix build produced
+            // was neither — the text was rendered and fully visible.
+            await expect(sandbox.getByText('This content was inserted via the default slot.')).toBeHidden()
+            await expect(sandbox.getByText('It supports rich markup.')).toBeHidden()
+        })
+
+        test('#420 at rest — the body is wrapped by origam-expansion-panel-content[role=region]', async ({ page }) => {
+            await page.goto(panelVariantUrl(5), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const panel = sandbox.locator('.origam-expansion-panel').first()
+            await expect(panel).toBeVisible({ timeout: 12000 })
+
+            const content = panel.locator('.origam-expansion-panel-content')
+            await expect(content).toHaveCount(1)
+            await expect(content).toHaveAttribute('role', 'region')
+            // `v-show` writes a literal inline `display: none` — no `var()`
+            // indirection — so this is a real computed-style verdict.
+            await expect(content).toHaveCSS('display', 'none')
+        })
+
+        test('#420 counter-test — opening the panel does reveal the body', async ({ page }) => {
+            await page.goto(panelVariantUrl(5), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const header = sandbox.locator('.origam-expansion-panel-header').first()
+            await expect(header).toBeVisible({ timeout: 12000 })
+
+            await header.click()
+            await expect(sandbox.getByText('This content was inserted via the default slot.')).toBeVisible({ timeout: 8000 })
+            await expect(sandbox.locator('.origam-expansion-panel-content').first()).not.toHaveCSS('display', 'none')
         })
     })
 
