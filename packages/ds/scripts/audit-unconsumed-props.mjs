@@ -82,8 +82,39 @@ function splitTopLevel (str, sep = ',') {
     return parts
 }
 
+/*********************************************************
+ * unwrapModifiers
+ *
+ * @description
+ * `Partial<X>`, `Required<X>`, `Readonly<X>` et `NonNullable<X>` ne changent
+ * QUE l'optionalite ou la mutabilite des membres : l'ensemble des NOMS est
+ * celui de `X`. Ils doivent donc etre traverses, pas traites comme un parent
+ * introuvable.
+ *
+ * @description
+ * Mesure : `ICheckboxGroupProps extends …, Partial<Omit<ICheckboxProps,
+ * 'trueValue' | 'falseValue'>>, …, Partial<ISelectionControlGroupProps>` ne
+ * resolvait que 71 props. `multiple`, `items` (de `ISelectionControlGroupProps`)
+ * et `label`, `required` (de `ISelectionControlProps`, atteint via
+ * `ICheckboxProps`) etaient perdus — d'ou une doc pourtant exacte accusee de
+ * decrire quatre props inexistantes.
+ *
+ * @description
+ * L'imbrication compte : `Partial<Omit<X, …>>` doit d'abord perdre son
+ * `Partial`, puis etre lu comme un `Omit`. D'ou la boucle.
+ ********************************************************/
+const TYPE_MODIFIERS = /^(?:Partial|Required|Readonly|NonNullable)<\s*([\s\S]+)>$/
+
+function unwrapModifiers (token) {
+    let out = token.trim()
+    let m
+    while ((m = TYPE_MODIFIERS.exec(out))) out = m[1].trim()
+    return out
+}
+
 /** Parses `Pick<Base, 'a' | 'b'>` / `Omit<Base, 'a' | 'b'>` → { kind, base, keys }, else null. */
-function parseNarrowing (token) {
+function parseNarrowing (rawToken) {
+    const token = unwrapModifiers(rawToken)
     const m = /^(Pick|Omit)<\s*([A-Za-z0-9_]+)\s*,\s*(.+)>$/.exec(token)
     if (!m) return null
     const [, kind, base, keysExpr] = m
@@ -98,7 +129,19 @@ function indexInterfaces () {
     const files = walk(join(SRC, 'interfaces'), (f) => f.endsWith('.ts'))
     for (const file of files) {
         const src = stripComments(read(file))
-        const re = /export\s+interface\s+([A-Za-z0-9_]+)\s*(?:extends\s+([^{]+))?\{/g
+        /*********************************************************
+         * Nom d'interface — avec ou sans parametre generique
+         *
+         * @description
+         * Le segment `<…>` est optionnel et non capture : sans lui, les 24
+         * interfaces generiques du DS (`IDataTableSlots<T = any>`,
+         * `IListChildrenSlots<T>`, …) n'etaient pas indexees DU TOUT — ni
+         * leurs membres, ni leur chaine d'heritage. Le motif est paresseux
+         * et interdit `{` a l'interieur, donc il s'arrete au bon `>` par
+         * retour arriere meme sur un generique imbrique
+         * (`<P extends Record<string, any>>`).
+         ********************************************************/
+        const re = /export\s+interface\s+([A-Za-z0-9_]+)\s*(?:<[^{]*?>)?\s*(?:extends\s+([^{]+))?\{/g
         let m
         while ((m = re.exec(src))) {
             const name = m[1]
@@ -108,7 +151,7 @@ function indexInterfaces () {
             for (const raw of rawParents) {
                 const pick = parseNarrowing(raw)
                 if (pick) narrowed.push(pick)
-                else ext.push(raw.replace(/<.*$/, ''))
+                else ext.push(unwrapModifiers(raw).replace(/<.*$/, ''))
             }
             // capture the body with brace matching
             let depth = 1
@@ -120,6 +163,40 @@ function indexInterfaces () {
             }
             const body = src.slice(re.lastIndex, i - 1)
             INTERFACES.set(name, { own: ownMembers(body), extends: ext, narrowed, file })
+        }
+
+        /*********************************************************
+         * Alias de type vers une ou plusieurs interfaces
+         *
+         * @description
+         * `export type IChartCartesianSlots = IChartBaseSlots` est un nom
+         * d'interface a part entiere du point de vue d'un `defineSlots<…>`,
+         * mais n'etait indexe nulle part : les 4 composants Chart cartesiens
+         * se lisaient donc sans aucun slot.
+         *
+         * @description
+         * Seuls les alias vers des NOMS sont repris (`A`, `A & B`), jamais
+         * une union de litteraux (`'a' | 'b'`) ni un type construit : le
+         * membre resolu doit rester une vraie surface d'interface. L'alias
+         * est enregistre comme un `extends` pur, sans membre propre.
+         ********************************************************/
+        const alias = /export\s+type\s+([A-Za-z0-9_]+)\s*(?:<[^=]*?>)?\s*=\s*([^\r\n;]+)/g
+        let a
+        while ((a = alias.exec(src))) {
+            if (INTERFACES.has(a[1])) continue
+            const ext = []
+            const narrowed = []
+            let usable = true
+            for (const rawTerm of splitTopLevel(a[2], '&').map((s) => s.trim()).filter(Boolean)) {
+                const pick = parseNarrowing(rawTerm)
+                if (pick) { narrowed.push(pick); continue }
+                const raw = unwrapModifiers(rawTerm)
+                if (!/^[A-Za-z0-9_]+$/.test(raw)) { usable = false; break }
+                ext.push(raw)
+            }
+            if (usable && (ext.length || narrowed.length)) {
+                INTERFACES.set(a[1], { own: new Set(), extends: ext, narrowed, file })
+            }
         }
     }
 }
@@ -141,8 +218,28 @@ function ownMembers (body) {
     for (const [raw] of lines) {
         const trimmed = raw.trim()
         if (d === 0) {
-            const m = /^(?:readonly\s+)?(['"]?)([A-Za-z_$][A-Za-z0-9_$]*)\1\s*\??\s*:/.exec(trimmed)
-            if (m) out.add(m[2])
+            /*********************************************************
+             * Cle de membre — nue OU entre quotes
+             *
+             * @description
+             * Une cle NUE est forcement un identifiant JS. Une cle QUOTEE
+             * ne l'est pas : les interfaces de slots declarent
+             * `'legend-item'?:` et `'header.prepend'?:`, noms impossibles
+             * sans quotes. L'ancien motif imposait le meme charset aux deux
+             * cas, donc `'legend-item'` s'arretait sur le tiret et le membre
+             * disparaissait — `IChartLegendSlots` et `IDataTableSlots` se
+             * lisaient VIDES, ce qui faisait passer chaque Variant de slot
+             * pour une invention.
+             *
+             * @description
+             * Le terminateur est `[:(]` et non `:` seul : un membre peut etre
+             * declare en syntaxe METHODE (`node (props: {…}): unknown`), sans
+             * deux-points apres le nom. `ITreeviewNodeSlots`,
+             * `IDefaultProviderSlots` et `IDataTableHeaderCellSlots`
+             * n'utilisent que cette forme et se lisaient donc vides.
+             ********************************************************/
+            const m = /^(?:readonly\s+)?(?:'([^']+)'|"([^"]+)"|([A-Za-z_$][A-Za-z0-9_$]*))\s*\??\s*[:(]/.exec(trimmed)
+            if (m) out.add(m[1] ?? m[2] ?? m[3])
         }
         for (const ch of raw) {
             if ('{(['.includes(ch)) d++
@@ -824,6 +921,34 @@ export function analyse () {
     }
     const componentFiles = walk(join(SRC, 'components'), (f) => f.endsWith('.vue')).sort()
     return componentFiles.map(analyseComponent).filter(Boolean)
+}
+
+/*********************************************************
+ * declaredPropsFor — surface de props d'une interface, `extends` resolu
+ *
+ * @description
+ * Meme index, meme resolution que `analyse()` ci-dessus : `resolveInterface`
+ * suit les `extends`, les `Pick<>` et les `Omit<>`. Expose pour que
+ * `analysis/c7-story-doc-sync.mjs` lise EXACTEMENT la meme surface de props
+ * que le garde `unconsumed-props`, au lieu d'une seconde copie qui derive.
+ *
+ * @description
+ * Les quatre index sont construits ensemble, comme dans `analyse()` : les
+ * batir separement laisserait `INTERFACES.size` non nul et ferait sauter la
+ * construction des trois autres au prochain appel d'`analyse()`.
+ *
+ * @description
+ * Rend une `Map<nomDeProp, interfaceDeclarante>` — vide si l'interface est
+ * inconnue.
+ ********************************************************/
+export function declaredPropsFor (ifaceName) {
+    if (!INTERFACES.size) {
+        indexInterfaces()
+        indexEnums()
+        indexConstArrays()
+        indexComposables()
+    }
+    return resolveInterface(ifaceName)
 }
 
 /* ------------------------------------------------------------------ */
