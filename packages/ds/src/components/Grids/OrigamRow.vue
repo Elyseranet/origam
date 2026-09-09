@@ -171,12 +171,12 @@
 		margin-inline-start: calc(var(--origam-row---margin-inline-start) + var(--origam-row---density));
 		margin-inline-end: calc(var(--origam-row---margin-inline-end) + var(--origam-row---density));
 
-		+ .v-row {
+		+ .origam-row {
 			margin-block-start: calc((var(--origam-row---margin-block-start) + var(--origam-row---density)) * -1);
 		}
 
 		&--density-default {
-			--origam-row---density: 0;
+			--origam-row---density: 0px;
 		}
 
 		&--density-compact {
@@ -249,7 +249,7 @@
 		--origam-row---margin-inline-start: -4px;
 		--origam-row---margin-inline-end: -4px;
 
-		--origam-row---density: 0;
+		--origam-row---density: 0px;
 
 		--origam-row---align-items: stretch;
 		--origam-row---justify-content: flex-start

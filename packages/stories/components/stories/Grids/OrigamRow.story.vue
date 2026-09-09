@@ -163,12 +163,12 @@
 					<origam-col cols="4"><div class="demo-cell">compact B</div></origam-col>
 					<origam-col cols="4"><div class="demo-cell">compact C</div></origam-col>
 				</origam-row>
-				<origam-row density="default" style="margin-top: 8px;">
+				<origam-row density="default">
 					<origam-col cols="4"><div class="demo-cell">default A</div></origam-col>
 					<origam-col cols="4"><div class="demo-cell">default B</div></origam-col>
 					<origam-col cols="4"><div class="demo-cell">default C</div></origam-col>
 				</origam-row>
-				<origam-row density="comfortable" style="margin-top: 8px;">
+				<origam-row density="comfortable">
 					<origam-col cols="4"><div class="demo-cell">comfortable A</div></origam-col>
 					<origam-col cols="4"><div class="demo-cell">comfortable B</div></origam-col>
 					<origam-col cols="4"><div class="demo-cell">comfortable C</div></origam-col>

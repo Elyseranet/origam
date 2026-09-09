@@ -98,7 +98,7 @@ its children. Defaults to `default`.
 ```ts
 interface IRowProps extends ICommonsComponentProps, ITagProps,
     IPaddingProps, IMarginProps, IBorderProps, IColorProps,
-    IDensityProps, IAlignProps, IJustifyProps {
+    IBgColorProps, IDensityProps, IAlignProps, IJustifyProps {
     gutters?:   string | number
     direction?: TFlexDirection
 }
@@ -123,13 +123,29 @@ interface IRowProps extends ICommonsComponentProps, ITagProps,
 | `--origam-row---box-sizing` | `border-box` |
 | `--origam-row---align-items` | `stretch` |
 | `--origam-row---justify-content` | `flex-start` |
+| `--origam-row---padding-block-start` | `0` |
+| `--origam-row---padding-block-end` | `0` |
+| `--origam-row---padding-inline-start` | `0` |
+| `--origam-row---padding-inline-end` | `0` |
 | `--origam-row---margin-block-start` | `-4px` |
 | `--origam-row---margin-block-end` | `-4px` |
 | `--origam-row---margin-inline-start` | `-4px` |
 | `--origam-row---margin-inline-end` | `-4px` |
-| `--origam-row---density` | `0` (compact) / `-8px` (default) |
+| `--origam-row---density` | `0px` (default) / `-8px` (compact) / `8px` (comfortable) |
 | `--origam-row--border---border-width` | inherits |
 | `--origam-row--border---box-shadow` | inherits |
+
+Every margin is emitted as `calc(var(--origam-row---margin-*) + var(--origam-row---density))`,
+so `density` widens or tightens the gutter around the row rather than
+replacing the base margin. The density value therefore **must carry a
+unit** — a unitless `0` makes the whole `calc()` invalid and the browser
+drops the declaration silently (the row then renders with no gutter at
+all instead of `-4px`).
+
+Two rows that follow each other collapse their facing gutters through
+`.origam-row + .origam-row`, which cancels the negative margin of the
+second one. Nothing to do in consumer code — do **not** add a manual
+`margin-top` between stacked rows.
 
 ## Accessibility
 
