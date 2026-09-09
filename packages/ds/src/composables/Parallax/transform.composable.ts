@@ -107,5 +107,32 @@ export function useParallaxTransform (props: IParallaxElementProps) {
             1)`
     }
 
-    return {transformStyles, strength}
+    /*********************************************************
+     * customMovement — la trappe `type="custom"` (#432)
+     *
+     * @description
+     * Rend le montant de mouvement PAR AXE, apres application de
+     * `strength` — la meme valeur exactement que `translateMovement`
+     * injecte dans son `translate3d`. `<OrigamParallaxElement>` la publie
+     * dans deux proprietes personnalisees (voir `PARALLAX_ELEMENT_VAR_X` /
+     * `_Y`) pour que le consommateur compose SA transform en CSS.
+     * @description
+     * ⛔ On rend `toMovement(x)`, jamais `x` brut. Publier la valeur brute
+     * ferait sauter `strength` — et avec lui `axis`, `min`, `max`, `cycle`
+     * qui l'alimentent en amont : toutes les props du composant seraient
+     * mortes des qu'on choisit `custom`, ce qui reproduirait le defaut
+     * qu'on repare sous une autre forme.
+     * @description
+     * Aucune unite n'est ajoutee : le meme nombre vaut des px, des degres
+     * ou un ratio selon la transform que le consommateur ecrit. C'est lui
+     * qui multiplie.
+     ********************************************************/
+    const customMovement = (x: number, y: number) => {
+        return {
+            x: toMovement(x),
+            y: toMovement(y)
+        }
+    }
+
+    return {transformStyles, strength, customMovement}
 }
