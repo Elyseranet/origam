@@ -67,11 +67,12 @@
 						:model-value="draft"
 						:placeholder="resolvedPlaceholder"
 						:disabled="disabled || isPending"
+						:aria-label="fieldAriaLabel"
 						:aria-invalid="error !== null"
 						:aria-describedby="error !== null ? errorId : undefined"
 						class="origam-inline-edit__field"
 						data-cy="origam-inline-edit-input"
-            hide-details
+						hide-details
 						@update:model-value="handleInput"
 						@keydown="handleKeyDown"
 						@blur="handleBlur"
@@ -121,6 +122,7 @@
 						:type="inputType"
 						:placeholder="resolvedPlaceholder"
 						:disabled="disabled || isPending"
+						:aria-label="fieldAriaLabel"
 						:aria-invalid="error !== null"
 						:aria-describedby="error !== null ? errorId : undefined"
 						class="origam-inline-edit__field"
@@ -207,6 +209,7 @@
 	import OrigamTextareaField from '../TextareaField/OrigamTextareaField.vue'
 
 	import { useInlineEdit } from '../../composables/InlineEdit/inline-edit.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useTypography } from '../../composables/Commons/typography.composable'
 
 	import { INLINE_EDIT_ACTION } from '../../enums/InlineEdit/inline-edit.enum'
@@ -224,10 +227,15 @@
 	 * here (not pulled from a const) because the Vue SFC compiler
 	 * analyses `withDefaults` statically and only resolves literals —
 	 * cf. CLAUDE.md "withDefaults — inline literals only" rule.
+	 *
+	 * @description
+	 * `placeholder` therefore has NO literal default: it is localised,
+	 * and a `t()` call is not a literal. `resolvedPlaceholder` falls back
+	 * to `t('origam.inline_edit.placeholder')` instead.
 	 ********************************************************/
 	const props = withDefaults(defineProps<IInlineEditProps>(), {
 		tag: 'span',
-		placeholder: 'Click to edit',
+		placeholder: undefined,
 		rules: undefined,
 		validate: undefined,
 		autoFocus: true,
@@ -252,6 +260,14 @@
 	 * up-to-date value (props are not Refs themselves).
 	 ********************************************************/
 	const modelRef = computed<string | number>(() => props.modelValue)
+
+	/*********************************************************
+	 * i18n — every user-facing string of this component goes through the
+	 * DS locale provider. Strict `useLocale()` matches the 74 other
+	 * components; the plugin is already required here anyway, since edit
+	 * mode renders `OrigamTextField` which calls it strictly too.
+	 ********************************************************/
+	const {t} = useLocale()
 
 	/*********************************************************
 	 * Composable — owns the IDLE → EDITING → VALIDATING state machine.
@@ -283,7 +299,8 @@
 			emit('update:modelValue', out)
 		},
 		onCancel: () => emit('cancel'),
-		onError: (message: string) => emit('validate-error', message)
+		onError: (message: string) => emit('validate-error', message),
+		invalidMessage: t('origam.inline_edit.invalid_value')
 	}))
 
 	/*********************************************************
@@ -306,16 +323,41 @@
 
 	const isEmpty = computed<boolean>(() => displayValue.value.trim().length === 0)
 
-	const resolvedPlaceholder = computed<string>(() => props.placeholder ?? 'Click to edit')
+	const resolvedPlaceholder = computed<string>(() => props.placeholder ?? t('origam.inline_edit.placeholder'))
 
 	const displayAriaLabel = computed<string>(() => {
 		const label = isEmpty.value ? resolvedPlaceholder.value : displayValue.value
-		return `Edit ${label}`
+		return t('origam.inline_edit.edit_aria_label', label)
 	})
 
-	const editActionLabel = computed<string>(() => `Edit ${displayValue.value || resolvedPlaceholder.value}`)
-	const confirmActionLabel = 'Confirm'
-	const cancelActionLabel = 'Cancel'
+	/*********************************************************
+	 * Accessible names
+	 *
+	 * @description
+	 * The pencil button gets the SHORT label, not the same
+	 * `"Edit {value}"` string as the display affordance: with
+	 * `showActions`, both are focusable at once and previously carried
+	 * the IDENTICAL name, so a screen-reader user heard the same command
+	 * announced twice with no way to tell them apart. The underlying
+	 * redundancy — two tab stops for one action — is NOT fixed here:
+	 * removing a focusable element from a delivered component is a
+	 * rendering change, raised as an arbitration instead.
+	 *
+	 * @description
+	 * `fieldAriaLabel` closes a harder gap: the edit field had NO
+	 * accessible name at all. Neither `label` nor `aria-label` reached
+	 * OrigamTextField / OrigamTextareaField, and `OrigamField` renders a
+	 * `<label>` only when `props.label || slots.label` is set — so the
+	 * one naming source left was `placeholder`, the last-resort branch of
+	 * the accname algorithm, which yields NO name under `placeholder=""`.
+	 * `aria-label` is neither an `on*` handler nor `class/style/id/data-*`,
+	 * so `filterInputAttrs` routes it to `inputAttrs` and it lands on the
+	 * native `<input>` / `<textarea>`, not on the wrapper.
+	 ********************************************************/
+	const editActionLabel = computed<string>(() => t('origam.inline_edit.edit'))
+	const confirmActionLabel = computed<string>(() => t('origam.inline_edit.confirm'))
+	const cancelActionLabel = computed<string>(() => t('origam.inline_edit.cancel'))
+	const fieldAriaLabel = computed<string>(() => t('origam.inline_edit.field_aria_label'))
 
 	/*********************************************************
 	 * Edit / confirm / cancel handlers — own the SFC-level emits.
@@ -440,7 +482,7 @@
 		display: inline-flex;
 		flex-direction: row;
 		align-items: flex-start;
-		gap: var(--origam-inline-edit---actions-gap, var(--origam-inline-edit__actions---gap, 4px));
+		gap: var(--origam-inline-edit__actions---gap, 4px);
 		max-width: 100%;
 		transition: opacity var(--origam-inline-edit---transition-duration, 160ms) ease;
 	}

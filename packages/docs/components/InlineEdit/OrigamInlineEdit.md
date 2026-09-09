@@ -16,8 +16,8 @@ modal form would feel heavy.
 </template>
 ```
 
-When no `#display` slot is provided, the component renders a
-button-styled span carrying the current value (or the placeholder
+When no `#display` slot is provided, the component renders a native
+`<button>` carrying the current value (or the placeholder
 when the value is empty). When no `#edit` slot is provided, it
 renders an `<OrigamTextField>` (or `<OrigamTextareaField>` when
 `multiline` is true). When `showActions=true`, the Confirm and Cancel
@@ -59,7 +59,7 @@ exposed — `fontFamily`, `letterSpacing` and `lineHeight` were removed from
 | Prop               | Type                                        | Default           | Notes                                                          |
 |--------------------|---------------------------------------------|-------------------|----------------------------------------------------------------|
 | `modelValue`       | `string \| number`                          | required          | v-model target. Numbers round-trip as numbers.                 |
-| `placeholder`      | `string`                                    | `'Click to edit'` | Shown on the input and on the empty display.                   |
+| `placeholder`      | `string`                                    | `origam.inline_edit.placeholder` | Shown on the input and on the empty display. Unset, it resolves through the DS locale ("Click to edit" in English). |
 | `rules`            | `Array<(v: string) => true \| string \| Promise<…>>` | `undefined` | Array of validation rules — same contract as all DS form fields. Rules are evaluated sequentially; first failure surfaces the error and blocks the commit. Evaluated before `validate`. |
 | `validate`         | `(v: string) => true \| string \| Promise<…>` | `undefined`     | Sync or async validator. Returning a string surfaces it as an error and keeps the editor open. Only runs if all `rules` pass. |
 | `autoFocus`        | `boolean`                                   | `true`            | Auto-focus the input on edit entry.                            |
@@ -74,6 +74,25 @@ exposed — `fontFamily`, `letterSpacing` and `lineHeight` were removed from
 | `loadingOnConfirm` | `boolean`                                   | `false`           | Adds a CSS hook (`.origam-inline-edit--loading-on-confirm`) while a Promise validator is in flight. `aria-busy` is set regardless. |
 | `showActions`      | `boolean`                                   | `false`           | Render built-in Edit / Confirm / Cancel buttons. See "Action buttons" section below. |
 | `tag`              | `string`                                    | `'span'`          | Root element tag.                                              |
+| `id`               | `string`                                    | `undefined`       | Forwarded to the root element.                                 |
+| `class`            | `string \| Array \| object`                 | `undefined`       | Merged onto the root element alongside the state classes.      |
+| `style`            | `string \| Array \| object`                 | `undefined`       | Merged onto the root element alongside the typography vars.    |
+
+### Localisation
+
+Every user-facing string this component renders itself goes through the DS
+locale provider (`useLocale`), so `createOrigam()` must be installed — which
+it already had to be, since edit mode renders `OrigamTextField`.
+
+| Key | English |
+|---|---|
+| `origam.inline_edit.placeholder` | `Click to edit` |
+| `origam.inline_edit.edit_aria_label` | `Edit {0}` — display affordance |
+| `origam.inline_edit.edit` | `Edit` — the pencil action button |
+| `origam.inline_edit.confirm` | `Confirm` |
+| `origam.inline_edit.cancel` | `Cancel` |
+| `origam.inline_edit.field_aria_label` | `Edit value` — accessible name of the input |
+| `origam.inline_edit.invalid_value` | `Invalid value` — validator rejected without its own message |
 
 ## Emits
 
@@ -232,7 +251,8 @@ const validate = async (v: string): Promise<true | string> => {
 ```
 
 While the Promise is in flight, the component sets `aria-busy="true"`
-on the root and `aria-disabled` on the input. With
+on the root and the real `disabled` attribute on the input (not
+`aria-disabled` — the control is genuinely inert while validating). With
 `loadingOnConfirm=true`, an additional CSS hook is exposed so you
 can render a spinner overlay if needed.
 
@@ -293,9 +313,18 @@ When the validator returns a string, the component:
 - **Display affordance** — the default render is a native `<button>`
   with an `aria-label` of `"Edit {value or placeholder}"`. Keyboard
   users get focus / Enter / Space semantics for free.
-- **Edit affordance** — the native `<input>` / `<textarea>` is
-  decorated with `aria-invalid` and `aria-describedby` (pointing to
-  the inline error) when a validator fails.
+- **Edit affordance** — the native `<input>` / `<textarea>` carries an
+  `aria-label` (`origam.inline_edit.field_aria_label`) so it always has
+  an accessible name. It is additionally decorated with `aria-invalid`
+  and `aria-describedby` (pointing to the inline error) when a validator
+  fails. Before this was wired, the only naming source was the
+  `placeholder` — the last-resort branch of the accessible-name
+  algorithm, which yields no name at all under `placeholder=""`.
+- **Action buttons** — with `showActions`, the display affordance and
+  the pencil button are both focusable and both enter edit mode. They
+  carry deliberately DIFFERENT accessible names (`Edit {value}` and
+  `Edit`) so a screen-reader user can tell them apart; the underlying
+  redundancy of two tab stops for one action is a known limitation.
 - **Live region** — the error message is wrapped in a `role="alert"`
   element, which screen readers announce immediately without
   interrupting the current speech.
@@ -330,6 +359,20 @@ const {
     onConfirm: (v) => (model.value = v),
 })
 ```
+
+The composable deliberately does NOT call `useLocale()` — it stays usable
+without `createOrigam()`. The single user-facing string it can produce (when
+a validator rejects without returning its own message) is therefore exposed
+as the `invalidMessage` option, which `<OrigamInlineEdit>` fills with
+`t('origam.inline_edit.invalid_value')`:
+
+| Option | Type | Default | Notes |
+|---|---|---|---|
+| `rules` | `Array<TInlineEditRule>` | `undefined` | Evaluated first, stops at the first failure. |
+| `validate` | `TInlineEditValidator` | `undefined` | Runs only if every rule passes. |
+| `trim` | `boolean` | `true` | Applied before validating AND before emitting. |
+| `invalidMessage` | `string` | `'Invalid value'` | Used when a validator rejects without its own message. |
+| `onConfirm` / `onCancel` / `onError` | callbacks | `undefined` | The SFC wires these to its emits. |
 
 | Return       | Type                            | Notes                                                            |
 |--------------|---------------------------------|------------------------------------------------------------------|

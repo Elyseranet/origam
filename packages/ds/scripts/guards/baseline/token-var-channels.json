@@ -374,7 +374,6 @@
     "packages/ds/src/components/Grid/OrigamGrid.vue::--origam-grid---template-columns",
     "packages/ds/src/components/Grid/OrigamGrid.vue::--origam-grid---template-rows",
     "packages/ds/src/components/InlineEdit/OrigamInlineEdit.vue::--origam-color__feedback--danger---bg-subtle",
-    "packages/ds/src/components/InlineEdit/OrigamInlineEdit.vue::--origam-inline-edit---actions-gap",
     "packages/ds/src/components/InlineEdit/OrigamInlineEdit.vue::--origam-inline-edit__action-btn---border-radius",
     "packages/ds/src/components/InlineEdit/OrigamInlineEdit.vue::--origam-inline-edit__action-btn---font-size",
     "packages/ds/src/components/InlineEdit/OrigamInlineEdit.vue::--origam-inline-edit__action-btn---size",

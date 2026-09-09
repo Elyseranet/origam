@@ -136,6 +136,13 @@ export function useInlineEdit (
      * Run the validator (if any). Resolves to the error message
      * (`string`) when the value is rejected, or `null` when the value
      * is accepted (or there is no validator).
+     *
+     * A validator that rejects WITHOUT returning its own message falls
+     * back to `options.invalidMessage` — the localisation seam that keeps
+     * this composable free of `useLocale()`, and therefore usable without
+     * `createOrigam()`. `<OrigamInlineEdit>` fills it with
+     * `t('origam.inline_edit.invalid_value')`; headless consumers that
+     * omit it keep the English literal.
      */
     const runValidator = async (
         value: string,
@@ -144,7 +151,9 @@ export function useInlineEdit (
         if (!validator) return null
         const verdict = await validator(value)
         if (verdict === true) return null
-        return typeof verdict === 'string' ? verdict : 'Invalid value'
+        return typeof verdict === 'string'
+            ? verdict
+            : (resolveOptions().invalidMessage ?? 'Invalid value')
     }
 
     /**
