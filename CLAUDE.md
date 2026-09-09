@@ -539,6 +539,33 @@ the mutation AND the measurement inside a single `evaluate`.** Verified: the
 same sequence fails in two steps and passes in one, on identical code. See
 `packages/tests/e2e/switch-density.spec.ts` for the working shape.
 
+⛔ **But the single-`evaluate` rule does NOT generalise to a DESCENDANT after an
+inline-style mutation — measured 2026-09-09, and it nearly produced a false
+"dead prop" report on correct code.** Chromium had not re-invalidated the
+`currentColor` a child substitutes through `var()` within the same turn:
+
+```
+same evaluate  : button rgb(255,0,128)  /  icon rgb(10,10,10)   ← false "dead prop"
+two steps      : button rgb(255,0,128)  /  icon rgb(255,0,128)  ← the truth
+```
+
+The two rules answer different questions, and the distinction is what matters:
+
+| what you are measuring | correct shape |
+|---|---|
+| a class bound to a `computed`, on the mutated element | one `evaluate` — Vue re-patches between two steps |
+| a **descendant** inheriting through `var()` / `currentColor` | **two steps** — let style recalculation land |
+
+A third variant of the same family: `.origam-main` carries
+`transition-property: all` over `0.2s`, so a synchronous read after the mutation
+returns the value **mid-animation** — identical on broken and on correct code
+(measured: sync `rgb(255,255,255)`, at +1200 ms `rgb(3,3,3)`). Derive the wait
+from `transitionDuration` rather than guessing.
+
+Common root: **before concluding "the prop does nothing", prove your harness can
+actuate it.** Three separate lots of the blockers campaign lost time to a
+measurement artefact that looked exactly like a product defect.
+
 ⛔ **Do NOT use `pnpm -F @origam/tests test:e2e`** — the `pretest:e2e` hook
 fails on a guard and **blocks Playwright before a single spec starts, while
 still returning `exit 0`** to the caller. ⛔ This has **no ticket** — the
