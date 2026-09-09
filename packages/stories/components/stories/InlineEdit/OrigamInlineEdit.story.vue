@@ -272,8 +272,8 @@
 					<origam-inline-edit
 							v-bind="state"
 							v-model="state.modelValue"
-							:rules="playgroundUseRules ? PLAYGROUND_RULES : undefined"
-							:validate="playgroundUseValidate ? validateMinLengthForPlayground : undefined"
+							:rules="playgroundRules"
+							:validate="playgroundValidate"
 							@edit="logEvent('edit', $event)"
 							@confirm="logEvent('confirm', $event)"
 							@cancel="logEvent('cancel', $event)"
@@ -305,8 +305,9 @@
 					<HstSelect  v-model="state.inputType" title="Input Type" :options="INPUT_TYPE_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Validation">
-					<HstCheckbox v-model="playgroundUseRules"    title="Rules (min 5 chars, not empty)"/>
-					<HstCheckbox v-model="playgroundUseValidate" title="Validate (min 3 chars)"/>
+					<HstCheckbox v-model="playgroundUseRules"         title="Rules (min 5 chars, not empty)"/>
+					<HstCheckbox v-model="playgroundUseValidate"      title="Validate (min 3 chars)"/>
+					<HstCheckbox v-model="playgroundUseAsyncValidate" title="Validate async (min 3 chars, 150ms)"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -317,7 +318,7 @@
 		lang="ts"
 		setup
 >
-	import { ref } from 'vue'
+	import { computed, ref } from 'vue'
 
 	import { logEvent } from 'histoire/client'
 
@@ -340,6 +341,12 @@
 	const validateMinLengthForSlot = (v: string): true | string => v.length >= 3 || 'Min 3 chars'
 	const validateMinLengthForPlayground = (v: string): true | string => v.length >= 3 || 'Min 3 chars'
 
+	const validateAsyncForPlayground = async (v: string): Promise<true | string> => {
+		await new Promise((resolve) => setTimeout(resolve, 150))
+
+		return v.length >= 3 || 'Min 3 chars (async)'
+	}
+
 	const PLAYGROUND_RULES: Array<(v: string) => true | string> = [
 		(v) => v.trim().length > 0 || 'Value cannot be empty',
 		(v) => v.length >= 5 || 'Min 5 characters required'
@@ -347,6 +354,16 @@
 
 	const playgroundUseRules = ref(false)
 	const playgroundUseValidate = ref(false)
+	const playgroundUseAsyncValidate = ref(false)
+
+	const playgroundRules = computed(() => playgroundUseRules.value ? PLAYGROUND_RULES : undefined)
+
+	const playgroundValidate = computed(() => {
+		if (playgroundUseAsyncValidate.value) return validateAsyncForPlayground
+		if (playgroundUseValidate.value) return validateMinLengthForPlayground
+
+		return undefined
+	})
 
 	const emitEditValue = ref('Click to trigger edit')
 	const emitConfirmValue = ref('Edit and confirm')
