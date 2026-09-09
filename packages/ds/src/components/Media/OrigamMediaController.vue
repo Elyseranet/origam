@@ -71,6 +71,7 @@
 				/>
 
 				<origam-media-volume-control
+						density="compact"
 						:volume="state.volume.value"
 						:muted="state.muted.value"
 						:mute-label="muteLabel"

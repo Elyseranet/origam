@@ -351,3 +351,82 @@ test.describe('OrigamMediaVolumeControl — surface de thème (#429)', () => {
         await expect(sandbox.locator('[data-cy="mvc-events-muted-mute"] .origam-icon')).toHaveClass(/mdi-volume-off/)
     })
 })
+
+/**
+ * SPEC — l'instance du volume DANS OrigamMediaController (#429, suite)
+ *
+ * ## Le défaut
+ *
+ * `OrigamMediaController` ne déclare AUCUNE prop de design en propre
+ * (`IMediaControllerProps extends ICommonsComponentProps`, rien d'autre) : il
+ * ne transmet donc rien, il IMPOSE. Ses sept `origam-btn` reçoivent
+ * `variant="text" density="compact"` en dur, et leur boîte est ensuite forcée
+ * par un override de variable dans son SCSS scopé. Le volume control, lui, ne
+ * recevait NI prop NI variable — il n'avait aucune des deux surfaces. Ses 36px
+ * carrés n'étaient donc pas un choix de design : c'était le défaut d'un
+ * composant livré sans props.
+ *
+ * ## ⛔ Mesure AVANT câblage — les voisins ne font PAS 32px carrés
+ *
+ * L'écart annoncé était « 4px ». La mesure en dit autre chose :
+ *
+ *     bouton play / cog   32 × 24 px
+ *     volume (avant)      36 × 36 px
+ *     volume (compact)    28 × 28 px
+ *
+ * Les Btn du transport sont RECTANGULAIRES : le contrôleur force
+ * `--origam-btn---width/height: 32px`, puis la densité compacte de Btn retire
+ * 8px à la hauteur seule (`calc(32px - 8px)` = 24px). Le volume control est
+ * circulaire, donc carré par construction — une seule valeur pilote ses deux
+ * axes. Aucune valeur de `density` ne peut produire 32 × 24.
+ *
+ * `compact` reste le bon réglage : il aligne le volume sur la même intention
+ * (la rangée compacte) et ramène l'écart de hauteur de +12px à +4px. Ce spec
+ * épingle les trois nombres pour que la revue visuelle porte sur des faits.
+ */
+
+const CONTROLLER_STORY_ID = 'components-stories-mediacontroller-origammediacontroller-story-vue'
+
+test.describe('OrigamMediaVolumeControl dans OrigamMediaController (#429)', () => {
+    test.setTimeout(60000)
+
+    test('le volume adopte la densité compacte de la rangée transport', async ({ page }) => {
+        await page.goto(`/stories/story/${CONTROLLER_STORY_ID}?variantId=${CONTROLLER_STORY_ID}-0`, { waitUntil: 'domcontentloaded' })
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+
+        const row = sandbox.locator('.origam-media-controller__buttons-row').first()
+        await expect(row).toBeVisible({ timeout: 15000 })
+
+        const measured = await row.evaluate((el) => {
+            const box = (sel: string) => {
+                const n = el.querySelector(sel) as HTMLElement | null
+                if (!n) return null
+                const cs = getComputedStyle(n)
+
+                return { width: cs.width, height: cs.height, classes: n.className }
+            }
+
+            return {
+                play: box('[data-cy="origam-media-controller-play"]'),
+                cog: box('[data-cy="origam-media-controller-config-btn"]'),
+                volume: box('[data-cy="origam-media-controller-volume-mute"]')
+            }
+        })
+
+        /*
+         * ⛔ C'est CETTE assertion qui échoue sur le code d'avant : sans la prop
+         * `density`, le volume rendait 36px — et avant #429 il n'existait même
+         * aucune prop pour le dire.
+         */
+        expect(measured.volume!.classes).toContain('origam-media-volume-control--density-compact')
+        expect(measured.volume!.width, 'volume compact = 36px - 8px').toBe('28px')
+        expect(measured.volume!.height, 'le volume reste carré — c\'est un cercle').toBe('28px')
+
+        // Les voisins, pour que l'écart réel vive dans le rapport de test et
+        // pas seulement dans une capture d'écran.
+        expect(measured.play!.width).toBe('32px')
+        expect(measured.play!.height).toBe('24px')
+        expect(measured.cog!.width).toBe('32px')
+        expect(measured.cog!.height).toBe('24px')
+    })
+})

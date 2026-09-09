@@ -166,6 +166,31 @@ everything below.
 
 ## Examples
 
+### Inside `<OrigamMediaController>`
+
+The controller passes `density="compact"` so the volume button joins the
+compact transport row. Measured in Chromium, that row is **not uniform** and
+cannot be made so by a density value:
+
+| element | box |
+|---|---|
+| `origam-btn` (play, cog, …) | 32 × 24 px |
+| volume button, `density="compact"` | 28 × 28 px |
+| volume button, no density (pre-#429) | 36 × 36 px |
+
+The transport buttons are rectangular — the controller forces
+`--origam-btn---width/height: 32px` and Btn's compact density then removes
+8 px from the height alone. The volume button is a circle, so a single token
+drives both of its axes; no `density` value yields 32 × 24. `compact` is the
+right setting because it expresses the same intent, and it takes the height
+gap from +12 px down to +4 px.
+
+⚠️ Because the controller passes the prop **explicitly**, an
+`IOrigamTheme.components['origam-media-volume-control'].density` entry does
+**not** reach that instance — an explicitly passed prop always beats the
+theme (ADR-005). The seven transport `origam-btn` behave the same way, for
+the same reason.
+
 ### Themed via props (the DS way)
 
 ```ts
