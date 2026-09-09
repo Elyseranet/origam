@@ -696,8 +696,8 @@
 	}
 
 	.origam-media-controller__buttons-row :deep(.origam-btn--active) {
-		color: var(--origam-media-controller---accent-color, var(--origam-color__action--primary---bg));
-		background-color: color-mix(in srgb, var(--origam-media-controller---accent-color, var(--origam-color__action--primary---bg)) 14%, transparent);
+		color: var(--origam-media-controller---accent-color);
+		background-color: color-mix(in srgb, var(--origam-media-controller---accent-color) 14%, transparent);
 	}
 
 	.origam-media-controller--inset {
@@ -733,16 +733,16 @@
 		font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
 		font-size: 12px;
 		font-variant-numeric: tabular-nums;
-		color: var(--origam-media-controller__time---color, inherit);
+		color: var(--origam-media-controller__time---color);
 		white-space: nowrap;
 		user-select: none;
 	}
 
 	.origam-media-controller__time-sep {
-		color: var(--origam-media-controller__time-sep---color, var(--origam-color__text---secondary));
+		color: var(--origam-media-controller__time-sep---color);
 	}
 
 	.origam-media-controller__time-total {
-		color: var(--origam-media-controller__time-total---color, var(--origam-color__text---secondary));
+		color: var(--origam-media-controller__time-total---color);
 	}
 </style>

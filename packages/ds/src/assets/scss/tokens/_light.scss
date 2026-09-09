@@ -2490,6 +2490,10 @@
   --origam-media-scrubber__tooltip---color: var(--origam-color__neutral---0);
   --origam-media-controller---color: var(--origam-color__text---primary);
   --origam-media-controller__scrubber---color: var(--origam-color__action--primary---bg);
+  --origam-media-controller---accent-color: var(--origam-color__action--primary---bg);
+  --origam-media-controller__time---color: currentColor;
+  --origam-media-controller__time-sep---color: var(--origam-color__text---secondary);
+  --origam-media-controller__time-total---color: var(--origam-color__text---secondary);
   --origam-media-volume-control---density: var(--origam-media-volume-control--default---density);
   --origam-media-volume-control--default---density: 0px;
   --origam-media-volume-control--compact---density: -8px;
