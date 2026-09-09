@@ -2713,4 +2713,95 @@
   --origam-list-group--fluid---list-indent-size: var(--origam-space---0);
   --origam-tab-panels__panel---transition-duration: 0.18s;
   --origam-tab-panels__panel--focus---outline-color: currentColor;
+  /* Transition family (#538 / #436) — duration + easing were CSS literals
+     inside each component's own <style> block, so no theme could reach them.
+     Values are the ones measured in Chromium before the move: this is a
+     refactor, not a retiming. Declared here only (not in dark.css): a
+     duration does not vary by theme, and the :root selector already covers
+     both. ExpandX/ExpandY's triples moved up from their component-local
+     <style>:root{} block; their misnamed 'enter-leave' infix was corrected to
+     'leave-active' here, the old name surviving only as a read-site fallback
+     inside the two components (deprecated, removed at the next major). */
+  --origam-transition--fade-enter-active---transition-duration: 0.3s;
+  --origam-transition--fade-enter-active---transition-timing-function: var(--origam-motion__easing---standard);
+  --origam-transition--fade-leave-active---transition-duration: 0.3s;
+  --origam-transition--fade-leave-active---transition-timing-function: var(--origam-motion__easing---standard);
+  --origam-transition--fade-move---transition-duration: 0.5s;
+  --origam-transition--fade-move---transition-timing-function: var(--origam-motion__easing---standard);
+  --origam-transition--slide-x-enter-active---transition-duration: 0.3s;
+  --origam-transition--slide-x-enter-active---transition-timing-function: var(--origam-motion__easing---standard);
+  --origam-transition--slide-x-leave-active---transition-duration: 0.3s;
+  --origam-transition--slide-x-leave-active---transition-timing-function: var(--origam-motion__easing---standard);
+  --origam-transition--slide-x-move---transition-duration: 0.5s;
+  --origam-transition--slide-x-move---transition-timing-function: var(--origam-motion__easing---standard);
+  --origam-transition--slide-y-enter-active---transition-duration: 0.3s;
+  --origam-transition--slide-y-enter-active---transition-timing-function: var(--origam-motion__easing---standard);
+  --origam-transition--slide-y-leave-active---transition-duration: 0.3s;
+  --origam-transition--slide-y-leave-active---transition-timing-function: var(--origam-motion__easing---standard);
+  --origam-transition--slide-y-move---transition-duration: 0.5s;
+  --origam-transition--slide-y-move---transition-timing-function: var(--origam-motion__easing---standard);
+  --origam-transition--scale-rotate-enter-active---transition-duration: 0.3s;
+  --origam-transition--scale-rotate-enter-active---transition-timing-function: var(--origam-motion__easing---standard);
+  --origam-transition--scale-rotate-leave-active---transition-duration: 0.3s;
+  --origam-transition--scale-rotate-leave-active---transition-timing-function: var(--origam-motion__easing---standard);
+  --origam-transition--scale-rotate-move---transition-duration: 0.5s;
+  --origam-transition--scale-rotate-move---transition-timing-function: var(--origam-motion__easing---standard);
+  --origam-transition--expand-x-enter-active---transition-duration: 0.5s;
+  --origam-transition--expand-x-enter-active---transition-timing-function: var(--origam-motion__easing---standard);
+  --origam-transition--expand-x-enter-active---transition-property: width;
+  --origam-transition--expand-x-leave-active---transition-duration: 0.5s;
+  --origam-transition--expand-x-leave-active---transition-timing-function: var(--origam-motion__easing---standard);
+  --origam-transition--expand-x-leave-active---transition-property: width;
+  --origam-transition--expand-x-move---transition-duration: 0.5s;
+  --origam-transition--expand-x-move---transition-timing-function: var(--origam-motion__easing---standard);
+  --origam-transition--expand-x-move---transition-property: transform;
+  --origam-transition--expand-y-enter-active---transition-duration: 0.5s;
+  --origam-transition--expand-y-enter-active---transition-timing-function: var(--origam-motion__easing---standard);
+  --origam-transition--expand-y-enter-active---transition-property: height;
+  --origam-transition--expand-y-leave-active---transition-duration: 0.5s;
+  --origam-transition--expand-y-leave-active---transition-timing-function: var(--origam-motion__easing---standard);
+  --origam-transition--expand-y-leave-active---transition-property: height;
+  --origam-transition--expand-y-move---transition-duration: 0.5s;
+  --origam-transition--expand-y-move---transition-timing-function: var(--origam-motion__easing---standard);
+  --origam-transition--expand-y-move---transition-property: transform;
+  --origam-transition--snack-enter-active---transition-duration: var(--origam-motion__duration---normal);
+  --origam-transition--snack-enter-active---transition-timing-function: var(--origam-motion__easing---decelerate);
+  --origam-transition--snack-leave-active---transition-duration: var(--origam-motion__duration---normal);
+  --origam-transition--snack-leave-active---transition-timing-function: var(--origam-motion__easing---decelerate);
+  --origam-transition--translate-bottom-enter-active---transition-duration: 225ms;
+  --origam-transition--translate-bottom-enter-active---transition-timing-function: var(--origam-motion__easing---decelerate);
+  --origam-transition--translate-bottom-leave-active---transition-duration: 125ms;
+  --origam-transition--translate-bottom-leave-active---transition-timing-function: var(--origam-motion__easing---accelerate);
+  --origam-transition--transform-scale-enter-active---transition-duration: 225ms;
+  --origam-transition--transform-scale-enter-active---transition-timing-function: var(--origam-motion__easing---decelerate);
+  --origam-transition--transform-scale-leave-active---transition-duration: 125ms;
+  --origam-transition--transform-scale-leave-active---transition-timing-function: var(--origam-motion__easing---accelerate);
+  --origam-transition--translate-picker-enter-active---transition-duration: 0.3s;
+  --origam-transition--translate-picker-enter-active---transition-timing-function: var(--origam-motion__easing---standard);
+  --origam-transition--translate-picker-leave-active---transition-duration: 0.3s;
+  --origam-transition--translate-picker-leave-active---transition-timing-function: var(--origam-motion__easing---standard);
+  --origam-transition--translate-picker-move---transition-duration: 0.3s;
+  --origam-transition--translate-picker-move---transition-timing-function: var(--origam-motion__easing---standard);
+  --origam-transition--reverse-translate-picker-enter-active---transition-duration: 0.3s;
+  --origam-transition--reverse-translate-picker-enter-active---transition-timing-function: var(--origam-motion__easing---standard);
+  --origam-transition--reverse-translate-picker-leave-active---transition-duration: 0.3s;
+  --origam-transition--reverse-translate-picker-leave-active---transition-timing-function: var(--origam-motion__easing---standard);
+  --origam-transition--reverse-translate-picker-move---transition-duration: 0.3s;
+  --origam-transition--reverse-translate-picker-move---transition-timing-function: var(--origam-motion__easing---standard);
+  --origam-transition--window-x-translate-enter-active---transition-duration: 0.3s;
+  --origam-transition--window-x-translate-enter-active---transition-timing-function: cubic-bezier(0.25, 0.8, 0.5, 1);
+  --origam-transition--window-x-translate-leave-active---transition-duration: 0.3s;
+  --origam-transition--window-x-translate-leave-active---transition-timing-function: cubic-bezier(0.25, 0.8, 0.5, 1);
+  --origam-transition--window-y-translate-enter-active---transition-duration: 0.3s;
+  --origam-transition--window-y-translate-enter-active---transition-timing-function: cubic-bezier(0.25, 0.8, 0.5, 1);
+  --origam-transition--window-y-translate-leave-active---transition-duration: 0.3s;
+  --origam-transition--window-y-translate-leave-active---transition-timing-function: cubic-bezier(0.25, 0.8, 0.5, 1);
+  --origam-transition--window-x-reverse-translate-enter-active---transition-duration: 0.3s;
+  --origam-transition--window-x-reverse-translate-enter-active---transition-timing-function: cubic-bezier(0.25, 0.8, 0.5, 1);
+  --origam-transition--window-x-reverse-translate-leave-active---transition-duration: 0.3s;
+  --origam-transition--window-x-reverse-translate-leave-active---transition-timing-function: cubic-bezier(0.25, 0.8, 0.5, 1);
+  --origam-transition--window-y-reverse-translate-enter-active---transition-duration: 0.3s;
+  --origam-transition--window-y-reverse-translate-enter-active---transition-timing-function: cubic-bezier(0.25, 0.8, 0.5, 1);
+  --origam-transition--window-y-reverse-translate-leave-active---transition-duration: 0.3s;
+  --origam-transition--window-y-reverse-translate-leave-active---transition-timing-function: cubic-bezier(0.25, 0.8, 0.5, 1);
 }

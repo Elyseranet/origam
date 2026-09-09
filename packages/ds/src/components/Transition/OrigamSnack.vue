@@ -62,10 +62,14 @@
 	@use '../../assets/scss/helpers' as ds;
 
 	.origam-transition--snack {
-		&-enter-active,
+		&-enter-active {
+			transition-duration: var(--origam-transition--snack-enter-active---transition-duration);
+			transition-timing-function: var(--origam-transition--snack-enter-active---transition-timing-function);
+		}
+
 		&-leave-active {
-			transition-duration: .15s;
-			transition-timing-function: cubic-bezier(0.0, 0, 0.2, 1);
+			transition-duration: var(--origam-transition--snack-leave-active---transition-duration);
+			transition-timing-function: var(--origam-transition--snack-leave-active---transition-timing-function);
 		}
 
 		&-enter-active {

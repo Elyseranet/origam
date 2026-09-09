@@ -62,19 +62,19 @@
 
 	.origam-transition--fade {
 		&-enter-active {
-			transition-duration: 0.3s;
-			transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+			transition-duration: var(--origam-transition--fade-enter-active---transition-duration);
+			transition-timing-function: var(--origam-transition--fade-enter-active---transition-timing-function);
 		}
 
 		&-leave-active {
-			transition-duration: 0.3s;
-			transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+			transition-duration: var(--origam-transition--fade-leave-active---transition-duration);
+			transition-timing-function: var(--origam-transition--fade-leave-active---transition-timing-function);
 		}
 
 		&-move {
-			transition-duration: 0.5s;
+			transition-duration: var(--origam-transition--fade-move---transition-duration);
 			transition-property: transform;
-			transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+			transition-timing-function: var(--origam-transition--fade-move---transition-timing-function);
 		}
 
 		&-enter-from, &-leave-to {

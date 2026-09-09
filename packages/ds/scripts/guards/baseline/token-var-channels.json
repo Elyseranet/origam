@@ -543,5 +543,11 @@
     "packages/ds/src/components/Toolbar/OrigamToolbar.vue::--origam-toolbar---padding-inline",
     "packages/ds/src/components/Toolbar/OrigamToolbar.vue::--origam-toolbar__title---color",
     "packages/ds/src/components/Toolbar/OrigamToolbar.vue::--origam-toolbar__wrapper---gap",
+    "packages/ds/src/components/Transition/OrigamExpandX.vue::--origam-transition--expand-x-enter-leave---transition-duration",
+    "packages/ds/src/components/Transition/OrigamExpandX.vue::--origam-transition--expand-x-enter-leave---transition-property",
+    "packages/ds/src/components/Transition/OrigamExpandX.vue::--origam-transition--expand-x-enter-leave---transition-timing-function",
+    "packages/ds/src/components/Transition/OrigamExpandY.vue::--origam-transition--expand-y-enter-leave---transition-duration",
+    "packages/ds/src/components/Transition/OrigamExpandY.vue::--origam-transition--expand-y-enter-leave---transition-property",
+    "packages/ds/src/components/Transition/OrigamExpandY.vue::--origam-transition--expand-y-enter-leave---transition-timing-function",
     "packages/ds/src/components/Video/OrigamVideo.vue::--origam-font---family"
 ]

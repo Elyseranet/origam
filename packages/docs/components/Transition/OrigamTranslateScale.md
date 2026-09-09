@@ -41,6 +41,27 @@ origam-transition--transform-scale-leave-active  { transition: 125ms accelerate;
 origam-transition--transform-scale-enter-from    { transform: scale(.9); opacity: 0; }
 ```
 
+## CSS variables consumed
+
+Declared in `assets/css/tokens/light.css`. Before #538 these were CSS
+literals inside the component's own `<style>` block — no theme could reach
+them.
+
+| Variable | Default |
+|---|---|
+| `--origam-transition--transform-scale-enter-active---transition-duration` | `225ms` |
+| `--origam-transition--transform-scale-enter-active---transition-timing-function` | `var(--origam-motion__easing---decelerate)` |
+| `--origam-transition--transform-scale-leave-active---transition-duration` | `125ms` |
+| `--origam-transition--transform-scale-leave-active---transition-timing-function` | `var(--origam-motion__easing---accelerate)` |
+
+Override at the document root or on a specific instance:
+
+```css
+.my-panel {
+    --origam-transition--transform-scale-enter-active---transition-duration: 0.15s;
+}
+```
+
 ## Props
 
 `<OrigamTranslateScale>` does **not** take the whole shared
@@ -111,3 +132,19 @@ None. `ITransitionEmits` is empty for every member of the family.
     (`utils/Transition/transition.util.ts`) picks up the custom value —
     that function's `x`/`y` offset math already generically accounts
     for whatever `transform-origin` is current on the element.
+
+## Accessibility
+
+Reduced motion is handled by the component itself — you do NOT need to pass
+`disabled` from a `matchMedia` listener. Every member of the family emits a
+`@media (prefers-reduced-motion: reduce)` block (shared `ds-reduced-motion`
+mixin, issue #494) that collapses the duration to `0.01ms`.
+
+That override wins over the CSS variables above, deliberately: it zeroes the
+PROPERTY, not the variable, so a theme or a per-instance duration cannot
+resurrect the motion for a user who asked for none. Verified in Chromium —
+setting a 9 s duration through the token under `prefers-reduced-motion:
+reduce` still measures `0.01ms`.
+
+`disabled` remains available for the unrelated case of skipping the
+transition on purpose.

@@ -293,7 +293,6 @@
     "--origam-menu---transition-duration",
     "--origam-menu---transition-timing-function",
     "--origam-motion__duration---instant",
-    "--origam-motion__easing---accelerate",
     "--origam-motion__easing---linear",
     "--origam-motion__easing---sharp",
     "--origam-otp-input-field---background-color",
