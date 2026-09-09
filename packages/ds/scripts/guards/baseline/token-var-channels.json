@@ -9,7 +9,6 @@
     "packages/ds/src/components/Audio/OrigamAudio.vue::--origam-audio--compact__progress---height",
     "packages/ds/src/components/Audio/OrigamAudio.vue::--origam-audio__btn---icon-size",
     "packages/ds/src/components/Audio/OrigamAudio.vue::--origam-audio__btn---size",
-    "packages/ds/src/components/Audio/OrigamAudio.vue::--origam-audio__cover---background",
     "packages/ds/src/components/Audio/OrigamAudio.vue::--origam-audio__header---margin-bottom",
     "packages/ds/src/components/Audio/OrigamAudio.vue::--origam-audio__meta-separator---content",
     "packages/ds/src/components/Audio/OrigamAudio.vue::--origam-audio__nav-btn---border-radius",

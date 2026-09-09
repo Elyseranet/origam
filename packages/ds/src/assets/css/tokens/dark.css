@@ -1258,8 +1258,6 @@
   --origam-overlay-scrim---transition-duration: var(--origam-motion__duration---medium);
   --origam-overlay-scrim---transition-timing-function: var(--origam-motion__easing---standard);
   --origam-loader---height: 100%;
-  --origam-loader---transition-duration: var(--origam-motion__duration---medium);
-  --origam-loader---transition-easing: var(--origam-motion__easing---standard);
   --origam-loader__progress---margin: auto;
   --origam-loader__fullscreen---position: fixed;
   --origam-loader__fullscreen---top: var(--origam-space---0);
@@ -2456,6 +2454,8 @@
   --origam-audio__meta---color: var(--origam-color__text---secondary);
   --origam-audio__cover---size: 96px;
   --origam-audio__cover---border-radius: var(--origam-radius---md);
+  --origam-audio__cover---background: #18181b;
+  --origam-audio__cover-label---background-color: var(--origam-color__neutral---950);
   --origam-audio__title---color: var(--origam-color__text---primary);
   --origam-audio__title---font-size: 18px;
   --origam-audio__title---font-weight: 700;
@@ -3996,8 +3996,6 @@
     --origam-overlay-scrim---transition-duration: var(--origam-motion__duration---medium);
     --origam-overlay-scrim---transition-timing-function: var(--origam-motion__easing---standard);
     --origam-loader---height: 100%;
-    --origam-loader---transition-duration: var(--origam-motion__duration---medium);
-    --origam-loader---transition-easing: var(--origam-motion__easing---standard);
     --origam-loader__progress---margin: auto;
     --origam-loader__fullscreen---position: fixed;
     --origam-loader__fullscreen---top: var(--origam-space---0);
@@ -5194,6 +5192,8 @@
     --origam-audio__meta---color: var(--origam-color__text---secondary);
     --origam-audio__cover---size: 96px;
     --origam-audio__cover---border-radius: var(--origam-radius---md);
+    --origam-audio__cover---background: #18181b;
+    --origam-audio__cover-label---background-color: var(--origam-color__neutral---950);
     --origam-audio__title---color: var(--origam-color__text---primary);
     --origam-audio__title---font-size: 18px;
     --origam-audio__title---font-weight: 700;
