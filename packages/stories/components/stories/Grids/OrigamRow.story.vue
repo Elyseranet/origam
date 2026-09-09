@@ -117,7 +117,7 @@
 					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Gutters">
-					<HstText v-model="state.gutters" title="Gutters"/>
+					<HstSelect v-model="state.gutters" title="Gutters" :options="ROW_GUTTER_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Padding">
 					<HstText v-model="state.padding"       title="Padding"/>
@@ -176,6 +176,20 @@
 			</origam-container>
 		</Variant>
 
+		<Variant title="Prop — gutters">
+			<origam-container>
+				<origam-row
+						v-for="rung in ROW_GUTTER_RUNGS"
+						:key="rung"
+						:gutters="rung"
+				>
+					<origam-col cols="4"><div class="demo-cell">{{ rung }} A</div></origam-col>
+					<origam-col cols="4"><div class="demo-cell">{{ rung }} B</div></origam-col>
+					<origam-col cols="4"><div class="demo-cell">{{ rung }} C</div></origam-col>
+				</origam-row>
+			</origam-container>
+		</Variant>
+
 		<Variant title="Prop — align">
 			<origam-container>
 				<origam-row align="center" style="min-height: 100px; background: var(--origam-color__surface---overlay, #ececec);">
@@ -226,7 +240,7 @@
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstSelect v-model="state.tag"     title="Tag"     :options="TAG_OPTIONS"/>
-					<HstText   v-model="state.gutters" title="Gutters"/>
+					<HstSelect v-model="state.gutters" title="Gutters" :options="ROW_GUTTER_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -239,8 +253,12 @@
 >
 	import { OrigamCol, OrigamContainer, OrigamRow } from '@origam/components'
 	import { FLEX_DIRECTION } from '@origam/enums'
+	import { ROW_GUTTER_RUNGS } from '@origam/consts'
 	import type { IOptions, IRowProps } from '@origam/interfaces'
-	import type { TFlexDirection } from '@origam/types'
+	import type {
+		TFlexDirection,
+		TRowGutter
+	} from '@origam/types'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
@@ -253,6 +271,11 @@
 		JUSTIFY_OPTIONS,
 		TAG_OPTIONS
 	} from '@stories/const'
+
+	const ROW_GUTTER_OPTIONS: Array<IOptions<TRowGutter | undefined>> = [
+		{ label: '(none)', value: undefined },
+		...ROW_GUTTER_RUNGS.map((rung) => ({ label: rung, value: rung }))
+	]
 
 	const FLEX_DIRECTION_OPTIONS: Array<IOptions<TFlexDirection | undefined>> = [
 		{ label: '(none)', value: undefined },
