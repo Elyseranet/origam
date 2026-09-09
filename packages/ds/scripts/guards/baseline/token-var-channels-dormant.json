@@ -285,8 +285,6 @@
     "--origam-layout---overflow",
     "--origam-layout__wrapper---height",
     "--origam-layout__wrapper---width",
-    "--origam-loader---transition-duration",
-    "--origam-loader---transition-easing",
     "--origam-main---background-color",
     "--origam-main---color",
     "--origam-menu---offset-bottom",
