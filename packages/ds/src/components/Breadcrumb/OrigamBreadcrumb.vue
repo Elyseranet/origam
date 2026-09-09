@@ -241,13 +241,7 @@
 		--origam-breadcrumb---border-bottom-width: 0px;
 		--origam-breadcrumb---border-right-width: 0px;
 		--origam-breadcrumb---border-width: var(--origam-breadcrumb---border-top-width) var(--origam-breadcrumb---border-left-width) var(--origam-breadcrumb---border-bottom-width) var(--origam-breadcrumb---border-right-width);
-		--origam-breadcrumb---border-color: currentColor;
-		--origam-breadcrumb---border-style: solid;
-		--origam-breadcrumb---border-radius: var(--origam-breadcrumb---border-radius-token, 0px);
 		--origam-breadcrumb---density: 0px;
-		--origam-breadcrumb---box-shadow: var(--origam-shadow---none, none);
-		--origam-breadcrumb---color: var(--origam-breadcrumb---color-token, var(--origam-color__text---primary));
-		--origam-breadcrumb---background: var(--origam-breadcrumb---background-token, transparent);
 		--origam-breadcrumb---margin-inline-start: 0px;
 		--origam-breadcrumb---margin-inline-end: 0px;
 		--origam-breadcrumb---margin-block-start: 0px;
@@ -257,8 +251,6 @@
 		--origam-breadcrumb---padding-inline-start: var(--origam-breadcrumb---padding-inline, 8px);
 		--origam-breadcrumb---padding-inline-end: var(--origam-breadcrumb---padding-inline, 8px);
 		--origam-breadcrumb---transition-duration: 0.2s, 0.1s;
-		--origam-breadcrumb---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-		--origam-breadcrumb---transition-property: transform, color;
 		--origam-breadcrumb---transition: var(--origam-breadcrumb---transition-property) var(--origam-breadcrumb---transition-duration) var(--origam-breadcrumb---transition-timing-function);
 
 		transition: var(--origam-breadcrumb---transition);

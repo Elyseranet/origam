@@ -237,20 +237,13 @@
 		scoped
 >
 	.origam-breadcrumb-item {
-		--origam-breadcrumb-item---text-decoration: none;
 		--origam-breadcrumb-item---border-top-width: 0px;
 		--origam-breadcrumb-item---border-left-width: 0px;
 		--origam-breadcrumb-item---border-bottom-width: 0px;
 		--origam-breadcrumb-item---border-right-width: 0px;
 		--origam-breadcrumb-item---border-width: var(--origam-breadcrumb-item---border-top-width) var(--origam-breadcrumb-item---border-left-width) var(--origam-breadcrumb-item---border-bottom-width) var(--origam-breadcrumb-item---border-right-width);
-		--origam-breadcrumb-item---border-color: currentColor;
-		--origam-breadcrumb-item---border-style: solid;
-		--origam-breadcrumb-item---border-radius: 0px;
 		--origam-breadcrumb-item---density: 0px;
-		--origam-breadcrumb-item---box-shadow: var(--origam-shadow---none, none);
 		--origam-breadcrumb-item---color: var(--origam-breadcrumb-item---color-token, inherit);
-		--origam-breadcrumb-item---opacity: 1;
-		--origam-breadcrumb-item---background: transparent;
 		--origam-breadcrumb-item---margin-inline-start: 0px;
 		--origam-breadcrumb-item---margin-inline-end: 0px;
 		--origam-breadcrumb-item---margin-block-start: 0px;
@@ -260,8 +253,6 @@
 		--origam-breadcrumb-item---padding-inline-start: 8px;
 		--origam-breadcrumb-item---padding-inline-end: 8px;
 		--origam-breadcrumb-item---transition-duration: 0.2s, 0.1s;
-		--origam-breadcrumb-item---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-		--origam-breadcrumb-item---transition-property: transform, color;
 		--origam-breadcrumb-item---transition: var(--origam-breadcrumb-item---transition-property) var(--origam-breadcrumb-item---transition-duration) var(--origam-breadcrumb-item---transition-timing-function);
 
 		align-items: center;
