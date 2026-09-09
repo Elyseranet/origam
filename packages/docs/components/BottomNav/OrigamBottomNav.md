@@ -263,25 +263,44 @@ interface IBottomNavProps extends ITagProps, ICommonsComponentProps,
 
 `<OrigamBottomNav>` reads its variables from
 `packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
-under `packages/ds/src/assets/scss/tokens/`), under the `--origam-bottom-bar---*`
-prefix — note it is `bottom-bar`, not `--origam-bottom-nav---*`.
+under `packages/ds/src/assets/scss/tokens/`), under the `--origam-bottom-nav---*`
+prefix — matching the component's own name, per the DS naming grammar. The
+legacy `--origam-bottom-bar---*` prefix still works as a deprecated alias;
+see the note below the table.
 
 | CSS variable | Token reference |
 |---|---|
-| `--origam-bottom-bar---background` | `{color.neutral.200}` |
-| `--origam-bottom-bar---color` | `{color.text.primary}` |
-| `--origam-bottom-bar---height` | `{space.12}` (48px) |
-| `--origam-bottom-bar---box-shadow` | `{shadow.none}` |
-| `--origam-bottom-bar--elevated---box-shadow` | shadow projected **upward** (negative offset-Y), so it isn't clipped by the viewport edge |
-| `--origam-bottom-bar--active---box-shadow` | same upward shadow, applied while the bar is active |
-| `--origam-bottom-bar---border-radius` | `{radius.none}` at rest. The token layer also generates `--origam-bottom-bar__rounded---border-radius: {radius.sm}` (4px) for the `rounded` state, but nothing in `OrigamBottomNav.vue`'s SCSS reads that variable — the `&--rounded` rule hardcodes `var(--origam-radius---2xl, 24px)` directly (`OrigamBottomNav.vue:400`), so the applied radius is **24px**, not `{radius.sm}`. |
-| `--origam-bottom-bar---density` / `-comfortable-density` / `-compact-density` | density-driven padding/height offset |
-| `--origam-bottom-bar__content---justify-content` / `-align-items` / `-flex-wrap` | layout of the items row |
-| `--origam-bottom-bar__content---transform` | Generic content-level transform override hook (`OrigamBottomNav.vue:359`). Naming matches the generated token exactly — no mismatch. **Not** what powers `shift` mode, though: `&--shift`'s label fade/slide (`OrigamBottomNav.vue:501-513`) sets a literal `transform: translateY(0.5rem)` directly on the more specific `.origam-btn__content` selector, so overriding this variable has no visible effect while `shift` is active — see `bottom-nav-shift.spec.ts` for the non-regression coverage of that mode. |
-| `--origam-bottom-bar---padding-*`, `--origam-bottom-bar---margin-*` | spacing (also driven by the `padding` / `margin` props) |
+| `--origam-bottom-nav---background` | `{color.neutral.200}` |
+| `--origam-bottom-nav---color` | `{color.text.primary}` |
+| `--origam-bottom-nav---height` | `{space.12}` (48px) |
+| `--origam-bottom-nav---box-shadow` | `{shadow.none}` |
+| `--origam-bottom-nav--elevated---box-shadow` | shadow projected **upward** (negative offset-Y), so it isn't clipped by the viewport edge |
+| `--origam-bottom-nav--active---box-shadow` | same upward shadow, applied while the bar is active |
+| `--origam-bottom-nav---border-radius` | `{radius.none}` at rest. The token layer also generates `--origam-bottom-nav__rounded---border-radius: {radius.sm}` (4px) for the `rounded` state, but nothing in `OrigamBottomNav.vue`'s SCSS reads that variable — the `&--rounded` rule hardcodes `var(--origam-radius---2xl, 24px)` directly (`OrigamBottomNav.vue:400`), so the applied radius is **24px**, not `{radius.sm}`. |
+| `--origam-bottom-nav---density` / `-comfortable-density` / `-compact-density` | density-driven padding/height offset |
+| `--origam-bottom-nav__content---justify-content` / `-align-items` / `-flex-wrap` | layout of the items row |
+
+::: warning `--origam-bottom-bar---*` is deprecated
+Until now every one of this component's variables carried the prefix
+`--origam-bottom-bar---*`, while the component itself is `origam-bottom-nav`
+— so a theme author who followed the DS naming grammar
+(`--origam-{component}---{property}`) and wrote `--origam-bottom-nav---background`
+got nothing at all, with no warning.
+
+The tokens now carry the correct `--origam-bottom-nav---*` prefix. **The old
+names keep working for one version**: each new token is declared as
+`var(--origam-bottom-bar---x, <value>)`, so anything you already set under
+the old prefix still wins. Nothing to change today; migrate at your leisure,
+the alias is removed in the next major.
+
+Rename mechanically — `--origam-bottom-bar` → `--origam-bottom-nav`, the
+property part is unchanged.
+:::
+| `--origam-bottom-nav__content---transform` | Generic content-level transform override hook (`OrigamBottomNav.vue:359`). Naming matches the generated token exactly — no mismatch. **Not** what powers `shift` mode, though: `&--shift`'s label fade/slide (`OrigamBottomNav.vue:501-513`) sets a literal `transform: translateY(0.5rem)` directly on the more specific `.origam-btn__content` selector, so overriding this variable has no visible effect while `shift` is active — see `bottom-nav-shift.spec.ts` for the non-regression coverage of that mode. |
+| `--origam-bottom-nav---padding-*`, `--origam-bottom-nav---margin-*` | spacing (also driven by the `padding` / `margin` props) |
 
 The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
-`dark.css` — grep for `--origam-bottom-bar`.
+`dark.css` — grep for `--origam-bottom-nav`.
 
 ## Accessibility
 
