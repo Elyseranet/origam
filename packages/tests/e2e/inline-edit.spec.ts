@@ -137,22 +137,47 @@ test.describe('OrigamInlineEdit — Default (display → edit transition)', () =
         await expect(inputInField(sandbox)).toHaveAttribute('aria-label', 'Edit value')
     })
 
-    // With showActions both the display and the pencil enter edit mode and
-    // are both focusable. They must not announce the SAME name.
-    test('display and pencil action carry DIFFERENT accessible names', async ({ page }) => {
+    // With showActions the display and the pencil both enter edit mode.
+    // They used to be two tab stops announcing the IDENTICAL name. The
+    // pencil now leaves the keyboard path (tabindex=-1 + aria-hidden) while
+    // staying visible and clickable; the names stay distinct as a net for a
+    // consumer who strips aria-hidden.
+    test('display mode with showActions offers exactly ONE tab stop', async ({ page }) => {
         await openVariant(page, 'Default')
         await toggleHstCheckbox(page, 'Show Actions')
         const sandbox = sandboxOf(page)
 
-        const displayLabel = await display(sandbox).getAttribute('aria-label')
-        const pencilLabel = await sandbox
-            .locator('[data-cy="origam-inline-edit-action-edit"]')
-            .first()
-            .getAttribute('aria-label')
+        const pencil = sandbox.locator('[data-cy="origam-inline-edit-action-edit"]').first()
+        await expect(pencil).toBeVisible()
 
-        expect(displayLabel).toBeTruthy()
-        expect(pencilLabel).toBeTruthy()
-        expect(displayLabel).not.toBe(pencilLabel)
+        // Counts the CAUSE (how many tab stops the component offers), not
+        // the symptom (which attributes happen to be present). Re-adding
+        // the pencil to the keyboard path under any other name or attribute
+        // makes this fail.
+        const tabStops = await sandbox
+            .locator('.origam-inline-edit')
+            .first()
+            .evaluate((root) => {
+                const candidates = root.querySelectorAll<HTMLElement>(
+                    'a[href], button, input, select, textarea, [tabindex]'
+                )
+
+                return Array.from(candidates)
+                    .filter((node) => {
+                        const tabindex = node.getAttribute('tabindex')
+                        if (tabindex !== null && Number(tabindex) < 0) return false
+                        if (node.hasAttribute('disabled')) return false
+
+                        return node.offsetParent !== null
+                    })
+                    .map((node) => node.getAttribute('data-cy') ?? node.tagName.toLowerCase())
+            })
+
+        expect(tabStops).toEqual(['origam-inline-edit-display'])
+
+        // Out of the keyboard path, yet still fully operable with the mouse.
+        await pencil.click()
+        await expect(inputInField(sandbox)).toBeVisible()
     })
 })
 

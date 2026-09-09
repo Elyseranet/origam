@@ -268,18 +268,18 @@ export interface IUseInlineEditOptions {
      * First failure blocks the commit and surfaces the error message.
      */
     rules?: Array<TInlineEditRule>
-    /** Sync or async validator — see `TInlineEditValidator`. */
-    validate?: TInlineEditValidator
     /**
-     * Message used when a validator rejects the draft WITHOUT returning
-     * its own message (i.e. it returned something other than `true` or a
-     * `string`). `<OrigamInlineEdit>` passes the localised
-     * `origam.inline_edit.invalid_value`; headless consumers that skip
-     * this option keep the English literal `'Invalid value'`.
+     * Sync or async validator — see `TInlineEditValidator`.
      *
-     * This is the localisation seam: it keeps `useInlineEdit` free of
-     * `useLocale()`, and therefore usable without `createOrigam()`.
+     * `invalidMessage` is its companion: the message used when a validator
+     * rejects the draft WITHOUT returning one of its own (i.e. it returned
+     * something other than `true` or a `string`). `<OrigamInlineEdit>`
+     * passes the localised `origam.inline_edit.invalid_value`; headless
+     * consumers that skip it keep the English literal `'Invalid value'`.
+     * That indirection is the localisation seam — it keeps `useInlineEdit`
+     * free of `useLocale()`, and therefore usable without `createOrigam()`.
      */
+    validate?: TInlineEditValidator
     invalidMessage?: string
     /**
      * Strip surrounding whitespace before running the validator and

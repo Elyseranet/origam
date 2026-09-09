@@ -46,6 +46,8 @@
 						:data-cy="`origam-inline-edit-action-${INLINE_EDIT_ACTION.EDIT}`"
 						size="x-small"
 						variant="text"
+						tabindex="-1"
+						aria-hidden="true"
 						@click="handleEnterEdit"
 				/>
 			</div>
@@ -339,9 +341,12 @@
 	 * `showActions`, both are focusable at once and previously carried
 	 * the IDENTICAL name, so a screen-reader user heard the same command
 	 * announced twice with no way to tell them apart. The underlying
-	 * redundancy — two tab stops for one action — is NOT fixed here:
-	 * removing a focusable element from a delivered component is a
-	 * rendering change, raised as an arbitration instead.
+	 * redundancy — two tab stops for one action — is settled at the
+	 * template level: the pencil carries `tabindex="-1"` + `aria-hidden`,
+	 * so it stays visible and clickable for mouse users but leaves the
+	 * keyboard path, where the display affordance already does the job.
+	 * Nothing disappears on screen. Its `aria-label` is kept as a
+	 * defensive net for a consumer who strips `aria-hidden`.
 	 *
 	 * @description
 	 * `fieldAriaLabel` closes a harder gap: the edit field had NO

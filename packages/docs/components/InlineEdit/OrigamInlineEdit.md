@@ -321,10 +321,16 @@ When the validator returns a string, the component:
   `placeholder` — the last-resort branch of the accessible-name
   algorithm, which yields no name at all under `placeholder=""`.
 - **Action buttons** — with `showActions`, the display affordance and
-  the pencil button are both focusable and both enter edit mode. They
-  carry deliberately DIFFERENT accessible names (`Edit {value}` and
-  `Edit`) so a screen-reader user can tell them apart; the underlying
-  redundancy of two tab stops for one action is a known limitation.
+  the pencil button both enter edit mode. The pencil carries
+  `tabindex="-1"` and `aria-hidden="true"`: it stays visible and
+  clickable for mouse users, but leaves the keyboard path, where the
+  display affordance already exposes the same action. Nothing
+  disappears on screen, and a keyboard user no longer tabs twice
+  through one command. Their accessible names remain deliberately
+  different (`Edit {value}` and `Edit`) as a net for a consumer who
+  strips `aria-hidden`. Confirm and Cancel stay fully keyboard
+  reachable — they are the mouse equivalents of `Enter` / `Escape`,
+  not duplicates of another focusable control.
 - **Live region** — the error message is wrapped in a `role="alert"`
   element, which screen readers announce immediately without
   interrupting the current speech.
