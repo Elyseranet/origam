@@ -63,19 +63,19 @@
 
 	.origam-transition--reverse-translate-picker {
 		&-enter-active {
-			transition-duration: 0.3s !important;
-			transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+			transition-duration: var(--origam-transition--reverse-translate-picker-enter-active---transition-duration) !important;
+			transition-timing-function: var(--origam-transition--reverse-translate-picker-enter-active---transition-timing-function) !important;
 		}
 
 		&-leave-active {
-			transition-duration: 0.3s !important;
-			transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+			transition-duration: var(--origam-transition--reverse-translate-picker-leave-active---transition-duration) !important;
+			transition-timing-function: var(--origam-transition--reverse-translate-picker-leave-active---transition-timing-function) !important;
 		}
 
 		&-move {
-			transition-duration: 0.3s !important;
+			transition-duration: var(--origam-transition--reverse-translate-picker-move---transition-duration) !important;
 			transition-property: transform !important;
-			transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+			transition-timing-function: var(--origam-transition--reverse-translate-picker-move---transition-timing-function) !important;
 		}
 
 		&-enter-from,

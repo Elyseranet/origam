@@ -425,6 +425,67 @@ const kebabCase = (name) => name.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)
  * doit exister. Un `state.imageSrc` seul, sans `:image=` en face, ne
  * suffit pas — il pourrait appartenir a une tout autre prop.
  */
+/*********************************************************
+ * normaliseTag
+ *
+ * @description
+ * Ramene un nom de balise a sa forme kebab, que la story l'ecrive en
+ * `<origam-otp-input-field>` (la convention du depot) ou en
+ * `<OrigamOtpInputField>`.
+ *
+ * @description
+ * ⛔ `kebabCase` seul ne suffit pas : il prefixe un tiret a chaque majuscule,
+ * donc `kebabCase('OtpInputField')` rend `-otp-input-field` (tiret de tete).
+ * Compose naivement, `origam-${kebabCase(pascal)}` donnait
+ * `origam--otp-input-field` — double tiret, aucune balise ne correspondait
+ * et le canal rendait « aucun » sur un defaut reel. Faux vert rencontre.
+ ********************************************************/
+function normaliseTag (name) {
+    return kebabCase(name).replace(/^-/, '')
+}
+
+/*********************************************************
+ * boundOnTag
+ *
+ * @description
+ * La bindure `:x="state.x"` est-elle posee sur la balise `tag` elle-meme ?
+ *
+ * @description
+ * ⛔ FAUX POSITIF MESURE, et c'est pour lui que cette fonction existe. Une
+ * story rend couramment des composants ENFANTS : `OrigamGrid.story.vue`
+ * binde `:align-self="state.alignSelf"` sur `<origam-grid-item>`. La prop
+ * est parfaitement reelle — declaree sur `IGridItemProps` — mais absente de
+ * `IGridProps`. Un test « ce nom est-il dans les props de OrigamGrid ? »
+ * accusait donc 19 composants, dont Grid, DataTableRow et TreeviewNode a
+ * tort. Verifie a la main sur `grid-item.interface.ts:55`.
+ *
+ * @description
+ * On remonte donc de l'attribut jusqu'a la balise qui le porte : entre
+ * `<balise` et un de ses attributs il ne peut pas y avoir de `>`, donc le
+ * dernier `<` rencontre en arriere ouvre bien l'element porteur.
+ ********************************************************/
+function boundOnTag (story, prop, tag) {
+    const attrs = [`:${prop}=`, `:${kebabCase(prop)}=`]
+
+    for (const attr of attrs) {
+        let from = 0
+
+        for (;;) {
+            const at = story.indexOf(attr, from)
+            if (at === -1) break
+            from = at + attr.length
+
+            const open = story.lastIndexOf('<', at)
+            if (open === -1) continue
+
+            const name = /^<\s*([A-Za-z][A-Za-z0-9-]*)/.exec(story.slice(open, at))?.[1]
+            if (name && normaliseTag(name) === tag) return true
+        }
+    }
+
+    return false
+}
+
 function hasControl (story, prop) {
     if (story.includes(`state.${prop}"`) || story.includes(`state.${prop}'`)) return true
 
@@ -514,6 +575,48 @@ function analyse () {
             for (const slot of slots) {
                 if (!story.includes(`Slots - ${slotNameToVariantTitle(slot)}`)) {
                     missing.slotVariants.push(slot)
+                }
+            }
+
+            /*********************************************************
+             * Canal « controle MENTEUR »
+             *
+             * @description
+             * Ce canal etait DECLARE (`lying.controls`) et RAPPORTE
+             * (`controle MENTEUR: ...` dans le resume) mais la boucle qui le
+             * remplit n'avait jamais ete ecrite : il rendait donc « aucun »
+             * quoi qu'il arrive. Un detecteur qui ne regarde pas est pire
+             * qu'un detecteur absent — il fait passer le point pour verifie.
+             *
+             * @description
+             * Trouve sur OrigamOtpInputField, dont la story expose encore une
+             * case « Persistent Placeholder » pour une prop retiree de
+             * l'interface (#445) : le binding tombe dans `$attrs`, atterrit
+             * sur la racine en attribut HTML et ne fait rien. L'utilisateur
+             * coche, rien ne bouge.
+             *
+             * @description
+             * Signal retenu, volontairement etroit pour ne pas fabriquer de
+             * faux rouges : il faut A LA FOIS un controle manipulable
+             * (`v-model="state.X"` sur un `Hst*`) ET une bindure en forme de
+             * prop (`:x=` ou `:kebab-x=`). Un `state.X` qui n'alimente qu'une
+             * fixture locale de la story n'est pas accuse.
+             *
+             * @description
+             * Comme pour les slots, on n'accuse que si l'interface de props a
+             * ete entierement resolue : sur une interface ouverte, l'absence
+             * d'un nom ne prouve pas qu'il n'existe pas.
+             ********************************************************/
+            if (propsIface && !openInterfaces.has(propsIface)) {
+                const ownTag = normaliseTag(`Origam${cmp.pascalName}`)
+
+                for (const m of story.matchAll(/v-model="state\.([A-Za-z0-9_]+)"/g)) {
+                    const name = m[1]
+                    if (IGNORED_PROPS.has(name)) continue
+                    if (propSet.has(name)) continue
+                    if (lying.controls.includes(name)) continue
+
+                    if (boundOnTag(story, name, ownTag)) lying.controls.push(name)
                 }
             }
 

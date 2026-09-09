@@ -141,11 +141,18 @@ is layout-only; the spinner color comes from `OrigamProgress`.
 | `--origam-loader---height`                | `100%`                          |
 | `--origam-loader__progress---margin`      | `auto`                          |
 | `--origam-loader__fullscreen---position`  | `fixed` (only applied when `fullscreen` is true) |
+| `--origam-loader__fullscreen---top`       | `var(--origam-space---0)`       |
+| `--origam-loader__fullscreen---left`      | `var(--origam-space---0)`       |
 | `--origam-loader__fullscreen---height`    | `100vh`                         |
 | `--origam-loader__fullscreen---width`     | `100vw`                         |
 
-The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
-`dark.css` — grep for `--origam-loader`.
+That table is the **complete** set — grep `--origam-loader` in
+`packages/ds/src/assets/css/tokens/light.css` / `dark.css` to confirm.
+`--origam-loader---transition-duration` and
+`--origam-loader---transition-easing` were declared but read by no rule
+(the component swaps its slots with `v-if`, there is no transition to
+drive); they were removed rather than left promising a behaviour that did
+not exist.
 
 ## Accessibility
 
