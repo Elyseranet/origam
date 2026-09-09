@@ -101,4 +101,43 @@ test.describe('OrigamBreadcrumbDivider / OrigamBreadcrumbItem — token namespac
 
         expect(found, 'the old --origam-breadcrumb__item---*/__divider---* names must not remain anywhere in the built CSS').toBe(false)
     })
+
+    /**
+     * `--origam-breadcrumb---gap` was DECLARED in light.css / dark.css but
+     * the string `gap` did not appear once in OrigamBreadcrumb.vue — the
+     * `.origam-breadcrumb__items` flex container never consumed it. A theme
+     * could set the token and nothing moved.
+     *
+     * Two assertions, because either one alone is a weak net:
+     *   1. an ABSOLUTE value (0px, from --origam-space---0), not merely
+     *      "different from something else" — the trap that kept the dead
+     *      Row gutter green for months was a test asserting three values
+     *      merely differed;
+     *   2. a mutation: overriding the token has to MOVE the computed gap.
+     *      Without the fix the property is absent and stays "normal"
+     *      whatever the token says, so this is what actually goes red.
+     *
+     * Mutation and measurement happen inside ONE evaluate() — Vue re-patches
+     * between two steps, which is the documented reason `alert.spec.ts`'s
+     * two-step shape measures the wrong element.
+     */
+    test('--origam-breadcrumb---gap reaches the items container, and overriding it moves the gap', async ({ page }) => {
+        await page.goto(bcUrl(0), { waitUntil: 'domcontentloaded' })
+        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+        const items = sandbox.locator('.origam-breadcrumb__items').first()
+        await expect(items).toBeVisible({ timeout: 12000 })
+
+        const measured = await items.evaluate((el) => {
+            const before = getComputedStyle(el).columnGap
+            const root = (el.closest('[data-theme]') ?? document.documentElement) as HTMLElement
+            const previous = root.style.getPropertyValue('--origam-breadcrumb---gap')
+            root.style.setProperty('--origam-breadcrumb---gap', '17px')
+            const after = getComputedStyle(el).columnGap
+            root.style.setProperty('--origam-breadcrumb---gap', previous)
+            return { before, after }
+        })
+
+        expect(measured.before, 'default gap must be the token value --origam-space---0 = 0px').toBe('0px')
+        expect(measured.after, 'overriding --origam-breadcrumb---gap must move the computed gap').toBe('17px')
+    })
 })
