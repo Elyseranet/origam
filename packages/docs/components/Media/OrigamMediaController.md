@@ -215,16 +215,34 @@ internal `internalLoopMode` ref rather than being that ref itself,
 ## CSS variables
 
 Confirmed against `packages/ds/src/assets/css/tokens/light.css` (and its
-`dark.css` / SCSS twins). Two variables are declared there; the others
-are local SCSS override hooks with no token entry (their "Default" below
-is the SCSS fallback literal).
+`dark.css` / SCSS twins). **All six are declared there** — a theme reaches
+every one of them through `IOrigamTheme.vars`.
+
+Four of the six were read by the SCSS but declared nowhere until #429; the
+inline fallback therefore always applied, and the accent color plus the three
+time-label colors were unreachable by any theme. They are now declared at
+their exact former fallback, so the rendering is unchanged — measured, see
+`packages/tests/e2e/media-controller.spec.ts`.
 
 | Variable | Default (light theme) | Notes |
 |---|---|---|
-| `--origam-media-controller---color` | `var(--origam-color__text---primary)` | Root foreground color. Token-backed. |
-| `--origam-media-controller__scrubber---color` | `var(--origam-color__action--primary---bg)` | Forwarded to the inner `<OrigamMediaScrubber>`'s own `--origam-media-scrubber---color`. Token-backed. |
-| `--origam-media-controller---accent-color` | `var(--origam-color__action--primary---bg)` (SCSS fallback, no token entry) | Colors the active state of loop/shuffle/cast buttons (background via `color-mix`). |
-| `--origam-media-controller__time---color` | `inherit` (SCSS fallback, no token entry) | Time-label (`mm:ss / mm:ss`) foreground color. |
+| `--origam-media-controller---color` | `var(--origam-color__text---primary)` | Root foreground color. |
+| `--origam-media-controller__scrubber---color` | `var(--origam-color__action--primary---bg)` | Forwarded to the inner `<OrigamMediaScrubber>`'s own `--origam-media-scrubber---color`. |
+| `--origam-media-controller---accent-color` | `var(--origam-color__action--primary---bg)` → `#7c3aed` | Active state of the loop / shuffle / cast buttons (foreground, and background via `color-mix` at 14%). |
+| `--origam-media-controller__time---color` | `currentColor` | Current-time label. Inherits the controller's foreground. |
+| `--origam-media-controller__time-sep---color` | `var(--origam-color__text---secondary)` → `#525252` | The `/` between current time and duration. |
+| `--origam-media-controller__time-total---color` | `var(--origam-color__text---secondary)` → `#525252` | Total-duration label. |
+
+::: warning `inherit` is not a usable default for a token
+`__time---color` reads `currentColor`, not `inherit`, and the difference is
+not cosmetic. `inherit` is a CSS-wide keyword **consumed by the custom
+property itself** — `--x: inherit` means "take `--x` from the parent", which
+nobody declares, so the property becomes guaranteed-invalid and
+`getPropertyValue` returns the empty string. The declaration would look
+present in the stylesheet while being inert, and a theme-surface audit would
+still count the token as undeclared. Measured on the real build: `inherit` →
+`""`, `currentColor` → `"currentColor"`; both paint `rgb(10, 10, 10)`.
+:::
 
 The scrubber's track/buffer colors
 (`--origam-media-scrubber---track-background-color` /
