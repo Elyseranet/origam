@@ -13,6 +13,9 @@
 //   1. deux <origam-checkbox-btn> sur un v-model tableau partage
 //   2. deux <origam-checkbox> sur un v-model tableau partage
 //   3. deux <origam-checkbox-btn> dans un <origam-selection-control-group>
+//   4. <origam-checkbox-group> pilote par `items` — la voie que documente la
+//      story, et la plus profonde : CheckboxGroup -> SelectionControlGroup ->
+//      Checkbox -> CheckboxBtn -> SelectionControl
 //
 // AUCUN stub : la chaine reelle Checkbox -> CheckboxBtn -> SelectionControl
 // est montee, sinon le test mesurerait le stub et non le composant.
@@ -33,6 +36,7 @@ import { defineComponent, h, ref } from 'vue'
 
 import OrigamCheckbox from '@origam/components/Checkbox/OrigamCheckbox.vue'
 import OrigamCheckboxBtn from '@origam/components/Checkbox/OrigamCheckboxBtn.vue'
+import OrigamCheckboxGroup from '@origam/components/Checkbox/OrigamCheckboxGroup.vue'
 import OrigamSelectionControlGroup from '@origam/components/SelectionControl/OrigamSelectionControlGroup.vue'
 import { createOrigam } from '@origam/origam'
 
@@ -111,6 +115,28 @@ const GroupedCheckboxBtn = defineComponent({
                 h(OrigamCheckboxBtn, { value: 'a', label: 'A' }),
                 h(OrigamCheckboxBtn, { value: 'b', label: 'B' })
             ]
+        })
+    }
+})
+
+// La voie documentee par la story : le groupe rend lui-meme ses <origam-checkbox>
+// a partir de `items`, le consommateur n'ecrit aucune case a la main.
+const ItemsCheckboxGroup = defineComponent({
+    name: 'ItemsCheckboxGroup',
+    setup () {
+        const selected = ref<string[]>([])
+
+        return { selected }
+    },
+    render () {
+        return h(OrigamCheckboxGroup, {
+            'modelValue': this.selected,
+            'label': 'Notifications',
+            'items': [
+                { label: 'A', value: 'a' },
+                { label: 'B', value: 'b' }
+            ],
+            'onUpdate:modelValue': (v: any) => { this.selected = v }
         })
     }
 })
@@ -195,6 +221,30 @@ describe('#396 — <origam-selection-control-group> qui possede la selection', (
 
         await toggleInput(wrapper, 1)
         expect(wrapper.vm.selected).toEqual([ 'a', 'b' ])
+    })
+})
+
+describe('#396 — <origam-checkbox-group> pilote par `items`', () => {
+    it('accumule les valeurs des cases qu\'il rend lui-meme', async () => {
+        const wrapper = mountWithOrigam(ItemsCheckboxGroup)
+
+        await toggleInput(wrapper, 0)
+        expect(wrapper.vm.selected).toEqual([ 'a' ])
+
+        await toggleInput(wrapper, 1)
+        expect(wrapper.vm.selected).toEqual([ 'a', 'b' ])
+    })
+
+    it('n\'emet update:modelValue qu\'UNE fois par selection', async () => {
+        const wrapper = mountWithOrigam(ItemsCheckboxGroup)
+        const group = wrapper.findComponent(OrigamCheckboxGroup)
+
+        await toggleInput(wrapper, 0)
+
+        // Le double-emit de RadioGroup (handler du consommateur appele deux
+        // fois par selection, `onUpdate:modelValue` bloque dans $attrs puis
+        // reinjecte) est ce que l'option `emits` de CheckboxGroup previent.
+        expect(group.emitted('update:modelValue')).toHaveLength(1)
     })
 })
 
