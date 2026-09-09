@@ -120,6 +120,26 @@ object overriding individual handlers from `ITouchHandlers`.
 | `arrows` | `prevProps`, `nextProps`, `canMoveBack`, `canMoveForward` | Replace both controls in one slot. |
 | `additional` | `group` | Slot rendered AFTER the container — useful for pagination dots. |
 
+## Props
+
+Own props. The cross-cutting surfaces (`rounded`, `border`, `elevation`,
+`padding`, `margin`, `bgColor`, `hover`, `active`, `tag`, `direction`, `id`,
+`class`, `style`) come from the `extends` chain below and behave as they do
+everywhere else in the DS.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `modelValue` | `any` | — | `v-model` — the `value` of the active `<OrigamWindowItem>`. |
+| `continuous` | `boolean` | `false` | Wraps around: the last slide's next goes back to the first, and the first slide's prev to the last. Both arrows then stay reachable at every index. |
+| `prevIcon` | `TIcon` | `mdi-chevron-left` | Icon of the previous-slide button. |
+| `nextIcon` | `TIcon` | `mdi-chevron-right` | Icon of the next-slide button. |
+| `reverse` | `boolean` | `false` | Inverts the transition direction, so forward navigation animates as if it were backward. |
+| `showArrows` | `boolean \| 'hover'` | `true` | `false` hides the controls block entirely; `'hover'` keeps it mounted but translates the arrows out of view until the window is hovered. |
+| `touch` | `boolean \| ITouchHandlers` | `undefined` | `false` disables swipe navigation. An object merges your handlers over the built-in left/right ones. |
+| `disabled` | `boolean` | `false` | Freezes selection — forwarded to the underlying group. |
+| `selectedClass` | `string` | `'origam-window-item--active'` | Class applied to the active item by the group registry. |
+| `mandatory` | `boolean` | `true` | Keeps exactly one item selected: the group refuses to end up with an empty selection. |
+
 ## Props (interface)
 
 ```ts

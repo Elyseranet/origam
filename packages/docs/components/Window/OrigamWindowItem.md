@@ -88,6 +88,21 @@ every group-item component of the DS.
 |---|---|---|
 | `default` | — | The slide content. Rendered inside the transition wrapper. |
 
+## Props
+
+Own props. `value`, `disabled` and `selectedClass` come from
+`IGroupItemProps`, `eager` from `ILazyProps`, and `id` / `class` / `style`
+from `ICommonsComponentProps`.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `transition` | `boolean \| string` | `undefined` | Transition name used for FORWARD navigation. A string is passed verbatim to Vue's `<Transition name>`, so it must have matching CSS (see **Custom transition**). `false` skips the transition. Left unset, the parent window's axis + direction name is used. |
+| `reverseTransition` | `boolean \| string` | `undefined` | Same, for BACKWARD navigation. `false` skips it. |
+| `value` | `any` | — | Identity of the slide, matched against the window's `modelValue`. |
+| `disabled` | `boolean` | `false` | Excludes the item from group navigation. |
+| `selectedClass` | `string` | inherited | Overrides the class the group applies when this item is active. |
+| `eager` | `boolean` | `false` | Renders the slot content before the item is first selected instead of mounting it lazily. |
+
 ## Props (interface)
 
 ```ts
