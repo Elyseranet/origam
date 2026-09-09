@@ -149,15 +149,21 @@ controls both children simultaneously.
 
 ## Accessibility
 
-- **`role="option"` (#424)** — set only when the item is nested inside a
-  list (an `OrigamList` / `OrigamListChildren` ancestor is present) AND is
-  not itself a group activator row. A bare `OrigamListItem` used outside
-  any list context gets no role: no ARIA is better than a role whose
-  promised `listbox` container doesn't exist.
-- `aria-selected` mirrors `isSelected` whenever `role="option"` is set —
-  required state for the `option` role in a listbox/combobox.
-- `aria-disabled` mirrors the `disabled` prop whenever `role="option"` is
-  set.
+- **The row does not choose its own role (#424).** It reads the one its list
+  published through `ORIGAM_LIST_KEY`: `role="listitem"` inside a plain
+  `role="list"`, `role="option"` inside a `role="listbox"`. An `option`
+  outside a listbox — or a `listitem` inside one — is a broken ARIA
+  contract, and neither is reachable from here. Which mode a list runs in
+  is documented on [`OrigamList`](../List/OrigamList.md#accessibility).
+- Two rows still get **no role at all**: one rendered outside any list (no
+  `OrigamList` / `OrigamListChildren` ancestor) — no ARIA is better than a
+  role whose promised container doesn't exist — and a group activator row,
+  which only toggles expand/collapse and never fires a selection, so it is
+  a control rather than one of the list's rows.
+- `aria-selected` mirrors `isSelected`, and `aria-disabled` mirrors the
+  `disabled` prop, **only** in the `option` role. Both are required state
+  on an option and meaningless on a `listitem`: a plain list row reporting
+  "not selected" would invent a selection the list does not offer.
 - A group activator row (rendered inside `OrigamListGroupActivator`) never
   gets `role="option"` — clicking it only toggles expand/collapse, it never
   fires a selection (see `OrigamListGroup`'s `role="group"` region).

@@ -3,8 +3,8 @@
 			:is="link.tag.value"
 			:id="styleId"
 			v-ripple="isClickable && ripple"
-			:aria-disabled="itemRole === 'option' ? disabled : undefined"
-			:aria-selected="itemRole === 'option' ? isSelected : undefined"
+			:aria-disabled="ariaDisabled"
+			:aria-selected="ariaSelected"
 			:class="listItemClasses"
 			:href="link.href.value"
 			:role="itemRole"
@@ -144,6 +144,7 @@
 	import vRipple from '../../directives/Ripple/ripple.directive'
 
 	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
+	import { LIST_ITEM_ROLE } from '../../enums/List/list-item.enum'
 
 	import type { IListItemProps } from '../../interfaces/List/list-item.interface'
 
@@ -264,20 +265,42 @@
 	 * itemRole (#424)
 	 *
 	 * @description
-	 * `<OrigamList>` hard-codes `role="listbox"` on its root — a listbox
-	 * with no `role="option"` descendant is ARIA posé à moitié. Only a row
-	 * genuinely nested inside a list (`list` truthy, i.e. an
-	 * `<OrigamListChildren>`/`<OrigamList>` ancestor provided
-	 * `ORIGAM_LIST_KEY`) AND acting as a real selectable row — not a group
-	 * activator, which only toggles expand/collapse and never fires
-	 * `select()` (see `click` below) — gets `role="option"`.
+	 * The row never picks its own role — it reads the one its list
+	 * PUBLISHED through `ORIGAM_LIST_KEY` (`listitem` in list mode,
+	 * `option` in selection mode). That way the container and its rows
+	 * can never disagree: an `option` outside a `listbox`, or a
+	 * `listitem` inside one, is a broken ARIA contract and neither is
+	 * reachable from here.
 	 * @description
-	 * A bare `<OrigamListItem>` used outside any list keeps no role at
-	 * all: no ARIA is better than a role whose promised container doesn't
-	 * exist.
+	 * Two rows still get no role at all. A bare `<OrigamListItem>` used
+	 * outside any list (`list` falsy — no ancestor provided the key): no
+	 * ARIA is better than a role whose promised container doesn't exist.
+	 * And a group activator, which only toggles expand/collapse and never
+	 * fires `select()` (see `click` below) — it is a control, not one of
+	 * the list's own rows.
 	 ********************************************************/
 	const itemRole = computed(() => {
-		return list && !isGroupActivator ? 'option' : undefined
+		return list && !isGroupActivator ? list.itemRole.value : undefined
+	})
+	/*********************************************************
+	 * ariaSelected / ariaDisabled
+	 *
+	 * @description
+	 * `aria-selected` is REQUIRED state on `option` and meaningless on
+	 * `listitem` — a plain list row that reports "not selected" invents a
+	 * selection the list does not offer. Both attributes are therefore
+	 * gated on the option role, and both are computed here rather than in
+	 * the template: no logic in the markup, and the role comparison has a
+	 * single home if the role set ever grows.
+	 ********************************************************/
+	const isOption = computed(() => {
+		return itemRole.value === LIST_ITEM_ROLE.OPTION
+	})
+	const ariaSelected = computed(() => {
+		return isOption.value ? isSelected.value : undefined
+	})
+	const ariaDisabled = computed(() => {
+		return isOption.value ? props.disabled : undefined
 	})
 	const isLink = computed(() => {
 		return props.link && link.isLink.value
