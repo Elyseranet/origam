@@ -1139,13 +1139,13 @@
 			&-solo {
 				box-shadow: var(--origam-theme---elevation, var(--origam-field--variant-solo---box-shadow, var(--origam-shadow---sm)));
 				border-color: transparent;
-				--origam-field__input---padding-top: 20px;
+				--origam-field__input---padding-top: var(--origam-field__input---padding-block-solo);
 			}
 
 			&-filled {
 				background: var(--origam-field--variant-filled---background-color, color-mix(in srgb, currentColor 12%, transparent));
 				border-radius: var(--origam-field---border-radius, 8px) var(--origam-field---border-radius, 8px) 0 0;
-				--origam-field__input---padding-top: 20px;
+				--origam-field__input---padding-top: var(--origam-field__input---padding-block-filled);
 
 				#{$this}__outlines {
 					#{$this}__outline {
