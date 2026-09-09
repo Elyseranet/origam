@@ -86,6 +86,12 @@ interface IScrimProps {
 }
 ```
 
+### Own props
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `active` | `boolean` | `false` | Renders the scrim. `false` removes the element from the DOM entirely (`v-if`), it is not merely hidden — so a transparent, click-through backdrop is impossible by design. `<OrigamOverlay>` drives this with `isActive && !!scrim`. |
+
 ## Anatomy
 
 ```html

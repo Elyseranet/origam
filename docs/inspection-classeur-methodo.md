@@ -1,3 +1,25 @@
+> ## ⛔ AVERTISSEMENT DU 2026-09-09 — LES VERDICTS DU CLASSEUR SONT FAUX DANS LES DEUX SENS
+>
+> Deux campagnes (26 bloquants, 105 majeurs) ont confronté le classeur au code.
+> Résultat mesuré :
+>
+> - **La très large majorité des défauts annoncés était DÉJÀ réparée** et jamais
+>   reportée ici. **5 lots sur 12 n'ont touché aucun fichier de `packages/ds/src/`.**
+> - **Des défauts réels portaient la mention « conforme »** — dont un bloquant :
+>   la gouttière de `OrigamRow`, morte pour **tous** les consommateurs.
+> - **Cinq instruments de mesure ont été pris en défaut**, dont trois qui
+>   remplissaient ce classeur : le détecteur C8 (aveugle aux chaînes derrière un
+>   opérateur), le canal C7 « contrôle MENTEUR » (jamais rempli), et la porte
+>   a11y (0 des 208 stories atteignable).
+>
+> **Un « conforme » ne prouve rien, et un « défaut » non plus.** Vérifier sur le
+> code avant d'agir sur une ligne.
+>
+> Ce qui a été trouvé **en réparant** et qui ne figurait dans aucune ligne :
+> `docs/mesures/defauts-hors-classeur-2026-09-09.md` (30 entrées).
+> Les corrections appliquées portent le marqueur `[CORRIGE 2026-09-09]` dans la
+> colonne Notes.
+
 # Classeur d'inspection — méthodologie et angles morts
 
 Ce fichier archive **le texte intégral** qui était stocké dans la ligne 2

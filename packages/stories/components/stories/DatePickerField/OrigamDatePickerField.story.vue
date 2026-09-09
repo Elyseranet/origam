@@ -85,14 +85,13 @@
 
 		<Variant
 				title="State"
-				:init-state="() => useStoryInitState<IHoverProps & IBgColorProps & { active?: boolean | object }>({ bgColor: 'primary' })"
+				:init-state="() => useStoryInitState<IBgColorProps & { active?: boolean | object }>({ bgColor: 'primary' })"
 		>
 			<template #default="{ state }">
 				<origam-date-picker-field
 						v-model="stateDate"
 						label="State"
 						:bg-color="state.bgColor"
-						:hover="resolveHoverState(state.hover)"
 						:active="resolveActiveState(state.active)"
 						style="max-width: 320px"
 				/>
@@ -102,7 +101,6 @@
 					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Interaction">
-					<HstSelect v-model="state.hover"  title="Hover"  :options="HOVER_OPTIONS"/>
 					<HstSelect v-model="state.active" title="Active" :options="ACTIVE_OPTIONS"/>
 				</StoryGroup>
 			</template>
@@ -463,8 +461,7 @@
 	import { DENSITY, MDI_ICONS, VARIANT_INPUT } from '@origam/enums'
 	import type {
 		IBgColorProps,
-		IDatePickerFieldProps,
-		IHoverProps
+		IDatePickerFieldProps
 	} from '@origam/interfaces'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
@@ -477,8 +474,6 @@
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
-		HOVER_OPTIONS,
-		resolveHoverState,
 		ICON_OPTIONS,
 		ROUNDED_OPTIONS,
 		SIZE_OPTIONS,

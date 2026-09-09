@@ -222,7 +222,11 @@
       "loop_off": "Loop off",
       "loop_one": "Loop track",
       "shuffle": "Shuffle",
-      "transport": "Transport controls"
+      "transport": "Transport controls",
+      "playback_error": "Playback error"
+    },
+    "audio": {
+      "track_number": "Track {0}"
     },
     "video": {
       "enter_fullscreen": "Enter fullscreen",
