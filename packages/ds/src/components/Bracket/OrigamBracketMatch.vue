@@ -98,6 +98,7 @@
 	import OrigamDivider from '../Divider/OrigamDivider.vue'
 
 	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useMargin } from '../../composables/Commons/margin.composable'
 	import { usePadding } from '../../composables/Commons/padding.composable'
@@ -130,20 +131,37 @@
 
 	const resolvedStatus = computed(() => props.status ?? props.match.status)
 
-	const STATUS_LABELS: Record<string, string> = {
-		[BRACKET_MATCH_STATUS.PENDING]: 'TBD',
-		[BRACKET_MATCH_STATUS.LIVE]: 'LIVE',
-		[BRACKET_MATCH_STATUS.COMPLETED]: 'Completed',
-		[BRACKET_MATCH_STATUS.FORFEITED]: 'Forfeit'
-	}
+	/*********************************************************
+	 * Libellés — critère C8
+	 *
+	 * @description
+	 * Les libellés de statut, « Watch live » et le repli « TBD » étaient
+	 * écrits en dur en anglais : toute la famille Bracket était donc
+	 * intraduisible, et aucun de ses quatre composants n'appelait
+	 * `useLocale`. La table de correspondance vivait en plus comme une
+	 * `const` déclarée DANS le `.vue`, ce que les conventions du dépôt
+	 * interdisent.
+	 * @description
+	 * La table est désormais reconstruite dans un `computed`, donc réévaluée
+	 * quand la locale change — un objet figé au corps de `setup()` aurait
+	 * gardé la première langue pour toute la vie du composant.
+	 ********************************************************/
+	const {t} = useLocale()
+
+	const statusLabels = computed<Record<string, string>>(() => ({
+		[BRACKET_MATCH_STATUS.PENDING]: t('origam.bracket.status.pending'),
+		[BRACKET_MATCH_STATUS.LIVE]: t('origam.bracket.status.live'),
+		[BRACKET_MATCH_STATUS.COMPLETED]: t('origam.bracket.status.completed'),
+		[BRACKET_MATCH_STATUS.FORFEITED]: t('origam.bracket.status.forfeited')
+	}))
 
 	const statusLabel = computed<string>(() => {
 		if (!resolvedStatus.value) return ''
 
-		return STATUS_LABELS[resolvedStatus.value] ?? resolvedStatus.value
+		return statusLabels.value[resolvedStatus.value] ?? resolvedStatus.value
 	})
 
-	const watchLabel = 'Watch live'
+	const watchLabel = computed(() => t('origam.bracket.watch_live'))
 
 	const statusClasses = computed(() => {
 		return [
@@ -197,10 +215,10 @@
 	const advantageB = computed<number | undefined>(() => advantageFor(props.match.competitorB))
 
 	const ariaLabel = computed<string>(() => {
-		const a = props.match.competitorA?.name ?? 'TBD'
-		const b = props.match.competitorB?.name ?? 'TBD'
+		const a = props.match.competitorA?.name ?? t('origam.bracket.tbd')
+		const b = props.match.competitorB?.name ?? t('origam.bracket.tbd')
 
-		return `Match: ${a} versus ${b}`
+		return t('origam.bracket.match_aria_label', a, b)
 	})
 
 	const handleMatchClick = (event: MouseEvent) => {

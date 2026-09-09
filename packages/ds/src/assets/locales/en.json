@@ -52,6 +52,25 @@
       }
     },
     "no_data_text": "No data available",
+    "bracket": {
+      "aria_label": "Tournament bracket",
+      "winners_label": "Winners bracket",
+      "losers_label": "Losers bracket",
+      "tbd": "TBD",
+      "tbd_long": "To be determined",
+      "match_aria_label": "Match: {0} versus {1}",
+      "forfeit_label": "forfeit",
+      "advantage_aria_label": "{0}-round head start",
+      "score_aria_suffix": ", score {0}",
+      "winner_aria_suffix": ", winner",
+      "watch_live": "Watch live",
+      "status": {
+        "pending": "TBD",
+        "live": "LIVE",
+        "completed": "Completed",
+        "forfeited": "Forfeit"
+      }
+    },
     "carousel": {
       "prev": "Previous visual",
       "next": "Next visual",

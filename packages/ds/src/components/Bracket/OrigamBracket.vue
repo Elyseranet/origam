@@ -251,6 +251,7 @@
 	import OrigamBracketRound from './OrigamBracketRound.vue'
 
 	import { useDimension } from '../../composables/Commons/dimension.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useMargin } from '../../composables/Commons/margin.composable'
 	import { usePadding } from '../../composables/Commons/padding.composable'
 	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
@@ -293,8 +294,8 @@
 		showSeed: false,
 		interactive: true,
 		color: 'primary',
-		winnersLabel: 'Winners bracket',
-		losersLabel: 'Losers bracket'
+		winnersLabel: undefined,
+		losersLabel: undefined
 	})
 
 	const emit = defineEmits<IBracketEmits>()
@@ -304,7 +305,32 @@
 	const {filterProps} = useProps<IBracketProps>(props)
 
 	const resolvedId = computed(() => props.id ?? 'origam-bracket')
-	const ariaLabel = 'Tournament bracket'
+	/*********************************************************
+	 * Libelles — critere C8
+	 *
+	 * @description
+	 * `ariaLabel` etait une chaine anglaise en dur, et `winnersLabel` /
+	 * `losersLabel` portaient leur traduction anglaise comme VALEUR PAR
+	 * DEFAUT de prop — un cas que les conventions du depot couvrent
+	 * explicitement. Toute la famille Bracket etait intraduisible : aucun
+	 * de ses quatre composants n'appelait `useLocale`.
+	 * @description
+	 * Le defaut passe a `undefined` et la traduction est resolue dans un
+	 * `computed` : c'est NON CASSANT — un consommateur qui passait deja sa
+	 * propre chaine continue de gagner, exactement comme avant. Faire
+	 * porter une CLE i18n a la prop aurait, lui, casse ces consommateurs.
+	 * @description
+	 * La resolution est differee dans un `computed` et non figee au corps
+	 * de `setup()` : le resolveur de theme (ADR-005) ecrit dans
+	 * `beforeCreate`, donc APRES `setup()`. Une lecture eager de
+	 * `props.winnersLabel` ne verrait jamais la valeur d'un theme.
+	 ********************************************************/
+	const {t} = useLocale()
+
+	const ariaLabel = computed(() => t('origam.bracket.aria_label'))
+
+	const resolvedWinnersLabel = computed(() => props.winnersLabel ?? t('origam.bracket.winners_label'))
+	const resolvedLosersLabel = computed(() => props.losersLabel ?? t('origam.bracket.losers_label'))
 
 	/*********************************************************
 	 * roundColor (#428)
@@ -375,8 +401,8 @@
 
 	const doubleSections = computed<TBracketDoubleSection[]>(() => {
 		const all: TBracketDoubleSection[] = [
-			{key: 'winners', label: props.winnersLabel ?? '', rounds: winnerRounds.value},
-			{key: 'losers', label: props.losersLabel ?? '', rounds: loserRounds.value},
+			{key: 'winners', label: resolvedWinnersLabel.value, rounds: winnerRounds.value},
+			{key: 'losers', label: resolvedLosersLabel.value, rounds: loserRounds.value},
 			{key: 'grand-final', label: '', rounds: grandFinalRounds.value}
 		]
 
