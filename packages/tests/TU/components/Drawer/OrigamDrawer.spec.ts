@@ -90,6 +90,29 @@ describe('OrigamDrawer — open/close via modelValue', () => {
         expect(emitted![0]).toEqual([false])
         wrapper.unmount()
     })
+
+    /*********************************************************
+     * `update:modelValue` must be DECLARED, not merely fired.
+     *
+     * @description
+     * `wrapper.emitted()` records an undeclared emit just as
+     * happily as a declared one, so the behavioural test above
+     * cannot see the gap. The gap is observable on the two
+     * assertions below, and it is not cosmetic: an undeclared
+     * emit leaves the consumer's `onUpdate:modelValue` handler
+     * in `$attrs`, where `inheritAttrs` binds it a second time
+     * onto the root <nav> as a stray DOM listener.
+     ********************************************************/
+    it('declares update:modelValue instead of leaking it through $attrs', () => {
+        expect((OrigamDrawer as any).emits).toContain('update:modelValue')
+
+        const wrapper = mountDrawer({
+            modelValue: true,
+            'onUpdate:modelValue': () => {}
+        })
+        expect(Object.keys(wrapper.vm.$attrs)).not.toContain('onUpdate:modelValue')
+        wrapper.unmount()
+    })
 })
 
 describe('OrigamDrawer — classes', () => {
