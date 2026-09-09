@@ -170,23 +170,33 @@ Width is resolved per physical side
 the general `--origam-btn---border-width` token), so a direction only ever
 paints the side it names — the other three stay at `0`.
 
-::: warning Why the width keywords need a component-scoped rule (#391)
+::: warning Why the width keywords are emitted inline (#391)
 `useBorder` emits the global `.origam--border-{none,thin,thick}` utility for
-these keywords, but **the utility alone cannot paint here**. A Vue scoped rule
+these keywords, and that utility paints correctly wherever nothing competes
+with it. But **it cannot be the mechanism on its own.** A Vue scoped rule
 (`.origam-btn[data-v-hash]`) has specificity (0,2,0); a utility
-(`.origam--border-thick`) has (0,1,0), so the component's own
-`border-*-width` declaration outranks it *regardless of which sheet loads
-last* — this is specificity, not order. Measured before the fix:
-`border="thick"` painted `1px`, and `border="none"` painted `1px` instead of
-cancelling.
+(`.origam--border-thick`) has (0,1,0), so a component that paints from
+`border-width: var(--origam-{cmp}---border-width, …)` outranks it
+*regardless of which sheet loads last* — this is specificity, not order.
 
-So the component also emits `origam-btn--border-{keyword}`, and
-`OrigamBtn.vue` consumes it by writing `--origam-btn---border-width` — the
-same custom property its base rule already reads. **The other 42 components
-that consume `useBorder` do not yet carry these rules**, so `border="thick"`
-still renders as `thin` there; they now receive the class, which is inert
-until each grows the matching rule (or until the DS-wide cascade decision
-in #391 / #514 is taken).
+Measured across the catalogue: **10 of the 43 `useBorder` consumers** carry
+such a rule (Btn, List, Kbd, Code, CardHeader, CardText, Audio, Calendar,
+Container, Row). On every one of them `border="thick"` painted `1px` and
+`border="none"` painted `1px` instead of cancelling.
+
+The fix is not per-component SCSS. The keywords resolve to a **width**, so
+`useBorder` emits them on the same inline channel the numeric `:border="4"`
+form always used — which is exactly why the numeric case never had this bug.
+Widths come from `BORDER_KEYWORD_WIDTH`, the same tokens the utility
+declares, so the class and the inline copy cannot drift apart. A direction
+(`border="top"`) emits all four physical widths — `thin` on the named side,
+`0` on the other three — because components that paint from a single
+`border-width` shorthand own no per-side custom property a class could
+target.
+
+When #514 settles the foreground-token question and the DS adopts `@layer`
+(measured in `packages/tests/e2e/btn-cascade-layer-probe.spec.ts`), the
+utility wins on its own and this inline path is the thing to delete.
 :::
 
 ## Polymorphic tag

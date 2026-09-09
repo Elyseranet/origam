@@ -669,30 +669,6 @@
 			--origam-btn---border-width: var(--origam-border__width---thin);
 		}
 
-		// #391 — sub-defaults for the WIDTH keywords `border="none|thin|
-		// thick"` (useBorder's `${name}--border-{keyword}` classes).
-		//
-		// The global `.origam--border-{keyword}` utility declares the width
-		// too, but it CANNOT win here: a Vue scoped rule is
-		// `.class[data-v-hash]` = specificity (0,2,0), a utility is (0,1,0),
-		// so the base `border-*-width: var(--origam-btn---border-width, 0)`
-		// declaration outranks it regardless of sheet order. Measured before
-		// this rule existed: `border="thick"` painted 1px, not 2px.
-		//
-		// These rules must stay AFTER `&--border` — same specificity tier,
-		// so source order is what lets `none` cancel the `thin` default.
-		&--border-none {
-			--origam-btn---border-width: var(--origam-border__width---0);
-		}
-
-		&--border-thin {
-			--origam-btn---border-width: var(--origam-border__width---thin);
-		}
-
-		&--border-thick {
-			--origam-btn---border-width: var(--origam-border__width---2);
-		}
-
 		// #391 — sub-defaults for `border="top|right|bottom|left"`
 		// (useBorder's `${name}--border-{side}` classes). No SCSS rule
 		// existed for these at all — the class was emitted but never

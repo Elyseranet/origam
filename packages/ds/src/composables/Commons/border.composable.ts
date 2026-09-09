@@ -1,6 +1,6 @@
 import { computed, isRef, Ref } from 'vue'
 import { DIRECTION_ARRAY } from '../../consts/Commons/anchor.const'
-import { BORDER_LOGICAL_AXIS_MAP, BORDER_POSITION_MAP, BORDER_REGEX } from '../../consts/Commons/border.const'
+import { BORDER_KEYWORD_WIDTH, BORDER_LOGICAL_AXIS_MAP, BORDER_POSITION_MAP, BORDER_REGEX } from '../../consts/Commons/border.const'
 
 import type { IBorderProps } from '../../interfaces/Commons/border.interface'
 import { TDirectionBoth } from '../../types/Commons/anchor.type'
@@ -49,29 +49,35 @@ function isUtilityBorder (value: unknown): value is string {
  * cascading from the rung below.
  *
  * @description
- * WIDTH KEYWORDS EMIT TWO CLASSES (#391). For 'none' | 'thin' | 'thick'
- * the global `.origam--border-{kw}` utility is emitted, but it CANNOT
- * paint on its own: a utility is specificity (0,1,0) while a Vue scoped
- * rule is `.class[data-v-hash]` = (0,2,0), so the component's own
- * `border-*-width` declaration outranks it whatever the sheet order —
- * that is specificity, not order. Measured on Btn before the fix:
- * `border="thick"` painted 1px, `border="none"` painted 1px instead of
- * cancelling. A component-scoped `${name}--border-{kw}` modifier is
- * therefore emitted alongside, mirroring what the direction sub-values
- * (`${name}--border-{side}`) already do; the component consumes it by
- * writing the custom property its base rule already reads. Only Btn
- * carries those rules today — the class is inert on the other 42
- * `useBorder` consumers until each grows them, or until the DS-wide
- * cascade decision (#391 / #514) is taken.
+ * WIDTH KEYWORDS AND DIRECTIONS ARE EMITTED INLINE (#391). 'none' | 'thin'
+ * | 'thick' and 'top' | 'right' | 'bottom' | 'left' resolve to a WIDTH, so
+ * they take the same inline path the numeric `:border="4"` form already
+ * took — which is precisely why the numeric case always worked while the
+ * keywords did not. The global `.origam--border-{kw}` utility is still
+ * emitted and still paints wherever nothing competes, but it CANNOT be the
+ * mechanism on its own: a utility is specificity (0,1,0) while a Vue scoped
+ * rule is `.class[data-v-hash]` = (0,2,0), so a component painting from
+ * `border-width: var(--origam-{cmp}---border-width, …)` outranks it
+ * whatever the sheet order. Measured: 10 of the 43 `useBorder` consumers
+ * carry such a rule (Btn, List, Kbd, Code, Card*, Audio, Calendar, …) and
+ * on every one of them `thick` painted `thin` and `none` painted `thin`.
+ * Widths come from `BORDER_KEYWORD_WIDTH`, the same tokens the utility
+ * declares, so the two channels cannot drift.
  *
  * @description
- * KEYWORDS ARE NOT COLOURS. `BORDER_REGEX`'s <color> alternative ends in
- * a bare `[A-Za-z]+`, so it matched the class-channel keywords as if they
- * were colours: `border="top"` parsed to `{width:'', style:'', color:
- * 'top'}` and the style loop emitted `border-color: top` plus an EMPTY
- * `border-width: `. Neither painted anything, but both landed in the live
- * `style` attribute. Those two facets now fall back to the same defaults
- * the empty case uses (`currentColor`, and no width declaration at all).
+ * A DIRECTION ISOLATES ITS EDGE. `border="top"` emits all four physical
+ * widths — `thin` on the named side, `0` on the other three — because the
+ * components that paint from a single `border-width` shorthand have no
+ * per-side custom property a class could target. Emitting the four
+ * declarations is what makes a direction mean the same thing everywhere
+ * instead of only on the two components that happen to declare per-side
+ * variables.
+ *
+ * @description
+ * WHEN #514 IS SETTLED, THIS INLINE PATH IS THE THING TO REMOVE. If the DS
+ * adopts `@layer` (measured in `packages/tests/e2e/btn-cascade-layer-probe.spec.ts`),
+ * the utility wins on its own and these `styles.push` calls become dead.
+ * Until then the inline copy is the only channel that can actually paint.
  ********************************************************/
 export function useBorder (props: IBorderProps | Ref<boolean | number | string | TDirectionBoth | Array<TDirectionBoth> | null | undefined>, name = getCurrentInstanceName()) {
     const borderClasses = computed(() => {
@@ -90,7 +96,6 @@ export function useBorder (props: IBorderProps | Ref<boolean | number | string |
             // class. Direction keywords (top/bottom/...) and free-form
             // strings stay on the inline-style path.
             if (isUtilityBorder(border)) {
-                classes.push(`${name}--border-${border}`)
                 classes.push(`origam--border-${border}`)
             } else if (border === true) {
                 // Legacy boolean opt-in is treated as the default
@@ -107,19 +112,27 @@ export function useBorder (props: IBorderProps | Ref<boolean | number | string |
         const border = isRef(props) ? props.value : props.border
         const styles: Array<string> = []
 
-        if (typeof border === 'string' && border !== '') {
+        if (isUtilityBorder(border)) {
+            styles.push(`border-width: ${BORDER_KEYWORD_WIDTH[border]}`)
+            styles.push('border-style: solid')
+            styles.push('border-color: currentColor')
+        } else if (DIRECTION_ARRAY.includes(border as TDirectionBoth)) {
+            DIRECTION_ARRAY.forEach((side) => {
+                styles.push(`border-${side}-width: ${side === border ? BORDER_KEYWORD_WIDTH.thin : BORDER_KEYWORD_WIDTH.none}`)
+            })
+            styles.push('border-style: solid')
+            styles.push('border-color: currentColor')
+        } else if (typeof border === 'string' && border !== '') {
             const match = BORDER_REGEX.exec(border)?.groups
             if (match) {
                 Object.keys(match).forEach((key) => {
                     let values = String(match[key]).split(' ')
 
-                    const isChannelKeyword = isUtilityBorder(border) || DIRECTION_ARRAY.includes(border as TDirectionBoth)
-
-                    if (key === 'width' && (isEmpty(match[key]) || isChannelKeyword)) return
+                    if (key === 'width' && isEmpty(match[key])) return
 
                     if (key === 'style' && isEmpty(match[key])) values = ['solid']
 
-                    if (key === 'color' && (isEmpty(match[key]) || isChannelKeyword)) values = ['currentColor']
+                    if (key === 'color' && isEmpty(match[key])) values = ['currentColor']
 
                     styles.push(...formatBorderStylesVar(values, key))
                 })
