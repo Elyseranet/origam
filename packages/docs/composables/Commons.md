@@ -598,10 +598,12 @@ branches prefer `useCssSupport().css.value.X` directly.
 
 **Exemple**
 
+```ts
 const supportsContainer = useCssSupportClient('containerQueries')
   // template:
   //   <div v-if="supportsContainer">…CSS path…</div>
   //   <div v-else>…JS fallback path…</div>
+```
 
 **Source** : `packages/ds/src/composables/Commons/cssSupportClient.composable.ts`
 
@@ -1177,8 +1179,8 @@ bon renderer. `defaultKind` est choisi par CHAQUE consommateur —
 
 Determinisme derive de la FORME de la valeur, pas d'un flag explicite :
 `loading={true}` → indetermine ; `loading={42}` → determine a 42 ;
-`loading={{ type: 'line', modelValue: 42 }}` → determine ; `loading=
-{{ type: 'line' }}` (sans `modelValue`) → indetermine. Un objet SANS
+`loading=&#123;&#123; type: 'line', modelValue: 42 &#125;&#125;` → determine ;
+`loading=&#123;&#123; type: 'line' &#125;&#125;` (sans `modelValue`) → indetermine. Un objet SANS
 `type` est traite comme "pas d'objet reconnu" et retombe sur l'etat
 inactif.
 
@@ -1521,8 +1523,10 @@ export function useProps<T extends object> (props: T): IFilterPropsOptions<T>
 ) forward their resolved props to an INTERNAL ROOT component through that
 child's own exposed `filterProps`, reached via a TEMPLATE REF:
 
+```ts
     const childRef = ref<TOrigamChild>()
     const childProps = computed(() => childRef.value?.filterProps(props, […]))
+```
 
 A template ref is `undefined` during the first render — it is assigned while
 that very render is being patched. So render 1 binds NOTHING and the child
