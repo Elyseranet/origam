@@ -1,5 +1,5 @@
 import { BLOCK, BORDER_LOGICAL_AXIS, INLINE } from '../../enums'
-import type { TBorderLogicalAxis } from '../../types/Commons/border.type'
+import type { TBorderLogicalAxis, TBorderWidthKeyword } from '../../types/Commons/border.type'
 
 /**
  * Parse a free-form `border` value into width / style / color groups.
@@ -55,3 +55,32 @@ export const BORDER_LOGICAL_AXIS_MAP: ReadonlyArray<{ axis: TBorderLogicalAxis, 
     {axis: BORDER_LOGICAL_AXIS.BLOCK, widthProp: 'borderBlock'},
     {axis: BORDER_LOGICAL_AXIS.INLINE, widthProp: 'borderInline'},
 ] as const
+
+/*********************************************************
+ * BORDER_KEYWORD_WIDTH
+ *
+ * @description
+ * The CSS width each `border="none|thin|thick"` keyword resolves to —
+ * the SAME token the matching `.origam--border-{kw}` utility declares in
+ * `assets/css/tokens/origam-utilities.css`. Single source of truth for
+ * the pair: the utility paints where nothing competes, `useBorder` emits
+ * these inline where a component's own scoped rule would otherwise win.
+ *
+ * @description
+ * ⛔ #391 — why the inline copy exists at all. A component that paints
+ * its border from `border-width: var(--origam-{cmp}---border-width, …)`
+ * inside a Vue scoped rule outranks the utility: `.class[data-v-hash]` is
+ * specificity (0,2,0), `.origam--border-thick` is (0,1,0), so the utility
+ * loses whatever the sheet order — that is specificity, not order.
+ * Measured across the catalogue: 10 of the 43 `useBorder` consumers carry
+ * such a rule, and on those `border="thick"` painted `thin` and
+ * `border="none"` painted `thin` instead of nothing. Emitting the width
+ * inline (exactly as the numeric `:border="4"` path already does, which
+ * is why THAT case always worked) fixes all 10 from one place instead of
+ * replicating three SCSS rules per component.
+ ********************************************************/
+export const BORDER_KEYWORD_WIDTH: Readonly<Record<TBorderWidthKeyword, string>> = {
+    none: 'var(--origam-border__width---0)',
+    thin: 'var(--origam-border__width---thin)',
+    thick: 'var(--origam-border__width---2)'
+} as const
