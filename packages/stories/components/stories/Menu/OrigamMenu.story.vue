@@ -227,6 +227,7 @@
 			<template #controls="{ state }">
 				<StoryGroup title="Content">
 					<HstText v-model="state.title" title="Title"/>
+					<HstText v-model="state.id"    title="Id"/>
 				</StoryGroup>
 				<StoryGroup title="Design">
 					<HstSelect v-model="state.bgColor"   title="Bg Color"  :options="COLOR_OPTIONS"/>

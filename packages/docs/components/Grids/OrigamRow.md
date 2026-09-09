@@ -98,8 +98,8 @@ its children. Defaults to `default`.
 ```ts
 interface IRowProps extends ICommonsComponentProps, ITagProps,
     IPaddingProps, IMarginProps, IBorderProps, IColorProps,
-    IDensityProps, IAlignProps, IJustifyProps {
-    gutters?:   string | number
+    IBgColorProps, IDensityProps, IAlignProps, IJustifyProps {
+    gutters?:   TRowGutter
     direction?: TFlexDirection
 }
 ```
@@ -123,13 +123,81 @@ interface IRowProps extends ICommonsComponentProps, ITagProps,
 | `--origam-row---box-sizing` | `border-box` |
 | `--origam-row---align-items` | `stretch` |
 | `--origam-row---justify-content` | `flex-start` |
+| `--origam-row---gutter` | `var(--origam-row--gutter-comfortable---gap)` (24px) |
+| `--origam-row--gutter-none---gap` | `0` |
+| `--origam-row--gutter-dense---gap` | `8px` |
+| `--origam-row--gutter-default---gap` | `16px` |
+| `--origam-row--gutter-comfortable---gap` | `24px` |
+| `--origam-row---padding-block-start` | `0` |
+| `--origam-row---padding-block-end` | `0` |
+| `--origam-row---padding-inline-start` | `0` |
+| `--origam-row---padding-inline-end` | `0` |
 | `--origam-row---margin-block-start` | `-4px` |
 | `--origam-row---margin-block-end` | `-4px` |
 | `--origam-row---margin-inline-start` | `-4px` |
 | `--origam-row---margin-inline-end` | `-4px` |
-| `--origam-row---density` | `0` (compact) / `-8px` (default) |
+| `--origam-row---density` | `0px` (default) / `-8px` (compact) / `8px` (comfortable) |
 | `--origam-row--border---border-width` | inherits |
 | `--origam-row--border---box-shadow` | inherits |
+
+## Gutters
+
+`gutters` sets `--origam-row---gutter`, the **total** space between two
+neighbouring columns. The variable is *inherited*: the row declares it on
+itself, every descendant `<OrigamCol>` reads it, and nothing has to be
+passed down — no `provide` / `inject`, no prop drilling.
+
+```
+col padding = gutter / 2          row margin = gutter / -2
+```
+
+Both halves come from the same number, which is what makes the outer edge
+of the grid sit flush with its container. Before this was wired the two
+sides disagreed — `OrigamCol` padded `12px` (a 24px gutter) while
+`OrigamRow` pulled back `-4px` (an 8px gutter), two rungs apart, so every
+grid sat 8px inside its container on each side.
+
+| `gutters` | gutter | col padding | row margin |
+|---|---|---|---|
+| `none` | `0` | `0` | `0` |
+| `dense` | `8px` | `4px` | `-4px` |
+| `default` | `16px` | `8px` | `-8px` |
+| `comfortable` *(default)* | `24px` | `12px` | `-12px` |
+
+A named rung emits the class `origam-row--gutter-{rung}`, which re-points
+`--origam-row---gutter` at that rung's token. Any other value is treated as
+a free length and emitted inline — a number becomes px, a CSS length is
+kept as written:
+
+```html
+<origam-row gutters="dense">…</origam-row>
+<origam-row :gutters="30">…</origam-row>
+<origam-row gutters="1.5rem">…</origam-row>
+```
+
+The default is `comfortable` so that column-to-column spacing stays exactly
+what it has always been (24px). Only the row's outer pull-back changed, and
+that change is the bug fix.
+
+::: warning `--origam-row---margin-*` is derived, not a knob
+The four `--origam-row---margin-*` variables are now computed from the
+gutter on the row itself. Setting one of them alone re-creates the very
+mismatch described above — the row would pull back a different amount than
+the columns push out. Drive the grid through `gutters` (or
+`--origam-row---gutter`); use the `margin` prop for one-off nudges.
+:::
+
+Every margin is emitted as `calc(var(--origam-row---margin-*) + var(--origam-row---density))`,
+so `density` widens or tightens the gutter around the row rather than
+replacing the base margin. The density value therefore **must carry a
+unit** — a unitless `0` makes the whole `calc()` invalid and the browser
+drops the declaration silently (the row then renders with no gutter at
+all instead of `-4px`).
+
+Two rows that follow each other collapse their facing gutters through
+`.origam-row + .origam-row`, which cancels the negative margin of the
+second one. Nothing to do in consumer code — do **not** add a manual
+`margin-top` between stacked rows.
 
 ## Accessibility
 

@@ -62,9 +62,14 @@
 	@use '../../assets/scss/helpers' as ds;
 
 	.origam-transition--window-x-reverse-translate {
-		&-enter-active,
+		&-enter-active {
+			transition-duration: var(--origam-transition--window-x-reverse-translate-enter-active---transition-duration);
+			transition-timing-function: var(--origam-transition--window-x-reverse-translate-enter-active---transition-timing-function);
+		}
+
 		&-leave-active {
-			transition: 0.3s cubic-bezier(0.25, 0.8, 0.5, 1);
+			transition-duration: var(--origam-transition--window-x-reverse-translate-leave-active---transition-duration);
+			transition-timing-function: var(--origam-transition--window-x-reverse-translate-leave-active---transition-timing-function);
 		}
 
 		&-leave-from,
