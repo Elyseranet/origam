@@ -108,6 +108,7 @@
     "guards:no-usedefaults": "node scripts/guards/no-usedefaults-in-components.mjs",
     "guards:token-var-channels": "node scripts/guards/token-var-channels.mjs",
     "guards:dead-handlers": "node scripts/guards/dead-handlers.mjs",
+    "guards:function-as-value": "node scripts/guards/function-as-value.mjs",
     "guards:id-forwarding": "node scripts/guards/id-forwarding.mjs",
     "guards:unemitted-declarations": "node scripts/guards/unemitted-declarations.mjs",
     "prepublishOnly": "pnpm run build",
