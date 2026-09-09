@@ -197,42 +197,36 @@ test.describe('OrigamParallax — multi-layer (enriched)', () => {
     })
 
     test('@scroll-progress — progress changes between 0 and 1 on scroll', async ({ page }) => {
-        // DS BUG: the Emit — @scroll-progress Variant uses the default easing
-        // (PARALLAX_EASING.LINEAR). On Chromium (Chrome 115+) which supports
-        // `animation-timeline: scroll()`, the runtime enters the CSS-driven path
-        // and the JS rAF loop never runs. Consequently `onProgress` is never
-        // called and `@scroll-progress` is never emitted — the counter text stays
-        // at "progress = 0.000" regardless of page scroll.
-        // This is a design gap in useParallaxRuntime: the CSS path should still
-        // call onProgress via a scroll listener so event consumers get updates.
-        // ⛔ 2026-08-17 — DELIBERATELY *NOT* CONVERTED TO `test.fail`, and the
-        // reason above is NOT what currently makes this test fail.
+        // ⛔ FIXME LEVÉ (2026-09-09) — les DEUX causes ont été traitées, et il
+        // fallait bien traiter les deux : lever l'une sans l'autre aurait rendu
+        // ce test vert pour la mauvaise raison.
         //
-        // Measured on develop @ e66dac68 (chromium, static Histoire): the test
-        // fails at `expect(target).toBeVisible()` with "element(s) not found"
-        // — it never reaches the progress assertion at all. The story no
-        // longer renders any `[data-cy="scroll-progress"]` node: the
-        // "Events - scroll-progress" Variant now reports through Histoire's
-        // event log (`@scroll-progress="logEvent('scroll-progress', $event)"`,
-        // OrigamParallax.story.vue:193-198). So this is a LOCATOR DRIFT
-        // sitting on top of the DS bug, and marking it `test.fail` would make
-        // it green for the wrong reason — it would stay green even after the
-        // DS bug is fixed, which is precisely the failure mode this pass
-        // exists to remove.
+        // 1. LOCATOR DRIFT. La Variant renvoyait vers `logEvent`, le journal
+        //    interne d'Histoire, que les specs de ce dépôt documentent comme
+        //    non observable depuis la page extérieure (voir badge.spec.ts:270,
+        //    breadcrumb.spec.ts:581). Aucun `[data-cy="scroll-progress"]`
+        //    n'existait, donc le test échouait sur le locator AVANT la moindre
+        //    assertion. La Variant rend de nouveau un compteur lisible.
         //
-        // Second reason not to `test.fail` it: the documented bug is
-        // Chromium-only (it needs `animation-timeline: scroll()`, Chrome
-        // 115+). On the firefox and webkit projects the runtime takes the JS
-        // rAF path and DOES emit, so the test would PASS there — and a passing
-        // `test.fail` is reported as an unexpected failure, reddening CI on
-        // two of the three projects.
+        // 2. LE DÉFAUT DS (#432), corrigé dans `parallax.composable.ts`. Les
+        //    écouteurs `scroll` / `resize` n'étaient installés que dans la
+        //    branche `if (!cssScrollDriven.value)`, et `updateProgress()` —
+        //    seul appelant de `onProgress` — n'était joignable que par la
+        //    boucle rAF du chemin JS. `@scroll-progress` ne partait donc jamais
+        //    sur Chrome 115+.
         //
-        // TO LIFT: rewrite the assertion against the Histoire event log
-        // (`[data-test-id="event-item"]`, as chart-streamgraph.spec.ts does),
-        // then guard it with `test.skip(browserName !== 'chromium', …)` and
-        // only then convert to `test.fail` against the DS bug.
-        test.fixme(true, 'LOCATOR DRIFT (2026-08-17): the story reports @scroll-progress via logEvent, not via [data-cy="scroll-progress"] — see the note above. The underlying DS bug (@scroll-progress not emitted when cssScrollDriven=true, Chrome 115+) is real but is NOT what this test currently measures.')
-
+        // ⛔ La note d'origine affirmait que la Variant utilisait l'easing par
+        // défaut (linéaire). C'ÉTAIT FAUX au moment où elle a été écrite : la
+        // Variant portait `:easing="PARALLAX_EASING.SPRING"`, ce qui la plaçait
+        // sur le chemin JS — le seul qui ait jamais fonctionné. Elle
+        // n'exerçait donc PAS le chemin cassé. Le binding a été retiré : la
+        // Variant tourne désormais sur l'easing par défaut, c'est-à-dire la
+        // configuration qu'obtient un consommateur qui ne règle rien.
+        //
+        // Pas de `test.skip(browserName !== 'chromium')` : maintenant que les
+        // deux chemins émettent, l'assertion vaut partout. Sur chromium elle
+        // mesure le chemin CSS (celui qui était cassé), sur firefox / webkit
+        // le chemin JS de repli. C'est précisément ce qu'on veut d'un filet.
         await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
@@ -254,8 +248,20 @@ test.describe('OrigamParallax — multi-layer (enriched)', () => {
 
         const final = await target.innerText()
         console.log('[scroll-progress] initial:', initial, '→ final:', final)
-        expect(final).not.toBe(initial)
+
         expect(final).toMatch(/progress\s*=\s*\d\.\d{3}/)
+
+        // ⛔ Assertions sur des VALEURS, pas sur « ça a changé ». Un test qui
+        // se contente de comparer deux lectures reste vert sur une valeur qui
+        // dérive n'importe où — c'est exactement ce qui a laissé passer
+        // `--origam-row---density: 0`.
+        const read = (text: string) => Number(/([\d.]+)/.exec(text)?.[1] ?? NaN)
+        const before = read(initial)
+        const after = read(final)
+
+        expect(before).toBe(0)
+        expect(after).toBeGreaterThan(0)
+        expect(after).toBeLessThanOrEqual(1)
     })
 
     test('disabled — element transform stays at offset 0 under the mouse', async ({ page }) => {
