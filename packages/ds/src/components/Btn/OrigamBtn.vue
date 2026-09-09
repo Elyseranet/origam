@@ -128,7 +128,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, ref, StyleValue, toRef, useAttrs, useSlots } from 'vue'
+	import { computed, onMounted, ref, StyleValue, toRef, useAttrs, useSlots } from 'vue'
 	import type { ComputedRef, ExtractPropTypes } from 'vue'
 	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
 	import OrigamIcon from '../Icon/OrigamIcon.vue'
@@ -154,6 +154,9 @@
 	import { useTypography } from '../../composables/Commons/typography.composable'
 	import { useVariant } from '../../composables/Commons/variant.composable'
 
+	import { warnDeprecatedEmit } from '../../utils/Commons/color.util'
+
+	import { ADJACENT_EMIT_REPLACEMENT } from '../../consts/Btn/btn.const'
 	import { ORIGAM_BTN_TOGGLE_KEY } from '../../consts/Btn/btn-toggle.const'
 
 	import vContrast from '../../directives/Contrast/contrast.directive'
@@ -319,9 +322,16 @@
 	const {
 		onClickPrepend: handleClickPrepend,
 		onClickAppend: handleClickAppend,
+		isPrependClickable,
+		isAppendClickable,
 		hasAppend,
 		hasPrepend
 	} = useAdjacent(props, prependIcon, appendIcon)
+
+	onMounted(() => {
+		if (isPrependClickable.value) warnDeprecatedEmit('OrigamBtn', 'click:prepend', ADJACENT_EMIT_REPLACEMENT)
+		if (isAppendClickable.value) warnDeprecatedEmit('OrigamBtn', 'click:append', ADJACENT_EMIT_REPLACEMENT)
+	})
 
 	/*********************************************************
 	 * Click handler

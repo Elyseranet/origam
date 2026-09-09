@@ -16,7 +16,7 @@ import { expect, test } from '@playwright/test'
 
 const STORY_ID = 'components-stories-btn-origambtn-story-vue'
 const STORY_PATH = `/stories/story/${STORY_ID}`
-const BORDER_MATRIX_URL = `${STORY_PATH}?variantId=${STORY_ID}-15`
+const BORDER_MATRIX_URL = `${STORY_PATH}?variantId=${STORY_ID}-13`
 
 type TBorderWidths = { top: string, right: string, bottom: string, left: string, style: string }
 

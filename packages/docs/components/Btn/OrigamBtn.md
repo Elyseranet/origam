@@ -242,20 +242,44 @@ utility wins on its own and this inline path is the thing to delete.
 | Event           | Payload      | Description |
 |-----------------|--------------|-------------|
 | `click`          | `MouseEvent`         | Standard button click. Fires for `<a>` tags too. |
-| `click:prepend`  | `MouseEvent`         | Clicked the prepend slot. Stops propagation upstream. |
-| `click:append`   | `MouseEvent`         | Clicked the append slot. |
 | `group:selected` | `{ value: boolean }` | The button's selection inside its group changed — `value` is the new state. Only fires when the button is registered in a group. `<OrigamBtnToggle>` is the only component that provides one (`ORIGAM_BTN_TOGGLE_KEY`) — `<OrigamBtnGroup>` is purely visual and does not. A button outside a toggle calls `useGroupItem(…, false)`, gets `null`, and never registers the watcher, so nothing is ever emitted. Inside one, the emit comes from `useGroupItem`'s `watch(isSelected, …)`, so a programmatic change to the toggle's `modelValue` fires it exactly like a click. |
 
 ```vue
 <template>
-    <OrigamBtn
-        prepend-icon="mdi-close"
-        text="Cancel"
-        @click="onCancel"
-        @click:prepend="onCloseIcon"
-    />
+    <OrigamBtn prepend-icon="mdi-close" text="Cancel" @click="onCancel"/>
 </template>
 ```
+
+::: danger `click:prepend` / `click:append` are deprecated — removed in v3.0.0 (#443)
+They still fire, and `<OrigamBtn>` warns once per emit in dev builds, but
+**do not use them**: they were never reachable by keyboard. The emit is bound
+to the `origam-btn__prepend` / `origam-btn__append` `<span>`, while a keyboard
+activation synthesises its click on the button ROOT — a listener bound to a
+descendant never sees it. Anyone navigating by keyboard, and every assistive
+technology driving the button that way, simply could not trigger the action.
+
+The remedy applied to the ten other `useAdjacent` consumers — promote the zone
+to a `role="button"` tab stop when a listener is attached — **cannot** be used
+here. `<OrigamBtn>` renders as `<button>` or `<a>`, and the HTML content model
+for both forbids an interactive-content descendant *and* any descendant
+carrying `tabindex`. A nested `<button type="button">` is invalid at that
+position for the same reason.
+
+The shape was wrong, not just the markup: a control that already owns one
+action cannot host a second. **Two actions are two buttons.**
+
+```vue
+<template>
+    <origam-btn-group>
+        <origam-btn text="Cancel" @click="onCancel"/>
+        <origam-btn icon="mdi-close" :aria-label="t('btn_dismiss', 'Dismiss')" @click="onCloseIcon"/>
+    </origam-btn-group>
+</template>
+```
+
+The `prepend` / `append` **slots are unaffected** and remain the right way to
+put a decorative or informational icon inside a button.
+:::
 
 ## Props (interface)
 

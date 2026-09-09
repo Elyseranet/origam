@@ -172,24 +172,6 @@
 			<origam-btn color="primary" text="Click me" @click="logEvent('click', $event)"/>
 		</Variant>
 
-		<Variant title="Events - click:prepend">
-			<origam-btn
-					color="primary"
-					:prepend-icon="prependIcon"
-					text="Click the icon"
-					@click:prepend="logEvent('click:prepend', $event)"
-			/>
-		</Variant>
-
-		<Variant title="Events - click:append">
-			<origam-btn
-					color="primary"
-					:append-icon="appendIcon"
-					text="Click the chevron"
-					@click:append="logEvent('click:append', $event)"
-			/>
-		</Variant>
-
 		<Variant title="Events - group:selected">
 			<origam-btn-toggle>
 				<origam-btn color="primary" text="First"  @group:selected="logEvent('group:selected', $event)"/>
