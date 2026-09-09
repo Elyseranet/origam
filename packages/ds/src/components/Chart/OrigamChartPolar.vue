@@ -504,8 +504,9 @@ return [ out, props.style as StyleValue ]
 	 * ARIA
 	 ********************************************************/
 	const ariaLabel = computed(() => props.title ?? t('origam.chart.aria_label'))
-	const svgAriaLabel = computed(() => props.title ?? `${ props.type } chart`)
-	const svgTitle = computed(() => props.title ?? `${ props.type } chart`)
+	const defaultAriaLabel = computed(() => t(`origam.chart.polar.aria_label_${ props.type }`))
+	const svgAriaLabel = computed(() => props.title ?? defaultAriaLabel.value)
+	const svgTitle = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgDesc = computed(() => {
 		const seriesCount = activeSeries.value.length
 		if (!seriesCount) return 'No data'

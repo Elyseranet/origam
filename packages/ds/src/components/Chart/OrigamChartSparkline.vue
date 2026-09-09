@@ -167,6 +167,7 @@
 		type StyleValue
 	} from 'vue'
 
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
@@ -221,6 +222,8 @@
 	})
 
 	const emit = defineEmits<IChartSparklineEmits>()
+
+	const { t } = useLocale()
 
 	defineSlots<IChartSparklineSlots>()
 
@@ -613,9 +616,10 @@
 	/*********************************************************
 	 * ARIA.
 	 ********************************************************/
-	const ariaLabel = computed(() => props.title ?? 'sparkline chart')
-	const svgAriaLabel = computed(() => props.title ?? `${ props.type } sparkline`)
-	const svgTitle = computed(() => props.title ?? `${ props.type } sparkline`)
+	const defaultAriaLabel = computed(() => t(`origam.chart.sparkline.aria_label_${ props.type }`))
+	const ariaLabel = computed(() => props.title ?? defaultAriaLabel.value)
+	const svgAriaLabel = computed(() => props.title ?? defaultAriaLabel.value)
+	const svgTitle = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgDesc = computed(() => {
 		const n = values.value.length
 		return `Sparkline with ${ n } data ${ n === 1 ? 'point' : 'points' }.`

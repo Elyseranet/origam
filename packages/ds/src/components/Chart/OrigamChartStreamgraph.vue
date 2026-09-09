@@ -643,9 +643,10 @@ return [ out, props.style as StyleValue ]
 	/*********************************************************
 	 * ARIA
 	 ********************************************************/
-	const ariaLabel = computed(() => props.title ?? 'streamgraph chart')
-	const svgAriaLabel = computed(() => props.title ?? 'streamgraph chart')
-	const svgTitle = computed(() => props.title ?? 'streamgraph chart')
+	const defaultAriaLabel = computed(() => t('origam.chart.streamgraph.aria_label'))
+	const ariaLabel = computed(() => props.title ?? defaultAriaLabel.value)
+	const svgAriaLabel = computed(() => props.title ?? defaultAriaLabel.value)
+	const svgTitle = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgDesc = computed(() => {
 		const n = visibleRibbons.value.length
 		return `Streamgraph with ${ n } series and ${ columnCount.value } time points.`

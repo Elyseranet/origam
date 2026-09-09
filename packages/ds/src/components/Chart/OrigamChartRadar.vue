@@ -343,9 +343,10 @@ return [ out, props.style as StyleValue ]
 
 	const hasTitleBlock = computed(() => Boolean(props.title || props.subtitle))
 
-	const ariaLabel = computed(() => props.title ?? 'Radar chart')
-	const svgAriaLabel = computed(() => props.title ?? 'radar chart')
-	const svgTitle = computed(() => props.title ?? 'radar chart')
+	const defaultAriaLabel = computed(() => t('origam.chart.radar.aria_label'))
+	const ariaLabel = computed(() => props.title ?? defaultAriaLabel.value)
+	const svgAriaLabel = computed(() => props.title ?? defaultAriaLabel.value)
+	const svgTitle = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgDesc = computed(() => {
 		const seriesCount = props.series.length
 		if (!seriesCount) return 'No data'

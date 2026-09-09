@@ -257,6 +257,46 @@
       },
       "zoom": {
         "reset_aria_label": "Réinitialiser le zoom"
+      },
+      "polar": {
+        "aria_label_pie": "Graphique circulaire",
+        "aria_label_donut": "Graphique en anneau"
+      },
+      "polar_bar": {
+        "aria_label": "Graphique à barres polaires"
+      },
+      "pyramid": {
+        "aria_label_pyramid": "Graphique en pyramide",
+        "aria_label_funnel": "Graphique en entonnoir"
+      },
+      "radar": {
+        "aria_label": "Graphique radar"
+      },
+      "sankey": {
+        "aria_label": "Diagramme de Sankey",
+        "link_aria_label": "{0} vers {1} : {2}"
+      },
+      "sparkline": {
+        "aria_label_line": "Courbe sparkline",
+        "aria_label_area": "Sparkline en aires",
+        "aria_label_column": "Sparkline en colonnes",
+        "aria_label_bar": "Sparkline à barres horizontales"
+      },
+      "streamgraph": {
+        "aria_label": "Graphique en flux"
+      },
+      "sunburst": {
+        "aria_label": "Graphique en rayons de soleil"
+      },
+      "treemap": {
+        "aria_label": "Carte proportionnelle"
+      },
+      "variwide": {
+        "aria_label": "Graphique à largeur variable",
+        "column_aria_label": "{0} : valeur {1}, largeur {2}"
+      },
+      "word_cloud": {
+        "aria_label": "Nuage de mots"
       }
     },
     "dialog": {

@@ -534,9 +534,10 @@ return [ out, props.style as StyleValue ]
 	/*********************************************************
 	 * ARIA
 	 ********************************************************/
-	const ariaLabel = computed(() => props.title ?? 'word cloud chart')
-	const svgAriaLabel = computed(() => props.title ?? 'word cloud chart')
-	const svgTitle = computed(() => props.title ?? 'word cloud chart')
+	const defaultAriaLabel = computed(() => t('origam.chart.word_cloud.aria_label'))
+	const ariaLabel = computed(() => props.title ?? defaultAriaLabel.value)
+	const svgAriaLabel = computed(() => props.title ?? defaultAriaLabel.value)
+	const svgTitle = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgDesc = computed(() => {
 		const n = placedWords.value.length
 		return `Word cloud chart with ${ n } ${ n === 1 ? 'word' : 'words' }.`

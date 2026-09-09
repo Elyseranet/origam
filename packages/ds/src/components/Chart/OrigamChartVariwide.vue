@@ -609,16 +609,17 @@ return [ out, props.style as StyleValue ]
 	/*********************************************************
 	 * ARIA
 	 ********************************************************/
-	const ariaLabel = computed(() => props.title ?? 'variwide chart')
-	const svgAriaLabel = computed(() => props.title ?? 'variwide chart')
-	const svgTitle = computed(() => props.title ?? 'variwide chart')
+	const defaultAriaLabel = computed(() => t('origam.chart.variwide.aria_label'))
+	const ariaLabel = computed(() => props.title ?? defaultAriaLabel.value)
+	const svgAriaLabel = computed(() => props.title ?? defaultAriaLabel.value)
+	const svgTitle = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgDesc = computed(() => {
 		const n = columns.value.length
 		return `Variwide chart with ${ n } ${ n === 1 ? 'column' : 'columns' }.`
 	})
 
 	const columnAriaLabel = (col: IChartVariwideColumn): string =>
-		`${ col.category }: value ${ col.formattedValue }, width ${ col.formattedWidth }`
+		t('origam.chart.variwide.column_aria_label', col.category, col.formattedValue, col.formattedWidth)
 
 	/*********************************************************
 	 * Interaction

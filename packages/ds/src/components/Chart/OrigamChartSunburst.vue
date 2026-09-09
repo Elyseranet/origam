@@ -756,9 +756,10 @@ return [ out, props.style as StyleValue ]
 	/*********************************************************
 	 * ARIA
 	 ********************************************************/
-	const ariaLabel = computed(() => props.title ?? 'Sunburst chart')
-	const svgAriaLabel = computed(() => props.title ?? 'Sunburst chart')
-	const svgTitle = computed(() => props.title ?? 'Sunburst chart')
+	const defaultAriaLabel = computed(() => t('origam.chart.sunburst.aria_label'))
+	const ariaLabel = computed(() => props.title ?? defaultAriaLabel.value)
+	const svgAriaLabel = computed(() => props.title ?? defaultAriaLabel.value)
+	const svgTitle = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgDesc = computed(() => {
 		const n = visibleNodes.value.filter((nd) => nd.depth === 0).length
 		return `Sunburst chart with ${ n } root ${ n === 1 ? 'node' : 'nodes' }.`
