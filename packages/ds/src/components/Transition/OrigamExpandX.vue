@@ -286,18 +286,3 @@
 	}
 </style>
 
-<style>
-	:root {
-		--origam-transition--expand-x-enter-active---transition-duration: .5s;
-		--origam-transition--expand-x-enter-active---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-		--origam-transition--expand-x-enter-active---transition-property: width;
-
-		--origam-transition--expand-x-enter-leave---transition-duration: .5s;
-		--origam-transition--expand-x-enter-leave---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-		--origam-transition--expand-x-enter-leave---transition-property: width;
-
-		--origam-transition--expand-x-move---transition-duration: .5s;
-		--origam-transition--expand-x-move---transition-property: transform;
-		--origam-transition--expand-x-move---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-	}
-</style>

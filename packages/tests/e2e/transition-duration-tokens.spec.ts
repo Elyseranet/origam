@@ -1,17 +1,18 @@
 import { expect, test, type Page } from '@playwright/test'
 
 /**
- * Regression spec for defect C2/C6 (ticket #538, family-wide — see #436):
+ * Regression spec for defect C2 (ticket #538, family-wide — see #436):
  * the 15 `<Origam*>` transition components that ship a `<style>` block
  * hardcoded their `transition-duration` / `transition-timing-function`
  * as CSS literals, so NO theme channel could reach them.
  *
  * Every other component family in the DS routes those two properties
- * through a `--origam-{cmp}---transition-{duration,timing-function}`
- * token declared in `assets/css/tokens/light.css` (see `--origam-btn---
- * transition-duration`, `--origam-card---transition-duration`, …). The
- * transition family was the outlier: a themer setting a duration on
- * `.origam-transition--fade-enter-active` had no variable to set.
+ * through a token declared in `assets/css/tokens/light.css` (see
+ * `--origam-btn---transition-duration`, `--origam-card---transition-
+ * duration`, …). The transition family was the outlier: a themer wanting
+ * to slow `.origam-transition--fade-enter-active` down had no variable to
+ * set. Only `ExpandX` / `ExpandY` were already tokenised — measured on
+ * develop before the fix: 32 red, 6 green, the 6 being exactly those two.
  *
  * WHY PLAYWRIGHT AND NOT VITEST
  * ------------------------------
@@ -20,176 +21,197 @@ import { expect, test, type Page } from '@playwright/test'
  * point of this spec is "does the `var()` indirection actually reach the
  * property", which only a real browser can answer.
  *
+ * WHAT IT ASSERTS — VALUES, NOT MERELY "SOMETHING CHANGED"
+ * ---------------------------------------------------------
+ * A test that only checks "two values differ" passes on a broken token:
+ * `--origam-row---density: 0` (unitless) makes `calc(-4px + 0)` invalid,
+ * the browser drops the declaration, and a difference-only assertion never
+ * notices. So each phase pins THREE observed values against the numbers
+ * measured on develop BEFORE the refactor — duration, timing-function and
+ * transition-property — and only then probes the token channel. A
+ * tokenisation that silently retimes the family fails here rather than
+ * shipping.
+ *
  * THE PROBE
  * ---------
- * The component `<style>` blocks are NOT scoped, so once a story chunk
- * has loaded, its transition classes are global CSS inside the sandbox
- * document. For each component we:
- *   1. build a bare `<div>` carrying the `-enter-active` (resp.
- *      `-leave-active`) class,
- *   2. read `transitionDuration` — this pins the CURRENT value, so a
- *      future "tokenisation" that silently changes the rendered timing
- *      fails here rather than shipping,
- *   3. set the expected token ON THAT ELEMENT and re-read.
+ * The component `<style>` blocks are NOT scoped, so once a story chunk has
+ * loaded, its transition classes are global CSS inside the sandbox
+ * document. For each phase we build a bare `<div>` carrying the class,
+ * read the three properties, set the two tokens ON THAT ELEMENT, and
+ * re-read — all inside a SINGLE `evaluate`. Splitting a DOM mutation from
+ * its measurement is the `alert.spec.ts` trap (CLAUDE.md): Vue re-patches
+ * the element in between and the assertion measures the wrong thing.
  *
- * Steps 2 and 3 happen inside a SINGLE `evaluate` — the `alert.spec.ts`
- * trap (CLAUDE.md): splitting a DOM mutation from its measurement lets
- * Vue re-patch the element in between, and `toHaveCSS` then polls the
- * wrong thing.
- *
- * Setting the custom property on the element itself (rather than on
- * `:root`) is deliberate: custom properties inherit and resolve on the
- * element that consumes them, so this measures the `var()` indirection
- * without mutating the shared document and leaking into sibling tests.
+ * Setting the custom property on the element itself rather than on
+ * `:root` is deliberate: custom properties inherit and resolve on the
+ * element that consumes them, so the probe never mutates shared document
+ * state and cannot leak into a sibling test.
  */
 
 const BASE = '/stories/story/components-stories-transition-'
 
-const PROBE = '4321ms'
-const PROBE_COMPUTED = '4.321s'
+const DURATION_PROBE = '4321ms'
+const DURATION_PROBE_COMPUTED = '4.321s'
+const EASING_PROBE = 'steps(7, end)'
+const EASING_PROBE_COMPUTED = 'steps(7)'
+
+/** Easings as Chromium serialises them — measured, not guessed. */
+const STANDARD = 'cubic-bezier(0.4, 0, 0.2, 1)'
+const DECELERATE = 'cubic-bezier(0, 0, 0.2, 1)'
+const ACCELERATE = 'cubic-bezier(0.4, 0, 1, 1)'
+const SWING = 'cubic-bezier(0.25, 0.8, 0.5, 1)'
+
+interface IPhase {
+    /** Class suffix, e.g. `enter-active`. */
+    suffix: string
+    /** Token infix — differs from `suffix` only for the ExpandX/Y misnomer. */
+    token: string
+    /** Values measured on develop before the refactor. */
+    duration: string
+    easing: string
+    property: string
+}
 
 interface ICase {
-    /** Story slug under `components-stories-transition-`. */
     story: string
-    /** Class root, without the `-enter-active` / `-leave-active` suffix. */
     root: string
-    /** Phase suffixes to probe, and the literal each renders today. */
-    phases: Array<{ suffix: string; token: string; current: string }>
+    phases: IPhase[]
 }
 
 /**
- * `expand-x` / `expand-y` read a token named `…-enter-leave---…` on their
- * LEAVE rule — a misnomer that predates this spec. It is pinned here as-is
- * rather than renamed: the name has shipped, and renaming a public CSS
- * variable is a breaking change that belongs to its own decision.
+ * ⛔ `expand-x` / `expand-y` read a token named `…-enter-leave---…` on their
+ * LEAVE rule — a misnomer that predates this spec and has already shipped.
+ * It is pinned here AS IS rather than renamed: renaming a public CSS
+ * variable is a breaking change for any consumer who overrode it, and that
+ * belongs to its own decision, not to a drive-by edit inside a refactor.
  */
 const CASES: ICase[] = [
     {
         story: 'origamfade-story-vue',
         root: 'origam-transition--fade',
         phases: [
-            {suffix: 'enter-active', token: 'enter-active', current: '0.3s'},
-            {suffix: 'leave-active', token: 'leave-active', current: '0.3s'},
-            {suffix: 'move', token: 'move', current: '0.5s'}
+            {suffix: 'enter-active', token: 'enter-active', duration: '0.3s', easing: STANDARD, property: 'opacity'},
+            {suffix: 'leave-active', token: 'leave-active', duration: '0.3s', easing: STANDARD, property: 'opacity'},
+            {suffix: 'move', token: 'move', duration: '0.5s', easing: STANDARD, property: 'transform'}
         ]
     },
     {
         story: 'origamslidex-story-vue',
         root: 'origam-transition--slide-x',
         phases: [
-            {suffix: 'enter-active', token: 'enter-active', current: '0.3s'},
-            {suffix: 'leave-active', token: 'leave-active', current: '0.3s'},
-            {suffix: 'move', token: 'move', current: '0.5s'}
+            {suffix: 'enter-active', token: 'enter-active', duration: '0.3s', easing: STANDARD, property: 'transform, opacity'},
+            {suffix: 'leave-active', token: 'leave-active', duration: '0.3s', easing: STANDARD, property: 'transform, opacity'},
+            {suffix: 'move', token: 'move', duration: '0.5s', easing: STANDARD, property: 'transform'}
         ]
     },
     {
         story: 'origamslidey-story-vue',
         root: 'origam-transition--slide-y',
         phases: [
-            {suffix: 'enter-active', token: 'enter-active', current: '0.3s'},
-            {suffix: 'leave-active', token: 'leave-active', current: '0.3s'},
-            {suffix: 'move', token: 'move', current: '0.5s'}
+            {suffix: 'enter-active', token: 'enter-active', duration: '0.3s', easing: STANDARD, property: 'transform, opacity'},
+            {suffix: 'leave-active', token: 'leave-active', duration: '0.3s', easing: STANDARD, property: 'transform, opacity'},
+            {suffix: 'move', token: 'move', duration: '0.5s', easing: STANDARD, property: 'transform'}
         ]
     },
     {
         story: 'origamscalerotate-story-vue',
         root: 'origam-transition--scale-rotate',
         phases: [
-            {suffix: 'enter-active', token: 'enter-active', current: '0.3s'},
-            {suffix: 'leave-active', token: 'leave-active', current: '0.3s'},
-            {suffix: 'move', token: 'move', current: '0.5s'}
+            {suffix: 'enter-active', token: 'enter-active', duration: '0.3s', easing: STANDARD, property: 'transform, opacity'},
+            {suffix: 'leave-active', token: 'leave-active', duration: '0.3s', easing: STANDARD, property: 'transform, opacity'},
+            {suffix: 'move', token: 'move', duration: '0.5s', easing: STANDARD, property: 'transform'}
         ]
     },
     {
         story: 'origamexpandx-story-vue',
         root: 'origam-transition--expand-x',
         phases: [
-            {suffix: 'enter-active', token: 'enter-active', current: '0.5s'},
-            {suffix: 'leave-active', token: 'enter-leave', current: '0.5s'},
-            {suffix: 'move', token: 'move', current: '0.5s'}
+            {suffix: 'enter-active', token: 'enter-active', duration: '0.5s', easing: STANDARD, property: 'width'},
+            {suffix: 'leave-active', token: 'enter-leave', duration: '0.5s', easing: STANDARD, property: 'width'},
+            {suffix: 'move', token: 'move', duration: '0.5s', easing: STANDARD, property: 'transform'}
         ]
     },
     {
         story: 'origamexpandy-story-vue',
         root: 'origam-transition--expand-y',
         phases: [
-            {suffix: 'enter-active', token: 'enter-active', current: '0.5s'},
-            {suffix: 'leave-active', token: 'enter-leave', current: '0.5s'},
-            {suffix: 'move', token: 'move', current: '0.5s'}
+            {suffix: 'enter-active', token: 'enter-active', duration: '0.5s', easing: STANDARD, property: 'height'},
+            {suffix: 'leave-active', token: 'enter-leave', duration: '0.5s', easing: STANDARD, property: 'height'},
+            {suffix: 'move', token: 'move', duration: '0.5s', easing: STANDARD, property: 'transform'}
         ]
     },
     {
         story: 'origamsnack-story-vue',
         root: 'origam-transition--snack',
         phases: [
-            {suffix: 'enter-active', token: 'enter-active', current: '0.15s'},
-            {suffix: 'leave-active', token: 'leave-active', current: '0.15s'}
+            {suffix: 'enter-active', token: 'enter-active', duration: '0.15s', easing: DECELERATE, property: 'opacity, transform'},
+            {suffix: 'leave-active', token: 'leave-active', duration: '0.15s', easing: DECELERATE, property: 'opacity'}
         ]
     },
     {
         story: 'origamtranslatebottom-story-vue',
         root: 'origam-transition--translate-bottom',
         phases: [
-            {suffix: 'enter-active', token: 'enter-active', current: '0.225s'},
-            {suffix: 'leave-active', token: 'leave-active', current: '0.125s'}
+            {suffix: 'enter-active', token: 'enter-active', duration: '0.225s', easing: DECELERATE, property: 'transform, opacity'},
+            {suffix: 'leave-active', token: 'leave-active', duration: '0.125s', easing: ACCELERATE, property: 'transform, opacity'}
         ]
     },
     {
         story: 'origamtranslatescale-story-vue',
         root: 'origam-transition--transform-scale',
         phases: [
-            {suffix: 'enter-active', token: 'enter-active', current: '0.225s'},
-            {suffix: 'leave-active', token: 'leave-active', current: '0.125s'}
+            {suffix: 'enter-active', token: 'enter-active', duration: '0.225s', easing: DECELERATE, property: 'transform, opacity'},
+            {suffix: 'leave-active', token: 'leave-active', duration: '0.125s', easing: ACCELERATE, property: 'transform, opacity'}
         ]
     },
     {
         story: 'origamtranslatepicker-story-vue',
         root: 'origam-transition--translate-picker',
         phases: [
-            {suffix: 'enter-active', token: 'enter-active', current: '0.3s'},
-            {suffix: 'leave-active', token: 'leave-active', current: '0.3s'},
-            {suffix: 'move', token: 'move', current: '0.3s'}
+            {suffix: 'enter-active', token: 'enter-active', duration: '0.3s', easing: STANDARD, property: 'transform, opacity'},
+            {suffix: 'leave-active', token: 'leave-active', duration: '0.3s', easing: STANDARD, property: 'transform, opacity'},
+            {suffix: 'move', token: 'move', duration: '0.3s', easing: STANDARD, property: 'transform'}
         ]
     },
     {
         story: 'origamreversetranslatepicker-story-vue',
         root: 'origam-transition--reverse-translate-picker',
         phases: [
-            {suffix: 'enter-active', token: 'enter-active', current: '0.3s'},
-            {suffix: 'leave-active', token: 'leave-active', current: '0.3s'},
-            {suffix: 'move', token: 'move', current: '0.3s'}
+            {suffix: 'enter-active', token: 'enter-active', duration: '0.3s', easing: STANDARD, property: 'transform, opacity'},
+            {suffix: 'leave-active', token: 'leave-active', duration: '0.3s', easing: STANDARD, property: 'transform, opacity'},
+            {suffix: 'move', token: 'move', duration: '0.3s', easing: STANDARD, property: 'transform'}
         ]
     },
     {
         story: 'origamwindowxtranslate-story-vue',
         root: 'origam-transition--window-x-translate',
         phases: [
-            {suffix: 'enter-active', token: 'enter-active', current: '0.3s'},
-            {suffix: 'leave-active', token: 'leave-active', current: '0.3s'}
+            {suffix: 'enter-active', token: 'enter-active', duration: '0.3s', easing: SWING, property: 'all'},
+            {suffix: 'leave-active', token: 'leave-active', duration: '0.3s', easing: SWING, property: 'all'}
         ]
     },
     {
         story: 'origamwindowytranslate-story-vue',
         root: 'origam-transition--window-y-translate',
         phases: [
-            {suffix: 'enter-active', token: 'enter-active', current: '0.3s'},
-            {suffix: 'leave-active', token: 'leave-active', current: '0.3s'}
+            {suffix: 'enter-active', token: 'enter-active', duration: '0.3s', easing: SWING, property: 'all'},
+            {suffix: 'leave-active', token: 'leave-active', duration: '0.3s', easing: SWING, property: 'all'}
         ]
     },
     {
         story: 'origamwindowxreversetranslate-story-vue',
         root: 'origam-transition--window-x-reverse-translate',
         phases: [
-            {suffix: 'enter-active', token: 'enter-active', current: '0.3s'},
-            {suffix: 'leave-active', token: 'leave-active', current: '0.3s'}
+            {suffix: 'enter-active', token: 'enter-active', duration: '0.3s', easing: SWING, property: 'all'},
+            {suffix: 'leave-active', token: 'leave-active', duration: '0.3s', easing: SWING, property: 'all'}
         ]
     },
     {
         story: 'origamwindowyreversetranslate-story-vue',
         root: 'origam-transition--window-y-reverse-translate',
         phases: [
-            {suffix: 'enter-active', token: 'enter-active', current: '0.3s'},
-            {suffix: 'leave-active', token: 'leave-active', current: '0.3s'}
+            {suffix: 'enter-active', token: 'enter-active', duration: '0.3s', easing: SWING, property: 'all'},
+            {suffix: 'leave-active', token: 'leave-active', duration: '0.3s', easing: SWING, property: 'all'}
         ]
     }
 ]
@@ -201,11 +223,10 @@ const CASES: ICase[] = [
  * after clicking a Variant title it has two, the second being
  * `/stories/__sandbox.html?storyId=…&variantId=…`.
  *
- * Skipping the click makes every probe below time out on
- * `frameLocator(...).locator('body')` — a failure that LOOKS like the
- * assertion failing (38 red tests) while measuring nothing at all. Same
- * shape as the "false red" trap in CLAUDE.md: a red test is only evidence
- * when it is red for the reason it claims.
+ * Skipping the click made every probe below time out on
+ * `frameLocator(...).locator('body')` — 38 red tests that LOOKED like the
+ * assertion failing while measuring nothing at all. A red test is only
+ * evidence when it is red for the reason it claims.
  */
 async function gotoStory (page: Page, story: string) {
     await page.goto(`${BASE}${story}`)
@@ -215,56 +236,95 @@ async function gotoStory (page: Page, story: string) {
     await page.waitForTimeout(600)
 }
 
-/**
- * Mutation AND measurement in one `evaluate` — see the header note about
- * the `alert.spec.ts` trap.
- */
-async function probeDuration (
+interface IProbeResult {
+    duration: string
+    easing: string
+    property: string
+    durationAfter: string
+    easingAfter: string
+}
+
+/** Mutation AND measurement in one `evaluate` — see the header note. */
+async function probe (
     page: Page,
     className: string,
-    tokenName: string
-): Promise<{ before: string; after: string }> {
+    durationToken: string,
+    easingToken: string
+): Promise<IProbeResult> {
     const frame = page.frameLocator('iframe[src*="__sandbox"]')
 
-    return await frame.locator('body').evaluate((body, {className, tokenName, probe}) => {
+    return await frame.locator('body').evaluate((body, args) => {
         const el = body.ownerDocument.createElement('div')
 
-        el.className = className
+        el.className = args.className
         body.appendChild(el)
 
         const view = body.ownerDocument.defaultView!
-        const before = view.getComputedStyle(el).transitionDuration
+        const before = view.getComputedStyle(el)
+        const result = {
+            duration: before.transitionDuration,
+            easing: before.transitionTimingFunction,
+            property: before.transitionProperty,
+            durationAfter: '',
+            easingAfter: ''
+        }
 
-        el.style.setProperty(tokenName, probe)
+        el.style.setProperty(args.durationToken, args.durationProbe)
+        el.style.setProperty(args.easingToken, args.easingProbe)
 
-        const after = view.getComputedStyle(el).transitionDuration
+        const after = view.getComputedStyle(el)
+
+        result.durationAfter = after.transitionDuration
+        result.easingAfter = after.transitionTimingFunction
 
         el.remove()
 
-        return {before, after}
-    }, {className, tokenName, probe: PROBE})
+        return result
+    }, {
+        className,
+        durationToken,
+        easingToken,
+        durationProbe: DURATION_PROBE,
+        easingProbe: EASING_PROBE
+    })
 }
 
 for (const testCase of CASES) {
-    test.describe(`${testCase.root} — duration token channel`, () => {
+    test.describe(`${testCase.root} — token channel`, () => {
         for (const phase of testCase.phases) {
-            test(`${phase.suffix} duration is themable via its token`, async ({page}) => {
+            test(`${phase.suffix} is themable and keeps its historical timing`, async ({page}) => {
                 await gotoStory(page, testCase.story)
 
                 const className = `${testCase.root}-${phase.suffix}`
-                const tokenName = `--${testCase.root}-${phase.token}---transition-duration`
+                const durationToken = `--${testCase.root}-${phase.token}---transition-duration`
+                const easingToken = `--${testCase.root}-${phase.token}---transition-timing-function`
 
-                const {before, after} = await probeDuration(page, className, tokenName)
-
-                expect(
-                    before,
-                    `${className} must still render its historical duration — tokenisation is a refactor, not a retiming`
-                ).toBe(phase.current)
+                const result = await probe(page, className, durationToken, easingToken)
 
                 expect(
-                    after,
-                    `${className} ignores ${tokenName}: the duration is a hardcoded literal, not a theme channel`
-                ).toBe(PROBE_COMPUTED)
+                    result.duration,
+                    `${className} changed duration — tokenisation is a refactor, not a retiming`
+                ).toBe(phase.duration)
+
+                expect(
+                    result.easing,
+                    `${className} changed easing — tokenisation is a refactor, not a retiming`
+                ).toBe(phase.easing)
+
+                expect(
+                    result.property,
+                    `${className} changed transition-property — tokenisation is a refactor, not a rescoping`
+                ).toBe(phase.property)
+
+                expect(
+                    result.durationAfter,
+                    `${className} ignores ${durationToken}: the duration is a hardcoded literal, not a theme channel`
+                ).toBe(DURATION_PROBE_COMPUTED)
+
+                expect(
+                    result.easingAfter,
+                    `${className} ignores ${easingToken}: the easing is a hardcoded literal, not a theme channel`
+                ).toBe(EASING_PROBE_COMPUTED)
             })
         }
     })
