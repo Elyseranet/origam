@@ -128,7 +128,7 @@
 	import OrigamIcon from '../Icon/OrigamIcon.vue'
 
 	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
-	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
+	import { useBothColor } from '../../composables/Commons/bothColor.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useLink } from '../../composables/Commons/link.composable'
@@ -183,8 +183,24 @@
 		openOnSelect
 	} = useNestedItem(id, false)
 	const list = useList()
+	/*********************************************************
+	 * Colour — BOTH channels (#436)
+	 *
+	 * @description
+	 * The row only ever consumed `bgColor`, through
+	 * `useBackgroundColor(toRef(props, 'bgColor'))`. `IListItemProps`
+	 * extends `IColorProps` all the same, so `color` was a declared,
+	 * documented, story-exposed prop that painted nothing.
+	 * @description
+	 * It is not an exotic prop either: `<origam-list>` AND
+	 * `<origam-list-group>` both forward `color` down to every descendant
+	 * `<origam-list-item>` through their defaults provider — that
+	 * forwarding landed on a prop the row dropped. `useBothColor` is the
+	 * same hook `<origam-list>` / `<origam-list-subheader>` already use;
+	 * it resolves the pair and delegates to `useColor`.
+	 ********************************************************/
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
-	const {backgroundColorClasses, backgroundColorStyles} = useBackgroundColor(toRef(props, 'bgColor'))
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 	const {densityClasses} = useDensity(props)
 	// Only `sizeClasses` is consumed — NEVER `sizeStyles`. Its non-tokenised
 	// branch emits an identical `width` AND `height` (a square), which would
@@ -390,7 +406,7 @@
 		return [
 			dimensionStyles.value,
 			borderStyles.value,
-			backgroundColorStyles.value,
+			colorStyles.value,
 			paddingStyles.value,
 			marginStyles.value,
 			roundedStyles.value,
@@ -410,7 +426,7 @@
 				'origam-list-item--slim': props.slim,
 				[`${props.activeClass}`]: props.activeClass && isActive.value
 			},
-			backgroundColorClasses.value,
+			colorClasses.value,
 			borderClasses.value,
 			densityClasses.value,
 			sizeClasses.value,
@@ -524,6 +540,21 @@
 
 		&--rounded {
 			--origam-list-item---border-radius: 4px;
+		}
+
+		// `slim` (#440) — the class was emitted by `listItemClasses` with no
+		// rule anywhere to read it, so the prop painted nothing while the doc
+		// promised "reduced inner spacing" and the story shipped a checkbox.
+		//
+		// It narrows the INLINE padding only. The block padding belongs to the
+		// `--size-*` rungs, which pin the row on the shared control-height
+		// scale; touching it here would take the row off that scale and undo
+		// the field/row match those rungs exist to hold. The base rule adds
+		// indent + density to the same `calc()`, so a slim row inside an
+		// indented group still lines up with its siblings.
+		&--slim {
+			--origam-list-item---padding-inline-start: var(--origam-list-item--slim---padding-inline-start, 8px);
+			--origam-list-item---padding-inline-end: var(--origam-list-item--slim---padding-inline-end, 8px);
 		}
 
 		// Row-height scale, aligned rung for rung on the control-height scale

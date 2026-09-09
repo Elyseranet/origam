@@ -62,7 +62,7 @@ prefixes (`list-item__title` and `list-item__subtitle`).
 | `lines`       | `TLines`                  | —       | Clamp subtitle to one, two or three lines     |
 | `link`        | `boolean`                 | `false` | Makes the item behave as a link               |
 | `nav`         | `boolean`                 | `false` | Nav-mode sizing (0.8125rem title, 0.75rem subtitle) |
-| `slim`        | `boolean`                 | `false` | Reduced inner spacing                         |
+| `slim`        | `boolean`                 | `false` | Halves the row's inline padding (16px → 8px) via `--origam-list-item--slim---padding-inline-{start,end}`. Block padding is untouched — it belongs to the `size` rungs |
 | `tag`         | `string`                  | `'div'` | Root HTML element                             |
 | `href`        | `string`                  | —       | Anchor href (renders as `<a>`)                |
 | `to`          | `RouteLocationRaw`        | —       | Router-link target                            |
@@ -73,6 +73,8 @@ prefixes (`list-item__title` and `list-item__subtitle`).
 | `appendAvatar`  | `string`                | —       | Avatar image URL shown after content          |
 | `density`     | `TDensity`                | —       | Row density (`default` · `compact` · `comfortable`). Inherited from the parent list unless set. Shifts the row height by `0` / `-8px` / `+8px` |
 | `size`        | `TSize`                   | —       | Row-height rung — see the section below. Inherited from the parent list unless set |
+| `color`       | `TColor`                  | —       | Foreground (text) colour — an intent (`primary`, `success`, …) or a raw CSS colour. Inherited from the parent list / group unless set |
+| `bgColor`     | `TColor`                  | —       | Surface colour. An intent also pairs the matching contrast foreground automatically. Inherited from the parent list / group unless set |
 
 ### Props — `size`: the row-height scale
 
@@ -177,3 +179,4 @@ controls both children simultaneously.
 | `--origam-list-item---padding-inline-start`       | `16px`           | left padding (indent-adjusted)        |
 | `--origam-list-item---height-sm` / `-md` / `-lg` / `-xl` | `28px` / `36px` / `44px` / `52px` | total row height per `size` rung |
 | `--origam-list-item---padding-block-sm` / `-md` / `-lg` / `-xl` | `2px` / `6px` / `10px` / `14px` | block padding per `size` rung |
+| `--origam-list-item--slim---padding-inline-start` / `-end` | `8px` / `8px` | inline padding when `slim` is set |
