@@ -251,8 +251,9 @@
 		--origam-breadcrumb-item---padding-block-end: 8px;
 		--origam-breadcrumb-item---padding-inline-start: 8px;
 		--origam-breadcrumb-item---padding-inline-end: 8px;
-		--origam-breadcrumb-item---transition-duration: 0.2s, 0.1s;
-		--origam-breadcrumb-item---transition: var(--origam-breadcrumb-item---transition-property) var(--origam-breadcrumb-item---transition-duration) var(--origam-breadcrumb-item---transition-timing-function);
+		--origam-breadcrumb-item---transition:
+			transform var(--origam-breadcrumb-item---transition-duration-transform) var(--origam-breadcrumb-item---transition-timing-function),
+			color var(--origam-breadcrumb-item---transition-duration-color) var(--origam-breadcrumb-item---transition-timing-function);
 
 		align-items: center;
 		display: inline-flex;

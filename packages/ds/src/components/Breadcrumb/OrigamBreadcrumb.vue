@@ -250,8 +250,9 @@
 		--origam-breadcrumb---padding-block-end: var(--origam-breadcrumb---padding-block, 8px);
 		--origam-breadcrumb---padding-inline-start: var(--origam-breadcrumb---padding-inline, 8px);
 		--origam-breadcrumb---padding-inline-end: var(--origam-breadcrumb---padding-inline, 8px);
-		--origam-breadcrumb---transition-duration: 0.2s, 0.1s;
-		--origam-breadcrumb---transition: var(--origam-breadcrumb---transition-property) var(--origam-breadcrumb---transition-duration) var(--origam-breadcrumb---transition-timing-function);
+		--origam-breadcrumb---transition:
+			transform var(--origam-breadcrumb---transition-duration-transform) var(--origam-breadcrumb---transition-timing-function),
+			color var(--origam-breadcrumb---transition-duration-color) var(--origam-breadcrumb---transition-timing-function);
 
 		transition: var(--origam-breadcrumb---transition);
 

@@ -181,6 +181,61 @@ test.describe('Breadcrumb — canal de thème (#607)', () => {
         expect(m.item).not.toBe('')
     })
 
+    test('transitions : le raccourci est bien formé, deux entrées, plus de `all`', async ({ page }) => {
+        // AVANT (mesuré) : `transform, color 0.2s, 0.1s cubic-bezier(…)` était lu
+        // comme TROIS transitions —
+        //   property : transform, color, all
+        //   duration : 0s, 0.2s, 0.1s
+        //   timing   : ease, ease, cubic-bezier(0.4, 0, 0.2, 1)
+        // soit transform jamais animé, color en `ease`, et une entrée fantôme
+        // `all` animant TOUT sur 100 ms.
+        for (const [story, sel] of [
+            [HOST, '.origam-breadcrumb'],
+            [HOST, '.origam-breadcrumb-divider'],
+            [ITEM, '.origam-breadcrumb-item']
+        ] as const) {
+            await page.goto(`/stories/story/${story}?variantId=${story}-0`)
+            const el = page.frameLocator(SANDBOX).locator(sel).first()
+            await el.waitFor({ state: 'visible' })
+
+            const m = await el.evaluate((n: HTMLElement) => {
+                const cs = getComputedStyle(n)
+                return {
+                    property: cs.transitionProperty,
+                    duration: cs.transitionDuration,
+                    timing: cs.transitionTimingFunction
+                }
+            })
+
+            expect(m.property, `${sel} — deux propriétés, pas trois`).toBe('transform, color')
+            expect(m.duration, `${sel} — 200 ms / 100 ms`).toBe('0.2s, 0.1s')
+            expect(m.timing, `${sel} — l'easing du DS des deux côtés`)
+                .toBe('cubic-bezier(0.4, 0, 0.2, 1), cubic-bezier(0.4, 0, 0.2, 1)')
+            expect(m.property, `${sel} — plus d'entrée fantôme`).not.toContain('all')
+        }
+    })
+
+    test('transitions : les deux durées sont thémables séparément', async ({ page }) => {
+        await page.addInitScript((css: string) => {
+            const inject = () => {
+                const s = document.createElement('style')
+                s.textContent = css
+                document.head.appendChild(s)
+            }
+            if (document.head) inject()
+            else document.addEventListener('DOMContentLoaded', inject, { once: true })
+        }, ':root, [data-theme="light"] { --origam-breadcrumb---transition-duration-transform: 1s; --origam-breadcrumb---transition-duration-color: 2s; }')
+
+        await page.goto(`/stories/story/${HOST}?variantId=${HOST}-0`)
+        const el = page.frameLocator(SANDBOX).locator('.origam-breadcrumb').first()
+        await el.waitFor({ state: 'visible' })
+
+        const duration = await el.evaluate((n: HTMLElement) => getComputedStyle(n).transitionDuration)
+        // Chaque durée bouge indépendamment — ce qu'un couple dans une seule
+        // variable ne permettait pas.
+        expect(duration).toBe('1s, 2s')
+    })
+
     test('non-régression : sans thème, les valeurs par défaut sont inchangées', async ({ page }) => {
         const m = await measure(page, `/stories/story/${ITEM}?variantId=${ITEM}-0`, '.origam-breadcrumb-item', [
             ...ITEM_NAMES,

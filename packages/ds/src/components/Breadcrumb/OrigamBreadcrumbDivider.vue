@@ -147,8 +147,9 @@
 		--origam-breadcrumb-divider---padding-block-end: 0px;
 		--origam-breadcrumb-divider---padding-inline-start: var(--origam-breadcrumb-divider---padding-inline, 8px);
 		--origam-breadcrumb-divider---padding-inline-end: var(--origam-breadcrumb-divider---padding-inline, 8px);
-		--origam-breadcrumb-divider---transition-duration: 0.2s, 0.1s;
-		--origam-breadcrumb-divider---transition: var(--origam-breadcrumb-divider---transition-property) var(--origam-breadcrumb-divider---transition-duration) var(--origam-breadcrumb-divider---transition-timing-function);
+		--origam-breadcrumb-divider---transition:
+			transform var(--origam-breadcrumb-divider---transition-duration-transform) var(--origam-breadcrumb-divider---transition-timing-function),
+			color var(--origam-breadcrumb-divider---transition-duration-color) var(--origam-breadcrumb-divider---transition-timing-function);
 
 		display: inline-block;
 		vertical-align: middle;

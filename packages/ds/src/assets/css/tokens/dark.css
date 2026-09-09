@@ -1459,8 +1459,8 @@
   --origam-breadcrumb---border-radius-rounded: var(--origam-radius---2xl);
   --origam-breadcrumb---box-shadow: var(--origam-shadow---none);
   --origam-breadcrumb---box-shadow-elevated: var(--origam-shadow---md);
-  --origam-breadcrumb---transition-property: transform, color;
-  --origam-breadcrumb---transition-duration: var(--origam-motion__duration---medium);
+  --origam-breadcrumb---transition-duration-transform: var(--origam-motion__duration---medium);
+  --origam-breadcrumb---transition-duration-color: var(--origam-motion__duration---fast);
   --origam-breadcrumb---transition-timing-function: var(--origam-motion__easing---standard);
   --origam-breadcrumb---home-icon-color: var(--origam-color__action--primary---bg);
   --origam-breadcrumb-item---color: var(--origam-color__text---primary);
@@ -1474,8 +1474,8 @@
   --origam-breadcrumb-item---border-color: currentColor;
   --origam-breadcrumb-item---border-style: solid;
   --origam-breadcrumb-item---border-radius: var(--origam-radius---none);
-  --origam-breadcrumb-item---transition-property: transform, color;
-  --origam-breadcrumb-item---transition-duration: var(--origam-motion__duration---medium);
+  --origam-breadcrumb-item---transition-duration-transform: var(--origam-motion__duration---medium);
+  --origam-breadcrumb-item---transition-duration-color: var(--origam-motion__duration---fast);
   --origam-breadcrumb-item---transition-timing-function: var(--origam-motion__easing---standard);
   --origam-breadcrumb-divider---color: var(--origam-color__text---secondary);
   --origam-breadcrumb-divider---font-size: var(--origam-font__size---md);
@@ -1487,8 +1487,8 @@
   --origam-breadcrumb-divider---border-color: currentColor;
   --origam-breadcrumb-divider---border-style: solid;
   --origam-breadcrumb-divider---border-radius: var(--origam-radius---none);
-  --origam-breadcrumb-divider---transition-property: transform, color;
-  --origam-breadcrumb-divider---transition-duration: var(--origam-motion__duration---medium);
+  --origam-breadcrumb-divider---transition-duration-transform: var(--origam-motion__duration---medium);
+  --origam-breadcrumb-divider---transition-duration-color: var(--origam-motion__duration---fast);
   --origam-breadcrumb-divider---transition-timing-function: var(--origam-motion__easing---standard);
   --origam-data-table---background-color: var(--origam-color__surface---default);
   --origam-data-table---color: var(--origam-color__text---primary);
@@ -4157,8 +4157,8 @@
     --origam-breadcrumb---border-radius-rounded: var(--origam-radius---2xl);
     --origam-breadcrumb---box-shadow: var(--origam-shadow---none);
     --origam-breadcrumb---box-shadow-elevated: var(--origam-shadow---md);
-    --origam-breadcrumb---transition-property: transform, color;
-    --origam-breadcrumb---transition-duration: var(--origam-motion__duration---medium);
+    --origam-breadcrumb---transition-duration-transform: var(--origam-motion__duration---medium);
+    --origam-breadcrumb---transition-duration-color: var(--origam-motion__duration---fast);
     --origam-breadcrumb---transition-timing-function: var(--origam-motion__easing---standard);
     --origam-breadcrumb---home-icon-color: var(--origam-color__action--primary---bg);
     --origam-breadcrumb-item---color: var(--origam-color__text---primary);
@@ -4172,8 +4172,8 @@
     --origam-breadcrumb-item---border-color: currentColor;
     --origam-breadcrumb-item---border-style: solid;
     --origam-breadcrumb-item---border-radius: var(--origam-radius---none);
-    --origam-breadcrumb-item---transition-property: transform, color;
-    --origam-breadcrumb-item---transition-duration: var(--origam-motion__duration---medium);
+    --origam-breadcrumb-item---transition-duration-transform: var(--origam-motion__duration---medium);
+    --origam-breadcrumb-item---transition-duration-color: var(--origam-motion__duration---fast);
     --origam-breadcrumb-item---transition-timing-function: var(--origam-motion__easing---standard);
     --origam-breadcrumb-divider---color: var(--origam-color__text---secondary);
     --origam-breadcrumb-divider---font-size: var(--origam-font__size---md);
@@ -4185,8 +4185,8 @@
     --origam-breadcrumb-divider---border-color: currentColor;
     --origam-breadcrumb-divider---border-style: solid;
     --origam-breadcrumb-divider---border-radius: var(--origam-radius---none);
-    --origam-breadcrumb-divider---transition-property: transform, color;
-    --origam-breadcrumb-divider---transition-duration: var(--origam-motion__duration---medium);
+    --origam-breadcrumb-divider---transition-duration-transform: var(--origam-motion__duration---medium);
+    --origam-breadcrumb-divider---transition-duration-color: var(--origam-motion__duration---fast);
     --origam-breadcrumb-divider---transition-timing-function: var(--origam-motion__easing---standard);
     --origam-data-table---background-color: var(--origam-color__surface---default);
     --origam-data-table---color: var(--origam-color__text---primary);
