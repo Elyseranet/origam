@@ -259,6 +259,20 @@ describe('OrigamChart* (seconde moitie) — libelles par element traduits (#567)
         wrapper.unmount()
     })
 
+    it.each([
+        ['OrigamChartPolar', OrigamChartPolar],
+        ['OrigamChartRadar', OrigamChartRadar]
+    ])('%s : le <desc> du SVG a vide n\'est plus « No data » en dur', (_name, Component) => {
+        const wrapper = mountWith(Component, {series: []}, 'fr')
+        const desc = wrapper.find('svg[role="img"] desc')
+
+        expect(desc.exists()).toBe(true)
+        expect(desc.text()).toBe('Aucune donnée à afficher')
+        expect(desc.text()).not.toBe('No data')
+
+        wrapper.unmount()
+    })
+
     it('OrigamChartPolarBar : le libelle de repli n\'est plus « Item N » en dur', () => {
         const wrapper = mountWith(OrigamChartPolarBar, {
             series: [{name: 'A', data: [1, 2]}]

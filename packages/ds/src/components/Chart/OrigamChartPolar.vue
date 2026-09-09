@@ -509,7 +509,7 @@ return [ out, props.style as StyleValue ]
 	const svgTitle = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgDesc = computed(() => {
 		const seriesCount = activeSeries.value.length
-		if (!seriesCount) return 'No data'
+		if (!seriesCount) return t('origam.chart.no_data_text')
 		const points = slotCount.value
 		return `${ props.type } chart with ${ seriesCount } series and ${ points } ${ points === 1 ? 'point' : 'points' }.`
 	})

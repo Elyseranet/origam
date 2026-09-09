@@ -349,7 +349,7 @@ return [ out, props.style as StyleValue ]
 	const svgTitle = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgDesc = computed(() => {
 		const seriesCount = props.series.length
-		if (!seriesCount) return 'No data'
+		if (!seriesCount) return t('origam.chart.no_data_text')
 		const points = slotCount.value
 		return `radar chart with ${ seriesCount } series and ${ points } axes.`
 	})
