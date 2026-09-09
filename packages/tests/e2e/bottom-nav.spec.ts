@@ -236,20 +236,15 @@ test.describe('OrigamBottomNav — Emit: update:modelValue', () => {
     })
 })
 
-// ─── Emit: update:active — SUPPRIMÉ, et c'est voulu ───────────────────────────
-//
-// `<OrigamBottomNav>` n'émet PAS `update:active`, et n'en a jamais eu de vrai
-// émetteur : son état « active » vient de `modelValue`
-// (`useStateFlag(props, {state: 'active', source: 'modelValue'})`), pas de la
-// prop `active` — laquelle est un simple défaut transmis aux `<origam-btn>`
-// enfants. L'emit a donc été retiré d'`IBottomNavEmits` (raisonnement complet
-// dans `bottom-nav.interface.ts`, preuve par mutation dans
-// `TU/origam/bottom-nav-active-dead.spec.ts`), et la Variant
-// « Events - update:active » avec lui.
-//
-// ⛔ Ce bloc de spec, lui, était resté : il ouvrait une Variant inexistante et
-// échouait sur un timeout de 30 s à chaque exécution. Ne pas le réintroduire
-// sans réintroduire d'abord un émetteur réel.
+// ─── Emit: update:active ──────────────────────────────────────────────────────
+
+test.describe('OrigamBottomNav — Emit: update:active', () => {
+    test('emit variant renders without errors', async ({ page }) => {
+        await openVariant(page, 'Events - update:active')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('.origam-bottom-nav').first()).toBeVisible({ timeout: 8000 })
+    })
+})
 
 // ─── Playground ───────────────────────────────────────────────────────────────
 

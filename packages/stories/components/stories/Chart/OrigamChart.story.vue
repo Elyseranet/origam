@@ -43,6 +43,8 @@
 						:height="state.height"
 						:title="state.title"
 						:subtitle="state.subtitle"
+						:font-size="state.fontSize || undefined"
+						:font-weight="state.fontWeight || undefined"
 						:color-scheme="state.colorScheme || undefined"
 						:bg-color="state.bgColor || undefined"
 						:rounded="state.rounded || undefined"
@@ -82,6 +84,8 @@
 					<HstText v-model="state.subtitle" title="Subtitle"/>
 				</StoryGroup>
 				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight" title="Font Weight" :options="FONT_WEIGHT_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Spacing">
 					<HstText v-model="state.padding" title="Padding"/>
@@ -363,6 +367,8 @@
 	import {
 		COLOR_OPTIONS,
 		ELEVATION_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
 		ROUNDED_OPTIONS
 	} from '@stories/const'
 

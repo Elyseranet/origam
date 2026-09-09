@@ -6,7 +6,7 @@
 			:class="listClasses"
 			:style="listStyles"
 			:tabindex="tabIndex"
-			:role="listRole"
+			role="listbox"
 			@focus="handleFocus"
 			@focusin="handleFocusIn"
 			@focusout="handleFocusOut"
@@ -111,8 +111,7 @@
 
 	import { DENSITY } from '../../enums/Commons/density.enum'
 	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
-	import { LINES, LIST_ROLE } from '../../enums/List/list.enum'
-	import { LIST_ITEM_ROLE } from '../../enums/List/list-item.enum'
+	import { LINES } from '../../enums/List/list.enum'
 	import { OPEN_STRATEGY, SELECT_STRATEGY } from '../../enums/Commons/nested.enum'
 
 	import type { IListProps } from '../../interfaces/List/list.interface'
@@ -120,8 +119,6 @@
 	import type { IListEmits, IListSlots } from '../../interfaces/List/list.interface'
 
 	import type { TFocusLocation } from '../../types/Commons/commons.type'
-
-	import type { TListItemRole } from '../../types/List/list-item.type'
 
 	import { deepEqual, focusChild, omitUndefined } from '../../utils/Commons/commons.util'
 
@@ -189,47 +186,7 @@
 	const {children, open, parents, select} = useNested(props)
 	const slots = useSlots()
 
-	/*********************************************************
-	 * Selection mode — le rôle décrit ce que la liste EST (#424)
-	 *
-	 * @description
-	 * The root used to hard-code `role="listbox"`. A listbox is a
-	 * SELECTION widget: it promises `option` children carrying
-	 * `aria-selected`, and a screen reader announces it as one. A nav
-	 * list, a list of subheaders and dividers, or `<origam-menu>`'s item
-	 * list is none of that — announcing them as a listbox is exactly the
-	 * "bad ARIA" the W3C rule warns about.
-	 * @description
-	 * ⛔ The mode CANNOT be read off `props.selectStrategy`: that prop has
-	 * a `withDefaults` value, so it is always truthy and every list on
-	 * earth would stay a listbox. `usePassedProps` reads `vnode.props`
-	 * instead — the difference between "the consumer asked for selection"
-	 * and "Vue filled in a default".
-	 * @description
-	 * Those signals are exactly what `<origam-select>` passes (`:selected`
-	 * AND an explicit `:select-strategy`) and exactly what `<origam-menu>`
-	 * does not. Select therefore keeps its combobox contract intact —
-	 * `aria-controls` / `aria-activedescendant` still point at a real
-	 * listbox of real options — while Menu stops claiming to be one.
-	 * @description
-	 * Listening to `update:selected` counts too: that emit only ever fires
-	 * when a selection changes, so wiring it IS asking for selection. It
-	 * has to be read off `vnode.props` — Vue strips the listener of a
-	 * DECLARED emit out of `$attrs`, so `useAttrs()` would never see it.
-	 ********************************************************/
-	const isSelectable = computed(() => {
-		return wasPropPassed('selected')
-			|| wasPropPassed('selectStrategy')
-			|| wasPropPassed('onUpdate:selected')
-	})
-	const listRole = computed(() => {
-		return isSelectable.value ? LIST_ROLE.LISTBOX : LIST_ROLE.LIST
-	})
-	const itemRole = computed<TListItemRole>(() => {
-		return isSelectable.value ? LIST_ITEM_ROLE.OPTION : LIST_ITEM_ROLE.LISTITEM
-	})
-
-	useCreateList(itemRole)
+	useCreateList()
 
 	const isFocused = shallowRef(false)
 	const contentRef = ref<HTMLElement>()
@@ -358,8 +315,6 @@
 	defineExpose({
 		open,
 		select,
-		listRole,
-		itemRole,
 		focus,
 		children,
 		parents,

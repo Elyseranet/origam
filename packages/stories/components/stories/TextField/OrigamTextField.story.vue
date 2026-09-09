@@ -103,12 +103,13 @@
 
 		<Variant
 				title="State"
-				:init-state="() => useStoryInitState<IActiveProps & Partial<ITextFieldProps>>({ color: 'primary' })"
+				:init-state="() => useStoryInitState<IHoverProps & IActiveProps & Partial<ITextFieldProps>>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
 				<origam-text-field
 						label="Stateful field"
 						:color="state.color"
+						:hover="resolveHoverState(state.hover)"
 						:active="resolveActiveState(state.active)"
 				/>
 			</template>
@@ -117,6 +118,7 @@
 					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Interaction">
+					<HstSelect v-model="state.hover"  title="Hover"  :options="HOVER_OPTIONS"/>
 					<HstSelect v-model="state.active" title="Active" :options="ACTIVE_OPTIONS"/>
 				</StoryGroup>
 			</template>
@@ -550,7 +552,7 @@
 
 	import { OrigamIcon, OrigamTextField } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
-	import type { IActiveProps, ITextFieldProps } from '@origam/interfaces'
+	import type { IActiveProps, IHoverProps, ITextFieldProps } from '@origam/interfaces'
 	import type { TLoadingValue } from '@origam/types'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
@@ -563,6 +565,8 @@
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
+		HOVER_OPTIONS,
+		resolveHoverState,
 		ICON_OPTIONS,
 		ROUNDED_OPTIONS,
 		SIZE_OPTIONS,

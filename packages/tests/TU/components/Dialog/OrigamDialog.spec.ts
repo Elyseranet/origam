@@ -168,14 +168,9 @@ describe('OrigamDialog — class modifiers', () => {
         wrapper.unmount()
     })
 
-    // #419 — the `scrollable` prop and its `origam-dialog--scrollable` class were
-    // REMOVED. No SCSS rule ever targeted the class, and the layout it claimed to
-    // enable is applied unconditionally, so it was redundant rather than merely
-    // inert. This assertion replaces the old "the class is emitted" test, which
-    // was true and worthless: it pinned a class nothing read.
-    it('never emits origam-dialog--scrollable, even if a consumer forces the prop', () => {
-        const wrapper = mountDialog({ scrollable: true } as Record<string, unknown>)
-        expect(wrapper.find('[data-stub="overlay"]').classes()).not.toContain('origam-dialog--scrollable')
+    it('adds origam-dialog--scrollable when scrollable=true', () => {
+        const wrapper = mountDialog({ scrollable: true })
+        expect(wrapper.find('[data-stub="overlay"]').classes()).toContain('origam-dialog--scrollable')
         wrapper.unmount()
     })
 

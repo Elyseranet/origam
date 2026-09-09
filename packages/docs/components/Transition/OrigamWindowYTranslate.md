@@ -28,27 +28,6 @@ origam-transition--window-y-translate-leave-from,
 origam-transition--window-y-translate-leave-to   { position: absolute; top: 0; width: 100%; }
 ```
 
-## CSS variables consumed
-
-Declared in `assets/css/tokens/light.css`. Before #538 these were CSS
-literals inside the component's own `<style>` block — no theme could reach
-them.
-
-| Variable | Default |
-|---|---|
-| `--origam-transition--window-y-translate-enter-active---transition-duration` | `0.3s` |
-| `--origam-transition--window-y-translate-enter-active---transition-timing-function` | `cubic-bezier(0.25, 0.8, 0.5, 1)` |
-| `--origam-transition--window-y-translate-leave-active---transition-duration` | `0.3s` |
-| `--origam-transition--window-y-translate-leave-active---transition-timing-function` | `cubic-bezier(0.25, 0.8, 0.5, 1)` |
-
-Override at the document root or on a specific instance:
-
-```css
-.my-panel {
-    --origam-transition--window-y-translate-enter-active---transition-duration: 0.15s;
-}
-```
-
 ## Props
 
 `ITransitionWindowProps` — `ITransitionProps` minus `origin`,
@@ -100,19 +79,3 @@ name. Declaring them here was a promise nothing kept.
 - Parent must be `position: relative` with a constrained height.
 - Use `OrigamWindowYReverseTranslate`
   for the back / previous direction.
-
-## Accessibility
-
-Reduced motion is handled by the component itself — you do NOT need to pass
-`disabled` from a `matchMedia` listener. Every member of the family emits a
-`@media (prefers-reduced-motion: reduce)` block (shared `ds-reduced-motion`
-mixin, issue #494) that collapses the duration to `0.01ms`.
-
-That override wins over the CSS variables above, deliberately: it zeroes the
-PROPERTY, not the variable, so a theme or a per-instance duration cannot
-resurrect the motion for a user who asked for none. Verified in Chromium —
-setting a 9 s duration through the token under `prefers-reduced-motion:
-reduce` still measures `0.01ms`.
-
-`disabled` remains available for the unrelated case of skipping the
-transition on purpose.

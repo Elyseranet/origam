@@ -436,40 +436,40 @@
 		bottom: 0;
 		width: 100%;
 
-		transition: var(--origam-bottom-bar---transition-property, var(--origam-bottom-nav---transition-property)) var(--origam-bottom-bar---transition-duration, var(--origam-bottom-nav---transition-duration)) var(--origam-bottom-bar---transition-timing-function, var(--origam-bottom-nav---transition-timing-function));
+		transition: var(--origam-bottom-bar---transition-property) var(--origam-bottom-bar---transition-duration) var(--origam-bottom-bar---transition-timing-function);
 
-		max-width: var(--origam-bottom-bar---max-width, var(--origam-bottom-nav---max-width));
-		min-height: calc(var(--origam-bottom-bar---height, var(--origam-bottom-nav---height)) - var(--origam-bottom-bar---density, var(--origam-bottom-nav---density)));
+		max-width: var(--origam-bottom-bar---max-width);
+		min-height: calc(var(--origam-bottom-bar---height) - var(--origam-bottom-bar---density));
 
-		background-color: var(--origam-bottom-bar---background, var(--origam-bottom-nav---background));
-		box-shadow: var(--origam-bottom-bar---box-shadow, var(--origam-bottom-nav---box-shadow));
-		color: var(--origam-bottom-bar---color, var(--origam-bottom-nav---color));
+		background-color: var(--origam-bottom-bar---background);
+		box-shadow: var(--origam-bottom-bar---box-shadow);
+		color: var(--origam-bottom-bar---color);
 
-		border-color: var(--origam-bottom-bar---border-color, var(--origam-bottom-nav---border-color));
-		border-style: var(--origam-bottom-bar---border-style, var(--origam-bottom-nav---border-style));
-		border-top-width: var(--origam-bottom-bar---border-top-width, var(--origam-bottom-nav---border-top-width, var(--origam-bottom-bar---border-width, var(--origam-bottom-nav---border-width, 0))));
-		border-right-width: var(--origam-bottom-bar---border-right-width, var(--origam-bottom-nav---border-right-width, var(--origam-bottom-bar---border-width, var(--origam-bottom-nav---border-width, 0))));
-		border-bottom-width: var(--origam-bottom-bar---border-bottom-width, var(--origam-bottom-nav---border-bottom-width, var(--origam-bottom-bar---border-width, var(--origam-bottom-nav---border-width, 0))));
-		border-left-width: var(--origam-bottom-bar---border-left-width, var(--origam-bottom-nav---border-left-width, var(--origam-bottom-bar---border-width, var(--origam-bottom-nav---border-width, 0))));
-		border-radius: var(--origam-bottom-bar---border-radius, var(--origam-bottom-nav---border-radius));
+		border-color: var(--origam-bottom-bar---border-color);
+		border-style: var(--origam-bottom-bar---border-style);
+		border-top-width: var(--origam-bottom-bar---border-top-width, var(--origam-bottom-bar---border-width, 0));
+		border-right-width: var(--origam-bottom-bar---border-right-width, var(--origam-bottom-bar---border-width, 0));
+		border-bottom-width: var(--origam-bottom-bar---border-bottom-width, var(--origam-bottom-bar---border-width, 0));
+		border-left-width: var(--origam-bottom-bar---border-left-width, var(--origam-bottom-bar---border-width, 0));
+		border-radius: var(--origam-bottom-bar---border-radius);
 
-		padding-block-start: calc(var(--origam-bottom-bar---padding-block-start, var(--origam-bottom-nav---padding-block-start)) - var(--origam-bottom-bar---density, var(--origam-bottom-nav---density)));
-		padding-block-end: calc(var(--origam-bottom-bar---padding-block-end, var(--origam-bottom-nav---padding-block-end)) - var(--origam-bottom-bar---density, var(--origam-bottom-nav---density)));
-		padding-inline-start: calc(var(--origam-bottom-bar---padding-inline-start, var(--origam-bottom-nav---padding-inline-start)) - var(--origam-bottom-bar---density, var(--origam-bottom-nav---density)));
-		padding-inline-end: calc(var(--origam-bottom-bar---padding-inline-end, var(--origam-bottom-nav---padding-inline-end)) - var(--origam-bottom-bar---density, var(--origam-bottom-nav---density)));
-		margin-block-start: var(--origam-bottom-bar---margin-block-start, var(--origam-bottom-nav---margin-block-start));
-		margin-block-end: var(--origam-bottom-bar---margin-block-end, var(--origam-bottom-nav---margin-block-end));
-		margin-inline-start: var(--origam-bottom-bar---margin-inline-start, var(--origam-bottom-nav---margin-inline-start));
-		margin-inline-end: var(--origam-bottom-bar---margin-inline-end, var(--origam-bottom-nav---margin-inline-end));
+		padding-block-start: calc(var(--origam-bottom-bar---padding-block-start) - var(--origam-bottom-bar---density));
+		padding-block-end: calc(var(--origam-bottom-bar---padding-block-end) - var(--origam-bottom-bar---density));
+		padding-inline-start: calc(var(--origam-bottom-bar---padding-inline-start) - var(--origam-bottom-bar---density));
+		padding-inline-end: calc(var(--origam-bottom-bar---padding-inline-end) - var(--origam-bottom-bar---density));
+		margin-block-start: var(--origam-bottom-bar---margin-block-start);
+		margin-block-end: var(--origam-bottom-bar---margin-block-end);
+		margin-inline-start: var(--origam-bottom-bar---margin-inline-start);
+		margin-inline-end: var(--origam-bottom-bar---margin-inline-end);
 
 		&__content {
 			flex: none;
 			display: flex;
-			justify-content: var(--origam-bottom-bar__content---justify-content, var(--origam-bottom-nav__content---justify-content));
-			align-items: var(--origam-bottom-bar__content---align-items, var(--origam-bottom-nav__content---align-items));
-			flex-wrap: var(--origam-bottom-bar__content---flex-wrap, var(--origam-bottom-nav__content---flex-wrap));
+			justify-content: var(--origam-bottom-bar__content---justify-content);
+			align-items: var(--origam-bottom-bar__content---align-items);
+			flex-wrap: var(--origam-bottom-bar__content---flex-wrap);
 			width: 100%;
-			transform: var(--origam-bottom-bar__content---transform, var(--origam-bottom-nav__content---transform));
+			transform: var(--origam-bottom-bar__content---transform);
 
 			> :deep(.origam-btn) {
 				--origam-btn---font-size: 0.75rem;
@@ -494,7 +494,7 @@
 		}
 
 		&--elevated {
-			--origam-bottom-nav---box-shadow: var(--origam-bottom-bar--elevated---box-shadow, var(--origam-bottom-nav--elevated---box-shadow));
+			--origam-bottom-bar---box-shadow: var(--origam-bottom-bar--elevated---box-shadow);
 		}
 
 		&--position-start {
@@ -514,55 +514,55 @@
 		}
 
 		&--border {
-			--origam-bottom-nav---border-width: thin;
-			--origam-bottom-nav---border-top-width: thin;
-			--origam-bottom-nav---border-right-width: thin;
-			--origam-bottom-nav---border-bottom-width: thin;
-			--origam-bottom-nav---border-left-width: thin;
+			--origam-bottom-bar---border-width: thin;
+			--origam-bottom-bar---border-top-width: thin;
+			--origam-bottom-bar---border-right-width: thin;
+			--origam-bottom-bar---border-bottom-width: thin;
+			--origam-bottom-bar---border-left-width: thin;
 		}
 
 		&--rounded {
-			--origam-bottom-nav---border-radius: var(--origam-radius---2xl, 24px);
+			--origam-bottom-bar---border-radius: var(--origam-radius---2xl, 24px);
 		}
 
 		&--rounded-x-small {
-			--origam-bottom-nav---border-radius: var(--origam-radius---xs, 2px);
+			--origam-bottom-bar---border-radius: var(--origam-radius---xs, 2px);
 		}
 
 		&--rounded-small {
-			--origam-bottom-nav---border-radius: var(--origam-radius---sm, 4px);
+			--origam-bottom-bar---border-radius: var(--origam-radius---sm, 4px);
 		}
 
 		&--rounded-default {
-			--origam-bottom-nav---border-radius: var(--origam-radius---md, 8px);
+			--origam-bottom-bar---border-radius: var(--origam-radius---md, 8px);
 		}
 
 		&--rounded-medium {
-			--origam-bottom-nav---border-radius: var(--origam-radius---lg, 12px);
+			--origam-bottom-bar---border-radius: var(--origam-radius---lg, 12px);
 		}
 
 		&--rounded-large {
-			--origam-bottom-nav---border-radius: var(--origam-radius---xl, 16px);
+			--origam-bottom-bar---border-radius: var(--origam-radius---xl, 16px);
 		}
 
 		&--rounded-x-large {
-			--origam-bottom-nav---border-radius: var(--origam-radius---2xl, 24px);
+			--origam-bottom-bar---border-radius: var(--origam-radius---2xl, 24px);
 		}
 
 		&--density-comfortable {
-			--origam-bottom-nav---density: -8px;
+			--origam-bottom-bar---density: -8px;
 		}
 
 		&--density-default {
-			--origam-bottom-nav---density: 0px;
+			--origam-bottom-bar---density: 0px;
 		}
 
 		&--density-compact {
-			--origam-bottom-nav---density: 8px;
+			--origam-bottom-bar---density: 8px;
 		}
 
 		&--active {
-			--origam-bottom-nav---box-shadow: var(--origam-bottom-bar--active---box-shadow, var(--origam-bottom-nav--active---box-shadow));
+			--origam-bottom-bar---box-shadow: var(--origam-bottom-bar--active---box-shadow);
 		}
 
 		&--grow {

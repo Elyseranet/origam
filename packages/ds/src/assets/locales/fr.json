@@ -213,11 +213,7 @@
       "transport": "Contrôles de lecture",
       "next_track": "Piste suivante",
       "previous_track": "Piste précédente",
-      "waveform": "Forme d'onde audio",
-      "playback_error": "Erreur de lecture"
-    },
-    "audio": {
-      "track_number": "Piste {0}"
+      "waveform": "Forme d'onde audio"
     },
     "video": {
       "enter_fullscreen": "Plein écran",

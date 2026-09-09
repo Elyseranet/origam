@@ -47,7 +47,7 @@
 
 		<Variant
 				title="Functional"
-				:init-state="() => useStoryInitState<Partial<ISelectionControlGroupProps>>({ type: 'checkbox', multiple: true, disabled: false, readonly: false, error: false, name: undefined })"
+				:init-state="() => useStoryInitState<Partial<ISelectionControlGroupProps>>({ type: 'checkbox', multiple: false, disabled: false, readonly: false, error: false, name: undefined })"
 		>
 			<template #default="{ state }">
 				<origam-selection-control-group
@@ -129,7 +129,7 @@
 
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<Partial<ISelectionControlGroupProps>>({ color: 'primary', density: 'default', type: 'checkbox', multiple: true, inline: false, disabled: false, readonly: false, error: false, ripple: true, trueIcon: MDI_ICONS.CHECKBOX_MARKED_OUTLINE, falseIcon: MDI_ICONS.CHECKBOX_BLANK_OUTLINE })"
+				:init-state="() => useStoryInitState<Partial<ISelectionControlGroupProps>>({ color: 'primary', density: 'default', type: 'checkbox', multiple: false, inline: false, disabled: false, readonly: false, error: false, ripple: true, trueIcon: MDI_ICONS.CHECKBOX_MARKED_OUTLINE, falseIcon: MDI_ICONS.CHECKBOX_BLANK_OUTLINE })"
 		>
 			<template #default="{ state }">
 				<origam-selection-control-group
@@ -193,19 +193,10 @@
 		{ value: 'gamma', label: 'Gamma' },
 	]
 
-	// ⛔ Chaque modele de variante est un TABLEAU, y compris le playground.
-	// Les variantes « Functional » et « Default » partaient de
-	// `multiple: false` sur un modele tableau et `type: 'checkbox'` : un
-	// utilisateur qui ouvrait la story voyait donc un groupe de cases ou
-	// chaque clic ecrase le precedent, et concluait — a tort — que le
-	// composant n'accumule pas (#396). Le composant etait correct :
-	// `multiple: false` veut bien dire « une seule ». C'est la story qui
-	// annoncait un groupe de cases tout en demandant le mode exclusif.
-	// Le controle « Multiple » reste la pour montrer les deux modes.
 	const designModel      = ref<string[]>([])
 	const functionalModel  = ref<string[]>([])
 	const emitModel        = ref<string[]>([])
 	const slotDefaultModel = ref<string | undefined>(undefined)
 	const slotItemModel    = ref<string[]>([])
-	const playgroundModel  = ref<any>([])
+	const playgroundModel  = ref<any>(undefined)
 </script>

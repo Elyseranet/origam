@@ -75,6 +75,7 @@
 				:init-state="() => useStoryInitState<Partial<IDialogProps>>({
 					title: 'Functional dialog',
 					fullscreen: false,
+					scrollable: false,
 					retainFocus: true,
 					persistent: false,
 					disabled: false,
@@ -87,6 +88,7 @@
 							v-model="functionalOpen"
 							:title="state.title"
 							:fullscreen="state.fullscreen"
+							:scrollable="state.scrollable"
 							:retain-focus="state.retainFocus"
 							:persistent="state.persistent"
 							:disabled="state.disabled"
@@ -111,6 +113,7 @@
 			<template #controls="{ state }">
 				<StoryGroup title="Behaviour">
 					<HstCheckbox v-model="state.fullscreen"  title="Fullscreen"/>
+					<HstCheckbox v-model="state.scrollable"  title="Scrollable"/>
 					<HstCheckbox v-model="state.retainFocus" title="Retain Focus"/>
 					<HstCheckbox v-model="state.persistent"  title="Persistent"/>
 				</StoryGroup>
@@ -376,6 +379,7 @@
 				:init-state="() => useStoryInitState<IDialogProps>({
 					title: 'Dialog',
 					fullscreen: false,
+					scrollable: false,
 					retainFocus: true,
 					closeLabel: 'origam.close'
 				})"
@@ -417,6 +421,7 @@
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.fullscreen"  title="Fullscreen"/>
+					<HstCheckbox v-model="state.scrollable"  title="Scrollable"/>
 					<HstCheckbox v-model="state.retainFocus" title="Retain Focus"/>
 					<HstCheckbox v-model="state.persistent"  title="Persistent"/>
 					<HstCheckbox v-model="state.disabled"    title="Disabled"/>

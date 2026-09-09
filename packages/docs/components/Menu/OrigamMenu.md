@@ -118,25 +118,6 @@ Prefer `onClick` when the handler needs the `MouseEvent` itself (to call
 `preventDefault()`, for instance) — the `select` payload is the item, not the
 event.
 
-## Props (interface)
-
-```ts
-interface IMenuProps extends IOverlayProps, IListProps, IListItemProps {
-    id?: string
-}
-```
-
-### Own props
-
-`<OrigamMenu>` inherits the whole `IOverlayProps` surface (activator,
-location, scroll strategy, scrim, transition…) plus `IListProps` /
-`IListItemProps` for the list it renders from `items`. Those are documented
-on their own pages — the table below covers only what `IMenuProps` adds.
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `id` | `string` | `origam-menu-{uid}` | DOM id of the menu surface. Also the value the activator advertises through `aria-owns`, so set it when you need a stable, predictable hook for a test or an external `aria-controls`. Left unset, an auto-generated unique id is used. |
-
 ## Design tokens
 
 | CSS variable | Description |

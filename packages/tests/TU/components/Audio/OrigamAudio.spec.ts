@@ -5,10 +5,9 @@
 
 import { mount, type VueWrapper } from '@vue/test-utils'
 import { describe, expect, it, vi } from 'vitest'
-import { h, nextTick } from 'vue'
+import { h } from 'vue'
 
 import OrigamAudio from '@origam/components/Audio/OrigamAudio.vue'
-import { createOrigam } from '@origam/origam'
 
 import { ORIGAM_LOCALE_KEY } from '@origam/consts'
 
@@ -261,35 +260,6 @@ describe('OrigamAudio — loop / shuffle binding', () => {
         const controller = wrapper.findComponent({ name: 'OrigamMediaController' })
         expect(controller.props('shuffle')).toBe(true)
     })
-
-    // The listener clicking a transport toggle must reach the CONSUMER of
-    // <OrigamAudio>, not just the internal ref. `update:shuffle` was fixed
-    // this way in 40c099b8; `update:loopMode` was its untouched twin —
-    // `v-model:loop-mode` swallowed the child event, so a consumer's
-    // `v-model:loopMode` / `@update:loopMode` never fired for a real user
-    // click (only when the parent flipped the legacy `loop` prop). The
-    // story's "Events - update:loopMode" Variant logged nothing.
-    it('re-emits update:loopMode when the listener cycles the loop button', async () => {
-        const wrapper = mountAudio()
-        const controller = wrapper.findComponent({ name: 'OrigamMediaController' })
-
-        controller.vm.$emit('update:loopMode', 'all')
-        await nextTick()
-
-        expect(wrapper.emitted('update:loopMode')).toEqual([['all']])
-        expect(controller.props('loopMode')).toBe('all')
-    })
-
-    it('re-emits update:shuffle when the listener toggles the shuffle button', async () => {
-        const wrapper = mountAudio()
-        const controller = wrapper.findComponent({ name: 'OrigamMediaController' })
-
-        controller.vm.$emit('update:shuffle', true)
-        await nextTick()
-
-        expect(wrapper.emitted('update:shuffle')).toEqual([[true]])
-        expect(controller.props('shuffle')).toBe(true)
-    })
 })
 
 describe('OrigamAudio — variant routing', () => {
@@ -521,98 +491,5 @@ describe('OrigamAudio — typography: audio__meta surface', () => {
     it('fontSize="sm" sets the font-size var on __meta', () => {
         expect(metaStyle({ fontSize: 'sm' }))
             .toContain('--origam-audio__meta---font-size: var(--origam-font__size---sm)')
-    })
-})
-
-// ---------------------------------------------------------------------------
-// i18n — hardcoded English strings reaching the user (#436, criterion C8)
-// ---------------------------------------------------------------------------
-//
-// Two literals were rendered verbatim whatever the active locale:
-//
-//   1. the playlist fallback title  `Track ${ index + 1 }`  (template)
-//   2. the generic error overlay message  'Playback error'  (script)
-//
-// Both are asserted against the REAL builtin locale adapter (via
-// `createOrigam()`), not the `stubLocale` used by the rest of this file: a
-// stub that echoes its key proves the call site changed but proves nothing
-// about the message actually shown. Asserting the FRENCH output fails on a
-// hardcoded English literal and cannot pass by accident.
-
-const I18N_STUBS = {
-    OrigamIcon: { template: '<i aria-hidden="true" />' },
-    OrigamMediaController: OrigamMediaControllerStub,
-    OrigamSliderField: { template: '<div data-cy="origam-audio-waveform-slider" />' },
-    OrigamList: { template: '<ul data-cy="origam-audio-playlist"><slot /></ul>' },
-    OrigamListItem: {
-        name: 'OrigamListItem',
-        props: ['active', 'title', 'subtitle', 'prependAvatar'],
-        template: '<li v-bind="$attrs"><slot /><slot name="append"/></li>'
-    }
-}
-
-const mountAudioLocalised = (locale: string, props: Record<string, unknown> = {}): VueWrapper => {
-    return mount(OrigamAudio, {
-        global: {
-            plugins: [createOrigam({ locale: { locale } } as never)],
-            stubs: I18N_STUBS
-        },
-        props: {
-            src: 'https://example.com/track.mp3',
-            ...props
-        } as never
-    })
-}
-
-const PLAYLIST_NO_TITLES = [
-    { src: 'https://example.com/a.mp3' },
-    { src: 'https://example.com/b.mp3' }
-]
-
-const playlistTitles = (wrapper: VueWrapper): Array<string> =>
-    wrapper.findAllComponents({ name: 'OrigamListItem' })
-        .map(item => item.props('title') as string)
-
-describe('OrigamAudio — i18n of the playlist fallback title (#436, C8)', () => {
-    it('renders the English "Track N" fallback through the locale catalogue', () => {
-        const wrapper = mountAudioLocalised('en', { playlist: PLAYLIST_NO_TITLES })
-        expect(playlistTitles(wrapper)).toEqual(['Track 1', 'Track 2'])
-    })
-
-    it('renders the FRENCH fallback under the fr locale (fails on a hardcoded literal)', () => {
-        const wrapper = mountAudioLocalised('fr', { playlist: PLAYLIST_NO_TITLES })
-        expect(playlistTitles(wrapper)).toEqual(['Piste 1', 'Piste 2'])
-    })
-
-    it('never overrides a track that carries its own title', () => {
-        const wrapper = mountAudioLocalised('fr', {
-            playlist: [{ src: 'https://example.com/a.mp3', title: 'Daydream' }]
-        })
-        expect(playlistTitles(wrapper)).toEqual(['Daydream'])
-    })
-})
-
-describe('OrigamAudio — i18n of the generic error message (#436, C8)', () => {
-    const raiseMediaError = async (wrapper: VueWrapper): Promise<void> => {
-        const el = wrapper.find('audio').element as HTMLAudioElement
-
-        // A real `MediaError` carries `code` and NO `message`, which is the
-        // branch that falls through to the generic label. jsdom never
-        // populates `el.error` on its own, so it is defined here.
-        Object.defineProperty(el, 'error', {value: {code: 4}, configurable: true})
-        el.dispatchEvent(new Event('error'))
-        await nextTick()
-    }
-
-    it('shows the English generic message when the MediaError carries no message', async () => {
-        const wrapper = mountAudioLocalised('en')
-        await raiseMediaError(wrapper)
-        expect(wrapper.find('.origam-audio__error-msg').text()).toBe('Playback error')
-    })
-
-    it('shows the FRENCH generic message under the fr locale (fails on a hardcoded literal)', async () => {
-        const wrapper = mountAudioLocalised('fr')
-        await raiseMediaError(wrapper)
-        expect(wrapper.find('.origam-audio__error-msg').text()).toBe('Erreur de lecture')
     })
 })

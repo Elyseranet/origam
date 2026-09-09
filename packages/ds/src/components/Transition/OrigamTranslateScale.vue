@@ -218,13 +218,13 @@
 
 	.origam-transition--transform-scale {
 		&-enter-active {
-			transition-duration: var(--origam-transition--transform-scale-enter-active---transition-duration);
-			transition-timing-function: var(--origam-transition--transform-scale-enter-active---transition-timing-function);
+			transition-duration: 225ms;
+			transition-timing-function: cubic-bezier(0.0, 0, 0.2, 1);
 		}
 
 		&-leave-active {
-			transition-duration: var(--origam-transition--transform-scale-leave-active---transition-duration);
-			transition-timing-function: var(--origam-transition--transform-scale-leave-active---transition-timing-function);
+			transition-duration: 125ms;
+			transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
 		}
 
 		&-enter-active,

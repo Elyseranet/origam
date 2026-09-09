@@ -62,13 +62,14 @@
 
 		<Variant
 				title="State"
-				:init-state="() => useStoryInitState<IHoverProps & { color?: string }>({ color: 'primary' })"
+				:init-state="() => useStoryInitState<IHoverProps & IActiveProps & { color?: string }>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
 				<origam-radio-btn
 						v-model="stateModel"
 						:color="state.color"
 						:hover="resolveHoverState(state.hover)"
+						:active="resolveActiveState(state.active)"
 						value="state"
 						label="Radio button"
 				/>
@@ -79,6 +80,7 @@
 				</StoryGroup>
 				<StoryGroup title="Interaction">
 					<HstSelect v-model="state.hover"  title="Hover"  :options="HOVER_OPTIONS"/>
+					<HstSelect v-model="state.active" title="Active" :options="ACTIVE_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -232,6 +234,7 @@
 	import { OrigamIcon, OrigamRadioBtn } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
 	import type {
+		IActiveProps,
 		IHoverProps,
 		IRadioBtnProps
 	} from '@origam/interfaces'
@@ -239,6 +242,8 @@
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 	import {
+		ACTIVE_OPTIONS,
+		resolveActiveState,
 		BORDER_OPTIONS,
 		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,
