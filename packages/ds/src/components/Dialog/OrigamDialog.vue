@@ -388,7 +388,8 @@
 		return [
 			'origam-dialog',
 			{
-				'origam-dialog--fullscreen': props.fullscreen
+				'origam-dialog--fullscreen': props.fullscreen,
+				'origam-dialog--scrollable': props.scrollable
 			},
 			sizeClasses.value,
 			statusClasses.value,

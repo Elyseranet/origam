@@ -957,3 +957,44 @@ export function warnUnsupportedProp (
         `[origam] <${component}> prop "${prop}" has no effect on this component: ${reason}`
     )
 }
+
+
+const _warnedDeprecatedEmitKeys = new Set<string>()
+
+/*********************************************************
+ * warnDeprecatedEmit
+ *
+ * @description
+ * Warn (once per component / emit, dev builds only) that the consumer
+ * attached a listener to an emit scheduled for removal. The emit KEEPS
+ * FIRING until the removal version — this announces the break instead of
+ * shipping it. `replacement` should name what to do instead, not merely
+ * say the emit is going away. Same once-per-key cache as the three
+ * warnings above, but for a public EMIT rather than a prop.
+ *
+ * @description
+ * First use case: `click:prepend` / `click:append` on `<OrigamBtn>` (#443).
+ * Those two were reachable by MOUSE ONLY — the emit is bound to a
+ * descendant span, while keyboard activation synthesises its click on the
+ * button root. The `role="button"` + tab-stop remedy `useAdjacent` applies
+ * on the other ten consumers is ILLEGAL here: Btn's root is a
+ * `<button>`/`<a>`, whose content model forbids both an interactive
+ * descendant and any descendant carrying `tabindex`. A control that already
+ * owns one action cannot host a second — two actions are two buttons
+ * (`origam-btn-group`).
+ ********************************************************/
+export function warnDeprecatedEmit (
+    component: string,
+    emit: string,
+    replacement: string,
+    removalVersion = 'v3.0.0',
+): void {
+    if (typeof console === 'undefined') return
+    if (!import.meta.env?.DEV) return
+    const key = `${component}::${emit}`
+    if (_warnedDeprecatedEmitKeys.has(key)) return
+    _warnedDeprecatedEmitKeys.add(key)
+    console.warn(
+        `[origam] <${component}> emit "${emit}" is deprecated and will be removed in ${removalVersion}. ${replacement}`
+    )
+}

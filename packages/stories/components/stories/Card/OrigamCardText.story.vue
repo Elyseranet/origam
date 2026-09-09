@@ -129,6 +129,18 @@
 			</origam-card>
 		</Variant>
 
+		<Variant title="Prop — border (VRT matrix)">
+			<div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;" data-cy="card-text-border-matrix">
+				<origam-card-text data-cy="card-text-border-unset">Text</origam-card-text>
+				<origam-card-text border="none" data-cy="card-text-border-none">Text</origam-card-text>
+				<origam-card-text border data-cy="card-text-border-bool">Text</origam-card-text>
+				<origam-card-text border="thin" data-cy="card-text-border-thin">Text</origam-card-text>
+				<origam-card-text border="thick" data-cy="card-text-border-thick">Text</origam-card-text>
+				<origam-card-text border="top" data-cy="card-text-border-top">Text</origam-card-text>
+				<origam-card-text :border="4" data-cy="card-text-border-four">Text</origam-card-text>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<ICardTextProps>({

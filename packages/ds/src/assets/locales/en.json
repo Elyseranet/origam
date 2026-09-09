@@ -213,11 +213,7 @@
       "loop_off": "Loop off",
       "loop_one": "Loop track",
       "shuffle": "Shuffle",
-      "transport": "Transport controls",
-      "playback_error": "Playback error"
-    },
-    "audio": {
-      "track_number": "Track {0}"
+      "transport": "Transport controls"
     },
     "video": {
       "enter_fullscreen": "Enter fullscreen",

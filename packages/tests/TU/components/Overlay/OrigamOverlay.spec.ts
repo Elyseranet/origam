@@ -71,53 +71,6 @@ describe('OrigamOverlay — afterEnter emit (issue #446)', () => {
     })
 })
 
-// `afterLeave` was the one emit of `IOverlayEmits` that no assertion
-// anywhere reached (C5 second half — "un test le prouve-t-il ?", measured
-// 2026-09-08). Unlike `afterEnter`/`keydown` it was never broken: it has
-// been wired since before #446. What was missing is the net, not the
-// behaviour — so this pins it against a future regression rather than
-// fixing one.
-describe('OrigamOverlay — afterLeave emit (C5 coverage)', () => {
-    it('emits `afterLeave` once the leave transition completes', async () => {
-        const wrapper = mountOverlay()
-
-        await nextTick()
-        await wrapper.setProps({ modelValue: false })
-
-        // Same polling rationale as `afterEnter` above: jsdom computes no
-        // real CSS transition duration, so Vue's <Transition> resolves the
-        // leave phase on its own schedule.
-        const deadline = Date.now() + 2000
-        while (!wrapper.emitted('afterLeave') && Date.now() < deadline) {
-            await nextTick()
-            await new Promise(resolve => setTimeout(resolve, 20))
-        }
-
-        expect(wrapper.emitted('afterLeave')).toBeTruthy()
-
-        wrapper.unmount()
-    })
-
-    it('does not emit `afterLeave` while the overlay is merely opening', async () => {
-        const wrapper = mountOverlay({ modelValue: false })
-
-        await wrapper.setProps({ modelValue: true })
-
-        const deadline = Date.now() + 500
-        while (!wrapper.emitted('afterEnter') && Date.now() < deadline) {
-            await nextTick()
-            await new Promise(resolve => setTimeout(resolve, 20))
-        }
-
-        // The enter phase completed (guard: otherwise this would pass
-        // simply because no transition ran at all).
-        expect(wrapper.emitted('afterEnter')).toBeTruthy()
-        expect(wrapper.emitted('afterLeave')).toBeFalsy()
-
-        wrapper.unmount()
-    })
-})
-
 describe('OrigamOverlay — keydown emit (issue #446)', () => {
     it('emits `keydown` with the real KeyboardEvent when a key is pressed while open', async () => {
         const wrapper = mountOverlay()

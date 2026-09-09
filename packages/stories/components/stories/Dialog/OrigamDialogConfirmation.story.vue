@@ -87,6 +87,7 @@
 					disabled: false,
 					loading: false,
 					persistent: false,
+					scrollable: false,
 					retainFocus: true,
 				})"
 		>
@@ -104,6 +105,7 @@
 							:disabled="state.disabled"
 							:loading="state.loading"
 							:persistent="state.persistent"
+							:scrollable="state.scrollable"
 							:retain-focus="state.retainFocus"
 					/>
 				</div>
@@ -123,6 +125,7 @@
 				<StoryGroup title="Dialog Behaviour">
 					<HstCheckbox v-model="state.fullscreen"   title="Fullscreen"/>
 					<HstCheckbox v-model="state.persistent"   title="Persistent"/>
+					<HstCheckbox v-model="state.scrollable"   title="Scrollable"/>
 					<HstCheckbox v-model="state.retainFocus"  title="Retain Focus"/>
 				</StoryGroup>
 			</template>
@@ -371,6 +374,7 @@
 					disabled: false,
 					loading: false,
 					persistent: false,
+					scrollable: false,
 				})"
 		>
 			<template #default="{ state }">
@@ -404,6 +408,7 @@
 					<HstCheckbox v-model="state.disabled"    title="Disabled"/>
 					<HstCheckbox v-model="state.loading"     title="Loading"/>
 					<HstCheckbox v-model="state.persistent"  title="Persistent"/>
+					<HstCheckbox v-model="state.scrollable"  title="Scrollable"/>
 				</StoryGroup>
 			</template>
 		</Variant>

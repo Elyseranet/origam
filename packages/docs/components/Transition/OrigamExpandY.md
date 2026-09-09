@@ -40,42 +40,15 @@ warning either way).
 
 ## CSS variables consumed
 
-Declared in `assets/css/tokens/light.css`.
-
 | Variable | Default |
 |---|---|
 | `--origam-transition--expand-y-enter-active---transition-duration` | `0.5s` |
-| `--origam-transition--expand-y-enter-active---transition-timing-function` | `var(--origam-motion__easing---standard)` |
+| `--origam-transition--expand-y-enter-active---transition-timing-function` | `cubic-bezier(0.4, 0, 0.2, 1)` |
 | `--origam-transition--expand-y-enter-active---transition-property` | `height` |
-| `--origam-transition--expand-y-leave-active---transition-duration` | `0.5s` |
-| `--origam-transition--expand-y-leave-active---transition-timing-function` | `var(--origam-motion__easing---standard)` |
-| `--origam-transition--expand-y-leave-active---transition-property` | `height` |
-| `--origam-transition--expand-y-move---transition-duration` | `0.5s` — only reachable via `group` (see above) |
-| `--origam-transition--expand-y-move---transition-timing-function` | `var(--origam-motion__easing---standard)` — idem |
-| `--origam-transition--expand-y-move---transition-property` | `transform` — idem |
+| `--origam-transition--expand-y-enter-leave---transition-duration` | `0.5s` |
+| `--origam-transition--expand-y-move---transition-property` | `transform` — only reachable via `group` (see above) |
 
-Override at the document root or on a specific instance:
-
-```css
-.my-panel {
-    --origam-transition--expand-y-enter-active---transition-duration: 0.25s;
-}
-```
-
-### Deprecated: the `-enter-leave-` name
-
-The leave rule used to read `--origam-transition--expand-y-enter-leave---*`, a
-misnomer that had already shipped. `-leave-active-` is now the reference and
-is what the stylesheet declares. The old name is still **honoured** — as a
-fallback read inside the component — and **will be removed at the next
-major**: migrate any override you have.
-
-The old name is deliberately declared nowhere. Were it declared, it would
-always resolve and `-leave-active-` would become unreachable. It works only
-because the component reads
-`var(--…-enter-leave---x, var(--…-leave-active---x))` — which is also why
-setting it directly on an element still works, whereas an alias written as a
-declaration in the token sheet would only ever substitute at `:root`.
+Override at root or per instance.
 
 ## Props
 
@@ -106,19 +79,3 @@ silent no-op.
   (removing one row from a vertical list without the others waiting on
   its full collapse animation), but both also work on a single-child
   `<OrigamExpandY>` without `group`.
-
-## Accessibility
-
-Reduced motion is handled by the component itself — you do NOT need to pass
-`disabled` from a `matchMedia` listener. Every member of the family emits a
-`@media (prefers-reduced-motion: reduce)` block (shared `ds-reduced-motion`
-mixin, issue #494) that collapses the duration to `0.01ms`.
-
-That override wins over the CSS variables above, deliberately: it zeroes the
-PROPERTY, not the variable, so a theme or a per-instance duration cannot
-resurrect the motion for a user who asked for none. Verified in Chromium —
-setting a 9 s duration through the token under `prefers-reduced-motion:
-reduce` still measures `0.01ms`.
-
-`disabled` remains available for the unrelated case of skipping the
-transition on purpose.

@@ -56,8 +56,28 @@ export interface IBtnProps extends ICommonsComponentProps, IColorProps, IBgColor
     statusIconPosition?: TStatusPosition
 }
 
-/** Emits fired by `<OrigamBtn>` — clicks on prepend/append slots and
- *  group-membership lifecycle. */
+/**
+ * Emit signatures for `<OrigamBtn>`.
+ *
+ * ⛔ DEPRECATED SURFACE (#443) — `click:prepend` / `click:append`, inherited
+ * from {@link IAdjacentEmits}, are **deprecated and will be removed in
+ * v3.0.0**. They still fire for now so no consumer breaks silently, and
+ * `<OrigamBtn>` warns once per emit in dev builds.
+ *
+ * They were never reachable by keyboard: the emit is bound to the
+ * `origam-btn__prepend` / `origam-btn__append` `<span>`, while a keyboard
+ * activation synthesises its click on the component ROOT, which never
+ * reaches a descendant listener. The fix `useAdjacent` applies on the other
+ * ten consumers — promote the zone to a `role="button"` tab stop — is
+ * ILLEGAL here: Btn renders as `<button>` or `<a>`, and both forbid an
+ * interactive-content descendant and any descendant with `tabindex`.
+ *
+ * Two actions are two buttons: compose them with `<origam-btn-group>`. The
+ * `prepend` / `append` SLOTS are unaffected — see {@link IBtnSlots}.
+ *
+ * @deprecated The inherited `click:prepend` / `click:append` only. Drop
+ * `IAdjacentEmits` from this interface in v3.0.0.
+ */
 export interface IBtnEmits extends IAdjacentEmits, IGroupEmits {}
 
 /** Slot signatures for `<OrigamBtn>`. */

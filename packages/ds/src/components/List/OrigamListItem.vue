@@ -3,8 +3,8 @@
 			:is="link.tag.value"
 			:id="styleId"
 			v-ripple="isClickable && ripple"
-			:aria-disabled="ariaDisabled"
-			:aria-selected="ariaSelected"
+			:aria-disabled="itemRole === 'option' ? disabled : undefined"
+			:aria-selected="itemRole === 'option' ? isSelected : undefined"
 			:class="listItemClasses"
 			:href="link.href.value"
 			:role="itemRole"
@@ -128,7 +128,7 @@
 	import OrigamIcon from '../Icon/OrigamIcon.vue'
 
 	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
-	import { useBothColor } from '../../composables/Commons/bothColor.composable'
+	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useLink } from '../../composables/Commons/link.composable'
@@ -144,7 +144,6 @@
 	import vRipple from '../../directives/Ripple/ripple.directive'
 
 	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
-	import { LIST_ITEM_ROLE } from '../../enums/List/list-item.enum'
 
 	import type { IListItemProps } from '../../interfaces/List/list-item.interface'
 
@@ -184,24 +183,8 @@
 		openOnSelect
 	} = useNestedItem(id, false)
 	const list = useList()
-	/*********************************************************
-	 * Colour — BOTH channels (#436)
-	 *
-	 * @description
-	 * The row only ever consumed `bgColor`, through
-	 * `useBackgroundColor(toRef(props, 'bgColor'))`. `IListItemProps`
-	 * extends `IColorProps` all the same, so `color` was a declared,
-	 * documented, story-exposed prop that painted nothing.
-	 * @description
-	 * It is not an exotic prop either: `<origam-list>` AND
-	 * `<origam-list-group>` both forward `color` down to every descendant
-	 * `<origam-list-item>` through their defaults provider — that
-	 * forwarding landed on a prop the row dropped. `useBothColor` is the
-	 * same hook `<origam-list>` / `<origam-list-subheader>` already use;
-	 * it resolves the pair and delegates to `useColor`.
-	 ********************************************************/
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
-	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	const {backgroundColorClasses, backgroundColorStyles} = useBackgroundColor(toRef(props, 'bgColor'))
 	const {densityClasses} = useDensity(props)
 	// Only `sizeClasses` is consumed — NEVER `sizeStyles`. Its non-tokenised
 	// branch emits an identical `width` AND `height` (a square), which would
@@ -265,42 +248,20 @@
 	 * itemRole (#424)
 	 *
 	 * @description
-	 * The row never picks its own role — it reads the one its list
-	 * PUBLISHED through `ORIGAM_LIST_KEY` (`listitem` in list mode,
-	 * `option` in selection mode). That way the container and its rows
-	 * can never disagree: an `option` outside a `listbox`, or a
-	 * `listitem` inside one, is a broken ARIA contract and neither is
-	 * reachable from here.
+	 * `<OrigamList>` hard-codes `role="listbox"` on its root — a listbox
+	 * with no `role="option"` descendant is ARIA posé à moitié. Only a row
+	 * genuinely nested inside a list (`list` truthy, i.e. an
+	 * `<OrigamListChildren>`/`<OrigamList>` ancestor provided
+	 * `ORIGAM_LIST_KEY`) AND acting as a real selectable row — not a group
+	 * activator, which only toggles expand/collapse and never fires
+	 * `select()` (see `click` below) — gets `role="option"`.
 	 * @description
-	 * Two rows still get no role at all. A bare `<OrigamListItem>` used
-	 * outside any list (`list` falsy — no ancestor provided the key): no
-	 * ARIA is better than a role whose promised container doesn't exist.
-	 * And a group activator, which only toggles expand/collapse and never
-	 * fires `select()` (see `click` below) — it is a control, not one of
-	 * the list's own rows.
+	 * A bare `<OrigamListItem>` used outside any list keeps no role at
+	 * all: no ARIA is better than a role whose promised container doesn't
+	 * exist.
 	 ********************************************************/
 	const itemRole = computed(() => {
-		return list && !isGroupActivator ? list.itemRole.value : undefined
-	})
-	/*********************************************************
-	 * ariaSelected / ariaDisabled
-	 *
-	 * @description
-	 * `aria-selected` is REQUIRED state on `option` and meaningless on
-	 * `listitem` — a plain list row that reports "not selected" invents a
-	 * selection the list does not offer. Both attributes are therefore
-	 * gated on the option role, and both are computed here rather than in
-	 * the template: no logic in the markup, and the role comparison has a
-	 * single home if the role set ever grows.
-	 ********************************************************/
-	const isOption = computed(() => {
-		return itemRole.value === LIST_ITEM_ROLE.OPTION
-	})
-	const ariaSelected = computed(() => {
-		return isOption.value ? isSelected.value : undefined
-	})
-	const ariaDisabled = computed(() => {
-		return isOption.value ? props.disabled : undefined
+		return list && !isGroupActivator ? 'option' : undefined
 	})
 	const isLink = computed(() => {
 		return props.link && link.isLink.value
@@ -429,7 +390,7 @@
 		return [
 			dimensionStyles.value,
 			borderStyles.value,
-			colorStyles.value,
+			backgroundColorStyles.value,
 			paddingStyles.value,
 			marginStyles.value,
 			roundedStyles.value,
@@ -449,7 +410,7 @@
 				'origam-list-item--slim': props.slim,
 				[`${props.activeClass}`]: props.activeClass && isActive.value
 			},
-			colorClasses.value,
+			backgroundColorClasses.value,
 			borderClasses.value,
 			densityClasses.value,
 			sizeClasses.value,
@@ -563,21 +524,6 @@
 
 		&--rounded {
 			--origam-list-item---border-radius: 4px;
-		}
-
-		// `slim` (#440) — the class was emitted by `listItemClasses` with no
-		// rule anywhere to read it, so the prop painted nothing while the doc
-		// promised "reduced inner spacing" and the story shipped a checkbox.
-		//
-		// It narrows the INLINE padding only. The block padding belongs to the
-		// `--size-*` rungs, which pin the row on the shared control-height
-		// scale; touching it here would take the row off that scale and undo
-		// the field/row match those rungs exist to hold. The base rule adds
-		// indent + density to the same `calc()`, so a slim row inside an
-		// indented group still lines up with its siblings.
-		&--slim {
-			--origam-list-item---padding-inline-start: var(--origam-list-item--slim---padding-inline-start, 8px);
-			--origam-list-item---padding-inline-end: var(--origam-list-item--slim---padding-inline-end, 8px);
 		}
 
 		// Row-height scale, aligned rung for rung on the control-height scale

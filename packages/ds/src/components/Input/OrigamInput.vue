@@ -361,6 +361,8 @@
 		font-weight: var(--origam-input---font-weight, 400);
 		line-height: var(--origam-input---line-height, 1.5);
 
+		--origam-input---padding-top: 16px;
+
 		&__details {
 			align-items: flex-end;
 			display: flex;
@@ -370,7 +372,7 @@
 			letter-spacing: var(--origam-input__details---letter-spacing, 0.0333333333em);
 			line-height: var(--origam-input__details---line-height, 1);
 			min-height: var(--origam-input__details---min-height, 22px);
-			padding-top: var(--origam-input__details---padding-top, 6px);
+			padding-top: 6px;
 			overflow: hidden;
 			justify-content: space-between;
 		}
@@ -431,7 +433,7 @@
 		}
 
 		&--density-comfortable {
-			--origam-input---density: var(--origam-input---density-comfortable-density, 8px);
+			--origam-input---density: 8px;
 		}
 
 		&--size-small {
@@ -464,11 +466,11 @@
 			grid-template-columns: min-content;
 
 			#{$this}__prepend {
-				margin-block-start: var(--origam-input__prepend---margin-block-start, 16px);
+				margin-block-start: 16px;
 			}
 
 			#{$this}__append {
-				margin-block-end: var(--origam-input__append---margin-block-end, 16px);
+				margin-block-end: 16px;
 			}
 		}
 

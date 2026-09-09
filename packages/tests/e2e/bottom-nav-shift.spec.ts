@@ -17,7 +17,7 @@ import { expect, test } from '@playwright/test'
  *       matched, so `:not(...)` was always true and EVERY button — selected
  *       included — got `opacity: 0` on its label.
  *   (b) The slide distance was written as a custom property
- *       (`--origam-bottom-nav__content--transform`) on `.origam-btn__content`
+ *       (`--origam-bottom-bar__content--transform`) on `.origam-btn__content`
  *       and read via `transform: var(...)` on the ANCESTOR
  *       `.origam-bottom-nav__content`. Custom properties only cascade to
  *       descendants, never back up to an ancestor, so the translateY never

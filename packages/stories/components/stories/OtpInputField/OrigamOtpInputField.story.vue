@@ -71,12 +71,13 @@
 
 		<Variant
 				title="State"
-				:init-state="() => useStoryInitState<IActiveProps & { color?: string }>({ color: 'primary' })"
+				:init-state="() => useStoryInitState<IHoverProps & IActiveProps & { color?: string }>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
 				<origam-otp-input-field
 						v-model="stateModel"
 						:color="state.color"
+						:hover="resolveHoverState(state.hover)"
 						:active="resolveActiveState(state.active)"
 						:length="4"
 						label="State"
@@ -87,6 +88,7 @@
 					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Interaction">
+					<HstSelect v-model="state.hover"  title="Hover"  :options="HOVER_OPTIONS"/>
 					<HstSelect v-model="state.active" title="Active" :options="ACTIVE_OPTIONS"/>
 				</StoryGroup>
 			</template>
@@ -103,6 +105,7 @@
 					loading: false,
 					autofocus: false,
 					focusAll: false,
+					persistentPlaceholder: false,
 					required: false,
 					hideDetails: false,
 				})"
@@ -120,6 +123,7 @@
 						:autofocus="state.autofocus"
 						:focus-all="state.focusAll"
 						:placeholder="state.placeholder"
+						:persistent-placeholder="state.persistentPlaceholder"
 						:required="state.required"
 						:hide-details="state.hideDetails"
 						:hint="state.hint"
@@ -132,6 +136,7 @@
 					<HstNumber v-model="state.length"         title="Length" :min="4" :max="10" :step="1"/>
 					<HstSelect v-model="state.type"           title="Type"   :options="OTP_TYPE_OPTIONS"/>
 					<HstText   v-model="state.placeholder"    title="Placeholder"/>
+					<HstCheckbox v-model="state.persistentPlaceholder" title="Persistent Placeholder"/>
 					<HstCheckbox v-model="state.focusAll"              title="Focus All"/>
 					<HstCheckbox v-model="state.autofocus"             title="Autofocus"/>
 				</StoryGroup>
@@ -345,6 +350,7 @@
 	import { MDI_ICONS, OTP_INPUT_FIELD_TYPE } from '@origam/enums'
 	import type {
 		IActiveProps,
+		IHoverProps,
 		IOtpInputFieldProps
 	} from '@origam/interfaces'
 
@@ -356,6 +362,8 @@
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
+		HOVER_OPTIONS,
+		resolveHoverState,
 		ICON_OPTIONS,
 		ROUNDED_OPTIONS,
 		SIZE_OPTIONS,

@@ -30,21 +30,31 @@ import { expect, test } from '@playwright/test'
 
 const STORY_ID = 'components-stories-btn-origambtn-story-vue'
 const STORY_PATH = '/stories/story/' + STORY_ID
-// "Prop — variant (VRT matrix)" is Variant index 15 (the LAST Variant in
-// the file, appended after the "Default" playground rather than in its
-// canonical position next to "Prop — color & bgColor" — see VRT.md "Un
-// détail qui a failli casser la suite existante" for why: inserting it
-// mid-file shifts every numeric variantId index e2e/btn.spec.ts hardcodes,
-// silently breaking 10 of its tests). Verified by
-// `grep -n '<Variant' OrigamBtn.story.vue` (see recipe in e2e/btn.spec.ts).
+// "Prop — variant (VRT matrix)" is Variant index 12. It is NO LONGER the
+// last Variant in the file: it used to be appended after the "Default"
+// playground specifically to keep the numeric indexes e2e/btn.spec.ts
+// hardcodes from shifting (see VRT.md "Un détail qui a failli casser la
+// suite existante"), but that placement violated the CLAUDE.md rule that
+// the "Default" playground comes LAST, and it has been moved back above it.
+//
+// ⛔ That index has now moved TWICE in one branch — 15 → 14 when "Default"
+// was restored to last, then 14 → 12 when the deprecated
+// `Events - click:prepend` / `Events - click:append` Variants were removed
+// (#443). The guard below is what caught both; it reported
+// `vrt/btn-variant.spec.ts [index 15] RANGE` rather than letting the suite
+// fail as a phantom visual diff. Always re-derive from the BUILD, never
+// from a count by eye:
+//   python3 -c "import json;d=json.load(open('packages/marketing/public/stories/histoire.json'));\
+//     [print(i,v['title']) for s in d['stories'] if s['id'].endswith('btn-origambtn-story-vue') \
+//      for i,v in enumerate(s['variants'])]"
 //
 // Index table — the row below is what makes this reference auditable by
 // e2e/_support/audit-variant-pins.mjs. Until that guard was widened to walk
 // `vrt/` (it only ever walked `e2e/`), this file was outside the net entirely:
 // its hardcoded index was invisible to the audit, and a Variant removed above
-// index 15 would have shifted it with nothing to flag the drift.
-// 15 → Prop — variant (VRT matrix)
-const VRT_VARIANT_URL = `${STORY_PATH}?variantId=${STORY_ID}-15`
+// it would have shifted it with nothing to flag the drift.
+// 12 → Prop — variant (VRT matrix)
+const VRT_VARIANT_URL = `${STORY_PATH}?variantId=${STORY_ID}-12`
 
 const BTN_VARIANTS = ['text', 'flat', 'elevated', 'tonal', 'outlined', 'plain', 'ghost'] as const
 

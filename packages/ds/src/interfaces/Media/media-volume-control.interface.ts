@@ -1,8 +1,4 @@
-import type { IColorProps } from '../Commons/color.interface'
 import type { ICommonsComponentProps } from '../Commons/commons.interface'
-import type { IDensityProps } from '../Commons/density.interface'
-import type { IRoundedProps } from '../Commons/rounded.interface'
-import type { ISizeProps } from '../Commons/size.interface'
 
 /**
  * Props for `<OrigamMediaVolumeControl>` — the mute / unmute button
@@ -19,33 +15,8 @@ import type { ISizeProps } from '../Commons/size.interface'
  * `methods.setVolume()` calls — emits `update:muted` and
  * `update:volume` so the parent stays the source of truth for
  * media-side mutations.
- *
- * ## Design surface (#429)
- *
- * The component shipped with NO visual prop and NO declared token, so a
- * theme could reach it neither through `IOrigamTheme.components` (nothing
- * to name) nor through `IOrigamTheme.vars` (nothing declared) — only a
- * raw CSS override worked, which inverts the DS's props-first rule.
- *
- * It now extends the four Commons surfaces that carry real meaning for a
- * round icon button, each consumed by its own composable rather than a
- * hand-rolled parser:
- *
- *  - {@link IColorProps}   → `useTextColor`  — the icon / `currentColor`
- *    channel. The hover wash and the scrubber inside the tooltip are both
- *    `color-mix(… currentColor …)`, so `color` repaints the whole widget.
- *  - {@link IRoundedProps} → `useRounded`    — corner radius, `full` by
- *    default (the historic hardcoded `50%`).
- *  - {@link ISizeProps}    → `useSize`       — the button box, five rungs
- *    plus the free-form escape hatch (`size="28px"`, `size={28}`).
- *  - {@link IDensityProps} → `useDensity`    — a ±8px offset ON TOP of the
- *    size rung, same grammar as `OrigamBtn` / `OrigamSelectionControl`, so
- *    a controller row can tighten every control at once.
- *
- * Everything else is themeable through the `--origam-media-volume-control*`
- * tokens declared in `assets/css/tokens/{light,dark}.css`.
  */
-export interface IMediaVolumeControlProps extends ICommonsComponentProps, IColorProps, IRoundedProps, ISizeProps, IDensityProps {
+export interface IMediaVolumeControlProps extends ICommonsComponentProps {
     /**
      * Linear volume in `[0, 1]`. Typically `state.volume.value`.
      * Required.

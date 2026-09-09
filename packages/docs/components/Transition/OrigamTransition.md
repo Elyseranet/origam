@@ -31,9 +31,8 @@ prop (overlay, dialog, snackbar, picker, …).
 ## Disabled
 
 `disabled` short-circuits the transition entirely (Vue `:css="false"`),
-for the case where motion is unwanted on purpose. It is NOT the way to
-honour `prefers-reduced-motion`: the transition this dispatcher renders
-handles that itself (see Accessibility below).
+useful when motion is unwanted or `prefers-reduced-motion` is detected
+upstream.
 
 ## Props
 
@@ -52,22 +51,6 @@ interface ITransitionComponentProps {
 - a registered origam-* leaf (`component` path).
 
 It does **not** wrap the slot in any extra DOM.
-
-## Accessibility
-
-Reduced motion is handled by the component itself — you do NOT need to pass
-`disabled` from a `matchMedia` listener. Every member of the family emits a
-`@media (prefers-reduced-motion: reduce)` block (shared `ds-reduced-motion`
-mixin, issue #494) that collapses the duration to `0.01ms`.
-
-That override wins over the CSS variables above, deliberately: it zeroes the
-PROPERTY, not the variable, so a theme or a per-instance duration cannot
-resurrect the motion for a user who asked for none. Verified in Chromium —
-setting a 9 s duration through the token under `prefers-reduced-motion:
-reduce` still measures `0.01ms`.
-
-`disabled` remains available for the unrelated case of skipping the
-transition on purpose.
 
 ## Related
 

@@ -24,7 +24,6 @@ pnpm -F origam guards:emits-completeness   # guard 7 only
 pnpm -F origam guards:no-usedefaults       # guard 8 only
 pnpm -F origam guards:token-var-channels   # guard 13 only
 pnpm -F origam guards:dead-handlers        # guard 14 only
-pnpm -F origam guards:function-as-value    # guard 19 only
 pnpm -F origam guards:id-forwarding        # guard 15 only
 pnpm -F origam guards:unemitted-declarations  # guard 18 only
 ```
@@ -54,7 +53,6 @@ text directly. The full suite runs in under two seconds.
 | 16 | `t-fallback.mjs` | (undocumented in this table — see the script header) | — |
 | 17 | `composable-setup-reads.mjs` | (undocumented in this table — see the script header) | — |
 | 18 | `unemitted-declarations.mjs` | Every emit DECLARED by `IXxxEmits` — its full `extends` chain resolved — must actually be EMITTED (literally, or by a known relay composable): the inverse of guard 7 | 35 (21 components) |
-| 19 | `function-as-value.mjs` | A name bound to a function LITERAL in a component's own `<script setup>` must not be used where the code consumes a VALUE — interpolated (`{{ fn }}`), used as a condition (`v-if="fn"`, operand of `&&`/`\|\|`/`!`/`?:`), or compared (`fn === x`, `deepEqual(x, fn)`): the mirror image of guard 14 | 0 |
 
 ### Guard 13 — the token pipeline can break silently, and nothing else watches for it
 
