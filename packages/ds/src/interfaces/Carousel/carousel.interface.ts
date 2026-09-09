@@ -42,16 +42,18 @@ export interface ICarouselEmits extends ICommonsComponentEmits {}
 /** Slot signatures for `<OrigamCarousel>` — thin wrapper over
  *  `<OrigamWindow>`'s own slots (`default` / `prev` / `next` /
  *  `arrows` share the exact same scope), plus the delimiter dots
- *  (`item.{index}` / `item`) and the cycle `progress` bar. */
+ *  (`item.{index}` / `item`), the cycle `progress` bar, and
+ *  `play-pause` — the autoplay stop control, rendered only while
+ *  `cycle` is on. Overriding `play-pause` REPLACES the built-in
+ *  button, so the replacement must still offer a way to stop the
+ *  animation or the component falls out of WCAG 2.2.2 conformance;
+ *  `toggle` and `isPaused` are handed over for that purpose. */
 export interface ICarouselSlots {
     default?: (group: IGroupProvide) => any
     additional?: (group: IGroupProvide) => any
     [key: `item.${number}`]: ((data: { props: Record<string, unknown>, item: ICarouselDelimiterItem }) => any) | undefined
     item?: (data: { props: Record<string, unknown>, item: ICarouselDelimiterItem, index: number }) => any
     progress?: (data: { percent: number }) => any
-    /** Contrôle pause/lecture rendu dès que `cycle` est actif (WCAG 2.2.2).
-     *  Le surcharger REMPLACE le bouton par défaut — la responsabilité
-     *  d'exposer un mécanisme d'arrêt passe alors au consommateur. */
     'play-pause'?: (data: { isPaused: boolean, toggle: () => void, label: string }) => any
     prev?: (data: { props: IWindowNavBtnProps, canMove: boolean }) => any
     next?: (data: { props: IWindowNavBtnProps, canMove: boolean }) => any

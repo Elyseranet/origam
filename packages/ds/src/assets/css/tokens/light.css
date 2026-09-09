@@ -1824,6 +1824,12 @@
   --origam-carousel__progress---position-left: var(--origam-space---0);
   --origam-carousel__progress---position-right: var(--origam-space---0);
   --origam-carousel__progress---z-index: var(--origam-zIndex---raised);
+  --origam-carousel__play-pause---background-color: rgba(0, 0, 0, 0.4);
+  --origam-carousel__play-pause---color: inherit;
+  --origam-carousel__play-pause---position: absolute;
+  --origam-carousel__play-pause---position-right: var(--origam-space---2);
+  --origam-carousel__play-pause---position-top: var(--origam-space---2);
+  --origam-carousel__play-pause---z-index: var(--origam-zIndex---raised);
   --origam-carousel__progress---margin: var(--origam-space---0);
   --origam-carousel--hide-delimiter-background---controls-background: rgba(0, 0, 0, 0);
   --origam-carousel--vertical-delimiters---controls-width: 50px;

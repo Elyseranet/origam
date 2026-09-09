@@ -127,8 +127,6 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
 
     let isInViewport = false
     let rafId: number | null = null
-    // Frame en attente pour le rapport de progression du chemin CSS — voir
-    // `onScroll`. Distincte de `rafId` : celle-la ne repeint aucune couche.
     let progressRafId: number | null = null
     let observer: IntersectionObserver | null = null
     // Per-layer current (smoothed) position for the spring easing.
@@ -302,6 +300,16 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
      * `getBoundingClientRect()` : l'executer a chaque evenement de
      * defilement forcerait un reflow synchrone. C'est la meme raison qui
      * fait passer le chemin JS par rAF.
+     * @description
+     * `progressRafId` est la frame en attente de ce rapport. Elle est
+     * distincte de `rafId` : celle-la ne repeint aucune couche, et les
+     * confondre ferait annuler la boucle de rendu en annulant le rapport.
+     * @description
+     * `scroll` et `resize` sont pour cette raison installes DANS LES DEUX
+     * CAS dans `onMounted`, et c'est `onScroll` qui choisit quoi faire.
+     * Le suivi de souris et le premier paint JS, eux, restent propres au
+     * chemin de repli : sur le chemin CSS c'est le navigateur qui
+     * positionne les couches.
      ********************************************************/
     const onScroll = () => {
         if (!isInViewport) return
@@ -372,15 +380,9 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
         }, { threshold: 0 })
         observer.observe(host)
 
-        // `scroll` / `resize` sont desormais installes DANS LES DEUX CAS :
-        // le chemin CSS en a besoin pour rapporter la progression (#432).
-        // `onScroll` choisit lui-meme quoi faire selon la branche active.
         window.addEventListener('scroll', onScroll, { passive: true })
         window.addEventListener('resize', onScroll, { passive: true })
 
-        // Le suivi de souris et le premier paint JS restent propres au
-        // chemin de repli : sur le chemin CSS c'est le navigateur qui
-        // positionne les couches.
         if (!cssScrollDriven.value) {
             host.addEventListener('mousemove', onMouseMove, { passive: true })
             // First paint with progress=0 so layers are positioned at offsets.
