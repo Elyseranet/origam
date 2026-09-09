@@ -68,7 +68,7 @@ describe.runIf(gc)('#365 — OrigamPagination, retention heap', () => {
 
         const growth = ((readings[readings.length - 1] - readings[0]) / readings[0]) * 100
 
-        // eslint-disable-next-line no-console
+         
         console.log(`#365 heap par serie (Mo) : ${ readings.map((r) => (r / 1048576).toFixed(1)).join(' → ') }  |  croissance ${ growth.toFixed(1) } %`)
 
         // Un composant qui retient a chaque cycle produit une croissance
