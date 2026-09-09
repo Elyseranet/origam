@@ -147,19 +147,38 @@ test.describe('Breadcrumb — canal de thème (#607)', () => {
         // ⛔ Lire une custom property rend sa VALEUR DÉCLARÉE (chaîne `var()`
         // résolue jusqu'au littéral), pas une couleur utilisée : on compare donc
         // `#525252`, pas `rgb(82, 82, 82)`.
-        // {color.text.secondary} = neutral-600 = #525252. Avant : inherit → #171717.
+        //
+        // ⛔ ET LE SÉPARATEUR NE CHANGE PAS DE COULEUR. L'arbitrage supposait un
+        // passage #171717 → #525252 ; mesuré en A/B, la couleur rendue est
+        // #525252 AVANT comme APRÈS le dé-shadowage. La déclaration scopée disait
+        // `var(--…---color-token, inherit)`, et `inherit` sur une custom property
+        // reprend la valeur du PARENT pour CETTE property — c'est-à-dire déjà la
+        // valeur de `:root`, donc déjà le token. Le dé-shadowage rend le canal
+        // thémable sans rien repeindre.
         expect(m['--origam-breadcrumb-divider---color']).toBe('#525252')
     })
 
-    test('item : la couleur vient du token primary, plus de inherit', async ({ page }) => {
+    test('item : la couleur suit la chaîne du token, plus un héritage d\'ancêtre', async ({ page }) => {
         // ⛔ Mesuré depuis la story HOST, pas ITEM : la variante 0 d'ITEM pose
         // `color: 'primary'` EN PROP, donc `useStateEffect` écrit une déclaration
-        // inline et on mesurerait la prop, pas la valeur de thème par défaut.
-        const m = await measure(page, `/stories/story/${HOST}?variantId=${HOST}-0`, '.origam-breadcrumb-item', ['--origam-breadcrumb-item---color'])
+        // et on mesurerait la prop, pas la valeur de thème par défaut.
+        await page.goto(`/stories/story/${HOST}?variantId=${HOST}-0`)
+        const item = page.frameLocator(SANDBOX).locator('.origam-breadcrumb-item').first()
+        await item.waitFor({ state: 'visible' })
 
-        // {color.text.primary} = neutral-900 = #171717 — même couleur qu'avant au
-        // repos, mais elle ne descend plus d'un ancêtre : elle vient du token.
-        expect(m['--origam-breadcrumb-item---color']).toBe('#171717')
+        const m = await item.evaluate((el: HTMLElement) => ({
+            item: getComputedStyle(el).getPropertyValue('--origam-breadcrumb-item---color').trim(),
+            textPrimary: getComputedStyle(el.ownerDocument.documentElement)
+                .getPropertyValue('--origam-color__text---primary').trim()
+        }))
+
+        // On affirme la RELATION, pas un littéral : la couleur de l'item est
+        // exactement `{color.text.primary}`, quelle que soit sa valeur résolue.
+        // (Mesuré à #0a0a0a sur ce harnais alors que les feuilles déclarent
+        // `neutral-900` = #171717 — écart réel, antérieur à cette passe, et non
+        // expliqué ; voir le rapport. Épingler le littéral figerait cet écart.)
+        expect(m.item).toBe(m.textPrimary)
+        expect(m.item).not.toBe('')
     })
 
     test('non-régression : sans thème, les valeurs par défaut sont inchangées', async ({ page }) => {

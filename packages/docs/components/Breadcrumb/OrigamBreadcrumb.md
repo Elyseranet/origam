@@ -262,18 +262,25 @@ parts that are *not* separate components).
 > Chromium : `packages/tests/e2e/breadcrumb-theme-channel.spec.ts` échoue sur
 > le code d'avant et passe après.
 >
-> ⚠️ **Un changement de comportement, sur la couleur.** `--origam-breadcrumb-item---color`
-> et `--origam-breadcrumb-divider---color` résolvaient `inherit` : la couleur
-> descendait d'un ancêtre. Elles résolvent désormais leur token
-> (`{color.text.primary}` pour l'item, `{color.text.secondary}` pour le
-> séparateur). **Colorer un fil d'Ariane en posant `color` sur un conteneur
-> parent ne fonctionne plus** — ce n'est pas déprécié, c'est sans effet, et
-> silencieusement. Réglez la couleur par le thème (le token ci-dessus) ou par
-> la prop `color` du composant.
+> **Sur la couleur : aucun pixel ne bouge.** `--origam-breadcrumb-item---color`
+> et `--origam-breadcrumb-divider---color` étaient déclarées
+> `var(--…---color-token, inherit)` dans le bloc scopé. On pouvait croire à un
+> héritage depuis un ancêtre arbitraire ; ce n'en est pas un. `inherit` sur une
+> **custom property** reprend la valeur du parent **pour cette même property** —
+> or celle-ci est déclarée sur `:root` et hérite jusqu'en bas. `inherit`
+> résolvait donc déjà le token.
 >
-> Le séparateur est aussi **plus clair qu'avant** : `{color.text.secondary}`
-> (#525252) au lieu du #171717 qu'il héritait. C'est délibéré — un séparateur
-> est du chrome, pas du contenu.
+> Vérifié en A/B dans Chromium, avant et après le dé-shadowage :
+>
+> | | avant | après |
+> |---|---|---|
+> | item | `#0a0a0a` | `#0a0a0a` |
+> | séparateur | `#525252` | `#525252` |
+>
+> Le séparateur n'est **pas** devenu plus clair : il rendait déjà
+> `{color.text.secondary}`. Ce que la correction change n'est pas la couleur
+> rendue, c'est qu'un thème peut désormais l'**écraser** — le bloc scopé, à
+> (0,2,0), gagnait auparavant contre `:root` à (0,1,0).
 >
 > Restent shadowés, en attente d'arbitrage : les `transition-duration` des
 > trois composants (voir « Transitions » plus bas).
@@ -318,11 +325,13 @@ d'arbitrage et n'est pas incluse dans la passe #607 ; les
 `--origam-{cmp}---transition-duration` des trois composants restent shadowés
 dans leur bloc scopé en attendant.
 
-Les tokens `--origam-{cmp}---transition-duration-transform`
-(`{motion.duration.medium}`, 200 ms) et `---transition-duration-color`
-(`{motion.duration.fast}`, 100 ms) sont **déclarés** dans les quatre feuilles
-pour recevoir la correction, mais **aucun composant ne les lit encore** — ils
-apparaissent donc en canal dormant tant que l'arbitrage n'est pas rendu.
+La forme visée est une paire de tokens par composant —
+`--origam-{cmp}---transition-duration-transform` (`{motion.duration.medium}`,
+200 ms) et `---transition-duration-color` (`{motion.duration.fast}`, 100 ms) —
+lus dans l'ordre de `transition-property`. Ils ont été déclarés puis
+**retirés** : tant qu'aucun composant ne les lit, le garde `token-var-channels`
+les compte à juste titre comme canaux dormants. Ils seront déclarés **et
+câblés dans le même geste**, une fois l'arbitrage rendu.
 
 ## Accessibility
 
