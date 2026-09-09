@@ -117,7 +117,7 @@
 					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Gutters">
-					<HstSelect v-model="state.gutters" title="Gutters" :options="ROW_GUTTER_OPTIONS"/>
+					<HstText v-model="state.gutters" title="Gutters"/>
 				</StoryGroup>
 				<StoryGroup title="Padding">
 					<HstText v-model="state.padding"       title="Padding"/>
@@ -163,29 +163,15 @@
 					<origam-col cols="4"><div class="demo-cell">compact B</div></origam-col>
 					<origam-col cols="4"><div class="demo-cell">compact C</div></origam-col>
 				</origam-row>
-				<origam-row density="default">
+				<origam-row density="default" style="margin-top: 8px;">
 					<origam-col cols="4"><div class="demo-cell">default A</div></origam-col>
 					<origam-col cols="4"><div class="demo-cell">default B</div></origam-col>
 					<origam-col cols="4"><div class="demo-cell">default C</div></origam-col>
 				</origam-row>
-				<origam-row density="comfortable">
+				<origam-row density="comfortable" style="margin-top: 8px;">
 					<origam-col cols="4"><div class="demo-cell">comfortable A</div></origam-col>
 					<origam-col cols="4"><div class="demo-cell">comfortable B</div></origam-col>
 					<origam-col cols="4"><div class="demo-cell">comfortable C</div></origam-col>
-				</origam-row>
-			</origam-container>
-		</Variant>
-
-		<Variant title="Prop — gutters">
-			<origam-container>
-				<origam-row
-						v-for="rung in ROW_GUTTER_RUNGS"
-						:key="rung"
-						:gutters="rung"
-				>
-					<origam-col cols="4"><div class="demo-cell">{{ rung }} A</div></origam-col>
-					<origam-col cols="4"><div class="demo-cell">{{ rung }} B</div></origam-col>
-					<origam-col cols="4"><div class="demo-cell">{{ rung }} C</div></origam-col>
 				</origam-row>
 			</origam-container>
 		</Variant>
@@ -240,7 +226,7 @@
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstSelect v-model="state.tag"     title="Tag"     :options="TAG_OPTIONS"/>
-					<HstSelect v-model="state.gutters" title="Gutters" :options="ROW_GUTTER_OPTIONS"/>
+					<HstText   v-model="state.gutters" title="Gutters"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -253,12 +239,8 @@
 >
 	import { OrigamCol, OrigamContainer, OrigamRow } from '@origam/components'
 	import { FLEX_DIRECTION } from '@origam/enums'
-	import { ROW_GUTTER_RUNGS } from '@origam/consts'
 	import type { IOptions, IRowProps } from '@origam/interfaces'
-	import type {
-		TFlexDirection,
-		TRowGutter
-	} from '@origam/types'
+	import type { TFlexDirection } from '@origam/types'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
@@ -271,11 +253,6 @@
 		JUSTIFY_OPTIONS,
 		TAG_OPTIONS
 	} from '@stories/const'
-
-	const ROW_GUTTER_OPTIONS: Array<IOptions<TRowGutter | undefined>> = [
-		{ label: '(none)', value: undefined },
-		...ROW_GUTTER_RUNGS.map((rung) => ({ label: rung, value: rung }))
-	]
 
 	const FLEX_DIRECTION_OPTIONS: Array<IOptions<TFlexDirection | undefined>> = [
 		{ label: '(none)', value: undefined },

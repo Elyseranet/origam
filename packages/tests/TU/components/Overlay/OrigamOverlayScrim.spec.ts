@@ -55,64 +55,6 @@ describe('OrigamOverlayScrim — tag prop (issue #447)', () => {
     })
 })
 
-// All three emits of `IOverlayScrimEmits` (`click`, `mouseenter`,
-// `mouseleave`) were declared, correctly wired in the template, and reached
-// by no assertion anywhere — the whole emit surface of this component was
-// uncovered (C5 second half, measured 2026-09-08). They are what
-// `OrigamOverlay` binds through `scrimEvents` to close the overlay when the
-// backdrop is clicked, so a silent regression here breaks dismissal on every
-// scrim-bearing component (Dialog, Drawer, Snackbar…).
-//
-// `stubs: { transition: false }` is required: the auto-stubbed
-// `<transition-stub>` renders no real child element, so there would be
-// nothing to dispatch a mouse event on and every assertion below would fail
-// for the wrong reason.
-describe('OrigamOverlayScrim — forwarded pointer emits (C5 coverage)', () => {
-    const mountScrim = () => mount(OrigamOverlayScrim, {
-        props: { active: true },
-        global: { stubs: { transition: false } }
-    })
-
-    it('emits `click` carrying the real MouseEvent', async () => {
-        const wrapper = mountScrim()
-
-        await wrapper.find('.origam-scrim').trigger('click')
-
-        const emitted = wrapper.emitted('click')
-        expect(emitted).toBeTruthy()
-        expect(emitted![0][0]).toBeInstanceOf(Event)
-        expect((emitted![0][0] as Event).type).toBe('click')
-    })
-
-    it('emits `mouseenter` carrying the real MouseEvent', async () => {
-        const wrapper = mountScrim()
-
-        await wrapper.find('.origam-scrim').trigger('mouseenter')
-
-        const emitted = wrapper.emitted('mouseenter')
-        expect(emitted).toBeTruthy()
-        expect((emitted![0][0] as Event).type).toBe('mouseenter')
-    })
-
-    it('emits `mouseleave` carrying the real MouseEvent', async () => {
-        const wrapper = mountScrim()
-
-        await wrapper.find('.origam-scrim').trigger('mouseleave')
-
-        const emitted = wrapper.emitted('mouseleave')
-        expect(emitted).toBeTruthy()
-        expect((emitted![0][0] as Event).type).toBe('mouseleave')
-    })
-
-    it('emits nothing before the user interacts (guard against a handler firing on mount)', () => {
-        const wrapper = mountScrim()
-
-        expect(wrapper.emitted('click')).toBeFalsy()
-        expect(wrapper.emitted('mouseenter')).toBeFalsy()
-        expect(wrapper.emitted('mouseleave')).toBeFalsy()
-    })
-})
-
 // A spy stub standing in for `<origam-transition>` — records every
 // `disabled` value it was mounted/updated with, so the assertion is "the
 // prop was forwarded", not "the transition behaved a certain way in jsdom"

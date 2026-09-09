@@ -85,34 +85,6 @@
 			/>
 		</Variant>
 
-		<Variant title="Slots - Default">
-			<origam-checkbox-group
-					label="Notifications"
-					:items="DEMO_ITEMS"
-					:model-value="['email']"
-			>
-				<template #default="{ isDisabled, isReadonly, isValid }">
-					<p>
-						Le slot par defaut remplace TOUT le corps du groupe, label et cases
-						comprises. Portee recue : disabled={{ isDisabled }},
-						readonly={{ isReadonly }}, valid={{ isValid }}.
-					</p>
-				</template>
-			</origam-checkbox-group>
-		</Variant>
-
-		<Variant title="Slots - Item">
-			<origam-checkbox-group
-					label="Notifications"
-					:items="DEMO_ITEMS"
-					:model-value="['email']"
-			>
-				<template #item="{ messagesId }">
-					<em>Rendu custom d'une entree ({{ messagesId }})</em>
-				</template>
-			</origam-checkbox-group>
-		</Variant>
-
 		<Variant title="Slots - Label">
 			<origam-checkbox-group
 					:items="DEMO_ITEMS"

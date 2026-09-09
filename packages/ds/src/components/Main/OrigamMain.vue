@@ -134,8 +134,6 @@
 
 		flex: var(--origam-main---flex);
 		max-width: var(--origam-main---max-width);
-		background-color: var(--origam-main---background-color);
-		color: var(--origam-main---color);
 		transition-duration: var(--origam-main---transition-duration);
 		transition-property: var(--origam-main---transition-property);
 		transition-timing-function: var(--origam-main---transition-timing-function);

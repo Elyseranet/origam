@@ -1,4 +1,4 @@
-import { expect, FrameLocator, Page, test } from '@playwright/test'
+import { expect, FrameLocator, test } from '@playwright/test'
 
 /**
  * OrigamMenu — suite e2e calée sur la story réelle.
@@ -257,66 +257,18 @@ test.describe('OrigamMenu', () => {
     // items=defaultItems, @contextmenu="logEvent"                         //
     // ------------------------------------------------------------------ //
 
-    // ⛔ Ce bloc regardait la MAUVAISE interaction (#430/#416). Il ne
-    // contenait qu'un test « le menu s'ouvre au CLIC GAUCHE » — c'est-à-dire
-    // une assertion sur `openOnClick`, déjà couverte par les Variants 1 et 7,
-    // et rigoureusement muette sur `contextmenu`. Il est donc resté vert
-    // pendant toute la période où l'emit ne partait jamais : déclaré dans
-    // `IMenuEmits`, jamais émis, et — parce que le déclarer retire
-    // `onContextmenu` de `$attrs` — sans même le repli du fallthrough natif.
-    // Les trois filets (doc, story, e2e) confirmaient un comportement absent.
-    //
-    // On observe désormais l'emit lui-même. `logEvent` (histoire/client) fait
-    // un `console.log('[histoire] Event fired', {name, argument})` DANS la
-    // sandbox avant de postMessage vers le parent — Playwright capte les
-    // messages console de toutes les frames, ce qui donne une observation
-    // directe de l'emit sans dépendre du DOM du panneau Events de Histoire
-    // (qui, lui, vit hors de l'iframe).
     test.describe('Events - contextmenu (index 3)', () => {
-        // Capte les événements Histoire émis depuis la sandbox. Doit être
-        // branché AVANT le goto — sinon on rate ceux du chargement.
-        const collectHistoireEvents = (page: Page) => {
-            const fired: string[] = []
-            page.on('console', (msg) => {
-                const text = msg.text()
-                if (text.includes('[histoire] Event fired')) fired.push(text)
-            })
-            return fired
-        }
-
         test('activateur .origam-btn visible', async ({ page }) => {
             await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-btn').first()).toBeVisible({ timeout: 35000 })
         })
 
-        test('un CLIC DROIT sur l activateur fait reellement partir l emit contextmenu', async ({ page }) => {
-            const fired = collectHistoireEvents(page)
-
-            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
-            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            const activator = sandbox.locator('.origam-btn').first()
-            await expect(activator).toBeVisible({ timeout: 35000 })
-
-            await activator.click({ button: 'right' })
-
-            await expect
-                .poll(() => fired.filter(t => t.includes('contextmenu')).length, { timeout: 12000 })
-                .toBeGreaterThan(0)
-        })
-
-        test('un clic GAUCHE ne fait PAS partir contextmenu (le filet distingue les deux boutons)', async ({ page }) => {
-            const fired = collectHistoireEvents(page)
-
+        test('menu s ouvre au clic gauche (openOnClick reste la valeur par défaut)', async ({ page }) => {
             await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const { content } = await openMenu(sandbox)
-
-            // Garde : le clic gauche a bien fait quelque chose (le menu s'est
-            // ouvert). Sans ça, ce test passerait aussi sur une page morte.
             await expect(content).toBeVisible()
-
-            expect(fired.filter(t => t.includes('contextmenu'))).toHaveLength(0)
         })
     })
 

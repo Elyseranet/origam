@@ -6,13 +6,14 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<Partial<IDataTableProps>>({ color: undefined })"
+				:init-state="() => useStoryInitState<Partial<IDataTableProps>>({ color: undefined, bgColor: undefined })"
 		>
 			<template #default="{ state }">
 				<origam-data-table
 						:headers="sortableHeaders"
 						:items="items"
 						:color="state.color"
+						:bg-color="state.bgColor"
 						:density="state.density"
 						:rounded="state.rounded"
 						:elevation="state.elevation"
@@ -30,6 +31,7 @@
 			<template #controls="{ state }">
 				<StoryGroup title="Color">
 					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Sizing">
 					<HstSelect v-model="state.density" title="Density" :options="DENSITY_OPTIONS"/>
@@ -457,6 +459,7 @@
 			<template #controls="{ state }">
 				<StoryGroup title="Design">
 					<HstSelect v-model="state.color"     title="Color"     :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor"   title="Bg Color"  :options="COLOR_OPTIONS"/>
 					<HstSelect v-model="state.density"   title="Density"   :options="DENSITY_OPTIONS"/>
 					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
 					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>

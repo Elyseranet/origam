@@ -566,6 +566,40 @@ Common root: **before concluding "the prop does nothing", prove your harness can
 actuate it.** Three separate lots of the blockers campaign lost time to a
 measurement artefact that looked exactly like a product defect.
 
+⛔ **Third qualification, measured 2026-09-09: inside Histoire's `__sandbox`
+iframe the single-`evaluate` rule produces FALSE NEGATIVES.** An element **already
+rendered by Vue** does not recalc after a mutation there — `getComputedStyle`
+returns the stale value even for a `background-color` written **inline** — while a
+`<div>` created in the same document responds correctly. Negative control, same
+`evaluate`:
+
+```
+fresh div, inline background-color   → rgb(9, 9, 9)      ✅ responds
+rendered <nav>, same write           → rgba(0, 0, 0, 0)  ❌ stale
+rendered <nav>, inline outline       → ignored too
+```
+
+This cost four consecutive diagnoses of "my fix does not take" on a fix that took.
+**Inject the theme with `addInitScript` before the document loads** — which is
+also the real-world scenario for a theme — instead of mutating after render.
+
+⛔ **`getPropertyValue()` on a CSS shorthand returns `""` whenever the value
+contains `var()`** (deferred substitution). Querying `background`, `border`,
+`transition`, `font` therefore reads empty on this DS's own tokens, and an audit
+that interrogates shorthands **silently misses nearly everything**. Query the
+longhand (`background-color`, `border-top-width`, …).
+
+⛔ **`sheet.cssRules` does not traverse `@media` / `@layer` groups.** A rule living
+inside one never appears in the enumeration, so a cascade probe that lists
+`cssRules` under-counts grouped rules and can name the wrong winner.
+
+⛔ **A probe element you build yourself is not the element Vue rendered.** A
+hand-made `<span class="origam-breadcrumb-item">` carries no `data-v-<hash>`, so
+the scoped selector never matches it: the probe measures a world where the defect
+does not exist, and **passes against pre-fix code**. Caught only by running the
+spec against `HEAD~1`. **Always A/B a new spec against the parent commit** — a
+green that also passes before the fix proves nothing.
+
 ⛔ **Do NOT use `pnpm -F @origam/tests test:e2e`** — the `pretest:e2e` hook
 fails on a guard and **blocks Playwright before a single spec starts, while
 still returning `exit 0`** to the caller. ⛔ Tracked as **#574**. Do NOT cite

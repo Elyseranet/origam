@@ -49,7 +49,7 @@
 					v-bind="controlsSlotBindings"
 			>
 				<origam-media-controller
-						:loop-mode="internalLoopMode"
+						v-model:loop-mode="internalLoopMode"
 						:shuffle="internalShuffle"
 						:state="state"
 						:methods="methods"
@@ -67,7 +67,6 @@
 						@previous="onPrevious"
 						@next="onNext"
 						@download="onDownloadClick"
-						@update:loop-mode="onLoopModeChange"
 						@update:shuffle="onShuffleChange"
 				>
 					<template #header>
@@ -181,7 +180,7 @@
 										v-for="(track, index) in playlist"
 										:key="track.id ?? index"
 										:active="index === safeTrackIndex"
-										:title="trackTitle(track, index)"
+										:title="track.title ?? `Track ${ index + 1 }`"
 										:subtitle="track.artist"
 										:prepend-avatar="track.cover"
 										class="origam-audio__playlist-item"
@@ -365,21 +364,6 @@
 	const loadingLabel = computed<string>(() => t('origam.loading'))
 
 	/*********************************************************
-	 * trackTitle — #436 (C8)
-	 *
-	 * @description
-	 * A playlist entry without a `title` used to fall back to the
-	 * template literal `Track ${ index + 1 }` — an English string
-	 * rendered verbatim under every locale, and a computation inside
-	 * the template. It now resolves `origam.audio.track_number`
-	 * (`"Track {0}"` / `"Piste {0}"`), interpolated positionally by
-	 * the builtin locale adapter.
-	 ********************************************************/
-	function trackTitle (track: IAudioTrack, index: number): string {
-		return track.title ?? t('origam.audio.track_number', index + 1)
-	}
-
-	/*********************************************************
 	 * Resolved autoplay / muted — autoplay is suppressed when the user
 	 * prefers reduced motion (a11y), and the browser requires muted=true
 	 * for unattended playback in most cases.
@@ -559,24 +543,6 @@
 		internalLoopMode.value = next ? 'one' : 'none'
 		emit('update:loopMode', internalLoopMode.value)
 	})
-
-	/*********************************************************
-	 * onLoopModeChange — #436
-	 *
-	 * @description
-	 * Exact twin of `onShuffleChange` below, and the defect 40c099b8
-	 * fixed for shuffle but not for loop: `v-model:loop-mode` on
-	 * `<origam-media-controller>` SWALLOWED the child's `update:loopMode`
-	 * into the internal ref, so a consumer's own `v-model:loopMode` /
-	 * `@update:loopMode` on `<OrigamAudio>` never fired for a real user
-	 * click on the loop button — only when the parent flipped the legacy
-	 * `loop` prop. The story's "Events - update:loopMode" Variant logged
-	 * nothing at all.
-	 ********************************************************/
-	const onLoopModeChange = (next: TAudioLoopMode) => {
-		internalLoopMode.value = next
-		emit('update:loopMode', next)
-	}
 
 	const resolvedLoopMode = computed<TAudioLoopMode>(() => internalLoopMode.value)
 
@@ -952,22 +918,12 @@
 
 	/*********************************************************
 	 * Error formatting for the default error overlay.
-	 *
-	 * @description
-	 * #436 (C8) — the generic label was the hardcoded English literal
-	 * `'Playback error'`, shown verbatim under every locale. It now
-	 * resolves `origam.media.playback_error`, shared with the other
-	 * media surfaces. A `MediaError` carries only a numeric `code`, so
-	 * this branch is the one a real decoding failure reaches; a
-	 * JS `Error` raised by the composable keeps its own `message`.
 	 ********************************************************/
-	const genericErrorMessage = computed<string>(() => t('origam.media.playback_error'))
-
 	const errorMessage = computed<string>(() => {
 		const err = state.error.value
-		if (!err) return genericErrorMessage.value
+		if (!err) return 'Playback error'
 		if ('message' in err && err.message) return err.message
-		return genericErrorMessage.value
+		return 'Playback error'
 	})
 
 	/*********************************************************
@@ -1270,14 +1226,6 @@
 			 * mask on `.origam-audio__cover` punches a real transparent
 			 * dot through this disc + image + grooves at the exact
 			 * centre, so we get a single continuous see-through hole.
-			 *
-			 * #436 (C2) — the disc colour was a hardcoded `#0a0a0a`, out of
-			 * reach of any theme. It now reads
-			 * `--origam-audio__cover-label---background-color`, declared as
-			 * `--origam-color__neutral---950` (the exact same value, so the
-			 * rendering is unchanged) in both the light and the dark sheet:
-			 * a vinyl label is a physical object, it does not flip with the
-			 * surface.
 			 */
 			content: '';
 			position: absolute;
@@ -1287,7 +1235,7 @@
 			width: 26%;
 			height: 26%;
 			border-radius: 50%;
-			background: var(--origam-audio__cover-label---background-color, #0a0a0a);
+			background: #0a0a0a;
 			box-shadow:
 				inset 0 0 0 1px rgba(255, 255, 255, 0.06),
 				0 0 6px rgba(0, 0, 0, 0.35);
@@ -1573,9 +1521,7 @@
 
 			:deep(.origam-avatar)::after {
 				/* Solid label disc; real spindle hole is punched by
-				   the `mask` on `.origam-avatar` itself. Shares the main
-				   cover's label token — same physical object, same
-				   colour, one override point (#436, C2). */
+				   the `mask` on `.origam-avatar` itself. */
 				content: '';
 				position: absolute;
 				top: 50%;
@@ -1584,7 +1530,7 @@
 				width: 28%;
 				height: 28%;
 				border-radius: 50%;
-				background: var(--origam-audio__cover-label---background-color, #0a0a0a);
+				background: #0a0a0a;
 				pointer-events: none;
 				z-index: 2;
 			}
