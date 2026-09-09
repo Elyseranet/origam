@@ -94,6 +94,8 @@ sibling drawer / app-bar.
 |---|---|
 | `--origam-main---flex` | `1 0 auto` |
 | `--origam-main---max-width` | `100%` |
+| `--origam-main---background-color` | inherits color.surface.default |
+| `--origam-main---color` | inherits color.text.primary |
 | `--origam-main---width` | `100%` |
 | `--origam-main---height` | `100%` |
 | `--origam-main---display` | `flex` |

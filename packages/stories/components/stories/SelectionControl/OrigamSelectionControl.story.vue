@@ -57,14 +57,13 @@
 
     <Variant
       title="State"
-      :init-state="() => useStoryInitState<IHoverProps & IActiveProps & IColorProps>({ color: 'primary' })"
+      :init-state="() => useStoryInitState<IHoverProps & IColorProps>({ color: 'primary' })"
     >
       <template #default="{ state }">
         <origam-selection-control-group v-model="stateModel" type="checkbox">
           <origam-selection-control
             :color="state.color"
             :hover="resolveHoverState(state.hover)"
-            :active="resolveActiveState(state.active)"
             :true-icon="MDI_ICONS.CHECKBOX_MARKED_OUTLINE"
             :false-icon="MDI_ICONS.CHECKBOX_BLANK_OUTLINE"
             value="state-val"
@@ -78,7 +77,6 @@
         </StoryGroup>
         <StoryGroup title="Interaction">
           <HstSelect v-model="state.hover" title="Hover" :options="HOVER_OPTIONS"/>
-          <HstSelect v-model="state.active" title="Active" :options="ACTIVE_OPTIONS"/>
         </StoryGroup>
       </template>
     </Variant>
@@ -261,7 +259,6 @@
 
   import { OrigamIcon, OrigamSelectionControl, OrigamSelectionControlGroup } from '@origam/components'
   import type {
-    IActiveProps,
     IColorProps,
     IHoverProps,
     IOptions,
@@ -272,8 +269,6 @@
   import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
   import { useStoryInitState } from '@stories/composables'
   import {
-    ACTIVE_OPTIONS,
-    resolveActiveState,
     BORDER_OPTIONS,
     BORDER_STYLE_OPTIONS,
     COLOR_OPTIONS,

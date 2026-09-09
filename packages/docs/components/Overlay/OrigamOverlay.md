@@ -121,6 +121,28 @@ interface IOverlayProps extends ICommonsComponentProps, IDimensionProps,
 }
 ```
 
+### Own props
+
+Inherited surfaces (`IDimensionProps`, `IActivatorProps`,
+`ILocationStrategyProps`, `IScrollStrategyProps`, `ILazyProps`,
+`ITransitionComponentProps`, `IScrimProps`) are documented on their own
+Commons pages — the table below covers only what `IOverlayProps` adds.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `modelValue` | `boolean` | `undefined` | Open state (`v-model`). Setting it to `true` while `disabled` is a no-op. |
+| `absolute` | `boolean` | `false` | Positions the root `absolute` instead of `fixed`, so the overlay scrolls with its container rather than the viewport. Implied by `contained`. |
+| `attach` | `boolean \| string \| Element` | `false` | Teleport destination. `false` → `<body>`; a CSS selector or `Element` → that node; `true` → no teleport at all (renders in place). A selector matching nothing warns and falls back to rendering in place. |
+| `contained` | `boolean` | `false` | Confines the overlay **and** its scrim to the nearest positioned ancestor. Implies `absolute` and is used as the teleport target when `attach` is unset. |
+| `contentClass` | `string \| Array<string>` | — | Extra class(es) on `.origam-overlay__content` (the floating panel), not on the root. |
+| `contentProps` | `any` | — | Attributes/listeners spread onto `.origam-overlay__content`. Merged after the internal content events, so use it for ARIA and data attributes rather than to override behaviour. |
+| `disabled` | `boolean` | `false` | Prevents opening, and closes the overlay if it is already open. |
+| `persistent` | `boolean` | `false` | Outside clicks, Escape and the back button no longer close the overlay — they play the "bounce" animation instead. |
+| `noClickAnimation` | `boolean` | `false` | Suppresses that bounce animation, so a `persistent` overlay stays completely inert. |
+| `closeOnBack` | `boolean` | `true` | The browser back button closes the topmost overlay instead of navigating away. |
+| `zIndex` | `number \| string` | `2000` | Base stacking value. Sibling overlays are stacked above it by `useStack`. |
+| `disableGlobalStack` | `boolean` | `false` | Keeps the overlay out of the global stack, so it never claims `globalTop` and never takes part in Escape / back-button arbitration between overlays. |
+
 ## Anatomy
 
 ```html
