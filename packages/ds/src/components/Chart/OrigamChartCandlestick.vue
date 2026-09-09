@@ -564,12 +564,13 @@ return [ out, props.style as StyleValue ]
 	/*********************************************************
 	 * ARIA
 	 ********************************************************/
-	const ariaLabel = computed(() => props.title ?? 'candlestick chart')
-	const svgAriaLabel = computed(() => props.title ?? 'candlestick chart')
-	const svgTitle = computed(() => props.title ?? 'candlestick chart')
+	const ariaLabel = computed(() => props.title ?? t('origam.chart.candlestick.aria_label'))
+	const svgAriaLabel = computed(() => props.title ?? t('origam.chart.candlestick.aria_label'))
+	const svgTitle = computed(() => props.title ?? t('origam.chart.candlestick.aria_label'))
 	const svgDesc = computed(() => {
 		const n = candles.value.length
-		return `Candlestick chart with ${ n } ${ n === 1 ? 'candle' : 'candles' }.`
+
+		return t('origam.chart.candlestick.desc', n)
 	})
 
 	const candleAriaLabel = (candle: IChartCandlestickCandle): string => {

@@ -880,12 +880,13 @@ return [ out, props.style as StyleValue ]
 	/*********************************************************
 	 * ARIA
 	 ********************************************************/
-	const ariaLabel = computed(() => props.title ?? 'pictorial chart')
-	const svgAriaLabel = computed(() => props.title ?? 'pictorial chart')
-	const svgTitle = computed(() => props.title ?? 'pictorial chart')
+	const ariaLabel = computed(() => props.title ?? t('origam.chart.pictorial.aria_label'))
+	const svgAriaLabel = computed(() => props.title ?? t('origam.chart.pictorial.aria_label'))
+	const svgTitle = computed(() => props.title ?? t('origam.chart.pictorial.aria_label'))
 	const svgDesc = computed(() => {
 		const n = visibleColumns.value.length
-		return `Pictorial chart with ${ n } ${ n === 1 ? 'column' : 'columns' }.`
+
+		return t('origam.chart.pictorial.desc', n)
 	})
 
 	const columnAriaLabel = (col: IChartPictorialColumn): string =>

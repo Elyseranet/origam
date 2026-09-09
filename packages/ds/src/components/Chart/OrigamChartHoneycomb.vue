@@ -540,12 +540,13 @@ return [ out, props.style as StyleValue ]
 	/*********************************************************
 	 * ARIA
 	 ********************************************************/
-	const ariaLabel = computed(() => props.title ?? 'honeycomb chart')
-	const svgAriaLabel = computed(() => props.title ?? 'honeycomb chart')
-	const svgTitle = computed(() => props.title ?? 'honeycomb chart')
+	const ariaLabel = computed(() => props.title ?? t('origam.chart.honeycomb.aria_label'))
+	const svgAriaLabel = computed(() => props.title ?? t('origam.chart.honeycomb.aria_label'))
+	const svgTitle = computed(() => props.title ?? t('origam.chart.honeycomb.aria_label'))
 	const svgDesc = computed(() => {
 		const n = visibleTiles.value.length
-		return `Honeycomb chart with ${ n } ${ n === 1 ? 'tile' : 'tiles' }.`
+
+		return t('origam.chart.honeycomb.desc', n)
 	})
 
 	const tileAriaLabel = (tile: IChartHoneycombTile): string => {

@@ -664,12 +664,13 @@ return [ out, props.style as StyleValue ]
 	/*********************************************************
 	 * ARIA
 	 ********************************************************/
-	const ariaLabel = computed(() => props.title ?? 'bullet chart')
-	const svgAriaLabel = computed(() => props.title ?? 'bullet chart')
-	const svgTitle = computed(() => props.title ?? 'bullet chart')
+	const ariaLabel = computed(() => props.title ?? t('origam.chart.bullet.aria_label'))
+	const svgAriaLabel = computed(() => props.title ?? t('origam.chart.bullet.aria_label'))
+	const svgTitle = computed(() => props.title ?? t('origam.chart.bullet.aria_label'))
 	const svgDesc = computed(() => {
 		const n = visibleBullets.value.length
-		return `Bullet chart with ${ n } ${ n === 1 ? 'indicator' : 'indicators' }.`
+
+		return t('origam.chart.bullet.desc', n)
 	})
 
 	const bulletAriaLabel = (bullet: IChartBulletBullet): string => {

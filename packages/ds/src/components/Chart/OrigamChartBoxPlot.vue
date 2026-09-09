@@ -659,12 +659,13 @@ return [ out, props.style as StyleValue ]
 	/*********************************************************
 	 * ARIA
 	 ********************************************************/
-	const ariaLabel = computed(() => props.title ?? 'box plot chart')
-	const svgAriaLabel = computed(() => props.title ?? 'box plot chart')
-	const svgTitle = computed(() => props.title ?? 'box plot chart')
+	const ariaLabel = computed(() => props.title ?? t('origam.chart.box_plot.aria_label'))
+	const svgAriaLabel = computed(() => props.title ?? t('origam.chart.box_plot.aria_label'))
+	const svgTitle = computed(() => props.title ?? t('origam.chart.box_plot.aria_label'))
 	const svgDesc = computed(() => {
 		const n = visibleBoxes.value.length
-		return `Box plot with ${ n } ${ n === 1 ? 'category' : 'categories' }.`
+
+		return t('origam.chart.box_plot.desc', n)
 	})
 
 	const boxAriaLabel = (box: IChartBoxPlotBox): string => {

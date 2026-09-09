@@ -395,11 +395,17 @@ return [ out, props.style as StyleValue ]
 
 	const hasTitleBlock = computed(() => Boolean(props.title || props.subtitle))
 
-	const ariaLabel = computed(() => props.title ?? `Gauge: ${ formattedValue.value }${ props.gaugeUnit ?? '' }`)
+	const ariaLabel = computed(() => props.title
+		?? t('origam.chart.gauge.value_aria_label', `${ formattedValue.value }${ props.gaugeUnit ?? '' }`))
 	const svgAriaLabel = computed(() => ariaLabel.value)
-	const svgTitle = computed(() => props.title ?? 'gauge chart')
+	const svgTitle = computed(() => props.title ?? t('origam.chart.gauge.aria_label'))
 	const svgDesc = computed(() =>
-		`Gauge showing ${ formattedValue.value }${ props.gaugeUnit ?? '' } out of a range from ${ props.gaugeMin } to ${ props.gaugeMax }.`
+		t(
+			'origam.chart.gauge.desc',
+			`${ formattedValue.value }${ props.gaugeUnit ?? '' }`,
+			props.gaugeMin,
+			props.gaugeMax
+		)
 	)
 </script>
 

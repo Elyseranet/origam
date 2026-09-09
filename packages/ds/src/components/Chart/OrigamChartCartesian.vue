@@ -1210,14 +1210,19 @@ return [ out, props.style as StyleValue ]
 	 * ARIA
 	 ********************************************************/
 	const ariaLabel = computed(() => props.title ?? t('origam.chart.aria_label'))
-	const svgAriaLabel = computed(() => props.title ?? `${ props.type } chart`)
-	const svgTitle = computed(() => props.title ?? `${ props.type } chart`)
+	const svgAriaLabel = computed(() => props.title ?? t('origam.chart.cartesian.aria_label', {type: props.type}))
+	const svgTitle = computed(() => props.title ?? t('origam.chart.cartesian.aria_label', {type: props.type}))
 	const svgDesc = computed(() => {
 		const seriesCount = activeSeries.value.length
-		if (!seriesCount) return 'No data'
+		if (!seriesCount) return t('origam.chart.desc_no_data')
 		const range = yRange.value
 		const points = slotCount.value
-		return `${ props.type } chart with ${ seriesCount } series and ${ points } ${ points === 1 ? 'point' : 'points' }, values ranging from ${ range.min } to ${ range.max }.`
+		return t('origam.chart.cartesian.desc', points, {
+			type: props.type,
+			series: seriesCount,
+			min: range.min,
+			max: range.max
+		})
 	})
 
 	const pointAriaLabel = (path: IChartPath) => {
