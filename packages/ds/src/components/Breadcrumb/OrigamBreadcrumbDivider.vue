@@ -139,7 +139,6 @@
 		--origam-breadcrumb-divider---border-right-width: 0px;
 		--origam-breadcrumb-divider---border-width: var(--origam-breadcrumb-divider---border-top-width) var(--origam-breadcrumb-divider---border-left-width) var(--origam-breadcrumb-divider---border-bottom-width) var(--origam-breadcrumb-divider---border-right-width);
 		--origam-breadcrumb-divider---density: 0px;
-		--origam-breadcrumb-divider---color: var(--origam-breadcrumb-divider---color-token, inherit);
 		--origam-breadcrumb-divider---margin-inline-start: 0px;
 		--origam-breadcrumb-divider---margin-inline-end: 0px;
 		--origam-breadcrumb-divider---margin-block-start: 0px;

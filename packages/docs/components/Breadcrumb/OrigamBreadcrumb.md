@@ -238,9 +238,10 @@ parts that are *not* separate components).
 |---|---|---|
 | `--origam-breadcrumb---background` | `transparent` | `<OrigamBreadcrumb>` root |
 | `--origam-breadcrumb---color` | `{color.text.primary}` | `<OrigamBreadcrumb>` root |
-| `--origam-breadcrumb---border-radius` | `{radius.none}` | `<OrigamBreadcrumb>` root — a `--origam-breadcrumb---border-radius-rounded` var (`{radius.sm}`, 4px) is also generated, but the component's `--rounded` modifier never reads it: `OrigamBreadcrumb.vue` hardcodes `border-radius: var(--origam-radius---2xl, 24px)` directly, so `--rounded` actually renders **24px**, not 4px |
-| `--origam-breadcrumb---box-shadow-elevated` | `{shadow.md}` | Generated in `main.css`, but **not read** by the component — the `--elevated` modifier in `OrigamBreadcrumb.vue` sets its local `--origam-breadcrumb---box-shadow` straight to `var(--origam-shadow---md, …)`, bypassing this variable entirely |
-| `--origam-breadcrumb---padding-block` / `-inline` | `{space.2}` | Generated in `main.css`, but **not read** — the component hardcodes its own local `--origam-breadcrumb---padding-{block,inline}-{start,end}` vars to a literal `8px`, ignoring these token-driven variables |
+| `--origam-breadcrumb---border-radius` | `{radius.none}` | `<OrigamBreadcrumb>` root |
+| `--origam-breadcrumb---border-radius-rounded` | `{radius.2xl}` (24px) | ✅ read by the `--rounded` modifier since the #607 pass. It was previously `{radius.sm}` (4px) and unread — the modifier hardcoded `var(--origam-radius---2xl, 24px)`. The token was repointed to `2xl` so wiring it changes **no pixel**: 24px is what `--rounded` has always rendered. Nobody could have seen the 4px value, because nothing ever read it |
+| `--origam-breadcrumb---box-shadow-elevated` | `{shadow.md}` | ✅ read by the `--elevated` modifier, with `var(--origam-shadow---md, …)` as fallback |
+| `--origam-breadcrumb---padding-block` / `-inline` | `{space.2}` | ✅ read — the component's local `--origam-breadcrumb---padding-{block,inline}-{start,end}` resolve `var(--origam-breadcrumb---padding-{block,inline}, 8px)` |
 | `--origam-breadcrumb---gap` | `{space.0}` | Generated in `main.css`, but **not read anywhere** — `&__items` has no `gap` declaration; crumbs are only spaced by the divider's own inline padding |
 | `--origam-breadcrumb-item---hover-color` | `{color.action.primary.bg}` | Generated, but **not read anywhere** in `OrigamBreadcrumbItem.vue` — no naming issue this time, the property is simply never wired |
 | `--origam-breadcrumb-item---active-color` | `{color.text.secondary}` | Same — generated, never read |
@@ -249,30 +250,79 @@ parts that are *not* separate components).
 | `--origam-breadcrumb-divider---padding-inline` | `{space.2}` | ✅ reaches the divider via `var(--origam-breadcrumb-divider---padding-inline, 8px)` — the other channel #386 restored |
 | `--origam-breadcrumb---home-icon-color` | `{color.action.primary.bg}` | optional home icon (via `prependIcon` on the first item) |
 
-> **#386 fixed the naming drift, but that only restored 2 of ~26
-> item/divider properties — most remain unreachable for a *different*
-> reason.** `OrigamBreadcrumbItem.vue` / `OrigamBreadcrumbDivider.vue`'s
-> scoped `<style>` blocks **redeclare** most of these custom properties
-> locally — either as a hardcoded literal (`--origam-breadcrumb-divider---border-color: currentColor;`)
-> or as a read of a *different* name (`--origam-breadcrumb-divider---color:
-> var(--origam-breadcrumb-divider---color-token, inherit)` — note
-> `-color-token`, not `-color`). A CSS custom property follows normal
-> cascade rules: `.origam-breadcrumb-divider[data-v-xxx]` has higher
-> specificity than `:root`/`[data-theme]`, so the component's own local
-> declaration always wins **regardless of what name the token pipeline
-> uses**. Renaming/relocating the DTCG source (#386) cannot fix a
-> property that's shadowed this way — only `padding-inline` (divider)
-> and `opacity-disabled` (item) read the token via a pure `var(token,
-> fallback)` with no competing local declaration of the same name, which
-> is why those two are the only ones actually restored. The remaining
-> properties (`color`, `background`, `border-*`, `box-shadow`,
-> `transition-*`, `font-size`, `character`, `hover-color`, `active-color`)
-> need the shadowing itself fixed — tracked in a follow-up ticket
-> (measurement-first: how many properties are shadowed this way across
-> the catalogue, before committing to fix them). To theme an item or
-> divider property that's still shadowed today, target the **local**
-> variable directly, e.g.:
-> `.origam-breadcrumb-item { --origam-breadcrumb-item---color: var(--origam-color__text---secondary); }`.
+> **Le recouvrement scopé est corrigé (#607).** Les trois composants
+> redéclaraient dans leur bloc `<style scoped>` des tokens déjà déclarés par
+> `light.css` / `dark.css`. Un sélecteur scopé — `.origam-breadcrumb-item[data-v-xxx]`,
+> spécificité (0,2,0) — bat `:root` / `[data-theme]` à (0,1,0) : la valeur du
+> thème était calculée puis écrasée, quel que soit le nom du token. #386 avait
+> corrigé le NOM ; il ne pouvait rien contre le recouvrement.
+>
+> **27 des 30 tokens concernés sont maintenant atteignables par un thème**
+> (9 sur la racine, 9 sur l'item, 9 sur le séparateur). Vérifié en A/B contre
+> Chromium : `packages/tests/e2e/breadcrumb-theme-channel.spec.ts` échoue sur
+> le code d'avant et passe après.
+>
+> ⚠️ **Un changement de comportement, sur la couleur.** `--origam-breadcrumb-item---color`
+> et `--origam-breadcrumb-divider---color` résolvaient `inherit` : la couleur
+> descendait d'un ancêtre. Elles résolvent désormais leur token
+> (`{color.text.primary}` pour l'item, `{color.text.secondary}` pour le
+> séparateur). **Colorer un fil d'Ariane en posant `color` sur un conteneur
+> parent ne fonctionne plus** — ce n'est pas déprécié, c'est sans effet, et
+> silencieusement. Réglez la couleur par le thème (le token ci-dessus) ou par
+> la prop `color` du composant.
+>
+> Le séparateur est aussi **plus clair qu'avant** : `{color.text.secondary}`
+> (#525252) au lieu du #171717 qu'il héritait. C'est délibéré — un séparateur
+> est du chrome, pas du contenu.
+>
+> Restent shadowés, en attente d'arbitrage : les `transition-duration` des
+> trois composants (voir « Transitions » plus bas).
+
+## Transitions
+
+⛔ **Le raccourci `transition` des trois composants est malformé, et le reste
+aujourd'hui — mesuré dans Chromium, pas déduit.** Les composants composent
+`--origam-{cmp}---transition` à partir de trois variables :
+
+```css
+--origam-breadcrumb---transition-property: transform, color;
+--origam-breadcrumb---transition-duration: 0.2s, 0.1s;
+--origam-breadcrumb---transition: var(…property) var(…duration) var(…timing);
+```
+
+Une fois substitué, cela donne `transform, color 0.2s, 0.1s cubic-bezier(…)`.
+`transition` étant une **liste de transitions séparées par des virgules**, le
+navigateur y lit trois entrées, pas deux propriétés à deux durées. Style
+calculé, identique sur `<OrigamBreadcrumb>`, `<OrigamBreadcrumbItem>` et
+`<OrigamBreadcrumbDivider>` :
+
+```
+transition-property        : transform, color, all
+transition-duration        : 0s, 0.2s, 0.1s
+transition-timing-function : ease, ease, cubic-bezier(0.4, 0, 0.2, 1)
+```
+
+Autrement dit, le rendu réel n'est pas « transform 200 ms / color 100 ms » :
+
+| entrée | effet réel |
+|---|---|
+| `transform` | **0 s — jamais animé** |
+| `color` | 200 ms, en `ease` (pas l'easing du DS) |
+| `all` | **100 ms sur TOUTES les propriétés** — entrée fantôme, non voulue |
+
+C'est cette troisième entrée qui anime aujourd'hui le fond, le rayon, l'ombre
+et l'opacité du composant. Corriger le raccourci **supprimerait** cette
+animation, **démarrerait** celle de `transform`, et changerait l'easing de
+`color` — trois changements visibles. La correction est donc en attente
+d'arbitrage et n'est pas incluse dans la passe #607 ; les
+`--origam-{cmp}---transition-duration` des trois composants restent shadowés
+dans leur bloc scopé en attendant.
+
+Les tokens `--origam-{cmp}---transition-duration-transform`
+(`{motion.duration.medium}`, 200 ms) et `---transition-duration-color`
+(`{motion.duration.fast}`, 100 ms) sont **déclarés** dans les quatre feuilles
+pour recevoir la correction, mais **aucun composant ne les lit encore** — ils
+apparaissent donc en canal dormant tant que l'arbitrage n'est pas rendu.
 
 ## Accessibility
 

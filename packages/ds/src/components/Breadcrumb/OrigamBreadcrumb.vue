@@ -297,7 +297,7 @@
 		}
 
 		&--rounded {
-			border-radius: var(--origam-radius---2xl, 24px);
+			border-radius: var(--origam-breadcrumb---border-radius-rounded, var(--origam-radius---2xl, 24px));
 		}
 
 		&--rounded-x-small {

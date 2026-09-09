@@ -117,6 +117,51 @@ test.describe('Breadcrumb — canal de thème (#607)', () => {
         expect(m['--origam-breadcrumb-divider---border-radius']).toBe('7px')
     })
 
+    test('rounded : le modificateur rend toujours 24px (aucun pixel ne bouge)', async ({ page }) => {
+        const m = await measure(page, `/stories/story/${HOST}?variantId=${HOST}-0`, '.origam-breadcrumb', ['--origam-breadcrumb---border-radius-rounded'])
+
+        // Le token valait {radius.sm} (4px) et n'était JAMAIS lu ; le modificateur
+        // codait en dur var(--origam-radius---2xl, 24px). Repointé sur 2xl puis
+        // câblé : 24px reste 24px, et le crochet de theming existe enfin.
+        expect(m['--origam-breadcrumb---border-radius-rounded']).toBe('24px')
+    })
+
+    test('rounded : le token est désormais thémable', async ({ page }) => {
+        await page.addInitScript((css: string) => {
+            const inject = () => {
+                const s = document.createElement('style')
+                s.textContent = css
+                document.head.appendChild(s)
+            }
+            if (document.head) inject()
+            else document.addEventListener('DOMContentLoaded', inject, { once: true })
+        }, ':root, [data-theme="light"] { --origam-breadcrumb---border-radius-rounded: 5px; }')
+
+        const m = await measure(page, `/stories/story/${HOST}?variantId=${HOST}-0`, '.origam-breadcrumb', ['--origam-breadcrumb---border-radius-rounded'])
+        expect(m['--origam-breadcrumb---border-radius-rounded']).toBe('5px')
+    })
+
+    test('divider : la couleur vient du token secondary, plus de inherit', async ({ page }) => {
+        const m = await measure(page, `/stories/story/${HOST}?variantId=${HOST}-0`, '.origam-breadcrumb-divider', ['--origam-breadcrumb-divider---color'])
+
+        // ⛔ Lire une custom property rend sa VALEUR DÉCLARÉE (chaîne `var()`
+        // résolue jusqu'au littéral), pas une couleur utilisée : on compare donc
+        // `#525252`, pas `rgb(82, 82, 82)`.
+        // {color.text.secondary} = neutral-600 = #525252. Avant : inherit → #171717.
+        expect(m['--origam-breadcrumb-divider---color']).toBe('#525252')
+    })
+
+    test('item : la couleur vient du token primary, plus de inherit', async ({ page }) => {
+        // ⛔ Mesuré depuis la story HOST, pas ITEM : la variante 0 d'ITEM pose
+        // `color: 'primary'` EN PROP, donc `useStateEffect` écrit une déclaration
+        // inline et on mesurerait la prop, pas la valeur de thème par défaut.
+        const m = await measure(page, `/stories/story/${HOST}?variantId=${HOST}-0`, '.origam-breadcrumb-item', ['--origam-breadcrumb-item---color'])
+
+        // {color.text.primary} = neutral-900 = #171717 — même couleur qu'avant au
+        // repos, mais elle ne descend plus d'un ancêtre : elle vient du token.
+        expect(m['--origam-breadcrumb-item---color']).toBe('#171717')
+    })
+
     test('non-régression : sans thème, les valeurs par défaut sont inchangées', async ({ page }) => {
         const m = await measure(page, `/stories/story/${ITEM}?variantId=${ITEM}-0`, '.origam-breadcrumb-item', [
             ...ITEM_NAMES,

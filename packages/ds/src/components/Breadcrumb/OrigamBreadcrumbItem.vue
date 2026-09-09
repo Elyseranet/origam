@@ -243,7 +243,6 @@
 		--origam-breadcrumb-item---border-right-width: 0px;
 		--origam-breadcrumb-item---border-width: var(--origam-breadcrumb-item---border-top-width) var(--origam-breadcrumb-item---border-left-width) var(--origam-breadcrumb-item---border-bottom-width) var(--origam-breadcrumb-item---border-right-width);
 		--origam-breadcrumb-item---density: 0px;
-		--origam-breadcrumb-item---color: var(--origam-breadcrumb-item---color-token, inherit);
 		--origam-breadcrumb-item---margin-inline-start: 0px;
 		--origam-breadcrumb-item---margin-inline-end: 0px;
 		--origam-breadcrumb-item---margin-block-start: 0px;
