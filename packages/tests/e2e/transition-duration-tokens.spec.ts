@@ -79,11 +79,12 @@ interface ICase {
 }
 
 /**
- * ⛔ `expand-x` / `expand-y` read a token named `…-enter-leave---…` on their
- * LEAVE rule — a misnomer that predates this spec and has already shipped.
- * It is pinned here AS IS rather than renamed: renaming a public CSS
- * variable is a breaking change for any consumer who overrode it, and that
- * belongs to its own decision, not to a drive-by edit inside a refactor.
+ * `expand-x` / `expand-y` used to read a token named `…-enter-leave---…` on
+ * their LEAVE rule — a misnomer that had already shipped. The correct
+ * `…-leave-active---…` name is now THE reference and is what the token
+ * stylesheets declare; the old name survives only as a read-site fallback
+ * (see the `deprecated alias` block at the bottom of this file) and goes
+ * away at the next major.
  */
 const CASES: ICase[] = [
     {
@@ -127,7 +128,7 @@ const CASES: ICase[] = [
         root: 'origam-transition--expand-x',
         phases: [
             {suffix: 'enter-active', token: 'enter-active', duration: '0.5s', easing: STANDARD, property: 'width'},
-            {suffix: 'leave-active', token: 'enter-leave', duration: '0.5s', easing: STANDARD, property: 'width'},
+            {suffix: 'leave-active', token: 'leave-active', duration: '0.5s', easing: STANDARD, property: 'width'},
             {suffix: 'move', token: 'move', duration: '0.5s', easing: STANDARD, property: 'transform'}
         ]
     },
@@ -136,7 +137,7 @@ const CASES: ICase[] = [
         root: 'origam-transition--expand-y',
         phases: [
             {suffix: 'enter-active', token: 'enter-active', duration: '0.5s', easing: STANDARD, property: 'height'},
-            {suffix: 'leave-active', token: 'enter-leave', duration: '0.5s', easing: STANDARD, property: 'height'},
+            {suffix: 'leave-active', token: 'leave-active', duration: '0.5s', easing: STANDARD, property: 'height'},
             {suffix: 'move', token: 'move', duration: '0.5s', easing: STANDARD, property: 'transform'}
         ]
     },
@@ -329,3 +330,59 @@ for (const testCase of CASES) {
         }
     })
 }
+
+/**
+ * Deprecated alias — `…-enter-leave---…` on ExpandX / ExpandY.
+ *
+ * ⛔ THE ALIAS CANNOT BE A DECLARATION. Writing
+ * `--new: var(--old, <value>)` in the token sheet performs the substitution
+ * AT `:root`, so a consumer who sets the old name ON AN ELEMENT — which is
+ * exactly what the CLAUDE.md recommends for a one-off override — is never
+ * honoured. Worse, the DS declares its tokens on `:root, [data-theme=…]`,
+ * which inherits onto every element, so a `var(--old, fallback)` in a
+ * declaration NEVER reaches its fallback at all.
+ *
+ * The alias therefore lives in the component's READS:
+ *
+ *     transition-duration: var(--old---transition-duration,
+ *                              var(--new---transition-duration));
+ *
+ * and the old name is deliberately NOT declared anywhere — if it were, it
+ * would always resolve and the new name would be unreachable.
+ *
+ * These tests are a non-regression pin, not a red-first filet: the old name
+ * worked before the rename too. What they guard is that renaming the
+ * reference did not silently drop the alias.
+ */
+test.describe('ExpandX / ExpandY — deprecated `enter-leave` alias', () => {
+    for (const {story, root} of [
+        {story: 'origamexpandx-story-vue', root: 'origam-transition--expand-x'},
+        {story: 'origamexpandy-story-vue', root: 'origam-transition--expand-y'}
+    ]) {
+        test(`${root}: the old enter-leave name still drives the leave duration`, async ({page}) => {
+            await gotoStory(page, story)
+
+            const result = await probe(
+                page,
+                `${root}-leave-active`,
+                `--${root}-enter-leave---transition-duration`,
+                `--${root}-enter-leave---transition-timing-function`
+            )
+
+            expect(
+                result.duration,
+                'the alias must not change what renders by default'
+            ).toBe('0.5s')
+
+            expect(
+                result.durationAfter,
+                'a consumer still setting the old name on the element is no longer honoured'
+            ).toBe(DURATION_PROBE_COMPUTED)
+
+            expect(
+                result.easingAfter,
+                'a consumer still setting the old easing name on the element is no longer honoured'
+            ).toBe(EASING_PROBE_COMPUTED)
+        })
+    }
+})

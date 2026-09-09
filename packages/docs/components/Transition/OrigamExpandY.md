@@ -40,15 +40,42 @@ warning either way).
 
 ## CSS variables consumed
 
+Declared in `assets/css/tokens/light.css`.
+
 | Variable | Default |
 |---|---|
 | `--origam-transition--expand-y-enter-active---transition-duration` | `0.5s` |
-| `--origam-transition--expand-y-enter-active---transition-timing-function` | `cubic-bezier(0.4, 0, 0.2, 1)` |
+| `--origam-transition--expand-y-enter-active---transition-timing-function` | `var(--origam-motion__easing---standard)` |
 | `--origam-transition--expand-y-enter-active---transition-property` | `height` |
-| `--origam-transition--expand-y-enter-leave---transition-duration` | `0.5s` |
-| `--origam-transition--expand-y-move---transition-property` | `transform` — only reachable via `group` (see above) |
+| `--origam-transition--expand-y-leave-active---transition-duration` | `0.5s` |
+| `--origam-transition--expand-y-leave-active---transition-timing-function` | `var(--origam-motion__easing---standard)` |
+| `--origam-transition--expand-y-leave-active---transition-property` | `height` |
+| `--origam-transition--expand-y-move---transition-duration` | `0.5s` — only reachable via `group` (see above) |
+| `--origam-transition--expand-y-move---transition-timing-function` | `var(--origam-motion__easing---standard)` — idem |
+| `--origam-transition--expand-y-move---transition-property` | `transform` — idem |
 
-Override at root or per instance.
+Override at the document root or on a specific instance:
+
+```css
+.my-panel {
+    --origam-transition--expand-y-enter-active---transition-duration: 0.25s;
+}
+```
+
+### Deprecated: the `-enter-leave-` name
+
+The leave rule used to read `--origam-transition--expand-y-enter-leave---*`, a
+misnomer that had already shipped. `-leave-active-` is now the reference and
+is what the stylesheet declares. The old name is still **honoured** — as a
+fallback read inside the component — and **will be removed at the next
+major**: migrate any override you have.
+
+The old name is deliberately declared nowhere. Were it declared, it would
+always resolve and `-leave-active-` would become unreachable. It works only
+because the component reads
+`var(--…-enter-leave---x, var(--…-leave-active---x))` — which is also why
+setting it directly on an element still works, whereas an alias written as a
+declaration in the token sheet would only ever substitute at `:root`.
 
 ## Props
 

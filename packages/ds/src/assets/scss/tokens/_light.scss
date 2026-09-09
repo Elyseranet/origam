@@ -2715,7 +2715,9 @@
      refactor, not a retiming. Declared here only (not in dark.css): a
      duration does not vary by theme, and the :root selector already covers
      both. ExpandX/ExpandY's triples moved up from their component-local
-     <style>:root{} block unchanged, misnamed 'enter-leave' infix included. */
+     <style>:root{} block; their misnamed 'enter-leave' infix was corrected to
+     'leave-active' here, the old name surviving only as a read-site fallback
+     inside the two components (deprecated, removed at the next major). */
   --origam-transition--fade-enter-active---transition-duration: 0.3s;
   --origam-transition--fade-enter-active---transition-timing-function: var(--origam-motion__easing---standard);
   --origam-transition--fade-leave-active---transition-duration: 0.3s;
@@ -2743,18 +2745,18 @@
   --origam-transition--expand-x-enter-active---transition-duration: 0.5s;
   --origam-transition--expand-x-enter-active---transition-timing-function: var(--origam-motion__easing---standard);
   --origam-transition--expand-x-enter-active---transition-property: width;
-  --origam-transition--expand-x-enter-leave---transition-duration: 0.5s;
-  --origam-transition--expand-x-enter-leave---transition-timing-function: var(--origam-motion__easing---standard);
-  --origam-transition--expand-x-enter-leave---transition-property: width;
+  --origam-transition--expand-x-leave-active---transition-duration: 0.5s;
+  --origam-transition--expand-x-leave-active---transition-timing-function: var(--origam-motion__easing---standard);
+  --origam-transition--expand-x-leave-active---transition-property: width;
   --origam-transition--expand-x-move---transition-duration: 0.5s;
   --origam-transition--expand-x-move---transition-timing-function: var(--origam-motion__easing---standard);
   --origam-transition--expand-x-move---transition-property: transform;
   --origam-transition--expand-y-enter-active---transition-duration: 0.5s;
   --origam-transition--expand-y-enter-active---transition-timing-function: var(--origam-motion__easing---standard);
   --origam-transition--expand-y-enter-active---transition-property: height;
-  --origam-transition--expand-y-enter-leave---transition-duration: 0.5s;
-  --origam-transition--expand-y-enter-leave---transition-timing-function: var(--origam-motion__easing---standard);
-  --origam-transition--expand-y-enter-leave---transition-property: height;
+  --origam-transition--expand-y-leave-active---transition-duration: 0.5s;
+  --origam-transition--expand-y-leave-active---transition-timing-function: var(--origam-motion__easing---standard);
+  --origam-transition--expand-y-leave-active---transition-property: height;
   --origam-transition--expand-y-move---transition-duration: 0.5s;
   --origam-transition--expand-y-move---transition-timing-function: var(--origam-motion__easing---standard);
   --origam-transition--expand-y-move---transition-property: transform;

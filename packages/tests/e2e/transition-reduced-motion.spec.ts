@@ -81,11 +81,7 @@ async function measureUnderReducedMotion (page: Page, root: string, phases: stri
 
             const plain = view.getComputedStyle(el).transitionDuration
 
-            const infix = phase === 'leave-active' && args.root.includes('expand-')
-                ? 'enter-leave'
-                : phase
-
-            el.style.setProperty(`--${args.root}-${infix}---transition-duration`, '9s')
+            el.style.setProperty(`--${args.root}-${phase}---transition-duration`, '9s')
 
             const themed = view.getComputedStyle(el).transitionDuration
 
