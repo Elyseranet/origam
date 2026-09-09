@@ -66,6 +66,15 @@ async function gotoStory (page: Page, story: string) {
  * through the new token channel, and measures — all inside a single
  * `evaluate` (the `alert.spec.ts` trap). If the accessibility override no
  * longer outranks the token, the long value is what comes back.
+ *
+ * ⛔ This assertion is "nothing changed", which is the exact shape a
+ * measurement artefact fakes: a harness that cannot actuate the property
+ * passes for the wrong reason. The single-`evaluate` caveat added to the
+ * CLAUDE.md on 2026-09-09 is about a DESCENDANT inheriting through `var()`;
+ * here the property is set on the SAME element that is measured, and the
+ * harness was proven to actuate — mutating `OrigamFade` so its
+ * reduced-motion block zeroes the VARIABLE instead of the PROPERTY makes
+ * this very probe return `9s`. The pass is therefore evidence, not silence.
  */
 async function measureUnderReducedMotion (page: Page, root: string, phases: string[]) {
     const frame = page.frameLocator('iframe[src*="__sandbox"]')
