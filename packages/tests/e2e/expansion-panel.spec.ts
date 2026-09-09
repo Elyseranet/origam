@@ -515,7 +515,7 @@ test.describe('OrigamExpansionPanel', () => {
             await openEventsTab(page)
             const logged = eventLogItems(page).filter({ hasText: 'group:selected' })
             await expect(logged).toHaveCount(1)
-            await expect(logged.first()).toContainText('true')
+            await expect(logged.first()).toContainText('{ value: true }')
         })
 
         test('collapsing again emits a second group:selected, with value false', async ({ page }) => {
@@ -530,9 +530,13 @@ test.describe('OrigamExpansionPanel', () => {
             await page.waitForTimeout(300)
 
             await openEventsTab(page)
+            // Histoire's event log is OLDEST-first: `.first()` is the opening
+            // event, `.last()` the collapse. Verified empirically — asserting
+            // on `.first()` here reads back `group:selected{ value: true }`.
             const logged = eventLogItems(page).filter({ hasText: 'group:selected' })
             await expect(logged).toHaveCount(2)
-            await expect(logged.first()).toContainText('false')
+            await expect(logged.first()).toContainText('{ value: true }')
+            await expect(logged.last()).toContainText('{ value: false }')
         })
 
         test('no group:selected is logged before any interaction', async ({ page }) => {
@@ -654,6 +658,25 @@ test.describe('OrigamExpansionPanel', () => {
             await header.click()
             await expect(sandbox.getByText('This content was inserted via the default slot.')).toBeVisible({ timeout: 8000 })
             await expect(sandbox.locator('.origam-expansion-panel-content').first()).not.toHaveCSS('display', 'none')
+        })
+
+        // The doc states the content "unmounts again after the closing
+        // transition ends (`useLazy`)". Returning to rest is a second at-rest
+        // state, and it was untested: the spec only ever checked that
+        // `aria-expanded` flipped back to false, which says nothing about
+        // whether the body actually left the screen.
+        test('#420 back at rest — closing the panel hides the body again', async ({ page }) => {
+            await page.goto(panelVariantUrl(5), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const header = sandbox.locator('.origam-expansion-panel-header').first()
+            await expect(header).toBeVisible({ timeout: 12000 })
+
+            await header.click()
+            await expect(sandbox.getByText('This content was inserted via the default slot.')).toBeVisible({ timeout: 8000 })
+
+            await header.click()
+            await expect(header).toHaveAttribute('aria-expanded', 'false')
+            await expect(sandbox.getByText('This content was inserted via the default slot.')).toBeHidden({ timeout: 8000 })
         })
     })
 
