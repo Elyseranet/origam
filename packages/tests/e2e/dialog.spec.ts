@@ -300,10 +300,13 @@ test.describe('OrigamDialog', () => {
 	// jamais un `var()` et renvoie un `16px` fabriqué qui ressemble à une
 	// vraie mesure (cf. CLAUDE.md #398). Navigateur réel obligatoire.
 	//
-	// ⛔ Un défaut voisin reste OUVERT et n'a PAS été réglé par ce retrait :
-	// ce qui déborde hors de `.origam-card__content` (un `#asset` ou un
-	// `#text` haut) est coupé par le `overflow: hidden` de la carte, sans
-	// aucun moyen d'y accéder. Sujet disjoint, ticket dédié.
+	// ⛔ Un défaut voisin reste OUVERT et n'a PAS été réglé par ce retrait —
+	// ticket #563. Ce qui déborde HORS de `.origam-card__content` (au premier
+	// chef un `#asset`, rendu comme frère de ce bloc) devient inatteignable :
+	// aucun ancêtre défilable, document bloqué par `scrollStrategy: 'block'`,
+	// 1219 px sous le bas du viewport. La carte n'est pas tronquée à sa propre
+	// frontière — elle GRANDIT, et `.origam-overlay__content` (`overflow:
+	// visible`) la laisse déborder hors écran.
 
 	test.describe('Prop scrollable retirée (#419)', () => {
 		test('aucun element ne porte la classe origam-dialog--scrollable', async ({ page }) => {

@@ -28,11 +28,18 @@ export interface IDialogProps extends ICommonsComponentProps, IOverlayProps, ICa
      *  // auto|auto|100%|330px|flex|column
      *
      * @description
-     * Le retrait ne change aucun rendu (la classe n'était lue par personne).
-     * Le défaut de clipping qu'un tel réglage aurait pu adresser — tout ce qui
-     * déborde hors de `.origam-card__content` est coupé par le `overflow:
-     * hidden` de la carte, sans moyen d'y accéder — est un sujet DISJOINT,
-     * suivi par son propre ticket. Il n'a PAS été réglé ici.
+     * Le retrait ne change aucun rendu : la classe n'était lue par personne.
+     *
+     * @description
+     * ⛔ Le défaut qu'un tel réglage aurait pu adresser est un sujet DISJOINT,
+     * suivi par le ticket #563, et il n'a PAS été réglé ici : tout ce qui
+     * déborde HORS de `.origam-card__content` — au premier chef le slot
+     * `#asset`, rendu comme frère de ce bloc — devient inatteignable. Mesuré :
+     * aucun ancêtre du contenu débordant n'est défilable, le document non plus
+     * (`scrollStrategy: 'block'`), et 1219 px se retrouvent sous le bas du
+     * viewport sans aucun moyen d'y accéder. La carte n'est pas tronquée à sa
+     * propre frontière — elle GRANDIT ; c'est `.origam-overlay__content`
+     * (`overflow: visible`) qui la laisse déborder hors écran.
      ********************************************************/
     size?: TSize
     /*********************************************************

@@ -84,11 +84,15 @@ Removing it changes no rendering whatsoever. It is a typed-API removal only:
 code passing `scrollable` now fails to type-check, and should simply drop the
 prop.
 
-**A separate, still-open defect was explicitly carved out of this decision**:
-content that overflows *outside* `.origam-card__content` — a tall `#asset`,
-`#text`, or header region — is clipped by the card's `overflow: hidden` with no
-way to reach it. Removing `scrollable` neither caused nor fixed that; it has its
-own ticket. Do not read #419 as having settled it.
+**A separate, still-open defect was explicitly carved out of this decision** —
+tracked as **#563**. Content that overflows *outside* `.origam-card__content` —
+chiefly a tall `#asset`, which `OrigamCard` renders as a **sibling** of that
+block — becomes unreachable. Measured: no ancestor of the overflowing content is
+scrollable, the document is not either (`scrollStrategy: 'block'`), and 1219 px
+end up below the viewport with no way to get to them. The card is not truncated
+at its own boundary — it *grows*; `.origam-overlay__content` (`overflow:
+visible`) is what lets it spill off screen. Removing `scrollable` neither caused
+nor fixed this. Do not read #419 as having settled it.
 :::
 
 ## Status / icon
