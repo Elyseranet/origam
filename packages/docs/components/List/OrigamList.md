@@ -1,9 +1,13 @@
 # OrigamList
 
-`<OrigamList>` is the root container of the List family. It renders a `role="listbox"`
-region that lays out rows either from **slotted children** (`OrigamListItem`,
-`OrigamListSubheader`, `OrigamListGroup`, …) or from a **declarative `items` array**,
-and it owns the nested selection/expansion state shared by every descendant.
+`<OrigamList>` is the root container of the List family. It lays out rows either
+from **slotted children** (`OrigamListItem`, `OrigamListSubheader`,
+`OrigamListGroup`, …) or from a **declarative `items` array**, and it owns the
+nested selection/expansion state shared by every descendant.
+
+Its ARIA role describes what it **is**, not what it could do: a plain
+`role="list"` by default, and `role="listbox"` only once the consumer asks for
+selection. See [Accessibility](#accessibility).
 
 ## Basic usage
 
@@ -309,19 +313,51 @@ directly in your templates:
 
 ## Accessibility
 
-- Root renders `role="listbox"` with a roving `tabindex` (`0` when
-  focusable, `-1` when `disabled` or already focused inside).
-- Every real, selectable `OrigamListItem` row nested inside a list gets
-  `role="option"` + `aria-selected` (+ `aria-disabled` when `disabled`) —
-  **fixed in #424**, previously a `listbox` with zero `option` descendants.
-  `OrigamListSubheader` (a label, not a selectable element) and the divider
-  (`role="separator"`, via `OrigamDivider`) intentionally do **not** get
-  `role="option"`. Neither does a group's activator row — it only toggles
-  expand/collapse and never fires a selection, so claiming `role="option"`
-  on it would repeat the same "half-implemented ARIA" bug one level down.
+### Two modes, one decision (#424)
+
+The root used to hard-code `role="listbox"` — unconditionally, for every list
+ever rendered. A listbox is a **selection widget**: it promises `option`
+children carrying `aria-selected`, and a screen reader announces it as "list
+box, N items, selected …". A navigation list, a list of subheaders and
+dividers, or `<OrigamMenu>`'s item list is none of those. The role now
+describes what the list is:
+
+| the consumer… | root | every real row |
+|---|---|---|
+| renders a list (default) | `role="list"` | `role="listitem"`, no `aria-selected` |
+| asks for selection | `role="listbox"` | `role="option"` + `aria-selected` (+ `aria-disabled` when `disabled`) |
+
+**Selection mode is entered by passing `selected`** (typically
+`v-model:selected`), **an explicit `selectStrategy`, or a listener on
+`update:selected`** — that emit only ever fires when a selection changes, so
+wiring it is asking for selection. The first two are exactly what
+`<OrigamSelect>` passes — so its combobox contract holds, `aria-controls` and
+`aria-activedescendant` still pointing at a real listbox of real options — and
+none of the three is what `<OrigamMenu>` passes, so a menu's list stops
+claiming to be a listbox it never was.
+
+⛔ The mode is **not** read from `props.selectStrategy`. That prop has a
+`withDefaults` value, so it is always truthy; reading it would leave every list
+on earth a listbox. It is read off `vnode.props` through `usePassedProps` —
+the difference between "the consumer asked" and "Vue filled in a default".
+That is also the only place the `update:selected` listener is visible: Vue
+strips the listener of a **declared** emit out of `$attrs`.
+
+A row never picks its own role: the list publishes it through `ORIGAM_LIST_KEY`
+and the row reads it, so the container and its rows can never disagree. Values
+live in the `LIST_ROLE` / `LIST_ITEM_ROLE` enums.
+
+- Root carries a roving `tabindex` (`0` when focusable, `-1` when `disabled`
+  or already focused inside).
+- `OrigamListSubheader` (a label, not a selectable element) and the divider
+  (`role="separator"`, via `OrigamDivider`) get neither row role. Neither does
+  a group's activator row — it only toggles expand/collapse and never fires a
+  selection, so it is a control, not one of the list's rows.
   A bare `OrigamListItem` rendered outside any list (`list` context absent)
   gets no role at all — no ARIA is better than a role whose promised
-  listbox container doesn't exist.
+  container doesn't exist.
+- Passing your own `role` on `<OrigamList>` overrides the computed one, for a
+  container that is genuinely something else (a `menu`, a `tablist`).
 - Each nested collapsible group (`OrigamListGroup`) renders its items region
   as `role="group"` with `aria-labelledby` pointing at its activator.
 - Arrow key / Home / End navigation moves focus between rows without

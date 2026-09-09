@@ -23,7 +23,7 @@ API below.
 ## Props
 
 `IDialogConfirmationProps extends IDialogProps` — every prop
-`<OrigamDialog>` accepts (`fullscreen`, `scrollable`, `retainFocus`,
+`<OrigamDialog>` accepts (`fullscreen`, `retainFocus`,
 `persistent`, `size`, `status`, `color`/`bgColor`, `rounded`, `border*`,
 `title`/`subtitle`/`text`/`image`, `width`/`height`, `closeLabel`, …, see
 the `OrigamDialog` Props table) is forwarded to
@@ -88,9 +88,21 @@ Inherits everything `<OrigamDialog>` provides (`role="dialog"`,
 `aria-modal`, focus trap via `retainFocus`, `ESC` to close non-persistent
 dialogs, `closeLabel` locale key on the built-in close button) — see
 `OrigamDialog`'s Accessibility section (voir la doc `OrigamDialog`).
-The Cancel/Validate footer buttons use plain `text` labels (not yet
-routed through the DS `t()` locale mechanism — pass a `footer` slot
-override if translated button labels are required today).
+
+The Cancel/Validate footer labels **are** routed through the DS `t()`
+locale mechanism, via the `cancelTextKey` / `validateTextKey` props above —
+a `footer` slot override is no longer needed to translate them. Switching
+the active locale switches the labels (`Cancel`/`Validate` → `Annuler`/
+`Valider` under `fr`), pinned in
+`packages/tests/TU/components/Dialog/dialog-contract.spec.ts`.
+
+The dialog's accessible name comes from `aria-labelledby`, which points at
+the id the inner `<OrigamCard>` puts on its title element — so passing a
+plain `title` is enough to name the dialog, with no extra ARIA. The same
+spec asserts the reference actually resolves to an existing element, on
+`<OrigamDialogConfirmation>` as well as on `<OrigamDialog>`: a dangling
+`aria-labelledby` leaves a confirmation dialog with **no** accessible
+name at all, which is exactly where it matters most.
 
 ## Related
 
