@@ -5,6 +5,7 @@
 	>
 		<div
 				v-show="isShown"
+				v-bind="$attrs"
 				:id="id"
 				v-touch
 				:class="windowItemClasses"
@@ -49,6 +50,27 @@
 	 * injection of the parent window context and group item
 	 * registration.
 	 ********************************************************/
+	/*********************************************************
+	 * inheritAttrs
+	 *
+	 * @description
+	 * The template root is `<origam-transition>`, whose own root is Vue's
+	 * built-in `<Transition>` — a renderless component that forwards nothing
+	 * to the element it animates. Every fallthrough attribute therefore
+	 * landed on `<Transition>` and was dropped: `role`, `aria-*`, `title`,
+	 * `data-*` could not be set on a window item from the outside at all.
+	 * That is what made the ARIA APG carousel pattern (`role="group"` +
+	 * `aria-roledescription="slide"` on each slide) unreachable here and on
+	 * `<OrigamCarouselItem>`, which composes this component.
+	 *
+	 * @description
+	 * Attrs are re-bound on the real `.origam-window-item` element below.
+	 * Nothing regresses by moving them: the transition lifecycle hooks this
+	 * component needs travel through the `transition` PROP object built in
+	 * the `transition` computed, never through attrs.
+	 ********************************************************/
+	defineOptions({inheritAttrs: false})
+
 	const props = withDefaults(defineProps<IWindowItemProps>(), {
 		transition: undefined,
 		reverseTransition: undefined

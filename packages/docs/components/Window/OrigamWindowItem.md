@@ -122,6 +122,31 @@ The leave / enter transforms (`translateX(100%)`, `translateY(-100%)`,
 etc.) are baked into the SCSS — they correspond to the four axis +
 direction combinations the parent window can apply.
 
+## Fallthrough attributes
+
+The component sets `inheritAttrs: false` and re-binds `$attrs` onto the
+rendered `.origam-window-item` element. Any attribute you pass that is not
+a declared prop — `role`, `aria-*`, `title`, `data-*`, `tabindex` — lands on
+that element.
+
+This is not the default Vue behaviour and it is deliberate: the template
+root is `<OrigamTransition>`, whose own root is Vue's built-in
+`<Transition>`. `<Transition>` forwards nothing to the element it animates,
+so without the explicit re-bind every attribute was silently dropped, with
+no warning and no error.
+
+```html
+<origam-window-item
+        value="a"
+        role="group"
+        aria-roledescription="slide"
+        aria-label="Slide 1 of 3"
+/>
+```
+
+The transition lifecycle hooks this component needs are unaffected — they
+travel through the `transition` prop object, never through attrs.
+
 ## Accessibility
 
 - Only the active item is visible (`v-show`), but every mounted item is
@@ -129,6 +154,11 @@ direction combinations the parent window can apply.
   media.
 - Provide stable keys (`:value`) so the window's group can track the
   active item across reorders.
+- The ARIA APG carousel pattern asks for `role="group"` +
+  `aria-roledescription="slide"` on each slide. Pass them as plain
+  attributes (see **Fallthrough attributes** above) — they reach the
+  rendered element. The component does not set them for you, because a
+  window item is not necessarily a carousel slide.
 
 ## Related
 
