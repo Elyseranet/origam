@@ -321,7 +321,6 @@
   "--origam-parallax---transition-easing-default",
   "--origam-parallax---transition-easing-spring",
   "--origam-parallax---translate-multiplier",
-  "--origam-parallax__element---transition-duration",
   "--origam-picker---border-color",
   "--origam-picker---border-width",
   "--origam-picker---max-width",

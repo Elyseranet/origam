@@ -2173,7 +2173,6 @@ export type TTokenName =
   | '--origam-parallax---transition-easing-spring'
   | '--origam-parallax---transition-timing-function'
   | '--origam-parallax---translate-multiplier'
-  | '--origam-parallax__element---transition-duration'
   | '--origam-parallax__layer---transform-origin'
   | '--origam-parallax__layer---will-change'
   | '--origam-password-field__details---padding-inline'

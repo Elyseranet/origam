@@ -172,16 +172,33 @@ interface IParallaxElementProps extends ICommonsComponentProps,
 `packages/ds/src/assets/css/tokens/light.css` and `dark.css` with its
 host.
 
-| CSS variable | Token reference |
-|---|---|
-| `--origam-parallax__element---transition-duration` | `{motion.duration.medium}` |
-
-Transition duration / easing are applied inline by the component, sourced
-from the parent `<OrigamParallax>` provide context (so all elements stay
-in sync).
-
 The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
 `dark.css` — grep for `--origam-parallax`.
+
+### Transition duration is a prop, not a token
+
+Transition duration and easing are applied **inline** by the component,
+sourced from the parent `<OrigamParallax>`'s `duration` / `easing` props
+so that every element in a host stays in sync. Set them on the parent:
+
+```vue
+<origam-parallax :duration="450">
+    <origam-parallax-element :strength="30" type="translate">…</origam-parallax-element>
+</origam-parallax>
+```
+
+::: warning A token used to be documented here, and it never worked
+This page previously listed `--origam-parallax__element---transition-duration`
+in a "Design tokens consumed" table. It was declared in the token
+stylesheets but **read by nothing**, and it could not have worked even if
+it had been: the component writes `transition-duration` as an inline style,
+which outranks any stylesheet declaration. The token has been removed from
+`light.css`, `dark.css`, their SCSS twins and `tokens.type.ts`.
+
+Wiring it as `var(--token, <prop value>)` was considered and rejected — it
+would let a theme override an explicitly passed prop, inverting the
+props-first rule the design system is built on.
+:::
 
 ## Accessibility
 
