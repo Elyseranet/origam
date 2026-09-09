@@ -10,7 +10,7 @@ import { expect, FrameLocator, test } from '@playwright/test'
  *
  *   Index → Titre
  *     0  → Design                  v-model=designOpen, bgColor=surface, size=default
- *     1  → Functional              v-model=functionalOpen, fullscreen/scrollable/persistent/…
+ *     1  → Functional              v-model=functionalOpen, fullscreen/persistent/retainFocus/…
  *     2  → Events - update:modelValue   @update:model-value
  *     3  → Events - isRead              @is-read
  *     4  → Events - click:outside       @click:outside
@@ -54,7 +54,18 @@ import { expect, FrameLocator, test } from '@playwright/test'
  *
  * ## Mécanismes de fermeture
  *
- *   1. Bouton "Close" interne — `.origam-btn` dont le texte contient "Close".
+ *   1. Bouton de fermeture intégré — `.origam-card-header__append button`,
+ *      icône seule, `aria-label="Close"`, AUCUN texte visible.
+ *
+ *      ⛔ Ce sélecteur a été corrigé (#412). Il cherchait auparavant
+ *      « `.origam-btn` dont le texte contient "Close" » — or le bouton intégré
+ *      n'a pas de texte : ce filtre matchait le bouton Close que la STORY
+ *      ajoute elle-même dans son `#footer`. Le test passait donc en mesurant
+ *      l'échafaudage de la story, pas le composant. C'est ainsi que #412 a
+ *      survécu : quand les cinq zones d'en-tête étaient silencieusement
+ *      jetées (nom de slot `header-append` au tiret au lieu de `header.append`
+ *      au point), un dialogue nu n'avait PLUS AUCUN moyen visuel de
+ *      fermeture — et cette suite restait verte.
  *   2. Touche Escape — gérée par l'overlay (non-persistent uniquement).
  *   3. Clic en dehors — `v-click-outside` sur `.origam-overlay__content`,
  *      fire `handleClickOutside` → `isActive = false` (non-persistent).
@@ -146,14 +157,25 @@ test.describe('OrigamDialog', () => {
 			await expect(dialogRoot).toHaveClass(/origam-overlay--active/)
 		})
 
-		test('fermeture via le bouton Close — dialog dispara t apres clic', async ({ page }) => {
+		test('le bouton de fermeture INTEGRE existe sans qu aucun slot ne soit fourni', async ({ page }) => {
+			await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+			await openDialog(page, sandbox)
+
+			const builtInClose = sandbox.locator('.origam-card-header__append button').first()
+			await expect(builtInClose).toBeVisible({ timeout: 5000 })
+			await expect(builtInClose).toHaveAttribute('aria-label', 'Close')
+			await expect(builtInClose).toHaveText('')
+		})
+
+		test('fermeture via le bouton de fermeture INTEGRE — dialog dispara t apres clic', async ({ page }) => {
 			await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
 
-			const closeBtn = sandbox.locator('.origam-btn').filter({ hasText: 'Close' }).first()
-			await expect(closeBtn).toBeVisible({ timeout: 5000 })
-			await closeBtn.click()
+			const builtInClose = sandbox.locator('.origam-card-header__append button').first()
+			await expect(builtInClose).toBeVisible({ timeout: 5000 })
+			await builtInClose.click()
 			await expect(overlayContent).not.toBeVisible({ timeout: 5000 })
 		})
 
@@ -172,7 +194,7 @@ test.describe('OrigamDialog', () => {
 
 	// ------------------------------------------------------------------ //
 	// FUNCTIONAL (index 1)                                                 //
-	// init: fullscreen=false, scrollable=false, retainFocus=true,         //
+	// init: fullscreen=false, retainFocus=true, persistent=false,       //
 	//       persistent=false, disabled=false                               //
 	// ------------------------------------------------------------------ //
 
@@ -256,8 +278,71 @@ test.describe('OrigamDialog', () => {
 	})
 
 	// ------------------------------------------------------------------ //
+	// PROP scrollable — RETIRÉE (#419)                                     //
+	// ------------------------------------------------------------------ //
+	//
+	// La prop `scrollable` émettait une classe `origam-dialog--scrollable`
+	// qu'AUCUNE règle SCSS du dépôt ne ciblait, et la mise en page qu'elle
+	// prétendait activer est déjà appliquée SANS condition
+	// (`.origam-card{overflow:hidden}` + `.origam-card__content{overflow:auto}`
+	// → en-tête et pied figés, corps qui défile). Elle était donc REDONDANTE,
+	// pas seulement inerte.
+	//
+	// Mesure ayant motivé le retrait, relevée ici même en Chromium avant de
+	// supprimer la prop — les deux relevés, avec et sans la classe, étaient
+	// identiques caractère pour caractère :
+	//
+	//     visible|visible|calc(100% - 48px)|430px|block|row
+	//  // hidden|hidden|100%|430px|flex|column
+	//  // auto|auto|100%|330px|flex|column
+	//
+	// ⛔ Cela ne se mesure PAS sous jsdom : `getComputedStyle` n'y résout
+	// jamais un `var()` et renvoie un `16px` fabriqué qui ressemble à une
+	// vraie mesure (cf. CLAUDE.md #398). Navigateur réel obligatoire.
+	//
+	// ⛔ Un défaut voisin reste OUVERT et n'a PAS été réglé par ce retrait :
+	// ce qui déborde hors de `.origam-card__content` (un `#asset` ou un
+	// `#text` haut) est coupé par le `overflow: hidden` de la carte, sans
+	// aucun moyen d'y accéder. Sujet disjoint, ticket dédié.
+
+	test.describe('Prop scrollable retirée (#419)', () => {
+		test('aucun element ne porte la classe origam-dialog--scrollable', async ({ page }) => {
+			await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
+			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+			await openDialog(page, sandbox)
+
+			await expect(sandbox.locator('.origam-dialog--scrollable')).toHaveCount(0)
+		})
+
+		test('le corps de la carte defile de lui-meme, sans prop pour l activer', async ({ page }) => {
+			await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
+			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+			await openDialog(page, sandbox)
+
+			const body = sandbox.locator('.origam-card__content').first()
+			await expect(body).toHaveCSS('overflow-y', 'auto')
+		})
+	})
+
+	// ------------------------------------------------------------------ //
 	// EVENTS - click:outside (index 4)                                     //
 	// ------------------------------------------------------------------ //
+	//
+	// ⛔ CE QUE CE BLOC NE PROUVE PAS. « Le dialogue se ferme au clic
+	// extérieur » est un effet de bord d'`OrigamOverlay` (`handleClickOutside`
+	// y écrit `isActive.value = false`) — totalement indépendant du fait que
+	// Dialog RELAIE l'emit à son consommateur. Les deux tests ci-dessous
+	// restaient donc verts pendant tout #416, où l'emit n'atteignait
+	// personne : `IDialogEmits extends IClickOutsideEmits` met
+	// `click:outside` dans les `emits` de Dialog, ce qui pousse Vue à retirer
+	// `onClick:outside` de `$attrs` avant la fusion par fallthrough — le seul
+	// canal qui portait l'événement, par accident. Déclarer l'emit sans
+	// jamais l'émettre l'a coupé.
+	//
+	// Le relais lui-même est épinglé côté unitaire, où l'on peut lire les
+	// emits du composant nu :
+	//     packages/tests/TU/components/Dialog/dialog-contract.spec.ts
+	//     → « emits click:outside when a click lands outside the content »
 
 	test.describe('Events - click:outside (index 4)', () => {
 		test('activateur visible et dialog s ouvre', async ({ page }) => {
@@ -556,7 +641,7 @@ test.describe('OrigamDialog', () => {
 
 	// ------------------------------------------------------------------ //
 	// DEFAULT / PLAYGROUND (index 18)                                      //
-	// init: title=Dialog, fullscreen=false, scrollable=false,              //
+	// init: title=Dialog, fullscreen=false, retainFocus=true,               //
 	//       retainFocus=true                                               //
 	// ------------------------------------------------------------------ //
 
@@ -578,13 +663,13 @@ test.describe('OrigamDialog', () => {
 			await expect(header).toContainText('Dialog')
 		})
 
-		test('le dialog se ferme via le bouton Close', async ({ page }) => {
+		test('le dialog se ferme via le bouton de fermeture INTEGRE', async ({ page }) => {
 			await page.goto(variantUrl(18), { waitUntil: 'domcontentloaded' })
 			const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 			const { overlayContent } = await openDialog(page, sandbox)
-			const closeBtn = sandbox.locator('.origam-btn').filter({ hasText: 'Close' }).first()
-			await expect(closeBtn).toBeVisible({ timeout: 5000 })
-			await closeBtn.click()
+			const builtInClose = sandbox.locator('.origam-card-header__append button').first()
+			await expect(builtInClose).toBeVisible({ timeout: 5000 })
+			await builtInClose.click()
 			await expect(overlayContent).not.toBeVisible({ timeout: 5000 })
 		})
 
