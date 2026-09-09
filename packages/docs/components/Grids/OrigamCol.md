@@ -167,10 +167,10 @@ or per-instance via a `:style` binding.
 | `--origam-col---max-width` | `100%` |
 | `--origam-col---align-self` | `auto` |
 | `--origam-col---box-sizing` | `border-box` |
-| `--origam-col---padding-block-start` | `12px` |
-| `--origam-col---padding-block-end` | `12px` |
-| `--origam-col---padding-inline-start` | `12px` |
-| `--origam-col---padding-inline-end` | `12px` |
+| `--origam-col---padding-block-start` | half the row's gutter (`12px` by default) |
+| `--origam-col---padding-block-end` | half the row's gutter (`12px` by default) |
+| `--origam-col---padding-inline-start` | half the row's gutter (`12px` by default) |
+| `--origam-col---padding-inline-end` | half the row's gutter (`12px` by default) |
 | `--origam-col---margin-block-start` | `0` |
 | `--origam-col---margin-block-end` | `0` |
 | `--origam-col---margin-inline-start` | `0` |
@@ -197,3 +197,23 @@ or per-instance via a `:style` binding.
 - `OrigamRow` — flex row container.
 - `OrigamContainer` — outer wrapper with breakpoint-aware max-width.
 - `OrigamSpacer` — flexible filler.
+
+## Gutter — where the padding comes from
+
+A column's padding is **half of its row's gutter**. `<OrigamRow>` declares
+the four `--origam-col---padding-*` variables on itself from
+`--origam-row---gutter`; they inherit down to every `<OrigamCol>` inside.
+The column therefore follows its row automatically — there is no `gutters`
+prop to repeat on the column, and no prop drilling.
+
+```html
+<origam-row gutters="dense">
+    <origam-col cols="6">4px of padding, because the row's gutter is 8px</origam-col>
+    <origam-col cols="6">idem</origam-col>
+</origam-row>
+```
+
+A column rendered **outside** a row falls back to the `:root` value
+(`12px`). To override one column on its own, use the `padding` prop — it
+emits at a level that wins over the inherited variable. The full model is
+documented under **Gutters** in the `OrigamRow` reference.

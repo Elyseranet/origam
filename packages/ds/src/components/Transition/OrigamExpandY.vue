@@ -269,10 +269,21 @@
 		transition-property: var(--origam-transition--expand-y-enter-active---transition-property);
 	}
 
+	/* The leave rule reads the DEPRECATED `-enter-leave-` name FIRST and falls
+	   back to the correct `-leave-active-` one. Removed at the next major.
+
+	   ⛔ The alias cannot be a declaration in the token sheet. Written
+	   `--new: var(--old, <value>)` the substitution happens AT `:root`, so a
+	   consumer setting the old name ON AN ELEMENT — what the CLAUDE.md
+	   recommends for a one-off override — is never honoured. And because the
+	   DS declares tokens on `:root, [data-theme=…]`, which inherits onto
+	   every element, such a `var(--old, fallback)` never reaches its fallback
+	   at all. The alias only works from the READ site, and only as long as
+	   the old name stays undeclared. */
 	.origam-transition--expand-y-leave-active {
-		transition-duration: var(--origam-transition--expand-y-enter-leave---transition-duration);
-		transition-timing-function: var(--origam-transition--expand-y-enter-leave---transition-timing-function);
-		transition-property: var(--origam-transition--expand-y-enter-leave---transition-property);
+		transition-duration: var(--origam-transition--expand-y-enter-leave---transition-duration, var(--origam-transition--expand-y-leave-active---transition-duration));
+		transition-timing-function: var(--origam-transition--expand-y-enter-leave---transition-timing-function, var(--origam-transition--expand-y-leave-active---transition-timing-function));
+		transition-property: var(--origam-transition--expand-y-enter-leave---transition-property, var(--origam-transition--expand-y-leave-active---transition-property));
 	}
 
 	.origam-transition--expand-y-move {
@@ -290,18 +301,3 @@
 	}
 </style>
 
-<style>
-	:root {
-		--origam-transition--expand-y-enter-active---transition-duration: .5s;
-		--origam-transition--expand-y-enter-active---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-		--origam-transition--expand-y-enter-active---transition-property: height;
-
-		--origam-transition--expand-y-enter-leave---transition-duration: .5s;
-		--origam-transition--expand-y-enter-leave---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-		--origam-transition--expand-y-enter-leave---transition-property: height;
-
-		--origam-transition--expand-y-move---transition-duration: .5s;
-		--origam-transition--expand-y-move---transition-property: transform;
-		--origam-transition--expand-y-move---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-	}
-</style>

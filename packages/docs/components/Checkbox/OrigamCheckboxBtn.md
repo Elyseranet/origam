@@ -81,6 +81,34 @@ Checking adds the control's `value`, unchecking removes it. Both controls
 must share the **same** `v-model` — the accumulation is computed from the
 current model, not from a local flag.
 
+## Theming — le canal passe par `selection-control`
+
+⛔ **Il n'existe AUCUN token `--origam-checkbox---*` ni
+`--origam-checkbox-btn---*`, et c'est voulu.** `OrigamCheckboxBtn` ne peint
+rien lui-meme : il delegue tout le rendu a `<OrigamSelectionControl>`, dont la
+SCSS est la seule a lire des variables. Habiller une case a cocher, c'est donc
+agir sur `--origam-selection-control*` — la surface, le halo, l'icone et le
+label y sont tous adressables :
+
+```css
+:root {
+    --origam-selection-control__input---border-radius: 4px;
+    --origam-selection-control__input---overlay-background-color: currentColor;
+    --origam-selection-control__icon---opacity: 0.4;
+    --origam-selection-control__label---color: var(--origam-color__text---secondary);
+}
+```
+
+Les 46 tokens `checkbox` / `checkbox-btn` que l'ancien pipeline Style
+Dictionary declarait n'etaient lus par personne : ils sont partis avec
+`packages/ds/tokens/` le 2026-08-31 (voir *Design tokens* dans le CLAUDE.md
+racine). Ne les recreez pas « pour la symetrie » : un token declare et jamais
+lu est un mensonge qui coute une session de debug a qui le trouve.
+
+Pour un reglage par instance, la voie normale reste les **props** — `color`,
+`density`, `rounded`, `elevation`, `trueIcon` / `falseIcon` — puis, seulement
+si aucune prop ne couvre le besoin, un override de variable cible.
+
 ## Accessibility
 
 The rendered element is a real `<input type="checkbox">`, so the checked
