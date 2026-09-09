@@ -67,7 +67,21 @@ const SENTINEL = {
     appendMarginBlockEnd: '53px'
 } as const
 
-/** Ce que le SCSS écrivait en dur — le rendu livré ne doit pas bouger. */
+/**
+ * Ce que le SCSS écrivait en dur — le rendu livré ne doit pas bouger.
+ *
+ * ⛔ `detailsPaddingTop: '6px'` est une valeur HORS ÉCHELLE, assumée, pas un
+ * oubli. La feuille de tokens déclarait
+ * `--origam-input__details---padding-top: var(--origam-space---2)` = **8px**,
+ * alors que le SCSS rendait **6px** depuis toujours. Lire le token tel quel
+ * rendait le canal vivant mais déplaçait le rendu de 2px sur TOUTE la famille
+ * des champs (Field, TextField, TextareaField, NumberField, PasswordField,
+ * Select, OtpInputField…) sans qu'aucun ticket ne le demande. La déclaration
+ * a donc été ramenée à `6px` : le canal devient thémable sans régression
+ * visuelle. Aucun barreau de `--origam-space---*` ne vaut 6px (1=4px,
+ * 2=8px) — décision actée avec le PM, la bascule vers 8px tient en une ligne
+ * si le design la tranche un jour.
+ */
 const SHIPPED = {
     paddingTop: '16px',
     detailsPaddingTop: '6px',
