@@ -116,7 +116,11 @@ interface IChartLegendItem {
   `!isHidden(entry)`, so a hidden series announces as *not pressed*.
   An `aria-label` on the same element spells the state and the
   consequence out in full (`"<series name>: visible, click to hide"` /
-  `"…: hidden, click to show"`).
+  `"…: hidden, click to show"`). Both halves are **translated** — they read
+  `origam.chart.legend.item_visible` / `item_hidden`, built in
+  `itemAriaLabel()` rather than in the template. They were English literals
+  hidden behind a ternary inside a template literal until #567, which is why
+  no hardcoded-string audit ever counted them.
 - **The root `<ul>` carries NO explicit `role`.** This is deliberate,
   not an oversight: the native `<ul>` already has the implicit `list`
   role, and this repo's HTML-semantics-first policy applies the W3C's

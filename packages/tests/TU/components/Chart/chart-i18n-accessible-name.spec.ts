@@ -85,6 +85,16 @@ function mountChart (component: unknown, locale: string | undefined, props: Reco
  * test only covers the props it happens to pass; this covers the file.
  ********************************************************/
 describe('OrigamChart* — no hardcoded accessible name survives (#567)', () => {
+    // ⛔ SCOPED ON PURPOSE, AND MEANT TO GROW. The same defect is live on
+    // the other 13 (OrigamChartPolar → OrigamChartWordCloud), being fixed
+    // in parallel. Listing all 26 here today would turn this net red on
+    // files this branch does not touch — a guard that fails on someone
+    // else's unfinished work is a guard people learn to skip.
+    //
+    // ONCE THE SECOND HALF LANDS, replace this list with the same
+    // `readdirSync(CHART_DIR)` sweep `chart-i18n-empty-state.spec.ts`
+    // already uses, so the whole family is covered by construction rather
+    // than by a list somebody has to remember to extend.
     const FIRST_HALF = [
         'OrigamChart', 'OrigamChartAxis', 'OrigamChartBoxPlot', 'OrigamChartBullet',
         'OrigamChartCandlestick', 'OrigamChartCartesian', 'OrigamChartGauge',
