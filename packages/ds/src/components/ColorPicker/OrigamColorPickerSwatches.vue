@@ -110,7 +110,7 @@
 	 * inline in the template twice.
 	 ********************************************************/
 	const isSelected = (color: TColorType) => {
-		return !!props.colorHsv && deepEqual(props.colorHsv, hsva)
+		return !!props.colorHsv && deepEqual(props.colorHsv, hsva(color))
 	}
 	const swatchLabel = (color: TColorType) => {
 		return t('origam.color_picker.swatches.aria_label', background(color))
