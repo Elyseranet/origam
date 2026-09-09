@@ -259,6 +259,32 @@ describe('OrigamChart* (seconde moitie) — libelles par element traduits (#567)
         wrapper.unmount()
     })
 
+    it('OrigamChartPolarBar : le libelle de repli n\'est plus « Item N » en dur', () => {
+        const wrapper = mountWith(OrigamChartPolarBar, {
+            series: [{name: 'A', data: [1, 2]}]
+        }, 'fr')
+
+        const html = wrapper.html()
+
+        expect(html).toContain('Élément 1')
+        expect(html).not.toContain('Item 1')
+
+        wrapper.unmount()
+    })
+
+    it('OrigamChartPyramid : le libelle de repli n\'est plus « Slice N » en dur', () => {
+        const wrapper = mountWith(OrigamChartPyramid, {
+            series: [{name: 'A', data: [3, 2]}]
+        }, 'fr')
+
+        const html = wrapper.html()
+
+        expect(html).toContain('Tranche 1')
+        expect(html).not.toContain('Slice 1')
+
+        wrapper.unmount()
+    })
+
     it('OrigamChartVariwide : la colonne n\'annonce plus « value » / « width » en dur', () => {
         const wrapper = mountWith(OrigamChartVariwide, {
             series: SERIES,

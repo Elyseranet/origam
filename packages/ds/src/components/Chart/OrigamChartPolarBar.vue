@@ -398,7 +398,7 @@
 			if (props.categories[i] != null) return String(props.categories[i])
 			const entry = raw[i]
 			if (typeof entry === 'object' && entry !== null) return String(entry.x)
-			return `Item ${ i + 1 }`
+			return t('origam.chart.polar_bar.item_label', i + 1)
 		}
 
 		return values.map((v, i): IChartPolarBarWedge => {

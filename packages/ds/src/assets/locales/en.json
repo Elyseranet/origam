@@ -263,11 +263,13 @@
         "aria_label_donut": "Donut chart"
       },
       "polar_bar": {
-        "aria_label": "Polar bar chart"
+        "aria_label": "Polar bar chart",
+        "item_label": "Item {0}"
       },
       "pyramid": {
         "aria_label_pyramid": "Pyramid chart",
-        "aria_label_funnel": "Funnel chart"
+        "aria_label_funnel": "Funnel chart",
+        "slice_label": "Slice {0}"
       },
       "radar": {
         "aria_label": "Radar chart"

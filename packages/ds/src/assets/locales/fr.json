@@ -263,11 +263,13 @@
         "aria_label_donut": "Graphique en anneau"
       },
       "polar_bar": {
-        "aria_label": "Graphique à barres polaires"
+        "aria_label": "Graphique à barres polaires",
+        "item_label": "Élément {0}"
       },
       "pyramid": {
         "aria_label_pyramid": "Graphique en pyramide",
-        "aria_label_funnel": "Graphique en entonnoir"
+        "aria_label_funnel": "Graphique en entonnoir",
+        "slice_label": "Tranche {0}"
       },
       "radar": {
         "aria_label": "Graphique radar"
