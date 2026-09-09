@@ -33,7 +33,15 @@ import { expect, test } from '@playwright/test'
  *     sandbox.locator('.origam-btn__append')
  *     sandbox.locator('.origam-progress--circular')
  *
- * ## 3. Titres réels des Variants (Btn — état au 2026-06-28)
+ * ## 3. Titres réels des Variants (Btn — état au 2026-09-09)
+ *
+ *   ⚠️  Ces index ONT BOUGÉ : `Default` (playground) est passé de 14 à 16
+ *   pour respecter la règle « Playground LAST » du CLAUDE.md — il était
+ *   suivi de la matrice VRT. Vérifie toujours l'ordre réel avant d'ajouter
+ *   un test, la source de vérité est le build :
+ *     python3 -c "import json;d=json.load(open('packages/marketing/public/stories/histoire.json'));\
+ *       [print(i,v['title']) for s in d['stories'] if s['id'].endswith('btn-origambtn-story-vue') \
+ *        for i,v in enumerate(s['variants'])]"
  *
  *   Index → Titre (tel que dans la sidebar Histoire)
  *     0  → Design         (props visuelles : variant, color, bgColor, size, …)
@@ -50,7 +58,9 @@ import { expect, test } from '@playwright/test'
  *    11  → Slots - Append
  *    12  → Slots - Loader
  *    13  → Slots - Wrapper
- *    14  → Default (playground)
+ *    14  → Prop — variant (VRT matrix)
+ *    15  → Prop — border (VRT matrix)   → voir btn-border.spec.ts (#391)
+ *    16  → Default (playground)
  *
  *   ⚠️  Les titres StoryGroup visibles dans les #controls (Color, Sizing, Shape…)
  *   sont des fieldsets DANS la sidebar — PAS des Variants séparés. Ne pas les cibler.
@@ -462,7 +472,7 @@ test.describe('OrigamBtn', () => {
 
     test.describe('Default (playground)', () => {
         test('renders a btn with color=primary and text "Button"', async ({ page }) => {
-            await page.goto(variantUrl(14), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(16), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -471,7 +481,7 @@ test.describe('OrigamBtn', () => {
         })
 
         test('is a native <button> element by default (tag=button)', async ({ page }) => {
-            await page.goto(variantUrl(14), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(16), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })

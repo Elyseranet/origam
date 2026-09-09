@@ -238,6 +238,32 @@
 			</origam-btn>
 		</Variant>
 
+		<Variant title="Prop — variant (VRT matrix)">
+			<div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;" data-cy="btn-variant-matrix">
+				<origam-btn variant="text"     text="Text"     data-cy="btn-variant-text"/>
+				<origam-btn variant="flat"     text="Flat"     data-cy="btn-variant-flat"/>
+				<origam-btn variant="elevated" text="Elevated" data-cy="btn-variant-elevated"/>
+				<origam-btn variant="tonal"    text="Tonal"    data-cy="btn-variant-tonal"/>
+				<origam-btn variant="outlined" text="Outlined" data-cy="btn-variant-outlined"/>
+				<origam-btn variant="plain"    text="Plain"    data-cy="btn-variant-plain"/>
+				<origam-btn variant="ghost"    text="Ghost"    data-cy="btn-variant-ghost"/>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — border (VRT matrix)">
+			<div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;" data-cy="btn-border-matrix">
+				<origam-btn                       text="Unset"  data-cy="btn-border-unset"/>
+				<origam-btn border="none"         text="None"   data-cy="btn-border-none"/>
+				<origam-btn border                text="Bool"   data-cy="btn-border-bool"/>
+				<origam-btn border="thin"         text="Thin"   data-cy="btn-border-thin"/>
+				<origam-btn border="thick"        text="Thick"  data-cy="btn-border-thick"/>
+				<origam-btn border="top"          text="Top"    data-cy="btn-border-top"/>
+				<origam-btn border="bottom"       text="Bottom" data-cy="btn-border-bottom"/>
+				<origam-btn :border="4"           text="Four"   data-cy="btn-border-four"/>
+				<origam-btn border="2px dashed"   text="String" data-cy="btn-border-string"/>
+			</div>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IBtnProps>({ color: 'primary', text: 'Button' })"
@@ -269,18 +295,6 @@
 					<HstCheckbox v-model="state.readonly" title="Readonly"/>
 				</StoryGroup>
 			</template>
-		</Variant>
-
-		<Variant title="Prop — variant (VRT matrix)">
-			<div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;" data-cy="btn-variant-matrix">
-				<origam-btn variant="text"     text="Text"     data-cy="btn-variant-text"/>
-				<origam-btn variant="flat"     text="Flat"     data-cy="btn-variant-flat"/>
-				<origam-btn variant="elevated" text="Elevated" data-cy="btn-variant-elevated"/>
-				<origam-btn variant="tonal"    text="Tonal"    data-cy="btn-variant-tonal"/>
-				<origam-btn variant="outlined" text="Outlined" data-cy="btn-variant-outlined"/>
-				<origam-btn variant="plain"    text="Plain"    data-cy="btn-variant-plain"/>
-				<origam-btn variant="ghost"    text="Ghost"    data-cy="btn-variant-ghost"/>
-			</div>
 		</Variant>
 	</Story>
 </template>

@@ -141,17 +141,53 @@ The `border` shorthand also works standalone, without `variant="outlined"` —
 
 ```vue
 <template>
-    <OrigamBtn border      text="All sides" />
-    <OrigamBtn border="thick" text="Thick" />
-    <OrigamBtn border="top"    text="Top only" />
-    <OrigamBtn border="bottom" text="Bottom only" />
+    <OrigamBtn border           text="All sides (1px)" />
+    <OrigamBtn border="thin"    text="Thin (1px)" />
+    <OrigamBtn border="thick"   text="Thick (2px)" />
+    <OrigamBtn border="none"    text="Explicit opt-out (0)" />
+    <OrigamBtn border="top"     text="Top only" />
+    <OrigamBtn border="bottom"  text="Bottom only" />
+    <OrigamBtn :border="4"      text="Numeric (4px)" />
+    <OrigamBtn border="2px dashed" text="Free-form string" />
 </template>
 ```
+
+Measured widths (Chromium, default theme):
+
+| value | rendered |
+|---|---|
+| *(prop absent)* | `0px` |
+| `border="none"` | `0px` |
+| `border` (boolean) | `1px` |
+| `border="thin"` | `1px` |
+| `border="thick"` | `2px` |
+| `border="top"` | `1px` top, `0` elsewhere |
+| `:border="4"` | `4px` |
+| `border="2px dashed"` | `2px dashed` |
 
 Width is resolved per physical side
 (`--origam-btn---border-{top,right,bottom,left}-width`, each falling back to
 the general `--origam-btn---border-width` token), so a direction only ever
 paints the side it names — the other three stay at `0`.
+
+::: warning Why the width keywords need a component-scoped rule (#391)
+`useBorder` emits the global `.origam--border-{none,thin,thick}` utility for
+these keywords, but **the utility alone cannot paint here**. A Vue scoped rule
+(`.origam-btn[data-v-hash]`) has specificity (0,2,0); a utility
+(`.origam--border-thick`) has (0,1,0), so the component's own
+`border-*-width` declaration outranks it *regardless of which sheet loads
+last* — this is specificity, not order. Measured before the fix:
+`border="thick"` painted `1px`, and `border="none"` painted `1px` instead of
+cancelling.
+
+So the component also emits `origam-btn--border-{keyword}`, and
+`OrigamBtn.vue` consumes it by writing `--origam-btn---border-width` — the
+same custom property its base rule already reads. **The other 42 components
+that consume `useBorder` do not yet carry these rules**, so `border="thick"`
+still renders as `thin` there; they now receive the class, which is inert
+until each grows the matching rule (or until the DS-wide cascade decision
+in #391 / #514 is taken).
+:::
 
 ## Polymorphic tag
 
@@ -300,11 +336,26 @@ The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
 ## Accessibility
 
 - ✅ Full keyboard support (Enter, Space).
-- ✅ `aria-disabled` mirrors the `disabled` prop.
-- ✅ `aria-busy` set while `loading` is true.
+- ✅ `aria-busy="true"` while a loader is active (any `loading` kind —
+  skeleton, line or circular). Absent when idle, so no `aria-busy="false"`
+  is added to the accessibility tree.
 - ✅ Focus ring uses `--origam-color__border---focus` (theme-aware).
-- ✅ Icon-only mode requires an `aria-label`; the component falls
-  back to `aria-label` from the `icon` prop's name when none is set.
+- ⚠️ `disabled` is conveyed **differently per tag**, on purpose:
+  - `tag="button"` (the default) gets the **native `disabled` attribute**.
+    No `aria-disabled` is emitted — it would be redundant, and the ARIA
+    spec's first rule is that a native element beats an ARIA attribute.
+  - `tag="a"` has no native `disabled`, so the anchor gets
+    `aria-disabled="true"` and its `href` is dropped instead.
+- ⚠️ **Icon-only mode needs an `aria-label` you supply yourself.** The
+  component does **not** derive one from the `icon` prop, and there is no
+  `ariaLabel` prop: an icon name (`mdi-content-save`) is an identifier, not
+  a translated human label, so auto-filling it would produce exactly the
+  "bad ARIA" the W3C tells you is worse than none. Pass it through — it
+  falls through to the root element with the rest of `$attrs`:
+
+  ```vue
+  <origam-btn icon="mdi-content-save" :aria-label="t('btn_save', 'Save')"/>
+  ```
 
 ## Theming notes
 
