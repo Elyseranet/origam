@@ -72,13 +72,12 @@
 
 		<Variant
 				title="State"
-				:init-state="() => useStoryInitState<IHoverProps & { bgColor?: string }>({ bgColor: 'primary' })"
+				:init-state="() => useStoryInitState<{ bgColor?: string }>({ bgColor: 'primary' })"
 		>
 			<template #default="{ state }">
 				<origam-textarea-field
 						v-model="stateModel"
 						:bg-color="state.bgColor"
-						:hover="resolveHoverState(state.hover)"
 						label="State textarea"
 				/>
 			</template>
@@ -87,7 +86,6 @@
 					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Interaction">
-					<HstSelect v-model="state.hover" title="Hover" :options="HOVER_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -482,7 +480,7 @@
 
 	import { OrigamIcon, OrigamTextareaField } from '@origam/components'
 	import { MDI_ICONS, TEXTAREA_MODE, TEXTAREA_OUTPUT, TEXTAREA_TOOLBAR_POSITION } from '@origam/enums'
-	import type { IHoverProps, ITextareaFieldProps } from '@origam/interfaces'
+	import type { ITextareaFieldProps } from '@origam/interfaces'
 	import type { TLoadingValue, TTextareaMode, TTextareaOutput, TTextareaToolbarPosition } from '@origam/types'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
@@ -493,8 +491,6 @@
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
-		HOVER_OPTIONS,
-		resolveHoverState,
 		ICON_OPTIONS,
 		ROUNDED_OPTIONS,
 		VARIANT_INPUT_OPTIONS

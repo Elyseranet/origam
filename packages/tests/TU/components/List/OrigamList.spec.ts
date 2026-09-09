@@ -75,13 +75,18 @@ describe('OrigamList — structural `items` entries (divider / subheader) (#424)
     })
 
     it('gives role="option" to every real ListItem row, and to nothing else', () => {
-        const wrapper = mountList()
+        // ⛔ Mounted in SELECTION mode on purpose. `role="listbox"` is no
+        // longer unconditional: a list only becomes one when the consumer asks
+        // for selection (`selected` / an explicit `selectStrategy`) — see
+        // `OrigamList.roles.spec.ts`, which pins BOTH modes by their exact
+        // role. This test's own subject is unchanged: inside a real listbox,
+        // only real rows may be options.
+        const wrapper = mountList({ selected: [] })
         const items = wrapper.findAll('.origam-list-item')
         for (const item of items) {
             expect(item.attributes('role')).toBe('option')
         }
 
-        // The container keeps its (pre-existing) listbox role…
         expect(wrapper.attributes('role')).toBe('listbox')
         // …but the subheader (a label) and the divider (a separator) must NOT
         // also claim to be selectable options.
@@ -109,7 +114,11 @@ describe('OrigamList — structural `items` entries (divider / subheader) (#424)
                 items: [
                     { title: 'Parent', value: 'p', children: [{ title: 'Child A', value: 'a' }] }
                 ],
-                opened: ['p']
+                opened: ['p'],
+                // Selection mode — otherwise the rows are `listitem` and the
+                // activator/row distinction this test is about has no `option`
+                // to contrast against.
+                selected: []
             } as never,
             global: { plugins: [createOrigam()] }
         })
