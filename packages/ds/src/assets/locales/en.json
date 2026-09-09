@@ -55,6 +55,9 @@
     "carousel": {
       "prev": "Previous visual",
       "next": "Next visual",
+      "pause": "Pause the carousel",
+      "play": "Play the carousel",
+      "slide": "slide",
       "aria_label": {
         "delimiter": "Carousel slide {0} of {1}"
       }

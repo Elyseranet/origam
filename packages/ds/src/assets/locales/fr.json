@@ -55,6 +55,9 @@
     "carousel": {
       "prev": "Visuel précédent",
       "next": "Visuel suivant",
+      "pause": "Mettre le carrousel en pause",
+      "play": "Lancer le carrousel",
+      "slide": "diapositive",
       "aria_label": {
         "delimiter": "Diapositive {0} de {1}"
       }

@@ -49,6 +49,10 @@ export interface ICarouselSlots {
     [key: `item.${number}`]: ((data: { props: Record<string, unknown>, item: ICarouselDelimiterItem }) => any) | undefined
     item?: (data: { props: Record<string, unknown>, item: ICarouselDelimiterItem, index: number }) => any
     progress?: (data: { percent: number }) => any
+    /** Contrôle pause/lecture rendu dès que `cycle` est actif (WCAG 2.2.2).
+     *  Le surcharger REMPLACE le bouton par défaut — la responsabilité
+     *  d'exposer un mécanisme d'arrêt passe alors au consommateur. */
+    'play-pause'?: (data: { isPaused: boolean, toggle: () => void, label: string }) => any
     prev?: (data: { props: IWindowNavBtnProps, canMove: boolean }) => any
     next?: (data: { props: IWindowNavBtnProps, canMove: boolean }) => any
     arrows?: (data: { prevProps: IWindowNavBtnProps, nextProps: IWindowNavBtnProps, canMoveBack: boolean, canMoveForward: boolean }) => any
