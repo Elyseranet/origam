@@ -8,6 +8,7 @@
 			:class="btnClasses"
 			:disabled="isDisabled || undefined"
 			:aria-disabled="ariaDisabled"
+			:aria-busy="ariaBusy"
 			:href="hrefAttr"
 			:type="typeAttr"
 			:value="valueAttr"
@@ -127,7 +128,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, ref, StyleValue, toRef, useAttrs, useSlots } from 'vue'
+	import { computed, onMounted, ref, StyleValue, toRef, useAttrs, useSlots } from 'vue'
 	import type { ComputedRef, ExtractPropTypes } from 'vue'
 	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
 	import OrigamIcon from '../Icon/OrigamIcon.vue'
@@ -153,6 +154,9 @@
 	import { useTypography } from '../../composables/Commons/typography.composable'
 	import { useVariant } from '../../composables/Commons/variant.composable'
 
+	import { warnDeprecatedEmit } from '../../utils/Commons/color.util'
+
+	import { ADJACENT_EMIT_REPLACEMENT } from '../../consts/Btn/btn.const'
 	import { ORIGAM_BTN_TOGGLE_KEY } from '../../consts/Btn/btn-toggle.const'
 
 	import vContrast from '../../directives/Contrast/contrast.directive'
@@ -318,9 +322,16 @@
 	const {
 		onClickPrepend: handleClickPrepend,
 		onClickAppend: handleClickAppend,
+		isPrependClickable,
+		isAppendClickable,
 		hasAppend,
 		hasPrepend
 	} = useAdjacent(props, prependIcon, appendIcon)
+
+	onMounted(() => {
+		if (isPrependClickable.value) warnDeprecatedEmit('OrigamBtn', 'click:prepend', ADJACENT_EMIT_REPLACEMENT)
+		if (isAppendClickable.value) warnDeprecatedEmit('OrigamBtn', 'click:append', ADJACENT_EMIT_REPLACEMENT)
+	})
 
 	/*********************************************************
 	 * Click handler
@@ -377,6 +388,8 @@
 			loaderConfig.value.kind === 'circular'
 		)
 	})
+
+	const ariaBusy = computed(() => (loaderConfig.value.isActive ? 'true' : undefined))
 
 	/*********************************************************
 	 * Forwarded props
@@ -663,7 +676,7 @@
 		}
 
 		&--border {
-			--origam-btn---border-width: thin;
+			--origam-btn---border-width: var(--origam-border__width---thin);
 		}
 
 		// #391 — sub-defaults for `border="top|right|bottom|left"`
@@ -675,7 +688,7 @@
 		// instead of leaving the others at whatever `border-width`
 		// last resolved to).
 		&--border-top {
-			--origam-btn---border-top-width: thin;
+			--origam-btn---border-top-width: var(--origam-border__width---thin);
 			--origam-btn---border-right-width: 0;
 			--origam-btn---border-bottom-width: 0;
 			--origam-btn---border-left-width: 0;
@@ -683,7 +696,7 @@
 
 		&--border-right {
 			--origam-btn---border-top-width: 0;
-			--origam-btn---border-right-width: thin;
+			--origam-btn---border-right-width: var(--origam-border__width---thin);
 			--origam-btn---border-bottom-width: 0;
 			--origam-btn---border-left-width: 0;
 		}
@@ -691,7 +704,7 @@
 		&--border-bottom {
 			--origam-btn---border-top-width: 0;
 			--origam-btn---border-right-width: 0;
-			--origam-btn---border-bottom-width: thin;
+			--origam-btn---border-bottom-width: var(--origam-border__width---thin);
 			--origam-btn---border-left-width: 0;
 		}
 
@@ -699,7 +712,7 @@
 			--origam-btn---border-top-width: 0;
 			--origam-btn---border-right-width: 0;
 			--origam-btn---border-bottom-width: 0;
-			--origam-btn---border-left-width: thin;
+			--origam-btn---border-left-width: var(--origam-border__width---thin);
 		}
 
 		// #391 — there is DELIBERATELY no `.origam-btn-group &` border rule

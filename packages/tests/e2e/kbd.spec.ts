@@ -179,14 +179,14 @@ test.describe('OrigamKbd', () => {
 
     test.describe('Default (playground)', () => {
         test('renders the kbd root', async ({ page }) => {
-            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const kbd = sandbox.locator('.origam-kbd').first()
             await expect(kbd).toBeVisible({ timeout: 12000 })
         })
 
         test('has non-transparent background-color from token', async ({ page }) => {
-            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const kbd = sandbox.locator('.origam-kbd').first()
             await expect(kbd).toBeVisible({ timeout: 12000 })
@@ -196,7 +196,7 @@ test.describe('OrigamKbd', () => {
         })
 
         test('has a non-zero font-size from the token', async ({ page }) => {
-            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const kbd = sandbox.locator('.origam-kbd').first()
             await expect(kbd).toBeVisible({ timeout: 12000 })
@@ -205,7 +205,7 @@ test.describe('OrigamKbd', () => {
         })
 
         test('variant=outlined produces a visible border', async ({ page }) => {
-            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const kbd = sandbox.locator('.origam-kbd').first()
             await expect(kbd).toBeVisible({ timeout: 12000 })
