@@ -239,13 +239,11 @@
 	 * pas l'ancien.
 	 ********************************************************/
 	const handleCheckBoxClick = (e: MouseEvent) => {
-		e.stopPropagation()
-		toggleSelect(props.item)
+		withModifiers(() => toggleSelect(props.item), ['stop'])
 		emits('select', {item: props.item, value: isSelected([props.item])})
 	}
 	const handleBtnClick = (e: MouseEvent) => {
 		e.stopPropagation()
-		toggleExpand(props.item)
 		emits('expand', {item: props.item, value: isExpanded(props.item)})
 	}
 
