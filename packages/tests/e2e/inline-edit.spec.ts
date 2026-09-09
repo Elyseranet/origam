@@ -541,6 +541,31 @@ test.describe('OrigamInlineEdit — action-btn theming channel', () => {
     })
 })
 
+/**
+ * Pins the field's rendered `min-width` ACROSS the
+ * `__field---min-width` → `__input---min-width` rename. The dormant
+ * declaration that used to carry the target name resolved to
+ * `--origam-space---20` = 80px, while the SCSS fallback that has always
+ * shipped is 180px — wiring the rename on the strength of the name alone
+ * would have shrunk the field by 100px. This assertion is what makes the
+ * rename provably lossless.
+ */
+test.describe('OrigamInlineEdit — field min-width', () => {
+    test('the edit field keeps its 180px minimum width', async ({ page }) => {
+        await openVariant(page, 'Default')
+        const sandbox = sandboxOf(page)
+
+        await display(sandbox).click()
+        await expect(fieldRoot(sandbox)).toBeVisible()
+
+        const minWidth = await fieldRoot(sandbox).evaluate(
+            (el) => getComputedStyle(el).minWidth
+        )
+
+        expect(minWidth).toBe('180px')
+    })
+})
+
 test.describe('OrigamInlineEdit — Validator (sync)', () => {
     test('a sync validator returning a string surfaces in role=alert AND keeps the editor open', async ({ page }) => {
         await openPlaygroundWithValidation(page, { validate: true })

@@ -533,7 +533,7 @@
 
 	.origam-inline-edit__field {
 		flex: 1;
-		min-width: var(--origam-inline-edit__field---min-width, 180px);
+		min-width: var(--origam-inline-edit__input---min-width, 180px);
 	}
 
 	.origam-inline-edit__error {

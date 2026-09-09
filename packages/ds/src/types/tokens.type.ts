@@ -1641,6 +1641,7 @@ export type TTokenName =
   | '--origam-inline-edit__error---font-weight'
   | '--origam-inline-edit__error---padding-block'
   | '--origam-inline-edit__error---padding-inline'
+  | '--origam-inline-edit__input---min-width'
   | '--origam-input---density-compact-density'
   | '--origam-input---density-default-density'
   | '--origam-input---disabled-opacity'
