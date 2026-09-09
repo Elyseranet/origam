@@ -183,11 +183,13 @@ A single set of `ITypographyProps` drives all four text surfaces. Each surface r
 
 | Slot         | Bindings                                                          | Default content                                                                                          |
 |--------------|-------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
+| `header`     | —                                                                 | The whole cover + metadata strip. Takes priority over `cover` / `metadata` / `title`.                     |
 | `cover`      | —                                                                 | `<origam-img>` of the resolved `cover`.                                                                  |
 | `metadata`   | —                                                                 | Title + artist · album · duration meta line.                                                             |
 | `title`      | —                                                                 | `<strong>` with the `title` prop.                                                                        |
 | `waveform`   | `{ peaks: Array<number>, currentTime: number, duration: number }`  | `<origam-slider-field variant="audio">`.                                                                 |
 | `controls`   | `IAudioScopedSlotBindings`                                        | Transport `<nav>` composed of the atomic media sub-components.                                            |
+| `playlist`   | `{ tracks, currentIndex, select(index) }`                          | `<origam-list>` of the playlist rows. Rendered only when `playlist` is set.                               |
 | `loading`    | —                                                                 | `<origam-icon icon="LOADING">`.                                                                          |
 | `error`      | `{ error: MediaError \| Error }`                                  | `<origam-icon>` + `<span>` with the error message.                                                       |
 

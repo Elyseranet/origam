@@ -652,3 +652,57 @@ test.describe('OrigamAudio — the loop mode reaches the <audio> element (#436)'
         expect(await nativeLoop()).toBe(false)
     })
 })
+
+/**
+ * `header` and `playlist` were declared on `IAudioSlots` and wired in the
+ * template, but had NO Variant and NO row in the doc's Slots table — the
+ * mirror image of the #378 defect (there, a slot was declared and
+ * documented without existing; here, it existed without being shown).
+ * Variants + doc rows added; these assert each one actually replaces the
+ * default render rather than sitting next to it.
+ */
+test.describe('OrigamAudio — Slots - header / playlist', () => {
+    test('#header replaces the whole cover + metadata strip', async ({ page }) => {
+        await openVariant(page, 'Slots - header')
+        const sandbox = sandboxOf(page)
+
+        const host = sandbox.locator('[data-cy="origam-audio"]').first()
+        await expect(host).toBeVisible({ timeout: 8000 })
+
+        await expect(host.locator('.story-slot-badge')).toBeVisible()
+        // The Variant passes title / artist / cover, so all three defaults
+        // WOULD render — the slot has to swallow them.
+        await expect(host.locator('[data-cy="origam-audio-cover-figure"]')).toHaveCount(0)
+        await expect(host.locator('[data-cy="origam-audio-metadata"]')).toHaveCount(0)
+    })
+
+    test('#playlist replaces the default list and its select() binding switches track', async ({ page }) => {
+        await openVariant(page, 'Slots - playlist')
+        const sandbox = sandboxOf(page)
+
+        const host = sandbox.locator('[data-cy="origam-audio"]').first()
+        await expect(host).toBeVisible({ timeout: 8000 })
+
+        const custom = host.locator('.story-slot-playlist')
+        await expect(custom).toBeVisible()
+        // Default <origam-list> must be gone, not merely hidden.
+        await expect(host.locator('[data-cy="origam-audio-playlist"]')).toHaveCount(0)
+
+        const rows = custom.locator('button')
+        await expect(rows.first()).toHaveAttribute('aria-current', 'true')
+
+        // `select(index)` is one of the slot's three bindings — clicking row
+        // 2 must move the active index AND swap the <audio> source.
+        const srcBefore = await host.locator('[data-cy="origam-audio-el"]')
+            .evaluate(node => (node as HTMLAudioElement).getAttribute('src'))
+
+        await rows.nth(1).click()
+
+        await expect(rows.nth(1)).toHaveAttribute('aria-current', 'true')
+        await expect(rows.first()).toHaveAttribute('aria-current', 'false')
+
+        const srcAfter = await host.locator('[data-cy="origam-audio-el"]')
+            .evaluate(node => (node as HTMLAudioElement).getAttribute('src'))
+        expect(srcAfter).not.toBe(srcBefore)
+    })
+})
