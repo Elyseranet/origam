@@ -194,9 +194,25 @@ const CASES: ICase[] = [
     }
 ]
 
+/**
+ * ⛔ The `__sandbox` iframe does NOT exist on a freshly-loaded story page —
+ * Histoire mounts it only once a Variant is selected. Measured: right after
+ * `waitForLoadState('networkidle')` the page has exactly ONE frame (itself);
+ * after clicking a Variant title it has two, the second being
+ * `/stories/__sandbox.html?storyId=…&variantId=…`.
+ *
+ * Skipping the click makes every probe below time out on
+ * `frameLocator(...).locator('body')` — a failure that LOOKS like the
+ * assertion failing (38 red tests) while measuring nothing at all. Same
+ * shape as the "false red" trap in CLAUDE.md: a red test is only evidence
+ * when it is red for the reason it claims.
+ */
 async function gotoStory (page: Page, story: string) {
     await page.goto(`${BASE}${story}`)
     await page.waitForLoadState('networkidle')
+    await page.getByText('Default', {exact: true}).first().click()
+    await page.waitForSelector('iframe[src*="__sandbox"]')
+    await page.waitForTimeout(600)
 }
 
 /**
