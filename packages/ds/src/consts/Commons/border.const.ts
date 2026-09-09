@@ -1,5 +1,5 @@
 import { BLOCK, BORDER_LOGICAL_AXIS, INLINE } from '../../enums'
-import type { TBorderLogicalAxis } from '../../types/Commons/border.type'
+import type { TBorderLogicalAxis, TBorderWidthKeyword } from '../../types/Commons/border.type'
 
 /**
  * Parse a free-form `border` value into width / style / color groups.
@@ -79,7 +79,7 @@ export const BORDER_LOGICAL_AXIS_MAP: ReadonlyArray<{ axis: TBorderLogicalAxis, 
  * is why THAT case always worked) fixes all 10 from one place instead of
  * replicating three SCSS rules per component.
  ********************************************************/
-export const BORDER_KEYWORD_WIDTH: Readonly<Record<string, string>> = {
+export const BORDER_KEYWORD_WIDTH: Readonly<Record<TBorderWidthKeyword, string>> = {
     none: 'var(--origam-border__width---0)',
     thin: 'var(--origam-border__width---thin)',
     thick: 'var(--origam-border__width---2)'

@@ -3,6 +3,7 @@ import { DIRECTION_ARRAY } from '../../consts/Commons/anchor.const'
 import { BORDER_KEYWORD_WIDTH, BORDER_LOGICAL_AXIS_MAP, BORDER_POSITION_MAP, BORDER_REGEX } from '../../consts/Commons/border.const'
 
 import type { IBorderProps } from '../../interfaces/Commons/border.interface'
+import type { TBorderWidthKeyword } from '../../types/Commons/border.type'
 import { TDirectionBoth } from '../../types/Commons/anchor.type'
 
 import { formatBorderPositionStylesVar, formatBorderStylesVar, parseBorderPositionValue, resolveBorderSideColor } from '../../utils/Commons/border.util'
@@ -14,12 +15,39 @@ import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.u
  * `src/assets/css/tokens/origam-utilities.css` (Phase 1 manifest):
  * `.origam--border-none`, `.origam--border-thin`, `.origam--border-thick`.
  */
-const UTILITY_BORDER: ReadonlySet<string> = new Set([
+const UTILITY_BORDER: ReadonlySet<TBorderWidthKeyword> = new Set<TBorderWidthKeyword>([
     'none', 'thin', 'thick'
 ])
 
-function isUtilityBorder (value: unknown): value is string {
-    return typeof value === 'string' && UTILITY_BORDER.has(value)
+/*********************************************************
+ * isUtilityBorder / isDirectionBorder
+ *
+ * @description
+ * Membership guards for the two CLASS-channel families `border` accepts.
+ *
+ * @description
+ * ⛔ Both return a NARROW literal union, never `value is string` (#391).
+ * A guard typed `value is string` looks harmless but makes TypeScript
+ * subtract EVERY string from the `else` branch, so the direction branch
+ * and the free-form-string branch both became unreachable in the
+ * compiler's model — while still running at runtime. That mismatch is
+ * what produced `TS2352` / `TS2367` and tempted a cast; the cast would
+ * have silenced the compiler on a union (`number | boolean |
+ * TDirectionBoth[] | null | undefined`) that genuinely holds the other
+ * shapes `border` accepts. Narrow the guard, don't force the type.
+ *
+ * @description
+ * `DIRECTION_ARRAY` is UPCAST to `ReadonlyArray<string>` before the
+ * membership test — a widening conversion, always sound — rather than
+ * DOWNCASTING the candidate value to `TDirectionBoth`, which is the
+ * unsound direction the compiler was rejecting.
+ ********************************************************/
+function isUtilityBorder (value: unknown): value is TBorderWidthKeyword {
+    return typeof value === 'string' && UTILITY_BORDER.has(value as TBorderWidthKeyword)
+}
+
+function isDirectionBorder (value: unknown): value is TDirectionBoth {
+    return typeof value === 'string' && (DIRECTION_ARRAY as ReadonlyArray<string>).includes(value)
 }
 
 /*********************************************************
@@ -87,7 +115,7 @@ export function useBorder (props: IBorderProps | Ref<boolean | number | string |
         if (border && typeof border !== 'undefined') {
             classes.push(`${name}--border`)
 
-            if (DIRECTION_ARRAY.includes(border as TDirectionBoth) || (Array.isArray(border) && border.some((bord) => DIRECTION_ARRAY.includes(bord)))) {
+            if (isDirectionBorder(border) || (Array.isArray(border) && border.some((bord) => DIRECTION_ARRAY.includes(bord)))) {
                 classes.push(`${name}--border-${border}`)
             }
 
@@ -116,7 +144,7 @@ export function useBorder (props: IBorderProps | Ref<boolean | number | string |
             styles.push(`border-width: ${BORDER_KEYWORD_WIDTH[border]}`)
             styles.push('border-style: solid')
             styles.push('border-color: currentColor')
-        } else if (DIRECTION_ARRAY.includes(border as TDirectionBoth)) {
+        } else if (isDirectionBorder(border)) {
             DIRECTION_ARRAY.forEach((side) => {
                 styles.push(`border-${side}-width: ${side === border ? BORDER_KEYWORD_WIDTH.thin : BORDER_KEYWORD_WIDTH.none}`)
             })

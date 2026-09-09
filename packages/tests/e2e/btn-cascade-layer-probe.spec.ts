@@ -31,7 +31,8 @@ import { fileURLToPath } from 'node:url'
 
 const STORY_ID = 'components-stories-btn-origambtn-story-vue'
 const STORY_PATH = `/stories/story/${STORY_ID}`
-const BORDER_MATRIX_URL = `${STORY_PATH}?variantId=${STORY_ID}-15`
+// 13 → Prop — border (VRT matrix)
+const BORDER_MATRIX_URL = `${STORY_PATH}?variantId=${STORY_ID}-13`
 
 type TProbeRow = { label: string, before: string, after: string, flipped: boolean }
 
