@@ -282,14 +282,34 @@ parts that are *not* separate components).
 > rendue, c'est qu'un thème peut désormais l'**écraser** — le bloc scopé, à
 > (0,2,0), gagnait auparavant contre `:root` à (0,1,0).
 >
-> Restent shadowés, en attente d'arbitrage : les `transition-duration` des
-> trois composants (voir « Transitions » plus bas).
+> Plus aucun token n'est recouvert sur ces trois composants : les
+> `transition-duration` l'étaient encore, ils ont été repris avec la
+> correction du raccourci (voir « Transitions » ci-dessous).
 
 ## Transitions
 
-⛔ **Le raccourci `transition` des trois composants est malformé, et le reste
-aujourd'hui — mesuré dans Chromium, pas déduit.** Les composants composent
-`--origam-{cmp}---transition` à partir de trois variables :
+Les trois composants animent **`transform` et `color`**, chacun avec sa
+propre durée et l'easing du DS :
+
+```css
+--origam-breadcrumb---transition:
+    transform var(--origam-breadcrumb---transition-duration-transform) var(--origam-breadcrumb---transition-timing-function),
+    color     var(--origam-breadcrumb---transition-duration-color)     var(--origam-breadcrumb---transition-timing-function);
+```
+
+| token | valeur | rôle |
+|---|---|---|
+| `--origam-{cmp}---transition-duration-transform` | `{motion.duration.medium}` — 200 ms | durée de `transform` |
+| `--origam-{cmp}---transition-duration-color` | `{motion.duration.fast}` — 100 ms | durée de `color` |
+| `--origam-{cmp}---transition-timing-function` | `{motion.easing.standard}` | courbe, commune aux deux |
+
+Les deux durées sont **thémables séparément**, ce qu'un couple dans une seule
+variable ne permettait pas.
+
+### ⛔ Ce que cette correction a réparé (#607) — changement visible
+
+Le raccourci était **malformé**, et le défaut était invisible parce qu'il ne
+produisait ni erreur ni avertissement. La composition d'origine était :
 
 ```css
 --origam-breadcrumb---transition-property: transform, color;
@@ -297,11 +317,10 @@ aujourd'hui — mesuré dans Chromium, pas déduit.** Les composants composent
 --origam-breadcrumb---transition: var(…property) var(…duration) var(…timing);
 ```
 
-Une fois substitué, cela donne `transform, color 0.2s, 0.1s cubic-bezier(…)`.
+Une fois substitué : `transform, color 0.2s, 0.1s cubic-bezier(…)`.
 `transition` étant une **liste de transitions séparées par des virgules**, le
-navigateur y lit trois entrées, pas deux propriétés à deux durées. Style
-calculé, identique sur `<OrigamBreadcrumb>`, `<OrigamBreadcrumbItem>` et
-`<OrigamBreadcrumbDivider>` :
+navigateur y lisait **trois** entrées, pas deux propriétés à deux durées.
+Style calculé mesuré dans Chromium, identique sur les trois composants :
 
 ```
 transition-property        : transform, color, all
@@ -309,29 +328,19 @@ transition-duration        : 0s, 0.2s, 0.1s
 transition-timing-function : ease, ease, cubic-bezier(0.4, 0, 0.2, 1)
 ```
 
-Autrement dit, le rendu réel n'est pas « transform 200 ms / color 100 ms » :
+| entrée | avant | après |
+|---|---|---|
+| `transform` | **0 s — jamais animé** | 200 ms, easing du DS |
+| `color` | 200 ms en `ease` (pas l'easing du DS) | 100 ms, easing du DS |
+| `all` | **100 ms sur TOUTES les propriétés** — entrée fantôme | supprimée |
 
-| entrée | effet réel |
-|---|---|
-| `transform` | **0 s — jamais animé** |
-| `color` | 200 ms, en `ease` (pas l'easing du DS) |
-| `all` | **100 ms sur TOUTES les propriétés** — entrée fantôme, non voulue |
+**Trois changements visibles, assumés.** Le fond, le rayon, l'ombre et
+l'opacité n'ont plus d'animation d'entrée : elle provenait de l'entrée `all`,
+née d'une virgule mal placée, que personne n'avait demandée. `transform`
+s'anime enfin, et `color` prend la courbe du DS.
 
-C'est cette troisième entrée qui anime aujourd'hui le fond, le rayon, l'ombre
-et l'opacité du composant. Corriger le raccourci **supprimerait** cette
-animation, **démarrerait** celle de `transform`, et changerait l'easing de
-`color` — trois changements visibles. La correction est donc en attente
-d'arbitrage et n'est pas incluse dans la passe #607 ; les
-`--origam-{cmp}---transition-duration` des trois composants restent shadowés
-dans leur bloc scopé en attendant.
-
-La forme visée est une paire de tokens par composant —
-`--origam-{cmp}---transition-duration-transform` (`{motion.duration.medium}`,
-200 ms) et `---transition-duration-color` (`{motion.duration.fast}`, 100 ms) —
-lus dans l'ordre de `transition-property`. Ils ont été déclarés puis
-**retirés** : tant qu'aucun composant ne les lit, le garde `token-var-channels`
-les compte à juste titre comme canaux dormants. Ils seront déclarés **et
-câblés dans le même geste**, une fois l'arbitrage rendu.
+Le rythme « 200 ms / 100 ms » que décrivait l'ancienne configuration n'a
+jamais été rendu tel quel — il est désormais réel.
 
 ## Accessibility
 
