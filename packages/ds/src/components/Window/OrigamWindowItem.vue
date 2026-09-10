@@ -10,7 +10,6 @@
 				v-touch
 				:class="windowItemClasses"
 				:style="windowItemStyles"
-				v-bind="a11yAttrs"
 		>
 			<slot
 					v-if="hasContent"
@@ -103,17 +102,6 @@
 	 ********************************************************/
 	const attrs = useAttrs()
 
-	const a11yAttrs = computed(() => {
-		const picked: Record<string, unknown> = {}
-
-		for (const key of Object.keys(attrs)) {
-			if (key === 'role' || key.startsWith('aria-')) {
-				picked[key] = attrs[key]
-			}
-		}
-
-		return picked
-	})
 
 	const {filterProps} = useProps<IWindowItemProps>(props)
 
