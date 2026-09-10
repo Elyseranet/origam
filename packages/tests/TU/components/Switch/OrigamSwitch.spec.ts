@@ -2,7 +2,7 @@
 //
 // Strategy: mount with createOrigam() + stubs for all sub-components so
 // the spec is hermetic. We exercise:
-//   - BEM root classes: origam-switch, --flat, --inset, --indeterminate
+//   - BEM root classes: origam-switch, --inset, --indeterminate
 //   - skeleton loader branch (loading kind=skeleton → origam-switch__skeleton)
 //   - reactive indeterminate class changes
 //   - custom class forwarded to root
@@ -113,16 +113,6 @@ describe('OrigamSwitch — BEM root class', () => {
     it('renders the origam-switch class', () => {
         const wrapper = mountSwitch()
         expect(wrapper.find('.origam-switch').exists()).toBe(true)
-    })
-
-    it('adds origam-switch--flat when flat=true', () => {
-        const wrapper = mountSwitch({ props: { flat: true } })
-        expect(wrapper.find('.origam-switch--flat').exists()).toBe(true)
-    })
-
-    it('does NOT add origam-switch--flat when flat is absent', () => {
-        const wrapper = mountSwitch()
-        expect(wrapper.find('.origam-switch--flat').exists()).toBe(false)
     })
 
     it('adds origam-switch--inset when inset=true', () => {
