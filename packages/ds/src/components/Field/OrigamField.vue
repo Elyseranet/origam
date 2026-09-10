@@ -824,7 +824,7 @@
 			opacity: 0;
 			transition: inherit;
 			white-space: nowrap;
-			min-height: max(var(--origam-input__control---height, 36px), 1.5rem + var(--origam-field-input---padding-top, 0px) + var(--origam-field-input---padding-bottom, 0px));
+			min-height: max(var(--origam-input__control---height, 36px), 1.5rem + var(--origam-field__input---padding-top, 0px) + var(--origam-field__input---padding-bottom, 0px));
 			padding-top: calc(var(--origam-field---padding-top, 4px) + calc(var(--origam-input---padding-top, 16px) + var(--origam-input---density, 0px)));
 			padding-bottom: var(--origam-field---padding-bottom, 6px);
 		}
@@ -1139,13 +1139,13 @@
 			&-solo {
 				box-shadow: var(--origam-theme---elevation, var(--origam-field--variant-solo---box-shadow, var(--origam-shadow---sm)));
 				border-color: transparent;
-				--origam-field__input---padding-top: 20px;
+				--origam-field__input---padding-top: var(--origam-field__input---padding-block-solo);
 			}
 
 			&-filled {
 				background: var(--origam-field--variant-filled---background-color, color-mix(in srgb, currentColor 12%, transparent));
 				border-radius: var(--origam-field---border-radius, 8px) var(--origam-field---border-radius, 8px) 0 0;
-				--origam-field__input---padding-top: 20px;
+				--origam-field__input---padding-top: var(--origam-field__input---padding-block-filled);
 
 				#{$this}__outlines {
 					#{$this}__outline {

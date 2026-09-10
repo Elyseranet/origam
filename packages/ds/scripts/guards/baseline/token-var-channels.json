@@ -385,8 +385,6 @@
     "packages/ds/src/components/Field/OrigamField.vue::--origam-field--inline---padding-inline",
     "packages/ds/src/components/Field/OrigamField.vue::--origam-field--variant-filled---background-color",
     "packages/ds/src/components/Field/OrigamField.vue::--origam-field--variant-filled---border-opacity",
-    "packages/ds/src/components/Field/OrigamField.vue::--origam-field-input---padding-bottom",
-    "packages/ds/src/components/Field/OrigamField.vue::--origam-field-input---padding-top",
     "packages/ds/src/components/Field/OrigamField.vue::--origam-field__skeleton---min-height",
     "packages/ds/src/components/Field/OrigamField.vue::--origam-input---density",
     "packages/ds/src/components/Field/OrigamField.vue::--origam-theme---elevation",

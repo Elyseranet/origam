@@ -197,3 +197,7 @@ genuinely need the raw DOM events at field level, listen for `focusin` /
 | `--origam-field---label-color` | text-secondary | Label color |
 | `--origam-field---bg-color` | surface | Background |
 | `--origam-field---density` | `0px` | Density offset |
+| `--origam-field__input---padding-top` | `--origam-field__input---padding-block-md` | Effective top padding of the input. Redirected onto a rung token by the `size` and `variant` rules below — override a rung, not this, when a rung applies. |
+| `--origam-field__input---padding-block-sm` · `-md` · `-lg` · `-xl` | `2px` · `6px` · `10px` · `14px` | Vertical padding rung selected by the `size` prop. |
+| `--origam-field__input---padding-block-solo` | `20px` | Vertical padding rung used by `variant="solo"`. |
+| `--origam-field__input---padding-block-filled` | `20px` | Vertical padding rung used by `variant="filled"`. |
