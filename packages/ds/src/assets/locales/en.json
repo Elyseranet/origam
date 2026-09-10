@@ -288,8 +288,11 @@
       "desc_no_data": "No data",
       "cartesian": {
         "aria_label": "{type} chart",
-        "desc_one": "{type} chart with {series} series and {count} point, values ranging from {min} to {max}.",
-        "desc_other": "{type} chart with {series} series and {count} points, values ranging from {min} to {max}."
+        "desc": "{type} chart with {series} and {points}, values ranging from {min} to {max}.",
+        "desc_series_one": "{count} series",
+        "desc_series_other": "{count} series",
+        "desc_points_one": "{count} point",
+        "desc_points_other": "{count} points"
       },
       "box_plot": {
         "aria_label": "box plot chart",
