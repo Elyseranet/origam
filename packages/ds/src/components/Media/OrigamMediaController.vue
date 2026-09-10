@@ -102,9 +102,9 @@
 						variant="text"
 						density="compact"
 						:icon="ICONS.SHUFFLE"
-						:active="internalShuffle"
+						:active="shuffleModel"
 						:aria-label="shuffleLabel"
-						:aria-pressed="internalShuffle"
+						:aria-pressed="shuffleModel"
 						data-cy="origam-media-controller-shuffle"
 						@click="toggleShuffle"
 				/>
@@ -165,12 +165,13 @@
 		lang="ts"
 		setup
 >
-	import { computed, type CSSProperties, ref, useSlots, watch } from 'vue'
+	import { computed, type CSSProperties, ref, useSlots } from 'vue'
 
 	import { OrigamBtn } from '../Btn'
 	import { OrigamMenu } from '../Menu'
 
 	import { useLocale } from '../../composables/Commons/locale.composable'
+	import { useVModel } from '../../composables/Commons/vModel.composable'
 
 	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
 
@@ -363,22 +364,28 @@
 	 * Tri-state loop — cycles `none → all → one → none …`. The
 	 * controller owns the cycle but mirrors the value via
 	 * `update:loopMode` so consumers can use `v-model:loopMode`.
+	 *
+	 * #429 — `loopMode` used to be seeded via `ref(props.loopMode ??
+	 * 'none')`, an EAGER read in the body of `setup()`. Vue runs
+	 * `setup()` BEFORE the `beforeCreate` hook where the ADR-005
+	 * theme-props resolver patches `instance.props` (root CLAUDE.md), so
+	 * a theme default for `loopMode` was captured too late and lost —
+	 * the trailing `watch()` never fired for the value it needed (a
+	 * watcher only reacts to a LATER change, never the initial one).
+	 * `useVModel` seeds its internal ref LAZILY (on first read, at
+	 * render — after `beforeCreate`), which is exactly the fix already
+	 * validated elsewhere in the DS for this same ADR-005 trap.
 	 ********************************************************/
-	const internalLoopMode = ref<TAudioLoopMode>(props.loopMode ?? 'none')
+	const loopModeModel = useVModel(props, 'loopMode', () => 'none')
 
-	watch(() => props.loopMode, (next) => {
-		if (next && next !== internalLoopMode.value) internalLoopMode.value = next
-	})
-
-	const resolvedLoopMode = computed<TAudioLoopMode>(() => internalLoopMode.value)
+	const resolvedLoopMode = computed<TAudioLoopMode>(() => loopModeModel.value)
 
 	function cycleLoopMode (): void {
 		const next: TAudioLoopMode =
-			internalLoopMode.value === 'none' ? 'all'
-				: internalLoopMode.value === 'all' ? 'one'
+			loopModeModel.value === 'none' ? 'all'
+				: loopModeModel.value === 'all' ? 'one'
 					: 'none'
-		internalLoopMode.value = next
-		emit('update:loopMode', next)
+		loopModeModel.value = next
 	}
 
 	const loopIcon = computed<string>(() => {
@@ -395,18 +402,13 @@
 
 	/*********************************************************
 	 * Shuffle toggle — v-modelled with the parent.
+	 *
+	 * #429 — same eager-read/ADR-005 trap as `loopMode` above, same fix.
 	 ********************************************************/
-	const internalShuffle = ref<boolean>(props.shuffle ?? false)
-
-	watch(() => props.shuffle, (next) => {
-		if (typeof next === 'boolean' && next !== internalShuffle.value) {
-			internalShuffle.value = next
-		}
-	})
+	const shuffleModel = useVModel(props, 'shuffle', () => false)
 
 	function toggleShuffle (): void {
-		internalShuffle.value = !internalShuffle.value
-		emit('update:shuffle', internalShuffle.value)
+		shuffleModel.value = !shuffleModel.value
 	}
 
 	/*********************************************************
@@ -651,7 +653,7 @@
 	defineExpose({
 		configMenuOpen,
 		resolvedLoopMode,
-		internalShuffle
+		internalShuffle: shuffleModel
 	})
 </script>
 
