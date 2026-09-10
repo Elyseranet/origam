@@ -6,6 +6,7 @@ import type {
 } from '../Commons/color.interface'
 import type { IBorderProps } from '../Commons/border.interface'
 import type {
+    ICommonsComponentEmits,
     ICommonsComponentProps,
     ITagProps
 } from '../Commons/commons.interface'
@@ -70,8 +71,18 @@ export interface IDrawerProps extends ITagProps, ICommonsComponentProps, IBorder
     clipped?: boolean | null
 }
 
-/** Emits fired by `<OrigamDrawer>` — v-model on the rail collapsed state. */
-export interface IDrawerEmits {
+/**
+ * Emits fired by `<OrigamDrawer>` — v-model on the open state, plus a
+ * second v-model on the rail collapsed state.
+ *
+ * `update:modelValue` arrives through `ICommonsComponentEmits`: the
+ * drawer closes itself on a scrim click (and on the route / resize
+ * watchers) via `useVModel(props, 'modelValue', …)`. Declaring it is
+ * what keeps the consumer's handler OUT of `$attrs` — an undeclared
+ * emit stays in the fallthrough set and `inheritAttrs` binds it a
+ * second time onto the root <nav>.
+ */
+export interface IDrawerEmits extends ICommonsComponentEmits {
     (e: 'update:rail', value: boolean): void
 }
 

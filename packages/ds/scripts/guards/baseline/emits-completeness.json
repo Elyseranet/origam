@@ -1,5 +1,4 @@
 [
     "ContextualMenu:update:modelValue",
-    "Drawer:update:modelValue",
     "Select:update:search"
 ]
