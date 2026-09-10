@@ -235,8 +235,29 @@
 	 * and a `t()` call is not a literal. `resolvedPlaceholder` falls back
 	 * to `t('origam.inline_edit.placeholder')` instead.
 	 ********************************************************/
+	/*********************************************************
+	 * `tag` default — 'div', not 'span' (arbitrage utilisateur, C6)
+	 *
+	 * @description
+	 * The root used to default to `<span>` (phrasing content) while edit
+	 * mode renders `<OrigamTextField>` / `<OrigamTextareaField>`, both of
+	 * which render a `<div>` (`OrigamField`) — a `<div>` is flow content,
+	 * not phrasing content, so a `<span>` could never legally contain it.
+	 * `.origam-inline-edit { display: inline-flex }` already overrides
+	 * the box type regardless of the underlying tag, so switching the
+	 * default to `<div>` is visually neutral (measured in Chromium — see
+	 * `packages/tests/e2e/inline-edit-tag.spec.ts`) while making the
+	 * rendered HTML valid again.
+	 * @description
+	 * ⛔ Migration note: a consumer who placed `<origam-inline-edit>`
+	 * inside a phrasing-only ancestor (`<p>`, `<label>`, …) relied on the
+	 * OLD default. A `<div>` closes an open `<p>` implicitly when the
+	 * browser's HTML parser is involved (raw HTML text / SSR markup being
+	 * parsed on load) — pass `tag="span"` explicitly to keep the previous
+	 * behaviour; the prop itself did not change, only its default.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IInlineEditProps>(), {
-		tag: 'span',
+		tag: 'div',
 		placeholder: undefined,
 		rules: undefined,
 		validate: undefined,

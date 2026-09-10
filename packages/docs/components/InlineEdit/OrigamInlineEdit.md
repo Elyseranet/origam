@@ -73,7 +73,7 @@ exposed — `fontFamily`, `letterSpacing` and `lineHeight` were removed from
 | `inputType`        | `'text' \| 'number' \| 'email' \| 'tel'`    | `'text'`          | Native HTML input type in single-line mode.                    |
 | `loadingOnConfirm` | `boolean`                                   | `false`           | Adds a CSS hook (`.origam-inline-edit--loading-on-confirm`) while a Promise validator is in flight. `aria-busy` is set regardless. |
 | `showActions`      | `boolean`                                   | `false`           | Render built-in Edit / Confirm / Cancel buttons. See "Action buttons" section below. |
-| `tag`              | `string`                                    | `'span'`          | Root element tag.                                              |
+| `tag`              | `string`                                    | `'div'` (was `'span'` before 2026-09) | Root element tag. See "Migration — `tag` default changed" below if you relied on the old default. |
 | `id`               | `string`                                    | `undefined`       | Forwarded to the root element.                                 |
 | `class`            | `string \| Array \| object`                 | `undefined`       | Merged onto the root element alongside the state classes.      |
 | `style`            | `string \| Array \| object`                 | `undefined`       | Merged onto the root element alongside the typography vars.    |
@@ -93,6 +93,39 @@ it already had to be, since edit mode renders `OrigamTextField`.
 | `origam.inline_edit.cancel` | `Cancel` |
 | `origam.inline_edit.field_aria_label` | `Edit value` — accessible name of the input |
 | `origam.inline_edit.invalid_value` | `Invalid value` — validator rejected without its own message |
+
+## Migration — `tag` default changed from `'span'` to `'div'`
+
+Since 2026-09, the root element defaults to `<div>` instead of `<span>`.
+
+**Why**: edit mode renders `<OrigamTextField>` / `<OrigamTextareaField>`,
+both of which render a `<div>` internally (`OrigamField`). A `<div>` is
+flow content, not phrasing content, so a `<span>` root could never
+legally contain it — the previous default produced invalid HTML on
+every instance that entered edit mode. `.origam-inline-edit { display:
+inline-flex }` already forces the inline-level box regardless of the
+underlying tag, so this change has **no visual effect** — dimensions,
+position and computed `display` are identical between the two tags
+(verified in a real browser, not jsdom; see
+`packages/tests/e2e/inline-edit-tag.spec.ts`).
+
+**Action required — only if you placed `<origam-inline-edit>` inside a
+phrasing-content-only ancestor** (a `<p>`, a `<label>`, another
+`<span>`, …): pass `tag="span"` explicitly to keep the previous
+behaviour.
+
+```vue
+<!-- Before 2026-09, this relied on the implicit 'span' default -->
+<p>
+    Status: <origam-inline-edit v-model="status" tag="span" />
+</p>
+```
+
+If you don't do this, a `<div>` inside a `<p>` closes the paragraph
+implicitly wherever the browser's HTML parser is involved (raw HTML
+text, or SSR markup parsed on page load) — the surrounding content can
+be reordered. The `tag` prop itself is unchanged; only its default
+value moved.
 
 ## Emits
 
@@ -189,7 +222,7 @@ layout overflow issues when the component is used in constrained containers.
 
 ```html
 <!-- single-line (showActions=true, isEditing=true) -->
-<span class="origam-inline-edit origam-inline-edit--editing origam-inline-edit--show-actions">
+<div class="origam-inline-edit origam-inline-edit--editing origam-inline-edit--show-actions">
   <div class="origam-text-field origam-inline-edit__field" data-cy="origam-inline-edit-input">
     <!-- OrigamTextField internals -->
     <div class="origam-field__append-inner">
@@ -197,7 +230,7 @@ layout overflow issues when the component is used in constrained containers.
       <button data-cy="origam-inline-edit-action-cancel">&#10005;</button>
     </div>
   </div>
-</span>
+</div>
 ```
 
 ### Combining `showActions` and `confirmOnBlur`

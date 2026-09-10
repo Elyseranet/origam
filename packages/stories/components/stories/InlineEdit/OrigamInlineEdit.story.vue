@@ -9,7 +9,7 @@
 				:init-state="() => useStoryInitState<Partial<IInlineEditProps>>({
 					modelValue: 'Inline edit value',
 					placeholder: 'Click to edit',
-					tag: 'span',
+					tag: 'div',
 					fontSize: undefined,
 					fontWeight: undefined
 				})"
