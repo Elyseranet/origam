@@ -358,45 +358,79 @@
       },
       "polar": {
         "aria_label_pie": "Graphique circulaire",
-        "aria_label_donut": "Graphique en anneau"
+        "aria_label_donut": "Graphique en anneau",
+        "desc": "{chart} avec {series} et {points}.",
+        "desc_series_one": "{count} série",
+        "desc_series_other": "{count} séries",
+        "desc_points_one": "{count} point",
+        "desc_points_other": "{count} points"
       },
       "polar_bar": {
         "aria_label": "Graphique à barres polaires",
-        "item_label": "Élément {0}"
+        "item_label": "Élément {0}",
+        "desc_one": "{chart} avec {count} secteur.",
+        "desc_other": "{chart} avec {count} secteurs."
       },
       "pyramid": {
         "aria_label_pyramid": "Graphique en pyramide",
         "aria_label_funnel": "Graphique en entonnoir",
-        "slice_label": "Tranche {0}"
+        "slice_label": "Tranche {0}",
+        "desc_one": "{chart} avec {count} tranche.",
+        "desc_other": "{chart} avec {count} tranches."
       },
       "radar": {
-        "aria_label": "Graphique radar"
+        "aria_label": "Graphique radar",
+        "desc": "{chart} avec {series} et {axes}.",
+        "desc_series_one": "{count} série",
+        "desc_series_other": "{count} séries",
+        "desc_axes_one": "{count} axe",
+        "desc_axes_other": "{count} axes"
       },
       "sankey": {
         "aria_label": "Diagramme de Sankey",
-        "link_aria_label": "{0} vers {1} : {2}"
+        "link_aria_label": "{0} vers {1} : {2}",
+        "desc": "{chart} avec {nodes} et {links}.",
+        "desc_nodes_one": "{count} nœud",
+        "desc_nodes_other": "{count} nœuds",
+        "desc_links_one": "{count} lien",
+        "desc_links_other": "{count} liens"
       },
       "sparkline": {
         "aria_label_line": "Courbe sparkline",
         "aria_label_area": "Sparkline en aires",
         "aria_label_column": "Sparkline en colonnes",
-        "aria_label_bar": "Sparkline à barres horizontales"
+        "aria_label_bar": "Sparkline à barres horizontales",
+        "desc_one": "{chart} avec {count} point de données.",
+        "desc_other": "{chart} avec {count} points de données."
       },
       "streamgraph": {
-        "aria_label": "Graphique en flux"
+        "aria_label": "Graphique en flux",
+        "desc": "{chart} avec {series} et {points}.",
+        "desc_series_one": "{count} série",
+        "desc_series_other": "{count} séries",
+        "desc_points_one": "{count} point temporel",
+        "desc_points_other": "{count} points temporels"
       },
       "sunburst": {
-        "aria_label": "Graphique en rayons de soleil"
+        "aria_label": "Graphique en rayons de soleil",
+        "desc_one": "{chart} avec {count} nœud racine.",
+        "desc_other": "{chart} avec {count} nœuds racines."
       },
       "treemap": {
-        "aria_label": "Carte proportionnelle"
+        "aria_label": "Carte proportionnelle",
+        "desc_one": "{chart} avec {count} tuile.",
+        "desc_other": "{chart} avec {count} tuiles."
       },
       "variwide": {
         "aria_label": "Graphique à largeur variable",
-        "column_aria_label": "{0} : valeur {1}, largeur {2}"
+        "column_aria_label": "{0} : valeur {1}, largeur {2}",
+        "desc_one": "{chart} avec {count} colonne.",
+        "desc_other": "{chart} avec {count} colonnes."
       },
       "word_cloud": {
-        "aria_label": "Nuage de mots"
+        "aria_label": "Nuage de mots",
+        "desc_one": "{chart} avec {count} mot.",
+        "desc_other": "{chart} avec {count} mots."
       }
     },
     "drawer": {
