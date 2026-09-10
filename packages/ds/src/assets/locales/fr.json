@@ -69,6 +69,11 @@
         "live": "EN DIRECT",
         "completed": "Terminé",
         "forfeited": "Forfait"
+      },
+      "round_robin": {
+        "cell_self": "{0} contre soi-même, non applicable",
+        "cell_no_match": "{0} contre {1}, sans match",
+        "cell_match": "{0} contre {1}"
       }
     },
     "carousel": {
