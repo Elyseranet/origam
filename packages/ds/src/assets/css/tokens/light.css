@@ -2162,8 +2162,10 @@
   --origam-container---max-width-lg: 992px;
   --origam-container---max-width-xl: 1280px;
   --origam-container---max-width-xxl: 1440px;
-  --origam-container---padding-inline: var(--origam-space---4);
-  --origam-container---margin-inline: auto;
+  --origam-container---padding-inline-start: var(--origam-space---4);
+  --origam-container---padding-inline-end: var(--origam-space---4);
+  --origam-container---margin-inline-start: auto;
+  --origam-container---margin-inline-end: auto;
   --origam-container--border---border-width: var(--origam-border__width---thin);
   --origam-container--border---box-shadow: var(--origam-shadow---none);
   --origam-row--gutter-none---gap: var(--origam-space---0);

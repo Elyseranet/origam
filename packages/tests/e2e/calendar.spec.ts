@@ -420,3 +420,51 @@ test.describe('OrigamCalendar — slots', () => {
         await expect(customCta).toBeVisible()
     })
 })
+
+// ⛔ Lot tokens (2026-09-10) — `--origam-calendar__day-cell---bg-color-hover`
+// was declared in light.css/dark.css but never read anywhere in the SCSS:
+// a clickable, focusable, tabindex-bearing grid cell (`cursor: pointer`)
+// had NO hover feedback at all. Real mouse hover (not a fabricated
+// `:hover` match) against a non-disabled, non-today cell.
+test.describe('OrigamCalendar — day-cell hover', () => {
+    test('hovering a non-disabled day cell changes its background-color', async ({ page }) => {
+        await openVariant(page, 'Design')
+        const sandbox = sandboxOf(page)
+
+        // A "plain" cell only — today / outside / weekend all carry their own
+        // background-color modifier and must not be picked, or the probe
+        // measures a coincidental colour match instead of the hover rule
+        // (this theme's `surface.overlay` and `surface.sunken` both resolve
+        // to the same #f5f5f5, which is exactly the trap: an --outside cell
+        // already sits at the hover fallback colour before any hover at all).
+        const cell = sandbox.locator(
+            '.origam-calendar__day-cell:not(.origam-calendar__day-cell--disabled)' +
+            ':not(.origam-calendar__day-cell--today)' +
+            ':not(.origam-calendar__day-cell--outside)' +
+            ':not(.origam-calendar__day-cell--weekend)'
+        ).first()
+        await expect(cell).toBeVisible({ timeout: 8000 })
+
+        const before = await cell.evaluate(el => getComputedStyle(el).backgroundColor)
+        await cell.hover()
+        await page.waitForTimeout(300)
+        const after = await cell.evaluate(el => getComputedStyle(el).backgroundColor)
+
+        expect(after).not.toBe(before)
+    })
+
+    test('hovering a disabled day cell keeps the base background-color', async ({ page }) => {
+        await openVariant(page, 'Functional')
+        const sandbox = sandboxOf(page)
+
+        const disabledCell = sandbox.locator('.origam-calendar__day-cell--disabled').first()
+        const count = await disabledCell.count()
+        test.skip(count === 0, 'no disabled cell in the Functional fixture')
+
+        const before = await disabledCell.evaluate(el => getComputedStyle(el).backgroundColor)
+        await disabledCell.hover()
+        const after = await disabledCell.evaluate(el => getComputedStyle(el).backgroundColor)
+
+        expect(after).toBe(before)
+    })
+})

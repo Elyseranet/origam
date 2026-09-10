@@ -266,6 +266,9 @@ Notable variables:
 - `--origam-calendar---background-color`
 - `--origam-calendar__day-cell---bg-color-today`
 - `--origam-calendar__day-cell---bg-color-weekend`
+- `--origam-calendar__day-cell---bg-color-hover` — mouse hover on a
+  non-disabled, non-today day cell (the cell already carries `cursor:
+  pointer` and is keyboard-focusable; hover now matches that affordance)
 - `--origam-calendar__event---bg-color-default`
 - `--origam-calendar__timeline---slot-height`
 - `--origam-calendar__range-select---bg-color`

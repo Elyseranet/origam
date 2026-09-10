@@ -116,3 +116,17 @@ The default slot overrides `text` and `combination` entirely, enabling rich cont
 | `--origam-kbd---font-weight` | `{font.weight.medium}` | Font weight |
 | `--origam-kbd---gap` | `{space.1}` | Gap between keys in a combination |
 | `--origam-kbd---box-shadow` | `{shadow.xs}` | Embossing shadow (filled variant only) |
+
+### Per-variant overrides
+
+Each `variant` reads its own background-color / border-width pair, falling
+back to the generic tokens above when unset:
+
+| Variable | Token | Description |
+|---|---|---|
+| `--origam-kbd--outlined---background-color` | `rgba(0, 0, 0, 0)` | `outlined` background (transparent by design) |
+| `--origam-kbd--outlined---border-width` | `{border.width.thin}` | `outlined` border width |
+| `--origam-kbd__filled---background-color` | `{color.surface.raised}` | `filled` background |
+| `--origam-kbd__filled---border-width` | `{border.width.thin}` | `filled` border width |
+| `--origam-kbd__tonal---background-color` | `{color.surface.sunken}` | `tonal` background |
+| `--origam-kbd__tonal---border-width` | `{border.width.0}` | `tonal` border width (none by default) |

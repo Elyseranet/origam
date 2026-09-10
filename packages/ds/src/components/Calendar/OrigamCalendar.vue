@@ -360,6 +360,8 @@
   import { INTENT } from '../../enums/Commons/intent.enum'
   import { VARIANT } from '../../enums/Commons/variant.enum'
 
+  import { UNSEEDED } from '../../consts/Commons/vmodel.const'
+
   import { useCalendar } from '../../composables/Calendar/calendar.composable'
   import { useDensity } from '../../composables/Commons/density.composable'
   import { useDimension } from '../../composables/Commons/dimension.composable'
@@ -486,8 +488,17 @@
   // interactive — the toolbar switches views / navigates on click. When
   // the parent binds `v-model:view` / `v-model:current-date`, the watchers
   // sync the controlled value back in.
-  const internalView = ref<TCalendarView>(props.view ?? CALENDAR_VIEW.MONTH)
-  const internalDate = ref<Date>(toDate(props.currentDate as Date | string) ?? new Date())
+  //
+  // ⛔ ADR-005 — the seed used to be `props.view ?? CALENDAR_VIEW.MONTH`
+  // read directly inside `ref(...)`, which runs during `setup()` —
+  // BEFORE the theme-props-resolver's `beforeCreate` patches `instance.props`.
+  // A theme naming a default `view` (or `currentDate`) for every calendar
+  // was therefore silently ignored on first render (mirrors the `useVModel`
+  // fix, #448 / #487): the ref starts `UNSEEDED` and the prop is read lazily,
+  // inside the `resolvedView` / `resolvedDate` computed getters, which only
+  // evaluate at render — comfortably after `beforeCreate`.
+  const internalView = ref<TCalendarView | typeof UNSEEDED>(UNSEEDED)
+  const internalDate = ref<Date | typeof UNSEEDED>(UNSEEDED)
 
   watch(() => props.view, (next) => {
     if (next != null) internalView.value = next
@@ -498,9 +509,13 @@
     if (parsed) internalDate.value = parsed
   })
 
-  const resolvedView = computed<TCalendarView>(() => internalView.value)
+  const resolvedView = computed<TCalendarView>(() => internalView.value !== UNSEEDED
+    ? internalView.value
+    : (props.view ?? CALENDAR_VIEW.MONTH))
 
-  const resolvedDate = computed<Date>(() => internalDate.value)
+  const resolvedDate = computed<Date>(() => internalDate.value !== UNSEEDED
+    ? internalDate.value
+    : (toDate(props.currentDate as Date | string) ?? new Date()))
 
   const resolvedLocale = computed<string>(() => {
     if (props.locale) return props.locale
@@ -1207,7 +1222,9 @@
   .origam-calendar {
     display: flex;
     flex-direction: column;
+    gap: var(--origam-calendar---gap, 0);
     width: 100%;
+    padding: var(--origam-calendar---padding, 0);
     background-color: var(--origam-calendar---background-color, #ffffff);
     color: var(--origam-calendar---color, inherit);
     border: var(--origam-calendar---border-width, 1px) solid var(--origam-calendar---border-color, #e5e7eb);
@@ -1314,6 +1331,10 @@
     flex-direction: column;
     gap: 4px;
     user-select: none;
+  }
+
+  .origam-calendar__day-cell:hover:not(.origam-calendar__day-cell--disabled) {
+    background-color: var(--origam-calendar__day-cell---bg-color-hover, var(--origam-color__surface---overlay, #f3f4f6));
   }
 
   .origam-calendar__day-cell:focus-visible {
@@ -1469,6 +1490,7 @@
   }
 
   .origam-calendar__timeline-slot {
+    height: var(--origam-calendar__timeline---slot-height, 32px);
     border-top: 1px solid var(--origam-calendar__timeline---grid-line-color, #f3f4f6);
     pointer-events: auto;
   }
