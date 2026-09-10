@@ -647,10 +647,11 @@ return [ out, props.style as StyleValue ]
 	const ariaLabel = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgAriaLabel = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgTitle = computed(() => props.title ?? defaultAriaLabel.value)
-	const svgDesc = computed(() => {
-		const n = visibleRibbons.value.length
-		return `Streamgraph with ${ n } series and ${ columnCount.value } time points.`
-	})
+	const svgDesc = computed(() => t('origam.chart.streamgraph.desc', {
+		chart: defaultAriaLabel.value,
+		series: t('origam.chart.streamgraph.desc_series', visibleRibbons.value.length),
+		points: t('origam.chart.streamgraph.desc_points', columnCount.value)
+	}))
 
 	const ribbonAriaLabel = (ribbon: IChartStreamgraphRibbon): string =>
 		`${ ribbon.name }: ${ ribbon.values.map((v) => formatValue(v)).join(', ') }`

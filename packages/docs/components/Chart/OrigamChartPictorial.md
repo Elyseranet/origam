@@ -52,6 +52,7 @@ import { OrigamChartPictorial } from '@origam/ds'
 | Name | Type | Default | Description |
 |---|---|---|---|
 | `direction` | `TDirection` | `'vertical'` | `'vertical'` stacks icons bottom-to-top (traditional column). `'horizontal'` stacks left-to-right. |
+| `mode` | `TChartPictorialMode` | `'stack'` | Rendering mode. `'stack'` is the classic isotype — rows of small repeated icons. `'fill'` draws **one large icon per category**, clip-masked from the bottom up to the fill ratio (thermometer / glass-fill effect); the unfilled portion keeps the icon silhouette as a faint shadow. |
 | `height` | `number \| string` | `400` | Chart height. A plain number is `px`. Ignored when `aspectRatio` is set. |
 | `aspectRatio` | `string` | `undefined` | CSS `aspect-ratio` shorthand. Overrides `height`. |
 | `colorScheme` | `Array<TIntent \| string>` | 8-intent cycle | Per-series fill palette when `iconColor` is not set. |

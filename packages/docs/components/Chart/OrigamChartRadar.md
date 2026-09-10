@@ -94,6 +94,8 @@ const series: Array<IChartSeries> = [
 
 **Circle markers.** Each vertex emits a `<circle class="origam-chart__point">` marker in addition to the polygon path. Each marker carries `tabindex="0"`, `role="button"` and an `aria-label`, and is the interactive target for `point-click` — via mouse click, `Enter` or `Space`. There is **no** hover tooltip on the radar: the markers are click targets only.
 
+**Accessibility — the `<desc>` summary is localised AND agrees in number.** The `<desc>` text is not an English literal: it resolves through the DS `t()` mechanism against `origam.chart.radar.desc*`, and the grammatical form is chosen by `Intl.PluralRules` for the ACTIVE locale — never by a `count === 1` test in the component. A translator supplies only the forms their language needs (`_one` / `_other` cover `en` and `fr`; a Russian translation adds `_few` with no component change), and a category a locale does not define falls back to `_other` rather than leaking the raw key. This chart names **two independent counts**, so each is pluralised as its own fragment and the shell key `desc` assembles them — that is what keeps the word order, and both agreements, under the translator's control.
+
 **No axes, grid, or tick labels.** Radar charts draw axis spokes (lines from centre to each vertex) and concentric grid rings instead of cartesian axes. These are rendered by the component internally and are not configurable via props on this version.
 
 **SSR.** A placeholder `<div>` with the correct dimensions is emitted server-side; the SVG mounts on `onMounted`.

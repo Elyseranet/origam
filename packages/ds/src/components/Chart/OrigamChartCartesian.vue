@@ -1208,6 +1208,21 @@ return [ out, props.style as StyleValue ]
 
 	/*********************************************************
 	 * ARIA
+	 *
+	 * @description
+	 * `svgDesc` compose DEUX comptes INDEPENDANTS — les series et les points.
+	 * Une seule cle pluralisee ne peut pas les accorder tous les deux : la
+	 * forme est choisie sur UN compte, et l'autre suit la mauvaise categorie.
+	 * Mesure en `fr` avec 1 serie et 5 points, la cle unique selectionnait
+	 * `desc_other` et rendait « avec 1 series et 5 points » ; avec 3 series et
+	 * 1 point elle rendait « avec 3 serie et 1 point ».
+	 * @description
+	 * Invisible en `en`, ou « series » est invariable — c'est pourquoi le
+	 * defaut a franchi la revue de #610. Chaque compte est donc resolu par son
+	 * PROPRE appel a `t()`, puis la chaine porteuse recoit les fragments deja
+	 * resolus en simple substitution : la couche i18n n'a rien a composer.
+	 * Meme patron que radar / streamgraph / sankey ; les composants a un seul
+	 * compte (variwide) gardent la forme simple `desc_one` / `desc_other`.
 	 ********************************************************/
 	const ariaLabel = computed(() => props.title ?? t('origam.chart.aria_label'))
 	const svgAriaLabel = computed(() => props.title ?? t('origam.chart.cartesian.aria_label', {type: props.type}))
@@ -1217,9 +1232,11 @@ return [ out, props.style as StyleValue ]
 		if (!seriesCount) return t('origam.chart.desc_no_data')
 		const range = yRange.value
 		const points = slotCount.value
-		return t('origam.chart.cartesian.desc', points, {
+
+		return t('origam.chart.cartesian.desc', {
 			type: props.type,
-			series: seriesCount,
+			series: t('origam.chart.cartesian.desc_series', seriesCount, {count: seriesCount}),
+			points: t('origam.chart.cartesian.desc_points', points, {count: points}),
 			min: range.min,
 			max: range.max
 		})

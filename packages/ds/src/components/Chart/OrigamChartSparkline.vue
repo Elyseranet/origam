@@ -620,10 +620,9 @@
 	const ariaLabel = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgAriaLabel = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgTitle = computed(() => props.title ?? defaultAriaLabel.value)
-	const svgDesc = computed(() => {
-		const n = values.value.length
-		return `Sparkline with ${ n } data ${ n === 1 ? 'point' : 'points' }.`
-	})
+	const svgDesc = computed(() =>
+		t('origam.chart.sparkline.desc', values.value.length, {chart: defaultAriaLabel.value})
+	)
 </script>
 
 <style

@@ -213,3 +213,64 @@ test.describe('OrigamChart — empty state slot', () => {
         await expect(host).toContainText(/no data yet/i)
     })
 })
+
+/**
+ * C7 — the five cartesian-forwarding props of the FACADE.
+ *
+ * `plotBands`, `plotLines`, `annotations`, `secondaryYAxis` and
+ * `drilldown` are declared on `IChartProps` and genuinely forwarded to
+ * `<OrigamChartCartesian>` through the `cartesianProps` computed
+ * (OrigamChart.vue:636-640) — yet before this change NONE of them had a
+ * doc row nor a story control. A prop that exists, works, and is
+ * documented nowhere is exactly the C7 defect.
+ *
+ * These probes deliberately assert on the RENDERED SVG artefact rather
+ * than on the presence of a control: a control that drives nothing lies
+ * louder than a missing doc. Each assertion therefore fails both when
+ * the Variant is absent AND when the forwarding is broken.
+ */
+test.describe('OrigamChart — facade forwards the cartesian overlay props', () => {
+    test('plotBands paints a band rect with its label', async ({ page }) => {
+        await openVariant(page, 'Functional - Plot overlays')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="origam-chart-plot-band"]')).toHaveCount(1)
+        await expect(sandbox.locator('[data-cy="origam-chart-plot-band-label"]')).toContainText('Target zone')
+    })
+
+    test('plotLines paints a threshold line with its label', async ({ page }) => {
+        await openVariant(page, 'Functional - Plot overlays')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="origam-chart-plot-line"]')).toHaveCount(1)
+        await expect(sandbox.locator('[data-cy="origam-chart-plot-line-label"]')).toContainText('Quota')
+    })
+
+    test('annotations paint the overlay layer', async ({ page }) => {
+        await openVariant(page, 'Functional - Plot overlays')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="origam-chart-annotations"]')).toHaveCount(1)
+        await expect(sandbox.locator('[data-cy="origam-chart-annotation-circle"]')).toHaveCount(1)
+        await expect(sandbox.locator('[data-cy="origam-chart-annotation-circle-text"]')).toContainText('Peak')
+    })
+
+    test('secondaryYAxis renders the right-hand axis group', async ({ page }) => {
+        await openVariant(page, 'Functional - Secondary Y axis')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="origam-chart-axis-secondary"]')).toHaveCount(1)
+        // The fixture formats the right axis as a percentage — proves the
+        // `format` callback of IChartSecondaryYAxis crossed the facade too,
+        // not merely that some second axis group exists.
+        await expect(
+            sandbox.locator('.origam-chart__axis-label--y-secondary').first()
+        ).toContainText('%')
+    })
+
+    test('drilldown swaps the dataset and shows the breadcrumb', async ({ page }) => {
+        await openVariant(page, 'Functional - Drilldown')
+        const sandbox = sandboxOf(page)
+        // No breadcrumb at the root level.
+        await expect(sandbox.locator('[data-cy="origam-chart-cartesian-breadcrumb"]')).toHaveCount(0)
+        await sandbox.locator('rect.origam-chart__bar').first().click({ force: true })
+        await expect(sandbox.locator('[data-cy="origam-chart-cartesian-breadcrumb"]')).toHaveCount(1)
+        await expect(sandbox.locator('[data-cy="origam-chart-cartesian-breadcrumb-back"]')).toBeVisible()
+    })
+})

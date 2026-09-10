@@ -183,21 +183,26 @@
 	const {id, css, load, isLoaded, unload} = useStyle(dataTableFooterStyles, () => props.id)
 
 	/*********************************************************
-	 * itemsPerPageLabelId (C6)
+	 * itemsPerPageLabelId — nom accessible du selecteur (#371, C6)
 	 *
 	 * @description
-	 * The "Items per page" `<origam-select>` had no accessible name — its
-	 * visible label was a plain `<span>`, only VISUALLY adjacent, never
-	 * programmatically associated (no `<label for>`, no `aria-label`, no
-	 * `aria-labelledby`). Fixed by giving the span a stable id and pointing
-	 * the select at it via `aria-labelledby`, which `filterInputAttrs`
-	 * (consumed by `OrigamTextField`, itself wrapped by `OrigamSelect`)
-	 * forwards onto the real `<input>` — not a fabricated `aria-label` on
-	 * top of the visible text (same "No ARIA is better than bad ARIA"
-	 * reasoning as #427/#622: the label already exists on screen, it only
-	 * needed to be wired, not duplicated).
+	 * Le <span> « Items per page » est le libelle VISIBLE du selecteur,
+	 * mais rien ne les associait : le champ ressortait annonce « Open ».
+	 * On lui donne un id derive de celui du pied de table, et le select
+	 * le reference par `aria-labelledby` — qui prime sur `aria-label`
+	 * dans le calcul du nom accessible.
+	 *
+	 * @description
+	 * ⛔ `<label for>` n'est pas jouable : l'id du <input> est genere a
+	 * l'interieur d'<OrigamSelect> et n'est pas expose ici. Et passer
+	 * `:label="…"` ne l'est pas davantage — un `const label` de setup
+	 * masque la prop homonyme dans le template d'OrigamSelect, si bien
+	 * que son `aria-label` vaut toujours « Open » / « Close ». Defaut
+	 * amont, famille Select, remonte a part.
 	 ********************************************************/
-	const itemsPerPageLabelId = computed(() => `${ id.value }-items-per-page-label`)
+	const itemsPerPageLabelId = computed(() => {
+		return `${id.value}-items-per-page-label`
+	})
 
 
 	/*********************************************************
