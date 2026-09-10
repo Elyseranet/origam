@@ -318,6 +318,48 @@
       },
       "zoom": {
         "reset_aria_label": "Reset zoom"
+      },
+      "polar": {
+        "aria_label_pie": "Pie chart",
+        "aria_label_donut": "Donut chart"
+      },
+      "polar_bar": {
+        "aria_label": "Polar bar chart",
+        "item_label": "Item {0}"
+      },
+      "pyramid": {
+        "aria_label_pyramid": "Pyramid chart",
+        "aria_label_funnel": "Funnel chart",
+        "slice_label": "Slice {0}"
+      },
+      "radar": {
+        "aria_label": "Radar chart"
+      },
+      "sankey": {
+        "aria_label": "Sankey diagram",
+        "link_aria_label": "{0} to {1}: {2}"
+      },
+      "sparkline": {
+        "aria_label_line": "Line sparkline",
+        "aria_label_area": "Area sparkline",
+        "aria_label_column": "Column sparkline",
+        "aria_label_bar": "Bar sparkline"
+      },
+      "streamgraph": {
+        "aria_label": "Streamgraph"
+      },
+      "sunburst": {
+        "aria_label": "Sunburst chart"
+      },
+      "treemap": {
+        "aria_label": "Treemap chart"
+      },
+      "variwide": {
+        "aria_label": "Variwide chart",
+        "column_aria_label": "{0}: value {1}, width {2}"
+      },
+      "word_cloud": {
+        "aria_label": "Word cloud chart"
       }
     },
     "dialog": {

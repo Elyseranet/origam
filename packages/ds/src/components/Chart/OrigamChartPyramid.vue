@@ -291,10 +291,10 @@
 		const cat = props.categories[index]
 		if (cat != null) return String(cat)
 		const series = props.series?.[0]
-		if (!series) return `Slice ${ index + 1 }`
+		if (!series) return t('origam.chart.pyramid.slice_label', index + 1)
 		const entry = series.data[index]
 		if (typeof entry === 'object' && entry !== null) return String(entry.x)
-		return `Slice ${ index + 1 }`
+		return t('origam.chart.pyramid.slice_label', index + 1)
 	}
 
 	const formatValue = (v: number): string => {
@@ -562,9 +562,10 @@ return [ out, props.style as StyleValue ]
 	/*********************************************************
 	 * ARIA
 	 ********************************************************/
-	const ariaLabel = computed(() => props.title ?? `${ props.type } chart`)
-	const svgAriaLabel = computed(() => props.title ?? `${ props.type } chart`)
-	const svgTitle = computed(() => props.title ?? `${ props.type } chart`)
+	const defaultAriaLabel = computed(() => t(`origam.chart.pyramid.aria_label_${ props.type }`))
+	const ariaLabel = computed(() => props.title ?? defaultAriaLabel.value)
+	const svgAriaLabel = computed(() => props.title ?? defaultAriaLabel.value)
+	const svgTitle = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgDesc = computed(() => {
 		const n = visibleSlices.value.length
 		return `${ props.type } chart with ${ n } ${ n === 1 ? 'slice' : 'slices' }.`

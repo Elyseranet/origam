@@ -66,7 +66,7 @@
 							:data-cy="`origam-chart-sankey-link-${ link.index }`"
 							tabindex="0"
 							role="button"
-							:aria-label="`${ link.from } to ${ link.to }: ${ link.formatted }`"
+							:aria-label="linkAriaLabel(link)"
 							@click="onLinkActivate(link, $event)"
 							@keydown.enter.prevent="onLinkActivate(link, $event)"
 							@keydown.space.prevent="onLinkActivate(link, $event)"
@@ -801,14 +801,18 @@ return [ out, props.style as StyleValue ]
 	/*********************************************************
 	 * ARIA
 	 ********************************************************/
-	const ariaLabel = computed(() => props.title ?? 'sankey chart')
-	const svgAriaLabel = computed(() => props.title ?? 'sankey chart')
-	const svgTitle = computed(() => props.title ?? 'sankey chart')
+	const defaultAriaLabel = computed(() => t('origam.chart.sankey.aria_label'))
+	const ariaLabel = computed(() => props.title ?? defaultAriaLabel.value)
+	const svgAriaLabel = computed(() => props.title ?? defaultAriaLabel.value)
+	const svgTitle = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgDesc = computed(() => {
 		const n = layoutNodes.value.length
 		const l = layoutLinks.value.length
 		return `Sankey diagram with ${ n } ${ n === 1 ? 'node' : 'nodes' } and ${ l } ${ l === 1 ? 'link' : 'links' }.`
 	})
+
+	const linkAriaLabel = (link: IChartSankeyLink): string =>
+		t('origam.chart.sankey.link_aria_label', link.from, link.to, link.formatted)
 
 	/*********************************************************
 	 * Interaction

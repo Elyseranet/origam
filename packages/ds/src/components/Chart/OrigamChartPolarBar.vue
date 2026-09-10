@@ -398,7 +398,7 @@
 			if (props.categories[i] != null) return String(props.categories[i])
 			const entry = raw[i]
 			if (typeof entry === 'object' && entry !== null) return String(entry.x)
-			return `Item ${ i + 1 }`
+			return t('origam.chart.polar_bar.item_label', i + 1)
 		}
 
 		return values.map((v, i): IChartPolarBarWedge => {
@@ -554,9 +554,10 @@ return [ out, props.style as StyleValue ]
 	/*********************************************************
 	 * ARIA
 	 ********************************************************/
-	const ariaLabel = computed(() => props.title ?? 'Polar bar chart')
-	const svgAriaLabel = computed(() => props.title ?? 'Polar bar chart')
-	const svgTitle = computed(() => props.title ?? 'Polar bar chart')
+	const defaultAriaLabel = computed(() => t('origam.chart.polar_bar.aria_label'))
+	const ariaLabel = computed(() => props.title ?? defaultAriaLabel.value)
+	const svgAriaLabel = computed(() => props.title ?? defaultAriaLabel.value)
+	const svgTitle = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgDesc = computed(() => {
 		const n = visibleWedges.value.length
 		return `Polar bar chart with ${ n } ${ n === 1 ? 'wedge' : 'wedges' }.`
