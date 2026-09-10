@@ -393,6 +393,9 @@
         "aria_label": "Nuage de mots"
       }
     },
+    "drawer": {
+      "aria_label": "Navigation principale"
+    },
     "dialog": {
       "close_aria_label": "Fermer la boîte de dialogue",
       "confirmation": {

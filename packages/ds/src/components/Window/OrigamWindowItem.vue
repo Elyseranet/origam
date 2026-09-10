@@ -80,8 +80,25 @@
 
 	defineSlots<IWindowItemSlots>()
 
-
-
+	/*********************************************************
+	 * ⛔ UN SEUL canal d'attributs sur le `<div>` — ne pas en rouvrir un second.
+	 *
+	 * @description
+	 * Deux correctifs concurrents ont visé le même trou (les attrs mouraient
+	 * sur `<Transition>`, qui ne rend aucun élément) et la fusion a gardé LES
+	 * DEUX : `v-bind="$attrs"` d'un côté, `v-bind="a11yAttrs"` — une recopie
+	 * manuelle du sous-ensemble `role` + `aria-*` — de l'autre. Aucun conflit
+	 * textuel, donc git n'a rien signalé ; mais deux `v-bind` sans argument
+	 * sur un même élément sont une ERREUR DE COMPILATION du parseur Vue 3
+	 * (« Duplicate attribute »), levée au transform. Mesuré sur `develop` :
+	 * 271 des 495 fichiers de test ne compilaient plus, en rendant « 0 test ».
+	 *
+	 * @description
+	 * Le canal conservé est `v-bind="$attrs"` + `inheritAttrs: false` (#475),
+	 * SUR-ENSEMBLE strict de la recopie manuelle : il transporte `role` et
+	 * `aria-*`, plus `title`, `data-*` et `tabindex` qu'elle laissait tomber.
+	 * Filet : `window-item-attrs-fallthrough.spec.ts`.
+	 ********************************************************/
 	const {filterProps} = useProps<IWindowItemProps>(props)
 
 	const window = inject(ORIGAM_WINDOW_KEY)

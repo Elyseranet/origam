@@ -393,6 +393,9 @@
         "aria_label": "Word cloud chart"
       }
     },
+    "drawer": {
+      "aria_label": "Navigation"
+    },
     "dialog": {
       "close_aria_label": "Close dialog",
       "confirmation": {
