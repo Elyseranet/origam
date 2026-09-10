@@ -55,15 +55,20 @@ const page = ref(1)
 
 ## ARIA
 
-| Prop | Type | Description |
-|---|---|---|
-| `ariaLabel` | `string` | `aria-label` on the `<nav>` element |
-| `pageAriaLabel` | `string` | Template for each page button |
-| `currentPageAriaLabel` | `string` | Template for the active page button |
-| `firstAriaLabel` | `string` | First-page button ARIA label |
-| `previousAriaLabel` | `string` | Previous-page button ARIA label |
-| `nextAriaLabel` | `string` | Next-page button ARIA label |
-| `lastAriaLabel` | `string` | Last-page button ARIA label |
+Every prop below carries a **locale key**, not finished text — its default is a
+`origam.pagination.aria_label.*` entry, and the component resolves it through
+`t()` before it reaches the DOM. Pass your own key to translate; literal text
+also works, since an unknown key is returned unchanged.
+
+| Prop | Type | Default key | Description |
+|---|---|---|---|
+| `ariaLabel` | `string` | `origam.pagination.aria_label.root` | `aria-label` on the `<nav>` element |
+| `pageAriaLabel` | `string` | `origam.pagination.aria_label.page` | Template for each page button (`{0}` = page number) |
+| `currentPageAriaLabel` | `string` | `origam.pagination.aria_label.current_page` | Template for the active page button |
+| `firstAriaLabel` | `string` | `origam.pagination.aria_label.first` | First-page button ARIA label |
+| `previousAriaLabel` | `string` | `origam.pagination.aria_label.previous` | Previous-page button ARIA label |
+| `nextAriaLabel` | `string` | `origam.pagination.aria_label.next` | Next-page button ARIA label |
+| `lastAriaLabel` | `string` | `origam.pagination.aria_label.last` | Last-page button ARIA label |
 
 ## Slots
 

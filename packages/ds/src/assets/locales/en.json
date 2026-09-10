@@ -277,7 +277,9 @@
       "aria_label": "Breadcrumb"
     },
     "command_palette": {
-      "aria_label": "Command palette"
+      "aria_label": "Command palette",
+      "placeholder": "Search…",
+      "empty_text": "No results"
     },
     "chart": {
       "aria_label": "Chart",
@@ -392,6 +394,9 @@
       "word_cloud": {
         "aria_label": "Word cloud chart"
       }
+    },
+    "drawer": {
+      "aria_label": "Navigation"
     },
     "dialog": {
       "close_aria_label": "Close dialog",

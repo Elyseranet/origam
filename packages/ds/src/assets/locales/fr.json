@@ -277,7 +277,9 @@
       "aria_label": "Fil d'Ariane"
     },
     "command_palette": {
-      "aria_label": "Palette de commandes"
+      "aria_label": "Palette de commandes",
+      "placeholder": "Rechercher…",
+      "empty_text": "Aucun résultat"
     },
     "chart": {
       "aria_label": "Graphique",
@@ -392,6 +394,9 @@
       "word_cloud": {
         "aria_label": "Nuage de mots"
       }
+    },
+    "drawer": {
+      "aria_label": "Navigation principale"
     },
     "dialog": {
       "close_aria_label": "Fermer la boîte de dialogue",
