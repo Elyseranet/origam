@@ -17,8 +17,10 @@ import { expect, test } from '@playwright/test'
  *   5  Slots - Append
  *   6  Slots - Label
  *   7  Slots - Details
- *   8  Slots - ItemLabel
- *   9  Default (playground, init: color:'primary', length:5, label:'Rating', modelValue:3)
+ *   8  Slots - Message
+ *   9  Slots - Messages
+ *   10 Slots - ItemLabel
+ *   11 Default (playground, init: color:'primary', length:5, label:'Rating', modelValue:3)
  *
  * ## OrigamRatingFieldItem — Variants (0-based)
  *   0  Design      (init: value:3, index:1, name:'rating', label:'Item', showStar:true, isFilled:true, color:'warning')
@@ -243,7 +245,41 @@ test.describe('OrigamRatingField', () => {
     })
 
     // ---------------------------------------------------------------- //
-    // SLOTS - ItemLabel (index 8)                                        //
+    // SLOTS - Message (index 8)                                          //
+    // ---------------------------------------------------------------- //
+
+    test.describe('Slots - Message', () => {
+        /**
+         * The story passes :error="true" :error-messages="['Error']" and
+         * overrides the #message slot with an italic <span>. The rendered
+         * text "Error" must be present — this proves `<OrigamRatingField>`
+         * forwards its `#message` scoped slot down to `<OrigamInput>`'s own
+         * `#message` (OrigamRatingField.vue, `<template v-if="slots.message"
+         * #message="{message}">`).
+         */
+        test('custom message slot renders the error message text', async ({ page }) => {
+            await page.goto(rfUrl(8), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
+            await expect(sandbox.locator('.origam-rating-field')).toContainText('Error')
+        })
+    })
+
+    // ---------------------------------------------------------------- //
+    // SLOTS - Messages (index 9)                                         //
+    // ---------------------------------------------------------------- //
+
+    test.describe('Slots - Messages', () => {
+        test('custom messages slot renders the custom error display', async ({ page }) => {
+            await page.goto(rfUrl(9), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
+            await expect(sandbox.locator('.origam-rating-field')).toContainText('Custom error display')
+        })
+    })
+
+    // ---------------------------------------------------------------- //
+    // SLOTS - ItemLabel (index 10)                                       //
     // ---------------------------------------------------------------- //
 
     test.describe('Slots - ItemLabel', () => {
@@ -262,28 +298,48 @@ test.describe('OrigamRatingField', () => {
          * index, not just when a per-index override happens to exist.
          */
         test('itemLabel generic slot renders one <strong> per item (regression for #452)', async ({ page }) => {
-            await page.goto(rfUrl(8), { waitUntil: 'domcontentloaded' })
+            await page.goto(rfUrl(10), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-rating-field strong')).toHaveCount(5)
         })
+
+        /**
+         * Second regression, also tracked under #452: the story's
+         * `#itemLabel="{ label }"` destructures a scope that
+         * `<OrigamRatingField>` never bound (`<slot name="itemLabel">` had
+         * no `v-bind`) — every `<strong>` above rendered EMPTY, which the
+         * count-only assertion above cannot catch. The component now binds
+         * `:label="itemLabels?.[index]"` / `:index="index"` on both the
+         * generic and the per-index `<slot>`, so the story's `<strong>` must
+         * contain the actual label text, not just exist.
+         */
+        test('itemLabel generic slot receives the real label text, not an empty scope', async ({ page }) => {
+            await page.goto(rfUrl(10), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
+            const strongs = sandbox.locator('.origam-rating-field strong')
+            await expect(strongs).toHaveCount(5)
+            await expect(strongs.nth(0)).toHaveText('Terrible')
+            await expect(strongs.nth(4)).toHaveText('Excellent')
+        })
     })
 
     // ---------------------------------------------------------------- //
-    // DEFAULT — playground (index 9)                                     //
+    // DEFAULT — playground (index 11)                                    //
     // init: { color:'primary', length:5, label:'Rating', modelValue:3 } //
     // ---------------------------------------------------------------- //
 
     test.describe('Default (playground)', () => {
         test('renders with label "Rating"', async ({ page }) => {
-            await page.goto(rfUrl(9), { waitUntil: 'domcontentloaded' })
+            await page.goto(rfUrl(11), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('.origam-rating-field')).toContainText('Rating')
         })
 
         test('renders 5 visible star items inside __content (length=5)', async ({ page }) => {
-            await page.goto(rfUrl(9), { waitUntil: 'domcontentloaded' })
+            await page.goto(rfUrl(11), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             const visibleItems = sandbox.locator('.origam-rating-field__content .origam-rating-field-item')
@@ -291,7 +347,7 @@ test.describe('OrigamRatingField', () => {
         })
 
         test('modelValue=3 → the radio with value=3 is checked', async ({ page }) => {
-            await page.goto(rfUrl(9), { waitUntil: 'domcontentloaded' })
+            await page.goto(rfUrl(11), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             // The field renders 6 inputs: hidden value=0 + visible values 1..5.
@@ -310,7 +366,7 @@ test.describe('OrigamRatingField', () => {
          * If the DS renders the clear button when clearable is falsy → regression.
          */
         test('clearable not set → no clear button even with modelValue=3', async ({ page }) => {
-            await page.goto(rfUrl(9), { waitUntil: 'domcontentloaded' })
+            await page.goto(rfUrl(11), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-rating-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="rating-field-clear"]')).toHaveCount(0)

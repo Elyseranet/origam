@@ -118,7 +118,8 @@
       "dropzone_title": "Drag and drop files here",
       "dropzone_subtitle": "or click to browse",
       "browse": "Browse Files",
-      "remove_aria_label": "Remove {0}"
+      "remove_aria_label": "Remove {0}",
+      "download_aria_label": "Download {0}"
     },
     "file_upload": {
       "title": "Drag and drop files here",
