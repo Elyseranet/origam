@@ -110,8 +110,8 @@ and `fontFamily` is a project-level setting configured once on `OrigamApp`.
 | `modelValue` | `boolean` | `false` | Whether the palette is open. v-model. |
 | `hotkey` | `string[] \| string[][] \| null` | `[['meta','k'],['ctrl','k']]` | Global hotkey(s) that toggle the palette. Pass `null` to disable. |
 | `commands` | `ICommand[]` | — | Static command list. Falls back to the global registry when omitted. |
-| `placeholder` | `string` | `'Search…'` | Placeholder of the search input. Pre-translate via `useT()`. |
-| `emptyText` | `string` | `'No results'` | Empty-state message when no command matches the query. |
+| `placeholder` | `string` | `'origam.command_palette.placeholder'` | Placeholder of the search input, and the name the `role="combobox"` input and the listbox are announced with. Resolved through the locale catalogue — pass a **key** to translate, or literal text to render verbatim (an unknown key is returned unchanged). |
+| `emptyText` | `string` | `'origam.command_palette.empty_text'` | Empty-state message when no command matches the query. Same key-or-literal contract as `placeholder`. |
 | `maxHeight` | `number \| string` | `480` | Max height of the result list (px when number). |
 | `width` | `number \| string` | `640` | Width of the palette dialog (px when number). |
 | `loading` | `boolean` | `false` | Display a loader inside the result list. |

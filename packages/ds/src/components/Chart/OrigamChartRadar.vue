@@ -350,8 +350,12 @@ return [ out, props.style as StyleValue ]
 	const svgDesc = computed(() => {
 		const seriesCount = props.series.length
 		if (!seriesCount) return t('origam.chart.no_data_text')
-		const points = slotCount.value
-		return `radar chart with ${ seriesCount } series and ${ points } axes.`
+
+		return t('origam.chart.radar.desc', {
+			chart: defaultAriaLabel.value,
+			series: t('origam.chart.radar.desc_series', seriesCount),
+			axes: t('origam.chart.radar.desc_axes', slotCount.value)
+		})
 	})
 
 	const pointAriaLabel = (path: IChartPath) => {

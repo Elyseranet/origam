@@ -690,7 +690,34 @@
 	 * Forwards filterProps to parent components.
 	 ********************************************************/
 	const {filterProps} = useProps<IFieldProps>(props)
-	const {id: styleId, css, load, isLoaded, unload} = useStyle(fieldStyles)
+
+	/*********************************************************
+	 * styleId — l'id de la RACINE, derive de celui du consommateur
+	 *
+	 * @description
+	 * #421/#422 — `useStyle(fieldStyles)` etait appele sans son second
+	 * argument : la racine rendait `origam-field-<uid>` et l'id du
+	 * consommateur n'atteignait jamais le wrapper.
+	 *
+	 * @description
+	 * ⛔ La correction evidente — lier `:id="id"` sur la racine — est
+	 * FAUSSE. `props.id` est deja porte par le vrai controle (via
+	 * `slotProps.id`) et sert de cible aux `for=` des deux labels : le
+	 * poser aussi sur la racine fabriquerait DEUX elements de meme id et
+	 * casserait le pairage `label[for]`. Le meme piege a ete mesure sur
+	 * `OrigamInput` (#421), ou six consommateurs de la famille auraient
+	 * pris un id duplique.
+	 *
+	 * @description
+	 * D'ou un id DERIVE : adressable et deterministe pour qui veut cibler
+	 * le wrapper, jamais egal a celui du controle. Le getter garde la
+	 * lecture PARESSEUSE (ADR-005) : le resolveur de theme ecrit dans
+	 * `beforeCreate`, donc APRES `setup()`.
+	 ********************************************************/
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(
+			fieldStyles,
+			() => props.id ? `${props.id}-field` : undefined
+	)
 
 
 	defineExpose({

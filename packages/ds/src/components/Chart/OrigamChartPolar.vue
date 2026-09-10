@@ -510,8 +510,12 @@ return [ out, props.style as StyleValue ]
 	const svgDesc = computed(() => {
 		const seriesCount = activeSeries.value.length
 		if (!seriesCount) return t('origam.chart.no_data_text')
-		const points = slotCount.value
-		return `${ props.type } chart with ${ seriesCount } series and ${ points } ${ points === 1 ? 'point' : 'points' }.`
+
+		return t('origam.chart.polar.desc', {
+			chart: defaultAriaLabel.value,
+			series: t('origam.chart.polar.desc_series', seriesCount),
+			points: t('origam.chart.polar.desc_points', slotCount.value)
+		})
 	})
 
 	const sliceAriaLabel = (path: IChartPath) => {

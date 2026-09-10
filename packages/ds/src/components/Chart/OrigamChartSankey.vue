@@ -805,11 +805,11 @@ return [ out, props.style as StyleValue ]
 	const ariaLabel = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgAriaLabel = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgTitle = computed(() => props.title ?? defaultAriaLabel.value)
-	const svgDesc = computed(() => {
-		const n = layoutNodes.value.length
-		const l = layoutLinks.value.length
-		return `Sankey diagram with ${ n } ${ n === 1 ? 'node' : 'nodes' } and ${ l } ${ l === 1 ? 'link' : 'links' }.`
-	})
+	const svgDesc = computed(() => t('origam.chart.sankey.desc', {
+		chart: defaultAriaLabel.value,
+		nodes: t('origam.chart.sankey.desc_nodes', layoutNodes.value.length),
+		links: t('origam.chart.sankey.desc_links', layoutLinks.value.length)
+	}))
 
 	const linkAriaLabel = (link: IChartSankeyLink): string =>
 		t('origam.chart.sankey.link_aria_label', link.from, link.to, link.formatted)

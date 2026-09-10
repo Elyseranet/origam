@@ -88,6 +88,33 @@ function onPointClick(point: IChartPoint) {
 | `yMin` | `number` | auto | Override the auto-computed Y minimum. Useful when data starts well above zero. |
 | `yMax` | `number` | auto | Override the auto-computed Y maximum. |
 
+### Cartesian overlays
+
+Forwarded verbatim to `<OrigamChartCartesian>`. They are **cartesian-family
+only** — `line`, `spline`, `stepped-line`, `area`, `bar`, `column`, `scatter`,
+`candlestick`, `variwide`. Non-cartesian types (`pie`, `donut`, `radar`,
+`gauge`, `treemap`, …) ignore them silently, with the single exception of
+`drilldown`, which the polar family honours too.
+
+| Name | Type | Default | Description |
+|---|---|---|---|
+| `plotBands` | `Array<IChartPlotBand>` | `[]` | Coloured rectangular zones drawn behind (or above) the data, spanning a numeric range on either axis. Each band accepts `axis`, `from`, `to`, `color`, `opacity`, `label`, `labelColor` and `layer`. |
+| `plotLines` | `Array<IChartPlotLine>` | `[]` | Threshold lines drawn at a fixed axis value. Each line accepts `axis`, `value`, `color`, `width`, `dash`, `label`, `labelAlign` and `layer`. |
+| `annotations` | `Array<IChartAnnotation>` | `[]` | Overlay annotations positioned in data coordinates and projected through the chart scales. Four kinds: `arrow`, `label`, `circle`, `bracket`. |
+| `secondaryYAxis` | `IChartSecondaryYAxis` | `undefined` | Configuration of the right-hand Y axis (`min`, `max`, `format`, `title`). A series opts into it with `yAxis: 1`; passing this object alone also forces the axis to render. |
+| `drilldown` | `IChartDrilldownProps` | `undefined` | Wires the drilldown feature. `datasets` is the bank of named sub-datasets looked up by the `drilldown.id` carried on a data point; `backLabel` and `navAriaLabel` label the breadcrumb trail. |
+
+```vue
+<origam-chart
+    type="column"
+    :series="series"
+    :categories="categories"
+    :plot-bands="[{ axis: 'y', from: 20, to: 34, color: 'success', label: 'Target zone' }]"
+    :plot-lines="[{ axis: 'y', value: 30, color: 'danger', dash: 'dashed', label: 'Quota' }]"
+    :annotations="[{ kind: 'circle', x: 'Dec', y: 52, text: 'Peak', color: 'warning' }]"
+/>
+```
+
 ### Donut-specific
 
 | Name | Type | Default | Description |

@@ -226,13 +226,13 @@
                         <div class="origam-file-field__selection">
                           <slot
                               name="chip"
-                              v-bind="{ fileNames: filename, totalBytes: totalBytes, totalBytesReadable: totalBytesReadable, props: chipProps }"
+                              v-bind="{ fileNames: filename, totalBytes: totalBytes, totalBytesReadable: totalBytesReadable, props: resolvedChipProps }"
                           >
                             <origam-chip
                                 key="chip"
                                 :model-value="true"
                                 size="small"
-                                v-bind="chipProps"
+                                v-bind="resolvedChipProps"
                                 @click:close.prevent.stop="handleRemove(index)"
                             >
                               <template #default>
@@ -304,12 +304,17 @@
                 <origam-file-field-list-item
                     :file="item"
                     :index="idx"
+                    :progress="getProgress(idx)"
                     :file-icon="fileIcon"
+                    :download-icon="downloadIcon"
                     :remove-icon="removeIcon"
+                    :downloadable="downloadable"
                     :disabled="isDisabled"
                     :readonly="isReadonly"
+                    :color="color"
                     :show-size="showSize"
                     @click:remove="handleRemove(idx)"
+                    @click:download="handleDownload(idx, item)"
                 />
               </slot>
             </template>
@@ -487,7 +492,7 @@
   const model = useVModel(
       props,
       'modelValue',
-      props.multiple ? [] as Array<File> : null,
+      () => props.multiple ? [] as Array<File> : null,
       val => wrapInArray(val),
       val => (props.multiple || Array.isArray(props.modelValue)) ? val : (val[0] ?? null)
   )
@@ -539,8 +544,20 @@
 
   const { isFocused, onFocus, onBlur: handleBlur } = useFocus(props)
 
+  /*********************************************************
+   * isActive
+   *
+   * @description
+   * #418 — `persistentPlaceholder` etait declaree dans l'interface et
+   * absente du `.vue`. Elle n'etait pas non plus TRANSMISSIBLE : ni
+   * `IInputProps` ni `IFieldProps` ne la declarent, donc `filterProps`,
+   * qui filtre sur les cles de l'interface enfant, ne pouvait pas la faire
+   * descendre. Elle se consomme ici, exactement comme chez les trois
+   * freres (TextField, TextareaField, PasswordField) : elle force l'etat
+   * actif du champ pour que le placeholder reste visible hors focus.
+   ********************************************************/
   const isActive = computed(() => {
-    return isFocused.value || props.active
+    return props.persistentPlaceholder || isFocused.value || props.active
   })
 
   /*********************************************************
@@ -766,10 +783,27 @@
   const inlineCounterValue = computed(() => {
     return model.value?.length ?? 0
   })
-  const chipProps = computed(() => {
+  /*********************************************************
+   * resolvedChipProps
+   *
+   * @description
+   * #418 — ce computed s'appelait `chipProps`, exactement comme la prop
+   * publique du meme nom. Le compilateur SFC resout un identifiant du
+   * template vers le binding `setup-ref` en priorite : `v-bind="chipProps"`
+   * lisait donc le computed, et `props.chipProps` n'a jamais ete lue depuis
+   * sa creation (`git log -S "props.chipProps"` : vide). L'audit statique
+   * des props non consommees ne pouvait pas le voir non plus, l'identifiant
+   * etant bien present dans le template.
+   * @description
+   * Le patron correct est celui d'`OrigamSelect` : les valeurs internes
+   * d'abord, la prop du consommateur etalee EN DERNIER pour qu'elle puisse
+   * surcharger.
+   ********************************************************/
+  const resolvedChipProps = computed(() => {
     return {
       closable: !props.disabled && !props.readonly,
-      color: props.color
+      color: props.color,
+      ...props.chipProps
     }
   })
   const getProgress = (index: number) => {
