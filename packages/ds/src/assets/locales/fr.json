@@ -285,8 +285,11 @@
       "desc_no_data": "Aucune donnée",
       "cartesian": {
         "aria_label": "graphique {type}",
-        "desc_one": "Graphique {type} avec {series} série et {count} point, valeurs de {min} à {max}.",
-        "desc_other": "Graphique {type} avec {series} séries et {count} points, valeurs de {min} à {max}."
+        "desc": "Graphique {type} avec {series} et {points}, valeurs de {min} à {max}.",
+        "desc_series_one": "{count} série",
+        "desc_series_other": "{count} séries",
+        "desc_points_one": "{count} point",
+        "desc_points_other": "{count} points"
       },
       "box_plot": {
         "aria_label": "boîte à moustaches",
