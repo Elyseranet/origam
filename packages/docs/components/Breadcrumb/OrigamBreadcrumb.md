@@ -36,9 +36,24 @@ with no link:
 ```
 
 The **last** item in `items` is always normalized to `disabled: true` and
-`active: true` (`aria-current="page"`), regardless of what you pass —
-this reflects "you are here" and matches the standard breadcrumb
-pattern.
+forced active (`aria-current="page"`) — this reflects "you are here" and
+matches the standard breadcrumb pattern. `active` on any OTHER item is
+ignored: only one item can be the current page, and it's always the last
+one (#386).
+
+An `active` **config object** (`IActiveState` — `bgColor`, `border`,
+`rounded`, …) is NOT destroyed on the last item: the item's own
+`item.active` config wins if set, otherwise the root `<OrigamBreadcrumb
+active="…">` default is used, otherwise it's a bare `true`. Either way
+`enabled: true` is injected into the resolved config so the visual
+override renders AND the item stays active — an object config alone
+doesn't force `isActive` (see `IActiveProps`).
+
+```vue
+<template>
+    <OrigamBreadcrumb :active="{ bgColor: 'primary' }" :items="items" />
+</template>
+```
 
 ## Divider
 
