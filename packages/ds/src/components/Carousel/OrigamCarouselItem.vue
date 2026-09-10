@@ -2,8 +2,10 @@
 	<origam-window-item
 			:id="id"
 			ref="origamWindowItemRef"
+			:aria-roledescription="slideRoleDescription"
 			:class="carouselItemClasses"
 			:style="carouselItemStyles"
+			role="group"
 			v-bind="windowItemProps"
 	>
 		<template #default>
@@ -45,6 +47,7 @@
 	import OrigamImg from '../Img/OrigamImg.vue'
 	import OrigamWindowItem from '../Window/OrigamWindowItem.vue'
 
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
@@ -128,6 +131,26 @@
 	})
 
 	const slots = useSlots()
+
+	/*********************************************************
+	 * Sémantique de diapositive — patron WAI-ARIA « carousel »
+	 *
+	 * @description
+	 * Le parent `<OrigamWindow>` porte déjà `role="region"` +
+	 * `aria-roledescription="carousel"` et la région live qui annonce le
+	 * changement. Il manquait l'échelon du BAS : sans `role="group"` +
+	 * `aria-roledescription="slide"`, un lecteur d'écran annonce la région
+	 * et le numéro de diapositive, mais rien ne délimite CE contenu-ci
+	 * comme étant une diapositive — le patron n'est complet qu'avec les
+	 * deux niveaux.
+	 * @description
+	 * `aria-roledescription` est LU TEL QUEL par les lecteurs d'écran :
+	 * c'est du texte destiné à l'utilisateur, il passe donc par la locale
+	 * (jamais une chaîne en dur), comme les libellés de navigation voisins.
+	 ********************************************************/
+	const {t} = useLocale()
+
+	const slideRoleDescription = computed(() => t('origam.carousel.slide'))
 
 	/*********************************************************
 	 * Class & Style

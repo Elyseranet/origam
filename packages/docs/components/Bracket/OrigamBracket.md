@@ -151,8 +151,8 @@ diagonal. The diagonal cells are inert.
 | `borderColor`     | `TIntent \| <css-color>`                                     | — (subtle)            |
 | `borderTopColor` / `borderRightColor` / `borderBottomColor` / `borderLeftColor` | `TIntent \| <css-color>` | — (overrides one side's colour only) |
 | `borderStyle`     | `'solid' \| 'dashed' \| 'dotted' \| …`                       | `'solid'`             |
-| `winnersLabel`    | `string`                                                      | `'Winners bracket'`   |
-| `losersLabel`     | `string`                                                      | `'Losers bracket'`    |
+| `winnersLabel`    | `string`                                                      | — (falls back to `origam.bracket.winners_label`) |
+| `losersLabel`     | `string`                                                      | — (falls back to `origam.bracket.losers_label`)  |
 | `width` / `height` / `minWidth` / `minHeight` / `maxWidth` / `maxHeight` | `number \| string` | — (applied to the bracket root) |
 | `margin` / `marginTop` / `marginRight` / `marginBottom` / `marginLeft` / `marginBlock` / `marginInline` | `number \| string \| boolean` | — (applied to the bracket root) |
 | `padding` / `paddingTop` / `paddingRight` / `paddingBottom` / `paddingLeft` / `paddingBlock` / `paddingInline` | `number \| string \| boolean` | — (applied to the bracket root) |
@@ -196,6 +196,18 @@ diagonal. The diagonal cells are inert.
 > read either var. `fontFamily` is a project-level setting configured once
 > on `OrigamApp`, not a per-instance override.
 >
+## Localisation
+
+Every user-facing string the Bracket family renders — bracket-side labels,
+match status chips, the `TBD` placeholder, the `forfeit` marker, and every
+`aria-label` — is resolved through the locale under the `origam.bracket.*`
+keys. Nothing is hardcoded.
+
+`winnersLabel` / `losersLabel` stay plain strings, **not** translation keys:
+when you pass one it is rendered verbatim, and when you omit it the component
+falls back to `origam.bracket.winners_label` / `origam.bracket.losers_label`.
+Passing a raw string therefore still works exactly as before.
+
 > `winnersLabel` / `losersLabel` are only rendered in the
 > `double-elimination` layout, as the heading above each bracket tree.
 > Pre-translate them — the component never calls `useT`.

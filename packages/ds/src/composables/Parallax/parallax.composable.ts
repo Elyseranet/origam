@@ -127,6 +127,7 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
 
     let isInViewport = false
     let rafId: number | null = null
+    let progressRafId: number | null = null
     let observer: IntersectionObserver | null = null
     // Per-layer current (smoothed) position for the spring easing.
     const layerLerp = new WeakMap<HTMLElement, { tx: number, ty: number }>()
@@ -277,8 +278,54 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
         }
     }
 
+    /*********************************************************
+     * onScroll — #432 : le chemin CSS n'emettait jamais scroll-progress
+     *
+     * @description
+     * `updateProgress()` est le SEUL appelant de `options.onProgress`, et il
+     * n'etait joignable que par `tick()`, la boucle rAF du chemin JS. Les
+     * ecouteurs `scroll` / `resize` n'etaient d'ailleurs installes que dans
+     * la branche `if (!cssScrollDriven.value)`. Consequence : sur Chrome
+     * 115+ avec un easing lineaire — exactement la configuration par defaut
+     * — le runtime basculait sur le chemin CSS et `@scroll-progress` ne
+     * partait JAMAIS. Le defaut etait connu du depot depuis le 2026-08-17
+     * (`e2e/parallax.spec.ts`, `test.fixme`) sans ticket derriere.
+     * @description
+     * Les couches, elles, restent animees par le navigateur via
+     * `animation-timeline: scroll()` : il ne faut donc SURTOUT PAS relancer
+     * `tick()` ici, qui repeindrait les transforms en JS et annulerait tout
+     * l'interet du chemin CSS. Seule la PROGRESSION est rapportee.
+     * @description
+     * Le calcul est differe d'une frame parce qu'`updateProgress()` appelle
+     * `getBoundingClientRect()` : l'executer a chaque evenement de
+     * defilement forcerait un reflow synchrone. C'est la meme raison qui
+     * fait passer le chemin JS par rAF.
+     * @description
+     * `progressRafId` est la frame en attente de ce rapport. Elle est
+     * distincte de `rafId` : celle-la ne repeint aucune couche, et les
+     * confondre ferait annuler la boucle de rendu en annulant le rapport.
+     * @description
+     * `scroll` et `resize` sont pour cette raison installes DANS LES DEUX
+     * CAS dans `onMounted`, et c'est `onScroll` qui choisit quoi faire.
+     * Le suivi de souris et le premier paint JS, eux, restent propres au
+     * chemin de repli : sur le chemin CSS c'est le navigateur qui
+     * positionne les couches.
+     ********************************************************/
     const onScroll = () => {
-        if (rafId == null && isInViewport) {
+        if (!isInViewport) return
+
+        if (cssScrollDriven.value) {
+            if (progressRafId != null) return
+
+            progressRafId = requestAnimationFrame(() => {
+                progressRafId = null
+                updateProgress()
+            })
+
+            return
+        }
+
+        if (rafId == null) {
             rafId = requestAnimationFrame(tick)
         }
     }
@@ -333,10 +380,10 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
         }, { threshold: 0 })
         observer.observe(host)
 
-        // JS fallback listeners.
+        window.addEventListener('scroll', onScroll, { passive: true })
+        window.addEventListener('resize', onScroll, { passive: true })
+
         if (!cssScrollDriven.value) {
-            window.addEventListener('scroll', onScroll, { passive: true })
-            window.addEventListener('resize', onScroll, { passive: true })
             host.addEventListener('mousemove', onMouseMove, { passive: true })
             // First paint with progress=0 so layers are positioned at offsets.
             requestAnimationFrame(tick)
@@ -345,6 +392,10 @@ export function useParallaxRuntime (options: IUseParallaxRuntimeOptions) {
 
     onBeforeUnmount(() => {
         if (rafId != null) cancelAnimationFrame(rafId)
+        if (progressRafId != null) {
+            cancelAnimationFrame(progressRafId)
+            progressRafId = null
+        }
         observer?.disconnect()
         observer = null
         if (typeof window !== 'undefined') {

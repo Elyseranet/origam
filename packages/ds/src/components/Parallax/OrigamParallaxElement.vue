@@ -23,6 +23,10 @@
 	import { useRounded } from '../../composables/Commons/rounded.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
+	import {
+		PARALLAX_ELEMENT_VAR_X,
+		PARALLAX_ELEMENT_VAR_Y
+	} from '../../consts/Parallax/parallax-element.const'
 	import { ORIGAM_PARALLAX_KEY } from '../../consts/Parallax/parallax.const'
 
 	import { AXIS } from '../../enums/Commons/drag.enum'
@@ -89,7 +93,7 @@
 
 	if (!parallax) throw new Error('[Origam] parallax-element needs to be placed inside parallax')
 
-	const {transformStyles, strength} = useParallaxTransform(props)
+	const {transformStyles, strength, customMovement} = useParallaxTransform(props)
 
 	const transform = computed(() => {
 		return transformCalculation()
@@ -184,6 +188,36 @@
 
 			x = mouseMovement.x
 			y = mouseMovement.y
+		}
+
+		/*********************************************************
+		 * type="custom" — la trappe d'extension (#432)
+		 *
+		 * @description
+		 * Les sept autres types composent leur `transform` ici. `custom`
+		 * n'en compose aucun : il PUBLIE le mouvement calcule dans deux
+		 * proprietes personnalisees et laisse le consommateur ecrire sa
+		 * propre transform en CSS. C'est ce que la doc annoncait depuis le
+		 * debut sans qu'aucune surface d'API ne le rende atteignable — le
+		 * `switch` de `useParallaxTransform` ne couvrait pas ce cas et
+		 * rendait `undefined`, silencieusement.
+		 * @description
+		 * On n'ecrit deliberement AUCUN `transform` : sans regle CSS cote
+		 * consommateur, l'element se rend exactement comme avant ce
+		 * correctif. La trappe est donc non cassante — elle ajoute un
+		 * moyen, elle ne change aucun rendu existant.
+		 * @description
+		 * Ces deux variables ne sont posees que pour `custom` : les sept
+		 * autres types gardent un chemin chaud intact, sans deux ecritures
+		 * de propriete personnalisee a chaque frame.
+		 ********************************************************/
+		if (props.type === PARALLAX_ELEMENT_TYPE.CUSTOM) {
+			const movement = customMovement(x, y)
+
+			return {
+				[PARALLAX_ELEMENT_VAR_X]: String(movement.x),
+				[PARALLAX_ELEMENT_VAR_Y]: String(movement.y)
+			}
 		}
 
 		return {

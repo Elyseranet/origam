@@ -305,6 +305,30 @@
 			</origam-carousel>
 		</Variant>
 
+		<Variant title="Slots - Play-pause">
+			<origam-carousel style="max-width: 600px" :cycle="true" :interval="3000">
+				<origam-carousel-item
+						v-for="(slide, i) in slides"
+						:key="i"
+				>
+					<div :style="{ background: slide.color, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1.5rem', color: 'white' }">
+						{{ slide.label }}
+					</div>
+				</origam-carousel-item>
+				<template #play-pause="{ isPaused, toggle, label }">
+					<button
+							:aria-label="label"
+							:aria-pressed="isPaused"
+							style="position: absolute; top: 8px; right: 8px; z-index: 3; padding: 4px 10px; border-radius: 4px; border: 0; cursor: pointer;"
+							type="button"
+							@click="toggle"
+					>
+						{{ isPaused ? '▶' : '❚❚' }}
+					</button>
+				</template>
+			</origam-carousel>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<Partial<ICarouselProps>>({

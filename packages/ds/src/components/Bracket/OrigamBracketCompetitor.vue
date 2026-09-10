@@ -65,6 +65,7 @@
 	import { computed, ComputedRef, StyleValue } from 'vue'
 
 	import { useDensity } from '../../composables/Commons/density.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useDimension } from '../../composables/Commons/dimension.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
@@ -122,8 +123,19 @@
 	 ********************************************************/
 	const isTbd = computed<boolean>(() => props.competitor === null)
 
+	/*********************************************************
+	 * Libelles — critere C8
+	 *
+	 * @description
+	 * « TBD », « forfeit », « To be determined », « winner » et le suffixe
+	 * de score etaient ecrits en dur en anglais. Ils sont lus par des
+	 * lecteurs d'ecran (`aria-label`) ou affiches tels quels : ce sont des
+	 * chaines destinees a l'utilisateur, elles passent par la locale.
+	 ********************************************************/
+	const {t} = useLocale()
+
 	const displayName = computed<string>(() => {
-		if (isTbd.value) return 'TBD'
+		if (isTbd.value) return t('origam.bracket.tbd')
 
 		return props.competitor!.name
 	})
@@ -135,7 +147,7 @@
 		return props.score
 	})
 
-	const forfeitLabel = 'forfeit'
+	const forfeitLabel = computed(() => t('origam.bracket.forfeit_label'))
 
 	const hasAdvantage = computed<boolean>(() => (props.advantageRounds ?? 0) > 0)
 
@@ -144,15 +156,15 @@
 	const advantageAriaLabel = computed<string>(() => {
 		const rounds = props.advantageRounds ?? 0
 
-		return `${rounds}-round head start`
+		return t('origam.bracket.advantage_aria_label', rounds)
 	})
 
 	const ariaLabel = computed<string>(() => {
-		if (isTbd.value) return 'To be determined'
+		if (isTbd.value) return t('origam.bracket.tbd_long')
 
 		const base = props.competitor!.name
-		const score = props.score != null ? `, score ${displayScore.value}` : ''
-		const winner = props.isWinner ? ', winner' : ''
+		const score = props.score != null ? t('origam.bracket.score_aria_suffix', displayScore.value) : ''
+		const winner = props.isWinner ? t('origam.bracket.winner_aria_suffix') : ''
 
 		return `${base}${score}${winner}`
 	})

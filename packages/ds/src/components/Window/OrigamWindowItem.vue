@@ -10,6 +10,7 @@
 				v-touch
 				:class="windowItemClasses"
 				:style="windowItemStyles"
+				v-bind="a11yAttrs"
 		>
 			<slot
 					v-if="hasContent"
@@ -23,7 +24,7 @@
 		lang="ts"
 		setup
 >
-	import { computed, inject, nextTick, shallowRef, StyleValue } from 'vue'
+	import { computed, inject, nextTick, shallowRef, StyleValue, useAttrs } from 'vue'
 	import OrigamTransition from '../Transition/OrigamTransition.vue'
 
 	import { useGroupItem } from '../../composables/Commons/groupItem.composable'
@@ -79,6 +80,40 @@
 	defineEmits<IWindowItemEmits>()
 
 	defineSlots<IWindowItemSlots>()
+
+	/*********************************************************
+	 * a11yAttrs — les attributs ARIA doivent atteindre l'ÉLÉMENT
+	 *
+	 * @description
+	 * La racine de ce composant est `<origam-transition>`, pas un élément
+	 * du DOM. Les attributs de repli (`$attrs`) atterrissent donc sur
+	 * `<OrigamTransition>`, qui les fusionne dans les props du
+	 * `<Transition>` de Vue — lequel ne rend AUCUN élément et ne les
+	 * transmet pas à son enfant. Mesuré : un `role="group"` posé sur
+	 * `<origam-window-item>` disparaît complètement du DOM rendu, alors
+	 * que `class` et `style` survivent (Vue les fusionne par un chemin
+	 * distinct). D'où l'illusion que le repli d'attributs fonctionne.
+	 * @description
+	 * On RECOPIE ici le sous-ensemble sémantique (`role` + `aria-*`) sur le
+	 * `<div>` réellement rendu, SANS toucher à `inheritAttrs`. Couper le
+	 * repli aurait déplacé les écouteurs de transition
+	 * (`@before-enter`, `@after-leave`…) de `<Transition>` vers le `<div>`,
+	 * où ils ne se déclencheraient plus. La duplication vers `<Transition>`
+	 * est inoffensive : il ignore ces clés.
+	 ********************************************************/
+	const attrs = useAttrs()
+
+	const a11yAttrs = computed(() => {
+		const picked: Record<string, unknown> = {}
+
+		for (const key of Object.keys(attrs)) {
+			if (key === 'role' || key.startsWith('aria-')) {
+				picked[key] = attrs[key]
+			}
+		}
+
+		return picked
+	})
 
 	const {filterProps} = useProps<IWindowItemProps>(props)
 

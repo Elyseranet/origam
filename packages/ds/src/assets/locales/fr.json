@@ -52,9 +52,31 @@
       }
     },
     "no_data_text": "Aucune donnée disponible",
+    "bracket": {
+      "aria_label": "Tableau du tournoi",
+      "winners_label": "Tableau principal",
+      "losers_label": "Tableau de repêchage",
+      "tbd": "À définir",
+      "tbd_long": "À déterminer",
+      "match_aria_label": "Match : {0} contre {1}",
+      "forfeit_label": "forfait",
+      "advantage_aria_label": "{0} manche(s) d'avance",
+      "score_aria_suffix": ", score {0}",
+      "winner_aria_suffix": ", vainqueur",
+      "watch_live": "Regarder en direct",
+      "status": {
+        "pending": "À venir",
+        "live": "EN DIRECT",
+        "completed": "Terminé",
+        "forfeited": "Forfait"
+      }
+    },
     "carousel": {
       "prev": "Visuel précédent",
       "next": "Visuel suivant",
+      "pause": "Mettre le carrousel en pause",
+      "play": "Lancer le carrousel",
+      "slide": "diapositive",
       "aria_label": {
         "delimiter": "Diapositive {0} de {1}"
       }
