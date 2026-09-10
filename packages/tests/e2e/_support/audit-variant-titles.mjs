@@ -98,6 +98,41 @@ function variantTitlesOf (storySrc) {
 }
 
 /**
+ * Pull every `title="…"` a Histoire CONTROL carries — `<HstCheckbox>`,
+ * `<HstSelect>`, `<HstNumber>`, `<HstText>`, `<HstColorPicker>`, … — as
+ * opposed to a `<Variant title="…">` (a sidebar navigation entry).
+ *
+ * Both live in `#default`/`#controls` on `page.` (outside the sandboxed
+ * iframe), so a plain `page.getByText('X').click()` cannot be told apart by
+ * RECEIVER the way an in-iframe click can (see the long note on
+ * `CLICK_TARGET_IDENT_RES` above) — only by what `X` actually names. A spec
+ * flipping a checkbox after opening a Variant (`bracket-competitor-contrast
+ * .spec.ts`: open "Default", then `getByText('Is Loser').click()` to toggle
+ * `<HstCheckbox title="Is Loser">`) is exercising the SAME Variant's
+ * controls, not navigating away from it — reporting that as drift punishes
+ * a spec for testing behaviour, on a false reading of what got clicked.
+ */
+function controlTitlesOf (storySrc) {
+    const titles = new Set()
+    const re = /<Hst[A-Za-z]+\b[^>]*?\btitle\s*=\s*"([^"]*)"/gs
+    let m
+    while ((m = re.exec(storySrc)) !== null) titles.add(m[1])
+    return titles
+}
+
+/**
+ * Titles clicked but neither a real `<Variant title>` nor a Histoire control
+ * label — the actual drift. Shared by the main loop AND the self-test's
+ * pipeline fixtures below, deliberately: a self-test that re-implements this
+ * filter instead of calling it can drift from the real behaviour and keep
+ * passing after a regression, which is exactly the failure mode this whole
+ * file exists to catch (see the long note at `selfTest()`).
+ */
+function missingTitlesOf (clickedTitles, knownTitles, knownControlTitles) {
+    return [...clickedTitles].filter((t) => !knownTitles.has(t) && !knownControlTitles.has(t))
+}
+
+/**
  * Pull the slug(s) a spec navigates to. Covers:
  *   - inline literals containing `/story/…` (STORY_PATH, open()/goto args).
  *   - `` `${BASE}suffix-story-vue` `` template-literal composition, where
@@ -150,8 +185,46 @@ function slugsInSpec (specSrc) {
         slugs.add(baseVal.slice(storyIdx + '/story/'.length) + suffix)
     }
 
+    /**
+     * Second combination shape — TWO interpolations in one template literal,
+     * `` `${BASE}${story}` `` (transition-duration-tokens.spec.ts,
+     * transition-reduced-motion.spec.ts). `tplRe` above only recognises a
+     * single ident immediately followed by a literal suffix; it cannot see a
+     * suffix that is itself a variable, so a data field like
+     * `story: 'origamfade-story-vue'` never gets recombined with `BASE` and
+     * the bare literal below is reported as an unresolved slug even though
+     * `slugForStory()` would happily produce the very story file it names.
+     *
+     * Recover the same `BASE` prefix `tplRe` computes above, once per file,
+     * so every short bare literal can be tried against it below — this is
+     * the exact recombination `tplRe` already performs, generalised to a
+     * suffix that isn't a source-level literal at the call site.
+     */
+    let dynamicBasePrefix = null
+    const dynRe = /`\$\{([A-Za-z_$][\w$]*)\}\$\{[A-Za-z_$][\w$]*\}`/
+    const dynMatch = dynRe.exec(specSrc)
+    if (dynMatch) {
+        const baseRe = new RegExp(`\\bconst\\s+${dynMatch[1]}\\s*=\\s*(['"])((?:[^\\\\]|\\\\.)*?)\\1`)
+        const bm = baseRe.exec(specSrc)
+        if (bm) {
+            const storyIdx = bm[2].indexOf('/story/')
+            if (storyIdx !== -1) dynamicBasePrefix = bm[2].slice(storyIdx + '/story/'.length)
+        }
+    }
+
     const bareRe = /(['"`])([a-z0-9][a-z0-9-]*-story-vue)\1/g
-    while ((m = bareRe.exec(specSrc)) !== null) slugs.add(m[2])
+    while ((m = bareRe.exec(specSrc)) !== null) {
+        const bare = m[2]
+        // A bare literal that is ALREADY a full slug (carries the canonical
+        // 'components-stories-' segment on its own) is a directly-navigable
+        // target — recombining it too would double-prefix it into nonsense.
+        // Only a genuinely SHORT suffix gets the `BASE` treatment.
+        if (dynamicBasePrefix && !bare.startsWith('components-stories-')) {
+            slugs.add(dynamicBasePrefix + bare)
+        } else {
+            slugs.add(bare)
+        }
+    }
 
     return slugs
 }
@@ -655,6 +728,62 @@ function selfTest () {
             name: 'pragma non refermé → refusé, jamais exempté en silence',
             src: `/** @audit-variant-titles:exempt(raison sans parenthèse fermante`,
             wantExempt: { valid: false }
+        },
+        // ── #629 1a — `${BASE}${story}` two-interpolation recombination ──
+        {
+            name: "BASE recolle un suffixe court (`${BASE}${story}`) → slug complet, PAS le suffixe nu (précision)",
+            src: `const BASE = '/stories/story/components-stories-transition-'
+                  async function gotoStory (page, story) { await page.goto(\`\${BASE}\${story}\`) }
+                  const CASES = [{ story: 'origamfade-story-vue' }]`,
+            wantSlugsExact: ['components-stories-transition-origamfade-story-vue']
+        },
+        {
+            name: 'un slug déjà complet ("components-stories-…") dans un fichier à BASE dynamique → jamais double-préfixé (précision)',
+            src: `const BASE = '/stories/story/components-stories-transition-'
+                  async function gotoStory (page, story) { await page.goto(\`\${BASE}\${story}\`) }
+                  const REAL = 'components-stories-btn-origambtn-story-vue'`,
+            wantSlugsExact: ['components-stories-btn-origambtn-story-vue']
+        },
+        {
+            name: 'suffixe court SANS aucune preuve de BASE dynamique → laissé tel quel, jamais inventé (rappel : reste un vrai miss en aval)',
+            src: `const CASES = [{ story: 'origamfade-story-vue' }]`,
+            wantSlugsExact: ['origamfade-story-vue']
+        },
+        // ── #629 1b — control label vs. Variant title ──
+        {
+            name: 'controlTitlesOf : capture le titre d’un <HstCheckbox>, jamais celui de <Variant>/<StoryGroup>',
+            storySrc: `<Variant title="Default">
+                          <template #controls>
+                            <StoryGroup title="State">
+                              <HstCheckbox title="Is Loser" v-model="state.isLoser"/>
+                            </StoryGroup>
+                          </template>
+                        </Variant>`,
+            wantControlTitles: ['Is Loser']
+        },
+        {
+            name: 'pipeline complet : cliquer un HstCheckbox de la Variant déjà ouverte n’est PAS une dérive (précision — bracket-competitor-contrast.spec.ts)',
+            src: `await page.getByText('Is Loser').click()`,
+            storySrc: `<Variant title="Default">
+                          <template #controls>
+                            <StoryGroup title="State">
+                              <HstCheckbox title="Is Loser" v-model="state.isLoser"/>
+                            </StoryGroup>
+                          </template>
+                        </Variant>`,
+            wantMissing: []
+        },
+        {
+            name: 'pipeline complet : un VRAI titre de Variant absent reste signalé (rappel — le filtre contrôle ne doit pas tout avaler)',
+            src: `await page.getByText('Nonexistent Variant').click()`,
+            storySrc: `<Variant title="Default">
+                          <template #controls>
+                            <StoryGroup title="State">
+                              <HstCheckbox title="Is Loser" v-model="state.isLoser"/>
+                            </StoryGroup>
+                          </template>
+                        </Variant>`,
+            wantMissing: ['Nonexistent Variant']
         }
     ]
 
@@ -672,6 +801,31 @@ function selfTest () {
         } else if (c.wantSlugs) {
             got = [...slugsInSpec(c.src)]
             ok = c.wantSlugs.every((s) => got.includes(s))
+        } else if (c.wantSlugsExact) {
+            // Exact set equality (order-insensitive) — where `wantSlugs`
+            // above only checks the expected slugs are PRESENT, this also
+            // asserts nothing EXTRA slipped in (e.g. the un-prefixed short
+            // suffix alongside the correctly recombined one) — the
+            // precision half of the #629 1a fix.
+            got = [...slugsInSpec(c.src)].sort()
+            const want = [...c.wantSlugsExact].sort()
+            ok = got.length === want.length && want.every((s, i) => got[i] === s)
+        } else if (c.wantControlTitles) {
+            got = [...controlTitlesOf(c.storySrc)]
+            ok = got.length === c.wantControlTitles.length && c.wantControlTitles.every((t) => got.includes(t))
+        } else if (c.wantMissing !== undefined) {
+            // Calls the SAME `missingTitlesOf` the main loop calls — not a
+            // re-implementation — for a single-story spec, on synthetic
+            // strings. The #629 1b fix (control-label clicks aren't
+            // Variant-navigation drift) only shows up once titles AND
+            // controls are cross-checked together, not in either extractor
+            // alone, and a fixture that duplicated the filter instead of
+            // calling it could pass after a regression to the real one.
+            const { titles: clicked } = clickedTitlesOf(c.src)
+            const knownTitles = variantTitlesOf(c.storySrc)
+            const knownControlTitles = controlTitlesOf(c.storySrc)
+            got = missingTitlesOf(clicked, knownTitles, knownControlTitles)
+            ok = got.length === c.wantMissing.length && c.wantMissing.every((t) => got.includes(t))
         } else {
             const r = clickedTitlesOf(c.src)
             if (c.wantUnresolved !== undefined) {
@@ -685,7 +839,7 @@ function selfTest () {
         console.log(`${ok ? '✓' : '✗'} ${c.name}`)
         if (!ok) {
             failed++
-            console.log(`    attendu ${JSON.stringify(c.wantExempt ?? c.wantSlugs ?? c.wantTitles ?? c.wantUnresolved)}, obtenu ${JSON.stringify(got)}`)
+            console.log(`    attendu ${JSON.stringify(c.wantExempt ?? c.wantSlugs ?? c.wantSlugsExact ?? c.wantControlTitles ?? c.wantMissing ?? c.wantTitles ?? c.wantUnresolved)}, obtenu ${JSON.stringify(got)}`)
         }
     }
     console.log(`\n${cases.length - failed}/${cases.length} cas passés.`)
@@ -757,14 +911,20 @@ for (const spec of specFiles) {
     coverage.titlesChecked += clicked.size
 
     const knownTitles = new Set()
+    const knownControlTitles = new Set()
     const unresolvedSlugs = []
     for (const slug of slugs) {
         const story = slugToStory.get(slug)
         if (!story) { unresolvedSlugs.push(slug); continue }
-        for (const t of variantTitlesOf(readFileSync(story, 'utf8'))) knownTitles.add(t)
+        const storySrc = readFileSync(story, 'utf8')
+        for (const t of variantTitlesOf(storySrc)) knownTitles.add(t)
+        for (const t of controlTitlesOf(storySrc)) knownControlTitles.add(t)
     }
-    // Spec may click standard widget chrome ("Default") that every story has.
-    const missing = [...clicked].filter((t) => !knownTitles.has(t))
+    // Spec may click standard widget chrome ("Default") that every story has,
+    // or a Histoire CONTROL (HstCheckbox/HstSelect/…) inside the Variant it
+    // already opened — that is exercising behaviour, not navigating to a
+    // Variant that doesn't exist. See `controlTitlesOf` / `missingTitlesOf` above.
+    const missing = missingTitlesOf(clicked, knownTitles, knownControlTitles)
     if (missing.length || unresolvedSlugs.length || unresolved.length) {
         report.push({
             spec: rel,
