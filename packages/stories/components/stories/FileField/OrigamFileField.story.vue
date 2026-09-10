@@ -120,6 +120,10 @@
 					chips: false,
 					showSize: false,
 					downloadable: false,
+					downloadIcon: undefined,
+					progressValue: undefined,
+					chipPill: false,
+					chipLabel: false,
 					error: undefined,
 					hint: undefined,
 					hideDetails: false,
@@ -147,6 +151,9 @@
 						:chips="state.chips"
 						:show-size="state.showSize"
 						:downloadable="state.downloadable"
+						:download-icon="state.downloadIcon || undefined"
+						:chip-props="{ pill: state.chipPill, label: state.chipLabel }"
+						:progress="state.progressValue !== undefined ? [state.progressValue] : undefined"
 						:error="state.error"
 						:hint="state.hint"
 						:hide-details="state.hideDetails"
@@ -174,7 +181,15 @@
 					<HstCheckbox v-model="state.chips"        title="Chips"/>
 					<HstCheckbox v-model="state.showSize"     title="Show Size"/>
 					<HstCheckbox v-model="state.downloadable" title="Downloadable"/>
+					<HstSelect   v-model="state.downloadIcon" title="Download Icon" :options="ICON_OPTIONS"/>
 					<HstCheckbox v-model="state.dropzone"     title="Dropzone"/>
+				</StoryGroup>
+				<StoryGroup title="Chip">
+					<HstCheckbox v-model="state.chipPill"  title="Chip Pill"/>
+					<HstCheckbox v-model="state.chipLabel" title="Chip Label"/>
+				</StoryGroup>
+				<StoryGroup title="Progress">
+					<HstNumber v-model="state.progressValue" title="Progress" :min="0" :max="100" :step="1"/>
 				</StoryGroup>
 				<StoryGroup title="Counter">
 					<HstCheckbox v-model="state.counter"           title="Counter"/>
@@ -658,6 +673,10 @@
 					counter: false,
 					chips: false,
 					downloadable: false,
+					downloadIcon: undefined,
+					progressValue: undefined,
+					chipPill: false,
+					chipLabel: false,
 					error: undefined,
 					placeholder: undefined,
 				})"
@@ -665,7 +684,7 @@
 			<template #default="{ state }">
 				<origam-file-field
 						v-model="playgroundFiles"
-						v-bind="state"
+						v-bind="resolvePlaygroundProps(state)"
 						style="max-width: 400px"
 						@update:model-value="logEvent('update:modelValue', $event)"
 				/>
@@ -694,7 +713,15 @@
 					<HstCheckbox v-model="state.counter"      title="Counter"/>
 					<HstCheckbox v-model="state.chips"        title="Chips"/>
 					<HstCheckbox v-model="state.downloadable" title="Downloadable"/>
+					<HstSelect   v-model="state.downloadIcon" title="Download Icon" :options="ICON_OPTIONS"/>
 					<HstText     v-model="state.error"        title="Error (string)"/>
+				</StoryGroup>
+				<StoryGroup title="Chip">
+					<HstCheckbox v-model="state.chipPill"  title="Chip Pill"/>
+					<HstCheckbox v-model="state.chipLabel" title="Chip Label"/>
+				</StoryGroup>
+				<StoryGroup title="Progress">
+					<HstNumber v-model="state.progressValue" title="Progress" :min="0" :max="100" :step="1"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -749,6 +776,22 @@
 		const file = new File([blob], name, { type })
 		Object.defineProperty(file, 'size', { value: size })
 		return file
+	}
+
+	// The Playground Variant binds the whole control state via `v-bind`.
+	// `chipPill` / `chipLabel` / `progressValue` are story-local control
+	// state, not real IFileFieldProps keys — spreading them as-is would
+	// leak invalid `chip-pill` / `chip-label` / `progress-value` attrs
+	// through $attrs. Strip them out and compose the real `chipProps` /
+	// `progress` props from them instead.
+	const resolvePlaygroundProps = (state: Record<string, any>) => {
+		const { chipPill, chipLabel, progressValue, ...rest } = state
+
+		return {
+			...rest,
+			chipProps: { pill: chipPill, label: chipLabel },
+			progress: progressValue !== undefined ? [progressValue] : undefined,
+		}
 	}
 
 	const singleFile = ref(null)
