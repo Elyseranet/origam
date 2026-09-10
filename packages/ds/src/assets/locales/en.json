@@ -352,45 +352,79 @@
       },
       "polar": {
         "aria_label_pie": "Pie chart",
-        "aria_label_donut": "Donut chart"
+        "aria_label_donut": "Donut chart",
+        "desc": "{chart} with {series} and {points}.",
+        "desc_series_one": "{count} series",
+        "desc_series_other": "{count} series",
+        "desc_points_one": "{count} point",
+        "desc_points_other": "{count} points"
       },
       "polar_bar": {
         "aria_label": "Polar bar chart",
-        "item_label": "Item {0}"
+        "item_label": "Item {0}",
+        "desc_one": "{chart} with {count} wedge.",
+        "desc_other": "{chart} with {count} wedges."
       },
       "pyramid": {
         "aria_label_pyramid": "Pyramid chart",
         "aria_label_funnel": "Funnel chart",
-        "slice_label": "Slice {0}"
+        "slice_label": "Slice {0}",
+        "desc_one": "{chart} with {count} slice.",
+        "desc_other": "{chart} with {count} slices."
       },
       "radar": {
-        "aria_label": "Radar chart"
+        "aria_label": "Radar chart",
+        "desc": "{chart} with {series} and {axes}.",
+        "desc_series_one": "{count} series",
+        "desc_series_other": "{count} series",
+        "desc_axes_one": "{count} axis",
+        "desc_axes_other": "{count} axes"
       },
       "sankey": {
         "aria_label": "Sankey diagram",
-        "link_aria_label": "{0} to {1}: {2}"
+        "link_aria_label": "{0} to {1}: {2}",
+        "desc": "{chart} with {nodes} and {links}.",
+        "desc_nodes_one": "{count} node",
+        "desc_nodes_other": "{count} nodes",
+        "desc_links_one": "{count} link",
+        "desc_links_other": "{count} links"
       },
       "sparkline": {
         "aria_label_line": "Line sparkline",
         "aria_label_area": "Area sparkline",
         "aria_label_column": "Column sparkline",
-        "aria_label_bar": "Bar sparkline"
+        "aria_label_bar": "Bar sparkline",
+        "desc_one": "{chart} with {count} data point.",
+        "desc_other": "{chart} with {count} data points."
       },
       "streamgraph": {
-        "aria_label": "Streamgraph"
+        "aria_label": "Streamgraph",
+        "desc": "{chart} with {series} and {points}.",
+        "desc_series_one": "{count} series",
+        "desc_series_other": "{count} series",
+        "desc_points_one": "{count} time point",
+        "desc_points_other": "{count} time points"
       },
       "sunburst": {
-        "aria_label": "Sunburst chart"
+        "aria_label": "Sunburst chart",
+        "desc_one": "{chart} with {count} root node.",
+        "desc_other": "{chart} with {count} root nodes."
       },
       "treemap": {
-        "aria_label": "Treemap chart"
+        "aria_label": "Treemap chart",
+        "desc_one": "{chart} with {count} tile.",
+        "desc_other": "{chart} with {count} tiles."
       },
       "variwide": {
         "aria_label": "Variwide chart",
-        "column_aria_label": "{0}: value {1}, width {2}"
+        "column_aria_label": "{0}: value {1}, width {2}",
+        "desc_one": "{chart} with {count} column.",
+        "desc_other": "{chart} with {count} columns."
       },
       "word_cloud": {
-        "aria_label": "Word cloud chart"
+        "aria_label": "Word cloud chart",
+        "desc_one": "{chart} with {count} word.",
+        "desc_other": "{chart} with {count} words."
       }
     },
     "dialog": {

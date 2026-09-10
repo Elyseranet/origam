@@ -760,10 +760,13 @@ return [ out, props.style as StyleValue ]
 	const ariaLabel = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgAriaLabel = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgTitle = computed(() => props.title ?? defaultAriaLabel.value)
-	const svgDesc = computed(() => {
-		const n = visibleNodes.value.filter((nd) => nd.depth === 0).length
-		return `Sunburst chart with ${ n } root ${ n === 1 ? 'node' : 'nodes' }.`
-	})
+	const svgDesc = computed(() =>
+		t(
+			'origam.chart.sunburst.desc',
+			visibleNodes.value.filter((nd) => nd.depth === 0).length,
+			{chart: defaultAriaLabel.value}
+		)
+	)
 
 	const nodeAriaLabel = (node: IChartSunburstNode): string => {
 		const formatted = props.yAxisFormat ? props.yAxisFormat(node.value) : String(node.value)
