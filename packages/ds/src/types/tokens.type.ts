@@ -1634,6 +1634,8 @@ export type TTokenName =
   | '--origam-infinite-scroll__loader---padding-block'
   | '--origam-infinite-scroll__loader---padding-inline'
   | '--origam-inline-edit---transition-duration'
+  | '--origam-inline-edit--editing---background-color'
+  | '--origam-inline-edit--has-error---outline-color'
   | '--origam-inline-edit__action-btn---border-radius'
   | '--origam-inline-edit__action-btn---font-size'
   | '--origam-inline-edit__action-btn---size'

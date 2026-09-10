@@ -502,6 +502,38 @@
 		pointer-events: none;
 	}
 
+	/*********************************************************
+	 * ⛔ C1 (vague 3) — les cinq classes d'etat racine suivantes
+	 * (--editing, --pending, --multiline, --has-error, --show-actions)
+	 * etaient posees sur la racine sans la moindre regle SCSS : la classe
+	 * existait, aucune ne peignait. Chacune produit desormais un style
+	 * calcule reellement distinct, mesure en Playwright (voir
+	 * packages/tests/e2e/inline-edit.spec.ts, describe "root state classes").
+	 *********************************************************/
+
+	.origam-inline-edit--editing {
+		background-color: var(--origam-inline-edit--editing---background-color, var(--origam-color__surface---raised));
+		border-radius: var(--origam-inline-edit__display---border-radius, 4px);
+	}
+
+	.origam-inline-edit--pending {
+		cursor: progress;
+	}
+
+	.origam-inline-edit--multiline {
+		width: 100%;
+	}
+
+	.origam-inline-edit--has-error {
+		outline: 1px solid var(--origam-inline-edit--has-error---outline-color, var(--origam-color__feedback--danger---border));
+		outline-offset: 2px;
+		border-radius: var(--origam-inline-edit__display---border-radius, 4px);
+	}
+
+	.origam-inline-edit--show-actions {
+		align-items: center;
+	}
+
 	.origam-inline-edit__display {
 		all: unset;
 		box-sizing: border-box;
