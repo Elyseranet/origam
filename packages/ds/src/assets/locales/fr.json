@@ -202,6 +202,15 @@
       "load_more": "Charger plus",
       "empty": "Aucune donnée supplémentaire"
     },
+    "inline_edit": {
+      "placeholder": "Cliquer pour modifier",
+      "edit_aria_label": "Modifier {0}",
+      "edit": "Modifier",
+      "confirm": "Valider",
+      "cancel": "Annuler",
+      "field_aria_label": "Modifier la valeur",
+      "invalid_value": "Valeur invalide"
+    },
     "validation": {
       "required": "Ce champ est obligatoire",
       "must_match": "Les champs ne correspondent pas",

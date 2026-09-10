@@ -202,6 +202,15 @@
       "load_more": "Load more",
       "empty": "No more"
     },
+    "inline_edit": {
+      "placeholder": "Click to edit",
+      "edit_aria_label": "Edit {0}",
+      "edit": "Edit",
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "field_aria_label": "Edit value",
+      "invalid_value": "Invalid value"
+    },
     "validation": {
       "required": "This field is required",
       "must_match": "The fields do not match",

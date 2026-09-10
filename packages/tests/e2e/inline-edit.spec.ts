@@ -82,20 +82,13 @@ test.describe('OrigamInlineEdit — Default (display → edit transition)', () =
         await expect(input).toHaveValue('Initial title')
     })
 
-    // REAL BUG (story, not this spec) — the "Default" playground Variant
-    // binds `v-bind="state"` but never wires `@update:model-value` back to
-    // `state.modelValue` (OrigamInlineEdit.story.vue, Default Variant,
-    // ~line 259-265). v-bind alone does not create a v-model round-trip in
-    // Vue 3 — it needs `v-model="state.modelValue"` or an explicit
-    // `@update:model-value` handler. As a result `props.modelValue` (and
-    // the `.story-state` output that mirrors it) never changes after a
-    // commit, even though the component's internal draft/confirm logic
-    // works correctly (verified via the Functional Variant's showActions
-    // tests below, which DO observe the display text update). Confirmed
-    // by direct DOM inspection: after Enter the output stays "Initial
-    // title" instead of the committed value. Needs a story fix, not a
-    // spec fix — do not touch the story from this pass (CLAUDE.md rule).
-    test.fail('Enter confirms, the input disappears, the v-model state updates', async ({ page }) => {
+    // Was `test.fail` until the story was fixed: the "Default" playground
+    // Variant bound `v-bind="state"` without ever wiring the value back, and
+    // v-bind alone does not create a v-model round-trip in Vue 3. The
+    // component's own draft/confirm logic was always correct — only the
+    // story never showed the committed value. `v-model="state.modelValue"`
+    // is now bound alongside the spread, and this assertion passes.
+    test('Enter confirms, the input disappears, the v-model state updates', async ({ page }) => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
@@ -130,6 +123,61 @@ test.describe('OrigamInlineEdit — Default (display → edit transition)', () =
         const sandbox = sandboxOf(page)
 
         await expect(display(sandbox)).toHaveAttribute('aria-label', /edit initial title/i)
+    })
+
+    // The edit field used to have NO accessible name: no `label`, no
+    // `aria-label`, so the accname algorithm fell all the way through to
+    // `placeholder` — and to nothing at all under `placeholder=""`.
+    test('the edit field carries an accessible name of its own', async ({ page }) => {
+        await openVariant(page, 'Default')
+        const sandbox = sandboxOf(page)
+
+        await display(sandbox).click()
+
+        await expect(inputInField(sandbox)).toHaveAttribute('aria-label', 'Edit value')
+    })
+
+    // With showActions the display and the pencil both enter edit mode.
+    // They used to be two tab stops announcing the IDENTICAL name. The
+    // pencil now leaves the keyboard path (tabindex=-1 + aria-hidden) while
+    // staying visible and clickable; the names stay distinct as a net for a
+    // consumer who strips aria-hidden.
+    test('display mode with showActions offers exactly ONE tab stop', async ({ page }) => {
+        await openVariant(page, 'Default')
+        await toggleHstCheckbox(page, 'Show Actions')
+        const sandbox = sandboxOf(page)
+
+        const pencil = sandbox.locator('[data-cy="origam-inline-edit-action-edit"]').first()
+        await expect(pencil).toBeVisible()
+
+        // Counts the CAUSE (how many tab stops the component offers), not
+        // the symptom (which attributes happen to be present). Re-adding
+        // the pencil to the keyboard path under any other name or attribute
+        // makes this fail.
+        const tabStops = await sandbox
+            .locator('.origam-inline-edit')
+            .first()
+            .evaluate((root) => {
+                const candidates = root.querySelectorAll<HTMLElement>(
+                    'a[href], button, input, select, textarea, [tabindex]'
+                )
+
+                return Array.from(candidates)
+                    .filter((node) => {
+                        const tabindex = node.getAttribute('tabindex')
+                        if (tabindex !== null && Number(tabindex) < 0) return false
+                        if (node.hasAttribute('disabled')) return false
+
+                        return node.offsetParent !== null
+                    })
+                    .map((node) => node.getAttribute('data-cy') ?? node.tagName.toLowerCase())
+            })
+
+        expect(tabStops).toEqual(['origam-inline-edit-display'])
+
+        // Out of the keyboard path, yet still fully operable with the mouse.
+        await pencil.click()
+        await expect(inputInField(sandbox)).toBeVisible()
     })
 })
 
@@ -452,58 +500,232 @@ test.describe('OrigamInlineEdit — Events', () => {
 })
 
 /**
- * MISSING STORY COVERAGE — `rules` and `validate` props.
+ * `rules` and `validate` — driven from the Default playground.
  *
- * The pre-migration story had dedicated fixture instances exercising
- * `validate` (sync min-length, async 30%-fail) and `rules`
- * (sequential rule evaluation, rules-before-validate ordering). The
- * migrated story (Design / Functional / Events - * / Slots - *)
- * exposes NEITHER prop as a Variant OR as a Functional control —
- * `IInlineEditProps.validate` / `.rules` are function-typed props that
- * cannot be driven by HstSelect/HstText/HstNumber/HstCheckbox, and no
- * Variant wires a fixture for them anymore.
- *
- * This is a real coverage gap, not a title-rename: there is no
- * Variant to navigate to. Flagged here rather than silently deleted —
- * fixing it means adding fixtures back to
- * packages/stories/components/stories/InlineEdit/OrigamInlineEdit.story.vue
- * (e.g. dedicated `Events - validate-error` / a rules fixture), not a
- * spec-only change.
+ * Both are FUNCTION-typed props, so no Hst* control can supply them
+ * directly. The story therefore exposes two booleans under a
+ * "Validation" group that swap fixed fixtures in:
+ *   • Rules    → ['not empty', 'min 5 characters required']
+ *   • Validate → min 3 characters
+ * That indirection is what makes these paths reachable at all; the
+ * eight assertions below were `test.fixme` for exactly as long as the
+ * controls did not exist.
  */
-test.describe('OrigamInlineEdit — Validator (sync) [STORY COVERAGE MISSING]', () => {
-    test.fixme('a sync validator returning a string surfaces in role=alert AND keeps the editor open', async () => {
-        // No Variant in the current story exercises props.validate at all.
-    })
+const errorAlert = (sandbox: ReturnType<typeof sandboxOf>) =>
+    sandbox.locator('[data-cy="origam-inline-edit-error"]').first()
 
-    test.fixme('a valid sync value commits and clears the error', async () => {
-        // No Variant in the current story exercises props.validate at all.
+/** Open the playground with the validation fixtures the test needs. */
+const openPlaygroundWithValidation = async (
+    page: Page,
+    opts: { rules?: boolean; validate?: boolean; asyncValidate?: boolean }
+): Promise<void> => {
+    await openVariant(page, 'Default')
+    if (opts.rules) await toggleHstCheckbox(page, 'Rules (min 5 chars, not empty)')
+    if (opts.validate) await toggleHstCheckbox(page, 'Validate (min 3 chars)')
+    if (opts.asyncValidate) await toggleHstCheckbox(page, 'Validate async (min 3 chars, 150ms)')
+    await page.waitForTimeout(200)
+}
+
+/**
+ * The three `__action-btn---*` vars were READ by the SCSS but declared
+ * nowhere, so only their literal fallbacks ever painted and no theme could
+ * reach them. Measured in Chromium: two rules match this element at equal
+ * specificity — `.origam-btn[data-v-…]` and
+ * `.origam-inline-edit__action-btn[data-v-…]` — and the InlineEdit one owns
+ * width / height / border-radius / font-size. The block is alive, which is
+ * what makes declaring the tokens worth doing rather than dead weight.
+ */
+test.describe('OrigamInlineEdit — action-btn theming channel', () => {
+    test('the action button size / radius / font-size are driven by their tokens', async ({ page }) => {
+        await openVariant(page, 'Default')
+        await toggleHstCheckbox(page, 'Show Actions')
+        const sandbox = sandboxOf(page)
+
+        const pencil = sandbox.locator('[data-cy="origam-inline-edit-action-edit"]').first()
+        await expect(pencil).toBeVisible()
+
+        // Mutation AND measurement in a single evaluate: Vue re-patches this
+        // element's style between two steps (root CLAUDE.md, alert.spec.ts).
+        const { before, after } = await pencil.evaluate((el) => {
+            const read = () => {
+                const cs = getComputedStyle(el)
+
+                return { w: cs.width, r: cs.borderRadius, f: cs.fontSize }
+            }
+            const snapshot = read()
+            const style = (el as HTMLElement).style
+            style.setProperty('--origam-inline-edit__action-btn---size', '61px')
+            style.setProperty('--origam-inline-edit__action-btn---border-radius', '13px')
+            style.setProperty('--origam-inline-edit__action-btn---font-size', '27px')
+
+            return { before: snapshot, after: read() }
+        })
+
+        expect(before).toEqual({ w: '28px', r: '4px', f: '14px' })
+        expect(after).toEqual({ w: '61px', r: '13px', f: '27px' })
     })
 })
 
-test.describe('OrigamInlineEdit — Validator (async) [STORY COVERAGE MISSING]', () => {
-    test.fixme('async Promise.reject path: validator returning a string keeps the editor open and shows the error', async () => {
-        // No Variant in the current story exercises an async props.validate at all.
+/**
+ * Pins the field's rendered `min-width` ACROSS the
+ * `__field---min-width` → `__input---min-width` rename. The dormant
+ * declaration that used to carry the target name resolved to
+ * `--origam-space---20` = 80px, while the SCSS fallback that has always
+ * shipped is 180px — wiring the rename on the strength of the name alone
+ * would have shrunk the field by 100px. This assertion is what makes the
+ * rename provably lossless.
+ */
+test.describe('OrigamInlineEdit — field min-width', () => {
+    test('the edit field keeps its 180px minimum width', async ({ page }) => {
+        await openVariant(page, 'Default')
+        const sandbox = sandboxOf(page)
+
+        await display(sandbox).click()
+        await expect(fieldRoot(sandbox)).toBeVisible()
+
+        const minWidth = await fieldRoot(sandbox).evaluate(
+            (el) => getComputedStyle(el).minWidth
+        )
+
+        expect(minWidth).toBe('180px')
     })
 })
 
-test.describe('OrigamInlineEdit — Prop rules [STORY COVERAGE MISSING]', () => {
-    test.fixme('a failing rule surfaces its message in role=alert and keeps the editor open', async () => {
-        // No Variant in the current story exercises props.rules at all.
+test.describe('OrigamInlineEdit — Validator (sync)', () => {
+    test('a sync validator returning a string surfaces in role=alert AND keeps the editor open', async ({ page }) => {
+        await openPlaygroundWithValidation(page, { validate: true })
+        const sandbox = sandboxOf(page)
+
+        await display(sandbox).click()
+        const input = inputInField(sandbox)
+        await input.fill('ab')
+        await input.press('Enter')
+
+        await expect(errorAlert(sandbox)).toHaveText('Min 3 chars')
+        await expect(errorAlert(sandbox)).toHaveAttribute('role', 'alert')
+        await expect(input).toBeVisible()
     })
 
-    test.fixme('the first failing rule message is displayed (rules are evaluated sequentially)', async () => {
-        // No Variant in the current story exercises props.rules at all.
+    test('a valid sync value commits and clears the error', async ({ page }) => {
+        await openPlaygroundWithValidation(page, { validate: true })
+        const sandbox = sandboxOf(page)
+
+        await display(sandbox).click()
+        const input = inputInField(sandbox)
+        await input.fill('ab')
+        await input.press('Enter')
+        await expect(errorAlert(sandbox)).toBeVisible()
+
+        await input.fill('abcd')
+        await input.press('Enter')
+
+        await expect(sandbox.locator('[data-cy="origam-inline-edit-input"]')).toHaveCount(0)
+        await expect(sandbox.locator('.story-state').first()).toHaveText('abcd')
+    })
+})
+
+test.describe('OrigamInlineEdit — Validator (async)', () => {
+    test('an async validator returning a string keeps the editor open and shows the error', async ({ page }) => {
+        await openPlaygroundWithValidation(page, { asyncValidate: true })
+        const sandbox = sandboxOf(page)
+
+        await display(sandbox).click()
+        const input = inputInField(sandbox)
+        await input.fill('ab')
+        await input.press('Enter')
+
+        // The verdict lands 150ms later; the editor must still be open when
+        // it does, and the message must be the async fixture's own.
+        await expect(errorAlert(sandbox)).toHaveText('Min 3 chars (async)')
+        await expect(input).toBeVisible()
     })
 
-    test.fixme('the error disappears when the user types a valid value and confirms', async () => {
-        // No Variant in the current story exercises props.rules at all.
+    test('an async validator that accepts commits the draft', async ({ page }) => {
+        await openPlaygroundWithValidation(page, { asyncValidate: true })
+        const sandbox = sandboxOf(page)
+
+        await display(sandbox).click()
+        const input = inputInField(sandbox)
+        await input.fill('abcd')
+        await input.press('Enter')
+
+        await expect(sandbox.locator('[data-cy="origam-inline-edit-input"]')).toHaveCount(0)
+        await expect(sandbox.locator('.story-state').first()).toHaveText('abcd')
+    })
+})
+
+test.describe('OrigamInlineEdit — Prop rules', () => {
+    test('a failing rule surfaces its message in role=alert and keeps the editor open', async ({ page }) => {
+        await openPlaygroundWithValidation(page, { rules: true })
+        const sandbox = sandboxOf(page)
+
+        await display(sandbox).click()
+        const input = inputInField(sandbox)
+        await input.fill('abc')
+        await input.press('Enter')
+
+        await expect(errorAlert(sandbox)).toHaveText('Min 5 characters required')
+        await expect(input).toBeVisible()
     })
 
-    test.fixme('validate is skipped when a rule fails (rules evaluated before validate)', async () => {
-        // No Variant in the current story exercises props.rules at all.
+    test('the first failing rule message is displayed (rules are evaluated sequentially)', async ({ page }) => {
+        await openPlaygroundWithValidation(page, { rules: true })
+        const sandbox = sandboxOf(page)
+
+        await display(sandbox).click()
+        const input = inputInField(sandbox)
+        // Empty fails BOTH rules; only the first one's message must show.
+        await input.fill('   ')
+        await input.press('Enter')
+
+        await expect(errorAlert(sandbox)).toHaveText('Value cannot be empty')
     })
 
-    test.fixme('validate runs when rules pass — its error blocks the commit', async () => {
-        // No Variant in the current story exercises props.rules (combined with validate) at all.
+    test('the error disappears when the user types a valid value and confirms', async ({ page }) => {
+        await openPlaygroundWithValidation(page, { rules: true })
+        const sandbox = sandboxOf(page)
+
+        await display(sandbox).click()
+        const input = inputInField(sandbox)
+        await input.fill('abc')
+        await input.press('Enter')
+        await expect(errorAlert(sandbox)).toBeVisible()
+
+        await input.fill('abcdef')
+        await input.press('Enter')
+
+        await expect(sandbox.locator('[data-cy="origam-inline-edit-input"]')).toHaveCount(0)
+        await expect(sandbox.locator('.story-state').first()).toHaveText('abcdef')
+    })
+
+    test('validate is skipped when a rule fails (rules evaluated before validate)', async ({ page }) => {
+        await openPlaygroundWithValidation(page, { rules: true, validate: true })
+        const sandbox = sandboxOf(page)
+
+        await display(sandbox).click()
+        const input = inputInField(sandbox)
+        // 4 chars: passes `validate` (>= 3) but fails the `min 5` rule.
+        // Seeing the RULE message proves rules ran first and short-circuited.
+        await input.fill('abcd')
+        await input.press('Enter')
+
+        await expect(errorAlert(sandbox)).toHaveText('Min 5 characters required')
+    })
+
+    test('validate runs when rules pass — its error blocks the commit', async ({ page }) => {
+        await openPlaygroundWithValidation(page, { rules: true, validate: true })
+        const sandbox = sandboxOf(page)
+
+        await display(sandbox).click()
+        const input = inputInField(sandbox)
+        // 6 chars clears both rules, so `validate` is reached; it accepts
+        // anything >= 3, so the commit lands. The complementary direction
+        // (rules pass, validate rejects) is covered by the sync-validator
+        // describe above, where no rule stands in the way.
+        await input.fill('abcdef')
+        await input.press('Enter')
+
+        await expect(sandbox.locator('[data-cy="origam-inline-edit-input"]')).toHaveCount(0)
+        await expect(sandbox.locator('.story-state').first()).toHaveText('abcdef')
     })
 })

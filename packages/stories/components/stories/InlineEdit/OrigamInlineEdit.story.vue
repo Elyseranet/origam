@@ -148,6 +148,20 @@
 			</div>
 		</Variant>
 
+		<Variant title="Events - update:modelValue">
+			<div class="story-shell">
+				<p class="hint">Fires after validation passes. The payload keeps the v-model shape — edit the number below and the emitted value stays a number.</p>
+				<origam-inline-edit
+						v-model="emitModelValue"
+						input-type="number"
+						placeholder="Numeric value"
+						data-cy="inline-edit-event-update-model-value"
+						@update:model-value="logEvent('update:modelValue', $event)"
+				/>
+				<output class="story-state">{{ emitModelValue }}</output>
+			</div>
+		</Variant>
+
 		<Variant title="Slots - Display">
 			<div class="story-shell">
 				<p class="hint">The <code>#display</code> slot exposes <code>{ value, edit, isEmpty, placeholder, disabled }</code>. Click the heading to enter edit mode.</p>
@@ -257,10 +271,14 @@
 				<div class="story-shell">
 					<origam-inline-edit
 							v-bind="state"
+							v-model="state.modelValue"
+							:rules="playgroundRules"
+							:validate="playgroundValidate"
 							@edit="logEvent('edit', $event)"
 							@confirm="logEvent('confirm', $event)"
 							@cancel="logEvent('cancel', $event)"
 							@validate-error="logEvent('validate-error', $event)"
+							@update:model-value="logEvent('update:modelValue', $event)"
 					/>
 					<output class="story-state">{{ state.modelValue }}</output>
 				</div>
@@ -286,6 +304,11 @@
 					<HstCheckbox v-model="state.showActions"      title="Show Actions"/>
 					<HstSelect  v-model="state.inputType" title="Input Type" :options="INPUT_TYPE_OPTIONS"/>
 				</StoryGroup>
+				<StoryGroup title="Validation">
+					<HstCheckbox v-model="playgroundUseRules"         title="Rules (min 5 chars, not empty)"/>
+					<HstCheckbox v-model="playgroundUseValidate"      title="Validate (min 3 chars)"/>
+					<HstCheckbox v-model="playgroundUseAsyncValidate" title="Validate async (min 3 chars, 150ms)"/>
+				</StoryGroup>
 			</template>
 		</Variant>
 	</Story>
@@ -295,7 +318,7 @@
 		lang="ts"
 		setup
 >
-	import { ref } from 'vue'
+	import { computed, ref } from 'vue'
 
 	import { logEvent } from 'histoire/client'
 
@@ -316,11 +339,37 @@
 
 	const validateMinLengthForEmit = (v: string): true | string => v.length >= 3 || 'Min 3 chars'
 	const validateMinLengthForSlot = (v: string): true | string => v.length >= 3 || 'Min 3 chars'
+	const validateMinLengthForPlayground = (v: string): true | string => v.length >= 3 || 'Min 3 chars'
+
+	const validateAsyncForPlayground = async (v: string): Promise<true | string> => {
+		await new Promise((resolve) => setTimeout(resolve, 150))
+
+		return v.length >= 3 || 'Min 3 chars (async)'
+	}
+
+	const PLAYGROUND_RULES: Array<(v: string) => true | string> = [
+		(v) => v.trim().length > 0 || 'Value cannot be empty',
+		(v) => v.length >= 5 || 'Min 5 characters required'
+	]
+
+	const playgroundUseRules = ref(false)
+	const playgroundUseValidate = ref(false)
+	const playgroundUseAsyncValidate = ref(false)
+
+	const playgroundRules = computed(() => playgroundUseRules.value ? PLAYGROUND_RULES : undefined)
+
+	const playgroundValidate = computed(() => {
+		if (playgroundUseAsyncValidate.value) return validateAsyncForPlayground
+		if (playgroundUseValidate.value) return validateMinLengthForPlayground
+
+		return undefined
+	})
 
 	const emitEditValue = ref('Click to trigger edit')
 	const emitConfirmValue = ref('Edit and confirm')
 	const emitCancelValue = ref('Edit then press Escape')
 	const emitValidateErrorValue = ref('Hello')
+	const emitModelValue = ref(42)
 
 	const slotDisplayValue = ref('A great article')
 	const slotEditValue = ref('vue 3')
