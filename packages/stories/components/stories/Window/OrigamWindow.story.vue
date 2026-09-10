@@ -103,25 +103,27 @@
 
 		<Variant
 				title="Functional"
-				:init-state="() => useStoryInitState<Partial<IWindowProps> & { step: number }>({
-					step: 1,
+				:init-state="() => useStoryInitState<Partial<IWindowProps>>({
+					modelValue: 1,
 					continuous: false,
 					reverse: false,
 					touch: true,
 					disabled: false,
 					mandatory: true,
 					tag: 'div',
+					selectedClass: 'origam-window-item--active',
 				})"
 		>
 			<template #default="{ state }">
 				<div class="story-shell">
 					<origam-window
-							v-model="state.step"
+							v-model="state.modelValue"
 							:continuous="state.continuous"
 							:reverse="state.reverse"
 							:touch="state.touch"
 							:disabled="state.disabled"
 							:mandatory="state.mandatory"
+							:selected-class="state.selectedClass"
 							:tag="state.tag"
 							show-arrows
 							:style="hostStyle"
@@ -130,7 +132,7 @@
 							<div :style="slideStyle(n)">Slide {{ n }}</div>
 						</origam-window-item>
 					</origam-window>
-					<div class="story-status">Active: <strong>{{ state.step }}</strong></div>
+					<div class="story-status">Active: <strong>{{ state.modelValue }}</strong></div>
 				</div>
 			</template>
 			<template #controls="{ state }">
@@ -138,6 +140,10 @@
 					<HstCheckbox v-model="state.continuous" title="Continuous"/>
 					<HstCheckbox v-model="state.reverse"    title="Reverse"/>
 					<HstCheckbox v-model="state.touch"      title="Touch / Swipe"/>
+				</StoryGroup>
+				<StoryGroup title="Selection">
+					<HstNumber v-model="state.modelValue"    title="Model Value"/>
+					<HstText   v-model="state.selectedClass" title="Selected Class"/>
 				</StoryGroup>
 				<StoryGroup title="States">
 					<HstCheckbox v-model="state.disabled"  title="Disabled"/>

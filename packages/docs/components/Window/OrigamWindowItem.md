@@ -88,6 +88,21 @@ every group-item component of the DS.
 |---|---|---|
 | `default` | — | The slide content. Rendered inside the transition wrapper. |
 
+## Props
+
+Own props. `value`, `disabled` and `selectedClass` come from
+`IGroupItemProps`, `eager` from `ILazyProps`, and `id` / `class` / `style`
+from `ICommonsComponentProps`.
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `transition` | `boolean \| string` | `undefined` | Transition name used for FORWARD navigation. A string is passed verbatim to Vue's `<Transition name>`, so it must have matching CSS (see **Custom transition**). `false` skips the transition. Left unset, the parent window's axis + direction name is used. |
+| `reverseTransition` | `boolean \| string` | `undefined` | Same, for BACKWARD navigation. `false` skips it. |
+| `value` | `any` | — | Identity of the slide, matched against the window's `modelValue`. |
+| `disabled` | `boolean` | `false` | Excludes the item from group navigation. |
+| `selectedClass` | `string` | inherited | Overrides the class the group applies when this item is active. |
+| `eager` | `boolean` | `false` | Renders the slot content before the item is first selected instead of mounting it lazily. |
+
 ## Props (interface)
 
 ```ts
@@ -122,6 +137,31 @@ The leave / enter transforms (`translateX(100%)`, `translateY(-100%)`,
 etc.) are baked into the SCSS — they correspond to the four axis +
 direction combinations the parent window can apply.
 
+## Fallthrough attributes
+
+The component sets `inheritAttrs: false` and re-binds `$attrs` onto the
+rendered `.origam-window-item` element. Any attribute you pass that is not
+a declared prop — `role`, `aria-*`, `title`, `data-*`, `tabindex` — lands on
+that element.
+
+This is not the default Vue behaviour and it is deliberate: the template
+root is `<OrigamTransition>`, whose own root is Vue's built-in
+`<Transition>`. `<Transition>` forwards nothing to the element it animates,
+so without the explicit re-bind every attribute was silently dropped, with
+no warning and no error.
+
+```html
+<origam-window-item
+        value="a"
+        role="group"
+        aria-roledescription="slide"
+        aria-label="Slide 1 of 3"
+/>
+```
+
+The transition lifecycle hooks this component needs are unaffected — they
+travel through the `transition` prop object, never through attrs.
+
 ## Accessibility
 
 - Only the active item is visible (`v-show`), but every mounted item is
@@ -129,6 +169,11 @@ direction combinations the parent window can apply.
   media.
 - Provide stable keys (`:value`) so the window's group can track the
   active item across reorders.
+- The ARIA APG carousel pattern asks for `role="group"` +
+  `aria-roledescription="slide"` on each slide. Pass them as plain
+  attributes (see **Fallthrough attributes** above) — they reach the
+  rendered element. The component does not set them for you, because a
+  window item is not necessarily a carousel slide.
 
 ## Related
 
