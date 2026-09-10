@@ -8,9 +8,10 @@
 			<slot name="prepend"/>
 
 			<div class="origam-data-table-footer__items-per-page">
-				<span>{{ t(itemsPerPageText) }}</span>
+				<span :id="itemsPerPageLabelId">{{ t(itemsPerPageText) }}</span>
 
 				<origam-select
+						:aria-labelledby="itemsPerPageLabelId"
 						:density="DENSITY.COMPACT"
 						:items="itemsPerPageOptions"
 						:model-value="itemsPerPage"
@@ -180,6 +181,28 @@
 		] as StyleValue
 	})
 	const {id, css, load, isLoaded, unload} = useStyle(dataTableFooterStyles, () => props.id)
+
+	/*********************************************************
+	 * itemsPerPageLabelId — nom accessible du selecteur (#371, C6)
+	 *
+	 * @description
+	 * Le <span> « Items per page » est le libelle VISIBLE du selecteur,
+	 * mais rien ne les associait : le champ ressortait annonce « Open ».
+	 * On lui donne un id derive de celui du pied de table, et le select
+	 * le reference par `aria-labelledby` — qui prime sur `aria-label`
+	 * dans le calcul du nom accessible.
+	 *
+	 * @description
+	 * ⛔ `<label for>` n'est pas jouable : l'id du <input> est genere a
+	 * l'interieur d'<OrigamSelect> et n'est pas expose ici. Et passer
+	 * `:label="…"` ne l'est pas davantage — un `const label` de setup
+	 * masque la prop homonyme dans le template d'OrigamSelect, si bien
+	 * que son `aria-label` vaut toujours « Open » / « Close ». Defaut
+	 * amont, famille Select, remonte a part.
+	 ********************************************************/
+	const itemsPerPageLabelId = computed(() => {
+		return `${id.value}-items-per-page-label`
+	})
 
 
 	/*********************************************************
