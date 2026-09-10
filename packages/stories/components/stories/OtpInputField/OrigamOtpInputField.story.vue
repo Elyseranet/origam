@@ -25,7 +25,6 @@
 						:size="state.size"
 						:rounded="state.rounded"
 						:elevation="state.elevation"
-						:flat="state.flat"
 						:single-line="state.singleLine"
 						:divider="state.divider"
 						:prefix="state.prefix"
@@ -50,7 +49,6 @@
 				<StoryGroup title="Shape">
 					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
 					<HstSelect   v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
-					<HstCheckbox v-model="state.flat"      title="Flat"/>
 				</StoryGroup>
 				<StoryGroup title="Layout">
 					<HstCheckbox v-model="state.singleLine" title="Single Line"/>

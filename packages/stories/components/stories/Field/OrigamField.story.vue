@@ -17,7 +17,6 @@
 						:density="state.density"
 						:rounded="state.rounded"
 						:elevation="state.elevation"
-						:flat="state.flat"
 						:prefix="state.prefix"
 						:suffix="state.suffix"
 						:label="state.label"
@@ -48,7 +47,6 @@
 				<StoryGroup title="Shape">
 					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
 					<HstSelect   v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
-					<HstCheckbox v-model="state.flat"      title="Flat"/>
 				</StoryGroup>
 				<StoryGroup title="Text Affixes">
 					<HstText v-model="state.prefix" title="Prefix"/>
@@ -461,7 +459,6 @@
 					<HstSelect   v-model="state.density"   title="Density"   :options="DENSITY_OPTIONS"/>
 					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
 					<HstSelect   v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
-					<HstCheckbox v-model="state.flat"      title="Flat"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.disabled"       title="Disabled"/>
