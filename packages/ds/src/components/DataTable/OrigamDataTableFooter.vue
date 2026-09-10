@@ -8,9 +8,10 @@
 			<slot name="prepend"/>
 
 			<div class="origam-data-table-footer__items-per-page">
-				<span>{{ t(itemsPerPageText) }}</span>
+				<span :id="itemsPerPageLabelId">{{ t(itemsPerPageText) }}</span>
 
 				<origam-select
+						:aria-labelledby="itemsPerPageLabelId"
 						:density="DENSITY.COMPACT"
 						:items="itemsPerPageOptions"
 						:model-value="itemsPerPage"
@@ -180,6 +181,23 @@
 		] as StyleValue
 	})
 	const {id, css, load, isLoaded, unload} = useStyle(dataTableFooterStyles, () => props.id)
+
+	/*********************************************************
+	 * itemsPerPageLabelId (C6)
+	 *
+	 * @description
+	 * The "Items per page" `<origam-select>` had no accessible name — its
+	 * visible label was a plain `<span>`, only VISUALLY adjacent, never
+	 * programmatically associated (no `<label for>`, no `aria-label`, no
+	 * `aria-labelledby`). Fixed by giving the span a stable id and pointing
+	 * the select at it via `aria-labelledby`, which `filterInputAttrs`
+	 * (consumed by `OrigamTextField`, itself wrapped by `OrigamSelect`)
+	 * forwards onto the real `<input>` — not a fabricated `aria-label` on
+	 * top of the visible text (same "No ARIA is better than bad ARIA"
+	 * reasoning as #427/#622: the label already exists on screen, it only
+	 * needed to be wired, not duplicated).
+	 ********************************************************/
+	const itemsPerPageLabelId = computed(() => `${ id.value }-items-per-page-label`)
 
 
 	/*********************************************************
