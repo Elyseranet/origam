@@ -15,7 +15,8 @@ import { expect, test } from '@playwright/test'
  *   8  → Slots - Next
  *   9  → Slots - Arrows
  *  10  → Slots - Progress
- *  11  → Default (playground)
+ *  11  → Slots - Play-pause   (inserted before the playground — #629: shifted "Default" from 11 to 12)
+ *  12  → Default (playground)
  *
  * ## BEM classes observables
  *   - .origam-carousel                    → root (merges origam-window + origam-carousel classes)
@@ -382,8 +383,7 @@ test.describe('OrigamCarousel', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // DEFAULT / PLAYGROUND (index 11)                                     //
-    // init: height=300, cycle=false, showArrows=true                     //
+    // ACCESSIBILITE — reuses Slots - Progress (index 10, cycle=true)      //
     // ------------------------------------------------------------------ //
 
     test.describe('Accessibilite — WCAG 2.2.2 (pause/lecture en autoplay)', () => {
