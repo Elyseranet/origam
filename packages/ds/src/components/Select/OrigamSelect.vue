@@ -4,13 +4,13 @@
 			ref="origamTextFieldRef"
 			v-model:focused="isFocused"
 			v-model:model-value="search"
-			:aria-label="t(label)"
+			:aria-label="t(accessibleLabel)"
 			:class="selectClasses"
 			:counter-value="counterValue"
 			:dirty="isDirty"
 			:placeholder="placeholder"
 			:style="selectStyles"
-			:title="t(label)"
+			:title="t(accessibleLabel)"
 			:validation-value="validationValue"
 			v-bind="{ ...textFieldProps, ...comboboxAriaAttrs }"
 			@blur="handleBlur"
@@ -1150,8 +1150,35 @@
 	const placeholder = computed(() => {
 		return isDirty.value || (!isFocused.value && props.label && !props.persistentPlaceholder) ? undefined : props.placeholder
 	})
-	const label = computed(() => {
+	/*********************************************************
+	 * toggleLabel / accessibleLabel (#622)
+	 *
+	 * @description
+	 * This was previously named `label`, a bare `const` that SHADOWED the
+	 * `label` PROP (`IFieldProps.label`) inside this `<script setup>`
+	 * block. The template's `:aria-label="t(label)"` / `:title="t(label)"`
+	 * therefore always resolved to this toggle wording, never to the
+	 * field's own label — every `<origam-select>` announced "Open"/"Close"
+	 * to assistive tech regardless of its `label` prop. Renamed so the
+	 * identifier can no longer mask `props.label`.
+	 *
+	 * @description
+	 * `<origam-field>` already renders a real `<label for>` (OrigamField ->
+	 * OrigamLabel, `for: id.value` / `text: props.label`, see `labelProps`
+	 * in `OrigamField.vue`) linked to this very `<input>` via its `id`, so
+	 * `props.label` is ALREADY the input's accessible name whenever it is
+	 * set. `accessibleLabel` keeps `aria-label` / `title` consistent with
+	 * that native label instead of re-introducing a second,
+	 * independently-maintained source of truth for the same text — it
+	 * falls back to `toggleLabel` only for a labelless/`singleLine`
+	 * select, the one case where `<origam-field>` renders no `<label for>`
+	 * at all and the toggle wording is the only accessible name available.
+	 ********************************************************/
+	const toggleLabel = computed(() => {
 		return menu.value ? props.closeText : props.openText
+	})
+	const accessibleLabel = computed(() => {
+		return props.label || toggleLabel.value
 	})
 
 	/*********************************************************
