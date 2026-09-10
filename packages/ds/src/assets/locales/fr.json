@@ -277,7 +277,9 @@
       "aria_label": "Fil d'Ariane"
     },
     "command_palette": {
-      "aria_label": "Palette de commandes"
+      "aria_label": "Palette de commandes",
+      "placeholder": "Rechercher…",
+      "empty_text": "Aucun résultat"
     },
     "chart": {
       "aria_label": "Graphique",
