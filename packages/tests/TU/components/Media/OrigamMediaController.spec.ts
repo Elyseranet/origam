@@ -36,7 +36,13 @@ const LABELS: Record<string, string> = {
     'origam.media.quality': 'Quality',
     'origam.media.download': 'Download',
     'origam.media.castToDevice': 'Cast to device',
-    'origam.media.stopCasting': 'Stop casting'
+    'origam.media.stopCasting': 'Stop casting',
+    'origam.media.previous_track': 'Previous track',
+    'origam.media.next_track': 'Next track',
+    'origam.media.loop_all': 'Loop playlist',
+    'origam.media.loop_one': 'Loop track',
+    'origam.media.loop_off': 'Loop off',
+    'origam.media.shuffle': 'Shuffle'
 }
 
 const stubLocale = (): any => ({
@@ -115,6 +121,12 @@ interface IMountOptions {
     downloadUrl?: string | null
     qualityOptions?: ReadonlyArray<{ quality: string, label: string }>
     currentQuality?: string | null
+    showPrevious?: boolean
+    showNext?: boolean
+    showLoop?: boolean
+    showShuffle?: boolean
+    loopMode?: 'none' | 'all' | 'one'
+    shuffle?: boolean
 }
 
 // OrigamMenu stub: renders the items tree as flat <button> elements so
@@ -260,7 +272,13 @@ const mountController = (opts: IMountOptions = {}): {
             downloadable: opts.downloadable,
             downloadUrl: opts.downloadUrl,
             qualityOptions: opts.qualityOptions,
-            currentQuality: opts.currentQuality
+            currentQuality: opts.currentQuality,
+            showPrevious: opts.showPrevious,
+            showNext: opts.showNext,
+            showLoop: opts.showLoop,
+            showShuffle: opts.showShuffle,
+            loopMode: opts.loopMode,
+            shuffle: opts.shuffle
         }
     })
     return { wrapper, methods, state }
@@ -452,6 +470,122 @@ describe('OrigamMediaController — download emit', () => {
 
         const dl = wrapper.find('[data-cy="origam-media-controller-config-download"]')
         expect(dl.exists()).toBe(false)
+    })
+})
+
+// ---------------------------------------------------------------------------
+// Coverage hole flagged by the classeur (lot "divers", 2026-09-01):
+// `showPrevious` / `showNext` / `showLoop` / `showShuffle` are declared,
+// wired in the template, and documented in OrigamMediaController.md — but
+// had ZERO story Variant, ZERO e2e spec, and ZERO unit test. Measured here
+// rather than assumed: the props DO work, so this closes the coverage gap
+// rather than fixing a functional regression.
+// ---------------------------------------------------------------------------
+describe('OrigamMediaController — previous / next transport buttons', () => {
+    it('does NOT render the previous/next buttons by default', () => {
+        const { wrapper } = mountController()
+        expect(wrapper.find('[data-cy="origam-media-controller-previous"]').exists()).toBe(false)
+        expect(wrapper.find('[data-cy="origam-media-controller-next"]').exists()).toBe(false)
+    })
+
+    it('renders the previous button with its accessible name when showPrevious=true', () => {
+        const { wrapper } = mountController({ showPrevious: true })
+        const btn = wrapper.find('[data-cy="origam-media-controller-previous"]')
+        expect(btn.exists()).toBe(true)
+        expect(btn.attributes('aria-label')).toBe('Previous track')
+    })
+
+    it('clicking the previous button emits `previous`', async () => {
+        const { wrapper } = mountController({ showPrevious: true })
+        await wrapper.find('[data-cy="origam-media-controller-previous"]').trigger('click')
+        expect(wrapper.emitted('previous')).toHaveLength(1)
+    })
+
+    it('renders the next button with its accessible name when showNext=true', () => {
+        const { wrapper } = mountController({ showNext: true })
+        const btn = wrapper.find('[data-cy="origam-media-controller-next"]')
+        expect(btn.exists()).toBe(true)
+        expect(btn.attributes('aria-label')).toBe('Next track')
+    })
+
+    it('clicking the next button emits `next`', async () => {
+        const { wrapper } = mountController({ showNext: true })
+        await wrapper.find('[data-cy="origam-media-controller-next"]').trigger('click')
+        expect(wrapper.emitted('next')).toHaveLength(1)
+    })
+})
+
+describe('OrigamMediaController — loop button', () => {
+    it('does NOT render the loop button by default', () => {
+        const { wrapper } = mountController()
+        expect(wrapper.find('[data-cy="origam-media-controller-loop"]').exists()).toBe(false)
+    })
+
+    it('renders with the "loop off" accessible name and aria-pressed=false at loopMode=none', () => {
+        const { wrapper } = mountController({ showLoop: true, loopMode: 'none' })
+        const btn = wrapper.find('[data-cy="origam-media-controller-loop"]')
+        expect(btn.exists()).toBe(true)
+        expect(btn.attributes('aria-label')).toBe('Loop off')
+        expect(btn.attributes('aria-pressed')).toBe('false')
+    })
+
+    it('cycles none → all → one → none on successive clicks, emitting update:loopMode each time', async () => {
+        const { wrapper } = mountController({ showLoop: true, loopMode: 'none' })
+        const btn = wrapper.find('[data-cy="origam-media-controller-loop"]')
+
+        await btn.trigger('click')
+        expect(btn.attributes('aria-label')).toBe('Loop playlist')
+        expect(btn.attributes('aria-pressed')).toBe('true')
+
+        await btn.trigger('click')
+        expect(btn.attributes('aria-label')).toBe('Loop track')
+        expect(btn.attributes('aria-pressed')).toBe('true')
+
+        await btn.trigger('click')
+        expect(btn.attributes('aria-label')).toBe('Loop off')
+        expect(btn.attributes('aria-pressed')).toBe('false')
+
+        const emitted = wrapper.emitted('update:loopMode') as Array<Array<unknown>>
+        expect(emitted).toEqual([['all'], ['one'], ['none']])
+    })
+
+    it('seeds the internal loop mode from the loopMode prop (v-model:loopMode entry state)', () => {
+        const { wrapper } = mountController({ showLoop: true, loopMode: 'all' })
+        const btn = wrapper.find('[data-cy="origam-media-controller-loop"]')
+        expect(btn.attributes('aria-label')).toBe('Loop playlist')
+        expect(btn.attributes('aria-pressed')).toBe('true')
+    })
+})
+
+describe('OrigamMediaController — shuffle button', () => {
+    it('does NOT render the shuffle button by default', () => {
+        const { wrapper } = mountController()
+        expect(wrapper.find('[data-cy="origam-media-controller-shuffle"]').exists()).toBe(false)
+    })
+
+    it('renders with aria-pressed=false when shuffle=false', () => {
+        const { wrapper } = mountController({ showShuffle: true, shuffle: false })
+        const btn = wrapper.find('[data-cy="origam-media-controller-shuffle"]')
+        expect(btn.exists()).toBe(true)
+        expect(btn.attributes('aria-label')).toBe('Shuffle')
+        expect(btn.attributes('aria-pressed')).toBe('false')
+    })
+
+    it('seeds aria-pressed=true from the shuffle prop', () => {
+        const { wrapper } = mountController({ showShuffle: true, shuffle: true })
+        const btn = wrapper.find('[data-cy="origam-media-controller-shuffle"]')
+        expect(btn.attributes('aria-pressed')).toBe('true')
+    })
+
+    it('clicking the shuffle button flips aria-pressed and emits update:shuffle', async () => {
+        const { wrapper } = mountController({ showShuffle: true, shuffle: false })
+        const btn = wrapper.find('[data-cy="origam-media-controller-shuffle"]')
+
+        await btn.trigger('click')
+        expect(btn.attributes('aria-pressed')).toBe('true')
+
+        const emitted = wrapper.emitted('update:shuffle') as Array<Array<unknown>>
+        expect(emitted).toEqual([[true]])
     })
 })
 
