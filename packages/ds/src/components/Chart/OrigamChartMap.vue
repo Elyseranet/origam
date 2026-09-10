@@ -653,16 +653,18 @@ return [ out, props.style as StyleValue ]
 	/*********************************************************
 	 * ARIA
 	 ********************************************************/
-	const ariaLabel = computed(() => props.title ?? 'map chart')
-	const svgAriaLabel = computed(() => props.title ?? 'map chart')
-	const svgTitle = computed(() => props.title ?? 'map chart')
+	const ariaLabel = computed(() => props.title ?? t('origam.chart.map.aria_label'))
+	const svgAriaLabel = computed(() => props.title ?? t('origam.chart.map.aria_label'))
+	const svgTitle = computed(() => props.title ?? t('origam.chart.map.aria_label'))
 	const svgDesc = computed(() => {
 		if (isChoroplethMode.value) {
 			const n = choroplethData.value.length
-			return `Choropleth map with ${ n } ${ n === 1 ? 'country' : 'countries' } in the dataset.`
+
+			return t('origam.chart.map.desc_choropleth', n)
 		}
 		const n = computedRoutes.value.length
-		return `Flight-routes map with ${ n } ${ n === 1 ? 'route' : 'routes' }.`
+
+		return t('origam.chart.map.desc_routes', n)
 	})
 
 	const countryAriaLabel = (country: IChartMapCountry): string => {

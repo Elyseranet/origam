@@ -642,13 +642,13 @@ return [ out, props.style as StyleValue ]
 	/*********************************************************
 	 * ARIA
 	 ********************************************************/
-	const ariaLabel = computed(() => props.title ?? 'heatmap chart')
-	const svgAriaLabel = computed(() => props.title ?? 'heatmap chart')
-	const svgTitle = computed(() => props.title ?? 'heatmap chart')
+	const ariaLabel = computed(() => props.title ?? t('origam.chart.heatmap.aria_label'))
+	const svgAriaLabel = computed(() => props.title ?? t('origam.chart.heatmap.aria_label'))
+	const svgTitle = computed(() => props.title ?? t('origam.chart.heatmap.aria_label'))
 	const svgDesc = computed(() => {
 		const nx2 = xCats.value.length
 		const ny2 = yCats.value.length
-		return `Heatmap chart with ${ nx2 } columns and ${ ny2 } rows.`
+		return t('origam.chart.heatmap.desc', nx2, ny2)
 	})
 
 	const cellAriaLabel = (cell: IChartHeatmapCell): string =>

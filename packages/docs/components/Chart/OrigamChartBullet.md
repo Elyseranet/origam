@@ -108,7 +108,10 @@ Bands are rendered in array order. Each band covers `[previous.to, this.to]`. St
 
 ## Accessibility
 
-- Root `<div>` carries `role="figure"` and `aria-label` (defaults to `title` or `"bullet chart"`).
+- Root is a native `<figure>` carrying `aria-label` — the `title` prop when
+  given, otherwise the translated `origam.chart.bullet.aria_label`. The
+  fallback is a locale key, not an English literal, so it follows the active
+  locale (#567).
 - Inner `<svg>` carries `role="img"` plus `<title>` and `<desc>` for screen readers.
 - Each value bar (`<rect>`) has `tabindex="0"`, `role="button"`, and `aria-label` describing category / value / target / achievement %.
 - Keyboard: `Enter` and `Space` fire `point-click` on the focused bar.

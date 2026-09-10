@@ -251,6 +251,63 @@
     "chart": {
       "aria_label": "Graphique",
       "no_data_text": "Aucune donnée à afficher",
+      "desc_no_data": "Aucune donnée",
+      "cartesian": {
+        "aria_label": "graphique {type}",
+        "desc_one": "Graphique {type} avec {series} série et {count} point, valeurs de {min} à {max}.",
+        "desc_other": "Graphique {type} avec {series} séries et {count} points, valeurs de {min} à {max}."
+      },
+      "box_plot": {
+        "aria_label": "boîte à moustaches",
+        "desc_one": "Boîte à moustaches avec {count} catégorie.",
+        "desc_other": "Boîte à moustaches avec {count} catégories."
+      },
+      "bullet": {
+        "aria_label": "graphique à puce",
+        "desc_one": "Graphique à puce avec {count} indicateur.",
+        "desc_other": "Graphique à puce avec {count} indicateurs."
+      },
+      "candlestick": {
+        "aria_label": "graphique en chandeliers",
+        "desc_one": "Graphique en chandeliers avec {count} chandelier.",
+        "desc_other": "Graphique en chandeliers avec {count} chandeliers."
+      },
+      "gauge": {
+        "aria_label": "jauge",
+        "value_aria_label": "Jauge : {0}",
+        "desc": "Jauge affichant {0} sur une plage de {1} à {2}."
+      },
+      "heatmap": {
+        "aria_label": "carte de chaleur",
+        "desc": "Carte de chaleur avec {0} colonnes et {1} lignes."
+      },
+      "honeycomb": {
+        "aria_label": "graphique en nid d'abeille",
+        "desc_one": "Graphique en nid d'abeille avec {count} tuile.",
+        "desc_other": "Graphique en nid d'abeille avec {count} tuiles."
+      },
+      "legend": {
+        "item_hidden": "masqué, cliquer pour afficher",
+        "item_visible": "visible, cliquer pour masquer"
+      },
+      "map": {
+        "aria_label": "carte",
+        "desc_choropleth_one": "Carte choroplèthe avec {count} pays dans le jeu de données.",
+        "desc_choropleth_other": "Carte choroplèthe avec {count} pays dans le jeu de données.",
+        "desc_routes_one": "Carte des routes aériennes avec {count} route.",
+        "desc_routes_other": "Carte des routes aériennes avec {count} routes."
+      },
+      "pareto": {
+        "aria_label": "diagramme de Pareto",
+        "cumulative_label": "% cumulé",
+        "desc_one": "Diagramme de Pareto avec {count} catégorie, triée par valeur décroissante.",
+        "desc_other": "Diagramme de Pareto avec {count} catégories, triées par valeur décroissante."
+      },
+      "pictorial": {
+        "aria_label": "graphique pictural",
+        "desc_one": "Graphique pictural avec {count} colonne.",
+        "desc_other": "Graphique pictural avec {count} colonnes."
+      },
       "range_selector": {
         "aria_label": "Sélecteur de plage du graphique"
       },

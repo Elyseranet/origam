@@ -251,6 +251,63 @@
     "chart": {
       "aria_label": "Chart",
       "no_data_text": "No data to display",
+      "desc_no_data": "No data",
+      "cartesian": {
+        "aria_label": "{type} chart",
+        "desc_one": "{type} chart with {series} series and {count} point, values ranging from {min} to {max}.",
+        "desc_other": "{type} chart with {series} series and {count} points, values ranging from {min} to {max}."
+      },
+      "box_plot": {
+        "aria_label": "box plot chart",
+        "desc_one": "Box plot with {count} category.",
+        "desc_other": "Box plot with {count} categories."
+      },
+      "bullet": {
+        "aria_label": "bullet chart",
+        "desc_one": "Bullet chart with {count} indicator.",
+        "desc_other": "Bullet chart with {count} indicators."
+      },
+      "candlestick": {
+        "aria_label": "candlestick chart",
+        "desc_one": "Candlestick chart with {count} candle.",
+        "desc_other": "Candlestick chart with {count} candles."
+      },
+      "gauge": {
+        "aria_label": "gauge chart",
+        "value_aria_label": "Gauge: {0}",
+        "desc": "Gauge showing {0} out of a range from {1} to {2}."
+      },
+      "heatmap": {
+        "aria_label": "heatmap chart",
+        "desc": "Heatmap chart with {0} columns and {1} rows."
+      },
+      "honeycomb": {
+        "aria_label": "honeycomb chart",
+        "desc_one": "Honeycomb chart with {count} tile.",
+        "desc_other": "Honeycomb chart with {count} tiles."
+      },
+      "legend": {
+        "item_hidden": "hidden, click to show",
+        "item_visible": "visible, click to hide"
+      },
+      "map": {
+        "aria_label": "map chart",
+        "desc_choropleth_one": "Choropleth map with {count} country in the dataset.",
+        "desc_choropleth_other": "Choropleth map with {count} countries in the dataset.",
+        "desc_routes_one": "Flight-routes map with {count} route.",
+        "desc_routes_other": "Flight-routes map with {count} routes."
+      },
+      "pareto": {
+        "aria_label": "Pareto chart",
+        "cumulative_label": "Cumulative %",
+        "desc_one": "Pareto chart with {count} category, sorted descending by value.",
+        "desc_other": "Pareto chart with {count} categories, sorted descending by value."
+      },
+      "pictorial": {
+        "aria_label": "pictorial chart",
+        "desc_one": "Pictorial chart with {count} column.",
+        "desc_other": "Pictorial chart with {count} columns."
+      },
       "range_selector": {
         "aria_label": "Chart range selector"
       },

@@ -620,7 +620,7 @@
 		if (props.showLine) {
 			items.push({
 				series: {
-					name: 'Cumulative %',
+					name: t('origam.chart.pareto.cumulative_label'),
 					data: [],
 					visible: true
 				} as IChartSeries,
@@ -737,12 +737,13 @@ return [ out, props.style as StyleValue ]
 	/*********************************************************
 	 * ARIA
 	 ********************************************************/
-	const ariaLabel = computed(() => props.title ?? 'Pareto chart')
-	const svgAriaLabel = computed(() => props.title ?? 'Pareto chart')
-	const svgTitle = computed(() => props.title ?? 'Pareto chart')
+	const ariaLabel = computed(() => props.title ?? t('origam.chart.pareto.aria_label'))
+	const svgAriaLabel = computed(() => props.title ?? t('origam.chart.pareto.aria_label'))
+	const svgTitle = computed(() => props.title ?? t('origam.chart.pareto.aria_label'))
 	const svgDesc = computed(() => {
 		const n = bars.value.length
-		return `Pareto chart with ${ n } ${ n === 1 ? 'category' : 'categories' }, sorted descending by value.`
+
+		return t('origam.chart.pareto.desc', n)
 	})
 
 	const barAriaLabel = (bar: IChartParetoBar): string =>
