@@ -13,7 +13,7 @@ import type {
     ITagProps
 } from '../Commons/commons.interface'
 import type { IElevationProps } from '../Commons/elevation.interface'
-import type { IHoverProps } from '../Commons/hover.interface'
+import type { IHoverEmits, IHoverProps } from '../Commons/hover.interface'
 import type { ILocationProps } from '../Commons/location.interface'
 import type { IRoundedProps } from '../Commons/rounded.interface'
 import type { IStatusProps } from '../Commons/status.interface'
@@ -45,8 +45,22 @@ export interface IBadgeProps extends ICommonsComponentProps, ITagProps, IBorderP
 }
 
 /** Emits fired by `<OrigamBadge>` — clicks on the prepend/append slots
- *  (same contract as `OrigamBtn` / `OrigamAlert`, via `useAdjacent`). */
-export interface IBadgeEmits extends IAdjacentEmits {}
+ *  (same contract as `OrigamBtn` / `OrigamAlert`, via `useAdjacent`),
+ *  plus `update:hover` (C7).
+ *
+ *  ⛔ `update:hover` PARTAIT DEJA sans etre declare ici. Badge cable un vrai
+ *  survol — `useStateFlag(props, {state:'hover'})` + `@mouseenter` /
+ *  `@mouseleave` sur la racine — dont `set()` / `unset()` ecrivent a travers
+ *  le v-model. Vue lit le gestionnaire dans `vnode.props`, ou un
+ *  `onUpdate:hover` non declare atterrit quand meme via les attrs : l'emit
+ *  fonctionnait donc PAR ACCIDENT, et Vue le faisait EN PLUS retomber en
+ *  ecouteur natif sur l'element racine.
+ *
+ *  Le declarer aligne trois choses qui divergeaient : le type public, la
+ *  Variant « Events - update:hover » que la story expose depuis toujours
+ *  (OrigamBadge.story.vue:146), et le comportement reel. Mesure : cf.
+ *  packages/tests/TU/components/Badge/badge-hover-emit-declared.spec.ts */
+export interface IBadgeEmits extends IAdjacentEmits, IHoverEmits {}
 
 /** Slot signatures for `<OrigamBadge>`. */
 export interface IBadgeSlots extends IAdjacentSlots {

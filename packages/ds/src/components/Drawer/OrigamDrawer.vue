@@ -10,7 +10,7 @@
 					v-if="isActive"
 					:id="id"
 					:ref="rootEl"
-					:aria-label="name || 'Navigation'"
+					:aria-label="drawerAriaLabel"
 					:class="drawerClasses"
 					:style="drawerStyles"
 					v-bind="{...scopeId, ...$attrs}"
@@ -78,6 +78,7 @@
 	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
 	import { useDensity } from '../../composables/Commons/density.composable'
 	import { useLayoutItem } from '../../composables/Commons/layoutItem.composable'
+	import { useLocale } from '../../composables/Commons/locale.composable'
 	import { useProps } from '../../composables/Commons/props.composable'
 	import { useRouter } from '../../composables/Commons/router.composable'
 	import { useScopeId } from '../../composables/Commons/scopeId.composable'
@@ -175,6 +176,7 @@
 	const router = useRouter()
 	const {ssrBootStyles} = useSsrBoot()
 	const {scopeId} = useScopeId()
+	const {t} = useLocale()
 	const rootEl = ref<HTMLElement>()
 	const isHovering = shallowRef(false)
 
@@ -400,6 +402,24 @@
 	const hasAppend = computed(() => {
 		return slots.append
 	})
+
+	/*********************************************************
+	 * Nom accessible
+	 *
+	 * @description
+	 * Le repli était la chaîne anglaise `'Navigation'` écrite en dur dans
+	 * le gabarit, derrière un `||` — la position exacte où le détecteur C8
+	 * est aveugle. Elle était annoncée telle quelle par tout lecteur
+	 * d'écran, quelle que soit la langue active.
+	 *
+	 * @description
+	 * `name` reste prioritaire : c'est le libellé que le consommateur a
+	 * choisi. On ne retombe sur le catalogue que s'il n'en a fourni aucun.
+	 * Lecture DIFFÉRÉE dans un `computed` (ADR-005) — contrairement à la
+	 * lecture eager de `name` par `useLayoutItem`, qui est une exception
+	 * actée parce qu'un id de layout doit être stable dès le setup.
+	 ********************************************************/
+	const drawerAriaLabel = computed(() => props.name || t('origam.drawer.aria_label'))
 
 	/*********************************************************
 	 * Class & Style

@@ -124,5 +124,10 @@ entirely.
 ## Accessibility
 
 - Renders as `<nav>` by default (override via `tag`).
+- The drawer's accessible name comes from `name`. When `name` is omitted it
+  falls back to the `origam.drawer.aria_label` locale entry, translated like
+  every other built-in label — it is **not** a hardcoded English string.
+  Give each drawer its own `name` as soon as a page carries more than one
+  navigation landmark, so they can be told apart.
 - In temporary mode, focus is trapped within the drawer; `ESC` closes it.
 - The scrim is `aria-hidden`.

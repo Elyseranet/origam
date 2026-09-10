@@ -41,7 +41,7 @@ import { OrigamChartGauge } from '@origam/ds'
 
 | Name | Type | Default | Description |
 |---|---|---|---|
-| `height` | `number \| string` | `360` | Chart height. A plain number is `px`. Ignored when `aspectRatio` is set. |
+| `height` | `number \| string` | `300` | Chart height. A plain number is `px`. Ignored when `aspectRatio` is set. |
 | `aspectRatio` | `string` | `undefined` | CSS `aspect-ratio` shorthand. Overrides `height`. |
 | `colorScheme` | `Array<TIntent \| string>` | 8-intent cycle | Fallback palette when the series omits its own `color`. Gauge only ever uses `colorScheme[0]`. |
 | `title` | `string` | `undefined` | Optional title above the gauge. |
@@ -66,6 +66,7 @@ import { OrigamChartGauge } from '@origam/ds'
 |---|---|---|---|
 | `animated` | `boolean` | `true` | Animate the filled arc on first paint and on value changes. Respects `prefers-reduced-motion`. |
 | `animationDuration` | `number` | `600` | Animation duration in ms. |
+| `categories` | `Array<string>` | `[]` | ⛔ **Sans effet sur ce composant** — a gauge reads a single value from the first series and draws no category axis. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
 | `showLegend` | `boolean` | `false` | ⛔ **Sans effet sur ce composant** — a gauge reads a single value from the first series and renders no legend markup at all. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
 | `legendPosition` | `TChartLegendPosition` | `'bottom'` | ⛔ **Sans effet sur ce composant** — no legend is ever rendered on a gauge, so there is nothing to anchor. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
 | `showTooltip` | `boolean` | `false` | ⛔ **Sans effet sur ce composant** — a gauge renders no per-point tooltip — the centre label already shows the current value. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
@@ -112,7 +113,7 @@ no legend.
 
 ## Caveats
 
-- **`showLegend`, `legendPosition`, `showTooltip` have no effect** (#545). They're inherited from `IChartBaseProps` and stay on the public API for consistency across chart types, but a gauge reads a single value from the first series and its template renders no legend and no tooltip markup at all — `IChartGaugeSlots` even `Omit`s the `tooltip` / `legend-item` slots the base family otherwise exposes. Passing any of the three logs `[origam] <OrigamChartGauge> prop "…" has no effect on this component: …` once to the console in dev builds (silent in production). Same #426 decision as `colorScheme` on Bullet/Candlestick/Heatmap/Map: neither wiring a fake behaviour nor removing the props was on the table.
+- **`categories`, `showLegend`, `legendPosition`, `showTooltip` have no effect** (#545). They're inherited from `IChartBaseProps` and stay on the public API for consistency across chart types, but a gauge reads a single value from the first series and its template renders no legend and no tooltip markup at all — `IChartGaugeSlots` even `Omit`s the `tooltip` / `legend-item` slots the base family otherwise exposes. Passing any of the three logs `[origam] <OrigamChartGauge> prop "…" has no effect on this component: …` once to the console in dev builds (silent in production). Same #426 decision as `colorScheme` on Bullet/Candlestick/Heatmap/Map: neither wiring a fake behaviour nor removing the props was on the table.
 - **No `point-click` / `legend-click` / `series-toggle` emits** (#545). Unlike the rest of the Chart family, `IChartGaugeEmits` is an empty interface — there is no per-point interactivity, no legend, and therefore nothing for those three events to report.
 
 ## Composable — `useChartGauge`

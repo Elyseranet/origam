@@ -3,7 +3,7 @@
 			:is="tag"
 			:id="id"
 			ref="resizeRef"
-			:aria-label="ariaLabel"
+			:aria-label="rootAriaLabel"
 			:class="paginationClasses"
 			:style="paginationStyles"
 			@keydown="handleKeydown"
@@ -487,6 +487,26 @@
 			}
 		})
 	})
+	const rootAriaLabel = computed(() => t(props.ariaLabel))
+
+	/*********************************************************
+	 * ⛔ TOUS les `*AriaLabel` sont des CLÉS, jamais du texte prêt.
+	 *
+	 * @description
+	 * Leurs valeurs par défaut sont des clés de catalogue
+	 * (`'origam.pagination.aria_label.first'`, …). Elles DOIVENT passer par
+	 * `t()` avant d'atteindre un `aria-label`. Cinq ne le faisaient pas : la
+	 * `<nav>` racine et les boutons premier / précédent / suivant / dernier
+	 * annonçaient la clé littérale, alors que les boutons de PAGE, eux,
+	 * étaient corrects — l'incohérence tenait dans le même fichier, à trente
+	 * lignes d'écart.
+	 *
+	 * @description
+	 * Un consommateur qui passe sa propre valeur passe donc une CLÉ, pas une
+	 * chaîne : c'est le contrat déjà en vigueur pour `pageAriaLabel`, et il est
+	 * documenté comme tel. Filet : `OrigamPagination.spec.ts`, dont le dernier
+	 * cas refuse tout `aria-label` commençant par `origam.` sur la barre.
+	 ********************************************************/
 	const controls = computed(() => {
 		const prevDisabled = !!props.disabled || page.value <= start.value
 		const nextDisabled = !!props.disabled || page.value >= start.value + length.value - 1
@@ -521,7 +541,7 @@
 				icon: props.firstIcon,
 				onClick: (e: Event) => setValue(e, start.value, 'first'),
 				disabled: prevDisabled,
-				'aria-label': props.firstAriaLabel,
+				'aria-label': t(props.firstAriaLabel),
 				'aria-disabled': prevDisabled
 			},
 			prev: {
@@ -529,7 +549,7 @@
 				...prevTextual,
 				onClick: (e: Event) => setValue(e, page.value - 1, 'prev'),
 				disabled: prevDisabled,
-				'aria-label': props.previousAriaLabel,
+				'aria-label': t(props.previousAriaLabel),
 				'aria-disabled': prevDisabled
 			},
 			next: {
@@ -537,7 +557,7 @@
 				...nextTextual,
 				onClick: (e: Event) => setValue(e, page.value + 1, 'next'),
 				disabled: nextDisabled,
-				'aria-label': props.nextAriaLabel,
+				'aria-label': t(props.nextAriaLabel),
 				'aria-disabled': nextDisabled
 			},
 			last: {
@@ -545,7 +565,7 @@
 				icon: props.lastIcon,
 				onClick: (e: Event) => setValue(e, start.value + length.value - 1, 'last'),
 				disabled: nextDisabled,
-				'aria-label': props.lastAriaLabel,
+				'aria-label': t(props.lastAriaLabel),
 				'aria-disabled': nextDisabled
 			}
 		}

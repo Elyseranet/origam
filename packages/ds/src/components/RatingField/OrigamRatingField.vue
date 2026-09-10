@@ -57,8 +57,16 @@
 				>
 					<div class="origam-rating-field__wrapper">
 						<template v-if="hasLabels && labelOnTop && (slots[`itemLabel.${index}`] || slots.itemLabel)">
-							<slot :name="`itemLabel.${index}`">
-								<slot name="itemLabel">
+							<slot
+									:index="index"
+									:label="itemLabels?.[index]"
+									:name="`itemLabel.${index}`"
+							>
+								<slot
+										:index="index"
+										:label="itemLabels?.[index]"
+										name="itemLabel"
+								>
 									<span>{{ itemLabels?.[index] ?? '&nbsp;' }}</span>
 								</slot>
 							</slot>
@@ -91,8 +99,16 @@
 							</template>
 						</div>
 						<template v-if="hasLabels && labelOnBottom && (slots[`itemLabel.${index}`] || slots.itemLabel)">
-							<slot :name="`itemLabel.${index}`">
-								<slot name="itemLabel">
+							<slot
+									:index="index"
+									:label="itemLabels?.[index]"
+									:name="`itemLabel.${index}`"
+							>
+								<slot
+										:index="index"
+										:label="itemLabels?.[index]"
+										name="itemLabel"
+								>
 									<span>{{ itemLabels?.[index] ?? '&nbsp;' }}</span>
 								</slot>
 							</slot>

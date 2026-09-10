@@ -33,6 +33,16 @@
       </div>
       <div class="origam-file-field-list-item__actions">
         <origam-btn
+            v-if="downloadable"
+            :aria-label="downloadAriaLabel"
+            :icon="downloadIcon"
+            data-cy="file-field-item-download"
+            flat
+            size="small"
+            :disabled="disabled"
+            @click.stop="handleDownload"
+        />
+        <origam-btn
             :aria-label="removeAriaLabel"
             :icon="removeIcon"
             flat
@@ -77,6 +87,7 @@
   const props = withDefaults(defineProps<IFileFieldListItemProps>(), {
     fileIcon: MDI_ICONS.FILE,
     removeIcon: MDI_ICONS.CLOSE,
+    downloadIcon: MDI_ICONS.DOWNLOAD,
   })
   const emits = defineEmits<IFileFieldListItemEmits>()
 
@@ -97,6 +108,10 @@
 
   const handleRemove = () => {
     emits('click:remove', { file: props.file, index: props.index })
+  }
+
+  const handleDownload = () => {
+    emits('click:download', { file: props.file, index: props.index })
   }
 
   /*********************************************************
@@ -125,6 +140,9 @@
   })
   const removeAriaLabel = computed(() => {
     return t('origam.file_field.remove_aria_label', props.file.name)
+  })
+  const downloadAriaLabel = computed(() => {
+    return t('origam.file_field.download_aria_label', props.file.name)
   })
 
   /*********************************************************

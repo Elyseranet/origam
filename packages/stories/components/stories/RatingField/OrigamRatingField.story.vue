@@ -6,13 +6,15 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<Partial<IRatingFieldProps>>({
+				:init-state="() => useStoryInitState<Partial<IRatingFieldProps> & { itemLabelsText: string }>({
 					color: 'primary',
 					length: 5,
 					size: undefined,
 					density: undefined,
 					rounded: undefined,
-					elevation: undefined
+					elevation: undefined,
+					itemLabelPosition: undefined,
+					itemLabelsText: ''
 				})"
 		>
 			<template #default="{ state }">
@@ -33,6 +35,7 @@
 						:height="state.height"
 						:length="state.length"
 						:item-label-position="state.itemLabelPosition"
+						:item-labels="parseItemLabels(state.itemLabelsText)"
 						label="Rating"
 				/>
 			</template>
@@ -60,6 +63,7 @@
 				</StoryGroup>
 				<StoryGroup title="Label">
 					<HstSelect v-model="state.itemLabelPosition" title="Item Label Position" :options="ITEM_LABEL_POSITION_OPTIONS"/>
+					<HstText   v-model="state.itemLabelsText"    title="Item Labels (comma-separated)"/>
 				</StoryGroup>
 				<StoryGroup title="Dimension">
 					<HstNumber v-model="state.length" title="Length" :min="1" :max="20"/>
@@ -80,6 +84,8 @@
 					readonly: false,
 					ripple: true,
 					label: 'Rating',
+					name: '',
+					itemAriaLabel: '',
 					hint: '',
 					persistentHint: false,
 					hideDetails: false,
@@ -97,6 +103,8 @@
 						:readonly="state.readonly"
 						:ripple="state.ripple"
 						:label="state.label"
+						:name="state.name || undefined"
+						:item-aria-label="state.itemAriaLabel || undefined"
 						:hint="state.hint"
 						:persistent-hint="state.persistentHint"
 						:hide-details="state.hideDetails"
@@ -121,6 +129,10 @@
 					<HstText     v-model="state.hint"           title="Hint"/>
 					<HstCheckbox v-model="state.persistentHint" title="Persistent Hint"/>
 					<HstCheckbox v-model="state.hideDetails"    title="Hide Details"/>
+				</StoryGroup>
+				<StoryGroup title="Identity / Accessibility">
+					<HstText v-model="state.name"          title="Name"/>
+					<HstText v-model="state.itemAriaLabel" title="Item Aria Label (locale key)"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -167,6 +179,22 @@
 			<origam-rating-field v-model="ratingSlot" label="Rating">
 				<template #details>
 					<span>Custom details area</span>
+				</template>
+			</origam-rating-field>
+		</Variant>
+
+		<Variant title="Slots - Message">
+			<origam-rating-field v-model="ratingSlot" label="Rating" :error="true" :error-messages="['Error']">
+				<template #message="{ message }">
+					<span style="font-style: italic;">{{ message }}</span>
+				</template>
+			</origam-rating-field>
+		</Variant>
+
+		<Variant title="Slots - Messages">
+			<origam-rating-field v-model="ratingSlot" label="Rating" :error="true" :error-messages="['Error one', 'Error two']">
+				<template #messages>
+					<span style="color: var(--origam-color__feedback--danger---fgSubtle);">Custom error display</span>
 				</template>
 			</origam-rating-field>
 		</Variant>
@@ -262,6 +290,19 @@
 		{ label: 'Top', value: BLOCK.TOP },
 		{ label: 'Bottom', value: BLOCK.BOTTOM }
 	]
+
+	// Same pattern as OrigamCalendar's `parseDisabledDates` — the `itemLabels`
+	// prop is a string[], so the Design control edits a single comma-separated
+	// HstText field and this turns it back into an array. An empty text field
+	// yields `undefined` (no labels) rather than `['']`.
+	function parseItemLabels (text: string): Array<string> | undefined {
+		if (!text) return undefined
+
+		return text
+			.split(',')
+			.map((entry) => entry.trim())
+			.filter((entry) => entry.length > 0)
+	}
 </script>
 
 <docs lang="md" src="@docs/components/RatingField/OrigamRatingField.md"/>
