@@ -230,10 +230,38 @@ test.describe('OrigamCounter', () => {
             await fillHstNumber(page, 'Value', 150)
             await expect(counter).toHaveClass(/origam-counter--error/)
 
+            // ⛔ `color` EST ANIME ici : le bloc `.origam-counter` declare
+            // `transition-property: color, opacity` sur 150ms (OrigamCounter.vue
+            // :176-177). Une lecture SYNCHRONE juste apres `fillHstNumber`
+            // renvoie donc une valeur INTERMEDIAIRE de l'interpolation, et le
+            // test echouait en annoncant `rgb(124, 58, 237)` — la couleur de
+            // depart — sur du code parfaitement correct.
+            //
+            // Mesure : seul, le fichier passait 19/19 ; lance en parallele de
+            // 8 autres specs, ce test tombait. Ce n'etait pas un defaut
+            // produit mais la charge machine qui etalait la transition sur
+            // plus de temps que la lecture n'en laissait. Sonde manuelle avec
+            // 600ms d'attente : `color` = `rgb(185, 28, 28)`, soit exactement
+            // `--origam-counter---color-error` = `#b91c1c`.
+            //
+            // `expect.poll` relit jusqu'a stabilisation au lieu de deviner un
+            // `waitForTimeout` — meme esprit que le test « la police n'est pas
+            // animee » plus bas, qui documente le cas symetrique.
+            await expect
+                .poll(async () => counter.evaluate(el => getComputedStyle(el).color), { timeout: 5000 })
+                .not.toBe(baseColor)
+
             const errorColor = await counter.evaluate(el => getComputedStyle(el).color)
             expect(errorColor).not.toBe('rgba(0, 0, 0, 0)')
             expect(errorColor).not.toBe('transparent')
             expect(errorColor).not.toBe(baseColor)
+
+            // Valeur ABSOLUE, pas un simple ecart : la couleur rendue doit
+            // etre celle du token d'erreur, pas « une autre couleur ».
+            const tokenError = await counter.evaluate(el =>
+                getComputedStyle(el).getPropertyValue('--origam-counter---color-error').trim())
+            expect(tokenError).toBe('#b91c1c')
+            expect(errorColor).toBe('rgb(185, 28, 28)')
         })
     })
 

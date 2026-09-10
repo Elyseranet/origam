@@ -189,6 +189,82 @@
 			</template>
 		</Variant>
 
+		<Variant
+				title="Functional - Plot overlays"
+				:init-state="() => useStoryInitState<Partial<IChartProps>>({
+					showBand: true,
+					showLine: true,
+					showAnnotation: true,
+					bandFrom: 20,
+					bandTo: 34,
+					lineValue: 30
+				})"
+		>
+			<template #default="{ state }">
+				<origam-chart
+						type="column"
+						:series="FIXTURE_SALES_SERIES"
+						:categories="FIXTURE_MONTHS"
+						:height="320"
+						title="Plot overlays"
+						:plot-bands="state.showBand ? [{ axis: 'y', from: state.bandFrom, to: state.bandTo, color: 'success', label: 'Target zone' }] : []"
+						:plot-lines="state.showLine ? [{ axis: 'y', value: state.lineValue, color: 'danger', dash: 'dashed', label: 'Quota' }] : []"
+						:annotations="state.showAnnotation ? [{ kind: 'circle', x: 'Dec', y: 52, text: 'Peak', color: 'warning', radius: 14 }] : []"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Plot bands">
+					<HstCheckbox v-model="state.showBand" title="Show Plot Band"/>
+					<HstNumber   v-model="state.bandFrom" title="Band From" :min="0" :max="60"/>
+					<HstNumber   v-model="state.bandTo"   title="Band To"   :min="0" :max="60"/>
+				</StoryGroup>
+				<StoryGroup title="Plot lines">
+					<HstCheckbox v-model="state.showLine"  title="Show Plot Line"/>
+					<HstNumber   v-model="state.lineValue" title="Line Value" :min="0" :max="60"/>
+				</StoryGroup>
+				<StoryGroup title="Annotations">
+					<HstCheckbox v-model="state.showAnnotation" title="Show Annotation"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
+				title="Functional - Secondary Y axis"
+				:init-state="() => useStoryInitState<Partial<IChartProps>>({
+					secondaryTitle: 'Conversion',
+					secondaryMax: 100
+				})"
+		>
+			<template #default="{ state }">
+				<origam-chart
+						type="line"
+						:series="FIXTURE_DUAL_AXIS_SERIES"
+						:categories="FIXTURE_MONTHS"
+						:height="320"
+						title="Revenue vs conversion"
+						:secondary-y-axis="{ min: 0, max: state.secondaryMax, title: state.secondaryTitle, format: FORMAT_PERCENT }"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Secondary Y axis">
+					<HstText   v-model="state.secondaryTitle" title="Axis Title"/>
+					<HstNumber v-model="state.secondaryMax"   title="Axis Max" :min="10" :max="500" :step="10"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant title="Functional - Drilldown">
+			<origam-chart
+					type="column"
+					:series="FIXTURE_DRILLDOWN_SERIES"
+					:categories="FIXTURE_QUARTERS"
+					:height="320"
+					title="Revenue by quarter"
+					subtitle="Click a column to drill into its months"
+					:drilldown="FIXTURE_DRILLDOWN"
+			/>
+		</Variant>
+
 		<Variant title="Events - point-click">
 			<origam-chart
 					type="column"
@@ -356,7 +432,7 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamChart } from '@origam/components'
-	import type { IChartProps, IChartSeries } from '@origam/interfaces'
+	import type { IChartDrilldownProps, IChartProps, IChartSeries } from '@origam/interfaces'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
@@ -433,6 +509,37 @@
 	const FIXTURE_GAUGE: Array<IChartSeries> = [
 		{ name: 'Completion', data: [62], color: 'primary' }
 	]
+
+	const FORMAT_PERCENT = (value: number) => `${value}%`
+
+	const FIXTURE_DUAL_AXIS_SERIES: Array<IChartSeries> = [
+		{ name: 'Revenue (k€)', data: [12, 18, 22, 19, 25, 32, 28, 33, 30, 36, 39, 42], color: 'primary' },
+		{ name: 'Conversion (%)', data: [31, 34, 30, 38, 42, 45, 41, 48, 52, 49, 55, 61], color: 'warning', yAxis: 1 }
+	]
+
+	const FIXTURE_QUARTERS = ['Q1', 'Q2', 'Q3', 'Q4']
+
+	const FIXTURE_DRILLDOWN_SERIES: Array<IChartSeries> = [
+		{
+			name: 'Revenue',
+			color: 'primary',
+			data: [
+				{ x: 'Q1', y: 52, drilldown: { id: 'q1', name: 'Q1' } },
+				{ x: 'Q2', y: 76, drilldown: { id: 'q2', name: 'Q2' } },
+				{ x: 'Q3', y: 91, drilldown: { id: 'q3', name: 'Q3' } },
+				{ x: 'Q4', y: 117, drilldown: { id: 'q4', name: 'Q4' } }
+			]
+		}
+	]
+
+	const FIXTURE_DRILLDOWN: IChartDrilldownProps = {
+		datasets: [
+			{ id: 'q1', name: 'Q1', categories: ['Jan', 'Feb', 'Mar'], series: [{ name: 'Revenue', data: [12, 18, 22], color: 'primary' }] },
+			{ id: 'q2', name: 'Q2', categories: ['Apr', 'May', 'Jun'], series: [{ name: 'Revenue', data: [19, 25, 32], color: 'primary' }] },
+			{ id: 'q3', name: 'Q3', categories: ['Jul', 'Aug', 'Sep'], series: [{ name: 'Revenue', data: [28, 33, 30], color: 'primary' }] },
+			{ id: 'q4', name: 'Q4', categories: ['Oct', 'Nov', 'Dec'], series: [{ name: 'Revenue', data: [36, 39, 42], color: 'primary' }] }
+		]
+	}
 </script>
 
 <style scoped>

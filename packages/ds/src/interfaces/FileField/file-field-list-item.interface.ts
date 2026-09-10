@@ -8,6 +8,8 @@ export interface IFileFieldListItemProps extends ICommonsComponentProps, IColorP
     progress?: number
     fileIcon?: string
     removeIcon?: string
+    downloadIcon?: string
+    downloadable?: boolean
     disabled?: boolean
     readonly?: boolean
     showSize?: boolean | 1000 | 1024
@@ -15,6 +17,7 @@ export interface IFileFieldListItemProps extends ICommonsComponentProps, IColorP
 
 export interface IFileFieldListItemEmits {
     (e: 'click:remove', value: { file: File, index: number }): void
+    (e: 'click:download', value: { file: File, index: number }): void
 }
 
 export interface IFileFieldListItemSlots {

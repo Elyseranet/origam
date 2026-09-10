@@ -34,7 +34,7 @@
 								:aria-activedescendant="activeOptionId"
 								:aria-controls="listboxId"
 								:aria-expanded="hasResults"
-								:placeholder="placeholder"
+								:placeholder="resolvedPlaceholder"
 								:style="inputTypographyStyles"
 								aria-autocomplete="list"
 								autocomplete="off"
@@ -52,7 +52,7 @@
 
 					<div
 							:id="listboxId"
-							:aria-label="placeholder"
+							:aria-label="resolvedPlaceholder"
 							:style="listStyles"
 							class="origam-command-palette__list"
 							role="listbox"
@@ -134,7 +134,7 @@
 								class="origam-command-palette__empty"
 						>
 							<slot name="empty">
-								{{ emptyText }}
+								{{ resolvedEmptyText }}
 							</slot>
 						</div>
 					</div>
@@ -205,8 +205,8 @@
 	const props = withDefaults(defineProps<ICommandPaletteProps>(), {
 		modelValue: false,
 		hotkey: () => COMMAND_PALETTE_DEFAULT_HOTKEY,
-		placeholder: 'Search…',
-		emptyText: 'No results',
+		placeholder: 'origam.command_palette.placeholder',
+		emptyText: 'origam.command_palette.empty_text',
 		maxHeight: COMMAND_PALETTE_DEFAULT_MAX_HEIGHT,
 		width: COMMAND_PALETTE_DEFAULT_WIDTH,
 		loading: false,
@@ -268,6 +268,26 @@
 	 ********************************************************/
 	const {t} = useLocale()
 	const dialogAriaLabel = computed(() => t('origam.command_palette.aria_label'))
+
+	/*********************************************************
+	 * `placeholder` et `emptyText` transportent une CLÉ (#404, C8)
+	 *
+	 * @description
+	 * Leurs valeurs par défaut étaient les chaînes anglaises `'Search…'` et
+	 * `'No results'`, écrites en dur dans `withDefaults` — donc rendues
+	 * telles quelles dans toutes les langues. Le placeholder est doublement
+	 * exposé : il remplit l'`<input role="combobox">`, dont il constitue le
+	 * nom accessible, et il sert d'`aria-label` à la listbox.
+	 *
+	 * @description
+	 * Le défaut est désormais une clé de catalogue, résolue par `t()`. Rien
+	 * ne casse pour un consommateur qui passe du texte littéral : l'adaptateur
+	 * intégré rend la clé INCHANGÉE quand elle est absente du catalogue, donc
+	 * `placeholder="Chercher un client"` s'affiche verbatim. C'est le contrat
+	 * déjà en vigueur sur `OrigamPagination`.
+	 ********************************************************/
+	const resolvedPlaceholder = computed(() => t(props.placeholder))
+	const resolvedEmptyText = computed(() => t(props.emptyText))
 
 	const rootRef = ref<HTMLElement>()
 	const dialogRef = ref<HTMLElement>()

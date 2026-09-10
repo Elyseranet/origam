@@ -116,6 +116,8 @@ Special markers (`showMin`, `showMax`) override the colour locally:
 
 The component uses a `<figure>` root (semantic landmark for a self-contained chart), an SVG with `role="img"`, `aria-label`, `<title>`, and `<desc>` for screen reader support.
 
+**Accessibility — the `<desc>` summary is localised AND agrees in number.** The `<desc>` text is not an English literal: it resolves through the DS `t()` mechanism against `origam.chart.sparkline.desc*`, and the grammatical form is chosen by `Intl.PluralRules` for the ACTIVE locale — never by a `count === 1` test in the component. A translator supplies only the forms their language needs (`_one` / `_other` cover `en` and `fr`; a Russian translation adds `_few` with no component change), and a category a locale does not define falls back to `_other` rather than leaking the raw key.
+
 ## Usage examples
 
 ### Embedding in a table

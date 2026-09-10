@@ -8,6 +8,8 @@ export interface IFileFieldDragNDropItemProps extends ICommonsComponentProps, IC
     progress?: number
     fileIcon?: string
     removeIcon?: string
+    downloadIcon?: string
+    downloadable?: boolean
     disabled?: boolean
     readonly?: boolean
     showSize?: boolean | 1000 | 1024
@@ -15,6 +17,7 @@ export interface IFileFieldDragNDropItemProps extends ICommonsComponentProps, IC
 
 export interface IFileFieldDragNDropItemEmits {
     (e: 'click:remove', value: { file: File, index: number }): void
+    (e: 'click:download', value: { file: File, index: number }): void
 }
 
 export interface IFileFieldDragNDropItemSlots {

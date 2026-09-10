@@ -266,3 +266,54 @@ describe('OrigamDrawer — expand-on-hover (rail mode)', () => {
         wrapper.unmount()
     })
 })
+
+// ---------------------------------------------------------------------------
+// i18n — hardcoded English string reaching the user (#419, criterion C8)
+// ---------------------------------------------------------------------------
+//
+// The root rendered `:aria-label="name || 'Navigation'"`. The literal sat
+// BEHIND a `||`, which is precisely the blind spot of the C8 detector, and it
+// was announced verbatim by every screen reader whatever the active locale.
+//
+// Asserted against the REAL builtin locale adapter (via `createOrigam()`),
+// under `fr`: under `en` a hardcoded English literal and its correct
+// translation are identical byte for byte, so an `en`-only test passes with
+// the defect fully intact.
+
+const mountDrawerLocalised = (locale: string, props: Record<string, any> = {}) => {
+    return mount(OrigamDrawer, {
+        props: { modelValue: true, ...props },
+        attachTo: document.body,
+        global: {
+            plugins: [createOrigam({ locale: { locale } } as never)],
+            stubs: {
+                Teleport: true,
+                OrigamTransition: OrigamTransitionStub,
+                OrigamOverlayScrim: OrigamOverlayScrimStub
+            }
+        }
+    })
+}
+
+const drawerAriaLabel = (wrapper: ReturnType<typeof mountDrawerLocalised>): string | undefined =>
+    wrapper.find('nav.origam-drawer').attributes('aria-label')
+
+describe('OrigamDrawer — i18n of the default aria-label (#419, C8)', () => {
+    it('falls back to the English catalogue label when no name is given', () => {
+        const wrapper = mountDrawerLocalised('en')
+        expect(drawerAriaLabel(wrapper)).toBe('Navigation')
+        wrapper.unmount()
+    })
+
+    it('falls back to the FRENCH label under the fr locale (fails on a hardcoded literal)', () => {
+        const wrapper = mountDrawerLocalised('fr')
+        expect(drawerAriaLabel(wrapper)).toBe('Navigation principale')
+        wrapper.unmount()
+    })
+
+    it('still lets a consumer-supplied name win over the catalogue fallback', () => {
+        const wrapper = mountDrawerLocalised('fr', { name: 'Filtres' })
+        expect(drawerAriaLabel(wrapper)).toBe('Filtres')
+        wrapper.unmount()
+    })
+})

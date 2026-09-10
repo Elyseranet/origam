@@ -81,13 +81,18 @@ describe('OrigamDataTableFooter — les libelles de page atteignent <OrigamPagin
         expect(labels).toContain('Next page')
         expect(labels).toContain('Last page')
 
-        // ⛔ HORS PERIMETRE — `<OrigamPagination>` rend SES PROPRES defauts
-        // d'aria-label (`ariaLabel`, `pageAriaLabel`, …) tels quels, cle
-        // i18n comprise : `origam.pagination.aria_label.root` finit
-        // litteralement dans le DOM. Ce n'est pas ce que ce spec mesure —
-        // les quatre libelles ci-dessus sont traduits par le PIED DE TABLE
-        // avant d'etre passes. Le defaut de Pagination est signale, pas
-        // corrige ici.
-        expect(labels.filter((l) => l?.startsWith('origam.')).length).toBeGreaterThan(0)
+        // Ce spec epinglait auparavant le defaut inverse : `<OrigamPagination>`
+        // rendait SES PROPRES defauts d'aria-label (`ariaLabel`,
+        // `firstAriaLabel`, …) tels quels, cle i18n comprise, si bien que
+        // `origam.pagination.aria_label.root` finissait litteralement dans le
+        // DOM. Le commentaire d'alors disait le defaut « signale, pas corrige
+        // ici » et l'assertion exigeait donc au moins une fuite.
+        //
+        // Il est corrige (#446, C6) : les cinq libelles qui manquaient leur
+        // `t()` — la <nav> racine et les quatre boutons de navigation —
+        // passent desormais par le catalogue. L'assertion est retournee et
+        // garde maintenant l'invariant utile : plus AUCUNE cle ne fuit, quelle
+        // que soit la moitie qui produit le libelle.
+        expect(labels.filter((l) => l?.startsWith('origam.'))).toEqual([])
     })
 })

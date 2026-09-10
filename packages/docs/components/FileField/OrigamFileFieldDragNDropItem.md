@@ -28,8 +28,10 @@ full customisation.
 | `progress` | `number` | `undefined` | Upload progress (0–100); the progress bar renders only when set |
 | `fileIcon` | `string` | `mdi-file` | Icon shown before the file name |
 | `removeIcon` | `string` | `mdi-close` | Icon for the remove button |
-| `disabled` | `boolean` | `undefined` | Disables the remove button |
-| `readonly` | `boolean` | `undefined` | Disables the remove button (read-only mode) |
+| `downloadIcon` | `string` | `mdi-download` | Icon for the download button |
+| `downloadable` | `boolean` | `undefined` | Shows the download button; hidden entirely when falsy |
+| `disabled` | `boolean` | `undefined` | Disables the remove button and the download button |
+| `readonly` | `boolean` | `undefined` | Disables the remove button (read-only mode); does **not** disable the download button — downloading isn't a destructive action |
 | `showSize` | `boolean \| 1000 \| 1024` | `false`\* | `false` hides the size line; `true` picks an auto unit; `1000`/`1024` force SI (kB) / IEC (KiB) |
 | `color` | `TColor` | `undefined` | Progress bar color |
 | `fontSize` | `TFontSize` | `undefined` | File name font size (bound on the `__name` surface) |
@@ -40,6 +42,7 @@ full customisation.
 | Event | Payload | Description |
 |---|---|---|
 | `click:remove` | `{ file: File, index: number }` | Remove button clicked |
+| `click:download` | `{ file: File, index: number }` | Download button clicked |
 
 ## Slots
 
@@ -58,7 +61,13 @@ runtime, so leaving it unset behaves exactly like passing `false`.
   icon-only button.
 - `disabled` and `readonly` both disable the remove button; neither is
   forwarded to a native disabled attribute on the card itself (there is no
-  native control on the card besides the button).
+  native control on the card besides the buttons).
+- The download button only renders when `downloadable` is `true` — it is
+  absent from the DOM otherwise, not merely hidden. It carries its own
+  translated `aria-label` ("Download {file name}",
+  `origam.file_field.download_aria_label`). Unlike the remove button, it
+  stays enabled while `readonly` — only `disabled` disables it, since
+  downloading a file isn't destructive the way removing one is.
 
 ## Design tokens
 

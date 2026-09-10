@@ -593,10 +593,9 @@ return [ out, props.style as StyleValue ]
 	const ariaLabel = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgAriaLabel = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgTitle = computed(() => props.title ?? defaultAriaLabel.value)
-	const svgDesc = computed(() => {
-		const n = visibleTiles.value.length
-		return `Treemap chart with ${ n } ${ n === 1 ? 'tile' : 'tiles' }.`
-	})
+	const svgDesc = computed(() =>
+		t('origam.chart.treemap.desc', visibleTiles.value.length, {chart: defaultAriaLabel.value})
+	)
 
 	const tileAriaLabel = (tile: IChartTreemapTile): string =>
 		`${ tile.name }: ${ tile.formatted }`

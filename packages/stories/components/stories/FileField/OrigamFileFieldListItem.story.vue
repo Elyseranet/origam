@@ -6,7 +6,7 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<Partial<IFileFieldListItemProps>>({ color: 'primary', showSize: true })"
+				:init-state="() => useStoryInitState<Partial<IFileFieldListItemProps>>({ color: 'primary', showSize: true, downloadable: true })"
 		>
 			<template #default="{ state }">
 				<div style="padding: 24px; max-width: 480px;">
@@ -16,6 +16,8 @@
 							:color="state.color"
 							:file-icon="state.fileIcon || undefined"
 							:remove-icon="state.removeIcon || undefined"
+							:download-icon="state.downloadIcon || undefined"
+							:downloadable="state.downloadable"
 							:show-size="state.showSize"
 					/>
 				</div>
@@ -25,18 +27,20 @@
 					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Icons">
-					<HstSelect v-model="state.fileIcon"   title="File Icon"   :options="ICON_OPTIONS"/>
-					<HstSelect v-model="state.removeIcon" title="Remove Icon" :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.fileIcon"     title="File Icon"     :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.removeIcon"   title="Remove Icon"   :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.downloadIcon" title="Download Icon" :options="ICON_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Display">
-					<HstSelect v-model="state.showSize" title="Show Size" :options="SHOW_SIZE_OPTIONS"/>
+					<HstSelect   v-model="state.showSize"     title="Show Size"    :options="SHOW_SIZE_OPTIONS"/>
+					<HstCheckbox v-model="state.downloadable" title="Downloadable"/>
 				</StoryGroup>
 			</template>
 		</Variant>
 
 		<Variant
 				title="Functional"
-				:init-state="() => useStoryInitState<Partial<IFileFieldListItemProps>>({ progress: 0, disabled: false, readonly: false, showSize: true })"
+				:init-state="() => useStoryInitState<Partial<IFileFieldListItemProps>>({ progress: 0, disabled: false, readonly: false, showSize: true, downloadable: true })"
 		>
 			<template #default="{ state }">
 				<div style="padding: 24px; max-width: 480px;">
@@ -46,14 +50,16 @@
 							:progress="state.progress"
 							:disabled="state.disabled"
 							:readonly="state.readonly"
+							:downloadable="state.downloadable"
 							:show-size="state.showSize"
 					/>
 				</div>
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="States">
-					<HstCheckbox v-model="state.disabled" title="Disabled"/>
-					<HstCheckbox v-model="state.readonly" title="Readonly"/>
+					<HstCheckbox v-model="state.disabled"     title="Disabled"/>
+					<HstCheckbox v-model="state.readonly"     title="Readonly"/>
+					<HstCheckbox v-model="state.downloadable" title="Downloadable"/>
 				</StoryGroup>
 				<StoryGroup title="Progress">
 					<HstNumber v-model="state.progress" title="Progress" :min="0" :max="100" :step="1"/>
@@ -74,6 +80,17 @@
 			</div>
 		</Variant>
 
+		<Variant title="Events - click:download">
+			<div style="padding: 24px; max-width: 480px;">
+				<origam-file-field-list-item
+						:file="mockFile('downloadable.pdf', 'application/pdf', 65536)"
+						:index="0"
+						downloadable
+						@click:download="logEvent('click:download', $event)"
+				/>
+			</div>
+		</Variant>
+
 		<Variant title="Slots - Default">
 			<div style="padding: 24px; max-width: 480px;">
 				<origam-file-field-list-item
@@ -87,7 +104,7 @@
 
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<Partial<IFileFieldListItemProps>>({ color: 'primary', progress: 0, disabled: false, readonly: false, showSize: true })"
+				:init-state="() => useStoryInitState<Partial<IFileFieldListItemProps>>({ color: 'primary', progress: 0, disabled: false, readonly: false, showSize: true, downloadable: true })"
 		>
 			<template #default="{ state }">
 				<div style="padding: 24px; max-width: 480px;">
@@ -96,22 +113,25 @@
 							:file="mockFile('playground.pdf', 'application/pdf', 256000)"
 							:index="0"
 							@click:remove="logEvent('click:remove', $event)"
+							@click:download="logEvent('click:download', $event)"
 					/>
 				</div>
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Content">
-					<HstSelect v-model="state.fileIcon"   title="File Icon"   :options="ICON_OPTIONS"/>
-					<HstSelect v-model="state.removeIcon" title="Remove Icon" :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.fileIcon"     title="File Icon"     :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.removeIcon"   title="Remove Icon"   :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.downloadIcon" title="Download Icon" :options="ICON_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Design">
 					<HstSelect v-model="state.color"    title="Color"     :options="COLOR_OPTIONS"/>
 					<HstSelect v-model="state.showSize" title="Show Size" :options="SHOW_SIZE_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
-					<HstCheckbox v-model="state.disabled" title="Disabled"/>
-					<HstCheckbox v-model="state.readonly" title="Readonly"/>
-					<HstNumber   v-model="state.progress" title="Progress" :min="0" :max="100" :step="1"/>
+					<HstCheckbox v-model="state.disabled"     title="Disabled"/>
+					<HstCheckbox v-model="state.readonly"     title="Readonly"/>
+					<HstCheckbox v-model="state.downloadable" title="Downloadable"/>
+					<HstNumber   v-model="state.progress"     title="Progress" :min="0" :max="100" :step="1"/>
 				</StoryGroup>
 			</template>
 		</Variant>

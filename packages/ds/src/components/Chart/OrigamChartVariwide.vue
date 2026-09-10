@@ -613,10 +613,9 @@ return [ out, props.style as StyleValue ]
 	const ariaLabel = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgAriaLabel = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgTitle = computed(() => props.title ?? defaultAriaLabel.value)
-	const svgDesc = computed(() => {
-		const n = columns.value.length
-		return `Variwide chart with ${ n } ${ n === 1 ? 'column' : 'columns' }.`
-	})
+	const svgDesc = computed(() =>
+		t('origam.chart.variwide.desc', columns.value.length, {chart: defaultAriaLabel.value})
+	)
 
 	const columnAriaLabel = (col: IChartVariwideColumn): string =>
 		t('origam.chart.variwide.column_aria_label', col.category, col.formattedValue, col.formattedWidth)

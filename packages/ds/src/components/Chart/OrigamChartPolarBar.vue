@@ -558,10 +558,9 @@ return [ out, props.style as StyleValue ]
 	const ariaLabel = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgAriaLabel = computed(() => props.title ?? defaultAriaLabel.value)
 	const svgTitle = computed(() => props.title ?? defaultAriaLabel.value)
-	const svgDesc = computed(() => {
-		const n = visibleWedges.value.length
-		return `Polar bar chart with ${ n } ${ n === 1 ? 'wedge' : 'wedges' }.`
-	})
+	const svgDesc = computed(() =>
+		t('origam.chart.polar_bar.desc', visibleWedges.value.length, {chart: defaultAriaLabel.value})
+	)
 
 	const wedgeAriaLabel = (wedge: IChartPolarBarWedge): string =>
 		`${ wedge.category }: ${ wedge.formatted } (${ wedge.percentage })`
