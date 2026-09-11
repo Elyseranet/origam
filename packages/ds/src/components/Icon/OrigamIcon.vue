@@ -5,7 +5,6 @@
 			:aria-hidden="ariaHidden"
 			:class="iconClasses"
 			:icon="iconData.icon"
-			:role="role"
 			:size="size"
 			:style="iconStyles"
 			:tag="tag"
@@ -69,7 +68,7 @@
 	const {sizeClasses, sizeStyles} = useSize(props)
 	const slots = useSlots()
 	const {iconData} = useIcon(computed(() => slotIcon.value || props.icon))
-	const {isClickable, ariaHidden, role} = useIconAccessibility()
+	const {isClickable, ariaHidden} = useIconAccessibility()
 
 	const slotIcon = ref<string>()
 

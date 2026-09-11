@@ -4,7 +4,6 @@
 			:id="id"
 			:aria-hidden="ariaHidden"
 			:class="iconClasses"
-			:role="role"
 			:style="iconStyles"
 	/>
 </template>
@@ -65,7 +64,7 @@
 	const {marginClasses, marginStyles} = useMargin(props)
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {dimensionStyles} = useDimension(props)
-	const {ariaHidden, role} = useIconAccessibility()
+	const {ariaHidden} = useIconAccessibility()
 
 	/*********************************************************
 	 * Class & Style

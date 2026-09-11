@@ -248,13 +248,63 @@ under `packages/ds/src/assets/scss/tokens/`):
 
 - `aria-hidden="true"` is applied automatically when **no click handler** is
   registered — purely-decorative icons stay invisible to screen readers.
-- When a click handler IS attached: `role="button"` + `aria-hidden="false"`.
-  The icon itself carries no accessible name — pass `aria-label` or
-  `aria-labelledby` on the same element, or a dev-time console warning
-  fires (`role="button"` with no name is worse than no role at all).
+
+### ⛔ Migrating off `@click` on an icon (#653)
+
+**If you attach `@click` directly to `<origam-icon>`, the rendered markup
+changed.** Before #653, a click handler flipped the icon to
+`role="button"` + `aria-hidden="false"`. **`role="button"` is gone.** The
+icon still receives the click (nothing stops a plain DOM listener) and
+`aria-hidden` still becomes `"false"`, but assistive technology no longer
+announces it as a button — because it never behaved like one:
+
+```
+measured — <origam-icon icon="mdi-close" @click="…" aria-label="Close"/>
+  before #653:  role="button"  aria-hidden="false"  aria-label="Close"
+  today:        role=(none)    aria-hidden="false"  aria-label="Close"
+```
+
+`role="button"` was removed rather than fixed in place: the icon family
+sets **no `tabindex` and no keyboard handler** anywhere, so the role
+announced a control a keyboard or switch-device user could never reach
+(`Tab` never lands on it) or activate (`Enter` / `Space` do nothing) — a
+WCAG 2.1.1 (Keyboard) violation, not a defensible ARIA fallback. A
+dev-time `console.warn` still fires when the icon is clickable with no
+`aria-label` / `aria-labelledby`, and now points at the real fix instead:
+
+```vue
+<!-- ❌ Before — announced role="button" with no keyboard access -->
+<origam-icon icon="mdi-close" aria-label="Close" @click="onClose"/>
+
+<!-- ✅ Now — origam-btn icon-only mode: a real <button>, full keyboard support for free -->
+<origam-btn icon="mdi-close" :aria-label="t('btn_close', 'Close')" @click="onClose"/>
+```
+
+`IBtnProps.icon` accepts `boolean | TIcon` (icon-only mode); see
+`OrigamBtn.md`'s Accessibility section — icon-only mode needs an
+`aria-label` you supply yourself, exactly like above, but on a real
+button.
+
+Compared against the DS's own precedent for `role="button"` on a
+non-native element, `OrigamCard` (#392): Card pairs the role with
+`tabindex="0"` **and** a keydown handler, and does so only because its
+content model makes a native `<button>` illegal (Card renders flow
+content a `<button>` cannot legally contain). `OrigamIcon` has no such
+constraint — `origam-btn` is always available — so reproducing Card's
+pattern here would only duplicate `OrigamBtn` instead of removing the
+anti-pattern.
+
+An earlier draft of this ticket also explored a typed `clickable` prop
+with a `vue-tsc`-enforced discriminated union. It was removed before
+release too: no component in the repo ever used it, and constraining an
+API nobody uses just papers over the real defect.
+
 - The inline `<svg>` leaf (`OrigamSvgIcon`) always renders its glyph with
   `aria-hidden="true"` — no `role` — it never carries meaning on its own;
   the accessible name lives on the interactive ancestor, not the glyph.
+  It also never calls `useIconAccessibility()` at all, so a clickable
+  `OrigamSvgIcon` doesn't even get the fallback above — tracked
+  separately as #660.
 
 ## Theming notes
 

@@ -4,7 +4,6 @@
 			:id="id"
 			:aria-hidden="ariaHidden"
 			:class="iconClasses"
-			:role="role"
 			:style="iconStyles"
 	>
 		{{ icon }}
@@ -46,7 +45,7 @@
 
 	defineSlots<ILigatureIconSlots>()
 
-	const {ariaHidden, role} = useIconAccessibility()
+	const {ariaHidden} = useIconAccessibility()
 
 	/*********************************************************
 	 * Class & Style

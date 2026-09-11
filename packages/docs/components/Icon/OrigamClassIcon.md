@@ -136,10 +136,17 @@ exposed to the accessibility tree. The leaf now resolves its own
 - `aria-hidden="true"` by default — the glyph is decorative and stays out
   of the accessibility tree, whether reached through `OrigamIcon` or used
   directly.
-- A click handler flips it to `aria-hidden="false"` + `role="button"`.
-  Pass `aria-label` or `aria-labelledby` on the same element — a
-  dev-time console warning fires otherwise (`role="button"` with no name
-  is worse than no role at all).
+- A click handler flips `aria-hidden` to `"false"`. ⛔ **Since #653, it no
+  longer also sets `role="button"`** — measured: this element has no
+  `tabindex` and no keyboard handler anywhere, so the role used to
+  announce a control a keyboard user could never reach (`Tab`) or
+  activate (`Enter` / `Space`). A dev-time console warning still fires
+  when clickable with no `aria-label` / `aria-labelledby`, now pointing
+  at the real fix:
+  `<origam-btn icon="mdi-home" :aria-label="t('btn_home', 'Home')" @click="..."/>`
+  — a real `<button>`, keyboard-accessible for free. See `OrigamIcon.md`'s
+  Accessibility section for the full rationale, including the measured
+  before/after markup.
 
 ## When to use
 

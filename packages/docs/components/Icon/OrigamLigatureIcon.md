@@ -121,10 +121,24 @@ The leaf applies the Material font via SCSS:
   this leaf defends itself even though `OrigamIcon`'s dispatcher never
   routes to it today (see "Related" below), because it is exported on
   the public barrel and can be used directly.
-- When a click handler IS attached: `aria-hidden="false"` + `role="button"`.
-  The ligature text itself is not a substitute for a real accessible
-  name — pass `aria-label` or `aria-labelledby`, or a dev-time console
-  warning fires.
+- When a click handler is attached: `aria-hidden` flips to `"false"`.
+  ⛔ **Since #653, it no longer also sets `role="button"`** — measured:
+  this element has no `tabindex` and no keyboard handler anywhere, so the
+  role used to announce a control a keyboard user could never reach
+  (`Tab`) or activate (`Enter` / `Space`). The ligature text itself was
+  never a substitute for a real accessible name either way — a dev-time
+  console warning still fires when clickable with no `aria-label` /
+  `aria-labelledby`, now pointing at the real fix. Use `OrigamBtn`'s
+  icon-only mode instead — a real `<button>`, keyboard-accessible for
+  free:
+  `<origam-btn icon="mdi-home" :aria-label="t('btn_home', 'Home')" @click="..."/>`.
+  ⚠️ `OrigamBtn` renders its icon through the SAME `OrigamIcon` dispatcher
+  that (see "Related" below) never routes to `OrigamLigatureIcon` — a
+  ligature name like `"home"` does not migrate 1:1, use the matching
+  `mdi-*` class name instead, or a plain `<button>` wrapping
+  `<origam-ligature-icon>` directly if the ligature glyph itself is
+  required. See `OrigamIcon.md`'s Accessibility section for the full
+  rationale (#653).
 
 ## Theming notes
 
