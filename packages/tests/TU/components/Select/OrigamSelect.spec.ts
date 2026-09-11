@@ -165,3 +165,95 @@ describe('OrigamSelect — update:focused / click:clear relay (LOT1 emits fix)',
         expect(wrapper.emitted('update:focused')).toEqual([[true], [false]])
     })
 })
+
+// ---------------------------------------------------------------------------
+// #622 — `const label` locally-declared in <script setup> masked the `label`
+// PROP declared on `ISelectProps` (-> `IFieldProps`). Both `:aria-label`
+// and `:title` on the forwarded `<origam-text-field>` read the bare `label`
+// identifier, which Vue resolves to the LOCAL computed
+// (`menu.value ? props.closeText : props.openText`) rather than the prop —
+// every `<origam-select>` announced "Open"/"Close" instead of its own
+// `label`, regardless of locale.
+//
+// Mounted in `fr` on purpose: a regression that only swaps the local for
+// `props.label` while still reading it under an English literal would stay
+// green against an English assertion. `fr` is the only filter that catches
+// it here (see BRIEF-VAGUE3-DIVERS.md).
+// ---------------------------------------------------------------------------
+describe('OrigamSelect — #622 le nom accessible est le label du champ, pas le libelle du bouton d ouverture', () => {
+    it('aria-label sur l input reflete props.label (fr)', async () => {
+        const wrapper = mount(OrigamSelect, {
+            global: { plugins: [createOrigam({ locale: { locale: 'fr' } })] },
+            props: { label: 'Pays', items: ['France', 'Belgique'] } as never
+        })
+        await nextTick()
+
+        const input = wrapper.find('input')
+        expect(input.attributes('aria-label')).toBe('Pays')
+        expect(input.attributes('title')).toBe('Pays')
+    })
+
+    it('ne regresse pas la locale en (memes assertions)', async () => {
+        const wrapper = mount(OrigamSelect, {
+            global: { plugins: [createOrigam()] },
+            props: { label: 'Country', items: ['France', 'Belgium'] } as never
+        })
+        await nextTick()
+
+        const input = wrapper.find('input')
+        expect(input.attributes('aria-label')).toBe('Country')
+    })
+
+    it('repli sur openText/closeText quand aucun label n est fourni (fr, menu ferme)', async () => {
+        const wrapper = mount(OrigamSelect, {
+            global: { plugins: [createOrigam({ locale: { locale: 'fr' } })] },
+            props: { items: ['France', 'Belgique'] } as never
+        })
+        await nextTick()
+
+        const input = wrapper.find('input')
+        expect(input.attributes('aria-label')).toBe('Ouvrir')
+    })
+
+    it('repli sur openText/closeText quand aucun label n est fourni (fr, menu ouvert des le montage)', async () => {
+        // `menu` is the documented v-model prop backing the internal open
+        // state (`menuState = useVModel(props, 'menu')`). Driving it at
+        // MOUNT time (rather than via a later `setProps`/synthetic
+        // keydown) is the deterministic way to reach the "open" state in
+        // jsdom for this v-model chain — a live focus -> control ->
+        // overlay toggle is an e2e concern the suite already covers.
+        const wrapper = mount(OrigamSelect, {
+            global: { plugins: [createOrigam({ locale: { locale: 'fr' } })] },
+            props: { items: ['France', 'Belgique'], menu: true } as never
+        })
+        await nextTick()
+
+        const input = wrapper.find('input')
+        expect(input.attributes('aria-label')).toBe('Fermer')
+    })
+
+    it('aria-controls est absent au repos (mesure #622)', async () => {
+        const wrapper = mount(OrigamSelect, {
+            global: { plugins: [createOrigam()] },
+            props: { label: 'Country', items: ['France', 'Belgium'] } as never
+        })
+        await nextTick()
+
+        const input = wrapper.find('input')
+        expect(input.attributes('aria-expanded')).toBe('false')
+        expect(input.attributes('aria-haspopup')).toBe('listbox')
+        expect(input.attributes('aria-controls')).toBeUndefined()
+    })
+
+    it('aria-controls est present quand le menu est ouvert des le montage (mesure #622)', async () => {
+        const wrapper = mount(OrigamSelect, {
+            global: { plugins: [createOrigam()] },
+            props: { label: 'Country', items: ['France', 'Belgium'], menu: true } as never
+        })
+        await nextTick()
+
+        const input = wrapper.find('input')
+        expect(input.attributes('aria-expanded')).toBe('true')
+        expect(input.attributes('aria-controls')).toBeTruthy()
+    })
+})
