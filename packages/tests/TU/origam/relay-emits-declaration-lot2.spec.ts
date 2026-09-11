@@ -184,12 +184,14 @@ describe('update:hover émis via useStateFlag({state:\'hover\'}) — déclaratio
     })
 
     /*
-     * The base origam theme defaults every Card to `flat: true`
-     * (`theme.components['origam-card'].flat`, see OrigamCard.vue's own
-     * `isHoverable` comment) — `isHoverable` gates the mouseenter/mouseleave
+     * `isHoverable` (`!disabled && !flat`) gates the mouseenter/mouseleave
      * BINDING itself off entirely for a flat card, by design (a flat card
-     * has no hover surface to show). `flat: false` reproduces the realistic
-     * override a consumer makes to opt back into hover.
+     * has no hover surface to show). Until #641, the base origam theme
+     * defaulted every Card to `flat: true`
+     * (`theme.components['origam-card'].flat`), which made this binding
+     * dead for every consumer regardless of the explicit prop — that theme
+     * default has been removed. `flat: false` here still exercises the
+     * component-level coupling directly, independent of the active theme.
      */
     it('OrigamCard déclare update:hover (flat=false, interaction réelle)', async () => {
         const { warnings, received, attrs } = await observe(
