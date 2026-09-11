@@ -119,11 +119,17 @@
 	 * row-level classes for line-numbers + highlight-lines.
 	 *
 	 * Theme integration:
-	 * shiki uses the `css-variables` built-in theme which emits spans with
-	 * `style="color: var(--shiki-token-keyword)"` etc. The SCSS block below
-	 * maps every `--shiki-*` variable to an origam design token so colours
-	 * follow `<html data-theme="…">` automatically — no JS re-render on
-	 * theme switch.
+	 * shiki v4.3.1 no longer ships a `css-variables` built-in theme (the
+	 * mechanism this comment used to describe, and that the now-removed
+	 * `--origam-code__syntax---*` tokens targeted — see #661/C2). Syntax
+	 * colouring is therefore NOT themeable via origam design tokens: it
+	 * comes from TWO real shiki themes (light + dark) highlighted once,
+	 * each span carrying both colours via `--shiki-light` / `--shiki-dark`
+	 * inline custom properties (shiki's own `defaultColor: false` dual-theme
+	 * output). The scoped `<style>` block below just picks whichever of
+	 * the two the active `data-theme`/`data-mode` calls for — see the
+	 * "Dual-theme shiki" block further down. Still no JS re-render on
+	 * theme switch, just a different `var()` resolving.
 	 ********************************************************/
 	const props = withDefaults(defineProps<ICodeProps>(), {
 		tag: 'figure',
@@ -259,9 +265,11 @@
 	 * The watcher re-runs on source / lang changes. We swallow stale promise
 	 * results so a fast lang-switch doesn't paint the wrong tokens.
 	 *
-	 * Theme changes are handled entirely by CSS: shiki emits
-	 * `style="color: var(--shiki-token-keyword)"` spans and the SCSS
-	 * block maps `--shiki-*` to origam tokens that change with data-theme.
+	 * Theme changes are handled entirely by CSS, NOT origam design tokens
+	 * (#661/C2 — see the "Global" block's doc-comment above): each span
+	 * shiki emits already carries both `--shiki-light` and `--shiki-dark`
+	 * inline, and the scoped `<style>` block picks whichever one the
+	 * current `data-theme`/`data-mode` calls for.
 	 ********************************************************/
 	const codeRef = ref<HTMLElement | null>(null)
 	const isHighlighting = ref(false)
