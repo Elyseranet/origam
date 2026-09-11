@@ -77,15 +77,32 @@ instead.
 
 ## Props (interface)
 
+`OrigamSvgIcon` shares `IIconComponentProps` with the other four Icon leaves
+(`OrigamIcon`, `OrigamClassIcon`, `OrigamComponentIcon`, `OrigamLigatureIcon`).
+The full surface is wider than `icon` / `size` / `tag`: it also carries color,
+spacing, border, rounded and dimension — every one of them wired via a
+composable in `OrigamSvgIcon.vue` (see "Color / theming" below for the color
+channel, and the story's "Design" Variant for a live control on each).
+
 ```ts
-interface IIconComponentProps {
-    icon?: TIcon  // string OR array (see above)
-    size?: TSize | number
-    tag?: string
-    class?: string | string[] | object
-    style?: string | string[] | object
+interface IIconComponentProps extends
+    IIconProps, IColorProps, IBgColorProps, ICommonsComponentProps,
+    ITagProps, ISizeProps, IPaddingProps, IMarginProps, IBorderProps,
+    IDimensionProps, IRoundedProps {
 }
 ```
+
+| Group | Props |
+|---|---|
+| Icon (own) | `icon: TIcon` — string OR array (see above) |
+| Color | `color`, `bgColor` |
+| Sizing | `size: TSize \| number` |
+| Shape | `rounded`, `roundedTopLeft`, `roundedTopRight`, `roundedBottomLeft`, `roundedBottomRight` |
+| Border | `border`, `borderColor`, `borderStyle`, `borderTop`, `borderRight`, `borderBottom`, `borderLeft` |
+| Dimension | `width`, `height`, `minWidth`, `minHeight`, `maxWidth`, `maxHeight` |
+| Spacing | `padding`, `paddingTop/Right/Bottom/Left`, `paddingBlock`, `paddingInline`, `margin`, `marginTop/Right/Bottom/Left`, `marginBlock`, `marginInline` |
+| Functional | `tag: string` |
+| Commons | `id`, `class`, `style` |
 
 ## Anatomy
 
@@ -107,8 +124,12 @@ interface IIconComponentProps {
 
 - Path elements inherit `fill: currentColor` (set by the
   `.origam-icon--svg .origam-icon__svg` rule).
-- The wrapper's `color` cascades from `.origam-icon` (`currentColor` by
-  default) — set `color` anywhere up the tree and the icon follows.
+- The wrapper's `color` prop (from `IColorProps`, resolved by
+  `useBothColor`) sets the ambient text color the paths' `currentColor`
+  resolves against — pass an intent (`color="danger"`) or a custom value.
+  Without it, `color` cascades from an ancestor instead.
+- `bgColor` paints the wrapper's background (rarely needed on a bare icon,
+  but available since it shares the same interface as every other leaf).
 - Per-path opacity is supported via the array tuple `[path, opacity]`.
 
 ## When to use

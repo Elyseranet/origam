@@ -2036,10 +2036,7 @@
   --origam-slider-field__track---height: 4px;
   --origam-slider-field__track---background-color: var(--origam-color__surface---disabled);
   --origam-slider-field__track---border-radius: var(--origam-radius---full);
-  --origam-slider-field---track-fill-background-color: var(--origam-color__action--primary---bg);
-  --origam-slider-field---track-fill-background-color-disabled: var(--origam-color__surface---overlay);
-  --origam-slider-field---track-fill-background-color-error: var(--origam-color__feedback--danger---bg);
-  --origam-slider-field---track-fill-transition-duration: var(--origam-motion__duration---fast);
+  --origam-slider-field-track__fill---background-color: var(--origam-color__action--primary---bg);
   --origam-slider-field__thumb---size: 16px;
   --origam-slider-field__thumb---background-color: var(--origam-color__action--primary---bg);
   --origam-slider-field__thumb---border-color: var(--origam-color__surface---default);

@@ -472,6 +472,9 @@
           "clear_format": "Clear formatting"
         }
       }
+    },
+    "treeview": {
+      "node_children_aria_label": "{0} contents"
     }
   }
 }
