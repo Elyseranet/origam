@@ -93,7 +93,11 @@ describe('C4 — la valeur du theme atteint-elle une prop lue eagerly dans setup
     })
 
 
-    it.fails('OrigamDatePicker.month — seed `ref(Number(props.month ?? …))` ligne 190', async () => {
+    // Bascule de `it.fails` a `it` : le defaut est CORRIGE (seed UNSEEDED +
+    // lecture paresseuse, meme patron que #429). La sonde a fait exactement
+    // ce pour quoi elle existe — elle est devenue verte et `it.fails` a
+    // signale ce vert inattendu comme un echec.
+    it('OrigamDatePicker.month — seed `ref(Number(props.month ?? …))` ligne 190', async () => {
         const wrapper = mount(OrigamDatePicker, {
             global: { plugins: [sonde({ 'origam-date-picker': { month: 11, year: 2030 } })] }
         })

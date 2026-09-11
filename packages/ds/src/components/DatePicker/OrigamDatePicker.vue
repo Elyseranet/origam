@@ -111,6 +111,8 @@
 	import { useVModel } from '../../composables/Commons/vModel.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
+	import { UNSEEDED } from '../../consts/Commons/vmodel.const'
+
 	import { CALENDAR_STRATEGY } from '../../enums/Commons/calendar.enum'
 	import { DATE_MODE } from '../../enums/DatePicker/date-picker.enum'
 
@@ -187,8 +189,42 @@
 		return value && adapter.isValid(value) ? value : adapter.date()
 	})
 
-	const month = ref(Number(props.month ?? adapter.getMonth(adapter.startOfMonth(internal.value))))
-	const year = ref(Number(props.year ?? adapter.getYear(adapter.startOfYear(adapter.setMonth(internal.value, month.value)))))
+	/*********************************************************
+	 * month / year — displayed month/year, ADR-005 lazy seed
+	 *
+	 * @description
+	 * `month`/`year` (from `ICalendarProps`) carry no `withDefaults`
+	 * default, so `props.month`/`props.year` are `undefined` unless the
+	 * consumer passes them explicitly OR a theme sets one on
+	 * `origam-date-picker`. They used to be seeded via a plain
+	 * `ref(Number(props.month ?? ...))` — an EAGER read in the body of
+	 * `setup()`. Vue runs `setup()` BEFORE the `beforeCreate` hook where
+	 * the ADR-005 theme-props resolver patches `instance.props` (root
+	 * CLAUDE.md), so a theme default for `month`/`year` was captured too
+	 * late and silently lost. Same family as #429/#448 — fixed the same
+	 * way: the internal ref starts `UNSEEDED`, and the fallback
+	 * expression is only evaluated on first read, through the writable
+	 * `month`/`year` computed below (evaluated at render, comfortably
+	 * after `beforeCreate`). Every existing call site (`month.value++`,
+	 * `v-model:month="month"`, …) keeps working unchanged since a
+	 * writable `computed` implements the same `.value` interface as a
+	 * `ref`.
+	 ********************************************************/
+	const internalMonth = ref<number | typeof UNSEEDED>(UNSEEDED)
+	const month = computed<number>({
+		get: () => internalMonth.value === UNSEEDED
+				? Number(props.month ?? adapter.getMonth(adapter.startOfMonth(internal.value)))
+				: internalMonth.value,
+		set: (value) => { internalMonth.value = value }
+	})
+
+	const internalYear = ref<number | typeof UNSEEDED>(UNSEEDED)
+	const year = computed<number>({
+		get: () => internalYear.value === UNSEEDED
+				? Number(props.year ?? adapter.getYear(adapter.startOfYear(adapter.setMonth(internal.value, month.value))))
+				: internalYear.value,
+		set: (value) => { internalYear.value = value }
+	})
 
 	const isReversing = shallowRef(false)
 
