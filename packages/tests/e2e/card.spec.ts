@@ -132,20 +132,22 @@ test.describe('OrigamCard', () => {
             expect(classes).not.toContain('origam-card--rounded ')
         })
 
-        test('flat modifier class is present in default init-state (theme default)', async ({ page }) => {
-            // The Design variant leaves `flat` unset in init-state, so it
-            // resolves through useDefaults() against the origam theme, which
-            // pins `'origam-card': { ..., flat: true }` (packages/ds/src/
-            // themes/origam.theme.ts, since commit 9a082b90, dated AFTER this
-            // test was originally written against OrigamCard's own
-            // component-level default, which does not set `flat` at all).
-            // This is a deliberate, documented choice — see the comment
-            // block above `flatForElevation` in OrigamCard.vue (issue #242):
-            // "the origam base theme defaults every card to flat: true".
+        test('flat modifier class is ABSENT in default init-state (#641 — theme no longer forces flat)', async ({ page }) => {
+            // The Design variant leaves `flat` unset in init-state. Until
+            // #641, this resolved through the ADR-005 theme-props resolver
+            // against the origam theme, which pinned `'origam-card': { ...,
+            // flat: true }` (packages/ds/src/themes/origam.theme.ts, since
+            // commit 9a082b90) — making EVERY default card flat, and with it
+            // silently killing `update:hover` / `origam-card--hover` for
+            // every consumer (`isHoverable = !disabled && !flat`, see
+            // OrigamCard.hover-gating.spec.ts). The theme no longer sets
+            // `flat`, so a card with no explicit `flat` prop now falls back
+            // to OrigamCard's own component-level default, which is
+            // `undefined` — i.e. NOT flat, and hoverable.
             await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = await expectCardVisible(page)
             const classes = await sandbox.locator('.origam-card').first().getAttribute('class') ?? ''
-            expect(classes).toContain('origam-card--flat')
+            expect(classes).not.toContain('origam-card--flat')
         })
     })
 
