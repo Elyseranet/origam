@@ -20,6 +20,7 @@
 						:class="imgPictureClasses"
 						:crossorigin="crossorigin"
 						:draggable="draggable"
+						:loading="nativeLoading"
 						:referrerpolicy="referrerpolicy"
 						:sizes="sizes"
 						:src="normalisedSrc.src"
@@ -156,7 +157,21 @@
 	const vm = getCurrentInstance('OrigamImg')
 	const currentSrc = shallowRef('') // Set from srcset
 	const image = ref<HTMLImageElement>()
-	const state = shallowRef<TImgState>(props.eager ? IMG_STATE.LOADING : IMG_STATE.IDLE)
+
+	/*********************************************************
+	 * state — ADR-005, no eager read of `props.eager` (#653 family)
+	 *
+	 * @description
+	 * The seed used to be `shallowRef(props.eager ? LOADING : IDLE)` —
+	 * an eager read of `props.eager` in the body of `setup()`, taken
+	 * BEFORE the theme-props-resolver's `beforeCreate` hook patches
+	 * `instance.props`. Always seeding `IDLE` is behaviour-preserving:
+	 * `init()` (called from `onBeforeMount`, which runs AFTER
+	 * `beforeCreate`) unconditionally overwrites `state` to `LOADING`
+	 * whenever the resolved `props.eager` is true — the only path
+	 * where the seed's value would otherwise have mattered.
+	 ********************************************************/
+	const state = shallowRef<TImgState>(IMG_STATE.IDLE)
 	const naturalWidth = shallowRef<number>()
 	const naturalHeight = shallowRef<number>()
 
@@ -330,10 +345,32 @@
 	// Cover the case where aspectRatio is ALREADY truthy on mount.
 	markBooted(aspectRatio.value)
 
-	const intersect = ref([{
+	/*********************************************************
+	 * intersect — ADR-005, computed instead of a setup-time ref
+	 *
+	 * @description
+	 * A plain `ref([{ handler, options: props.options }, ...])` reads
+	 * `props.options` once, eagerly, in the body of `setup()` — a
+	 * theme naming `options` on `origam-img` never reached the
+	 * directive. `computed` defers the read to access time (render),
+	 * comfortably after the theme-props-resolver's `beforeCreate`.
+	 ********************************************************/
+	const intersect = computed(() => [{
 		handler: init,
 		options: props.options
 	}, null, ['once']])
+
+	/*********************************************************
+	 * nativeLoading — native `loading` attribute (CSS/HTML-first)
+	 *
+	 * @description
+	 * Complements the custom `IntersectionObserver`-driven state
+	 * machine (which also feeds the placeholder/error slots and the
+	 * `load`/`error` emits) with the browser's own lazy-loading
+	 * primitive. Read lazily via a computed, so a theme-provided
+	 * `eager` reaches it (ADR-005).
+	 ********************************************************/
+	const nativeLoading = computed(() => (props.eager ? 'eager' : 'lazy'))
 
 	/*********************************************************
 	 * State

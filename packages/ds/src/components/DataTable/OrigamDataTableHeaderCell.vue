@@ -108,7 +108,18 @@
 
 	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
-	const headerProps = mergeProps(props.headerProps ?? {})
+	/*********************************************************
+	 * ADR-005 — computed, not a plain const (#371)
+	 *
+	 * @description
+	 * `mergeProps(props.headerProps ?? {})` evaluated directly in the
+	 * `setup()` body is a snapshot taken BEFORE the theme-props-resolver's
+	 * `beforeCreate` hook patches `instance.props` — a theme targeting
+	 * `theme.components['origam-data-table-header-cell'].headerProps`
+	 * never lands, and nothing warns. Wrapping it in a `computed` defers
+	 * the read to render time, after the resolver has run.
+	 ********************************************************/
+	const headerProps = computed(() => mergeProps(props.headerProps ?? {}))
 
 	const sortedItems = (column: IInternalDataTableHeader) => {
 		return sortBy.value.findIndex((x: IDataTableSortItem) => {

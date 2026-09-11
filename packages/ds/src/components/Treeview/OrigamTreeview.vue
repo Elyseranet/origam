@@ -37,6 +37,7 @@
 
 	import OrigamTreeviewNode from './OrigamTreeviewNode.vue'
 	import { ORIGAM_TREEVIEW_KEY } from '../../consts/Treeview/treeview.const'
+	import { UNSEEDED } from '../../consts/Commons/vmodel.const'
 	import { DENSITY } from '../../enums/Commons/density.enum'
 	import { SIZES } from '../../enums/Commons/size.enum'
 	import { TREEVIEW_SELECT_MODE, TREEVIEW_SELECTABLE_NODES } from '../../enums/Treeview/treeview.enum'
@@ -68,8 +69,31 @@
 
 	const { filterProps } = useProps<ITreeviewProps>(props)
 
-	// Expanded set — source of truth
-	const expandedSet = ref<Set<string>>(new Set(props.expandedValue ?? []))
+	/*********************************************************
+	 * expandedSet — source of truth, ADR-005 lazy seed
+	 *
+	 * @description
+	 * `expandedValue` carries no `withDefaults` default, so
+	 * `props.expandedValue` is `undefined` unless the consumer passes
+	 * it explicitly OR a theme sets one on `origam-treeview`. Used to
+	 * be seeded via a plain `ref(new Set(props.expandedValue ?? []))`
+	 * — an EAGER read in the body of `setup()`, taken BEFORE the
+	 * ADR-005 theme-props resolver's `beforeCreate` patches
+	 * `instance.props`. Same family as #429/#448: the internal ref
+	 * starts `UNSEEDED`, and the fallback is only evaluated on first
+	 * read, through the writable `expandedSet` computed below
+	 * (evaluated at render, after `beforeCreate`). Every existing call
+	 * site (`expandedSet.value = …`) keeps working unchanged since a
+	 * writable `computed` implements the same `.value` interface as a
+	 * `ref`.
+	 ********************************************************/
+	const internalExpandedSet = ref<Set<string> | typeof UNSEEDED>(UNSEEDED)
+	const expandedSet = computed<Set<string>>({
+		get: () => internalExpandedSet.value === UNSEEDED
+				? new Set(props.expandedValue ?? [])
+				: internalExpandedSet.value,
+		set: (value) => { internalExpandedSet.value = value }
+	})
 
 	watch(
 		() => props.expandedValue,
@@ -87,7 +111,22 @@
 		return new Set([v])
 	}
 
-	const selectedSet = ref<Set<string>>(toSelectedSet(props.modelValue))
+	/*********************************************************
+	 * selectedSet — source of truth, ADR-005 lazy seed
+	 *
+	 * @description
+	 * Same family as `expandedSet` above: `ref(toSelectedSet(props.modelValue))`
+	 * read `props.modelValue` eagerly in `setup()`, before the theme
+	 * resolver's `beforeCreate` patch. Lazy `UNSEEDED` + writable
+	 * computed, same pattern.
+	 ********************************************************/
+	const internalSelectedSet = ref<Set<string> | typeof UNSEEDED>(UNSEEDED)
+	const selectedSet = computed<Set<string>>({
+		get: () => internalSelectedSet.value === UNSEEDED
+				? toSelectedSet(props.modelValue)
+				: internalSelectedSet.value,
+		set: (value) => { internalSelectedSet.value = value }
+	})
 
 	watch(
 		() => props.modelValue,
