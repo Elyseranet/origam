@@ -221,7 +221,6 @@
 		ellipsis: '...',
 		length: 1,
 		start: 1,
-		modelValue: 1, // TODO - Delete default value for modelValue
 		ariaLabel: 'origam.pagination.aria_label.root',
 		pageAriaLabel: 'origam.pagination.aria_label.page',
 		currentPageAriaLabel: 'origam.pagination.aria_label.current_page',
@@ -259,7 +258,18 @@
 	 * form defers the read to `useVModel`'s internal `seed()`, which only
 	 * runs on first actual access — after the resolver has already run.
 	 ********************************************************/
-	const page = useVModel(props, 'modelValue', () => props.start)
+	/*********************************************************
+	 * Page
+	 *
+	 * @description
+	 * `modelValue` n'a plus de defaut (#640) pour que le repli vers `start`
+	 * soit atteignable. Son type devient donc `number | undefined`, alors
+	 * qu'au runtime `start` (defaut 1) garantit toujours une valeur.
+	 * `transformIn` rend cette garantie EXPLICITE a l'execution plutot que
+	 * de la masquer par un cast, qui aurait eteint le rouge de vue-tsc sans
+	 * repondre a la question.
+	 ********************************************************/
+	const page = useVModel(props, 'modelValue', () => props.start, (v?: number) => v ?? props.start)
 
 	/*********************************************************
 	 * Composables

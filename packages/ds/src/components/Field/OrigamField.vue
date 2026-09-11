@@ -660,7 +660,6 @@
 				'origam-field--disabled': props.disabled,
 				'origam-field--dirty': props.dirty,
 				'origam-field--error': props.error,
-				'origam-field--flat': props.flat,
 				'origam-field--has-background': !!props.bgColor,
 				'origam-field--inline': props.inline,
 				'origam-field--persistent-clear': props.persistentClear,

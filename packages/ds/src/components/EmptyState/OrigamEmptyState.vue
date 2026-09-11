@@ -205,6 +205,7 @@
 		color: var(--origam-empty-state---resolved-icon-color);
 		font-size: var(--origam-empty-state---resolved-icon-size);
 		line-height: 1;
+		margin-bottom: var(--origam-empty-state__icon---margin-bottom, 0);
 	}
 
 	.origam-empty-state__icon-glyph {

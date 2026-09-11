@@ -235,8 +235,29 @@
 	 * and a `t()` call is not a literal. `resolvedPlaceholder` falls back
 	 * to `t('origam.inline_edit.placeholder')` instead.
 	 ********************************************************/
+	/*********************************************************
+	 * `tag` default — 'div', not 'span' (arbitrage utilisateur, C6)
+	 *
+	 * @description
+	 * The root used to default to `<span>` (phrasing content) while edit
+	 * mode renders `<OrigamTextField>` / `<OrigamTextareaField>`, both of
+	 * which render a `<div>` (`OrigamField`) — a `<div>` is flow content,
+	 * not phrasing content, so a `<span>` could never legally contain it.
+	 * `.origam-inline-edit { display: inline-flex }` already overrides
+	 * the box type regardless of the underlying tag, so switching the
+	 * default to `<div>` is visually neutral (measured in Chromium — see
+	 * `packages/tests/e2e/inline-edit-tag.spec.ts`) while making the
+	 * rendered HTML valid again.
+	 * @description
+	 * ⛔ Migration note: a consumer who placed `<origam-inline-edit>`
+	 * inside a phrasing-only ancestor (`<p>`, `<label>`, …) relied on the
+	 * OLD default. A `<div>` closes an open `<p>` implicitly when the
+	 * browser's HTML parser is involved (raw HTML text / SSR markup being
+	 * parsed on load) — pass `tag="span"` explicitly to keep the previous
+	 * behaviour; the prop itself did not change, only its default.
+	 ********************************************************/
 	const props = withDefaults(defineProps<IInlineEditProps>(), {
-		tag: 'span',
+		tag: 'div',
 		placeholder: undefined,
 		rules: undefined,
 		validate: undefined,
@@ -500,6 +521,38 @@
 	.origam-inline-edit--loading-on-confirm {
 		opacity: 0.75;
 		pointer-events: none;
+	}
+
+	/*********************************************************
+	 * ⛔ C1 (vague 3) — les cinq classes d'etat racine suivantes
+	 * (--editing, --pending, --multiline, --has-error, --show-actions)
+	 * etaient posees sur la racine sans la moindre regle SCSS : la classe
+	 * existait, aucune ne peignait. Chacune produit desormais un style
+	 * calcule reellement distinct, mesure en Playwright (voir
+	 * packages/tests/e2e/inline-edit.spec.ts, describe "root state classes").
+	 *********************************************************/
+
+	.origam-inline-edit--editing {
+		background-color: var(--origam-inline-edit--editing---background-color, var(--origam-color__surface---raised));
+		border-radius: var(--origam-inline-edit__display---border-radius, 4px);
+	}
+
+	.origam-inline-edit--pending {
+		cursor: progress;
+	}
+
+	.origam-inline-edit--multiline {
+		width: 100%;
+	}
+
+	.origam-inline-edit--has-error {
+		outline: 1px solid var(--origam-inline-edit--has-error---outline-color, var(--origam-color__feedback--danger---border));
+		outline-offset: 2px;
+		border-radius: var(--origam-inline-edit__display---border-radius, 4px);
+	}
+
+	.origam-inline-edit--show-actions {
+		align-items: center;
 	}
 
 	.origam-inline-edit__display {

@@ -145,11 +145,17 @@
       />
     </Variant>
 
-    <Variant title="Events - update:hover">
-      <origam-alert
-        text="Hover over this alert to fire update:hover."
-        @update:hover="logEvent('update:hover', {$event})"
-      />
+    <Variant
+      title="Events - update:hover"
+      :init-state="() => useStoryInitState<IHoverProps>({ hover: false })"
+    >
+      <template #default="{ state }">
+        <origam-alert
+          v-model:hover="state.hover"
+          text="Hover over this alert to fire update:hover."
+          @update:hover="logEvent('update:hover', $event)"
+        />
+      </template>
     </Variant>
 
     <Variant title="Events - update:modelValue"

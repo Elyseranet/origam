@@ -654,6 +654,135 @@ test.describe('OrigamInlineEdit — Validator (async)', () => {
     })
 })
 
+/**
+ * ⛔ C1 (vague 3, lot rendu distinct) — the five root state classes below
+ * (--editing, --pending, --multiline, --has-error, --show-actions) were
+ * emitted by `rootClasses` with ZERO matching SCSS rule anywhere in the
+ * component: the class existed in the DOM, nothing painted. Fixed by
+ * adding one real, token-driven declaration per class (see the `<style
+ * scoped>` block of OrigamInlineEdit.vue). Each test below proves the
+ * computed style genuinely differs with the class present vs absent —
+ * not merely that the class string is in `className`.
+ *
+ * `--pending` and `--multiline` are asserted via a direct classList
+ * mutation on the REAL Vue-rendered root (same technique as the
+ * "action-btn theming channel" describe above): `--pending` is only true
+ * for the ~150ms window of an async validator, too narrow to poll for
+ * reliably, and `--multiline`'s layout effect (width:100%) depends on the
+ * story's container width, which this avoids depending on. `--editing`
+ * and `--has-error` are instead driven through the REAL interaction
+ * (click to edit, fail validation) because they are trivially reachable
+ * and that is the stronger proof.
+ */
+test.describe('OrigamInlineEdit — root state classes (C1)', () => {
+    test('--editing paints a background-color while editing, absent while idle', async ({ page }) => {
+        await openVariant(page, 'Default')
+        const sandbox = sandboxOf(page)
+        const root = sandbox.locator('.origam-inline-edit').first()
+
+        const idle = await root.evaluate((el) => getComputedStyle(el).backgroundColor)
+
+        await display(sandbox).click()
+        await expect(root).toHaveClass(/origam-inline-edit--editing/)
+        const editing = await root.evaluate((el) => getComputedStyle(el).backgroundColor)
+
+        expect(editing).not.toBe(idle)
+    })
+
+    test('--has-error paints an outline on the root, absent before the error', async ({ page }) => {
+        await openPlaygroundWithValidation(page, { validate: true })
+        const sandbox = sandboxOf(page)
+        const root = sandbox.locator('.origam-inline-edit').first()
+
+        const beforeError = await root.evaluate((el) => getComputedStyle(el).outlineStyle)
+
+        await display(sandbox).click()
+        const input = inputInField(sandbox)
+        await input.fill('ab')
+        await input.press('Enter')
+
+        await expect(root).toHaveClass(/origam-inline-edit--has-error/)
+        const withError = await root.evaluate((el) => getComputedStyle(el).outlineStyle)
+
+        expect(beforeError).toBe('none')
+        expect(withError).toBe('solid')
+    })
+
+    test('--show-actions changes the root cross-axis alignment', async ({ page }) => {
+        await openVariant(page, 'Functional')
+        const sandbox = sandboxOf(page)
+        const root = sandbox.locator('.origam-inline-edit').first()
+
+        const before = await root.evaluate((el) => getComputedStyle(el).alignItems)
+
+        await toggleHstCheckbox(page, 'Show Actions')
+        await expect(root).toHaveClass(/origam-inline-edit--show-actions/)
+        const after = await root.evaluate((el) => getComputedStyle(el).alignItems)
+
+        expect(before).toBe('flex-start')
+        expect(after).toBe('center')
+    })
+
+    test('--pending sets cursor:progress on the root', async ({ page }) => {
+        await openVariant(page, 'Default')
+        const sandbox = sandboxOf(page)
+        const root = sandbox.locator('.origam-inline-edit').first()
+
+        // Mutation AND measurement in a single evaluate (same rule as the
+        // action-btn theming channel test above) — the real async-pending
+        // window is ~150ms, too narrow to assert on reliably by polling.
+        const { before, after } = await root.evaluate((el) => {
+            const read = () => getComputedStyle(el).cursor
+            const beforeCursor = read()
+
+            el.classList.add('origam-inline-edit--pending')
+
+            return { before: beforeCursor, after: read() }
+        })
+
+        expect(before).not.toBe('progress')
+        expect(after).toBe('progress')
+    })
+
+    // The story's ambient layout stretches the root to its parent's full
+    // width on the CROSS axis regardless of the component's own `width`
+    // (a flex-column ancestor with the browser default `align-items:
+    // stretch`), so a getBoundingClientRect() comparison reads 540px on
+    // BOTH sides of the class toggle and proves nothing either way.
+    // Reading the compiled rule straight out of the CSSOM sidesteps that
+    // ambient layout entirely and is the deterministic check: does the
+    // SCSS declaration for this class actually exist and say
+    // `width: 100%`. (root CLAUDE.md warns `sheet.cssRules` skips rules
+    // nested under `@media`/`@layer` groups — this scoped rule is a
+    // plain top-level rule, not grouped, so the enumeration finds it.)
+    test('--multiline declares width:100% in the compiled stylesheet', async ({ page }) => {
+        await openVariant(page, 'Default')
+        const sandbox = sandboxOf(page)
+        const root = sandbox.locator('.origam-inline-edit').first()
+
+        const width = await root.evaluate((el) => {
+            const doc = el.ownerDocument
+            for (const sheet of Array.from(doc.styleSheets)) {
+                let rules: CSSRuleList
+                try {
+                    rules = sheet.cssRules
+                } catch {
+                    continue
+                }
+                for (const rule of Array.from(rules)) {
+                    if (rule instanceof CSSStyleRule && rule.selectorText.includes('origam-inline-edit--multiline')) {
+                        return rule.style.width
+                    }
+                }
+            }
+
+            return null
+        })
+
+        expect(width).toBe('100%')
+    })
+})
+
 test.describe('OrigamInlineEdit — Prop rules', () => {
     test('a failing rule surfaces its message in role=alert and keeps the editor open', async ({ page }) => {
         await openPlaygroundWithValidation(page, { rules: true })

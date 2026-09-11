@@ -31,7 +31,7 @@
 
 	import { AXIS } from '../../enums/Commons/drag.enum'
 	import { PARALLAX_ELEMENT_TYPE } from '../../enums/Parallax/parallax-element.enum'
-	import { PARALLAX_EVENT } from '../../enums/Parallax/parallax.enum'
+	import { PARALLAX_EASING, PARALLAX_EVENT } from '../../enums/Parallax/parallax.enum'
 
 	import type { IParallaxElementEmits, IParallaxElementProps, IParallaxElementSlots } from '../../interfaces/Parallax/parallax-element.interface'
 
@@ -101,8 +101,22 @@
 	const transitionDuration = computed(() => {
 		return `${parallax.duration.value}ms`
 	})
+	/*********************************************************
+	 * `parallax.easing` carries the raw `IParallaxProps.easing` value —
+	 * `'linear'` / `'ease-out'` happen to already BE valid CSS
+	 * `transition-timing-function` keywords, but `'spring'` is not: the
+	 * browser silently drops `transition-timing-function: spring` (invalid
+	 * value), so passing `easing="spring"` produced NO spring feel at all
+	 * on this legacy mouse/scroll path — only the multi-layer runtime
+	 * (`useParallaxRuntime`) implements the actual spring lerp. This maps
+	 * the enum's `spring` member onto the dedicated token so the CSS
+	 * transition at least approximates the intended curve instead of being
+	 * silently ignored.
+	 ********************************************************/
 	const transitionTimingFunction = computed(() => {
-		return parallax.easing.value
+		return parallax.easing.value === PARALLAX_EASING.SPRING
+			? 'var(--origam-parallax---transition-easing-spring, cubic-bezier(0.16, 1, 0.3, 1))'
+			: parallax.easing.value
 	})
 	const transformParameters = computed(() => {
 		return {

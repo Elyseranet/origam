@@ -4,7 +4,7 @@ import { expect, test } from '@playwright/test'
  * SPEC — OrigamSwitch (pattern canonique btn.spec.ts)
  *
  * ## Index des Variants (0-based, ordre fichier story)
- *   0  → Design      (color, bgColor, size, density, rounded, elevation, inset, flat, border, label)
+ *   0  → Design      (color, bgColor, size, density, rounded, elevation, inset, border, label)
  *   1  → State       (hover / active surface)
  *   2  → Functional  (disabled, readonly, loading, indeterminate, required, multiple, inline, error)
  *   3  → Events - update:modelValue   (data-cy="switch-emit-update")
@@ -412,16 +412,6 @@ test.describe('OrigamSwitch', () => {
     // ------------------------------------------------------------------ //
 
     test.describe('BEM / SCSS contracts', () => {
-        test('origam-switch--flat modifier is emitted when flat class injected', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
-            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            const sw = sandbox.locator('.origam-switch').first()
-            await expect(sw).toBeVisible({ timeout: 12000 })
-            // Verify the class can be applied and does not break render
-            await sw.evaluate(el => el.classList.add('origam-switch--flat'))
-            await expect(sw).toHaveClass(/origam-switch--flat/)
-        })
-
         test('origam-switch--inset: track adopts inset height token', async ({ page }) => {
             await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

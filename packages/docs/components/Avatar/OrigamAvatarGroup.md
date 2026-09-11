@@ -172,7 +172,9 @@ for `--origam-avatar-group---`.
   cohesive entity instead of disjoint avatars.
 - When `expandOnHover` is on, also wire `expandOnClick` so keyboard
   users can reach the full list — pure-hover affordances are not
-  reachable from the keyboard.
+  reachable from the keyboard. With `expandOnClick`, the wrapper is
+  focusable (`tabindex="0"`) and exposes `aria-expanded`; Enter/Space
+  toggle the same expansion a pointer click does.
 - The overflow chip is purely visual; if its content matters
   (e.g. the literal count), wrap the cluster in an
   `aria-label="N collaborators"` container.

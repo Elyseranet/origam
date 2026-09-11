@@ -28,7 +28,7 @@
 							:elevation="state.elevation"
 							:padding="state.padding"
 							:margin="state.margin"
-							:style="hostStyle"
+							:style="designHostStyle"
 					>
 						<origam-window-item v-for="n in 3" :key="n" :value="n">
 							<div :style="slideStyle(n)">Slide {{ n }}</div>
@@ -330,6 +330,21 @@
 		{ label: 'false (hidden)',         value: false },
 		{ label: 'hover (on hover only)',  value: 'hover' },
 	]
+
+	// Design variant only — no hardcoded `border`/`borderRadius` here: those
+	// two keys would land on the SAME `:style` binding as the component's own
+	// `border`/`rounded` props (`props.style` is merged LAST by design, so a
+	// consumer's style always wins — the correct, documented behaviour), and
+	// would therefore silently swallow the Border/Rounded controls. Found
+	// while writing `window-surface-props.spec.ts`: selecting "large" on the
+	// Rounded control never changed the measured `border-radius` because this
+	// object's static `6px` always won. `width`/`height`/`backgroundColor`
+	// don't collide with any control on this Variant, so they're kept.
+	const designHostStyle: CSSProperties = {
+		width: '100%',
+		height: '180px',
+		backgroundColor: 'var(--origam-color__surface---default, rgba(0, 0, 0, 0.03))',
+	}
 
 	const hostStyle: CSSProperties = {
 		width: '100%',

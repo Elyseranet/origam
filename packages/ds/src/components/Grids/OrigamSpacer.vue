@@ -79,6 +79,8 @@
 >
 	.origam-spacer {
 		flex-grow: var(--origam-spacer---flex-grow);
+		min-width: var(--origam-spacer---min-size, 0);
+		min-height: var(--origam-spacer---min-size, 0);
 	}
 </style>
 

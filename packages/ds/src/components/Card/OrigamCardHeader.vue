@@ -316,15 +316,24 @@
 		outline: var(--origam-card-header---outline);
 		position: var(--origam-card-header---position);
 
-		padding-block-start: calc(var(--origam-card-header---padding-block-start) + var(--origam-card-header---density));
-		padding-block-end: calc(var(--origam-card-header---padding-block-end) + var(--origam-card-header---density));
-		padding-inline-start: calc(var(--origam-card-header---padding-inline-start) + var(--origam-card-header---density));
-		padding-inline-end: calc(var(--origam-card-header---padding-inline-end) + var(--origam-card-header---density));
+		// ⛔ #C2 — zero-specificity defaults so a scale-driven utility
+		// class (`.origam--p-4` / `.origam--m-4` from `padding="4"` /
+		// `margin="4"`) wins the cascade. Without `:where()`, this scoped
+		// rule's [data-v-hash] pushes each declaration to (0,2,0), beating
+		// the utility's (0,1,0), and the scale form of both props goes
+		// silently inert. See CLAUDE.md "CSS-first" table — `:where(…)`
+		// is the documented zero-specificity default.
+		:where(&) {
+			padding-block-start: calc(var(--origam-card-header---padding-block-start) + var(--origam-card-header---density));
+			padding-block-end: calc(var(--origam-card-header---padding-block-end) + var(--origam-card-header---density));
+			padding-inline-start: calc(var(--origam-card-header---padding-inline-start) + var(--origam-card-header---density));
+			padding-inline-end: calc(var(--origam-card-header---padding-inline-end) + var(--origam-card-header---density));
 
-		margin-block-start: var(--origam-card-header---margin-block-start);
-		margin-block-end: var(--origam-card-header---margin-block-end);
-		margin-inline-start: var(--origam-card-header---margin-inline-start);
-		margin-inline-end: var(--origam-card-header---margin-inline-end);
+			margin-block-start: var(--origam-card-header---margin-block-start);
+			margin-block-end: var(--origam-card-header---margin-block-end);
+			margin-inline-start: var(--origam-card-header---margin-inline-start);
+			margin-inline-end: var(--origam-card-header---margin-inline-end);
+		}
 
 		border-color: var(--origam-card-header---border-color);
 		border-style: var(--origam-card-header---border-style);

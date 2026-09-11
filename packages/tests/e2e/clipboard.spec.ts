@@ -35,10 +35,22 @@ import { expect, test, type Page } from '@playwright/test'
  *   On ne peut pas intercepter `logEvent` (console Histoire privé) — on vérifie
  *   que le trigger reste en état non-copied.
  *
- * #400 (corrigé) — le slot `#feedback` est désormais rendu à l'intérieur du
+ * #400 (corrigé) — le slot `#feedback` est rendu à l'intérieur du
  *   trigger par défaut, à la place du label `feedbackText`. Ne s'applique
  *   qu'au trigger intégré : un `#default` personnalisé n'a pas de bouton
  *   où l'insérer.
+ *
+ * e9bce4a1 (#400, 2026-09-01) — l'acquittement ("Copied!" / le contenu du
+ *   slot #feedback) ne vit PLUS dans un `<span>` du bouton (l'ancienne
+ *   classe `.origam-clipboard__default-label` a disparu). Il est rendu par
+ *   `<origam-tooltip :model-value="copied">`, dont le contenu (classe
+ *   `.origam-tooltip__content`) est TÉLÉPORTÉ (`OrigamOverlay` > `<teleport>`)
+ *   en fin de <body> DU MÊME DOCUMENT (le sandbox iframe) — donc toujours
+ *   dans le frameLocator, mais JAMAIS comme descendant de `.origam-clipboard`.
+ *   Le nœud existe en permanence dans le DOM (eager) : au repos il est
+ *   masqué via `style="display: none"` sur `.origam-overlay__content`, pas
+ *   absent — vérifié par capture DOM réelle (Playwright, sandbox réel),
+ *   voir e2e/_support (probe ad hoc, non committée).
  */
 
 const STORY_ID   = 'components-stories-clipboard-origamclipboard-story-vue'
@@ -162,20 +174,21 @@ test.describe('OrigamClipboard', () => {
             await expect(trigger).toHaveClass(/origam-clipboard__default-trigger--copied/, { timeout: 3000 })
         })
 
-        test('le label feedback .origam-clipboard__default-label apparaît après copie', async ({ page }) => {
+        test('le feedback .origam-tooltip__content apparaît après copie', async ({ page }) => {
             await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
             await waitForRoot(page)
             const trigger = sandbox(page).locator('[data-cy="origam-clipboard-default-trigger"]').first()
             await expect(trigger).toBeVisible({ timeout: 8000 })
 
-            // Avant copie : label absent
-            const label = sandbox(page).locator('.origam-clipboard__default-label')
-            await expect(label).toHaveCount(0)
+            // Avant copie : le nœud tooltip existe déjà (eager) mais est masqué
+            // (display:none sur .origam-overlay__content) — jamais absent.
+            const feedback = sandbox(page).locator('.origam-tooltip__content')
+            await expect(feedback).toBeHidden()
 
             await stubClipboard(page)
             await trigger.click()
-            await expect(label).toBeVisible({ timeout: 3000 })
-            await expect(label).toHaveText('Copied!')
+            await expect(feedback).toBeVisible({ timeout: 3000 })
+            await expect(feedback).toHaveText('Copied!')
         })
 
         test('la classe --copied disparaît sur la racine après feedbackDuration (2 s)', async ({ page }) => {
@@ -347,8 +360,10 @@ test.describe('OrigamClipboard', () => {
     // SLOTS - Feedback (index 5)                                       //
     //                                                                  //
     // #400 (corrigé) — <slot name="feedback"> est rendu à l'intérieur  //
-    // du trigger par défaut, à la place du span feedbackText, tant que //
-    // #default n'est pas surchargé.                                   //
+    // du contenu du tooltip d'acquittement (.origam-tooltip__content), //
+    // à la place du texte par défaut, tant que #default n'est pas      //
+    // surchargé. Ce contenu est téléporté hors de .origam-clipboard    //
+    // (cf. en-tête du fichier, e9bce4a1).                               //
     // ─────────────────────────────────────────────────────────────── //
 
     test.describe('Slots - Feedback — variant 5', () => {
@@ -367,7 +382,9 @@ test.describe('OrigamClipboard', () => {
             await stubClipboard(page)
 
             await trigger.click()
-            const feedbackSpan = sandbox(page).locator('.origam-clipboard').getByText('Done!')
+            // Le contenu du slot #feedback est téléporté par OrigamTooltip/
+            // OrigamOverlay hors de .origam-clipboard — cf. en-tête du fichier.
+            const feedbackSpan = sandbox(page).locator('.origam-tooltip__content').getByText('Done!')
             await expect(feedbackSpan).toBeVisible({ timeout: 3000 })
         })
     })

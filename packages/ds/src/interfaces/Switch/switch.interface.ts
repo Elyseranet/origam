@@ -23,7 +23,6 @@ import type { ISwitchTrackSlotsProps } from './switch-track.interface'
 export interface ISwitchProps extends ICommonsComponentProps, ITagProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IInputProps, ISelectionControlProps, ILoaderProps, IColorProps, IDensityProps, IElevationProps, IActiveProps, IHoverProps {
     indeterminate?: boolean
     inset?: boolean
-    flat?: boolean
 }
 
 /** Emits fired by `<OrigamSwitch>` — v-model + focus + indeterminate
