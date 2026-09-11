@@ -134,14 +134,41 @@ test.describe('OrigamChip', () => {
         expect(radiiInvert.br, 'invert BR').toBe('0px')
         expect(radiiInvert.tr).toBe(radiiInvert.bl)
 
-        // --label: border-radius = 4px
+        // --label: border-radius = 4px.
+        // The Design variant carries `.origam-chip--pill` at rest (theme
+        // default `pill: true` on 'origam-chip', origam.theme.ts) — confirmed
+        // by the sibling "Design" test just above. `&--label` (line ~595)
+        // and `&--pill` (line ~608) are equal-specificity BEM modifiers;
+        // `&--pill` is declared AFTER `&--label` on purpose (de58dbdc, #C7:
+        // "pill restores the full radius over anything that squared it —
+        // label, or a rounded utility class") so it WINS when both classes
+        // are present. Testing `--label` in isolation requires removing the
+        // baseline `--pill` first, or this measures the pill/label conflict
+        // instead of `--label` on its own. Verified live (Chromium):
+        // labelWithPill=9999px, labelWithoutPill=4px.
+        const hadPill = await chip.evaluate(el => el.classList.contains('origam-chip--pill'))
         const labelRadius = await chip.evaluate(el => {
+            el.classList.remove('origam-chip--pill')
             el.classList.add('origam-chip--label')
             const r = getComputedStyle(el).borderRadius
             el.classList.remove('origam-chip--label')
             return r
         })
         expect(labelRadius).toBe('4px')
+        if (hadPill) {
+            await chip.evaluate(el => el.classList.add('origam-chip--pill'))
+        }
+
+        // Non-regression for de58dbdc: `--pill` explicitly wins over
+        // `--label` when both are present (the documented opt-in behaviour,
+        // not a leftover default).
+        const pillOverLabel = await chip.evaluate(el => {
+            el.classList.add('origam-chip--pill', 'origam-chip--label')
+            const r = getComputedStyle(el).borderRadius
+            el.classList.remove('origam-chip--label')
+            return r
+        })
+        expect(pillOverLabel).toBe('9999px')
     })
 
     // ------------------------------------------------------------------ //
@@ -190,14 +217,25 @@ test.describe('OrigamChip', () => {
         })
         expect(ptrEventsDisabled).toBe('none')
 
-        // SCSS --label: border-radius 4px
+        // SCSS --label: border-radius 4px.
+        // This variant's <origam-chip> does not bind :pill either, so it
+        // also inherits the theme default `pill: true` (origam.theme.ts) —
+        // same collision as the "Design → Rounded SCSS" test above:
+        // `&--pill` (declared after `&--label`, de58dbdc/#C7) wins the
+        // border-radius when both classes are present. Remove the baseline
+        // `--pill` to measure `--label` in isolation.
+        const hadPill = await chip.evaluate(el => el.classList.contains('origam-chip--pill'))
         const labelRadius = await chip.evaluate(el => {
+            el.classList.remove('origam-chip--pill')
             el.classList.add('origam-chip--label')
             const r = getComputedStyle(el).borderRadius
             el.classList.remove('origam-chip--label')
             return r
         })
         expect(labelRadius).toBe('4px')
+        if (hadPill) {
+            await chip.evaluate(el => el.classList.add('origam-chip--pill'))
+        }
 
         // closable=false by default: no close button
         await expect(chip.locator('.origam-chip__close')).toHaveCount(0)
