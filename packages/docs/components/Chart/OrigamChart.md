@@ -72,6 +72,7 @@ function onPointClick(point: IChartPoint) {
 | `animated` | `boolean` | `true` | Animate paths / bars / slices on first paint and on data changes. Respects `prefers-reduced-motion`. |
 | `animationDuration` | `number` | `600` | Animation duration in ms. |
 | `stacked` | `boolean` | `false` | Stack series on top of each other. Applies to `bar` and `column`. |
+| `stacking` | `TChartStacking` | `'normal'` | Stacking mode applied when `stacked=true`. `'normal'` stacks raw absolute values; `'percent'` normalises every stack to 100%, fixes the Y axis at `0 → 100`, and formats tick labels as `${v}%`. Cartesian family only. |
 | `smoothing` | `TChartSmoothing` | `'none'` | Smoothing strategy for `line` / `area`. `'none'` draws straight segments; `'curve'` uses cubic Bezier with Catmull-Rom tangents. `spline` forces `'monotone'` internally regardless of this prop. |
 | `showLegend` | `boolean` | `true` | Toggle the legend block. |
 | `legendPosition` | `TChartLegendPosition` | `'bottom'` | Legend anchor. One of `'top'`, `'bottom'`, `'left'`, `'right'`. |
@@ -87,6 +88,29 @@ function onPointClick(point: IChartPoint) {
 | `yAxisFormat` | `(value: number) => string` | `String(value)` | Formatter applied to Y-axis tick labels. |
 | `yMin` | `number` | auto | Override the auto-computed Y minimum. Useful when data starts well above zero. |
 | `yMax` | `number` | auto | Override the auto-computed Y maximum. |
+
+### Surface — dimension, spacing, shape
+
+`OrigamChart` renders no DOM of its own — it dispatches to one of the 21
+family components. These props are forwarded verbatim to whichever family is
+active (all 21 already consume them through the shared `IChartBaseProps` →
+`IDimensionProps` / `IMarginProps` / `IPaddingProps` / `IRoundedProps` /
+`IElevationProps` / `IBgColorProps` chain), so `<origam-chart padding="8px"
+rounded="lg" elevation="md">` styles the actual rendered family, not the
+dispatcher. Inherited from `IDimensionProps` / `IMarginProps` /
+`IPaddingProps` / `IRoundedProps` / `IElevationProps` / `IBgColorProps`.
+
+| Name | Type | Default | Description |
+|---|---|---|---|
+| `width` | `number \| string` | `undefined` | Chart width. A plain number is interpreted as `px`. |
+| `minWidth` / `maxWidth` | `number \| string` | `undefined` | Min / max width bounds. |
+| `minHeight` / `maxHeight` | `number \| string` | `undefined` | Min / max height bounds. |
+| `bgColor` | `TIntent \| string` | `undefined` | Background color painted behind the chart surface. |
+| `elevation` | `TElevation` | `undefined` | Shadow rung (`xs` → `xl`) applied to the chart surface. |
+| `rounded` | `TRounded \| string \| boolean` | `undefined` | Corner radius shorthand. |
+| `roundedTopLeft` / `roundedTopRight` / `roundedBottomLeft` / `roundedBottomRight` | `string` | `undefined` | Per-corner radius override — takes precedence over `rounded` for the corner it targets. |
+| `padding` / `paddingTop` / `paddingRight` / `paddingBottom` / `paddingLeft` / `paddingBlock` / `paddingInline` | `string \| number` | `undefined` | Padding shorthand and per-side overrides. |
+| `margin` / `marginTop` / `marginRight` / `marginBottom` / `marginLeft` / `marginBlock` / `marginInline` | `string \| number` | `undefined` | Margin shorthand and per-side overrides. |
 
 ### Cartesian overlays
 

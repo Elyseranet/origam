@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test'
+import { fillHstText, selectHstOption } from './_support/histoire-controls'
 
 /**
  * RECIPE — Pattern canonique (réf. btn.spec.ts)
@@ -37,9 +38,26 @@ import { expect, test } from '@playwright/test'
  *     7  → Slots - Append
  *     8  → Default (playground)
  *
+ * ─── OrigamBreadcrumbDivider.story.vue ───────────────────────────────────────
+ *
+ * ⛔ #386 — until this lot, this component's own story had ZERO e2e coverage:
+ * it was exercised only indirectly through `OrigamBreadcrumb`'s
+ * `.origam-breadcrumb-divider` count assertions, and this header never even
+ * listed the file in its own plan. A story that's never navigated to
+ * directly can drift silently (dead control, broken Variant) without any
+ * test going red.
+ *
+ *   STORY_ID  : components-stories-breadcrumb-origambreadcrumbdivider-story-vue
+ *   STORY_PATH: /stories/story/<STORY_ID>
+ *
+ *   Index → Titre
+ *     0  → Design           init: { divider:'/' }
+ *     1  → Slots - Default
+ *     2  → Default (playground)
+ *
  * BEM roots
- *   OrigamBreadcrumb     → .origam-breadcrumb
- *   OrigamBreadcrumbItem → .origam-breadcrumb-item
+ *   OrigamBreadcrumb        → .origam-breadcrumb
+ *   OrigamBreadcrumbItem    → .origam-breadcrumb-item
  *   OrigamBreadcrumbDivider → .origam-breadcrumb-divider
  *
  * Non-testable headlessly (documenté) :
@@ -57,6 +75,10 @@ const bcUrl = (idx: number) => `${BC_STORY_PATH}?variantId=${BC_STORY_ID}-${idx}
 const BCI_STORY_ID   = 'components-stories-breadcrumb-origambreadcrumbitem-story-vue'
 const BCI_STORY_PATH = '/stories/story/' + BCI_STORY_ID
 const bciUrl = (idx: number) => `${BCI_STORY_PATH}?variantId=${BCI_STORY_ID}-${idx}`
+
+const BCD_STORY_ID   = 'components-stories-breadcrumb-origambreadcrumbdivider-story-vue'
+const BCD_STORY_PATH = '/stories/story/' + BCD_STORY_ID
+const bcdUrl = (idx: number) => `${BCD_STORY_PATH}?variantId=${BCD_STORY_ID}-${idx}`
 
 // ─── OrigamBreadcrumb ─────────────────────────────────────────────────────────
 
@@ -676,6 +698,120 @@ test.describe('OrigamBreadcrumbItem', () => {
             const item = sandbox.locator('.origam-breadcrumb-item').first()
             await expect(item).toBeVisible({ timeout: 12000 })
             await expect(item).toContainText('Breadcrumb item')
+        })
+    })
+})
+
+// ─── OrigamBreadcrumbDivider ───────────────────────────────────────────────────
+//
+// #386 — this component's own story previously had ZERO e2e coverage (see
+// the header note above). It was exercised only indirectly through
+// OrigamBreadcrumb's `.origam-breadcrumb-divider` count assertions, which
+// prove the divider is PRESENT between items but never exercise its own
+// Design controls (color, density, padding, divider text/icon).
+
+test.describe('OrigamBreadcrumbDivider', () => {
+    test.setTimeout(45000)
+
+    // ----------------------------------------------------------------------- //
+    // DESIGN (index 0)                                                         //
+    // init: { divider:'/' }                                                    //
+    // ----------------------------------------------------------------------- //
+
+    test.describe('Design', () => {
+        test('renders the divider root with BEM class and the default "/" text', async ({ page }) => {
+            await page.goto(bcdUrl(0), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const divider = sandbox.locator('.origam-breadcrumb-divider').first()
+            await expect(divider).toBeVisible({ timeout: 12000 })
+            await expect(divider).toHaveText('/')
+        })
+
+        test('the "Divider" control changes the rendered text (not a dead control)', async ({ page }) => {
+            await page.goto(bcdUrl(0), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const divider = sandbox.locator('.origam-breadcrumb-divider').first()
+            await expect(divider).toBeVisible({ timeout: 12000 })
+
+            await fillHstText(page, 'Divider', '»')
+            await page.waitForTimeout(300)
+            await expect(divider).toHaveText('»')
+        })
+
+        test('the "Color" control applies the origam--color-{intent} utility class', async ({ page }) => {
+            await page.goto(bcdUrl(0), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const divider = sandbox.locator('.origam-breadcrumb-divider').first()
+            await expect(divider).toBeVisible({ timeout: 12000 })
+            await expect(divider).not.toHaveClass(/origam--color-primary/)
+
+            await selectHstOption(page, 'Color', 'Primary')
+            await expect(divider).toHaveClass(/origam--color-primary/)
+        })
+
+        test('the "Density" control applies the matching --density-{value} modifier class', async ({ page }) => {
+            await page.goto(bcdUrl(0), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const divider = sandbox.locator('.origam-breadcrumb-divider').first()
+            await expect(divider).toBeVisible({ timeout: 12000 })
+
+            await selectHstOption(page, 'Density', 'Compact')
+            await expect(divider).toHaveClass(/origam-breadcrumb-divider--density-compact/)
+        })
+
+        test('the "Padding Inline" control changes the computed padding-inline-start (not a dead control)', async ({ page }) => {
+            await page.goto(bcdUrl(0), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const divider = sandbox.locator('.origam-breadcrumb-divider').first()
+            await expect(divider).toBeVisible({ timeout: 12000 })
+
+            const before = await divider.evaluate((el) => getComputedStyle(el).paddingInlineStart)
+
+            await fillHstText(page, 'Padding Inline', '30px')
+            await page.waitForTimeout(300)
+
+            const after = await divider.evaluate((el) => getComputedStyle(el).paddingInlineStart)
+            expect(after).not.toBe(before)
+            expect(after).toBe('30px')
+        })
+    })
+
+    // ----------------------------------------------------------------------- //
+    // SLOTS - Default (index 1)                                               //
+    // ----------------------------------------------------------------------- //
+
+    test.describe('Slots - Default', () => {
+        test('custom #default slot replaces the "/" text with the provided markup', async ({ page }) => {
+            await page.goto(bcdUrl(1), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const divider = sandbox.locator('.origam-breadcrumb-divider').first()
+            await expect(divider).toBeVisible({ timeout: 12000 })
+            await expect(divider.locator('strong')).toHaveText('»')
+        })
+    })
+
+    // ----------------------------------------------------------------------- //
+    // DEFAULT — playground (index 2)                                          //
+    // ----------------------------------------------------------------------- //
+
+    test.describe('Default (playground)', () => {
+        test('renders the divider in the playground variant', async ({ page }) => {
+            await page.goto(bcdUrl(2), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const divider = sandbox.locator('.origam-breadcrumb-divider').first()
+            await expect(divider).toBeVisible({ timeout: 12000 })
+            await expect(divider).toHaveText('/')
+        })
+
+        test('playground: the "Divider" control changes the rendered text', async ({ page }) => {
+            await page.goto(bcdUrl(2), { waitUntil: 'domcontentloaded' })
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const divider = sandbox.locator('.origam-breadcrumb-divider').first()
+            await expect(divider).toBeVisible({ timeout: 12000 })
+
+            await fillHstText(page, 'Divider', '>')
+            await page.waitForTimeout(300)
+            await expect(divider).toHaveText('>')
         })
     })
 })
