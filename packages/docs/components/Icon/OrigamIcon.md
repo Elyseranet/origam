@@ -91,8 +91,9 @@ For a one-off custom colour, use a `:style` binding instead of a raw hex:
 </template>
 ```
 
-⚠️ The root is `<i>` whatever the notation. `<OrigamIcon>` declares
-`withDefaults(…, { tag: 'i' })` and forwards `:tag="tag"` to the leaf it
+⚠️ The root is `<i>` whatever the notation. `<OrigamIcon>` defaults `tag` to
+`'i'` (via a `computed` that reads `props.tag ?? 'i'` — NOT `withDefaults()`,
+see **Accessibility** for why) and forwards `:tag="tag"` to the leaf it
 dispatched to, so `OrigamSvgIcon` / `OrigamComponentIcon` /
 `OrigamLigatureIcon`'s own `tag: 'div'` default is never reached through the
 dispatcher. Mounting a leaf directly *does* give you a `<div>`. Pinned by
@@ -100,18 +101,29 @@ dispatcher. Mounting a leaf directly *does* give you a `<div>`. Pinned by
 
 ## Click handler (button mode)
 
-When `OrigamIcon` receives an `@click` listener it switches to button
-semantics: `role="button"`, `cursor: pointer`, no `aria-hidden`.
+When `OrigamIcon` receives an `@click` listener OR the `clickable` prop is
+set to `true`, it switches to button semantics: `role="button"`,
+`cursor: pointer`, no `aria-hidden`.
 
 ```vue
 <template>
     <OrigamIcon
+        clickable
         icon="mdi-close"
         aria-label="Close"
         @click="onClose"
     />
 </template>
 ```
+
+⛔ **Since #653, `clickable` is TYPE-CHECKED**: `vue-tsc` refuses
+`clickable="true"` (or `:clickable="true"`) unless the SAME element also
+carries `aria-label` or `aria-labelledby`. This is a **breaking change for
+the type surface only** — a plain `@click` with no `clickable` prop still
+works exactly as before (dev-only console warning, no compile error) for
+untyped / legacy call sites; only the NEW `clickable` prop is gated. See
+**Accessibility** below, including a known `vue-tsc` limitation with the
+idiomatic kebab-case `aria-label="…"` spelling.
 
 ## Slots
 
@@ -127,6 +139,14 @@ semantics: `role="button"`, `cursor: pointer`, no `aria-hidden`.
 |---|---|---|---|
 | `icon` | `TIcon` | `undefined` | The glyph. See the dispatch table at the top for every accepted form. Overridden by the `default` slot when that slot resolves to a text node |
 | `tag` | `string` | `'i'` | Element the root renders as |
+
+### Accessibility (`IAccessibleClickableProps`, since #653)
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `clickable` | `boolean` | `undefined` (falsy) | Marks the icon as an interactive control (`role="button"`, `aria-hidden="false"`). **Type-checked**: `clickable: true` requires `ariaLabel` or `ariaLabelledby` on the SAME element — `vue-tsc` refuses the component otherwise. A plain `@click` with no `clickable` still flips the same runtime state (dev-warn only, not type-checked) |
+| `ariaLabel` | `string` | `undefined` | Accessible name. Write it as the HTML attribute `aria-label="…"` in templates |
+| `ariaLabelledby` | `string` | `undefined` | Id of an element that already carries the name. Write it as `aria-labelledby="…"` |
 
 ### Color
 
@@ -185,6 +205,18 @@ interface IIconComponentProps extends IIconProps,
     ISizeProps, IPaddingProps, IMarginProps, IBorderProps,
     IDimensionProps, IRoundedProps {
 }
+
+// The type `<OrigamIcon>` actually declares on `defineProps<…>()` — the
+// base surface above PLUS the compile-time `clickable` contract. A `type`
+// intersection, not an `interface extends` (TS interfaces cannot extend a
+// union type) — see `IAccessibleClickableProps` for the full rationale
+// and the `withDefaults()` trap this shape falls into.
+type IIconClickableComponentProps = IIconComponentProps & IAccessibleClickableProps
+
+type IAccessibleClickableProps =
+    | { clickable: true; ariaLabel: string; ariaLabelledby?: string }
+    | { clickable: true; ariaLabelledby: string; ariaLabel?: string }
+    | { clickable?: false; ariaLabel?: string; ariaLabelledby?: string }
 
 interface IIconProps {
     icon?: TIcon
@@ -246,15 +278,41 @@ under `packages/ds/src/assets/scss/tokens/`):
 
 ## Accessibility
 
-- `aria-hidden="true"` is applied automatically when **no click handler** is
-  registered — purely-decorative icons stay invisible to screen readers.
-- When a click handler IS attached: `role="button"` + `aria-hidden="false"`.
-  The icon itself carries no accessible name — pass `aria-label` or
-  `aria-labelledby` on the same element, or a dev-time console warning
-  fires (`role="button"` with no name is worse than no role at all).
+- `aria-hidden="true"` is applied automatically when the icon is NOT
+  clickable (no click handler, `clickable` unset/`false`) — purely-decorative
+  icons stay invisible to screen readers.
+- Clickable (a click handler is attached OR `clickable="true"`):
+  `role="button"` + `aria-hidden="false"`. The icon itself carries no
+  accessible name on its own — it must come from `ariaLabel` /
+  `ariaLabelledby`.
+- ⛔ **Since #653, this is enforced at compile time for the typed path**:
+  `clickable: true` without `ariaLabel` / `ariaLabelledby` makes
+  `vue-tsc` refuse the component. A legacy `@click`-only call site (no
+  `clickable` prop) is NOT type-checked — it still only gets the dev-time
+  `console.warn` fallback ("No ARIA is better than bad ARIA" — this hook
+  never fabricates a label; a guessed "icon button" string is itself bad
+  ARIA, see #622).
+- ⚠️ **Known `vue-tsc` limitation** (tracked upstream:
+  [vuejs/language-tools#1909](https://github.com/vuejs/language-tools/issues/1909),
+  [#8952](https://github.com/vuejs/language-tools/issues/8952)): the
+  type-checker does not apply Vue's own kebab↔camelCase attribute-name
+  equivalence when checking a template against a UNION-typed prop like
+  `clickable`'s. Concretely: `<OrigamIcon clickable aria-label="Close" .../>`
+  is **valid at runtime** (Vue resolves `aria-label` → `ariaLabel` exactly
+  like it does for `bg-color` → `bgColor`), but `vue-tsc` currently still
+  reports it as missing a name. If your CI runs `vue-tsc --noEmit` and
+  this blocks a genuinely-correct usage, spell the binding in the prop's
+  own camelCase casing instead: `:aria-label="'Close'"` still fails —
+  the working form is `:ariaLabel="'Close'"`. The REFUSAL half of the
+  contract (no name supplied at all) is unaffected by this limitation —
+  it fails correctly regardless of attribute casing.
 - The inline `<svg>` leaf (`OrigamSvgIcon`) always renders its glyph with
-  `aria-hidden="true"` — no `role` — it never carries meaning on its own;
-  the accessible name lives on the interactive ancestor, not the glyph.
+  `aria-hidden="true"` — no `role`, no `clickable` prop, it never calls
+  `useIconAccessibility()` — it never carries meaning on its own; the
+  accessible name lives on the interactive ancestor, not the glyph. This
+  is a known gap distinct from #653 (`OrigamSvgIcon` cannot become a
+  button at all today, typed or not) — see the report for #653 for the
+  follow-up ticket this deserves.
 
 ## Theming notes
 

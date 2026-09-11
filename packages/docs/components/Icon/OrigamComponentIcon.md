@@ -87,6 +87,12 @@ interface IIconComponentProps {
     class?: string | string[] | object
     style?: string | string[] | object
 }
+
+// Plus the compile-time accessibility contract, since #653:
+type IAccessibleClickableProps =
+    | { clickable: true; ariaLabel: string; ariaLabelledby?: string }
+    | { clickable: true; ariaLabelledby: string; ariaLabel?: string }
+    | { clickable?: false; ariaLabel?: string; ariaLabelledby?: string }
 ```
 
 ## Anatomy
@@ -105,9 +111,15 @@ interface IIconComponentProps {
 - `aria-hidden="true"` by default, whether reached through `OrigamIcon` or
   used directly — this protects the whole subtree even if the
   consumer-supplied inner component doesn't manage its own accessibility.
-- A click handler flips it to `aria-hidden="false"` + `role="button"`.
-  Pass `aria-label` or `aria-labelledby` on the same element — a
-  dev-time console warning fires otherwise.
+- A click handler OR `clickable="true"` flips it to `aria-hidden="false"` +
+  `role="button"`. Pass `aria-label` or `aria-labelledby` on the same
+  element.
+- ⛔ **Since #653, `clickable` is type-checked**: `vue-tsc` refuses
+  `clickable="true"` without `ariaLabel` / `ariaLabelledby` (see
+  `OrigamIcon.md`'s Accessibility section for the full contract and a
+  known `vue-tsc` limitation with the kebab `aria-label="…"` spelling —
+  [vuejs/language-tools#1909](https://github.com/vuejs/language-tools/issues/1909)).
+  A legacy `@click`-only usage keeps the dev-time `console.warn` fallback.
 
 ## When to use
 

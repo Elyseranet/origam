@@ -3,6 +3,8 @@
 			:is="tag"
 			:id="id"
 			:aria-hidden="ariaHidden"
+			:aria-label="ariaLabel"
+			:aria-labelledby="ariaLabelledby"
 			:class="iconClasses"
 			:role="role"
 			:style="iconStyles"
@@ -23,7 +25,7 @@
 	import { useRounded } from '../../composables/Commons/rounded.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { SIZES_ARRAY } from '../../consts/Commons/size.const'
-	import type { IClassIconSlots, IIconComponentEmits, IIconComponentProps } from '../../interfaces/Icon/icon.interface'
+	import type { IClassIconSlots, IIconClickableComponentProps, IIconComponentEmits } from '../../interfaces/Icon/icon.interface'
 	import type { TSize } from '../../types/Commons/size.type'
 
 	import { convertToUnit } from '../../utils/Commons/commons.util'
@@ -35,14 +37,22 @@
 	 *
 	 * @description
 	 * Props and composable setup.
+	 *
+	 * ⛔ issue #653 — `tag` deliberately does NOT go through
+	 * `withDefaults()` — see the matching note in `OrigamIcon.vue` /
+	 * `IAccessibleClickableProps` for why (a discriminated union prop is
+	 * not distributive through `withDefaults()`'s `Omit`, which silently
+	 * defeats the compile-time `clickable` contract for consumers).
 	 ********************************************************/
-	const props = withDefaults(defineProps<IIconComponentProps>(), {tag: 'i'})
+	const props = defineProps<IIconClickableComponentProps>()
 
-	const {filterProps} = useProps<IIconComponentProps>(props)
+	const {filterProps} = useProps<IIconClickableComponentProps>(props)
 
 	defineEmits<IIconComponentEmits>()
 
 	defineSlots<IClassIconSlots>()
+
+	const tag = computed(() => props.tag ?? 'i')
 
 	/*********************************************************
 	 * Composables
@@ -65,7 +75,7 @@
 	const {marginClasses, marginStyles} = useMargin(props)
 	const {roundedClasses, roundedStyles} = useRounded(props)
 	const {dimensionStyles} = useDimension(props)
-	const {ariaHidden, role} = useIconAccessibility()
+	const {ariaHidden, role} = useIconAccessibility(props)
 
 	/*********************************************************
 	 * Class & Style

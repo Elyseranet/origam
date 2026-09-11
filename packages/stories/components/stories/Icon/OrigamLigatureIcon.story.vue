@@ -151,6 +151,29 @@
 			</div>
 		</Variant>
 
+		<Variant
+				title="Accessibility — clickable"
+				:init-state="() => useStoryInitState<Partial<IIconClickableComponentProps>>({ icon: 'close', clickable: true, ariaLabel: 'Close' })"
+		>
+			<template #default="{ state }">
+				<!-- issue #653 — `clickable: true` requires `ariaLabel` OR
+				     `ariaLabelledby` on this exact element; `vue-tsc` refuses
+				     the component otherwise. -->
+				<origam-ligature-icon
+						:aria-label="state.ariaLabel"
+						:clickable="state.clickable"
+						:icon="state.icon"
+						@click="() => {}"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Accessibility">
+					<HstCheckbox v-model="state.clickable" title="Clickable"/>
+					<HstText v-model="state.ariaLabel" title="Aria label"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
 		<Variant title="Prop — icon (common ligature names showcase)">
 			<div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
 				<origam-ligature-icon icon="home" size="large"/>
@@ -193,7 +216,7 @@
 		setup
 >
 	import { OrigamLigatureIcon } from '@origam/components'
-	import type { IIconComponentProps } from '@origam/interfaces'
+	import type { IIconClickableComponentProps, IIconComponentProps } from '@origam/interfaces'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'

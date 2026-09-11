@@ -3,6 +3,8 @@
 			:is="tag"
 			:id="id"
 			:aria-hidden="ariaHidden"
+			:aria-label="ariaLabel"
+			:aria-labelledby="ariaLabelledby"
 			:class="iconClasses"
 			:role="role"
 			:style="iconStyles"
@@ -31,7 +33,7 @@
 	import { useStyle } from '../../composables/Commons/style.composable'
 	import { SIZES_ARRAY } from '../../consts/Commons/size.const'
 
-	import type { IIconComponentEmits, IIconComponentProps, IIconComponentSlots } from '../../interfaces/Icon/icon.interface'
+	import type { IIconClickableComponentProps, IIconComponentEmits, IIconComponentSlots } from '../../interfaces/Icon/icon.interface'
 	import type { Component } from 'vue'
 	import { computed, StyleValue, toRef } from 'vue'
 
@@ -43,14 +45,22 @@
 	 *
 	 * @description
 	 * Props, composable setup, and icon component resolution.
+	 *
+	 * ⛔ issue #653 — `tag` deliberately does NOT go through
+	 * `withDefaults()` — see the matching note in `OrigamIcon.vue` /
+	 * `IAccessibleClickableProps` for why (a discriminated union prop is
+	 * not distributive through `withDefaults()`'s `Omit`, which silently
+	 * defeats the compile-time `clickable` contract for consumers).
 	 ********************************************************/
-	const props = withDefaults(defineProps<IIconComponentProps>(), {tag: 'div'})
+	const props = defineProps<IIconClickableComponentProps>()
 
-	const {filterProps} = useProps<IIconComponentProps>(props)
+	const {filterProps} = useProps<IIconClickableComponentProps>(props)
 
 	defineEmits<IIconComponentEmits>()
 
 	defineSlots<IIconComponentSlots>()
+
+	const tag = computed(() => props.tag ?? 'div')
 
 	const hasIcon = computed(() => {
 		return !!props.icon
@@ -59,7 +69,7 @@
 		return props.icon as Component
 	})
 
-	const {ariaHidden, role} = useIconAccessibility()
+	const {ariaHidden, role} = useIconAccessibility(props)
 
 	/*********************************************************
 	 * Class & Style

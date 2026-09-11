@@ -56,7 +56,7 @@
 
 		<Variant
 				title="Functional"
-				:init-state="() => useStoryInitState<Partial<IIconComponentProps>>({ icon: MDI_ICONS.HOME })"
+				:init-state="() => useStoryInitState<Partial<IIconClickableComponentProps>>({ icon: MDI_ICONS.HOME })"
 		>
 			<template #default="{ state }">
 				<origam-icon
@@ -71,8 +71,34 @@
 			</template>
 		</Variant>
 
+		<Variant
+				title="Accessibility — clickable"
+				:init-state="() => useStoryInitState<Partial<IIconClickableComponentProps>>({ icon: MDI_ICONS.CLOSE, clickable: true, ariaLabel: 'Close' })"
+		>
+			<template #default="{ state }">
+				<!-- issue #653 — `clickable: true` requires `ariaLabel` OR
+				     `ariaLabelledby` on this exact element; `vue-tsc` refuses
+				     the component otherwise. Toggle `clickable` off in the
+				     controls below to see the icon revert to decorative
+				     (aria-hidden, no role). -->
+				<origam-icon
+						:aria-label="state.ariaLabel"
+						:clickable="state.clickable"
+						:icon="state.icon"
+						@click="logEvent('click', $event)"
+				/>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Accessibility">
+					<HstCheckbox v-model="state.clickable" title="Clickable"/>
+					<HstText v-model="state.ariaLabel" title="Aria label"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
 		<Variant title="Events - click">
 			<origam-icon
+					:clickable="true"
 					:icon="MDI_ICONS.CLOSE"
 					aria-label="Close"
 					@click="logEvent('click', $event)"
@@ -165,7 +191,7 @@
 
 	import { OrigamIcon } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
-	import type { IIconComponentProps } from '@origam/interfaces'
+	import type { IIconClickableComponentProps, IIconComponentProps } from '@origam/interfaces'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'

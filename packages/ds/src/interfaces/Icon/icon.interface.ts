@@ -1,3 +1,4 @@
+import type { IAccessibleClickableProps } from '../Commons/accessible-clickable.interface'
 import type {
     IBgColorProps,
     IColorProps
@@ -40,6 +41,29 @@ export interface IIconProps {
  ********************************************************/
 export interface IIconComponentProps extends IIconProps, IColorProps, IBgColorProps, ICommonsComponentProps, ITagProps, ISizeProps, IPaddingProps, IMarginProps, IBorderProps, IDimensionProps, IRoundedProps {
 }
+
+/*********************************************************
+ * IIconClickableComponentProps
+ *
+ * @description
+ * ⛔ issue #653 — `IIconComponentProps` PLUS the compile-time contract:
+ * `clickable: true` requires `aria-label` or `aria-labelledby`. Used by
+ * the four icon leaves that actually implement the a11y half of the
+ * contract via `useIconAccessibility()` — `OrigamIcon`, `OrigamClassIcon`,
+ * `OrigamComponentIcon`, `OrigamLigatureIcon`.
+ *
+ * `OrigamSvgIcon` deliberately keeps plain `IIconComponentProps`: it
+ * hardcodes `aria-hidden="true"` on its inner `<svg>` and never calls
+ * `useIconAccessibility()` / exposes a `role`, so it has no clickable
+ * a11y contract to enforce here — widening its props with `clickable`
+ * would advertise a capability it does not implement. See #653 report
+ * for the follow-up this gap deserves as its own ticket.
+ *
+ * ⛔ A `type` intersection, not an `interface extends` — see
+ * `IAccessibleClickableProps` for why, and for the `withDefaults()` trap
+ * this specific shape falls into.
+ ********************************************************/
+export type IIconClickableComponentProps = IIconComponentProps & IAccessibleClickableProps
 
 /*********************************************************
  * IIconComponentEmits

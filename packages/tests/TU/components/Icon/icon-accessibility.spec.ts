@@ -13,6 +13,12 @@
 //
 // All four leaves + the dispatcher share one contract via
 // `useIconAccessibility()`.
+//
+// Issue #653 adds the RUNTIME half of the `clickable` prop (the
+// compile-time half — `vue-tsc` refusing `clickable` without a name — is
+// proven separately, see the ticket report; TypeScript unit tests cannot
+// assert a compile error). At runtime `clickable` is just a second signal
+// alongside `onClick`: either one flips `isClickable` to true.
 
 import { describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
@@ -127,5 +133,23 @@ describe('OrigamIcon — button mode accessible-name warning (issue #427)', () =
         mountIcon({ icon: 'mdi-close', onClick: () => {}, 'aria-labelledby': 'external-label' })
         expect(warn).not.toHaveBeenCalled()
         warn.mockRestore()
+    })
+
+    it('clickable=true with no onClick still flips to aria-hidden=false + role=button', () => {
+        const wrapper = mountIcon({ icon: 'mdi-close', clickable: true, 'aria-label': 'Close' })
+        expect(wrapper.attributes('aria-hidden')).toBe('false')
+        expect(wrapper.attributes('role')).toBe('button')
+    })
+
+    it('clickable=true with no accessible name warns even without onClick', () => {
+        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
+        mountIcon({ icon: 'mdi-close', clickable: true })
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining('no accessible name'))
+        warn.mockRestore()
+    })
+
+    it('clickable=false with onClick still behaves as clickable (onClick alone is sufficient)', () => {
+        const wrapper = mountIcon({ icon: 'mdi-close', clickable: false, onClick: () => {}, 'aria-label': 'Close' })
+        expect(wrapper.attributes('role')).toBe('button')
     })
 })

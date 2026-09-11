@@ -81,6 +81,12 @@ interface IIconComponentProps {
     class?: string | string[] | object
     style?: string | string[] | object
 }
+
+// Plus the compile-time accessibility contract, since #653:
+type IAccessibleClickableProps =
+    | { clickable: true; ariaLabel: string; ariaLabelledby?: string }
+    | { clickable: true; ariaLabelledby: string; ariaLabel?: string }
+    | { clickable?: false; ariaLabel?: string; ariaLabelledby?: string }
 ```
 
 ## Anatomy
@@ -121,10 +127,16 @@ The leaf applies the Material font via SCSS:
   this leaf defends itself even though `OrigamIcon`'s dispatcher never
   routes to it today (see "Related" below), because it is exported on
   the public barrel and can be used directly.
-- When a click handler IS attached: `aria-hidden="false"` + `role="button"`.
-  The ligature text itself is not a substitute for a real accessible
-  name — pass `aria-label` or `aria-labelledby`, or a dev-time console
-  warning fires.
+- When a click handler is attached OR `clickable="true"`:
+  `aria-hidden="false"` + `role="button"`. The ligature text itself is
+  not a substitute for a real accessible name — pass `aria-label` or
+  `aria-labelledby`.
+- ⛔ **Since #653, `clickable` is type-checked**: `vue-tsc` refuses
+  `clickable="true"` without `ariaLabel` / `ariaLabelledby` (see
+  `OrigamIcon.md`'s Accessibility section for the full contract and a
+  known `vue-tsc` limitation with the kebab `aria-label="…"` spelling —
+  [vuejs/language-tools#1909](https://github.com/vuejs/language-tools/issues/1909)).
+  A legacy `@click`-only usage keeps the dev-time `console.warn` fallback.
 
 ## Theming notes
 

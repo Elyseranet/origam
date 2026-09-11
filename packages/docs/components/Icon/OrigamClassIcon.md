@@ -84,6 +84,8 @@ resolves every surface axis itself.
 | `width` / `height` / `min*` / `max*` | `number \| string` | Dimension axis. |
 | `class` | `string \| string[] \| object` | Merged into the root class list. |
 | `style` | `string \| string[] \| object` | Merged into the root style. |
+| `clickable` | `boolean` | Marks the icon as an interactive control. **Type-checked since #653**: `true` requires `ariaLabel` or `ariaLabelledby` on the same element. |
+| `ariaLabel` / `ariaLabelledby` | `string` | Accessible name — write them as `aria-label` / `aria-labelledby` in the template. See [Accessibility](#accessibility). |
 
 ::: tip Behaviour change
 These axes used to be a no-op at the leaf level: `OrigamIcon` resolved them
@@ -136,10 +138,19 @@ exposed to the accessibility tree. The leaf now resolves its own
 - `aria-hidden="true"` by default — the glyph is decorative and stays out
   of the accessibility tree, whether reached through `OrigamIcon` or used
   directly.
-- A click handler flips it to `aria-hidden="false"` + `role="button"`.
-  Pass `aria-label` or `aria-labelledby` on the same element — a
-  dev-time console warning fires otherwise (`role="button"` with no name
-  is worse than no role at all).
+- A click handler OR `clickable="true"` flips it to `aria-hidden="false"` +
+  `role="button"`. Pass `aria-label` or `aria-labelledby` on the same
+  element.
+- ⛔ **Since #653, `clickable` is type-checked**: `vue-tsc` refuses
+  `clickable="true"` without `ariaLabel` / `ariaLabelledby`. A legacy
+  `@click`-only usage (no `clickable` prop) keeps the old dev-time
+  `console.warn` fallback instead of a compile error.
+- ⚠️ Known `vue-tsc` limitation
+  ([vuejs/language-tools#1909](https://github.com/vuejs/language-tools/issues/1909)):
+  the idiomatic `aria-label="…"` (kebab) works correctly at RUNTIME but is
+  not always recognised by the type-checker against this union — see
+  `OrigamIcon.md`'s Accessibility section for the full writeup and the
+  `:ariaLabel="…"` workaround.
 
 ## When to use
 
