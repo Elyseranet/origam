@@ -275,13 +275,30 @@ test.describe('OrigamAlert', () => {
             await expect(alert).toContainText('Hover over this alert to fire update:hover.')
         })
 
-        test('hovering over the alert does not throw', async ({ page }) => {
+        /**
+         * `hover` used to default to `true` on this Variant, which
+         * FORCES `isOn` on regardless of pointer events (useStateFlag). A real
+         * mouseenter was therefore a no-op (already `true` → no state change →
+         * no `update:hover` emit): `logEvent` is Histoire-internal and not
+         * assertable from the outer page, but the resulting DOM class IS —
+         * the Variant now starts `hover:false` with a real `v-model:hover`
+         * round-trip, so a genuine mouseenter/mouseleave toggles
+         * `.origam-alert--hover` on the root element. That class flip is the
+         * externally observable proof the emit path actually runs.
+         */
+        test('hovering toggles the origam-alert--hover class (real state change, not a no-op)', async ({ page }) => {
             await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const alert = sandbox.locator('.origam-alert').first()
             await expect(alert).toBeVisible(VIS)
+
+            await expect(alert).not.toHaveClass(/origam-alert--hover/)
+
             await alert.hover()
-            await page.waitForTimeout(300)
+            await expect(alert).toHaveClass(/origam-alert--hover/)
+
+            await page.mouse.move(0, 0)
+            await expect(alert).not.toHaveClass(/origam-alert--hover/)
         })
     })
 

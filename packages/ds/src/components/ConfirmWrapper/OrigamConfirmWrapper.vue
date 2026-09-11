@@ -1,5 +1,6 @@
 <template>
 	<div
+			:id="id"
 			:class="confirmWrapperClasses"
 			:style="confirmWrapperStyles"
 	>
