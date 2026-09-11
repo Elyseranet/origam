@@ -28,7 +28,7 @@ const page = ref(1)
 | `modelValue` | `number` | `undefined` | Active page (1-based) |
 | `length` | `number \| string` | `undefined` | Total number of pages |
 | `totalVisible` | `number \| string` | `undefined` | Max visible page buttons (auto-fills with ellipsis) |
-| `start` | `number` | `1` | First page number |
+| `start` | `number` | `1` | First page number. Also used as the fallback initial active page when `modelValue` is omitted in uncontrolled mode — since `start` itself defaults to `1`, a consumer passing neither prop still gets page 1 highlighted. |
 
 ## First / last page shortcuts
 

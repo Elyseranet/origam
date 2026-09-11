@@ -535,3 +535,52 @@ describe('OrigamPagination — les boutons de navigation annoncent un libellé t
         wrapper.unmount()
     })
 })
+
+// ---------------------------------------------------------------------------
+// #640 — `modelValue` had a hardcoded default of 1, so `props.modelValue`
+// was NEVER `undefined` and `useVModel`'s fallback to `() => props.start`
+// (seed()) was never reached. A consumer passing only `start` therefore had
+// NO active page highlighted at all, even though the button LIST correctly
+// honored `start`. These three cases are mounted WITHOUT the `mountPagination`
+// helper's forced `modelValue: 1` default, to actually exercise `seed()`.
+// ---------------------------------------------------------------------------
+describe('OrigamPagination — #640 modelValue/start fallback', () => {
+    it('start only: the `start` page is active', () => {
+        const wrapper = mount(OrigamPagination, {
+            props: { length: 10, start: 5, totalVisible: 5 },
+            attachTo: document.body,
+            global: makeGlobal()
+        })
+
+        const activeButtons = wrapper.findAll('[data-active="true"]')
+        expect(activeButtons).toHaveLength(1)
+        expect(activeButtons[0].attributes('data-text')).toBe('5')
+        wrapper.unmount()
+    })
+
+    it('modelValue only: unchanged behaviour', () => {
+        const wrapper = mount(OrigamPagination, {
+            props: { length: 10, modelValue: 7, totalVisible: 5 },
+            attachTo: document.body,
+            global: makeGlobal()
+        })
+
+        const activeButtons = wrapper.findAll('[data-active="true"]')
+        expect(activeButtons).toHaveLength(1)
+        expect(activeButtons[0].attributes('data-text')).toBe('7')
+        wrapper.unmount()
+    })
+
+    it('neither modelValue nor start: page 1 is active (regression guard)', () => {
+        const wrapper = mount(OrigamPagination, {
+            props: { length: 10, totalVisible: 5 },
+            attachTo: document.body,
+            global: makeGlobal()
+        })
+
+        const activeButtons = wrapper.findAll('[data-active="true"]')
+        expect(activeButtons).toHaveLength(1)
+        expect(activeButtons[0].attributes('data-text')).toBe('1')
+        wrapper.unmount()
+    })
+})

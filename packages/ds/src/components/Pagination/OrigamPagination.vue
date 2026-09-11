@@ -221,7 +221,6 @@
 		ellipsis: '...',
 		length: 1,
 		start: 1,
-		modelValue: 1, // TODO - Delete default value for modelValue
 		ariaLabel: 'origam.pagination.aria_label.root',
 		pageAriaLabel: 'origam.pagination.aria_label.page',
 		currentPageAriaLabel: 'origam.pagination.aria_label.current_page',

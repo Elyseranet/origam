@@ -13,20 +13,30 @@
 // separately in a real browser — see the commit message). What's testable
 // and load-bearing here: does the listener fire, and does it produce the
 // class.
+//
+// ⛔ #641 — mounting WITHOUT `createOrigam()` (no active theme) is exactly
+// why this file did not catch the regression: `props.flat` only ever comes
+// from the explicit prop in that world, so "a normal card" always tested
+// `flat === undefined`. Under the real `origam` theme, EVERY card used to
+// resolve `flat: true` from `theme.components['origam-card']` — a real
+// consumer calling `<OrigamCard />` with zero props got a card that could
+// never react to hover. Mounting with the real theme here is what makes
+// "a normal card" actually mean what a real app renders.
 
 import { describe, expect, it } from 'vitest'
 import { mount } from '@vue/test-utils'
 
 import OrigamCard from '@origam/components/Card/OrigamCard.vue'
+import { createOrigam } from '@origam/origam'
 
 async function hoverCard (props: Record<string, unknown>) {
-    const wrapper = mount(OrigamCard, { props: props as never })
+    const wrapper = mount(OrigamCard, { props: props as never, global: { plugins: [createOrigam()] } })
     await wrapper.trigger('mouseenter')
     return wrapper
 }
 
 describe('OrigamCard — hover listener gating (isHoverable)', () => {
-    it('a normal card (not flat, not disabled) still reacts to a real mouse hover', async () => {
+    it('a normal card (not flat, not disabled), under the real origam theme, still reacts to a real mouse hover', async () => {
         const wrapper = await hoverCard({})
         expect(wrapper.classes()).toContain('origam-card--hover')
     })
@@ -49,7 +59,7 @@ describe('OrigamCard — hover listener gating (isHoverable)', () => {
     })
 
     it('an explicit hover=true prop (forced, not flat/disabled) shows the class without any interaction', () => {
-        const wrapper = mount(OrigamCard, { props: { hover: true } as never })
+        const wrapper = mount(OrigamCard, { props: { hover: true } as never, global: { plugins: [createOrigam()] } })
         expect(wrapper.classes()).toContain('origam-card--hover')
     })
 
@@ -58,7 +68,7 @@ describe('OrigamCard — hover listener gating (isHoverable)', () => {
         // regardless of `disabled`/`flat` — only the mouseenter/mouseleave
         // *listener* was gated by `isHoverable`, not the `hover` prop's own
         // forced branch. Documented, not silently patched — see PHASE B report.
-        const wrapper = mount(OrigamCard, { props: { hover: true, flat: true } as never })
+        const wrapper = mount(OrigamCard, { props: { hover: true, flat: true } as never, global: { plugins: [createOrigam()] } })
         expect(wrapper.classes()).toContain('origam-card--hover')
     })
 })
