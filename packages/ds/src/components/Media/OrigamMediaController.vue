@@ -376,7 +376,7 @@
 	 * render — after `beforeCreate`), which is exactly the fix already
 	 * validated elsewhere in the DS for this same ADR-005 trap.
 	 ********************************************************/
-	const loopModeModel = useVModel(props, 'loopMode', () => 'none')
+	const loopModeModel = useVModel(props, 'loopMode', (): TAudioLoopMode => 'none')
 
 	const resolvedLoopMode = computed<TAudioLoopMode>(() => loopModeModel.value)
 
