@@ -74,6 +74,7 @@
 
 	import type { IBreadcrumbItemProps } from '../../interfaces/Breadcrumb/breadcrumb-item.interface'
 	import type { IBreadcrumbEmits, IBreadcrumbProps, IBreadcrumbSlots } from '../../interfaces/Breadcrumb/breadcrumb.interface'
+	import type { IStateEffectConfig } from '../../interfaces/Commons/state-effect.interface'
 
 	import type { TBreadcrumbItem } from '../../types/Breadcrumb/breadcrumb.type'
 
@@ -147,12 +148,41 @@
 	// density/color fallback — no manual merge needed here.
 	// `disabled` and `isActive` are structural (not visual tokens), so
 	// they remain explicitly set on the item object.
+
+	/*********************************************************
+	 * resolveActive
+	 *
+	 * @description
+	 * #386 — `active` = current page: only the LAST item can ever be
+	 * active, and it always must be. The last item may carry a visual
+	 * `active` CONFIG (its own `item.active`, or the root's `props.active`
+	 * default) instead of a bare `true` — that configuration must survive.
+	 * @description
+	 * Resolution mirrors `slotDefaults` above ("items that pass their own
+	 * props still win"): the item's own config wins over the root's.
+	 * `item.active` on a NON-last item is deliberately ignored — the
+	 * product rule tolerates only one active item, the last one.
+	 * @description
+	 * A config object alone does NOT force `useStateFlag`'s `isOn` (only a
+	 * bare `true`, or `enabled: true` inside the object, does — see
+	 * state-effect.interface.ts). Since the last item must always render
+	 * as active, `enabled: true` is injected into the resolved config so
+	 * the override applies AND the state is forced on.
+	 ********************************************************/
+	const resolveActive = (item: TBreadcrumbItem, index: number): boolean | IStateEffectConfig => {
+		if (!isLastItem(index)) return false
+
+		const ownConfig = typeof item === 'string' ? undefined : item.active
+		const config = ownConfig !== undefined ? ownConfig : (wasPropPassed('active') ? props.active : undefined)
+
+		return config && typeof config === 'object' ? {...config, enabled: true} : true
+	}
 	const normalizedItems = computed<Array<IBreadcrumbItemProps>>(() => {
 		return props.items.map((item, index) => {
-			return typeof item === 'string' ? {title: item, disabled: isLastItem(index), active: isLastItem(index)} : {
+			return typeof item === 'string' ? {title: item, disabled: isLastItem(index), active: resolveActive(item, index)} : {
 				...item,
 				disabled: isLastItem(index) || item.disabled,
-				active: isLastItem(index)
+				active: resolveActive(item, index)
 			}
 		}) as Array<IBreadcrumbItemProps>
 	})

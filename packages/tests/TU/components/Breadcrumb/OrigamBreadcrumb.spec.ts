@@ -230,3 +230,98 @@ describe('OrigamBreadcrumb — default slot', () => {
         expect(wrapper.findAll('.origam-breadcrumb__item').length).toBe(0)
     })
 })
+
+// ---------------------------------------------------------------------------
+// #386 — last item `active` config resolution
+//
+// Product rule (non-negotiable, given by the user): `active` = current page,
+// so ONLY the last item can be active, and it always must be. But the LAST
+// item may carry a visual `active` CONFIG (its own, or the root's default)
+// instead of a bare `true` — that configuration must not be destroyed.
+//
+// Bug (pre-fix): `normalizedItems` wrote `active: isLastItem(index)` — a bare
+// boolean — unconditionally AFTER spreading `...item`, so any `item.active`
+// config (and the root `props.active` config forwarded via slotDefaults) was
+// silently erased on the last item. Verified via the literal CSS text
+// `useStyle()` injects (`vm.css`) — NOT `getComputedStyle`, which never
+// resolves `var()` under jsdom (see CLAUDE.md).
+// ---------------------------------------------------------------------------
+
+describe('OrigamBreadcrumb — #386 last item active config resolution', () => {
+    function lastItemCss(wrapper: ReturnType<typeof mountBreadcrumb>): string {
+        const items = wrapper.findAllComponents(OrigamBreadcrumbItem)
+        const last = items[items.length - 1]
+        return (last.vm as unknown as { css: string }).css
+    }
+
+    it('last item is always forced active (aria-current="page"), config or not', () => {
+        const wrapper = mountBreadcrumb({
+            items: [{ title: 'Accueil' }, { title: 'Catalogue' }, { title: 'Fiche', active: { bgColor: 'success' } }]
+        })
+        const items = wrapper.findAll('.origam-breadcrumb-item')
+        expect(items[items.length - 1].attributes('aria-current')).toBe('page')
+    })
+
+    it("last item's OWN active config wins over the root's active config", () => {
+        const wrapper = mountBreadcrumb({
+            active: { bgColor: 'primary' },
+            items: [{ title: 'Accueil' }, { title: 'Catalogue' }, { title: 'Fiche', active: { bgColor: 'success' } }]
+        })
+        const css = lastItemCss(wrapper)
+        expect(css).toContain('background-color: var(--origam-color__feedback--success---bg)')
+        expect(css).not.toContain('background-color: var(--origam-color__action--primary---bg)')
+    })
+
+    it("last item without its own config falls back to the root's active config", () => {
+        const wrapper = mountBreadcrumb({
+            active: { bgColor: 'primary' },
+            items: [{ title: 'Accueil' }, { title: 'Catalogue' }, { title: 'Fiche' }]
+        })
+        const css = lastItemCss(wrapper)
+        expect(css).toContain('background-color: var(--origam-color__action--primary---bg)')
+    })
+
+    it('string last item (no own config) inherits the root active config', () => {
+        const wrapper = mountBreadcrumb({
+            active: { bgColor: 'primary' },
+            items: ITEMS_STRINGS
+        })
+        const css = lastItemCss(wrapper)
+        expect(css).toContain('background-color: var(--origam-color__action--primary---bg)')
+    })
+
+    it('an object active config on the LAST item still forces isActive=true (no bare "true" needed)', () => {
+        // #386 core defect: a config object WITHOUT `enabled: true` does not
+        // force useStateFlag's isOn by itself (see state-effect.interface.ts).
+        // OrigamBreadcrumb must inject `enabled: true` on the resolved config
+        // for the last item so it both shows the override AND is active.
+        const wrapper = mountBreadcrumb({
+            items: [{ title: 'Accueil' }, { title: 'Catalogue' }, { title: 'Fiche', active: { bgColor: 'success' } }]
+        })
+        const items = wrapper.findAll('.origam-breadcrumb-item')
+        const last = items[items.length - 1]
+        expect(last.attributes('aria-current')).toBe('page')
+        expect(lastItemCss(wrapper)).toContain('background-color: var(--origam-color__feedback--success---bg)')
+    })
+
+    it("a middle item's own active config is IGNORED — only the last item can be active", () => {
+        const wrapper = mountBreadcrumb({
+            items: [
+                { title: 'Accueil' },
+                { title: 'Middle', active: { bgColor: 'danger' } },
+                { title: 'Fiche' }
+            ]
+        })
+        const items = wrapper.findAll('.origam-breadcrumb-item')
+        expect(items[1].attributes('aria-current')).toBeUndefined()
+        const middleCss = (wrapper.findAllComponents(OrigamBreadcrumbItem)[1].vm as unknown as { css: string }).css
+        expect(middleCss).not.toContain('background-color: var(--origam-color__feedback--danger---bg)')
+    })
+
+    it('no config anywhere: last item still gets bare active=true (regression guard)', () => {
+        const wrapper = mountBreadcrumb({ items: ITEMS_STRINGS })
+        const items = wrapper.findAll('.origam-breadcrumb-item')
+        expect(items[items.length - 1].attributes('aria-current')).toBe('page')
+        expect(items[0].attributes('aria-current')).toBeUndefined()
+    })
+})
