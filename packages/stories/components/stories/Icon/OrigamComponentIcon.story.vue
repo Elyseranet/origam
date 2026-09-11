@@ -120,29 +120,6 @@
 			</template>
 		</Variant>
 
-		<Variant
-				title="Accessibility — clickable"
-				:init-state="() => useStoryInitState<Partial<IIconClickableComponentProps>>({ clickable: true, ariaLabel: 'Star' })"
-		>
-			<template #default="{ state }">
-				<!-- issue #653 — `clickable: true` requires `ariaLabel` OR
-				     `ariaLabelledby` on this exact element; `vue-tsc` refuses
-				     the component otherwise. -->
-				<origam-component-icon
-						:aria-label="state.ariaLabel"
-						:clickable="state.clickable"
-						:icon="StarSvgComponent"
-						@click="() => {}"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<StoryGroup title="Accessibility">
-					<HstCheckbox v-model="state.clickable" title="Clickable"/>
-					<HstText v-model="state.ariaLabel" title="Aria label"/>
-				</StoryGroup>
-			</template>
-		</Variant>
-
 		<Variant title="Slots - Default">
 			<origam-component-icon>
 				<svg viewBox="0 0 24 24" style="width:1em;height:1em;fill:currentColor;" aria-hidden="true">
@@ -215,7 +192,7 @@
 	import { defineComponent, h } from 'vue'
 
 	import { OrigamComponentIcon } from '@origam/components'
-	import type { IIconClickableComponentProps, IIconComponentProps } from '@origam/interfaces'
+	import type { IIconComponentProps } from '@origam/interfaces'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'

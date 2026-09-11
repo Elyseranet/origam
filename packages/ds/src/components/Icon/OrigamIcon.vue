@@ -3,8 +3,6 @@
 			:is="iconData.component"
 			:id="id"
 			:aria-hidden="ariaHidden"
-			:aria-label="ariaLabel"
-			:aria-labelledby="ariaLabelledby"
 			:class="iconClasses"
 			:icon="iconData.icon"
 			:role="role"
@@ -33,7 +31,7 @@
 	import { useSize } from '../../composables/Commons/size.composable'
 	import { useStyle } from '../../composables/Commons/style.composable'
 
-	import type { IIconClickableComponentProps, IIconComponentEmits, IIconComponentSlots } from '../../interfaces/Icon/icon.interface'
+	import type { IIconComponentEmits, IIconComponentProps, IIconComponentSlots } from '../../interfaces/Icon/icon.interface'
 
 	import { flattenFragments } from '../../utils/Commons/commons.util'
 
@@ -42,26 +40,14 @@
 	 *
 	 * @description
 	 * Props, composables, and slot icon resolution.
-	 *
-	 * ⛔ issue #653 — `tag` deliberately does NOT go through
-	 * `withDefaults()`. `IIconClickableComponentProps` intersects a
-	 * discriminated union (`clickable` requires `aria-label` /
-	 * `aria-labelledby`); `withDefaults()`'s `Omit<T, keyof Defaults>`
-	 * is not distributive over that union and silently erases the
-	 * compile-time contract for template consumers (measured — see
-	 * `IAccessibleClickableProps`). The default is applied via the
-	 * same-named `tag` computed below instead, which shadows the raw
-	 * prop in the template exactly like `withDefaults` would.
 	 ********************************************************/
-	const props = defineProps<IIconClickableComponentProps>()
+	const props = withDefaults(defineProps<IIconComponentProps>(), {tag: 'i'})
 
-	const {filterProps} = useProps<IIconClickableComponentProps>(props)
+	const {filterProps} = useProps<IIconComponentProps>(props)
 
 	defineEmits<IIconComponentEmits>()
 
 	defineSlots<IIconComponentSlots>()
-
-	const tag = computed(() => props.tag ?? 'i')
 
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 
@@ -83,20 +69,7 @@
 	const {sizeClasses, sizeStyles} = useSize(props)
 	const slots = useSlots()
 	const {iconData} = useIcon(computed(() => slotIcon.value || props.icon))
-	const {isClickable, ariaHidden, role} = useIconAccessibility(props)
-
-	/*********************************************************
-	 * Accessibility
-	 *
-	 * @description
-	 * ⛔ issue #653 — `ariaLabel` / `ariaLabelledby` are now DECLARED
-	 * props (via `IIconClickableComponentProps`), so Vue routes them out
-	 * of `$attrs` and stops forwarding them to the dispatched leaf
-	 * automatically. The template re-forwards them explicitly (bare
-	 * `ariaLabel` / `ariaLabelledby`, already auto-exposed by
-	 * `defineProps()` — no wrapping `computed()` needed), exactly like
-	 * `ariaHidden` / `role` already are.
-	 ********************************************************/
+	const {isClickable, ariaHidden, role} = useIconAccessibility()
 
 	const slotIcon = ref<string>()
 

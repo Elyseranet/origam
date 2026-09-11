@@ -14,11 +14,11 @@
 // All four leaves + the dispatcher share one contract via
 // `useIconAccessibility()`.
 //
-// Issue #653 adds the RUNTIME half of the `clickable` prop (the
-// compile-time half — `vue-tsc` refusing `clickable` without a name — is
-// proven separately, see the ticket report; TypeScript unit tests cannot
-// assert a compile error). At runtime `clickable` is just a second signal
-// alongside `onClick`: either one flips `isClickable` to true.
+// Issue #653 explored (then reverted) a typed `clickable` prop — zero
+// components in the repo ever used it, and the DS's own rule is that an
+// interactive control is a `<button>`, not ARIA bolted onto a glyph. The
+// warning message below now redirects to `origam-btn` instead of asking
+// for `aria-label` / `aria-labelledby` directly on the icon.
 
 import { describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
@@ -45,10 +45,10 @@ describe('OrigamLigatureIcon — accessibility (issue #427)', () => {
         expect(wrapper.attributes('role')).toBe('button')
     })
 
-    it('warns in dev when clickable with no accessible name', () => {
+    it('warns in dev when clickable with no accessible name, redirecting to origam-btn', () => {
         const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
         mount(OrigamLigatureIcon, { props: { icon: 'home', onClick: () => {} } as never })
-        expect(warn).toHaveBeenCalledWith(expect.stringContaining('no accessible name'))
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining('origam-btn'))
         warn.mockRestore()
     })
 
@@ -110,12 +110,12 @@ describe('OrigamIcon — button mode accessible-name warning (issue #427)', () =
         warn.mockRestore()
     })
 
-    it('button mode with no accessible name: role=button is set, but warns (the exact defect #427 reports)', () => {
+    it('button mode with no accessible name: role=button is set, but warns and points at origam-btn', () => {
         const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
         const wrapper = mountIcon({ icon: 'mdi-close', onClick: () => {} })
         expect(wrapper.attributes('aria-hidden')).toBe('false')
         expect(wrapper.attributes('role')).toBe('button')
-        expect(warn).toHaveBeenCalledWith(expect.stringContaining('no accessible name'))
+        expect(warn).toHaveBeenCalledWith(expect.stringContaining('origam-btn'))
         warn.mockRestore()
     })
 
@@ -133,23 +133,5 @@ describe('OrigamIcon — button mode accessible-name warning (issue #427)', () =
         mountIcon({ icon: 'mdi-close', onClick: () => {}, 'aria-labelledby': 'external-label' })
         expect(warn).not.toHaveBeenCalled()
         warn.mockRestore()
-    })
-
-    it('clickable=true with no onClick still flips to aria-hidden=false + role=button', () => {
-        const wrapper = mountIcon({ icon: 'mdi-close', clickable: true, 'aria-label': 'Close' })
-        expect(wrapper.attributes('aria-hidden')).toBe('false')
-        expect(wrapper.attributes('role')).toBe('button')
-    })
-
-    it('clickable=true with no accessible name warns even without onClick', () => {
-        const warn = vi.spyOn(console, 'warn').mockImplementation(() => {})
-        mountIcon({ icon: 'mdi-close', clickable: true })
-        expect(warn).toHaveBeenCalledWith(expect.stringContaining('no accessible name'))
-        warn.mockRestore()
-    })
-
-    it('clickable=false with onClick still behaves as clickable (onClick alone is sufficient)', () => {
-        const wrapper = mountIcon({ icon: 'mdi-close', clickable: false, onClick: () => {}, 'aria-label': 'Close' })
-        expect(wrapper.attributes('role')).toBe('button')
     })
 })

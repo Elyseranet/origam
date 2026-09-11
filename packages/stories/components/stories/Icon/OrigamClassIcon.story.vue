@@ -121,29 +121,6 @@
 
 
 		<Variant
-				title="Accessibility — clickable"
-				:init-state="() => useStoryInitState<Partial<IIconClickableComponentProps>>({ icon: MDI_HOME, clickable: true, ariaLabel: 'Home' })"
-		>
-			<template #default="{ state }">
-				<!-- issue #653 — `clickable: true` requires `ariaLabel` OR
-				     `ariaLabelledby` on this exact element; `vue-tsc` refuses
-				     the component otherwise. -->
-				<origam-class-icon
-						:aria-label="state.ariaLabel"
-						:clickable="state.clickable"
-						:icon="state.icon"
-						@click="() => {}"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<StoryGroup title="Accessibility">
-					<HstCheckbox v-model="state.clickable" title="Clickable"/>
-					<HstText v-model="state.ariaLabel" title="Aria label"/>
-				</StoryGroup>
-			</template>
-		</Variant>
-
-		<Variant
 				title="Prop — size"
 				:init-state="() => useStoryInitState<IIconComponentProps>({ icon: MDI_HOME, size: undefined })"
 		>
@@ -202,7 +179,7 @@
 		setup
 >
 	import { OrigamClassIcon } from '@origam/components'
-	import type { IIconClickableComponentProps, IIconComponentProps } from '@origam/interfaces'
+	import type { IIconComponentProps } from '@origam/interfaces'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
