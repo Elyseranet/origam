@@ -1,4 +1,4 @@
-import type { Ref } from 'vue'
+import type { MaybeRefOrGetter, Ref } from 'vue'
 
 import type {
     IBgColorProps,
@@ -422,8 +422,16 @@ export interface IUseWaveformOptions {
      *
      * - `'use-credentials'` — include cookies / auth headers.
      * - any other value (or `undefined`) — `'same-origin'` semantics.
+     *
+     * @description
+     * Accepts a plain `string`, a `Ref<string>`, or a getter
+     * (`() => string`) — `useWaveform` reads it LAZILY, inside
+     * `compute()`, on every (re-)computation. A caller sourcing this
+     * from a component prop MUST pass a getter (`() => props.crossorigin`)
+     * so a theme default written after `setup()` (ADR-005) is still
+     * picked up the next time `compute()` runs. See issue #661.
      */
-    crossOrigin?: string
+    crossOrigin?: MaybeRefOrGetter<string | undefined>
 }
 
 /**
@@ -460,10 +468,17 @@ export interface IAudioPlayerEmits extends IMediaPlayerEmits {}
  * namespace so both can coexist in the public barrel.
  */
 export interface IUseOrigamAudioPlayerOptions {
-    /** Suppress autoplay when the user has requested reduced motion. */
-    autoplay?: boolean
-    /** Initial muted state. */
-    muted?: boolean
+    /**
+     * Suppress autoplay when the user has requested reduced motion.
+     *
+     * @description
+     * Same lazy-read contract as `IUseMediaPlayerOptions.autoplay` —
+     * pass a getter (`() => props.autoplay`) when sourcing this from a
+     * component prop, never the prop value itself (see #661).
+     */
+    autoplay?: MaybeRefOrGetter<boolean>
+    /** Initial muted state. Same lazy-read contract as `autoplay`. */
+    muted?: MaybeRefOrGetter<boolean>
     /** Loop on `ended`. */
     loop?: boolean
     /** Buffering hint. */
