@@ -378,13 +378,34 @@
 	})
 
 	/*********************************************************
-	 * Composable
+	 * Composable — ADR-005, do not eagerly read `resolvedMuted.value`
+	 *
+	 * @description
+	 * `useVideoPlayer({...})` runs synchronously in the body of
+	 * `setup()`. Passing `resolvedMuted.value` here used to EVALUATE
+	 * that `computed` for the first time right there — before the
+	 * theme-props-resolver's `beforeCreate` patches `instance.props`.
+	 * A Vue `computed` MEMOIZES its result until a tracked dependency
+	 * is invalidated; this eager access "poisoned" the cache with the
+	 * PRE-theme value, and — since the ADR-005 patch does not reliably
+	 * trigger that invalidation (root CLAUDE.md) — the SAME stale
+	 * value then leaked into the template's OWN `:muted="resolvedMuted"`
+	 * binding on the native `<video>`, not just this composable's
+	 * internal seed. Verified at runtime: with a theme setting
+	 * `muted: true`, `resolvedMuted` stayed `false` and the native
+	 * element's `.muted` property was `false`.
+	 * Passing the raw `props.muted` here instead is a plain prop read
+	 * (no memoization to poison) — it only seeds this composable's own
+	 * internal `state.muted`, which self-corrects from `el.muted` once
+	 * the element binds (`use-media-player.composable.ts`, `bind()`).
+	 * `loop` / `preload` are dropped: neither is read anywhere in
+	 * `useMediaPlayer` / `useVideoPlayer` (dead pass-through) — the
+	 * native `loop` / `preload` attributes are already driven directly
+	 * by the auto-exposed `loop` / `preload` props in the template.
 	 ********************************************************/
 	const { videoRef, state, methods } = useVideoPlayer({
 		autoplay: props.autoplay,
-		muted: resolvedMuted.value,
-		loop: props.loop,
-		preload: props.preload
+		muted: props.muted
 	})
 
 	/*********************************************************
