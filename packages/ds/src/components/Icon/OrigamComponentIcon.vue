@@ -4,7 +4,6 @@
 			:id="id"
 			:aria-hidden="ariaHidden"
 			:class="iconClasses"
-			:role="role"
 			:style="iconStyles"
 	>
 		<slot name="default">
@@ -59,7 +58,7 @@
 		return props.icon as Component
 	})
 
-	const {ariaHidden, role} = useIconAccessibility()
+	const {ariaHidden} = useIconAccessibility()
 
 	/*********************************************************
 	 * Class & Style
