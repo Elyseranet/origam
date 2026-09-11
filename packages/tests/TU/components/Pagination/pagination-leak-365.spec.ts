@@ -40,9 +40,24 @@ import { createOrigam } from '@origam/origam'
  * deux fois plus longtemps a leur worker, la suite est passee de 37 a 54 min,
  * et `carousel.spec.ts` — vert aux trois executions precedentes — a pris leur
  * place avec 7 echecs. Relance seul : 33/33. Gonfler un plafond deplace le
- * flottement, il ne le supprime pas ; reduire le travail, si.
+  * flottement, il ne le supprime pas ; reduire le travail, si.
+ *
+ * @description
+ * ⛔ 20, pas 60 — meme argument, applique une fois de plus (2026-09-11). Les 60
+ * sont restes 5538 ms sur un runner CI partage contre un plafond de 5000 ms,
+ * faisant rougir `develop` ET les 7 PR ouvertes, sans un seul defaut derriere.
+ * Mesure locale sur Node 24 : le spec seul tourne en ~1,15 s, et la branche
+ * est indiscernable de `develop` — ce n'est donc pas le code qui a ralenti,
+ * c'est la marge qui etait trop mince.
+ *
+ * @description
+ * Le plafond n'a une fois de plus PAS ete releve : l'arbitrage a ete pose a
+ * l'utilisateur, qui a d'abord choisi de le relever, puis a suivi la decision
+ * consignee ci-dessus une fois ce bloc porte a sa connaissance. Puisqu'une
+ * fuite d'une unite par instance se voit des le PREMIER cycle, 60 ne prouvait
+ * rien de plus que 20 — exactement comme 200 ne prouvait rien de plus que 60.
  ********************************************************/
-const CYCLES = 60
+const CYCLES = 20
 
 // ⛔ `createOrigam()` injecte DEUX <style> de theme (`origam-theme`,
 // `origam-theme-dark`) au premier appel, et une seule fois pour toute la
