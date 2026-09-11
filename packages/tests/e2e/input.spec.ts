@@ -3,7 +3,7 @@ import { expect, test } from '@playwright/test'
 const STORY_PATH = '/stories/story/components-stories-input-origaminput-story-vue'
 
 test.describe('OrigamInput', () => {
-    test('Color variant — renders outer wrapper and its control', async ({ page }) => {
+    test('Color variant — renders outer wrapper with label', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
         await page.getByText('Prop — color', { exact: true }).first().click()
@@ -77,7 +77,7 @@ test.describe('OrigamInput', () => {
     test('Slot prepend — custom prepend slot renders', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Slots - Prepend', { exact: true }).first().click()
+        await page.getByText('Slot — prepend', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

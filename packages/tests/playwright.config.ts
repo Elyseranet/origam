@@ -1,8 +1,6 @@
 import { defineConfig, devices } from '@playwright/test'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { MARKETING_SPEC_PATTERNS } from './e2e/_support/marketing-specs.const'
-import { scratchDirPatterns } from './scratch-dirs.const'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const REPO_ROOT = resolve(__dirname, '..', '..')
@@ -77,10 +75,7 @@ const GREEN_SPECS = [
     'theme-provider.spec.ts',
     'textarea-richtext.spec.ts',
     'defaults-provider.spec.ts',
-    'field-height.spec.ts',
-    // wave 7 — contrôles de story pour les 16 props directionnelles câblées
-    // en 249ac7d1. Vérifiée verte sur chromium + firefox + webkit.
-    'directional-story-controls.spec.ts'
+    'field-height.spec.ts'
 ]
 
 /**
@@ -93,37 +88,12 @@ const GREEN_SPECS = [
  * by navigating to its story URL. This avoids spinning up a parallel
  * Vite dev server for each component under test.
  */
-/**
- * Port the Histoire server is expected on. Read once here so the `webServer`
- * command, the `webServer.url` probe, `use.baseURL` and the manifest guard
- * all agree — the preview command used to hardcode `-p 6006` while every
- * other knob honoured the env var.
- */
-const HISTOIRE_PORT = process.env.E2E_HISTOIRE_PORT ?? '6006'
-
 export default defineConfig({
     testDir: './e2e',
     outputDir: './e2e/.results',
 
-    // Aborts the whole run when the process answering HISTOIRE_PORT serves a
-    // story catalogue that isn't this worktree's — the failure mode
-    // `reuseExistingServer` opens up. Removing it centrally covers all 175
-    // specs without touching a single `page.goto(variantUrl(…))` call site.
-    // See e2e-global-setup.ts for the full rationale.
-    globalSetup: './e2e-global-setup.ts',
-
     // CI gates on the migrated subset; locally the full suite still runs.
     testMatch: process.env.E2E_GREEN_ONLY === '1' ? GREEN_SPECS : undefined,
-
-    // Marketing-only specs target the Nuxt dev server (:3000) via
-    // playwright.marketing.config.ts and its own `MARKETING_BASE_URL`. They
-    // live in the same `./e2e` directory, so a full local run of THIS config
-    // (no `E2E_GREEN_ONLY`) would otherwise pick them up too and point them
-    // at Histoire's baseURL, where their DOM never exists — every test in
-    // the file then times out identically on chromium/firefox/webkit,
-    // masquerading as a cross-engine product defect. See
-    // e2e/_support/marketing-specs.const.ts for the full rationale.
-    testIgnore: [...MARKETING_SPEC_PATTERNS, ...scratchDirPatterns('./e2e')],
 
     // One spec per file; specs inside a file run sequentially (consistent
     // visual-regression baselines), but separate files parallelise.
@@ -152,7 +122,7 @@ export default defineConfig({
         // Story URLs must include the full prefix: page.goto('/stories/story/STORY_ID...')
         // Note: Playwright resolves absolute paths (starting with /) against the baseURL
         // host only, NOT the full baseURL path. Keep baseURL at origin level.
-        baseURL: `http://localhost:${HISTOIRE_PORT}`,
+        baseURL: 'http://localhost:6006',
         trace: 'on-first-retry',
         screenshot: 'only-on-failure',
         video: 'retain-on-failure'
@@ -180,14 +150,10 @@ export default defineConfig({
         // fit its timeout and run parallel workers. Same /stories/story/... URLs.
         // Default (local): the live `histoire dev` server, reused if running.
         command: process.env.E2E_STATIC === '1'
-            ? `pnpm -F @origam/stories exec histoire preview -p ${HISTOIRE_PORT}`
-            // No `--` separator: pnpm forwards it literally to the script
-            // (`histoire dev "--" "--port" "6106"`), sade ignores the unknown
-            // positional, and the server silently binds the default 6006
-            // instead — verified.
-            : `pnpm -F @origam/stories dev --port ${HISTOIRE_PORT}`,
+            ? 'pnpm -F @origam/stories exec histoire preview -p 6006'
+            : 'pnpm -F @origam/stories dev',
         cwd: REPO_ROOT,
-        url: `http://localhost:${HISTOIRE_PORT}/stories/`,
+        url: 'http://localhost:6006/stories/',
         reuseExistingServer: !process.env.CI,
         timeout: 120_000
     }

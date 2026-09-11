@@ -1,3 +1,3 @@
-import OrigamTable from '../../components/Table/OrigamTable.vue'
+import { OrigamTable } from '../../components'
 
 export type TOrigamTable = InstanceType<typeof OrigamTable>

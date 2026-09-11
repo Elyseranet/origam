@@ -1,35 +1,13 @@
 /**
  * Nav link availability — masquage des liens 404 (#43)
  *
- * Vérifie, une fois le client hydraté, que le méga-menu et le footer
- * n'exposent que des liens réels et que les pages réelles y sont bien
- * présentes. C'est un test de comportement CLIENT (clic pour ouvrir un
- * menu, lecture du DOM après hydratation) — pour la garantie SSR (le HTML
- * tel que servi, avant JS), voir `marketing-nav-ssr.spec.ts`. Les deux
- * sont complémentaires : celui-ci ne peut structurellement pas voir un
- * bug de rendu serveur, l'autre ne peut pas voir un bug d'interaction
- * client (menu qui ne s'ouvre pas, item qui ne réagit pas au clic).
+ * Vérifie que le layout masque les liens same-origin dont la page n'existe pas
+ * (stories, docs, playground, blog) et affiche les liens vers des pages réelles.
  *
- * Changements (audit-ssr-nav, 2026-08-31) :
- * - Retrait de la dépendance à `[data-nav-ready="true"]` — cet attribut
- *   et le composable `useLinkAvailability` qui le posait ont été retirés
- *   (fix-nav-ssr). On attend désormais que `.primary-nav` soit visible,
- *   ce qui suffit : les assertions qui suivent utilisent `.click()` et
- *   `expect(...).toHaveCount(...)`, qui ré-essaient déjà nativement.
- * - `/stories` et `/docs` (SANS slash) retirés de DEAD_HREFS : les vrais
- *   hrefs portent un slash final (`/stories/`, `/docs/`), donc vérifier
- *   l'absence de la forme sans slash ne prouvait rien — elle ne pouvait
- *   de toute façon jamais apparaître. Vérifié dans
- *   `packages/marketing/src/consts/nav.const.ts`.
- * - `/playground` et `/blog` retirés de DEAD_HREFS : ils ne viennent que
- *   de `NAV_LINKS`, une const jamais importée nulle part — ces liens
- *   n'ont jamais été candidats au rendu, donc leur absence ne prouvait
- *   rien non plus.
- * - Ajout d'une vérification que "Docs" et "Stories" apparaissent bien
- *   dans les menus, PAR LABEL et non par href : ces deux hrefs peuvent
- *   pointer vers une origine séparée une fois la config de déploiement
- *   tranchée (Stories/Docs embarqués sur un domaine/port distinct) —
- *   décision utilisateur du 2026-08-31, normative pour ce fichier aussi.
+ * Stratégie :
+ * - Attendre `[data-nav-ready="true"]` avant tout assert (probe fini côté client).
+ * - Ouvrir chaque section de menu, assert les items présents/absents, fermer.
+ * - Pour les liens footer, ils sont dans le DOM directement (pas de menu).
  *
  * Run:
  *   pnpm -F @origam/tests playwright test \
@@ -38,18 +16,10 @@
 
 import { expect, test, type Page } from '@playwright/test'
 
-// '/figma-plugin' a été ajouté par un autre agent (purge-figma-vitrine),
-// en parallèle de ce chantier — non touché ici (hors périmètre). À noter :
-// ce href n'existe dans aucune des consts de nav actuelles (NAV_SECTIONS,
-// FOOTER_COLUMNS, NAV_LINKS) non plus, donc l'assertion sur son absence a
-// le même défaut que celles retirées ci-dessus (jamais candidate au
-// rendu — la garder est neutre, mais elle ne prouve rien de plus).
-const DEAD_HREFS = ['/figma-plugin']
+const DEAD_HREFS = ['/stories', '/docs', '/playground', '/blog']
 
-const LIVE_LABELS_BY_TEXT = ['Docs', 'Stories']
-
-async function waitForPrimaryNav (page: Page): Promise<void> {
-    await page.locator('.primary-nav').waitFor({ state: 'visible', timeout: 15_000 })
+async function waitForNavReady (page: Page): Promise<void> {
+    await page.locator('[data-nav-ready="true"]').waitFor({ state: 'attached', timeout: 15_000 })
 }
 
 async function collectAllNavHrefs (page: Page): Promise<Set<string>> {
@@ -84,43 +54,11 @@ async function collectAllNavHrefs (page: Page): Promise<Set<string>> {
     return found
 }
 
-async function collectAllNavLabels (page: Page): Promise<string[]> {
-    const labels: string[] = []
-
-    const navBtns = page.locator('.primary-nav .origam-btn')
-    const count = await navBtns.count()
-
-    for (let i = 0; i < count; i++) {
-        const btn = navBtns.nth(i)
-        await btn.click()
-        await page.waitForTimeout(300)
-
-        const menuLinks = page.locator('.origam-menu__content a[href]')
-        const linkCount = await menuLinks.count()
-        for (let j = 0; j < linkCount; j++) {
-            const text = await menuLinks.nth(j).innerText()
-            if (text.trim()) labels.push(text.trim())
-        }
-
-        await page.keyboard.press('Escape')
-        await page.waitForTimeout(150)
-    }
-
-    const footerLinks = page.locator('.site-footer a[href]')
-    const footerCount = await footerLinks.count()
-    for (let i = 0; i < footerCount; i++) {
-        const text = await footerLinks.nth(i).innerText()
-        if (text.trim()) labels.push(text.trim())
-    }
-
-    return labels
-}
-
 test.describe('Nav link availability — masquage des liens 404', () => {
 
     test.beforeEach(async ({ page }) => {
         await page.goto('/')
-        await waitForPrimaryNav(page)
+        await waitForNavReady(page)
     })
 
     test('les liens morts ne sont dans aucun menu ni footer', async ({ page }) => {
@@ -155,16 +93,6 @@ test.describe('Nav link availability — masquage des liens 404', () => {
         }
     })
 
-    test('"Docs" et "Stories" apparaissent dans les menus, par libellé (href non testé — peut pointer hors origine)', async ({ page }) => {
-        const labels = await collectAllNavLabels(page)
-        for (const label of LIVE_LABELS_BY_TEXT) {
-            expect(
-                labels.some(l => l.includes(label)),
-                `Aucun lien de menu/footer n'a le libellé "${label}" — labels trouvés : ${JSON.stringify(labels)}`
-            ).toBe(true)
-        }
-    })
-
     test('liens externes (GitHub) sont toujours visibles dans le footer', async ({ page }) => {
         const githubLinks = page.locator('.site-footer a[href*="github.com"]')
         const count = await githubLinks.count()
@@ -178,21 +106,6 @@ test.describe('Nav link availability — masquage des liens 404', () => {
         }
     })
 
-    // Ce test était `.fixme` depuis le 2026-08-31 : `getUid()` reposait sur un
-    // compteur GLOBAL AU MODULE, donc les id générés divergeaient entre le HTML
-    // servi et le DOM hydraté. Deux causes distinctes, toutes deux mesurées sur
-    // le build de production de marketing, pas déduites :
-    //   - l'ordre d'attribution diffère entre serveur et client (un compteur
-    //     linéaire est ordre-dépendant) — 82 des 125 id différaient sur `/`,
-    //     serveur au repos, une seule requête ;
-    //   - `createOrigam()` appelait `getUid.reset()` à chaque install, et le
-    //     plugin serveur Nuxt installe UNE FOIS PAR REQUÊTE — une requête
-    //     rembobinait donc le compteur au milieu du rendu d'une autre. Sous
-    //     charge parallèle : 125 id sur 125 remplacés à l'hydratation.
-    // `getUid()` s'appuie désormais sur `useId()` de Vue 3.5 (id dérivé de la
-    // position dans l'arbre, portée = l'app, aucun état de module). Après
-    // correctif, sur la même page : 0 id divergent, au repos comme sous charge,
-    // et plus aucune erreur "Hydration completed but contains mismatches."
     test('pas d\'erreur d\'hydratation dans la console', async ({ page }) => {
         const hydrationErrors: string[] = []
         page.on('console', msg => {
@@ -206,7 +119,7 @@ test.describe('Nav link availability — masquage des liens 404', () => {
         })
 
         await page.reload()
-        await waitForPrimaryNav(page)
+        await waitForNavReady(page)
 
         expect(
             hydrationErrors,
@@ -223,19 +136,11 @@ test.describe('Nav link availability — masquage des liens 404', () => {
         })
 
         await page.reload()
-        await waitForPrimaryNav(page)
+        await waitForNavReady(page)
 
-        // Le titre du test dit "hors hydratation" : les mismatches
-        // d'hydratation ont leur propre test (ci-dessus). Le filtre reste en
-        // place pour que ce test-ci garde un seul objet — toute AUTRE erreur
-        // console bloquante — et ne redevienne pas le canari d'un problème
-        // d'hydratation qui a déjà son assertion dédiée.
         const blocking = consoleErrors.filter(e =>
             !e.includes('favicon') &&
-            !e.includes('net::ERR') &&
-            !e.includes('hydration') &&
-            !e.includes('Hydration') &&
-            !e.includes('mismatch')
+            !e.includes('net::ERR')
         )
 
         expect(

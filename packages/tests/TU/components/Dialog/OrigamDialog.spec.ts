@@ -25,7 +25,11 @@ import { createOrigam } from '@origam/origam'
 // Re-mock per-test (vi.clearAllMocks() from global setup wipes mockImplementation)
 // ---------------------------------------------------------------------------
 beforeEach(() => {
-    global.IntersectionObserver = vi.fn(class { observe = vi.fn(); unobserve = vi.fn(); disconnect = vi.fn() }) as any
+    global.IntersectionObserver = vi.fn().mockImplementation(() => ({
+        observe: vi.fn(),
+        unobserve: vi.fn(),
+        disconnect: vi.fn()
+    })) as any
 })
 
 // ---------------------------------------------------------------------------
@@ -61,24 +65,19 @@ const OrigamOverlayStub = defineComponent({
     }
 })
 
-// OrigamCard stub — renders its `#header.append` slot (close button) and
-// `#default` / `#footer` slots. #412 — the REAL `<OrigamCard>` reads this
-// slot under the POINT name (`slots['header.append']`, `OrigamCard.vue`);
-// this stub used to read the DASH name Dialog wrongly provided pre-fix,
-// which made this spec pass for the wrong reason (it exercised a mismatch
-// that happened to line up between two wrongs, not the real contract).
+// OrigamCard stub — renders its `#header-append` slot (close button) and
+// `#default` / `#footer` slots.
 const OrigamCardStub = defineComponent({
     name: 'OrigamCard',
     props: {
         ariaLabelledby: String,
         ariaModal: String,
-        role: String,
-        titleId: String
+        role: String
     },
     setup(_props, { slots, expose }) {
         expose({ filterProps: (_props: any) => ({}) })
         return () => h('div', { 'data-stub': 'card' }, [
-            slots['header.append']?.(),
+            slots['header-append']?.(),
             slots.default?.(),
             slots.footer?.()
         ])
@@ -168,14 +167,9 @@ describe('OrigamDialog — class modifiers', () => {
         wrapper.unmount()
     })
 
-    // #419 — the `scrollable` prop and its `origam-dialog--scrollable` class were
-    // REMOVED. No SCSS rule ever targeted the class, and the layout it claimed to
-    // enable is applied unconditionally, so it was redundant rather than merely
-    // inert. This assertion replaces the old "the class is emitted" test, which
-    // was true and worthless: it pinned a class nothing read.
-    it('never emits origam-dialog--scrollable, even if a consumer forces the prop', () => {
-        const wrapper = mountDialog({ scrollable: true } as Record<string, unknown>)
-        expect(wrapper.find('[data-stub="overlay"]').classes()).not.toContain('origam-dialog--scrollable')
+    it('adds origam-dialog--scrollable when scrollable=true', () => {
+        const wrapper = mountDialog({ scrollable: true })
+        expect(wrapper.find('[data-stub="overlay"]').classes()).toContain('origam-dialog--scrollable')
         wrapper.unmount()
     })
 

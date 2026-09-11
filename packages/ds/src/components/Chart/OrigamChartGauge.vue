@@ -1,9 +1,9 @@
 <template>
-	<figure
-			:id="id"
+	<div
 			class="origam-chart-gauge"
 			:class="rootClasses"
 			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles, headerTypographyStyles]"
+			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-gauge"
 	>
@@ -122,11 +122,11 @@
 					data-cy="origam-chart-gauge-empty"
 			>
 				<slot name="empty">
-					<span>{{ t('origam.chart.no_data_text') }}</span>
+					<span>No data to display</span>
 				</slot>
 			</div>
 		</div>
-	</figure>
+	</div>
 </template>
 
 <script
@@ -139,18 +139,20 @@
 	} from 'vue'
 
 	import { useChartGauge } from '../../composables/Chart/chart-gauge.composable'
-	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
-	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
-	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
-	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
-	import { useDimension } from '../../composables/Commons/dimension.composable'
-	import { useElevation } from '../../composables/Commons/elevation.composable'
-	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useMargin } from '../../composables/Commons/margin.composable'
-	import { usePadding } from '../../composables/Commons/padding.composable'
-	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import {
+		useBackgroundColor,
+		useChartHeaderTypography,
+		useDimension,
+		useElevation,
+		useMargin,
+		usePadding,
+		useRounded
+	} from '../../composables'
 
-	import type { IChartGaugeEmits, IChartGaugeProps, IChartGaugeSlots } from '../../interfaces/Chart/chart-gauge.interface'
+	import type {
+		IChartGaugeEmits,
+		IChartGaugeProps
+	} from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -191,11 +193,9 @@
 		gaugeShowValue: true
 	})
 
-	defineEmits<IChartGaugeEmits>()
+	const emit = defineEmits<IChartGaugeEmits>()
+	void emit
 
-	defineSlots<IChartGaugeSlots>()
-
-	const { t } = useLocale()
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
 	const { elevationClasses, elevationStyles } = useElevation(props)
@@ -203,55 +203,6 @@
 	const { paddingClasses, paddingStyles } = usePadding(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
 	const { headerTypographyStyles } = useChartHeaderTypography(props)
-
-	/*********************************************************
-	 * Props heritees sans effet ici (#426)
-	 *
-	 * @description
-	 * ⛔ Ces props sont declarees par `IChartBaseProps` et n'ont aucun
-	 * effet sur ce composant. Elles ne sont ni retirees ni cablees a un
-	 * comportement fictif : elles avertissent une fois, en dev, avec la
-	 * raison exacte. Meme traitement que `OrigamChartGauge`.
-	 ********************************************************/
-	useUnsupportedProp(
-		'OrigamChartGauge',
-		'categories',
-		'a gauge reads a single value from the first series and draws no category axis.',
-		() => (props.categories?.length ?? 0) > 0
-	)
-	const chartAnimationStyle = useChartAnimationStyle(props)
-
-	/*********************************************************
-	 * Unsupported base props (#545)
-	 *
-	 * @description
-	 * `showLegend` / `legendPosition` / `showTooltip` are inherited from
-	 * `IChartBaseProps` but have no effect here: a gauge reads a single
-	 * value (`series[0].data[0]`, extra series ignored) and renders
-	 * neither a legend nor a tooltip.
-	 * @description
-	 * Same treatment as `colorScheme` on Bullet/Candlestick/Heatmap/Map
-	 * (#426): neither wiring a fake behaviour nor removing the prop —
-	 * warn instead.
-	 ********************************************************/
-	useUnsupportedProp(
-		'OrigamChartGauge',
-		'showLegend',
-		'a gauge reads a single value from the first series and renders no legend markup at all.',
-		() => props.showLegend === true
-	)
-	useUnsupportedProp(
-		'OrigamChartGauge',
-		'legendPosition',
-		'no legend is ever rendered on a gauge, so there is nothing to anchor.',
-		() => props.legendPosition !== undefined && props.legendPosition !== 'bottom'
-	)
-	useUnsupportedProp(
-		'OrigamChartGauge',
-		'showTooltip',
-		'a gauge renders no per-point tooltip — the centre label already shows the current value.',
-		() => props.showTooltip === true
-	)
 
 	/*********************************************************
 	 * Static SVG box
@@ -277,36 +228,21 @@
 		return typeof entry === 'number' ? entry : entry.y
 	})
 
-	/*********************************************************
-	 * valueColor
-	 *
-	 * @description
-	 * Falls back to the action-primary intent token when the series
-	 * doesn't pin its own colour.
-	 *
-	 * @description
-	 * ⛔ #529 — the two `var(--origam-color__action--…---bg, …)` fallback
-	 * chains below used to nest a SECOND rung, `var(--origam-color--${c})`
-	 * — a single-tiret name the token pipeline has never emitted. It was
-	 * dead the moment `c`/`first.color` is a valid `TIntent` (the only
-	 * case either branch is reached for): the primary rung always resolves
-	 * first. Removed rather than "fixed" into a real token — it never
-	 * carried a distinct semantic, `currentColor` was already the intended
-	 * final fallback.
-	 ********************************************************/
 	const valueColor = computed<string>(() => {
 		const first = props.series?.[0]
+		// Fall back to the action-primary intent token when the series
+		// doesn't pin its own colour.
 		if (first?.color) {
 			if (/^(#|rgb|rgba|hsl|hsla|var|currentColor)/i.test(first.color)) {
 				return first.color
 			}
-			return `var(--origam-color__action--${ first.color }---bg, currentColor)`
+			return `var(--origam-color__action--${ first.color }---bg, var(--origam-color--${ first.color }, currentColor))`
 		}
 		const scheme = props.colorScheme
 		if (scheme.length) {
 			const c = scheme[0] as string
 			if (/^(#|rgb|rgba|hsl|hsla|var|currentColor)/i.test(c)) return c
-			return `var(--origam-color__action--${ c }---bg, currentColor)`
+			return `var(--origam-color__action--${ c }---bg, var(--origam-color--${ c }, currentColor))`
 		}
 		return 'var(--origam-color__action--primary---bg, currentColor)'
 	})
@@ -372,8 +308,7 @@
 		elevationClasses.value,
 		marginClasses.value,
 		paddingClasses.value,
-		roundedClasses.value,
-		props.class
+		roundedClasses.value
 	])
 
 	const rootStyles = computed<StyleValue>(() => {
@@ -381,12 +316,12 @@
 		if (props.aspectRatio) {
 			out.aspectRatio = props.aspectRatio
 		}
-		Object.assign(out, chartAnimationStyle.value)
+		out['--origam-chart---animation-duration'] = `${ props.animationDuration }ms`
 		// Expose the arc fraction as a CSS variable so the entrance
 		// animation can transition `stroke-dashoffset` from full to
 		// the value-arc length on first paint.
 		out['--origam-chart-gauge---ratio'] = String(geometry.value.ratio)
-return [ out, props.style as StyleValue ]
+		return out
 	})
 
 	const svgClasses = computed(() => ({
@@ -395,17 +330,11 @@ return [ out, props.style as StyleValue ]
 
 	const hasTitleBlock = computed(() => Boolean(props.title || props.subtitle))
 
-	const ariaLabel = computed(() => props.title
-		?? t('origam.chart.gauge.value_aria_label', `${ formattedValue.value }${ props.gaugeUnit ?? '' }`))
+	const ariaLabel = computed(() => props.title ?? `Gauge: ${ formattedValue.value }${ props.gaugeUnit ?? '' }`)
 	const svgAriaLabel = computed(() => ariaLabel.value)
-	const svgTitle = computed(() => props.title ?? t('origam.chart.gauge.aria_label'))
+	const svgTitle = computed(() => props.title ?? 'gauge chart')
 	const svgDesc = computed(() =>
-		t(
-			'origam.chart.gauge.desc',
-			`${ formattedValue.value }${ props.gaugeUnit ?? '' }`,
-			props.gaugeMin,
-			props.gaugeMax
-		)
+		`Gauge showing ${ formattedValue.value }${ props.gaugeUnit ?? '' } out of a range from ${ props.gaugeMin } to ${ props.gaugeMax }.`
 	)
 </script>
 
@@ -418,17 +347,7 @@ return [ out, props.style as StyleValue ]
 
 		display: grid;
 		gap: var(--origam-chart---gap, 12px);
-
-		// ⛔ #C2 — zero-specificity default so a scale-driven utility
-		// class (`.origam--p-4` from `padding="4"`) wins the cascade.
-		// Without `:where()`, this scoped rule's [data-v-hash] pushes it
-		// to (0,2,0), beating the utility's (0,1,0), and the `padding`
-		// prop's scale form goes silently inert. See CLAUDE.md "CSS-first"
-		// table — `:where(…)` is the documented zero-specificity default.
-		:where(&) {
-			padding: var(--origam-chart---padding, 12px);
-		}
-
+		padding: var(--origam-chart---padding, 12px);
 		background-color: var(--origam-chart---background-color, transparent);
 		color: var(--origam-chart---color, inherit);
 		width: 100%;
@@ -454,7 +373,7 @@ return [ out, props.style as StyleValue ]
 
 		&__subtitle {
 			font-size: var(--origam-chart__subtitle---font-size, 0.875rem);
-			color: var(--origam-chart__subtitle---color, var(--origam-color__text---secondary, #6b7280));
+			color: var(--origam-chart__subtitle---color, var(--origam-color-text-secondary, #6b7280));
 		}
 
 		&__body {
@@ -476,7 +395,7 @@ return [ out, props.style as StyleValue ]
 		}
 
 		.origam-chart__gauge-track {
-			fill: var(--origam-chart__gauge-track---color, var(--origam-color__border---subtle, #e5e7eb));
+			fill: var(--origam-chart__gauge-track---color, var(--origam-color-border-subtle, #e5e7eb));
 			stroke: none;
 		}
 
@@ -486,12 +405,12 @@ return [ out, props.style as StyleValue ]
 		}
 
 		.origam-chart__gauge-endpoint {
-			fill: var(--origam-chart__axis-label---color, var(--origam-color__text---secondary, #6b7280));
+			fill: var(--origam-chart__axis-label---color, var(--origam-color-text-secondary, #6b7280));
 			font-size: var(--origam-chart__axis-label---font-size, 0.75rem);
 		}
 
 		.origam-chart__gauge-label {
-			fill: var(--origam-chart__gauge-label---color, var(--origam-color__text---primary, currentColor));
+			fill: var(--origam-chart__gauge-label---color, var(--origam-color-text-primary, currentColor));
 			font-size: var(--origam-chart__gauge-label---font-size, 1.5rem);
 			font-weight: var(--origam-chart__gauge-label---font-weight, 700);
 		}
@@ -506,7 +425,7 @@ return [ out, props.style as StyleValue ]
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			color: var(--origam-chart__empty---color, var(--origam-color__text---secondary, #6b7280));
+			color: var(--origam-chart__empty---color, var(--origam-color-text-secondary, #6b7280));
 		}
 
 		&--no-animation .origam-chart__gauge-value {

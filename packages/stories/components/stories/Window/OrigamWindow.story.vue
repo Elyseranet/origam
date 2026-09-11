@@ -28,7 +28,7 @@
 							:elevation="state.elevation"
 							:padding="state.padding"
 							:margin="state.margin"
-							:style="designHostStyle"
+							:style="hostStyle"
 					>
 						<origam-window-item v-for="n in 3" :key="n" :value="n">
 							<div :style="slideStyle(n)">Slide {{ n }}</div>
@@ -62,68 +62,26 @@
 		</Variant>
 
 		<Variant
-				title="State"
-				:init-state="() => useStoryInitState<Partial<IWindowProps>>({
-					bgColor: 'primary',
-					hoverClass: '',
-					activeClass: '',
-				})"
-		>
-			<template #default="{ state }">
-				<div class="story-shell">
-					<origam-window
-							v-model="stateStep"
-							show-arrows
-							:bg-color="state.bgColor"
-							:hover="resolveHoverState(state.hover)"
-							:active="resolveActiveState(state.active)"
-							:hover-class="state.hoverClass || undefined"
-							:active-class="state.activeClass || undefined"
-							:style="hostStyle"
-					>
-						<origam-window-item v-for="n in 3" :key="n" :value="n">
-							<div :style="slideStyle(n)">Slide {{ n }}</div>
-						</origam-window-item>
-					</origam-window>
-					<div class="story-status">bgColor / hover / active paint the prev &amp; next buttons, not the window.</div>
-				</div>
-			</template>
-			<template #controls="{ state }">
-				<StoryGroup title="Surface">
-					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
-				</StoryGroup>
-				<StoryGroup title="Interaction">
-					<HstSelect v-model="state.hover"       title="Hover"        :options="HOVER_OPTIONS"/>
-					<HstSelect v-model="state.active"      title="Active"       :options="ACTIVE_OPTIONS"/>
-					<HstText   v-model="state.hoverClass"  title="Hover Class"/>
-					<HstText   v-model="state.activeClass" title="Active Class"/>
-				</StoryGroup>
-			</template>
-		</Variant>
-
-		<Variant
 				title="Functional"
-				:init-state="() => useStoryInitState<Partial<IWindowProps>>({
-					modelValue: 1,
+				:init-state="() => useStoryInitState<Partial<IWindowProps> & { step: number }>({
+					step: 1,
 					continuous: false,
 					reverse: false,
 					touch: true,
 					disabled: false,
 					mandatory: true,
 					tag: 'div',
-					selectedClass: 'origam-window-item--active',
 				})"
 		>
 			<template #default="{ state }">
 				<div class="story-shell">
 					<origam-window
-							v-model="state.modelValue"
+							v-model="state.step"
 							:continuous="state.continuous"
 							:reverse="state.reverse"
 							:touch="state.touch"
 							:disabled="state.disabled"
 							:mandatory="state.mandatory"
-							:selected-class="state.selectedClass"
 							:tag="state.tag"
 							show-arrows
 							:style="hostStyle"
@@ -132,7 +90,7 @@
 							<div :style="slideStyle(n)">Slide {{ n }}</div>
 						</origam-window-item>
 					</origam-window>
-					<div class="story-status">Active: <strong>{{ state.modelValue }}</strong></div>
+					<div class="story-status">Active: <strong>{{ state.step }}</strong></div>
 				</div>
 			</template>
 			<template #controls="{ state }">
@@ -140,10 +98,6 @@
 					<HstCheckbox v-model="state.continuous" title="Continuous"/>
 					<HstCheckbox v-model="state.reverse"    title="Reverse"/>
 					<HstCheckbox v-model="state.touch"      title="Touch / Swipe"/>
-				</StoryGroup>
-				<StoryGroup title="Selection">
-					<HstNumber v-model="state.modelValue"    title="Model Value"/>
-					<HstText   v-model="state.selectedClass" title="Selected Class"/>
 				</StoryGroup>
 				<StoryGroup title="States">
 					<HstCheckbox v-model="state.disabled"  title="Disabled"/>
@@ -301,21 +255,15 @@
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 	import {
-		ACTIVE_OPTIONS,
 		BORDER_OPTIONS,
 		BORDER_STYLE_OPTIONS,
-		COLOR_OPTIONS,
 		ELEVATION_OPTIONS,
-		HOVER_OPTIONS,
 		ICON_OPTIONS,
-		resolveActiveState,
-		resolveHoverState,
 		ROUNDED_OPTIONS,
 		TAG_OPTIONS
 	} from '@stories/const'
 
 	const designStep    = ref(1)
-	const stateStep     = ref(1)
 	const slotStep      = ref(1)
 	const emitStep      = ref(1)
 	const playgroundStep = ref(1)
@@ -330,21 +278,6 @@
 		{ label: 'false (hidden)',         value: false },
 		{ label: 'hover (on hover only)',  value: 'hover' },
 	]
-
-	// Design variant only — no hardcoded `border`/`borderRadius` here: those
-	// two keys would land on the SAME `:style` binding as the component's own
-	// `border`/`rounded` props (`props.style` is merged LAST by design, so a
-	// consumer's style always wins — the correct, documented behaviour), and
-	// would therefore silently swallow the Border/Rounded controls. Found
-	// while writing `window-surface-props.spec.ts`: selecting "large" on the
-	// Rounded control never changed the measured `border-radius` because this
-	// object's static `6px` always won. `width`/`height`/`backgroundColor`
-	// don't collide with any control on this Variant, so they're kept.
-	const designHostStyle: CSSProperties = {
-		width: '100%',
-		height: '180px',
-		backgroundColor: 'var(--origam-color__surface---default, rgba(0, 0, 0, 0.03))',
-	}
 
 	const hostStyle: CSSProperties = {
 		width: '100%',

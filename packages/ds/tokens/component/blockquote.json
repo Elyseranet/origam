@@ -1,0 +1,69 @@
+{
+  "blockquote": {
+    "padding-block":   { "$type": "dimension",  "$value": "{space.4}" },
+    "padding-inline":  { "$type": "dimension",  "$value": "{space.6}" },
+    "font-family":     { "$type": "fontFamily", "$value": "{font.family.sans}" },
+    "font-size":       { "$type": "dimension",  "$value": "{font.size.lg}" },
+    "font-style":      { "$value": "normal" },
+    "font-weight":     { "$type": "fontWeight", "$value": "{font.weight.regular}" },
+    "line-height":     { "$type": "number",     "$value": "{font.lineHeight.relaxed}" },
+    "color":           { "$type": "color",      "$value": "{color.text.primary}" },
+
+    "accent": {
+      "color":         { "$type": "color",     "$value": "{color.action.primary.bg}" },
+      "width":         { "$type": "dimension", "$value": "4px" }
+    },
+
+    "author": {
+      "color":         { "$type": "color",      "$value": "{color.text.secondary}" },
+      "font-size":     { "$type": "dimension",  "$value": "{font.size.md}" },
+      "font-style":    { "$value": "normal" },
+      "font-weight":   { "$type": "fontWeight", "$value": "{font.weight.medium}" },
+      "margin-top":    { "$type": "dimension",  "$value": "{space.3}" }
+    },
+
+    "source": {
+      "color":         { "$type": "color",     "$value": "{color.text.secondary}" },
+      "font-size":     { "$type": "dimension", "$value": "{font.size.md}" },
+      "font-style":    { "$value": "italic" }
+    },
+
+    "quote-mark": {
+      "font-size":     { "$type": "dimension", "$value": "{font.size.5xl}" },
+      "color":         { "$type": "color",     "$value": "{color.action.primary.bg}" },
+      "opacity":       { "$type": "number",    "$value": 0.25 },
+      "line-height":   { "$type": "number",    "$value": "{font.lineHeight.none}" }
+    },
+
+    "quoted": {
+      "glyph-size":         { "$type": "dimension", "$value": "8rem" },
+      "glyph-opacity":      { "$type": "number",    "$value": 0.08 },
+      "glyph-offset-top":   { "$type": "dimension", "$value": "-0.1em" },
+      "glyph-offset-left":  { "$type": "dimension", "$value": "-0.05em" },
+      "glyph-padding-extra":{ "$type": "dimension", "$value": "1rem" }
+    },
+
+    "elegant": {
+      "font-family":   { "$type": "fontFamily", "$value": "{font.family.serif}" },
+      "font-size":     { "$type": "dimension",  "$value": "{font.size.xl}" },
+      "font-style":    { "$value": "italic" },
+      "line-height":   { "$type": "number",     "$value": "{font.lineHeight.loose}" },
+      "padding-block": { "$type": "dimension",  "$value": "{space.6}" }
+    },
+
+    "minimal": {
+      "font-size":     { "$type": "dimension",  "$value": "{font.size.md}" },
+      "font-style":    { "$value": "italic" },
+      "padding-inline":{ "$type": "dimension",  "$value": "{space.3}" }
+    },
+
+    "pull": {
+      "font-family":   { "$type": "fontFamily", "$value": "{font.family.serif}" },
+      "font-size":     { "$type": "dimension",  "$value": "{font.size.3xl}" },
+      "font-weight":   { "$type": "fontWeight", "$value": "{font.weight.medium}" },
+      "line-height":   { "$type": "number",     "$value": "{font.lineHeight.snug}" },
+      "padding-block": { "$type": "dimension",  "$value": "{space.6}" },
+      "rule-width":    { "$type": "dimension",  "$value": "2px" }
+    }
+  }
+}

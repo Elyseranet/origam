@@ -1,4 +1,4 @@
-import { BREAKPOINTS } from '../../enums/Commons/display.enum'
+import { BREAKPOINTS } from '../../enums'
 
 export type TBreakpoint = `${BREAKPOINTS}`
 

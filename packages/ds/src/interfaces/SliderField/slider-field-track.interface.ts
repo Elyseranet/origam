@@ -1,15 +1,7 @@
-import type {
-    IBgColorProps,
-    IColorProps
-} from '../Commons/color.interface'
-import type { ICommonsComponentProps } from '../Commons/commons.interface'
-import type { IRoundedProps } from '../Commons/rounded.interface'
-import type { ISizeProps } from '../Commons/size.interface'
+import type { IBgColorProps,
+    IColorProps, ICommonsComponentProps, IRoundedProps, ISizeProps } from '../../interfaces'
 
-import type {
-    TAlways,
-    TTick
-} from '../../types/SliderField/slider-field.type'
+import type { TAlways, TTick } from '../../types'
 
 export interface ISliderFieldTrackProps extends ICommonsComponentProps, IColorProps, IBgColorProps, ISizeProps, IRoundedProps {
     start?: number
@@ -31,25 +23,4 @@ export interface ISliderFieldTrackProps extends ICommonsComponentProps, IColorPr
     tickSize?: number | string
     /** Pre-computed tick descriptors — parent owns the math. */
     ticks?: Array<TTick>
-}
-
-/*********************************************************
- * ISliderFieldTrackEmits
- *
- * @description
- * `<OrigamSliderFieldTrack>` emits nothing of its own — it's a purely
- * presentational track/fill/ticks renderer driven entirely by props
- * computed by the parent `<OrigamSliderField>`.
- ********************************************************/
-export interface ISliderFieldTrackEmits {}
-
-/**
- * Slot signatures for `<OrigamSliderFieldTrack>`. `item` and the
- * per-tick `item.{index}` share the same `{ tick, index }` scope — the
- * indexed form is the fallback the un-indexed `item` slot itself falls
- * back to.
- */
-export interface ISliderFieldTrackSlots {
-    item?: (data: { tick: TTick, index: number }) => any
-    [key: `item.${number}`]: ((data: { tick: TTick, index: number }) => any) | undefined
 }

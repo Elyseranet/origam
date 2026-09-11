@@ -1,6 +1,6 @@
 <template>
 	<component
-			:is="tag"
+			:is="props.tag"
 			:id="id"
 			v-contrast
 			:class="titleClasses"
@@ -20,18 +20,21 @@
 		setup
 >
 	import { computed, StyleValue, toRef, useSlots } from 'vue'
-	import { useBorder } from '../../composables/Commons/border.composable'
-	import { useBothColor } from '../../composables/Commons/bothColor.composable'
-	import { useDensity } from '../../composables/Commons/density.composable'
-	import { useMargin } from '../../composables/Commons/margin.composable'
-	import { usePadding } from '../../composables/Commons/padding.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-	import { useTypography } from '../../composables/Commons/typography.composable'
+	import {
+	useBorder,
+	useBothColor,
+	useDefaults,
+	useDensity,
+	useMargin,
+	usePadding,
+	useProps,
+	useStyle,
+	useTypography
+} from '../../composables'
 
-	import vContrast from '../../directives/Contrast/contrast.directive'
+	import { vContrast } from '../../directives'
 
-	import type { ITitleEmits, ITitleProps, ITitleSlots } from '../../interfaces/Title/title.interface'
+	import type { ITitleProps } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -46,13 +49,15 @@
 	// valid under a page-owned `h1`, and repeating it is legal.
 	// The right level still depends on document position, which the
 	// component cannot know — pass `tag` explicitly whenever it matters.
-	const props = withDefaults(defineProps<ITitleProps>(), {tag: 'h2'})
+	const _props = withDefaults(defineProps<ITitleProps>(), {tag: 'h2'})
+
+	// Opt into the defaults layer so `theme.components['origam-title']` (or a
+	// `<OrigamDefaultsProvider>`) can set `tag` — and every other prop —
+	// app-wide. This is also the one-line migration for anyone who relied on
+	// the previous `h1` default: `'origam-title': { tag: 'h1' }`.
+	const props = useDefaults(_props)
 
 	const {filterProps} = useProps<ITitleProps>(props)
-
-	defineEmits<ITitleEmits>()
-
-	defineSlots<ITitleSlots>()
 
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 
@@ -141,7 +146,7 @@
 	.origam-title {
 		color:          var(--origam-title---color);
 		font-family:    var(--origam-title---font-family);
-		font-size:      var(--origam-title---font-size, var(--origam-title---font-size-md));
+		font-size:      var(--origam-title---font-size);
 		font-weight:    var(--origam-title---font-weight);
 		letter-spacing: var(--origam-title---letter-spacing);
 		line-height:    var(--origam-title---line-height);

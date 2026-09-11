@@ -1,3 +1,3 @@
-import OrigamListSubheader from '../../components/List/OrigamListSubheader.vue'
+import { OrigamListSubheader } from "../../components"
 
 export type TOrigamListSubheader = InstanceType<typeof OrigamListSubheader>

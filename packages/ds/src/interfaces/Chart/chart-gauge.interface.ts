@@ -1,7 +1,4 @@
-import type {
-    IChartBaseProps,
-    IChartBaseSlots
-} from './chart-base.interface'
+import type { IChartBaseEmits, IChartBaseProps, IChartBaseSlots } from '../../interfaces'
 
 /**
  * Props for `<OrigamChartGauge>` — solid gauge (radial progress
@@ -50,38 +47,11 @@ export interface IChartGaugeProps extends IChartBaseProps {
     gaugeShowValue?: boolean
 }
 
-/**
- * `<OrigamChartGauge>` emits — deliberately EMPTY, not an alias of
- * `IChartBaseEmits`.
- *
- * ⛔ Was `export type IChartGaugeEmits = IChartBaseEmits` until #545 —
- * an alias `buildInterfaceIndex()` never resolved (it only matched `export
- * interface`), so `unemitted-declarations` never even SAW this component,
- * let alone flagged it. Once the guard was taught to follow the alias, all
- * three inherited events (`point-click`, `legend-click`, `series-toggle`)
- * measured genuinely dead: the template has no per-point interactivity (no
- * `@click`/`@keydown` on the arc paths, no `role`/`tabindex`), no legend
- * markup at all, and `series` beyond the first entry is silently ignored —
- * there is no "series" axis for a toggle to flip. Same reasoning as
- * `IChartGaugeSlots`'s `Omit<IChartBaseSlots, 'tooltip' | 'legend-item'>`
- * just below, applied to the emits side: a gauge is a single-value
- * visualisation with neither points, a legend, nor a tooltip.
- */
-export interface IChartGaugeEmits {}
+/** Emits surfaced by `<OrigamChartGauge>`. Mirrors the base family. */
+export type IChartGaugeEmits = IChartBaseEmits
 
-/**
- * Slot signatures exposed by `<OrigamChartGauge>`.
- *
- * Deliberately `Omit`s `tooltip` and `legend-item` from the base
- * family — a gauge reads a single value from the first datum, so
- * it renders neither a per-point tooltip nor a series legend.
- * Declaring `defineSlots<IChartGaugeSlots>()` with the full,
- * un-narrowed `IChartBaseSlots` would type-check a `#tooltip` /
- * `#legend-item` slot on the consumer side that the template never
- * forwards — a silently-ignored slot, same failure mode as a prop
- * the `<style>` block never reads.
- */
-export interface IChartGaugeSlots extends Omit<IChartBaseSlots, 'tooltip' | 'legend-item'> {
+/** Slot signatures exposed by `<OrigamChartGauge>`. */
+export interface IChartGaugeSlots extends IChartBaseSlots {
     /**
      * Replace the centre value label. Receives the formatted value
      * + raw datum + ratio (0..1) for custom rendering.

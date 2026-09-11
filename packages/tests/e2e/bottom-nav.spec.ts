@@ -1,23 +1,9 @@
 import { expect, test, type Page } from '@playwright/test'
 
-import { selectHstOption } from './_support/histoire-controls'
-
 /**
  * OrigamBottomNav — runtime assertions per story Variant.
  *
  * Story URL: /story/components-stories-bottomnav-origambottomnav-story-vue
- *
- * The story restructuring (canonical Design/State/Functional/Events/Slots
- * layout, see root CLAUDE.md) removed every dedicated `Prop — …` / `Slot —
- * …` / `Emit — …` fixture this spec used to navigate to, AND removed every
- * static per-fixture `data-cy` (e.g. `bottom-nav-color`, `bottom-nav-
- * density`, …) — verified empirically: `OrigamBottomNav.vue` itself sets
- * NO static `data-cy` on its root either. Since each Variant renders
- * exactly one `<origam-bottom-nav>`, the structural class `.origam-
- * bottom-nav` is the unambiguous replacement anchor throughout. Dynamic
- * props are driven via `_support/histoire-controls.ts` on "Design" /
- * "Functional"; emits/slots map straight to their canonical
- * "Events - …" / "Slots - …" Variant.
  */
 
 const sandboxOf = (page: Page) => page.frameLocator('iframe[src*="__sandbox"]')
@@ -37,12 +23,9 @@ const openVariant = async (page: Page, variant: string) => {
 
 test.describe('OrigamBottomNav — Color', () => {
     test('color intent is propagated to btn children', async ({ page }) => {
-        // Dedicated fixture folded into "Design" — its default init-state
-        // already sets bgColor: 'primary' (see OrigamBottomNav.story.vue),
-        // so no control interaction is needed.
-        await openVariant(page, 'Design')
+        await openVariant(page, 'Prop — color & bgColor')
         const sandbox = sandboxOf(page)
-        const nav = sandbox.locator('.origam-bottom-nav').first()
+        const nav = sandbox.locator('[data-cy="bottom-nav-color"]').first()
         await expect(nav).toBeVisible({ timeout: 8000 })
         const count = await nav.locator('.origam-btn').count()
         expect(count).toBeGreaterThan(0)
@@ -69,16 +52,10 @@ test.describe('OrigamBottomNav — Color', () => {
 
 test.describe('OrigamBottomNav — Density', () => {
     test('density class lands on btn children', async ({ page }) => {
-        // Dedicated fixture folded into "Design" — flip Density from its
-        // unset default to a concrete rung so the assertion below exercises
-        // real prop propagation, not just a default class.
-        await openVariant(page, 'Design')
-        await selectHstOption(page, 'Density', 'Compact')
-        await page.waitForTimeout(400)
+        await openVariant(page, 'Prop — density')
         const sandbox = sandboxOf(page)
-        const nav = sandbox.locator('.origam-bottom-nav').first()
-        await expect(nav).toBeVisible({ timeout: 8000 })
-        const childClasses = await nav.locator('.origam-btn').evaluateAll(els =>
+        await expect(sandbox.locator('[data-cy="bottom-nav-density"]').first()).toBeVisible({ timeout: 8000 })
+        const childClasses = await sandbox.locator('[data-cy="bottom-nav-density"] .origam-btn').evaluateAll(els =>
             els.map(el => el.className)
         )
         expect(childClasses.length).toBeGreaterThan(0)
@@ -92,13 +69,9 @@ test.describe('OrigamBottomNav — Density', () => {
 
 test.describe('OrigamBottomNav — Rounded', () => {
     test('border-radius is applied when rounded=true', async ({ page }) => {
-        // Dedicated fixture folded into "Design" — flip Rounded to the
-        // legacy boolean-true option (matches the original "rounded=true" intent).
-        await openVariant(page, 'Design')
-        await selectHstOption(page, 'Rounded', 'Rounded (legacy boolean)')
-        await page.waitForTimeout(400)
+        await openVariant(page, 'Prop — rounded')
         const sandbox = sandboxOf(page)
-        const nav = sandbox.locator('.origam-bottom-nav').first()
+        const nav = sandbox.locator('[data-cy="bottom-nav-rounded"]').first()
         await expect(nav).toBeVisible({ timeout: 8000 })
         const radius = await nav.evaluate(el => getComputedStyle(el).borderRadius)
         expect(radius).not.toBe('0px')
@@ -109,13 +82,9 @@ test.describe('OrigamBottomNav — Rounded', () => {
 
 test.describe('OrigamBottomNav — Border', () => {
     test('border modifier class is applied', async ({ page }) => {
-        // Dedicated fixture folded into "Design" — same control as
-        // bottom-nav-border.spec.ts.
-        await openVariant(page, 'Design')
-        await selectHstOption(page, 'Border', 'Border (legacy boolean → thin)')
-        await page.waitForTimeout(400)
+        await openVariant(page, 'Prop — border')
         const sandbox = sandboxOf(page)
-        const nav = sandbox.locator('.origam-bottom-nav').first()
+        const nav = sandbox.locator('[data-cy="bottom-nav-border"]').first()
         await expect(nav).toBeVisible({ timeout: 8000 })
         const cls = await nav.evaluate(el => el.className)
         expect(cls).toMatch(/origam-bottom-nav--border|origam--border/)
@@ -126,13 +95,9 @@ test.describe('OrigamBottomNav — Border', () => {
 
 test.describe('OrigamBottomNav — Elevation', () => {
     test('elevation variant renders without errors', async ({ page }) => {
-        // Dedicated fixture folded into "Design" — any non-"(none)" rung
-        // satisfies this smoke assertion.
-        await openVariant(page, 'Design')
-        await selectHstOption(page, 'Elevation', 'MD (8)')
-        await page.waitForTimeout(400)
+        await openVariant(page, 'Prop — elevation')
         const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('.origam-bottom-nav').first()).toBeVisible({ timeout: 8000 })
+        await expect(sandbox.locator('[data-cy="bottom-nav-elevation"]').first()).toBeVisible({ timeout: 8000 })
     })
 })
 
@@ -140,13 +105,9 @@ test.describe('OrigamBottomNav — Elevation', () => {
 
 test.describe('OrigamBottomNav — Grow', () => {
     test('grow modifier class is applied', async ({ page }) => {
-        // Dedicated fixture folded into "Functional" — Grow checkbox
-        // defaults to unchecked (false, see init-state), flip it on.
-        await openVariant(page, 'Functional')
-        await page.getByRole('checkbox', { name: 'Grow', exact: true }).click()
-        await page.waitForTimeout(400)
+        await openVariant(page, 'Prop — grow')
         const sandbox = sandboxOf(page)
-        const nav = sandbox.locator('.origam-bottom-nav').first()
+        const nav = sandbox.locator('[data-cy="bottom-nav-grow"]').first()
         await expect(nav).toBeVisible({ timeout: 8000 })
         const cls = await nav.evaluate(el => el.className)
         expect(cls).toContain('origam-bottom-nav--grow')
@@ -157,12 +118,9 @@ test.describe('OrigamBottomNav — Grow', () => {
 
 test.describe('OrigamBottomNav — Mode', () => {
     test('mode class is applied to the nav', async ({ page }) => {
-        // Dedicated fixture folded into "Functional" — its default
-        // init-state already sets mode: MODE.VERTICAL (see
-        // OrigamBottomNav.story.vue), so no control interaction is needed.
-        await openVariant(page, 'Functional')
+        await openVariant(page, 'Prop — mode')
         const sandbox = sandboxOf(page)
-        const nav = sandbox.locator('.origam-bottom-nav').first()
+        const nav = sandbox.locator('[data-cy="bottom-nav-mode"]').first()
         await expect(nav).toBeVisible({ timeout: 8000 })
         const cls = await nav.evaluate(el => el.className)
         expect(cls).toMatch(/origam-bottom-nav--(vertical|horizontal|shift)/)
@@ -173,13 +131,12 @@ test.describe('OrigamBottomNav — Mode', () => {
 
 test.describe('OrigamBottomNav — Items prop', () => {
     test('renders one btn per item entry (3)', async ({ page }) => {
-        // Dedicated fixture folded into "Design" — `:items="navItems"` (3
-        // entries) is bound unconditionally, not behind any control.
-        await openVariant(page, 'Design')
+        await openVariant(page, 'Prop — items')
         const sandbox = sandboxOf(page)
-        const nav = sandbox.locator('.origam-bottom-nav').first()
+        const nav = sandbox.locator('[data-cy="bottom-nav-items"]').first()
         await expect(nav).toBeVisible({ timeout: 8000 })
-        await expect(nav.locator('.origam-btn')).toHaveCount(3)
+        const count = await nav.locator('.origam-btn').count()
+        expect(count).toBe(3)
     })
 })
 
@@ -187,11 +144,9 @@ test.describe('OrigamBottomNav — Items prop', () => {
 
 test.describe('OrigamBottomNav — Visible', () => {
     test('nav is visible when modelValue=true', async ({ page }) => {
-        // Dedicated fixture folded into "Design" — `:model-value="true"` is
-        // bound unconditionally there, not behind any control.
-        await openVariant(page, 'Design')
+        await openVariant(page, 'Prop — modelValue (visible)')
         const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('.origam-bottom-nav').first()).toBeVisible({ timeout: 8000 })
+        await expect(sandbox.locator('[data-cy="bottom-nav-visible"]').first()).toBeVisible({ timeout: 8000 })
     })
 })
 
@@ -199,16 +154,13 @@ test.describe('OrigamBottomNav — Visible', () => {
 
 test.describe('OrigamBottomNav — Slot: default', () => {
     test('renders explicit btn children in the default slot', async ({ page }) => {
-        // Canonical Variant is "Slots - Default" — its 3 fixture buttons
-        // (Home / Search / Profile) carry no data-cy, matched by their
-        // visible text instead.
-        await openVariant(page, 'Slots - Default')
+        await openVariant(page, 'Slot — default')
         const sandbox = sandboxOf(page)
-        const nav = sandbox.locator('.origam-bottom-nav').first()
+        const nav = sandbox.locator('[data-cy="bottom-nav-slot-default"]').first()
         await expect(nav).toBeVisible({ timeout: 8000 })
-        await expect(nav.getByText('Home', { exact: true })).toBeVisible()
-        await expect(nav.getByText('Search', { exact: true })).toBeVisible()
-        await expect(nav.getByText('Profile', { exact: true })).toBeVisible()
+        await expect(sandbox.locator('[data-cy="bottom-nav-slot-home"]').first()).toBeVisible()
+        await expect(sandbox.locator('[data-cy="bottom-nav-slot-search"]').first()).toBeVisible()
+        await expect(sandbox.locator('[data-cy="bottom-nav-slot-profile"]').first()).toBeVisible()
     })
 })
 
@@ -216,13 +168,11 @@ test.describe('OrigamBottomNav — Slot: default', () => {
 
 test.describe('OrigamBottomNav — Slot: item', () => {
     test('custom item slot renders with 3 buttons', async ({ page }) => {
-        // Canonical Variant is "Slots - Item" — the custom #item template
-        // tags each button `data-cy="slot-item-{index}"` (see
-        // OrigamBottomNav.story.vue), not the old "bottom-nav-slot-item".
-        await openVariant(page, 'Slots - Item')
+        await openVariant(page, 'Slot — item')
         const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('[data-cy="slot-item-0"]').first()).toBeVisible({ timeout: 8000 })
-        await expect(sandbox.locator('[data-cy^="slot-item-"]')).toHaveCount(3)
+        await expect(sandbox.locator('[data-cy="bottom-nav-slot-item"]').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('[data-cy="bottom-nav-slot-item"] .origam-btn').count()
+        expect(count).toBe(3)
     })
 })
 
@@ -230,26 +180,21 @@ test.describe('OrigamBottomNav — Slot: item', () => {
 
 test.describe('OrigamBottomNav — Emit: update:modelValue', () => {
     test('emit variant renders without errors', async ({ page }) => {
-        await openVariant(page, 'Events - update:modelValue')
+        await openVariant(page, 'Emit — update:modelValue')
         const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('.origam-bottom-nav').first()).toBeVisible({ timeout: 8000 })
+        await expect(sandbox.locator('[data-cy="bottom-nav-emit-model"]').first()).toBeVisible({ timeout: 8000 })
     })
 })
 
-// ─── Emit: update:active — SUPPRIMÉ, et c'est voulu ───────────────────────────
-//
-// `<OrigamBottomNav>` n'émet PAS `update:active`, et n'en a jamais eu de vrai
-// émetteur : son état « active » vient de `modelValue`
-// (`useStateFlag(props, {state: 'active', source: 'modelValue'})`), pas de la
-// prop `active` — laquelle est un simple défaut transmis aux `<origam-btn>`
-// enfants. L'emit a donc été retiré d'`IBottomNavEmits` (raisonnement complet
-// dans `bottom-nav.interface.ts`, preuve par mutation dans
-// `TU/origam/bottom-nav-active-dead.spec.ts`), et la Variant
-// « Events - update:active » avec lui.
-//
-// ⛔ Ce bloc de spec, lui, était resté : il ouvrait une Variant inexistante et
-// échouait sur un timeout de 30 s à chaque exécution. Ne pas le réintroduire
-// sans réintroduire d'abord un émetteur réel.
+// ─── Emit: update:active ──────────────────────────────────────────────────────
+
+test.describe('OrigamBottomNav — Emit: update:active', () => {
+    test('emit variant renders without errors', async ({ page }) => {
+        await openVariant(page, 'Emit — update:active')
+        const sandbox = sandboxOf(page)
+        await expect(sandbox.locator('[data-cy="bottom-nav-emit-active"]').first()).toBeVisible({ timeout: 8000 })
+    })
+})
 
 // ─── Playground ───────────────────────────────────────────────────────────────
 
@@ -257,6 +202,6 @@ test.describe('OrigamBottomNav — Default', () => {
     test('renders without errors', async ({ page }) => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('.origam-bottom-nav').first()).toBeVisible({ timeout: 8000 })
+        await expect(sandbox.locator('[data-cy="bottom-nav-playground"]').first()).toBeVisible({ timeout: 8000 })
     })
 })

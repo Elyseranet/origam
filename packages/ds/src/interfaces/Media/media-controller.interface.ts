@@ -1,11 +1,10 @@
-import type { ICommonsComponentProps } from '../Commons/commons.interface'
 import type {
+    ICommonsComponentProps,
     IMediaPlayerMethods,
     IMediaPlayerState
-} from './media-player.interface'
+} from '../../interfaces'
 
-import type { TAudioLoopMode } from '../../types/Audio/audio.type'
-import type { TQualityOption } from '../../types/Media/quality-option.type'
+import type { TAudioLoopMode, TQualityOption } from '../../types'
 
 /**
  * Props for `<OrigamMediaController>` — the universal media-controls
@@ -21,14 +20,6 @@ import type { TQualityOption } from '../../types/Media/quality-option.type'
  *
  * Defaults are inlined inside `withDefaults` (cf. CLAUDE.md
  * `withDefaults` rule) — this interface only types the public API.
- *
- * Deliberately NOT `extends IAdjacentProps`. The Controller is a full
- * transport toolbar, not a single piece of content with a leading/
- * trailing icon — its "adjacent" surface is the `prepend-transport` /
- * `append-transport` SLOTS (custom buttons around the play control),
- * not an icon/avatar PROP pair. Every icon it renders (play, volume,
- * loop, shuffle, cast, …) is a fixed-purpose transport control, matching
- * the same reasoning as `IPaginationProps` (first/prev/next/last).
  */
 export interface IMediaControllerProps extends ICommonsComponentProps {
     /** Reactive media state from `useMediaPlayer()` (or any

@@ -1,16 +1,16 @@
-import type { IBorderProps } from '../Commons/border.interface'
 import type {
+    IBorderProps,
     IBgColorProps,
-    IColorProps
-} from '../Commons/color.interface'
-import type { ICommonsComponentProps } from '../Commons/commons.interface'
-import type { IRoundedProps } from '../Commons/rounded.interface'
-import type { ISizeProps } from '../Commons/size.interface'
-import type { ITypographyProps } from '../Commons/typography.interface'
+    IColorProps,
+    ICommonsComponentProps,
+    IRoundedProps,
+    ISizeProps,
+    ITypographyProps,
+} from '../../interfaces'
 
-import type { TKbdVariant } from '../../types/Kbd/kbd.type'
+import type { TKbdVariant } from '../../types'
 
-export interface IKbdProps extends ICommonsComponentProps, IColorProps, IBgColorProps, ISizeProps, IBorderProps, IRoundedProps, Pick<ITypographyProps, 'fontFamily' | 'fontSize' | 'fontWeight'> {
+export interface IKbdProps extends ICommonsComponentProps, IColorProps, IBgColorProps, ISizeProps, IBorderProps, IRoundedProps, ITypographyProps {
     /** Single key label (e.g. "⌘", "Ctrl", "A"). Overridden by the default slot. */
     text?: string
     /** Composed shortcut rendered as individual nested `<kbd>` elements (e.g. ['Ctrl', 'Shift', 'Z']). */
@@ -19,12 +19,4 @@ export interface IKbdProps extends ICommonsComponentProps, IColorProps, IBgColor
     separator?: string
     /** Visual variant. Defaults to 'outlined'. */
     variant?: TKbdVariant
-}
-
-export interface IKbdEmits {}
-
-/** Slot signatures for `<OrigamKbd>`. The default slot wins over both
- *  the `combination` and `text` props. */
-export interface IKbdSlots {
-    default?: () => any
 }

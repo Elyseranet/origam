@@ -1,11 +1,8 @@
 <template>
 	<origam-window-item
-			:id="id"
 			ref="origamWindowItemRef"
-			:aria-roledescription="slideRoleDescription"
 			:class="carouselItemClasses"
 			:style="carouselItemStyles"
-			role="group"
 			v-bind="windowItemProps"
 	>
 		<template #default>
@@ -44,20 +41,16 @@
 		lang="ts"
 		setup
 >
-	import OrigamImg from '../Img/OrigamImg.vue'
-	import OrigamWindowItem from '../Window/OrigamWindowItem.vue'
+	import { OrigamImg, OrigamWindowItem } from '../../components'
 
-	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
+	import {
+	useProps,
+	useStyle
+} from '../../composables'
 
-	import { omitUndefined } from '../../utils/Commons/commons.util'
+	import type { ICarouselItemProps } from '../../interfaces'
 
-	import type { ICarouselItemEmits, ICarouselItemProps, ICarouselItemSlots } from '../../interfaces/Carousel/carousel-item.interface'
-
-	import type { TOrigamImg } from '../../types/Img/img.type'
-	import type { TOrigamWindowItem } from '../../types/Window/window-item.type'
+	import type { TOrigamImg, TOrigamWindowItem } from "../../types"
 
 	import { computed, ref, StyleValue, useAttrs, useSlots } from 'vue'
 
@@ -75,10 +68,6 @@
 
 	const {filterProps} = useProps<ICarouselItemProps>(props)
 
-	defineEmits<ICarouselItemEmits>()
-
-	defineSlots<ICarouselItemSlots>()
-
 	const attrs = useAttrs()
 
 	const origamWindowItemRef = ref<TOrigamWindowItem>()
@@ -91,66 +80,11 @@
 	const windowItemProps = computed(() => {
 		return origamWindowItemRef.value?.filterProps(props)
 	})
-
-	/*********************************************************
-	 * imgProps (#428)
-	 *
-	 * @description
-	 * `ICarouselItemProps` extends `IImgProps` (→ `IResponsiveProps` →
-	 * `IBorderProps` / `IRoundedProps`) and `IBgColorProps` / `IColorProps`
-	 * — `rounded`, `border`, `bgColor` and `color` all accept a `boolean`
-	 * (or `false`) member in their union. Vue resolves an UNSET prop of
-	 * that shape to the concrete value `false`, never to `undefined` — so
-	 * a plain `filterProps(props)` (which only strips STRICT `undefined`)
-	 * forwarded an explicit `false` for all four onto `<origam-img>`
-	 * whenever THIS component's own consumer never set them, permanently
-	 * outranking `theme.components['origam-img']`. Measured with a real
-	 * `createOrigam()` under `{'origam-img': {rounded: 'lg'}}` and no
-	 * consumer props at all: `imgVm.vm.$.props.rounded` resolved `false`,
-	 * not `'lg'` — reproduced identically for `bgColor` and `border`.
-	 * `usePassedProps` sees past the coercion (it reads `vnode.props`,
-	 * the raw value the parent template actually wrote) — only an
-	 * explicitly passed value survives the strip-and-reapply below; an
-	 * unset one is genuinely ABSENT from the object bound onto
-	 * `<origam-img>`, letting its own theme/default resolve.
-	 ********************************************************/
-	const wasPropPassed = usePassedProps(props)
 	const imgProps = computed(() => {
-		const base = origamImgRef.value?.filterProps(props) ?? {}
-		const {rounded: _rounded, border: _border, bgColor: _bgColor, color: _color, ...rest} = base as Record<string, unknown>
-
-		return {
-			...rest,
-			...omitUndefined({
-				rounded: wasPropPassed('rounded') ? props.rounded : undefined,
-				border: wasPropPassed('border') ? props.border : undefined,
-				bgColor: wasPropPassed('bgColor') ? props.bgColor : undefined,
-				color: wasPropPassed('color') ? props.color : undefined
-			})
-		}
+		return origamImgRef.value?.filterProps(props)
 	})
 
 	const slots = useSlots()
-
-	/*********************************************************
-	 * Sémantique de diapositive — patron WAI-ARIA « carousel »
-	 *
-	 * @description
-	 * Le parent `<OrigamWindow>` porte déjà `role="region"` +
-	 * `aria-roledescription="carousel"` et la région live qui annonce le
-	 * changement. Il manquait l'échelon du BAS : sans `role="group"` +
-	 * `aria-roledescription="slide"`, un lecteur d'écran annonce la région
-	 * et le numéro de diapositive, mais rien ne délimite CE contenu-ci
-	 * comme étant une diapositive — le patron n'est complet qu'avec les
-	 * deux niveaux.
-	 * @description
-	 * `aria-roledescription` est LU TEL QUEL par les lecteurs d'écran :
-	 * c'est du texte destiné à l'utilisateur, il passe donc par la locale
-	 * (jamais une chaîne en dur), comme les libellés de navigation voisins.
-	 ********************************************************/
-	const {t} = useLocale()
-
-	const slideRoleDescription = computed(() => t('origam.carousel.slide'))
 
 	/*********************************************************
 	 * Class & Style
@@ -170,7 +104,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(carouselItemStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(carouselItemStyles)
 
 
 	/*********************************************************

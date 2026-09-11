@@ -1,6 +1,6 @@
 import { DENSITY } from '../../enums'
 
-import type { TDensity } from '../../types/Commons/density.type'
+import type { TDensity } from '../../types'
 
 export const PREDEFINED_DENSITY: Array<TDensity> = [
     DENSITY.DEFAULT,

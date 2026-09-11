@@ -61,35 +61,6 @@
 			</div>
 		</Variant>
 
-		<Variant title="Variant — playlist controls (previous/next/shuffle/loop)">
-			<div
-					class="story-shell"
-					data-cy="media-controller-playlist-shell"
-			>
-				<audio
-						ref="audioElPlaylist"
-						src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
-						preload="metadata"
-						style="display:none"
-				/>
-				<origam-media-controller
-						:state="statePlaylist"
-						:methods="methodsPlaylist"
-						show-previous
-						show-next
-						show-shuffle
-						show-loop
-						:shuffle="playlistShuffle"
-						:loop-mode="playlistLoopMode"
-						data-cy="media-controller-playlist-controller"
-						@previous="onPlaylistPrevious"
-						@next="onPlaylistNext"
-						@update:shuffle="playlistShuffle = $event"
-						@update:loop-mode="playlistLoopMode = $event"
-				/>
-			</div>
-		</Variant>
-
 		<Variant title="Variant — #extraControlsRight slot">
 			<div
 					class="story-shell"
@@ -153,21 +124,6 @@
 
 	const audioElExtras = ref<HTMLAudioElement | null>(null)
 	const { state: stateExtras, methods: methodsExtras } = useMediaPlayer({ mediaRef: audioElExtras as any })
-
-	const audioElPlaylist = ref<HTMLAudioElement | null>(null)
-	const { state: statePlaylist, methods: methodsPlaylist } = useMediaPlayer({ mediaRef: audioElPlaylist as any })
-	const playlistShuffle = ref(false)
-	const playlistLoopMode = ref<'none' | 'all' | 'one'>('none')
-
-	function onPlaylistPrevious (): void {
-		// eslint-disable-next-line no-console
-		console.log('[story] previous track requested')
-	}
-
-	function onPlaylistNext (): void {
-		// eslint-disable-next-line no-console
-		console.log('[story] next track requested')
-	}
 </script>
 
 <style scoped>

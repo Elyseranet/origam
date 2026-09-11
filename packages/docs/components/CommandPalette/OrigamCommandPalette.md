@@ -93,11 +93,9 @@ variable via `useTypography`.
 | `__input` (search field) | `--origam-command-palette__input---font-size` | `fontSize` |
 | `__group-title` (group header) | `--origam-command-palette__group-title---font-size` | `fontSize` |
 
-`fontFamily`, `fontWeight`, `lineHeight` and `letterSpacing` were removed
-from `ICommandPaletteProps` (issue #501): `fontWeight` and `letterSpacing`
-have hardcoded values in the SCSS (`600` and `0.04em` on `__group-title`,
-NOT token-driven), `lineHeight` has no matching SCSS rule on either surface,
-and `fontFamily` is a project-level setting configured once on `OrigamApp`.
+`fontWeight` and `letterSpacing` have hardcoded values in the SCSS
+(`600` and `0.04em` on `__group-title`) — they are NOT token-driven and
+passing those props has no visual effect.
 
 ```vue
 <OrigamCommandPalette v-model="open" :commands="commands" font-size="sm"/>
@@ -110,8 +108,8 @@ and `fontFamily` is a project-level setting configured once on `OrigamApp`.
 | `modelValue` | `boolean` | `false` | Whether the palette is open. v-model. |
 | `hotkey` | `string[] \| string[][] \| null` | `[['meta','k'],['ctrl','k']]` | Global hotkey(s) that toggle the palette. Pass `null` to disable. |
 | `commands` | `ICommand[]` | — | Static command list. Falls back to the global registry when omitted. |
-| `placeholder` | `string` | `'origam.command_palette.placeholder'` | Placeholder of the search input, and the name the `role="combobox"` input and the listbox are announced with. Resolved through the locale catalogue — pass a **key** to translate, or literal text to render verbatim (an unknown key is returned unchanged). |
-| `emptyText` | `string` | `'origam.command_palette.empty_text'` | Empty-state message when no command matches the query. Same key-or-literal contract as `placeholder`. |
+| `placeholder` | `string` | `'Search…'` | Placeholder of the search input. Pre-translate via `useT()`. |
+| `emptyText` | `string` | `'No results'` | Empty-state message when no command matches the query. |
 | `maxHeight` | `number \| string` | `480` | Max height of the result list (px when number). |
 | `width` | `number \| string` | `640` | Width of the palette dialog (px when number). |
 | `loading` | `boolean` | `false` | Display a loader inside the result list. |
@@ -119,6 +117,10 @@ and `fontFamily` is a project-level setting configured once on `OrigamApp`.
 | `closeOnEscape` | `boolean` | `true` | Close on `Escape`. |
 | `closeOnBackdrop` | `boolean` | `true` | Close when the user clicks the backdrop. |
 | `fontSize` | `TFontSize` | — | Font size token applied to both `__input` and `__group-title` surfaces. |
+| `fontFamily` | `TFontFamily` | — | Font family token (emitted but no SCSS rule on these surfaces — no visual effect). |
+| `fontWeight` | `TFontWeight` | — | Font weight token (emitted but hardcoded in SCSS — no visual effect). |
+| `lineHeight` | `TLineHeight` | — | Line-height token (emitted but no SCSS rule on these surfaces — no visual effect). |
+| `letterSpacing` | `TLetterSpacing` | — | Letter-spacing token (emitted but hardcoded in SCSS — no visual effect). |
 
 ## Events
 
@@ -230,17 +232,10 @@ The palette implements the ARIA combobox pattern.
 
 | Element | Roles / attributes |
 |---|---|
-| Overlay root | `role="dialog"` + `aria-modal="true"` + `aria-label` naming the dialog ("Command palette", `origam.command_palette.aria_label`) |
+| Overlay root | `role="dialog"` + `aria-modal="true"` + `aria-labelledby` pointing at the input |
 | Search input | `role="combobox"` + `aria-expanded` + `aria-controls` + `aria-activedescendant` + `aria-autocomplete="list"` |
 | Results container | `role="listbox"` |
 | Each command | `role="option"` + `aria-selected` + `aria-disabled` |
-
-Note (issue #404): the dialog used to point `aria-labelledby` at the
-search input, relying on the input's `placeholder` to supply a name.
-Measured against real Chromium via Playwright's `ariaSnapshot()`: this
-produced an UNNAMED dialog — a `placeholder` names the element that
-carries it, not an element that merely references it via
-`aria-labelledby`. `aria-label` on the dialog itself is the fix.
 
 The dialog also:
 

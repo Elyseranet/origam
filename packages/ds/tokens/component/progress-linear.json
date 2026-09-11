@@ -1,0 +1,48 @@
+{
+  "progress-linear": {
+    "background":           { "$type": "color",      "$value": "transparent" },
+    "overflow":             { "$type": "other",      "$value": "hidden" },
+    "position":             { "$type": "other",      "$value": "relative" },
+    "width":                { "$type": "dimension",  "$value": "100%" },
+
+    "transition-duration":  { "$type": "duration",   "$value": "{motion.duration.medium}" },
+    "transition-easing":    { "$type": "cubicBezier","$value": "{motion.easing.standard}" },
+
+    "indeterminate-duration":{ "$type": "duration",  "$value": "2200ms", "$description": "Duration of the indeterminate bar animation. Not tokenised as motion.duration.* because it is SVG/CSS-animation-specific and differs from UI motion tokens." },
+
+    "rounded-border-radius":{ "$type": "dimension",  "$value": "{radius.full}" },
+
+    "background-track": {
+      "_comment":           "Background track (buffer / remaining zone).",
+      "background":         { "$type": "color",      "$value": "currentColor", "$description": "Inherits color from the component's color prop via useTextColor (backgroundColorClasses)." },
+      "opacity":            { "$type": "number",     "$value": "{opacity.50}" },
+      "position":           { "$type": "other",      "$value": "absolute" }
+    },
+
+    "bar": {
+      "_comment":           "Foreground progress bar.",
+      "height":             { "$type": "other",      "$value": "100%" },
+      "position":           { "$type": "other",      "$value": "absolute" },
+      "left":               { "$type": "dimension",  "$value": "{space.0}" },
+      "transition-property":{ "$type": "other",      "$value": "width, left, right" }
+    },
+
+    "stream": {
+      "opacity":            { "$type": "number",     "$value": 0.3, "$description": "Buffer stream indicator opacity. No matching primitive token (available: opacity.26, opacity.32). Kept as literal 0.3 pending addition of opacity.30 to the primitive tier." },
+      "position":           { "$type": "other",      "$value": "absolute" },
+      "pointer-events":     { "$type": "other",      "$value": "none" }
+    },
+
+    "absolute": {
+      "position":           { "$type": "other",      "$value": "absolute" },
+      "left":               { "$type": "dimension",  "$value": "{space.0}" },
+      "z-index":            { "$type": "number",     "$value": 1 }
+    },
+
+    "fixed": {
+      "position":           { "$type": "other",      "$value": "fixed" },
+      "left":               { "$type": "dimension",  "$value": "{space.0}" },
+      "z-index":            { "$type": "number",     "$value": 1 }
+    }
+  }
+}

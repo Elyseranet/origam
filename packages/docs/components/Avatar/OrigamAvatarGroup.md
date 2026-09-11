@@ -66,29 +66,12 @@ behaviour after a hover preview.
 
 ## Density
 
-`density` retunes the overlap between consecutive avatars. The base
-overlap is a flat `-18px` (`margin-inline-start` on `horizontal`,
-`margin-block-start` on `vertical`, applied to every child but the
-first); `density` contributes an offset to that value through
-`--origam-avatar-group---density`:
-
-| `density` | `--origam-avatar-group---density` | Resulting margin | Effect |
-|---|---|---|---|
-| `compact` | `-6px` | `calc(-18px + -6px)` = **-24px** | tightens the cluster by 6px per avatar |
-| `default` | `0px` | `calc(-18px + 0px)` = **-18px** | the baseline overlap |
-| `comfortable` | `10px` | `calc(-18px + 10px)` = **-8px** | **loosens** the cluster by 10px per avatar |
-
-> ⛔ An earlier version of this page claimed *"compact / comfortable both
-> shave 8 pixels"*. Neither figure was right, and `comfortable` does not
-> shave anything — it is the one rung that spreads the avatars apart.
-
-`expandOnHover` / `expandOnClick` override the whole calculation while
-engaged: the margin drops to `0`, whatever the density.
+The density mixin reaches every avatar in the cluster and tightens the
+overlap accordingly (compact / comfortable both shave 8 pixels).
 
 ```vue
 <template>
     <OrigamAvatarGroup :items="people" density="compact" />
-    <OrigamAvatarGroup :items="people" density="comfortable" />
 </template>
 ```
 
@@ -162,9 +145,7 @@ interface IAvatarGroupProps extends ICommonsComponentProps,
 | `--origam-avatar-group__item---outline-width` | Separation-ring width. Default: `2px`. |
 | `--origam-avatar-group__item---outline-style` | Separation-ring style. Default: `solid`. |
 
-The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
-`dark.css` (SCSS twins under `packages/ds/src/assets/scss/tokens/`) — grep
-for `--origam-avatar-group---`.
+The full list lives in `tokens/component/avatar-group.json`.
 
 ## Accessibility
 
@@ -172,9 +153,7 @@ for `--origam-avatar-group---`.
   cohesive entity instead of disjoint avatars.
 - When `expandOnHover` is on, also wire `expandOnClick` so keyboard
   users can reach the full list — pure-hover affordances are not
-  reachable from the keyboard. With `expandOnClick`, the wrapper is
-  focusable (`tabindex="0"`) and exposes `aria-expanded`; Enter/Space
-  toggle the same expansion a pointer click does.
+  reachable from the keyboard.
 - The overflow chip is purely visual; if its content matters
   (e.g. the literal count), wrap the cluster in an
   `aria-label="N collaborators"` container.

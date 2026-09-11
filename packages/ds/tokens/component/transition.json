@@ -1,0 +1,42 @@
+{
+  "transition": {
+    "_comment": "Shared motion tokens for the OrigamTransition family (fade, slide, scale, expand, dialog, etc.). Keyframes themselves stay global in each .vue (Vue 3 scoped doesn't expose them).",
+    "default": {
+      "duration": { "$type": "duration",    "$value": "{motion.duration.medium}" },
+      "easing":   { "$type": "cubicBezier", "$value": "{motion.easing.standard}" }
+    },
+    "fade": {
+      "duration": { "$type": "duration",    "$value": "{motion.duration.medium}" },
+      "easing":   { "$type": "cubicBezier", "$value": "{motion.easing.standard}" }
+    },
+    "slide-x": {
+      "duration":        { "$type": "duration",    "$value": "{motion.duration.medium}" },
+      "easing":          { "$type": "cubicBezier", "$value": "{motion.easing.decelerate}" },
+      "translate-distance":{ "$type": "dimension", "$value": "100%" }
+    },
+    "slide-y": {
+      "duration":        { "$type": "duration",    "$value": "{motion.duration.medium}" },
+      "easing":          { "$type": "cubicBezier", "$value": "{motion.easing.decelerate}" },
+      "translate-distance":{ "$type": "dimension", "$value": "100%" }
+    },
+    "scale": {
+      "duration":  { "$type": "duration",    "$value": "{motion.duration.medium}" },
+      "easing":    { "$type": "cubicBezier", "$value": "{motion.easing.standard}" },
+      "scale-from":{ "$type": "number",      "$value": 0.95 }
+    },
+    "expand": {
+      "duration":      { "$type": "duration",    "$value": "{motion.duration.slow}" },
+      "easing":        { "$type": "cubicBezier", "$value": "{motion.easing.standard}" },
+      "max-height-from":{ "$type": "dimension",  "$value": "0" }
+    },
+    "dialog": {
+      "duration": { "$type": "duration",    "$value": "{motion.duration.medium}" },
+      "easing":   { "$type": "cubicBezier", "$value": "{motion.easing.decelerate}" }
+    },
+    "dialog-bottom": {
+      "duration":          { "$type": "duration",    "$value": "{motion.duration.slow}" },
+      "easing":            { "$type": "cubicBezier", "$value": "{motion.easing.decelerate}" },
+      "translate-distance":{ "$type": "dimension",   "$value": "100%" }
+    }
+  }
+}

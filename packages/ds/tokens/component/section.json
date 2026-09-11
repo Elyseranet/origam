@@ -1,0 +1,12 @@
+{
+  "section": {
+    "background-color":  { "$type": "color",     "$value": "{color.surface.default}" },
+    "color":             { "$type": "color",     "$value": "{color.text.primary}" },
+    "padding":           { "$type": "dimension", "$value": "{space.6}" },
+    "border-radius":     { "$type": "dimension", "$value": "{radius.md}" },
+    "display":           { "$type": "other",     "$value": "flex" },
+    "flex-direction":    { "$type": "other",     "$value": "column" },
+    "gap":               { "$type": "dimension", "$value": "{space.4}" },
+    "width":             { "$type": "other",     "$value": "100%" }
+  }
+}

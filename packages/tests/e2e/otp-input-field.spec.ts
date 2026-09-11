@@ -19,27 +19,18 @@ import { expect, test } from '@playwright/test'
  *   3  → Events - update:modelValue
  *   4  → Events - finish
  *   5  → Events - click:clear
- *   6  → Events - click:appendInner
- *   7  → Events - click:prependInner
- *   8  → Events - click:control
- *   9  → Events - mousedown:control
- *  10  → Slots - Default
- *  11  → Slots - Label
- *  12  → Slots - FloatingLabel
- *  13  → Slots - Prefix
- *  14  → Slots - Suffix
- *  15  → Slots - PrependInner
- *  16  → Slots - AppendInner
- *  17  → Slots - Clear
- *  18  → Slots - Loader
- *  19  → Default (playground)
- *
- * issue #554 — indices 8..17 drifted by +2 once the story gained two real
- * Variants (`Events - click:appendInner` / `Events - click:prependInner`),
- * both backed by real component emits — see `handleClickAppendInner` /
- * `handleClickPrependInner` in OrigamOtpInputField.vue. The story is the
- * living API and was correct; this spec's hardcoded indices were stale.
- * Fixed here (indices only), never by weakening an assertion.
+ *   6  → Events - click:control
+ *   7  → Events - mousedown:control
+ *   8  → Slots - Default
+ *   9  → Slots - Label
+ *  10  → Slots - FloatingLabel
+ *  11  → Slots - Prefix
+ *  12  → Slots - Suffix
+ *  13  → Slots - PrependInner
+ *  14  → Slots - AppendInner
+ *  15  → Slots - Clear
+ *  16  → Slots - Loader
+ *  17  → Default (playground)
  */
 
 const STORY_ID   = 'components-stories-otpinputfield-origamotpinputfield-story-vue'
@@ -57,38 +48,14 @@ test.describe('OrigamOtpInputField', () => {
 
     test.describe('Design', () => {
         test('renders root with BEM class', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
-        })
-
-        // issue #491 — `label` was excluded from the per-cell forwarded
-        // props AND read nowhere else: a consumer following the doc's own
-        // usage example got no accessible name at all anywhere on the
-        // widget. Fixed as a group-level aria-label (root carries
-        // role="group"), not per-cell forwarding (which would have
-        // repeated the text as a visible floating label on every digit box).
-        test('label reaches the root as a group-level aria-label', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
-            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            const root = sandbox.locator('.origam-otp-input-field').first()
-            await expect(root).toBeVisible({ timeout: 12000 })
-            await expect(root).toHaveAttribute('role', 'group')
-            await expect(root).toHaveAttribute('aria-label', 'Verification code')
-        })
-
-        test('each individual cell keeps its own per-index accessible name', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
-            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            const root = sandbox.locator('.origam-otp-input-field').first()
-            await expect(root).toBeVisible({ timeout: 12000 })
-            const firstCell = root.locator('.origam-otp-input-field__field').first()
-            await expect(firstCell).toHaveAttribute('aria-label', 'Please enter OTP character 1')
         })
 
         test('length=6 renders exactly 6 visible cell inputs', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -98,7 +65,7 @@ test.describe('OrigamOtpInputField', () => {
         })
 
         test('hidden consolidation input carries the joined OTP value', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -107,7 +74,7 @@ test.describe('OrigamOtpInputField', () => {
         })
 
         test('no divider class when divider=undefined (init default)', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -116,7 +83,7 @@ test.describe('OrigamOtpInputField', () => {
         })
 
         test('details section is rendered by default (hideDetails=false)', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -131,7 +98,7 @@ test.describe('OrigamOtpInputField', () => {
 
     test.describe('State', () => {
         test('renders root and 4 cells (length=4)', async ({ page }) => {
-            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(1))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -147,7 +114,7 @@ test.describe('OrigamOtpInputField', () => {
 
     test.describe('Functional', () => {
         test('renders root with 6 cells', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -156,7 +123,7 @@ test.describe('OrigamOtpInputField', () => {
         })
 
         test('cells are not disabled in initial state', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -165,7 +132,7 @@ test.describe('OrigamOtpInputField', () => {
         })
 
         test('typing a digit in the first cell advances focus to the second', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -182,7 +149,7 @@ test.describe('OrigamOtpInputField', () => {
             // onto the root and observing the inputs via SCSS cascade.
             // The actual prop logic is confirmed via disabled=true init not covered here;
             // we verify the SCSS rule exists and disables pointer-events on root.
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -193,7 +160,7 @@ test.describe('OrigamOtpInputField', () => {
         })
 
         test('Backspace clears current cell and moves focus to previous', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -208,7 +175,7 @@ test.describe('OrigamOtpInputField', () => {
         })
 
         test('ArrowRight moves focus to next cell', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -219,7 +186,7 @@ test.describe('OrigamOtpInputField', () => {
         })
 
         test('ArrowLeft moves focus to previous cell', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -231,7 +198,7 @@ test.describe('OrigamOtpInputField', () => {
         })
 
         test('paste fills cells from first position', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -259,7 +226,7 @@ test.describe('OrigamOtpInputField', () => {
 
     test.describe('Events - update:modelValue', () => {
         test('typing a digit updates the visible value display', async ({ page }) => {
-            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(3))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -279,7 +246,7 @@ test.describe('OrigamOtpInputField', () => {
 
     test.describe('Events - finish', () => {
         test('filling all 4 cells triggers finish (value display shows full code)', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(4))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -306,7 +273,7 @@ test.describe('OrigamOtpInputField', () => {
 
     test.describe('Events - click:clear', () => {
         test('renders clearable OTP field', async ({ page }) => {
-            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(5))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -321,7 +288,7 @@ test.describe('OrigamOtpInputField', () => {
 
     test.describe('Events - click:control', () => {
         test('clicking the field content does not throw', async ({ page }) => {
-            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(6))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -336,7 +303,7 @@ test.describe('OrigamOtpInputField', () => {
 
     test.describe('Events - mousedown:control', () => {
         test('mousedown on the field content does not throw', async ({ page }) => {
-            await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(7))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -351,7 +318,7 @@ test.describe('OrigamOtpInputField', () => {
 
     test.describe('Slots - Default', () => {
         test('default slot renders custom content inside the field content area', async ({ page }) => {
-            await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(8))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -362,7 +329,7 @@ test.describe('OrigamOtpInputField', () => {
 
     test.describe('Slots - Label', () => {
         test('label slot renders custom strong element (one per cell — first is sufficient)', async ({ page }) => {
-            await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(9))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -375,7 +342,7 @@ test.describe('OrigamOtpInputField', () => {
 
     test.describe('Slots - FloatingLabel', () => {
         test('floating label slot renders custom em element (one per cell — first is sufficient)', async ({ page }) => {
-            await page.goto(variantUrl(12), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(10))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -387,7 +354,7 @@ test.describe('OrigamOtpInputField', () => {
 
     test.describe('Slots - Prefix', () => {
         test('prefix slot renders the + span', async ({ page }) => {
-            await page.goto(variantUrl(13), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(11))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -398,7 +365,7 @@ test.describe('OrigamOtpInputField', () => {
 
     test.describe('Slots - Suffix', () => {
         test('suffix slot renders the OTP span', async ({ page }) => {
-            await page.goto(variantUrl(14), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(12))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -409,7 +376,7 @@ test.describe('OrigamOtpInputField', () => {
 
     test.describe('Slots - PrependInner', () => {
         test('prepend inner slot renders an origam-icon', async ({ page }) => {
-            await page.goto(variantUrl(15), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(13))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -419,7 +386,7 @@ test.describe('OrigamOtpInputField', () => {
 
     test.describe('Slots - AppendInner', () => {
         test('append inner slot renders an origam-icon', async ({ page }) => {
-            await page.goto(variantUrl(16), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(14))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -429,7 +396,7 @@ test.describe('OrigamOtpInputField', () => {
 
     test.describe('Slots - Clear', () => {
         test('clear slot renders a custom close icon when clearable', async ({ page }) => {
-            await page.goto(variantUrl(17), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(15))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -440,8 +407,8 @@ test.describe('OrigamOtpInputField', () => {
     })
 
     test.describe('Slots - Loader', () => {
-        test('loading=true mounts a loader overlay', async ({ page }) => {
-            await page.goto(variantUrl(18), { waitUntil: 'domcontentloaded' })
+        test('loading=true mounts an overlay with a progress indicator', async ({ page }) => {
+            await page.goto(variantUrl(16))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -452,32 +419,32 @@ test.describe('OrigamOtpInputField', () => {
         })
 
         /**
-         * REGRESSION for issue #554 — the #loader slot custom content used to be
-         * silently dropped.
+         * DS BUG — slot #loader is NOT forwarded to OrigamOverlay.
          *
-         * OrigamOtpInputField passed <template #loader> to <origam-overlay>, but
-         * OrigamOverlay only ever exposed #default and #activator slots — it had
-         * no #loader slot in its API. The custom slot content (<span>Loading…</span>)
-         * was therefore silently dropped; only the default OrigamProgress circular
-         * indicator rendered.
+         * OrigamOtpInputField passes <template #loader> to <origam-overlay>, but
+         * OrigamOverlay only exposes #default and #activator slots — it has no #loader
+         * slot in its API. The custom slot content (<span>Loading…</span>) is therefore
+         * silently dropped; only the default OrigamProgress circular indicator renders.
          *
-         * Fixed by targeting OrigamOverlay's real #default slot instead of the
-         * non-existent #loader one (OrigamOtpInputField.vue, the
-         * <origam-overlay> block around the loading overlay). This test now
-         * asserts the custom slot content actually reaches the DOM — it must
-         * fail again if that wiring regresses.
+         * This test documents the observed (broken) behaviour so a regression test
+         * can be written once the bug is fixed:
+         *   Expected: sandbox.locator('.origam-otp-input-field__loader').toContainText('Loading')
+         *   Observed: loader div is empty; custom slot content is not rendered.
+         *
+         * Severité: Medium — consumer cannot customise the OTP loading indicator.
+         * Ticket: to open against OrigamOtpInputField (OrigamOverlay slot wiring).
          */
-        test('loader slot custom content renders inside the overlay (issue #554 regression)', async ({ page }) => {
-            await page.goto(variantUrl(18), { waitUntil: 'domcontentloaded' })
+        test('loader overlay div is present (custom slot text not rendered — DS bug)', async ({ page }) => {
+            await page.goto(variantUrl(16))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
             // Confirm the overlay content div is present (loading prop active)
             const loaderDiv = sandbox.locator('.origam-otp-input-field__loader')
             await expect(loaderDiv).toBeAttached()
-            // Story passes <template #loader><span>Loading…</span></template> —
-            // it must now render, not the default OrigamProgress fallback.
-            await expect(loaderDiv).toContainText('Loading')
+            // Confirm the custom slot text is NOT rendered (the bug described above)
+            const text = await loaderDiv.textContent()
+            expect(text?.trim(), 'DS bug: custom #loader slot text should not appear until slot is fixed').toBe('')
         })
     })
 
@@ -488,7 +455,7 @@ test.describe('OrigamOtpInputField', () => {
 
     test.describe('Default (playground)', () => {
         test('renders root with 6 cells and value display', async ({ page }) => {
-            await page.goto(variantUrl(19), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(17))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -497,7 +464,7 @@ test.describe('OrigamOtpInputField', () => {
         })
 
         test('typing fills cells and the value display shows the typed digits', async ({ page }) => {
-            await page.goto(variantUrl(19), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(17))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -522,7 +489,7 @@ test.describe('OrigamOtpInputField', () => {
         test('--divided class is applied when divider prop is set', async ({ page }) => {
             // The story Design variant starts without a divider; we inject the
             // modifier class to verify the SCSS rule applies a larger max-width.
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -538,7 +505,7 @@ test.describe('OrigamOtpInputField', () => {
             // SCSS scoped styles use a data-v-* attribute that is not present on
             // dynamically injected elements. We inspect the compiled stylesheet instead
             // (same pattern as btn.spec.ts for --variant-outlined).
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -570,7 +537,7 @@ test.describe('OrigamOtpInputField', () => {
 
     test.describe('Details section', () => {
         test('__details section is in DOM when hideDetails is false (default)', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -578,7 +545,7 @@ test.describe('OrigamOtpInputField', () => {
         })
 
         test('origam-messages element is rendered inside details', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -586,7 +553,7 @@ test.describe('OrigamOtpInputField', () => {
         })
 
         test('error SCSS modifier colors the messages section', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-otp-input-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })

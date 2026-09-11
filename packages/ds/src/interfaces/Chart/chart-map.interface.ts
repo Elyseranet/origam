@@ -1,12 +1,7 @@
-import type {
-    IChartBaseProps,
-    IChartBaseSlots
-} from './chart-base.interface'
-import type { IChartPoint } from './chart-point.interface'
-import type { IChartSeries } from './chart-series.interface'
+import type { IChartBaseEmits, IChartBaseProps, IChartBaseSlots, IChartPoint, IChartSeries } from '../../interfaces'
 
-import type { TChartMapMode } from '../../types/Chart/chart-map.type'
-import type { TIntent } from '../../types/Commons/intent.type'
+import type { TChartMapMode } from '../../types/Chart/chart-map-mode.type'
+import type { TIntent } from '../../types'
 
 /**
  * A single choropleth data point keyed by ISO-3166-1 alpha-2 code.
@@ -131,30 +126,11 @@ export interface IChartMapProps extends IChartBaseProps {
     yAxisFormat?: (value: number) => string
 }
 
-/**
- * `<OrigamChartMap>` emits — `point-click` only, NOT the full base family.
- * Was `export type IChartMapEmits = IChartBaseEmits` until #545 — an alias
- * `buildInterfaceIndex()` never resolved, so the guard never even saw this
- * component. Once fixed, `legend-click` and `series-toggle` measured
- * genuinely dead: the map's series represent choropleth regions / flight
- * routes, not a discrete toggleable legend list (see `IChartMapSlots`'s
- * `Omit<IChartBaseSlots, 'legend-item'>` above) — there is no toggleable
- * entry for either event to report. `point-click` stays: countries / route
- * nodes ARE individually clickable/keyboard-activatable.
- */
-export interface IChartMapEmits {
-    (e: 'point-click', point: IChartPoint, originalEvent: MouseEvent | KeyboardEvent): void
-}
+/** Emits surfaced by `<OrigamChartMap>`. Mirrors the base family. */
+export type IChartMapEmits = IChartBaseEmits
 
-/**
- * Slot signatures exposed by `<OrigamChartMap>`.
- *
- * Omits `legend-item` from the base family — the map's series
- * represent choropleth regions / flight routes, not a discrete
- * toggleable legend list, so the template never renders a
- * `<slot name="legend-item">` to forward it to.
- */
-export interface IChartMapSlots extends Omit<IChartBaseSlots, 'legend-item'> {
+/** Slot signatures exposed by `<OrigamChartMap>`. */
+export interface IChartMapSlots extends IChartBaseSlots {
     /**
      * Replace the default tooltip body.
      * Receives the hovered point, series, and category label.

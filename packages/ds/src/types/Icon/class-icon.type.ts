@@ -1,3 +1,3 @@
-import OrigamClassIcon from '../../components/Icon/OrigamClassIcon.vue'
+import { OrigamClassIcon } from "../../components"
 
 export type TOrigamClassIcon = InstanceType<typeof OrigamClassIcon>

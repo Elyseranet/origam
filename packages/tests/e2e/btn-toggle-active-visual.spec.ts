@@ -25,10 +25,7 @@ const openVariant = async (page: Page, storyPath: string, variant: string) => {
 const STORY = '/stories/story/components-stories-btn-origambtntoggle-story-vue'
 
 test('active button overlay opacity > non-active sibling opacity', async ({ page }) => {
-    // Dedicated fixture folded into "State" — its default init-state
-    // already sets modelValue: 1 (value=1 button, "One", selected) — see
-    // OrigamBtnToggle.story.vue — so no control interaction is needed.
-    await openVariant(page, STORY, 'State')
+    await openVariant(page, STORY, 'Prop — modelValue (single selection)')
     const sandbox = sandboxOf(page)
     await expect(sandbox.locator('.origam-btn-toggle').first()).toBeVisible({ timeout: 8000 })
 
@@ -55,10 +52,7 @@ test('active button overlay opacity > non-active sibling opacity', async ({ page
 })
 
 test('active button overlay > hover overlay (selected reads as "more present")', async ({ page }) => {
-    // Dedicated fixture folded into "State" — its default init-state
-    // already sets modelValue: 1 (value=1 button, "One", selected) — see
-    // OrigamBtnToggle.story.vue — so no control interaction is needed.
-    await openVariant(page, STORY, 'State')
+    await openVariant(page, STORY, 'Prop — modelValue (single selection)')
     const sandbox = sandboxOf(page)
     await expect(sandbox.locator('.origam-btn-toggle').first()).toBeVisible({ timeout: 8000 })
 

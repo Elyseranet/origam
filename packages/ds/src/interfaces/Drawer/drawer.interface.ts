@@ -1,24 +1,20 @@
-import type { IActiveProps } from '../Commons/active.interface'
-import type { IAdjacentSlots } from '../Commons/adjacent.interface'
 import type {
+    IActiveProps,
     IBgColorProps,
-    IColorProps
-} from '../Commons/color.interface'
-import type { IBorderProps } from '../Commons/border.interface'
-import type {
-    ICommonsComponentEmits,
+    IBorderProps,
+    IColorProps,
     ICommonsComponentProps,
-    ITagProps
-} from '../Commons/commons.interface'
-import type { IDensityProps } from '../Commons/density.interface'
-import type { IElevationProps } from '../Commons/elevation.interface'
-import type { IHoverProps } from '../Commons/hover.interface'
-import type { ILayoutItemProps } from '../Commons/layout.interface'
-import type { IMarginProps } from '../Commons/margin.interface'
-import type { IPaddingProps } from '../Commons/padding.interface'
-import type { IRoundedProps } from '../Commons/rounded.interface'
-import type { IScrimProps } from '../Overlay/overlay-scrim.interface'
-import type { ITransitionComponentProps } from '../Commons/transition-component.interface'
+    IDensityProps,
+    IElevationProps,
+    IHoverProps,
+    ILayoutItemProps,
+    IMarginProps,
+    IPaddingProps,
+    IRoundedProps,
+    IScrimProps,
+    ITagProps,
+    ITransitionComponentProps
+} from '../../interfaces'
 
 
 export interface IDrawerProps extends ITagProps, ICommonsComponentProps, IBorderProps, IElevationProps, ILayoutItemProps, IRoundedProps, IColorProps, IBgColorProps, IDensityProps, IPaddingProps, IMarginProps, ITransitionComponentProps, IScrimProps, IActiveProps, IHoverProps {
@@ -71,24 +67,7 @@ export interface IDrawerProps extends ITagProps, ICommonsComponentProps, IBorder
     clipped?: boolean | null
 }
 
-/**
- * Emits fired by `<OrigamDrawer>` — v-model on the open state, plus a
- * second v-model on the rail collapsed state.
- *
- * `update:modelValue` arrives through `ICommonsComponentEmits`: the
- * drawer closes itself on a scrim click (and on the route / resize
- * watchers) via `useVModel(props, 'modelValue', …)`. Declaring it is
- * what keeps the consumer's handler OUT of `$attrs` — an undeclared
- * emit stays in the fallthrough set and `inheritAttrs` binds it a
- * second time onto the root <nav>.
- */
-export interface IDrawerEmits extends ICommonsComponentEmits {
+/** Emits fired by `<OrigamDrawer>` — v-model on the rail collapsed state. */
+export interface IDrawerEmits {
     (e: 'update:rail', value: boolean): void
-}
-
-/** Slot signatures for `<OrigamDrawer>`. */
-export interface IDrawerSlots extends IAdjacentSlots {
-    /** Overrides the whole prepend/content/append layout. */
-    wrapper?: () => any
-    default?: () => any
 }

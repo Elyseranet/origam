@@ -1,6 +1,5 @@
 <template>
 	<div
-			:id="id"
 			:class="datePickerMonthClasses"
 			:style="datePickerMonthStyles"
 	>
@@ -96,29 +95,17 @@
 		lang="ts"
 		setup
 >
-	import OrigamBtn from '../Btn/OrigamBtn.vue'
-	import OrigamReverseTranslatePicker from '../Transition/OrigamReverseTranslatePicker.vue'
-	import OrigamTransition from '../Transition/OrigamTransition.vue'
-	import OrigamTranslatePicker from '../Transition/OrigamTranslatePicker.vue'
+	import { OrigamBtn, OrigamReverseTranslatePicker, OrigamTransition, OrigamTranslatePicker } from "../../components"
 
-	import { useDatePickerCalendar } from '../../composables/Commons/date-picker-calendar.composable'
-	import { useDate } from '../../composables/Commons/date.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useDatePickerCalendar, useDate, useProps , useStyle} from "../../composables"
 
-	import { CALENDAR_STRATEGY } from '../../enums/Commons/calendar.enum'
-	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { CALENDAR_STRATEGY, DENSITY } from "../../enums"
 
-	import type { IDatePickerMonthEmits, IDatePickerMonthProps, IDatePickerMonthSlots } from '../../interfaces/DatePicker/date-picker-month.interface'
-	import type { IDay } from '../../interfaces/DatePicker/date-picker-calendar.interface'
+	import type { IDatePickerMonthProps, IDay } from "../../interfaces"
 
-	import type { TOrigamBtn } from '../../types/Btn/btn.type'
-	import type { TTransitionProps } from '../../types/Transition/transition.type'
+	import type { TOrigamBtn, TTransitionProps } from "../../types"
 
-	import type { TIntent } from '../../types/Commons/intent.type'
-
-	import { isCssColor, isIntent, tokenForegroundForIntent } from '../../utils/Commons/color.util'
-	import { wrapInArray } from '../../utils/Commons/commons.util'
+	import { wrapInArray } from "../../utils"
 
 	import { computed, ref, shallowRef, StyleValue, watch } from "vue"
 
@@ -135,10 +122,6 @@
 		transition: () => ({component: OrigamTranslatePicker}) as unknown as TTransitionProps,
 		reverseTransition: () => ({component: OrigamReverseTranslatePicker}) as unknown as TTransitionProps
 	})
-
-	defineEmits<IDatePickerMonthEmits>()
-
-	defineSlots<IDatePickerMonthSlots>()
 
 	const {filterProps} = useProps<IDatePickerMonthProps>(props)
 
@@ -310,63 +293,6 @@
 	}
 
 	/*********************************************************
-	 * Color
-	 *
-	 * @description
-	 * ⛔ #550 (critere C1) — `color` etait declaree (`IColorProps`) et
-	 * exposee dans la story, mais lue nulle part : la prop ne peignait
-	 * rien.
-	 * @description
-	 * Le canal transversal habituel (`useTextColor` sur la racine) ne
-	 * pouvait PAS la servir ici, et c'est mesurable : la regle scopee
-	 * `&__day` declare `color: var(--origam-date-picker__day---color, …)`
-	 * sur CHAQUE cellule, et `--origam-date-picker__day---color` est
-	 * declaree globalement dans `light.css` / `dark.css` — donc le
-	 * fallback ne sert jamais et une couleur posee sur la racine, qui
-	 * n'agit que par heritage, perd contre cette declaration directe.
-	 * @description
-	 * On alimente donc le TOKEN plutot que la propriete `color` : une
-	 * custom property posee sur la racine est heritee par les cellules et
-	 * l'emporte sur celle de `:root` (ancetre le plus proche), sans aucun
-	 * conflit de specificite. Meme geste que `OrigamCalendar`
-	 * (`--origam-calendar__day-cell---color` / `__weekday---color`), qui
-	 * est l'analogue direct de cette grille.
-	 * @description
-	 * `--origam-btn---color` est pose en meme temps parce que le libelle
-	 * d'un jour est rendu par un `<origam-btn>` : `.origam-btn` declare
-	 * `color: var(--origam-btn---color, …)` sur lui-meme, donc il ignore
-	 * le token du jour. Les deux variables ne sont emises QUE si `color`
-	 * est fournie — sans la prop, le rendu est strictement celui d'avant
-	 * (les deux tokens ont des defauts differents : `text---primary` vs
-	 * `action--secondary---fg`).
-	 * @description
-	 * Les degrades (`TColor` accepte `isGradient`) ne sont pas couverts :
-	 * un `linear-gradient()` n'est pas une valeur de `color` et demande
-	 * le triptyque `background-clip: text`, hors sujet pour une grille de
-	 * jours. Meme perimetre que `OrigamCalendar`.
-	 ********************************************************/
-
-	const dayColorVars = computed<Record<string, string>>(() => {
-		const vars: Record<string, string> = {}
-		const fg = props.color
-
-		let resolved: string | undefined
-
-		if (isIntent(fg)) {
-			resolved = tokenForegroundForIntent(fg as TIntent)
-		} else if (typeof fg === 'string' && isCssColor(fg)) {
-			resolved = fg
-		}
-
-		if (resolved) {
-			vars['--origam-date-picker__day---color'] = resolved
-			vars['--origam-btn---color'] = resolved
-		}
-
-		return vars
-	})
-
-	/*********************************************************
 	 * Class & Style
 	 *
 	 * @description
@@ -375,7 +301,6 @@
 
 	const datePickerMonthStyles = computed(() => {
 		return [
-			dayColorVars.value,
 			props.style
 		] as StyleValue
 	})
@@ -385,16 +310,7 @@
 			props.class
 		]
 	})
-	/*********************************************************
-	 * useStyle
-	 *
-	 * @description
-	 * #372 — `id` must be seeded with `() => props.id`: without it, the id
-	 * returned here is a purely GENERATED one for the scoped stylesheet
-	 * selector, and the template's `:id="id"` on the root would render
-	 * that generated id instead of the consumer's.
-	 ********************************************************/
-	const {id, css, load, isLoaded, unload} = useStyle(datePickerMonthStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(datePickerMonthStyles)
 
 
 	/*********************************************************
@@ -430,12 +346,7 @@
 			display: grid;
 			grid-template-rows: repeat(7, 1fr);
 			column-gap: 4px;
-			// `rem` resolves against the document root, not this component's
-			// ancestor — a plain literal here would be immune to the typography
-			// bridge `OrigamDatePickerField` republishes on the teleported
-			// surface (see `useTeleportTypography`). Generic-first read, same
-			// convention as `useTypography`'s rollout.
-			font-size: var(--origam-date-picker-month__weeks---font-size, .85rem);
+			font-size: .85rem;
 
 			+ #{$this}__days {
 				grid-row-gap: 0;
@@ -443,7 +354,7 @@
 		}
 
 		&__weekday {
-			font-size: var(--origam-date-picker-month__weekday---font-size, .85rem);
+			font-size: .85rem;
 		}
 
 		&__days {
@@ -459,27 +370,20 @@
 			display: flex;
 			justify-content: center;
 			position: relative;
-			height: var(--origam-date-picker__day---size, 40px);
-			background-color: var(--origam-date-picker__day---background-color, transparent);
-			color: var(--origam-date-picker__day---color, var(--origam-color__text---primary));
+			height: 40px;
+			background-color: rgb(255, 255, 255);
+			color: rgb(0, 0, 0);
 
 			:deep(.origam-btn) {
 				--origam-btn---height: 24px;
 				--origam-btn---size: .85rem;
-				// `OrigamBtn`'s own `--size-*` modifier sets `--origam-btn---font-size`
-				// directly on this same element (its size prop is unset here, so it's
-				// the default rung) — an inherited custom property from an ancestor
-				// loses to that local declaration. A plain `font-size` read here, at
-				// equal locality, is what actually wins; same rem-trap as `&__weeks` /
-				// `&__weekday` above, bridged token first, historical size as fallback.
-				font-size: var(--origam-date-picker-month__day---font-size, .85rem);
 				z-index: 1;
 			}
 
 			&--selected {
 				:deep(.origam-btn) {
-					background-color: var(--origam-date-picker__day---background-color-selected, var(--origam-color__action--primary---bg));
-					color: var(--origam-date-picker__day---color-selected, var(--origam-color__action--primary---fg));
+					background-color: rgb(163, 163, 163);
+					color: rgb(255, 255, 255);
 				}
 
 				+ #{$this}__day--selected {
@@ -493,7 +397,7 @@
 						top: 50%;
 						left: -2px;
 						transform: translate(-50%, -50%);
-						background-color: var(--origam-date-picker__day---background-color-in-range, var(--origam-color__surface---overlay));
+						background-color: rgb(143, 143, 143); // TODO make variable for background
 					}
 
 					&#{$this}__day--week-end {
@@ -507,7 +411,7 @@
 							top: 50%;
 							left: 2px;
 							transform: translate(50%, -50%);
-							background-color: var(--origam-date-picker__day---background-color-in-range, var(--origam-color__surface---overlay));
+							background-color: rgb(143, 143, 143); // TODO make variable for background
 						}
 					}
 				}

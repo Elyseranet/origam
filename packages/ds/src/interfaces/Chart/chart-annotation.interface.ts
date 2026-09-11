@@ -1,4 +1,4 @@
-import type { TIntent } from '../../types/Commons/intent.type'
+import type { TIntent } from '../../types'
 
 /**
  * A single overlay annotation drawn on top of a cartesian chart's

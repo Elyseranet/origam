@@ -1,7 +1,7 @@
 import type {
     ICommonsComponentProps,
     ITagProps
-} from '../Commons/commons.interface'
+} from '../../interfaces'
 
 import type {
     TNumberFormatCompactDisplay,
@@ -12,7 +12,7 @@ import type {
     TNumberFormatSignDisplay,
     TNumberFormatUnitDisplay,
     TNumberFormatUseGrouping
-} from '../../types/NumberFormat/number-format.type'
+} from '../../types'
 
 /**
  * Props for `<OrigamNumberFormat>` — pure-display i18n number renderer
@@ -114,8 +114,6 @@ export interface INumberFormatProps extends ICommonsComponentProps, ITagProps {
      */
     signDisplay?: TNumberFormatSignDisplay
 }
-
-export interface INumberFormatEmits {}
 
 /**
  * Bindings exposed by the scoped `#default` slot. Consumers use these

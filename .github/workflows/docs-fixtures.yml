@@ -74,7 +74,7 @@ jobs:
           # `Authorization` headers → "Duplicate header" → push fails (exit 128).
           persist-credentials: false
 
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@v4
 
       - name: Setup Node
         uses: actions/setup-node@v6
@@ -84,6 +84,11 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      # Generated token types (src/types/tokens.type.ts) are imported across the
+      # DS source; rebuild them so the doc extractor resolves every reference.
+      - name: Build tokens
+        run: pnpm -F origam tokens:build
 
       - name: Apply migrations
         run: pnpm -F @origam/marketing db:migrate
@@ -128,7 +133,7 @@ jobs:
       # Open / refresh a PR to develop. create-pull-request no-ops when there is
       # no diff, so it is the single change gate.
       - name: Open PR with regenerated fixtures
-        uses: peter-evans/create-pull-request@v8
+        uses: peter-evans/create-pull-request@v7
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: chore/regenerate-fixtures

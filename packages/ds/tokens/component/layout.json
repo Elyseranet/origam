@@ -1,0 +1,17 @@
+{
+  "layout": {
+    "background-color": { "$type": "color",     "$value": "{color.surface.default}" },
+    "display":          { "$type": "other",     "$value": "flex" },
+    "flex":             { "$type": "other",     "$value": "1 0 auto" },
+    "flex-direction":   { "$type": "other",     "$value": "column" },
+    "overflow":         { "$type": "other",     "$value": "hidden" },
+    "max-width":        { "$type": "other",     "$value": "100%" },
+    "position":         { "$type": "other",     "$value": "relative" },
+    "wrapper": {
+      "width":          { "$type": "other",     "$value": "100vw" },
+      "height":         { "$type": "other",     "$value": "100vh" },
+      "max-height":     { "$type": "other",     "$value": "100%" },
+      "max-width":      { "$type": "other",     "$value": "100%" }
+    }
+  }
+}

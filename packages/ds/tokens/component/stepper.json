@@ -1,0 +1,34 @@
+{
+  "stepper": {
+    "_comment": "OrigamStepper + OrigamStepperItem component tokens. Multi-step progress indicator (Account → Profile → Plan → Confirm) with active/done/pending/error states and optional connectors.",
+
+    "background-color":       { "$type": "color",      "$value": "{color.surface.default}",          "$description": "Background of the stepper root container" },
+    "color":                  { "$type": "color",      "$value": "{color.text.primary}",              "$description": "Default text color of the stepper" },
+    "gap":                    { "$type": "dimension",  "$value": "{space.4}",                         "$description": "Gap between step items" },
+    "padding-block":          { "$type": "dimension",  "$value": "{space.2}",                         "$description": "Block padding of the stepper root" },
+    "padding-inline":         { "$type": "dimension",  "$value": "{space.2}",                         "$description": "Inline padding of the stepper root" },
+
+    "indicator-size":         { "$type": "dimension",  "$value": "{space.8}",                         "$description": "Width and height of the step indicator circle" },
+    "indicator-border-width": { "$type": "dimension",  "$value": "{border.width.thin}",               "$description": "Border width of the step indicator circle" },
+    "indicator-font-size":    { "$type": "dimension",  "$value": "{font.size.sm}",                    "$description": "Font size of the step number inside the indicator" },
+    "indicator-font-weight":  { "$type": "fontWeight", "$value": "{font.weight.medium}",              "$description": "Font weight of the step number inside the indicator" },
+    "indicator-bg":           { "$type": "color",      "$value": "{color.surface.overlay}",           "$description": "Background of the pending step indicator" },
+    "indicator-color":        { "$type": "color",      "$value": "{color.text.secondary}",            "$description": "Foreground of the pending step indicator" },
+    "indicator-active-bg":    { "$type": "color",      "$value": "{color.action.primary.bg}",         "$description": "Background of the active step indicator" },
+    "indicator-active-color": { "$type": "color",      "$value": "{color.action.primary.fg}",         "$description": "Foreground of the active step indicator" },
+    "indicator-done-bg":      { "$type": "color",      "$value": "{color.action.primary.bg}",         "$description": "Background of the done step indicator" },
+    "indicator-done-color":   { "$type": "color",      "$value": "{color.action.primary.fg}",         "$description": "Foreground of the done step indicator" },
+    "indicator-error-bg":     { "$type": "color",      "$value": "{color.feedback.danger.bg}",        "$description": "Background of the error step indicator" },
+    "indicator-error-color":  { "$type": "color",      "$value": "{color.feedback.danger.fg}",        "$description": "Foreground of the error step indicator" },
+
+    "title-font-size":        { "$type": "dimension",  "$value": "{font.size.md}",                    "$description": "Font size of the step title" },
+    "title-font-weight":      { "$type": "fontWeight", "$value": "{font.weight.medium}",              "$description": "Font weight of the step title" },
+    "title-color":            { "$type": "color",      "$value": "{color.text.primary}",              "$description": "Color of the step title" },
+    "subtitle-font-size":     { "$type": "dimension",  "$value": "{font.size.sm}",                    "$description": "Font size of the step subtitle" },
+    "subtitle-color":         { "$type": "color",      "$value": "{color.text.secondary}",            "$description": "Color of the step subtitle" },
+
+    "connector-color":        { "$type": "color",      "$value": "{color.border.subtle}",             "$description": "Default connector line color (pending)" },
+    "connector-color-done":   { "$type": "color",      "$value": "{color.action.primary.bg}",         "$description": "Connector line color when the preceding step is done/active" },
+    "connector-thickness":    { "$type": "dimension",  "$value": "{border.width.thin}",               "$description": "Thickness of the connector line" }
+  }
+}

@@ -1,3 +1,3 @@
-import OrigamExpansionPanels from '../../components/ExpansionPanel/OrigamExpansionPanels.vue'
+import { OrigamExpansionPanels } from "../../components"
 
 export type TOrigamExpansionPanels = InstanceType<typeof OrigamExpansionPanels>

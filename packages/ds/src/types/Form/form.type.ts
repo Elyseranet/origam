@@ -1,3 +1,3 @@
-import OrigamForm from '../../components/Form/OrigamForm.vue'
+import { OrigamForm } from "../../components"
 
 export type TOrigamForm = InstanceType<typeof OrigamForm>

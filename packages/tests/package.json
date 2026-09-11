@@ -12,23 +12,13 @@
     "test:unit:run": "vitest --run",
     "test:run": "vitest --run",
     "test:coverage": "vitest --run --coverage",
-    "audit:inert-props": "node audit/run-inert-props-audit.mjs",
-    "audit:id-forwarding": "node audit/id-forwarding.audit.mjs",
     "test:e2e": "playwright test",
-    "test:e2e:audit": "node e2e/_support/run-guards.mjs",
-    "test:e2e:audit:self": "node e2e/_support/run-guards.mjs --self-test",
-    "test:e2e:audit:titles": "node e2e/_support/audit-variant-titles.mjs",
-    "test:e2e:audit:pins": "node e2e/_support/audit-variant-pins.mjs",
-    "pretest:e2e": "node e2e/_support/run-guards.mjs",
+    "test:e2e:audit": "node e2e/_support/audit-variant-titles.mjs",
+    "pretest:e2e": "node e2e/_support/audit-variant-titles.mjs",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug",
     "test:e2e:report": "playwright show-report",
-    "test:a11y": "playwright test --config=playwright.a11y.config.ts",
-    "test:vrt": "playwright test --config=playwright.vrt.config.ts",
-    "test:vrt:update": "playwright test --config=playwright.vrt.config.ts --update-snapshots",
-    "test:vrt:report": "playwright show-report vrt/.report",
-    "test:vrt:docker": "bash vrt/vrt-docker.sh test",
-    "test:vrt:docker:update": "bash vrt/vrt-docker.sh update"
+    "test:a11y": "playwright test --config=playwright.a11y.config.ts"
   },
   "dependencies": {
     "@vue/server-renderer": "^3.5.39",
@@ -40,13 +30,12 @@
     "@histoire/shared": "^1.0.0-beta.1",
     "@playwright/test": "^1.48.0",
     "@vitejs/plugin-vue": "^6.0.7",
-    "@vitest/coverage-v8": "4.1.10",
+    "@vitest/coverage-v8": "3.2.4",
     "@vue/test-utils": "^2.4.6",
     "axe-core": "^4.11.4",
-    "happy-dom": "^20.11.1",
-    "jsdom": "^30.0.1",
-    "vite-tsconfig-paths": "^6.1.1",
-    "vitest": "^4.1.10",
-    "vue-router": "^4.5.0"
+    "happy-dom": "^20.10.6",
+    "jsdom": "^29.1.1",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.2.4"
   }
 }

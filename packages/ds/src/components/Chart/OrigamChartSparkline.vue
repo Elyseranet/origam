@@ -1,6 +1,5 @@
 <template>
 	<figure
-			:id="id"
 			class="origam-chart-sparkline"
 			:class="rootClasses"
 			:style="[rootStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles]"
@@ -17,7 +16,6 @@
 				data-cy="origam-chart-sparkline-svg"
 				@mousemove="onSvgMouseMove"
 				@mouseleave="onSvgMouseLeave"
-				@click="onSvgClick"
 		>
 			<title>{{ svgTitle }}</title>
 			<desc>{{ svgDesc }}</desc>
@@ -36,13 +34,7 @@
 						:width="bar.width"
 						:height="bar.height"
 						:style="{ fill: resolvedColor }"
-						tabindex="0"
-						role="button"
-						:aria-label="pointAriaLabel(bar.index)"
 						:data-cy="`origam-chart-sparkline-bar-${ bar.index }`"
-						@click.stop="onPointClick(bar.index, $event)"
-						@keydown.enter.prevent="onPointClick(bar.index, $event)"
-						@keydown.space.prevent="onPointClick(bar.index, $event)"
 				/>
 			</g>
 
@@ -60,13 +52,7 @@
 						:width="bar.width"
 						:height="bar.height"
 						:style="{ fill: resolvedColor }"
-						tabindex="0"
-						role="button"
-						:aria-label="pointAriaLabel(bar.index)"
 						:data-cy="`origam-chart-sparkline-hbar-${ bar.index }`"
-						@click.stop="onPointClick(bar.index, $event)"
-						@keydown.enter.prevent="onPointClick(bar.index, $event)"
-						@keydown.space.prevent="onPointClick(bar.index, $event)"
 				/>
 			</g>
 
@@ -99,13 +85,7 @@
 						:cy="pt.cy"
 						:r="markerSize"
 						:style="{ fill: resolvedColor }"
-						tabindex="0"
-						role="button"
-						:aria-label="pointAriaLabel(pt.index)"
 						:data-cy="`origam-chart-sparkline-marker-${ pt.index }`"
-						@click.stop="onPointClick(pt.index, $event)"
-						@keydown.enter.prevent="onPointClick(pt.index, $event)"
-						@keydown.space.prevent="onPointClick(pt.index, $event)"
 				/>
 			</g>
 
@@ -118,13 +98,7 @@
 					:cy="m.cy"
 					:r="m.r"
 					:style="{ fill: m.fill }"
-					tabindex="0"
-					role="button"
-					:aria-label="pointAriaLabel(m.dataIndex)"
 					:data-cy="`origam-chart-sparkline-special-${ m.role }`"
-					@click.stop="onPointClick(m.dataIndex, $event)"
-					@keydown.enter.prevent="onPointClick(m.dataIndex, $event)"
-					@keydown.space.prevent="onPointClick(m.dataIndex, $event)"
 			/>
 		</svg>
 
@@ -167,21 +141,24 @@
 		type StyleValue
 	} from 'vue'
 
-	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
-	import { useDimension } from '../../composables/Commons/dimension.composable'
-	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
-	import { useElevation } from '../../composables/Commons/elevation.composable'
-	import { useMargin } from '../../composables/Commons/margin.composable'
-	import { usePadding } from '../../composables/Commons/padding.composable'
-	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import {
+		useBackgroundColor,
+		useElevation,
+		useMargin,
+		usePadding,
+		useRounded
+	} from '../../composables'
 
-	import type { IChartPoint } from '../../interfaces/Chart/chart-point.interface'
-	import type { IChartSparklineEmits, IChartSparklineKind, IChartSparklineProps, IChartSparklineSlots } from '../../interfaces/Chart/chart-sparkline.interface'
+	import type {
+		IChartPoint,
+		IChartSparklineEmits,
+		IChartSparklineKind,
+		IChartSparklineProps
+	} from '../../interfaces'
 
 	import { intentBgExpr, isIntent } from '../../utils/Commons/color.util'
 
-	import type { TIntent } from '../../types/Commons/intent.type'
+	import type { TIntent } from '../../types'
 
 	/*********************************************************
 	 * Global
@@ -221,11 +198,7 @@
 		aspectRatio: undefined
 	})
 
-	const emit = defineEmits<IChartSparklineEmits>()
-
-	const { t } = useLocale()
-
-	defineSlots<IChartSparklineSlots>()
+	defineEmits<IChartSparklineEmits>()
 
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
 	const { elevationClasses, elevationStyles } = useElevation(props)
@@ -441,23 +414,18 @@
 	const mousePos = ref<{ x: number, y: number }>({ x: 0, y: 0 })
 	const hoveredIndex = ref<number | null>(null)
 
-	const pointAt = (index: number): IChartPoint | null => {
-		if (!activeSeries.value) return null
-		const v = values.value[index]
+	const tooltipPoint = computed<IChartPoint | null>(() => {
+		if (hoveredIndex.value === null || !activeSeries.value) return null
+		const v = values.value[hoveredIndex.value]
 		if (v === undefined) return null
 		return {
 			seriesIndex: 0,
 			seriesName: activeSeries.value.name,
-			dataIndex: index,
-			x: index,
+			dataIndex: hoveredIndex.value,
+			x: hoveredIndex.value,
 			y: v,
 			color: resolvedColor.value
 		}
-	}
-
-	const tooltipPoint = computed<IChartPoint | null>(() => {
-		if (hoveredIndex.value === null) return null
-		return pointAt(hoveredIndex.value)
 	})
 
 	const tooltipStyle = computed<StyleValue>(() => ({
@@ -465,62 +433,24 @@
 		top: `${ mousePos.value.y - 28 }px`
 	}))
 
-	/*********************************************************
-	 * nearestIndexFromEvent
-	 *
-	 * @description
-	 * Nearest data-point index for a mouse position on the SVG — shared
-	 * by hover (tooltip) and click (`point-click`) so both agree on
-	 * which point the pointer is over.
-	 ********************************************************/
-	const nearestIndexFromEvent = (event: MouseEvent): number | null => {
-		const target = svgRef.value
-		if (!target) return null
-		const n = values.value.length
-		if (!n) return null
-		const rect = target.getBoundingClientRect()
-		const relX = event.clientX - rect.left
-		const ratio = relX / rect.width
-		return Math.min(n - 1, Math.max(0, Math.round(ratio * (n - 1))))
-	}
-
 	const onSvgMouseMove = (event: MouseEvent) => {
 		if (!props.showTooltip) return
 		const target = svgRef.value
 		if (!target) return
 		const rect = target.getBoundingClientRect()
-		mousePos.value = { x: event.clientX - rect.left, y: event.clientY - rect.top }
-		hoveredIndex.value = nearestIndexFromEvent(event)
+		const relX = event.clientX - rect.left
+		mousePos.value = { x: relX, y: event.clientY - rect.top }
+
+		const n = values.value.length
+		if (!n) return
+
+		const ratio = relX / rect.width
+		const idx = Math.min(n - 1, Math.max(0, Math.round(ratio * (n - 1))))
+		hoveredIndex.value = idx
 	}
 
 	const onSvgMouseLeave = () => {
 		hoveredIndex.value = null
-	}
-
-	/*********************************************************
-	 * `point-click` — mouse / keyboard activation on a data point.
-	 * Individually-rendered marks (markers, special min/max/last,
-	 * bars) carry their own click/keydown handlers (see template);
-	 * clicking anywhere else on the SVG falls back to the nearest
-	 * point, so `line`/`area` sparklines without visible markers stay
-	 * clickable too.
-	 ********************************************************/
-	const onPointClick = (index: number, event: MouseEvent | KeyboardEvent) => {
-		const point = pointAt(index)
-		if (!point) return
-		emit('point-click', point, event)
-	}
-
-	const onSvgClick = (event: MouseEvent) => {
-		const idx = nearestIndexFromEvent(event)
-		if (idx === null) return
-		onPointClick(idx, event)
-	}
-
-	const pointAriaLabel = (index: number): string => {
-		const point = pointAt(index)
-		if (!point) return ''
-		return `${ point.seriesName ?? '' }, ${ index }: ${ point.y }`.trim()
 	}
 
 	/*********************************************************
@@ -533,96 +463,29 @@
 		},
 		backgroundColorClasses.value,
 		elevationClasses.value,
-		roundedClasses.value,
-		props.class
+		roundedClasses.value
 	])
 
-	const {dimensionStyles} = useDimension(props)
-
-	/*********************************************************
-	 * Props heritees sans effet ici (#426)
-	 *
-	 * @description
-	 * ⛔ Ces props sont declarees par `IChartBaseProps` et n'ont aucun
-	 * effet sur ce composant. Elles ne sont ni retirees ni cablees a un
-	 * comportement fictif : elles avertissent une fois, en dev, avec la
-	 * raison exacte. Meme traitement que `OrigamChartGauge`.
-	 ********************************************************/
-	useUnsupportedProp(
-		'OrigamChartSparkline',
-		'categories',
-		'a sparkline is a bare trend line: it draws no axis and no labels.',
-		() => props.categories !== undefined
-	)
-	useUnsupportedProp(
-		'OrigamChartSparkline',
-		'animated',
-		'no animation is ever emitted — neither a CSS class nor an inline `animation` declaration.',
-		() => props.animated === true
-	)
-	useUnsupportedProp(
-		'OrigamChartSparkline',
-		'animationDuration',
-		'nothing is animated, so there is no duration to apply.',
-		() => props.animationDuration !== undefined && props.animationDuration !== 600
-	)
-	useUnsupportedProp(
-		'OrigamChartSparkline',
-		'aspectRatio',
-		'the root sizes itself from `width` / `height`; no `aspect-ratio` declaration is emitted.',
-		() => props.aspectRatio !== undefined
-	)
-	useUnsupportedProp(
-		'OrigamChartSparkline',
-		'fontSize',
-		'a sparkline renders no text at all.',
-		() => props.fontSize !== undefined
-	)
-	useUnsupportedProp(
-		'OrigamChartSparkline',
-		'fontWeight',
-		'a sparkline renders no text at all.',
-		() => props.fontWeight !== undefined
-	)
-	useUnsupportedProp(
-		'OrigamChartSparkline',
-		'subtitle',
-		'a sparkline renders no header — neither title nor subtitle.',
-		() => props.subtitle !== undefined
-	)
-
-	/*********************************************************
-	 * rootStyles
-	 *
-	 * @description
-	 * ⛔ Ce bloc convertissait `width` / `height` a la main — et ignorait les
-	 * cinq autres props de dimension qu'`IDimensionProps` declare. Un
-	 * consommateur passant `maxHeight` ne voyait rien se produire, sans
-	 * avertissement : la « half-implemented surface » que le CLAUDE.md du
-	 * projet decrit nommement.
-	 *
-	 * @description
-	 * `useDimension` couvre les sept, et son `convertToUnit` gere des cas
-	 * qu'un convertisseur maison finit toujours par manquer : nombres,
-	 * longueurs CSS, references a une propriete personnalisee, raccourcis
-	 * d'`aspect-ratio`.
-	 ********************************************************/
-	const rootStyles = computed<StyleValue>(() => [
-		dimensionStyles.value,
-		{ display: 'inline-block' },
-		props.style as StyleValue
-	])
+	const rootStyles = computed<StyleValue>(() => {
+		const w = typeof props.width === 'number' ? `${ props.width }px` : props.width
+		const h = typeof props.height === 'number' ? `${ props.height }px` : props.height
+		return {
+			width: w,
+			height: h,
+			display: 'inline-block'
+		}
+	})
 
 	/*********************************************************
 	 * ARIA.
 	 ********************************************************/
-	const defaultAriaLabel = computed(() => t(`origam.chart.sparkline.aria_label_${ props.type }`))
-	const ariaLabel = computed(() => props.title ?? defaultAriaLabel.value)
-	const svgAriaLabel = computed(() => props.title ?? defaultAriaLabel.value)
-	const svgTitle = computed(() => props.title ?? defaultAriaLabel.value)
-	const svgDesc = computed(() =>
-		t('origam.chart.sparkline.desc', values.value.length, {chart: defaultAriaLabel.value})
-	)
+	const ariaLabel = computed(() => props.title ?? 'sparkline chart')
+	const svgAriaLabel = computed(() => props.title ?? `${ props.type } sparkline`)
+	const svgTitle = computed(() => props.title ?? `${ props.type } sparkline`)
+	const svgDesc = computed(() => {
+		const n = values.value.length
+		return `Sparkline with ${ n } data ${ n === 1 ? 'point' : 'points' }.`
+	})
 </script>
 
 <style
@@ -670,7 +533,7 @@
 		&__tooltip {
 			position: absolute;
 			pointer-events: none;
-			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color__surface---overlay, #1f2937));
+			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color-surface-overlay, #1f2937));
 			color: var(--origam-chart__tooltip---color, #ffffff);
 			padding: var(--origam-chart-sparkline__tooltip---padding, 2px 6px);
 			border-radius: var(--origam-chart-sparkline__tooltip---border-radius, 4px);
@@ -689,7 +552,7 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			color: var(--origam-chart__empty---color, var(--origam-color__text---secondary, #6b7280));
+			color: var(--origam-chart__empty---color, var(--origam-color-text-secondary, #6b7280));
 			font-size: var(--origam-chart-sparkline__empty---font-size, 0.75rem);
 		}
 	}

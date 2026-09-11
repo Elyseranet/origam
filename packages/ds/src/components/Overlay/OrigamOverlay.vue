@@ -9,7 +9,6 @@
 				:to="teleportTarget"
 		>
 			<div
-					:id="id"
 					ref="root"
 					:class="overlayClasses"
 					:style="overlayStyles"
@@ -26,7 +25,6 @@
 						:transition="transition"
 						appear
 						persisted
-						@after-enter="handleAfterEnter"
 						@after-leave="handleAfterLeave"
 				>
 					<div
@@ -53,48 +51,41 @@
 		setup
 >
 	import { computed, mergeProps, onBeforeUnmount, ref, StyleValue, toRef, watch } from 'vue'
-	import OrigamFade from '../Transition/OrigamFade.vue'
-	import OrigamOverlayScrim from './OrigamOverlayScrim.vue'
-	import OrigamTransition from '../Transition/OrigamTransition.vue'
+	import { OrigamFade, OrigamOverlayScrim, OrigamTransition } from '../../components'
 
-	import { useActivator } from '../../composables/Commons/activator.composable'
-	import { useBackButton } from '../../composables/Commons/backButton.composable'
-	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
-	import { useDimension } from '../../composables/Commons/dimension.composable'
-	import { useHydration } from '../../composables/Commons/hydration.composable'
-	import { useLazy } from '../../composables/Commons/lazy.composable'
-	import { useLocationStrategies } from '../../composables/Commons/locationStrategies.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useRouter } from '../../composables/Commons/router.composable'
-	import { useRtl } from '../../composables/Commons/rtl.composable'
-	import { useScopeId } from '../../composables/Commons/scopeId.composable'
-	import { useScrollStrategies } from '../../composables/Commons/scrollStrategies.composable'
-	import { useStack } from '../../composables/Commons/stack.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-	import { useTeleport } from '../../composables/Commons/teleport.composable'
-	import { useToggleScope } from '../../composables/Commons/toggleScope.composable'
-	import { useVModel } from '../../composables/Commons/vModel.composable'
+	import {
+		useActivator,
+		useBackButton,
+		useBackgroundColor,
+		useDimension,
+		useHydration,
+		useLazy,
+		useLocationStrategies,
+		useProps,
+		useRouter,
+		useRtl,
+		useScopeId,
+		useScrollStrategies,
+		useStack,
+		useStyle,
+		useTeleport,
+		useToggleScope,
+		useVModel
+} from '../../composables'
 
-	import { IN_BROWSER } from '../../consts/Commons/commons.const'
+	import { IN_BROWSER } from '../../consts'
 
-	import vClickOutside from '../../directives/ClickOutside/clickOutside.directive'
+	import { vClickOutside } from '../../directives'
 
-	import { BLOCK } from '../../enums/Commons/anchor.enum'
-	import { EASING } from '../../enums/Transition/transition.enum'
-	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
-	import { LOCATION_STRATEGIES } from '../../enums/Commons/location.enum'
-	import { SCROLL_STRATEGIES } from '../../enums/Commons/scroll.enum'
+	import { BLOCK, EASING, KEYBOARD_VALUES, LOCATION_STRATEGIES, SCROLL_STRATEGIES } from '../../enums'
 
-	import type { IOverlayProps } from '../../interfaces/Overlay/overlay.interface'
+	import type { IOverlayProps} from '../../interfaces'
 
-	import type { IOverlayEmits, IOverlaySlots } from '../../interfaces/Overlay/overlay.interface'
+	import type { IOverlayEmits } from '../../interfaces/Overlay/overlay.interface'
 
-	import type { TOrigamOverlayScrim } from '../../types/Overlay/overlay-scrim.type'
-	import type { TTransitionProps } from '../../types/Transition/transition.type'
+	import type { TOrigamOverlayScrim, TTransitionProps } from "../../types"
 
-	import { animate } from '../../utils/Commons/animation.util'
-	import { convertToUnit } from '../../utils/Commons/commons.util'
-	import { getScrollParent } from '../../utils/Commons/scroll.util'
+	import { animate, convertToUnit, getScrollParent } from '../../utils'
 
 	/*********************************************************
 	 * Global
@@ -138,8 +129,6 @@
 
 	const emits = defineEmits<IOverlayEmits>()
 
-	defineSlots<IOverlaySlots>()
-
 	const {filterProps} = useProps<IOverlayProps>(props)
 
 	/*********************************************************
@@ -172,19 +161,9 @@
 	 * Composables
 	 ********************************************************/
 
-	/*********************************************************
-	 * disableGlobalStack
-	 *
-	 * @description
-	 * ⛔ ADR-005 — `computed` (not `toRef`) so an optional `boolean |
-	 * undefined` prop normalises to a definite `boolean` for `useStack`'s
-	 * `Ref<boolean>` parameter, while still deferring the read past
-	 * `setup()` (see the long comment in `stack.composable.ts`).
-	 ********************************************************/
 	const {teleportTarget} = useTeleport(computed(() => props.attach || props.contained))
 	const {hasContent, onAfterLeave} = useLazy(props, isActive)
-	const disableGlobalStack = computed(() => !!props.disableGlobalStack)
-	const {globalTop, localTop, stackStyles} = useStack(isActive, toRef(props, 'zIndex'), disableGlobalStack)
+	const {globalTop, localTop, stackStyles} = useStack(isActive, toRef(props, 'zIndex'), props.disableGlobalStack)
 	const {
 		activatorEl,
 		activatorRef,
@@ -274,18 +253,8 @@
 	 * or bounces it when persistent. Attached to the window while
 	 * the overlay is active so multiple overlays each handle Escape
 	 * independently.
-	 *
-	 * @description
-	 * The `keydown` emit itself is forwarded unconditionally, ahead of the
-	 * Escape-only logic below — it documents "any key pressed while the
-	 * overlay is open" (IOverlayEmits/the doc), not only the Escape key
-	 * this handler reacts to. The window listener is only attached while
-	 * `isActive` (see the `watch` below), so "while open" is already the
-	 * natural gate.
 	 ********************************************************/
 	const handleKeydown = (e: KeyboardEvent) => {
-		emits('keydown', e)
-
 		if (e.key === KEYBOARD_VALUES.ESC && globalTop.value) {
 			if (!props.persistent) {
 				isActive.value = false
@@ -358,10 +327,6 @@
 		}
 	}
 
-	const handleAfterEnter = () => {
-		emits('afterEnter')
-	}
-
 	const handleAfterLeave = () => {
 		onAfterLeave()
 		emits('afterLeave')
@@ -416,7 +381,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(overlayStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(overlayStyles)
 
 
 	/*********************************************************
@@ -451,49 +416,41 @@
 	.origam-overlay {
 		$this: &;
 
-		border-radius: var(--origam-overlay---border-radius, inherit);
-		display: var(--origam-overlay---display, flex);
+		border-radius: inherit;
+		display: flex;
 		left: 0;
-		pointer-events: var(--origam-overlay---pointer-events, none);
-		position: var(--origam-overlay---position, fixed);
+		pointer-events: none;
+		position: fixed;
 		top: 0;
 		bottom: 0;
 		right: 0;
 
 		&__content {
-			outline: var(--origam-overlay__content---outline, none);
-			position: var(--origam-overlay__content---position, absolute);
-			pointer-events: var(--origam-overlay__content---pointer-events, auto);
-			contain: var(--origam-overlay__content---contain, layout);
+			outline: none;
+			position: absolute;
+			pointer-events: auto;
+			contain: layout;
 		}
 
 		&__scrim {
 			pointer-events: var(--origam-overlay__scrim---pointer-events, auto);
 			background-color: var(--origam-overlay__scrim---background-color, var(--origam-color__overlay---scrim)); // TODO: rename to color.overlay.backdrop once #arbitration2 resolved
-			border-radius: var(--origam-overlay__scrim---border-radius, inherit);
-			bottom: var(--origam-overlay__scrim---position-bottom, 0);
-			left: var(--origam-overlay__scrim---position-left, 0);
+			border-radius: inherit;
+			bottom: 0;
+			left: 0;
 			opacity: var(--origam-overlay__scrim---opacity, 0.32);
-			position: var(--origam-overlay__scrim---position, fixed);
-			right: var(--origam-overlay__scrim---position-right, 0);
-			top: var(--origam-overlay__scrim---position-top, 0);
+			position: fixed;
+			right: 0;
+			top: 0;
 		}
 
-    &--is-rtl {
-      direction: rtl;
-    }
-
-    &--is-ltr {
-      direction: ltr;
-    }
-
 		&--absolute {
-			position: var(--origam-overlay__absolute---position, absolute);
+			position: absolute;
 		}
 
 		&--contained {
 			#{$this}__scrim {
-				position: var(--origam-overlay__contained---scrim-position, absolute);
+				position: absolute;
 			}
 		}
 

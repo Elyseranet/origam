@@ -108,32 +108,15 @@ interface IChartLegendItem {
   legend item gets the `--hidden` modifier class which applies
   `opacity: 0.4` + `text-decoration: line-through`. The item stays
   visible AND clickable so the user can re-enable a hidden series.
-- **Keyboard activation** — each entry is an `<li role="button"
-  tabindex="0">` that responds to `Enter` and `Space` as well as to
-  click. The three handlers all route to the same `onItemClick`, and
-  both key handlers call `.prevent` so `Space` never scrolls the page.
-- **`aria-pressed` carries the toggle state** — bound to
-  `!isHidden(entry)`, so a hidden series announces as *not pressed*.
-  An `aria-label` on the same element spells the state and the
-  consequence out in full (`"<series name>: visible, click to hide"` /
-  `"…: hidden, click to show"`). Both halves are **translated** — they read
-  `origam.chart.legend.item_visible` / `item_hidden`, built in
-  `itemAriaLabel()` rather than in the template. They were English literals
-  hidden behind a ternary inside a template literal until #567, which is why
-  no hardcoded-string audit ever counted them.
-- **The root `<ul>` carries NO explicit `role`.** This is deliberate,
-  not an oversight: the native `<ul>` already has the implicit `list`
-  role, and this repo's HTML-semantics-first policy applies the W3C's
-  first ARIA rule — *no ARIA is better than bad ARIA*. Pinned by
-  `packages/tests/e2e/chart.spec.ts` ("renders a native `<ul>` with one
-  entry per series"), which asserts the tag name and counts the
-  `[role="button"]` children.
-
-  ⚠️ Known consequence: because each `<li>` is overridden to
-  `role="button"`, the `<ul>` has no `listitem` children, so assistive
-  technology announces a set of toggle buttons rather than "list with N
-  items". The buttons themselves are fully labelled and operable — only
-  the list grouping is lost.
+- **Keyboard activation** — each `<li role="listitem" tabindex="0">`
+  responds to `Enter` and `Space` like a button. The `aria-pressed`
+  pattern isn't used because a legend item is a TOGGLE on its OWN
+  representation, not an action button — `tabindex` + `Enter / Space`
+  is the accessible-tree convention here.
+- **`role="list"` on the root `<ul>`** — explicit because Safari + VO
+  drop the implicit list semantics when the list has any non-default
+  CSS (e.g. `list-style: none`). The role makes the legend show up as
+  "list with N items" in the screen-reader rotor.
 - **Click → mutation order** — `legend-click` is emitted FIRST with the
   pre-click `entry.visible`. Then `series-toggle` is emitted with the
   inverted visibility. Parents that need only one signal should listen

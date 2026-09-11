@@ -1,0 +1,75 @@
+{
+  "badge": {
+    "_comment": "Badge consists of two BEM children: __wrapper (anchors the badge to its parent) and __badge (the visible dot/number). Tokens are split accordingly.",
+
+    "wrapper": {
+      "display":              { "$type": "other",      "$value": "flex" },
+      "align-items":          { "$type": "other",      "$value": "stretch" },
+      "justify-content":      { "$type": "other",      "$value": "start" },
+      "padding-block-start":  { "$type": "dimension",  "$value": "{space.0}" },
+      "padding-block-end":    { "$type": "dimension",  "$value": "{space.0}" },
+      "padding-inline-start": { "$type": "dimension",  "$value": "{space.0}" },
+      "padding-inline-end":   { "$type": "dimension",  "$value": "{space.0}" },
+      "margin-block-start":   { "$type": "dimension",  "$value": "{space.0}" },
+      "margin-block-end":     { "$type": "dimension",  "$value": "{space.0}" },
+      "margin-inline-start":  { "$type": "dimension",  "$value": "{space.0}" },
+      "margin-inline-end":    { "$type": "dimension",  "$value": "{space.0}" }
+    },
+
+    "badge": {
+      "background-color":     { "$type": "color",      "$value": "{color.action.primary.bg}" },
+      "color":                { "$type": "color",      "$value": "{color.action.primary.fg}" },
+      "border-color":         { "$type": "color",      "$value": "currentColor" },
+      "border-style":         { "$type": "other",      "$value": "solid" },
+      "border-width":         { "$type": "dimension",  "$value": "{border.width.0}" },
+      "border-top-width":     { "$type": "dimension",  "$value": "{border.width.0}" },
+      "border-left-width":    { "$type": "dimension",  "$value": "{border.width.0}" },
+      "border-bottom-width":  { "$type": "dimension",  "$value": "{border.width.0}" },
+      "border-right-width":   { "$type": "dimension",  "$value": "{border.width.0}" },
+      "border-radius":        { "$type": "dimension",  "$value": "{radius.full}" },
+      "font-size":            { "$type": "dimension",  "$value": "{font.size.sm}" },
+      "font-weight":          { "$type": "fontWeight", "$value": "{font.weight.medium}" },
+      "text-align":           { "$type": "other",      "$value": "center" },
+      "text-indent":          { "$type": "dimension",  "$value": "0" },
+      "white-space":          { "$type": "other",      "$value": "nowrap" },
+      "height":               { "$type": "dimension",  "$value": "1.25rem" },
+      "min-width":            { "$type": "dimension",  "$value": "20px" },
+      "pointer-events":       { "$type": "other",      "$value": "auto" },
+      "position":             { "$type": "other",      "$value": "absolute" },
+      "padding-block-start":  { "$type": "dimension",  "$value": "{space.0}" },
+      "padding-block-end":    { "$type": "dimension",  "$value": "{space.0}" },
+      "padding-inline-start": { "$type": "dimension",  "$value": "{space.1}" },
+      "padding-inline-end":   { "$type": "dimension",  "$value": "{space.1}" },
+      "margin-block-start":   { "$type": "dimension",  "$value": "{space.0}" },
+      "margin-block-end":     { "$type": "dimension",  "$value": "{space.0}" },
+      "margin-inline-start":  { "$type": "dimension",  "$value": "{space.0}" },
+      "margin-inline-end":    { "$type": "dimension",  "$value": "{space.0}" },
+      "transition-duration":  { "$type": "duration",   "$value": "225ms" },
+      "transition-timing-function": { "$type": "cubicBezier", "$value": "{motion.easing.standard}" },
+      "transition-property":  { "$type": "other",      "$value": "all" },
+      "box-shadow":           { "$type": "shadow",     "$value": "{shadow.none}" },
+      "box-shadow-elevated":  { "$type": "shadow",     "$value": "{shadow.md}" }
+    },
+
+    "warning": {
+      "background-color":   { "$type": "color", "$value": "{color.feedback.warning.bg}" },
+      "color":              { "$type": "color", "$value": "{color.feedback.warning.fg}" }
+    },
+    "success": {
+      "background-color":   { "$type": "color", "$value": "{color.feedback.success.bg}" },
+      "color":              { "$type": "color", "$value": "{color.feedback.success.fg}" }
+    },
+    "danger": {
+      "background-color":   { "$type": "color", "$value": "{color.feedback.danger.bg}" },
+      "color":              { "$type": "color", "$value": "{color.feedback.danger.fg}" }
+    },
+    "info": {
+      "background-color":   { "$type": "color", "$value": "{color.feedback.info.bg}" },
+      "color":              { "$type": "color", "$value": "{color.feedback.info.fg}" }
+    },
+    "error": {
+      "background-color":   { "$type": "color", "$value": "{color.feedback.danger.bg}" },
+      "color":              { "$type": "color", "$value": "{color.feedback.danger.fg}" }
+    }
+  }
+}

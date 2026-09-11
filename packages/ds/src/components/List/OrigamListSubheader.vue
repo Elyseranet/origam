@@ -1,7 +1,6 @@
 <template>
 	<component
 			:is="tag"
-			:id="id"
 			v-contrast
 			:class="listSubheaderClasses"
 			:style="listSubheaderStyles"
@@ -25,28 +24,26 @@
 		setup
 >
 	import { computed, StyleValue, toRef, useSlots } from 'vue'
-	import { useBorder } from '../../composables/Commons/border.composable'
-	import { useBothColor } from '../../composables/Commons/bothColor.composable'
-	import { useMargin } from '../../composables/Commons/margin.composable'
-	import { usePadding } from '../../composables/Commons/padding.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useRounded } from '../../composables/Commons/rounded.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-	import { useTypography } from '../../composables/Commons/typography.composable'
+	import {
+	useBorder,
+	useBothColor,
+	useMargin,
+	usePadding,
+	useProps,
+	useRounded,
+	useStyle,
+	useTypography
+} from '../../composables'
 
-	import vContrast from '../../directives/Contrast/contrast.directive'
+	import { vContrast } from '../../directives'
 
-	import type { IListSubheader, IListSubheaderEmits, IListSubheaderSlots } from '../../interfaces/List/list-subheader.interface'
+	import type { IListSubheader } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
 	 ********************************************************/
 
 	const props = withDefaults(defineProps<IListSubheader>(), {tag: 'div'})
-
-	defineEmits<IListSubheaderEmits>()
-
-	defineSlots<IListSubheaderSlots>()
 
 	const {filterProps} = useProps<IListSubheader>(props)
 
@@ -96,7 +93,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(listSubheaderStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(listSubheaderStyles)
 
 
 	/*********************************************************
@@ -121,7 +118,7 @@
 		background: inherit;
 		color: var(--origam-list-subheader---color, var(--origam-color__text---secondary));
 		display: flex;
-		font-size: var(--origam-list-subheader---font-size, var(--origam-list__subheader---font-size, 0.875rem));
+		font-size: var(--origam-list-subheader---font-size, 0.875rem);
 		font-weight: var(--origam-list-subheader---font-weight, 400);
 		line-height: var(--origam-list-subheader---line-height, 1.375rem);
 		padding-inline-end: var(--origam-list-subheader---padding-inline-end, 16px);

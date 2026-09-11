@@ -1,22 +1,21 @@
-import type { IBorderProps } from '../Commons/border.interface'
-import type { IColorProps } from '../Commons/color.interface'
 import type {
+    IBorderProps,
+    IColorProps,
     ICommonsComponentEmits,
-    ICommonsComponentProps
-} from '../Commons/commons.interface'
-import type { IDatePickerControlsProps } from './date-picker-controls.interface'
-import type { IDatePickerHeaderProps } from './date-picker-header.interface'
-import type { IDatePickerMonthProps } from './date-picker-month.interface'
-import type { IDatePickerMonthsProps } from './date-picker-months.interface'
-import type { IDatePickerYearsProps } from './date-picker-years.interface'
-import type { IElevationProps } from '../Commons/elevation.interface'
-import type { IMarginProps } from '../Commons/margin.interface'
-import type { IPaddingProps } from '../Commons/padding.interface'
-import type { IPickerProps } from '../Picker/picker.interface'
-import type { IRoundedProps } from '../Commons/rounded.interface'
+    ICommonsComponentProps,
+    IDatePickerControlsProps,
+    IDatePickerHeaderProps,
+    IDatePickerMonthProps,
+    IDatePickerMonthsProps,
+    IDatePickerYearsProps,
+    IElevationProps,
+    IMarginProps,
+    IPaddingProps,
+    IPickerProps,
+    IRoundedProps
+} from "../../interfaces"
 
-import type { TDateMode } from '../../types/DatePicker/date-picker.type'
-import type { TTransitionProps } from '../../types/Transition/transition.type'
+import type { TDateMode } from "../../types"
 
 // IPickerProps (via ISheetProps → IActiveProps) declares `active?: boolean | IActiveState`.
 // IDatePickerControlsProps declares `active?: string | Array<string> | boolean | IActiveState`.
@@ -34,23 +33,4 @@ export interface IDatePickerEmits extends ICommonsComponentEmits {
     (e: 'update:month', value: number): void
     (e: 'update:year', value: number): void
     (e: 'update:viewMode', value: TDateMode): void
-}
-
-/** Scope forwarded on the `header` slot — the computed header text plus the
- *  reverse-aware transition wrapper (`OrigamTranslatePicker` /
- *  `OrigamReverseTranslatePicker`) driving its enter/leave direction. */
-export interface IDatePickerHeaderSlot {
-    header: string
-    transition: TTransitionProps
-}
-
-/** Slot signatures for `<OrigamDatePicker>`. `title` / `default` / `actions`
- *  render with no scope (the default render swaps controls + month/months/
- *  years panels internally); `header` forwards `<OrigamDatePickerHeader>`'s
- *  computed text + transition so a custom render can reuse them. */
-export interface IDatePickerSlots {
-    title?: () => any
-    header?: (props: IDatePickerHeaderSlot) => any
-    default?: () => any
-    actions?: () => any
 }

@@ -1,7 +1,6 @@
 <template>
 	<component
 			:is="tag"
-			:id="id"
 			:class="rowClasses"
 			:style="rowStyles"
 	>
@@ -14,28 +13,21 @@
 		setup
 >
 	import { computed, type Ref, StyleValue, toRef } from 'vue'
-	import { useBorder } from '../../composables/Commons/border.composable'
-	import { useBothColor } from '../../composables/Commons/bothColor.composable'
-	import { useDensity } from '../../composables/Commons/density.composable'
-	import { useMargin } from '../../composables/Commons/margin.composable'
-	import { usePadding } from '../../composables/Commons/padding.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-	import { DENSITY } from '../../enums/Commons/density.enum'
-	import { ROW_GUTTER_RUNGS } from '../../consts/Grids/row.const'
-
-	import type {
-		IRowEmits,
-		IRowProps,
-		IRowSlots
-	} from '../../interfaces/Grids/row.interface'
-	import type { TColor } from '../../types/Commons/color.type'
-	import type { TRowGutterRung } from '../../types/Grids/row.type'
-
 	import {
-		convertToUnit,
-		toKebabCase
-	} from '../../utils/Commons/commons.util'
+	useBorder,
+	useBothColor,
+	useDensity,
+	useMargin,
+	usePadding,
+	useProps,
+	useStyle
+} from '../../composables'
+	import { DENSITY } from '../../enums'
+
+	import type { IRowProps } from '../../interfaces'
+	import type { TColor } from '../../types'
+
+	import { toKebabCase } from '../../utils'
 
 	/*********************************************************
 	 * Global
@@ -46,10 +38,6 @@
 	const props = withDefaults(defineProps<IRowProps>(), {tag: 'div', density: DENSITY.DEFAULT})
 
 	const {filterProps} = useProps<IRowProps>(props)
-
-	defineEmits<IRowEmits>()
-
-	defineSlots<IRowSlots>()
 
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 
@@ -67,49 +55,6 @@
 	 ********************************************************/
 
 	const {densityClasses} = useDensity(props)
-
-	/*********************************************************
-	 * Gouttiere (#417)
-	 *
-	 * @description
-	 * `gutters` etait declaree, exposee par deux controles de la story, et
-	 * ne faisait rien — seulement un avertissement de prop non supportee.
-	 * Elle pilote desormais reellement la grille, par UNE variable :
-	 * `--origam-row---gutter`, la gouttiere TOTALE entre deux colonnes
-	 * voisines.
-	 *
-	 * @description
-	 * ⛔ C'est une variable HERITEE, et c'est tout le mecanisme : le row la
-	 * pose sur lui-meme, chaque `<origam-col>` descendant la lit sans que
-	 * le row ait rien a lui transmettre. Pas de `provide`/`inject`, pas de
-	 * prop a faire descendre — le CSS fait deja circuler la valeur
-	 * (principe « CSS-first » du depot). Un col hors d'un row retombe sur
-	 * la valeur declaree au `:root`.
-	 *
-	 * @description
-	 * Le partage echelon / valeur libre est celui du reste du DS : un
-	 * echelon nomme sort en CLASSE (`origam-row--gutter-dense`), qui
-	 * repointe la variable vers le token de l'echelon ; une longueur libre
-	 * sort en DECLARATION EN LIGNE via `convertToUnit` (nombre -> px,
-	 * longueur CSS preservee telle quelle).
-	 *
-	 * @description
-	 * `computed` et non lecture eager : ADR-005, le resolveur de props de
-	 * theme ecrit dans `beforeCreate`, donc APRES `setup()`.
-	 ********************************************************/
-	const gutterRung = computed(() => {
-		const value = props.gutters
-
-		return typeof value === 'string' && (ROW_GUTTER_RUNGS as ReadonlyArray<string>).includes(value)
-			? value as TRowGutterRung
-			: undefined
-	})
-
-	const gutterStyles = computed(() => {
-		if (props.gutters === undefined || gutterRung.value) return undefined
-
-		return {'--origam-row---gutter': convertToUnit(props.gutters)}
-	})
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {paddingClasses, paddingStyles} = usePadding(props)
 	const {marginClasses, marginStyles} = useMargin(props)
@@ -122,7 +67,6 @@
 	 ********************************************************/
 	const rowStyles = computed(() => {
 		return [
-			gutterStyles.value,
 			borderStyles.value,
 			paddingStyles.value,
 			marginStyles.value,
@@ -133,7 +77,6 @@
 	const rowClasses = computed(() => {
 		const classes = [
 			'origam-row',
-			gutterRung.value ? `origam-row--gutter-${gutterRung.value}` : undefined,
 			colorClasses.value,
 			densityClasses.value,
 			borderClasses.value,
@@ -157,7 +100,7 @@
 
 		return classes
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(rowStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(rowStyles)
 
 
 	/*********************************************************
@@ -193,38 +136,22 @@
 		justify-content: var(--origam-row---justify-content);
 		box-sizing: var(--origam-row---box-sizing);
 
-		padding-block-start: var(--origam-row---padding-block-start);
-		padding-block-end: var(--origam-row---padding-block-end);
-		padding-inline-start: var(--origam-row---padding-inline-start);
-		padding-inline-end: var(--origam-row---padding-inline-end);
-
-		--origam-col---padding-block-start: calc(var(--origam-row---gutter) / 2);
-		--origam-col---padding-block-end: calc(var(--origam-row---gutter) / 2);
-		--origam-col---padding-inline-start: calc(var(--origam-row---gutter) / 2);
-		--origam-col---padding-inline-end: calc(var(--origam-row---gutter) / 2);
-
-		--origam-row---margin-block-start: calc(var(--origam-row---gutter) / -2);
-		--origam-row---margin-block-end: calc(var(--origam-row---gutter) / -2);
-		--origam-row---margin-inline-start: calc(var(--origam-row---gutter) / -2);
-		--origam-row---margin-inline-end: calc(var(--origam-row---gutter) / -2);
+		padding-block-start: var(--origam-container---padding-block-start);
+		padding-block-end: var(--origam-container---padding-block-end);
+		padding-inline-start: var(--origam-container---padding-inline-start);
+		padding-inline-end: var(--origam-container---padding-inline-end);
 
 		margin-block-start: calc(var(--origam-row---margin-block-start) + var(--origam-row---density));
 		margin-block-end: calc(var(--origam-row---margin-block-end) + var(--origam-row---density));
 		margin-inline-start: calc(var(--origam-row---margin-inline-start) + var(--origam-row---density));
 		margin-inline-end: calc(var(--origam-row---margin-inline-end) + var(--origam-row---density));
 
-		+ .origam-row {
+		+ .v-row {
 			margin-block-start: calc((var(--origam-row---margin-block-start) + var(--origam-row---density)) * -1);
 		}
 
-		@each $rung in (none, dense, default, comfortable) {
-			&--gutter-#{$rung} {
-				--origam-row---gutter: var(--origam-row--gutter-#{$rung}---gap);
-			}
-		}
-
 		&--density-default {
-			--origam-row---density: 0px;
+			--origam-row---density: 0;
 		}
 
 		&--density-compact {
@@ -292,7 +219,12 @@
 		--origam-row---padding-inline-start: 0;
 		--origam-row---padding-inline-end: 0;
 
-		--origam-row---density: 0px;
+		--origam-row---margin-block-start: -4px;
+		--origam-row---margin-block-end: -4px;
+		--origam-row---margin-inline-start: -4px;
+		--origam-row---margin-inline-end: -4px;
+
+		--origam-row---density: 0;
 
 		--origam-row---align-items: stretch;
 		--origam-row---justify-content: flex-start

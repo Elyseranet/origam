@@ -1,7 +1,4 @@
-import type {
-    ICommonsComponentProps,
-    ITagProps
-} from '../Commons/commons.interface'
+import type { ICommonsComponentProps, ITagProps } from '../../interfaces'
 
 export interface IParallaxLayerProps extends ICommonsComponentProps, ITagProps {
     /**
@@ -30,21 +27,6 @@ export interface IParallaxLayerProps extends ICommonsComponentProps, ITagProps {
      * Optional `z-index` override. By default layers stack in document order.
      */
     zIndex?: number
-}
-
-/*********************************************************
- * IParallaxLayerEmits
- *
- * @description
- * `<OrigamParallaxLayer>` emits nothing of its own — it registers into
- * the parent `<OrigamParallax>` registry (via `provide`/`inject`) and
- * is mutated directly by the host's rAF loop, outside Vue emit wiring.
- ********************************************************/
-export interface IParallaxLayerEmits {}
-
-/** Slot signatures for `<OrigamParallaxLayer>`. */
-export interface IParallaxLayerSlots {
-    default?: () => any
 }
 
 export interface IParallaxLayerRegistry {

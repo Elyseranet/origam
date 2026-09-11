@@ -1,0 +1,50 @@
+{
+  "slide-group": {
+    "display":                 { "$type": "other",      "$value": "flex" },
+    "overflow":                { "$type": "other",      "$value": "hidden" },
+
+    "transition-duration":     { "$type": "duration",   "$value": "{motion.duration.medium}" },
+    "transition-easing":       { "$type": "cubicBezier","$value": "{motion.easing.standard}" },
+
+    "prev": {
+      "align-items":           { "$type": "other",      "$value": "center" },
+      "display":               { "$type": "other",      "$value": "flex" },
+      "flex":                  { "$type": "other",      "$value": "0 1 52px" },
+      "min-width":             { "$type": "dimension",  "$value": "52px" },
+      "cursor":                { "$type": "other",      "$value": "pointer" },
+      "opacity-disabled":      { "$type": "number",     "$value": "{opacity.60}" },
+      "color":                 { "$type": "color",      "$value": "{color.text.primary}" }
+    },
+
+    "next": {
+      "align-items":           { "$type": "other",      "$value": "center" },
+      "display":               { "$type": "other",      "$value": "flex" },
+      "flex":                  { "$type": "other",      "$value": "0 1 52px" },
+      "min-width":             { "$type": "dimension",  "$value": "52px" },
+      "cursor":                { "$type": "other",      "$value": "pointer" },
+      "opacity-disabled":      { "$type": "number",     "$value": "{opacity.60}" },
+      "color":                 { "$type": "color",      "$value": "{color.text.primary}" }
+    },
+
+    "container": {
+      "display":               { "$type": "other",      "$value": "flex" },
+      "flex":                  { "$type": "other",      "$value": "1 1 auto" },
+      "overflow-x":            { "$type": "other",      "$value": "auto" },
+      "overflow-y":            { "$type": "other",      "$value": "hidden" },
+      "scrollbar-color":       { "$type": "color",      "$value": "transparent" }
+    },
+
+    "content": {
+      "display":               { "$type": "other",      "$value": "flex" },
+      "flex":                  { "$type": "other",      "$value": "1 0 auto" },
+      "position":              { "$type": "other",      "$value": "relative" },
+      "white-space":           { "$type": "other",      "$value": "nowrap" }
+    },
+
+    "vertical": {
+      "max-height":            { "$type": "other",      "$value": "inherit" },
+      "content-overflow-x":   { "$type": "other",      "$value": "hidden" },
+      "content-overflow-y":   { "$type": "other",      "$value": "auto" }
+    }
+  }
+}

@@ -14,8 +14,6 @@
 					gaugeThickness: 18,
 					gaugeShowEndpoints: true,
 					gaugeShowValue: true,
-					gaugeStartAngle: -2.3561944901923448,
-					gaugeEndAngle: 2.3561944901923448,
 					title: 'Completion',
 					height: 300
 				})"
@@ -29,8 +27,6 @@
 						:gauge-thickness="state.gaugeThickness"
 						:gauge-show-endpoints="state.gaugeShowEndpoints"
 						:gauge-show-value="state.gaugeShowValue"
-						:gauge-start-angle="state.gaugeStartAngle"
-						:gauge-end-angle="state.gaugeEndAngle"
 						:title="state.title"
 						:subtitle="state.subtitle"
 						:bg-color="state.bgColor"
@@ -56,10 +52,6 @@
 					<HstCheckbox v-model="state.gaugeShowEndpoints" title="Show Endpoints"/>
 					<HstCheckbox v-model="state.gaugeShowValue"     title="Show Value"/>
 				</StoryGroup>
-				<StoryGroup title="Sweep">
-					<HstSelect v-model="state.gaugeStartAngle" title="Start Angle" :options="GAUGE_START_ANGLE_OPTIONS"/>
-					<HstSelect v-model="state.gaugeEndAngle"   title="End Angle"   :options="GAUGE_END_ANGLE_OPTIONS"/>
-				</StoryGroup>
 				<StoryGroup title="Labels">
 					<HstText v-model="state.title"    title="Title"/>
 					<HstText v-model="state.subtitle" title="Subtitle"/>
@@ -80,6 +72,8 @@
 					gaugeUnit: '%',
 					animated: true,
 					animationDuration: 600,
+					showLegend: false,
+					showTooltip: false,
 					height: 300
 				})"
 		>
@@ -91,6 +85,8 @@
 						:gauge-unit="state.gaugeUnit"
 						:animated="state.animated"
 						:animation-duration="state.animationDuration"
+						:show-legend="state.showLegend"
+						:show-tooltip="state.showTooltip"
 						:height="state.height"
 				/>
 			</template>
@@ -99,7 +95,49 @@
 					<HstCheckbox v-model="state.animated"         title="Animated"/>
 					<HstNumber   v-model="state.animationDuration" title="Duration (ms)" :min="0" :max="3000" :step="100"/>
 				</StoryGroup>
+				<StoryGroup title="Visibility">
+					<HstCheckbox v-model="state.showLegend"  title="Show Legend"/>
+					<HstCheckbox v-model="state.showTooltip" title="Show Tooltip"/>
+				</StoryGroup>
 			</template>
+		</Variant>
+
+		<Variant title="Events - point-click">
+			<origam-chart-gauge
+					:series="[{ name: 'CPU', data: [72], color: 'primary' }]"
+					:gauge-min="0"
+					:gauge-max="100"
+					gauge-unit="%"
+					title="Point click"
+					:height="280"
+					@point-click="logEvent('point-click', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - legend-click">
+			<origam-chart-gauge
+					:series="[{ name: 'Load', data: [55], color: 'success' }]"
+					:gauge-min="0"
+					:gauge-max="100"
+					gauge-unit="%"
+					title="Legend click"
+					:show-legend="true"
+					:height="280"
+					@legend-click="logEvent('legend-click', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - series-toggle">
+			<origam-chart-gauge
+					:series="[{ name: 'Load', data: [55], color: 'success' }]"
+					:gauge-min="0"
+					:gauge-max="100"
+					gauge-unit="%"
+					title="Series toggle"
+					:show-legend="true"
+					:height="280"
+					@series-toggle="logEvent('series-toggle', $event)"
+			/>
 		</Variant>
 
 		<Variant title="Slots - title">
@@ -158,6 +196,21 @@
 			</origam-chart-gauge>
 		</Variant>
 
+		<Variant title="Slots - tooltip">
+			<origam-chart-gauge
+					:series="[{ name: 'CPU', data: [62], color: 'primary' }]"
+					:gauge-min="0"
+					:gauge-max="100"
+					gauge-unit="%"
+					:show-tooltip="true"
+					:height="280"
+			>
+				<template #tooltip="{ point, series }">
+					<span><strong>{{ series.name }}</strong>: {{ point.y }}</span>
+				</template>
+			</origam-chart-gauge>
+		</Variant>
+
 		<Variant title="Slots - empty">
 			<origam-chart-gauge
 					:series="[]"
@@ -184,12 +237,19 @@
 					gaugeShowValue: true,
 					animated: true,
 					animationDuration: 600,
+					showLegend: false,
+					showTooltip: false,
 					title: 'Completion',
 					height: 300
 				})"
 		>
 			<template #default="{ state }">
-				<origam-chart-gauge v-bind="state"/>
+				<origam-chart-gauge
+						v-bind="state"
+						@point-click="logEvent('point-click', $event)"
+						@legend-click="logEvent('legend-click', $event)"
+						@series-toggle="logEvent('series-toggle', $event)"
+				/>
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Labels">
@@ -211,6 +271,8 @@
 					<HstCheckbox v-model="state.gaugeShowEndpoints" title="Show Endpoints"/>
 					<HstCheckbox v-model="state.gaugeShowValue"     title="Show Value"/>
 					<HstCheckbox v-model="state.animated"           title="Animated"/>
+					<HstCheckbox v-model="state.showLegend"         title="Show Legend"/>
+					<HstCheckbox v-model="state.showTooltip"        title="Show Tooltip"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -221,6 +283,8 @@
 		lang="ts"
 		setup
 >
+	import { logEvent } from 'histoire/client'
+
 	import { OrigamChartGauge } from '@origam/components'
 	import type { IChartGaugeProps } from '@origam/interfaces'
 
@@ -231,23 +295,6 @@
 		ELEVATION_OPTIONS,
 		ROUNDED_OPTIONS
 	} from '@stories/const'
-
-	// Les angles sont en RADIANS, mesures depuis midi et croissant dans le
-	// sens horaire — c'est ce que consomme `useChartGauge` via les getters
-	// `startAngle` / `endAngle` (OrigamChartGauge.vue:325-326). Les libelles
-	// donnent l'equivalent en degres, seule facon de rendre un controle
-	// numerique en radians utilisable.
-	const GAUGE_START_ANGLE_OPTIONS = [
-		{ label: '-135° (defaut)', value: -2.3561944901923448 },
-		{ label: '-180° (demi-cercle)', value: -Math.PI },
-		{ label: '-90° (quart)', value: -Math.PI / 2 }
-	]
-
-	const GAUGE_END_ANGLE_OPTIONS = [
-		{ label: '135° (defaut)', value: 2.3561944901923448 },
-		{ label: '180° (demi-cercle)', value: Math.PI },
-		{ label: '90° (quart)', value: Math.PI / 2 }
-	]
 </script>
 
 <docs

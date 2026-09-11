@@ -1,16 +1,8 @@
-import type OrigamStepper from '../../components/Stepper/OrigamStepper.vue'
-import type OrigamStepperItem from '../../components/Stepper/OrigamStepperItem.vue'
-import { STEPPER_ITEM_STATUS } from '../../enums/Stepper/stepper.enum'
-import type { TDirection } from '../Commons/direction.type'
+import type { OrigamStepper, OrigamStepperItem } from '../../components'
 
 export type TOrigamStepper = InstanceType<typeof OrigamStepper>
 export type TOrigamStepperItem = InstanceType<typeof OrigamStepperItem>
 
-/**
- * Layout axis of `<OrigamStepper>`. Mirrors the global `TDirection` so
- * the stepper plays nicely with the rest of the design system's
- * direction props.
- */
-export type TStepperOrientation = TDirection
+export type TStepperOrientation = 'horizontal' | 'vertical'
 
-export type TStepperItemStatus = `${STEPPER_ITEM_STATUS}`
+export type TStepperItemStatus = 'pending' | 'active' | 'done' | 'error'

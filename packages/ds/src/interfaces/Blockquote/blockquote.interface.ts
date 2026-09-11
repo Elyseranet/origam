@@ -1,24 +1,22 @@
 import type {
     IAccentColorProps,
     IBgColorProps,
-    IColorProps
-} from '../Commons/color.interface'
-import type { IBorderProps } from '../Commons/border.interface'
-import type {
+    IBorderProps,
+    IColorProps,
     ICommonsComponentProps,
-    ITagProps
-} from '../Commons/commons.interface'
-import type { IElevationProps } from '../Commons/elevation.interface'
-import type { IMarginProps } from '../Commons/margin.interface'
-import type { IPaddingProps } from '../Commons/padding.interface'
-import type { IRoundedProps } from '../Commons/rounded.interface'
-import type { ITypographyProps } from '../Commons/typography.interface'
+    IElevationProps,
+    IMarginProps,
+    IPaddingProps,
+    IRoundedProps,
+    ITagProps,
+    ITypographyProps
+} from '../../interfaces'
 
 import type {
     TBlockquoteAlign,
     TBlockquoteLang,
     TBlockquoteVariant
-} from '../../types/Blockquote/blockquote.type'
+} from '../../types'
 
 /**
  * Props for `<OrigamBlockquote>` — typographic citation component.
@@ -112,12 +110,3 @@ export interface IBlockquoteSlots {
     author?: () => any
     source?: () => any
 }
-
-/*********************************************************
- * IBlockquoteEmits
- *
- * @description
- * Emits fired by `<OrigamBlockquote>` — none. Purely typographic,
- * renders a native `<blockquote>` with no interactive state.
- ********************************************************/
-export interface IBlockquoteEmits {}

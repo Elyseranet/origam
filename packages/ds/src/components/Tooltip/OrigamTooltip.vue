@@ -41,32 +41,28 @@
 		setup
 >
 	import { computed, mergeProps, ref, StyleValue, toRef } from 'vue'
-	import OrigamFade from '../Transition/OrigamFade.vue'
-	import OrigamOverlay from '../Overlay/OrigamOverlay.vue'
-	import OrigamTranslateScale from '../Transition/OrigamTranslateScale.vue'
+	import { OrigamFade, OrigamOverlay, OrigamTranslateScale } from '../../components'
 
-	import { useBothColor } from '../../composables/Commons/bothColor.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useScopeId } from '../../composables/Commons/scopeId.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-	import { useTypography } from '../../composables/Commons/typography.composable'
-	import { useVModel } from '../../composables/Commons/vModel.composable'
+	import {
+	useBothColor,
+	useProps,
+	useScopeId,
+	useStyle,
+	useTypography,
+	useVModel
+} from '../../composables'
 
-	import vContrast from '../../directives/Contrast/contrast.directive'
+	import { vContrast } from '../../directives'
 
-	import { INLINE } from '../../enums/Commons/anchor.enum'
-	import { LOCATION_STRATEGIES } from '../../enums/Commons/location.enum'
-	import { SCROLL_STRATEGIES } from '../../enums/Commons/scroll.enum'
+	import { INLINE, LOCATION_STRATEGIES, SCROLL_STRATEGIES } from '../../enums'
 
-	import type { ITooltipProps } from '../../interfaces/Tooltip/tooltip.interface'
+	import type { ITooltipProps} from '../../interfaces'
 
-	import type { ITooltipEmits, ITooltipSlots } from '../../interfaces/Tooltip/tooltip.interface'
+	import type { ITooltipEmits } from '../../interfaces/Tooltip/tooltip.interface'
 
-	import type { TAnchor } from '../../types/Commons/anchor.type'
-	import type { TOrigamOverlay } from '../../types/Overlay/overlay.type'
+	import type { TAnchor, TOrigamOverlay } from '../../types'
 
-	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
-	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
+	import { forwardRefs, getUid } from '../../utils'
 
 	/*********************************************************
 	 * Global
@@ -88,8 +84,6 @@
 	})
 
 	defineEmits<ITooltipEmits>()
-
-	defineSlots<ITooltipSlots>()
 
 	const {filterProps} = useProps<ITooltipProps>(props)
 

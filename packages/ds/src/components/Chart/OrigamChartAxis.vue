@@ -87,7 +87,7 @@
 		lang="ts"
 		setup
 >
-	import type { IChartAxisEmits, IChartAxisProps, IChartAxisSlots } from '../../interfaces/Chart/chart-axis.interface'
+	import type { IChartAxisProps } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -124,10 +124,6 @@
 		secondaryYTicks: undefined,
 		secondaryYAxisFormat: undefined
 	})
-
-	defineEmits<IChartAxisEmits>()
-
-	defineSlots<IChartAxisSlots>()
 
 	/*********************************************************
 	 * Format helpers — fall back to identity when the consumer
@@ -167,17 +163,17 @@
 	 * via the `--origam-chart__{grid,axis}---*` CSS variables.
 	 */
 	.origam-chart__grid-line {
-		stroke: var(--origam-chart__grid---color, var(--origam-color__border---subtle, #e5e7eb));
+		stroke: var(--origam-chart__grid---color, var(--origam-color-border-subtle, #e5e7eb));
 		stroke-width: var(--origam-chart__grid---stroke-width, 1);
 	}
 
 	.origam-chart__axis-line {
-		stroke: var(--origam-chart__axis---color, var(--origam-color__border---default, #d1d5db));
+		stroke: var(--origam-chart__axis---color, var(--origam-color-border-default, #d1d5db));
 		stroke-width: var(--origam-chart__axis---stroke-width, 1);
 	}
 
 	.origam-chart__axis-label {
-		fill: var(--origam-chart__axis-label---color, var(--origam-color__text---secondary, #6b7280));
+		fill: var(--origam-chart__axis-label---color, var(--origam-color-text-secondary, #6b7280));
 		font-size: var(--origam-chart__axis-label---font-size, 0.75rem);
 	}
 </style>

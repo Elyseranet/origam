@@ -1,13 +1,12 @@
 <template>
 	<Story
 			group="components"
-      auto-props-disabled
 			title="SelectionControl/OrigamSelectionControlGroup"
 	>
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<Partial<ISelectionControlGroupProps>>({ color: 'primary', density: 'default', trueIcon: MDI_ICONS.CHECKBOX_MARKED_OUTLINE, falseIcon: MDI_ICONS.CHECKBOX_BLANK_OUTLINE, inline: false, ripple: true })"
+				:init-state="() => useStoryInitState<Partial<ISelectionControlGroupProps>>({ color: 'primary', density: 'default', trueIcon: undefined, falseIcon: undefined, inline: false, ripple: true })"
 		>
 			<template #default="{ state }">
 				<origam-selection-control-group
@@ -47,7 +46,7 @@
 
 		<Variant
 				title="Functional"
-				:init-state="() => useStoryInitState<Partial<ISelectionControlGroupProps>>({ type: 'checkbox', multiple: true, disabled: false, readonly: false, error: false, name: undefined })"
+				:init-state="() => useStoryInitState<Partial<ISelectionControlGroupProps>>({ type: 'checkbox', multiple: false, disabled: false, readonly: false, error: false, name: undefined })"
 		>
 			<template #default="{ state }">
 				<origam-selection-control-group
@@ -57,8 +56,6 @@
 						:disabled="state.disabled"
 						:readonly="state.readonly"
 						:error="state.error"
-            :true-icon="state.multiple ? MDI_ICONS.CHECKBOX_MARKED_OUTLINE : MDI_ICONS.RADIOBOX_MARKED"
-            :false-icon="state.multiple ? MDI_ICONS.CHECKBOX_BLANK_OUTLINE : MDI_ICONS.RADIOBOX_BLANK"
 						:name="state.name || undefined"
 				>
 					<origam-selection-control value="a" label="Option A"/>
@@ -86,14 +83,10 @@
 			<origam-selection-control-group
 					v-model="emitModel"
 					type="checkbox"
-          multiple
-          :true-icon="MDI_ICONS.CHECKBOX_MARKED_OUTLINE"
-          :false-icon="MDI_ICONS.CHECKBOX_BLANK_OUTLINE"
 					@update:model-value="logEvent('update:modelValue', $event)"
 			>
-          <origam-selection-control value="a" label="Option A"/>
-          <origam-selection-control value="b" label="Option B"/>
-          <origam-selection-control value="c" label="Option C"/>
+				<origam-selection-control value="a" label="Option A"/>
+				<origam-selection-control value="b" label="Option B"/>
 			</origam-selection-control-group>
 		</Variant>
 
@@ -101,8 +94,6 @@
 			<origam-selection-control-group
 					v-model="slotDefaultModel"
 					type="radio"
-          :true-icon="MDI_ICONS.RADIOBOX_MARKED"
-          :false-icon="MDI_ICONS.RADIOBOX_BLANK"
 			>
 				<origam-selection-control value="x" label="Choice X"/>
 				<origam-selection-control value="y" label="Choice Y"/>
@@ -114,8 +105,6 @@
 			<origam-selection-control-group
 					v-model="slotItemModel"
 					type="checkbox"
-          :true-icon="MDI_ICONS.CHECKBOX_MARKED_OUTLINE"
-          :false-icon="MDI_ICONS.CHECKBOX_BLANK_OUTLINE"
 					:items="checkboxItems"
 			>
 				<template #item="{ item, index }">
@@ -129,7 +118,7 @@
 
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<Partial<ISelectionControlGroupProps>>({ color: 'primary', density: 'default', type: 'checkbox', multiple: true, inline: false, disabled: false, readonly: false, error: false, ripple: true, trueIcon: MDI_ICONS.CHECKBOX_MARKED_OUTLINE, falseIcon: MDI_ICONS.CHECKBOX_BLANK_OUTLINE })"
+				:init-state="() => useStoryInitState<Partial<ISelectionControlGroupProps>>({ color: 'primary', density: 'default', type: 'checkbox', multiple: false, inline: false, disabled: false, readonly: false, error: false, ripple: true, trueIcon: undefined, falseIcon: undefined })"
 		>
 			<template #default="{ state }">
 				<origam-selection-control-group
@@ -166,8 +155,7 @@
 		lang="ts"
 		setup
 >
-	import { MDI_ICONS } from "@origam/enums";
-  import { ref } from 'vue'
+	import { ref } from 'vue'
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamSelectionControl, OrigamSelectionControlGroup } from '@origam/components'
@@ -193,19 +181,10 @@
 		{ value: 'gamma', label: 'Gamma' },
 	]
 
-	// ⛔ Chaque modele de variante est un TABLEAU, y compris le playground.
-	// Les variantes « Functional » et « Default » partaient de
-	// `multiple: false` sur un modele tableau et `type: 'checkbox'` : un
-	// utilisateur qui ouvrait la story voyait donc un groupe de cases ou
-	// chaque clic ecrase le precedent, et concluait — a tort — que le
-	// composant n'accumule pas (#396). Le composant etait correct :
-	// `multiple: false` veut bien dire « une seule ». C'est la story qui
-	// annoncait un groupe de cases tout en demandant le mode exclusif.
-	// Le controle « Multiple » reste la pour montrer les deux modes.
 	const designModel      = ref<string[]>([])
 	const functionalModel  = ref<string[]>([])
 	const emitModel        = ref<string[]>([])
 	const slotDefaultModel = ref<string | undefined>(undefined)
 	const slotItemModel    = ref<string[]>([])
-	const playgroundModel  = ref<any>([])
+	const playgroundModel  = ref<any>(undefined)
 </script>

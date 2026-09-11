@@ -1,0 +1,37 @@
+{
+  "otp-input-field": {
+    "background-color":        { "$type": "color",     "$value": "{color.surface.default}" },
+    "color":                   { "$type": "color",     "$value": "{color.text.primary}" },
+    "border-radius":           { "$type": "dimension", "$value": "{radius.sm}" },
+    "padding-block":           { "$type": "dimension", "$value": "{space.2}" },
+    "font-size":               { "$type": "dimension", "$value": "{font.size.2xl}", "$description": "1.25rem — taille du chiffre dans chaque cell" },
+    "gap":                     { "$type": "dimension", "$value": "{space.2}", "$description": "Espacement entre les cells OTP" },
+    "transition-duration":     { "$type": "duration",  "$value": "{motion.duration.medium}" },
+    "transition-easing":       { "$type": "cubicBezier", "$value": "{motion.easing.standard}" },
+
+    "content": {
+      "height":                { "$type": "dimension", "$value": "{space.16}", "$description": "64px — hauteur du conteneur de cells" },
+      "max-width":             { "$type": "dimension", "$value": "320px" },
+      "max-width-divided":     { "$type": "dimension", "$value": "360px", "$description": "max-width quand le prop divider est actif" },
+      "padding":               { "$type": "dimension", "$value": "{space.2}" }
+    },
+
+    "divider": {
+      "margin-inline":         { "$type": "dimension", "$value": "{space.2}", "$description": "Marge horizontale du séparateur entre cells" }
+    },
+
+    "cell": {
+      "width":                 { "$type": "dimension", "$value": "100%", "$description": "Chaque cell prend la largeur disponible dans son origam-field" },
+      "height":                { "$type": "dimension", "$value": "100%" },
+      "color":                 { "$type": "color",     "$value": "inherit", "$description": "Hérite du color du composant parent" },
+      "border-color":          { "$type": "color",     "$value": "{color.border.default}" },
+      "border-color-filled":   { "$type": "color",     "$value": "{color.border.strong}", "$description": "Cell remplie par l'utilisateur" },
+      "border-color-focused":  { "$type": "color",     "$value": "{color.border.focus}", "$description": "Cell actuellement active (focus)" },
+      "border-color-error":    { "$type": "color",     "$value": "{color.feedback.danger.border}", "$description": "État erreur de validation" },
+      "background-color":      { "$type": "color",     "$value": "transparent" },
+      "font-size":             { "$type": "dimension", "$value": "{font.size.2xl}" },
+      "text-align":            { "$type": "other",     "$value": "center" },
+      "outline":               { "$type": "other",     "$value": "none", "$description": "Outline natif supprimé — le focus est géré par origam-field" }
+    }
+  }
+}

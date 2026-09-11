@@ -18,12 +18,6 @@ import { expect, test, type Page } from '@playwright/test'
  *      visually inverted vs the navigation direction.
  *
  * These tests pin the post-fix invariants so the bugs don't regress.
- *
- * REALIGNED (2026-08) — "Show arrows" is now the "Default" Variant
- * (init-state already sets showArrows: true) — swapped the title, no
- * extra control-driving required. The migrated story also dropped
- * every `data-cy="item-default-N"` on window items — active-item
- * identity is now read from its text content ("Slide N") instead.
  */
 
 const sandboxOf = (page: Page) =>
@@ -82,7 +76,8 @@ test.describe('OrigamWindow — arrows render by default', () => {
         const sandbox = sandboxOf(page)
 
         await expect(sandbox.locator('.origam-window').first()).toBeVisible({ timeout: 8000 })
-        await expect(sandbox.locator('.origam-window__controls')).toHaveCount(1)
+        const controlsCount = await sandbox.locator('.origam-window__controls').count()
+        expect(controlsCount).toBe(1)
     })
 
     test('Default variant exposes the next button (canMoveForward at index 0)', async ({ page }) => {
@@ -90,14 +85,13 @@ test.describe('OrigamWindow — arrows render by default', () => {
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-window').first()).toBeVisible({ timeout: 8000 })
 
-        await expect(sandbox.locator('.origam-window__next')).toHaveCount(1)
+        const nextCount = await sandbox.locator('.origam-window__next').count()
+        expect(nextCount).toBe(1)
     })
 
     test('next-button uses chevron-right, prev-button uses chevron-left', async ({ page }) => {
-        // "Show arrows" is now the "Default" Variant — init-state already
-        // sets showArrows: true, so both arrows are visible after one
-        // navigation, same as the removed dedicated fixture.
-        await openVariant(page, WINDOW_PATH, 'Default')
+        // Show arrows variant has both arrows visible after one navigation.
+        await openVariant(page, WINDOW_PATH, 'Show arrows')
         const sandbox = sandboxOf(page)
         const next = sandbox.locator('.origam-window__next').first()
         await expect(next).toBeVisible({ timeout: 8000 })
@@ -123,21 +117,19 @@ test.describe('OrigamWindow — clicking arrows rotates active item', () => {
         const window = sandbox.locator('.origam-window').first()
         await expect(window).toBeVisible({ timeout: 8000 })
 
-        // No data-cy on OrigamWindowItem / the story's slide content
-        // anymore — identify the active item by its text ("Slide N",
-        // slideStyle-driven content in OrigamWindow.story.vue).
-        const activeSlideText = async () =>
-            sandbox.locator('.origam-window-item--active').first().textContent()
+        // Helper: which data-cy is currently the active item?
+        const activeCy = async () =>
+            sandbox.locator('.origam-window-item--active').first().getAttribute('data-cy')
 
-        expect(await activeSlideText()).toContain('Slide 1')
+        expect(await activeCy()).toBe('item-default-1')
 
         await sandbox.locator('.origam-window__next').first().click({ force: true })
         await page.waitForTimeout(500)
-        expect(await activeSlideText()).toContain('Slide 2')
+        expect(await activeCy()).toBe('item-default-2')
 
         await sandbox.locator('.origam-window__next').first().click({ force: true })
         await page.waitForTimeout(500)
-        expect(await activeSlideText()).toContain('Slide 3')
+        expect(await activeCy()).toBe('item-default-3')
     })
 
     test('clicking prev rolls activeIndex back', async ({ page }) => {
@@ -154,8 +146,8 @@ test.describe('OrigamWindow — clicking arrows rotates active item', () => {
         // Now walk back — prev should be visible since activeIndex > 0.
         await sandbox.locator('.origam-window__prev').first().click({ force: true })
         await page.waitForTimeout(450)
-        const text = await sandbox.locator('.origam-window-item--active').first().textContent()
-        expect(text).toContain('Slide 2')
+        const cy = await sandbox.locator('.origam-window-item--active').first().getAttribute('data-cy')
+        expect(cy).toBe('item-default-2')
     })
 })
 

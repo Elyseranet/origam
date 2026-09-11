@@ -1,0 +1,10 @@
+{
+  "responsive": {
+    "_comment": "Aspect-ratio container. Mostly dimension/layout tokens — no chrome.",
+    "aspect-ratio-default": { "$type": "other",     "$value": "16 / 9" },
+    "aspect-ratio-square":  { "$type": "other",     "$value": "1 / 1" },
+    "aspect-ratio-portrait":{ "$type": "other",     "$value": "3 / 4" },
+    "max-width":            { "$type": "other",     "$value": "100%" },
+    "overflow":             { "$type": "other",     "$value": "hidden" }
+  }
+}

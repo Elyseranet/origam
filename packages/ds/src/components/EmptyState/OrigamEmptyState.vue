@@ -1,7 +1,6 @@
 <template>
 	<component
 			:is="tag"
-			:id="id"
 			:class="emptyStateClasses"
 			:style="emptyStateStyles"
 			role="status"
@@ -60,11 +59,11 @@
 
 	import { OrigamIcon } from '../Icon'
 
-	import { useTypography } from '../../composables/Commons/typography.composable'
+	import { useTypography } from '../../composables'
 
 	import { EMPTY_STATE_PRESET_CONFIG } from '../../consts/EmptyState/empty-state.const'
 
-	import type { IEmptyStateEmits, IEmptyStateProps, IEmptyStateSlots } from '../../interfaces/EmptyState/empty-state.interface'
+	import type { IEmptyStateProps } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -89,10 +88,6 @@
 		size: 'md',
 		align: 'center'
 	})
-
-	defineEmits<IEmptyStateEmits>()
-
-	defineSlots<IEmptyStateSlots>()
 
 	const slots = useSlots()
 
@@ -205,7 +200,6 @@
 		color: var(--origam-empty-state---resolved-icon-color);
 		font-size: var(--origam-empty-state---resolved-icon-size);
 		line-height: 1;
-		margin-bottom: var(--origam-empty-state__icon---margin-bottom, 0);
 	}
 
 	.origam-empty-state__icon-glyph {

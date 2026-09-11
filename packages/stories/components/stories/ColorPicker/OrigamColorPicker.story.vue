@@ -113,6 +113,30 @@
 			</template>
 		</Variant>
 
+		<Variant title="Prop — hideCanvas">
+			<div style="padding: 24px; display: flex; justify-content: center;">
+				<origam-color-picker v-model="color" hide-canvas/>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — mode">
+			<div style="padding: 24px; display: flex; justify-content: center;">
+				<origam-color-picker v-model="color" mode="hsla"/>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — hideSliders & hideInputs">
+			<div style="padding: 24px; display: flex; justify-content: center;">
+				<origam-color-picker v-model="color" hide-sliders hide-inputs/>
+			</div>
+		</Variant>
+
+		<Variant title="Prop — showSwatches & swatchesMaxHeight">
+			<div style="padding: 24px; display: flex; justify-content: center;">
+				<origam-color-picker v-model="color" show-swatches :swatches-max-height="120"/>
+			</div>
+		</Variant>
+
 		<Variant title="Events - update:modelValue">
 			<origam-color-picker
 					v-model="color"

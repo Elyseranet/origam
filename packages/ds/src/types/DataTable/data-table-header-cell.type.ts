@@ -1,3 +1,3 @@
-import OrigamDataTableHeaderCell from '../../components/DataTable/OrigamDataTableHeaderCell.vue'
+import { OrigamDataTableHeaderCell } from "../../components"
 
 export type TOrigamDataTableHeaderCell = InstanceType<typeof OrigamDataTableHeaderCell>

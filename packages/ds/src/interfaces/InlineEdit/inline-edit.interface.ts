@@ -1,10 +1,10 @@
 import type {
     ICommonsComponentProps,
-    ITagProps
-} from '../Commons/commons.interface'
-import type { ITypographyProps } from '../Commons/typography.interface'
+    ITagProps,
+    ITypographyProps
+} from '../../interfaces'
 
-import type { TInlineEditInputType } from '../../types/InlineEdit/inline-edit.type'
+import type { TInlineEditInputType } from '../../types'
 
 /**
  * Signature of a validator passed to `<OrigamInlineEdit>` (and to the
@@ -34,14 +34,14 @@ export type TInlineEditRule = (value: string) => true | string | Promise<true | 
  * Props for `<OrigamInlineEdit>` — edit-in-place pattern.
  *
  * The component is intentionally headless on the display side: by
- * default it renders a native `<button>` carrying the current value (or
+ * default it renders a button-styled span with the current value (or
  * the placeholder when the value is empty); consumers can fully
- * override the affordance via the scoped `#display` slot. In edit mode
- * it renders `<OrigamTextField>` (or `<OrigamTextareaField>` when
- * `multiline` is true), which is what supplies the field chrome and the
- * `appendInner` surface the built-in action buttons live in.
+ * override the affordance via the scoped `#display` slot. In edit
+ * mode it renders a native `<input>` (or `<textarea>` when `multiline`
+ * is true) — wrapping a heavier component (TextField, …) is not
+ * needed and would defeat the keyboard-driven UX.
  */
-export interface IInlineEditProps extends ICommonsComponentProps, ITagProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight'> {
+export interface IInlineEditProps extends ICommonsComponentProps, ITagProps, ITypographyProps {
     /**
      * Current value (v-model target). Accepts both `string` and
      * `number` for ergonomics — the internal draft is normalised to a
@@ -51,11 +51,8 @@ export interface IInlineEditProps extends ICommonsComponentProps, ITagProps, Pic
     modelValue: string | number
     /**
      * Placeholder shown on the input AND surfaced inside the default
-     * `#display` slot when `modelValue` is empty.
-     *
-     * Left unset, it falls back to the localised
-     * `origam.inline_edit.placeholder` ("Click to edit" in English) —
-     * it is NOT a hardcoded English literal any more.
+     * `#display` slot when `modelValue` is empty. Consumers wrap with
+     * `t()` if they need i18n.
      */
     placeholder?: string
     /**
@@ -268,19 +265,8 @@ export interface IUseInlineEditOptions {
      * First failure blocks the commit and surfaces the error message.
      */
     rules?: Array<TInlineEditRule>
-    /**
-     * Sync or async validator — see `TInlineEditValidator`.
-     *
-     * `invalidMessage` is its companion: the message used when a validator
-     * rejects the draft WITHOUT returning one of its own (i.e. it returned
-     * something other than `true` or a `string`). `<OrigamInlineEdit>`
-     * passes the localised `origam.inline_edit.invalid_value`; headless
-     * consumers that skip it keep the English literal `'Invalid value'`.
-     * That indirection is the localisation seam — it keeps `useInlineEdit`
-     * free of `useLocale()`, and therefore usable without `createOrigam()`.
-     */
+    /** Sync or async validator — see `TInlineEditValidator`. */
     validate?: TInlineEditValidator
-    invalidMessage?: string
     /**
      * Strip surrounding whitespace before running the validator and
      * emitting the new value.

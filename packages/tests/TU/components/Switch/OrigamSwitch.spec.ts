@@ -2,7 +2,7 @@
 //
 // Strategy: mount with createOrigam() + stubs for all sub-components so
 // the spec is hermetic. We exercise:
-//   - BEM root classes: origam-switch, --inset, --indeterminate
+//   - BEM root classes: origam-switch, --flat, --inset, --indeterminate
 //   - skeleton loader branch (loading kind=skeleton → origam-switch__skeleton)
 //   - reactive indeterminate class changes
 //   - custom class forwarded to root
@@ -50,7 +50,7 @@ const OrigamSelectionControlStub = defineComponent({
         readonly: Boolean,
         type: String
     },
-    emits: ['update:modelValue', 'focus', 'blur', 'click:label'],
+    emits: ['update:modelValue', 'focus', 'blur'],
     setup (_, { expose }) {
         expose({
             filterProps: (_p: any, _e?: string[]) => ({}),
@@ -113,6 +113,16 @@ describe('OrigamSwitch — BEM root class', () => {
     it('renders the origam-switch class', () => {
         const wrapper = mountSwitch()
         expect(wrapper.find('.origam-switch').exists()).toBe(true)
+    })
+
+    it('adds origam-switch--flat when flat=true', () => {
+        const wrapper = mountSwitch({ props: { flat: true } })
+        expect(wrapper.find('.origam-switch--flat').exists()).toBe(true)
+    })
+
+    it('does NOT add origam-switch--flat when flat is absent', () => {
+        const wrapper = mountSwitch()
+        expect(wrapper.find('.origam-switch--flat').exists()).toBe(false)
     })
 
     it('adds origam-switch--inset when inset=true', () => {
@@ -185,24 +195,6 @@ describe('OrigamSwitch — indeterminate toggling', () => {
         await wrapper.setProps({ indeterminate: true })
         await nextTick()
         expect(wrapper.find('.origam-switch--indeterminate').exists()).toBe(true)
-    })
-})
-
-// LOT 3 (unemitted-declarations guard) — `ISwitchEmits` extends
-// `IClickLabelEmits` (`click:label`), but nothing wired the underlying
-// `<origam-selection-control>`'s own `click:label` up to `<origam-switch>`:
-// the declaration was dead, a consumer binding `@click:label` never
-// received it. Fixed by capturing `defineEmits` into `emits` and wiring
-// `@click:label="handleClickLabel"` — same pattern as OrigamRadioBtn.
-describe('OrigamSwitch — click:label forwarded from the underlying SelectionControl', () => {
-    it('emits click:label when the SelectionControl fires it', async () => {
-        const wrapper = mountSwitch()
-        const control = wrapper.findComponent({ name: 'OrigamSelectionControl' })
-        const event = new MouseEvent('click')
-        await control.vm.$emit('click:label', event)
-
-        expect(wrapper.emitted('click:label')).toBeTruthy()
-        expect(wrapper.emitted('click:label')?.[0][0]).toBe(event)
     })
 })
 

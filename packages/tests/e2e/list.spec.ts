@@ -45,14 +45,14 @@ test.describe('OrigamList', () => {
 
     test.describe('Design', () => {
         test('renders the list root with BEM class', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
         })
 
         test('default density class is applied', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
@@ -60,7 +60,7 @@ test.describe('OrigamList', () => {
         })
 
         test('default lines class is applied (one-line)', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
@@ -68,15 +68,16 @@ test.describe('OrigamList', () => {
         })
 
         test('renders 3 list-items in the default slot', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
-            await expect(sandbox.locator('.origam-list-item')).toHaveCount(3)
+            const count = await sandbox.locator('.origam-list-item').count()
+            expect(count).toBe(3)
         })
 
         test('second item has a subtitle element', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
@@ -93,22 +94,23 @@ test.describe('OrigamList', () => {
 
     test.describe('Functional', () => {
         test('renders the list root', async ({ page }) => {
-            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(1))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
         })
 
         test('renders 3 selectable items from items prop', async ({ page }) => {
-            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(1))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
-            await expect(sandbox.locator('.origam-list-item')).toHaveCount(3)
+            const count = await sandbox.locator('.origam-list-item').count()
+            expect(count).toBe(3)
         })
 
         test('no --nav modifier class at init (nav=false)', async ({ page }) => {
-            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(1))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
@@ -117,7 +119,7 @@ test.describe('OrigamList', () => {
         })
 
         test('no --disabled modifier class at init (disabled=false)', async ({ page }) => {
-            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(1))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
@@ -133,11 +135,12 @@ test.describe('OrigamList', () => {
 
     test.describe('Events - update:selected', () => {
         test('renders selectable items', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
-            await expect(sandbox.locator('.origam-list-item')).toHaveCount(3)
+            const count = await sandbox.locator('.origam-list-item').count()
+            expect(count).toBe(3)
         })
     })
 
@@ -147,11 +150,12 @@ test.describe('OrigamList', () => {
 
     test.describe('Events - click:select', () => {
         test('renders selectable items', async ({ page }) => {
-            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(3))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
-            await expect(sandbox.locator('.origam-list-item')).toHaveCount(3)
+            const count = await sandbox.locator('.origam-list-item').count()
+            expect(count).toBe(3)
         })
     })
 
@@ -162,7 +166,7 @@ test.describe('OrigamList', () => {
 
     test.describe('Events - click:open', () => {
         test('renders grouped list (list-group elements)', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(4))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
@@ -177,7 +181,7 @@ test.describe('OrigamList', () => {
 
     test.describe('Events - update:opened', () => {
         test('renders grouped list', async ({ page }) => {
-            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(5))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
@@ -193,15 +197,16 @@ test.describe('OrigamList', () => {
 
     test.describe('Slots - Default', () => {
         test('renders 3 items via default slot', async ({ page }) => {
-            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(6))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
-            await expect(sandbox.locator('.origam-list-item')).toHaveCount(3)
+            const count = await sandbox.locator('.origam-list-item').count()
+            expect(count).toBe(3)
         })
 
         test('item titles are visible (Alpha, Beta, Gamma)', async ({ page }) => {
-            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(6))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
@@ -218,7 +223,7 @@ test.describe('OrigamList', () => {
 
     test.describe('Slots - ChildrenItem', () => {
         test('renders the list root', async ({ page }) => {
-            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(7))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
@@ -229,7 +234,7 @@ test.describe('OrigamList', () => {
             // The #childrenItem slot bypasses OrigamListGroup and renders children
             // directly as list-items tagged data-cy="children-item-{index}".
             // No .origam-list-group elements are produced.
-            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(7))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
@@ -245,7 +250,7 @@ test.describe('OrigamList', () => {
 
     test.describe('Slots - Divider', () => {
         test('renders the list root with items from itemsWithDivider', async ({ page }) => {
-            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(8))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
@@ -258,7 +263,7 @@ test.describe('OrigamList', () => {
             // the custom slot, so .origam-list-item count is 0 and hr count
             // matches the total item count (5). This is a DS-level behavioural
             // quirk, documented here as a non-regression marker.
-            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(8))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
@@ -274,14 +279,14 @@ test.describe('OrigamList', () => {
 
     test.describe('Slots - Subheader', () => {
         test('renders list with subheaders', async ({ page }) => {
-            await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(9))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
         })
 
         test('custom subheader slot prepends a star character', async ({ page }) => {
-            await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(9))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
@@ -298,7 +303,7 @@ test.describe('OrigamList', () => {
 
     test.describe('Slots - Group', () => {
         test('renders the list root', async ({ page }) => {
-            await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(10))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
@@ -312,14 +317,14 @@ test.describe('OrigamList', () => {
 
     test.describe('Slots - GroupActivator', () => {
         test('renders the list root', async ({ page }) => {
-            await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(11))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
         })
 
         test('custom activator renders "Custom Activator" title', async ({ page }) => {
-            await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(11))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
@@ -334,11 +339,12 @@ test.describe('OrigamList', () => {
 
     test.describe('Slots - Item', () => {
         test('renders 3 items via custom #item slot', async ({ page }) => {
-            await page.goto(variantUrl(12), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(12))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
-            await expect(sandbox.locator('.origam-list-item')).toHaveCount(3)
+            const count = await sandbox.locator('.origam-list-item').count()
+            expect(count).toBe(3)
         })
     })
 
@@ -350,22 +356,23 @@ test.describe('OrigamList', () => {
 
     test.describe('Default (playground)', () => {
         test('renders the list root', async ({ page }) => {
-            await page.goto(variantUrl(13), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(13))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
         })
 
         test('renders 3 items', async ({ page }) => {
-            await page.goto(variantUrl(13), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(13))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
-            await expect(sandbox.locator('.origam-list-item')).toHaveCount(3)
+            const count = await sandbox.locator('.origam-list-item').count()
+            expect(count).toBe(3)
         })
 
         test('density-default class applied', async ({ page }) => {
-            await page.goto(variantUrl(13), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(13))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
@@ -373,7 +380,7 @@ test.describe('OrigamList', () => {
         })
 
         test('one-line class applied', async ({ page }) => {
-            await page.goto(variantUrl(13), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(13))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
@@ -395,7 +402,7 @@ test.describe('OrigamList', () => {
 
     test.describe('Keyboard navigation', () => {
         test('ArrowDown from the list root moves focus to the first item', async ({ page }) => {
-            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(1))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
@@ -408,7 +415,7 @@ test.describe('OrigamList', () => {
         })
 
         test('repeated ArrowDown steps through items in order', async ({ page }) => {
-            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(1))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
@@ -424,7 +431,7 @@ test.describe('OrigamList', () => {
         })
 
         test('ArrowUp steps backwards through items', async ({ page }) => {
-            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(1))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
@@ -439,7 +446,7 @@ test.describe('OrigamList', () => {
         })
 
         test('End jumps directly to the last item', async ({ page }) => {
-            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(1))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
@@ -451,7 +458,7 @@ test.describe('OrigamList', () => {
         })
 
         test('Home jumps directly to the first item', async ({ page }) => {
-            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(1))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })
@@ -465,7 +472,7 @@ test.describe('OrigamList', () => {
         })
 
         test('ArrowDown wraps from the last item back to the first (focusChild fallback)', async ({ page }) => {
-            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(1))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const list = sandbox.locator('.origam-list').first()
             await expect(list).toBeVisible({ timeout: 12000 })

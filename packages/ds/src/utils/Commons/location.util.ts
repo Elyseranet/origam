@@ -1,20 +1,29 @@
 import { computed, nextTick, onScopeDispose, Ref, watch } from 'vue'
 import { AXIS } from '../../enums'
 
-import type { IBox } from '../../interfaces/Commons/box.interface'
-import type { ILocationStrategyData, ILocationStrategyProps } from '../../interfaces/Commons/location.interface'
+import type { IBox, ILocationStrategyData, ILocationStrategyProps } from '../../interfaces'
 
-import { Box } from '../../classes/Commons/box.class'
+import { Box } from '../../services'
 
-import type { TAnchor } from '../../types/Commons/anchor.type'
+import type { TAnchor } from '../../types'
 
-import { flipAlign, flipCorner, flipSide, getAxis, parseAnchor } from './anchor.util'
-import { nullifyTransforms } from './animation.util'
-import { getOverflow, getTargetBox } from './box.util'
-import { clamp, convertToUnit, destructComputed } from './commons.util'
-import { consoleError } from './console.util'
-import { anchorToPoint, getOffset } from './point.util'
-import { getScrollParents } from './scroll.util'
+import {
+    anchorToPoint,
+    clamp,
+    consoleError,
+    convertToUnit,
+    destructComputed,
+    flipAlign,
+    flipCorner,
+    flipSide,
+    getAxis,
+    getOffset,
+    getOverflow,
+    getScrollParents,
+    getTargetBox,
+    nullifyTransforms,
+    parseAnchor
+} from '../../utils'
 
 /**
  * Static location strategy.

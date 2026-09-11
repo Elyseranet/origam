@@ -1,19 +1,18 @@
 import type {
     IAdjacentEmits,
     IAdjacentProps,
-    IAdjacentSlots
-} from '../Commons/adjacent.interface'
-import type { IColorProps } from '../Commons/color.interface'
-import type {
+    IAdjacentSlots,
+    IColorProps,
     ICommonsComponentEmits,
-    ICommonsComponentProps
-} from '../Commons/commons.interface'
-import type { IDensityProps } from '../Commons/density.interface'
-import type { IDirectionProps } from '../Commons/direction.interface'
-import type { IElevationProps } from '../Commons/elevation.interface'
-import type { IFocusProps } from '../Commons/focus.interface'
-import type { IRoundedProps } from '../Commons/rounded.interface'
-import type { IVariantProps } from '../Commons/variant.interface'
+    ICommonsComponentProps,
+    IDensityProps,
+    IDirectionProps,
+    IElevationProps,
+    IFocusEmits,
+    IFocusProps,
+    IRoundedProps,
+    IVariantProps
+} from '../../interfaces'
 
 /**
  * Props for `<OrigamConfirmWrapper>` — a "type-it-twice" form helper that
@@ -45,21 +44,8 @@ export interface IConfirmWrapperProps extends ICommonsComponentProps,
     label?: string
 }
 
-/*********************************************************
- * IConfirmWrapperEmits
- *
- * @description
- * Does NOT extend `IFocusEmits`: the component reads the `focused` prop
- * (from `IFocusProps`, kept below) purely as an externally-driven display
- * hint — showing the hint text while a consumer says the field is focused
- * — but never tracks focus itself. There is no `useFocus(props)` call, no
- * focus/blur listener, nowhere `update:focused` could fire from.
- * Declaring it anyway would silently break the `@update:focused`
- * fallthrough for any consumer that tried to listen — same defect class
- * as the `OrigamCheckboxBtn` `update:focused` fix.
- ********************************************************/
 export interface IConfirmWrapperEmits extends ICommonsComponentEmits,
-    IAdjacentEmits {
+    IAdjacentEmits, IFocusEmits {
     (e: 'update:confirm', value: any): void
 }
 

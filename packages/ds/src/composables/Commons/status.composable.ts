@@ -1,8 +1,7 @@
 import { STATUS_POSITION } from "../../enums"
-import type { IAdjacentProps } from '../../interfaces/Commons/adjacent.interface'
-import type { IStatusProps } from '../../interfaces/Commons/status.interface'
-import type { TColor } from '../../types/Commons/color.type'
-import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.util'
+import type { IAdjacentProps, IStatusProps } from "../../interfaces"
+import type { TColor } from "../../types"
+import { getCurrentInstanceName } from '../../utils'
 import { computed } from 'vue'
 
 // A `status` carries its own semantic surface colour. It maps to the
@@ -17,20 +16,6 @@ const STATUS_TO_INTENT: Record<string, TColor> = {
 
 /*********************************************************
  * useStatus
- *
- * @description
- * Traduit `props.status` (`success|info|warning|error`) en icone
- * (`$success`, `$error`…), position (`prependIcon`/`appendIcon`/`icon`
- * selon `statusIconPosition`), classe `{name}--{status}` et intention de
- * couleur forcee (`statusIntent`, non surchargeable par `color`/`bgColor`
- * — `error` mappe sur l'intent `danger`, les autres 1:1).
- *
- * @description
- * Sans `statusIconPosition` explicite, la position par defaut est
- * PREPEND, pas "partout" : l'ancienne logique traitait `undefined` comme
- * "rendre a chaque emplacement", peignant l'icone en double (prepend ET
- * append) dans `OrigamAlert`. Une icone `prependIcon`/`appendIcon`/`icon`
- * deja fournie par le consommateur passe toujours avant l'icone de statut.
  ********************************************************/
 export function useStatus (props: IStatusProps & IAdjacentProps, name = getCurrentInstanceName()) {
     const statusIcon = computed(() => {

@@ -1,4 +1,4 @@
-import type { TPosition } from '../../types/Commons/position.type'
+import type { TPosition } from '../../types'
 
 export interface IPositionProps {
     position?: TPosition

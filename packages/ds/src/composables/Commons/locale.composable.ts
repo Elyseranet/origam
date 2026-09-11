@@ -1,19 +1,22 @@
-import { computed, inject, provide, ref } from 'vue'
-import * as origamMessages from '../../assets/locales'
-import { ORIGAM_LOCALE_KEY } from '../../consts/Commons/locale.const'
-import type { ILocaleInstance, ILocaleMessages, ILocaleOptions, ILocaleProps, IRtlOptions, IRtlProps } from '../../interfaces/Commons/locale.interface'
-import { mergeDeep } from '../../utils/Commons/commons.util'
-import { createBuiltinAdapter } from '../../utils/Commons/locale.util'
-import { createRtl, provideRtl } from './rtl.composable'
+import { computed, inject, provide, ref } from "vue"
+import * as origamMessages from "../../assets/locales"
+
+import { LOCALE_RTL_DEFAULT, ORIGAM_LOCALE_KEY } from "../../consts"
+
+import type {
+    ILocaleInstance,
+    ILocaleOptions,
+    ILocaleProps,
+    IRtlInstance,
+    IRtlOptions,
+    IRtlProps,
+    ILocaleMessages
+} from "../../interfaces"
+
+import { createBuiltinAdapter, getCurrentInstanceName, mergeDeep } from "../../utils"
 
 /*********************************************************
  * createLocale
- *
- * @description
- * Plugin-side factory used by `createOrigam()` to seed the root
- * locale instance (i18n adapter + RTL state) from the host app's
- * options. Delegates the RTL half to `createRtl` (own file) rather
- * than duplicating it.
  ********************************************************/
 export function createLocale (options?: ILocaleOptions & IRtlOptions) {
     const merged = mergeDeep({
@@ -40,55 +43,17 @@ export function createLocale (options?: ILocaleOptions & IRtlOptions) {
 
 /*********************************************************
  * useLocale
- *
- * @description
- * Reads the injected locale instance (i18n adapter + RTL state).
- * Independent from `useRtl` at the call level (both inject
- * `ORIGAM_LOCALE_KEY` separately) — kept in its own file since it is
- * conceptually the locale-resolution half of the system, not RTL.
- *
- * `strict` (default `true`) preserves the exact behaviour every one of
- * the 50+ existing call sites already depends on: throw when no
- * `createOrigam()` plugin is installed. Pass `strict: false` ONLY for a
- * component that MUST keep mounting without the plugin (e.g. it sits in
- * another component's unconditionally-rendered tree, so simply mounting
- * that parent must not hard-fail) — the caller then gets `null` back and
- * is responsible for its own fallback (issue #444, `OrigamLoader`).
  ********************************************************/
-export function useLocale (strict?: true): ILocaleInstance
-/*********************************************************
- * useLocale (surcharge `strict: false`)
- *
- * @description
- * Variante non stricte : retourne `null` plutot que de lever quand aucun
- * `createOrigam()` n'est installe. Voir la banniere au-dessus de la
- * premiere surcharge pour le comportement complet et son unique usage
- * legitime (#444, `OrigamLoader`).
- ********************************************************/
-export function useLocale (strict: false): ILocaleInstance | null
-/*********************************************************
- * useLocale (implementation)
- *
- * @description
- * Lit l'instance de locale injectee sous `ORIGAM_LOCALE_KEY` ; leve si
- * absente et `strict` (defaut `true`), retourne `null` sinon. Voir la
- * banniere au-dessus de la premiere surcharge pour le detail du contrat.
- ********************************************************/
-export function useLocale (strict: boolean = true): ILocaleInstance | null {
-    const locale = inject(ORIGAM_LOCALE_KEY, null)
+export function useLocale () {
+    const locale = inject(ORIGAM_LOCALE_KEY)
 
-    if (!locale && strict) throw new Error('[Origam] Could not find injected locale instance')
+    if (!locale) throw new Error('[Origam] Could not find injected locale instance')
 
     return locale
 }
 
 /*********************************************************
  * provideLocale
- *
- * @description
- * Provider-side hook: derives a subtree's locale + RTL state from
- * props, overriding the parent injection. Delegates the RTL half to
- * `provideRtl` (own file) rather than duplicating it.
  ********************************************************/
 export function provideLocale (props: ILocaleProps & IRtlProps) {
     const locale = inject(ORIGAM_LOCALE_KEY)
@@ -104,3 +69,44 @@ export function provideLocale (props: ILocaleProps & IRtlProps) {
 
     return data
 }
+
+/*********************************************************
+ * createRtl
+ ********************************************************/
+export function createRtl (i18n: ILocaleInstance, options?: IRtlOptions): IRtlInstance {
+    const rtl = ref<Record<string, boolean>>(options?.rtl ?? LOCALE_RTL_DEFAULT)
+    const isRtl = computed(() => rtl.value[i18n.current.value] ?? false)
+
+    return {
+        isRtl,
+        rtl
+    }
+}
+
+/*********************************************************
+ * useRtl
+ ********************************************************/
+export function useRtl (name = getCurrentInstanceName()) {
+    const locale = inject(ORIGAM_LOCALE_KEY)
+
+    if (!locale) throw new Error('[Origam] Could not find injected rtl instance')
+
+    const rtlClasses = computed(() => {
+        return `${name}--is-${locale.isRtl.value ? 'rtl' : 'ltr'}`
+    })
+
+    return {isRtl: locale.isRtl, rtlClasses}
+}
+
+/*********************************************************
+ * provideRtl
+ ********************************************************/
+export function provideRtl (locale: ILocaleInstance, rtl: IRtlInstance['rtl'], props: IRtlProps): IRtlInstance {
+    const isRtl = computed(() => props.rtl ?? rtl.value[locale.current.value] ?? false)
+
+    return {
+        isRtl,
+        rtl
+    }
+}
+

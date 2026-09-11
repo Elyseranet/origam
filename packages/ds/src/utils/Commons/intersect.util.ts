@@ -1,4 +1,4 @@
-import type { IIntersectDirectiveBinding, IIntersectHtmlElement } from '../../interfaces/Commons/intersect.interface'
+import type { IIntersectDirectiveBinding, IIntersectHtmlElement } from '../../interfaces'
 
 /**
  * Unmount intersect.

@@ -1,12 +1,5 @@
 import { convertToUnit } from '../Commons/commons.util'
 import { isCssColor, isIntent, tokenForegroundForIntent, tokenStylesForIntent } from '../Commons/color.util'
-import { BORDER_LOGICAL_AXIS_MAP, BORDER_POSITION_MAP } from '../../consts/Commons/border.const'
-import { ROUNDED_CORNER_MAP } from '../../consts/Commons/spacing.const'
-
-import type { IBracketSurfaceInput } from '../../interfaces/Bracket/bracket-surface.interface'
-import type { TBracketBorder, TBracketColor, TBracketElevation, TBracketRounded } from '../../types/Bracket/bracket.type'
-
-export type { IBracketSurfaceInput } from '../../interfaces/Bracket/bracket-surface.interface'
 
 /**
  * Shared resolvers for the Bracket family surface. The match card's
@@ -19,6 +12,11 @@ export type { IBracketSurfaceInput } from '../../interfaces/Bracket/bracket-surf
  * Tokenised intents / rungs resolve to the generated theme vars; custom
  * numbers and CSS values pass through `convertToUnit` (or verbatim).
  */
+
+type TBracketColor = string | null | undefined
+type TBracketRounded = string | number | boolean | null | undefined
+type TBracketElevation = string | number | boolean | null | undefined
+type TBracketBorder = string | number | boolean | null | undefined
 
 const ROUNDED_RUNGS = ['none', 'xs', 'sm', 'md', 'lg', 'xl', 'full']
 const SHADOW_RUNGS = ['none', 'xs', 'sm', 'md', 'lg', 'xl']
@@ -85,23 +83,12 @@ export function resolveBracketShadow (value: TBracketElevation): string | null {
     return typeof value === 'string' ? value : null
 }
 
-/**
- * `border` → `border-width` (utility keyword / number / boolean / free-form
- * CSS length).
- *
- * #482 — this used to `return null` for any string outside the
- * `none`/`thin`/`thick` table, silently dropping a free-form CSS length
- * like `'8px'` (no error, no visual break — the 1px default kept applying,
- * so nothing signalled the value was ignored). `resolveBracketRadius`
- * above already falls through free-form strings via `convertToUnit`; this
- * mirrors the same catch-all for width so the two stay consistent.
- */
+/** `border` → `border-width` (utility keyword / number / boolean). */
 export function resolveBracketBorderWidth (value: TBracketBorder): string | null {
     if (value == null || value === false) return null
     if (typeof value === 'string' && value in BORDER_WIDTH_VARS) return BORDER_WIDTH_VARS[value]
     if (value === true || value === '') return 'var(--origam-border__width---thin)'
     if (typeof value === 'number') return convertToUnit(value) ?? null
-    if (typeof value === 'string') return convertToUnit(value) ?? value
 
     return null
 }
@@ -121,6 +108,15 @@ export function bracketDashArray (borderStyle: string | null | undefined): { das
     if (borderStyle === 'dotted') return { dasharray: '1 5', linecap: 'round' }
 
     return {}
+}
+
+export interface IBracketSurfaceInput {
+    bgColor?: TBracketColor
+    rounded?: TBracketRounded
+    elevation?: TBracketElevation
+    border?: TBracketBorder
+    borderColor?: TBracketColor
+    borderStyle?: string | null
 }
 
 /**
@@ -150,31 +146,6 @@ export function bracketSurfaceVars (input: IBracketSurfaceInput): Record<string,
 
     const borderColor = resolveBracketBorderColor(input.borderColor)
     if (borderColor) vars['--origam-bracket-match---border-color'] = borderColor
-
-    // ── Per-corner radius ────────────────────────────────────────────
-    // Driven off the SAME `ROUNDED_CORNER_MAP` that `useRounded` uses, so
-    // the two cannot drift on corner naming or prop spelling.
-    ROUNDED_CORNER_MAP.forEach(({corner, prop}) => {
-        const resolved = resolveBracketRadius(input[prop])
-
-        if (resolved) vars[`--origam-bracket-match---border-${corner}-radius`] = resolved
-    })
-
-    // ── Per-side border width + color ────────────────────────────────
-    BORDER_POSITION_MAP.forEach(({side, widthProp, colorProp}) => {
-        const width = resolveBracketBorderWidth(input[widthProp as keyof IBracketSurfaceInput] as TBracketBorder)
-        if (width) vars[`--origam-bracket-match---border-${side}-width`] = width
-
-        const sideColor = resolveBracketBorderColor(input[colorProp as keyof IBracketSurfaceInput] as TBracketColor)
-        if (sideColor) vars[`--origam-bracket-match---border-${side}-color`] = sideColor
-    })
-
-    // ── Logical-axis border width ────────────────────────────────────
-    BORDER_LOGICAL_AXIS_MAP.forEach(({axis, widthProp}) => {
-        const width = resolveBracketBorderWidth(input[widthProp as keyof IBracketSurfaceInput] as TBracketBorder)
-
-        if (width) vars[`--origam-bracket-match---border-${axis}-width`] = width
-    })
 
     return vars
 }

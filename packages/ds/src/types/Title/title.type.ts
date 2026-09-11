@@ -1,3 +1,3 @@
-import OrigamTitle from '../../components/Title/OrigamTitle.vue'
+import { OrigamTitle } from "../../components"
 
 export type TOrigamTitle = InstanceType<typeof OrigamTitle>

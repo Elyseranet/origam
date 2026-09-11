@@ -1,3 +1,3 @@
-import OrigamSlideGroup from '../../components/Slide/OrigamSlideGroup.vue'
+import { OrigamSlideGroup } from "../../components"
 
 export type TOrigamSlideGroup = InstanceType<typeof OrigamSlideGroup>

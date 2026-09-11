@@ -1,7 +1,6 @@
 <template>
 	<component
 			:is="tag"
-			:id="id"
 			:class="slideGroupClasses"
 			:style="slideGroupStyles"
 			:tabindex="(isFocused || group.selected.value.length) ? -1 : 0"
@@ -62,32 +61,36 @@
 		setup
 >
 	import { computed, shallowRef, StyleValue, watch } from "vue"
-	import OrigamFade from '../Transition/OrigamFade.vue'
-	import OrigamIcon from '../Icon/OrigamIcon.vue'
-	import { useBorder } from '../../composables/Commons/border.composable'
-	import { useDisplay } from '../../composables/Commons/display.composable'
-	import { useGoTo } from '../../composables/Commons/goTo.composable'
-	import { useGroup } from '../../composables/Commons/group.composable'
-	import { useMargin } from '../../composables/Commons/margin.composable'
-	import { usePadding } from '../../composables/Commons/padding.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useResizeObserver } from '../../composables/Commons/resizeObserver.composable'
-	import { useRounded } from '../../composables/Commons/rounded.composable'
-	import { useRtl } from '../../composables/Commons/rtl.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
+	import { OrigamFade, OrigamIcon } from "../../components"
+	import {
+		useBorder,
+		useDisplay,
+		useGoTo,
+		useGroup,
+		useMargin,
+		usePadding,
+		useProps,
+		useResizeObserver,
+		useRounded,
+		useRtl
+	, useStyle} from "../../composables"
 
-	import { IN_BROWSER } from '../../consts/Commons/commons.const'
-	import { ORIGAM_SLIDE_GROUP_KEY } from '../../consts/Slide/slide-group.const'
+	import { IN_BROWSER, ORIGAM_SLIDE_GROUP_KEY } from "../../consts"
 
-	import { DIRECTION } from '../../enums/Commons/direction.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { DIRECTION, MDI_ICONS } from "../../enums"
 
-	import type { IGoToOptions } from '../../interfaces/Commons/goTo.interface'
-	import type { ISlideGroupProps } from '../../interfaces/Slide/slide-group.interface'
+	import type { IGoToOptions, ISlideGroupProps} from "../../interfaces"
 
-	import type { ISlideGroupEmits, ISlideGroupSlots } from '../../interfaces/Slide/slide-group.interface'
-	import { calculateCenteredTarget, calculateUpdatedTarget, getClientSize, getOffsetSize, getScrollPosition, getScrollSize } from '../../utils/Slide/slide-group.util'
-	import { focusableChildren } from '../../utils/Commons/commons.util'
+	import type { ISlideGroupEmits } from '../../interfaces/Slide/slide-group.interface'
+	import {
+		calculateCenteredTarget,
+		calculateUpdatedTarget,
+		focusableChildren,
+		getClientSize,
+		getOffsetSize,
+		getScrollPosition,
+		getScrollSize
+	} from "../../utils"
 
 	/*********************************************************
 	 * Global
@@ -113,8 +116,6 @@
 
 	defineEmits<ISlideGroupEmits>()
 
-	defineSlots<ISlideGroupSlots>()
-
 	const {filterProps} = useProps<ISlideGroupProps>(props)
 
 	/*********************************************************
@@ -132,7 +133,7 @@
 	const scrollOffset = shallowRef(0)
 	const containerSize = shallowRef(0)
 	const contentSize = shallowRef(0)
-	const isHorizontal = computed(() => props.direction === DIRECTION.HORIZONTAL)
+	const isHorizontal = computed(() => props.direction === 'horizontal')
 
 	const {resizeRef: containerRef, contentRect: containerRect} = useResizeObserver()
 	const {resizeRef: contentRef, contentRect} = useResizeObserver()
@@ -472,7 +473,7 @@
 			}
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(slideGroupStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(slideGroupStyles)
 
 
 	/*********************************************************
@@ -502,9 +503,10 @@
 		display: var(--origam-slide-group---display, flex);
 		overflow: var(--origam-slide-group---overflow, hidden);
 
-		&__prev {
-			align-items: var(--origam-slide-group__prev---align-items, center);
-			display: var(--origam-slide-group__prev---display, flex);
+		&__prev,
+		&__next {
+			align-items: center;
+			display: flex;
 			flex: 0 1 var(--origam-slide-group__prev---min-width, 52px);
 			justify-content: center;
 			min-width: var(--origam-slide-group__prev---min-width, 52px);
@@ -514,21 +516,6 @@
 			&--disabled {
 				pointer-events: none;
 				opacity: var(--origam-slide-group__prev---opacity-disabled, 0.6);
-			}
-		}
-
-		&__next {
-			align-items: var(--origam-slide-group__next---align-items, center);
-			display: var(--origam-slide-group__next---display, flex);
-			flex: 0 1 var(--origam-slide-group__next---min-width, 52px);
-			justify-content: center;
-			min-width: var(--origam-slide-group__next---min-width, 52px);
-			cursor: var(--origam-slide-group__next---cursor, pointer);
-			color: var(--origam-slide-group__next---color, inherit);
-
-			&--disabled {
-				pointer-events: none;
-				opacity: var(--origam-slide-group__next---opacity-disabled, 0.6);
 			}
 		}
 

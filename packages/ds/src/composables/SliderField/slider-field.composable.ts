@@ -1,6 +1,6 @@
-import type { ISliderFieldProps } from '../../interfaces/SliderField/slider-field.interface'
+import type { ISliderFieldProps } from '../../interfaces'
 
-import { clamp, getDecimals } from '../../utils/Commons/commons.util'
+import { clamp, getDecimals } from '../../utils'
 
 import { computed } from 'vue'
 

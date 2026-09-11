@@ -1,18 +1,16 @@
 <template>
 	<component
-			:is="rootTag"
-			:id="id"
+			:is="link.tag"
 			v-ripple="rippleProps"
 			v-contrast
 			:class="chipClasses"
 			:disabled="disabled"
 			:draggable="draggable"
-			:href="link.href.value"
+			:href="link.href"
 			:style="chipStyles"
 			:tabindex="isClickable ? 0 : undefined"
-			:type="typeAttr"
 			@click="handleClick"
-			@keydown="handleKeydown"
+			@keydown="isClickable && !isLink && handleKeydown"
 	>
     <span
 		    v-if="isClickable"
@@ -44,10 +42,7 @@
 				v-if="hasPrepend"
 				key="prepend"
 				class="origam-chip__prepend"
-				:role="isPrependZoneFocusable ? 'button' : undefined"
-				:tabindex="isPrependZoneFocusable ? 0 : undefined"
 				@click="handleClickPrepend"
-				@keydown="handleKeydownPrepend"
 		>
 			<slot name="prepend">
 				<origam-avatar
@@ -81,10 +76,7 @@
 				v-if="hasAppend"
 				key="append"
 				class="origam-chip__append"
-				:role="isAppendZoneFocusable ? 'button' : undefined"
-				:tabindex="isAppendZoneFocusable ? 0 : undefined"
 				@click="handleClickAppend"
-				@keydown="handleKeydownAppend"
 		>
 			<slot name="append">
 				<origam-avatar
@@ -136,34 +128,33 @@
 		lang="ts"
 		setup
 >
-	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
-	import OrigamBtn from '../Btn/OrigamBtn.vue'
-	import OrigamExpandX from '../Transition/OrigamExpandX.vue'
-	import OrigamIcon from '../Icon/OrigamIcon.vue'
+	import { OrigamAvatar, OrigamBtn, OrigamExpandX, OrigamIcon } from '../../components'
 
-	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
-	import { useDensity } from '../../composables/Commons/density.composable'
-	import { useGroupItem } from '../../composables/Commons/groupItem.composable'
-	import { useLink } from '../../composables/Commons/link.composable'
-	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useSize } from '../../composables/Commons/size.composable'
-	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
-	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-	import { useTypography } from '../../composables/Commons/typography.composable'
+	import {
+		useAdjacent,
+		useBothColor,
+		useDefaults,
+		useDensity,
+		useGroupItem,
+		useHover,
+		useLink,
+		useLocale,
+		useProps,
+		useSize,
+		useStateEffect,
+		useStyle,
+		useTypography,
+		useVModel
+} from '../../composables'
 
-	import { ORIGAM_CHIP_GROUP_KEY } from '../../consts/Chip/chip-group.const'
+	import { ORIGAM_CHIP_GROUP_KEY } from '../../consts'
 
-	import vContrast from '../../directives/Contrast/contrast.directive'
-	import vRipple from '../../directives/Ripple/ripple.directive'
+	import { vContrast, vRipple } from '../../directives'
 
-	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
-	import { SIZES } from '../../enums/Commons/size.enum'
+	import { KEYBOARD_VALUES, MDI_ICONS, SIZES } from '../../enums'
 
-	import type { IChipProps } from '../../interfaces/Chip/chip.interface'
-	import type { IChipEmits, IChipSlots } from '../../interfaces/Chip/chip.interface'
+	import type { IChipProps } from '../../interfaces'
+	import type { IChipEmits } from '../../interfaces/Chip/chip.interface'
 
 	import { computed, StyleValue, toRef, useAttrs, useSlots } from 'vue'
 
@@ -175,7 +166,7 @@
 	 * bindings for the chip.
 	 ********************************************************/
 
-	const props = withDefaults(defineProps<IChipProps>(), {
+	const _props = withDefaults(defineProps<IChipProps>(), {
 		tag: 'span',
 		closeIcon: MDI_ICONS.CLOSE_CIRCLE_OUTLINE,
 		filterIcon: MDI_ICONS.CHECK,
@@ -190,9 +181,13 @@
 		size: SIZES.DEFAULT
 	})
 
-	const emits = defineEmits<IChipEmits>()
+	// Resolve each prop against the closest provider — typically a parent
+	// `OrigamChipGroup` injecting `'origam-chip': { color, density, … }`.
+	// Without this hook, group-level color / density never propagates to
+	// chips passed via the default slot.
+	const props = useDefaults(_props)
 
-	defineSlots<IChipSlots>()
+	const emits = defineEmits<IChipEmits>()
 
 	const {filterProps} = useProps<IChipProps>(props)
 
@@ -207,54 +202,29 @@
 
 	const {densityClasses} = useDensity(props)
 
-	const {isOn: isHover, config: hoverState} = useStateFlag(props, {state: 'hover'})
-	/*********************************************************
-	 * active — decorative state-effect toggle (IActiveProps)
-	 *
-	 * @description
-	 * `active` here is the DECORATIVE state-effect toggle from
-	 * `IActiveProps` (forced highlight / color-bgColor-border-rounded-
-	 * elevation override via an `IActiveState` config) — unrelated to
-	 * `closeChip` below, which reads `modelValue` (source override) under
-	 * the SAME `state: 'active'` label to drive dismiss/close, not this
-	 * decorative surface. Named `active` (not `isActive`) so neither
-	 * call's destructured names collide.
-	 ********************************************************/
-	const {isOn: active, config: activeState, classes: activeClasses} = useStateFlag(props, {state: 'active'})
+	const {isHover, hoverState} = useHover(props)
 	const {
-		colorClasses, colorStyles,
 		borderClasses, borderStyles,
 		roundedClasses, roundedStyles,
 		elevationClasses,
 		paddingClasses, paddingStyles,
 		marginClasses, marginStyles,
-	} = useStateEffect(props, isHover, active, hoverState, activeState)
+	} = useStateEffect(props, isHover, undefined, hoverState, undefined)
 	const {sizeClasses, sizeStyles} = useSize(props)
 	const {typographyStyles} = useTypography(props, 'chip')
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 
 	/*********************************************************
-	 * Color — porte par useStateEffect, PAS par useBothColor.
-	 *
-	 * @description
-	 * useStateEffect etait deja appele juste au-dessus, mais on ne lui
-	 * prenait que border / rounded / elevation / padding / margin : son
-	 * canal COULEUR etait jete, et la couleur repassait par useBothColor,
-	 * qui est statique. Consequence : les surcharges de couleur declarees
-	 * dans la config d'etat (hover / active) ne peignaient jamais — le
-	 * chip lisait props.color et props.bgColor bruts quoi qu'il arrive.
-	 *
-	 * @description
-	 * On consomme desormais colorClasses / colorStyles du meme
-	 * useStateEffect que les autres axes. Un seul canal, coherent avec
-	 * border / rounded / elevation qui, eux, respectaient deja l'etat.
+	 * Color
 	 ********************************************************/
+
+	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
 
 	/*********************************************************
 	 * Value
 	 ********************************************************/
 
-	const { unset: closeChip } = useStateFlag(props, {state: 'active', source: 'modelValue'})
+	const isActive = useVModel(props, 'modelValue')
 	const group = useGroupItem(props, ORIGAM_CHIP_GROUP_KEY, false)
 	const link = useLink(props, attrs)
 
@@ -265,82 +235,15 @@
 	const {
 		onClickPrepend: handleClickPrepend,
 		onClickAppend: handleClickAppend,
-		onKeydownPrepend: handleKeydownPrepend,
-		onKeydownAppend: handleKeydownAppend,
-		isPrependClickable,
-		isAppendClickable,
 		hasPrepend,
 		hasAppend
 	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
 
-	/*********************************************************
-	 * isPrependZoneFocusable / isAppendZoneFocusable
-	 *
-	 * @description
-	 * issue #443 — root renders `<component :is="link.tag.value">`, which is
-	 * `<a>` whenever `link.isLink` is true regardless of the `link` PROP
-	 * (that prop only gates the chip's OWN `isLink` computed below, not the
-	 * tag resolution). A <button>/<a> content model forbids any descendant
-	 * with a `tabindex` attribute specified, so the prepend/append zone can
-	 * only become its own tab stop when the root is NOT actually an <a>.
-	 ********************************************************/
-	const isPrependZoneFocusable = computed(() => isPrependClickable.value && !link.isLink.value)
-	const isAppendZoneFocusable = computed(() => isAppendClickable.value && !link.isLink.value)
-
-	/*********************************************************
-	 * rootTag / typeAttr — issue #530 (a11y sweep)
-	 *
-	 * @description
-	 * The root used to render whatever `useLink` resolved — `<a>` when
-	 * linked, `<span>` (the `tag` default) otherwise — even when the chip
-	 * was clickable. A clickable, non-link `<span>` carries no implicit
-	 * role at all: nothing is announced to assistive tech beyond a bare
-	 * tab stop, and any `type="button"` attribute a consumer forwarded
-	 * (expecting button semantics) landed on the `<span>` as an INVALID
-	 * attribute (axe: `aria-allowed-attr`, `type` is not allowed outside
-	 * `<button>`/`<input>`/…).
-	 *
-	 * Root cause fix, not an attribute strip: when the chip is purely
-	 * clickable — not a link, no close button, no focusable prepend/append
-	 * zone — swap the DEFAULT `span` for a real `<button>`. `<button>` is
-	 * *phrasing content that forbids interactive descendants* (no nested
-	 * `<a>`/`<button>`/`tabindex` element), so the swap only happens when
-	 * none of those descendants can exist: `hasClose` renders an
-	 * `<origam-btn>` (a real `<button>`) inside, and a focusable
-	 * prepend/append zone renders `tabindex="0"` — both would make a
-	 * `<button>` root invalid content. An explicit non-default `tag` (e.g.
-	 * a chip deliberately rendered as `li`) is left untouched — the
-	 * upgrade only applies to the unstyled `span` default, never overrides
-	 * a consumer's own semantic choice.
-	 *
-	 * @description
-	 * `typeAttr` is hardcoded, not read off a prop — mirrors `OrigamBtn`'s
-	 * own `typeAttr`: without it, a chip-as-button inside a `<form>` would
-	 * default to `type="submit"` and submit the form on click.
-	 ********************************************************/
-	const isButtonSafe = computed(() => {
-		return props.tag === 'span' &&
-			isClickable.value &&
-			!link.isLink.value &&
-			!hasClose.value &&
-			!isPrependZoneFocusable.value &&
-			!isAppendZoneFocusable.value
-	})
-	const rootTag = computed(() => (isButtonSafe.value ? 'button' : link.tag.value))
-	const typeAttr = computed(() => (rootTag.value === 'button' ? 'button' : undefined))
-
 	const isLink = computed(() => {
 		return props.link && link.isLink.value
 	})
-	// `props.link &&` used to gate the whole expression, which short-circuited
-	// the `!!group` disjunct into dead code: a chip inside an
-	// `<origam-chip-group>` was inert unless it ALSO carried `link`, so the
-	// group never emitted `update:modelValue`. Same shape as the repaired
-	// `OrigamListItem.isClickable` — a chip is clickable when it belongs to a
-	// group, when it opts in via `link`, or when `useLink` detects an `href` /
-	// `to` / a bound `click` listener.
 	const isClickable = computed(() => {
-		return !props.disabled && (!!group || props.link || link.isClickable.value)
+		return !props.disabled && props.link && (!!group || props.link || link.isClickable.value)
 	})
 	const rippleProps = computed(() => {
 		return [isClickable.value && props.ripple, null]
@@ -377,39 +280,14 @@
 		e.preventDefault()
 		e.stopPropagation()
 
-		closeChip()
+		isActive.value = false
 
 		emits('click:close', e)
 	}
 	const handleClick = (e: MouseEvent) => {
 		onClick(e)
 	}
-	/*********************************************************
-	 * handleKeydown (#439)
-	 *
-	 * @description
-	 * `@keydown="isClickable && !isLink && handleKeydown"` used to compile
-	 * to `$event => (cond && _ctx.handleKeydown)` — Vue's inline-statement
-	 * form for anything more complex than a bare member expression. The
-	 * expression EVALUATES `handleKeydown` (a function reference) and
-	 * stops there; it never CALLS it.
-	 * @description
-	 * Root cause fixed at the binding (`@keydown="handleKeydown"`, the one
-	 * form Vue auto-invokes with `$event`) — the guard moves in here,
-	 * where wrapping it in `&&`/`?:` again can't silently undo the fix
-	 * (see issue #439 / #397).
-	 *
-	 * @description
-	 * #530 — also bails when `rootTag` resolved to a real `<button>`: it
-	 * already activates on Enter/Space natively and fires its own `click`
-	 * event, so re-firing `onClick` here would double-invoke every handler
-	 * downstream. Verified empirically against a real browser (Chromium):
-	 * pressing Enter then Space on the button-tagged "Events - click" chip
-	 * produced exactly one `click` per key, not two.
-	 ********************************************************/
 	const handleKeydown = (e: KeyboardEvent) => {
-		if (!isClickable.value || isLink.value || rootTag.value === 'button') return
-
 		if (e.key === KEYBOARD_VALUES.ENTER || e.key === ' ') {
 			e.preventDefault()
 			onClick(e as any as MouseEvent)
@@ -452,12 +330,6 @@
 	const chipClasses = computed(() => {
 		return [
 			'origam-chip',
-			// `OrigamChipGroup` declares `selectedClass: 'origam-chip--selected'`
-			// and the chip exposed it to the default slot only, so a chip that
-			// WAS selected carried no class on its root and stayed visually
-			// indistinguishable. Same position as `OrigamBtn`, `OrigamItem`,
-			// `OrigamTab` and `OrigamWindowItem`.
-			group?.selectedClass.value,
 			{
 				'origam-chip--disabled': props.disabled,
 				'origam-chip--label': props.label,
@@ -473,11 +345,10 @@
 			sizeClasses.value,
 			paddingClasses.value,
 			marginClasses.value,
-			activeClasses.value,
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(chipStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(chipStyles)
 
 
 	/*********************************************************
@@ -506,16 +377,6 @@
 
 		align-items: center;
 		display: inline-flex;
-		// Every `&--size-*` height below is a CONTENT-box measurement (chip
-		// only ever rendered as `<span>`/`<a>`, both `content-box` under the
-		// UA stylesheet, when those were authored). #530 made a purely
-		// clickable chip render as a real `<button>` — and `button` is
-		// `box-sizing: border-box` by default in the UA stylesheet, which
-		// would silently shrink every bordered/outlined chip by its own
-		// border-width (measured: 26px → 24px with `border: true` + `thin`).
-		// Pinning `content-box` here keeps the token math identical no
-		// matter which tag ends up on the root.
-		box-sizing: content-box;
 		font-weight: var(--origam-chip---font-weight, 400);
 		max-width: 100%;
 		min-width: 0;
@@ -579,11 +440,11 @@
 			background-color: var(--origam-chip__overlay---background-color, currentColor);
 			border-radius: var(--origam-chip__overlay---border-radius, inherit);
 			pointer-events: var(--origam-chip__overlay---pointer-events, none);
-			opacity: var(--origam-chip__overlay---opacity, var(--origam-chip---overlay-opacity, 0));
+			opacity: var(--origam-chip__overlay---opacity, 0);
 			transition:
 				var(--origam-chip__overlay---transition-property, opacity)
-				var(--origam-chip__overlay---transition-duration, var(--origam-chip---transition-duration, 0.2s))
-				var(--origam-chip__overlay---transition-timing-function, var(--origam-chip---transition-easing, ease-in-out));
+				var(--origam-chip__overlay---transition-duration, 0.2s)
+				var(--origam-chip__overlay---transition-timing-function, ease-in-out);
 		}
 
 		&--disabled {
@@ -594,24 +455,6 @@
 
 		&--label {
 			border-radius: var(--origam-chip---border-radius-label, 4px);
-		}
-
-		// C7 — `origam-chip--pill` was emitted by the template and targeted by
-		// NO rule anywhere in the DS: the prop was inert. The base class is
-		// already fully round, so "pill makes the chip round" (what the doc
-		// claimed) describes the DEFAULT, not this prop. What `pill` does own
-		// is the explicit opt-IN, the twin of `--label`'s opt-out: it restores
-		// the full radius over anything that squared it — `label`, or a
-		// `rounded` utility class (weaker cascade, but a theme can raise it).
-		// Declared AFTER `--label` on purpose: both selectors carry the same
-		// specificity, so source order is what decides `pill label`.
-		&--pill {
-			border-radius: var(--origam-chip---border-radius, 9999px);
-		}
-
-		&--selected {
-			background-color: var(--origam-chip--selected---background-color);
-			color: var(--origam-chip--selected---color);
 		}
 
 		&--size-x-small {

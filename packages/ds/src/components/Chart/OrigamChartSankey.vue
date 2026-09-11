@@ -1,9 +1,9 @@
 <template>
-	<figure
-			:id="id"
+	<div
 			class="origam-chart-sankey"
 			:class="rootClasses"
 			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles, headerTypographyStyles]"
+			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-sankey"
 	>
@@ -66,7 +66,7 @@
 							:data-cy="`origam-chart-sankey-link-${ link.index }`"
 							tabindex="0"
 							role="button"
-							:aria-label="linkAriaLabel(link)"
+							:aria-label="`${ link.from } to ${ link.to }: ${ link.formatted }`"
 							@click="onLinkActivate(link, $event)"
 							@keydown.enter.prevent="onLinkActivate(link, $event)"
 							@keydown.space.prevent="onLinkActivate(link, $event)"
@@ -140,7 +140,7 @@
 					data-cy="origam-chart-sankey-empty"
 			>
 				<slot name="empty">
-					<span>{{ t('origam.chart.no_data_text') }}</span>
+					<span>No data to display</span>
 				</slot>
 			</div>
 		</div>
@@ -162,7 +162,7 @@
 				/>
 			</template>
 		</origam-chart-legend>
-	</figure>
+	</div>
 </template>
 
 <script
@@ -178,26 +178,29 @@
 	import OrigamChartLegend from './OrigamChartLegend.vue'
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
-	import type { IChartLegendItem } from '../../interfaces/Chart/chart.interface'
-	import type { IChartPoint } from '../../interfaces/Chart/chart-point.interface'
-	import type { IChartSankeyEmits, IChartSankeyLink, IChartSankeyNode, IChartSankeyProps, IChartSankeySlots } from '../../interfaces/Chart/chart-sankey.interface'
-	import type { IChartSeries } from '../../interfaces/Chart/chart-series.interface'
+	import type {
+		IChartLegendItem,
+		IChartPoint,
+		IChartSankeyEmits,
+		IChartSankeyLink,
+		IChartSankeyNode,
+		IChartSankeyProps,
+		IChartSeries
+	} from '../../interfaces'
 
-	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
-	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
-	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
-	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
-	import { useDimension } from '../../composables/Commons/dimension.composable'
-	import { useElevation } from '../../composables/Commons/elevation.composable'
-	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useMargin } from '../../composables/Commons/margin.composable'
-	import { usePadding } from '../../composables/Commons/padding.composable'
-	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import {
+		useChartHeaderTypography,
+		useBackgroundColor,
+		useDimension,
+		useElevation,
+		useMargin,
+		usePadding,
+		useRounded
+	} from '../../composables'
 
 	import { intentBgExpr, isIntent } from '../../utils/Commons/color.util'
 
-	import type { TChartSankeyLinkSpec } from '../../types/Chart/chart-sankey.type'
-	import type { TIntent } from '../../types/Commons/intent.type'
+	import type { TIntent } from '../../types'
 
 	/*********************************************************
 	 * Global
@@ -237,33 +240,13 @@
 
 	const emit = defineEmits<IChartSankeyEmits>()
 
-	defineSlots<IChartSankeySlots>()
-
-	const { t } = useLocale()
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
 	const { elevationClasses, elevationStyles } = useElevation(props)
-	const { marginClasses, marginStyles } = useMargin(props)
-	const { paddingClasses, paddingStyles } = usePadding(props)
+	const { marginStyles } = useMargin(props)
+	const { paddingStyles } = usePadding(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
 	const { headerTypographyStyles } = useChartHeaderTypography(props)
-
-	/*********************************************************
-	 * Props heritees sans effet ici (#426)
-	 *
-	 * @description
-	 * ⛔ Ces props sont declarees par `IChartBaseProps` et n'ont aucun
-	 * effet sur ce composant. Elles ne sont ni retirees ni cablees a un
-	 * comportement fictif : elles avertissent une fois, en dev, avec la
-	 * raison exacte. Meme traitement que `OrigamChartGauge`.
-	 ********************************************************/
-	useUnsupportedProp(
-		'OrigamChartSankey',
-		'categories',
-		'a sankey draws nodes and links — there is no category axis.',
-		() => props.categories !== undefined
-	)
-	const chartAnimationStyle = useChartAnimationStyle(props)
 
 	/*********************************************************
 	 * Static SVG box — always paints into 600 × 400 coordinate
@@ -543,7 +526,19 @@
 		 * this sort, ribbons cross themselves on the same node and
 		 * produce the swirl-from-hell visual.
 		 */
-		const specs: Array<TChartSankeyLinkSpec> = []
+		type TLinkSpec = {
+			index: number
+			from: string
+			to: string
+			value: number
+			color: string
+			srcBandH: number
+			tgtBandH: number
+			srcY: number
+			tgtY: number
+		}
+
+		const specs: Array<TLinkSpec> = []
 		for (let i = 0; i < data.length; i++) {
 			const d = data[i]
 			const sourceNode = nodeMap.get(d.from)
@@ -581,7 +576,7 @@
 		 * so we need the exact vertical extent.
 		 */
 		const srcOffsetMap = new Map<number, { yTop: number, srcBandH: number }>()
-		const bySource = new Map<string, Array<TChartSankeyLinkSpec>>()
+		const bySource = new Map<string, Array<TLinkSpec>>()
 		for (const s of specs) {
 			if (!bySource.has(s.from)) bySource.set(s.from, [])
 			bySource.get(s.from)!.push(s)
@@ -602,7 +597,7 @@
 		 * band on the target came from the topmost source.
 		 */
 		const tgtOffsetMap = new Map<number, { yTop: number, tgtBandH: number }>()
-		const byTarget = new Map<string, Array<TChartSankeyLinkSpec>>()
+		const byTarget = new Map<string, Array<TLinkSpec>>()
 		for (const s of specs) {
 			if (!byTarget.has(s.to)) byTarget.set(s.to, [])
 			byTarget.get(s.to)!.push(s)
@@ -774,10 +769,7 @@
 		},
 		backgroundColorClasses.value,
 		elevationClasses.value,
-		marginClasses.value,
-		paddingClasses.value,
-		roundedClasses.value,
-		props.class
+		roundedClasses.value
 	])
 
 	const rootStyles = computed<StyleValue>(() => {
@@ -785,8 +777,8 @@
 		if (props.aspectRatio) {
 			out.aspectRatio = props.aspectRatio
 		}
-		Object.assign(out, chartAnimationStyle.value)
-return [ out, props.style as StyleValue ]
+		out['--origam-chart---animation-duration'] = `${ props.animationDuration }ms`
+		return out
 	})
 
 	const bodyClasses = computed(() => ({
@@ -803,18 +795,14 @@ return [ out, props.style as StyleValue ]
 	/*********************************************************
 	 * ARIA
 	 ********************************************************/
-	const defaultAriaLabel = computed(() => t('origam.chart.sankey.aria_label'))
-	const ariaLabel = computed(() => props.title ?? defaultAriaLabel.value)
-	const svgAriaLabel = computed(() => props.title ?? defaultAriaLabel.value)
-	const svgTitle = computed(() => props.title ?? defaultAriaLabel.value)
-	const svgDesc = computed(() => t('origam.chart.sankey.desc', {
-		chart: defaultAriaLabel.value,
-		nodes: t('origam.chart.sankey.desc_nodes', layoutNodes.value.length),
-		links: t('origam.chart.sankey.desc_links', layoutLinks.value.length)
-	}))
-
-	const linkAriaLabel = (link: IChartSankeyLink): string =>
-		t('origam.chart.sankey.link_aria_label', link.from, link.to, link.formatted)
+	const ariaLabel = computed(() => props.title ?? 'sankey chart')
+	const svgAriaLabel = computed(() => props.title ?? 'sankey chart')
+	const svgTitle = computed(() => props.title ?? 'sankey chart')
+	const svgDesc = computed(() => {
+		const n = layoutNodes.value.length
+		const l = layoutLinks.value.length
+		return `Sankey diagram with ${ n } ${ n === 1 ? 'node' : 'nodes' } and ${ l } ${ l === 1 ? 'link' : 'links' }.`
+	})
 
 	/*********************************************************
 	 * Interaction
@@ -892,17 +880,7 @@ return [ out, props.style as StyleValue ]
 
 		display: grid;
 		gap: var(--origam-chart---gap, 12px);
-
-		// ⛔ #C2 — zero-specificity default so a scale-driven utility
-		// class (`.origam--p-4` from `padding="4"`) wins the cascade.
-		// Without `:where()`, this scoped rule's [data-v-hash] pushes it
-		// to (0,2,0), beating the utility's (0,1,0), and the `padding`
-		// prop's scale form goes silently inert. See CLAUDE.md "CSS-first"
-		// table — `:where(…)` is the documented zero-specificity default.
-		:where(&) {
-			padding: var(--origam-chart---padding, 12px);
-		}
-
+		padding: var(--origam-chart---padding, 12px);
 		background-color: var(--origam-chart---background-color, transparent);
 		color: var(--origam-chart---color, inherit);
 		width: 100%;
@@ -961,7 +939,7 @@ return [ out, props.style as StyleValue ]
 
 		&__subtitle {
 			font-size: var(--origam-chart__subtitle---font-size, 0.875rem);
-			color: var(--origam-chart__subtitle---color, var(--origam-color__text---secondary, #6b7280));
+			color: var(--origam-chart__subtitle---color, var(--origam-color-text-secondary, #6b7280));
 		}
 
 		&__body {
@@ -1011,7 +989,7 @@ return [ out, props.style as StyleValue ]
 			pointer-events: none;
 			font-size: var(--origam-chart__sankey-label---font-size, 0.6875rem);
 			font-weight: var(--origam-chart__sankey-label---font-weight, 500);
-			fill: var(--origam-chart__sankey-label---color, var(--origam-color__text---primary, currentColor));
+			fill: var(--origam-chart__sankey-label---color, var(--origam-color-text-primary, currentColor));
 			user-select: none;
 		}
 
@@ -1026,7 +1004,7 @@ return [ out, props.style as StyleValue ]
 		:deep(.origam-chart__tooltip) {
 			position: absolute;
 			pointer-events: none;
-			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color__surface---overlay, #1f2937));
+			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color-surface-overlay, #1f2937));
 			color: var(--origam-chart__tooltip---color, #ffffff);
 			padding: var(--origam-chart__tooltip---padding, 8px 12px);
 			border-radius: var(--origam-chart__tooltip---border-radius, 6px);
@@ -1064,7 +1042,7 @@ return [ out, props.style as StyleValue ]
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			color: var(--origam-chart__empty---color, var(--origam-color__text---secondary, #6b7280));
+			color: var(--origam-chart__empty---color, var(--origam-color-text-secondary, #6b7280));
 		}
 
 		:deep(.origam-chart__legend) {

@@ -1,0 +1,15 @@
+{
+  "slide": {
+    "_comment": "Single-direction slide transition (sibling of SlideGroup). Distinct from `slide-group.json` — that one covers the carousel-like multi-item slider.",
+    "transition-duration":        { "$type": "duration",   "$value": "{motion.duration.medium}" },
+    "transition-duration-reverse":{ "$type": "duration",   "$value": "{motion.duration.medium}" },
+    "transition-timing-function": { "$type": "cubicBezier","$value": "{motion.easing.standard}" },
+
+    "translate-x-default":  { "$type": "dimension", "$value": "100%" },
+    "translate-y-default":  { "$type": "dimension", "$value": "100%" },
+    "translate-x-reverse":  { "$type": "dimension", "$value": "-100%" },
+    "translate-y-reverse":  { "$type": "dimension", "$value": "-100%" },
+    "opacity-from":         { "$type": "number",    "$value": 0 },
+    "opacity-to":           { "$type": "number",    "$value": 1 }
+  }
+}

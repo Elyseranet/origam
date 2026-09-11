@@ -1,7 +1,6 @@
 <template>
 	<component
 			:is="tag"
-			:id="id"
 			:class="dataTableColumnClasses"
 			:scope="tag === 'th' ? 'col' : undefined"
 			:style="dataTableColumnStyles"
@@ -14,16 +13,18 @@
 		lang="ts"
 		setup
 >
-	import { useDimension } from '../../composables/Commons/dimension.composable'
-	import { usePadding } from '../../composables/Commons/padding.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
+	import {
+	useDimension,
+	usePadding,
+	useProps,
+	useStyle
+} from '../../composables'
 
-	import { ALIGN } from '../../enums/Commons/align.enum'
+	import { ALIGN } from '../../enums'
 
-	import type { IDataTableColumnCellEmits, IDataTableColumnCellSlots, IDataTableColumnProps } from '../../interfaces/DataTable/column.interface'
+	import type { IDataTableColumnProps } from '../../interfaces'
 
-	import { convertToUnit } from '../../utils/Commons/commons.util'
+	import { convertToUnit } from '../../utils'
 
 	import { computed, StyleValue } from 'vue'
 
@@ -35,10 +36,6 @@
 		align: ALIGN.START,
 		tag: 'td'
 	})
-
-	defineEmits<IDataTableColumnCellEmits>()
-
-	defineSlots<IDataTableColumnCellSlots>()
 
 	const {filterProps} = useProps<IDataTableColumnProps>(props)
 
@@ -75,7 +72,7 @@
 			props.style
 		] as StyleValue
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(dataTableColumnStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableColumnStyles)
 
 
 	/*********************************************************
@@ -128,13 +125,13 @@
 
 		&--fixed {
 			position: sticky;
-			background: var(--origam-data-table-cell--fixed---background, var(--origam-data-table__cell---fixed-background-color, var(--origam-color__surface---raised)));
+			background: var(--origam-data-table-cell--fixed---background, var(--origam-color__surface---raised));
 			left: 0;
-			z-index: var(--origam-data-table-cell--fixed---z-index, var(--origam-data-table__cell---fixed-z-index, 1))
+			z-index: var(--origam-data-table-cell--fixed---z-index, 1)
 		}
 
 		&--last-fixed {
-			border-right: var(--origam-data-table-cell--last-fixed---border-right-width, var(--origam-data-table__cell---last-fixed-border-right-width, 1px)) var(--origam-data-table__cell---last-fixed-border-right-style, solid) var(--origam-data-table-cell--last-fixed---border-right-color, var(--origam-data-table__cell---last-fixed-border-right-color, var(--origam-color__border---subtle)));
+			border-right: var(--origam-data-table-cell--last-fixed---border-right-width, 1px) solid var(--origam-data-table-cell--last-fixed---border-right-color, var(--origam-color__border---subtle));
 		}
 	}
 </style>

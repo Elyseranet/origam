@@ -52,36 +52,9 @@
       }
     },
     "no_data_text": "Aucune donnée disponible",
-    "bracket": {
-      "aria_label": "Tableau du tournoi",
-      "winners_label": "Tableau principal",
-      "losers_label": "Tableau de repêchage",
-      "tbd": "À définir",
-      "tbd_long": "À déterminer",
-      "match_aria_label": "Match : {0} contre {1}",
-      "forfeit_label": "forfait",
-      "advantage_aria_label": "{0} manche(s) d'avance",
-      "score_aria_suffix": ", score {0}",
-      "winner_aria_suffix": ", vainqueur",
-      "watch_live": "Regarder en direct",
-      "status": {
-        "pending": "À venir",
-        "live": "EN DIRECT",
-        "completed": "Terminé",
-        "forfeited": "Forfait"
-      },
-      "round_robin": {
-        "cell_self": "{0} contre soi-même, non applicable",
-        "cell_no_match": "{0} contre {1}, sans match",
-        "cell_match": "{0} contre {1}"
-      }
-    },
     "carousel": {
       "prev": "Visuel précédent",
       "next": "Visuel suivant",
-      "pause": "Mettre le carrousel en pause",
-      "play": "Lancer le carrousel",
-      "slide": "diapositive",
       "aria_label": {
         "delimiter": "Diapositive {0} de {1}"
       }
@@ -113,18 +86,12 @@
       "counter": "{0} fichier(s)",
       "counter_size": "{0} fichier(s) ({1} au total)"
     },
-    "password_field": {
-      "show": "Afficher le mot de passe",
-      "hide": "Masquer le mot de passe"
-    },
     "file_field": {
       "counter": "{0} fichier(s)",
       "counter_size": "{0} fichier(s) ({1} au total)",
       "dropzone_title": "Glissez et déposez vos fichiers ici",
       "dropzone_subtitle": "ou cliquez pour parcourir",
-      "browse": "Parcourir les fichiers",
-      "remove_aria_label": "Supprimer {0}",
-      "download_aria_label": "Télécharger {0}"
+      "browse": "Parcourir les fichiers"
     },
     "file_upload": {
       "title": "Drag and drop files here",
@@ -135,12 +102,6 @@
       "am": "AM",
       "pm": "PM",
       "title": "Select Time"
-    },
-    "number_field": {
-      "aria_label": {
-        "decrement": "Décrémenter",
-        "increment": "Incrémenter"
-      }
     },
     "pagination": {
       "aria_label": {
@@ -163,29 +124,14 @@
       "copy": "Copier",
       "copied": "Copié !",
       "copy_aria_label": "Copier le code dans le presse-papier",
-      "copied_aria_label": "Code copié dans le presse-papier",
-      "scroller_aria_label": "Bloc de code, zone défilante",
-      "scroller_aria_label_filename": "{filename}, bloc de code, zone défilante",
-      "scroller_aria_label_lang": "Bloc de code {lang}, zone défilante"
-    },
-    "qr_code": {
-      "aria_label": "QR code pour {value}"
+      "copied_aria_label": "Code copié dans le presse-papier"
     },
     "clipboard": {
-      "copied": "Copié !",
       "copy_aria_label": "Copier dans le presse-papier",
       "copied_aria_label": "Valeur copiée dans le presse-papier"
     },
-    "sheet": {
-      "handle": {
-        "aria_label": "Poignée de déplacement"
-      }
-    },
     "snackbar": {
       "dismiss": "Fermer la notification"
-    },
-    "snackbar_group": {
-      "notifications": "Notifications"
     },
     "stepper": {
       "next": "Suivant",
@@ -207,15 +153,6 @@
     "infinite_scroll": {
       "load_more": "Charger plus",
       "empty": "Aucune donnée supplémentaire"
-    },
-    "inline_edit": {
-      "placeholder": "Cliquer pour modifier",
-      "edit_aria_label": "Modifier {0}",
-      "edit": "Modifier",
-      "confirm": "Valider",
-      "cancel": "Annuler",
-      "field_aria_label": "Modifier la valeur",
-      "invalid_value": "Valeur invalide"
     },
     "validation": {
       "required": "Ce champ est obligatoire",
@@ -250,11 +187,7 @@
       "transport": "Contrôles de lecture",
       "next_track": "Piste suivante",
       "previous_track": "Piste précédente",
-      "waveform": "Forme d'onde audio",
-      "playback_error": "Erreur de lecture"
-    },
-    "audio": {
-      "track_number": "Piste {0}"
+      "waveform": "Forme d'onde audio"
     },
     "video": {
       "enter_fullscreen": "Plein écran",
@@ -268,185 +201,10 @@
       "canvas": {
         "aria_label": "Saturation et luminosité",
         "value": "Saturation {0}%, luminosité {1}%"
-      },
-      "edit": {
-        "cycle_mode_aria_label": "Changer le format de couleur"
-      },
-      "preview": {
-        "eye_dropper_aria_label": "Prélever une couleur à l'écran"
-      },
-      "swatches": {
-        "aria_label": "Sélectionner la couleur {0}"
       }
     },
     "breadcrumb": {
       "aria_label": "Fil d'Ariane"
-    },
-    "command_palette": {
-      "aria_label": "Palette de commandes",
-      "placeholder": "Rechercher…",
-      "empty_text": "Aucun résultat"
-    },
-    "chart": {
-      "aria_label": "Graphique",
-      "no_data_text": "Aucune donnée à afficher",
-      "desc_no_data": "Aucune donnée",
-      "cartesian": {
-        "aria_label": "graphique {type}",
-        "desc": "Graphique {type} avec {series} et {points}, valeurs de {min} à {max}.",
-        "desc_series_one": "{count} série",
-        "desc_series_other": "{count} séries",
-        "desc_points_one": "{count} point",
-        "desc_points_other": "{count} points"
-      },
-      "box_plot": {
-        "aria_label": "boîte à moustaches",
-        "desc_one": "Boîte à moustaches avec {count} catégorie.",
-        "desc_other": "Boîte à moustaches avec {count} catégories."
-      },
-      "bullet": {
-        "aria_label": "graphique à puce",
-        "desc_one": "Graphique à puce avec {count} indicateur.",
-        "desc_other": "Graphique à puce avec {count} indicateurs."
-      },
-      "candlestick": {
-        "aria_label": "graphique en chandeliers",
-        "desc_one": "Graphique en chandeliers avec {count} chandelier.",
-        "desc_other": "Graphique en chandeliers avec {count} chandeliers."
-      },
-      "gauge": {
-        "aria_label": "jauge",
-        "value_aria_label": "Jauge : {0}",
-        "desc": "Jauge affichant {0} sur une plage de {1} à {2}."
-      },
-      "heatmap": {
-        "aria_label": "carte de chaleur",
-        "desc": "Carte de chaleur avec {0} colonnes et {1} lignes."
-      },
-      "honeycomb": {
-        "aria_label": "graphique en nid d'abeille",
-        "desc_one": "Graphique en nid d'abeille avec {count} tuile.",
-        "desc_other": "Graphique en nid d'abeille avec {count} tuiles."
-      },
-      "legend": {
-        "item_hidden": "masqué, cliquer pour afficher",
-        "item_visible": "visible, cliquer pour masquer"
-      },
-      "map": {
-        "aria_label": "carte",
-        "desc_choropleth_one": "Carte choroplèthe avec {count} pays dans le jeu de données.",
-        "desc_choropleth_other": "Carte choroplèthe avec {count} pays dans le jeu de données.",
-        "desc_routes_one": "Carte des routes aériennes avec {count} route.",
-        "desc_routes_other": "Carte des routes aériennes avec {count} routes."
-      },
-      "pareto": {
-        "aria_label": "diagramme de Pareto",
-        "cumulative_label": "% cumulé",
-        "desc_one": "Diagramme de Pareto avec {count} catégorie, triée par valeur décroissante.",
-        "desc_other": "Diagramme de Pareto avec {count} catégories, triées par valeur décroissante."
-      },
-      "pictorial": {
-        "aria_label": "graphique pictural",
-        "desc_one": "Graphique pictural avec {count} colonne.",
-        "desc_other": "Graphique pictural avec {count} colonnes."
-      },
-      "range_selector": {
-        "aria_label": "Sélecteur de plage du graphique"
-      },
-      "drilldown": {
-        "aria_label": "Navigation d'exploration",
-        "back_label": "← Retour",
-        "root_label": "Racine"
-      },
-      "zoom": {
-        "reset_aria_label": "Réinitialiser le zoom"
-      },
-      "polar": {
-        "aria_label_pie": "Graphique circulaire",
-        "aria_label_donut": "Graphique en anneau",
-        "desc": "{chart} avec {series} et {points}.",
-        "desc_series_one": "{count} série",
-        "desc_series_other": "{count} séries",
-        "desc_points_one": "{count} point",
-        "desc_points_other": "{count} points"
-      },
-      "polar_bar": {
-        "aria_label": "Graphique à barres polaires",
-        "item_label": "Élément {0}",
-        "desc_one": "{chart} avec {count} secteur.",
-        "desc_other": "{chart} avec {count} secteurs."
-      },
-      "pyramid": {
-        "aria_label_pyramid": "Graphique en pyramide",
-        "aria_label_funnel": "Graphique en entonnoir",
-        "slice_label": "Tranche {0}",
-        "desc_one": "{chart} avec {count} tranche.",
-        "desc_other": "{chart} avec {count} tranches."
-      },
-      "radar": {
-        "aria_label": "Graphique radar",
-        "desc": "{chart} avec {series} et {axes}.",
-        "desc_series_one": "{count} série",
-        "desc_series_other": "{count} séries",
-        "desc_axes_one": "{count} axe",
-        "desc_axes_other": "{count} axes"
-      },
-      "sankey": {
-        "aria_label": "Diagramme de Sankey",
-        "link_aria_label": "{0} vers {1} : {2}",
-        "desc": "{chart} avec {nodes} et {links}.",
-        "desc_nodes_one": "{count} nœud",
-        "desc_nodes_other": "{count} nœuds",
-        "desc_links_one": "{count} lien",
-        "desc_links_other": "{count} liens"
-      },
-      "sparkline": {
-        "aria_label_line": "Courbe sparkline",
-        "aria_label_area": "Sparkline en aires",
-        "aria_label_column": "Sparkline en colonnes",
-        "aria_label_bar": "Sparkline à barres horizontales",
-        "desc_one": "{chart} avec {count} point de données.",
-        "desc_other": "{chart} avec {count} points de données."
-      },
-      "streamgraph": {
-        "aria_label": "Graphique en flux",
-        "desc": "{chart} avec {series} et {points}.",
-        "desc_series_one": "{count} série",
-        "desc_series_other": "{count} séries",
-        "desc_points_one": "{count} point temporel",
-        "desc_points_other": "{count} points temporels"
-      },
-      "sunburst": {
-        "aria_label": "Graphique en rayons de soleil",
-        "desc_one": "{chart} avec {count} nœud racine.",
-        "desc_other": "{chart} avec {count} nœuds racines."
-      },
-      "treemap": {
-        "aria_label": "Carte proportionnelle",
-        "desc_one": "{chart} avec {count} tuile.",
-        "desc_other": "{chart} avec {count} tuiles."
-      },
-      "variwide": {
-        "aria_label": "Graphique à largeur variable",
-        "column_aria_label": "{0} : valeur {1}, largeur {2}",
-        "desc_one": "{chart} avec {count} colonne.",
-        "desc_other": "{chart} avec {count} colonnes."
-      },
-      "word_cloud": {
-        "aria_label": "Nuage de mots",
-        "desc_one": "{chart} avec {count} mot.",
-        "desc_other": "{chart} avec {count} mots."
-      }
-    },
-    "drawer": {
-      "aria_label": "Navigation principale"
-    },
-    "dialog": {
-      "close_aria_label": "Fermer la boîte de dialogue",
-      "confirmation": {
-        "cancel": "Annuler",
-        "validate": "Valider"
-      }
     },
     "textarea": {
       "rich": {

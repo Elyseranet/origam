@@ -250,19 +250,22 @@
 
 	import OrigamBracketRound from './OrigamBracketRound.vue'
 
-	import { useDimension } from '../../composables/Commons/dimension.composable'
-	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useMargin } from '../../composables/Commons/margin.composable'
-	import { usePadding } from '../../composables/Commons/padding.composable'
-	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useTypography } from '../../composables/Commons/typography.composable'
+	import {
+		useDimension,
+		useMargin,
+		usePadding,
+		useProps,
+		useTypography
+	} from '../../composables'
 
-	import { BRACKET_DEFAULT_MATCH_GAP, BRACKET_DEFAULT_MATCH_HEIGHT, BRACKET_DEFAULT_MATCH_WIDTH, BRACKET_DEFAULT_ROUND_GAP } from '../../consts/Bracket/bracket.const'
+	import {
+		BRACKET_DEFAULT_MATCH_GAP,
+		BRACKET_DEFAULT_MATCH_HEIGHT,
+		BRACKET_DEFAULT_MATCH_WIDTH,
+		BRACKET_DEFAULT_ROUND_GAP
+	} from '../../consts'
 
-	import { BRACKET_ROUND_SIDE } from '../../enums/Bracket/bracket-round.enum'
-	import { BRACKET_VARIANT } from '../../enums/Bracket/bracket.enum'
-	import { DIRECTION } from '../../enums/Commons/direction.enum'
+	import { BRACKET_VARIANT, DIRECTION } from '../../enums'
 
 	import {
 		bracketDashArray,
@@ -272,15 +275,16 @@
 		resolveBracketForeground
 	} from '../../utils/Bracket/bracket-surface.util'
 
-	import type { IBracketCompetitor } from '../../interfaces/Bracket/bracket-competitor.interface'
-	import type { IBracketEmits, IBracketProps, IBracketSlots } from '../../interfaces/Bracket/bracket.interface'
-	import type { IBracketMatch } from '../../interfaces/Bracket/bracket-match.interface'
-	import type { IBracketRound } from '../../interfaces/Bracket/bracket-round.interface'
+	import type {
+		IBracketCompetitor,
+		IBracketMatch,
+		IBracketProps,
+		IBracketRound
+	} from '../../interfaces'
 
 	import type { IBracketSurfaceInput } from '../../utils/Bracket/bracket-surface.util'
 
-	import type { TBracketConnectorPath, TBracketDoubleSection } from '../../types/Bracket/bracket.type'
-	import type { TIntent } from '../../types/Commons/intent.type'
+	import type { TIntent } from '../../types'
 
 	/*********************************************************
 	 * Global
@@ -294,75 +298,25 @@
 		showSeed: false,
 		interactive: true,
 		color: 'primary',
-		winnersLabel: undefined,
-		losersLabel: undefined
+		winnersLabel: 'Winners bracket',
+		losersLabel: 'Losers bracket'
 	})
 
-	const emit = defineEmits<IBracketEmits>()
-
-	defineSlots<IBracketSlots>()
+	const emit = defineEmits<{
+		(e: 'match-click', match: IBracketMatch, round: IBracketRound, event: MouseEvent): void
+		(e: 'winner-click', competitor: IBracketCompetitor, match: IBracketMatch, event: MouseEvent | KeyboardEvent): void
+		(e: 'competitor-click', competitor: IBracketCompetitor, match: IBracketMatch, event: MouseEvent | KeyboardEvent): void
+	}>()
 
 	const {filterProps} = useProps<IBracketProps>(props)
 
 	const resolvedId = computed(() => props.id ?? 'origam-bracket')
-	/*********************************************************
-	 * Libelles — critere C8
-	 *
-	 * @description
-	 * `ariaLabel` etait une chaine anglaise en dur, et `winnersLabel` /
-	 * `losersLabel` portaient leur traduction anglaise comme VALEUR PAR
-	 * DEFAUT de prop — un cas que les conventions du depot couvrent
-	 * explicitement. Toute la famille Bracket etait intraduisible : aucun
-	 * de ses quatre composants n'appelait `useLocale`.
-	 * @description
-	 * Le defaut passe a `undefined` et la traduction est resolue dans un
-	 * `computed` : c'est NON CASSANT — un consommateur qui passait deja sa
-	 * propre chaine continue de gagner, exactement comme avant. Faire
-	 * porter une CLE i18n a la prop aurait, lui, casse ces consommateurs.
-	 * @description
-	 * La resolution est differee dans un `computed` et non figee au corps
-	 * de `setup()` : le resolveur de theme (ADR-005) ecrit dans
-	 * `beforeCreate`, donc APRES `setup()`. Une lecture eager de
-	 * `props.winnersLabel` ne verrait jamais la valeur d'un theme.
-	 ********************************************************/
-	const {t} = useLocale()
+	const ariaLabel = 'Tournament bracket'
 
-	const ariaLabel = computed(() => t('origam.bracket.aria_label'))
-
-	const resolvedWinnersLabel = computed(() => props.winnersLabel ?? t('origam.bracket.winners_label'))
-	const resolvedLosersLabel = computed(() => props.losersLabel ?? t('origam.bracket.losers_label'))
-
-	/*********************************************************
-	 * roundColor (#428)
-	 *
-	 * @description
-	 * `withDefaults` gives `props.color` a hard default (`'primary'`), so
-	 * reading it directly here ALWAYS produced a concrete value — never
-	 * `undefined` — even when THIS component's own consumer never set
-	 * `color` at all. Forwarded unconditionally onto every
-	 * `<origam-bracket-round>` below, that concrete value permanently
-	 * outranked any `theme.components['origam-bracket-round'].color`
-	 * (the resolver's own precedence: an explicit passed value always
-	 * wins — see ADR-005 / #411). Measured: mounting a Round standalone
-	 * under a theme naming `origam-bracket-round: { color: 'danger' }`
-	 * resolved `'danger'`; the SAME Round nested inside `<origam-bracket>`
-	 * resolved `'primary'` instead — forced by this binding.
-	 * `usePassedProps` distinguishes "the consumer of THIS Bracket wrote
-	 * `color=…`" from "Bracket's own default resolved it" — only the
-	 * former forwards down, letting Round's own theme/default apply
-	 * otherwise. Same guard already used by `OrigamBottomNav` /
-	 * `OrigamRadioGroup` / `OrigamChipGroup` / `OrigamBtnGroup` for the
-	 * identical class of problem.
-	 * @description
-	 * `IBracketRoundProps.color` expects `TIntent | undefined` but
-	 * `IBracketProps` inherits `color` from `IColorProps` (`TColor`).
-	 * Cast to the narrower type expected by child round components —
-	 * type-only, no runtime change.
-	 ********************************************************/
-	const wasPropPassed = usePassedProps(props)
-	const roundColor = computed<TIntent | undefined>(() => {
-		return wasPropPassed('color') ? (props.color as TIntent | undefined) : undefined
-	})
+	// `IBracketRoundProps.color` expects `TIntent | undefined` but `IBracketProps`
+	// inherits `color` from `IColorProps` (TColor). Cast to the narrower type
+	// expected by child round components — type-only, no runtime change.
+	const roundColor = computed<TIntent | undefined>(() => props.color as TIntent | undefined)
 
 	/*********************************************************
 	 * Display rounds
@@ -376,9 +330,9 @@
 	const displayRounds = computed<IBracketRound[]>(() => {
 		if (props.variant !== BRACKET_VARIANT.DOUBLE_ELIMINATION) return props.rounds
 
-		const winners = props.rounds.filter(r => r.side === BRACKET_ROUND_SIDE.WINNER || r.side === undefined)
-		const losers = props.rounds.filter(r => r.side === BRACKET_ROUND_SIDE.LOSER)
-		const grandFinals = props.rounds.filter(r => r.side === BRACKET_ROUND_SIDE.GRAND_FINAL)
+		const winners = props.rounds.filter(r => r.side === 'winner' || r.side === undefined)
+		const losers = props.rounds.filter(r => r.side === 'loser')
+		const grandFinals = props.rounds.filter(r => r.side === 'grand-final')
 
 		return [...winners, ...losers, ...grandFinals]
 	})
@@ -395,14 +349,20 @@
 	 * Each section is rendered as its own tree; empty sections are
 	 * dropped.
 	 ********************************************************/
-	const winnerRounds = computed<IBracketRound[]>(() => props.rounds.filter(r => r.side === BRACKET_ROUND_SIDE.WINNER || r.side === undefined))
-	const loserRounds = computed<IBracketRound[]>(() => props.rounds.filter(r => r.side === BRACKET_ROUND_SIDE.LOSER))
-	const grandFinalRounds = computed<IBracketRound[]>(() => props.rounds.filter(r => r.side === BRACKET_ROUND_SIDE.GRAND_FINAL))
+	const winnerRounds = computed<IBracketRound[]>(() => props.rounds.filter(r => r.side === 'winner' || r.side === undefined))
+	const loserRounds = computed<IBracketRound[]>(() => props.rounds.filter(r => r.side === 'loser'))
+	const grandFinalRounds = computed<IBracketRound[]>(() => props.rounds.filter(r => r.side === 'grand-final'))
 
-	const doubleSections = computed<TBracketDoubleSection[]>(() => {
-		const all: TBracketDoubleSection[] = [
-			{key: 'winners', label: resolvedWinnersLabel.value, rounds: winnerRounds.value},
-			{key: 'losers', label: resolvedLosersLabel.value, rounds: loserRounds.value},
+	type TDoubleSection = {
+		key: 'winners' | 'losers' | 'grand-final'
+		label: string
+		rounds: IBracketRound[]
+	}
+
+	const doubleSections = computed<TDoubleSection[]>(() => {
+		const all: TDoubleSection[] = [
+			{key: 'winners', label: props.winnersLabel ?? '', rounds: winnerRounds.value},
+			{key: 'losers', label: props.losersLabel ?? '', rounds: loserRounds.value},
 			{key: 'grand-final', label: '', rounds: grandFinalRounds.value}
 		]
 
@@ -482,29 +442,15 @@
 		]
 	}
 
-	/*********************************************************
-	 * describeRoundRobinCell — critere C8
-	 *
-	 * @description
-	 * Trois libelles d'aria-label ecrits en dur en anglais, non couverts
-	 * par le correctif #388 (portait uniquement sur l'aria-label racine,
-	 * `winnersLabel` / `losersLabel`, `OrigamBracketMatch` et
-	 * `OrigamBracketCompetitor`). Trouve en reparant, absent du classeur.
-	 * @description
-	 * Le suffixe de score reutilise `origam.bracket.score_aria_suffix`,
-	 * deja declare pour le meme usage sur `OrigamBracketCompetitor` — pas
-	 * de cle dupliquee pour un concept identique.
-	 ********************************************************/
 	const describeRoundRobinCell = (row: IBracketCompetitor, col: IBracketCompetitor): string => {
-		if (row.id === col.id) return t('origam.bracket.round_robin.cell_self', row.name)
+		if (row.id === col.id) return `${row.name} versus itself, not applicable`
 
 		const match = findRoundRobinMatch(row.id, col.id)
-		if (!match) return t('origam.bracket.round_robin.cell_no_match', row.name, col.name)
+		if (!match) return `${row.name} vs ${col.name}, no match`
 
 		const score = roundRobinScore(row, col)
-		const base = t('origam.bracket.round_robin.cell_match', row.name, col.name)
 
-		return score ? `${base}${t('origam.bracket.score_aria_suffix', score)}` : base
+		return `${row.name} vs ${col.name}${score ? `, score ${score}` : ''}`
 	}
 
 	const onRoundRobinCellClick = (row: IBracketCompetitor, col: IBracketCompetitor, event: MouseEvent) => {
@@ -576,6 +522,14 @@
 	const doubleRef = ref<HTMLElement | null>(null)
 	const connectorViewBox = ref<string>('0 0 0 0')
 
+	type TConnectorPath = {
+		key: string
+		d: string
+		from: { matchId: IBracketMatch['id']; x: number; y: number }
+		to: { matchId: IBracketMatch['id']; x: number; y: number }
+		winner: boolean
+	}
+
 	/*********************************************************
 	 * Connector measurement (real DOM positions)
 	 *
@@ -589,7 +543,7 @@
 	 * exact middle of the card it leaves / enters, whatever the
 	 * title, density, scores or gap.
 	 ********************************************************/
-	const connectorPaths = ref<TBracketConnectorPath[]>([])
+	const connectorPaths = ref<TConnectorPath[]>([])
 
 	/*********************************************************
 	 * Double-elimination connectors (id-driven)
@@ -619,7 +573,7 @@
 			rectById.set(String(card.dataset.matchId), card.getBoundingClientRect())
 		})
 
-		const paths: TBracketConnectorPath[] = []
+		const paths: TConnectorPath[] = []
 
 		for (const round of props.rounds) {
 			for (const match of round.matches) {
@@ -672,7 +626,7 @@
 		})
 
 		const horiz = isHorizontal.value
-		const paths: TBracketConnectorPath[] = []
+		const paths: TConnectorPath[] = []
 
 		for (let r = 0; r < displayRounds.value.length - 1; r += 1) {
 			const round = displayRounds.value[r]
@@ -701,8 +655,8 @@
 				const toCenterY = (toRect.top - treeRect.top) + toRect.height / 2
 
 				let d: string
-				let from: TBracketConnectorPath['from']
-				let to: TBracketConnectorPath['to']
+				let from: TConnectorPath['from']
+				let to: TConnectorPath['to']
 
 				if (horiz) {
 					const startX = fromRect.right - treeRect.left
@@ -1021,6 +975,10 @@
 			display: flex;
 			position: relative;
 			gap: var(--origam-bracket---round-gap, 48px);
+			/* Pin to natural size — otherwise a wider parent stretches
+			 * the tree, the connectors SVG stretches with it (via
+			 * preserveAspectRatio="none"), but the round columns keep
+			 * their fixed width → connectors land outside the cards. */
 			width: max-content;
 
 			&--direction-horizontal {

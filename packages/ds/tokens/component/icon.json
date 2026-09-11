@@ -1,0 +1,24 @@
+{
+  "icon": {
+    "_comment": "Wraps font-icon and SVG-icon variants. Sizes mirror the typographic scale so an icon can sit inline with a body of matching size.",
+    "color":   { "$type": "color",     "$value": "currentColor" },
+    "transition-duration":   { "$type": "duration",  "$value": "{motion.duration.fast}" },
+    "transition-timing-function": { "$type": "cubicBezier", "$value": "{motion.easing.standard}" },
+
+    "font-size-xs":  { "$type": "dimension", "$value": "{font.size.xs}" },
+    "font-size-sm":  { "$type": "dimension", "$value": "{font.size.sm}" },
+    "font-size-md":  { "$type": "dimension", "$value": "{font.size.md}" },
+    "font-size-lg":  { "$type": "dimension", "$value": "{font.size.lg}" },
+    "font-size-xl":  { "$type": "dimension", "$value": "{font.size.xl}" },
+    "font-size-2xl": { "$type": "dimension", "$value": "{font.size.2xl}" },
+    "font-size-3xl": { "$type": "dimension", "$value": "{font.size.3xl}" },
+    "font-size-4xl": { "$type": "dimension", "$value": "{font.size.4xl}" },
+
+    "color-primary": { "$type": "color", "$value": "{color.action.primary.bg}" },
+    "color-success": { "$type": "color", "$value": "{color.feedback.success.bg}" },
+    "color-warning": { "$type": "color", "$value": "{color.feedback.warning.bg}" },
+    "color-danger":  { "$type": "color", "$value": "{color.feedback.danger.bg}" },
+    "color-info":    { "$type": "color", "$value": "{color.feedback.info.bg}" },
+    "color-disabled":{ "$type": "color", "$value": "{color.text.disabled}" }
+  }
+}

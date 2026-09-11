@@ -1,12 +1,6 @@
-import type {
-    IChartBaseEmits,
-    IChartBaseProps,
-    IChartBaseSlots
-} from './chart-base.interface'
-import type { IChartPoint } from './chart-point.interface'
-import type { IChartSeries } from './chart-series.interface'
+import type { IChartBaseEmits, IChartBaseProps, IChartBaseSlots, IChartPoint, IChartSeries } from '../../interfaces'
 
-import type { TChartStreamgraphOffset } from '../../types/Chart/chart-streamgraph.type'
+import type { TChartStreamgraphOffset } from '../../types'
 
 /**
  * Props for `<OrigamChartStreamgraph>` — the streamgraph family.

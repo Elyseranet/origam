@@ -1,3 +1,3 @@
-import OrigamDialog from '../../components/Dialog/OrigamDialog.vue'
+import { OrigamDialog } from '../../components'
 
 export type TOrigamDialog = InstanceType<typeof OrigamDialog>

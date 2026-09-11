@@ -115,9 +115,7 @@ interface IResponsiveProps extends IDimensionProps, ICommonsComponentProps,
 
 ## Design tokens consumed
 
-`<OrigamResponsive>` reads its variables from
-`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
-under `packages/ds/src/assets/scss/tokens/`).
+`<OrigamResponsive>` reads from `tokens/component/responsive.json`.
 
 | CSS variable | Default |
 |---|---|

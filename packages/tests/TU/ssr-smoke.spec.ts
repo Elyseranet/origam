@@ -9,19 +9,21 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h } from 'vue'
 import { renderToString } from '@vue/server-renderer'
 
-import { _resetCssSupportCache, useCssSupport } from '@origam/composables/Commons/cssSupport.composable'
-import { useCssSupportClient } from '@origam/composables/Commons/cssSupportClient.composable'
+import {
+    _resetCssSupportCache,
+    useCssSupport,
+    useCssSupportClient
+} from '@origam/composables/CssSupport/cssSupport.composable'
 
-import { useSnackbarGroup } from '@origam/composables/Snackbar/snackbar-group.composable'
-import { resetSnackbarGroupForTesting } from '@origam/utils/Snackbar/snackbar-group.util'
-import { useMask } from '@origam/composables/Commons/mask.composable'
+import { useSnackbarGroup, resetSnackbarGroupForTesting } from '@origam/composables/Snackbar/snackbar-group.composable'
+import { useMask } from '@origam/composables/Mask/mask.composable'
 import { useCode } from '@origam/composables/Code/code.composable'
-import { applyModeSync, applyThemeSync, readPersistedMode, readPersistedTheme } from '@origam/composables/Commons/theme.composable'
+import { applyModeSync, applyThemeSync, readPersistedMode, readPersistedTheme } from '@origam/composables/Theme/theme.composable'
 
-import { applyTheme, themeToCss } from '@origam/utils/Commons/apply-theme.util'
+import { applyTheme, themeToCss } from '@origam/utils/Theme/apply-theme.util'
 
-import { sanitizeHtml } from '@origam/utils/TextareaField/sanitize-html.util'
-import { htmlToMarkdown } from '@origam/utils/TextareaField/html-to-markdown.util'
+import { sanitizeHtml } from '@origam/utils/Textarea/sanitize-html.util'
+import { htmlToMarkdown } from '@origam/utils/Textarea/html-to-markdown.util'
 
 // ───────────────────────────────────────────────────────────────────────────
 // Helper — temporarily strip browser globals to simulate Node / SSR
@@ -188,26 +190,9 @@ describe('SSR safety — Vue server renderer integration', () => {
                 return () => h('div', { class: { 'has-grid': css.value.grid } }, 'hello')
             }
         })
-        // A real server has no `CSS` global at all. This suite runs under jsdom,
-        // which DOES provide one — so the absence of `has-grid` used to hold by
-        // accident, only because jsdom answered `false` to every query. jsdom 30
-        // started answering `true` for `display: grid`, and the assertion broke
-        // without any origam change. Removing the global reproduces the actual
-        // server condition, which is what this test claims to cover.
-        const globals = globalThis as { CSS?: unknown }
-        const savedCss = globals.CSS
-        delete globals.CSS
-
-        let html: string
-
-        try {
-            html = await renderToString(h(Host))
-        } finally {
-            globals.CSS = savedCss
-        }
-
+        const html = await renderToString(h(Host))
         expect(html).toContain('hello')
-        // Every flag is false server-side → no `has-grid` class on the output.
+        // All flags must be false → no `has-grid` class on the SSR output.
         expect(html).not.toContain('has-grid')
     })
 

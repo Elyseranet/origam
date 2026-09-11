@@ -1,12 +1,14 @@
 import type {
     ICommonsComponentProps,
-    ITagProps
-} from '../Commons/commons.interface'
-import type { IGradient } from '../Commons/gradient.interface'
-import type { ITypographyProps } from '../Commons/typography.interface'
+    IGradient,
+    ITagProps,
+    ITypographyProps
+} from '../../interfaces'
 
-import type { TBlockquoteAlign } from '../../types/Blockquote/blockquote.type'
-import type { TTextMaskAnimation } from '../../types/TextMask/text-mask.type'
+import type {
+    TBlockquoteAlign,
+    TTextMaskAnimation
+} from '../../types'
 
 /**
  * Props for `<OrigamTextMask>` — typographic "window" component.
@@ -93,12 +95,3 @@ export interface ITextMaskProps extends ICommonsComponentProps, ITagProps, ITypo
 export interface ITextMaskSlots {
     default?: () => any
 }
-
-/*********************************************************
- * ITextMaskEmits
- *
- * @description
- * `<OrigamTextMask>` only paints text via CSS `background-clip: text` —
- * it never calls `emit(...)` in its script.
- ********************************************************/
-export interface ITextMaskEmits {}

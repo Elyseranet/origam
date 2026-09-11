@@ -1,7 +1,6 @@
-import type { IScrollStrategyData, IScrollStrategyProps } from '../../interfaces/Commons/scroll.interface'
+import type { IScrollStrategyData, IScrollStrategyProps } from '../../interfaces'
 
-import { convertToUnit } from './commons.util'
-import { requestNewFrame } from './requestNewFrame.util'
+import { convertToUnit, requestNewFrame } from '../../utils'
 
 import { EffectScope, onScopeDispose } from 'vue'
 

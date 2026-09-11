@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "types": ["vitest/globals"],
+    "lib": ["ESNext", "DOM"],
+    "moduleResolution": "Bundler"
+  },
+  "include": ["src/**/*.spec.ts", "src/**/*.spec.tsx"],
+  "exclude": ["node_modules", "dist"]
+}

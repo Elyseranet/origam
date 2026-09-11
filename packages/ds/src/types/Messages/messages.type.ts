@@ -1,3 +1,3 @@
-import OrigamMessages from '../../components/Messages/OrigamMessages.vue'
+import { OrigamMessages } from "../../components"
 
 export type TOrigamMessages = InstanceType<typeof OrigamMessages>

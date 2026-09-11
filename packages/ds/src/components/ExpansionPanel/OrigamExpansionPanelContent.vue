@@ -3,9 +3,9 @@
 		<component
 				:is="tag"
 				v-show="isSelected"
-				:id="contentDomId"
+				:id="`expansion-panel-content-${expansionPanel.id}`"
 				v-contrast
-				:aria-labelledby="expansionPanel.headerId.value"
+				:aria-labelledby="`expansion-panel-header-${expansionPanel.id}`"
 				:class="expansionPanelContentClasses"
 				:style="expansionPanelContentStyles"
 				role="region"
@@ -13,9 +13,9 @@
 			<div class="origam-expansion-panel-content__wrapper">
 				<template v-if="loaderConfig.isActive && loaderConfig.kind === 'skeleton'">
 					<slot name="loader">
-						<origam-skeleton variant="text" :loading="true" :label="loadingText" v-bind="loaderConfig.overrides"/>
-						<origam-skeleton variant="text" :loading="true" :label="loadingText" v-bind="loaderConfig.overrides"/>
-						<origam-skeleton variant="text" :loading="true" :label="loadingText" v-bind="loaderConfig.overrides"/>
+						<origam-skeleton variant="text" :loading="true" v-bind="loaderConfig.overrides"/>
+						<origam-skeleton variant="text" :loading="true" v-bind="loaderConfig.overrides"/>
+						<origam-skeleton variant="text" :loading="true" v-bind="loaderConfig.overrides"/>
 					</slot>
 				</template>
 
@@ -27,7 +27,6 @@
 								:model-value="loaderConfig.modelValue"
 								:type="loaderConfig.kind === 'circular' ? PROGRESS_TYPE.CIRCULAR : PROGRESS_TYPE.LINEAR"
 								:class="expansionPanelContentProgressClasses"
-								:label="loadingText"
 								thickness="4"
 								v-bind="loaderConfig.overrides"
 						/>
@@ -56,34 +55,29 @@
 		lang="ts"
 		setup
 >
-	import { computed, inject, StyleValue, toRef, watchEffect } from 'vue'
-	import OrigamExpandY from '../Transition/OrigamExpandY.vue'
-	import OrigamProgress from '../Progress/OrigamProgress.vue'
-	import OrigamSkeleton from '../Skeleton/OrigamSkeleton.vue'
+	import { computed, inject, StyleValue, toRef } from 'vue'
+	import { OrigamExpandY, OrigamProgress, OrigamSkeleton } from '../../components'
 
-	import vContrast from '../../directives/Contrast/contrast.directive'
+	import { vContrast } from '../../directives'
 
-	import { useBorder } from '../../composables/Commons/border.composable'
-	import { useBothColor } from '../../composables/Commons/bothColor.composable'
-	import { useDensity } from '../../composables/Commons/density.composable'
-	import { useLazy } from '../../composables/Commons/lazy.composable'
-	import { useLoader } from '../../composables/Commons/loader.composable'
-	import { useMargin } from '../../composables/Commons/margin.composable'
-	import { usePadding } from '../../composables/Commons/padding.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useRounded } from '../../composables/Commons/rounded.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
+	import {
+		useBorder,
+		useBothColor,
+		useDensity,
+		useLazy,
+		useLoader,
+		useMargin,
+		usePadding,
+		useProps,
+		useRounded,
+		useStyle
+} from '../../composables'
 
-	import { LOADER_KIND } from '../../enums/Commons/loader.enum'
-	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
+	import { PROGRESS_TYPE } from '../../enums'
 
-	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts/ExpansionPanel/expansion-panel.const'
+	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts'
 
-	import type {
-		IExpansionPanelContentEmits,
-		IExpansionPanelContentProps,
-		IExpansionPanelContentSlots
-	} from '../../interfaces/ExpansionPanel/expansion-panel-content.interface'
+	import type { IExpansionPanelContentProps } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -94,10 +88,6 @@
 	const props = withDefaults(defineProps<IExpansionPanelContentProps>(), {
 		tag: 'div'
 	})
-
-	defineEmits<IExpansionPanelContentEmits>()
-
-	defineSlots<IExpansionPanelContentSlots>()
 
 	const {filterProps} = useProps<IExpansionPanelContentProps>(props)
 
@@ -111,24 +101,6 @@
 	 * @description
 	 * Deferred content rendering tied to the panel's selection state.
 	 ********************************************************/
-
-	/*********************************************************
-	 * ARIA wiring
-	 *
-	 * @description
-	 * `contentDomId` is this content's own resolved DOM id —
-	 * `props.id` when the consumer supplies one, a generated
-	 * fallback otherwise. Published onto the shared
-	 * `expansionPanel.contentId` slot so the sibling
-	 * `<OrigamExpansionPanelHeader>` can point its
-	 * `aria-controls` at the REAL id instead of guessing the
-	 * generated-fallback naming scheme (#519, #520).
-	 ********************************************************/
-	const contentDomId = computed(() => props.id || `expansion-panel-content-${expansionPanel.id}`)
-
-	watchEffect(() => {
-		expansionPanel.contentId.value = contentDomId.value
-	})
 
 	/*********************************************************
 	 * Composables
@@ -148,16 +120,8 @@
 	 *
 	 * @description
 	 * Line/circular/skeleton loading state for the content area.
-	 *
-	 * @description
-	 * `loadingText` reaches the render through the ACTIVE renderer's
-	 * `label` prop (template). `<origam-skeleton>` and `<origam-progress>`
-	 * already resolve `label` as a locale key into their own `aria-label`
-	 * (default `'origam.loading'`), so there is no second translation path
-	 * to maintain here. Bound BEFORE `v-bind="loaderConfig.overrides"` so a
-	 * per-instance `loading="{ type, label }"` keeps the last word.
 	 ********************************************************/
-	const {loaderClasses, loaderConfig} = useLoader(props, LOADER_KIND.LINE)
+	const {loaderClasses, loaderConfig} = useLoader(props, 'line')
 
 	/*********************************************************
 	 * Class & Style

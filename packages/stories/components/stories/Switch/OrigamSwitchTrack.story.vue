@@ -6,7 +6,7 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<Partial<ISwitchTrackProps>>({ modelValue: true, color: undefined, bgColor: undefined, inset: false, border: undefined, borderColor: undefined, borderStyle: undefined, rounded: undefined, elevation: undefined })"
+				:init-state="() => useStoryInitState<Partial<ISwitchTrackProps>>({ modelValue: true, color: undefined, bgColor: undefined, inset: false })"
 		>
 			<template #default="{ state }">
 				<div style="display: flex; flex-direction: column; gap: 16px; padding: 24px;">
@@ -15,40 +15,13 @@
 							:color="state.color"
 							:bg-color="state.bgColor"
 							:inset="state.inset"
-							:border="state.border"
-							:border-color="state.borderColor"
-							:border-style="state.borderStyle"
-							:rounded="state.rounded"
-							:elevation="state.elevation"
-					>
-						<template #track.true="{ color: slotColor }">
-							<origam-icon
-									:icon="checkIcon"
-									:color="slotColor"
-							/>
-						</template>
-						<template #track.false="{ color: slotColor }">
-							<origam-icon
-									:icon="closeIcon"
-									:color="slotColor"
-							/>
-						</template>
-					</origam-switch-track>
+					/>
 				</div>
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Color">
-					<HstSelect v-model="state.bgColor" title="Bg Color (paints the rail)" :options="COLOR_OPTIONS"/>
-					<HstSelect v-model="state.color"   title="Color (slot payload only)"  :options="COLOR_OPTIONS"/>
-				</StoryGroup>
-				<StoryGroup title="Shape">
-					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
-					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
-				</StoryGroup>
-				<StoryGroup title="Border">
-					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
-					<HstSelect v-model="state.borderColor" title="Border Color" :options="COLOR_OPTIONS"/>
-					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
+					<HstSelect v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Variant">
 					<HstCheckbox v-model="state.inset" title="Inset"/>
@@ -143,11 +116,6 @@
 					isValid: null,
 					color: undefined,
 					bgColor: undefined,
-					border: undefined,
-					borderColor: undefined,
-					borderStyle: undefined,
-					rounded: undefined,
-					elevation: undefined,
 				})"
 		>
 			<template #default="{ state }">
@@ -155,20 +123,7 @@
 					<origam-switch-track
 							v-bind="state"
 							@click="logEvent('click', $event)"
-					>
-						<template #track.true="{ color: slotColor }">
-							<origam-icon
-									:icon="checkIcon"
-									:color="slotColor"
-							/>
-						</template>
-						<template #track.false="{ color: slotColor }">
-							<origam-icon
-									:icon="closeIcon"
-									:color="slotColor"
-							/>
-						</template>
-					</origam-switch-track>
+					/>
 				</div>
 			</template>
 			<template #controls="{ state }">
@@ -176,14 +131,9 @@
 					<HstCheckbox v-model="state.modelValue" title="Model Value (on/off)"/>
 				</StoryGroup>
 				<StoryGroup title="Design">
-					<HstSelect   v-model="state.bgColor" title="Bg Color (paints the rail)" :options="COLOR_OPTIONS"/>
-					<HstSelect   v-model="state.color"   title="Color (slot payload only)"  :options="COLOR_OPTIONS"/>
+					<HstSelect   v-model="state.color"   title="Color"    :options="COLOR_OPTIONS"/>
+					<HstSelect   v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
 					<HstCheckbox v-model="state.inset"   title="Inset"/>
-					<HstSelect   v-model="state.rounded"     title="Rounded"      :options="ROUNDED_OPTIONS"/>
-					<HstSelect   v-model="state.elevation"   title="Elevation"    :options="ELEVATION_OPTIONS"/>
-					<HstSelect   v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
-					<HstSelect   v-model="state.borderColor" title="Border Color" :options="COLOR_OPTIONS"/>
-					<HstSelect   v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.disabled" title="Disabled"/>
@@ -207,13 +157,7 @@
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
-	import {
-		BORDER_OPTIONS,
-		BORDER_STYLE_OPTIONS,
-		COLOR_OPTIONS,
-		ELEVATION_OPTIONS,
-		ROUNDED_OPTIONS
-	} from '@stories/const'
+	import { COLOR_OPTIONS } from '@stories/const'
 
 	const checkIcon = MDI_ICONS.CHECK
 	const closeIcon = MDI_ICONS.CLOSE

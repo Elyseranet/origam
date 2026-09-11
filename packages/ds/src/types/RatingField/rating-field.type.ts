@@ -1,3 +1,3 @@
-import OrigamRatingField from '../../components/RatingField/OrigamRatingField.vue'
+import { OrigamRatingField } from "../../components"
 
 export type TOrigamRatingField = InstanceType<typeof OrigamRatingField>

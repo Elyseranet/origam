@@ -13,7 +13,7 @@ import type { ITypographyProps } from '../Commons/typography.interface'
  */
 export type TCommandPaletteHotkey = ReadonlyArray<string> | ReadonlyArray<ReadonlyArray<string>>
 
-export interface ICommandPaletteProps extends ICommonsComponentProps, Pick<ITypographyProps, 'fontSize'> {
+export interface ICommandPaletteProps extends ICommonsComponentProps, ITypographyProps {
     /** v-model — whether the palette is open. */
     modelValue?: boolean
     /**

@@ -1,5 +1,4 @@
-import type { TGridGapSize } from '../../types/Grid/grid.type'
-import type { TMasonryAlign } from '../../types/Masonry/masonry.type'
+import type { TGridGapSize, TMasonryAlign } from '../../types'
 
 /**
  * Closed list of valid `align` values for `<OrigamMasonry>`. Exposed so

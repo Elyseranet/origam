@@ -1,3 +1,3 @@
-import OrigamSelectionControl from '../../components/SelectionControl/OrigamSelectionControl.vue'
+import { OrigamSelectionControl } from "../../components"
 
 export type TOrigamSelectionControl = InstanceType<typeof OrigamSelectionControl>

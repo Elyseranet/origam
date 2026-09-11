@@ -1,3 +1,3 @@
-import OrigamDatePickerControls from '../../components/DatePicker/OrigamDatePickerControls.vue'
+import { OrigamDatePickerControls } from "../../components"
 
 export type TOrigamDatePickerControls = InstanceType<typeof OrigamDatePickerControls>

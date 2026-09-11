@@ -1,0 +1,19 @@
+{
+  "qrcode": {
+    "foreground":            { "$type": "color",     "$value": "{color.text.primary}" },
+    "background-color":      { "$type": "color",     "$value": "{color.surface.default}" },
+
+    "size-sm":               { "$type": "dimension", "$value": "120px" },
+    "size-md":               { "$type": "dimension", "$value": "240px" },
+    "size-lg":               { "$type": "dimension", "$value": "480px" },
+
+    "module": {
+      "corner-radius":       { "$type": "dimension", "$value": "0" }
+    },
+
+    "logo": {
+      "padding":             { "$type": "dimension", "$value": "{space.2}" },
+      "background-color":    { "$type": "color",     "$value": "{color.surface.default}" }
+    }
+  }
+}

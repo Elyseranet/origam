@@ -1,13 +1,9 @@
 import { defineConfig, devices } from '@playwright/test'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { scratchDirPatterns } from './scratch-dirs.const'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const REPO_ROOT = resolve(__dirname, '..', '..')
-
-/** Same knob as `playwright.config.ts` — the manifest guard reads it too. */
-const HISTOIRE_PORT = process.env.E2E_HISTOIRE_PORT ?? '6006'
 
 /*
  * Standalone Playwright config for `pnpm -F @origam/tests test:a11y`.
@@ -24,19 +20,7 @@ const HISTOIRE_PORT = process.env.E2E_HISTOIRE_PORT ?? '6006'
  */
 export default defineConfig({
     testDir: './a11y',
-    // 'marketing-a11y.spec.ts' targets the Nuxt marketing app (:3000) via
-    // `playwright.a11y.marketing.config.ts` and its own `MARKETING_BASE_URL`.
-    // It lives in the same `./a11y` directory, so without this it would also
-    // run here against Histoire's baseURL, where its DOM never exists — the
-    // exact harness-scoping bug `e2e/_support/marketing-specs.const.ts`
-    // documents for the e2e side.
-    testIgnore: [...scratchDirPatterns('./a11y'), '**/marketing-a11y.spec.ts'],
     outputDir: './a11y/.results',
-
-    // Same `reuseExistingServer` exposure as the e2e config: a foreign or
-    // outdated Histoire on this port silently routes the wrong stories.
-    // See e2e-global-setup.ts.
-    globalSetup: './e2e-global-setup.ts',
 
     fullyParallel: false,
 
@@ -51,7 +35,7 @@ export default defineConfig({
     ],
 
     use: {
-        baseURL: `http://localhost:${HISTOIRE_PORT}`,
+        baseURL: 'http://localhost:6006',
         trace: 'on-first-retry'
     },
 
@@ -64,9 +48,9 @@ export default defineConfig({
 
     webServer: {
         // Spawn pnpm from the repo root so the workspace filter resolves.
-        command: `pnpm -F @origam/stories dev --port ${HISTOIRE_PORT}`,
+        command: 'pnpm -F @origam/stories dev',
         cwd: REPO_ROOT,
-        url: `http://localhost:${HISTOIRE_PORT}`,
+        url: 'http://localhost:6006',
         reuseExistingServer: !process.env.CI,
         timeout: 120_000
     }

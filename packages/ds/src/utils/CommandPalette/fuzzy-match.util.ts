@@ -26,9 +26,16 @@
  * inside a `computed`.
  */
 
-import type { IFuzzyMatchResult } from '../../interfaces/CommandPalette/command.interface'
-
-export type { IFuzzyMatchResult } from '../../interfaces/CommandPalette/command.interface'
+/**
+ * Output of `fuzzyMatch` — the matched item carries its score so callers
+ * can short-circuit a re-sort on cached input.
+ */
+export interface IFuzzyMatchResult<T> {
+    /** Original item passed in. */
+    item: T
+    /** Higher = better fit. `0` is the floor for a successful match. */
+    score: number
+}
 
 /**
  * Bonus weights — tuned by hand against typical command-palette

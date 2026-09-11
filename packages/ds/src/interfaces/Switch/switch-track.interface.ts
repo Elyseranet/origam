@@ -1,28 +1,21 @@
 import type {
     IBgColorProps,
-    IColorProps
-} from '../Commons/color.interface'
-import type { IBorderProps } from '../Commons/border.interface'
-import type {
+    IBorderProps,
+    IColorProps,
+    ICommonsComponentEmits,
     ICommonsComponentProps,
-    ICommonsComponentSlots
-} from '../Commons/commons.interface'
-import type { IElevationProps } from '../Commons/elevation.interface'
-import type { IRoundedProps } from '../Commons/rounded.interface'
+    ICommonsComponentSlots,
+    IElevationProps,
+    IRoundedProps
+} from '../../interfaces'
 
-import type { TColor } from '../../types/Commons/color.type'
-
-/*********************************************************
- * ISwitchTrackProps
- *
- * @description
+/**
  * Props for `<OrigamSwitchTrack>` — the rounded "rail" sitting behind the
  * Switch thumb. The track owns its own visual surface (background, border,
  * inset variant, error state, rounded/elevation identity) and exposes slots
  * for content shown on the `true` (left) and `false` (right) sides of the
  * rail.
  *
- * @description
  * Color contract — strict channel separation:
  *  • `bgColor` paints the rail (the box behind the thumb).
  *  • `color`   is the foreground intent inherited from the parent
@@ -30,7 +23,6 @@ import type { TColor } from '../../types/Commons/color.type'
  *              not the track) — exposed here so the slot content can
  *              react to it (e.g. an icon inside `track.true`).
  *
- * @description
  * `border` / `rounded` / `elevation` (props-first, lot 4 theming fix):
  * previously declared on `ISwitchProps` (inherited from the Commons
  * interfaces) but never consumed anywhere — `OrigamSwitch.vue` accepted
@@ -40,7 +32,7 @@ import type { TColor } from '../../types/Commons/color.type'
  * and nothing would render differently. Declared here now because the
  * track is the element that owns the visual surface these props target —
  * `OrigamSwitch` forwards its own values down via `filterProps`.
- ********************************************************/
+ */
 export interface ISwitchTrackProps extends ICommonsComponentProps, IColorProps, IBgColorProps, IBorderProps, IRoundedProps, IElevationProps {
     /** Whether the switch is currently ON. Drives the `--dirty` modifier. */
     modelValue?: boolean
@@ -62,47 +54,15 @@ export interface ISwitchTrackProps extends ICommonsComponentProps, IColorProps, 
     inset?: boolean
 }
 
-/*********************************************************
- * ISwitchTrackEmits
- *
- * @description
- * ⛔ Does NOT extend `ICommonsComponentEmits` (LOT 3, unemitted-declarations
- * guard). That interface only declares `update:modelValue`, which this
- * component cannot emit: `modelValue` is a plain, read-only display prop
- * here — `props.modelValue: boolean`, driving the `--dirty` CSS modifier —
- * there is no `useVModel` call, no `modelValue.value =` write, nothing.
- * The track only ever forwards a raw `click` upward; `OrigamSwitch` decides
- * whether that toggles the real `modelValue` it owns (`v-model="model"` on
- * `<origam-selection-control>`, several layers above). Same reasoning as
- * `ICheckboxBtnEmits` for `update:focused` — dead surface, not an
- * observable break: a consumer binding `@update:model-value` on
- * `<origam-switch-track>` directly received nothing before and receives
- * nothing after; the listener now flows through `$attrs` instead of being
- * swallowed by a declaration that lied about firing it.
- ********************************************************/
-export interface ISwitchTrackEmits {
+export interface ISwitchTrackEmits extends ICommonsComponentEmits {
     (e: 'click', event: MouseEvent): void
 }
 
-/*********************************************************
- * ISwitchTrackSlotsProps
- *
- * @description
+/**
  * Slot payload — `model` and `isValid` are forwarded so the consumer can
  * render contextual content (a checkmark on ON, an `x` on OFF, …).
- *
- * @description
- * ⛔ `color` is part of the payload AT RUNTIME (`slotProps` in
- * `OrigamSwitchTrack.vue` spreads `color: props.color`) but was missing
- * from this type, so a TypeScript consumer destructuring
- * `#track.true="{ color }"` got an error on a value that is genuinely
- * there. Declared here to close the gap — the track still does NOT paint
- * with it (the foreground channel lives on the surrounding
- * SelectionControl, see the note on `ISwitchTrackProps`); it is forwarded
- * precisely so slot content can react to it.
- ********************************************************/
+ */
 export interface ISwitchTrackSlotsProps {
-    color?: TColor
     model: boolean
     isValid: boolean | null
 }

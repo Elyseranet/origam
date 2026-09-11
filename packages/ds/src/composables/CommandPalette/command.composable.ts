@@ -1,10 +1,8 @@
-import { computed, ref } from 'vue'
+import { computed, type ComputedRef, ref, type Ref } from 'vue'
 
-import type { ICommand, ICommandRegistry, IUseCommandReturn } from '../../interfaces/CommandPalette/command.interface'
+import type { ICommand } from '../../interfaces'
 
-import { tryOnScopeDispose } from '../../utils/Commons/commons.util'
-
-export type { IUseCommandReturn } from '../../interfaces/CommandPalette/command.interface'
+import { tryOnScopeDispose } from '../../utils'
 
 /*********************************************************
  * Singleton registry
@@ -18,6 +16,13 @@ export type { IUseCommandReturn } from '../../interfaces/CommandPalette/command.
  * Reactivity is preserved through plain `ref()` references. Two
  * callers on the same module instance see the exact same list.
  ********************************************************/
+
+interface ICommandRegistry {
+    /** Live array of registered commands. Dedup by id is enforced at write time. */
+    items: Ref<Array<ICommand>>
+    /** Whether the global palette singleton is currently open. */
+    isOpen: Ref<boolean>
+}
 
 const REGISTRY: ICommandRegistry = {
     items: ref<Array<ICommand>>([]),
@@ -46,20 +51,29 @@ const removeById = (id: string): void => {
  * useCommand
  ********************************************************/
 
+export interface IUseCommandReturn {
+    /**
+     * Register a command. Returns an `unregister()` closure so callers
+     * can drop the entry imperatively. When called from inside a Vue
+     * effect scope, the entry is auto-unregistered on scope dispose
+     * (component unmount, route leave, …) via `tryOnScopeDispose`.
+     */
+    register: (cmd: ICommand) => () => void
+    /** Drop the entry with the matching `id`. No-op if unknown. */
+    unregister: (id: string) => void
+    /**
+     * Reactive read-only view of every registered command, deduplicated
+     * by id.
+     */
+    commands: ComputedRef<ReadonlyArray<ICommand>>
+    /** Open the global palette singleton. */
+    open: () => void
+    /** Close the global palette singleton. */
+    close: () => void
+    /** Reactive open/close state of the global palette singleton. */
+    isOpen: Ref<boolean>
+}
 
-/*********************************************************
- * useCommand
- *
- * @description
- * Registre des commandes de `<origam-command-palette>`. `register` ajoute ou
- * remplace une commande par son `id` et retourne sa fonction de retrait.
- *
- * @description
- * Le retrait est aussi branche sur `tryOnScopeDispose` : une commande
- * enregistree depuis un `setup()` disparait avec le composant, sans que
- * l'appelant ait a garder la fonction retournee. Hors d'un scope Vue, cet
- * accrochage ne fait rien et c'est au consommateur d'appeler le retrait.
- ********************************************************/
 export function useCommand (): IUseCommandReturn {
     const register = (cmd: ICommand): () => void => {
         upsert(cmd)

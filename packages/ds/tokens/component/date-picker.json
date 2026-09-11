@@ -1,0 +1,73 @@
+{
+  "date-picker": {
+    "background-color":      { "$type": "color",     "$value": "{color.surface.raised}" },
+    "color":                 { "$type": "color",     "$value": "{color.text.primary}" },
+    "border-radius":         { "$type": "dimension", "$value": "{radius.md}" },
+    "padding-block":         { "$type": "dimension", "$value": "{space.4}" },
+    "padding-inline":        { "$type": "dimension", "$value": "{space.4}" },
+    "transition-duration":   { "$type": "duration",  "$value": "{motion.duration.fast}" },
+    "transition-timing-function": { "$type": "cubicBezier", "$value": "{motion.easing.standard}" },
+
+    "header": {
+      "background-color":      { "$type": "color",      "$value": "{color.action.primary.bg}" },
+      "color":                 { "$type": "color",      "$value": "{color.action.primary.fg}" },
+      "padding-block":         { "$type": "dimension",  "$value": "{space.4}" },
+      "padding-inline":        { "$type": "dimension",  "$value": "{space.4}" },
+      "font-size":             { "$type": "dimension",  "$value": "{font.size.lg}" },
+      "font-weight":           { "$type": "fontWeight", "$value": "{font.weight.medium}" },
+      "min-height":            { "$type": "dimension",  "$value": "70px" }
+    },
+
+    "controls": {
+      "color":            { "$type": "color",     "$value": "{color.text.secondary}" },
+      "color-hover":      { "$type": "color",     "$value": "{color.text.primary}" },
+      "color-disabled":   { "$type": "color",     "$value": "{color.text.disabled}" },
+      "padding":          { "$type": "dimension", "$value": "{space.2}" }
+    },
+
+    "month": {
+      "padding-block":      { "$type": "dimension", "$value": "{space.2}" },
+      "padding-inline":     { "$type": "dimension", "$value": "{space.3}" },
+      "border-radius":      { "$type": "dimension", "$value": "{radius.sm}" },
+      "color":              { "$type": "color",     "$value": "{color.text.primary}" },
+      "background-color":   { "$type": "color",     "$value": "transparent" },
+      "background-color-hover":    { "$type": "color", "$value": "{color.surface.overlay}" },
+      "background-color-selected": { "$type": "color", "$value": "{color.action.primary.bg}" },
+      "color-selected":     { "$type": "color",     "$value": "{color.action.primary.fg}" },
+      "border-color-today": { "$type": "color",     "$value": "{color.action.primary.bg}" },
+      "border-width-today": { "$type": "dimension", "$value": "{border.width.thin}" },
+      "opacity-disabled":   { "$type": "number",    "$value": "{opacity.32}" }
+    },
+
+    "year": {
+      "padding-block":      { "$type": "dimension", "$value": "{space.2}" },
+      "padding-inline":     { "$type": "dimension", "$value": "{space.4}" },
+      "border-radius":      { "$type": "dimension", "$value": "{radius.sm}" },
+      "color":              { "$type": "color",     "$value": "{color.text.primary}" },
+      "background-color":   { "$type": "color",     "$value": "transparent" },
+      "background-color-hover":    { "$type": "color", "$value": "{color.surface.overlay}" },
+      "background-color-selected": { "$type": "color", "$value": "{color.action.primary.bg}" },
+      "color-selected":     { "$type": "color",     "$value": "{color.action.primary.fg}" }
+    },
+
+    "weekday": {
+      "color":       { "$type": "color",      "$value": "{color.text.secondary}" },
+      "font-size":   { "$type": "dimension",  "$value": "{font.size.sm}" },
+      "font-weight": { "$type": "fontWeight", "$value": "{font.weight.medium}" }
+    },
+
+    "day": {
+      "size":               { "$type": "dimension", "$value": "40px" },
+      "color":              { "$type": "color",     "$value": "{color.text.primary}" },
+      "background-color":   { "$type": "color",     "$value": "transparent" },
+      "background-color-hover":    { "$type": "color", "$value": "{color.surface.overlay}" },
+      "background-color-selected": { "$type": "color", "$value": "{color.action.primary.bg}" },
+      "color-selected":     { "$type": "color",     "$value": "{color.action.primary.fg}" },
+      "background-color-in-range": { "$type": "color", "$value": "{color.surface.overlay}" },
+      "border-color-today": { "$type": "color",     "$value": "{color.action.primary.bg}" },
+      "color-out-of-month": { "$type": "color",     "$value": "{color.text.disabled}" },
+      "opacity-disabled":   { "$type": "number",    "$value": "{opacity.32}" },
+      "border-radius":      { "$type": "dimension", "$value": "{radius.full}" }
+    }
+  }
+}

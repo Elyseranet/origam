@@ -15,17 +15,9 @@
 						:bg-color="state.bgColor"
 						:size="state.size"
 						:rounded="state.rounded"
-						:rounded-top-left="state.roundedTopLeft"
-						:rounded-top-right="state.roundedTopRight"
-						:rounded-bottom-left="state.roundedBottomLeft"
-						:rounded-bottom-right="state.roundedBottomRight"
 						:border="state.border"
 						:border-color="state.borderColor"
 						:border-style="state.borderStyle"
-						:border-top="state.borderTop"
-						:border-right="state.borderRight"
-						:border-bottom="state.borderBottom"
-						:border-left="state.borderLeft"
 						:width="state.width"
 						:height="state.height"
 				/>
@@ -41,22 +33,10 @@
 				<StoryGroup title="Shape">
 					<HstSelect v-model="state.rounded" title="Rounded" :options="ROUNDED_OPTIONS"/>
 				</StoryGroup>
-				<StoryGroup title="Rounded — per corner">
-					<HstText v-model="state.roundedTopLeft"     title="Rounded Top Left"/>
-					<HstText v-model="state.roundedTopRight"    title="Rounded Top Right"/>
-					<HstText v-model="state.roundedBottomLeft"  title="Rounded Bottom Left"/>
-					<HstText v-model="state.roundedBottomRight" title="Rounded Bottom Right"/>
-				</StoryGroup>
 				<StoryGroup title="Border">
 					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
 					<HstText   v-model="state.borderColor" title="Border Color"/>
 					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
-				</StoryGroup>
-				<StoryGroup title="Border — per side">
-					<HstSelect v-model="state.borderTop"    title="Border Top"    :options="BORDER_OPTIONS"/>
-					<HstSelect v-model="state.borderRight"  title="Border Right"  :options="BORDER_OPTIONS"/>
-					<HstSelect v-model="state.borderBottom" title="Border Bottom" :options="BORDER_OPTIONS"/>
-					<HstSelect v-model="state.borderLeft"   title="Border Left"   :options="BORDER_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Dimension">
 					<HstText v-model="state.width"  title="Width"/>
@@ -72,25 +52,17 @@
 			<template #default="{ state }">
 				<origam-component-icon
 						:icon="StarSvgComponent"
+						:disabled="state.disabled"
 						:tag="state.tag"
 						:size="state.size"
 						:padding="state.padding"
-						:padding-top="state.paddingTop"
-						:padding-right="state.paddingRight"
-						:padding-bottom="state.paddingBottom"
-						:padding-left="state.paddingLeft"
-						:padding-block="state.paddingBlock"
-						:padding-inline="state.paddingInline"
 						:margin="state.margin"
-						:margin-top="state.marginTop"
-						:margin-right="state.marginRight"
-						:margin-bottom="state.marginBottom"
-						:margin-left="state.marginLeft"
-						:margin-block="state.marginBlock"
-						:margin-inline="state.marginInline"
 				/>
 			</template>
 			<template #controls="{ state }">
+				<StoryGroup title="States">
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+				</StoryGroup>
 				<StoryGroup title="Tag">
 					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
 				</StoryGroup>
@@ -100,22 +72,6 @@
 				<StoryGroup title="Spacing">
 					<HstText v-model="state.padding" title="Padding"/>
 					<HstText v-model="state.margin"  title="Margin"/>
-				</StoryGroup>
-				<StoryGroup title="Padding — per side">
-					<HstText v-model="state.paddingTop"    title="Padding Top"/>
-					<HstText v-model="state.paddingRight"  title="Padding Right"/>
-					<HstText v-model="state.paddingBottom" title="Padding Bottom"/>
-					<HstText v-model="state.paddingLeft"   title="Padding Left"/>
-					<HstText v-model="state.paddingBlock"  title="Padding Block"/>
-					<HstText v-model="state.paddingInline" title="Padding Inline"/>
-				</StoryGroup>
-				<StoryGroup title="Margin — per side">
-					<HstText v-model="state.marginTop"    title="Margin Top"/>
-					<HstText v-model="state.marginRight"  title="Margin Right"/>
-					<HstText v-model="state.marginBottom" title="Margin Bottom"/>
-					<HstText v-model="state.marginLeft"   title="Margin Left"/>
-					<HstText v-model="state.marginBlock"  title="Margin Block"/>
-					<HstText v-model="state.marginInline" title="Margin Inline"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -159,6 +115,13 @@
 			</div>
 		</Variant>
 
+		<Variant title="Slot — default (overrides icon prop)">
+			<origam-component-icon>
+				<svg viewBox="0 0 24 24" style="width:1em;height:1em;fill:currentColor;" aria-hidden="true">
+					<path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+				</svg>
+			</origam-component-icon>
+		</Variant>
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IIconComponentProps>({ tag: 'div', size: 'default' })"
@@ -179,6 +142,7 @@
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstSelect   v-model="state.tag"      title="Tag"      :options="TAG_OPTIONS"/>
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
 				</StoryGroup>
 			</template>
 		</Variant>

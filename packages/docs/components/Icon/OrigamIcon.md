@@ -44,11 +44,11 @@ Five named tiers are mapped to the typographic scale tokens:
 
 ```vue
 <template>
-    <OrigamIcon icon="mdi-home" size="x-small" />  <!-- --origam-icon---font-size-xs -->
-    <OrigamIcon icon="mdi-home" size="small"   />  <!-- --origam-icon---font-size-sm -->
-    <OrigamIcon icon="mdi-home" size="default" />  <!-- --origam-icon---font-size-md -->
-    <OrigamIcon icon="mdi-home" size="large"   />  <!-- --origam-icon---font-size-lg -->
-    <OrigamIcon icon="mdi-home" size="x-large" />  <!-- --origam-icon---font-size-xl -->
+    <OrigamIcon icon="mdi-home" size="x-small" />  <!-- font.size.xs -->
+    <OrigamIcon icon="mdi-home" size="small"   />  <!-- font.size.sm -->
+    <OrigamIcon icon="mdi-home" size="default" />  <!-- font.size.md -->
+    <OrigamIcon icon="mdi-home" size="large"   />  <!-- font.size.lg -->
+    <OrigamIcon icon="mdi-home" size="x-large" />  <!-- font.size.xl -->
 
     <!-- Numeric override (pixels) -->
     <OrigamIcon icon="mdi-home" :size="48" />
@@ -82,21 +82,13 @@ For a one-off custom colour, use a `:style` binding instead of a raw hex:
 
 ```vue
 <template>
-    <!-- Default — <i>, for EVERY notation -->
+    <!-- Default — <i> for class-icons, <div> for SVG/component/ligature -->
     <OrigamIcon icon="mdi-home" />
-    <OrigamIcon icon="M12 2 L17 8 …" />
 
     <!-- Force a different tag -->
     <OrigamIcon icon="mdi-home" tag="span" />
 </template>
 ```
-
-⚠️ The root is `<i>` whatever the notation. `<OrigamIcon>` declares
-`withDefaults(…, { tag: 'i' })` and forwards `:tag="tag"` to the leaf it
-dispatched to, so `OrigamSvgIcon` / `OrigamComponentIcon` /
-`OrigamLigatureIcon`'s own `tag: 'div'` default is never reached through the
-dispatcher. Mounting a leaf directly *does* give you a `<div>`. Pinned by
-`packages/tests/TU/components/Icon/icon-root-tag.spec.ts`.
 
 ## Click handler (button mode)
 
@@ -119,71 +111,13 @@ semantics: `role="button"`, `cursor: pointer`, no `aria-hidden`.
 |---|---|
 | `default` | Override the icon by passing its **string name** as the slot's text content. Useful for `<OrigamIcon>$success</OrigamIcon>`. |
 
-## Props
-
-### Content
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `icon` | `TIcon` | `undefined` | The glyph. See the dispatch table at the top for every accepted form. Overridden by the `default` slot when that slot resolves to a text node |
-| `tag` | `string` | `'i'` | Element the root renders as |
-
-### Color
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `color` | `TColor` | `undefined` | Foreground. Falls back to `--origam-icon---color`, i.e. `currentColor` |
-| `bgColor` | `TColor` | `undefined` | Surface behind the glyph. Both channels go through `useBothColor` |
-
-### Sizing
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `size` | `TSize \| number` | `undefined` | One of `x-small` · `small` · `default` · `large` · `x-large`. Emits `origam-icon--size-{value}`, whose rule reads `--origam-icon---font-size-{xs\|sm\|md\|lg\|xl}`. A number or an unrecognised length goes to `sizeStyles` as inline `width` / `height` instead — never both channels at once. **Unset means no class and no rule**: the glyph keeps the inherited `font-size` |
-
-### Dimension (`IDimensionProps`)
-
-Consumed by `useDimension(props)` — inline declarations on the root, so they
-outrank the size rung.
-
-| Prop | Type | Description |
-|---|---|---|
-| `width` / `height` | `number \| string` | Explicit box size |
-| `minWidth` / `minHeight` | `number \| string` | |
-| `maxWidth` / `maxHeight` | `number \| string` | |
-
-### Shape, border and spacing
-
-| Group | Props | Composable |
-|---|---|---|
-| Shape | `rounded`, `roundedTopLeft` / `TopRight` / `BottomLeft` / `BottomRight` | `useRounded` |
-| Border | `border`, `borderBlock`, `borderInline`, `borderTop` / `Right` / `Bottom` / `Left`, `borderColor`, `borderStyle`, the four per-side `border*Color` | `useBorder` |
-| Padding | `padding`, `paddingBlock`, `paddingInline`, `paddingTop` / `Right` / `Bottom` / `Left` | `usePadding` |
-| Margin | `margin`, `marginBlock`, `marginInline`, `marginTop` / `Right` / `Bottom` / `Left` | `useMargin` |
-| Commons | `id`, `class`, `style` | — |
-
-### Not a prop
-
-`disabled` is deliberately absent. None of the five icon components ever read
-it, and an icon is a render element, not a control — there is nothing to
-disable. Paint the disabled state on whatever *carries* the icon (button,
-field, list item); the icon inherits its opacity and cursor. That also stops a
-single control from showing two divergent disabled treatments.
-
-## Emits
-
-**None.** `IIconComponentEmits` is empty on purpose: none of the five
-components calls `emit(…)` anywhere. A `@click` listener you attach is a
-plain DOM listener — which is exactly what `useIconAccessibility` detects to
-switch the icon into button mode (see **Accessibility**).
-
 ## Props (interface)
 
 ```ts
 interface IIconComponentProps extends IIconProps,
-    IColorProps, IBgColorProps, ICommonsComponentProps, ITagProps,
-    ISizeProps, IPaddingProps, IMarginProps, IBorderProps,
-    IDimensionProps, IRoundedProps {
+    IColorProps, ICommonsComponentProps, ITagProps,
+    ISizeProps, IPaddingProps, IMarginProps, IBorderProps {
+    disabled?: boolean
 }
 
 interface IIconProps {
@@ -198,113 +132,48 @@ type TIcon =
 
 ## Anatomy
 
-Through `<OrigamIcon>` the root is always `<i>` (see **Polymorphic tag**), and
-the `--size-*` class only appears when `size` is set.
-
 ```html
-<!-- Class icon (mdi/fa) — <OrigamIcon icon="mdi-home" size="default" /> -->
+<!-- Class icon (mdi/fa) -->
 <i class="origam-icon origam-icon--size-default mdi mdi-home"></i>
 
-<!-- SVG icon — <OrigamIcon icon="M12 …" /> -->
-<i class="origam-icon origam-icon--svg">
-    <svg class="origam-icon__svg" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+<!-- SVG icon -->
+<div class="origam-icon origam-icon--svg origam-icon--size-default">
+    <svg class="origam-icon__svg" viewBox="0 0 24 24">
         <path d="…" />
     </svg>
-</i>
+</div>
 
-<!-- Component icon — <OrigamIcon :icon="LucideHome" /> -->
-<i class="origam-icon origam-icon--component">
+<!-- Ligature icon -->
+<div class="origam-icon origam-icon--ligature origam-icon--size-default">home</div>
+
+<!-- Component icon (Vue component) -->
+<div class="origam-icon origam-icon--component origam-icon--size-default">
     <!-- inner Vue component -->
-</i>
-```
-
-Mounted directly rather than through the dispatcher, each leaf keeps its own
-`tag: 'div'` default:
-
-```html
-<div class="origam-icon origam-icon--ligature">home</div>
+</div>
 ```
 
 ## Design tokens consumed
 
-`<OrigamIcon>` reads its variables from
-`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
-under `packages/ds/src/assets/scss/tokens/`):
+`<OrigamIcon>` reads from `tokens/component/icon.json`:
 
-| CSS variable | Declared value |
+| CSS variable | Token reference |
 |---|---|
 | `--origam-icon---color` | `currentColor` |
-| `--origam-icon---transition-duration` | `var(--origam-motion__duration---fast)` |
-| `--origam-icon---transition-timing-function` | `var(--origam-motion__easing---standard)` |
-| `--origam-icon---font-size-xs` … `-4xl` | `var(--origam-font__size---{rung})`, for `xs` `sm` `md` `lg` `xl` `2xl` `3xl` `4xl` |
-| `--origam-icon---color-primary` | `var(--origam-color__action--primary---bg)` |
-| `--origam-icon---color-success` | `var(--origam-color__feedback--success---bg)` |
-| `--origam-icon---color-warning` | `var(--origam-color__feedback--warning---bg)` |
-| `--origam-icon---color-danger` | `var(--origam-color__feedback--danger---bg)` |
-| `--origam-icon---color-info` | `var(--origam-color__feedback--info---bg)` |
-| `--origam-icon---color-disabled` | `var(--origam-color__text---disabled)` |
+| `--origam-icon---transition-duration` | `{motion.duration.fast}` |
+| `--origam-icon---font-size-xs` | `{font.size.xs}` |
+| `--origam-icon---font-size-sm` | `{font.size.sm}` |
+| `--origam-icon---font-size-md` | `{font.size.md}` |
+| `--origam-icon---font-size-lg` | `{font.size.lg}` |
+| `--origam-icon---font-size-xl` | `{font.size.xl}` |
 
 ## Accessibility
 
 - `aria-hidden="true"` is applied automatically when **no click handler** is
   registered — purely-decorative icons stay invisible to screen readers.
-
-### ⛔ Migrating off `@click` on an icon (#653)
-
-**If you attach `@click` directly to `<origam-icon>`, the rendered markup
-changed.** Before #653, a click handler flipped the icon to
-`role="button"` + `aria-hidden="false"`. **`role="button"` is gone.** The
-icon still receives the click (nothing stops a plain DOM listener) and
-`aria-hidden` still becomes `"false"`, but assistive technology no longer
-announces it as a button — because it never behaved like one:
-
-```
-measured — <origam-icon icon="mdi-close" @click="…" aria-label="Close"/>
-  before #653:  role="button"  aria-hidden="false"  aria-label="Close"
-  today:        role=(none)    aria-hidden="false"  aria-label="Close"
-```
-
-`role="button"` was removed rather than fixed in place: the icon family
-sets **no `tabindex` and no keyboard handler** anywhere, so the role
-announced a control a keyboard or switch-device user could never reach
-(`Tab` never lands on it) or activate (`Enter` / `Space` do nothing) — a
-WCAG 2.1.1 (Keyboard) violation, not a defensible ARIA fallback. A
-dev-time `console.warn` still fires when the icon is clickable with no
-`aria-label` / `aria-labelledby`, and now points at the real fix instead:
-
-```vue
-<!-- ❌ Before — announced role="button" with no keyboard access -->
-<origam-icon icon="mdi-close" aria-label="Close" @click="onClose"/>
-
-<!-- ✅ Now — origam-btn icon-only mode: a real <button>, full keyboard support for free -->
-<origam-btn icon="mdi-close" :aria-label="t('btn_close', 'Close')" @click="onClose"/>
-```
-
-`IBtnProps.icon` accepts `boolean | TIcon` (icon-only mode); see
-`OrigamBtn.md`'s Accessibility section — icon-only mode needs an
-`aria-label` you supply yourself, exactly like above, but on a real
-button.
-
-Compared against the DS's own precedent for `role="button"` on a
-non-native element, `OrigamCard` (#392): Card pairs the role with
-`tabindex="0"` **and** a keydown handler, and does so only because its
-content model makes a native `<button>` illegal (Card renders flow
-content a `<button>` cannot legally contain). `OrigamIcon` has no such
-constraint — `origam-btn` is always available — so reproducing Card's
-pattern here would only duplicate `OrigamBtn` instead of removing the
-anti-pattern.
-
-An earlier draft of this ticket also explored a typed `clickable` prop
-with a `vue-tsc`-enforced discriminated union. It was removed before
-release too: no component in the repo ever used it, and constraining an
-API nobody uses just papers over the real defect.
-
-- The inline `<svg>` leaf (`OrigamSvgIcon`) always renders its glyph with
-  `aria-hidden="true"` — no `role` — it never carries meaning on its own;
-  the accessible name lives on the interactive ancestor, not the glyph.
-  It also never calls `useIconAccessibility()` at all, so a clickable
-  `OrigamSvgIcon` doesn't even get the fallback above — tracked
-  separately as #660.
+- When a click handler IS attached: `role="button"` + the consumer must
+  provide `aria-label`.
+- Inline SVG is rendered with `role="img"` + `aria-hidden="true"` (the
+  outer wrapper is the announce target).
 
 ## Theming notes
 

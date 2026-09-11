@@ -1,0 +1,9 @@
+{
+  "lazy": {
+    "_comment": "Render-only wrapper that defers child mount until the placeholder enters the viewport. No chrome of its own; transition tokens drive the fade-in.",
+    "transition-duration":        { "$type": "duration",   "$value": "{motion.duration.medium}" },
+    "transition-timing-function": { "$type": "cubicBezier","$value": "{motion.easing.standard}" },
+    "placeholder-min-height":     { "$type": "dimension",  "$value": "{space.10}" },
+    "placeholder-background-color":{ "$type": "color",     "$value": "{color.surface.overlay}" }
+  }
+}

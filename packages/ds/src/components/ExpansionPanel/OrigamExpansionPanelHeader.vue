@@ -1,10 +1,10 @@
 <template>
 	<component
 			:is="tag"
-			:id="headerDomId"
+			:id="`expansion-panel-header-${expansionPanel.id}`"
 			v-ripple="ripple"
 			v-contrast
-			:aria-controls="expansionPanel.contentId.value"
+			:aria-controls="`expansion-panel-content-${expansionPanel.id}`"
 			:aria-expanded="isSelected"
 			:class="expansionPanelHeaderClasses"
 			:disabled="isDisabled"
@@ -20,10 +20,7 @@
 		      v-if="hasPrepend"
 		      key="prepend"
 		      class="origam-expansion-panel-header__prepend"
-		      :role="isPrependClickable ? 'button' : undefined"
-		      :tabindex="isPrependClickable ? 0 : undefined"
 		      @click="handleClickPrepend"
-		      @keydown="handleKeydownPrepend"
       >
         <slot
 		        name="prepend"
@@ -65,10 +62,7 @@
 					v-if="hasAppend || !hideActions"
 					key="append"
 					class="origam-expansion-panel-header__append"
-					:role="isAppendClickable ? 'button' : undefined"
-					:tabindex="isAppendClickable ? 0 : undefined"
 					@click="handleClickAppend"
-					@keydown="handleKeydownAppend"
 			>
         <slot
 		        name="append"
@@ -100,29 +94,30 @@
 		lang="ts"
 		setup
 >
-	import { computed, inject, StyleValue, toRef, useSlots, watchEffect } from 'vue'
-	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
-	import OrigamIcon from '../Icon/OrigamIcon.vue'
+	import { computed, inject, StyleValue, toRef, useSlots } from 'vue'
+	import { OrigamAvatar, OrigamIcon } from '../../components'
 
-	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
-	import { useBothColor } from '../../composables/Commons/bothColor.composable'
-	import { useDensity } from '../../composables/Commons/density.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
-	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-	import { useTypography } from '../../composables/Commons/typography.composable'
+	import {
+		useActive,
+		useAdjacent,
+		useBothColor,
+		useDensity,
+		useHover,
+		useProps,
+		useStateEffect,
+		useStyle,
+		useTypography
+} from '../../composables'
 
-	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts/ExpansionPanel/expansion-panel.const'
+	import { ORIGAM_EXPANSION_PANEL_KEY } from '../../consts'
 
-	import vContrast from '../../directives/Contrast/contrast.directive'
-	import vRipple from '../../directives/Ripple/ripple.directive'
+	import { vContrast, vRipple } from '../../directives'
 
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { MDI_ICONS } from "../../enums"
 
-	import type { IExpansionPanelHeaderProps } from '../../interfaces/ExpansionPanel/expansion-panel-header.interface'
+	import type { IExpansionPanelHeaderProps} from '../../interfaces'
 
-	import type { IExpansionPanelHeaderEmits, IExpansionPanelHeaderSlots } from '../../interfaces/ExpansionPanel/expansion-panel-header.interface'
+	import type { IExpansionPanelHeaderEmits } from '../../interfaces/ExpensionPanel/expansion-panel-header.interface'
 
 	/*********************************************************
 	 * Global
@@ -138,8 +133,6 @@
 
 	defineEmits<IExpansionPanelHeaderEmits>()
 
-	defineSlots<IExpansionPanelHeaderSlots>()
-
 	const {filterProps} = useProps<IExpansionPanelHeaderProps>(props)
 
 	const expansionPanel = inject(ORIGAM_EXPANSION_PANEL_KEY)
@@ -154,24 +147,6 @@
 	 * @description
 	 * Selection state, expand/collapse toggle, and slot props.
 	 ********************************************************/
-
-	/*********************************************************
-	 * ARIA wiring
-	 *
-	 * @description
-	 * `headerDomId` is this header's own resolved DOM id —
-	 * `props.id` when the consumer supplies one, a generated
-	 * fallback otherwise. Published onto the shared
-	 * `expansionPanel.headerId` slot so the sibling
-	 * `<OrigamExpansionPanelContent>` can point its
-	 * `aria-labelledby` at the REAL id instead of guessing the
-	 * generated-fallback naming scheme (#519, #520).
-	 ********************************************************/
-	const headerDomId = computed(() => props.id || `expansion-panel-header-${expansionPanel.id}`)
-
-	watchEffect(() => {
-		expansionPanel.headerId.value = headerDomId.value
-	})
 
 	/*********************************************************
 	 * Event handlers
@@ -222,12 +197,8 @@
 	const {
 		hasAppend,
 		hasPrepend,
-		isPrependClickable,
-		isAppendClickable,
 		onClickPrepend: handleClickPrepend,
-		onClickAppend: handleClickAppend,
-		onKeydownPrepend: handleKeydownPrepend,
-		onKeydownAppend: handleKeydownAppend
+		onClickAppend: handleClickAppend
 	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
 
 	/*********************************************************
@@ -238,8 +209,8 @@
 	 ********************************************************/
 	const {densityClasses} = useDensity(props)
 
-	const {isOn: isHover, config: hoverState} = useStateFlag(props, {state: 'hover'})
-	const {isOn: isActive, config: activeState} = useStateFlag(props, {state: 'active'})
+	const {isHover, hoverState} = useHover(props)
+	const {isActive, activeState} = useActive(props)
 	const {
 		borderClasses, borderStyles,
 		roundedClasses, roundedStyles,
@@ -333,8 +304,8 @@
 			position: var(--origam-expansion-panel__header__overlay---position, absolute);
 			top: var(--origam-expansion-panel__header__overlay---top, 0);
 			left: var(--origam-expansion-panel__header__overlay---left, 0);
-			width: var(--origam-expansion-panel__header__overlay---width, 100%);
-			height: var(--origam-expansion-panel__header__overlay---height, 100%);
+			width: 100%;
+			height: 100%;
 			background-color: currentColor;
 			border-radius: var(--origam-expansion-panel__header__overlay---border-radius, inherit);
 			opacity: var(--origam-expansion-panel__header__overlay---opacity, 0);
@@ -353,8 +324,6 @@
 		}
 
 		&__prepend {
-			margin-bottom: var(--origam-expansion-panel__header__prepend---margin-block, -4px);
-			margin-top: var(--origam-expansion-panel__header__prepend---margin-block, -4px);
 			margin-inline-end: var(--origam-expansion-panel__header__prepend---margin-inline-end, 8px);
 		}
 

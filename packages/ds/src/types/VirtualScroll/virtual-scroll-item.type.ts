@@ -1,3 +1,3 @@
-import OrigamVirtualScrollItem from '../../components/VirtualScroll/OrigamVirtualScrollItem.vue'
+import { OrigamVirtualScrollItem } from "../../components"
 
 export type TOrigamVirtualScrollItem = InstanceType<typeof OrigamVirtualScrollItem>

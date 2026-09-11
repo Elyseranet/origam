@@ -1,0 +1,24 @@
+{
+  "messages": {
+    "_comment": "OrigamMessages component tokens — Lot 3.2A. Renders a list of validation/hint messages. BEM child: message.",
+
+    "color":                  { "$type": "color",        "$value": "currentColor",                 "$description": "Default message color — inherits from parent (OrigamField sets it via color context)" },
+    "font-size":              { "$type": "dimension",    "$value": "12px",                         "$description": "Messages font-size (fixed 12 px per spec)" },
+    "min-height":             { "$type": "dimension",    "$value": "14px",                         "$description": "Minimum height to preserve layout even with no messages" },
+    "min-width":              { "$type": "dimension",    "$value": "1px",                          "$description": "Minimum width to prevent collapsing in flex containers" },
+    "opacity":                { "$type": "number",       "$value": "{opacity.87}",                 "$description": "Default messages container opacity" },
+    "padding":                { "$type": "dimension",    "$value": "{space.0}",                    "$description": "Padding controlled by density (--origam-messages---density var)" },
+    "flex":                   { "$type": "other",        "$value": "1 1 auto",                     "$description": "Messages stretches to fill available space" },
+    "position":               { "$type": "other",        "$value": "relative",                     "$description": "Positioning context for message children" },
+
+    "density":                { "$type": "dimension",    "$value": "{space.0}",                    "$description": "Density offset used as padding (controlled by density composable)" },
+
+    "message": {
+      "_comment": "BEM child: .origam-messages__message — individual message row.",
+      "line-height":          { "$type": "number",       "$value": 1,                              "$description": "Tight line-height for compact display" },
+      "word-break":           { "$type": "other",        "$value": "break-word",                   "$description": "Force long words to wrap" },
+      "overflow-wrap":        { "$type": "other",        "$value": "break-word",                   "$description": "CSS overflow-wrap for long messages" },
+      "transition-duration":  { "$type": "duration",     "$value": "{motion.duration.normal}",     "$description": "Duration of slide-y enter/leave transition" }
+    }
+  }
+}

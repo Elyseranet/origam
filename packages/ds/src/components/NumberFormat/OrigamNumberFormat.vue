@@ -1,7 +1,6 @@
 <template>
 	<component
 			:is="tag"
-			:id="id"
 			class="origam-number-format"
 			:class="rootClasses"
 			:style="rootStyles"
@@ -25,13 +24,11 @@
 		type StyleValue
 	} from 'vue'
 
-	import { useNumberFormat } from '../../composables/NumberFormat/number-format.composable'
+	import { useNumberFormat } from '../../composables'
 
 	import type {
-		INumberFormatEmits,
-		INumberFormatProps,
-		INumberFormatSlots
-	} from '../../interfaces/NumberFormat/number-format.interface'
+		INumberFormatProps
+	} from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -64,10 +61,6 @@
 		useGrouping: true,
 		signDisplay: 'auto'
 	})
-
-	defineEmits<INumberFormatEmits>()
-
-	defineSlots<INumberFormatSlots>()
 
 	/*********************************************************
 	 * Resolved options snapshot — fed to the composable as a getter

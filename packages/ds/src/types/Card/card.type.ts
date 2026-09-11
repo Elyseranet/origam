@@ -1,6 +1,6 @@
-import OrigamCard from '../../components/Card/OrigamCard.vue'
+import { OrigamCard } from '../../components'
 
-import { CARD_TYPE } from '../../enums/Card/card.enum'
+import { CARD_TYPE } from '../../enums'
 
 export type TCardType = `${CARD_TYPE}`
 

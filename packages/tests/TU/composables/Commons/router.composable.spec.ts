@@ -16,7 +16,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { ILinkProps, ITagProps } from '@origam/interfaces'
 
-import { useLink } from '@origam/composables/Commons/link.composable'
+import { useLink } from '@origam/composables/Commons/router.composable'
 
 // ─── useLink — no RouterLink (fallback string branch) ────────────────────────
 //
@@ -49,17 +49,17 @@ describe('useLink — href only (no RouterLink installed)', () => {
 
     it('tag is "a" when href is provided', () => {
         const { api } = mountLink({ href: 'https://example.com' })
-        expect(api().tag.value).toBe('a')
+        expect(api().tag).toBe('a')
     })
 
     it('tag falls back to "div" when no href and no tag prop', () => {
         const { api } = mountLink({})
-        expect(api().tag.value).toBe('div')
+        expect(api().tag).toBe('div')
     })
 
     it('tag prop is used when isLink=false', () => {
         const { api } = mountLink({ tag: 'button' })
-        expect(api().tag.value).toBe('button')
+        expect(api().tag).toBe('button')
     })
 
     it('href ref carries the provided href value', () => {
@@ -125,7 +125,7 @@ describe('useRoute / useRouter — missing vm', () => {
 
 // ─── useBackButton ────────────────────────────────────────────────────────────
 
-import { useBackButton } from '@origam/composables/Commons/backButton.composable'
+import { useBackButton } from '@origam/composables/Commons/router.composable'
 
 describe('useBackButton — popstate listener', () => {
     beforeEach(() => {

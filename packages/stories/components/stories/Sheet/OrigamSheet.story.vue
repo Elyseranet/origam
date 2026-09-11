@@ -101,8 +101,7 @@
 					defaultSnap: 'half',
 					open: undefined,
 					disabled: false,
-					persistent: false,
-					handleLabel: 'origam.sheet.handle.aria_label'
+					persistent: false
 				})"
 		>
 			<template #default="{ state }">
@@ -115,7 +114,6 @@
 							:open="state.open"
 							:disabled="state.disabled"
 							:persistent="state.persistent"
-							:handle-label="state.handleLabel"
 							elevation="lg"
 							style="background: var(--origam-color__surface---default); padding: 16px;"
 					>
@@ -134,9 +132,6 @@
 					<HstCheckbox v-model="state.open"        title="Open"/>
 					<HstCheckbox v-model="state.disabled"    title="Disabled"/>
 					<HstCheckbox v-model="state.persistent"  title="Persistent"/>
-				</StoryGroup>
-				<StoryGroup title="Accessibility">
-					<HstText v-model="state.handleLabel" title="Handle Label (locale key)"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -170,22 +165,6 @@
 				>
 					<div style="padding: 16px;">
 						<p>Drag to change snap — watch the log</p>
-					</div>
-				</origam-sheet>
-			</div>
-		</Variant>
-
-		<Variant title="Events - update:active">
-			<div style="position: relative; height: 320px; background: var(--origam-color__surface---overlay, #f5f5f5); overflow: hidden; border-radius: 8px;">
-				<origam-sheet
-						side="bottom"
-						default-snap="peek"
-						elevation="lg"
-						style="background: var(--origam-color__surface---default);"
-						@update:active="logEvent('update:active', $event)"
-				>
-					<div style="padding: 16px;">
-						<p>Click or press Enter / Space on the sheet — watch the log</p>
 					</div>
 				</origam-sheet>
 			</div>
@@ -242,8 +221,7 @@
 					side: undefined,
 					defaultSnap: 'half',
 					disabled: false,
-					persistent: false,
-					handleLabel: 'origam.sheet.handle.aria_label'
+					persistent: false
 				})"
 		>
 			<template #default="{ state }">
@@ -276,7 +254,6 @@
 					<HstSelect   v-model="state.defaultSnap" title="Default Snap" :options="SNAP_OPTIONS"/>
 					<HstCheckbox v-model="state.disabled"    title="Disabled"/>
 					<HstCheckbox v-model="state.persistent"  title="Persistent"/>
-					<HstText     v-model="state.handleLabel" title="Handle Label (locale key)"/>
 				</StoryGroup>
 			</template>
 		</Variant>

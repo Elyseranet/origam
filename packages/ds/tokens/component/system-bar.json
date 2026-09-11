@@ -1,0 +1,41 @@
+{
+  "system-bar": {
+    "display":              { "$type": "other",      "$value": "flex" },
+    "flex":                 { "$type": "other",      "$value": "1 1 auto" },
+    "align-items":          { "$type": "other",      "$value": "center" },
+    "justify-content":      { "$type": "other",      "$value": "flex-end" },
+    "text-align":           { "$type": "other",      "$value": "end" },
+    "position":             { "$type": "other",      "$value": "relative" },
+    "max-width":            { "$type": "dimension",  "$value": "100%" },
+    "width":                { "$type": "dimension",  "$value": "100%" },
+
+    "height":               { "$type": "dimension",  "$value": "24px" },
+    "height-window":        { "$type": "dimension",  "$value": "32px" },
+
+    "padding-inline":       { "$type": "dimension",  "$value": "{space.2}" },
+
+    "background":           { "$type": "color",      "$value": "{color.neutral.700}" },
+    "color":                { "$type": "color",      "$value": "{color.text.inverse}" },
+
+    "font-size":            { "$type": "dimension",  "$value": "{font.size.sm}" },
+    "font-weight":          { "$type": "fontWeight", "$value": "{font.weight.regular}" },
+    "letter-spacing":       { "$type": "dimension",  "$value": "{font.letterSpacing.wide}" },
+    "line-height":          { "$type": "number",     "$value": 1.667 },
+    "text-transform":       { "$type": "other",      "$value": "none" },
+
+    "icon": {
+      "opacity":            { "$type": "number",     "$value": "{opacity.70}" }
+    },
+
+    "border-style":         { "$type": "other",      "$value": "solid" },
+    "border-color":         { "$type": "color",      "$value": "{color.border.default}" },
+    "border-top-width":     { "$type": "dimension",  "$value": "{border.width.0}" },
+    "border-left-width":    { "$type": "dimension",  "$value": "{border.width.0}" },
+    "border-bottom-width":  { "$type": "dimension",  "$value": "{border.width.0}" },
+    "border-right-width":   { "$type": "dimension",  "$value": "{border.width.0}" },
+    "border-start-start-radius": { "$type": "dimension", "$value": "{radius.none}" },
+    "border-start-end-radius":   { "$type": "dimension", "$value": "{radius.none}" },
+    "border-end-start-radius":   { "$type": "dimension", "$value": "{radius.none}" },
+    "border-end-end-radius":     { "$type": "dimension", "$value": "{radius.none}" }
+  }
+}

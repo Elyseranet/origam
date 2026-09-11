@@ -1,9 +1,7 @@
-import OrigamList from '../../components/List/OrigamList.vue'
+import { OrigamList } from '../../components'
 
-import { LINES, LIST_ROLE } from '../../enums/List/list.enum'
+import { LINES } from '../../enums'
 
 export type TLines = `${LINES}`
-
-export type TListRole = `${LIST_ROLE}`
 
 export type TOrigamList = InstanceType<typeof OrigamList>

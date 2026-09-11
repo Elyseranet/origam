@@ -17,10 +17,17 @@
  * Pure / SSR-safe: no `Date.now()` at module scope, no DOM access.
  */
 
-import type { IEvent } from '../../interfaces/Calendar/event.interface'
-import type { ICalendarParsedRule } from '../../interfaces/Calendar/rrule.interface'
+import type { IEvent } from '../../interfaces'
 
 import { addDays, addMonths, diffMinutes, toDate } from './date.util'
+
+interface IParsedRule {
+    freq: 'DAILY' | 'WEEKLY' | 'MONTHLY'
+    interval: number
+    count: number | null
+    until: Date | null
+    byDay: Array<number> | null
+}
 
 const BY_DAY_MAP: Record<string, number> = {
     SU: 0, MO: 1, TU: 2, WE: 3, TH: 4, FR: 5, SA: 6
@@ -51,7 +58,7 @@ function parseUntil (value: string): Date | null {
  * `FREQ` value — the caller should fall back to single-occurrence
  * rendering in that case.
  */
-export function parseRRule (rrule: string): ICalendarParsedRule | null {
+export function parseRRule (rrule: string): IParsedRule | null {
     if (!rrule) return null
     const cleaned = rrule.replace(/^RRULE:/i, '').trim()
     if (!cleaned) return null
@@ -60,7 +67,7 @@ export function parseRRule (rrule: string): ICalendarParsedRule | null {
         const [key, value] = segment.split('=')
         if (key && value !== undefined) parts[key.toUpperCase()] = value
     }
-    const freq = parts.FREQ as ICalendarParsedRule['freq']
+    const freq = parts.FREQ as IParsedRule['freq']
     if (freq !== 'DAILY' && freq !== 'WEEKLY' && freq !== 'MONTHLY') return null
     const interval = parts.INTERVAL ? Math.max(1, Number(parts.INTERVAL)) : 1
     const count = parts.COUNT ? Math.max(0, Number(parts.COUNT)) : null
@@ -173,7 +180,7 @@ export function expandRecurrence (
  * we advance one day at a time so the `passesByDay` filter can
  * accept the right weekdays; otherwise we jump by `interval` units.
  */
-function advance (cursor: Date, rule: ICalendarParsedRule, anchor: Date): Date {
+function advance (cursor: Date, rule: IParsedRule, anchor: Date): Date {
     if (rule.freq === 'WEEKLY' && rule.byDay && rule.byDay.length > 0) {
         return addDays(cursor, 1)
     }

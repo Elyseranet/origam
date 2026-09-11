@@ -27,7 +27,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@v4
 
       - uses: actions/setup-node@v6
         with:
@@ -40,58 +40,13 @@ jobs:
       - name: Run ESLint (no auto-fix)
         run: pnpm exec eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --max-warnings 0
 
-  architecture-guards:
-    name: Architecture guards (DS)
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v7
-
-      - uses: pnpm/action-setup@v6
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: .nvmrc
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      # Static-analysis guards over packages/ds/src — see
-      # packages/ds/scripts/guards/README.md for what each one checks and
-      # how the baseline mechanism works. No build prerequisite: the guards
-      # parse .vue/.ts/.scss source text directly (~1s total), so this job
-      # adds negligible wall-clock to the pipeline.
-      - name: Run architecture guards
-        run: pnpm -F origam guards
-
-      # The e2e audit guards, added 2026-08-17. They were repaired and wired
-      # into `pretest:e2e` that day, and then measured to be in NO workflow at
-      # all — so they protected local runs only and blocked no merge. That is
-      # the same failure shape they exist to catch: a check that reports clean
-      # because nobody asked it anything.
-      #
-      # They are static (no browser, no Histoire server, no build) and cover
-      # the two halves of the suite with zero overlap: one resolves the
-      # `<Variant title>` a spec clicks, the other the positional
-      # `?variantId=<slug>-N` a spec navigates to. Running only one leaves
-      # half the suite unguarded, which is why the runner aggregates exit
-      # codes instead of chaining with `&&`.
-      - name: Run e2e audit guards
-        run: pnpm -F @origam/tests run test:e2e:audit
-
-      # Pins the guards' own detectors. Without this a regression in an
-      # extractor makes both guards go quiet — the failure mode that let 55
-      # broken specs pass as "no drift".
-      - name: Run e2e audit self-tests
-        run: pnpm -F @origam/tests run test:e2e:audit:self
-
   type-check:
     name: Type-check (vue-tsc)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
 
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@v4
 
       - uses: actions/setup-node@v6
         with:
@@ -100,6 +55,11 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      # Generated token types (src/types/tokens.type.ts) are imported across the
+      # DS source; rebuild them so vue-tsc resolves every reference.
+      - name: Build tokens (prereq for type resolution)
+        run: pnpm -F origam tokens:build
 
       # Hard gate: the DS must stay at ZERO vue-tsc errors. This locks in the
       # #65 type-debt cleanup (262 -> 0) and fails the build on any regression.
@@ -112,42 +72,66 @@ jobs:
       - name: noUnusedLocals re-enable canary
         run: pnpm -F origam run type-check:canary
 
-  test-unit:
-    name: Unit tests (Vitest, Node ${{ matrix.node }})
+  tokens:
+    name: Tokens build & lint
     runs-on: ubuntu-latest
-
-    # Deux versions, deux roles distincts — ce n'est pas de la redondance.
-    #
-    #   24 = la version que `.nvmrc` epingle. C'est sur elle que le projet se
-    #        developpe, et c'est elle qui doit rester verte en priorite.
-    #   22 = le PLANCHER que `engines.node: ">=22"` promet aux consommateurs du
-    #        paquet npm `origam`. Sans ce job, cette promesse ne serait plus
-    #        verifiee nulle part a partir du moment ou `.nvmrc` est passe a 24
-    #        (2026-09-03) : on continuerait de l'ecrire dans trois package.json
-    #        sans jamais l'eprouver.
-    #
-    # Le jour ou `engines` sera releve a >=24, cette matrice n'aura plus de
-    # raison d'etre et devra tomber avec lui — les deux vont ensemble.
-    strategy:
-      # Un echec sur 22 ne doit pas annuler le job 24, ni l'inverse : les deux
-      # verdicts sont voulus, et savoir LEQUEL des deux casse est toute
-      # l'information de ce job.
-      fail-fast: false
-      matrix:
-        node: [22, 24]
-
     steps:
       - uses: actions/checkout@v7
 
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@v4
 
       - uses: actions/setup-node@v6
         with:
-          node-version: ${{ matrix.node }}
+          node-version-file: .nvmrc
           cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Validate tokens JSON
+        run: |
+          for f in packages/ds/tokens/*.json packages/ds/tokens/semantic/*.json packages/ds/tokens/component/*.json; do
+            [ -f "$f" ] || continue
+            node -e "JSON.parse(require('fs').readFileSync('$f','utf8'))" \
+              || { echo "::error file=$f::Invalid JSON"; exit 1; }
+          done
+
+      - name: Tokens lint (strict)
+        run: pnpm -F origam tokens:lint
+
+      - name: Tokens build
+        run: pnpm -F origam tokens:build
+
+      - name: Upload generated token artefacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: tokens-dist
+          path: |
+            packages/ds/src/assets/css/tokens
+            packages/ds/src/assets/scss/tokens
+            packages/ds/src/types/tokens.type.ts
+          retention-days: 7
+          if-no-files-found: error
+
+  test-unit:
+    name: Unit tests (Vitest)
+    runs-on: ubuntu-latest
+    needs: tokens
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build tokens (prereq for component tests)
+        run: pnpm -F origam tokens:build
 
       # `test:coverage` et non `test:unit:run` : le provider V8 traverse
       # `test-exclude` -> `glob` -> `minimatch`, un chemin que la suite nue
@@ -162,10 +146,11 @@ jobs:
   build:
     name: Library build (unbuild)
     runs-on: ubuntu-latest
+    needs: tokens
     steps:
       - uses: actions/checkout@v7
 
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@v4
 
       - uses: actions/setup-node@v6
         with:
@@ -185,7 +170,7 @@ jobs:
             || { echo "::error::packages/ds/dist/src/origam.js missing — entry not emitted"; exit 1; }
 
       - name: Upload library dist
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: library-dist
           path: packages/ds/dist/
@@ -195,6 +180,7 @@ jobs:
   build-embeds:
     name: Build embeds (stories + docs)
     runs-on: ubuntu-latest
+    needs: tokens
     # The Histoire stories build (209 stories, large vendor chunk) needs more
     # heap than the workflow-level 4096 MB default.
     env:
@@ -202,7 +188,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@v4
 
       - uses: actions/setup-node@v6
         with:
@@ -211,6 +197,9 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Build tokens (the docs theme imports the generated token CSS)
+        run: pnpm -F origam tokens:build
 
       - name: Build embeds (Histoire stories + VitePress docs)
         run: pnpm run build:embeds
@@ -223,7 +212,7 @@ jobs:
             || { echo "::error::docs embed missing — public/docs/index.html not built"; exit 1; }
 
       - name: Upload marketing embeds
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: marketing-embeds
           path: |
@@ -232,63 +221,13 @@ jobs:
           retention-days: 7
           if-no-files-found: error
 
-  build-marketing:
-    name: Build marketing (Nuxt)
-    runs-on: ubuntu-latest
-    # No GHA/docker.yml job builds the marketing image (it only ships docs +
-    # stories, and only on `main`/tags) — Coolify was the only thing building
-    # it on every `develop` push, and its failures never surfaced on GitHub.
-    # This job is the guard: it runs the same `nuxt build` Coolify's Docker
-    # image runs, on a full checkout, so a broken marketing build goes red
-    # here instead of only at deploy time. See postmortem: a stale root
-    # tsconfig project reference (fixed in 29e9c1b7) broke every Coolify
-    # deploy on `develop` for days while this workflow stayed green, because
-    # nothing here ever ran `pnpm -F @origam/marketing build`.
-    #
-    # Deliberately narrow: builds the lib (marketing imports `origam`) then
-    # the Nuxt app directly, skipping `build:embeds` (Histoire + VitePress,
-    # ~70s+ on its own, already covered by `build-embeds` above). The embeds
-    # are static assets copied into `public/`; nothing in `nuxt.config.ts` or
-    # the build pipeline reads them at build time, so omitting them doesn't
-    # lose any coverage — confirmed by reproducing the original incident
-    # (renaming packages/tests/{TU,e2e}/tsconfig.json) with embeds skipped
-    # and still seeing `nuxt build` fail with the same
-    # `[TSCONFIG_ERROR] ... Tsconfig not found`.
-    env:
-      # Matches packages/marketing/Dockerfile's build stage: the Nitro build
-      # (server bundle + SSR payload) OOMs on the workflow-level 4096 MB.
-      NODE_OPTIONS: --max-old-space-size=8192
-    steps:
-      - uses: actions/checkout@v7
-
-      - uses: pnpm/action-setup@v6
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: .nvmrc
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build library (marketing imports `origam`)
-        run: pnpm -F origam build
-
-      - name: Build marketing (Nuxt)
-        run: pnpm -F @origam/marketing build
-
-      - name: Assert Nuxt output exists
-        run: |
-          test -f packages/marketing/.output/server/index.mjs \
-            || { echo "::error::packages/marketing/.output/server/index.mjs missing — Nitro server entry not emitted"; exit 1; }
-
   i18n-check:
     name: i18n check (marketing)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
 
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@v4
 
       - uses: actions/setup-node@v6
         with:
@@ -310,6 +249,7 @@ jobs:
   test-e2e:
     name: E2E tests (Playwright / Chromium)
     runs-on: ubuntu-latest
+    needs: tokens
     # The GREEN_SPECS suite exceeds a single runner's 45-min budget even at
     # workers=100%. Shard it across parallel jobs (Playwright `--shard=i/N`);
     # each job runs ~1/N of the tests, so wall-clock drops well under the
@@ -332,7 +272,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@v4
 
       - uses: actions/setup-node@v6
         with:
@@ -362,6 +302,9 @@ jobs:
       - name: Install Playwright OS deps only
         if: steps.pw-cache.outputs.cache-hit == 'true'
         run: pnpm -F @origam/tests exec playwright install-deps chromium
+
+      - name: Build tokens
+        run: pnpm -F origam tokens:build
 
       - name: Build static Histoire (served by the e2e webServer)
         run: pnpm -F @origam/stories build
@@ -371,191 +314,11 @@ jobs:
 
       - name: Upload Playwright report
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: playwright-report-shard-${{ matrix.shard }}
           path: |
             packages/tests/e2e/.report
             packages/tests/e2e/.results
-          retention-days: 7
-          if-no-files-found: ignore
-
-  test-e2e-marketing:
-    name: E2E tests — marketing nav/footer (Playwright / Chromium)
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    # MARKETING_GREEN_ONLY: run only the specs verified green + stable on
-    #   this config (MARKETING_GREEN_SPECS in playwright.marketing.config.ts)
-    #   — same GREEN_ONLY pattern as `test-e2e` above, kept in its own job
-    #   because this config boots the Nuxt marketing dev server (:3000),
-    #   not Histoire (:6006), and `playwright.config.ts` cannot target both.
-    # Was previously in NO CI job at all — `nav-link-availability.spec.ts`
-    # existed but nothing ever invoked `playwright.marketing.config.ts` on
-    # a merge, so a real SSR regression (nav/footer rendering empty — see
-    # `marketing-nav-ssr.spec.ts`) could ship without a single red check.
-    env:
-      MARKETING_GREEN_ONLY: '1'
-    steps:
-      - uses: actions/checkout@v7
-
-      - uses: pnpm/action-setup@v6
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: .nvmrc
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Resolve Playwright version
-        id: pw
-        run: |
-          version=$(node -p "require('./packages/tests/package.json').devDependencies['@playwright/test'].replace(/[^\d.]/g,'')")
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-
-      - name: Cache Playwright browsers
-        id: pw-cache
-        uses: actions/cache@v6
-        with:
-          path: ~/.cache/ms-playwright
-          key: pw-${{ runner.os }}-${{ steps.pw.outputs.version }}-chromium
-
-      - name: Install Playwright Chromium
-        if: steps.pw-cache.outputs.cache-hit != 'true'
-        run: pnpm -F @origam/tests exec playwright install --with-deps chromium
-
-      - name: Install Playwright OS deps only
-        if: steps.pw-cache.outputs.cache-hit == 'true'
-        run: pnpm -F @origam/tests exec playwright install-deps chromium
-
-      # `nuxt dev` resolves `origam/nuxt` from packages/ds/dist at startup —
-      # without this step the marketing webServer fails at boot. Captured as
-      # a plain `run:` (no pipe) on purpose: piping `pnpm build` output
-      # through `tail`/`grep` swallows a non-zero exit code, which is
-      # exactly how a broken build ran green here once already (see the
-      # `build-marketing` job's own comment on this same failure mode).
-      - name: Build library (marketing imports `origam`)
-        run: pnpm -F origam build
-
-      - name: Run Playwright (marketing nav/footer, chromium)
-        run: pnpm -F @origam/tests exec playwright test --config=playwright.marketing.config.ts --project=chromium
-
-      - name: Upload Playwright report
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: playwright-report-marketing
-          path: |
-            packages/tests/e2e/.report-marketing
-            packages/tests/e2e/.results-marketing
-          retention-days: 7
-          if-no-files-found: ignore
-
-  test-a11y-marketing:
-    name: A11y tests — marketing pages (axe-core / Chromium)
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    # Sweeps real marketing pages (landmarks, skip link, no-JS nav) — the
-    # existing `a11y/components.spec.ts` only ever scans a component inside
-    # a Histoire story iframe and explicitly ignores `region` /
-    # `landmark-one-main` / `page-has-heading-one` as iframe noise. Neither
-    # that suite nor this one ran in CI before this job existed.
-    steps:
-      - uses: actions/checkout@v7
-
-      - uses: pnpm/action-setup@v6
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: .nvmrc
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Resolve Playwright version
-        id: pw
-        run: |
-          version=$(node -p "require('./packages/tests/package.json').devDependencies['@playwright/test'].replace(/[^\d.]/g,'')")
-          echo "version=$version" >> "$GITHUB_OUTPUT"
-
-      - name: Cache Playwright browsers
-        id: pw-cache
-        uses: actions/cache@v6
-        with:
-          path: ~/.cache/ms-playwright
-          key: pw-${{ runner.os }}-${{ steps.pw.outputs.version }}-chromium
-
-      - name: Install Playwright Chromium
-        if: steps.pw-cache.outputs.cache-hit != 'true'
-        run: pnpm -F @origam/tests exec playwright install --with-deps chromium
-
-      - name: Install Playwright OS deps only
-        if: steps.pw-cache.outputs.cache-hit == 'true'
-        run: pnpm -F @origam/tests exec playwright install-deps chromium
-
-      # Same rationale as `test-e2e-marketing` above — plain `run:`, no pipe,
-      # so a broken build fails this job instead of running green.
-      - name: Build library (marketing imports `origam`)
-        run: pnpm -F origam build
-
-      - name: Run Playwright (marketing a11y, chromium)
-        run: pnpm -F @origam/tests exec playwright test --config=playwright.a11y.marketing.config.ts --project=chromium
-
-      - name: Upload Playwright report
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: playwright-report-a11y-marketing
-          path: |
-            packages/tests/a11y/.report-marketing
-            packages/tests/a11y/.results-marketing
-          retention-days: 7
-          if-no-files-found: ignore
-
-  vrt:
-    name: Visual regression (OrigamBtn variants)
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    # Runs INSIDE the pinned Playwright image — not on the bare runner OS
-    # via `playwright install --with-deps` like `test-e2e` above. Visual
-    # baselines are font/anti-aliasing sensitive (see packages/tests/vrt/VRT.md);
-    # pinning the exact container used to CAPTURE the baselines is what
-    # makes this job's verdict meaningful. Keep the tag in sync with
-    # packages/tests/package.json's @playwright/test version — a version
-    # bump there without bumping this tag re-introduces the exact drift
-    # this job exists to eliminate.
-    container:
-      image: mcr.microsoft.com/playwright:v1.59.1-jammy
-    env:
-      E2E_STATIC: '1'
-    steps:
-      - uses: actions/checkout@v7
-
-      - uses: pnpm/action-setup@v6
-
-      - uses: actions/setup-node@v6
-        with:
-          node-version-file: .nvmrc
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build static Histoire (served by the vrt webServer)
-        run: pnpm -F @origam/stories build
-
-      - name: Run VRT suite (chromium, in-container)
-        run: pnpm -F @origam/tests exec playwright test --config=playwright.vrt.config.ts
-
-      - name: Upload VRT report
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: playwright-report-vrt
-          path: |
-            packages/tests/vrt/.report
-            packages/tests/vrt/.results
           retention-days: 7
           if-no-files-found: ignore

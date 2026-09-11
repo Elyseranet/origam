@@ -1,3 +1,3 @@
-import OrigamBadge from '../../components/Badge/OrigamBadge.vue'
+import { OrigamBadge } from '../../components'
 
 export type TOrigamBadge = InstanceType<typeof OrigamBadge>

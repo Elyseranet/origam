@@ -1,13 +1,12 @@
 <template>
 	<origam-menu
-			:id="id"
 			ref="origamMenuRef"
 			v-model:model-value="modelValue"
 			:class="contextualMenuClasses"
-			:open-on-click="openOnClick"
-			:open-on-context-menu="openOnContextMenu"
+			:open-on-click="false"
 			:style="contextualMenuStyles"
 			activator="cursor"
+			open-on-context-menu
 			target="cursor"
 			v-bind="menuProps"
 	>
@@ -27,22 +26,12 @@
 		lang="ts"
 		setup
 >
-	import OrigamMenu from '../Menu/OrigamMenu.vue'
-	import OrigamTranslateScale from '../Transition/OrigamTranslateScale.vue'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useVModel } from '../../composables/Commons/vModel.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-	import { INLINE } from '../../enums/Commons/anchor.enum'
-	import { LOCATION_STRATEGIES } from '../../enums/Commons/location.enum'
-	import { SCROLL_STRATEGIES } from '../../enums/Commons/scroll.enum'
-  import type {
-    IContextualMenuEmits,
-    IContextualMenuProps,
-    IContextualMenuSlots
-  } from '../../interfaces/ContextualMenu/contextual-menu.interface'
-	import type { TOrigamMenu } from '../../types/Menu/menu.type'
-	import type { TTransitionProps } from '../../types/Transition/transition.type'
-	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
+	import { OrigamMenu, OrigamTranslateScale } from "../../components"
+	import { useProps, useVModel , useStyle} from "../../composables"
+	import { INLINE, LOCATION_STRATEGIES, SCROLL_STRATEGIES } from "../../enums"
+	import type { IContextualMenuProps } from "../../interfaces"
+	import type { TOrigamMenu, TTransitionProps } from "../../types"
+	import { forwardRefs } from "../../utils"
 
 	import { computed, ref, StyleValue } from "vue"
 
@@ -69,10 +58,6 @@
 		transition: () => ({component: OrigamTranslateScale}) as unknown as TTransitionProps
 	})
 
-  defineEmits<IContextualMenuEmits>()
-
-  defineSlots<IContextualMenuSlots>()
-
 	const {filterProps} = useProps<IContextualMenuProps>(props)
 
 	/*********************************************************
@@ -95,7 +80,7 @@
 	 ********************************************************/
 
 	const menuProps = computed(() => {
-		return origamMenuRef.value?.filterProps(props, ['class', 'id', 'style', 'modelValue', 'activator', 'target', 'openOnClick', 'openOnContextMenu'])
+		return origamMenuRef.value?.filterProps(props, ['class', 'id', 'style', 'modelValue', 'activator', 'target', 'openOnClick', 'openOnContextualMenu'])
 	})
 
 	/*********************************************************
@@ -116,7 +101,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(contextualMenuStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(contextualMenuStyles)
 
 
 	/*********************************************************

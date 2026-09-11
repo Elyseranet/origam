@@ -1,16 +1,16 @@
 import type {
     ICommonsComponentProps,
-    ITagProps
-} from '../Commons/commons.interface'
-import type { ITypographyProps } from '../Commons/typography.interface'
+    ITagProps,
+    ITypographyProps
+} from '../../interfaces'
 
 import type {
     TEmptyStateAlign,
     TEmptyStatePreset,
-    TEmptyStateSize
-} from '../../types/EmptyState/empty-state.type'
-import type { TIcon } from '../../types/Icon/icon.type'
-import type { TIntent } from '../../types/Commons/intent.type'
+    TEmptyStateSize,
+    TIcon,
+    TIntent
+} from '../../types'
 
 /**
  * Props for `<OrigamEmptyState>` — placeholder shown when a list, table
@@ -30,7 +30,7 @@ import type { TIntent } from '../../types/Commons/intent.type'
  * `letterSpacing` is inert here — neither text surface reads a
  * `letter-spacing` rule.
  */
-export interface IEmptyStateProps extends ICommonsComponentProps, ITagProps, Pick<ITypographyProps, 'fontFamily' | 'fontSize' | 'fontWeight' | 'lineHeight'> {
+export interface IEmptyStateProps extends ICommonsComponentProps, ITagProps, ITypographyProps {
     /**
      * Visual preset. Bundles a default icon and intent — see
      * `EMPTY_STATE_PRESET_CONFIG`. The preset is the starting point;
@@ -118,12 +118,3 @@ export interface IEmptyStateSlots {
      */
     actions?: () => any
 }
-
-/*********************************************************
- * IEmptyStateEmits
- *
- * @description
- * `<OrigamEmptyState>` is a static illustration/placeholder — nothing
- * is emitted.
- ********************************************************/
-export interface IEmptyStateEmits {}

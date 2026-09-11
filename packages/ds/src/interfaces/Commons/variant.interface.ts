@@ -1,7 +1,4 @@
-import type {
-    TVariant,
-    TVariantInput
-} from '../../types/Commons/variant.type'
+import type { TVariant, TVariantInput } from '../../types'
 
 /**
  * Mixin props for components that expose a visual variant. The union accepts

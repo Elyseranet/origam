@@ -1,6 +1,5 @@
-import OrigamKbd from '../../components/Kbd/OrigamKbd.vue'
-import { KBD_VARIANT } from '../../enums/Kbd/kbd.enum'
+import { OrigamKbd } from '../../components'
 
-export type TKbdVariant = `${KBD_VARIANT}`
+export type TKbdVariant = 'filled' | 'outlined' | 'tonal'
 
 export type TOrigamKbd = InstanceType<typeof OrigamKbd>

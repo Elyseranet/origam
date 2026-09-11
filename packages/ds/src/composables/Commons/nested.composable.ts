@@ -1,90 +1,35 @@
-import { computed, onBeforeUnmount, onMounted, provide, ref, shallowRef, watch } from 'vue'
-import { useVModel } from './vModel.composable'
-import { LIST_OPEN_STRATEGY, MULTIPLE_OPEN_STRATEGY, ORIGAM_NESTED_KEY, SINGLE_OPEN_STRATEGY } from '../../consts/Commons/nested.const'
-import { OPEN_STRATEGY, SELECTED, SELECT_STRATEGY } from '../../enums'
-import type { INestedProps } from '../../interfaces/Commons/nested.interface'
-import type { TNestedProvide } from '../../types/Commons/nested.type'
-import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
-import { classicSelectStrategy, independentSelectStrategy, independentSingleSelectStrategy, leafSelectStrategy, leafSingleSelectStrategy } from '../../utils/Commons/nested.util'
+import { useVModel } from '../../composables'
+import {
+    EMPTY_NESTED,
+    LIST_OPEN_STRATEGY,
+    MULTIPLE_OPEN_STRATEGY,
+    ORIGAM_NESTED_KEY,
+    SINGLE_OPEN_STRATEGY
+} from '../../consts'
+import { OPEN_STRATEGY, SELECT_STRATEGY } from '../../enums'
 
-/*********************************************************
- * useNested
- *
- * @description
- * Root of the nested-tree system — tracks children/parents/opened/
- * selected state and provides `ORIGAM_NESTED_KEY` so `useNestedItem` /
- * `useNestedGroupActivator` consumers down the tree (list items, tree
- * nodes, menu items…) can register and read/write back into it.
- * Independent from `useNestedItem` / `useNestedGroupActivator` at the
- * call level (no direct function dependency) — the three only share
- * the `ORIGAM_NESTED_KEY` provide/inject contract.
- ********************************************************/
+import type { INestedProps } from '../../interfaces'
+
+import type { TNestedProvide } from '../../types'
+
+import {
+    classicSelectStrategy,
+    getCurrentInstance,
+    getUid,
+    independentSelectStrategy,
+    independentSingleSelectStrategy,
+    leafSelectStrategy,
+    leafSingleSelectStrategy
+} from '../../utils'
+
+import { computed, inject, onBeforeUnmount, provide, Ref, ref, shallowRef, toRaw } from 'vue'
+
 export const useNested = (props: INestedProps) => {
     let isUnmounted = false
-
-    /*********************************************************
-     * openedTouchedBeforeMount
-     *
-     * @description
-     * Flips the moment `open()`/`openOnSelect()` writes `opened.value` for
-     * the first time — guards the `onMounted` reseed below from clobbering
-     * a legitimate pre-mount write (see the comment there).
-     ********************************************************/
-    let openedTouchedBeforeMount = false
     const children = ref(new Map<unknown, Array<unknown>>())
     const parents = ref(new Map<unknown, unknown>())
 
     const opened = ref(new Set(props.opened))
-
-    /*********************************************************
-     * opened must track an external props.opened change (#486)
-     *
-     * @description
-     * `opened` was seeded from `props.opened` once, here, and never
-     * watched again — unlike `selected` below, which goes through
-     * `useVModel` and reacts correctly. A consumer driving `opened` as
-     * an external v-model and reassigning it from OUTSIDE the tree
-     * (not via a node click routed through `open()`) never reached
-     * this ref. `open()` itself still writes `opened.value` directly
-     * for the internal click path, so this watcher only needs to
-     * cover the external-write path — reseeding whenever the prop
-     * reference actually changes.
-     ********************************************************/
-    watch(() => props.opened, (val) => {
-        opened.value = new Set(val)
-    })
-
-    /*********************************************************
-     * opened's FIRST seed is re-applied once mounted (ADR-005)
-     *
-     * @description
-     * `ref(new Set(props.opened))` above runs during the caller's
-     * `setup()`, BEFORE `beforeCreate` installs the ADR-005 theme-props
-     * accessor on `instance.props` — so a theme-only `opened` default
-     * (`theme.components['origam-list'].opened`, the same shape `selected`
-     * already supports via `useVModel`) is invisible to this first
-     * snapshot. The `watch` just above does not correct it either: its
-     * own baseline read runs at the same `setup()` instant, so it only
-     * ever fires for a LATER change coming from the parent (#486), never
-     * for the theme value landing for the first time. Measured, not
-     * assumed — `nested-opened-theme-race.spec.ts` reproduced the miss
-     * against the real `createOrigam({ themes })` mechanism before this
-     * fix, mirroring `useVirtual.estimateLast`'s already-shipped pattern
-     * for the exact same class of defect.
-     *
-     * @description
-     * Re-applying the seed unconditionally would clobber a legitimate
-     * `open()`/`openOnSelect()` call a CHILD's own `onMounted`/watcher may
-     * have already routed through this ref — Vue mounts children before
-     * their parent, so that ordering is possible. `openedTouchedBeforeMount`
-     * flips the moment either handler writes `opened.value`, and the
-     * reseed below only runs while it is still untouched.
-     ********************************************************/
-    onMounted(() => {
-        if (!openedTouchedBeforeMount) {
-            opened.value = new Set(props.opened)
-        }
-    })
 
     const selectStrategy = computed(() => {
         if (typeof props.selectStrategy === 'object') return props.selectStrategy
@@ -118,20 +63,10 @@ export const useNested = (props: INestedProps) => {
         }
     })
 
-    /*********************************************************
-     * selected
-     *
-     * @description
-     * ⛔ Pas de `props.selected` en 3e argument — meme forme que
-     * `provideExpanded` (`expand.composable.ts`) et `provideSelection`
-     * (`select.composable.ts`) : l'argument était mort et forçait une
-     * lecture pendant le `setup()` de l'appelant (#504). Mesuré, cas du
-     * thème compris : `vmodel-default-value.spec.ts`.
-     ********************************************************/
     const selected = useVModel(
         props,
         'selected',
-        undefined,
+        props.selected,
         v => selectStrategy.value.in(v, children.value, parents.value),
         v => selectStrategy.value.out(v, children.value, parents.value)
     )
@@ -164,7 +99,7 @@ export const useNested = (props: INestedProps) => {
 
                 if (selected.value) {
                     for (const [key, value] of selected.value.entries()) {
-                        if (value === SELECTED.ON) arr.push(key)
+                        if (value === 'on') arr.push(key)
                     }
                 }
 
@@ -210,7 +145,6 @@ export const useNested = (props: INestedProps) => {
                 })
 
                 if (newOpened) {
-                    openedTouchedBeforeMount = true
                     opened.value = new Set(newOpened)
                     vm.emit('update:opened', newOpened)
                 }
@@ -227,7 +161,6 @@ export const useNested = (props: INestedProps) => {
                 })
 
                 if (newOpened) {
-                    openedTouchedBeforeMount = true
                     opened.value = newOpened
                 }
             },
@@ -258,4 +191,74 @@ export const useNested = (props: INestedProps) => {
     provide(ORIGAM_NESTED_KEY, nested)
 
     return nested.root
+}
+
+/*********************************************************
+ * useNestedItem
+ ********************************************************/
+export function useNestedItem (id: Ref<unknown>, isGroup: boolean) {
+    const parent = inject(ORIGAM_NESTED_KEY, EMPTY_NESTED)
+
+    const uidSymbol = Symbol(getUid())
+    const computedId = computed(() => id.value !== undefined ? id.value : uidSymbol)
+
+    const item = {
+        ...parent,
+        id: computedId,
+        open: (open: boolean, e: Event) => {
+            if (parent?.root) {
+                parent.root.open(computedId.value, open, e)
+            }
+        },
+        openOnSelect: (open: boolean, e?: Event) => {
+            if (parent?.root) {
+                parent.root.openOnSelect(computedId.value, open, e)
+            }
+        },
+        isOpen: computed(() => Boolean(parent?.root?.opened.value.has(computedId.value))),
+        parent: computed(() => parent?.root?.parents.value.get(computedId.value)),
+        select: (selected: boolean, e?: Event) => {
+            if (parent?.root) {
+                parent.root.select(computedId.value, selected, e)
+            }
+        },
+        isSelected: computed(() => Boolean(parent?.root?.selected.value.get(toRaw(computedId.value)) === 'on')),
+        isIndeterminate: computed(() => Boolean(parent?.root?.selected.value.get(computedId.value) === 'indeterminate')),
+        isLeaf: computed(() => Boolean(!parent?.root?.children.value.get(computedId.value))),
+        isGroupActivator: parent?.isGroupActivator
+    }
+
+    if (!parent?.isGroupActivator) {
+        if (parent?.root) {
+            parent.root.register(computedId.value, parent?.id.value, isGroup)
+        }
+    }
+
+    onBeforeUnmount(() => {
+        if (!parent?.isGroupActivator) {
+            if (parent?.root) {
+                parent.root.unregister(computedId.value)
+            }
+        }
+    })
+
+    if (isGroup) {
+        provide(ORIGAM_NESTED_KEY, item)
+    }
+
+    return item
+}
+
+/*********************************************************
+ * useNestedGroupActivator
+ ********************************************************/
+export function useNestedGroupActivator () {
+    const parent = inject(ORIGAM_NESTED_KEY, EMPTY_NESTED)
+
+    const item = {
+        ...parent,
+        isGroupActivator: true
+    }
+
+    provide(ORIGAM_NESTED_KEY, item)
 }

@@ -30,7 +30,11 @@ import OrigamDialog from '@origam/components/Dialog/OrigamDialog.vue'
 import { createOrigam } from '@origam/origam'
 
 beforeEach(() => {
-    global.IntersectionObserver = vi.fn(class { observe = vi.fn(); unobserve = vi.fn(); disconnect = vi.fn() }) as any
+    global.IntersectionObserver = vi.fn().mockImplementation(() => ({
+        observe: vi.fn(),
+        unobserve: vi.fn(),
+        disconnect: vi.fn()
+    })) as any
 })
 
 // Mirrors `pick()` from src/utils/Commons/commons.util.ts: only forwards

@@ -101,34 +101,20 @@ The `validateOn` prop controls when validation fires:
 
 | Slot | Scope | Description |
 |------|-------|-------------|
-| `default` | field props | Extra content appended after the cells (does not replace them) |
-| `label` | — | Custom label |
-| `floatingLabel` | — | Custom floating label |
-| `prefix` | — | Content before the cells |
-| `suffix` | — | Content after the cells |
-| `prependInner` | — | Icon/content inside the control, before the cells |
-| `appendInner` | — | Icon/content inside the control, after the cells |
-| `clear` | — | Custom clear icon (only rendered when `clearable`) |
-| `loader` | — | Custom loading indicator (shown while `loading`) |
+| `default` | field props | Override field body |
+| `label` | `ILabelProps` | Custom label |
+| `field` | `{ id, isDisabled, isDirty, isValid, isReadonly }` | Replace individual `<input>` cells |
 
 ## Emits
 
 | Event | Payload | Description |
 |-------|---------|-------------|
 | `update:modelValue` | `string \| number \| null` | Partial / full value |
-| `update:focused` | `boolean` | Focus state changed (own `useFocus(props)` call) |
 | `finish` | `string` | All cells filled |
-| `click:control` | `MouseEvent` | Click on the control area (`.origam-otp-input-field__content`) |
-| `mousedown:control` | `MouseEvent` | Mousedown on the control area (`.origam-otp-input-field__content`) |
-| `click:clear` | `MouseEvent` | Clear button clicked — also resets the model to empty |
-| `click:appendInner` | `MouseEvent` | Append-inner adornment clicked (relayed from the focused cell's `<origam-field>`) |
-| `click:prependInner` | `MouseEvent` | Prepend-inner adornment clicked (relayed from the focused cell's `<origam-field>`) |
-
-`focus` and `blur` are not component emits — `IOtpInputFieldEmits` does not
-declare them. They reach the consumer as plain DOM events, relayed by
-Vue's attribute fallthrough: `@focus` / `@blur` bound on
-`<origam-otp-input-field>` work the normal HTML way, they just aren't part
-of the typed `emits` contract.
+| `focus` | `FocusEvent` | Any cell focused |
+| `blur` | `FocusEvent` | All cells blurred |
+| `click:clear` | `MouseEvent` | Clear button clicked |
+| `click:control` | `MouseEvent` | Control area clicked |
 
 ## Props (validation)
 
@@ -148,38 +134,12 @@ of the typed `emits` contract.
 - The component also fires `validate()` automatically when the `finish` event fires (all cells filled).
 - The `origam-otp-input-field--error` CSS class is applied to the root when `isValid === false`.
 
-## Accessibility
-
-- The root wrapper carries `role="group"`, and `aria-label` sourced from
-  `label` when set — one accessible name for the whole widget.
-- Each individual cell ALSO carries its own accessible name (`t('origam.
-  input.otp', i + 1)`, "Please enter OTP character N") — the two combine
-  the same way a `<fieldset><legend>` groups individually-labelled inputs.
-- `label` is intentionally NOT forwarded onto individual cells: doing so
-  would render it as a visible floating label repeated once per digit box.
-
 ## Design tokens
 
-Ces cinq variables sont les **seules** que le composant lit réellement —
-liste établie par `grep -oE "--origam-otp-input-field[a-z-]*"` sur son
-`.vue`, pas recopiée d'un fichier de tokens.
-
-| CSS variable | Description |
-|---|---|
-| `--origam-otp-input-field---gap` | Espace entre les cellules |
-| `--origam-otp-input-field---border-radius` | Rayon des cellules |
-| `--origam-otp-input-field---padding-block` | Padding vertical |
-| `--origam-otp-input-field---error-color` | Couleur du texte des messages d'erreur |
-| `--origam-otp-input-field__details---padding-inline` | Padding horizontal de la zone details / messages |
-
-> ⛔ **Corrigé le 2026-09-02.** Cette table citait
-> `--origam-otp-input---cell-width` et `--origam-otp-input---cell-gap`, qui
-> n'existent **nulle part** — ni dans le SCSS, ni dans les feuilles de
-> tokens. Le préfixe réel porte `-field`. Elle citait aussi
-> `--origam-field---border-color`, que ce composant ne lit pas, et une
-> variable de largeur par cellule qui n'existe pas non plus : la largeur des
-> cellules n'est pas thémable aujourd'hui.
->
-> Une doc de tokens ne se recopie pas d'un fichier de tokens : elle se
-> **mesure sur le composant**. C'est précisément l'écart que le critère C7 du
-> classeur appelle « doc MENSONGÈRE », par opposition à « doc absente ».
+| CSS variable | Default | Description |
+|---|---|---|
+| `--origam-otp-input---cell-width` | `48px` | Width per cell |
+| `--origam-otp-input---cell-gap` | `8px` | Gap between cells |
+| `--origam-field---border-color` | semantic border | Cell outline |
+| `--origam-otp-input-field__details---padding-inline` | `4px` | Horizontal padding of the details / messages zone |
+| `--origam-otp-input-field---error-color` | `var(--origam-color__feedback--danger---fg-subtle)` | Text color of error messages |

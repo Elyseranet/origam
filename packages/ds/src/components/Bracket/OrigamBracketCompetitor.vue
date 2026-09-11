@@ -64,19 +64,21 @@
 >
 	import { computed, ComputedRef, StyleValue } from 'vue'
 
-	import { useDensity } from '../../composables/Commons/density.composable'
-	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useDimension } from '../../composables/Commons/dimension.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
-	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
-	import { useTypography } from '../../composables/Commons/typography.composable'
+	import {
+		useActive,
+		useDensity,
+		useDimension,
+		useHover,
+		useProps,
+		useStateEffect,
+		useTypography
+	} from '../../composables'
 
 	import { isIntent, tokenForegroundForIntent } from '../../utils/Commons/color.util'
 
-	import type { IBracketCompetitorEmits, IBracketCompetitorProps, IBracketCompetitorSlots } from '../../interfaces/Bracket/bracket-competitor-component.interface'
+	import type { IBracketCompetitorProps } from '../../interfaces'
 
-	import type { TIntent } from '../../types/Commons/intent.type'
+	import type { TIntent } from '../../types'
 
 	const props = withDefaults(defineProps<IBracketCompetitorProps>(), {
 		tag: 'div',
@@ -87,9 +89,9 @@
 		interactive: true
 	})
 
-	const emit = defineEmits<IBracketCompetitorEmits>()
-
-	defineSlots<IBracketCompetitorSlots>()
+	const emit = defineEmits<{
+		(e: 'click', event: MouseEvent | KeyboardEvent): void
+	}>()
 
 	const {filterProps} = useProps<IBracketCompetitorProps>(props)
 
@@ -98,44 +100,10 @@
 	const {typographyStyles: scoreTypographyStyles} = useTypography(props, 'bracket-score')
 	const {typographyStyles: advantageTypographyStyles} = useTypography(props, 'bracket-advantage')
 
-	/*********************************************************
-	 * #513 — opacity-based de-emphasis destroyed contrast
-	 *
-	 * @description
-	 * `__seed`, `--loser`, `--tbd` (its CSS vars are named `--pending`, the
-	 * class is `--tbd`) and `--forfeit .__name` used to de-emphasise their
-	 * text via `opacity` on top of `currentColor`. Contrast is a property
-	 * of the COMPOSITED color, not the declared one: opacity multiplies
-	 * whatever hue `currentColor` carries (any `TIntent` the row is given)
-	 * against the surface behind it.
-	 * @description
-	 * Measured live (Playwright, Histoire, resolved `getComputedStyle`):
-	 * with `color="primary"` the `__name` text sits at 7.10:1 unstyled but
-	 * composites to 3.84:1 once dimmed to opacity 0.7 (fails AA 4.5:1); the
-	 * same 0.7/0.85 opacities are harmless only against the undyed default
-	 * (near-black) text.
-	 * @description
-	 * Since the row accepts any intent, no single opacity constant is safe
-	 * for all of them — the four rules now paint a fixed, pre-vetted
-	 * neutral (`--origam-color__text---secondary`, 7.81:1 on white,
-	 * independently verified) instead of dimming whatever color was
-	 * already there.
-	 ********************************************************/
 	const isTbd = computed<boolean>(() => props.competitor === null)
 
-	/*********************************************************
-	 * Libelles — critere C8
-	 *
-	 * @description
-	 * « TBD », « forfeit », « To be determined », « winner » et le suffixe
-	 * de score etaient ecrits en dur en anglais. Ils sont lus par des
-	 * lecteurs d'ecran (`aria-label`) ou affiches tels quels : ce sont des
-	 * chaines destinees a l'utilisateur, elles passent par la locale.
-	 ********************************************************/
-	const {t} = useLocale()
-
 	const displayName = computed<string>(() => {
-		if (isTbd.value) return t('origam.bracket.tbd')
+		if (isTbd.value) return 'TBD'
 
 		return props.competitor!.name
 	})
@@ -147,7 +115,7 @@
 		return props.score
 	})
 
-	const forfeitLabel = computed(() => t('origam.bracket.forfeit_label'))
+	const forfeitLabel = 'forfeit'
 
 	const hasAdvantage = computed<boolean>(() => (props.advantageRounds ?? 0) > 0)
 
@@ -156,15 +124,15 @@
 	const advantageAriaLabel = computed<string>(() => {
 		const rounds = props.advantageRounds ?? 0
 
-		return t('origam.bracket.advantage_aria_label', rounds)
+		return `${rounds}-round head start`
 	})
 
 	const ariaLabel = computed<string>(() => {
-		if (isTbd.value) return t('origam.bracket.tbd_long')
+		if (isTbd.value) return 'To be determined'
 
 		const base = props.competitor!.name
-		const score = props.score != null ? t('origam.bracket.score_aria_suffix', displayScore.value) : ''
-		const winner = props.isWinner ? t('origam.bracket.winner_aria_suffix') : ''
+		const score = props.score != null ? `, score ${displayScore.value}` : ''
+		const winner = props.isWinner ? ', winner' : ''
 
 		return `${base}${score}${winner}`
 	})
@@ -190,8 +158,8 @@
 	// elevation, padding, margin) from the props and the hover / active
 	// state objects. `bgColor` unset → transparent row inheriting the
 	// bracket's auto-contrast colour through `currentColor`.
-	const {classes: hoverClasses, isOn: isHover, config: hoverState, set: onMouseenter, unset: onMouseleave} = useStateFlag(props, {state: 'hover'})
-	const {classes: activeClasses, isOn: isActive, config: activeState, toggle: onActive} = useStateFlag(props, {state: 'active'})
+	const {hoverClasses, isHover, hoverState, onMouseenter, onMouseleave} = useHover(props)
+	const {activeClasses, isActive, activeState, onActive} = useActive(props)
 
 	// Hover wins over active: while hovering, suppress the active flag so the
 	// hover surface takes precedence (active → hover cascade).
@@ -284,7 +252,8 @@
 			min-width: var(--origam-bracket-seed---min-width, 20px);
 			font-size: var(--origam-bracket-seed---font-size, 0.75rem);
 			font-weight: var(--origam-bracket-seed---font-weight, 500);
-			color: var(--origam-bracket-seed---color, var(--origam-color__text---secondary));
+			color: var(--origam-bracket-seed---color, currentColor);
+			opacity: var(--origam-bracket-seed---opacity, 0.7);
 			text-align: end;
 			flex: 0 0 auto;
 		}
@@ -325,15 +294,15 @@
 			font-weight: 700;
 			text-transform: uppercase;
 			letter-spacing: 0.04em;
-			color: var(--origam-color__feedback--warning---fgSubtle, #b45309);
+			color: var(--origam-color__feedback--warning---bg, #ed6c02);
 			border: 1px solid currentColor;
 			border-radius: 4px;
 		}
 
 		&--forfeit {
 			.origam-bracket-competitor__name {
-				color: var(--origam-bracket-competitor--forfeit---color, var(--origam-color__text---secondary));
 				text-decoration: line-through;
+				opacity: 0.7;
 			}
 		}
 
@@ -370,11 +339,13 @@
 		}
 
 		&--loser {
-			color: var(--origam-bracket-competitor--loser---color, var(--origam-color__text---secondary));
+			color: var(--origam-bracket-competitor--loser---color, currentColor);
+			opacity: var(--origam-bracket-competitor--loser---opacity, 0.85);
 		}
 
 		&--tbd {
-			color: var(--origam-bracket-competitor--pending---color, var(--origam-color__text---secondary));
+			color: var(--origam-bracket-competitor--pending---color, currentColor);
+			opacity: var(--origam-bracket-competitor--pending---opacity, 0.7);
 			font-style: var(--origam-bracket-competitor--pending---font-style, italic);
 		}
 

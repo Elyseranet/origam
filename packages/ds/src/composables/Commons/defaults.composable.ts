@@ -1,10 +1,8 @@
-import { computed, inject, provide, ref, toValue, type MaybeRefOrGetter, type Ref } from 'vue'
+import { computed, inject, provide, ref, type Ref } from 'vue'
 
-import { ORIGAM_DEFAULTS_KEY } from '../../consts/Commons/defaults.const'
-import type { IDefault } from '../../interfaces/DefaultsProvider/defaults-provider.interface'
-import { mergeDeep } from '../../utils/Commons/commons.util'
-import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.util'
-import { usePassedProps } from './passedProps.composable'
+import { ORIGAM_DEFAULTS_KEY } from '../../consts'
+import type { IDefault } from '../../interfaces'
+import { getCurrentInstance, getCurrentInstanceName, mergeDeep } from '../../utils'
 
 // ────────────────────────────────────────────────────────────────────────────
 // Defaults system — ported from origam(Lot 3.0)
@@ -24,11 +22,59 @@ import { usePassedProps } from './passedProps.composable'
 //
 // SSR-safe: no DOM access. The injection key is a global symbol so multiple
 // bundle copies of origam still cooperate.
-//
-// `usePassedProps` (the "was this prop explicitly passed?" primitive this
-// hook depends on) lives in its own file — see `passedProps.composable.ts`.
-// `camelize` (kebab→camel prop-name matching) moved to
-// `utils/Commons/commons.util.ts`, shared with `theme-props-resolver`.
+
+/**
+ * `kebab-case` → `camelCase`. Used to recognise prop names that were passed
+ * as kebab-case attributes on the parent vnode.
+ */
+function camelize (str: string): string {
+    return str.replace(/-([a-z])/g, (_, c: string) => c.toUpperCase())
+}
+
+/**
+ * Was-prop-passed factory.
+ *
+ * @description
+ * Component-side primitive: for the CURRENT component instance, returns a
+ * predicate telling whether a given prop key was explicitly written by the
+ * parent template (`vnode.props`) — as opposed to resolved from a default
+ * (`withDefaults()`, or Vue's own boolean-prop coercion).
+ *
+ * This matters beyond `useDefaults()` itself: any component that FORWARDS
+ * its own props down to descendants as `<OrigamDefaultsProvider>` entries
+ * (e.g. `OrigamAvatarGroup` → `origam-avatar`, `OrigamBtnGroup` → `origam-btn`)
+ * must use this — not a plain `!== undefined` check — to decide whether to
+ * forward a value. Reason: Vue resolves an UNSET prop whose declared type
+ * *includes* `boolean` (e.g. `border?: boolean | string`, `rounded?: boolean
+ * | TRounded`) to the concrete value `false`, never to `undefined`. A naive
+ * `omitUndefined()` over the forwarded map therefore still ships an explicit
+ * `false` for `border`/`rounded` even when the consumer never set them,
+ * which then wins the `mergeDeep` against an ancestor/theme default (e.g.
+ * `origam-avatar: { border: true }`) — see #263.
+ *
+ * MUST be re-read on every resolution (not captured once), for the same
+ * reason `useDefaults()` re-reads it: a parent binding through a dynamic
+ * `v-bind` whose object starts empty (`childRef?.filterProps(...)` before
+ * mount) only fills `vnode.props` on a later render.
+ */
+
+/*********************************************************
+ * usePassedProps
+ ********************************************************/
+export function usePassedProps<T extends Record<string, any>> (
+    _props: T,
+    instanceLabel = 'usePassedProps'
+): (key: Extract<keyof T, string> | string) => boolean {
+    const vm = getCurrentInstance(instanceLabel)
+
+    return (key) => {
+        const vnodeProps = vm.vnode.props || {}
+        for (const k in vnodeProps) {
+            if (k === key || camelize(k) === key) return true
+        }
+        return false
+    }
+}
 
 /**
  * Component-side hook: resolve `props` against the closest DefaultsProvider.
@@ -45,14 +91,8 @@ import { usePassedProps } from './passedProps.composable'
 
 /*********************************************************
  * useDefaults
- *
- * @description
- * Resolves a component's props against the closest
- * `<OrigamDefaultsProvider>` (or global defaults), falling back to the
- * component's own `withDefaults()` value. Delegates the "was this prop
- * explicitly passed?" check to `usePassedProps`.
  ********************************************************/
-export function useDefaults<T extends object> (
+export function useDefaults<T extends Record<string, any>> (
     props: T,
     name = getCurrentInstanceName()
 ): T {
@@ -62,8 +102,8 @@ export function useDefaults<T extends object> (
     if (!propNames.length) return props
 
     // Determine which props were explicitly passed by the parent template —
-    // see `usePassedProps()` for why this can't be a plain `!== undefined`
-    // check.
+    // see `usePassedProps()` above for why this can't be a plain
+    // `!== undefined` check.
     const wasPropPassed = usePassedProps(props, 'useDefaults')
 
     const result = {} as Record<string, any>
@@ -126,51 +166,46 @@ export function useDefaults<T extends object> (
     })
 }
 
+/**
+ * Provider-side hook: declare a defaults map for the current component
+ * subtree. Consumed by `<OrigamDefaultsProvider>` but also callable directly
+ * for advanced cases (e.g. providing defaults from inside a renderless
+ * component).
+ *
+ * Options control how this provider composes with any ancestor provider:
+ *   - `disabled` — pass through the parent map unchanged.
+ *   - `reset` / `root` — ignore the parent map; only this provider's
+ *     defaults are visible to descendants.
+ *   - `scoped` — same effect as `reset`, declarative variant.
+ *   - default — deep-merge parent defaults under this provider's defaults.
+ */
+
 /*********************************************************
  * provideDefaults
- *
- * @description
- * Cote fournisseur : declare une map de defauts pour le sous-arbre courant,
- * injectee sous `ORIGAM_DEFAULTS_KEY` et lue par `useDefaults()` chez les
- * descendants. Utilise par `<OrigamDefaultsProvider>` mais aussi appelable
- * directement (composant renderless, cas avances). `disabled` laisse passer
- * la map parente inchangee ; `reset`/`root`/`scoped` l'ignorent entierement
- * (seuls les defauts de ce provider sont visibles) ; par defaut, fusion
- * profonde (`mergeDeep`) des defauts parents sous ceux de ce provider.
- *
- * @description
- * Chaque option accepte une valeur brute OU un `Ref`/getter
- * (`MaybeRefOrGetter`), deroule via `toValue()` a chaque re-evaluation.
- * ⛔ Un appelant dont l'option est une PROP de composant doit passer un
- * getter (`() => props.scoped`), jamais la valeur nue capturee une fois —
- * #438 : `<OrigamDefaultsProvider>` forwardait `props.scoped` comme un
- * booleen brut fige au `setup()`, donc ce `computed()` ne re-trackait
- * jamais les changements et `:scoped="uneRef"` restait sans effet apres le
- * montage initial.
  ********************************************************/
 export function provideDefaults (
     defaults?: Ref<IDefault> | IDefault,
     options?: {
-        scoped?: MaybeRefOrGetter<boolean | undefined>
-        reset?: MaybeRefOrGetter<string | number | undefined>
-        root?: MaybeRefOrGetter<string | number | undefined>
-        disabled?: MaybeRefOrGetter<boolean | undefined>
+        scoped?: boolean
+        reset?: string | number
+        root?: string | number
+        disabled?: boolean
     }
 ) {
     const parentDefaults = inject(ORIGAM_DEFAULTS_KEY, ref({}))
 
     const provided = computed(() => {
-        if (toValue(options?.disabled)) return parentDefaults.value
+        if (options?.disabled) return parentDefaults.value
 
         const rawDefaults = defaults && 'value' in defaults ? defaults.value : defaults
 
         if (!rawDefaults) return parentDefaults.value
 
-        if (toValue(options?.reset) != null || toValue(options?.root) != null) {
+        if (options?.reset != null || options?.root != null) {
             return rawDefaults
         }
 
-        if (toValue(options?.scoped)) {
+        if (options?.scoped) {
             return rawDefaults
         }
 
@@ -182,14 +217,13 @@ export function provideDefaults (
     return provided
 }
 
+/**
+ * Plugin-side factory used by `createOrigam()` to seed the root defaults
+ * map from the host app's options.
+ */
+
 /*********************************************************
  * createDefaults
- *
- * @description
- * Fabrique installee par `createOrigam()` : seme le `Ref<IDefault>` racine
- * a partir des `options.components` fournies par l'app hote (ou un objet
- * vide) — c'est ce Ref que `provideDefaults()` recoit comme premiere
- * valeur parente au sommet de l'arbre.
  ********************************************************/
 export function createDefaults (options?: IDefault): Ref<IDefault> {
     return ref(options ?? {})

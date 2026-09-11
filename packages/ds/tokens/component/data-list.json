@@ -1,0 +1,62 @@
+{
+  "data-list": {
+    "background-color":        { "$type": "color",      "$value": "{color.surface.default}" },
+    "color":                   { "$type": "color",      "$value": "{color.text.primary}" },
+    "border-radius":           { "$type": "dimension",  "$value": "{radius.none}" },
+    "padding":                 { "$type": "dimension",  "$value": "{space.0}" },
+    "gap":                     { "$type": "dimension",  "$value": "{space.0}" },
+    "display":                 { "$type": "other",      "$value": "block" },
+    "overflow":                { "$type": "other",      "$value": "hidden" },
+
+    "item": {
+      "background-color":      { "$type": "color",      "$value": "transparent" },
+      "padding":               { "$type": "dimension",  "$value": "{space.0}" },
+      "hover-background-color":{ "$type": "color",      "$value": "{color.surface.overlay}" },
+      "active-background-color":{ "$type": "color",     "$value": "{color.surface.raised}" }
+    },
+
+    "title": {
+      "font-size":             { "$type": "dimension",  "$value": "{font.size.sm}" },
+      "font-weight":           { "$type": "fontWeight", "$value": "{font.weight.medium}" },
+      "color":                 { "$type": "color",      "$value": "{color.text.secondary}" },
+      "line-height":           { "$type": "number",     "$value": "{font.lineHeight.normal}" },
+      "letter-spacing":        { "$type": "dimension",  "$value": "{font.letterSpacing.wide}" }
+    },
+
+    "text": {
+      "font-size":             { "$type": "dimension",  "$value": "{font.size.md}" },
+      "color":                 { "$type": "color",      "$value": "{color.text.primary}" },
+      "line-height":           { "$type": "number",     "$value": "{font.lineHeight.normal}" },
+      "letter-spacing":        { "$type": "dimension",  "$value": "{font.letterSpacing.normal}" }
+    },
+
+    "bordered": {
+      "border-color":          { "$type": "color",      "$value": "{color.border.default}" },
+      "border-style":          { "$type": "other",      "$value": "solid" },
+      "border-width":          { "$type": "dimension",  "$value": "{border.width.thin}" },
+      "item-border-bottom-width": { "$type": "dimension", "$value": "{border.width.thin}" },
+      "item-border-color":     { "$type": "color",      "$value": "{color.border.subtle}" }
+    },
+
+    "striped": {
+      "item-even-background-color": { "$type": "color", "$value": "{color.surface.overlay}" },
+      "item-odd-background-color":  { "$type": "color", "$value": "transparent" }
+    },
+
+    "kv": {
+      "display":               { "$type": "other",      "$value": "block" },
+      "row-padding-block":     { "$type": "dimension",  "$value": "{space.3}" },
+      "row-divider":           { "$type": "color",      "$value": "{color.border.subtle}" },
+      "key-width":             { "$type": "dimension",  "$value": "160px" },
+      "key-color":             { "$type": "color",      "$value": "{color.text.secondary}" },
+      "key-font-size":         { "$type": "dimension",  "$value": "{font.size.md}" },
+      "key-font-weight":       { "$type": "fontWeight", "$value": "{font.weight.medium}" },
+      "key-line-height":       { "$type": "number",     "$value": "{font.lineHeight.normal}" },
+      "value-color":           { "$type": "color",      "$value": "{color.text.primary}" },
+      "value-font-size":       { "$type": "dimension",  "$value": "{font.size.md}" },
+      "value-line-height":     { "$type": "number",     "$value": "{font.lineHeight.normal}" },
+      "gap-key-value":         { "$type": "dimension",  "$value": "{space.4}" },
+      "value-inline-gap":      { "$type": "dimension",  "$value": "{space.2}" }
+    }
+  }
+}

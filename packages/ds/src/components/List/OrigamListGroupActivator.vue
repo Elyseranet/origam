@@ -1,7 +1,6 @@
 <template>
 	<component
 			:is="tag"
-			:id="id"
 			:class="activatorClasses"
 			:style="activatorStyles"
 	>
@@ -14,21 +13,19 @@
 		setup
 >
 	import { computed, StyleValue } from 'vue'
-	import { useNestedGroupActivator } from '../../composables/Commons/nestedGroupActivator.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
+	import {
+	useNestedGroupActivator,
+	useProps,
+	useStyle
+} from '../../composables'
 
-	import type { IListActivatorEmits, IListActivatorProps, IListActivatorSlots } from '../../interfaces/List/list-group.interface'
+	import type { IListActivatorProps } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
 	 ********************************************************/
 
 	const props = withDefaults(defineProps<IListActivatorProps>(), {tag: 'div'})
-
-	defineEmits<IListActivatorEmits>()
-
-	defineSlots<IListActivatorSlots>()
 
 	const {filterProps} = useProps<IListActivatorProps>(props)
 
@@ -48,7 +45,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(activatorStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(activatorStyles)
 
 
 	/*********************************************************

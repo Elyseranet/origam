@@ -1,3 +1,3 @@
-import OrigamChip from '../../components/Chip/OrigamChip.vue'
+import { OrigamChip } from "../../components"
 
 export type TOrigamChip = InstanceType<typeof OrigamChip>

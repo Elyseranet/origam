@@ -1,6 +1,5 @@
 <template>
 	<origam-selection-control
-			:id="id"
 			ref="origamSelectionControlRef"
 			v-model="model"
 			:class="radioBtnClasses"
@@ -42,20 +41,21 @@
 		setup
 >
 	import { computed, ref, StyleValue, useSlots } from 'vue'
-	import OrigamSelectionControl from '../SelectionControl/OrigamSelectionControl.vue'
+	import { OrigamSelectionControl } from '../../components'
 
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-	import { useVModel } from '../../composables/Commons/vModel.composable'
+	import {
+	useProps,
+	useStyle,
+	useVModel
+} from '../../composables'
 
-	import { DENSITY } from '../../enums/Commons/density.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { DENSITY, MDI_ICONS } from '../../enums'
 
-	import type { IRadioBtnProps } from '../../interfaces/Radio/radio-btn.interface'
+	import type { IRadioBtnProps} from '../../interfaces'
 
-	import type { IRadioBtnEmits, IRadioBtnSlots } from '../../interfaces/Radio/radio-btn.interface'
+	import type { IRadioBtnEmits } from '../../interfaces/Radio/radio-btn.interface'
 
-	import type { TOrigamSelectionControl } from '../../types/SelectionControl/selection-control.type'
+	import type { TOrigamSelectionControl } from "../../types"
 
 	/*********************************************************
 	 * Global
@@ -70,8 +70,6 @@
 	})
 
 	const emits = defineEmits<IRadioBtnEmits>()
-
-	defineSlots<IRadioBtnSlots>()
 
 	const {filterProps} = useProps<IRadioBtnProps>(props)
 
@@ -136,7 +134,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(radioBtnStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(radioBtnStyles)
 
 
 	/*********************************************************

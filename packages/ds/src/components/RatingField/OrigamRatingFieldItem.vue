@@ -4,10 +4,7 @@
 			:class="ratingFieldItemClasses"
 			:style="ratingFieldItemStyles"
 	>
-		<label
-				:for="id"
-				class="origam-rating-field-item__label"
-		>
+		<label :for="id">
 			<span class="origam-rating-field-item__hidden">{{ t(itemAriaLabel, value, length) }}</span>
 			<slot
 					v-if="showStar"
@@ -43,20 +40,17 @@
 		setup
 >
 	import { computed, ref, StyleValue } from 'vue'
-	import OrigamBtn from '../Btn/OrigamBtn.vue'
+	import { OrigamBtn } from '../../components'
 
-	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useLocale, useProps , useStyle} from "../../composables"
 
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
-	import { VARIANT } from '../../enums/Commons/variant.enum'
+	import { MDI_ICONS, VARIANT } from "../../enums"
 
-	import type { IRatingFieldItemProps, IRatingFieldItemSlots } from '../../interfaces/RatingField/rating-field-item.interface'
+	import type { IRatingFieldItemProps} from '../../interfaces'
 
 	import type { IRatingFieldItemEmits } from '../../interfaces/RatingField/rating-field-item.interface'
 
-	import type { TOrigamBtn } from '../../types/Btn/btn.type'
+	import type { TOrigamBtn } from "../../types"
 
 	/*********************************************************
 	 * Global
@@ -74,8 +68,6 @@
 	})
 
 	const emits = defineEmits<IRatingFieldItemEmits>()
-
-	defineSlots<IRatingFieldItemSlots>()
 
 	const {filterProps} = useProps<IRatingFieldItemProps>(props)
 
@@ -101,18 +93,8 @@
 	 * le background". Spread last so a consumer override on
 	 * the item itself still wins.
 	 ********************************************************/
-	/*********************************************************
-	 * id
-	 *
-	 * @description
-	 * #372 — a consumer-supplied `id` must win over the per-item generated
-	 * one. Without the `props.id ||` fallback here, `props.id` was a
-	 * homonym-shadowed dead prop: this local `id` (used below for the
-	 * `<label for>` / `<input id>` pairing) never read it, so it was
-	 * silently accepted and discarded.
-	 ********************************************************/
 	const id = computed(() => {
-		return props.id || `${props.name}-${String(props.value).replace('.', '-')}`
+		return `${props.name}-${String(props.value).replace('.', '-')}`
 	})
 
 	/*********************************************************
@@ -122,7 +104,7 @@
 	const ratingBtnProps = computed(() => {
 		const isFullIcon = props.isHovering ? props.isHovered : props.isFilled
 		const icon = isFullIcon ? props.fullIcon : props.emptyIcon
-		const btnProps = origamBtnRef.value?.filterProps(props, ['class', 'style', 'id', 'bgColor'])
+		const btnProps = origamBtnRef.value?.filterProps(props, ['class', 'style', 'id', 'bgColor', 'activeBgColor', 'hoverBgColor'])
 
 		return {variant: VARIANT.TEXT, ...btnProps, icon}
 	})

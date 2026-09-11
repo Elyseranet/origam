@@ -1,0 +1,30 @@
+{
+  "form": {
+    "_comment": "OrigamForm component tokens — Lot 3.2A. Wraps form fields, provides global error messaging and action area. BEM children: content, details, actions.",
+
+    "actions": {
+      "_comment": "BEM child: .origam-form__actions — action buttons row.",
+      "margin-top":           { "$type": "dimension",    "$value": "{space.4}",                    "$description": "Top margin separating actions from the form body" },
+      "gap":                  { "$type": "dimension",    "$value": "{space.2}",                    "$description": "Gap between action buttons" },
+      "display":              { "$type": "other",        "$value": "flex",                         "$description": "Actions row layout" }
+    },
+
+    "details": {
+      "_comment": "BEM child: .origam-form__details — global error/hint messages area.",
+      "font-size":            { "$type": "dimension",    "$value": "{font.size.sm}",               "$description": "Messages font-size" },
+      "font-weight":          { "$type": "fontWeight",   "$value": "{font.weight.regular}",        "$description": "Messages font-weight" },
+      "letter-spacing":       { "$type": "dimension",    "$value": "0.0333333333em",               "$description": "Messages letter-spacing" },
+      "line-height":          { "$type": "number",       "$value": 1,                              "$description": "Messages line-height" },
+      "min-height":           { "$type": "dimension",    "$value": "22px",                         "$description": "Minimum height to avoid layout shift when no messages" },
+      "padding-top":          { "$type": "dimension",    "$value": "6px",                          "$description": "Top padding inside the details area" },
+      "icon-opacity":         { "$type": "number",       "$value": 0.7,                            "$description": "Icon opacity inside details at rest" }
+    },
+
+    "error": {
+      "_comment": "State tokens applied when --origam-form--error modifier is active.",
+      "messages-color":       { "$type": "color",        "$value": "{color.feedback.danger.fgSubtle}", "$description": "Color of error messages inside .origam-form__details" },
+      "icon-color":           { "$type": "color",        "$value": "{color.feedback.danger.fgSubtle}", "$description": "Color of error icon inside .origam-form__details" },
+      "icon-opacity":         { "$type": "number",       "$value": "{opacity.100}",                "$description": "Full opacity for icons in error state" }
+    }
+  }
+}

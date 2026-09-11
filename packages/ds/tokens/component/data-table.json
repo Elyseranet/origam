@@ -1,0 +1,165 @@
+{
+  "_comment": "OrigamDataTable component tokens — Lot 5A. DataTable with sub-components: header, headers, row, rows, column, footer, group-header-row. BEM children: cell, sort-icon, sort-badge, column-title, column-value.",
+
+  "data-table": {
+    "background-color":       { "$type": "color",      "$value": "{color.surface.default}",          "$description": "Root table background color" },
+    "color":                  { "$type": "color",      "$value": "{color.text.primary}",             "$description": "Root table text color" },
+    "border-color":           { "$type": "color",      "$value": "{color.border.subtle}",            "$description": "Outer table border color" },
+    "border-radius":          { "$type": "dimension",  "$value": "{radius.none}",                    "$description": "Table border-radius (flat by default)" },
+    "font-size":              { "$type": "dimension",  "$value": "{font.size.md}",                   "$description": "Base font-size for table cells" },
+    "font-weight":            { "$type": "fontWeight", "$value": "{font.weight.regular}",            "$description": "Base font-weight for table cells" },
+    "line-height":            { "$type": "number",     "$value": "{font.lineHeight.normal}",         "$description": "Base line-height for table cells" },
+    "width":                  { "$type": "other",      "$value": "100%",                             "$description": "Table takes full width of its container" },
+    "border-collapse":        { "$type": "other",      "$value": "separate",                         "$description": "Allows per-cell border control" },
+    "border-spacing":         { "$type": "other",      "$value": "0",                                "$description": "No spacing between cells (pairs with border-collapse separate)" },
+
+    "loading": {
+      "_comment": "Tokens for the --loading state on the root DataTable wrapper.",
+      "opacity":              { "$type": "number",     "$value": "{opacity.50}",                     "$description": "Opacity applied to data cells while loading" }
+    },
+
+    "header": {
+      "_comment": "BEM block: .origam-data-table-header-cell — th elements in the header row.",
+      "background-color":     { "$type": "color",      "$value": "{color.surface.raised}",           "$description": "Header cell background — neutral.0 light / neutral.900 dark. Provides visual separation from body rows." },
+      "color":                { "$type": "color",      "$value": "{color.text.inverse}",             "$description": "Header cell text color (white on dark header background)" },
+      "font-weight":          { "$type": "fontWeight", "$value": "{font.weight.medium}",             "$description": "Slightly heavier weight for column titles" },
+      "font-size":            { "$type": "dimension",  "$value": "{font.size.sm}",                   "$description": "Header cell font-size (smaller than body cells)" },
+      "padding-block":        { "$type": "dimension",  "$value": "{space.3}",                        "$description": "Block (top/bottom) padding for header cells" },
+      "padding-inline":       { "$type": "dimension",  "$value": "{space.4}",                        "$description": "Inline (left/right) padding for header cells" },
+      "border-bottom-color":  { "$type": "color",      "$value": "{color.border.default}",           "$description": "Bottom border separating header from body" },
+      "border-bottom-width":  { "$type": "dimension",  "$value": "{border.width.thin}",              "$description": "Width of the header bottom border" },
+      "border-bottom-style":  { "$type": "other",      "$value": "solid",                            "$description": "Style of the header bottom border" },
+
+      "sort-icon": {
+        "_comment": "BEM element: .origam-data-table-header-cell__sort-icon",
+        "color":              { "$type": "color",      "$value": "{color.text.inverse}",             "$description": "Sort icon default color (matches header text)" },
+        "color-active":       { "$type": "color",      "$value": "{color.text.inverse}",             "$description": "Sort icon color when actively sorting" },
+        "opacity":            { "$type": "number",     "$value": "{opacity.0}",                      "$description": "Hidden at rest, revealed on hover/sorted state" },
+        "opacity-hover":      { "$type": "number",     "$value": "{opacity.50}",                     "$description": "Semi-visible on column hover" },
+        "opacity-active":     { "$type": "number",     "$value": "{opacity.100}",                    "$description": "Fully visible when column is actively sorted" }
+      },
+
+      "sort-badge": {
+        "_comment": "BEM element: .origam-data-table-header-cell__sort-badge — multi-sort index badge",
+        "background-color":   { "$type": "color",      "$value": "{color.border.default}",           "$description": "Sort badge background — translucent layer on header background. NOTE: was rgba(255,255,255,0.12) — replaced by border.default which is semantically neutral-400 light / neutral-700 dark." },
+        "color":              { "$type": "color",      "$value": "{color.text.inverse}",             "$description": "Sort badge text color" },
+        "font-size":          { "$type": "dimension",  "$value": "0.875rem",                         "$description": "Sort badge font-size (14px literal — no exact primitive alias)" },
+        "padding":            { "$type": "dimension",  "$value": "{space.1}",                        "$description": "Inner padding of the sort badge" },
+        "border-radius":      { "$type": "dimension",  "$value": "{radius.full}",                    "$description": "Pill-shaped badge" },
+        "min-width":          { "$type": "dimension",  "$value": "20px",                             "$description": "Minimum width to keep badge circular" },
+        "min-height":         { "$type": "dimension",  "$value": "20px",                             "$description": "Minimum height to keep badge circular" },
+        "width":              { "$type": "dimension",  "$value": "20px",                             "$description": "Fixed width for the badge" },
+        "height":             { "$type": "dimension",  "$value": "20px",                             "$description": "Fixed height for the badge" }
+      }
+    },
+
+    "row": {
+      "_comment": "BEM block: .origam-data-table-row — tr elements in tbody",
+      "background-color":        { "$type": "color",   "$value": "{color.surface.default}",          "$description": "Default row background" },
+      "color":                   { "$type": "color",   "$value": "{color.text.primary}",             "$description": "Default row text color" },
+      "hover-background-color":  { "$type": "color",   "$value": "{color.surface.overlay}",          "$description": "Row background on hover — surface.overlay = neutral.100 light / neutral.800 dark. Tile-style overlay pattern, no JS needed." },
+      "selected-background-color": { "$type": "color", "$value": "{color.surface.overlay}",          "$description": "Row background when selected. Arbitrage: uses surface.overlay (neutral.100 light). Token action.primary.bgSubtle absent du semantic. Decision requise : créer color.action.primary.bgSubtle = primary.50 pour distinguer visuellement sélection vs hover." },
+      "striped-background-color": { "$type": "color",  "$value": "{color.surface.sunken}",           "$description": "Alternate (even) row background for striped variant. Arbitrage: surface.sunken (neutral.50 light / neutral.950 dark) retenu — sémantiquement 'en creux' par rapport à surface.default. surface.disabled (neutral.200) serait trop marqué." },
+      "border-bottom-color":     { "$type": "color",   "$value": "{color.border.subtle}",            "$description": "Row bottom border color (separator between rows)" },
+      "border-bottom-width":     { "$type": "dimension","$value": "{border.width.thin}",             "$description": "Width of the row bottom border" },
+      "border-bottom-style":     { "$type": "other",   "$value": "solid",                            "$description": "Style of the row bottom border" },
+      "transition-duration":     { "$type": "duration","$value": "{motion.duration.fast}",           "$description": "Row background transition on hover/select" },
+      "transition-easing":       { "$type": "cubicBezier","$value": "{motion.easing.standard}",      "$description": "Row background transition easing" },
+
+      "column-title": {
+        "_comment": "BEM element: .origam-data-table-row__column-title — mobile layout column label",
+        "font-weight":          { "$type": "fontWeight","$value": "{font.weight.medium}",            "$description": "Label weight in mobile stacked layout" }
+      },
+
+      "mobile": {
+        "_comment": "State tokens for .origam-data-table-row--mobile",
+        "column-min-height":  { "$type": "dimension",  "$value": "52px",                             "$description": "Minimum height of each stacked cell in mobile layout (52px literal — aligns with standard touch target size)" }
+      }
+    },
+
+    "cell": {
+      "_comment": "BEM block: .origam-data-table-cell (OrigamDataTableColumnCell) — td/th elements",
+      "padding-block":        { "$type": "dimension",  "$value": "{space.3}",                        "$description": "Block (top/bottom) padding for body cells" },
+      "padding-inline":       { "$type": "dimension",  "$value": "{space.4}",                        "$description": "Inline (left/right) padding for body cells" },
+      "font-size":            { "$type": "dimension",  "$value": "{font.size.md}",                   "$description": "Body cell font-size" },
+
+      "fixed": {
+        "_comment": "State modifier: .origam-data-table-cell--fixed — sticky columns",
+        "background-color":   { "$type": "color",      "$value": "{color.surface.raised}",           "$description": "Background for fixed (sticky) columns. NOTE: was rgba(33,33,33,1) hardcoded. Replaced by surface.raised to support theming." },
+        "z-index":            { "$type": "number",     "$value": 1,                                  "$description": "Stack order for fixed columns (above scrolling body)" }
+      },
+
+      "last-fixed": {
+        "_comment": "State modifier: .origam-data-table-cell--last-fixed — rightmost fixed column",
+        "border-right-color": { "$type": "color",      "$value": "{color.border.subtle}",            "$description": "Right border of the last fixed column. NOTE: was rgba(255,255,255,0.12) hardcoded — now border.subtle for proper light/dark support." },
+        "border-right-width": { "$type": "dimension",  "$value": "{border.width.thin}",              "$description": "Width of the separator after the last fixed column" },
+        "border-right-style": { "$type": "other",      "$value": "solid",                            "$description": "Style of the separator" }
+      }
+    },
+
+    "footer": {
+      "_comment": "BEM block: .origam-data-table-footer — pagination/items-per-page bar",
+      "background-color":     { "$type": "color",      "$value": "{color.surface.default}",          "$description": "Footer background — inherits from table surface" },
+      "color":                { "$type": "color",      "$value": "{color.text.primary}",             "$description": "Footer text color" },
+      "padding-block":        { "$type": "dimension",  "$value": "{space.2}",                        "$description": "Block (top/bottom) padding of the footer bar" },
+      "padding-inline":       { "$type": "dimension",  "$value": "{space.1}",                        "$description": "Inline (left/right) padding of the footer bar" },
+      "border-top-color":     { "$type": "color",      "$value": "{color.border.subtle}",            "$description": "Top border separating footer from last data row" },
+      "border-top-width":     { "$type": "dimension",  "$value": "{border.width.thin}",              "$description": "Width of the footer top border" },
+      "border-top-style":     { "$type": "other",      "$value": "solid",                            "$description": "Style of the footer top border" },
+      "align-items":          { "$type": "other",      "$value": "center",                           "$description": "Vertical alignment for footer flex children" },
+      "display":              { "$type": "other",      "$value": "flex",                             "$description": "Footer layout model" },
+      "flex-wrap":            { "$type": "other",      "$value": "wrap",                             "$description": "Allows footer to wrap on small screens" },
+      "justify-content":      { "$type": "other",      "$value": "flex-end",                         "$description": "Footer children align to the right" },
+
+      "items-per-page": {
+        "_comment": "BEM element: .origam-data-table-footer__items-per-page",
+        "gap":              { "$type": "dimension",    "$value": "{space.2}",                        "$description": "Gap between label and select in items-per-page" },
+        "padding-inline-end": { "$type": "dimension",  "$value": "{space.2}",                        "$description": "Trailing padding on the label" },
+        "select-width":     { "$type": "dimension",    "$value": "90px",                             "$description": "Fixed width for the items-per-page select" }
+      },
+
+      "info": {
+        "_comment": "BEM element: .origam-data-table-footer__info — 'x-y of z' text",
+        "min-width":        { "$type": "dimension",    "$value": "116px",                            "$description": "Min width to prevent layout shift" },
+        "padding-inline":   { "$type": "dimension",    "$value": "{space.4}",                        "$description": "Horizontal padding of the info block" },
+        "justify-content":  { "$type": "other",        "$value": "flex-end",                         "$description": "Right-align info text" }
+      },
+
+      "pagination": {
+        "_comment": "BEM element: .origam-data-table-footer__pagination",
+        "margin-inline-start": { "$type": "dimension", "$value": "{space.4}",                        "$description": "Left margin to separate pagination from info" }
+      }
+    },
+
+    "group-header-row": {
+      "_comment": "BEM block: .origam-data-table-group-header-row — tr element for group headers",
+      "background-color":   { "$type": "color",        "$value": "{color.surface.overlay}",          "$description": "Group header row background — surface.overlay (neutral.100) creates visual distinction from data rows without heavy contrast" },
+      "color":              { "$type": "color",         "$value": "{color.text.primary}",             "$description": "Group header row text color" },
+      "font-weight":        { "$type": "fontWeight",    "$value": "{font.weight.medium}",             "$description": "Group name slightly heavier to signal grouping" },
+
+      "column": {
+        "_comment": "BEM element: .origam-data-table-group-header-row__column",
+        "padding-inline-start-factor": { "$type": "dimension", "$value": "{space.4}",               "$description": "Multiplied by group depth to indent nested groups. calc(depth * 16px) in runtime CSS." }
+      }
+    },
+
+    "empty": {
+      "_comment": "State: .origam-data-table-rows--no-data",
+      "color":              { "$type": "color",         "$value": "{color.text.secondary}",           "$description": "Text color for the empty state message — secondary to de-emphasize" },
+      "text-align":         { "$type": "other",         "$value": "center",                           "$description": "Center the no-data message" }
+    },
+
+    "loading-row": {
+      "_comment": "State: .origam-data-table-rows--loading — the loading text row",
+      "color":              { "$type": "color",         "$value": "{color.text.secondary}",           "$description": "Text color for the loading message row" }
+    },
+
+    "sortable": {
+      "_comment": "Modifier: --sortable on header cells",
+      "cursor":             { "$type": "other",         "$value": "pointer",                          "$description": "Pointer cursor on sortable column headers" },
+      "icon-color":         { "$type": "color",         "$value": "{color.text.inverse}",             "$description": "Sort icon color on sortable header columns" },
+      "icon-color-hover":   { "$type": "color",         "$value": "{color.text.inverse}",             "$description": "Sort icon color on header hover (opacity-based reveal)" },
+      "icon-color-active":  { "$type": "color",         "$value": "{color.text.inverse}",             "$description": "Sort icon color when column is actively sorted" }
+    }
+  }
+}

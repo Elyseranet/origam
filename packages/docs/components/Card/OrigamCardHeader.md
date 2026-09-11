@@ -34,9 +34,8 @@ typography prop you pass is forwarded to `.origam-card-header__title` AND
 | `lineHeight` | `TLineHeight` | `--origam-font__lineHeight---*` | title + subtitle |
 | `letterSpacing` | `TLetterSpacing` | `--origam-font__letterSpacing---*` | title + subtitle |
 
-`fontFamily` was removed from `ICardHeaderProps` (issue #501) — neither SCSS
-surface has a `font-family` rule, and `fontFamily` is a project-level setting
-configured once on `OrigamApp`, not a per-instance override.
+`fontFamily` is part of `ITypographyProps` (type-checks fine) but neither
+SCSS surface has a `font-family` rule, so it has no visual effect at this time.
 
 ```vue
 <template>

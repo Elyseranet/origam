@@ -1,0 +1,53 @@
+{
+  "input": {
+    "_comment": "Input component tokens — Lot 3.2B. Base layout component shared by TextField, TextareaField, Select, etc. Manages the grid layout (prepend / control / append / messages).",
+
+    "padding-top":             { "$type": "dimension", "$value": "16px" },
+
+    "font-size":               { "$type": "dimension", "$value": "{font.size.md}" },
+    "font-weight":             { "$type": "fontWeight","$value": "{font.weight.regular}" },
+    "line-height":             { "$type": "number",    "$value": 1.5 },
+
+    "icon-opacity":            { "$type": "number",    "$value": "{opacity.70}" },
+    "icon-opacity-active":     { "$type": "number",    "$value": "{opacity.100}" },
+    "disabled-opacity":        { "$type": "number",    "$value": "{opacity.50}" },
+
+    "error-color":             { "$type": "color",     "$value": "{color.feedback.danger.fgSubtle}" },
+
+    "control": {
+      "_comment":              "Control height scale — Phase 1 PDF alignment. Maps to SIZES enum: small=28, default=36, large=44, x-large=52. Aligned with btn.height-XX so a button + adjacent input share the exact same vertical footprint. The unprefixed `height` references `height-md` (the default). Material's 56px default has been retired — every existing TextField shrinks to 36px (md) unless a `size` prop is passed.",
+      "height-sm":             { "$type": "dimension", "$value": "28px" },
+      "height-md":             { "$type": "dimension", "$value": "36px" },
+      "height-lg":             { "$type": "dimension", "$value": "44px" },
+      "height-xl":             { "$type": "dimension", "$value": "52px" },
+      "height":                { "$type": "dimension", "$value": "{input.control.height-md}" }
+    },
+
+    "details": {
+      "font-size":             { "$type": "dimension", "$value": "{font.size.sm}" },
+      "font-weight":           { "$type": "fontWeight","$value": "{font.weight.regular}" },
+      "letter-spacing":        { "$type": "dimension", "$value": "0.0333333333em" },
+      "line-height":           { "$type": "number",    "$value": 1 },
+      "min-height":            { "$type": "dimension", "$value": "22px" },
+      "padding-top":           { "$type": "dimension", "$value": "{space.2}" }
+    },
+
+    "prepend": {
+      "padding-top":           { "$type": "dimension", "$value": "{space.2}" },
+      "margin-inline-end":     { "$type": "dimension", "$value": "16px" }
+    },
+
+    "append": {
+      "padding-top":           { "$type": "dimension", "$value": "{space.2}" },
+      "margin-inline-start":   { "$type": "dimension", "$value": "16px" }
+    },
+
+    "density-default": {
+      "density":               { "$type": "dimension", "$value": "0px" }
+    },
+
+    "density-compact": {
+      "density":               { "$type": "dimension", "$value": "-8px" }
+    }
+  }
+}

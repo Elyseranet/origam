@@ -1,5 +1,5 @@
-import OrigamBreadcrumb from '../../components/Breadcrumb/OrigamBreadcrumb.vue'
-import type { IBreadcrumbItemProps } from '../../interfaces/Breadcrumb/breadcrumb-item.interface'
+import { OrigamBreadcrumb } from "../../components"
+import type { IBreadcrumbItemProps } from '../../interfaces'
 
 export type TBreadcrumbItem = string | Partial<IBreadcrumbItemProps> | never
 

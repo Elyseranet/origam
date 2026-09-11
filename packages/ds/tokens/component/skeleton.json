@@ -1,0 +1,12 @@
+{
+  "skeleton": {
+    "background-color":       { "$type": "color",     "$value": "{color.surface.overlay}" },
+    "border-radius":          { "$type": "dimension", "$value": "{radius.sm}" },
+    "border-radius-circular": { "$type": "dimension", "$value": "{radius.full}" },
+    "animation-duration":     { "$type": "duration",  "$value": "{motion.duration.xslow}" },
+    "opacity-min":            { "$type": "number",    "$value": 0.4 },
+    "opacity-max":            { "$type": "number",    "$value": 0.8 },
+    "text-height":            { "$type": "dimension", "$value": "1.2em" },
+    "gap":                    { "$type": "dimension", "$value": "{space.3}" }
+  }
+}

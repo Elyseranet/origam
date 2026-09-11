@@ -1,6 +1,5 @@
 <template>
 	<div
-			:id="styleId"
 			v-contrast
 			:class="inputClasses"
 			:style="inputStyles"
@@ -9,10 +8,7 @@
 		    v-if="hasPrepend"
 		    key="prepend"
 		    class="origam-input__prepend"
-		    :role="isPrependClickable ? 'button' : undefined"
-		    :tabindex="isPrependClickable ? 0 : undefined"
 		    @click="handleClickPrepend"
-		    @keydown="handleKeydownPrepend"
     >
       <slot name="prepend">
         <origam-avatar
@@ -44,10 +40,7 @@
 				v-if="hasAppend"
 				key="append"
 				class="origam-input__append"
-				:role="isAppendClickable ? 'button' : undefined"
-				:tabindex="isAppendClickable ? 0 : undefined"
 				@click="handleClickAppend"
-				@keydown="handleKeydownAppend"
 		>
       <slot name="append">
        <origam-avatar
@@ -103,36 +96,31 @@
 		setup
 >
 	import { computed, StyleValue, toRef, useSlots } from 'vue'
-	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
-	import OrigamIcon from '../Icon/OrigamIcon.vue'
+	import { OrigamAvatar, OrigamIcon } from '../../components'
 	import { OrigamMessages } from '../../components/Messages'
-	import vContrast from '../../directives/Contrast/contrast.directive'
+	import { vContrast } from '../../directives'
 
-	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
-	import { useBorder } from '../../composables/Commons/border.composable'
-	import { useBothColor } from '../../composables/Commons/bothColor.composable'
-	import { useDensity } from '../../composables/Commons/density.composable'
-	import { useDimension } from '../../composables/Commons/dimension.composable'
-	import { useElevation } from '../../composables/Commons/elevation.composable'
-	import { useMargin } from '../../composables/Commons/margin.composable'
-	import { usePadding } from '../../composables/Commons/padding.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useRounded } from '../../composables/Commons/rounded.composable'
-	import { useRtl } from '../../composables/Commons/rtl.composable'
-	import { useSize } from '../../composables/Commons/size.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-	import { useTypography } from '../../composables/Commons/typography.composable'
-	import { useValidation } from '../../composables/Commons/validation.composable'
+	import {
+		useAdjacent,
+		useBothColor,
+		useDefaults,
+		useDensity,
+		useDimension,
+		useProps,
+		useRtl,
+		useSize,
+		useStyle,
+		useTypography,
+		useValidation
+} from '../../composables'
 
-	import { DENSITY } from '../../enums/Commons/density.enum'
-	import { DIRECTION } from '../../enums/Commons/direction.enum'
+	import { DENSITY, DIRECTION } from '../../enums'
 
-	import type { IInputProps, IInputSlots } from '../../interfaces/Input/input.interface'
+	import type { IInputProps, IInputSlots} from '../../interfaces'
 
 	import type { IInputEmits } from '../../interfaces/Input/input.interface'
 
-	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
-	import { wrapInArray } from '../../utils/Commons/commons.util'
+	import { getUid, wrapInArray } from '../../utils'
 
 	/*********************************************************
 	 * Global
@@ -140,11 +128,13 @@
 	 * @description
 	 * Props, emits, slots, and identity setup.
 	 ********************************************************/
-	const props = withDefaults(defineProps<IInputProps>(), {
+	const _props = withDefaults(defineProps<IInputProps>(), {
 		direction: DIRECTION.HORIZONTAL,
 		centerAffix: true,
 		density: DENSITY.DEFAULT
 	})
+	const props = useDefaults(_props)
+
 	defineEmits<IInputEmits>()
 
 	defineSlots<IInputSlots>()
@@ -185,11 +175,7 @@
 		hasPrepend,
 		hasAppend,
 		onClickPrepend: handleClickPrepend,
-		onClickAppend: handleClickAppend,
-		onKeydownPrepend: handleKeydownPrepend,
-		onKeydownAppend: handleKeydownAppend,
-		isPrependClickable,
-		isAppendClickable
+		onClickAppend: handleClickAppend
 	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
 
 	const messages = computed(() => {
@@ -246,37 +232,16 @@
 	 * Color
 	 ********************************************************/
 
-	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	const {colorClasses, colorStyles} = useBothColor(toRef(props.bgColor), toRef(props.color))
 	const {rtlClasses} = useRtl()
 	const {sizeClasses} = useSize(props, 'origam-input')
 	const {typographyStyles} = useTypography(props, 'input')
-
-	/*********************************************************
-	 * Spacing / border / shape / elevation
-	 *
-	 * @description
-	 * `IInputProps` extends IPaddingProps / IMarginProps / IBorderProps /
-	 * IRoundedProps / IElevationProps. The component consumed dimension,
-	 * color, density, size and typography — but none of these five, so 32
-	 * typed props resolved to nothing. Declared after the existing axes so
-	 * the spacing rungs land last and win the inline cascade.
-	 ********************************************************/
-	const {paddingClasses, paddingStyles} = usePadding(props)
-	const {marginClasses, marginStyles} = useMargin(props)
-	const {borderClasses, borderStyles} = useBorder(props)
-	const {roundedClasses, roundedStyles} = useRounded(props)
-	const {elevationClasses, elevationStyles} = useElevation(props)
 
 	const inputStyles = computed(() => {
 		return [
 			dimensionStyles.value,
 			colorStyles.value,
 			typographyStyles.value,
-			borderStyles.value,
-			roundedStyles.value,
-			elevationStyles.value,
-			marginStyles.value,
-			paddingStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -293,11 +258,6 @@
 			sizeClasses.value,
 			validationClasses.value,
 			rtlClasses.value,
-			borderClasses.value,
-			roundedClasses.value,
-			elevationClasses.value,
-			paddingClasses.value,
-			marginClasses.value,
 			props.class
 		]
 	})
@@ -308,25 +268,6 @@
 	})
 	const inputControlStyles = computed<StyleValue>(() => [])
 
-	/*********************************************************
-	 * useStyle
-	 *
-	 * @description
-	 * #421 — the ROOT `.origam-input` wrapper binds `styleId` (this
-	 * component's OWN generated scoped-style id), NOT `id` (the
-	 * consumer's real id). `id` is exposed to the `#default` slot
-	 * (`inputProps.id` above) so the CONTROL the consumer actually cares
-	 * about (the real `<input>`/`<checkbox-btn>`/…, whatever a `<label
-	 * for>` targets) carries it — exactly the split `OrigamField` already
-	 * establishes between its own root `:id="styleId"` and its
-	 * `slotProps.id`. Binding `id` on BOTH the wrapper and the real
-	 * control would paint the SAME value on two DOM elements at once —
-	 * measured directly: mounting `OrigamCheckbox` with a consumer `id`
-	 * produced exactly that duplicate before this was caught. The
-	 * wrapper still gets a real, stable id (fixing "no id at all on the
-	 * root" — the defect #421 reports) — just not the SAME string as the
-	 * functional control's.
-	 ********************************************************/
 	/*********************************************************
 	 * Expose
 	 *
@@ -361,16 +302,18 @@
 		font-weight: var(--origam-input---font-weight, 400);
 		line-height: var(--origam-input---line-height, 1.5);
 
+		--origam-input---padding-top: 16px;
+
 		&__details {
 			align-items: flex-end;
 			display: flex;
-			font-size: var(--origam-input__details---font-size, 0.75rem);
-			font-weight: var(--origam-input__details---font-weight, 400);
+			font-size: 0.75rem;
+			font-weight: 400;
 			grid-area: messages;
-			letter-spacing: var(--origam-input__details---letter-spacing, 0.0333333333em);
-			line-height: var(--origam-input__details---line-height, 1);
-			min-height: var(--origam-input__details---min-height, 22px);
-			padding-top: var(--origam-input__details---padding-top, 6px);
+			letter-spacing: 0.0333333333em;
+			line-height: 1;;
+			min-height: 22px;
+			padding-top: 6px;
 			overflow: hidden;
 			justify-content: space-between;
 		}
@@ -387,14 +330,7 @@
 		&__append {
 			display: flex;
 			align-items: flex-start;
-		}
-
-		&__prepend {
-			padding-top: var(--origam-input__prepend---padding-top, 8px);
-		}
-
-		&__append {
-			padding-top: var(--origam-input__append---padding-top, 8px);
+			padding-top: 8px;
 		}
 
 		&__prepend {
@@ -410,28 +346,20 @@
 			grid-area: control;
 		}
 
-    &--is-rtl {
-      direction: rtl;
-    }
-
-    &--is-ltr {
-      direction: ltr;
-    }
-
 		&--disabled {
 			pointer-events: none;
 		}
 
 		&--density-default {
-			--origam-input---density: var(--origam-input---density-default-density, 0px);
+			--origam-input---density: 0px;
 		}
 
 		&--density-compact {
-			--origam-input---density: var(--origam-input---density-compact-density, -8px);
+			--origam-input---density: -8px;
 		}
 
 		&--density-comfortable {
-			--origam-input---density: var(--origam-input---density-comfortable-density, 8px);
+			--origam-input---density: 8px;
 		}
 
 		&--size-small {
@@ -464,11 +392,11 @@
 			grid-template-columns: min-content;
 
 			#{$this}__prepend {
-				margin-block-start: var(--origam-input__prepend---margin-block-start, 16px);
+				margin-block-start: 16px;
 			}
 
 			#{$this}__append {
-				margin-block-end: var(--origam-input__append---margin-block-end, 16px);
+				margin-block-end: 16px;
 			}
 		}
 
@@ -478,11 +406,11 @@
 			grid-template-rows: auto auto;
 
 			#{$this}__prepend {
-				margin-inline-end: var(--origam-input__prepend---margin-inline-end, 16px);
+				margin-inline-end: 16px;
 			}
 
 			#{$this}__append {
-				margin-inline-start: var(--origam-input__append---margin-inline-start, 16px);
+				margin-inline-start: 16px;
 			}
 		}
 
@@ -515,7 +443,7 @@
 			&:not(#{$this}--disabled) {
 				#{$this}__details {
 					> .origam-messages {
-						color: var(--origam-input---error-color, var(--origam-color__feedback--danger---fgSubtle));
+						color: var(--origam-input---error-color, var(--origam-color__feedback--danger---fg-subtle));
 					}
 				}
 
@@ -523,7 +451,7 @@
 				#{$this}__prepend,
 				#{$this}__append {
 					> .origam-icon {
-						color: var(--origam-input---error-color, var(--origam-color__feedback--danger---fgSubtle));
+						color: var(--origam-input---error-color, var(--origam-color__feedback--danger---fg-subtle));
 					}
 				}
 			}

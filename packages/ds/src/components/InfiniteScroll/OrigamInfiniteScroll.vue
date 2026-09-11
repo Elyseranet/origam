@@ -1,7 +1,6 @@
 <template>
 	<component
 			:is="tag"
-			:id="id"
 			ref="rootEl"
 			:class="infiniteScrollClasses"
 			:style="infiniteScrollStyles"
@@ -40,7 +39,7 @@
 					>
 						<origam-btn
 								:color="color"
-								:text="t(loadMoreText)"
+								text="Load more"
 								@click="intersecting(INFINITE_SCROLL_SIDE.START)"
 						/>
 					</slot>
@@ -71,7 +70,7 @@
 		</template>
 
 		<div class="origam-infinite-scroll__side" role="status" aria-live="polite" :style="typographyStyles">
-			<template v-if="hasEndIntersect">
+			<template v-if="hasStartIntersect">
 				<slot
 						name="error"
 						v-bind="{side: INFINITE_SCROLL_SIDE.END, props: { onClick: () => intersecting(INFINITE_SCROLL_SIDE.END), color }}"
@@ -119,26 +118,30 @@
 		setup
 >
 	import { computed, nextTick, onMounted, ref, shallowRef, StyleValue, toRef } from 'vue'
-	import OrigamBtn from '../Btn/OrigamBtn.vue'
-	import OrigamInfiniteScrollIntersect from './OrigamInfiniteScrollIntersect.vue'
-	import OrigamProgress from '../Progress/OrigamProgress.vue'
+	import { OrigamBtn, OrigamInfiniteScrollIntersect, OrigamProgress } from '../../components'
 
-	import { useBothColor } from '../../composables/Commons/bothColor.composable'
-	import { useDimension } from '../../composables/Commons/dimension.composable'
-	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-	import { useTypography } from '../../composables/Commons/typography.composable'
+	import {
+	useBothColor,
+	useDimension,
+	useLocale,
+	useProps,
+	useStyle,
+	useTypography
+} from '../../composables'
 
-	import { DIRECTION } from '../../enums/Commons/direction.enum'
-	import { INFINITE_SCROLL_MODE, INFINITE_SCROLL_SIDE, INFINITE_SCROLL_STATUS } from '../../enums/InfiniteScroll/infinite-scroll.enum'
-	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
+	import {
+		DIRECTION,
+		INFINITE_SCROLL_MODE,
+		INFINITE_SCROLL_SIDE,
+		INFINITE_SCROLL_STATUS,
+		PROGRESS_TYPE
+	} from '../../enums'
 
-	import type { IInfiniteScrollProps } from '../../interfaces/InfiniteScroll/infinite-scroll.interface'
+	import type { IInfiniteScrollProps} from '../../interfaces'
 
-	import type { IInfiniteScrollEmits, IInfiniteScrollSlots } from '../../interfaces/InfiniteScroll/infinite-scroll.interface'
+	import type { IInfiniteScrollEmits } from '../../interfaces/InfiniteScroll/infinite-scroll.interface'
 
-	import type { TInfiniteScrollSide, TInfiniteScrollStatus } from '../../types/InfiniteScroll/infinite-scroll.type'
+	import type { TInfiniteScrollSide, TInfiniteScrollStatus } from '../../types'
 
 	/*********************************************************
 	 * Global
@@ -156,8 +159,6 @@
 	})
 
 	const emits = defineEmits<IInfiniteScrollEmits>()
-
-	defineSlots<IInfiniteScrollSlots>()
 
 	const {filterProps} = useProps<IInfiniteScrollProps>(props)
 
@@ -340,7 +341,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(infiniteScrollStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(infiniteScrollStyles)
 
 
 	/*********************************************************
@@ -372,7 +373,7 @@
 			justify-content: center;
 			flex-direction: column;
 			gap: var(--origam-infinite-scroll__loader---gap, 12px);
-			padding-block: var(--origam-infinite-scroll__empty---padding-block, var(--origam-infinite-scroll__loader---padding-block, 12px));
+			padding-block: var(--origam-infinite-scroll__loader---padding-block, 12px);
 			padding-inline: var(--origam-infinite-scroll__loader---padding-inline, 0px);
 			font-size: var(--origam-infinite-scroll__loader---font-size, 0.875rem);
 			color: var(--origam-infinite-scroll__empty---color, var(--origam-color__text---secondary));

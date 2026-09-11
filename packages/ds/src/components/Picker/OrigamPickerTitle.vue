@@ -1,7 +1,6 @@
 <template>
 	<component
 			:is="tag"
-			:id="id"
 			:class="pickerTitleClasses"
 			:style="pickerTitleStyles"
 	>
@@ -16,12 +15,9 @@
 		setup
 >
 	import { computed, StyleValue, toRef } from "vue"
-	import { useBothColor } from '../../composables/Commons/bothColor.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-	import { useTypography } from '../../composables/Commons/typography.composable'
+	import { useBothColor, useProps, useStyle, useTypography } from "../../composables"
 
-	import type { IPickerTitleEmits, IPickerTitleProps, IPickerTitleSlots } from '../../interfaces/Picker/picker-title.interface'
+	import type { IPickerTitleProps } from "../../interfaces"
 
 	/*********************************************************
 	 * Global
@@ -34,10 +30,6 @@
 	})
 
 	const {filterProps} = useProps<IPickerTitleProps>(props)
-
-	defineEmits<IPickerTitleEmits>()
-
-	defineSlots<IPickerTitleSlots>()
 
 	/*********************************************************
 	 * Color
@@ -72,7 +64,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(pickerTitleStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(pickerTitleStyles)
 
 
 	/*********************************************************
@@ -102,6 +94,6 @@
 		padding-block: var(--origam-picker-title---padding-block, 16px);
 		font-weight: var(--origam-picker-title---font-weight, 400);
 		letter-spacing: var(--origam-picker-title---letter-spacing, .1666666667em);
-		color: var(--origam-picker-title---color, inherit);
+		color: var(--origam-picker-title---color, var(--origam-picker--title---color, inherit));
 	}
 </style>

@@ -1,3 +1,3 @@
-import OrigamCardText from '../../components/Card/OrigamCardText.vue'
+import { OrigamCardText } from '../../components'
 
 export type TOrigamCardText = InstanceType<typeof OrigamCardText>

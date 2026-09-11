@@ -23,20 +23,8 @@
  * __strength---bg-{level}`).
  */
 
-import {
-    PASSWORD_MIN_LENGTH,
-    PASSWORD_PATTERN_DIGIT,
-    PASSWORD_PATTERN_LOWERCASE,
-    PASSWORD_PATTERN_SPECIAL,
-    PASSWORD_PATTERN_UPPERCASE,
-    PASSWORD_STRENGTH_LEVEL_BY_SCORE,
-    PASSWORD_STRENGTH_MAX_SCORE,
-    PASSWORD_STRONG_LENGTH
-} from '../../consts/PasswordField/password-field.const'
-
-import { PASSWORD_STRENGTH_LEVEL } from '../../enums'
-import type { IPasswordStrength } from '../../interfaces/PasswordField/password-strength.interface'
-import type { TPasswordStrengthScore } from '../../types/PasswordField/password-field.type'
+import type { IPasswordStrength } from '../../interfaces'
+import type { TPasswordStrengthLevel, TPasswordStrengthScore } from '../../types'
 
 /**
  * Compute the strength of a password string. Pure — no side effects,
@@ -46,43 +34,30 @@ import type { TPasswordStrengthScore } from '../../types/PasswordField/password-
 /*********************************************************
  * computeStrength
  ********************************************************/
-/*********************************************************
- * computeStrength
- *
- * @description
- * Fonction PURE — pas un composable malgre son emplacement. Note un mot de
- * passe et retourne `{ score, level }`, ou `level` est une valeur de
- * `PASSWORD_STRENGTH_LEVEL`.
- *
- * @description
- * Le score additionne des criteres independants : longueur minimale, longueur
- * forte, presence de chiffres, melange de casse. Une chaine vide, `null` ou
- * `undefined` donnent 0 et `WEAK` — l'appelant n'a donc jamais a garder la
- * valeur avant d'appeler.
- *
- * @description
- * ⛔ Ce n'est pas une mesure d'entropie et ca ne pretend pas en etre une :
- * c'est un indicateur d'interface, a ne pas confondre avec une politique de
- * securite cote serveur.
- ********************************************************/
 export function computeStrength (value: string | null | undefined): IPasswordStrength {
     const v = (value ?? '').toString()
 
     if (v.length === 0) {
-        return { score: 0, level: PASSWORD_STRENGTH_LEVEL.WEAK }
+        return { score: 0, level: 'weak' }
     }
 
     let raw = 0
-    if (v.length >= PASSWORD_MIN_LENGTH) raw += 1
-    if (v.length >= PASSWORD_STRONG_LENGTH) raw += 1
-    if (PASSWORD_PATTERN_DIGIT.test(v)) raw += 1
-    if (PASSWORD_PATTERN_LOWERCASE.test(v) && PASSWORD_PATTERN_UPPERCASE.test(v)) raw += 1
-    if (PASSWORD_PATTERN_SPECIAL.test(v)) raw += 1
+    if (v.length >= 8) raw += 1
+    if (v.length >= 12) raw += 1
+    if (/\d/.test(v)) raw += 1
+    if (/[a-z]/.test(v) && /[A-Z]/.test(v)) raw += 1
+    if (/[^A-Za-z0-9]/.test(v)) raw += 1
 
-    // Clamp so the bar never exceeds its segment count.
-    const score = (raw > PASSWORD_STRENGTH_MAX_SCORE ? PASSWORD_STRENGTH_MAX_SCORE : raw) as TPasswordStrengthScore
+    // Clamp 0..4 so the bar never exceeds 4 segments.
+    const score = (raw > 4 ? 4 : raw) as TPasswordStrengthScore
 
-    return { score, level: PASSWORD_STRENGTH_LEVEL_BY_SCORE[score] }
+    let level: TPasswordStrengthLevel
+    if (score <= 1) level = 'weak'
+    else if (score === 2) level = 'fair'
+    else if (score === 3) level = 'good'
+    else level = 'strong'
+
+    return { score, level }
 }
 
 // `DEFAULT_PASSWORD_REQUIREMENTS` lives in `src/consts/PasswordField/
@@ -90,4 +65,4 @@ export function computeStrength (value: string | null | undefined): IPasswordStr
 // ONLY in src/consts/" rule. Re-import + re-export it here so existing
 // `import { DEFAULT_PASSWORD_REQUIREMENTS } from '@/composables'`
 // callsites keep resolving without a barrel-file change.
-export { DEFAULT_PASSWORD_REQUIREMENTS } from '../../consts/PasswordField/password-field.const'
+export { DEFAULT_PASSWORD_REQUIREMENTS } from '../../consts'

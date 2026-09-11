@@ -1,7 +1,7 @@
 import { computed } from 'vue'
 
 import type { StyleValue } from 'vue'
-import type { ITypographyProps } from '../../interfaces/Commons/typography.interface'
+import type { ITypographyProps } from '../../interfaces'
 
 import { useTypography } from '../Commons/typography.composable'
 

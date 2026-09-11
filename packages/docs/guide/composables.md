@@ -9,33 +9,35 @@ Les composables communs fournissent des fonctionnalités réutilisables pour tou
 | Composable            | Description                                                 |
 |:----------------------|:------------------------------------------------------------|
 | **useBothColor**      | Gère la couleur du texte et l'arrière-plan                  |
-| **useColor**          | Génère classes et styles de couleur (voir aussi `useBackgroundColor`, `useTextColor`, `useBothColor`) |
-| **useStateFlag**      | Gère un état `active` ou `hover` (fusion de `useActive` et `useHover`) |
+| **useColorStyles**    | Génère les styles de couleur                                |
+| **useAlign**          | Gère l'alignement (text-align, align-items)                 |
+| **useActive**         | Gère l'état actif des composants                            |
 | **useDensity**        | Gère les classes de densité (compact, comfortable, default) |
 | **useDimension**      | Gère les dimensions (width, height)                         |
 | **useElevation**      | Gère l'élévation (box-shadow)                               |
 | **useGroup**          | Gère les groupes de composants                              |
+| **useHover**          | Gère les états de survol                                    |
+| **useJustify**        | Gère la justification (justify-content)                     |
+| **useLabel**          | Gère les étiquettes associées aux champs                    |
 | **useLayout**         | Gère la mise en page (flex, grid)                           |
 | **useLink**           | Gère les liens (href, to)                                   |
 | **useLocale**         | Gère la localisation (i18n)                                 |
 | **useMessage**        | Gère les messages (snackbars, notifications)                |
+| **useOverflow**       | Gère le débordement (overflow)                              |
 | **useProps**          | Filtre et extrait les props du composant                    |
-| **usePadding**        | Gère l'espacement interne, raccourci + par côté             |
-| **useMargin**         | Gère l'espacement externe, raccourci + par côté             |
-| **useBorder**         | Gère les bordures, raccourci + par côté + couleur par côté  |
-| **useRounded**        | Gère les coins arrondis (border-radius), raccourci + par coin |
+| **useRounded**        | Gère les coins arrondis (border-radius)                     |
 | **useSelectLink**     | Gère les liens dans les sélections                          |
 | **useSize**           | Gère la taille des composants                               |
 | **useStatus**         | Gère le statut (success, error, warning, info)              |
 | **useToggleScope**    | Gère les portées de basculement                             |
-| **useValidation**     | Gère la validation des champs                               |
+| **useValidate**       | Gère la validation des champs                               |
 | **useVariant**        | Gère les variantes de composants                            |
 | **useVModel**         | Gère le v-model                                             |
 | **useResizeObserver** | Observe les changements de dimension                        |
-| **useSsrBoot**        | Gère l'amorçage côté serveur (bascule SSR → client)         |
+| **useSsr**            | Gère le rendu côté serveur                                  |
 | **useAdjacent**       | Gère l'adjacence des éléments                               |
 | **useTheme**          | Gère les themes                                             |
-| **useLoader**         | Résout la prop `loading` en descripteur d'état de chargement |
+| **useLoad**           | Gère le chargement des ressources                           |
 
 ## Composables Formulaire (Form)
 
@@ -47,7 +49,7 @@ Les composables communs fournissent des fonctionnalités réutilisables pour tou
 
 | Composable | Description |
 | :--- | :--- |
-| **useIconAccessibility** | Contrat `aria-hidden` / `role` partagé par les feuilles d'icône |
+| **useIcon** | Gère les icônes et leurs propriétés |
 
 ## Composables Liste (List)
 

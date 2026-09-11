@@ -1,9 +1,17 @@
 import { computed, ref } from 'vue'
 
-import {
-    CHART_ZOOM_MIN_VISIBLE_CATEGORIES,
-    CHART_ZOOM_WHEEL_STEP
-} from '../../consts/Chart/chart-cartesian.const'
+/**
+ * Minimum number of categories that must remain visible after a zoom
+ * operation. Prevents the viewport from collapsing to zero width.
+ */
+const MIN_VISIBLE_CATEGORIES = 2
+
+/**
+ * Scroll-wheel zoom speed. Each wheel tick moves the window by this
+ * fraction of the current visible range. `0.15` is ~15 % per notch
+ * which matches Highcharts' feel without being jerky.
+ */
+const WHEEL_ZOOM_STEP = 0.15
 
 /**
  * Manages interactive zoom / pan state for `<OrigamChartCartesian>`.
@@ -15,7 +23,7 @@ import {
  *
  * Invariants maintained by every mutating method:
  *   - `0 ≤ zoomStart < zoomEnd ≤ dataLength - 1`
- *   - `zoomEnd - zoomStart ≥ CHART_ZOOM_MIN_VISIBLE_CATEGORIES - 1`
+ *   - `zoomEnd - zoomStart ≥ MIN_VISIBLE_CATEGORIES - 1`
  *
  * @param options.dataLength  Reactive getter returning the total
  *   number of categories (or data points when no categories array
@@ -52,8 +60,8 @@ export function useChartZoom(options: { dataLength: () => number }) {
         let s = Math.max(0, Math.min(start, maxIdx))
         let e = Math.max(0, Math.min(end, maxIdx))
         if (s > e) [s, e] = [e, s]
-        if (e - s < CHART_ZOOM_MIN_VISIBLE_CATEGORIES - 1) {
-            e = Math.min(maxIdx, s + CHART_ZOOM_MIN_VISIBLE_CATEGORIES - 1)
+        if (e - s < MIN_VISIBLE_CATEGORIES - 1) {
+            e = Math.min(maxIdx, s + MIN_VISIBLE_CATEGORIES - 1)
         }
         zoomStart.value = Math.round(s)
         zoomEnd.value = Math.round(e)
@@ -88,7 +96,7 @@ export function useChartZoom(options: { dataLength: () => number }) {
         if (len <= 0) return
         const cur = effectiveEnd.value
         const visibleRange = cur - zoomStart.value
-        if (visibleRange < CHART_ZOOM_MIN_VISIBLE_CATEGORIES - 1 && deltaFraction > 0) return
+        if (visibleRange < MIN_VISIBLE_CATEGORIES - 1 && deltaFraction > 0) return
 
         const anchor = zoomStart.value + visibleRange * Math.max(0, Math.min(1, anchorFraction))
         const newStart = anchor - (anchor - zoomStart.value) * (1 - deltaFraction)
@@ -160,6 +168,6 @@ export function useChartZoom(options: { dataLength: () => number }) {
         panBy,
         pxToCategoryIndex,
         categoryIndexToPx,
-        WHEEL_ZOOM_STEP: CHART_ZOOM_WHEEL_STEP
+        WHEEL_ZOOM_STEP
     }
 }

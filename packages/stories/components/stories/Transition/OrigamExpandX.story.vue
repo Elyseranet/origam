@@ -5,10 +5,28 @@
 	>
 
 		<Variant
+				title="Design"
+				:init-state="() => useStoryInitState<Partial<ITransitionProps>>({ origin: '' })"
+		>
+			<template #default="{ state }">
+				<div class="story-shell">
+					<button class="story-toggle" data-cy="toggle-design" @click="toggleDesign = !toggleDesign">Toggle</button>
+					<origam-expand-x :origin="state.origin">
+						<div v-if="toggleDesign" class="story-target" data-cy="target-design">Design target</div>
+					</origam-expand-x>
+				</div>
+			</template>
+			<template #controls="{ state }">
+				<StoryGroup title="Origin">
+					<HstText v-model="state.origin" title="Origin"/>
+				</StoryGroup>
+			</template>
+		</Variant>
+
+		<Variant
 				title="Functional"
-				:init-state="() => useStoryInitState<Partial<ITransitionNoOriginProps>>({
+				:init-state="() => useStoryInitState<Partial<ITransitionProps>>({
 					name: 'origam-transition--expand-x',
-					mode: 'in-out',
 					disabled: false,
 					group: false,
 					hideOnLeave: false,
@@ -20,7 +38,6 @@
 					<button class="story-toggle" data-cy="toggle-functional" @click="toggleFunctional = !toggleFunctional">Toggle</button>
 					<origam-expand-x
 							:name="state.name"
-							:mode="state.mode"
 							:disabled="state.disabled"
 							:group="state.group"
 							:hide-on-leave="state.hideOnLeave"
@@ -59,12 +76,13 @@
 
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<ITransitionNoOriginProps>({
+				:init-state="() => useStoryInitState<ITransitionProps>({
 					name: 'origam-transition--expand-x',
 					disabled: false,
 					group: false,
 					hideOnLeave: false,
-					leaveAbsolute: false
+					leaveAbsolute: false,
+					origin: ''
 				})"
 		>
 			<template #default="{ state }">
@@ -76,6 +94,9 @@
 				</div>
 			</template>
 			<template #controls="{ state }">
+				<StoryGroup title="Design">
+					<HstText v-model="state.origin" title="Origin"/>
+				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstText     v-model="state.name"         title="Name"/>
 					<HstSelect   v-model="state.mode"         title="Mode"           :options="TRANSITION_MODE_OPTIONS"/>
@@ -97,11 +118,12 @@
 
 	import { OrigamExpandX } from '@origam/components'
 	import { TRANSITION_MODE } from '@origam/enums'
-	import type { ITransitionNoOriginProps } from '@origam/interfaces'
+	import type { ITransitionProps } from '@origam/interfaces'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 
+	const toggleDesign     = ref(false)
 	const toggleFunctional = ref(false)
 	const toggleSlotDefault = ref(false)
 	const togglePlayground  = ref(false)

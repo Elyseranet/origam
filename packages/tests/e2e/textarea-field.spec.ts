@@ -7,44 +7,33 @@ import { expect, test } from '@playwright/test'
  * NEVER waitForLoadState('networkidle') — Histoire holds a WebSocket open.
  * Variant index map (0-based, matches grep -E '<Variant' in the story file):
  *
- *  0  → Design
- *  1  → State
- *  2  → Functional
- *  3  → Functional - Rich Mode
- *  4  → Mode — rich (HTML output)
- *  5  → Mode — rich (Markdown output)
- *  6  → Prop — toolbar (filtered)
- *  7  → Events - update:modelValue
- *  8  → Events - focus
- *  9  → Events - click:control
- * 10  → Events - mousedown:control
- * 11  → Events - update:height
- * 12  → Events - format
- * 13  → Slots - Default
- * 14  → Slots - Prepend
- * 15  → Slots - Append
- * 16  → Slots - PrependInner
- * 17  → Slots - AppendInner
- * 18  → Slots - Clear
- * 19  → Slots - Counter
- * 20  → Slots - Details
- * 21  → Slots - FloatingLabel
- * 22  → Slots - Label
- * 23  → Slots - Loader
- * 24  → Slots - Message
- * 25  → Slots - Messages
- * 26  → Slots - Prefix
- * 27  → Slots - Suffix
- * 28  → Slots - Toolbar
- * 29  → Default
- *
- * Ce tableau était DÉCALÉ DE 3 à partir de l'index 4 : trois Variants
- * ("Mode — rich (HTML output)", "Mode — rich (Markdown output)",
- * "Prop — toolbar (filtered)") ont été insérés après "Functional - Rich Mode"
- * et le code de navigation a suivi (il vise bien 7..29) — mais pas l'en-tête.
- * Les tests assertaient donc contre les bons Variants tout en les documentant
- * faux. Invisible au garde parce que le séparateur était une espace et non
- * "→", la seule forme qu'il sache lire.
+ *  0  Design
+ *  1  State
+ *  2  Functional
+ *  3  Functional - Rich Mode
+ *  4  Events - update:modelValue
+ *  5  Events - focus
+ *  6  Events - click:control
+ *  7  Events - mousedown:control
+ *  8  Events - update:height
+ *  9  Events - format
+ * 10  Slots - Default
+ * 11  Slots - Prepend
+ * 12  Slots - Append
+ * 13  Slots - PrependInner
+ * 14  Slots - AppendInner
+ * 15  Slots - Clear
+ * 16  Slots - Counter
+ * 17  Slots - Details
+ * 18  Slots - FloatingLabel
+ * 19  Slots - Label
+ * 20  Slots - Loader
+ * 21  Slots - Message
+ * 22  Slots - Messages
+ * 23  Slots - Prefix
+ * 24  Slots - Suffix
+ * 25  Slots - Toolbar
+ * 26  Default (playground)
  *
  * Non-headless limitations documented inline where applicable.
  */
@@ -64,13 +53,13 @@ test.describe('OrigamTextareaField', () => {
 
     test.describe('Design', () => {
         test('renders root with BEM class origam-textarea-field', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-textarea-field').first()).toBeVisible({ timeout: 12000 })
         })
 
         test('renders a <textarea> element in plain mode', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-textarea-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('textarea').first()).toBeAttached()
@@ -80,7 +69,7 @@ test.describe('OrigamTextareaField', () => {
             // color='primary' is passed to OrigamInput which emits it via inline style
             // (colorStyles) rather than a utility class when props flow through filterProps.
             // We assert the field renders and does not fall back to the browser default.
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-textarea-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -102,7 +91,7 @@ test.describe('OrigamTextareaField', () => {
             // not as a utility class, when props arrive via v-bind spread.
             // We assert the component renders correctly without asserting the specific
             // utility class — that is covered by unit tests closer to the composable.
-            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(1))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-textarea-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -118,7 +107,7 @@ test.describe('OrigamTextareaField', () => {
 
     test.describe('Functional', () => {
         test('renders root with a textarea in initial state', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-textarea-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -126,7 +115,7 @@ test.describe('OrigamTextareaField', () => {
         })
 
         test('initial state: no disabled class on root', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-textarea-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -135,7 +124,7 @@ test.describe('OrigamTextareaField', () => {
         })
 
         test('initial state: no no-resize class (noResize=false)', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-textarea-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -144,7 +133,7 @@ test.describe('OrigamTextareaField', () => {
         })
 
         test('initial state: no auto-grow class (autoGrow=false)', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-textarea-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -153,7 +142,7 @@ test.describe('OrigamTextareaField', () => {
         })
 
         test('textarea is enabled and writable in initial state', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-textarea-field').first()).toBeVisible({ timeout: 12000 })
             const textarea = sandbox.locator('textarea').first()
@@ -162,7 +151,7 @@ test.describe('OrigamTextareaField', () => {
         })
 
         test('SCSS: injecting origam-textarea-field--no-resize disables CSS resize', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-textarea-field').first()).toBeVisible({ timeout: 12000 })
             // The SCSS rule `.origam-textarea-field--no-resize :deep(.origam-field__input) { resize: none }`.
@@ -182,7 +171,7 @@ test.describe('OrigamTextareaField', () => {
 
     test.describe('Functional - Rich Mode', () => {
         test('renders root in initial plain mode (no rich toolbar)', async ({ page }) => {
-            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(3))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('.origam-textarea-field').first()
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -192,7 +181,7 @@ test.describe('OrigamTextareaField', () => {
         })
 
         test('plain mode: rich host div is absent', async ({ page }) => {
-            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(3))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-textarea-field').first()).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="origam-textarea-rich-host"]')).not.toBeAttached()
@@ -206,13 +195,13 @@ test.describe('OrigamTextareaField', () => {
 
     test.describe('Events - update:modelValue', () => {
         test('renders the textarea with data-cy attribute', async ({ page }) => {
-            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(7))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textarea-emit-update"]')).toBeVisible({ timeout: 12000 })
         })
 
         test('typing into the textarea does not throw', async ({ page }) => {
-            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(7))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textarea-emit-update"]')).toBeVisible({ timeout: 12000 })
             const textarea = sandbox.locator('[data-cy="textarea-emit-update"] textarea').first()
@@ -228,13 +217,13 @@ test.describe('OrigamTextareaField', () => {
 
     test.describe('Events - focus', () => {
         test('renders the focus-event textarea', async ({ page }) => {
-            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(8))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textarea-emit-focus"]')).toBeVisible({ timeout: 12000 })
         })
 
         test('clicking the textarea does not throw (focus/blur handlers fire)', async ({ page }) => {
-            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(8))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textarea-emit-focus"]')).toBeVisible({ timeout: 12000 })
             const textarea = sandbox.locator('[data-cy="textarea-emit-focus"] textarea').first()
@@ -251,13 +240,13 @@ test.describe('OrigamTextareaField', () => {
 
     test.describe('Events - click:control', () => {
         test('renders the click:control textarea', async ({ page }) => {
-            await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(9))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textarea-emit-click-control"]')).toBeVisible({ timeout: 12000 })
         })
 
         test('clicking the control area does not throw', async ({ page }) => {
-            await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(9))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textarea-emit-click-control"]')).toBeVisible({ timeout: 12000 })
             await sandbox.locator('[data-cy="textarea-emit-click-control"]').click()
@@ -271,7 +260,7 @@ test.describe('OrigamTextareaField', () => {
 
     test.describe('Events - mousedown:control', () => {
         test('renders the mousedown:control textarea', async ({ page }) => {
-            await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(10))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textarea-emit-mousedown-control"]')).toBeVisible({ timeout: 12000 })
         })
@@ -284,7 +273,7 @@ test.describe('OrigamTextareaField', () => {
 
     test.describe('Events - update:height', () => {
         test('auto-grow is active: origam-textarea-field--auto-grow class present', async ({ page }) => {
-            await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(11))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('[data-cy="textarea-emit-height"]')
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -292,7 +281,7 @@ test.describe('OrigamTextareaField', () => {
         })
 
         test('auto-grow textarea grows after content is added', async ({ page }) => {
-            await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(11))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textarea-emit-height"]')).toBeVisible({ timeout: 12000 })
             const textarea = sandbox.locator('[data-cy="textarea-emit-height"] textarea').first()
@@ -313,7 +302,7 @@ test.describe('OrigamTextareaField', () => {
 
     test.describe('Events - format', () => {
         test('renders in rich mode: rich toolbar is visible', async ({ page }) => {
-            await page.goto(variantUrl(12), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(12))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('[data-cy="textarea-rich-emit-format"]')
             await expect(root).toBeVisible({ timeout: 12000 })
@@ -321,14 +310,14 @@ test.describe('OrigamTextareaField', () => {
         })
 
         test('rich host contenteditable div is present', async ({ page }) => {
-            await page.goto(variantUrl(12), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(12))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textarea-rich-emit-format"]')).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="origam-textarea-rich-host"]')).toBeAttached()
         })
 
         test('clicking a toolbar button does not throw', async ({ page }) => {
-            await page.goto(variantUrl(12), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(12))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textarea-rich-emit-format"]')).toBeVisible({ timeout: 12000 })
             // Click the first toolbar button (Bold) — logEvent fires, no error expected
@@ -344,7 +333,7 @@ test.describe('OrigamTextareaField', () => {
 
     test.describe('Slots - Default', () => {
         test('default slot content renders inside the field', async ({ page }) => {
-            await page.goto(variantUrl(13), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(13))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textarea-slot-default"]')).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="textarea-slot-default"]')).toContainText('Custom slot content')
@@ -353,7 +342,7 @@ test.describe('OrigamTextareaField', () => {
 
     test.describe('Slots - Prepend', () => {
         test('prepend slot renders an origam-icon outside the field control', async ({ page }) => {
-            await page.goto(variantUrl(14), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(14))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textarea-slot-prepend"]')).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="textarea-slot-prepend"] .origam-input__prepend .origam-icon')).toBeAttached()
@@ -362,7 +351,7 @@ test.describe('OrigamTextareaField', () => {
 
     test.describe('Slots - Append', () => {
         test('append slot renders an origam-icon outside the field control', async ({ page }) => {
-            await page.goto(variantUrl(15), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(15))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textarea-slot-append"]')).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="textarea-slot-append"] .origam-input__append .origam-icon')).toBeAttached()
@@ -371,7 +360,7 @@ test.describe('OrigamTextareaField', () => {
 
     test.describe('Slots - PrependInner', () => {
         test('prependInner slot renders an icon inside the field', async ({ page }) => {
-            await page.goto(variantUrl(16), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(16))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textarea-slot-prepend-inner"]')).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="textarea-slot-prepend-inner"] .origam-field__prepend-inner')).toBeAttached()
@@ -380,7 +369,7 @@ test.describe('OrigamTextareaField', () => {
 
     test.describe('Slots - AppendInner', () => {
         test('appendInner slot renders an icon inside the field', async ({ page }) => {
-            await page.goto(variantUrl(17), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(17))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textarea-slot-append-inner"]')).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="textarea-slot-append-inner"] .origam-field__append-inner')).toBeAttached()
@@ -389,7 +378,7 @@ test.describe('OrigamTextareaField', () => {
 
     test.describe('Slots - Clear', () => {
         test('clear slot renders custom clear icon when clearable', async ({ page }) => {
-            await page.goto(variantUrl(18), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(18))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textarea-slot-clear"]')).toBeVisible({ timeout: 12000 })
             // Clearable icon is only shown when the field has value — check the origam-field__clear slot is mounted
@@ -401,7 +390,7 @@ test.describe('OrigamTextareaField', () => {
 
     test.describe('Slots - Counter', () => {
         test('custom counter slot renders its span content', async ({ page }) => {
-            await page.goto(variantUrl(19), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(19))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textarea-slot-counter"]')).toBeVisible({ timeout: 12000 })
             // Click to focus so counter renders via persistentCounter || isFocused
@@ -412,7 +401,7 @@ test.describe('OrigamTextareaField', () => {
 
     test.describe('Slots - Details', () => {
         test('details slot renders custom hint text', async ({ page }) => {
-            await page.goto(variantUrl(20), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(20))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textarea-slot-details"]')).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="textarea-slot-details"]')).toContainText('Custom hint text')
@@ -421,7 +410,7 @@ test.describe('OrigamTextareaField', () => {
 
     test.describe('Slots - FloatingLabel', () => {
         test('floatingLabel slot renders italic label content', async ({ page }) => {
-            await page.goto(variantUrl(21), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(21))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textarea-slot-floating-label"]')).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="textarea-slot-floating-label"]')).toContainText('Floating label')
@@ -430,7 +419,7 @@ test.describe('OrigamTextareaField', () => {
 
     test.describe('Slots - Label', () => {
         test('label slot renders italic custom label', async ({ page }) => {
-            await page.goto(variantUrl(22), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(22))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textarea-slot-label"]')).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="textarea-slot-label"]')).toContainText('Custom label')
@@ -445,7 +434,7 @@ test.describe('OrigamTextareaField', () => {
             // are NOT mounted because the named slot replaces the entire fallback block.
             // The observable fact: the textarea root is present and "Loading..." is
             // rendered (tested in the next case). There is no wrapper div to assert here.
-            await page.goto(variantUrl(23), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(23))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textarea-slot-loader"]')).toBeVisible({ timeout: 12000 })
             // The textarea is hidden when loading=true (skeleton hides it; other kinds keep it)
@@ -454,7 +443,7 @@ test.describe('OrigamTextareaField', () => {
         })
 
         test('loader slot: custom loading span text is rendered', async ({ page }) => {
-            await page.goto(variantUrl(23), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(23))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textarea-slot-loader"]')).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="textarea-slot-loader"]')).toContainText('Loading...')
@@ -463,7 +452,7 @@ test.describe('OrigamTextareaField', () => {
 
     test.describe('Slots - Message', () => {
         test('message slot renders single italic error message', async ({ page }) => {
-            await page.goto(variantUrl(24), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(24))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textarea-slot-message"]')).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="textarea-slot-message"]')).toContainText('Error')
@@ -472,7 +461,7 @@ test.describe('OrigamTextareaField', () => {
 
     test.describe('Slots - Messages', () => {
         test('messages slot renders custom error display', async ({ page }) => {
-            await page.goto(variantUrl(25), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(25))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textarea-slot-messages"]')).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="textarea-slot-messages"]')).toContainText('Custom error display')
@@ -481,7 +470,7 @@ test.describe('OrigamTextareaField', () => {
 
     test.describe('Slots - Prefix', () => {
         test('prefix slot renders "Note:" text before the input', async ({ page }) => {
-            await page.goto(variantUrl(26), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(26))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textarea-slot-prefix"]')).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="textarea-slot-prefix"]')).toContainText('Note:')
@@ -490,7 +479,7 @@ test.describe('OrigamTextareaField', () => {
 
     test.describe('Slots - Suffix', () => {
         test('suffix slot renders "chars" text after the input', async ({ page }) => {
-            await page.goto(variantUrl(27), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(27))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textarea-slot-suffix"]')).toBeVisible({ timeout: 12000 })
             await expect(sandbox.locator('[data-cy="textarea-slot-suffix"]')).toContainText('chars')
@@ -499,7 +488,7 @@ test.describe('OrigamTextareaField', () => {
 
     test.describe('Slots - Toolbar', () => {
         test('custom toolbar slot renders role=toolbar with Bold/Italic/UL buttons', async ({ page }) => {
-            await page.goto(variantUrl(28), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(28))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textarea-rich-slot-toolbar"]')).toBeVisible({ timeout: 12000 })
             // Custom toolbar slot replaces origam-rich-toolbar with a native <div role="toolbar">
@@ -510,7 +499,7 @@ test.describe('OrigamTextareaField', () => {
         })
 
         test('clicking Bold button in custom toolbar does not throw', async ({ page }) => {
-            await page.goto(variantUrl(28), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(28))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textarea-rich-slot-toolbar"]')).toBeVisible({ timeout: 12000 })
             // Click the rich host to focus it first
@@ -530,13 +519,13 @@ test.describe('OrigamTextareaField', () => {
 
     test.describe('Default (Playground)', () => {
         test('renders the playground textarea', async ({ page }) => {
-            await page.goto(variantUrl(29), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(29))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textarea-playground"]')).toBeVisible({ timeout: 12000 })
         })
 
         test('textarea accepts text input', async ({ page }) => {
-            await page.goto(variantUrl(29), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(29))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('[data-cy="textarea-playground"]')).toBeVisible({ timeout: 12000 })
             const textarea = sandbox.locator('[data-cy="textarea-playground"] textarea').first()
@@ -545,7 +534,7 @@ test.describe('OrigamTextareaField', () => {
         })
 
         test('initial state: rows=4, label=Message, no disabled/error classes', async ({ page }) => {
-            await page.goto(variantUrl(29), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(29))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const root = sandbox.locator('[data-cy="textarea-playground"]')
             await expect(root).toBeVisible({ timeout: 12000 })

@@ -3,10 +3,9 @@
 `<OrigamTable>` is the chrome wrapper around a native `<table>`. It
 renders a polymorphic outer container, an inner scroll wrapper, and the
 `<table>` itself — leaving header / body / footer authoring to the
-consumer. Hover, header chrome, and row separators come from the
-`--origam-table---*` variables declared in
-`packages/ds/src/assets/css/tokens/light.css` and `dark.css` so the
-table stays theme-aware out of the box.
+consumer. Hover, header chrome, and row separators come from
+`tokens/component/table.json` so the table stays theme-aware out of the
+box.
 
 It is intentionally **structural**: no intent / color prop. Use the
 `--origam-table---*` CSS variables (or wrap in a `<OrigamSheet>`) when
@@ -121,29 +120,11 @@ scrollable body without breaking the outer chrome.
 ```ts
 interface ITableProps extends ICommonsComponentProps, IBorderProps,
     IRoundedProps, IElevationProps, IPaddingProps, IMarginProps,
-    IHoverProps, IDimensionProps, IDensityProps, ITagProps,
-    Pick<ITypographyProps, 'fontSize' | 'fontWeight'> {
+    IHoverProps, IDimensionProps, IDensityProps, ITagProps {
     fixedHeader?: boolean
     fixedFooter?: boolean
-    caption?: string
-    captionVisible?: boolean
-    ariaRowcount?: number
 }
 ```
-
-### Table-specific props
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `fixedHeader` | `boolean` | `false` | Pins `<thead>` while the scroll wrapper scrolls. Flags the root `origam-table--fixed-header`. |
-| `fixedFooter` | `boolean` | `false` | Pins `<tfoot>` the same way. |
-| `caption` | `string` | — | Renders a real `<caption>` as the first child of `<table>`. Empty / omitted → no `<caption>` element at all. |
-| `captionVisible` | `boolean` | `false` | Adds `origam-table__caption--visible`. **The caption is announced by assistive tech either way** — this only decides whether it is painted on screen. |
-| `ariaRowcount` | `number` | — | Sets `aria-rowcount` on the `<table>`. Use it when the DOM holds one page of a larger, virtualised or paginated dataset. Falsy values emit no attribute. |
-
-`fontSize` / `fontWeight` are the only two `ITypographyProps` members on the
-surface — see [Typography props](#typography-props) below for the exact
-variables each one writes.
 
 ## Anatomy
 
@@ -163,10 +144,8 @@ variables each one writes.
 
 ## Design tokens consumed
 
-`<OrigamTable>` reads its variables from
-`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
-under `packages/ds/src/assets/scss/tokens/`). Override at the document
-root or via a `:style` binding to re-skin a single instance.
+`<OrigamTable>` reads from `tokens/component/table.json`. Override at
+the document root or via a `:style` binding to re-skin a single instance.
 
 | CSS variable | Token reference |
 |---|---|
@@ -187,23 +166,18 @@ root or via a `:style` binding to re-skin a single instance.
 | `--origam-table__cell---border-width` | `{border.width.thin}` |
 | `--origam-table__row---hover-background-color` | `{color.surface.sunken}` |
 
-The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
-`dark.css` — grep for `--origam-table`.
+The full list lives in
+`tokens/component/table.json`.
 
 ## Accessibility
 
-- Name the dataset: pass `caption` (the component renders a real
-  `<caption>`; add `captionVisible` to show it on screen), author your own
-  `<caption>` in the default slot, or pair the table with a heading +
-  `aria-labelledby`.
+- Always author a real `<caption>` or pair the table with a heading +
+  `aria-labelledby` so assistive tech announces the dataset.
 - `<th scope="col">` (or `scope="row"`) is the consumer's
   responsibility — `<OrigamTable>` does not inject any header markup.
 - The scroll wrapper exposes `overflow-x: auto` on small viewports;
   combine with `<caption>` so the focusable scroll region remains
   discoverable.
-- When the rendered rows are one page of a larger set (pagination,
-  virtualisation), pass `ariaRowcount` with the **total** count so screen
-  readers announce "row 3 of 4 812" rather than "row 3 of 25".
 
 ## Theming notes
 
@@ -226,10 +200,8 @@ both the table body and the visible caption; `fontWeight` targets header cells.
 | `fontSize` | `--origam-table__caption---font-size` | `<caption>` element | Overrides the default `0.875rem` caption font size (only visible when `captionVisible` is `true`) |
 | `fontWeight` | `--origam-table__header-cell---font-weight` | `<th>` cells (via cascade from root) | Overrides the default `600` header cell font weight |
 
-`fontFamily`, `lineHeight`, and `letterSpacing` were removed from
-`ITableProps` (issue #501) — the component SCSS does not read those
-variables on any surface. `fontFamily` is a project-level setting
-configured once on `OrigamApp`.
+`fontFamily`, `lineHeight`, and `letterSpacing` are not exposed — the
+component SCSS does not read those variables on any surface.
 
 ```vue
 <template>

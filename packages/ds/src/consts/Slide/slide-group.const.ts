@@ -1,4 +1,4 @@
-import type { IGroupProvide } from '../../interfaces/Commons/group.interface'
+import type { IGroupProvide } from "../../interfaces";
 
 import type { InjectionKey } from "vue"
 

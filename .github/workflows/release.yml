@@ -38,7 +38,7 @@ jobs:
     steps:
       - uses: actions/setup-node@v6
         with:
-          node-version-file: .nvmrc
+          node-version: 22
           registry-url: "https://registry.npmjs.org"
           always-auth: true
       - name: whoami (proves the token authenticates)
@@ -60,7 +60,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - uses: pnpm/action-setup@v6
+      - uses: pnpm/action-setup@v4
 
       - uses: actions/setup-node@v6
         with:
@@ -81,6 +81,9 @@ jobs:
             exit 1
           fi
           echo "version=$pkg" >> "$GITHUB_ENV"
+
+      - name: Build tokens
+        run: pnpm -F origam tokens:build
 
       - name: Build library
         run: pnpm -F origam build

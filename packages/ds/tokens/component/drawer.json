@@ -1,0 +1,93 @@
+{
+  "drawer": {
+    "display":               { "$type": "other",      "$value": "flex" },
+    "flex-direction":        { "$type": "other",      "$value": "column" },
+
+    "position":              { "$type": "other",      "$value": "absolute" },
+    "z-index":               { "$type": "number",     "$value": "{zIndex.dropdown}" },
+
+    "height":                { "$type": "dimension",  "$value": "100%" },
+    "width":                 { "$type": "dimension",  "$value": "100%" },
+    "max-width":             { "$type": "dimension",  "$value": "100%" },
+
+    "pointer-events":        { "$type": "other",      "$value": "auto" },
+
+    "background":            { "$type": "color",      "$value": "{color.surface.default}" },
+    "color":                 { "$type": "color",      "$value": "{color.text.primary}" },
+    "box-shadow":            { "$type": "shadow",     "$value": "{shadow.none}" },
+
+    "border-color":          { "$type": "color",      "$value": "{color.text.primary}" },
+    "border-style":          { "$type": "other",      "$value": "solid" },
+    "border-top-width":      { "$type": "dimension",  "$value": "{border.width.0}" },
+    "border-left-width":     { "$type": "dimension",  "$value": "{border.width.0}" },
+    "border-bottom-width":   { "$type": "dimension",  "$value": "{border.width.0}" },
+    "border-right-width":    { "$type": "dimension",  "$value": "{border.width.0}" },
+    "border-start-start-radius": { "$type": "dimension", "$value": "{radius.none}" },
+    "border-start-end-radius":   { "$type": "dimension", "$value": "{radius.none}" },
+    "border-end-start-radius":   { "$type": "dimension", "$value": "{radius.none}" },
+    "border-end-end-radius":     { "$type": "dimension", "$value": "{radius.none}" },
+
+    "transition-duration":         { "$type": "duration",    "$value": "{motion.duration.medium}" },
+    "transition-property":         { "$type": "other",       "$value": "box-shadow, transform, visibility, width, height, left, right, top, bottom" },
+    "transition-timing-function":  { "$type": "cubicBezier", "$value": "{motion.easing.standard}" },
+
+    "temporary": {
+      "box-shadow": { "$type": "shadow", "$value": "{shadow.lg}" }
+    },
+
+    "sticky": {
+      "height":              { "$type": "other",      "$value": "auto" },
+      "transition-property": { "$type": "other",      "$value": "box-shadow, transform, visibility, width, height, left, right" }
+    },
+
+    "border": {
+      "border-width": { "$type": "dimension", "$value": "{border.width.thin}" },
+      "box-shadow":   { "$type": "shadow",    "$value": "{shadow.none}" }
+    },
+
+    "top": {
+      "border-bottom-width": { "$type": "dimension", "$value": "{border.width.thin}" }
+    },
+
+    "bottom": {
+      "border-top-width": { "$type": "dimension", "$value": "{border.width.thin}" }
+    },
+
+    "left": {
+      "border-right-width": { "$type": "dimension", "$value": "{border.width.thin}" }
+    },
+
+    "right": {
+      "border-left-width": { "$type": "dimension", "$value": "{border.width.thin}" }
+    },
+
+    "scrim": {
+      "background":          { "$type": "color",      "$value": "{color.overlay.scrim}" },
+      "opacity":             { "$type": "number",     "$value": 0.2, "$description": "Arbitrage: opacity.20 absent du primitif (palette: 12, 26, 32, 50). Valeur 0.2 issue du composant original. Envisager d'ajouter opacity.20 au primitif ou d'aligner sur opacity.26." },
+      "position":            { "$type": "other",      "$value": "absolute" },
+      "position-top":        { "$type": "dimension",  "$value": "{space.0}" },
+      "position-left":       { "$type": "dimension",  "$value": "{space.0}" },
+      "width":               { "$type": "dimension",  "$value": "100%" },
+      "height":              { "$type": "dimension",  "$value": "100%" },
+      "z-index":             { "$type": "number",     "$value": "{zIndex.raised}" },
+      "transition-property":        { "$type": "other",       "$value": "opacity" },
+      "transition-duration":        { "$type": "duration",    "$value": "{motion.duration.medium}" },
+      "transition-timing-function": { "$type": "cubicBezier", "$value": "{motion.easing.standard}" }
+    },
+
+    "content": {
+      "flex":       { "$type": "other",     "$value": "0 1 auto" },
+      "height":     { "$type": "dimension", "$value": "100%" },
+      "max-width":  { "$type": "dimension", "$value": "100%" },
+      "overflow-x": { "$type": "other",     "$value": "hidden" },
+      "overflow-y": { "$type": "other",     "$value": "auto" }
+    },
+
+    "img": {
+      "height":   { "$type": "dimension", "$value": "100%" },
+      "width":    { "$type": "dimension", "$value": "100%" },
+      "position": { "$type": "other",     "$value": "absolute" },
+      "z-index":  { "$type": "number",    "$value": -1 }
+    }
+  }
+}

@@ -133,18 +133,6 @@
 			</origam-parallax>
 		</Variant>
 
-		<Variant title="Type - custom (consumer-driven transform)">
-			<origam-parallax :style="hostStyle">
-				<origam-parallax-element
-						:strength="40"
-						:style="customTransformStyle"
-						:type="PARALLAX_ELEMENT_TYPE.CUSTOM"
-				>
-					<strong :style="layerStyle">Move the mouse — transform written in CSS</strong>
-				</origam-parallax-element>
-			</origam-parallax>
-		</Variant>
-
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IParallaxElementProps>({
@@ -210,23 +198,6 @@
 		ROUNDED_OPTIONS,
 		TAG_OPTIONS
 	} from '@stories/const'
-
-	/*********************************************************
-	 * customTransformStyle — ce que le CONSOMMATEUR ecrit
-	 *
-	 * @description
-	 * `type="custom"` ne compose aucun `transform` : le composant publie
-	 * `--origam-parallax__element---x` / `---y` et c'est cette regle-ci,
-	 * cote consommateur, qui decide de la transform. Sans elle l'element
-	 * ne bouge pas — c'est le contrat, pas un defaut.
-	 * @description
-	 * Les deux valeurs sont des NOMBRES NUS : on les multiplie par l'unite
-	 * voulue. La demo choisit exprès `deg` et non `px`, parce que c'est
-	 * precisement ce qu'un `translate` en dur aurait rendu impossible.
-	 ********************************************************/
-	const customTransformStyle = {
-		transform: 'rotate3d(0, 0, 1, calc(var(--origam-parallax__element---x) * 1deg))'
-	}
 
 	const PARALLAX_ELEMENT_TYPE_OPTIONS: Array<IOptions<TParallaxElementType | undefined>> = [
 		{ label: '(default — translate)', value: undefined },

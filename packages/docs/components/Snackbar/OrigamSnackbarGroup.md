@@ -177,8 +177,6 @@ without holding a component ref.
 
 ## Design tokens
 
-### Stack container
-
 | CSS variable | Description |
 |---|---|
 | `--origam-snackbar-group---z-index` | Stack z-index (default `toast`). |
@@ -189,42 +187,14 @@ without holding a component ref.
 | `--origam-snackbar-group---position-bottom` | Bottom offset for bottom-anchored stacks. |
 | `--origam-snackbar-group---position-left` | Left offset for left-anchored stacks. |
 | `--origam-snackbar-group---position-right` | Right offset for right-anchored stacks. |
-
-### Per-item overrides (`__item`)
-
-`OrigamSnackbarItem` reads its own `--origam-snackbar-item---*` channel. The
-group bridges the `__item` family onto it inside a `:deep(.origam-snackbar-item)`
-block (#436), so setting one of these re-skins the items **only while
-stacked** — a standalone `<OrigamSnackbar>` keeps the `-item` defaults. Each
-bridged token falls back to the item's own value, so the stack renders
-identically until you actually set one.
-
-| CSS variable | Description |
-|---|---|
 | `--origam-snackbar-group__item---background-color` | Item surface background. |
-| `--origam-snackbar-group__item---border-color` | Item surface border colour. |
-| `--origam-snackbar-group__item---border-width` | Item border width. |
+| `--origam-snackbar-group__item---border-color` | Item surface border. |
+| `--origam-snackbar-group__item---color` | Item text color. |
+| `--origam-snackbar-group__item---box-shadow` | Item elevation. |
 | `--origam-snackbar-group__item---border-radius` | Item corner radius. |
-| `--origam-snackbar-group__item---color` | Item text colour. |
-| `--origam-snackbar-group__item---font-size` | Item font size. |
 | `--origam-snackbar-group__item---padding` | Item inner padding. |
-| `--origam-snackbar-group__item---gap` | Gap between the item's zones. |
-| `--origam-snackbar-group__item---min-width` / `---max-width` | Item width clamp. |
-| `--origam-snackbar-group__item---prepend-color` | Leading icon colour. |
-| `--origam-snackbar-group__item---title-font-weight` | Title weight. |
-| `--origam-snackbar-group__item---message-font-weight` | Message weight. |
-| `--origam-snackbar-group__item---message-color` | Message colour. |
-| `--origam-snackbar-group__item---message-opacity` | Message opacity. |
-| `--origam-snackbar-group__item---action-color` | Action button colour. |
-
-### Declared but not bridged
-
-`--origam-snackbar-group__item---box-shadow` is declared in `light.css` /
-`dark.css` but **is not wired** — the `:deep()` bridge deliberately leaves it
-out, because the value declared for it does not match what `OrigamSnackbarItem`
-renders today, so bridging it would change the current appearance rather than
-merely make it themeable. Overriding it has no effect. To change a stacked
-item's elevation, set `--origam-snackbar-item---box-shadow` instead.
+| `--origam-snackbar-group__item---min-width` / `max-width` | Item width clamp. |
+| `--origam-snackbar-group__item---action-color` | Action button color. |
 
 Intent-based surface colors fall through to the shared semantic
 `--origam-color__feedback--{intent}---*` tokens, so a single design-token

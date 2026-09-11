@@ -1,0 +1,34 @@
+{
+  "table": {
+    "_comment": "OrigamTable component tokens — Lot 5D. Minimal wrapper rendering a <table> inside a scrollable div. BEM children: wrapper. The component applies border/rounded/elevation/density/padding composables; those properties are already covered by shared composable tokens. Only table-specific semantics are declared here.",
+
+    "background-color":         { "$type": "color",      "$value": "{color.surface.default}",      "$description": "Table background color" },
+    "color":                    { "$type": "color",      "$value": "{color.text.primary}",         "$description": "Table text color (inherited by cells)" },
+    "font-size":                { "$type": "dimension",  "$value": "{font.size.md}",               "$description": "Base font-size for table content" },
+    "border-collapse":          { "$type": "other",      "$value": "collapse",                     "$description": "CSS border-collapse on the <table> element" },
+
+    "header-cell": {
+      "_comment": "BEM child representing <th> elements in the table header.",
+      "background-color":       { "$type": "color",      "$value": "{color.surface.overlay}",      "$description": "Background of header cells (slightly elevated vs body rows)" },
+      "color":                  { "$type": "color",      "$value": "{color.text.primary}",         "$description": "Header cell text color" },
+      "font-weight":            { "$type": "fontWeight", "$value": "{font.weight.semibold}",       "$description": "Font weight for column headers" },
+      "padding-block":          { "$type": "dimension",  "$value": "{space.3}",                    "$description": "Block-axis (top/bottom) padding inside each <th>" },
+      "padding-inline":         { "$type": "dimension",  "$value": "{space.4}",                    "$description": "Inline-axis (left/right) padding inside each <th>" },
+      "border-bottom-color":    { "$type": "color",      "$value": "{color.border.default}",       "$description": "Bottom border color separating header from body" },
+      "border-bottom-width":    { "$type": "dimension",  "$value": "{border.width.2}",             "$description": "Width of the header bottom border (2px to visually anchor the header)" }
+    },
+
+    "cell": {
+      "_comment": "BEM child representing <td> elements in the table body.",
+      "padding-block":          { "$type": "dimension",  "$value": "{space.3}",                    "$description": "Block-axis padding inside each <td>" },
+      "padding-inline":         { "$type": "dimension",  "$value": "{space.4}",                    "$description": "Inline-axis padding inside each <td>" },
+      "border-color":           { "$type": "color",      "$value": "{color.border.subtle}",        "$description": "Border color between rows (horizontal separators)" },
+      "border-width":           { "$type": "dimension",  "$value": "{border.width.thin}",          "$description": "Width of the row separator border" }
+    },
+
+    "row": {
+      "_comment": "Tokens applied to <tr> elements.",
+      "hover-background-color": { "$type": "color",      "$value": "{color.surface.sunken}",       "$description": "Subtle background on row hover (provides visual affordance)" }
+    }
+  }
+}

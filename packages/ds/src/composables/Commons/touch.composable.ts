@@ -1,38 +1,12 @@
-import { useVelocity } from './velocity.composable'
-import {
-    TOUCH_DRAG_THRESHOLD_PX,
-    TOUCH_EDGE_ZONE_PX,
-    TOUCH_FLING_VELOCITY_X,
-    TOUCH_FLING_VELOCITY_Y,
-    TOUCH_OPEN_DIRECTION_BY_POSITION,
-    TOUCH_SETTLE_PROGRESS
-} from '../../consts/Commons/touch.const'
+import { useVelocity } from '../../composables'
 
-import { oops } from '../../utils/Commons/commons.util'
+import { oops } from '../../utils'
 
 import { computed, onBeforeUnmount, onMounted, Ref, shallowRef } from 'vue'
 
 
 /*********************************************************
  * useTouch
- *
- * @description
- * Geste tactile swipe-to-open/close pour un panneau ancre a un `position`
- * (`left|right|top|bottom`, ex. Navigation Drawer) : ecoute
- * `touchstart`/`touchmove`/`touchend` sur `window`, ne se declenche que si
- * le doigt part depuis la zone de bord (`TOUCH_EDGE_ZONE_PX`) ou depuis
- * le panneau deja ouvert, decide de la direction de drag (horizontal vs
- * vertical) au premier depassement de `TOUCH_DRAG_THRESHOLD_PX`, et bascule
- * `isActive` a la fin du geste selon la VELOCITE (fling, via
- * `useVelocity`) ou a defaut selon `dragProgress > TOUCH_SETTLE_PROGRESS`.
- *
- * @description
- * `dragStyles` emet une `transform: translate(...)` directement liee a
- * `dragProgress` PENDANT le drag (`transition: none` pour suivre le doigt
- * sans latence) — c'est au composant appelant de reprendre la transition
- * normale une fois `isDragging` retombe a `false`. `touchless.value` a
- * `true` desactive l'ouverture par swipe des `touchstart`, sans retirer
- * les listeners.
  ********************************************************/
 export function useTouch ({isActive, isTemporary, width, touchless, position}: {
     isActive: Ref<boolean>
@@ -88,11 +62,12 @@ export function useTouch ({isActive, isTemporary, width, touchless, position}: {
         const touchX = e.changedTouches[0].clientX
         const touchY = e.changedTouches[0].clientY
 
+        const touchZone = 25
         const inTouchZone: boolean =
-            position.value === 'left' ? touchX < TOUCH_EDGE_ZONE_PX
-                : position.value === 'right' ? touchX > document.documentElement.clientWidth - TOUCH_EDGE_ZONE_PX
-                    : position.value === 'top' ? touchY < TOUCH_EDGE_ZONE_PX
-                        : position.value === 'bottom' ? touchY > document.documentElement.clientHeight - TOUCH_EDGE_ZONE_PX
+            position.value === 'left' ? touchX < touchZone
+                : position.value === 'right' ? touchX > document.documentElement.clientWidth - touchZone
+                    : position.value === 'top' ? touchY < touchZone
+                        : position.value === 'bottom' ? touchY > document.documentElement.clientHeight - touchZone
                             : oops()
 
         const inElement: boolean = isActive.value && (
@@ -132,13 +107,13 @@ export function useTouch ({isActive, isTemporary, width, touchless, position}: {
             const dy = Math.abs(touchY - start![1])
 
             const thresholdMet = isHorizontal.value
-                ? dx > dy && dx > TOUCH_DRAG_THRESHOLD_PX
-                : dy > dx && dy > TOUCH_DRAG_THRESHOLD_PX
+                ? dx > dy && dx > 3
+                : dy > dx && dy > 3
 
             if (thresholdMet) {
                 isDragging.value = true
                 maybeDragging = false
-            } else if ((isHorizontal.value ? dy : dx) > TOUCH_DRAG_THRESHOLD_PX) {
+            } else if ((isHorizontal.value ? dy : dx) > 3) {
                 maybeDragging = false
             }
         }
@@ -170,13 +145,18 @@ export function useTouch ({isActive, isTemporary, width, touchless, position}: {
         const vx = Math.abs(velocity.x)
         const vy = Math.abs(velocity.y)
         const thresholdMet = isHorizontal.value
-            ? vx > vy && vx > TOUCH_FLING_VELOCITY_X
-            : vy > vx && vy > TOUCH_FLING_VELOCITY_Y
+            ? vx > vy && vx > 400
+            : vy > vx && vy > 3
 
         if (thresholdMet) {
-            isActive.value = velocity.direction === (TOUCH_OPEN_DIRECTION_BY_POSITION[position.value] || oops())
+            isActive.value = velocity.direction === ({
+                left: 'right',
+                right: 'left',
+                top: 'down',
+                bottom: 'up'
+            }[position.value] || oops())
         } else {
-            isActive.value = dragProgress.value > TOUCH_SETTLE_PROGRESS
+            isActive.value = dragProgress.value > 0.5
         }
     }
 

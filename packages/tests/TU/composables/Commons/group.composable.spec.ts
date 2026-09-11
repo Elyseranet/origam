@@ -11,8 +11,7 @@ import { describe, expect, it } from 'vitest'
 
 import type { IGroupProps, IGroupItemProps, IGroupProvide } from '@origam/interfaces'
 
-import { useGroup } from '@origam/composables/Commons/group.composable'
-import { useGroupItem } from '@origam/composables/Commons/groupItem.composable'
+import { useGroup, useGroupItem } from '@origam/composables/Commons/group.composable'
 
 // ---------------------------------------------------------------------------
 // Helpers

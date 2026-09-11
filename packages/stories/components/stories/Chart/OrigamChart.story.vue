@@ -24,32 +24,18 @@
 				<origam-chart
 						:type="state.type"
 						:padding="state.padding"
-						:padding-top="state.paddingTop"
-						:padding-right="state.paddingRight"
-						:padding-bottom="state.paddingBottom"
-						:padding-left="state.paddingLeft"
-						:padding-block="state.paddingBlock"
-						:padding-inline="state.paddingInline"
 						:margin="state.margin"
-						:margin-top="state.marginTop"
-						:margin-right="state.marginRight"
-						:margin-bottom="state.marginBottom"
-						:margin-left="state.marginLeft"
-						:margin-block="state.marginBlock"
-						:margin-inline="state.marginInline"
 						:series="FIXTURE_SALES_SERIES"
 						:categories="FIXTURE_MONTHS"
 						:width="state.width"
 						:height="state.height"
 						:title="state.title"
 						:subtitle="state.subtitle"
+						:font-size="state.fontSize || undefined"
+						:font-weight="state.fontWeight || undefined"
 						:color-scheme="state.colorScheme || undefined"
 						:bg-color="state.bgColor || undefined"
 						:rounded="state.rounded || undefined"
-						:rounded-top-left="state.roundedTopLeft"
-						:rounded-top-right="state.roundedTopRight"
-						:rounded-bottom-left="state.roundedBottomLeft"
-						:rounded-bottom-right="state.roundedBottomRight"
 						:elevation="state.elevation || undefined"
 						:aspect-ratio="state.aspectRatio || undefined"
 				/>
@@ -60,17 +46,11 @@
 				</StoryGroup>
 				<StoryGroup title="Color">
 					<HstSelect v-model="state.bgColor"     title="Bg Color"     :options="COLOR_OPTIONS"/>
-					<HstSelect v-model="state.colorScheme" title="Color Scheme (no effect: bullet / candlestick / heatmap / map)" :options="COLOR_SCHEME_OPTIONS"/>
+					<HstSelect v-model="state.colorScheme" title="Color Scheme" :options="COLOR_SCHEME_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Shape">
 					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
 					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
-				</StoryGroup>
-				<StoryGroup title="Rounded — per corner">
-					<HstText v-model="state.roundedTopLeft"     title="Rounded Top Left"/>
-					<HstText v-model="state.roundedTopRight"    title="Rounded Top Right"/>
-					<HstText v-model="state.roundedBottomLeft"  title="Rounded Bottom Left"/>
-					<HstText v-model="state.roundedBottomRight" title="Rounded Bottom Right"/>
 				</StoryGroup>
 				<StoryGroup title="Dimension">
 					<HstText   v-model="state.width"      title="Width"/>
@@ -82,26 +62,12 @@
 					<HstText v-model="state.subtitle" title="Subtitle"/>
 				</StoryGroup>
 				<StoryGroup title="Typography">
+					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
+					<HstSelect v-model="state.fontWeight" title="Font Weight" :options="FONT_WEIGHT_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Spacing">
 					<HstText v-model="state.padding" title="Padding"/>
 					<HstText v-model="state.margin"  title="Margin"/>
-				</StoryGroup>
-				<StoryGroup title="Padding — per side">
-					<HstText v-model="state.paddingTop"    title="Padding Top"/>
-					<HstText v-model="state.paddingRight"  title="Padding Right"/>
-					<HstText v-model="state.paddingBottom" title="Padding Bottom"/>
-					<HstText v-model="state.paddingLeft"   title="Padding Left"/>
-					<HstText v-model="state.paddingBlock"  title="Padding Block"/>
-					<HstText v-model="state.paddingInline" title="Padding Inline"/>
-				</StoryGroup>
-				<StoryGroup title="Margin — per side">
-					<HstText v-model="state.marginTop"    title="Margin Top"/>
-					<HstText v-model="state.marginRight"  title="Margin Right"/>
-					<HstText v-model="state.marginBottom" title="Margin Bottom"/>
-					<HstText v-model="state.marginLeft"   title="Margin Left"/>
-					<HstText v-model="state.marginBlock"  title="Margin Block"/>
-					<HstText v-model="state.marginInline" title="Margin Inline"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -187,82 +153,6 @@
 					<HstText   v-model="state.gaugeUnit" title="Gauge Unit (e.g. %)"/>
 				</StoryGroup>
 			</template>
-		</Variant>
-
-		<Variant
-				title="Functional - Plot overlays"
-				:init-state="() => useStoryInitState<Partial<IChartProps>>({
-					showBand: true,
-					showLine: true,
-					showAnnotation: true,
-					bandFrom: 20,
-					bandTo: 34,
-					lineValue: 30
-				})"
-		>
-			<template #default="{ state }">
-				<origam-chart
-						type="column"
-						:series="FIXTURE_SALES_SERIES"
-						:categories="FIXTURE_MONTHS"
-						:height="320"
-						title="Plot overlays"
-						:plot-bands="state.showBand ? [{ axis: 'y', from: state.bandFrom, to: state.bandTo, color: 'success', label: 'Target zone' }] : []"
-						:plot-lines="state.showLine ? [{ axis: 'y', value: state.lineValue, color: 'danger', dash: 'dashed', label: 'Quota' }] : []"
-						:annotations="state.showAnnotation ? [{ kind: 'circle', x: 'Dec', y: 52, text: 'Peak', color: 'warning', radius: 14 }] : []"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<StoryGroup title="Plot bands">
-					<HstCheckbox v-model="state.showBand" title="Show Plot Band"/>
-					<HstNumber   v-model="state.bandFrom" title="Band From" :min="0" :max="60"/>
-					<HstNumber   v-model="state.bandTo"   title="Band To"   :min="0" :max="60"/>
-				</StoryGroup>
-				<StoryGroup title="Plot lines">
-					<HstCheckbox v-model="state.showLine"  title="Show Plot Line"/>
-					<HstNumber   v-model="state.lineValue" title="Line Value" :min="0" :max="60"/>
-				</StoryGroup>
-				<StoryGroup title="Annotations">
-					<HstCheckbox v-model="state.showAnnotation" title="Show Annotation"/>
-				</StoryGroup>
-			</template>
-		</Variant>
-
-		<Variant
-				title="Functional - Secondary Y axis"
-				:init-state="() => useStoryInitState<Partial<IChartProps>>({
-					secondaryTitle: 'Conversion',
-					secondaryMax: 100
-				})"
-		>
-			<template #default="{ state }">
-				<origam-chart
-						type="line"
-						:series="FIXTURE_DUAL_AXIS_SERIES"
-						:categories="FIXTURE_MONTHS"
-						:height="320"
-						title="Revenue vs conversion"
-						:secondary-y-axis="{ min: 0, max: state.secondaryMax, title: state.secondaryTitle, format: FORMAT_PERCENT }"
-				/>
-			</template>
-			<template #controls="{ state }">
-				<StoryGroup title="Secondary Y axis">
-					<HstText   v-model="state.secondaryTitle" title="Axis Title"/>
-					<HstNumber v-model="state.secondaryMax"   title="Axis Max" :min="10" :max="500" :step="10"/>
-				</StoryGroup>
-			</template>
-		</Variant>
-
-		<Variant title="Functional - Drilldown">
-			<origam-chart
-					type="column"
-					:series="FIXTURE_DRILLDOWN_SERIES"
-					:categories="FIXTURE_QUARTERS"
-					:height="320"
-					title="Revenue by quarter"
-					subtitle="Click a column to drill into its months"
-					:drilldown="FIXTURE_DRILLDOWN"
-			/>
 		</Variant>
 
 		<Variant title="Events - point-click">
@@ -432,13 +322,15 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamChart } from '@origam/components'
-	import type { IChartDrilldownProps, IChartProps, IChartSeries } from '@origam/interfaces'
+	import type { IChartProps, IChartSeries } from '@origam/interfaces'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 	import {
 		COLOR_OPTIONS,
 		ELEVATION_OPTIONS,
+		FONT_SIZE_OPTIONS,
+		FONT_WEIGHT_OPTIONS,
 		ROUNDED_OPTIONS
 	} from '@stories/const'
 
@@ -509,37 +401,6 @@
 	const FIXTURE_GAUGE: Array<IChartSeries> = [
 		{ name: 'Completion', data: [62], color: 'primary' }
 	]
-
-	const FORMAT_PERCENT = (value: number) => `${value}%`
-
-	const FIXTURE_DUAL_AXIS_SERIES: Array<IChartSeries> = [
-		{ name: 'Revenue (k€)', data: [12, 18, 22, 19, 25, 32, 28, 33, 30, 36, 39, 42], color: 'primary' },
-		{ name: 'Conversion (%)', data: [31, 34, 30, 38, 42, 45, 41, 48, 52, 49, 55, 61], color: 'warning', yAxis: 1 }
-	]
-
-	const FIXTURE_QUARTERS = ['Q1', 'Q2', 'Q3', 'Q4']
-
-	const FIXTURE_DRILLDOWN_SERIES: Array<IChartSeries> = [
-		{
-			name: 'Revenue',
-			color: 'primary',
-			data: [
-				{ x: 'Q1', y: 52, drilldown: { id: 'q1', name: 'Q1' } },
-				{ x: 'Q2', y: 76, drilldown: { id: 'q2', name: 'Q2' } },
-				{ x: 'Q3', y: 91, drilldown: { id: 'q3', name: 'Q3' } },
-				{ x: 'Q4', y: 117, drilldown: { id: 'q4', name: 'Q4' } }
-			]
-		}
-	]
-
-	const FIXTURE_DRILLDOWN: IChartDrilldownProps = {
-		datasets: [
-			{ id: 'q1', name: 'Q1', categories: ['Jan', 'Feb', 'Mar'], series: [{ name: 'Revenue', data: [12, 18, 22], color: 'primary' }] },
-			{ id: 'q2', name: 'Q2', categories: ['Apr', 'May', 'Jun'], series: [{ name: 'Revenue', data: [19, 25, 32], color: 'primary' }] },
-			{ id: 'q3', name: 'Q3', categories: ['Jul', 'Aug', 'Sep'], series: [{ name: 'Revenue', data: [28, 33, 30], color: 'primary' }] },
-			{ id: 'q4', name: 'Q4', categories: ['Oct', 'Nov', 'Dec'], series: [{ name: 'Revenue', data: [36, 39, 42], color: 'primary' }] }
-		]
-	}
 </script>
 
 <style scoped>

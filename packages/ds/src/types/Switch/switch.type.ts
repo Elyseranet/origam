@@ -1,3 +1,3 @@
-import OrigamSwitch from '../../components/Switch/OrigamSwitch.vue'
+import { OrigamSwitch } from "../../components"
 
 export type TOrigamSwitch = InstanceType<typeof OrigamSwitch>

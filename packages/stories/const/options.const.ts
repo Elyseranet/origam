@@ -14,7 +14,6 @@ export {
 export { intentList as COLOR_OPTIONS } from './intent.const'
 export { sizeList as SIZE_OPTIONS } from './size.const'
 export { densityList as DENSITY_OPTIONS } from './density.const'
-export { directionList as DIRECTION_OPTIONS } from './direction.const'
 export { roundedList as ROUNDED_OPTIONS } from './rounded.const'
 export { elevationList as ELEVATION_OPTIONS } from './elevation.const'
 export { iconList as ICON_OPTIONS } from './icon.const'
@@ -31,7 +30,7 @@ export {
 } from './font.const'
 
 export { alignList as ALIGN_OPTIONS } from './align.const'
-export { colsList as COLS_OPTIONS, offsetList as OFFSET_OPTIONS } from './cols.const'
+export { colsList as COLS_OPTIONS } from './cols.const'
 export { justifyList as JUSTIFY_OPTIONS } from './justify.const'
 export { positionList as POSITION_OPTIONS } from './position.const'
 export { progressTypeList as PROGRESS_TYPE_OPTIONS } from './progress.const'

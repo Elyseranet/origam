@@ -1,0 +1,19 @@
+{
+  "watermark": {
+    "color":                 { "$type": "color",     "$value": "{color.text.primary}" },
+
+    "opacity-low":           { "$type": "opacity",   "$value": "0.05" },
+    "opacity-medium":        { "$type": "opacity",   "$value": "0.1" },
+    "opacity-high":          { "$type": "opacity",   "$value": "0.2" },
+
+    "gap-tight":             { "$type": "dimension", "$value": "60px" },
+    "gap-medium":            { "$type": "dimension", "$value": "120px" },
+    "gap-loose":             { "$type": "dimension", "$value": "200px" },
+
+    "font-size-sm":          { "$type": "dimension", "$value": "12px" },
+    "font-size-md":          { "$type": "dimension", "$value": "16px" },
+    "font-size-lg":          { "$type": "dimension", "$value": "24px" },
+
+    "z-index":               { "$type": "number",    "$value": "1" }
+  }
+}

@@ -68,12 +68,10 @@ function formatY(v: number) { return `$${v}k` }
 |---|---|---|---|
 | `plot` | `{ x0: number, y0: number, x1: number, y1: number, cx: number, cy: number }` | required | Pixel coordinates of the plotting area's four corners. Comes from `useChart().plot.value`. |
 | `ticks` | `{ x: Array<IChartTick>, y: Array<IChartTick> }` | required | Tick descriptors for both axes. Comes from `useChart().ticks.value`. |
-| `secondaryYTicks` | `Array<IChartTick>` | `undefined` | Tick descriptors for a second Y axis drawn on the right edge of the plot. Comes from `useChart().secondaryTicks.value`. Rendered only when `showAxis` is `true`. |
-| `showAxis` | `boolean` | `true` | Render the axis frame (left + bottom lines), the tick labels and — when `secondaryYTicks` is supplied — the right axis. Does **not** gate the grid. |
-| `showGrid` | `boolean` | `true` | Render horizontal grid lines under the plot. Independent of `showAxis`. |
+| `showAxis` | `boolean` | `true` | Render the four-side axis frame and tick labels. When `false`, the component renders nothing. |
+| `showGrid` | `boolean` | `true` | Render horizontal grid lines under the plot. |
 | `xAxisFormat` | `(value: string \| number) => string` | `String(value)` | Formatter applied to X-axis tick labels. |
 | `yAxisFormat` | `(value: number) => string` | `String(value)` | Formatter applied to Y-axis tick labels. |
-| `secondaryYAxisFormat` | `(value: number) => string` | falls back to `yAxisFormat`, then `String(value)` | Formatter applied to the secondary (right) Y-axis tick labels. |
 
 ### `IChartTick` (tick descriptor)
 
@@ -82,7 +80,7 @@ Each entry in `ticks.x` and `ticks.y`:
 | Field | Type | Description |
 |---|---|---|
 | `position` | `number` | SVG pixel coordinate along the relevant axis. |
-| `label` | `string` | Pre-formatted label string produced by `useChart`. **`OrigamChartAxis` never reads this field** — it renders `xAxisFormat(value)` / `yAxisFormat(value)`, or `String(value)` when no formatter is given. Other consumers of `useChart().ticks` may use it. |
+| `label` | `string` | Already-formatted label string. Overridden by `xAxisFormat` / `yAxisFormat` when those props are supplied. |
 | `value` | `number \| string` | Raw value before formatting. |
 
 ## Emits
@@ -99,24 +97,13 @@ No slots — the component renders fixed SVG elements only.
 
 **Pure renderer.** The component owns no reactive state and performs no data computation. Every position it renders comes from the `plot` and `ticks` props. Update those props reactively (e.g. via a `ComputedRef` from `useChart`) and the axis repaints automatically.
 
-**`showAxis` and `showGrid` are independent.** The template carries two sibling roots — `<g v-if="showGrid" class="origam-chart__grid">` and `<g v-if="showAxis" class="origam-chart__axis">` — and neither condition mentions the other. All four combinations are reachable:
+**`showAxis = false` renders nothing.** When `showAxis` is `false`, the component mounts an empty `<g>` with no children — it does not forward its children or render the grid either.
 
-| `showAxis` | `showGrid` | Rendered |
-|---|---|---|
-| `true` | `true` | grid lines + axis frame + tick labels |
-| `false` | `true` | **grid lines only** — no frame, no labels |
-| `true` | `false` | axis frame + tick labels only |
-| `false` | `false` | nothing at all (both `v-if` fail; no empty `<g>` is left behind) |
-
-Grid-only rendering therefore needs no CSS workaround: pass `:show-axis="false" :show-grid="true"`. Pinned by `packages/tests/TU/components/Chart/chart-axis-grid-independence.spec.ts`.
-
-**The secondary right axis follows `showAxis`.** `<g v-if="showAxis && secondaryYTicks?.length">` — supplying `secondaryYTicks` while `showAxis` is `false` renders no right axis.
-
-**SVG strokes when used standalone.** SVG elements have no default `stroke` / `fill`. Inside the cartesian family, the parent's `:deep()` rules paint the lines; used standalone, the component's own scoped rules supply visible defaults, overridable through `--origam-chart__grid---color`, `--origam-chart__grid---stroke-width`, `--origam-chart__axis---color`, `--origam-chart__axis---stroke-width`, `--origam-chart__axis-label---color` and `--origam-chart__axis-label---font-size`.
+**Grid only without axis lines.** Passing `showAxis=true` and `showGrid=true` renders both. To render only horizontal grid lines without the axis frame and labels, set `showAxis=false` and `showGrid=true`. However: when `showAxis=false`, **nothing** is rendered (including the grid). If you need grid-only rendering, pass both `showAxis=true` and `showGrid=true` and hide the axis lines via CSS.
 
 **Tick count.** The number of Y ticks is controlled by `CHART_Y_TICK_COUNT` (a constant in `src/consts/Chart/chart.const.ts`; default value exposed in the stories is `5`). The number of X ticks equals `categories.length`. These counts are determined by `useChart` before the ticks reach this component; `OrigamChartAxis` renders whatever it receives.
 
-**Formatter application.** `xAxisFormat` and `yAxisFormat` are applied inside the component to the `tick.value` field. `tick.label` is **never read** — when no formatter is supplied the fallback is `String(tick.value)`, not the pre-formatted label. Pass a formatter if the raw value is not the string you want on screen.
+**Formatter application.** `xAxisFormat` and `yAxisFormat` are applied inside the component to the `tick.value` field (not `tick.label`). The pre-formatted `tick.label` is used as a fallback when no formatter is provided.
 
 ## Examples
 

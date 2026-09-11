@@ -1,3 +1,3 @@
-import OrigamColorPickerEdit from '../../components/ColorPicker/OrigamColorPickerEdit.vue'
+import { OrigamColorPickerEdit } from "../../components"
 
 export type TOrigamColorPickerEdit = InstanceType<typeof OrigamColorPickerEdit>

@@ -1,0 +1,43 @@
+{
+  "overlay": {
+    "display":              { "$type": "other",      "$value": "flex" },
+    "position":             { "$type": "other",      "$value": "fixed" },
+    "border-radius":        { "$type": "other",      "$value": "inherit" },
+    "pointer-events":       { "$type": "other",      "$value": "none" },
+    "z-index":              { "$type": "number",     "$value": "{zIndex.overlay}" },
+
+    "transition-duration":  { "$type": "duration",   "$value": "{motion.duration.medium}" },
+    "transition-easing":    { "$type": "cubicBezier","$value": "{motion.easing.standard}" },
+
+    "scrim": {
+      "_comment":           "TODO: rename background-color token to color.overlay.backdrop once #arbitration2 resolved — see also drawer.scrim.background (Lot 2D).",
+      "background-color":   { "$type": "color",      "$value": "{color.overlay.scrim}", "$description": "Arbitrage: color.overlay.scrim flips white (light) / black (dark). For a traditional modal backdrop we want a dark semi-transparent scrim in both themes. Aliased here to {color.overlay.scrim} pending #arbitration2 — replace with color.overlay.backdrop once that token is added to semantic." },
+      "opacity":            { "$type": "number",     "$value": "{opacity.32}" },
+      "pointer-events":     { "$type": "other",      "$value": "auto" },
+      "border-radius":      { "$type": "other",      "$value": "inherit" },
+      "position":           { "$type": "other",      "$value": "fixed" },
+      "position-top":       { "$type": "dimension",  "$value": "{space.0}" },
+      "position-bottom":    { "$type": "dimension",  "$value": "{space.0}" },
+      "position-left":      { "$type": "dimension",  "$value": "{space.0}" },
+      "position-right":     { "$type": "dimension",  "$value": "{space.0}" },
+      "transition-property":        { "$type": "other",       "$value": "opacity" },
+      "transition-duration":        { "$type": "duration",    "$value": "{motion.duration.medium}" },
+      "transition-timing-function": { "$type": "cubicBezier", "$value": "{motion.easing.standard}" }
+    },
+
+    "content": {
+      "outline":            { "$type": "other",      "$value": "none" },
+      "position":           { "$type": "other",      "$value": "absolute" },
+      "pointer-events":     { "$type": "other",      "$value": "auto" },
+      "contain":            { "$type": "other",      "$value": "layout" }
+    },
+
+    "absolute": {
+      "position":           { "$type": "other",      "$value": "absolute" }
+    },
+
+    "contained": {
+      "scrim-position":     { "$type": "other",      "$value": "absolute" }
+    }
+  }
+}

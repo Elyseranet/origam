@@ -23,27 +23,26 @@
 		>
 			<template #default="{ state }">
 				<origam-expansion-panels>
-					<origam-expansion-panel content="Body content">
-						<template #header>
-							<origam-expansion-panel-header
-									:title="state.title"
-									:padding="state.padding"
-									:margin="state.margin"
-									:color="state.color"
-									:bg-color="state.bgColor"
-									:density="state.density"
-									:rounded="state.rounded"
-									:border="state.border"
-									:border-color="state.borderColor"
-									:border-style="state.borderStyle"
-									:prepend-icon="state.prependIcon || undefined"
-									:append-icon="state.appendIcon || undefined"
-									:expand-icon="state.expandIcon || undefined"
-									:collapse-icon="state.collapseIcon || undefined"
-									:font-size="state.fontSize"
-									:line-height="state.lineHeight"
-							/>
-						</template>
+					<origam-expansion-panel>
+						<origam-expansion-panel-header
+								:title="state.title"
+								:padding="state.padding"
+								:margin="state.margin"
+								:color="state.color"
+								:bg-color="state.bgColor"
+								:density="state.density"
+								:rounded="state.rounded"
+								:border="state.border"
+								:border-color="state.borderColor"
+								:border-style="state.borderStyle"
+								:prepend-icon="state.prependIcon || undefined"
+								:append-icon="state.appendIcon || undefined"
+								:expand-icon="state.expandIcon || undefined"
+								:collapse-icon="state.collapseIcon || undefined"
+								:font-size="state.fontSize"
+								:line-height="state.lineHeight"
+						/>
+						<origam-expansion-panel-content content="Body content"/>
 					</origam-expansion-panel>
 				</origam-expansion-panels>
 			</template>
@@ -89,15 +88,14 @@
 		>
 			<template #default="{ state }">
 				<origam-expansion-panels>
-					<origam-expansion-panel content="Body">
-						<template #header>
-							<origam-expansion-panel-header
-									:bg-color="state.bgColor"
-									:hover="resolveHoverState(state.hover)"
-									:active="resolveActiveState(state.active)"
-									title="State header"
-							/>
-						</template>
+					<origam-expansion-panel>
+						<origam-expansion-panel-header
+								:bg-color="state.bgColor"
+								:hover="resolveHoverState(state.hover)"
+								:active="resolveActiveState(state.active)"
+								title="State header"
+						/>
+						<origam-expansion-panel-content content="Body"/>
 					</origam-expansion-panel>
 				</origam-expansion-panels>
 			</template>
@@ -125,18 +123,17 @@
 		>
 			<template #default="{ state }">
 				<origam-expansion-panels>
-					<origam-expansion-panel content="Body">
-						<template #header>
-							<origam-expansion-panel-header
-									:hide-actions="state.hideActions"
-									:readonly="state.readonly"
-									:static="state.static"
-									:focusable="state.focusable"
-									:ripple="state.ripple"
-									:tag="state.tag"
-									title="Functional header"
-							/>
-						</template>
+					<origam-expansion-panel>
+						<origam-expansion-panel-header
+								:hide-actions="state.hideActions"
+								:readonly="state.readonly"
+								:static="state.static"
+								:focusable="state.focusable"
+								:ripple="state.ripple"
+								:tag="state.tag"
+								title="Functional header"
+						/>
+						<origam-expansion-panel-content content="Body"/>
 					</origam-expansion-panel>
 				</origam-expansion-panels>
 			</template>
@@ -156,82 +153,76 @@
 
 		<Variant title="Events - click:append">
 			<origam-expansion-panels>
-				<origam-expansion-panel content="Body">
-					<template #header>
-						<origam-expansion-panel-header
-								title="Click the append icon"
-								:append-icon="appendIcon"
-								@click:append="logEvent('click:append', $event)"
-						/>
-					</template>
+				<origam-expansion-panel>
+					<origam-expansion-panel-header
+							title="Click the append icon"
+							:append-icon="appendIcon"
+							@click:append="logEvent('click:append', $event)"
+					/>
+					<origam-expansion-panel-content content="Body"/>
 				</origam-expansion-panel>
 			</origam-expansion-panels>
 		</Variant>
 
 		<Variant title="Events - click:prepend">
 			<origam-expansion-panels>
-				<origam-expansion-panel content="Body">
-					<template #header>
-						<origam-expansion-panel-header
-								title="Click the prepend icon"
-								:prepend-icon="prependIcon"
-								@click:prepend="logEvent('click:prepend', $event)"
-						/>
-					</template>
+				<origam-expansion-panel>
+					<origam-expansion-panel-header
+							title="Click the prepend icon"
+							:prepend-icon="prependIcon"
+							@click:prepend="logEvent('click:prepend', $event)"
+					/>
+					<origam-expansion-panel-content content="Body"/>
 				</origam-expansion-panel>
 			</origam-expansion-panels>
 		</Variant>
 
 		<Variant title="Slots - Default">
 			<origam-expansion-panels>
-				<origam-expansion-panel content="Body">
-					<template #header>
-						<origam-expansion-panel-header>
-							<span>Custom default slot content</span>
-						</origam-expansion-panel-header>
-					</template>
+				<origam-expansion-panel>
+					<origam-expansion-panel-header>
+						<span>Custom default slot content</span>
+					</origam-expansion-panel-header>
+					<origam-expansion-panel-content content="Body"/>
 				</origam-expansion-panel>
 			</origam-expansion-panels>
 		</Variant>
 
 		<Variant title="Slots - Prepend">
 			<origam-expansion-panels>
-				<origam-expansion-panel content="Body">
-					<template #header>
-						<origam-expansion-panel-header title="With prepend slot">
-							<template #prepend>
-								<origam-icon :icon="prependIcon"/>
-							</template>
-						</origam-expansion-panel-header>
-					</template>
+				<origam-expansion-panel>
+					<origam-expansion-panel-header title="With prepend slot">
+						<template #prepend>
+							<origam-icon :icon="prependIcon"/>
+						</template>
+					</origam-expansion-panel-header>
+					<origam-expansion-panel-content content="Body"/>
 				</origam-expansion-panel>
 			</origam-expansion-panels>
 		</Variant>
 
 		<Variant title="Slots - Append">
 			<origam-expansion-panels>
-				<origam-expansion-panel content="Body">
-					<template #header>
-						<origam-expansion-panel-header title="With append slot">
-							<template #append>
-								<origam-icon :icon="appendIcon"/>
-							</template>
-						</origam-expansion-panel-header>
-					</template>
+				<origam-expansion-panel>
+					<origam-expansion-panel-header title="With append slot">
+						<template #append>
+							<origam-icon :icon="appendIcon"/>
+						</template>
+					</origam-expansion-panel-header>
+					<origam-expansion-panel-content content="Body"/>
 				</origam-expansion-panel>
 			</origam-expansion-panels>
 		</Variant>
 
 		<Variant title="Slots - Title">
 			<origam-expansion-panels>
-				<origam-expansion-panel content="Body">
-					<template #header>
-						<origam-expansion-panel-header>
-							<template #title>
-								<strong>Custom title slot content</strong>
-							</template>
-						</origam-expansion-panel-header>
-					</template>
+				<origam-expansion-panel>
+					<origam-expansion-panel-header>
+						<template #title>
+							<strong>Custom title slot content</strong>
+						</template>
+					</origam-expansion-panel-header>
+					<origam-expansion-panel-content content="Body"/>
 				</origam-expansion-panel>
 			</origam-expansion-panels>
 		</Variant>
@@ -248,14 +239,13 @@
 		>
 			<template #default="{ state }">
 				<origam-expansion-panels>
-					<origam-expansion-panel content="Body content">
-						<template #header>
-							<origam-expansion-panel-header
-									v-bind="state"
-									@click:append="logEvent('click:append', $event)"
-									@click:prepend="logEvent('click:prepend', $event)"
-							/>
-						</template>
+					<origam-expansion-panel>
+						<origam-expansion-panel-header
+								v-bind="state"
+								@click:append="logEvent('click:append', $event)"
+								@click:prepend="logEvent('click:prepend', $event)"
+						/>
+						<origam-expansion-panel-content content="Body content"/>
 					</origam-expansion-panel>
 				</origam-expansion-panels>
 			</template>
@@ -294,6 +284,7 @@
 
 	import {
 		OrigamExpansionPanel,
+		OrigamExpansionPanelContent,
 		OrigamExpansionPanelHeader,
 		OrigamExpansionPanels,
 		OrigamIcon,

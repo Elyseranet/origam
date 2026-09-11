@@ -46,8 +46,8 @@
 				<StoryGroup title="Shape">
 					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
 					<HstSelect   v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
-					<HstCheckbox v-model="state.pill"      title="Pill (round is the default — visible only against Label)"/>
-					<HstCheckbox v-model="state.label"     title="Label (square corners)"/>
+					<HstCheckbox v-model="state.pill"      title="Pill"/>
+					<HstCheckbox v-model="state.label"     title="Label"/>
 				</StoryGroup>
 				<StoryGroup title="Border">
 					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
@@ -73,12 +73,7 @@
 				:init-state="() => useStoryInitState<IHoverProps & IActiveProps & Partial<IBgColorProps>>({ bgColor: 'primary' })"
 		>
 			<template #default="{ state }">
-				<origam-chip
-          :bg-color="state.bgColor"
-          :hover="resolveHoverState(state.hover)"
-          :active="resolveActiveState(state.active)"
-          text="Chip"
-        />
+				<origam-chip :bg-color="state.bgColor" :hover="resolveHoverState(state.hover)" :active="resolveActiveState(state.active)" text="Chip"/>
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Surface">
@@ -251,8 +246,8 @@
 					<HstSelect   v-model="state.density"   title="Density"   :options="DENSITY_OPTIONS"/>
 					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
 					<HstSelect   v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
-					<HstCheckbox v-model="state.pill"      title="Pill (round is the default — visible only against Label)"/>
-					<HstCheckbox v-model="state.label"     title="Label (square corners)"/>
+					<HstCheckbox v-model="state.pill"      title="Pill"/>
+					<HstCheckbox v-model="state.label"     title="Label"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.closable"  title="Closable"/>

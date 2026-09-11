@@ -1,0 +1,65 @@
+{
+  "breadcrumb": {
+    "_comment": "OrigamBreadcrumb + OrigamBreadcrumbItem + OrigamBreadcrumbDivider component tokens — Lot 5D. Navigation landmark (<nav>) rendering an ordered list of items separated by dividers. BEM children: items (ol), item (li wrapper), prepend, append. Sibling components: OrigamBreadcrumbItem (the link/span per crumb) and OrigamBreadcrumbDivider (the separator glyph or icon). Each has its own sub-section below.",
+
+    "gap":                        { "$type": "dimension",  "$value": "{space.0}",                  "$description": "Gap between items in the ol flex row (spacing is handled by item padding-inline)" },
+    "padding-block":              { "$type": "dimension",  "$value": "{space.2}",                  "$description": "Block padding of the breadcrumb root container" },
+    "padding-inline":             { "$type": "dimension",  "$value": "{space.2}",                  "$description": "Inline padding of the breadcrumb root container" },
+    "font-size":                  { "$type": "dimension",  "$value": "{font.size.md}",             "$description": "Base font-size for the breadcrumb trail" },
+
+    "background":                 { "$type": "color",      "$value": "transparent",                "$description": "Default background of the breadcrumb root (transparent; the old :root default was rgb(230,230,230) which is now migrated)" },
+    "color":                      { "$type": "color",      "$value": "{color.text.primary}",       "$description": "Default text color of the breadcrumb root (replaces rgba(0,0,0,0.87) from :root block)" },
+
+    "border-color":               { "$type": "color",      "$value": "currentColor",               "$description": "Border color (used when --border variant is active)" },
+    "border-style":               { "$type": "other",      "$value": "solid",                      "$description": "Border style" },
+    "border-radius":              { "$type": "dimension",  "$value": "{radius.none}",              "$description": "Default border-radius of the root container" },
+    "border-radius-rounded":      { "$type": "dimension",  "$value": "{radius.sm}",                "$description": "Border-radius for the --rounded variant" },
+
+    "box-shadow":                 { "$type": "shadow",     "$value": "{shadow.none}",              "$description": "Default box-shadow (none)" },
+    "box-shadow-elevated":        { "$type": "shadow",     "$value": "{shadow.md}",                "$description": "Box-shadow when --elevated modifier is active (replaces rgba(0,0,0,0.05)+rgba(0,0,0,0.08) hardcoded in scoped style)" },
+
+    "transition-property":        { "$type": "other",      "$value": "transform, color",           "$description": "Transition properties for the root container" },
+    "transition-duration":        { "$type": "duration",   "$value": "{motion.duration.medium}",   "$description": "Transition duration for the root container" },
+    "transition-timing-function": { "$type": "cubicBezier","$value": "{motion.easing.standard}",   "$description": "Transition easing for the root container" },
+
+    "item": {
+      "_comment": "BEM: .origam-breadcrumb-item — the individual crumb link or span.",
+      "color":                    { "$type": "color",      "$value": "{color.text.primary}",       "$description": "Default color of a breadcrumb item (inherit from root)" },
+      "hover-color":              { "$type": "color",      "$value": "{color.action.primary.bg}",  "$description": "Color on hover for clickable items (link affordance)" },
+      "active-color":             { "$type": "color",      "$value": "{color.text.secondary}",     "$description": "Color of the current page item (last crumb, aria-current=page)" },
+      "opacity":                  { "$type": "number",     "$value": "{opacity.100}",              "$description": "Default opacity of a breadcrumb item" },
+      "opacity-disabled":         { "$type": "number",     "$value": "{opacity.50}",               "$description": "Opacity when the item is disabled" },
+      "text-decoration":          { "$type": "other",      "$value": "none",                       "$description": "Text decoration (none by default; can override for underlined links)" },
+      "background":               { "$type": "color",      "$value": "transparent",                "$description": "Default background (transparent)" },
+      "box-shadow":               { "$type": "shadow",     "$value": "{shadow.none}",              "$description": "Default box-shadow (none)" },
+      "border-color":             { "$type": "color",      "$value": "currentColor",               "$description": "Border color" },
+      "border-style":             { "$type": "other",      "$value": "solid",                      "$description": "Border style" },
+      "border-radius":            { "$type": "dimension",  "$value": "{radius.none}",              "$description": "Border radius of an item" },
+      "transition-property":      { "$type": "other",      "$value": "transform, color",           "$description": "Animated properties for item hover/active transitions" },
+      "transition-duration":      { "$type": "duration",   "$value": "{motion.duration.medium}",   "$description": "Duration of item transitions" },
+      "transition-timing-function":{ "$type": "cubicBezier","$value": "{motion.easing.standard}", "$description": "Easing for item transitions" }
+    },
+
+    "divider": {
+      "_comment": "BEM: .origam-breadcrumb-divider — the separator between crumbs.",
+      "color":                    { "$type": "color",      "$value": "{color.text.secondary}",     "$description": "Color of the divider character or icon" },
+      "font-size":                { "$type": "dimension",  "$value": "{font.size.md}",             "$description": "Font size of the divider character" },
+      "character":                { "$type": "other",      "$value": "/",                          "$description": "Default divider character (overridable via the divider prop)" },
+      "padding-inline":           { "$type": "dimension",  "$value": "{space.2}",                  "$description": "Horizontal padding around the divider (gives breathing room between crumbs)" },
+      "opacity":                  { "$type": "number",     "$value": "{opacity.100}",              "$description": "Default opacity of the divider" },
+      "background":               { "$type": "color",      "$value": "transparent",                "$description": "Background of the divider container (transparent)" },
+      "box-shadow":               { "$type": "shadow",     "$value": "{shadow.none}",              "$description": "Box-shadow of the divider (none)" },
+      "border-color":             { "$type": "color",      "$value": "currentColor",               "$description": "Border color of the divider" },
+      "border-style":             { "$type": "other",      "$value": "solid",                      "$description": "Border style" },
+      "border-radius":            { "$type": "dimension",  "$value": "{radius.none}",              "$description": "Border radius of the divider wrapper" },
+      "transition-property":      { "$type": "other",      "$value": "transform, color",           "$description": "Animated properties for divider" },
+      "transition-duration":      { "$type": "duration",   "$value": "{motion.duration.medium}",   "$description": "Duration of divider transitions" },
+      "transition-timing-function":{ "$type": "cubicBezier","$value": "{motion.easing.standard}", "$description": "Easing for divider transitions" }
+    },
+
+    "home-icon": {
+      "_comment": "Tokens for an optional home icon prepended to the first breadcrumb item (via the prependIcon prop on OrigamBreadcrumbItem).",
+      "color":                    { "$type": "color",      "$value": "{color.action.primary.bg}",  "$description": "Color of the home icon (matches primary link color)" }
+    }
+  }
+}

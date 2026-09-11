@@ -1,0 +1,14 @@
+{
+  "counter": {
+    "color":           { "$type": "color",      "$value": "{color.text.secondary}" },
+    "color-active":    { "$type": "color",      "$value": "{color.action.primary.bg}" },
+    "color-error":     { "$type": "color",      "$value": "{color.feedback.danger.fgSubtle}" },
+    "font-size":       { "$type": "dimension",  "$value": "{font.size.xs}" },
+    "font-weight":     { "$type": "fontWeight", "$value": "{font.weight.regular}" },
+    "letter-spacing":  { "$type": "dimension",  "$value": "{font.letterSpacing.normal}" },
+    "padding-inline":  { "$type": "dimension",  "$value": "{space.1}" },
+    "opacity":         { "$type": "number",     "$value": "{opacity.70}" },
+    "opacity-active":  { "$type": "number",     "$value": "{opacity.100}" },
+    "transition-duration": { "$type": "duration", "$value": "{motion.duration.fast}" }
+  }
+}

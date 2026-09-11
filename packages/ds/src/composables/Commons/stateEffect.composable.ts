@@ -7,16 +7,33 @@ import { useMargin } from './margin.composable'
 import { usePadding } from './padding.composable'
 import { useRounded } from './rounded.composable'
 
-import { getForeground, intentBgExpr, isCssColor, isIntent, isParsableColor, isUtilityIntent, parseColor, rawBgExprWithState, tokenForegroundForIntent, tokenStylesForIntent, warnLegacyColor } from '../../utils/Commons/color.util'
+import {
+    getForeground,
+    intentBgExpr,
+    isCssColor,
+    isIntent,
+    isParsableColor,
+    isUtilityIntent,
+    parseColor,
+    rawBgExprWithState,
+    tokenForegroundForIntent,
+    tokenStylesForIntent,
+    warnLegacyColor,
+} from '../../utils'
 
-import type { IBorderProps } from '../../interfaces/Commons/border.interface'
-import type { IMarginProps } from '../../interfaces/Commons/margin.interface'
-import type { IPaddingProps } from '../../interfaces/Commons/padding.interface'
-import type { IRoundedProps } from '../../interfaces/Commons/rounded.interface'
-import type { IActiveState, IHoverState } from '../../interfaces/Commons/state-effect.interface'
+import type {
+    IActiveState,
+    IBgColorProps,
+    IBorderProps,
+    IColorProps,
+    IElevationProps,
+    IHoverState,
+    IMarginProps,
+    IPaddingProps,
+    IRoundedProps,
+} from '../../interfaces'
 
-import type { TBgFgRole, TColor } from '../../types/Commons/color.type'
-import type { TStateEffectProps } from '../../types/Commons/state-effect.type'
+import type { TBgFgRole, TColor } from '../../types'
 
 // ────────────────────────────────────────────────────────────────────────────
 // `useStateEffect` — single composable for state-aware visual styles.
@@ -92,32 +109,20 @@ function pickEffective<T> (
     })
 }
 
+type TStateEffectProps =
+    & IColorProps
+    & IBgColorProps
+    & IBorderProps
+    & IRoundedProps
+    & IElevationProps
+    & IPaddingProps
+    & IMarginProps
+    & { gap?: boolean | number | string }
+
 const noopRef = computed(() => false)
 
 /*********************************************************
  * useStateEffect
- *
- * @description
- * Composable unique remplacant la chaine `useColorEffect` +
- * `useBorder` + `useRounded` + `useElevation` + `usePadding` + `useMargin`
- * que chaque composant visuel devait repeter. Lit les etats `isHover`/
- * `isActive`/`isDisabled` (et leurs overrides `hoverState`/`activeState`)
- * et resout 8 axes state-aware : color, bgColor, border, rounded,
- * elevation, padding, margin, gap — chacun avec classes ET styles.
- * Priorite de resolution par axe : HOVER gagne sur ACTIVE (survoler un
- * element presse/selectionne montre la surface hover), qui gagne sur la
- * valeur de repos (`props.xxx`).
- *
- * @description
- * ⛔ `status` (`success|info|warning|error`) ECRASE `color`/`bgColor` —
- * il n'est PAS surchargeable par les props de couleur du consommateur,
- * sinon le statut serait cosmetiquement sans effet. Les props directionnelles
- * (`borderTop`, `paddingBlock`, `marginInline`, les coins `roundedTopLeft`…)
- * ne sont PAS state-swappables : elles sont lues directement depuis
- * `props` via un objet `reactive` a accesseurs `get` — jamais un litteral
- * plat, qui figerait la valeur au moment de l'appel et casserait la
- * reactivite sur un changement de prop ulterieur (meme piege que
- * `pickEffective` documente plus haut pour la valeur de repos).
  ********************************************************/
 export function useStateEffect (
     props: TStateEffectProps,
@@ -164,7 +169,7 @@ export function useStateEffect (
     const padding  = pickEffective(() => props.padding, isHover, isActive, hoverState, activeState, 'padding')
     const margin   = pickEffective(() => props.margin, isHover, isActive, hoverState, activeState, 'margin')
     const gap      = pickEffective<boolean | number | string>(
-        () => props.gap, isHover, isActive, hoverState, activeState, 'gap',
+        () => (props as any).gap, isHover, isActive, hoverState, activeState, 'gap',
     )
 
     // ── Color axis (preserved verbatim from useColorEffect) ──────────
@@ -267,25 +272,17 @@ export function useStateEffect (
     // stays state-aware via the reactive getter (same pattern as
     // padding / margin); `borderColor` / `borderStyle` — and the per-side
     // `borderTop`/`borderRight`/`borderBottom`/`borderLeft` (+ `*Color`)
-    // props from issue #215, plus the logical-axis `borderBlock` /
-    // `borderInline` props — are not state-swappable, so they read
+    // props from issue #215 — are not state-swappable, so they read
     // straight from the base props. Forwarding these was the same "declared
     // but never read" bug the ticket fixes at the `useBorder` level: without
     // this explicit pass-through, any consumer of `useStateEffect` (Card,
     // Sheet, …) would have the props typed on `IBorderProps` yet silently
-    // dropped before reaching `useBorder`. `borderBlock` / `borderInline`
-    // hit exactly this gap a second time: `useBorder` itself was fixed to
-    // read them, but this curated getter list was never updated to forward
-    // them, so every one of the ~30 components routed through
-    // `useStateEffect` (Card, Btn, Sheet, Alert, …) still silently dropped
-    // them even after that fix.
+    // dropped before reaching `useBorder`.
     const { borderClasses, borderStyles }       = useBorder(
         reactive({
             get border () { return border.value },
             get borderColor () { return props.borderColor },
             get borderStyle () { return props.borderStyle },
-            get borderBlock () { return props.borderBlock },
-            get borderInline () { return props.borderInline },
             get borderTop () { return props.borderTop },
             get borderRight () { return props.borderRight },
             get borderBottom () { return props.borderBottom },
@@ -296,26 +293,7 @@ export function useStateEffect (
             get borderLeftColor () { return props.borderLeftColor },
         }) as IBorderProps,
     )
-    // Rounded goes through the props-object overload (not the bare Ref) for
-    // the same reason border does: the `Ref` overload carries ONLY the
-    // `rounded` shorthand scalar, so the per-corner `roundedTopLeft` /
-    // `roundedTopRight` / `roundedBottomLeft` / `roundedBottomRight` props
-    // were structurally unreachable — every component routed through
-    // `useStateEffect` (Card, Btn, Sheet, Alert, …) dropped them even once
-    // `useRounded` learned to read them. This is the third instance of the
-    // exact same "curated getter list was never updated" bug (border per-side
-    // → borderBlock/borderInline → here); the shorthand stays state-aware via
-    // the reactive getter, the corners read straight from the base props
-    // (they are not state-swappable).
-    const { roundedClasses, roundedStyles }     = useRounded(
-        reactive({
-            get rounded () { return rounded.value },
-            get roundedTopLeft () { return props.roundedTopLeft },
-            get roundedTopRight () { return props.roundedTopRight },
-            get roundedBottomLeft () { return props.roundedBottomLeft },
-            get roundedBottomRight () { return props.roundedBottomRight },
-        }) as IRoundedProps,
-    )
+    const { roundedClasses, roundedStyles }     = useRounded(rounded)
     const { elevationClasses, elevationStyles } = useElevation(
         elevation as Ref<number | string | undefined>,
         flat as Ref<boolean>,
@@ -327,35 +305,11 @@ export function useStateEffect (
     // when `padding` changes — which is exactly what happens on
     // hover/active swaps. Wrap with a `reactive` getter so the read goes
     // through the ref every time, preserving the dependency chain.
-    //
-    // The directional props (`paddingTop` / `paddingBlock` / … and their
-    // margin mirrors) are NOT state-swappable — there is no `hoverState
-    // .paddingTop` — so they read straight from the base props. They must
-    // still be forwarded explicitly: a getter bag only exposes the keys it
-    // names, so omitting them here would silently drop all 12 for every
-    // component routed through `useStateEffect`, exactly as happened to
-    // `borderBlock` / `borderInline` above.
     const { paddingClasses, paddingStyles }     = usePadding(
-        reactive({
-            get padding () { return padding.value },
-            get paddingTop () { return props.paddingTop },
-            get paddingRight () { return props.paddingRight },
-            get paddingBottom () { return props.paddingBottom },
-            get paddingLeft () { return props.paddingLeft },
-            get paddingBlock () { return props.paddingBlock },
-            get paddingInline () { return props.paddingInline },
-        }) as IPaddingProps,
+        reactive({ get padding () { return padding.value } }) as IPaddingProps,
     )
     const { marginClasses, marginStyles }       = useMargin(
-        reactive({
-            get margin () { return margin.value },
-            get marginTop () { return props.marginTop },
-            get marginRight () { return props.marginRight },
-            get marginBottom () { return props.marginBottom },
-            get marginLeft () { return props.marginLeft },
-            get marginBlock () { return props.marginBlock },
-            get marginInline () { return props.marginInline },
-        }) as IMarginProps,
+        reactive({ get margin () { return margin.value } }) as IMarginProps,
     )
 
     // Gap support: there's no `useGap` composable today. Emit an inline

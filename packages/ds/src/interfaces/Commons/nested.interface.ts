@@ -1,9 +1,4 @@
-import type {
-    TOpenStrategy,
-    TOpenStrategyFns,
-    TSelectStrategy,
-    TSelectStrategyFn
-} from '../../types/Commons/nested.type'
+import type { TOpenStrategy, TOpenStrategyFns, TSelectStrategy, TSelectStrategyFn } from '../../types'
 
 export interface INestedProps {
     selectStrategy?: TSelectStrategy | TSelectStrategyFn

@@ -1,6 +1,5 @@
 <template>
 	<div
-			:id="id"
 			:class="colorPickerEditClasses"
 			:style="colorPickerEditStyles"
 	>
@@ -21,8 +20,6 @@
 
 		<template v-if="enabledModes.length > 1">
 			<origam-btn
-					:aria-label="cycleModeAriaLabel"
-					:disabled="disabled"
 					:icon="MDI_ICONS.UNFOLD_LESS_HORIZONTAL"
 					size="x-small"
 					@click="handleUpdateMode"
@@ -35,21 +32,15 @@
 		lang="ts"
 		setup
 >
-	import OrigamBtn from '../Btn/OrigamBtn.vue'
+	import { OrigamBtn } from "../../components"
 
-	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useProps , useStyle} from "../../composables"
 
-	import { COLOR_NULL, COLOR_PICKER_MODES } from '../../consts/ColorPicker/color-picker.const'
+	import { COLOR_NULL, COLOR_PICKER_MODES } from "../../consts"
 
-	import { COLOR_MODES_NAMES } from '../../enums/ColorPicker/color-picker.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { COLOR_MODES_NAMES, MDI_ICONS } from "../../enums"
 
-  import type {
-    IColorPickerEditProps,
-    IColorPickerEditSlots
-  } from '../../interfaces/ColorPicker/color-picker-edit.interface'
+	import type { IColorPickerEditProps} from "../../interfaces"
 
 	import type { IColorPickerEditEmits } from '../../interfaces/ColorPicker/color-picker-edit.interface'
 
@@ -69,17 +60,10 @@
 
 	const emits = defineEmits<IColorPickerEditEmits>()
 
-  defineSlots<IColorPickerEditSlots>()
-
 	const {filterProps} = useProps<IColorPickerEditProps>(props)
-	const {t} = useLocale()
 
 	const enabledModes = computed(() => {
 		return props.modes.map((key) => ({...COLOR_PICKER_MODES[key], name: key}))
-	})
-
-	const cycleModeAriaLabel = computed(() => {
-		return props.ariaLabel ?? t('origam.color_picker.edit.cycle_mode_aria_label')
 	})
 
 	const inputsProps = computed((): Array<Record<string, unknown>> => {
@@ -138,7 +122,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(colorPickerEditStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(colorPickerEditStyles)
 
 
 	/*********************************************************
@@ -176,30 +160,24 @@
 			text-align: center;
 
 			&:not(:last-child) {
-				margin-inline-end: var(--origam-color-picker__edit---gap, 8px);
+				margin-inline-end: 8px;
 			}
 
 			#{$this}__input {
 				border-radius: 4px;
 				margin-bottom: 8px;
-				border: 1px solid var(--origam-color-picker-edit__input---border-color, var(--origam-color__border---default));
+				border: 1px solid rgba(163, 163, 163);
 				min-width: 0;
 				outline: none;
 				text-align: center;
 				width: 100%;
 				height: 32px;
-				background: var(--origam-color-picker-edit__input---background-color, var(--origam-color__surface---default));
-				color: var(--origam-color-picker-edit__input---color, var(--origam-color__text---secondary));
+				background: rgba(255, 255, 255);
+				color: rgba(0, 0, 0, .5);
 			}
 
 			#{$this}__label {
-				// `rem` resolves against the document root, not this component's
-				// ancestor — a plain literal here would be immune to the typography
-				// bridge `OrigamColorPickerField` republishes on the teleported
-				// surface (see `useTeleportTypography`). Generic-first read, same
-				// convention as `useTypography`'s rollout: the bridged var wins when
-				// present, the historical size is the fallback.
-				font-size: var(--origam-color-picker-edit__label---font-size, .75rem);
+				font-size: .75rem
 			}
 		}
 	}

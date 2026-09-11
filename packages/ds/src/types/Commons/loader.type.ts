@@ -1,14 +1,14 @@
-import { LOADER_KIND } from '../../enums/Commons/loader.enum'
-
-import type { IProgressCircularProps } from '../../interfaces/Progress/progress-circular.interface'
-import type { IProgressLinearProps } from '../../interfaces/Progress/progress-linear.interface'
-import type { ISkeletonProps } from '../../interfaces/Skeleton/skeleton.interface'
+import type {
+    IProgressCircularProps,
+    IProgressLinearProps,
+    ISkeletonProps
+} from '../../interfaces'
 
 /**
  * Loader kind — decides which renderer is mounted by the consumer
  * component when a loading state is active.
  */
-export type TLoaderKind = `${LOADER_KIND}`
+export type TLoaderKind = 'line' | 'circular' | 'skeleton'
 
 /**
  * Per-kind override config. Each kind extends the corresponding component's
@@ -21,9 +21,9 @@ export type TLoaderKind = `${LOADER_KIND}`
  * defensively.
  */
 export type TLoaderConfig =
-    | ({ type: `${LOADER_KIND.LINE}` } & Partial<IProgressLinearProps>)
-    | ({ type: `${LOADER_KIND.CIRCULAR}` } & Partial<IProgressCircularProps>)
-    | ({ type: `${LOADER_KIND.SKELETON}` } & Partial<ISkeletonProps>)
+    | ({ type: 'line' } & Partial<IProgressLinearProps>)
+    | ({ type: 'circular' } & Partial<IProgressCircularProps>)
+    | ({ type: 'skeleton' } & Partial<ISkeletonProps>)
 
 /**
  * The full `loading` prop value accepted by every consumer component.

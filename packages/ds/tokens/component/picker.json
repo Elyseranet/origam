@@ -1,0 +1,24 @@
+{
+  "picker": {
+    "_comment": "Base abstraction shared by DatePicker, ColorPicker, and any future picker variant. Concrete pickers compose these defaults with their own component-specific tokens.",
+    "background-color":      { "$type": "color",     "$value": "{color.surface.raised}" },
+    "color":                 { "$type": "color",     "$value": "{color.text.primary}" },
+    "border-color":          { "$type": "color",     "$value": "{color.border.subtle}" },
+    "border-width":          { "$type": "dimension", "$value": "{border.width.thin}" },
+    "border-radius":         { "$type": "dimension", "$value": "{radius.md}" },
+    "box-shadow":            { "$type": "shadow",    "$value": "{shadow.lg}" },
+    "padding-block":         { "$type": "dimension", "$value": "{space.4}" },
+    "padding-inline":        { "$type": "dimension", "$value": "{space.4}" },
+    "min-width":             { "$type": "dimension", "$value": "320px" },
+    "max-width":             { "$type": "dimension", "$value": "100vw" },
+    "z-index":               { "$type": "number",    "$value": "{zIndex.dropdown}" },
+    "transition-duration":   { "$type": "duration",  "$value": "{motion.duration.medium}" },
+    "transition-timing-function": { "$type": "cubicBezier", "$value": "{motion.easing.standard}" },
+
+    "title": {
+      "color":       { "$type": "color",      "$value": "{color.text.secondary}" },
+      "font-size":   { "$type": "dimension",  "$value": "{font.size.md}" },
+      "font-weight": { "$type": "fontWeight", "$value": "{font.weight.medium}" }
+    }
+  }
+}

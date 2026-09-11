@@ -1,3 +1,3 @@
-import OrigamTooltip from '../../components/Tooltip/OrigamTooltip.vue'
+import { OrigamTooltip } from "../../components"
 
 export type TOrigamTooltip = InstanceType<typeof OrigamTooltip>

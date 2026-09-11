@@ -101,14 +101,14 @@
 				<StoryGroup title="Tooltip">
 					<HstCheckbox v-model="state.showTooltip" title="Show Tooltip"/>
 				</StoryGroup>
-				<StoryGroup title="Animation — inert on this component (#426)">
-					<HstCheckbox v-model="state.animated"           title="Animated (no effect)"/>
-					<HstNumber   v-model="state.animationDuration"  title="Duration (ms) (no effect)" :min="100" :max="2000" :step="100"/>
+				<StoryGroup title="Animation">
+					<HstCheckbox v-model="state.animated"           title="Animated"/>
+					<HstNumber   v-model="state.animationDuration"  title="Duration (ms)" :min="100" :max="2000" :step="100"/>
 				</StoryGroup>
 				<StoryGroup title="Metadata">
-					<HstText v-model="state.title"       title="Title (accessible name only — no visible header)"/>
-					<HstText v-model="state.subtitle"    title="Subtitle (no effect — no header is rendered)"/>
-					<HstText v-model="state.aspectRatio" title="Aspect Ratio (no effect — sized by width / height)"/>
+					<HstText v-model="state.title"       title="Title"/>
+					<HstText v-model="state.subtitle"    title="Subtitle"/>
+					<HstText v-model="state.aspectRatio" title="Aspect Ratio (e.g. 16/9)"/>
 				</StoryGroup>
 				<StoryGroup title="Dimension">
 					<HstText v-model="state.width"  title="Width"/>
@@ -216,8 +216,8 @@
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.showTooltip"        title="Show Tooltip"/>
-					<HstCheckbox v-model="state.animated"           title="Animated (no effect — #426)"/>
-					<HstNumber   v-model="state.animationDuration"  title="Duration (ms) (no effect — #426)" :min="100" :max="2000" :step="100"/>
+					<HstCheckbox v-model="state.animated"           title="Animated"/>
+					<HstNumber   v-model="state.animationDuration"  title="Duration (ms)" :min="100" :max="2000" :step="100"/>
 				</StoryGroup>
 				<StoryGroup title="Dimension">
 					<HstText v-model="state.width"  title="Width"/>

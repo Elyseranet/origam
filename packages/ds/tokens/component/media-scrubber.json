@@ -1,0 +1,33 @@
+{
+  "media-scrubber": {
+    "_comment": "Tokens for <OrigamMediaScrubber>. Reusable slider used by both the video scrubber AND the volume control inside <OrigamMediaController>. Track + buffer + progress + thumb + hover-tooltip surfaces.",
+    "color":                     { "$type": "color",      "$value": "{color.action.primary.bg}" },
+    "primary":                   { "$type": "color",      "$value": "{color.action.primary.bg}" },
+
+    "track": {
+      "_comment": "Idle track height. Slightly grows on hover/scrubbing via the --track-thickness-active companion var.",
+      "thickness":               { "$type": "dimension",  "$value": "4px" },
+      "thickness-active":        { "$type": "dimension",  "$value": "6px" },
+      "size":                    { "$type": "dimension",  "$value": "4px" },
+      "size-active":             { "$type": "dimension",  "$value": "6px" },
+      "background-color":        { "$type": "color",      "$value": "{color.surface.overlay}" },
+      "bg":                      { "$type": "color",      "$value": "{color.surface.overlay}" }
+    },
+
+    "buffer": {
+      "background-color":        { "$type": "color",      "$value": "{color.surface.disabled}" },
+      "bg":                      { "$type": "color",      "$value": "{color.surface.disabled}" }
+    },
+
+    "thumb": {
+      "diameter":                { "$type": "dimension",  "$value": "12px" },
+      "size":                    { "$type": "dimension",  "$value": "12px" }
+    },
+
+    "tooltip": {
+      "_comment": "Floating hover tooltip used when showHoverTooltip=true. Horizontal orientation only. Uses neutral primitives directly because the DS has no semantic `surface.inverse` token yet — the contrast pair (neutral.900 bg + neutral.0 fg) matches what OrigamTooltip does elsewhere.",
+      "background-color":        { "$type": "color",      "$value": "{color.neutral.900}" },
+      "color":                   { "$type": "color",      "$value": "{color.neutral.0}" }
+    }
+  }
+}

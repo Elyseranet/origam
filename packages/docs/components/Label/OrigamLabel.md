@@ -23,7 +23,7 @@ input.
 ```
 
 The `*` indicator is theme-aware — its color comes from
-`--origam-label---required-indicator-color`.
+`--origam-label__required-indicator---color`.
 
 ## Floating
 
@@ -40,37 +40,10 @@ charge of the actual transform / positioning animation.
 
 ## Color
 
-`color` and `bgColor` accept **either** a semantic intent (`'primary'`,
-`'danger'`, `'success'`, …) **or** a raw CSS color. `OrigamLabel` runs both
-through `useBothColor`, so intents resolve to theme tokens — no `:style`
-workaround is needed.
-
-```vue
-<template>
-    <OrigamLabel text="Email" color="primary"/>
-    <OrigamLabel text="Required" bg-color="danger"/>
-</template>
-```
-
-What each form emits on the root element:
-
-| Value | Class | Inline style |
-|---|---|---|
-| `color="primary"` | `origam--color-primary` | `color: var(--origam-color__action--primary---fgSubtle)` |
-| `color="#ff00aa"` | — | `color: rgb(255, 0, 170)` |
-| `bg-color="primary"` | `origam--bg-primary` | `background-color: var(--origam-color__action--primary---bg)` plus the paired `color: …---fg` |
-| `bg-color="#ff00aa"` | — | `background-color: rgb(255, 0, 170)` plus an auto-contrast `color` |
-
-An intent fills both the utility class **and** the inline declaration — that
-is deliberate on the foreground channel: a Vue scoped rule outranks a utility
-class, so only the inline declaration reliably paints (see the
-"Classes-first" note in the repo's `CLAUDE.md`). Setting the same intent on
-both channels (`color="danger" bg-color="danger"`) swaps the foreground to
-the background's paired contrast token instead of a hue-on-hue pair.
-
-To reach a token outside the intent scale, set the component variable
-directly — but leave `color` unset, since the prop's inline declaration
-outranks the SCSS rule that reads `--origam-label---color`:
+`color` and `bgColor` accept any CSS-color value. Intent strings are
+typed but resolved as raw CSS values by `useColor` here (no intent →
+SCSS mapping). Use a `:style` binding on a component CSS variable for
+semantic tinting:
 
 ```vue
 <template>
@@ -141,11 +114,6 @@ interface ILabelEmits {
 | `lineHeight` | `TLineHeight` | — | Line-height token. Sets `--origam-label---line-height` to `var(--origam-font__lineHeight---{lineHeight})` (none 1 · tight 1.25 · snug 1.375 · normal 1.5 · relaxed 1.625 · loose 2). When unset, the label keeps its theme line-height. |
 | `letterSpacing` | `TLetterSpacing` | — | Letter-spacing token. Sets `--origam-label---letter-spacing` to `var(--origam-font__letterSpacing---{letterSpacing})` (tight · normal · wide · wider · widest). When unset, the label keeps its theme letter-spacing. |
 
-> `fontFamily` was removed from `ILabelProps` (issue #501) — no rule in the
-> label stylesheet reads `--origam-label---font-family`. A label is meant to
-> inherit the family of the form it labels, which is a project-level setting
-> configured once on `OrigamApp`.
-
 ## Anatomy
 
 ```html
@@ -157,10 +125,8 @@ interface ILabelEmits {
 
 ## Design tokens consumed
 
-`<OrigamLabel>` reads its variables from
-`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
-under `packages/ds/src/assets/scss/tokens/`). Override at the document
-root or via a `:style` binding to re-skin a single instance.
+`<OrigamLabel>` reads from `tokens/component/label.json`. Override at
+the document root or via a `:style` binding to re-skin a single instance.
 
 | CSS variable | Token reference |
 |---|---|
@@ -172,12 +138,12 @@ root or via a `:style` binding to re-skin a single instance.
 | `--origam-label---pointer-events` | `none` |
 | `--origam-label---transition-duration` | `{motion.duration.normal}` |
 | `--origam-label---transition-easing` | `{motion.easing.standard}` |
-| `--origam-label__floating---font-size` | `0.75em` |
-| `--origam-label__floating---visibility` | `hidden` |
-| `--origam-label---required-indicator-color` | `{color.feedback.danger.fgSubtle}` |
+| `--origam-label--floating---font-size` | `0.75em` |
+| `--origam-label--floating---visibility` | `hidden` |
+| `--origam-label__required-indicator---color` | `{color.feedback.danger.fgSubtle}` |
 
-The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
-`dark.css` — grep for `--origam-label`.
+The full list lives in
+`tokens/component/label.json`.
 
 ## Accessibility
 

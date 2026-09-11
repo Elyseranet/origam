@@ -1,6 +1,6 @@
-import OrigamOtpInputField from '../../components/OtpInputField/OrigamOtpInputField.vue'
+import { OrigamOtpInputField } from '../../components'
 
-import { OTP_INPUT_FIELD_TYPE } from '../../enums/OtpInputField/otp-input-field.enum'
+import { OTP_INPUT_FIELD_TYPE } from "../../enums"
 
 export type TOtpInputFieldType = `${OTP_INPUT_FIELD_TYPE}`
 

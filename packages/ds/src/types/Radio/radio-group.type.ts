@@ -1,3 +1,3 @@
-import OrigamRadioGroup from '../../components/Radio/OrigamRadioGroup.vue'
+import { OrigamRadioGroup } from "../../components"
 
 export type TOrigamRadioGroup = InstanceType<typeof OrigamRadioGroup>

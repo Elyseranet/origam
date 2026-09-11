@@ -1,7 +1,6 @@
-import type { IHoverDirectiveBinding, IHoverHtmlElement } from '../../interfaces/Commons/hover.interface'
+import type { IHoverDirectiveBinding, IHoverHtmlElement } from '../../interfaces'
 
-import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.util'
-import { hoverRemoveListeners, isHoverEnabled, updateHover } from '../../utils/Commons/hover.util'
+import { getCurrentInstanceName, hoverRemoveListeners, isHoverEnabled, updateHover } from '../../utils'
 
 export const Hover = {
     mounted: (el: IHoverHtmlElement, binding: IHoverDirectiveBinding, name = getCurrentInstanceName()) => {

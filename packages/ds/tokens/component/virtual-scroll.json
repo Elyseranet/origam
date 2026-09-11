@@ -1,0 +1,11 @@
+{
+  "virtual-scroll": {
+    "_comment": "OrigamVirtualScroll + OrigamVirtualScrollItem component tokens — Lot 5D. Container-level component with no intrinsic visual styling; delegates layout to consuming components. BEM children: container (inner scroll wrapper), spacer (padding-top/bottom placeholders), item (each rendered virtual slot). No hex colors — purely layout and motion tokens.",
+
+    "item-height":              { "$type": "dimension",  "$value": "48px",                         "$description": "Default estimated item height used by the virtual engine for initial layout calculation. Overridden at runtime per item via the update:height event. 48px is a standard list row height." },
+    "scroll-padding":           { "$type": "dimension",  "$value": "{space.0}",                    "$description": "scroll-padding applied to the scroll container, ensuring focused items are not obscured by sticky headers" },
+
+    "transition-duration":      { "$type": "duration",   "$value": "{motion.duration.fast}",       "$description": "Duration for item appear/disappear transitions (fast to avoid jank during rapid scrolling)" },
+    "transition-easing":        { "$type": "cubicBezier","$value": "{motion.easing.standard}",     "$description": "Easing for virtual scroll item transitions" }
+  }
+}

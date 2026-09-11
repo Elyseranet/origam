@@ -1,3 +1,3 @@
-import OrigamDataText from '../../components/DataList/OrigamDataText.vue'
+import { OrigamDataText } from "../../components"
 
 export type TOrigamDataText = InstanceType<typeof OrigamDataText>

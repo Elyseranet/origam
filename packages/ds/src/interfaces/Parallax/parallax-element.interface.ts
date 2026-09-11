@@ -1,19 +1,15 @@
-import type { IBorderProps } from '../Commons/border.interface'
-import type { IBox } from '../Commons/box.interface'
 import type {
+    IBorderProps,
+    IBox,
     ICommonsComponentProps,
+    IElevationProps,
+    IMarginProps,
+    IPaddingProps,
+    IRoundedProps,
     ITagProps
-} from '../Commons/commons.interface'
-import type { IElevationProps } from '../Commons/elevation.interface'
-import type { IMarginProps } from '../Commons/margin.interface'
-import type { IPaddingProps } from '../Commons/padding.interface'
-import type { IRoundedProps } from '../Commons/rounded.interface'
+} from '../../interfaces'
 
-import type { TAnchor } from '../../types/Commons/anchor.type'
-import type { TAxis } from '../../types/Commons/axis.type'
-import type { TParallaxElementType } from '../../types/Parallax/parallax-element.type'
-import type { TParallaxEvent } from '../../types/Parallax/parallax.type'
-import type { TPoint } from '../../types/Commons/point.type'
+import type { TAnchor, TAxis, TParallaxElementType, TParallaxEvent, TPoint } from '../../types'
 
 export interface IParallaxElementTypeProps {
     type?: TParallaxElementType
@@ -45,20 +41,6 @@ export interface IParallaxElementMovement {
     minY?: number,
     maxX?: number,
     maxY?: number,
-}
-
-/*********************************************************
- * IParallaxElementEmits
- *
- * @description
- * `<OrigamParallaxElement>` emits nothing of its own — the transform
- * is purely reactive to the injected parent `<OrigamParallax>` state.
- ********************************************************/
-export interface IParallaxElementEmits {}
-
-/** Slot signatures for `<OrigamParallaxElement>`. */
-export interface IParallaxElementSlots {
-    default?: () => any
 }
 
 export interface IParallaxElementCicle {

@@ -1,0 +1,54 @@
+{
+  "file-field": {
+    "gap":                  { "$type": "dimension",  "$value": "{space.2}",                        "$description": "Gap between dragndrop wrapper sections (dropzone + list)" },
+    "list-gap":             { "$type": "dimension",  "$value": "{space.2}",                        "$description": "Gap between file-field__list items" },
+    "field-gap":            { "$type": "dimension",  "$value": "{space.2}",                        "$description": "Gap between origam-field and file list in default field mode" },
+    "details-padding-inline": { "$type": "dimension","$value": "{space.4}",                        "$description": "padding-inline of .origam-input__details deep override (16px)" },
+    "transition-duration":  { "$type": "duration",   "$value": "{motion.duration.medium}",         "$description": "Transition duration for dropzone border/bg color changes" },
+    "transition-easing":    { "$type": "cubicBezier","$value": "{motion.easing.standard}",         "$description": "Transition easing for dropzone color changes" },
+
+    "dropzone": {
+      "background-color":   { "$type": "color",      "$value": "transparent",                      "$description": "Default dropzone background" },
+      "color":              { "$type": "color",       "$value": "{color.border.default}",           "$description": "Dropzone border color (2px dashed) and text color fallback — was rgba(0,0,0,0.2)" },
+      "color-hover":        { "$type": "color",       "$value": "{color.border.strong}",            "$description": "Dropzone border color on :hover — was rgba(0,0,0,0.4)" },
+      "border-width":       { "$type": "dimension",   "$value": "2px",                             "$description": "Dropzone dashed border width" },
+      "border-style":       { "$type": "other",       "$value": "dashed",                          "$description": "Dropzone border style" },
+      "border-radius":      { "$type": "dimension",   "$value": "{radius.md}",                     "$description": "Dropzone corner radius — was 8px" },
+      "min-height":         { "$type": "dimension",   "$value": "140px",                           "$description": "Default min-height (density-adjusted via --density offset)" },
+      "padding":            { "$type": "dimension",   "$value": "{space.6}",                       "$description": "Default padding (density-adjusted) — was 24px" },
+      "gap":                { "$type": "dimension",   "$value": "{space.2}",                       "$description": "Flexbox gap inside the dropzone (icon + title + subtitle)" },
+      "cursor":             { "$type": "other",       "$value": "pointer",                         "$description": "Cursor in interactive dropzone" },
+      "cursor-disabled":    { "$type": "other",       "$value": "not-allowed",                     "$description": "Cursor when disabled or readonly" },
+      "opacity-disabled":   { "$type": "number",      "$value": "{opacity.60}",                    "$description": "Opacity when disabled or readonly" },
+      "icon-font-size":     { "$type": "dimension",   "$value": "40px",                            "$description": "Dropzone upload icon size (font-size)" },
+      "icon-opacity":       { "$type": "number",      "$value": 0.7,                               "$description": "Dropzone upload icon opacity" },
+      "title-font-size":    { "$type": "dimension",   "$value": "{font.size.md}",                  "$description": "Dropzone title font-size — was 15px ~ 0.875rem" },
+      "title-font-weight":  { "$type": "fontWeight",  "$value": "{font.weight.medium}",            "$description": "Dropzone title font-weight" },
+      "subtitle-font-size": { "$type": "dimension",   "$value": "{font.size.sm}",                  "$description": "Dropzone subtitle font-size — was 13px ~ 0.75rem" },
+      "subtitle-opacity":   { "$type": "number",      "$value": 0.6,                               "$description": "Dropzone subtitle opacity" },
+
+      "has-file": {
+        "padding":          { "$type": "dimension",   "$value": "{space.3}",                       "$description": "Compact padding when a single file is shown inside the dropzone (was 10px 12px)" },
+        "padding-inline":   { "$type": "dimension",   "$value": "{space.3}",                       "$description": "Inline padding in has-file mode" },
+        "gap":              { "$type": "dimension",   "$value": "{space.3}",                       "$description": "Row gap between icon and content in has-file mode — was 12px" }
+      },
+
+      "dragging": {
+        "background-color": { "$type": "color",       "$value": "{color.feedback.info.bgSubtle}",  "$description": "Dragover highlight bg — was rgba(25,118,210,0.06) ≈ blue.50 tint; closest semantic alias is info.bgSubtle" },
+        "border-color":     { "$type": "color",       "$value": "{color.feedback.info.bg}",        "$description": "Dragover border accent — was rgb(25,118,210) ≈ blue action color; mapped to info.bg" }
+      },
+
+      "border-color":          { "$type": "color",       "$value": "{color.border.default}",       "$description": "PDF P3 — explicit dropzone border color alias (mirrors dropzone.color, kept for clarity per the design deck)" },
+      "border-color-dragging": { "$type": "color",       "$value": "{color.action.primary.bg}",    "$description": "PDF P3 — dropzone border in 'dragging' state (primary action color per the deck)" },
+      "border-color-error":    { "$type": "color",       "$value": "{color.feedback.danger.bg}",   "$description": "PDF P3 — dropzone border in 'error' state (danger feedback)" },
+      "bg-dragging":           { "$type": "color",       "$value": "{color.surface.sunken}",       "$description": "PDF P3 — dropzone background during dragover (subtle surface tint, sunken surface alias)" },
+      "padding-block":         { "$type": "dimension",   "$value": "{space.6}",                    "$description": "PDF P3 — block padding for the empty-state dropzone" },
+      "gap-deck":              { "$type": "dimension",   "$value": "{space.2}",                    "$description": "PDF P3 — gap between dropzone children (icon + text + actions)" },
+
+      "error": {
+        "border-color":     { "$type": "color",       "$value": "{color.feedback.danger.bg}",     "$description": "Dropzone border in error state — drives the --error modifier" },
+        "fg":               { "$type": "color",       "$value": "{color.feedback.danger.fgSubtle}","$description": "Dropzone error message text color" }
+      }
+    }
+  }
+}

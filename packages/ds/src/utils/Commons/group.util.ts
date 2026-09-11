@@ -1,7 +1,7 @@
 import { UnwrapRef } from 'vue'
-import type { IGroupItem } from '../../interfaces/Commons/group.interface'
+import type { IGroupItem } from '../../interfaces'
 
-import { deepEqual } from './commons.util'
+import { deepEqual } from '../../utils'
 
 /**
  * Get item index.

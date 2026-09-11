@@ -16,18 +16,7 @@ import { expect, test } from '@playwright/test'
  *   6  → Slots - Avatar
  *   7  → Slots - Icon
  *   8  → Slots - Text
- *   9  → Prop — content (text · image · icon)
- *  10  → Prop — size
- *  11  → Prop — density
- *  12  → Prop — rounded
- *  13  → Prop — elevation
- *  14  → Prop — border
- *  15  → Default (playground)
- *
- * ⚠️  `variantId` vaut `<storyId>-<index>` et l'index est la POSITION du
- * <Variant> dans le fichier : insérer un Variant décale tous les suivants
- * sans casser la navigation. Table vérifiée par
- * `node e2e/_support/audit-variant-pins.mjs`.
+ *   9  → Default (playground)
  *
  * ⚠️  JAMAIS waitForLoadState('networkidle') : Histoire garde un websocket HMR
  * ouvert → networkidle ne résout JAMAIS → timeout garanti.
@@ -55,7 +44,7 @@ test.describe('OrigamAvatar', () => {
     // ------------------------------------------------------------------ //
 
     test('Design — BEM class, bgColor token, size, text content, three avatars', async ({ page }) => {
-        await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+        await page.goto(variantUrl(0))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const firstAvatar = sandbox.locator('.origam-avatar').first()
 
@@ -89,7 +78,8 @@ test.describe('OrigamAvatar', () => {
         await expect(firstAvatar.locator('.origam-avatar__text')).toContainText('AP')
 
         // Three avatars rendered (text / image / icon)
-        await expect(sandbox.locator('.origam-avatar')).toHaveCount(3)
+        const count = await sandbox.locator('.origam-avatar').count()
+        expect(count).toBe(3)
 
         // SCSS --rounded injects a non-zero border-radius
         const radius = await firstAvatar.evaluate(el => {
@@ -105,7 +95,7 @@ test.describe('OrigamAvatar', () => {
     // ------------------------------------------------------------------ //
 
     test('State — resting: bgColor token, non-transparent bg, wrapper present', async ({ page }) => {
-        await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
+        await page.goto(variantUrl(1))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const avatar = sandbox.locator('.origam-avatar').first()
         await expect(avatar).toBeVisible({ timeout: 20000 })
@@ -128,7 +118,7 @@ test.describe('OrigamAvatar', () => {
     // ------------------------------------------------------------------ //
 
     test('Functional — tag=div as root, text "AP" rendered', async ({ page }) => {
-        await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+        await page.goto(variantUrl(2))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const avatar = sandbox.locator('.origam-avatar').first()
         await expect(avatar).toBeVisible({ timeout: 20000 })
@@ -146,7 +136,7 @@ test.describe('OrigamAvatar', () => {
     // ------------------------------------------------------------------ //
 
     test('Events - update:active — button-tagged, clickable without error', async ({ page }) => {
-        await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
+        await page.goto(variantUrl(3))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const avatar = sandbox.locator('.origam-avatar').first()
         await expect(avatar).toBeVisible({ timeout: 20000 })
@@ -166,7 +156,7 @@ test.describe('OrigamAvatar', () => {
     // ------------------------------------------------------------------ //
 
     test('Events - update:hover — button-tagged, hoverable without error', async ({ page }) => {
-        await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+        await page.goto(variantUrl(4))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const avatar = sandbox.locator('.origam-avatar').first()
         await expect(avatar).toBeVisible({ timeout: 20000 })
@@ -184,7 +174,7 @@ test.describe('OrigamAvatar', () => {
     // ------------------------------------------------------------------ //
 
     test('Slots - Default — custom content renders inside wrapper', async ({ page }) => {
-        await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
+        await page.goto(variantUrl(5))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const avatar = sandbox.locator('.origam-avatar').first()
         await expect(avatar).toBeVisible({ timeout: 20000 })
@@ -201,7 +191,7 @@ test.describe('OrigamAvatar', () => {
     // ------------------------------------------------------------------ //
 
     test('Slots - Avatar — avatar renders with bg-color=primary, token resolves', async ({ page }) => {
-        await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
+        await page.goto(variantUrl(6))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const avatar = sandbox.locator('.origam-avatar').first()
         await expect(avatar).toBeVisible({ timeout: 20000 })
@@ -221,7 +211,7 @@ test.describe('OrigamAvatar', () => {
     // ------------------------------------------------------------------ //
 
     test('Slots - Icon — __icon wrapper and origam-icon element present', async ({ page }) => {
-        await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
+        await page.goto(variantUrl(7))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const avatar = sandbox.locator('.origam-avatar').first()
         await expect(avatar).toBeVisible({ timeout: 20000 })
@@ -237,7 +227,7 @@ test.describe('OrigamAvatar', () => {
     // ------------------------------------------------------------------ //
 
     test('Slots - Text — custom label "Custom" with italic font-style', async ({ page }) => {
-        await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
+        await page.goto(variantUrl(8))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const avatar = sandbox.locator('.origam-avatar').first()
         await expect(avatar).toBeVisible({ timeout: 20000 })
@@ -252,21 +242,12 @@ test.describe('OrigamAvatar', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // DEFAULT / PLAYGROUND (index 15)                                     //
+    // DEFAULT / PLAYGROUND (index 9)                                      //
     // init: { text: 'AP', bgColor: 'primary' }                           //
-    //                                                                     //
-    // Historique de cet index, à garder en tête avant de le toucher :     //
-    // il valait 9 à l'origine. Sept Variants « Prop — … » insérés avant   //
-    // le playground l'ont poussé à 16, et le test a CONTINUÉ À PASSER en  //
-    // visant 9 (« Prop — content »), dont le premier avatar affiche lui   //
-    // aussi 'AP' en bg-color="primary" codé en dur — vert, sans jamais    //
-    // observer le playground. Il est repassé à 15 avec la suppression du  //
-    // Variant « Prop — tag », doublon exact du Variant canonique          //
-    // « Functional » (même init-state, même template, même contrôle).     //
     // ------------------------------------------------------------------ //
 
     test('Default (playground) — text "AP", bgColor primary, hover wired', async ({ page }) => {
-        await page.goto(variantUrl(15), { waitUntil: 'domcontentloaded' })
+        await page.goto(variantUrl(9))
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         const avatar = sandbox.locator('.origam-avatar').first()
         await expect(avatar).toBeVisible({ timeout: 20000 })

@@ -1,4 +1,4 @@
-import type { TDirection } from '../../types/Commons/direction.type'
+import type { TDirection } from '../../types'
 
 export interface IDirectionProps {
     direction?: TDirection

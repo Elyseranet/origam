@@ -93,7 +93,7 @@
 					<HstNumber   v-model="state.animationDuration" title="Duration (ms)" :min="0" :max="2000" :step="100"/>
 				</StoryGroup>
 				<StoryGroup title="Display">
-					<HstCheckbox v-model="state.showTooltip"      title="Show Tooltip (no effect — radar renders no tooltip)"/>
+					<HstCheckbox v-model="state.showTooltip"      title="Show Tooltip"/>
 					<HstCheckbox v-model="state.showLegend"       title="Show Legend"/>
 					<HstSelect   v-model="state.legendPosition"   title="Legend Position" :options="LEGEND_POSITION_OPTIONS"/>
 					<HstText     v-model="state.aspectRatio"      title="Aspect Ratio (e.g. 16/9)"/>
@@ -133,6 +133,21 @@
 						:categories="FIXTURE_RADAR_AXES"
 						:height="320"
 						@series-toggle="logEvent('series-toggle', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - Tooltip">
+			<div
+					class="story-shell"
+					data-cy="radar-slot-tooltip"
+			>
+				<p class="hint">The radar chart does not currently surface a hover tooltip — interaction is limited to the legend. This slot is reserved for future use.</p>
+				<origam-chart-radar
+						:series="FIXTURE_RADAR"
+						:categories="FIXTURE_RADAR_AXES"
+						:height="320"
+						data-cy="radar-slot-tooltip-chart"
 				/>
 			</div>
 		</Variant>
@@ -243,7 +258,7 @@
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.showLegend"        title="Show Legend"/>
-					<HstCheckbox v-model="state.showTooltip"       title="Show Tooltip (no effect — radar renders no tooltip)"/>
+					<HstCheckbox v-model="state.showTooltip"       title="Show Tooltip"/>
 					<HstCheckbox v-model="state.animated"          title="Animated"/>
 					<HstNumber   v-model="state.animationDuration" title="Duration (ms)" :min="0" :max="2000" :step="100"/>
 				</StoryGroup>

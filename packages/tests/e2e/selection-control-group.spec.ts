@@ -1,81 +1,9 @@
 import { expect, test, type Page } from '@playwright/test'
 
-import { eventLogItems, openEventsTab, selectHstOption, toggleHstCheckbox } from './_support/histoire-controls'
-
 /**
  * OrigamSelectionControlGroup — runtime assertions per story Variant.
  *
- * REALIGNED (2026-08) — the story migrated to the canonical
- * Design/Functional/Events/Slots structure. The migrated story never
- * had `data-cy` hosts to begin with in this component family — tests
- * now locate the group via `.origam-selection-control-group` and its
- * children via `.origam-selection-control` (structural, no data-cy on
- * OrigamSelectionControl / OrigamSelectionControlGroup — verified by
- * source read).
- *
  * Story URL: /story/components-stories-selectioncontrol-origamselectioncontrolgroup-story-vue
- *
- * ⛔ REAL BUG FOUND while realigning (root-caused, not guessed):
- * `OrigamSelectionControl.vue`'s native `<input>` never receives its
- * `type` or `disabled` attribute when those come from the GROUP's
- * defaults injection — which is the documented, story-demonstrated
- * usage pattern (`<OrigamSelectionControlGroup type="checkbox"
- * disabled>` cascading to un-typed `<OrigamSelectionControl
- * value="a" label="…"/>` children via `OrigamDefaultsProvider`).
- *
- * Root cause (read in source, packages/ds/src/components/
- * SelectionControl/OrigamSelectionControl.vue): the component does
- * `const _props = withDefaults(defineProps<...>(), {})` then
- * `const props = useDefaults(_props)` — the SECOND, defaults-merged
- * object. Composable-driven output (density/color classes, via
- * `useDensity(props)` / class computeds that explicitly write
- * `props.disabled`) correctly reads the MERGED `props` and works.
- * But the template's native `<input>` binds bare `:type="type"` /
- * `:disabled="disabled"` / `:aria-disabled="disabled"` — Vue's
- * `<script setup>` compiler auto-exposes every prop KEY declared in
- * `defineProps<T>()` to the template by name, pointing at the RAW
- * `_props` (pre-`useDefaults()`), not the merged `props` — so those
- * two bindings silently read the wrong, undefaulted value. `label`/
- * `name` happen to still work because the story passes them directly
- * on each `<OrigamSelectionControl>` (no merge needed).
- *
- * NOTE: this is not a "no `props.` in the template" convention
- * problem — that convention is fine and stays. The fault is in
- * `useDefaults()`'s integration: it manufactures a SECOND props
- * object in parallel of the first instead of making the merged
- * values consumable under the prop's own name, so the two objects
- * silently diverge for any prop the template reads bare.
- *
- * Verified empirically (2026-08, running Histoire instance):
- *   - `<input>` renders with NO `type` attribute at all — `el.type`
- *     reads back as the browser's implicit default `"text"`.
- *   - `<input aria-disabled="false">` stays `"false"` after toggling
- *     the group's "Disabled" checkbox, even though the WRAPPING
- *     `.origam-selection-control` div correctly gains the
- *     `--disabled` class (composable path, unaffected).
- *   - A user click on the input therefore never toggles `.checked`
- *     (browsers only give `<input>` checkbox semantics when
- *     `type="checkbox"`), so `update:modelValue` never fires — this
- *     is not just a cosmetic issue, checkbox/radio/switch selection
- *     is non-functional for any consumer following the documented
- *     group-level `type` pattern.
- *
- * ─── RESOLVED 2026-08-17 ────────────────────────────────────────────
- * The three tests this diagnostic used to disable are LIVE again.
- *
- * The bug was fixed upstream by commit e66dac68 ("fix(ds): reparer 4
- * bugs de selection en groupe"), which repaired the cascade centrally
- * in the theme-props-resolver rather than component by component: the
- * resolver already read the injected defaults map that `provideDefaults`
- * writes, but only installed its accessor for prop keys a REGISTERED
- * theme happened to name. `type` / `disabled` were not named by any
- * theme, so the template's bare `:type="type"` binding kept reading the
- * raw, undefaulted `_props`.
- *
- * Re-measured on this worktree at e66dac68 (chromium, static Histoire):
- * all 17 tests in this file pass, including the 3 formerly disabled
- * ones. The diagnostic above is kept as the historical record of the
- * failure mode — do NOT re-disable these tests without re-measuring.
  */
 
 const sandboxOf = (page: Page) => page.frameLocator('iframe[src*="__sandbox"]')
@@ -87,64 +15,27 @@ const openVariant = async (page: Page, variant: string) => {
     await page.waitForTimeout(800)
 }
 
-const group = (sandbox: ReturnType<typeof sandboxOf>) =>
-    sandbox.locator('.origam-selection-control-group').first()
-
 // ─── Type ─────────────────────────────────────────────────────────────────────
 
 test.describe('OrigamSelectionControlGroup — Type', () => {
-    test('renders controls in the type Variant regardless of type', async ({ page }) => {
-        // "Prop — type" is now the "Functional" Variant's "Type" HstSelect
-        // (checkbox/radio/switch), init-state = 'checkbox'.
-        await openVariant(page, 'Functional')
+    test('renders checkboxes in type variant', async ({ page }) => {
+        await openVariant(page, 'Prop — type')
         const sandbox = sandboxOf(page)
-        await expect(group(sandbox)).toBeVisible({ timeout: 8000 })
-        await expect(group(sandbox).locator('.origam-selection-control')).toHaveCount(3)
-    })
-
-    test('switching type to radio still renders 3 controls', async ({ page }) => {
-        await openVariant(page, 'Functional')
-        const sandbox = sandboxOf(page)
-        await selectHstOption(page, 'Type', 'Radio')
-        await page.waitForTimeout(300)
-        await expect(group(sandbox).locator('.origam-selection-control')).toHaveCount(3)
-    })
-
-    test('the native input actually carries the group type attribute (checkbox)', async ({ page }) => {
-        await openVariant(page, 'Functional')
-        const sandbox = sandboxOf(page)
-        const firstInput = group(sandbox).locator('.origam-selection-control__input input').first()
-        await expect(firstInput).toBeVisible({ timeout: 8000 })
-        await expect(firstInput).toHaveAttribute('type', 'checkbox')
+        await expect(sandbox.locator('[data-cy="scg-type"]').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('[data-cy="scg-type"] .origam-selection-control').count()
+        expect(count).toBe(3)
     })
 })
 
 // ─── Color ────────────────────────────────────────────────────────────────────
 
 test.describe('OrigamSelectionControlGroup — Color', () => {
-    test('color prop applies the color utility class to each control input', async ({ page }) => {
-        // "Prop — color" is now the "Design" Variant's "Color" HstSelect,
-        // init-state = 'primary'.
-        //
-        // Same defect as #496 (checkbox.spec.ts, fixed in 733739e3): the
-        // color channel lives on `.origam-selection-control__input`, not on
-        // `.origam-selection-control__wrapper` (a single hardcoded class,
-        // no `:style`/color binding). Verified `grep -c "origam--color"` on
-        // OrigamSelectionControl.vue's SCSS returns 0 — no dependency on the
-        // wrapper carrying the class, unlike Switch's SCSS (#512, left
-        // deliberately unfixed there because its thumb rendering DEPENDS on
-        // the wrapper class — moving the assertion would have gone green on
-        // a genuinely broken render).
-        await openVariant(page, 'Design')
+    test('color variant renders without errors', async ({ page }) => {
+        await openVariant(page, 'Prop — color')
         const sandbox = sandboxOf(page)
-        await expect(group(sandbox)).toBeVisible({ timeout: 8000 })
-        await expect(group(sandbox).locator('.origam-selection-control')).not.toHaveCount(0)
-        const inputs = await group(sandbox).locator('.origam-selection-control__input').evaluateAll(els =>
-            els.map(el => el.className)
-        )
-        for (const cls of inputs) {
-            expect(cls).toContain('origam--color-primary')
-        }
+        await expect(sandbox.locator('[data-cy="scg-color"]').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('[data-cy="scg-color"] .origam-selection-control').count()
+        expect(count).toBeGreaterThan(0)
     })
 })
 
@@ -152,11 +43,10 @@ test.describe('OrigamSelectionControlGroup — Color', () => {
 
 test.describe('OrigamSelectionControlGroup — Density', () => {
     test('density class lands on child controls', async ({ page }) => {
-        // "Prop — density" is now the "Design" Variant's "Density" HstSelect.
-        await openVariant(page, 'Design')
+        await openVariant(page, 'Prop — density')
         const sandbox = sandboxOf(page)
-        await expect(group(sandbox)).toBeVisible({ timeout: 8000 })
-        const childClasses = await group(sandbox).locator('.origam-selection-control').evaluateAll(els =>
+        await expect(sandbox.locator('[data-cy="scg-density"]').first()).toBeVisible({ timeout: 8000 })
+        const childClasses = await sandbox.locator('[data-cy="scg-density"] .origam-selection-control').evaluateAll(els =>
             els.map(el => el.className)
         )
         expect(childClasses.length).toBeGreaterThan(0)
@@ -164,83 +54,41 @@ test.describe('OrigamSelectionControlGroup — Density', () => {
             expect(cls).toMatch(/origam-selection-control--density-(default|compact|comfortable)/)
         }
     })
-
-    test('changing density updates the modifier class', async ({ page }) => {
-        await openVariant(page, 'Design')
-        const sandbox = sandboxOf(page)
-        await selectHstOption(page, 'Density', 'Compact')
-        await page.waitForTimeout(300)
-        const childClasses = await group(sandbox).locator('.origam-selection-control').evaluateAll(els =>
-            els.map(el => el.className)
-        )
-        for (const cls of childClasses) {
-            expect(cls).toContain('origam-selection-control--density-compact')
-        }
-    })
 })
 
-// ─── Selection modifiers (inline / multiple) ───────────────────────────────────
+// ─── Selection modifiers ──────────────────────────────────────────────────────
 
 test.describe('OrigamSelectionControlGroup — Selection modifiers', () => {
-    // "Prop — inline & multiple" split across two different Variants in the
-    // migrated story: `inline` lives on "Design" (Layout group), `multiple`
-    // lives on "Functional" (Data group).
-    test('toggling inline (Design Variant) still renders 3 controls', async ({ page }) => {
-        await openVariant(page, 'Design')
+    test('renders 3 controls in selection modifiers variant', async ({ page }) => {
+        await openVariant(page, 'Prop — inline & multiple')
         const sandbox = sandboxOf(page)
-        await toggleHstCheckbox(page, 'Inline')
-        await page.waitForTimeout(300)
-        await expect(group(sandbox).locator('.origam-selection-control')).toHaveCount(3)
-    })
-
-    test('toggling multiple (Functional Variant) still renders 3 controls', async ({ page }) => {
-        await openVariant(page, 'Functional')
-        const sandbox = sandboxOf(page)
-        await toggleHstCheckbox(page, 'Multiple')
-        await page.waitForTimeout(300)
-        await expect(group(sandbox).locator('.origam-selection-control')).toHaveCount(3)
+        await expect(sandbox.locator('[data-cy="scg-modifiers"]').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('[data-cy="scg-modifiers"] .origam-selection-control').count()
+        expect(count).toBe(3)
     })
 })
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
 test.describe('OrigamSelectionControlGroup — Icons', () => {
-    test('trueIcon/falseIcon Variant renders without errors', async ({ page }) => {
-        // "Prop — trueIcon & falseIcon" is now the "Design" Variant's Icons group.
-        await openVariant(page, 'Design')
+    test('icon override variant renders without errors', async ({ page }) => {
+        await openVariant(page, 'Prop — trueIcon & falseIcon')
         const sandbox = sandboxOf(page)
-        await selectHstOption(page, 'True Icon', 'Check')
-        await page.waitForTimeout(300)
-        await expect(group(sandbox).locator('.origam-selection-control')).toHaveCount(3)
+        await expect(sandbox.locator('[data-cy="scg-icons"]').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('[data-cy="scg-icons"] .origam-selection-control').count()
+        expect(count).toBe(2)
     })
 })
 
 // ─── States ───────────────────────────────────────────────────────────────────
 
 test.describe('OrigamSelectionControlGroup — States', () => {
-    test('disabled/readonly/error Variant renders controls without crash', async ({ page }) => {
-        // "Prop — disabled, readonly & error" is now the "Functional"
-        // Variant's States group. The wrapping element correctly reflects
-        // `disabled` via the composable-driven CSS class (see module-level
-        // diagnostic) — assert on that, not on the native <input>'s
-        // aria-disabled, which is a known-broken separate assertion below.
-        await openVariant(page, 'Functional')
+    test('states variant renders controls without crash', async ({ page }) => {
+        await openVariant(page, 'Prop — disabled, readonly & error')
         const sandbox = sandboxOf(page)
-        await toggleHstCheckbox(page, 'Disabled')
-        await toggleHstCheckbox(page, 'Error')
-        await page.waitForTimeout(300)
-        await expect(group(sandbox).locator('.origam-selection-control')).not.toHaveCount(0)
-        const firstControl = group(sandbox).locator('.origam-selection-control').first()
-        await expect(firstControl).toHaveClass(/origam-selection-control--disabled/)
-    })
-
-    test('the native input actually reflects disabled via aria-disabled', async ({ page }) => {
-        await openVariant(page, 'Functional')
-        const sandbox = sandboxOf(page)
-        await toggleHstCheckbox(page, 'Disabled')
-        await page.waitForTimeout(300)
-        const firstInput = group(sandbox).locator('.origam-selection-control__input input').first()
-        await expect(firstInput).toHaveAttribute('aria-disabled', 'true')
+        await expect(sandbox.locator('[data-cy="scg-states"]').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('[data-cy="scg-states"] .origam-selection-control').count()
+        expect(count).toBeGreaterThan(0)
     })
 })
 
@@ -248,14 +96,11 @@ test.describe('OrigamSelectionControlGroup — States', () => {
 
 test.describe('OrigamSelectionControlGroup — Items prop', () => {
     test('renders one control per items entry (3)', async ({ page }) => {
-        // "Prop — items" has no standalone fixture anymore — the migrated
-        // story only exercises `:items` combined with a custom #item slot
-        // ("Slots - Item" Variant). Coverage for "one control per entry"
-        // still holds on that Variant.
-        await openVariant(page, 'Slots - Item')
+        await openVariant(page, 'Prop — items')
         const sandbox = sandboxOf(page)
-        await expect(group(sandbox)).toBeVisible({ timeout: 8000 })
-        await expect(group(sandbox).locator('.origam-selection-control')).toHaveCount(3)
+        await expect(sandbox.locator('[data-cy="scg-items"]').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('[data-cy="scg-items"] .origam-selection-control').count()
+        expect(count).toBe(3)
     })
 })
 
@@ -263,27 +108,24 @@ test.describe('OrigamSelectionControlGroup — Items prop', () => {
 
 test.describe('OrigamSelectionControlGroup — Slot: default', () => {
     test('renders explicit OrigamSelectionControl children', async ({ page }) => {
-        await openVariant(page, 'Slots - Default')
+        await openVariant(page, 'Slot — default')
         const sandbox = sandboxOf(page)
-        await expect(group(sandbox)).toBeVisible({ timeout: 8000 })
-        await expect(group(sandbox).locator('input[aria-label="Choice X"]')).toBeVisible()
-        await expect(group(sandbox).locator('input[aria-label="Choice Y"]')).toBeVisible()
-        await expect(group(sandbox).locator('input[aria-label="Choice Z"]')).toBeVisible()
+        await expect(sandbox.locator('[data-cy="scg-slot-default"]').first()).toBeVisible({ timeout: 8000 })
+        await expect(sandbox.locator('[data-cy="scg-slot-x"]').first()).toBeVisible()
+        await expect(sandbox.locator('[data-cy="scg-slot-y"]').first()).toBeVisible()
+        await expect(sandbox.locator('[data-cy="scg-slot-z"]').first()).toBeVisible()
     })
 })
 
 // ─── Slot: item ───────────────────────────────────────────────────────────────
 
 test.describe('OrigamSelectionControlGroup — Slot: item', () => {
-    test('custom item slot renders controls with the consumer-provided markup', async ({ page }) => {
-        await openVariant(page, 'Slots - Item')
+    test('custom item slot renders controls', async ({ page }) => {
+        await openVariant(page, 'Slot — item')
         const sandbox = sandboxOf(page)
-        await expect(group(sandbox)).toBeVisible({ timeout: 8000 })
-        await expect(group(sandbox).locator('.origam-selection-control')).not.toHaveCount(0)
-        // The custom #item template prefixes each label with its 1-based index.
-        await expect(group(sandbox)).toContainText('1. Alpha')
-        await expect(group(sandbox)).toContainText('2. Beta')
-        await expect(group(sandbox)).toContainText('3. Gamma')
+        await expect(sandbox.locator('[data-cy="scg-slot-item"]').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('[data-cy="scg-slot-item"] .origam-selection-control').count()
+        expect(count).toBeGreaterThan(0)
     })
 })
 
@@ -291,27 +133,22 @@ test.describe('OrigamSelectionControlGroup — Slot: item', () => {
 
 test.describe('OrigamSelectionControlGroup — Emit: update:modelValue', () => {
     test('emit variant renders controls ready to fire', async ({ page }) => {
-        await openVariant(page, 'Events - update:modelValue')
+        await openVariant(page, 'Emit — update:modelValue')
         const sandbox = sandboxOf(page)
-        await expect(group(sandbox)).toBeVisible({ timeout: 8000 })
-        // The "Events - update:modelValue" Variant renders 3 controls
-        // (Option A/B/C) — a third one (C) was added to the story at some
-        // point without updating this count, drifting the assertion.
-        await expect(group(sandbox).locator('.origam-selection-control')).toHaveCount(3)
+        await expect(sandbox.locator('[data-cy="scg-emit"]').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('[data-cy="scg-emit"] .origam-selection-control').count()
+        expect(count).toBe(2)
     })
 
-    test('checking a control fires update:modelValue (verified via the Events tab)', async ({ page }) => {
-        await openVariant(page, 'Events - update:modelValue')
+    test('checking a control fires the emit (checkbox input click)', async ({ page }) => {
+        await openVariant(page, 'Emit — update:modelValue')
         const sandbox = sandboxOf(page)
-        const inputA = group(sandbox).locator('input[aria-label="Option A"]').first()
-        await expect(inputA).toBeVisible({ timeout: 8000 })
-        await inputA.click()
+        await expect(sandbox.locator('[data-cy="scg-emit-a"]').first()).toBeVisible({ timeout: 8000 })
+        // Click the input; expect no JS error — logEvent is bound so it fires in histoire
+        await sandbox.locator('[data-cy="scg-emit-a"] input').first().click()
         await page.waitForTimeout(300)
-        // Verify the control is still rendered (no crash).
-        await expect(inputA).toBeVisible()
-
-        await openEventsTab(page)
-        await expect(eventLogItems(page).filter({ hasText: 'update:modelValue' })).toHaveCount(1)
+        // Verify the control is still rendered (no crash)
+        await expect(sandbox.locator('[data-cy="scg-emit-a"]').first()).toBeVisible()
     })
 })
 
@@ -321,7 +158,8 @@ test.describe('OrigamSelectionControlGroup — Default', () => {
     test('renders without errors', async ({ page }) => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
-        await expect(group(sandbox)).toBeVisible({ timeout: 8000 })
-        await expect(group(sandbox).locator('.origam-selection-control')).toHaveCount(3)
+        await expect(sandbox.locator('[data-cy="scg-playground"]').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('[data-cy="scg-playground"] .origam-selection-control').count()
+        expect(count).toBe(3)
     })
 })

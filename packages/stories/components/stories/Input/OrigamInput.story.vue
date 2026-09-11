@@ -8,6 +8,7 @@
 				title="Design"
 				:init-state="() => useStoryInitState<Partial<IInputProps>>({
 					color: 'primary',
+					label: 'Input',
 					fontSize: undefined,
 					fontWeight: undefined,
 					lineHeight: undefined
@@ -17,35 +18,15 @@
 				<origam-input
 						:color="state.color"
 						:padding="state.padding"
-						:padding-top="state.paddingTop"
-						:padding-right="state.paddingRight"
-						:padding-bottom="state.paddingBottom"
-						:padding-left="state.paddingLeft"
-						:padding-block="state.paddingBlock"
-						:padding-inline="state.paddingInline"
 						:margin="state.margin"
-						:margin-top="state.marginTop"
-						:margin-right="state.marginRight"
-						:margin-bottom="state.marginBottom"
-						:margin-left="state.marginLeft"
-						:margin-block="state.marginBlock"
-						:margin-inline="state.marginInline"
 						:bg-color="state.bgColor"
 						:density="state.density"
 						:size="state.size"
 						:rounded="state.rounded"
-						:rounded-top-left="state.roundedTopLeft"
-						:rounded-top-right="state.roundedTopRight"
-						:rounded-bottom-left="state.roundedBottomLeft"
-						:rounded-bottom-right="state.roundedBottomRight"
 						:elevation="state.elevation"
 						:border="state.border"
 						:border-color="state.borderColor"
 						:border-style="state.borderStyle"
-						:border-top="state.borderTop"
-						:border-right="state.borderRight"
-						:border-bottom="state.borderBottom"
-						:border-left="state.borderLeft"
 						:prepend-icon="state.prependIcon || undefined"
 						:append-icon="state.appendIcon || undefined"
 						:prepend-avatar="state.prependAvatar || undefined"
@@ -57,6 +38,7 @@
 						:font-size="state.fontSize"
 						:font-weight="state.fontWeight"
 						:line-height="state.lineHeight"
+						:label="state.label"
 				>
 					<template #default="{ id, isDisabled, isReadonly }">
 						<input
@@ -82,22 +64,10 @@
 					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
 					<HstSelect v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
 				</StoryGroup>
-				<StoryGroup title="Rounded — per corner">
-					<HstText v-model="state.roundedTopLeft"     title="Rounded Top Left"/>
-					<HstText v-model="state.roundedTopRight"    title="Rounded Top Right"/>
-					<HstText v-model="state.roundedBottomLeft"  title="Rounded Bottom Left"/>
-					<HstText v-model="state.roundedBottomRight" title="Rounded Bottom Right"/>
-				</StoryGroup>
 				<StoryGroup title="Border">
 					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
 					<HstText   v-model="state.borderColor" title="Border Color"/>
 					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
-				</StoryGroup>
-				<StoryGroup title="Border — per side">
-					<HstSelect v-model="state.borderTop"    title="Border Top"    :options="BORDER_OPTIONS"/>
-					<HstSelect v-model="state.borderRight"  title="Border Right"  :options="BORDER_OPTIONS"/>
-					<HstSelect v-model="state.borderBottom" title="Border Bottom" :options="BORDER_OPTIONS"/>
-					<HstSelect v-model="state.borderLeft"   title="Border Left"   :options="BORDER_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Typography">
 					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
@@ -122,28 +92,13 @@
 					<HstText v-model="state.padding" title="Padding"/>
 					<HstText v-model="state.margin"  title="Margin"/>
 				</StoryGroup>
-				<StoryGroup title="Padding — per side">
-					<HstText v-model="state.paddingTop"    title="Padding Top"/>
-					<HstText v-model="state.paddingRight"  title="Padding Right"/>
-					<HstText v-model="state.paddingBottom" title="Padding Bottom"/>
-					<HstText v-model="state.paddingLeft"   title="Padding Left"/>
-					<HstText v-model="state.paddingBlock"  title="Padding Block"/>
-					<HstText v-model="state.paddingInline" title="Padding Inline"/>
-				</StoryGroup>
-				<StoryGroup title="Margin — per side">
-					<HstText v-model="state.marginTop"    title="Margin Top"/>
-					<HstText v-model="state.marginRight"  title="Margin Right"/>
-					<HstText v-model="state.marginBottom" title="Margin Bottom"/>
-					<HstText v-model="state.marginLeft"   title="Margin Left"/>
-					<HstText v-model="state.marginBlock"  title="Margin Block"/>
-					<HstText v-model="state.marginInline" title="Margin Inline"/>
-				</StoryGroup>
 			</template>
 		</Variant>
 
 		<Variant
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IInputProps>>({
+					label: 'Stateful input',
 					hint: 'Helper text',
 					persistentHint: false,
 					hideDetails: false,
@@ -159,6 +114,7 @@
 			<template #default="{ state }">
 				<origam-input
 						v-model="functionalModel"
+						:label="state.label"
 						:hint="state.hint"
 						:persistent-hint="state.persistentHint"
 						:hide-details="state.hideDetails"
@@ -182,7 +138,8 @@
 				</origam-input>
 			</template>
 			<template #controls="{ state }">
-				<StoryGroup title="Hint">
+				<StoryGroup title="Label & Hint">
+					<HstText     v-model="state.label"         title="Label"/>
 					<HstText     v-model="state.hint"          title="Hint"/>
 					<HstCheckbox v-model="state.persistentHint" title="Persistent Hint"/>
 				</StoryGroup>
@@ -202,6 +159,7 @@
 		<Variant title="Events - update:modelValue">
 			<origam-input
 					v-model="emitUpdateModel"
+					label="Type here"
 					@update:model-value="logEvent('update:modelValue', $event)"
 			>
 				<template #default="{ id, isDisabled }">
@@ -215,10 +173,28 @@
 			</origam-input>
 		</Variant>
 
+		<Variant title="Events - update:focused">
+			<origam-input
+					v-model="emitFocusModel"
+					label="Focus / blur me"
+					@update:focused="logEvent('update:focused', $event)"
+			>
+				<template #default="{ id, isDisabled }">
+					<input
+							:id="id"
+							v-model="emitFocusModel"
+							:disabled="isDisabled"
+							style="border: none; outline: none; background: transparent; width: 100%;"
+					/>
+				</template>
+			</origam-input>
+		</Variant>
+
 		<Variant title="Events - click:prepend">
 			<origam-input
 					v-model="emitPrependModel"
 					:prepend-icon="prependIcon"
+					label="Click the prepend icon"
 					@click:prepend="logEvent('click:prepend', $event)"
 			>
 				<template #default="{ id, isDisabled }">
@@ -236,6 +212,7 @@
 			<origam-input
 					v-model="emitAppendModel"
 					:append-icon="appendIcon"
+					label="Click the append icon"
 					@click:append="logEvent('click:append', $event)"
 			>
 				<template #default="{ id, isDisabled }">
@@ -250,7 +227,7 @@
 		</Variant>
 
 		<Variant title="Slots - Default">
-			<origam-input v-model="slotDefaultModel">
+			<origam-input v-model="slotDefaultModel" label="Custom default slot">
 				<template #default="{ id, isDisabled }">
 					<input
 							:id="id"
@@ -264,7 +241,7 @@
 		</Variant>
 
 		<Variant title="Slots - Prepend">
-			<origam-input v-model="slotPrependModel" data-cy="input-slot-prepend">
+			<origam-input v-model="slotPrependModel" label="With prepend slot">
 				<template #prepend>
 					<origam-icon :icon="prependIcon" style="color: var(--origam-color__feedback--danger---bg);"/>
 				</template>
@@ -280,7 +257,7 @@
 		</Variant>
 
 		<Variant title="Slots - Append">
-			<origam-input v-model="slotAppendModel">
+			<origam-input v-model="slotAppendModel" label="With append slot">
 				<template #append>
 					<origam-icon :icon="appendIcon"/>
 				</template>
@@ -298,6 +275,7 @@
 		<Variant title="Slots - Messages">
 			<origam-input
 					v-model="slotMessagesModel"
+					label="Custom messages"
 					hint="Custom hint"
 					persistent-hint
 			>
@@ -318,6 +296,7 @@
 		<Variant title="Slots - Message">
 			<origam-input
 					v-model="slotMessageModel"
+					label="With message slot"
 					:error-messages="['Validation error']"
 					error
 			>
@@ -336,7 +315,7 @@
 		</Variant>
 
 		<Variant title="Slots - Details">
-			<origam-input v-model="slotDetailsModel">
+			<origam-input v-model="slotDetailsModel" label="With details slot">
 				<template #details>
 					<span style="font-size: 0.75rem; color: var(--origam-color__text---secondary);">Custom details content</span>
 				</template>
@@ -352,7 +331,7 @@
 		</Variant>
 
 		<Variant title="Prop — color">
-			<origam-input color="primary" data-cy="input-color">
+			<origam-input label="Colored input" color="primary" data-cy="input-color">
 				<template #default="{ id, isDisabled, isReadonly }">
 					<input :id="id" :disabled="isDisabled" :readonly="isReadonly" style="border: none; outline: none; background: transparent; width: 100%;"/>
 				</template>
@@ -360,7 +339,7 @@
 		</Variant>
 
 		<Variant title="Prop — hint & persistentHint">
-			<origam-input v-model="hintModel" hint="This is a helpful hint" :persistent-hint="true" data-cy="input-hint">
+			<origam-input v-model="hintModel" label="With hint" hint="This is a helpful hint" :persistent-hint="true" data-cy="input-hint">
 				<template #default="{ id, isDisabled, isReadonly }">
 					<input :id="id" v-model="hintModel" :disabled="isDisabled" :readonly="isReadonly" style="border: none; outline: none; background: transparent; width: 100%;"/>
 				</template>
@@ -370,6 +349,7 @@
 		<Variant title="Prop — prependIcon & appendIcon">
 			<origam-input
 					v-model="adjacentModel"
+					label="With icons"
 					:prepend-icon="prependIcon"
 					:append-icon="appendIcon"
 					data-cy="input-adjacent"
@@ -382,17 +362,17 @@
 
 		<Variant title="Prop — disabled, readonly & error">
 			<div style="display: flex; flex-direction: column; gap: 16px; padding: 16px;" data-cy="input-states">
-				<origam-input disabled>
+				<origam-input label="Disabled" disabled>
 					<template #default="{ id, isDisabled }">
 						<input :id="id" :disabled="isDisabled" style="border: none; outline: none; background: transparent; width: 100%;"/>
 					</template>
 				</origam-input>
-				<origam-input readonly>
+				<origam-input label="Readonly" readonly>
 					<template #default="{ id, isDisabled, isReadonly }">
 						<input :id="id" :disabled="isDisabled" :readonly="isReadonly" style="border: none; outline: none; background: transparent; width: 100%;"/>
 					</template>
 				</origam-input>
-				<origam-input error>
+				<origam-input label="Error" error>
 					<template #default="{ id, isDisabled }">
 						<input :id="id" :disabled="isDisabled" style="border: none; outline: none; background: transparent; width: 100%;"/>
 					</template>
@@ -404,6 +384,7 @@
 			<div style="padding: 16px;" data-cy="input-emit-update">
 				<origam-input
 						v-model="emitNewUpdateModel"
+						label="Type something"
 						@update:model-value="logEvent('update:modelValue', $event)"
 				>
 					<template #default="{ id, isDisabled }">
@@ -417,6 +398,7 @@
 		<Variant title="Emit — click:prepend & click:append">
 			<origam-input
 					v-model="emitClickModel"
+					label="Click icons"
 					:prepend-icon="prependIcon"
 					:append-icon="appendIcon"
 					data-cy="input-emit-click"
@@ -429,9 +411,21 @@
 			</origam-input>
 		</Variant>
 
+		<Variant title="Slot — prepend">
+			<origam-input v-model="slotPrependNewModel" label="Custom prepend slot" data-cy="input-slot-prepend">
+				<template #prepend>
+					<origam-icon :icon="prependIcon"/>
+				</template>
+				<template #default="{ id, isDisabled }">
+					<input :id="id" v-model="slotPrependNewModel" :disabled="isDisabled" style="border: none; outline: none; background: transparent; width: 100%;"/>
+				</template>
+			</origam-input>
+		</Variant>
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IInputProps>({
+					label: 'Input',
 					color: 'primary',
 					hint: '',
 					persistentHint: false,
@@ -465,6 +459,7 @@
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Content">
+					<HstText   v-model="state.label" title="Label"/>
 					<HstText   v-model="state.hint"  title="Hint"/>
 					<HstSelect v-model="state.prependIcon" title="Prepend Icon" :options="ICON_OPTIONS"/>
 					<HstSelect v-model="state.appendIcon"  title="Append Icon"  :options="ICON_OPTIONS"/>
@@ -533,6 +528,7 @@
 
 	const functionalModel  = ref('')
 	const emitUpdateModel  = ref('')
+	const emitFocusModel   = ref('')
 	const emitPrependModel = ref('')
 	const emitAppendModel  = ref('')
 	const slotDefaultModel  = ref('')
@@ -546,6 +542,7 @@
 	const adjacentModel     = ref('')
 	const emitNewUpdateModel = ref('')
 	const emitClickModel    = ref('')
+	const slotPrependNewModel = ref('')
 </script>
 
 <docs lang="md" src="@docs/components/Input/OrigamInput.md"/>

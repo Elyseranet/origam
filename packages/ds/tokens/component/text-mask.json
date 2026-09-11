@@ -1,0 +1,12 @@
+{
+  "text-mask": {
+    "font-size-default":   { "$type": "dimension",  "$value": "{font.size.5xl}" },
+    "font-weight-default": { "$type": "fontWeight", "$value": "{font.weight.bold}" },
+    "line-height-default": { "$type": "number",     "$value": "{font.lineHeight.tight}" },
+
+    "animation": {
+      "duration-default":  { "$type": "duration", "$value": "3s" },
+      "easing-default":    { "$type": "cubicBezier", "$value": "{motion.easing.standard}" }
+    }
+  }
+}

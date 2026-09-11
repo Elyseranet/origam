@@ -1,9 +1,9 @@
 <template>
-	<figure
-			:id="id"
+	<div
 			class="origam-chart-radar"
 			:class="rootClasses"
 			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles, headerTypographyStyles]"
+			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-radar"
 	>
@@ -98,13 +98,8 @@
 								:cy="path.circle!.cy"
 								:r="path.circle!.r"
 								:fill="path.color"
-								tabindex="0"
-								role="button"
 								:aria-label="pointAriaLabel(path)"
 								:data-cy="`origam-chart-point-${ path.seriesIndex }-${ path.dataIndex }`"
-								@click="onPointActivate(path, $event)"
-								@keydown.enter.prevent="onPointActivate(path, $event)"
-								@keydown.space.prevent="onPointActivate(path, $event)"
 						/>
 					</template>
 				</g>
@@ -116,7 +111,7 @@
 					data-cy="origam-chart-radar-empty"
 			>
 				<slot name="empty">
-					<span>{{ t('origam.chart.no_data_text') }}</span>
+					<span>No data to display</span>
 				</slot>
 			</div>
 		</div>
@@ -138,7 +133,7 @@
 				/>
 			</template>
 		</origam-chart-legend>
-	</figure>
+	</div>
 </template>
 
 <script
@@ -151,24 +146,25 @@
 		type StyleValue
 	} from 'vue'
 
-	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
-	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
-	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
-	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
-	import { useChart } from '../../composables/Chart/chart.composable'
-	import { useDimension } from '../../composables/Commons/dimension.composable'
-	import { useElevation } from '../../composables/Commons/elevation.composable'
-	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useMargin } from '../../composables/Commons/margin.composable'
-	import { usePadding } from '../../composables/Commons/padding.composable'
-	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import {
+		useChartHeaderTypography,
+		useBackgroundColor,
+		useChart,
+		useDimension,
+		useElevation,
+		useMargin,
+		usePadding,
+		useRounded
+	} from '../../composables'
 
 	import OrigamChartLegend from './OrigamChartLegend.vue'
 
-	import type { IChartPath } from '../../interfaces/Chart/chart.interface'
-	import type { IChartPoint } from '../../interfaces/Chart/chart-point.interface'
-	import type { IChartRadarEmits, IChartRadarProps, IChartRadarSlots } from '../../interfaces/Chart/chart-radar.interface'
-	import type { IChartSeries } from '../../interfaces/Chart/chart-series.interface'
+	import type {
+		IChartBaseEmits,
+		IChartPath,
+		IChartRadarProps,
+		IChartSeries
+	} from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -198,11 +194,8 @@
 		aspectRatio: undefined
 	})
 
-	const emit = defineEmits<IChartRadarEmits>()
+	const emit = defineEmits<IChartBaseEmits>()
 
-	defineSlots<IChartRadarSlots>()
-
-	const { t } = useLocale()
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
 	const { elevationClasses, elevationStyles } = useElevation(props)
@@ -210,23 +203,6 @@
 	const { paddingClasses, paddingStyles } = usePadding(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
 	const { headerTypographyStyles } = useChartHeaderTypography(props)
-
-	/*********************************************************
-	 * Props heritees sans effet ici (#426)
-	 *
-	 * @description
-	 * ⛔ Ces props sont declarees par `IChartBaseProps` et n'ont aucun
-	 * effet sur ce composant. Elles ne sont ni retirees ni cablees a un
-	 * comportement fictif : elles avertissent une fois, en dev, avec la
-	 * raison exacte. Meme traitement que `OrigamChartGauge`.
-	 ********************************************************/
-	useUnsupportedProp(
-		'OrigamChartRadar',
-		'showTooltip',
-		'no tooltip component is rendered by the radar — `ChartTooltip` appears nowhere in its template.',
-		() => props.showTooltip !== undefined
-	)
-	const chartAnimationStyle = useChartAnimationStyle(props)
 
 	const SVG_WIDTH = 600
 	const SVG_HEIGHT = 360
@@ -319,8 +295,7 @@
 		elevationClasses.value,
 		marginClasses.value,
 		paddingClasses.value,
-		roundedClasses.value,
-		props.class
+		roundedClasses.value
 	])
 
 	const rootStyles = computed<StyleValue>(() => {
@@ -328,8 +303,8 @@
 		if (props.aspectRatio) {
 			out.aspectRatio = props.aspectRatio
 		}
-		Object.assign(out, chartAnimationStyle.value)
-return [ out, props.style as StyleValue ]
+		out['--origam-chart---animation-duration'] = `${ props.animationDuration }ms`
+		return out
 	})
 
 	const bodyClasses = computed(() => ({
@@ -343,19 +318,14 @@ return [ out, props.style as StyleValue ]
 
 	const hasTitleBlock = computed(() => Boolean(props.title || props.subtitle))
 
-	const defaultAriaLabel = computed(() => t('origam.chart.radar.aria_label'))
-	const ariaLabel = computed(() => props.title ?? defaultAriaLabel.value)
-	const svgAriaLabel = computed(() => props.title ?? defaultAriaLabel.value)
-	const svgTitle = computed(() => props.title ?? defaultAriaLabel.value)
+	const ariaLabel = computed(() => props.title ?? 'Radar chart')
+	const svgAriaLabel = computed(() => props.title ?? 'radar chart')
+	const svgTitle = computed(() => props.title ?? 'radar chart')
 	const svgDesc = computed(() => {
 		const seriesCount = props.series.length
-		if (!seriesCount) return t('origam.chart.no_data_text')
-
-		return t('origam.chart.radar.desc', {
-			chart: defaultAriaLabel.value,
-			series: t('origam.chart.radar.desc_series', seriesCount),
-			axes: t('origam.chart.radar.desc_axes', slotCount.value)
-		})
+		if (!seriesCount) return 'No data'
+		const points = slotCount.value
+		return `radar chart with ${ seriesCount } series and ${ points } axes.`
 	})
 
 	const pointAriaLabel = (path: IChartPath) => {
@@ -363,21 +333,6 @@ return [ out, props.style as StyleValue ]
 		const y = typeof entry === 'number' ? entry : entry.y
 		const cat = props.categories[path.dataIndex ?? 0] ?? path.dataIndex
 		return `${ path.series.name }, ${ cat }: ${ y }`
-	}
-
-	const onPointActivate = (path: IChartPath, originalEvent: MouseEvent | KeyboardEvent): void => {
-		const dataIndex = path.dataIndex ?? 0
-		const entry = path.series.data[dataIndex]
-		const y = typeof entry === 'number' ? entry : entry.y
-		const point: IChartPoint = {
-			seriesIndex: path.seriesIndex,
-			seriesName: path.series.name,
-			dataIndex,
-			x: props.categories[dataIndex] ?? dataIndex,
-			y,
-			color: path.color
-		}
-		emit('point-click', point, originalEvent)
 	}
 
 	const onLegendClick = (series: IChartSeries, index: number): void => {
@@ -399,17 +354,7 @@ return [ out, props.style as StyleValue ]
 
 		display: grid;
 		gap: var(--origam-chart---gap, 12px);
-
-		// ⛔ #C2 — zero-specificity default so a scale-driven utility
-		// class (`.origam--p-4` from `padding="4"`) wins the cascade.
-		// Without `:where()`, this scoped rule's [data-v-hash] pushes it
-		// to (0,2,0), beating the utility's (0,1,0), and the `padding`
-		// prop's scale form goes silently inert. See CLAUDE.md "CSS-first"
-		// table — `:where(…)` is the documented zero-specificity default.
-		:where(&) {
-			padding: var(--origam-chart---padding, 12px);
-		}
-
+		padding: var(--origam-chart---padding, 12px);
 		background-color: var(--origam-chart---background-color, transparent);
 		color: var(--origam-chart---color, inherit);
 		width: 100%;
@@ -468,7 +413,7 @@ return [ out, props.style as StyleValue ]
 
 		&__subtitle {
 			font-size: var(--origam-chart__subtitle---font-size, 0.875rem);
-			color: var(--origam-chart__subtitle---color, var(--origam-color__text---secondary, #6b7280));
+			color: var(--origam-chart__subtitle---color, var(--origam-color-text-secondary, #6b7280));
 		}
 
 		&__body {
@@ -492,29 +437,21 @@ return [ out, props.style as StyleValue ]
 		.origam-chart__radar-ring,
 		.origam-chart__radar-spoke {
 			fill: none;
-			stroke: var(--origam-chart__grid---color, var(--origam-color__border---subtle, #e5e7eb));
+			stroke: var(--origam-chart__grid---color, var(--origam-color-border-subtle, #e5e7eb));
 			stroke-width: 1;
 		}
 
 		.origam-chart__radar-label {
-			fill: var(--origam-chart__axis-label---color, var(--origam-color__text---secondary, #6b7280));
+			fill: var(--origam-chart__axis-label---color, var(--origam-color-text-secondary, #6b7280));
 			font-size: var(--origam-chart__axis-label---font-size, 0.75rem);
 		}
 
 		.origam-chart__polygon {
 			stroke-width: var(--origam-chart__polygon---stroke-width, 1.5);
-			fill-opacity: var(--origam-chart__radar---fill-opacity, 0.18);
 		}
 
 		.origam-chart__point {
 			cursor: pointer;
-			transition: filter 150ms ease;
-
-			&:hover,
-			&:focus-visible {
-				outline: none;
-				filter: brightness(1.15);
-			}
 		}
 
 		.origam-chart__svg--animated .origam-chart__polygon,
@@ -528,7 +465,7 @@ return [ out, props.style as StyleValue ]
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			color: var(--origam-chart__empty---color, var(--origam-color__text---secondary, #6b7280));
+			color: var(--origam-chart__empty---color, var(--origam-color-text-secondary, #6b7280));
 		}
 
 		:deep(.origam-chart__legend) {

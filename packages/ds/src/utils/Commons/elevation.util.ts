@@ -1,7 +1,6 @@
-import { CUSTOM_BOX_SHADOW_REGEX } from '../../consts/Commons/elevation.const'
-import type { TColor, THSLA } from '../../types/Commons/color.type'
-import { HSVtoHSL, isParsableColor, parseColor, RGBtoHSV } from './color.util'
-import { convertToUnit, normalize, roundTo } from './commons.util'
+import { CUSTOM_BOX_SHADOW_REGEX } from '../../consts'
+import type { TColor, THSLA } from "../../types"
+import { convertToUnit, HSVtoHSL, isParsableColor, normalize, parseColor, RGBtoHSV, roundTo } from "../../utils"
 
 /**
  * Whether a string is a free-form custom `box-shadow` value (not an

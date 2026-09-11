@@ -1,0 +1,11 @@
+{
+  "media-controller": {
+    "_comment": "Tokens for <OrigamMediaController>. The shell controls bar shared by <OrigamVideo> and <OrigamAudio> — owns scrubber row + play/volume/time on the left + cog/cast/extras on the right.",
+    "color":                     { "$type": "color",      "$value": "{color.text.primary}" },
+
+    "scrubber": {
+      "_comment": "Override of the inner <OrigamMediaScrubber> colour when used as the timeline scrubber inside the controls bar. Falls through to the scrubber default when unset.",
+      "color":                   { "$type": "color",      "$value": "{color.action.primary.bg}" }
+    }
+  }
+}

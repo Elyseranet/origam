@@ -1,6 +1,6 @@
-import { HANDLERS } from '../../consts/Commons/bindProps.const'
+import { HANDLERS } from '../../consts'
 
-import { eventName, isOn } from './commons.util'
+import { eventName, isOn } from '../../utils'
 
 /**
  * Bind props.

@@ -1,9 +1,9 @@
 import type {
     ICommonsComponentProps,
     ITagProps
-} from '../Commons/commons.interface'
+} from '../../interfaces'
 
-import type { TGridPlaceSelf } from '../../types/Grid/grid-item.type'
+import type { TGridPlaceSelf } from '../../types'
 
 /**
  * Object syntax for a grid line spec. The same shape is used for
@@ -59,12 +59,3 @@ export interface IGridItemProps extends ICommonsComponentProps, ITagProps {
      */
     justifySelf?: TGridPlaceSelf
 }
-
-/*********************************************************
- * IGridItemEmits
- *
- * @description
- * Emits fired by `<OrigamGridItem>` — none. Purely presentational,
- * serialises its placement props into inline CSS.
- ********************************************************/
-export interface IGridItemEmits {}

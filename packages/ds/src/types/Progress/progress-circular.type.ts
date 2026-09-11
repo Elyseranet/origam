@@ -1,3 +1,3 @@
-import OrigamProgressCircular from '../../components/Progress/OrigamProgressCircular.vue'
+import { OrigamProgressCircular } from "../../components"
 
 export type TOrigamProgressCircular = InstanceType<typeof OrigamProgressCircular>

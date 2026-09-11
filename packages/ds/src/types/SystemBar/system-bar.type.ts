@@ -1,3 +1,3 @@
-import OrigamSystemBar from '../../components/SystemBar/OrigamSystemBar.vue'
+import { OrigamSystemBar } from '../../components'
 
 export type TOrigamSystemBar = InstanceType<typeof OrigamSystemBar>

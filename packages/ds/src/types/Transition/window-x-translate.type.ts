@@ -1,3 +1,3 @@
-import OrigamWindowXTranslate from '../../components/Transition/OrigamWindowXTranslate.vue'
+import { OrigamWindowXTranslate } from "../../components"
 
 export type TOrigamWindowXTranslate = InstanceType<typeof OrigamWindowXTranslate>

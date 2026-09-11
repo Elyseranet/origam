@@ -1,0 +1,36 @@
+{
+  "file-field-list-item": {
+    "background-color":      { "$type": "color",      "$value": "{color.surface.overlay}",  "$description": "List item background — was rgba(0,0,0,0.02); closest semantic token is surface.overlay (neutral.100, very light tint)" },
+    "border-color":          { "$type": "color",      "$value": "{color.border.subtle}",    "$description": "List item border — was rgba(0,0,0,0.08); mapped to border.subtle (neutral.300)" },
+    "border-width":          { "$type": "dimension",  "$value": "1px",                      "$description": "List item border width" },
+    "border-style":          { "$type": "other",      "$value": "solid",                    "$description": "List item border style" },
+    "border-radius":         { "$type": "dimension",  "$value": "{radius.sm}",              "$description": "List item corner radius — was 6px; radius.sm = 4px (closest token below 6px); kept 6px literal as fallback in .vue" },
+    "gap":                   { "$type": "dimension",  "$value": "{space.3}",                "$description": "Gap between icon, content and actions — was 12px" },
+    "padding-block":         { "$type": "dimension",  "$value": "{space.2}",                "$description": "Block padding (top/bottom) — was 10px; nearest token is space.2 = 8px; fallback 10px kept in .vue" },
+    "padding-inline":        { "$type": "dimension",  "$value": "{space.3}",                "$description": "Inline padding (left/right) — was 12px" },
+    "content-gap":           { "$type": "dimension",  "$value": "{space.1}",                "$description": "Inner gap between name, meta and progress — was 4px" },
+    "actions-gap":           { "$type": "dimension",  "$value": "{space.1}",                "$description": "Gap between action buttons — was 4px" },
+
+    "icon": {
+      "color":               { "$type": "color",      "$value": "{color.text.secondary}",   "$description": "File icon color" }
+    },
+
+    "name": {
+      "font-size":           { "$type": "dimension",  "$value": "{font.size.md}",           "$description": "File name font-size — was 14px" },
+      "font-weight":         { "$type": "fontWeight", "$value": "{font.weight.medium}",     "$description": "File name font-weight — was 500" }
+    },
+
+    "meta": {
+      "color":               { "$type": "color",      "$value": "{color.text.secondary}",   "$description": "File size / meta text color — was rgba(0,0,0,0.6)" },
+      "font-size":           { "$type": "dimension",  "$value": "{font.size.sm}",           "$description": "Meta text font-size — was 12px" }
+    },
+
+    "progress": {
+      "margin-top":          { "$type": "dimension",  "$value": "{space.1}",                "$description": "Top margin of progress bar — was 4px" }
+    },
+
+    "remove": {
+      "size":                { "$type": "other",      "$value": "small",                    "$description": "Remove button size variant" }
+    }
+  }
+}

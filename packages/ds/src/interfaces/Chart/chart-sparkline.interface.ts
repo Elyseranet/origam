@@ -1,10 +1,8 @@
-import type { IChartBaseProps } from './chart-base.interface'
-import type { IChartPoint } from './chart-point.interface'
-import type { IChartSeries } from './chart-series.interface'
+import type { IChartBaseProps, IChartPoint, IChartSeries } from '../../interfaces'
 
-import type { TChartSparklineKind } from '../../types/Chart/chart-sparkline.type'
+import type { TChartSparklineKind } from '../../types'
 
-import type { TIntent } from '../../types/Commons/intent.type'
+import type { TIntent } from '../../types'
 
 /**
  * Props for `<OrigamChartSparkline>` — the tiny inline-chart family.

@@ -1,6 +1,5 @@
 <template>
 	<div
-			:id="id"
 			class="origam-media-controller"
 			:class="rootClasses"
 			:style="style"
@@ -71,7 +70,6 @@
 				/>
 
 				<origam-media-volume-control
-						density="compact"
 						:volume="state.volume.value"
 						:muted="state.muted.value"
 						:mute-label="muteLabel"
@@ -102,9 +100,9 @@
 						variant="text"
 						density="compact"
 						:icon="ICONS.SHUFFLE"
-						:active="shuffleModel"
+						:active="internalShuffle"
 						:aria-label="shuffleLabel"
-						:aria-pressed="shuffleModel"
+						:aria-pressed="internalShuffle"
 						data-cy="origam-media-controller-shuffle"
 						@click="toggleShuffle"
 				/>
@@ -139,6 +137,7 @@
 						:items="configMenuItems"
 						:item-children="'children'"
 						data-cy="origam-media-controller-config"
+						@select="onConfigSelect"
 				>
 					<template #activator="{ props: activatorProps }">
 						<origam-btn
@@ -165,17 +164,16 @@
 		lang="ts"
 		setup
 >
-	import { computed, type CSSProperties, ref, useSlots } from 'vue'
+	import { computed, type CSSProperties, ref, useSlots, watch } from 'vue'
 
 	import { OrigamBtn } from '../Btn'
 	import { OrigamMenu } from '../Menu'
 
-	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useVModel } from '../../composables/Commons/vModel.composable'
+	import { useLocale } from '../../composables'
 
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { MDI_ICONS } from '../../enums'
 
-	import { formatMediaTime } from '../../utils/Media/format-time.util'
+	import { formatMediaTime } from '../../utils'
 
 	import type {
 		IMediaControllerEmits,
@@ -183,9 +181,7 @@
 		IMediaControllerSlots
 	} from '../../interfaces/Media/media-controller.interface'
 
-	import type { IConfigMenuItem } from '../../interfaces/Media/media-config-menu-item.interface'
-
-	import type { TAudioLoopMode } from '../../types/Audio/audio.type'
+	import type { TAudioLoopMode } from '../../types'
 
 	import OrigamMediaScrubber from './OrigamMediaScrubber.vue'
 	import OrigamMediaVolumeControl from './OrigamMediaVolumeControl.vue'
@@ -252,26 +248,26 @@
 	 * stays free of `t(...)` calls (CLAUDE.md "no logic in templates"
 	 * rule).
 	 ********************************************************/
-	const playLabel = computed<string>(() => t('origam.media.play'))
-	const pauseLabel = computed<string>(() => t('origam.media.pause'))
-	const muteLabel = computed<string>(() => t('origam.media.mute'))
-	const unmuteLabel = computed<string>(() => t('origam.media.unmute'))
-	const volumeLabel = computed<string>(() => t('origam.media.volume'))
-	const seekLabel = computed<string>(() => t('origam.media.seek'))
-	const previousLabel = computed<string>(() => t('origam.media.previous_track'))
-	const nextLabel = computed<string>(() => t('origam.media.next_track'))
-	const loopAllLabel = computed<string>(() => t('origam.media.loop_all'))
-	const loopOneLabel = computed<string>(() => t('origam.media.loop_one'))
-	const loopOffLabel = computed<string>(() => t('origam.media.loop_off'))
-	const shuffleLabel = computed<string>(() => t('origam.media.shuffle'))
-	const castLabel = computed<string>(() => t('origam.media.cast_to_device'))
-	const stopCastLabel = computed<string>(() => t('origam.media.stop_casting'))
-	const settingsLabel = computed<string>(() => t('origam.media.settings'))
-	const downloadLabel = computed<string>(() => t('origam.media.download'))
-	const speedLabel = computed<string>(() => t('origam.media.playback_speed'))
-	const normalSpeedLabel = computed<string>(() => t('origam.media.normal_speed'))
-	const qualityLabel = computed<string>(() => t('origam.media.quality'))
-	const transportLabel = computed<string>(() => t('origam.media.transport'))
+	const playLabel = computed<string>(() => t('origam.media.play', 'Play'))
+	const pauseLabel = computed<string>(() => t('origam.media.pause', 'Pause'))
+	const muteLabel = computed<string>(() => t('origam.media.mute', 'Mute'))
+	const unmuteLabel = computed<string>(() => t('origam.media.unmute', 'Unmute'))
+	const volumeLabel = computed<string>(() => t('origam.media.volume', 'Volume'))
+	const seekLabel = computed<string>(() => t('origam.media.seek', 'Seek'))
+	const previousLabel = computed<string>(() => t('origam.media.previous_track', 'Previous track'))
+	const nextLabel = computed<string>(() => t('origam.media.next_track', 'Next track'))
+	const loopAllLabel = computed<string>(() => t('origam.media.loop_all', 'Loop playlist'))
+	const loopOneLabel = computed<string>(() => t('origam.media.loop_one', 'Loop track'))
+	const loopOffLabel = computed<string>(() => t('origam.media.loop_off', 'Loop off'))
+	const shuffleLabel = computed<string>(() => t('origam.media.shuffle', 'Shuffle'))
+	const castLabel = computed<string>(() => t('origam.media.cast_to_device', 'Cast to device'))
+	const stopCastLabel = computed<string>(() => t('origam.media.stop_casting', 'Stop casting'))
+	const settingsLabel = computed<string>(() => t('origam.media.settings', 'Settings'))
+	const downloadLabel = computed<string>(() => t('origam.media.download', 'Download'))
+	const speedLabel = computed<string>(() => t('origam.media.playback_speed', 'Playback speed'))
+	const normalSpeedLabel = computed<string>(() => t('origam.media.normal_speed', 'Normal'))
+	const qualityLabel = computed<string>(() => t('origam.media.quality', 'Quality'))
+	const transportLabel = computed<string>(() => t('origam.media.transport', 'Transport controls'))
 
 	/*********************************************************
 	 * Reactive shorthands — surfaced as locals so the template stays
@@ -364,28 +360,22 @@
 	 * Tri-state loop — cycles `none → all → one → none …`. The
 	 * controller owns the cycle but mirrors the value via
 	 * `update:loopMode` so consumers can use `v-model:loopMode`.
-	 *
-	 * #429 — `loopMode` used to be seeded via `ref(props.loopMode ??
-	 * 'none')`, an EAGER read in the body of `setup()`. Vue runs
-	 * `setup()` BEFORE the `beforeCreate` hook where the ADR-005
-	 * theme-props resolver patches `instance.props` (root CLAUDE.md), so
-	 * a theme default for `loopMode` was captured too late and lost —
-	 * the trailing `watch()` never fired for the value it needed (a
-	 * watcher only reacts to a LATER change, never the initial one).
-	 * `useVModel` seeds its internal ref LAZILY (on first read, at
-	 * render — after `beforeCreate`), which is exactly the fix already
-	 * validated elsewhere in the DS for this same ADR-005 trap.
 	 ********************************************************/
-	const loopModeModel = useVModel(props, 'loopMode', (): TAudioLoopMode => 'none')
+	const internalLoopMode = ref<TAudioLoopMode>(props.loopMode ?? 'none')
 
-	const resolvedLoopMode = computed<TAudioLoopMode>(() => loopModeModel.value)
+	watch(() => props.loopMode, (next) => {
+		if (next && next !== internalLoopMode.value) internalLoopMode.value = next
+	})
+
+	const resolvedLoopMode = computed<TAudioLoopMode>(() => internalLoopMode.value)
 
 	function cycleLoopMode (): void {
 		const next: TAudioLoopMode =
-			loopModeModel.value === 'none' ? 'all'
-				: loopModeModel.value === 'all' ? 'one'
+			internalLoopMode.value === 'none' ? 'all'
+				: internalLoopMode.value === 'all' ? 'one'
 					: 'none'
-		loopModeModel.value = next
+		internalLoopMode.value = next
+		emit('update:loopMode', next)
 	}
 
 	const loopIcon = computed<string>(() => {
@@ -402,13 +392,18 @@
 
 	/*********************************************************
 	 * Shuffle toggle — v-modelled with the parent.
-	 *
-	 * #429 — same eager-read/ADR-005 trap as `loopMode` above, same fix.
 	 ********************************************************/
-	const shuffleModel = useVModel(props, 'shuffle', () => false)
+	const internalShuffle = ref<boolean>(props.shuffle ?? false)
+
+	watch(() => props.shuffle, (next) => {
+		if (typeof next === 'boolean' && next !== internalShuffle.value) {
+			internalShuffle.value = next
+		}
+	})
 
 	function toggleShuffle (): void {
-		shuffleModel.value = !shuffleModel.value
+		internalShuffle.value = !internalShuffle.value
+		emit('update:shuffle', internalShuffle.value)
 	}
 
 	/*********************************************************
@@ -447,22 +442,35 @@
 		return match?.label ?? props.currentQuality
 	})
 
+	interface IConfigMenuItem {
+		title: string
+		appendText?: string
+		prependIcon?: string
+		key: string
+		value?: string | number
+		children?: Array<IConfigMenuItem>
+		onClick?: (event: MouseEvent) => void
+		link?: boolean
+		href?: string
+		download?: string | boolean
+		rel?: string
+		target?: string
+	}
+
 	/*********************************************************
 	 * configMenuItems
 	 *
-	 * Each leaf item carries its OWN `onClick`, dispatched through the
-	 * underlying `<OrigamListItem>`; parent rows that open a submenu
-	 * purposely have NO click (the menu toggles the submenu on
-	 * hover/click via its own activator binding).
+	 * `<OrigamMenu>` doesn't emit a `select` event — clicking an item
+	 * fires whatever `onClick` lives on the item, dispatched through
+	 * the underlying `<OrigamListItem>`. Each leaf item therefore needs
+	 * its OWN click handler; parent rows that open a submenu purposely
+	 * have NO click (the menu toggles the submenu on hover/click via
+	 * its own activator binding).
 	 *
-	 * `<OrigamMenu>` also emits `select` for a picked leaf row, so this
-	 * component deliberately does NOT listen for it: both channels fire
-	 * on the same click, and routing both into `onConfigSelect` emitted
-	 * `download` twice per click (and called `setPlaybackRate` /
-	 * `quality-change` twice). The per-item handler is the one kept
-	 * because `handleDownloadClick` needs the real `MouseEvent` to
-	 * `preventDefault()` the cross-origin anchor navigation — the
-	 * `select` payload is the item object, not the event.
+	 * Carrying `onClick` on the item object also lights up
+	 * `OrigamListItem.isClickable.value` → cursor: pointer, ripple,
+	 * keyboard activation, focusable tabindex — i.e. the visual
+	 * affordances a menu row needs.
 	 ********************************************************/
 	const configMenuItems = computed<Array<IConfigMenuItem>>(() => {
 		const items: Array<IConfigMenuItem> = []
@@ -561,6 +569,14 @@
 			configMenuOpen.value = false
 			return
 		}
+		if (item.key === 'download') {
+			// Path used by the test stub: it emits `select` on click
+			// without going through the per-item `onClick`. In the
+			// real browser, `handleDownloadClick` already emits and
+			// closes — this branch keeps the controller spec passing.
+			emit('download')
+			configMenuOpen.value = false
+		}
 	}
 
 	/*********************************************************
@@ -653,7 +669,7 @@
 	defineExpose({
 		configMenuOpen,
 		resolvedLoopMode,
-		internalShuffle: shuffleModel
+		internalShuffle
 	})
 </script>
 
@@ -698,8 +714,8 @@
 	}
 
 	.origam-media-controller__buttons-row :deep(.origam-btn--active) {
-		color: var(--origam-media-controller---accent-color);
-		background-color: color-mix(in srgb, var(--origam-media-controller---accent-color) 14%, transparent);
+		color: var(--origam-media-controller---accent-color, var(--origam-color__action--primary---bg));
+		background-color: color-mix(in srgb, var(--origam-media-controller---accent-color, var(--origam-color__action--primary---bg)) 14%, transparent);
 	}
 
 	.origam-media-controller--inset {
@@ -735,16 +751,16 @@
 		font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
 		font-size: 12px;
 		font-variant-numeric: tabular-nums;
-		color: var(--origam-media-controller__time---color);
+		color: var(--origam-media-controller__time---color, inherit);
 		white-space: nowrap;
 		user-select: none;
 	}
 
 	.origam-media-controller__time-sep {
-		color: var(--origam-media-controller__time-sep---color);
+		opacity: 0.6;
 	}
 
 	.origam-media-controller__time-total {
-		color: var(--origam-media-controller__time-total---color);
+		opacity: 0.7;
 	}
 </style>

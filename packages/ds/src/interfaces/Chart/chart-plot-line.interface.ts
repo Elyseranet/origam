@@ -1,4 +1,4 @@
-import type { TIntent } from '../../types/Commons/intent.type'
+import type { TIntent } from '../../types'
 
 /**
  * A single threshold line drawn at a fixed axis value, either

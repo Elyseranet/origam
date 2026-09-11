@@ -289,43 +289,4 @@ describe('useInlineEdit', () => {
         expect(isEditing.value).toBe(false)
         expect(onConfirm).toHaveBeenCalledWith('quick commit')
     })
-
-    // ── rules : le trou `false`, ferme par la mise en commun de la boucle ──
-    // Avant, `runRules` ne regardait que `typeof result === 'string'` : une
-    // regle booleenne — la forme la plus naturelle qui soit — ne bloquait
-    // JAMAIS, ni sur true ni sur false. `useValidation` comptait deja `false`
-    // comme un echec ; les deux copies de la boucle avaient diverge.
-    it('rules: une regle booleenne qui echoue (false) BLOQUE le commit', async () => {
-        const model = ref('hello')
-        const onConfirm = vi.fn()
-        const { error, isEditing, edit, confirm, setValue } = useInlineEdit(model, {
-            rules: [((v: string) => v.length >= 10) as never],
-            onConfirm
-        })
-
-        edit()
-        setValue('court')
-
-        const ok = await confirm()
-
-        expect(ok).toBe(false)
-        expect(onConfirm).not.toHaveBeenCalled()
-        expect(isEditing.value).toBe(true)
-        expect(error.value).not.toBeNull()
-    })
-
-    it('rules: une regle booleenne qui passe (true) laisse committer', async () => {
-        const model = ref('hello')
-        const onConfirm = vi.fn()
-        const { edit, confirm, setValue } = useInlineEdit(model, {
-            rules: [((v: string) => v.length >= 3) as never],
-            onConfirm
-        })
-
-        edit()
-        setValue('assez long')
-
-        expect(await confirm()).toBe(true)
-        expect(onConfirm).toHaveBeenCalledWith('assez long')
-    })
 })

@@ -1,7 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
 
-import { eventLogItems, fillHstNumber, openEventsTab } from './_support/histoire-controls'
-
 /**
  * OrigamChartCandlestick — Playwright spec.
  *
@@ -15,15 +13,6 @@ import { eventLogItems, fillHstNumber, openEventsTab } from './_support/histoire
  *  - Each candle group carries role="button", tabindex="0", aria-label.
  *  - The empty slot renders when series is empty.
  *  - point-click emit fires when a candle is activated.
- *
- * The story restructuring (canonical Design/State/Functional/Events/Slots
- * layout, see root CLAUDE.md) removed the old "candlestick-playground-
- * chart" fixture root data-cy — `OrigamChartCandlestick.vue` itself sets
- * a static `data-cy="origam-chart-candlestick"` on its own root instead.
- * candleWidth/wickWidth were static side-by-side comparisons, now single
- * dynamic controls on "Design", driven sequentially. The old
- * "candlestick-emit-log" DOM shell is gone — emits read back via the
- * shared `openEventsTab` / `eventLogItems` helpers.
  */
 
 const CANDLESTICK_STORY = '/stories/story/components-stories-chart-origamchartcandlestick-story-vue'
@@ -42,15 +31,15 @@ test.describe('OrigamChartCandlestick — Default (AAPL 14 days)', () => {
     test('renders figure root with role="figure"', async ({ page }) => {
         await openVariant(page, CANDLESTICK_STORY, 'Default')
         const sandbox = sandboxOf(page)
-        const host = sandbox.locator('[data-cy="origam-chart-candlestick"]').first()
+        const host = sandbox.locator('[data-cy="candlestick-playground-chart"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
-        await expect(host).toHaveRole('figure') // #426 — root is a native <figure>, role is implicit, no explicit attribute any more
+        await expect(host).toHaveAttribute('role', 'figure')
     })
 
     test('SVG carries role=img, title and desc', async ({ page }) => {
         await openVariant(page, CANDLESTICK_STORY, 'Default')
         const sandbox = sandboxOf(page)
-        const svg = sandbox.locator('[data-cy="origam-chart-candlestick"] svg').first()
+        const svg = sandbox.locator('[data-cy="candlestick-playground-chart"] svg').first()
         await expect(svg).toBeVisible()
         await expect(svg).toHaveAttribute('role', 'img')
         await expect(svg.locator('title')).toHaveCount(1)
@@ -70,13 +59,8 @@ test.describe('OrigamChartCandlestick — Default (AAPL 14 days)', () => {
         await openVariant(page, CANDLESTICK_STORY, 'Default')
         const sandbox = sandboxOf(page)
         const candles = sandbox.locator('[data-cy^="origam-chart-candlestick-candle-"]')
-        // Timing flake found while repairing this spec's title drift,
-        // unrelated to it (same class of race documented on chart-
-        // bullet.spec.ts's axis-ticks test): candle geometry depends on a
-        // layout measurement that isn't always settled right after
-        // openVariant's fixed 500ms wait. `toHaveCount` auto-retries.
-        await expect(candles).toHaveCount(14, { timeout: 6000 })
         const count = await candles.count()
+        expect(count).toBe(14)
 
         for (let i = 0; i < count; i++) {
             const wick = sandbox.locator(`[data-cy="origam-chart-candlestick-wick-${ i }"]`)
@@ -89,15 +73,12 @@ test.describe('OrigamChartCandlestick — Default (AAPL 14 days)', () => {
 
 test.describe('OrigamChartCandlestick — bullish / bearish colours', () => {
     test('bullish and bearish candles have distinct fill colours (default intents)', async ({ page }) => {
-        // Dedicated fixture folded into "Design" — its default init-state
-        // already sets bullishColor: 'success' / bearishColor: 'danger'
-        // (see OrigamChartCandlestick.story.vue), so no control
-        // interaction is needed.
-        await openVariant(page, CANDLESTICK_STORY, 'Design')
+        await openVariant(page, CANDLESTICK_STORY, 'Prop — bullishColor / bearishColor (DS intents vs custom hex)')
         const sandbox = sandboxOf(page)
+        await page.screenshot({ path: '/tmp/chart-candlestick-colors.png', fullPage: false })
 
-        const bullishCandles = sandbox.locator('[data-cy="origam-chart-candlestick"] .origam-chart-candlestick__candle--bullish')
-        const bearishCandles = sandbox.locator('[data-cy="origam-chart-candlestick"] .origam-chart-candlestick__candle--bearish')
+        const bullishCandles = sandbox.locator('[data-cy="candlestick-color-intents"] .origam-chart-candlestick__candle--bullish')
+        const bearishCandles = sandbox.locator('[data-cy="candlestick-color-intents"] .origam-chart-candlestick__candle--bearish')
 
         await expect(bullishCandles.first()).toBeVisible({ timeout: 6000 })
         await expect(bearishCandles.first()).toBeVisible({ timeout: 6000 })
@@ -109,37 +90,35 @@ test.describe('OrigamChartCandlestick — bullish / bearish colours', () => {
         expect(bullishCount + bearishCount).toBe(14)
     })
 
-    test('custom hex colours produce distinct body fill inline styles', async () => {
-        // STORY GAP found while repairing this spec: Design's Bullish/
-        // Bearish Color controls are `HstSelect` bound to `INTENT_OPTIONS`
-        // (named intents only — 'success'/'danger'/… — verified via
-        // intent.const.ts, no free-form hex entry), unlike e.g. chart-
-        // bullet's rangeColors which uses free-typing `HstText` fields.
-        // The old side-by-side "DS intents vs custom hex" comparison had
-        // its own hardcoded-hex fixture that no longer exists, and there's
-        // no control path to inject a raw hex value into bullishColor/
-        // bearishColor from this story. Can't be reproduced without
-        // editing the story.
-        test.skip(true, 'STORY GAP: OrigamChartCandlestick.story.vue only exposes bullishColor/bearishColor via an intent-only HstSelect (INTENT_OPTIONS) after the canonical-structure migration — no control accepts a raw hex value, and the old custom-hex fixture is gone. Needs a dedicated story fixture or an HstText control, not a spec change.')
+    test('custom hex colours produce distinct body fill inline styles', async ({ page }) => {
+        await openVariant(page, CANDLESTICK_STORY, 'Prop — bullishColor / bearishColor (DS intents vs custom hex)')
+        const sandbox = sandboxOf(page)
+
+        const firstBullishBody = sandbox.locator('[data-cy="candlestick-color-hex"] .origam-chart-candlestick__candle--bullish .origam-chart-candlestick__body-rect').first()
+        const firstBearishBody = sandbox.locator('[data-cy="candlestick-color-hex"] .origam-chart-candlestick__candle--bearish .origam-chart-candlestick__body-rect').first()
+
+        const bullishStyle = await firstBullishBody.getAttribute('style')
+        const bearishStyle = await firstBearishBody.getAttribute('style')
+
+        // Chromium normalises hex colours to rgb() in SVG inline styles,
+        // so we verify the two fills are non-null and distinct rather than
+        // asserting a specific hex literal.
+        expect(bullishStyle).toBeTruthy()
+        expect(bearishStyle).toBeTruthy()
+        expect(bullishStyle).not.toBe(bearishStyle)
     })
 })
 
 test.describe('OrigamChartCandlestick — candleWidth', () => {
     test('slim (0.3) body is narrower than wide (0.9) body', async ({ page }) => {
-        // Dedicated side-by-side fixture folded into "Design" — a single
-        // dynamic "Candle Width [0..1]" control (default 0.6), driven
-        // sequentially instead.
-        await openVariant(page, CANDLESTICK_STORY, 'Design')
+        await openVariant(page, CANDLESTICK_STORY, 'Prop — candleWidth (slim 0.3 vs wide 0.9)')
         const sandbox = sandboxOf(page)
-        const body = sandbox.locator('[data-cy="origam-chart-candlestick"] [data-cy="origam-chart-candlestick-body-0"]')
 
-        await fillHstNumber(page, 'Candle Width [0..1]', 0.3)
-        await page.waitForTimeout(400)
-        const slimW = await body.getAttribute('width')
+        const slimBody = sandbox.locator('[data-cy="candlestick-width-slim"] [data-cy="origam-chart-candlestick-body-0"]')
+        const wideBody = sandbox.locator('[data-cy="candlestick-width-wide"] [data-cy="origam-chart-candlestick-body-0"]')
 
-        await fillHstNumber(page, 'Candle Width [0..1]', 0.9)
-        await page.waitForTimeout(400)
-        const wideW = await body.getAttribute('width')
+        const slimW = await slimBody.getAttribute('width')
+        const wideW = await wideBody.getAttribute('width')
 
         expect(parseFloat(slimW!)).toBeLessThan(parseFloat(wideW!))
     })
@@ -147,20 +126,14 @@ test.describe('OrigamChartCandlestick — candleWidth', () => {
 
 test.describe('OrigamChartCandlestick — wickWidth', () => {
     test('thick wick has a greater stroke-width attribute than thin wick', async ({ page }) => {
-        // Dedicated side-by-side fixture folded into "Design" — a single
-        // dynamic "Wick Width (px)" control (default 1), driven
-        // sequentially instead.
-        await openVariant(page, CANDLESTICK_STORY, 'Design')
+        await openVariant(page, CANDLESTICK_STORY, 'Prop — wickWidth (thin 0.5 vs thick 2)')
         const sandbox = sandboxOf(page)
-        const wick = sandbox.locator('[data-cy="origam-chart-candlestick"] [data-cy="origam-chart-candlestick-wick-0"]')
 
-        await fillHstNumber(page, 'Wick Width (px)', 0.5)
-        await page.waitForTimeout(400)
-        const thinSW = await wick.getAttribute('stroke-width')
+        const thinWick = sandbox.locator('[data-cy="candlestick-wick-thin"] [data-cy="origam-chart-candlestick-wick-0"]')
+        const thickWick = sandbox.locator('[data-cy="candlestick-wick-thick"] [data-cy="origam-chart-candlestick-wick-0"]')
 
-        await fillHstNumber(page, 'Wick Width (px)', 2)
-        await page.waitForTimeout(400)
-        const thickSW = await wick.getAttribute('stroke-width')
+        const thinSW = await thinWick.getAttribute('stroke-width')
+        const thickSW = await thickWick.getAttribute('stroke-width')
 
         expect(parseFloat(thinSW!)).toBeLessThan(parseFloat(thickSW!))
     })
@@ -196,9 +169,6 @@ test.describe('OrigamChartCandlestick — accessibility', () => {
         await openVariant(page, CANDLESTICK_STORY, 'Default')
         const sandbox = sandboxOf(page)
         const bearishCandles = sandbox.locator('[data-cy^="origam-chart-candlestick-candle-"][aria-label*="bearish"]')
-        // Same timing race as "each candle has a wick line…" above —
-        // `toBeAttached` auto-retries instead of one synchronous snapshot.
-        await expect(bearishCandles.first()).toBeAttached({ timeout: 6000 })
         const count = await bearishCandles.count()
         expect(count).toBeGreaterThan(0)
     })
@@ -206,7 +176,7 @@ test.describe('OrigamChartCandlestick — accessibility', () => {
 
 test.describe('OrigamChartCandlestick — empty state', () => {
     test('empty slot renders when series is empty', async ({ page }) => {
-        await openVariant(page, CANDLESTICK_STORY, 'Slots - Empty')
+        await openVariant(page, CANDLESTICK_STORY, 'Slot — empty')
         const sandbox = sandboxOf(page)
         const empty = sandbox.locator('[data-cy="candlestick-slot-empty-chart"] [data-cy="origam-chart-candlestick-empty"]')
         await expect(empty).toBeVisible({ timeout: 6000 })
@@ -214,7 +184,7 @@ test.describe('OrigamChartCandlestick — empty state', () => {
     })
 
     test('no candles render in the empty state', async ({ page }) => {
-        await openVariant(page, CANDLESTICK_STORY, 'Slots - Empty')
+        await openVariant(page, CANDLESTICK_STORY, 'Slot — empty')
         const sandbox = sandboxOf(page)
         const candles = sandbox.locator('[data-cy="candlestick-slot-empty-chart"] [data-cy^="origam-chart-candlestick-candle-"]')
         await expect(candles).toHaveCount(0, { timeout: 4000 })
@@ -223,24 +193,25 @@ test.describe('OrigamChartCandlestick — empty state', () => {
 
 test.describe('OrigamChartCandlestick — point-click emit', () => {
     test('clicking a candle appends a line to the log', async ({ page }) => {
-        // Canonical Variant is "Events - point-click". The old
-        // "candlestick-emit-log" DOM shell is gone — read back from
-        // Histoire's own "Events" tab instead.
-        await openVariant(page, CANDLESTICK_STORY, 'Events - point-click')
+        await openVariant(page, CANDLESTICK_STORY, 'Emit — point-click on candle')
         const sandbox = sandboxOf(page)
+
+        const log = sandbox.locator('[data-cy="candlestick-emit-log"]')
+        const initialText = await log.textContent()
+        expect(initialText?.trim()).toBe('')
 
         const firstCandle = sandbox.locator('[data-cy="origam-chart-candlestick-candle-0"]')
         await firstCandle.click()
         await page.waitForTimeout(300)
 
-        await openEventsTab(page)
-        await expect(eventLogItems(page).first()).toContainText('point-click', { timeout: 4000 })
+        const updatedText = await log.textContent()
+        expect(updatedText).toContain('point-click')
     })
 })
 
 test.describe('OrigamChartCandlestick — BTC fixture (30 days)', () => {
     test('slot tooltip variant renders 30 candles for BTC fixture', async ({ page }) => {
-        await openVariant(page, CANDLESTICK_STORY, 'Slots - Tooltip')
+        await openVariant(page, CANDLESTICK_STORY, 'Slot — tooltip')
         const sandbox = sandboxOf(page)
         const candles = sandbox.locator('[data-cy^="origam-chart-candlestick-candle-"]')
         await expect(candles).toHaveCount(30, { timeout: 6000 })

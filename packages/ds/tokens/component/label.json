@@ -1,0 +1,26 @@
+{
+  "label": {
+    "_comment": "OrigamLabel component tokens — Lot 3.2A. Simple label element used standalone and inside OrigamField. No BEM children — it is itself a BEM child of OrigamField (field.label tokens control its float animation).",
+
+    "color":                  { "$type": "color",        "$value": "{color.text.secondary}",       "$description": "Default label text color" },
+    "font-size":              { "$type": "dimension",    "$value": "{font.size.md}",               "$description": "Default label font-size (1em when used inside OrigamField — overridden by field context)" },
+    "font-weight":            { "$type": "fontWeight",   "$value": "{font.weight.regular}",        "$description": "Label font-weight" },
+    "line-height":            { "$type": "number",       "$value": "{font.lineHeight.normal}",     "$description": "Label line-height" },
+    "letter-spacing":         { "$type": "dimension",    "$value": "{font.letterSpacing.normal}",  "$description": "Label letter-spacing" },
+
+    "pointer-events":         { "$type": "other",        "$value": "none",                         "$description": "Labels do not capture pointer events (positioned on top of input)" },
+    "transition-duration":    { "$type": "duration",     "$value": "{motion.duration.normal}",     "$description": "Duration for opacity/transform transitions (float animation driven by JS)" },
+    "transition-easing":      { "$type": "cubicBezier",  "$value": "{motion.easing.standard}",     "$description": "Easing for label transitions" },
+
+    "floating": {
+      "_comment": "State tokens for .origam-label--floating — the cloned label in the notch.",
+      "font-size":            { "$type": "dimension",    "$value": "0.75em",                       "$description": "Scale of the floating label (corresponds to --origam-field__label---font-size)" },
+      "visibility":           { "$type": "other",        "$value": "hidden",                       "$description": "Hidden by default — revealed by JS animation on field activation" }
+    },
+
+    "required-indicator": {
+      "_comment": "The <sup>*</sup> required indicator rendered when `required` prop is true.",
+      "color":                { "$type": "color",        "$value": "{color.feedback.danger.fgSubtle}", "$description": "Color of the asterisk required indicator" }
+    }
+  }
+}

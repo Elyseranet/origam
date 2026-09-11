@@ -66,9 +66,8 @@ Bands are rendered in array order. Each band covers `[previous.to, this.to]`. St
 | `barColor` | `TIntent \| string` | `'primary'` | Fill colour of the actual-value bar. |
 | `targetColor` | `TIntent \| string` | `'danger'` | Stroke colour of the target marker tick. |
 | `rangeColors` | `Array<TIntent \| string>` | `['danger', 'warning', 'success']` | Fallback palette used when `range.color` is omitted. Cycled in array order. |
-| `orientation` | `TDirection` | `'horizontal'` | `'horizontal'` renders labels left, bars right. `'vertical'` renders labels bottom, bars upward. |
+| `orientation` | `TChartBulletOrientation` | `'horizontal'` | `'horizontal'` renders labels left, bars right. `'vertical'` renders labels bottom, bars upward. |
 | `barThickness` | `number` | `0.45` | Fraction of the slot height (horizontal) or slot width (vertical) used for the value bar. Range `[0, 1]`. |
-| `colorScheme` | `Array<TIntent \| string>` | ⛔ **Sans effet sur ce composant** — the value bar uses a single uniform fill (barColor) and range bands use their own palette (rangeColors) — there is no per-series identity for a rotating palette to drive. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
 
 ### Behaviour
 
@@ -85,9 +84,7 @@ Bands are rendered in array order. Each band covers `[previous.to, this.to]`. St
 
 ### Inherited from `IChartBaseProps`
 
-`height`, `aspectRatio`, and all dimension / margin / padding / rounded / elevation / bgColor props.
-
-`colorScheme` is also inherited but has **no effect** on this component (see [Caveats](#caveats)).
+`height`, `colorScheme`, `aspectRatio`, and all dimension / margin / padding / rounded / elevation / bgColor props.
 
 ## Emits
 
@@ -108,10 +105,7 @@ Bands are rendered in array order. Each band covers `[previous.to, this.to]`. St
 
 ## Accessibility
 
-- Root is a native `<figure>` carrying `aria-label` — the `title` prop when
-  given, otherwise the translated `origam.chart.bullet.aria_label`. The
-  fallback is a locale key, not an English literal, so it follows the active
-  locale (#567).
+- Root `<div>` carries `role="figure"` and `aria-label` (defaults to `title` or `"bullet chart"`).
 - Inner `<svg>` carries `role="img"` plus `<title>` and `<desc>` for screen readers.
 - Each value bar (`<rect>`) has `tabindex="0"`, `role="button"`, and `aria-label` describing category / value / target / achievement %.
 - Keyboard: `Enter` and `Space` fire `point-click` on the focused bar.
@@ -160,10 +154,6 @@ const series = [{
   }]
 }]
 ```
-
-## Caveats
-
-- **`colorScheme` has no effect** (#426). It's inherited from `IChartBaseProps` and stays on the public API for consistency across chart types, but the value bar uses a single uniform fill (`barColor`) and the range bands use their own dedicated palette (`rangeColors`) — there's no per-series identity a rotating palette could drive. Passing it logs `[origam] <OrigamChartBullet> prop "colorScheme" has no effect on this component: …` once to the console in dev builds (silent in production). Neither wiring a fake behaviour nor removing the prop was on the table — see the #426 decision.
 
 ## Composable reference
 

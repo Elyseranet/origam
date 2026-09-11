@@ -1,5 +1,5 @@
-import OrigamParallaxElement from '../../components/Parallax/OrigamParallaxElement.vue'
-import { PARALLAX_ELEMENT_TYPE } from '../../enums/Parallax/parallax-element.enum'
+import { OrigamParallaxElement } from "../../components"
+import { PARALLAX_ELEMENT_TYPE } from '../../enums'
 
 export type TParallaxElementType = `${PARALLAX_ELEMENT_TYPE}`
 

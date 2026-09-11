@@ -1,6 +1,3 @@
-import { TAB_VARIANT } from '../../enums/Tabs/tab.enum'
-import OrigamTab from '../../components/Tabs/OrigamTab.vue'
-
-export type TTabVariant = `${TAB_VARIANT}`
+import { OrigamTab } from '../../components'
 
 export type TOrigamTab = InstanceType<typeof OrigamTab>

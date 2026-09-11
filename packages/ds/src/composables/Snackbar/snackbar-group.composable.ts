@@ -1,10 +1,59 @@
-import type { Ref } from 'vue'
-import { SNACKBAR_GROUP_DEFAULT_ID } from '../../consts/Snackbar/snackbar-group.const'
-import type { ISnackbarGroupItem, ISnackbarGroupItemOptions } from '../../interfaces/Snackbar/snackbar-group-item.interface'
-import type { IUseSnackbarGroupOptions, IUseSnackbarGroupReturn } from '../../interfaces/Snackbar/snackbar-group.interface'
-import { clearTimer, generateId, getStore } from '../../utils/Snackbar/snackbar-group.util'
+import { computed, ref, type Ref } from 'vue'
 
-export type { IUseSnackbarGroupOptions, IUseSnackbarGroupReturn } from '../../interfaces/Snackbar/snackbar-group.interface'
+import { SNACKBAR_GROUP_DEFAULT_DURATION, SNACKBAR_GROUP_DEFAULT_ID } from '../../consts'
+
+import type { ISnackbarGroupItem, ISnackbarGroupItemOptions } from '../../interfaces'
+
+/*********************************************************
+ * Internal store
+ *
+ * @description
+ * One singleton store per `id`. The map persists for the
+ * lifetime of the module so any number of components /
+ * composables addressing the same stack `id` share state
+ * (notify here, dismiss there).
+ ********************************************************/
+
+interface ISnackbarGroupState {
+    items: Ref<Array<ISnackbarGroupItem>>
+    timers: Map<string, number>
+    counter: { current: number }
+}
+
+const STORES = new Map<string, ISnackbarGroupState>()
+
+const getStore = (id: string): ISnackbarGroupState => {
+    let store = STORES.get(id)
+
+    if (!store) {
+        store = {
+            items: ref<Array<ISnackbarGroupItem>>([]),
+            timers: new Map(),
+            counter: { current: 0 }
+        }
+
+        STORES.set(id, store)
+    }
+
+    return store
+}
+
+const generateId = (state: ISnackbarGroupState): string => {
+    state.counter.current += 1
+
+    return `origam-snackbar-group-item-${state.counter.current}`
+}
+
+const clearTimer = (state: ISnackbarGroupState, itemId: string): void => {
+    const handle = state.timers.get(itemId)
+
+    if (handle !== undefined) {
+        // SSR-safe — `dismiss` is part of the public API and a consumer
+        // could plausibly invoke it from a setup() block (no DOM).
+        if (typeof window !== 'undefined') window.clearTimeout(handle)
+        state.timers.delete(itemId)
+    }
+}
 
 /*********************************************************
  * useSnackbarGroup
@@ -15,12 +64,30 @@ export type { IUseSnackbarGroupOptions, IUseSnackbarGroupReturn } from '../../in
  * same reactive reference shared with the matching
  * `<OrigamSnackbarGroup id="…">` instance, so direct
  * mutation outside of `notify` / `dismiss` is discouraged.
- * @description
- * The store singleton (`getStore` / `generateId` / `clearTimer`) lives
- * in `utils/Snackbar/snackbar-group.util.ts`, shared with
- * `useSnackbarGroupInternal` (own file) — both hooks address the same
- * per-id stack and must never own separate copies of it.
  ********************************************************/
+export interface IUseSnackbarGroupOptions {
+    id?: string
+    /**
+     * Maximum number of items kept in the stack. When `notify` would
+     * push past this number, the oldest item is evicted FIFO. When
+     * undefined, the stack is unbounded (the rendering component
+     * still caps the visible count via its `max` prop).
+     */
+    max?: number
+    /**
+     * Fallback `duration` applied to items that omit their own.
+     * Defaults to `SNACKBAR_GROUP_DEFAULT_DURATION` (5 000 ms).
+     */
+    defaultDuration?: number
+}
+
+export interface IUseSnackbarGroupReturn {
+    items: Readonly<Ref<ReadonlyArray<ISnackbarGroupItem>>>
+    notify: (opts: ISnackbarGroupItemOptions) => string
+    dismiss: (itemId: string) => void
+    dismissAll: () => void
+}
+
 export function useSnackbarGroup (options: IUseSnackbarGroupOptions = {}): IUseSnackbarGroupReturn {
     const id = options.id ?? SNACKBAR_GROUP_DEFAULT_ID
     const state = getStore(id)
@@ -49,13 +116,7 @@ export function useSnackbarGroup (options: IUseSnackbarGroupOptions = {}): IUseS
 
     const notify = (opts: ISnackbarGroupItemOptions): string => {
         const itemId = generateId(state)
-        // Precedence: per-item override > explicit `useSnackbarGroup({
-        // defaultDuration })` call-site option > the stack's registered
-        // default (`<OrigamSnackbarGroup defaultDuration="…">`, kept in
-        // sync via `useSnackbarGroupInternal`'s `registerDefaultDuration`
-        // — falls back to `SNACKBAR_GROUP_DEFAULT_DURATION` itself when
-        // no component instance is mounted for this stack `id`).
-        const duration = opts.duration ?? options.defaultDuration ?? state.defaultDuration.value
+        const duration = opts.duration ?? options.defaultDuration ?? SNACKBAR_GROUP_DEFAULT_DURATION
 
         const item: ISnackbarGroupItem = {
             ...opts,
@@ -103,4 +164,44 @@ export function useSnackbarGroup (options: IUseSnackbarGroupOptions = {}): IUseS
         dismiss,
         dismissAll
     }
+}
+
+/*********************************************************
+ * Internal helper for the host component
+ *
+ * @description
+ * `<OrigamSnackbarGroup>` needs a *writable* ref to the
+ * items list (it reads them to render and the composable
+ * mutates them). Exposed under a separate name so the
+ * public `useSnackbarGroup` API stays read-only on
+ * `items`. Components outside the library should never
+ * import this.
+ ********************************************************/
+export function useSnackbarGroupInternal (id: string = SNACKBAR_GROUP_DEFAULT_ID) {
+    const state = getStore(id)
+
+    return {
+        rawItems: state.items,
+        itemCount: computed(() => state.items.value.length)
+    }
+}
+
+/*********************************************************
+ * Test helper
+ *
+ * @description
+ * Vitest needs to wipe the singleton between specs so that
+ * counters / timers do not leak across tests. Not part of
+ * the public surface — do not import in product code.
+ ********************************************************/
+export function resetSnackbarGroupForTesting (): void {
+    STORES.forEach((state) => {
+        state.timers.forEach((handle) => {
+            if (typeof window !== 'undefined') window.clearTimeout(handle)
+        })
+        state.timers.clear()
+        state.items.value = []
+        state.counter.current = 0
+    })
+    STORES.clear()
 }

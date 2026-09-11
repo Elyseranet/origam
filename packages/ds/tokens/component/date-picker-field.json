@@ -1,0 +1,14 @@
+{
+  "date-picker-field": {
+    "_comment": "Inherits Field tokens for the input chrome and DatePicker tokens for the popup. This file holds the integration-specific layout (gap between input and dropdown, max-width).",
+    "min-width":         { "$type": "dimension", "$value": "200px" },
+    "max-width":         { "$type": "dimension", "$value": "320px" },
+    "menu-offset":       { "$type": "dimension", "$value": "{space.1}" },
+
+    "icon": {
+      "color":       { "$type": "color",     "$value": "{color.text.secondary}" },
+      "color-hover": { "$type": "color",     "$value": "{color.text.primary}" },
+      "color-error": { "$type": "color",     "$value": "{color.feedback.danger.fgSubtle}" }
+    }
+  }
+}

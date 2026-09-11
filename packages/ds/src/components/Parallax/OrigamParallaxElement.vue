@@ -1,7 +1,6 @@
 <template>
 	<component
 			:is="tag"
-			:id="id"
 			:class="parallaxElementClasses"
 			:style="parallaxElementStyles"
 	>
@@ -14,28 +13,24 @@
 		setup
 >
 	import { computed, inject, StyleValue } from 'vue'
-	import { useBorder } from '../../composables/Commons/border.composable'
-	import { useElevation } from '../../composables/Commons/elevation.composable'
-	import { useMargin } from '../../composables/Commons/margin.composable'
-	import { usePadding } from '../../composables/Commons/padding.composable'
-	import { useParallaxTransform } from '../../composables/Parallax/transform.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useRounded } from '../../composables/Commons/rounded.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-
 	import {
-		PARALLAX_ELEMENT_VAR_X,
-		PARALLAX_ELEMENT_VAR_Y
-	} from '../../consts/Parallax/parallax-element.const'
-	import { ORIGAM_PARALLAX_KEY } from '../../consts/Parallax/parallax.const'
+	useBorder,
+	useElevation,
+	useMargin,
+	usePadding,
+	useParallaxTransform,
+	useProps,
+	useRounded,
+	useStyle
+} from '../../composables'
 
-	import { AXIS } from '../../enums/Commons/drag.enum'
-	import { PARALLAX_ELEMENT_TYPE } from '../../enums/Parallax/parallax-element.enum'
-	import { PARALLAX_EASING, PARALLAX_EVENT } from '../../enums/Parallax/parallax.enum'
+	import { ORIGAM_PARALLAX_KEY } from '../../consts'
 
-	import type { IParallaxElementEmits, IParallaxElementProps, IParallaxElementSlots } from '../../interfaces/Parallax/parallax-element.interface'
+	import { AXIS, PARALLAX_ELEMENT_TYPE } from '../../enums'
 
-	import { cyclicMovement, elementMovement } from '../../utils/Parallax/parallax-element.util'
+	import type { IParallaxElementProps } from '../../interfaces'
+
+	import { cyclicMovement, elementMovement } from '../../utils'
 
 	/*********************************************************
 	 * Global
@@ -55,10 +50,6 @@
 	})
 
 	const {filterProps} = useProps<IParallaxElementProps>(props)
-
-	defineEmits<IParallaxElementEmits>()
-
-	defineSlots<IParallaxElementSlots>()
 
 	/*********************************************************
 	 * Decorators
@@ -93,7 +84,7 @@
 
 	if (!parallax) throw new Error('[Origam] parallax-element needs to be placed inside parallax')
 
-	const {transformStyles, strength, customMovement} = useParallaxTransform(props)
+	const {transformStyles, strength} = useParallaxTransform(props)
 
 	const transform = computed(() => {
 		return transformCalculation()
@@ -101,22 +92,8 @@
 	const transitionDuration = computed(() => {
 		return `${parallax.duration.value}ms`
 	})
-	/*********************************************************
-	 * `parallax.easing` carries the raw `IParallaxProps.easing` value —
-	 * `'linear'` / `'ease-out'` happen to already BE valid CSS
-	 * `transition-timing-function` keywords, but `'spring'` is not: the
-	 * browser silently drops `transition-timing-function: spring` (invalid
-	 * value), so passing `easing="spring"` produced NO spring feel at all
-	 * on this legacy mouse/scroll path — only the multi-layer runtime
-	 * (`useParallaxRuntime`) implements the actual spring lerp. This maps
-	 * the enum's `spring` member onto the dedicated token so the CSS
-	 * transition at least approximates the intended curve instead of being
-	 * silently ignored.
-	 ********************************************************/
 	const transitionTimingFunction = computed(() => {
-		return parallax.easing.value === PARALLAX_EASING.SPRING
-			? 'var(--origam-parallax---transition-easing-spring, cubic-bezier(0.16, 1, 0.3, 1))'
-			: parallax.easing.value
+		return parallax.easing.value
 	})
 	const transformParameters = computed(() => {
 		return {
@@ -165,17 +142,17 @@
 					maxY: props.maxY
 				})
 				: cyclicMovement({
-					referencePosition: parallax.event.value === PARALLAX_EVENT.SCROLL ? {x: 0, y: 0} : parallax.eventData.value,
+					referencePosition: parallax.event.value === 'scroll' ? {x: 0, y: 0} : parallax.eventData.value,
 					shape: parallax.shape.value,
 					event: parallax.event.value,
 					cycles: props.cycle,
 					strength: strength.value
 				})
 
-		if (parallax.event.value !== PARALLAX_EVENT.SCROLL) {
+		if (parallax.event.value !== 'scroll') {
 			movementX = props.axis === AXIS.Y ? 0 : x
 			movementY = props.axis === AXIS.X ? 0 : y
-		} else if (parallax.event.value === PARALLAX_EVENT.SCROLL) {
+		} else if (parallax.event.value === 'scroll') {
 			movementX = props.axis === AXIS.X ? y : 0
 			movementY = props.axis === AXIS.Y || !props.axis ? y : 0
 		} else if (props.cycle > 0) {
@@ -202,36 +179,6 @@
 
 			x = mouseMovement.x
 			y = mouseMovement.y
-		}
-
-		/*********************************************************
-		 * type="custom" — la trappe d'extension (#432)
-		 *
-		 * @description
-		 * Les sept autres types composent leur `transform` ici. `custom`
-		 * n'en compose aucun : il PUBLIE le mouvement calcule dans deux
-		 * proprietes personnalisees et laisse le consommateur ecrire sa
-		 * propre transform en CSS. C'est ce que la doc annoncait depuis le
-		 * debut sans qu'aucune surface d'API ne le rende atteignable — le
-		 * `switch` de `useParallaxTransform` ne couvrait pas ce cas et
-		 * rendait `undefined`, silencieusement.
-		 * @description
-		 * On n'ecrit deliberement AUCUN `transform` : sans regle CSS cote
-		 * consommateur, l'element se rend exactement comme avant ce
-		 * correctif. La trappe est donc non cassante — elle ajoute un
-		 * moyen, elle ne change aucun rendu existant.
-		 * @description
-		 * Ces deux variables ne sont posees que pour `custom` : les sept
-		 * autres types gardent un chemin chaud intact, sans deux ecritures
-		 * de propriete personnalisee a chaque frame.
-		 ********************************************************/
-		if (props.type === PARALLAX_ELEMENT_TYPE.CUSTOM) {
-			const movement = customMovement(x, y)
-
-			return {
-				[PARALLAX_ELEMENT_VAR_X]: String(movement.x),
-				[PARALLAX_ELEMENT_VAR_Y]: String(movement.y)
-			}
 		}
 
 		return {
@@ -269,7 +216,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(parallaxElementStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(parallaxElementStyles)
 
 
 	/*********************************************************

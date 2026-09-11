@@ -1,7 +1,6 @@
 <template>
 	<component
 			:is="tag"
-			:id="id"
 			v-intersect="intersect"
 			:aria-busy="!isActive || undefined"
 			:class="lazyClasses"
@@ -23,21 +22,22 @@
 		setup
 >
 	import { computed, StyleValue } from 'vue'
-	import OrigamFade from '../Transition/OrigamFade.vue'
-	import OrigamTransition from '../Transition/OrigamTransition.vue'
+	import { OrigamFade, OrigamTransition } from '../../components'
 
-	import { useDimension } from '../../composables/Commons/dimension.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-	import { useVModel } from '../../composables/Commons/vModel.composable'
+	import {
+	useDimension,
+	useProps,
+	useStyle,
+	useVModel
+} from '../../composables'
 
-	import vIntersect from '../../directives/Intersect/intersect.directive'
+	import { vIntersect } from '../../directives'
 
-	import type { ILazyComponentProps } from '../../interfaces/Lazy/lazy.interface'
+	import type { ILazyComponentProps} from '../../interfaces'
 
-	import type { ILazyEmits, ILazySlots } from '../../interfaces/Lazy/lazy.interface'
+	import type { ILazyEmits } from '../../interfaces/Commons/lazy.interface'
 
-	import type { TTransitionProps } from '../../types/Transition/transition.type'
+	import type { TTransitionProps } from "../../types"
 
 	/*********************************************************
 	 * Global
@@ -57,8 +57,6 @@
 	})
 
 	defineEmits<ILazyEmits>()
-
-	defineSlots<ILazySlots>()
 
 	const {filterProps} = useProps<ILazyComponentProps>(props)
 
@@ -118,7 +116,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(lazyStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(lazyStyles)
 
 
 	/*********************************************************

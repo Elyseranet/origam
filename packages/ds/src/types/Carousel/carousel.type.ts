@@ -1,3 +1,3 @@
-import OrigamCarousel from '../../components/Carousel/OrigamCarousel.vue'
+import { OrigamCarousel } from "../../components"
 
 export type TOrigamCarousel = InstanceType<typeof OrigamCarousel>

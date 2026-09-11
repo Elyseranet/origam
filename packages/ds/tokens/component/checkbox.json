@@ -1,0 +1,39 @@
+{
+  "checkbox": {
+    "min-height":              { "$type": "dimension", "$value": "56px", "$description": "Hauteur minimale avant application de la density" },
+    "flex":                    { "$type": "other",     "$value": "0 1 auto" },
+    "transition-duration":     { "$type": "duration",  "$value": "{motion.duration.medium}" },
+    "transition-easing":       { "$type": "cubicBezier", "$value": "{motion.easing.standard}" },
+
+    "input": {
+      "background-color":              { "$type": "color",     "$value": "{color.surface.default}", "$description": "Fond de la case visuelle (span overlay)" },
+      "background-color-checked":      { "$type": "color",     "$value": "{color.action.primary.bg}", "$description": "Fond quand la case est cochée" },
+      "background-color-indeterminate":{ "$type": "color",     "$value": "{color.action.primary.bg}", "$description": "Fond en état indeterminate" },
+      "background-color-disabled":     { "$type": "color",     "$value": "{color.action.primary.bgDisabled}", "$description": "Fond quand désactivé" },
+      "background-color-error":        { "$type": "color",     "$value": "{color.feedback.danger.bgSubtle}", "$description": "Fond en état erreur" },
+      "border-color":                  { "$type": "color",     "$value": "{color.border.default}" },
+      "border-color-checked":          { "$type": "color",     "$value": "{color.action.primary.bg}" },
+      "border-color-focused":          { "$type": "color",     "$value": "{color.border.focus}" },
+      "border-color-error":            { "$type": "color",     "$value": "{color.feedback.danger.border}" },
+      "border-color-disabled":         { "$type": "color",     "$value": "{color.border.subtle}" },
+      "border-width":                  { "$type": "dimension", "$value": "{border.width.thin}" },
+      "border-style":                  { "$type": "other",     "$value": "solid" },
+      "border-radius":                 { "$type": "dimension", "$value": "{radius.xs}" },
+      "opacity-disabled":              { "$type": "number",    "$value": "{opacity.50}" }
+    },
+
+    "icon": {
+      "color":                         { "$type": "color", "$value": "{color.text.onColor}", "$description": "Couleur du check ✓ affiché dans la case cochée" },
+      "color-unchecked":               { "$type": "color", "$value": "{color.text.primary}", "$description": "Couleur de l'icône quand non cochée (outline)" },
+      "color-disabled":                { "$type": "color", "$value": "{color.text.disabled}" },
+      "color-error":                   { "$type": "color", "$value": "{color.feedback.danger.fgSubtle}" },
+      "opacity":                       { "$type": "number", "$value": "{opacity.100}" }
+    },
+
+    "label": {
+      "color":                         { "$type": "color", "$value": "{color.text.primary}" },
+      "color-disabled":                { "$type": "color", "$value": "{color.text.disabled}" },
+      "color-error":                   { "$type": "color", "$value": "{color.feedback.danger.fgSubtle}" }
+    }
+  }
+}

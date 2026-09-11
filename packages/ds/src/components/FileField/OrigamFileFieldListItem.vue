@@ -1,6 +1,5 @@
 <template>
   <li
-      :id="id"
       :class="listItemClasses"
       :style="listItemStyles"
   >
@@ -16,10 +15,7 @@
         >
           {{ file.name }}
         </div>
-        <div
-            v-if="hasSize"
-            class="origam-file-field-list-item__meta"
-        >
+        <div class="origam-file-field-list-item__meta">
           {{ humanReadableFileSize(file.size, base) }}
         </div>
         <origam-progress
@@ -33,17 +29,6 @@
       </div>
       <div class="origam-file-field-list-item__actions">
         <origam-btn
-            v-if="downloadable"
-            :aria-label="downloadAriaLabel"
-            :icon="downloadIcon"
-            data-cy="file-field-item-download"
-            flat
-            size="small"
-            :disabled="disabled"
-            @click.stop="handleDownload"
-        />
-        <origam-btn
-            :aria-label="removeAriaLabel"
             :icon="removeIcon"
             flat
             size="small"
@@ -61,18 +46,18 @@
 >
   import { computed, StyleValue } from 'vue'
 
-  import OrigamBtn from '../Btn/OrigamBtn.vue'
-  import OrigamIcon from '../Icon/OrigamIcon.vue'
-  import OrigamProgress from '../Progress/OrigamProgress.vue'
-  import { useLocale } from '../../composables/Commons/locale.composable'
-  import { useProps } from '../../composables/Commons/props.composable'
-  import { useStyle } from '../../composables/Commons/style.composable'
-  import { useTypography } from '../../composables/Commons/typography.composable'
-  import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
-  import type { IFileFieldListItemProps, IFileFieldListItemSlots } from '../../interfaces/FileField/file-field-list-item.interface'
+  import { OrigamBtn, OrigamIcon, OrigamProgress } from '../../components'
+  import {
+	useDefaults,
+	useProps,
+	useStyle,
+	useTypography
+} from '../../composables'
+  import { MDI_ICONS } from '../../enums'
+  import type { IFileFieldListItemProps, IFileFieldListItemSlots} from '../../interfaces'
 
 	import type { IFileFieldListItemEmits } from '../../interfaces/FileField/file-field-list-item.interface'
-  import { humanReadableFileSize } from '../../utils/Commons/commons.util'
+  import { humanReadableFileSize } from '../../utils'
 
   /*********************************************************
    * Global
@@ -84,16 +69,15 @@
    *    This variable serves as a declaration point for all events that the component can emit.
    * Slots for the component.
    ********************************************************/
-  const props = withDefaults(defineProps<IFileFieldListItemProps>(), {
+  const _props = withDefaults(defineProps<IFileFieldListItemProps>(), {
     fileIcon: MDI_ICONS.FILE,
     removeIcon: MDI_ICONS.CLOSE,
-    downloadIcon: MDI_ICONS.DOWNLOAD,
   })
+  const props = useDefaults(_props)
+
   const emits = defineEmits<IFileFieldListItemEmits>()
 
   defineSlots<IFileFieldListItemSlots>()
-
-  const { t } = useLocale()
 
   /*********************************************************
    * Events
@@ -110,10 +94,6 @@
     emits('click:remove', { file: props.file, index: props.index })
   }
 
-  const handleDownload = () => {
-    emits('click:download', { file: props.file, index: props.index })
-  }
-
   /*********************************************************
    * Computed
    *
@@ -123,26 +103,8 @@
   const base = computed(() => {
     return typeof props.showSize !== 'boolean' ? props.showSize : undefined
   })
-  /*********************************************************
-   * hasSize
-   *
-   * @description
-   * #418 — `showSize` accepts `boolean | 1000 | 1024`. `false` must hide
-   * the size line entirely; only the numeric bases pick a unit system.
-   * Nothing previously gated the render on this, so `false` and `true`
-   * produced the same visible text.
-   ********************************************************/
-  const hasSize = computed(() => {
-    return props.showSize !== false
-  })
   const hasProgress = computed(() => {
     return typeof props.progress === 'number'
-  })
-  const removeAriaLabel = computed(() => {
-    return t('origam.file_field.remove_aria_label', props.file.name)
-  })
-  const downloadAriaLabel = computed(() => {
-    return t('origam.file_field.download_aria_label', props.file.name)
   })
 
   /*********************************************************
@@ -176,7 +138,7 @@
   const { typographyStyles } = useTypography(props, 'file-field-list-item__name')
 
   const { filterProps } = useProps<IFileFieldListItemProps>(props)
-	const {id, css, load, isLoaded, unload} = useStyle(listItemStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(listItemStyles)
 
 
   defineExpose({ filterProps,

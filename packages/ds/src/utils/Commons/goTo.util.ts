@@ -1,8 +1,7 @@
 import { ComponentPublicInstance } from 'vue'
-import type { IGoToInstance, IGoToOptions, IGoToOptionsPatterns } from '../../interfaces/Commons/goTo.interface'
+import type { IGoToInstance, IGoToOptions, IGoToOptionsPatterns } from '../../interfaces'
 
-import { clamp, int, mergeDeep, refElement } from './commons.util'
-import { consoleWarn } from './console.util'
+import { clamp, consoleWarn, int, mergeDeep, refElement } from '../../utils'
 
 /**
  * Gen defaults.

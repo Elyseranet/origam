@@ -81,12 +81,11 @@
 				title="Functional"
 				:init-state="() => useStoryInitState<Partial<IDialogConfirmationProps>>({
 					cancellable: true,
-					cancelTextKey: 'origam.dialog.confirmation.cancel',
-					validateTextKey: 'origam.dialog.confirmation.validate',
 					fullscreen: false,
 					disabled: false,
 					loading: false,
 					persistent: false,
+					scrollable: false,
 					retainFocus: true,
 				})"
 		>
@@ -97,13 +96,12 @@
 							v-model="functionalOpen"
 							title="Functional dialog"
 							text="Adjust controls to test behaviour."
-							:cancel-text-key="state.cancelTextKey"
 							:cancellable="state.cancellable"
-							:validate-text-key="state.validateTextKey"
 							:fullscreen="state.fullscreen"
 							:disabled="state.disabled"
 							:loading="state.loading"
 							:persistent="state.persistent"
+							:scrollable="state.scrollable"
 							:retain-focus="state.retainFocus"
 					/>
 				</div>
@@ -112,10 +110,6 @@
 				<StoryGroup title="Confirmation">
 					<HstCheckbox v-model="state.cancellable" title="Cancellable"/>
 				</StoryGroup>
-				<StoryGroup title="Libelles (cles i18n)">
-					<HstText v-model="state.cancelTextKey"   title="Cancel key"/>
-					<HstText v-model="state.validateTextKey" title="Validate key"/>
-				</StoryGroup>
 				<StoryGroup title="States">
 					<HstCheckbox v-model="state.disabled" title="Disabled"/>
 					<HstCheckbox v-model="state.loading"  title="Loading"/>
@@ -123,6 +117,7 @@
 				<StoryGroup title="Dialog Behaviour">
 					<HstCheckbox v-model="state.fullscreen"   title="Fullscreen"/>
 					<HstCheckbox v-model="state.persistent"   title="Persistent"/>
+					<HstCheckbox v-model="state.scrollable"   title="Scrollable"/>
 					<HstCheckbox v-model="state.retainFocus"  title="Retain Focus"/>
 				</StoryGroup>
 			</template>
@@ -148,18 +143,6 @@
 						title="Watch cancel"
 						text="Click Cancel and observe the Histoire event log."
 						@cancel="logEvent('cancel', $event)"
-				/>
-			</div>
-		</Variant>
-
-		<Variant title="Events - update:modelValue">
-			<div style="padding: 24px;">
-				<origam-btn text="Open" @click="emitModelValueOpen = true"/>
-				<origam-dialog-confirmation
-						v-model="emitModelValueOpen"
-						title="Watch update:modelValue"
-						text="Validate or Cancel — both close the dialog and emit the new value."
-						@update:model-value="logEvent('update:modelValue', $event)"
 				/>
 			</div>
 		</Variant>
@@ -371,6 +354,7 @@
 					disabled: false,
 					loading: false,
 					persistent: false,
+					scrollable: false,
 				})"
 		>
 			<template #default="{ state }">
@@ -404,6 +388,7 @@
 					<HstCheckbox v-model="state.disabled"    title="Disabled"/>
 					<HstCheckbox v-model="state.loading"     title="Loading"/>
 					<HstCheckbox v-model="state.persistent"  title="Persistent"/>
+					<HstCheckbox v-model="state.scrollable"  title="Scrollable"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -439,7 +424,6 @@
 	const functionalOpen       = ref(false)
 	const emitValidateOpen     = ref(false)
 	const emitCancelOpen       = ref(false)
-	const emitModelValueOpen   = ref(false)
 	const slotDefaultOpen      = ref(false)
 	const slotActivatorOpen    = ref(false)
 	const slotAssetOpen        = ref(false)

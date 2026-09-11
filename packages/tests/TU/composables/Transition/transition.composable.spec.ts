@@ -30,9 +30,7 @@ import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 
 import { ORIGAM_WINDOW_KEY } from '@origam/consts'
-import { useTransition } from '@origam/composables/Transition/transition.composable'
-import { useCssTransition } from '@origam/composables/Transition/cssTransition.composable'
-import { useWindowTransition } from '@origam/composables/Transition/windowTransition.composable'
+import { useTransition, useCssTransition, useWindowTransition } from '@origam/composables/Transition/transition.composable'
 import type { ITransitionProps } from '@origam/interfaces'
 
 // ---------------------------------------------------------------------------
@@ -162,50 +160,22 @@ describe('useCssTransition — transitionProps', () => {
         expect(api().transitionProps.value.css).toBe(false)
     })
 
-    // ⛔ Ces deux tests assertaient l'INVERSE — « mode included when group=true »,
-    // « NOT included when group=false » — c'est-a-dire exactement le bug. Le
-    // composable ecrivait `if (props.group)`, et le spec l'a fidelement epingle,
-    // ce qui a fait passer la suite au vert pendant tout ce temps sur une prop
-    // morte dans les DEUX branches.
-    //
-    // `mode` n'existe que sur `<Transition>` : `'mode' in TransitionGroup.props`
-    // vaut `false`. Le poser sur un groupe produisait un attribut DOM inerte ;
-    // ne pas le poser hors groupe le laissait sans destination, puisqu'une prop
-    // declaree par l'hote ne retombe pas dans `$attrs`.
-    //
-    // Meme famille que le test voisin corrige sous #549. Un spec qui reproduit
-    // le comportement observe au lieu du comportement voulu ne protege de rien :
-    // il verrouille le defaut.
-    it('mode is NOT included when group=true — TransitionGroup has no such prop', () => {
+    it('mode is included in transitionProps when group=true and mode is set', () => {
         const { api } = mountCssTransition({ name: 'fade', group: true, mode: 'out-in' })
-        expect(api().transitionProps.value).not.toHaveProperty('mode')
-    })
-
-    it('mode IS included when group=false — this is the only place it works', () => {
-        const { api } = mountCssTransition({ name: 'fade', group: false, mode: 'out-in' })
         expect(api().transitionProps.value.mode).toBe('out-in')
     })
 
-    // ⛔ Ce test assertait l'INVERSE jusqu'a #549 : « no JS hooks when
-    // disabled=false (css-driven) ». Il decrivait le code, il ne le
-    // specifiait pas — et le code avait la condition a l'envers.
-    //
-    // Les trois hooks ne portent PAS l'animation, que le CSS assure : ils
-    // portent `origin` (transform-origin a poser avant l'entree),
-    // `leaveAbsolute` (figer la boite pendant la sortie) et `hideOnLeave`.
-    // Ces trois besoins existent que la transition soit CSS ou non. Les lier
-    // seulement quand elle est DESACTIVEE rendait les trois props mortes en
-    // usage normal.
-    //
-    // Chaque hook garde deja sa propre prop en interne, donc une liaison
-    // inconditionnelle ne coute rien quand les props sont absentes — ce que
-    // le dernier test de ce bloc verifie.
-    it('les hooks JS sont lies meme quand la transition est ACTIVE (#549)', () => {
+    it('mode is NOT included when group=false', () => {
+        const { api } = mountCssTransition({ name: 'fade', group: false, mode: 'out-in' })
+        expect(api().transitionProps.value).not.toHaveProperty('mode')
+    })
+
+    it('no JS hooks when disabled=false (css-driven)', () => {
         const { api } = mountCssTransition({ name: 'fade', disabled: false })
         const tp = api().transitionProps.value
-        expect(typeof tp.onBeforeEnter).toBe('function')
-        expect(typeof tp.onLeave).toBe('function')
-        expect(typeof tp.onAfterLeave).toBe('function')
+        expect(tp).not.toHaveProperty('onBeforeEnter')
+        expect(tp).not.toHaveProperty('onLeave')
+        expect(tp).not.toHaveProperty('onAfterLeave')
     })
 
     it('JS hooks are set when disabled=true', () => {

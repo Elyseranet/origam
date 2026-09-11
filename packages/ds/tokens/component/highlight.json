@@ -1,0 +1,24 @@
+{
+  "highlight": {
+    "_comment": "Inline text highlighter (think `<mark>`). Default tint is amber for a search-result vibe; override via the variants for status-aware highlights.",
+    "background-color":      { "$type": "color",     "$value": "{color.feedback.warning.bgSubtle}" },
+    "color":                 { "$type": "color",     "$value": "{color.feedback.warning.fgSubtle}" },
+    "padding-block":         { "$type": "dimension", "$value": "0" },
+    "padding-inline":        { "$type": "dimension", "$value": "{space.1}" },
+    "border-radius":         { "$type": "dimension", "$value": "{radius.xs}" },
+    "font-weight":           { "$type": "fontWeight", "$value": "{font.weight.medium}" },
+
+    "success": {
+      "background-color": { "$type": "color", "$value": "{color.feedback.success.bgSubtle}" },
+      "color":            { "$type": "color", "$value": "{color.feedback.success.fgSubtle}" }
+    },
+    "danger": {
+      "background-color": { "$type": "color", "$value": "{color.feedback.danger.bgSubtle}" },
+      "color":            { "$type": "color", "$value": "{color.feedback.danger.fgSubtle}" }
+    },
+    "info": {
+      "background-color": { "$type": "color", "$value": "{color.feedback.info.bgSubtle}" },
+      "color":            { "$type": "color", "$value": "{color.feedback.info.fgSubtle}" }
+    }
+  }
+}

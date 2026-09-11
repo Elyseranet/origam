@@ -1,0 +1,21 @@
+{
+  "main": {
+    "flex":                        { "$type": "other",       "$value": "1 0 auto" },
+    "max-width":                   { "$type": "other",       "$value": "100%" },
+    "width":                       { "$type": "other",       "$value": "100%" },
+    "height":                      { "$type": "other",       "$value": "100%" },
+    "display":                     { "$type": "other",       "$value": "flex" },
+    "position":                    { "$type": "other",       "$value": "absolute" },
+    "position-top":                { "$type": "dimension",   "$value": "{space.0}" },
+    "position-left":               { "$type": "dimension",   "$value": "{space.0}" },
+    "transition-duration":         { "$type": "duration",    "$value": "{motion.duration.medium}" },
+    "transition-property":         { "$type": "other",       "$value": "all" },
+    "transition-timing-function":  { "$type": "cubicBezier", "$value": "{motion.easing.standard}" },
+    "background-color":            { "$type": "color",       "$value": "{color.surface.default}" },
+    "color":                       { "$type": "color",       "$value": "{color.text.primary}" },
+    "scroller": {
+      "position":   { "$type": "other", "$value": "relative" },
+      "max-width":  { "$type": "other", "$value": "100%" }
+    }
+  }
+}

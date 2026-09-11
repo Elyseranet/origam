@@ -1,6 +1,6 @@
 import { DIMENSIONS } from '../../enums'
 
-import type { TDimensions } from '../../types/Commons/dimension.type'
+import type { TDimensions } from '../../types'
 
 export const DIMENSIONS_ARRAY: Array<TDimensions> = [
     DIMENSIONS.HEIGHT,

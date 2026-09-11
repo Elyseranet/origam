@@ -1,38 +1,31 @@
 import type {
-    IAdjacentInnerEmits,
-    IAdjacentInnerProps
-} from '../Commons/adjacent.interface'
-import type { IBorderProps } from '../Commons/border.interface'
-import type { IColorProps } from '../Commons/color.interface'
-import type { ICommonsComponentProps } from '../Commons/commons.interface'
-import type { IDensityProps } from '../Commons/density.interface'
-import type { IElevationProps } from '../Commons/elevation.interface'
-import type { IFocusEmits } from '../Commons/focus.interface'
-import type {
+    IAdjacentInnerProps,
+    IBorderProps,
+    IColorProps,
+    ICommonsComponentProps,
+    IDensityProps,
+    IElevationProps,
+    IFieldEmits,
     IFieldProps,
-    IFieldSlots
-} from '../Field/field.interface'
-import type {
+    IFieldSlots,
     IInputEmits,
     IInputProps,
-    IInputSlots
-} from '../Input/input.interface'
-import type { IMarginProps } from '../Commons/margin.interface'
-import type { IPaddingProps } from '../Commons/padding.interface'
-import type { IRoundedProps } from '../Commons/rounded.interface'
-import type { ITextareaToolbarSlotProps } from './textarea-field-rich-toolbar.interface'
-import type { ITypographyProps } from '../Commons/typography.interface'
+    IInputSlots,
+    IMarginProps,
+    IPaddingProps,
+    IRoundedProps,
+    ITextareaToolbarSlotProps,
+    ITypographyProps
+} from '../../interfaces'
 
 import type {
     TTextareaMode,
-    TTextareaOutput
-} from '../../types/TextareaField/textarea-field.type'
-import type {
+    TTextareaOutput,
     TTextareaToolbarCommand,
     TTextareaToolbarPosition
-} from '../../types/TextareaField/textarea-field-rich-toolbar.type'
+} from '../../types'
 
-export interface ITextareaFieldProps extends ICommonsComponentProps, IColorProps, IDensityProps, IFieldProps, IInputProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, IAdjacentInnerProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'> {
+export interface ITextareaFieldProps extends ICommonsComponentProps, IColorProps, IDensityProps, IFieldProps, IInputProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, IAdjacentInnerProps, ITypographyProps {
     autoGrow?: boolean
     autofocus?: boolean
     counter?: boolean | number | string
@@ -72,20 +65,8 @@ export interface ITextareaFieldProps extends ICommonsComponentProps, IColorProps
 /**
  * Aggregate emits for `<OrigamTextareaField>` — re-exports field/input events
  * plus the height update event (auto-grow) and control click events.
- *
- * ⛔ Extends `IFocusEmits` + `IAdjacentInnerEmits` directly rather than the
- * full `IFieldEmits` — `<OrigamTextareaField>` wraps `<origam-field>`
- * directly and calls its OWN `useFocus(props)` and its OWN
- * `useAdjacent(props)` / `useAdjacentInner(props)`, so `update:focused` /
- * `click:appendInner` / `click:prependInner` are genuinely emitted at THIS
- * level. `IActiveEmits` (`update:active`) is deliberately excluded: this
- * component passes its OWN `isActive || isDirty` computed DOWN to
- * `<origam-field>` as a plain prop, with no `@update:active` listener
- * wired to relay the child's internal toggle — declaring it here promised
- * an event nobody ever fired (issue: guard `unemitted-declarations`,
- * `TextareaField:update:active`).
  */
-export interface ITextareaFieldEmits extends IFocusEmits, IAdjacentInnerEmits, IInputEmits {
+export interface ITextareaFieldEmits extends IFieldEmits, IInputEmits {
     (e: 'update:height', height: number): void
     (e: 'click:control', event: MouseEvent): void
     (e: 'mousedown:control', event: MouseEvent): void

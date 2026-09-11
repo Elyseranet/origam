@@ -8,9 +8,8 @@
 >
 	import { computed } from 'vue'
 
-	import { provideDefaults } from '../../composables/Commons/defaults.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import type { IDefaultProviderEmits, IDefaultProviderProps, IDefaultProviderSlots } from '../../interfaces/DefaultsProvider/defaults-provider.interface'
+	import { provideDefaults, useProps } from '../../composables'
+	import type { IDefaultProviderProps, IDefaultProviderSlots } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -29,27 +28,21 @@
 	 ********************************************************/
 	const props = withDefaults(defineProps<IDefaultProviderProps>(), {})
 
-	defineEmits<IDefaultProviderEmits>()
-
 	defineSlots<IDefaultProviderSlots>()
 
 	/*********************************************************
 	 * Defaults
 	 *
 	 * Wraps the props' `defaults` in a computed so the provider re-evaluates
-	 * if the host app mutates the map. `scoped`/`reset`/`root`/`disabled` are
-	 * forwarded as GETTERS, not raw values — `provideDefaults()`'s internal
-	 * `computed()` only re-tracks what it reads at evaluation time, so a raw
-	 * `props.scoped` captured once here would freeze at its mount-time value
-	 * and never react to a later `:scoped="someRef"` change (issue #438).
+	 * if the host app mutates the map.
 	 ********************************************************/
 	provideDefaults(
 			computed(() => props.defaults ?? {}),
 			{
-				scoped: () => props.scoped,
-				reset: () => props.reset,
-				root: () => props.root,
-				disabled: () => props.disabled
+				scoped: props.scoped,
+				reset: props.reset,
+				root: props.root,
+				disabled: props.disabled
 			}
 	)
 

@@ -1,0 +1,101 @@
+{
+  "audio": {
+    "_comment": "Tokens for <OrigamAudio> — Stemtracks-inspired studio dark strip. The shell is intentionally dark across light AND dark themes (it's an audio surface, not a chrome surface), with an accent-color that drives both scrubbers, the play-button surface, and the active-loop pill. Adjust via the `bgColor` / `color` props to opt out per-instance.",
+
+    "background-color":          { "$type": "color",      "$value": "{color.surface.raised}" },
+    "color":                     { "$type": "color",      "$value": "{color.text.primary}" },
+    "accent-color":              { "$type": "color",      "$value": "{color.action.primary.bg}" },
+    "secondary-color":           { "$type": "color",      "$value": "{color.text.secondary}" },
+    "border-color":              { "$type": "color",      "$value": "{color.border.subtle}" },
+    "border-width":              { "$type": "string",     "$value": "1px" },
+    "box-shadow":                { "$type": "string",     "$value": "0px 1px 3px 0px rgba(0,0,0,0.06), 0px 1px 2px -1px rgba(0,0,0,0.06)" },
+    "border-radius":             { "$type": "dimension",  "$value": "{radius.lg}" },
+    "gap":                       { "$type": "dimension",  "$value": "{space.4}" },
+    "padding":                   { "$type": "dimension",  "$value": "{space.4}" },
+
+    "body": {
+      "gap":                     { "$type": "dimension",  "$value": "{space.3}" }
+    },
+
+    "metadata": {
+      "gap":                     { "$type": "dimension",  "$value": "{space.1}" }
+    },
+
+    "meta": {
+      "gap":                     { "$type": "dimension",  "$value": "{space.2}" },
+      "font-size":               { "$type": "dimension",  "$value": "13px" },
+      "color":                   { "$type": "color",      "$value": "{color.text.secondary}" }
+    },
+
+    "cover": {
+      "size":                    { "$type": "dimension",  "$value": "96px" },
+      "border-radius":           { "$type": "dimension",  "$value": "{radius.md}" }
+    },
+
+    "title": {
+      "color":                   { "$type": "color",      "$value": "{color.text.primary}" },
+      "font-size":               { "$type": "dimension",  "$value": "18px" },
+      "font-weight":             { "$type": "string",     "$value": "700" },
+      "line-height":             { "$type": "string",     "$value": "1.25" }
+    },
+
+    "artist": {
+      "color":                   { "$type": "color",      "$value": "{color.text.secondary}" }
+    },
+
+    "album": {
+      "color":                   { "$type": "color",      "$value": "{color.text.secondary}" }
+    },
+
+    "duration": {
+      "color":                   { "$type": "color",      "$value": "{color.text.secondary}" }
+    },
+
+    "waveform": {
+      "_comment": "Web-Audio-decoded peaks rendered as an SVG sibling inside the SliderField variant=audio. The played bars use the audio accent; the unplayed bars use a translucent currentColor.",
+      "height":                  { "$type": "dimension",  "$value": "48px" },
+      "color":                   { "$type": "color",      "$value": "{color.action.primary.bg}" }
+    },
+
+    "transport": {
+      "gap":                     { "$type": "dimension",  "$value": "{space.2}" },
+      "btn-size":                { "$type": "dimension",  "$value": "32px" },
+      "btn-icon-size":           { "$type": "dimension",  "$value": "20px" }
+    },
+
+    "play-btn": {
+      "size":                    { "$type": "dimension",  "$value": "48px" }
+    },
+
+    "compact": {
+      "_comment": "Compact dock variant — 48 px cover, single inline metadata strip, no waveform, dense transport row.",
+      "cover": {
+        "size":                  { "$type": "dimension",  "$value": "48px" }
+      },
+      "body": {
+        "gap":                   { "$type": "dimension",  "$value": "{space.2}" }
+      },
+      "metadata": {
+        "gap":                   { "$type": "dimension",  "$value": "{space.2}" }
+      },
+      "title": {
+        "font-size":             { "$type": "dimension",  "$value": "14px" }
+      }
+    },
+
+    "loading": {
+      "font-size":               { "$type": "dimension",  "$value": "{font.size.sm}" },
+      "color":                   { "$type": "color",      "$value": "{color.text.secondary}" }
+    },
+
+    "error": {
+      "background-color":        { "$type": "color",      "$value": "{color.feedback.danger.bgSubtle}" },
+      "color":                   { "$type": "color",      "$value": "{color.feedback.danger.fgSubtle}" },
+      "font-size":               { "$type": "dimension",  "$value": "{font.size.sm}" },
+      "border-radius":           { "$type": "dimension",  "$value": "{radius.sm}" },
+      "padding":                 { "$type": "string",     "$value": "{space.2} {space.3}" },
+      "gap":                     { "$type": "dimension",  "$value": "{space.2}" },
+      "icon-font-size":          { "$type": "dimension",  "$value": "{font.size.lg}" }
+    }
+  }
+}

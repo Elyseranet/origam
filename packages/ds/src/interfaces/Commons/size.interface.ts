@@ -1,4 +1,4 @@
-import type { TSize } from '../../types/Commons/size.type'
+import type { TSize } from '../../types'
 
 export interface ISizeProps {
     size?: TSize | number

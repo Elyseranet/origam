@@ -133,6 +133,18 @@
 			</origam-layout>
 		</Variant>
 
+				<Variant title="Prop — default layout">
+			<origam-layout style="height: 280px; border: 1px dashed var(--origam-color__border---default, #ccc);">
+				<origam-main>
+					<div class="demo-content">
+						<strong>Default layout — main element</strong>
+						<p>The root element is a &lt;main&gt; and always renders a .origam-main__wrapper child.</p>
+					</div>
+				</origam-main>
+			</origam-layout>
+		</Variant>
+
+
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IMainProps>({ tag: 'main', scrollable: false })"

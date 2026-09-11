@@ -1,3 +1,3 @@
-import OrigamLabel from '../../components/Label/OrigamLabel.vue'
+import { OrigamLabel } from "../../components"
 
 export type TOrigamLabel = InstanceType<typeof OrigamLabel>

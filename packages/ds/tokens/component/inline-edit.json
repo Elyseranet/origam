@@ -1,0 +1,40 @@
+{
+  "inline-edit": {
+    "transition-duration":   { "$type": "duration",  "$value": "{motion.duration.medium}" },
+    "display": {
+      "padding-block":       { "$type": "dimension", "$value": "{space.1}" },
+      "padding-inline":      { "$type": "dimension", "$value": "{space.2}" },
+      "border-radius":       { "$type": "dimension", "$value": "{radius.sm}" },
+      "min-height":          { "$type": "dimension", "$value": "{space.6}" },
+      "hover-bg-color":      { "$type": "color",     "$value": "{color.surface.raised}" },
+      "color-empty":         { "$type": "color",     "$value": "{color.text.disabled}" }
+    },
+    "editor": {
+      "padding-block":       { "$type": "dimension", "$value": "{space.1}" },
+      "padding-inline":      { "$type": "dimension", "$value": "{space.2}" },
+      "border-radius":       { "$type": "dimension", "$value": "{radius.sm}" },
+      "border-color":        { "$type": "color",     "$value": "{color.border.subtle}" },
+      "focus-border-color":  { "$type": "color",     "$value": "{color.action.primary.bg}" },
+      "focus-ring-color":    { "$type": "color",     "$value": "{color.action.primary.bgSubtle}" },
+      "bg-color":            { "$type": "color",     "$value": "{color.surface.default}" },
+      "gap":                 { "$type": "dimension", "$value": "{space.1}" }
+    },
+    "input": {
+      "min-width":               { "$type": "dimension", "$value": "{space.20}" },
+      "multiline-min-height":    { "$type": "dimension", "$value": "{space.16}" }
+    },
+    "error": {
+      "color":               { "$type": "color",      "$value": "{color.feedback.danger.fgSubtle}" },
+      "background-color":    { "$type": "color",      "$value": "{color.feedback.danger.bgSubtle}" },
+      "ring-color":          { "$type": "color",      "$value": "{color.feedback.danger.bgSubtle}" },
+      "font-size":           { "$type": "dimension",  "$value": "{font.size.xs}" },
+      "font-weight":         { "$type": "fontWeight", "$value": "{font.weight.medium}" },
+      "padding-block":       { "$type": "dimension",  "$value": "{space.1}" },
+      "padding-inline":      { "$type": "dimension",  "$value": "{space.2}" },
+      "border-radius":       { "$type": "dimension",  "$value": "{radius.sm}" }
+    },
+    "actions": {
+      "gap":                 { "$type": "dimension", "$value": "{space.1}" }
+    }
+  }
+}

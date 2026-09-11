@@ -1,0 +1,20 @@
+{
+  "dialog-confirmation": {
+    "icon-size":     { "$type": "dimension", "$value": "28px" },
+
+    "icon-color-default": { "$type": "color", "$value": "{color.text.secondary}" },
+    "icon-color-success": { "$type": "color", "$value": "{color.feedback.success.fgSubtle}" },
+    "icon-color-warning": { "$type": "color", "$value": "{color.feedback.warning.fgSubtle}" },
+    "icon-color-danger":  { "$type": "color", "$value": "{color.feedback.danger.fgSubtle}" },
+    "icon-color-info":    { "$type": "color", "$value": "{color.feedback.info.fgSubtle}" },
+
+    "title-font-size":   { "$type": "dimension",  "$value": "{font.size.lg}" },
+    "title-font-weight": { "$type": "fontWeight",  "$value": "{font.weight.semibold}" },
+    "title-color":       { "$type": "color",       "$value": "{color.text.primary}" },
+
+    "description-font-size": { "$type": "dimension", "$value": "{font.size.md}" },
+    "description-color":     { "$type": "color",     "$value": "{color.text.secondary}" },
+
+    "actions-gap": { "$type": "dimension", "$value": "{space.3}" }
+  }
+}

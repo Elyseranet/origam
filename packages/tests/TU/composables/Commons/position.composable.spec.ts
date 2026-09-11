@@ -84,28 +84,21 @@ describe('usePosition — positionStyles', () => {
 
     it('includes "right: <value>" when right is set', () => {
         const { api } = mountPosition({ right: '0' })
-        // ⛔ `0px`, pas `0` : depuis #557 la valeur passe par `convertToUnit`.
-        // Ce test assertait `'right: 0'` — une declaration SANS unite, donc
-        // invalide et ignoree par le navigateur. Il decrivait le code, il ne
-        // le specifiait pas.
-        expect(api().positionStyles.value).toContain('right: 0px')
+        expect(api().positionStyles.value).toContain('right: 0')
     })
 
     it('includes all four offsets when all are set', () => {
         const { api } = mountPosition({ top: '0', bottom: '0', left: '0', right: '0' })
         const styles = api().positionStyles.value
-        expect(styles).toContain('top: 0px')
-        expect(styles).toContain('bottom: 0px')
-        expect(styles).toContain('left: 0px')
-        expect(styles).toContain('right: 0px')
+        expect(styles).toContain('top: 0')
+        expect(styles).toContain('bottom: 0')
+        expect(styles).toContain('left: 0')
+        expect(styles).toContain('right: 0')
     })
 
-    it('accepts numeric values, and gives them a unit (#557)', () => {
+    it('accepts numeric values', () => {
         const { api } = mountPosition({ top: 10 })
-        // C'etait le defaut : `top: 10` partait tel quel dans le DOM et
-        // n'etait jamais applique. `useDimension`, le composable voisin,
-        // faisait deja passer ses sept props par `convertToUnit`.
-        expect(api().positionStyles.value).toContain('top: 10px')
+        expect(api().positionStyles.value).toContain('top: 10')
     })
 
     it('updates reactively when top changes', () => {

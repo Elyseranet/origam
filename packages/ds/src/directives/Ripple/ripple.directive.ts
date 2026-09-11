@@ -1,6 +1,6 @@
-import type { IRippleDirectiveBinding, IRippleHtmlElement } from '../../interfaces/Commons/ripple.interface'
+import type { IRippleDirectiveBinding, IRippleHtmlElement } from '../../interfaces'
 
-import { isRippleEnabled, rippleRemoveListeners, updateRipple } from '../../utils/Commons/ripple.util'
+import { isRippleEnabled, rippleRemoveListeners, updateRipple } from '../../utils'
 
 export const Ripple = {
     mounted: (el: IRippleHtmlElement, binding: IRippleDirectiveBinding) => {

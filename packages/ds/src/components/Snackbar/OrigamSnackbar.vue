@@ -90,32 +90,32 @@
     watch,
     watchEffect
   } from 'vue'
-  import OrigamOverlay from '../Overlay/OrigamOverlay.vue'
-  import OrigamSnack from '../Transition/OrigamSnack.vue'
+  import { OrigamOverlay, OrigamSnack } from '../../components'
   import OrigamSnackbarItem from './OrigamSnackbarItem.vue'
 
-  import { useBothColor } from '../../composables/Commons/bothColor.composable'
-  import { useLayout } from '../../composables/Commons/layout.composable'
-  import { usePosition } from '../../composables/Commons/position.composable'
-  import { useProps } from '../../composables/Commons/props.composable'
-  import { useScopeId } from '../../composables/Commons/scopeId.composable'
-  import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
-  import { useStatus } from '../../composables/Commons/status.composable'
-  import { useStyle } from '../../composables/Commons/style.composable'
-  import { useToggleScope } from '../../composables/Commons/toggleScope.composable'
-  import { useVModel } from '../../composables/Commons/vModel.composable'
+  import {
+    useBothColor,
+    useDefaults,
+    useLayout,
+    usePosition,
+    useProps,
+    useScopeId,
+    useStateEffect,
+    useStatus,
+    useStyle,
+    useToggleScope,
+    useVModel
+  } from '../../composables'
 
-  import { ORIGAM_LAYOUT_KEY } from '../../consts/Commons/layout.const'
+  import { ORIGAM_LAYOUT_KEY } from '../../consts'
 
-  import { SCROLL_STRATEGIES } from '../../enums/Commons/scroll.enum'
+  import { SCROLL_STRATEGIES } from '../../enums'
 
-  import type { ISnackbarEmits, ISnackbarProps, ISnackbarSlots } from '../../interfaces/Snackbar/snackbar.interface'
+  import type { ISnackbarProps } from '../../interfaces'
 
-  import type { TIntent } from '../../types/Commons/intent.type'
-  import type { TOrigamOverlay } from '../../types/Overlay/overlay.type'
-  import type { TTransitionProps } from '../../types/Transition/transition.type'
+  import type { TIntent, TOrigamOverlay, TTransitionProps } from '../../types'
 
-  import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
+  import { forwardRefs } from '../../utils'
 
   /*********************************************************
    * Global
@@ -123,7 +123,7 @@
    * @description
    * Props with defaults and filterProps utility.
    ********************************************************/
-  const props = withDefaults(defineProps<ISnackbarProps>(), {
+  const _props = withDefaults(defineProps<ISnackbarProps>(), {
     timeout: 5000,
     location: 'bottom',
     border: true,
@@ -134,9 +134,10 @@
     }) as unknown as TTransitionProps
   })
 
-  defineSlots<ISnackbarSlots>()
-
-  defineEmits<ISnackbarEmits>()
+  // `useDefaults` resolves each prop against theme.components['origam-snackbar']
+  // (OrigamBtn pattern) — without this, theme.components['origam-snackbar']
+  // (location/border/rounded/elevation) was a silent no-op.
+  const props = useDefaults(_props)
 
   const { filterProps } = useProps<ISnackbarProps>(props)
 
@@ -339,17 +340,7 @@
     ]
   })
 
-  /*********************************************************
-   * useStyle
-   *
-   * @description
-   * #381 — the `id` returned by useStyle is a GENERATED identifier,
-   * only meant for the scoped stylesheet selector. Without
-   * `() => props.id` here, it shadowed the `id` PROP of the same
-   * name: the template's `:id="id"` on <origam-overlay> rendered
-   * the generated id, never the consumer's.
-   ********************************************************/
-  const { id, css, load, isLoaded, unload } = useStyle(snackbarStyles, () => props.id)
+  const { id, css, load, isLoaded, unload } = useStyle(snackbarStyles)
 
   /*********************************************************
    * Expose
@@ -372,9 +363,10 @@
     $this: &;
 
     justify-content: center;
-    z-index: var(--origam-snackbar---z-index, var(--origam-zIndex---toast, 1060));
+    z-index: var(--origam-snackbar---z-index, var(--origam-z-index-toast, 1060));
     margin: var(--origam-snackbar---margin, 8px);
     margin-inline-end: calc(var(--origam-snackbar---margin, 8px) + 0px);
+    padding: var(--origam-layout---position-top) var(--origam-layout---position-right) var(--origam-layout---position-bottom) var(--origam-layout---position-left);
 
     &:not(#{$this}--center) {
       &:not(#{$this}--top) {
@@ -451,7 +443,7 @@
 
         :deep(#{$this}__wrapper) {
           background-color: var(--origam-color__feedback--#{$status}---bgSubtle);
-          border-color: var(--origam-snackbar--#{$status}---border, var(--origam-color__feedback--#{$status}---border));
+          border-color: var(--origam-color__feedback--#{$status}---border);
           color: var(--origam-color__feedback--#{$status}---fgSubtle);
         }
 
@@ -486,7 +478,7 @@
 
     &--absolute {
       position: absolute;
-      z-index: var(--origam-snackbar--absolute---z-index, var(--origam-zIndex---raised, 1));
+      z-index: var(--origam-snackbar--absolute---z-index, var(--origam-z-index-raised, 1));
     }
 
     &__item--multi-line {

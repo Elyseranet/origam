@@ -1,16 +1,11 @@
 <template>
 	<component
 			:is="tag"
-			:id="id"
 			v-click-outside="clickOutsideArgs"
 			:class="avatarGroupClasses"
 			:style="avatarGroupStyles"
 			role="group"
-			:tabindex="isClickExpandable ? 0 : undefined"
-			:aria-expanded="isClickExpandable ? isExpanded : undefined"
 			@click="handleClick"
-			@keydown.enter.prevent="handleKeydownExpand"
-			@keydown.space.prevent="handleKeydownExpand"
 			@mouseenter="handleMouseEnter"
 			@mouseleave="handleMouseLeave"
 	>
@@ -57,22 +52,14 @@
 		setup
 >
 
-	import OrigamAvatar from './OrigamAvatar.vue'
-	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
-	import { useDensity } from '../../composables/Commons/density.composable'
-	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useRtl } from '../../composables/Commons/rtl.composable'
-	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
-	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-	import vClickOutside from '../../directives/ClickOutside/clickOutside.directive'
-	import { DIRECTION } from '../../enums/Commons/direction.enum'
-	import type { IAvatarGroupProps } from '../../interfaces/Avatar/avatar-group.interface'
-	import type { IAvatarProps } from '../../interfaces/Avatar/avatar.interface'
+	import { OrigamAvatar, OrigamDefaultsProvider } from "../../components"
+	import { useActive, useDensity, useHover, usePassedProps, useProps, useRtl, useStateEffect, useStyle } from "../../composables"
+	import { vClickOutside } from "../../directives"
+	import { DIRECTION } from "../../enums"
+	import type { IAvatarGroupProps, IAvatarProps} from "../../interfaces"
 
-	import type { IAvatarGroupEmits, IAvatarGroupSlots } from '../../interfaces/Avatar/avatar-group.interface'
-	import { omitUndefined } from '../../utils/Commons/commons.util'
+	import type { IAvatarGroupEmits } from '../../interfaces/Avatar/avatar-group.interface'
+	import { omitUndefined } from "../../utils"
 
 	import type { ComputedRef, StyleValue, VNodeProps } from 'vue'
 	import { computed, mergeProps, ref } from "vue"
@@ -95,7 +82,7 @@
 	// DEFAULTS — children that pass their own props still win.
 	//
 	// A prop the CONSUMER never passed to `<origam-avatar-group>` must NOT be
-	// forwarded — else `mergeDeep` (used by `provideDefaults`
+	// forwarded — else `mergeDeep` (used by `provideDefaults`/`useDefaults`
 	// to combine this map with an ancestor/theme `'origam-avatar'` defaults
 	// entry) copies it unconditionally and silently overwrites the theme
 	// default (e.g. `origam-avatar { border: true }`) — see #263.
@@ -122,15 +109,13 @@
 
 	defineEmits<IAvatarGroupEmits>()
 
-	defineSlots<IAvatarGroupSlots>()
-
 	const {filterProps} = useProps<IAvatarGroupProps>(props)
 
 	/*********************************************************
 	 * Composables
 	 ********************************************************/
 
-	const {rtlClasses} = useRtl()
+	const {isRtl} = useRtl()
 
 	/*********************************************************
 	 * Group items
@@ -177,8 +162,8 @@
 	 * Hover / active state with optional expand-on-hover and
 	 * expand-on-click behaviour.
 	 ********************************************************/
-	const {classes: hoverClasses, config: hoverState, isOn: isHover, unset: onMouseleave, set: onMouseenter} = useStateFlag(props, {state: 'hover'})
-	const {classes: activeClasses, config: activeState, isOn: isActive, toggle: onActive} = useStateFlag(props, {state: 'active'})
+	const {hoverClasses, hoverState, isHover, onMouseleave, onMouseenter} = useHover(props)
+	const {activeClasses, activeState, isActive, onActive} = useActive(props)
 
 	// Avatars inherit the group's density / size / color / bgColor through the
 	// `<origam-defaults-provider :defaults="slotDefaults">` wrapper, so we must
@@ -231,22 +216,6 @@
 		onActive()
 	}
 
-	/*********************************************************
-	 * isClickExpandable / handleKeydownExpand
-	 *
-	 * @description
-	 * `expandOnClick` only wired `@click` — a mouse-only interaction
-	 * (WCAG 2.1.1). `tabindex`/`aria-expanded` make the group focusable
-	 * and announce its disclosure state; Enter/Space replay the same
-	 * `handleClick` a pointer click already triggers.
-	 ********************************************************/
-	const isClickExpandable = computed(() => Boolean(props.expandOnClick))
-	const handleKeydownExpand = () => {
-		if (isClickExpandable.value) {
-			handleClick()
-		}
-	}
-
 	// Click-to-expand groups collapse when the pointer lands outside the group.
 	// `closeConditional` gates the handler so it only fires while expand-on-click
 	// is active AND the group is currently open.
@@ -289,8 +258,8 @@
 			{
 				'origam-avatar-group--expand-on-hover': props.expandOnHover,
 				'origam-avatar-group--expand-on-click': props.expandOnClick,
+				'origam-avatar-group--rtl': isRtl
 			},
-      rtlClasses.value,
 			hoverClasses.value,
 			activeClasses.value,
 			marginClasses.value,
@@ -300,16 +269,7 @@
 		]
 	})
 
-	/*********************************************************
-	 * useStyle
-	 *
-	 * @description
-	 * #372 — `id` must be seeded with `() => props.id`: without it, the id
-	 * returned here is a purely GENERATED one for the scoped stylesheet
-	 * selector, and the template's `:id="id"` on the root would render
-	 * that generated id instead of the consumer's.
-	 ********************************************************/
-	const {id, css, load, isLoaded, unload} = useStyle(avatarGroupStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(avatarGroupStyles)
 
 	/*********************************************************
 	 * Expose
@@ -341,23 +301,14 @@
 		display: inline-flex;
 		flex-direction: var(--origam-avatar-group---flex-direction);
 
-		// ⛔ #C2 — zero-specificity defaults so a scale-driven utility
-		// class (`.origam--p-4` from `padding="4"`, `.origam--m-4` from
-		// `margin="4"`) wins the cascade. Without `:where()`, this scoped
-		// rule's [data-v-hash] pushes each longhand to (0,2,0), beating
-		// the utility's (0,1,0) — the utility sets the `padding`/`margin`
-		// SHORTHAND, but specificity is compared per longhand, so these
-		// per-edge declarations always won regardless of load order.
-		:where(&) {
-			padding-block-start: var(--origam-avatar-group---padding-block-start);
-			padding-block-end: var(--origam-avatar-group---padding-block-end);
-			padding-inline-start: var(--origam-avatar-group---padding-inline-start);
-			padding-inline-end: var(--origam-avatar-group---padding-inline-end);
-			margin-block-start: var(--origam-avatar-group---margin-block-start);
-			margin-block-end: var(--origam-avatar-group---margin-block-end);
-			margin-inline-start: var(--origam-avatar-group---margin-inline-start);
-			margin-inline-end: var(--origam-avatar-group---margin-inline-end);
-		}
+		padding-block-start: var(--origam-avatar-group---padding-block-start);
+		padding-block-end: var(--origam-avatar-group---padding-block-end);
+		padding-inline-start: var(--origam-avatar-group---padding-inline-start);
+		padding-inline-end: var(--origam-avatar-group---padding-inline-end);
+		margin-block-start: var(--origam-avatar-group---margin-block-start);
+		margin-block-end: var(--origam-avatar-group---margin-block-end);
+		margin-inline-start: var(--origam-avatar-group---margin-inline-start);
+		margin-inline-end: var(--origam-avatar-group---margin-inline-end);
 
 		&__item {
 			margin-block-start: var(--origam-avatar-group__item---margin-block-start);
@@ -392,14 +343,6 @@
 				transition-timing-function: var(--origam-avatar-group__avatar---transition-timing-function, cubic-bezier(0.4, 0, 0.2, 1));
 			}
 		}
-
-    &--is-rtl {
-      direction: rtl;
-    }
-
-    &--is-ltr {
-      direction: ltr;
-    }
 
 		&--expand-on-click {
 			cursor: pointer;

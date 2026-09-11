@@ -1,5 +1,3 @@
-import { INTENT } from '../../enums/Commons/intent.enum'
-
 /**
  * Semantic intents accepted by `useColorEffect` and `intent`-prop components
  * (Btn, Chip, Alert, Badge, …).
@@ -12,4 +10,12 @@ import { INTENT } from '../../enums/Commons/intent.enum'
  * `--origam-{component}--{intent}---{prop}`
  * (e.g. `--origam-btn--success---bg`).
  */
-export type TIntent = `${INTENT}`
+export type TIntent =
+    | 'neutral'
+    | 'primary'
+    | 'secondary'
+    | 'ghost'
+    | 'success'
+    | 'warning'
+    | 'danger'
+    | 'info'

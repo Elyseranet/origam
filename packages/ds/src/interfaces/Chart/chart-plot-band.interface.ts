@@ -1,4 +1,4 @@
-import type { TIntent } from '../../types/Commons/intent.type'
+import type { TIntent } from '../../types'
 
 /**
  * A coloured rectangular zone drawn behind (or above) chart data,

@@ -1,6 +1,6 @@
-import OrigamColorPicker from '../../components/ColorPicker/OrigamColorPicker.vue'
+import { OrigamColorPicker } from "../../components"
 
-import { COLOR_MODES_NAMES } from '../../enums/ColorPicker/color-picker.enum'
+import { COLOR_MODES_NAMES } from "../../enums"
 
 export type TColorModes = `${COLOR_MODES_NAMES}`
 

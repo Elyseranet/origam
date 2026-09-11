@@ -1,7 +1,5 @@
 import { expect, test } from '@playwright/test'
 
-import { selectHstOption } from './_support/histoire-controls'
-
 const sandboxOf = (page) => page.frameLocator('iframe[src*="__sandbox"]')
 
 const openVariant = async (page, variant) => {
@@ -36,12 +34,7 @@ test('Default variant: BottomNav has NO visible border by default', async ({ pag
 })
 
 test('Border variant: enabling `border` prop produces a visible 1px border', async ({ page }) => {
-    // Dedicated fixture folded into "Design" — flip the Border select from
-    // its 'No Border' default to the legacy boolean-true option, which
-    // resolves to the `thin` (~1px) utility width (see border.const.ts).
-    await openVariant(page, 'Design')
-    await selectHstOption(page, 'Border', 'Border (legacy boolean → thin)')
-    await page.waitForTimeout(400)
+    await openVariant(page, 'Prop — border')
     const sandbox = sandboxOf(page)
     const nav = sandbox.locator('.origam-bottom-nav').first()
     await expect(nav).toBeVisible({ timeout: 8000 })

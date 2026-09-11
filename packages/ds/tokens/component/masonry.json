@@ -1,0 +1,6 @@
+{
+  "masonry": {
+    "animation-duration": { "$type": "duration", "$value": "{motion.duration.fast}" },
+    "animation-easing": { "$type": "cubicBezier", "$value": "{motion.easing.standard}" }
+  }
+}

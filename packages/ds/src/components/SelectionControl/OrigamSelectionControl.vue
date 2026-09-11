@@ -4,7 +4,10 @@
     :style="selectionControlStyles"
     v-bind="rootAttrs"
   >
-    <div :class="selectionControlWrapperClasses">
+    <div
+      :class="selectionControlWrapperClasses"
+      :style="wrapperColorStyles"
+    >
       <slot
         name="default"
         v-bind="{ model, color, bgColor, icon, props: { onFocus: handleFocus, onBlur: handleBlur, id } }"
@@ -69,30 +72,33 @@
   lang="ts"
   setup
 >
-  import { computed, inject, nextTick, ref, shallowRef, StyleValue, toRef, useAttrs } from 'vue'
+  import { computed, inject, nextTick, ref, shallowRef, StyleValue, useAttrs } from 'vue'
 
-  import { ORIGAM_SELECTION_CONTROL_GROUP_KEY } from '../../consts/SelectionControl/selection-control.const'
-  import type { TOrigamLabel } from '../../types/Label/label.type'
-  import OrigamIcon from '../Icon/OrigamIcon.vue'
-  import OrigamLabel from '../Label/OrigamLabel.vue'
+  import { ORIGAM_SELECTION_CONTROL_GROUP_KEY } from "../../consts";
+  import type { TOrigamLabel } from "../../types";
+  import { OrigamIcon, OrigamLabel } from '../../components'
 
-  import { useDensity } from '../../composables/Commons/density.composable'
-  import { useProps } from '../../composables/Commons/props.composable'
-  import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
-  import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
-  import { useStyle } from '../../composables/Commons/style.composable'
-  import { useVModel } from '../../composables/Commons/vModel.composable'
+  import {
+    useBorder,
+    useDefaults,
+    useDensity,
+    useElevation,
+    useHover,
+    useProps,
+    useRounded,
+    useStateEffect,
+    useStyle,
+    useTextColor,
+    useVModel
+  } from '../../composables'
 
-  import vRipple from '../../directives/Ripple/ripple.directive'
+  import { vRipple } from '../../directives'
 
-  import type { ISelectionControlProps, ISelectionControlSlots } from '../../interfaces/SelectionControl/selection-control.interface'
+  import type { ISelectionControlProps, ISelectionControlSlots } from "../../interfaces"
 
   import type { ISelectionControlEmits } from '../../interfaces/SelectionControl/selection-control.interface'
 
-  import { deepEqual, matchesSelector, wrapInArray } from '../../utils/Commons/commons.util'
-  import { filterInputAttrs } from '../../utils/Input/input.util'
-  import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
-  import { getUid } from '../../utils/Commons/getCurrentInstance.util'
+  import { deepEqual, filterInputAttrs, forwardRefs, getUid, matchesSelector, wrapInArray } from '../../utils'
 
   /*********************************************************
    * Global
@@ -103,23 +109,9 @@
    * `provideDefaults({ 'origam-selection-control': … })` injected
    * by a parent `OrigamSelectionControlGroup`.
    ********************************************************/
-  /*********************************************************
-   * multiple: undefined (#396)
-   *
-   * @description
-   * NOT a no-op default. `multiple` is typed `boolean`, and Vue's own
-   * runtime boolean-cast rule turns an ABSENT Boolean-typed prop into the
-   * concrete value `false` whenever no `default` is declared for it.
-   * @description
-   * Declaring one (even `undefined`) disables that cast (`hasDefault`
-   * becomes true), so `props.multiple` stays genuinely `undefined` when
-   * nobody set it — which is what lets `isMultiple` below tell "nobody
-   * said anything" apart from "explicitly false" and fall back to
-   * auto-detecting array-based `modelValue`, as documented.
-   ********************************************************/
-  const props = withDefaults(defineProps<ISelectionControlProps>(), {
-    multiple: undefined
-  })
+  const _props = withDefaults(defineProps<ISelectionControlProps>(), {})
+
+  const props = useDefaults(_props)
 
   const emits = defineEmits<ISelectionControlEmits>()
 
@@ -155,7 +147,8 @@
   const { densityClasses } = useDensity(props)
 
 
-  const { isOn: isHover, config: hoverState } = useStateFlag(props, {state: 'hover'})
+  const { isHover, hoverState } = useHover(props)
+  useStateEffect(props, isHover, undefined, hoverState, undefined)
   /*********************************************************
    * Value
    ********************************************************/
@@ -168,48 +161,16 @@
   const falseValue = computed(() => {
     return props.falseValue !== undefined ? props.falseValue : false
   })
+  const isMultiple = computed(() => {
+    return !!props.multiple || (props.multiple == null && Array.isArray(modelValue.value))
+  })
   const valueComparator = computed(() => {
     return props.valueComparator ?? deepEqual
   })
 
-  // The model this control reads from and writes back to. Inside a group the
-  // group owns the selection; standalone, the control's own `v-model` does.
-  // The getter and the setter MUST agree on this source: while the setter
-  // rebuilt the array from `modelValue` (the control's own, always empty
-  // inside a group) it discarded every previously selected value — checking
-  // `b` after `a` emitted `['b']` instead of `['a','b']`, and unchecking
-  // filtered an empty array. Read it fresh on each access; both callers are
-  // inside a computed's accessor, so the dependency stays tracked.
-  const currentModel = () => group ? group.modelValue.value : modelValue.value
-
-  /*********************************************************
-   * isMultiple auto-detect (#396)
-   *
-   * @description
-   * Must look at the SAME source as the getter/setter above. It used to
-   * read `modelValue.value` unconditionally — the control's own, private
-   * v-model — which inside a group is never bound (the group forwards
-   * `density`/`color`/`type`/… as defaults, never `modelValue`), so it
-   * stayed `undefined` forever and `Array.isArray()` was always false.
-   * @description
-   * Result: on the officially documented path
-   * (`<origam-selection-control-group v-model="selected">` with NO
-   * explicit `multiple`, `selected` initialised as `[]`), auto-detect
-   * never turned on multiple mode, and the setter below overwrote the
-   * group's array with a bare scalar on every click — PERTE DE DONNEES.
-   * @description
-   * Reading `currentModel()` (group-aware) instead repairs the
-   * auto-detect for the grouped case without changing the standalone
-   * case (`currentModel() === modelValue.value` there, `group` being
-   * undefined).
-   ********************************************************/
-  const isMultiple = computed(() => {
-    return !!props.multiple || (props.multiple == null && Array.isArray(currentModel()))
-  })
-
   const model = computed({
     get() {
-      const val = currentModel()
+      const val = group ? group.modelValue.value : modelValue.value
 
       return isMultiple.value
         ? wrapInArray(val).some((v: any) => valueComparator.value(v, trueValue.value))
@@ -223,11 +184,9 @@
       let newVal = currentValue
 
       if (isMultiple.value) {
-        const previous = currentModel()
-
         newVal = val
-          ? [ ...wrapInArray(previous), currentValue ]
-          : wrapInArray(previous).filter((item: any) => !valueComparator.value(item, trueValue.value))
+          ? [ ...wrapInArray(modelValue.value), currentValue ]
+          : wrapInArray(modelValue.value).filter((item: any) => !valueComparator.value(item, trueValue.value))
       }
 
       if (group) {
@@ -298,12 +257,49 @@
 
   const [ rootAttrs, inputAttrs ] = filterInputAttrs(attrs)
 
-  const {
-    colorClasses, colorStyles,
-    borderClasses, borderStyles,
-    roundedClasses, roundedStyles,
-    elevationClasses, elevationStyles
-  } = useStateEffect(props, isHover, undefined, hoverState, undefined, toRef(props, 'disabled'))
+  const color = computed(() => {
+    if (props.error || props.disabled) return undefined
+
+    return model.value ? (props.activeColor || props.color) : props.color
+  })
+  const bgColor = computed(() => {
+    if (props.error || props.disabled) return undefined
+
+    return model.value ? (props.activeBgColor || props.bgColor) : props.bgColor
+  })
+
+  // Phase 5 — fix Switch thumb tint regression (commit 5039394).
+  // The wrapper carries the consumer's `color` intent so that:
+  //   • The Switch thumb can pick the tint up via `currentColor` (the
+  //     SCSS rule `.origam--color-{intent} &__thumb { background-color:
+  //     currentColor }` re-instates the previous behaviour with the
+  //     class-first selector instead of the brittle `[style*="color:"]`
+  //     attribute selector).
+  //   • Legacy raw colors (hex/rgb) keep working through the inline
+  //     style fallback — `useTextColor` returns `[]` for non-tokenisable
+  //     values and pushes the inline declaration only.
+
+  /*********************************************************
+   * Color
+   ********************************************************/
+
+  const { textColorClasses: wrapperColorClasses, textColorStyles: wrapperColorStyles } = useTextColor(color)
+
+  // Props-first (lot 4 theming fix, issue #241) — `border` / `rounded` /
+  // `elevation` are declared on `ISelectionControlProps` (Commons
+  // interfaces) but were never consumed anywhere: neither Checkbox nor
+  // Radio read them, so a theme's `'origam-checkbox': { rounded: 'md' }`
+  // was a silent no-op. `__input` is the element that owns the visible
+  // state-layer box (the circular hit/hover area sitting behind the
+  // glyph) — mirrors `OrigamSwitchTrack`'s "the box owns the surface"
+  // pattern. NOTE: the checkbox/radio glyph itself is a `mdi-*` icon-font
+  // character rendered by `<origam-icon>` — a font glyph has no
+  // border-radius/border/box-shadow of its own, so these props change the
+  // state-layer box around the glyph, not the glyph's own silhouette
+  // (tracked separately, see #241 rendering aggravation note).
+  const { borderClasses, borderStyles } = useBorder(props)
+  const { roundedClasses, roundedStyles } = useRounded(props)
+  const { elevationClasses, elevationStyles } = useElevation(props)
 
   const rippleProp = computed(() => {
     if (props.ripple) {
@@ -328,6 +324,7 @@
   const selectionControlWrapperClasses = computed(() => {
     return [
       'origam-selection-control__wrapper',
+      wrapperColorClasses.value
     ]
   })
   const selectionControlInputClasses = computed(() => {
@@ -335,16 +332,14 @@
       'origam-selection-control__input',
       borderClasses.value,
       roundedClasses.value,
-      elevationClasses.value,
-      colorClasses.value
+      elevationClasses.value
     ]
   })
   const selectionControlInputStyles = computed(() => {
     return [
       borderStyles.value,
       roundedStyles.value,
-      elevationStyles.value,
-      colorStyles.value
+      elevationStyles.value
     ] as StyleValue
   })
   const selectionControlClasses = computed(() => {
@@ -404,8 +399,8 @@
     }
 
     &__wrapper {
-      width: calc(var(--origam-selection-control__wrapper---width, 40px) + 1.5 * var(--origam-selection-control---density, 0px));
-      height: calc(var(--origam-selection-control__wrapper---height, 40px) + 1.5 * var(--origam-selection-control---density, 0px));
+      width: calc(40px + 1.5 * var(--origam-selection-control--density, 0px));
+      height: calc(40px + 1.5 * var(--origam-selection-control--density, 0px));
       display: inline-flex;
       align-items: center;
       position: relative;
@@ -414,14 +409,14 @@
     }
 
     &__input {
-      width: calc(40px + 1.5 * var(--origam-selection-control---density, 0px));
-      height: calc(40px + 1.5 * var(--origam-selection-control---density, 0px));
+      width: calc(40px + 1.5 * var(--origam-selection-control--density, 0px));
+      height: calc(40px + 1.5 * var(--origam-selection-control--density, 0px));
       align-items: center;
       display: flex;
       flex: none;
       justify-content: center;
       position: relative;
-      border-radius: var(--origam-selection-control__input---border-radius, 50%);
+      border-radius: 50%;
       backdrop-filter: var(--origam-selection-control__input---backdrop-filter, none);
       -webkit-backdrop-filter: var(--origam-selection-control__input---backdrop-filter, none);
 
@@ -451,7 +446,7 @@
         // pouvait peindre au repos ignorait la prop. `inherit` reprend le
         // border-radius résolu par `useRounded` sur `__input`.
         border-radius: inherit;
-        background-color: var(--origam-selection-control__input---overlay-background-color, currentColor);
+        background-color: currentColor;
         opacity: 0;
         pointer-events: none;
       }
@@ -468,7 +463,7 @@
     &--error {
       #{$this}__input {
         > .origam-icon {
-          opacity: var(--origam-selection-control__icon---opacity-active, 1);
+          opacity: 1;
         }
       }
     }
@@ -476,12 +471,12 @@
     &--error,
     &--disabled {
       .origam-label {
-        opacity: var(--origam-selection-control__label---opacity-disabled, 1);
+        opacity: 1;
       }
     }
 
     &--disabled {
-      opacity: var(--origam-selection-control---opacity-disabled, 0.5);
+      opacity: 0.5;
       pointer-events: none;
     }
 
@@ -513,25 +508,25 @@
     &--focus-visible {
       #{$this}__input {
         &:before {
-          opacity: var(--origam-selection-control__input---overlay-opacity-focus, 0.12);
+          opacity: calc(0.12 * 1);
         }
 
         outline: var(--origam-border__width---2, 2px) solid var(--origam-color__border---focus, currentColor);
         outline-offset: var(--origam-space---1, 2px);
-        border-radius: var(--origam-selection-control__input---border-radius, 50%);
+        border-radius: 50%;
       }
     }
 
     &--density-default {
-      --origam-selection-control---density: 0px;
+      --origam-selection-control--density: 0px;
     }
 
     &--density-compact {
-      --origam-selection-control---density: -8px;
+      --origam-selection-control--density: -8px;
     }
 
     &--density-comfortable {
-      --origam-selection-control---density: 8px;
+      --origam-selection-control--density: 8px;
     }
   }
 </style>

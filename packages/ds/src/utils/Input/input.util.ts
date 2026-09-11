@@ -1,6 +1,5 @@
-import { ON_REGEX } from '../../consts/Commons/commons.const'
-import { BUBBLING_EVENTS } from '../../consts/Input/input.const'
-import { omit, pickWithRest } from '../Commons/commons.util'
+import { BUBBLING_EVENTS, ON_REGEX } from '../../consts'
+import { omit, pickWithRest } from '../../utils'
 
 /**
  * Filter attributes that should be applied to

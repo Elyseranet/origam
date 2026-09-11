@@ -1,3 +1,3 @@
-import OrigamDivider from '../../components/Divider/OrigamDivider.vue'
+import { OrigamDivider } from "../../components"
 
 export type TOrigamDivider = InstanceType<typeof OrigamDivider>

@@ -1,3 +1,3 @@
-import OrigamSnackbar from '../../components/Snackbar/OrigamSnackbar.vue'
+import { OrigamSnackbar } from "../../components"
 
 export type TOrigamSnackbar = InstanceType<typeof OrigamSnackbar>

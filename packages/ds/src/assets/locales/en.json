@@ -52,36 +52,9 @@
       }
     },
     "no_data_text": "No data available",
-    "bracket": {
-      "aria_label": "Tournament bracket",
-      "winners_label": "Winners bracket",
-      "losers_label": "Losers bracket",
-      "tbd": "TBD",
-      "tbd_long": "To be determined",
-      "match_aria_label": "Match: {0} versus {1}",
-      "forfeit_label": "forfeit",
-      "advantage_aria_label": "{0}-round head start",
-      "score_aria_suffix": ", score {0}",
-      "winner_aria_suffix": ", winner",
-      "watch_live": "Watch live",
-      "status": {
-        "pending": "TBD",
-        "live": "LIVE",
-        "completed": "Completed",
-        "forfeited": "Forfeit"
-      },
-      "round_robin": {
-        "cell_self": "{0} versus itself, not applicable",
-        "cell_no_match": "{0} vs {1}, no match",
-        "cell_match": "{0} vs {1}"
-      }
-    },
     "carousel": {
       "prev": "Previous visual",
       "next": "Next visual",
-      "pause": "Pause the carousel",
-      "play": "Play the carousel",
-      "slide": "slide",
       "aria_label": {
         "delimiter": "Carousel slide {0} of {1}"
       }
@@ -113,18 +86,12 @@
       "counter": "{0} files",
       "counter_size": "{0} files ({1} in total)"
     },
-    "password_field": {
-      "show": "Show password",
-      "hide": "Hide password"
-    },
     "file_field": {
       "counter": "{0} files",
       "counter_size": "{0} files ({1} in total)",
       "dropzone_title": "Drag and drop files here",
       "dropzone_subtitle": "or click to browse",
-      "browse": "Browse Files",
-      "remove_aria_label": "Remove {0}",
-      "download_aria_label": "Download {0}"
+      "browse": "Browse Files"
     },
     "file_upload": {
       "title": "Drag and drop files here",
@@ -135,12 +102,6 @@
       "am": "AM",
       "pm": "PM",
       "title": "Select Time"
-    },
-    "number_field": {
-      "aria_label": {
-        "decrement": "Decrement",
-        "increment": "Increment"
-      }
     },
     "pagination": {
       "aria_label": {
@@ -163,29 +124,14 @@
       "copy": "Copy",
       "copied": "Copied!",
       "copy_aria_label": "Copy code to clipboard",
-      "copied_aria_label": "Code copied to clipboard",
-      "scroller_aria_label": "Code block, scrollable region",
-      "scroller_aria_label_filename": "{filename}, code block, scrollable region",
-      "scroller_aria_label_lang": "{lang} code block, scrollable region"
-    },
-    "qr_code": {
-      "aria_label": "QR code for {value}"
+      "copied_aria_label": "Code copied to clipboard"
     },
     "clipboard": {
-      "copied": "Copied!",
       "copy_aria_label": "Copy to clipboard",
       "copied_aria_label": "Value copied to clipboard"
     },
-    "sheet": {
-      "handle": {
-        "aria_label": "Drag handle"
-      }
-    },
     "snackbar": {
       "dismiss": "Dismiss notification"
-    },
-    "snackbar_group": {
-      "notifications": "Notifications"
     },
     "stepper": {
       "next": "Next",
@@ -207,15 +153,6 @@
     "infinite_scroll": {
       "load_more": "Load more",
       "empty": "No more"
-    },
-    "inline_edit": {
-      "placeholder": "Click to edit",
-      "edit_aria_label": "Edit {0}",
-      "edit": "Edit",
-      "confirm": "Confirm",
-      "cancel": "Cancel",
-      "field_aria_label": "Edit value",
-      "invalid_value": "Invalid value"
     },
     "validation": {
       "required": "This field is required",
@@ -250,11 +187,7 @@
       "loop_off": "Loop off",
       "loop_one": "Loop track",
       "shuffle": "Shuffle",
-      "transport": "Transport controls",
-      "playback_error": "Playback error"
-    },
-    "audio": {
-      "track_number": "Track {0}"
+      "transport": "Transport controls"
     },
     "video": {
       "enter_fullscreen": "Enter fullscreen",
@@ -268,185 +201,10 @@
       "canvas": {
         "aria_label": "Saturation and lightness",
         "value": "Saturation {0}%, lightness {1}%"
-      },
-      "edit": {
-        "cycle_mode_aria_label": "Switch color format"
-      },
-      "preview": {
-        "eye_dropper_aria_label": "Pick color from screen"
-      },
-      "swatches": {
-        "aria_label": "Select color {0}"
       }
     },
     "breadcrumb": {
       "aria_label": "Breadcrumb"
-    },
-    "command_palette": {
-      "aria_label": "Command palette",
-      "placeholder": "Search…",
-      "empty_text": "No results"
-    },
-    "chart": {
-      "aria_label": "Chart",
-      "no_data_text": "No data to display",
-      "desc_no_data": "No data",
-      "cartesian": {
-        "aria_label": "{type} chart",
-        "desc": "{type} chart with {series} and {points}, values ranging from {min} to {max}.",
-        "desc_series_one": "{count} series",
-        "desc_series_other": "{count} series",
-        "desc_points_one": "{count} point",
-        "desc_points_other": "{count} points"
-      },
-      "box_plot": {
-        "aria_label": "box plot chart",
-        "desc_one": "Box plot with {count} category.",
-        "desc_other": "Box plot with {count} categories."
-      },
-      "bullet": {
-        "aria_label": "bullet chart",
-        "desc_one": "Bullet chart with {count} indicator.",
-        "desc_other": "Bullet chart with {count} indicators."
-      },
-      "candlestick": {
-        "aria_label": "candlestick chart",
-        "desc_one": "Candlestick chart with {count} candle.",
-        "desc_other": "Candlestick chart with {count} candles."
-      },
-      "gauge": {
-        "aria_label": "gauge chart",
-        "value_aria_label": "Gauge: {0}",
-        "desc": "Gauge showing {0} out of a range from {1} to {2}."
-      },
-      "heatmap": {
-        "aria_label": "heatmap chart",
-        "desc": "Heatmap chart with {0} columns and {1} rows."
-      },
-      "honeycomb": {
-        "aria_label": "honeycomb chart",
-        "desc_one": "Honeycomb chart with {count} tile.",
-        "desc_other": "Honeycomb chart with {count} tiles."
-      },
-      "legend": {
-        "item_hidden": "hidden, click to show",
-        "item_visible": "visible, click to hide"
-      },
-      "map": {
-        "aria_label": "map chart",
-        "desc_choropleth_one": "Choropleth map with {count} country in the dataset.",
-        "desc_choropleth_other": "Choropleth map with {count} countries in the dataset.",
-        "desc_routes_one": "Flight-routes map with {count} route.",
-        "desc_routes_other": "Flight-routes map with {count} routes."
-      },
-      "pareto": {
-        "aria_label": "Pareto chart",
-        "cumulative_label": "Cumulative %",
-        "desc_one": "Pareto chart with {count} category, sorted descending by value.",
-        "desc_other": "Pareto chart with {count} categories, sorted descending by value."
-      },
-      "pictorial": {
-        "aria_label": "pictorial chart",
-        "desc_one": "Pictorial chart with {count} column.",
-        "desc_other": "Pictorial chart with {count} columns."
-      },
-      "range_selector": {
-        "aria_label": "Chart range selector"
-      },
-      "drilldown": {
-        "aria_label": "Drilldown navigation",
-        "back_label": "← Back",
-        "root_label": "Root"
-      },
-      "zoom": {
-        "reset_aria_label": "Reset zoom"
-      },
-      "polar": {
-        "aria_label_pie": "Pie chart",
-        "aria_label_donut": "Donut chart",
-        "desc": "{chart} with {series} and {points}.",
-        "desc_series_one": "{count} series",
-        "desc_series_other": "{count} series",
-        "desc_points_one": "{count} point",
-        "desc_points_other": "{count} points"
-      },
-      "polar_bar": {
-        "aria_label": "Polar bar chart",
-        "item_label": "Item {0}",
-        "desc_one": "{chart} with {count} wedge.",
-        "desc_other": "{chart} with {count} wedges."
-      },
-      "pyramid": {
-        "aria_label_pyramid": "Pyramid chart",
-        "aria_label_funnel": "Funnel chart",
-        "slice_label": "Slice {0}",
-        "desc_one": "{chart} with {count} slice.",
-        "desc_other": "{chart} with {count} slices."
-      },
-      "radar": {
-        "aria_label": "Radar chart",
-        "desc": "{chart} with {series} and {axes}.",
-        "desc_series_one": "{count} series",
-        "desc_series_other": "{count} series",
-        "desc_axes_one": "{count} axis",
-        "desc_axes_other": "{count} axes"
-      },
-      "sankey": {
-        "aria_label": "Sankey diagram",
-        "link_aria_label": "{0} to {1}: {2}",
-        "desc": "{chart} with {nodes} and {links}.",
-        "desc_nodes_one": "{count} node",
-        "desc_nodes_other": "{count} nodes",
-        "desc_links_one": "{count} link",
-        "desc_links_other": "{count} links"
-      },
-      "sparkline": {
-        "aria_label_line": "Line sparkline",
-        "aria_label_area": "Area sparkline",
-        "aria_label_column": "Column sparkline",
-        "aria_label_bar": "Bar sparkline",
-        "desc_one": "{chart} with {count} data point.",
-        "desc_other": "{chart} with {count} data points."
-      },
-      "streamgraph": {
-        "aria_label": "Streamgraph",
-        "desc": "{chart} with {series} and {points}.",
-        "desc_series_one": "{count} series",
-        "desc_series_other": "{count} series",
-        "desc_points_one": "{count} time point",
-        "desc_points_other": "{count} time points"
-      },
-      "sunburst": {
-        "aria_label": "Sunburst chart",
-        "desc_one": "{chart} with {count} root node.",
-        "desc_other": "{chart} with {count} root nodes."
-      },
-      "treemap": {
-        "aria_label": "Treemap chart",
-        "desc_one": "{chart} with {count} tile.",
-        "desc_other": "{chart} with {count} tiles."
-      },
-      "variwide": {
-        "aria_label": "Variwide chart",
-        "column_aria_label": "{0}: value {1}, width {2}",
-        "desc_one": "{chart} with {count} column.",
-        "desc_other": "{chart} with {count} columns."
-      },
-      "word_cloud": {
-        "aria_label": "Word cloud chart",
-        "desc_one": "{chart} with {count} word.",
-        "desc_other": "{chart} with {count} words."
-      }
-    },
-    "drawer": {
-      "aria_label": "Navigation"
-    },
-    "dialog": {
-      "close_aria_label": "Close dialog",
-      "confirmation": {
-        "cancel": "Cancel",
-        "validate": "Validate"
-      }
     },
     "textarea": {
       "rich": {

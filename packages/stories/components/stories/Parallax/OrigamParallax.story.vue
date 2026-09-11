@@ -194,13 +194,11 @@
 			<origam-parallax
 					:style="hostStyleTall"
 					:event="PARALLAX_EVENT.SCROLL"
-					@scroll-progress="onScrollProgress"
+					:easing="PARALLAX_EASING.SPRING"
+					@scroll-progress="logEvent('scroll-progress', $event)"
 			>
 				<origam-parallax-layer :speed="0.5">
-					<div
-							:style="layerMid"
-							data-cy="scroll-progress"
-					>progress = {{ scrollProgress.toFixed(3) }}</div>
+					<div :style="layerMid">Scroll to emit progress</div>
 				</origam-parallax-layer>
 			</origam-parallax>
 			<div :style="scrollFiller"></div>
@@ -310,31 +308,6 @@
 
 	const enterCount = ref(0)
 	const leaveCount = ref(0)
-
-	/*********************************************************
-	 * scrollProgress — lisible DEPUIS LA PAGE (#432)
-	 *
-	 * @description
-	 * Cette Variant renvoyait vers `logEvent`, un journal interne à
-	 * Histoire que les specs e2e de ce dépôt documentent comme non
-	 * observable depuis la page extérieure. Le `[data-cy="scroll-progress"]`
-	 * que `e2e/parallax.spec.ts` cherchait n'existait donc nulle part, et
-	 * son test échouait sur le locator AVANT d'atteindre la moindre
-	 * assertion — d'où le `test.fixme` du 2026-08-17.
-	 * @description
-	 * ⛔ Le `:easing="PARALLAX_EASING.SPRING"` posé ici a été RETIRÉ à
-	 * dessein : il plaçait la Variant sur le chemin JS, le seul qui ait
-	 * jamais fonctionné. Le défaut #432 ne vit que sur le chemin CSS
-	 * scroll-driven, atteint avec l'easing PAR DÉFAUT (linéaire) sur
-	 * Chrome 115+ — c'est-à-dire la configuration qu'obtient un
-	 * consommateur qui ne règle rien. La Variant doit donc exercer CE
-	 * chemin-là, sinon elle documente un cas qui n'a jamais été cassé.
-	 ********************************************************/
-	const scrollProgress = ref(0)
-
-	const onScrollProgress = (value: number) => {
-		scrollProgress.value = value
-	}
 
 	const hostStyle: CSSProperties = {
 		width: '100%',

@@ -3,10 +3,8 @@ import type { UnwrapNestedRefs, VNodeChild } from 'vue'
 
 // These already exist in scope in the final bundle
 // @skip-build
-import type { IDateInstance } from './interfaces/Commons/date.interface'
-import type { IDisplayInstance } from './interfaces/Commons/display.interface'
-import type { ILocaleInstance, IRtlInstance } from './interfaces/Commons/locale.interface'
-import type { TIconOptions } from './types/Icon/icon.type'
+import type { IDateInstance, IDisplayInstance, ILocaleInstance, IRtlInstance } from './interfaces'
+import type { TIconOptions } from './types'
 
 declare global {
     namespace JSX {

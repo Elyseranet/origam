@@ -1,3 +1,3 @@
-import OrigamInfiniteScrollIntersect from '../../components/InfiniteScroll/OrigamInfiniteScrollIntersect.vue'
+import { OrigamInfiniteScrollIntersect } from "../../components"
 
 export type TOrigamInfiniteScrollIntersect = InstanceType<typeof OrigamInfiniteScrollIntersect>

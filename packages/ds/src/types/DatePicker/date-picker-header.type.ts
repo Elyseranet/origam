@@ -1,3 +1,3 @@
-import OrigamDatePickerHeader from '../../components/DatePicker/OrigamDatePickerHeader.vue'
+import { OrigamDatePickerHeader } from "../../components"
 
 export type TOrigamDatePickerHeader = InstanceType<typeof OrigamDatePickerHeader>

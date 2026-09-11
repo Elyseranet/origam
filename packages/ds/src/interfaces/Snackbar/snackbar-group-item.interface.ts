@@ -1,5 +1,4 @@
-import type { TIcon } from '../../types/Icon/icon.type'
-import type { TIntent } from '../../types/Commons/intent.type'
+import type { TIcon, TIntent } from '../../types'
 
 /**
  * Action button descriptor attached to a snackbar stack item.

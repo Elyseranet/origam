@@ -1,3 +1,3 @@
-import OrigamFade from '../../components/Transition/OrigamFade.vue'
+import { OrigamFade } from "../../components"
 
 export type TOrigamFade = InstanceType<typeof OrigamFade>

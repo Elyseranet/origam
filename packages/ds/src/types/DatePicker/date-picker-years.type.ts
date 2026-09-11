@@ -1,3 +1,3 @@
-import OrigamDatePickerYears from '../../components/DatePicker/OrigamDatePickerYears.vue'
+import { OrigamDatePickerYears } from "../../components"
 
 export type TOrigamDatePickerYears = InstanceType<typeof OrigamDatePickerYears>

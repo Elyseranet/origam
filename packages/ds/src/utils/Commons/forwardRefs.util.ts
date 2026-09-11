@@ -1,7 +1,7 @@
 import { ComponentPublicInstance, Ref, UnwrapRef } from 'vue'
-import { FORWARD_REFS } from '../../consts/Commons/forwardRefs.const'
+import { FORWARD_REFS } from '../../consts'
 
-import type { TOmitPrefix, TOmitProps, TUnionToIntersection } from '../../types/Commons/forwardRefs.type'
+import type { TOmitPrefix, TOmitProps, TUnionToIntersection } from '../../types'
 
 /**
  * Forward refs.

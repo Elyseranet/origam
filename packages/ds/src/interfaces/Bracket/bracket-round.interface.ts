@@ -1,4 +1,4 @@
-import type { TBracketRoundSide } from '../../types/Bracket/bracket-round.type'
+import type { TBracketRoundSide } from '../../types'
 import type { IBracketMatch } from './bracket-match.interface'
 
 /**

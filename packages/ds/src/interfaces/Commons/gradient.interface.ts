@@ -1,4 +1,4 @@
-import type { TIntent } from '../../types/Commons/intent.type'
+import type { TIntent } from '../../types'
 
 /**
  * Single stop in a multi-stop gradient.

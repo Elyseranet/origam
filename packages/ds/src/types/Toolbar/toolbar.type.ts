@@ -1,5 +1,5 @@
-import OrigamToolbar from '../../components/Toolbar/OrigamToolbar.vue'
-import { SCROLL_BEHAVIOR } from '../../enums/Toolbar/toolbar.enum'
+import { OrigamToolbar } from "../../components"
+import { SCROLL_BEHAVIOR } from '../../enums'
 
 export type TScrollBehavior = `${SCROLL_BEHAVIOR}`
 

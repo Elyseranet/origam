@@ -1,6 +1,5 @@
 <template>
 	<origam-picker
-			:id="id"
 			ref="origamPickerRef"
 			:class="datePickerClasses"
 			:style="datePickerStyles"
@@ -14,7 +13,10 @@
 			<slot name="title"/>
 		</template>
 
-		<template #header>
+		<template
+				v-if="slots.header"
+				#header
+		>
 			<slot
 					name="header"
 					v-bind="headerProps"
@@ -23,7 +25,7 @@
 						key="header"
 						ref="origamDatePickerHeaderRef"
 						v-bind="{ ...datePickerHeaderProps, ...headerProps }"
-						@click="handleHeaderClick"
+						@click="!viewModeIsMonth ? handleClickDate : undefined"
 				/>
 			</slot>
 		</template>
@@ -95,40 +97,36 @@
 		lang="ts"
 		setup
 >
-	import OrigamDatePickerControls from './OrigamDatePickerControls.vue'
-	import OrigamDatePickerHeader from './OrigamDatePickerHeader.vue'
-	import OrigamDatePickerMonth from './OrigamDatePickerMonth.vue'
-	import OrigamDatePickerMonths from './OrigamDatePickerMonths.vue'
-	import OrigamDatePickerYears from './OrigamDatePickerYears.vue'
-	import OrigamFade from '../Transition/OrigamFade.vue'
-	import OrigamPicker from '../Picker/OrigamPicker.vue'
-	import OrigamReverseTranslatePicker from '../Transition/OrigamReverseTranslatePicker.vue'
-	import OrigamTranslatePicker from '../Transition/OrigamTranslatePicker.vue'
+	import {
+		OrigamDatePickerControls,
+		OrigamDatePickerHeader,
+		OrigamDatePickerMonth,
+		OrigamDatePickerMonths,
+		OrigamDatePickerYears,
+		OrigamFade,
+		OrigamPicker,
+		OrigamReverseTranslatePicker,
+		OrigamTranslatePicker
+	} from "../../components"
 
-	import { useDate } from '../../composables/Commons/date.composable'
-	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useVModel } from '../../composables/Commons/vModel.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useDate, useLocale, useProps, useVModel , useStyle} from "../../composables"
 
-	import { UNSEEDED } from '../../consts/Commons/vmodel.const'
+	import { CALENDAR_STRATEGY, DATE_MODE } from "../../enums"
 
-	import { CALENDAR_STRATEGY } from '../../enums/Commons/calendar.enum'
-	import { DATE_MODE } from '../../enums/DatePicker/date-picker.enum'
+	import type { IDatePickerControlsProps, IDatePickerProps} from "../../interfaces"
 
-	import type { IDatePickerControlsProps } from '../../interfaces/DatePicker/date-picker-controls.interface'
-	import type { IDatePickerProps } from '../../interfaces/DatePicker/date-picker.interface'
+	import type { IDatePickerEmits } from '../../interfaces/DatePicker/date-picker.interface'
 
-	import type { IDatePickerEmits, IDatePickerSlots } from '../../interfaces/DatePicker/date-picker.interface'
+	import type {
+		TOrigamDatePickerControls,
+		TOrigamDatePickerHeader,
+		TOrigamDatePickerMonth,
+		TOrigamDatePickerMonths,
+		TOrigamDatePickerYears,
+		TOrigamPicker
+	} from "../../types"
 
-	import type { TOrigamDatePickerControls } from '../../types/DatePicker/date-picker-controls.type'
-	import type { TOrigamDatePickerHeader } from '../../types/DatePicker/date-picker-header.type'
-	import type { TOrigamDatePickerMonth } from '../../types/DatePicker/date-picker-month.type'
-	import type { TOrigamDatePickerMonths } from '../../types/DatePicker/date-picker-months.type'
-	import type { TOrigamDatePickerYears } from '../../types/DatePicker/date-picker-years.type'
-	import type { TOrigamPicker } from '../../types/Picker/picker.type'
-
-	import { wrapInArray } from '../../utils/Commons/commons.util'
+	import { wrapInArray } from "../../utils"
 
 	import { computed, ref, shallowRef, StyleValue, useSlots, watch } from "vue"
 
@@ -146,8 +144,6 @@
 	})
 
 	const emits = defineEmits<IDatePickerEmits>()
-
-	defineSlots<IDatePickerSlots>()
 
 	const slots = useSlots()
 	const {filterProps} = useProps<IDatePickerProps>(props)
@@ -189,42 +185,8 @@
 		return value && adapter.isValid(value) ? value : adapter.date()
 	})
 
-	/*********************************************************
-	 * month / year — displayed month/year, ADR-005 lazy seed
-	 *
-	 * @description
-	 * `month`/`year` (from `ICalendarProps`) carry no `withDefaults`
-	 * default, so `props.month`/`props.year` are `undefined` unless the
-	 * consumer passes them explicitly OR a theme sets one on
-	 * `origam-date-picker`. They used to be seeded via a plain
-	 * `ref(Number(props.month ?? ...))` — an EAGER read in the body of
-	 * `setup()`. Vue runs `setup()` BEFORE the `beforeCreate` hook where
-	 * the ADR-005 theme-props resolver patches `instance.props` (root
-	 * CLAUDE.md), so a theme default for `month`/`year` was captured too
-	 * late and silently lost. Same family as #429/#448 — fixed the same
-	 * way: the internal ref starts `UNSEEDED`, and the fallback
-	 * expression is only evaluated on first read, through the writable
-	 * `month`/`year` computed below (evaluated at render, comfortably
-	 * after `beforeCreate`). Every existing call site (`month.value++`,
-	 * `v-model:month="month"`, …) keeps working unchanged since a
-	 * writable `computed` implements the same `.value` interface as a
-	 * `ref`.
-	 ********************************************************/
-	const internalMonth = ref<number | typeof UNSEEDED>(UNSEEDED)
-	const month = computed<number>({
-		get: () => internalMonth.value === UNSEEDED
-				? Number(props.month ?? adapter.getMonth(adapter.startOfMonth(internal.value)))
-				: internalMonth.value,
-		set: (value) => { internalMonth.value = value }
-	})
-
-	const internalYear = ref<number | typeof UNSEEDED>(UNSEEDED)
-	const year = computed<number>({
-		get: () => internalYear.value === UNSEEDED
-				? Number(props.year ?? adapter.getYear(adapter.startOfYear(adapter.setMonth(internal.value, month.value))))
-				: internalYear.value,
-		set: (value) => { internalYear.value = value }
-	})
+	const month = ref(Number(props.month ?? adapter.getMonth(adapter.startOfMonth(internal.value))))
+	const year = ref(Number(props.year ?? adapter.getYear(adapter.startOfYear(adapter.setMonth(internal.value, month.value)))))
 
 	const isReversing = shallowRef(false)
 
@@ -341,21 +303,6 @@
 	const handleClickDate = () => {
 		viewMode.value = DATE_MODE.MONTH
 	}
-	/*********************************************************
-	 * handleHeaderClick (#410)
-	 *
-	 * @description
-	 * The header's `@click` used to bind a ternary expression
-	 * (`!viewModeIsMonth ? handleClickDate : undefined`) directly — a
-	 * non-trivial expression on an event binding is evaluated once and
-	 * its RESULT (a function reference, or `undefined`) becomes the
-	 * handler; `handleClickDate` itself was therefore returned, never
-	 * invoked. A dedicated named handler keeps the branch out of the
-	 * template (repo convention) and actually calls it.
-	 ********************************************************/
-	const handleHeaderClick = () => {
-		if (!viewModeIsMonth.value) handleClickDate()
-	}
 	const handleClickMonth = () => {
 		viewMode.value = viewModeIsMonths.value ? DATE_MODE.MONTH : DATE_MODE.MONTHS
 	}
@@ -471,7 +418,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(datePickerStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(datePickerStyles)
 
 
 	/*********************************************************
@@ -499,10 +446,10 @@
 		$this: &;
 
 		overflow: hidden;
-		width: var(--origam-date-picker---width);
+		width: 328px;
 
 		&--show-week {
-			width: var(--origam-date-picker--show-week---width);
+			width: 368px;
 		}
 
 		&--year {

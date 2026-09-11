@@ -132,7 +132,7 @@ test.describe('OrigamImg', () => {
     test('error state — error slot renders when src is broken', async ({ page }) => {
         await page.goto(IMG_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Slots - Error', { exact: true }).first().click()
+        await page.getByText('Slot — error', { exact: true }).first().click()
         // Allow the network request to fail and the error slot to mount.
         await page.waitForTimeout(2000)
 
@@ -268,11 +268,7 @@ test.describe('OrigamAvatar', () => {
     test('tag variant — switches the host element', async ({ page }) => {
         await page.goto(AVATAR_PATH)
         await page.waitForLoadState('networkidle')
-        // « Functional » est le Variant canonique de l'axe `tag`. L'ancien
-        // « Prop — tag » en était un doublon exact — même init-state
-        // ({ tag: 'div' }), même template, même HstSelect sur TAG_OPTIONS —
-        // donc ce test rend et assert strictement la même chose qu'avant.
-        await page.getByText('Functional', { exact: true }).first().click()
+        await page.getByText('Prop — tag', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')

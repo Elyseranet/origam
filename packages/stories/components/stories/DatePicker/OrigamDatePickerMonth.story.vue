@@ -40,17 +40,7 @@
 
 		<Variant
 				title="Functional"
-				:init-state="() => useStoryInitState<Partial<IDatePickerMonthProps> & { weekdaysPreset: string; weekdaysOnly: boolean; displayValue: string; transitionName: string; reverseTransitionName: string; transitionMode: string }>({
-					month: currentMonth,
-					year: currentYear,
-					date: [today],
-					weekdaysPreset: 'all',
-					weekdaysOnly: false,
-					displayValue: '',
-					transitionName: '',
-					reverseTransitionName: '',
-					transitionMode: TRANSITION_MODE.OUT_IN
-				})"
+				:init-state="() => useStoryInitState<Partial<IDatePickerMonthProps>>({ month: currentMonth, year: currentYear, date: [today] })"
 		>
 			<template #default="{ state }">
 				<origam-date-picker-month
@@ -62,11 +52,6 @@
 						:disabled="state.disabled"
 						:min="state.min || undefined"
 						:max="state.max || undefined"
-						:allowed-dates="state.weekdaysOnly ? isWeekday : undefined"
-						:display-value="state.displayValue || undefined"
-						:weekdays="WEEKDAYS_SETS[state.weekdaysPreset]"
-						:transition="state.transitionName ? { name: state.transitionName, mode: state.transitionMode as TTransitionMode } : undefined"
-						:reverse-transition="state.reverseTransitionName ? { name: state.reverseTransitionName, mode: state.transitionMode as TTransitionMode } : undefined"
 				/>
 			</template>
 			<template #controls="{ state }">
@@ -78,30 +63,10 @@
 					<HstCheckbox v-model="state.disabled" title="Disabled"/>
 				</StoryGroup>
 				<StoryGroup title="Bounds">
-					<HstText     v-model="state.min" title="Min (ISO date, e.g. 2026-06-10)"/>
-					<HstText     v-model="state.max" title="Max (ISO date, e.g. 2026-06-20)"/>
-					<HstCheckbox v-model="state.weekdaysOnly" title="Allowed Dates — weekdays only"/>
-				</StoryGroup>
-				<StoryGroup title="Display">
-					<HstText   v-model="state.displayValue" title="Display Value (ISO date)"/>
-					<HstSelect v-model="state.weekdaysPreset" title="Weekdays" :options="WEEKDAYS_OPTIONS"/>
-				</StoryGroup>
-				<StoryGroup title="Transitions">
-					<HstText   v-model="state.transitionName"        title="Transition Name"/>
-					<HstText   v-model="state.reverseTransitionName" title="Reverse Transition Name"/>
-					<HstSelect v-model="state.transitionMode"        title="Transition Mode" :options="TRANSITION_MODE_OPTIONS"/>
+					<HstText v-model="state.min" title="Min (ISO date, e.g. 2026-06-10)"/>
+					<HstText v-model="state.max" title="Max (ISO date, e.g. 2026-06-20)"/>
 				</StoryGroup>
 			</template>
-		</Variant>
-
-		<Variant title="Events - update:date">
-			<origam-date-picker-month
-					:month="currentMonth"
-					:year="currentYear"
-					multiple
-					data-cy="dp-month-emit-update-date"
-					@update:date="logEvent('update:date', $event)"
-			/>
 		</Variant>
 
 		<Variant title="Slots - Days">
@@ -157,12 +122,9 @@
 		lang="ts"
 		setup
 >
-	import { logEvent } from 'histoire/client'
-
 	import { OrigamDatePickerMonth } from '@origam/components'
-	import { CALENDAR_STRATEGY, TRANSITION_MODE } from '@origam/enums'
+	import { CALENDAR_STRATEGY } from '@origam/enums'
 	import type { IDatePickerMonthProps } from '@origam/interfaces'
-	import type { TTransitionMode } from '@origam/types'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
@@ -173,33 +135,9 @@
 	const currentYear  = now.getFullYear()
 	const today        = now.toISOString().slice(0, 10)
 
-	const isWeekday = (date: unknown) => {
-		const day = new Date(date as string).getDay()
-
-		return day !== 0 && day !== 6
-	}
-
 	const WEEKS_IN_MONTH_OPTIONS = [
 		{ label: 'Dynamic', value: CALENDAR_STRATEGY.DYNAMIC },
 		{ label: 'Static',  value: CALENDAR_STRATEGY.STATIC }
-	]
-
-	const WEEKDAYS_SETS: Record<string, Array<number>> = {
-		all:      [0, 1, 2, 3, 4, 5, 6],
-		workweek: [1, 2, 3, 4, 5],
-		weekend:  [0, 6]
-	}
-
-	const WEEKDAYS_OPTIONS = [
-		{ label: 'All seven',       value: 'all' },
-		{ label: 'Monday → Friday', value: 'workweek' },
-		{ label: 'Weekend only',    value: 'weekend' }
-	]
-
-	const TRANSITION_MODE_OPTIONS = [
-		{ label: 'out-in',  value: TRANSITION_MODE.OUT_IN },
-		{ label: 'in-out',  value: TRANSITION_MODE.IN_OUT },
-		{ label: 'default', value: TRANSITION_MODE.DEFAULT }
 	]
 </script>
 

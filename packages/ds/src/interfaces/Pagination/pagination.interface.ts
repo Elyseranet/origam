@@ -1,34 +1,21 @@
-import type { IBorderProps } from '../Commons/border.interface'
 import type {
+    IBorderProps,
     IBgColorProps,
-    IColorProps
-} from '../Commons/color.interface'
-import type {
+    IColorProps,
     ICommonsComponentEmits,
     ICommonsComponentProps,
-    ITagProps
-} from '../Commons/commons.interface'
-import type { IDensityProps } from '../Commons/density.interface'
-import type { IElevationProps } from '../Commons/elevation.interface'
-import type { IMarginProps } from '../Commons/margin.interface'
-import type { IPaddingProps } from '../Commons/padding.interface'
-import type { ISizeProps } from '../Commons/size.interface'
-import type { ITypographyProps } from '../Commons/typography.interface'
+    IDensityProps,
+    IElevationProps,
+    IMarginProps,
+    IPaddingProps,
+    ISizeProps,
+    ITagProps,
+    ITypographyProps
+} from "../../interfaces"
 
-import type { TIcon } from '../../types/Icon/icon.type'
+import type { TColor, TIcon } from "../../types"
 
-/**
- * Deliberately NOT `extends IAdjacentProps`. `IAdjacentProps` models a
- * single leading/trailing pair around one piece of content (`prependIcon`
- * / `appendIcon`); Pagination has FOUR fixed-purpose navigation icons
- * (first / prev / next / last), each a distinct semantic role rather than
- * a generic "start" / "end" slot. `prevIcon` / `nextIcon` are forwarded
- * as `prependIcon` / `appendIcon` props to the internal `<OrigamBtn>` nav
- * buttons (see `controls` computed in `OrigamPagination.vue`) — that's
- * `IBtnProps.IAdjacentProps` being consumed by the child, not a surface
- * this component itself exposes.
- */
-export interface IPaginationProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IBorderProps, IPaddingProps, IMarginProps, IElevationProps, ISizeProps, IDensityProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight'> {
+export interface IPaginationProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IBorderProps, IPaddingProps, IMarginProps, IElevationProps, ISizeProps, IDensityProps, ITypographyProps {
     start?: number
     modelValue?: number
     disabled?: boolean
@@ -91,6 +78,14 @@ export interface IPaginationProps extends ICommonsComponentProps, ITagProps, ICo
      * @default 'origam.pagination.aria_label.page_number'
      */
     pageNumberAriaLabel?: string
+    /** @deprecated Use the `hover` object prop instead. Kept for back-compat. */
+    hoverColor?: TColor
+    /** @deprecated Use the `hover` object prop instead. Kept for back-compat. */
+    hoverBgColor?: TColor
+    /** @deprecated Use the `active` object prop instead. Kept for back-compat. */
+    activeColor?: TColor
+    /** @deprecated Use the `active` object prop instead. Kept for back-compat. */
+    activeBgColor?: TColor
 }
 
 /** Emits fired by `<OrigamPagination>` — current page v-model + the four
@@ -100,22 +95,4 @@ export interface IPaginationEmits extends ICommonsComponentEmits {
     (e: 'prev', value: number): void
     (e: 'next', value: number): void
     (e: 'last', value: number): void
-}
-
-/**
- * Slot signatures for `<OrigamPagination>`. `first` / `prev` / `next` /
- * `last` receive the resolved `<OrigamBtn>` props bag spread as the
- * scope (`v-bind="{...controls.prev}"`, …) — a loose `Record` since the
- * bag mixes DS button props with internal wiring (`ref`, `onClick`,
- * `ellipsis`). Per-page overrides (`item-{key}` / `item`) are unscoped —
- * the template renders `<slot :name="…">` with no `v-bind`.
- */
-export interface IPaginationSlots {
-    info?: (data: { start: number, end: number, total: number }) => any
-    first?: (props: Record<string, unknown>) => any
-    prev?: (props: Record<string, unknown>) => any
-    next?: (props: Record<string, unknown>) => any
-    last?: (props: Record<string, unknown>) => any
-    item?: () => any
-    [key: `item-${string}`]: (() => any) | undefined
 }

@@ -1,3 +1,3 @@
-import { DENSITY } from '../../enums/Commons/density.enum'
+import { DENSITY } from '../../enums'
 
 export type TDensity = `${DENSITY}`

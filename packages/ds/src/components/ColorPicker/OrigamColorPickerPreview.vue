@@ -1,6 +1,5 @@
 <template>
 	<div
-			:id="id"
 			:class="colorPickerPreviewClasses"
 			:style="colorPickerPreviewStyles"
 	>
@@ -10,9 +9,7 @@
 					class="origam-color-picker-preview__eye-dropper"
 			>
 				<origam-btn
-						:aria-label="eyeDropperAriaLabel"
 						:density="DENSITY.DEFAULT"
-						:disabled="disabled"
 						:icon="MDI_ICONS.EYEDROPPER"
 						@click="openEyeDropper"
 				/>
@@ -67,32 +64,21 @@
 		lang="ts"
 		setup
 >
-	import OrigamBtn from '../Btn/OrigamBtn.vue'
-	import OrigamSliderField from '../SliderField/OrigamSliderField.vue'
+	import { OrigamBtn, OrigamSliderField } from "../../components"
 
-	import { useDimension } from '../../composables/Commons/dimension.composable'
-	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useVModel } from '../../composables/Commons/vModel.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useProps, useVModel , useStyle} from "../../composables"
 
-	import { COLOR_NULL } from '../../consts/ColorPicker/color-picker.const'
-	import { SUPPORTS_EYE_DROPPER } from '../../consts/Commons/commons.const'
+	import { COLOR_NULL, SUPPORTS_EYE_DROPPER } from "../../consts"
 
-	import { DENSITY } from '../../enums/Commons/density.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { DENSITY, MDI_ICONS } from "../../enums"
 
-  import type {
-    IColorPickerPreviewProps,
-    IColorPickerPreviewSlots
-  } from '../../interfaces/ColorPicker/color-picker-preview.interface'
+	import type { IColorPickerPreviewProps} from "../../interfaces"
 
 	import type { IColorPickerPreviewEmits } from '../../interfaces/ColorPicker/color-picker-preview.interface'
 
-	import type { THSVA } from '../../types/Commons/color.type'
+	import type { THSVA } from "../../types"
 
-	import { consoleWarn } from '../../utils/Commons/console.util'
-	import { HSVtoCSS, parseColor, RGBtoHSV } from '../../utils/Commons/color.util'
+	import { consoleWarn, HSVtoCSS, parseColor, RGBtoHSV } from "../../utils"
 
 	import { computed, onUnmounted, StyleValue } from "vue"
 
@@ -108,10 +94,7 @@
 
 	const emits = defineEmits<IColorPickerPreviewEmits>()
 
-  defineSlots<IColorPickerPreviewSlots>()
-
 	const {filterProps} = useProps<IColorPickerPreviewProps>(props)
-	const {t} = useLocale()
 
 	const abortController = new AbortController()
 
@@ -121,12 +104,8 @@
 
 	const colorHsv = useVModel(props, 'colorHsv', COLOR_NULL)
 
-	const eyeDropperAriaLabel = computed(() => {
-		return props.ariaLabel ?? t('origam.color_picker.preview.eye_dropper_aria_label')
-	})
-
 	const openEyeDropper = async () => {
-		if (!SUPPORTS_EYE_DROPPER || props.disabled) return
+		if (!SUPPORTS_EYE_DROPPER) return
 
 		const eyeDropper = new window.EyeDropper()
 
@@ -163,12 +142,8 @@
 	 * Composes BEM modifier classes and passes through host styles.
 	 ********************************************************/
 
-	const {dimensionStyles} = useDimension(props)
-
 	const colorPickerPreviewStyles = computed(() => {
 		return [
-			dimensionStyles.value,
-			{'--origam-color-picker-color-hsv': HSVtoCSS({...(colorHsv.value ?? COLOR_NULL), a: 1})},
 			props.style
 		] as StyleValue
 	})
@@ -181,7 +156,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(colorPickerPreviewStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(colorPickerPreviewStyles)
 
 
 	/*********************************************************

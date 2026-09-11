@@ -1,0 +1,76 @@
+{
+  "snackbar": {
+    "z-index":                 { "$type": "number",     "$value": "{zIndex.toast}" },
+    "margin":                  { "$type": "dimension",  "$value": "{space.2}" },
+    "position":                { "$type": "other",      "$value": "fixed" },
+
+    "wrapper": {
+      "min-height":            { "$type": "dimension",  "$value": "48px" },
+      "min-width":             { "$type": "dimension",  "$value": "344px" },
+      "max-width":             { "$type": "dimension",  "$value": "672px" },
+      "border-width":          { "$type": "dimension",  "$value": "{border.width.thin}" },
+      "border-style":          { "$type": "other",      "$value": "solid" },
+      "border-radius":         { "$type": "dimension",  "$value": "{radius.sm}" }
+    },
+
+    "content": {
+      "font-size":             { "$type": "dimension",  "$value": "{font.size.md}" },
+      "font-weight":           { "$type": "fontWeight", "$value": "{font.weight.regular}" },
+      "letter-spacing":        { "$type": "dimension",  "$value": "{font.letterSpacing.wide}" },
+      "line-height":           { "$type": "number",     "$value": "{font.lineHeight.snug}" },
+      "padding-block":         { "$type": "dimension",  "$value": "14px" },
+      "padding-inline":        { "$type": "dimension",  "$value": "{space.4}" }
+    },
+
+    "prepend": {
+      "margin-inline-end":     { "$type": "dimension",  "$value": "{space.3}" }
+    },
+
+    "actions": {
+      "margin-inline-end":     { "$type": "dimension",  "$value": "{space.2}" }
+    },
+
+    "timer": {
+      "transition-duration":   { "$type": "duration",   "$value": "{motion.duration.medium}" },
+      "transition-easing":     { "$type": "cubicBezier","$value": "{motion.easing.linear}" }
+    },
+
+    "multi-line": {
+      "wrapper-min-height":    { "$type": "dimension",  "$value": "68px" }
+    },
+
+    "vertical": {
+      "actions-margin-bottom": { "$type": "dimension",  "$value": "{space.2}" }
+    },
+
+    "absolute": {
+      "z-index":               { "$type": "number",     "$value": "{zIndex.raised}" }
+    },
+
+    "success": {
+      "bg":                    { "$type": "color",      "$value": "{color.feedback.success.bg}" },
+      "fg":                    { "$type": "color",      "$value": "{color.feedback.success.fg}" },
+      "border":                { "$type": "color",      "$value": "{color.feedback.success.border}" }
+    },
+    "warning": {
+      "bg":                    { "$type": "color",      "$value": "{color.feedback.warning.bg}" },
+      "fg":                    { "$type": "color",      "$value": "{color.feedback.warning.fg}" },
+      "border":                { "$type": "color",      "$value": "{color.feedback.warning.border}" }
+    },
+    "danger": {
+      "bg":                    { "$type": "color",      "$value": "{color.feedback.danger.bg}" },
+      "fg":                    { "$type": "color",      "$value": "{color.feedback.danger.fg}" },
+      "border":                { "$type": "color",      "$value": "{color.feedback.danger.border}" }
+    },
+    "info": {
+      "bg":                    { "$type": "color",      "$value": "{color.feedback.info.bg}" },
+      "fg":                    { "$type": "color",      "$value": "{color.feedback.info.fg}" },
+      "border":                { "$type": "color",      "$value": "{color.feedback.info.border}" }
+    }
+  },
+
+  "snackbar-item": {
+    "_comment": "OrigamSnackbarItem owns the visible painted surface consumed via --origam-snackbar-item---* (background-color/border/box-shadow already read by the SCSS with raw fallbacks, undeclared here — out of #253 scope). Only backdrop-filter is declared as a baseline token (#253, pattern #238).",
+    "backdrop-filter":         { "$type": "other",      "$value": "none" }
+  }
+}

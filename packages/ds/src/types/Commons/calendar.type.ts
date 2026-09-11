@@ -1,3 +1,3 @@
-import { CALENDAR_STRATEGY } from '../../enums/Commons/calendar.enum'
+import { CALENDAR_STRATEGY } from "../../enums"
 
 export type TCalendarStrategy = `${CALENDAR_STRATEGY}`

@@ -32,7 +32,6 @@
 						:font-size="state.fontSize"
 						:font-weight="state.fontWeight"
 						:line-height="state.lineHeight"
-						:letter-spacing="state.letterSpacing"
 						author="Linus Torvalds"
 						source="LKML, 2003"
 						cite="https://lkml.org/lkml/2003/8/26/142"
@@ -55,7 +54,6 @@
 					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
 					<HstSelect v-model="state.fontWeight" title="Font Weight" :options="FONT_WEIGHT_OPTIONS"/>
 					<HstSelect v-model="state.lineHeight" title="Line Height" :options="LINE_HEIGHT_OPTIONS"/>
-					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Shape">
 					<HstSelect v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
@@ -186,7 +184,6 @@
 					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
 					<HstSelect v-model="state.fontWeight" title="Font Weight" :options="FONT_WEIGHT_OPTIONS"/>
 					<HstSelect v-model="state.lineHeight" title="Line Height" :options="LINE_HEIGHT_OPTIONS"/>
-					<HstSelect v-model="state.letterSpacing" title="Letter Spacing" :options="LETTER_SPACING_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
@@ -218,7 +215,6 @@
 		FONT_SIZE_OPTIONS,
 		FONT_WEIGHT_OPTIONS,
 		INTENT_OPTIONS,
-		LETTER_SPACING_OPTIONS,
 		LINE_HEIGHT_OPTIONS,
 		ROUNDED_OPTIONS,
 		TAG_OPTIONS

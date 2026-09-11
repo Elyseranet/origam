@@ -1,11 +1,6 @@
-import type {
-    IChartBaseEmits,
-    IChartBaseProps,
-    IChartBaseSlots
-} from './chart-base.interface'
-import type { IChartPoint } from './chart-point.interface'
+import type { IChartBaseEmits, IChartBaseProps, IChartBaseSlots, IChartPoint } from '../../interfaces'
 
-import type { TIntent } from '../../types/Commons/intent.type'
+import type { TIntent } from '../../types'
 
 /**
  * A single datum in the Pareto series.

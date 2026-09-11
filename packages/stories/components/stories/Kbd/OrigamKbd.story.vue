@@ -72,18 +72,6 @@
 			</origam-kbd>
 		</Variant>
 
-		<Variant title="Prop — border (VRT matrix)">
-			<div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;" data-cy="kbd-border-matrix">
-				<origam-kbd text="K" data-cy="kbd-border-unset"/>
-				<origam-kbd border="none" text="K" data-cy="kbd-border-none"/>
-				<origam-kbd border text="K" data-cy="kbd-border-bool"/>
-				<origam-kbd border="thin" text="K" data-cy="kbd-border-thin"/>
-				<origam-kbd border="thick" text="K" data-cy="kbd-border-thick"/>
-				<origam-kbd border="top" text="K" data-cy="kbd-border-top"/>
-				<origam-kbd :border="4" text="K" data-cy="kbd-border-four"/>
-			</div>
-		</Variant>
-
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IKbdProps>({ text: '⌘', variant: 'outlined', separator: '+' })"

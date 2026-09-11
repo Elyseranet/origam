@@ -1,0 +1,437 @@
+/* Origam DS Sync — UI iframe styles.
+ *
+ * Authoring rules:
+ *   - Use Figma's runtime CSS variables (--figma-color-*) for every
+ *     surface/text/border so the UI auto-themes (light / dark) when
+ *     `themeColors: true` is set on figma.showUI().
+ *   - No external font; inherit Figma's Inter via system stack fallback.
+ *   - 360x480 viewport — keep paddings tight, hit areas >= 24px.
+ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--figma-color-text, #111);
+  background: var(--figma-color-bg, #fff);
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+code {
+  font-family: 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.92em;
+  background: var(--figma-color-bg-secondary, rgba(0, 0, 0, 0.05));
+  padding: 0 4px;
+  border-radius: 3px;
+}
+
+/* ------------------------------------------------------------------ shell */
+
+.app {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  min-height: 100vh;
+}
+
+.app__body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 12px 14px 8px;
+}
+
+.app__footer {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 14px;
+  border-top: 1px solid var(--figma-color-border, rgba(0, 0, 0, 0.1));
+  background: var(--figma-color-bg-secondary, rgba(0, 0, 0, 0.02));
+  font-size: 10px;
+  color: var(--figma-color-text-secondary, rgba(0, 0, 0, 0.6));
+}
+
+.app__brand {
+  font-weight: 500;
+}
+
+.app__version {
+  font-variant-numeric: tabular-nums;
+}
+
+/* -------------------------------------------------------------- tab bar */
+
+.tabbar {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-bottom: 1px solid var(--figma-color-border, rgba(0, 0, 0, 0.1));
+  background: var(--figma-color-bg, #fff);
+}
+
+.tabbar__tab {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  padding: 10px 8px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--figma-color-text-secondary, rgba(0, 0, 0, 0.6));
+  border-bottom: 2px solid transparent;
+  transition: color 100ms ease, border-color 100ms ease,
+    background-color 100ms ease;
+}
+
+.tabbar__tab:hover {
+  color: var(--figma-color-text, #111);
+  background: var(--figma-color-bg-hover, rgba(0, 0, 0, 0.04));
+}
+
+.tabbar__tab:focus-visible {
+  outline: 2px solid var(--figma-color-border-selected, #18a0fb);
+  outline-offset: -2px;
+}
+
+.tabbar__tab--active {
+  color: var(--figma-color-text, #111);
+  border-bottom-color: var(--figma-color-bg-brand, #18a0fb);
+}
+
+/* -------------------------------------------------------------- panels */
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.section--footer {
+  margin-top: 4px;
+}
+
+.section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.section__title {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--figma-color-text, #111);
+}
+
+.section__actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+}
+
+/* -------------------------------------------------------------- banner */
+
+.banner {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: start;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--figma-color-border, rgba(0, 0, 0, 0.1));
+  border-radius: 4px;
+  background: var(--figma-color-bg-secondary, rgba(24, 160, 251, 0.06));
+  color: var(--figma-color-text, #111);
+  font-size: 11px;
+}
+
+.banner__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--figma-color-bg-brand, #18a0fb);
+  color: var(--figma-color-text-onbrand, #fff);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 10px;
+  flex: 0 0 auto;
+}
+
+.banner__text {
+  line-height: 1.45;
+}
+
+.banner__close {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  padding: 0 4px;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  color: var(--figma-color-text-secondary, rgba(0, 0, 0, 0.6));
+  align-self: start;
+}
+
+.banner__close:hover {
+  color: var(--figma-color-text, #111);
+}
+
+.banner__close:focus-visible {
+  outline: 2px solid var(--figma-color-border-selected, #18a0fb);
+  outline-offset: 1px;
+  border-radius: 2px;
+}
+
+/* -------------------------------------------------------------- buttons */
+
+.btn {
+  appearance: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 120ms ease, border-color 120ms ease,
+    color 120ms ease, opacity 120ms ease;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--figma-color-border-selected, #18a0fb);
+  outline-offset: 2px;
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.btn--primary {
+  background: var(--figma-color-bg-brand, #18a0fb);
+  color: var(--figma-color-text-onbrand, #fff);
+}
+
+.btn--primary:not(:disabled):hover {
+  background: var(--figma-color-bg-brand-hover, #0d8ee0);
+}
+
+.btn--secondary {
+  background: var(--figma-color-bg-secondary, rgba(0, 0, 0, 0.05));
+  color: var(--figma-color-text, #111);
+  border-color: var(--figma-color-border, rgba(0, 0, 0, 0.12));
+}
+
+.btn--secondary:not(:disabled):hover {
+  background: var(--figma-color-bg-hover, rgba(0, 0, 0, 0.08));
+}
+
+.btn__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.22);
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* -------------------------------------------------------------- links */
+
+.link {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  padding: 2px 4px;
+  cursor: pointer;
+  color: var(--figma-color-text-brand, #18a0fb);
+  font-size: 10px;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.link:disabled {
+  color: var(--figma-color-text-disabled, rgba(0, 0, 0, 0.3));
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+.link:not(:disabled):hover {
+  color: var(--figma-color-text-brand-hover, #0d8ee0);
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--figma-color-border-selected, #18a0fb);
+  outline-offset: 1px;
+  border-radius: 2px;
+}
+
+.link__sep {
+  color: var(--figma-color-text-secondary, rgba(0, 0, 0, 0.4));
+}
+
+/* -------------------------------------------------------------- checklist */
+
+.checklist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px 12px;
+}
+
+.checklist__item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 24px;
+  padding: 2px 4px;
+  border-radius: 3px;
+}
+
+.checklist__item:hover {
+  background: var(--figma-color-bg-hover, rgba(0, 0, 0, 0.04));
+}
+
+.checklist__checkbox {
+  margin: 0;
+  cursor: pointer;
+  accent-color: var(--figma-color-bg-brand, #18a0fb);
+}
+
+.checklist__label {
+  cursor: pointer;
+  user-select: none;
+  font-size: 11px;
+}
+
+/* -------------------------------------------------------------- radiolist */
+
+.radiolist {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.radiolist__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 10px;
+  border: 1px solid var(--figma-color-border, rgba(0, 0, 0, 0.1));
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border-color 120ms ease, background-color 120ms ease;
+}
+
+.radiolist__item:hover {
+  background: var(--figma-color-bg-hover, rgba(0, 0, 0, 0.04));
+}
+
+.radiolist__item:has(input:checked) {
+  border-color: var(--figma-color-border-selected, #18a0fb);
+  background: var(--figma-color-bg-selected, rgba(24, 160, 251, 0.08));
+}
+
+.radiolist__radio {
+  margin: 1px 0 0;
+  cursor: pointer;
+  accent-color: var(--figma-color-bg-brand, #18a0fb);
+}
+
+.radiolist__label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  cursor: pointer;
+  user-select: none;
+  flex: 1;
+}
+
+.radiolist__title {
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.radiolist__desc {
+  font-size: 10px;
+  color: var(--figma-color-text-secondary, rgba(0, 0, 0, 0.6));
+  line-height: 1.4;
+}
+
+/* -------------------------------------------------------------- status zone */
+
+.status {
+  min-height: 0;
+}
+
+.status:empty {
+  display: none;
+}
+
+/* -------------------------------------------------------------- empty state */
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 24px 12px;
+  text-align: center;
+}
+
+.empty__title {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.empty__text {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.5;
+  color: var(--figma-color-text, #111);
+}
+
+.empty__text--muted {
+  color: var(--figma-color-text-secondary, rgba(0, 0, 0, 0.6));
+  font-size: 10px;
+}

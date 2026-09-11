@@ -1,8 +1,8 @@
-import { DEFAULT_ACTION_HEADER, DEFAULT_HEADER } from '../../consts/DataTable/data-table.const'
+import { DEFAULT_ACTION_HEADER, DEFAULT_HEADER } from '../../consts'
 
-import type { IDataTableHeader, IInternalDataTableHeader } from '../../interfaces/DataTable/data-table-header.interface'
+import type { IDataTableHeader, IInternalDataTableHeader } from '../../interfaces'
 
-import { consoleError } from '../Commons/console.util'
+import { consoleError } from '../../utils'
 
 /**
  * Extract keys.

@@ -146,12 +146,6 @@ HTMLMediaElement scrubber UX.
 ### `variant="audio"`
 
 Same as `timer`, plus a waveform background painted from `peaks` via
-`<OrigamAudioWaveform>` — a dedicated component under `components/Audio/`
-since 2026-09-02. It used to be an inline `<svg>` here, and it was the only
-markup this component's second template branch actually owned. See its own
-doc for the clamping contract and the accessibility rationale.
-
-Historical note kept because it explains the shape of this file:
 inline SVG. Bars left of the thumb use the active color; bars right
 use a 35 %-mixed fade so the played-vs-remaining split reads
 instantly. The track area defaults to 48 px tall to give the bars
@@ -215,36 +209,9 @@ breathing room.
 | `update:modelValue` | `number \| number[]` | Value changed (on input). |
 | `start` | `number \| number[]` | Pointer pressed on a thumb. |
 | `end` | `number \| number[]` | Pointer released on a thumb. |
-| `update:focused` | `boolean` | Aggregate focus flag — `true` when a thumb takes focus, `false` when it loses it. |
-
-### ⛔ There is no `focus` / `blur` emit
-
-An earlier version of this table listed `focus` and `blur` beside the three
-above. They do not exist, in either sense:
-
-- `ISliderFieldEmits` declares only `ICommonsComponentEmits`, `IFocusEmits`,
-  `start` and `end` — and the component never calls
-  `emits('focus' | 'blur', …)`. Its `@focus` / `@blur` handlers on the native
-  `<input type="range">` call `useFocus`'s `onFocus()` / `onBlur()`, which
-  emit `update:focused`.
-- Nor does a listener reach the input by attrs fallthrough. `focus` and
-  `blur` **do not bubble**, and the listener lands on the component root —
-  `<OrigamInput>`'s root for `variant="field"`, the `<section>` for `timer` /
-  `audio` — two levels above the input that actually takes focus.
-
-Measured, with a positive control (`focusin`, which *does* bubble, fires
-normally): `packages/tests/TU/components/SliderField/slider-field-focus-blur.spec.ts`.
-
-Use `update:focused` — or `@focusin` / `@focusout`, which bubble:
-
-```vue
-<template>
-    <OrigamSliderField
-        v-model="volume"
-        @update:focused="focused = $event"
-    />
-</template>
-```
+| `focus` | — | A thumb received focus. |
+| `blur` | — | A thumb lost focus. |
+| `update:focused` | `boolean` | Aggregate focus flag. |
 
 ## Slots
 

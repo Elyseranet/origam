@@ -118,7 +118,6 @@
 					kind: 'bool',
 					progress: 42,
 					circularSize: 24,
-					loadingText: '',
 				})"
 		>
 			<template #default="{ state }">
@@ -132,7 +131,6 @@
 							:title="state.title"
 							:content="state.content"
 							:loading="resolveLoading(state)"
-							:loading-text="state.loadingText || undefined"
 					/>
 				</origam-expansion-panels>
 			</template>
@@ -151,7 +149,6 @@
 					<HstSelect   v-model="state.kind"         title="Loading Kind" :options="LOADING_KIND_OPTIONS"/>
 					<HstNumber   v-model="state.progress"     title="Progress (number)"  :min="0"  :max="100" :step="1"/>
 					<HstNumber   v-model="state.circularSize" title="Size (circular)"    :min="12" :max="64"  :step="2"/>
-					<HstText     v-model="state.loadingText"  title="Loading Text"/>
 				</StoryGroup>
 				<StoryGroup title="Render">
 					<HstCheckbox v-model="state.eager" title="Eager"/>
@@ -237,22 +234,6 @@
 						<span style="padding: 16px; display: block;">Custom wrapper slot content</span>
 					</template>
 				</origam-expansion-panel>
-			</origam-expansion-panels>
-		</Variant>
-
-		<Variant title="Prop — loadingText">
-			<origam-expansion-panels>
-				<origam-expansion-panel
-						:loading="true"
-						title="Default announcement"
-						content="No loadingText — the indicator falls back to the shared 'origam.loading' key. Inspect the progress bar: aria-label reads Loading…"
-				/>
-				<origam-expansion-panel
-						:loading="true"
-						loading-text="origam.data_iterator.loading_text"
-						title="Custom announcement"
-						content="loadingText carries a LOCALE KEY, handed to the renderer's own label prop. Inspect: aria-label reads Loading items…"
-				/>
 			</origam-expansion-panels>
 		</Variant>
 

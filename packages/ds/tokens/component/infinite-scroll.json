@@ -1,0 +1,20 @@
+{
+  "infinite-scroll": {
+    "_comment": "OrigamInfiniteScroll + OrigamInfiniteScrollIntersect component tokens — Lot 5D. Scroll container with intersection-based load triggers. BEM children: side (top/bottom loading zones), loader slot, empty slot, loadMore slot. Note: <v-*> Vuetify usages (OrigamInfiniteScroll uses OrigamProgress and OrigamBtn inline) are kept as-is per Lot 5D spec — no bug fix applied to Vuetify legacy patterns.",
+
+    "loader": {
+      "_comment": "Tokens for the loading indicator slot displayed while new content is fetching.",
+      "color":                  { "$type": "color",      "$value": "{color.action.primary.bg}",   "$description": "Color passed to OrigamProgress spinner (circular indeterminate) in the loading slot" },
+      "gap":                    { "$type": "dimension",  "$value": "{space.3}",                    "$description": "Gap between the loader and adjacent elements within the __side zone" },
+      "padding-block":          { "$type": "dimension",  "$value": "{space.3}",                    "$description": "Block padding of the __side container hosting the loader" },
+      "padding-inline":         { "$type": "dimension",  "$value": "{space.0}",                    "$description": "Inline padding of the __side container" },
+      "font-size":              { "$type": "dimension",  "$value": "{font.size.md}",               "$description": "Font size for any text accompanying the loading indicator" }
+    },
+
+    "empty": {
+      "_comment": "Tokens for the empty-state slot shown when no more items are available.",
+      "color":                  { "$type": "color",      "$value": "{color.text.secondary}",       "$description": "Text color for the empty state message (subdued, secondary)" },
+      "padding-block":          { "$type": "dimension",  "$value": "{space.3}",                    "$description": "Block padding around the empty state text" }
+    }
+  }
+}

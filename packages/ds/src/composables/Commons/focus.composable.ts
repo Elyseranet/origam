@@ -1,17 +1,11 @@
 import { computed } from 'vue'
-import { useVModel } from './vModel.composable'
-import type { IFocusProps } from '../../interfaces/Commons/focus.interface'
+import { useVModel } from '../../composables'
+import type { IFocusProps } from '../../interfaces'
 
-import { getCurrentInstanceName } from '../../utils/Commons/getCurrentInstance.util'
+import { getCurrentInstanceName } from '../../utils'
 
 /*********************************************************
  * useFocus
- *
- * @description
- * Etat de focus v-modelisable (`props.focused`, via `useVModel` — donc
- * `update:focused` remonte au parent) plus une classe `{name}--focused`
- * et deux handlers `onFocus`/`onBlur` prets a poser sur un `@focus`/`@blur`
- * de template. `name` par defaut le nom kebab-case du composant courant.
  ********************************************************/
 export function useFocus (props: IFocusProps, name = getCurrentInstanceName()) {
     const isFocused = useVModel(props, 'focused', false as unknown as IFocusProps['focused'])

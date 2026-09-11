@@ -1,7 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
 
-import { eventLogItems, fillHstNumber, openEventsTab } from './_support/histoire-controls'
-
 /**
  * OrigamChartSunburst — Playwright spec.
  *
@@ -13,19 +11,9 @@ import { eventLogItems, fillHstNumber, openEventsTab } from './_support/histoire
  *  - Each arc has role="button", aria-label, and tabindex=0.
  *  - Empty state slot renders when series is empty.
  *  - innerRadius=0 vs 0.4 produce distinct arc `d` paths.
- *
- * Story realignment (canonical Design/Functional/Events/Slots structure):
- * the old "Prop — innerRadius (pie vs donut)" side-by-side Variant was
- * folded into the "Design" Variant's Inner Radius HstNumber control, driven
- * via `fillHstNumber` across two separate navigations instead of comparing
- * DOM siblings. `colorScheme` has NO surviving control or fixture anywhere
- * in the story — see the `test.fixme` block below. The bespoke
- * `[data-cy="…-log"]` event log shell is gone too; emits are read back from
- * Histoire's own "Events" tab.
  */
 
 const SUNBURST_STORY = '/stories/story/components-stories-chart-origamchartsunburst-story-vue'
-const ROOT = '[data-cy="origam-chart-sunburst"]'
 
 const sandboxOf = (page: Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')
@@ -41,15 +29,15 @@ test.describe('OrigamChartSunburst — Default', () => {
     test('renders figure root with role="figure"', async ({ page }) => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
-        const host = sandbox.locator('[data-cy="origam-chart-sunburst"]').first()
+        const host = sandbox.locator('[data-cy="sunburst-playground-chart"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
-        await expect(host).toHaveRole('figure') // #426 — root is a native <figure>, role is implicit, no explicit attribute any more
+        await expect(host).toHaveAttribute('role', 'figure')
     })
 
     test('SVG carries role=img, title and desc', async ({ page }) => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
-        const svg = sandbox.locator('[data-cy="origam-chart-sunburst"] svg').first()
+        const svg = sandbox.locator('[data-cy="sunburst-playground-chart"] svg').first()
         await expect(svg).toBeVisible()
         await expect(svg).toHaveAttribute('role', 'img')
         await expect(svg.locator('title')).toHaveCount(1)
@@ -61,8 +49,7 @@ test.describe('OrigamChartSunburst — Default', () => {
         const sandbox = sandboxOf(page)
         await page.screenshot({ path: '/tmp/chart-sunburst-default.png', fullPage: false })
 
-        const arcs = sandbox.locator('[data-cy="origam-chart-sunburst"] .origam-chart__sunburst-arc')
-        await expect(arcs.first()).toBeVisible({ timeout: 8000 })
+        const arcs = sandbox.locator('[data-cy="sunburst-playground-chart"] .origam-chart__sunburst-arc')
         const count = await arcs.count()
         expect(count).toBeGreaterThan(2)
     })
@@ -70,8 +57,7 @@ test.describe('OrigamChartSunburst — Default', () => {
     test('each arc path has a non-empty d attribute starting with M', async ({ page }) => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
-        const arcs = sandbox.locator('[data-cy="origam-chart-sunburst"] .origam-chart__sunburst-arc')
-        await expect(arcs.first()).toBeVisible({ timeout: 8000 })
+        const arcs = sandbox.locator('[data-cy="sunburst-playground-chart"] .origam-chart__sunburst-arc')
         const count = await arcs.count()
         expect(count).toBeGreaterThan(0)
         for (let i = 0; i < count; i++) {
@@ -84,8 +70,7 @@ test.describe('OrigamChartSunburst — Default', () => {
     test('each arc is keyboard-focusable (tabindex=0)', async ({ page }) => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
-        const arcs = sandbox.locator('[data-cy="origam-chart-sunburst"] .origam-chart__sunburst-arc')
-        await expect(arcs.first()).toBeVisible({ timeout: 8000 })
+        const arcs = sandbox.locator('[data-cy="sunburst-playground-chart"] .origam-chart__sunburst-arc')
         const count = await arcs.count()
         for (let i = 0; i < count; i++) {
             await expect(arcs.nth(i)).toHaveAttribute('tabindex', '0')
@@ -95,8 +80,7 @@ test.describe('OrigamChartSunburst — Default', () => {
     test('each arc has role="button" and a non-empty aria-label', async ({ page }) => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
-        const arcs = sandbox.locator('[data-cy="origam-chart-sunburst"] .origam-chart__sunburst-arc')
-        await expect(arcs.first()).toBeVisible({ timeout: 8000 })
+        const arcs = sandbox.locator('[data-cy="sunburst-playground-chart"] .origam-chart__sunburst-arc')
         const count = await arcs.count()
         for (let i = 0; i < count; i++) {
             await expect(arcs.nth(i)).toHaveAttribute('role', 'button')
@@ -108,31 +92,31 @@ test.describe('OrigamChartSunburst — Default', () => {
 
 test.describe('OrigamChartSunburst — innerRadius prop', () => {
     test('pie (innerRadius=0) and donut (innerRadius=0.4) produce distinct arc paths', async ({ page }) => {
-        await openVariant(page, 'Design')
+        await openVariant(page, 'Prop — innerRadius (pie vs donut)')
         const sandbox = sandboxOf(page)
-        const arcs = sandbox.locator(`${ ROOT } .origam-chart__sunburst-arc`)
-
-        await fillHstNumber(page, 'Inner Radius', 0)
-        await expect(arcs.first()).toBeVisible({ timeout: 8000 })
         await page.screenshot({ path: '/tmp/chart-sunburst-inner-radius.png', fullPage: false })
-        const pieD0 = await arcs.first().getAttribute('d')
 
-        await fillHstNumber(page, 'Inner Radius', 0.4)
-        await expect(arcs.first()).toBeVisible({ timeout: 8000 })
-        const donutD0 = await arcs.first().getAttribute('d')
+        const pieArcs = sandbox.locator('[data-cy="sunburst-inner-0"] .origam-chart__sunburst-arc')
+        const donutArcs = sandbox.locator('[data-cy="sunburst-inner-04"] .origam-chart__sunburst-arc')
 
+        await expect(pieArcs.first()).toBeVisible({ timeout: 8000 })
+        await expect(donutArcs.first()).toBeVisible({ timeout: 8000 })
+
+        const pieCount = await pieArcs.count()
+        const donutCount = await donutArcs.count()
+
+        expect(pieCount).toBeGreaterThan(0)
+        expect(donutCount).toBeGreaterThan(0)
+
+        const pieD0 = await pieArcs.first().getAttribute('d')
+        const donutD0 = await donutArcs.first().getAttribute('d')
         expect(pieD0).not.toEqual(donutD0)
     })
 })
 
-// Story realignment: `colorScheme` has NO surviving control (no HstSelect)
-// or fixture Variant anywhere in OrigamChartSunburst.story.vue — genuine
-// coverage gap, not a renamed Variant. Needs a story-side decision: either
-// add a Color Scheme control to the Design Variant, or accept the loss.
-test.describe('OrigamChartSunburst — colorScheme prop [REMOVED FROM STORY]', () => {
+test.describe('OrigamChartSunburst — colorScheme prop', () => {
     test('default and custom colorScheme render distinct fill styles', async ({ page }) => {
-        test.fixme(true, 'No control anywhere in the story sets colorScheme — see chart-sunburst.spec.ts header note')
-        await openVariant(page, 'Design')
+        await openVariant(page, 'Prop — colorScheme')
         const sandbox = sandboxOf(page)
 
         const defaultArcs = sandbox.locator('[data-cy="sunburst-color-default"] .origam-chart__sunburst-arc')
@@ -148,12 +132,11 @@ test.describe('OrigamChartSunburst — legend toggle', () => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
-        const arcs = sandbox.locator('[data-cy="origam-chart-sunburst"] .origam-chart__sunburst-arc')
-        await expect(arcs.first()).toBeVisible({ timeout: 8000 })
+        const arcs = sandbox.locator('[data-cy="sunburst-playground-chart"] .origam-chart__sunburst-arc')
         const countBefore = await arcs.count()
         expect(countBefore).toBeGreaterThan(0)
 
-        const legendItems = sandbox.locator('[data-cy="origam-chart-sunburst"] .origam-chart__legend-item')
+        const legendItems = sandbox.locator('[data-cy="sunburst-playground-chart"] .origam-chart__legend-item')
         await expect(legendItems.first()).toBeVisible()
         await legendItems.first().click()
         await page.waitForTimeout(300)
@@ -168,11 +151,10 @@ test.describe('OrigamChartSunburst — legend toggle', () => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
 
-        const arcs = sandbox.locator('[data-cy="origam-chart-sunburst"] .origam-chart__sunburst-arc')
-        await expect(arcs.first()).toBeVisible({ timeout: 8000 })
+        const arcs = sandbox.locator('[data-cy="sunburst-playground-chart"] .origam-chart__sunburst-arc')
         const countBefore = await arcs.count()
 
-        const legendItems = sandbox.locator('[data-cy="origam-chart-sunburst"] .origam-chart__legend-item')
+        const legendItems = sandbox.locator('[data-cy="sunburst-playground-chart"] .origam-chart__legend-item')
         await legendItems.first().click()
         await page.waitForTimeout(300)
 
@@ -186,9 +168,9 @@ test.describe('OrigamChartSunburst — legend toggle', () => {
 
 test.describe('OrigamChartSunburst — empty state', () => {
     test('empty slot renders when series is empty', async ({ page }) => {
-        await openVariant(page, 'Slots - Empty')
+        await openVariant(page, 'Slot — empty')
         const sandbox = sandboxOf(page)
-        const empty = sandbox.locator(`${ ROOT } [data-cy="origam-chart-sunburst-empty"]`)
+        const empty = sandbox.locator('[data-cy="sunburst-slot-empty-chart"] [data-cy="origam-chart-sunburst-empty"]')
         await expect(empty).toBeVisible({ timeout: 6000 })
         await expect(empty).toContainText('No hierarchy data')
     })
@@ -196,15 +178,15 @@ test.describe('OrigamChartSunburst — empty state', () => {
 
 test.describe('OrigamChartSunburst — emit', () => {
     test('point-click emit appends a log line', async ({ page }) => {
-        await openVariant(page, 'Events - point-click')
+        await openVariant(page, 'Emit — point-click on node')
         const sandbox = sandboxOf(page)
 
-        const arcs = sandbox.locator(`${ ROOT } .origam-chart__sunburst-arc`)
+        const arcs = sandbox.locator('[data-cy="sunburst-emit-chart"] .origam-chart__sunburst-arc')
         await expect(arcs.first()).toBeVisible({ timeout: 8000 })
         await arcs.first().click()
         await page.waitForTimeout(300)
 
-        await openEventsTab(page)
-        await expect(eventLogItems(page).first()).toContainText('point-click', { timeout: 4000 })
+        const log = sandbox.locator('[data-cy="sunburst-emit-log"]')
+        await expect(log).toContainText('point-click', { timeout: 4000 })
     })
 })

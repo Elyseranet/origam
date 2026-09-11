@@ -52,10 +52,9 @@ they can also be overridden independently via CSS.
 | `fontSize`   | `TFontSize`   | root (`bracket-competitor`), seed (`bracket-seed`), score (`bracket-score`), advantage (`bracket-advantage`) |
 | `fontWeight` | `TFontWeight` | root (`bracket-competitor`), seed (`bracket-seed`), score (`bracket-score`), advantage (`bracket-advantage`) |
 
-`fontFamily`, `lineHeight`, and `letterSpacing` were removed from
-`IBracketCompetitorProps` (issue #501) — no surface read a matching var.
-`fontFamily` is a project-level setting configured once on `OrigamApp`, not a
-per-instance override.
+`fontFamily`, `lineHeight`, and `letterSpacing` are inherited via
+`ITypographyProps` (vars are emitted) but the SCSS reads no matching var on
+any surface — they have no visual effect until the SCSS is extended.
 
 - `isWinner` bolds the row + tints its background; `isLoser` de-emphasises
   it (lower opacity). `null` competitor → italic "TBD".
@@ -67,7 +66,6 @@ per-instance override.
 | Event   | Payload                          |
 |---------|-----------------------------------|
 | `click` | `(ev: MouseEvent \| KeyboardEvent)` — only when `interactive` |
-| `update:active` | `(value: boolean)` — v-model companion of the `active` prop, emitted on every click via `useActive` |
 
 ## Notes
 

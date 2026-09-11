@@ -1,15 +1,11 @@
-import type { IColorProps } from '../Commons/color.interface'
-import type { ICommonsComponentProps } from '../Commons/commons.interface'
-import type { ITypographyProps } from '../Commons/typography.interface'
+import type { IColorProps, ICommonsComponentProps, ITypographyProps } from '../../interfaces'
 
-export interface IFileFieldListItemProps extends ICommonsComponentProps, IColorProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight'> {
+export interface IFileFieldListItemProps extends ICommonsComponentProps, IColorProps, ITypographyProps {
     file: File
     index: number
     progress?: number
     fileIcon?: string
     removeIcon?: string
-    downloadIcon?: string
-    downloadable?: boolean
     disabled?: boolean
     readonly?: boolean
     showSize?: boolean | 1000 | 1024
@@ -17,7 +13,6 @@ export interface IFileFieldListItemProps extends ICommonsComponentProps, IColorP
 
 export interface IFileFieldListItemEmits {
     (e: 'click:remove', value: { file: File, index: number }): void
-    (e: 'click:download', value: { file: File, index: number }): void
 }
 
 export interface IFileFieldListItemSlots {

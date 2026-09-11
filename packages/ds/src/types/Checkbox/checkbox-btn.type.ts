@@ -1,3 +1,3 @@
-import OrigamCheckboxBtn from '../../components/Checkbox/OrigamCheckboxBtn.vue'
+import { OrigamCheckboxBtn } from "../../components"
 
 export type TOrigamCheckboxBtn = InstanceType<typeof OrigamCheckboxBtn>

@@ -1,3 +1,3 @@
-import OrigamAvatar from '../../components/Avatar/OrigamAvatar.vue'
+import { OrigamAvatar } from '../../components'
 
 export type TOrigamAvatar = InstanceType<typeof OrigamAvatar>

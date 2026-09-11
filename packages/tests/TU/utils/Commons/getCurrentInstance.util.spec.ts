@@ -7,7 +7,7 @@
 // getUid / getCurrentInstanceName require a live component instance — tested via
 // a real component mount so no mocking of Vue internals is needed.
 
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, afterEach } from 'vitest'
 import { defineComponent, h } from 'vue'
 import { mount } from '@vue/test-utils'
 import {
@@ -15,6 +15,11 @@ import {
     getCurrentInstance,
     getUid
 } from '@origam/utils/Commons/getCurrentInstance.util'
+
+afterEach(() => {
+    // Reset the uid counter between tests to keep them independent.
+    getUid.reset()
+})
 
 describe('getLifeCycleTarget', () => {
     it('returns the provided target when one is given', () => {
@@ -61,13 +66,8 @@ describe('getUid', () => {
         expect(() => getUid()).toThrow('[Origam] getUid')
     })
 
-    // The value used to be a number from a module-global counter. It is now
-    // Vue's `useId()` string, because only a tree-derived id survives SSR ->
-    // hydration — see the doc comment on `getUid` for the two defects the
-    // counter caused and how each was measured. Callers must treat it as
-    // opaque: no parsing, no arithmetic, no ordering.
-    it('returns a non-empty opaque string uid when called from setup()', () => {
-        let uid: string | undefined
+    it('returns a numeric uid when called from setup()', () => {
+        let uid: number | undefined
 
         const Comp = defineComponent({
             setup () {
@@ -77,12 +77,11 @@ describe('getUid', () => {
         })
 
         mount(Comp)
-        expect(typeof uid).toBe('string')
-        expect(uid).not.toBe('')
+        expect(typeof uid).toBe('number')
     })
 
     it('returns the same uid on repeated calls within the same component instance', () => {
-        const uids: Array<string> = []
+        const uids: Array<number> = []
 
         const Comp = defineComponent({
             setup () {
@@ -96,34 +95,45 @@ describe('getUid', () => {
         expect(uids[0]).toBe(uids[1])
     })
 
-    // Uniqueness is scoped to the APP, which is the scope that matters: the
-    // value ends up as a DOM `id`, and ids only have to be unique within one
-    // document. A page mounting two independent Vue apps must separate them
-    // with Vue's own `app.config.idPrefix` — see the note on `getUid`.
-    it('assigns different uids to sibling instances in the same app', () => {
-        const uids: Array<string> = []
+    it('assigns different uids to different component instances', () => {
+        const uids: Array<number> = []
 
-        const Child = defineComponent({
+        const Comp = defineComponent({
             setup () {
                 uids.push(getUid())
                 return () => h('div')
             }
         })
-        const Parent = defineComponent({
-            setup: () => () => h('div', [h(Child), h(Child)])
-        })
 
-        mount(Parent)
+        mount(Comp)
+        mount(Comp)
         expect(uids).toHaveLength(2)
         expect(uids[0]).not.toBe(uids[1])
     })
 
-    // `getUid.reset()` is GONE, and its absence is the fix for the
-    // cross-request half of the bug: it was module-global state rewound once
-    // per SSR request by `createOrigam()`'s `install()`, which corrupted any
-    // render still in flight. There is nothing left to reset — the id lives on
-    // the component instance, so each app is already its own namespace.
-    it('exposes no reset hook — per-app scoping replaced it', () => {
-        expect((getUid as { reset?: unknown }).reset).toBeUndefined()
+    it('getUid.reset() resets the counter', () => {
+        const firstUids: Array<number> = []
+
+        const Comp = defineComponent({
+            setup () {
+                firstUids.push(getUid())
+                return () => h('div')
+            }
+        })
+
+        mount(Comp)
+        getUid.reset()
+
+        const secondUids: Array<number> = []
+        const Comp2 = defineComponent({
+            setup () {
+                secondUids.push(getUid())
+                return () => h('div')
+            }
+        })
+        mount(Comp2)
+
+        // After reset the counter restarts at 0
+        expect(secondUids[0]).toBe(0)
     })
 })

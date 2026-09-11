@@ -1,3 +1,3 @@
-import OrigamSliderFieldTrack from '../../components/SliderField/OrigamSliderFieldTrack.vue'
+import { OrigamSliderFieldTrack } from '../../components'
 
 export type TOrigamSliderFieldTrack = InstanceType<typeof OrigamSliderFieldTrack>

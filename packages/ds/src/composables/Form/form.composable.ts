@@ -1,31 +1,13 @@
 import { computed, markRaw, provide, ref, shallowRef, toRef, watch } from 'vue'
-import { useVModel } from '../Commons/vModel.composable'
-import { ORIGAM_FORM_KEY } from '../../consts/Form/form.const'
+import { useVModel } from '../../composables'
+import { ORIGAM_FORM_KEY } from '../../consts'
 
-import type { IValidationFieldResult } from '../../interfaces/Commons/validation.interface'
-import type { IFormField, IFormProps } from '../../interfaces/Form/form.interface'
+import type { IFormField, IFormProps, IValidationFieldResult } from '../../interfaces'
 
-import { consoleWarn } from '../../utils/Commons/console.util'
+import { consoleWarn } from '../../utils'
 
 /*********************************************************
  * useForm
- ********************************************************/
-/*********************************************************
- * useForm
- *
- * @description
- * Etat d'un `<origam-form>` : agrege les champs qui s'y enregistrent et
- * expose la validation d'ensemble, `reset` et `resetValidation`.
- *
- * @description
- * La validite globale n'est pas calculee par le formulaire mais DELEGUEE aux
- * champs : `validate` appelle chacun d'eux et rassemble les erreurs. Un champ
- * ajoute dynamiquement participe donc sans que le formulaire ait a le
- * connaitre a l'avance.
- *
- * @description
- * `disabled` et `readonly` descendent aux champs enregistres — les poser sur
- * le formulaire evite de les repeter sur chaque champ.
  ********************************************************/
 export function useForm (props: IFormProps) {
     const model = useVModel(props, 'modelValue')

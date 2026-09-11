@@ -21,6 +21,7 @@
 						:density="state.density"
 						:rounded="state.rounded"
 						:elevation="state.elevation"
+						:flat="state.flat"
 						:border="state.border"
 						:border-color="state.borderColor"
 						:border-style="state.borderStyle"
@@ -33,6 +34,7 @@
 						:suffix="state.suffix"
 						:width="state.width"
 						:height="state.height"
+						:reverse="state.reverse"
 						:single-line="state.singleLine"
 				/>
 			</template>
@@ -51,6 +53,7 @@
 				<StoryGroup title="Shape">
 					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
 					<HstSelect   v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+					<HstCheckbox v-model="state.flat"      title="Flat"/>
 				</StoryGroup>
 				<StoryGroup title="Border">
 					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
@@ -67,6 +70,7 @@
 					<HstText     v-model="state.label"      title="Label"/>
 					<HstText     v-model="state.prefix"     title="Prefix"/>
 					<HstText     v-model="state.suffix"     title="Suffix"/>
+					<HstCheckbox v-model="state.reverse"    title="Reverse"/>
 					<HstCheckbox v-model="state.singleLine" title="Single Line"/>
 				</StoryGroup>
 				<StoryGroup title="Dimension">

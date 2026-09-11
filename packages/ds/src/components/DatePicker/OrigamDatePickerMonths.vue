@@ -1,6 +1,5 @@
 <template>
 	<div
-			:id="id"
 			:class="datePickerMonthsClasses"
 			:style="datePickerMonthsStyles"
 	>
@@ -21,19 +20,15 @@
 		lang="ts"
 		setup
 >
-	import OrigamBtn from '../Btn/OrigamBtn.vue'
+	import { OrigamBtn } from "../../components"
 
-	import { useDimension } from '../../composables/Commons/dimension.composable'
-	import { useDate } from '../../composables/Commons/date.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useVModel } from '../../composables/Commons/vModel.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useDate, useProps, useVModel , useStyle} from "../../composables"
 
-	import type { IDatePickerMonthsProps } from '../../interfaces/DatePicker/date-picker-months.interface'
+	import type { IDatePickerMonthsProps} from "../../interfaces"
 
-	import type { IDatePickerMonthsEmits, IDatePickerMonthsSlots } from '../../interfaces/DatePicker/date-picker-months.interface'
+	import type { IDatePickerMonthsEmits } from '../../interfaces/DatePicker/date-picker-months.interface'
 
-	import { convertToUnit, createRange, int } from '../../utils/Commons/commons.util'
+	import { convertToUnit, createRange, int } from "../../utils"
 
 	import { computed, StyleValue, watchEffect } from "vue"
 
@@ -47,8 +42,6 @@
 	const props = withDefaults(defineProps<IDatePickerMonthsProps>(), {})
 
 	const emits = defineEmits<IDatePickerMonthsEmits>()
-
-	defineSlots<IDatePickerMonthsSlots>()
 
 	const {filterProps} = useProps<IDatePickerMonthsProps>(props)
 
@@ -136,11 +129,8 @@
 	 * Root element classes and inline styles.
 	 ********************************************************/
 
-	const {dimensionStyles} = useDimension(props)
-
 	const datePickerMonthsStyles = computed(() => {
 		return [
-			dimensionStyles.value,
 			{
 				height: convertToUnit(props.height)
 			},
@@ -153,7 +143,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(datePickerMonthsStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(datePickerMonthsStyles)
 
 
 	/*********************************************************

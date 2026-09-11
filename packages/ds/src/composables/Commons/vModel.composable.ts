@@ -1,36 +1,13 @@
-import { useToggleScope } from './toggleScope.composable'
+import { useToggleScope } from '../../composables'
 
-import { UNSEEDED } from '../../consts/Commons/vmodel.const'
+import type { TEventProp, TInnerVal, TVModel } from '../../types'
 
-import type { TEventProp, TInnerVal } from '../../types/Commons/commons.type'
-import type { TVModel } from '../../types/Commons/v-model.type'
+import { getCurrentInstance, toKebabCase } from '../../utils'
 
-import { toKebabCase } from '../../utils/Commons/commons.util'
-import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
-
-import { computed, MaybeRefOrGetter, ref, Ref, toRaw, toValue, watch } from 'vue'
+import { computed, ref, Ref, toRaw, watch } from 'vue'
 
 /*********************************************************
  * useVModel
- *
- * @description
- * V-model generique pour n'importe quelle prop (pas seulement
- * `modelValue`) : detecte si `prop` est CONTROLE (le parent a fourni a la
- * fois la prop et son `onUpdate:{prop}`) ou NON CONTROLE (le composant
- * gere son propre etat interne, seede depuis `props[prop]` ou
- * `defaultValue`). `transformIn`/`transformOut` convertissent entre la
- * forme externe (celle de la prop) et la forme interne utilisee par le
- * composant — identite par defaut.
- *
- * @description
- * ⛔ Le seed non controle est lu PARESSEUSEMENT (au premier acces via
- * `model`, pas a l'appel de `useVModel()`) — voir la banniere "THE
- * UNCONTROLLED SEED IS READ LAZILY, NOT AT SETUP" juste en dessous : le
- * meme piege ADR-005 que `useSelectLink`/`useValidation`/`useVirtual`,
- * ici avec deux consequences (le seed lui-meme ET `defaultValue` passe en
- * argument, qui doit etre un getter `() => props.xxx` pour rester
- * theme-safe). `UNSEEDED` est un symbole distinct de `undefined`, qui est
- * une valeur de modele legitime.
  ********************************************************/
 export function useVModel<
     Props extends object & { [key in Prop as `onUpdate:${Prop}`]?: TEventProp | undefined },
@@ -39,44 +16,12 @@ export function useVModel<
 > (
     props: Props,
     prop: Prop,
-    defaultValue?: MaybeRefOrGetter<Props[Prop] | undefined>,
-    transformIn: (value?: Props[Prop]) => Inner = (v?: Props[Prop]) => v as Inner,
-    transformOut: (value: Inner) => Props[Prop] = (v: Inner) => v as Props[Prop]
+    defaultValue?: Props[Prop],
+    transformIn: (value?: Props[Prop]) => Inner = (v: any) => v,
+    transformOut: (value: Inner) => Props[Prop] = (v: any) => v
 ): TVModel<Props, Prop, Inner> {
     const vm = getCurrentInstance('useVModel')
-
-    /*********************************************************
-     *  THE UNCONTROLLED SEED IS READ LAZILY, NOT AT SETUP
-     *
-     *  @description
-     *  `useVModel` runs during `setup()`, and Vue runs `setup()` BEFORE the
-     *  `beforeCreate` hook where the ADR-005 theme-props resolver patches
-     *  `instance.props`.
-     *  Seeding this ref with `props[prop]` right here therefore captured the
-     *  value a theme had not yet been able to set, and nothing re-read it
-     *  afterwards: the watch below only fires on a LATER change, and swapping
-     *  a property descriptor is not a reactive change the watcher can see.
-     *  So the ref starts UNSEEDED and the seed is taken on first read instead.
-     *  Every read goes through `model`, a computed that first evaluates at
-     *  render — comfortably after `beforeCreate` — so the themed value lands.
-     *  `UNSEEDED` is a symbol rather than `undefined` because `undefined` is a
-     *  legitimate model value that must not be mistaken for "never set".
-     *  Measured before this changed: a theme setting `modelValue` on Alert or
-     *  NumberField, `focused` on any field, or `indeterminate` on Switch,
-     *  produced no change in the rendered markup.
-     *
-     *  `defaultValue` itself accepts `MaybeRefOrGetter` for the same reason
-     *  (#448): a caller passing a raw `props.xxx` expression as the THIRD
-     *  ARGUMENT evaluates it at the `useVModel(...)` call site — i.e. during
-     *  the host's own `setup()`, still before `beforeCreate` — freezing the
-     *  pre-theme value forever. Resolving it via `toValue()` HERE, inside
-     *  `seed()`, defers that read to first actual access, mirroring the
-     *  `useHold` fix for `holdRepeat` / `holdDelay` (#487). Callers pass
-     *  `() => props.xxx` to opt in; a plain value still works unchanged.
-     ********************************************************/
-    const internal = ref(UNSEEDED) as Ref<Props[Prop] | typeof UNSEEDED>
-    const seed = () => (props[prop] !== undefined ? props[prop] : toValue(defaultValue)) as Props[Prop]
-    const internalValue = () => (internal.value === UNSEEDED ? seed() : internal.value as Props[Prop])
+    const internal = ref(props[prop] !== undefined ? props[prop] : defaultValue) as Ref<Props[Prop]>
     const kebabProp = toKebabCase(prop)
     const checkKebab = kebabProp !== prop
 
@@ -108,26 +53,26 @@ export function useVModel<
     })
 
     const model = computed({
-        get (): Inner {
+        get (): any {
             const externalValue = props[prop]
 
-            return transformIn(isControlled.value ? externalValue : internalValue())
+            return transformIn(isControlled.value ? externalValue : internal.value)
         },
-        set (internalValue_) {
-            const newValue = transformOut(internalValue_)
-            const value = toRaw(isControlled.value ? props[prop] : internalValue())
+        set (internalValue) {
+            const newValue = transformOut(internalValue)
+            const value = toRaw(isControlled.value ? props[prop] : internal.value)
 
-            if (value === newValue || transformIn(value) === internalValue_) {
+            if (value === newValue || transformIn(value) === internalValue) {
                 return
             }
 
             internal.value = newValue
             vm?.emit(`update:${prop}`, newValue)
         }
-    }) as unknown as Ref<TInnerVal<Inner>> & { readonly externalValue: Props[Prop] }
+    }) as any as Ref<TInnerVal<Inner>> & { readonly externalValue: Props[Prop] }
 
     Object.defineProperty(model, 'externalValue', {
-        get: () => isControlled.value ? props[prop] : internalValue()
+        get: () => isControlled.value ? props[prop] : internal.value
     })
 
     return model

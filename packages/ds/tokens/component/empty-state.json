@@ -1,0 +1,50 @@
+{
+  "empty-state": {
+    "padding-block":            { "$type": "dimension",  "$value": "{space.10}" },
+    "padding-inline":           { "$type": "dimension",  "$value": "{space.6}" },
+    "padding-block-sm":         { "$type": "dimension",  "$value": "{space.6}" },
+    "padding-block-md":         { "$type": "dimension",  "$value": "{space.10}" },
+    "padding-block-lg":         { "$type": "dimension",  "$value": "{space.16}" },
+    "gap":                      { "$type": "dimension",  "$value": "{space.4}" },
+    "gap-sm":                   { "$type": "dimension",  "$value": "{space.3}" },
+    "gap-md":                   { "$type": "dimension",  "$value": "{space.4}" },
+    "gap-lg":                   { "$type": "dimension",  "$value": "{space.6}" },
+    "max-width":                { "$type": "dimension",  "$value": "480px" },
+
+    "icon": {
+      "size":                   { "$type": "dimension",  "$value": "64px" },
+      "size-sm":                { "$type": "dimension",  "$value": "48px" },
+      "size-md":                { "$type": "dimension",  "$value": "64px" },
+      "size-lg":                { "$type": "dimension",  "$value": "96px" },
+      "color":                  { "$type": "color",      "$value": "{color.text.secondary}" },
+      "margin-bottom":          { "$type": "dimension",  "$value": "{space.2}" }
+    },
+
+    "title": {
+      "color":                  { "$type": "color",      "$value": "{color.text.primary}" },
+      "font-family":            { "$type": "fontFamily", "$value": "{font.family.sans}" },
+      "font-weight":            { "$type": "fontWeight", "$value": "{font.weight.semiBold}" },
+      "line-height":            { "$type": "number",     "$value": "{font.lineHeight.snug}" },
+      "font-size":              { "$type": "dimension",  "$value": "{font.size.xl}" },
+      "font-size-sm":           { "$type": "dimension",  "$value": "{font.size.lg}" },
+      "font-size-md":           { "$type": "dimension",  "$value": "{font.size.xl}" },
+      "font-size-lg":           { "$type": "dimension",  "$value": "{font.size.2xl}" }
+    },
+
+    "description": {
+      "color":                  { "$type": "color",      "$value": "{color.text.secondary}" },
+      "font-family":            { "$type": "fontFamily", "$value": "{font.family.sans}" },
+      "font-weight":            { "$type": "fontWeight", "$value": "{font.weight.regular}" },
+      "line-height":            { "$type": "number",     "$value": "{font.lineHeight.relaxed}" },
+      "font-size":              { "$type": "dimension",  "$value": "{font.size.md}" },
+      "font-size-sm":           { "$type": "dimension",  "$value": "{font.size.sm}" },
+      "font-size-md":           { "$type": "dimension",  "$value": "{font.size.md}" },
+      "font-size-lg":           { "$type": "dimension",  "$value": "{font.size.lg}" }
+    },
+
+    "actions": {
+      "margin-top":             { "$type": "dimension",  "$value": "{space.2}" },
+      "gap":                    { "$type": "dimension",  "$value": "{space.3}" }
+    }
+  }
+}

@@ -1,7 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
 
-import { selectHstOption, toggleHstCheckbox } from './_support/histoire-controls'
-
 /**
  * Lot C1 — OrigamBtnGroup runtime probes.
  *
@@ -37,7 +35,8 @@ test.describe('OrigamBtnGroup — default', () => {
         const group = sandbox.locator('.origam-btn-group').first()
         await expect(group).toBeVisible({ timeout: 8000 })
 
-        await expect(group.locator('.origam-btn')).toHaveCount(3)
+        const children = await group.locator('.origam-btn').count()
+        expect(children).toBe(3)
     })
 
     test('children buttons are stacked horizontally without gaps', async ({ page }) => {
@@ -68,21 +67,14 @@ test.describe('OrigamBtnGroup — default', () => {
 
 test.describe('OrigamBtnGroup — items prop', () => {
     test('renders one btn per items entry (3)', async ({ page }) => {
-        // The dedicated "Prop — items" fixture no longer exists — `:items`
-        // is only exercised by the canonical "Slots - Item" Variant
-        // (`:items="actions"`, labels Save/Edit/Delete — see
-        // OrigamBtnGroup.story.vue), which is also where the old
-        // "Slot — item (custom render)" test below now points. No group-
-        // level data-cy exists anymore either (only per-index
-        // `btn-group-item-slot-{index}` on each child) — the structural
-        // `.origam-btn-group` class anchors the one instance rendered.
-        await openVariant(page, STORY, 'Slots - Item')
+        await openVariant(page, STORY, 'Prop — items')
         const sandbox = sandboxOf(page)
 
-        const group = sandbox.locator('.origam-btn-group').first()
+        const group = sandbox.locator('[data-cy="btn-group-items"]').first()
         await expect(group).toBeVisible({ timeout: 8000 })
 
-        await expect(group.locator('.origam-btn')).toHaveCount(3)
+        const children = await group.locator('.origam-btn').count()
+        expect(children).toBe(3)
 
         const labels = await group.locator('.origam-btn .origam-btn__content').evaluateAll(els =>
             els.map(el => (el.textContent || '').trim())
@@ -95,10 +87,7 @@ test.describe('OrigamBtnGroup — items prop', () => {
 
 test.describe('OrigamBtnGroup — density', () => {
     test('default density emits the --density-default modifier class', async ({ page }) => {
-        // Dedicated fixture folded into "Design" — its default init-state
-        // already sets density: 'default' (see OrigamBtnGroup.story.vue),
-        // so no control interaction is needed.
-        await openVariant(page, STORY, 'Design')
+        await openVariant(page, STORY, 'Prop — density')
         const sandbox = sandboxOf(page)
 
         const group = sandbox.locator('.origam-btn-group').first()
@@ -113,14 +102,10 @@ test.describe('OrigamBtnGroup — density', () => {
 
 test.describe('OrigamBtnGroup — divided', () => {
     test('divided=true emits the --divided modifier', async ({ page }) => {
-        // Dedicated fixture folded into "Functional" — Divided checkbox
-        // defaults to unchecked (false), flip it on.
-        await openVariant(page, STORY, 'Functional')
-        await toggleHstCheckbox(page, 'Divided')
-        await page.waitForTimeout(400)
+        await openVariant(page, STORY, 'Prop — divided')
         const sandbox = sandboxOf(page)
 
-        const group = sandbox.locator('.origam-btn-group').first()
+        const group = sandbox.locator('[data-cy="btn-group-divided"]').first()
         await expect(group).toBeVisible({ timeout: 8000 })
 
         const cls = await group.evaluate(el => el.className)
@@ -132,14 +117,10 @@ test.describe('OrigamBtnGroup — divided', () => {
 
 test.describe('OrigamBtnGroup — rounded', () => {
     test('outer border-radius is applied', async ({ page }) => {
-        // Dedicated fixture folded into "Design" — flip Rounded from its
-        // unset default to the legacy boolean-true option.
-        await openVariant(page, STORY, 'Design')
-        await selectHstOption(page, 'Rounded', 'Rounded (legacy boolean)')
-        await page.waitForTimeout(400)
+        await openVariant(page, STORY, 'Prop — rounded')
         const sandbox = sandboxOf(page)
 
-        const group = sandbox.locator('.origam-btn-group').first()
+        const group = sandbox.locator('[data-cy="btn-group-rounded"]').first()
         await expect(group).toBeVisible({ timeout: 8000 })
 
         const radius = await group.evaluate(el => getComputedStyle(el).borderRadius)
@@ -153,21 +134,20 @@ test.describe('OrigamBtnGroup — rounded', () => {
 
 test.describe('OrigamBtnGroup — item slot', () => {
     test('the item slot is invoked per items entry', async ({ page }) => {
-        // Canonical Variant is "Slots - Item" — no group-level data-cy
-        // remains (only per-index `btn-group-item-slot-{index}` on each
-        // child), so the structural `.origam-btn-group` class anchors it.
-        await openVariant(page, STORY, 'Slots - Item')
+        await openVariant(page, STORY, 'Slot — item (custom render)')
         const sandbox = sandboxOf(page)
 
-        const group = sandbox.locator('.origam-btn-group').first()
+        const group = sandbox.locator('[data-cy="btn-group-item-slot"]').first()
         await expect(group).toBeVisible({ timeout: 8000 })
 
-        await expect(group.locator('.origam-btn')).toHaveCount(3)
+        const children = await group.locator('.origam-btn').count()
+        expect(children).toBe(3)
 
         // Each cell should have a chevron-right append icon.
         // The icon enum value is 'mdi:mdi-chevron-right' which becomes a CSS class
         // on the <i> element. The colon makes it an attribute-contains selector.
-        await expect(group.locator('.origam-btn i[class*="mdi-chevron-right"]')).toHaveCount(3)
+        const chevrons = await group.locator('.origam-btn i[class*="mdi-chevron-right"]').count()
+        expect(chevrons).toBe(3)
     })
 })
 
@@ -175,17 +155,14 @@ test.describe('OrigamBtnGroup — item slot', () => {
 
 test.describe('OrigamBtnGroup — color (intent)', () => {
     test('group-level color forwards to children buttons', async ({ page }) => {
-        // Dedicated fixture folded into "Design" — flip Color from its
-        // unset default to a concrete intent.
-        await openVariant(page, STORY, 'Design')
-        await selectHstOption(page, 'Color', 'Primary')
-        await page.waitForTimeout(400)
+        await openVariant(page, STORY, 'Prop — color & bgColor')
         const sandbox = sandboxOf(page)
 
-        const group = sandbox.locator('.origam-btn-group').first()
+        const group = sandbox.locator('[data-cy="btn-group-color"]').first()
         await expect(group).toBeVisible({ timeout: 8000 })
 
-        await expect(group.locator('.origam-btn')).toHaveCount(3)
+        const childCount = await group.locator('.origam-btn').count()
+        expect(childCount).toBe(3)
 
         // Children must end up with a non-default color (any intent token
         // produces either a class or an inline style on the btn root).

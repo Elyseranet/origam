@@ -14,8 +14,7 @@ import { describe, expect, it } from 'vitest'
 
 import type { INestedProps } from '@origam/interfaces'
 
-import { useNested } from '@origam/composables/Commons/nested.composable'
-import { useNestedItem } from '@origam/composables/Commons/nestedItem.composable'
+import { useNested, useNestedItem } from '@origam/composables/Commons/nested.composable'
 import { SELECT_STRATEGY } from '@origam/enums'
 
 // ---------------------------------------------------------------------------

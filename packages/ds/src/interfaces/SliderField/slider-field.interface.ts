@@ -1,32 +1,26 @@
-import type { IAdjacentSlots } from '../Commons/adjacent.interface'
-import type { IBorderProps } from '../Commons/border.interface'
-import type { IColorProps } from '../Commons/color.interface'
 import type {
+    IBorderProps,
+    IColorProps,
     ICommonsComponentEmits,
-    ICommonsComponentProps
-} from '../Commons/commons.interface'
-import type { IDensityProps } from '../Commons/density.interface'
-import type { IDirectionProps } from '../Commons/direction.interface'
-import type { IElevationProps } from '../Commons/elevation.interface'
-import type {
+    ICommonsComponentProps,
+    IDensityProps,
+    IDirectionProps,
+    IElevationProps,
     IFocusEmits,
-    IFocusProps
-} from '../Commons/focus.interface'
-import type { IInputProps } from '../Input/input.interface'
-import type { IMarginProps } from '../Commons/margin.interface'
-import type { IPaddingProps } from '../Commons/padding.interface'
-import type { IRippleProps } from '../Commons/ripple.interface'
-import type { IRoundedProps } from '../Commons/rounded.interface'
-import type {
-    ISliderFieldTrackProps,
-    ISliderFieldTrackSlots
-} from './slider-field-track.interface'
+    IFocusProps,
+    IInputProps,
+    IMarginProps,
+    IPaddingProps,
+    IRippleProps,
+    IRoundedProps,
+    ISliderFieldTrackProps
+} from '../../interfaces'
 
 import type {
     TAlways,
+    TSize,
     TSliderFieldVariant
-} from '../../types/SliderField/slider-field.type'
-import type { TSize } from '../../types/Commons/size.type'
+} from '../../types'
 
 export interface ISliderFieldProps extends ICommonsComponentProps, IDensityProps, IColorProps, IInputProps, IFocusProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, IRippleProps, IDirectionProps {
     disabled?: boolean
@@ -127,20 +121,4 @@ export interface ISliderFieldProps extends ICommonsComponentProps, IDensityProps
 export interface ISliderFieldEmits extends ICommonsComponentEmits, IFocusEmits {
     (e: 'start', value: number | string | Array<number> | Array<string>): void
     (e: 'end', value: number | string | Array<number> | Array<string>): void
-}
-
-/**
- * Slot signatures for `<OrigamSliderField>`. `prepend` / `append` are
- * unscoped ("field" variant only — `hasPrepend`/`slots.append` gate
- * them). `default` is scoped when the field variant renders, `label`
- * is unscoped, `item` forwards straight through to the nested
- * `<OrigamSliderFieldTrack>`'s own `item` slot.
- */
-export interface ISliderFieldSlots extends IAdjacentSlots {
-    default?: (data: { id: string, messagesId: string, isDisabled: boolean, isReadonly: boolean, isValid: boolean | undefined }) => any
-    label?: () => any
-    item?: ISliderFieldTrackSlots['item']
-    details?: (props: any) => any
-    messages?: (data: { hasMessages: boolean, messages: Array<string> | Record<string, string> }) => any
-    message?: (data: { message: any }) => any
 }

@@ -1,3 +1,3 @@
-import OrigamTabPanels from '../../components/Tabs/OrigamTabPanels.vue'
+import { OrigamTabPanels } from '../../components'
 
 export type TOrigamTabPanels = InstanceType<typeof OrigamTabPanels>

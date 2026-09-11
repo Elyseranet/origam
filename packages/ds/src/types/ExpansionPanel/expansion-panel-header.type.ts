@@ -1,3 +1,3 @@
-import OrigamExpansionPanelHeader from '../../components/ExpansionPanel/OrigamExpansionPanelHeader.vue'
+import { OrigamExpansionPanelHeader } from "../../components"
 
 export type TOrigamExpansionPanelHeader = InstanceType<typeof OrigamExpansionPanelHeader>

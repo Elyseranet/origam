@@ -6,7 +6,7 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<Partial<IChipGroupProps>>({ color: 'primary', direction: DIRECTION.HORIZONTAL, column: false })"
+				:init-state="() => useStoryInitState<Partial<IChipGroupProps>>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
 				<origam-chip-group
@@ -17,7 +17,6 @@
 						:border-color="state.borderColor"
 						:border-style="state.borderStyle"
 						:column="state.column"
-						:direction="state.direction"
 						:margin="state.margin"
 						:padding="state.padding"
 				>
@@ -40,8 +39,7 @@
 					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Layout">
-					<HstSelect   v-model="state.direction" title="Direction" :options="DIRECTION_OPTIONS"/>
-					<HstCheckbox v-model="state.column"    title="Column (declared, no effect — use Direction)"/>
+					<HstCheckbox v-model="state.column" title="Column (wrap)"/>
 				</StoryGroup>
 				<StoryGroup title="Spacing">
 					<HstText v-model="state.margin"  title="Margin"/>
@@ -121,7 +119,7 @@
 
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<IChipGroupProps>({ color: 'primary', multiple: false, mandatory: false, filter: false, column: false, direction: DIRECTION.HORIZONTAL })"
+				:init-state="() => useStoryInitState<IChipGroupProps>({ color: 'primary', multiple: false, mandatory: false, filter: false, column: false })"
 		>
 			<template #default="{ state }">
 				<origam-chip-group v-bind="state" v-model="playgroundModel" @update:model-value="logEvent('update:modelValue', $event)">
@@ -136,8 +134,7 @@
 					<HstSelect   v-model="state.color"         title="Color"    :options="COLOR_OPTIONS"/>
 					<HstSelect   v-model="state.bgColor"       title="Bg Color" :options="COLOR_OPTIONS"/>
 					<HstSelect   v-model="state.rounded"       title="Rounded"  :options="ROUNDED_OPTIONS"/>
-					<HstSelect   v-model="state.direction"     title="Direction" :options="DIRECTION_OPTIONS"/>
-					<HstCheckbox v-model="state.column"        title="Column (declared, no effect — use Direction)"/>
+					<HstCheckbox v-model="state.column"        title="Column (wrap)"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.multiple"  title="Multiple"/>
@@ -159,7 +156,6 @@
 	import { logEvent } from 'histoire/client'
 
 	import { OrigamChip, OrigamChipGroup } from '@origam/components'
-	import { DIRECTION } from '@origam/enums'
 	import type { IChipGroupProps } from '@origam/interfaces'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
@@ -168,7 +164,6 @@
 		BORDER_OPTIONS,
 		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,
-		DIRECTION_OPTIONS,
 		ICON_OPTIONS,
 		ROUNDED_OPTIONS,
 		TAG_OPTIONS

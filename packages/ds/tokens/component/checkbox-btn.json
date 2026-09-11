@@ -1,0 +1,25 @@
+{
+  "checkbox-btn": {
+    "$description": "Variante button-style du Checkbox. Partage les sémantiques de checkbox.json pour les couleurs ; ajoute uniquement les tokens de layout propres au bouton.",
+    "border-radius":        { "$type": "dimension", "$value": "{radius.sm}", "$description": "Border-radius du conteneur bouton-checkbox" },
+    "background-color":     { "$type": "color",     "$value": "{color.action.secondary.bg}" },
+    "background-color-hover":   { "$type": "color", "$value": "{color.action.secondary.bgHover}" },
+    "background-color-checked": { "$type": "color", "$value": "{color.action.primary.bg}" },
+    "background-color-disabled":{ "$type": "color", "$value": "{color.action.primary.bgDisabled}" },
+    "color":                { "$type": "color",     "$value": "{color.text.primary}" },
+    "color-checked":        { "$type": "color",     "$value": "{color.text.onColor}" },
+    "color-disabled":       { "$type": "color",     "$value": "{color.text.disabled}" },
+    "border-color":         { "$type": "color",     "$value": "{color.border.default}" },
+    "border-color-checked": { "$type": "color",     "$value": "{color.action.primary.bg}" },
+    "border-color-error":   { "$type": "color",     "$value": "{color.feedback.danger.border}" },
+    "border-width":         { "$type": "dimension", "$value": "{border.width.thin}" },
+    "border-style":         { "$type": "other",     "$value": "solid" },
+    "padding-inline":       { "$type": "dimension", "$value": "{space.3}" },
+    "padding-block":        { "$type": "dimension", "$value": "{space.2}" },
+    "font-size":            { "$type": "dimension", "$value": "{font.size.md}" },
+    "font-weight":          { "$type": "fontWeight", "$value": "{font.weight.medium}" },
+    "transition-duration":  { "$type": "duration",  "$value": "{motion.duration.medium}" },
+    "transition-easing":    { "$type": "cubicBezier", "$value": "{motion.easing.standard}" },
+    "opacity-disabled":     { "$type": "number",    "$value": "{opacity.50}" }
+  }
+}

@@ -63,26 +63,20 @@
 		setup
 >
 	import { computed, ref, StyleValue, useAttrs } from 'vue'
-	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
-	import OrigamInput from '../Input/OrigamInput.vue'
-	import OrigamLabel from '../Label/OrigamLabel.vue'
-	import OrigamRadio from './OrigamRadio.vue'
-	import OrigamSelectionControlGroup from '../SelectionControl/OrigamSelectionControlGroup.vue'
+	import { OrigamDefaultsProvider, OrigamInput, OrigamLabel, OrigamRadio, OrigamSelectionControlGroup } from '../../components'
 
-	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-	import { useVModel } from '../../composables/Commons/vModel.composable'
+	import {
+	useProps,
+	useStyle,
+	useVModel
+} from '../../composables'
 
-	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { DENSITY } from '../../enums'
 
-	import type { IRadioGroupEmits, IRadioGroupProps, IRadioGroupSlots } from '../../interfaces/Radio/radio-group.interface'
-	import type { TOrigamInput } from '../../types/Input/input.type'
-	import type { TOrigamSelectionControlGroup } from '../../types/SelectionControl/selection-control-group.type'
+	import type { IRadioGroupProps } from '../../interfaces'
+	import type { TOrigamInput, TOrigamSelectionControlGroup } from "../../types"
 
-	import { filterInputAttrs } from '../../utils/Input/input.util'
-	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
-	import { omitUndefined } from '../../utils/Commons/commons.util'
+	import { filterInputAttrs, getUid } from '../../utils'
 
 	/*********************************************************
 	 * Global
@@ -93,10 +87,6 @@
 	const props = withDefaults(defineProps<IRadioGroupProps>(), {
 		density: DENSITY.DEFAULT
 	})
-
-	defineSlots<IRadioGroupSlots>()
-
-	defineEmits<IRadioGroupEmits>()
 
 	const {filterProps} = useProps<IRadioGroupProps>(props)
 
@@ -148,24 +138,13 @@
 	// computed to derive the radios' own props re-triggered the render
 	// endlessly — "Maximum recursive updates in OrigamInput". Defaults provide
 	// the same forwarding with no ref read; per-item props still win.
-	//
-	// Forward ONLY what the consumer actually passed — see #263 and the same
-	// guard on `OrigamBtnGroup` / `OrigamAvatarGroup`. `color` / `bgColor` are
-	// `TColor` (which includes `false`), so Vue's boolean-prop coercion
-	// resolves each UNSET prop to the concrete value `false` — there is no
-	// `undefined` left for `omitUndefined` to filter. `density` additionally
-	// carries this group's OWN `withDefaults` value (`'default'`), which is
-	// not the consumer's intent either; forwarded unconditionally it won the
-	// `mergeDeep` against an ancestor/theme `'origam-radio'` entry and
-	// silently erased it.
-	const wasPropPassed = usePassedProps(props)
 	const radioDefaults = computed(() => ({
-		'origam-radio': omitUndefined({
-			color: wasPropPassed('color') ? props.color : undefined,
-			bgColor: wasPropPassed('bgColor') ? props.bgColor : undefined,
-			density: wasPropPassed('density') ? props.density : undefined,
-			size: wasPropPassed('size') ? props.size : undefined
-		})
+		'origam-radio': {
+			color: props.color,
+			bgColor: props.bgColor,
+			density: props.density,
+			size: props.size
+		}
 	}))
 
 	const items = computed(() => {

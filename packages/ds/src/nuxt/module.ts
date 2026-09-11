@@ -9,8 +9,7 @@ import { addComponentsDir, addImports, addPlugin, createResolver, defineNuxtModu
 // declaration build fails with TS2883. Surfaced by Nuxt 4.5.
 import type { NuxtModule } from '@nuxt/schema'
 
-import type { IOrigamNuxtModuleOptions } from '../interfaces/Commons/nuxt-module.interface'
-import type { IOrigamTheme } from '../interfaces/Commons/theme.interface'
+import type { IOrigamNuxtModuleOptions, IOrigamTheme } from '../interfaces'
 
 const MODULE_NAME = 'origam-nuxt'
 const CONFIG_KEY = 'origam'

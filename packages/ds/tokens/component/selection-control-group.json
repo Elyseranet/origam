@@ -1,0 +1,13 @@
+{
+  "selection-control-group": {
+    "$description": "Layout-only tokens. Les tokens de couleur et d'état restent sur selection-control, checkbox, checkbox-btn, etc.",
+
+    "display":          { "$type": "other",     "$value": "flex" },
+    "flex-direction":   { "$type": "other",     "$value": "column", "$description": "Vertical par défaut; inline switche à row via la classe --inline" },
+    "flex-direction-inline": { "$type": "other", "$value": "row", "$description": "Quand la prop inline est active" },
+    "flex-wrap":        { "$type": "other",     "$value": "wrap" },
+    "gap":              { "$type": "dimension",  "$value": "{space.2}", "$description": "Espacement entre les contrôles du groupe" },
+    "padding-block":    { "$type": "dimension",  "$value": "{space.0}" },
+    "padding-inline":   { "$type": "dimension",  "$value": "{space.0}" }
+  }
+}

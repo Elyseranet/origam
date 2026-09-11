@@ -1,17 +1,14 @@
 <template>
 	<component
-			:is="link.tag.value"
-			:id="styleId"
+			:is="link.tag"
+			:id="props.id"
 			v-ripple="isClickable && ripple"
-			:aria-disabled="ariaDisabled"
-			:aria-selected="ariaSelected"
 			:class="listItemClasses"
 			:href="link.href.value"
-			:role="itemRole"
 			:style="listItemStyles"
 			:tabindex="listItemTabIndex"
 			@click="handleClick"
-			@keydown="handleKeyDown"
+			@keydown="isClickable && !isLink && handleKeyDown"
 	>
     <span
 		    v-if="isClickable || isActive"
@@ -28,10 +25,7 @@
 					v-if="hasPrepend"
 					key="prepend"
 					class="origam-list-item__prepend"
-					:role="isPrependZoneFocusable ? 'button' : undefined"
-					:tabindex="isPrependZoneFocusable ? 0 : undefined"
 					@click="handleClickPrepend"
-					@keydown="handleKeydownPrepend"
 			>
 				<slot
 						name="prepend"
@@ -92,10 +86,7 @@
 					v-if="hasAppend"
 					key="append"
 					class="origam-list-item__append"
-					:role="isAppendZoneFocusable ? 'button' : undefined"
-					:tabindex="isAppendZoneFocusable ? 0 : undefined"
 					@click="handleClickAppend"
-					@keydown="handleKeydownAppend"
 			>
 				<slot
 						name="append"
@@ -124,33 +115,34 @@
 		setup
 >
 	import { computed, onBeforeMount, StyleValue, toRef, useAttrs, useSlots, watch } from 'vue'
-	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
-	import OrigamIcon from '../Icon/OrigamIcon.vue'
+	import { OrigamAvatar, OrigamIcon } from '../../components'
 
-	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
-	import { useBothColor } from '../../composables/Commons/bothColor.composable'
-	import { useDensity } from '../../composables/Commons/density.composable'
-	import { useDimension } from '../../composables/Commons/dimension.composable'
-	import { useLink } from '../../composables/Commons/link.composable'
-	import { useList } from '../../composables/List/list.composable'
-	import { useNestedItem } from '../../composables/Commons/nestedItem.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useSize } from '../../composables/Commons/size.composable'
-	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
-	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-	import { useTypography } from '../../composables/Commons/typography.composable'
+	import {
+		useAdjacent,
+		useBackgroundColor,
+		useDefaults,
+		useDensity,
+		useDimension,
+		useHover,
+		useLink,
+		useList,
+		useNestedItem,
+		useProps,
+		useSize,
+		useStateEffect,
+		useStyle,
+		useTypography
+} from '../../composables'
 
-	import vRipple from '../../directives/Ripple/ripple.directive'
+	import { vRipple } from '../../directives'
 
-	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
-	import { LIST_ITEM_ROLE } from '../../enums/List/list-item.enum'
+	import { KEYBOARD_VALUES } from '../../enums'
 
-	import type { IListItemProps } from '../../interfaces/List/list-item.interface'
+	import type { IListItemProps} from '../../interfaces'
 
-	import type { IListItemEmits, IListItemSlots } from '../../interfaces/List/list-item.interface'
+	import type { IListItemEmits } from '../../interfaces/List/list-item.interface'
 
-	import type { TListItemSlot } from '../../types/List/list-item.type'
+	import type { TListItemSlot } from '../../types'
 
 	const attrs = useAttrs()
 
@@ -158,11 +150,13 @@
 	 * Global
 	 ********************************************************/
 
-	const props = withDefaults(defineProps<IListItemProps>(), {tag: 'div'})
+	const _props = withDefaults(defineProps<IListItemProps>(), {tag: 'div'})
+
+	// Resolve props against the closest `provideDefaults({ 'origam-list-item': … })`
+	// injected by a parent `OrigamList`.
+	const props = useDefaults(_props)
 
 	const emits = defineEmits<IListItemEmits>()
-
-	defineSlots<IListItemSlots>()
 
 	const {filterProps} = useProps<IListItemProps>(props)
 
@@ -184,24 +178,8 @@
 		openOnSelect
 	} = useNestedItem(id, false)
 	const list = useList()
-	/*********************************************************
-	 * Colour — BOTH channels (#436)
-	 *
-	 * @description
-	 * The row only ever consumed `bgColor`, through
-	 * `useBackgroundColor(toRef(props, 'bgColor'))`. `IListItemProps`
-	 * extends `IColorProps` all the same, so `color` was a declared,
-	 * documented, story-exposed prop that painted nothing.
-	 * @description
-	 * It is not an exotic prop either: `<origam-list>` AND
-	 * `<origam-list-group>` both forward `color` down to every descendant
-	 * `<origam-list-item>` through their defaults provider — that
-	 * forwarding landed on a prop the row dropped. `useBothColor` is the
-	 * same hook `<origam-list>` / `<origam-list-subheader>` already use;
-	 * it resolves the pair and delegates to `useColor`.
-	 ********************************************************/
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
-	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	const {backgroundColorClasses, backgroundColorStyles} = useBackgroundColor(toRef(props, 'bgColor'))
 	const {densityClasses} = useDensity(props)
 	// Only `sizeClasses` is consumed — NEVER `sizeStyles`. Its non-tokenised
 	// branch emits an identical `width` AND `height` (a square), which would
@@ -209,8 +187,7 @@
 	// padding instead; see the `&--size-*` rules in the style block.
 	const {sizeClasses} = useSize(props)
 
-	const {isOn: isHover, config: hoverState} = useStateFlag(props, {state: 'hover'})
-	const {isOn: isActiveFlag} = useStateFlag(props, {state: 'active'})
+	const {isHover, hoverState} = useHover(props)
 	const {
 		borderClasses, borderStyles,
 		roundedClasses, roundedStyles,
@@ -239,68 +216,12 @@
 	const {
 		onClickPrepend: handleClickPrepend,
 		onClickAppend: handleClickAppend,
-		onKeydownPrepend: handleKeydownPrepend,
-		onKeydownAppend: handleKeydownAppend,
-		isPrependClickable,
-		isAppendClickable,
 		hasAppend,
 		hasPrepend
 	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
 
-	/*********************************************************
-	 * isPrependZoneFocusable / isAppendZoneFocusable
-	 *
-	 * @description
-	 * issue #443 — same <a>-content-model gating as OrigamChip/OrigamBreadcrumbItem:
-	 * the root is `<a>` whenever `link.isLink` is true, and a <button>/<a>
-	 * forbids any descendant with a `tabindex` attribute specified.
-	 ********************************************************/
-	const isPrependZoneFocusable = computed(() => isPrependClickable.value && !link.isLink.value)
-	const isAppendZoneFocusable = computed(() => isAppendClickable.value && !link.isLink.value)
-
 	const isActive = computed(() => {
-		return isActiveFlag.value || link.isActive?.value || isSelected.value
-	})
-	/*********************************************************
-	 * itemRole (#424)
-	 *
-	 * @description
-	 * The row never picks its own role — it reads the one its list
-	 * PUBLISHED through `ORIGAM_LIST_KEY` (`listitem` in list mode,
-	 * `option` in selection mode). That way the container and its rows
-	 * can never disagree: an `option` outside a `listbox`, or a
-	 * `listitem` inside one, is a broken ARIA contract and neither is
-	 * reachable from here.
-	 * @description
-	 * Two rows still get no role at all. A bare `<OrigamListItem>` used
-	 * outside any list (`list` falsy — no ancestor provided the key): no
-	 * ARIA is better than a role whose promised container doesn't exist.
-	 * And a group activator, which only toggles expand/collapse and never
-	 * fires `select()` (see `click` below) — it is a control, not one of
-	 * the list's own rows.
-	 ********************************************************/
-	const itemRole = computed(() => {
-		return list && !isGroupActivator ? list.itemRole.value : undefined
-	})
-	/*********************************************************
-	 * ariaSelected / ariaDisabled
-	 *
-	 * @description
-	 * `aria-selected` is REQUIRED state on `option` and meaningless on
-	 * `listitem` — a plain list row that reports "not selected" invents a
-	 * selection the list does not offer. Both attributes are therefore
-	 * gated on the option role, and both are computed here rather than in
-	 * the template: no logic in the markup, and the role comparison has a
-	 * single home if the role set ever grows.
-	 ********************************************************/
-	const isOption = computed(() => {
-		return itemRole.value === LIST_ITEM_ROLE.OPTION
-	})
-	const ariaSelected = computed(() => {
-		return isOption.value ? isSelected.value : undefined
-	})
-	const ariaDisabled = computed(() => {
-		return isOption.value ? props.disabled : undefined
+		return props.active || link.isActive?.value || isSelected.value
 	})
 	const isLink = computed(() => {
 		return props.link && link.isLink.value
@@ -371,24 +292,7 @@
 	const handleClick = (e: MouseEvent) => {
 		click(e)
 	}
-	/*********************************************************
-	 * handleKeyDown (#439)
-	 *
-	 * @description
-	 * `@keydown="isClickable && !isLink && handleKeyDown"` used to compile
-	 * to `$event => (cond && _ctx.handleKeyDown)` — Vue's inline-statement
-	 * form for anything more complex than a bare member expression. The
-	 * expression EVALUATES `handleKeyDown` (a function reference) and
-	 * stops there; it never CALLS it.
-	 * @description
-	 * Root cause fixed at the binding (`@keydown="handleKeyDown"`, the one
-	 * form Vue auto-invokes with `$event`) — the guard moves in here,
-	 * where wrapping it in `&&`/`?:` again can't silently undo the fix
-	 * (see issue #439 / #397).
-	 ********************************************************/
 	const handleKeyDown = (e: KeyboardEvent) => {
-		if (!isClickable.value || isLink.value) return
-
 		if (e.key === KEYBOARD_VALUES.ENTER || e.key === ' ') {
 			e.preventDefault()
 			click(e as any as MouseEvent)
@@ -429,7 +333,7 @@
 		return [
 			dimensionStyles.value,
 			borderStyles.value,
-			colorStyles.value,
+			backgroundColorStyles.value,
 			paddingStyles.value,
 			marginStyles.value,
 			roundedStyles.value,
@@ -449,7 +353,7 @@
 				'origam-list-item--slim': props.slim,
 				[`${props.activeClass}`]: props.activeClass && isActive.value
 			},
-			colorClasses.value,
+			backgroundColorClasses.value,
 			borderClasses.value,
 			densityClasses.value,
 			sizeClasses.value,
@@ -461,22 +365,7 @@
 			props.class
 		]
 	})
-	/*********************************************************
-	 * useStyle
-	 *
-	 * @description
-	 * #375 — the template used to write `:id="props.id"` explicitly,
-	 * because the bare name `id` is ALREADY a local (the nested-item
-	 * registration key computed above from `value`/`href` — DO NOT feed
-	 * `props.id` into that one, `useNestedItem` uses it synchronously as
-	 * a Map key, see #372/#442).
-	 * @description
-	 * Renaming this SEPARATE `useStyle` local to `styleId` and seeding it
-	 * with `() => props.id` gives the template an unambiguous,
-	 * rule-compliant binding (`:id="styleId"`) without touching the
-	 * registration identity at all.
-	 ********************************************************/
-	const {id: styleId, css, load, isLoaded, unload} = useStyle(listItemStyles, () => props.id)
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(listItemStyles)
 
 
 	/*********************************************************
@@ -535,7 +424,7 @@
 		// `.origam-field__input`'s own `min-height: max(height + density, …)`.
 		// Under `border-box` this min-height IS the row height, so the rungs
 		// below hand it the FULL rung, not the rung minus its padding.
-		min-height: max(calc(var(--origam-list-item---min-height, var(--origam-list__item---min-height, 56px)) + var(--origam-list---density, 0px)), 1.5rem);
+		min-height: max(calc(var(--origam-list-item---min-height, 56px) + var(--origam-list---density, 0px)), 1.5rem);
 
 		text-decoration: var(--origam-list-item---text-decoration, none);
 
@@ -563,21 +452,6 @@
 
 		&--rounded {
 			--origam-list-item---border-radius: 4px;
-		}
-
-		// `slim` (#440) — the class was emitted by `listItemClasses` with no
-		// rule anywhere to read it, so the prop painted nothing while the doc
-		// promised "reduced inner spacing" and the story shipped a checkbox.
-		//
-		// It narrows the INLINE padding only. The block padding belongs to the
-		// `--size-*` rungs, which pin the row on the shared control-height
-		// scale; touching it here would take the row off that scale and undo
-		// the field/row match those rungs exist to hold. The base rule adds
-		// indent + density to the same `calc()`, so a slim row inside an
-		// indented group still lines up with its siblings.
-		&--slim {
-			--origam-list-item---padding-inline-start: var(--origam-list-item--slim---padding-inline-start, 8px);
-			--origam-list-item---padding-inline-end: var(--origam-list-item--slim---padding-inline-end, 8px);
 		}
 
 		// Row-height scale, aligned rung for rung on the control-height scale
@@ -714,9 +588,9 @@
 		}
 
 		&__overlay {
-			background-color: var(--origam-list-item__overlay---background-color, var(--origam-list__item---overlay-background-color, currentColor));
+			background-color: var(--origam-list-item__overlay---background-color, currentColor);
 			border-radius: var(--origam-list-item__overlay---border-radius, inherit);
-			opacity: var(--origam-list-item__overlay---opacity, var(--origam-list__item---overlay-opacity, 0));
+			opacity: var(--origam-list-item__overlay---opacity, 0);
 			pointer-events: var(--origam-list-item__overlay---pointer-events, none);
 			position: var(--origam-list-item__overlay---position, absolute);
 			bottom: var(--origam-list-item__overlay---position-bottom, 0);
@@ -725,7 +599,7 @@
 			top: var(--origam-list-item__overlay---position-top, 0);
 			transition-property: var(--origam-list-item__overlay---transition-property, opacity);
 			transition-duration: var(--origam-list-item__overlay---transition-duration, 0.2s);
-			transition-timing-function: var(--origam-list-item__overlay---transition-timing-function, var(--origam-list__item---overlay-transition-timing-function, ease-in-out));
+			transition-timing-function: var(--origam-list-item__overlay---transition-timing-function, ease-in-out);
 		}
 
 		&__underlay {
@@ -778,7 +652,7 @@
 			text-overflow: var(--origam-list-item__title---text-overflow, ellipsis);
 			word-break: var(--origam-list-item__title---word-break, normal);
 			word-wrap: var(--origam-list-item__title---word-wrap, break-word);
-			font-size: var(--origam-list-item__title---font-size, var(--origam-list__item---title-font-size, 1rem));
+			font-size: var(--origam-list-item__title---font-size, 1rem);
 			font-weight: var(--origam-list-item__title---font-weight, 400);
 			letter-spacing: var(--origam-list-item__title---letter-spacing, 0.009375em);
 			line-height: var(--origam-list-item__title---line-height, 1.5rem);
@@ -796,7 +670,7 @@
 			padding-inline-end: var(--origam-list-item__subtitle---padding-inline-end, 0);
 			text-overflow: var(--origam-list-item__subtitle---text-overflow, ellipsis);
 			word-break: var(--origam-list-item__subtitle---word-break, break-all);
-			font-size: var(--origam-list-item__subtitle---font-size, var(--origam-list__item---subtitle-font-size, 0.875rem));
+			font-size: var(--origam-list-item__subtitle---font-size, 0.875rem);
 			font-weight: var(--origam-list-item__subtitle---font-weight, 400);
 			letter-spacing: var(--origam-list-item__subtitle---letter-spacing, 0.0178571429em);
 			line-height: var(--origam-list-item__subtitle---line-height, 1rem);

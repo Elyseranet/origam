@@ -128,8 +128,6 @@ Plain `number` items (from `IChartSeries.data`) are accepted for compatibility; 
 
 **Accessibility.** Each bar is a focusable `<rect>` with `role="button"` and an `aria-label` carrying the category, formatted value, and width value. Keyboard users can Tab through bars and activate them with Enter or Space. The SVG carries a `<title>` and `<desc>` for screen-reader context.
 
-**Accessibility — the `<desc>` summary is localised AND agrees in number.** The `<desc>` text is not an English literal: it resolves through the DS `t()` mechanism against `origam.chart.variwide.desc*`, and the grammatical form is chosen by `Intl.PluralRules` for the ACTIVE locale — never by a `count === 1` test in the component. A translator supplies only the forms their language needs (`_one` / `_other` cover `en` and `fr`; a Russian translation adds `_few` with no component change), and a category a locale does not define falls back to `_other` rather than leaking the raw key.
-
 **Animation.** Bars grow upward from the baseline on mount via a CSS `scaleY` keyframe. The animation is skipped when `animated=false` or `prefers-reduced-motion: reduce` is set.
 
 ## Examples

@@ -1,0 +1,24 @@
+{
+  "gradient": {
+    "sunset": {
+      "$type": "other",
+      "$value": "linear-gradient(135deg, #b55149, #9d6f4a)"
+    },
+    "ocean": {
+      "$type": "other",
+      "$value": "linear-gradient(135deg, #134a59, #2f7e90)"
+    },
+    "forest": {
+      "$type": "other",
+      "$value": "linear-gradient(135deg, #0a2b34, #3a6047)"
+    },
+    "fire": {
+      "$type": "other",
+      "$value": "linear-gradient(135deg, #8c1a0b, #8a6210)"
+    },
+    "midnight": {
+      "$type": "other",
+      "$value": "linear-gradient(135deg, #0d0d0e, #1f2022)"
+    }
+  }
+}

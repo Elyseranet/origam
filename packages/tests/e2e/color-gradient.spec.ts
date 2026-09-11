@@ -80,21 +80,11 @@ async function getInjectedBgImage (locator: ReturnType<ReturnType<typeof sandbox
 
 // ─── Format 1 — raw CSS gradient string ─────────────────────────────────────
 
-// DS BUG (re-verified 2026-08-17 on develop @ e66dac68): useStateEffect (used by
-// OrigamBtn) ignores isGradient/resolveGradient — background-image is never emitted
-// for bgColor gradient strings. `grep -n "isGradient\|resolveGradient"
-// packages/ds/src/composables/Commons/stateEffect.composable.ts` returns ZERO lines,
-// against 10 in color.composable.ts. Measured DOM: background-image === "none".
-// Fix: add the isGradient guard in stateEffect.composable.ts colorStyles, mirroring
-// color.composable.ts useColorEffect lines 399-409.
-//
-// The 3 describes below were `test.describe.fixme` (6 tests never executed). They
-// now RUN under `test.fail`: green while the bug is present, RED the day it is
-// fixed — so the fix cannot land without this file being updated.
-test.describe('Color gradient — raw CSS string', () => {
-    test.beforeEach(() => { test.fail() })
+// DS BUG: useStateEffect (used by OrigamBtn) ignores isGradient/resolveGradient — background-image is never emitted for bgColor gradient strings.
+// Fix: add the isGradient guard in stateEffect.composable.ts colorStyles, mirroring color.composable.ts useColorEffect lines 399-409.
+test.describe.fixme('Color gradient — raw CSS string', () => {
     test('linear-gradient(135deg, #ff0080, #7928ca) renders verbatim', async ({ page }) => {
-        await openVariant(page, STORY, 'Design')
+        await openVariant(page, STORY, 'Prop — raw CSS gradient string')
         const sandbox = sandboxOf(page)
         const btn = sandbox.locator('[data-cy="raw-string-btn-1"]').first()
         await expect(btn).toBeVisible({ timeout: 8000 })
@@ -112,7 +102,7 @@ test.describe('Color gradient — raw CSS string', () => {
     })
 
     test('radial-gradient renders as radial-gradient(...)', async ({ page }) => {
-        await openVariant(page, STORY, 'Design')
+        await openVariant(page, STORY, 'Prop — raw CSS gradient string')
         const sandbox = sandboxOf(page)
         const btn = sandbox.locator('[data-cy="raw-string-btn-3"]').first()
         await expect(btn).toBeVisible({ timeout: 8000 })
@@ -127,10 +117,9 @@ test.describe('Color gradient — raw CSS string', () => {
 
 // DS BUG: useStateEffect (used by OrigamBtn) ignores isGradient/resolveGradient — background-image is never emitted for IGradient bgColor objects.
 // Fix: add the isGradient guard in stateEffect.composable.ts colorStyles, mirroring color.composable.ts useColorEffect lines 399-409.
-test.describe('Color gradient — IGradient object (intent stops)', () => {
-    test.beforeEach(() => { test.fail() })
+test.describe.fixme('Color gradient — IGradient object (intent stops)', () => {
     test('{ from: primary, to: success } emits intent CSS-var references', async ({ page }) => {
-        await openVariant(page, STORY, 'Design')
+        await openVariant(page, STORY, 'Prop — IGradient object (intents)')
         const sandbox = sandboxOf(page)
         const btn = sandbox.locator('[data-cy="object-btn-1"]').first()
         await expect(btn).toBeVisible({ timeout: 8000 })
@@ -146,7 +135,7 @@ test.describe('Color gradient — IGradient object (intent stops)', () => {
     })
 
     test('stops array with 3 colors emits the matching number of positioned stops', async ({ page }) => {
-        await openVariant(page, STORY, 'Design')
+        await openVariant(page, STORY, 'Prop — IGradient object (intents)')
         const sandbox = sandboxOf(page)
         const btn = sandbox.locator('[data-cy="object-btn-4"]').first()
         await expect(btn).toBeVisible({ timeout: 8000 })
@@ -162,10 +151,9 @@ test.describe('Color gradient — IGradient object (intent stops)', () => {
 
 // DS BUG: useStateEffect (used by OrigamBtn) ignores isGradient/resolveGradient — background-image is never emitted for gradient-{slug} bgColor preset strings.
 // Fix: add the isGradient guard in stateEffect.composable.ts colorStyles, mirroring color.composable.ts useColorEffect lines 399-409.
-test.describe('Color gradient — preset name', () => {
-    test.beforeEach(() => { test.fail() })
+test.describe.fixme('Color gradient — preset name', () => {
     test('bg-color="gradient-sunset" resolves to var(--origam-gradient---sunset)', async ({ page }) => {
-        await openVariant(page, STORY, 'Design')
+        await openVariant(page, STORY, 'Prop — preset names')
         const sandbox = sandboxOf(page)
         const btn = sandbox.locator('[data-cy="preset-btn-sunset"]').first()
         await expect(btn).toBeVisible({ timeout: 8000 })
@@ -176,7 +164,7 @@ test.describe('Color gradient — preset name', () => {
     })
 
     test('all 5 presets resolve to their respective CSS vars', async ({ page }) => {
-        await openVariant(page, STORY, 'Design')
+        await openVariant(page, STORY, 'Prop — preset names')
         const sandbox = sandboxOf(page)
         const presets = ['sunset', 'ocean', 'forest', 'fire', 'midnight']
         for (const p of presets) {
@@ -196,7 +184,7 @@ test.describe('Color gradient — preset name', () => {
 
 test.describe('Color gradient — text gradient (background-clip)', () => {
     test('color={ from, to } on title produces background-clip: text + color: transparent', async ({ page }) => {
-        await openVariant(page, STORY, 'Design')
+        await openVariant(page, STORY, 'Text gradient — background-clip: text')
         const sandbox = sandboxOf(page)
         const title = sandbox.locator('[data-cy="text-gradient-title"]').first()
         await expect(title).toBeVisible({ timeout: 8000 })
@@ -214,7 +202,7 @@ test.describe('Color gradient — text gradient (background-clip)', () => {
     })
 
     test('color="gradient-sunset" on label triggers the preset text gradient', async ({ page }) => {
-        await openVariant(page, STORY, 'Design')
+        await openVariant(page, STORY, 'Text gradient — background-clip: text')
         const sandbox = sandboxOf(page)
         const label = sandbox.locator('[data-cy="text-gradient-label"]').first()
         await expect(label).toBeVisible({ timeout: 8000 })

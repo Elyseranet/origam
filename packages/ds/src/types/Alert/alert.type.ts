@@ -1,3 +1,3 @@
-import OrigamAlert from '../../components/Alert/OrigamAlert.vue'
+import { OrigamAlert } from '../../components'
 
 export type TOrigamAlert = InstanceType<typeof OrigamAlert>

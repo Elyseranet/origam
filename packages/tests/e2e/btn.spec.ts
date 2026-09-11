@@ -33,16 +33,7 @@ import { expect, test } from '@playwright/test'
  *     sandbox.locator('.origam-btn__append')
  *     sandbox.locator('.origam-progress--circular')
  *
- * ## 3. Titres réels des Variants (Btn — état au 2026-09-09)
- *
- *   ⚠️  Ces index ONT BOUGÉ DEUX FOIS : `Default` (playground) 14 → 16 pour
- *   respecter « Playground LAST », puis 16 → 14 quand les Variants
- *   `Events - click:prepend` / `Events - click:append` ont été retirés
- *   (#443 — emits dépréciés, injoignables au clavier). Vérifie toujours
- *   l'ordre réel avant d'ajouter un test, la source de vérité est le build :
- *     python3 -c "import json;d=json.load(open('packages/marketing/public/stories/histoire.json'));\
- *       [print(i,v['title']) for s in d['stories'] if s['id'].endswith('btn-origambtn-story-vue') \
- *        for i,v in enumerate(s['variants'])]"
+ * ## 3. Titres réels des Variants (Btn — état au 2026-06-28)
  *
  *   Index → Titre (tel que dans la sidebar Histoire)
  *     0  → Design         (props visuelles : variant, color, bgColor, size, …)
@@ -51,14 +42,14 @@ import { expect, test } from '@playwright/test'
  *     3  → Prop — color & bgColor
  *     4  → Prop — loading (interactive)
  *     5  → Events - click
- *     6  → Events - group:selected
- *     7  → Slots - Default
- *     8  → Slots - Prepend
- *     9  → Slots - Append
- *    10  → Slots - Loader
- *    11  → Slots - Wrapper
- *    12  → Prop — variant (VRT matrix)
- *    13  → Prop — border (VRT matrix)   → voir btn-border.spec.ts (#391)
+ *     6  → Events - click:prepend
+ *     7  → Events - click:append
+ *     8  → Events - group:selected
+ *     9  → Slots - Default
+ *    10  → Slots - Prepend
+ *    11  → Slots - Append
+ *    12  → Slots - Loader
+ *    13  → Slots - Wrapper
  *    14  → Default (playground)
  *
  *   ⚠️  Les titres StoryGroup visibles dans les #controls (Color, Sizing, Shape…)
@@ -66,19 +57,9 @@ import { expect, test } from '@playwright/test'
  *
  * ## 4. Init-state par défaut
  *
- *   ⚠️  Le rendu réel dépend aussi du thème origam actif (Histoire monte les
- *   stories sous le thème par défaut). Depuis le commit 9a082b90 (2026-06-27,
- *   POSTÉRIEUR à ce fichier), `origam.theme.ts` fixe
- *   `'origam-btn': { variant: 'text', size: 'small' }` — tout prop `variant`/
- *   `size` laissé vide dans une story résout donc sur CES valeurs, pas sur
- *   les défauts propres du composant (variant non défini / size-default).
- *
  *   Design     : { color: 'white', bgColor: 'primary', text: 'Button' }
- *               → classes: origam-btn origam-btn--variant-text
- *                 origam-btn--size-small origam--bg-primary origam--text-sm
- *               → background-color: transparent (variant=text force
- *                 `background-color: transparent !important`, quel que soit
- *                 bgColor — cf. tests "--variant-text: … stylesheet inspection")
+ *               → classes: origam-btn origam--bg-primary origam--text-md
+ *               → background-color: rgb(124, 58, 237)
  *
  *   State      : { bgColor: 'primary' }
  *               → classes: origam-btn origam--bg-primary
@@ -122,14 +103,14 @@ test.describe('OrigamBtn', () => {
 
     test.describe('Design', () => {
         test('renders the btn root with BEM class', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
         })
 
         test('bgColor=primary applies the utility class origam--bg-primary', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -137,36 +118,11 @@ test.describe('OrigamBtn', () => {
         })
 
         test('bgColor=primary produces a non-transparent background from the token', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
-            // The Design variant's `variant` is left unset in init-state, so it
-            // now resolves through useDefaults() against the origam theme,
-            // which pins `'origam-btn': { variant: 'text', size: 'small' }`
-            // (packages/ds/src/themes/origam.theme.ts, since commit 9a082b90
-            // "sobre-as-default theme, per-component defaults" — dated AFTER
-            // this test was written). `.origam-btn--variant-text` forces
-            // `background-color: transparent !important` — a deliberate,
-            // older rule (2026-04-26) already guarded by the dedicated
-            // "--variant-text: background-color declaration is transparent
-            // !important" spec further down this file. So the LIVE btn is
-            // always transparent here, by design, regardless of whether the
-            // bgColor token itself resolves correctly.
-            //
-            // Probe the token in isolation instead: a bare element carrying
-            // only the origam--bg-primary utility class (no variant modifier)
-            // reveals whether the token is broken (falls back to transparent
-            // / UA gray) or resolves to a real color — which is what this
-            // test actually guards against.
-            const bg = await btn.evaluate(el => {
-                const probe = document.createElement('span')
-                probe.className = 'origam--bg-primary'
-                el.ownerDocument.body.appendChild(probe)
-                const resolved = getComputedStyle(probe).backgroundColor
-                probe.remove()
-                return resolved
-            })
+            const bg = await btn.evaluate(el => getComputedStyle(el).backgroundColor)
             // Must NOT be transparent or the browser default (gray).
             // The primary token resolves to a non-transparent color.
             expect(bg).not.toBe('rgba(0, 0, 0, 0)')
@@ -178,29 +134,23 @@ test.describe('OrigamBtn', () => {
         })
 
         test('text prop renders the label inside the btn', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
             await expect(btn.locator('.origam-btn__content')).toContainText('Button')
         })
 
-        test('theme-default size class is applied (size-small)', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+        test('default size class is applied (size-default)', async ({ page }) => {
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
-            // The Design variant leaves `size` unset in init-state, so it
-            // resolves through useDefaults() against the origam theme, which
-            // pins `'origam-btn': { variant: 'text', size: 'small' }`
-            // (packages/ds/src/themes/origam.theme.ts, since commit 9a082b90,
-            // dated AFTER this test was originally written against
-            // OrigamBtn's own component-level default of size-default).
-            await expect(btn).toHaveClass(/origam-btn--size-small/)
+            await expect(btn).toHaveClass(/origam-btn--size-default/)
         })
 
         test('default density class is applied (density-default)', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -215,7 +165,7 @@ test.describe('OrigamBtn', () => {
 
     test.describe('State', () => {
         test('renders with bgColor=primary in resting state', async ({ page }) => {
-            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(1))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -223,7 +173,7 @@ test.describe('OrigamBtn', () => {
         })
 
         test('resting state: overlay opacity is 0 (no hover/active)', async ({ page }) => {
-            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(1))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -242,7 +192,7 @@ test.describe('OrigamBtn', () => {
 
     test.describe('Functional', () => {
         test('renders btn with color=primary utility class', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -250,7 +200,7 @@ test.describe('OrigamBtn', () => {
         })
 
         test('enabled=false: no loading class in initial state', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -259,7 +209,7 @@ test.describe('OrigamBtn', () => {
         })
 
         test('disabled=false: pointer-events are auto in initial state', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -271,7 +221,7 @@ test.describe('OrigamBtn', () => {
             // The SCSS rule `.origam-btn--disabled { pointer-events: none }` is scoped.
             // We inject the class programmatically into the sandbox DOM to verify the
             // rule is compiled and applied — this tests the stylesheet, not the prop logic.
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -283,7 +233,7 @@ test.describe('OrigamBtn', () => {
         })
 
         test('SCSS --loading: adding the class disables pointer events', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -295,7 +245,7 @@ test.describe('OrigamBtn', () => {
         })
 
         test('SCSS --block: adding the class makes btn flex full-width', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -313,7 +263,7 @@ test.describe('OrigamBtn', () => {
 
     test.describe('Events - click', () => {
         test('renders a clickable button labelled "Click me"', async ({ page }) => {
-            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(5))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -321,7 +271,7 @@ test.describe('OrigamBtn', () => {
         })
 
         test('click does not throw (logEvent side-effect is not assertable headlessly)', async ({ page }) => {
-            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(5))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -333,9 +283,50 @@ test.describe('OrigamBtn', () => {
         })
     })
 
+    test.describe('Events - click:prepend', () => {
+        test('renders btn with a prepend slot area', async ({ page }) => {
+            await page.goto(variantUrl(6))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const btn = sandbox.locator('.origam-btn').first()
+            await expect(btn).toBeVisible({ timeout: 12000 })
+            // Prepend slot wrapper must be present (icon rendered inside)
+            await expect(btn.locator('.origam-btn__prepend')).toBeAttached()
+        })
+
+        test('click on prepend area does not throw', async ({ page }) => {
+            await page.goto(variantUrl(6))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const prepend = sandbox.locator('.origam-btn__prepend').first()
+            // Variant 6 with MDI icon can take up to ~15s on cold Playwright context
+            await expect(prepend).toBeVisible({ timeout: 20000 })
+            await prepend.click()
+        })
+    })
+
+    test.describe('Events - click:append', () => {
+        // Variant 7 (Events - click:append) loads the MDI ARROW_RIGHT icon asynchronously.
+        // In a cold Playwright context, the sandbox takes ~10-12s to mount all icon fonts
+        // and render the component. We use a 20s timeout for this variant only.
+        test('renders btn with an append slot area', async ({ page }) => {
+            await page.goto(variantUrl(7))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const btn = sandbox.locator('.origam-btn').first()
+            await expect(btn).toBeVisible({ timeout: 20000 })
+            await expect(btn.locator('.origam-btn__append')).toBeAttached()
+        })
+
+        test('click on append area does not throw', async ({ page }) => {
+            await page.goto(variantUrl(7))
+            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
+            const append = sandbox.locator('.origam-btn__append').first()
+            await expect(append).toBeVisible({ timeout: 20000 })
+            await append.click()
+        })
+    })
+
     test.describe('Events - group:selected', () => {
         test('renders a standard btn (group context not available standalone)', async ({ page }) => {
-            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(8))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -348,7 +339,7 @@ test.describe('OrigamBtn', () => {
 
     test.describe('Slots - Default', () => {
         test('default slot renders custom content ("Custom content")', async ({ page }) => {
-            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(9))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -360,7 +351,7 @@ test.describe('OrigamBtn', () => {
 
     test.describe('Slots - Prepend', () => {
         test('prepend slot renders an origam-icon inside the prepend area', async ({ page }) => {
-            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(10))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -370,7 +361,7 @@ test.describe('OrigamBtn', () => {
 
     test.describe('Slots - Append', () => {
         test('append slot renders an origam-icon inside the append area', async ({ page }) => {
-            await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(11))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -392,7 +383,7 @@ test.describe('OrigamBtn', () => {
          * The test asserts the loading state via the circular progress.
          */
         test('loading=true mounts a circular progress overlay', async ({ page }) => {
-            await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(12))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -402,7 +393,7 @@ test.describe('OrigamBtn', () => {
         })
 
         test('loading=true: pointer-events are disabled on the btn', async ({ page }) => {
-            await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(12))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -413,7 +404,7 @@ test.describe('OrigamBtn', () => {
 
     test.describe('Slots - Wrapper', () => {
         test('wrapper slot replaces btn inner content with custom markup', async ({ page }) => {
-            await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(13))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -430,7 +421,7 @@ test.describe('OrigamBtn', () => {
 
     test.describe('Default (playground)', () => {
         test('renders a btn with color=primary and text "Button"', async ({ page }) => {
-            await page.goto(variantUrl(14), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(14))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -439,7 +430,7 @@ test.describe('OrigamBtn', () => {
         })
 
         test('is a native <button> element by default (tag=button)', async ({ page }) => {
-            await page.goto(variantUrl(14), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(14))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -458,7 +449,7 @@ test.describe('OrigamBtn', () => {
 
     test.describe('Rounded SCSS rules', () => {
         test('--rounded-shaped: TL+BR rounded, TR+BL = 0', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -480,7 +471,7 @@ test.describe('OrigamBtn', () => {
         })
 
         test('--rounded-shaped-invert: TR+BL rounded, TL+BR = 0', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -518,7 +509,7 @@ test.describe('OrigamBtn', () => {
             // computed value is NOT rgba(0,0,0,0) but the parent's bg. This is correct CSS
             // behaviour, not a bug. Asserting the computed bg in a sandbox with an opaque
             // parent would produce a false negative. We therefore assert border-style only.
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -532,7 +523,7 @@ test.describe('OrigamBtn', () => {
         test('--variant-outlined: background-color declaration is transparent !important (stylesheet inspection)', async ({ page }) => {
             // Directly inspect the stylesheet to verify the SCSS compiled correctly.
             // This tests the rule's existence and priority, not the painted color.
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })
@@ -557,7 +548,7 @@ test.describe('OrigamBtn', () => {
         })
 
         test('--variant-text: background-color declaration is transparent !important (stylesheet inspection)', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const btn = sandbox.locator('.origam-btn').first()
             await expect(btn).toBeVisible({ timeout: 12000 })

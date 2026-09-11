@@ -86,10 +86,7 @@ interface IIconComponentProps {
 ## Anatomy
 
 ```html
-<div
-    class="origam-icon origam-icon--ligature origam-icon--size-default"
-    aria-hidden="true"
->
+<div class="origam-icon origam-icon--ligature origam-icon--size-default">
     home
 </div>
 ```
@@ -110,35 +107,6 @@ The leaf applies the Material font via SCSS:
   class names ("mdi-settings-outline").
 - When you want the markup to stay **readable in source** without
   pre-loading a class-mapping font CSS.
-
-## Accessibility
-
-- ⛔ Without a font that supports the ligature substitution (or before it
-  loads), the rendered node is a literal text node — `home`, `settings`,
-  `account_circle` — words a screen reader would read verbatim if left
-  unprotected. `aria-hidden="true"` is applied automatically whenever no
-  click handler is registered, matching `OrigamIcon`'s own contract —
-  this leaf defends itself even though `OrigamIcon`'s dispatcher never
-  routes to it today (see "Related" below), because it is exported on
-  the public barrel and can be used directly.
-- When a click handler is attached: `aria-hidden` flips to `"false"`.
-  ⛔ **Since #653, it no longer also sets `role="button"`** — measured:
-  this element has no `tabindex` and no keyboard handler anywhere, so the
-  role used to announce a control a keyboard user could never reach
-  (`Tab`) or activate (`Enter` / `Space`). The ligature text itself was
-  never a substitute for a real accessible name either way — a dev-time
-  console warning still fires when clickable with no `aria-label` /
-  `aria-labelledby`, now pointing at the real fix. Use `OrigamBtn`'s
-  icon-only mode instead — a real `<button>`, keyboard-accessible for
-  free:
-  `<origam-btn icon="mdi-home" :aria-label="t('btn_home', 'Home')" @click="..."/>`.
-  ⚠️ `OrigamBtn` renders its icon through the SAME `OrigamIcon` dispatcher
-  that (see "Related" below) never routes to `OrigamLigatureIcon` — a
-  ligature name like `"home"` does not migrate 1:1, use the matching
-  `mdi-*` class name instead, or a plain `<button>` wrapping
-  `<origam-ligature-icon>` directly if the ligature glyph itself is
-  required. See `OrigamIcon.md`'s Accessibility section for the full
-  rationale (#653).
 
 ## Theming notes
 

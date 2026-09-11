@@ -92,7 +92,7 @@ Each data entry shape (inside `series[0].data`):
 
 | Name | Type | Default | Description |
 |---|---|---|---|
-| `xAxisFormat` | `(value: number \| string) => string` | ⛔ **Sans effet sur ce composant** — `labelFor` only ever applies `yAxisFormat`; a hex grid has no x axis. La prop reste declaree (elle est heritee d'`IChartBaseProps`) et emet un avertissement de developpement si elle est passee. Voir #426. |
+| `xAxisFormat` | `(value: number \| string) => string` | `String(value)` | Applied to the `x` (column index) in tooltip and accessibility text. |
 | `yAxisFormat` | `(value: number) => string` | `String(value)` | Applied to the `value` field in tooltips. |
 
 ## Emits

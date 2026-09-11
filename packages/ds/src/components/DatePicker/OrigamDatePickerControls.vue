@@ -1,6 +1,5 @@
 <template>
 	<div
-			:id="id"
 			:class="datePickerControlsClasses"
 			:style="datePickerControlsStyles"
 	>
@@ -57,20 +56,15 @@
 		lang="ts"
 		setup
 >
-	import OrigamBtn from '../Btn/OrigamBtn.vue'
-	import OrigamBtnGroup from '../Btn/OrigamBtnGroup.vue'
-	import OrigamSpacer from '../Grids/OrigamSpacer.vue'
+	import { OrigamBtn, OrigamBtnGroup, OrigamSpacer } from "../../components"
 
-	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useProps , useStyle} from "../../composables"
 
-	import { DATE_MODE } from '../../enums/DatePicker/date-picker.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { DATE_MODE, MDI_ICONS } from "../../enums"
 
-	import type { IDatePickerControlsProps } from '../../interfaces/DatePicker/date-picker-controls.interface'
+	import type { IDatePickerControlsProps} from "../../interfaces"
 
-	import type { IDatePickerControlsEmits, IDatePickerControlsSlots } from '../../interfaces/DatePicker/date-picker-controls.interface'
+	import type { IDatePickerControlsEmits } from '../../interfaces/DatePicker/date-picker-controls.interface'
 
 	import { computed, StyleValue } from "vue"
 
@@ -88,32 +82,7 @@
 		viewMode: DATE_MODE.MONTH
 	})
 
-	/*********************************************************
-	 * Props declarees sans effet (#550, critere C1)
-	 *
-	 * @description
-	 * ⛔ Exposees dans la story, parfois documentees, et pourtant lues
-	 * nulle part. Elles ne sont ni retirees — ca casserait la story et le
-	 * type d'un consommateur pour une prop qui ne faisait deja rien — ni
-	 * cablees a un comportement invente. Elles avertissent une fois, en
-	 * dev, avec la raison exacte. Meme traitement que la famille Chart.
-	 ********************************************************/
-	useUnsupportedProp(
-		'OrigamDatePickerControls',
-		'active',
-		'the controls row reflects the picker view state of its parent; it has no active state of its own.',
-		() => props.active !== undefined
-	)
-	useUnsupportedProp(
-		'OrigamDatePickerControls',
-		'viewMode',
-		'the displayed mode comes from the picker through `mode`, never from this prop.',
-		() => props.viewMode !== DATE_MODE.MONTH
-	)
-
 	const emits = defineEmits<IDatePickerControlsEmits>()
-
-	defineSlots<IDatePickerControlsSlots>()
 
 	const {filterProps} = useProps<IDatePickerControlsProps>(props)
 
@@ -175,7 +144,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(datePickerControlsStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(datePickerControlsStyles)
 
 
 	/*********************************************************

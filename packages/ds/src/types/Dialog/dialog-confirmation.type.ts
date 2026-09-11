@@ -1,3 +1,3 @@
-import OrigamDialogConfirmation from '../../components/Dialog/OrigamDialogConfirmation.vue'
+import { OrigamDialogConfirmation } from '../../components'
 
 export type TOrigamDialogConfirmation = InstanceType<typeof OrigamDialogConfirmation>

@@ -1,0 +1,58 @@
+{
+  "progress-circular": {
+    "_comment": "Tokens for OrigamProgressCircular. Color is applied via JS (useTextColor composable) so 'color' tokens here document intent — they map to the CSS custom properties injected by the composable on each circle element.",
+    "display":            { "$type": "other",      "$value": "inline-flex" },
+    "align-items":        { "$type": "other",      "$value": "center" },
+    "justify-content":    { "$type": "other",      "$value": "center" },
+    "position":           { "$type": "other",      "$value": "relative" },
+    "vertical-align":     { "$type": "other",      "$value": "middle" },
+
+    "size-xs":            { "$type": "dimension",  "$value": "16px" },
+    "size-sm":            { "$type": "dimension",  "$value": "24px" },
+    "size-md":            { "$type": "dimension",  "$value": "32px" },
+    "size-lg":            { "$type": "dimension",  "$value": "48px" },
+    "size-xl":            { "$type": "dimension",  "$value": "64px" },
+
+    "transition-duration":    { "$type": "duration",    "$value": "{motion.duration.medium}" },
+    "transition-easing":      { "$type": "cubicBezier", "$value": "{motion.easing.standard}" },
+
+    "indeterminate-duration": { "$type": "duration",    "$value": "1400ms", "$description": "Duration of the indeterminate spin/dash animations. Not tokenised as a motion.duration.* because the 1.4s cadence is SVG animation-specific and differs from UI motion tokens." },
+
+    "svg": {
+      "width":            { "$type": "other",      "$value": "100%" },
+      "height":           { "$type": "other",      "$value": "100%" },
+      "position":         { "$type": "other",      "$value": "absolute" },
+      "z-index":          { "$type": "number",     "$value": 0 }
+    },
+
+    "underlay": {
+      "color":            { "$type": "color",      "$value": "{color.surface.disabled}", "$description": "Background ring. color.surface.disabled resolves to neutral.200 (light) / neutral.800 (dark) — a muted track color appropriate for both themes." },
+      "opacity":          { "$type": "number",     "$value": "{opacity.50}" },
+      "z-index":          { "$type": "number",     "$value": 1 }
+    },
+
+    "overlay": {
+      "color":            { "$type": "color",      "$value": "{color.action.primary.bg}", "$description": "Foreground arc — overridden by 'color' prop at runtime via useTextColor." },
+      "z-index":          { "$type": "number",     "$value": 2 }
+    },
+
+    "content": {
+      "align-items":      { "$type": "other",      "$value": "center" },
+      "display":          { "$type": "other",      "$value": "flex" },
+      "justify-content":  { "$type": "other",      "$value": "center" }
+    },
+
+    "success": {
+      "color":            { "$type": "color",      "$value": "{color.feedback.success.bg}" }
+    },
+    "warning": {
+      "color":            { "$type": "color",      "$value": "{color.feedback.warning.bg}" }
+    },
+    "danger": {
+      "color":            { "$type": "color",      "$value": "{color.feedback.danger.bg}" }
+    },
+    "info": {
+      "color":            { "$type": "color",      "$value": "{color.feedback.info.bg}" }
+    }
+  }
+}

@@ -1,3 +1,3 @@
-import OrigamSlideY from '../../components/Transition/OrigamSlideY.vue'
+import { OrigamSlideY } from "../../components"
 
 export type TOrigamSlideY = InstanceType<typeof OrigamSlideY>

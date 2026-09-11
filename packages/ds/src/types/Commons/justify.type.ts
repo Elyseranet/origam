@@ -1,3 +1,3 @@
-import { JUSTIFY } from '../../enums/Commons/justify.enum'
+import { JUSTIFY } from '../../enums'
 
 export type TJustify = `${JUSTIFY}`

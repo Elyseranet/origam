@@ -1,0 +1,37 @@
+{
+  "radio": {
+    "_comment": "Inherits SelectionControl tokens for layout. Radio-specific tokens cover the circular input visual + the selected dot.",
+    "input": {
+      "size":              { "$type": "dimension", "$value": "20px" },
+      "border-color":      { "$type": "color",     "$value": "{color.border.default}" },
+      "border-color-checked":  { "$type": "color", "$value": "{color.action.primary.bg}" },
+      "border-color-disabled": { "$type": "color", "$value": "{color.border.subtle}" },
+      "border-color-error":    { "$type": "color", "$value": "{color.feedback.danger.bg}" },
+      "border-width":      { "$type": "dimension", "$value": "{border.width.2}" },
+      "border-radius":     { "$type": "dimension", "$value": "{radius.full}" },
+      "background-color":  { "$type": "color",     "$value": "transparent" },
+      "background-color-disabled": { "$type": "color", "$value": "{color.surface.disabled}" },
+      "transition-duration":{ "$type": "duration", "$value": "{motion.duration.fast}" }
+    },
+
+    "dot": {
+      "size":             { "$type": "dimension", "$value": "10px" },
+      "background-color": { "$type": "color",     "$value": "{color.action.primary.bg}" },
+      "background-color-disabled": { "$type": "color", "$value": "{color.text.disabled}" },
+      "background-color-error":    { "$type": "color", "$value": "{color.feedback.danger.bg}" },
+      "border-radius":    { "$type": "dimension", "$value": "{radius.full}" },
+      "scale-from":       { "$type": "number",    "$value": 0 },
+      "scale-to":         { "$type": "number",    "$value": 1 }
+    },
+
+    "label": {
+      "color":          { "$type": "color",      "$value": "{color.text.primary}" },
+      "color-disabled": { "$type": "color",      "$value": "{color.text.disabled}" },
+      "color-error":    { "$type": "color",      "$value": "{color.feedback.danger.fgSubtle}" },
+      "font-size":      { "$type": "dimension",  "$value": "{font.size.md}" },
+      "padding-inline": { "$type": "dimension",  "$value": "{space.2}" }
+    },
+
+    "opacity-disabled": { "$type": "number", "$value": "{opacity.32}" }
+  }
+}

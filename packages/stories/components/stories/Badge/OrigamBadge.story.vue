@@ -23,10 +23,6 @@
 							:status="state.status"
 							:status-icon-position="state.statusIconPosition"
 							:icon="state.icon || undefined"
-							:prepend-icon="state.prependIcon || undefined"
-							:append-icon="state.appendIcon || undefined"
-							:prepend-avatar="state.prependAvatar || undefined"
-							:append-avatar="state.appendAvatar || undefined"
 							:location="state.location"
 							:offset-x="state.offsetX"
 							:offset-y="state.offsetY"
@@ -60,13 +56,7 @@
 					<HstSelect v-model="state.statusIconPosition" title="Status Position" :options="STATUS_POSITION_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Icons">
-					<HstSelect v-model="state.icon"        title="Icon"         :options="ICON_OPTIONS"/>
-					<HstSelect v-model="state.prependIcon" title="Prepend Icon" :options="ICON_OPTIONS"/>
-					<HstSelect v-model="state.appendIcon"  title="Append Icon"  :options="ICON_OPTIONS"/>
-				</StoryGroup>
-				<StoryGroup title="Avatars">
-					<HstText v-model="state.prependAvatar" title="Prepend Avatar (image URL)"/>
-					<HstText v-model="state.appendAvatar"  title="Append Avatar (image URL)"/>
+					<HstSelect v-model="state.icon" title="Icon" :options="ICON_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Location">
 					<HstSelect v-model="state.location" title="Location" :options="LOCATION_OPTIONS"/>
@@ -359,34 +349,6 @@
 			</template>
 		</Variant>
 
-		<Variant title="Events - click:prepend">
-			<div class="demo-host">
-				<origam-badge
-						:model-value="true"
-						:content="3"
-						:prepend-icon="heartIcon"
-						bg-color="primary"
-						@click:prepend="logEvent('click:prepend', $event)"
-				>
-					<origam-avatar text="AP"/>
-				</origam-badge>
-			</div>
-		</Variant>
-
-		<Variant title="Events - click:append">
-			<div class="demo-host">
-				<origam-badge
-						:model-value="true"
-						:content="3"
-						:append-icon="heartIcon"
-						bg-color="primary"
-						@click:append="logEvent('click:append', $event)"
-				>
-					<origam-avatar text="AP"/>
-				</origam-badge>
-			</div>
-		</Variant>
-
 				<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IBadgeProps>({ modelValue: true, content: 3, bgColor: 'primary', location: 'top right' })"
@@ -414,8 +376,6 @@
 					<HstSelect v-model="state.location"  title="Location"  :options="LOCATION_OPTIONS"/>
 					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
 					<HstSelect v-model="state.fontWeight" title="Font Weight" :options="FONT_WEIGHT_OPTIONS"/>
-					<HstSelect v-model="state.prependIcon" title="Prepend Icon" :options="ICON_OPTIONS"/>
-					<HstSelect v-model="state.appendIcon"  title="Append Icon"  :options="ICON_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.modelValue" title="Model Value"/>

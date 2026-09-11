@@ -1,6 +1,6 @@
 <template>
 	<component
-			:is="tag"
+			:is="props.tag"
 			:id="id"
 			role="group"
 			:class="btnGroupClasses"
@@ -29,25 +29,22 @@
 		lang="ts"
 		setup
 >
-	import OrigamBtn from './OrigamBtn.vue'
-	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
-	import { useDensity } from '../../composables/Commons/density.composable'
-	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useSize } from '../../composables/Commons/size.composable'
-	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-	import { useVariant } from '../../composables/Commons/variant.composable'
+	import { OrigamBtn, OrigamDefaultsProvider } from '../../components'
+	import {
+		useDefaults,
+		useDensity,
+		usePassedProps,
+		useProps,
+		useSize,
+		useStateEffect,
+		useStyle,
+		useVariant
+	} from '../../composables'
 
-	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { DENSITY } from '../../enums'
 
-	import type {
-		IBtnGroupEmits,
-		IBtnGroupProps,
-		IBtnGroupSlots
-	} from '../../interfaces/Btn/btn-group.interface'
-	import type { IBtnProps } from '../../interfaces/Btn/btn.interface'
-	import { omitUndefined } from '../../utils/Commons/commons.util'
+	import type { IBtnGroupProps, IBtnProps } from '../../interfaces'
+	import { omitUndefined } from '../../utils'
 
 	import { computed, StyleValue, useSlots } from 'vue'
 
@@ -58,22 +55,31 @@
 	 * Props and slot defaults propagation to child buttons
 	 * via OrigamDefaultsProvider.
 	 ********************************************************/
-	const props = withDefaults(defineProps<IBtnGroupProps>(), {tag: 'div', density: DENSITY.DEFAULT, items: () => []})
+	const _props = withDefaults(defineProps<IBtnGroupProps>(), {tag: 'div', density: DENSITY.DEFAULT, items: () => []})
+
+	// `useDefaults` resolves the GROUP's OWN props (rounded/border/elevation/…)
+	// against the closest `provideDefaults({ 'origam-btn-group': … })` (a
+	// marketing theme's `components` block). Separate from `slotDefaults`/
+	// `OrigamDefaultsProvider` below, which pushes THIS component's resolved
+	// density/color down to CHILD `<origam-btn>` instances under the
+	// `'origam-btn'` key — that mechanism was already working; this hook
+	// covers the GROUP's own visual surface. Without it a theme's
+	// `elevation`/`rounded` config for the group itself was silently
+	// dropped — confirmed via computed-style (`box-shadow: none` on a
+	// themed Light/Dark toggle despite `elevation: 2` configured). Mirrors
+	// `OrigamBtn.vue`'s exact pattern.
+	const props = useDefaults(_props)
 
 	const {filterProps} = useProps<IBtnGroupProps>(props)
-
-	defineEmits<IBtnGroupEmits>()
-
-	defineSlots<IBtnGroupSlots>()
 
 	// Push the visual-token props down to every descendant `<origam-btn>`
 	// as DEFAULTS — children that pass their own `density` / `color` /
 	// `bgColor` / etc. still win (that's the contract: parent provides
 	// defaults, child overrides). Children consume this map via
-	// the ADR-005 resolver, which patches `instance.props` on every mount.
+	// `useDefaults(props)` inside `OrigamBtn.vue`.
 	//
 	// A prop the CONSUMER never passed to `<origam-btn-group>` must NOT be
-	// forwarded — else `mergeDeep` (used by `provideDefaults`
+	// forwarded — else `mergeDeep` (used by `provideDefaults`/`useDefaults`
 	// to combine this map with an ancestor/theme `'origam-btn'` defaults
 	// entry) copies it unconditionally and silently overwrites the theme
 	// default (e.g. `origam-btn: { density: 'comfortable' }`) — see #263,
@@ -110,16 +116,14 @@
 			// override to each child OrigamBtn — only when the consumer
 			// actually set it.
 			hover: wasPropPassed('hover') ? props.hover : undefined,
-			active: wasPropPassed('active') ? props.active : undefined,
-			hoverClass: wasPropPassed('hoverClass') ? props.hoverClass : undefined,
-			activeClass: wasPropPassed('activeClass') ? props.activeClass : undefined
+			active: wasPropPassed('active') ? props.active : undefined
 		})
 	}))
 
 	// The `items` array path used to manually merge with `props.x ?? item.x`,
 	// which made the parent OVERRIDE the item (the inverse of the documented
 	// "parent default, item override" contract). The merge is no longer
-	// needed — the ADR-005 resolver enforces the correct
+	// needed — `useDefaults` inside each child enforces the correct
 	// resolution order and respects per-item overrides automatically.
 	const items = computed(() => (props.items ?? []) as Array<IBtnProps>)
 
@@ -210,17 +214,7 @@
 		]
 	})
 
-	/*********************************************************
-	 * useStyle
-	 *
-	 * @description
-	 * #381 — the `id` returned by useStyle is a GENERATED identifier,
-	 * only meant for the scoped stylesheet selector. Without
-	 * `() => props.id` here, it shadowed the `id` PROP of the same
-	 * name: the template's `:id="id"` on the root rendered the
-	 * generated id, never the consumer's.
-	 ********************************************************/
-	const {id, css, load, isLoaded, unload} = useStyle(btnGroupStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(btnGroupStyles)
 
 	/*********************************************************
 	 * Expose

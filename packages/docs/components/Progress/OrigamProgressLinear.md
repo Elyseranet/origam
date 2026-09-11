@@ -38,13 +38,12 @@ buffer edge.
         :model-value="35"
         :buffer-value="60"
         stream
+        active
     />
 </template>
 ```
 
-Note: the `stream` indicator (and the indeterminate bar) only animates
-while `active` is true — `active` defaults to `true`, so this runs out of
-the box. Pass `:active="false"` to pause it (e.g. an off-screen bar).
+Note: the `stream` indicator only animates when `active` is true.
 
 ## Thickness
 
@@ -167,9 +166,7 @@ interface IProgressLinearProps extends IProgressTypeProps, IRoundedProps, ILocat
 
 ## Design tokens consumed
 
-`<OrigamProgressLinear>` reads its variables from
-`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
-under `packages/ds/src/assets/scss/tokens/`).
+`<OrigamProgressLinear>` reads from `tokens/component/progress-linear.json`.
 
 | CSS variable                                                 | Token reference                          |
 |--------------------------------------------------------------|------------------------------------------|
@@ -184,28 +181,11 @@ under `packages/ds/src/assets/scss/tokens/`).
 
 ## Accessibility
 
-`<OrigamProgressLinear>` owns its full ARIA contract (#500) — it is
-accessible **standalone**, with no `<OrigamProgress>` wrapper required.
-
-- Renders `role="progressbar"` on its own root.
+- Renders with `role="progressbar"` (set by parent `OrigamProgress`).
 - `aria-valuemin="0"`, `aria-valuemax` mirrors `max`.
-- `aria-valuenow` is set to the normalised value in determinate mode.
-  In `indeterminate` mode it is **omitted entirely** (not set to `0`) —
-  the ARIA spec reserves `aria-valuenow` for a known value, and
-  `indeterminate` progress has none.
-- `aria-busy="true"` is set while `indeterminate`.
-- `aria-label` resolves the `label` prop (a locale key, default
-  `origam.loading`) through the DS `t()` mechanism.
-- `aria-hidden` mirrors the `active` prop (default `true`) — set
-  `active="false"` to intentionally hide an off-screen or paused
-  indicator.
+- `aria-valuenow` is set when not `indeterminate`.
 - When `clickable` is enabled, the bar accepts pointer input - pair with a
   visible label so the seek behaviour is discoverable.
-
-When mounted through `<OrigamProgress type="linear">`, the wrapper
-forwards `label`/`active`/`modelValue`/`max`/`indeterminate` down to this
-component via `filterProps` — the wrapper itself declares no ARIA
-attribute, so there is only ever one `role="progressbar"` in the DOM.
 
 ## Theming notes
 

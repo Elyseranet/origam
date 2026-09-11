@@ -1,7 +1,6 @@
 <template>
 	<component
 			:is="tag"
-			:id="id"
 			class="origam-inline-edit"
 			:class="rootClasses"
 			:style="rootStyles"
@@ -46,8 +45,6 @@
 						:data-cy="`origam-inline-edit-action-${INLINE_EDIT_ACTION.EDIT}`"
 						size="x-small"
 						variant="text"
-						tabindex="-1"
-						aria-hidden="true"
 						@click="handleEnterEdit"
 				/>
 			</div>
@@ -69,12 +66,11 @@
 						:model-value="draft"
 						:placeholder="resolvedPlaceholder"
 						:disabled="disabled || isPending"
-						:aria-label="fieldAriaLabel"
 						:aria-invalid="error !== null"
 						:aria-describedby="error !== null ? errorId : undefined"
 						class="origam-inline-edit__field"
 						data-cy="origam-inline-edit-input"
-						hide-details
+            hide-details
 						@update:model-value="handleInput"
 						@keydown="handleKeyDown"
 						@blur="handleBlur"
@@ -124,7 +120,6 @@
 						:type="inputType"
 						:placeholder="resolvedPlaceholder"
 						:disabled="disabled || isPending"
-						:aria-label="fieldAriaLabel"
 						:aria-invalid="error !== null"
 						:aria-describedby="error !== null ? errorId : undefined"
 						class="origam-inline-edit__field"
@@ -206,20 +201,16 @@
 		watch
 	} from 'vue'
 
-	import OrigamBtn from '../Btn/OrigamBtn.vue'
-	import OrigamTextField from '../TextField/OrigamTextField.vue'
-	import OrigamTextareaField from '../TextareaField/OrigamTextareaField.vue'
+	import { OrigamBtn, OrigamTextField, OrigamTextareaField } from '../../components'
 
-	import { useInlineEdit } from '../../composables/InlineEdit/inline-edit.composable'
-	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useTypography } from '../../composables/Commons/typography.composable'
+	import { useInlineEdit, useTypography } from '../../composables'
 
-	import { INLINE_EDIT_ACTION } from '../../enums/InlineEdit/inline-edit.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { INLINE_EDIT_ACTION, MDI_ICONS } from '../../enums'
 
-	import type { IInlineEditProps } from '../../interfaces/InlineEdit/inline-edit.interface'
+	import type {
+		IInlineEditProps} from '../../interfaces'
 
-	import type { IInlineEditEmits, IInlineEditSlots } from '../../interfaces/InlineEdit/inline-edit.interface'
+	import type { IInlineEditEmits } from '../../interfaces/InlineEdit/inline-edit.interface'
 
 	/*********************************************************
 	 * Global
@@ -229,36 +220,10 @@
 	 * here (not pulled from a const) because the Vue SFC compiler
 	 * analyses `withDefaults` statically and only resolves literals —
 	 * cf. CLAUDE.md "withDefaults — inline literals only" rule.
-	 *
-	 * @description
-	 * `placeholder` therefore has NO literal default: it is localised,
-	 * and a `t()` call is not a literal. `resolvedPlaceholder` falls back
-	 * to `t('origam.inline_edit.placeholder')` instead.
-	 ********************************************************/
-	/*********************************************************
-	 * `tag` default — 'div', not 'span' (arbitrage utilisateur, C6)
-	 *
-	 * @description
-	 * The root used to default to `<span>` (phrasing content) while edit
-	 * mode renders `<OrigamTextField>` / `<OrigamTextareaField>`, both of
-	 * which render a `<div>` (`OrigamField`) — a `<div>` is flow content,
-	 * not phrasing content, so a `<span>` could never legally contain it.
-	 * `.origam-inline-edit { display: inline-flex }` already overrides
-	 * the box type regardless of the underlying tag, so switching the
-	 * default to `<div>` is visually neutral (measured in Chromium — see
-	 * `packages/tests/e2e/inline-edit-tag.spec.ts`) while making the
-	 * rendered HTML valid again.
-	 * @description
-	 * ⛔ Migration note: a consumer who placed `<origam-inline-edit>`
-	 * inside a phrasing-only ancestor (`<p>`, `<label>`, …) relied on the
-	 * OLD default. A `<div>` closes an open `<p>` implicitly when the
-	 * browser's HTML parser is involved (raw HTML text / SSR markup being
-	 * parsed on load) — pass `tag="span"` explicitly to keep the previous
-	 * behaviour; the prop itself did not change, only its default.
 	 ********************************************************/
 	const props = withDefaults(defineProps<IInlineEditProps>(), {
-		tag: 'div',
-		placeholder: undefined,
+		tag: 'span',
+		placeholder: 'Click to edit',
 		rules: undefined,
 		validate: undefined,
 		autoFocus: true,
@@ -276,21 +241,11 @@
 
 	const emit = defineEmits<IInlineEditEmits>()
 
-	defineSlots<IInlineEditSlots>()
-
 	/*********************************************************
 	 * Model — reactive accessor so the composable always reads the
 	 * up-to-date value (props are not Refs themselves).
 	 ********************************************************/
 	const modelRef = computed<string | number>(() => props.modelValue)
-
-	/*********************************************************
-	 * i18n — every user-facing string of this component goes through the
-	 * DS locale provider. Strict `useLocale()` matches the 74 other
-	 * components; the plugin is already required here anyway, since edit
-	 * mode renders `OrigamTextField` which calls it strictly too.
-	 ********************************************************/
-	const {t} = useLocale()
 
 	/*********************************************************
 	 * Composable — owns the IDLE → EDITING → VALIDATING state machine.
@@ -305,7 +260,7 @@
 		confirm,
 		cancel,
 		setValue
-	} = useInlineEdit(modelRef, () => ({
+	} = useInlineEdit(modelRef, {
 		rules: props.rules,
 		validate: props.validate,
 		trim: props.trim,
@@ -322,9 +277,8 @@
 			emit('update:modelValue', out)
 		},
 		onCancel: () => emit('cancel'),
-		onError: (message: string) => emit('validate-error', message),
-		invalidMessage: t('origam.inline_edit.invalid_value')
-	}))
+		onError: (message: string) => emit('validate-error', message)
+	})
 
 	/*********************************************************
 	 * Refs / IDs
@@ -346,44 +300,16 @@
 
 	const isEmpty = computed<boolean>(() => displayValue.value.trim().length === 0)
 
-	const resolvedPlaceholder = computed<string>(() => props.placeholder ?? t('origam.inline_edit.placeholder'))
+	const resolvedPlaceholder = computed<string>(() => props.placeholder ?? 'Click to edit')
 
 	const displayAriaLabel = computed<string>(() => {
 		const label = isEmpty.value ? resolvedPlaceholder.value : displayValue.value
-		return t('origam.inline_edit.edit_aria_label', label)
+		return `Edit ${label}`
 	})
 
-	/*********************************************************
-	 * Accessible names
-	 *
-	 * @description
-	 * The pencil button gets the SHORT label, not the same
-	 * `"Edit {value}"` string as the display affordance: with
-	 * `showActions`, both are focusable at once and previously carried
-	 * the IDENTICAL name, so a screen-reader user heard the same command
-	 * announced twice with no way to tell them apart. The underlying
-	 * redundancy — two tab stops for one action — is settled at the
-	 * template level: the pencil carries `tabindex="-1"` + `aria-hidden`,
-	 * so it stays visible and clickable for mouse users but leaves the
-	 * keyboard path, where the display affordance already does the job.
-	 * Nothing disappears on screen. Its `aria-label` is kept as a
-	 * defensive net for a consumer who strips `aria-hidden`.
-	 *
-	 * @description
-	 * `fieldAriaLabel` closes a harder gap: the edit field had NO
-	 * accessible name at all. Neither `label` nor `aria-label` reached
-	 * OrigamTextField / OrigamTextareaField, and `OrigamField` renders a
-	 * `<label>` only when `props.label || slots.label` is set — so the
-	 * one naming source left was `placeholder`, the last-resort branch of
-	 * the accname algorithm, which yields NO name under `placeholder=""`.
-	 * `aria-label` is neither an `on*` handler nor `class/style/id/data-*`,
-	 * so `filterInputAttrs` routes it to `inputAttrs` and it lands on the
-	 * native `<input>` / `<textarea>`, not on the wrapper.
-	 ********************************************************/
-	const editActionLabel = computed<string>(() => t('origam.inline_edit.edit'))
-	const confirmActionLabel = computed<string>(() => t('origam.inline_edit.confirm'))
-	const cancelActionLabel = computed<string>(() => t('origam.inline_edit.cancel'))
-	const fieldAriaLabel = computed<string>(() => t('origam.inline_edit.field_aria_label'))
+	const editActionLabel = computed<string>(() => `Edit ${displayValue.value || resolvedPlaceholder.value}`)
+	const confirmActionLabel = 'Confirm'
+	const cancelActionLabel = 'Cancel'
 
 	/*********************************************************
 	 * Edit / confirm / cancel handlers — own the SFC-level emits.
@@ -508,7 +434,7 @@
 		display: inline-flex;
 		flex-direction: row;
 		align-items: flex-start;
-		gap: var(--origam-inline-edit__actions---gap, 4px);
+		gap: var(--origam-inline-edit---actions-gap, var(--origam-inline-edit__actions---gap, 4px));
 		max-width: 100%;
 		transition: opacity var(--origam-inline-edit---transition-duration, 160ms) ease;
 	}
@@ -521,38 +447,6 @@
 	.origam-inline-edit--loading-on-confirm {
 		opacity: 0.75;
 		pointer-events: none;
-	}
-
-	/*********************************************************
-	 * ⛔ C1 (vague 3) — les cinq classes d'etat racine suivantes
-	 * (--editing, --pending, --multiline, --has-error, --show-actions)
-	 * etaient posees sur la racine sans la moindre regle SCSS : la classe
-	 * existait, aucune ne peignait. Chacune produit desormais un style
-	 * calcule reellement distinct, mesure en Playwright (voir
-	 * packages/tests/e2e/inline-edit.spec.ts, describe "root state classes").
-	 *********************************************************/
-
-	.origam-inline-edit--editing {
-		background-color: var(--origam-inline-edit--editing---background-color, var(--origam-color__surface---raised));
-		border-radius: var(--origam-inline-edit__display---border-radius, 4px);
-	}
-
-	.origam-inline-edit--pending {
-		cursor: progress;
-	}
-
-	.origam-inline-edit--multiline {
-		width: 100%;
-	}
-
-	.origam-inline-edit--has-error {
-		outline: 1px solid var(--origam-inline-edit--has-error---outline-color, var(--origam-color__feedback--danger---border));
-		outline-offset: 2px;
-		border-radius: var(--origam-inline-edit__display---border-radius, 4px);
-	}
-
-	.origam-inline-edit--show-actions {
-		align-items: center;
 	}
 
 	.origam-inline-edit__display {
@@ -591,7 +485,7 @@
 
 	.origam-inline-edit__field {
 		flex: 1;
-		min-width: var(--origam-inline-edit__input---min-width, 180px);
+		min-width: var(--origam-inline-edit__field---min-width, 180px);
 	}
 
 	.origam-inline-edit__error {

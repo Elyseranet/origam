@@ -1,3 +1,3 @@
-import OrigamLayout from '../../components/Layout/OrigamLayout.vue'
+import { OrigamLayout } from "../../components"
 
 export type TOrigamLayout = InstanceType<typeof OrigamLayout>

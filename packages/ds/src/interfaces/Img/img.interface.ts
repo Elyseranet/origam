@@ -1,16 +1,13 @@
 import type {
     IBgColorProps,
-    IColorProps
-} from '../Commons/color.interface'
-import type { IIntersectionObserverInit } from '../Commons/commons.interface'
-import type { ILazyProps } from '../Commons/lazy.interface'
-import type { IResponsiveProps } from '../Responsive/responsive.interface'
-import type { ITransitionComponentProps } from '../Commons/transition-component.interface'
+    IColorProps,
+    IIntersectionObserverInit,
+    ILazyProps,
+    IResponsiveProps,
+    ITransitionComponentProps
+} from '../../interfaces'
 
-import type {
-    TCrossOrigin,
-    TReferrerPolicy
-} from '../../types/Img/img.type'
+import type { TCrossOrigin, TReferrerPolicy } from '../../types'
 
 export interface IImgProps extends IColorProps, IBgColorProps, IResponsiveProps, ITransitionComponentProps, ILazyProps {
     alt?: string
@@ -42,12 +39,5 @@ export interface IImgEmits {
     (e: 'loadstart', value: { src: string }): void
     (e: 'load', value: { src: string }): void
     (e: 'error', value: { src: string }): void
-}
-
-/** Slot signatures for `<OrigamImg>`. */
-export interface IImgSlots {
-    placeholder?: () => any
-    error?: () => any
-    default?: () => any
 }
 

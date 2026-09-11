@@ -1,0 +1,53 @@
+{
+  "carousel": {
+    "aspect-ratio":            { "$type": "other",      "$value": "auto" },
+    "position":                { "$type": "other",      "$value": "relative" },
+    "overflow":                { "$type": "other",      "$value": "hidden" },
+    "width":                   { "$type": "dimension",  "$value": "100%" },
+
+    "transition-duration":     { "$type": "duration",   "$value": "{motion.duration.slow}" },
+    "transition-easing":       { "$type": "cubicBezier","$value": "{motion.easing.standard}" },
+
+    "controls": {
+      "background-color":      { "$type": "color",      "$value": "rgba(0, 0, 0, 0.4)" },
+      "color":                 { "$type": "color",      "$value": "{color.text.primary}" },
+      "height":                { "$type": "dimension",  "$value": "50px" },
+      "width":                 { "$type": "dimension",  "$value": "100%" },
+      "position":              { "$type": "other",      "$value": "absolute" },
+      "position-bottom":       { "$type": "dimension",  "$value": "{space.0}" },
+      "z-index":               { "$type": "number",     "$value": "{zIndex.raised}" }
+    },
+
+    "controls-item": {
+      "margin-inline":         { "$type": "dimension",  "$value": "{space.2}" },
+      "opacity":               { "$type": "number",     "$value": "{opacity.50}" },
+      "opacity-active":        { "$type": "number",     "$value": "{opacity.100}" },
+      "opacity-hover":         { "$type": "number",     "$value": "{opacity.87}" }
+    },
+
+    "delimiters": {
+      "color":                 { "$type": "color",      "$value": "{color.text.primary}" },
+      "active-color":          { "$type": "color",      "$value": "{color.action.primary.bg}" },
+      "gap":                   { "$type": "dimension",  "$value": "{space.2}" },
+      "padding":               { "$type": "dimension",  "$value": "{space.2}" }
+    },
+
+    "progress": {
+      "position":              { "$type": "other",      "$value": "absolute" },
+      "position-top":          { "$type": "dimension",  "$value": "{space.0}" },
+      "position-bottom":       { "$type": "other",      "$value": "auto" },
+      "position-left":         { "$type": "dimension",  "$value": "{space.0}" },
+      "position-right":        { "$type": "dimension",  "$value": "{space.0}" },
+      "z-index":               { "$type": "number",     "$value": "{zIndex.raised}" },
+      "margin":                { "$type": "dimension",  "$value": "{space.0}" }
+    },
+
+    "hide-delimiter-background": {
+      "controls-background":   { "$type": "color",      "$value": "transparent" }
+    },
+
+    "vertical-delimiters": {
+      "controls-width":        { "$type": "dimension",  "$value": "50px" }
+    }
+  }
+}

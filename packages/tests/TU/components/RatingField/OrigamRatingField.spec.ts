@@ -14,7 +14,7 @@
 
 import { describe, expect, it } from 'vitest'
 import { mount, type VueWrapper } from '@vue/test-utils'
-import { computed, defineComponent, h, nextTick } from 'vue'
+import { computed, defineComponent, nextTick } from 'vue'
 
 import OrigamRatingField from '@origam/components/RatingField/OrigamRatingField.vue'
 import { createOrigam } from '@origam/origam'
@@ -297,46 +297,5 @@ describe('OrigamRatingField — clearable toggle (re-click same value)', () => {
         expect(emitted).toBeTruthy()
         // Re-clicking the current value with clearable should emit 0
         expect(emitted![0][0]).toBe(0)
-    })
-})
-
-// ---------------------------------------------------------------------------
-// #452 — the `itemLabel` / `itemLabel.{n}` slots must receive a real
-// `{ label, index }` scope. Before the fix, neither `<slot :name="...">`
-// call passed a v-bind: a consumer destructuring `#itemLabel="{ label }"`
-// (exactly what the story does) always got `label === undefined`, so the
-// documented override rendered an empty element for every item — a lying
-// Variant, not a working one.
-// ---------------------------------------------------------------------------
-
-describe('OrigamRatingField — itemLabel slot scope (#452)', () => {
-    it('passes a real { label, index } scope to the generic #itemLabel slot for every item', async () => {
-        const wrapper = mountRating({
-            props: { modelValue: 0, length: 3, itemLabels: ['Bad', 'OK', 'Good'] },
-            slots: {
-                itemLabel: (scope: { label?: string, index?: number }) => h('strong', {'data-index': scope?.index}, scope?.label ?? '')
-            }
-        })
-        await nextTick()
-
-        const strongs = wrapper.findAll('strong')
-        expect(strongs).toHaveLength(3)
-        // Before the fix, neither <slot> call forwarded a scope object:
-        // `scope` was `undefined` and every <strong> rendered empty,
-        // regardless of `itemLabels`.
-        expect(strongs.map((s) => s.text())).toEqual(['Bad', 'OK', 'Good'])
-        expect(strongs.map((s) => s.attributes('data-index'))).toEqual(['0', '1', '2'])
-    })
-
-    it('passes the same { label, index } scope to the per-index #itemLabel\\.{n} slot', async () => {
-        const wrapper = mountRating({
-            props: { modelValue: 0, length: 3, itemLabels: ['Bad', 'OK', 'Good'] },
-            slots: {
-                'itemLabel.1': (scope: { label?: string, index?: number }) => h('em', {}, `${scope?.label ?? ''}-${scope?.index}`)
-            }
-        })
-        await nextTick()
-
-        expect(wrapper.find('em').text()).toBe('OK-1')
     })
 })

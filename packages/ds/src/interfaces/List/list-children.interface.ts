@@ -1,5 +1,4 @@
-import type { IListGroupActivatorSlotProps } from './list-group.interface'
-import type { TListItemType } from '../../types/List/list-item.type'
+import type { TListItemType } from '../../types'
 
 export interface IListItemChildren {
     items: Array<IInternalListItemChildren>
@@ -23,29 +22,4 @@ export interface IInternalListItem<T = any> extends IInternalItem<T> {
 export interface IInternalItem<T = any> {
     value?: any
     raw: T
-}
-
-/*********************************************************
- * IListChildrenEmits
- *
- * @description
- * `<OrigamListChildren>` emits nothing of its own — it is a pure
- * recursive renderer over `items`, delegating divider/subheader/group/
- * item chrome to child DS components.
- ********************************************************/
-export interface IListChildrenEmits {}
-
-/** Slot signatures for `<OrigamListChildren>`. `divider` / `subheader` /
- *  `group` / `item` all forward the same `{ itemProps }` shape — the
- *  resolved item's `props` bag, spread onto whichever DS component
- *  renders that row. */
-export interface IListChildrenSlots<T = any> {
-    default?: () => any
-    children?: (data: { item: IInternalListItemChildren<T>, index: number }) => any
-    divider?: (data: { itemProps: IInternalListItem<T>['props'] }) => any
-    subheader?: (data: { itemProps: IInternalListItem<T>['props'] }) => any
-    subheaderTitle?: (data: { title?: string }) => any
-    group?: (data: { itemProps: IInternalListItem<T>['props'] }) => any
-    groupActivator?: (data: IListGroupActivatorSlotProps) => any
-    item?: (data: { itemProps: IInternalListItem<T>['props'] }) => any
 }

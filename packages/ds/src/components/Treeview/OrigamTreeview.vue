@@ -5,7 +5,7 @@
 			:style="treeviewStyles"
 			role="tree"
 			:aria-label="ariaLabel || 'File tree'"
-			:aria-multiselectable="selectMode === TREEVIEW_SELECT_MODE.MULTIPLE || undefined"
+			:aria-multiselectable="selectMode === 'multiple' || undefined"
 			@keydown="handleKeydown"
 	>
 		<origam-treeview-node
@@ -14,17 +14,7 @@
 				:node="node"
 				:depth="0"
 				:data-cy="`treeview-node-${node.id}`"
-		>
-			<template
-					v-if="$slots.node"
-					#node="nodeProps"
-			>
-				<slot
-						name="node"
-						v-bind="nodeProps"
-				/>
-			</template>
-		</origam-treeview-node>
+		/>
 	</div>
 </template>
 
@@ -35,24 +25,24 @@
 	import { computed, provide, ref, watch } from 'vue'
 	import type { StyleValue } from 'vue'
 
-	import OrigamTreeviewNode from './OrigamTreeviewNode.vue'
-	import { ORIGAM_TREEVIEW_KEY } from '../../consts/Treeview/treeview.const'
-	import { DENSITY } from '../../enums/Commons/density.enum'
-	import { SIZES } from '../../enums/Commons/size.enum'
-	import { TREEVIEW_SELECT_MODE, TREEVIEW_SELECTABLE_NODES } from '../../enums/Treeview/treeview.enum'
-	import { useDensity } from '../../composables/Commons/density.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useSize } from '../../composables/Commons/size.composable'
-	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
+	import { OrigamTreeviewNode } from '../../components'
+	import { ORIGAM_TREEVIEW_KEY } from '../../consts'
+	import { DENSITY, SIZES } from '../../enums'
+	import {
+	useDensity,
+	useProps,
+	useSize,
+	useStateEffect,
+	useStyle
+} from '../../composables'
 
-	import type { ITreeviewEmits, ITreeviewProps, ITreeviewSlots } from '../../interfaces/Treeview/treeview.interface'
+	import type { ITreeviewProps } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
 	 ********************************************************/
 
-	const props = withDefaults(defineProps<ITreeviewProps>(), {
+	const props = withDefaults(defineProps<ITreeviewProps & { ariaLabel?: string }>(), {
 		selectMode: 'none',
 		selectableNodes: 'leaf',
 		showLines: true,
@@ -62,9 +52,12 @@
 		ariaLabel: undefined
 	})
 
-	const emit = defineEmits<ITreeviewEmits>()
-
-	defineSlots<ITreeviewSlots>()
+	const emit = defineEmits<{
+		(e: 'update:modelValue', value: string[] | string): void
+		(e: 'update:expandedValue', value: string[]): void
+		(e: 'select', id: string): void
+		(e: 'toggle', id: string, expanded: boolean): void
+	}>()
 
 	const { filterProps } = useProps<ITreeviewProps>(props)
 
@@ -111,11 +104,11 @@
 
 	const toggleSelected = (id: string) => {
 		const mode = props.selectMode
-		if (mode === TREEVIEW_SELECT_MODE.NONE) return
+		if (mode === 'none') return
 
 		const next = new Set(selectedSet.value)
 
-		if (mode === TREEVIEW_SELECT_MODE.SINGLE) {
+		if (mode === 'single') {
 			if (next.has(id)) {
 				next.clear()
 			} else {
@@ -147,8 +140,8 @@
 		toggleSelected,
 		isExpanded,
 		isSelected,
-		selectMode: computed(() => props.selectMode ?? TREEVIEW_SELECT_MODE.NONE),
-		selectableNodes: computed(() => props.selectableNodes ?? TREEVIEW_SELECTABLE_NODES.LEAF),
+		selectMode: computed(() => props.selectMode ?? 'none'),
+		selectableNodes: computed(() => props.selectableNodes ?? 'leaf'),
 		showLines: computed(() => props.showLines !== false),
 		expandOnClick: computed(() => props.expandOnClick === true),
 		color: computed(() => {
@@ -203,17 +196,7 @@
 		sizeClasses.value,
 		props.class
 	])
-	/*********************************************************
-	 * useStyle
-	 *
-	 * @description
-	 * #381 — the `id` returned by useStyle is a GENERATED identifier,
-	 * only meant for the scoped stylesheet selector. Without
-	 * `() => props.id` here, it shadowed the `id` PROP of the same
-	 * name: the template's `:id="id"` on the root rendered the
-	 * generated id, never the consumer's.
-	 ********************************************************/
-	const {id, css, load, isLoaded, unload} = useStyle(treeviewStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(treeviewStyles)
 
 
 	/*********************************************************

@@ -1,3 +1,3 @@
-import OrigamRadioBtn from '../../components/Radio/OrigamRadioBtn.vue'
+import { OrigamRadioBtn } from "../../components"
 
 export type TOrigamRadioBtn = InstanceType<typeof OrigamRadioBtn>

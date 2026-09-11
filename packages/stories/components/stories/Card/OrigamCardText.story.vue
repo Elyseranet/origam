@@ -20,10 +20,6 @@
 							:border="state.border"
 							:border-color="state.borderColor"
 							:border-style="state.borderStyle"
-							:border-top="state.borderTop"
-							:border-right="state.borderRight"
-							:border-bottom="state.borderBottom"
-							:border-left="state.borderLeft"
 							:rounded="state.rounded"
 							:rounded-top-right="state.roundedTopRight"
 							:rounded-top-left="state.roundedTopLeft"
@@ -53,12 +49,6 @@
 					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
 					<HstText   v-model="state.borderColor" title="Border Color"/>
 					<HstSelect v-model="state.borderStyle" title="Border Style" :options="BORDER_STYLE_OPTIONS"/>
-				</StoryGroup>
-				<StoryGroup title="Border — per side">
-					<HstSelect v-model="state.borderTop"    title="Border Top"    :options="BORDER_OPTIONS"/>
-					<HstSelect v-model="state.borderRight"  title="Border Right"  :options="BORDER_OPTIONS"/>
-					<HstSelect v-model="state.borderBottom" title="Border Bottom" :options="BORDER_OPTIONS"/>
-					<HstSelect v-model="state.borderLeft"   title="Border Left"   :options="BORDER_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Tag">
 					<HstSelect v-model="state.tag" title="Tag" :options="TAG_OPTIONS"/>
@@ -127,18 +117,6 @@
 					<p>It supports any HTML markup.</p>
 				</origam-card-text>
 			</origam-card>
-		</Variant>
-
-		<Variant title="Prop — border (VRT matrix)">
-			<div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;" data-cy="card-text-border-matrix">
-				<origam-card-text data-cy="card-text-border-unset">Text</origam-card-text>
-				<origam-card-text border="none" data-cy="card-text-border-none">Text</origam-card-text>
-				<origam-card-text border data-cy="card-text-border-bool">Text</origam-card-text>
-				<origam-card-text border="thin" data-cy="card-text-border-thin">Text</origam-card-text>
-				<origam-card-text border="thick" data-cy="card-text-border-thick">Text</origam-card-text>
-				<origam-card-text border="top" data-cy="card-text-border-top">Text</origam-card-text>
-				<origam-card-text :border="4" data-cy="card-text-border-four">Text</origam-card-text>
-			</div>
 		</Variant>
 
 		<Variant

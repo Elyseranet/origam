@@ -9,13 +9,8 @@ import { expect, test } from '@playwright/test'
  *   1  → Functional
  *   2  → Prop — fullHeight
  *   3  → Prop — drawer (with Drawer child)
- *   4  → Prop — app-bar + drawer (layout order)
- *   5  → Slots - Default
- *   6  → Default (playground)
- *
- * ⚠️  Cette table décale dès qu'un <Variant> est inséré dans la story :
- * `variantId` vaut `<storyId>-<index>` et l'index est la POSITION dans le
- * fichier. Elle est vérifiée par `node e2e/_support/audit-variant-pins.mjs`.
+ *   4  → Slots - Default
+ *   5  → Default (playground)
  */
 
 const STORY_ID   = 'components-stories-app-origamapp-story-vue'
@@ -27,7 +22,7 @@ test.describe('OrigamApp', () => {
 	test.setTimeout(45000)
 
 	test('Default — app shell renders with toolbar and main', async ({ page }) => {
-		await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
+		await page.goto(variantUrl(6))
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 		const app = sandbox.locator('[data-cy="app-playground"]')
@@ -36,7 +31,7 @@ test.describe('OrigamApp', () => {
 	})
 
 	test('Default — toolbar renders inside app', async ({ page }) => {
-		await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
+		await page.goto(variantUrl(6))
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 		const toolbar = sandbox.locator('[data-cy="app-playground-toolbar"]')
@@ -44,7 +39,7 @@ test.describe('OrigamApp', () => {
 	})
 
 	test('Default — main area renders inside app', async ({ page }) => {
-		await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
+		await page.goto(variantUrl(6))
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 		const main = sandbox.locator('[data-cy="app-playground-main"]')
@@ -52,7 +47,7 @@ test.describe('OrigamApp', () => {
 	})
 
 	test('With Drawer — drawer toggle button renders', async ({ page }) => {
-		await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
+		await page.goto(variantUrl(3))
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 		const toggle = sandbox.locator('[data-cy="app-drawer-toggle"]')
@@ -60,7 +55,7 @@ test.describe('OrigamApp', () => {
 	})
 
 	test('With Drawer — navigation drawer renders inside app', async ({ page }) => {
-		await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
+		await page.goto(variantUrl(3))
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 		const nav = sandbox.locator('[data-cy="app-drawer-nav"]')
@@ -68,7 +63,7 @@ test.describe('OrigamApp', () => {
 	})
 
 	test('Full height — app renders with fullHeight control', async ({ page }) => {
-		await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+		await page.goto(variantUrl(2))
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 		const app = sandbox.locator('[data-cy="app-fullheight"]')
@@ -76,7 +71,7 @@ test.describe('OrigamApp', () => {
 	})
 
 	test('Slot — default — app renders with slot content', async ({ page }) => {
-		await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
+		await page.goto(variantUrl(5))
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 		const app = sandbox.locator('[data-cy="app-slot-default"]')
@@ -84,7 +79,7 @@ test.describe('OrigamApp', () => {
 	})
 
 	test('Playground — app renders with playground controls', async ({ page }) => {
-		await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
+		await page.goto(variantUrl(6))
 
 		const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
 		const app = sandbox.locator('[data-cy="app-playground"]')

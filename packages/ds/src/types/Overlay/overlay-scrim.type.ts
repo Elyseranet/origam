@@ -1,3 +1,3 @@
-import OrigamOverlayScrim from '../../components/Overlay/OrigamOverlayScrim.vue'
+import { OrigamOverlayScrim } from "../../components"
 
 export type TOrigamOverlayScrim = InstanceType<typeof OrigamOverlayScrim>

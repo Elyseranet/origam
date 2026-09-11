@@ -82,7 +82,7 @@ supports inset, sticky, border, spacing, color and typography props.
 | Variable                                          | Default                          | Used for                   |
 |---------------------------------------------------|----------------------------------|----------------------------|
 | `--origam-list-subheader---color`                 | `--origam-color__text---secondary` | label text color         |
-| `--origam-list__subheader---font-size`            | `0.875rem`                       | label font size — **this** is the themeable name. The component reads `var(--origam-list-subheader---font-size, var(--origam-list__subheader---font-size, 0.875rem))`; the flat `--origam-list-subheader---font-size` is not declared in any token sheet and is set only by `OrigamList.vue` for the `nav` variant (from `--origam-list__subheader---nav-font-size`), so overriding it in a theme has no effect. |
+| `--origam-list-subheader---font-size`             | `0.875rem`                       | label font size            |
 | `--origam-list-subheader---font-weight`           | `400`                            | label font weight          |
 | `--origam-list-subheader---line-height`           | `1.375rem`                       | label line height          |
 | `--origam-list-subheader---min-height`            | `40px`                           | minimum row height         |

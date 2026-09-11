@@ -6,7 +6,7 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<Partial<IFileFieldDragNDropItemProps>>({ color: 'primary', downloadable: true })"
+				:init-state="() => useStoryInitState<Partial<IFileFieldDragNDropItemProps>>({ color: 'primary' })"
 		>
 			<template #default="{ state }">
 				<origam-file-field-drag-n-drop-item
@@ -15,8 +15,6 @@
 						:color="state.color"
 						:file-icon="state.fileIcon || undefined"
 						:remove-icon="state.removeIcon || undefined"
-						:download-icon="state.downloadIcon || undefined"
-						:downloadable="state.downloadable"
 						:font-size="state.fontSize || undefined"
 						:font-weight="state.fontWeight || undefined"
 				/>
@@ -26,12 +24,8 @@
 					<HstSelect v-model="state.color" title="Color" :options="COLOR_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Icons">
-					<HstSelect v-model="state.fileIcon"     title="File Icon"     :options="ICON_OPTIONS"/>
-					<HstSelect v-model="state.removeIcon"   title="Remove Icon"   :options="ICON_OPTIONS"/>
-					<HstSelect v-model="state.downloadIcon" title="Download Icon" :options="ICON_OPTIONS"/>
-				</StoryGroup>
-				<StoryGroup title="Actions">
-					<HstCheckbox v-model="state.downloadable" title="Downloadable"/>
+					<HstSelect v-model="state.fileIcon"   title="File Icon"   :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.removeIcon" title="Remove Icon" :options="ICON_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Typography">
 					<HstSelect v-model="state.fontSize"   title="Font Size"   :options="FONT_SIZE_OPTIONS"/>
@@ -42,7 +36,7 @@
 
 		<Variant
 				title="Functional"
-				:init-state="() => useStoryInitState<Partial<IFileFieldDragNDropItemProps>>({ progress: 0, showSize: true, disabled: false, readonly: false, downloadable: true })"
+				:init-state="() => useStoryInitState<Partial<IFileFieldDragNDropItemProps>>({ progress: 0, showSize: true, disabled: false, readonly: false })"
 		>
 			<template #default="{ state }">
 				<origam-file-field-drag-n-drop-item
@@ -52,14 +46,12 @@
 						:show-size="state.showSize"
 						:disabled="state.disabled"
 						:readonly="state.readonly"
-						:downloadable="state.downloadable"
 				/>
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="States">
-					<HstCheckbox v-model="state.disabled"     title="Disabled"/>
-					<HstCheckbox v-model="state.readonly"     title="Readonly"/>
-					<HstCheckbox v-model="state.downloadable" title="Downloadable"/>
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+					<HstCheckbox v-model="state.readonly" title="Readonly"/>
 				</StoryGroup>
 				<StoryGroup title="Progress">
 					<HstNumber v-model="state.progress" title="Progress" :min="0" :max="100" :step="1"/>
@@ -78,15 +70,6 @@
 			/>
 		</Variant>
 
-		<Variant title="Events - click:download">
-			<origam-file-field-drag-n-drop-item
-					:file="mockFile('downloadable.pdf', 'application/pdf', 32768)"
-					:index="0"
-					downloadable
-					@click:download="logEvent('click:download', $event)"
-			/>
-		</Variant>
-
 		<Variant title="Slots - Default">
 			<origam-file-field-drag-n-drop-item
 					:file="mockFile('slot-demo.pdf', 'application/pdf', 32768)"
@@ -98,7 +81,7 @@
 
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<Partial<IFileFieldDragNDropItemProps>>({ color: 'primary', progress: 0, showSize: true, disabled: false, readonly: false, downloadable: true })"
+				:init-state="() => useStoryInitState<Partial<IFileFieldDragNDropItemProps>>({ color: 'primary', progress: 0, showSize: true, disabled: false, readonly: false })"
 		>
 			<template #default="{ state }">
 				<origam-file-field-drag-n-drop-item
@@ -106,22 +89,19 @@
 						:file="mockFile('playground.pdf', 'application/pdf', 256000)"
 						:index="0"
 						@click:remove="logEvent('click:remove', $event)"
-						@click:download="logEvent('click:download', $event)"
 				/>
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Design">
-					<HstSelect v-model="state.color"        title="Color"         :options="COLOR_OPTIONS"/>
-					<HstSelect v-model="state.fileIcon"     title="File Icon"     :options="ICON_OPTIONS"/>
-					<HstSelect v-model="state.removeIcon"   title="Remove Icon"   :options="ICON_OPTIONS"/>
-					<HstSelect v-model="state.downloadIcon" title="Download Icon" :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.color"      title="Color"       :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.fileIcon"   title="File Icon"   :options="ICON_OPTIONS"/>
+					<HstSelect v-model="state.removeIcon" title="Remove Icon" :options="ICON_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
-					<HstCheckbox v-model="state.disabled"     title="Disabled"/>
-					<HstCheckbox v-model="state.readonly"     title="Readonly"/>
-					<HstCheckbox v-model="state.downloadable" title="Downloadable"/>
-					<HstNumber   v-model="state.progress"     title="Progress" :min="0" :max="100" :step="1"/>
-					<HstSelect   v-model="state.showSize"     title="Show Size" :options="SHOW_SIZE_OPTIONS"/>
+					<HstCheckbox v-model="state.disabled" title="Disabled"/>
+					<HstCheckbox v-model="state.readonly" title="Readonly"/>
+					<HstNumber   v-model="state.progress" title="Progress" :min="0" :max="100" :step="1"/>
+					<HstSelect   v-model="state.showSize" title="Show Size" :options="SHOW_SIZE_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>

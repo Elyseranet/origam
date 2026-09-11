@@ -1,0 +1,16 @@
+{
+  "text-field": {
+    "_comment": "TextField component tokens — Lot 3.2B. Wraps OrigamField + native <input>. Manages details padding, input visibility transitions, and field overrides.",
+
+    "details": {
+      "padding-inline":        { "$type": "dimension", "$value": "16px" }
+    },
+
+    "input": {
+      "opacity":               { "$type": "number",    "$value": "{opacity.0}" },
+      "opacity-active":        { "$type": "number",    "$value": "{opacity.100}" },
+      "transition-duration":   { "$type": "duration",  "$value": "0.15s" },
+      "transition-easing":     { "$type": "cubicBezier","$value": "{motion.easing.standard}" }
+    }
+  }
+}

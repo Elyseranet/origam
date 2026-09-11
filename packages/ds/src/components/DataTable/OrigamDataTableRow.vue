@@ -1,6 +1,5 @@
 <template>
 	<tr
-			:id="id"
 			:aria-selected="showSelect ? isSelected([item]) : undefined"
 			:class="dataTableRowClasses"
 			:style="dataTableRowStyles"
@@ -44,7 +43,7 @@
 							>
 								<origam-btn
 										:aria-expanded="isExpanded(item)"
-										:aria-label="isExpanded(item) ? t('origam.data_table_row.collapse_row') : t('origam.data_table_row.expand_row')"
+										:aria-label="isExpanded(item) ? t('origam.data_table_row.collapse_row', 'Collapse row') : t('origam.data_table_row.expand_row', 'Expand row')"
 										:icon="isExpanded(item) ? MDI_ICONS.CHEVRON_UP : MDI_ICONS.CHEVRON_DOWN"
 										:size="SIZES.SMALL"
 										@click="handleBtnClick"
@@ -86,34 +85,31 @@
 		setup
 >
 
-	import OrigamBtn from '../Btn/OrigamBtn.vue'
-	import OrigamCheckboxBtn from '../Checkbox/OrigamCheckboxBtn.vue'
-	import OrigamDataTableColumnCell from './OrigamDataTableColumnCell.vue'
+	import { OrigamBtn, OrigamCheckboxBtn, OrigamDataTableColumnCell } from '../../components'
 
-	import { useCell } from '../../composables/DataTable/cell.composable'
-	import { useDisplay } from '../../composables/Commons/display.composable'
-	import { useExpanded } from '../../composables/DataTable/expand.composable'
-	import { useHeaders } from '../../composables/DataTable/headers.composable'
-	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useSelection } from '../../composables/DataTable/select.composable'
-	import { useSort } from '../../composables/DataTable/sort.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
+	import {
+	useCell,
+	useDisplay,
+	useExpanded,
+	useHeaders,
+	useLocale,
+	useProps,
+	useSelection,
+	useSort,
+	useStyle
+} from '../../composables'
 
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
-	import { SIZES } from '../../enums/Commons/size.enum'
+	import { MDI_ICONS, SIZES } from '../../enums'
 
-	import type { IDataTableHeaderCellColumnSlot, IDataTableItemKey } from '../../interfaces/DataTable/items.interface'
-	import type { IDataTableRowProps } from '../../interfaces/DataTable/data-table-row.interface'
+	import type { IDataTableHeaderCellColumnSlot, IDataTableItemKey, IDataTableRowProps} from '../../interfaces'
 
-	import type { IDataTableRowEmits, IDataTableRowSlots } from '../../interfaces/DataTable/data-table-row.interface'
+	import type { IDataTableRowEmits } from '../../interfaces/DataTable/row.interface'
 
-	import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
-	import { getObjectValueByPath } from '../../utils/Commons/commons.util'
+	import { getCurrentInstance, getObjectValueByPath } from '../../utils'
 
-	import { ORIGAM_DATA_TABLE_SHOW_SELECT_KEY } from '../../consts/DataTable/data-table.const'
+	import { ORIGAM_DATA_TABLE_SHOW_SELECT_KEY } from '../../consts'
 
-	import { computed, inject, ref, Ref, StyleValue, toDisplayString } from 'vue'
+	import { computed, inject, ref, Ref, StyleValue, toDisplayString, withModifiers } from 'vue'
 
 	const vm = getCurrentInstance('dataTableRow')
 
@@ -130,8 +126,6 @@
 	const { t } = useLocale()
 
 	const emits = defineEmits<IDataTableRowEmits>()
-
-	defineSlots<IDataTableRowSlots>()
 
 	const {filterProps} = useProps<IDataTableRowProps>(props)
 
@@ -167,9 +161,9 @@
 			selectAll,
 			isSorted,
 			toggleSort,
-			sortBy: sortBy.value,
-			someSelected: someSelected.value,
-			allSelected: allSelected.value,
+			sortBy: sortBy,
+			someSelected: someSelected,
+			allSelected: allSelected,
 			getSortIcon: () => ''
 		}
 	}
@@ -207,46 +201,13 @@
 	 * Event handlers
 	 ********************************************************/
 
-	/*********************************************************
-	 * handleCheckBoxClick / handleBtnClick (#439)
-	 *
-	 * @description
-	 * `withModifiers(fn, ['stop'])` is a FACTORY: it returns a new wrapped
-	 * handler, it does not call `fn` nor stop anything on its own. Calling
-	 * it as a bare statement (pre-fix) built a throwaway function and
-	 * discarded it — `toggleSelect` / `toggleExpand` were never invoked,
-	 * while `emits('select')` / `emits('expand')` fired right after
-	 * regardless, so the row reported a selection/expansion that never
-	 * happened.
-	 * @description
-	 * `stopPropagation()` is what `.stop` compiles down to — called
-	 * directly here since these handlers already receive the real native
-	 * event (bare `@click="handleCheckBoxClick"` / `@click=
-	 * "handleBtnClick"` bindings, Vue's auto-invoked "blessed form").
-	 ********************************************************/
-	/*********************************************************
-	 * Charge utile de `select` / `expand` (#550, critere C7)
-	 *
-	 * @description
-	 * `IDataTableRowEmits` annonce depuis toujours un objet
-	 * `{ item, value }` optionnel ; le code emettait sans rien. Un
-	 * consommateur qui ecoutait `@expand` recevait `undefined` et ne
-	 * pouvait pas savoir QUELLE ligne avait bascule — la seule
-	 * information que l'evenement porte au-dela de `update:expanded`.
-	 *
-	 * @description
-	 * L'etat est lu APRES la bascule : `value` est donc l'etat resultant,
-	 * pas l'ancien.
-	 ********************************************************/
-	const handleCheckBoxClick = (e: MouseEvent) => {
-		e.stopPropagation()
-		toggleSelect(props.item)
-		emits('select', {item: props.item, value: isSelected([props.item])})
+	const handleCheckBoxClick = () => {
+		withModifiers(() => toggleSelect(props.item), ['stop'])
+		emits('select')
 	}
-	const handleBtnClick = (e: MouseEvent) => {
-		e.stopPropagation()
-		toggleExpand(props.item)
-		emits('expand', {item: props.item, value: isExpanded(props.item)})
+	const handleBtnClick = () => {
+		withModifiers(() => toggleExpand(props.item), ['stop'])
+		emits('expand')
 	}
 
 	const dataTableColumnCellClasses = (key: string | null) => {
@@ -277,7 +238,7 @@
 			props.style
 		] as StyleValue
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(dataTableRowStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableRowStyles)
 
 
 	/*********************************************************
@@ -300,18 +261,18 @@
 	.origam-data-table-row {
 		$this: &;
 
-		background-color: var(--origam-data-table-row---background-color, var(--origam-data-table__row---background-color, var(--origam-color__surface---default)));
-		color: var(--origam-data-table-row---color, var(--origam-data-table__row---color, var(--origam-color__text---primary)));
+		background-color: var(--origam-data-table-row---background-color, var(--origam-color__surface---default));
+		color: var(--origam-data-table-row---color, var(--origam-color__text---primary));
 		transition-property: background-color;
-		transition-duration: var(--origam-data-table-row---transition-duration, var(--origam-data-table__row---transition-duration, 100ms));
-		transition-timing-function: var(--origam-data-table-row---transition-easing, var(--origam-data-table__row---transition-easing, cubic-bezier(0.4, 0, 0.2, 1)));
+		transition-duration: var(--origam-data-table-row---transition-duration, 100ms);
+		transition-timing-function: var(--origam-data-table-row---transition-easing, cubic-bezier(0.4, 0, 0.2, 1));
 
 		&:hover {
-			background-color: var(--origam-data-table-row--hover---background-color, var(--origam-data-table__row---hover-background-color, var(--origam-color__surface---overlay)));
+			background-color: var(--origam-data-table-row--hover---background-color, var(--origam-color__surface---overlay));
 		}
 
 		&__column-title {
-			font-weight: var(--origam-data-table-row__column-title---font-weight, var(--origam-data-table__row---column-title-font-weight, 500));
+			font-weight: var(--origam-data-table-row__column-title---font-weight, 500);
 		}
 
 		&--clickable {
@@ -346,7 +307,7 @@
 				column-gap: 4px;
 				display: grid;
 				grid-template-columns: repeat(2, 1fr);
-				min-height: var(--origam-data-table-row--mobile__column-min-height, var(--origam-data-table-row--mobile__column, var(--origam-data-table__row---mobile-column-min-height, 52px)));
+				min-height: var(--origam-data-table-row--mobile__column-min-height, var(--origam-data-table-row--mobile__column, 52px));
 
 				&:not(:last-child) {
 					border-bottom: 0;

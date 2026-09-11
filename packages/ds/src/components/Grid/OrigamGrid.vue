@@ -1,7 +1,6 @@
 <template>
 	<component
 			:is="tag"
-			:id="id"
 			:class="gridClasses"
 			:style="gridStyles"
 	>
@@ -15,21 +14,22 @@
 >
 	import { computed, StyleValue, toRef } from 'vue'
 
-	import { useBorder } from '../../composables/Commons/border.composable'
-	import { useBothColor } from '../../composables/Commons/bothColor.composable'
-	import { useDimension } from '../../composables/Commons/dimension.composable'
-	import { useElevation } from '../../composables/Commons/elevation.composable'
-	import { useMargin } from '../../composables/Commons/margin.composable'
-	import { usePadding } from '../../composables/Commons/padding.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import {
+		useBorder,
+		useBothColor,
+		useDimension,
+		useElevation,
+		useMargin,
+		usePadding,
+		useProps,
+		useRounded
+	} from '../../composables'
 
-	import { GRID_GAP_SIZE_VAR } from '../../consts/Grid/grid.const'
+	import { GRID_GAP_SIZE_VAR } from '../../consts'
 
-	import type { ICommonsComponentSlots } from '../../interfaces/Commons/commons.interface'
-	import type { IGridEmits, IGridProps, TGridTracks } from '../../interfaces/Grid/grid.interface'
+	import type { IGridProps, TGridTracks } from '../../interfaces'
 
-	import type { TGridGapSize } from '../../types/Grid/grid.type'
+	import type { TGridGapSize } from '../../types'
 
 	/*********************************************************
 	 * Global
@@ -61,10 +61,6 @@
 	})
 
 	const {filterProps} = useProps<IGridProps>(props)
-
-	defineEmits<IGridEmits>()
-
-	defineSlots<ICommonsComponentSlots>()
 
 	/*********************************************************
 	 * Track serialisation

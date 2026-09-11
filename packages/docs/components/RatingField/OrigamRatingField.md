@@ -15,20 +15,6 @@ const rating = ref(0)
 </script>
 ```
 
-## Label & identity
-
-```vue
-<template>
-    <OrigamRatingField v-model="rating" label="Rating" name="product-rating" />
-</template>
-```
-
-| Prop | Type | Default | Description |
-|---|---|---|---|
-| `label` | `string` | — | Field label text, rendered via `<OrigamLabel>` above the item row |
-| `name` | `string` | auto-generated (`origam-rating-{uid}`) | Native `name` shared by the underlying radio inputs, grouping them into one control |
-| `itemAriaLabel` | `string` | `'origam.rating.aria_label.item'` | Locale key forwarded to every `<OrigamRatingFieldItem>` for its accessible name — see `OrigamRatingFieldItem`'s own `itemAriaLabel` doc for the resolved arguments |
-
 ## Length and half-increments
 
 ```vue
@@ -101,8 +87,8 @@ const rating = ref(0)
 | `details` | slot bindings | Details area below the field |
 | `messages` | `{ hasMessages, messages }` | Messages override |
 | `message` | `{ message }` | Single message override |
-| `itemLabel` | `{ label, index }` | Custom label for every item — `label` is the resolved `itemLabels[index]` entry (`undefined` if none was provided for that position) |
-| `itemLabel.{n}` | `{ label, index }` | Custom label for item at index `n` — same scope as `itemLabel` |
+| `itemLabel` | — | Custom label for every item |
+| `itemLabel.{n}` | — | Custom label for item at index `n` |
 
 ## Emits
 

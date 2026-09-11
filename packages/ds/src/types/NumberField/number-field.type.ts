@@ -1,3 +1,3 @@
-import OrigamNumberField from '../../components/NumberField/OrigamNumberField.vue'
+import { OrigamNumberField } from '../../components'
 
 export type TOrigamNumberField = InstanceType<typeof OrigamNumberField>

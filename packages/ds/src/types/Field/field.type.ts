@@ -1,3 +1,3 @@
-import OrigamField from '../../components/Field/OrigamField.vue'
+import { OrigamField } from '../../components'
 
 export type TOrigamField = InstanceType<typeof OrigamField>

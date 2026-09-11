@@ -1,3 +1,3 @@
-import OrigamSnack from '../../components/Transition/OrigamSnack.vue'
+import { OrigamSnack } from "../../components"
 
 export type TOrigamSnack = InstanceType<typeof OrigamSnack>

@@ -1,9 +1,9 @@
 <template>
-	<figure
-			:id="id"
+	<div
 			class="origam-chart-treemap"
 			:class="rootClasses"
 			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles, headerTypographyStyles]"
+			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-treemap"
 	>
@@ -132,7 +132,7 @@
 					data-cy="origam-chart-treemap-empty"
 			>
 				<slot name="empty">
-					<span>{{ t('origam.chart.no_data_text') }}</span>
+					<span>No data to display</span>
 				</slot>
 			</div>
 		</div>
@@ -154,7 +154,7 @@
 				/>
 			</template>
 		</origam-chart-legend>
-	</figure>
+	</div>
 </template>
 
 <script
@@ -170,25 +170,28 @@
 	import OrigamChartLegend from './OrigamChartLegend.vue'
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
-	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
-	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
-	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
-	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
-	import { useDimension } from '../../composables/Commons/dimension.composable'
-	import { useElevation } from '../../composables/Commons/elevation.composable'
-	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useMargin } from '../../composables/Commons/margin.composable'
-	import { usePadding } from '../../composables/Commons/padding.composable'
-	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import {
+		useChartHeaderTypography,
+		useBackgroundColor,
+		useDimension,
+		useElevation,
+		useMargin,
+		usePadding,
+		useRounded
+	} from '../../composables'
 
-	import type { IChartLegendItem } from '../../interfaces/Chart/chart.interface'
-	import type { IChartPoint } from '../../interfaces/Chart/chart-point.interface'
-	import type { IChartSeries } from '../../interfaces/Chart/chart-series.interface'
-	import type { IChartTreemapEmits, IChartTreemapProps, IChartTreemapRect, IChartTreemapSlots, IChartTreemapTile } from '../../interfaces/Chart/chart-treemap.interface'
+	import type {
+		IChartLegendItem,
+		IChartPoint,
+		IChartSeries,
+		IChartTreemapEmits,
+		IChartTreemapProps,
+		IChartTreemapTile
+	} from '../../interfaces'
 
 	import { intentBgExpr, isIntent } from '../../utils/Commons/color.util'
 
-	import type { TIntent } from '../../types/Commons/intent.type'
+	import type { TIntent } from '../../types'
 
 	/*********************************************************
 	 * Global
@@ -233,33 +236,13 @@
 
 	const emit = defineEmits<IChartTreemapEmits>()
 
-	defineSlots<IChartTreemapSlots>()
-
-	const { t } = useLocale()
 	const { dimensionStyles } = useDimension(props)
 	const { backgroundColorClasses, backgroundColorStyles } = useBackgroundColor(props, 'bgColor')
 	const { elevationClasses, elevationStyles } = useElevation(props)
-	const { marginClasses, marginStyles } = useMargin(props)
-	const { paddingClasses, paddingStyles } = usePadding(props)
+	const { marginStyles } = useMargin(props)
+	const { paddingStyles } = usePadding(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
 	const { headerTypographyStyles } = useChartHeaderTypography(props)
-
-	/*********************************************************
-	 * Props heritees sans effet ici (#426)
-	 *
-	 * @description
-	 * ⛔ Ces props sont declarees par `IChartBaseProps` et n'ont aucun
-	 * effet sur ce composant. Elles ne sont ni retirees ni cablees a un
-	 * comportement fictif : elles avertissent une fois, en dev, avec la
-	 * raison exacte. Meme traitement que `OrigamChartGauge`.
-	 ********************************************************/
-	useUnsupportedProp(
-		'OrigamChartTreemap',
-		'categories',
-		'a treemap labels each tile from its own datum — there is no category axis.',
-		() => (props.categories?.length ?? 0) > 0
-	)
-	const chartAnimationStyle = useChartAnimationStyle(props)
 
 	/*********************************************************
 	 * Static SVG box — fixed 600 × 400 coordinate space.
@@ -322,6 +305,13 @@
 	 * map those areas back to {x, y, width, height} rects.
 	 ********************************************************/
 
+	interface Rect {
+		x: number
+		y: number
+		w: number
+		h: number
+	}
+
 	/**
 	 * Squarified treemap algorithm (Bruls, Huijse & van Wijk, 1999).
 	 *
@@ -330,7 +320,7 @@
 	 *
 	 * Returns one {x, y, w, h} rect per input value, preserving order.
 	 */
-	const squarify = (values: Array<number>, bounds: IChartTreemapRect): Array<IChartTreemapRect> => {
+	const squarify = (values: Array<number>, bounds: Rect): Array<Rect> => {
 		if (values.length === 0) return []
 		if (values.length === 1) {
 			return [{ x: bounds.x, y: bounds.y, w: bounds.w, h: bounds.h }]
@@ -341,12 +331,12 @@
 		const scale = totalArea / (total || 1)
 		const scaled = values.map((v) => v * scale)
 
-		const rects: Array<IChartTreemapRect> = []
+		const rects: Array<Rect> = []
 		layoutRow(scaled, bounds, rects)
 		return rects
 	}
 
-	const layoutRow = (values: Array<number>, bounds: IChartTreemapRect, rects: Array<IChartTreemapRect>): void => {
+	const layoutRow = (values: Array<number>, bounds: Rect, rects: Array<Rect>): void => {
 		if (values.length === 0) return
 
 		const { x, y, w, h } = bounds
@@ -383,7 +373,7 @@
 		}
 
 		if (remaining.length > 0) {
-			const nextBounds: IChartTreemapRect = isWide
+			const nextBounds: Rect = isWide
 				? { x: x + rowThick, y, w: w - rowThick, h }
 				: { x, y: y + rowThick, w, h: h - rowThick }
 			layoutRow(remaining, nextBounds, rects)
@@ -406,7 +396,7 @@
 	 * Slice-dice algorithm. Alternates between horizontal and vertical
 	 * splitting at each call. `depth` starts at 0 (horizontal slice).
 	 */
-	const sliceDice = (values: Array<number>, bounds: IChartTreemapRect, depth: number): Array<IChartTreemapRect> => {
+	const sliceDice = (values: Array<number>, bounds: Rect, depth: number): Array<Rect> => {
 		if (values.length === 0) return []
 		if (values.length === 1) {
 			return [{ x: bounds.x, y: bounds.y, w: bounds.w, h: bounds.h }]
@@ -414,7 +404,7 @@
 
 		const total = values.reduce((a, b) => a + b, 0)
 		const { x, y, w, h } = bounds
-		const rects: Array<IChartTreemapRect> = []
+		const rects: Array<Rect> = []
 		const horizontal = depth % 2 === 0
 
 		let cursor = horizontal ? x : y
@@ -424,7 +414,7 @@
 		for (const v of values) {
 			const frac = v / (total || 1)
 			const len = frac * along
-			const r: IChartTreemapRect = horizontal
+			const r: Rect = horizontal
 				? { x: cursor, y, w: len, h: across }
 				: { x, y: cursor, w: across, h: len }
 			rects.push(r)
@@ -562,10 +552,7 @@
 		},
 		backgroundColorClasses.value,
 		elevationClasses.value,
-		marginClasses.value,
-		paddingClasses.value,
-		roundedClasses.value,
-		props.class
+		roundedClasses.value
 	])
 
 	const rootStyles = computed<StyleValue>(() => {
@@ -573,8 +560,8 @@
 		if (props.aspectRatio) {
 			out.aspectRatio = props.aspectRatio
 		}
-		Object.assign(out, chartAnimationStyle.value)
-return [ out, props.style as StyleValue ]
+		out['--origam-chart---animation-duration'] = `${ props.animationDuration }ms`
+		return out
 	})
 
 	const bodyClasses = computed(() => ({
@@ -591,13 +578,13 @@ return [ out, props.style as StyleValue ]
 	/*********************************************************
 	 * ARIA
 	 ********************************************************/
-	const defaultAriaLabel = computed(() => t('origam.chart.treemap.aria_label'))
-	const ariaLabel = computed(() => props.title ?? defaultAriaLabel.value)
-	const svgAriaLabel = computed(() => props.title ?? defaultAriaLabel.value)
-	const svgTitle = computed(() => props.title ?? defaultAriaLabel.value)
-	const svgDesc = computed(() =>
-		t('origam.chart.treemap.desc', visibleTiles.value.length, {chart: defaultAriaLabel.value})
-	)
+	const ariaLabel = computed(() => props.title ?? 'treemap chart')
+	const svgAriaLabel = computed(() => props.title ?? 'treemap chart')
+	const svgTitle = computed(() => props.title ?? 'treemap chart')
+	const svgDesc = computed(() => {
+		const n = visibleTiles.value.length
+		return `Treemap chart with ${ n } ${ n === 1 ? 'tile' : 'tiles' }.`
+	})
 
 	const tileAriaLabel = (tile: IChartTreemapTile): string =>
 		`${ tile.name }: ${ tile.formatted }`
@@ -654,17 +641,7 @@ return [ out, props.style as StyleValue ]
 
 		display: grid;
 		gap: var(--origam-chart---gap, 12px);
-
-		// ⛔ #C2 — zero-specificity default so a scale-driven utility
-		// class (`.origam--p-4` from `padding="4"`) wins the cascade.
-		// Without `:where()`, this scoped rule's [data-v-hash] pushes it
-		// to (0,2,0), beating the utility's (0,1,0), and the `padding`
-		// prop's scale form goes silently inert. See CLAUDE.md "CSS-first"
-		// table — `:where(…)` is the documented zero-specificity default.
-		:where(&) {
-			padding: var(--origam-chart---padding, 12px);
-		}
-
+		padding: var(--origam-chart---padding, 12px);
 		background-color: var(--origam-chart---background-color, transparent);
 		color: var(--origam-chart---color, inherit);
 		width: 100%;
@@ -723,7 +700,7 @@ return [ out, props.style as StyleValue ]
 
 		&__subtitle {
 			font-size: var(--origam-chart__subtitle---font-size, 0.875rem);
-			color: var(--origam-chart__subtitle---color, var(--origam-color__text---secondary, #6b7280));
+			color: var(--origam-chart__subtitle---color, var(--origam-color-text-secondary, #6b7280));
 		}
 
 		&__body {
@@ -749,7 +726,7 @@ return [ out, props.style as StyleValue ]
 		}
 
 		.origam-chart__treemap-tile {
-			stroke: var(--origam-chart__treemap---stroke-color, var(--origam-color__surface---default, #ffffff));
+			stroke: var(--origam-chart__treemap---stroke-color, var(--origam-color-surface-default, #ffffff));
 			stroke-width: var(--origam-chart__treemap---stroke-width, 2);
 			cursor: pointer;
 			transition: opacity 150ms ease, filter 150ms ease;
@@ -783,7 +760,7 @@ return [ out, props.style as StyleValue ]
 		:deep(.origam-chart__tooltip) {
 			position: absolute;
 			pointer-events: none;
-			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color__surface---overlay, #1f2937));
+			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color-surface-overlay, #1f2937));
 			color: var(--origam-chart__tooltip---color, #ffffff);
 			padding: var(--origam-chart__tooltip---padding, 8px 12px);
 			border-radius: var(--origam-chart__tooltip---border-radius, 6px);
@@ -821,7 +798,7 @@ return [ out, props.style as StyleValue ]
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			color: var(--origam-chart__empty---color, var(--origam-color__text---secondary, #6b7280));
+			color: var(--origam-chart__empty---color, var(--origam-color-text-secondary, #6b7280));
 		}
 
 		:deep(.origam-chart__legend) {

@@ -1,6 +1,6 @@
-import OrigamProgress from '../../components/Progress/OrigamProgress.vue'
+import { OrigamProgress } from '../../components'
 
-import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
+import { PROGRESS_TYPE } from '../../enums'
 
 export type TProgressType = `${PROGRESS_TYPE}`
 

@@ -1,18 +1,15 @@
-import type { IAlignProps } from '../Commons/align.interface'
-import type { IBorderProps } from '../Commons/border.interface'
 import type {
+    IAlignProps,
+    IBorderProps,
     IBgColorProps,
-    IColorProps
-} from '../Commons/color.interface'
-import type {
+    IColorProps,
     ICommonsComponentProps,
-    ICommonsComponentSlots,
+    IMarginProps,
+    IPaddingProps,
     ITagProps
-} from '../Commons/commons.interface'
-import type { IMarginProps } from '../Commons/margin.interface'
-import type { IPaddingProps } from '../Commons/padding.interface'
+} from '../../interfaces'
 
-import type { TCols } from '../../types/Grids/col.type'
+import type { TCols } from '../../types'
 
 export interface IColProps extends IColorProps, IBgColorProps, ICommonsComponentProps, ITagProps, IPaddingProps, IMarginProps, IBorderProps, IAlignProps {
     cols?: TCols,
@@ -34,7 +31,3 @@ export interface IColProps extends IColorProps, IBgColorProps, ICommonsComponent
     orderXl?: number,
     orderXxl?: number
 }
-
-export interface IColEmits {}
-
-export interface IColSlots extends ICommonsComponentSlots {}

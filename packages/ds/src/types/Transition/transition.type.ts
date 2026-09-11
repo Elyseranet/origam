@@ -1,5 +1,5 @@
-import OrigamTransition from '../../components/Transition/OrigamTransition.vue'
-import { TRANSITION_MODE } from '../../enums/Transition/transition.enum'
+import { OrigamTransition } from "../../components"
+import { TRANSITION_MODE } from '../../enums'
 
 import { Component, TransitionProps } from 'vue'
 

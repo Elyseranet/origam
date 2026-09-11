@@ -1,6 +1,5 @@
 <template>
 	<origam-btn-group
-			:id="id"
 			ref="origamBtnGroupRef"
 			:class="btnToggleClasses"
 			:styles="btnToggleStyles"
@@ -32,21 +31,24 @@
 		lang="ts"
 		setup
 >
-	import OrigamBtnGroup from './OrigamBtnGroup.vue'
+	import { OrigamBtnGroup } from '../../components'
 
-	import { useGroup } from '../../composables/Commons/group.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
+	import {
+	useDefaults,
+	useGroup,
+	useProps,
+	useStyle
+} from '../../composables'
 
-	import { ORIGAM_BTN_TOGGLE_KEY } from '../../consts/Btn/btn-toggle.const'
+	import { ORIGAM_BTN_TOGGLE_KEY } from '../../consts'
 
-	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { DENSITY } from '../../enums'
 
-	import type { IBtnToggleProps } from '../../interfaces/Btn/btn-toggle.interface'
+	import type { IBtnToggleProps} from '../../interfaces'
 
-	import type { IBtnToggleEmits, IBtnToggleSlots } from '../../interfaces/Btn/btn-toggle.interface'
+	import type { IBtnToggleEmits } from '../../interfaces/Btn/btn-toggle.interface'
 
-	import type { TOrigamBtnGroup } from '../../types/Btn/btn-group.type'
+	import type { TOrigamBtnGroup } from "../../types"
 
 	import { computed, ref, StyleValue, useSlots } from 'vue'
 
@@ -56,11 +58,19 @@
 	 * @description
 	 * Props, emits and group selection state for the toggle.
 	 ********************************************************/
-	const props = withDefaults(defineProps<IBtnToggleProps>(), {tag: 'div', items: () => [], density: DENSITY.DEFAULT})
+	const _props = withDefaults(defineProps<IBtnToggleProps>(), {tag: 'div', items: () => [], density: DENSITY.DEFAULT})
+
+	// `useDefaults` resolves the TOGGLE's OWN props (rounded/border/elevation/…)
+	// against the closest `provideDefaults({ 'origam-btn-toggle': … })` (a
+	// marketing theme's `components` block). `btnGroupProps` below then
+	// forwards the RESOLVED values down to the underlying `<origam-btn-group>`
+	// as explicit props, so `OrigamBtnGroup`'s own `useDefaults` sees them as
+	// parent-passed (highest priority) rather than needing to resolve
+	// `'origam-btn-group'` itself for a toggle instance. Mirrors
+	// `OrigamBtn.vue`'s exact pattern.
+	const props = useDefaults(_props)
 
 	defineEmits<IBtnToggleEmits>()
-
-	defineSlots<IBtnToggleSlots>()
 
 	const {filterProps} = useProps<IBtnToggleProps>(props)
 
@@ -99,7 +109,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(btnToggleStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(btnToggleStyles)
 
 
 	/*********************************************************

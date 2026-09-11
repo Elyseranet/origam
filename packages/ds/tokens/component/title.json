@@ -1,0 +1,19 @@
+{
+  "title": {
+    "color":                 { "$type": "color",      "$value": "{color.text.primary}" },
+    "font-family":           { "$type": "fontFamily", "$value": "{font.family.sans}" },
+    "font-weight":           { "$type": "fontWeight", "$value": "{font.weight.semibold}" },
+    "letter-spacing":        { "$type": "dimension",  "$value": "{font.letterSpacing.tight}" },
+    "line-height":           { "$type": "number",     "$value": "{font.lineHeight.tight}" },
+    "margin-block-start":    { "$type": "dimension",  "$value": "{space.0}" },
+    "margin-block-end":      { "$type": "dimension",  "$value": "{space.0}" },
+
+    "font-size-xs":   { "$type": "dimension", "$value": "{font.size.md}" },
+    "font-size-sm":   { "$type": "dimension", "$value": "{font.size.lg}" },
+    "font-size-md":   { "$type": "dimension", "$value": "{font.size.xl}" },
+    "font-size-lg":   { "$type": "dimension", "$value": "{font.size.2xl}" },
+    "font-size-xl":   { "$type": "dimension", "$value": "{font.size.3xl}" },
+    "font-size-2xl":  { "$type": "dimension", "$value": "{font.size.4xl}" },
+    "font-size-3xl":  { "$type": "dimension", "$value": "{font.size.5xl}" }
+  }
+}

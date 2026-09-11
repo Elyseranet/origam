@@ -1,0 +1,60 @@
+{
+  "color-picker": {
+    "background-color":      { "$type": "color",     "$value": "{color.surface.raised}" },
+    "border-radius":         { "$type": "dimension", "$value": "{radius.md}" },
+    "padding-block":         { "$type": "dimension", "$value": "{space.4}" },
+    "padding-inline":        { "$type": "dimension", "$value": "{space.4}" },
+    "gap":                   { "$type": "dimension", "$value": "{space.3}" },
+    "min-width":             { "$type": "dimension", "$value": "300px" },
+    "transition-duration":   { "$type": "duration",  "$value": "{motion.duration.fast}" },
+
+    "canvas": {
+      "width":         { "$type": "other",     "$value": "100%" },
+      "height":        { "$type": "dimension", "$value": "150px" },
+      "border-radius": { "$type": "dimension", "$value": "{radius.sm}" },
+      "border-color":  { "$type": "color",     "$value": "{color.border.subtle}" },
+      "border-width":  { "$type": "dimension", "$value": "{border.width.thin}" }
+    },
+
+    "cursor": {
+      "size":           { "$type": "dimension", "$value": "16px" },
+      "border-color":   { "$type": "color",     "$value": "{color.surface.default}" },
+      "border-width":   { "$type": "dimension", "$value": "2px" },
+      "box-shadow":     { "$type": "shadow",    "$value": "{shadow.sm}" },
+      "border-radius":  { "$type": "dimension", "$value": "{radius.full}" }
+    },
+
+    "preview": {
+      "width":         { "$type": "dimension", "$value": "32px" },
+      "height":        { "$type": "dimension", "$value": "32px" },
+      "border-radius": { "$type": "dimension", "$value": "{radius.sm}" },
+      "border-color":  { "$type": "color",     "$value": "{color.border.subtle}" },
+      "border-width":  { "$type": "dimension", "$value": "{border.width.thin}" }
+    },
+
+    "edit": {
+      "input-width": { "$type": "dimension", "$value": "48px" },
+      "gap":         { "$type": "dimension", "$value": "{space.2}" },
+      "label-color": { "$type": "color",     "$value": "{color.text.secondary}" },
+      "label-font-size": { "$type": "dimension", "$value": "{font.size.xs}" }
+    },
+
+    "swatches": {
+      "item-size":     { "$type": "dimension", "$value": "20px" },
+      "gap":           { "$type": "dimension", "$value": "{space.1}" },
+      "border-radius": { "$type": "dimension", "$value": "{radius.sm}" },
+      "border-color":  { "$type": "color",     "$value": "{color.border.subtle}" },
+      "border-width":  { "$type": "dimension", "$value": "{border.width.thin}" }
+    },
+
+    "hue-slider": {
+      "height":        { "$type": "dimension", "$value": "12px" },
+      "border-radius": { "$type": "dimension", "$value": "{radius.full}" }
+    },
+
+    "alpha-slider": {
+      "height":        { "$type": "dimension", "$value": "12px" },
+      "border-radius": { "$type": "dimension", "$value": "{radius.full}" }
+    }
+  }
+}

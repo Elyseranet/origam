@@ -116,11 +116,7 @@ const BTN_STORY = '/stories/story/components-stories-btn-origambtn-story-vue'
 
 test.describe('OrigamBtn — rounded rungs', () => {
     test('OK: x-small(2)→small(4)→default(8)→medium(12)→large(16)→x-large(24)', async ({ page }) => {
-        // "Prop — rounded" no longer exists — folded into "Design"'s Shape
-        // group (Rounded HstSelect). The test drives border-radius via raw
-        // classList mutation afterwards (borderRadiusAt), so any Variant
-        // that mounts `.origam-btn` works as the landing point.
-        await openVariant(page, BTN_STORY, 'Design')
+        await openVariant(page, BTN_STORY, 'Prop — rounded')
         const sandbox = sandboxOf(page)
         const btn = sandbox.locator('.origam-btn').first()
         await expect(btn).toBeVisible({ timeout: 8000 })
@@ -160,11 +156,7 @@ const CHIP_STORY = '/stories/story/components-stories-chip-origamchip-story-vue'
 
 test.describe('OrigamChip — rounded rungs', () => {
     test('boolean true should set non-pill radius; rungs should produce distinct values', async ({ page }) => {
-        // "Prop — rounded" no longer exists on OrigamChip's story — folded
-        // into "Design"'s Shape group. Landing Variant is irrelevant to the
-        // assertions below (raw classList mutation), only needs to mount
-        // `.origam-chip`.
-        await openVariant(page, CHIP_STORY, 'Design')
+        await openVariant(page, CHIP_STORY, 'Prop — rounded')
         const sandbox = sandboxOf(page)
         const chip = sandbox.locator('.origam-chip').first()
         await expect(chip).toBeVisible({ timeout: 8000 })
@@ -197,9 +189,7 @@ const ALERT_STORY = '/stories/story/components-stories-alert-origamalert-story-v
 
 test.describe('OrigamAlert — rounded rungs', () => {
     test('rungs produce distinct border-radius values', async ({ page }) => {
-        // "Prop — rounded" no longer exists — folded into "Design"'s Shape
-        // group. Landing Variant only needs to mount `.origam-alert`.
-        await openVariant(page, ALERT_STORY, 'Design')
+        await openVariant(page, ALERT_STORY, 'Prop — rounded')
         const sandbox = sandboxOf(page)
         const alert = sandbox.locator('.origam-alert').first()
         await expect(alert).toBeVisible({ timeout: 8000 })
@@ -219,9 +209,7 @@ const BTN_GROUP_STORY = '/stories/story/components-stories-btn-origambtngroup-st
 
 test.describe('OrigamBtnGroup — rounded rungs', () => {
     test('rungs produce distinct border-radius values', async ({ page }) => {
-        // "Prop — rounded" no longer exists — folded into "Design"'s Shape
-        // group. Landing Variant only needs to mount `.origam-btn-group`.
-        await openVariant(page, BTN_GROUP_STORY, 'Design')
+        await openVariant(page, BTN_GROUP_STORY, 'Prop — rounded')
         const sandbox = sandboxOf(page)
         const group = sandbox.locator('.origam-btn-group').first()
         await expect(group).toBeVisible({ timeout: 8000 })
@@ -241,9 +229,7 @@ const BOTTOM_NAV_STORY = '/stories/story/components-stories-bottomnav-origambott
 
 test.describe('OrigamBottomNav — rounded rungs', () => {
     test('rungs produce distinct border-radius values', async ({ page }) => {
-        // "Prop — rounded" no longer exists — folded into "Design"'s Shape
-        // group. Landing Variant only needs to mount `.origam-bottom-nav`.
-        await openVariant(page, BOTTOM_NAV_STORY, 'Design')
+        await openVariant(page, BOTTOM_NAV_STORY, 'Prop — rounded')
         const sandbox = sandboxOf(page)
         const nav = sandbox.locator('.origam-bottom-nav').first()
         await expect(nav).toBeVisible({ timeout: 8000 })
@@ -263,9 +249,7 @@ const BREADCRUMB_STORY = '/stories/story/components-stories-breadcrumb-origambre
 
 test.describe('OrigamBreadcrumb — rounded rungs', () => {
     test('rungs produce distinct border-radius values', async ({ page }) => {
-        // "Prop — rounded" no longer exists — folded into "Design"'s Shape
-        // group. Landing Variant only needs to mount `.origam-breadcrumb`.
-        await openVariant(page, BREADCRUMB_STORY, 'Design')
+        await openVariant(page, BREADCRUMB_STORY, 'Prop — rounded')
         const sandbox = sandboxOf(page)
         const bc = sandbox.locator('.origam-breadcrumb').first()
         await expect(bc).toBeVisible({ timeout: 8000 })
@@ -285,9 +269,7 @@ const LIST_STORY = '/stories/story/components-stories-list-origamlist-story-vue'
 
 test.describe('OrigamList — rounded rungs', () => {
     test('rungs produce distinct border-radius values', async ({ page }) => {
-        // "Prop — rounded" no longer exists — folded into "Design"'s Shape
-        // group. Landing Variant only needs to mount `.origam-list`.
-        await openVariant(page, LIST_STORY, 'Design')
+        await openVariant(page, LIST_STORY, 'Prop — rounded')
         const sandbox = sandboxOf(page)
         const list = sandbox.locator('.origam-list').first()
         await expect(list).toBeVisible({ timeout: 8000 })
@@ -307,9 +289,7 @@ const EXPANSION_STORY = '/stories/story/components-stories-expansionpanel-origam
 
 test.describe('OrigamExpansionPanels — rounded rungs', () => {
     test('rungs produce distinct border-radius values on root', async ({ page }) => {
-        // "Prop — rounded" no longer exists — folded into "Design"'s Shape
-        // group. Landing Variant only needs to mount `.origam-expansion-panels`.
-        await openVariant(page, EXPANSION_STORY, 'Design')
+        await openVariant(page, EXPANSION_STORY, 'Prop — rounded')
         const sandbox = sandboxOf(page)
         const panels = sandbox.locator('.origam-expansion-panels').first()
         await expect(panels).toBeVisible({ timeout: 8000 })
@@ -329,10 +309,7 @@ const SYSTEM_BAR_STORY = '/stories/story/components-stories-systembar-origamsyst
 
 test.describe('OrigamSystemBar — rounded rungs', () => {
     test('rungs produce distinct border-radius values', async ({ page }) => {
-        // "Prop — rounded" no longer exists — folded into "Design"'s Shape
-        // group (the story still keeps a leftover "Prop — window" Variant,
-        // unrelated). Landing Variant only needs to mount `.origam-system-bar`.
-        await openVariant(page, SYSTEM_BAR_STORY, 'Design')
+        await openVariant(page, SYSTEM_BAR_STORY, 'Prop — rounded')
         const sandbox = sandboxOf(page)
         const bar = sandbox.locator('.origam-system-bar').first()
         await expect(bar).toBeVisible({ timeout: 8000 })
@@ -392,10 +369,7 @@ const TABLE_STORY = '/stories/story/components-stories-table-origamtable-story-v
 
 test.describe('OrigamTable — rounded rungs', () => {
     test('OK: rungs produce distinct border-radius values', async ({ page }) => {
-        // "Prop — rounded" no longer exists — folded into "Design" (rounded
-        // is bound there even though the init-state leaves it undefined).
-        // Landing Variant only needs to mount `.origam-table`.
-        await openVariant(page, TABLE_STORY, 'Design')
+        await openVariant(page, TABLE_STORY, 'Prop — rounded')
         const sandbox = sandboxOf(page)
         const table = sandbox.locator('.origam-table').first()
         await expect(table).toBeVisible({ timeout: 8000 })
@@ -468,10 +442,7 @@ test.describe('OrigamAlert — density', () => {
 
 test.describe('OrigamBtnGroup — density', () => {
     test('comfortable height > compact height', async ({ page }) => {
-        // "Prop — density" no longer exists — folded into "Design"'s Sizing
-        // group (Density HstSelect, init-state 'default'). Landing Variant
-        // only needs to mount `.origam-btn-group`.
-        await openVariant(page, BTN_GROUP_STORY, 'Design')
+        await openVariant(page, BTN_GROUP_STORY, 'Prop — density')
         const sandbox = sandboxOf(page)
         const group = sandbox.locator('.origam-btn-group').first()
         await expect(group).toBeVisible({ timeout: 8000 })
@@ -528,11 +499,7 @@ test.describe('OrigamSheet — elevation', () => {
 
 test.describe('OrigamSheet — border', () => {
     test('default → 0px border-width; --border → 1px border-width', async ({ page }) => {
-        // "Prop — border & rounded (modifiers)" no longer exists — border is
-        // now driven from "Design"'s Border group (init-state leaves it
-        // undefined). Landing Variant only needs to mount `.origam-sheet`;
-        // the assertions below drive the class directly.
-        await openVariant(page, SHEET_STORY, 'Design')
+        await openVariant(page, SHEET_STORY, 'Prop — border & rounded (modifiers)')
         const sandbox = sandboxOf(page)
         const sheet = sandbox.locator('.origam-sheet').first()
         await expect(sheet).toBeVisible({ timeout: 8000 })

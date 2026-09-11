@@ -15,8 +15,7 @@ import { expect, test } from '@playwright/test'
  *   8  → Slots - Next
  *   9  → Slots - Arrows
  *  10  → Slots - Progress
- *  11  → Slots - Play-pause   (inserted before the playground — #629: shifted "Default" from 11 to 12)
- *  12  → Default (playground)
+ *  11  → Default (playground)
  *
  * ## BEM classes observables
  *   - .origam-carousel                    → root (merges origam-window + origam-carousel classes)
@@ -60,13 +59,13 @@ test.describe('OrigamCarousel', () => {
 
     test.describe('Design', () => {
         test('renders the carousel root with BEM class', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-carousel').first()).toBeVisible({ timeout: 30000 })
         })
 
         test('delimiter controls strip is visible by default', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const carousel = sandbox.locator('.origam-carousel').first()
             await expect(carousel).toBeVisible({ timeout: 30000 })
@@ -74,7 +73,7 @@ test.describe('OrigamCarousel', () => {
         })
 
         test('delimiter dots are rendered (one per slide)', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const carousel = sandbox.locator('.origam-carousel').first()
             await expect(carousel).toBeVisible({ timeout: 30000 })
@@ -84,7 +83,7 @@ test.describe('OrigamCarousel', () => {
 
         test('height prop is applied as inline style on the root', async ({ page }) => {
             // init-state: height=300 — dimensionStyles sets height via useDimension
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const carousel = sandbox.locator('.origam-carousel').first()
             await expect(carousel).toBeVisible({ timeout: 30000 })
@@ -94,7 +93,7 @@ test.describe('OrigamCarousel', () => {
 
         test('no cycle autoplay: first dot stays active after 1s', async ({ page }) => {
             // Design init-state does not set cycle — timer never starts.
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const carousel = sandbox.locator('.origam-carousel').first()
             await expect(carousel).toBeVisible({ timeout: 30000 })
@@ -114,13 +113,13 @@ test.describe('OrigamCarousel', () => {
 
     test.describe('State', () => {
         test('carousel renders in State variant', async ({ page }) => {
-            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(1))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-carousel').first()).toBeVisible({ timeout: 30000 })
         })
 
         test('show-arrows=true exposes the arrow controls zone', async ({ page }) => {
-            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(1))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const carousel = sandbox.locator('.origam-carousel').first()
             await expect(carousel).toBeVisible({ timeout: 30000 })
@@ -129,7 +128,7 @@ test.describe('OrigamCarousel', () => {
         })
 
         test('modelValue=0 selects the first delimiter dot', async ({ page }) => {
-            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(1))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const carousel = sandbox.locator('.origam-carousel').first()
             await expect(carousel).toBeVisible({ timeout: 30000 })
@@ -138,7 +137,7 @@ test.describe('OrigamCarousel', () => {
         })
 
         test('clicking the next arrow advances to slide 2 (dot 2 becomes active)', async ({ page }) => {
-            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(1))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const carousel = sandbox.locator('.origam-carousel').first()
             await expect(carousel).toBeVisible({ timeout: 30000 })
@@ -161,13 +160,13 @@ test.describe('OrigamCarousel', () => {
 
     test.describe('Functional', () => {
         test('renders the carousel in Functional variant', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-carousel').first()).toBeVisible({ timeout: 30000 })
         })
 
         test('showArrows=true: arrow controls zone is present', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const carousel = sandbox.locator('.origam-carousel').first()
             await expect(carousel).toBeVisible({ timeout: 30000 })
@@ -175,7 +174,7 @@ test.describe('OrigamCarousel', () => {
         })
 
         test('delimiter strip is visible (hideDelimiters defaults to false)', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const carousel = sandbox.locator('.origam-carousel').first()
             await expect(carousel).toBeVisible({ timeout: 30000 })
@@ -183,7 +182,7 @@ test.describe('OrigamCarousel', () => {
         })
 
         test('cycle=false: slide does not change automatically after 1.2s', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const carousel = sandbox.locator('.origam-carousel').first()
             await expect(carousel).toBeVisible({ timeout: 30000 })
@@ -194,7 +193,7 @@ test.describe('OrigamCarousel', () => {
         })
 
         test('dot click navigates to the targeted slide', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const carousel = sandbox.locator('.origam-carousel').first()
             await expect(carousel).toBeVisible({ timeout: 30000 })
@@ -212,13 +211,13 @@ test.describe('OrigamCarousel', () => {
 
     test.describe('Events - update:modelValue', () => {
         test('carousel renders in Events variant', async ({ page }) => {
-            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(3))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-carousel').first()).toBeVisible({ timeout: 30000 })
         })
 
         test('clicking a delimiter dot changes the active dot (proxy for emit firing)', async ({ page }) => {
-            await page.goto(variantUrl(3), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(3))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const carousel = sandbox.locator('.origam-carousel').first()
             await expect(carousel).toBeVisible({ timeout: 30000 })
@@ -236,13 +235,13 @@ test.describe('OrigamCarousel', () => {
 
     test.describe('Slots - Default', () => {
         test('carousel renders with default slot content', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(4))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-carousel').first()).toBeVisible({ timeout: 30000 })
         })
 
         test('4 window items are rendered inside the default slot', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(4))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const carousel = sandbox.locator('.origam-carousel').first()
             await expect(carousel).toBeVisible({ timeout: 30000 })
@@ -257,7 +256,7 @@ test.describe('OrigamCarousel', () => {
 
     test.describe('Slots - Additional', () => {
         test('carousel renders with additional slot overlay', async ({ page }) => {
-            await page.goto(variantUrl(5), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(5))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const carousel = sandbox.locator('.origam-carousel').first()
             await expect(carousel).toBeVisible({ timeout: 30000 })
@@ -272,7 +271,7 @@ test.describe('OrigamCarousel', () => {
 
     test.describe('Slots - Item', () => {
         test('carousel renders with custom #item slot for delimiters', async ({ page }) => {
-            await page.goto(variantUrl(6), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(6))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const carousel = sandbox.locator('.origam-carousel').first()
             await expect(carousel).toBeVisible({ timeout: 30000 })
@@ -288,7 +287,7 @@ test.describe('OrigamCarousel', () => {
 
     test.describe('Slots - Prev', () => {
         test('carousel renders in Slots - Prev variant', async ({ page }) => {
-            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(7))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const carousel = sandbox.locator('.origam-carousel').first()
             await expect(carousel).toBeVisible({ timeout: 30000 })
@@ -297,7 +296,7 @@ test.describe('OrigamCarousel', () => {
         })
 
         test('custom prev slot renders ← button after navigating to slide 2', async ({ page }) => {
-            await page.goto(variantUrl(7), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(7))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const carousel = sandbox.locator('.origam-carousel').first()
             await expect(carousel).toBeVisible({ timeout: 30000 })
@@ -318,7 +317,7 @@ test.describe('OrigamCarousel', () => {
 
     test.describe('Slots - Next', () => {
         test('carousel renders in Slots - Next variant', async ({ page }) => {
-            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(8))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const carousel = sandbox.locator('.origam-carousel').first()
             await expect(carousel).toBeVisible({ timeout: 30000 })
@@ -326,7 +325,7 @@ test.describe('OrigamCarousel', () => {
         })
 
         test('custom next slot renders → button from slide 0 (not last slide)', async ({ page }) => {
-            await page.goto(variantUrl(8), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(8))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const carousel = sandbox.locator('.origam-carousel').first()
             await expect(carousel).toBeVisible({ timeout: 30000 })
@@ -342,13 +341,13 @@ test.describe('OrigamCarousel', () => {
 
     test.describe('Slots - Arrows', () => {
         test('carousel renders in Slots - Arrows variant', async ({ page }) => {
-            await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(9))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-carousel').first()).toBeVisible({ timeout: 30000 })
         })
 
         test('custom arrows slot provides the › button from slide 0', async ({ page }) => {
-            await page.goto(variantUrl(9), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(9))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const carousel = sandbox.locator('.origam-carousel').first()
             await expect(carousel).toBeVisible({ timeout: 30000 })
@@ -366,13 +365,13 @@ test.describe('OrigamCarousel', () => {
 
     test.describe('Slots - Progress', () => {
         test('carousel renders in Slots - Progress variant', async ({ page }) => {
-            await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(10))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-carousel').first()).toBeVisible({ timeout: 30000 })
         })
 
         test('custom #progress slot outer container (height 4px) is in the DOM', async ({ page }) => {
-            await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(10))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const carousel = sandbox.locator('.origam-carousel').first()
             await expect(carousel).toBeVisible({ timeout: 30000 })
@@ -383,96 +382,19 @@ test.describe('OrigamCarousel', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // ACCESSIBILITE — reuses Slots - Progress (index 10, cycle=true)      //
+    // DEFAULT / PLAYGROUND (index 11)                                     //
+    // init: height=300, cycle=false, showArrows=true                     //
     // ------------------------------------------------------------------ //
-
-    test.describe('Accessibilite — WCAG 2.2.2 (pause/lecture en autoplay)', () => {
-        // La Variant « Slots - Progress » (index 10) est la seule qui code
-        // `:cycle="true"` en dur : elle rend donc le controle par defaut sans
-        // qu'on ait a manipuler le HstCheckbox du panneau, dont le DOM custom
-        // a deja fait rougir d'autres specs de ce depot.
-        test('un <button> pause reel est rendu, correctement etiquete', async ({ page }) => {
-            await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
-            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            const carousel = sandbox.locator('.origam-carousel').first()
-            await expect(carousel).toBeVisible({ timeout: 30000 })
-
-            const btn = carousel.locator('[data-cy="carousel-play-pause"]')
-            await expect(btn).toBeVisible()
-
-            // Element natif : « No ARIA is better than bad ARIA ».
-            expect(await btn.evaluate(el => el.tagName)).toBe('BUTTON')
-            await expect(btn).toHaveAttribute('aria-label', 'Pause the carousel')
-            await expect(btn).toHaveAttribute('aria-pressed', 'false')
-        })
-
-        test('le controle est atteignable au CLAVIER et bascule a l\'Entree', async ({ page }) => {
-            await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
-            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            const btn = sandbox.locator('[data-cy="carousel-play-pause"]').first()
-            await expect(btn).toBeVisible({ timeout: 30000 })
-
-            // WCAG exige un mecanisme utilisable, pas seulement present : un
-            // controle qu'on ne peut pas atteindre au clavier ne vaut rien.
-            await btn.focus()
-            await expect(btn).toBeFocused()
-
-            await btn.press('Enter')
-            await expect(btn).toHaveAttribute('aria-pressed', 'true')
-            await expect(btn).toHaveAttribute('aria-label', 'Play the carousel')
-        })
-
-        test('chaque diapositive porte role=group et aria-roledescription=slide', async ({ page }) => {
-            await page.goto(variantUrl(10), { waitUntil: 'domcontentloaded' })
-            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            const carousel = sandbox.locator('.origam-carousel').first()
-            await expect(carousel).toBeVisible({ timeout: 30000 })
-
-            const items = carousel.locator('.origam-carousel-item')
-            const count = await items.count()
-            expect(count).toBeGreaterThan(0)
-
-            for (let i = 0; i < count; i++) {
-                await expect(items.nth(i)).toHaveAttribute('role', 'group')
-                await expect(items.nth(i)).toHaveAttribute('aria-roledescription', 'slide')
-            }
-        })
-    })
-
-    test.describe('Slots - Play-pause', () => {
-        // ⛔ L'insertion de cette Variant AVANT le playground a decale ce
-        // dernier de l'index 11 a l'index 12 — c'est ce qui a fait rougir
-        // « playground: height=300 » et non une regression du composant. Les
-        // index de Variant sont positionnels : ajouter une Variant ailleurs
-        // qu'a la fin renumerote tout ce qui suit.
-        test('le controle par defaut est remplace par celui du consommateur', async ({ page }) => {
-            await page.goto(variantUrl(11), { waitUntil: 'domcontentloaded' })
-            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            const carousel = sandbox.locator('.origam-carousel').first()
-            await expect(carousel).toBeVisible({ timeout: 30000 })
-
-            // Le bouton du DS a cede la place — sinon le slot ne remplacerait
-            // rien et l'utilisateur verrait deux controles.
-            await expect(carousel.locator('[data-cy="carousel-play-pause"]')).toHaveCount(0)
-
-            const custom = carousel.locator('button[aria-pressed]').first()
-            await expect(custom).toBeVisible()
-            await expect(custom).toHaveAttribute('aria-pressed', 'false')
-
-            await custom.click()
-            await expect(custom).toHaveAttribute('aria-pressed', 'true')
-        })
-    })
 
     test.describe('Default (Playground)', () => {
         test('carousel renders in playground variant', async ({ page }) => {
-            await page.goto(variantUrl(12), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(11))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             await expect(sandbox.locator('.origam-carousel').first()).toBeVisible({ timeout: 30000 })
         })
 
         test('playground: height=300 is applied as inline style', async ({ page }) => {
-            await page.goto(variantUrl(12), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(11))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const carousel = sandbox.locator('.origam-carousel').first()
             await expect(carousel).toBeVisible({ timeout: 30000 })
@@ -481,7 +403,7 @@ test.describe('OrigamCarousel', () => {
         })
 
         test('playground: 4 delimiter dots are rendered', async ({ page }) => {
-            await page.goto(variantUrl(12), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(11))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const carousel = sandbox.locator('.origam-carousel').first()
             await expect(carousel).toBeVisible({ timeout: 30000 })
@@ -489,7 +411,7 @@ test.describe('OrigamCarousel', () => {
         })
 
         test('playground: next arrow click advances slide (dot 2 becomes active)', async ({ page }) => {
-            await page.goto(variantUrl(12), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(11))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const carousel = sandbox.locator('.origam-carousel').first()
             await expect(carousel).toBeVisible({ timeout: 30000 })
@@ -503,7 +425,7 @@ test.describe('OrigamCarousel', () => {
         })
 
         test('playground: dot click selects the matching slide', async ({ page }) => {
-            await page.goto(variantUrl(12), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(11))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const carousel = sandbox.locator('.origam-carousel').first()
             await expect(carousel).toBeVisible({ timeout: 30000 })

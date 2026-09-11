@@ -17,10 +17,6 @@
 							:bg-color="state.bgColor"
 							:size="state.size"
 							:rounded="state.rounded"
-							:rounded-top-left="state.roundedTopLeft"
-							:rounded-top-right="state.roundedTopRight"
-							:rounded-bottom-left="state.roundedBottomLeft"
-							:rounded-bottom-right="state.roundedBottomRight"
 					/>
 				</div>
 			</template>
@@ -34,12 +30,6 @@
 				</StoryGroup>
 				<StoryGroup title="Shape">
 					<HstSelect v-model="state.rounded" title="Rounded" :options="ROUNDED_OPTIONS"/>
-				</StoryGroup>
-				<StoryGroup title="Rounded — per corner">
-					<HstText v-model="state.roundedTopLeft"     title="Rounded Top Left"/>
-					<HstText v-model="state.roundedTopRight"    title="Rounded Top Right"/>
-					<HstText v-model="state.roundedBottomLeft"  title="Rounded Bottom Left"/>
-					<HstText v-model="state.roundedBottomRight" title="Rounded Bottom Right"/>
 				</StoryGroup>
 				<StoryGroup title="Track">
 					<HstNumber v-model="state.start" title="Start (%)" :min="0" :max="100" :step="1"/>

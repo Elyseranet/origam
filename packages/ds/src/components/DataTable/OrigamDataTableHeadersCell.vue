@@ -3,10 +3,7 @@
 			v-for="(row, y) in headers"
 			:key="y"
 	>
-		<tr
-				:id="headerRowId(y)"
-				class="origam-data-table-headers"
-		>
+		<tr class="origam-data-table-headers">
 			<template
 					v-for="(column, x) in row"
 					:key="x"
@@ -19,18 +16,7 @@
 						:x="x"
 						:y="y"
 						v-bind="dataTableHeaderCellProps"
-				>
-					<template
-							v-for="name in headerColumnSlotNames"
-							:key="name"
-							#[name]="columnProps"
-					>
-						<slot
-								:name="name"
-								v-bind="columnProps"
-						/>
-					</template>
-				</origam-data-table-header-cell>
+				/>
 			</template>
 		</tr>
 	</template>
@@ -40,17 +26,14 @@
 		lang="ts"
 		setup
 >
-	import OrigamDataTableHeaderCell from './OrigamDataTableHeaderCell.vue'
+	import { OrigamDataTableHeaderCell } from '../../components'
 
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useProps , useStyle} from "../../composables"
 
-	import type { IDataTableHeadersCellEmits, IDataTableHeadersCellProps, IDataTableHeadersCellSlots } from '../../interfaces/DataTable/data-table-headers-cell.interface'
-	import type { TOrigamDataTableHeaderCell } from '../../types/DataTable/data-table-header-cell.type'
+	import type { IDataTableHeadersCellProps } from '../../interfaces'
+	import type { TOrigamDataTableHeaderCell } from "../../types"
 
-	import { pickDataTableHeaderColumnSlotNames } from '../../utils/DataTable/slot-name.util'
-
-	import { computed, ref, StyleValue, useSlots } from 'vue'
+	import { computed, ref, StyleValue } from 'vue'
 
 	/*********************************************************
 	 * Global
@@ -58,29 +41,9 @@
 
 	const props = withDefaults(defineProps<IDataTableHeadersCellProps>(), {})
 
-	defineEmits<IDataTableHeadersCellEmits>()
-
-	defineSlots<IDataTableHeadersCellSlots>()
-
 	const {filterProps} = useProps<IDataTableHeadersCellProps>(props)
 
-	const slots = useSlots()
-
 	const origamDataTableHeaderCellRef = ref<Array<TOrigamDataTableHeaderCell>>()
-
-	/*********************************************************
-	 * Forwarded slots (#550, critere C7)
-	 *
-	 * @description
-	 * Dernier maillon avant `<origam-data-table-header-cell>`, qui rend
-	 * `header.{cle}`. `IDataTableHeadersCellSlots` etait declaree VIDE et
-	 * decrivait le composant comme un « pur relais » — il relayait les
-	 * props, pas les slots, et le contenu d'en-tete personnalise mourait
-	 * ici.
-	 ********************************************************/
-	const headerColumnSlotNames = computed(() => {
-		return pickDataTableHeaderColumnSlotNames(Object.keys(slots))
-	})
 
 	/*********************************************************
 	 * Forwarded props
@@ -114,9 +77,7 @@
 			props.style
 		] as StyleValue
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(dataTableHeadersCellStyles, () => props.id)
-
-	const headerRowId = (index: number) => (props.id ? `${props.id}-row-${index}` : undefined)
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableHeadersCellStyles)
 
 
 	/*********************************************************

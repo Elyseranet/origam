@@ -14,6 +14,7 @@
 					density: DENSITY.DEFAULT,
 					rounded: true,
 					elevation: undefined,
+					flat: false,
 					border: true,
 					appendInnerIcon: MDI_ICONS.CALENDAR_OUTLINE,
 					width: '',
@@ -31,6 +32,7 @@
 						:density="state.density"
 						:rounded="state.rounded"
 						:elevation="state.elevation"
+						:flat="state.flat"
 						:border="state.border"
 						:border-color="state.borderColor"
 						:border-style="state.borderStyle"
@@ -61,6 +63,7 @@
 				<StoryGroup title="Shape">
 					<HstSelect   v-model="state.rounded"   title="Rounded"   :options="ROUNDED_OPTIONS"/>
 					<HstSelect   v-model="state.elevation" title="Elevation" :options="ELEVATION_OPTIONS"/>
+					<HstCheckbox v-model="state.flat"      title="Flat"/>
 				</StoryGroup>
 				<StoryGroup title="Border">
 					<HstSelect v-model="state.border"      title="Border"       :options="BORDER_OPTIONS"/>
@@ -82,13 +85,14 @@
 
 		<Variant
 				title="State"
-				:init-state="() => useStoryInitState<IBgColorProps & { active?: boolean | object }>({ bgColor: 'primary' })"
+				:init-state="() => useStoryInitState<IHoverProps & IBgColorProps & { active?: boolean | object }>({ bgColor: 'primary' })"
 		>
 			<template #default="{ state }">
 				<origam-date-picker-field
 						v-model="stateDate"
 						label="State"
 						:bg-color="state.bgColor"
+						:hover="resolveHoverState(state.hover)"
 						:active="resolveActiveState(state.active)"
 						style="max-width: 320px"
 				/>
@@ -98,6 +102,7 @@
 					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Interaction">
+					<HstSelect v-model="state.hover"  title="Hover"  :options="HOVER_OPTIONS"/>
 					<HstSelect v-model="state.active" title="Active" :options="ACTIVE_OPTIONS"/>
 				</StoryGroup>
 			</template>
@@ -116,6 +121,7 @@
 					openOnClear: false,
 					clearable: false,
 					persistentClear: false,
+					reverse: false,
 					singleLine: false,
 					hint: '',
 					hideDetails: false,
@@ -137,6 +143,7 @@
 						:open-on-clear="state.openOnClear"
 						:clearable="state.clearable"
 						:persistent-clear="state.persistentClear"
+						:reverse="state.reverse"
 						:single-line="state.singleLine"
 						:hint="state.hint || undefined"
 						:hide-details="state.hideDetails"
@@ -155,6 +162,7 @@
 				<StoryGroup title="States">
 					<HstCheckbox v-model="state.disabled" title="Disabled"/>
 					<HstCheckbox v-model="state.readonly" title="Readonly"/>
+					<HstCheckbox v-model="state.reverse"  title="Reverse"/>
 				</StoryGroup>
 				<StoryGroup title="Selection">
 					<HstCheckbox v-model="state.range"         title="Range"/>
@@ -374,6 +382,15 @@
 			</div>
 		</Variant>
 
+		<Variant title="Emit — update:modelValue">
+			<origam-date-picker-field
+					v-model="emitDate"
+					label="Date"
+					style="max-width: 320px"
+					@update:model-value="logEvent('update:modelValue', $event)"
+			/>
+		</Variant>
+
 		<Variant title="Prop — rules">
 			<div style="display: flex; flex-direction: column; gap: 24px; padding: 16px;">
 				<origam-date-picker-field
@@ -458,7 +475,8 @@
 	import { DENSITY, MDI_ICONS, VARIANT_INPUT } from '@origam/enums'
 	import type {
 		IBgColorProps,
-		IDatePickerFieldProps
+		IDatePickerFieldProps,
+		IHoverProps
 	} from '@origam/interfaces'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
@@ -471,6 +489,8 @@
 		COLOR_OPTIONS,
 		DENSITY_OPTIONS,
 		ELEVATION_OPTIONS,
+		HOVER_OPTIONS,
+		resolveHoverState,
 		ICON_OPTIONS,
 		ROUNDED_OPTIONS,
 		SIZE_OPTIONS,

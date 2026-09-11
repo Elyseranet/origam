@@ -110,8 +110,7 @@ interface ISlideGroupProps extends ICommonsComponentProps, ITagProps,
 
 ## Design tokens consumed
 
-Defined in `packages/ds/src/assets/css/tokens/light.css` and `dark.css`
-(SCSS twins under `packages/ds/src/assets/scss/tokens/`).
+Defined in `tokens/component/slide-group.json`.
 
 | CSS variable | Default |
 |---|---|

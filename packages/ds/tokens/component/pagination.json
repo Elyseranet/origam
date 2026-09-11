@@ -1,0 +1,59 @@
+{
+  "pagination": {
+    "_comment": "OrigamPagination component tokens. The DEFAULT visual is intentionally subtle (transparent surface, neutral text) so it blends with the page chrome. The styled, filled look from the PDF mock kicks in only when the consumer passes color='primary' (or any TIntent) — at which point the inner OrigamBtn instances render with their normal intent rules. BEM children: list, item (--is-active modifier), first, prev, next, last, info, compact-label, compact-input. Modifiers: --colored (any TIntent forwarded by consumer), --compact, --with-info.",
+
+    "gap":                      { "$type": "dimension",  "$value": "{space.1}",                       "$description": "Gap between each pagination list item (margin applied per item)" },
+    "gap-info":                 { "$type": "dimension",  "$value": "{space.4}",                       "$description": "Gap between the left-side info label and the right-side list when withInfo=true" },
+    "padding-block":            { "$type": "dimension",  "$value": "{space.0}",                       "$description": "Block-axis padding of the pagination root container" },
+    "padding-inline":           { "$type": "dimension",  "$value": "{space.0}",                       "$description": "Inline-axis padding of the pagination root container" },
+
+    "background-color":         { "$type": "color",      "$value": "transparent",                     "$description": "Default surface of every page button when no color prop is passed (subtle, ghost-like)" },
+    "background-color-hover":   { "$type": "color",      "$value": "{color.action.secondary.bgHover}", "$description": "Default hover surface of every page button when no color prop is passed" },
+    "color":                    { "$type": "color",      "$value": "{color.text.primary}",            "$description": "Default text color of every page button when no color prop is passed" },
+
+    "primary": {
+      "_comment": "State branch — applies when consumer passes color='primary'. Reproduces the filled look from the PDF mock.",
+      "background-color":       { "$type": "color",      "$value": "{color.action.primary.bg}",       "$description": "Filled surface (primary intent) for the styled PDF look" },
+      "background-color-hover": { "$type": "color",      "$value": "{color.action.primary.bgHover}",  "$description": "Hover surface in primary mode" },
+      "color":                  { "$type": "color",      "$value": "{color.action.primary.fg}",       "$description": "Text color over the filled primary surface" },
+      "box-shadow":             { "$type": "shadow",     "$value": "{shadow.xs}",                     "$description": "Subtle elevation under the filled buttons (matches PDF reference)" }
+    },
+
+    "info": {
+      "_comment": "BEM child: .origam-pagination__info — the 'Showing 21-40 of 248' label rendered on the left when withInfo=true.",
+      "color":                  { "$type": "color",      "$value": "{color.text.secondary}",          "$description": "Text color of the info range label" },
+      "font-size":              { "$type": "dimension",  "$value": "{font.size.sm}",                  "$description": "Slightly smaller than body to read as meta info" },
+      "font-weight":            { "$type": "fontWeight", "$value": "{font.weight.regular}",           "$description": "Regular weight — purely informational" }
+    },
+
+    "item": {
+      "_comment": "BEM child: .origam-pagination__item — individual page number button.",
+      "background-color":       { "$type": "color",      "$value": "transparent",                     "$description": "Default background of a page item (inherits from btn secondary)" },
+      "color":                  { "$type": "color",      "$value": "{color.text.primary}",            "$description": "Text color of a page item" },
+      "background-color-hover": { "$type": "color",      "$value": "{color.action.secondary.bgHover}", "$description": "Background on hover (follows btn secondary hover)" },
+      "active-background-color":{ "$type": "color",      "$value": "{color.action.primary.bg}",       "$description": "Background of the active (current) page button" },
+      "active-color":           { "$type": "color",      "$value": "{color.action.primary.fg}",       "$description": "Text color of the active page button" },
+      "active-overlay-opacity": { "$type": "number",     "$value": 0.12,                              "$description": "Overlay opacity on the active item's __overlay pseudo-element (provides a subtle tint reinforcement)" }
+    },
+
+    "prev-next-icon": {
+      "_comment": "Tokens for the prev/next/first/last navigation icon buttons.",
+      "color":                  { "$type": "color",      "$value": "{color.text.primary}",            "$description": "Icon color for prev/next/first/last controls" },
+      "opacity-disabled":       { "$type": "number",     "$value": "{opacity.26}",                    "$description": "Opacity when the control is disabled (no more pages available)" }
+    },
+
+    "ellipsis": {
+      "_comment": "Tokens for the ellipsis (...) placeholder item.",
+      "color":                  { "$type": "color",      "$value": "{color.text.secondary}",          "$description": "Text color of the ellipsis placeholder" },
+      "font-weight":            { "$type": "fontWeight", "$value": "{font.weight.bold}",              "$description": "Font weight — heavier to visually distinguish from page numbers" }
+    },
+
+    "border-radius":            { "$type": "dimension",  "$value": "{radius.sm}",                     "$description": "Default border-radius of each page button (4px square)" },
+    "border-radius-rounded":    { "$type": "dimension",  "$value": "{radius.2xl}",                    "$description": "Border-radius used with --rounded variant (pill-like)" },
+    "border-radius-circle":     { "$type": "dimension",  "$value": "{radius.full}",                   "$description": "Border-radius used with --circle variant (perfect circle)" },
+
+    "input-width":              { "$type": "dimension",  "$value": "{space.10}",                      "$description": "Width of the page number input in compact mode" },
+    "input-padding-inline":     { "$type": "dimension",  "$value": "{space.2}",                       "$description": "Inline padding of the page number input in compact mode" },
+    "label-gap":                { "$type": "dimension",  "$value": "{space.2}",                       "$description": "Gap between labels and input in compact mode" }
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "file-field-dragndrop-item": {
+    "gap":                   { "$type": "dimension",  "$value": "{space.3}",               "$description": "Gap between icon, content and actions — was 12px" },
+    "content-gap":           { "$type": "dimension",  "$value": "{space.1}",               "$description": "Inner gap between name, meta and progress inside content — was 4px" },
+    "actions-gap":           { "$type": "dimension",  "$value": "{space.1}",               "$description": "Gap between action buttons — was 4px" },
+
+    "icon": {
+      "color":               { "$type": "color",      "$value": "{color.text.secondary}",  "$description": "File icon color (inherits from parent by default)" }
+    },
+
+    "meta": {
+      "color":               { "$type": "color",      "$value": "{color.text.secondary}",  "$description": "File size / meta text color — was rgba(0,0,0,0.6)" },
+      "font-size":           { "$type": "dimension",  "$value": "{font.size.sm}",          "$description": "Meta text font-size — was 12px" }
+    },
+
+    "name": {
+      "font-size":           { "$type": "dimension",  "$value": "{font.size.md}",          "$description": "File name font-size — was 14px" },
+      "font-weight":         { "$type": "fontWeight", "$value": "{font.weight.medium}",    "$description": "File name font-weight — was 500" }
+    },
+
+    "progress": {
+      "margin-top":          { "$type": "dimension",  "$value": "{space.1}",               "$description": "Top margin of progress bar inside content — was 4px" }
+    },
+
+    "remove": {
+      "size":                { "$type": "other",      "$value": "small",                   "$description": "Remove button size variant" }
+    }
+  }
+}

@@ -27,8 +27,9 @@ const files = ref(null)
 |---|---|---|---|
 | `multiple` | `boolean` | `false` | Allow multiple file selection |
 | `chips` | `boolean` | `false` | Display files as chips |
-| `showSize` | `TFileSize` | `false` | Show file size next to name (`false` hides it, `true` picks an auto unit, `1000`/`1024` force SI/IEC) |
-| `chipProps` | `IChipProps` | `undefined` | Props merged onto each chip's own defaults (`closable` derived from `disabled`/`readonly`, `color`) — e.g. `{ pill: true }` renders pill-shaped chips; keys in `chipProps` override the internal defaults |
+| `showSize` | `TFileSize` | `false` | Show file size next to name |
+| `chipProps` | `IChipProps` | `undefined` | Props forwarded to chip elements |
+| `divider` | `string` | `','` | Separator between file names in text mode |
 
 ## Drag-and-drop mode
 
@@ -62,24 +63,6 @@ When `dragndrop` is set, the field renders as a dropzone instead of a standard f
 | `fileIcon` | `string` | Icon for generic files |
 | `removeIcon` | `string` | Remove button icon |
 | `downloadIcon` | `string` | Download button icon |
-
-The download button only renders when `downloadable` is `true`, and — unlike
-the remove button — stays active while `readonly` (only `disabled` disables
-it): removing a file is destructive, downloading it isn't. It always carries
-a translated, per-file `aria-label` via `origam.file_field.download_aria_label`.
-
-## Placeholder
-
-```vue
-<template>
-    <OrigamFileField v-model="files" placeholder="No file selected" persistent-placeholder />
-</template>
-```
-
-| Prop | Type | Description |
-|---|---|---|
-| `placeholder` | `string` | Text shown in the field when no file is selected |
-| `persistentPlaceholder` | `boolean` | Keeps the placeholder visible even when the field isn't focused/dirty (forces the active state, same behaviour as `OrigamTextField` / `OrigamTextareaField` / `OrigamPasswordField`) |
 
 ## Validation
 
@@ -122,12 +105,6 @@ a translated, per-file `aria-label` via `origam.file_field.download_aria_label`.
 | `click:download` | `{ file, index }` | Download button clicked |
 | `drop` | `{ files, event }` | Files dropped on the dropzone |
 | `error:max-size` | `{ files, maxFileSize, message }` | Files exceeded `maxFileSize` |
-| `click:prepend` | `MouseEvent` | Prepend adornment clicked (inherited from `OrigamInput`) |
-| `click:append` | `MouseEvent` | Append adornment clicked (inherited from `OrigamInput`) |
-| `click:prependInner` | `MouseEvent` | Inner prepend adornment clicked (inherited from `OrigamField`) |
-| `click:appendInner` | `MouseEvent` | Inner append adornment clicked (inherited from `OrigamField`) |
-| `click:clear` | `MouseEvent` | Clear button clicked (inherited from `OrigamField`) |
-| `update:focused` | `boolean` | Focus state changed (own `useFocus(props)` call) |
 
 ## Composition
 

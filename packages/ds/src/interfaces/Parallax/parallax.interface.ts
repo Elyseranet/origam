@@ -1,27 +1,21 @@
-import type { IBorderProps } from '../Commons/border.interface'
-import type { IBox } from '../Commons/box.interface'
 import type {
+    IAudioProps,
+    IBorderProps,
+    IBox,
     IBgColorProps,
-    IColorProps
-} from '../Commons/color.interface'
-import type {
+    IColorProps,
     ICommonsComponentProps,
-    ITagProps
-} from '../Commons/commons.interface'
-import type { IDimensionProps } from '../Commons/dimension.interface'
-import type { IElevationProps } from '../Commons/elevation.interface'
-import type { IMarginProps } from '../Commons/margin.interface'
-import type { IPaddingProps } from '../Commons/padding.interface'
-import type { IRoundedProps } from '../Commons/rounded.interface'
-import type { IParallaxLayerRegistry } from './parallax-layer.interface'
-import type { IUseAudioProps } from '../Commons/audio.interface'
+    IDimensionProps,
+    IElevationProps,
+    IMarginProps,
+    IPaddingProps,
+    IRoundedProps,
+    ITagProps,
+    IParallaxLayerRegistry,
+    IUseAudioProps
+} from '../../interfaces'
 
-import type {
-    TParallaxDirection,
-    TParallaxEasing,
-    TParallaxEvent
-} from '../../types/Parallax/parallax.type'
-import type { TPoint } from '../../types/Commons/point.type'
+import type { TParallaxDirection, TParallaxEasing, TParallaxEvent, TPoint } from '../../types'
 
 import type { Ref } from 'vue'
 
@@ -30,28 +24,7 @@ import type { Ref } from 'vue'
 // `--color` from the design tokens (added in 2931d43); declaring the
 // props here lets the consumer override them per-instance via inline
 // styles, matching every other coloured component.
-/*********************************************************
- * IParallaxProps
- *
- * @description
- * ⛔ Cette interface etendait `IAudioProps`, la surface COMPLETE
- * d'`<OrigamAudio>` : `playlist`, `tracks`, `waveform`, `controls`, `cover`,
- * `artist`, `album`, `playbackRates`… **29 props declarees et jamais lues**,
- * a elles seules un quart de la baseline `unconsumed-props` du depot.
- *
- * @description
- * `<OrigamParallax>` a bien un `<audio>`, mais minimal : une bande-son de
- * fond, pilotee par la seule URL `audio` et le booleen `playAudio`. C'est
- * exactement ce que `IUseAudioProps` declare, et c'est tout ce que
- * `useAudio(props)` lit — verifie : le composable ne touche que `props.audio`
- * et `props.playAudio`.
- *
- * @description
- * L'`extends IAudioProps` est donc retire. Rupture de type pour qui passait
- * une de ces 29 props — mais elle ne faisait deja rien, silencieusement.
- * Issue #550, critere C1.
- ********************************************************/
-export interface IParallaxProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, IDimensionProps, IUseAudioProps {
+export interface IParallaxProps extends ICommonsComponentProps, ITagProps, IColorProps, IBgColorProps, IPaddingProps, IMarginProps, IBorderProps, IRoundedProps, IElevationProps, IDimensionProps, IAudioProps, IUseAudioProps {
     /**
      * @deprecated Use `duration` instead. `animationDuration` is kept as a
      * silent alias for backwards-compat and will be removed in v3.0.0.
@@ -111,19 +84,6 @@ export interface IParallaxProps extends ICommonsComponentProps, ITagProps, IColo
     threshold?: number
 }
 
-/** Emits fired by `<OrigamParallax>` — mouse/scroll movement lifecycle
- *  and live scroll-progress reporting. */
-export interface IParallaxEmits {
-    (e: 'enter'): void
-    (e: 'leave'): void
-    (e: 'scroll-progress', progress: number): void
-}
-
-/** Slot signatures for `<OrigamParallax>`. */
-export interface IParallaxSlots {
-    default?: () => any
-}
-
 export interface IParallaxProvide {
     audioData: Ref<any>
     eventData: Ref<TPoint>
@@ -173,31 +133,4 @@ export interface IParallaxLayerProvide {
      */
     register: (layer: IParallaxLayerRegistry) => void
     unregister: (id: symbol) => void
-    /**
-     * Patches a REGISTERED layer's `speed`/`offsetX`/`offsetY` in place —
-     * see #449. `register()` only runs once, at mount; without this, a
-     * reactive change to those props after mount never reaches the
-     * running rAF loop / CSS scroll-driven animation, which both read the
-     * registry entry directly rather than through Vue reactivity.
-     */
-    update: (id: symbol, patch: Pick<IParallaxLayerRegistry, 'speed' | 'offsetX' | 'offsetY'>) => void
-}
-
-/*********************************************************
- * Options consumed by `useParallaxRuntime`.
- ********************************************************/
-export interface IUseParallaxRuntimeOptions {
-    target: Ref<HTMLElement | undefined>
-    direction: Ref<TParallaxDirection>
-    easing: Ref<TParallaxEasing | string>
-    threshold: Ref<number>
-    disabled: Ref<boolean>
-    /**
-     * Fallback speed used when `slot=default` carries raw content (no
-     * `<OrigamParallaxLayer>`). Mirrors `IParallaxProps.speed`.
-     */
-    speed: Ref<number>
-    onEnter?: () => void
-    onLeave?: () => void
-    onProgress?: (progress: number) => void
 }

@@ -1,3 +1,3 @@
-import OrigamDataTableGroupHeaderRow from '../../components/DataTable/OrigamDataTableGroupHeaderRow.vue'
+import { OrigamDataTableGroupHeaderRow } from "../../components"
 
 export type TOrigamDataTableGroupHeaderRow = InstanceType<typeof OrigamDataTableGroupHeaderRow>

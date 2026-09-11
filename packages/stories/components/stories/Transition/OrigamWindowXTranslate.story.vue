@@ -6,9 +6,10 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<ITransitionWindowProps>({
+				:init-state="() => useStoryInitState<ITransitionProps>({
 					name: 'origam-transition--window-x-translate',
-					mode: TRANSITION_MODE.OUT_IN
+					mode: TRANSITION_MODE.OUT_IN,
+					origin: ''
 				})"
 		>
 			<template #default="{ state }">
@@ -18,6 +19,7 @@
 						<origam-window-x-translate
 								:name="state.name"
 								:mode="state.mode"
+								:origin="state.origin || undefined"
 						>
 							<div v-if="toggleDesign" class="story-target" data-cy="target-design">Animation content</div>
 						</origam-window-x-translate>
@@ -28,15 +30,18 @@
 				<StoryGroup title="Animation">
 					<HstText   v-model="state.name"   title="Name"/>
 					<HstSelect v-model="state.mode"   title="Mode"   :options="TRANSITION_MODE_OPTIONS"/>
+					<HstText   v-model="state.origin" title="Origin"/>
 				</StoryGroup>
 			</template>
 		</Variant>
 
 		<Variant
 				title="Functional"
-				:init-state="() => useStoryInitState<ITransitionWindowProps>({
+				:init-state="() => useStoryInitState<ITransitionProps>({
 					disabled: false,
 					group: false,
+					hideOnLeave: false,
+					leaveAbsolute: false
 				})"
 		>
 			<template #default="{ state }">
@@ -46,6 +51,8 @@
 						<origam-window-x-translate
 								:disabled="state.disabled"
 								:group="state.group"
+								:hide-on-leave="state.hideOnLeave"
+								:leave-absolute="state.leaveAbsolute"
 						>
 							<div v-if="toggleFunctional" class="story-target" data-cy="target-functional">Functional content</div>
 						</origam-window-x-translate>
@@ -58,6 +65,8 @@
 				</StoryGroup>
 				<StoryGroup title="Behaviour">
 					<HstCheckbox v-model="state.group"         title="Group"/>
+					<HstCheckbox v-model="state.hideOnLeave"   title="Hide On Leave"/>
+					<HstCheckbox v-model="state.leaveAbsolute" title="Leave Absolute"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -77,11 +86,14 @@
 
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<ITransitionWindowProps>({
+				:init-state="() => useStoryInitState<ITransitionProps>({
 					name: 'origam-transition--window-x-translate',
 					mode: TRANSITION_MODE.OUT_IN,
+					origin: '',
 					disabled: false,
 					group: false,
+					hideOnLeave: false,
+					leaveAbsolute: false
 				})"
 		>
 			<template #default="{ state }">
@@ -98,10 +110,13 @@
 				<StoryGroup title="Design">
 					<HstText   v-model="state.name"   title="Name"/>
 					<HstSelect v-model="state.mode"   title="Mode"   :options="TRANSITION_MODE_OPTIONS"/>
+					<HstText   v-model="state.origin" title="Origin"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.disabled"      title="Disabled"/>
 					<HstCheckbox v-model="state.group"         title="Group"/>
+					<HstCheckbox v-model="state.hideOnLeave"   title="Hide On Leave"/>
+					<HstCheckbox v-model="state.leaveAbsolute" title="Leave Absolute"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -116,7 +131,7 @@
 
 	import { OrigamWindowXTranslate } from '@origam/components'
 	import { TRANSITION_MODE } from '@origam/enums'
-	import type { ITransitionWindowProps } from '@origam/interfaces'
+	import type { ITransitionProps } from '@origam/interfaces'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'

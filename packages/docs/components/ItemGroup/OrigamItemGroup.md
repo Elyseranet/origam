@@ -1,7 +1,7 @@
 # OrigamItemGroup
 
 `<OrigamItemGroup>` is a renderless selection container: it tracks which of
-its registered `<origam-item-group-item>` children are selected and exposes
+its registered `<origam-item>` children are selected and exposes
 `select` / `toggle` / `next` / `prev`, but renders **no visual chrome of its
 own** (no border, background, layout) — you drive 100% of the visual through
 the default slot. It is the same `useGroup` mechanism used internally by
@@ -9,7 +9,7 @@ the default slot. It is the same `useGroup` mechanism used internally by
 exposed here as a standalone building block for custom selectable
 collections (plan pickers, segmented choices, card grids…).
 
-`<OrigamItemGroupItem>` is the required child: it registers itself with the nearest
+`<OrigamItem>` is the required child: it registers itself with the nearest
 `<OrigamItemGroup>` and throws if used outside one.
 
 ## Basic usage
@@ -17,7 +17,7 @@ collections (plan pickers, segmented choices, card grids…).
 ```vue
 <template>
   <origam-item-group v-model="selected">
-    <origam-item-group-item v-for="plan in plans" :key="plan.value" :value="plan.value">
+    <origam-item v-for="plan in plans" :key="plan.value" :value="plan.value">
       <template #default="{ isSelected, toggle }">
         <origam-card
           border
@@ -27,7 +27,7 @@ collections (plan pickers, segmented choices, card grids…).
           {{ plan.label }}
         </origam-card>
       </template>
-    </origam-item-group-item>
+    </origam-item>
   </origam-item-group>
 </template>
 
@@ -43,7 +43,7 @@ const selected = ref('m')
 </script>
 ```
 
-Neither `<origam-item-group>` nor `<origam-item-group-item>` binds a native `click` or
+Neither `<origam-item-group>` nor `<origam-item>` binds a native `click` or
 `keydown` handler for you — the story above wires `@click="toggle"` inside
 the slot by hand, and that pattern is required: without it, nothing is
 selectable.
@@ -53,17 +53,17 @@ selectable.
 - `<OrigamItemGroup>` owns `modelValue` (single value, or an array when
   `multiple` is set) and provides the shared selection state via
   `useGroup` / `ORIGAM_ITEM_GROUP_KEY`.
-- Each `<OrigamItemGroupItem>` registers itself on mount (`useGroupItem`) with an
+- Each `<OrigamItem>` registers itself on mount (`useGroupItem`) with an
   auto-generated internal id and its own `value` prop, and unregisters on
   unmount.
 - `modelValue` is expressed in terms of each item's `value` — internally the
   group maps values to registration ids and back (`getIds` / `getValues`),
   so consumers never see the internal ids.
-- An `<OrigamItemGroupItem>` rendered outside of an `<OrigamItemGroup>` throws at
-  setup time — but not the message the guard in `OrigamItemGroupItem.vue:49-51` would
+- An `<OrigamItem>` rendered outside of an `<OrigamItemGroup>` throws at
+  setup time — but not the message the guard in `OrigamItem.vue:53-55` would
   suggest. `useGroupItem` is called with `required = true` (the default), so
   when no group injection is found, `useGroupItem` itself throws first
-  (`groupItem.composable.ts:65`), before `OrigamItemGroupItem`'s own
+  (`group.composable.ts:51-54`), before `OrigamItem.vue`'s own
   `if (!groupItem)` check can ever run. The message actually thrown is:
   `[Origam] Could not find useGroup injection with symbol origam:item-group`.
 
@@ -73,30 +73,30 @@ selectable.
 <template>
   <!-- single selection (default) -->
   <origam-item-group v-model="single">
-    <origam-item-group-item v-for="o in options" :key="o" :value="o">
+    <origam-item v-for="o in options" :key="o" :value="o">
       <template #default="{ isSelected, toggle }">…</template>
-    </origam-item-group-item>
+    </origam-item>
   </origam-item-group>
 
   <!-- multiple selection -->
   <origam-item-group v-model="multi" multiple>
-    <origam-item-group-item v-for="o in options" :key="o" :value="o">
+    <origam-item v-for="o in options" :key="o" :value="o">
       <template #default="{ isSelected, toggle }">…</template>
-    </origam-item-group-item>
+    </origam-item>
   </origam-item-group>
 
   <!-- mandatory: always at least one item selected -->
   <origam-item-group v-model="always" mandatory>
-    <origam-item-group-item v-for="o in options" :key="o" :value="o">
+    <origam-item v-for="o in options" :key="o" :value="o">
       <template #default="{ isSelected, toggle }">…</template>
-    </origam-item-group-item>
+    </origam-item>
   </origam-item-group>
 
   <!-- max: caps how many items can be selected at once (multiple only) -->
   <origam-item-group v-model="capped" multiple :max="2">
-    <origam-item-group-item v-for="o in options" :key="o" :value="o">
+    <origam-item v-for="o in options" :key="o" :value="o">
       <template #default="{ isSelected, toggle }">…</template>
-    </origam-item-group-item>
+    </origam-item>
   </origam-item-group>
 </template>
 ```
@@ -108,7 +108,7 @@ selectable.
 - `max` — only enforced in `multiple` mode: once `max` items are selected,
   further selections are ignored until one is deselected.
 - `disabled` (on the group) forces every descendant item's `disabled` to
-  `true`, in addition to whatever each `<origam-item-group-item>` sets on its own
+  `true`, in addition to whatever each `<origam-item>` sets on its own
   (an item can still be individually disabled without disabling the group).
 
 ## Selected item styling
@@ -116,13 +116,13 @@ selectable.
 ```vue
 <template>
   <origam-item-group v-model="selected" selected-class="plan-card--active">
-    <origam-item-group-item v-for="plan in plans" :key="plan.value" :value="plan.value">
+    <origam-item v-for="plan in plans" :key="plan.value" :value="plan.value">
       <template #default="{ isSelected, toggle, selectedClass }">
         <div :class="['plan-card', selectedClass]" @click="toggle">
           {{ plan.label }}
         </div>
       </template>
-    </origam-item-group-item>
+    </origam-item>
   </origam-item-group>
 </template>
 ```
@@ -130,30 +130,22 @@ selectable.
 The group's `selectedClass` **always wins** over an item's own
 `selected-class` prop, not the other way around: `useGroupItem` resolves it
 as `group.selectedClass.value ? group.selectedClass.value : props.selectedClass`
-(`groupItem.composable.ts:87`), and the group's `selectedClass` prop defaults
-to `'origam-item--selected'` (`OrigamItemGroup.vue:43`) — so it is truthy
+(`group.composable.ts:74-80`), and the group's `selectedClass` prop defaults
+to `'origam-item--selected'` (`OrigamItemGroup.vue:41`) — so it is truthy
 unless you explicitly clear it, which means a per-item `selected-class` is
 only ever used when the group's own prop has been unset.
 
 `<OrigamItemGroup>` also wraps its default slot in an
 `<origam-defaults-provider>` seeded with `{ 'origam-item': { selectedClass }
-}` (`OrigamItemGroup.vue:64-68`). That looks like the mechanism pushing the
-default down, but it has **no effect here** — and not because the item skips
-`useDefaults()`. Since ADR-005, no component needs that call: the global
-resolver installed by `createOrigam()` reads the injected defaults map
-directly. What breaks the link is the **key**: the map is written under
-`'origam-item'`, while the resolver identifies this component by its own
-kebab name, `origam-item-group-item`
-(`toKebabCase(vm.aliasName ?? vm.name ?? vm.__name)` in
-`getCurrentInstance.util.ts:38`). The two never match, so the entry is
-skipped before any prop is looked at — which is also why the dev-only
-"unsupported prop" warning from #515 never fires on it. The resolution above,
-through the group injection, is the only path that actually runs.
+}` (`OrigamItemGroup.vue:54-60`). That looks like the mechanism pushing the
+default down, but it has **no effect here**: `<OrigamItem>` never calls
+`useDefaults()`, so it never reads from that provider — the resolution
+above (through the group injection) is the only path that actually runs.
 
 The class (or array of classes) is present in the item's slot scope while
-that item is selected, and it **is** applied automatically: `OrigamItemGroupItem`
+that item is selected, and it **is** applied automatically: `OrigamItem.vue`
 pushes `groupItem.selectedClass.value` into its own root element's `class`
-binding, alongside the fixed `origam-item` class (`OrigamItemGroupItem.vue:68-74`).
+binding, alongside the fixed `origam-item` class (`OrigamItem.vue:72-78`).
 Since the DS ships no CSS for `.origam-item` / `origam-item--selected` (see
 "CSS variables" below), that class alone won't visibly style anything — you
 still typically bind `selectedClass` onto your own inner markup (as in the
@@ -188,7 +180,7 @@ consumer:
 (`defineExpose`) and through the default slot's scope (`{ isSelected, select,
 next, prev, selected }`) — note that the slot-scope `isSelected` / `select`
 operate on internal numeric item ids, not on `value`; in practice, the
-per-item `isSelected` / `toggle` exposed by each `<origam-item-group-item>`'s own slot
+per-item `isSelected` / `toggle` exposed by each `<origam-item>`'s own slot
 (used throughout this page) is the ergonomic path.
 
 ## Props
@@ -213,7 +205,7 @@ interface `OrigamTabs`, `OrigamBtnToggle`, `OrigamChipGroup` and
 | `id` | `string` | — | Declared on the interface, but not bound anywhere in the template — passing it has no effect on the rendered element |
 | `class` / `style` | `ICommonsComponentProps` | — | Passthrough on the root element |
 
-### `<OrigamItemGroupItem>` props
+### `<OrigamItem>` props
 
 `IItemGroupItemProps extends ICommonsComponentProps, ITagProps, IGroupItemProps`
 (`item-group.interface.ts:32`) — `value`/`disabled`/`selectedClass` come
@@ -235,7 +227,7 @@ from the generic `IGroupItemProps` (`Commons/group.interface.ts:36-40`);
 |---|---|---|
 | `update:modelValue` | `any` | Fired whenever the selection changes |
 
-Each `<OrigamItemGroupItem>` additionally emits its own `group:selected` event
+Each `<OrigamItem>` additionally emits its own `group:selected` event
 (`{ value: boolean }`) whenever its individual selection state flips — that
 is an event on the **item**, not on `<OrigamItemGroup>` itself.
 
@@ -243,17 +235,17 @@ is an event on the **item**, not on `<OrigamItemGroup>` itself.
 
 | Slot | Scope | Description |
 |---|---|---|
-| `default` | `{ isSelected, select, next, prev, selected }` | Container for `<origam-item-group-item>` children — see the caveat about `isSelected`/`select` operating on internal ids above |
+| `default` | `{ isSelected, select, next, prev, selected }` | Container for `<origam-item>` children — see the caveat about `isSelected`/`select` operating on internal ids above |
 
-### `<OrigamItemGroupItem>` slots
+### `<OrigamItem>` slots
 
 | Slot | Scope | Description |
 |---|---|---|
-| `default` | `{ isSelected, selectedClass, toggle, select, value, disabled }` | Item content (`OrigamItemGroupItem.vue:53-60`) — `isSelected` is this item's own selection state, `toggle`/`select` operate on this item specifically (no id juggling needed), `selectedClass` is the resolved class from "Selected item styling" above |
+| `default` | `{ isSelected, selectedClass, toggle, select, value, disabled }` | Item content (`OrigamItem.vue:57-64`) — `isSelected` is this item's own selection state, `toggle`/`select` operate on this item specifically (no id juggling needed), `selectedClass` is the resolved class from "Selected item styling" above |
 
 ## Accessibility
 
-`<OrigamItemGroup>` and `<OrigamItemGroupItem>` add **no ARIA role or attribute by
+`<OrigamItemGroup>` and `<OrigamItem>` add **no ARIA role or attribute by
 themselves** — no `role="group"`/`"radiogroup"`, no `aria-selected`, no
 `tabindex`. Because unrecognised attributes fall through to the root element
 by default in Vue 3, you can (and should) supply the semantics that fit your
@@ -266,7 +258,7 @@ use case directly on the tags:
     role="radiogroup"
     aria-label="Choose a plan"
   >
-    <origam-item-group-item
+    <origam-item
       v-for="plan in plans"
       :key="plan.value"
       :value="plan.value"
@@ -275,7 +267,7 @@ use case directly on the tags:
       <template #default="{ isSelected, toggle }">
         <span :aria-pressed="isSelected" @click="toggle">{{ plan.label }}</span>
       </template>
-    </origam-item-group-item>
+    </origam-item>
   </origam-item-group>
 </template>
 ```
@@ -286,7 +278,7 @@ the slot content, as shown in "Programmatic navigation" above.
 
 ## CSS variables
 
-None. Neither `OrigamItemGroup.vue` nor `OrigamItemGroupItem` ships a `<style>`
+None. Neither `OrigamItemGroup.vue` nor `OrigamItem.vue` ships a `<style>`
 block, and the class each renders (`origam-item-group`, `origam-item`,
 plus the resolved `selectedClass`) carries no built-in styling in the DS —
 the classes exist purely as CSS hooks for your own stylesheet.

@@ -1,0 +1,16 @@
+{
+  "clipboard": {
+    "feedback": {
+      "color":               { "$type": "color",      "$value": "{color.feedback.success.fgSubtle}" },
+      "bg-color":            { "$type": "color",      "$value": "{color.feedback.success.bgSubtle}" },
+      "padding-block":       { "$type": "dimension",  "$value": "{space.1}" },
+      "padding-inline":      { "$type": "dimension",  "$value": "{space.2}" },
+      "border-radius":       { "$type": "dimension",  "$value": "{radius.sm}" },
+      "font-size":           { "$type": "dimension",  "$value": "{font.size.xs}" },
+      "font-weight":         { "$type": "fontWeight", "$value": "{font.weight.medium}" },
+      "gap":                 { "$type": "dimension",  "$value": "{space.1}" },
+      "offset":              { "$type": "dimension",  "$value": "{space.2}" },
+      "transition-duration": { "$type": "duration",   "$value": "{motion.duration.medium}" }
+    }
+  }
+}

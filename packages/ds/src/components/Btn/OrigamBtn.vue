@@ -1,16 +1,15 @@
 <template>
 	<component
-			:is="link.tag.value"
+			:is="link.tag"
 			:id="id"
 			v-ripple="isRipple"
 			v-contrast
 			:data-origam-color-locked="colorLocked"
 			:class="btnClasses"
 			:disabled="isDisabled || undefined"
-			:aria-disabled="ariaDisabled"
-			:aria-busy="ariaBusy"
-			:href="hrefAttr"
-			:type="typeAttr"
+			:aria-disabled="link.tag === 'a' && isDisabled ? 'true' : undefined"
+			:href="link.tag === 'a' && isDisabled ? undefined : link.href.value"
+			:type="link.tag === 'a' ? undefined : 'button'"
 			:value="valueAttr"
 			@click="handleClick"
 			@mouseenter="handleMouseenter"
@@ -128,60 +127,50 @@
 		lang="ts"
 		setup
 >
-	import { computed, onMounted, ref, StyleValue, toRef, useAttrs, useSlots } from 'vue'
+	import { computed, ref, StyleValue, toRef, useAttrs, useSlots } from 'vue'
 	import type { ComputedRef, ExtractPropTypes } from 'vue'
-	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
-	import OrigamIcon from '../Icon/OrigamIcon.vue'
-	import OrigamLoader from '../Loader/OrigamLoader.vue'
-	import OrigamProgress from '../Progress/OrigamProgress.vue'
-	import OrigamSkeleton from '../Skeleton/OrigamSkeleton.vue'
+	import { OrigamAvatar, OrigamIcon, OrigamLoader, OrigamProgress, OrigamSkeleton } from '../../components'
 
-	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
-	import { useDensity } from '../../composables/Commons/density.composable'
-	import { useDimension } from '../../composables/Commons/dimension.composable'
-	import { useGroupItem } from '../../composables/Commons/groupItem.composable'
-	import { useLink } from '../../composables/Commons/link.composable'
-	import { useLoader } from '../../composables/Commons/loader.composable'
-	import { useLocation } from '../../composables/Commons/location.composable'
-	import { usePosition } from '../../composables/Commons/position.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useSelectLink } from '../../composables/Commons/selectLink.composable'
-	import { useSize } from '../../composables/Commons/size.composable'
-	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
-	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
-	import { useStatus } from '../../composables/Commons/status.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-	import { useTypography } from '../../composables/Commons/typography.composable'
-	import { useVariant } from '../../composables/Commons/variant.composable'
+	import {
+		useActive,
+		useAdjacent,
+		useDefaults,
+		useDensity,
+		useDimension,
+		useGroupItem,
+		useHover,
+		useLink,
+		useLoader,
+		useLocation,
+		usePosition,
+		useProps,
+		useSelectLink,
+		useSize,
+		useStateEffect,
+		useStatus,
+		useStyle,
+		useTypography,
+		useVariant
+	} from '../../composables'
 
-	import { warnDeprecatedEmit } from '../../utils/Commons/color.util'
+	import { ORIGAM_BTN_TOGGLE_KEY } from '../../consts'
 
-	import { ADJACENT_EMIT_REPLACEMENT } from '../../consts/Btn/btn.const'
-	import { ORIGAM_BTN_TOGGLE_KEY } from '../../consts/Btn/btn-toggle.const'
+	import { vContrast, vRipple } from '../../directives'
 
-	import vContrast from '../../directives/Contrast/contrast.directive'
-	import vRipple from '../../directives/Ripple/ripple.directive'
+	import { DENSITY, PROGRESS_TYPE, SIZES } from '../../enums'
 
-	import { DENSITY } from '../../enums/Commons/density.enum'
-	import { LOADER_KIND } from '../../enums/Commons/loader.enum'
-	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
-	import { SIZES } from '../../enums/Commons/size.enum'
+	import type { IAdjacentProps, IBtnProps, IProgressProps, IStatusProps } from '../../interfaces'
 
-	import type { IAdjacentProps } from '../../interfaces/Commons/adjacent.interface'
-	import type { IBtnProps } from '../../interfaces/Btn/btn.interface'
-	import type { IProgressProps } from '../../interfaces/Progress/progress.interface'
-	import type { IStatusProps } from '../../interfaces/Commons/status.interface'
+	import type { IBtnEmits } from '../../interfaces/Btn/btn.interface'
 
-	import type { IBtnEmits, IBtnSlots } from '../../interfaces/Btn/btn.interface'
-
-	import type { TOrigamProgress } from '../../types/Progress/progress.type'
+	import type { TOrigamProgress } from "../../types"
 
 	/*********************************************************
 	 * Global
 	 ********************************************************/
 	const attrs = useAttrs()
 
-	const props = withDefaults(defineProps<IBtnProps>(), {
+	const _props = withDefaults(defineProps<IBtnProps>(), {
 		tag: 'button',
 		ripple: true,
 		active: undefined,
@@ -189,13 +178,20 @@
 		density: DENSITY.DEFAULT
 	})
 
+	// `useDefaults` resolves each prop against the closest
+	// `<OrigamDefaultsProvider>` (or `provideDefaults({ 'origam-btn': … })`
+	// from a parent like `OrigamBtnGroup` / `OrigamBtnToggle`). Without
+	// this hook the parent's `color` / `density` / `bgColor` settings
+	// silently dropped when buttons were passed via the default slot —
+	// only the `items` prop path was honoured (and even that flipped the
+	// override semantics: parent `??` item, instead of item-wins).
+	const props = useDefaults(_props)
+
 	// When the consumer explicitly picks a foreground `color`, mark the element
 	// so `v-contrast` doesn't override that intentional colour for legibility.
 	const colorLocked = computed(() => (props.color ? 'true' : undefined))
 
 	defineEmits<IBtnEmits>()
-
-	defineSlots<IBtnSlots>()
 
 	const {filterProps} = useProps<IBtnProps>(props)
 
@@ -210,8 +206,8 @@
 	/*********************************************************
 	 * Effect
 	 ********************************************************/
-	const {isOn: isHover, config: hoverState, set: handleMouseenter, unset: handleMouseleave} = useStateFlag(props, {state: 'hover'})
-	const {isOn: active, config: activeState} = useStateFlag(props, {state: 'active'})
+	const {isHover, hoverState, onMouseenter: handleMouseenter, onMouseleave: handleMouseleave} = useHover(props)
+	const {isActive: active, activeState} = useActive(props)
 
 	const isActive = computed(() => {
 		// An explicitly FORCED active (`active=true` or `{ enabled: true }`)
@@ -247,21 +243,6 @@
 	const isDisabled = computed(() => group?.disabled.value || props.disabled)
 
 	/*********************************************************
-	 *  ANCHOR-ONLY ATTRIBUTES
-	 *
-	 *  @description
-	 *  A button rendered as `<a>` cannot carry `disabled`, so it announces the
-	 *  disabled state through `aria-disabled` and drops its `href` instead.
-	 *  Rendered as anything else it takes an explicit `type="button"`, which
-	 *  stops a button inside a form from defaulting to submit.
-	 *  Kept out of the template so the markup stays as readable as a wireframe.
-	 ********************************************************/
-	const isAnchor = computed(() => link.tag.value === 'a')
-	const ariaDisabled = computed(() => (isAnchor.value && isDisabled.value ? 'true' : undefined))
-	const hrefAttr = computed(() => (isAnchor.value && isDisabled.value ? undefined : link.href.value))
-	const typeAttr = computed(() => (isAnchor.value ? undefined : 'button'))
-
-	/*********************************************************
 	 * Value
 	 ********************************************************/
 	const valueAttr = computed(() => {
@@ -287,7 +268,7 @@
 	 ********************************************************/
 	const {densityClasses} = useDensity(props)
 	const {dimensionStyles} = useDimension(props)
-	const {loaderClasses, loaderConfig} = useLoader(props, LOADER_KIND.CIRCULAR)
+	const {loaderClasses, loaderConfig} = useLoader(props, 'circular')
 	const {locationStyles} = useLocation(props)
 	const {positionClasses} = usePosition(props)
 	const {sizeClasses, sizeStyles} = useSize(props)
@@ -322,16 +303,9 @@
 	const {
 		onClickPrepend: handleClickPrepend,
 		onClickAppend: handleClickAppend,
-		isPrependClickable,
-		isAppendClickable,
 		hasAppend,
 		hasPrepend
 	} = useAdjacent(props, prependIcon, appendIcon)
-
-	onMounted(() => {
-		if (isPrependClickable.value) warnDeprecatedEmit('OrigamBtn', 'click:prepend', ADJACENT_EMIT_REPLACEMENT)
-		if (isAppendClickable.value) warnDeprecatedEmit('OrigamBtn', 'click:append', ADJACENT_EMIT_REPLACEMENT)
-	})
 
 	/*********************************************************
 	 * Click handler
@@ -388,8 +362,6 @@
 			loaderConfig.value.kind === 'circular'
 		)
 	})
-
-	const ariaBusy = computed(() => (loaderConfig.value.isActive ? 'true' : undefined))
 
 	/*********************************************************
 	 * Forwarded props
@@ -470,19 +442,6 @@
 			roundedClasses.value,
 			sizeClasses.value,
 			statusClasses.value,
-			/*********************************************************
-			 * activeClass
-			 *
-			 * @description
-			 * Mirrors the main `origam-btn--active` class above: gated on
-			 * the SAME `isActive` (forced / group-selection / link-active
-			 * aware), not on useStateFlag's own narrower `isOn` — a plain
-			 * `activeClasses.value` from useStateFlag would miss the
-			 * group/link-driven cases entirely (it only reflects the raw
-			 * `props.active` v-model, never `group.isSelected` /
-			 * `link.isActive`).
-			 ********************************************************/
-			isActive.value && props.activeClass,
 			props.class
 		]
 	})
@@ -550,32 +509,9 @@
 		user-select: none;
 		opacity: var(--origam-btn---opacity, 1);
 
-		// #391 — the base rule used to read `--origam-btn-group---border-*`
-		// EXCLUSIVELY, but `&--border` (below) only ever wrote
-		// `--origam-btn---border-width` — two different custom properties,
-		// so the `border` prop painted nothing. A naive
-		// `var(--origam-btn-group---border-width, var(--origam-btn---border-width))`
-		// fallback does NOT fix this: the group token is registered
-		// GLOBALLY at `:root`/`[data-theme]` (`tokens/component/btn-group.json`
-		// → `light.css`/`dark.css`), always defined (`0` at rest), so the
-		// `var()` fallback never falls through to the btn's own value —
-		// measured, see the #391/#530 root-vs-token audit
-		// (`docs/mesures/`): on every conflict of this shape checked in a
-		// real browser, the globally-registered token wins, never the
-		// component-local declaration. So the STANDALONE default below
-		// reads the BTN's OWN var directly (no group fallback) — this is
-		// what actually makes `&--border`'s write visible.
-		//
-		// Width is split per physical side so the `border="top|right|
-		// bottom|left"` sub-values (useBorder's `${name}--border-{side}`
-		// classes below) can zero the other three sides — mirrors
-		// OrigamCard's identical `border-{side}-width` pattern.
-		border-color: var(--origam-btn---border-color, currentColor);
-		border-style: var(--origam-btn---border-style, solid);
-		border-top-width: var(--origam-btn---border-top-width, var(--origam-btn---border-width, 0));
-		border-right-width: var(--origam-btn---border-right-width, var(--origam-btn---border-width, 0));
-		border-bottom-width: var(--origam-btn---border-bottom-width, var(--origam-btn---border-width, 0));
-		border-left-width: var(--origam-btn---border-left-width, var(--origam-btn---border-width, 0));
+		border-width: var(--origam-btn-group---border-width);
+		border-style: var(--origam-btn-group---border-style);
+		border-color: var(--origam-btn-group---border-color);
 		border-radius: var(
 			--origam-btn---border-radius,
 			var(--origam-btn-group---border-radius, 4px)
@@ -606,10 +542,10 @@
 		}
 
 		&--size-x-small {
-			--origam-btn---height: var(--origam-btn---height-xs, 20px);
+			--origam-btn---height: 20px;
 			--origam-btn---font-size: 0.625rem;
 			--origam-btn---min-width: 36px;
-			padding: 0 calc(var(--origam-btn---padding-xs, 8px) + var(--origam-btn---density-padding-x, 0px));
+			padding: 0 calc(8px + var(--origam-btn---density-padding-x, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 16px;
@@ -617,10 +553,10 @@
 		}
 
 		&--size-small {
-			--origam-btn---height: var(--origam-btn---height-sm, 28px);
+			--origam-btn---height: 28px;
 			--origam-btn---font-size: 0.75rem;
 			--origam-btn---min-width: 50px;
-			padding: 0 calc(var(--origam-btn---padding-sm, 12px) + var(--origam-btn---density-padding-x, 0px));
+			padding: 0 calc(12px + var(--origam-btn---density-padding-x, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 20px;
@@ -628,10 +564,10 @@
 		}
 
 		&--size-default {
-			--origam-btn---height: var(--origam-btn---height-md, 36px);
+			--origam-btn---height: 36px;
 			--origam-btn---font-size: 0.875rem;
 			--origam-btn---min-width: 64px;
-			padding: 0 calc(var(--origam-btn---padding-md, 16px) + var(--origam-btn---density-padding-x, 0px));
+			padding: 0 calc(16px + var(--origam-btn---density-padding-x, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 24px;
@@ -639,10 +575,10 @@
 		}
 
 		&--size-large {
-			--origam-btn---height: var(--origam-btn---height-lg, 44px);
+			--origam-btn---height: 44px;
 			--origam-btn---font-size: 1rem;
 			--origam-btn---min-width: 78px;
-			padding: 0 calc(var(--origam-btn---padding-lg, 20px) + var(--origam-btn---density-padding-x, 0px));
+			padding: 0 calc(20px + var(--origam-btn---density-padding-x, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 28px;
@@ -650,10 +586,10 @@
 		}
 
 		&--size-x-large {
-			--origam-btn---height: var(--origam-btn---height-xl, 52px);
+			--origam-btn---height: 52px;
 			--origam-btn---font-size: 1.125rem;
 			--origam-btn---min-width: 92px;
-			padding: 0 calc(var(--origam-btn---padding-xl, 24px) + var(--origam-btn---density-padding-x, 0px));
+			padding: 0 calc(24px + var(--origam-btn---density-padding-x, 0px));
 
 			:deep(.origam-icon) {
 				--origam-btn---font-size: 32px;
@@ -676,75 +612,8 @@
 		}
 
 		&--border {
-			--origam-btn---border-width: var(--origam-border__width---thin);
+			--origam-btn---border-width: thin;
 		}
-
-		// #391 — sub-defaults for `border="top|right|bottom|left"`
-		// (useBorder's `${name}--border-{side}` classes). No SCSS rule
-		// existed for these at all — the class was emitted but never
-		// consumed. Mirrors OrigamCard's identical `&--border-{side}`
-		// pattern one-for-one (thin on the target side, zero on the
-		// other three, so a direction genuinely isolates one edge
-		// instead of leaving the others at whatever `border-width`
-		// last resolved to).
-		&--border-top {
-			--origam-btn---border-top-width: var(--origam-border__width---thin);
-			--origam-btn---border-right-width: 0;
-			--origam-btn---border-bottom-width: 0;
-			--origam-btn---border-left-width: 0;
-		}
-
-		&--border-right {
-			--origam-btn---border-top-width: 0;
-			--origam-btn---border-right-width: var(--origam-border__width---thin);
-			--origam-btn---border-bottom-width: 0;
-			--origam-btn---border-left-width: 0;
-		}
-
-		&--border-bottom {
-			--origam-btn---border-top-width: 0;
-			--origam-btn---border-right-width: 0;
-			--origam-btn---border-bottom-width: var(--origam-border__width---thin);
-			--origam-btn---border-left-width: 0;
-		}
-
-		&--border-left {
-			--origam-btn---border-top-width: 0;
-			--origam-btn---border-right-width: 0;
-			--origam-btn---border-bottom-width: 0;
-			--origam-btn---border-left-width: var(--origam-border__width---thin);
-		}
-
-		// #391 — there is DELIBERATELY no `.origam-btn-group &` border rule
-		// here, and it must not be reintroduced without reading this first.
-		//
-		// A group-aware rule was written and removed. It could not work,
-		// for two independent reasons:
-		//
-		// 1. `OrigamBtnGroup.vue` already paints the group's border and
-		//    zeroes its children with `border-width: 0 !important` — so a
-		//    non-important rule here loses, always. That override is
-		//    intentional and documented there ("reads as ONE button with
-		//    internal separators").
-		// 2. Its body would have been
-		//    `var(--origam-btn-group---border-width, var(--origam-btn---border-width))`,
-		//    which is the very dead-fallback this ticket exists to fix.
-		//    `--origam-btn-group---border-width` is declared GLOBALLY on
-		//    `:root` / `[data-theme]` (`assets/css/tokens/light.css`), so it
-		//    is inherited by every element and ALWAYS defined — at `0`. The
-		//    second branch is unreachable. Such a rule would therefore not
-		//    be merely inert: the day someone relaxes the `!important` above
-		//    as a cleanup, it would silently force the border back to `0`
-		//    and reopen this exact bug somewhere new.
-		//
-		// The base rule above reads the BUTTON's own variables and nothing
-		// else. That is what makes `&--border` visible, and it is enough.
-		// Should group-over-button precedence ever be genuinely wanted, the
-		// lever is `@property { inherits: false }` on the group variable —
-		// which restores the difference between "no ancestor set this" and
-		// "an ancestor set it to 0" — plus removing the `!important`. That
-		// changes the rendering of every button group and needs its own
-		// decision.
 
 		&--absolute {
 			--origam-btn---position: absolute;

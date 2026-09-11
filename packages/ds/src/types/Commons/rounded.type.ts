@@ -1,4 +1,4 @@
-import { ROUNDED, ROUNDED_TOKEN } from '../../enums/Commons/rounded.enum'
+import { ROUNDED, ROUNDED_TOKEN } from '../../enums'
 
 /**
  * Every value the `rounded` prop accepts.
@@ -13,16 +13,3 @@ import { ROUNDED, ROUNDED_TOKEN } from '../../enums/Commons/rounded.enum'
  * type-check and never surfaced in autocompletion.
  */
 export type TRounded = `${ROUNDED}` | `${ROUNDED_TOKEN}`
-
-/**
- * Standalone name for the token-rung half of `TRounded` — the
- * abbreviated `none | xs | sm | md | lg | xl | full` vocabulary.
- *
- * Beyond radius, this abbreviated vocabulary is also the DS's generic
- * "how big is this thing" naming convention (mirrors `TDirection`'s
- * role for axis words): other component-scoped size scales that use
- * the same abbreviations — not the same CSS property, just the same
- * string vocabulary — derive their subset from this type instead of
- * redeclaring the strings (e.g. `TGridGapSize`, `TEmptyStateSize`).
- */
-export type TRoundedToken = `${ROUNDED_TOKEN}`

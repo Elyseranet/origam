@@ -1,7 +1,6 @@
 <template>
 	<component
 			:is="tag"
-			:id="id"
 			ref="rootEl"
 			class="origam-watermark"
 			:class="rootClasses"
@@ -33,9 +32,11 @@
 		watch
 	} from 'vue'
 
-	import { useWatermark } from '../../composables/Watermark/watermark.composable'
+	import { useWatermark } from '../../composables'
 
-	import type { IWatermarkEmits, IWatermarkProps, IWatermarkSlots } from '../../interfaces/Watermark/watermark.interface'
+	import type {
+		IWatermarkProps
+	} from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -88,10 +89,6 @@
 		pointerEvents: props.pointerEvents,
 		zIndex: props.zIndex
 	}))
-
-	defineEmits<IWatermarkEmits>()
-
-	defineSlots<IWatermarkSlots>()
 
 	const { patternUrl } = useWatermark(resolvedOptions)
 

@@ -1,3 +1,3 @@
-import OrigamWindow from '../../components/Window/OrigamWindow.vue'
+import { OrigamWindow } from '../../components'
 
 export type TOrigamWindow = InstanceType<typeof OrigamWindow>

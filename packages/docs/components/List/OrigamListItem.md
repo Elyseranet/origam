@@ -62,7 +62,7 @@ prefixes (`list-item__title` and `list-item__subtitle`).
 | `lines`       | `TLines`                  | —       | Clamp subtitle to one, two or three lines     |
 | `link`        | `boolean`                 | `false` | Makes the item behave as a link               |
 | `nav`         | `boolean`                 | `false` | Nav-mode sizing (0.8125rem title, 0.75rem subtitle) |
-| `slim`        | `boolean`                 | `false` | Halves the row's inline padding (16px → 8px) via `--origam-list-item--slim---padding-inline-{start,end}`. Block padding is untouched — it belongs to the `size` rungs |
+| `slim`        | `boolean`                 | `false` | Reduced inner spacing                         |
 | `tag`         | `string`                  | `'div'` | Root HTML element                             |
 | `href`        | `string`                  | —       | Anchor href (renders as `<a>`)                |
 | `to`          | `RouteLocationRaw`        | —       | Router-link target                            |
@@ -73,8 +73,6 @@ prefixes (`list-item__title` and `list-item__subtitle`).
 | `appendAvatar`  | `string`                | —       | Avatar image URL shown after content          |
 | `density`     | `TDensity`                | —       | Row density (`default` · `compact` · `comfortable`). Inherited from the parent list unless set. Shifts the row height by `0` / `-8px` / `+8px` |
 | `size`        | `TSize`                   | —       | Row-height rung — see the section below. Inherited from the parent list unless set |
-| `color`       | `TColor`                  | —       | Foreground (text) colour — an intent (`primary`, `success`, …) or a raw CSS colour. Inherited from the parent list / group unless set |
-| `bgColor`     | `TColor`                  | —       | Surface colour. An intent also pairs the matching contrast foreground automatically. Inherited from the parent list / group unless set |
 
 ### Props — `size`: the row-height scale
 
@@ -110,11 +108,9 @@ Two behaviours worth knowing:
 Each rung is overridable per theme through
 `--origam-list-item---height-{sm,md,lg,xl}` and
 `--origam-list-item---padding-block-{sm,md,lg,xl}`. The rung is the **total**
-row height: the row declares `box-sizing: border-box` on its own base rule
-(it does not rely on the consumer's reset), so the rung goes into
-`--origam-list-item---min-height` **whole** — that min-height *is* the
-rendered height. The block padding does not subtract from it; it only
-positions the 24px title line box inside the row.
+row height; because the row is a `content-box`, it is split internally between
+`--origam-list-item---min-height` (`rung - 2 × padding`) and the block padding,
+which sum back to the rung.
 
 ### Props — Typography (title and subtitle surfaces)
 
@@ -147,27 +143,6 @@ controls both children simultaneously.
 | `append`   | slot props                         | Trailing avatar / icon override     |
 | `wrapper`  | —                                  | Full content wrapper override       |
 
-## Accessibility
-
-- **The row does not choose its own role (#424).** It reads the one its list
-  published through `ORIGAM_LIST_KEY`: `role="listitem"` inside a plain
-  `role="list"`, `role="option"` inside a `role="listbox"`. An `option`
-  outside a listbox — or a `listitem` inside one — is a broken ARIA
-  contract, and neither is reachable from here. Which mode a list runs in
-  is documented on [`OrigamList`](../List/OrigamList.md#accessibility).
-- Two rows still get **no role at all**: one rendered outside any list (no
-  `OrigamList` / `OrigamListChildren` ancestor) — no ARIA is better than a
-  role whose promised container doesn't exist — and a group activator row,
-  which only toggles expand/collapse and never fires a selection, so it is
-  a control rather than one of the list's rows.
-- `aria-selected` mirrors `isSelected`, and `aria-disabled` mirrors the
-  `disabled` prop, **only** in the `option` role. Both are required state
-  on an option and meaningless on a `listitem`: a plain list row reporting
-  "not selected" would invent a selection the list does not offer.
-- A group activator row (rendered inside `OrigamListGroupActivator`) never
-  gets `role="option"` — clicking it only toggles expand/collapse, it never
-  fires a selection (see `OrigamListGroup`'s `role="group"` region).
-
 ## Tokens
 
 | Variable                                          | Default          | Used for                              |
@@ -180,9 +155,8 @@ controls both children simultaneously.
 | `--origam-list-item__subtitle---font-weight`      | `400`            | subtitle font weight                  |
 | `--origam-list-item__subtitle---letter-spacing`   | `0.0178571429em` | subtitle letter spacing               |
 | `--origam-list-item__subtitle---line-height`      | `1rem`           | subtitle line height                  |
-| `--origam-list-item---min-height`                 | undeclared — resolves through `--origam-list__item---min-height` (`56px`) | row minimum **border-box** height, i.e. the rendered row height (density-adjusted). Set to the whole rung by the `size` prop's `--size-*` rules; padding does **not** subtract from it |
+| `--origam-list-item---min-height`                 | `40px`           | row minimum **content** height (density-adjusted) |
 | `--origam-list-item---padding-block-start`        | `8px`            | top padding                           |
 | `--origam-list-item---padding-inline-start`       | `16px`           | left padding (indent-adjusted)        |
 | `--origam-list-item---height-sm` / `-md` / `-lg` / `-xl` | `28px` / `36px` / `44px` / `52px` | total row height per `size` rung |
 | `--origam-list-item---padding-block-sm` / `-md` / `-lg` / `-xl` | `2px` / `6px` / `10px` / `14px` | block padding per `size` rung |
-| `--origam-list-item--slim---padding-inline-start` / `-end` | `8px` / `8px` | inline padding when `slim` is set |

@@ -1,3 +1,3 @@
-import OrigamLazy from '../../components/Lazy/OrigamLazy.vue'
+import { OrigamLazy } from "../../components"
 
 export type TOrigamLazy = InstanceType<typeof OrigamLazy>

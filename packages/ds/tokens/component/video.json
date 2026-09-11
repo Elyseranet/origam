@@ -1,0 +1,65 @@
+{
+  "video": {
+    "background-color":           { "$type": "color",      "$value": "{color.black}" },
+    "border-radius":              { "$type": "dimension",  "$value": "{radius.md}" },
+
+    "poster": {
+      "background-color":         { "$type": "color",      "$value": "{color.black}" }
+    },
+
+    "poster-btn": {
+      "size":                     { "$type": "dimension",  "$value": "{space.16}" },
+      "background-color":         { "$type": "color",      "$value": "{color.neutral.950}" },
+      "background-color-hover":   { "$type": "color",      "$value": "{color.neutral.900}" },
+      "color":                    { "$type": "color",      "$value": "{color.neutral.0}" },
+      "font-size":                { "$type": "dimension",  "$value": "{font.size.3xl}" }
+    },
+
+    "controls": {
+      "background-color":         { "$type": "color",      "$value": "{color.neutral.950}" },
+      "color":                    { "$type": "color",      "$value": "{color.neutral.0}" },
+      "padding":                  { "$type": "dimension",  "$value": "{space.2}" },
+      "gap":                      { "$type": "dimension",  "$value": "{space.2}" }
+    },
+
+    "btn": {
+      "size":                     { "$type": "dimension",  "$value": "{space.8}" },
+      "color":                    { "$type": "color",      "$value": "{color.neutral.0}" },
+      "color-hover":              { "$type": "color",      "$value": "{color.neutral.0}" },
+      "background-color-hover":   { "$type": "color",      "$value": "{color.neutral.800}" },
+      "background-color-active":  { "$type": "color",      "$value": "{color.neutral.700}" },
+      "border-radius":            { "$type": "dimension",  "$value": "{radius.sm}" },
+      "font-size":                { "$type": "dimension",  "$value": "{font.size.lg}" }
+    },
+
+    "time": {
+      "color":                    { "$type": "color",      "$value": "{color.neutral.0}" },
+      "font-size":                { "$type": "dimension",  "$value": "{font.size.xs}" },
+      "font-family":              { "$type": "fontFamily", "$value": "{font.family.mono}" }
+    },
+
+    "scrubber": {
+      "color":                    { "$type": "color",      "$value": "{color.primary.500}" },
+      "thumb-size":               { "$type": "dimension",  "$value": "{space.4}" }
+    },
+
+    "volume": {
+      "color":                    { "$type": "color",      "$value": "{color.neutral.0}" },
+      "width":                    { "$type": "dimension",  "$value": "{space.20}" }
+    },
+
+    "loading": {
+      "color":                    { "$type": "color",      "$value": "{color.neutral.0}" },
+      "font-size":                { "$type": "dimension",  "$value": "{font.size.3xl}" }
+    },
+
+    "error": {
+      "background-color":         { "$type": "color",      "$value": "{color.neutral.950}" },
+      "color":                    { "$type": "color",      "$value": "{color.red.400}" },
+      "font-size":                { "$type": "dimension",  "$value": "{font.size.sm}" },
+      "gap":                      { "$type": "dimension",  "$value": "{space.2}" },
+      "padding":                  { "$type": "dimension",  "$value": "{space.4}" },
+      "icon-font-size":           { "$type": "dimension",  "$value": "{font.size.3xl}" }
+    }
+  }
+}

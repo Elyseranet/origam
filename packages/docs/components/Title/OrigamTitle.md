@@ -116,10 +116,8 @@ component uses for theme-aware fonts.
 
 ## Design tokens consumed
 
-`<OrigamTitle>` reads its variables from
-`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
-under `packages/ds/src/assets/scss/tokens/`). Override at the document
-root or via a `:style` binding to re-skin a single instance.
+`<OrigamTitle>` reads from `tokens/component/title.json`. Override at the
+document root or via a `:style` binding to re-skin a single instance.
 
 | CSS variable | Token reference |
 |---|---|
@@ -138,8 +136,8 @@ root or via a `:style` binding to re-skin a single instance.
 | `--origam-title---font-size-2xl` | `{font.size.4xl}` |
 | `--origam-title---font-size-3xl` | `{font.size.5xl}` |
 
-The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
-`dark.css` — grep for `--origam-title`.
+The full list lives in
+`tokens/component/title.json`.
 
 ## Accessibility
 

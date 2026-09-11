@@ -1,0 +1,19 @@
+{
+  "progress": {
+    "_comment": "Router/dispatcher component — delegates rendering to OrigamProgressCircular or OrigamProgressLinear. Tokens here cover only the wrapper-level layout concerns shared by both variants.",
+    "display":            { "$type": "other",      "$value": "block" },
+    "width":              { "$type": "dimension",  "$value": "100%" },
+
+    "content": {
+      "align-items":      { "$type": "other",      "$value": "center" },
+      "display":          { "$type": "other",      "$value": "flex" },
+      "height":           { "$type": "other",      "$value": "100%" },
+      "justify-content":  { "$type": "other",      "$value": "center" },
+      "position":         { "$type": "other",      "$value": "absolute" },
+      "pointer-events":   { "$type": "other",      "$value": "none" },
+      "left":             { "$type": "dimension",  "$value": "{space.0}" },
+      "top":              { "$type": "dimension",  "$value": "{space.0}" },
+      "width":            { "$type": "dimension",  "$value": "100%" }
+    }
+  }
+}

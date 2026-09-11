@@ -1,9 +1,4 @@
-import type {
-    TFilterFunction,
-    TFilterKeyFunctions,
-    TFilterKeys,
-    TFilterMode
-} from '../../types/Commons/filters.type'
+import type { TFilterFunction, TFilterKeyFunctions, TFilterKeys, TFilterMode } from '../../types'
 
 export interface IFiltersProps {
     customFilter?: TFilterFunction

@@ -1,3 +1,3 @@
-import OrigamLigatureIcon from '../../components/Icon/OrigamLigatureIcon.vue'
+import { OrigamLigatureIcon } from "../../components"
 
 export type TOrigamLigatureIcon = InstanceType<typeof OrigamLigatureIcon>

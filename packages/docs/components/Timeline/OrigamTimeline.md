@@ -1,11 +1,6 @@
 # OrigamTimeline
 
-Activity feed — release timeline / changelog style. Renders a dot and connecting line for each entry.
-
-Two layouts, chosen with `orientation`:
-
-- **`'vertical'`** (default) — dots stacked top to bottom, content beside each dot; `side` picks left, right, or alternating.
-- **`'horizontal'`** — dots laid out left to right inside a scroll-snapping track, content below each dot.
+Vertical activity feed — release timeline / changelog style. Renders a dot and connecting line for each entry.
 
 ## Basic usage
 
@@ -38,28 +33,11 @@ const entries: ITimelineEntry[] = [
 | Prop | Type | Default | Description |
 |---|---|---|---|
 | `items` | `ITimelineEntry[]` | `undefined` | Data-driven entries (alternative to slot children) |
-| `orientation` | `'vertical' \| 'horizontal'` | `'vertical'` | Layout axis. `'horizontal'` wraps the items in an `origam-timeline__track-wrapper` with `scroll-snap-type: x mandatory` and a hidden scrollbar, so the user pages point-to-point by swiping or scrolling. Provided to every `<OrigamTimelineItem>` through the timeline context, so items placed by hand in the `default` slot pick it up without receiving the prop. |
 | `side` | `'start' \| 'end' \| 'alternating'` | `'start'` | Content position relative to the track |
 | `truncateLine` | `boolean` | `false` | Hides the connector on the last item |
-| `color` | `TColor` | `undefined` | Propagated dot color (overridden per-item by `intent`). Only a `string` value is forwarded through the context — a boolean `false` is dropped. |
+| `color` | `TColor` | `undefined` | Propagated dot color (overridden per-item by `intent`) |
 | `density` | `TDensity` | `undefined` | Density modifier |
-| `size` | `TSize \| number` | `undefined` | Size modifier. The `x-small … x-large` rungs each rescale the dot, track width, item gap and both font sizes. |
-| `ariaLabel` | `string` | `undefined` | Accessible name of the `role="list"` root. Bound straight to `aria-label`, so it is the **final string**, not a locale key — translate it yourself. Give one whenever the surrounding page does not already name the list. |
-| `tag` | `string` | `'div'` | Element rendered for the root. |
-| `id` | `string` | generated | DOM id of the root. |
-| `class` | `string \| string[] \| object` | `undefined` | Extra classes on the root. |
-| `style` | `string \| string[] \| object \| StyleValue` | `undefined` | Extra inline styles on the root. |
-
-## Emits — OrigamTimeline
-
-None. `ITimelineEmits` is empty: the component renders a static list of
-`<OrigamTimelineItem>` and never calls `emit()`.
-
-## Slots — OrigamTimeline
-
-| Slot | Description |
-|---|---|
-| `default` | Replaces the whole auto-generated `<OrigamTimelineItem>` list. In `horizontal` mode it renders inside the scroll-snapping track wrapper. |
+| `size` | `TSize` | `undefined` | Size modifier |
 
 ## Props — OrigamTimelineItem
 
@@ -67,14 +45,11 @@ None. `ITimelineEmits` is empty: the component renders a static list of
 |---|---|---|---|
 | `title` | `string` | `undefined` | Entry title (bold, monospace) |
 | `subtitle` | `string` | `undefined` | Typically a date or secondary label |
-| `description` | `string` | `undefined` | Body text under the title. The `#body` slot wins over it; when neither is set the body element is not rendered at all. |
-| `orientation` | `'vertical' \| 'horizontal'` | `undefined` | Layout axis. Normally injected from the parent timeline rather than passed; unset means vertical. |
 | `icon` | `TIcon` | `undefined` | Replaces the plain dot with an icon |
 | `intent` | `TIntent` | `'primary'` | Dot color intent |
 | `isLast` | `boolean` | `false` | Marks the final item (hides connector when `truncateLine=true`) |
 | `truncateLine` | `boolean` | `false` | Per-item override (usually set by parent context) |
 | `side` | `'start' \| 'end' \| 'alternating'` | `'start'` | Track position |
-| `orientation` | `'vertical' \| 'horizontal'` | `'vertical'` | Layout axis. Emits `origam-timeline-item--orientation-{value}`, which drives the horizontal layout rules. **The parent wins**: when an `<OrigamTimeline>` ancestor provides an `orientation`, the injected value takes precedence over the prop — set it on the parent, not per item. |
 | `index` | `number` | `0` | Used for alternating layout computation |
 
 ## Slots — OrigamTimelineItem
@@ -109,28 +84,10 @@ The `intent` prop maps to semantic design tokens:
 - `success`, `warning`, `danger`, `info` — feedback.{intent}.bg/fg
 - `secondary`, `ghost`, `neutral` — action.{intent}.bg/fg
 
-## Horizontal mode
-
-```vue
-<template>
-    <origam-timeline :items="entries" orientation="horizontal"/>
-</template>
-```
-
-The track is a flex row with `overflow-x: auto` and
-`scroll-snap-type: x mandatory`; the scrollbar is hidden
-(`scrollbar-width: none` plus the `-webkit-scrollbar` reset) because the
-dots and connectors already show progress. Give the timeline a bounded
-width — the track fills its container and only scrolls once the items
-overflow it.
-
 ## Accessibility
 
-- The wrapper renders with `role="list"`, and `aria-label` when `ariaLabel` is set.
+- The wrapper renders with `role="list"`.
 - Each item renders with `role="listitem"`.
 - The track (dot + connector) is `aria-hidden="true"` — it is purely decorative.
 - Use descriptive `title` values for screen-reader users.
-- Keyboard navigation follows natural DOM order. In `horizontal` mode the
-  scroll container has no `tabindex`, so it is not itself a tab stop —
-  keyboard users reach the off-screen items only through whatever
-  focusable content the entries contain.
+- Keyboard navigation follows natural DOM order.

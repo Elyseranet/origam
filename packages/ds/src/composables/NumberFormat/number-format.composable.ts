@@ -12,7 +12,9 @@ import {
     NUMBER_FORMAT_LRU_CAPACITY
 } from '../../consts/NumberFormat/number-format.const'
 
-import type { IUseNumberFormatOptions } from '../../interfaces/NumberFormat/number-format.interface'
+import type {
+    IUseNumberFormatOptions
+} from '../../interfaces'
 
 /**
  * Module-level LRU keyed on the serialised resolver options. Reusing a

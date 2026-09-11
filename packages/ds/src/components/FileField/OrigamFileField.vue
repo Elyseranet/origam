@@ -226,13 +226,13 @@
                         <div class="origam-file-field__selection">
                           <slot
                               name="chip"
-                              v-bind="{ fileNames: filename, totalBytes: totalBytes, totalBytesReadable: totalBytesReadable, props: resolvedChipProps }"
+                              v-bind="{ fileNames: filename, totalBytes: totalBytes, totalBytesReadable: totalBytesReadable, props: chipProps }"
                           >
                             <origam-chip
                                 key="chip"
                                 :model-value="true"
                                 size="small"
-                                v-bind="resolvedChipProps"
+                                v-bind="chipProps"
                                 @click:close.prevent.stop="handleRemove(index)"
                             >
                               <template #default>
@@ -287,7 +287,7 @@
           </origam-field>
 
           <ul
-              v-if="multiple && hasFiles && !hasChips && displayMode === FILE_FIELD_DISPLAY.LIST"
+              v-if="multiple && hasFiles && !hasChips && displayMode === 'list'"
               class="origam-file-field__list"
           >
             <template v-for="(item, idx) in fileList" :key="idx">
@@ -304,17 +304,12 @@
                 <origam-file-field-list-item
                     :file="item"
                     :index="idx"
-                    :progress="getProgress(idx)"
                     :file-icon="fileIcon"
-                    :download-icon="downloadIcon"
                     :remove-icon="removeIcon"
-                    :downloadable="downloadable"
                     :disabled="isDisabled"
                     :readonly="isReadonly"
-                    :color="color"
                     :show-size="showSize"
                     @click:remove="handleRemove(idx)"
-                    @click:download="handleDownload(idx, item)"
                 />
               </slot>
             </template>
@@ -382,33 +377,27 @@
 >
   import { computed, nextTick, ref, StyleValue, toRef, useAttrs, useSlots, watch } from 'vue'
 
-  import OrigamChip from '../Chip/OrigamChip.vue'
-  import OrigamCounter from '../Counter/OrigamCounter.vue'
-  import OrigamField from '../Field/OrigamField.vue'
-  import OrigamIcon from '../Icon/OrigamIcon.vue'
-  import OrigamInput from '../Input/OrigamInput.vue'
+  import { OrigamChip, OrigamCounter, OrigamField, OrigamIcon, OrigamInput } from '../../components'
   import OrigamFileFieldDragNDropItem from './OrigamFileFieldDragNDropItem.vue'
   import OrigamFileFieldListItem from './OrigamFileFieldListItem.vue'
-  import { useAdjacent } from '../../composables/Commons/adjacent.composable'
-  import { useAdjacentInner } from '../../composables/Commons/adjacentInner.composable'
-  import { useBothColor } from '../../composables/Commons/bothColor.composable'
-  import { useDensity } from '../../composables/Commons/density.composable'
-  import { useFocus } from '../../composables/Commons/focus.composable'
-  import { useLocale } from '../../composables/Commons/locale.composable'
-  import { useProps } from '../../composables/Commons/props.composable'
-  import { useStyle } from '../../composables/Commons/style.composable'
-  import { useVModel } from '../../composables/Commons/vModel.composable'
-  import { DENSITY } from '../../enums/Commons/density.enum'
-  import { FILE_FIELD_DISPLAY } from '../../enums/FileField/file-field.enum'
-  import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
-  import type { IFileFieldProps, IFileFieldSlots } from '../../interfaces/FileField/file-field.interface'
+  import {
+	useAdjacent,
+	useAdjacentInner,
+	useBothColor,
+	useDefaults,
+	useDensity,
+	useFocus,
+	useLocale,
+	useProps,
+	useStyle,
+	useVModel
+} from '../../composables'
+  import { DENSITY, MDI_ICONS } from '../../enums'
+  import type { IFileFieldProps, IFileFieldSlots} from '../../interfaces'
 
 	import type { IFileFieldEmits } from '../../interfaces/FileField/file-field.interface'
-  import type { TOrigamField } from '../../types/Field/field.type'
-  import type { TOrigamInput } from '../../types/Input/input.type'
-  import { filterInputAttrs } from '../../utils/Input/input.util'
-  import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
-  import { humanReadableFileSize, wrapInArray } from '../../utils/Commons/commons.util'
+  import type { TOrigamField, TOrigamInput } from '../../types'
+  import { filterInputAttrs, forwardRefs, humanReadableFileSize, wrapInArray } from '../../utils'
 
   /*********************************************************
    * Global
@@ -420,7 +409,7 @@
    *    This variable serves as a declaration point for all events that the component can emit.
    * Slots for the component.
    ********************************************************/
-  const props = withDefaults(defineProps<IFileFieldProps>(), {
+  const _props = withDefaults(defineProps<IFileFieldProps>(), {
     prependInnerIcon: MDI_ICONS.PAPERCLIP,
     dragndropIcon: MDI_ICONS.CLOUD_UPLOAD_OUTLINE,
     fileIcon: MDI_ICONS.FILE,
@@ -432,13 +421,17 @@
     density: DENSITY.DEFAULT,
     border: true,
     rounded: true,
+    divider: ',',
     display: 'list',
     counterSizeString: 'origam.file_field.counter_size',
     counterString: 'origam.file_field.counter',
     dropzoneTitle: 'origam.file_field.dropzone_title',
     dropzoneSubtitle: 'origam.file_field.dropzone_subtitle',
+    browseText: 'origam.file_field.browse',
     maxFileSizeErrorString: 'origam.validation.max_size_error'
   })
+  const props = useDefaults(_props)
+
   /*********************************************************
    * PDF P3 — display + dropzone aliasing + error
    *
@@ -455,8 +448,8 @@
    ********************************************************/
   const isDropzoneMode = computed(() => Boolean(props.dropzone || props.dragndrop))
   const displayMode = computed(() => {
-    if (props.chips) return FILE_FIELD_DISPLAY.CHIPS
-    return props.display ?? FILE_FIELD_DISPLAY.LIST
+    if (props.chips) return 'chips'
+    return props.display ?? 'list'
   })
   const isErrored = computed(() => Boolean(props.error))
   const errorMessage = computed(() => typeof props.error === 'string' ? props.error : '')
@@ -492,7 +485,7 @@
   const model = useVModel(
       props,
       'modelValue',
-      () => props.multiple ? [] as Array<File> : null,
+      props.multiple ? [] as Array<File> : null,
       val => wrapInArray(val),
       val => (props.multiple || Array.isArray(props.modelValue)) ? val : (val[0] ?? null)
   )
@@ -544,20 +537,8 @@
 
   const { isFocused, onFocus, onBlur: handleBlur } = useFocus(props)
 
-  /*********************************************************
-   * isActive
-   *
-   * @description
-   * #418 — `persistentPlaceholder` etait declaree dans l'interface et
-   * absente du `.vue`. Elle n'etait pas non plus TRANSMISSIBLE : ni
-   * `IInputProps` ni `IFieldProps` ne la declarent, donc `filterProps`,
-   * qui filtre sur les cles de l'interface enfant, ne pouvait pas la faire
-   * descendre. Elle se consomme ici, exactement comme chez les trois
-   * freres (TextField, TextareaField, PasswordField) : elle force l'etat
-   * actif du champ pour que le placeholder reste visible hors focus.
-   ********************************************************/
   const isActive = computed(() => {
-    return props.persistentPlaceholder || isFocused.value || props.active
+    return isFocused.value || props.active
   })
 
   /*********************************************************
@@ -775,35 +756,18 @@
     return slots.details || hasCounter.value
   })
   const hasChips = computed(() => {
-    return displayMode.value === FILE_FIELD_DISPLAY.CHIPS || slots.chip
+    return displayMode.value === 'chips' || slots.chip
   })
   const hasInlineCounter = computed(() => {
-    return displayMode.value === FILE_FIELD_DISPLAY.COUNTER && hasFiles.value && props.multiple
+    return displayMode.value === 'counter' && hasFiles.value && props.multiple
   })
   const inlineCounterValue = computed(() => {
     return model.value?.length ?? 0
   })
-  /*********************************************************
-   * resolvedChipProps
-   *
-   * @description
-   * #418 — ce computed s'appelait `chipProps`, exactement comme la prop
-   * publique du meme nom. Le compilateur SFC resout un identifiant du
-   * template vers le binding `setup-ref` en priorite : `v-bind="chipProps"`
-   * lisait donc le computed, et `props.chipProps` n'a jamais ete lue depuis
-   * sa creation (`git log -S "props.chipProps"` : vide). L'audit statique
-   * des props non consommees ne pouvait pas le voir non plus, l'identifiant
-   * etant bien present dans le template.
-   * @description
-   * Le patron correct est celui d'`OrigamSelect` : les valeurs internes
-   * d'abord, la prop du consommateur etalee EN DERNIER pour qu'elle puisse
-   * surcharger.
-   ********************************************************/
-  const resolvedChipProps = computed(() => {
+  const chipProps = computed(() => {
     return {
       closable: !props.disabled && !props.readonly,
-      color: props.color,
-      ...props.chipProps
+      color: props.color
     }
   })
   const getProgress = (index: number) => {
@@ -835,20 +799,8 @@
    * Forwarded props
    ********************************************************/
 
-  /*********************************************************
-   * inputProps
-   *
-   * @description
-   * #421 — `id` is deliberately NOT filtered out: OrigamInput needs it to
-   * build `<id>-messages`, the target of its own `aria-describedby`, and
-   * to feed its default slot's `id` (consumed by OrigamField, then the
-   * real `<input type="file">`). Filtering it forced OrigamInput to
-   * invent an id, so a consumer passing `id` got an input unreachable by
-   * `getElementById` and a `<label for>` pointing nowhere — same fix as
-   * OrigamTextField (ce365b10).
-   ********************************************************/
   const inputProps = computed(() => {
-    return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'focused'])
+    return origamInputRef.value?.filterProps(props, ['modelValue', 'class', 'style', 'id', 'focused'])
   })
   const fieldProps = computed(() => {
     return origamFieldRef.value?.filterProps(props, ['class', 'style', 'id', 'active', 'dirty', 'disabled', 'focused', 'error'])
@@ -1002,7 +954,7 @@
     &__dropzone {
       align-items: center;
       background-color: var(--origam-file-field__dropzone---background-color, transparent);
-      border: var(--origam-file-field__dropzone---border-width, 2px) var(--origam-file-field__dropzone---border-style, dashed) var(--origam-file-field__dropzone---border-color, var(--origam-file-field__dropzone---color, var(--origam-color__border---default)));
+      border: var(--origam-file-field__dropzone---border-width, 2px) var(--origam-file-field__dropzone---border-style, dashed) var(--origam-file-field__dropzone---color, var(--origam-color__border---default));
       border-radius: var(--origam-file-field__dropzone---border-radius, 8px);
       color: var(--origam-file-field__dropzone---color, inherit);
       cursor: var(--origam-file-field__dropzone---cursor, pointer);
@@ -1012,7 +964,6 @@
       justify-content: center;
       min-height: calc(var(--origam-file-field__dropzone---min-height, 140px) + var(--origam-file-field__dropzone---density, 0px));
       padding: calc(var(--origam-file-field__dropzone---padding, 24px) + var(--origam-file-field__dropzone---density, 0px));
-      padding-block: calc(var(--origam-file-field__dropzone---padding-block, var(--origam-file-field__dropzone---padding, 24px)) + var(--origam-file-field__dropzone---density, 0px));
       position: relative;
       text-align: center;
       transition: border-color var(--origam-file-field---transition-duration, 200ms) ease, background-color var(--origam-file-field---transition-duration, 200ms) ease;
@@ -1022,7 +973,7 @@
       }
 
       &--dragging {
-        background-color: var(--origam-file-field__dropzone---bg-dragging, var(--origam-file-field__dropzone--dragging---background-color, var(--origam-color__feedback--info---bgSubtle)));
+        background-color: var(--origam-file-field__dropzone---bg-dragging, var(--origam-file-field__dropzone--dragging---background-color, var(--origam-color__feedback--info---bg-subtle)));
         border-color: var(--origam-file-field__dropzone---border-color-dragging, var(--origam-file-field__dropzone--dragging---border-color, var(--origam-color__feedback--info---bg)));
       }
 
@@ -1031,12 +982,12 @@
 
         .origam-file-field__dropzone-icon,
         .origam-file-field__dropzone-title {
-          color: var(--origam-file-field__dropzone--error---fg, var(--origam-color__feedback--danger---fgSubtle));
+          color: var(--origam-file-field__dropzone--error---fg, var(--origam-color__feedback--danger---fg-subtle));
         }
       }
 
       &-error {
-        color: var(--origam-file-field__dropzone--error---fg, var(--origam-color__feedback--danger---fgSubtle));
+        color: var(--origam-file-field__dropzone--error---fg, var(--origam-color__feedback--danger---fg-subtle));
         font-size: var(--origam-file-field__dropzone---subtitle-font-size, 0.75rem);
         margin-top: var(--origam-file-field__dropzone---gap-deck, 8px);
       }

@@ -1,17 +1,9 @@
 <template>
 	<component
 			:is="tag"
-			:id="id"
 			ref="root"
-			:aria-busy="indeterminate ? true : undefined"
-			:aria-hidden="!active"
-			:aria-label="progressAriaLabel"
-			:aria-valuemax="max"
-			:aria-valuenow="indeterminate ? undefined : normalizedValue"
 			:class="progressCircularClasses"
 			:style="progressCircularStyles"
-			aria-valuemin="0"
-			role="progressbar"
 	>
 		<svg
 				:style="svgStyles"
@@ -60,26 +52,23 @@
 		setup
 >
 	import { computed, ref, StyleValue, toRef, watchEffect } from 'vue'
-	import { useIntersectionObserver } from '../../composables/Commons/intersectionObserver.composable'
-	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useProgress } from '../../composables/Progress/progress.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useResizeObserver } from '../../composables/Commons/resizeObserver.composable'
-	import { useSize } from '../../composables/Commons/size.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-	import { useTextColor } from '../../composables/Commons/textColor.composable'
+	import {
+		useIntersectionObserver,
+		useProgress,
+		useProps,
+		useResizeObserver,
+		useSize,
+		useStyle,
+		useTextColor
+} from '../../composables'
 
-	import { CIRCUMFERENCE, MAGIC_RADIUS } from '../../consts/Progress/progress.const'
+	import { CIRCUMFERENCE, MAGIC_RADIUS } from '../../consts'
 
-	import type {
-		IProgressCircularEmits,
-		IProgressCircularProps,
-		IProgressCircularSlots
-	} from '../../interfaces/Progress/progress-circular.interface'
+	import type { IProgressCircularProps } from '../../interfaces'
 
-	import { convertToUnit, int } from '../../utils/Commons/commons.util'
+	import { convertToUnit } from '../../utils'
 
-	import { SIZES } from '../../enums/Commons/size.enum'
+	import { SIZES } from '../../enums'
 
 	/*********************************************************
 	 * Global
@@ -90,28 +79,14 @@
 	 * `.origam-progress--circular.origam-progress--size-default`
 	 * pins width/height — without this the SVG (position: absolute)
 	 * collapses to 0×0 and the component renders invisible.
-	 *
-	 * Why not the native `<progress>` element (#500): it has no
-	 * circular rendering model at all — per the HTML spec it is an
-	 * inherently horizontal-bar element, so it cannot express a ring.
-	 * The ARIA `role="progressbar"` + `aria-value*` contract below
-	 * gives assistive tech the exact same semantics natively-supported
-	 * `<progress>` would, without requiring one.
 	 ********************************************************/
 	const props = withDefaults(defineProps<IProgressCircularProps>(), {
 		tag: 'div',
 		modelValue: 0,
 		max: 100,
 		thickness: 4,
-		size: SIZES.DEFAULT,
-		rotate: 0,
-		active: true,
-		label: 'origam.loading'
+		size: SIZES.DEFAULT
 	})
-
-	defineEmits<IProgressCircularEmits>()
-
-	defineSlots<IProgressCircularSlots>()
 
 	const {filterProps} = useProps<IProgressCircularProps>(props)
 
@@ -145,19 +120,6 @@
 	const {intersectionRef} = useIntersectionObserver()
 	const {sizeStyles, sizeClasses} = useSize(props, 'origam-progress')
 
-	const {t} = useLocale()
-
-	/*********************************************************
-	 * Accessibility
-	 *
-	 * @description
-	 * #500 — own ARIA semantics (role, aria-value.., aria-label, aria-hidden)
-	 * moved down from the `<OrigamProgress>` wrapper so a consumer who
-	 * mounts this component standalone (both are exported publicly) still
-	 * gets an accessible progress bar.
-	 ********************************************************/
-	const progressAriaLabel = computed(() => t(props.label))
-
 	/*********************************************************
 	 * Color
 	 ********************************************************/
@@ -171,22 +133,9 @@
 	 * @description
 	 * Derived dimensions for the circular SVG track.
 	 ********************************************************/
-	/*********************************************************
-	 * size
-	 *
-	 * @description
-	 * #384 — `Number(props.size)` returned NaN for any CSS
-	 * length string (`Number('48px')` === NaN). Unlike the
-	 * dimension components in this ticket, this value isn't a
-	 * CSS declaration silently dropped on an invalid value —
-	 * it feeds SVG geometry math (`diameter`, `strokeWidth`,
-	 * `svgViewBox`), so NaN poisoned all three and produced an
-	 * invalid `viewBox="0 0 NaN NaN"`. `int()` parses both a
-	 * bare number and a CSS-length string.
-	 ********************************************************/
 	const size = computed(() => {
 		if (sizeStyles.value.length) {
-			return int(props.size)
+			return Number(props.size)
 		}
 
 		if (contentRect.value) {
@@ -246,23 +195,8 @@
 			props.class
 		]
 	})
-	/*********************************************************
-	 * svgStyles
-	 *
-	 * @description
-	 * #384 (adjacent finding, not in the original scope) —
-	 * `Number(props.rotate)` ran UNCONDITIONALLY with no
-	 * default in `withDefaults`, so every instance that didn't
-	 * explicitly pass `rotate` computed `Number(undefined)` ===
-	 * NaN, rendering the entire `transform` declaration invalid
-	 * and silently dropped by the browser — losing the base
-	 * `-90deg` start-angle offset. Added the missing `rotate: 0`
-	 * default (matches the documented "no extra rotation"
-	 * behaviour) and switched to `int()` for CSS-length-string
-	 * safety, consistent with the `size` fix above.
-	 ********************************************************/
 	const svgStyles = computed(() => {
-		return [`transform: rotate(calc(-90deg + ${int(props.rotate)}deg))`]
+		return [`transform: rotate(calc(-90deg + ${Number(props.rotate)}deg))`]
 	})
 	const backgroundStyles = computed(() => {
 		return [
@@ -274,7 +208,7 @@
 			loaderColorStyles.value
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(progressCircularStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(progressCircularStyles)
 
 
 	/*********************************************************
@@ -301,78 +235,78 @@
 		$this: &;
 
 		&--circular {
-			align-items: var(--origam-progress-circular---align-items, center);
-			display: var(--origam-progress-circular---display, inline-flex);
-			justify-content: var(--origam-progress-circular---justify-content, center);
-			position: var(--origam-progress-circular---position, relative);
-			vertical-align: var(--origam-progress-circular---vertical-align, middle);
+			align-items: center;
+			display: inline-flex;
+			justify-content: center;
+			position: relative;
+			vertical-align: middle;
 
 			> svg {
-				width: var(--origam-progress-circular__svg---width, 100%);
-				height: var(--origam-progress-circular__svg---height, 100%);
+				width: 100%;
+				height: 100%;
 				margin: auto;
-				position: var(--origam-progress-circular__svg---position, absolute);
+				position: absolute;
 				top: 0;
 				bottom: 0;
 				left: 0;
 				right: 0;
-				z-index: var(--origam-progress-circular__svg---z-index, 0);
+				z-index: 0;
 			}
 
 			#{$this}__content {
-				align-items: var(--origam-progress-circular__content---align-items, center);
-				display: var(--origam-progress-circular__content---display, flex);
-				justify-content: var(--origam-progress-circular__content---justify-content, center);
+				align-items: center;
+				display: flex;
+				justify-content: center;
 			}
 
 			#{$this}__underlay {
 				color: var(--origam-progress-circular__underlay---color, var(--origam-color__surface---disabled));
 				stroke: currentColor;
 				opacity: var(--origam-progress-circular__underlay---opacity, 0.5);
-				z-index: var(--origam-progress-circular__underlay---z-index, 1);
+				z-index: 1;
 			}
 
 			#{$this}__overlay {
 				color: var(--origam-progress-circular__overlay---color, inherit);
 				stroke: currentColor;
 				transition: all var(--origam-progress-circular---transition-duration, 0.2s) var(--origam-progress-circular---transition-easing, ease-in-out), stroke-width 0s;
-				z-index: var(--origam-progress-circular__overlay---z-index, 2);
+				z-index: 2;
 			}
 
 			&#{$this}--size-x-small {
-				height: var(--origam-progress-circular---size-xs, 16px);
-				width: var(--origam-progress-circular---size-xs, 16px);
+				height: 16px;
+				width: 16px;
 			}
 
 			&#{$this}--size-small {
-				height: var(--origam-progress-circular---size-sm, 24px);
-				width: var(--origam-progress-circular---size-sm, 24px);
+				height: 24px;
+				width: 24px;
 			}
 
 			&#{$this}--size-default {
-				height: var(--origam-progress-circular---size-md, 32px);
-				width: var(--origam-progress-circular---size-md, 32px);
+				height: 32px;
+				width: 32px;
 			}
 
 			&#{$this}--size-large {
-				height: var(--origam-progress-circular---size-lg, 48px);
-				width: var(--origam-progress-circular---size-lg, 48px);
+				height: 48px;
+				width: 48px;
 			}
 
 			&#{$this}--size-x-large {
-				height: var(--origam-progress-circular---size-xl, 64px);
-				width: var(--origam-progress-circular---size-xl, 64px);
+				height: 64px;
+				width: 64px;
 			}
 
 			&#{$this}--indeterminate {
 				> svg {
-					animation: progress-circular-rotate var(--origam-progress-circular---indeterminate-duration, 1.4s) linear infinite;
+					animation: progress-circular-rotate 1.4s linear infinite;
 					transform-origin: center center;
 					transition: all 0.2s ease-in-out;
 				}
 
 				#{$this}__overlay {
-					animation: progress-circular-dash var(--origam-progress-circular---indeterminate-duration, 1.4s) ease-in-out infinite, progress-circular-rotate var(--origam-progress-circular---indeterminate-duration, 1.4s) linear infinite;
+					animation: progress-circular-dash 1.4s ease-in-out infinite, progress-circular-rotate 1.4s linear infinite;
 					stroke-dasharray: 25, 200;
 					stroke-dashoffset: 0;
 					stroke-linecap: round;

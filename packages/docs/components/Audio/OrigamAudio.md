@@ -116,7 +116,7 @@ are all unset (and no `#metadata` slot is provided), only the cover
 | `border`        | `IBorderProps['border']`                                         | `undefined`   | Picks a border token.                                                                                                                                  |
 | `padding`       | `IPaddingProps['padding']`                                       | `undefined`   | Padding tokens (axis or per-side).                                                                                                                     |
 | `margin`        | `IMarginProps['margin']`                                         | `undefined`   | Margin tokens (axis or per-side).                                                                                                                      |
-| `tag`           | `string`                                                         | `'article'`   | Element rendered as the root. Defaults to `<article>` — a player with its own cover, title and transport is self-contained content. Override it only when the surrounding document demands another element; keep an element that may contain flow content.            |
+| `tag`           | `string`                                                         | `'article'`   | `IAudioProps` extends `ITagProps`. The root is always rendered as `<article>` for HTML semantics; the prop is preserved for typed consumers.            |
 
 ### Typography props (`ITypographyProps`) — per-surface
 
@@ -127,10 +127,8 @@ A single set of `ITypographyProps` drives all four text surfaces. Each surface r
 | `fontSize`      | `TFontSize`   | `undefined` | `audio__title` (font-size), `audio__meta` (font-size), `audio__loading` (font-size), `audio--error` (font-size) |
 | `fontWeight`    | `TFontWeight` | `undefined` | `audio__title` (font-weight) only                                                                |
 | `lineHeight`    | `TLineHeight` | `undefined` | `audio__title` (line-height) only                                                                |
-
-> `letterSpacing` and `fontFamily` were removed from `IAudioProps` (issue #501) — no
-> surface read either var. `fontFamily` is a project-level setting configured once
-> on `OrigamApp`, not a per-instance override.
+| `letterSpacing` | `TLetterSpacing` | `undefined` | No SCSS rule in current surfaces — prop accepted, var emitted, no visible effect               |
+| `fontFamily`    | `TFontFamily` | `undefined` | No SCSS rule in current surfaces — prop accepted, var emitted, no visible effect               |
 
 > `audio__loading` and `audio--error` are state overlays — only visible when the player is loading or in error state. The CSS var is always set via inline `:style`; the rendered effect requires triggering the matching player state.
 
@@ -170,10 +168,6 @@ A single set of `ITypographyProps` drives all four text surfaces. Each surface r
 | `loadedmetadata`         | `Event`                                | Fires once metadata has loaded and `duration` is finite.                                                               |
 | `error`                  | `Event \| MediaError \| Error`         | Wraps the native `<audio>` `error` event with the resolved `MediaError` when available.                                |
 | `update:playbackRate`    | `number`                               | Listener picked a rate from the cog menu.                                                                              |
-| `update:shuffle`         | `boolean`                              | Listener toggled the shuffle button in the controls (`v-model:shuffle` two-way binding).                               |
-| `update:loopMode`        | `'none' \| 'all' \| 'one'`              | Listener cycled the loop button (`v-model:loopMode` two-way binding). Also fires when the parent flips the legacy `loop` prop. |
-| `update:currentTrackIndex` | `number`                             | Active playlist entry changed — a row click, prev / next, or an auto-advance on `ended` (`v-model:currentTrackIndex`). |
-| `track-change`           | `(track: IAudioTrack, index: number)`  | Same moments as `update:currentTrackIndex`, with the whole track descriptor.                                           |
 | `download`               | `string` (URL)                         | Listener clicked the Download row. Payload is the file URL.                                                            |
 | `waveform`               | `Array<number>` (200 0..1 amplitudes)   | Fires once per recomputation (typically on `src` change).                                                              |
 | `previous`               | —                                      | Listener clicked the `⏮` button. The component ALSO skips -10 s internally so isolated players keep working.            |
@@ -183,13 +177,11 @@ A single set of `ITypographyProps` drives all four text surfaces. Each surface r
 
 | Slot         | Bindings                                                          | Default content                                                                                          |
 |--------------|-------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------|
-| `header`     | —                                                                 | The whole cover + metadata strip. Takes priority over `cover` / `metadata` / `title`.                     |
 | `cover`      | —                                                                 | `<origam-img>` of the resolved `cover`.                                                                  |
 | `metadata`   | —                                                                 | Title + artist · album · duration meta line.                                                             |
 | `title`      | —                                                                 | `<strong>` with the `title` prop.                                                                        |
 | `waveform`   | `{ peaks: Array<number>, currentTime: number, duration: number }`  | `<origam-slider-field variant="audio">`.                                                                 |
 | `controls`   | `IAudioScopedSlotBindings`                                        | Transport `<nav>` composed of the atomic media sub-components.                                            |
-| `playlist`   | `{ tracks, currentIndex, select(index) }`                          | `<origam-list>` of the playlist rows. Rendered only when `playlist` is set.                               |
 | `loading`    | —                                                                 | `<origam-icon icon="LOADING">`.                                                                          |
 | `error`      | `{ error: MediaError \| Error }`                                  | `<origam-icon>` + `<span>` with the error message.                                                       |
 
@@ -209,8 +201,6 @@ State variants use the double-tiret separator
 | `--origam-audio---padding`                              | `16px`                                          | Surface padding.                                                       |
 | `--origam-audio---border-radius`                        | `var(--origam-radius---lg, 12px)`               | Surface radius.                                                        |
 | `--origam-audio__cover---size`                          | `96px`                                          | Expanded variant cover size.                                           |
-| `--origam-audio__cover---background`                    | `#18181b`                                       | Vinyl body behind the album art — shows through a transparent or not-yet-loaded cover. |
-| `--origam-audio__cover-label---background-color`        | `var(--origam-color__neutral---950)`            | The record's centre label disc, on the main cover **and** on every playlist avatar. Identical in light and dark: a vinyl label is a physical object, it does not flip with the surface. |
 | `--origam-audio--compact__cover---size`                 | `48px`                                          | Compact variant cover size.                                            |
 | `--origam-audio__title---font-size`                     | `18px`                                          | Title size (expanded). Overridden in compact.                          |
 | `--origam-audio__meta---color`                          | `color-mix(in srgb, currentColor 60%, transparent)` | Subtle meta line colour.                                            |
@@ -311,22 +301,6 @@ mounted.
 - `accent-color: var(--origam-audio---accent-color)` on the root paints
   both scrubbers via the platform's native tint (no JS, no canvas).
 - `autoplay` is suppressed when the user has requested reduced motion.
-
-## Localisation
-
-Every string the component renders itself goes through `useLocale()`; none
-is a literal. The keys it owns:
-
-| Key                          | English            | Where it shows                                                                   |
-|------------------------------|--------------------|----------------------------------------------------------------------------------|
-| `origam.loading`             | `Loading...`       | `aria-label` of the buffering overlay.                                            |
-| `origam.media.seek`          | `Seek`             | `aria-label` of the waveform scrubber.                                            |
-| `origam.audio.track_number`  | `Track {0}`        | Playlist row title, for a track that carries no `title` of its own. `{0}` is the 1-based index. |
-| `origam.media.playback_error`| `Playback error`   | Error overlay, when the `MediaError` carries no message of its own.               |
-
-Every transport label (play, pause, mute, volume, prev / next, loop,
-shuffle, cast, settings, speed, quality, download) lives inside
-`<OrigamMediaController>` and resolves there.
 
 ## Notes
 

@@ -1,3 +1,3 @@
-import OrigamListGroup from '../../components/List/OrigamListGroup.vue'
+import { OrigamListGroup } from "../../components"
 
 export type TOrigamListGroup = InstanceType<typeof OrigamListGroup>

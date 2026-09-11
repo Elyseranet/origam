@@ -1,3 +1,3 @@
-import OrigamSvgIcon from '../../components/Icon/OrigamSvgIcon.vue'
+import { OrigamSvgIcon } from "../../components"
 
 export type TOrigamSvgIcon = InstanceType<typeof OrigamSvgIcon>

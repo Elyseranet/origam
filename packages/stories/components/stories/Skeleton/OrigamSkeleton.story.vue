@@ -43,11 +43,10 @@
 
 		<Variant
 				title="Functional"
-				:init-state="() => useStoryInitState<Partial<ISkeletonProps>>({ loading: true, pulse: true, variant: 'text', width: '200', label: 'origam.loading' })"
+				:init-state="() => useStoryInitState<Partial<ISkeletonProps>>({ loading: true, pulse: true, variant: 'text', width: '200' })"
 		>
 			<template #default="{ state }">
 				<origam-skeleton
-						:label="state.label"
 						:loading="state.loading"
 						:pulse="state.pulse"
 						:variant="state.variant"
@@ -60,9 +59,6 @@
 				<StoryGroup title="States">
 					<HstCheckbox v-model="state.loading" title="Loading"/>
 					<HstCheckbox v-model="state.pulse"   title="Pulse"/>
-				</StoryGroup>
-				<StoryGroup title="Accessibility">
-					<HstText v-model="state.label" title="Label (locale key)"/>
 				</StoryGroup>
 				<StoryGroup title="Data">
 					<HstSelect v-model="state.variant" title="Variant" :options="SKELETON_VARIANT_OPTIONS"/>
@@ -79,7 +75,7 @@
 
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<ISkeletonProps>({ variant: 'text', width: '200', loading: true, pulse: true, label: 'origam.loading' })"
+				:init-state="() => useStoryInitState<ISkeletonProps>({ variant: 'text', width: '200', loading: true, pulse: true })"
 		>
 			<template #default="{ state }">
 				<origam-skeleton v-bind="state">
@@ -101,7 +97,6 @@
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.loading" title="Loading"/>
 					<HstCheckbox v-model="state.pulse"   title="Pulse"/>
-					<HstText     v-model="state.label"   title="Label (locale key)"/>
 				</StoryGroup>
 			</template>
 		</Variant>

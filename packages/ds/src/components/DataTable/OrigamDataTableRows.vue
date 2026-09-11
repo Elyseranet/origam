@@ -3,7 +3,6 @@
 		<template v-if="loaderConfig.kind === 'skeleton'">
 			<tr
 					v-for="rowIndex in SKELETON_ROW_COUNT"
-					:id="skeletonRowId(rowIndex)"
 					:key="`skeleton-row_${rowIndex}`"
 					class="origam-data-table-rows origam-data-table-rows--skeleton"
 					aria-busy="true"
@@ -19,11 +18,8 @@
 		</template>
 		<template v-else>
 			<tr
-					:id="id"
 					key="loading"
 					class="origam-data-table-rows origam-data-table-rows--loading"
-					:class="textColorClasses"
-					:style="textColorStyles"
 			>
 				<td :colspan="columns.length">
 					<slot name="loading">
@@ -36,11 +32,8 @@
 
 	<template v-else-if="!(items && items.length) && !hideNoData">
 		<tr
-				:id="id"
 				key="no-data"
 				class="origam-data-table-rows origam-data-table-rows--no-data"
-				:class="textColorClasses"
-				:style="textColorStyles"
 		>
 			<td :colspan="columns.length">
 				<slot name="no-data">
@@ -58,29 +51,9 @@
 						v-bind="groupHeaderSlotProps(item, index)"
 				>
 					<origam-data-table-group-header-row
-							:id="itemRowId(index)"
 							:key="`group-header_${item.id}`"
-							v-bind="groupHeaderRowProps(item, index)"
+							v-bind="groupHeaderSlotProps(item, index)"
 					>
-						<template
-								v-if="$slots['data-table-group']"
-								#data-table-group="groupProps"
-						>
-							<slot
-									name="data-table-group"
-									v-bind="groupProps"
-							/>
-						</template>
-
-						<template
-								v-if="$slots['data-table-select']"
-								#data-table-select="selectProps"
-						>
-							<slot
-									name="data-table-select"
-									v-bind="selectProps"
-							/>
-						</template>
 					</origam-data-table-group-header-row>
 				</slot>
 			</template>
@@ -91,40 +64,16 @@
 						v-bind="itemSlotProps(item, index)"
 				>
 					<origam-data-table-row
-							:id="itemRowId(index)"
 							:item="item"
 							v-bind="{...itemSlotProps(item, index).props}"
-							@expand="emit('expand', $event)"
-							@select="emit('select', $event)"
 					>
-						<template
-								v-for="name in itemColumnSlotNames"
-								:key="name"
-								#[name]="cellProps"
-						>
-							<slot
-									:name="name"
-									v-bind="cellProps"
-							/>
-						</template>
-
-						<template
-								v-for="name in headerColumnSlotNames"
-								:key="name"
-								#[name]="titleProps"
-						>
-							<slot
-									:name="name"
-									v-bind="titleProps"
-							/>
-						</template>
 					</origam-data-table-row>
 				</slot>
 
 				<template v-if="isExpanded(item)">
 					<slot
 							name="expanded-row"
-							v-bind="slotProps(item, index)"
+							v-bind="slotProps"
 					/>
 				</template>
 			</template>
@@ -136,34 +85,21 @@
 		lang="ts"
 		setup
 >
-	import OrigamDataTableGroupHeaderRow from './OrigamDataTableGroupHeaderRow.vue'
-	import OrigamDataTableRow from './OrigamDataTableRow.vue'
-	import OrigamSkeleton from '../Skeleton/OrigamSkeleton.vue'
+	import { OrigamDataTableGroupHeaderRow, OrigamDataTableRow, OrigamSkeleton } from '../../components'
 
-	import { useDisplay } from '../../composables/Commons/display.composable'
-	import { useExpanded } from '../../composables/DataTable/expand.composable'
-	import { useGroupBy } from '../../composables/DataTable/group.composable'
-	import { useHeaders } from '../../composables/DataTable/headers.composable'
-	import { useLoader } from '../../composables/Commons/loader.composable'
-	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { usePagination } from '../../composables/DataTable/pagination.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useSelection } from '../../composables/DataTable/select.composable'
-	import { useTextColor } from '../../composables/Commons/textColor.composable'
+	import { useDisplay, useExpanded, useGroupBy, useHeaders, useLoader, useLocale, usePagination, useProps, useSelection } from '../../composables'
 
-	import type { IDataTableGroup, IDataTableGroupHeaderSlot } from '../../interfaces/DataTable/group.interface'
-	import type { IDataTableItemBaseSlot, IDataTableItemSlot } from '../../interfaces/DataTable/items.interface'
-	import type { IDataTableRowsEmits, IDataTableRowsProps, IDataTableRowsSlots } from '../../interfaces/DataTable/data-table-rows.interface'
+	import type {
+		IDataTableGroup,
+		IDataTableGroupHeaderSlot,
+		IDataTableItemBaseSlot,
+		IDataTableItemSlot,
+		IDataTableRowsProps
+	} from '../../interfaces'
 
-	import { LOADER_KIND } from '../../enums/Commons/loader.enum'
+	import { getPrefixedEventHandlers } from '../../utils'
 
-	import { getPrefixedEventHandlers } from '../../utils/Commons/event.util'
-	import {
-		pickDataTableHeaderColumnSlotNames,
-		pickDataTableItemColumnSlotNames
-	} from '../../utils/DataTable/slot-name.util'
-
-	import { computed, mergeProps, useAttrs, useSlots } from 'vue'
+	import { mergeProps, useAttrs } from 'vue'
 
 	const attrs = useAttrs()
 
@@ -176,31 +112,6 @@
 		noDataText: 'origam.no_data_text'
 	})
 
-	const emit = defineEmits<IDataTableRowsEmits>()
-
-	defineSlots<IDataTableRowsSlots>()
-
-	/*********************************************************
-	 * Forwarded slots (#550, critere C7)
-	 *
-	 * @description
-	 * `<origam-data-table-row>` rend `item.{cle}` (valeur de cellule) et,
-	 * en disposition mobile, `header.{cle}` (titre de colonne). Aucun des
-	 * deux n'etait relaye : le contenu du consommateur s'arretait ici.
-	 *
-	 * @description
-	 * `useSlots()` n'est pas une prop — la lecture ci-dessous ne tombe pas
-	 * sous la reserve ADR-005 sur les lectures eager du corps de `setup`.
-	 ********************************************************/
-	const slots = useSlots()
-
-	const itemColumnSlotNames = computed(() => {
-		return pickDataTableItemColumnSlotNames(Object.keys(slots))
-	})
-	const headerColumnSlotNames = computed(() => {
-		return pickDataTableHeaderColumnSlotNames(Object.keys(slots))
-	})
-
 	const {filterProps} = useProps<IDataTableRowsProps>(props)
 
 	const {t} = useLocale()
@@ -208,33 +119,11 @@
 	/** Fixed number of skeleton placeholder rows when kind='skeleton'. */
 	const SKELETON_ROW_COUNT = 5
 
-	const skeletonRowId = (index: number) => (props.id ? `${props.id}-skeleton-row-${index}` : undefined)
-	const itemRowId = (index: number) => (props.id ? `${props.id}-row-${index}` : undefined)
-
 	/*********************************************************
 	 * Composables
 	 ********************************************************/
 
-	const {loaderConfig} = useLoader(props, LOADER_KIND.LINE)
-
-	/*********************************************************
-	 * Couleur des lignes propres au composant (#550)
-	 *
-	 * @description
-	 * `color` etait declaree (heritee d'`ILoaderProps`) et lue nulle part,
-	 * alors que la story expose un controle de couleur qui la traverse.
-	 *
-	 * @description
-	 * Elle peint desormais les deux seules lignes que ce composant rend
-	 * lui-meme : la ligne de chargement et la ligne « aucune donnee ». Les
-	 * lignes d'items sont rendues par `<origam-data-table-row>` et se
-	 * colorent via `rowProps`.
-	 *
-	 * @description
-	 * `useTextColor` lit la prop dans un `computed` : la valeur ecrite par
-	 * le resolveur de theme en `beforeCreate` (ADR-005) reste visible.
-	 ********************************************************/
-	const {textColorClasses, textColorStyles} = useTextColor(props, 'color')
+	const {loaderConfig} = useLoader(props, 'line')
 
 	const {columns} = useHeaders()
 	const {expandOnClick, toggleExpand, isExpanded} = useExpanded()
@@ -270,36 +159,6 @@
 			toggleGroup,
 			isGroupOpen
 		})
-	}
-	/*********************************************************
-	 * Props reellement declarees par la ligne d'en-tete de groupe
-	 *
-	 * @description
-	 * ⛔ Ne PAS spreader `groupHeaderSlotProps()` sur le composant. Le
-	 * scope de slot porte volontairement plus de cles que l'interface du
-	 * composant n'en declare (`internalItem`, `isExpanded`, `toggleExpand`,
-	 * `toggleSelect`, `isGroupOpen`) : elles servent au consommateur qui
-	 * remplace le rendu via `#group-header`.
-	 *
-	 * @description
-	 * Une cle non declaree ne disparait pas — elle tombe dans `$attrs` et
-	 * atterrit sur la racine du composant, un `<tr>`, ou Vue la pose en
-	 * ATTRIBUT DOM. Une fonction y serait serialisee en chaine
-	 * (`toggleexpand="(item) => {…}"`). D'ou ce second constructeur, borne
-	 * a ce que `IDataTableGroupHeaderRowProps` declare, plus les
-	 * gestionnaires prefixes `:group-header` qui, eux, doivent bien passer.
-	 ********************************************************/
-	const groupHeaderRowProps = (item: IDataTableGroup, index: number) => {
-		const slotPropsLocal = slotProps(item, index)
-
-		return {
-			index,
-			item,
-			columns: columns.value,
-			isSelected,
-			toggleGroup,
-			...getPrefixedEventHandlers(attrs, ':group-header', () => slotPropsLocal)
-		}
 	}
 	const itemSlotProps = (item: any, index: number): IDataTableItemSlot => {
 		const slotPropsLocal = slotProps(item, index)
@@ -353,12 +212,12 @@
 >
 	.origam-data-table-rows {
 		&--no-data {
-			text-align: var(--origam-data-table-empty---text-align, var(--origam-data-table__empty---text-align, center));
-			color: var(--origam-data-table-rows--no-data---color, var(--origam-data-table__empty---color, var(--origam-color__text---secondary)));
+			text-align: var(--origam-data-table-empty---text-align, center);
+			color: var(--origam-data-table-rows--no-data---color, var(--origam-color__text---secondary));
 		}
 
 		&--loading {
-			color: var(--origam-data-table-rows--loading---color, var(--origam-data-table---loading-row-color, var(--origam-color__text---secondary)));
+			color: var(--origam-data-table-rows--loading---color, var(--origam-color__text---secondary));
 		}
 
 		&--skeleton {

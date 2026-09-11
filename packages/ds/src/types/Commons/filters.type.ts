@@ -1,6 +1,6 @@
-import { FILTERS_MODE } from '../../enums/Commons/filters.enum'
+import { FILTERS_MODE } from '../../enums'
 
-import type { IInternalItem } from '../../interfaces/List/list-children.interface'
+import type { IInternalItem } from '../../interfaces'
 
 export type TFilterMatch = boolean | number | [number, number] | [number, number][]
 export type TFilterFunction = (value: string, query: string, item?: IInternalItem) => TFilterMatch

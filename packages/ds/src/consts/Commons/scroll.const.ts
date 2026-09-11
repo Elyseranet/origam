@@ -1,4 +1,4 @@
-import { blockScrollStrategy, closeScrollStrategy, repositionScrollStrategy } from '../../utils/Commons/scroll.util'
+import { blockScrollStrategy, closeScrollStrategy, repositionScrollStrategy } from '../../utils'
 
 export const SCROLL_STRATEGIES = {
     none: null,

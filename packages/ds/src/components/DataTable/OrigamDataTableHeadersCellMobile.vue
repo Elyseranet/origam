@@ -1,7 +1,6 @@
 <template>
 	<tr class="origam-data-table-headers__row">
 		<origam-data-table-column-cell
-				:id="id"
 				:class="dataTableHeadersCellClasses"
 				:colspan="colspan"
 				:style="dataTableHeadersCellStyles"
@@ -21,7 +20,6 @@
 							clearable
 							@click:clear="handleClear"
 							@click:append="handleAppendCLick"
-							@click:prepend="handlePrependClick"
 					>
 						<template
 								v-if="slots['select.prepend']"
@@ -190,24 +188,22 @@
 		lang="ts"
 		setup
 >
-	import OrigamChip from '../Chip/OrigamChip.vue'
-	import OrigamDataTableColumnCell from './OrigamDataTableColumnCell.vue'
-	import OrigamSelect from '../Select/OrigamSelect.vue'
+	import { OrigamChip, OrigamDataTableColumnCell, OrigamSelect } from '../../components'
 
-	import { useHeadersCell } from '../../composables/DataTable/headersCell.composable'
-	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useSelection } from '../../composables/DataTable/select.composable'
-	import { useSort } from '../../composables/DataTable/sort.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
+	import {
+	useHeadersCell,
+	useLocale,
+	useProps,
+	useSelection,
+	useSort,
+	useStyle
+} from '../../composables'
 
-	import { DENSITY } from '../../enums/Commons/density.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { DENSITY, MDI_ICONS } from '../../enums'
 
-	import type { IDataTableHeadersCellMobileProps } from '../../interfaces/DataTable/data-table-headers-cell-mobile.interface'
-	import type { IInternalListItem } from '../../interfaces/List/list-children.interface'
+	import type { IDataTableHeadersCellMobileProps, IInternalListItem} from '../../interfaces'
 
-	import type { IDataTableHeadersCellMobileEmits, IDataTableHeadersCellMobileSlots } from '../../interfaces/DataTable/data-table-headers-cell-mobile.interface'
+	import type { IDataTableHeadersCellMobileEmits } from '../../interfaces/DataTable/headers.interface'
 
 	import { computed, mergeProps, useSlots } from 'vue'
 
@@ -218,8 +214,6 @@
 	const props = withDefaults(defineProps<IDataTableHeadersCellMobileProps>(), {})
 
 	const emits = defineEmits<IDataTableHeadersCellMobileEmits>()
-
-	defineSlots<IDataTableHeadersCellMobileSlots>()
 
 	const {filterProps} = useProps<IDataTableHeadersCellMobileProps>(props)
 
@@ -264,15 +258,8 @@
 		emits('click:clear', e)
 	}
 	const handleAppendCLick = (e: MouseEvent) => {
-		selectAll(!allSelected.value)
+		selectAll(!allSelected)
 		emits('click:append', e)
-	}
-	// No "select all" business logic attached here — unlike the append
-	// side, this cell never sets a `prependIcon` on the internal select
-	// itself, so a prepend click can only originate from a consumer's
-	// `#select.prepend` slot. Just pass the click through.
-	const handlePrependClick = (e: MouseEvent) => {
-		emits('click:prepend', e)
 	}
 
 	const handleChipClick = (item: IInternalListItem) => {
@@ -298,7 +285,7 @@
 			props.style
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(dataTableHeadersCellStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableHeadersCellStyles)
 
 
 	/*********************************************************

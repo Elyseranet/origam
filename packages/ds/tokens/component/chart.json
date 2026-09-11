@@ -1,0 +1,86 @@
+{
+  "chart": {
+    "_comment": "Tokens for <OrigamChart>. Single component, eight visualisation primitives (line/area/bar/column/pie/donut/scatter/radar). Per-primitive overrides sit under the matching BEM child.",
+
+    "background-color":    { "$type": "color",     "$value": "{color.surface.default}" },
+    "color":               { "$type": "color",     "$value": "{color.text.primary}" },
+    "padding":             { "$type": "dimension", "$value": "{space.3}" },
+    "gap":                 { "$type": "dimension", "$value": "{space.3}" },
+
+    "title": {
+      "color":             { "$type": "color",      "$value": "{color.text.primary}" },
+      "font-size":         { "$type": "dimension",  "$value": "{font.size.lg}" },
+      "font-weight":       { "$type": "fontWeight", "$value": "{font.weight.semibold}" }
+    },
+
+    "subtitle": {
+      "color":             { "$type": "color",     "$value": "{color.text.secondary}" },
+      "font-size":         { "$type": "dimension", "$value": "{font.size.sm}" }
+    },
+
+    "axis": {
+      "color":             { "$type": "color",     "$value": "{color.border.default}" },
+      "label": {
+        "color":           { "$type": "color",     "$value": "{color.text.secondary}" },
+        "font-size":       { "$type": "dimension", "$value": "{font.size.xs}" }
+      }
+    },
+
+    "grid": {
+      "color":             { "$type": "color",     "$value": "{color.border.subtle}" },
+      "stroke-width":      { "$type": "dimension", "$value": "1px" }
+    },
+
+    "tooltip": {
+      "background-color":  { "$type": "color",     "$value": "{color.surface.inverse}" },
+      "color":             { "$type": "color",     "$value": "{color.text.onInverse}" },
+      "padding":           { "$type": "dimension", "$value": "{space.2}" },
+      "border-radius":     { "$type": "dimension", "$value": "{radius.sm}" },
+      "shadow":            { "$type": "boxShadow", "$value": "{shadow.md}" }
+    },
+
+    "legend": {
+      "gap":               { "$type": "dimension", "$value": "{space.3}" }
+    },
+
+    "legend-swatch": {
+      "border-radius":     { "$type": "dimension", "$value": "{radius.xs}" }
+    },
+
+    "point": {
+      "radius":            { "$type": "dimension", "$value": "4px" },
+      "radius-hover":      { "$type": "dimension", "$value": "6px" }
+    },
+
+    "bar": {
+      "gap":               { "$type": "dimension", "$value": "{space.1}" },
+      "border-radius":     { "$type": "dimension", "$value": "{radius.xs}" }
+    },
+
+    "path": {
+      "stroke-width":      { "$type": "dimension", "$value": "2px" }
+    },
+
+    "pie": {
+      "stroke-color":      { "$type": "color",     "$value": "{color.surface.default}" },
+      "stroke-width":      { "$type": "dimension", "$value": "2px" }
+    },
+
+    "radar": {
+      "fill-opacity":      { "$type": "number",    "$value": "0.18" }
+    },
+
+    "polygon": {
+      "stroke-width":      { "$type": "dimension", "$value": "1.5px" }
+    },
+
+    "empty": {
+      "color":             { "$type": "color",     "$value": "{color.text.secondary}" }
+    },
+
+    "animation": {
+      "duration":          { "$type": "duration",  "$value": "600ms" },
+      "easing":            { "$type": "cubicBezier", "$value": "cubic-bezier(0.4, 0, 0.2, 1)" }
+    }
+  }
+}

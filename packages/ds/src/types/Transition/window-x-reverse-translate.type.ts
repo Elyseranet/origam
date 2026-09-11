@@ -1,3 +1,3 @@
-import OrigamWindowXReverseTranslate from '../../components/Transition/OrigamWindowXReverseTranslate.vue'
+import { OrigamWindowXReverseTranslate } from "../../components"
 
 export type TOrigamWindowXReverseTranslate = InstanceType<typeof OrigamWindowXReverseTranslate>

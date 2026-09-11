@@ -1,20 +1,14 @@
 import { computed, type ComputedRef } from 'vue'
 
-import {
-    CALENDAR_DAYS_PER_WEEK,
-    CALENDAR_DEFAULT_EVENT_DURATION_MIN,
-    CALENDAR_MIN_EVENT_HEIGHT_MIN,
-    CALENDAR_MINUTES_PER_HOUR,
-    CALENDAR_MONTH_GRID_WEEKS,
-    CALENDAR_MS_PER_MINUTE
-} from '../../consts/Calendar/calendar.const'
+import type {
+    IEvent,
+    IUseCalendarOptions
+} from '../../interfaces'
 
-import { CALENDAR_NAVIGATE, CALENDAR_VIEW } from '../../enums'
-
-import type { ICalendarAgendaEntry, ICalendarTimeSlot, IUseCalendarOptions } from '../../interfaces/Calendar/calendar.interface'
-import type { IEvent } from '../../interfaces/Calendar/event.interface'
-
-import type { TCalendarNavigate, TCalendarView } from '../../types/Calendar/calendar.type'
+import type {
+    TCalendarNavigate,
+    TCalendarView
+} from '../../types'
 
 import {
     addDays,
@@ -34,11 +28,34 @@ import {
     toDate
 } from '../../utils/Calendar/date.util'
 
-import { endOfDay } from '../../utils/Commons/date.util'
-
 import { expandRecurrence } from '../../utils/Calendar/rrule.util'
 
-export type { ICalendarAgendaEntry, ICalendarTimeSlot } from '../../interfaces/Calendar/calendar.interface'
+/**
+ * Time-slot descriptor returned by `buildDayGrid` / `buildWeekGrid`.
+ *
+ * The grid is **not** event-aware — events are positioned absolutely
+ * on top of the timeline using `diffMinutes(dayStart, event.start)`.
+ * Decoupling the grid from the events lets us re-use the grid output
+ * for the drag-select overlay without re-computing.
+ */
+export interface ICalendarTimeSlot {
+    /** Top-of-slot Date (e.g. 09:30). */
+    date: Date
+    /** Slot duration in minutes (mirror of `options.slotDuration`). */
+    durationMin: number
+    /** True when the slot's hour mark falls on the hour. */
+    isHourMark: boolean
+}
+
+/**
+ * Agenda entry — one per day that has at least one event in the
+ * visible window. Agenda view skips empty days; the `#empty` slot
+ * fires when *no* event is in range.
+ */
+export interface ICalendarAgendaEntry {
+    date: Date
+    events: Array<IEvent>
+}
 
 /**
  * Internal navigation step lookup. Reads cleaner than a `switch`
@@ -48,10 +65,10 @@ const NAVIGATION_STEP: Record<
     TCalendarView,
     (date: Date, direction: 1 | -1) => Date
 > = {
-    [CALENDAR_VIEW.MONTH]: (date, direction) => addMonths(date, direction),
-    [CALENDAR_VIEW.WEEK]: (date, direction) => addWeeks(date, direction),
-    [CALENDAR_VIEW.DAY]: (date, direction) => addDays(date, direction),
-    [CALENDAR_VIEW.AGENDA]: (date, direction) => addMonths(date, direction)
+    month: (date, direction) => addMonths(date, direction),
+    week: (date, direction) => addWeeks(date, direction),
+    day: (date, direction) => addDays(date, direction),
+    agenda: (date, direction) => addMonths(date, direction)
 }
 
 /**
@@ -82,23 +99,27 @@ export function useCalendar (
         const date = options.currentDate()
         const firstDayOfWeek = options.firstDayOfWeek()
         switch (view) {
-            case CALENDAR_VIEW.MONTH:
-            case CALENDAR_VIEW.AGENDA: {
+            case 'month':
+            case 'agenda': {
                 const monthStart = startOfMonth(date)
                 const gridStart = startOfWeekFixed(monthStart, firstDayOfWeek)
                 // The month grid always renders 6 rows × 7 cols so the
                 // calendar height stays stable across short months.
-                const gridEnd = addDays(gridStart, CALENDAR_MONTH_GRID_WEEKS * CALENDAR_DAYS_PER_WEEK - 1)
+                const gridEnd = addDays(gridStart, 6 * 7 - 1)
                 return { start: gridStart, end: gridEnd }
             }
-            case CALENDAR_VIEW.WEEK:
+            case 'week':
                 return {
                     start: startOfWeekFixed(date, firstDayOfWeek),
                     end: endOfWeekFixed(date, firstDayOfWeek)
                 }
-            case CALENDAR_VIEW.DAY:
-            default:
-                return { start: startOfDay(date), end: endOfDay(date) }
+            case 'day':
+            default: {
+                const start = startOfDay(date)
+                const end = new Date(start)
+                end.setHours(23, 59, 59, 999)
+                return { start, end }
+            }
         }
     })
 
@@ -134,10 +155,10 @@ export function useCalendar (
         const view = options.view()
         const current = options.currentDate()
         let next: Date
-        if (direction === CALENDAR_NAVIGATE.TODAY) {
+        if (direction === 'today') {
             next = new Date()
         } else {
-            const step = direction === CALENDAR_NAVIGATE.NEXT ? 1 : -1
+            const step = direction === 'next' ? 1 : -1
             next = NAVIGATION_STEP[view](current, step)
         }
         // Clamp to min/max.
@@ -172,7 +193,7 @@ export function useCalendar (
         const slotDuration = options.slotDuration()
         const slots: Array<ICalendarTimeSlot> = []
         const base = startOfDay(date)
-        const totalMinutes = (endHour - startHour) * CALENDAR_MINUTES_PER_HOUR
+        const totalMinutes = (endHour - startHour) * 60
         for (let offsetMin = 0; offsetMin < totalMinutes; offsetMin += slotDuration) {
             const slotDate = new Date(base)
             slotDate.setHours(startHour, 0, 0, 0)
@@ -194,7 +215,7 @@ export function useCalendar (
         const firstDayOfWeek = options.firstDayOfWeek()
         const start = startOfWeekFixed(date, firstDayOfWeek)
         const columns: Array<Array<ICalendarTimeSlot>> = []
-        for (let i = 0; i < CALENDAR_DAYS_PER_WEEK; i++) {
+        for (let i = 0; i < 7; i++) {
             columns.push(buildDayGrid(addDays(start, i)))
         }
         return columns
@@ -249,12 +270,10 @@ export function useCalendar (
     function positionEvent (event: IEvent, dayStart: Date, pxPerMin: number): { top: number, height: number } | null {
         const start = toDate(event.start)
         if (!start) return null
-        const end = event.end
-            ? toDate(event.end)
-            : new Date(start.getTime() + CALENDAR_DEFAULT_EVENT_DURATION_MIN * CALENDAR_MS_PER_MINUTE)
+        const end = event.end ? toDate(event.end) : new Date(start.getTime() + 30 * 60000)
         if (!end) return null
         const top = Math.max(0, diffMinutes(dayStart, start) * pxPerMin)
-        const height = Math.max(pxPerMin * CALENDAR_MIN_EVENT_HEIGHT_MIN, diffMinutes(start, end) * pxPerMin)
+        const height = Math.max(pxPerMin * 15, diffMinutes(start, end) * pxPerMin)
         return { top, height }
     }
 

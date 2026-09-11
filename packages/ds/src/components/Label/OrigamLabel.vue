@@ -1,11 +1,11 @@
 <template>
 	<component
-			:is="tag"
+			:is="props.tag"
 			:id="id"
 			v-contrast
 			:class="labelClasses"
 			:style="labelStyles"
-			:name="resolvedName"
+			:name="name"
 			@click="handleClick"
 	>
 		<slot name="default">
@@ -19,20 +19,21 @@
 		setup
 >
 	import { computed, StyleValue, toRef } from 'vue'
-	import { useBorder } from '../../composables/Commons/border.composable'
-	import { useBothColor } from '../../composables/Commons/bothColor.composable'
-	import { useMargin } from '../../composables/Commons/margin.composable'
-	import { usePadding } from '../../composables/Commons/padding.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useRounded } from '../../composables/Commons/rounded.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-	import { useTypography } from '../../composables/Commons/typography.composable'
+	import {
+	useBorder,
+	useBothColor,
+	useDefaults,
+	useMargin,
+	usePadding,
+	useProps,
+	useRounded,
+	useStyle,
+	useTypography
+} from '../../composables'
 
-	import { NAME_ATTR_TAGS } from '../../consts/Commons/commons.const'
+	import { vContrast } from '../../directives'
 
-	import vContrast from '../../directives/Contrast/contrast.directive'
-
-	import type { ILabelProps, ILabelSlots } from '../../interfaces/Label/label.interface'
+	import type { ILabelProps, ILabelSlots} from '../../interfaces'
 
 	import type { ILabelEmits } from '../../interfaces/Label/label.interface'
 
@@ -40,9 +41,11 @@
 	 * Global
 	 ********************************************************/
 
-	const props = withDefaults(defineProps<ILabelProps>(), {
+	const _props = withDefaults(defineProps<ILabelProps>(), {
 		tag: 'label'
 	})
+	const props = useDefaults(_props)
+
 	const emits = defineEmits<ILabelEmits>()
 
 	defineSlots<ILabelSlots>()
@@ -54,23 +57,6 @@
 	const handleClick = (e: MouseEvent) => {
 		emits('click', e)
 	}
-
-	/*********************************************************
-	 * name attribute
-	 *
-	 * @description
-	 * `name` is only a valid content attribute on a handful of elements
-	 * (see NAME_ATTR_TAGS). The default tag here is `label`, which is NOT
-	 * one of them, so binding it unconditionally rendered
-	 * `<label name="…">` — ignored by the browser and a W3C validation
-	 * error on every page using the component (issue #458).
-	 * @description
-	 * Resolved lazily in a computed rather than read in the setup body, so
-	 * a `tag` supplied by `theme.components` is still seen (ADR-005).
-	 ********************************************************/
-	const resolvedName = computed(() => (
-		NAME_ATTR_TAGS.has(String(props.tag)) ? props.name : undefined
-	))
 
 	/*********************************************************
 	 * Class & Style
@@ -131,17 +117,7 @@
 	 * Expose
 	 ********************************************************/
 	const {filterProps} = useProps<ILabelProps>(props)
-	/*********************************************************
-	 * useStyle
-	 *
-	 * @description
-	 * #381 — the `id` returned by useStyle is a GENERATED identifier,
-	 * only meant for the scoped stylesheet selector. Without
-	 * `() => props.id` here, it shadowed the `id` PROP of the same
-	 * name: the template's `:id="id"` on the root rendered the
-	 * generated id, never the consumer's.
-	 ********************************************************/
-	const {id, css, load, isLoaded, unload} = useStyle(labelStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(labelStyles)
 
 
 	defineExpose({

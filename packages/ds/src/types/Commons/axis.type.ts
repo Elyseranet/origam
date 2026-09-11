@@ -1,3 +1,3 @@
-import { AXIS } from '../../enums/Commons/drag.enum'
+import { AXIS } from '../../enums'
 
 export type TAxis = `${AXIS}`

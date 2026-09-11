@@ -137,7 +137,7 @@ it.skip('isScrollingUp flips to true when scroll position decreases — requires
 
 // ─── useScrolling — isScrolling / onListScroll ───────────────────────────────
 
-import { useScrolling } from '@origam/composables/Commons/scrolling.composable'
+import { useScrolling } from '@origam/composables/Commons/scroll.composable'
 
 describe('useScrolling — onListScroll', () => {
     beforeEach(() => vi.useFakeTimers())

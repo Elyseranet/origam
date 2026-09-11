@@ -1,7 +1,6 @@
 <template>
 	<component
 			:is="tag"
-			:id="id"
 			v-contrast
 			:class="breadcrumbDividerClasses"
 			:style="breadcrumbDividerStyles"
@@ -21,22 +20,16 @@
 		lang="ts"
 		setup
 >
-	import OrigamIcon from '../Icon/OrigamIcon.vue'
+	import { OrigamIcon } from '../../components'
 
-	import { useBothColor } from '../../composables/Commons/bothColor.composable'
-	import { useDensity } from '../../composables/Commons/density.composable'
-	import { useMargin } from '../../composables/Commons/margin.composable'
-	import { usePadding } from '../../composables/Commons/padding.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useSize } from '../../composables/Commons/size.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useBothColor, useDensity, useMargin, usePadding, useProps, useSize, useStyle } from '../../composables'
 
-	import vContrast from '../../directives/Contrast/contrast.directive'
+	import { vContrast } from '../../directives'
 
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { MDI_ICONS } from '../../enums'
 
-	import type { IBreadcrumbDividerEmits, IBreadcrumbDividerProps, IBreadcrumbDividerSlots } from '../../interfaces/Breadcrumb/breadcrumb-divider.interface'
-	import type { TValueOf } from '../../types/Commons/commons.type'
+	import type { IBreadcrumbDividerProps } from '../../interfaces'
+	import type { TValueOf } from "../../types"
 
 	import { computed, StyleValue, toRef } from 'vue'
 
@@ -49,10 +42,6 @@
 	const props = withDefaults(defineProps<IBreadcrumbDividerProps>(), {tag: 'span', divider: '/'})
 
 	const {filterProps} = useProps<IBreadcrumbDividerProps>(props)
-
-	defineEmits<IBreadcrumbDividerEmits>()
-
-	defineSlots<IBreadcrumbDividerSlots>()
 
 	/*********************************************************
 	 * Icon detection
@@ -110,7 +99,7 @@
 		]
 	})
 
-	const {id, css, load, isLoaded, unload} = useStyle(breadcrumbDividerStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(breadcrumbDividerStyles)
 
 	/*********************************************************
 	 * Expose
@@ -138,7 +127,14 @@
 		--origam-breadcrumb-divider---border-bottom-width: 0px;
 		--origam-breadcrumb-divider---border-right-width: 0px;
 		--origam-breadcrumb-divider---border-width: var(--origam-breadcrumb-divider---border-top-width) var(--origam-breadcrumb-divider---border-left-width) var(--origam-breadcrumb-divider---border-bottom-width) var(--origam-breadcrumb-divider---border-right-width);
+		--origam-breadcrumb-divider---border-color: currentColor;
+		--origam-breadcrumb-divider---border-style: solid;
+		--origam-breadcrumb-divider---border-radius: 0px;
 		--origam-breadcrumb-divider---density: 0px;
+		--origam-breadcrumb-divider---box-shadow: var(--origam-shadow---none, none);
+		--origam-breadcrumb-divider---color: var(--origam-breadcrumb-divider---color-token, inherit);
+		--origam-breadcrumb-divider---opacity: 1;
+		--origam-breadcrumb-divider---background: transparent;
 		--origam-breadcrumb-divider---margin-inline-start: 0px;
 		--origam-breadcrumb-divider---margin-inline-end: 0px;
 		--origam-breadcrumb-divider---margin-block-start: 0px;
@@ -147,9 +143,10 @@
 		--origam-breadcrumb-divider---padding-block-end: 0px;
 		--origam-breadcrumb-divider---padding-inline-start: var(--origam-breadcrumb-divider---padding-inline, 8px);
 		--origam-breadcrumb-divider---padding-inline-end: var(--origam-breadcrumb-divider---padding-inline, 8px);
-		--origam-breadcrumb-divider---transition:
-			transform var(--origam-breadcrumb-divider---transition-duration-transform) var(--origam-breadcrumb-divider---transition-timing-function),
-			color var(--origam-breadcrumb-divider---transition-duration-color) var(--origam-breadcrumb-divider---transition-timing-function);
+		--origam-breadcrumb-divider---transition-duration: 0.2s, 0.1s;
+		--origam-breadcrumb-divider---transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+		--origam-breadcrumb-divider---transition-property: transform, color;
+		--origam-breadcrumb-divider---transition: var(--origam-breadcrumb-divider---transition-property) var(--origam-breadcrumb-divider---transition-duration) var(--origam-breadcrumb-divider---transition-timing-function);
 
 		display: inline-block;
 		vertical-align: middle;

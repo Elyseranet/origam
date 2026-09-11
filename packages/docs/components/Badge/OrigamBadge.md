@@ -125,31 +125,6 @@ Pass `icon` to render an icon glyph instead of `content`. The slot
 </template>
 ```
 
-## Prepend / append
-
-`prependIcon` / `appendIcon` / `prependAvatar` / `appendAvatar` add a
-leading or trailing glyph on either side of the badge content — the
-standard `IAdjacentProps` surface shared with `OrigamBtn` / `OrigamAlert`
-/ `OrigamChip`. Both sides can be set at once. The `prepend` / `append`
-slots override the icon/avatar with fully custom content.
-
-```vue
-<template>
-    <OrigamBadge
-        :model-value="true"
-        :content="3"
-        :prepend-icon="MDI_ICONS.CHEVRON_LEFT"
-        :append-icon="MDI_ICONS.CHEVRON_RIGHT"
-    >
-        <OrigamAvatar text="AP" />
-    </OrigamBadge>
-</template>
-```
-
-Clicking either side emits `click:prepend` / `click:append` — useful to
-wire a dismiss or drill-down action without swallowing clicks on the
-host element itself.
-
 ## Rounded / border / elevation
 
 The same chrome mixins as the rest of origam apply to the badge chip
@@ -169,16 +144,12 @@ itself.
 |---|---|---|
 | `default` | — | The host element the badge attaches to. |
 | `badge` | — | Override the badge chip content (icon / text / custom). |
-| `prepend` | — | Override the leading icon/avatar (see `prependIcon` / `prependAvatar`). |
-| `append` | — | Override the trailing icon/avatar (see `appendIcon` / `appendAvatar`). |
 
 ## Events
 
 | Event | Payload | Description |
 |---|---|---|
 | `update:hover` | `boolean` | Hover toggled on mouse enter / leave. |
-| `click:prepend` | `MouseEvent` | The leading (prepend) icon/avatar/slot was clicked. |
-| `click:append` | `MouseEvent` | The trailing (append) icon/avatar/slot was clicked. |
 
 ## Props (interface)
 
@@ -186,7 +157,7 @@ itself.
 interface IBadgeProps extends ICommonsComponentProps, ITagProps,
     IBorderProps, IColorProps, ILocationProps, IRoundedProps,
     ITransitionComponentProps, IStatusProps, IHoverProps,
-    IElevationProps, ITypographyProps, IAdjacentProps {
+    IElevationProps, ITypographyProps {
     content?: number | string
     dot?: boolean
     floating?: boolean
@@ -198,15 +169,6 @@ interface IBadgeProps extends ICommonsComponentProps, ITagProps,
     offsetY?: number | string
 }
 ```
-
-### Adjacent props (`IAdjacentProps`)
-
-| Prop | Type | Description |
-|---|---|---|
-| `prependIcon` | `TIcon` | Leading icon, rendered before the content. |
-| `appendIcon` | `TIcon` | Trailing icon, rendered after the content. |
-| `prependAvatar` | `string` | Leading avatar image URL. |
-| `appendAvatar` | `string` | Trailing avatar image URL. |
 
 ### Typography props
 
@@ -243,24 +205,18 @@ Bound on the `__badge` pill (the visible surface). Both props have a real visual
 | `--origam-badge--{intent}---background-color` / `--origam-badge--{intent}---color` | Per-status palette. |
 | `--origam-badge__wrapper---*` | Host wrapper layout (display, padding, margin). |
 
-The full list lives in `packages/ds/src/assets/css/tokens/light.css` and
-`dark.css` (SCSS twins under `packages/ds/src/assets/scss/tokens/`) — grep
-for `--origam-badge`.
+The full list lives in `tokens/component/badge.json`.
 
 ## Accessibility
 
 - The chip carries `role="status"`, `aria-live="polite"`, and
   `aria-atomic="true"`. Screen readers announce updates as they
   happen (e.g. counter increments) without re-announcing the host.
-- `aria-label` announces the badge's `content` directly (e.g. `"3"`,
-  `"NEW"`) when it has one, re-announcing it whenever it changes
-  (paired with `role="status"` / `aria-live="polite"`). In `dot` mode
-  and icon-only mode, where there is no textual content to read, it
-  falls back to the translated `label` i18n key (defaults to
-  `origam.badge` → `"Badge"`).
-- Override `label` to pass a tailored localised string for the
-  fallback case, or when the numeric content alone is not informative
-  enough ("3 unread messages" rather than "3").
+- The visual content (`content`, `icon`) is mirrored into
+  `aria-label` via the i18n `label` key (defaults to `origam.badge`).
+- Override `label` to pass a tailored localised string when the
+  numeric content alone is not informative ("3 unread messages"
+  rather than "3").
 
 ## Theming notes
 

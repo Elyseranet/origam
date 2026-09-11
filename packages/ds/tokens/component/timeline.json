@@ -1,0 +1,21 @@
+{
+  "timeline": {
+    "background-color":    { "$type": "color",      "$value": "{color.surface.default}" },
+    "color":               { "$type": "color",      "$value": "{color.text.primary}" },
+    "gap":                 { "$type": "dimension",  "$value": "{space.4}" },
+    "padding-block":       { "$type": "dimension",  "$value": "{space.2}" },
+    "padding-inline":      { "$type": "dimension",  "$value": "{space.4}" },
+    "track-width":         { "$type": "dimension",  "$value": "{space.6}" },
+    "dot-size":            { "$type": "dimension",  "$value": "{space.3}" },
+    "dot-bg":              { "$type": "color",      "$value": "{color.action.primary.bg}" },
+    "dot-color":           { "$type": "color",      "$value": "{color.action.primary.fg}" },
+    "dot-border-width":    { "$type": "dimension",  "$value": "{border.width.thin}" },
+    "dot-border-color":    { "$type": "color",      "$value": "{color.surface.default}" },
+    "connector-color":     { "$type": "color",      "$value": "{color.border.subtle}" },
+    "connector-thickness": { "$type": "dimension",  "$value": "{border.width.thin}" },
+    "title-font-size":     { "$type": "dimension",  "$value": "{font.size.md}" },
+    "title-font-weight":   { "$type": "fontWeight", "$value": "{font.weight.semibold}" },
+    "subtitle-font-size":  { "$type": "dimension",  "$value": "{font.size.sm}" },
+    "subtitle-color":      { "$type": "color",      "$value": "{color.text.secondary}" }
+  }
+}

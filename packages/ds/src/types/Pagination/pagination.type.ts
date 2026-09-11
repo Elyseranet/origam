@@ -1,3 +1,3 @@
-import OrigamPagination from '../../components/Pagination/OrigamPagination.vue'
+import { OrigamPagination } from '../../components'
 
 export type TOrigamPagination = InstanceType<typeof OrigamPagination>

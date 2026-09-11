@@ -1,5 +1,5 @@
 <template>
-	<div :id="id" :class="itemClasses" :style="itemStyles" role="listitem">
+	<div :class="itemClasses" :style="itemStyles" role="listitem">
 		<div class="origam-timeline-item__track" aria-hidden="true">
 			<div class="origam-timeline-item__dot" :style="dotStyles">
 				<slot name="dot">
@@ -44,22 +44,22 @@
 	import { computed, inject } from 'vue'
 	import type { StyleValue } from 'vue'
 
-	import OrigamIcon from '../Icon/OrigamIcon.vue'
-	import { useDensity } from '../../composables/Commons/density.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useSize } from '../../composables/Commons/size.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-	import type { ITimelineItemEmits, ITimelineItemProps, ITimelineItemSlots } from '../../interfaces/Timeline/timeline-item.interface'
+	import { OrigamIcon } from '../../components'
+	import {
+	useDensity,
+	useProps,
+	useSize,
+	useStyle
+} from '../../composables'
+	import type { ITimelineItemProps } from '../../interfaces'
 
-	import { TIMELINE_CONTEXT_KEY } from '../../consts/Timeline/timeline.const'
-	import { DIRECTION } from '../../enums/Commons/direction.enum'
-	import { TIMELINE_SIDE } from '../../enums/Timeline/timeline.enum'
+	import { TIMELINE_CONTEXT_KEY } from '../../consts'
 
 	/*********************************************************
 	 * Global
 	 ********************************************************/
 
-	const props = withDefaults(defineProps<ITimelineItemProps>(), {
+	const props = withDefaults(defineProps<ITimelineItemProps & { description?: string }>(), {
 		side: 'start',
 		orientation: 'vertical',
 		isLast: false,
@@ -72,10 +72,6 @@
 	const timelineCtx = inject(TIMELINE_CONTEXT_KEY, null)
 
 	const { filterProps } = useProps<ITimelineItemProps>(props)
-
-	defineEmits<ITimelineItemEmits>()
-
-	defineSlots<ITimelineItemSlots>()
 	/*********************************************************
 	 * Composables
 	 ********************************************************/
@@ -90,7 +86,7 @@
 
 	const effectiveOrientation = computed(() => {
 		if (timelineCtx?.orientation) return timelineCtx.orientation
-		return props.orientation ?? DIRECTION.VERTICAL
+		return props.orientation ?? 'vertical'
 	})
 
 	const effectiveTruncateLine = computed(() => {
@@ -121,7 +117,7 @@
 		// "thickness" becomes the height, and the width fills the
 		// available space. In vertical layout (legacy default) it's a
 		// thin vertical bar.
-		const isH = effectiveOrientation.value === DIRECTION.HORIZONTAL
+		const isH = effectiveOrientation.value === 'horizontal'
 		return {
 			'background-color': 'var(--origam-timeline---connector-color, var(--origam-color__border---subtle))',
 			[isH ? 'height' : 'width']: 'var(--origam-timeline---connector-thickness, var(--origam-border__width---thin, 1px))'
@@ -150,8 +146,8 @@
 
 	const contentSide = computed(() => {
 		const side = effectiveSide.value
-		if (side === TIMELINE_SIDE.ALTERNATING) {
-			return props.index % 2 === 0 ? TIMELINE_SIDE.START : TIMELINE_SIDE.END
+		if (side === 'alternating') {
+			return props.index % 2 === 0 ? 'start' : 'end'
 		}
 		return side
 	})
@@ -164,10 +160,10 @@
 		'origam-timeline-item',
 		`origam-timeline-item--orientation-${effectiveOrientation.value}`,
 		{
-			'origam-timeline-item--side-start': effectiveSide.value === TIMELINE_SIDE.START || contentSide.value === TIMELINE_SIDE.START,
-			'origam-timeline-item--side-end': effectiveSide.value === TIMELINE_SIDE.END || contentSide.value === TIMELINE_SIDE.END,
-			'origam-timeline-item--alternating': effectiveSide.value === TIMELINE_SIDE.ALTERNATING,
-			'origam-timeline-item--content-end': contentSide.value === TIMELINE_SIDE.END,
+			'origam-timeline-item--side-start': effectiveSide.value === 'start' || contentSide.value === 'start',
+			'origam-timeline-item--side-end': effectiveSide.value === 'end' || contentSide.value === 'end',
+			'origam-timeline-item--alternating': effectiveSide.value === 'alternating',
+			'origam-timeline-item--content-end': contentSide.value === 'end',
 			'origam-timeline-item--last': props.isLast
 		},
 		densityClasses.value,
@@ -178,7 +174,7 @@
 	const itemStyles = computed(() => [
 		props.style
 	] as StyleValue)
-	const {id, css, load, isLoaded, unload} = useStyle(itemStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(itemStyles)
 
 
 	/*********************************************************

@@ -34,22 +34,22 @@
 		setup
 >
 	import { computed, onScopeDispose, provide, StyleValue } from 'vue'
-	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
-	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-	import { useVModel } from '../../composables/Commons/vModel.composable'
+	import { OrigamDefaultsProvider } from '../../components'
+	import {
+	useProps,
+	useStyle,
+	useVModel
+} from '../../composables'
 
-	import { ORIGAM_SELECTION_CONTROL_GROUP_KEY } from '../../consts/SelectionControl/selection-control.const'
+	import { ORIGAM_SELECTION_CONTROL_GROUP_KEY } from '../../consts'
 
-	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { DENSITY } from '../../enums'
 
-	import type { ISelectionControlGroupProps, ISelectionControlGroupSlots } from '../../interfaces/SelectionControl/selection-control-group.interface'
+	import type { ISelectionControlGroupProps, ISelectionControlGroupSlots} from "../../interfaces"
 
 	import type { ISelectionControlGroupEmits } from '../../interfaces/SelectionControl/selection-control-group.interface'
 
-	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
-	import { omitUndefined } from '../../utils/Commons/commons.util'
+	import { getUid } from '../../utils'
 
 	/*********************************************************
 	 * Global
@@ -83,33 +83,21 @@
 	 * updated and the radio looked broken. Forward `type` plus
 	 * the rest of the group-level surface. (Closes task #24.)
 	 ********************************************************/
-	// A prop the CONSUMER never passed must NOT be forwarded — `mergeDeep`
-	// (used by `provideDefaults` to combine this map with an
-	// ancestor/theme `'origam-selection-control'` entry) copies it
-	// unconditionally and silently overwrites the theme default — see #263.
-	//
-	// A plain `omitUndefined` is NOT enough: `disabled`/`readonly`/`error`/
-	// `multiple`/`ripple` are boolean-typed and `color` is `TColor` (which
-	// includes `false`), so Vue resolves them to the concrete value `false`
-	// when unset — there is no `undefined` left to filter. `usePassedProps`
-	// reads `vnode.props` directly, so it tells the truth regardless of
-	// Vue's coercion.
-	const wasPropPassed = usePassedProps(props)
 	const slotDefaults = computed(() => ({
-		'origam-selection-control': omitUndefined({
-			density: wasPropPassed('density') ? props.density : undefined,
-			color: wasPropPassed('color') ? props.color : undefined,
-			type: wasPropPassed('type') ? props.type : undefined,
-			disabled: wasPropPassed('disabled') ? props.disabled : undefined,
-			readonly: wasPropPassed('readonly') ? props.readonly : undefined,
-			error: wasPropPassed('error') ? props.error : undefined,
-			multiple: wasPropPassed('multiple') ? props.multiple : undefined,
-			name: wasPropPassed('name') ? props.name : undefined,
-			ripple: wasPropPassed('ripple') ? props.ripple : undefined,
-			falseIcon: wasPropPassed('falseIcon') ? props.falseIcon : undefined,
-			trueIcon: wasPropPassed('trueIcon') ? props.trueIcon : undefined,
-			valueComparator: wasPropPassed('valueComparator') ? props.valueComparator : undefined
-		})
+		'origam-selection-control': {
+			density: props.density,
+			color: props.color,
+			type: props.type,
+			disabled: props.disabled,
+			readonly: props.readonly,
+			error: props.error,
+			multiple: props.multiple,
+			name: props.name,
+			ripple: props.ripple,
+			falseIcon: props.falseIcon,
+			trueIcon: props.trueIcon,
+			valueComparator: props.valueComparator
+		}
 	}))
 
 	/*********************************************************

@@ -1,6 +1,5 @@
 <template>
 	<dt
-			:id="id"
 			v-contrast
 			:class="dataTitleClasses"
 			:style="dataTitleStyles"
@@ -9,10 +8,7 @@
 		    v-if="hasPrepend"
 		    key="prepend"
 		    class="origam-data-title__prepend"
-		    :role="isPrependClickable ? 'button' : undefined"
-		    :tabindex="isPrependClickable ? 0 : undefined"
 		    @click="handleClickPrepend"
-		    @keydown="handleKeydownPrepend"
     >
       <slot name="prepend">
         <origam-avatar
@@ -46,10 +42,7 @@
 				v-if="hasAppend"
 				key="append"
 				class="origam-data-title__append"
-				:role="isAppendClickable ? 'button' : undefined"
-				:tabindex="isAppendClickable ? 0 : undefined"
 				@click="handleClickAppend"
-				@keydown="handleKeydownAppend"
 		>
       <slot name="append">
        <origam-avatar
@@ -74,29 +67,18 @@
 		setup
 >
 
-	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
-	import OrigamIcon from '../Icon/OrigamIcon.vue'
-	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
-	import { useBothColor } from '../../composables/Commons/bothColor.composable'
-	import { useDensity } from '../../composables/Commons/density.composable'
-	import { useMargin } from '../../composables/Commons/margin.composable'
-	import { usePadding } from '../../composables/Commons/padding.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-	import vContrast from '../../directives/Contrast/contrast.directive'
+	import { OrigamAvatar, OrigamIcon } from "../../components"
+	import { useAdjacent, useBothColor, useDensity, useMargin, usePadding, useProps , useStyle} from "../../composables"
+	import { vContrast } from "../../directives"
 
-	import type { IDataTitleEmits, IDataTitleProps, IDataTitleSlots } from '../../interfaces/DataList/data-title.interface'
-	import { computed, StyleValue, toRef } from "vue"
+	import type { IDataTitleProps } from "../../interfaces"
+	import { computed, shallowRef, StyleValue, toRef } from "vue"
 
 	/*********************************************************
 	 * Global
 	 ********************************************************/
 
 	const props = withDefaults(defineProps<IDataTitleProps>(), {})
-
-	defineEmits<IDataTitleEmits>()
-
-	defineSlots<IDataTitleSlots>()
 
 	const {filterProps} = useProps<IDataTitleProps>(props)
 
@@ -115,25 +97,36 @@
 	const {
 		onClickPrepend: handleClickPrepend,
 		onClickAppend: handleClickAppend,
-		onKeydownPrepend: handleKeydownPrepend,
-		onKeydownAppend: handleKeydownAppend,
-		isPrependClickable,
-		isAppendClickable,
 		hasAppend,
 		hasPrepend
 	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
 
-	// `hoverColor` / `hoverBgColor` (flat props) were removed — this
-	// component never wired an `isHover` state to them (no `useStateFlag`,
-	// no `@mouseenter`), so the override was dead code: `color`/`bgColor`
-	// always resolved to `props.color`/`props.bgColor`. Reading the base
-	// props directly is behaviourally identical, not a regression.
+	const isHover = shallowRef(false)
+
+	// `||` (not `??`) to fall back through the Vue-coerced `false` value
+	// that an unset TColor prop ends up with — `??` only catches null /
+	// undefined and would leak `false` downstream, where `useColor`
+	// silently no-ops on falsy backgrounds.
+	const hoverColor = computed(() => {
+		return props.hoverColor || props.color
+	})
+	const color = computed(() => {
+		return isHover.value ? hoverColor.value : props.color
+	})
+	const hoverBgColor = computed(() => {
+		return props.hoverBgColor || props.color
+	})
+	const bgColor = computed(() => {
+		return isHover.value ? hoverBgColor.value : props.bgColor
+	})
+
+	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 
 	/*********************************************************
 	 * Color
 	 ********************************************************/
 
-	const {colorClasses, colorStyles} = useBothColor(toRef(props, 'bgColor'), toRef(props, 'color'))
+	const {colorClasses, colorStyles} = useBothColor(bgColor, color)
 
 	/*********************************************************
 	 * Class & Style
@@ -156,7 +149,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(dataTitleStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(dataTitleStyles)
 
 
 	/*********************************************************

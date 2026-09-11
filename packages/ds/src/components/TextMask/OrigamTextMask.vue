@@ -1,7 +1,6 @@
 <template>
 	<component
 			:is="tag"
-			:id="id"
 			:class="textMaskClasses"
 			:style="textMaskStyles"
 			data-cy="origam-text-mask"
@@ -22,9 +21,9 @@
 	} from 'vue'
 
 	import { resolveGradient } from '../../utils/Commons/gradient.util'
-	import { useTypography } from '../../composables/Commons/typography.composable'
+	import { useTypography } from '../../composables'
 
-	import type { ITextMaskEmits, ITextMaskProps, ITextMaskSlots } from '../../interfaces/TextMask/text-mask.interface'
+	import type { ITextMaskProps } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -47,10 +46,6 @@
 		animationType: 'pan',
 		align: 'left'
 	})
-
-	defineEmits<ITextMaskEmits>()
-
-	defineSlots<ITextMaskSlots>()
 
 	const slots = useSlots()
 

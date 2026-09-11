@@ -1,3 +1,3 @@
-import { SORT_DIRECTION } from '../../enums/Commons/sort.enum'
+import { SORT_DIRECTION } from '../../enums'
 
 export type TSortDirection = `${SORT_DIRECTION}`

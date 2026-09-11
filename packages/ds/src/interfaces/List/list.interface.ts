@@ -1,28 +1,22 @@
-import type { IBorderProps } from '../Commons/border.interface'
 import type {
+    IBorderProps,
     IBgColorProps,
-    IColorProps
-} from '../Commons/color.interface'
-import type {
+    IColorProps,
     ICommonsComponentProps,
+    IDensityProps,
+    IDimensionProps,
+    IElevationProps,
+    IMarginProps,
+    INestedProps,
+    IPaddingProps,
+    IRoundedProps,
+    ISizeProps,
     ITagProps
-} from '../Commons/commons.interface'
-import type { IDensityProps } from '../Commons/density.interface'
-import type { IDimensionProps } from '../Commons/dimension.interface'
-import type { IElevationProps } from '../Commons/elevation.interface'
-import type {
-    IInternalListItem,
-    IInternalListItemChildren
-} from './list-children.interface'
-import type { IItemProps } from '../Commons/item.interface'
-import type { IListGroupActivatorSlotProps } from './list-group.interface'
-import type { IMarginProps } from '../Commons/margin.interface'
-import type { INestedProps } from '../Commons/nested.interface'
-import type { IPaddingProps } from '../Commons/padding.interface'
-import type { IRoundedProps } from '../Commons/rounded.interface'
-import type { ISizeProps } from '../Commons/size.interface'
+} from '../../interfaces'
 
-import type { TLines } from '../../types/List/list.type'
+import type { TLines, TSelectItemKey } from '../../types'
+
+import { deepEqual } from '../../utils'
 
 /**
  * `size` is a FORWARDING prop on the list: the root paints nothing from it,
@@ -43,6 +37,16 @@ export interface IListProps extends ITagProps, ICommonsComponentProps, IElevatio
     itemType?: string
 }
 
+export interface IItemProps {
+    items?: Array<any>
+    itemTitle?: TSelectItemKey
+    itemValue?: TSelectItemKey
+    itemChildren?: TSelectItemKey
+    itemProps?: TSelectItemKey
+    returnObject?: boolean
+    valueComparator?: typeof deepEqual
+}
+
 /** Emits fired by `<OrigamList>` — selection / open state propagation and
  *  user-driven click events on items. */
 export interface IListEmits {
@@ -50,22 +54,4 @@ export interface IListEmits {
     (e: 'update:opened', value: Array<unknown>): void
     (e: 'click:open', value: { id: unknown, value: boolean, path: Array<unknown> }): void
     (e: 'click:select', value: { id: unknown, value: boolean, path: Array<unknown> }): void
-}
-
-/**
- * Slot signatures for `<OrigamList>`. All slots below `default` are
- * forwarded straight through to the nested `<OrigamListChildren>` —
- * `divider` / `subheader` / `group` / `item` receive the destructured
- * `itemProps` object SPREAD as the scope (`v-bind="itemProps"`, not
- * `v-bind="{itemProps}"`), `childrenItem` mirrors ListChildren's own
- * `children` slot scope.
- */
-export interface IListSlots {
-    default?: () => any
-    childrenItem?: (data: { item: IInternalListItemChildren, index: number }) => any
-    divider?: (props: IInternalListItem['props']) => any
-    subheader?: (props: IInternalListItem['props']) => any
-    group?: (props: IInternalListItem['props']) => any
-    groupActivator?: (data: IListGroupActivatorSlotProps) => any
-    item?: (props: IInternalListItem['props']) => any
 }

@@ -1,20 +1,18 @@
 import type {
     IBgColorProps,
-    IColorProps
-} from '../Commons/color.interface'
-import type { IBorderProps } from '../Commons/border.interface'
-import type {
+    IBorderProps,
+    IColorProps,
     ICommonsComponentProps,
-    ITagProps
-} from '../Commons/commons.interface'
-import type { IDimensionProps } from '../Commons/dimension.interface'
-import type { IElevationProps } from '../Commons/elevation.interface'
-import type { IMarginProps } from '../Commons/margin.interface'
-import type { IPaddingProps } from '../Commons/padding.interface'
-import type { IRoundedProps } from '../Commons/rounded.interface'
-import type { ITypographyProps } from '../Commons/typography.interface'
+    IDimensionProps,
+    IElevationProps,
+    IMarginProps,
+    IPaddingProps,
+    IRoundedProps,
+    ITagProps,
+    ITypographyProps
+} from '../index'
 
-import type { TCodeLang } from '../../types/Code/code.type'
+import type { TCodeLang } from '../../types'
 
 /**
  * Props for `<OrigamCode>` — a shiki-powered code block with line numbers,
@@ -25,7 +23,7 @@ import type { TCodeLang } from '../../types/Code/code.type'
  * conservative default so existing call sites keep their behaviour
  * (plain-text, no line numbers, copy button visible).
  */
-export interface ICodeProps extends ICommonsComponentProps, ITagProps, IBorderProps, IRoundedProps, IElevationProps, IPaddingProps, IMarginProps, IDimensionProps, IColorProps, IBgColorProps, Pick<ITypographyProps, 'fontFamily' | 'fontSize' | 'lineHeight'> {
+export interface ICodeProps extends ICommonsComponentProps, ITagProps, IBorderProps, IRoundedProps, IElevationProps, IPaddingProps, IMarginProps, IDimensionProps, IColorProps, IBgColorProps, ITypographyProps {
     /**
      * The code to highlight. When omitted, the default slot is used as the
      * source — useful for multi-line snippets that are nicer to read in
@@ -92,21 +90,6 @@ export interface ICodeProps extends ICommonsComponentProps, ITagProps, IBorderPr
      * Most useful paired with `compact` for an install-command pill.
      */
     prompt?: string
-}
-
-/** Emits fired by `<OrigamCode>` — copy-to-clipboard confirmation. */
-export interface ICodeEmits {
-    (e: 'copy', code: string): void
-}
-
-/** Slot signatures for `<OrigamCode>`. */
-export interface ICodeSlots {
-    /** Custom header content — receives the copy-button wiring so a
-     *  consumer can rebuild the default filename/lang badge + copy button. */
-    header?: (data: { filename: string | undefined, langName: TCodeLang | undefined, copy: () => Promise<void>, copied: boolean }) => any
-    footer?: () => any
-    /** Source for the highlighted code when the `code` prop is omitted. */
-    default?: () => any
 }
 
 /**

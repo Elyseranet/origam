@@ -124,6 +124,42 @@
 			</div>
 		</Variant>
 
+		<Variant title="Events - legend-click">
+			<div
+					class="story-shell"
+					data-cy="heatmap-emit-legend-click"
+			>
+				<origam-chart-heatmap
+						:series="FIXTURE_ACTIVITY"
+						:x-categories="HOURS"
+						:y-categories="DAYS"
+						:height="400"
+						:show-legend="true"
+						title="Click a legend entry"
+						data-cy="heatmap-emit-legend-click-chart"
+						@legend-click="logEvent('legend-click', $event)"
+				/>
+			</div>
+		</Variant>
+
+		<Variant title="Events - series-toggle">
+			<div
+					class="story-shell"
+					data-cy="heatmap-emit-series-toggle"
+			>
+				<origam-chart-heatmap
+						:series="FIXTURE_ACTIVITY"
+						:x-categories="HOURS"
+						:y-categories="DAYS"
+						:height="400"
+						:show-legend="true"
+						title="Toggle series visibility"
+						data-cy="heatmap-emit-series-toggle-chart"
+						@series-toggle="logEvent('series-toggle', $event)"
+				/>
+			</div>
+		</Variant>
+
 		<Variant title="Slots - tooltip">
 			<div
 					class="story-shell"
@@ -142,6 +178,29 @@
 							<strong>{{ point?.x }} h</strong>
 							<span>{{ point?.y }} commits</span>
 						</div>
+					</template>
+				</origam-chart-heatmap>
+			</div>
+		</Variant>
+
+		<Variant title="Slots - legend-item">
+			<div
+					class="story-shell"
+					data-cy="heatmap-slot-legend-item"
+			>
+				<origam-chart-heatmap
+						:series="FIXTURE_ACTIVITY"
+						:x-categories="HOURS"
+						:y-categories="DAYS"
+						:height="400"
+						:show-legend="true"
+						title="Custom legend item"
+						data-cy="heatmap-slot-legend-item-chart"
+				>
+					<template #legend-item="{ series, index, visible }">
+						<span :style="{ opacity: visible ? 1 : 0.4 }">
+							[{{ index }}] {{ series.name }}
+						</span>
 					</template>
 				</origam-chart-heatmap>
 			</div>
@@ -210,6 +269,8 @@
 				<origam-chart-heatmap
 						v-bind="state"
 						@point-click="logEvent('point-click', $event)"
+						@legend-click="logEvent('legend-click', $event)"
+						@series-toggle="logEvent('series-toggle', $event)"
 				/>
 			</template>
 			<template #controls="{ state }">

@@ -6,13 +6,14 @@
 
 		<Variant
 				title="Design"
-				:init-state="() => useStoryInitState<ITransitionNoOriginProps>({
+				:init-state="() => useStoryInitState<ITransitionProps>({
 					name: 'origam-transition--expand-y',
 					mode: 'in-out',
 					disabled: false,
 					group: false,
 					hideOnLeave: false,
-					leaveAbsolute: false
+					leaveAbsolute: false,
+					origin: ''
 				})"
 		>
 			<template #default="{ state }">
@@ -25,6 +26,7 @@
 							:group="state.group"
 							:hide-on-leave="state.hideOnLeave"
 							:leave-absolute="state.leaveAbsolute"
+							:origin="state.origin"
 					>
 						<div v-if="toggleDesign" class="story-target" data-cy="target-design">Expand Y content</div>
 					</origam-expand-y>
@@ -34,6 +36,7 @@
 				<StoryGroup title="Transition">
 					<HstText   v-model="state.name"   title="Name"/>
 					<HstSelect v-model="state.mode"   title="Mode" :options="TRANSITION_MODE_OPTIONS"/>
+					<HstText   v-model="state.origin" title="Origin"/>
 				</StoryGroup>
 				<StoryGroup title="Behaviour">
 					<HstCheckbox v-model="state.disabled"      title="Disabled"/>
@@ -46,7 +49,7 @@
 
 		<Variant
 				title="Functional"
-				:init-state="() => useStoryInitState<ITransitionNoOriginProps>({
+				:init-state="() => useStoryInitState<ITransitionProps>({
 					disabled: false,
 					group: false,
 					hideOnLeave: false,
@@ -93,13 +96,14 @@
 
 		<Variant
 				title="Default"
-				:init-state="() => useStoryInitState<ITransitionNoOriginProps>({
+				:init-state="() => useStoryInitState<ITransitionProps>({
 					name: 'origam-transition--expand-y',
 					mode: 'in-out',
 					disabled: false,
 					group: false,
 					hideOnLeave: false,
-					leaveAbsolute: false
+					leaveAbsolute: false,
+					origin: ''
 				})"
 		>
 			<template #default="{ state }">
@@ -114,6 +118,7 @@
 				<StoryGroup title="Design">
 					<HstText   v-model="state.name"   title="Name"/>
 					<HstSelect v-model="state.mode"   title="Mode" :options="TRANSITION_MODE_OPTIONS"/>
+					<HstText   v-model="state.origin" title="Origin"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.disabled"      title="Disabled"/>
@@ -134,7 +139,7 @@
 
 	import { OrigamExpandY } from '@origam/components'
 	import { TRANSITION_MODE } from '@origam/enums'
-	import type { ITransitionNoOriginProps } from '@origam/interfaces'
+	import type { ITransitionProps } from '@origam/interfaces'
 
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'

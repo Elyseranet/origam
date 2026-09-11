@@ -124,8 +124,6 @@ Pass `series[0].data` as `Array<IChartSunburstDatum>`.
 
 **Accessibility.** Each arc is a focusable `<path>` with `role="button"` and an `aria-label` in the form `"Root > Branch: value"`. Keyboard users can Tab through arcs and activate with Enter or Space. The SVG carries a `<title>` and `<desc>`.
 
-**Accessibility — the `<desc>` summary is localised AND agrees in number.** The `<desc>` text is not an English literal: it resolves through the DS `t()` mechanism against `origam.chart.sunburst.desc*`, and the grammatical form is chosen by `Intl.PluralRules` for the ACTIVE locale — never by a `count === 1` test in the component. A translator supplies only the forms their language needs (`_one` / `_other` cover `en` and `fr`; a Russian translation adds `_few` with no component change), and a category a locale does not define falls back to `_other` rather than leaking the raw key.
-
 **Animation.** Arcs fade in on mount. Skipped when `animated=false` or `prefers-reduced-motion: reduce`.
 
 ## Examples

@@ -1,3 +1,3 @@
-import OrigamScaleRotate from '../../components/Transition/OrigamScaleRotate.vue'
+import { OrigamScaleRotate } from "../../components"
 
 export type TOrigamScaleRotate = InstanceType<typeof OrigamScaleRotate>

@@ -50,35 +50,6 @@ to populate the header automatically. Use the named header slots for full contro
 </template>
 ```
 
-### Link props
-
-`ICardProps` extends `ILinkProps`, so the four router-link props are real
-and forwarded to `vue-router`'s own `useLink`.
-
-| Prop      | Type               | Effect                                                                                     |
-|-----------|--------------------|--------------------------------------------------------------------------------------------|
-| `href`    | `string`           | Renders the root as `<a href>`. No router involved.                                          |
-| `to`      | `RouteLocationRaw` | Renders as `<a>` with the resolved route href and navigates on click through the router.     |
-| `replace` | `boolean`          | With `to`, navigates with `router.replace()` instead of `router.push()` — no history entry.  |
-| `exact`   | `boolean`          | Narrows the active-state derivation to an exact match, query string included.                 |
-| `link`    | `boolean`          | Forces the clickable affordance (cursor, ripple, `--link` modifier) without a URL.            |
-
-```vue
-<template>
-    <OrigamCard :to="{ name: 'invoice', params: { id } }" replace title="Open invoice"/>
-</template>
-```
-
-> **`replace`, `to` and `exact` need an installed router.** `useLink`
-> resolves `RouterLink` dynamically; when the app has no `vue-router`
-> instance the resolution falls back to a plain string and the composable
-> returns early with only `href`. That is exactly the case inside the
-> Histoire sandbox — the `Replace` / `To` / `Exact` controls in the story's
-> **Link** group are inert there, not because the props are dead but because
-> the sandbox installs no router. With a router present, `replace: true`
-> routes through `router.replace()` (verified in
-> `packages/tests/TU/components/Card/OrigamCard.link.spec.ts`).
-
 ## Loading state
 
 Accepts a boolean or a number (progress percentage) for `loading`.
@@ -89,23 +60,6 @@ Accepts a boolean or a number (progress percentage) for `loading`.
     <OrigamCard :loading="75" title="75 % loaded" />
 </template>
 ```
-
-`loadingText` names what the loading indicator announces to a screen reader.
-It carries a **locale key**, not final text — it is handed to the active
-renderer's `label` prop (`<OrigamProgress>` or `<OrigamSkeleton>`), which
-resolves it through the DS `t()` mechanism. Defaults to the shared
-`'origam.loading'` key. A raw string that matches no key is returned
-unchanged, so `loading-text="Fetching your invoices"` also works if you
-prefer to translate on your side.
-
-```vue
-<template>
-    <OrigamCard loading loading-text="origam.data_iterator.loading_text" />
-</template>
-```
-
-A per-instance `loading="{ type: 'line', label: '…' }"` still wins over
-`loadingText`.
 
 ## Disabled
 
@@ -167,45 +121,6 @@ through to the pre-existing behaviour (no shadow emitted). See `useElevation`
     <OrigamCard rounded="large" title="Rounded card" />
 </template>
 ```
-
-Each corner can be overridden individually. A corner prop beats the `rounded`
-shorthand for that corner only:
-
-```vue
-<template>
-    <OrigamCard rounded="lg" rounded-top-left="0px" title="One flat corner" />
-</template>
-```
-
-| Prop | Effet |
-|:--|:--|
-| `roundedTopLeft` | Coin haut-gauche uniquement |
-| `roundedTopRight` | Coin haut-droit uniquement |
-| `roundedBottomLeft` | Coin bas-gauche uniquement |
-| `roundedBottomRight` | Coin bas-droit uniquement |
-
-Même vocabulaire que `rounded` : `8`, `'8px'`, `'md'`, `'large'`, `'var(…)'`.
-
-## Padding et margin
-
-Les deux raccourcis se déclinent par axe logique et par côté physique :
-
-```vue
-<template>
-    <OrigamCard padding="16px" padding-left="32px" title="Un seul côté ajusté" />
-</template>
-```
-
-| Groupe | Props |
-|:--|:--|
-| Padding — axe | `paddingBlock` `paddingInline` |
-| Padding — côté | `paddingTop` `paddingRight` `paddingBottom` `paddingLeft` |
-| Margin — axe | `marginBlock` `marginInline` |
-| Margin — côté | `marginTop` `marginRight` `marginBottom` `marginLeft` |
-
-Le côté physique gagne sur l'axe, qui gagne sur le raccourci. Les valeurs
-acceptées et la table de précédence complète sont documentées dans
-[Espacement et coins](/guide/spacing-and-corners).
 
 ## Border
 

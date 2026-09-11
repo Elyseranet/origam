@@ -1,29 +1,20 @@
 import type {
     IBgColorProps,
-    IColorProps
-} from '../Commons/color.interface'
-import type { IBorderProps } from '../Commons/border.interface'
-import type {
+    IBorderProps,
+    IColorProps,
     ICommonsComponentProps,
-    ITagProps
-} from '../Commons/commons.interface'
-import type { IDensityProps } from '../Commons/density.interface'
-import type { IDimensionProps } from '../Commons/dimension.interface'
-import type { IElevationProps } from '../Commons/elevation.interface'
-import type { IMarginProps } from '../Commons/margin.interface'
-import type { IPaddingProps } from '../Commons/padding.interface'
-import type { IRoundedProps } from '../Commons/rounded.interface'
-import type { ITypographyProps } from '../Commons/typography.interface'
+    IDensityProps,
+    IDimensionProps,
+    IElevationProps,
+    IMarginProps,
+    IPaddingProps,
+    IRoundedProps,
+    ITagProps,
+    ITypographyProps
+} from '../../interfaces'
 
-import type {
-    TBracketConnectorPath,
-    TBracketVariant
-} from '../../types/Bracket/bracket.type'
+import type { TBracketVariant } from '../../types'
 
-import type { IBracketCompetitor } from './bracket-competitor.interface'
-import type { IBracketMatchCompetitorSlot } from './bracket-match-component.interface'
-import type { IBracketMatch } from './bracket-match.interface'
-import type { IBracketRoundMatchSlot, IBracketRoundTitleSlot } from './bracket-round-component.interface'
 import type { IBracketRound } from './bracket-round.interface'
 
 /**
@@ -36,7 +27,7 @@ import type { IBracketRound } from './bracket-round.interface'
  * data and re-render. No internal state is held about scores or
  * winners — the data passed in is the source of truth.
  */
-export interface IBracketProps extends ICommonsComponentProps, ITagProps, IDensityProps, IRoundedProps, IColorProps, IBgColorProps, IBorderProps, IDimensionProps, IElevationProps, IMarginProps, IPaddingProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'letterSpacing'> {
+export interface IBracketProps extends ICommonsComponentProps, ITagProps, IDensityProps, IRoundedProps, IColorProps, IBgColorProps, IBorderProps, IDimensionProps, IElevationProps, IMarginProps, IPaddingProps, ITypographyProps {
     /**
      * Required. Pre-ordered list of rounds. For single-elimination,
      * the rounds are laid out from earliest (e.g. round-of-16) to
@@ -101,33 +92,4 @@ export interface IBracketProps extends ICommonsComponentProps, ITagProps, IDensi
      * @default 'Losers bracket'
      */
     losersLabel?: string
-}
-
-/** Emits fired by `<OrigamBracket>` — bubbled up from every match /
- *  competitor across every round (single-elim tree, both double-elim
- *  trees, or the round-robin matrix). */
-export interface IBracketEmits {
-    (e: 'match-click', match: IBracketMatch, round: IBracketRound, event: MouseEvent): void
-    (e: 'winner-click', competitor: IBracketCompetitor, match: IBracketMatch, event: MouseEvent | KeyboardEvent): void
-    (e: 'competitor-click', competitor: IBracketCompetitor, match: IBracketMatch, event: MouseEvent | KeyboardEvent): void
-}
-
-/** Scope for the `connector` slot — one measured SVG link between two
- *  match cards (single/double-elimination only; round-robin has no
- *  connectors). Overriding it replaces the default `<path>` render. */
-export interface IBracketConnectorSlot {
-    from: TBracketConnectorPath['from']
-    to: TBracketConnectorPath['to']
-}
-
-/** Slot signatures for `<OrigamBracket>`. `round-title` / `match` /
- *  `competitor` are 1:1 forwards of `<OrigamBracketRound>` /
- *  `<OrigamBracketMatch>`'s own slots (same scope, same names) — they
- *  exist here so a consumer can override deeply-nested match/competitor
- *  rendering without dropping down to the round component directly. */
-export interface IBracketSlots {
-    connector?: (props: IBracketConnectorSlot) => any
-    'round-title'?: (props: IBracketRoundTitleSlot) => any
-    match?: (props: IBracketRoundMatchSlot) => any
-    competitor?: (props: IBracketMatchCompetitorSlot) => any
 }

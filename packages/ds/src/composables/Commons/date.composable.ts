@@ -1,27 +1,16 @@
 import { inject } from "vue"
-import { useLocale } from './locale.composable'
+import { useLocale } from "../../composables"
 
-import { ORIGAM_DATE_OPTIONS_KEY } from '../../consts/Commons/date.const'
+import { ORIGAM_DATE_OPTIONS_KEY } from "../../consts"
 
-import type { IDateOptions } from '../../interfaces/Commons/date.interface'
-import type { ILocaleInstance } from '../../interfaces/Commons/locale.interface'
+import type { IDateOptions, ILocaleInstance } from "../../interfaces"
 
-import { DateAdapter } from '../../classes/Commons/date-adapter.class'
+import { DateAdapter } from "../../services"
 
-import { mergeDeep } from '../../utils/Commons/commons.util'
-import { createInstance } from '../../utils/Commons/date.util'
+import { createInstance, mergeDeep } from "../../utils"
 
 /*********************************************************
  * createDate
- *
- * @description
- * Fabrique installee au niveau app (voir `createOrigam()`), pas un hook de
- * composant : fusionne les `options` fournies avec un adaptateur par
- * defaut (`DateAdapter`) et une table de locales BCP-47 par langue (`fr`,
- * `es`, `ar` en sont deliberement absents, commentes en code — leur valeur
- * differe selon la variante regionale), puis construit l'instance
- * d'adaptateur via `createInstance`. `useDate()` consomme ce resultat, il
- * ne le recree pas.
  ********************************************************/
 export function createDate (options: IDateOptions | undefined, locale: ILocaleInstance) {
     const _options = mergeDeep({
@@ -79,18 +68,6 @@ export function createDate (options: IDateOptions | undefined, locale: ILocaleIn
 
 /*********************************************************
  * useDate
- *
- * @description
- * Recupere les options de date injectees par `createDate()` (cle
- * `ORIGAM_DATE_OPTIONS_KEY`) et la locale active (`useLocale()`), puis
- * retourne l'instance d'adaptateur de date (`createInstance`) que les
- * composants Date/DatePicker consomment pour toute arithmetique de date.
- *
- * @description
- * Leve une erreur explicite si les options ne sont pas injectees — signe
- * que l'app n'a pas ete initialisee via `createOrigam()`. Ce n'est pas une
- * valeur par defaut silencieuse : sans adaptateur enregistre, aucune
- * hypothese de locale/format n'est fiable.
  ********************************************************/
 export function useDate () {
     const options = inject(ORIGAM_DATE_OPTIONS_KEY)

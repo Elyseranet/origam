@@ -1,0 +1,48 @@
+{
+  "number-field": {
+    "background-color":          { "$type": "color",     "$value": "{color.surface.default}" },
+    "color":                     { "$type": "color",     "$value": "{color.text.primary}" },
+    "border-color":              { "$type": "color",     "$value": "{color.border.default}" },
+    "border-color-focus":        { "$type": "color",     "$value": "{color.border.focus}" },
+    "border-color-error":        { "$type": "color",     "$value": "{color.feedback.danger.border}" },
+    "border-color-disabled":     { "$type": "color",     "$value": "{color.border.subtle}" },
+    "border-radius":             { "$type": "dimension", "$value": "{radius.sm}" },
+    "font-size":                 { "$type": "dimension", "$value": "{font.size.md}" },
+    "opacity-disabled":          { "$type": "number",    "$value": "{opacity.50}" },
+    "padding-inline":            { "$type": "dimension", "$value": "{space.3}" },
+    "transition-duration":       { "$type": "duration",  "$value": "{motion.duration.medium}" },
+    "transition-easing":         { "$type": "cubicBezier", "$value": "{motion.easing.standard}" },
+
+    "control": {
+      "background-color":          { "$type": "color", "$value": "transparent", "$description": "Fond des boutons increment/decrement dans le conteneur __control" },
+      "border-radius":             { "$type": "dimension", "$value": "{radius.none}", "$description": "Les boutons +/- n'ont pas de border-radius propre (hérité du champ)" },
+      "cursor":                    { "$type": "other",  "$value": "pointer" },
+      "cursor-disabled":           { "$type": "other",  "$value": "not-allowed" }
+    },
+
+    "increment": {
+      "background-color":          { "$type": "color", "$value": "transparent", "$description": "Fond du bouton increment (+)" },
+      "background-color-hover":    { "$type": "color", "$value": "{color.action.secondary.bgHover}" },
+      "background-color-disabled": { "$type": "color", "$value": "{color.action.primary.bgDisabled}" },
+      "color":                     { "$type": "color", "$value": "{color.text.primary}" },
+      "color-disabled":            { "$type": "color", "$value": "{color.text.disabled}" },
+      "cursor":                    { "$type": "other",  "$value": "pointer" },
+      "cursor-disabled":           { "$type": "other",  "$value": "not-allowed" }
+    },
+
+    "decrement": {
+      "background-color":          { "$type": "color", "$value": "transparent", "$description": "Fond du bouton decrement (-)" },
+      "background-color-hover":    { "$type": "color", "$value": "{color.action.secondary.bgHover}" },
+      "background-color-disabled": { "$type": "color", "$value": "{color.action.primary.bgDisabled}" },
+      "color":                     { "$type": "color", "$value": "{color.text.primary}" },
+      "color-disabled":            { "$type": "color", "$value": "{color.text.disabled}" },
+      "cursor":                    { "$type": "other",  "$value": "pointer" },
+      "cursor-disabled":           { "$type": "other",  "$value": "not-allowed" }
+    },
+
+    "compact": {
+      "gap":         { "$type": "dimension", "$value": "{space.2}", "$description": "Gap between − input + buttons in compact horizontal layout" },
+      "input-width": { "$type": "dimension", "$value": "3em",       "$description": "Width of the centered numeric input in compact mode" }
+    }
+  }
+}

@@ -7,18 +7,18 @@ import {
     watch
 } from 'vue'
 
-import { DEFAULT_SHEET_SNAP_POINTS, SHEET_FAST_FLICK_THRESHOLD as FAST_FLICK_THRESHOLD } from '../../consts/Sheet/sheet.const'
-import type { ISheetSwipeOptions } from '../../interfaces/Sheet/sheet-swipe-options.interface'
-import type { ISheetSwipeReturn } from '../../interfaces/Sheet/sheet-swipe-return.interface'
-import type { TSheetSnapId, TSheetSnapPoint } from '../../types/Sheet/sheet.type'
+import { DEFAULT_SHEET_SNAP_POINTS } from '../../consts/Sheet/sheet-snap-points.const'
+import { SHEET_FAST_FLICK_THRESHOLD as FAST_FLICK_THRESHOLD } from '../../consts/Sheet/sheet-swipe.const'
+import type { ISheetSwipeOptions, ISheetSwipeReturn } from '../../interfaces'
+import type { TSheetSnapId, TSheetSnapPoint } from '../../types'
 
 // Re-export so existing `import { DEFAULT_SHEET_SNAP_POINTS } from
 // '@/composables'` callsites continue to resolve. The const itself
-// lives in `src/consts/Sheet/sheet.const.ts` per the
+// lives in `src/consts/Sheet/sheet-snap-points.const.ts` per the
 // global CLAUDE.md "Constants ONLY in src/consts/" rule.
-export { DEFAULT_SHEET_SNAP_POINTS } from '../../consts/Sheet/sheet.const'
+export { DEFAULT_SHEET_SNAP_POINTS } from '../../consts/Sheet/sheet-snap-points.const'
 
-// `FAST_FLICK_THRESHOLD` lives in `src/consts/Sheet/sheet.const.ts`
+// `FAST_FLICK_THRESHOLD` lives in `src/consts/Sheet/sheet-swipe.const.ts`
 // (exported there as `SHEET_FAST_FLICK_THRESHOLD`).
 
 /**
@@ -83,24 +83,6 @@ function resolveHeightPx (height: number | string): number {
 
 /*********************************************************
  * useSheetSwipe
- ********************************************************/
-/*********************************************************
- * useSheetSwipe
- *
- * @description
- * Geste de glissement d'un `<origam-sheet>` : suit le doigt sur l'element ou
- * sur sa poignee, puis s'aimante au point d'accroche le plus proche a la
- * relache.
- *
- * @description
- * Les points d'accroche sont TRIES PAR HAUTEUR CROISSANTE avant usage. C'est
- * ce qui permet aux recherches d'index (`snaps[i+1]`, `snaps[i-1]`) de
- * designer les voisins visuels ; sur une liste non triee, glisser vers le haut
- * pourrait aimanter vers le bas.
- *
- * @description
- * `persistent` empeche la fermeture par glissement — le dernier cran reste le
- * plus bas point d'accroche au lieu d'etre l'etat ferme.
  ********************************************************/
 export function useSheetSwipe (options: ISheetSwipeOptions): ISheetSwipeReturn {
     const {

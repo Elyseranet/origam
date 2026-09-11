@@ -180,16 +180,8 @@ ancestor to change specific token colours for a subtree:
 
 ## Accessibility
 
-- The scroll wrapper (`.origam-code__scroller`) carries `tabindex="0"` so a
-  code block wider than its column stays readable without a mouse, plus
-  `role="region"` and an `aria-label` that names it. The label resolves in
-  this order: `filename` when one is passed, else `lang` when it is anything
-  other than `plaintext`, else the generic *"Code block, scrollable
-  region"*. Keys: `origam.code.scroller_aria_label_filename`,
-  `origam.code.scroller_aria_label_lang`, `origam.code.scroller_aria_label`.
-  Pass a `filename` (or at least a `lang`) whenever a page shows several
-  blocks — otherwise every one of them lands in the screen-reader landmark
-  list under the same name.
+- The container carries `role="region"` and an `aria-label` that
+  includes the filename (or language fallback).
 - The copy button is a real `<button>` with an `aria-label` describing
   the action, and an `aria-live="polite"` region for the "Copied!"
   feedback.

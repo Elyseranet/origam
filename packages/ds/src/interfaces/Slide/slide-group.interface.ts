@@ -1,19 +1,16 @@
-import type { IBorderProps } from '../Commons/border.interface'
 import type {
+    IBorderProps,
     ICommonsComponentEmits,
     ICommonsComponentProps,
-    ITagProps
-} from '../Commons/commons.interface'
-import type { IDirectionProps } from '../Commons/direction.interface'
-import type { IDisplayProps } from '../Commons/display.interface'
-import type {
+    IDirectionProps,
+    IDisplayProps,
     IGroupProps,
-    IGroupProvide
-} from '../Commons/group.interface'
-import type { IMarginProps } from '../Commons/margin.interface'
-import type { IPaddingProps } from '../Commons/padding.interface'
-import type { IRoundedProps } from '../Commons/rounded.interface'
-import type { TIcon } from '../../types/Icon/icon.type'
+    IMarginProps,
+    IPaddingProps,
+    IRoundedProps,
+    ITagProps
+} from '../../interfaces'
+import type { TIcon } from '../../types'
 
 export interface ISlideGroupProps extends ICommonsComponentProps, ITagProps, IDirectionProps, IGroupProps, IPaddingProps, IMarginProps, IRoundedProps, IBorderProps, IDisplayProps {
     centerActive?: boolean
@@ -24,12 +21,3 @@ export interface ISlideGroupProps extends ICommonsComponentProps, ITagProps, IDi
 
 /** Emits fired by `<OrigamSlideGroup>` — v-model on the active slide. */
 export interface ISlideGroupEmits extends ICommonsComponentEmits {}
-
-/** Slot signatures for `<OrigamSlideGroup>`. */
-export interface ISlideGroupSlots {
-    prev?: () => any
-    /** Receives the group's own navigation/selection API so custom
-     *  content can drive the slide group without re-injecting it. */
-    default?: (data: Pick<IGroupProvide, 'next' | 'prev' | 'select' | 'isSelected'>) => any
-    next?: () => any
-}

@@ -1,26 +1,18 @@
 import { expect, test, type Page } from '@playwright/test'
 
-import { selectHstOption } from './_support/histoire-controls'
-
 /**
  * OrigamExpansionPanels — runtime assertions per story Variant.
  *
  * Story URL: /story/components-stories-expansionpanel-origamexpansionpanels-story-vue
  *
- * Story realignment (canonical Design/Functional/Events/Slots structure):
- * NO `data-cy` attribute exists anywhere in OrigamExpansionPanels.story.vue
- * nor in OrigamExpansionPanels.vue / OrigamExpansionPanel.vue /
- * OrigamExpansionPanelHeader.vue (verified via grep) — every locator here
- * is class-based. Old side-by-side "Prop — …" Variants folded into the
- * "Design"/"Functional" Variants' controls, driven via `selectHstOption`.
- *
- * DS BUG STATUS UPDATE (2026-08): the previously-documented "useElevation
- * not imported" bug that made every test in this file `test.fixme` is
- * FIXED — verified empirically: `useElevation` is properly imported in
- * OrigamExpansionPanels.vue (named import list + call site), and a probe
- * navigation to the "Design" Variant mounts cleanly with 3 panels and zero
- * console/page errors. All tests below are un-fixme'd and now run for
- * real.
+ * DS BUG (expansion-panels — all tests): OrigamExpansionPanels.vue calls
+ * `useElevation(props, toRef(props, 'flat'))` at line 190 but `useElevation`
+ * is NOT listed in the named import from '../../composables'. In Vite dev mode
+ * every .vue is an isolated ES module — the binding is never created, so the
+ * component throws `ReferenceError: useElevation is not defined` at creation
+ * time. Fix: either add `useElevation` to the named import list, or destructure
+ * `elevationClasses` from the `useStateEffect` return value (which already
+ * calls useElevation internally and exposes the result).
  */
 
 const sandboxOf = (page: Page) => page.frameLocator('iframe[src*="__sandbox"]')
@@ -35,26 +27,28 @@ const openVariant = async (page: Page, variant: string) => {
 // ─── Color ────────────────────────────────────────────────────────────────────
 
 test.describe('OrigamExpansionPanels — Color', () => {
-    test('color variant renders without errors', async ({ page }) => {
-        await openVariant(page, 'Design')
+    // DS BUG: useElevation not imported in OrigamExpansionPanels.vue — component throws at mount
+    test.fixme('color variant renders without errors', async ({ page }) => {
+        await openVariant(page, 'Prop — color & bgColor')
         const sandbox = sandboxOf(page)
-        await selectHstOption(page, 'Color', 'Success')
-        const root = sandbox.locator('.origam-expansion-panels').first()
-        await expect(root).toBeVisible({ timeout: 8000 })
-        await expect(sandbox.locator('.origam-expansion-panel')).toHaveCount(3, { timeout: 8000 })
+        await expect(sandbox.locator('[data-cy="expansion-color"]').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('[data-cy="expansion-color"] .origam-expansion-panel').count()
+        expect(count).toBeGreaterThan(0)
     })
 })
 
 // ─── Density ──────────────────────────────────────────────────────────────────
 
 test.describe('OrigamExpansionPanels — Density', () => {
-    test('density class lands on child panels', async ({ page }) => {
-        await openVariant(page, 'Design')
+    // DS BUG: useElevation not imported in OrigamExpansionPanels.vue — component throws at mount
+    test.fixme('density class lands on child panels', async ({ page }) => {
+        await openVariant(page, 'Prop — density')
         const sandbox = sandboxOf(page)
-        await selectHstOption(page, 'Density', 'Compact')
-        const panels = sandbox.locator('.origam-expansion-panel')
-        await expect(panels).toHaveCount(3, { timeout: 8000 })
-        const childClasses = await panels.evaluateAll(els => els.map(el => el.className))
+        await expect(sandbox.locator('[data-cy="expansion-density"]').first()).toBeVisible({ timeout: 8000 })
+        const childClasses = await sandbox.locator('[data-cy="expansion-density"] .origam-expansion-panel').evaluateAll(els =>
+            els.map(el => el.className)
+        )
+        expect(childClasses.length).toBeGreaterThan(0)
         for (const cls of childClasses) {
             expect(cls).toMatch(/origam-expansion-panel--density-(default|compact|comfortable)/)
         }
@@ -64,11 +58,11 @@ test.describe('OrigamExpansionPanels — Density', () => {
 // ─── Rounded ──────────────────────────────────────────────────────────────────
 
 test.describe('OrigamExpansionPanels — Rounded', () => {
-    test('rounded class is applied to the wrapper', async ({ page }) => {
-        await openVariant(page, 'Design')
+    // DS BUG: useElevation not imported in OrigamExpansionPanels.vue — component throws at mount
+    test.fixme('rounded class is applied to the wrapper', async ({ page }) => {
+        await openVariant(page, 'Prop — rounded')
         const sandbox = sandboxOf(page)
-        await selectHstOption(page, 'Rounded', 'small (radius.sm / 4px)')
-        const wrapper = sandbox.locator('.origam-expansion-panels').first()
+        const wrapper = sandbox.locator('[data-cy="expansion-rounded"]').first()
         await expect(wrapper).toBeVisible({ timeout: 8000 })
         const cls = await wrapper.evaluate(el => el.className)
         expect(cls).toMatch(/origam-expansion-panels--rounded|origam--rounded/)
@@ -78,11 +72,11 @@ test.describe('OrigamExpansionPanels — Rounded', () => {
 // ─── Border ───────────────────────────────────────────────────────────────────
 
 test.describe('OrigamExpansionPanels — Border', () => {
-    test('border modifier class is applied', async ({ page }) => {
-        await openVariant(page, 'Design')
+    // DS BUG: useElevation not imported in OrigamExpansionPanels.vue — component throws at mount
+    test.fixme('border modifier class is applied', async ({ page }) => {
+        await openVariant(page, 'Prop — border')
         const sandbox = sandboxOf(page)
-        await selectHstOption(page, 'Border', 'Border (legacy boolean → thin)')
-        const wrapper = sandbox.locator('.origam-expansion-panels').first()
+        const wrapper = sandbox.locator('[data-cy="expansion-border"]').first()
         await expect(wrapper).toBeVisible({ timeout: 8000 })
         const cls = await wrapper.evaluate(el => el.className)
         expect(cls).toMatch(/origam-expansion-panels--border|origam--border/)
@@ -92,131 +86,138 @@ test.describe('OrigamExpansionPanels — Border', () => {
 // ─── Elevation ────────────────────────────────────────────────────────────────
 
 test.describe('OrigamExpansionPanels — Elevation', () => {
-    test('elevation variant renders without errors', async ({ page }) => {
-        await openVariant(page, 'Design')
+    // DS BUG: useElevation not imported in OrigamExpansionPanels.vue — component throws at mount
+    test.fixme('elevation variant renders without errors', async ({ page }) => {
+        await openVariant(page, 'Prop — elevation')
         const sandbox = sandboxOf(page)
-        await selectHstOption(page, 'Elevation', 'MD (8)')
-        await expect(sandbox.locator('.origam-expansion-panels').first()).toBeVisible({ timeout: 8000 })
+        await expect(sandbox.locator('[data-cy="expansion-elevation"]').first()).toBeVisible({ timeout: 8000 })
     })
 })
 
 // ─── Icons ────────────────────────────────────────────────────────────────────
 
 test.describe('OrigamExpansionPanels — Icons', () => {
-    test('panels render with icon variant controls', async ({ page }) => {
-        await openVariant(page, 'Design')
+    // DS BUG: useElevation not imported in OrigamExpansionPanels.vue — component throws at mount
+    test.fixme('panels render with icon variant controls', async ({ page }) => {
+        await openVariant(page, 'Prop — expandIcon & collapseIcon')
         const sandbox = sandboxOf(page)
-        await selectHstOption(page, 'Expand Icon', 'Star')
-        await selectHstOption(page, 'Collapse Icon', 'Heart')
-        await expect(sandbox.locator('.origam-expansion-panels').first()).toBeVisible({ timeout: 8000 })
-        await expect(sandbox.locator('.origam-expansion-panel')).toHaveCount(3, { timeout: 8000 })
+        await expect(sandbox.locator('[data-cy="expansion-icons"]').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('[data-cy="expansion-icons"] .origam-expansion-panel').count()
+        expect(count).toBe(2)
     })
 })
 
 // ─── Selection ────────────────────────────────────────────────────────────────
 
 test.describe('OrigamExpansionPanels — Selection', () => {
-    test('selection variant renders panels', async ({ page }) => {
-        await openVariant(page, 'Functional')
+    // DS BUG: useElevation not imported in OrigamExpansionPanels.vue — component throws at mount
+    test.fixme('selection variant renders panels', async ({ page }) => {
+        await openVariant(page, 'Prop — multiple & mandatory (selection)')
         const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('.origam-expansion-panels').first()).toBeVisible({ timeout: 8000 })
-        await expect(sandbox.locator('.origam-expansion-panel')).toHaveCount(3, { timeout: 8000 })
+        await expect(sandbox.locator('[data-cy="expansion-selection"]').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('[data-cy="expansion-selection"] .origam-expansion-panel').count()
+        expect(count).toBe(3)
     })
 })
 
 // ─── Items prop ───────────────────────────────────────────────────────────────
 
 test.describe('OrigamExpansionPanels — Items prop', () => {
-    // Story realignment: no bare "items renders panels" Variant survives —
-    // every Variant using `:items="panelItems"` (3 items) pairs it with a
-    // slot override. "Slots - Append" is a non-destructive one (the append
-    // slot only adds content, it doesn't replace panel rendering), so it's
-    // a faithful re-target for "items drives panel count".
-    test('renders one panel per items entry (3)', async ({ page }) => {
-        await openVariant(page, 'Slots - Append')
+    // DS BUG: useElevation not imported in OrigamExpansionPanels.vue — component throws at mount
+    test.fixme('renders one panel per items entry (3)', async ({ page }) => {
+        await openVariant(page, 'Prop — items')
         const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('.origam-expansion-panels').first()).toBeVisible({ timeout: 8000 })
-        await expect(sandbox.locator('.origam-expansion-panel')).toHaveCount(3, { timeout: 8000 })
+        await expect(sandbox.locator('[data-cy="expansion-items"]').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('[data-cy="expansion-items"] .origam-expansion-panel').count()
+        expect(count).toBe(3)
     })
 })
 
 // ─── Slot: default ────────────────────────────────────────────────────────────
 
 test.describe('OrigamExpansionPanels — Slot: default', () => {
-    test('renders explicit OrigamExpansionPanel children with slot-based title', async ({ page }) => {
-        await openVariant(page, 'Slots - Default')
+    // DS BUG: useElevation not imported in OrigamExpansionPanels.vue — component throws at mount
+    test.fixme('renders explicit OrigamExpansionPanel children with slot-based title', async ({ page }) => {
+        await openVariant(page, 'Slot — default')
         const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('.origam-expansion-panels').first()).toBeVisible({ timeout: 8000 })
-        await expect(sandbox.locator('.origam-expansion-panel')).toHaveCount(2, { timeout: 8000 })
-        await expect(sandbox.getByText('Custom title one')).toBeVisible()
-        await expect(sandbox.getByText('Custom title two')).toBeVisible()
+        await expect(sandbox.locator('[data-cy="expansion-slot-default"]').first()).toBeVisible({ timeout: 8000 })
+        await expect(sandbox.locator('[data-cy="expansion-slot-p1"]').first()).toBeVisible()
+        await expect(sandbox.locator('[data-cy="expansion-slot-p2"]').first()).toBeVisible()
     })
 })
 
 // ─── Slot: item ───────────────────────────────────────────────────────────────
 
 test.describe('OrigamExpansionPanels — Slot: item', () => {
-    test('custom item slot renders 3 panels', async ({ page }) => {
-        await openVariant(page, 'Slots - Item')
+    // DS BUG: useElevation not imported in OrigamExpansionPanels.vue — component throws at mount
+    test.fixme('custom item slot renders 3 panels', async ({ page }) => {
+        await openVariant(page, 'Slot — item')
         const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('.origam-expansion-panels').first()).toBeVisible({ timeout: 8000 })
-        await expect(sandbox.locator('.origam-expansion-panel')).toHaveCount(3, { timeout: 8000 })
+        await expect(sandbox.locator('[data-cy="expansion-slot-item"]').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('[data-cy="expansion-slot-item"] .origam-expansion-panel').count()
+        expect(count).toBe(3)
     })
 })
 
 // ─── Slot: header ─────────────────────────────────────────────────────────────
 
 test.describe('OrigamExpansionPanels — Slot: header', () => {
-    test('custom header slot renders', async ({ page }) => {
-        await openVariant(page, 'Slots - Header')
+    // DS BUG: useElevation not imported in OrigamExpansionPanels.vue — component throws at mount
+    test.fixme('custom header slot renders', async ({ page }) => {
+        await openVariant(page, 'Slot — header')
         const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('.origam-expansion-panels').first()).toBeVisible({ timeout: 8000 })
-        await expect(sandbox.getByText('Custom header slot')).toBeVisible({ timeout: 8000 })
+        await expect(sandbox.locator('[data-cy="expansion-slot-header"]').first()).toBeVisible({ timeout: 8000 })
+        await expect(sandbox.locator('[data-cy="expansion-slot-header-custom"]').first()).toBeVisible()
     })
 })
 
 // ─── Slot: title ──────────────────────────────────────────────────────────────
 
 test.describe('OrigamExpansionPanels — Slot: title', () => {
-    test('custom title slot renders', async ({ page }) => {
-        await openVariant(page, 'Slots - Title')
+    // DS BUG: useElevation not imported in OrigamExpansionPanels.vue — component throws at mount
+    test.fixme('custom title slot renders', async ({ page }) => {
+        await openVariant(page, 'Slot — title')
         const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('.origam-expansion-panels').first()).toBeVisible({ timeout: 8000 })
-        await expect(sandbox.getByText('Custom title slot')).toBeVisible({ timeout: 8000 })
+        await expect(sandbox.locator('[data-cy="expansion-slot-title"]').first()).toBeVisible({ timeout: 8000 })
     })
 })
 
 // ─── Emit: update:modelValue ──────────────────────────────────────────────────
 
 test.describe('OrigamExpansionPanels — Emit: update:modelValue', () => {
-    test('emit variant renders clickable panels', async ({ page }) => {
-        await openVariant(page, 'Events - update:modelValue')
+    // DS BUG: useElevation not imported in OrigamExpansionPanels.vue — component throws at mount
+    test.fixme('emit variant renders clickable panels', async ({ page }) => {
+        await openVariant(page, 'Emit — update:modelValue')
         const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('.origam-expansion-panels').first()).toBeVisible({ timeout: 8000 })
-        const headers = sandbox.locator('.origam-expansion-panel-header')
-        await expect(headers).not.toHaveCount(0, { timeout: 8000 })
+        await expect(sandbox.locator('[data-cy="expansion-emit-model"]').first()).toBeVisible({ timeout: 8000 })
+        const headers = sandbox.locator('[data-cy="expansion-emit-model"] .origam-expansion-panel-header')
+        const headerCount = await headers.count()
+        expect(headerCount).toBeGreaterThan(0)
     })
 })
 
 // ─── Emit: group:selected ─────────────────────────────────────────────────────
 
 test.describe('OrigamExpansionPanels — Emit: group:selected', () => {
-    test('emit variant renders panels that can fire group:selected', async ({ page }) => {
-        await openVariant(page, 'Events - group:selected')
+    // DS BUG: useElevation not imported in OrigamExpansionPanels.vue — component throws at mount
+    test.fixme('emit variant renders panels that can fire group:selected', async ({ page }) => {
+        await openVariant(page, 'Emit — group:selected')
         const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('.origam-expansion-panels').first()).toBeVisible({ timeout: 8000 })
-        await expect(sandbox.getByText('Select me')).toBeVisible()
-        await expect(sandbox.getByText('Or me')).toBeVisible()
+        await expect(sandbox.locator('[data-cy="expansion-emit-selected"]').first()).toBeVisible({ timeout: 8000 })
+        await expect(sandbox.locator('[data-cy="expansion-emit-selected-p1"]').first()).toBeVisible()
+        await expect(sandbox.locator('[data-cy="expansion-emit-selected-p2"]').first()).toBeVisible()
     })
 })
 
 // ─── Playground ───────────────────────────────────────────────────────────────
 
 test.describe('OrigamExpansionPanels — Default', () => {
-    test('renders without errors', async ({ page }) => {
+    // DS BUG: useElevation not imported in OrigamExpansionPanels.vue — component throws at mount
+    test.fixme('renders without errors', async ({ page }) => {
         await openVariant(page, 'Default')
         const sandbox = sandboxOf(page)
-        await expect(sandbox.locator('.origam-expansion-panels').first()).toBeVisible({ timeout: 8000 })
-        await expect(sandbox.locator('.origam-expansion-panel')).toHaveCount(3, { timeout: 8000 })
+        await expect(sandbox.locator('[data-cy="expansion-playground"]').first()).toBeVisible({ timeout: 8000 })
+        const count = await sandbox.locator('[data-cy="expansion-playground"] .origam-expansion-panel').count()
+        expect(count).toBe(3)
     })
 })

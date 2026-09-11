@@ -1,3 +1,3 @@
-import OrigamWindowYTranslate from '../../components/Transition/OrigamWindowYTranslate.vue'
+import { OrigamWindowYTranslate } from "../../components"
 
 export type TOrigamWindowYTranslate = InstanceType<typeof OrigamWindowYTranslate>

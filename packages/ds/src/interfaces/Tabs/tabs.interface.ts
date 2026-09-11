@@ -1,21 +1,16 @@
 import type {
     IBgColorProps,
-    IColorProps
-} from '../Commons/color.interface'
-import type {
+    IColorProps,
     ICommonsComponentEmits,
     ICommonsComponentProps,
-    ITagProps
-} from '../Commons/commons.interface'
-import type { IDensityProps } from '../Commons/density.interface'
-import type { IDirectionProps } from '../Commons/direction.interface'
-import type {
+    IDensityProps,
+    IDirectionProps,
     IGroupProps,
-    IGroupProvide
-} from '../Commons/group.interface'
-import type { IRoundedProps } from '../Commons/rounded.interface'
+    IRoundedProps,
+    ITagProps
+} from '../../interfaces'
 
-import type { TTabVariant } from '../../types/Tabs/tab.type'
+import type { TTabVariant } from '../../types'
 
 /**
  * Props for `<OrigamTabs>` — a stateful tablist container.
@@ -44,16 +39,3 @@ export interface ITabsProps extends ICommonsComponentProps, ITagProps, IDirectio
 
 /** Emits fired by `<OrigamTabs>` — v-model on the active tab. */
 export interface ITabsEmits extends ICommonsComponentEmits {}
-
-/** Scope forwarded to the `default` slot — the raw `useGroup()`
- *  selection API, forwarded as-is (its `selected` field stays a `Ref`,
- *  mirroring `IItemGroupSlots`). `items` is unwrapped from the
- *  `ComputedRef` returned by `useGroup` into the plain array. */
-export interface ITabsSlotProps extends Pick<IGroupProvide, 'isSelected' | 'select' | 'next' | 'prev' | 'selected'> {
-    items: IGroupProvide['items']['value']
-}
-
-/** Slot signatures for `<OrigamTabs>`. */
-export interface ITabsSlots {
-    default?: (data: ITabsSlotProps) => any
-}

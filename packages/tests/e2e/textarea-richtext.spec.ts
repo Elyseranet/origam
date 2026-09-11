@@ -3,18 +3,7 @@ import { expect, test, type Page } from '@playwright/test'
 const STORY_ID = 'components-stories-textareafield-origamtextareafield-story-vue'
 const STORY_PATH = '/stories/story/' + STORY_ID
 
-// This spec exercises variants of the same OrigamTextareaField.story.vue
-// chunk as textarea-field.spec.ts, which already uses 12000ms for the
-// identical reason: Histoire's live dev server compiles the story on
-// first hit, and that compile is contended under full-suite parallel
-// workers. The richtext variants pull in extra weight on top (sanitize-html,
-// markdown conversion, the rich toolbar) so they are at least as expensive.
-// 5000ms was fine in isolation (100/100 passed mono-worker, --repeat-each=10)
-// but produced a 25% failure rate (20/80) under --workers=8 --repeat-each=8,
-// every failure an identical `toBeVisible` timeout with no async/lazy
-// mounting in the component to blame — a harness timeout too tight for
-// contended CI load, not a product race. Matching the sibling spec's value.
-const ARROW_TIMEOUT = 12000
+const ARROW_TIMEOUT = 5000
 
 // Deep-link straight to a variant. The previous per-test navigation used
 // `page.goto(STORY_PATH)` + `waitForLoadState('networkidle')` — which NEVER
@@ -22,7 +11,7 @@ const ARROW_TIMEOUT = 12000
 // (textarea-richtext:110 timed out in CI) — plus a brittle `getByText().click()`
 // and a fixed `waitForTimeout`. This resolves deterministically and fast.
 const variantUrl = (idx: number) => `${STORY_PATH}?variantId=${STORY_ID}-${idx}`
-const gotoVariant = (page: Page, idx: number) => page.goto(variantUrl(idx), { waitUntil: 'domcontentloaded' })
+const gotoVariant = (page: Page, idx: number) => page.goto(variantUrl(idx))
 
 test.describe('OrigamTextareaField — richtext mode', () => {
     test('Mode rich (HTML) — renders contenteditable host with toolbar', async ({ page }) => {
@@ -142,8 +131,10 @@ test.describe('OrigamTextareaField — richtext mode', () => {
 
         await expect(container.locator('[data-cy="origam-rich-toolbar-bold"]')).toBeVisible({ timeout: ARROW_TIMEOUT })
         await expect(container.locator('[data-cy="origam-rich-toolbar-italic"]')).toBeVisible({ timeout: ARROW_TIMEOUT })
-        await expect(container.locator('[data-cy="origam-rich-toolbar-heading"]')).toHaveCount(0)
-        await expect(container.locator('[data-cy="origam-rich-toolbar-clear-format"]')).toHaveCount(0)
+        const headingCount = await container.locator('[data-cy="origam-rich-toolbar-heading"]').count()
+        expect(headingCount).toBe(0)
+        const clearCount = await container.locator('[data-cy="origam-rich-toolbar-clear-format"]').count()
+        expect(clearCount).toBe(0)
     })
 
     test('Slot toolbar — replaces the default toolbar', async ({ page }) => {
@@ -153,7 +144,8 @@ test.describe('OrigamTextareaField — richtext mode', () => {
         await expect(custom).toBeVisible({ timeout: ARROW_TIMEOUT })
 
         // The default-toolbar should NOT have rendered alongside.
-        await expect(sandbox.locator('[data-cy="textarea-rich-slot-toolbar"] [data-cy="origam-rich-toolbar"]')).toHaveCount(0)
+        const defaultToolbar = await sandbox.locator('[data-cy="textarea-rich-slot-toolbar"] [data-cy="origam-rich-toolbar"]').count()
+        expect(defaultToolbar).toBe(0)
     })
 
     test('Emit format — counter increments on every toolbar click', async ({ page }) => {

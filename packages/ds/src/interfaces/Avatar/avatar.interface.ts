@@ -1,32 +1,26 @@
 import type {
     IActiveEmits,
-    IActiveProps
-} from '../Commons/active.interface'
-import type { IBorderProps } from '../Commons/border.interface'
-import type {
+    IActiveProps,
+    IBorderProps,
     IBgColorProps,
-    IColorProps
-} from '../Commons/color.interface'
-import type {
+    IColorProps,
     ICommonsComponentProps,
-    ITagProps
-} from '../Commons/commons.interface'
-import type { IDensityProps } from '../Commons/density.interface'
-import type { IElevationProps } from '../Commons/elevation.interface'
-import type {
+    IDensityProps,
+    IElevationProps,
     IHoverEmits,
-    IHoverProps
-} from '../Commons/hover.interface'
-import type { IMarginProps } from '../Commons/margin.interface'
-import type { IPaddingProps } from '../Commons/padding.interface'
-import type { IRoundedProps } from '../Commons/rounded.interface'
-import type { ISizeProps } from '../Commons/size.interface'
-import type { ISrcObject } from '../Img/img.interface'
-import type { ITypographyProps } from '../Commons/typography.interface'
+    IHoverProps,
+    IMarginProps,
+    IPaddingProps,
+    IRoundedProps,
+    ISizeProps,
+    ISrcObject,
+    ITagProps,
+    ITypographyProps
+} from '../../interfaces'
 
-import type { TIcon } from '../../types/Icon/icon.type'
+import type { TIcon } from '../../types'
 
-export interface IAvatarProps extends ICommonsComponentProps, IDensityProps, IRoundedProps, ISizeProps, ITagProps, IColorProps, IBgColorProps, IPaddingProps, IMarginProps, IBorderProps, IElevationProps, IHoverProps, IActiveProps, Pick<ITypographyProps, 'fontSize' | 'fontWeight' | 'lineHeight' | 'letterSpacing'> {
+export interface IAvatarProps extends ICommonsComponentProps, IDensityProps, IRoundedProps, ISizeProps, ITagProps, IColorProps, IBgColorProps, IPaddingProps, IMarginProps, IBorderProps, IElevationProps, IHoverProps, IActiveProps, ITypographyProps {
     /**
      * Renders an icon inside the avatar (centered). Mutually exclusive
      * with `image` and `text`: image wins, then icon, then text.
@@ -38,13 +32,3 @@ export interface IAvatarProps extends ICommonsComponentProps, IDensityProps, IRo
 
 /** Emits fired by `<OrigamAvatar>` — active + hover state propagation. */
 export interface IAvatarEmits extends IActiveEmits, IHoverEmits {}
-
-/** Slot signatures for `<OrigamAvatar>`. Each overrides the matching
- *  auto-rendered content (image / icon / text), `default` overrides the
- *  whole image/icon/text switch. */
-export interface IAvatarSlots {
-    default?: () => any
-    avatar?: () => any
-    icon?: () => any
-    text?: () => any
-}

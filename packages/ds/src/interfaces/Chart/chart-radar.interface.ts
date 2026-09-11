@@ -1,8 +1,4 @@
-import type {
-    IChartBaseEmits,
-    IChartBaseProps,
-    IChartBaseSlots
-} from './chart-base.interface'
+import type { IChartBaseProps } from '../../interfaces'
 
 /**
  * Props for `<OrigamChartRadar>` — radar / spider chart
@@ -14,16 +10,3 @@ import type {
 export interface IChartRadarProps extends IChartBaseProps {
 
 }
-
-/** Emits surfaced by `<OrigamChartRadar>`. Mirrors the base family. */
-export type IChartRadarEmits = IChartBaseEmits
-
-/**
- * Slot signatures exposed by `<OrigamChartRadar>`.
- *
- * Omits `tooltip` from the base family — the radar spoke geometry
- * has no per-point hover tooltip wired in the template (no
- * `<slot name="tooltip">` to forward it to), unlike the other
- * per-type chart components.
- */
-export type IChartRadarSlots = Omit<IChartBaseSlots, 'tooltip'>

@@ -1,4 +1,4 @@
-import { OPEN_STRATEGY, SELECT_STRATEGY, SELECTED } from '../../enums/Commons/nested.enum'
+import { OPEN_STRATEGY, SELECT_STRATEGY, SELECTED } from '../../enums'
 
 import { Ref } from 'vue'
 

@@ -2,6 +2,15 @@ import type { IFooterColumn, INavLink, INavSection } from '../interfaces/nav.int
 
 import { MARKETING_DEFAULTS } from './marketing.const'
 
+export const NAV_LINKS: INavLink[] = [
+    { i18nKey: 'nav.components', i18nFallback: 'Components', href: '/components' },
+    { i18nKey: 'nav.playground', i18nFallback: 'Playground', href: '/playground' },
+    { i18nKey: 'nav.docs', i18nFallback: 'Docs', href: '/docs/' },
+    { i18nKey: 'nav.stories', i18nFallback: 'Stories', href: '/stories/' },
+    { i18nKey: 'nav.blog', i18nFallback: 'Blog', href: '/blog' },
+    { i18nKey: 'nav.changelog', i18nFallback: 'Changelog', href: '/changelog' }
+]
+
 export const NAV_SECTIONS: INavSection[] = [
     {
         titleKey: 'nav.sections.introduction',
@@ -17,7 +26,8 @@ export const NAV_SECTIONS: INavSection[] = [
         titleFallback: 'Getting started',
         items: [
             { i18nKey: 'nav.installation', i18nFallback: 'Installation', href: '/installation' },
-            { i18nKey: 'nav.wireframe', i18nFallback: 'Wireframe', href: '/wireframe' }
+            { i18nKey: 'nav.wireframe', i18nFallback: 'Wireframe', href: '/wireframe' },
+            { i18nKey: 'nav.figma_plugin', i18nFallback: 'Figma plugin', href: '/figma-plugin' }
         ]
     },
     {
@@ -53,6 +63,7 @@ export const GITHUB_LINK: INavLink = {
 
 export const DISCORD_LINK = 'https://discord.gg/origam'
 export const TWITTER_LINK = 'https://twitter.com/origam'
+export const RSS_LINK = '/rss.xml'
 
 export const FOOTER_GRID_COLUMNS = '2fr 1fr 1fr 1fr'
 
@@ -74,6 +85,8 @@ export const FOOTER_COLUMNS: IFooterColumn[] = [
             { i18nKey: 'footer.resources.discord', i18nFallback: 'Discord', href: DISCORD_LINK, external: true },
             { i18nKey: 'footer.resources.discussions', i18nFallback: 'Discussions', href: `${MARKETING_DEFAULTS.githubRepo}/discussions`, external: true },
             { i18nKey: 'footer.resources.twitter', i18nFallback: 'Twitter', href: TWITTER_LINK, external: true },
+            { i18nKey: 'footer.resources.rss', i18nFallback: 'RSS', href: RSS_LINK },
+            { i18nKey: 'footer.resources.figma_plugin', i18nFallback: 'Figma plugin', href: '/figma-plugin' },
             { i18nKey: 'footer.resources.support', i18nFallback: 'Support origam', href: '/support' }
         ]
     },

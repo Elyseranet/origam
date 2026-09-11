@@ -1,6 +1,5 @@
 <template>
 	<origam-toolbar
-			:id="id"
 			ref="origamToolbarRef"
 			:class="appBarClasses"
 			:collapse="isCollapsed"
@@ -32,13 +31,6 @@
 		</template>
 
 		<template
-				v-if="hasTitle"
-				#title
-		>
-			<slot name="title"/>
-		</template>
-
-		<template
 				v-if="hasContent"
 				#content
 		>
@@ -58,28 +50,27 @@
 		lang="ts"
 		setup
 >
-	import OrigamImg from '../Img/OrigamImg.vue'
-	import OrigamToolbar from '../Toolbar/OrigamToolbar.vue'
+	import { OrigamImg, OrigamToolbar } from '../../components'
 
-	import { useLayoutItem } from '../../composables/Commons/layoutItem.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useScroll } from '../../composables/Commons/scroll.composable'
-	import { useSsrBoot } from '../../composables/Commons/ssrBoot.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-	import { useToggleScope } from '../../composables/Commons/toggleScope.composable'
-	import { useVModel } from '../../composables/Commons/vModel.composable'
+	import {
+	useLayoutItem,
+	useProps,
+	useScroll,
+	useSsrBoot,
+	useStyle,
+	useToggleScope,
+	useVModel
+} from '../../composables'
 
-	import { BLOCK } from '../../enums/Commons/anchor.enum'
-	import { DENSITY } from '../../enums/Commons/density.enum'
+	import { BLOCK, DENSITY } from '../../enums'
 
-	import type { IAppBarProps } from '../../interfaces/App/app-bar.interface'
+	import type { IAppBarProps} from '../../interfaces'
 
-	import type { IAppBarEmits, IAppBarSlots } from '../../interfaces/App/app-bar.interface'
+	import type { IAppBarEmits } from '../../interfaces/App/app-bar.interface'
 
-	import type { TOrigamToolbar } from '../../types/Toolbar/toolbar.type'
+	import type { TOrigamToolbar } from "../../types"
 
-	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
-	import { int } from '../../utils/Commons/commons.util'
+	import { forwardRefs, int } from "../../utils"
 
 	import { computed, ComputedRef, ref, shallowRef, StyleValue, toRef, useSlots, watchEffect } from 'vue'
 
@@ -98,8 +89,6 @@
 	})
 
 	defineEmits<IAppBarEmits>()
-
-	defineSlots<IAppBarSlots>()
 
 	const {filterProps} = useProps<IAppBarProps>(props)
 
@@ -125,16 +114,6 @@
 	})
 	const hasPrepend = computed(() => {
 		return hasImage.value || slots.prepend
-	})
-	/*********************************************************
-	 * ⛔ `title` etait documente et expose par la story (« Slots - Title »),
-	 * mais aucun `<template #title>` n'etait transmis a `<origam-toolbar>` :
-	 * le contenu du slot etait perdu, jamais rendu. Le Toolbar declare bien
-	 * un slot `title` (`IToolbarSlots.title`) — il ne manquait que le relais,
-	 * identique a ceux de `append` / `prepend` / `content` / `default`.
-	 ********************************************************/
-	const hasTitle = computed(() => {
-		return slots.title
 	})
 	const hasContent = computed(() => {
 		return slots.content
@@ -166,6 +145,7 @@
 
 		return {
 			hide: behavior.has('hide'),
+			// fullyHide: behavior.has('fully-hide'),
 			inverted: behavior.has('inverted'),
 			collapse: behavior.has('collapse'),
 			elevate: behavior.has('elevate'),
@@ -211,14 +191,28 @@
 		})
 	})
 
+	// `active` scroll-behaviour: the bar engages its `active` design-state as
+	// soon as the page is scrolled away from the top. Drives the
+	// `origam-app-bar--active` class (consumer CSS hook) AND forwards a forced
+	// `active` to the inner Toolbar so its surface paints (see `toolbarActive`).
 	const isScrolled = computed(() => currentScroll.value > 0)
 
 	const isScrollActive = computed(() => scrollBehavior.value.active && isScrolled.value)
 
+	// `--active` is emitted ONLY for the `active` scroll-behaviour (engaged on
+	// scroll). It is intentionally NOT tied to `modelValue`/visibility — the bar
+	// being shown is not an "active" design-state, and binding the class to
+	// visibility painted the bar permanently (modelValue defaults to true).
+	// Visibility is handled by the layout transform, no class required.
 	const barActiveClasses = computed(() => {
 		return isScrollActive.value ? ['origam-app-bar--active'] : []
 	})
 
+	// Forwarded `active` for the Toolbar surface. The Toolbar's own design is
+	// only engaged on scroll when the consumer PROVIDED an override object
+	// (`:active="{ bgColor: 'surface' }"`). With no override we leave the
+	// surface untouched — `--active` (the class) is the only signal, so the
+	// consumer styles it however they want and nothing is imposed by default.
 	const toolbarActive = computed(() => {
 		const override = props.active && typeof props.active === 'object' ? props.active : undefined
 
@@ -235,6 +229,11 @@
 			scrollBehavior.value.elevate &&
 			(scrollBehavior.value.inverted ? currentScroll.value > 0 : currentScroll.value === 0)
 	))
+	// AppBar default height matches the toolbar's `--origam-toolbar---height`
+	// token (56 px). If the consumer overrides via `:height="…"` the prop
+	// wins. Without a default the layout reserved 0 px at the top → drawer /
+	// main covered the AppBar (user report: drawer overlaps the bar instead
+	// of starting BELOW it).
 	const height = computed(() => {
 		if (scrollBehavior.value.hide && scrollBehavior.value.inverted) return 0
 
@@ -248,32 +247,15 @@
 	 * Registers the bar as a layout item so sibling regions
 	 * (main, nav drawer) offset correctly.
 	 ********************************************************/
-	/*********************************************************
-	 * ⛔ `props.name` est lu EAGERLY ici, et c'est VOULU (ADR-005).
-	 *
-	 * @description
-	 * `setup-reads.mjs` signale cette lecture, a juste titre : le resolveur
-	 * de props de theme ecrit dans `beforeCreate`, APRES l'execution de
-	 * `setup()`. Une valeur capturee ici ne verra donc jamais celle du
-	 * theme.
-	 *
-	 * @description
-	 * Elle ne peut pas etre differee pour autant. `useLayoutItem` se sert
-	 * de cet `id` pour trois choses qui exigent une valeur STABLE des le
-	 * setup : `provide(ORIGAM_LAYOUT_ITEM_KEY, {id})`, `layout.register(vm,
-	 * {..., id})` et `layout.unregister(id)` au demontage. Un identifiant
-	 * qui changerait apres l'enregistrement laisserait un element fantome
-	 * dans le layout et n'en desenregistrerait aucun.
-	 *
-	 * @description
-	 * La vraie question n'est donc pas « comment differer cette lecture »
-	 * mais « un theme a-t-il vocation a nommer un element de layout ? ».
-	 * `name` est une IDENTITE, pas un reglage visuel — au meme titre qu'un
-	 * `id`. Tant que la reponse est non, cette lecture est correcte et le
-	 * signalement de l'outil est un faux positif a connaitre.
-	 ********************************************************/
 	const {layoutItemStyles} = useLayoutItem({
 		id: props.name,
+		// `int(undefined as string)` is NaN, which silently broke the
+		// layer-chain sort in useCreateLayout (drawers ended up before
+		// the AppBar, causing the drawer to extend full-height
+		// instead of starting BELOW the bar). Fall back to 0 so AppBar
+		// reserves its top space FIRST, then drawers / side rails
+		// register after it (their own order defaults to a UID-based
+		// large number).
 		order: computed(() => {
 			const parsed = int(props.order as string)
 			return Number.isFinite(parsed) ? parsed : 0
@@ -282,6 +264,9 @@
 		layoutSize: height,
 		elementSize: shallowRef(undefined),
 		active: visible as unknown as ComputedRef,
+		// `absolute` is not part of the AppBar surface (it only toggles
+		// absolute↔fixed and never scrolls the bar away). The layout defaults
+		// to fixed for the root bar.
 		absolute: shallowRef(undefined)
 	})
 
@@ -306,7 +291,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(appBarStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(appBarStyles)
 
 
 	/*********************************************************

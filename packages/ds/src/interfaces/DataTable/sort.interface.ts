@@ -1,7 +1,6 @@
-import type { IInternalDataTableHeader } from './data-table-header.interface'
+import type { IInternalDataTableHeader } from '../../interfaces'
 
-import type { TDataTableCompareFunction } from '../../types/DataTable/data-table.type'
-import type { TSortDirection } from '../../types/Commons/sort.type'
+import type { TDataTableCompareFunction, TSortDirection } from '../../types'
 
 import type { Ref } from 'vue'
 

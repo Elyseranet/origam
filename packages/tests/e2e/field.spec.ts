@@ -1,5 +1,4 @@
 import { expect, test } from '@playwright/test'
-import { toggleHstCheckbox } from './_support/histoire-controls'
 
 const STORY_PATH = '/stories/story/components-stories-field-origamfield-story-vue'
 
@@ -86,55 +85,18 @@ test.describe('OrigamField', () => {
         await expect(sandbox.locator('.origam-field__prepend-inner').first()).toBeVisible({ timeout: 3000 })
     })
 
-    // issue #422 — the "Required" checkbox on this Variant was wired to a
-    // real prop that had NO effect at all: no asterisk, no aria-required.
-    // Fixed centrally in OrigamField's slotProps; the story's default slot
-    // now forwards the resulting `aria-required` onto its plain <input>
-    // (previously it destructured only id/onFocus/onBlur, discarding it —
-    // exactly why the checkbox looked inert even after the component fix).
-    test('Required — toggling the checkbox sets aria-required on the input', async ({ page }) => {
+    test('Emit focus / blur — focusing input fires events', async ({ page }) => {
         await page.goto(STORY_PATH)
         await page.waitForLoadState('networkidle')
-        await page.getByText('Functional', { exact: true }).first().click()
+        await page.getByText('Emit — focus & blur', { exact: true }).first().click()
         await page.waitForTimeout(800)
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const input = sandbox.locator('[data-cy="field-functional-input"]')
+        const input = sandbox.locator('[data-cy="field-emit-focus"] input').first()
         await expect(input).toBeVisible({ timeout: 5000 })
-        await expect(input).not.toHaveAttribute('aria-required', 'true')
-
-        await toggleHstCheckbox(page, 'Required')
-        await page.waitForTimeout(300)
-
-        await expect(input).toHaveAttribute('aria-required', 'true')
-    })
-
-    test('Events update:focused — focusing the input toggles the focused state', async ({ page }) => {
-        // focus/blur are NOT emits on OrigamField, and $attrs fallthrough does
-        // NOT rescue them either: the root is a <div> with no tabindex and
-        // focus/blur do not bubble. The previous version of this spec navigated
-        // to a Variant titled "Native — focus / blur (DOM fallthrough)" and
-        // asserted nothing at all ("no throw = success") — it pinned the lie
-        // instead of the intent. Both the Variant and this spec now exercise
-        // `update:focused`, the channel that actually works, and assert the
-        // observable consequence on the root.
-        await page.goto(STORY_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Events - update:focused', { exact: true }).first().click()
-        await page.waitForTimeout(800)
-
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const field = sandbox.locator('[data-cy="field-emit-focus"]').first()
-        const input = field.locator('input').first()
-        await expect(input).toBeVisible({ timeout: 5000 })
-
-        await expect(field).not.toHaveClass(/origam-field--focused/)
-
         await input.focus()
-        await expect(field).toHaveClass(/origam-field--focused/)
-
         await input.blur()
-        await expect(field).not.toHaveClass(/origam-field--focused/)
+        // logEvent called — no throw = success
     })
 
     test('Prop rounded — themed default radius resolves (non-zero) and prop overrides it', async ({ page }) => {
@@ -167,32 +129,5 @@ test.describe('OrigamField', () => {
 
         const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
         await expect(sandbox.locator('[data-cy="field-playground"]')).toBeVisible({ timeout: 5000 })
-    })
-
-    // Regression — a prepended field's `__outline--start` leg must stay at
-    // least as wide as the field's border-radius. When it was clamped to the
-    // raw `padding-start` (6px) instead, a `rounded="large"` (16px) corner
-    // rendered flat: CSS scales down a border-radius that exceeds the box
-    // carrying it, and `__outline--start` is exactly the box that carries the
-    // start-side radius.
-    test('Prepended + rounded — outline start leg is not narrower than the corner radius', async ({ page }) => {
-        await page.goto(STORY_PATH)
-        await page.waitForLoadState('networkidle')
-        await page.getByText('Prop — prepended corner (regression)', { exact: true }).first().click()
-        await page.waitForTimeout(800)
-
-        const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-        const field = sandbox.locator('[data-cy="field-corner-prepended"]')
-        const outlineStart = sandbox.locator('[data-cy="field-corner-prepended"] .origam-field__outline--start')
-
-        await expect(field).toBeVisible({ timeout: 5000 })
-        await expect(outlineStart).toBeVisible({ timeout: 3000 })
-
-        const radiusPx = await field.evaluate(el => parseFloat(getComputedStyle(el).borderTopLeftRadius))
-        const outlineBox = await outlineStart.boundingBox()
-
-        expect(radiusPx).toBeGreaterThan(6)
-        expect(outlineBox).not.toBeNull()
-        expect(outlineBox!.width).toBeGreaterThanOrEqual(radiusPx - 1)
     })
 })

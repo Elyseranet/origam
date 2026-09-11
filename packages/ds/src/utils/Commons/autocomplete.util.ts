@@ -1,4 +1,4 @@
-import { COMPOSITION_IGNORE_KEYS } from '../../consts/Commons/autocomplete.const'
+import { COMPOSITION_IGNORE_KEYS } from '../../consts'
 
 /**
  * Is composing ignore key.

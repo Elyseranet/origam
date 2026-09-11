@@ -1,3 +1,3 @@
-import OrigamSpacer from '../../components/Grids/OrigamSpacer.vue'
+import { OrigamSpacer } from "../../components"
 
 export type TOrigamSpacer = InstanceType<typeof OrigamSpacer>

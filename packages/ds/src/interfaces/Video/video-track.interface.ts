@@ -1,4 +1,4 @@
-import type { TVideoTrackKind } from '../../types/Video/video.type'
+import type { TVideoTrackKind } from '../../types'
 
 /**
  * A single `<track>` declaration attached to the `<video>` element.

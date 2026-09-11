@@ -1,0 +1,11 @@
+{
+  "app": {
+    "background-color": { "$type": "color",     "$value": "{color.surface.default}" },
+    "color":            { "$type": "color",     "$value": "{color.text.primary}" },
+    "min-height":       { "$type": "dimension", "$value": "100vh" },
+    "display":          { "$type": "other",     "$value": "flex" },
+    "flex-direction":   { "$type": "other",     "$value": "column" },
+    "overflow":         { "$type": "other",     "$value": "hidden" },
+    "position":         { "$type": "other",     "$value": "relative" }
+  }
+}

@@ -1,13 +1,9 @@
 # OrigamList
 
-`<OrigamList>` is the root container of the List family. It lays out rows either
-from **slotted children** (`OrigamListItem`, `OrigamListSubheader`,
-`OrigamListGroup`, …) or from a **declarative `items` array**, and it owns the
-nested selection/expansion state shared by every descendant.
-
-Its ARIA role describes what it **is**, not what it could do: a plain
-`role="list"` by default, and `role="listbox"` only once the consumer asks for
-selection. See [Accessibility](#accessibility).
+`<OrigamList>` is the root container of the List family. It renders a `role="listbox"`
+region that lays out rows either from **slotted children** (`OrigamListItem`,
+`OrigamListSubheader`, `OrigamListGroup`, …) or from a **declarative `items` array**,
+and it owns the nested selection/expansion state shared by every descendant.
 
 ## Basic usage
 
@@ -153,7 +149,7 @@ add an `origam-list--{lines}-line` class to the root — **but no CSS rule in
 the codebase selects that class**, so today it has no visible effect. The
 line-clamp itself only works when set directly on each `OrigamListItem`
 (`origam-list-item--{lines}-line`, documented on
-`OrigamListItem`). See the known-gap note under
+[`OrigamListItem`](./OrigamListItem.md)). See the known-gap note under
 Props.
 
 ## Disabled
@@ -203,7 +199,7 @@ a scrollable list (`max-height` + the default `overflow: auto`).
 | `itemValue` | `TSelectItemKey` | `'value'` | Key/path/accessor read for each item's value |
 | `itemChildren` | `TSelectItemKey` | `'children'` | Key/path/accessor read for nested children |
 | `itemProps` | `TSelectItemKey` | `'props'` | Key/path/accessor read for the props forwarded to the row renderer |
-| `itemType` | `string` | `'type'` | Key/path/accessor read off each raw `items` entry to discriminate `item` / `subheader` / `divider` (`LIST_ITEM_TYPE`) |
+| `itemType` | `string` | `'type'` | Intended to discriminate `item` / `subheader` / `divider` (`LIST_ITEM_TYPE`) — **not currently wired through**, see known gap below |
 | `returnObject` | `boolean` | — | `selected` carries the raw item objects instead of their `value` |
 | `valueComparator` | `(a, b) => boolean` | `deepEqual` | Custom equality check used to match a `selected` value back to an item |
 | `selected` | `Array<unknown>` | — | v-model:selected — currently selected id(s) |
@@ -243,23 +239,23 @@ a scrollable list (`max-height` + the default `overflow: auto`).
 >   the class-generation line itself. Passing `lines` on `OrigamList` today
 >   has no visible effect; each `OrigamListItem` needs its own `lines` prop
 >   for the clamp to actually apply.
+> - `itemType` and the `type` field it's meant to read off each raw `items`
+>   entry are **dropped during transform**:
+>   `transformListItem` (`packages/ds/src/utils/List/list-item.util.ts`)
+>   never reads `props.itemType`, and its returned object
+>   (`{ title, value, props, children, raw }`) never sets a `type` field.
+>   Since `OrigamListChildren.hasDivider` / `hasSubheader`
+>   (`packages/ds/src/components/List/OrigamListChildren.vue`) only match on
+>   `item.type === LIST_ITEM_TYPE.DIVIDER` / `.SUBHEADER`, an `items` entry
+>   like `{ type: 'subheader', title: 'Fruits' }` renders as a plain
+>   `OrigamListItem`, not a subheader — the discriminant is silently lost.
+>   The story `OrigamList.story.vue` (`itemsWithSubheader`,
+>   `itemsWithDivider`) exercises exactly this shape, which is what
+>   surfaced the gap while cross-checking the code — it likely doesn't
+>   render as intended today. Groups still work because `hasChildren`
+>   checks for a `children` array, independent of `type`.
+>
 > Flagging all of the above rather than guessing at intended behaviour.
-
-**Fixed (#424)** — `itemType` / structural `items` entries used to be dropped
-during transform: `transformListItem`
-(`packages/ds/src/utils/List/list-item.util.ts`) never read `props.itemType`
-and never set a `type` field on its returned object, so `OrigamListChildren`'s
-`hasDivider` / `hasSubheader` (which only match on `item.type ===
-LIST_ITEM_TYPE.DIVIDER` / `.SUBHEADER`) always fell through to the default
-`OrigamListItem` branch — a `{ type: 'divider' }` entry has no `title` key,
-so the un-stringified raw item leaked into the row's `title` prop and Vue
-rendered it as a literal JSON dump. Both are fixed: `type` is read and
-forwarded, and the row's resolved `title` is always coerced to a string
-before being handed to a component prop. `{ type: 'subheader', title: '…' }`
-/ `{ type: 'divider' }` entries in a plain `items` array now render as a real
-`OrigamListSubheader` / `<origam-divider role="separator">`, exactly like the
-`OrigamList.story.vue` fixtures (`itemsWithSubheader`, `itemsWithDivider`)
-intend.
 
 ## Emits
 
@@ -293,9 +289,9 @@ intend.
 `OrigamList` is the entry point of a small family of components you compose
 directly in your templates:
 
-- `OrigamListItem` — a single row (title/subtitle,
+- [`OrigamListItem`](./OrigamListItem.md) — a single row (title/subtitle,
   prepend/append icon or avatar, link behaviour).
-- `OrigamListSubheader` — a section label between
+- [`OrigamListSubheader`](./OrigamListSubheader.md) — a section label between
   groups of items.
 - `OrigamListGroup` (`packages/ds/src/components/List/OrigamListGroup.vue`) —
   a collapsible group: renders an activator row (an `OrigamListItem` by
@@ -303,61 +299,18 @@ directly in your templates:
   items. Used automatically for `items` with a non-empty `children` array, or
   can be nested manually in the default slot. **No dedicated doc page exists
   for it yet** — flagging this gap rather than inventing one.
-- `OrigamListGroupActivator` — the low-level
+- [`OrigamListGroupActivator`](./OrigamListGroupActivator.md) — the low-level
   wrapper a custom `#groupActivator` slot content should be placed in; it
   registers the group-activator context so the activator itself doesn't
   count as a nested list item.
-- `OrigamListChildren` — the internal renderer
+- [`OrigamListChildren`](./OrigamListChildren.md) — the internal renderer
   that turns an `items` array into rows (item / subheader / divider / group);
   used automatically when you pass `items`, rarely instantiated directly.
 
 ## Accessibility
 
-### Two modes, one decision (#424)
-
-The root used to hard-code `role="listbox"` — unconditionally, for every list
-ever rendered. A listbox is a **selection widget**: it promises `option`
-children carrying `aria-selected`, and a screen reader announces it as "list
-box, N items, selected …". A navigation list, a list of subheaders and
-dividers, or `<OrigamMenu>`'s item list is none of those. The role now
-describes what the list is:
-
-| the consumer… | root | every real row |
-|---|---|---|
-| renders a list (default) | `role="list"` | `role="listitem"`, no `aria-selected` |
-| asks for selection | `role="listbox"` | `role="option"` + `aria-selected` (+ `aria-disabled` when `disabled`) |
-
-**Selection mode is entered by passing `selected`** (typically
-`v-model:selected`), **an explicit `selectStrategy`, or a listener on
-`update:selected`** — that emit only ever fires when a selection changes, so
-wiring it is asking for selection. The first two are exactly what
-`<OrigamSelect>` passes — so its combobox contract holds, `aria-controls` and
-`aria-activedescendant` still pointing at a real listbox of real options — and
-none of the three is what `<OrigamMenu>` passes, so a menu's list stops
-claiming to be a listbox it never was.
-
-⛔ The mode is **not** read from `props.selectStrategy`. That prop has a
-`withDefaults` value, so it is always truthy; reading it would leave every list
-on earth a listbox. It is read off `vnode.props` through `usePassedProps` —
-the difference between "the consumer asked" and "Vue filled in a default".
-That is also the only place the `update:selected` listener is visible: Vue
-strips the listener of a **declared** emit out of `$attrs`.
-
-A row never picks its own role: the list publishes it through `ORIGAM_LIST_KEY`
-and the row reads it, so the container and its rows can never disagree. Values
-live in the `LIST_ROLE` / `LIST_ITEM_ROLE` enums.
-
-- Root carries a roving `tabindex` (`0` when focusable, `-1` when `disabled`
-  or already focused inside).
-- `OrigamListSubheader` (a label, not a selectable element) and the divider
-  (`role="separator"`, via `OrigamDivider`) get neither row role. Neither does
-  a group's activator row — it only toggles expand/collapse and never fires a
-  selection, so it is a control, not one of the list's rows.
-  A bare `OrigamListItem` rendered outside any list (`list` context absent)
-  gets no role at all — no ARIA is better than a role whose promised
-  container doesn't exist.
-- Passing your own `role` on `<OrigamList>` overrides the computed one, for a
-  container that is genuinely something else (a `menu`, a `tablist`).
+- Root renders `role="listbox"` with a roving `tabindex` (`0` when
+  focusable, `-1` when `disabled` or already focused inside).
 - Each nested collapsible group (`OrigamListGroup`) renders its items region
   as `role="group"` with `aria-labelledby` pointing at its activator.
 - Arrow key / Home / End navigation moves focus between rows without
@@ -388,5 +341,5 @@ live in the `LIST_ROLE` / `LIST_ITEM_ROLE` enums.
 Row-level (`--origam-list-item---*`), subheader-level
 (`--origam-list-subheader---*`) and group-level (`--origam-list-group---*`)
 variables are documented on their own pages
-(`OrigamListItem`,
-`OrigamListSubheader`).
+([`OrigamListItem`](./OrigamListItem.md#tokens),
+[`OrigamListSubheader`](./OrigamListSubheader.md#tokens)).

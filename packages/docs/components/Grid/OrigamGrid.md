@@ -33,23 +33,6 @@ ergonomic object syntax. Anyone can skip it and put
 | `inline`         | `boolean`                                                                              | `false`      | Toggles `display: inline-grid`.                                                                        |
 | `tag`            | `string`                                                                               | `'div'`      | Rendered HTML element.                                                                                 |
 
-### Transversal props — OrigamGrid
-
-`IGridProps` also extends the shared surface interfaces, and the component
-consumes every one of them on its root element. They are driven by the
-story's controls too.
-
-| Group     | Props                                                                                                                                                                              | Composable       |
-|-----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------|
-| Color     | `color`, `bgColor`                                                                                                                                                                  | `useBothColor`   |
-| Border    | `border`, `borderTop`, `borderRight`, `borderBottom`, `borderLeft`, `borderBlock`, `borderInline`, `borderColor`, `borderStyle`, `borderTopColor`, `borderRightColor`, `borderBottomColor`, `borderLeftColor` | `useBorder`      |
-| Rounded   | `rounded`, `roundedTopLeft`, `roundedTopRight`, `roundedBottomLeft`, `roundedBottomRight`                                                                                            | `useRounded`     |
-| Elevation | `elevation`                                                                                                                                                                          | `useElevation`   |
-| Dimension | `width`, `height`, `minWidth`, `minHeight`, `maxWidth`, `maxHeight`                                                                                                                  | `useDimension`   |
-| Padding   | `padding`, `paddingTop`, `paddingRight`, `paddingBottom`, `paddingLeft`, `paddingBlock`, `paddingInline`                                                                             | `usePadding`     |
-| Margin    | `margin`, `marginTop`, `marginRight`, `marginBottom`, `marginLeft`, `marginBlock`, `marginInline`                                                                                    | `useMargin`      |
-| Commons   | `id`, `class`, `style`                                                                                                                                                               | —                |
-
 ## Props — OrigamGridItem
 
 | Prop          | Type                                              | Default      | Notes                                                                                                  |
@@ -60,21 +43,6 @@ story's controls too.
 | `alignSelf`   | `'start' \| 'center' \| 'end' \| 'stretch'`       | `undefined`  | Per-item override of the parent's `alignItems`.                                                        |
 | `justifySelf` | `'start' \| 'center' \| 'end' \| 'stretch'`       | `undefined`  | Per-item override of the parent's `justifyItems`.                                                      |
 | `tag`         | `string`                                          | `'div'`      | Rendered HTML element.                                                                                 |
-| `id` / `class` / `style` | `ICommonsComponentProps`               | `undefined`  | Passthrough on the root element. `IGridItemProps` extends nothing else — no color, border or spacing surface here. |
-
-## Emits
-
-Neither component emits anything. `IGridEmits` and `IGridItemEmits` are
-declared empty on purpose — both are purely presentational containers.
-
-## Slots
-
-| Component        | Slot      | Bindings | Description               |
-|------------------|-----------|----------|---------------------------|
-| `OrigamGrid`     | `default` | —        | The grid items.           |
-| `OrigamGridItem` | `default` | —        | The cell's content.       |
-
-Both are typed as `ICommonsComponentSlots`; there is no named slot on either.
 
 ## IGridLineSpec
 
@@ -88,10 +56,9 @@ interface IGridLineSpec {
 
 ## Tokens
 
-`packages/ds/src/assets/css/tokens/light.css` / `dark.css` (SCSS twins
-under `packages/ds/src/assets/scss/tokens/`) expose the gap-size matrix:
+`tokens/component/grid.json` exposes the gap-size matrix:
 
-| Token  | CSS variable                  | Resolves to (primitive tier)   |
+| Token  | CSS variable                  | Resolves to (`primitive.json`) |
 |--------|-------------------------------|--------------------------------|
 | `xs`   | `--origam-grid---gap-xs`      | `space.1`  →  4 px             |
 | `sm`   | `--origam-grid---gap-sm`      | `space.2`  →  8 px             |

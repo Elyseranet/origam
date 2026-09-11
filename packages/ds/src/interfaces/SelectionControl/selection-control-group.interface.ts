@@ -1,11 +1,5 @@
-import type { IColorProps } from '../Commons/color.interface'
-import type {
-    ICommonsComponentEmits,
-    ICommonsComponentProps
-} from '../Commons/commons.interface'
-import type { IDensityProps } from '../Commons/density.interface'
-import type { IRippleProps } from '../Commons/ripple.interface'
-import type { TIcon } from '../../types/Icon/icon.type'
+import type { IColorProps, ICommonsComponentEmits, ICommonsComponentProps, IDensityProps, IRippleProps } from '../../interfaces'
+import type { TIcon } from '../../types'
 
 import { Ref } from 'vue'
 

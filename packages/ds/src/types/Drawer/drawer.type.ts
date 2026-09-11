@@ -1,3 +1,3 @@
-import OrigamDrawer from '../../components/Drawer/OrigamDrawer.vue'
+import { OrigamDrawer } from "../../components"
 
 export type TOrigamDrawer = InstanceType<typeof OrigamDrawer>

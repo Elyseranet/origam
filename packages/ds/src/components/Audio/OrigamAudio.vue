@@ -1,7 +1,5 @@
 <template>
-	<component
-			:is="tag"
-			:id="id"
+	<article
 			class="origam-audio"
 			:class="rootClasses"
 			:style="rootStyles"
@@ -43,164 +41,156 @@
 			/>
 		</audio>
 
-		<template v-if="isCustomControls">
-			<slot
-					name="controls"
-					v-bind="controlsSlotBindings"
-			>
-				<origam-media-controller
-						:loop-mode="resolvedLoopMode"
-						:shuffle="resolvedShuffle"
-						:state="state"
-						:methods="methods"
-						:playback-rates="playbackRates"
-						:allow-remote-playback="allowRemotePlayback"
-						:downloadable="downloadable"
-						:download-url="downloadUrl"
-						:download-filename="downloadFilename"
-						:show-previous="hasPlaylist"
-						:show-next="hasPlaylist"
-						:show-loop="true"
-						:show-shuffle="hasPlaylist"
-						class="origam-audio__controller"
-						data-cy="origam-audio-controls"
-						@previous="onPrevious"
-						@next="onNext"
-						@download="onDownloadClick"
-						@update:loop-mode="onLoopModeChange"
-						@update:shuffle="onShuffleChange"
-				>
-					<template #header>
-						<slot name="header">
-							<div
-									v-if="hasCover || hasMetadata"
-									class="origam-audio__header"
-									:class="{ 'origam-audio__header--no-cover': !hasCover }"
-							>
-								<figure
-										v-if="hasCover"
-										class="origam-audio__cover"
-										data-cy="origam-audio-cover-figure"
-								>
-									<slot name="cover">
-										<img
-												:src="resolvedCover!"
-												:alt="coverAlt"
-												:width="coverSizePx"
-												:height="coverSizePx"
-												class="origam-audio__cover-img"
-												data-cy="origam-audio-cover"
-												loading="lazy"
-												decoding="async"
-										/>
-									</slot>
-								</figure>
-
-								<header
-										v-if="hasMetadata"
-										class="origam-audio__metadata"
-										data-cy="origam-audio-metadata"
-								>
-									<slot name="metadata">
-										<slot name="title">
-											<strong
-													v-if="resolvedTitle"
-													class="origam-audio__title"
-													data-cy="origam-audio-title"
-													:style="typographyTitleStyles"
-											>{{ resolvedTitle }}</strong>
-										</slot>
-										<span
-												v-if="hasMetaLine"
-												class="origam-audio__meta"
-												:style="typographyMetaStyles"
-										>
-											<span
-													v-if="resolvedArtist"
-													class="origam-audio__artist"
-													data-cy="origam-audio-artist"
-											>{{ resolvedArtist }}</span>
-											<span
-													v-if="resolvedAlbum"
-													class="origam-audio__album"
-													data-cy="origam-audio-album"
-											>{{ resolvedAlbum }}</span>
-											<span
-													v-if="hasDurationLabel"
-													class="origam-audio__duration"
-													data-cy="origam-audio-duration"
-											>{{ formattedDuration }}</span>
-										</span>
-									</slot>
-								</header>
-							</div>
-						</slot>
-					</template>
-
-					<template #waveform>
-						<slot
-								name="waveform"
-								:peaks="peaks"
-								:current-time="state.currentTime.value"
-								:duration="state.duration.value"
-						>
-							<origam-slider-field
-									:model-value="state.currentTime.value"
-									:max="scrubberMax"
-									:step="0.1"
-									:buffered="state.buffered.value"
-									:peaks="isCompactVariant ? undefined : displayedPeaks"
-									:aria-label="waveformAriaLabel"
-									:variant="isCompactVariant ? 'timer' : 'audio'"
-									show-thumb-on-hover-only
-									show-hover-tooltip
-									:format-hover-tooltip="formatTimeTooltip"
-									class="origam-audio__waveform-slider"
-									:style="{ color: 'inherit' }"
-									data-cy="origam-audio-waveform-slider"
-									@update:model-value="onWaveformSeek"
-							/>
-						</slot>
-					</template>
-
-					<template
-							v-if="hasPlaylist"
-							#footer
+		<origam-media-controller
+				v-if="isCustomControls"
+				v-model:loop-mode="internalLoopMode"
+				v-model:shuffle="internalShuffle"
+				:state="state"
+				:methods="methods"
+				:playback-rates="playbackRates"
+				:allow-remote-playback="allowRemotePlayback"
+				:downloadable="downloadable"
+				:download-url="downloadUrl"
+				:download-filename="downloadFilename"
+				:show-previous="hasPlaylist"
+				:show-next="hasPlaylist"
+				:show-loop="true"
+				:show-shuffle="hasPlaylist"
+				class="origam-audio__controller"
+				data-cy="origam-audio-controls"
+				@previous="onPrevious"
+				@next="onNext"
+				@download="onDownloadClick"
+		>
+			<template #header>
+				<slot name="header">
+					<div
+							v-if="hasCover || hasMetadata"
+							class="origam-audio__header"
+							:class="{ 'origam-audio__header--no-cover': !hasCover }"
 					>
-						<slot
-								name="playlist"
-								:tracks="playlist"
-								:current-index="safeTrackIndex"
-								:select="setActiveTrack"
+						<figure
+								v-if="hasCover"
+								class="origam-audio__cover"
+								data-cy="origam-audio-cover-figure"
 						>
-							<origam-list
-								class="origam-audio__playlist"
-								data-cy="origam-audio-playlist"
-							>
-								<origam-list-item
-										v-for="(track, index) in playlist"
-										:key="track.id ?? index"
-										:active="index === safeTrackIndex"
-										:title="trackTitle(track, index)"
-										:subtitle="track.artist"
-										:prepend-avatar="track.cover"
-										class="origam-audio__playlist-item"
-										:data-cy="`origam-audio-playlist-item-${ index }`"
-										@click="setActiveTrack(index)"
+							<slot name="cover">
+								<img
+										:src="resolvedCover!"
+										:alt="coverAlt"
+										:width="coverSizePx"
+										:height="coverSizePx"
+										class="origam-audio__cover-img"
+										data-cy="origam-audio-cover"
+										loading="lazy"
+										decoding="async"
+								/>
+							</slot>
+						</figure>
+
+						<header
+								v-if="hasMetadata"
+								class="origam-audio__metadata"
+								data-cy="origam-audio-metadata"
+						>
+							<slot name="metadata">
+								<slot name="title">
+									<strong
+											v-if="resolvedTitle"
+											class="origam-audio__title"
+											data-cy="origam-audio-title"
+											:style="typographyTitleStyles"
+									>{{ resolvedTitle }}</strong>
+								</slot>
+								<span
+										v-if="hasMetaLine"
+										class="origam-audio__meta"
+										:style="typographyMetaStyles"
 								>
-									<template
-											v-if="track.duration"
-											#append
-									>
-										<span class="origam-audio__playlist-duration">{{ formatMediaTime(track.duration) }}</span>
-									</template>
-								</origam-list-item>
-							</origam-list>
-						</slot>
-					</template>
-				</origam-media-controller>
-			</slot>
-		</template>
+									<span
+											v-if="resolvedArtist"
+											class="origam-audio__artist"
+											data-cy="origam-audio-artist"
+									>{{ resolvedArtist }}</span>
+									<span
+											v-if="resolvedAlbum"
+											class="origam-audio__album"
+											data-cy="origam-audio-album"
+									>{{ resolvedAlbum }}</span>
+									<span
+											v-if="hasDurationLabel"
+											class="origam-audio__duration"
+											data-cy="origam-audio-duration"
+									>{{ formattedDuration }}</span>
+								</span>
+							</slot>
+						</header>
+					</div>
+				</slot>
+			</template>
+
+			<template #waveform>
+				<slot
+						name="waveform"
+						:peaks="peaks"
+						:current-time="state.currentTime.value"
+						:duration="state.duration.value"
+				>
+					<origam-slider-field
+							:model-value="state.currentTime.value"
+							:max="scrubberMax"
+							:step="0.1"
+							:buffered="state.buffered.value"
+							:peaks="isCompactVariant ? undefined : displayedPeaks"
+							:aria-label="waveformAriaLabel"
+							:variant="isCompactVariant ? 'timer' : 'audio'"
+							show-thumb-on-hover-only
+							show-hover-tooltip
+							:format-hover-tooltip="formatTimeTooltip"
+							class="origam-audio__waveform-slider"
+							:style="{ color: 'inherit' }"
+							data-cy="origam-audio-waveform-slider"
+							@update:model-value="onWaveformSeek"
+					/>
+				</slot>
+			</template>
+
+			<template
+					v-if="hasPlaylist"
+					#footer
+			>
+				<slot
+						name="playlist"
+						:tracks="props.playlist"
+						:current-index="safeTrackIndex"
+						:select="setActiveTrack"
+				>
+					<origam-list
+						class="origam-audio__playlist"
+						data-cy="origam-audio-playlist"
+					>
+						<origam-list-item
+								v-for="(track, index) in props.playlist"
+								:key="track.id ?? index"
+								:active="index === safeTrackIndex"
+								:title="track.title ?? `Track ${ index + 1 }`"
+								:subtitle="track.artist"
+								:prepend-avatar="track.cover"
+								class="origam-audio__playlist-item"
+								:data-cy="`origam-audio-playlist-item-${ index }`"
+								@click="setActiveTrack(index)"
+						>
+							<template
+									v-if="track.duration"
+									#append
+							>
+								<span class="origam-audio__playlist-duration">{{ formatMediaTime(track.duration) }}</span>
+							</template>
+						</origam-list-item>
+					</origam-list>
+				</slot>
+			</template>
+		</origam-media-controller>
 
 		<div
 				v-if="state.loading.value && !state.error.value"
@@ -238,7 +228,7 @@
 				<span class="origam-audio__error-msg">{{ errorMessage }}</span>
 			</slot>
 		</div>
-	</component>
+	</article>
 </template>
 
 <script
@@ -258,37 +248,34 @@
 	import { OrigamMediaController } from '../Media'
 	import { OrigamSliderField } from '../SliderField'
 
-	import { useUnsupportedProp } from '../../composables/Commons/unsupportedProp.composable'
-	import { useBorder } from '../../composables/Commons/border.composable'
-	import { useColorEffect } from '../../composables/Commons/colorEffect.composable'
-	import { useDimension } from '../../composables/Commons/dimension.composable'
-	import { useElevation } from '../../composables/Commons/elevation.composable'
-	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useMargin } from '../../composables/Commons/margin.composable'
-	import { usePadding } from '../../composables/Commons/padding.composable'
-	import { usePosition } from '../../composables/Commons/position.composable'
-	import { useRounded } from '../../composables/Commons/rounded.composable'
-	import { useTypography } from '../../composables/Commons/typography.composable'
+	import {
+		useBorder,
+		useColorEffect,
+		useDimension,
+		useElevation,
+		useLocale,
+		useMargin,
+		usePadding,
+		usePosition,
+		useRounded,
+		useTypography
+	} from '../../composables'
 	import { useAudioPlayer } from '../../composables/Audio/use-audio-player.composable'
 	import { useWaveform } from '../../composables/Audio/use-waveform.composable'
 	import { shouldSuppressAutoplay } from '../../composables/Media/use-media-player.composable'
 
-	import { UNSEEDED } from '../../consts/Commons/vmodel.const'
-
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { MDI_ICONS } from '../../enums'
 
 	import type {
 		IAudioEmits,
 		IAudioProps,
-		IAudioScopedSlotBindings,
-		IAudioSlots,
 		IAudioSource,
 		IAudioTrack
 	} from '../../interfaces/Audio/audio-player.interface'
 
-	import type { TAudioLoopMode } from '../../types/Audio/audio.type'
+	import type { TAudioLoopMode } from '../../types'
 
-	import { formatMediaTime } from '../../utils/Media/format-time.util'
+	import { formatMediaTime } from '../../utils'
 
 	/*********************************************************
 	 * Global
@@ -343,8 +330,6 @@
 
 	const emit = defineEmits<IAudioEmits>()
 
-	defineSlots<IAudioSlots>()
-
 	/*********************************************************
 	 * Icon refs — single source of truth for the transport + status
 	 * glyphs. Inlined as a const object so the template only sees
@@ -363,23 +348,8 @@
 	 * transport) lives inside `<origam-media-controller>` and
 	 * resolves there directly.
 	 ********************************************************/
-	const waveformAriaLabel = computed<string>(() => t('origam.media.seek'))
-	const loadingLabel = computed<string>(() => t('origam.loading'))
-
-	/*********************************************************
-	 * trackTitle — #436 (C8)
-	 *
-	 * @description
-	 * A playlist entry without a `title` used to fall back to the
-	 * template literal `Track ${ index + 1 }` — an English string
-	 * rendered verbatim under every locale, and a computation inside
-	 * the template. It now resolves `origam.audio.track_number`
-	 * (`"Track {0}"` / `"Piste {0}"`), interpolated positionally by
-	 * the builtin locale adapter.
-	 ********************************************************/
-	function trackTitle (track: IAudioTrack, index: number): string {
-		return track.title ?? t('origam.audio.track_number', index + 1)
-	}
+	const waveformAriaLabel = computed<string>(() => t('origam.media.seek', 'Seek'))
+	const loadingLabel = computed<string>(() => t('origam.loading', 'Loading'))
 
 	/*********************************************************
 	 * Resolved autoplay / muted — autoplay is suppressed when the user
@@ -420,7 +390,7 @@
 	 * Playlist state machine
 	 *
 	 * @description
-	 * When `playlist` is set, the active track drives the
+	 * When `props.playlist` is set, the active track drives the
 	 * `<audio>` source AND the metadata strip. The component owns
 	 * an internal `currentTrackIndex` ref that v-models against the
 	 * parent so consumers can either read it or control it externally.
@@ -515,7 +485,7 @@
 		const total = props.playlist!.length
 		if (total === 0) return
 
-		if (resolvedShuffle.value) {
+		if (internalShuffle.value) {
 			setActiveTrack(pickRandomIndex())
 			return
 		}
@@ -537,27 +507,18 @@
 	 *
 	 * Legacy `loop: true` maps to `loopMode='one'` at read-time when
 	 * the consumer hasn't explicitly set `loopMode`.
-	 *
-	 * #648 — `internalLoopMode` used to be seeded via
-	 * `ref(initialLoopMode)`, itself derived from `props.loopMode` /
-	 * `props.loop` read EAGERLY in the body of `setup()`. Vue runs
-	 * `setup()` BEFORE the `beforeCreate` hook where the ADR-005
-	 * theme-props resolver patches `instance.props` (root CLAUDE.md), so
-	 * a theme default for `loopMode` on `origam-audio` was captured too
-	 * late and silently lost — same defect as #429 on
-	 * `OrigamMediaController`. Fixed the same way: the ref starts
-	 * `UNSEEDED` and the legacy-aware seed is computed LAZILY, on first
-	 * read through `resolvedLoopMode` (a `computed`, evaluated at render
-	 * — comfortably after `beforeCreate`), not at `setup()` time.
 	 ********************************************************/
-	const internalLoopMode = ref<TAudioLoopMode | typeof UNSEEDED>(UNSEEDED)
+	// Initialise the internal loop mode honouring the legacy `loop:true`
+	// flag when the consumer hasn't passed an explicit `loopMode`.
 	// `withDefaults` resolves `loopMode` to `'none'` by default, so we
-	// only fall through to the legacy `loop` flag when `loopMode` was
-	// left at its default — never overriding an explicit non-'none' value.
-	const seedLoopMode = (): TAudioLoopMode =>
+	// only fall through to `'one'` when `loop:true` AND `loopMode` was
+	// left at its default — never overriding an explicit `'none'`.
+	const initialLoopMode: TAudioLoopMode =
 		props.loopMode && props.loopMode !== 'none'
 			? props.loopMode
 			: (props.loop ? 'one' : 'none')
+
+	const internalLoopMode = ref<TAudioLoopMode>(initialLoopMode)
 	watch(() => props.loopMode, (next) => {
 		if (next && next !== internalLoopMode.value) internalLoopMode.value = next
 	})
@@ -568,58 +529,17 @@
 	watch(() => props.loop, (next) => {
 		if (props.loopMode && props.loopMode !== 'none') return
 		internalLoopMode.value = next ? 'one' : 'none'
-		emit('update:loopMode', internalLoopMode.value as TAudioLoopMode)
+		emit('update:loopMode', internalLoopMode.value)
 	})
 
-	/*********************************************************
-	 * onLoopModeChange — #436
-	 *
-	 * @description
-	 * Exact twin of `onShuffleChange` below, and the defect 40c099b8
-	 * fixed for shuffle but not for loop: `v-model:loop-mode` on
-	 * `<origam-media-controller>` SWALLOWED the child's `update:loopMode`
-	 * into the internal ref, so a consumer's own `v-model:loopMode` /
-	 * `@update:loopMode` on `<OrigamAudio>` never fired for a real user
-	 * click on the loop button — only when the parent flipped the legacy
-	 * `loop` prop. The story's "Events - update:loopMode" Variant logged
-	 * nothing at all.
-	 ********************************************************/
-	const onLoopModeChange = (next: TAudioLoopMode) => {
-		internalLoopMode.value = next
-		emit('update:loopMode', next)
-	}
+	const resolvedLoopMode = computed<TAudioLoopMode>(() => internalLoopMode.value)
 
-	const resolvedLoopMode = computed<TAudioLoopMode>(() => (
-		internalLoopMode.value === UNSEEDED ? seedLoopMode() : internalLoopMode.value
-	))
-
-	/*********************************************************
-	 * #648 — same eager-read/ADR-005 trap as `loopMode` above, same fix:
-	 * `internalShuffle` starts `UNSEEDED`, the `props.shuffle ?? false`
-	 * seed is read lazily through `resolvedShuffle` at render time.
-	 ********************************************************/
-	const internalShuffle = ref<boolean | typeof UNSEEDED>(UNSEEDED)
+	const internalShuffle = ref<boolean>(props.shuffle ?? false)
 	watch(() => props.shuffle, (next) => {
 		if (typeof next === 'boolean' && next !== internalShuffle.value) {
 			internalShuffle.value = next
 		}
 	})
-	const resolvedShuffle = computed<boolean>(() => (
-		internalShuffle.value === UNSEEDED ? (props.shuffle ?? false) : internalShuffle.value
-	))
-	/*********************************************************
-	 * onShuffleChange
-	 *
-	 * @description
-	 * The shuffle toggle lives in `<origam-media-controller>` — its
-	 * `update:shuffle` is relayed here (rather than v-modelled) so the
-	 * consumer's own `v-model:shuffle` / `update:shuffle` listener on
-	 * `<OrigamAudio>` actually fires when the user clicks the button.
-	 ********************************************************/
-	const onShuffleChange = (next: boolean) => {
-		internalShuffle.value = next
-		emit('update:shuffle', next)
-	}
 
 	/*********************************************************
 	 * Source resolution — when a playlist is active the `<audio>`
@@ -654,33 +574,6 @@
 		loop: props.loop,
 		preload: props.preload
 	})
-
-	/*********************************************************
-	 * controlsSlotBindings — #378
-	 *
-	 * @description
-	 * `IAudioSlots.controls` was declared and documented ("Override the
-	 * entire controls, replaces the default `<OrigamMediaController>`")
-	 * but never rendered in the template: a consumer following the doc
-	 * got total silence. Bindings mirror `IAudioScopedSlotBindings`
-	 * exactly — unwrapped snapshots of the internal `state` refs plus
-	 * the imperative `methods` object already driving the default
-	 * `<OrigamMediaController>`, so a custom transport has the same
-	 * capability as the built-in one.
-	 ********************************************************/
-	const controlsSlotBindings = computed<IAudioScopedSlotBindings>(() => ({
-		playing: state.playing.value,
-		paused: state.paused.value,
-		currentTime: state.currentTime.value,
-		duration: state.duration.value,
-		buffered: state.buffered.value,
-		volume: state.volume.value,
-		muted: state.muted.value,
-		playbackRate: state.playbackRate.value,
-		loading: state.loading.value,
-		error: state.error.value,
-		methods
-	}))
 
 	/*********************************************************
 	 * Resume playback once the new track is ready — paired with
@@ -911,7 +804,7 @@
 		const total = props.playlist!.length
 		if (total === 0) return
 
-		if (resolvedShuffle.value) {
+		if (internalShuffle.value) {
 			setActiveTrack(pickRandomIndex())
 			void nextTick(() => { void methods.play() })
 			return
@@ -973,22 +866,12 @@
 
 	/*********************************************************
 	 * Error formatting for the default error overlay.
-	 *
-	 * @description
-	 * #436 (C8) — the generic label was the hardcoded English literal
-	 * `'Playback error'`, shown verbatim under every locale. It now
-	 * resolves `origam.media.playback_error`, shared with the other
-	 * media surfaces. A `MediaError` carries only a numeric `code`, so
-	 * this branch is the one a real decoding failure reaches; a
-	 * JS `Error` raised by the composable keeps its own `message`.
 	 ********************************************************/
-	const genericErrorMessage = computed<string>(() => t('origam.media.playback_error'))
-
 	const errorMessage = computed<string>(() => {
 		const err = state.error.value
-		if (!err) return genericErrorMessage.value
+		if (!err) return 'Playback error'
 		if ('message' in err && err.message) return err.message
-		return genericErrorMessage.value
+		return 'Playback error'
 	})
 
 	/*********************************************************
@@ -1007,23 +890,6 @@
 	 * supplied so the consumer's intent is always respected.
 	 ********************************************************/
 	const { colorClasses, colorStyles } = useColorEffect(props)
-
-	/*********************************************************
-	 * Props declarees sans effet (#550, critere C1)
-	 *
-	 * @description
-	 * ⛔ Exposees dans la story, parfois documentees, et pourtant lues
-	 * nulle part. Elles ne sont ni retirees — ca casserait la story et le
-	 * type d'un consommateur pour une prop qui ne faisait deja rien — ni
-	 * cablees a un comportement invente. Elles avertissent une fois, en
-	 * dev, avec la raison exacte. Meme traitement que la famille Chart.
-	 ********************************************************/
-	useUnsupportedProp(
-		'OrigamAudio',
-		'waveformColor',
-		'the waveform paints from `currentColor`; this prop reaches no declaration.',
-		() => props.waveformColor !== undefined
-	)
 	const hasColorProp = computed(() => !!props.color)
 	const hasBgColorProp = computed(() => !!props.bgColor)
 	const scrubberColorStyle = computed<Record<string, string>>(() => {
@@ -1291,14 +1157,6 @@
 			 * mask on `.origam-audio__cover` punches a real transparent
 			 * dot through this disc + image + grooves at the exact
 			 * centre, so we get a single continuous see-through hole.
-			 *
-			 * #436 (C2) — the disc colour was a hardcoded `#0a0a0a`, out of
-			 * reach of any theme. It now reads
-			 * `--origam-audio__cover-label---background-color`, declared as
-			 * `--origam-color__neutral---950` (the exact same value, so the
-			 * rendering is unchanged) in both the light and the dark sheet:
-			 * a vinyl label is a physical object, it does not flip with the
-			 * surface.
 			 */
 			content: '';
 			position: absolute;
@@ -1308,7 +1166,7 @@
 			width: 26%;
 			height: 26%;
 			border-radius: 50%;
-			background: var(--origam-audio__cover-label---background-color, #0a0a0a);
+			background: #0a0a0a;
 			box-shadow:
 				inset 0 0 0 1px rgba(255, 255, 255, 0.06),
 				0 0 6px rgba(0, 0, 0, 0.35);
@@ -1517,12 +1375,13 @@
 			}
 
 			:deep(.origam-list-item__content),
-			:deep(.origam-list-item__title) {
+			:deep(.origam-list-item__title),
+			:deep(.origam-list-item__subtitle) {
 				color: inherit;
 			}
 
 			:deep(.origam-list-item__subtitle) {
-				color: var(--origam-audio__playlist-subtitle---color, var(--origam-color__text---secondary));
+				opacity: 0.7;
 			}
 		}
 
@@ -1594,9 +1453,7 @@
 
 			:deep(.origam-avatar)::after {
 				/* Solid label disc; real spindle hole is punched by
-				   the `mask` on `.origam-avatar` itself. Shares the main
-				   cover's label token — same physical object, same
-				   colour, one override point (#436, C2). */
+				   the `mask` on `.origam-avatar` itself. */
 				content: '';
 				position: absolute;
 				top: 50%;
@@ -1605,7 +1462,7 @@
 				width: 28%;
 				height: 28%;
 				border-radius: 50%;
-				background: var(--origam-audio__cover-label---background-color, #0a0a0a);
+				background: #0a0a0a;
 				pointer-events: none;
 				z-index: 2;
 			}
@@ -1625,17 +1482,17 @@
 		}
 
 		&__playlist-artist {
-			color: var(--origam-audio__playlist-artist---color, var(--origam-color__text---secondary));
 			font-size: 12px;
+			opacity: 0.65;
 			white-space: nowrap;
 			overflow: hidden;
 			text-overflow: ellipsis;
 		}
 
 		&__playlist-duration {
-			color: var(--origam-audio__playlist-duration---color, var(--origam-color__text---secondary));
 			font-variant-numeric: tabular-nums;
 			font-size: 12px;
+			opacity: 0.6;
 			flex: 0 0 auto;
 		}
 

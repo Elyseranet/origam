@@ -8,22 +8,22 @@ import {
 } from 'vue'
 
 import {
-    QR_CODE_DEFAULT_BACKGROUND,
-    QR_CODE_DEFAULT_CORNER_RADIUS,
     QR_CODE_DEFAULT_ECC,
-    QR_CODE_DEFAULT_FOREGROUND,
-    QR_CODE_DEFAULT_LOGO_BACKGROUND,
     QR_CODE_DEFAULT_LOGO_PADDING,
     QR_CODE_DEFAULT_LOGO_SIZE,
     QR_CODE_DEFAULT_MARGIN,
-    QR_CODE_LOGO_PADDING_PX_PER_MODULE,
     QR_CODE_LRU_CAPACITY,
     QR_CODE_OVERLAY_MAX_RATIO
 } from '../../consts/QrCode/qr-code.const'
 
-import type { IQrCodeResolvedOptions, IUseQrCodeOptions } from '../../interfaces/QrCode/qr-code.interface'
+import type {
+    IQrCodeLogo,
+    IUseQrCodeOptions
+} from '../../interfaces'
 
-import type { TQrCodeErrorCorrectionLevel } from '../../types/QrCode/qr-code.type'
+import type {
+    TQrCodeErrorCorrectionLevel
+} from '../../types'
 
 /**
  * Module-level LRU keyed on the serialised payload + options. Reuse
@@ -32,6 +32,15 @@ import type { TQrCodeErrorCorrectionLevel } from '../../types/QrCode/qr-code.typ
  * `src/consts/QrCode/qr-code.const.ts`.
  */
 const matrixCache = new Map<string, boolean[][]>()
+
+interface IInternalOptions {
+    errorCorrectionLevel: TQrCodeErrorCorrectionLevel
+    foreground: string
+    background: string
+    margin: number
+    cornerRadius: number
+    logo?: IQrCodeLogo
+}
 
 /**
  * Pull a (cached or freshly built) module matrix for the requested
@@ -111,7 +120,7 @@ function escapeXmlAttr (raw: string): string {
  */
 function buildSvg (
     matrix: boolean[][],
-    options: IQrCodeResolvedOptions
+    options: IInternalOptions
 ): string {
     const count = matrix.length
     const viewSize = count + options.margin * 2
@@ -132,7 +141,7 @@ function buildSvg (
         }
     }
 
-    const backgroundRect = bg && bg !== QR_CODE_DEFAULT_BACKGROUND
+    const backgroundRect = bg && bg !== 'transparent'
         ? `<rect x="0" y="0" width="${viewSize}" height="${viewSize}" fill="${escapeXmlAttr(bg)}"/>`
         : ''
 
@@ -140,8 +149,7 @@ function buildSvg (
     if (options.logo && options.logo.src) {
         const ratio = options.logo.size ?? QR_CODE_DEFAULT_LOGO_SIZE
         const padding = options.logo.padding ?? QR_CODE_DEFAULT_LOGO_PADDING
-        const logoBg = options.logo.background
-            ?? (bg && bg !== QR_CODE_DEFAULT_BACKGROUND ? bg : QR_CODE_DEFAULT_LOGO_BACKGROUND)
+        const logoBg = options.logo.background ?? (bg && bg !== 'transparent' ? bg : '#ffffff')
 
         const logoBoxSize = count * ratio
         const logoX = options.margin + (count - logoBoxSize) / 2
@@ -159,7 +167,7 @@ function buildSvg (
          * `<image>` slot in the component template provides a runtime
          * escape hatch — see `IQrCodeSlots.center`.
          */
-        const paddingUnits = padding / QR_CODE_LOGO_PADDING_PX_PER_MODULE
+        const paddingUnits = padding / 16
         const bdX = logoX - paddingUnits
         const bdY = logoY - paddingUnits
         const bdSize = logoBoxSize + paddingUnits * 2
@@ -211,7 +219,7 @@ export function useQrCode (
         return typeof resolved === 'string' ? resolved : String(resolved ?? '')
     })
 
-    const normalisedOptions: ComputedRef<IQrCodeResolvedOptions> = computed(() => {
+    const normalisedOptions: ComputedRef<IInternalOptions> = computed(() => {
         const raw = isRef(options) || typeof options === 'function' ? toValue(options) : options
         const opts = (raw ?? {}) as IUseQrCodeOptions
 
@@ -225,10 +233,10 @@ export function useQrCode (
 
         return {
             errorCorrectionLevel: opts.errorCorrectionLevel ?? QR_CODE_DEFAULT_ECC,
-            foreground: opts.foreground ?? QR_CODE_DEFAULT_FOREGROUND,
-            background: opts.background ?? QR_CODE_DEFAULT_BACKGROUND,
+            foreground: opts.foreground ?? 'currentColor',
+            background: opts.background ?? 'transparent',
             margin: typeof opts.margin === 'number' ? opts.margin : QR_CODE_DEFAULT_MARGIN,
-            cornerRadius: typeof opts.cornerRadius === 'number' ? opts.cornerRadius : QR_CODE_DEFAULT_CORNER_RADIUS,
+            cornerRadius: typeof opts.cornerRadius === 'number' ? opts.cornerRadius : 0,
             logo: opts.logo
         }
     })

@@ -1,0 +1,75 @@
+{
+  "bottom-bar": {
+    "border-top-width":    { "$type": "dimension",  "$value": "{border.width.0}" },
+    "border-left-width":   { "$type": "dimension",  "$value": "{border.width.0}" },
+    "border-bottom-width": { "$type": "dimension",  "$value": "{border.width.0}" },
+    "border-right-width":  { "$type": "dimension",  "$value": "{border.width.0}" },
+    "border-color":        { "$type": "color",      "$value": "currentColor" },
+    "border-style":        { "$type": "other",      "$value": "solid" },
+    "border-radius":       { "$type": "dimension",  "$value": "{radius.none}" },
+
+    "density":             { "$type": "dimension",  "$value": "0px" },
+    "max-width":           { "$type": "other",      "$value": "100%" },
+    "height":              { "$type": "dimension",  "$value": "{space.12}" },
+
+    "background":          { "$type": "color",      "$value": "{color.neutral.200}" },
+    "color":               { "$type": "color",      "$value": "{color.text.primary}" },
+    "box-shadow":          { "$type": "shadow",     "$value": "{shadow.none}" },
+
+    "padding-block-start":  { "$type": "dimension", "$value": "{space.2}" },
+    "padding-block-end":    { "$type": "dimension", "$value": "{space.2}" },
+    "padding-inline-start": { "$type": "dimension", "$value": "{space.2}" },
+    "padding-inline-end":   { "$type": "dimension", "$value": "{space.2}" },
+
+    "margin-block-start":   { "$type": "dimension", "$value": "{space.0}" },
+    "margin-block-end":     { "$type": "dimension", "$value": "{space.0}" },
+    "margin-inline-start":  { "$type": "dimension", "$value": "{space.0}" },
+    "margin-inline-end":    { "$type": "dimension", "$value": "{space.0}" },
+
+    "transition-duration":          { "$type": "duration",     "$value": "0.2s, 0.1s" },
+    "transition-timing-function":   { "$type": "cubicBezier",  "$value": "{motion.easing.standard}" },
+    "transition-property":          { "$type": "other",        "$value": "transform, color" },
+
+    "elevated": {
+      "_comment": "Shadow projects UP (negative offsetY) — BottomNav lives at the bottom of the viewport, so a downward shadow would be clipped off-screen. We mirror the primitive shadow.md scale on the Y axis only.",
+      "box-shadow": { "$type": "shadow", "$value": [
+        { "offsetX": "0px", "offsetY": "-6px", "blur": "24px", "spread": "0px", "color": "rgba(0,0,0,0.05)" },
+        { "offsetX": "0px", "offsetY": "0px", "blur": "0px", "spread": "1px", "color": "rgba(0,0,0,0.08)" }
+      ]}
+    },
+
+    "active": {
+      "box-shadow": { "$type": "shadow", "$value": [
+        { "offsetX": "0px", "offsetY": "-6px", "blur": "24px", "spread": "0px", "color": "rgba(0,0,0,0.05)" },
+        { "offsetX": "0px", "offsetY": "0px", "blur": "0px", "spread": "1px", "color": "rgba(0,0,0,0.08)" }
+      ]}
+    },
+
+    "border-variant": {
+      "border-width": { "$type": "dimension", "$value": "{border.width.thin}" }
+    },
+
+    "rounded": {
+      "border-radius": { "$type": "dimension", "$value": "{radius.sm}" }
+    },
+
+    "density-comfortable": {
+      "density": { "$type": "dimension", "$value": "{space.2}" }
+    },
+
+    "density-default": {
+      "density": { "$type": "dimension", "$value": "{space.0}" }
+    },
+
+    "density-compact": {
+      "density": { "$type": "dimension", "$value": "{space.2}" }
+    },
+
+    "content": {
+      "justify-content": { "$type": "other",      "$value": "center" },
+      "align-items":      { "$type": "other",      "$value": "center" },
+      "flex-wrap":        { "$type": "other",      "$value": "nowrap" },
+      "transform":        { "$type": "other",      "$value": "none" }
+    }
+  }
+}

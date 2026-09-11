@@ -124,9 +124,7 @@ interface IProgressCircularProps extends IProgressTypeProps, ISizeProps {
 
 ## Design tokens consumed
 
-`<OrigamProgressCircular>` reads its variables from
-`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
-under `packages/ds/src/assets/scss/tokens/`).
+`<OrigamProgressCircular>` reads from `tokens/component/progress-circular.json`.
 
 | CSS variable                                            | Token reference                          |
 |---------------------------------------------------------|------------------------------------------|
@@ -139,28 +137,11 @@ under `packages/ds/src/assets/scss/tokens/`).
 
 ## Accessibility
 
-`<OrigamProgressCircular>` owns its full ARIA contract (#500) — it is
-accessible **standalone**, with no `<OrigamProgress>` wrapper required.
-
-- Renders `role="progressbar"` on its own root.
+- Renders with `role="progressbar"` (set by parent `OrigamProgress`).
 - `aria-valuemin="0"`, `aria-valuemax` mirrors `max`.
-- `aria-valuenow` is set to the normalised value in determinate mode.
-  In `indeterminate` mode it is **omitted entirely** (not set to `0`) —
-  the ARIA spec reserves `aria-valuenow` for a known value, and
-  `indeterminate` progress has none.
-- `aria-busy="true"` is set while `indeterminate`.
-- `aria-label` resolves the `label` prop (a locale key, default
-  `origam.loading`) through the DS `t()` mechanism.
-- `aria-hidden` mirrors the `active` prop (default `true`) — set
-  `active="false"` to intentionally hide an off-screen or paused
-  indicator.
+- `aria-valuenow` is set when not `indeterminate`.
 - The continuous spin is purely decorative; assistive tech announces only
   the value changes.
-
-When mounted through `<OrigamProgress type="circular">`, the wrapper
-forwards `label`/`active`/`modelValue`/`max`/`indeterminate` down to this
-component via `filterProps` — the wrapper itself declares no ARIA
-attribute, so there is only ever one `role="progressbar"` in the DOM.
 
 ## Theming notes
 

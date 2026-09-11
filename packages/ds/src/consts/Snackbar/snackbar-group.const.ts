@@ -1,4 +1,4 @@
-import type { TSnackbarGroupDirection, TSnackbarGroupLocation } from '../../types/Snackbar/snackbar-group.type'
+import type { TSnackbarGroupDirection, TSnackbarGroupLocation } from '../../types'
 
 /**
  * Closed list of valid `location` values for `OrigamSnackbarGroup`.

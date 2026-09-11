@@ -1,4 +1,4 @@
-import type { IOrigamNuxtModuleOptions, IOrigamNuxtRuntimeConfig } from '../interfaces/Commons/nuxt-module.interface'
+import type { IOrigamNuxtModuleOptions, IOrigamNuxtRuntimeConfig } from '../interfaces'
 
 declare module '@nuxt/schema' {
     interface NuxtConfig {

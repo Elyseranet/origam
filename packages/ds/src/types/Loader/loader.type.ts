@@ -1,3 +1,3 @@
-import OrigamLoader from '../../components/Loader/OrigamLoader.vue'
+import { OrigamLoader } from "../../components"
 
 export type TOrigamLoader = InstanceType<typeof OrigamLoader>

@@ -1,7 +1,6 @@
 <template>
 	<component
 			:is="tag"
-			:id="styleId"
 			v-contrast
 			:class="listGroupClasses"
 			:style="listGroupStyles"
@@ -15,9 +14,7 @@
 					>
 						<origam-list-item
 								:active="isOpen"
-								:append-avatar="appendAvatar"
 								:append-icon="appendActivatorIcon"
-								:prepend-avatar="prependAvatar"
 								:prepend-icon="prependActivatorIcon"
 								:title="title"
 								:value="value"
@@ -50,31 +47,26 @@
 		setup
 >
 	import { computed, ref, StyleValue, toRef } from 'vue'
-	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
-	import OrigamExpandY from '../Transition/OrigamExpandY.vue'
-	import OrigamListGroupActivator from './OrigamListGroupActivator.vue'
-	import OrigamListItem from './OrigamListItem.vue'
-	import OrigamTransition from '../Transition/OrigamTransition.vue'
+	import { OrigamDefaultsProvider, OrigamExpandY, OrigamListGroupActivator, OrigamListItem, OrigamTransition } from '../../components'
 
-	import { useBothColor } from '../../composables/Commons/bothColor.composable'
-	import { useList } from '../../composables/List/list.composable'
-	import { useNestedItem } from '../../composables/Commons/nestedItem.composable'
-	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useSsrBoot } from '../../composables/Commons/ssrBoot.composable'
-	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
-	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
+	import {
+		useBothColor,
+		useHover,
+		useList,
+		useNestedItem,
+		useProps,
+		useSsrBoot,
+		useStateEffect,
+		useStyle
+} from '../../composables'
 
-	import vContrast from '../../directives/Contrast/contrast.directive'
+	import { vContrast } from '../../directives'
 
-	import { omitUndefined } from '../../utils/Commons/commons.util'
+	import { MDI_ICONS } from "../../enums"
 
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import type { IListActivatorProps, IListGroupProps} from '../../interfaces'
 
-	import type { IListActivatorProps, IListGroupProps } from '../../interfaces/List/list-group.interface'
-
-	import type { IListGroupEmits, IListGroupSlots } from '../../interfaces/List/list-group.interface'
+	import type { IListGroupEmits } from '../../interfaces/List/list-group.interface'
 
 	/*********************************************************
 	 * Global
@@ -88,10 +80,8 @@
 
 	const emits = defineEmits<IListGroupEmits>()
 
-	defineSlots<IListGroupSlots>()
 
-
-	const {isOn: isHover, config: hoverState} = useStateFlag(props, {state: 'hover'})
+	const {isHover, hoverState} = useHover(props)
 	const {
 		borderClasses, borderStyles,
 		roundedClasses, roundedStyles,
@@ -102,15 +92,11 @@
 
 	// Push visual-token props down to every descendant `<origam-list-item>` as
 	// DEFAULTS — items that pass their own props still win.
-	// Forward ONLY what the consumer actually passed — see #263. `color` /
-	// `bgColor` are `TColor`, which includes `false`, so Vue coerces them to a
-	// concrete `false` when unset and `omitUndefined` alone cannot see it.
-	const wasPropPassed = usePassedProps(props)
 	const slotDefaults = computed(() => ({
-		'origam-list-item': omitUndefined({
-			color: wasPropPassed('color') ? props.color : undefined,
-			bgColor: wasPropPassed('bgColor') ? props.bgColor : undefined
-		})
+		'origam-list-item': {
+			color: props.color,
+			bgColor: props.bgColor
+		}
 	}))
 
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
@@ -189,7 +175,7 @@
 			props.class
 		]
 	})
-	const {id: styleId, css, load, isLoaded, unload} = useStyle(listGroupStyles, () => props.id)
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(listGroupStyles)
 
 
 	/*********************************************************
@@ -243,7 +229,7 @@
 
 					&:hover {
 						#{$item}__overlay {
-							opacity: var(--origam-list-group__header--active--hover---opacity, var(--origam-list__group---header-active-hover-opacity, calc(0.04 * 1)));
+							opacity: var(--origam-list-group__header--active--hover---opacity, calc(0.04 * 1));
 						}
 					}
 				}

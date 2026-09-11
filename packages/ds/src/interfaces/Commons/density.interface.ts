@@ -1,4 +1,4 @@
-import type { TDensity } from '../../types/Commons/density.type'
+import type { TDensity } from '../../types'
 
 export interface IDensityProps {
     density?: TDensity

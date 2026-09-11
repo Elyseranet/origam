@@ -1,9 +1,9 @@
 <template>
-	<figure
-			:id="id"
+	<div
 			class="origam-chart-polar"
 			:class="rootClasses"
 			:style="[rootStyles, dimensionStyles, marginStyles, paddingStyles, backgroundColorStyles, elevationStyles, roundedStyles, headerTypographyStyles]"
+			role="figure"
 			:aria-label="ariaLabel"
 			data-cy="origam-chart-polar"
 	>
@@ -31,7 +31,7 @@
 		<nav
 				v-if="hasDrilldown && isDrilled"
 				class="origam-chart-polar__breadcrumb"
-				:aria-label="drilldownNavAriaLabel"
+				aria-label="Drilldown navigation"
 				data-cy="origam-chart-polar-breadcrumb"
 		>
 			<origam-btn
@@ -135,7 +135,7 @@
 					data-cy="origam-chart-polar-empty"
 			>
 				<slot name="empty">
-					<span>{{ t('origam.chart.no_data_text') }}</span>
+					<span>No data to display</span>
 				</slot>
 			</div>
 		</div>
@@ -157,7 +157,7 @@
 				/>
 			</template>
 		</origam-chart-legend>
-	</figure>
+	</div>
 </template>
 
 <script
@@ -170,27 +170,32 @@
 		type StyleValue
 	} from 'vue'
 
-	import { useChartHeaderTypography } from '../../composables/Chart/chart-header-typography.composable'
-	import { useChartAnimationStyle } from '../../composables/Chart/chart-animation.composable'
-	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
-	import { useChart } from '../../composables/Chart/chart.composable'
-	import { useDimension } from '../../composables/Commons/dimension.composable'
-	import { useElevation } from '../../composables/Commons/elevation.composable'
-	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useMargin } from '../../composables/Commons/margin.composable'
-	import { usePadding } from '../../composables/Commons/padding.composable'
-	import { useRounded } from '../../composables/Commons/rounded.composable'
+	import {
+		useChartHeaderTypography,
+		useBackgroundColor,
+		useChart,
+		useDimension,
+		useElevation,
+		useMargin,
+		usePadding,
+		useRounded
+	} from '../../composables'
 
 	import { OrigamBtn } from '../Btn'
 
 	import OrigamChartLegend from './OrigamChartLegend.vue'
 	import OrigamChartTooltip from './OrigamChartTooltip.vue'
 
-	import type { IChartDrilldownFrame, IChartDrilldownLink } from '../../interfaces/Chart/chart-drilldown.interface'
-	import type { IChartPath } from '../../interfaces/Chart/chart.interface'
-	import type { IChartPoint } from '../../interfaces/Chart/chart-point.interface'
-	import type { IChartPolarEmits, IChartPolarProps, IChartPolarSlots } from '../../interfaces/Chart/chart-polar.interface'
-	import type { IChartSeries, IChartSeriesPoint } from '../../interfaces/Chart/chart-series.interface'
+	import type {
+		IChartDrilldownFrame,
+		IChartDrilldownLink,
+		IChartPath,
+		IChartPoint,
+		IChartPolarEmits,
+		IChartPolarProps,
+		IChartSeries,
+		IChartSeriesPoint
+	} from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -230,14 +235,6 @@
 
 	const emit = defineEmits<IChartPolarEmits>()
 
-	defineSlots<IChartPolarSlots>()
-
-	/*********************************************************
-	 * Composables
-	 ********************************************************/
-
-	const {t} = useLocale()
-
 	/*********************************************************
 	 * Drilldown state — mirrors the cartesian implementation.
 	 * Pie / donut slices can carry a drilldown link on their
@@ -261,12 +258,11 @@
 	const isDrilled = computed(() => drillStack.value.length > 0)
 
 	const breadcrumbItems = computed<Array<{ name: string, depth: number }>>(() => {
-		const root = { name: props.title ?? t('origam.chart.drilldown.root_label'), depth: -1 }
+		const root = { name: props.title ?? 'Root', depth: -1 }
 		return [root, ...drillStack.value.map((frame, i) => ({ name: frame.name, depth: i }))]
 	})
 
-	const drilldownBackLabel = computed(() => props.drilldown?.backLabel ?? t('origam.chart.drilldown.back_label'))
-	const drilldownNavAriaLabel = computed(() => t(props.drilldown?.navAriaLabel ?? 'origam.chart.drilldown.aria_label'))
+	const drilldownBackLabel = computed(() => props.drilldown?.backLabel ?? '← Back')
 
 	const resolveDrilldownLink = (link: IChartDrilldownLink): IChartDrilldownFrame | null => {
 		if (!props.drilldown) return null
@@ -314,7 +310,6 @@
 	const { paddingClasses, paddingStyles } = usePadding(props)
 	const { roundedClasses, roundedStyles } = useRounded(props)
 	const { headerTypographyStyles } = useChartHeaderTypography(props)
-	const chartAnimationStyle = useChartAnimationStyle(props)
 
 	/*********************************************************
 	 * Static — polar charts need less padding than cartesian
@@ -411,8 +406,7 @@
 		elevationClasses.value,
 		marginClasses.value,
 		paddingClasses.value,
-		roundedClasses.value,
-		props.class
+		roundedClasses.value
 	])
 
 	const rootStyles = computed<StyleValue>(() => {
@@ -420,8 +414,8 @@
 		if (props.aspectRatio) {
 			out.aspectRatio = props.aspectRatio
 		}
-		Object.assign(out, chartAnimationStyle.value)
-return [ out, props.style as StyleValue ]
+		out['--origam-chart---animation-duration'] = `${ props.animationDuration }ms`
+		return out
 	})
 
 	const bodyClasses = computed(() => ({
@@ -503,19 +497,14 @@ return [ out, props.style as StyleValue ]
 	/*********************************************************
 	 * ARIA
 	 ********************************************************/
-	const ariaLabel = computed(() => props.title ?? t('origam.chart.aria_label'))
-	const defaultAriaLabel = computed(() => t(`origam.chart.polar.aria_label_${ props.type }`))
-	const svgAriaLabel = computed(() => props.title ?? defaultAriaLabel.value)
-	const svgTitle = computed(() => props.title ?? defaultAriaLabel.value)
+	const ariaLabel = computed(() => props.title ?? 'Chart')
+	const svgAriaLabel = computed(() => props.title ?? `${ props.type } chart`)
+	const svgTitle = computed(() => props.title ?? `${ props.type } chart`)
 	const svgDesc = computed(() => {
 		const seriesCount = activeSeries.value.length
-		if (!seriesCount) return t('origam.chart.no_data_text')
-
-		return t('origam.chart.polar.desc', {
-			chart: defaultAriaLabel.value,
-			series: t('origam.chart.polar.desc_series', seriesCount),
-			points: t('origam.chart.polar.desc_points', slotCount.value)
-		})
+		if (!seriesCount) return 'No data'
+		const points = slotCount.value
+		return `${ props.type } chart with ${ seriesCount } series and ${ points } ${ points === 1 ? 'point' : 'points' }.`
 	})
 
 	const sliceAriaLabel = (path: IChartPath) => {
@@ -540,17 +529,7 @@ return [ out, props.style as StyleValue ]
 
 		display: grid;
 		gap: var(--origam-chart---gap, 12px);
-
-		// ⛔ #C2 — zero-specificity default so a scale-driven utility
-		// class (`.origam--p-4` from `padding="4"`) wins the cascade.
-		// Without `:where()`, this scoped rule's [data-v-hash] pushes it
-		// to (0,2,0), beating the utility's (0,1,0), and the `padding`
-		// prop's scale form goes silently inert. See CLAUDE.md "CSS-first"
-		// table — `:where(…)` is the documented zero-specificity default.
-		:where(&) {
-			padding: var(--origam-chart---padding, 12px);
-		}
-
+		padding: var(--origam-chart---padding, 12px);
 		background-color: var(--origam-chart---background-color, transparent);
 		color: var(--origam-chart---color, inherit);
 		width: 100%;
@@ -612,7 +591,7 @@ return [ out, props.style as StyleValue ]
 			align-items: center;
 			gap: var(--origam-chart__breadcrumb---gap, 8px);
 			font-size: var(--origam-chart__breadcrumb---font-size, 0.8125rem);
-			color: var(--origam-chart__breadcrumb---color, var(--origam-color__text---secondary, #6b7280));
+			color: var(--origam-chart__breadcrumb---color, var(--origam-color-text-secondary, #6b7280));
 		}
 
 		&__breadcrumb-back {
@@ -620,7 +599,7 @@ return [ out, props.style as StyleValue ]
 			align-items: center;
 			gap: 4px;
 			padding: 4px 10px;
-			border: 1px solid var(--origam-chart__breadcrumb-back---border-color, var(--origam-color__border---default, #d1d5db));
+			border: 1px solid var(--origam-chart__breadcrumb-back---border-color, var(--origam-color-border-default, #d1d5db));
 			border-radius: var(--origam-chart__breadcrumb-back---border-radius, 4px);
 			background-color: var(--origam-chart__breadcrumb-back---background-color, transparent);
 			color: var(--origam-chart__breadcrumb-back---color, inherit);
@@ -653,6 +632,7 @@ return [ out, props.style as StyleValue ]
 
 			&:not(:last-child)::after {
 				content: "/";
+				opacity: 0.5;
 			}
 		}
 
@@ -660,7 +640,7 @@ return [ out, props.style as StyleValue ]
 			background: none;
 			border: none;
 			padding: 0;
-			color: var(--origam-chart__breadcrumb-link---color, var(--origam-color__action--ghost---fg, #3b82f6));
+			color: var(--origam-chart__breadcrumb-link---color, var(--origam-color-action-primary-text, #3b82f6));
 			font-size: inherit;
 			cursor: pointer;
 			text-decoration: underline;
@@ -686,7 +666,7 @@ return [ out, props.style as StyleValue ]
 
 		&__subtitle {
 			font-size: var(--origam-chart__subtitle---font-size, 0.875rem);
-			color: var(--origam-chart__subtitle---color, var(--origam-color__text---secondary, #6b7280));
+			color: var(--origam-chart__subtitle---color, var(--origam-color-text-secondary, #6b7280));
 		}
 
 		&__body {
@@ -712,7 +692,7 @@ return [ out, props.style as StyleValue ]
 		}
 
 		.origam-chart__slice {
-			stroke: var(--origam-chart__pie---stroke-color, var(--origam-color__surface---default, #ffffff));
+			stroke: var(--origam-chart__pie---stroke-color, var(--origam-color-surface-default, #ffffff));
 			stroke-width: var(--origam-chart__pie---stroke-width, 2);
 			cursor: pointer;
 			transition: transform 150ms ease;
@@ -733,7 +713,7 @@ return [ out, props.style as StyleValue ]
 		:deep(.origam-chart__tooltip) {
 			position: absolute;
 			pointer-events: none;
-			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color__surface---overlay, #1f2937));
+			background-color: var(--origam-chart__tooltip---background-color, var(--origam-color-surface-overlay, #1f2937));
 			color: var(--origam-chart__tooltip---color, #ffffff);
 			padding: var(--origam-chart__tooltip---padding, 8px 12px);
 			border-radius: var(--origam-chart__tooltip---border-radius, 6px);
@@ -771,7 +751,7 @@ return [ out, props.style as StyleValue ]
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			color: var(--origam-chart__empty---color, var(--origam-color__text---secondary, #6b7280));
+			color: var(--origam-chart__empty---color, var(--origam-color-text-secondary, #6b7280));
 		}
 
 		:deep(.origam-chart__legend) {

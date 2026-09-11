@@ -1,3 +1,3 @@
-import OrigamCounter from '../../components/Counter/OrigamCounter.vue'
+import { OrigamCounter } from "../../components"
 
 export type TOrigamCounter = InstanceType<typeof OrigamCounter>

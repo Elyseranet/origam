@@ -1,6 +1,5 @@
 <template>
 	<div
-			:id="styleId"
 			v-contrast
 			:class="fieldClasses"
 			:style="fieldStyles"
@@ -40,10 +39,7 @@
 					v-if="hasPrependInner"
 					key="prependInner"
 					class="origam-field__prepend-inner"
-					:role="isPrependInnerClickable ? 'button' : undefined"
-					:tabindex="isPrependInnerClickable ? 0 : undefined"
 					@click="handleClickPrependInner"
-					@keydown="handleKeydownPrependInner"
 			>
 				<slot name="prependInner">
 					<origam-avatar
@@ -109,30 +105,27 @@
 					v-if="hasClear"
 					key="clear"
 			>
-				<button
+				<div
 						v-show="dirty"
-						type="button"
 						class="origam-field__clearable"
-						:aria-label="clearLabel"
-						@blur="handleBlur"
-						@focus="handleFocus"
 						@mousedown="handleMousedownClear"
-						@keydown="handleKeydownClear"
 				>
 					<slot name="clear">
-						<origam-icon :icon="clearIcon"/>
+						<origam-icon
+								:icon="clearIcon"
+								@blur="handleBlur"
+								@focus="handleFocus"
+								@keydown="handleKeydownClear"
+						/>
 					</slot>
-				</button>
+				</div>
 			</origam-expand-x>
 
 			<div
 					v-if="hasAppendInner"
 					key="appendInner"
 					class="origam-field__append-inner"
-					:role="isAppendInnerClickable ? 'button' : undefined"
-					:tabindex="isAppendInnerClickable ? 0 : undefined"
 					@click="handleClickAppendInner"
-					@keydown="handleKeydownAppendInner"
 			>
 				<slot name="appendInner">
 					<origam-avatar
@@ -175,67 +168,56 @@
 		lang="ts"
 		setup
 >
-	import { computed, onMounted, ref, StyleValue, useAttrs, useSlots, watch } from 'vue'
-	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
-	import OrigamExpandX from '../Transition/OrigamExpandX.vue'
-	import OrigamIcon from '../Icon/OrigamIcon.vue'
-	import OrigamLabel from '../Label/OrigamLabel.vue'
-	import OrigamProgress from '../Progress/OrigamProgress.vue'
-	import OrigamSkeleton from '../Skeleton/OrigamSkeleton.vue'
+	import { computed, ref, StyleValue, useAttrs, useSlots, watch } from 'vue'
+	import { OrigamAvatar, OrigamExpandX, OrigamIcon, OrigamLabel, OrigamProgress, OrigamSkeleton } from '../../components'
 
-	import { useAdjacentInner } from '../../composables/Commons/adjacentInner.composable'
-	import { useBothColor } from '../../composables/Commons/bothColor.composable'
-	import { useDensity } from '../../composables/Commons/density.composable'
-	import { useFocus } from '../../composables/Commons/focus.composable'
-	import { useLoader } from '../../composables/Commons/loader.composable'
-	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useRtl } from '../../composables/Commons/rtl.composable'
-	import { useSize } from '../../composables/Commons/size.composable'
-	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
-	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-	import { useTypography } from '../../composables/Commons/typography.composable'
-	import { useVariant } from '../../composables/Commons/variant.composable'
+	import {
+		useActive,
+		useAdjacentInner,
+		useBothColor,
+		useDefaults,
+		useDensity,
+		useFocus,
+		useLoader,
+		useProps,
+		useRtl,
+		useSize,
+		useStateEffect,
+		useStyle,
+		useTypography,
+		useVariant
+} from '../../composables'
 
-	import vContrast from '../../directives/Contrast/contrast.directive'
+	import { vContrast } from '../../directives'
 
-	import { DENSITY } from '../../enums/Commons/density.enum'
-	import { EASING } from '../../enums/Transition/transition.enum'
-	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
-	import { LOADER_KIND } from '../../enums/Commons/loader.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
-	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
-	import { VARIANT_INPUT } from '../../enums/Commons/variant.enum'
+	import { DENSITY, EASING, KEYBOARD_VALUES, MDI_ICONS, PROGRESS_TYPE, VARIANT_INPUT } from '../../enums'
 
-	import type { IFieldProps, IFieldSlots } from '../../interfaces/Field/field.interface'
+	import type { IFieldProps, IFieldSlots} from '../../interfaces'
 
 	import type { IFieldEmits } from '../../interfaces/Field/field.interface'
 
-	import type { TOrigamLabel } from '../../types/Label/label.type'
+	import type { TOrigamLabel } from "../../types"
 
-	import { animate, nullifyTransforms } from '../../utils/Commons/animation.util'
-	import { convertToUnit } from '../../utils/Commons/commons.util'
-	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
+	import { animate, convertToUnit, getUid, nullifyTransforms } from '../../utils'
 
 	/*********************************************************
 	 * Global
 	 ********************************************************/
 
-	const props = withDefaults(defineProps<IFieldProps>(), {
+	const _props = withDefaults(defineProps<IFieldProps>(), {
 		variant: VARIANT_INPUT.OUTLINED,
 		density: DENSITY.DEFAULT,
 		centerAffix: true,
 		clearIcon: MDI_ICONS.CLOSE_CIRCLE_OUTLINE
 	})
+	const props = useDefaults(_props)
+
 	defineEmits<IFieldEmits>()
 
 	defineSlots<IFieldSlots>()
 	const slots = useSlots()
 
 	const attrs = useAttrs()
-
-	const {t} = useLocale()
 
 	/*********************************************************
 	 * Adjacent
@@ -252,23 +234,10 @@
 		hasAppendInner,
 		onClickAppendInner: handleClickAppendInner,
 		onClickPrependInner: handleClickPrependInner,
-		onKeydownAppendInner: handleKeydownAppendInner,
-		onKeydownPrependInner: handleKeydownPrependInner,
-		isAppendInnerClickable,
-		isPrependInnerClickable,
 		clickClear: handleClickClear,
 		hasPrependInner,
 		hasClear
 	} = useAdjacentInner(props)
-
-	/*********************************************************
-	 * Clear button — accessible name (issue #443)
-	 *
-	 * @description
-	 * Reuses the pre-existing, previously-unwired `origam.input.clear`
-	 * locale key ("Clear {0}").
-	 ********************************************************/
-	const clearLabel = computed(() => t('origam.input.clear', props.label ?? ''))
 
 	/*********************************************************
 	 * Input
@@ -296,27 +265,8 @@
 			e.preventDefault()
 		}
 	}
-
-	/*********************************************************
-	 * Clear button (issue #443)
-	 *
-	 * @description
-	 * Was a bare `<div @mousedown>` wrapping an `aria-hidden` icon whose
-	 * own `@keydown`/`@focus`/`@blur` listeners could never fire —
-	 * `OrigamIcon` never sets `tabindex`, so the icon was never reachable
-	 * by Tab in the first place. Now a real `<button type="button">`
-	 * (Tab-reachable, has an accessible name), but the trigger stays
-	 * `@mousedown` — NOT `@click` — to preserve the exact pre-existing
-	 * mouse behaviour: `handleMousedownClear` calls `preventDefault()` +
-	 * `stopPropagation()` so clearing never blurs the input nor bubbles
-	 * into the field root's own `@click`. A manual `@keydown` handler
-	 * (Enter/Space) gives keyboard users the same action WITHOUT also
-	 * binding `@click` — the button's native keyboard activation
-	 * synthesizes a `click` DOM event nothing listens for, so there is no
-	 * double-fire risk between the two paths.
-	 ********************************************************/
 	const handleKeydownClear = (e: KeyboardEvent) => {
-		if (e.key !== KEYBOARD_VALUES.ENTER && e.key !== KEYBOARD_VALUES.EMPTY) return
+		if (e.key !== KEYBOARD_VALUES.ENTER && e.key !== ' ') return
 
 		e.preventDefault()
 		e.stopPropagation()
@@ -338,29 +288,11 @@
 	 ********************************************************/
 	const controlRef = ref<HTMLElement>()
 
-	/*********************************************************
-	 * slotProps — default-slot channel to every consumer's real <input>
-	 *
-	 * @description
-	 * #422 — `required` was declared on IFieldProps and read nowhere: no
-	 * asterisk (the label side already worked via the template-ref
-	 * forwarding to OrigamLabel, one render tick later — verified with
-	 * nextTick before assuming otherwise), but NO aria-required at all on
-	 * any of the field-family inputs.
-	 *
-	 * @description
-	 * `slotProps` is the one channel every `<origam-field>` consumer
-	 * (TextField, NumberField, PasswordField, FileField) already
-	 * destructures via `#default="{class, ref, ...fieldSlotProps}"` and
-	 * spreads onto its real `<input>` — wiring `aria-required` here fixes
-	 * all of them at once instead of duplicating it in each consumer.
-	 ********************************************************/
 	const slotProps = computed(() => {
 		return {
 			class: 'origam-field__input',
 			id: id.value,
 			'aria-describedby': messagesId.value,
-			'aria-required': props.required || undefined,
 			isActive: isActive.value,
 			isFocused: isFocused.value,
 			ref: controlRef.value,
@@ -377,18 +309,8 @@
 	 * The SCSS reads this var on &__label--floating (the animated floating
 	 * label). The var is also consumed by the JS animation scale calculation
 	 * (line: `getPropertyValue('--origam-field__label---font-size')`).
-	 *
-	 * ⛔ fontWeight / lineHeight / letterSpacing are NOT read via THIS
-	 * `field__label` prefix — but they are NOT inert either (issue #501
-	 * correction). `labelProps` / `floatingLabelProps` below forward the
-	 * full prop set to the nested `<OrigamLabel>` via
-	 * `origamLabelRef.value.filterProps(props, …)`, and `OrigamLabel` has
-	 * its OWN `useTypography(props, 'label')` call that DOES read those
-	 * three (`--origam-label---font-weight` / `---line-height` /
-	 * `---letter-spacing`) — confirmed via `@vue/test-utils` + `nextTick`
-	 * (the ref is `undefined` on the first render; the forward lands on
-	 * the second, invisible-to-paint render per `useProps`'s own doc
-	 * comment). Only `fontFamily` is genuinely dead on both prefixes.
+	 * Only fontSize has a real visual effect — fontWeight / lineHeight / etc.
+	 * are not read by the __label SCSS.
 	 ********************************************************/
 	const {typographyStyles} = useTypography(props, 'field__label')
 
@@ -475,7 +397,7 @@
 	 * @description
 	 *
 	 ********************************************************/
-	const {loaderClasses, loaderConfig} = useLoader(props, LOADER_KIND.LINE)
+	const {loaderClasses, loaderConfig} = useLoader(props, 'line')
 
 	const hasLoader = computed(() => {
 		return slots.loader || loaderConfig.value.isActive
@@ -501,82 +423,58 @@
 	 * isActive is a ref that holds a boolean value indicating whether the field is active.
 	 ********************************************************/
 	const {focusClasses, isFocused, onFocus: handleFocus, onBlur: handleBlur} = useFocus(props)
-	const {isOn: active, config: activeState, toggle: handleActive} = useStateFlag(props, {state: 'active'})
+	const {isActive: active, activeState, onActive: handleActive} = useActive(props)
 
 	const isActive = computed(() => {
 		return props.dirty || active.value || hasPrefix.value || hasSuffix.value
 	})
 
-	/*********************************************************
-	 *  WATCHERS DEFERRED TO onMounted — NOT AN OPTIMISATION
-	 *
-	 *  @description
-	 *  `watch(source, cb)` reads `source` synchronously the instant it is
-	 *  created, to seed `oldValue` — regardless of `immediate`. `isFocused`
-	 *  and `isActive` are `computed()`s that read `props.focused` /
-	 *  `props.dirty` / `active.value` / `hasPrefix.value` / `hasSuffix.value`.
-	 *  Creating these watchers at the top level of `setup()` forced that
-	 *  seeding read before Vue's `beforeCreate` hook runs, which is where the
-	 *  ADR-005 theme resolver patches `instance.props`. A `computed` caches
-	 *  whatever its first evaluation saw and only invalidates on a tracked
-	 *  dependency change; the resolver's `Object.defineProperty` patch is not
-	 *  one on a static mount with no parent re-render, so `isFocused` /
-	 *  `isActive` stayed cached at their pre-theme value forever — a theme
-	 *  naming `focused`, `active`, `dirty`, `prefix` or `suffix` never
-	 *  flipped `--origam-field--active` / `--origam-field--focused`.
-	 *  Deferring both watchers to `onMounted` delays their first read to
-	 *  after the component's first render, which is already past
-	 *  `beforeCreate` — the template's own `fieldClasses` read gets there
-	 *  first and seeds the correct, themed value.
-	 ********************************************************/
-	onMounted(() => {
-		watch(isFocused, (newVal, oldVal) => {
-			if (newVal !== oldVal) {
-				handleActive()
-			}
-		})
-		watch(isActive, (newVal, oldVal) => {
-			if (hasLabel.value && newVal !== oldVal) {
-				const el: HTMLElement = origamLabelRef.value!.$el
-				const targetEl: HTMLElement = origamFloatingLabelRef.value!.$el
-
-				requestAnimationFrame(() => {
-					const rect = nullifyTransforms(el)
-					const targetRect = targetEl.getBoundingClientRect()
-
-					const x = targetRect.x - rect.x
-					const y = targetRect.y - rect.y - (rect.height / 2 - targetRect.height / 2)
-
-					const targetWidth = targetRect.width / 0.75
-					const width = Math.abs(targetWidth - rect.width) > 1
-							? {maxWidth: convertToUnit(targetWidth)}
-							: undefined
-
-					const style = getComputedStyle(el)
-					const targetStyle = getComputedStyle(targetEl)
-					const duration = parseFloat(style.transitionDuration) * 1000 || 150
-					const scale = parseFloat(targetStyle.getPropertyValue('--origam-field__label---font-size'))
-					const color = targetStyle.getPropertyValue('color')
-
-					el.style.visibility = 'visible'
-					targetEl.style.visibility = 'hidden'
-
-					animate(el, {
-						transform: `translate(${x}px, ${y}px) scale(${scale})`,
-						color,
-						...width
-					}, {
-						duration,
-						easing: EASING.STANDARD,
-						direction: newVal ? 'normal' : 'reverse'
-					}).finished.then(() => {
-						el.style.removeProperty('visibility')
-						targetEl.style.removeProperty('visibility')
-					})
-				})
-			}
-		}, {flush: 'post'})
+	watch(isFocused, (newVal, oldVal) => {
+		if (newVal !== oldVal) {
+			handleActive()
+		}
 	})
+	watch(isActive, (newVal, oldVal) => {
+		if (hasLabel.value && newVal !== oldVal) {
+			const el: HTMLElement = origamLabelRef.value!.$el
+			const targetEl: HTMLElement = origamFloatingLabelRef.value!.$el
+
+			requestAnimationFrame(() => {
+				const rect = nullifyTransforms(el)
+				const targetRect = targetEl.getBoundingClientRect()
+
+				const x = targetRect.x - rect.x
+				const y = targetRect.y - rect.y - (rect.height / 2 - targetRect.height / 2)
+
+				const targetWidth = targetRect.width / 0.75
+				const width = Math.abs(targetWidth - rect.width) > 1
+						? {maxWidth: convertToUnit(targetWidth)}
+						: undefined
+
+				const style = getComputedStyle(el)
+				const targetStyle = getComputedStyle(targetEl)
+				const duration = parseFloat(style.transitionDuration) * 1000 || 150
+				const scale = parseFloat(targetStyle.getPropertyValue('--origam-field__label---font-size'))
+				const color = targetStyle.getPropertyValue('color')
+
+				el.style.visibility = 'visible'
+				targetEl.style.visibility = 'hidden'
+
+				animate(el, {
+					transform: `translate(${x}px, ${y}px) scale(${scale})`,
+					color,
+					...width
+				}, {
+					duration,
+					easing: EASING.STANDARD,
+					direction: newVal ? 'normal' : 'reverse'
+				}).finished.then(() => {
+					el.style.removeProperty('visibility')
+					targetEl.style.removeProperty('visibility')
+				})
+			})
+		}
+	}, {flush: 'post'})
 
 	/*********************************************************
 	 * Class & Style
@@ -585,19 +483,11 @@
 	 * fieldClasses is a computed property that returns an array of classes for the field element.
 	 * fieldStyles is a computed property that returns an array of styles for the field element.
 	 ********************************************************/
-	// `activeColor` / `activeBgColor` (flat props) were removed — the
-	// override now reads from the `active` object prop (`activeState`,
-	// already resolved above by `useStateFlag` for the rounded/elevation
-	// axes at line ~541). Gate stays `isActive.value && isFocused.value`
-	// exactly as before: `isActive` alone also turns true on dirty/prefix/
-	// suffix WITHOUT focus, and the accent colour is deliberately a
-	// focus-only affordance (unlike rounded/elevation, which persist once
-	// the field carries content).
 	const color = computed(() => {
-		return isActive.value && isFocused.value && activeState.value?.color ? activeState.value.color : props.color
+		return isActive.value && isFocused.value && props.activeColor ? props.activeColor : props.color
 	})
 	const bgColor = computed(() => {
-		return isActive.value && isFocused.value && activeState.value?.bgColor ? activeState.value.bgColor : props.bgColor
+		return isActive.value && isFocused.value && props.activeBgColor ? props.activeBgColor : props.bgColor
 	})
 
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
@@ -660,10 +550,12 @@
 				'origam-field--disabled': props.disabled,
 				'origam-field--dirty': props.dirty,
 				'origam-field--error': props.error,
+				'origam-field--flat': props.flat,
 				'origam-field--has-background': !!props.bgColor,
 				'origam-field--inline': props.inline,
 				'origam-field--persistent-clear': props.persistentClear,
 				'origam-field--prepended': hasPrependInner.value,
+				'origam-field--reverse': props.reverse,
 				'origam-field--single-line': props.singleLine,
 				'origam-field--no-label': !hasLabel.value,
 				'origam-text-field--prefixed': props.prefix,
@@ -689,34 +581,7 @@
 	 * Forwards filterProps to parent components.
 	 ********************************************************/
 	const {filterProps} = useProps<IFieldProps>(props)
-
-	/*********************************************************
-	 * styleId — l'id de la RACINE, derive de celui du consommateur
-	 *
-	 * @description
-	 * #421/#422 — `useStyle(fieldStyles)` etait appele sans son second
-	 * argument : la racine rendait `origam-field-<uid>` et l'id du
-	 * consommateur n'atteignait jamais le wrapper.
-	 *
-	 * @description
-	 * ⛔ La correction evidente — lier `:id="id"` sur la racine — est
-	 * FAUSSE. `props.id` est deja porte par le vrai controle (via
-	 * `slotProps.id`) et sert de cible aux `for=` des deux labels : le
-	 * poser aussi sur la racine fabriquerait DEUX elements de meme id et
-	 * casserait le pairage `label[for]`. Le meme piege a ete mesure sur
-	 * `OrigamInput` (#421), ou six consommateurs de la famille auraient
-	 * pris un id duplique.
-	 *
-	 * @description
-	 * D'ou un id DERIVE : adressable et deterministe pour qui veut cibler
-	 * le wrapper, jamais egal a celui du controle. Le getter garde la
-	 * lecture PARESSEUSE (ADR-005) : le resolveur de theme ecrit dans
-	 * `beforeCreate`, donc APRES `setup()`.
-	 ********************************************************/
-	const {id: styleId, css, load, isLoaded, unload} = useStyle(
-			fieldStyles,
-			() => props.id ? `${props.id}-field` : undefined
-	)
+	const {id: styleId, css, load, isLoaded, unload} = useStyle(fieldStyles)
 
 
 	defineExpose({
@@ -740,7 +605,7 @@
 		display: grid;
 		grid-template-areas: "prepend-inner field clear append-inner";
 		grid-template-columns: min-content minmax(0, 1fr) min-content min-content;
-		font-size: var(--origam-field---font-size, 16px);
+		font-size: 16px;
 		letter-spacing: 0.009375em;
 		max-width: 100%;
 		border-radius: var(--origam-field---border-radius, 8px);
@@ -789,7 +654,7 @@
 			display: flex;
 			flex-wrap: wrap;
 			letter-spacing: 0.009375em;
-			opacity: var(--origam-field__input---opacity, 0.7);
+			opacity: 0.7;
 			box-sizing: border-box;
 			min-height: max(calc(var(--origam-input__control---height, 36px) + var(--origam-input---density, 0px)), 1.5rem + var(--origam-field__input---padding-top) + var(--origam-field__input---padding-bottom));
 			min-width: 0;
@@ -850,19 +715,17 @@
 			opacity: 0;
 			transition: inherit;
 			white-space: nowrap;
-			min-height: max(var(--origam-input__control---height, 36px), 1.5rem + var(--origam-field__input---padding-top, 0px) + var(--origam-field__input---padding-bottom, 0px));
+			min-height: max(var(--origam-input__control---height, 36px), 1.5rem + var(--origam-field-input---padding-top, 0px) + var(--origam-field-input---padding-bottom, 0px));
 			padding-top: calc(var(--origam-field---padding-top, 4px) + calc(var(--origam-input---padding-top, 16px) + var(--origam-input---density, 0px)));
 			padding-bottom: var(--origam-field---padding-bottom, 6px);
 		}
 
 		&__prefix {
 			padding-inline-start: var(--origam-field---padding-start, 16px);
-			opacity: var(--origam-field__prefix---opacity, 0);
 		}
 
 		&__suffix {
 			padding-inline-end: var(--origam-field---padding-end, 16px);
-			opacity: var(--origam-field__suffix---opacity, 0);
 		}
 
 		&__field {
@@ -898,33 +761,13 @@
 			}
 		}
 
-		&__prepend-inner > .origam-icon {
-			opacity: var(--origam-field---prepend-inner-icon-opacity, 0.7);
-		}
-
-		&__append-inner > .origam-icon {
-			opacity: var(--origam-field---append-inner-icon-opacity, 0.7);
-		}
-
 		&__clearable {
 			cursor: pointer;
-			opacity: var(--origam-field__clearable---opacity, 0);
+			opacity: 0;
 			overflow: hidden;
-			margin-inline: var(--origam-field__clearable---margin-inline, 4px);
-			transition: var(--origam-field__clearable---transition-duration, 150ms) var(--origam-field__clearable---transition-easing, cubic-bezier(0.4, 0, 0.2, 1));
+			margin-inline: 4px;
+			transition: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 			transition-property: opacity, transform, width;
-
-			// issue #443 — now a real <button> (was a bare <div>): reset the
-			// UA button chrome the shared prepend/append/clear rule above
-			// doesn't cover (it only sets padding-top + padding-inline).
-			// `padding-bottom` alone, never the `padding` shorthand — that
-			// would clobber the token-driven padding-top/padding-inline set
-			// two rules up.
-			border: none;
-			background: none;
-			padding-bottom: 0;
-			font: inherit;
-			color: inherit;
 		}
 
 		&__label {
@@ -937,7 +780,7 @@
 			position: absolute;
 			top: calc(var(--origam-input---padding-top, 16px) + var(--origam-input---density, 0px) - 8px);
 			transform-origin: left center;
-			transition: var(--origam-field__label---transition-duration, 150ms) var(--origam-field__label---transition-easing, cubic-bezier(0.4, 0, 0.2, 1));
+			transition: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 			transition-property: opacity, transform;
 			z-index: 1;
 
@@ -979,14 +822,6 @@
 			}
 		}
 
-    &--is-rtl {
-      direction: rtl;
-    }
-
-    &--is-ltr {
-      direction: ltr;
-    }
-
 		&--prefixed {
 			--origam-field---padding-start: 6px;
 		}
@@ -1023,17 +858,14 @@
 				}
 			}
 
-			#{$this}__prefix {
-				opacity: var(--origam-field__prefix---opacity-active, 1);
-			}
-
+			#{$this}__prefix,
 			#{$this}__suffix {
-				opacity: var(--origam-field__suffix---opacity-active, 1);
+				opacity: 1;
 			}
 		}
 
 		&--disabled {
-			opacity: var(--origam-field---opacity-disabled, 0.5);
+			opacity: 0.5;
 			pointer-events: none;
 
 			#{$this}__prefix,
@@ -1045,17 +877,15 @@
 		&--prepended {
 			--origam-field---padding-start: 6px;
 
-			// Le CONTENU se rapproche du bord (l'icone/swatch remplit le coin),
-			// donc on retire le plancher de degagement sur le padding.
+			// A prepend-inner (icon / swatch) already fills the left corner, so
+			// opt out of the corner-clearing floor: keep the inline padding and
+			// the start outline leg at the raw padding-start (widening them would
+			// draw the outline over the prepend content).
 			padding-inline: var(--origam-field---padding-start) var(--origam-field---padding-end);
 
-			// MAIS on ne touche PAS a la largeur de la patte d'outline : ce
-			// segment PORTE le rayon du coin gauche, et CSS reduit proportionnellement
-			// un `border-radius` qui depasse la boite qui le declare (une patte de
-			// 6px ne peut pas rendre un rayon de 12px+ : le coin sort plat). Le
-			// couplage n'avait pas lieu d'etre : `__outlines` est `position: absolute`
-			// + `pointer-events: none`, une couche decorative qui ne deplace aucun
-			// contenu — l'elargir ne dessine rien par-dessus le prepend.
+			#{$this}__outline--start {
+				flex-basis: var(--origam-field---padding-start);
+			}
 		}
 
 		&--appended {
@@ -1110,7 +940,7 @@
 		&--focused,
 		&--persistent-clear {
 			#{$this}__clearable {
-				opacity: var(--origam-field__clearable---opacity-visible, 1);
+				opacity: 1;
 			}
 		}
 
@@ -1165,13 +995,13 @@
 			&-solo {
 				box-shadow: var(--origam-theme---elevation, var(--origam-field--variant-solo---box-shadow, var(--origam-shadow---sm)));
 				border-color: transparent;
-				--origam-field__input---padding-top: var(--origam-field__input---padding-block-solo);
+				--origam-field__input---padding-top: 20px;
 			}
 
 			&-filled {
 				background: var(--origam-field--variant-filled---background-color, color-mix(in srgb, currentColor 12%, transparent));
 				border-radius: var(--origam-field---border-radius, 8px) var(--origam-field---border-radius, 8px) 0 0;
-				--origam-field__input---padding-top: var(--origam-field__input---padding-block-filled);
+				--origam-field__input---padding-top: 20px;
 
 				#{$this}__outlines {
 					#{$this}__outline {
@@ -1214,12 +1044,12 @@
 			&-outlined {
 				--origam-field---border-width: var(--origam-field---border-width-outlined, 1px);
 				--origam-field---border-opacity: var(--origam-field---border-opacity-outlined, .38);
-				background: var(--origam-field---background-color, var(--origam-field---variant-outlined-background-color, transparent));
+				background: var(--origam-field---background-color, transparent);
 
 				#{$this}__outline {
-					border-color: var(--origam-field---border-color, var(--origam-field__outline---border-color, currentColor));
-					border-style: var(--origam-field__outline---border-style, solid);
-					opacity: var(--origam-field---border-opacity, var(--origam-field__outline---border-opacity, .38));
+					border-color: var(--origam-field---border-color, currentColor);
+					border-style: solid;
+					opacity: var(--origam-field---border-opacity);
 
 					&--start {
 						border-top-width: var(--origam-field---border-width);
@@ -1284,10 +1114,10 @@
 				--origam-field---border-opacity: .38;
 
 				#{$this}__outline {
-					border-color: var(--origam-field---border-color, var(--origam-field__outline---border-color, currentColor));
-					border-style: var(--origam-field__outline---border-style, solid);
-					opacity: var(--origam-field---border-opacity, var(--origam-field__outline---border-opacity, .38));
-					transition: opacity var(--origam-field__outline---transition-duration, .25s) var(--origam-field__outline---transition-easing, cubic-bezier(.4, 0, .2, 1));
+					border-color: var(--origam-field---border-color, currentColor);
+					border-style: solid;
+					opacity: var(--origam-field---border-opacity);
+					transition: opacity .25s cubic-bezier(.4, 0, .2, 1);
 					border-width: 0;
 
 					&--start {
@@ -1305,7 +1135,7 @@
 
 				&:hover,
 				&#{$this}--focused {
-					--origam-field---border-opacity: var(--origam-field__outline---border-opacity-hover, 1);
+					--origam-field---border-opacity: 1;
 				}
 			}
 		}

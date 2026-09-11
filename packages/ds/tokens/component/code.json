@@ -1,0 +1,95 @@
+{
+  "code": {
+    "background-color":     { "$type": "color",      "$value": "{color.surface.sunken}" },
+    "color":                { "$type": "color",      "$value": "{color.text.primary}" },
+    "border-color":         { "$type": "color",      "$value": "{color.border.subtle}" },
+    "border-width":         { "$type": "dimension",  "$value": "{border.width.thin}" },
+    "border-radius":        { "$type": "dimension",  "$value": "{radius.md}" },
+    "padding-block":        { "$type": "dimension",  "$value": "{space.4}" },
+    "padding-inline":       { "$type": "dimension",  "$value": "{space.4}" },
+    "font-family":          { "$type": "fontFamily", "$value": "{font.family.mono}" },
+    "font-size":            { "$type": "dimension",  "$value": "{font.size.sm}" },
+    "line-height":          { "$type": "number",     "$value": 1.6 },
+
+    "header": {
+      "background-color":   { "$type": "color",      "$value": "{color.surface.overlay}" },
+      "color":              { "$type": "color",      "$value": "{color.text.secondary}" },
+      "padding-block":      { "$type": "dimension",  "$value": "{space.2}" },
+      "padding-inline":     { "$type": "dimension",  "$value": "{space.4}" },
+      "gap":                { "$type": "dimension",  "$value": "{space.2}" }
+    },
+
+    "filename": {
+      "color":              { "$type": "color",      "$value": "{color.text.secondary}" },
+      "font-size":          { "$type": "dimension",  "$value": "{font.size.xs}" },
+      "font-weight":        { "$type": "fontWeight", "$value": "{font.weight.medium}" }
+    },
+
+    "copy": {
+      "color":              { "$type": "color",      "$value": "{color.text.secondary}" },
+      "color-hover":        { "$type": "color",      "$value": "{color.text.primary}" },
+      "background-color":   { "$type": "color",      "$value": "transparent" },
+      "background-color-hover": { "$type": "color",  "$value": "{color.surface.raised}" },
+      "padding-block":      { "$type": "dimension",  "$value": "{space.1}" },
+      "padding-inline":     { "$type": "dimension",  "$value": "{space.2}" },
+      "border-radius":      { "$type": "dimension",  "$value": "{radius.sm}" },
+      "font-size":          { "$type": "dimension",  "$value": "{font.size.xs}" },
+      "gap":                { "$type": "dimension",  "$value": "{space.1}" },
+      "offset":             { "$type": "dimension",  "$value": "{space.2}" }
+    },
+
+    "compact": {
+      "gap":                { "$type": "dimension",  "$value": "{space.3}" },
+      "padding-block":      { "$type": "dimension",  "$value": "{space.2}" },
+      "padding-inline":     { "$type": "dimension",  "$value": "{space.4}" },
+      "line-height":        { "$type": "number",     "$value": 1.4 }
+    },
+
+    "compact-copy": {
+      "background-color":   { "$type": "color",      "$value": "{color.surface.raised}" },
+      "padding-block":      { "$type": "dimension",  "$value": "{space.1}" },
+      "padding-inline":     { "$type": "dimension",  "$value": "{space.2}" },
+      "border-radius":      { "$type": "dimension",  "$value": "{radius.sm}" },
+      "font-size":          { "$type": "dimension",  "$value": "{font.size.xs}" }
+    },
+
+    "prompt": {
+      "color":              { "$type": "color",      "$value": "{color.text.disabled}" }
+    },
+
+    "line-number": {
+      "color":              { "$type": "color",      "$value": "{color.text.disabled}" },
+      "width":              { "$type": "dimension",  "$value": "3.5rem" },
+      "padding-right":      { "$type": "dimension",  "$value": "{space.5}" },
+      "gap":                { "$type": "dimension",  "$value": "{space.4}" }
+    },
+
+    "line-highlight": {
+      "background-color":   { "$type": "color",      "$value": "{color.feedback.warning.bgSubtle}" },
+      "accent-color":       { "$type": "color",      "$value": "{color.feedback.warning.fgSubtle}" }
+    },
+
+    "row": {
+      "padding-inline":     { "$type": "dimension",  "$value": "0" }
+    },
+
+    "scrollbar": {
+      "color":              { "$type": "color",      "$value": "{color.border.subtle}" }
+    },
+
+    "syntax": {
+      "foreground":         { "$type": "color", "$value": "{color.text.primary}" },
+      "background":         { "$type": "color", "$value": "{color.surface.sunken}" },
+      "keyword":            { "$type": "color", "$value": "{color.feedback.danger.fgSubtle}" },
+      "string":             { "$type": "color", "$value": "{color.feedback.success.fgSubtle}" },
+      "string-expression":  { "$type": "color", "$value": "{color.feedback.success.fgSubtle}" },
+      "function":           { "$type": "color", "$value": "{color.feedback.info.fgSubtle}" },
+      "parameter":          { "$type": "color", "$value": "{color.feedback.info.fgSubtle}" },
+      "constant":           { "$type": "color", "$value": "{color.feedback.warning.fgSubtle}" },
+      "comment":            { "$type": "color", "$value": "{color.text.disabled}" },
+      "punctuation":        { "$type": "color", "$value": "{color.text.secondary}" },
+      "link":               { "$type": "color", "$value": "{color.action.primary.fgSubtle}" },
+      "inserted":           { "$type": "color", "$value": "{color.feedback.success.fgSubtle}" }
+    }
+  }
+}

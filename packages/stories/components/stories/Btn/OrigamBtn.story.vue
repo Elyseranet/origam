@@ -154,7 +154,6 @@
 				<origam-btn text="BgColor primary" bg-color="primary" data-cy="btn-color-primary"/>
 				<origam-btn text="BgColor success" bg-color="success"/>
 				<origam-btn text="BgColor danger"  bg-color="danger"/>
-				<origam-btn variant="flat" text="Flat bgColor primary" bg-color="primary" data-cy="btn-flat-color-primary"/>
 			</div>
 		</Variant>
 
@@ -172,11 +171,26 @@
 			<origam-btn color="primary" text="Click me" @click="logEvent('click', $event)"/>
 		</Variant>
 
+		<Variant title="Events - click:prepend">
+			<origam-btn
+					color="primary"
+					:prepend-icon="prependIcon"
+					text="Click the icon"
+					@click:prepend="logEvent('click:prepend', $event)"
+			/>
+		</Variant>
+
+		<Variant title="Events - click:append">
+			<origam-btn
+					color="primary"
+					:append-icon="appendIcon"
+					text="Click the chevron"
+					@click:append="logEvent('click:append', $event)"
+			/>
+		</Variant>
+
 		<Variant title="Events - group:selected">
-			<origam-btn-toggle>
-				<origam-btn color="primary" text="First"  @group:selected="logEvent('group:selected', $event)"/>
-				<origam-btn color="primary" text="Second" @group:selected="logEvent('group:selected', $event)"/>
-			</origam-btn-toggle>
+			<origam-btn color="primary" text="Group item" @group:selected="logEvent('group:selected', $event)"/>
 		</Variant>
 
 		<Variant title="Slots - Default">
@@ -220,32 +234,6 @@
 			</origam-btn>
 		</Variant>
 
-		<Variant title="Prop — variant (VRT matrix)">
-			<div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;" data-cy="btn-variant-matrix">
-				<origam-btn variant="text"     text="Text"     data-cy="btn-variant-text"/>
-				<origam-btn variant="flat"     text="Flat"     data-cy="btn-variant-flat"/>
-				<origam-btn variant="elevated" text="Elevated" data-cy="btn-variant-elevated"/>
-				<origam-btn variant="tonal"    text="Tonal"    data-cy="btn-variant-tonal"/>
-				<origam-btn variant="outlined" text="Outlined" data-cy="btn-variant-outlined"/>
-				<origam-btn variant="plain"    text="Plain"    data-cy="btn-variant-plain"/>
-				<origam-btn variant="ghost"    text="Ghost"    data-cy="btn-variant-ghost"/>
-			</div>
-		</Variant>
-
-		<Variant title="Prop — border (VRT matrix)">
-			<div style="display: flex; gap: 12px; flex-wrap: wrap; align-items: center;" data-cy="btn-border-matrix">
-				<origam-btn                       text="Unset"  data-cy="btn-border-unset"/>
-				<origam-btn border="none"         text="None"   data-cy="btn-border-none"/>
-				<origam-btn border                text="Bool"   data-cy="btn-border-bool"/>
-				<origam-btn border="thin"         text="Thin"   data-cy="btn-border-thin"/>
-				<origam-btn border="thick"        text="Thick"  data-cy="btn-border-thick"/>
-				<origam-btn border="top"          text="Top"    data-cy="btn-border-top"/>
-				<origam-btn border="bottom"       text="Bottom" data-cy="btn-border-bottom"/>
-				<origam-btn :border="4"           text="Four"   data-cy="btn-border-four"/>
-				<origam-btn border="2px dashed"   text="String" data-cy="btn-border-string"/>
-			</div>
-		</Variant>
-
 		<Variant
 				title="Default"
 				:init-state="() => useStoryInitState<IBtnProps>({ color: 'primary', text: 'Button' })"
@@ -287,7 +275,7 @@
 >
 	import { logEvent } from 'histoire/client'
 
-	import { OrigamBtn, OrigamBtnToggle, OrigamIcon } from '@origam/components'
+	import { OrigamBtn, OrigamIcon } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
 	import type {
 		IBgColorProps,

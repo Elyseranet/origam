@@ -1,0 +1,5 @@
+{
+  "theme-provider": {
+    "_comment": "Wrapper that rewrites `data-theme` for its sub-tree. No visible chrome — the wrapper uses `display: contents` so it doesn't perturb layout."
+  }
+}

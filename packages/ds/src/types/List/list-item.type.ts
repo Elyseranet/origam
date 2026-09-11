@@ -1,9 +1,7 @@
-import OrigamListItem from '../../components/List/OrigamListItem.vue'
-import { LIST_ITEM_ROLE, LIST_ITEM_TYPE } from '../../enums/List/list-item.enum'
+import { OrigamListItem } from "../../components"
+import { LIST_ITEM_TYPE } from '../../enums'
 
 export type TListItemType = `${LIST_ITEM_TYPE}`
-
-export type TListItemRole = `${LIST_ITEM_ROLE}`
 
 export type TListItemSlot = {
     isActive: boolean

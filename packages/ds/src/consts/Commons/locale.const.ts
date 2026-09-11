@@ -1,5 +1,5 @@
 import type { InjectionKey } from "vue"
-import type { ILocaleInstance, IRtlInstance } from '../../interfaces/Commons/locale.interface'
+import type { ILocaleInstance, IRtlInstance } from "../../interfaces"
 
 export const ORIGAM_LOCALE_KEY: InjectionKey<ILocaleInstance & IRtlInstance> = Symbol.for('origam:locale')
 

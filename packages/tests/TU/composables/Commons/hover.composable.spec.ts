@@ -1,38 +1,29 @@
-// Unit tests for the `hover` state of `useStateFlag`.
-// Covers: isOn/config/classes computation, set()/unset() handlers,
-// reactive prop changes. `useHover` was merged into `useStateFlag` —
-// see stateFlag.composable.ts and active.composable.spec.ts.
+// Unit tests for `useHover`.
+// Covers: isHover/hoverState/hoverClasses/forced computation,
+// mouseenter/mouseleave handlers, reactive prop changes.
 
 import { defineComponent, h, reactive } from 'vue'
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 
 import type { IHoverProps } from '@origam/interfaces'
-import { useStateFlag } from '@origam/composables/Commons/stateFlag.composable'
+import { useHover } from '@origam/composables/Commons/hover.composable'
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
 /**
- * `useStateFlag` accepts an explicit `name` option used verbatim in the
- * class (`${name}--hover`). When omitted, it calls
+ * `useHover` accepts an explicit `name` string used verbatim in the class
+ * (`${name}--hovered`). When omitted, the default calls
  * `getCurrentInstanceName()` which applies `toKebabCase` from the component
  * name. Here we pass an already-kebab-cased name to get predictable classes.
- *
- * ⛔ Historical bug this replaces: the old `useHover(props, prop, name)` took
- * two POSITIONAL strings. A harness calling `useHover(props, 'origam-hover-host')`
- * believing it named the instance actually overwrote `prop` (the key read
- * off `props`) — 11 of these 21 tests were red on `develop` because of it.
- * `useStateFlag(props, { state: 'hover', name: kebabName })` can't make that
- * mistake: `state` is a closed union checked at compile time, and `name` is
- * a named option, never confused with `source`.
  */
 function mountWithHover (initial: IHoverProps['hover'], kebabName = 'origam-hover-host') {
     const props = reactive<IHoverProps>({ hover: initial })
-    let api!: ReturnType<typeof useStateFlag<'hover'>>
+    let api!: ReturnType<typeof useHover>
 
     const Host = defineComponent({
         setup () {
-            api = useStateFlag(props, { state: 'hover', name: kebabName })
+            api = useHover(props, kebabName)
             return () => h('div')
         }
     })
@@ -42,153 +33,139 @@ function mountWithHover (initial: IHoverProps['hover'], kebabName = 'origam-hove
 
 // ─── suite ──────────────────────────────────────────────────────────────────
 
-describe('useStateFlag(hover) — hover=undefined (default, pointer-driven)', () => {
-    it('isOn starts false', () => {
+describe('useHover — hover=undefined (default, pointer-driven)', () => {
+    it('isHover starts false', () => {
         const { api } = mountWithHover(undefined)
-        expect(api().isOn.value).toBe(false)
+        expect(api().isHover.value).toBe(false)
     })
 
-    it('set() sets isOn to true', () => {
+    it('onMouseenter sets isHover to true', () => {
         const { api } = mountWithHover(undefined)
-        api().set()
-        expect(api().isOn.value).toBe(true)
+        api().onMouseenter()
+        expect(api().isHover.value).toBe(true)
     })
 
-    it('unset() sets isOn to false', () => {
+    it('onMouseleave sets isHover to false', () => {
         const { api } = mountWithHover(undefined)
-        api().set()
-        api().unset()
-        expect(api().isOn.value).toBe(false)
+        api().onMouseenter()
+        api().onMouseleave()
+        expect(api().isHover.value).toBe(false)
     })
 
-    it('config is undefined', () => {
+    it('hoverState is undefined', () => {
         const { api } = mountWithHover(undefined)
-        expect(api().config.value).toBeUndefined()
+        expect(api().hoverState.value).toBeUndefined()
     })
 })
 
-describe('useStateFlag(hover) — hover=false (same as default)', () => {
-    it('isOn starts false', () => {
+describe('useHover — hover=false (same as default)', () => {
+    it('isHover starts false', () => {
         const { api } = mountWithHover(false)
-        expect(api().isOn.value).toBe(false)
+        expect(api().isHover.value).toBe(false)
     })
 
-    it('set() still activates hover', () => {
+    it('onMouseenter still activates hover', () => {
         const { api } = mountWithHover(false)
-        api().set()
-        expect(api().isOn.value).toBe(true)
+        api().onMouseenter()
+        expect(api().isHover.value).toBe(true)
     })
 })
 
-describe('useStateFlag(hover) — hover=true (forced)', () => {
-    it('isOn is true regardless of interaction', () => {
+describe('useHover — hover=true (forced)', () => {
+    it('isHover is true regardless of mouse events', () => {
         const { api } = mountWithHover(true)
-        expect(api().isOn.value).toBe(true)
+        expect(api().isHover.value).toBe(true)
     })
 
-    it('unset() does NOT unset isOn when forced=true', () => {
+    it('onMouseleave does NOT unset isHover when forced=true', () => {
         const { api } = mountWithHover(true)
-        api().unset()
-        expect(api().isOn.value).toBe(true)
+        api().onMouseleave()
+        expect(api().isHover.value).toBe(true)
     })
 
-    it('config is undefined when hover is boolean true', () => {
+    it('hoverState is undefined when hover is boolean true', () => {
         const { api } = mountWithHover(true)
-        expect(api().config.value).toBeUndefined()
+        expect(api().hoverState.value).toBeUndefined()
     })
 })
 
-describe('useStateFlag(hover) — hover=IStateEffectConfig object', () => {
-    it('isOn is pointer-driven when enabled is absent', () => {
+describe('useHover — hover=IHoverState object', () => {
+    it('isHover is pointer-driven when enabled is absent', () => {
         const { api } = mountWithHover({ color: 'primary' })
-        expect(api().isOn.value).toBe(false)
-        api().set()
-        expect(api().isOn.value).toBe(true)
+        expect(api().isHover.value).toBe(false)
+        api().onMouseenter()
+        expect(api().isHover.value).toBe(true)
     })
 
-    it('isOn is forced when enabled=true in object', () => {
+    it('isHover is forced when enabled=true in object', () => {
         const { api } = mountWithHover({ enabled: true, color: 'danger' })
-        expect(api().isOn.value).toBe(true)
+        expect(api().isHover.value).toBe(true)
     })
 
-    it('config returns the config object', () => {
+    it('hoverState returns the config object', () => {
         const config = { color: 'success', bgColor: 'warning' }
         const { api } = mountWithHover(config)
-        expect(api().config.value).toEqual(config)
+        expect(api().hoverState.value).toEqual(config)
     })
 
-    it('config is still reactive after pointer events', () => {
+    it('hoverState is still reactive after pointer events', () => {
         const config = { elevation: 'md' }
         const { api } = mountWithHover(config)
-        api().set()
-        expect(api().config.value).toEqual(config)
-    })
-
-    it('set() does NOT destroy the config object (bug fixed by the useActive merge)', () => {
-        // Pre-merge bug: useHover's onMouseenter wrote `vmodel.value = true`
-        // UNCONDITIONALLY, which for a controlled `v-model:hover="{...}"`
-        // emitted `true` back to the parent and destroyed the config on the
-        // first mouseenter. useStateFlag gates set()/unset()/toggle() on the
-        // current value's type — object → internalToggle, never vmodel.
-        const config = { bgColor: 'success' }
-        const { props, api } = mountWithHover(config)
-        api().set()
-        expect(props.hover).toEqual(config)
-        expect(api().config.value).toEqual(config)
-        expect(api().isOn.value).toBe(true)
+        api().onMouseenter()
+        expect(api().hoverState.value).toEqual(config)
     })
 })
 
-describe('useStateFlag(hover) — classes', () => {
-    it('no class when isOn=false', () => {
+describe('useHover — hoverClasses', () => {
+    it('no class when isHover=false', () => {
         const { api } = mountWithHover(false, 'origam-btn')
-        expect(api().classes.value).toEqual([])
+        expect(api().hoverClasses.value).toEqual([])
     })
 
-    it('emits <component>--hover class when isOn=true', () => {
+    it('emits <component>--hovered class when isHover=true', () => {
         const { api } = mountWithHover(true, 'origam-btn')
-        expect(api().classes.value).toContain('origam-btn--hover')
+        expect(api().hoverClasses.value).toContain('origam-btn--hovered')
     })
 
-    it('class mirrors the name option verbatim (consumer is responsible for casing)', () => {
+    it('class mirrors the name arg verbatim (consumer is responsible for casing)', () => {
         const { api } = mountWithHover(true, 'origam-list-item')
-        expect(api().classes.value).toContain('origam-list-item--hover')
+        expect(api().hoverClasses.value).toContain('origam-list-item--hovered')
     })
 
-    it('class added after set()', () => {
+    it('class added after onMouseenter', () => {
         const { api } = mountWithHover(undefined, 'origam-card')
-        expect(api().classes.value).toEqual([])
-        api().set()
-        expect(api().classes.value).toContain('origam-card--hover')
+        expect(api().hoverClasses.value).toEqual([])
+        api().onMouseenter()
+        expect(api().hoverClasses.value).toContain('origam-card--hovered')
     })
 
-    it('class removed after unset()', () => {
+    it('class removed after onMouseleave', () => {
         const { api } = mountWithHover(undefined, 'origam-card')
-        api().set()
-        api().unset()
-        expect(api().classes.value).toEqual([])
+        api().onMouseenter()
+        api().onMouseleave()
+        expect(api().hoverClasses.value).toEqual([])
     })
 })
 
-describe('useStateFlag(hover) — reactive prop changes', () => {
-    it('prop change from false to true forces isOn', () => {
+describe('useHover — reactive prop changes', () => {
+    it('prop change from false to true forces isHover', () => {
         const { props, api } = mountWithHover(false)
-        expect(api().isOn.value).toBe(false)
+        expect(api().isHover.value).toBe(false)
         props.hover = true
-        expect(api().isOn.value).toBe(true)
+        expect(api().isHover.value).toBe(true)
     })
 
     it('prop change from true to false releases force (pointer events take over)', () => {
         const { props, api } = mountWithHover(true)
-        expect(api().isOn.value).toBe(true)
+        expect(api().isHover.value).toBe(true)
         props.hover = false
-        // forced is now false; isOn's internal ref is still false → overall false
-        expect(api().isOn.value).toBe(false)
+        // forced is now false; isHovered internal ref is still false → overall false
+        expect(api().isHover.value).toBe(false)
     })
 
     it('prop change to object with enabled=true forces hover', () => {
         const { props, api } = mountWithHover(false)
         props.hover = { enabled: true, color: 'info' }
-        expect(api().isOn.value).toBe(true)
+        expect(api().isHover.value).toBe(true)
     })
 })

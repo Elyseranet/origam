@@ -1,8 +1,6 @@
-import type { IActiveState } from '../Commons/state-effect.interface'
-import type { ICommonsComponentProps } from '../Commons/commons.interface'
+import type { IActiveState, ICommonsComponentProps } from "../../interfaces"
 
-import type { TDateMode } from '../../types/DatePicker/date-picker.type'
-import type { TIcon } from '../../types/Icon/icon.type'
+import type { TDateMode, TIcon } from "../../types"
 
 export interface IDatePickerControlsProps extends ICommonsComponentProps {
     /**
@@ -24,11 +22,8 @@ export interface IDatePickerControlsProps extends ICommonsComponentProps {
     viewMode?: TDateMode
 }
 
-/** Emits fired by `<OrigamDatePickerControls>` — clicks on the four
- *  toolbar buttons (year / month / prev / next). The month button
- *  itself carries the `text` label (see `IDatePickerControlsProps.text`);
- *  there is no button dedicated solely to the label, so there is no
- *  separate `click:text` — a click on the label fires `click:month`.
+/** Emits fired by `<OrigamDatePickerControls>` — clicks on the five
+ *  toolbar buttons (year / month / prev / next / text label).
  *  `event` is optional: the click handlers call `emits('click:prev')`
  *  etc. without forwarding the originating MouseEvent. */
 export interface IDatePickerControlsEmits {
@@ -36,13 +31,5 @@ export interface IDatePickerControlsEmits {
     (e: 'click:month', event?: MouseEvent): void
     (e: 'click:prev', event?: MouseEvent): void
     (e: 'click:next', event?: MouseEvent): void
+    (e: 'click:text', event?: MouseEvent): void
 }
-
-/*********************************************************
- * IDatePickerControlsSlots
- *
- * @description
- * `<OrigamDatePickerControls>` renders its own fixed toolbar (month
- * label, mode toggle, prev/next buttons) — no `<slot>` in its template.
- ********************************************************/
-export interface IDatePickerControlsSlots {}

@@ -1,10 +1,9 @@
-import type { IAdjacentSlots } from '../Commons/adjacent.interface'
-import type { IChipProps } from '../Chip/chip.interface'
-import type { ICommonsComponentEmits } from '../Commons/commons.interface'
-import type { IFieldSlots } from '../Field/field.interface'
-import type { IMenuProps } from '../Menu/menu.interface'
-import type { ITextFieldProps } from '../TextField/text-field.interface'
-import type { ITransitionComponentProps } from '../Commons/transition-component.interface'
+import type {
+    IChipProps,
+    IMenuProps,
+    ITextFieldProps,
+    ITransitionComponentProps
+} from "../../interfaces"
 
 export interface IDatePickerFieldProps extends ITextFieldProps, ITransitionComponentProps {
     menu?: boolean,
@@ -17,29 +16,4 @@ export interface IDatePickerFieldProps extends ITextFieldProps, ITransitionCompo
     closeOnSelect?: boolean
     chipProps?: IChipProps
     closableChips?: boolean
-}
-
-/*********************************************************
- * IDatePickerFieldEmits
- *
- * @description
- * Emits fired by `<OrigamDatePickerField>` — both are `useVModel`
- * relays (`modelValue` selection, `menu` open state), not literal
- * `emit(...)` calls in the component body.
- ********************************************************/
-export interface IDatePickerFieldEmits extends ICommonsComponentEmits {
-    (e: 'update:menu', value: boolean): void
-}
-
-/** Slot signatures for `<OrigamDatePickerField>` — the field chrome
- *  slots (`IFieldSlots` minus its scoped `default`, since this field
- *  renders its own selection markup instead) plus `prepend` / `append`
- *  (`IAdjacentSlots`) and the date-selection overrides. */
-export interface IDatePickerFieldSlots extends Omit<IFieldSlots, 'default'>, IAdjacentSlots {
-    /** Overrides the formatted range text (`range` mode, single-select display). */
-    rangeSelection?: () => any
-    /** Overrides one selected-date chip (`multiple` mode). */
-    chip?: (data: { item: string, index: number, props: Record<string, unknown> }) => any
-    /** Overrides a single selected-date's text representation. */
-    selection?: () => any
 }

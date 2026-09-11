@@ -1,13 +1,11 @@
 <template>
 	<origam-overlay
-			:id="id"
 			ref="origamOverlayRef"
 			v-model="isActive"
 			:activator-props="activatorProps"
 			:class="dialogClasses"
 			:style="dialogStyles"
 			v-bind="{...overlayProps, ...scopeId}"
-			@click:outside="handleClickOutside"
 	>
 			<template #activator="{props}">
 			<slot
@@ -24,7 +22,6 @@
 				<origam-card
 						ref="origamCardRef"
 						:aria-labelledby="dialogTitleId"
-						:title-id="dialogTitleId"
 						aria-modal="true"
 						role="dialog"
 						v-bind="cardProps"
@@ -43,24 +40,12 @@
 						<slot name="header"/>
 					</template>
 
-					<!--
-						#412 — the target names below (`#header.append`, …) address
-						`<OrigamCard>`'s OWN slots, which it reads as `slots['header.append']`
-						(point notation, `OrigamCard.vue:70`). Dialog's PUBLIC slot names
-						exposed to ITS OWN consumers stay dash-named (`<slot name="header-append">`
-						right below) — the two are independent identifiers: a named
-						template's target must match the CHILD's slot name, not whatever
-						name this component re-exposes upward. Pre-fix these were both
-						written as `#header-append` (dash) — a literal string that never
-						matched Card's `header.append`, so the five header zones (including
-						the default close button) were silently discarded. See #412.
-					-->
-					<template #header.append>
+					<template #header-append>
 						<slot name="header-append">
 							<origam-btn
 									:icon="MDI_ICONS.CLOSE"
 									:rounded="0"
-									:aria-label="t(closeLabel)"
+									aria-label="Close dialog"
 									bg-color="transparent"
 									@click="handleClose"
 							/>
@@ -69,7 +54,7 @@
 
 					<template
 							v-if="hasPrepend"
-							#header.prepend
+							#header-prepend
 					>
 						<slot name="header-prepend">
 							<origam-icon
@@ -83,7 +68,7 @@
 
 					<template
 							v-if="slots['header-title']"
-							#header.title
+							#header-title
 					>
 						<slot
 								name="header-title"
@@ -93,14 +78,14 @@
 
 					<template
 							v-if="slots['header-subtitle']"
-							#header.subtitle
+							#header-subtitle
 					>
 						<slot name="header-subtitle"/>
 					</template>
 
 					<template
 							v-if="slots['header-content']"
-							#header.content
+							#header-content
 					>
 						<slot name="header-content"/>
 					</template>
@@ -144,30 +129,24 @@
 		setup
 >
 	import { computed, mergeProps, nextTick, ref, StyleValue, useSlots, watch } from 'vue'
-	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
-	import OrigamBtn from '../Btn/OrigamBtn.vue'
-	import OrigamCard from '../Card/OrigamCard.vue'
-	import OrigamIcon from '../Icon/OrigamIcon.vue'
-	import OrigamOverlay from '../Overlay/OrigamOverlay.vue'
-	import OrigamTranslateScale from '../Transition/OrigamTranslateScale.vue'
-	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useScopeId } from '../../composables/Commons/scopeId.composable'
-	import { useSize } from '../../composables/Commons/size.composable'
-	import { useStatus } from '../../composables/Commons/status.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-	import { useVModel } from '../../composables/Commons/vModel.composable'
-	import { IN_BROWSER } from '../../consts/Commons/commons.const'
-	import vIntersect from '../../directives/Intersect/intersect.directive'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
-	import type { IDialogProps } from '../../interfaces/Dialog/dialog.interface'
+	import { getUid } from '../../utils'
+	import { OrigamBtn, OrigamCard, OrigamIcon, OrigamOverlay, OrigamTranslateScale } from '../../components'
+	import {
+	useProps,
+	useScopeId,
+	useSize,
+	useStatus,
+	useStyle,
+	useVModel
+} from '../../composables'
+	import { IN_BROWSER } from '../../consts'
+	import { vIntersect } from '../../directives'
+	import { MDI_ICONS } from '../../enums'
+	import type { IDialogProps} from '../../interfaces'
 
-	import type { IDialogEmits, IDialogSlots } from '../../interfaces/Dialog/dialog.interface'
-	import type { TOrigamCard } from '../../types/Card/card.type'
-	import type { TOrigamOverlay } from '../../types/Overlay/overlay.type'
-	import type { TTransitionProps } from '../../types/Transition/transition.type'
-	import { focusableChildren } from '../../utils/Commons/commons.util'
-	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
+	import type { IDialogEmits } from '../../interfaces/Dialog/dialog.interface'
+	import type { TOrigamCard, TOrigamOverlay, TTransitionProps } from '../../types'
+	import { focusableChildren, forwardRefs } from '../../utils'
 
 	/*********************************************************
 	 * Global
@@ -203,13 +182,10 @@
 		// scrim: true })` default and the backdrop never renders,
 		// regardless of theme/consumer intent. Anchoring the default
 		// here lines up the resolved prop with OrigamOverlay's (see #279).
-		scrim: true,
-		closeLabel: 'origam.close'
+		scrim: true
 	})
 
 	const emits = defineEmits<IDialogEmits>()
-
-	defineSlots<IDialogSlots>()
 
 	const {filterProps} = useProps<IDialogProps>(props)
 
@@ -224,7 +200,6 @@
 	 ********************************************************/
 
 	const {scopeId} = useScopeId()
-	const {t} = useLocale()
 	const slots = useSlots()
 	const uid = getUid()
 	const dialogTitleId = computed(() => `origam-dialog-title-${uid}`)
@@ -348,25 +323,6 @@
 	const handleClose = () => {
 		isActive.value = false
 	}
-	/*********************************************************
-	 * handleClickOutside (#416)
-	 *
-	 * @description
-	 * `IDialogEmits extends IClickOutsideEmits` puts `click:outside` in
-	 * Dialog's OWN `emits` option. From that point on Vue strips any
-	 * `onClick:outside` LISTENER out of `$attrs` before the fallthrough
-	 * merge — on purpose, so the same event can't fire twice (once via
-	 * `emit()`, once via attrs fallthrough). Since Dialog's template
-	 * never called `emits('click:outside', …)` itself, declaring the
-	 * emit without ever firing it silently cut the one channel that used
-	 * to carry the event by accident (attrs fallthrough onto
-	 * `<origam-overlay>`, which DOES emit it — see
-	 * `OrigamOverlay.vue:259`). Relaying it explicitly here restores the
-	 * channel without giving up the typed `emits` declaration.
-	 ********************************************************/
-	const handleClickOutside = (e: MouseEvent) => {
-		emits('click:outside', e)
-	}
 	const handleIntersect = (_isIntersecting: boolean, entries: Array<IntersectionObserverEntry>) => {
 		if (entries[entries.length - 1].isIntersecting) {
 			emits('isRead', true)
@@ -388,14 +344,15 @@
 		return [
 			'origam-dialog',
 			{
-				'origam-dialog--fullscreen': props.fullscreen
+				'origam-dialog--fullscreen': props.fullscreen,
+				'origam-dialog--scrollable': props.scrollable
 			},
 			sizeClasses.value,
 			statusClasses.value,
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(dialogStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(dialogStyles)
 
 
 	/*********************************************************

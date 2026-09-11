@@ -1,3 +1,3 @@
-import OrigamDataTableRow from '../../components/DataTable/OrigamDataTableRow.vue'
+import { OrigamDataTableRow } from "../../components"
 
 export type TOrigamDataTableRow = InstanceType<typeof OrigamDataTableRow>

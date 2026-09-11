@@ -7,7 +7,6 @@
 	</template>
 	<template v-else>
 		<div
-				:id="id"
 				ref="resizeRef"
 				:class="virtualScrollItemClasses"
 				:style="virtualScrollItemStyles"
@@ -23,13 +22,15 @@
 		setup
 >
 	import { computed, StyleValue, useAttrs, watch } from 'vue'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useResizeObserver } from '../../composables/Commons/resizeObserver.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
+	import {
+	useProps,
+	useResizeObserver,
+	useStyle
+} from '../../composables'
 
-	import type { IVirtualScrollItemProps } from '../../interfaces/VirtualScroll/virtual-scroll-item.interface'
+	import type { IVirtualScrollItemProps} from '../../interfaces'
 
-	import type { IVirtualScrollItemEmits, IVirtualScrollItemSlots } from '../../interfaces/VirtualScroll/virtual-scroll-item.interface'
+	import type { IVirtualScrollItemEmits } from '../../interfaces/VirtualScroll/virtual-scroll-item.interface'
 
 	/*********************************************************
 	 * Global
@@ -41,8 +42,6 @@
 	const props = withDefaults(defineProps<IVirtualScrollItemProps>(), {})
 
 	const emits = defineEmits<IVirtualScrollItemEmits>()
-
-	defineSlots<IVirtualScrollItemSlots>()
 
 	const {filterProps} = useProps<IVirtualScrollItemProps>(props)
 
@@ -85,7 +84,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(virtualScrollItemStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(virtualScrollItemStyles)
 
 
 	/*********************************************************

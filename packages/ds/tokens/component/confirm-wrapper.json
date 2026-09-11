@@ -1,0 +1,25 @@
+{
+  "confirm-wrapper": {
+    "_comment": "ConfirmWrapper component tokens — Lot 3.0. Layout-only component with minimal chrome; uses semantic feedback tokens for the error state instead of the legacy hardcoded `rgba(255, 0, 0, 1)`.",
+
+    "padding-start":   { "$type": "dimension", "$value": "{space.2}" },
+    "padding-end":     { "$type": "dimension", "$value": "{space.2}" },
+    "padding-top":     { "$type": "dimension", "$value": "{space.2}" },
+    "padding-bottom":  { "$type": "dimension", "$value": "{space.4}" },
+
+    "details-min-height":      { "$type": "dimension", "$value": "22px" },
+    "details-font-size":       { "$type": "dimension", "$value": "{font.size.sm}" },
+    "details-letter-spacing":  { "$type": "dimension", "$value": "0.0333333333em" },
+    "details-line-height":     { "$type": "number",    "$value": 1 },
+
+    "icon-opacity":            { "$type": "number",    "$value": "{opacity.70}" },
+    "icon-opacity-active":     { "$type": "number",    "$value": "{opacity.100}" },
+    "disabled-opacity":        { "$type": "number",    "$value": "{opacity.50}" },
+
+    "horizontal-gap":          { "$type": "dimension", "$value": "1em" },
+
+    "error": {
+      "color":  { "$type": "color", "$value": "{color.feedback.danger.fgSubtle}" }
+    }
+  }
+}

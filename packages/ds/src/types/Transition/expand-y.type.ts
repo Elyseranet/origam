@@ -1,3 +1,3 @@
-import OrigamExpandY from '../../components/Transition/OrigamExpandY.vue'
+import { OrigamExpandY } from "../../components"
 
 export type TOrigamExpandY = InstanceType<typeof OrigamExpandY>

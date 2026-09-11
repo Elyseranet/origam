@@ -3,7 +3,6 @@
 		<transition name="origam-command-palette--fade">
 			<div
 					v-if="isActive"
-					:id="id"
 					ref="rootRef"
 					:class="rootClasses"
 					:style="rootStyles"
@@ -13,7 +12,7 @@
 			>
 				<div
 						ref="dialogRef"
-						:aria-label="dialogAriaLabel"
+						:aria-labelledby="inputId"
 						:class="dialogClasses"
 						:style="dialogStyles"
 						aria-modal="true"
@@ -34,7 +33,7 @@
 								:aria-activedescendant="activeOptionId"
 								:aria-controls="listboxId"
 								:aria-expanded="hasResults"
-								:placeholder="resolvedPlaceholder"
+								:placeholder="placeholder"
 								:style="inputTypographyStyles"
 								aria-autocomplete="list"
 								autocomplete="off"
@@ -52,7 +51,7 @@
 
 					<div
 							:id="listboxId"
-							:aria-label="resolvedPlaceholder"
+							:aria-label="placeholder"
 							:style="listStyles"
 							class="origam-command-palette__list"
 							role="listbox"
@@ -134,7 +133,7 @@
 								class="origam-command-palette__empty"
 						>
 							<slot name="empty">
-								{{ resolvedEmptyText }}
+								{{ emptyText }}
 							</slot>
 						</div>
 					</div>
@@ -170,31 +169,30 @@
 >
 	import { computed, nextTick, ref, StyleValue, useSlots, watch } from 'vue'
 
-	import OrigamIcon from '../Icon/OrigamIcon.vue'
-	import OrigamKbd from '../Kbd/OrigamKbd.vue'
+	import { OrigamIcon, OrigamKbd } from '../../components'
 
 	import { useCommand } from '../../composables/CommandPalette/command.composable'
 
 	import { useHotkey } from '../../composables/Commons/hotkey.composable'
-	import { useLocale } from '../../composables/Commons/locale.composable'
 
 	import { useTypography } from '../../composables/Commons/typography.composable'
 
 	import { useVModel } from '../../composables/Commons/vModel.composable'
 
-	import { COMMAND_PALETTE_DEFAULT_HOTKEY, COMMAND_PALETTE_DEFAULT_MAX_HEIGHT, COMMAND_PALETTE_DEFAULT_WIDTH } from '../../consts/CommandPalette/command-palette.const'
-	import { IN_BROWSER } from '../../consts/Commons/commons.const'
+	import {
+		COMMAND_PALETTE_DEFAULT_HOTKEY,
+		COMMAND_PALETTE_DEFAULT_MAX_HEIGHT,
+		COMMAND_PALETTE_DEFAULT_WIDTH,
+		IN_BROWSER
+	} from '../../consts'
 
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { MDI_ICONS } from '../../enums'
 
-	import type { ICommand } from '../../interfaces/CommandPalette/command.interface'
-	import type { ICommandPaletteProps, ICommandPaletteSlots } from '../../interfaces/CommandPalette/command-palette.interface'
+	import type { ICommand, ICommandPaletteProps, ICommandPaletteSlots} from '../../interfaces'
 
 	import type { ICommandPaletteEmits } from '../../interfaces/CommandPalette/command-palette.interface'
 
-	import type { IRenderedGroup } from '../../interfaces/CommandPalette/command-palette-rendered-group.interface'
-
-	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
+	import { getUid } from '../../utils'
 
 	import { fuzzyMatch, type IFuzzyMatchResult } from '../../utils/CommandPalette/fuzzy-match.util'
 
@@ -205,8 +203,8 @@
 	const props = withDefaults(defineProps<ICommandPaletteProps>(), {
 		modelValue: false,
 		hotkey: () => COMMAND_PALETTE_DEFAULT_HOTKEY,
-		placeholder: 'origam.command_palette.placeholder',
-		emptyText: 'origam.command_palette.empty_text',
+		placeholder: 'Search…',
+		emptyText: 'No results',
 		maxHeight: COMMAND_PALETTE_DEFAULT_MAX_HEIGHT,
 		width: COMMAND_PALETTE_DEFAULT_WIDTH,
 		loading: false,
@@ -251,43 +249,6 @@
 	const inputId = computed(() => `origam-command-palette-input-${uid}`)
 	const listboxId = computed(() => `origam-command-palette-listbox-${uid}`)
 	const dataCy = computed(() => 'origam-command-palette')
-
-	/*********************************************************
-	 * Dialog accessible name (issue #404)
-	 *
-	 * @description
-	 * Was `aria-labelledby="inputId"`, pointing the dialog's name at the
-	 * `<input>`. Measured with a real Playwright `ariaSnapshot()` against
-	 * Chromium: the dialog announced with NO name at all — a placeholder
-	 * does not reliably promote to the accessible name of an ELEMENT
-	 * REFERENCING it via `aria-labelledby` (it only names the input
-	 * itself). `aria-label` and `aria-labelledby` can't coexist —
-	 * `aria-labelledby` always wins when both are present — so the fix
-	 * replaces it outright with a dedicated, always-present label rather
-	 * than keeping a dead attribute alongside a working one.
-	 ********************************************************/
-	const {t} = useLocale()
-	const dialogAriaLabel = computed(() => t('origam.command_palette.aria_label'))
-
-	/*********************************************************
-	 * `placeholder` et `emptyText` transportent une CLÉ (#404, C8)
-	 *
-	 * @description
-	 * Leurs valeurs par défaut étaient les chaînes anglaises `'Search…'` et
-	 * `'No results'`, écrites en dur dans `withDefaults` — donc rendues
-	 * telles quelles dans toutes les langues. Le placeholder est doublement
-	 * exposé : il remplit l'`<input role="combobox">`, dont il constitue le
-	 * nom accessible, et il sert d'`aria-label` à la listbox.
-	 *
-	 * @description
-	 * Le défaut est désormais une clé de catalogue, résolue par `t()`. Rien
-	 * ne casse pour un consommateur qui passe du texte littéral : l'adaptateur
-	 * intégré rend la clé INCHANGÉE quand elle est absente du catalogue, donc
-	 * `placeholder="Chercher un client"` s'affiche verbatim. C'est le contrat
-	 * déjà en vigueur sur `OrigamPagination`.
-	 ********************************************************/
-	const resolvedPlaceholder = computed(() => t(props.placeholder))
-	const resolvedEmptyText = computed(() => t(props.emptyText))
 
 	const rootRef = ref<HTMLElement>()
 	const dialogRef = ref<HTMLElement>()
@@ -384,6 +345,11 @@
 	 * When the query is non-empty we keep the fuzzy ranking flat
 	 * (groups would conflict with score-based ordering).
 	 ********************************************************/
+
+	interface IRenderedGroup {
+		label: string | null
+		items: ReadonlyArray<IFuzzyMatchResult<ICommand>>
+	}
 
 	const groupedResults = computed<ReadonlyArray<IRenderedGroup>>(() => {
 		if (query.value.trim().length > 0) {

@@ -1,19 +1,12 @@
 import type {
+    IActiveProps,
     IBgColorProps,
-    IColorProps
-} from '../Commons/color.interface'
-import type { IBorderProps } from '../Commons/border.interface'
-import type {
-    ICommonsComponentEmits,
-    ICommonsComponentProps
-} from '../Commons/commons.interface'
-import type { IDensityProps } from '../Commons/density.interface'
-import type { IElevationProps } from '../Commons/elevation.interface'
-import type { IHoverProps } from '../Commons/hover.interface'
-import type { IRippleProps } from "../Commons/ripple.interface";
-import type { IRoundedProps } from '../Commons/rounded.interface'
-import type { TColor } from '../../types/Commons/color.type'
-import type { TIcon } from '../../types/Icon/icon.type'
+    IBorderProps,
+    IColorProps, ICommonsComponentEmits, ICommonsComponentProps, IDensityProps, IElevationProps, ISelectionControlGroupProps,
+    IHoverProps,
+    IRoundedProps
+} from '../../interfaces'
+import type { TColor, TIcon } from '../../types'
 
 /**
  * `border` / `rounded` / `elevation` (props-first, issue #241) — declared
@@ -26,23 +19,16 @@ import type { TIcon } from '../../types/Icon/icon.type'
  * forward these values down automatically through `filterProps` without
  * any additional wiring.
  */
-export interface ISelectionControlProps extends ICommonsComponentProps, IColorProps, IBgColorProps, IHoverProps, IDensityProps, IBorderProps, IRoundedProps, IElevationProps, IRippleProps {
+export interface ISelectionControlProps extends ICommonsComponentProps, Partial<Omit<ISelectionControlGroupProps, 'items'>>, IColorProps, IBgColorProps, IActiveProps, IHoverProps, IDensityProps, IBorderProps, IRoundedProps, IElevationProps {
     label?: string
     trueValue?: any
     falseValue?: any
     value?: any
     required?: boolean
-    disabled?: boolean
-    error?: string | boolean
-    name?: string
-    readonly?: boolean
-    type?: string
-    modelValue?: any
-    valueComparator?: (a: any, b: any) => boolean
-    falseIcon?: TIcon
-    trueIcon?: TIcon
-    multiple?: boolean
-    inline?: boolean
+    /** @deprecated Use the `active` object prop instead. Kept for back-compat. */
+    activeColor?: TColor
+    /** @deprecated Use the `active` object prop instead. Kept for back-compat. */
+    activeBgColor?: TColor
 }
 
 export interface ISelectionControlEmits extends ICommonsComponentEmits {

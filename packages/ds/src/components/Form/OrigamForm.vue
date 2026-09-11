@@ -1,6 +1,5 @@
 <template>
 	<form
-			:id="id"
 			ref="formRef"
 			:class="formClasses"
 			:style="formStyles"
@@ -48,7 +47,7 @@
 		>
 			<slot
 					name="actions"
-					v-bind="{submit: handleSubmit, reset: handleReset}"
+					v-bind="{submit: () => handleSubmit, reset: () => handleReset}"
 			/>
 		</div>
 	</form>
@@ -59,21 +58,23 @@
 		setup
 >
 	import { computed, nextTick, ref, StyleValue, useSlots } from 'vue'
-	import OrigamMessages from '../Messages/OrigamMessages.vue'
+	import { OrigamMessages } from '../../components'
 
-	import { useForm } from '../../composables/Form/form.composable'
-	import { useMessage } from '../../composables/Commons/message.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-	import { useTypography } from '../../composables/Commons/typography.composable'
-	import { useValidation } from '../../composables/Commons/validation.composable'
+	import {
+	useDefaults,
+	useForm,
+	useMessage,
+	useProps,
+	useStyle,
+	useTypography,
+	useValidation
+} from '../../composables'
 
-	import type { IFormProps, IFormSlots, ISubmitEventPromise } from '../../interfaces/Form/form.interface'
+	import type { IFormProps, IFormSlots, ISubmitEventPromise} from '../../interfaces'
 
 	import type { IFormEmits } from '../../interfaces/Form/form.interface'
 
-	import { forwardRefs } from '../../utils/Commons/forwardRefs.util'
-	import { getUid } from '../../utils/Commons/getCurrentInstance.util'
+	import { forwardRefs, getUid } from '../../utils'
 
 	/*********************************************************
 	 * Global
@@ -81,7 +82,9 @@
 	 * @description
 	 * Props, emits, slots, and composable setup.
 	 ********************************************************/
-	const props = withDefaults(defineProps<IFormProps>(), {})
+	const _props = withDefaults(defineProps<IFormProps>(), {})
+	const props = useDefaults(_props)
+
 	const emits = defineEmits<IFormEmits>()
 
 	defineSlots<IFormSlots>()
@@ -161,7 +164,6 @@
 		e.preventDefault()
 		form.reset()
 		resetFormValidation()
-		emits('reset', e)
 	}
 
 	const handleSubmit = (_e: Event) => {
@@ -214,16 +216,7 @@
 			props.class
 		]
 	})
-	/*********************************************************
-	 * useStyle
-	 *
-	 * @description
-	 * #372 — `id` must be seeded with `() => props.id`: without it, the id
-	 * returned here is a purely GENERATED one for the scoped stylesheet
-	 * selector, and the template's `:id="id"` on the root would render
-	 * that generated id instead of the consumer's.
-	 ********************************************************/
-	const {id, css, load, isLoaded, unload} = useStyle(formStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(formStyles)
 
 
 	/*********************************************************

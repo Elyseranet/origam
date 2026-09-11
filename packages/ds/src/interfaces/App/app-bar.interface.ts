@@ -1,10 +1,6 @@
-import type { ICommonsComponentEmits } from '../Commons/commons.interface'
-import type { IImgProps } from '../Img/img.interface'
-import type { ILayoutItemProps } from '../Commons/layout.interface'
-import type { IScrollProps } from '../Commons/scroll.interface'
-import type { IToolbarProps } from '../Toolbar/toolbar.interface'
+import type { ICommonsComponentEmits, IImgProps, ILayoutItemProps, IScrollProps, IToolbarProps } from '../../interfaces'
 
-import type { TBlock } from '../../types/Commons/anchor.type'
+import type { TBlock } from "../../types"
 
 /**
  * A docked AppBar's cross-axis size (`width` for a top/bottom bar) is owned by
@@ -31,28 +27,3 @@ export interface IAppBarProps extends Omit<IToolbarProps, 'width' | 'minWidth' |
 
 /** Emits fired by `<OrigamAppBar>` — v-model on the rail/expanded state. */
 export interface IAppBarEmits extends ICommonsComponentEmits {}
-
-/*********************************************************
- * IAppBarSlots
- *
- * @description
- * Signatures des slots de `<OrigamAppBar>`. Tous sont RELAYES a
- * `<origam-toolbar>`, sauf `img` qui est rendu par l'AppBar elle-meme dans
- * la zone `prepend`.
- *
- * @description
- * ⛔ `title` etait documente et expose par la story (« Slots - Title »)
- * sans etre declare ici, et le template ne transmettait aucun
- * `<template #title>` : le contenu du slot etait perdu, jamais rendu. Le
- * Toolbar declare pourtant bien ce slot (`IToolbarSlots.title`) — il ne
- * manquait que le relais. Comme sur le Toolbar, le slot l'emporte sur la
- * prop `title`.
- ********************************************************/
-export interface IAppBarSlots {
-    append?: () => any
-    prepend?: () => any
-    img?: () => any
-    title?: () => any
-    content?: () => any
-    default?: () => any
-}

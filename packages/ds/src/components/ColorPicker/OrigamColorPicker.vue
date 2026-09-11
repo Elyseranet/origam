@@ -1,6 +1,5 @@
 <template>
 	<origam-picker
-			:id="id"
 			ref="origamPickerRef"
 			:class="colorPickerClasses"
 			:style="colorPickerStyles"
@@ -91,34 +90,33 @@
 		lang="ts"
 		setup
 >
-	import OrigamColorPickerCanvas from './OrigamColorPickerCanvas.vue'
-	import OrigamColorPickerEdit from './OrigamColorPickerEdit.vue'
-	import OrigamColorPickerPreview from './OrigamColorPickerPreview.vue'
-	import OrigamColorPickerSwatches from './OrigamColorPickerSwatches.vue'
-	import OrigamPicker from '../Picker/OrigamPicker.vue'
+	import {
+		OrigamColorPickerCanvas,
+		OrigamColorPickerEdit,
+		OrigamColorPickerPreview,
+		OrigamColorPickerSwatches,
+		OrigamPicker
+	} from "../../components"
 
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useRtl } from '../../composables/Commons/rtl.composable'
-	import { useVModel } from '../../composables/Commons/vModel.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useProps, useRtl, useVModel , useStyle} from "../../composables"
 
-	import { COLOR_MODES_NAMES } from '../../enums/ColorPicker/color-picker.enum'
+	import { COLOR_MODES_NAMES } from "../../enums"
 
-	import type { IColorPickerProps } from '../../interfaces/ColorPicker/color-picker.interface'
+	import type { IColorPickerProps} from "../../interfaces"
 
-	import type { IColorPickerEmits, IColorPickerSlots } from '../../interfaces/ColorPicker/color-picker.interface'
+	import type { IColorPickerEmits } from '../../interfaces/ColorPicker/color-picker.interface'
 
-	import type { TColorModes } from '../../types/ColorPicker/color-picker.type'
-	import type { THSVA } from '../../types/Commons/color.type'
-	import type { TOrigamColorPickerCanvas } from '../../types/ColorPicker/color-picker-canvas.type'
-	import type { TOrigamColorPickerEdit } from '../../types/ColorPicker/color-picker-edit.type'
-	import type { TOrigamColorPickerPreview } from '../../types/ColorPicker/color-picker-preview.type'
-	import type { TOrigamColorPickerSwatches } from '../../types/ColorPicker/color-picker-swatches.type'
-	import type { TOrigamPicker } from '../../types/Picker/picker.type'
+	import type {
+		TColorModes,
+		THSVA,
+		TOrigamColorPickerCanvas,
+		TOrigamColorPickerEdit,
+		TOrigamColorPickerPreview,
+		TOrigamColorPickerSwatches,
+		TOrigamPicker
+	} from "../../types"
 
-	import { consoleWarn } from '../../utils/Commons/console.util'
-	import { extractColor } from '../../utils/ColorPicker/color-picker.util'
-	import { HSVtoCSS, parseColor, RGBtoHSV } from '../../utils/Commons/color.util'
+	import { consoleWarn, extractColor, HSVtoCSS, parseColor, RGBtoHSV } from "../../utils"
 
 	import { computed, onBeforeMount, ref, StyleValue, useSlots, watch } from "vue"
 
@@ -140,8 +138,6 @@
 	})
 
 	defineEmits<IColorPickerEmits>()
-
-	defineSlots<IColorPickerSlots>()
 
 	const slots = useSlots()
 	const {filterProps} = useProps<IColorPickerProps>(props)
@@ -265,7 +261,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(colorPickerStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(colorPickerStyles)
 
 
 	/*********************************************************
@@ -297,16 +293,7 @@
 		&__controls {
 			display: flex;
 			flex-direction: column;
-			padding-block: var(--origam-color-picker__controls---padding-block, 16px);
-			padding-inline: var(--origam-color-picker__controls---padding-inline, 16px);
+			padding: 16px;
 		}
-
-    &--is-rtl {
-      direction: rtl;
-    }
-
-    &--is-ltr {
-      direction: ltr;
-    }
 	}
 </style>

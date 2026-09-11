@@ -1,7 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
 
-import { selectHstOption, toggleHstCheckbox } from './_support/histoire-controls'
-
 /**
  * Lot C2 — OrigamChipGroup runtime probes.
  *
@@ -13,18 +11,6 @@ import { selectHstOption, toggleHstCheckbox } from './_support/histoire-controls
  *   - filter: selected chip shows the filter icon
  *   - column: wrapper has --column modifier class
  *   - color: forwarded to child chips
- *
- * Story realignment (canonical Design/Functional/Events/Slots structure):
- * neither OrigamChip.vue nor OrigamChipGroup.vue carry ANY `data-cy` hooks
- * (verified via grep) — the old story's `[data-cy="chip-group-…"]`
- * selectors were entirely story-side fall-through that no longer exists.
- * All locators here are class-based (`.origam-chip-group`, `.origam-chip`)
- * or text-based (chip label). The old side-by-side "Prop — multiple /
- * mandatory / filter / column / color" fixture Variants are gone —
- * multiple/mandatory/filter/column are now HstCheckbox controls on the
- * "Functional"/"Design" Variants, driven via `toggleHstCheckbox`; color is
- * the "Design" Variant's Color HstSelect, forwarded to child chips via
- * `origam-defaults-provider` (verified in OrigamChipGroup.vue).
  */
 
 const sandboxOf = (page: Page) =>
@@ -43,25 +29,27 @@ const STORY = '/stories/story/components-stories-chip-origamchipgroup-story-vue'
 
 test.describe('OrigamChipGroup — default', () => {
     test('renders the group wrapper with 3 child chips', async ({ page }) => {
-        await openVariant(page, STORY, 'Design')
+        await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
-        const group = sandbox.locator('.origam-chip-group').first()
+        const group = sandbox.locator('[data-cy="chip-group-playground"]').first()
         await expect(group).toBeVisible({ timeout: 8000 })
-        await expect(group.locator('.origam-chip')).toHaveCount(3, { timeout: 8000 })
+
+        const chips = await group.locator('.origam-chip').count()
+        expect(chips).toBe(3)
     })
 
     test('clicking a chip toggles selection and updates status', async ({ page }) => {
         await openVariant(page, STORY, 'Default')
         const sandbox = sandboxOf(page)
 
-        const chip1 = sandbox.locator('.origam-chip', { hasText: 'Alpha' }).first()
+        const chip1 = sandbox.locator('[data-cy="chip-group-playground-1"]').first()
         await expect(chip1).toBeVisible({ timeout: 8000 })
         await chip1.click()
         await page.waitForTimeout(300)
 
         // Status display should show the selected value (1)
-        const status = sandbox.locator('.story-status').first()
+        const status = sandbox.locator('[data-cy="chip-group-playground-status"]').first()
         await expect(status).toContainText('1')
     })
 })
@@ -70,12 +58,11 @@ test.describe('OrigamChipGroup — default', () => {
 
 test.describe('OrigamChipGroup — multiple', () => {
     test('multiple chips can be selected simultaneously', async ({ page }) => {
-        await openVariant(page, STORY, 'Functional')
+        await openVariant(page, STORY, 'Prop — multiple (checkbox-style selection)')
         const sandbox = sandboxOf(page)
-        await toggleHstCheckbox(page, 'Multiple')
 
-        const chipA = sandbox.locator('.origam-chip', { hasText: 'Alpha' }).first()
-        const chipB = sandbox.locator('.origam-chip', { hasText: 'Beta' }).first()
+        const chipA = sandbox.locator('[data-cy="chip-group-multiple-a"]').first()
+        const chipB = sandbox.locator('[data-cy="chip-group-multiple-b"]').first()
         await expect(chipA).toBeVisible({ timeout: 8000 })
 
         await chipA.click()
@@ -83,11 +70,11 @@ test.describe('OrigamChipGroup — multiple', () => {
         await chipB.click()
         await page.waitForTimeout(200)
 
-        const status = sandbox.locator('.story-status').first()
+        const status = sandbox.locator('[data-cy="chip-group-multiple-status"]').first()
         const text = await status.innerText()
-        // Both values (1 and 2) should be in the status
-        expect(text).toContain('1')
-        expect(text).toContain('2')
+        // Both a and b should be in the status
+        expect(text).toContain('a')
+        expect(text).toContain('b')
     })
 })
 
@@ -95,25 +82,21 @@ test.describe('OrigamChipGroup — multiple', () => {
 
 test.describe('OrigamChipGroup — mandatory', () => {
     test('mandatory mode keeps at least one chip selected', async ({ page }) => {
-        await openVariant(page, STORY, 'Functional')
+        await openVariant(page, STORY, 'Prop — mandatory (always one selected)')
         const sandbox = sandboxOf(page)
-        await toggleHstCheckbox(page, 'Mandatory')
 
-        const statusEl = sandbox.locator('.story-status').first()
+        // Initial selection is 'grid'
+        const statusEl = sandbox.locator('[data-cy="chip-group-mandatory-status"]').first()
         await expect(statusEl).toBeVisible({ timeout: 8000 })
 
-        const chipAlpha = sandbox.locator('.origam-chip', { hasText: 'Alpha' }).first()
-        // Select it first (functionalModel starts undefined).
-        await chipAlpha.click()
-        await page.waitForTimeout(300)
-        await expect(statusEl).toContainText('1')
-
-        // Click the already-selected chip again → mandatory prevents deselection.
-        await chipAlpha.click()
+        const gridChip = sandbox.locator('[data-cy="chip-group-mandatory-grid"]').first()
+        // Click the already-selected chip → mandatory prevents deselection
+        await gridChip.click()
         await page.waitForTimeout(300)
 
         const text = await statusEl.innerText()
-        expect(text).toContain('1')
+        // Should still have a value (not empty)
+        expect(text).not.toContain('(none)')
     })
 })
 
@@ -121,18 +104,13 @@ test.describe('OrigamChipGroup — mandatory', () => {
 
 test.describe('OrigamChipGroup — filter', () => {
     test('filter group renders chips and selecting one shows filter icon', async ({ page }) => {
-        // #400/L55 — la prop `filter` d'OrigamChipGroup etait declaree sur
-        // IChipGroupProps et lue NULLE PART. Elle cascade desormais vers les
-        // chips enfants via slotDefaults, comme color / bgColor / active /
-        // hover. Le test.fail() qui documentait le bug est retire : il passe.
-        await openVariant(page, STORY, 'Functional')
+        await openVariant(page, STORY, 'Prop — filter (check icon when selected)')
         const sandbox = sandboxOf(page)
-        await toggleHstCheckbox(page, 'Filter (check icon)')
 
-        const group = sandbox.locator('.origam-chip-group').first()
+        const group = sandbox.locator('[data-cy="chip-group-filter"]').first()
         await expect(group).toBeVisible({ timeout: 8000 })
 
-        const chip1 = sandbox.locator('.origam-chip', { hasText: 'Alpha' }).first()
+        const chip1 = sandbox.locator('[data-cy="chip-group-filter-1"]').first()
         await chip1.click()
         await page.waitForTimeout(300)
 
@@ -146,11 +124,10 @@ test.describe('OrigamChipGroup — filter', () => {
 
 test.describe('OrigamChipGroup — column', () => {
     test('column=true emits --column modifier class', async ({ page }) => {
-        await openVariant(page, STORY, 'Design')
+        await openVariant(page, STORY, 'Prop — column (wraps chips to new lines)')
         const sandbox = sandboxOf(page)
-        await toggleHstCheckbox(page, 'Column (wrap)')
 
-        const group = sandbox.locator('.origam-chip-group').first()
+        const group = sandbox.locator('[data-cy="chip-group-column"]').first()
         await expect(group).toBeVisible({ timeout: 8000 })
 
         const cls = await group.evaluate(el => el.className)
@@ -161,19 +138,14 @@ test.describe('OrigamChipGroup — column', () => {
 // ─── Color ──────────────────────────────────────────────────────────────────
 
 test.describe('OrigamChipGroup — color', () => {
-    test('color prop is forwarded to child chips via origam-defaults-provider', async ({ page }) => {
-        await openVariant(page, STORY, 'Design')
+    test('color prop is passed down and group renders child chips', async ({ page }) => {
+        await openVariant(page, STORY, 'Prop — color (applies to selected chip)')
         const sandbox = sandboxOf(page)
 
-        const group = sandbox.locator('.origam-chip-group').first()
+        const group = sandbox.locator('[data-cy="chip-group-color"]').first()
         await expect(group).toBeVisible({ timeout: 8000 })
-        // Design Variant init-state already sets color: 'primary' — no control change needed.
-        const chips = group.locator('.origam-chip')
-        await expect(chips).toHaveCount(3)
-        const firstChipClass = await chips.first().evaluate((el) => el.className)
-        expect(firstChipClass).toContain('origam--color-primary')
 
-        await selectHstOption(page, 'Color', 'Success')
-        await expect(chips.first()).toHaveClass(/origam--color-success/, { timeout: 4000 })
+        const chips = await group.locator('.origam-chip').count()
+        expect(chips).toBe(2)
     })
 })

@@ -1,11 +1,11 @@
 <template>
 	<component
 			:is="tag"
-			:id="id"
 			ref="resizeRef"
-			:aria-label="rootAriaLabel"
+			:aria-label="ariaLabel"
 			:class="paginationClasses"
 			:style="paginationStyles"
+			role="navigation"
 			@keydown="handleKeydown"
 	>
 		<span
@@ -179,32 +179,17 @@
 		setup
 >
 	import { ComponentPublicInstance, computed, nextTick, ref, shallowRef, StyleValue } from "vue"
-	import OrigamBtn from '../Btn/OrigamBtn.vue'
+	import { OrigamBtn } from "../../components"
 
-	import { useBorder } from '../../composables/Commons/border.composable'
-	import { useDensity } from '../../composables/Commons/density.composable'
-	import { useDisplay } from '../../composables/Commons/display.composable'
-	import { useElevation } from '../../composables/Commons/elevation.composable'
-	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useMargin } from '../../composables/Commons/margin.composable'
-	import { usePadding } from '../../composables/Commons/padding.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useRefs } from '../../composables/Commons/refs.composable'
-	import { useResizeObserver } from '../../composables/Commons/resizeObserver.composable'
-	import { useSize } from '../../composables/Commons/size.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-	import { useTypography } from '../../composables/Commons/typography.composable'
-	import { useVModel } from '../../composables/Commons/vModel.composable'
+	import { useDensity, useDisplay, useLocale, useProps, useRefs, useResizeObserver, useSize, useTypography, useVModel , useStyle} from "../../composables"
 
-	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
-	import { VARIANT } from '../../enums/Commons/variant.enum'
+	import { KEYBOARD_VALUES, MDI_ICONS, VARIANT } from "../../enums"
 
-	import type { IPaginationProps } from '../../interfaces/Pagination/pagination.interface'
+	import type { IPaginationProps} from "../../interfaces"
 
-	import type { IPaginationEmits, IPaginationSlots } from '../../interfaces/Pagination/pagination.interface'
+	import type { IPaginationEmits } from '../../interfaces/Pagination/pagination.interface'
 
-	import { createRange, int } from '../../utils/Commons/commons.util'
+	import { createRange, int } from "../../utils"
 
 	/*********************************************************
 	 * Global
@@ -217,10 +202,11 @@
 		nextIcon: MDI_ICONS.CHEVRON_RIGHT,
 		firstIcon: MDI_ICONS.CHEVRON_DOUBLE_LEFT,
 		lastIcon: MDI_ICONS.CHEVRON_DOUBLE_RIGHT,
-		tag: 'nav',
+		tag: 'div',
 		ellipsis: '...',
 		length: 1,
 		start: 1,
+		modelValue: 1, // TODO - Delete default value for modelValue
 		ariaLabel: 'origam.pagination.aria_label.root',
 		pageAriaLabel: 'origam.pagination.aria_label.page',
 		currentPageAriaLabel: 'origam.pagination.aria_label.current_page',
@@ -239,8 +225,6 @@
 
 	const emits = defineEmits<IPaginationEmits>()
 
-	defineSlots<IPaginationSlots>()
-
 	const {filterProps} = useProps<IPaginationProps>(props)
 
 	const {t} = useLocale()
@@ -251,25 +235,8 @@
 	 * @description
 	 * page is the controlled current-page number.
 	 * width / maxButtons support the responsive total-visible calculation.
-	 * The uncontrolled seed is passed as `() => props.start`, not
-	 * `props.start` (#448): a plain read right here, in the setup body,
-	 * would freeze the pre-theme value, since `useVModel` runs before the
-	 * ADR-005 theme-props resolver patches `instance.props`. The getter
-	 * form defers the read to `useVModel`'s internal `seed()`, which only
-	 * runs on first actual access — after the resolver has already run.
 	 ********************************************************/
-	/*********************************************************
-	 * Page
-	 *
-	 * @description
-	 * `modelValue` n'a plus de defaut (#640) pour que le repli vers `start`
-	 * soit atteignable. Son type devient donc `number | undefined`, alors
-	 * qu'au runtime `start` (defaut 1) garantit toujours une valeur.
-	 * `transformIn` rend cette garantie EXPLICITE a l'execution plutot que
-	 * de la masquer par un cast, qui aurait eteint le rouge de vue-tsc sans
-	 * repondre a la question.
-	 ********************************************************/
-	const page = useVModel(props, 'modelValue', () => props.start, (v?: number) => v ?? props.start)
+	const page = useVModel(props, 'modelValue', props.start)
 
 	/*********************************************************
 	 * Composables
@@ -392,7 +359,8 @@
 		// JS-side bg is the same intent the SCSS already paints, so the
 		// inline declaration is harmless (same value), and the fg now
 		// wins by virtue of being on the same axis as the synthesised
-		// bg.
+		// bg. Symmetric mirroring for hoverColor / activeColor keeps the
+		// per-state contrast consistent.
 		// NB: `TColor = string | false | null | undefined`, and Vue's
 		// defineProps emits `false` (not `undefined`) when a TColor prop
 		// is omitted. We MUST use `||` (truthy fallback), NOT `??`
@@ -400,17 +368,20 @@
 		// synthesis silently no-ops, while `false || "primary"` falls
 		// through to the consumer's chosen intent as intended.
 		//
-		// hover / active are NOT forwarded here: the inner `<OrigamBtn>`
-		// derives its own hover/active darken cascade (bgHover / bgActive
-		// token rungs) from ITS OWN `hover` / `active` state via
-		// `useStateFlag` + `useStateEffect` — Pagination never had a
-		// `hover` / `active` object prop of its own to relay, and the
-		// legacy flat `hoverColor` / `hoverBgColor` / `activeColor` /
-		// `activeBgColor` props this comment used to describe forwarding
-		// were removed (`OrigamBtn` had already stopped reading them —
-		// this forwarding was dead code). The active PAGE item still
-		// differentiates itself via the per-item `active: true` boolean
-		// (see `controls` below), which IS live.
+		// We ONLY synthesise `bgColor`. Forwarding `hoverBgColor` /
+		// `activeBgColor` as the synthesised intent would defeat the
+		// inner btn's bgRole logic:
+		//     bgRole = isActive && !props.activeBgColor ? 'active' : 'default'
+		// A truthy synthesised activeBgColor falls back to the 'default'
+		// slot → no darken on the active page → hover and active become
+		// visually identical to rest. By leaving these props at `false`
+		// the inner btn promotes bgRole to 'hover' / 'active' and
+		// emits the proper bgHover / bgActive token cascade (color-mix
+		// fallback included). Auto-contrast on the fg still works
+		// because color.value defaults to props.color when hoverColor
+		// is missing, and bgColor.value defaults to props.bgColor when
+		// hoverBgColor is missing — so both axes carry the same intent
+		// in each state and the clash detection kicks for white text.
 		const baseBg = props.bgColor || props.color
 		return {
 			// In colored mode force `flat` so the btn actually PAINTS the
@@ -421,6 +392,10 @@
 			variant: baseBg ? VARIANT.FLAT : undefined,
 			color: props.color,
 			bgColor: baseBg,
+			hoverColor: props.hoverColor,
+			hoverBgColor: props.hoverBgColor,
+			activeColor: props.activeColor,
+			activeBgColor: props.activeBgColor,
 			// Size / density flow through to every nav btn so the whole row
 			// scales consistently — matches the PDF spec which shows the
 			// pagination at sm / default / lg sizes (no per-btn override).
@@ -497,26 +472,6 @@
 			}
 		})
 	})
-	const rootAriaLabel = computed(() => t(props.ariaLabel))
-
-	/*********************************************************
-	 * ⛔ TOUS les `*AriaLabel` sont des CLÉS, jamais du texte prêt.
-	 *
-	 * @description
-	 * Leurs valeurs par défaut sont des clés de catalogue
-	 * (`'origam.pagination.aria_label.first'`, …). Elles DOIVENT passer par
-	 * `t()` avant d'atteindre un `aria-label`. Cinq ne le faisaient pas : la
-	 * `<nav>` racine et les boutons premier / précédent / suivant / dernier
-	 * annonçaient la clé littérale, alors que les boutons de PAGE, eux,
-	 * étaient corrects — l'incohérence tenait dans le même fichier, à trente
-	 * lignes d'écart.
-	 *
-	 * @description
-	 * Un consommateur qui passe sa propre valeur passe donc une CLÉ, pas une
-	 * chaîne : c'est le contrat déjà en vigueur pour `pageAriaLabel`, et il est
-	 * documenté comme tel. Filet : `OrigamPagination.spec.ts`, dont le dernier
-	 * cas refuse tout `aria-label` commençant par `origam.` sur la barre.
-	 ********************************************************/
 	const controls = computed(() => {
 		const prevDisabled = !!props.disabled || page.value <= start.value
 		const nextDisabled = !!props.disabled || page.value >= start.value + length.value - 1
@@ -551,7 +506,7 @@
 				icon: props.firstIcon,
 				onClick: (e: Event) => setValue(e, start.value, 'first'),
 				disabled: prevDisabled,
-				'aria-label': t(props.firstAriaLabel),
+				'aria-label': props.firstAriaLabel,
 				'aria-disabled': prevDisabled
 			},
 			prev: {
@@ -559,7 +514,7 @@
 				...prevTextual,
 				onClick: (e: Event) => setValue(e, page.value - 1, 'prev'),
 				disabled: prevDisabled,
-				'aria-label': t(props.previousAriaLabel),
+				'aria-label': props.previousAriaLabel,
 				'aria-disabled': prevDisabled
 			},
 			next: {
@@ -567,7 +522,7 @@
 				...nextTextual,
 				onClick: (e: Event) => setValue(e, page.value + 1, 'next'),
 				disabled: nextDisabled,
-				'aria-label': t(props.nextAriaLabel),
+				'aria-label': props.nextAriaLabel,
 				'aria-disabled': nextDisabled
 			},
 			last: {
@@ -575,7 +530,7 @@
 				icon: props.lastIcon,
 				onClick: (e: Event) => setValue(e, start.value + length.value - 1, 'last'),
 				disabled: nextDisabled,
-				'aria-label': t(props.lastAriaLabel),
+				'aria-label': props.lastAriaLabel,
 				'aria-disabled': nextDisabled
 			}
 		}
@@ -691,21 +646,6 @@
 	const { densityClasses } = useDensity(props)
 	const { typographyStyles } = useTypography(props, 'pagination--info')
 
-	/*********************************************************
-	 * Spacing / border / elevation
-	 *
-	 * @description
-	 * `IPaginationProps` extends IPaddingProps / IMarginProps / IBorderProps /
-	 * IElevationProps. None of the four were consumed: the row could not be
-	 * padded, spaced, bordered or raised despite the types promising it.
-	 * These paint the pagination ROW itself — the per-page buttons keep
-	 * taking their own size / density through `btnProps` above.
-	 ********************************************************/
-	const { paddingClasses, paddingStyles } = usePadding(props)
-	const { marginClasses, marginStyles } = useMargin(props)
-	const { borderClasses, borderStyles } = useBorder(props)
-	const { elevationClasses, elevationStyles } = useElevation(props)
-
 	const paginationClasses = computed(() => {
 		return [
 			'origam-pagination',
@@ -716,23 +656,15 @@
 			},
 			sizeClasses.value,
 			densityClasses.value,
-			borderClasses.value,
-			elevationClasses.value,
-			paddingClasses.value,
-			marginClasses.value,
 			props.class
 		]
 	})
 	const paginationStyles = computed(() => {
 		return [
-			borderStyles.value,
-			elevationStyles.value,
-			marginStyles.value,
-			paddingStyles.value,
 			props.style
 		] as StyleValue
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(paginationStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(paginationStyles)
 
 
 	/*********************************************************
@@ -783,8 +715,8 @@
 		// will hoist nested rules above bare declarations, so keeping
 		// the order is "declarations → nested rules" prevents the
 		// `mixed-decls` deprecation warning.
-		--bg-base: var(--origam-pagination---background-color, var(--origam-pagination__item---background-color, transparent));
-		--fg-base: var(--origam-pagination---color, var(--origam-pagination__item---color, currentColor));
+		--bg-base: var(--origam-pagination---background-color, transparent);
+		--fg-base: var(--origam-pagination---color, currentColor);
 
 		display: flex;
 		flex-wrap: wrap;
@@ -841,31 +773,9 @@
 		:deep(.origam-btn:hover:not(.origam-btn--active)) {
 			--origam-btn---background-color: var(
 				--origam-pagination---background-color-hover,
-				var(--origam-pagination__item---background-color-hover,
-				color-mix(in srgb, var(--bg-base), black 20%))
+				color-mix(in srgb, var(--bg-base), black 20%)
 			);
 			--origam-btn---color: var(--origam-pagination---color-hover, var(--fg-base));
-		}
-
-		// Same "text-variant blocks background-color" contract as the
-		// active state below — `--origam-btn---background-color` set on
-		// `.origam-btn:hover` above has zero visual effect in uncolored/
-		// ghost mode, regardless of what it resolves to. Unlike the active
-		// state, `.origam-btn`'s NATIVE hover feedback (its own
-		// `.origam-btn__overlay`, opacity 0.12) isn't suppressed by any
-		// Pagination rule — but that overlay's default paint colour
-		// (`--origam-color__overlay---scrim`) is WHITE in the light theme,
-		// so a 12 % white tint over an already-transparent/white page is
-		// imperceptible in practice (verified via getComputedStyle: overlay
-		// background rgb(255, 255, 255) at opacity 0.12). Repaint it with
-		// the SAME `--origam-pagination---background-color-hover` token the
-		// (dead, for this branch) rule above already references — it's
-		// seeded globally at :root (→ neutral action-secondary-bgHover,
-		// #e6e6e6 in the light theme), so this is the first rule that
-		// actually surfaces the value everyone already had access to.
-		&:not(&--colored) :deep(.origam-btn:hover:not(.origam-btn--active) .origam-btn__overlay) {
-			background-color: var(--origam-pagination---background-color-hover);
-			opacity: 1;
 		}
 
 		// Active state — derived: 30 % darker than --bg-base.
@@ -885,56 +795,8 @@
 			);
 		}
 
-		// The `--origam-btn---background-color` derivation above (and the
-		// hover rule before it) can NEVER visually apply in uncolored/ghost
-		// mode. The origam baseline theme (packages/ds/src/themes/
-		// origam.theme.ts, since 9a082b90) sets `'origam-btn': { variant:
-		// 'text', size: 'small' }` as the default for every Btn that doesn't
-		// receive an explicit `variant` prop — which is exactly this
-		// branch's inner buttons (`variant: baseBg ? VARIANT.FLAT :
-		// undefined`, undefined here). `.origam-btn--variant-text` then
-		// unconditionally forces `background-color: transparent !important`
-		// — a deliberate, tested contract (btn.spec.ts:591, "--variant-text:
-		// background-color declaration is transparent !important"), NOT a
-		// bug this component may work around by feeding the CSS var a
-		// different value. Confirmed: overriding
-		// `--origam-btn---background-color` here has zero visual effect
-		// on a text-variant button, on any engine.
-		//
-		// Before 9a082b90 introduced that theme default, these inner
-		// buttons had no forced variant and the color-mix background fill
-		// genuinely worked (cb10d654's commit message recorded the
-		// then-correct `color(srgb 0 0 0 / 0.3)` result for this exact
-		// case) — the theme change silently broke it, reproducing the
-		// exact "indistinguishable active page" defect this file's
-		// user-reported origin (652a770e) was fixed for.
-		//
-		// The only mechanism that CAN still paint a text-variant button is
-		// its own `.origam-btn__overlay` — a separate absolutely-positioned
-		// element Btn itself uses for native hover/active feedback, exempt
-		// from the `--variant-text` rule (which only targets `.origam-btn`
-		// itself). Its default `background-color` token
-		// (`--origam-color__overlay---scrim`) is WHITE in the light theme
-		// (verified via getComputedStyle) — useless for a darkening effect
-		// — so paint it with the same neutral-200 target color instead, at
-		// full opacity, which composites to exactly the intended
-		// rgb(230, 230, 230) over the (transparent) resting surface.
-		&:not(&--colored) &__item--is-active :deep(.origam-btn__overlay) {
-			background-color: var(
-				--origam-pagination__item--is-active---background-color,
-				var(--origam-color__neutral---200, #e6e6e6)
-			);
-			opacity: var(--origam-pagination__item--is-active---active-overlay-opacity, 1);
-		}
-
 		&__item--is-active :deep(.origam-btn__overlay) {
-			// Colored mode: the flat-variant background derivation above
-			// (color-mix 30 % darker) already carries the contrast on
-			// `.origam-btn` itself — collapse the overlay so it doesn't
-			// double-darken on top of that fill. The uncolored-branch rule
-			// above wins over this one for uncolored instances (extra
-			// `:not(&--colored)` specificity), so it isn't shadowed by this
-			// default.
+			// Legacy overlay collapsed — solid fill carries the contrast.
 			opacity: var(--origam-pagination__item--is-active---active-overlay-opacity, 0);
 		}
 

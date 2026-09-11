@@ -1,0 +1,5 @@
+{
+  "defaults-provider": {
+    "_comment": "Render-only component (only reveals its default slot). File present for token-set order consistency — no chrome of its own."
+  }
+}

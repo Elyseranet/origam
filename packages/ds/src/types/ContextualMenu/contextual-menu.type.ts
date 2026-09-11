@@ -1,3 +1,3 @@
-import OrigamContextualMenu from '../../components/ContextualMenu/OrigamContextualMenu.vue'
+import { OrigamContextualMenu } from '../../components'
 
 export type TOrigamContextualMenu = InstanceType<typeof OrigamContextualMenu>

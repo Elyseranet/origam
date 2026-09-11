@@ -1,19 +1,15 @@
 <template>
 	<component
-			:is="link.tag.value"
-			:id="id"
-			ref="root"
+			:is="link.tag"
 			v-ripple="isClickable && ripple"
 			v-contrast
 			:class="cardClasses"
-			:href="link.href.value"
-			:role="cardRole"
+			:href="link.href"
 			:style="cardStyles"
-			:tabindex="cardTabindex"
+			:tabindex="disabled ? -1 : undefined"
 			@click="handleClick"
-			@keydown="handleKeydown"
-			@mouseenter="mouseenterHandler"
-			@mouseleave="mouseleaveHandler"
+			@mouseenter="onMouseenter"
+			@mouseleave="onMouseleave"
 	>
     <span
 		    v-if="isClickable"
@@ -33,7 +29,6 @@
 								v-if="loaderConfig.kind === 'skeleton'"
 								variant="card"
 								:loading="true"
-								:label="loadingText"
 								v-bind="loaderConfig.overrides"
 						/>
 						<origam-progress
@@ -44,7 +39,6 @@
 								:model-value="loaderConfig.modelValue"
 								:type="loaderConfig.kind === 'circular' ? PROGRESS_TYPE.CIRCULAR : PROGRESS_TYPE.LINEAR"
 								:class="cardProgressClasses"
-								:label="loadingText"
 								thickness="4"
 								v-bind="loaderConfig.overrides"
 						/>
@@ -64,7 +58,6 @@
 								:prepend-icon="prependIcon"
 								:subtitle="subtitle"
 								:title="title"
-								:title-id="titleId"
 								class="origam-card__header"
 								@click:prepend="handleClickPrepend"
 								@click:append="handleClickAppend"
@@ -150,37 +143,33 @@
 		lang="ts"
 		setup
 >
-	import OrigamCardHeader from './OrigamCardHeader.vue'
-	import OrigamCardText from './OrigamCardText.vue'
-	import OrigamImg from '../Img/OrigamImg.vue'
-	import OrigamProgress from '../Progress/OrigamProgress.vue'
-	import OrigamSkeleton from '../Skeleton/OrigamSkeleton.vue'
+	import { OrigamCardHeader, OrigamCardText, OrigamImg, OrigamProgress, OrigamSkeleton } from '../../components'
 
-	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
-	import { useDensity } from '../../composables/Commons/density.composable'
-	import { useDimension } from '../../composables/Commons/dimension.composable'
-	import { useLink } from '../../composables/Commons/link.composable'
-	import { useLoader } from '../../composables/Commons/loader.composable'
-	import { useLocation } from '../../composables/Commons/location.composable'
-	import { usePosition } from '../../composables/Commons/position.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
-	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
+	import {
+		useActive,
+		useAdjacent,
+		useDefaults,
+		useDensity,
+		useDimension,
+		useHover,
+		useLink,
+		useLoader,
+		useLocation,
+		usePosition,
+		useProps,
+		useStateEffect,
+		useStyle
+} from '../../composables'
 
-	import vContrast from '../../directives/Contrast/contrast.directive'
-	import vRipple from '../../directives/Ripple/ripple.directive'
+	import { vContrast, vRipple } from '../../directives'
 
-	import { DENSITY } from '../../enums/Commons/density.enum'
-	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
-	import { LOADER_KIND } from '../../enums/Commons/loader.enum'
-	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
+	import { DENSITY, PROGRESS_TYPE } from '../../enums'
 
-	import type { ICardProps } from '../../interfaces/Card/card.interface'
+	import type { ICardProps} from '../../interfaces'
 
-	import type { ICardEmits, ICardSlots } from '../../interfaces/Card/card.interface'
+	import type { ICardEmits } from '../../interfaces/Card/card.interface'
 
-	import { computed, ref, StyleValue, toRef, useAttrs, useSlots } from 'vue'
+	import { computed, StyleValue, toRef, useAttrs, useSlots } from 'vue'
 
 	/*********************************************************
 	 * Global
@@ -188,19 +177,20 @@
 	 * @description
 	 * Props, emits and link resolution for the Card component.
 	 ********************************************************/
-	const props = withDefaults(defineProps<ICardProps>(), {ripple: true, density: DENSITY.DEFAULT, tag: 'div'})
+	const _props = withDefaults(defineProps<ICardProps>(), {ripple: true, density: DENSITY.DEFAULT, tag: 'div'})
+
+	// `useDefaults` resolves each prop against the closest theme
+	// `components['origam-card']` config (OrigamBtn pattern) — without this,
+	// theme entries like `rounded` / `border` / `flat` never took effect.
+	const props = useDefaults(_props)
 
 	defineEmits<ICardEmits>()
-
-	defineSlots<ICardSlots>()
 
 	const {filterProps} = useProps<ICardProps>(props)
 
 	const attrs = useAttrs()
 
 	const link = useLink(props, attrs)
-
-	const root = ref<HTMLElement>()
 
 	/*********************************************************
 	 * Adjacent (prepend / append) & clickability
@@ -211,14 +201,14 @@
 	 ********************************************************/
 	// `useStateEffect` produces inline `color: …` / `background-color: …`
 	// declarations from intent props (`color`, `bgColor`) and also reacts
-	// to hover/active states by swapping in the `hover` / `active` object
-	// prop's `color` / `bgColor` overrides (or auto-darken via color-mix
-	// when no explicit override is provided).
+	// to hover/active states by swapping in `hoverBgColor` / `hoverColor`
+	// / `activeBgColor` / `activeColor` overrides (or auto-darken via
+	// color-mix when no explicit override is provided).
 	//
 	// Pre-fix Card used `useBothColor` — the legacy composable — which
-	// is stateless: passing `<origam-card :hover="{ color: 'success' }">`
-	// was a silent no-op because the composable never saw `isHover.value`.
-	// We now wire `useStateFlag` (hover + active) so the resting / hover /
+	// is stateless: passing `<origam-card hover-color="success">` was a
+	// silent no-op because the composable never saw `isHover.value`.
+	// We now wire `useHover` + `useActive` so the resting / hover /
 	// pressed cycles cascade through the same intent system as Btn /
 	// BottomNav / Alert.
 
@@ -226,8 +216,8 @@
 	 * Effect
 	 ********************************************************/
 
-	const {isOn: isHover, config: hoverState, classes: hoverClasses, set: onMouseenter, unset: onMouseleave} = useStateFlag(props, {state: 'hover'})
-	const {isOn: isActive, config: activeState, classes: activeClasses, toggle: onActive} = useStateFlag(props, {state: 'active'})
+	const {isHover, hoverState, hoverClasses, onMouseenter, onMouseleave} = useHover(props)
+	const {isActive, activeState, activeClasses, onActive} = useActive(props)
 
 	/*********************************************************
 	 * Color
@@ -236,13 +226,13 @@
 	// `useElevation` (inside `useStateEffect` below) treats `flat` as a hard
 	// "no shadow, ever" override of `elevation` — by design, for the case
 	// where a consumer sets BOTH props explicitly on the same instance.
-	// Since the ADR-005 resolver, `flat` can also resolve
+	// Since useDefaults wiring (issue #242), `flat` can now also resolve
 	// from `theme.components['origam-card'].flat` (the origam base theme
 	// defaults every card to `flat: true`) — so a consumer who explicitly
 	// passes only `elevation` (e.g. the free-form custom box-shadow escape
 	// hatch) had their explicit choice silently suppressed by the THEME's
 	// flat default, even though `elevation` itself correctly resolved via
-	// the resolver's own explicit-prop-wins precedence. `props.elevation` is
+	// useDefaults' own explicit-prop-wins precedence. `props.elevation` is
 	// non-null ONLY when a consumer explicitly sets it (the origam base
 	// theme never sets `elevation` on `origam-card`) — a reliable, low-risk
 	// signal to stop `flat` from suppressing that explicit choice, without
@@ -290,65 +280,9 @@
 		hasPrepend
 	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
 
-	// `isClickable` drives the ripple, the `__overlay` element, the
-	// `--link` modifier class and the click-to-navigate bridge. It must be
-	// true whenever the card is interactive for any reason — i.e. when
-	// EITHER of the following holds:
-	//   • `props.link` toggles explicit router-link mode
-	//   • `link.isClickable.value` — useLink detects an `href`, a `to`,
-	//     OR an `onClick` listener (on attrs or props)
-	//
-	// Unlike `OrigamChip` / `OrigamListItem`, Card has no group notion, so
-	// there is no `!!group` disjunct to carry over here.
-	//
-	// Pre-fix the chain was `… && props.link && (props.link || …)`. The
-	// middle `props.link` short-circuited the whole parenthesis to false
-	// whenever the consumer didn't opt into link mode, making
-	// `link.isClickable.value` dead code — an `href`-only card rendered as
-	// an `<a>` but stayed visually and behaviourally inert. Same repair as
-	// `OrigamListItem` and `OrigamChip` before it.
 	const isClickable = computed(() => {
-		return !props.disabled && (props.link || link.isClickable.value)
+		return !props.disabled && props.link && (props.link || link.isClickable.value)
 	})
-
-	/*********************************************************
-	 * isHoverable
-	 *
-	 * @description
-	 * Gates whether `@mouseenter`/`@mouseleave` are even wired to the root
-	 * element. Mirrors the guard the hand-rolled `origam-card--hover` class
-	 * has always carried (`props.hover && !(props.disabled || props.flat)`)
-	 * minus the `props.hover` check, since a real mouse hover — not just a
-	 * forced `hover` prop — must also respect it.
-	 *
-	 * @description
-	 * Before this, `onMouseenter`/`onMouseleave` (from `useStateFlag`) were
-	 * bound unconditionally: a `flat` or `disabled` Card still flipped
-	 * `isHover` to `true` on real mouse hover, which now that
-	 * `useStateFlag`'s hover suffix resolves to a real `&--hover` rule
-	 * (`--hover`, not the dead `--hovered`) painted `cursor:pointer` + a
-	 * ripple overlay + `box-shadow-hover` on cards that were never meant to
-	 * look interactive. This restores the original intent — a decorative
-	 * Card stops reacting to hover — without duplicating the hand-rolled
-	 * class's condition (see `cardClasses` below, still gated on
-	 * `props.hover` specifically).
-	 ********************************************************/
-	const isHoverable = computed(() => {
-		return !props.disabled && !props.flat
-	})
-
-	/*********************************************************
-	 * mouseenterHandler / mouseleaveHandler
-	 *
-	 * @description
-	 * Template-safe wrappers around `isHoverable` — keeps the conditional
-	 * out of the `<template>` (repo convention: no expressions in event
-	 * bindings). Binding `undefined` removes the native listener entirely
-	 * (Vue's `patchEvent` treats a nullish handler as "no listener"), it
-	 * does not merely no-op it.
-	 ********************************************************/
-	const mouseenterHandler = computed(() => (isHoverable.value ? onMouseenter : undefined))
-	const mouseleaveHandler = computed(() => (isHoverable.value ? onMouseleave : undefined))
 
 	// Combined click handler — drives both `isActive` (so `activeColor`
 	// / `activeBgColor` resolve via `useStateEffect`) and the link
@@ -361,79 +295,12 @@
 	}
 
 	/*********************************************************
-	 * cardRole / cardTabindex (#392)
-	 *
-	 * @description
-	 * A Card rendered with `href`/`to` is a native `<a>` — already
-	 * focusable, already announced as a link, `role="button"` on top of
-	 * that would misrepresent it. A Card made clickable only through a
-	 * `@click` listener or the `link` prop (no URL to navigate to) stays
-	 * a `<div>` (or `tag`): a `<button>` is not an option here because
-	 * it is phrasing content and cannot legally contain the flow content
-	 * a Card renders (header, image, footer slots, …) — the content
-	 * model rejects it outright, so ARIA is the only remaining option,
-	 * not a shortcut around the native element. `role="button"` +
-	 * `tabindex="0"` restore the semantics a native control would have
-	 * given for free.
-	 * @description
-	 * A purely decorative Card (`isClickable` false) must NOT become
-	 * focusable — the symmetric defect flagged in #392 alongside the
-	 * missing tabindex/role.
-	 ********************************************************/
-	const cardRole = computed(() => {
-		return isClickable.value && !link.isLink.value ? 'button' : undefined
-	})
-	const cardTabindex = computed(() => {
-		if (props.disabled) return -1
-		return isClickable.value && !link.isLink.value ? 0 : undefined
-	})
-
-	/*********************************************************
-	 * handleKeydown (#392)
-	 *
-	 * @description
-	 * Native `<a href>` already activates on Enter and needs no help;
-	 * this handler only runs for the ARIA-button `<div>` path
-	 * (`isClickable && !link.isLink`). Enter AND Space both activate —
-	 * Space is prevented from scrolling the page, matching the WAI-ARIA
-	 * button pattern.
-	 * @description
-	 * Dispatches a real `click()` on the root element instead of
-	 * re-implementing the click behaviour here: Card never declares
-	 * `click` as its own emit (see `ICardEmits`), so a consumer's
-	 * `@click="fn"` reaches the root purely through Vue's automatic
-	 * `$attrs` fallthrough merge, not through anything this component's
-	 * script can call directly. A synthetic `click()` re-triggers that
-	 * exact same native event path — both `handleClick` and the
-	 * consumer's own listener — instead of guessing at how to invoke an
-	 * attrs-only handler by hand (same bridging pattern already used by
-	 * `OrigamFileField` / `OrigamSwitch`).
-	 ********************************************************/
-	const handleKeydown = (event: KeyboardEvent) => {
-		if (!isClickable.value || link.isLink.value) return
-
-		if (event.key === KEYBOARD_VALUES.ENTER || event.key === ' ') {
-			event.preventDefault()
-			root.value?.click()
-		}
-	}
-
-	/*********************************************************
 	 * Loader
 	 *
 	 * @description
 	 * Controls the card loader slot and progress renderer.
-	 *
-	 * @description
-	 * `loadingText` is handed to the ACTIVE renderer's `label` prop in the
-	 * template — `<origam-skeleton>` and `<origam-progress>` both already
-	 * own the "locale key -> aria-label" wiring (`t(props.label)`, default
-	 * key `'origam.loading'`), so nothing is re-implemented here and the
-	 * default announcement stays the shared one. Bound BEFORE
-	 * `v-bind="loaderConfig.overrides"` so a per-instance
-	 * `loading="{ type, label }"` still wins.
 	 ********************************************************/
-	const {loaderClasses, loaderConfig} = useLoader(props, LOADER_KIND.LINE)
+	const {loaderClasses, loaderConfig} = useLoader(props, 'line')
 
 	const slots = useSlots()
 
@@ -536,7 +403,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(cardStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(cardStyles)
 
 
 	/*********************************************************

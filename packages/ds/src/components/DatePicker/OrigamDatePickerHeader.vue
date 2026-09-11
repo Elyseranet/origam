@@ -1,21 +1,14 @@
 <template>
 	<div
-			:id="id"
 			:class="datePickerHeaderClasses"
 			:style="datePickerHeaderStyles"
-			:role="isClickable ? 'button' : undefined"
-			:tabindex="isClickable ? 0 : undefined"
 			@click="handleClick"
-			@keydown="handleKeydown"
 	>
 		<template v-if="hasPrepend">
 			<div
 					key="prepend"
 					class="origam-date-picker-header__prepend"
-					:role="isPrependClickable ? 'button' : undefined"
-					:tabindex="isPrependClickable ? 0 : undefined"
 					@click="handleClickPrepend"
-					@keydown="handleKeydownPrepend"
 			>
 				<slot name="prepend">
 					<origam-avatar
@@ -54,10 +47,7 @@
 			<div
 					key="append"
 					class="origam-date-picker-header__append"
-					:role="isAppendClickable ? 'button' : undefined"
-					:tabindex="isAppendClickable ? 0 : undefined"
 					@click="handleClickAppend"
-					@keydown="handleKeydownAppend"
 			>
 				<slot name="append">
 					<origam-avatar
@@ -82,26 +72,15 @@
 		lang="ts"
 		setup
 >
-	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
-	import OrigamIcon from '../Icon/OrigamIcon.vue'
-	import OrigamTransition from '../Transition/OrigamTransition.vue'
+	import { OrigamAvatar, OrigamIcon, OrigamTransition } from "../../components"
 
-	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
-	import { useDensity } from '../../composables/Commons/density.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-	import { useTextColor } from '../../composables/Commons/textColor.composable'
+	import { useAdjacent, useDensity, useProps , useStyle} from "../../composables"
 
-	import { KEYBOARD_VALUES } from '../../enums/Commons/hotkey.enum'
+	import type { IDatePickerHeaderProps} from "../../interfaces"
 
-	import type { IDatePickerHeaderProps } from '../../interfaces/DatePicker/date-picker-header.interface'
+	import type { IDatePickerHeaderEmits } from '../../interfaces/DatePicker/date-picker-header.interface'
 
-	import type { IDatePickerHeaderEmits, IDatePickerHeaderSlots } from '../../interfaces/DatePicker/date-picker-header.interface'
-
-	import { hasEvent } from '../../utils/Commons/commons.util'
-	import { getCurrentInstance } from '../../utils/Commons/getCurrentInstance.util'
-
-	import { computed, StyleValue, toRef, useAttrs, useSlots } from "vue"
+	import { computed, StyleValue, toRef, useSlots } from "vue"
 
 	/*********************************************************
 	 * Global
@@ -114,14 +93,9 @@
 
 	const emits = defineEmits<IDatePickerHeaderEmits>()
 
-	defineSlots<IDatePickerHeaderSlots>()
-
 	const {filterProps} = useProps<IDatePickerHeaderProps>(props)
 
 	const slots = useSlots()
-
-	const vm = getCurrentInstance('OrigamDatePickerHeader')
-	const attrs = useAttrs()
 
 	/*********************************************************
 	 * Composables
@@ -130,34 +104,12 @@
 	const {densityClasses} = useDensity(props)
 
 	/*********************************************************
-	 * Color
-	 *
-	 * @description
-	 * ⛔ #550 (critere C1) — `color` etait declaree (`IColorProps`) et
-	 * exposee dans la story, mais lue nulle part : la prop ne peignait
-	 * rien. Elle est desormais servie par le canal transversal standard
-	 * (`useTextColor`), comme `OrigamMessages`.
-	 * @description
-	 * Le canal racine SUFFIT ici, contrairement a `OrigamDatePickerMonth` :
-	 * ni `.origam-date-picker-header`, ni `__content`, ni `__prepend` /
-	 * `__append` ne declarent de `color`, donc la valeur posee sur la
-	 * racine descend par heritage jusqu'au texte et aux icones (qui
-	 * peignent en `currentColor`). Aucune regle scopee a battre.
-	 ********************************************************/
-
-	const {textColorClasses, textColorStyles} = useTextColor(toRef(props, 'color'))
-
-	/*********************************************************
 	 * Icon
 	 ********************************************************/
 
 	const {
 		onClickPrepend: handleClickPrepend,
 		onClickAppend: handleClickAppend,
-		onKeydownPrepend: handleKeydownPrepend,
-		onKeydownAppend: handleKeydownAppend,
-		isPrependClickable,
-		isAppendClickable,
 		hasAppend,
 		hasPrepend
 	} = useAdjacent(props, toRef(props, 'prependIcon'), toRef(props, 'appendIcon'))
@@ -175,31 +127,10 @@
 
 	/*********************************************************
 	 * Event handlers
-	 *
-	 * @description
-	 * ⛔ issue #443 — the root `@click` is a REAL action: `OrigamDatePicker`
-	 * wires it to `handleHeaderClick`, which switches back to month view
-	 * whenever the header is showing months/years. `click` is a declared
-	 * emit (`IDatePickerHeaderEmits`), so — same #397-shaped gap as
-	 * `useLink.isClickable` / `useAdjacent.isPrependClickable` — `$attrs`
-	 * alone would miss the listener; `vm.vnode.props` (raw, pre-split)
-	 * doesn't.
 	 ********************************************************/
-
-	const isClickable = computed(() => {
-		return hasEvent(attrs, 'click') || hasEvent(vm.vnode.props ?? {}, 'click')
-	})
 
 	const handleClick = () => {
 		emits('click')
-	}
-
-	const handleKeydown = (e: KeyboardEvent) => {
-		if (!isClickable.value) return
-		if (e.key !== KEYBOARD_VALUES.ENTER && e.key !== KEYBOARD_VALUES.EMPTY) return
-
-		e.preventDefault()
-		handleClick()
 	}
 
 	/*********************************************************
@@ -211,7 +142,6 @@
 
 	const datePickerHeaderStyles = computed(() => {
 		return [
-			textColorStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -219,11 +149,10 @@
 		return [
 			'origam-date-picker-header',
 			densityClasses.value,
-			textColorClasses.value,
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(datePickerHeaderStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(datePickerHeaderStyles)
 
 
 	/*********************************************************
@@ -251,13 +180,13 @@
 		$this: &;
 
 		align-items: flex-end;
-		height: var(--origam-date-picker__header---min-height, 70px);
+		height: 70px;
 		display: grid;
 		grid-template-areas: "prepend content append";
 		grid-template-columns: min-content minmax(0, 1fr) min-content;
 		overflow: hidden;
-		padding-inline: var(--origam-date-picker__header---padding-inline, 24px 12px);
-		padding-block: var(--origam-date-picker__header---padding-block, 0 12px);
+		padding-inline: 24px 12px;
+		padding-bottom: 12px;
 
 		&__append {
 			grid-area: append;
@@ -271,7 +200,7 @@
 		&__content {
 			align-items: center;
 			display: inline-flex;
-			font-size: var(--origam-date-picker__header---font-size, 32px);
+			font-size: 32px;
 			line-height: 40px;
 			grid-area: content;
 			justify-content: space-between;

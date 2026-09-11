@@ -1,7 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
 
-import { selectHstOption } from './_support/histoire-controls'
-
 /**
  * OrigamChartPyramid — Playwright spec.
  *
@@ -9,19 +7,11 @@ import { selectHstOption } from './_support/histoire-controls'
  *  - N trapezoid `<path>` elements render for N data points.
  *  - `funnel` and `pyramid` variants both produce the expected
  *    number of paths.
- *  - The main OrigamChart shell story dispatches to the pyramid chart
- *    for `type="funnel"` / `type="pyramid"`.
+ *  - The main OrigamChart shell story shows both types side-by-side.
  *  - Clicking a legend item hides the corresponding slice and
  *    applies the `--hidden` modifier on the legend item.
  *  - ARIA attributes (role="figure", role="img", title, desc) are
  *    present for screen-reader support.
- *
- * Story realignment (canonical Design/Functional/Events/Slots structure):
- * the old per-prop `Prop — …` Variants were folded into the `Design`
- * Variant's `Type` control (`HstSelect`). There is no longer a
- * side-by-side funnel/pyramid fixture nor a 3/5/8-slice count control —
- * see the `test.fixme` below for the one scenario with no surviving
- * equivalent.
  */
 
 const PYRAMID_STORY = '/stories/story/components-stories-chart-origamchartpyramid-story-vue'
@@ -41,15 +31,15 @@ test.describe('OrigamChartPyramid — Default (funnel)', () => {
     test('renders figure root with role="figure"', async ({ page }) => {
         await openVariant(page, PYRAMID_STORY, 'Default')
         const sandbox = sandboxOf(page)
-        const host = sandbox.locator('[data-cy="origam-chart-pyramid"]').first()
+        const host = sandbox.locator('[data-cy="pyramid-playground-chart"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
-        await expect(host).toHaveRole('figure') // #426 — root is a native <figure>, role is implicit, no explicit attribute any more
+        await expect(host).toHaveAttribute('role', 'figure')
     })
 
     test('SVG carries role=img, title and desc', async ({ page }) => {
         await openVariant(page, PYRAMID_STORY, 'Default')
         const sandbox = sandboxOf(page)
-        const svg = sandbox.locator('[data-cy="origam-chart-pyramid"] svg').first()
+        const svg = sandbox.locator('[data-cy="pyramid-playground-chart"] svg').first()
         await expect(svg).toBeVisible()
         await expect(svg).toHaveAttribute('role', 'img')
         await expect(svg.locator('title')).toHaveCount(1)
@@ -61,16 +51,16 @@ test.describe('OrigamChartPyramid — Default (funnel)', () => {
         const sandbox = sandboxOf(page)
         await page.screenshot({ path: '/tmp/chart-pyramid-default.png', fullPage: false })
 
-        const slices = sandbox.locator('[data-cy="origam-chart-pyramid"] [data-cy^="origam-chart-pyramid-slice-"]')
+        const slices = sandbox.locator('[data-cy="pyramid-playground-chart"] [data-cy^="origam-chart-pyramid-slice-"]')
         await expect(slices).toHaveCount(5, { timeout: 6000 })
     })
 
     test('each slice path has a non-empty d attribute', async ({ page }) => {
         await openVariant(page, PYRAMID_STORY, 'Default')
         const sandbox = sandboxOf(page)
-        const slices = sandbox.locator('[data-cy="origam-chart-pyramid"] [data-cy^="origam-chart-pyramid-slice-"]')
-        await expect(slices).toHaveCount(5, { timeout: 6000 })
+        const slices = sandbox.locator('[data-cy="pyramid-playground-chart"] [data-cy^="origam-chart-pyramid-slice-"]')
         const count = await slices.count()
+        expect(count).toBe(5)
         for (let i = 0; i < count; i++) {
             const d = await slices.nth(i).getAttribute('d')
             expect(d).toBeTruthy()
@@ -80,37 +70,28 @@ test.describe('OrigamChartPyramid — Default (funnel)', () => {
 })
 
 test.describe('OrigamChartPyramid — Funnel variant', () => {
-    // Story realignment: the old dedicated "Prop — type (funnel / pyramid
-    // side by side)" Variant rendering two chart instances at once was
-    // folded into the single "Design" Variant's Type control (HstSelect).
-    // Each type is now exercised as a single instance in sequence instead
-    // of a side-by-side comparison.
     test('funnel type renders 5 slices', async ({ page }) => {
-        await openVariant(page, PYRAMID_STORY, 'Design')
+        await openVariant(page, PYRAMID_STORY, 'Prop — type (funnel / pyramid side by side)')
         const sandbox = sandboxOf(page)
-        await selectHstOption(page, 'Type', 'funnel')
         await page.screenshot({ path: '/tmp/chart-pyramid-funnel.png', fullPage: false })
 
-        const slices = sandbox.locator('[data-cy="origam-chart-pyramid"] [data-cy^="origam-chart-pyramid-slice-"]')
+        const slices = sandbox.locator('[data-cy="pyramid-type-funnel"] [data-cy^="origam-chart-pyramid-slice-"]')
         await expect(slices).toHaveCount(5, { timeout: 6000 })
     })
 
     test('pyramid type renders 5 slices', async ({ page }) => {
-        await openVariant(page, PYRAMID_STORY, 'Design')
+        await openVariant(page, PYRAMID_STORY, 'Prop — type (funnel / pyramid side by side)')
         const sandbox = sandboxOf(page)
-        await selectHstOption(page, 'Type', 'pyramid')
-        const slices = sandbox.locator('[data-cy="origam-chart-pyramid"] [data-cy^="origam-chart-pyramid-slice-"]')
+        const slices = sandbox.locator('[data-cy="pyramid-type-pyramid"] [data-cy^="origam-chart-pyramid-slice-"]')
         await expect(slices).toHaveCount(5, { timeout: 6000 })
     })
 
     test('funnel slice 0 is wider at the top than slice 4', async ({ page }) => {
-        await openVariant(page, PYRAMID_STORY, 'Design')
+        await openVariant(page, PYRAMID_STORY, 'Prop — type (funnel / pyramid side by side)')
         const sandbox = sandboxOf(page)
-        // Type defaults to 'funnel' on the Design Variant's init-state — no
-        // control change needed.
 
-        const slice0 = sandbox.locator('[data-cy="origam-chart-pyramid-slice-0"]')
-        const slice4 = sandbox.locator('[data-cy="origam-chart-pyramid-slice-4"]')
+        const slice0 = sandbox.locator('[data-cy="pyramid-type-funnel"] [data-cy="origam-chart-pyramid-slice-0"]')
+        const slice4 = sandbox.locator('[data-cy="pyramid-type-funnel"] [data-cy="origam-chart-pyramid-slice-4"]')
 
         const d0 = await slice0.getAttribute('d')
         const d4 = await slice4.getAttribute('d')
@@ -131,26 +112,17 @@ test.describe('OrigamChartPyramid — Funnel variant', () => {
 })
 
 test.describe('OrigamChartPyramid — series slice count variations', () => {
-    // Story realignment: the old "Prop — series (3 / 5 / 8 slices)" Variant
-    // is GONE with no surviving equivalent — OrigamChartPyramid.story.vue's
-    // Design/Functional/Default Variants all bind a single fixed fixture
-    // (FIXTURE_FUNNEL, 5 categories); there is no control anywhere in the
-    // story that varies the series length. This is a genuine coverage gap,
-    // not a renamed Variant — flagging via test.fixme rather than silently
-    // dropping the assertions or inventing a fixture the story doesn't have.
     test('3-slice variant renders exactly 3 paths', async ({ page }) => {
-        test.fixme(true, 'No story Variant/control varies series length anymore (fixed FIXTURE_FUNNEL, 5 categories) — needs a story-side decision, see chart-pyramid.spec.ts header note')
-        await openVariant(page, PYRAMID_STORY, 'Design')
+        await openVariant(page, PYRAMID_STORY, 'Prop — series (3 / 5 / 8 slices)')
         const sandbox = sandboxOf(page)
-        const slices = sandbox.locator('[data-cy="origam-chart-pyramid"] [data-cy^="origam-chart-pyramid-slice-"]')
+        const slices = sandbox.locator('[data-cy="pyramid-series-3"] [data-cy^="origam-chart-pyramid-slice-"]')
         await expect(slices).toHaveCount(3, { timeout: 6000 })
     })
 
     test('8-slice variant renders exactly 8 paths', async ({ page }) => {
-        test.fixme(true, 'No story Variant/control varies series length anymore (fixed FIXTURE_FUNNEL, 5 categories) — needs a story-side decision, see chart-pyramid.spec.ts header note')
-        await openVariant(page, PYRAMID_STORY, 'Design')
+        await openVariant(page, PYRAMID_STORY, 'Prop — series (3 / 5 / 8 slices)')
         const sandbox = sandboxOf(page)
-        const slices = sandbox.locator('[data-cy="origam-chart-pyramid"] [data-cy^="origam-chart-pyramid-slice-"]')
+        const slices = sandbox.locator('[data-cy="pyramid-series-8"] [data-cy^="origam-chart-pyramid-slice-"]')
         await expect(slices).toHaveCount(8, { timeout: 6000 })
     })
 })
@@ -161,11 +133,11 @@ test.describe('OrigamChartPyramid — legend toggle', () => {
         const sandbox = sandboxOf(page)
 
         // Verify 5 slices visible before toggle.
-        const slices = sandbox.locator('[data-cy="origam-chart-pyramid"] [data-cy^="origam-chart-pyramid-slice-"]')
+        const slices = sandbox.locator('[data-cy="pyramid-playground-chart"] [data-cy^="origam-chart-pyramid-slice-"]')
         await expect(slices).toHaveCount(5, { timeout: 6000 })
 
         // Click the first legend item.
-        const legendItems = sandbox.locator('[data-cy="origam-chart-pyramid"] .origam-chart__legend-item')
+        const legendItems = sandbox.locator('[data-cy="pyramid-playground-chart"] .origam-chart__legend-item')
         await expect(legendItems.first()).toBeVisible()
         await legendItems.first().click()
         await page.waitForTimeout(300)
@@ -181,8 +153,8 @@ test.describe('OrigamChartPyramid — legend toggle', () => {
         await openVariant(page, PYRAMID_STORY, 'Default')
         const sandbox = sandboxOf(page)
 
-        const slices = sandbox.locator('[data-cy="origam-chart-pyramid"] [data-cy^="origam-chart-pyramid-slice-"]')
-        const legendItems = sandbox.locator('[data-cy="origam-chart-pyramid"] .origam-chart__legend-item')
+        const slices = sandbox.locator('[data-cy="pyramid-playground-chart"] [data-cy^="origam-chart-pyramid-slice-"]')
+        const legendItems = sandbox.locator('[data-cy="pyramid-playground-chart"] .origam-chart__legend-item')
 
         // Hide first slice.
         await legendItems.first().click()
@@ -201,8 +173,7 @@ test.describe('OrigamChartPyramid — accessibility', () => {
     test('each slice has role="button" and a non-empty aria-label', async ({ page }) => {
         await openVariant(page, PYRAMID_STORY, 'Default')
         const sandbox = sandboxOf(page)
-        const slices = sandbox.locator('[data-cy="origam-chart-pyramid"] [data-cy^="origam-chart-pyramid-slice-"]')
-        await expect(slices).toHaveCount(5, { timeout: 6000 })
+        const slices = sandbox.locator('[data-cy="pyramid-playground-chart"] [data-cy^="origam-chart-pyramid-slice-"]')
         const count = await slices.count()
         for (let i = 0; i < count; i++) {
             await expect(slices.nth(i)).toHaveAttribute('role', 'button')
@@ -214,8 +185,7 @@ test.describe('OrigamChartPyramid — accessibility', () => {
     test('each slice is keyboard-focusable (tabindex=0)', async ({ page }) => {
         await openVariant(page, PYRAMID_STORY, 'Default')
         const sandbox = sandboxOf(page)
-        const slices = sandbox.locator('[data-cy="origam-chart-pyramid"] [data-cy^="origam-chart-pyramid-slice-"]')
-        await expect(slices).toHaveCount(5, { timeout: 6000 })
+        const slices = sandbox.locator('[data-cy="pyramid-playground-chart"] [data-cy^="origam-chart-pyramid-slice-"]')
         const count = await slices.count()
         for (let i = 0; i < count; i++) {
             await expect(slices.nth(i)).toHaveAttribute('tabindex', '0')
@@ -224,42 +194,39 @@ test.describe('OrigamChartPyramid — accessibility', () => {
 })
 
 test.describe('OrigamChart shell — pyramid / funnel dispatch', () => {
-    // Story realignment: the old dedicated "Prop — pyramid / funnel (side by
-    // side)" and "Prop — type (29 primitives)" Variants were folded into the
-    // single "Design" Variant's Type control (HstSelect, 29 chart type
-    // options including funnel/pyramid). The Design Variant's fixture is
-    // FIXTURE_SALES_SERIES × FIXTURE_MONTHS (12 categories), not the
-    // 5-category pyramid-only fixture — verified empirically against the
-    // running story (12 `origam-chart-pyramid-slice-*` nodes render for
-    // both funnel and pyramid types).
-    test('Design Variant Type=funnel dispatches to OrigamChartPyramid (12 slices)', async ({ page }) => {
-        await openVariant(page, CHART_STORY, 'Design')
+    test('Prop — pyramid / funnel variant renders both charts side by side', async ({ page }) => {
+        await openVariant(page, CHART_STORY, 'Prop — pyramid / funnel (side by side)')
         const sandbox = sandboxOf(page)
-        await selectHstOption(page, 'Type', 'funnel')
 
-        const root = sandbox.locator('[data-cy~="origam-chart--funnel"]')
-        await expect(root).toBeVisible({ timeout: 8000 })
-        const slices = sandbox.locator('[data-cy^="origam-chart-pyramid-slice-"]')
-        await expect(slices).toHaveCount(12, { timeout: 8000 })
+        const funnelSlices = sandbox.locator('[data-cy="chart-pyramid-funnel-funnel"] [data-cy^="origam-chart-pyramid-slice-"]')
+        const pyramidSlices = sandbox.locator('[data-cy="chart-pyramid-funnel-pyramid"] [data-cy^="origam-chart-pyramid-slice-"]')
+
+        await expect(funnelSlices).toHaveCount(5, { timeout: 8000 })
+        await expect(pyramidSlices).toHaveCount(5, { timeout: 8000 })
     })
 
-    test('Design Variant Type=pyramid dispatches to OrigamChartPyramid (12 slices)', async ({ page }) => {
-        await openVariant(page, CHART_STORY, 'Design')
+    test('funnel chart in 13-primitives grid renders 5 slices', async ({ page }) => {
+        await openVariant(page, CHART_STORY, 'Prop — type (29 primitives)')
         const sandbox = sandboxOf(page)
-        await selectHstOption(page, 'Type', 'pyramid')
 
-        const root = sandbox.locator('[data-cy~="origam-chart--pyramid"]')
-        await expect(root).toBeVisible({ timeout: 8000 })
-        const slices = sandbox.locator('[data-cy^="origam-chart-pyramid-slice-"]')
-        await expect(slices).toHaveCount(12, { timeout: 8000 })
+        const slices = sandbox.locator('[data-cy="chart-type-funnel"] [data-cy^="origam-chart-pyramid-slice-"]')
+        await expect(slices).toHaveCount(5, { timeout: 8000 })
+    })
+
+    test('pyramid chart in 13-primitives grid renders 5 slices', async ({ page }) => {
+        await openVariant(page, CHART_STORY, 'Prop — type (29 primitives)')
+        const sandbox = sandboxOf(page)
+
+        const slices = sandbox.locator('[data-cy="chart-type-pyramid"] [data-cy^="origam-chart-pyramid-slice-"]')
+        await expect(slices).toHaveCount(5, { timeout: 8000 })
     })
 })
 
 test.describe('OrigamChartPyramid — empty state', () => {
     test('empty slot renders when series is empty', async ({ page }) => {
-        await openVariant(page, PYRAMID_STORY, 'Slots - Empty')
+        await openVariant(page, PYRAMID_STORY, 'Slot — empty')
         const sandbox = sandboxOf(page)
-        const empty = sandbox.locator('[data-cy="origam-chart-pyramid-empty"]')
+        const empty = sandbox.locator('[data-cy="pyramid-slot-empty-chart"] [data-cy="origam-chart-pyramid-empty"]')
         await expect(empty).toBeVisible({ timeout: 6000 })
         await expect(empty).toContainText('No pipeline data')
     })

@@ -1,7 +1,5 @@
 import { expect, test, type Page } from '@playwright/test'
 
-import { eventLogItems, fillHstNumber, fillHstText, openEventsTab, selectHstOption } from './_support/histoire-controls'
-
 /**
  * OrigamChartBullet — Playwright spec.
  *
@@ -14,18 +12,6 @@ import { eventLogItems, fillHstNumber, fillHstText, openEventsTab, selectHstOpti
  *  - Empty state renders when series is empty.
  *  - ARIA attributes (role="figure", role="img", title, desc) are
  *    present for screen-reader support.
- *
- * The story restructuring (canonical Design/State/Functional/Events/Slots
- * layout, see root CLAUDE.md) removed every per-fixture root data-cy this
- * spec targeted (bullet-playground-chart, bullet-orientation-h/v,
- * bullet-thickness-slim/thick, bullet-range-intent/custom,
- * bullet-slot-empty-chart, bullet-performance-chart, bullet-emit-log) —
- * `OrigamChartBullet.vue` itself sets a static
- * `data-cy="origam-chart-bullet"` on its own root instead. Side-by-side
- * comparisons (orientation, barThickness, rangeColors) fold into single
- * dynamic controls on "Design", driven sequentially. "Emit — …" maps to
- * "Events - point-click"; its removed `bullet-emit-log` DOM shell is read
- * back via the shared `openEventsTab` / `eventLogItems` helpers.
  */
 
 const BULLET_STORY = '/stories/story/components-stories-chart-origamchartbullet-story-vue'
@@ -44,15 +30,15 @@ test.describe('OrigamChartBullet — Default', () => {
     test('renders figure root with role="figure"', async ({ page }) => {
         await openVariant(page, BULLET_STORY, 'Default')
         const sandbox = sandboxOf(page)
-        const host = sandbox.locator('[data-cy="origam-chart-bullet"]').first()
+        const host = sandbox.locator('[data-cy="bullet-playground-chart"]').first()
         await expect(host).toBeVisible({ timeout: 8000 })
-        await expect(host).toHaveRole('figure') // #426 — root is a native <figure>, role is implicit, no explicit attribute any more
+        await expect(host).toHaveAttribute('role', 'figure')
     })
 
     test('SVG carries role=img, title and desc', async ({ page }) => {
         await openVariant(page, BULLET_STORY, 'Default')
         const sandbox = sandboxOf(page)
-        const svg = sandbox.locator('[data-cy="origam-chart-bullet"] svg').first()
+        const svg = sandbox.locator('[data-cy="bullet-playground-chart"] svg').first()
         await expect(svg).toBeVisible()
         await expect(svg).toHaveAttribute('role', 'img')
         await expect(svg.locator('title')).toHaveCount(1)
@@ -64,7 +50,7 @@ test.describe('OrigamChartBullet — Default', () => {
         const sandbox = sandboxOf(page)
         await page.screenshot({ path: '/tmp/chart-bullet-default.png', fullPage: false })
 
-        const rows = sandbox.locator('[data-cy="origam-chart-bullet"] [data-cy^="origam-chart-bullet-row-"]')
+        const rows = sandbox.locator('[data-cy="bullet-playground-chart"] [data-cy^="origam-chart-bullet-row-"]')
         await expect(rows).toHaveCount(3, { timeout: 6000 })
     })
 
@@ -101,18 +87,7 @@ test.describe('OrigamChartBullet — Default', () => {
     test('axis ticks render when showAxis is true', async ({ page }) => {
         await openVariant(page, BULLET_STORY, 'Default')
         const sandbox = sandboxOf(page)
-        const axisTicks = sandbox.locator('[data-cy="origam-chart-bullet"] [data-cy^="origam-chart-bullet-tick-"]')
-        // Flake found while repairing this spec's title drift, unrelated to
-        // it: a synchronous `.count()` right after openVariant's fixed
-        // 500ms wait intermittently reads 0 — the tick geometry depends on
-        // a layout measurement (SVG width) that isn't always settled yet.
-        // Reproduced consistently as a standalone run, then observed to
-        // pass once extra `await` calls (even just console.log +
-        // locator reads) pushed past the race — confirms timing, not a
-        // missing/broken feature (ticks ARE present once settled, verified
-        // via full axis-group HTML dump). `expect(...).toBeAttached()`
-        // auto-retries instead of taking one synchronous snapshot.
-        await expect(axisTicks.first()).toBeAttached({ timeout: 6000 })
+        const axisTicks = sandbox.locator('[data-cy="bullet-playground-chart"] [data-cy^="origam-chart-bullet-tick-"]')
         const count = await axisTicks.count()
         expect(count).toBeGreaterThan(0)
     })
@@ -120,38 +95,31 @@ test.describe('OrigamChartBullet — Default', () => {
 
 test.describe('OrigamChartBullet — Orientation', () => {
     test('horizontal and vertical variants both render 3 rows', async ({ page }) => {
-        // Dedicated side-by-side fixture folded into "Design" — a single
-        // dynamic "Orientation" control (default 'Horizontal', see
-        // OrigamChartBullet.story.vue), driven sequentially instead.
-        await openVariant(page, BULLET_STORY, 'Design')
+        await openVariant(page, BULLET_STORY, 'Prop — orientation (horizontal vs vertical)')
         const sandbox = sandboxOf(page)
-        const rows = sandbox.locator('[data-cy="origam-chart-bullet"] [data-cy^="origam-chart-bullet-row-"]')
+        await page.screenshot({ path: '/tmp/chart-bullet-orientation.png', fullPage: false })
 
-        await expect(rows).toHaveCount(3, { timeout: 6000 })
+        const horizontal = sandbox.locator('[data-cy="bullet-orientation-horizontal"] [data-cy^="origam-chart-bullet-row-"]')
+        await expect(horizontal).toHaveCount(3, { timeout: 6000 })
 
-        await selectHstOption(page, 'Orientation', 'Vertical')
-        await page.waitForTimeout(400)
-        await expect(rows).toHaveCount(3, { timeout: 6000 })
+        const vertical = sandbox.locator('[data-cy="bullet-orientation-vertical"] [data-cy^="origam-chart-bullet-row-"]')
+        await expect(vertical).toHaveCount(3, { timeout: 6000 })
     })
 })
 
 test.describe('OrigamChartBullet — barThickness', () => {
     test('slim and thick variants both render bar elements', async ({ page }) => {
-        // Dedicated side-by-side fixture folded into "Design" — a single
-        // dynamic "Bar Thickness" control (default 0.45), driven
-        // sequentially instead.
-        await openVariant(page, BULLET_STORY, 'Design')
+        await openVariant(page, BULLET_STORY, 'Prop — barThickness (slim vs thick)')
         const sandbox = sandboxOf(page)
-        const bar = sandbox.locator('[data-cy="origam-chart-bullet"] [data-cy="origam-chart-bullet-bar-0"]')
 
-        await fillHstNumber(page, 'Bar Thickness', 0.15)
-        await page.waitForTimeout(400)
-        await expect(bar).toBeVisible({ timeout: 6000 })
-        const slimH = await bar.getAttribute('height')
+        const slimBar = sandbox.locator('[data-cy="bullet-thickness-slim"] [data-cy="origam-chart-bullet-bar-0"]')
+        await expect(slimBar).toBeVisible({ timeout: 6000 })
 
-        await fillHstNumber(page, 'Bar Thickness', 0.85)
-        await page.waitForTimeout(400)
-        const thickH = await bar.getAttribute('height')
+        const thickBar = sandbox.locator('[data-cy="bullet-thickness-thick"] [data-cy="origam-chart-bullet-bar-0"]')
+        await expect(thickBar).toBeVisible({ timeout: 6000 })
+
+        const slimH = await slimBar.getAttribute('height')
+        const thickH = await thickBar.getAttribute('height')
 
         expect(Number(thickH)).toBeGreaterThan(Number(slimH))
     })
@@ -159,51 +127,41 @@ test.describe('OrigamChartBullet — barThickness', () => {
 
 test.describe('OrigamChartBullet — rangeColors', () => {
     test('intent and custom range color variants both render range rects', async ({ page }) => {
-        // Dedicated side-by-side fixture folded into "Design" — 3
-        // individual HstText fields ("Range 1 (poor)" etc.), defaulting
-        // to DS intents ('danger'/'warning'/'success'). Driven
-        // sequentially: capture the intent-driven style, switch the
-        // first range to a raw hex, capture again, compare.
-        await openVariant(page, BULLET_STORY, 'Design')
+        await openVariant(page, BULLET_STORY, 'Prop — rangeColors (DS intents vs custom palette)')
         const sandbox = sandboxOf(page)
-        const range = sandbox.locator('[data-cy="origam-chart-bullet"] [data-cy="origam-chart-bullet-range-0-0"]')
 
-        await expect(range).toBeVisible({ timeout: 6000 })
-        const intentStyle = await range.getAttribute('style')
+        const intentRange = sandbox.locator('[data-cy="bullet-range-intent"] [data-cy="origam-chart-bullet-range-0-0"]')
+        await expect(intentRange).toBeVisible({ timeout: 6000 })
 
-        await fillHstText(page, 'Range 1 (poor)', '#123456')
-        await page.waitForTimeout(400)
-        const customStyle = await range.getAttribute('style')
+        const customRange = sandbox.locator('[data-cy="bullet-range-custom"] [data-cy="origam-chart-bullet-range-0-0"]')
+        await expect(customRange).toBeVisible({ timeout: 6000 })
 
+        const intentStyle = await intentRange.getAttribute('style')
+        const customStyle = await customRange.getAttribute('style')
         expect(intentStyle).not.toBe(customStyle)
     })
 })
 
 test.describe('OrigamChartBullet — Emit point-click', () => {
     test('clicking a bar appends to the log', async ({ page }) => {
-        // Canonical Variant is "Events - point-click". The old
-        // `bullet-emit-log` DOM shell is gone — read back from Histoire's
-        // own "Events" tab instead.
-        await openVariant(page, BULLET_STORY, 'Events - point-click')
+        await openVariant(page, BULLET_STORY, 'Emit — point-click on bullet')
         const sandbox = sandboxOf(page)
 
         const bar = sandbox.locator('[data-cy="origam-chart-bullet-bar-0"]').first()
         await bar.click()
-        await page.waitForTimeout(300)
 
-        await openEventsTab(page)
-        await expect(eventLogItems(page).first()).toContainText('point-click', { timeout: 4000 })
+        const log = sandbox.locator('[data-cy="bullet-emit-log"]').first()
+        const logText = await log.textContent()
+        expect(logText).toContain('point-click')
     })
 })
 
 test.describe('OrigamChartBullet — Empty state', () => {
     test('renders custom empty slot when series is empty', async ({ page }) => {
-        // Canonical Variant is "Slots - empty" (lowercase 'e', unlike most
-        // other charts' "Slots - Empty" — see available Variant titles).
-        await openVariant(page, BULLET_STORY, 'Slots - empty')
+        await openVariant(page, BULLET_STORY, 'Slot — empty')
         const sandbox = sandboxOf(page)
 
-        const empty = sandbox.locator('[data-cy="origam-chart-bullet"] [data-cy="origam-chart-bullet-empty"]')
+        const empty = sandbox.locator('[data-cy="bullet-slot-empty-chart"] [data-cy="origam-chart-bullet-empty"]')
         await expect(empty).toBeVisible({ timeout: 6000 })
         const text = await empty.textContent()
         expect(text).toContain('No KPI data')
@@ -211,17 +169,11 @@ test.describe('OrigamChartBullet — Empty state', () => {
 })
 
 test.describe('OrigamChartBullet — 5 KPI performance metrics', () => {
-    test('renders 5 bullet rows', async () => {
-        // STORY GAP found while repairing this spec: the migrated story
-        // has only ONE fixture set left (FIXTURE_SALES /
-        // FIXTURE_SALES_CATEGORIES, 3 entries — "Revenue" / "Profit
-        // Margin" / "Customer Satisfaction") — the separate 5-KPI
-        // "performance" fixture this test targeted no longer exists
-        // anywhere in OrigamChartBullet.story.vue (verified via grep: no
-        // second FIXTURE_* array, no "performance" reference). Since row
-        // count is driven directly by the hardcoded series/categories
-        // array length, this can't be reproduced from the spec without
-        // editing the story.
-        test.skip(true, 'STORY GAP: OrigamChartBullet.story.vue no longer has a 5-entry fixture ("performance" KPIs) after the canonical-structure migration — only the 3-entry FIXTURE_SALES remains. Needs a dedicated story fixture, not a spec change.')
+    test('renders 5 bullet rows', async ({ page }) => {
+        await openVariant(page, BULLET_STORY, 'Prop — 5 KPI performance metrics')
+        const sandbox = sandboxOf(page)
+
+        const rows = sandbox.locator('[data-cy="bullet-performance-chart"] [data-cy^="origam-chart-bullet-row-"]')
+        await expect(rows).toHaveCount(5, { timeout: 6000 })
     })
 })

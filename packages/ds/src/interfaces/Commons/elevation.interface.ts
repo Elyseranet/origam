@@ -1,4 +1,4 @@
-import type { TElevation } from '../../types/Commons/elevation.type'
+import type { TElevation } from '../../types'
 
 export interface IElevationProps {
     elevation?: TElevation

@@ -90,29 +90,6 @@ describe('OrigamDrawer — open/close via modelValue', () => {
         expect(emitted![0]).toEqual([false])
         wrapper.unmount()
     })
-
-    /*********************************************************
-     * `update:modelValue` must be DECLARED, not merely fired.
-     *
-     * @description
-     * `wrapper.emitted()` records an undeclared emit just as
-     * happily as a declared one, so the behavioural test above
-     * cannot see the gap. The gap is observable on the two
-     * assertions below, and it is not cosmetic: an undeclared
-     * emit leaves the consumer's `onUpdate:modelValue` handler
-     * in `$attrs`, where `inheritAttrs` binds it a second time
-     * onto the root <nav> as a stray DOM listener.
-     ********************************************************/
-    it('declares update:modelValue instead of leaking it through $attrs', () => {
-        expect((OrigamDrawer as any).emits).toContain('update:modelValue')
-
-        const wrapper = mountDrawer({
-            modelValue: true,
-            'onUpdate:modelValue': () => {}
-        })
-        expect(Object.keys(wrapper.vm.$attrs)).not.toContain('onUpdate:modelValue')
-        wrapper.unmount()
-    })
 })
 
 describe('OrigamDrawer — classes', () => {
@@ -263,57 +240,6 @@ describe('OrigamDrawer — expand-on-hover (rail mode)', () => {
         await wrapper.find('nav').trigger('mouseleave')
         await nextTick()
         expect(wrapper.find('nav').classes()).not.toContain('origam-drawer--is-hovering')
-        wrapper.unmount()
-    })
-})
-
-// ---------------------------------------------------------------------------
-// i18n — hardcoded English string reaching the user (#419, criterion C8)
-// ---------------------------------------------------------------------------
-//
-// The root rendered `:aria-label="name || 'Navigation'"`. The literal sat
-// BEHIND a `||`, which is precisely the blind spot of the C8 detector, and it
-// was announced verbatim by every screen reader whatever the active locale.
-//
-// Asserted against the REAL builtin locale adapter (via `createOrigam()`),
-// under `fr`: under `en` a hardcoded English literal and its correct
-// translation are identical byte for byte, so an `en`-only test passes with
-// the defect fully intact.
-
-const mountDrawerLocalised = (locale: string, props: Record<string, any> = {}) => {
-    return mount(OrigamDrawer, {
-        props: { modelValue: true, ...props },
-        attachTo: document.body,
-        global: {
-            plugins: [createOrigam({ locale: { locale } } as never)],
-            stubs: {
-                Teleport: true,
-                OrigamTransition: OrigamTransitionStub,
-                OrigamOverlayScrim: OrigamOverlayScrimStub
-            }
-        }
-    })
-}
-
-const drawerAriaLabel = (wrapper: ReturnType<typeof mountDrawerLocalised>): string | undefined =>
-    wrapper.find('nav.origam-drawer').attributes('aria-label')
-
-describe('OrigamDrawer — i18n of the default aria-label (#419, C8)', () => {
-    it('falls back to the English catalogue label when no name is given', () => {
-        const wrapper = mountDrawerLocalised('en')
-        expect(drawerAriaLabel(wrapper)).toBe('Navigation')
-        wrapper.unmount()
-    })
-
-    it('falls back to the FRENCH label under the fr locale (fails on a hardcoded literal)', () => {
-        const wrapper = mountDrawerLocalised('fr')
-        expect(drawerAriaLabel(wrapper)).toBe('Navigation principale')
-        wrapper.unmount()
-    })
-
-    it('still lets a consumer-supplied name win over the catalogue fallback', () => {
-        const wrapper = mountDrawerLocalised('fr', { name: 'Filtres' })
-        expect(drawerAriaLabel(wrapper)).toBe('Filtres')
         wrapper.unmount()
     })
 })

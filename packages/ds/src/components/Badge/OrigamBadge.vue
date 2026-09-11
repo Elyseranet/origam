@@ -11,80 +11,52 @@
 			<slot name="default"/>
 
 			<origam-transition :transition="transition">
-				<span
-						v-show="modelValue"
-						:id="id"
-						v-contrast
-						:aria-label="badgeAriaLabel"
-						:class="badgeContentClasses"
-						:style="typographyStyles"
-						aria-atomic="true"
-						aria-live="polite"
-						role="status"
-						v-bind="badgeAttrs"
-				>
-					<template v-if="!dot">
-						<slot name="badge">
-							<template v-if="hasPrepend">
-								<span
-										key="prepend"
-										class="origam-badge__prepend"
-										:role="isPrependClickable ? 'button' : undefined"
-										:tabindex="isPrependClickable ? 0 : undefined"
-										@click="handleClickPrepend"
-										@keydown="handleKeydownPrepend"
-								>
-									<slot name="prepend">
-										<origam-avatar
-												v-if="prependAvatar"
-												key="prepend-avatar"
-												:image="prependAvatar"
-										/>
-										<origam-icon
-												v-if="prependIcon"
-												key="prepend-icon"
-												:icon="prependIcon"
-										/>
-									</slot>
-								</span>
-							</template>
+        <span
+		        v-show="modelValue"
+		        :id="id"
+		        v-contrast
+		        :aria-label="t(label, content)"
+		        :class="badgeContentClasses"
+		        :style="typographyStyles"
+		        aria-atomic="true"
+		        aria-live="polite"
+		        role="status"
+		        v-bind="badgeAttrs"
+        >
+          <template v-if="!dot">
+            <slot name="badge">
+              <template v-if="hasPrependIcon">
+                <slot name="prepend">
+                  <origam-icon
+                          key="prepend-icon"
+                          class="origam-badge__prepend"
+                          :icon="prependIcon"
+                  />
+                </slot>
+              </template>
 
-							<template v-if="hasIcon">
-								<origam-icon
-										key="content-icon"
-										:icon="icon"
-								/>
-							</template>
-							<template v-else-if="content !== undefined && content !== null && content !== ''">
-								<span class="origam-badge__content">{{ content }}</span>
-							</template>
+              <template v-if="hasIcon">
+                <origam-icon
+                        key="content-icon"
+                        :icon="icon"
+                />
+              </template>
+              <template v-else-if="content !== undefined && content !== null && content !== ''">
+                <span class="origam-badge__content">{{ content }}</span>
+              </template>
 
-							<template v-if="hasAppend">
-								<span
-										key="append"
-										class="origam-badge__append"
-										:role="isAppendClickable ? 'button' : undefined"
-										:tabindex="isAppendClickable ? 0 : undefined"
-										@click="handleClickAppend"
-										@keydown="handleKeydownAppend"
-								>
-									<slot name="append">
-										<origam-avatar
-												v-if="appendAvatar"
-												key="append-avatar"
-												:image="appendAvatar"
-										/>
-										<origam-icon
-												v-if="appendIcon"
-												key="append-icon"
-												:icon="appendIcon"
-										/>
-									</slot>
-								</span>
-							</template>
-						</slot>
-					</template>
-				</span>
+              <template v-if="hasAppendIcon">
+                <slot name="append">
+                  <origam-icon
+                          key="append-icon"
+                          class="origam-badge__append"
+                          :icon="appendIcon"
+                  />
+                </slot>
+              </template>
+            </slot>
+          </template>
+        </span>
 			</origam-transition>
 		</div>
 	</component>
@@ -94,28 +66,26 @@
 		lang="ts"
 		setup
 >
-	import OrigamAvatar from '../Avatar/OrigamAvatar.vue'
-	import OrigamFade from '../Transition/OrigamFade.vue'
-	import OrigamIcon from '../Icon/OrigamIcon.vue'
-	import OrigamTransition from '../Transition/OrigamTransition.vue'
+	import { OrigamFade, OrigamIcon, OrigamTransition } from '../../components'
 
-	import { useAdjacent } from '../../composables/Commons/adjacent.composable'
-	import { useLocale } from '../../composables/Commons/locale.composable'
-	import { useLocation } from '../../composables/Commons/location.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useStateEffect } from '../../composables/Commons/stateEffect.composable'
-	import { useStateFlag } from '../../composables/Commons/stateFlag.composable'
-	import { useStatus } from '../../composables/Commons/status.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-	import { useTypography } from '../../composables/Commons/typography.composable'
+	import {
+		useActive,
+		useHover,
+		useLocale,
+		useLocation,
+		useProps,
+		useStateEffect,
+		useStatus,
+		useStyle,
+		useTypography
+	} from '../../composables'
 
-	import type { IBadgeProps } from '../../interfaces/Badge/badge.interface'
-	import type { IBadgeEmits, IBadgeSlots } from '../../interfaces/Badge/badge.interface'
-	import type { TTransitionProps } from '../../types/Transition/transition.type'
+	import type { IBadgeProps } from '../../interfaces'
+	import type { TTransitionProps } from "../../types"
 
-	import vContrast from '../../directives/Contrast/contrast.directive'
+	import { vContrast } from '../../directives'
 
-	import { omit, pick } from '../../utils/Commons/commons.util'
+	import { omit, pick } from '../../utils'
 
 	import { computed, ComputedRef, StyleValue, useAttrs } from 'vue'
 
@@ -138,10 +108,6 @@
 		transition: () => ({component: OrigamFade}) as unknown as TTransitionProps
 	})
 
-	defineEmits<IBadgeEmits>()
-
-	defineSlots<IBadgeSlots>()
-
 	const {filterProps} = useProps<IBadgeProps>(props)
 	const {t} = useLocale()
 
@@ -153,8 +119,8 @@
 	 * @description
 	 * Hover, active state, color and location resolution.
 	 ********************************************************/
-	const {classes: hoverClasses, isOn: isHover, config: hoverState, unset: handleMouseleave, set: handleMouseenter} = useStateFlag(props, {state: 'hover'})
-	const {classes: activeClasses, isOn: isActive, config: activeState} = useStateFlag(props, {state: 'active', source: 'modelValue'})
+	const {hoverClasses, isHover, hoverState, onMouseleave: handleMouseleave, onMouseenter: handleMouseenter} = useHover(props)
+	const {activeClasses, isActive, activeState} = useActive(props, 'modelValue')
 	// Phase 3 (Vague D) — class-first companion alongside inline styles.
 	// The badge pill (`__badge` span) is the visual surface; classes go
 	// there, not on the wrapper root.
@@ -175,16 +141,6 @@
 	const {typographyStyles} = useTypography(props, 'badge__badge')
 
 	const {icon, prependIcon, appendIcon, statusClasses} = useStatus(props)
-	const {
-		onClickPrepend: handleClickPrepend,
-		onClickAppend: handleClickAppend,
-		onKeydownPrepend: handleKeydownPrepend,
-		onKeydownAppend: handleKeydownAppend,
-		isPrependClickable,
-		isAppendClickable,
-		hasAppend,
-		hasPrepend
-	} = useAdjacent(props, prependIcon, appendIcon)
 	const {locationStyles} = useLocation(props, true, side => {
 		const base = props.floating
 				? (props.dot ? 2 : 4)
@@ -206,6 +162,12 @@
 	const hasIcon = computed(() => {
 		return !!icon.value
 	})
+	const hasPrependIcon = computed(() => {
+		return !!prependIcon.value
+	})
+	const hasAppendIcon = computed(() => {
+		return !!appendIcon.value
+	})
 
 	const content = computed(() => {
 		const value = Number(props.content)
@@ -217,24 +179,6 @@
 		}
 
 		return `${props.max}+`
-	})
-
-	/*********************************************************
-	 * badgeAriaLabel
-	 *
-	 * @description
-	 * #380 — `t(label, content)` used to pass `content` as a POSITIONAL
-	 * interpolation argument to the `origam.badge` template ("Badge"),
-	 * which has no `{0}` placeholder: the value was silently dropped.
-	 * A badge whose content is already text (a count, "NEW", …) doesn't
-	 * need the translated prefix — announce the content directly, and
-	 * fall back to the translated generic label only when there is no
-	 * content to read (dot mode, icon-only mode).
-	 ********************************************************/
-	const badgeAriaLabel = computed(() => {
-		const hasTextContent = !props.dot && !hasIcon.value && content.value !== undefined && content.value !== null && content.value !== ''
-
-		return hasTextContent ? String(content.value) : t(props.label)
 	})
 
 	const badgeAttrs = computed<Record<string, unknown>>(() => {
@@ -303,18 +247,7 @@
 		]
 	})
 
-	/*********************************************************
-	 * useStyle
-	 *
-	 * @description
-	 * #381 — the `id` returned by useStyle is a GENERATED identifier,
-	 * only meant for the scoped stylesheet selector. Without
-	 * `() => props.id` here, it shadowed the `id` PROP of the same
-	 * name: the template's `:id="id"` on the content pill
-	 * (.origam-badge__badge) rendered the generated id, never the
-	 * consumer's.
-	 ********************************************************/
-	const {id, css, load, isLoaded, unload} = useStyle(badgeContentStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(badgeContentStyles)
 
 
 	/*********************************************************
@@ -351,7 +284,7 @@
 
 			position: var(--origam-badge__badge---position);
 			pointer-events: var(--origam-badge__badge---pointer-events);
-			transition: var(--origam-badge__badge---transition-property) var(--origam-badge__badge---transition-duration) var(--origam-badge__badge---transition-timing-function);
+			transition: var(--origam-badge__badge---transition);
 
 			border-width: var(--origam-badge__badge---border-width);
 			border-style: var(--origam-badge__badge---border-style);
@@ -504,8 +437,8 @@
 		}
 
 		&--error {
-			--origam-badge__badge---background-color: var(--origam-badge--danger---background-color, var(--origam-badge--error---background-color, var(--origam-color__feedback--danger---bg)));
-			--origam-badge__badge---color: var(--origam-badge--danger---color, var(--origam-badge--error---color, var(--origam-color__feedback--danger---fg)));
+			--origam-badge__badge---background-color: var(--origam-badge--danger---background-color, var(--origam-color__feedback--danger---bg));
+			--origam-badge__badge---color: var(--origam-badge--danger---color, var(--origam-color__feedback--danger---fg));
 		}
 	}
 </style>

@@ -8,12 +8,7 @@ import { defineComponent, h, nextTick, ref } from 'vue'
 import { mount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { useVideoPlayer } from '@origam/composables/Video/video-player.composable'
-// shouldSuppressAutoplay vit dans la base Media. Video/ en exposait un
-// pass-through d'une ligne, supprime le 2026-09-03 (doublon C2) : il
-// etait exclu du barrel, donc joignable par personne, et OrigamVideo
-// comme OrigamAudio importaient deja cette version-ci.
-import { shouldSuppressAutoplay } from '@origam/composables/Media/use-media-player.composable'
+import { shouldSuppressAutoplay, useVideoPlayer } from '@origam/composables/Video/video-player.composable'
 
 /**
  * Helper component — runs `useVideoPlayer` inside a real Vue setup

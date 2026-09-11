@@ -1,14 +1,13 @@
 <template>
 	<component
 		:is="tag || 'div'"
-		:id="id"
 		:class="timelineClasses"
 		:style="timelineStyles"
 		role="list"
 		:aria-label="ariaLabel"
 	>
 		<div
-				v-if="isHorizontal"
+				v-if="orientation === 'horizontal'"
 				class="origam-timeline__track-wrapper"
 		>
 			<slot name="default">
@@ -22,7 +21,7 @@
 					:intent="entry.intent"
 					:is-last="index === (items?.length ?? 0) - 1"
 					:truncate-line="truncateLine ?? false"
-					:side="side ?? TIMELINE_SIDE.START"
+					:side="side ?? 'start'"
 					:orientation="orientation"
 					:index="index"
 					:data-cy="`timeline-item-${index}`"
@@ -54,15 +53,15 @@
 	import { computed, provide } from 'vue'
 	import type { StyleValue } from 'vue'
 
-	import OrigamTimelineItem from './OrigamTimelineItem.vue'
-	import { useDensity } from '../../composables/Commons/density.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useSize } from '../../composables/Commons/size.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
-	import type { ITimelineEmits, ITimelineProps, ITimelineSlots } from '../../interfaces/Timeline/timeline.interface'
-	import { TIMELINE_CONTEXT_KEY } from '../../consts/Timeline/timeline.const'
-	import { DIRECTION } from '../../enums/Commons/direction.enum'
-	import { TIMELINE_SIDE } from '../../enums/Timeline/timeline.enum'
+	import { OrigamTimelineItem } from '../../components'
+	import {
+	useDensity,
+	useProps,
+	useSize,
+	useStyle
+} from '../../composables'
+	import type { ITimelineProps } from '../../interfaces'
+	import { TIMELINE_CONTEXT_KEY } from '../../consts'
 
 	/*********************************************************
 	 * Global
@@ -77,12 +76,7 @@
 
 	const { filterProps } = useProps<ITimelineProps>(props)
 
-	defineEmits<ITimelineEmits>()
-
-	defineSlots<ITimelineSlots>()
-
-	const orientation = computed(() => props.orientation ?? DIRECTION.VERTICAL)
-	const isHorizontal = computed(() => orientation.value === DIRECTION.HORIZONTAL)
+	const orientation = computed(() => props.orientation ?? 'vertical')
 
 	/*********************************************************
 	 * Composables
@@ -95,7 +89,7 @@
 	// is exposed too so an item dropped manually in the slot picks up the
 	// parent layout direction without having to pass the prop explicitly.
 	provide(TIMELINE_CONTEXT_KEY, {
-		get side() { return props.side ?? TIMELINE_SIDE.START },
+		get side() { return props.side ?? 'start' },
 		get truncateLine() { return props.truncateLine ?? false },
 		get orientation() { return orientation.value },
 		get color() {
@@ -123,7 +117,7 @@
 	const timelineStyles = computed(() => [
 		props.style
 	] as StyleValue)
-	const {id, css, load, isLoaded, unload} = useStyle(timelineStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(timelineStyles)
 
 
 	/*********************************************************

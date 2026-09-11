@@ -1,0 +1,20 @@
+{
+  "loader": {
+    "_comment": "Container component — delegates all visual rendering to OrigamProgress (OrigamProgressCircular). No component-level CSS custom properties are declared in the Vue scoped style block; this file is a stub for completeness and future token needs.",
+    "height":             { "$type": "other",      "$value": "100%" },
+    "transition-duration":{ "$type": "duration",   "$value": "{motion.duration.medium}" },
+    "transition-easing":  { "$type": "cubicBezier","$value": "{motion.easing.standard}" },
+
+    "progress": {
+      "margin": { "$type": "other", "$value": "auto" }
+    },
+
+    "fullscreen": {
+      "position": { "$type": "other",      "$value": "fixed" },
+      "top":      { "$type": "dimension",  "$value": "{space.0}" },
+      "left":     { "$type": "dimension",  "$value": "{space.0}" },
+      "height":   { "$type": "other",      "$value": "100vh" },
+      "width":    { "$type": "other",      "$value": "100vw" }
+    }
+  }
+}

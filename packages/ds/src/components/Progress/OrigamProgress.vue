@@ -1,10 +1,16 @@
 <template>
 	<component
 			:is="progressComponent"
-			:id="id"
 			ref="origamProgressRef"
+			:aria-busy="indeterminate ? true : undefined"
+			:aria-hidden="!active"
+			:aria-label="progressAriaLabel"
+			:aria-valuemax="max"
+			:aria-valuenow="indeterminate ? undefined : normalizedValue"
 			:class="progressClasses"
 			:style="progressStyles"
+			aria-valuemin="0"
+			role="progressbar"
 			v-bind="progressProps"
 	>
 		<template
@@ -21,21 +27,20 @@
 		setup
 >
 	import { computed, ref, StyleValue } from 'vue'
-	import OrigamProgressCircular from './OrigamProgressCircular.vue'
-	import OrigamProgressLinear from './OrigamProgressLinear.vue'
+	import { OrigamProgressCircular, OrigamProgressLinear } from '../../components'
 
-	import { useProgress } from '../../composables/Progress/progress.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useSize } from '../../composables/Commons/size.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
+	import {
+	useProgress,
+	useProps,
+	useSize,
+	useStyle
+} from '../../composables'
 
-	import { PROGRESS_TYPE } from '../../enums/Progress/progress.enum'
-	import { SIZES } from '../../enums/Commons/size.enum'
+	import { PROGRESS_TYPE, SIZES } from '../../enums'
 
-	import type { IProgressEmits, IProgressProps, IProgressSlots } from '../../interfaces/Progress/progress.interface'
+	import type { IProgressProps } from '../../interfaces'
 
-	import type { TOrigamProgressCircular } from '../../types/Progress/progress-circular.type'
-	import type { TOrigamProgressLinear } from '../../types/Progress/progress-linear.type'
+	import type { TOrigamProgressCircular, TOrigamProgressLinear } from "../../types"
 
 	/*********************************************************
 	 * Global
@@ -48,16 +53,10 @@
 		modelValue: 0,
 		max: 100,
 		thickness: 4,
-		size: SIZES.DEFAULT,
-		label: 'origam.loading',
-		active: true
+		size: SIZES.DEFAULT
 	})
 
 	const {filterProps} = useProps<IProgressProps>(props)
-
-	defineEmits<IProgressEmits>()
-
-	defineSlots<IProgressSlots>()
 
 	/*********************************************************
 	 * DOM refs
@@ -72,20 +71,7 @@
 	 * Decorators & progress state
 	 *
 	 * @description
-	 * Size utilities and hasContent flag (used to render the
-	 * default slot as an overlay on top of the dispatched bar).
-	 *
-	 * #500 — this wrapper no longer carries any ARIA semantics
-	 * (role, aria-value*, aria-busy, aria-label, aria-hidden). It
-	 * delegates its ENTIRE render to whichever concrete component
-	 * `type` selects (`<component :is="progressComponent">` — a
-	 * single root, never an extra wrapping DOM node), and both
-	 * `OrigamProgressCircular` and `OrigamProgressLinear` now own
-	 * their own ARIA contract so they stay accessible when mounted
-	 * standalone. Re-declaring it here would either be dead code or,
-	 * worse, a second conflicting `role="progressbar"` on the same
-	 * element — see the anti-duplication tests in
-	 * OrigamProgress.aria.spec.ts.
+	 * Size utilities and normalized value / hasContent flags.
 	 ********************************************************/
 
 	/*********************************************************
@@ -93,7 +79,9 @@
 	 ********************************************************/
 
 	const {sizeClasses, sizeStyles} = useSize(props)
-	const {hasContent} = useProgress(props)
+	const {normalizedValue, hasContent} = useProgress(props)
+
+	const progressAriaLabel = computed(() => props.label ?? 'Loading')
 
 	/*********************************************************
 	 * Component selection
@@ -135,7 +123,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(progressStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(progressStyles)
 
 
 	/*********************************************************

@@ -9,8 +9,6 @@ import { expect, test } from '@playwright/test'
  * shell changes.
  */
 
-import { toggleHstCheckbox } from './_support/histoire-controls'
-
 const sandboxOf = (page: import('@playwright/test').Page) =>
     page.frameLocator('iframe[src*="__sandbox"]')
 
@@ -36,22 +34,14 @@ test.describe('OrigamWindow', () => {
     test('continuous variant mounts without throwing', async ({ page }) => {
         const errors: string[] = []
         page.on('pageerror', err => errors.push(err.message))
-        // The canonical story exposes `continuous` as a CONTROL on "Functional"
-        // (pinned false by its init-state), not as a dedicated Variant. Simply
-        // retargeting the navigation would leave this test green while never
-        // turning the prop on — so the checkbox is flipped explicitly. Single
-        // toggle is safe: the starting value is known from the init-state
-        // (`continuous: false`), which is what `toggleHstCheckbox` requires.
-        await openVariant(page, WINDOW_PATH, 'Functional')
-        await toggleHstCheckbox(page, 'Continuous')
+        await openVariant(page, WINDOW_PATH, 'Continuous')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-window').first()).toBeVisible({ timeout: 8000 })
         expect(errors).toEqual([])
     })
 
     test('show arrows variant mounts the window root', async ({ page }) => {
-        // `showArrows: true` is pinned by the "Design" Variant's init-state.
-        await openVariant(page, WINDOW_PATH, 'Design')
+        await openVariant(page, WINDOW_PATH, 'Show arrows')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-window').first()).toBeVisible({ timeout: 8000 })
     })
@@ -72,11 +62,7 @@ test.describe('OrigamWindowItem', () => {
     test('disabled variant mounts without throwing', async ({ page }) => {
         const errors: string[] = []
         page.on('pageerror', err => errors.push(err.message))
-        // Same shape as OrigamWindow's `continuous`: `disabled` is a control on
-        // "Functional", pinned false. Flip it so the test still means what its
-        // name says.
-        await openVariant(page, WINDOW_ITEM_PATH, 'Functional')
-        await toggleHstCheckbox(page, 'Disabled (item 1)')
+        await openVariant(page, WINDOW_ITEM_PATH, 'Disabled')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-window').first()).toBeVisible({ timeout: 8000 })
         expect(errors).toEqual([])
@@ -194,8 +180,7 @@ test.describe('OrigamVirtualScroll', () => {
     test('item height variant mounts without throwing', async ({ page }) => {
         const errors: string[] = []
         page.on('pageerror', err => errors.push(err.message))
-        // `itemHeight: 48` is pinned by the "Design" Variant's init-state.
-        await openVariant(page, VS_PATH, 'Design')
+        await openVariant(page, VS_PATH, 'Prop — itemHeight')
         const sandbox = sandboxOf(page)
         await expect(sandbox.locator('.origam-virtual-scroll').first()).toBeVisible({ timeout: 8000 })
         expect(errors).toEqual([])
@@ -219,7 +204,7 @@ test.describe('OrigamVirtualScrollItem', () => {
     test('renderless variant mounts without throwing', async ({ page }) => {
         const errors: string[] = []
         page.on('pageerror', err => errors.push(err.message))
-        await openVariant(page, VS_ITEM_PATH, 'Slots - Renderless')
+        await openVariant(page, VS_ITEM_PATH, 'Slot — renderless')
         // No assertion on a specific class — renderless = no wrapper.
         // Just confirm no runtime error.
         await page.waitForTimeout(500)

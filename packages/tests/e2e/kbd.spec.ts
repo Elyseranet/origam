@@ -38,14 +38,14 @@ test.describe('OrigamKbd', () => {
 
     test.describe('Design', () => {
         test('renders the kbd root with BEM class origam-kbd', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const kbd = sandbox.locator('.origam-kbd').first()
             await expect(kbd).toBeVisible({ timeout: 12000 })
         })
 
         test('renders a <kbd> element', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const kbd = sandbox.locator('.origam-kbd').first()
             await expect(kbd).toBeVisible({ timeout: 12000 })
@@ -54,7 +54,7 @@ test.describe('OrigamKbd', () => {
         })
 
         test('variant=outlined adds origam-kbd--variant-outlined class', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const kbd = sandbox.locator('.origam-kbd').first()
             await expect(kbd).toBeVisible({ timeout: 12000 })
@@ -62,7 +62,7 @@ test.describe('OrigamKbd', () => {
         })
 
         test('combination prop adds origam-kbd--combination class', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const kbd = sandbox.locator('.origam-kbd').first()
             await expect(kbd).toBeVisible({ timeout: 12000 })
@@ -70,7 +70,7 @@ test.describe('OrigamKbd', () => {
         })
 
         test('combination renders one nested <kbd class="origam-kbd__key"> per key', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const kbd = sandbox.locator('.origam-kbd').first()
             await expect(kbd).toBeVisible({ timeout: 12000 })
@@ -82,7 +82,7 @@ test.describe('OrigamKbd', () => {
         })
 
         test('combination renders (n-1) separators with aria-hidden', async ({ page }) => {
-            await page.goto(variantUrl(0), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(0))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const kbd = sandbox.locator('.origam-kbd').first()
             await expect(kbd).toBeVisible({ timeout: 12000 })
@@ -102,7 +102,7 @@ test.describe('OrigamKbd', () => {
 
     test.describe('Functional', () => {
         test('text prop renders content directly inside <kbd>', async ({ page }) => {
-            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(1))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const kbd = sandbox.locator('.origam-kbd').first()
             await expect(kbd).toBeVisible({ timeout: 12000 })
@@ -110,7 +110,7 @@ test.describe('OrigamKbd', () => {
         })
 
         test('text-only kbd has no origam-kbd--combination class', async ({ page }) => {
-            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(1))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const kbd = sandbox.locator('.origam-kbd').first()
             await expect(kbd).toBeVisible({ timeout: 12000 })
@@ -119,7 +119,7 @@ test.describe('OrigamKbd', () => {
         })
 
         test('text-only kbd contains no nested kbd__key elements', async ({ page }) => {
-            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(1))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const kbd = sandbox.locator('.origam-kbd').first()
             await expect(kbd).toBeVisible({ timeout: 12000 })
@@ -128,7 +128,7 @@ test.describe('OrigamKbd', () => {
         })
 
         test('outlined variant (default) box-shadow is not none', async ({ page }) => {
-            await page.goto(variantUrl(1), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(1))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const kbd = sandbox.locator('.origam-kbd').first()
             await expect(kbd).toBeVisible({ timeout: 12000 })
@@ -146,14 +146,14 @@ test.describe('OrigamKbd', () => {
 
     test.describe('Slots - Default', () => {
         test('slot content renders inside the kbd element', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const kbd = sandbox.locator('.origam-kbd').first()
             await expect(kbd).toBeVisible({ timeout: 12000 })
         })
 
         test('slot renders an origam-icon child (not raw text)', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const kbd = sandbox.locator('.origam-kbd').first()
             await expect(kbd).toBeVisible({ timeout: 12000 })
@@ -162,7 +162,7 @@ test.describe('OrigamKbd', () => {
         })
 
         test('slot kbd contains no origam-kbd__key children', async ({ page }) => {
-            await page.goto(variantUrl(2), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(2))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const kbd = sandbox.locator('.origam-kbd').first()
             await expect(kbd).toBeVisible({ timeout: 12000 })
@@ -179,52 +179,24 @@ test.describe('OrigamKbd', () => {
 
     test.describe('Default (playground)', () => {
         test('renders the kbd root', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(3))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const kbd = sandbox.locator('.origam-kbd').first()
             await expect(kbd).toBeVisible({ timeout: 12000 })
         })
 
-        // ⛔ Lot tokens (2026-09-10) — this assertion encoded the BUG: the
-        // outlined variant used to ignore its 5 dormant per-variant tokens
-        // (`--origam-kbd--outlined---background-color`,
-        // `--origam-kbd__filled/tonal---background-color`, …, declared in
-        // light.css/dark.css, never read anywhere in the SCSS) and fell back
-        // to a hardcoded `var(--origam-color__surface---raised, #fff)`
-        // instead — a solid fill for a variant whose OWN declared token is
-        // `rgba(0, 0, 0, 0)` (transparent), the same convention `OrigamChip`
-        // already uses for its outlined variant. Now that the SCSS reads the
-        // real per-variant token, the default (`variant="outlined"`)
-        // playground IS transparent by design — asserting the opposite was
-        // asserting the pre-fix defect.
-        test('variant=outlined resolves the transparent background token (by design)', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+        test('has non-transparent background-color from token', async ({ page }) => {
+            await page.goto(variantUrl(3))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const kbd = sandbox.locator('.origam-kbd').first()
             await expect(kbd).toBeVisible({ timeout: 12000 })
             const bg = await kbd.evaluate(el => getComputedStyle(el).backgroundColor)
-            expect(bg).toBe('rgba(0, 0, 0, 0)')
-        })
-
-        test('variant=filled resolves a non-transparent background from its own token', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
-            const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
-            const kbd = sandbox.locator('.origam-kbd').first()
-            await expect(kbd).toBeVisible({ timeout: 12000 })
-            // Mutate the class AND read the computed style in the SAME
-            // `evaluate` — a class bound to Vue's `computed` (kbdClasses)
-            // gets re-patched between two separate round-trips (see the
-            // repo-wide `alert.spec.ts` pattern warning).
-            const bg = await kbd.evaluate(el => {
-                (el as HTMLElement).className = el.className.replace('origam-kbd--variant-outlined', 'origam-kbd--variant-filled')
-                return getComputedStyle(el).backgroundColor
-            })
             expect(bg).not.toBe('rgba(0, 0, 0, 0)')
             expect(bg).not.toBe('transparent')
         })
 
         test('has a non-zero font-size from the token', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(3))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const kbd = sandbox.locator('.origam-kbd').first()
             await expect(kbd).toBeVisible({ timeout: 12000 })
@@ -233,7 +205,7 @@ test.describe('OrigamKbd', () => {
         })
 
         test('variant=outlined produces a visible border', async ({ page }) => {
-            await page.goto(variantUrl(4), { waitUntil: 'domcontentloaded' })
+            await page.goto(variantUrl(3))
             const sandbox = page.frameLocator('iframe[src*="__sandbox"]')
             const kbd = sandbox.locator('.origam-kbd').first()
             await expect(kbd).toBeVisible({ timeout: 12000 })

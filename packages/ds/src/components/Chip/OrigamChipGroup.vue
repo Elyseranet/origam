@@ -1,6 +1,5 @@
 <template>
 	<origam-slide-group
-			:id="id"
 			ref="origamSlideGroupRef"
 			:class="chipGroupClasses"
 			:style="chipGroupStyles"
@@ -19,30 +18,19 @@
 		lang="ts"
 		setup
 >
-	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
-	import OrigamSlideGroup from '../Slide/OrigamSlideGroup.vue'
+	import { OrigamDefaultsProvider, OrigamSlideGroup } from '../../components'
 
-	import { useBorder } from '../../composables/Commons/border.composable'
-	import { useGroup } from '../../composables/Commons/group.composable'
-	import { useMargin } from '../../composables/Commons/margin.composable'
-	import { usePadding } from '../../composables/Commons/padding.composable'
-	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useRounded } from '../../composables/Commons/rounded.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
+	import { useBorder, useGroup, useMargin, usePadding, useProps, useRounded, useStyle } from "../../composables"
 
-	import { ORIGAM_CHIP_GROUP_KEY } from '../../consts/Chip/chip-group.const'
+	import { ORIGAM_CHIP_GROUP_KEY } from "../../consts"
 
-	import { DIRECTION } from '../../enums/Commons/direction.enum'
-	import { MDI_ICONS } from '../../enums/Commons/mdi.enum'
+	import { DIRECTION, MDI_ICONS } from '../../enums'
 
-	import type { IChipGroupProps } from '../../interfaces/Chip/chip-group.interface'
+	import type { IChipGroupProps} from '../../interfaces'
 
-	import type { IChipGroupEmits, IChipGroupSlots } from '../../interfaces/Chip/chip-group.interface'
+	import type { IChipGroupEmits } from '../../interfaces/Chip/chip-group.interface'
 
-	import type { TOrigamSlideGroup } from '../../types/Slide/slide-group.type'
-
-	import { omitUndefined } from '../../utils/Commons/commons.util'
+	import type { TOrigamSlideGroup } from "../../types"
 
 	import { computed, ref, StyleValue } from "vue";
 
@@ -63,8 +51,6 @@
 
 	defineEmits<IChipGroupEmits>()
 
-	defineSlots<IChipGroupSlots>()
-
 	const {filterProps} = useProps<IChipGroupProps>(props)
 
 	const origamSlideGroupRef = ref<TOrigamSlideGroup>()
@@ -84,43 +70,16 @@
 	const {borderClasses, borderStyles} = useBorder(props)
 	const {roundedClasses, roundedStyles} = useRounded(props)
 
-	/*********************************************************
-	 * wasPropPassed
-	 *
-	 * @description
-	 * Push the visual-token props down to every descendant `<origam-chip>`
-	 * as DEFAULTS (children that pass their own value still win). Same
-	 * pattern as `OrigamBtnGroup` — see the propagation contract there.
-	 * Forward ONLY what the consumer actually passed — see #263 and the same
-	 * guard on `OrigamBtnGroup` / `OrigamAvatarGroup`. `color` / `bgColor` are
-	 * `TColor` (which includes `false`) and `hover` / `active` are
-	 * `boolean | IHoverState / IActiveState`, so Vue coerces every one of them
-	 * to a concrete `false` when unset — `omitUndefined` alone cannot see it.
-	 * Pre-fix, the forwarded `color: false` won the `mergeDeep` against the
-	 * baseline theme's `'origam-chip': { color: 'primary' }`, so chips lost
-	 * their themed colour merely by being wrapped in a group.
-	 ********************************************************/
-	const wasPropPassed = usePassedProps(props)
+	// Push the visual-token props down to every descendant `<origam-chip>`
+	// as DEFAULTS (children that pass their own value still win). Same
+	// pattern as `OrigamBtnGroup` — see the propagation contract there.
 	const slotDefaults = computed(() => ({
-		'origam-chip': omitUndefined({
-			color: wasPropPassed('color') ? props.color : undefined,
-			bgColor: wasPropPassed('bgColor') ? props.bgColor : undefined,
-			active: wasPropPassed('active') ? props.active : undefined,
-			hover: wasPropPassed('hover') ? props.hover : undefined,
-			/*********************************************************
-			 * filter
-			 *
-			 * @description
-			 * `filter` etait declaree sur IChipGroupProps et lue NULLE PART :
-			 * zero occurrence de props.filter dans ce script hors la
-			 * declaration de type. Elle ne cascadait pas vers les chips
-			 * enfants, et OrigamChip n'affiche .origam-chip__filter que si SA
-			 * PROPRE prop filter est vraie — activer la case du groupe
-			 * n'avait donc aucun effet observable. Prop morte, cascadee ici
-			 * comme color / bgColor / active / hover.
-			 ********************************************************/
-			filter: wasPropPassed('filter') ? props.filter : undefined
-		})
+		'origam-chip': {
+			color: props.color,
+			bgColor: props.bgColor,
+			active: props.active,
+			hover: props.hover,
+		}
 	}))
 
 	/*********************************************************
@@ -160,7 +119,7 @@
 			props.class
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(chipGroupStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(chipGroupStyles)
 
 
 	/*********************************************************

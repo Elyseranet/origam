@@ -83,30 +83,26 @@ interface IMainProps extends ITagProps, ICommonsComponentProps,
 
 ## Design tokens consumed
 
-`<OrigamMain>` reads its variables from
-`packages/ds/src/assets/css/tokens/light.css` and `dark.css` (SCSS twins
-under `packages/ds/src/assets/scss/tokens/`). The component
+`<OrigamMain>` reads from `tokens/component/main.json`. The component
 also re-exports the `--origam-layout---position-*` family written by
 the surrounding `<OrigamLayout>` so its inner padding tracks every
 sibling drawer / app-bar.
 
 | CSS variable | Default |
 |---|---|
-| `--origam-main---flex` | `1 0 auto` |
-| `--origam-main---max-width` | `100%` |
-| `--origam-main---background-color` | inherits color.surface.default |
-| `--origam-main---color` | inherits color.text.primary |
-| `--origam-main---width` | `100%` |
-| `--origam-main---height` | `100%` |
-| `--origam-main---display` | `flex` |
-| `--origam-main---position` | `absolute` |
-| `--origam-main---position-top` | `0` |
-| `--origam-main---position-left` | `0` |
-| `--origam-main---transition-duration` | inherits motion.duration.medium |
-| `--origam-main---transition-property` | `all` |
-| `--origam-main---transition-timing-function` | inherits motion.easing.standard |
-| `--origam-main__scroller---max-width` | `100%` |
-| `--origam-main__scroller---position` | `relative` |
+| `--origam-main--flex` | `1 0 auto` |
+| `--origam-main--max-width` | `100%` |
+| `--origam-main--width` | `100%` |
+| `--origam-main--height` | `100%` |
+| `--origam-main--display` | `flex` |
+| `--origam-main--position` | `absolute` |
+| `--origam-main--position-top` | `0` |
+| `--origam-main--position-left` | `0` |
+| `--origam-main--transition-duration` | inherits motion.duration.medium |
+| `--origam-main--transition-property` | `all` |
+| `--origam-main--transition-timing-function` | inherits motion.easing.standard |
+| `--origam-main__scroller--max-width` | `100%` |
+| `--origam-main__scroller--position` | `relative` |
 
 The component also reads the layout-bound positions:
 `--origam-layout---position-top`, `--origam-layout---position-bottom`,

@@ -1,6 +1,5 @@
 <template>
 	<origam-data-table-column-cell
-			:id="id"
 			:align="column.align"
 			:aria-sort="column.sortable && !disableSort ? (isSorted(column) ? (sortBy.find((s: IDataTableSortItem) => s.key === column.key)?.order === 'desc' ? 'descending' : 'ascending') : 'none') : undefined"
 			:class="dataTableHeaderCellClasses"
@@ -60,23 +59,21 @@
 		lang="ts"
 		setup
 >
-	import OrigamCheckboxBtn from '../Checkbox/OrigamCheckboxBtn.vue'
-	import OrigamDataTableColumnCell from './OrigamDataTableColumnCell.vue'
-	import OrigamIcon from '../Icon/OrigamIcon.vue'
+	import { OrigamCheckboxBtn, OrigamDataTableColumnCell, OrigamIcon } from '../../components'
 
-	import { useBothColor } from '../../composables/Commons/bothColor.composable'
-	import { useCell } from '../../composables/DataTable/cell.composable'
-	import { useHeadersCell } from '../../composables/DataTable/headersCell.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useSelection } from '../../composables/DataTable/select.composable'
-	import { useSort } from '../../composables/DataTable/sort.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
+	import {
+	useBothColor,
+	useCell,
+	useHeadersCell,
+	useProps,
+	useSelection,
+	useSort,
+	useStyle
+} from '../../composables'
 
-	import type { IDataTableHeaderCellEmits, IDataTableHeaderCellProps, IDataTableHeaderCellSlots } from '../../interfaces/DataTable/data-table-header-cell.interface'
-	import type { IDataTableSortItem } from '../../interfaces/DataTable/sort.interface'
-	import type { IInternalDataTableHeader } from '../../interfaces/DataTable/data-table-header.interface'
+	import type { IDataTableHeaderCellProps, IDataTableSortItem, IInternalDataTableHeader } from '../../interfaces'
 
-	import { convertToUnit } from '../../utils/Commons/commons.util'
+	import { convertToUnit } from '../../utils'
 
 	import { computed, CSSProperties, mergeProps, toRef } from 'vue'
 
@@ -85,10 +82,6 @@
 	 ********************************************************/
 
 	const props = withDefaults(defineProps<IDataTableHeaderCellProps>(), {})
-
-	defineEmits<IDataTableHeaderCellEmits>()
-
-	defineSlots<IDataTableHeaderCellSlots>()
 
 	const {filterProps} = useProps<IDataTableHeaderCellProps>(props)
 
@@ -112,8 +105,8 @@
 
 	const sortedItems = (column: IInternalDataTableHeader) => {
 		return sortBy.value.findIndex((x: IDataTableSortItem) => {
-			return x.key === column.key
-		}) + 1
+			return x.key === column.key! + 1
+		})
 	}
 
 	const getFixedStyles = (column: IInternalDataTableHeader, y: number): CSSProperties | undefined => {
@@ -186,7 +179,7 @@
 			props.style
 		]
 	})
-	const {id, css, load, isLoaded, unload} = useStyle(dataTableHeaderCellStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(dataTableHeaderCellStyles)
 
 
 	/*********************************************************
@@ -210,14 +203,14 @@
 		$this: &;
 
 		align-items: center;
-		color: var(--origam-data-table-header-cell---color, var(--origam-data-table__header---color, var(--origam-color__text---primary)));
+		color: var(--origam-data-table-header-cell---color, var(--origam-color__text---primary));
 
 		&__sort-icon {
-			opacity: var(--origam-data-table-header-cell__sort-icon---opacity, var(--origam-data-table__header---sort-icon-opacity, 0));
-			color: var(--origam-data-table-header-cell__sort-icon---color, var(--origam-data-table__header---sort-icon-color, var(--origam-data-table__sortable---icon-color, var(--origam-color__text---primary))));
+			opacity: var(--origam-data-table-header-cell__sort-icon---opacity, 0);
+			color: var(--origam-data-table-header-cell__sort-icon---color, var(--origam-color__text---primary));
 
 			&--active {
-				color: var(--origam-data-table-header-cell__sort-icon--active---color, var(--origam-data-table__header---sort-icon-color-active, var(--origam-data-table__sortable---icon-color-active, var(--origam-color__text---primary))));
+				color: var(--origam-data-table-header-cell__sort-icon--active---color, var(--origam-color__text---primary));
 			}
 		}
 
@@ -231,30 +224,30 @@
 			display: inline-flex;
 			justify-content: center;
 			align-items: center;
-			font-size: var(--origam-data-table-header-cell__sort-badge---font-size, var(--origam-data-table__header---sort-badge-font-size, 0.875rem));
-			padding: var(--origam-data-table-header-cell__sort-badge---padding, var(--origam-data-table__header---sort-badge-padding, var(--origam-space---1, 4px)));
-			border-radius: var(--origam-data-table-header-cell__sort-badge---border-radius, var(--origam-data-table__header---sort-badge-border-radius, var(--origam-radius---full, 9999px)));
-			background: var(--origam-data-table-header-cell__sort-badge---background, var(--origam-data-table__header---sort-badge-background-color, var(--origam-color__border---default)));
-			color: var(--origam-data-table-header-cell__sort-badge---color, var(--origam-data-table__header---sort-badge-color, var(--origam-color__text---primary)));
-			min-width: var(--origam-data-table-header-cell__sort-badge---min-width, var(--origam-data-table__header---sort-badge-min-width, 20px));
-			min-height: var(--origam-data-table-header-cell__sort-badge---min-height, var(--origam-data-table__header---sort-badge-min-height, 20px));
-			width: var(--origam-data-table-header-cell__sort-badge---width, var(--origam-data-table__header---sort-badge-width, 20px));
-			height: var(--origam-data-table-header-cell__sort-badge---height, var(--origam-data-table__header---sort-badge-height, 20px))
+			font-size: var(--origam-data-table-header-cell__sort-badge---font-size, 0.875rem);
+			padding: var(--origam-data-table-header-cell__sort-badge---padding, var(--origam-space---1, 4px));
+			border-radius: var(--origam-data-table-header-cell__sort-badge---border-radius, var(--origam-radius---full, 9999px));
+			background: var(--origam-data-table-header-cell__sort-badge---background, var(--origam-color__border---default));
+			color: var(--origam-data-table-header-cell__sort-badge---color, var(--origam-color__text---primary));
+			min-width: var(--origam-data-table-header-cell__sort-badge---min-width, 20px);
+			min-height: var(--origam-data-table-header-cell__sort-badge---min-height, 20px);
+			width: var(--origam-data-table-header-cell__sort-badge---width, 20px);
+			height: var(--origam-data-table-header-cell__sort-badge---height, 20px)
 		}
 
 		&#{$this}--sortable {
-			cursor: var(--origam-data-table-sortable---cursor, var(--origam-data-table__sortable---cursor, pointer));
+			cursor: var(--origam-data-table-sortable---cursor, pointer);
 
 			&:hover {
 				#{$this}__sort-icon {
-					opacity: var(--origam-data-table-header-cell__sort-icon---opacity-hover, var(--origam-data-table__header---sort-icon-opacity-hover, 0.5));
+					opacity: var(--origam-data-table-header-cell__sort-icon---opacity-hover, 0.5);
 				}
 			}
 		}
 
 		&#{$this}--sorted {
 			#{$this}__sort-icon {
-				opacity: var(--origam-data-table-header-cell__sort-icon---opacity-active, var(--origam-data-table__header---sort-icon-opacity-active, 1));
+				opacity: var(--origam-data-table-header-cell__sort-icon---opacity-active, 1);
 			}
 		}
 
@@ -263,8 +256,8 @@
 		}
 
 		&:deep(.origam-data-table-cell) {
-			background: var(--origam-data-table-header-cell---background, var(--origam-data-table__header---background-color, var(--origam-color__surface---raised)));
-			color: var(--origam-data-table-header-cell---color, var(--origam-data-table__header---color, var(--origam-color__text---primary)));
+			background: var(--origam-data-table-header-cell---background, var(--origam-color__surface---raised));
+			color: var(--origam-data-table-header-cell---color, var(--origam-color__text---primary));
 		}
 	}
 </style>

@@ -76,13 +76,14 @@
 
 		<Variant
 				title="State"
-				:init-state="() => useStoryInitState<IHoverProps & Partial<IBgColorProps>>({ bgColor: 'primary' })"
+				:init-state="() => useStoryInitState<IHoverProps & IActiveProps & Partial<IBgColorProps>>({ bgColor: 'primary' })"
 		>
 			<template #default="{ state }">
 				<origam-list>
 					<origam-list-group
 							:bg-color="state.bgColor"
 							:hover="resolveHoverState(state.hover)"
+							:active="resolveActiveState(state.active)"
 							title="Group"
 					>
 						<template #items>
@@ -97,7 +98,8 @@
 					<HstSelect v-model="state.bgColor" title="Bg Color" :options="COLOR_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Interaction">
-					<HstSelect v-model="state.hover" title="Hover" :options="HOVER_OPTIONS"/>
+					<HstSelect v-model="state.hover"  title="Hover"  :options="HOVER_OPTIONS"/>
+					<HstSelect v-model="state.active" title="Active" :options="ACTIVE_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -248,6 +250,7 @@
 	import { OrigamList, OrigamListGroup, OrigamListItem } from '@origam/components'
 	import { MDI_ICONS } from '@origam/enums'
 	import type {
+		IActiveProps,
 		IBgColorProps,
 		IHoverProps,
 		IListGroupProps
@@ -256,6 +259,8 @@
 	import StoryGroup from '@stories/components/_shared/StoryGroup.vue'
 	import { useStoryInitState } from '@stories/composables'
 	import {
+		ACTIVE_OPTIONS,
+		resolveActiveState,
 		BORDER_OPTIONS,
 		BORDER_STYLE_OPTIONS,
 		COLOR_OPTIONS,

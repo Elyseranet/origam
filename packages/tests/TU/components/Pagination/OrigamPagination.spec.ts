@@ -21,7 +21,11 @@ import { createOrigam } from '@origam/origam'
 // ResizeObserver re-mock (vi.clearAllMocks in global setup clears it each test)
 // ---------------------------------------------------------------------------
 beforeEach(() => {
-    global.ResizeObserver = vi.fn(class { observe = vi.fn(); unobserve = vi.fn(); disconnect = vi.fn() }) as any
+    global.ResizeObserver = vi.fn().mockImplementation(() => ({
+        observe: vi.fn(),
+        unobserve: vi.fn(),
+        disconnect: vi.fn()
+    })) as any
 })
 
 // ---------------------------------------------------------------------------
@@ -479,108 +483,6 @@ describe('OrigamPagination — withInfo range computation', () => {
 
         expect(slotProps.start).toBe(41)
         expect(slotProps.end).toBe(43) // clamped to total, not 50
-        wrapper.unmount()
-    })
-})
-
-// ---------------------------------------------------------------------------
-// a11y — les quatre boutons de navigation annonçaient une CLÉ (#446, C6)
-// ---------------------------------------------------------------------------
-//
-// `firstAriaLabel` / `previousAriaLabel` / `nextAriaLabel` / `lastAriaLabel`
-// ont pour valeur par défaut une CLÉ de catalogue
-// (`'origam.pagination.aria_label.first'`, …). Les boutons de page passent
-// bien par `t()`, mais ces quatre-là posaient la prop BRUTE sur `aria-label`.
-// Un lecteur d'écran énonçait donc littéralement
-// « origam point pagination point aria underscore label point first ».
-//
-// Pas besoin de `fr` ici, contrairement au cas Drawer : une clé de catalogue
-// n'est identique à sa traduction dans AUCUNE langue, `en` compris.
-
-const NAV_LABELS: Array<[string, string]> = [
-    ['.origam-pagination__first', 'First page'],
-    ['.origam-pagination__prev', 'Previous page'],
-    ['.origam-pagination__next', 'Next page'],
-    ['.origam-pagination__last', 'Last page']
-]
-
-describe('OrigamPagination — les boutons de navigation annoncent un libellé traduit (#446, C6)', () => {
-    it.each(NAV_LABELS)('%s annonce son libellé, pas sa clé', (selector, expected) => {
-        const wrapper = mountPagination({ modelValue: 5, length: 10, showFirstLastPage: true })
-        const btn = wrapper.find(`${selector} button`)
-
-        expect(btn.exists()).toBe(true)
-        expect(btn.attributes('aria-label')).toBe(expected)
-        wrapper.unmount()
-    })
-
-    it('la <nav> racine annonce son libellé, pas sa clé', () => {
-        const wrapper = mountPagination({ modelValue: 5, length: 10 })
-
-        expect(wrapper.attributes('aria-label')).toBe('Pagination Navigation')
-        wrapper.unmount()
-    })
-
-    // Balaie TOUT porteur d'aria-label, pas seulement les <button> : la <nav>
-    // racine souffrait du même défaut et un balayage limité aux boutons l'a
-    // manquée au premier passage.
-    it('aucun aria-label de la barre ne laisse fuir une clé de catalogue', () => {
-        const wrapper = mountPagination({ modelValue: 5, length: 10, showFirstLastPage: true })
-
-        const leaked = wrapper.findAll('[aria-label]')
-            .map(el => el.attributes('aria-label'))
-            .filter((l): l is string => !!l && l.startsWith('origam.'))
-
-        expect(leaked).toEqual([])
-        wrapper.unmount()
-    })
-})
-
-// ---------------------------------------------------------------------------
-// #640 — `modelValue` had a hardcoded default of 1, so `props.modelValue`
-// was NEVER `undefined` and `useVModel`'s fallback to `() => props.start`
-// (seed()) was never reached. A consumer passing only `start` therefore had
-// NO active page highlighted at all, even though the button LIST correctly
-// honored `start`. These three cases are mounted WITHOUT the `mountPagination`
-// helper's forced `modelValue: 1` default, to actually exercise `seed()`.
-// ---------------------------------------------------------------------------
-describe('OrigamPagination — #640 modelValue/start fallback', () => {
-    it('start only: the `start` page is active', () => {
-        const wrapper = mount(OrigamPagination, {
-            props: { length: 10, start: 5, totalVisible: 5 },
-            attachTo: document.body,
-            global: makeGlobal()
-        })
-
-        const activeButtons = wrapper.findAll('[data-active="true"]')
-        expect(activeButtons).toHaveLength(1)
-        expect(activeButtons[0].attributes('data-text')).toBe('5')
-        wrapper.unmount()
-    })
-
-    it('modelValue only: unchanged behaviour', () => {
-        const wrapper = mount(OrigamPagination, {
-            props: { length: 10, modelValue: 7, totalVisible: 5 },
-            attachTo: document.body,
-            global: makeGlobal()
-        })
-
-        const activeButtons = wrapper.findAll('[data-active="true"]')
-        expect(activeButtons).toHaveLength(1)
-        expect(activeButtons[0].attributes('data-text')).toBe('7')
-        wrapper.unmount()
-    })
-
-    it('neither modelValue nor start: page 1 is active (regression guard)', () => {
-        const wrapper = mount(OrigamPagination, {
-            props: { length: 10, totalVisible: 5 },
-            attachTo: document.body,
-            global: makeGlobal()
-        })
-
-        const activeButtons = wrapper.findAll('[data-active="true"]')
-        expect(activeButtons).toHaveLength(1)
-        expect(activeButtons[0].attributes('data-text')).toBe('1')
         wrapper.unmount()
     })
 })

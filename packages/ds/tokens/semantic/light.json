@@ -1,0 +1,82 @@
+{
+  "color": {
+    "surface": {
+      "default":   { "$type": "color", "$value": "{color.neutral.0}" },
+      "raised":    { "$type": "color", "$value": "{color.neutral.0}" },
+      "overlay":   { "$type": "color", "$value": "{color.neutral.100}" },
+      "sunken":    { "$type": "color", "$value": "{color.neutral.50}" },
+      "disabled":  { "$type": "color", "$value": "{color.neutral.200}" }
+    },
+    "text": {
+      "primary":   { "$type": "color", "$value": "{color.neutral.900}" },
+      "secondary": { "$type": "color", "$value": "{color.neutral.600}" },
+      "disabled":  { "$type": "color", "$value": "{color.neutral.400}" },
+      "inverse":   { "$type": "color", "$value": "{color.neutral.0}" },
+      "onColor":   { "$type": "color", "$value": "{color.neutral.0}" }
+    },
+    "border": {
+      "default":  { "$type": "color", "$value": "{color.neutral.400}" },
+      "subtle":   { "$type": "color", "$value": "{color.neutral.300}" },
+      "strong":   { "$type": "color", "$value": "{color.neutral.700}" },
+      "focus":    { "$type": "color", "$value": "{color.primary.600}" }
+    },
+    "action": {
+      "primary": {
+        "bg":         { "$type": "color", "$value": "{color.primary.600}" },
+        "bgHover":    { "$type": "color", "$value": "{color.primary.700}" },
+        "bgSubtle":   { "$type": "color", "$value": "{color.primary.50}" },
+        "bgDisabled": { "$type": "color", "$value": "{color.neutral.200}" },
+        "fg":         { "$type": "color", "$value": "{color.neutral.0}" },
+        "fgSubtle":   { "$type": "color", "$value": "{color.primary.700}" },
+        "fgDisabled": { "$type": "color", "$value": "{color.neutral.400}" }
+      },
+      "secondary": {
+        "bg":         { "$type": "color", "$value": "{color.neutral.200}" },
+        "bgHover":    { "$type": "color", "$value": "{color.neutral.300}" },
+        "bgDisabled": { "$type": "color", "$value": "{color.neutral.100}" },
+        "fg":         { "$type": "color", "$value": "{color.neutral.800}" },
+        "fgDisabled": { "$type": "color", "$value": "{color.neutral.400}" }
+      },
+      "ghost": {
+        "bg":         { "$type": "color", "$value": "transparent" },
+        "bgHover":    { "$type": "color", "$value": "{color.neutral.100}" },
+        "bgDisabled": { "$type": "color", "$value": "transparent" },
+        "fg":         { "$type": "color", "$value": "{color.primary.600}" },
+        "fgDisabled": { "$type": "color", "$value": "{color.neutral.400}" }
+      }
+    },
+    "feedback": {
+      "success": {
+        "bg":       { "$type": "color", "$value": "{color.green.500}" },
+        "bgSubtle": { "$type": "color", "$value": "{color.green.50}" },
+        "fg":       { "$type": "color", "$value": "{color.neutral.0}" },
+        "fgSubtle": { "$type": "color", "$value": "{color.green.600}" },
+        "border":   { "$type": "color", "$value": "{color.green.500}" }
+      },
+      "warning": {
+        "bg":       { "$type": "color", "$value": "{color.amber.600}" },
+        "bgSubtle": { "$type": "color", "$value": "{color.amber.50}" },
+        "fg":       { "$type": "color", "$value": "{color.neutral.0}" },
+        "fgSubtle": { "$type": "color", "$value": "{color.amber.700}" },
+        "border":   { "$type": "color", "$value": "{color.amber.600}" }
+      },
+      "danger": {
+        "bg":       { "$type": "color", "$value": "{color.red.500}" },
+        "bgSubtle": { "$type": "color", "$value": "{color.red.50}" },
+        "fg":       { "$type": "color", "$value": "{color.neutral.0}" },
+        "fgSubtle": { "$type": "color", "$value": "{color.red.700}" },
+        "border":   { "$type": "color", "$value": "{color.red.400}" }
+      },
+      "info": {
+        "bg":       { "$type": "color", "$value": "{color.blue.500}" },
+        "bgSubtle": { "$type": "color", "$value": "{color.blue.50}" },
+        "fg":       { "$type": "color", "$value": "{color.neutral.0}" },
+        "fgSubtle": { "$type": "color", "$value": "{color.blue.700}" },
+        "border":   { "$type": "color", "$value": "{color.blue.500}" }
+      }
+    },
+    "overlay": {
+      "scrim": { "$type": "color", "$value": "{color.white}" }
+    }
+  }
+}

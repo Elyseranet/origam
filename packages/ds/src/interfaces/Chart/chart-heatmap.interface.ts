@@ -1,11 +1,6 @@
-import type {
-    IChartBaseProps,
-    IChartBaseSlots
-} from './chart-base.interface'
-import type { IChartPoint } from './chart-point.interface'
+import type { IChartBaseEmits, IChartBaseProps, IChartBaseSlots, IChartPoint } from '../../interfaces'
 
-import type { TChartLegendPosition } from '../../types/Chart/chart-legend.type'
-import type { TIntent } from '../../types/Commons/intent.type'
+import type { TChartLegendPosition, TIntent } from '../../types'
 
 /**
  * Props for `<OrigamChartHeatmap>` — the rectangular heatmap family.
@@ -72,31 +67,11 @@ export interface IChartHeatmapProps extends IChartBaseProps {
     yAxisFormat?: (value: number) => string
 }
 
-/**
- * `<OrigamChartHeatmap>` emits — `point-click` only, NOT the full base
- * family. Was `export type IChartHeatmapEmits = IChartBaseEmits` until
- * #545 — an alias `buildInterfaceIndex()` never resolved, so the guard
- * never even saw this component. Once fixed, `legend-click` and
- * `series-toggle` measured genuinely dead: the heatmap renders a
- * continuous colour-gradient legend (min/max labels + a gradient swatch,
- * see `IChartHeatmapSlots`'s `Omit<IChartBaseSlots, 'legend-item'>` above),
- * not a discrete per-series legend list — there is no toggleable entry for
- * either event to report. `point-click` stays: cells ARE individually
- * clickable/keyboard-activatable (see `onCellActivate` in the component).
- */
-export interface IChartHeatmapEmits {
-    (e: 'point-click', point: IChartPoint, originalEvent: MouseEvent | KeyboardEvent): void
-}
+/** Emits surfaced by `<OrigamChartHeatmap>`. Mirrors the base family. */
+export type IChartHeatmapEmits = IChartBaseEmits
 
-/**
- * Slot signatures exposed by `<OrigamChartHeatmap>`.
- *
- * Omits `legend-item` from the base family — the heatmap renders a
- * continuous colour-gradient legend (min/max labels + a gradient
- * swatch), not a discrete per-series legend list, so there is no
- * `<slot name="legend-item">` in the template to forward it to.
- */
-export interface IChartHeatmapSlots extends Omit<IChartBaseSlots, 'legend-item'> {
+/** Slot signatures exposed by `<OrigamChartHeatmap>`. */
+export interface IChartHeatmapSlots extends IChartBaseSlots {
     /**
      * Replace the tooltip body for a hovered cell.
      * Receives the hovered point, its resolved colour, and

@@ -19,7 +19,7 @@
 			</template>
 			<template #controls="{ state }">
 				<StoryGroup title="Color">
-					<HstSelect v-model="state.color" title="Loader & empty row color" :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.color" title="Loader Color" :options="COLOR_OPTIONS"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -180,7 +180,7 @@
 					<HstNumber v-model="state.itemsPerPage" title="Items Per Page" :min="1" :max="20" :step="1"/>
 				</StoryGroup>
 				<StoryGroup title="Design">
-					<HstSelect v-model="state.color" title="Loader & empty row color" :options="COLOR_OPTIONS"/>
+					<HstSelect v-model="state.color" title="Loader Color" :options="COLOR_OPTIONS"/>
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.loading"     title="Loading"/>

@@ -1,3 +1,3 @@
-import OrigamBreadcrumbDivider from '../../components/Breadcrumb/OrigamBreadcrumbDivider.vue'
+import { OrigamBreadcrumbDivider } from '../../components'
 
 export type TOrigamBreadcrumbDivider = InstanceType<typeof OrigamBreadcrumbDivider>

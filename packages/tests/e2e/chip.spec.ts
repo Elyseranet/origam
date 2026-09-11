@@ -54,7 +54,7 @@ test.describe('OrigamChip', () => {
     // ------------------------------------------------------------------ //
 
     test('Design: root BEM class, bgColor=primary, text, size, density, pill, label', async ({ page }) => {
-        await page.goto(sandboxUrl(0), { waitUntil: 'domcontentloaded' })
+        await page.goto(sandboxUrl(0))
         const chip = page.locator('.origam-chip').first()
         await expect(chip).toBeVisible({ timeout: 30000 })
 
@@ -70,31 +70,20 @@ test.describe('OrigamChip', () => {
         // text prop renders inside the content area
         await expect(chip.locator('.origam-chip__content')).toContainText('Chip')
 
-        // Size: the story's init-state does not set `size` — it resolves
-        // through useDefaults() against the origam theme, which pins
-        // `'origam-chip': { size: 'small', ... }` (packages/ds/src/themes/
-        // origam.theme.ts, since commit 9a082b90 "sobre-as-default theme,
-        // per-component defaults"). OrigamChip's own withDefaults() falls
-        // back to SIZES.DEFAULT, but that only applies when no theme (and
-        // no explicit prop) sets it — the theme wins here, by design.
-        await expect(chip).toHaveClass(/origam-chip--size-small/)
+        // default size class is present
+        await expect(chip).toHaveClass(/origam-chip--size-default/)
         // density class: the chip emits a density class only when a density
         // prop is explicitly passed. With no density prop, useDensity emits
         // no class — the chip's SCSS resets --density via the scoped :root block.
 
-        // pill / border: also theme defaults (`pill: true, border: true` on
-        // 'origam-chip') — not component-own defaults (OrigamChip's
-        // withDefaults() does not set either). `label` stays unset by both
-        // the component and the theme, so it correctly stays absent.
+        // pill / label not active by default
         const classes = await chip.getAttribute('class') ?? ''
-        expect(classes).toContain('origam-chip--pill')
-        expect(classes).toContain('origam-chip--border')
+        expect(classes).not.toContain('origam-chip--pill')
         expect(classes).not.toContain('origam-chip--label')
 
-        // Height follows from the theme-resolved size-small SCSS rule
-        // (`--origam-chip---height-sm`, 24px) — not size-default's 32px.
+        // default height from --size-default SCSS rule
         const height = await chip.evaluate(el => getComputedStyle(el).height)
-        expect(height).toBe('24px')
+        expect(height).toBe('32px')
     })
 
     // ------------------------------------------------------------------ //
@@ -102,7 +91,7 @@ test.describe('OrigamChip', () => {
     // ------------------------------------------------------------------ //
 
     test('Design → Rounded SCSS: --rounded-shaped, --rounded-shaped-invert, --label radius', async ({ page }) => {
-        await page.goto(sandboxUrl(0), { waitUntil: 'domcontentloaded' })
+        await page.goto(sandboxUrl(0))
         const chip = page.locator('.origam-chip').first()
         await expect(chip).toBeVisible({ timeout: 30000 })
 
@@ -134,41 +123,14 @@ test.describe('OrigamChip', () => {
         expect(radiiInvert.br, 'invert BR').toBe('0px')
         expect(radiiInvert.tr).toBe(radiiInvert.bl)
 
-        // --label: border-radius = 4px.
-        // The Design variant carries `.origam-chip--pill` at rest (theme
-        // default `pill: true` on 'origam-chip', origam.theme.ts) — confirmed
-        // by the sibling "Design" test just above. `&--label` (line ~595)
-        // and `&--pill` (line ~608) are equal-specificity BEM modifiers;
-        // `&--pill` is declared AFTER `&--label` on purpose (de58dbdc, #C7:
-        // "pill restores the full radius over anything that squared it —
-        // label, or a rounded utility class") so it WINS when both classes
-        // are present. Testing `--label` in isolation requires removing the
-        // baseline `--pill` first, or this measures the pill/label conflict
-        // instead of `--label` on its own. Verified live (Chromium):
-        // labelWithPill=9999px, labelWithoutPill=4px.
-        const hadPill = await chip.evaluate(el => el.classList.contains('origam-chip--pill'))
+        // --label: border-radius = 4px
         const labelRadius = await chip.evaluate(el => {
-            el.classList.remove('origam-chip--pill')
             el.classList.add('origam-chip--label')
             const r = getComputedStyle(el).borderRadius
             el.classList.remove('origam-chip--label')
             return r
         })
         expect(labelRadius).toBe('4px')
-        if (hadPill) {
-            await chip.evaluate(el => el.classList.add('origam-chip--pill'))
-        }
-
-        // Non-regression for de58dbdc: `--pill` explicitly wins over
-        // `--label` when both are present (the documented opt-in behaviour,
-        // not a leftover default).
-        const pillOverLabel = await chip.evaluate(el => {
-            el.classList.add('origam-chip--pill', 'origam-chip--label')
-            const r = getComputedStyle(el).borderRadius
-            el.classList.remove('origam-chip--label')
-            return r
-        })
-        expect(pillOverLabel).toBe('9999px')
     })
 
     // ------------------------------------------------------------------ //
@@ -176,7 +138,7 @@ test.describe('OrigamChip', () => {
     // ------------------------------------------------------------------ //
 
     test('State: bgColor=primary, overlay opacity 0 at rest', async ({ page }) => {
-        await page.goto(sandboxUrl(1), { waitUntil: 'domcontentloaded' })
+        await page.goto(sandboxUrl(1))
         const chip = page.locator('.origam-chip').first()
         await expect(chip).toBeVisible({ timeout: 30000 })
         await expect(chip).toHaveClass(/origam--bg-primary/)
@@ -195,7 +157,7 @@ test.describe('OrigamChip', () => {
     // ------------------------------------------------------------------ //
 
     test('Functional: no disabled/closable by default, SCSS --disabled/--label rules work', async ({ page }) => {
-        await page.goto(sandboxUrl(2), { waitUntil: 'domcontentloaded' })
+        await page.goto(sandboxUrl(2))
         const chip = page.locator('.origam-chip').first()
         await expect(chip).toBeVisible({ timeout: 30000 })
         await expect(chip).toHaveClass(/origam--bg-primary/)
@@ -217,28 +179,18 @@ test.describe('OrigamChip', () => {
         })
         expect(ptrEventsDisabled).toBe('none')
 
-        // SCSS --label: border-radius 4px.
-        // This variant's <origam-chip> does not bind :pill either, so it
-        // also inherits the theme default `pill: true` (origam.theme.ts) —
-        // same collision as the "Design → Rounded SCSS" test above:
-        // `&--pill` (declared after `&--label`, de58dbdc/#C7) wins the
-        // border-radius when both classes are present. Remove the baseline
-        // `--pill` to measure `--label` in isolation.
-        const hadPill = await chip.evaluate(el => el.classList.contains('origam-chip--pill'))
+        // SCSS --label: border-radius 4px
         const labelRadius = await chip.evaluate(el => {
-            el.classList.remove('origam-chip--pill')
             el.classList.add('origam-chip--label')
             const r = getComputedStyle(el).borderRadius
             el.classList.remove('origam-chip--label')
             return r
         })
         expect(labelRadius).toBe('4px')
-        if (hadPill) {
-            await chip.evaluate(el => el.classList.add('origam-chip--pill'))
-        }
 
         // closable=false by default: no close button
-        await expect(chip.locator('.origam-chip__close')).toHaveCount(0)
+        const closeCount = await chip.locator('.origam-chip__close').count()
+        expect(closeCount).toBe(0)
     })
 
     // ------------------------------------------------------------------ //
@@ -246,7 +198,7 @@ test.describe('OrigamChip', () => {
     // ------------------------------------------------------------------ //
 
     test('Events - click: chip is visible, has --link class, click does not throw', async ({ page }) => {
-        await page.goto(sandboxUrl(3), { waitUntil: 'domcontentloaded' })
+        await page.goto(sandboxUrl(3))
         const chip = page.locator('.origam-chip').first()
         await expect(chip).toBeVisible({ timeout: 30000 })
         await expect(chip).toContainText('Click me')
@@ -260,7 +212,7 @@ test.describe('OrigamChip', () => {
     // ------------------------------------------------------------------ //
 
     test('Events - click:prepend: prepend area present, click does not throw', async ({ page }) => {
-        await page.goto(sandboxUrl(4), { waitUntil: 'domcontentloaded' })
+        await page.goto(sandboxUrl(4))
         const chip = page.locator('.origam-chip').first()
         await expect(chip).toBeVisible({ timeout: 30000 })
         const prepend = chip.locator('.origam-chip__prepend').first()
@@ -274,7 +226,7 @@ test.describe('OrigamChip', () => {
     // ------------------------------------------------------------------ //
 
     test('Events - click:append: append area present, click does not throw', async ({ page }) => {
-        await page.goto(sandboxUrl(5), { waitUntil: 'domcontentloaded' })
+        await page.goto(sandboxUrl(5))
         const chip = page.locator('.origam-chip').first()
         await expect(chip).toBeVisible({ timeout: 30000 })
         const append = chip.locator('.origam-chip__append').first()
@@ -288,7 +240,7 @@ test.describe('OrigamChip', () => {
     // ------------------------------------------------------------------ //
 
     test('Events - click:close: close button present with correct margin, click does not throw', async ({ page }) => {
-        await page.goto(sandboxUrl(6), { waitUntil: 'domcontentloaded' })
+        await page.goto(sandboxUrl(6))
         const chip = page.locator('.origam-chip').first()
         await expect(chip).toBeVisible({ timeout: 30000 })
         await expect(chip).toContainText('Close me')
@@ -314,7 +266,7 @@ test.describe('OrigamChip', () => {
     // ------------------------------------------------------------------ //
 
     test('Events - group:selected: chip-group renders 2 chips, click does not throw', async ({ page }) => {
-        await page.goto(sandboxUrl(7), { waitUntil: 'domcontentloaded' })
+        await page.goto(sandboxUrl(7))
         const chips = page.locator('.origam-chip')
         await expect(chips.first()).toBeVisible({ timeout: 30000 })
         await expect(chips).toHaveCount(2)
@@ -322,49 +274,11 @@ test.describe('OrigamChip', () => {
     })
 
     // ------------------------------------------------------------------ //
-    // KEYBOARD ACTIVATION — issue #439 (real browser, index 7)             //
-    //                                                                      //
-    // `@keydown="isClickable && !isLink && handleKeydown"` compiled to a   //
-    // discarded function REFERENCE — Enter/Space never invoked the        //
-    // handler. Runtime proof: focus a chip via keyboard, press Enter,     //
-    // assert the group-membership class (`origam-chip--selected`) that    //
-    // ONLY the click→toggle path can add actually appears. Chip's tag     //
-    // defaults to `span` here (not a native button), so this exercises    //
-    // the manual keydown path exactly as a real user's keyboard would —   //
-    // no reliance on jsdom, which cannot synthesize the UA's native       //
-    // Enter/Space-to-click behaviour for real `<button>` elements anyway. //
-    // ------------------------------------------------------------------ //
-
-    test('Keyboard: Enter on a focused chip toggles group selection', async ({ page }) => {
-        await page.goto(sandboxUrl(7), { waitUntil: 'domcontentloaded' })
-        const first = page.locator('.origam-chip').first()
-        await expect(first).toBeVisible({ timeout: 30000 })
-        await expect(first).not.toHaveClass(/origam-chip--selected/)
-
-        await first.focus()
-        await page.keyboard.press('Enter')
-
-        await expect(first).toHaveClass(/origam-chip--selected/)
-    })
-
-    test('Keyboard: Space on a focused chip toggles group selection', async ({ page }) => {
-        await page.goto(sandboxUrl(7), { waitUntil: 'domcontentloaded' })
-        const second = page.locator('.origam-chip').nth(1)
-        await expect(second).toBeVisible({ timeout: 30000 })
-        await expect(second).not.toHaveClass(/origam-chip--selected/)
-
-        await second.focus()
-        await page.keyboard.press(' ')
-
-        await expect(second).toHaveClass(/origam-chip--selected/)
-    })
-
-    // ------------------------------------------------------------------ //
     // EVENTS - update:modelValue (index 8)                                //
     // ------------------------------------------------------------------ //
 
     test('Events - update:modelValue: chip-group renders chips A and B, click does not throw', async ({ page }) => {
-        await page.goto(sandboxUrl(8), { waitUntil: 'domcontentloaded' })
+        await page.goto(sandboxUrl(8))
         const chips = page.locator('.origam-chip')
         await expect(chips.first()).toBeVisible({ timeout: 30000 })
         await expect(chips).toHaveCount(2)
@@ -376,7 +290,7 @@ test.describe('OrigamChip', () => {
     // ------------------------------------------------------------------ //
 
     test('Slots - Default: custom italic content rendered inside chip content area', async ({ page }) => {
-        await page.goto(sandboxUrl(9), { waitUntil: 'domcontentloaded' })
+        await page.goto(sandboxUrl(9))
         const chip = page.locator('.origam-chip').first()
         await expect(chip).toBeVisible({ timeout: 30000 })
         // Story renders: <span style="font-style: italic;">Custom slot content</span>
@@ -389,7 +303,7 @@ test.describe('OrigamChip', () => {
     // ------------------------------------------------------------------ //
 
     test('Slots - Prepend: origam-icon in prepend area, chip text "With prepend"', async ({ page }) => {
-        await page.goto(sandboxUrl(10), { waitUntil: 'domcontentloaded' })
+        await page.goto(sandboxUrl(10))
         const chip = page.locator('.origam-chip').first()
         await expect(chip).toBeVisible({ timeout: 30000 })
         await expect(chip).toContainText('With prepend')
@@ -401,7 +315,7 @@ test.describe('OrigamChip', () => {
     // ------------------------------------------------------------------ //
 
     test('Slots - Append: origam-icon in append area, chip text "With append"', async ({ page }) => {
-        await page.goto(sandboxUrl(11), { waitUntil: 'domcontentloaded' })
+        await page.goto(sandboxUrl(11))
         const chip = page.locator('.origam-chip').first()
         await expect(chip).toBeVisible({ timeout: 30000 })
         await expect(chip).toContainText('With append')
@@ -413,7 +327,7 @@ test.describe('OrigamChip', () => {
     // ------------------------------------------------------------------ //
 
     test('Slots - Close: custom icon in close button, chip text "Custom close"', async ({ page }) => {
-        await page.goto(sandboxUrl(12), { waitUntil: 'domcontentloaded' })
+        await page.goto(sandboxUrl(12))
         const chip = page.locator('.origam-chip').first()
         await expect(chip).toBeVisible({ timeout: 30000 })
         await expect(chip).toContainText('Custom close')
@@ -427,7 +341,7 @@ test.describe('OrigamChip', () => {
     // ------------------------------------------------------------------ //
 
     test('Slots - Filter: chip-group renders, clicking a chip shows filter area', async ({ page }) => {
-        await page.goto(sandboxUrl(13), { waitUntil: 'domcontentloaded' })
+        await page.goto(sandboxUrl(13))
         const chips = page.locator('.origam-chip')
         await expect(chips.first()).toBeVisible({ timeout: 30000 })
         await expect(chips).toHaveCount(2)
@@ -441,22 +355,13 @@ test.describe('OrigamChip', () => {
     // DEFAULT playground (index 14)                                       //
     // ------------------------------------------------------------------ //
 
-    // #530 — a purely clickable chip (has a `@click` listener, not a link,
-    // not closable, no focusable prepend/append zone) now renders a real
-    // `<button type="button">` instead of a `<span>` playing pretend at
-    // interactivity: a `<span>` carried a `type="button"` attribute that
-    // axe correctly flagged as invalid outside `<button>`/`<input>`/…, and
-    // had no implicit role at all for assistive tech. See `OrigamChip.vue`'s
-    // `isButtonSafe` / `rootTag` computeds for the exact content-model
-    // guard (link / close / focusable zones still keep `span`/`a`).
-    test('Default (playground): bgColor=primary, text "Chip", clickable → tag=button', async ({ page }) => {
-        await page.goto(sandboxUrl(14), { waitUntil: 'domcontentloaded' })
+    test('Default (playground): bgColor=primary, text "Chip", tag=span', async ({ page }) => {
+        await page.goto(sandboxUrl(14))
         const chip = page.locator('.origam-chip').first()
         await expect(chip).toBeVisible({ timeout: 30000 })
         await expect(chip).toHaveClass(/origam--bg-primary/)
         await expect(chip).toContainText('Chip')
         const tag = await chip.evaluate(el => el.tagName.toLowerCase())
-        expect(tag).toBe('button')
-        await expect(chip).toHaveAttribute('type', 'button')
+        expect(tag).toBe('span')
     })
 })

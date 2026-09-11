@@ -1,6 +1,6 @@
-import OrigamDatePicker from '../../components/DatePicker/OrigamDatePicker.vue'
+import { OrigamDatePicker } from "../../components"
 
-import { DATE_MODE } from '../../enums/DatePicker/date-picker.enum'
+import { DATE_MODE } from "../../enums"
 
 export type TDateMode = `${DATE_MODE}`
 

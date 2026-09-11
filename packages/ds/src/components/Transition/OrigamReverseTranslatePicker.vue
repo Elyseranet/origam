@@ -12,10 +12,9 @@
 		lang="ts"
 		setup
 >
-	import { useCssTransition } from '../../composables/Transition/cssTransition.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
+	import { useCssTransition, useProps } from '../../composables'
 
-	import type { ITransitionEmits, ITransitionProps, ITransitionSlots } from '../../interfaces/Transition/transition.interface'
+	import type { ITransitionProps } from '../../interfaces'
 
 	/*********************************************************
 	 * Global
@@ -28,10 +27,6 @@
 	})
 
 	const {filterProps} = useProps<ITransitionProps>(props)
-
-	defineEmits<ITransitionEmits>()
-
-	defineSlots<ITransitionSlots>()
 
 	/*********************************************************
 	 * Transition
@@ -59,23 +54,21 @@
 </script>
 
 <style lang="scss">
-	@use '../../assets/scss/helpers' as ds;
-
 	.origam-transition--reverse-translate-picker {
 		&-enter-active {
-			transition-duration: var(--origam-transition--reverse-translate-picker-enter-active---transition-duration) !important;
-			transition-timing-function: var(--origam-transition--reverse-translate-picker-enter-active---transition-timing-function) !important;
+			transition-duration: 0.3s !important;
+			transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
 		}
 
 		&-leave-active {
-			transition-duration: var(--origam-transition--reverse-translate-picker-leave-active---transition-duration) !important;
-			transition-timing-function: var(--origam-transition--reverse-translate-picker-leave-active---transition-timing-function) !important;
+			transition-duration: 0.3s !important;
+			transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
 		}
 
 		&-move {
-			transition-duration: var(--origam-transition--reverse-translate-picker-move---transition-duration) !important;
+			transition-duration: 0.3s !important;
 			transition-property: transform !important;
-			transition-timing-function: var(--origam-transition--reverse-translate-picker-move---transition-timing-function) !important;
+			transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
 		}
 
 		&-enter-from,
@@ -100,14 +93,6 @@
 
 		&-leave-to {
 			transform: translate(100%, 0);
-		}
-
-		@include ds.ds-reduced-motion {
-			&-enter-active,
-			&-leave-active,
-			&-move {
-				transition-duration: 0.01ms !important;
-			}
 		}
 	}
 </style>

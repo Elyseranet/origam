@@ -1,5 +1,7 @@
-import type { TChartType } from '../../types/Chart/chart.type'
-import type { TIntent } from '../../types/Commons/intent.type'
+import type {
+    TChartType,
+    TIntent
+} from '../../types'
 
 import type { IChartDrilldownLink } from './chart-drilldown.interface'
 

@@ -1,0 +1,9 @@
+{
+  "grid": {
+    "gap-xs": { "$type": "dimension", "$value": "{space.1}" },
+    "gap-sm": { "$type": "dimension", "$value": "{space.2}" },
+    "gap-md": { "$type": "dimension", "$value": "{space.4}" },
+    "gap-lg": { "$type": "dimension", "$value": "{space.6}" },
+    "gap-xl": { "$type": "dimension", "$value": "{space.8}" }
+  }
+}

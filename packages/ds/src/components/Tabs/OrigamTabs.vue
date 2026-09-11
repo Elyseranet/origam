@@ -1,6 +1,6 @@
 <template>
 	<component
-			:is="tag"
+			:is="props.tag"
 			:id="id"
 			ref="rootRef"
 			role="tablist"
@@ -22,35 +22,31 @@
 		lang="ts"
 		setup
 >
-	import { computed, provide, ref, StyleValue, toRef } from 'vue'
+	import { computed, ref, StyleValue } from 'vue'
 
-	import OrigamDefaultsProvider from '../DefaultsProvider/OrigamDefaultsProvider.vue'
+	import { OrigamDefaultsProvider } from '../../components'
 
-	import { useBackgroundColor } from '../../composables/Commons/backgroundColor.composable'
-	import { useDensity } from '../../composables/Commons/density.composable'
-	import { useGroup } from '../../composables/Commons/group.composable'
-	import { useGroupSiblingLink } from '../../composables/Commons/groupSiblingLink.composable'
-	import { usePassedProps } from '../../composables/Commons/passedProps.composable'
-	import { useProps } from '../../composables/Commons/props.composable'
-	import { useRounded } from '../../composables/Commons/rounded.composable'
-	import { useStyle } from '../../composables/Commons/style.composable'
+	import {
+		useDefaults,
+		useDensity,
+		useGroup,
+		useProps,
+		useRounded,
+		useStyle
+	} from '../../composables'
 
-	import { ORIGAM_TABS_KEY, ORIGAM_TAB_PANELS_KEY, ORIGAM_TAB_PANELS_LINK_KEY } from '../../consts/Tabs/tabs.const'
+	import { ORIGAM_TABS_KEY } from '../../consts'
 
-	import { omitUndefined } from '../../utils/Commons/commons.util'
+	import { DENSITY, DIRECTION, TAB_VARIANT } from '../../enums'
 
-	import { DENSITY } from '../../enums/Commons/density.enum'
-	import { DIRECTION } from '../../enums/Commons/direction.enum'
-	import { TAB_VARIANT } from '../../enums/Tabs/tab.enum'
+	import type { ITabsProps} from '../../interfaces'
 
-	import type { ITabsProps } from '../../interfaces/Tabs/tabs.interface'
-
-	import type { ITabsEmits, ITabsSlots } from '../../interfaces/Tabs/tabs.interface'
+	import type { ITabsEmits } from '../../interfaces/Tabs/tabs.interface'
 
 	/*********************************************************
 	 * Global
 	 ********************************************************/
-	const props = withDefaults(defineProps<ITabsProps>(), {
+	const _props = withDefaults(defineProps<ITabsProps>(), {
 		tag: 'div',
 		direction: DIRECTION.HORIZONTAL,
 		density: DENSITY.DEFAULT,
@@ -61,9 +57,16 @@
 		selectedClass: 'origam-tab--active'
 	})
 
-	defineEmits<ITabsEmits>()
+	// `useDefaults` resolves each prop against the closest
+	// `<OrigamDefaultsProvider>` / theme `components['origam-tabs']` entry.
+	// OrigamTabs is the SOLE owner of `variant` — without this hook a
+	// theme's `'origam-tabs': { variant: 'pills' }` was completely inert,
+	// and the `slotDefaults` forwarded to descendant `<OrigamTab>` (which
+	// reads straight off `props.variant`/`density`/`color`/`fixed`) never
+	// picked it up either (see #279).
+	const props = useDefaults(_props)
 
-	defineSlots<ITabsSlots>()
+	defineEmits<ITabsEmits>()
 
 	const {filterProps} = useProps<ITabsProps>(props)
 
@@ -76,20 +79,6 @@
 	 * the same injection key.
 	 ********************************************************/
 	const {isSelected, select, next, prev, selected, items} = useGroup(props, ORIGAM_TABS_KEY)
-
-	/*********************************************************
-	 * Sibling panels link (#441)
-	 *
-	 * @description
-	 * `<OrigamTabPanels>` is documented as a SIBLING, never an
-	 * ancestor — `<OrigamTab>` cannot `inject(ORIGAM_TAB_PANELS_KEY)`
-	 * directly. Resolve the sibling's group once (walking the shared
-	 * parent's render tree, see `useGroupSiblingLink`) and re-provide
-	 * it down OUR OWN (real) ancestor chain so `<OrigamTab>` can read
-	 * it via a plain `inject()`.
-	 ********************************************************/
-	const panelsGroupLink = useGroupSiblingLink(ORIGAM_TABS_KEY, ORIGAM_TAB_PANELS_KEY)
-	provide(ORIGAM_TAB_PANELS_LINK_KEY, panelsGroupLink)
 
 	const rootRef = ref<HTMLElement>()
 
@@ -105,22 +94,13 @@
 		items: items.value
 	}))
 
-	// Forward ONLY what the consumer actually passed — see #263. `color` is
-	// `TColor` (includes `false`) and `fixed` is boolean, so Vue coerces both
-	// to a concrete `false` when unset; `omitUndefined` alone cannot see it.
-	//
-	// `variant` is kept unconditional, exactly as on `OrigamBtnGroup`: the
-	// tabs' own resolved variant (whether passed or resolved from a theme's
-	// `'origam-tabs'` block) must always reach the children, else a themed
-	// variant paints the tab bar but leaves every tab on its own default.
-	const wasPropPassed = usePassedProps(props)
 	const slotDefaults = computed(() => ({
-		'origam-tab': omitUndefined({
+		'origam-tab': {
+			density: props.density,
+			color: props.color,
 			variant: props.variant,
-			density: wasPropPassed('density') ? props.density : undefined,
-			color: wasPropPassed('color') ? props.color : undefined,
-			fixed: wasPropPassed('fixed') ? props.fixed : undefined
-		})
+			fixed: props.fixed
+		}
 	}))
 
 	/*********************************************************
@@ -195,41 +175,11 @@
 	const {roundedClasses, roundedStyles} = useRounded(props)
 
 	/*********************************************************
-	 * bgColor
-	 *
-	 * @description
-	 * #550 (critere C1) — `bgColor` etait DECLAREE (via `IBgColorProps`),
-	 * exposee par DEUX controles de la story et documentee, et lue nulle
-	 * part : la barre d'onglets restait sur son
-	 * `--origam-tabs---background-color` quoi qu'on passe. Seul `color`
-	 * etait lu, et uniquement pour etre RE-DIFFUSE aux `<origam-tab>`
-	 * enfants via `slotDefaults` — jamais pour peindre le tablist lui-meme.
-	 *
-	 * @description
-	 * `useBackgroundColor` (et non `useBothColor`) : le perimetre est
-	 * `bgColor`. Y adjoindre `color` changerait le contrat de `color`, qui
-	 * est aujourd'hui une valeur PROPAGEE aux onglets, pas une couleur de
-	 * texte du conteneur. La paire de contraste reste assuree : quand
-	 * `bgColor` est une intention, `useColor` emet aussi le `color:` associe
-	 * (`bgIntentFg`), donc le texte reste lisible sur la surface peinte.
-	 *
-	 * @description
-	 * La declaration inline est celle qui peint : la regle scopee
-	 * `.origam-tabs { background-color: var(--origam-tabs---background-color,
-	 * transparent) }` vaut (0,2,0) et battrait l'utilitaire
-	 * `.origam--bg-{intention}` (0,1,0) — cf. « Strategie A » dans le
-	 * CLAUDE.md racine. Les deux canaux sont branches quand meme, en
-	 * parallele, comme partout ailleurs.
-	 ********************************************************/
-	const {backgroundColorClasses, backgroundColorStyles} = useBackgroundColor(toRef(props, 'bgColor'))
-
-	/*********************************************************
 	 * Class & Style
 	 ********************************************************/
 	const tabsStyles = computed(() => {
 		return [
 			roundedStyles.value,
-			backgroundColorStyles.value,
 			props.style
 		] as StyleValue
 	})
@@ -242,23 +192,12 @@
 				'origam-tabs--fixed': props.fixed,
 				'origam-tabs--centered': props.centered
 			},
-			backgroundColorClasses.value,
 			densityClasses.value,
 			roundedClasses.value,
 			props.class
 		]
 	})
-	/*********************************************************
-	 * useStyle
-	 *
-	 * @description
-	 * #381 — the `id` returned by useStyle is a GENERATED identifier,
-	 * only meant for the scoped stylesheet selector. Without
-	 * `() => props.id` here, it shadowed the `id` PROP of the same
-	 * name: the template's `:id="id"` on the root rendered the
-	 * generated id, never the consumer's.
-	 ********************************************************/
-	const {id, css, load, isLoaded, unload} = useStyle(tabsStyles, () => props.id)
+	const {id, css, load, isLoaded, unload} = useStyle(tabsStyles)
 
 	/*********************************************************
 	 * Expose

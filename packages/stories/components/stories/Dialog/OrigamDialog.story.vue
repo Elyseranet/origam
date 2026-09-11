@@ -75,10 +75,10 @@
 				:init-state="() => useStoryInitState<Partial<IDialogProps>>({
 					title: 'Functional dialog',
 					fullscreen: false,
+					scrollable: false,
 					retainFocus: true,
 					persistent: false,
-					disabled: false,
-					closeLabel: 'origam.close'
+					disabled: false
 				})"
 		>
 			<template #default="{ state }">
@@ -87,10 +87,10 @@
 							v-model="functionalOpen"
 							:title="state.title"
 							:fullscreen="state.fullscreen"
+							:scrollable="state.scrollable"
 							:retain-focus="state.retainFocus"
 							:persistent="state.persistent"
 							:disabled="state.disabled"
-							:close-label="state.closeLabel"
 					>
 						<template #activator="{ props: a }">
 							<origam-btn v-bind="a" text="Open (Functional)"/>
@@ -111,14 +111,12 @@
 			<template #controls="{ state }">
 				<StoryGroup title="Behaviour">
 					<HstCheckbox v-model="state.fullscreen"  title="Fullscreen"/>
+					<HstCheckbox v-model="state.scrollable"  title="Scrollable"/>
 					<HstCheckbox v-model="state.retainFocus" title="Retain Focus"/>
 					<HstCheckbox v-model="state.persistent"  title="Persistent"/>
 				</StoryGroup>
 				<StoryGroup title="States">
 					<HstCheckbox v-model="state.disabled" title="Disabled"/>
-				</StoryGroup>
-				<StoryGroup title="Accessibility">
-					<HstText v-model="state.closeLabel" title="Close Label (locale key)"/>
 				</StoryGroup>
 			</template>
 		</Variant>
@@ -376,8 +374,8 @@
 				:init-state="() => useStoryInitState<IDialogProps>({
 					title: 'Dialog',
 					fullscreen: false,
-					retainFocus: true,
-					closeLabel: 'origam.close'
+					scrollable: false,
+					retainFocus: true
 				})"
 		>
 			<template #default="{ state }">
@@ -417,10 +415,10 @@
 				</StoryGroup>
 				<StoryGroup title="Functional">
 					<HstCheckbox v-model="state.fullscreen"  title="Fullscreen"/>
+					<HstCheckbox v-model="state.scrollable"  title="Scrollable"/>
 					<HstCheckbox v-model="state.retainFocus" title="Retain Focus"/>
 					<HstCheckbox v-model="state.persistent"  title="Persistent"/>
 					<HstCheckbox v-model="state.disabled"    title="Disabled"/>
-					<HstText     v-model="state.closeLabel"  title="Close Label (locale key)"/>
 				</StoryGroup>
 			</template>
 		</Variant>

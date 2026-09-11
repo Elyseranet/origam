@@ -1,3 +1,3 @@
-import OrigamColorPickerCanvas from '../../components/ColorPicker/OrigamColorPickerCanvas.vue'
+import { OrigamColorPickerCanvas } from "../../components"
 
 export type TOrigamColorPickerCanvas = InstanceType<typeof OrigamColorPickerCanvas>
