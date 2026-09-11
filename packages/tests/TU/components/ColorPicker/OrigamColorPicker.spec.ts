@@ -7,10 +7,11 @@
 // field receives the value. What these specs pin is (a) that the commit path
 // really does reach `update:modelValue`, so the false claim cannot be made
 // again without a red test, and (b) the ONE real defect found: the canvas
-// announces itself as a keyboard control (`role="application"`, `tabindex=0`,
-// live `aria-valuetext`) but ignored arrow keys whenever no colour was set
-// yet — the exact state an empty field opens in, which is why the earlier
-// probe concluded "arrows ignored entirely".
+// announces itself as a keyboard control (`role="slider"` since the C6 a11y
+// pass, was `role="application"` before — see OrigamColorPickerCanvas.vue,
+// `tabindex=0`, live `aria-valuetext`) but ignored arrow keys whenever no
+// colour was set yet — the exact state an empty field opens in, which is
+// why the earlier probe concluded "arrows ignored entirely".
 
 import { describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
@@ -124,7 +125,7 @@ describe('OrigamColorPickerCanvas — keyboard', () => {
     // picker with no colour yet — an empty OrigamColorPickerField is exactly
     // that — swallowed every arrow key, while a MOUSE click on the very same
     // canvas committed a colour just fine. A control that advertises
-    // `role="application"` + `tabindex="0"` + a live `aria-valuetext` must
+    // `role="slider"` + `tabindex="0"` + a live `aria-valuetext` must
     // answer the keyboard wherever it answers the mouse.
     it('commits from a null colour on ArrowRight (keyboard/mouse parity)', async () => {
         const wrapper = await mountPicker({ modelValue: null })

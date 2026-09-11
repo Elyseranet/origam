@@ -4,10 +4,13 @@
 			ref="resizeRef"
 			:aria-disabled="disabled"
 			:aria-label="canvasAriaLabel"
+			:aria-valuemax="100"
+			:aria-valuemin="0"
+			:aria-valuenow="canvasAriaValueNow"
 			:aria-valuetext="canvasAriaValueText"
 			:class="colorPickerCanvasClasses"
 			:style="colorPickerCanvasStyles"
-			role="application"
+			role="slider"
 			tabindex="0"
 			@keydown="handleKeyDown"
 			@mousedown="handleMouseDown"
@@ -190,6 +193,27 @@
 	})
 
 	/*********************************************************
+	 * canvasAriaValueNow
+	 *
+	 * @description
+	 * ⛔ issue C6 (a11y audit) — `role="application"` does not carry
+	 * `aria-valuenow` / `aria-valuemin` / `aria-valuemax` / `aria-valuetext`
+	 * in its supported-states table (WAI-ARIA 1.2 §5.4, confirmed against
+	 * the spec: those four properties belong to `slider` / `spinbutton` /
+	 * `scrollbar` / `progressbar` / `meter`, never to `application`), so a
+	 * screen reader had no defined way to expose the live value it was
+	 * already computing.
+	 * @description
+	 * `role="slider"` makes `aria-valuenow` a REQUIRED property (MDN),
+	 * hence this dedicated computed — `s` (saturation) is the reported
+	 * axis, `aria-valuetext` still carries the full two-axis description
+	 * for assistive tech that prefers it.
+	 ********************************************************/
+	const canvasAriaValueNow = computed(() => {
+		return Math.round((props.colorHsv?.s ?? 0) * 100)
+	})
+
+	/*********************************************************
 	 * Event handlers
 	 ********************************************************/
 
@@ -203,7 +227,7 @@
 		// A picker that has no colour yet (an empty OrigamColorPickerField
 		// opens in exactly that state) must still answer the keyboard: a
 		// mouse click on this same canvas commits a colour from null, and
-		// this element advertises `role="application"`, `tabindex="0"` and a
+		// this element advertises `role="slider"`, `tabindex="0"` and a
 		// live `aria-valuetext`. Bailing out on a null colour made it inert
 		// for keyboard users precisely when they had nothing to start from.
 		const hsv = props.colorHsv ?? COLOR_NULL
